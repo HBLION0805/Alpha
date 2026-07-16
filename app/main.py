@@ -9,7 +9,7 @@ from app.decision_engine import (
     evaluate_stock,
 )
 from app.portfolio import Portfolio, create_sample_portfolio
-
+from app.risk_engine import RiskEngine
 
 console = Console()
 
@@ -220,6 +220,36 @@ def display_event_decisions(portfolio: Portfolio) -> None:
 
     console.print(table)
 
+def display_risk_limits(portfolio: Portfolio) -> None:
+    """Display deterministic portfolio risk limits."""
+
+    risk_engine = RiskEngine()
+    limits = risk_engine.get_summary(portfolio.total_value)
+
+    table = Table(title="Risk Limits")
+
+    table.add_column("Risk Control")
+    table.add_column("Amount", justify="right")
+
+    table.add_row(
+        "Maximum Total Position",
+        format_money(limits["maximum_total_position"]),
+    )
+    table.add_row(
+        "Minimum Cash Reserve",
+        format_money(limits["minimum_cash_reserve"]),
+    )
+    table.add_row(
+        "Maximum Daily Loss",
+        format_money(limits["maximum_daily_loss"]),
+    )
+    table.add_row(
+        "Maximum Single Trade",
+        format_money(limits["maximum_single_trade"]),
+    )
+
+    console.print(table)
+
 def main() -> None:
     """Run the Alpha terminal dashboard."""
 
@@ -236,7 +266,7 @@ def main() -> None:
     display_event_contracts(portfolio)
     display_stock_decisions(portfolio)
     display_event_decisions(portfolio)
-
+    display_risk_limits(portfolio)
 
 if __name__ == "__main__":
     main()
