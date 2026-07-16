@@ -1,29 +1,119 @@
-# Project Alpha-1000
+# Alpha
+
+> A Personal Capital Operating System
+
+---
+
+## Vision
+
+Alpha is a Personal Capital Operating System designed to help individuals protect, allocate, grow, and compound capital over the long term.
+
+The goal of Alpha is not to maximize the profit of a single trade.
+
+The goal is to build a disciplined capital management system that survives for decades.
+
+---
 
 ## Mission
 
-Build an AI-powered trading operating system that helps grow capital through disciplined decision-making.
+Alpha helps its owner make better financial decisions through structured planning, disciplined execution, continuous learning, and long-term capital allocation.
 
-## Long-Term Goal
+Alpha is not a trading bot.
 
-Use short-term event opportunities to responsibly build long-term stock wealth.
+Alpha is a decision-support system.
 
-## Project Principles
+---
 
-1. Protect capital first.
-2. Every trade must have a reason.
-3. Data over emotion.
-4. Continuous improvement.
-5. Long-term wealth over short-term excitement.
+## Core Philosophy
 
-## Version
+Protect Capital
 
-V0.1
+↓
 
-## Started
+Allocate Capital
 
-July 2026
+↓
 
-## Founder
+Grow Capital
 
-Haibo Liu
+↓
+
+Compound Capital
+
+---
+
+## Current Development Status
+
+Current Version
+
+Pre-Alpha
+
+Current Phase
+
+Day 3
+
+Completed Systems
+
+- Portfolio System
+- Dashboard
+- Decision Engine
+- Config System
+- Risk Engine
+
+Under Development
+
+- AI Router
+- Alpha Journal
+- Strategy Versioning
+- Research Lab
+
+---
+
+## Long-Term Architecture
+
+Alpha will eventually contain:
+
+- Portfolio System
+- Dashboard
+- Decision Engine
+- Config System
+- Risk Engine
+- AI Router
+- AI Cost Governor
+- Prediction Logs
+- Strategy Database
+- Event Replay Engine
+- Research Lab
+- Capital Allocation Engine
+
+---
+
+## Development Principles
+
+- Protect capital before pursuing growth.
+- Stable growth is better than maximum growth.
+- Every strategy must be testable.
+- Every important decision must be recorded.
+- Never let emotions modify an existing trading plan.
+- Build software before adding complexity.
+
+---
+
+## Repository Structure
+
+```text
+Alpha/
+|-- app/              # Core application
+|-- config/           # Configuration
+|-- data/             # Local data
+|-- docs/             # Documentation
+|   |-- ARCHITECTURE.md
+|   |-- CORE_PRINCIPLES.md
+|   |-- ROADMAP.md
+|   |-- BACKLOG.md
+|   |-- DECISIONS.md
+|   |-- CHANGELOG.md
+|   |-- HANDOFF.md
+|   `-- ALPHA_JOURNAL.md
+|-- tests/            # Automated tests
+`-- README.md
