@@ -25,3 +25,6 @@ Thumbs.db
 # Python cache
 .pytest_cache/
 .mypy_cache/
+
+# Node.js
+node_modules/
