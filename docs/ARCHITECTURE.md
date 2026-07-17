@@ -75,10 +75,12 @@ Responsible for:
 
 Responsible for:
 
-- Opportunity evaluation
-- Strategy recommendation
-- Trade planning
-- Risk assessment
+- Combining research, opportunity, prediction, instrument, and risk outputs
+- Producing the final capital decision
+- Producing and preserving the final decision record
+- Producing an approved trade plan when action is justified
+
+The Decision Engine does not replace the specialized evaluation systems. It coordinates their outputs and may return WAIT, Cash, or NO TRADE.
 
 ---
 
@@ -104,6 +106,42 @@ Responsible for:
 
 ---
 
+## Research Framework
+
+Responsible for:
+
+- Research methodology
+- Evidence and source standards
+- Separation of verified facts, inferences, assumptions, and unknowns
+- Scenario and confidence requirements
+- Research report structure
+
+---
+
+## Opportunity Score Engine
+
+Responsible for:
+
+- Evaluating opportunity quality
+- Determining whether an opportunity deserves further consideration
+- Tracking opportunity state and confidence
+- Advancing, waiting, rejecting, or archiving opportunities
+
+The Opportunity Score Engine evaluates the opportunity itself. It does not select an execution instrument.
+
+---
+
+## Instrument Ranking Engine
+
+Responsible for:
+
+- Comparing eligible execution instruments
+- Evaluating execution quality and holding-period suitability
+- Ranking instruments by capital protection, risk-adjusted return, and execution quality
+- Returning WAIT or Cash when no instrument is suitable
+
+---
+
 ## AI Router
 
 Responsible for:
@@ -115,13 +153,36 @@ Responsible for:
 
 ---
 
-## Prediction & Decision Log
+## Prediction Log
 
 Responsible for:
 
-- Recording every prediction
-- Recording every decision
-- Comparing expected vs actual outcomes
+- Preserving finalized predictions before execution
+- Preserving the evidence available when each prediction was created
+- Resolving predictions independently from trade profitability
+- Supporting later comparison with decisions and trade outcomes
+
+---
+
+## Trade Outcome Log
+
+Responsible for:
+
+- Recording completed trade results
+- Comparing planned and actual execution
+- Separating prediction quality, execution quality, and profitability
+- Preserving risk, adherence, attribution, and lesson records
+
+---
+
+## Learning Loop
+
+Responsible for:
+
+- Reviewing completed predictions and trade outcomes
+- Performing root cause analysis and pattern detection
+- Validating candidate improvements
+- Proposing evidence-based strategy changes
 
 ---
 
@@ -140,9 +201,10 @@ Responsible for:
 
 Responsible for:
 
-- Version control of trading strategies
-- Performance comparison
-- Historical testing
+- Preserving strategy identity, lineage, and status
+- Reviewing proposed strategy changes
+- Comparing strategy versions
+- Supporting owner-approved activation and rollback without rewriting history
 
 ---
 
@@ -197,33 +259,45 @@ Large refactoring should be avoided whenever possible.
 
 ---
 
-# Information Flow
+# Decision Intelligence and Learning Flow
 
-Market Data
+Research Framework
+|
+v
+Opportunity Score Engine
+|
+v
+Prediction Log (Forecast Freeze)
+|
+v
+Instrument Ranking Engine
+|
+v
+Risk Engine Review
 |
 v
 Decision Engine
 |
 v
-Risk Engine
-|
-v
-Trade Plan
-|
-v
 Execution
 |
 v
-Prediction Log
+Trade Outcome Log
 |
 v
-Journal
+Learning Loop
 |
 v
-Strategy Review
+Strategy Versioning
 |
 v
-Portfolio Update
+Future Decision Improvement
+
+The Prediction Log precedes the final decision and execution so Alpha can preserve the original forecast without hindsight changes.
+
+The Portfolio System and Config System provide control inputs across the flow. The Risk Engine provides constraints during instrument ranking and performs the final risk review before a capital decision. The Dashboard presents state and outputs but does not own decision logic. The Alpha Journal may summarize decisions and lessons but does not replace source records.
+
+Execution is currently an external, owner-controlled action. Future broker integration must not bypass owner approval, the approved trade plan, or Risk Engine limits.
 
 ---
 

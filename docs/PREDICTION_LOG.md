@@ -227,9 +227,9 @@ The Risk Engine provides risk context and invalidation evidence that may be link
 
 The Decision Engine may use finalized predictions as inputs while preserving separate records for prediction, decision, and trade outcome.
 
-### Future Trade Outcome Log
+### Trade Outcome Log
 
-The Prediction Log should link to the future Trade Outcome Log so Alpha can compare prediction quality with actual execution and profitability.
+The Prediction Log links to the Trade Outcome Log so Alpha can compare prediction quality with actual execution and profitability.
 
 ### Alpha Journal
 
@@ -243,9 +243,9 @@ Each prediction should reference the strategy version active when the prediction
 
 The Research Lab may use Prediction Log history for studies, experiments, and retrospective analysis.
 
-### Future Learning Loop
+### Learning Loop
 
-The Learning Loop should use resolved predictions and trade outcomes to improve strategy design after the prediction period or trade ends.
+The Learning Loop uses resolved predictions and trade outcomes to improve strategy design after the prediction period or trade ends.
 
 ### AI Router
 
@@ -301,4 +301,3 @@ Future additions may include:
 - Backtesting integration
 
 Future expansion should preserve provider independence, auditability, and separation between prediction quality and trading profitability.
-

@@ -301,9 +301,9 @@ Each trade outcome should reference the active strategy version so performance c
 
 The Research Lab may use trade outcome history for studies, experiments, and retrospective analysis.
 
-### Future Learning Loop
+### Learning Loop
 
-The Learning Loop should use trade outcomes after trades close to improve research, instrument selection, risk controls, and strategy design.
+The Learning Loop uses trade outcomes after trades close to improve research, instrument selection, risk controls, and strategy design.
 
 ### Dashboard
 
@@ -362,4 +362,3 @@ Future additions may include:
 - AI cost tracking
 
 Future expansion should preserve provider independence, auditability, and separation between prediction quality and trade outcome.
-

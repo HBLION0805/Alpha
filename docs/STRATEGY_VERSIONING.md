@@ -186,6 +186,10 @@ Instrument selection rules may be versioned so Alpha can compare instrument suit
 
 Risk rules and portfolio limits may be versioned, reviewed, and rolled back when evidence supports change.
 
+### Decision Engine
+
+The Decision Engine uses the active, owner-approved strategy version. Strategy changes affect future decisions only and must not rewrite historical decision records.
+
 ### Dashboard
 
 The Dashboard may display the active strategy version, version status, pending proposals, performance comparisons, and rollback status.
@@ -243,4 +247,3 @@ Future additions may include:
 - Provider-independent strategy review tools
 
 Future expansion should preserve provider independence, historical integrity, owner approval, and clear separation between learning, review, approval, and activation.
-

@@ -9,6 +9,21 @@ This framework defines a consistent, evidence-based, and reviewable research sta
 
 Alpha does not optimize for prediction accuracy alone. Alpha optimizes for profitable execution under controlled risk.
 
+## System Boundaries
+
+The Research Framework defines the evidence, analysis, scenario, confidence, and reporting standards used across Alpha. It does not replace the systems that act on research outputs.
+
+- The Opportunity Score Engine owns opportunity evaluation.
+- The Prediction Log owns the frozen forecast record.
+- The Instrument Ranking Engine owns execution instrument comparison and ranking.
+- The Risk Engine owns risk calculations, limits, and enforcement.
+- The Decision Engine owns the final capital decision and approved trade plan.
+- The Trade Outcome Log owns the completed trade record.
+- The Learning Loop owns post-outcome analysis and improvement proposals.
+- Strategy Versioning owns controlled strategy evolution.
+
+The Research Report Template is the reusable presentation contract for research work.
+
 ## 2. Research Scope
 
 Alpha research may cover:
@@ -282,4 +297,3 @@ After completing research work, report:
 - Unknowns
 - Limitations
 - Recommended next step
-

@@ -1,0 +1,38 @@
+# Alpha Architecture Decisions
+
+## 2026-07-16 - Architecture Consistency Review
+
+### Prediction Freeze Placement
+
+- Decision: Finalize and freeze prediction records before the final capital decision and execution.
+- Context or problem: Predictions recorded after decisions or execution could be changed with hindsight.
+- Rationale: Preserving the original forecast enables an honest comparison between prediction quality, decision quality, execution quality, and outcomes.
+- Consequences: Later evidence must be stored as a linked amendment or resolution and must not rewrite the original prediction.
+
+### Decision Engine Ownership
+
+- Decision: Specialized systems own opportunity evaluation, prediction records, instrument ranking, and risk constraints. The Decision Engine combines those outputs and owns the final capital decision and approved trade plan.
+- Context or problem: Broad Decision Engine responsibilities overlapped with specialized systems and made ownership unclear.
+- Rationale: Explicit boundaries prevent duplicated logic and preserve independent evaluation stages.
+- Consequences: The Decision Engine coordinates validated outputs but does not replace upstream evaluation or Risk Engine enforcement.
+
+### Execution Boundary
+
+- Decision: Execution remains external and owner-controlled. Future broker integration must not bypass owner approval, the frozen trade plan, or Risk Engine limits.
+- Context or problem: Alpha is a decision-support system, and execution authority must remain explicit.
+- Rationale: Owner control and deterministic risk enforcement protect capital and prevent unauthorized automated execution.
+- Consequences: Execution automation requires separate approval and must preserve the existing approval and risk boundaries.
+
+### Learning and Strategy Approval
+
+- Decision: The Learning Loop proposes improvements, Strategy Versioning reviews changes, and the owner approves activation or rollback. Automatic production strategy replacement is prohibited.
+- Context or problem: Learning outputs must not silently alter active production strategies.
+- Rationale: Separating proposal, review, and approval protects historical integrity and prevents reactive strategy changes.
+- Consequences: Old strategy versions remain available, and every activation or rollback requires an auditable owner approval.
+
+### Implementation Order
+
+- Decision: Define deterministic record and storage contracts before implementing the new intelligence and learning systems. Add AI Router integration only after deterministic boundaries are stable.
+- Context or problem: Implementing orchestration before stable system contracts would create unclear dependencies and provider coupling.
+- Rationale: Deterministic contracts provide reliable ownership, validation, storage, and enforcement boundaries.
+- Consequences: Record schemas and storage behavior are the next architecture task; AI routing remains downstream work.

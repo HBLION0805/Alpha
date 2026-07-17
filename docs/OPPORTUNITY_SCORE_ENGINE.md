@@ -140,11 +140,12 @@ An opportunity may move through the following lifecycle:
 3. Researched
 4. Scored
 5. Watchlisted
-6. Advanced to instrument ranking
-7. Approved for decision review
-8. Rejected
-9. Archived
-10. Reopened
+6. Advanced to prediction
+7. Advanced to instrument ranking
+8. Approved for decision review
+9. Rejected
+10. Archived
+11. Reopened
 
 The lifecycle should preserve evidence, assumptions, unknowns, and state changes so future review can explain why an opportunity advanced or stopped.
 
@@ -198,9 +199,13 @@ The Opportunity Score Engine applies the Research Framework by requiring evidenc
 
 ### Instrument Ranking Engine
 
-The Opportunity Score Engine decides whether an opportunity should advance to execution instrument review. The Instrument Ranking Engine then evaluates which execution instrument, if any, is suitable.
+The Opportunity Score Engine decides whether an opportunity should advance. After the forecast is frozen in the Prediction Log, the Instrument Ranking Engine evaluates which execution instrument, if any, is suitable.
 
 Opportunity scoring must be independent of execution instruments. A strong opportunity can still result in Cash if execution quality is poor.
+
+### Prediction Log
+
+The Prediction Log freezes the opportunity thesis, expected scenario, evidence snapshot, and confidence before instrument ranking, final decision, or execution. Prediction quality remains separate from opportunity quality and execution quality.
 
 ### Risk Engine
 
@@ -216,6 +221,7 @@ The engine may produce the following outputs:
 
 - Advance to research
 - Continue research
+- Advance to prediction
 - Advance to instrument ranking
 - Watch
 - Wait
@@ -248,4 +254,3 @@ Future expansion may include:
 - Dashboard opportunity views
 
 Future AI Router integration should route tasks based on complexity, required evidence quality, cost, and the type of opportunity being evaluated. The engine should expose clear inputs and outputs so routing can occur without changing the core opportunity evaluation standard.
-

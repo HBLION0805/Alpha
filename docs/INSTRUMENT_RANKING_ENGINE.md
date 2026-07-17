@@ -215,7 +215,14 @@ The Risk Engine provides risk constraints and risk warnings used to exclude, pen
 
 The Dashboard should display the selected instrument, ranking rationale, execution confidence, major risks, and current decision. It should make WAIT and Cash visible as valid outcomes.
 
-### Future Opportunity Score Engine
+### Opportunity Score Engine
 
-The future Opportunity Score Engine may identify attractive research opportunities. The Instrument Ranking Engine remains responsible for selecting the best execution instrument after an opportunity has been evaluated.
+The Opportunity Score Engine identifies opportunities that deserve further consideration. The Instrument Ranking Engine remains responsible for selecting the best execution instrument after an opportunity has been evaluated.
 
+### Prediction Log
+
+The Prediction Log provides the frozen thesis, expected scenario, and Prediction Confidence used during instrument evaluation. Instrument selection must not rewrite the original prediction.
+
+### Decision Engine
+
+The Decision Engine consumes the completed instrument ranking together with research, opportunity, prediction, and Risk Engine outputs to produce the final capital decision.

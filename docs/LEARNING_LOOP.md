@@ -89,7 +89,7 @@ v
 Strategy Proposal
 |
 v
-Strategy Version Review
+Strategy Versioning Review
 |
 v
 Approved Strategy Update
@@ -195,9 +195,11 @@ One trade never creates a new strategy version.
 
 One profitable month is insufficient evidence.
 
-Learning proposes.
+Learning Loop proposes.
 
-Strategy Review approves.
+Strategy Versioning reviews.
+
+Owner approves.
 
 Approved changes must preserve the reason for the change, the evidence used, and the strategy version affected.
 
@@ -296,4 +298,3 @@ Future additions may include:
 - Dashboard learning metrics
 
 Future expansion should preserve provider independence, auditability, historical integrity, and separation between learning, review, approval, and execution.
-

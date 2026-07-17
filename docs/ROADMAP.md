@@ -18,40 +18,53 @@ Status: Completed
 
 ---
 
-# Phase 2 — Core Infrastructure (Current)
+# Phase 2 — Core Infrastructure and Architecture (Current)
 
 Status: In Progress
 
 Goals:
 
-- Complete project documentation
-- Establish development workflow
-- Build Risk Engine
+- Maintain project documentation and development workflow
+- Integrate the Risk Engine across decision systems
 - Build AI Router
-- Define trading framework
+- Prepare deterministic data contracts for the decision and learning pipeline
+
+Completed Architecture:
+
+- Research Framework
+- Opportunity Score Engine
+- Instrument Ranking Engine
+- Prediction Log
+- Trade Outcome Log
+- Learning Loop
+- Strategy Versioning
 
 ---
 
-# Phase 3 — Trading Intelligence
+# Phase 3 — Decision Intelligence Implementation
 
 Planned Features:
 
+- Opportunity Score Engine implementation
+- Instrument Ranking Engine implementation
+- Prediction record storage
+- Decision record storage
 - Event Contract Engine
 - Trade Planning Engine
 - Profit-Taking Engine
 - Position Sizing
 - Daily Goal System
-- Opportunity Ranking
+- Dashboard integration
 
 ---
 
-# Phase 4 — Learning System
+# Phase 4 — Learning System Implementation
 
 Planned Features:
 
-- Prediction Log
-- Trade Review
-- Strategy Versioning
+- Trade Outcome Log implementation
+- Learning Loop implementation
+- Strategy Versioning implementation
 - Performance Analysis
 - Research Lab
 
