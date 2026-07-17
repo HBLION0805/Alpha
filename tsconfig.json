@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "types": []
   },
-  "include": ["src/contracts/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }
