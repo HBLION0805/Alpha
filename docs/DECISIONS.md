@@ -1,5 +1,21 @@
 # Alpha Architecture Decisions
 
+## 2026-07-18 - Deterministic AI Router Planning Boundary
+
+### Provider-Independent Selection
+
+- Decision: The AI Router planning engine evaluates provider-neutral profiles using hard eligibility constraints followed by deterministic, stable ordering.
+- Context or problem: Alpha needs to balance capability, privacy, reliability, latency, context, and cost without coupling business logic to a provider or introducing random routing.
+- Rationale: Provider-neutral contracts and explicit rejection and ranking rules allow providers and models to be replaced through configuration while keeping every selection reproducible and auditable.
+- Consequences: Provider display names never affect selection, all rejected candidates retain normalized reasons, and identical request, configuration, budget, and clock snapshots produce identical decisions.
+
+### Planning and Execution Separation
+
+- Decision: The minimum Router Engine ends after returning a routing decision, fallback plan, and audit record.
+- Context or problem: Combining selection with provider execution would introduce SDK, credential, network, retry, and persistence concerns before the deterministic boundary is proven.
+- Rationale: A planning-only engine is easier to validate and preserves the architecture rule that provider adapters remain replaceable infrastructure.
+- Consequences: The engine performs no network calls, model invocation, retries, audit persistence, or business action. Those capabilities require separate reviewed tasks.
+
 ## 2026-07-16 - Architecture Consistency Review
 
 ### Prediction Freeze Placement

@@ -3,7 +3,11 @@
   "private": true,
   "scripts": {
     "typecheck": "tsc --project tsconfig.json",
-    "test:opportunity": "tsx src/engines/opportunity/OpportunityScoreEngine.test.ts"
+    "test": "tsx src/engines/opportunity/OpportunityScoreEngine.test.ts && tsx src/engines/prediction/PredictionEngine.test.ts && tsx src/contracts/AIRouter.test.ts && tsx src/engines/ai-router/AIRouterEngine.test.ts",
+    "test:opportunity": "tsx src/engines/opportunity/OpportunityScoreEngine.test.ts",
+    "test:prediction": "tsx src/engines/prediction/PredictionEngine.test.ts",
+    "test:ai-router": "tsx src/contracts/AIRouter.test.ts",
+    "test:ai-router-engine": "tsx src/engines/ai-router/AIRouterEngine.test.ts"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

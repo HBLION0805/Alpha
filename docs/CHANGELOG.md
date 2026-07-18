@@ -1,5 +1,18 @@
 # Alpha Changelog
 
+## 2026-07-18
+
+### Added
+
+- Added AI Router v1 provider-neutral request, response, provider, model, configuration, budget, fallback, error, and audit contracts.
+- Added deterministic validation for Router requests, registries, costs, budgets, decisions, and audit records.
+- Added the deterministic AI Router planning engine with explicit eligibility, cost estimation, budget checks, critical overrides, stable ranking, fallback planning, normalized failures, and in-memory audit generation.
+- Added focused AI Router contract and engine tests and an aggregate TypeScript test command.
+
+### Boundaries
+
+- No provider SDK, credentials, HTTP client, external AI call, provider adapter, persistence, or Python business-logic change was added.
+
 ## 2026-07-16
 
 ### Changed
