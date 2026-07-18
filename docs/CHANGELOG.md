@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## 2026-07-18 - Day 5
+
+### Prediction Log Foundation
+
+- Began Alpha's TypeScript business layer with the authoritative Prediction Log foundation.
+- Replaced the deletion and mutable-update prediction repository port with append-only prediction, lifecycle, outcome, and review contracts.
+- Added deterministic prediction IDs, immutable evidence and decision snapshots, and the strict Draft -> Submitted -> Locked -> Outcome Known -> Reviewed -> Archived lifecycle.
+- Added separate accuracy and profitability classifications, review scores, filters, statistics, summaries, translation, and JSON/NDJSON/CSV export.
+- Added defensive in-memory and local single-process NDJSON repositories with duplicate protection and strict reload behavior.
+- Added 40 focused tests covering validation, lifecycle, repositories, statistics, filtering, append-only behavior, immutability, evidence, review rules, history, translation, and exports.
+- Preserved provider-independent and advisory boundaries; no provider SDK, network/API, credential, market-data, portfolio-execution, broker, or Python business-logic change was added.
+
 ## 2026-07-18
 
 ### Day 4 Milestone

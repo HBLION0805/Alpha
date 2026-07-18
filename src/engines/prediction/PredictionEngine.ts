@@ -343,7 +343,7 @@ export function evaluatePrediction(
   const activationBlockers = createActivationBlockers(input);
   const predictionState =
     activationBlockers.length === 0
-      ? PredictionStatus.Active
+      ? PredictionStatus.Submitted
       : PredictionStatus.Draft;
 
   return {

@@ -1,4 +1,9 @@
 declare module "node:fs" {
+  export function appendFileSync(
+    path: string,
+    data: string,
+    options?: { readonly encoding?: "utf8"; readonly flag?: string },
+  ): void;
   export function closeSync(fd: number): void;
   export function existsSync(path: string): boolean;
   export function fsyncSync(fd: number): void;
@@ -23,6 +28,7 @@ declare module "node:os" {
 }
 
 declare module "node:path" {
+  export function dirname(path: string): string;
   export function join(...paths: ReadonlyArray<string>): string;
   export function resolve(...paths: ReadonlyArray<string>): string;
   export const sep: string;

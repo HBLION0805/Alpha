@@ -1,5 +1,28 @@
 # Alpha Architecture Decisions
 
+## 2026-07-18 - Prediction Log Repository and Review Lifecycle
+
+### Prediction as Immutable Evidence
+
+- Decision: Treat the canonical prediction snapshot as immutable evidence identified deterministically from its complete canonical content.
+- Context or problem: Mutable status, amendment, resolution, and deletion operations could allow hindsight changes and weaken later learning evidence.
+- Rationale: Append-only lifecycle events preserve what Alpha expected before outcome while still allowing state reconstruction and review.
+- Consequences: The repository exposes no delete or overwrite path. Outcome, review, and archival information is appended as new linked records.
+
+### Accuracy and Profitability Separation
+
+- Decision: Store and aggregate prediction accuracy independently from trading profitability.
+- Context or problem: A correct forecast does not guarantee profitable execution, and profitability does not prove forecast quality.
+- Rationale: Separate classifications and rationales allow future Learning Loop and Trade Outcome analysis to attribute forecast, decision, execution, and position-sizing quality honestly.
+- Consequences: No component may derive one measurement from the other. Not-applicable and indeterminate cases remain explicit.
+
+### Local Event-Store Boundary
+
+- Decision: Use defensive in-memory storage and append-only local NDJSON event persistence for the Day 5 foundation.
+- Context or problem: Alpha needs reviewable local prediction history before selecting a production database or integrating later business systems.
+- Rationale: A versioned event envelope proves the repository port and restart reconstruction with no new dependency or external service.
+- Consequences: The local store is single-owner and single-process only. It does not provide cross-record transactions, signing, encryption, backup, multi-writer coordination, or production crash recovery.
+
 ## 2026-07-18 - Alpha AI Infrastructure v1 Milestone
 
 ### Provider-Independent Foundation Completed

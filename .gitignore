@@ -32,3 +32,4 @@ node_modules/
 # Local runtime accounting data
 data/runtime/ai-cost-ledger/
 data/runtime/ai-audit/
+data/runtime/prediction-log/

@@ -291,10 +291,15 @@ The workflow coordinates existing subsystem authorities; it does not own busines
 
 Responsible for:
 
-- Preserving finalized predictions before execution
-- Preserving the evidence available when each prediction was created
-- Resolving predictions independently from trade profitability
-- Supporting later comparison with decisions and trade outcomes
+- Appending deterministic prediction identities and immutable evidence snapshots before outcome
+- Enforcing Draft -> Submitted -> Locked -> Outcome Known -> Reviewed -> Archived transitions
+- Preserving immutable opportunity, risk, Router, model, configuration, policy, and timestamp decision context
+- Appending outcomes and reviews without changing the original forecast
+- Measuring prediction accuracy independently from trade profitability
+- Providing defensive in-memory and local NDJSON repositories, filtering, statistics, translation, and export
+- Supporting later comparison with decisions, trade outcomes, learning, journals, research, and strategy versions through references
+
+The implemented local repository is single-owner, single-process development persistence. It exposes no delete or overwrite path and contains no live market, provider, broker, portfolio, or trade execution integration. Outcome/review compound appends are not a production transaction boundary.
 
 ---
 

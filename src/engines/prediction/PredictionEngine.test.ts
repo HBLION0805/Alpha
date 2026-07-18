@@ -124,7 +124,7 @@ const tests: ReadonlyArray<TestCase> = [
     name: "strong opportunity creates active high-confidence prediction",
     run: () => {
       const result = evaluatePrediction(strongOpportunity);
-      assertEqual(result.predictionState, PredictionStatus.Active, "state");
+      assertEqual(result.predictionState, PredictionStatus.Submitted, "state");
       assertEqual(
         result.predictionConfidence,
         ConfidenceLevel.High,
@@ -161,7 +161,7 @@ const tests: ReadonlyArray<TestCase> = [
         ...mediumOpportunity,
         expectedDirection: PredictionDirection.Down,
       });
-      assertEqual(result.predictionState, PredictionStatus.Active, "state");
+      assertEqual(result.predictionState, PredictionStatus.Submitted, "state");
       assertEqual(
         result.predictionConfidence,
         ConfidenceLevel.Medium,

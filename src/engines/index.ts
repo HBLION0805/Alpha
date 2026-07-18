@@ -8,3 +8,4 @@ export * from "./ai-runtime-workflow";
 export * from "./ai-router";
 export * from "./opportunity";
 export * from "./prediction";
+export * from "./prediction-log";

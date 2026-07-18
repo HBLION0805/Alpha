@@ -8,5 +8,7 @@ export * from "./LocalNdjsonAIAuditRepository";
 export * from "./LearningRepository";
 export * from "./OpportunityRepository";
 export * from "./PredictionRepository";
+export * from "./InMemoryPredictionLogRepository";
+export * from "./LocalNdjsonPredictionLogRepository";
 export * from "./ResearchRepository";
 export * from "./TradeRepository";
