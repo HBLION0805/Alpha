@@ -1,12 +1,12 @@
 # Alpha AI Router Specification v1.0
 
-Status: Proposed architecture and contracts
+Status: Deterministic planning foundation implemented; live execution portions remain future production work
 Task: D4-T2 AI Router Specification v1.0
 Date: 2026-07-18
 
 ## 1. Purpose
 
-The AI Router selects and invokes an eligible AI model for an Alpha task while balancing capability, reliability, context capacity, latency, privacy, and cost.
+The complete AI Router design selects and may eventually invoke an eligible AI model while balancing capability, reliability, context capacity, latency, privacy, and cost. The implemented v1 Router is the deterministic planning boundary described in section 24 and performs no invocation.
 
 The Router is provider-independent. Alpha business modules describe what a task needs through stable task and capability contracts. They never select a provider, name a provider model, import a provider SDK, or branch on provider identity.
 
@@ -721,18 +721,15 @@ Before the Router can be considered implemented, tests must demonstrate:
 - Token counts before execution are estimates; budget enforcement therefore reserves a conservative maximum.
 - A secure secret store and secure content store will exist outside general Router audit metadata.
 - Initial implementation will target the current TypeScript deterministic architecture unless a separate architecture decision changes the language boundary.
-- The Cost Ledger persistence contract and local append-only implementation now exist; production transactional storage and the cross-system Audit Repository remain required before production use.
+- Cost Ledger and Unified Audit Repository local append-only implementations now exist; production transactional storage and cross-repository coordination remain required before production use.
 
-## 23. Recommended implementation sequence
+## 23. Remaining production implementation sequence
 
-1. Review and approve this specification.
-2. Define TypeScript contracts for requests, responses, task profiles, provider profiles, failures, cost ledger entries, and audit events.
-3. Define configuration schemas and validation without adding a provider SDK.
-4. Implement and test the deterministic policy engine using fixture profiles.
-5. Implement budget reservation and audit repositories.
-6. Define adapter conformance tests.
-7. Add the first provider adapter as a separate, replaceable integration.
-8. Integrate one low-risk Alpha task before any critical decision-support task.
+1. Replace in-memory workflow/reservation state and local ledger/audit files with owner-reviewed transactional or outbox-backed production persistence.
+2. Add a crash-safe durable provider-execution claim and billing reconciliation.
+3. Review secret management, network controls, timeout/cancellation behavior, and one production adapter separately.
+4. Pass provider conformance, privacy, failure-injection, accounting, and audit tests.
+5. Integrate one low-risk Alpha task before any critical decision-support task.
 
 ## 24. Deterministic planning engine boundary
 

@@ -2,6 +2,13 @@
 
 ## 2026-07-18
 
+### Day 4 Milestone
+
+- Completed and reconciled Alpha AI Infrastructure v1 as a provider-independent deterministic foundation.
+- Recorded final validation: TypeScript strict typecheck passed, aggregate tests passed 375/375, and focused AI Infrastructure tests passed 333/333.
+- Recorded milestone commits: AI Router `3e47739ffb956621fdba8c22b39e023ac544eb27`, AI Cost Governor `20993926a532e91625807df1ff7a760dd4b7a397`, and AI Infrastructure v1 `780ca3a9ebd889cab05c479f0a7270cf08f61f8e`.
+- Clarified the Python prototype/TypeScript infrastructure split, local NDJSON development-only persistence, no-live-provider boundary, remaining production blockers, and Day 5 priorities.
+
 ### Added
 
 - Added AI Router v1 provider-neutral request, response, provider, model, configuration, budget, fallback, error, and audit contracts.
@@ -27,7 +34,7 @@
 - Added provider-neutral AI Cost Ledger entry, append, query, balance, usage-summary, reconciliation, policy, error, audit, repository, and checkpoint contracts.
 - Added deterministic append, idempotency, monotonic sequence, currency-separated query/summary, unresolved-reservation, manual-adjustment, and reconciliation behavior.
 - Added defensive in-memory and append-only local NDJSON repositories with strict canonical reload validation, flush-on-append behavior, corruption detection, and traversal-resistant ledger IDs.
-- Added Reservation Manager instruction translation, 48 focused Cost Ledger tests, runtime-data Git exclusion, and the Cost Ledger specification.
+- Added Reservation Manager instruction translation, 50 focused Cost Ledger tests, runtime-data Git exclusion, and the Cost Ledger specification.
 - Added provider-neutral Unified Audit Repository contracts for normalized records, privacy, retention, idempotency, trace reconstruction, integrity checks, owner approval, export, and operation audits.
 - Added deterministic append policy enforcement, stable compound queries, trace reconstruction, read-only integrity inspection, privacy-aware snapshot export, and pure translations for current Router, Cost Governor, Reservation, Execution, and Cost Ledger audits.
 - Added defensive in-memory and canonical append-only local NDJSON audit repositories with monotonic sequence assignment, flush-on-append durability, strict corruption detection, and traversal-resistant store IDs.

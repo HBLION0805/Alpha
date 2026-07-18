@@ -11,6 +11,7 @@ This document is the permanent development guide for AI coding agents working on
 Before major implementation work, agents must inspect:
 
 - README.md
+- docs/DEVELOPMENT_STANDARD.md
 - docs/ARCHITECTURE.md
 - docs/CORE_PRINCIPLES.md
 - docs/ROADMAP.md
@@ -36,6 +37,7 @@ Before major implementation work, agents must inspect:
 - Do not silently invent requirements.
 - Explain every code change clearly.
 - Keep changes focused on the assigned task.
+- Define and review a specification before implementing a major new subsystem.
 
 ## Testing and Validation
 
@@ -77,11 +79,11 @@ Push
 
 ## Current Implemented Systems
 
-- Portfolio System
-- Dashboard
-- Decision Engine
-- Config System
-- Risk Engine
+- Python prototype/runtime: Portfolio, terminal Dashboard, Config, Risk Engine, and early deterministic Decision Engine rules
+- TypeScript core: contract and repository-port layer, Opportunity Score Engine v1, and Prediction Engine v1
+- Alpha AI Infrastructure v1: Router, Cost Governor, Provider Adapter boundary, Execution Coordinator, Reservation Manager, Cost Ledger, Unified Audit Repository, and Runtime Workflow foundations
+
+The Python and TypeScript surfaces are not yet integrated into one application runtime. No production AI provider adapter or live AI API integration exists.
 
 ## Required Completion Report
 
@@ -93,5 +95,7 @@ After every implementation task, report:
 - Tests or commands run
 - Test results
 - Failures or unresolved issues
+- Risks
 - Assumptions
 - Recommended next step
+- Git status

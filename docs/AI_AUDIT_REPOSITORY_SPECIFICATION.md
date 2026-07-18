@@ -25,6 +25,7 @@ Cost Governor audit ------------+
 Reservation Manager audit ------+--> translation --> Unified Audit Repository --> query / trace / integrity / export
 Execution Coordinator audit ----+
 Cost Ledger audit --------------+
+Runtime Workflow audit ---------+
 Future normalized evidence -----+
 ```
 

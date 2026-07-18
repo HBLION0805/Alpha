@@ -157,7 +157,7 @@ Optional reported cost uses the Cost Governor's integer minor-unit amount contra
 The deterministic coordinator foundation now:
 
 1. Accepts an approved Router and Cost Governor result.
-2. Validates the supplied reservation plan/reference; durable acquisition remains future work.
+2. Validates the supplied acquired reservation snapshot/reference; the local Runtime Workflow performs acquisition, while durable acquisition remains future production work.
 3. Resolves the exact provider adapter.
 4. Validates health and compatibility.
 5. Invokes one attempt with timeout and cancellation controls.

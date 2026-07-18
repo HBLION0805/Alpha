@@ -31,7 +31,7 @@ The in-memory repository uses local process memory. The local repository uses on
 
 ## 5. Why Build It Now
 
-The Reservation Manager now emits explicit lifecycle instructions. Persisting those instructions before a live provider is introduced establishes cost accounting independently from provider behavior and makes the next workflow and audit tasks consume stable, reviewable contracts.
+The Reservation Manager now emits explicit lifecycle instructions. Persisting those instructions before a live provider is introduced establishes cost accounting independently from provider behavior and gave the Runtime Workflow and Unified Audit integration stable, reviewable contracts.
 
 ## 6. Non-Goals
 

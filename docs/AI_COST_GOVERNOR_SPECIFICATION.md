@@ -54,9 +54,9 @@ Business module
   -> selected candidate cost estimate
   -> Router-to-Cost-Governor mapping boundary
   -> AI Cost Governor decision and reservation plan
-  -> future reservation persistence
-  -> future provider adapter execution
-  -> future actual-cost commit or reservation release
+  -> local AI Runtime Workflow and Reservation Manager acquisition
+  -> neutral fixture adapter execution through Execution Coordinator
+  -> local settlement, ledger reconciliation, and unified audit trace
 ```
 
 The current Router remains a planning engine. `AIRouterCostBoundary` converts its major-unit estimates and aggregate usage snapshot into the governor contract. Direct provider execution is intentionally absent.
@@ -184,10 +184,9 @@ Future providers remain behind Router provider definitions and adapters. Future 
 
 Before live execution, Alpha still needs:
 
-1. A durable transactional implementation of the Reservation Manager repository and Cost Ledger.
-2. Workflow wiring from reservation acquisition through Coordinator settlement instructions.
-3. Production transactional audit storage and reconciliation beyond the implemented local Unified Audit Repository.
-4. Usage aggregation by accounting timezone and policy version.
-5. Explicit owner-reviewed provider adapters and credential boundaries.
+1. Durable transactional or reviewed outbox-backed workflow, Reservation Manager, Cost Ledger, and Unified Audit persistence.
+2. A crash-safe durable execution claim for provider invocation.
+3. Usage aggregation and provider billing reconciliation by accounting timezone and policy version.
+4. Explicit owner-reviewed provider adapters, network controls, and credential boundaries.
 
 These are separate implementation tasks and are not implied by this foundation.

@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-18 - Alpha AI Infrastructure v1 Milestone
+
+### Provider-Independent Foundation Completed
+
+- Decision: Accept AI Infrastructure v1 as the implemented and tested deterministic foundation spanning Router, Cost Governor, Provider Adapter boundary, Execution Coordinator, Reservation Manager, Cost Ledger, Unified Audit Repository, and Runtime Workflow.
+- Rationale: Provider-neutral contracts and explicit subsystem authority prevent the first live provider from defining Alpha's business, budget, accounting, or audit architecture.
+- Consequences: The milestone contains no production adapter or live API integration. AI remains advisory and cannot mutate capital state.
+
+### Production Provider Gate
+
+- Decision: Do not add or enable a production provider until durable execution claims and transactional or reviewed outbox/inbox behavior for workflow, reservation, ledger, and audit state receive owner review.
+- Rationale: Repository-level idempotency cannot safely infer whether a cost-bearing external call occurred before a crash.
+- Consequences: Production credentials, adapters, billing reconciliation, health polling, and rollout remain separate future tasks.
+
+### Specification and Local Persistence Policy
+
+- Decision: Major subsystems require an approved specification before implementation. Local canonical NDJSON is approved only for current single-owner, single-process development.
+- Rationale: Specifications stabilize ownership and failure boundaries; local files provide inspectable development durability without pretending to be a production database.
+- Consequences: Cost Ledger remains monetary truth and Unified Audit Repository remains evidence truth. Local persistence provides no cross-repository transaction, encryption, backup, archival, or multi-writer safety.
+
+### Milestone References
+
+- AI Router foundation: `3e47739ffb956621fdba8c22b39e023ac544eb27`
+- AI Cost Governor foundation: `20993926a532e91625807df1ff7a760dd4b7a397`
+- Alpha AI Infrastructure v1: `780ca3a9ebd889cab05c479f0a7270cf08f61f8e`
+
 ## 2026-07-18 - Deterministic AI Runtime Orchestration
 
 ### Thin Workflow, Existing Authorities
@@ -191,4 +217,4 @@
 - Decision: Define deterministic record and storage contracts before implementing the new intelligence and learning systems. Add AI Router integration only after deterministic boundaries are stable.
 - Context or problem: Implementing orchestration before stable system contracts would create unclear dependencies and provider coupling.
 - Rationale: Deterministic contracts provide reliable ownership, validation, storage, and enforcement boundaries.
-- Consequences: Record schemas and storage behavior are the next architecture task; AI routing remains downstream work.
+- Consequences: Day 4 followed this order through AI Infrastructure v1. Future major subsystems must continue to stabilize specifications, record ownership, and persistence behavior before orchestration or external integration.

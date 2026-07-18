@@ -2,141 +2,88 @@
 
 > A Personal Capital Operating System
 
----
+Alpha is a pre-alpha decision-support system for protecting, allocating, growing, and compounding capital. It is not a trading bot and does not authorize autonomous capital or trade execution.
 
-## Vision
+## Current Status
 
-Alpha is a Personal Capital Operating System designed to help individuals protect, allocate, grow, and compound capital over the long term.
+Implemented Python prototype/runtime:
 
-The goal of Alpha is not to maximize the profit of a single trade.
+- Portfolio models and calculations
+- Terminal dashboard using sample development data
+- Deterministic decision rules
+- Configuration and deterministic risk limits
 
-The goal is to build a disciplined capital management system that survives for decades.
+Implemented and tested TypeScript foundations:
 
----
-
-## Mission
-
-Alpha helps its owner make better financial decisions through structured planning, disciplined execution, continuous learning, and long-term capital allocation.
-
-Alpha is not a trading bot.
-
-Alpha is a decision-support system.
-
----
-
-## Core Philosophy
-
-Protect Capital
-
-↓
-
-Allocate Capital
-
-↓
-
-Grow Capital
-
-↓
-
-Compound Capital
-
----
-
-## Current Development Status
-
-Current Version
-
-Pre-Alpha
-
-Current Phase
-
-Architecture and Core Infrastructure
-
-Completed Systems
-
-- Portfolio System
-- Dashboard
-- Decision Engine
-- Config System
-- Risk Engine
-
-Completed Architecture
-
-- Research Framework
-- Opportunity Score Engine
-- Instrument Ranking Engine
-- Prediction Log
-- Trade Outcome Log
-- Learning Loop
-- Strategy Versioning
-
-Completed Deterministic Foundations
-
-- AI Router planning engine
-- AI Cost Governor enforcement engine
+- Shared contract and repository-port layer
+- Opportunity Score Engine v1
+- Prediction Engine v1
+- AI Router deterministic planning
+- AI Cost Governor enforcement
 - AI Provider Adapter interface and registry
-- AI Execution Coordinator foundation
-- AI Reservation Manager deterministic foundation
-- AI Cost Ledger append-only accounting foundation
-- Unified Audit Repository append-only evidence and traceability foundation
-- AI Runtime Workflow deterministic end-to-end orchestration foundation
-
-Under Development
-
-- Production provider adapters and production-grade transactional workflow/reservation/ledger/audit persistence
-- Decision intelligence implementation
-- Learning system implementation
-- Alpha Journal
-- Research Lab
-
----
-
-## Long-Term Architecture
-
-Alpha will eventually contain:
-
-- Portfolio System
-- Dashboard
-- Decision Engine
-- Config System
-- Risk Engine
-- AI Router
-- AI Cost Governor
+- AI Execution Coordinator
+- AI Reservation Manager
 - AI Cost Ledger
-- Prediction Logs
-- Strategy Database
-- Event Replay Engine
-- Research Lab
-- Capital Allocation Engine
+- Unified Audit Repository
+- AI Runtime Workflow
 
----
+The Python and TypeScript layers are not yet integrated into one runtime. The TypeScript AI infrastructure uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
-## Development Principles
+Local AI Cost Ledger and Unified Audit NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary.
 
-- Protect capital before pursuing growth.
-- Stable growth is better than maximum growth.
-- Every strategy must be testable.
-- Every important decision must be recorded.
-- Never let emotions modify an existing trading plan.
-- Build software before adding complexity.
+## Architecture Boundary
 
----
+AI may provide advisory output. Deterministic Alpha systems retain control of calculations, validation, financial permission, reservation state, accounting, evidence, risk, decisions, and capital state. AI does not control portfolio or trade execution.
+
+See [Architecture](docs/ARCHITECTURE.md), [Roadmap](docs/ROADMAP.md), and [Handoff](docs/HANDOFF.md) for current boundaries and next priorities.
 
 ## Repository Structure
 
 ```text
 Alpha/
-|-- app/              # Core application
-|-- config/           # Configuration
-|-- data/             # Local data
-|-- docs/             # Documentation
-|   |-- ARCHITECTURE.md
-|   |-- CORE_PRINCIPLES.md
-|   |-- ROADMAP.md
-|   |-- BACKLOG.md
-|   |-- DECISIONS.md
-|   |-- CHANGELOG.md
-|   |-- HANDOFF.md
-|   `-- ALPHA_JOURNAL.md
-|-- tests/            # Automated tests
+|-- app/                 # Python portfolio, dashboard, decision, and risk prototype
+|-- config/              # Python decision and risk configuration
+|-- data/                # Local data; runtime AI ledger/audit paths are Git-ignored
+|-- docs/                # Architecture, specifications, roadmap, decisions, and handoff
+|-- src/
+|   |-- contracts/       # Provider-neutral TypeScript records and validation
+|   |-- engines/         # Deterministic Opportunity, Prediction, and AI engines
+|   |-- repositories/    # Repository ports and local AI repository implementations
+|   `-- types/           # Minimal local Node standard-library declarations
+|-- package.json         # TypeScript validation and test commands
+|-- tsconfig.json
+|-- AGENTS.md
 `-- README.md
+```
+
+## TypeScript Setup and Validation
+
+Requirements: Node.js and npm.
+
+```text
+npm install
+npm run typecheck
+npm test
+```
+
+`npm test` runs the complete deterministic TypeScript suite. At the Day 4 milestone, strict typecheck passed and the aggregate suite passed 375/375 tests.
+
+## Python Prototype
+
+The terminal prototype imports the third-party `rich` package. Python dependencies are not yet pinned in this repository.
+
+```text
+python -m pip install rich
+python -m app.main
+```
+
+The Python application currently uses sample portfolio data and is not wired to the TypeScript engines or AI infrastructure.
+
+## Development Principles
+
+- Protect capital before pursuing growth.
+- Use deterministic software when it is more accurate, faster, and cheaper than AI.
+- Keep AI provider-independent and advisory.
+- Record important decisions and preserve immutable evidence.
+- Specify major subsystem boundaries before implementation.
+- Require owner approval before commits, pushes, production adapters, or execution integration.

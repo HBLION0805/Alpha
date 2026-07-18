@@ -26,8 +26,8 @@ Goals:
 
 - Maintain project documentation and development workflow
 - Integrate the Risk Engine across decision systems
-- Extend the implemented AI Router and AI Cost Governor foundations toward reviewed execution boundaries
-- Prepare deterministic data contracts for the decision and learning pipeline
+- Extend deterministic decision and learning records into reviewable product capabilities
+- Reconcile the current Python prototype with the TypeScript architecture without weakening system boundaries
 
 Completed Architecture:
 
@@ -47,15 +47,23 @@ Completed Architecture:
 - Unified Audit Repository append-only evidence and traceability foundation
 - AI Runtime Workflow deterministic orchestration foundation
 
+Next Priority:
+
+1. Prediction Log repository and review lifecycle
+2. Alpha Journal foundation
+3. Research Lab v1 specification and minimum deterministic data model
+4. Strategy Versioning foundation
+
+The existing Prediction contract, repository interface, and deterministic Prediction Engine are inputs to the first task; durable repository behavior and a review lifecycle are not yet implemented.
+
 ---
 
 # Phase 3 — Decision Intelligence Implementation
 
 Planned Features:
 
-- Opportunity Score Engine implementation
+- Prediction Log repository implementation and review lifecycle
 - Instrument Ranking Engine implementation
-- Prediction record storage
 - Decision record storage
 - Event Contract Engine
 - Trade Planning Engine
@@ -99,6 +107,22 @@ Planned Features:
 - Broker Integration
 - Market Data Integration
 - Mobile Dashboard
+
+---
+
+# Backlog
+
+- Historical Market Pattern Library
+- Historical Analogy Engine
+- Strategy Validation Lab
+- Catalyst Calendar
+- Relative Strength Engine
+- Sector Rotation Engine
+- Event Replay / Price Timeline Database
+- Backtesting and Learning Loop expansion
+- Production provider adapters
+- Production database and transactional outbox architecture
+- Live market-data integrations
 
 ---
 

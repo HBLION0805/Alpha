@@ -49,6 +49,15 @@ Compound Capital
 
 Alpha consists of the following major systems.
 
+## Current Runtime Boundary
+
+Alpha currently has two unintegrated implementation surfaces:
+
+- The Python prototype/runtime contains local portfolio models, a terminal dashboard using sample data, deterministic risk calculations, configuration, and early stock/event-contract decision rules.
+- The TypeScript core infrastructure contains record contracts, repository ports, implemented Opportunity and Prediction engines, and AI Infrastructure v1.
+
+The Python application does not invoke the TypeScript engines or AI Runtime Workflow. The TypeScript layer does not modify Python portfolio, risk, decision, or trade state. Future integration must preserve deterministic capital controls and the owner-controlled execution boundary.
+
 ## Portfolio System
 
 Responsible for:
@@ -139,6 +148,28 @@ Responsible for:
 - Evaluating execution quality and holding-period suitability
 - Ranking instruments by capital protection, risk-adjusted return, and execution quality
 - Returning WAIT or Cash when no instrument is suitable
+
+---
+
+## AI Infrastructure v1 Flow
+
+```text
+Provider-neutral advisory request
+  -> AI Router
+  -> AI Cost Governor
+  -> AI Reservation Manager
+  -> AI Cost Ledger reservation append
+  -> Unified Audit pre-execution evidence
+  -> AI Execution Coordinator
+  -> AI Provider Adapter boundary
+  -> Reservation settlement
+  -> Cost Ledger settlement and reconciliation
+  -> Unified Audit final trace
+```
+
+Router selects models deterministically. Cost Governor decides whether AI operating cost is permitted. Reservation Manager owns current reservation state. Cost Ledger is the monetary source of truth for historical AI cost events. Unified Audit Repository is the evidence-ordering and trace-integrity source of truth. Runtime Workflow coordinates these authorities without replacing them.
+
+The current adapter boundary has no production adapter, SDK, credentials, network transport, or live model call. Neutral test fixtures prove the contract only. AI output remains advisory and cannot approve or mutate portfolio, risk, decision, trade, or strategy state.
 
 ---
 
@@ -252,7 +283,7 @@ Responsible for:
 - Persisting an idempotent in-memory workflow result so replay cannot repeat provider execution or monetary state changes
 - Reporting explicit compensation and replay instructions when separate repositories cannot change atomically
 
-The workflow coordinates existing subsystem authorities; it does not own business policy, select hidden fallbacks, recompute accounting truth, repair history, or contain provider integrations. The current foundation uses only injected repositories and neutral fixture adapters. Production use requires durable execution claims and transactional or outbox-backed workflow, reservation, ledger, and audit persistence.
+The workflow coordinates existing subsystem authorities; it does not own business policy, select hidden fallbacks, recompute accounting truth, repair history, or contain provider integrations. The current foundation uses only injected repositories and neutral fixture adapters. Before live provider use, production design requires a crash-safe durable execution claim plus transactional or reviewed outbox-backed workflow, reservation, ledger, and audit persistence.
 
 ---
 
@@ -408,7 +439,8 @@ Execution is currently an external, owner-controlled action. Future broker integ
 
 Future systems may include:
 
-- Production-grade transactional AI reservation, ledger, and audit persistence
+- Production-grade transactional AI workflow, reservation, ledger, and audit persistence or a reviewed outbox architecture
+- Durable provider-execution claims and provider-billing reconciliation
 - Production provider adapters and durable, crash-recoverable runtime workflow execution
 - Event Replay Database
 - Portfolio Analytics

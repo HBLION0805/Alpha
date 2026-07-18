@@ -230,6 +230,6 @@ Before production provider execution, replace the in-memory repository behind th
 5. Immutable policy-version retrieval and accounting-timezone metadata.
 6. Retention, backup, restoration, observability, and reconciliation controls.
 7. Provider billing reconciliation and explicit handling for reported cost above reservation.
-8. A reviewed workflow that acquires before execution and applies coordinator settlement exactly once.
+8. A durable workflow execution claim that preserves the implemented acquire-before-execution and exactly-once settlement behavior across process failure.
 
 Distributed locking is not required if the durable implementation provides equivalent transactional uniqueness and compare-and-set guarantees.

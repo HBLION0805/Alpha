@@ -206,7 +206,7 @@ Before live provider use:
 3. Review one production adapter and its SDK/credential isolation separately.
 4. Run adapter conformance tests.
 5. Add explicit live timeout/cancellation controls.
-6. Add a higher-level workflow that decides whether to enact retry or return to Router.
+6. Replace the local workflow result boundary with a durable execution claim and transactional or outbox-backed recovery model.
 7. Start with a low-risk task and owner-observed rollout.
 
 ## 20. Known Limitations
