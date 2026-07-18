@@ -89,9 +89,9 @@ Returns a deterministic status, reason codes, evaluated scopes, low-cost require
 
 Records the decision identity, timestamp, policy version, estimated cost, every scope evaluation, reasons, reservation, override reference, normalized error, and final result.
 
-### CostLedgerRepository
+### AI Cost Ledger Boundary
 
-Defines only the future persistence port for append and request/reservation lookup. No implementation is provided.
+The implemented AI Cost Ledger now defines its own richer persistence port, append results, sequence ordering, currency-separated queries, and reconciliation contracts. The legacy governor-local `CostLedgerRepository` type remains only as an earlier compatibility contract and is not used by the ledger engine.
 
 ## 10. Budget Scopes
 
@@ -138,13 +138,13 @@ Invalid, expired, insufficient, disabled, task-unauthorized, or scope-unauthoriz
 
 An allowed decision returns a `PLANNED` reservation containing the request, amount, applicable enabled scopes, policy version, creation time, and optional deterministic expiry. The pure engine does not persist or atomically acquire the reservation.
 
-A future coordinator must atomically transition a plan to `RESERVED` before execution. It must later transition to `COMMITTED`, `RELEASED`, or `EXPIRED`. Concurrent enforcement cannot rely on read-only snapshots alone; the future persistent implementation must use transactional or compare-and-set semantics.
+The implemented AI Reservation Manager foundation validates and atomically transitions the plan to `RESERVED` in its in-memory repository. It later supports `PARTIALLY_COMMITTED`, `COMMITTED`, `RELEASED`, and `EXPIRED` outcomes using idempotency and compare-and-set versions. The in-memory implementation is not a durable production accounting boundary.
 
 ## 14. Ledger Model
 
-Future immutable ledger entries distinguish reservation creation, release, actual usage commit, expiry, manual adjustment, and override use. Every entry identifies request, optional reservation, scope, currency, policy version, timestamp, and signed delta.
+Immutable ledger entries now distinguish reservation acquisition, partial/full usage commit, release, expiry, cancellation, rejection, override use, and authorized manual adjustment. The Reservation Manager emits append-only instructions and the Cost Ledger translates and persists them through a separate port.
 
-The ledger is the future source for rebuilding usage snapshots and reconciling estimated with actual cost. This foundation defines its contracts but stores nothing.
+The ledger is the accounting source for rebuilding usage summaries and reconciling reservation history. Its local NDJSON repository is restart-persistent but is not a production transactional database or provider-billing integration.
 
 ## 15. AI Router Interaction
 
@@ -156,7 +156,7 @@ The Router first establishes an eligible candidate and estimate. The boundary ma
 - Router per-request, daily, and monthly budget configuration
 - aggregate daily and monthly usage
 
-The governor then returns one of: allowed, allowed-low-cost-only, allowed-with-override, rejected, or deferred. A future orchestration layer must honor that result before any provider call. Business logic consumes provider-neutral outcomes only.
+The governor then returns one of: allowed, allowed-low-cost-only, allowed-with-override, rejected, or deferred. The deterministic AI Runtime Workflow honors that result before any fixture adapter call. Business logic consumes provider-neutral outcomes only.
 
 ## 16. Audit Requirements
 
@@ -172,7 +172,7 @@ Every evaluation records:
 - Normalized error and retryability, when present
 - Final result: allowed, rejected, or deferred
 
-Audit creation is in memory. Durable audit persistence is future work.
+Audit creation remains in memory inside the Governor. Callers may now translate and append it to the local Unified Audit Repository; production transactional audit persistence remains future work.
 
 ## 17. Failure Behavior
 
@@ -184,9 +184,9 @@ Future providers remain behind Router provider definitions and adapters. Future 
 
 Before live execution, Alpha still needs:
 
-1. Transactional reservation storage with idempotency and expiry.
-2. A coordinator that evaluates, reserves, executes, commits actual cost, or releases.
-3. Durable audit storage and reconciliation.
+1. A durable transactional implementation of the Reservation Manager repository and Cost Ledger.
+2. Workflow wiring from reservation acquisition through Coordinator settlement instructions.
+3. Production transactional audit storage and reconciliation beyond the implemented local Unified Audit Repository.
 4. Usage aggregation by accounting timezone and policy version.
 5. Explicit owner-reviewed provider adapters and credential boundaries.
 

@@ -874,7 +874,7 @@ function createFailure(
     configuration.modelRegistry.version,
     "INVALID_MODEL_REGISTRY",
   );
-  const registryVersion = `${providerRegistryVersion}/${modelRegistryVersion}`;
+  const registryVersion = `${providerRegistryVersion}:${modelRegistryVersion}`;
   const decisionId = `${requestId}:route:${policyVersion}:${registryVersion}`;
   const reasonCodes = uniqueValues([
     category,
@@ -1079,7 +1079,7 @@ export function routeAIRequest(
     false,
   );
   const policyVersion = input.configuration.routingPolicy.version;
-  const registryVersion = `${input.configuration.providerRegistry.version}/${input.configuration.modelRegistry.version}`;
+  const registryVersion = `${input.configuration.providerRegistry.version}:${input.configuration.modelRegistry.version}`;
   const decisionId = `${input.request.requestId}:route:${policyVersion}:${registryVersion}`;
   const decision: AISelectedRoutingDecision = {
     decisionId,

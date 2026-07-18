@@ -40,6 +40,12 @@ Completed Architecture:
 - Strategy Versioning
 - AI Router deterministic planning foundation
 - AI Cost Governor deterministic enforcement foundation
+- AI Provider Adapter interface and registry foundation
+- AI Execution Coordinator deterministic foundation
+- AI Reservation Manager deterministic in-memory foundation
+- AI Cost Ledger append-only local accounting foundation
+- Unified Audit Repository append-only evidence and traceability foundation
+- AI Runtime Workflow deterministic orchestration foundation
 
 ---
 
@@ -88,7 +94,8 @@ Planned Features:
 Planned Features:
 
 - AI Router Optimization
-- AI cost reservation, ledger persistence, and usage reconciliation
+- Production-grade transactional AI reservation, ledger, audit persistence, and provider-billing reconciliation
+- Reviewed production provider adapters and durable, crash-recoverable runtime workflow execution
 - Broker Integration
 - Market Data Integration
 - Mobile Dashboard

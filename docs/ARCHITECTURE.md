@@ -165,7 +165,94 @@ Responsible for:
 - Requiring low-cost mode at soft thresholds and rejecting hard-limit breaches
 - Returning bounded critical-override decisions, reservation plans, and audit records
 
-The AI Cost Governor is provider-independent and uses integer minor-unit arithmetic. The current foundation does not persist reservations, ingest live usage, or call providers.
+The AI Cost Governor is provider-independent and uses integer minor-unit arithmetic. It returns plans but does not acquire reservations, ingest live usage, or call providers.
+
+---
+
+## AI Reservation Manager
+
+Responsible for:
+
+- Atomically acquiring an approved Cost Governor reservation plan in one repository boundary
+- Applying versioned commit, partial commit, release, expiration, cancellation, and rejection transitions
+- Enforcing idempotency, amount conservation, currency identity, and optimistic concurrency
+- Returning append-only Cost Ledger instructions and complete in-memory audits
+- Providing a deterministic in-memory repository for tests and local use
+
+The manager does not approve cost, route, execute AI, call providers, or persist a durable ledger. The in-memory repository is not durable or distributed-safe. A production replacement must preserve the same port while transacting reservation state, operation history, ledger entries, and audit records atomically.
+
+---
+
+## AI Cost Ledger
+
+Responsible for:
+
+- Appending immutable reservation, usage, release, expiration, override, and manual-adjustment accounting events
+- Assigning deterministic monotonic accounting sequences independently from caller timestamps
+- Preventing duplicate entry, operation, idempotency, and execution-settlement identities
+- Returning stable currency-separated queries and usage summaries
+- Reconciliation that reports reservation accounting inconsistencies without changing source state
+- Providing in-memory and local append-only NDJSON repository implementations behind a durable persistence port
+
+The Cost Ledger is the source of truth for historical AI cost events, while the Reservation Manager remains the source of truth for current reservation state. The local file repository is single-process personal-development storage, not a production transactional database. It contains no prompts, credentials, provider payloads, routing logic, budget approval, or capital-domain state.
+
+---
+
+## Unified Audit Repository
+
+Responsible for:
+
+- Preserving normalized append-only evidence from AI subsystem audit records
+- Assigning one deterministic audit sequence independently from source timestamps
+- Correlating request, route, budget, reservation, execution, and ledger references
+- Reconstructing stable traces and reporting missing, cyclic, or conflicting evidence
+- Enforcing privacy-aware in-memory export and retention metadata boundaries
+- Providing in-memory and local canonical NDJSON repositories behind a durable port
+
+The Audit Repository is an evidence index, not a business or accounting engine. Source systems retain ownership of their decisions and state, and the AI Cost Ledger remains the monetary source of truth. Local audit persistence is single-process development storage; it contains no raw prompts, credentials, provider-native payloads, network code, or update/delete path.
+
+---
+
+## AI Provider Adapter Boundary
+
+Responsible for:
+
+- Defining provider-neutral execution requests and normalized responses
+- Verifying compatibility with an already-selected provider and model
+- Reporting provider-neutral capabilities and static health metadata
+- Normalizing output, usage, timeout, cancellation, and provider failures
+- Registering adapter interfaces deterministically by provider ID
+
+Adapters do not own routing, budget approval, retries, reservation or ledger state, persistence, or business logic. The current foundation contains no production adapter, provider SDK, credential, network call, or health polling.
+
+---
+
+## AI Execution Coordinator
+
+Responsible for:
+
+- Validating Router, Cost Governor, reservation, adapter, health, and trace preconditions
+- Invoking exactly one already-selected provider adapter
+- Validating normalized output, usage, latency, cost, and reference integrity
+- Returning deterministic retry or return-to-Router recommendations
+- Returning reservation and usage settlement instructions
+- Producing an in-memory execution audit record
+
+The coordinator does not reroute, run retry loops, persist records, mutate reservations or ledgers, or call any production provider. The current foundation uses only neutral test fixtures.
+
+---
+
+## AI Runtime Workflow
+
+Responsible for:
+
+- Coordinating one provider-neutral request through Router, Cost Governor, reservation, accounting, audit, Coordinator, settlement, reconciliation, and final trace validation
+- Enforcing deterministic stage ordering, caller-supplied identity, immutable inputs, and fail-closed subsystem boundaries
+- Applying at most one explicit low-cost reroute while leaving Router as the only model selector
+- Persisting an idempotent in-memory workflow result so replay cannot repeat provider execution or monetary state changes
+- Reporting explicit compensation and replay instructions when separate repositories cannot change atomically
+
+The workflow coordinates existing subsystem authorities; it does not own business policy, select hidden fallbacks, recompute accounting truth, repair history, or contain provider integrations. The current foundation uses only injected repositories and neutral fixture adapters. Production use requires durable execution claims and transactional or outbox-backed workflow, reservation, ledger, and audit persistence.
 
 ---
 
@@ -321,7 +408,8 @@ Execution is currently an external, owner-controlled action. Future broker integ
 
 Future systems may include:
 
-- Transactional AI cost reservation and ledger persistence
+- Production-grade transactional AI reservation, ledger, and audit persistence
+- Production provider adapters and durable, crash-recoverable runtime workflow execution
 - Event Replay Database
 - Portfolio Analytics
 - Backtesting Engine

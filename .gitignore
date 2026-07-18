@@ -28,3 +28,7 @@ Thumbs.db
 
 # Node.js
 node_modules/
+
+# Local runtime accounting data
+data/runtime/ai-cost-ledger/
+data/runtime/ai-audit/

@@ -3,12 +3,18 @@
   "private": true,
   "scripts": {
     "typecheck": "tsc --project tsconfig.json",
-    "test": "tsx src/engines/opportunity/OpportunityScoreEngine.test.ts && tsx src/engines/prediction/PredictionEngine.test.ts && tsx src/contracts/AIRouter.test.ts && tsx src/engines/ai-router/AIRouterEngine.test.ts && tsx src/engines/ai-cost-governor/AICostGovernor.test.ts",
+    "test": "tsx src/engines/opportunity/OpportunityScoreEngine.test.ts && tsx src/engines/prediction/PredictionEngine.test.ts && tsx src/contracts/AIRouter.test.ts && tsx src/engines/ai-router/AIRouterEngine.test.ts && tsx src/engines/ai-cost-governor/AICostGovernor.test.ts && tsx src/engines/ai-provider-adapter/AIProviderAdapterRegistry.test.ts && tsx src/engines/ai-execution-coordinator/AIExecutionCoordinator.test.ts && tsx src/engines/ai-reservation-manager/AIReservationManager.test.ts && tsx src/engines/ai-cost-ledger/AICostLedger.test.ts && tsx src/engines/ai-audit-repository/AIAuditRepository.test.ts && tsx src/engines/ai-runtime-workflow/AIRuntimeWorkflow.test.ts",
     "test:opportunity": "tsx src/engines/opportunity/OpportunityScoreEngine.test.ts",
     "test:prediction": "tsx src/engines/prediction/PredictionEngine.test.ts",
     "test:ai-router": "tsx src/contracts/AIRouter.test.ts",
     "test:ai-router-engine": "tsx src/engines/ai-router/AIRouterEngine.test.ts",
-    "test:ai-cost-governor": "tsx src/engines/ai-cost-governor/AICostGovernor.test.ts"
+    "test:ai-cost-governor": "tsx src/engines/ai-cost-governor/AICostGovernor.test.ts",
+    "test:ai-provider-adapter": "tsx src/engines/ai-provider-adapter/AIProviderAdapterRegistry.test.ts",
+    "test:ai-execution-coordinator": "tsx src/engines/ai-execution-coordinator/AIExecutionCoordinator.test.ts",
+    "test:ai-reservation-manager": "tsx src/engines/ai-reservation-manager/AIReservationManager.test.ts",
+    "test:ai-cost-ledger": "tsx src/engines/ai-cost-ledger/AICostLedger.test.ts",
+    "test:ai-audit-repository": "tsx src/engines/ai-audit-repository/AIAuditRepository.test.ts",
+    "test:ai-runtime-workflow": "tsx src/engines/ai-runtime-workflow/AIRuntimeWorkflow.test.ts"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

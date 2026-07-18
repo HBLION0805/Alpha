@@ -74,10 +74,16 @@ Completed Deterministic Foundations
 
 - AI Router planning engine
 - AI Cost Governor enforcement engine
+- AI Provider Adapter interface and registry
+- AI Execution Coordinator foundation
+- AI Reservation Manager deterministic foundation
+- AI Cost Ledger append-only accounting foundation
+- Unified Audit Repository append-only evidence and traceability foundation
+- AI Runtime Workflow deterministic end-to-end orchestration foundation
 
 Under Development
 
-- AI provider execution, transactional cost reservation, and persistence
+- Production provider adapters and production-grade transactional workflow/reservation/ledger/audit persistence
 - Decision intelligence implementation
 - Learning system implementation
 - Alpha Journal
@@ -96,6 +102,7 @@ Alpha will eventually contain:
 - Risk Engine
 - AI Router
 - AI Cost Governor
+- AI Cost Ledger
 - Prediction Logs
 - Strategy Database
 - Event Replay Engine

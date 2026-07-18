@@ -721,7 +721,7 @@ Before the Router can be considered implemented, tests must demonstrate:
 - Token counts before execution are estimates; budget enforcement therefore reserves a conservative maximum.
 - A secure secret store and secure content store will exist outside general Router audit metadata.
 - Initial implementation will target the current TypeScript deterministic architecture unless a separate architecture decision changes the language boundary.
-- Concrete persistence contracts for the cost ledger and audit events will be designed before production use.
+- The Cost Ledger persistence contract and local append-only implementation now exist; production transactional storage and the cross-system Audit Repository remain required before production use.
 
 ## 23. Recommended implementation sequence
 
@@ -738,6 +738,6 @@ Before the Router can be considered implemented, tests must demonstrate:
 
 The minimum AI Router Engine is a planning component. It validates a provider-neutral request and configuration, evaluates every registered provider/model candidate, records explicit rejection reasons, calculates configured cost estimates, applies deterministic ranking, and returns a primary route with an ordered fallback plan and audit record.
 
-The engine ends after producing the routing decision. It does not call a model, invoke a provider adapter, retry a request, persist an audit record, or return generated model content. Provider adapters and execution orchestration remain separate future components.
+The engine ends after producing the routing decision. It does not call a model, invoke a provider adapter, retry a request, persist an audit record, or return generated model content. The separate AI Runtime Workflow may consume the decision; production provider adapters remain future work.
 
 Selection uses hard eligibility constraints first. Remaining candidates are ordered lexicographically by the configured cost mode and latency priority, followed by stable provider and model IDs. Provider display names never affect selection, and identical requests plus configuration, budget, and clock snapshots produce identical decisions.
