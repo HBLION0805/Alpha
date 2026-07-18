@@ -70,9 +70,14 @@ Completed Architecture
 - Learning Loop
 - Strategy Versioning
 
+Completed Deterministic Foundations
+
+- AI Router planning engine
+- AI Cost Governor enforcement engine
+
 Under Development
 
-- AI Router
+- AI provider execution, transactional cost reservation, and persistence
 - Decision intelligence implementation
 - Learning system implementation
 - Alpha Journal

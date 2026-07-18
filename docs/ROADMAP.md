@@ -26,7 +26,7 @@ Goals:
 
 - Maintain project documentation and development workflow
 - Integrate the Risk Engine across decision systems
-- Build AI Router
+- Extend the implemented AI Router and AI Cost Governor foundations toward reviewed execution boundaries
 - Prepare deterministic data contracts for the decision and learning pipeline
 
 Completed Architecture:
@@ -38,6 +38,8 @@ Completed Architecture:
 - Trade Outcome Log
 - Learning Loop
 - Strategy Versioning
+- AI Router deterministic planning foundation
+- AI Cost Governor deterministic enforcement foundation
 
 ---
 
@@ -86,7 +88,7 @@ Planned Features:
 Planned Features:
 
 - AI Router Optimization
-- AI Cost Governor
+- AI cost reservation, ledger persistence, and usage reconciliation
 - Broker Integration
 - Market Data Integration
 - Mobile Dashboard

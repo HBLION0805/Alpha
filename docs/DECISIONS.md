@@ -1,5 +1,28 @@
 # Alpha Architecture Decisions
 
+## 2026-07-18 - Deterministic AI Cost Governor Boundary
+
+### Integer Monetary Enforcement
+
+- Decision: AI cost policy is evaluated in non-negative safe integer minor units under one declared currency and scale.
+- Context or problem: Floating-point arithmetic and mixed currencies can make exact budget boundaries ambiguous.
+- Rationale: Integer arithmetic makes equality, remaining budget, reservations, and audit values deterministic.
+- Consequences: The Router boundary converts major-unit estimates once using a 1,000,000-unit scale; invalid, unsafe, or currency-mismatched values fail closed.
+
+### Reservation and Persistence Separation
+
+- Decision: The foundation returns a reservation plan and defines a ledger repository port but performs no persistence or provider execution.
+- Context or problem: Reliable concurrent budget enforcement requires transactional reservation storage and reconciliation that do not yet exist.
+- Rationale: Separating pure evaluation from atomic acquisition keeps policy testable while making the future consistency boundary explicit.
+- Consequences: An allowed plan is not permission to execute until a future coordinator atomically reserves it. Live usage ingestion, durable audit, commit, release, and expiry are separate reviewed work.
+
+### Router Integration Boundary
+
+- Decision: Router estimates and aggregate usage are translated through a provider-neutral mapping boundary before governor evaluation.
+- Context or problem: Directly embedding budget persistence or provider concerns in the Router would couple planning, enforcement, and execution.
+- Rationale: A narrow mapping preserves existing Router behavior and lets both engines evolve behind stable contracts.
+- Consequences: Core business logic depends only on neutral contracts; future provider or ledger implementations do not change capital-domain rules.
+
 ## 2026-07-18 - Deterministic AI Router Planning Boundary
 
 ### Provider-Independent Selection

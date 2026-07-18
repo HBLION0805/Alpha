@@ -146,10 +146,26 @@ Responsible for:
 
 Responsible for:
 
-- Selecting the most appropriate AI model
+- Deterministically planning the most appropriate eligible AI model
 - Balancing capability, cost, and speed
 - Remaining provider-independent
 - Supporting future AI models without redesign
+
+The current Router stops at selection, fallback planning, and in-memory audit generation. It does not call providers.
+
+---
+
+## AI Cost Governor
+
+Responsible for:
+
+- Deterministically evaluating estimated AI cost before execution
+- Enforcing versioned per-request, daily, monthly, task, provider, and model budgets
+- Accounting for committed and reserved usage
+- Requiring low-cost mode at soft thresholds and rejecting hard-limit breaches
+- Returning bounded critical-override decisions, reservation plans, and audit records
+
+The AI Cost Governor is provider-independent and uses integer minor-unit arithmetic. The current foundation does not persist reservations, ingest live usage, or call providers.
 
 ---
 
@@ -305,7 +321,7 @@ Execution is currently an external, owner-controlled action. Future broker integ
 
 Future systems may include:
 
-- AI Cost Governor
+- Transactional AI cost reservation and ledger persistence
 - Event Replay Database
 - Portfolio Analytics
 - Backtesting Engine
