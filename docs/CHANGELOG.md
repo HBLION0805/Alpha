@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-07-19 - Day 6 Task 2
+
+### Production Persistence and Recovery Architecture
+
+- Added `docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md` as the architecture foundation for future production persistence, transaction boundaries, crash recovery, backup, restore, retention, durability, integrity verification, repository ownership, and development-vs-production separation.
+- Clarified that current in-memory and local NDJSON repositories remain development persistence and are not production databases, transaction boundaries, backup systems, encryption/signing systems, or multi-writer stores.
+- Documented future production requirements for transactional or reviewed outbox/inbox workflows, durable provider-execution claims, idempotent recovery, backup/restore review, retention execution, and integrity verification.
+- Updated README, Architecture, Roadmap, Decisions, and Handoff to record D6-T2 as architecture-only and D6-T3 as not started.
+- Preserved architecture-only scope. No production persistence implementation, database technology, runtime persistence behavior change, Python runtime change, TypeScript business-logic change, AI Router behavior change, provider SDK, network/API code, credential, live-market integration, broker integration, runtime data, or D6-T3 work was added.
+
 ## 2026-07-19 - Day 6 Task 1
 
 ### Development Efficiency Standard v1

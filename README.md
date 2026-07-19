@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 6 has started with D6-T1, the Development Efficiency Standard v1 documentation milestone. Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 648/648 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, and 42 Opportunity/Prediction engine tests.
+Day 6 has started. D6-T1, the Development Efficiency Standard v1 documentation milestone, is complete; D6-T2 defines the Production Persistence and Recovery Architecture foundation. Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 648/648 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, and 42 Opportunity/Prediction engine tests.
 
 Implemented Python prototype/runtime:
 
@@ -34,10 +34,11 @@ Implemented and tested TypeScript foundations:
 - Unified Audit Repository
 - AI Runtime Workflow
 - Codex Development Standard, task template, owner review template, and local validation bundle foundation
+- Production Persistence and Recovery Architecture specification
 
 The Python and TypeScript layers are not yet integrated into one runtime. The TypeScript AI infrastructure uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
-Local AI Cost Ledger, Unified Audit, Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary.
+Local AI Cost Ledger, Unified Audit, Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary. Future production persistence and recovery requirements are specified in [Production Persistence and Recovery](docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md), with no production implementation added.
 
 ## Architecture Boundary
 

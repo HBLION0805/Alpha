@@ -58,6 +58,18 @@ Alpha currently has two unintegrated implementation surfaces:
 
 The Python application does not invoke the TypeScript engines or AI Runtime Workflow. The TypeScript layer does not modify Python portfolio, risk, decision, or trade state. Future integration must preserve deterministic capital controls and the owner-controlled execution boundary.
 
+## Production Persistence and Recovery
+
+Responsible for:
+
+- Defining future durable repository, transaction, crash-recovery, backup, restore, retention, and integrity requirements
+- Preserving the existing development persistence model while making clear that local NDJSON is not production storage
+- Requiring transactional or reviewed outbox/inbox boundaries before production workflows depend on multi-repository durability
+- Requiring crash-safe execution claims before any live provider, broker, market, or other external side effect can be enabled
+- Keeping repository persistence beneath provider-neutral ports without moving domain logic into storage
+
+D6-T2 defines this architecture in `docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md`. It does not implement a database, change local repositories, change runtime behavior, add provider/network/credential integration, or begin D6-T3.
+
 ## Portfolio System
 
 Responsible for:

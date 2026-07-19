@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - D6-T2 Production Persistence and Recovery Architecture
+
+### Architecture Before Production Storage
+
+- Decision: Define production persistence, transaction, crash-recovery, backup, restore, retention, durability, integrity, and repository-ownership requirements before selecting or implementing any production storage technology.
+- Reason: Alpha's current repositories are intentionally local and single-process; production durability affects evidence integrity, external side effects, owner review, and future capital safety.
+- Consequence: D6-T2 adds architecture only. No production database, runtime persistence change, provider integration, network/API code, credential path, broker integration, or market integration is added.
+
+### Preserve Development Persistence
+
+- Decision: Keep existing in-memory and local NDJSON repositories as development persistence while documenting that they are not production storage.
+- Reason: The local repositories remain valuable for deterministic tests and inspectable single-owner development.
+- Consequence: Future production repositories must preserve provider-neutral ports and must not break local development repositories.
+
+### Transaction or Outbox Required
+
+- Decision: Production workflows must use either a single transactional boundary or a reviewed transactional outbox/inbox boundary for multi-step durable state.
+- Reason: Separate repository appends cannot be treated as atomic, especially before live provider execution or future broker/market integrations.
+- Consequence: Future implementation tasks must define crash points, replay ownership, idempotent consumers, poison/dead-letter handling, and manual reconciliation before production use.
+
+### Durable Execution Claims
+
+- Decision: Live provider execution requires a durable execution claim before any cost-bearing invocation.
+- Reason: Recovery must distinguish not-invoked from invoked-but-not-persisted states without guessing or repeating external side effects.
+- Consequence: Production providers remain blocked until durable execution claims and recovery behavior are implemented and owner-reviewed.
+
 ## 2026-07-19 - D6-T1 Development Efficiency Standard v1
 
 ### Quality-First Token Optimization
@@ -24,7 +50,7 @@
 
 - Decision: D6-T1 does not begin Development Validation Log report integration, production persistence work, historical engines, or Python/TypeScript runtime integration.
 - Reason: Those areas require separate specifications and owner review.
-- Consequence: Day 6 has started, but D6-T2 has not started.
+- Consequence: At D6-T1 completion, Day 6 had started but D6-T2 had not started. D6-T2 is now recorded as a separate architecture decision above.
 
 ## 2026-07-19 - Day 5 Learning Infrastructure Milestone
 
