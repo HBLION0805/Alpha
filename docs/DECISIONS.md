@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - Day 6 Milestone Closeout
+
+### Historical Evidence Infrastructure Completed for Local Foundations
+
+- Decision: Close Day 6 with Codex workflow rules, production persistence architecture, Historical Pattern Library, Historical Analogy Engine, and Event Replay Architecture recorded as complete local foundations.
+- Reason: The five Day 6 tasks establish development workflow, production-readiness boundaries, and deterministic historical evidence primitives without expanding into production systems.
+- Consequence: Day 7 can plan integration work from stable documentation and contracts, but no Day 7 implementation is included in the closeout.
+
+### Production Boundaries Remain Closed
+
+- Decision: Keep production persistence, live provider adapters, live market data, broker integration, backtesting, execution simulation, Python/TypeScript runtime integration, and automated capital execution as future owner-reviewed work.
+- Reason: Day 6 intentionally defined or implemented foundations only; production behavior requires separate architecture, validation, and owner approval.
+- Consequence: Current repositories remain local single-owner development persistence, and Alpha remains a decision-support system with owner-controlled execution.
+
 ## 2026-07-19 - D6-T5 Event Replay Architecture Foundation
 
 ### Evidence Reconstruction, Not Backtesting

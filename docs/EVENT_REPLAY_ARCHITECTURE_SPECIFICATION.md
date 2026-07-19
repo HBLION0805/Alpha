@@ -1,6 +1,6 @@
 # Event Replay Architecture Specification v1.0
 
-Status: Foundation implementation in owner review
+Status: Implemented foundation; owner-approved and committed
 
 Version: 1.0
 
