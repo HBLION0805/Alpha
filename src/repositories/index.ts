@@ -14,4 +14,6 @@ export * from "./PredictionRepository";
 export * from "./InMemoryPredictionLogRepository";
 export * from "./LocalNdjsonPredictionLogRepository";
 export * from "./ResearchRepository";
+export * from "./InMemoryResearchRepository";
+export * from "./LocalNdjsonResearchRepository";
 export * from "./TradeRepository";

@@ -20,6 +20,7 @@ Implemented and tested TypeScript foundations:
 - Prediction Engine v1
 - Prediction Log repository and deterministic review lifecycle foundation
 - Alpha Journal append-only evidence and review foundation
+- Research Lab append-only research evidence and review foundation
 - AI Router deterministic planning
 - AI Cost Governor enforcement
 - AI Provider Adapter interface and registry
@@ -31,7 +32,7 @@ Implemented and tested TypeScript foundations:
 
 The Python and TypeScript layers are not yet integrated into one runtime. The TypeScript AI infrastructure uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
-Local AI Cost Ledger, Unified Audit, Prediction Log, and Alpha Journal NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary.
+Local AI Cost Ledger, Unified Audit, Prediction Log, Alpha Journal, and Research Lab NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary.
 
 ## Architecture Boundary
 
@@ -49,7 +50,7 @@ Alpha/
 |-- docs/                # Architecture, specifications, roadmap, decisions, and handoff
 |-- src/
 |   |-- contracts/       # Provider-neutral TypeScript records and validation
-|   |-- engines/         # Deterministic Opportunity, Prediction Log, and AI engines
+|   |-- engines/         # Deterministic Opportunity, Prediction, Journal, Research, and AI engines
 |   |-- repositories/    # Repository ports and local append-only implementations
 |   `-- types/           # Minimal local Node standard-library declarations
 |-- package.json         # TypeScript validation and test commands
@@ -68,7 +69,7 @@ npm run typecheck
 npm test
 ```
 
-`npm test` runs the complete deterministic TypeScript suite. After the D5-T2 foundation, strict typecheck passed and the aggregate suite passed 466/466 tests.
+`npm test` runs the complete deterministic TypeScript suite, including the focused Research Lab suite.
 
 ## Python Prototype
 

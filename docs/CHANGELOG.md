@@ -2,6 +2,16 @@
 
 ## 2026-07-18 - Day 5
 
+### Research Lab Foundation
+
+- Replaced the mutable generic Research placeholder with an evidence-first append-only Research Lab authority while retaining shared confidence/evidence compatibility for existing contracts.
+- Added provider-neutral research, source, evidence, assumption, uncertainty, scenario, typed-reference, lifecycle, amendment, review, supersession, privacy, query, statistics, export, error, and audit contracts.
+- Added deterministic content-derived identity, complete draft-to-finalized provenance, immutable records, and monotonic repository event ordering.
+- Added defensive in-memory and canonical local NDJSON repositories with idempotent replay, conflict rejection, strict corruption handling, and traversal-safe storage.
+- Added deterministic Prediction evidence gating, privacy-aware JSON/NDJSON export, summaries/statistics, and pure Unified Audit translation.
+- Added 64 focused Research Lab tests and aggregate test exposure.
+- Preserved Prediction Log, Alpha Journal, and Unified Audit ownership; added no Strategy Versioning, historical engine, live market data, provider, network, credential, broker, trade, portfolio, or Python business-logic implementation.
+
 ### Alpha Journal Foundation
 
 - Added the evidence-first Alpha Journal specification and provider-neutral contracts.

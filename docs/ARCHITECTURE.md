@@ -355,10 +355,13 @@ Responsible for:
 
 Responsible for:
 
-- New strategy research
-- Market studies
-- AI experiments
-- Statistical analysis
+- Preserving immutable point-in-time questions, sources, evidence, assumptions, uncertainty, thesis, conclusions, confidence, and scenarios
+- Appending finalized research, amendments, reviews, supersession, and archive history without overwrite or deletion
+- Linking Prediction, Journal, Strategy, Portfolio, Audit, Historical Pattern, Research, Decision, Trade, Development Validation, market-snapshot, catalyst, and future Event Replay evidence without taking ownership
+- Enforcing deterministic identity, lifecycle, query, statistics, privacy-aware export, and Unified Audit translation
+- Providing defensive in-memory and canonical local NDJSON repositories
+
+Draft collection and analysis remain workspace state outside the authoritative repository. Research Lab is research truth, Prediction Log is prediction truth, Alpha Journal is context and reflection truth, and Unified Audit is normalized trace truth. The foundation has no live source retrieval, market-data API, provider integration, or business execution. Local persistence is single-owner, single-process development storage.
 
 ---
 

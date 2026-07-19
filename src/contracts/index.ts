@@ -23,4 +23,5 @@ export * from "./OpportunityRecord";
 export * from "./PredictionRecord";
 export * from "./PredictionValidation";
 export * from "./ResearchRecord";
+export * from "./ResearchValidation";
 export * from "./TradeRecord";

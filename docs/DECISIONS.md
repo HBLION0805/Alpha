@@ -1,5 +1,28 @@
 # Alpha Architecture Decisions
 
+## 2026-07-18 - Research Lab Foundation
+
+### Append-Only Research Authority
+
+- Decision: Research Lab is the source of truth for structured point-in-time research evidence and conclusions; authoritative records begin finalized and are never updated or deleted.
+- Context or problem: The prior generic Research placeholder exposed create, update, and delete operations and could not preserve what evidence justified a conclusion before later information arrived.
+- Rationale: Canonical content-derived identity, complete draft-to-finalized provenance, immutable evidence, and separate amendments, reviews, and supersession preserve historical honesty.
+- Consequences: Draft collection and analysis remain workspace state. Finalized and superseded research, sources, assumptions, counterevidence, and uncertainty remain retrievable.
+
+### Evidence Ownership and Frozen References
+
+- Decision: Research Lab links to Prediction Log, Alpha Journal, Unified Audit, and future Strategy/Historical systems only through stable typed resolved/unresolved references.
+- Context or problem: Copying or mutating records across systems would create conflicting authorities and allow later research to rewrite locked predictions.
+- Rationale: Frozen research version, status, conclusion, and confidence references give downstream systems sufficient evidence without transferring ownership.
+- Consequences: Prediction Log remains prediction truth, Alpha Journal remains context/reflection truth, Unified Audit remains normalized trace truth, and future Strategy Versioning remains the only strategy-state authority.
+
+### Local Persistence and External Integration Boundary
+
+- Decision: Research Lab v1 provides deterministic in-memory and canonical append-only local NDJSON repositories only.
+- Context or problem: Alpha needs reviewable local evidence before approving production storage, live sources, or provider integrations.
+- Rationale: A narrow single-process repository proves validation, ordering, replay, privacy, and corruption behavior without network or operational complexity.
+- Consequences: Local files are unencrypted and not multi-writer or transactionally coordinated. No market-data API, scraping, provider SDK, credential, AI generation, Strategy Versioning, historical engine, or business execution is included.
+
 ## 2026-07-18 - Alpha Journal Foundation
 
 ### Authoritative Evidence, Not Mutable Notes
