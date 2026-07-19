@@ -84,7 +84,7 @@ Push
 - TypeScript core: contract and repository-port layer, Opportunity Score Engine v1, and Prediction Engine v1
 - Alpha AI Infrastructure v1: Router, Cost Governor, Provider Adapter boundary, Execution Coordinator, Reservation Manager, Cost Ledger, Unified Audit Repository, and Runtime Workflow foundations
 - Alpha Learning Infrastructure v1: Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log foundations
-- Historical Evidence Infrastructure: Historical Pattern Library and deterministic Historical Analogy Engine foundations
+- Historical Evidence Infrastructure: Historical Pattern Library, deterministic Historical Analogy Engine, and Event Replay Architecture foundations
 - Day 6 Development Efficiency Standard v1 documentation: Codex development standard, task template, owner review template, and deterministic validation bundle foundation
 
 The Python and TypeScript surfaces are not yet integrated into one application runtime. TypeScript local NDJSON repositories are single-process development persistence. No production AI provider adapter, live AI API integration, live market-data integration, or automated capital execution exists.

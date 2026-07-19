@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-07-19 - Day 6 Task 5
+
+### Event Replay Architecture Foundation
+
+- Added `docs/EVENT_REPLAY_ARCHITECTURE_SPECIFICATION.md`.
+- Added provider-neutral Event Replay contracts, validation, append-only repository ports, in-memory repository, local NDJSON repository, deterministic replay engine, export helper, and Unified Audit translation.
+- Added deterministic timeline, observation-window, immutable-checkpoint, replay-session, lifecycle, review, supersession, archive, statistics, privacy export, and local corruption/path validation.
+- Added 20 focused Event Replay tests and aggregate validation-bundle coverage, raising the aggregate TypeScript baseline to 827/827.
+- Preserved Historical Pattern Library, Historical Analogy Engine, Research Lab, Prediction Log, Alpha Journal, Strategy Versioning, Decision Engine, Risk Engine, Portfolio, Trade, Unified Audit, and Python authority. Added no backtesting, prediction, execution simulation, live market data, provider SDK, network/API code, credential, broker integration, production persistence, capital execution, or Day 7 work.
+
 ## 2026-07-19 - Day 6 Task 4
 
 ### Historical Analogy Engine Foundation

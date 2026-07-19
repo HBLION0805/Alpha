@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - D6-T5 Event Replay Architecture Foundation
+
+### Evidence Reconstruction, Not Backtesting
+
+- Decision: Implement Event Replay as deterministic reconstruction of caller-supplied historical timelines, observation windows, and immutable checkpoints.
+- Reason: Alpha needs stable chronology and replay provenance before research or learning systems cite event timelines.
+- Consequence: Replay reports completeness, confidence, quality, missing data, and limitations, but it does not calculate returns, simulate execution, optimize strategy, or predict future outcomes.
+
+### References Without Ownership Transfer
+
+- Decision: Event Replay may freeze references to Historical Events, Historical Patterns, Historical Analogies, Research Lab, Prediction Log, Alpha Journal, snapshots, and supporting source evidence.
+- Reason: Replay evidence should connect existing sources of truth without rewriting or replacing them.
+- Consequence: Historical Pattern Library remains historical truth, Historical Analogy Engine remains comparison truth, Research Lab remains interpretation truth, and Decision/Risk/Portfolio/Trade systems retain authority.
+
+### Local Append-Only Foundation
+
+- Decision: Provide defensive in-memory and canonical local NDJSON repositories under `data/runtime/event-replays/` with no update, overwrite, or delete path.
+- Reason: This matches Alpha's development persistence convention while avoiding premature production storage choices.
+- Consequence: Local replay storage remains unencrypted single-owner, single-process development persistence. No provider, network, live-market, broker, Python, production persistence, or Day 7 work is added.
+
 ## 2026-07-19 - D6-T4 Historical Analogy Engine Foundation
 
 ### Deterministic Comparison, Not Prediction

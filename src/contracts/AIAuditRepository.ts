@@ -28,6 +28,7 @@ export enum AIAuditRecordType {
   DevelopmentValidation = "DEVELOPMENT_VALIDATION",
   HistoricalRecord = "HISTORICAL_RECORD",
   HistoricalAnalogy = "HISTORICAL_ANALOGY",
+  EventReplay = "EVENT_REPLAY",
   LearningReview = "LEARNING_REVIEW",
 }
 
@@ -50,6 +51,7 @@ export enum AIAuditSourceSubsystem {
   DevelopmentValidation = "DEVELOPMENT_VALIDATION",
   HistoricalPatternLibrary = "HISTORICAL_PATTERN_LIBRARY",
   HistoricalAnalogyEngine = "HISTORICAL_ANALOGY_ENGINE",
+  EventReplay = "EVENT_REPLAY",
   LearningLoop = "LEARNING_LOOP",
 }
 

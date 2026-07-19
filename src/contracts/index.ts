@@ -33,3 +33,5 @@ export * from "./HistoricalPattern";
 export * from "./HistoricalPatternValidation";
 export * from "./HistoricalAnalogy";
 export * from "./HistoricalAnalogyValidation";
+export * from "./EventReplay";
+export * from "./EventReplayValidation";

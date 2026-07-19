@@ -54,7 +54,7 @@ Alpha consists of the following major systems.
 Alpha currently has two unintegrated implementation surfaces:
 
 - The Python prototype/runtime contains local portfolio models, a terminal dashboard using sample data, deterministic risk calculations, configuration, and early stock/event-contract decision rules.
-- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, the Historical Pattern Library, and the Historical Analogy Engine foundation.
+- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, the Historical Pattern Library, the Historical Analogy Engine foundation, and the Event Replay Architecture foundation.
 
 The Python application does not invoke the TypeScript engines or AI Runtime Workflow. The TypeScript layer does not modify Python portfolio, risk, decision, or trade state. Future integration must preserve deterministic capital controls and the owner-controlled execution boundary.
 
@@ -427,7 +427,7 @@ Responsible for:
 
 Historical Pattern Library is historical-event and reusable-pattern truth. Research Lab remains current structured-research truth, Prediction Log remains prediction truth, Alpha Journal remains context/reflection truth, Strategy Versioning remains strategy truth, and Unified Audit remains normalized trace truth.
 
-The library does not fetch historical prices, ingest live data, calculate external market values, compare current events, predict outcomes, backtest, replay timelines, execute providers, or authorize capital decisions. The separate Historical Analogy Engine may read frozen finalized records without modifying historical truth. Event Replay remains future work. Local persistence is unencrypted single-owner, single-process development storage governed by the production boundary in `docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md`.
+The library does not fetch historical prices, ingest live data, calculate external market values, compare current events, predict outcomes, backtest, replay timelines, execute providers, or authorize capital decisions. The separate Historical Analogy Engine may read frozen finalized records without modifying historical truth. Event Replay may reference finalized historical records without modifying historical truth. Local persistence is unencrypted single-owner, single-process development storage governed by the production boundary in `docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md`.
 
 ---
 
@@ -447,6 +447,20 @@ Responsible for:
 Historical Pattern Library remains historical truth. Research Lab remains interpretation truth. Prediction Log and Strategy Versioning may later freeze reviewed analogy evidence but are not mutated. Decision Engine cannot treat raw similarity as an automatic decision, and Risk Engine constraints cannot be bypassed.
 
 The engine performs no AI scoring, embeddings, semantic search, vector database, external search, live data retrieval, prediction, trade recommendation, backtest, Event Replay, provider/network call, broker integration, or capital-state mutation. Local persistence is unencrypted single-owner, single-process development storage.
+
+---
+
+## Event Replay Architecture
+
+Responsible for:
+
+- Preserving deterministic historical-event replay timelines from caller-supplied evidence
+- Freezing chronological events, observation windows, immutable checkpoints, references, provenance, missing-data policy, completeness, confidence, quality, and limitations
+- Creating replay sessions that reconstruct ordered evidence without prediction, execution simulation, strategy optimization, or capital authority
+- Linking Historical Events, Historical Patterns, Historical Analogies, Research Lab, Prediction Log, Alpha Journal, snapshots, and source evidence without taking ownership
+- Providing defensive in-memory and canonical local NDJSON repositories, privacy-aware export, statistics, lifecycle review/supersession/archive, and pure Unified Audit translation
+
+Event Replay is evidence reconstruction only. Historical Pattern Library remains historical truth, Historical Analogy Engine remains comparison truth, Research Lab remains interpretation truth, and Decision/Risk/Portfolio/Trade systems retain their existing authority. The foundation has no backtesting, trading simulation, live market-data source, provider SDK, network/API code, broker integration, Python runtime integration, or production persistence.
 
 ---
 
@@ -540,7 +554,7 @@ Future systems may include:
 - Durable provider-execution claims and provider-billing reconciliation
 - Production provider adapters and durable, crash-recoverable runtime workflow execution
 - Historical Analogy Engine product integration and production hardening
-- Event Replay Database
+- Event Replay product integration and production hardening
 - Portfolio Analytics
 - Backtesting Engine
 - Mobile Dashboard

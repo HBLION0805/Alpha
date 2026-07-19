@@ -1,0 +1,18 @@
+import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve, sep } from "node:path";
+import { EventReplayErrorCategory, canonicalizeEventReplayValue } from "../contracts";
+import { InMemoryEventReplayRepository } from "./InMemoryEventReplayRepository";
+import type { EventReplayRepositoryEvent } from "./EventReplayRepository";
+
+const STORE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/;
+export class EventReplayRepositoryCorruptionError extends Error { readonly category = EventReplayErrorCategory.RepositoryCorrupt; constructor(message: string) { super(message); this.name = "EventReplayRepositoryCorruptionError"; } }
+export class EventReplayRepositoryPathError extends Error { readonly category = EventReplayErrorCategory.InvalidPath; constructor(message: string) { super(message); this.name = "EventReplayRepositoryPathError"; } }
+function safePath(rootDirectory: string, storeId: string): string { if (!STORE_ID.test(storeId)) throw new EventReplayRepositoryPathError("Invalid event replay store ID: path traversal is forbidden."); const root = resolve(rootDirectory); const file = resolve(root, `${storeId}.ndjson`); if (!file.startsWith(`${root}${sep}`)) throw new EventReplayRepositoryPathError("Invalid event replay path: resolved path escaped root."); return file; }
+function load(rootDirectory: string, storeId: string): { readonly filePath: string; readonly events: ReadonlyArray<EventReplayRepositoryEvent> } { const filePath = safePath(rootDirectory, storeId); mkdirSync(resolve(rootDirectory), { recursive: true }); if (!existsSync(filePath)) { const descriptor = openSync(filePath, "a"); try { fsyncSync(descriptor); } finally { closeSync(descriptor); } return { filePath, events: [] }; } const content = readFileSync(filePath, "utf8"); if (content.length === 0) return { filePath, events: [] }; if (!content.endsWith("\n")) throw new EventReplayRepositoryCorruptionError("Corrupt event replay repository: truncated final record."); const events: EventReplayRepositoryEvent[] = []; const lines = content.slice(0, -1).split("\n"); for (let index = 0; index < lines.length; index += 1) { const line = lines[index]; if (line === undefined || line.length === 0) throw new EventReplayRepositoryCorruptionError(`Corrupt event replay repository: empty line ${String(index + 1)}.`); let parsed: unknown; try { parsed = JSON.parse(line); } catch { throw new EventReplayRepositoryCorruptionError(`Corrupt event replay repository: malformed JSON at line ${String(index + 1)}.`); } if (canonicalizeEventReplayValue(parsed) !== line) throw new EventReplayRepositoryCorruptionError(`Corrupt event replay repository: non-canonical line ${String(index + 1)}.`); const event = parsed as EventReplayRepositoryEvent; if (event.schemaVersion !== "1.0" || event.sequence !== index + 1) throw new EventReplayRepositoryCorruptionError(`Corrupt event replay repository: invalid envelope at line ${String(index + 1)}.`); events.push(event); } return { filePath, events }; }
+
+export class LocalNdjsonEventReplayRepository extends InMemoryEventReplayRepository {
+  private readonly filePath: string;
+  constructor(rootDirectory: string, storeId = "event-replay-v1") { const loaded = load(rootDirectory, storeId); super(loaded.events); this.filePath = loaded.filePath; }
+  getStoragePath(): string { return this.filePath; }
+  protected override persistEvent(event: Readonly<EventReplayRepositoryEvent>): void { const descriptor = openSync(this.filePath, "a"); try { writeFileSync(descriptor, `${canonicalizeEventReplayValue(event)}\n`); fsyncSync(descriptor); } finally { closeSync(descriptor); } }
+}

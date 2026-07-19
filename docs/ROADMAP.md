@@ -55,6 +55,7 @@ Implemented and Tested Foundations:
 - Development Validation Log append-only task lifecycle, validation, owner review, Git evidence, defect/risk/follow-up, export, and audit foundation
 - Historical Pattern Library append-only historical-event, regime, asset-reaction, reusable-pattern, amendment, review, supersession, export, and audit foundation
 - Historical Analogy Engine deterministic current-situation comparison, scoring, ranking, bias, review, export, and audit foundation
+- Event Replay Architecture deterministic timeline, checkpoint, replay-session, review, export, and audit foundation
 
 Day 5 Milestone Status:
 
@@ -70,17 +71,17 @@ Day 6 Milestone Status:
 - D6-T2 is complete and pushed as the architecture-only Production Persistence and Recovery foundation.
 - D6-T2 documents future durable persistence, transaction, recovery, backup, restore, retention, integrity, and development-vs-production boundaries without implementing production persistence.
 - D6-T3 Historical Pattern Library is complete, committed, and pushed as `9358c9fc5d6350cfcddc385806738a7ce8235abb`.
-- D6-T4 implements the deterministic Historical Analogy Engine foundation and is awaiting owner review.
+- D6-T4 Historical Analogy Engine is complete, committed, and pushed as `95a634ad097a96527a0eef7f8984014dac4ed160`.
 - D6-T4 separates similarity, difference, completeness, evidence quality, and candidate quality; produces no prediction or trading recommendation; and adds no AI scoring, embeddings, vector database, Event Replay, live data, provider, network, broker, or Python behavior.
-- Current aggregate validation is 807/807 TypeScript tests, including 68/68 focused Historical Pattern Library tests and 91/91 focused Historical Analogy Engine tests.
-- D6-T5 has not started.
+- D6-T5 implements the deterministic Event Replay Architecture foundation and is awaiting owner review.
+- D6-T5 preserves caller-supplied timelines, observation windows, immutable checkpoints, replay sessions, evidence references, missing-data state, completeness, confidence, limitations, export, and audit translation without backtesting, prediction, execution simulation, live-market data, provider, network, broker, or Python behavior.
+- Current aggregate validation is 827/827 TypeScript tests, including 68/68 focused Historical Pattern Library tests, 91/91 focused Historical Analogy Engine tests, and 20/20 focused Event Replay tests.
 
 Proposed Day 6 Priority Order:
 
-1. Owner review and approval of D6-T4 Historical Analogy Engine foundation.
+1. Owner review and approval of D6-T5 Event Replay Architecture foundation.
 2. Specify the development-standard/reporting integration for Development Validation Log without automating Git or owner approval.
-3. Define Event Replay compatibility requirements without implementing replay or backtesting.
-4. Design the Python/TypeScript integration boundary while preserving deterministic capital controls.
+3. Design the Python/TypeScript integration boundary while preserving deterministic capital controls.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 
@@ -152,7 +153,8 @@ Planned Features:
 - Catalyst Calendar
 - Relative Strength Engine
 - Sector Rotation Engine
-- Event Replay / Price Timeline Database
+- Event Replay product integration and production hardening
+- Price Timeline Database
 - Backtesting and Learning Loop expansion
 - Production provider adapters
 - Production database and transactional outbox architecture

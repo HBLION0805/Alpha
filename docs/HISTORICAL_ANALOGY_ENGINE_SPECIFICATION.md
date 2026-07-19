@@ -1,6 +1,6 @@
 # Historical Analogy Engine v1 Specification
 
-Status: Foundation implementation in owner review
+Status: Implemented foundation; owner-approved and committed
 
 Version: 1.0
 
@@ -249,7 +249,7 @@ Translations exclude credentials, raw copyrighted source content, and unnecessar
 
 ## 18. Event Replay Compatibility Boundary
 
-Version 1 defines only typed compatibility references for future replay ID/version, observation window, optional price/event timeline, optional execution context, and replay-quality status. No Event Replay engine, price-timeline database, backtest, or execution simulation exists.
+Version 1 defines typed compatibility references for Event Replay ID/version, observation window, optional price/event timeline, optional execution context, and replay-quality status. D6-T5 separately implements an Event Replay Architecture foundation for deterministic evidence reconstruction. No price-timeline database, backtest, execution simulation, prediction, or trading authority exists.
 
 Future replay evidence may validate or challenge analogy assumptions but cannot rewrite analogy history.
 

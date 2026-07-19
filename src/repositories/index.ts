@@ -29,3 +29,6 @@ export * from "./LocalNdjsonHistoricalPatternRepository";
 export * from "./HistoricalAnalogyRepository";
 export * from "./InMemoryHistoricalAnalogyRepository";
 export * from "./LocalNdjsonHistoricalAnalogyRepository";
+export * from "./EventReplayRepository";
+export * from "./InMemoryEventReplayRepository";
+export * from "./LocalNdjsonEventReplayRepository";

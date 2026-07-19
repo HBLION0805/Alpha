@@ -4,11 +4,31 @@ Date:
 2026-07-19
 
 Project Stage:
-Day 6 in progress - D6-T1 through D6-T3 complete and pushed; D6-T4 Historical Analogy Engine foundation implemented and awaiting owner review; D6-T5 not started
+Day 6 in progress - D6-T1 through D6-T4 complete and pushed; D6-T5 Event Replay Architecture foundation implemented and awaiting owner review; Day 7 not started
 
-## Day 6 Task 4 Current Work
+## Day 6 Task 5 Current Work
 
-D6-T4 implements Alpha's deterministic Historical Analogy Engine foundation.
+D6-T5 implements Alpha's deterministic Event Replay Architecture foundation.
+
+Created:
+
+- `docs/EVENT_REPLAY_ARCHITECTURE_SPECIFICATION.md`
+- `src/contracts/EventReplay.ts`
+- `src/contracts/EventReplayValidation.ts`
+- `src/repositories/EventReplayRepository.ts`
+- `src/repositories/InMemoryEventReplayRepository.ts`
+- `src/repositories/LocalNdjsonEventReplayRepository.ts`
+- `src/engines/event-replay/`
+
+The foundation preserves caller-supplied historical timelines, observation windows, immutable checkpoints, replay sessions, replay references, snapshot/pattern/analogy/evidence references, lifecycle review/supersession/archive evidence, deterministic statistics, privacy-aware export, and Unified Audit translation.
+
+Replay reconstructs historical evidence only. It is not prediction, execution, strategy optimization, automatic learning, or backtesting. The implementation adds no live market-data source, provider SDK, network/API code, credential, broker integration, Python runtime change, production persistence, Decision/Risk/Portfolio/Trade behavior, or Day 7 work.
+
+D6-T5 includes 20 focused deterministic tests. The aggregate TypeScript baseline is 827/827 tests. Local NDJSON under `data/runtime/event-replays/` remains Git-ignored single-owner, single-process development persistence.
+
+## Day 6 Task 4 Completed Work
+
+D6-T4 implements Alpha's deterministic Historical Analogy Engine foundation and was committed and pushed as `95a634ad097a96527a0eef7f8984014dac4ed160`.
 
 Created:
 
@@ -26,7 +46,7 @@ Missing data never becomes a neutral match. Results preserve strongest similarit
 
 Historical Pattern Library remains historical truth and Research Lab remains interpretation truth. No Prediction, Strategy, Decision, Risk override, trading recommendation, AI similarity scoring, embedding, vector database, Event Replay, live data, provider/network integration, broker behavior, or Python change exists.
 
-D6-T4 includes 91 focused deterministic tests. The aggregate TypeScript baseline is 807/807 tests. Local NDJSON under `data/runtime/historical-analogies/` remains Git-ignored single-owner, single-process development persistence. D6-T5 has not started.
+D6-T4 includes 91 focused deterministic tests. At D6-T4 completion, the aggregate TypeScript baseline was 807/807 tests. Local NDJSON under `data/runtime/historical-analogies/` remains Git-ignored single-owner, single-process development persistence. D6-T5 was subsequently implemented as the separate milestone above.
 
 ## Day 6 Task 3 Completed Work
 
@@ -222,6 +242,7 @@ Current TypeScript foundations:
 - Development Validation Log: deterministic append-only task lifecycle, structured validation, owner review/approval, Git evidence, defect/risk/follow-up, privacy, query, statistics, export, and audit foundation implemented for local single-process use
 - Historical Pattern Library: deterministic append-only historical-event, regime, observation-window, asset-reaction, reusable-pattern, amendment, review, supersession, privacy, query, statistics, export, and audit foundation implemented for local single-process use
 - Historical Analogy Engine: deterministic frozen-snapshot and finalized-candidate comparison, scoring, ranking, bias/limitation, review, privacy, export, and audit foundation implemented for local single-process use
+- Event Replay Architecture: deterministic timeline, checkpoint, replay-session, review, privacy, export, and audit foundation implemented for local single-process use
 - Instrument Ranking, Trade Outcome, and Learning Loop: documented architecture or backlog, not implemented runtime systems
 
 Python and TypeScript do not currently form one integrated application runtime. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
@@ -231,7 +252,7 @@ Python and TypeScript do not currently form one integrated application runtime. 
 Current validation completed successfully:
 
 - TypeScript strict typecheck passed
-- Aggregate TypeScript tests: 807/807 passed, including 40/40 focused Prediction Log, 51/51 focused Alpha Journal, 64/64 focused Research Lab, 70/70 focused Strategy Versioning, 48/48 focused Development Validation Log, 68/68 focused Historical Pattern Library, and 91/91 focused Historical Analogy Engine tests
+- Aggregate TypeScript tests: 827/827 passed, including 40/40 focused Prediction Log, 51/51 focused Alpha Journal, 64/64 focused Research Lab, 70/70 focused Strategy Versioning, 48/48 focused Development Validation Log, 68/68 focused Historical Pattern Library, 91/91 focused Historical Analogy Engine, and 20/20 focused Event Replay tests
 - Focused AI Infrastructure tests: 333/333 passed
 - Provider SDK and production-adapter scan clean
 - Network, API, and credential scan clean
@@ -253,6 +274,7 @@ Current validation completed successfully:
 - `ee664db39b29126849d3358ce17b97a3934c4f38` — Codex Development Standard foundation
 - `92fe95ea678e8201c60654539138c95dc70c1d1f` — Production Persistence and Recovery Architecture
 - `9358c9fc5d6350cfcddc385806738a7ce8235abb` — Historical Pattern Library foundation
+- `95a634ad097a96527a0eef7f8984014dac4ed160` — Historical Analogy Engine foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -263,7 +285,7 @@ Acceptable current development limitations:
 - Neutral fixtures only; no production provider adapter or live AI API integration
 - No production credential handling or provider-health polling
 - Reservation and workflow result repositories are in memory
-- Local ledger, audit, learning, historical-pattern, and historical-analogy NDJSON repositories are single-owner, single-process development persistence
+- Local ledger, audit, learning, historical-pattern, historical-analogy, and event-replay NDJSON repositories are single-owner, single-process development persistence
 - Python and TypeScript runtimes remain separate
 - Business-domain runtime integration is incomplete
 - AI controls no portfolio or trade execution
@@ -280,12 +302,11 @@ Blockers before live provider use:
 
 ## Proposed Day 6 Priority Order
 
-These are proposed planning priorities only. D6-T1 through D6-T3 are complete; D6-T4 is implemented for owner review; D6-T5 and later tasks have not started.
+These are proposed planning priorities only. D6-T1 through D6-T4 are complete; D6-T5 is implemented for owner review; Day 7 has not started.
 
-1. Owner review and approval of D6-T4 Historical Analogy Engine foundation.
+1. Owner review and approval of D6-T5 Event Replay Architecture foundation.
 2. Specify the development-standard/reporting integration for Development Validation Log without automating Git or owner approval.
-3. Specify future Event Replay compatibility without implementing replay, backtesting, prediction, or trading authority.
-4. Design the Python/TypeScript integration boundary while preserving deterministic capital controls.
+3. Design the Python/TypeScript integration boundary while preserving deterministic capital controls.
 
 Backlog without immediate scheduling:
 
@@ -294,7 +315,8 @@ Backlog without immediate scheduling:
 - Catalyst Calendar
 - Relative Strength Engine
 - Sector Rotation Engine
-- Event Replay / Price Timeline Database
+- Event Replay product integration and production hardening
+- Price Timeline Database
 - Backtesting and Learning Loop expansion
 - Production provider adapters
 - Production database and transactional outbox architecture
@@ -302,4 +324,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of D6-T4 Historical Analogy Engine foundation. After approval, run final validation, create one focused commit only if authorized, and push only if explicitly approved. Do not begin D6-T5.
+Owner review of D6-T5 Event Replay Architecture foundation. After approval, run final validation, create one focused commit only if authorized, and push only if explicitly approved. Do not begin Day 7.
