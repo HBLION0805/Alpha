@@ -6,6 +6,8 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
+Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 648/648 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, and 42 Opportunity/Prediction engine tests.
+
 Implemented Python prototype/runtime:
 
 - Portfolio models and calculations
@@ -41,6 +43,8 @@ Local AI Cost Ledger, Unified Audit, Prediction Log, Alpha Journal, Research Lab
 AI may provide advisory output. Deterministic Alpha systems retain control of calculations, validation, financial permission, reservation state, accounting, evidence, risk, decisions, and capital state. AI does not control portfolio or trade execution.
 
 See [Architecture](docs/ARCHITECTURE.md), [Roadmap](docs/ROADMAP.md), and [Handoff](docs/HANDOFF.md) for current boundaries and next priorities.
+
+Day 5 contracts and boundaries are specified in [Prediction Log](docs/PREDICTION_LOG_SPECIFICATION.md), [Alpha Journal](docs/ALPHA_JOURNAL_SPECIFICATION.md), [Research Lab](docs/RESEARCH_LAB_SPECIFICATION.md), [Strategy Versioning](docs/STRATEGY_VERSIONING_SPECIFICATION.md), and [Development Validation Log](docs/DEVELOPMENT_VALIDATION_LOG_SPECIFICATION.md).
 
 ## Repository Structure
 

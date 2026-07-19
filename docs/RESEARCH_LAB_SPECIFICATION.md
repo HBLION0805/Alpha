@@ -1,6 +1,6 @@
 # Research Lab v1 Specification
 
-Status: Implemented foundation; awaiting owner review  
+Status: Implemented foundation; owner-approved and committed
 Version: 1.0  
 Date: 2026-07-18
 

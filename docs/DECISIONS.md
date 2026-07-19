@@ -1,5 +1,27 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - Day 5 Learning Infrastructure Milestone
+
+### Local Evidence Foundations Completed
+
+- Decision: Close Day 5 with Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log implemented as deterministic provider-neutral TypeScript foundations.
+- Reason: Together they establish distinct sources of truth for predictions, context and reflection, research, strategy lineage, and engineering-task evidence without transferring authority between systems.
+- Consequence: The milestone provides contracts, validators, deterministic engines, focused tests, in-memory repositories, and local append-only NDJSON repositories where specified. It does not claim production persistence, cross-repository transactions, live data, provider execution, or Python/TypeScript runtime integration.
+
+### Production and Day 6 Boundary
+
+- Decision: Record Day 6 priorities as proposed follow-up work only; do not treat them as implemented or approved by the Day 5 closeout.
+- Reason: Production hardening and development-workflow integration require separate specifications, owner review, and explicit scope.
+- Consequence: Day 6 has not started. Current foundations remain single-owner local development systems, and all capital, provider, network, credential, and external-execution boundaries remain unchanged.
+
+### Milestone References
+
+- Prediction Log: `9677838c930c05d900eb8fa5c3b05af5bfa09a4a`
+- Alpha Journal: `2098353a41215d70fcb02fff61f34e930a5ecea8`
+- Research Lab: `41105b70254d94d9058fa9f4b958cbfbd8a3d579`
+- Strategy Versioning: `50686a955930a182b49d6d9b02381d74974c71e2`
+- Development Validation Log: `cc9fb3fb47b467764ee9227993e77047a5c1a11d`
+
 ## 2026-07-18 - Development Validation Log Foundation
 
 ### Structured Engineering Memory, Not a Git Replacement

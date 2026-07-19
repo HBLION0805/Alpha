@@ -1,6 +1,6 @@
 # Strategy Versioning Foundation Specification v1.0
 
-Status: Foundation design implemented; awaiting owner review  
+Status: Implemented foundation; owner-approved and committed
 Date: 2026-07-18
 
 ## 1. Problem, Value, Cost, and Timing

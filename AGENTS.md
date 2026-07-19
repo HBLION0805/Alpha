@@ -82,8 +82,9 @@ Push
 - Python prototype/runtime: Portfolio, terminal Dashboard, Config, Risk Engine, and early deterministic Decision Engine rules
 - TypeScript core: contract and repository-port layer, Opportunity Score Engine v1, and Prediction Engine v1
 - Alpha AI Infrastructure v1: Router, Cost Governor, Provider Adapter boundary, Execution Coordinator, Reservation Manager, Cost Ledger, Unified Audit Repository, and Runtime Workflow foundations
+- Alpha Learning Infrastructure v1: Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log foundations
 
-The Python and TypeScript surfaces are not yet integrated into one application runtime. No production AI provider adapter or live AI API integration exists.
+The Python and TypeScript surfaces are not yet integrated into one application runtime. TypeScript local NDJSON repositories are single-process development persistence. No production AI provider adapter, live AI API integration, live market-data integration, or automated capital execution exists.
 
 ## Required Completion Report
 

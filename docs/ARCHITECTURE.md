@@ -54,7 +54,7 @@ Alpha consists of the following major systems.
 Alpha currently has two unintegrated implementation surfaces:
 
 - The Python prototype/runtime contains local portfolio models, a terminal dashboard using sample data, deterministic risk calculations, configuration, and early stock/event-contract decision rules.
-- The TypeScript core infrastructure contains record contracts, repository ports, implemented Opportunity and Prediction engines, and AI Infrastructure v1.
+- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, and the Day 5 Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log foundations.
 
 The Python application does not invoke the TypeScript engines or AI Runtime Workflow. The TypeScript layer does not modify Python portfolio, risk, decision, or trade state. Future integration must preserve deterministic capital controls and the owner-controlled execution boundary.
 
@@ -256,7 +256,7 @@ Responsible for:
 
 Git remains the source of truth for code and version history. Unified Audit remains normalized cross-system trace truth. HANDOFF and CHANGELOG remain project-state and released-capability summaries. Alpha Journal remains context/reflection truth. Development Validation Log owns detailed structured engineering-memory evidence only; it stores no full diffs, huge raw logs, or secrets.
 
-The repository exposes no update, overwrite, delete, Git execution, issue creation, provider, network, live-market, broker, capital-state, or Python integration. Local persistence is unencrypted single-owner, single-process development storage. The future `CODEX_DEVELOPMENT_STANDARD` may define how task reports populate these contracts, but no Day 6 standard or automation is implemented.
+The repository exposes no update, overwrite, delete, Git execution, issue creation, provider, network, live-market, broker, capital-state, or Python integration. Local persistence is unencrypted single-owner, single-process development storage. A future, separately approved development-standard task may define how task reports populate these contracts; that integration is planned and has not started.
 
 ---
 
