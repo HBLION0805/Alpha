@@ -60,12 +60,20 @@ Day 5 Milestone Status:
 - The five Day 5 learning-infrastructure foundations are Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log.
 - Current aggregate validation is 648/648 TypeScript tests, including 333 AI Infrastructure tests and 273 Day 5 learning-infrastructure tests.
 
-Proposed Day 6 Priority Order (not started or approved for implementation):
+Day 6 Milestone Status:
 
-1. Specify the development-standard/reporting integration for Development Validation Log without automating Git or owner approval.
-2. Review production persistence, transaction, recovery, privacy, retention, and signing requirements for business evidence repositories.
-3. Specify Historical Pattern Library and Historical Analogy Engine ownership and evidence boundaries.
-4. Design the Python/TypeScript integration boundary while preserving deterministic capital controls.
+- Day 6 has started with D6-T1, the Development Efficiency Standard v1 documentation milestone.
+- D6-T1 centralizes repeated Codex workflow rules, context-loading policy, task template, owner review template, and deterministic validation-bundle guidance.
+- D6-T1 does not modify Alpha business logic, Python or TypeScript runtime behavior, provider integration, network/API code, credentials, runtime data, or capital-control boundaries.
+- D6-T2 has not started.
+
+Proposed Day 6 Priority Order:
+
+1. Owner review and approval of D6-T1 Development Efficiency Standard v1.
+2. Specify the development-standard/reporting integration for Development Validation Log without automating Git or owner approval.
+3. Review production persistence, transaction, recovery, privacy, retention, and signing requirements for business evidence repositories.
+4. Specify Historical Pattern Library and Historical Analogy Engine ownership and evidence boundaries.
+5. Design the Python/TypeScript integration boundary while preserving deterministic capital controls.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

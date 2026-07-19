@@ -256,7 +256,20 @@ Responsible for:
 
 Git remains the source of truth for code and version history. Unified Audit remains normalized cross-system trace truth. HANDOFF and CHANGELOG remain project-state and released-capability summaries. Alpha Journal remains context/reflection truth. Development Validation Log owns detailed structured engineering-memory evidence only; it stores no full diffs, huge raw logs, or secrets.
 
-The repository exposes no update, overwrite, delete, Git execution, issue creation, provider, network, live-market, broker, capital-state, or Python integration. Local persistence is unencrypted single-owner, single-process development storage. A future, separately approved development-standard task may define how task reports populate these contracts; that integration is planned and has not started.
+The repository exposes no update, overwrite, delete, Git execution, issue creation, provider, network, live-market, broker, capital-state, or Python integration. Local persistence is unencrypted single-owner, single-process development storage. A future, separately approved integration task may define how task reports populate these contracts; that integration is planned and has not started.
+
+---
+
+## Development Efficiency Standard
+
+Responsible for:
+
+- Centralizing repeated Codex implementation, validation, reporting, owner-review, and Git-safety rules
+- Defining a context-loading hierarchy so future tasks can use shorter prompts without losing relevant authority documents
+- Preserving quality-first model selection, deterministic-software-first behavior, provider independence, runtime-data boundaries, and owner approval authority
+- Providing a concise task template, owner review template, and deterministic local validation bundle
+
+The Development Efficiency Standard is documentation and workflow guidance only. It does not modify Python or TypeScript runtime behavior, automate owner approval, populate the Development Validation Log, execute Git commits or pushes, add provider/network/credential integration, or change capital-domain logic.
 
 ---
 

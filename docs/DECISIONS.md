@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - D6-T1 Development Efficiency Standard v1
+
+### Quality-First Token Optimization
+
+- Decision: Centralize repeated Codex execution, validation, reporting, owner-review, and Git-safety rules in `docs/CODEX_DEVELOPMENT_STANDARD.md`.
+- Reason: Future tasks can use shorter prompts only after stable requirements are version-controlled and unambiguous.
+- Consequence: Token optimization is accepted only when architecture quality, implementation quality, test coverage, validation rigor, owner review, auditability, and safety boundaries remain intact.
+
+### Context Layers and Prompt Compression
+
+- Decision: Use a five-layer context hierarchy covering permanent core context, architecture context, subsystem context, task context, and evidence context.
+- Reason: Loading every specification for every task wastes context, but omitting relevant authority documents creates architecture drift.
+- Consequence: Future prompts may reference the Codex standard and task template for stable rules, while uncertainty still requires targeted inspection rather than guessing.
+
+### Validation Bundle Boundary
+
+- Decision: Add a dependency-free local `npm run alpha:validate` bundle for existing safe checks while preserving individual commands.
+- Reason: Alpha's validation workflow has become repetitive enough to centralize locally without adding dependencies, network access, provider SDKs, credentials, runtime-data mutation, or Git side effects.
+- Consequence: The bundle is a convenience wrapper only. It does not replace task-specific validation judgment, owner approval, commits, pushes, or Development Validation Log persistence.
+
+### D6-T2 Boundary
+
+- Decision: D6-T1 does not begin Development Validation Log report integration, production persistence work, historical engines, or Python/TypeScript runtime integration.
+- Reason: Those areas require separate specifications and owner review.
+- Consequence: Day 6 has started, but D6-T2 has not started.
+
 ## 2026-07-19 - Day 5 Learning Infrastructure Milestone
 
 ### Local Evidence Foundations Completed

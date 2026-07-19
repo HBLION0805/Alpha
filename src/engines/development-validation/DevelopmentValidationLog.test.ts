@@ -111,7 +111,7 @@ const tests: ReadonlyArray<TestCase> = [
   { name: "45 repository has no overwrite or delete methods", run: () => { const repository: object = new InMemoryDevelopmentValidationRepository(); assertTrue(!("update" in repository) && !("overwrite" in repository) && !("delete" in repository), "mutable method exposed"); } },
   { name: "46 runtime validation data path is Git-ignored", run: () => assertTrue(readFileSync(".gitignore", "utf8").includes("data/runtime/development-validation/"), "ignore rule") },
   { name: "47 no provider network broker or Python implementation exists", run: () => { const source = ["DevelopmentValidationLog.ts", "DevelopmentValidationExports.ts", "DevelopmentValidationAuditTranslations.ts"].map((name) => readFileSync(join("src/engines/development-validation", name), "utf8")).join("\n"); assertTrue(!/fetch\s*\(|axios|node:https|brokerClient|openai|anthropic/i.test(source), "forbidden implementation"); } },
-  { name: "48 no Day 6 implementation exists", run: () => { assertTrue(!existsSync("docs/CODEX_DEVELOPMENT_STANDARD.md") && !existsSync("src/engines/codex-development-standard"), "Day 6 started"); } },
+  { name: "48 Day 6 development standard remains documentation-only", run: () => { assertTrue(existsSync("docs/CODEX_DEVELOPMENT_STANDARD.md"), "D6 standard missing"); assertTrue(!existsSync("src/engines/codex-development-standard"), "runtime implementation exists"); } },
 ];
 
 let passed = 0;

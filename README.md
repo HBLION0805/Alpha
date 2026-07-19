@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 648/648 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, and 42 Opportunity/Prediction engine tests.
+Day 6 has started with D6-T1, the Development Efficiency Standard v1 documentation milestone. Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 648/648 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, and 42 Opportunity/Prediction engine tests.
 
 Implemented Python prototype/runtime:
 
@@ -33,6 +33,7 @@ Implemented and tested TypeScript foundations:
 - AI Cost Ledger
 - Unified Audit Repository
 - AI Runtime Workflow
+- Codex Development Standard, task template, owner review template, and local validation bundle foundation
 
 The Python and TypeScript layers are not yet integrated into one runtime. The TypeScript AI infrastructure uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
@@ -45,6 +46,8 @@ AI may provide advisory output. Deterministic Alpha systems retain control of ca
 See [Architecture](docs/ARCHITECTURE.md), [Roadmap](docs/ROADMAP.md), and [Handoff](docs/HANDOFF.md) for current boundaries and next priorities.
 
 Day 5 contracts and boundaries are specified in [Prediction Log](docs/PREDICTION_LOG_SPECIFICATION.md), [Alpha Journal](docs/ALPHA_JOURNAL_SPECIFICATION.md), [Research Lab](docs/RESEARCH_LAB_SPECIFICATION.md), [Strategy Versioning](docs/STRATEGY_VERSIONING_SPECIFICATION.md), and [Development Validation Log](docs/DEVELOPMENT_VALIDATION_LOG_SPECIFICATION.md).
+
+Day 6 development-efficiency rules are specified in [Codex Development Standard](docs/CODEX_DEVELOPMENT_STANDARD.md), [Codex Task Template](docs/CODEX_TASK_TEMPLATE.md), and [Owner Review Template](docs/OWNER_REVIEW_TEMPLATE.md).
 
 ## Repository Structure
 
@@ -73,9 +76,12 @@ Requirements: Node.js and npm.
 npm install
 npm run typecheck
 npm test
+npm run alpha:validate
 ```
 
 `npm test` runs the complete deterministic TypeScript suite, including the focused Strategy Versioning and Development Validation Log suites.
+
+`npm run alpha:validate` runs the local validation bundle: required-file checks, strict typecheck, aggregate tests, Markdown link/path/fence checks, provider/network/API/credential scans, Python-change scan, runtime-data tracking scan, merge-marker scan, `git diff --check`, and final working-tree warning. Component commands remain individually available.
 
 ## Python Prototype
 
@@ -96,3 +102,4 @@ The Python application currently uses sample portfolio data and is not wired to 
 - Record important decisions and preserve immutable evidence.
 - Specify major subsystem boundaries before implementation.
 - Require owner approval before commits, pushes, production adapters, or execution integration.
+- Optimize repeated Codex prompt context only when quality, validation, owner authority, and safety boundaries remain intact.

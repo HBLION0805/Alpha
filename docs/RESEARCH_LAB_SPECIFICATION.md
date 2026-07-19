@@ -1,7 +1,7 @@
 # Research Lab v1 Specification
 
 Status: Implemented foundation; owner-approved and committed
-Version: 1.0  
+Version: 1.0
 Date: 2026-07-18
 
 ## 1. Problem, Value, and Timing

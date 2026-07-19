@@ -2,8 +2,8 @@
 
 This document defines the official software engineering standard for Alpha. It exists to keep development consistent, reviewable, cost-aware, and aligned with the long-term direction of the project.
 
-Version: 1.0
-Revision date: 2026-07-15
+Version: 1.1
+Revision date: 2026-07-19
 
 ## 1. Architecture First
 
@@ -62,6 +62,8 @@ Every implementation task should include an AI Dispatch Card with:
 
 Model selection should balance quality and cost. Use the lowest-cost model capable of producing the required quality for the task.
 
+For repeated Codex execution rules, task templates, owner-review criteria, context-loading policy, final-report structure, and validation-ladder guidance, use `docs/CODEX_DEVELOPMENT_STANDARD.md`. That document centralizes stable Codex workflow requirements so prompts can become shorter without weakening quality or safety.
+
 ## 4. Git Safety
 
 - Never auto commit.
@@ -83,6 +85,9 @@ Each project document has a distinct responsibility:
 - CHANGELOG.md: Records meaningful changes to behavior, business logic, and system capabilities.
 - HANDOFF.md: Captures current project state, active context, and work needed by the next contributor.
 - AGENTS.md: Provides operating instructions for AI coding agents.
+- CODEX_DEVELOPMENT_STANDARD.md: Defines stable Codex execution, validation, context, reporting, owner-review, and token-optimization rules.
+- CODEX_TASK_TEMPLATE.md: Provides the reusable compact task template.
+- OWNER_REVIEW_TEMPLATE.md: Provides the owner review checklist and approval structure.
 
 Documentation should stay concise, accurate, and aligned with the current project state.
 
@@ -100,6 +105,8 @@ This protects the reasoning behind business behavior and preserves a clear histo
 Always use the lowest-cost AI model capable of producing the required quality.
 
 Avoid using stronger models when unnecessary. Higher-cost models should be reserved for tasks that require deeper reasoning, broader context, higher risk analysis, or more complex implementation judgment.
+
+Cost reduction must never reduce architecture quality, implementation quality, test coverage, validation rigor, owner review, auditability, or safety boundaries.
 
 ## 8. Maintainability First
 
@@ -141,3 +148,6 @@ This standard is versioned. Future improvements should update:
 
 Updates should be intentional, reviewed, and aligned with the long-term needs of the Alpha project.
 
+## 12. D6-T1 Development Efficiency Standard
+
+Day 6 begins with a documentation-only development-efficiency milestone. The milestone centralizes repeated Codex rules, defines context layers, adds a standard task template, adds an owner review template, and introduces a dependency-free local validation bundle. It changes workflow documentation only and does not modify Alpha business logic, runtime behavior, provider integration, credentials, network/API code, Python code, or capital-control boundaries.

@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-07-19 - Day 6 Task 1
+
+### Development Efficiency Standard v1
+
+- Added `docs/CODEX_DEVELOPMENT_STANDARD.md` as the stable Codex execution, context-loading, validation, reporting, owner-review, Git-safety, model-selection, and token-optimization standard.
+- Added `docs/CODEX_TASK_TEMPLATE.md` so future tasks can use one concise template with implementation, documentation, review, commit/push, investigation, and specification modes.
+- Added `docs/OWNER_REVIEW_TEMPLATE.md` to preserve owner-only approval authority while giving AI a structured way to prepare reviews.
+- Added `npm run alpha:validate`, a dependency-free local validation bundle that runs required-file checks, strict TypeScript typecheck, aggregate tests, documentation checks, safety scans, `git diff --check`, and final working-tree warning.
+- Updated AGENTS, README, Architecture, Development Standard, Roadmap, Decisions, and Handoff to record that Day 6 has started with D6-T1 and that D6-T2 has not started.
+- Preserved documentation/workflow-tooling scope. No Alpha business logic, Python or TypeScript runtime behavior, provider SDK, production adapter, network/API code, credential, live-market integration, broker integration, runtime data, Git automation, or owner-approval delegation was added.
+
 ## 2026-07-19 - Day 5 Milestone Review
 
 - Completed and reconciled the Day 5 learning-infrastructure milestone: Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log.
