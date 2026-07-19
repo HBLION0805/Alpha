@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-07-19 - Day 6 Task 3
+
+### Historical Pattern Library Foundation
+
+- Added the Historical Pattern Library v1 specification and provider-neutral historical event, date precision, regime, observation-window, asset-reaction, source/evidence, reusable pattern, typed-reference, lifecycle, amendment, review, supersession, query, statistics, export, error, future-analogy boundary, and audit contracts.
+- Added deterministic validation separating facts, observations, source claims, interpretations, inferences, hypotheses, disputed claims, counterevidence, and unknowns; rejecting unsupported finalization, invalid calculations, zero denominators, non-finite values, unsupported currency comparisons, privacy downgrade, guaranteed-recurrence language, invalid lifecycle/reference graphs, and secret metadata.
+- Added defensive in-memory and canonical append-only local NDJSON repositories with caller-supplied deterministic IDs, monotonic sequence, canonical fingerprints, idempotent replay, conflict rejection, cycle detection, strict corruption handling, traversal-safe storage, and no update/overwrite/delete path.
+- Added deterministic lifecycle services, frozen downstream evidence references, observation-window ordering, related-record queries, pagination, summaries, statistics, privacy-aware JSON/NDJSON export, and pure Unified Audit translation.
+- Added 68 focused Historical Pattern Library tests and aggregate exposure, raising the TypeScript validation baseline to 716/716 tests.
+- Preserved Research Lab, Prediction Log, Alpha Journal, Strategy Versioning, Unified Audit, Portfolio, Risk, Decision, and Python ownership. Added no Historical Analogy Engine, Event Replay, historical-data ingestion, live market integration, provider SDK, network/API code, credential, broker, execution, backtesting, or D6-T4 work.
+
 ## 2026-07-19 - Day 6 Task 2
 
 ### Production Persistence and Recovery Architecture

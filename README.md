@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 6 has started. D6-T1, the Development Efficiency Standard v1 documentation milestone, is complete; D6-T2 defines the Production Persistence and Recovery Architecture foundation. Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 648/648 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, and 42 Opportunity/Prediction engine tests.
+Day 6 has started. D6-T1 Development Efficiency and D6-T2 Production Persistence and Recovery Architecture are complete and pushed. D6-T3 implements the Historical Pattern Library foundation and is awaiting owner review. Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 716/716 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, 42 Opportunity/Prediction engine tests, and 68 Historical Pattern Library tests.
 
 Implemented Python prototype/runtime:
 
@@ -25,6 +25,7 @@ Implemented and tested TypeScript foundations:
 - Research Lab append-only research evidence and review foundation
 - Strategy Versioning immutable lifecycle, comparison, activation, and rollback foundation
 - Development Validation Log append-only engineering-memory foundation
+- Historical Pattern Library append-only historical-event and reusable-pattern foundation
 - AI Router deterministic planning
 - AI Cost Governor enforcement
 - AI Provider Adapter interface and registry
@@ -38,7 +39,7 @@ Implemented and tested TypeScript foundations:
 
 The Python and TypeScript layers are not yet integrated into one runtime. The TypeScript AI infrastructure uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
-Local AI Cost Ledger, Unified Audit, Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary. Future production persistence and recovery requirements are specified in [Production Persistence and Recovery](docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md), with no production implementation added.
+Local AI Cost Ledger, Unified Audit, Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, Development Validation Log, and Historical Pattern Library NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary. Future production persistence and recovery requirements are specified in [Production Persistence and Recovery](docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md), with no production implementation added.
 
 ## Architecture Boundary
 
@@ -49,6 +50,8 @@ See [Architecture](docs/ARCHITECTURE.md), [Roadmap](docs/ROADMAP.md), and [Hando
 Day 5 contracts and boundaries are specified in [Prediction Log](docs/PREDICTION_LOG_SPECIFICATION.md), [Alpha Journal](docs/ALPHA_JOURNAL_SPECIFICATION.md), [Research Lab](docs/RESEARCH_LAB_SPECIFICATION.md), [Strategy Versioning](docs/STRATEGY_VERSIONING_SPECIFICATION.md), and [Development Validation Log](docs/DEVELOPMENT_VALIDATION_LOG_SPECIFICATION.md).
 
 Day 6 development-efficiency rules are specified in [Codex Development Standard](docs/CODEX_DEVELOPMENT_STANDARD.md), [Codex Task Template](docs/CODEX_TASK_TEMPLATE.md), and [Owner Review Template](docs/OWNER_REVIEW_TEMPLATE.md).
+
+Day 6 historical evidence boundaries are specified in [Historical Pattern Library](docs/HISTORICAL_PATTERN_LIBRARY_SPECIFICATION.md). Historical events and reusable patterns are separate records; facts, observations, interpretations, and inferences remain structurally distinct. No Historical Analogy Engine, Event Replay, historical-data ingestion, live market integration, or prediction behavior is implemented.
 
 ## Repository Structure
 
@@ -80,7 +83,7 @@ npm test
 npm run alpha:validate
 ```
 
-`npm test` runs the complete deterministic TypeScript suite, including the focused Strategy Versioning and Development Validation Log suites.
+`npm test` runs the complete deterministic TypeScript suite, including the focused Strategy Versioning, Development Validation Log, and Historical Pattern Library suites.
 
 `npm run alpha:validate` runs the local validation bundle: required-file checks, strict typecheck, aggregate tests, Markdown link/path/fence checks, provider/network/API/credential scans, Python-change scan, runtime-data tracking scan, merge-marker scan, `git diff --check`, and final working-tree warning. Component commands remain individually available.
 

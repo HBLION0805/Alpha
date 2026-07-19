@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - D6-T3 Historical Pattern Library Foundation
+
+### Separate Historical Events from Reusable Patterns
+
+- Decision: Historical Event records preserve what happened and under which regime; Historical Pattern records preserve reusable evidence-backed structures derived from one or more events.
+- Reason: Treating an event as a pattern would hide sample size, exceptions, regime dependence, and the difference between observation and generalization.
+- Consequence: Patterns require supporting finalized events and limitations, never claim guaranteed recurrence, and cannot become predictions or trading decisions.
+
+### Preserve Fact and Interpretation Boundaries
+
+- Decision: Store historical facts, quantitative observations, source claims, interpretations, inferences, hypotheses, disputed claims, counterevidence, and unknowns as distinct classifications.
+- Reason: Historical narratives are exposed to hindsight and causal overstatement; confidence alone cannot convert an inference into fact.
+- Consequence: Deterministic validation requires source evidence for factual claims and rejects structurally detectable inference-as-fact and guaranteed-recurrence language.
+
+### Append-Only Historical Authority
+
+- Decision: Finalized historical records are immutable; corrections, reviews, supersession, and archive state append new records without update, overwrite, or deletion.
+- Reason: Later research or reinterpretation must not rewrite what evidence and classification were authoritative at an earlier time.
+- Consequence: Repository sequence is authoritative, prior records remain visible, supersession rejects cycles, and local NDJSON remains development persistence only.
+
+### Future Analogy Boundary
+
+- Decision: Define only frozen queries and a provider-neutral input boundary for a future Historical Analogy Engine.
+- Reason: Stable evidence contracts are needed now, but comparison, replay, backtesting, prediction, and capital decisions require separate specifications and owner review.
+- Consequence: D6-T3 adds no analogy scoring, Event Replay, live data, provider/network integration, automated prediction, trading authority, or D6-T4 work.
+
 ## 2026-07-19 - D6-T2 Production Persistence and Recovery Architecture
 
 ### Architecture Before Production Storage

@@ -29,3 +29,5 @@ export * from "./StrategyVersion";
 export * from "./StrategyVersionValidation";
 export * from "./DevelopmentValidation";
 export * from "./DevelopmentValidationValidation";
+export * from "./HistoricalPattern";
+export * from "./HistoricalPatternValidation";

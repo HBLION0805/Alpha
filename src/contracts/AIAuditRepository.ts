@@ -26,6 +26,7 @@ export enum AIAuditRecordType {
   JournalEntry = "JOURNAL_ENTRY",
   StrategyVersion = "STRATEGY_VERSION",
   DevelopmentValidation = "DEVELOPMENT_VALIDATION",
+  HistoricalRecord = "HISTORICAL_RECORD",
   LearningReview = "LEARNING_REVIEW",
 }
 
@@ -46,6 +47,7 @@ export enum AIAuditSourceSubsystem {
   Journal = "JOURNAL",
   StrategyVersioning = "STRATEGY_VERSIONING",
   DevelopmentValidation = "DEVELOPMENT_VALIDATION",
+  HistoricalPatternLibrary = "HISTORICAL_PATTERN_LIBRARY",
   LearningLoop = "LEARNING_LOOP",
 }
 

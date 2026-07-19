@@ -23,3 +23,6 @@ export * from "./LocalNdjsonStrategyRepository";
 export * from "./DevelopmentValidationRepository";
 export * from "./InMemoryDevelopmentValidationRepository";
 export * from "./LocalNdjsonDevelopmentValidationRepository";
+export * from "./HistoricalPatternRepository";
+export * from "./InMemoryHistoricalPatternRepository";
+export * from "./LocalNdjsonHistoricalPatternRepository";

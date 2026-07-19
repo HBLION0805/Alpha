@@ -54,7 +54,7 @@ Alpha consists of the following major systems.
 Alpha currently has two unintegrated implementation surfaces:
 
 - The Python prototype/runtime contains local portfolio models, a terminal dashboard using sample data, deterministic risk calculations, configuration, and early stock/event-contract decision rules.
-- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, and the Day 5 Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log foundations.
+- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, and the Day 6 Historical Pattern Library foundation.
 
 The Python application does not invoke the TypeScript engines or AI Runtime Workflow. The TypeScript layer does not modify Python portfolio, risk, decision, or trade state. Future integration must preserve deterministic capital controls and the owner-controlled execution boundary.
 
@@ -414,6 +414,23 @@ Draft collection and analysis remain workspace state outside the authoritative r
 
 ---
 
+## Historical Pattern Library
+
+Responsible for:
+
+- Preserving immutable historical events with explicit date precision, categories, regimes, observation windows, asset reactions, source evidence, uncertainty, disputed interpretations, and frozen subsystem references
+- Preserving reusable historical patterns as records distinct from their supporting events, with qualifying conditions, causal-mechanism classification, counterexamples, regime dependencies, limitations, invalidation conditions, and minimum support counts
+- Keeping historical facts, quantitative observations, source claims, interpretations, inferences, hypotheses, disputed claims, counterevidence, and unknowns structurally distinct
+- Appending event/pattern amendments and reviews plus pattern supersession and archive history without update, overwrite, or deletion
+- Providing deterministic queries, related-record traversal, pagination, statistics, privacy-aware export, pure Unified Audit translation, and defensive in-memory/canonical local NDJSON repositories
+- Freezing stable record/version/status/summary references for Research Lab and future consumers without mutating their records
+
+Historical Pattern Library is historical-event and reusable-pattern truth. Research Lab remains current structured-research truth, Prediction Log remains prediction truth, Alpha Journal remains context/reflection truth, Strategy Versioning remains strategy truth, and Unified Audit remains normalized trace truth.
+
+The foundation does not fetch historical prices, ingest live data, calculate external market values, compare current events, predict outcomes, backtest, replay timelines, execute providers, or authorize capital decisions. The Historical Analogy Engine and Event Replay remain future systems. Local persistence is unencrypted single-owner, single-process development storage governed by the production boundary in `docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md`.
+
+---
+
 # Event Contract Framework
 
 Event contracts are considered a temporary capital-building tool.
@@ -503,6 +520,7 @@ Future systems may include:
 - Production-grade transactional AI workflow, reservation, ledger, and audit persistence or a reviewed outbox architecture
 - Durable provider-execution claims and provider-billing reconciliation
 - Production provider adapters and durable, crash-recoverable runtime workflow execution
+- Historical Analogy Engine using evidence-preserving Historical Pattern Library queries
 - Event Replay Database
 - Portfolio Analytics
 - Backtesting Engine

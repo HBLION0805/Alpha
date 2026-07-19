@@ -1,0 +1,87 @@
+import {
+  HistoricalEventStatus, HistoricalPatternStatus, HistoricalRecordKind, HistoricalRegimeState,
+  HistoricalSourceType, HistoricalTimeHorizon, throwIfInvalidHistorical,
+  validateHistoricalEvent, validateHistoricalEventAmendment, validateHistoricalEventHistory,
+  validateHistoricalEventReview, validateHistoricalPattern, validateHistoricalPatternAmendment,
+  validateHistoricalPatternHistory, validateHistoricalPatternReview, validateHistoricalPatternSupersession,
+  type HistoricalAnalogyInputBoundary, type HistoricalAppendResult, type HistoricalEvent,
+  type HistoricalEventAmendment, type HistoricalEventHistory, type HistoricalEventRecordHistory,
+  type HistoricalEventReview, type HistoricalFrozenReference, type HistoricalPattern,
+  type HistoricalPatternAmendment, type HistoricalPatternFilter, type HistoricalPatternHistory,
+  type HistoricalPatternHistoryEntry, type HistoricalPatternQuery, type HistoricalPatternRepository,
+  type HistoricalPatternReview, type HistoricalPatternStatistics, type HistoricalPatternSummary,
+  type HistoricalPatternSupersession,
+} from "../../contracts";
+
+export type HistoricalEventFinalization = Omit<HistoricalEvent, "status" | "history">;
+export type HistoricalPatternFinalization = Omit<HistoricalPattern, "status" | "history">;
+export interface HistoricalPatternClock { now(): string; }
+export class SystemHistoricalPatternClock implements HistoricalPatternClock { now(): string { return new Date().toISOString(); } }
+
+const horizonOrder: Readonly<Record<HistoricalTimeHorizon, number>> = {
+  [HistoricalTimeHorizon.PreEvent]: 0, [HistoricalTimeHorizon.EventDay]: 1, [HistoricalTimeHorizon.FirstTradingDay]: 2,
+  [HistoricalTimeHorizon.ThreeTradingDays]: 3, [HistoricalTimeHorizon.OneWeek]: 4, [HistoricalTimeHorizon.OneMonth]: 5,
+  [HistoricalTimeHorizon.ThreeMonths]: 6, [HistoricalTimeHorizon.SixMonths]: 7, [HistoricalTimeHorizon.OneYear]: 8,
+  [HistoricalTimeHorizon.MultiYear]: 9, [HistoricalTimeHorizon.Custom]: 10,
+};
+export function sortHistoricalObservationWindows<T extends { readonly horizon: HistoricalTimeHorizon; readonly windowId: string }>(values: ReadonlyArray<T>): ReadonlyArray<T> { return values.map((value) => structuredClone(value)).sort((a, b) => horizonOrder[a.horizon] - horizonOrder[b.horizon] || a.windowId.localeCompare(b.windowId)); }
+
+function requiredEvent(repository: HistoricalPatternRepository, id: string): HistoricalEvent { const value = repository.getEventById(id); if (value === undefined) throw new Error("RECORD_NOT_FOUND: historical event does not exist."); return value; }
+function requiredPattern(repository: HistoricalPatternRepository, id: string): HistoricalPattern { const value = repository.getPatternById(id); if (value === undefined) throw new Error("RECORD_NOT_FOUND: historical pattern does not exist."); return value; }
+
+export class HistoricalPatternLibrary {
+  constructor(private readonly repository: HistoricalPatternRepository, private readonly clock: HistoricalPatternClock = new SystemHistoricalPatternClock()) {}
+
+  finalizeEvent(input: HistoricalEventFinalization): HistoricalAppendResult<HistoricalEvent> {
+    const now = this.clock.now(); const history: HistoricalEventHistory[] = [
+      { historyId: `${input.eventId}:history:1`, eventId: input.eventId, lifecycleSequence: 1, fromStatus: HistoricalEventStatus.Proposed, toStatus: HistoricalEventStatus.Validating, occurredAt: now, reason: "Historical event entered deterministic validation." },
+      { historyId: `${input.eventId}:history:2`, eventId: input.eventId, lifecycleSequence: 2, fromStatus: HistoricalEventStatus.Validating, toStatus: HistoricalEventStatus.Finalized, occurredAt: now, reason: "Historical event finalized as authoritative evidence." },
+    ]; const record: HistoricalEvent = { ...structuredClone(input), status: HistoricalEventStatus.Finalized, history }; throwIfInvalidHistorical(validateHistoricalEvent(record)); return this.repository.appendEvent(record, now);
+  }
+  finalizePattern(input: HistoricalPatternFinalization): HistoricalAppendResult<HistoricalPattern> {
+    const now = this.clock.now(); const history: HistoricalPatternHistoryEntry[] = [
+      { historyId: `${input.patternId}:history:1`, patternId: input.patternId, lifecycleSequence: 1, fromStatus: HistoricalPatternStatus.Proposed, toStatus: HistoricalPatternStatus.Validating, occurredAt: now, reason: "Historical pattern entered deterministic validation." },
+      { historyId: `${input.patternId}:history:2`, patternId: input.patternId, lifecycleSequence: 2, fromStatus: HistoricalPatternStatus.Validating, toStatus: HistoricalPatternStatus.Finalized, occurredAt: now, reason: "Historical pattern finalized as reusable evidence, not a prediction." },
+    ]; const record: HistoricalPattern = { ...structuredClone(input), status: HistoricalPatternStatus.Finalized, history }; throwIfInvalidHistorical(validateHistoricalPattern(record)); return this.repository.appendPattern(record, now);
+  }
+  amendEvent(value: HistoricalEventAmendment): HistoricalAppendResult<HistoricalEventAmendment> { const original = requiredEvent(this.repository, value.eventId); throwIfInvalidHistorical(validateHistoricalEventAmendment(value, original)); return this.repository.appendEventAmendment(structuredClone(value), this.clock.now()); }
+  amendPattern(value: HistoricalPatternAmendment): HistoricalAppendResult<HistoricalPatternAmendment> { const original = requiredPattern(this.repository, value.patternId); throwIfInvalidHistorical(validateHistoricalPatternAmendment(value, original)); return this.repository.appendPatternAmendment(structuredClone(value), this.clock.now()); }
+  reviewEvent(value: HistoricalEventReview): HistoricalAppendResult<HistoricalEventReview> { const original = requiredEvent(this.repository, value.eventId); throwIfInvalidHistorical(validateHistoricalEventReview(value, original)); const history = this.eventHistory(original, HistoricalEventStatus.Reviewed, value.createdAt, "Historical event review appended.", value.reviewId); throwIfInvalidHistorical(validateHistoricalEventHistory(history, original)); return this.repository.appendEventReview(structuredClone(value), history, this.clock.now()); }
+  reviewPattern(value: HistoricalPatternReview): HistoricalAppendResult<HistoricalPatternReview> { const original = requiredPattern(this.repository, value.patternId); throwIfInvalidHistorical(validateHistoricalPatternReview(value, original)); const history = this.patternHistory(original, HistoricalPatternStatus.Reviewed, value.createdAt, "Historical pattern review appended.", value.reviewId); throwIfInvalidHistorical(validateHistoricalPatternHistory(history, original)); return this.repository.appendPatternReview(structuredClone(value), history, this.clock.now()); }
+  supersedePattern(value: HistoricalPatternSupersession): HistoricalAppendResult<HistoricalPatternSupersession> { const prior = requiredPattern(this.repository, value.priorPatternId); const successor = requiredPattern(this.repository, value.successorPatternId); throwIfInvalidHistorical(validateHistoricalPatternSupersession(value, prior, successor)); const history = this.patternHistory(prior, HistoricalPatternStatus.Superseded, value.createdAt, value.reason, value.supersessionId); throwIfInvalidHistorical(validateHistoricalPatternHistory(history, prior)); return this.repository.appendSupersession(structuredClone(value), history, this.clock.now()); }
+  archiveEvent(id: string, occurredAt: string, reason: string): HistoricalAppendResult<HistoricalEventHistory> { const record = requiredEvent(this.repository, id); const history = this.eventHistory(record, HistoricalEventStatus.Archived, occurredAt, reason); throwIfInvalidHistorical(validateHistoricalEventHistory(history, record)); return this.repository.appendEventArchive(history, this.clock.now()); }
+  archivePattern(id: string, occurredAt: string, reason: string): HistoricalAppendResult<HistoricalPatternHistoryEntry> { const record = requiredPattern(this.repository, id); const history = this.patternHistory(record, HistoricalPatternStatus.Archived, occurredAt, reason); throwIfInvalidHistorical(validateHistoricalPatternHistory(history, record)); return this.repository.appendPatternArchive(history, this.clock.now()); }
+  getEvent(id: string): HistoricalEvent | undefined { return this.repository.getEventById(id); }
+  getPattern(id: string): HistoricalPattern | undefined { return this.repository.getPatternById(id); }
+  eventHistoryById(id: string): HistoricalEventRecordHistory | undefined { return this.repository.getEventHistory(id); }
+  patternHistoryById(id: string): HistoricalPatternHistory | undefined { return this.repository.getPatternHistory(id); }
+  queryEvents(query: HistoricalPatternQuery = {}): ReadonlyArray<HistoricalEvent> { return this.repository.queryEvents(query); }
+  queryPatterns(query: HistoricalPatternQuery = {}): ReadonlyArray<HistoricalPattern> { return this.repository.queryPatterns(query); }
+  relatedEvents(id: string): ReadonlyArray<HistoricalEvent> { return this.repository.listRelatedEvents(id); }
+  relatedPatterns(id: string): ReadonlyArray<HistoricalPattern> { return this.repository.listRelatedPatterns(id); }
+
+  summary(kind: HistoricalRecordKind, id: string): HistoricalPatternSummary | undefined {
+    if (kind === HistoricalRecordKind.Event) { const history = this.repository.getEventHistory(id); if (history === undefined) return undefined; const record = history.record; return { recordKind: HistoricalRecordKind.Event, recordId: record.eventId, recordVersion: record.recordVersion, title: record.title, status: record.status, categories: structuredClone(record.eventCategories), reviewed: history.reviews.length > 0, amendmentCount: history.amendments.length }; }
+    const history = this.repository.getPatternHistory(id); if (history === undefined) return undefined; const record = history.record; return { recordKind: HistoricalRecordKind.Pattern, recordId: record.patternId, recordVersion: record.recordVersion, title: record.title, status: record.status, patternType: record.patternType, supportingEventCount: record.sourceEventIds.length, reviewed: history.reviews.length > 0, amendmentCount: history.amendments.length };
+  }
+
+  freezeReference(kind: HistoricalRecordKind, id: string): HistoricalFrozenReference {
+    if (kind === HistoricalRecordKind.Event) { const record = requiredEvent(this.repository, id); if (![HistoricalEventStatus.Finalized, HistoricalEventStatus.Reviewed].includes(record.status)) throw new Error("INVALID_LIFECYCLE: only current finalized historical events can be frozen."); return { recordKind: kind, recordId: record.eventId, recordVersion: record.recordVersion, frozenStatus: record.status as HistoricalEventStatus.Finalized | HistoricalEventStatus.Reviewed, summary: record.factualDescription, sourceEventCount: 1, limitationSummaries: structuredClone(record.uncertainties), regimeSummary: record.marketRegime.summary, assetReactionIds: record.assetReactions.map((value) => value.reactionId) }; }
+    const record = requiredPattern(this.repository, id); if (![HistoricalPatternStatus.Finalized, HistoricalPatternStatus.Reviewed].includes(record.status)) throw new Error("INVALID_LIFECYCLE: only current finalized historical patterns can be frozen."); return { recordKind: kind, recordId: record.patternId, recordVersion: record.recordVersion, frozenStatus: record.status as HistoricalPatternStatus.Finalized | HistoricalPatternStatus.Reviewed, summary: record.description, sourceEventCount: record.sourceEventIds.length, limitationSummaries: record.limitations.map((value) => value.statement), assetReactionIds: record.typicalAssetReactions.map((value) => value.reactionId) };
+  }
+
+  prepareAnalogyInput(value: HistoricalAnalogyInputBoundary): HistoricalAnalogyInputBoundary { if (value.candidateEventIds.some((id) => this.repository.getEventById(id) === undefined) || value.candidatePatternIds.some((id) => this.repository.getPatternById(id) === undefined)) throw new Error("INVALID_REFERENCE: analogy candidates must exist."); if (value.comparisonDimensions.length === 0 || value.similarityWeightProfileReference.trim().length === 0 || value.evidenceRequirements.length === 0) throw new Error("INVALID_RECORD: analogy boundary requires dimensions, weight profile, and evidence requirements."); return structuredClone(value); }
+
+  statistics(filter?: HistoricalPatternFilter): HistoricalPatternStatistics {
+    const events = this.repository.queryEvents(filter === undefined ? {} : { filter }); const patterns = this.repository.queryPatterns(filter === undefined ? {} : { filter });
+    const eventsByCategory: HistoricalPatternStatistics["eventsByCategory"] extends infer T ? { -readonly [K in keyof T]: T[K] } : never = {}; const patternsByType: Record<string, number> = {}; const eventsByDecade: Record<string, number> = {}; const eventsByGeography: Record<string, number> = {}; const recordsByStatus: Record<string, number> = {}; const eventsByRegime: Record<string, number> = {}; const eventsByAssetClass: Record<string, number> = {}; const sourcesByType: Partial<Record<HistoricalSourceType, number>> = {}; const patternsBySupportingEventCount: Record<string, number> = {};
+    let reviewedRecordCount = 0; let missingDataCount = 0; let disputedClaimCount = 0; let evidenceCount = 0; let researchLinkedRecordCount = 0; let strategyLinkedRecordCount = 0;
+    for (const event of events) { for (const category of event.eventCategories) eventsByCategory[category] = (eventsByCategory[category] ?? 0) + 1; const year = event.start.value?.slice(0, 4); if (year !== undefined && /^\d{4}$/.test(year)) { const decade = `${year.slice(0, 3)}0s`; eventsByDecade[decade] = (eventsByDecade[decade] ?? 0) + 1; } for (const place of event.geography) eventsByGeography[place] = (eventsByGeography[place] ?? 0) + 1; for (const dimension of event.marketRegime.dimensions) { const key = `${dimension.dimension}:${dimension.state === HistoricalRegimeState.Known ? dimension.value : dimension.state}`; eventsByRegime[key] = (eventsByRegime[key] ?? 0) + 1; } for (const assetClass of event.affectedAssetClasses) eventsByAssetClass[assetClass] = (eventsByAssetClass[assetClass] ?? 0) + 1; for (const source of event.sources) sourcesByType[source.sourceType] = (sourcesByType[source.sourceType] ?? 0) + 1; recordsByStatus[event.status] = (recordsByStatus[event.status] ?? 0) + 1; if (this.repository.getEventHistory(event.eventId)?.reviews.length) reviewedRecordCount += 1; missingDataCount += event.assetReactions.filter((value) => value.missingDataState !== "COMPLETE").length; disputedClaimCount += event.disputedInterpretations.length + event.evidence.filter((value) => value.classification === "DISPUTED_CLAIM").length; evidenceCount += event.evidence.length; if (event.references.research.length > 0) researchLinkedRecordCount += 1; if (event.references.strategies.length > 0) strategyLinkedRecordCount += 1; }
+    for (const pattern of patterns) { patternsByType[pattern.patternType] = (patternsByType[pattern.patternType] ?? 0) + 1; const support = String(pattern.sourceEventIds.length); patternsBySupportingEventCount[support] = (patternsBySupportingEventCount[support] ?? 0) + 1; recordsByStatus[pattern.status] = (recordsByStatus[pattern.status] ?? 0) + 1; if (this.repository.getPatternHistory(pattern.patternId)?.reviews.length) reviewedRecordCount += 1; missingDataCount += pattern.typicalAssetReactions.filter((value) => value.missingDataState !== "COMPLETE").length; disputedClaimCount += pattern.evidence.filter((value) => value.classification === "DISPUTED_CLAIM").length; evidenceCount += pattern.evidence.length; if (pattern.references.research.length > 0) researchLinkedRecordCount += 1; if (pattern.references.strategies.length > 0) strategyLinkedRecordCount += 1; }
+    const all = [...events, ...patterns]; const supersededRecordCount = all.filter((value) => value.status === "SUPERSEDED").length; const currentRecordCount = all.filter((value) => !["SUPERSEDED", "ARCHIVED"].includes(value.status)).length;
+    return { generatedAt: this.clock.now(), eventCount: events.length, patternCount: patterns.length, eventsByCategory, patternsByType, eventsByDecade, eventsByGeography, recordsByStatus, eventsByRegime, eventsByAssetClass, sourcesByType, patternsBySupportingEventCount, currentRecordCount, supersededRecordCount, reviewedRecordCount, unreviewedRecordCount: all.length - reviewedRecordCount, missingDataCount, disputedClaimCount, evidenceCount, researchLinkedRecordCount, strategyLinkedRecordCount };
+  }
+
+  private eventHistory(record: HistoricalEvent, toStatus: HistoricalEventStatus, occurredAt: string, reason: string, referenceId?: string): HistoricalEventHistory { const base = { historyId: `${record.eventId}:history:${String(record.history.length + 1)}`, eventId: record.eventId, lifecycleSequence: record.history.length + 1, fromStatus: record.status, toStatus, occurredAt, reason }; return referenceId === undefined ? base : { ...base, referenceId }; }
+  private patternHistory(record: HistoricalPattern, toStatus: HistoricalPatternStatus, occurredAt: string, reason: string, referenceId?: string): HistoricalPatternHistoryEntry { const base = { historyId: `${record.patternId}:history:${String(record.history.length + 1)}`, patternId: record.patternId, lifecycleSequence: record.history.length + 1, fromStatus: record.status, toStatus, occurredAt, reason }; return referenceId === undefined ? base : { ...base, referenceId }; }
+}
