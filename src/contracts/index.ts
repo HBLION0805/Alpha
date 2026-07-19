@@ -27,3 +27,5 @@ export * from "./ResearchValidation";
 export * from "./TradeRecord";
 export * from "./StrategyVersion";
 export * from "./StrategyVersionValidation";
+export * from "./DevelopmentValidation";
+export * from "./DevelopmentValidationValidation";

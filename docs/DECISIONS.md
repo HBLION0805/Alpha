@@ -1,5 +1,35 @@
 # Alpha Architecture Decisions
 
+## 2026-07-18 - Development Validation Log Foundation
+
+### Structured Engineering Memory, Not a Git Replacement
+
+- Decision: Development Validation Log is the append-only authority for structured task, scope, validation, warning, defect, risk, owner-decision, Git-reference, handoff, lesson, and follow-up evidence.
+- Context or problem: Git proves code history but does not preserve the complete requested goal, validation meaning, environment warnings, accepted risks, approval conditions, and follow-up context.
+- Rationale: One immutable sequence-ordered record per engineering event preserves historical intent without copying raw diffs or logs.
+- Consequences: Git remains code/version-history truth, Unified Audit remains trace truth, HANDOFF/CHANGELOG remain summaries, Alpha Journal remains reflection truth, and issue tracking remains future external work.
+
+### Deterministic Lifecycle and Owner Authority
+
+- Decision: Enforce ordered task evidence from PLANNED through implementation, validation, owner review, approval, commit, push, handoff, and close; require owner identity for review/approval/rejection; reject AI owner impersonation.
+- Context or problem: Recording approval, commit, or push out of order would make workflow evidence misleading and weaken the existing owner-controlled Git process.
+- Rationale: Explicit status transitions and category-specific requirements make every milestone independently reviewable.
+- Consequences: Blocking failures prevent approval unless an immutable owner exception names the evidence, reason, and follow-up. Environment warnings remain distinct from code failures.
+
+### Git Evidence Is Supplied, Never Executed
+
+- Decision: Store structured branch, base commit, resulting commit, message, remote, push, synchronization, and working-tree evidence supplied by the workflow; never invoke Git from the subsystem.
+- Context or problem: A record repository that performs Git operations would mix evidence ownership with side effects and duplicate Git authority.
+- Rationale: Pure reference validation preserves a narrow deterministic boundary and supports local tests without repository mutation.
+- Consequences: The caller remains responsible for verifying external Git facts. The log detects internal conflicts but does not fetch, commit, push, tag, or repair history.
+
+### Local Persistence and Day 6 Boundary
+
+- Decision: Provide defensive in-memory and canonical append-only local NDJSON repositories only; defer report-convention and automation integration to a separately reviewed Day 6 task.
+- Context or problem: Alpha needs a structured record target before defining a future Codex development standard, but must not begin that standard implicitly.
+- Rationale: Existing local event-store patterns prove identity, sequence, replay, privacy, export, corruption, and path behavior at low cost.
+- Consequences: Files are unencrypted, single-process development storage without cross-system transactions. No `CODEX_DEVELOPMENT_STANDARD`, provider/network integration, business-logic mutation, or future-task creation is included.
+
 ## 2026-07-18 - Strategy Versioning Foundation
 
 ### Immutable Authority and Semantic Lineage

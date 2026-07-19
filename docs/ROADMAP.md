@@ -50,13 +50,14 @@ Completed Architecture:
 - Alpha Journal append-only evidence, amendment, review, privacy, export, and audit foundation
 - Research Lab append-only evidence, lifecycle, amendment, review, supersession, privacy, export, and audit foundation
 - Strategy Versioning immutable definition/version lineage, validation, owner approval, activation, comparison, rollback, performance, export, and audit foundation
+- Development Validation Log append-only task lifecycle, validation, owner review, Git evidence, defect/risk/follow-up, export, and audit foundation
 
 Next Priority:
 
-1. Owner review of Strategy Versioning v1
-2. Development Validation Log formalization
-3. Business evidence production persistence and transactional hardening after requirements review
-4. Historical Pattern and Analogy requirements review
+1. Owner review of Development Validation Log v1 and Day 5 milestone closeout
+2. Business evidence production persistence and transactional hardening after requirements review
+3. Historical Pattern and Analogy requirements review
+4. Separately specify Day 6 development-standard work; it has not started
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 
@@ -65,6 +66,8 @@ The Alpha Journal local foundation now preserves deterministic point-in-time con
 The Research Lab local foundation now preserves structured evidence, sources, assumptions, conclusions, reviews, and supersession without replacing Prediction Log, Alpha Journal, or Unified Audit.
 
 The Strategy Versioning local foundation now preserves immutable strategy lineage, explicit change evidence, deterministic comparisons, owner-controlled lifecycle authority, active-version trade-plan freezing, and rollback through a new version. It does not execute trades or mutate other business systems.
+
+The Development Validation Log local foundation now preserves detailed engineering-task, validation, review, Git-reference, defect, risk, warning, lesson, and follow-up evidence without replacing Git, Unified Audit, HANDOFF, CHANGELOG, Alpha Journal, or issue tracking. Day 5 becomes complete only after owner approval and push of D5-T5.
 
 ---
 

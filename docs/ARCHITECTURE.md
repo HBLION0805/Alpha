@@ -244,6 +244,22 @@ The Audit Repository is an evidence index, not a business or accounting engine. 
 
 ---
 
+## Development Validation Log
+
+Responsible for:
+
+- Preserving immutable engineering-task records for requested goals, approved scope, inspections, implementation, structured tests, validations, warnings, defects, risks, assumptions, owner review, approval/rejection, Git milestones, handoff, lessons, and follow-ups
+- Enforcing deterministic `PLANNED -> IN_PROGRESS -> IMPLEMENTED -> VALIDATED -> OWNER_REVIEWED -> APPROVED -> COMMITTED -> PUSHED -> HANDED_OFF -> CLOSED` evidence ordering with terminal rejected/blocked/cancelled states
+- Keeping environment warnings distinct from code failures and requiring explicit owner exceptions for blocking failed validation
+- Recording verified branch, base/commit/push/synchronization evidence supplied by a caller without executing or replacing Git
+- Providing sequence-ordered queries, task histories, summaries, statistics, privacy-aware export, pure Unified Audit translation, and defensive in-memory/canonical local NDJSON repositories
+
+Git remains the source of truth for code and version history. Unified Audit remains normalized cross-system trace truth. HANDOFF and CHANGELOG remain project-state and released-capability summaries. Alpha Journal remains context/reflection truth. Development Validation Log owns detailed structured engineering-memory evidence only; it stores no full diffs, huge raw logs, or secrets.
+
+The repository exposes no update, overwrite, delete, Git execution, issue creation, provider, network, live-market, broker, capital-state, or Python integration. Local persistence is unencrypted single-owner, single-process development storage. The future `CODEX_DEVELOPMENT_STANDARD` may define how task reports populate these contracts, but no Day 6 standard or automation is implemented.
+
+---
+
 ## AI Provider Adapter Boundary
 
 Responsible for:

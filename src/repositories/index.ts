@@ -20,3 +20,6 @@ export * from "./TradeRepository";
 export * from "./StrategyVersionRepository";
 export * from "./InMemoryStrategyRepository";
 export * from "./LocalNdjsonStrategyRepository";
+export * from "./DevelopmentValidationRepository";
+export * from "./InMemoryDevelopmentValidationRepository";
+export * from "./LocalNdjsonDevelopmentValidationRepository";
