@@ -1,4 +1,6 @@
 export * from "./AICostGovernor";
+export * from "./AlphaJournal";
+export * from "./AlphaJournalValidation";
 export * from "./AICostGovernorValidation";
 export * from "./AICostLedger";
 export * from "./AICostLedgerValidation";

@@ -2,6 +2,16 @@
 
 ## 2026-07-18 - Day 5
 
+### Alpha Journal Foundation
+
+- Added the evidence-first Alpha Journal specification and provider-neutral contracts.
+- Added deterministic content-derived entry identity, authoritative finalization, append-only amendments, reviews, lessons, lifecycle history, and archive behavior.
+- Added typed resolved/unresolved evidence references and immutable point-in-time context snapshots.
+- Added privacy-aware deterministic queries, pagination, summaries, statistics, JSON/NDJSON export, and pure Unified Audit translation.
+- Added defensive in-memory and canonical local NDJSON repositories with monotonic sequence, idempotent replay, conflict rejection, strict reload, and traversal-safe storage.
+- Added 51 focused Alpha Journal tests and aggregate test exposure.
+- Preserved Prediction Log as prediction truth and added no Research Lab, Strategy Versioning, live market, provider, network, credential, broker, execution, or Python business-logic implementation.
+
 ### Prediction Log Foundation
 
 - Began Alpha's TypeScript business layer with the authoritative Prediction Log foundation.

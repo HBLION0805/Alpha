@@ -329,10 +329,14 @@ Responsible for:
 
 Responsible for:
 
-- Daily summaries
-- Lessons learned
-- Strategy reviews
-- Development notes
+- Preserving immutable point-in-time observations, rationale, assumptions, uncertainty, actions, and expected outcomes
+- Appending finalized authoritative entries, amendments, reviews, lessons, and archive history without overwrite or deletion
+- Linking Prediction, Research, Decision, Trade, Strategy, Portfolio, Audit, Journal, and Development Validation evidence without taking ownership
+- Preserving immutable opportunity, risk, prediction, configuration, strategy, policy, Router/model, market, portfolio, and owner-decision context when available
+- Enforcing privacy-aware deterministic query, statistics, summary, export, and Unified Audit translation boundaries
+- Providing defensive in-memory and canonical local NDJSON repositories
+
+Drafts are workspace state outside the authoritative repository. Prediction Log remains the prediction source of truth; Journal records explanation, context, reflection, and lessons and cannot mutate predictions or strategies. The local repository is single-owner, single-process development persistence with no encryption, multi-writer safety, or production transaction guarantee.
 
 ---
 

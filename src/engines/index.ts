@@ -1,4 +1,5 @@
 export * from "./ai-cost-governor";
+export * from "./alpha-journal";
 export * from "./ai-cost-ledger";
 export * from "./ai-audit-repository";
 export * from "./ai-execution-coordinator";

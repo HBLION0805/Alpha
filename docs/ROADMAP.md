@@ -47,15 +47,18 @@ Completed Architecture:
 - Unified Audit Repository append-only evidence and traceability foundation
 - AI Runtime Workflow deterministic orchestration foundation
 - Prediction Log append-only repository and deterministic review lifecycle foundation
+- Alpha Journal append-only evidence, amendment, review, privacy, export, and audit foundation
 
 Next Priority:
 
-1. Alpha Journal foundation
-2. Research Lab v1 specification and minimum deterministic data model
-3. Strategy Versioning foundation
-4. Prediction Log production persistence and transactional hardening after requirements review
+1. Research Lab v1 specification and minimum deterministic data model
+2. Strategy Versioning foundation
+3. Development Validation Log formalization
+4. Business evidence production persistence and transactional hardening after requirements review
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
+
+The Alpha Journal local foundation now preserves deterministic point-in-time context, rationale, reflection, amendments, and lessons without replacing Prediction Log or other source records.
 
 ---
 

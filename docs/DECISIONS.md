@@ -1,5 +1,28 @@
 # Alpha Architecture Decisions
 
+## 2026-07-18 - Alpha Journal Foundation
+
+### Authoritative Evidence, Not Mutable Notes
+
+- Decision: Store only finalized Journal entries in the authoritative repository; keep draft workspace behavior outside the append-only port.
+- Context or problem: Mutable draft and finalized records in one repository would blur when a note becomes evidence and permit hindsight overwrite.
+- Rationale: Finalization as the first event produces a clear evidence boundary while append-only reviews, amendments, and archive history preserve later knowledge honestly.
+- Consequences: There is no update, overwrite, or delete interface. Reviews and amendments never replace original text or context.
+
+### Typed Evidence Without Ownership Transfer
+
+- Decision: Link Prediction, Research, Decision, Trade, Strategy, Portfolio, Audit, Journal, and Development Validation records through stable typed resolved/unresolved references.
+- Context or problem: Copying external records into Journal would duplicate sources of truth, while untyped IDs would weaken traceability.
+- Rationale: Typed references preserve subsystem ownership and support future systems that do not exist yet.
+- Consequences: Prediction Log remains prediction truth. Journal cannot mutate predictions, strategies, trades, decisions, or portfolio state.
+
+### Privacy-Aware Local Event Store
+
+- Decision: Use deterministic in-memory and canonical local NDJSON event repositories with non-public defaults and restricted export.
+- Context or problem: Personal evidence can be sensitive and needs inspectable durability before a production database is selected.
+- Rationale: Existing Alpha event-store conventions provide monotonic ordering, idempotency, defensive copies, strict reload, and low operating cost without new dependencies.
+- Consequences: `LOCAL_ONLY` cannot be externally exported and sensitive export may require authorization. Local files remain unencrypted, single-process, and non-production.
+
 ## 2026-07-18 - Prediction Log Repository and Review Lifecycle
 
 ### Prediction as Immutable Evidence

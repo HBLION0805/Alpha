@@ -1,4 +1,7 @@
 export * from "./DecisionRepository";
+export * from "./AlphaJournalRepository";
+export * from "./InMemoryAlphaJournalRepository";
+export * from "./LocalNdjsonAlphaJournalRepository";
 export * from "./InMemoryAIReservationRepository";
 export * from "./InMemoryAIRuntimeWorkflowRepository";
 export * from "./InMemoryAICostLedgerRepository";
