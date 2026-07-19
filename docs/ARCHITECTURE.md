@@ -344,10 +344,18 @@ Drafts are workspace state outside the authoritative repository. Prediction Log 
 
 Responsible for:
 
-- Preserving strategy identity, lineage, and status
-- Reviewing proposed strategy changes
-- Comparing strategy versions
-- Supporting owner-approved activation and rollback without rewriting history
+- Preserving immutable strategy definitions, version snapshots, semantic lineage, status history, changes, validation, approval, activation, suspension, retirement, and performance evidence
+- Enforcing the authoritative `PROPOSED -> VALIDATING -> APPROVED -> ACTIVE -> SUSPENDED -> RETIRED -> ARCHIVED` lifecycle, with explicit owner rejection and no reverse transitions
+- Classifying changes as PATCH, MINOR, or MAJOR and validating the exact semantic-version increment against the declared change set
+- Linking frozen Research, Prediction, Journal, Decision, Risk, Trade, Audit, Backtest, Validation, and Event Replay references without taking ownership of those records
+- Comparing two versions deterministically across behavior, parameters, constraints, risk, evidence, validation, and performance
+- Freezing the exact active version, ruleset fingerprint, parameters, risk-policy reference, decision timestamp, and owner approval into a provider-neutral trade-plan contract
+- Supporting rollback only by proposing, validating, approving, and activating a new version that explicitly references the trusted and failed versions
+- Providing defensive in-memory and canonical append-only local NDJSON repositories, privacy-aware export, statistics, and pure Unified Audit translation
+
+Draft editing remains workspace state outside the authoritative repository. Only the owner may approve or reject a version, activation must be an owner action backed by matching owner approval, and AI can propose or analyze but cannot approve or activate. Suspension, retirement, and rollback use explicit policy/evidence records rather than hidden state changes. One active version per strategy definition is enforced by default. Suspension blocks new plan snapshots but does not rewrite an already frozen snapshot, and retirement never deletes historical evidence.
+
+Strategy Versioning owns strategy truth only. Prediction Log owns prediction truth, Research Lab owns research truth, Alpha Journal owns context and reflection truth, and Unified Audit owns normalized trace truth. This foundation defines a trade-plan freeze contract but contains no trade repository, execution path, broker integration, live market source, provider SDK, network call, credential handling, or Python runtime integration. Local persistence is single-owner, single-process development storage.
 
 ---
 

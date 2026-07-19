@@ -17,3 +17,6 @@ export * from "./ResearchRepository";
 export * from "./InMemoryResearchRepository";
 export * from "./LocalNdjsonResearchRepository";
 export * from "./TradeRepository";
+export * from "./StrategyVersionRepository";
+export * from "./InMemoryStrategyRepository";
+export * from "./LocalNdjsonStrategyRepository";

@@ -49,19 +49,22 @@ Completed Architecture:
 - Prediction Log append-only repository and deterministic review lifecycle foundation
 - Alpha Journal append-only evidence, amendment, review, privacy, export, and audit foundation
 - Research Lab append-only evidence, lifecycle, amendment, review, supersession, privacy, export, and audit foundation
+- Strategy Versioning immutable definition/version lineage, validation, owner approval, activation, comparison, rollback, performance, export, and audit foundation
 
 Next Priority:
 
-1. Owner review of Research Lab v1
-2. Strategy Versioning foundation
-3. Development Validation Log formalization
-4. Business evidence production persistence and transactional hardening after requirements review
+1. Owner review of Strategy Versioning v1
+2. Development Validation Log formalization
+3. Business evidence production persistence and transactional hardening after requirements review
+4. Historical Pattern and Analogy requirements review
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 
 The Alpha Journal local foundation now preserves deterministic point-in-time context, rationale, reflection, amendments, and lessons without replacing Prediction Log or other source records.
 
 The Research Lab local foundation now preserves structured evidence, sources, assumptions, conclusions, reviews, and supersession without replacing Prediction Log, Alpha Journal, or Unified Audit.
+
+The Strategy Versioning local foundation now preserves immutable strategy lineage, explicit change evidence, deterministic comparisons, owner-controlled lifecycle authority, active-version trade-plan freezing, and rollback through a new version. It does not execute trades or mutate other business systems.
 
 ---
 
@@ -86,7 +89,7 @@ Planned Features:
 
 - Trade Outcome Log implementation
 - Learning Loop implementation
-- Strategy Versioning implementation
+- Strategy Versioning product integration and production hardening
 - Performance Analysis
 - Research Lab product integration and production hardening
 

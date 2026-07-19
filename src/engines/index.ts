@@ -11,3 +11,4 @@ export * from "./opportunity";
 export * from "./prediction";
 export * from "./prediction-log";
 export * from "./research-lab";
+export * from "./strategy-versioning";

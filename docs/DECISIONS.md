@@ -1,5 +1,35 @@
 # Alpha Architecture Decisions
 
+## 2026-07-18 - Strategy Versioning Foundation
+
+### Immutable Authority and Semantic Lineage
+
+- Decision: Strategy Versioning is the sole authority for immutable strategy definitions, version snapshots, semantic lineage, lifecycle history, and explicit changes.
+- Context or problem: Mutable strategy settings cannot prove which rules, parameters, assumptions, evidence, or risk boundaries governed a historical decision.
+- Rationale: Content-derived identity, direct-parent lineage, exact PATCH/MINOR/MAJOR enforcement, and append-only events prevent hindsight rewriting.
+- Consequences: Draft editing remains outside the authoritative repository. Published versions are never updated or deleted, and material changes require evidence.
+
+### Owner-Controlled Lifecycle and Active-Version Invariant
+
+- Decision: Authoritative versions begin PROPOSED; validation and approval are separate; only the owner can approve or reject; activation requires passed validation and valid owner approval; at most one version per definition is ACTIVE.
+- Context or problem: AI or subsystem self-approval would collapse recommendation and authority, while multiple active versions would make decision provenance ambiguous.
+- Rationale: Explicit lifecycle gates preserve human control and deterministic eligibility.
+- Consequences: AI may propose or analyze but cannot approve or activate. Suspension blocks new plan freezes, rejection remains visible, and retirement preserves history.
+
+### Trade-Plan Freeze and Rollback Policy
+
+- Decision: A new trade plan may reference only an ACTIVE strategy and freezes its exact version, ruleset fingerprint, parameters, risk-policy reference, decision timestamp, and owner approval. Rollback always creates a new version.
+- Context or problem: Referencing a mutable or merely latest strategy would let later changes silently alter historical intent.
+- Rationale: Frozen references preserve the rule set used at decision time; a new rollback version preserves both failure and recovery evidence.
+- Consequences: The foundation defines a contract only. It adds no trade repository, broker, execution, or automatic restoration path.
+
+### Evidence Ownership, Performance, and Local Persistence
+
+- Decision: Link external evidence through typed frozen references, keep prediction accuracy, trading profitability, and process quality metrics separate, and provide only in-memory plus canonical local NDJSON persistence in v1.
+- Context or problem: Copying source records would create conflicting authorities, blended performance would hide causes, and production integration is not yet approved.
+- Rationale: References and separated metric groups preserve provenance; narrow append-only repositories prove behavior without operational overclaim.
+- Consequences: Prediction Log, Research Lab, Alpha Journal, and Unified Audit retain their ownership. Local files remain unencrypted, single-process development storage with no provider, network, live-market, credential, or cross-repository transaction guarantee.
+
 ## 2026-07-18 - Research Lab Foundation
 
 ### Append-Only Research Authority

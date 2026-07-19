@@ -25,3 +25,5 @@ export * from "./PredictionValidation";
 export * from "./ResearchRecord";
 export * from "./ResearchValidation";
 export * from "./TradeRecord";
+export * from "./StrategyVersion";
+export * from "./StrategyVersionValidation";

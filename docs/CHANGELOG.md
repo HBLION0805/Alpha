@@ -2,6 +2,15 @@
 
 ## 2026-07-18 - Day 5
 
+### Strategy Versioning Foundation
+
+- Added the Strategy Versioning v1 specification and provider-independent definition, version, lifecycle, change-set, validation, approval, activation, suspension, retirement, performance, comparison, rollback, export, error, and audit contracts.
+- Added deterministic content-derived identity, semantic-version enforcement, direct lineage validation, immutable snapshots, owner-only approval/activation authority, and one-active-version enforcement.
+- Added deterministic comparison, active-version trade-plan freezing, explicit rollback through a new version, performance attribution separated across prediction/trading/process, queries, statistics, privacy-aware export, and pure Unified Audit translation.
+- Added defensive in-memory and canonical append-only local NDJSON repositories with replay/conflict handling, strict corruption rejection, and traversal-safe storage.
+- Added 70 focused Strategy Versioning tests and aggregate test exposure.
+- Preserved Prediction Log, Alpha Journal, Research Lab, Unified Audit, trade, portfolio, risk, and decision ownership; added no provider SDK, network/API, credential, live market-data, broker, execution, or Python business-logic implementation.
+
 ### Research Lab Foundation
 
 - Replaced the mutable generic Research placeholder with an evidence-first append-only Research Lab authority while retaining shared confidence/evidence compatibility for existing contracts.
