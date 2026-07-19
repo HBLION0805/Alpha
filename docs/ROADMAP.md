@@ -54,6 +54,7 @@ Implemented and Tested Foundations:
 - Strategy Versioning immutable definition/version lineage, validation, owner approval, activation, comparison, rollback, performance, export, and audit foundation
 - Development Validation Log append-only task lifecycle, validation, owner review, Git evidence, defect/risk/follow-up, export, and audit foundation
 - Historical Pattern Library append-only historical-event, regime, asset-reaction, reusable-pattern, amendment, review, supersession, export, and audit foundation
+- Historical Analogy Engine deterministic current-situation comparison, scoring, ranking, bias, review, export, and audit foundation
 
 Day 5 Milestone Status:
 
@@ -68,16 +69,17 @@ Day 6 Milestone Status:
 - D6-T1 does not modify Alpha business logic, Python or TypeScript runtime behavior, provider integration, network/API code, credentials, runtime data, or capital-control boundaries.
 - D6-T2 is complete and pushed as the architecture-only Production Persistence and Recovery foundation.
 - D6-T2 documents future durable persistence, transaction, recovery, backup, restore, retention, integrity, and development-vs-production boundaries without implementing production persistence.
-- D6-T3 implements the deterministic Historical Pattern Library foundation and is awaiting owner review.
-- D6-T3 separates historical events from reusable patterns and facts from interpretations/inferences while adding no live ingestion, analogy, replay, prediction, provider, network, broker, or Python behavior.
-- Current aggregate validation is 716/716 TypeScript tests, including 68/68 focused Historical Pattern Library tests.
-- D6-T4 has not started.
+- D6-T3 Historical Pattern Library is complete, committed, and pushed as `9358c9fc5d6350cfcddc385806738a7ce8235abb`.
+- D6-T4 implements the deterministic Historical Analogy Engine foundation and is awaiting owner review.
+- D6-T4 separates similarity, difference, completeness, evidence quality, and candidate quality; produces no prediction or trading recommendation; and adds no AI scoring, embeddings, vector database, Event Replay, live data, provider, network, broker, or Python behavior.
+- Current aggregate validation is 807/807 TypeScript tests, including 68/68 focused Historical Pattern Library tests and 91/91 focused Historical Analogy Engine tests.
+- D6-T5 has not started.
 
 Proposed Day 6 Priority Order:
 
-1. Owner review and approval of D6-T3 Historical Pattern Library foundation.
+1. Owner review and approval of D6-T4 Historical Analogy Engine foundation.
 2. Specify the development-standard/reporting integration for Development Validation Log without automating Git or owner approval.
-3. Specify the future Historical Analogy Engine comparison boundary without adding prediction or trading authority.
+3. Define Event Replay compatibility requirements without implementing replay or backtesting.
 4. Design the Python/TypeScript integration boundary while preserving deterministic capital controls.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
@@ -145,7 +147,7 @@ Planned Features:
 
 # Backlog
 
-- Historical Analogy Engine
+- Historical Analogy Engine product integration and production hardening
 - Strategy Validation Lab
 - Catalyst Calendar
 - Relative Strength Engine

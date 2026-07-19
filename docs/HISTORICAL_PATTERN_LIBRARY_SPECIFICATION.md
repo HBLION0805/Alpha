@@ -1,6 +1,6 @@
 # Historical Pattern Library v1 Specification
 
-Status: Foundation implementation in owner review
+Status: Implemented foundation; owner-approved and committed
 Version: 1.0
 Date: 2026-07-19
 

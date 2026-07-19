@@ -31,3 +31,5 @@ export * from "./DevelopmentValidation";
 export * from "./DevelopmentValidationValidation";
 export * from "./HistoricalPattern";
 export * from "./HistoricalPatternValidation";
+export * from "./HistoricalAnalogy";
+export * from "./HistoricalAnalogyValidation";

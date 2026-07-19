@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-07-19 - Day 6 Task 4
+
+### Historical Analogy Engine Foundation
+
+- Added the Historical Analogy Engine v1 specification and provider-neutral request, frozen current-situation snapshot, finalized candidate, comparison dimension, immutable weight profile, missing-data, score, quality, confidence, outcome, limitation, bias, lifecycle, review, amendment, supersession, query, statistics, export, error, Event Replay compatibility, and audit contracts.
+- Added deterministic fixed-scale comparison methods, explicit missing-data policies, separate similarity/completeness/evidence/candidate quality, quality gates, strongest-similarity/difference evidence, stable ranking, and structural rejection of guaranteed recurrence and trading recommendations.
+- Added defensive in-memory and canonical append-only local NDJSON repositories with monotonic sequence, canonical fingerprints, idempotent replay, conflict rejection, lifecycle and supersession checks, deterministic queries/ranking/statistics, strict corruption handling, traversal-safe storage, and no update/overwrite/delete path.
+- Added Historical Pattern repository candidate freezing, Research evidence boundaries, privacy-aware JSON/NDJSON export, pure Unified Audit translation, and 91 focused deterministic tests, raising the aggregate TypeScript baseline to 807/807.
+- Preserved Historical Pattern Library, Research Lab, Prediction Log, Strategy Versioning, Decision Engine, Risk Engine, Portfolio, Trade, Unified Audit, and Python authority. Added no AI scoring, embeddings, vector database, Event Replay, live market data, provider SDK, network/API code, credential, broker integration, capital execution, or D6-T5 work.
+
 ## 2026-07-19 - Day 6 Task 3
 
 ### Historical Pattern Library Foundation

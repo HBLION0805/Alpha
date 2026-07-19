@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 6 has started. D6-T1 Development Efficiency and D6-T2 Production Persistence and Recovery Architecture are complete and pushed. D6-T3 implements the Historical Pattern Library foundation and is awaiting owner review. Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 716/716 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, 42 Opportunity/Prediction engine tests, and 68 Historical Pattern Library tests.
+Day 6 is in progress. D6-T1 Development Efficiency, D6-T2 Production Persistence and Recovery Architecture, and D6-T3 Historical Pattern Library are complete and pushed. D6-T4 implements the Historical Analogy Engine foundation and is awaiting owner review. Day 5 is complete through the Development Validation Log foundation. The current TypeScript aggregate validation baseline is 807/807 tests: 333 AI Infrastructure tests, 273 Day 5 learning-infrastructure tests, 42 Opportunity/Prediction engine tests, 68 Historical Pattern Library tests, and 91 Historical Analogy Engine tests.
 
 Implemented Python prototype/runtime:
 
@@ -26,6 +26,7 @@ Implemented and tested TypeScript foundations:
 - Strategy Versioning immutable lifecycle, comparison, activation, and rollback foundation
 - Development Validation Log append-only engineering-memory foundation
 - Historical Pattern Library append-only historical-event and reusable-pattern foundation
+- Historical Analogy Engine deterministic comparison, scoring, ranking, review, and evidence foundation
 - AI Router deterministic planning
 - AI Cost Governor enforcement
 - AI Provider Adapter interface and registry
@@ -39,7 +40,7 @@ Implemented and tested TypeScript foundations:
 
 The Python and TypeScript layers are not yet integrated into one runtime. The TypeScript AI infrastructure uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
-Local AI Cost Ledger, Unified Audit, Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, Development Validation Log, and Historical Pattern Library NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary. Future production persistence and recovery requirements are specified in [Production Persistence and Recovery](docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md), with no production implementation added.
+Local AI Cost Ledger, Unified Audit, Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, Development Validation Log, Historical Pattern Library, and Historical Analogy Engine NDJSON repositories are single-process development persistence. They are not a production database or cross-repository transaction boundary. Future production persistence and recovery requirements are specified in [Production Persistence and Recovery](docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md), with no production implementation added.
 
 ## Architecture Boundary
 
@@ -51,7 +52,7 @@ Day 5 contracts and boundaries are specified in [Prediction Log](docs/PREDICTION
 
 Day 6 development-efficiency rules are specified in [Codex Development Standard](docs/CODEX_DEVELOPMENT_STANDARD.md), [Codex Task Template](docs/CODEX_TASK_TEMPLATE.md), and [Owner Review Template](docs/OWNER_REVIEW_TEMPLATE.md).
 
-Day 6 historical evidence boundaries are specified in [Historical Pattern Library](docs/HISTORICAL_PATTERN_LIBRARY_SPECIFICATION.md). Historical events and reusable patterns are separate records; facts, observations, interpretations, and inferences remain structurally distinct. No Historical Analogy Engine, Event Replay, historical-data ingestion, live market integration, or prediction behavior is implemented.
+Day 6 historical evidence boundaries are specified in [Historical Pattern Library](docs/HISTORICAL_PATTERN_LIBRARY_SPECIFICATION.md) and [Historical Analogy Engine](docs/HISTORICAL_ANALOGY_ENGINE_SPECIFICATION.md). Historical events and reusable patterns remain historical truth; deterministic analogy results report similarities, differences, missing data, completeness, evidence quality, bias, and limitations for Research Lab review. No AI similarity scoring, embeddings, vector database, Event Replay, historical-data ingestion, live market integration, prediction, or trading recommendation exists.
 
 ## Repository Structure
 
@@ -83,7 +84,7 @@ npm test
 npm run alpha:validate
 ```
 
-`npm test` runs the complete deterministic TypeScript suite, including the focused Strategy Versioning, Development Validation Log, and Historical Pattern Library suites.
+`npm test` runs the complete deterministic TypeScript suite, including the focused Strategy Versioning, Development Validation Log, Historical Pattern Library, and Historical Analogy Engine suites.
 
 `npm run alpha:validate` runs the local validation bundle: required-file checks, strict typecheck, aggregate tests, Markdown link/path/fence checks, provider/network/API/credential scans, Python-change scan, runtime-data tracking scan, merge-marker scan, `git diff --check`, and final working-tree warning. Component commands remain individually available.
 

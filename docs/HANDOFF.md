@@ -4,11 +4,33 @@ Date:
 2026-07-19
 
 Project Stage:
-Day 6 in progress - D6-T1 and D6-T2 complete and pushed; D6-T3 Historical Pattern Library foundation implemented and awaiting owner review; D6-T4 not started
+Day 6 in progress - D6-T1 through D6-T3 complete and pushed; D6-T4 Historical Analogy Engine foundation implemented and awaiting owner review; D6-T5 not started
 
-## Day 6 Task 3 Current Work
+## Day 6 Task 4 Current Work
 
-D6-T3 implements Alpha's deterministic Historical Pattern Library foundation.
+D6-T4 implements Alpha's deterministic Historical Analogy Engine foundation.
+
+Created:
+
+- `docs/HISTORICAL_ANALOGY_ENGINE_SPECIFICATION.md`
+- `src/contracts/HistoricalAnalogy.ts`
+- `src/contracts/HistoricalAnalogyValidation.ts`
+- `src/repositories/HistoricalAnalogyRepository.ts`
+- `src/repositories/InMemoryHistoricalAnalogyRepository.ts`
+- `src/repositories/LocalNdjsonHistoricalAnalogyRepository.ts`
+- `src/engines/historical-analogy-engine/`
+
+The engine freezes caller-supplied current-situation snapshots, exact finalized Historical Event or Historical Pattern candidates, and owner-approved immutable weight profiles. It compares typed dimensions with transparent integer basis-point arithmetic and keeps similarity, difference, completeness, evidence quality, candidate quality, and comparison confidence separate.
+
+Missing data never becomes a neutral match. Results preserve strongest similarities and differences, exclusions, historical outcome observations, regime differences, bias risks, limitations, invalidation conditions, deterministic ranking, append-only review/amendment/supersession history, privacy-aware export, and Unified Audit translation.
+
+Historical Pattern Library remains historical truth and Research Lab remains interpretation truth. No Prediction, Strategy, Decision, Risk override, trading recommendation, AI similarity scoring, embedding, vector database, Event Replay, live data, provider/network integration, broker behavior, or Python change exists.
+
+D6-T4 includes 91 focused deterministic tests. The aggregate TypeScript baseline is 807/807 tests. Local NDJSON under `data/runtime/historical-analogies/` remains Git-ignored single-owner, single-process development persistence. D6-T5 has not started.
+
+## Day 6 Task 3 Completed Work
+
+D6-T3 implements Alpha's deterministic Historical Pattern Library foundation and was committed and pushed as `9358c9fc5d6350cfcddc385806738a7ce8235abb`.
 
 Created:
 
@@ -24,7 +46,7 @@ The subsystem separates historical events from reusable patterns and keeps facts
 
 Historical Pattern Library is historical-pattern truth. Research Lab remains current research truth; Prediction Log, Alpha Journal, Strategy Versioning, and Unified Audit retain their existing authority. No consumer record is mutated.
 
-D6-T3 includes 68 focused deterministic tests. The aggregate TypeScript baseline is 716/716 tests. It adds no Historical Analogy Engine, Event Replay, historical-data ingestion, live market data, provider SDK, network/API code, credentials, broker/execution behavior, backtesting, Python changes, production persistence, or D6-T4 work.
+D6-T3 includes 68 focused deterministic tests. At D6-T3 completion, the aggregate TypeScript baseline was 716/716 tests. It added no Historical Analogy Engine, Event Replay, historical-data ingestion, live market data, provider SDK, network/API code, credentials, broker/execution behavior, backtesting, Python changes, production persistence, or D6-T4 work. D6-T4 was subsequently implemented as the separate milestone above.
 
 ## Day 6 Task 2 Completed Work
 
@@ -199,6 +221,7 @@ Current TypeScript foundations:
 - Strategy Versioning: deterministic immutable definition/version lineage, validation, owner approval, activation, suspension, retirement, comparison, rollback, trade-plan freeze, performance, privacy, query, export, and audit foundation implemented for local single-process use
 - Development Validation Log: deterministic append-only task lifecycle, structured validation, owner review/approval, Git evidence, defect/risk/follow-up, privacy, query, statistics, export, and audit foundation implemented for local single-process use
 - Historical Pattern Library: deterministic append-only historical-event, regime, observation-window, asset-reaction, reusable-pattern, amendment, review, supersession, privacy, query, statistics, export, and audit foundation implemented for local single-process use
+- Historical Analogy Engine: deterministic frozen-snapshot and finalized-candidate comparison, scoring, ranking, bias/limitation, review, privacy, export, and audit foundation implemented for local single-process use
 - Instrument Ranking, Trade Outcome, and Learning Loop: documented architecture or backlog, not implemented runtime systems
 
 Python and TypeScript do not currently form one integrated application runtime. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
@@ -208,7 +231,7 @@ Python and TypeScript do not currently form one integrated application runtime. 
 Current validation completed successfully:
 
 - TypeScript strict typecheck passed
-- Aggregate TypeScript tests: 716/716 passed, including 40/40 focused Prediction Log, 51/51 focused Alpha Journal, 64/64 focused Research Lab, 70/70 focused Strategy Versioning, 48/48 focused Development Validation Log, and 68/68 focused Historical Pattern Library tests
+- Aggregate TypeScript tests: 807/807 passed, including 40/40 focused Prediction Log, 51/51 focused Alpha Journal, 64/64 focused Research Lab, 70/70 focused Strategy Versioning, 48/48 focused Development Validation Log, 68/68 focused Historical Pattern Library, and 91/91 focused Historical Analogy Engine tests
 - Focused AI Infrastructure tests: 333/333 passed
 - Provider SDK and production-adapter scan clean
 - Network, API, and credential scan clean
@@ -229,6 +252,7 @@ Current validation completed successfully:
 - `cc9fb3fb47b467764ee9227993e77047a5c1a11d` — Development Validation Log foundation
 - `ee664db39b29126849d3358ce17b97a3934c4f38` — Codex Development Standard foundation
 - `92fe95ea678e8201c60654539138c95dc70c1d1f` — Production Persistence and Recovery Architecture
+- `9358c9fc5d6350cfcddc385806738a7ce8235abb` — Historical Pattern Library foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -239,7 +263,7 @@ Acceptable current development limitations:
 - Neutral fixtures only; no production provider adapter or live AI API integration
 - No production credential handling or provider-health polling
 - Reservation and workflow result repositories are in memory
-- Local ledger, audit, learning, and historical-pattern NDJSON repositories are single-owner, single-process development persistence
+- Local ledger, audit, learning, historical-pattern, and historical-analogy NDJSON repositories are single-owner, single-process development persistence
 - Python and TypeScript runtimes remain separate
 - Business-domain runtime integration is incomplete
 - AI controls no portfolio or trade execution
@@ -256,16 +280,16 @@ Blockers before live provider use:
 
 ## Proposed Day 6 Priority Order
 
-These are proposed planning priorities only. D6-T1 and D6-T2 are complete; D6-T3 is implemented for owner review; D6-T4 and later tasks have not started.
+These are proposed planning priorities only. D6-T1 through D6-T3 are complete; D6-T4 is implemented for owner review; D6-T5 and later tasks have not started.
 
-1. Owner review and approval of D6-T3 Historical Pattern Library foundation.
+1. Owner review and approval of D6-T4 Historical Analogy Engine foundation.
 2. Specify the development-standard/reporting integration for Development Validation Log without automating Git or owner approval.
-3. Specify the Historical Analogy Engine comparison boundary without adding prediction or trading authority.
+3. Specify future Event Replay compatibility without implementing replay, backtesting, prediction, or trading authority.
 4. Design the Python/TypeScript integration boundary while preserving deterministic capital controls.
 
 Backlog without immediate scheduling:
 
-- Historical Analogy Engine
+- Historical Analogy Engine product integration and production hardening
 - Strategy Validation Lab
 - Catalyst Calendar
 - Relative Strength Engine
@@ -278,4 +302,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of D6-T3 Historical Pattern Library foundation. After approval, run final validation, create one focused commit only if authorized, and push only if explicitly approved. Do not begin D6-T4.
+Owner review of D6-T4 Historical Analogy Engine foundation. After approval, run final validation, create one focused commit only if authorized, and push only if explicitly approved. Do not begin D6-T5.

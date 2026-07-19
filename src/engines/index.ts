@@ -14,3 +14,4 @@ export * from "./research-lab";
 export * from "./strategy-versioning";
 export * from "./development-validation";
 export * from "./historical-pattern-library";
+export * from "./historical-analogy-engine";

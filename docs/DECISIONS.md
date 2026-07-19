@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - D6-T4 Historical Analogy Engine Foundation
+
+### Deterministic Comparison, Not Prediction
+
+- Decision: Compare frozen current-situation dimensions against exact finalized Historical Event or Historical Pattern versions with transparent integer basis-point arithmetic.
+- Reason: Reproducible comparison evidence reduces subjective analogy while preventing AI-generated scoring or hidden model behavior from becoming authoritative.
+- Consequence: Similarity, difference, completeness, evidence quality, candidate quality, and comparison confidence are separate; no score implies causation, future return, or a trading signal.
+
+### Explicit Missing Data and Bias
+
+- Decision: Every weight profile declares one missing-data policy, and every result preserves missing weight, exclusions, material differences, bias risks, and limitations.
+- Reason: Treating unknown input as a neutral match would inflate similarity and conceal evidence weakness.
+- Consequence: Required missing data may fail closed, be penalized, remain incomplete, or require review; high similarity with low completeness cannot be high quality.
+
+### Frozen Authority Boundaries
+
+- Decision: Historical Pattern Library remains historical truth and Research Lab remains interpretation truth; analogy records freeze exact candidate, snapshot, profile, method, and limitation evidence without mutating consumers.
+- Reason: Comparison must not rewrite historical evidence or become an implicit Prediction, Strategy, Decision, or Risk override.
+- Consequence: Later candidate, snapshot, profile, or method changes create a new analogy and append-only supersession. Prediction/Strategy references are compatibility boundaries only.
+
+### Local Append-Only Foundation
+
+- Decision: Provide defensive in-memory and canonical local NDJSON repositories under `data/runtime/historical-analogies/` with no update, overwrite, or delete path.
+- Reason: The established development convention proves ordering, replay, corruption handling, privacy-aware export, and audit translation without selecting production storage.
+- Consequence: Local storage remains unencrypted single-owner, single-process development persistence. No AI provider, network, embedding, vector database, live market data, Event Replay, broker, Python, or production persistence is added.
+
 ## 2026-07-19 - D6-T3 Historical Pattern Library Foundation
 
 ### Separate Historical Events from Reusable Patterns

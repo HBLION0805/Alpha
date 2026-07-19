@@ -54,7 +54,7 @@ Alpha consists of the following major systems.
 Alpha currently has two unintegrated implementation surfaces:
 
 - The Python prototype/runtime contains local portfolio models, a terminal dashboard using sample data, deterministic risk calculations, configuration, and early stock/event-contract decision rules.
-- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, and the Day 6 Historical Pattern Library foundation.
+- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, the Historical Pattern Library, and the Historical Analogy Engine foundation.
 
 The Python application does not invoke the TypeScript engines or AI Runtime Workflow. The TypeScript layer does not modify Python portfolio, risk, decision, or trade state. Future integration must preserve deterministic capital controls and the owner-controlled execution boundary.
 
@@ -427,7 +427,26 @@ Responsible for:
 
 Historical Pattern Library is historical-event and reusable-pattern truth. Research Lab remains current structured-research truth, Prediction Log remains prediction truth, Alpha Journal remains context/reflection truth, Strategy Versioning remains strategy truth, and Unified Audit remains normalized trace truth.
 
-The foundation does not fetch historical prices, ingest live data, calculate external market values, compare current events, predict outcomes, backtest, replay timelines, execute providers, or authorize capital decisions. The Historical Analogy Engine and Event Replay remain future systems. Local persistence is unencrypted single-owner, single-process development storage governed by the production boundary in `docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md`.
+The library does not fetch historical prices, ingest live data, calculate external market values, compare current events, predict outcomes, backtest, replay timelines, execute providers, or authorize capital decisions. The separate Historical Analogy Engine may read frozen finalized records without modifying historical truth. Event Replay remains future work. Local persistence is unencrypted single-owner, single-process development storage governed by the production boundary in `docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md`.
+
+---
+
+## Historical Analogy Engine
+
+Responsible for:
+
+- Freezing caller-supplied current-situation snapshots and exact finalized Historical Event or Historical Pattern candidates
+- Applying owner-approved immutable weight profiles and explicit missing-data policies
+- Comparing typed dimensions through transparent integer basis-point arithmetic
+- Keeping similarity, difference, completeness, evidence quality, candidate quality, and comparison confidence separate
+- Reporting strongest similarities, strongest differences, missing dimensions, exclusions, historical outcome observations, regime differences, limitations, bias risks, and invalidation conditions
+- Ranking eligible completed comparisons deterministically with stable candidate and analogy identity tie-breaking
+- Preserving append-only request, snapshot, profile, result, review, amendment, supersession, archive, query, statistics, export, and Unified Audit evidence
+- Providing defensive in-memory and canonical local NDJSON repositories under a Git-ignored runtime path
+
+Historical Pattern Library remains historical truth. Research Lab remains interpretation truth. Prediction Log and Strategy Versioning may later freeze reviewed analogy evidence but are not mutated. Decision Engine cannot treat raw similarity as an automatic decision, and Risk Engine constraints cannot be bypassed.
+
+The engine performs no AI scoring, embeddings, semantic search, vector database, external search, live data retrieval, prediction, trade recommendation, backtest, Event Replay, provider/network call, broker integration, or capital-state mutation. Local persistence is unencrypted single-owner, single-process development storage.
 
 ---
 
@@ -520,7 +539,7 @@ Future systems may include:
 - Production-grade transactional AI workflow, reservation, ledger, and audit persistence or a reviewed outbox architecture
 - Durable provider-execution claims and provider-billing reconciliation
 - Production provider adapters and durable, crash-recoverable runtime workflow execution
-- Historical Analogy Engine using evidence-preserving Historical Pattern Library queries
+- Historical Analogy Engine product integration and production hardening
 - Event Replay Database
 - Portfolio Analytics
 - Backtesting Engine

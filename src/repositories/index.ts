@@ -26,3 +26,6 @@ export * from "./LocalNdjsonDevelopmentValidationRepository";
 export * from "./HistoricalPatternRepository";
 export * from "./InMemoryHistoricalPatternRepository";
 export * from "./LocalNdjsonHistoricalPatternRepository";
+export * from "./HistoricalAnalogyRepository";
+export * from "./InMemoryHistoricalAnalogyRepository";
+export * from "./LocalNdjsonHistoricalAnalogyRepository";

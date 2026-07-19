@@ -21,6 +21,7 @@ const requiredFiles = [
   "docs/CHANGELOG.md",
   "docs/DEVELOPMENT_VALIDATION_LOG_SPECIFICATION.md",
   "docs/HISTORICAL_PATTERN_LIBRARY_SPECIFICATION.md",
+  "docs/HISTORICAL_ANALOGY_ENGINE_SPECIFICATION.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -46,6 +47,7 @@ const aggregateTestFiles = [
   "src/engines/strategy-versioning/StrategyVersioning.test.ts",
   "src/engines/development-validation/DevelopmentValidationLog.test.ts",
   "src/engines/historical-pattern-library/HistoricalPatternLibrary.test.ts",
+  "src/engines/historical-analogy-engine/HistoricalAnalogyEngine.test.ts",
   "src/contracts/AIRouter.test.ts",
   "src/engines/ai-router/AIRouterEngine.test.ts",
   "src/engines/ai-cost-governor/AICostGovernor.test.ts",
