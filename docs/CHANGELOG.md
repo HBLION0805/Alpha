@@ -1,5 +1,11 @@
 # Alpha Changelog
 
+## 2026-07-20 - D9-T1 Market Data Layer Foundation
+
+- Added provider-independent canonical instrument and latest-quote contracts with fixed-decimal values, explicit timestamps, source provenance, versioned policy, staged results, and categorical quality statuses.
+- Added a read-only Market Data service over an explicit adapter port with deterministic capability, normalization, validation, freshness, chronology, precision, duplicate, consistency, and safe-error behavior.
+- Added 43 focused tests and aggregate validation registration. Added no live provider, SDK, network/API call, credential, production persistence, AI path, recommendation, Risk/Decision behavior, Dashboard integration, paper trading, broker, or execution behavior.
+
 ## 2026-07-20 - D8-T3B Minimal Knowledge Approval Foundation
 
 - Added versioned Candidate Knowledge, per-type Approval Policy, deterministic Eligibility Result, owner Decision, Approved Knowledge, lifecycle, read-model, and audit-translation contracts.

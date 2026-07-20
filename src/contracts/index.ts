@@ -41,3 +41,4 @@ export * from "./CrossSystemEvidenceLink";
 export * from "./EvidenceEngine";
 export * from "./StrategyReview";
 export * from "./KnowledgeApproval";
+export * from "./MarketData";

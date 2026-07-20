@@ -370,7 +370,7 @@ Responsible for:
 
 ---
 
-## Knowledge Approval and Strategy Change Boundary (Planned)
+## Knowledge Approval and Future Strategy Change Boundary
 
 Responsible for:
 
@@ -515,7 +515,15 @@ This layer consumes explicit evidence links without changing source ownership:
 
 “No Evidence, No Decision” is the entry gate to downstream decision evaluation. A request must fail closed when required evidence is `INSUFFICIENT`, `CONFLICTING`, or `UNAVAILABLE`; only an explicitly `SUFFICIENT` assessment under a traceable versioned policy may proceed. Sufficiency is necessary but does not itself produce a recommendation or authorize action. Decision evaluation, Risk Engine review, frozen-plan requirements, owner approval, and execution controls remain separate downstream gates.
 
-The Evidence Assessment and Strategy Review foundations are complete. The Knowledge Approval architecture is approved, and its bounded local foundation is implemented pending owner review. Production persistence, cryptographic authorization, Strategy Change Proposals, AI drafting, and broad retrieval remain unimplemented. AI cannot create facts, override evidence or policy blockers, approve knowledge, activate a strategy, bypass Risk/Decision controls, or authorize capital action. A general-purpose Alpha Memory database is not approved because it would duplicate existing authorities; a future read-only knowledge-retrieval policy requires a concrete consumer and production persistence/privacy review.
+The Evidence Assessment, Strategy Review, and bounded local Knowledge Approval foundations are committed and pushed. Production persistence, cryptographic authorization, Strategy Change Proposals, AI drafting, and broad retrieval remain unimplemented. AI cannot create facts, override evidence or policy blockers, approve knowledge, activate a strategy, bypass Risk/Decision controls, or authorize capital action. A general-purpose Alpha Memory database is not approved because it would duplicate existing authorities; a future read-only knowledge-retrieval policy requires a concrete consumer and production persistence/privacy review.
+
+---
+
+## Market Data Layer Foundation
+
+D9-T1 adds a quote-first provider boundary: `future provider -> provider adapter -> raw response -> explicit normalization -> deterministic validation -> canonical Market Data result -> future read-only consumers`. Canonical instrument IDs belong to Alpha; provider symbols remain source metadata. Fixed-decimal prices preserve precision, and observation, publication, receipt, normalization, evaluation, and processing times remain distinct.
+
+The layer returns explicit transport, normalization, validation, operation, and quality states. Invalid, incomplete, stale, unavailable, unsupported, out-of-order, or conflicting data fails closed. The foundation adds no live provider, network/API code, credential, persistence, automatic fallback, downstream Evidence/Replay wiring, paper trading, recommendation, Risk/Decision behavior, Dashboard behavior, broker, or execution path. See [Market Data Layer](specifications/MARKET_DATA_LAYER.md).
 
 ---
 
@@ -594,13 +602,13 @@ v
 Strategy Review Foundation
 |
 v
-Candidate Knowledge (planned)
+Candidate Knowledge (local foundation)
 |
 v
-Owner Knowledge Approval (planned)
+Owner Knowledge Approval (local foundation)
 |
 v
-Approved Knowledge (planned)
+Approved Knowledge (local foundation)
 |
 v
 Strategy Change Proposal (future separate gate)

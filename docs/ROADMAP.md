@@ -115,7 +115,7 @@ Day 8 begins from explicit evidence links and existing immutable records. It is 
    - Exit criteria: “No Strategy Change Without Approved Knowledge” is authoritative; source ownership and fail-closed rules are explicit; documentation validation passes; owner approves the architecture.
 
 4. **D8-T3B — Minimal Knowledge Approval Foundation**
-   - Status: implemented locally and validated; pending owner review, commit, and push.
+   - Status: completed, committed, and pushed as `a44fb34d489111b389a758a4a489ebcd6702ef60`.
    - Combines typed candidate/decision/approved-knowledge contracts, deterministic policy guards, owner-only approval, append-only lifecycle, an in-memory repository/current read model, and Unified Audit translation.
    - Excludes Strategy Change Proposal implementation, AI review adapters, production persistence, broad retrieval, dashboard work, and automatic learning.
    - Exit criteria: completed and `SUFFICIENT` review evidence is required; blockers fail closed; approval is owner-only; knowledge cannot mutate strategy; focused tests and strict typecheck pass.
@@ -128,6 +128,14 @@ Day 8 begins from explicit evidence links and existing immutable records. It is 
 The separate Strategy Change Proposal workflow remains backlog and must not delay Phase 1 API or Paper Trading. A separate Candidate-only task, Approval Workflow task, and Approved Knowledge Store task are not planned; the cohesive minimum belongs in D8-T3B.
 
 Day 8 foundations are not production ready. Production persistence, transaction/recovery, privacy/retention enforcement, dashboard integration, live data, providers, brokers, backtesting, and automation remain separately reviewed work.
+
+## Day 9 — Provider-Independent Market Boundary (In Progress)
+
+1. **D9-T1 — Market Data Layer Foundation**
+   - Status: implemented locally and validated; pending owner review, commit, and push.
+   - Scope: canonical instrument and latest-quote contracts, explicit provider capabilities, opaque raw adapter boundary, fixed-decimal values, deterministic normalization/validation, provenance, quality states, and one read-only service.
+   - Excludes: live providers, credentials, network/API calls, trades/bars/streaming, persistence, automatic fallback, Evidence/Replay wiring, Paper Trading, Dashboard, recommendation, broker, or execution behavior.
+   - Exit criteria: provider schemas remain isolated; invalid, stale, incomplete, unsupported, unavailable, out-of-order, and conflicting data fail closed; focused tests and strict typecheck pass.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

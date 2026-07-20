@@ -1,5 +1,13 @@
 # Alpha Architecture Decisions
 
+## 2026-07-20 - D9-T1 Market Data Layer Foundation
+
+### Market Data Uses a Provider-Neutral, Quote-First, Fail-Closed Boundary
+
+- Decision: Alpha's first Market Data Layer contract supports explicit latest-quote requests over caller-selected provider adapters. Canonical identities are Alpha-owned, monetary values use fixed-decimal atomic strings and scale, observation and receipt time remain distinct, and transport, normalization, validation, and availability remain separate result stages.
+- Reason: This is the smallest useful provider boundary for future Evidence, Replay, and Paper Trading consumers. It prevents provider schemas and aliases from becoming domain truth and prevents transport success from bypassing deterministic validation.
+- Rejected alternatives: Direct provider clients in Evidence, Decision, Risk, or Dashboard; floating-point canonical prices; inferred timestamps or units; AI repair or validation; opaque data-confidence scores; silent provider fallback or merging; and a premature universal market-data ontology. Trades, bars, event contracts, streaming, live adapters, persistence, and downstream wiring require separate review.
+
 ## 2026-07-20 - D8-T3B Minimal Knowledge Approval Foundation
 
 ### Eligibility Does Not Grant Authority

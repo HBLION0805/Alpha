@@ -4,11 +4,11 @@ Date:
 2026-07-20
 
 Project Stage:
-Architecture Checkpoint 1, D8-T1 Evidence Assessment, D8-T2 Strategy Review, and D8-T3A Knowledge Approval architecture complete and pushed; D8-T3B local foundation implemented pending owner review
+D8-T1 Evidence Assessment, D8-T2 Strategy Review, D8-T3A Knowledge Approval architecture, and D8-T3B Minimal Knowledge Approval are committed and pushed; D9-T1 Market Data Layer foundation is local pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `553d0e2946cd305e999bf8d7fbaec387381ed592` on clean `main`, equal to `origin/main` before D8-T3A.
+Verified baseline: `a44fb34d489111b389a758a4a489ebcd6702ef60` on clean `main`, equal to `origin/main` before D9-T1.
 
 Day 7 completed:
 
@@ -19,7 +19,7 @@ Day 7 completed:
 
 Day 7 adds no dashboard wiring, mutable cross-runtime operation, graph database, source-authority transfer, AI reasoning, automatic learning, provider/network/API integration, live market data, broker behavior, production persistence, or capital-domain behavior change.
 
-Architecture Checkpoint 1 selected a narrow deterministic sequence. D8-T1 and D8-T2 are complete, D8-T3A is approved and pushed, and D8-T3B now provides the bounded local Knowledge Approval foundation pending owner review. The layer separates Candidate Knowledge, deterministic eligibility, owner approval, Approved Knowledge, and a future Strategy Change Proposal. It rejects a general-purpose Alpha Memory database and preserves the future durable Trade Outcome boundary. See `docs/ARCHITECTURE_CHECKPOINT_1.md` and `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`.
+Architecture Checkpoint 1 selected a narrow deterministic sequence. D8-T1 through D8-T3B are committed and pushed. Knowledge Approval separates Candidate Knowledge, deterministic eligibility, owner approval, Approved Knowledge, and a future Strategy Change Proposal. D9-T1 now adds a bounded provider-independent latest-quote boundary pending owner review. It adds no live provider or downstream market-data consumer. See `docs/ARCHITECTURE_CHECKPOINT_1.md`, `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`, and `docs/specifications/MARKET_DATA_LAYER.md`.
 
 ## Day 6 Milestone Review
 
@@ -276,16 +276,16 @@ Current TypeScript foundations:
 - Unified Validation Reporting: normalized deterministic validation-reporting foundation implemented without replacing validators
 - Historical Evidence Product Surface: read-only deterministic composition of historical pattern, analogy, replay, prediction, and strategy reference metadata implemented
 - Cross-System Evidence Linking: read-only explicit typed link validation and resolution foundation implemented; source repositories remain authoritative
-- Evidence Assessment and Strategy Review foundations: completed and pushed; Knowledge Approval Layer architecture: documented locally pending owner review; Instrument Ranking, durable Trade Outcome, multi-cycle performance evaluation, Strategy Change Proposals, and broader knowledge retrieval remain planned or backlog
+- Evidence Assessment, Strategy Review, and Minimal Knowledge Approval foundations: completed and pushed; Market Data Layer quote foundation: implemented locally pending owner review; live adapters, Instrument Ranking, durable Trade Outcome, multi-cycle performance evaluation, Strategy Change Proposals, and broader knowledge retrieval remain planned or backlog
 
 Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. Day 7 product surfaces and links are TypeScript read models only. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
 
 ## Validation Status
 
-The committed D8-T2 validation baseline completed successfully:
+The current local D9-T1 validation baseline completed successfully:
 
 - TypeScript strict typecheck passed
-- Aggregate TypeScript tests: 937/937 passed, including 40/40 Prediction Log, 51/51 Alpha Journal, 64/64 Research Lab, 70/70 Strategy Versioning, 48/48 Development Validation Log, 68/68 Historical Pattern Library, 91/91 Historical Analogy Engine, 20/20 Event Replay, 4/4 Historical Evidence Product Surface, 14/14 Cross-System Evidence Linking, 26/26 Evidence Engine, 35/35 Strategy Review, 15/15 Python-integration client, 5/5 Validation Reporting, and 333/333 AI Infrastructure tests
+- Registered validation tests: 1026/1026 passed, including 40/40 Prediction Log, 51/51 Alpha Journal, 64/64 Research Lab, 70/70 Strategy Versioning, 48/48 Development Validation Log, 68/68 Historical Pattern Library, 91/91 Historical Analogy Engine, 20/20 Event Replay, 4/4 Historical Evidence Product Surface, 14/14 Cross-System Evidence Linking, 26/26 Evidence Engine, 35/35 Strategy Review, 46/46 Knowledge Approval, 43/43 Market Data Layer, 15/15 Python-integration client, 11/11 Python-side integration, 5/5 Validation Reporting, and 333/333 AI Infrastructure tests
 - Focused Python integration tests: 11/11 passed
 - Provider SDK and production-adapter scan clean
 - Network, API, and credential scan clean
@@ -294,7 +294,7 @@ The committed D8-T2 validation baseline completed successfully:
 - Secret-metadata and merge-marker scans clean
 - `git diff --check` passed
 
-D8-T3A changes architecture documentation only. Focused documentation link/path/fence, terminology, lifecycle, source-authority, principle, merge-marker, whitespace, and `git diff --check` validation passed; the application test baseline is unchanged.
+D9-T1 documentation links, paths, fences, required files, provider/network/credential safety, runtime-data, Python-change, merge-marker, and `git diff --check` validation passed.
 
 ## Git Milestones
 
@@ -315,6 +315,8 @@ D8-T3A changes architecture documentation only. Focused documentation link/path/
 - `4033bce3a4b57e80a4cbcc82e575420e298aa50f` — Cross-System Evidence Linking Foundation
 - `d5aeff9e24b2c2e237c2e6bd94379dc8e36ee719` — Architecture Checkpoint 1, Evidence Assessment Foundation, and Evidence Gate
 - `553d0e2946cd305e999bf8d7fbaec387381ed592` — Strategy Review Foundation
+- `83bd3d598ca949f9d9829f0ea03f493eef288ea9` — Knowledge Approval Layer Architecture
+- `a44fb34d489111b389a758a4a489ebcd6702ef60` — Minimal Knowledge Approval Foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -345,7 +347,7 @@ Blockers before live provider use:
 1. D8-T1 Evidence Assessment Foundation: completed, committed, and pushed with the fail-closed “No Evidence, No Decision” gate.
 2. D8-T2 Strategy Review Foundation: completed, committed, and pushed as `553d0e2946cd305e999bf8d7fbaec387381ed592`.
 3. D8-T3A Knowledge Approval Layer Architecture: completed, committed, and pushed as `83bd3d598ca949f9d9829f0ea03f493eef288ea9`; establishes “No Strategy Change Without Approved Knowledge,” owner-only approval, and immutable knowledge governance.
-4. D8-T3B Minimal Knowledge Approval Foundation: implemented locally pending owner review, with candidate, policy, decision, approved-knowledge, append-only lifecycle, in-memory repository/read-model, and audit contracts without strategy mutation.
+4. D8-T3B Minimal Knowledge Approval Foundation: completed, committed, and pushed as `a44fb34d489111b389a758a4a489ebcd6702ef60`, with candidate, policy, decision, approved-knowledge, append-only lifecycle, in-memory repository/read-model, and audit contracts without strategy mutation.
 5. D8-T4 Intelligence Layer Milestone Review: documentation, validation, dependency, and backlog reconciliation only.
 
 Backlog without immediate scheduling:
@@ -366,4 +368,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of the bounded D8-T3B Minimal Knowledge Approval Foundation. Do not begin D8-T4, Strategy Change Proposal work, multi-cycle strategy evaluation, a general-purpose Alpha Memory database, durable Trade Outcome work, dashboard integration, provider/network integration, production persistence, API, or Paper Trading.
+Owner review of D9-T1 Market Data Layer Foundation. Do not add a live provider, SDK, credential, network/API transport, downstream consumer wiring, persistence, Paper Trading, Dashboard integration, broker behavior, or execution behavior during review.
