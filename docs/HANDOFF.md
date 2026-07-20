@@ -4,7 +4,7 @@ Date:
 2026-07-20
 
 Project Stage:
-Architecture Checkpoint 1, D8-T1 Evidence Assessment, and D8-T2 Strategy Review complete and pushed; D8-T3A Knowledge Approval Layer architecture documented locally pending owner review
+Architecture Checkpoint 1, D8-T1 Evidence Assessment, D8-T2 Strategy Review, and D8-T3A Knowledge Approval architecture complete and pushed; D8-T3B local foundation implemented pending owner review
 
 ## Current Architecture Checkpoint
 
@@ -19,7 +19,7 @@ Day 7 completed:
 
 Day 7 adds no dashboard wiring, mutable cross-runtime operation, graph database, source-authority transfer, AI reasoning, automatic learning, provider/network/API integration, live market data, broker behavior, production persistence, or capital-domain behavior change.
 
-Architecture Checkpoint 1 selected a narrow deterministic sequence. D8-T1 and D8-T2 are now complete. D8-T3A refines the planned learning step into a Knowledge Approval Layer that separates Candidate Knowledge, owner approval, Approved Knowledge, and a future Strategy Change Proposal. It rejects a general-purpose Alpha Memory database and preserves the future durable Trade Outcome boundary. See `docs/ARCHITECTURE_CHECKPOINT_1.md` and `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`.
+Architecture Checkpoint 1 selected a narrow deterministic sequence. D8-T1 and D8-T2 are complete, D8-T3A is approved and pushed, and D8-T3B now provides the bounded local Knowledge Approval foundation pending owner review. The layer separates Candidate Knowledge, deterministic eligibility, owner approval, Approved Knowledge, and a future Strategy Change Proposal. It rejects a general-purpose Alpha Memory database and preserves the future durable Trade Outcome boundary. See `docs/ARCHITECTURE_CHECKPOINT_1.md` and `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`.
 
 ## Day 6 Milestone Review
 
@@ -344,8 +344,8 @@ Blockers before live provider use:
 
 1. D8-T1 Evidence Assessment Foundation: completed, committed, and pushed with the fail-closed “No Evidence, No Decision” gate.
 2. D8-T2 Strategy Review Foundation: completed, committed, and pushed as `553d0e2946cd305e999bf8d7fbaec387381ed592`.
-3. D8-T3A Knowledge Approval Layer Architecture: documented locally pending owner review; establishes “No Strategy Change Without Approved Knowledge,” owner-only approval, and immutable knowledge governance.
-4. D8-T3B Minimal Knowledge Approval Foundation: one bounded implementation of candidate, policy, decision, approved-knowledge, lifecycle, in-memory read-model, and audit contracts without strategy mutation.
+3. D8-T3A Knowledge Approval Layer Architecture: completed, committed, and pushed as `83bd3d598ca949f9d9829f0ea03f493eef288ea9`; establishes “No Strategy Change Without Approved Knowledge,” owner-only approval, and immutable knowledge governance.
+4. D8-T3B Minimal Knowledge Approval Foundation: implemented locally pending owner review, with candidate, policy, decision, approved-knowledge, append-only lifecycle, in-memory repository/read-model, and audit contracts without strategy mutation.
 5. D8-T4 Intelligence Layer Milestone Review: documentation, validation, dependency, and backlog reconciliation only.
 
 Backlog without immediate scheduling:
@@ -366,4 +366,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of D8-T3A Knowledge Approval Layer Architecture. If approved, proceed only to the bounded D8-T3B Minimal Knowledge Approval Foundation. Do not begin Strategy Change Proposal work, multi-cycle strategy evaluation, a general-purpose Alpha Memory database, durable Trade Outcome work, dashboard integration, provider/network integration, production persistence, API, or Paper Trading within D8-T3A.
+Owner review of the bounded D8-T3B Minimal Knowledge Approval Foundation. Do not begin D8-T4, Strategy Change Proposal work, multi-cycle strategy evaluation, a general-purpose Alpha Memory database, durable Trade Outcome work, dashboard integration, provider/network integration, production persistence, API, or Paper Trading.

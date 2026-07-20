@@ -109,13 +109,13 @@ Day 8 begins from explicit evidence links and existing immutable records. It is 
    - Exit criteria: active or incomplete cycles fail closed; profitability cannot hide prediction, execution, or risk failures; provenance and focused tests are complete.
 
 3. **D8-T3A — Knowledge Approval Layer Architecture**
-   - Status: architecture documented locally pending owner review.
+   - Status: completed, committed, and pushed as `83bd3d598ca949f9d9829f0ea03f493eef288ea9`.
    - Defines facts, interpretations, Candidate Knowledge, deterministic approval eligibility, owner decisions, Approved Knowledge, supersession/deprecation/revocation, and the separate Strategy Change Proposal boundary.
    - Excludes runtime contracts, repositories, AI calls, persistence, strategy mutation, and a general-purpose memory database.
    - Exit criteria: “No Strategy Change Without Approved Knowledge” is authoritative; source ownership and fail-closed rules are explicit; documentation validation passes; owner approves the architecture.
 
 4. **D8-T3B — Minimal Knowledge Approval Foundation**
-   - Build now after D8-T3A approval as one bounded implementation task.
+   - Status: implemented locally and validated; pending owner review, commit, and push.
    - Combines typed candidate/decision/approved-knowledge contracts, deterministic policy guards, owner-only approval, append-only lifecycle, an in-memory repository/current read model, and Unified Audit translation.
    - Excludes Strategy Change Proposal implementation, AI review adapters, production persistence, broad retrieval, dashboard work, and automatic learning.
    - Exit criteria: completed and `SUFFICIENT` review evidence is required; blockers fail closed; approval is owner-only; knowledge cannot mutate strategy; focused tests and strict typecheck pass.

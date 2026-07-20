@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-20 - D8-T3B Minimal Knowledge Approval Foundation
+
+### Eligibility Does Not Grant Authority
+
+- Decision: Implement eligibility as a pure, versioned, deterministic result that can only declare a Candidate Knowledge item eligible for owner review or blocked. Approval always requires a separate explicit owner decision with an authorization-policy reference.
+- Reason: Mechanical evidence checks can fail closed but cannot grant durable knowledge authority. Keeping the records separate prevents AI content, profitability, or a passed checklist from becoming implicit approval.
+- Consequence: Missing or incomplete Strategy Reviews, non-`SUFFICIENT` evidence, unavailable sources, missing provenance, inadequate samples, incompatible versions, material conflicts, staleness, or missing owner authority remain visible blockers. The narrow severe-safety exception changes sample eligibility only and still requires the owner.
+
+### Append-only Local Aggregate and Read-only Projection
+
+- Decision: Use one cohesive local aggregate with explicit Candidate, owner-decision, Approved Knowledge, and lifecycle records; store them in an append-only in-memory development repository and expose a separate read-only projection.
+- Reason: Candidate and Approved Knowledge must remain distinct and immutable without adding production infrastructure or a competing persistence/audit framework.
+- Consequence: Exact typed claim keys and command identities are deterministic, terminal history cannot be reopened, supersession/deprecation/revocation are appended, and Unified Audit translation reuses the existing Learning Review conventions. Production transactions, authentication, persistence, AI adapters, and Strategy Change Proposals remain deferred.
+
 ## 2026-07-20 - D8-T3A Knowledge Approval Layer Architecture
 
 ### No Strategy Change Without Approved Knowledge

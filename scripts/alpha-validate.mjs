@@ -57,6 +57,7 @@ const aggregateTestFiles = [
   "src/engines/cross-system-evidence-linking/CrossSystemEvidenceLinkingSurface.test.ts",
   "src/engines/evidence-engine/EvidenceEngine.test.ts",
   "src/engines/strategy-review/StrategyReviewEngine.test.ts",
+  "src/engines/knowledge-approval/KnowledgeApprovalService.test.ts",
   "src/integration/python/PythonIntegration.test.ts",
   "src/contracts/AIRouter.test.ts",
   "src/engines/ai-router/AIRouterEngine.test.ts",

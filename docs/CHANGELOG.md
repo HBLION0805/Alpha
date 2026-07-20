@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-07-20 - D8-T3B Minimal Knowledge Approval Foundation
+
+- Added versioned Candidate Knowledge, per-type Approval Policy, deterministic Eligibility Result, owner Decision, Approved Knowledge, lifecycle, read-model, and audit-translation contracts.
+- Added fail-closed eligibility checks for completed Strategy Reviews, `SUFFICIENT` evidence, availability, provenance, sample adequacy, version compatibility, material conflicts, freshness, and explicit owner authority.
+- Added an append-only in-memory development repository with deterministic claim identity, command/idempotency rejection, optimistic aggregate versions, immutable snapshots, full lifecycle history, and a read-only current-state projection.
+- Preserved the narrow configured severe-safety exception as eligibility-only; deterministic checks never grant approval, and only an explicitly authorized owner may approve or reject.
+- Added 46 focused tests and registered the foundation with aggregate validation. Added no AI call, provider/network integration, production persistence, Strategy Change Proposal, strategy mutation, UI, API, or paper-trading behavior.
+
 ## 2026-07-20 - D8-T2 Strategy Review Foundation
 
 - Added a deterministic read-only Strategy Review contract and engine for explicitly completed single-cycle review.

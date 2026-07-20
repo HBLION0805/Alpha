@@ -1,7 +1,9 @@
 # Knowledge Approval Layer Architecture
 
-Status: D8-T3A architecture proposed; pending owner review
+Status: D8-T3A architecture approved and committed; D8-T3B local foundation implemented pending owner review
 Architecture version: `1.0`
+
+Implementation boundary: D8-T3B provides versioned contracts, deterministic eligibility and lifecycle guards, an owner-decision service, an append-only in-memory development repository, a read-only current-state projection, and Unified Audit translation. It does not provide production persistence, authentication, AI drafting, Strategy Change Proposals, or strategy mutation.
 
 ## Problem Solved
 
