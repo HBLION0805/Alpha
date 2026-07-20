@@ -2,7 +2,7 @@
 
 ## Status
 
-D9-T1 foundation implemented locally for owner review. This specification defines a provider-independent, quote-first boundary. It does not add a live provider, network transport, credential, data store, or market-data consumer.
+D9-T1 foundation is committed and pushed as `52b292748cfac4af63d164b804bff084439b176e`. This specification defines a provider-independent, quote-first boundary. It does not add a live provider, network transport, credential, data store, or market-data consumer.
 
 ## Problem Solved and Expected Value
 
@@ -54,6 +54,8 @@ All timestamps are canonical UTC ISO-8601 values. Receipt or processing time nev
 ## Provider Adapter Port and Capability Model
 
 Each adapter declares a stable provider ID, adapter ID/version, enabled state, supported asset classes, and explicit capabilities. The v1 service requires `LATEST_QUOTE`; health and identity-resolution capabilities remain independently declared.
+
+The D9-T2 [Provider Registry](PROVIDER_REGISTRY.md) is the authoritative discovery source for provider identity, lifecycle metadata, declared capabilities, asset classes, priority, default enablement, and documentation. Adapter descriptors remain implementation compatibility declarations; they are not a competing provider catalog.
 
 The caller selects one provider explicitly. The service does not rank providers, use AI, perform fallback, or merge providers. A missing, disabled, disallowed, unhealthy, or incapable provider returns an explicit result before transport where possible.
 

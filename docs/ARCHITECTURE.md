@@ -525,6 +525,8 @@ D9-T1 adds a quote-first provider boundary: `future provider -> provider adapter
 
 The layer returns explicit transport, normalization, validation, operation, and quality states. Invalid, incomplete, stale, unavailable, unsupported, out-of-order, or conflicting data fails closed. The foundation adds no live provider, network/API code, credential, persistence, automatic fallback, downstream Evidence/Replay wiring, paper trading, recommendation, Risk/Decision behavior, Dashboard behavior, broker, or execution path. See [Market Data Layer](specifications/MARKET_DATA_LAYER.md).
 
+D9-T2 adds the separate immutable [Provider Registry](specifications/PROVIDER_REGISTRY.md) as the provider-discovery metadata authority. It owns canonical provider identity, status, declared capabilities and asset classes, static discovery priority, default enablement, and documentation references. Adapter descriptors describe implementation compatibility only. The registry holds no adapters, performs no calls, and has no selection, routing, fallback, reflection, AI, or runtime registration path.
+
 ---
 
 # Event Contract Framework

@@ -1,5 +1,11 @@
 # Alpha Changelog
 
+## 2026-07-20 - D9-T2 Provider Registry Foundation
+
+- Added versioned provider identity, lifecycle metadata, registry policy, query scope, and explicit error contracts over the existing Market Data asset-class and expanded capability enums.
+- Added an immutable in-memory provider registry with constructor-time validation, deterministic priority/ID ordering, strict ID lookup, enabled-provider gating, capability and asset-class discovery, and deeply frozen serializable results.
+- Added 28 focused tests and aggregate validation registration. Added no provider records, adapter instantiation, SDK, network/API call, credential, runtime reflection, dynamic registration, provider selection, fallback, broker, Paper Trading, AI, or domain behavior.
+
 ## 2026-07-20 - D9-T1 Market Data Layer Foundation
 
 - Added provider-independent canonical instrument and latest-quote contracts with fixed-decimal values, explicit timestamps, source provenance, versioned policy, staged results, and categorical quality statuses.

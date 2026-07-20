@@ -42,3 +42,4 @@ export * from "./EvidenceEngine";
 export * from "./StrategyReview";
 export * from "./KnowledgeApproval";
 export * from "./MarketData";
+export * from "./MarketDataProviderRegistry";

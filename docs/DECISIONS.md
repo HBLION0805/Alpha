@@ -1,5 +1,13 @@
 # Alpha Architecture Decisions
 
+## 2026-07-20 - D9-T2 Provider Registry Foundation
+
+### Provider Metadata and Adapter Implementations Are Separate Authorities
+
+- Decision: Use one immutable provider registry as the authority for canonical provider identity, lifecycle status, declared capabilities, supported asset classes, static discovery priority, default enablement, and documentation. Adapter descriptors remain implementation compatibility declarations and are not the discovery catalog.
+- Reason: Provider discovery must not depend on adapter instances, runtime reflection, domain imports, or provider-specific schemas. Separating metadata from implementations lets future providers add reviewed records without changing registry logic or domain systems.
+- Consequence: Registration is constructor-time and validated; results are immutable and deterministically ordered. Priority is discovery order only, not dynamic ranking or selection. The registry does not instantiate adapters, call APIs, route, fail over, or authorize provider use.
+
 ## 2026-07-20 - D9-T1 Market Data Layer Foundation
 
 ### Market Data Uses a Provider-Neutral, Quote-First, Fail-Closed Boundary

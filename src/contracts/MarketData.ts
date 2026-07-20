@@ -17,7 +17,10 @@ export enum MarketAssetClass {
 
 export enum MarketDataCapability {
   LatestQuote = "LATEST_QUOTE",
+  LatestTrade = "LATEST_TRADE",
+  Bars = "BARS",
   ResolveInstrument = "RESOLVE_INSTRUMENT",
+  MarketStatus = "MARKET_STATUS",
   Health = "HEALTH",
 }
 

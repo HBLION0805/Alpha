@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Evidence Assessment, Strategy Review, and Minimal Knowledge Approval foundations are committed and pushed. D9-T1 now implements a local provider-independent Market Data Layer foundation for owner review; it contains no live provider, SDK, network/API call, credential, persistence, paper trading, or execution behavior.
+Day 8 Evidence Assessment, Strategy Review, and Minimal Knowledge Approval foundations are committed and pushed. D9-T1 Market Data Layer is committed and pushed; D9-T2 now implements a local immutable Provider Registry foundation for owner review. Neither task adds a live provider, SDK, network/API call, credential, persistence, paper trading, or execution behavior.
 
 Implemented Python prototype/runtime:
 
@@ -44,6 +44,7 @@ Implemented and tested TypeScript foundations:
 - Cross-System Evidence Linking with explicit typed, version-aware, read-only links across Prediction, Strategy, Historical Evidence, Event Replay, Outcome, and Journal records
 - Evidence Assessment, Strategy Review, and Minimal Knowledge Approval foundations with fail-closed evidence and owner-approval boundaries
 - Market Data Layer quote foundation with canonical identities, fixed-decimal values, explicit provider capabilities, provenance, normalization, and deterministic validation
+- Market Data Provider Registry foundation with canonical provider metadata, deterministic discovery, immutable results, and explicit capability/asset-class queries
 
 The TypeScript application layer can now invoke one registered read-only Python Risk Engine calculation through a versioned typed client and fixed local subprocess adapter. No dashboard or business consumer is wired to the boundary yet, Python does not invoke TypeScript, and no mutable cross-runtime operation exists. The TypeScript AI infrastructure still uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
@@ -63,7 +64,7 @@ Day 6 historical evidence boundaries are specified in [Historical Pattern Librar
 
 The D7-T1 local runtime boundary is specified in [Python-TypeScript Integration Boundary](docs/PYTHON_TYPESCRIPT_INTEGRATION_BOUNDARY.md). TypeScript consumers depend on typed client and transport ports; only the fixed Python entry point knows the explicit operation registry and Python domain implementation. Day 7 also adds read-only validation reporting, a historical evidence product surface, and explicit cross-system evidence links; they do not add a provider, network, dashboard, persistence, recommendation, or capital-execution path.
 
-The deterministic Intelligence Layer direction is documented in [Architecture Checkpoint 1](docs/ARCHITECTURE_CHECKPOINT_1.md). The provider-independent quote boundary is specified in [Market Data Layer](docs/specifications/MARKET_DATA_LAYER.md). Both defer a general-purpose Alpha Memory database, live providers, automation, and production infrastructure.
+The deterministic Intelligence Layer direction is documented in [Architecture Checkpoint 1](docs/ARCHITECTURE_CHECKPOINT_1.md). Provider-independent market boundaries are specified in [Market Data Layer](docs/specifications/MARKET_DATA_LAYER.md) and [Provider Registry](docs/specifications/PROVIDER_REGISTRY.md). They defer a general-purpose Alpha Memory database, live providers, automation, and production infrastructure.
 
 ## Repository Structure
 
@@ -96,7 +97,7 @@ npm test
 npm run alpha:validate
 ```
 
-`npm test` runs the complete deterministic TypeScript suite plus the focused Python-side integration tests, including Strategy Versioning, Development Validation Log, Historical Pattern Library, Historical Analogy Engine, Event Replay, Historical Evidence Product Surface, Cross-System Evidence Linking, Evidence Assessment, Strategy Review, Knowledge Approval, Market Data, and Python-TypeScript Integration.
+`npm test` runs the complete deterministic TypeScript suite plus the focused Python-side integration tests, including Strategy Versioning, Development Validation Log, Historical Pattern Library, Historical Analogy Engine, Event Replay, Historical Evidence Product Surface, Cross-System Evidence Linking, Evidence Assessment, Strategy Review, Knowledge Approval, Market Data, Provider Registry, and Python-TypeScript Integration.
 
 `npm run alpha:validate` runs the local validation bundle: required-file checks, strict typecheck, aggregate tests, Markdown link/path/fence checks, provider/network/API/credential scans, Python-change scan, runtime-data tracking scan, merge-marker scan, `git diff --check`, and final working-tree warning. Component commands remain individually available.
 

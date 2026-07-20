@@ -27,6 +27,7 @@ const requiredFiles = [
   "docs/EVENT_REPLAY_ARCHITECTURE_SPECIFICATION.md",
   "docs/PYTHON_TYPESCRIPT_INTEGRATION_BOUNDARY.md",
   "docs/specifications/MARKET_DATA_LAYER.md",
+  "docs/specifications/PROVIDER_REGISTRY.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -60,6 +61,7 @@ const aggregateTestFiles = [
   "src/engines/strategy-review/StrategyReviewEngine.test.ts",
   "src/engines/knowledge-approval/KnowledgeApprovalService.test.ts",
   "src/engines/market-data/MarketDataService.test.ts",
+  "src/engines/market-data-provider-registry/MarketDataProviderRegistry.test.ts",
   "src/integration/python/PythonIntegration.test.ts",
   "src/contracts/AIRouter.test.ts",
   "src/engines/ai-router/AIRouterEngine.test.ts",

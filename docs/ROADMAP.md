@@ -132,10 +132,16 @@ Day 8 foundations are not production ready. Production persistence, transaction/
 ## Day 9 — Provider-Independent Market Boundary (In Progress)
 
 1. **D9-T1 — Market Data Layer Foundation**
-   - Status: implemented locally and validated; pending owner review, commit, and push.
+   - Status: completed, committed, and pushed as `52b292748cfac4af63d164b804bff084439b176e`.
    - Scope: canonical instrument and latest-quote contracts, explicit provider capabilities, opaque raw adapter boundary, fixed-decimal values, deterministic normalization/validation, provenance, quality states, and one read-only service.
    - Excludes: live providers, credentials, network/API calls, trades/bars/streaming, persistence, automatic fallback, Evidence/Replay wiring, Paper Trading, Dashboard, recommendation, broker, or execution behavior.
    - Exit criteria: provider schemas remain isolated; invalid, stale, incomplete, unsupported, unavailable, out-of-order, and conflicting data fail closed; focused tests and strict typecheck pass.
+
+2. **D9-T2 — Provider Registry Foundation**
+   - Status: implemented locally and validated; pending owner review, commit, and push.
+   - Scope: canonical provider metadata, explicit lifecycle/default enablement, bounded capabilities and asset classes, deterministic immutable discovery, strict lookup/gates, validation, and documentation.
+   - Excludes: provider records based on guesses, adapter instantiation, runtime reflection/registration, network/API code, credentials, selection, dynamic ranking, fallback, Paper Trading, or domain integration.
+   - Exit criteria: duplicate/malformed registrations fail explicitly; ID/capability/asset queries are deterministic and immutable; disabled or unsupported requirements fail closed; focused tests and strict typecheck pass.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 
