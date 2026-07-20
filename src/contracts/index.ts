@@ -35,3 +35,5 @@ export * from "./HistoricalAnalogy";
 export * from "./HistoricalAnalogyValidation";
 export * from "./EventReplay";
 export * from "./EventReplayValidation";
+export * from "./PythonIntegration";
+export * from "./PythonIntegrationValidation";

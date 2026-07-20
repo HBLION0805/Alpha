@@ -51,12 +51,27 @@ Alpha consists of the following major systems.
 
 ## Current Runtime Boundary
 
-Alpha currently has two unintegrated implementation surfaces:
+Alpha currently has two implementation surfaces connected by one narrow local read-only boundary:
 
 - The Python prototype/runtime contains local portfolio models, a terminal dashboard using sample data, deterministic risk calculations, configuration, and early stock/event-contract decision rules.
 - The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, the Historical Pattern Library, the Historical Analogy Engine foundation, and the Event Replay Architecture foundation.
 
-The Python application does not invoke the TypeScript engines or AI Runtime Workflow. The TypeScript layer does not modify Python portfolio, risk, decision, or trade state. Future integration must preserve deterministic capital controls and the owner-controlled execution boundary.
+The TypeScript application layer may invoke only the registered `risk.calculate_limits` operation through a versioned client and transport port. A fixed local subprocess entry point validates and dispatches the request to the existing Python Risk Engine. No dashboard or product consumer uses the boundary yet. Python does not invoke TypeScript, and TypeScript does not modify Python portfolio, risk, decision, or trade state.
+
+## Python-TypeScript Integration Boundary
+
+Responsible for:
+
+- Preserving a versioned provider-independent request and response contract across runtimes
+- Keeping TypeScript consumers independent from Python modules, commands, exceptions, and serialization details
+- Restricting invocation to an explicit immutable Python operation registry
+- Validating requests and responses on both sides
+- Normalizing validation, compatibility, domain, transport, timeout, protocol, and internal failures
+- Returning minimal request, operation, duration, status, contract-version, and completion metadata without logging payloads
+
+The initial transport starts a configured Python executable without a shell and always invokes the fixed `app.integration.entrypoint` module. JSON passes through stdin/stdout under bounded timeout and output limits. The transport is replaceable behind a TypeScript port.
+
+The only v1 operation is the read-only deterministic Risk Engine limit summary. The boundary owns translation and validation only; Python Risk Engine retains calculation authority. There is no dashboard integration, mutable operation, service deployment, remote network, retry loop, AI call, provider SDK, credential, broker, live-market source, or cross-runtime transaction.
 
 ## Production Persistence and Recovery
 

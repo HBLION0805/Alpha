@@ -23,6 +23,35 @@ declare module "node:fs" {
   export function writeSync(fd: number, data: string): number;
 }
 
+declare module "node:child_process" {
+  export interface SpawnSyncError extends Error {
+    readonly code?: string;
+  }
+
+  export interface SpawnSyncResult {
+    readonly stdout: string;
+    readonly stderr: string;
+    readonly status: number | null;
+    readonly signal: string | null;
+    readonly error?: SpawnSyncError;
+  }
+
+  export function spawnSync(
+    command: string,
+    args: ReadonlyArray<string>,
+    options: {
+      readonly cwd: string;
+      readonly input: string;
+      readonly encoding: "utf8";
+      readonly shell: false;
+      readonly timeout: number;
+      readonly maxBuffer: number;
+      readonly windowsHide: boolean;
+      readonly killSignal: "SIGTERM";
+    },
+  ): SpawnSyncResult;
+}
+
 declare module "node:os" {
   export function tmpdir(): string;
 }
@@ -32,4 +61,8 @@ declare module "node:path" {
   export function join(...paths: ReadonlyArray<string>): string;
   export function resolve(...paths: ReadonlyArray<string>): string;
   export const sep: string;
+}
+
+declare module "node:process" {
+  export const execPath: string;
 }

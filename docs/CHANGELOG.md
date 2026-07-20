@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-07-19 - Day 7 Task 1
+
+### Python-TypeScript Integration Boundary
+
+- Added a versioned provider-independent request/response contract, typed TypeScript client port, replaceable transport port, and stable `AlphaIntegrationError` taxonomy.
+- Added a fixed local subprocess adapter with no shell, structured JSON stdin/stdout, timeout, output limit, process-failure handling, and protocol validation.
+- Added a Python entry point, mirrored envelope validation, immutable operation registry, safe error normalization, and one read-only `risk.calculate_limits` adapter over the existing deterministic Risk Engine.
+- Added 15 focused TypeScript integration tests and 11 focused Python tests, raising the aggregate TypeScript baseline to 842/842.
+- Added no provider SDK, credential, network/API, AI call, broker, live-market source, background service, runtime persistence, dashboard wiring, mutable cross-runtime operation, or capital-domain behavior change.
+
 ## 2026-07-19 - Day 6 Milestone Review
 
 - Reconciled Day 6 milestone status after D6-T1 through D6-T5 were completed, committed, and pushed.

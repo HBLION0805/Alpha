@@ -127,9 +127,11 @@ Business logic must not depend on OpenAI, Claude, Gemini, or any specific provid
 
 ## 10. Python and TypeScript Boundaries
 
-The Python prototype/runtime and TypeScript foundations are currently not integrated into one application runtime.
+The Python prototype/runtime and TypeScript foundations have one implemented local read-only integration boundary, pending owner review. TypeScript may invoke only explicitly registered operations through the versioned typed client and transport ports documented in `docs/PYTHON_TYPESCRIPT_INTEGRATION_BOUNDARY.md`.
 
 - Do not modify Python business logic unless the task explicitly approves it.
+- Do not invoke Python modules, scripts, or subprocesses outside the formal integration transport.
+- Do not add arbitrary operation dispatch, caller-selected imports, or shell command construction.
 - Do not make TypeScript code mutate Python portfolio, risk, decision, or trade state unless a reviewed integration design exists.
 - Do not make Python invoke TypeScript AI infrastructure as part of a documentation or infrastructure-standard task.
 - TypeScript local NDJSON repositories are single-process development persistence unless a future production persistence task says otherwise.

@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - D7-T1 Python-TypeScript Integration Boundary
+
+### Contract and Port Before Runtime Implementation
+
+- Decision: TypeScript application code depends on a versioned typed client and transport port, while a fixed Python entry point owns request dispatch to existing Python domain engines.
+- Reason: Consumers must not depend on Python modules, shell commands, raw stdout, or Python exceptions, and the transport must remain replaceable.
+- Consequence: The local subprocess is an adapter only. A future service transport can replace it without changing business consumers or registered operation contracts.
+
+### Closed Operation Registry
+
+- Decision: Python executes only exact operations in an immutable registry, beginning with the read-only `risk.calculate_limits` operation over the existing deterministic Risk Engine.
+- Reason: Arbitrary module/function execution would create command-execution risk, weak validation, and unstable coupling; duplicating the risk calculation in TypeScript would create competing business logic.
+- Consequence: New operations require mirrored contracts, validation, registration, focused tests, and architecture review. Caller-selected imports, module paths, functions, and process arguments are prohibited.
+
+### Local Subprocess Foundation
+
+- Decision: Use a fixed no-shell local subprocess with bounded JSON stdin/stdout, timeout, and output size for the current single-owner local runtime.
+- Reason: Alpha already has a local Python prototype and TypeScript core, while HTTP, deployment, authentication, background services, and network operations are not justified for one read-only capability.
+- Consequence: The synchronous adapter is not a production service boundary. Remote transport, retries, process supervision, mutable operations, cross-runtime transactions, and product wiring remain separate owner-reviewed work.
+
 ## 2026-07-19 - Day 6 Milestone Closeout
 
 ### Historical Evidence Infrastructure Completed for Local Foundations

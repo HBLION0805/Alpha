@@ -56,6 +56,7 @@ Implemented and Tested Foundations:
 - Historical Pattern Library append-only historical-event, regime, asset-reaction, reusable-pattern, amendment, review, supersession, export, and audit foundation
 - Historical Analogy Engine deterministic current-situation comparison, scoring, ranking, bias, review, export, and audit foundation
 - Event Replay Architecture deterministic timeline, checkpoint, replay-session, review, export, and audit foundation
+- Python-TypeScript Integration Boundary versioned local read-only foundation
 
 Day 5 Milestone Status:
 
@@ -76,11 +77,17 @@ Day 6 Milestone Status:
 - D6-T5 Event Replay Architecture is complete, committed, and pushed as `cf37492431e4bf32f53b9bfe4e1ba6b742648984`.
 - D6-T5 preserves caller-supplied timelines, observation windows, immutable checkpoints, replay sessions, evidence references, missing-data state, completeness, confidence, limitations, export, and audit translation without backtesting, prediction, execution simulation, live-market data, provider, network, broker, or Python behavior.
 - Current aggregate validation is 827/827 TypeScript tests, including 68/68 focused Historical Pattern Library tests, 91/91 focused Historical Analogy Engine tests, and 20/20 focused Event Replay tests.
-- Day 6 is complete. Day 7 is planned but has not started.
+- Day 6 is complete.
 
-Proposed Day 7 Priority Order:
+Day 7 Milestone Status:
 
-1. Define the Python/TypeScript integration boundary while preserving deterministic capital controls.
+- D7-T1 implements a versioned typed TypeScript client, replaceable transport port, fixed local subprocess adapter, Python entry point, immutable operation registry, mirrored validation, stable errors, and one read-only Risk Engine demonstration operation.
+- D7-T1 contains no dashboard wiring, mutable cross-runtime operation, provider, network/API, broker, live-market, AI, persistence, portfolio, decision, trade, or strategy behavior change.
+- D7-T1 validation baseline is 842/842 TypeScript tests plus 11/11 focused Python tests; owner review, commit, and push remain pending.
+
+Day 7 Priority Order:
+
+1. Complete owner review and finalization of the D7-T1 Python-TypeScript integration boundary.
 2. Specify the Development Validation Log reporting integration without automating Git or owner approval.
 3. Plan product integration for historical evidence surfaces without adding live market data, provider execution, backtesting, or broker behavior.
 

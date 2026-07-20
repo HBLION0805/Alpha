@@ -16,3 +16,4 @@ export * from "./development-validation";
 export * from "./historical-pattern-library";
 export * from "./historical-analogy-engine";
 export * from "./event-replay";
+export * from "./historical-evidence-product-surface";

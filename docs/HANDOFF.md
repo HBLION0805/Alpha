@@ -4,7 +4,25 @@ Date:
 2026-07-19
 
 Project Stage:
-Day 6 complete - D6-T1 through D6-T5 complete, committed, and pushed; Day 7 planned but not started
+Day 6 complete; D7-T1 Python-TypeScript Integration Boundary implemented and validated locally, awaiting owner review
+
+## Day 7 Task 1 Current Work
+
+D7-T1 establishes the first narrow runtime boundary between Alpha's TypeScript application layer and Python deterministic domain engines.
+
+Implemented:
+
+- versioned TypeScript/Python request and response contracts
+- typed TypeScript integration client and replaceable transport ports
+- fixed local subprocess adapter with no shell, timeout, output limit, and safe process/protocol errors
+- fixed Python JSON entry point and immutable registered-operation dispatcher
+- validation on both sides, stable public errors, and bounded audit metadata
+- one read-only `risk.calculate_limits` operation delegating to the existing Python `RiskEngine.get_summary`
+- 15 focused TypeScript tests and 11 focused Python tests
+
+The aggregate TypeScript baseline is 842/842 tests. No dashboard consumer, mutable cross-runtime operation, arbitrary execution, provider, AI call, network/API, credential, broker, live-market source, background service, runtime persistence, or Python domain-rule change was added.
+
+D7-T1 is uncommitted and unpushed pending owner review. Do not begin D7-T2 until D7-T1 is approved and finalized.
 
 ## Day 6 Milestone Review
 
@@ -259,18 +277,19 @@ Current TypeScript foundations:
 - Event Replay Architecture: deterministic timeline, checkpoint, replay-session, review, privacy, export, and audit foundation implemented for local single-process use
 - Instrument Ranking, Trade Outcome, and Learning Loop: documented architecture or backlog, not implemented runtime systems
 
-Python and TypeScript do not currently form one integrated application runtime. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
+Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
 
 ## Validation Status
 
 Current validation completed successfully:
 
 - TypeScript strict typecheck passed
-- Aggregate TypeScript tests: 827/827 passed, including 40/40 focused Prediction Log, 51/51 focused Alpha Journal, 64/64 focused Research Lab, 70/70 focused Strategy Versioning, 48/48 focused Development Validation Log, 68/68 focused Historical Pattern Library, 91/91 focused Historical Analogy Engine, and 20/20 focused Event Replay tests
+- Aggregate TypeScript tests: 842/842 passed, including 40/40 focused Prediction Log, 51/51 focused Alpha Journal, 64/64 focused Research Lab, 70/70 focused Strategy Versioning, 48/48 focused Development Validation Log, 68/68 focused Historical Pattern Library, 91/91 focused Historical Analogy Engine, 20/20 focused Event Replay, and 15/15 focused Python-integration client tests
+- Focused Python integration tests: 11/11 passed
 - Focused AI Infrastructure tests: 333/333 passed
 - Provider SDK and production-adapter scan clean
 - Network, API, and credential scan clean
-- Python and unrelated business-logic change scan clean
+- Scoped Python-change scan confirmed only the new integration boundary and its focused tests; existing Python business logic is unchanged
 - Runtime-data Git tracking scan clean
 - Secret-metadata and merge-marker scans clean
 - `git diff --check` passed
@@ -315,11 +334,11 @@ Blockers before live provider use:
 - No encryption, backup, restoration, archival, retention enforcement, or tamper-resistant signing for ledger/audit data
 - No reviewed production secret-management and adapter boundary
 
-## Proposed Day 7 Priority Order
+## Day 7 Priority Order
 
-These are proposed planning priorities only. Day 6 is complete and pushed; Day 7 has not started.
+Day 7 has started with D7-T1 implemented and awaiting owner review.
 
-1. Define the Python/TypeScript integration boundary while preserving deterministic capital controls.
+1. Complete D7-T1 owner review and finalization while preserving deterministic capital controls.
 2. Specify the Development Validation Log reporting integration without automating Git or owner approval.
 3. Plan product integration for historical evidence surfaces without adding live market data, provider execution, backtesting, or broker behavior.
 
@@ -339,4 +358,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Commit and push this Day 6 milestone review documentation only after owner approval. Do not begin Day 7 implementation.
+Owner review of D7-T1. If approved, run the final scoped validation bundle, commit only the reviewed D7-T1 changes, and push only with explicit owner authorization. Do not begin D7-T2.
