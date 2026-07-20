@@ -109,7 +109,17 @@ A decision request must fail closed unless its required evidence has been explic
 
 ---
 
-# 11. Every Decision Must Be Recorded
+# 11. No Strategy Change Without Approved Knowledge
+
+A strategy change must fail closed unless it is supported by current, applicable knowledge approved through a versioned policy and an auditable owner decision.
+
+Facts, interpretations, Candidate Knowledge, Approved Knowledge, Strategy Change Proposals, and Strategy Versions remain separate. One outcome may create a candidate, but it does not normally establish permanent knowledge. AI may draft or challenge a candidate; it cannot approve knowledge, override evidence blockers, or mutate a strategy.
+
+Approved Knowledge is necessary but does not itself require or authorize a strategy change. Any change must proceed through a separate proposal, validation, owner approval, and new immutable Strategy Version. Active frozen plans remain unchanged.
+
+---
+
+# 12. Every Decision Must Be Recorded
 
 Alpha maintains complete records of:
 

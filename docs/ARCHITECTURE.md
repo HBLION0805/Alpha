@@ -370,14 +370,16 @@ Responsible for:
 
 ---
 
-## Reviewed Learning and Strategy Change Boundary (Planned)
+## Knowledge Approval and Strategy Change Boundary (Planned)
 
 Responsible for:
 
-- Reviewing completed predictions and trade outcomes
-- Performing root cause analysis and pattern detection
-- Validating candidate improvements
-- Proposing evidence-based strategy changes
+- Preserving Candidate Knowledge derived from completed Strategy Reviews without treating it as approved truth
+- Enforcing versioned evidence, provenance, sample, compatibility, conflict, and owner-authority gates
+- Recording immutable Approved Knowledge plus supersession, deprecation, and revocation history
+- Requiring a separate Strategy Change Proposal and normal Strategy Versioning approval before any future strategy change
+
+The architecture is defined in `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`. Its governing rule is “No Strategy Change Without Approved Knowledge.” Deterministic checks may block or establish eligibility for owner review, but they cannot approve knowledge. AI may assist drafting and objection discovery but cannot approve, reject, resolve evidence blockers, or mutate strategy. Approved Knowledge is necessary for a future change proposal but does not itself require or authorize a change.
 
 ---
 
@@ -508,12 +510,12 @@ Cross-System Evidence Linking is a link resolver, not a graph database, source a
 This layer consumes explicit evidence links without changing source ownership:
 
 1. Evidence Assessment Foundation is implemented, reviewed, and committed. It calculates published completeness, availability, freshness, consistency, version-compatibility, provenance, and limitation indicators from explicit evidence.
-2. Strategy Review Foundation is implemented locally pending owner review. It evaluates one explicitly completed prediction/plan/execution/outcome cycle across separate prediction-quality, execution-quality, risk-discipline, and realized-profitability dimensions. It accepts normalized read snapshots only; a future durable Trade Outcome Log remains required for production outcome authority and multi-cycle performance evaluation.
-3. Reviewed Learning Proposal Foundation may preserve review-required lessons from completed evidence. It cannot alter a frozen trade plan or activate, replace, or optimize a strategy.
+2. Strategy Review Foundation is implemented, reviewed, committed, and pushed. It evaluates one explicitly completed prediction/plan/execution/outcome cycle across separate prediction-quality, execution-quality, risk-discipline, and realized-profitability dimensions. It accepts normalized read snapshots only; a future durable Trade Outcome Log remains required for production outcome authority and multi-cycle performance evaluation.
+3. Knowledge Approval Layer architecture separates facts, interpretations, Candidate Knowledge, Approved Knowledge, Strategy Change Proposals, and Strategy Versions. Candidate and approval records remain planned until D8-T3B; no strategy mutation is authorized.
 
 “No Evidence, No Decision” is the entry gate to downstream decision evaluation. A request must fail closed when required evidence is `INSUFFICIENT`, `CONFLICTING`, or `UNAVAILABLE`; only an explicitly `SUFFICIENT` assessment under a traceable versioned policy may proceed. Sufficiency is necessary but does not itself produce a recommendation or authorize action. Decision evaluation, Risk Engine review, frozen-plan requirements, owner approval, and execution controls remain separate downstream gates.
 
-The Evidence Assessment Foundation is complete and the Strategy Review Foundation is locally implemented pending review; multi-cycle performance evaluation and the learning-proposal foundation remain planned. AI may optionally draft an owner-reviewed explanation after deterministic outputs exist; it cannot create links, set metrics, override the evidence gate, approve a lesson, activate a strategy, bypass Risk/Decision controls, or authorize capital action. A general-purpose Alpha Memory database is not approved because it would duplicate existing authorities; a future read-only knowledge-retrieval policy requires a concrete consumer and production persistence/privacy review.
+The Evidence Assessment and Strategy Review foundations are complete. The Knowledge Approval architecture is documented pending owner review, while its runtime contracts and workflow remain unimplemented. AI may optionally draft a candidate or objections after deterministic outputs exist; it cannot create facts, override the evidence gate, approve knowledge, activate a strategy, bypass Risk/Decision controls, or authorize capital action. A general-purpose Alpha Memory database is not approved because it would duplicate existing authorities; a future read-only knowledge-retrieval policy requires a concrete consumer and production persistence/privacy review.
 
 ---
 
@@ -592,7 +594,16 @@ v
 Strategy Review Foundation
 |
 v
-Reviewed Learning Proposal Foundation (planned)
+Candidate Knowledge (planned)
+|
+v
+Owner Knowledge Approval (planned)
+|
+v
+Approved Knowledge (planned)
+|
+v
+Strategy Change Proposal (future separate gate)
 |
 v
 Strategy Versioning
@@ -607,6 +618,8 @@ The Portfolio System and Config System provide control inputs across the flow. R
 Execution is currently an external, owner-controlled action. Future broker integration must not bypass owner approval, the approved trade plan, or Risk Engine limits.
 
 Strategy Review does not make the durable Trade Outcome Log production-ready. It reviews only explicit finalized read snapshots, preserves prediction quality, execution quality, risk discipline, and profitability independently, and cannot reopen a completed trade or change a strategy.
+
+Knowledge approval occurs only after completed Strategy Review. One outcome may create a candidate but does not normally create durable Approved Knowledge. Approved Knowledge remains informational until a separate Strategy Change Proposal passes its own validation and owner approval and becomes a new immutable Strategy Version. Existing active or frozen plans are never mutated by this learning path.
 
 ---
 

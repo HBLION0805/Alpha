@@ -34,7 +34,7 @@ Documented Architecture (designs may precede implementation):
 - Research Framework
 - Instrument Ranking Engine
 - Trade Outcome Log
-- Reviewed Learning Proposal Foundation
+- Knowledge Approval Layer architecture
 
 Implemented and Tested Foundations:
 
@@ -92,7 +92,7 @@ Day 7 Milestone Status:
 - The aggregate baseline is 876/876 TypeScript tests plus 11/11 focused Python integration tests.
 - Day 7 added no dashboard integration, mutable cross-runtime operation, provider or network/API integration, live market data, broker behavior, AI reasoning, automatic learning, production persistence, or capital-domain behavior change.
 
-## Day 8 — Deterministic Intelligence Layer Foundations (Planned)
+## Day 8 — Deterministic Intelligence Layer Foundations (In Progress)
 
 Day 8 begins from explicit evidence links and existing immutable records. It is a small, staged learning/evaluation phase, not a new recommendation platform, memory database, or automation milestone. See [Architecture Checkpoint 1](ARCHITECTURE_CHECKPOINT_1.md) for the full capability analysis and model strategy.
 
@@ -103,21 +103,29 @@ Day 8 begins from explicit evidence links and existing immutable records. It is 
    - Exit criteria: source authority preserved; no recommendation/ranking; unresolved evidence remains explicit; only `SUFFICIENT` required evidence may reach downstream decision evaluation; focused tests pass.
 
 2. **D8-T2 — Strategy Review Foundation**
-   - Status: implemented locally pending owner review.
+   - Status: completed, committed, and pushed as `553d0e2946cd305e999bf8d7fbaec387381ed592`.
    - Consumes one explicitly completed prediction/plan/execution/outcome cycle, Evidence Assessment, risk findings, replay state, and explicit strategy-version references.
    - Preserves prediction quality, execution quality, risk discipline, and realized profitability independently; excludes aggregate scoring, ranking, learning approval, strategy mutation, and production outcome authority.
    - Exit criteria: active or incomplete cycles fail closed; profitability cannot hide prediction, execution, or risk failures; provenance and focused tests are complete.
 
-3. **D8-T3 — Reviewed Learning Proposal Foundation**
-   - Build now after D8-T2; bounded architecture plus implementation task.
-   - Preserves review-required lessons from completed evidence, with fact/inference separation and no direct strategy mutation.
-   - Excludes automatic learning, activation, learning during frozen execution, and profitability conclusions without a Trade Outcome Log.
-   - Exit criteria: every proposal has completed evidence provenance; owner approval and Strategy Versioning remain separate; focused tests pass.
+3. **D8-T3A — Knowledge Approval Layer Architecture**
+   - Status: architecture documented locally pending owner review.
+   - Defines facts, interpretations, Candidate Knowledge, deterministic approval eligibility, owner decisions, Approved Knowledge, supersession/deprecation/revocation, and the separate Strategy Change Proposal boundary.
+   - Excludes runtime contracts, repositories, AI calls, persistence, strategy mutation, and a general-purpose memory database.
+   - Exit criteria: “No Strategy Change Without Approved Knowledge” is authoritative; source ownership and fail-closed rules are explicit; documentation validation passes; owner approves the architecture.
 
-4. **D8-T4 — Intelligence Layer Milestone Review**
-   - Build now after D8-T3 as a short documentation/validation closeout.
+4. **D8-T3B — Minimal Knowledge Approval Foundation**
+   - Build now after D8-T3A approval as one bounded implementation task.
+   - Combines typed candidate/decision/approved-knowledge contracts, deterministic policy guards, owner-only approval, append-only lifecycle, an in-memory repository/current read model, and Unified Audit translation.
+   - Excludes Strategy Change Proposal implementation, AI review adapters, production persistence, broad retrieval, dashboard work, and automatic learning.
+   - Exit criteria: completed and `SUFFICIENT` review evidence is required; blockers fail closed; approval is owner-only; knowledge cannot mutate strategy; focused tests and strict typecheck pass.
+
+5. **D8-T4 — Intelligence Layer Milestone Review**
+   - Build now after D8-T3B as a short documentation/validation closeout.
    - Reconciles architecture, decisions, roadmap, handoff, test baseline, production limitations, and backlog.
    - No standalone review engine is created.
+
+The separate Strategy Change Proposal workflow remains backlog and must not delay Phase 1 API or Paper Trading. A separate Candidate-only task, Approval Workflow task, and Approved Knowledge Store task are not planned; the cohesive minimum belongs in D8-T3B.
 
 Day 8 foundations are not production ready. Production persistence, transaction/recovery, privacy/retention enforcement, dashboard integration, live data, providers, brokers, backtesting, and automation remain separately reviewed work.
 
@@ -153,7 +161,7 @@ Planned Features:
 Planned Features:
 
 - Trade Outcome Log implementation
-- Reviewed Learning Proposal product integration and production hardening
+- Knowledge Approval product integration and production hardening
 - Strategy Versioning product integration and production hardening
 - Performance Analysis
 - Research Lab product integration and production hardening
@@ -193,6 +201,7 @@ Planned Features:
 - Sector Rotation Engine
 - Event Replay product integration and production hardening
 - Knowledge Retrieval Policy / Read Model after a concrete consumer and production persistence/privacy review
+- Strategy Change Proposal workflow after a concrete consumer and durable evidence requirements are approved
 - Price Timeline Database
 - Backtesting and reviewed-learning expansion
 - Production provider adapters

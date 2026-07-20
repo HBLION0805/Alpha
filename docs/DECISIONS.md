@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-20 - D8-T3A Knowledge Approval Layer Architecture
+
+### No Strategy Change Without Approved Knowledge
+
+- Decision: Adopt “No Strategy Change Without Approved Knowledge” as a fail-closed architecture rule. Facts, interpretations, Candidate Knowledge, Approved Knowledge, Strategy Change Proposals, and Strategy Versions are separate records and approval gates.
+- Reason: A completed or profitable result can support a candidate lesson without proving a reusable rule. Collapsing review, learning, and strategy change would invite overfitting, hindsight bias, and unauthorized mutation.
+- Consequence: Only current, applicable Approved Knowledge may support a future Strategy Change Proposal. Approved Knowledge does not itself require, create, approve, or activate a strategy change; Strategy Versioning and owner approval remain authoritative, and active frozen plans remain unchanged.
+
+### Deterministic Eligibility, Owner-only Approval
+
+- Decision: Versioned deterministic policy may block a Candidate Knowledge item or declare it eligible for owner review, but only an authorized owner may approve or reject knowledge during the personal-system phase.
+- Reason: Evidence completeness, lifecycle status, provenance, sample counts, version compatibility, conflicts, and stale sources are deterministic checks; granting durable authority is a governance decision.
+- Consequence: Incomplete reviews, non-`SUFFICIENT` review evidence, unresolved conflicts, incompatible versions, stale sources, missing authority, and unmet policy fail closed. AI narrative or confidence cannot satisfy a blocker or grant approval. A single verified severe safety or hard-policy violation may use only an explicit versioned exception and still requires owner approval.
+
+### Immutable Knowledge Lifecycle Without a Memory Database
+
+- Decision: Knowledge Approval owns append-only candidate, decision, and Approved Knowledge lifecycle records, including explicit supersession, deprecation, and revocation. It does not become a general notes, research, pattern, configuration, or memory database.
+- Reason: Journal, Research Lab, Historical Pattern Library, Evidence Assessment, Strategy Review, and Strategy Versioning already own their records; copying their payloads would create conflicting authority.
+- Consequence: The layer stores bounded approved statements and typed references. Duplicate and contradiction checks use exact declared keys and scopes, not fuzzy or semantic matching. Prior history is never edited or deleted.
+
+### One Cohesive Minimal Implementation
+
+- Decision: After D8-T3A owner approval, implement one bounded D8-T3B Knowledge Approval Foundation containing contracts, deterministic approval guards, owner decisions, append-only lifecycle, an in-memory repository/current read model, and audit translation.
+- Reason: Separate Candidate, Approval Workflow, and Approved Knowledge Store tasks would leave partial authority boundaries and add overhead without improving the Phase 1 MVP.
+- Consequence: Strategy Change Proposal workflow, AI review adapters, broader retrieval, and production persistence remain backlog. D8-T3B should close the minimum governance gap without delaying API and Paper Trading work.
+
 ## 2026-07-20 - D8-T2 Strategy Review Foundation
 
 ### Single-Cycle Review Before Performance Evaluation
@@ -36,11 +62,11 @@
 - Rejected alternatives: AI guessing, semantic inference, silently dropping unresolved items, averaging required conflicts into a score, and treating optional evidence as universally mandatory.
 - Consequences: `INSUFFICIENT`, `CONFLICTING`, and `UNAVAILABLE` stop progression. `SUFFICIENT` is necessary but never guarantees `BUY`, `ENTER`, profitability, or execution; the Decision Engine still evaluates the opportunity, the Risk Engine may reject or constrain it, frozen-plan rules remain binding, and human approval or later execution controls may still be required. AI cannot override the gate.
 
-### Performance Evaluation Before Broad Learning
+### Strategy Review Before Knowledge Approval
 
-- Decision: Follow evidence assessment with a Strategy Performance Evaluation Foundation based on completed Prediction Log outcomes/reviews and explicit strategy-version references, then a Reviewed Learning Proposal Foundation.
+- Decision: Follow evidence assessment with a deterministic single-cycle Strategy Review, then a separately governed Knowledge Approval Layer.
 - Reason: Strategy Versioning already owns version lineage, validation, approval, activation, comparison, and recorded performance evidence; Prediction Log already separates forecast evidence, outcomes, and reviews. A broad learning engine would duplicate authority and risk reactive strategy changes.
-- Consequence: Prediction quality and trading profitability remain separate. Incomplete samples must be non-comparable, a future Trade Outcome Log is required before profitability/execution attribution, and learning proposals require review before any separate Strategy Versioning proposal and owner approval.
+- Consequence: Prediction quality and trading profitability remain separate. A future durable Trade Outcome Log remains required for production outcome authority and multi-cycle evaluation. Candidate Knowledge requires owner approval before it becomes Approved Knowledge, and any strategy change remains a later separate proposal and Strategy Versioning approval.
 
 ### No General-Purpose Alpha Memory Authority
 

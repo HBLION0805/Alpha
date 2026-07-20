@@ -1,6 +1,6 @@
 # Strategy Review Foundation
 
-Status: D8-T2 implemented locally, pending owner review
+Status: D8-T2 implemented, owner-approved, committed, and pushed
 Contract version: `1.0`
 
 ## Responsibility

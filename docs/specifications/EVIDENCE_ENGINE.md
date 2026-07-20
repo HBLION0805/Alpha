@@ -1,6 +1,6 @@
 # Evidence Engine Foundation
 
-Status: D8-T1 foundation implemented locally, pending owner review
+Status: D8-T1 foundation implemented, owner-approved, committed, and pushed
 Contract version: `1.0`
 
 ## Responsibility

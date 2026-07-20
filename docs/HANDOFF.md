@@ -1,14 +1,14 @@
 # Alpha Handoff
 
 Date:
-2026-07-19
+2026-07-20
 
 Project Stage:
-Architecture Checkpoint 1 and D8-T1 Evidence Assessment complete and pushed; D8-T2 Strategy Review implemented locally pending owner review
+Architecture Checkpoint 1, D8-T1 Evidence Assessment, and D8-T2 Strategy Review complete and pushed; D8-T3A Knowledge Approval Layer architecture documented locally pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `4033bce3a4b57e80a4cbcc82e575420e298aa50f` on clean `main`, equal to `origin/main` before this documentation task.
+Verified baseline: `553d0e2946cd305e999bf8d7fbaec387381ed592` on clean `main`, equal to `origin/main` before D8-T3A.
 
 Day 7 completed:
 
@@ -19,7 +19,7 @@ Day 7 completed:
 
 Day 7 adds no dashboard wiring, mutable cross-runtime operation, graph database, source-authority transfer, AI reasoning, automatic learning, provider/network/API integration, live market data, broker behavior, production persistence, or capital-domain behavior change.
 
-Architecture Checkpoint 1 selects a narrow Day 8 sequence: Evidence Assessment Foundation, Strategy Performance Evaluation Foundation, Reviewed Learning Proposal Foundation, then an Intelligence Layer Milestone Review. It rejects a general-purpose Alpha Memory database and defers trade-profitability evaluation until a Trade Outcome Log exists. See `docs/ARCHITECTURE_CHECKPOINT_1.md`.
+Architecture Checkpoint 1 selected a narrow deterministic sequence. D8-T1 and D8-T2 are now complete. D8-T3A refines the planned learning step into a Knowledge Approval Layer that separates Candidate Knowledge, owner approval, Approved Knowledge, and a future Strategy Change Proposal. It rejects a general-purpose Alpha Memory database and preserves the future durable Trade Outcome boundary. See `docs/ARCHITECTURE_CHECKPOINT_1.md` and `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`.
 
 ## Day 6 Milestone Review
 
@@ -276,13 +276,13 @@ Current TypeScript foundations:
 - Unified Validation Reporting: normalized deterministic validation-reporting foundation implemented without replacing validators
 - Historical Evidence Product Surface: read-only deterministic composition of historical pattern, analogy, replay, prediction, and strategy reference metadata implemented
 - Cross-System Evidence Linking: read-only explicit typed link validation and resolution foundation implemented; source repositories remain authoritative
-- Evidence Assessment Foundation: completed and pushed; Strategy Review Foundation: deterministic single-cycle four-dimension review implemented locally pending owner review; Instrument Ranking, durable Trade Outcome, multi-cycle performance evaluation, and Reviewed Learning Proposals remain planned foundations or backlog
+- Evidence Assessment and Strategy Review foundations: completed and pushed; Knowledge Approval Layer architecture: documented locally pending owner review; Instrument Ranking, durable Trade Outcome, multi-cycle performance evaluation, Strategy Change Proposals, and broader knowledge retrieval remain planned or backlog
 
 Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. Day 7 product surfaces and links are TypeScript read models only. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
 
 ## Validation Status
 
-Current working-tree validation completed successfully:
+The committed D8-T2 validation baseline completed successfully:
 
 - TypeScript strict typecheck passed
 - Aggregate TypeScript tests: 937/937 passed, including 40/40 Prediction Log, 51/51 Alpha Journal, 64/64 Research Lab, 70/70 Strategy Versioning, 48/48 Development Validation Log, 68/68 Historical Pattern Library, 91/91 Historical Analogy Engine, 20/20 Event Replay, 4/4 Historical Evidence Product Surface, 14/14 Cross-System Evidence Linking, 26/26 Evidence Engine, 35/35 Strategy Review, 15/15 Python-integration client, 5/5 Validation Reporting, and 333/333 AI Infrastructure tests
@@ -293,6 +293,8 @@ Current working-tree validation completed successfully:
 - Runtime-data Git tracking scan clean
 - Secret-metadata and merge-marker scans clean
 - `git diff --check` passed
+
+D8-T3A changes architecture documentation only. Focused documentation link/path/fence, terminology, lifecycle, source-authority, principle, merge-marker, whitespace, and `git diff --check` validation passed; the application test baseline is unchanged.
 
 ## Git Milestones
 
@@ -312,6 +314,7 @@ Current working-tree validation completed successfully:
 - `ce9f05798fea14f8e7e71eae08e346367998d073` — Day 7 integration foundation and Historical Evidence Product Surface
 - `4033bce3a4b57e80a4cbcc82e575420e298aa50f` — Cross-System Evidence Linking Foundation
 - `d5aeff9e24b2c2e237c2e6bd94379dc8e36ee719` — Architecture Checkpoint 1, Evidence Assessment Foundation, and Evidence Gate
+- `553d0e2946cd305e999bf8d7fbaec387381ed592` — Strategy Review Foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -340,9 +343,10 @@ Blockers before live provider use:
 ## Day 8 Priority Order
 
 1. D8-T1 Evidence Assessment Foundation: completed, committed, and pushed with the fail-closed “No Evidence, No Decision” gate.
-2. D8-T2 Strategy Review Foundation: deterministic read-only review of a completed single cycle across prediction quality, execution quality, risk discipline, and realized profitability; implemented locally pending owner review.
-3. D8-T3 Reviewed Learning Proposal Foundation: review-required proposals from completed evidence, without strategy mutation or learning during frozen execution.
-4. D8-T4 Intelligence Layer Milestone Review: documentation, validation, dependency, and backlog reconciliation only.
+2. D8-T2 Strategy Review Foundation: completed, committed, and pushed as `553d0e2946cd305e999bf8d7fbaec387381ed592`.
+3. D8-T3A Knowledge Approval Layer Architecture: documented locally pending owner review; establishes “No Strategy Change Without Approved Knowledge,” owner-only approval, and immutable knowledge governance.
+4. D8-T3B Minimal Knowledge Approval Foundation: one bounded implementation of candidate, policy, decision, approved-knowledge, lifecycle, in-memory read-model, and audit contracts without strategy mutation.
+5. D8-T4 Intelligence Layer Milestone Review: documentation, validation, dependency, and backlog reconciliation only.
 
 Backlog without immediate scheduling:
 
@@ -354,6 +358,7 @@ Backlog without immediate scheduling:
 - Event Replay product integration and production hardening
 - Price Timeline Database
 - Knowledge Retrieval Policy / Read Model after a concrete consumer and persistence/privacy review
+- Strategy Change Proposal workflow after a concrete consumer and durable evidence requirements are approved
 - Backtesting and reviewed-learning expansion
 - Production provider adapters
 - Production database and transactional outbox architecture
@@ -361,4 +366,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review and finalization of D8-T2 Strategy Review Foundation. Do not begin Reviewed Learning Proposals, multi-cycle strategy evaluation, a general-purpose Alpha Memory database, durable Trade Outcome work, dashboard integration, provider/network integration, or production persistence until the D8-T2 boundary is approved.
+Owner review of D8-T3A Knowledge Approval Layer Architecture. If approved, proceed only to the bounded D8-T3B Minimal Knowledge Approval Foundation. Do not begin Strategy Change Proposal work, multi-cycle strategy evaluation, a general-purpose Alpha Memory database, durable Trade Outcome work, dashboard integration, provider/network integration, production persistence, API, or Paper Trading within D8-T3A.
