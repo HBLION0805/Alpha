@@ -37,3 +37,4 @@ export * from "./EventReplay";
 export * from "./EventReplayValidation";
 export * from "./PythonIntegration";
 export * from "./PythonIntegrationValidation";
+export * from "./CrossSystemEvidenceLink";

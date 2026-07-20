@@ -54,6 +54,7 @@ const aggregateTestFiles = [
   "src/engines/historical-analogy-engine/HistoricalAnalogyEngine.test.ts",
   "src/engines/event-replay/EventReplayEngine.test.ts",
   "src/engines/historical-evidence-product-surface/HistoricalEvidenceProductSurface.test.ts",
+  "src/engines/cross-system-evidence-linking/CrossSystemEvidenceLinkingSurface.test.ts",
   "src/integration/python/PythonIntegration.test.ts",
   "src/contracts/AIRouter.test.ts",
   "src/engines/ai-router/AIRouterEngine.test.ts",
