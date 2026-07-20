@@ -97,16 +97,16 @@ Day 7 Milestone Status:
 Day 8 begins from explicit evidence links and existing immutable records. It is a small, staged learning/evaluation phase, not a new recommendation platform, memory database, or automation milestone. See [Architecture Checkpoint 1](ARCHITECTURE_CHECKPOINT_1.md) for the full capability analysis and model strategy.
 
 1. **D8-T1 — Evidence Assessment Foundation**
-   - Status: implemented locally with the “No Evidence, No Decision” gate documented; pending owner review and milestone finalization.
+   - Status: completed, committed, and pushed as `d5aeff9e24b2c2e237c2e6bd94379dc8e36ee719` with the “No Evidence, No Decision” gate.
    - Depends on Day 7 evidence links and product surface.
    - Produces deterministic completeness, provenance, availability, version-consistency, and limitation assessment from explicit links only.
    - Exit criteria: source authority preserved; no recommendation/ranking; unresolved evidence remains explicit; only `SUFFICIENT` required evidence may reach downstream decision evaluation; focused tests pass.
 
-2. **D8-T2 — Strategy Performance Evaluation Foundation**
-   - Build now after D8-T1; weekend task because metric and sample-comparability policy require careful review.
-   - Consumes completed prediction outcomes/reviews and explicit strategy-version references.
-   - Excludes trade profitability, execution attribution, backtesting, auto-ranking, and strategy activation until a Trade Outcome Log exists.
-   - Exit criteria: prediction quality remains separate from profitability; incomplete samples are non-comparable; provenance and tests are complete.
+2. **D8-T2 — Strategy Review Foundation**
+   - Status: implemented locally pending owner review.
+   - Consumes one explicitly completed prediction/plan/execution/outcome cycle, Evidence Assessment, risk findings, replay state, and explicit strategy-version references.
+   - Preserves prediction quality, execution quality, risk discipline, and realized profitability independently; excludes aggregate scoring, ranking, learning approval, strategy mutation, and production outcome authority.
+   - Exit criteria: active or incomplete cycles fail closed; profitability cannot hide prediction, execution, or risk failures; provenance and focused tests are complete.
 
 3. **D8-T3 — Reviewed Learning Proposal Foundation**
    - Build now after D8-T2; bounded architecture plus implementation task.

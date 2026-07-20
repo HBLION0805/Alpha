@@ -19,3 +19,4 @@ export * from "./event-replay";
 export * from "./historical-evidence-product-surface";
 export * from "./cross-system-evidence-linking";
 export * from "./evidence-engine";
+export * from "./strategy-review";

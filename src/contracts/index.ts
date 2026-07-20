@@ -39,3 +39,4 @@ export * from "./PythonIntegration";
 export * from "./PythonIntegrationValidation";
 export * from "./CrossSystemEvidenceLink";
 export * from "./EvidenceEngine";
+export * from "./StrategyReview";

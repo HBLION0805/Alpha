@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-07-20 - D8-T2 Strategy Review Foundation
+
+- Added a deterministic read-only Strategy Review contract and engine for explicitly completed single-cycle review.
+- Preserved prediction quality, execution quality, risk discipline, and realized trading profitability as four independent dimensions with no aggregate score.
+- Enforced reviewed-prediction, completed-execution, finalized-outcome, released-plan, replay-policy, and Evidence Assessment eligibility gates.
+- Added explicit protection against source mutation, active-plan changes, execution instructions, completed-trade reopening, automatic lessons, and strategy-version creation.
+- Added focused Strategy Review tests and registered them with Alpha validation.
+- Production Trade Outcome Log authority, durable persistence, source adapters, multi-cycle evaluation, learning approval, ranking, optimization, UI, and live execution remain deferred.
+
 ## 2026-07-19 - Day 7 Milestone and Architecture Checkpoint 1
 
 - Completed and pushed D7-T1 through D7-T4: Python-TypeScript Integration Boundary, Unified Validation Reporting, Historical Evidence Product Surface, and Cross-System Evidence Linking.

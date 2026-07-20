@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-20 - D8-T2 Strategy Review Foundation
+
+### Single-Cycle Review Before Performance Evaluation
+
+- Decision: Implement Strategy Review as a deterministic read-only assessment of one explicitly completed prediction, frozen-plan, execution, risk, and realized-outcome cycle.
+- Reason: Alpha needs to preserve prediction quality, execution quality, risk discipline, and trading profitability independently before any reviewed learning or multi-strategy evaluation can be trusted.
+- Consequence: The foundation consumes normalized, versioned source snapshots and produces no source mutation, aggregate score, ranking, execution instruction, lesson approval, or strategy change. Durable outcome persistence and multi-cycle comparison remain future work.
+
+### Finalized Snapshot Without Production Outcome Authority
+
+- Decision: Permit the local foundation to classify realized profitability only when a caller supplies an explicit finalized read snapshot with source and audit references.
+- Reason: Existing `TradeRecord` contracts contain structured plan-adherence, risk-review, and realized economic fields, but Alpha does not yet have a durable append-only Trade Outcome Log.
+- Consequence: D8-T2 can prove dimension separation and lifecycle behavior without claiming production durability or replacing a future Trade Outcome Log. Pending, unavailable, or unrealized outcomes cannot produce a completed formal review.
+
+### Independent Dimensions and Frozen-Trade Protection
+
+- Decision: Never infer one review dimension from another and never allow Strategy Review to reopen a completed trade or modify an active frozen plan.
+- Reason: Profit can coexist with an incorrect prediction, non-compliant execution, or a risk violation; a correct prediction can coexist with a loss.
+- Consequence: Profitable violations remain violations, no composite strategy score exists, all lessons require later human review, and regret, excitement, or fear of missing out cannot emit re-entry behavior.
+
 ## 2026-07-19 - Architecture Checkpoint 1: Deterministic Intelligence Layer Direction
 
 ### Evidence Assessment Before Recommendation

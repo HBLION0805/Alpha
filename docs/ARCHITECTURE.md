@@ -507,13 +507,13 @@ Cross-System Evidence Linking is a link resolver, not a graph database, source a
 
 This layer consumes explicit evidence links without changing source ownership:
 
-1. Evidence Assessment Foundation is implemented locally pending owner review and calculates published completeness, availability, freshness, consistency, version-compatibility, provenance, and limitation indicators from explicit evidence.
-2. Strategy Performance Evaluation Foundation may evaluate completed prediction outcomes/reviews against explicit strategy versions with sample-completeness gates. Prediction accuracy and trading profitability remain separate; a future Trade Outcome Log is required for profitability or execution attribution.
+1. Evidence Assessment Foundation is implemented, reviewed, and committed. It calculates published completeness, availability, freshness, consistency, version-compatibility, provenance, and limitation indicators from explicit evidence.
+2. Strategy Review Foundation is implemented locally pending owner review. It evaluates one explicitly completed prediction/plan/execution/outcome cycle across separate prediction-quality, execution-quality, risk-discipline, and realized-profitability dimensions. It accepts normalized read snapshots only; a future durable Trade Outcome Log remains required for production outcome authority and multi-cycle performance evaluation.
 3. Reviewed Learning Proposal Foundation may preserve review-required lessons from completed evidence. It cannot alter a frozen trade plan or activate, replace, or optimize a strategy.
 
 “No Evidence, No Decision” is the entry gate to downstream decision evaluation. A request must fail closed when required evidence is `INSUFFICIENT`, `CONFLICTING`, or `UNAVAILABLE`; only an explicitly `SUFFICIENT` assessment under a traceable versioned policy may proceed. Sufficiency is necessary but does not itself produce a recommendation or authorize action. Decision evaluation, Risk Engine review, frozen-plan requirements, owner approval, and execution controls remain separate downstream gates.
 
-The Evidence Assessment Foundation is locally implemented pending review; the performance-evaluation and learning-proposal foundations remain planned. AI may optionally draft an owner-reviewed explanation after deterministic outputs exist; it cannot create links, set metrics, override the evidence gate, approve a lesson, activate a strategy, bypass Risk/Decision controls, or authorize capital action. A general-purpose Alpha Memory database is not approved because it would duplicate existing authorities; a future read-only knowledge-retrieval policy requires a concrete consumer and production persistence/privacy review.
+The Evidence Assessment Foundation is complete and the Strategy Review Foundation is locally implemented pending review; multi-cycle performance evaluation and the learning-proposal foundation remain planned. AI may optionally draft an owner-reviewed explanation after deterministic outputs exist; it cannot create links, set metrics, override the evidence gate, approve a lesson, activate a strategy, bypass Risk/Decision controls, or authorize capital action. A general-purpose Alpha Memory database is not approved because it would duplicate existing authorities; a future read-only knowledge-retrieval policy requires a concrete consumer and production persistence/privacy review.
 
 ---
 
@@ -589,7 +589,7 @@ v
 Trade Outcome Log (planned)
 |
 v
-Strategy Performance Evaluation Foundation (planned)
+Strategy Review Foundation
 |
 v
 Reviewed Learning Proposal Foundation (planned)
@@ -605,6 +605,8 @@ The Prediction Log precedes the final decision and execution so Alpha can preser
 The Portfolio System and Config System provide control inputs across the flow. Required evidence must pass the deterministic Evidence Assessment gate before Decision Engine evaluation. The Risk Engine may then reject or constrain a proposed decision before any downstream action is permitted. The Dashboard presents state and outputs but does not own decision logic. The Alpha Journal may summarize decisions and lessons but does not replace source records.
 
 Execution is currently an external, owner-controlled action. Future broker integration must not bypass owner approval, the approved trade plan, or Risk Engine limits.
+
+Strategy Review does not make the durable Trade Outcome Log production-ready. It reviews only explicit finalized read snapshots, preserves prediction quality, execution quality, risk discipline, and profitability independently, and cannot reopen a completed trade or change a strategy.
 
 ---
 
