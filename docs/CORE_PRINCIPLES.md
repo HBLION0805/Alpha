@@ -99,7 +99,17 @@ A profitable system is more important than a highly accurate predictor.
 
 ---
 
-# 10. Every Decision Must Be Recorded
+# 10. No Evidence, No Decision
+
+A decision request must fail closed unless its required evidence has been explicitly assessed as sufficient under a versioned deterministic policy.
+
+`INSUFFICIENT`, `CONFLICTING`, or `UNAVAILABLE` required evidence blocks downstream decision evaluation. Required conflicts cannot be averaged away, and AI cannot override the evidence gate.
+
+`SUFFICIENT` evidence is necessary but not sufficient for action. The Decision Engine must still evaluate the opportunity, the Risk Engine may reject or constrain it, frozen plan rules remain authoritative, and human approval or later execution controls may still be required. Optional evidence may remain unavailable when the applicable policy does not require it.
+
+---
+
+# 11. Every Decision Must Be Recorded
 
 Alpha maintains complete records of:
 

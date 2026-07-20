@@ -274,6 +274,14 @@ Warnings must be reported. Code failures must be fixed or explicitly accepted by
 
 Model choice must be task-based and provider-independent.
 
+Default development allocation:
+
+- GPT-5.6 Sol: core architecture, cross-system design, major system boundaries, capital/risk policy, and final integration reviews.
+- GPT-5.6 Terra: implementation, integrations, validation, Dashboard work, and most engineering tasks.
+- GPT-5.6 Luna: documentation, Git operations, renaming, formatting, and routine small fixes.
+
+Quality takes priority over token savings. Use a stronger model only when it provides material architecture, risk, security, or integration value. Prompts should cite unchanged authority documents rather than regenerate their context, and focused validation should normally precede milestone-wide validation.
+
 Use the strongest available model with high reasoning for:
 
 - Architecture

@@ -4,25 +4,22 @@ Date:
 2026-07-19
 
 Project Stage:
-Day 6 complete; D7-T1 Python-TypeScript Integration Boundary implemented and validated locally, awaiting owner review
+Day 7 complete and pushed; Architecture Checkpoint 1 reconciled; D8-T1 Evidence Assessment implemented locally and its evidence gate documented, pending owner review
 
-## Day 7 Task 1 Current Work
+## Current Architecture Checkpoint
 
-D7-T1 establishes the first narrow runtime boundary between Alpha's TypeScript application layer and Python deterministic domain engines.
+Verified baseline: `4033bce3a4b57e80a4cbcc82e575420e298aa50f` on clean `main`, equal to `origin/main` before this documentation task.
 
-Implemented:
+Day 7 completed:
 
-- versioned TypeScript/Python request and response contracts
-- typed TypeScript integration client and replaceable transport ports
-- fixed local subprocess adapter with no shell, timeout, output limit, and safe process/protocol errors
-- fixed Python JSON entry point and immutable registered-operation dispatcher
-- validation on both sides, stable public errors, and bounded audit metadata
-- one read-only `risk.calculate_limits` operation delegating to the existing Python `RiskEngine.get_summary`
-- 15 focused TypeScript tests and 11 focused Python tests
+- D7-T1 Python-TypeScript Integration Boundary: typed, versioned, fixed local read-only subprocess path for `risk.calculate_limits` only
+- D7-T2 Unified Validation Reporting: one normalized report over existing validation mechanisms
+- D7-T3 Historical Evidence Product Surface: one read-only aggregation surface for existing historical records and references
+- D7-T4 Cross-System Evidence Linking: explicit, typed, version-aware, deterministic link resolution across Prediction, Strategy Version, Historical Pattern, Historical Analogy, Event Replay, Prediction Outcome, and Journal Entry records
 
-The aggregate TypeScript baseline is 842/842 tests. No dashboard consumer, mutable cross-runtime operation, arbitrary execution, provider, AI call, network/API, credential, broker, live-market source, background service, runtime persistence, or Python domain-rule change was added.
+Day 7 adds no dashboard wiring, mutable cross-runtime operation, graph database, source-authority transfer, AI reasoning, automatic learning, provider/network/API integration, live market data, broker behavior, production persistence, or capital-domain behavior change.
 
-D7-T1 is uncommitted and unpushed pending owner review. Do not begin D7-T2 until D7-T1 is approved and finalized.
+Architecture Checkpoint 1 selects a narrow Day 8 sequence: Evidence Assessment Foundation, Strategy Performance Evaluation Foundation, Reviewed Learning Proposal Foundation, then an Intelligence Layer Milestone Review. It rejects a general-purpose Alpha Memory database and defers trade-profitability evaluation until a Trade Outcome Log exists. See `docs/ARCHITECTURE_CHECKPOINT_1.md`.
 
 ## Day 6 Milestone Review
 
@@ -275,21 +272,24 @@ Current TypeScript foundations:
 - Historical Pattern Library: deterministic append-only historical-event, regime, observation-window, asset-reaction, reusable-pattern, amendment, review, supersession, privacy, query, statistics, export, and audit foundation implemented for local single-process use
 - Historical Analogy Engine: deterministic frozen-snapshot and finalized-candidate comparison, scoring, ranking, bias/limitation, review, privacy, export, and audit foundation implemented for local single-process use
 - Event Replay Architecture: deterministic timeline, checkpoint, replay-session, review, privacy, export, and audit foundation implemented for local single-process use
-- Instrument Ranking, Trade Outcome, and Learning Loop: documented architecture or backlog, not implemented runtime systems
+- Python-TypeScript Integration Boundary: versioned local read-only contract/client/transport and one registered Python Risk Engine operation implemented for local use
+- Unified Validation Reporting: normalized deterministic validation-reporting foundation implemented without replacing validators
+- Historical Evidence Product Surface: read-only deterministic composition of historical pattern, analogy, replay, prediction, and strategy reference metadata implemented
+- Cross-System Evidence Linking: read-only explicit typed link validation and resolution foundation implemented; source repositories remain authoritative
+- Evidence Assessment Foundation: implemented locally pending owner review; Instrument Ranking, Trade Outcome, Strategy Performance Evaluation, and Reviewed Learning Proposals remain planned foundations or backlog
 
-Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
+Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. Day 7 product surfaces and links are TypeScript read models only. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
 
 ## Validation Status
 
-Current validation completed successfully:
+Day 7 milestone validation completed successfully:
 
 - TypeScript strict typecheck passed
-- Aggregate TypeScript tests: 842/842 passed, including 40/40 focused Prediction Log, 51/51 focused Alpha Journal, 64/64 focused Research Lab, 70/70 focused Strategy Versioning, 48/48 focused Development Validation Log, 68/68 focused Historical Pattern Library, 91/91 focused Historical Analogy Engine, 20/20 focused Event Replay, and 15/15 focused Python-integration client tests
+- Aggregate TypeScript tests: 902/902 passed, including 40/40 Prediction Log, 51/51 Alpha Journal, 64/64 Research Lab, 70/70 Strategy Versioning, 48/48 Development Validation Log, 68/68 Historical Pattern Library, 91/91 Historical Analogy Engine, 20/20 Event Replay, 4/4 Historical Evidence Product Surface, 14/14 Cross-System Evidence Linking, 26/26 Evidence Engine, 15/15 Python-integration client, 5/5 Validation Reporting, and 333/333 AI Infrastructure tests
 - Focused Python integration tests: 11/11 passed
-- Focused AI Infrastructure tests: 333/333 passed
 - Provider SDK and production-adapter scan clean
 - Network, API, and credential scan clean
-- Scoped Python-change scan confirmed only the new integration boundary and its focused tests; existing Python business logic is unchanged
+- Scoped Python-change scan confirmed only the approved D7-T1 integration boundary and its focused tests; existing Python business logic is unchanged
 - Runtime-data Git tracking scan clean
 - Secret-metadata and merge-marker scans clean
 - `git diff --check` passed
@@ -309,6 +309,8 @@ Current validation completed successfully:
 - `9358c9fc5d6350cfcddc385806738a7ce8235abb` — Historical Pattern Library foundation
 - `95a634ad097a96527a0eef7f8984014dac4ed160` — Historical Analogy Engine foundation
 - `cf37492431e4bf32f53b9bfe4e1ba6b742648984` — Event Replay Architecture foundation
+- `ce9f05798fea14f8e7e71eae08e346367998d073` — Day 7 integration foundation and Historical Evidence Product Surface
+- `4033bce3a4b57e80a4cbcc82e575420e298aa50f` — Cross-System Evidence Linking Foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -334,13 +336,12 @@ Blockers before live provider use:
 - No encryption, backup, restoration, archival, retention enforcement, or tamper-resistant signing for ledger/audit data
 - No reviewed production secret-management and adapter boundary
 
-## Day 7 Priority Order
+## Day 8 Priority Order
 
-Day 7 has started with D7-T1 implemented and awaiting owner review.
-
-1. Complete D7-T1 owner review and finalization while preserving deterministic capital controls.
-2. Specify the Development Validation Log reporting integration without automating Git or owner approval.
-3. Plan product integration for historical evidence surfaces without adding live market data, provider execution, backtesting, or broker behavior.
+1. D8-T1 Evidence Assessment Foundation: locally implemented with the fail-closed “No Evidence, No Decision” gate documented; pending owner review and finalization.
+2. D8-T2 Strategy Performance Evaluation Foundation: completed prediction outcomes/reviews linked to strategy versions, with sample gates and no profitability conflation.
+3. D8-T3 Reviewed Learning Proposal Foundation: review-required proposals from completed evidence, without strategy mutation or learning during frozen execution.
+4. D8-T4 Intelligence Layer Milestone Review: documentation, validation, dependency, and backlog reconciliation only.
 
 Backlog without immediate scheduling:
 
@@ -351,11 +352,12 @@ Backlog without immediate scheduling:
 - Sector Rotation Engine
 - Event Replay product integration and production hardening
 - Price Timeline Database
-- Backtesting and Learning Loop expansion
+- Knowledge Retrieval Policy / Read Model after a concrete consumer and persistence/privacy review
+- Backtesting and reviewed-learning expansion
 - Production provider adapters
 - Production database and transactional outbox architecture
 - Live market-data integrations
 
 ## Immediate Next Task
 
-Owner review of D7-T1. If approved, run the final scoped validation bundle, commit only the reviewed D7-T1 changes, and push only with explicit owner authorization. Do not begin D7-T2.
+Owner review and finalization of D8-T1 Evidence Assessment Foundation and the D8-T1A “No Evidence, No Decision” documentation. Do not begin Strategy Performance Evaluation, Reviewed Learning Proposals, a general-purpose Alpha Memory database, Trade Outcome work, dashboard integration, provider/network integration, or production persistence until the D8-T1 boundary is approved.

@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 6 is complete through the owner-approved and pushed Event Replay Architecture foundation. D7-T1 now implements the local Python-TypeScript Integration Boundary foundation and awaits owner review. The current TypeScript aggregate validation baseline is 842/842 tests, with an additional 11/11 focused Python integration tests.
+Day 7 is complete and pushed through the Cross-System Evidence Linking Foundation. The current TypeScript aggregate validation baseline is 876/876 tests, with an additional 11/11 focused Python integration tests. Day 8 is planned as a narrow deterministic Intelligence Layer foundation; it has not started.
 
 Implemented Python prototype/runtime:
 
@@ -39,6 +39,9 @@ Implemented and tested TypeScript foundations:
 - Codex Development Standard, task template, owner review template, and local validation bundle foundation
 - Production Persistence and Recovery Architecture specification
 - Python-TypeScript Integration Boundary with one registered read-only Risk Engine operation
+- Unified Validation Reporting with one normalized local validation result shape
+- Historical Evidence Product Surface with a read-only combined historical-evidence view
+- Cross-System Evidence Linking with explicit typed, version-aware, read-only links across Prediction, Strategy, Historical Evidence, Event Replay, Outcome, and Journal records
 
 The TypeScript application layer can now invoke one registered read-only Python Risk Engine calculation through a versioned typed client and fixed local subprocess adapter. No dashboard or business consumer is wired to the boundary yet, Python does not invoke TypeScript, and no mutable cross-runtime operation exists. The TypeScript AI infrastructure still uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
@@ -56,7 +59,9 @@ Day 6 development-efficiency rules are specified in [Codex Development Standard]
 
 Day 6 historical evidence boundaries are specified in [Historical Pattern Library](docs/HISTORICAL_PATTERN_LIBRARY_SPECIFICATION.md), [Historical Analogy Engine](docs/HISTORICAL_ANALOGY_ENGINE_SPECIFICATION.md), and [Event Replay Architecture](docs/EVENT_REPLAY_ARCHITECTURE_SPECIFICATION.md). Historical events and reusable patterns remain historical truth; deterministic analogy results report similarities, differences, missing data, completeness, evidence quality, bias, and limitations for Research Lab review; Event Replay reconstructs caller-supplied historical timelines through immutable checkpoints. Those systems contain no AI similarity scoring, embeddings, vector database, historical-data ingestion, live market integration, prediction, trading recommendation, backtesting, or execution simulation.
 
-The D7-T1 local runtime boundary is specified in [Python-TypeScript Integration Boundary](docs/PYTHON_TYPESCRIPT_INTEGRATION_BOUNDARY.md). TypeScript consumers depend on typed client and transport ports; only the fixed Python entry point knows the explicit operation registry and Python domain implementation.
+The D7-T1 local runtime boundary is specified in [Python-TypeScript Integration Boundary](docs/PYTHON_TYPESCRIPT_INTEGRATION_BOUNDARY.md). TypeScript consumers depend on typed client and transport ports; only the fixed Python entry point knows the explicit operation registry and Python domain implementation. Day 7 also adds read-only validation reporting, a historical evidence product surface, and explicit cross-system evidence links; they do not add a provider, network, dashboard, persistence, recommendation, or capital-execution path.
+
+The next planned direction is documented in [Architecture Checkpoint 1](docs/ARCHITECTURE_CHECKPOINT_1.md). It recommends deterministic evidence assessment, strategy performance evaluation, and reviewed learning proposals while deferring a general-purpose Alpha Memory database, automation, and production infrastructure.
 
 ## Repository Structure
 
@@ -89,7 +94,7 @@ npm test
 npm run alpha:validate
 ```
 
-`npm test` runs the complete deterministic TypeScript suite plus the focused Python-side integration tests, including Strategy Versioning, Development Validation Log, Historical Pattern Library, Historical Analogy Engine, Event Replay, and Python-TypeScript Integration.
+`npm test` runs the complete deterministic TypeScript suite plus the focused Python-side integration tests, including Strategy Versioning, Development Validation Log, Historical Pattern Library, Historical Analogy Engine, Event Replay, Historical Evidence Product Surface, Cross-System Evidence Linking, and Python-TypeScript Integration.
 
 `npm run alpha:validate` runs the local validation bundle: required-file checks, strict typecheck, aggregate tests, Markdown link/path/fence checks, provider/network/API/credential scans, Python-change scan, runtime-data tracking scan, merge-marker scan, `git diff --check`, and final working-tree warning. Component commands remain individually available.
 

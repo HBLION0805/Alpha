@@ -86,9 +86,9 @@ Push
 - Alpha Learning Infrastructure v1: Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log foundations
 - Historical Evidence Infrastructure: Historical Pattern Library, deterministic Historical Analogy Engine, and Event Replay Architecture foundations
 - Day 6 Development Efficiency Standard v1 documentation: Codex development standard, task template, owner review template, and deterministic validation bundle foundation
-- Day 7 local integration foundation: versioned TypeScript client and fixed Python subprocess boundary for one registered read-only Risk Engine operation
+- Day 7 integration and evidence foundations: versioned local Python-TypeScript read boundary, unified validation reporting, read-only Historical Evidence Product Surface, and typed Cross-System Evidence Linking
 
-The Python and TypeScript surfaces now have one narrow local read-only integration boundary, but they are not a unified product runtime. No dashboard consumer, mutable cross-runtime operation, or Python-to-TypeScript call exists. TypeScript local NDJSON repositories are single-process development persistence. No production AI provider adapter, live AI API integration, live market-data integration, or automated capital execution exists.
+The Python and TypeScript surfaces now have one narrow local read-only integration boundary, but they are not a unified product runtime. Day 7 read models and links do not add dashboard wiring, recommendations, automatic learning, mutable cross-runtime operations, or Python-to-TypeScript calls. TypeScript local NDJSON repositories are single-process development persistence. No production AI provider adapter, live AI API integration, live market-data integration, or automated capital execution exists.
 
 ## Required Completion Report
 

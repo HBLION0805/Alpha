@@ -34,7 +34,7 @@ Documented Architecture (designs may precede implementation):
 - Research Framework
 - Instrument Ranking Engine
 - Trade Outcome Log
-- Learning Loop
+- Reviewed Learning Proposal Foundation
 
 Implemented and Tested Foundations:
 
@@ -57,6 +57,9 @@ Implemented and Tested Foundations:
 - Historical Analogy Engine deterministic current-situation comparison, scoring, ranking, bias, review, export, and audit foundation
 - Event Replay Architecture deterministic timeline, checkpoint, replay-session, review, export, and audit foundation
 - Python-TypeScript Integration Boundary versioned local read-only foundation
+- Unified Validation Reporting foundation
+- Historical Evidence Product Surface read-only aggregation foundation
+- Cross-System Evidence Linking read-only resolution foundation
 
 Day 5 Milestone Status:
 
@@ -81,15 +84,42 @@ Day 6 Milestone Status:
 
 Day 7 Milestone Status:
 
-- D7-T1 implements a versioned typed TypeScript client, replaceable transport port, fixed local subprocess adapter, Python entry point, immutable operation registry, mirrored validation, stable errors, and one read-only Risk Engine demonstration operation.
-- D7-T1 contains no dashboard wiring, mutable cross-runtime operation, provider, network/API, broker, live-market, AI, persistence, portfolio, decision, trade, or strategy behavior change.
-- D7-T1 validation baseline is 842/842 TypeScript tests plus 11/11 focused Python tests; owner review, commit, and push remain pending.
+- D7-T1 delivered the versioned typed local Python-TypeScript read boundary and one registered read-only Risk Engine operation.
+- D7-T2 delivered unified validation reporting over existing validators without changing their business behavior.
+- D7-T3 delivered the read-only Historical Evidence Product Surface over existing historical repositories.
+- D7-T4 delivered explicit, deterministic, version-aware Cross-System Evidence Linking across Prediction, Strategy Version, Historical Evidence, Event Replay, Prediction Outcome, and Journal records.
+- Day 7 is complete and pushed through `4033bce3a4b57e80a4cbcc82e575420e298aa50f`.
+- The aggregate baseline is 876/876 TypeScript tests plus 11/11 focused Python integration tests.
+- Day 7 added no dashboard integration, mutable cross-runtime operation, provider or network/API integration, live market data, broker behavior, AI reasoning, automatic learning, production persistence, or capital-domain behavior change.
 
-Day 7 Priority Order:
+## Day 8 — Deterministic Intelligence Layer Foundations (Planned)
 
-1. Complete owner review and finalization of the D7-T1 Python-TypeScript integration boundary.
-2. Specify the Development Validation Log reporting integration without automating Git or owner approval.
-3. Plan product integration for historical evidence surfaces without adding live market data, provider execution, backtesting, or broker behavior.
+Day 8 begins from explicit evidence links and existing immutable records. It is a small, staged learning/evaluation phase, not a new recommendation platform, memory database, or automation milestone. See [Architecture Checkpoint 1](ARCHITECTURE_CHECKPOINT_1.md) for the full capability analysis and model strategy.
+
+1. **D8-T1 — Evidence Assessment Foundation**
+   - Status: implemented locally with the “No Evidence, No Decision” gate documented; pending owner review and milestone finalization.
+   - Depends on Day 7 evidence links and product surface.
+   - Produces deterministic completeness, provenance, availability, version-consistency, and limitation assessment from explicit links only.
+   - Exit criteria: source authority preserved; no recommendation/ranking; unresolved evidence remains explicit; only `SUFFICIENT` required evidence may reach downstream decision evaluation; focused tests pass.
+
+2. **D8-T2 — Strategy Performance Evaluation Foundation**
+   - Build now after D8-T1; weekend task because metric and sample-comparability policy require careful review.
+   - Consumes completed prediction outcomes/reviews and explicit strategy-version references.
+   - Excludes trade profitability, execution attribution, backtesting, auto-ranking, and strategy activation until a Trade Outcome Log exists.
+   - Exit criteria: prediction quality remains separate from profitability; incomplete samples are non-comparable; provenance and tests are complete.
+
+3. **D8-T3 — Reviewed Learning Proposal Foundation**
+   - Build now after D8-T2; bounded architecture plus implementation task.
+   - Preserves review-required lessons from completed evidence, with fact/inference separation and no direct strategy mutation.
+   - Excludes automatic learning, activation, learning during frozen execution, and profitability conclusions without a Trade Outcome Log.
+   - Exit criteria: every proposal has completed evidence provenance; owner approval and Strategy Versioning remain separate; focused tests pass.
+
+4. **D8-T4 — Intelligence Layer Milestone Review**
+   - Build now after D8-T3 as a short documentation/validation closeout.
+   - Reconciles architecture, decisions, roadmap, handoff, test baseline, production limitations, and backlog.
+   - No standalone review engine is created.
+
+Day 8 foundations are not production ready. Production persistence, transaction/recovery, privacy/retention enforcement, dashboard integration, live data, providers, brokers, backtesting, and automation remain separately reviewed work.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 
@@ -123,7 +153,7 @@ Planned Features:
 Planned Features:
 
 - Trade Outcome Log implementation
-- Learning Loop implementation
+- Reviewed Learning Proposal product integration and production hardening
 - Strategy Versioning product integration and production hardening
 - Performance Analysis
 - Research Lab product integration and production hardening
@@ -162,8 +192,9 @@ Planned Features:
 - Relative Strength Engine
 - Sector Rotation Engine
 - Event Replay product integration and production hardening
+- Knowledge Retrieval Policy / Read Model after a concrete consumer and production persistence/privacy review
 - Price Timeline Database
-- Backtesting and Learning Loop expansion
+- Backtesting and reviewed-learning expansion
 - Production provider adapters
 - Production database and transactional outbox architecture
 - Live market-data integrations

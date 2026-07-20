@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## 2026-07-19 - Day 7 Milestone and Architecture Checkpoint 1
+
+- Completed and pushed D7-T1 through D7-T4: Python-TypeScript Integration Boundary, Unified Validation Reporting, Historical Evidence Product Surface, and Cross-System Evidence Linking.
+- Added a typed, explicit, version-aware read-only linking foundation across Prediction, Strategy Version, Historical Pattern, Historical Analogy, Event Replay, Prediction Outcome, and Journal Entry records without transferring source authority.
+- Confirmed the Day 7 aggregate TypeScript validation baseline at 876/876 tests, plus 11/11 focused Python integration tests.
+- Reconciled the next phase as deterministic Evidence Assessment, Strategy Performance Evaluation, and Reviewed Learning Proposal foundations; deferred a general-purpose Alpha Memory database, autonomous learning, product UI expansion, remote services, and production infrastructure.
+
 ## 2026-07-19 - Day 7 Task 1
 
 ### Python-TypeScript Integration Boundary

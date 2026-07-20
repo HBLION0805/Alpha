@@ -54,7 +54,7 @@ Alpha consists of the following major systems.
 Alpha currently has two implementation surfaces connected by one narrow local read-only boundary:
 
 - The Python prototype/runtime contains local portfolio models, a terminal dashboard using sample data, deterministic risk calculations, configuration, and early stock/event-contract decision rules.
-- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, the Historical Pattern Library, the Historical Analogy Engine foundation, and the Event Replay Architecture foundation.
+- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, the Historical Pattern Library, the Historical Analogy Engine foundation, the Event Replay Architecture foundation, and Day 7 read-only validation, evidence-surface, and cross-system-linking foundations.
 
 The TypeScript application layer may invoke only the registered `risk.calculate_limits` operation through a versioned client and transport port. A fixed local subprocess entry point validates and dispatches the request to the existing Python Risk Engine. No dashboard or product consumer uses the boundary yet. Python does not invoke TypeScript, and TypeScript does not modify Python portfolio, risk, decision, or trade state.
 
@@ -359,7 +359,7 @@ The implemented local repository is single-owner, single-process development per
 
 ---
 
-## Trade Outcome Log
+## Trade Outcome Log (Planned)
 
 Responsible for:
 
@@ -370,7 +370,7 @@ Responsible for:
 
 ---
 
-## Learning Loop
+## Reviewed Learning and Strategy Change Boundary (Planned)
 
 Responsible for:
 
@@ -479,6 +479,44 @@ Event Replay is evidence reconstruction only. Historical Pattern Library remains
 
 ---
 
+## Historical Evidence Product Surface
+
+Responsible for:
+
+- Presenting existing Historical Pattern, Historical Analogy, and Event Replay records through one deterministic read-only response
+- Preserving already-recorded strategy, prediction, confidence, limitation, and replay-reference metadata without recalculation
+- Reporting unavailable replay timelines explicitly without mutating source records
+
+The product surface is an adapter over existing repository read ports. Historical Pattern Library, Historical Analogy Engine, and Event Replay retain authority. It performs no historical reasoning, ranking, recommendation, AI call, persistence, dashboard presentation, or source-record mutation.
+
+---
+
+## Cross-System Evidence Linking
+
+Responsible for:
+
+- Validating explicit typed links among Prediction, Strategy Version, Historical Pattern, Historical Analogy, Event Replay, Prediction Outcome, and Journal Entry records
+- Resolving fixed repository read ports into deterministic, version-aware, read-only link results
+- Preserving relation type, source/target identity, resolution status, source status, trace/audit metadata, and explicit missing or unavailable states
+
+Cross-System Evidence Linking is a link resolver, not a graph database, source authority, inference engine, or persistence layer. It follows the dependency direction `authoritative repositories -> narrow read adapters -> linking/product surfaces -> future consumers`. It never discovers relationships from text, uses fuzzy matching, recursively explores a graph, changes domain records, or invokes arbitrary repositories.
+
+---
+
+## Evidence Assessment and Evaluation Layer
+
+This layer consumes explicit evidence links without changing source ownership:
+
+1. Evidence Assessment Foundation is implemented locally pending owner review and calculates published completeness, availability, freshness, consistency, version-compatibility, provenance, and limitation indicators from explicit evidence.
+2. Strategy Performance Evaluation Foundation may evaluate completed prediction outcomes/reviews against explicit strategy versions with sample-completeness gates. Prediction accuracy and trading profitability remain separate; a future Trade Outcome Log is required for profitability or execution attribution.
+3. Reviewed Learning Proposal Foundation may preserve review-required lessons from completed evidence. It cannot alter a frozen trade plan or activate, replace, or optimize a strategy.
+
+“No Evidence, No Decision” is the entry gate to downstream decision evaluation. A request must fail closed when required evidence is `INSUFFICIENT`, `CONFLICTING`, or `UNAVAILABLE`; only an explicitly `SUFFICIENT` assessment under a traceable versioned policy may proceed. Sufficiency is necessary but does not itself produce a recommendation or authorize action. Decision evaluation, Risk Engine review, frozen-plan requirements, owner approval, and execution controls remain separate downstream gates.
+
+The Evidence Assessment Foundation is locally implemented pending review; the performance-evaluation and learning-proposal foundations remain planned. AI may optionally draft an owner-reviewed explanation after deterministic outputs exist; it cannot create links, set metrics, override the evidence gate, approve a lesson, activate a strategy, bypass Risk/Decision controls, or authorize capital action. A general-purpose Alpha Memory database is not approved because it would duplicate existing authorities; a future read-only knowledge-retrieval policy requires a concrete consumer and production persistence/privacy review.
+
+---
+
 # Event Contract Framework
 
 Event contracts are considered a temporary capital-building tool.
@@ -533,19 +571,28 @@ v
 Instrument Ranking Engine
 |
 v
+Evidence Assessment Gate
+|
+v
+Decision Engine Evaluation
+|
+v
 Risk Engine Review
 |
 v
-Decision Engine
+Permitted Downstream Action, If Any
 |
 v
 Execution
 |
 v
-Trade Outcome Log
+Trade Outcome Log (planned)
 |
 v
-Learning Loop
+Strategy Performance Evaluation Foundation (planned)
+|
+v
+Reviewed Learning Proposal Foundation (planned)
 |
 v
 Strategy Versioning
@@ -555,7 +602,7 @@ Future Decision Improvement
 
 The Prediction Log precedes the final decision and execution so Alpha can preserve the original forecast without hindsight changes.
 
-The Portfolio System and Config System provide control inputs across the flow. The Risk Engine provides constraints during instrument ranking and performs the final risk review before a capital decision. The Dashboard presents state and outputs but does not own decision logic. The Alpha Journal may summarize decisions and lessons but does not replace source records.
+The Portfolio System and Config System provide control inputs across the flow. Required evidence must pass the deterministic Evidence Assessment gate before Decision Engine evaluation. The Risk Engine may then reject or constrain a proposed decision before any downstream action is permitted. The Dashboard presents state and outputs but does not own decision logic. The Alpha Journal may summarize decisions and lessons but does not replace source records.
 
 Execution is currently an external, owner-controlled action. Future broker integration must not bypass owner approval, the approved trade plan, or Risk Engine limits.
 

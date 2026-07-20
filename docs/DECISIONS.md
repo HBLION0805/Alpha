@@ -1,5 +1,45 @@
 # Alpha Architecture Decisions
 
+## 2026-07-19 - Architecture Checkpoint 1: Deterministic Intelligence Layer Direction
+
+### Evidence Assessment Before Recommendation
+
+- Decision: Begin the next phase with an Evidence Assessment Foundation that derives transparent completeness, availability, provenance, version-consistency, and limitation indicators only from explicit linked evidence.
+- Reason: Day 7 now supplies read-only historical evidence and cross-system link resolution, but no consumer should turn heterogeneous evidence into an opaque recommendation or a new source of truth.
+- Consequence: The proposed “Evidence Engine” is renamed to Evidence Assessment Foundation. It remains deterministic, read-only, provider-neutral, and unable to create links, infer relevance, rank capital opportunities, or change Decision/Risk/Portfolio/Trade state.
+
+### No Evidence, No Decision Gate
+
+- Decision: Adopt “No Evidence, No Decision” as a fail-closed architecture rule. A decision request may proceed to downstream decision evaluation only when its required evidence assessment is explicitly `SUFFICIENT` under a traceable, versioned deterministic policy.
+- Context or problem: Missing, unresolved, unavailable, or materially conflicting required evidence could otherwise be silently ignored, hidden by averaging, or replaced by unsupported AI reasoning.
+- Rationale: A categorical evidence gate preserves source provenance, makes blockers explainable, and prevents an incomplete evidence set from acquiring false authority through a recommendation or confidence score.
+- Rejected alternatives: AI guessing, semantic inference, silently dropping unresolved items, averaging required conflicts into a score, and treating optional evidence as universally mandatory.
+- Consequences: `INSUFFICIENT`, `CONFLICTING`, and `UNAVAILABLE` stop progression. `SUFFICIENT` is necessary but never guarantees `BUY`, `ENTER`, profitability, or execution; the Decision Engine still evaluates the opportunity, the Risk Engine may reject or constrain it, frozen-plan rules remain binding, and human approval or later execution controls may still be required. AI cannot override the gate.
+
+### Performance Evaluation Before Broad Learning
+
+- Decision: Follow evidence assessment with a Strategy Performance Evaluation Foundation based on completed Prediction Log outcomes/reviews and explicit strategy-version references, then a Reviewed Learning Proposal Foundation.
+- Reason: Strategy Versioning already owns version lineage, validation, approval, activation, comparison, and recorded performance evidence; Prediction Log already separates forecast evidence, outcomes, and reviews. A broad learning engine would duplicate authority and risk reactive strategy changes.
+- Consequence: Prediction quality and trading profitability remain separate. Incomplete samples must be non-comparable, a future Trade Outcome Log is required before profitability/execution attribution, and learning proposals require review before any separate Strategy Versioning proposal and owner approval.
+
+### No General-Purpose Alpha Memory Authority
+
+- Decision: Defer Alpha Memory as a general database. Treat any future need as a read-only Knowledge Retrieval Policy / Read Model with a concrete consumer, authority-precedence rules, privacy/retention review, and production-persistence alignment.
+- Reason: Journal, Research Lab, Config, Strategy Versioning, Historical Pattern Library, project documentation, and existing evidence links already own the proposed fact categories.
+- Consequence: No duplicate memory store, embeddings, semantic retrieval, automatic relationship discovery, or graph database is approved for Day 8.
+
+### Milestone Review, Not an Intelligence Review Engine
+
+- Decision: Merge “Intelligence Layer Review” into continuous task review and the D8-T4 milestone review.
+- Reason: A standing review engine would add no source authority or deterministic calculation beyond normal architecture, validation, and owner-review procedures.
+- Consequence: D8-T4 is documentation and validation reconciliation only; it creates no runtime subsystem.
+
+## 2026-07-19 - Day 7 Integration and Evidence Foundations Complete
+
+- Decision: Record D7-T1 through D7-T4 as complete local foundations: Python-TypeScript Integration Boundary, Unified Validation Reporting, Historical Evidence Product Surface, and Cross-System Evidence Linking.
+- Reason: The four tasks provide a narrow read boundary, normalized validation reporting, stable historical evidence access, and explicit version-aware link resolution without transferring domain ownership.
+- Consequence: Day 8 may consume explicit evidence through deterministic read models. No Day 7 component is a dashboard, graph database, recommendation engine, AI reasoning layer, automatic learning mechanism, production persistence system, provider integration, or capital-execution path.
+
 ## 2026-07-19 - D7-T1 Python-TypeScript Integration Boundary
 
 ### Contract and Port Before Runtime Implementation
