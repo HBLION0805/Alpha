@@ -8,17 +8,23 @@ import {
   type CanonicalQuoteSourceMetadata,
   type QuoteDecimal,
 } from "./CanonicalQuote";
-import type { CanonicalBar } from "./CanonicalBar";
+import type { BarInterval, CanonicalBar } from "./CanonicalBar";
 
 export const MARKET_DATA_SCHEMA_VERSION = "1.0" as const;
 
 export enum MarketDataOperation {
   LatestQuote = "LATEST_QUOTE",
+  Bars = "BARS",
 }
 
 export enum MarketDataType {
   Quote = "QUOTE",
   Bar = "BAR",
+}
+
+export enum MarketDataBarMode {
+  Historical = "HISTORICAL",
+  Intraday = "INTRADAY",
 }
 
 /** @deprecated Use InstrumentAssetClass from CanonicalInstrument for new code. */
@@ -140,6 +146,8 @@ export enum MarketDataIssueCode {
   OutOfOrderObservation = "OUT_OF_ORDER_OBSERVATION",
   DuplicateObservation = "DUPLICATE_OBSERVATION",
   InvalidQuoteRelationship = "INVALID_QUOTE_RELATIONSHIP",
+  InvalidRequestWindow = "INVALID_REQUEST_WINDOW",
+  NoAcceptedData = "NO_ACCEPTED_DATA",
 }
 
 /** Compatibility alias; fixed-decimal quote values are owned by Canonical Quote. */
@@ -268,6 +276,55 @@ export interface MarketDataProviderAdapter {
   ): MarketDataAdapterError;
 }
 
+export interface MarketDataBarPolicy {
+  readonly schemaVersion: typeof MARKET_DATA_SCHEMA_VERSION;
+  readonly policyId: string;
+  readonly version: string;
+  readonly allowedProviderIds: readonly string[];
+  readonly requiredCapabilities: readonly MarketDataCapability[];
+  readonly maxRecords: number;
+}
+
+export interface MarketDataBarRequest {
+  readonly schemaVersion: typeof MARKET_DATA_SCHEMA_VERSION;
+  readonly requestId: string;
+  readonly operation: MarketDataOperation.Bars;
+  readonly providerId: string;
+  readonly barMode: MarketDataBarMode;
+  readonly instrument: MarketDataInstrumentRequest;
+  readonly interval: BarInterval;
+  readonly startTime: string;
+  readonly endTime: string;
+  readonly maxRecords: number;
+  readonly requestedAt: string;
+  readonly evaluatedAt: string;
+  readonly policy: MarketDataBarPolicy;
+  readonly trace: MarketDataTraceMetadata;
+}
+
+export interface MarketDataBarNormalizationResult {
+  readonly providerId: string;
+  readonly status: MarketDataNormalizationStatus.Normalized | MarketDataNormalizationStatus.Rejected;
+  readonly bars: readonly CanonicalBar[];
+  readonly blockers: readonly MarketDataNormalizationIssue[];
+  readonly warnings: readonly MarketDataNormalizationIssue[];
+}
+
+export interface MarketDataBarProviderAdapter {
+  getDescriptor(): MarketDataProviderDescriptor;
+  getHealth(): MarketDataProviderHealth;
+  fetchBars(request: Readonly<MarketDataBarRequest>): Promise<MarketDataRawResponse>;
+  normalizeBars(
+    raw: Readonly<MarketDataRawResponse>,
+    request: Readonly<MarketDataBarRequest>,
+  ): MarketDataBarNormalizationResult;
+  normalizeError(
+    error: unknown,
+    request: Readonly<MarketDataBarRequest>,
+    occurredAt: string,
+  ): MarketDataAdapterError;
+}
+
 /** Compatibility alias; CanonicalQuote is Alpha's only accepted quote representation. */
 export type CanonicalMarketQuote = CanonicalQuote;
 
@@ -305,6 +362,29 @@ export interface MarketDataResult {
   readonly observationTime?: string;
   readonly receivedAt?: string;
   readonly data?: CanonicalMarketQuote;
+  readonly transportStatus: MarketDataTransportStatus;
+  readonly normalizationStatus: MarketDataNormalizationStatus;
+  readonly validation: MarketDataValidationResult;
+  readonly blockers: readonly MarketDataNormalizationIssue[];
+  readonly warnings: readonly MarketDataNormalizationIssue[];
+  readonly policyId: string;
+  readonly policyVersion: string;
+  readonly trace: MarketDataTraceMetadata;
+  readonly processing: MarketDataProcessingMetadata;
+}
+
+export interface MarketDataBarResult {
+  readonly schemaVersion: typeof MARKET_DATA_SCHEMA_VERSION;
+  readonly requestId: string;
+  readonly operation: MarketDataOperation.Bars;
+  readonly status: MarketDataResultStatus;
+  readonly qualityStatus: MarketDataQualityStatus;
+  readonly providerId: string;
+  readonly barMode: MarketDataBarMode;
+  readonly capability: MarketDataCapability.Bars;
+  readonly requestedInstrument: MarketDataInstrumentRequest;
+  readonly interval: BarInterval;
+  readonly data: readonly CanonicalBar[];
   readonly transportStatus: MarketDataTransportStatus;
   readonly normalizationStatus: MarketDataNormalizationStatus;
   readonly validation: MarketDataValidationResult;

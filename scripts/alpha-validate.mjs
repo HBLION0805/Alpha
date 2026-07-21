@@ -31,6 +31,7 @@ const requiredFiles = [
   "docs/specifications/CANONICAL_BAR.md",
   "docs/specifications/MARKET_DATA_LAYER.md",
   "docs/specifications/PROVIDER_REGISTRY.md",
+  "docs/specifications/TWELVE_DATA_ADAPTER.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -68,6 +69,10 @@ const aggregateTestFiles = [
   "src/engines/canonical-bar/CanonicalBar.test.ts",
   "src/engines/market-data/MarketDataService.test.ts",
   "src/engines/market-data-provider-registry/MarketDataProviderRegistry.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataBarAdapter.test.ts",
   "src/integration/python/PythonIntegration.test.ts",
   "src/contracts/AIRouter.test.ts",
   "src/engines/ai-router/AIRouterEngine.test.ts",

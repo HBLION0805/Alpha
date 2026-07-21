@@ -46,3 +46,4 @@ export * from "./CanonicalQuote";
 export * from "./CanonicalBar";
 export * from "./MarketData";
 export * from "./MarketDataProviderRegistry";
+export * from "./TwelveDataAdapter";

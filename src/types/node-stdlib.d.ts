@@ -64,5 +64,6 @@ declare module "node:path" {
 }
 
 declare module "node:process" {
+  export const env: Readonly<Record<string, string | undefined>>;
   export const execPath: string;
 }

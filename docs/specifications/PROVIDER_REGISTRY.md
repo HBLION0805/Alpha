@@ -2,7 +2,7 @@
 
 ## Status
 
-D9-T2 foundation is committed and pushed as `79c4b1fb5f5b6cc7c9988f84df0479bcce87af27`. The registry contains provider metadata only. It does not instantiate adapters, call providers, select a provider, or add a live integration.
+D9-T2 foundation is committed and pushed as `79c4b1fb5f5b6cc7c9988f84df0479bcce87af27`. The registry contains provider metadata only. Day10-T2 contributes the first reviewed record, `provider:twelve-data`, for explicit equity/ETF `BARS` discovery. The registry still does not instantiate adapters, call providers, select a provider, or hold credentials.
 
 ## Problem Solved
 
@@ -39,7 +39,7 @@ Each record contains:
 
 Only an `ACTIVE` provider may be enabled by default. Planned, inactive, and deprecated providers remain discoverable through the explicit `ALL` query scope but cannot pass the enabled-provider gate.
 
-No Polygon, Robinhood, Kalshi, BRTI, Coinbase, Yahoo, Finnhub, calendar, or news record is predeclared in D9-T2 because their exact capabilities and asset boundaries require reviewed provider-specific adapter work. Adding guessed metadata would weaken the registry's authority.
+No Polygon, Robinhood, Kalshi, BRTI, Coinbase, Yahoo, Finnhub, calendar, or news record is predeclared because their exact capabilities and asset boundaries require reviewed provider-specific adapter work. Twelve Data is registered only after the Day10 official-evidence review and declares only `BARS` for equities and ETFs. Adding guessed metadata would weaken the registry's authority.
 
 ## Capability Model
 

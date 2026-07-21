@@ -26,7 +26,7 @@ It does not own predictions, evidence sufficiency, recommendations, risk rules, 
 
 ## Initial Contract Scope
 
-Version 1.0 service behavior intentionally supports only a latest two-sided quote and canonical instrument identity for equities, ETFs, crypto assets, and indices. It consumes the shared [Canonical Quote Foundation](CANONICAL_QUOTE.md) as Alpha's only accepted quote representation. D9-T5 adds the separate [Canonical Bar Foundation](CANONICAL_BAR.md) and a type-only Market Data compatibility alias; bar retrieval and normalization remain unimplemented. Trades, event-contract quotes, foreign exchange, market status, streaming, and provider orchestration are deferred until a concrete consumer requires them.
+Version 1.0 service behavior supports a latest two-sided quote path and, from Day10-T2, a separate provider-neutral Bar path. It consumes the shared [Canonical Quote Foundation](CANONICAL_QUOTE.md) and [Canonical Bar Foundation](CANONICAL_BAR.md) as Alpha's only accepted representations. The first Bar implementation is the narrowly bounded [Twelve Data Bar Adapter](TWELVE_DATA_ADAPTER.md). Trades, event-contract quotes, foreign exchange, market status, streaming, and provider orchestration remain deferred.
 
 ### Canonical Instrument Identity
 
@@ -110,7 +110,7 @@ There is no universal freshness threshold and no new configuration framework. A 
 
 ## Security
 
-- No credentials, SDKs, network code, or live endpoints exist in this foundation.
+- Credentials and provider schemas remain confined to reviewed adapters. The Day10-T2 Twelve Data adapter defines an injected HTTP transport and credential loader but performs no network request during registered validation.
 - Adapters must normalize errors into safe bounded fields.
 - Raw headers and secret-bearing payloads are not public result fields.
 - Provider text is untrusted data and must never be interpreted as an AI instruction.
@@ -135,9 +135,9 @@ A new provider requires a reviewed adapter that implements the existing port, de
 
 ## Deferred Items
 
-- live provider integrations and credentials;
+- additional live provider integrations and general runtime credential composition;
 - provider fallback, ranking, and multi-provider reconciliation;
-- trades, bar retrieval/normalization, streaming, market status, event-contract quotes, and foreign exchange;
+- trades, streaming, market status, event-contract quotes, and foreign exchange;
 - production persistence and a market timeline database;
 - contextual anomaly or bad-tick detection;
 - Evidence, Replay, Dashboard, API, and Paper Trading integration;

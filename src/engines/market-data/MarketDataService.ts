@@ -1,5 +1,6 @@
 import {
   MARKET_DATA_SCHEMA_VERSION,
+  MarketDataBarMode,
   MarketDataCapability,
   MarketDataDimensionStatus,
   MarketDataDuplicatePolicy,
@@ -17,6 +18,9 @@ import {
   type CanonicalInstrumentIdentity,
   type CanonicalMarketQuote,
   type LatestQuoteRequest,
+  type MarketDataBarProviderAdapter,
+  type MarketDataBarRequest,
+  type MarketDataBarResult,
   type MarketDataClock,
   type MarketDataFreshnessRule,
   type MarketDataNormalizationIssue,
@@ -25,6 +29,7 @@ import {
   type MarketDataResult,
   type MarketDataValidationCheck,
 } from "../../contracts/MarketData";
+import { BarFreshnessStatus, BarInterval } from "../../contracts/CanonicalBar";
 import { InstrumentAssetClass } from "../../contracts/CanonicalInstrument";
 import {
   CANONICAL_QUOTE_SCHEMA_VERSION,
@@ -36,6 +41,7 @@ import {
   validateCanonicalInstrument,
 } from "../canonical-instrument/CanonicalInstrument";
 import { createCanonicalQuote } from "../canonical-quote/CanonicalQuote";
+import { validateCanonicalBar } from "../canonical-bar/CanonicalBar";
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/u;
 const INTEGER = /^-?\d+$/u;
@@ -51,10 +57,12 @@ export class MarketDataConfigurationError extends Error {
 /** Read-only orchestration of one explicitly requested provider adapter. */
 export class MarketDataService {
   private readonly adapters = new Map<string, MarketDataProviderAdapter>();
+  private readonly barAdapters = new Map<string, MarketDataBarProviderAdapter>();
 
   public constructor(
     adapters: readonly MarketDataProviderAdapter[],
     private readonly clock: MarketDataClock,
+    barAdapters: readonly MarketDataBarProviderAdapter[] = [],
   ) {
     for (const adapter of adapters) {
       const descriptor = validateDescriptor(adapter.getDescriptor());
@@ -63,14 +71,116 @@ export class MarketDataService {
       }
       this.adapters.set(descriptor.providerId, adapter);
     }
+    for (const adapter of barAdapters) {
+      const descriptor = validateDescriptor(adapter.getDescriptor());
+      if (this.adapters.has(descriptor.providerId) || this.barAdapters.has(descriptor.providerId)) {
+        throw new MarketDataConfigurationError(`Duplicate provider ID: ${descriptor.providerId}`);
+      }
+      this.barAdapters.set(descriptor.providerId, adapter);
+    }
   }
 
   public listProviders(): readonly MarketDataProviderDescriptor[] {
     return deepFreeze(
-      [...this.adapters.values()]
+      [...this.adapters.values(), ...this.barAdapters.values()]
         .map((adapter) => copyDescriptor(validateDescriptor(adapter.getDescriptor())))
         .sort((left, right) => left.providerId.localeCompare(right.providerId)),
     );
+  }
+
+  public async getBars(value: unknown): Promise<MarketDataBarResult> {
+    const request = validateBarRequest(value);
+    const startedAt = parseTimestamp(this.clock.now(), "clock.now");
+    const adapter = this.barAdapters.get(request.providerId);
+    if (!adapter) return barResultWithoutData(request, startedAt, MarketDataResultStatus.Unavailable, MarketDataQualityStatus.Unavailable,
+      MarketDataTransportStatus.NotAttempted, issue(MarketDataIssueCode.ProviderNotRegistered, "Requested Bar provider is not registered."));
+
+    const descriptor = validateDescriptor(adapter.getDescriptor());
+    if (!descriptor.enabled) return barResultWithoutData(request, startedAt, MarketDataResultStatus.Unavailable, MarketDataQualityStatus.Unavailable,
+      MarketDataTransportStatus.NotAttempted, issue(MarketDataIssueCode.ProviderDisabled, "Requested Bar provider is disabled."));
+    if (!request.policy.allowedProviderIds.includes(request.providerId)) return barResultWithoutData(request, startedAt, MarketDataResultStatus.Rejected,
+      MarketDataQualityStatus.Invalid, MarketDataTransportStatus.NotAttempted, issue(MarketDataIssueCode.ProviderNotAllowed, "Requested Bar provider is not allowed by policy."));
+    if (!descriptor.capabilities.includes(MarketDataCapability.Bars)) return barResultWithoutData(request, startedAt, MarketDataResultStatus.Unsupported,
+      MarketDataQualityStatus.Unsupported, MarketDataTransportStatus.NotAttempted, issue(MarketDataIssueCode.CapabilityUnsupported, "Provider does not support Bars."));
+
+    const health = adapter.getHealth();
+    validateHealth(health, descriptor.providerId);
+    if (health.status === MarketDataProviderHealthStatus.Unavailable) return barResultWithoutData(request, startedAt, MarketDataResultStatus.Unavailable,
+      MarketDataQualityStatus.Unavailable, MarketDataTransportStatus.Unavailable, issue(MarketDataIssueCode.ProviderUnavailable, health.reason ?? "Provider is unavailable."));
+
+    let raw;
+    try {
+      raw = await adapter.fetchBars(deepFreeze(clone(request)));
+    } catch (error: unknown) {
+      const normalizedError = adapter.normalizeError(error, deepFreeze(clone(request)), this.clock.now());
+      validateAdapterError(normalizedError, descriptor.providerId);
+      return barResultWithoutData(request, startedAt, MarketDataResultStatus.Unavailable, MarketDataQualityStatus.Unavailable,
+        MarketDataTransportStatus.Failed, issue(MarketDataIssueCode.TransportFailure, normalizedError.safeMessage));
+    }
+    const rawCopy = deepFreeze(clone(raw));
+    if (!isRecord(rawCopy) || rawCopy.providerId !== descriptor.providerId || !isTimestamp(rawCopy.receivedAt)) {
+      return barResultWithoutData(request, startedAt, MarketDataResultStatus.Rejected, MarketDataQualityStatus.Invalid,
+        MarketDataTransportStatus.Succeeded, issue(MarketDataIssueCode.InvalidProviderIdentity, "Raw Bar response envelope is invalid."));
+    }
+
+    let normalized;
+    try {
+      normalized = adapter.normalizeBars(rawCopy, deepFreeze(clone(request)));
+    } catch {
+      return barResultWithoutData(request, startedAt, MarketDataResultStatus.Rejected, MarketDataQualityStatus.Invalid,
+        MarketDataTransportStatus.Succeeded, issue(MarketDataIssueCode.NormalizationRejected, "Bar normalization failed safely."), MarketDataNormalizationStatus.Rejected);
+    }
+    if (normalized.providerId !== descriptor.providerId || !Array.isArray(normalized.bars)
+      || !Array.isArray(normalized.blockers) || !Array.isArray(normalized.warnings)) {
+      throw new MarketDataConfigurationError("Bar normalization result is malformed.");
+    }
+    if (normalized.status === MarketDataNormalizationStatus.Rejected || normalized.bars.length === 0) {
+      return barResultWithoutData(request, startedAt, MarketDataResultStatus.Rejected,
+        normalized.blockers.some((entry) => entry.code === MarketDataIssueCode.AmbiguousUnits) ? MarketDataQualityStatus.Incomplete : MarketDataQualityStatus.Invalid,
+        MarketDataTransportStatus.Succeeded,
+        normalized.blockers.length > 0 ? normalized.blockers : issue(MarketDataIssueCode.NoAcceptedData, "Adapter returned no accepted Bars."),
+        MarketDataNormalizationStatus.Rejected, normalized.warnings);
+    }
+
+    const bars = normalized.bars.map((bar) => clone(bar)).sort((left, right) => left.intervalStart.localeCompare(right.intervalStart) || left.barId.localeCompare(right.barId));
+    const invalid = bars.some((bar) => !validateCanonicalBar(bar).valid
+      || bar.instrument.instrumentId !== request.instrument.instrumentId
+      || bar.source.providerId !== descriptor.providerId
+      || bar.interval !== request.interval);
+    if (invalid) return barResultWithoutData(request, startedAt, MarketDataResultStatus.Rejected, MarketDataQualityStatus.Invalid,
+      MarketDataTransportStatus.Succeeded, issue(MarketDataIssueCode.NormalizationRejected, "Adapter returned an invalid Canonical Bar."),
+      MarketDataNormalizationStatus.Normalized, normalized.warnings);
+
+    const stale = bars.some((bar) => bar.quality.freshness === BarFreshnessStatus.Stale);
+    if (stale && request.barMode === MarketDataBarMode.Intraday) {
+      return barResultWithoutData(request, startedAt, MarketDataResultStatus.Rejected, MarketDataQualityStatus.Stale,
+        MarketDataTransportStatus.Succeeded, issue(MarketDataIssueCode.StaleObservation, "Intraday Bar result contains stale observations."),
+        MarketDataNormalizationStatus.Normalized, normalized.warnings);
+    }
+
+    const processedAt = this.clock.now();
+    return deepFreeze({
+      schemaVersion: MARKET_DATA_SCHEMA_VERSION,
+      requestId: request.requestId,
+      operation: MarketDataOperation.Bars,
+      status: MarketDataResultStatus.Accepted,
+      qualityStatus: stale ? MarketDataQualityStatus.Stale : MarketDataQualityStatus.Valid,
+      providerId: request.providerId,
+      barMode: request.barMode,
+      capability: MarketDataCapability.Bars,
+      requestedInstrument: clone(request.instrument),
+      interval: request.interval,
+      data: bars,
+      transportStatus: MarketDataTransportStatus.Succeeded,
+      normalizationStatus: MarketDataNormalizationStatus.Normalized,
+      validation: { status: MarketDataValidationStatus.Passed, checks: [] },
+      blockers: [],
+      warnings: sortIssues(normalized.warnings),
+      policyId: request.policy.policyId,
+      policyVersion: request.policy.version,
+      trace: clone(request.trace),
+      processing: processing(request, startedAt, processedAt),
+    });
   }
 
   public async getLatestQuote(value: unknown): Promise<MarketDataResult> {
@@ -473,6 +583,37 @@ function validateRequest(value: unknown): LatestQuoteRequest {
   return deepFreeze(clone(value as unknown as LatestQuoteRequest));
 }
 
+function validateBarRequest(value: unknown): MarketDataBarRequest {
+  if (!isRecord(value)
+    || value.schemaVersion !== MARKET_DATA_SCHEMA_VERSION
+    || value.operation !== MarketDataOperation.Bars
+    || !validIdentifier(value.requestId)
+    || !validIdentifier(value.providerId)
+    || !Object.values(MarketDataBarMode).includes(value.barMode as MarketDataBarMode)
+    || !isRecord(value.instrument) || !isCanonicalInstrumentId(value.instrument.instrumentId)
+    || !Object.values(BarInterval).includes(value.interval as BarInterval)
+    || !isTimestamp(value.startTime) || !isTimestamp(value.endTime)
+    || Date.parse(value.endTime as string) <= Date.parse(value.startTime as string)
+    || !Number.isSafeInteger(value.maxRecords) || (value.maxRecords as number) < 1
+    || !isTimestamp(value.requestedAt) || !isTimestamp(value.evaluatedAt)
+    || !isRecord(value.trace) || !validIdentifier(value.trace.correlationId)
+    || !isRecord(value.policy)) {
+    throw new MarketDataConfigurationError("Bar request is malformed.");
+  }
+  const policy = value.policy;
+  if (policy.schemaVersion !== MARKET_DATA_SCHEMA_VERSION
+    || !validIdentifier(policy.policyId) || !validIdentifier(policy.version)
+    || !Array.isArray(policy.allowedProviderIds) || !policy.allowedProviderIds.every(validIdentifier)
+    || !Array.isArray(policy.requiredCapabilities)
+    || !policy.requiredCapabilities.every((entry) => Object.values(MarketDataCapability).includes(entry as MarketDataCapability))
+    || !policy.requiredCapabilities.includes(MarketDataCapability.Bars)
+    || !Number.isSafeInteger(policy.maxRecords) || (policy.maxRecords as number) < 1 || (policy.maxRecords as number) > 5_000
+    || (value.maxRecords as number) > (policy.maxRecords as number)) {
+    throw new MarketDataConfigurationError("Bar policy is malformed or request exceeds its record limit.");
+  }
+  return deepFreeze(clone(value as unknown as MarketDataBarRequest));
+}
+
 function validateDescriptor(value: MarketDataProviderDescriptor): MarketDataProviderDescriptor {
   if (!isRecord(value)
     || value.schemaVersion !== MARKET_DATA_SCHEMA_VERSION
@@ -553,6 +694,41 @@ function dataValidationFailure(
   });
 }
 
+function barResultWithoutData(
+  request: MarketDataBarRequest,
+  startedAt: number,
+  status: MarketDataResultStatus,
+  qualityStatus: MarketDataQualityStatus,
+  transportStatus: MarketDataTransportStatus,
+  blockers: MarketDataNormalizationIssue | readonly MarketDataNormalizationIssue[],
+  normalizationStatus = MarketDataNormalizationStatus.NotAttempted,
+  warnings: readonly MarketDataNormalizationIssue[] = [],
+): MarketDataBarResult {
+  const processedAt = new Date(startedAt).toISOString();
+  return deepFreeze({
+    schemaVersion: MARKET_DATA_SCHEMA_VERSION,
+    requestId: request.requestId,
+    operation: MarketDataOperation.Bars,
+    status,
+    qualityStatus,
+    providerId: request.providerId,
+    barMode: request.barMode,
+    capability: MarketDataCapability.Bars,
+    requestedInstrument: clone(request.instrument),
+    interval: request.interval,
+    data: [],
+    transportStatus,
+    normalizationStatus,
+    validation: { status: MarketDataValidationStatus.NotRun, checks: [] },
+    blockers: sortIssues(Array.isArray(blockers) ? blockers : [blockers]),
+    warnings: sortIssues(warnings),
+    policyId: request.policy.policyId,
+    policyVersion: request.policy.version,
+    trace: clone(request.trace),
+    processing: processing(request, startedAt, processedAt),
+  });
+}
+
 function resultWithoutData(
   request: LatestQuoteRequest,
   startedAt: number,
@@ -589,7 +765,7 @@ function resultWithoutData(
   });
 }
 
-function processing(request: LatestQuoteRequest, startedAt: number, processedAt: string) {
+function processing(request: LatestQuoteRequest | MarketDataBarRequest, startedAt: number, processedAt: string) {
   const processedMs = Date.parse(processedAt);
   return {
     requestedAt: request.requestedAt,
