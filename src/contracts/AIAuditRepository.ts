@@ -30,6 +30,7 @@ export enum AIAuditRecordType {
   HistoricalAnalogy = "HISTORICAL_ANALOGY",
   EventReplay = "EVENT_REPLAY",
   LearningReview = "LEARNING_REVIEW",
+  MarketRegimeAssessment = "MARKET_REGIME_ASSESSMENT",
 }
 
 export enum AIAuditSourceSubsystem {
@@ -53,6 +54,7 @@ export enum AIAuditSourceSubsystem {
   HistoricalAnalogyEngine = "HISTORICAL_ANALOGY_ENGINE",
   EventReplay = "EVENT_REPLAY",
   LearningLoop = "LEARNING_LOOP",
+  MarketRegimeEngine = "MARKET_REGIME_ENGINE",
 }
 
 export enum AIAuditRetentionClassification {

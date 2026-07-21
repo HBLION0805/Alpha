@@ -4,11 +4,11 @@ Date:
 2026-07-21
 
 Project Stage:
-Day 10 Market Data boundary consolidation is complete; Day11-T1 bounded live-smoke transport foundation awaits owner review without any live request having been executed
+Day11-T1 bounded live-smoke transport foundation is committed; Day11-T2 deterministic Market Regime foundation awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `e2e3370a5ab1ee123d1f6ab61fa43ca52c6aa94e` on clean `main`, equal to `origin/main` before Day11-T1.
+Verified baseline: `b73387c2b9499db9c5b263d36fcc8b0d8790abda` on clean `main`, equal to `origin/main` before Day11-T2.
 
 Day 7 completed:
 
@@ -19,9 +19,11 @@ Day 7 completed:
 
 Day 7 adds no dashboard wiring, mutable cross-runtime operation, graph database, source-authority transfer, AI reasoning, automatic learning, provider/network/API integration, live market data, broker behavior, production persistence, or capital-domain behavior change.
 
-Architecture Checkpoint 1 selected a narrow deterministic sequence. Day 8, Day 9, and Day 10 are complete. Day11-T1 adds a Twelve Data-owned concrete HTTPS transport behind the existing port and a manual command that defaults to a network-free dry run. It is restricted to AAPL/PT5M, one request, 10 records, one API credit, explicit UTC timestamps, and `ALPHA_TWELVE_DATA_API_KEY`; confirmation, timeout/cancellation, endpoint allow-listing, and redacted diagnostics are mandatory. No real request, polling, retry, persistence, routing/fallback, downstream Evidence/Decision wiring, Paper Trading, broker, or execution has occurred. See `docs/specifications/TWELVE_DATA_LIVE_SMOKE.md`.
+Architecture Checkpoint 1 selected a narrow deterministic sequence. Day 8, Day 9, and Day 10 are complete. Day11-T1 is committed and adds a Twelve Data-owned concrete HTTPS transport behind the existing port plus a manual command that defaults to a network-free dry run. It remains restricted to AAPL/PT5M, one request, 10 records, one API credit, explicit UTC timestamps, and `ALPHA_TWELVE_DATA_API_KEY`; no real request has been executed.
 
-The Day11-T1 registered validation baseline is 1293/1293 tests. The next step is owner review of this uncommitted foundation. After a clean dry run, the owner may separately authorize exactly one real request. Live Canonical Bar acceptance remains blocked by the official equity-volume unit evidence gate regardless of transport success.
+Day11-T2 adds a provider-independent deterministic Market Regime snapshot, policy, engine, assessment, and Unified Audit translation. Primary price structure remains separate from secondary conditions; distribution and accumulation require verified volume-unit and breadth evidence. The layer does not fetch data, invoke AI, emit trade signals, alter Risk/Decision/Portfolio state, or execute anything. See `docs/specifications/MARKET_REGIME_ENGINE.md`.
+
+The Day11-T2 registered validation baseline is 1322/1322 tests. The next step is owner review and release of this uncommitted foundation. A separately authorized live smoke request remains optional and independent; live Canonical Bar acceptance remains blocked by the official equity-volume unit evidence gate regardless of transport success.
 
 ## Day 6 Milestone Review
 
@@ -278,25 +280,26 @@ Current TypeScript foundations:
 - Unified Validation Reporting: normalized deterministic validation-reporting foundation implemented without replacing validators
 - Historical Evidence Product Surface: read-only deterministic composition of historical pattern, analogy, replay, prediction, and strategy reference metadata implemented
 - Cross-System Evidence Linking: read-only explicit typed link validation and resolution foundation implemented; source repositories remain authoritative
-- Evidence Assessment, Strategy Review, Minimal Knowledge Approval, Market Data Layer, Provider Registry, Canonical Instrument, Canonical Quote, and Canonical Bar foundations: completed and pushed; live adapters, Instrument Ranking, durable Trade Outcome, multi-cycle performance evaluation, Strategy Change Proposals, and broader knowledge retrieval remain planned or backlog
+- Evidence Assessment, Strategy Review, Minimal Knowledge Approval, Market Data Layer, Provider Registry, Canonical Instrument, Canonical Quote, and Canonical Bar foundations: completed and pushed
+- Market Regime Engine: deterministic provider-independent snapshot, fixed-decimal features, primary/secondary classification, policy, evidence reasons, and Unified Audit translation implemented locally for owner review; no signal or action authority
 
 Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. Day 7 product surfaces and links are TypeScript read models only. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
 
 ## Validation Status
 
-The current committed D9-T5 validation baseline completed successfully:
+The current uncommitted Day11-T2 validation baseline completed successfully:
 
 - TypeScript strict typecheck passed
-- Registered validation tests: 1173/1173 passed, including 40/40 Prediction Log, 51/51 Alpha Journal, 64/64 Research Lab, 70/70 Strategy Versioning, 48/48 Development Validation Log, 68/68 Historical Pattern Library, 91/91 Historical Analogy Engine, 20/20 Event Replay, 4/4 Historical Evidence Product Surface, 14/14 Cross-System Evidence Linking, 26/26 Evidence Engine, 35/35 Strategy Review, 46/46 Knowledge Approval, 28/28 Canonical Instrument, 35/35 Canonical Quote, 54/54 Canonical Bar, 45/45 Market Data Layer, 28/28 Provider Registry, 15/15 Python-integration client, 11/11 Python-side integration, 5/5 Validation Reporting, and 333/333 AI Infrastructure tests
+- Registered validation tests: 1322/1322 passed, including 29/29 Market Regime, 26/26 Evidence Engine, 35/35 Strategy Review, 46/46 Knowledge Approval, 28/28 Canonical Instrument, 36/36 Canonical Quote, 55/55 Canonical Bar, 45/45 Market Data Layer, 28/28 Provider Registry, 12/12 Provider Composition, 39/39 Twelve Data live-smoke foundation, 15/15 TypeScript Python-integration client, 11/11 Python-side integration, 5/5 Validation Reporting, and all existing deterministic learning, historical, decision, and AI infrastructure suites
 - Focused Python integration tests: 11/11 passed
-- Provider SDK and production-adapter scan clean
-- Network, API, and credential scan clean
+- Provider SDK scan clean; network scan allows only the reviewed Twelve Data one-shot transport and found no unapproved implementation
+- Credential and secret scan clean
 - Scoped Python-change scan confirmed only the approved D7-T1 integration boundary and its focused tests; existing Python business logic is unchanged
 - Runtime-data Git tracking scan clean
 - Secret-metadata and merge-marker scans clean
 - `git diff --check` passed
 
-The committed D9-T5 baseline passed documentation links, paths, fences, required files, provider/network/credential safety, runtime-data, Python-change, merge-marker, and `git diff --check` validation. Day10-T1 must rerun the complete bundle before owner review.
+The Day11-T2 working tree passed documentation links, paths, fences, required files, provider/network/credential safety, runtime-data, Python-change, merge-marker, and `git diff --check` validation.
 
 ## Git Milestones
 
@@ -324,6 +327,9 @@ The committed D9-T5 baseline passed documentation links, paths, fences, required
 - `c2cb8628ef6315da41e29a3974af7aa1c389ed6c` — Provider Selection Research and Canonical Instrument Foundation
 - `a114d98f87ab50e96e655409e55be057098a4328` — Canonical Quote Foundation
 - `0551e2ee20f9ce80ad6608929ed98c49abce77a3` — Canonical Bar Foundation
+- `a61d253010e0c963917b1773f2e8d0d2a92ccb60` — First Provider-specific Fixture Adapter Foundation
+- `e2e3370a5ab1ee123d1f6ab61fa43ca52c6aa94e` — Market Data Boundary Consolidation
+- `b73387c2b9499db9c5b263d36fcc8b0d8790abda` — Safe Live Smoke Transport Foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -375,4 +381,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day10-T1 Twelve Data official evidence and Bar semantics. If approved, the next implementation task should be a fixture-first Twelve Data intraday Bar adapter with no live request, committed credential, persistence, streaming, routing, fallback, Paper Trading, broker behavior, or execution behavior. Equity-volume units and provider-data retention remain blocking unknowns for live acceptance and persistence.
+Owner review and release of Day11-T2 Market Regime Engine Foundation. Do not wire it to live startup, Evidence, Decision, Risk, Portfolio, Dashboard, or execution until a separate consumer-integration design is approved. A future benchmark-fixture/evidence-composition task should use a reviewed broad-market ETF or index and remain independent from the optional Twelve Data live-smoke authorization.

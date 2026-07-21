@@ -159,7 +159,7 @@ Day 8 foundations are not production ready. Production persistence, transaction/
 
 Day 9 is foundation-complete, not production-ready. It owns canonical market identities and records but has no live source, concrete transport, secret, storage, or downstream consumer integration. Day 10 later added a narrowly reviewed fixture mapping and adapter boundary without changing this production-readiness classification.
 
-## Day 10 — External World Integration (In Progress)
+## Day 10 — External World Integration (Completed)
 
 1. **Day10-T1 — Twelve Data Official Evidence and Bar Semantics Review**
    - Status: completed, committed, and pushed as `42027f4d8a234cc9fe3ffb41a72a288985061c21`; no adapter implementation.
@@ -178,13 +178,19 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Excludes: new providers, live network behavior, routing/fallback, persistence, downstream domain wiring, Paper Trading, broker, or execution.
    - Exit criteria: all D-class consolidation findings are corrected, the complete registered validation passes, and live-smoke blockers remain explicit.
 
-## Day 11 — Bounded Live Verification (In Progress)
+## Day 11 — Bounded Live Verification and Market Context (In Progress)
 
 1. **Day11-T1 — Twelve Data Live Smoke Transport Foundation**
-   - Status: implemented locally and awaiting owner review; no real live request has been executed.
+   - Status: completed, committed, and pushed as `b73387c2b9499db9c5b263d36fcc8b0d8790abda`; no real live request has been executed.
    - Scope: opaque environment credential handle, allow-listed one-request HTTPS transport, strict AAPL/PT5M policy, mandatory dry run, explicit confirmation command, sanitized result, network-free tests, and safety-scan controls.
    - Excludes: automatic live execution, retries, polling, scheduling, streaming, persistence, SPY, multi-symbol calls, Quotes/Trades, Evidence/Decision/Risk/Portfolio wiring, Paper Trading, broker, or execution.
    - Exit criteria: strict typecheck and registered validation pass; dry-run and all automated tests prove zero live calls; no secret is tracked; unresolved equity-volume units continue to block Canonical acceptance; owner reviews the milestone before separately authorizing one request.
+
+2. **Day11-T2 — Market Regime Engine Architecture and Minimal Deterministic Foundation**
+   - Status: implemented locally and awaiting owner review.
+   - Scope: immutable provider-independent regime snapshots, fixed-decimal price features, versioned policy thresholds, mutually exclusive primary regimes, independent evidence-gated conditions, explainable assessments, and Unified Audit translation.
+   - Excludes: live/startup wiring, provider calls, AI, signals, recommendations, Risk/Decision/Portfolio mutation, volume/breadth invention, persistence, Dashboard, backtesting, Paper Trading, brokerage, or execution.
+   - Exit criteria: missing or contradictory required evidence fails closed; correction remains distinct from bear trend; relief rally remains distinct from bull trend; high volatility can coexist with a primary regime; distribution/accumulation require verified volume and breadth evidence; focused and complete validation pass.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

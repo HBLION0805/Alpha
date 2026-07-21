@@ -537,6 +537,16 @@ Day11-T1 adds the narrowly allow-listed [Twelve Data Live Smoke Transport](speci
 
 ---
 
+## Market Regime Engine Foundation
+
+Day11-T2 adds one provider-independent [Market Regime Engine](specifications/MARKET_REGIME_ENGINE.md) downstream of canonical observations: `canonical market observations -> immutable regime snapshot -> deterministic fixed-decimal features -> versioned rules -> immutable assessment -> Evidence references / Unified Audit translation`. The engine fetches and normalizes nothing and has no dependency on Twelve Data or another provider.
+
+One primary price-structure regime is reported separately from secondary conditions. `HIGH_VOLATILITY` may coexist with `BULL_TREND`, `BEAR_TREND`, `CORRECTION`, `RELIEF_RALLY`, or `RANGE_BOUND`. `DISTRIBUTION_RISK` and `ACCUMULATION_CANDIDATE` require verified volume-unit semantics and verified breadth evidence; price alone cannot produce them. Evidence strength describes deterministic coverage, never probability or expected profitability.
+
+The engine emits no signal, recommendation, plan, risk override, position size, portfolio mutation, or execution instruction. Missing observations, stale/rejected quality, unresolved canonical identity, contradiction, or missing source evidence fails closed as `INSUFFICIENT_EVIDENCE`. Decision Engine, Risk Engine, Evidence Engine, Unified Audit, Strategy Versioning, and authoritative market-data systems retain their existing responsibilities.
+
+---
+
 # Event Contract Framework
 
 Event contracts are considered a temporary capital-building tool.

@@ -47,3 +47,4 @@ export * from "./CanonicalBar";
 export * from "./MarketData";
 export * from "./MarketDataProviderRegistry";
 export * from "./MarketDataProviderComposition";
+export * from "./MarketRegime";

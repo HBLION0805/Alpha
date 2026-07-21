@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-21 - Day11-T2 Market Regime Engine Foundation
+
+### Regime Describes Environment but Does Not Authorize Action
+
+- Decision: Add one immutable provider-independent regime snapshot and one deterministic engine that returns a primary price-structure regime, independent secondary conditions, evidence strength, reason codes, unresolved requirements, and versioned policy metadata.
+- Reason: Future Volume, Breadth, Risk, Signal, Research, and Backtesting work needs a shared market-environment vocabulary without duplicating Decision Engine or Risk Engine authority.
+- Consequence: `BULL_TREND`, `BEAR_TREND`, `CORRECTION`, `RELIEF_RALLY`, `RANGE_BOUND`, and `INSUFFICIENT_EVIDENCE` are primary outcomes. `HIGH_VOLATILITY` may coexist as a condition. An assessment cannot recommend, size, plan, execute, mutate portfolio state, or override risk.
+
+### Distribution and Accumulation Require Verified Non-price Evidence
+
+- Decision: Treat `DISTRIBUTION_RISK` and `ACCUMULATION_CANDIDATE` as evidence-dependent secondary conditions. The conservative v1 gate requires verified volume evidence with explicit unit semantics and verified breadth evidence.
+- Reason: Price movement alone cannot establish market-wide distribution or accumulation, and Alpha currently has no approved breadth source or general verified equity-volume semantics.
+- Consequence: Missing, unverified, unavailable, or contradictory supplemental evidence remains an ordered unresolved requirement. AI, provider narrative, or a transport-success response cannot fill the gap.
+
+### Evidence Strength Is Not Probability
+
+- Decision: Use `STRONG_EVIDENCE`, `MODERATE_EVIDENCE`, `WEAK_EVIDENCE`, and `INSUFFICIENT_EVIDENCE` only as deterministic coverage classifications.
+- Reason: Alpha has no calibrated statistical regime model, so numeric confidence or probability would be misleading.
+- Consequence: Every assessment preserves the exact feature values, policy/rule-set version, reason codes, source references, input fingerprint, and Unified Audit translation needed to reconstruct the result.
+
 ## 2026-07-21 - Day11-T1 Twelve Data Live Smoke Transport Foundation
 
 ### One Manual HTTPS Request Is a Separate, Fail-closed Capability

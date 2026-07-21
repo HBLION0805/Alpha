@@ -27,3 +27,4 @@ export * from "./canonical-bar";
 export * from "./market-data";
 export * from "./market-data-provider-registry";
 export * from "./market-data-provider-composition";
+export * from "./market-regime";

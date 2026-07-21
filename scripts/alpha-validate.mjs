@@ -33,6 +33,7 @@ const requiredFiles = [
   "docs/specifications/PROVIDER_REGISTRY.md",
   "docs/specifications/TWELVE_DATA_ADAPTER.md",
   "docs/specifications/TWELVE_DATA_LIVE_SMOKE.md",
+  "docs/specifications/MARKET_REGIME_ENGINE.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -71,6 +72,7 @@ const aggregateTestFiles = [
   "src/engines/market-data/MarketDataService.test.ts",
   "src/engines/market-data-provider-registry/MarketDataProviderRegistry.test.ts",
   "src/engines/market-data-provider-composition/MarketDataProviderComposition.test.ts",
+  "src/engines/market-regime/MarketRegimeEngine.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",

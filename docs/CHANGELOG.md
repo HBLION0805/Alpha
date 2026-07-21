@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## 2026-07-21 - Day11-T2 Market Regime Engine Foundation
+
+- Added immutable provider-independent `RegimeInputSnapshot`, `MarketRegimePolicy`, and `MarketRegimeAssessment` contracts with fixed-decimal feature calculations, versioned thresholds, deterministic reasons, evidence strength, and fail-closed validation.
+- Added primary `BULL_TREND`, `BEAR_TREND`, `CORRECTION`, `RELIEF_RALLY`, `RANGE_BOUND`, and `INSUFFICIENT_EVIDENCE` classification with independent `HIGH_VOLATILITY` condition support.
+- Required verified volume-unit semantics and verified breadth evidence before `DISTRIBUTION_RISK` or `ACCUMULATION_CANDIDATE` can be emitted; price alone never produces those conditions.
+- Added deterministic Unified Audit translation and 29 focused tests; complete registered validation passes 1322/1322 without AI, network, provider-native fields, persistence, trading logic, portfolio mutation, or execution behavior.
+
 ## 2026-07-21 - Day11-T1 Twelve Data Live Smoke Transport Foundation
 
 - Added a Twelve Data-owned allow-listed HTTPS transport with one-request execution, redirect rejection, timeout/cancellation, bounded response handling, typed safe failures, and no provider SDK, retry, polling, caching, or persistence.
