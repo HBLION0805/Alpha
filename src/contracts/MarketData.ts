@@ -8,6 +8,7 @@ import {
   type CanonicalQuoteSourceMetadata,
   type QuoteDecimal,
 } from "./CanonicalQuote";
+import type { CanonicalBar } from "./CanonicalBar";
 
 export const MARKET_DATA_SCHEMA_VERSION = "1.0" as const;
 
@@ -17,6 +18,7 @@ export enum MarketDataOperation {
 
 export enum MarketDataType {
   Quote = "QUOTE",
+  Bar = "BAR",
 }
 
 /** @deprecated Use InstrumentAssetClass from CanonicalInstrument for new code. */
@@ -268,6 +270,9 @@ export interface MarketDataProviderAdapter {
 
 /** Compatibility alias; CanonicalQuote is Alpha's only accepted quote representation. */
 export type CanonicalMarketQuote = CanonicalQuote;
+
+/** Type-only compatibility alias; CanonicalBar is Alpha's only bar representation. */
+export type CanonicalMarketBar = CanonicalBar;
 
 export interface MarketDataValidationCheck {
   readonly dimension: MarketDataValidationDimension;

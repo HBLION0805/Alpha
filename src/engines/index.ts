@@ -23,5 +23,6 @@ export * from "./strategy-review";
 export * from "./knowledge-approval";
 export * from "./canonical-instrument";
 export * from "./canonical-quote";
+export * from "./canonical-bar";
 export * from "./market-data";
 export * from "./market-data-provider-registry";

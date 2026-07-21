@@ -26,7 +26,7 @@ It does not own predictions, evidence sufficiency, recommendations, risk rules, 
 
 ## Initial Contract Scope
 
-Version 1.0 intentionally supports only a latest two-sided quote and canonical instrument identity for equities, ETFs, crypto assets, and indices. It consumes the shared [Canonical Quote Foundation](CANONICAL_QUOTE.md) as Alpha's only accepted quote representation. Trades, bars, event-contract quotes, foreign exchange, market status, streaming, and provider orchestration are deferred until a concrete consumer requires them.
+Version 1.0 service behavior intentionally supports only a latest two-sided quote and canonical instrument identity for equities, ETFs, crypto assets, and indices. It consumes the shared [Canonical Quote Foundation](CANONICAL_QUOTE.md) as Alpha's only accepted quote representation. D9-T5 adds the separate [Canonical Bar Foundation](CANONICAL_BAR.md) and a type-only Market Data compatibility alias; bar retrieval and normalization remain unimplemented. Trades, event-contract quotes, foreign exchange, market status, streaming, and provider orchestration are deferred until a concrete consumer requires them.
 
 ### Canonical Instrument Identity
 
@@ -137,7 +137,7 @@ A new provider requires a reviewed adapter that implements the existing port, de
 
 - live provider integrations and credentials;
 - provider fallback, ranking, and multi-provider reconciliation;
-- trades, bars, streaming, market status, event-contract quotes, and foreign exchange;
+- trades, bar retrieval/normalization, streaming, market status, event-contract quotes, and foreign exchange;
 - production persistence and a market timeline database;
 - contextual anomaly or bad-tick detection;
 - Evidence, Replay, Dashboard, API, and Paper Trading integration;

@@ -43,5 +43,6 @@ export * from "./StrategyReview";
 export * from "./KnowledgeApproval";
 export * from "./CanonicalInstrument";
 export * from "./CanonicalQuote";
+export * from "./CanonicalBar";
 export * from "./MarketData";
 export * from "./MarketDataProviderRegistry";

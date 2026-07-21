@@ -85,7 +85,7 @@ A new quote kind or quality reason requires a documented consumer need, a bounde
 ## Deferred Work
 
 - live provider adapters, credentials, HTTP, WebSocket, and streaming;
-- bid/ask books, market depth, trades, bars, snapshots, market status, and event-contract quote extensions;
+- bid/ask books, market depth, trades, snapshots, market status, and event-contract quote extensions; Canonical Bar is a separate implemented foundation;
 - corporate actions, exchange calendars, provider correction feeds, and contextual anomaly detection;
 - cross-provider reconciliation, routing, fallback, and automatic provider selection;
 - production persistence, signing, API, Dashboard, Evidence integration, Paper Trading, broker integration, and execution;
