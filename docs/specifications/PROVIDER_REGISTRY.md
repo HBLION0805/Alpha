@@ -56,7 +56,7 @@ The registry declares coverage; it does not call or validate a live adapter. Uns
 
 ## Asset-Class Model
 
-D9-T2 reuses the Market Data Layer asset classes: equity, ETF, crypto, and index. Unknown values and duplicate declarations are rejected. Event contracts, foreign exchange, economic-calendar events, and news require explicit typed extensions rather than being forced into an unrelated asset class.
+Provider coverage metadata reuses the [Canonical Instrument Foundation](CANONICAL_INSTRUMENT.md) asset classes: equity, ETF, crypto, and index. The former Market Data asset-class export remains a compatibility alias only. Unknown values and duplicate declarations are rejected. Event contracts, foreign exchange, economic-calendar events, and news require explicit typed extensions rather than being forced into an unrelated asset class.
 
 ## Registration and Validation
 

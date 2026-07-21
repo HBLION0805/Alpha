@@ -8,7 +8,8 @@ import {
   type MarketDataProviderRegistry,
   type MarketDataProviderRegistryPolicy,
 } from "../../contracts/MarketDataProviderRegistry";
-import { MarketAssetClass, MarketDataCapability } from "../../contracts/MarketData";
+import { InstrumentAssetClass } from "../../contracts/CanonicalInstrument";
+import { MarketDataCapability } from "../../contracts/MarketData";
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/u;
 const DISPLAY_NAME = /^[A-Za-z0-9][A-Za-z0-9 .&()'/-]{0,119}$/u;
@@ -165,7 +166,7 @@ function validateAndCopyProvider(value: unknown): MarketDataProviderMetadata {
     || !Object.values(MarketDataProviderStatus).includes(value.status as MarketDataProviderStatus)
     || !Array.isArray(value.supportedAssetClasses)
     || value.supportedAssetClasses.length === 0
-    || !value.supportedAssetClasses.every((assetClass) => Object.values(MarketAssetClass).includes(assetClass as MarketAssetClass))
+    || !value.supportedAssetClasses.every((assetClass) => Object.values(InstrumentAssetClass).includes(assetClass as InstrumentAssetClass))
     || new Set(value.supportedAssetClasses).size !== value.supportedAssetClasses.length
     || !Array.isArray(value.capabilities)
     || value.capabilities.length === 0
@@ -233,11 +234,11 @@ function validateCapability(value: unknown): MarketDataCapability {
   return value as MarketDataCapability;
 }
 
-function validateAssetClass(value: unknown): MarketAssetClass {
-  if (!Object.values(MarketAssetClass).includes(value as MarketAssetClass)) {
+function validateAssetClass(value: unknown): InstrumentAssetClass {
+  if (!Object.values(InstrumentAssetClass).includes(value as InstrumentAssetClass)) {
     throw registryError(MarketDataProviderRegistryErrorCode.UnknownAssetClass, "Asset class is invalid or unknown.");
   }
-  return value as MarketAssetClass;
+  return value as InstrumentAssetClass;
 }
 
 function validateScope(value: unknown): asserts value is MarketDataProviderQueryScope {

@@ -1,3 +1,8 @@
+import {
+  InstrumentAssetClass,
+  type CanonicalInstrument,
+} from "./CanonicalInstrument";
+
 export const MARKET_DATA_SCHEMA_VERSION = "1.0" as const;
 
 export enum MarketDataOperation {
@@ -8,12 +13,10 @@ export enum MarketDataType {
   Quote = "QUOTE",
 }
 
-export enum MarketAssetClass {
-  Equity = "EQUITY",
-  Etf = "ETF",
-  Crypto = "CRYPTO",
-  Index = "INDEX",
-}
+/** @deprecated Use InstrumentAssetClass from CanonicalInstrument for new code. */
+export const MarketAssetClass = InstrumentAssetClass;
+/** @deprecated Use InstrumentAssetClass from CanonicalInstrument for new code. */
+export type MarketAssetClass = InstrumentAssetClass;
 
 export enum MarketDataCapability {
   LatestQuote = "LATEST_QUOTE",
@@ -135,14 +138,8 @@ export interface MarketDecimal {
   readonly scale: number;
 }
 
-export interface CanonicalInstrumentIdentity {
-  readonly schemaVersion: typeof MARKET_DATA_SCHEMA_VERSION;
-  readonly instrumentId: string;
-  readonly assetClass: MarketAssetClass;
-  readonly symbol: string;
-  readonly venue: string;
-  readonly currency: string;
-}
+/** Compatibility alias; canonical identity is owned by the Canonical Instrument foundation. */
+export type CanonicalInstrumentIdentity = CanonicalInstrument;
 
 export interface MarketDataInstrumentRequest {
   readonly instrumentId: string;
@@ -155,7 +152,7 @@ export interface MarketDataProviderDescriptor {
   readonly providerId: string;
   readonly enabled: boolean;
   readonly capabilities: readonly MarketDataCapability[];
-  readonly supportedAssetClasses: readonly MarketAssetClass[];
+  readonly supportedAssetClasses: readonly InstrumentAssetClass[];
 }
 
 export interface MarketDataProviderHealth {
@@ -166,7 +163,7 @@ export interface MarketDataProviderHealth {
 }
 
 export interface MarketDataFreshnessRule {
-  readonly assetClass: MarketAssetClass;
+  readonly assetClass: InstrumentAssetClass;
   readonly dataType: MarketDataType.Quote;
   readonly maxAgeSeconds: number;
   readonly maxPriceScale: number;

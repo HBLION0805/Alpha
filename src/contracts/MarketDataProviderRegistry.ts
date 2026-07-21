@@ -1,4 +1,5 @@
-import type { MarketAssetClass, MarketDataCapability } from "./MarketData";
+import type { InstrumentAssetClass } from "./CanonicalInstrument";
+import type { MarketDataCapability } from "./MarketData";
 
 export const MARKET_DATA_PROVIDER_REGISTRY_SCHEMA_VERSION = "1.0" as const;
 
@@ -43,7 +44,7 @@ export interface MarketDataProviderMetadata {
   readonly metadataVersion: string;
   readonly identity: MarketDataProviderIdentity;
   readonly status: MarketDataProviderStatus;
-  readonly supportedAssetClasses: readonly MarketAssetClass[];
+  readonly supportedAssetClasses: readonly InstrumentAssetClass[];
   readonly capabilities: readonly MarketDataCapability[];
   /** Static discovery order only. Lower values are listed first; this is not routing authority. */
   readonly priority: number;

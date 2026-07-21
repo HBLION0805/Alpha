@@ -1,6 +1,11 @@
 import {
+  CANONICAL_INSTRUMENT_SCHEMA_VERSION,
+  InstrumentAssetClass,
+  InstrumentStatus,
+  InstrumentType,
+} from "../../contracts/CanonicalInstrument";
+import {
   MARKET_DATA_SCHEMA_VERSION,
-  MarketAssetClass,
   MarketDataAdapterErrorCategory,
   MarketDataCapability,
   MarketDataDuplicatePolicy,
@@ -52,7 +57,7 @@ function request(overrides: Record<string, unknown> = {}): LatestQuoteRequest {
     requestId: "request:quote:1",
     operation: MarketDataOperation.LatestQuote,
     providerId: "provider:fixture",
-    instrument: { instrumentId: "instrument:equity:XNAS:AAPL:USD" },
+    instrument: { instrumentId: "instrument:00000000000000000000000001" },
     requestedAt: "2026-07-20T11:59:29.000Z",
     evaluatedAt: NOW,
     policy: {
@@ -63,7 +68,7 @@ function request(overrides: Record<string, unknown> = {}): LatestQuoteRequest {
       requiredCapabilities: [MarketDataCapability.LatestQuote],
       duplicatePolicy: MarketDataDuplicatePolicy.RejectExact,
       freshnessRules: [{
-        assetClass: MarketAssetClass.Equity,
+        assetClass: InstrumentAssetClass.Equity,
         dataType: MarketDataType.Quote,
         maxAgeSeconds: 60,
         maxPriceScale: 4,
@@ -82,12 +87,18 @@ function normalized(overrides: Record<string, unknown> = {}): MarketDataNormaliz
     status: MarketDataNormalizationStatus.Normalized,
     data: {
       instrument: {
-        schemaVersion: MARKET_DATA_SCHEMA_VERSION,
-        instrumentId: "instrument:equity:XNAS:AAPL:USD",
-        assetClass: MarketAssetClass.Equity,
-        symbol: "AAPL",
-        venue: "XNAS",
+        schemaVersion: CANONICAL_INSTRUMENT_SCHEMA_VERSION,
+        instrumentId: "instrument:00000000000000000000000001",
+        metadataVersion: "1.0",
+        displaySymbol: "AAPL",
+        displayName: "Apple Inc.",
+        assetClass: InstrumentAssetClass.Equity,
+        instrumentType: InstrumentType.CommonStock,
+        status: InstrumentStatus.Active,
         currency: "USD",
+        exchange: "XNAS",
+        timezone: "America/New_York",
+        effectiveFrom: "2026-07-20T00:00:00.000Z",
       },
       bidPrice: { atomicValue: "2241234", scale: 4 },
       askPrice: { atomicValue: "2241300", scale: 4 },
@@ -133,7 +144,7 @@ class FixtureAdapter implements MarketDataProviderAdapter {
       providerId: "provider:fixture",
       enabled: true,
       capabilities: [MarketDataCapability.Health, MarketDataCapability.LatestQuote],
-      supportedAssetClasses: [MarketAssetClass.Equity],
+      supportedAssetClasses: [InstrumentAssetClass.Equity],
     },
     public health: MarketDataProviderHealth = {
       providerId: "provider:fixture",
@@ -217,12 +228,12 @@ test("missing required quote field fails closed", async () => {
 });
 
 test("missing asset-class policy rule fails closed", async () => {
-  const result = await system().service.getLatestQuote(request({ policy: { ...request().policy, freshnessRules: [{ ...request().policy.freshnessRules[0]!, assetClass: MarketAssetClass.Crypto }] } }));
+  const result = await system().service.getLatestQuote(request({ policy: { ...request().policy, freshnessRules: [{ ...request().policy.freshnessRules[0]!, assetClass: InstrumentAssetClass.Crypto }] } }));
   assertIssue(result, MarketDataIssueCode.MissingRequiredField);
 });
 
 test("undeclared provider asset class fails closed", async () => {
-  const adapter = new FixtureAdapter({ ...new FixtureAdapter().descriptor, supportedAssetClasses: [MarketAssetClass.Crypto] });
+  const adapter = new FixtureAdapter({ ...new FixtureAdapter().descriptor, supportedAssetClasses: [InstrumentAssetClass.Crypto] });
   assertIssue(await system(adapter).service.getLatestQuote(request()), MarketDataIssueCode.InvalidInstrumentIdentity);
 });
 
@@ -301,7 +312,7 @@ test("exact duplicates may be accepted with an explicit warning", async () => {
 
 test("canonical instrument identity is provider independent", async () => {
   const result = await system().service.getLatestQuote(request());
-  assertEqual(result.data?.instrument.instrumentId, "instrument:equity:XNAS:AAPL:USD", "canonical ID");
+  assertEqual(result.data?.instrument.instrumentId, "instrument:00000000000000000000000001", "canonical ID");
   assertTrue(result.data?.instrument.instrumentId !== result.data?.source.providerInstrumentId, "not provider ID");
 });
 
@@ -309,7 +320,7 @@ test("different aliases map to the same canonical identity", async () => {
   const adapter = new FixtureAdapter();
   adapter.normalization = normalized({ source: { ...normalized().data!.source!, providerSymbol: "US0378331005" } });
   const result = await system(adapter).service.getLatestQuote(request());
-  assertEqual(result.data?.instrument.instrumentId, "instrument:equity:XNAS:AAPL:USD", "canonical ID");
+  assertEqual(result.data?.instrument.instrumentId, "instrument:00000000000000000000000001", "canonical ID");
   assertEqual(result.data?.source.providerSymbol, "US0378331005", "source alias");
 });
 
@@ -457,6 +468,16 @@ test("malformed service request is rejected", async () => {
   let failed = false;
   try { await system().service.getLatestQuote({}); } catch (error) { failed = error instanceof MarketDataConfigurationError; }
   assertTrue(failed, "request rejected");
+});
+
+test("provider symbol cannot replace canonical request identity", async () => {
+  let failed = false;
+  try {
+    await system().service.getLatestQuote(request({ instrument: { instrumentId: "AAPL" } }));
+  } catch (error) {
+    failed = error instanceof MarketDataConfigurationError;
+  }
+  assertTrue(failed, "provider symbol rejected");
 });
 
 async function main(): Promise<void> {

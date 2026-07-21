@@ -7,7 +7,8 @@ import {
   type MarketDataProviderMetadata,
   type MarketDataProviderRegistryPolicy,
 } from "../../contracts/MarketDataProviderRegistry";
-import { MarketAssetClass, MarketDataCapability } from "../../contracts/MarketData";
+import { InstrumentAssetClass } from "../../contracts/CanonicalInstrument";
+import { MarketDataCapability } from "../../contracts/MarketData";
 import {
   InMemoryMarketDataProviderRegistry,
   MarketDataProviderRegistryError,
@@ -53,7 +54,7 @@ function provider(overrides: Partial<MarketDataProviderMetadata> = {}): MarketDa
       displayName: "Fixture Equities",
     },
     status: MarketDataProviderStatus.Active,
-    supportedAssetClasses: [MarketAssetClass.Equity, MarketAssetClass.Etf],
+    supportedAssetClasses: [InstrumentAssetClass.Equity, InstrumentAssetClass.Etf],
     capabilities: [
       MarketDataCapability.LatestQuote,
       MarketDataCapability.ResolveInstrument,
@@ -72,7 +73,7 @@ function secondProvider(overrides: Partial<MarketDataProviderMetadata> = {}): Ma
       providerId: "provider:fixture-crypto",
       displayName: "Fixture Crypto",
     },
-    supportedAssetClasses: [MarketAssetClass.Crypto],
+    supportedAssetClasses: [InstrumentAssetClass.Crypto],
     capabilities: [MarketDataCapability.LatestQuote, MarketDataCapability.LatestTrade],
     priority: 50,
     documentationReference: "docs/specifications/PROVIDER_REGISTRY.md#fixture-crypto",
@@ -136,7 +137,7 @@ test("lookup by capability returns enabled matches", () => {
 test("lookup by asset class returns enabled matches", () => {
   const registry = new InMemoryMarketDataProviderRegistry([provider(), secondProvider()], policy);
   assertDeepEqual(
-    registry.findByAssetClass(MarketAssetClass.Equity).map((value) => value.identity.providerId),
+    registry.findByAssetClass(InstrumentAssetClass.Equity).map((value) => value.identity.providerId),
     ["provider:fixture-equities"],
     "asset matches",
   );
@@ -160,7 +161,7 @@ test("capabilities and asset classes are normalized deterministically", () => {
   const registry = new InMemoryMarketDataProviderRegistry([provider()], policy);
   const value = registry.getProvider("provider:fixture-equities");
   assertDeepEqual(value.capabilities, [MarketDataCapability.Health, MarketDataCapability.LatestQuote, MarketDataCapability.ResolveInstrument], "capabilities");
-  assertDeepEqual(value.supportedAssetClasses, [MarketAssetClass.Equity, MarketAssetClass.Etf], "asset classes");
+  assertDeepEqual(value.supportedAssetClasses, [InstrumentAssetClass.Equity, InstrumentAssetClass.Etf], "asset classes");
 });
 
 test("registry results are deeply immutable", () => {
@@ -220,7 +221,7 @@ test("unknown capability fails explicitly", () => {
 test("unsupported asset class fails explicitly", () => {
   const registry = new InMemoryMarketDataProviderRegistry([provider()], policy);
   expectError(
-    () => registry.requireAssetClass("provider:fixture-equities", MarketAssetClass.Crypto),
+    () => registry.requireAssetClass("provider:fixture-equities", InstrumentAssetClass.Crypto),
     MarketDataProviderRegistryErrorCode.AssetClassUnsupported,
   );
 });
@@ -246,14 +247,14 @@ test("duplicate capability declarations are rejected", () => {
 
 test("unsupported asset-class declarations are rejected", () => {
   expectError(
-    () => new InMemoryMarketDataProviderRegistry([provider({ supportedAssetClasses: ["COMMODITY" as MarketAssetClass] })], policy),
+    () => new InMemoryMarketDataProviderRegistry([provider({ supportedAssetClasses: ["COMMODITY" as InstrumentAssetClass] })], policy),
     MarketDataProviderRegistryErrorCode.InvalidProvider,
   );
 });
 
 test("duplicate asset-class declarations are rejected", () => {
   expectError(
-    () => new InMemoryMarketDataProviderRegistry([provider({ supportedAssetClasses: [MarketAssetClass.Equity, MarketAssetClass.Equity] })], policy),
+    () => new InMemoryMarketDataProviderRegistry([provider({ supportedAssetClasses: [InstrumentAssetClass.Equity, InstrumentAssetClass.Equity] })], policy),
     MarketDataProviderRegistryErrorCode.InvalidProvider,
   );
 });

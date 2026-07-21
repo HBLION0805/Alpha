@@ -1,6 +1,5 @@
 import {
   MARKET_DATA_SCHEMA_VERSION,
-  MarketAssetClass,
   MarketDataCapability,
   MarketDataDimensionStatus,
   MarketDataDuplicatePolicy,
@@ -26,6 +25,11 @@ import {
   type MarketDataResult,
   type MarketDataValidationCheck,
 } from "../../contracts/MarketData";
+import { InstrumentAssetClass } from "../../contracts/CanonicalInstrument";
+import {
+  isCanonicalInstrumentId,
+  validateCanonicalInstrument,
+} from "../canonical-instrument/CanonicalInstrument";
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/u;
 const INTEGER = /^-?\d+$/u;
@@ -285,11 +289,8 @@ function validateCandidate(
     add(MarketDataValidationDimension.ProviderIdentity, issue(MarketDataIssueCode.InvalidProviderIdentity, "Source provider and adapter identity must match the selected adapter.", "source"));
   }
   if (candidate.instrument) {
-    if (!validIdentifier(candidate.instrument.instrumentId)
-      || candidate.instrument.instrumentId !== request.instrument.instrumentId
-      || !validIdentifier(candidate.instrument.symbol)
-      || !validIdentifier(candidate.instrument.venue)
-      || !Object.values(MarketAssetClass).includes(candidate.instrument.assetClass)) {
+    if (!validateCanonicalInstrument(candidate.instrument).valid
+      || candidate.instrument.instrumentId !== request.instrument.instrumentId) {
       add(MarketDataValidationDimension.InstrumentIdentity, issue(MarketDataIssueCode.InvalidInstrumentIdentity, "Canonical instrument identity is invalid or does not match the request.", "instrument"));
     }
     if (!descriptor.supportedAssetClasses.includes(candidate.instrument.assetClass)) {
@@ -415,7 +416,7 @@ function validateRequest(value: unknown): LatestQuoteRequest {
     || !validIdentifier(value.requestId)
     || !validIdentifier(value.providerId)
     || !isRecord(value.instrument)
-    || !validIdentifier(value.instrument.instrumentId)
+    || !isCanonicalInstrumentId(value.instrument.instrumentId)
     || !isTimestamp(value.requestedAt)
     || !isTimestamp(value.evaluatedAt)
     || !isRecord(value.trace)
@@ -439,7 +440,7 @@ function validateRequest(value: unknown): LatestQuoteRequest {
   }
   for (const rule of policy.freshnessRules) {
     if (!isRecord(rule)
-      || !Object.values(MarketAssetClass).includes(rule.assetClass as MarketAssetClass)
+      || !Object.values(InstrumentAssetClass).includes(rule.assetClass as InstrumentAssetClass)
       || rule.dataType !== MarketDataType.Quote
       || !Number.isSafeInteger(rule.maxAgeSeconds) || (rule.maxAgeSeconds as number) < 0
       || !Number.isSafeInteger(rule.maxPriceScale) || (rule.maxPriceScale as number) < 0 || (rule.maxPriceScale as number) > 18
@@ -470,7 +471,7 @@ function validateDescriptor(value: MarketDataProviderDescriptor): MarketDataProv
     || new Set(value.capabilities).size !== value.capabilities.length
     || !Array.isArray(value.supportedAssetClasses)
     || value.supportedAssetClasses.length === 0
-    || !value.supportedAssetClasses.every((entry) => Object.values(MarketAssetClass).includes(entry))) {
+    || !value.supportedAssetClasses.every((entry) => Object.values(InstrumentAssetClass).includes(entry))) {
     throw new MarketDataConfigurationError("Provider descriptor is malformed.");
   }
   return value;
@@ -502,7 +503,7 @@ function validateNormalizationEnvelope(value: unknown, providerId: string): asse
   }
 }
 
-function findFreshnessRule(request: LatestQuoteRequest, assetClass: MarketAssetClass | undefined): MarketDataFreshnessRule | undefined {
+function findFreshnessRule(request: LatestQuoteRequest, assetClass: InstrumentAssetClass | undefined): MarketDataFreshnessRule | undefined {
   if (assetClass === undefined) return undefined;
   return request.policy.freshnessRules.find((rule) => rule.assetClass === assetClass && rule.dataType === MarketDataType.Quote);
 }

@@ -30,7 +30,9 @@ Version 1.0 intentionally supports only a latest two-sided quote and canonical i
 
 ### Canonical Instrument Identity
 
-A canonical instrument contains an Alpha-owned stable `instrumentId`, asset class, display symbol, venue, currency, and schema version. Display symbols are not globally unique. Provider symbols and provider instrument IDs remain source metadata and never replace Alpha's canonical ID. Alias resolution is adapter-owned and must map explicitly to a caller-requested canonical identity.
+Market Data consumes the shared [Canonical Instrument Foundation](CANONICAL_INSTRUMENT.md). A canonical instrument contains an Alpha-owned opaque `instrumentId` and immutable versioned display/classification metadata. Display symbols are labels, not globally unique IDs. Provider symbols and provider instrument IDs remain source metadata and never replace Alpha's canonical ID.
+
+Future alias resolution belongs behind the provider-neutral Instrument Resolver port and an explicit versioned mapping snapshot. D9-T3 defines that port but adds no resolver implementation or live lookup. The current quote request continues to name an already-known canonical instrument ID.
 
 ### Fixed-Decimal Values
 
@@ -53,7 +55,7 @@ All timestamps are canonical UTC ISO-8601 values. Receipt or processing time nev
 
 ## Provider Adapter Port and Capability Model
 
-Each adapter declares a stable provider ID, adapter ID/version, enabled state, supported asset classes, and explicit capabilities. The v1 service requires `LATEST_QUOTE`; health and identity-resolution capabilities remain independently declared.
+Each adapter declares a stable provider ID, adapter ID/version, enabled state, canonical instrument asset classes, and explicit capabilities. The v1 service requires `LATEST_QUOTE`; health and identity-resolution capabilities remain independently declared.
 
 The D9-T2 [Provider Registry](PROVIDER_REGISTRY.md) is the authoritative discovery source for provider identity, lifecycle metadata, declared capabilities, asset classes, priority, default enablement, and documentation. Adapter descriptors remain implementation compatibility declarations; they are not a competing provider catalog.
 
