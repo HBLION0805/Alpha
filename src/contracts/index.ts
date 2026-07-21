@@ -48,3 +48,4 @@ export * from "./MarketData";
 export * from "./MarketDataProviderRegistry";
 export * from "./MarketDataProviderComposition";
 export * from "./MarketRegime";
+export * from "./BroadMarketEvidence";

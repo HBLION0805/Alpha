@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## 2026-07-21 - Day12-T1 Broad Market Evidence Foundation (Pending Owner Review)
+
+- Added immutable provider-independent benchmark observation, snapshot, policy, feature, assessment, quality, issue, and trace contracts over reviewed Canonical Instrument and Canonical Bar references.
+- Added fixed-decimal short/medium return, drawdown, rebound, bounded volatility, range, and recovery calculations plus deterministic multi-benchmark agreement, disagreement, freshness, and missing-evidence facts.
+- Added fail-closed `COMPLETE`, `PARTIAL`, `STALE`, `CONTRADICTORY`, and `INSUFFICIENT` composition quality without regime, signal, recommendation, probability, AI, network, persistence, or domain mutation behavior.
+- Added deterministic Unified Audit translation, 40 focused fixture tests, validation registration, and the Broad Market Evidence specification; complete registered validation passes 1362/1362. The milestone remains uncommitted pending owner review.
+
 ## 2026-07-21 - Day11-T2 Market Regime Engine Foundation
 
 - Added immutable provider-independent `RegimeInputSnapshot`, `MarketRegimePolicy`, and `MarketRegimeAssessment` contracts with fixed-decimal feature calculations, versioned thresholds, deterministic reasons, evidence strength, and fail-closed validation.

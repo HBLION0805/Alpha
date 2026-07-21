@@ -178,7 +178,7 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Excludes: new providers, live network behavior, routing/fallback, persistence, downstream domain wiring, Paper Trading, broker, or execution.
    - Exit criteria: all D-class consolidation findings are corrected, the complete registered validation passes, and live-smoke blockers remain explicit.
 
-## Day 11 — Bounded Live Verification and Market Context (In Progress)
+## Day 11 — Bounded Live Verification and Market Context (Completed)
 
 1. **Day11-T1 — Twelve Data Live Smoke Transport Foundation**
    - Status: completed, committed, and pushed as `b73387c2b9499db9c5b263d36fcc8b0d8790abda`; no real live request has been executed.
@@ -187,10 +187,18 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: strict typecheck and registered validation pass; dry-run and all automated tests prove zero live calls; no secret is tracked; unresolved equity-volume units continue to block Canonical acceptance; owner reviews the milestone before separately authorizing one request.
 
 2. **Day11-T2 — Market Regime Engine Architecture and Minimal Deterministic Foundation**
-   - Status: implemented locally and awaiting owner review.
+   - Status: completed, committed, and pushed as `f51b3251526535cb9f7255e01d3299d0587e1d99`.
    - Scope: immutable provider-independent regime snapshots, fixed-decimal price features, versioned policy thresholds, mutually exclusive primary regimes, independent evidence-gated conditions, explainable assessments, and Unified Audit translation.
    - Excludes: live/startup wiring, provider calls, AI, signals, recommendations, Risk/Decision/Portfolio mutation, volume/breadth invention, persistence, Dashboard, backtesting, Paper Trading, brokerage, or execution.
    - Exit criteria: missing or contradictory required evidence fails closed; correction remains distinct from bear trend; relief rally remains distinct from bull trend; high volatility can coexist with a primary regime; distribution/accumulation require verified volume and breadth evidence; focused and complete validation pass.
+
+## Day 12 — Broad Market Evidence (In Progress)
+
+1. **Day12-T1 — Broad Market Evidence Foundation**
+   - Status: implemented locally, uncommitted, and pending owner review.
+   - Scope: reviewed Canonical Instrument benchmark membership; immutable provider-independent snapshots; fixed-decimal return, drawdown, rebound, volatility, range, and recovery facts; deterministic cross-benchmark composition quality; provenance; and Unified Audit translation.
+   - Excludes: live fetching, VIX/breadth/volume integration, regime behavior changes, signals, Decision/Risk/Portfolio wiring, persistence, replay, backtesting, Dashboard, Paper Trading, AI, broker, or execution.
+   - Exit criteria: required and optional membership is explicit; malformed, stale, missing, insufficient, and contradictory evidence fails closed; output contains no regime or action result; focused and complete validation pass; owner reviews before release.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

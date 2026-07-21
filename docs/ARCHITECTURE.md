@@ -545,6 +545,14 @@ One primary price-structure regime is reported separately from secondary conditi
 
 The engine emits no signal, recommendation, plan, risk override, position size, portfolio mutation, or execution instruction. Missing observations, stale/rejected quality, unresolved canonical identity, contradiction, or missing source evidence fails closed as `INSUFFICIENT_EVIDENCE`. Decision Engine, Risk Engine, Evidence Engine, Unified Audit, Strategy Versioning, and authoritative market-data systems retain their existing responsibilities.
 
+## Broad Market Evidence Foundation
+
+Day12-T1 adds the provider-independent [Broad Market Evidence](specifications/BROAD_MARKET_EVIDENCE.md) boundary before future Market Regime consumption: `reviewed Canonical Bar references -> immutable benchmark snapshot -> fixed-decimal features -> deterministic multi-benchmark assessment -> future regime input adapter`. The layer owns benchmark evidence composition, not regime classification.
+
+Reviewed ETF or index Canonical Instrument IDs define explicit required and optional benchmark membership. Deterministic output contains positive/negative/neutral direction facts, agreement/disagreement counts, drawdown, rebound, range, recovery, and bounded volatility facts plus `COMPLETE`, `PARTIAL`, `STALE`, `CONTRADICTORY`, or `INSUFFICIENT` quality. It cannot emit bull, bear, correction, relief-rally, trade, signal, probability, or expected-return outcomes.
+
+Market Regime remains authoritative for environment classification. Day12-T1 adds no live fetch, provider dependency, startup wiring, persistence, Decision/Risk/Portfolio change, AI, or execution path. Unified Audit receives only deterministic translation; it remains the audit authority.
+
 ---
 
 # Event Contract Framework

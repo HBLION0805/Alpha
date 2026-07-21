@@ -31,6 +31,7 @@ export enum AIAuditRecordType {
   EventReplay = "EVENT_REPLAY",
   LearningReview = "LEARNING_REVIEW",
   MarketRegimeAssessment = "MARKET_REGIME_ASSESSMENT",
+  BroadMarketEvidenceAssessment = "BROAD_MARKET_EVIDENCE_ASSESSMENT",
 }
 
 export enum AIAuditSourceSubsystem {
@@ -55,6 +56,7 @@ export enum AIAuditSourceSubsystem {
   EventReplay = "EVENT_REPLAY",
   LearningLoop = "LEARNING_LOOP",
   MarketRegimeEngine = "MARKET_REGIME_ENGINE",
+  BroadMarketEvidence = "BROAD_MARKET_EVIDENCE",
 }
 
 export enum AIAuditRetentionClassification {

@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-21 - Day12-T1 Broad Market Evidence Foundation
+
+### Broad-market Composition Precedes Regime Classification
+
+- Decision: Add one provider-independent Broad Market Evidence snapshot and deterministic composition engine between reviewed Canonical Bar references and a future Market Regime input adapter.
+- Reason: Market Regime must not assemble unrelated benchmark observations or allow future consumers to invent conflicting definitions of broad-market coverage.
+- Consequence: The new layer reports evidence facts and quality only. Market Regime remains the authority for bull, bear, correction, relief-rally, range, and condition classifications; Decision and Risk behavior is unchanged.
+
+### Benchmark Membership Is Explicit and Reviewed
+
+- Decision: Versioned policy declares every ETF or index Canonical Instrument benchmark as required or optional, and snapshot membership must match it exactly. Individual equities, symbol guessing, provider aliases, and automatic discovery are rejected.
+- Reason: A popular ticker or provider symbol is not a durable broad-market identity or proof of representative coverage.
+- Consequence: Missing evidence remains explicit, optional absence warns without automatically failing required sufficiency, and provider-native data cannot cross the snapshot boundary.
+
+### Evidence Quality and Strength Are Fail-closed Facts
+
+- Decision: Compose `COMPLETE`, `PARTIAL`, `STALE`, `CONTRADICTORY`, and `INSUFFICIENT` through explicit precedence and use evidence-strength bands only for deterministic adequacy, never probability.
+- Reason: Cross-benchmark disagreement, stale observations, and missing required membership must remain visible and cannot be averaged into a regime or confidence score.
+- Consequence: Feature calculations are fixed-decimal and versioned; assessments preserve canonical observation references, policy/rule/feature versions, issues, warnings, and Unified Audit traceability without persistence or action authority.
+
 ## 2026-07-21 - Day11-T2 Market Regime Engine Foundation
 
 ### Regime Describes Environment but Does Not Authorize Action
