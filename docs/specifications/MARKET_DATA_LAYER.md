@@ -14,7 +14,7 @@ The foundation makes provider replacement possible without changing downstream d
 
 The Market Data Layer owns:
 
-- canonical instrument and quote representation;
+- orchestration from explicitly selected provider adapter to accepted canonical data;
 - explicit provider identity and capability declarations;
 - isolation of raw provider payloads;
 - deterministic normalization and validation orchestration;
@@ -26,7 +26,7 @@ It does not own predictions, evidence sufficiency, recommendations, risk rules, 
 
 ## Initial Contract Scope
 
-Version 1.0 intentionally supports only a latest two-sided quote and canonical instrument identity for equities, ETFs, crypto assets, and indices. Trades, bars, event-contract quotes, foreign exchange, market status, streaming, and provider orchestration are deferred until a concrete consumer requires them.
+Version 1.0 intentionally supports only a latest two-sided quote and canonical instrument identity for equities, ETFs, crypto assets, and indices. It consumes the shared [Canonical Quote Foundation](CANONICAL_QUOTE.md) as Alpha's only accepted quote representation. Trades, bars, event-contract quotes, foreign exchange, market status, streaming, and provider orchestration are deferred until a concrete consumer requires them.
 
 ### Canonical Instrument Identity
 
@@ -78,7 +78,7 @@ The result separates four stages:
 3. validation: `NOT_RUN`, `PASSED`, or `FAILED`;
 4. operation result: `ACCEPTED`, `REJECTED`, `UNAVAILABLE`, or `UNSUPPORTED`.
 
-An accepted result includes immutable canonical quote data. Every result preserves request, provider, capability, policy ID/version, trace metadata, blockers, warnings, and timing metadata. There is no confidence score.
+An accepted result includes an immutable Canonical Quote with deterministic identity, fingerprint, timestamps, quality-policy metadata, and bounded provenance. Every result preserves request, provider, capability, policy ID/version, trace metadata, blockers, warnings, and timing metadata. There is no confidence score.
 
 ## Validation and Quality Statuses
 

@@ -2,6 +2,12 @@ import {
   InstrumentAssetClass,
   type CanonicalInstrument,
 } from "./CanonicalInstrument";
+import {
+  QuoteQuantityUnit,
+  type CanonicalQuote,
+  type CanonicalQuoteSourceMetadata,
+  type QuoteDecimal,
+} from "./CanonicalQuote";
 
 export const MARKET_DATA_SCHEMA_VERSION = "1.0" as const;
 
@@ -95,9 +101,10 @@ export enum MarketDataDuplicatePolicy {
   AllowExactWithWarning = "ALLOW_EXACT_WITH_WARNING",
 }
 
-export enum MarketDataQuantityUnit {
-  BaseUnits = "BASE_UNITS",
-}
+/** @deprecated Use QuoteQuantityUnit from CanonicalQuote for new code. */
+export const MarketDataQuantityUnit = QuoteQuantityUnit;
+/** @deprecated Use QuoteQuantityUnit from CanonicalQuote for new code. */
+export type MarketDataQuantityUnit = QuoteQuantityUnit;
 
 export enum MarketDataAdapterErrorCategory {
   ProviderUnavailable = "PROVIDER_UNAVAILABLE",
@@ -133,10 +140,8 @@ export enum MarketDataIssueCode {
   InvalidQuoteRelationship = "INVALID_QUOTE_RELATIONSHIP",
 }
 
-export interface MarketDecimal {
-  readonly atomicValue: string;
-  readonly scale: number;
-}
+/** Compatibility alias; fixed-decimal quote values are owned by Canonical Quote. */
+export type MarketDecimal = QuoteDecimal;
 
 /** Compatibility alias; canonical identity is owned by the Canonical Instrument foundation. */
 export type CanonicalInstrumentIdentity = CanonicalInstrument;
@@ -206,15 +211,8 @@ export interface MarketDataRawResponse {
   readonly payload: unknown;
 }
 
-export interface MarketDataSourceMetadata {
-  readonly providerId: string;
-  readonly adapterId: string;
-  readonly adapterVersion: string;
-  readonly providerInstrumentId: string;
-  readonly providerSymbol: string;
-  readonly sourceReference: string;
-  readonly contentIntegrityReference: string;
-}
+/** Compatibility alias; accepted quote provenance is owned by Canonical Quote. */
+export type MarketDataSourceMetadata = CanonicalQuoteSourceMetadata;
 
 export interface NormalizedQuoteCandidate {
   readonly instrument?: CanonicalInstrumentIdentity;
@@ -268,22 +266,8 @@ export interface MarketDataProviderAdapter {
   ): MarketDataAdapterError;
 }
 
-export interface CanonicalMarketQuote {
-  readonly schemaVersion: typeof MARKET_DATA_SCHEMA_VERSION;
-  readonly dataType: MarketDataType.Quote;
-  readonly instrument: CanonicalInstrumentIdentity;
-  readonly bidPrice: MarketDecimal;
-  readonly askPrice: MarketDecimal;
-  readonly bidSize?: MarketDecimal;
-  readonly askSize?: MarketDecimal;
-  readonly quantityUnit?: MarketDataQuantityUnit;
-  readonly observationTime?: string;
-  readonly providerPublishedAt?: string;
-  readonly receivedAt: string;
-  readonly normalizedAt: string;
-  readonly source: MarketDataSourceMetadata;
-  readonly fingerprint: string;
-}
+/** Compatibility alias; CanonicalQuote is Alpha's only accepted quote representation. */
+export type CanonicalMarketQuote = CanonicalQuote;
 
 export interface MarketDataValidationCheck {
   readonly dimension: MarketDataValidationDimension;

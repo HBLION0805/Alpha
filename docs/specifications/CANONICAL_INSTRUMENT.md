@@ -2,7 +2,7 @@
 
 ## Status
 
-D9-T3 foundation implemented locally for owner review. This task defines Alpha's permanent provider-independent instrument identity, validation, construction, serialization, equality, and resolver port. It does not add an instrument repository, provider mapping, live lookup, market-data operation, network transport, credential, quote, trade, bar, execution, or routing behavior.
+D9-T3 foundation is committed and pushed as `c2cb8628ef6315da41e29a3974af7aa1c389ed6c`. It defines Alpha's permanent provider-independent instrument identity, validation, construction, serialization, equality, and resolver port. D9-T4 now consumes this identity from the separate Canonical Quote foundation; the instrument subsystem itself still adds no repository, provider mapping, live lookup, market-data operation, network transport, credential, trade, bar, execution, or routing behavior.
 
 ## Problem Solved
 
@@ -205,5 +205,5 @@ Arbitrary strings and provider-owned enum values are not extension mechanisms.
 - FIGI, ISIN, CUSIP, exchange-native identifier, and corporate-action integration;
 - exchange calendars, market sessions, and timezone-database validation;
 - options, futures, foreign exchange, commodities, bonds, event contracts, and other derivatives;
-- quotes, trades, bars, streaming, routing, execution, and Paper Trading;
+- trades, bars, streaming, routing, execution, and Paper Trading; Canonical Quote is now a separate implemented foundation;
 - production persistence, API, Dashboard, and downstream consumer migrations beyond current Market Data contracts.

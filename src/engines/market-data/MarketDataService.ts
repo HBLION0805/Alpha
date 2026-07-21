@@ -27,9 +27,15 @@ import {
 } from "../../contracts/MarketData";
 import { InstrumentAssetClass } from "../../contracts/CanonicalInstrument";
 import {
+  CANONICAL_QUOTE_SCHEMA_VERSION,
+  CanonicalQuoteStatus,
+  QuoteQualityReasonCode,
+} from "../../contracts/CanonicalQuote";
+import {
   isCanonicalInstrumentId,
   validateCanonicalInstrument,
 } from "../canonical-instrument/CanonicalInstrument";
+import { createCanonicalQuote } from "../canonical-quote/CanonicalQuote";
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/u;
 const INTEGER = /^-?\d+$/u;
@@ -211,26 +217,48 @@ export class MarketDataService {
 
     const candidate = normalized.data;
     const instrument = candidate.instrument as CanonicalInstrumentIdentity;
-    const fingerprint = quoteFingerprint(candidate);
-    const quote: CanonicalMarketQuote = {
-      schemaVersion: MARKET_DATA_SCHEMA_VERSION,
-      dataType: MarketDataType.Quote,
+    const quote: CanonicalMarketQuote = createCanonicalQuote({
+      schemaVersion: CANONICAL_QUOTE_SCHEMA_VERSION,
       instrument: clone(instrument),
-      bidPrice: clone(candidate.bidPrice!),
-      askPrice: clone(candidate.askPrice!),
-      ...(candidate.bidSize === undefined ? {} : { bidSize: clone(candidate.bidSize) }),
-      ...(candidate.askSize === undefined ? {} : { askSize: clone(candidate.askSize) }),
-      ...(candidate.quantityUnit === undefined ? {} : { quantityUnit: candidate.quantityUnit }),
-      ...(candidate.observationTime === undefined ? {} : { observationTime: candidate.observationTime }),
+      value: {
+        bidPrice: clone(candidate.bidPrice!),
+        askPrice: clone(candidate.askPrice!),
+        ...(candidate.bidSize === undefined ? {} : { bidSize: clone(candidate.bidSize) }),
+        ...(candidate.askSize === undefined ? {} : { askSize: clone(candidate.askSize) }),
+        ...(candidate.quantityUnit === undefined ? {} : { quantityUnit: candidate.quantityUnit }),
+      },
+      currency: instrument.currency,
+      status: CanonicalQuoteStatus.Current,
+      observationTime: candidate.observationTime!,
       ...(candidate.providerPublishedAt === undefined ? {} : { providerPublishedAt: candidate.providerPublishedAt }),
       receivedAt: candidate.receivedAt!,
       normalizedAt: candidate.normalizedAt!,
+      quality: {
+        policyId: request.policy.policyId,
+        policyVersion: request.policy.version,
+        evaluatedAt: request.evaluatedAt,
+        maxAgeSeconds: rule!.maxAgeSeconds,
+        reasonCodes: candidate.bidSize === undefined ? [QuoteQualityReasonCode.MissingSize] : [],
+      },
       source: clone(candidate.source!),
-      fingerprint,
-    };
+    });
+    const duplicate = request.previousFingerprint === quote.fingerprint;
+    if (duplicate && request.policy.duplicatePolicy === MarketDataDuplicatePolicy.RejectExact) {
+      const duplicateIssue = issue(MarketDataIssueCode.DuplicateObservation, "Quote exactly matches the previous accepted observation.");
+      const duplicateAssessment: CandidateAssessment = {
+        checks: assessment.checks.map((check) => check.dimension === MarketDataValidationDimension.Duplicate
+          ? { ...check, status: MarketDataDimensionStatus.Failed, issueCodes: [MarketDataIssueCode.DuplicateObservation] }
+          : check),
+        blockers: [duplicateIssue],
+        warnings: assessment.warnings,
+        qualityStatus: MarketDataQualityStatus.Invalid,
+      };
+      return dataValidationFailure(request, startedAt, quote.receivedAt, duplicateAssessment, normalized.warnings);
+    }
     const warnings = sortIssues([
       ...normalized.warnings,
       ...assessment.warnings,
+      ...(duplicate ? [issue(MarketDataIssueCode.DuplicateObservation, "Quote exactly matches the previous accepted observation.")] : []),
     ]);
     const processedAt = this.clock.now();
 
@@ -244,7 +272,7 @@ export class MarketDataService {
       capability: MarketDataCapability.LatestQuote,
       requestedInstrument: clone(request.instrument),
       canonicalInstrument: clone(instrument),
-      ...(quote.observationTime === undefined ? {} : { observationTime: quote.observationTime }),
+      observationTime: quote.observationTime,
       receivedAt: quote.receivedAt,
       data: quote,
       transportStatus: MarketDataTransportStatus.Succeeded,
@@ -325,8 +353,8 @@ function validateCandidate(
   if (candidate.receivedAt !== undefined && candidate.receivedAt !== rawReceivedAt) {
     add(MarketDataValidationDimension.Provenance, issue(MarketDataIssueCode.MissingProvenance, "Normalized receipt time must preserve the raw response receipt time.", "receivedAt"));
   }
-  if (rule?.requireObservationTime === true && candidate.observationTime === undefined) {
-    add(MarketDataValidationDimension.Timestamp, issue(MarketDataIssueCode.MissingObservationTime, "Observation time is required by policy.", "observationTime"));
+  if (candidate.observationTime === undefined) {
+    add(MarketDataValidationDimension.Timestamp, issue(MarketDataIssueCode.MissingObservationTime, "Canonical quotes require an observation time.", "observationTime"));
   }
   if (candidate.observationTime && isTimestamp(candidate.observationTime)) {
     const observationMs = Date.parse(candidate.observationTime);
@@ -381,13 +409,6 @@ function validateCandidate(
     && compareDecimal(candidate.bidPrice, candidate.askPrice) > 0) {
     add(MarketDataValidationDimension.InternalConsistency, issue(MarketDataIssueCode.InvalidQuoteRelationship, "Bid price cannot exceed ask price.", "bidPrice"));
   }
-  if (request.previousFingerprint && request.previousFingerprint === quoteFingerprint(candidate)) {
-    const duplicate = issue(MarketDataIssueCode.DuplicateObservation, "Quote exactly matches the previous accepted observation.");
-    if (request.policy.duplicatePolicy === MarketDataDuplicatePolicy.RejectExact) {
-      add(MarketDataValidationDimension.Duplicate, duplicate);
-    }
-  }
-
   const dimensions = Object.values(MarketDataValidationDimension);
   const checks = dimensions.map((dimension) => ({
     dimension,
@@ -395,16 +416,10 @@ function validateCandidate(
     issueCodes: [...new Set((issues.get(dimension) ?? []).map((value) => value.code))].sort(),
   }));
   const blockers = sortIssues([...issues.values()].flat());
-  const warnings = request.previousFingerprint
-    && request.previousFingerprint === quoteFingerprint(candidate)
-    && request.policy.duplicatePolicy === MarketDataDuplicatePolicy.AllowExactWithWarning
-    ? [issue(MarketDataIssueCode.DuplicateObservation, "Quote exactly matches the previous accepted observation.")]
-    : [];
-
   return {
     checks,
     blockers,
-    warnings,
+    warnings: [],
     qualityStatus: qualityFromIssues(blockers),
   };
 }
@@ -592,20 +607,6 @@ function qualityFromIssues(issues: readonly MarketDataNormalizationIssue[]): Mar
     return MarketDataQualityStatus.Incomplete;
   }
   return MarketDataQualityStatus.Invalid;
-}
-
-function quoteFingerprint(candidate: NonNullable<ReturnType<MarketDataProviderAdapter["normalizeLatestQuote"]>["data"]>): string {
-  return [
-    candidate.instrument?.instrumentId ?? "",
-    candidate.bidPrice ? `${candidate.bidPrice.atomicValue}:${candidate.bidPrice.scale}` : "",
-    candidate.askPrice ? `${candidate.askPrice.atomicValue}:${candidate.askPrice.scale}` : "",
-    candidate.bidSize ? `${candidate.bidSize.atomicValue}:${candidate.bidSize.scale}` : "",
-    candidate.askSize ? `${candidate.askSize.atomicValue}:${candidate.askSize.scale}` : "",
-    candidate.quantityUnit ?? "",
-    candidate.observationTime ?? "",
-    candidate.source?.providerId ?? "",
-    candidate.source?.sourceReference ?? "",
-  ].join("|");
 }
 
 function compareDecimal(left: { atomicValue: string; scale: number }, right: { atomicValue: string; scale: number }): number {

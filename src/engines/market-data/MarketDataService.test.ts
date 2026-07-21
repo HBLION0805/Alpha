@@ -210,7 +210,7 @@ test("valid raw quote normalizes to a canonical quote", async () => {
   const result = await system().service.getLatestQuote(request());
   assertEqual(result.status, MarketDataResultStatus.Accepted, "status");
   assertEqual(result.validation.status, MarketDataValidationStatus.Passed, "validation");
-  assertEqual(result.data?.bidPrice.atomicValue, "2241234", "bid atomic value");
+  assertEqual(result.data?.value.bidPrice.atomicValue, "2241234", "bid atomic value");
 });
 
 test("provider payload remains behind the adapter boundary", async () => {
@@ -274,6 +274,18 @@ test("missing observation timestamp fails when policy requires it", async () => 
   assertIssue(await system(adapter).service.getLatestQuote(request()), MarketDataIssueCode.MissingObservationTime);
 });
 
+test("canonical quote rejects a missing observation timestamp even when legacy policy makes it optional", async () => {
+  const adapter = new FixtureAdapter();
+  adapter.normalization = normalized({ observationTime: undefined });
+  const value = request({
+    policy: {
+      ...request().policy,
+      freshnessRules: [{ ...request().policy.freshnessRules[0]!, requireObservationTime: false }],
+    },
+  });
+  assertIssue(await system(adapter).service.getLatestQuote(value), MarketDataIssueCode.MissingObservationTime);
+});
+
 test("observation and receipt timestamps remain distinct", async () => {
   const result = await system().service.getLatestQuote(request());
   assertEqual(result.observationTime, OBSERVED, "observation");
@@ -326,7 +338,7 @@ test("different aliases map to the same canonical identity", async () => {
 
 test("fixed-decimal price precision is preserved", async () => {
   const result = await system().service.getLatestQuote(request());
-  assertDeepEqual(result.data?.bidPrice, { atomicValue: "2241234", scale: 4 }, "fixed decimal");
+  assertDeepEqual(result.data?.value.bidPrice, { atomicValue: "2241234", scale: 4 }, "fixed decimal");
 });
 
 test("result is serializable", async () => {
