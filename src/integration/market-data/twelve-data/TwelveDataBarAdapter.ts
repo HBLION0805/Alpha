@@ -36,6 +36,7 @@ import {
   validateTwelveDataLiveSmokePolicy,
   validateTwelveDataPolicy,
 } from "./TwelveDataProvider";
+import { TwelveDataTransportError, TwelveDataTransportErrorCode } from "./TwelveDataHttpsTransport";
 
 const DESCRIPTOR: MarketDataProviderDescriptor = deepFreeze({
   schemaVersion: MARKET_DATA_SCHEMA_VERSION,
@@ -66,14 +67,15 @@ export class TwelveDataBarAdapter implements MarketDataBarProviderAdapter {
     if (!Object.values(TwelveDataExecutionMode).includes(dependencies.executionMode)) {
       throw new TwelveDataConfigurationError(TwelveDataValidationIssueCode.InvalidRequest, "Execution mode is invalid.");
     }
-    if (typeof dependencies.credentials.apiKey !== "string" || dependencies.credentials.apiKey.length < 8) {
+    if (typeof dependencies.credentials.revealForTransport !== "function"
+      || typeof dependencies.credentials.toRedactedDiagnostic !== "function") {
       throw new TwelveDataConfigurationError(TwelveDataValidationIssueCode.InvalidCredentials, "Credentials are malformed.");
     }
     const mappings = dependencies.mappings.map(validateTwelveDataMapping);
     if (new Set(mappings.map((mapping) => mapping.canonicalInstrument.instrumentId)).size !== mappings.length) {
       throw new TwelveDataConfigurationError(TwelveDataValidationIssueCode.UnsupportedInstrument, "Duplicate canonical instrument mappings are forbidden.");
     }
-    this.#credentials = deepFreeze({ ...dependencies.credentials });
+    this.#credentials = dependencies.credentials;
     this.#transport = dependencies.transport;
     this.#mappings = deepFreeze(mappings);
     this.#policy = validateTwelveDataPolicy(dependencies.policy);
@@ -108,7 +110,7 @@ export class TwelveDataBarAdapter implements MarketDataBarProviderAdapter {
     const response = await this.#transport.execute(httpRequest, this.#credentials);
     validateTransportResponse(response);
     if (response.statusCode < 200 || response.statusCode > 299) {
-      throw new TwelveDataTransportError(`HTTP_${String(response.statusCode)}`, response.statusCode === 429 || response.statusCode >= 500);
+      throw new TwelveDataTransportError(TwelveDataTransportErrorCode.HttpFailure, false, response.statusCode);
     }
     const payload: RawEnvelope = deepFreeze({ body: response.body, transportKind: response.transportKind });
     return deepFreeze({ providerId: TWELVE_DATA_PROVIDER_ID, receivedAt: response.receivedAt, payload });
@@ -169,19 +171,12 @@ export class TwelveDataBarAdapter implements MarketDataBarProviderAdapter {
   }
 }
 
-class TwelveDataTransportError extends Error {
-  public constructor(public readonly safeCode: string, public readonly retryable: boolean) {
-    super("Twelve Data transport failed.");
-    this.name = "TwelveDataTransportError";
-  }
-}
-
 function validateTransportResponse(value: TwelveDataHttpResponse): void {
   if (!Number.isSafeInteger(value.statusCode) || value.statusCode < 100 || value.statusCode > 599
     || !isTimestamp(value.receivedAt)
     || !Object.values(TwelveDataTransportKind).includes(value.transportKind)
     || typeof value.body !== "string") {
-    throw new TwelveDataTransportError("INVALID_HTTP_RESPONSE", false);
+    throw new TwelveDataTransportError(TwelveDataTransportErrorCode.NetworkFailure, false);
   }
 }
 

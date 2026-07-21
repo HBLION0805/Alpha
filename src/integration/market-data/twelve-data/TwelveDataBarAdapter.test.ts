@@ -33,6 +33,7 @@ import {
   FixtureTwelveDataTransport,
   TWELVE_DATA_SPY_TEST_MAPPING,
   fixtureBody,
+  fixtureCredentials,
   fixturePolicy,
   fixtureRequest,
 } from "./TwelveDataTestFixtures";
@@ -45,7 +46,7 @@ async function expectServiceError(run: () => Promise<unknown>, label: string): P
 function system(options: { readonly mode?: TwelveDataExecutionMode; readonly transport?: FixtureTwelveDataTransport; readonly mappings?: typeof TWELVE_DATA_AAPL_FIXTURE_MAPPING[]; readonly volume?: TwelveDataVolumeEvidenceStatus } = {}) {
   const transport = options.transport ?? new FixtureTwelveDataTransport();
   const adapter = new TwelveDataBarAdapter({
-    credentials: { apiKey: "fixture-secret-value" },
+    credentials: fixtureCredentials(),
     transport,
     mappings: options.mappings ?? [TWELVE_DATA_AAPL_FIXTURE_MAPPING],
     policy: fixturePolicy({ volumeEvidenceStatus: options.volume ?? TwelveDataVolumeEvidenceStatus.FixtureReviewed }),
@@ -71,13 +72,18 @@ function liveSmokePolicy(): TwelveDataLiveSmokePolicy {
     allowedProviderId: TWELVE_DATA_PROVIDER_ID,
     allowedSymbols: ["AAPL"],
     allowedIntervals: [BarInterval.FiveMinutes],
+    maxSymbolsPerRun: 1,
+    maxRequestsPerRun: 1,
     maxLookbackSeconds: 3_600,
-    maxRecords: 20,
+    maxRecords: 10,
     maxApiCreditsPerRun: 1,
     officialEvidenceReferences: ["docs/research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md"],
     executionKind: "MANUAL_ONE_SHOT",
     pollingAllowed: false,
     persistenceAllowed: false,
+    streamingAllowed: false,
+    automaticRetryAllowed: false,
+    backgroundExecutionAllowed: false,
     secretLoggingAllowed: false,
   };
 }
@@ -85,13 +91,13 @@ function liveSmokePolicy(): TwelveDataLiveSmokePolicy {
 const tests: ReadonlyArray<readonly [string, () => void | Promise<void>]> = [
   ["provider metadata is an active Bars-only registry record", () => { assertEqual(TWELVE_DATA_PROVIDER_METADATA.identity.providerId, TWELVE_DATA_PROVIDER_ID, "provider"); assertEqual(TWELVE_DATA_PROVIDER_METADATA.capabilities.join("|"), MarketDataCapability.Bars, "capability"); }],
   ["provider metadata registers without adapter instantiation", () => { const registry = new InMemoryMarketDataProviderRegistry([TWELVE_DATA_PROVIDER_METADATA], { schemaVersion: MARKET_DATA_PROVIDER_REGISTRY_SCHEMA_VERSION, policyId: "registry:test", version: "1.0", displayNamePolicy: MarketDataProviderNamePolicy.RejectDuplicates }); assertEqual(registry.requireCapability(TWELVE_DATA_PROVIDER_ID, MarketDataCapability.Bars).identity.providerId, TWELVE_DATA_PROVIDER_ID, "registered"); }],
-  ["credential loader reads only the named environment variable", () => { const value = loadTwelveDataCredentials({ [TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE]: "fixture-secret-value", OTHER_SECRET: "ignored" }); assertEqual(value.apiKey, "fixture-secret-value", "api key"); assertTrue(Object.isFrozen(value), "frozen"); }],
+  ["credential loader reads only the named environment variable", () => { const value = loadTwelveDataCredentials({ [TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE]: " fixture-secret-value ", OTHER_SECRET: "ignored" }); assertEqual(value.revealForTransport(), "fixture-secret-value", "trimmed api key"); assertTrue(Object.isFrozen(value), "frozen"); }],
   ["missing credentials fail closed", () => expectError(() => loadTwelveDataCredentials({}), "credentials")],
   ["request construction is deterministic and explicit", () => { const first = system().adapter.buildRequest(fixtureRequest()); const second = system().adapter.buildRequest(fixtureRequest()); assertEqual(JSON.stringify(first), JSON.stringify(second), "request"); assertEqual(first.query.map(([key]) => key).join("|"), [...first.query.map(([key]) => key)].sort().join("|"), "query order"); }],
   ["request forces UTC ascending regular raw bars", () => { const query = Object.fromEntries(system().adapter.buildRequest(fixtureRequest()).query); assertEqual(query.timezone, "UTC", "timezone"); assertEqual(query.order, "asc", "order"); assertEqual(query.prepost, "false", "prepost"); assertEqual(query.adjust, "none", "adjust"); }],
   ["credentials never enter URL or query", () => { const request = system().adapter.buildRequest(fixtureRequest()); assertTrue(!JSON.stringify(request).includes("fixture-secret-value"), "secret absent"); assertTrue(!request.query.some(([key]) => key === "apikey"), "apikey query absent"); }],
   ["adapter serialization cannot expose credentials", () => assertTrue(!JSON.stringify(system().adapter).includes("fixture-secret-value"), "secret absent")],
-  ["bounded smoke permits at most twenty Bars", () => expectError(() => system({ mode: TwelveDataExecutionMode.BoundedLiveSmoke }).adapter.buildRequest(fixtureRequest({ maxRecords: 21 })), "smoke bound")],
+  ["bounded smoke permits at most ten Bars", () => expectError(() => system({ mode: TwelveDataExecutionMode.BoundedLiveSmoke }).adapter.buildRequest(fixtureRequest({ maxRecords: 11 })), "smoke bound")],
   ["daily interval is explicitly unsupported", () => expectError(() => system().adapter.buildRequest(fixtureRequest({ interval: BarInterval.OneDay })), "daily")],
   ["unapproved mapping fails closed", () => { const pending = { ...TWELVE_DATA_AAPL_FIXTURE_MAPPING, reviewStatus: TwelveDataMappingReviewStatus.Pending }; expectError(() => system({ mappings: [pending] }).adapter.buildRequest(fixtureRequest()), "mapping"); }],
   ["AAPL fixture request reaches injected transport", async () => { const { adapter, transport } = system(); const raw = await adapter.fetchBars(fixtureRequest()); assertEqual(raw.providerId, TWELVE_DATA_PROVIDER_ID, "provider"); assertTrue(transport.credentialObserved, "credential boundary"); }],

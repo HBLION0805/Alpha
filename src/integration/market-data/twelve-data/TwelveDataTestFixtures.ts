@@ -14,10 +14,12 @@ import {
 } from "../../../contracts/MarketData";
 import {
   TWELVE_DATA_ADAPTER_SCHEMA_VERSION,
+  TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE,
   TWELVE_DATA_PROVIDER_ID,
   TwelveDataMappingReviewStatus,
   TwelveDataTransportKind,
   TwelveDataVolumeEvidenceStatus,
+  type TwelveDataCredentials,
   type TwelveDataHttpRequest,
   type TwelveDataHttpResponse,
   type TwelveDataHttpTransport,
@@ -25,6 +27,7 @@ import {
   type TwelveDataNormalizationPolicy,
 } from "./TwelveDataContracts";
 import { TWELVE_DATA_AAPL_FIXTURE_MAPPING } from "./TwelveDataProvider";
+import { loadTwelveDataCredentials } from "./TwelveDataProvider";
 
 export const FIXTURE_RECEIVED_AT = "2026-07-20T14:45:00.000Z";
 export const FIXTURE_NORMALIZED_AT = "2026-07-20T14:45:01.000Z";
@@ -129,9 +132,13 @@ export class FixtureTwelveDataTransport implements TwelveDataHttpTransport {
     body: fixtureBody(),
   };
 
-  public async execute(request: Readonly<TwelveDataHttpRequest>, credentials: Readonly<{ apiKey: string }>): Promise<TwelveDataHttpResponse> {
+  public async execute(request: Readonly<TwelveDataHttpRequest>, credentials: Readonly<TwelveDataCredentials>): Promise<TwelveDataHttpResponse> {
     this.request = request;
-    this.credentialObserved = credentials.apiKey === "fixture-secret-value";
+    this.credentialObserved = credentials.revealForTransport() === "fixture-secret-value";
     return this.response;
   }
+}
+
+export function fixtureCredentials(): TwelveDataCredentials {
+  return loadTwelveDataCredentials({ [TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE]: "fixture-secret-value" });
 }

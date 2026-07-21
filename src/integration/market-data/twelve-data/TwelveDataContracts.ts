@@ -5,7 +5,7 @@ import type { MarketDataNormalizationIssue } from "../../../contracts/MarketData
 export const TWELVE_DATA_ADAPTER_SCHEMA_VERSION = "1.0" as const;
 export const TWELVE_DATA_PROVIDER_ID = "provider:twelve-data" as const;
 export const TWELVE_DATA_ADAPTER_ID = "adapter:twelve-data:bars" as const;
-export const TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE = "TWELVE_DATA_API_KEY" as const;
+export const TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE = "ALPHA_TWELVE_DATA_API_KEY" as const;
 
 export enum TwelveDataExecutionMode {
   Fixture = "FIXTURE",
@@ -47,8 +47,18 @@ export enum TwelveDataValidationIssueCode {
   ProviderIdentityMismatch = "PROVIDER_IDENTITY_MISMATCH",
 }
 
+export interface TwelveDataCredentialDiagnostic {
+  readonly environmentVariable: typeof TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE;
+  readonly configured: true;
+  readonly value: "[REDACTED]";
+}
+
+/** Opaque credential handle. Serialization and diagnostics are always redacted. */
 export interface TwelveDataCredentials {
-  readonly apiKey: string;
+  revealForTransport(): string;
+  toRedactedDiagnostic(): TwelveDataCredentialDiagnostic;
+  toJSON(): TwelveDataCredentialDiagnostic;
+  toString(): string;
 }
 
 export interface TwelveDataInstrumentMapping {
@@ -95,7 +105,12 @@ export interface TwelveDataHttpTransport {
   execute(
     request: Readonly<TwelveDataHttpRequest>,
     credentials: Readonly<TwelveDataCredentials>,
+    options?: Readonly<TwelveDataTransportExecutionOptions>,
   ): Promise<TwelveDataHttpResponse>;
+}
+
+export interface TwelveDataTransportExecutionOptions {
+  readonly signal?: AbortSignal;
 }
 
 export interface TwelveDataProviderMetadataPayload {
@@ -169,6 +184,8 @@ export interface TwelveDataLiveSmokePolicy {
   readonly allowedProviderId: typeof TWELVE_DATA_PROVIDER_ID;
   readonly allowedSymbols: readonly ("AAPL" | "SPY")[];
   readonly allowedIntervals: readonly BarInterval[];
+  readonly maxSymbolsPerRun: 1;
+  readonly maxRequestsPerRun: 1;
   readonly maxLookbackSeconds: number;
   readonly maxRecords: number;
   readonly maxApiCreditsPerRun: number;
@@ -176,5 +193,8 @@ export interface TwelveDataLiveSmokePolicy {
   readonly executionKind: "MANUAL_ONE_SHOT";
   readonly pollingAllowed: false;
   readonly persistenceAllowed: false;
+  readonly streamingAllowed: false;
+  readonly automaticRetryAllowed: false;
+  readonly backgroundExecutionAllowed: false;
   readonly secretLoggingAllowed: false;
 }

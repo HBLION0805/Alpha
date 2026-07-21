@@ -52,6 +52,35 @@ export class TwelveDataConfigurationError extends Error {
   }
 }
 
+class RedactedTwelveDataCredentials implements TwelveDataCredentials {
+  readonly #apiKey: string;
+
+  public constructor(apiKey: string) {
+    this.#apiKey = apiKey;
+    Object.freeze(this);
+  }
+
+  public revealForTransport(): string {
+    return this.#apiKey;
+  }
+
+  public toRedactedDiagnostic() {
+    return Object.freeze({
+      environmentVariable: TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE,
+      configured: true as const,
+      value: "[REDACTED]" as const,
+    });
+  }
+
+  public toJSON() {
+    return this.toRedactedDiagnostic();
+  }
+
+  public toString(): string {
+    return `${TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE}=[REDACTED]`;
+  }
+}
+
 export const TWELVE_DATA_PROVIDER_METADATA: MarketDataProviderMetadata = deepFreeze({
   schemaVersion: MARKET_DATA_PROVIDER_REGISTRY_SCHEMA_VERSION,
   metadataVersion: "1.0",
@@ -98,14 +127,15 @@ export const TWELVE_DATA_AAPL_FIXTURE_MAPPING: TwelveDataInstrumentMapping = dee
 export function loadTwelveDataCredentials(
   environment: Readonly<Record<string, string | undefined>> = processEnvironment,
 ): TwelveDataCredentials {
-  const apiKey = environment[TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE];
-  if (typeof apiKey !== "string" || !SECRET.test(apiKey) || apiKey.trim() !== apiKey) {
+  const rawApiKey = environment[TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE];
+  const apiKey = rawApiKey?.trim();
+  if (typeof apiKey !== "string" || !SECRET.test(apiKey)) {
     throw new TwelveDataConfigurationError(
       TwelveDataValidationIssueCode.InvalidCredentials,
       `${TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE} is missing or malformed.`,
     );
   }
-  return deepFreeze({ apiKey });
+  return new RedactedTwelveDataCredentials(apiKey);
 }
 
 export function validateTwelveDataMapping(value: unknown): TwelveDataInstrumentMapping {
@@ -200,20 +230,21 @@ export function validateTwelveDataLiveSmokePolicy(value: unknown): TwelveDataLiv
     || !IDENTIFIER.test(String(value.policyId ?? ""))
     || !IDENTIFIER.test(String(value.version ?? ""))
     || value.allowedProviderId !== TWELVE_DATA_PROVIDER_ID
-    || !Array.isArray(value.allowedSymbols) || value.allowedSymbols.length === 0
-    || !value.allowedSymbols.every((entry) => SUPPORTED_SYMBOLS.has(String(entry)))
-    || new Set(value.allowedSymbols).size !== value.allowedSymbols.length
-    || !Array.isArray(value.allowedIntervals) || value.allowedIntervals.length === 0
-    || !value.allowedIntervals.every((entry) => INTERVALS[entry as BarInterval] !== undefined)
-    || new Set(value.allowedIntervals).size !== value.allowedIntervals.length
-    || !Number.isSafeInteger(value.maxLookbackSeconds) || (value.maxLookbackSeconds as number) < 1
-    || !Number.isSafeInteger(value.maxRecords) || (value.maxRecords as number) < 1 || (value.maxRecords as number) > 20
-    || !Number.isSafeInteger(value.maxApiCreditsPerRun) || (value.maxApiCreditsPerRun as number) < 1
+    || !Array.isArray(value.allowedSymbols) || value.allowedSymbols.length !== 1 || value.allowedSymbols[0] !== "AAPL"
+    || !Array.isArray(value.allowedIntervals) || value.allowedIntervals.length !== 1 || value.allowedIntervals[0] !== BarInterval.FiveMinutes
+    || value.maxSymbolsPerRun !== 1
+    || value.maxRequestsPerRun !== 1
+    || !Number.isSafeInteger(value.maxLookbackSeconds) || (value.maxLookbackSeconds as number) < 1 || (value.maxLookbackSeconds as number) > 23_400
+    || !Number.isSafeInteger(value.maxRecords) || (value.maxRecords as number) < 1 || (value.maxRecords as number) > 10
+    || value.maxApiCreditsPerRun !== 1
     || !Array.isArray(value.officialEvidenceReferences) || value.officialEvidenceReferences.length === 0
     || !value.officialEvidenceReferences.every((entry) => typeof entry === "string" && entry.startsWith("docs/") && entry.length <= 240)
     || value.executionKind !== "MANUAL_ONE_SHOT"
     || value.pollingAllowed !== false
     || value.persistenceAllowed !== false
+    || value.streamingAllowed !== false
+    || value.automaticRetryAllowed !== false
+    || value.backgroundExecutionAllowed !== false
     || value.secretLoggingAllowed !== false) {
     throw new TwelveDataConfigurationError(TwelveDataValidationIssueCode.SmokeLimitExceeded, "Bounded live-smoke policy is malformed.");
   }

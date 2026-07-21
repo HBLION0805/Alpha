@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-21 - Day11-T1 Twelve Data Live Smoke Transport Foundation
+
+### One Manual HTTPS Request Is a Separate, Fail-closed Capability
+
+- Decision: Add one Twelve Data-owned concrete HTTPS transport and one explicit manual command. Dry run is the default; transport invocation requires `--confirm-live-smoke` and is bounded to AAPL, PT5M, one request, 10 records, one API credit, and one regular trading day.
+- Reason: The fixture adapter must be tested against the real provider only through a reviewable seam that cannot become polling, automation, routing, persistence, or trading authority. Credentials must remain process-local and every diagnostic must remain redacted.
+- Consequence: The transport allow-lists the Twelve Data HTTPS endpoint, rejects redirects, supports timeout/cancellation, performs no retry, and returns safe typed errors. Tests inject fake executors and make no live calls. Owner execution remains a separate authorization after code review.
+
+### Unverified Live Equity Volume Blocks Canonical Acceptance
+
+- Decision: Permit sanitized transport/parser diagnostics but reject live Canonical Bar acceptance until official evidence proves the equity-volume unit required by Alpha.
+- Reason: Treating the provider's `volume` field as canonical `BASE_UNITS` without authoritative evidence would violate No Truth Without Traceability.
+- Consequence: A successful provider response may report `BLOCKED_UNVERIFIED_VOLUME`; no unknown unit is invented, no Canonical validity rule is weakened, and no data is persisted or forwarded to Evidence, Decision, Risk, Portfolio, Replay, or execution systems.
+
 ## 2026-07-21 - Day10-T3B Market Data Boundary Consolidation
 
 ### Provider Registry Authority Is Bound Through Explicit Composition

@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-07-21 - Day11-T1 Twelve Data Live Smoke Transport Foundation
+
+- Added a Twelve Data-owned allow-listed HTTPS transport with one-request execution, redirect rejection, timeout/cancellation, bounded response handling, typed safe failures, and no provider SDK, retry, polling, caching, or persistence.
+- Replaced the enumerable credential object with an opaque `ALPHA_TWELVE_DATA_API_KEY` handle whose diagnostics, string conversion, and serialization are redacted.
+- Added the strict AAPL/PT5M manual smoke policy, mandatory network-free dry run, explicit `--confirm-live-smoke` command, sanitized summary, and fixture-injected automated coverage. No real live request was executed.
+- Preserved the unresolved live equity-volume gate: transport/parser diagnostics may succeed, but Canonical Bar acceptance remains blocked and no volume unit is invented.
+- Registered 39 focused tests for credentials, transport, policy, dry run, and the manual path; complete validation passes 1293/1293.
+
 ## 2026-07-21 - Day10-T3B Market Data Boundary Consolidation
 
 - Added immutable composition between authoritative Provider Registry metadata and capability-specific Quote/Bar adapters, allowing one provider to expose multiple capabilities while rejecting disagreements and duplicate provider/capability bindings.

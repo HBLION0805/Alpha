@@ -173,10 +173,18 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Excludes: concrete live transport, live request, Quote/Trade, streaming, polling, persistence, routing/fallback, Paper Trading, broker, or execution.
 
 3. **Day10-T3B — Market Data Boundary Consolidation**
-   - Status: implemented and validated locally; awaiting owner review and commit.
+   - Status: completed, committed, and pushed as `e2e3370a5ab1ee123d1f6ab61fa43ca52c6aa94e`.
    - Scope: authoritative registry/adapter composition, multi-capability binding, Quote/Bar orchestrator separation, Bar-policy parity, observation fingerprint correction semantics, provider-native export cleanup, bounded live-smoke policy, and governance reconciliation.
    - Excludes: new providers, live network behavior, routing/fallback, persistence, downstream domain wiring, Paper Trading, broker, or execution.
    - Exit criteria: all D-class consolidation findings are corrected, the complete registered validation passes, and live-smoke blockers remain explicit.
+
+## Day 11 — Bounded Live Verification (In Progress)
+
+1. **Day11-T1 — Twelve Data Live Smoke Transport Foundation**
+   - Status: implemented locally and awaiting owner review; no real live request has been executed.
+   - Scope: opaque environment credential handle, allow-listed one-request HTTPS transport, strict AAPL/PT5M policy, mandatory dry run, explicit confirmation command, sanitized result, network-free tests, and safety-scan controls.
+   - Excludes: automatic live execution, retries, polling, scheduling, streaming, persistence, SPY, multi-symbol calls, Quotes/Trades, Evidence/Decision/Risk/Portfolio wiring, Paper Trading, broker, or execution.
+   - Exit criteria: strict typecheck and registered validation pass; dry-run and all automated tests prove zero live calls; no secret is tracked; unresolved equity-volume units continue to block Canonical acceptance; owner reviews the milestone before separately authorizing one request.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

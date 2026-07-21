@@ -4,11 +4,11 @@ Date:
 2026-07-21
 
 Project Stage:
-Day 9 Canonical Market Domain is complete; Day10-T1 and Day10-T2 are committed, and Day10-T3B Market Data boundary consolidation awaits owner review
+Day 10 Market Data boundary consolidation is complete; Day11-T1 bounded live-smoke transport foundation awaits owner review without any live request having been executed
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `a61d253010e0c963917b1773f2e8d0d2a92ccb60` on clean `main`, equal to `origin/main` before Day10-T3B.
+Verified baseline: `e2e3370a5ab1ee123d1f6ab61fa43ca52c6aa94e` on clean `main`, equal to `origin/main` before Day11-T1.
 
 Day 7 completed:
 
@@ -19,9 +19,9 @@ Day 7 completed:
 
 Day 7 adds no dashboard wiring, mutable cross-runtime operation, graph database, source-authority transfer, AI reasoning, automatic learning, provider/network/API integration, live market data, broker behavior, production persistence, or capital-domain behavior change.
 
-Architecture Checkpoint 1 selected a narrow deterministic sequence. Day 8 and Day 9 are complete. Day10-T1 committed official evidence and Bar policy; Day10-T2 committed Alpha's first provider-specific fixture adapter foundation. Day10-T3B now binds adapter compatibility to authoritative Provider Registry metadata, permits multi-capability provider composition, separates Quote and Bar orchestration, corrects observation-fingerprint semantics and Bar-policy parity, and internalizes provider-native contracts. No concrete live transport, network request, polling, persistence, routing/fallback, downstream Evidence/Decision wiring, Paper Trading, broker, or execution path exists. See `docs/specifications/MARKET_DATA_LAYER.md`, `docs/specifications/PROVIDER_REGISTRY.md`, `docs/specifications/TWELVE_DATA_ADAPTER.md`, and `docs/research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md`.
+Architecture Checkpoint 1 selected a narrow deterministic sequence. Day 8, Day 9, and Day 10 are complete. Day11-T1 adds a Twelve Data-owned concrete HTTPS transport behind the existing port and a manual command that defaults to a network-free dry run. It is restricted to AAPL/PT5M, one request, 10 records, one API credit, explicit UTC timestamps, and `ALPHA_TWELVE_DATA_API_KEY`; confirmation, timeout/cancellation, endpoint allow-listing, and redacted diagnostics are mandatory. No real request, polling, retry, persistence, routing/fallback, downstream Evidence/Decision wiring, Paper Trading, broker, or execution has occurred. See `docs/specifications/TWELVE_DATA_LIVE_SMOKE.md`.
 
-The current registered validation baseline is 1254/1254. The next step is owner review and finalization of Day10-T3B; live smoke execution remains blocked pending a separately approved concrete transport, owner authorization, and resolution of the official live equity-volume unit evidence gate.
+The Day11-T1 registered validation baseline is 1293/1293 tests. The next step is owner review of this uncommitted foundation. After a clean dry run, the owner may separately authorize exactly one real request. Live Canonical Bar acceptance remains blocked by the official equity-volume unit evidence gate regardless of transport success.
 
 ## Day 6 Milestone Review
 

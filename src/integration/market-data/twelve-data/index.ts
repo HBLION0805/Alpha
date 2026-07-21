@@ -1,6 +1,20 @@
 export * from "./TwelveDataProvider";
 export * from "./TwelveDataBarAdapter";
 export {
+  TwelveDataHttpsTransport,
+  TwelveDataTransportError,
+  TwelveDataTransportErrorCode,
+  TWELVE_DATA_LIVE_SMOKE_HTTP_DEFAULTS,
+  type TwelveDataHttpsTransportOptions,
+} from "./TwelveDataHttpsTransport";
+export {
+  TWELVE_DATA_INITIAL_LIVE_SMOKE_POLICY,
+  parseTwelveDataLiveSmokeArguments,
+  runInitialTwelveDataLiveSmoke,
+  type TwelveDataLiveSmokeInput,
+  type TwelveDataLiveSmokeSummary,
+} from "./TwelveDataLiveSmoke";
+export {
   TWELVE_DATA_ADAPTER_ID,
   TWELVE_DATA_ADAPTER_SCHEMA_VERSION,
   TWELVE_DATA_API_KEY_ENVIRONMENT_VARIABLE,
@@ -9,6 +23,7 @@ export {
   TwelveDataMappingReviewStatus,
   TwelveDataTransportKind,
   TwelveDataVolumeEvidenceStatus,
+  type TwelveDataCredentialDiagnostic,
   type TwelveDataCredentials,
   type TwelveDataHttpRequest,
   type TwelveDataHttpResponse,
@@ -16,4 +31,5 @@ export {
   type TwelveDataInstrumentMapping,
   type TwelveDataLiveSmokePolicy,
   type TwelveDataNormalizationPolicy,
+  type TwelveDataTransportExecutionOptions,
 } from "./TwelveDataContracts";

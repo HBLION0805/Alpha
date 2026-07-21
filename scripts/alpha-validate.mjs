@@ -32,6 +32,7 @@ const requiredFiles = [
   "docs/specifications/MARKET_DATA_LAYER.md",
   "docs/specifications/PROVIDER_REGISTRY.md",
   "docs/specifications/TWELVE_DATA_ADAPTER.md",
+  "docs/specifications/TWELVE_DATA_LIVE_SMOKE.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -74,6 +75,11 @@ const aggregateTestFiles = [
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarAdapter.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataCredentials.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataLiveSmokePolicy.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataLiveSmokeDryRun.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataLiveSmokeCommand.test.ts",
   "src/integration/python/PythonIntegration.test.ts",
   "src/contracts/AIRouter.test.ts",
   "src/engines/ai-router/AIRouterEngine.test.ts",
@@ -306,20 +312,37 @@ function checkNetworkAndProviderCode(files) {
   });
 
   const providerImportPattern = /\b(?:from\s+["']|import\s*\(?\s*["']|require\s*\(\s*["'])(openai|@anthropic-ai\/sdk|@google\/generative-ai|@google\/genai|google-generative-ai|cohere-ai|@cohere-ai\/sdk|mistralai|groq-sdk|together-ai|replicate|@polygon\.io\/client-js|@alpacahq\/alpaca-trade-api|finnhub|twelvedata|twelvedata-js)["']/iu;
-  const networkPattern = /\b(fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|axios|node:https|node:http|require\s*\(\s*["']https?["']|https?\.request|requests\.|urllib\.request|aiohttp|socket\.)/iu;
+  const networkPattern = /\b(fetch\s*\(|fetchFunction\s*\(|XMLHttpRequest|WebSocket|EventSource|axios|node:https|node:http|require\s*\(\s*["']https?["']|https?\.request|requests\.|urllib\.request|aiohttp|socket\.)/iu;
   const twelveDataConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+TwelveDataHttpTransport\b/u;
+  const approvedLiveTransport = "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.ts";
 
   for (const file of productionFiles) {
     const text = readText(file);
     if (providerImportPattern.test(text)) {
       recordFailure(`Provider SDK import found in production code: ${file}`);
     }
-    if (networkPattern.test(text)) {
+    const normalizedFile = relativePath(file);
+    if (networkPattern.test(text) && normalizedFile !== approvedLiveTransport) {
       recordFailure(`Network/API implementation pattern found in production code: ${file}`);
     }
     if (twelveDataConcreteTransportPattern.test(text)
-      && !relativePath(file).endsWith("TwelveDataTestFixtures.ts")) {
+      && !normalizedFile.endsWith("TwelveDataTestFixtures.ts")
+      && normalizedFile !== approvedLiveTransport) {
       recordFailure(`Unapproved concrete Twelve Data transport found in production code: ${file}`);
+    }
+    if (normalizedFile === approvedLiveTransport) {
+      const requiredControls = [
+        'https://api.twelvedata.com/time_series',
+        'redirect: "error"',
+        'TwelveDataTransportErrorCode.Timeout',
+        'MAX_RESPONSE_BYTES',
+      ];
+      for (const control of requiredControls) {
+        if (!text.includes(control)) recordFailure(`Approved live transport is missing safety control ${control}: ${file}`);
+      }
+      if (/\b(setInterval|WebSocket|EventSource|node:http|http:\/\/|writeFile|appendFile)\b/u.test(text)) {
+        recordFailure(`Forbidden polling, streaming, insecure transport, or persistence pattern found: ${file}`);
+      }
     }
   }
 }
@@ -327,6 +350,10 @@ function checkNetworkAndProviderCode(files) {
 function checkSecrets(files) {
   const secretPattern = /(sk-[A-Za-z0-9_-]{20,}|AIza[0-9A-Za-z_-]{20,}|-----BEGIN (?:RSA |EC |OPENSSH |)?PRIVATE KEY-----|xox[baprs]-[0-9A-Za-z-]{20,})/u;
   for (const file of files) {
+    const normalizedFile = relativePath(file);
+    if ((normalizedFile.endsWith("/.env") || normalizedFile === ".env") && !normalizedFile.endsWith(".example")) {
+      recordFailure(`Tracked environment credential file found: ${file}`);
+    }
     if (!textExtensions.has(extname(file).toLowerCase())) {
       continue;
     }

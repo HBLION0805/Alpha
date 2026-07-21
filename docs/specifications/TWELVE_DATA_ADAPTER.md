@@ -2,14 +2,14 @@
 
 ## Status
 
-Day10-T2 implements Alpha's first provider-specific fixture adapter foundation for Twelve Data REST `time_series` Bars. It adds a provider-specific request, parser, validator, normalizer, credential boundary, and MarketDataService Bar path. It is not live-connected: no concrete HTTP transport or network request exists, and it adds no provider SDK, persistence, streaming, routing, failover, trading, or execution.
+Day10-T2 implements Alpha's first provider-specific fixture adapter foundation for Twelve Data REST `time_series` Bars. Day11-T1 adds a separately reviewed, manually bounded concrete transport and dry-run/confirmation path; no live request has been executed by implementation or automated validation. The integration adds no provider SDK, persistence, polling, streaming, routing, failover, trading, or execution.
 
 The governing evidence and normalization policy is [Twelve Data Official Evidence and Bar Semantics Review](../research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md), policy `TWELVE-DATA-BAR-NORMALIZATION-1.0`.
 
 ## Responsibility and Boundary
 
 ```text
-TWELVE_DATA_API_KEY environment value
+ALPHA_TWELVE_DATA_API_KEY environment value
   -> injected TwelveDataHttpTransport
   -> bounded raw HTTP response
   -> TwelveDataResponseParser
@@ -35,9 +35,9 @@ The Provider Registry stores authoritative metadata only. It does not instantiat
 
 ## Credentials and HTTP Transport
 
-Credentials load only from `TWELVE_DATA_API_KEY`. Missing, short, whitespace-bearing, or malformed values fail closed. The deterministic request object never contains the key, an `apikey` query parameter, raw headers, or a printable authorization value.
+Credentials load only from `ALPHA_TWELVE_DATA_API_KEY`. Surrounding whitespace is trimmed; missing, blank, short, control-bearing, or malformed values fail closed. The opaque credential handle serializes and prints only redacted diagnostics. The deterministic public request object never contains the key, an `apikey` parameter, raw headers, or a printable authorization value.
 
-`TwelveDataHttpTransport` is an injected port. It receives the immutable request and credential separately so a composition root can place the key in the provider-approved `Authorization: apikey ...` header without exposing it to URLs, logs, results, fixtures, or audit records. Day10-T2 adds no SDK and runs no live call.
+`TwelveDataHttpTransport` remains the injected port. Day11-T1's `TwelveDataHttpsTransport` is the sole reviewed concrete implementation: it permits only the approved HTTPS endpoint, adds the credential only at the provider-request boundary, rejects redirects, enforces cancellation/timeout and response bounds, makes one request, and returns safe typed failures. The provider target, key, response body, and provider narrative never appear in Alpha diagnostics. See [Twelve Data Live Smoke Transport](TWELVE_DATA_LIVE_SMOKE.md).
 
 ## Deterministic Request Construction
 
@@ -113,22 +113,22 @@ The request distinguishes `HISTORICAL` from `INTRADAY`. Stale intraday results f
 
 Transport success, parsing, provider validation, normalization, canonical validation, and acceptance remain separate. A successful HTTP response does not imply valid data.
 
-## Optional Bounded Smoke Policy
+## Bounded Live-Smoke Policy
 
-A later manually composed live smoke adapter must be governed by one explicit versioned policy containing:
+The manually composed live-smoke adapter is governed by one explicit versioned policy containing:
 
 - the single allowed provider and approved official-evidence references;
-- an allow-list of reviewed symbols and supported intervals;
-- a maximum lookback window, returned-record limit of at most 20 Bars, and maximum API-credit budget per run;
+- exactly the reviewed AAPL symbol and PT5M interval;
+- a one-regular-trading-day lookback ceiling, returned-record limit of 10 Bars, one request, and one API-credit budget per run;
 - `MANUAL_ONE_SHOT` execution only;
-- explicit prohibitions on polling, persistence, and secret logging.
+- explicit prohibitions on polling, persistence, streaming, automatic retries, background execution, and secret logging.
 
-Construction fails closed when any smoke-policy control is missing or exceeded. The smoke path still requires credentials outside source control and the live volume evidence gate. No concrete live transport or smoke execution exists in this milestone.
+Construction fails closed when any smoke-policy control is missing or exceeded. Dry run is mandatory and network-free; the explicit confirmation flag is required before the concrete transport is invoked. The live volume evidence gate still blocks Canonical acceptance. No real smoke request was executed in Day11-T1.
 
 ## Security
 
-- No credential value is committed, logged, serialized, or placed in a query string.
-- No provider SDK or ambient network client is imported.
+- No credential value is committed, logged, serialized, reported, or included in the public request contract.
+- No provider SDK or third-party network library is imported.
 - Raw headers are not part of contracts.
 - Provider messages are treated as untrusted data and normalized to bounded safe errors.
 - Provider text cannot become AI instructions.
@@ -142,7 +142,7 @@ Extending Twelve Data requires official evidence, a versioned mapping/policy cha
 
 ## Deferred
 
-- concrete live HTTP composition and owner-approved smoke execution;
+- owner-approved execution of the first real smoke request;
 - official live equity-volume unit resolution;
 - built-in reviewed SPY exchange/MIC mapping;
 - `P1D` and exchange-calendar/session validation;

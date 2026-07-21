@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations and the Day 9 Canonical Market Domain milestone are complete and pushed. Day 10 has added the approved Twelve Data evidence policy and Alpha's first provider-specific fixture adapter foundation, followed by a targeted Market Data boundary consolidation. The adapter is not live-connected: no concrete network transport, live API call, committed credential, persistence, paper trading, or execution behavior exists.
+Day 8 Intelligence foundations, the Day 9 Canonical Market Domain, and Day 10 Market Data boundary work are complete and pushed. Day11-T1 adds a reviewed, manually bounded Twelve Data HTTPS transport, mandatory network-free dry run, and explicit one-shot confirmation path. No real live API call has been executed; no credential, provider data, persistence, polling, paper trading, decision wiring, or execution behavior is committed.
 
 Implemented Python prototype/runtime:
 
@@ -47,7 +47,7 @@ Implemented and tested TypeScript foundations:
 - Market Data Provider Registry foundation with canonical provider metadata, deterministic discovery, immutable results, and explicit capability/asset-class queries
 - Canonical Instrument, Canonical Quote, and Canonical Bar foundations with provider-independent identity, fixed-decimal values, explicit time/quality/provenance semantics, and fail-closed validation
 - Immutable registry/adapter composition with multi-capability provider binding and capability-specific Quote/Bar orchestration
-- Twelve Data fixture-first intraday Bar adapter boundary with private provider-native contracts, deterministic parsing/normalization, and no concrete live transport
+- Twelve Data fixture-first intraday Bar adapter plus a separately reviewed AAPL/PT5M one-shot HTTPS smoke boundary with redacted environment credentials and fail-closed live-volume semantics
 
 The TypeScript application layer can now invoke one registered read-only Python Risk Engine calculation through a versioned typed client and fixed local subprocess adapter. No dashboard or business consumer is wired to the boundary yet, Python does not invoke TypeScript, and no mutable cross-runtime operation exists. The TypeScript AI infrastructure still uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 
@@ -67,7 +67,7 @@ Day 6 historical evidence boundaries are specified in [Historical Pattern Librar
 
 The D7-T1 local runtime boundary is specified in [Python-TypeScript Integration Boundary](docs/PYTHON_TYPESCRIPT_INTEGRATION_BOUNDARY.md). TypeScript consumers depend on typed client and transport ports; only the fixed Python entry point knows the explicit operation registry and Python domain implementation. Day 7 also adds read-only validation reporting, a historical evidence product surface, and explicit cross-system evidence links; they do not add a provider, network, dashboard, persistence, recommendation, or capital-execution path.
 
-The deterministic Intelligence Layer direction is documented in [Architecture Checkpoint 1](docs/ARCHITECTURE_CHECKPOINT_1.md). Provider-independent market boundaries are specified in [Market Data Layer](docs/specifications/MARKET_DATA_LAYER.md), [Provider Registry](docs/specifications/PROVIDER_REGISTRY.md), and [Twelve Data Bar Adapter](docs/specifications/TWELVE_DATA_ADAPTER.md). They defer a general-purpose Alpha Memory database, concrete live transport, automation, and production infrastructure.
+The deterministic Intelligence Layer direction is documented in [Architecture Checkpoint 1](docs/ARCHITECTURE_CHECKPOINT_1.md). Provider-independent market boundaries are specified in [Market Data Layer](docs/specifications/MARKET_DATA_LAYER.md), [Provider Registry](docs/specifications/PROVIDER_REGISTRY.md), [Twelve Data Bar Adapter](docs/specifications/TWELVE_DATA_ADAPTER.md), and [Twelve Data Live Smoke Transport](docs/specifications/TWELVE_DATA_LIVE_SMOKE.md). They defer a general-purpose Alpha Memory database, automated market retrieval, production persistence, and trading infrastructure.
 
 ## Repository Structure
 
