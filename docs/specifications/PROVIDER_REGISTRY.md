@@ -2,7 +2,7 @@
 
 ## Status
 
-D9-T2 foundation implemented locally for owner review. The registry contains provider metadata only. It does not instantiate adapters, call providers, select a provider, or add a live integration.
+D9-T2 foundation is committed and pushed as `79c4b1fb5f5b6cc7c9988f84df0479bcce87af27`. The registry contains provider metadata only. It does not instantiate adapters, call providers, select a provider, or add a live integration.
 
 ## Problem Solved
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-D9-T4 foundation implemented locally for owner review. It defines Alpha's only provider-independent accepted quote representation, deterministic validation and construction, serialization, equality, and immutable quality/provenance metadata. It adds no provider adapter, network transport, credential, streaming, trade, bar, execution, routing, or persistence behavior.
+D9-T4 foundation is committed and pushed as `a114d98f87ab50e96e655409e55be057098a4328`. It defines Alpha's only provider-independent accepted quote representation, deterministic validation and construction, serialization, equality, and immutable quality/provenance metadata. It adds no provider adapter, network transport, credential, streaming, trade, execution, routing, or persistence behavior.
 
 ## Philosophy and Responsibility
 

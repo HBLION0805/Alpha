@@ -4,11 +4,11 @@ Date:
 2026-07-20
 
 Project Stage:
-D8 Intelligence foundations and D9-T1 Market Data Layer are committed and pushed; D9-T2 Provider Registry foundation is local pending owner review
+Day 9 Canonical Market Domain is committed and pushed; Day 10 External World Integration is in evidence-and-policy review only
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `52b292748cfac4af63d164b804bff084439b176e` on clean `main`, equal to `origin/main` before D9-T2.
+Verified baseline: `0551e2ee20f9ce80ad6608929ed98c49abce77a3` on clean `main`, equal to `origin/main` before Day10-T1.
 
 Day 7 completed:
 
@@ -19,7 +19,7 @@ Day 7 completed:
 
 Day 7 adds no dashboard wiring, mutable cross-runtime operation, graph database, source-authority transfer, AI reasoning, automatic learning, provider/network/API integration, live market data, broker behavior, production persistence, or capital-domain behavior change.
 
-Architecture Checkpoint 1 selected a narrow deterministic sequence. D8-T1 through D8-T3B and D9-T1 are committed and pushed. D9-T2 now adds an immutable provider-discovery metadata authority pending owner review. It adds no provider record, adapter instance, live provider, selection, or downstream market-data consumer. See `docs/ARCHITECTURE_CHECKPOINT_1.md`, `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`, `docs/specifications/MARKET_DATA_LAYER.md`, and `docs/specifications/PROVIDER_REGISTRY.md`.
+Architecture Checkpoint 1 selected a narrow deterministic sequence. D8-T1 through D8-T3B and D9-T1 through D9-T5 are committed and pushed. Day 9 completed the Market Data Layer, immutable Provider Registry, Canonical Instrument, Canonical Quote, and Canonical Bar foundations without a live provider, selection, or downstream market-data consumer. Day10-T1 adds official-provider evidence and policy only. See `docs/ARCHITECTURE_CHECKPOINT_1.md`, `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`, `docs/specifications/MARKET_DATA_LAYER.md`, `docs/specifications/PROVIDER_REGISTRY.md`, and `docs/research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md`.
 
 ## Day 6 Milestone Review
 
@@ -276,16 +276,16 @@ Current TypeScript foundations:
 - Unified Validation Reporting: normalized deterministic validation-reporting foundation implemented without replacing validators
 - Historical Evidence Product Surface: read-only deterministic composition of historical pattern, analogy, replay, prediction, and strategy reference metadata implemented
 - Cross-System Evidence Linking: read-only explicit typed link validation and resolution foundation implemented; source repositories remain authoritative
-- Evidence Assessment, Strategy Review, Minimal Knowledge Approval, and Market Data Layer foundations: completed and pushed; Provider Registry: implemented locally pending owner review; live adapters, Instrument Ranking, durable Trade Outcome, multi-cycle performance evaluation, Strategy Change Proposals, and broader knowledge retrieval remain planned or backlog
+- Evidence Assessment, Strategy Review, Minimal Knowledge Approval, Market Data Layer, Provider Registry, Canonical Instrument, Canonical Quote, and Canonical Bar foundations: completed and pushed; live adapters, Instrument Ranking, durable Trade Outcome, multi-cycle performance evaluation, Strategy Change Proposals, and broader knowledge retrieval remain planned or backlog
 
 Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. Day 7 product surfaces and links are TypeScript read models only. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
 
 ## Validation Status
 
-The current local D9-T1 validation baseline completed successfully:
+The current committed D9-T5 validation baseline completed successfully:
 
 - TypeScript strict typecheck passed
-- Registered validation tests: 1054/1054 passed, including 40/40 Prediction Log, 51/51 Alpha Journal, 64/64 Research Lab, 70/70 Strategy Versioning, 48/48 Development Validation Log, 68/68 Historical Pattern Library, 91/91 Historical Analogy Engine, 20/20 Event Replay, 4/4 Historical Evidence Product Surface, 14/14 Cross-System Evidence Linking, 26/26 Evidence Engine, 35/35 Strategy Review, 46/46 Knowledge Approval, 43/43 Market Data Layer, 28/28 Provider Registry, 15/15 Python-integration client, 11/11 Python-side integration, 5/5 Validation Reporting, and 333/333 AI Infrastructure tests
+- Registered validation tests: 1173/1173 passed, including 40/40 Prediction Log, 51/51 Alpha Journal, 64/64 Research Lab, 70/70 Strategy Versioning, 48/48 Development Validation Log, 68/68 Historical Pattern Library, 91/91 Historical Analogy Engine, 20/20 Event Replay, 4/4 Historical Evidence Product Surface, 14/14 Cross-System Evidence Linking, 26/26 Evidence Engine, 35/35 Strategy Review, 46/46 Knowledge Approval, 28/28 Canonical Instrument, 35/35 Canonical Quote, 54/54 Canonical Bar, 45/45 Market Data Layer, 28/28 Provider Registry, 15/15 Python-integration client, 11/11 Python-side integration, 5/5 Validation Reporting, and 333/333 AI Infrastructure tests
 - Focused Python integration tests: 11/11 passed
 - Provider SDK and production-adapter scan clean
 - Network, API, and credential scan clean
@@ -294,7 +294,7 @@ The current local D9-T1 validation baseline completed successfully:
 - Secret-metadata and merge-marker scans clean
 - `git diff --check` passed
 
-D9-T2 documentation links, paths, fences, required files, provider/network/credential safety, runtime-data, Python-change, merge-marker, and `git diff --check` validation passed.
+The committed D9-T5 baseline passed documentation links, paths, fences, required files, provider/network/credential safety, runtime-data, Python-change, merge-marker, and `git diff --check` validation. Day10-T1 must rerun the complete bundle before owner review.
 
 ## Git Milestones
 
@@ -318,6 +318,10 @@ D9-T2 documentation links, paths, fences, required files, provider/network/crede
 - `83bd3d598ca949f9d9829f0ea03f493eef288ea9` — Knowledge Approval Layer Architecture
 - `a44fb34d489111b389a758a4a489ebcd6702ef60` — Minimal Knowledge Approval Foundation
 - `52b292748cfac4af63d164b804bff084439b176e` — Market Data Layer Foundation
+- `79c4b1fb5f5b6cc7c9988f84df0479bcce87af27` — Provider Registry Foundation
+- `c2cb8628ef6315da41e29a3974af7aa1c389ed6c` — Provider Selection Research and Canonical Instrument Foundation
+- `a114d98f87ab50e96e655409e55be057098a4328` — Canonical Quote Foundation
+- `0551e2ee20f9ce80ad6608929ed98c49abce77a3` — Canonical Bar Foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -369,4 +373,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of D9-T2 Provider Registry Foundation. Do not add a provider record, adapter, SDK, credential, network/API transport, automatic selection, routing, fallback, persistence, Paper Trading, Dashboard integration, broker behavior, or execution behavior during review.
+Owner review of Day10-T1 Twelve Data official evidence and Bar semantics. If approved, the next implementation task should be a fixture-first Twelve Data intraday Bar adapter with no live request, committed credential, persistence, streaming, routing, fallback, Paper Trading, broker behavior, or execution behavior. Equity-volume units and provider-data retention remain blocking unknowns for live acceptance and persistence.

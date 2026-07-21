@@ -129,7 +129,7 @@ The separate Strategy Change Proposal workflow remains backlog and must not dela
 
 Day 8 foundations are not production ready. Production persistence, transaction/recovery, privacy/retention enforcement, dashboard integration, live data, providers, brokers, backtesting, and automation remain separately reviewed work.
 
-## Day 9 — Provider-Independent Market Boundary (In Progress)
+## Day 9 — Canonical Market Domain (Completed)
 
 1. **D9-T1 — Market Data Layer Foundation**
    - Status: completed, committed, and pushed as `52b292748cfac4af63d164b804bff084439b176e`.
@@ -138,10 +138,35 @@ Day 8 foundations are not production ready. Production persistence, transaction/
    - Exit criteria: provider schemas remain isolated; invalid, stale, incomplete, unsupported, unavailable, out-of-order, and conflicting data fail closed; focused tests and strict typecheck pass.
 
 2. **D9-T2 — Provider Registry Foundation**
-   - Status: implemented locally and validated; pending owner review, commit, and push.
+   - Status: completed, committed, and pushed as `79c4b1fb5f5b6cc7c9988f84df0479bcce87af27`.
    - Scope: canonical provider metadata, explicit lifecycle/default enablement, bounded capabilities and asset classes, deterministic immutable discovery, strict lookup/gates, validation, and documentation.
    - Excludes: provider records based on guesses, adapter instantiation, runtime reflection/registration, network/API code, credentials, selection, dynamic ranking, fallback, Paper Trading, or domain integration.
    - Exit criteria: duplicate/malformed registrations fail explicitly; ID/capability/asset queries are deterministic and immutable; disabled or unsupported requirements fail closed; focused tests and strict typecheck pass.
+
+3. **D9-T3A and D9-T3 — Provider Selection Research and Canonical Instrument Foundation**
+   - Status: completed, committed, and pushed as `c2cb8628ef6315da41e29a3974af7aa1c389ed6c`.
+   - Scope: deterministic provider-evidence gates plus Alpha-owned immutable instrument identity, validation, serialization, equality, and resolver boundary.
+   - Excludes: provider selection without official evidence, live symbol lookup, provider mapping records, network calls, credentials, quotes, bars, routing, or execution.
+
+4. **D9-T4 — Canonical Quote Foundation**
+   - Status: completed, committed, and pushed as `a114d98f87ab50e96e655409e55be057098a4328`.
+   - Scope: Alpha's immutable provider-independent two-sided top-of-market Quote, fixed-decimal values, timestamps, provenance, quality, identity, fingerprint, equality, and validation.
+   - Excludes: last-price substitution, provider adapter, network, streaming, order book, trade, bar, routing, broker, or execution behavior.
+
+5. **D9-T5 — Canonical Bar Foundation**
+   - Status: completed, committed, and pushed as `0551e2ee20f9ce80ad6608929ed98c49abce77a3`.
+   - Scope: Alpha's immutable provider-independent OHLCV Bar, canonical intervals, half-open time boundaries, session/adjustment/quality/provenance metadata, deterministic identity and content fingerprint, equality, serialization, and validation.
+   - Excludes: provider adapter, network, calendar, adjustment engine, resampling, streaming, persistence, backtesting, Paper Trading, broker, or execution behavior.
+
+Day 9 is foundation-complete, not production-ready. It owns canonical market identities and records but has no live source, transport, secret, provider mapping, storage, or consumer integration.
+
+## Day 10 — External World Integration (In Progress)
+
+1. **Day10-T1 — Twelve Data Official Evidence and Bar Semantics Review**
+   - Status: documentation and policy prepared for owner review; no adapter implementation.
+   - Scope: current official-source register, constrained provider decision, deterministic Twelve Data intraday Bar normalization policy, minimal immutable Provider Symbol mapping policy, and explicit unresolved semantics.
+   - Excludes: provider adapter, live request, credential, network code, public/commercial use, persistence, routing/fallback, streaming, Paper Trading, broker, or execution.
+   - Exit criteria: official evidence is traceable; the decision is `APPROVED WITH CONSTRAINTS` or `NOT APPROVED`; unknown facts fail closed; documentation and complete registered validation pass.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

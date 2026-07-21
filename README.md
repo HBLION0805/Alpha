@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Evidence Assessment, Strategy Review, and Minimal Knowledge Approval foundations are committed and pushed. D9-T1 Market Data Layer is committed and pushed; D9-T2 now implements a local immutable Provider Registry foundation for owner review. Neither task adds a live provider, SDK, network/API call, credential, persistence, paper trading, or execution behavior.
+Day 8 Intelligence foundations and the Day 9 Canonical Market Domain milestone are committed and pushed. Day 9 includes the Market Data Layer, Provider Registry, Canonical Instrument, Canonical Quote, and Canonical Bar foundations. Day 10 External World Integration has begun with official-provider evidence and normalization policy only; no live provider, SDK, network/API call, credential, persistence, paper trading, or execution behavior exists.
 
 Implemented Python prototype/runtime:
 
@@ -45,6 +45,7 @@ Implemented and tested TypeScript foundations:
 - Evidence Assessment, Strategy Review, and Minimal Knowledge Approval foundations with fail-closed evidence and owner-approval boundaries
 - Market Data Layer quote foundation with canonical identities, fixed-decimal values, explicit provider capabilities, provenance, normalization, and deterministic validation
 - Market Data Provider Registry foundation with canonical provider metadata, deterministic discovery, immutable results, and explicit capability/asset-class queries
+- Canonical Instrument, Canonical Quote, and Canonical Bar foundations with provider-independent identity, fixed-decimal values, explicit time/quality/provenance semantics, and fail-closed validation
 
 The TypeScript application layer can now invoke one registered read-only Python Risk Engine calculation through a versioned typed client and fixed local subprocess adapter. No dashboard or business consumer is wired to the boundary yet, Python does not invoke TypeScript, and no mutable cross-runtime operation exists. The TypeScript AI infrastructure still uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 

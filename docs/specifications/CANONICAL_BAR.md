@@ -2,7 +2,7 @@
 
 ## Status and Purpose
 
-D9-T5 foundation implemented locally for owner review. Canonical Bar defines Alpha's provider-independent OHLCV record before any live provider adapter exists. It is the only canonical bar representation intended for future Research, Evidence, Decision, Replay, Backtesting, Strategy Evaluation, event-market learning, and Portfolio read-only consumers.
+D9-T5 foundation is committed and pushed as `0551e2ee20f9ce80ad6608929ed98c49abce77a3`. Canonical Bar defines Alpha's provider-independent OHLCV record before any live provider adapter exists. It is the only canonical bar representation intended for future Research, Evidence, Decision, Replay, Backtesting, Strategy Evaluation, event-market learning, and Portfolio read-only consumers.
 
 This foundation adds contracts, deterministic validation and construction, identity and content comparison, serialization, focused tests, and a type-only Market Data compatibility boundary. It adds no provider adapter, retrieval operation, network transport, credential, streaming, persistence, resampling, consumer wiring, broker behavior, or execution.
 

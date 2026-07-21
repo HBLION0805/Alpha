@@ -527,6 +527,10 @@ The layer returns explicit transport, normalization, validation, operation, and 
 
 D9-T2 adds the separate immutable [Provider Registry](specifications/PROVIDER_REGISTRY.md) as the provider-discovery metadata authority. It owns canonical provider identity, status, declared capabilities and asset classes, static discovery priority, default enablement, and documentation references. Adapter descriptors describe implementation compatibility only. The registry holds no adapters, performs no calls, and has no selection, routing, fallback, reflection, AI, or runtime registration path.
 
+D9-T3 through D9-T5 complete the Canonical Market Domain with one authoritative [Canonical Instrument](specifications/CANONICAL_INSTRUMENT.md), [Canonical Quote](specifications/CANONICAL_QUOTE.md), and [Canonical Bar](specifications/CANONICAL_BAR.md). Provider symbols are adapter-owned mappings rather than canonical identity. Quote and Bar values remain immutable, fixed-decimal, timestamp-explicit, quality-aware, and provenance-preserving. Bar identity excludes OHLCV content so later corrections can retain logical identity while changing the content fingerprint.
+
+Day 10 External World Integration begins with evidence and policy, not network behavior. The [Twelve Data evidence and Bar semantics review](research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md) approves only a constrained future fixture-first intraday Bar adapter. Provider authentication, payloads, symbols, limits, and errors must remain behind the adapter boundary; canonical normalization cannot upgrade partial-market data to full-market, infer NBBO, fabricate timestamps or units, or hide unresolved quality.
+
 ---
 
 # Event Contract Framework

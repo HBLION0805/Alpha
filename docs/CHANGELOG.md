@@ -1,5 +1,27 @@
 # Alpha Changelog
 
+## 2026-07-20 - Day10-T1 Twelve Data Official Evidence and Bar Semantics Review
+
+- Reconciled the first-provider research against current official Twelve Data pricing, coverage, licensing, API, Bar, session, symbol, and EOD documentation.
+- Approved Twelve Data with constraints for a future personal/internal, REST-only, fixture-first U.S. stock/ETF intraday Bar adapter; explicitly excluded SIP, NBBO, full-market, public/commercial, redistribution, persistence, streaming, Paper Trading, broker, and execution claims.
+- Defined a deterministic Bar normalization policy and minimal immutable Provider Symbol mapping snapshot, including UTC interval-open parsing, half-open canonical intervals, bounded closed-Bar retrieval, partial-market defaults, non-content source identity, and correction handling.
+- Added no provider adapter, registry record, network/API code, credential, dependency, runtime data, or application behavior.
+
+## 2026-07-20 - D9-T5 Canonical Bar Foundation
+
+- Added Alpha's immutable provider-independent OHLCV Bar with canonical intervals, half-open time boundaries, fixed-decimal values, session/adjustment/quality/provenance metadata, deterministic identity and content fingerprint, equality, serialization, and fail-closed validation.
+- Added 54 focused tests and raised the registered validation baseline to 1173/1173 without adding a provider adapter, network, credential, persistence, calendar, adjustment engine, streaming, Paper Trading, broker, or execution path.
+
+## 2026-07-20 - D9-T4 Canonical Quote Foundation
+
+- Added Alpha's immutable provider-independent two-sided top-of-market Quote with fixed-decimal values, explicit timestamps, source metadata, deterministic identity/fingerprint, equality, serialization, and fail-closed validation.
+- Added 35 focused tests without treating last trade, close, midpoint, or provider-native payloads as a Canonical Quote.
+
+## 2026-07-20 - D9-T3A and D9-T3 Provider Research and Canonical Instrument Foundation
+
+- Added the official-evidence-gated first-provider selection framework and Alpha's immutable provider-independent Canonical Instrument identity, validation, serialization, equality, and resolver boundary.
+- Preserved provider symbols outside canonical identity and added 28 focused Canonical Instrument tests with no live lookup, mapping repository, network, credential, quote, Bar, broker, or execution behavior.
+
 ## 2026-07-20 - D9-T2 Provider Registry Foundation
 
 - Added versioned provider identity, lifecycle metadata, registry policy, query scope, and explicit error contracts over the existing Market Data asset-class and expanded capability enums.

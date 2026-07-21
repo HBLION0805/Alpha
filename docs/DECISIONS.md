@@ -1,5 +1,13 @@
 # Alpha Architecture Decisions
 
+## 2026-07-20 - Day10-T1 Twelve Data Development-Provider Decision
+
+### Official Evidence Authorizes Only a Constrained Intraday Bar Adapter
+
+- Decision: Approve Twelve Data as Alpha's first development market-data provider only for a future personal/internal, REST-only, fixture-first U.S. stock/ETF intraday Bar adapter governed by `TWELVE-DATA-BAR-NORMALIZATION-1.0` and immutable reviewed Provider Symbol mappings.
+- Reason: Official sources establish authentication, Basic-plan limits, listed U.S. stock/ETF access, `/time_series` interval/timestamp/order/adjustment semantics, and a current non-commercial personal/internal licensing path. They also establish that the default real-time U.S. feed represents about 5% of trading volume and leave record IDs, publication times, corrections, volume units, and retention duration unresolved.
+- Consequence: Default intraday coverage is `PARTIAL_MARKET`, never SIP or NBBO; unknown endpoint semantics fail closed; P1D, extended hours, persistence, streaming, live requests, public display, redistribution, Paper Trading, brokerage, and execution remain unauthorized. Approval expires outside the documented private-development scope. See [Twelve Data Official Evidence and Bar Semantics](research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md).
+
 ## 2026-07-20 - D9-T2 Provider Registry Foundation
 
 ### Provider Metadata and Adapter Implementations Are Separate Authorities
