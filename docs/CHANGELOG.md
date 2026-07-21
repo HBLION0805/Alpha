@@ -1,11 +1,18 @@
 # Alpha Changelog
 
-## 2026-07-21 - Day12-T1 Broad Market Evidence Foundation (Pending Owner Review)
+## 2026-07-21 - Day13-T1 Evidence Fusion Layer Foundation (Pending Owner Review)
+
+- Added immutable `EvidenceFusionInput`, policy, assessment, snapshot, quality, completeness, freshness, issue, contradiction, provenance, and trace contracts.
+- Added the explicit Broad Market Evidence source adapter and deterministic fail-closed composition for missing, incomplete, stale, future-dated, contradictory, schema-incompatible, and insufficiently referenced evidence.
+- Added deterministic snapshot fingerprinting and Unified Audit translation without scoring, probability, regime, recommendation, Decision/Risk wiring, AI, network, provider, persistence, trading, or execution behavior.
+- Added 32 focused tests, validation registration, and the Evidence Fusion specification. The milestone remains uncommitted pending owner review.
+
+## 2026-07-21 - Day12-T1 Broad Market Evidence Foundation
 
 - Added immutable provider-independent benchmark observation, snapshot, policy, feature, assessment, quality, issue, and trace contracts over reviewed Canonical Instrument and Canonical Bar references.
 - Added fixed-decimal short/medium return, drawdown, rebound, bounded volatility, range, and recovery calculations plus deterministic multi-benchmark agreement, disagreement, freshness, and missing-evidence facts.
 - Added fail-closed `COMPLETE`, `PARTIAL`, `STALE`, `CONTRADICTORY`, and `INSUFFICIENT` composition quality without regime, signal, recommendation, probability, AI, network, persistence, or domain mutation behavior.
-- Added deterministic Unified Audit translation, 40 focused fixture tests, validation registration, and the Broad Market Evidence specification; complete registered validation passes 1362/1362. The milestone remains uncommitted pending owner review.
+- Added deterministic Unified Audit translation, 40 focused fixture tests, validation registration, and the Broad Market Evidence specification; complete registered validation passes 1362/1362. The milestone was committed and pushed as `35cf0398bd9633dc68063397cbc589edeb9f83c4`.
 
 ## 2026-07-21 - Day11-T2 Market Regime Engine Foundation
 

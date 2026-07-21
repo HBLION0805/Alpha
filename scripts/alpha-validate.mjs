@@ -35,6 +35,7 @@ const requiredFiles = [
   "docs/specifications/TWELVE_DATA_LIVE_SMOKE.md",
   "docs/specifications/MARKET_REGIME_ENGINE.md",
   "docs/specifications/BROAD_MARKET_EVIDENCE.md",
+  "docs/specifications/EVIDENCE_FUSION.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -75,6 +76,7 @@ const aggregateTestFiles = [
   "src/engines/market-data-provider-composition/MarketDataProviderComposition.test.ts",
   "src/engines/market-regime/MarketRegimeEngine.test.ts",
   "src/engines/broad-market-evidence/BroadMarketEvidenceEngine.test.ts",
+  "src/engines/evidence-fusion/EvidenceFusionEngine.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",

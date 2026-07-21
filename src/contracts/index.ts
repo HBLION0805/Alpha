@@ -49,3 +49,4 @@ export * from "./MarketDataProviderRegistry";
 export * from "./MarketDataProviderComposition";
 export * from "./MarketRegime";
 export * from "./BroadMarketEvidence";
+export * from "./EvidenceFusion";

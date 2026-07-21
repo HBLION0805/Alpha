@@ -553,6 +553,14 @@ Reviewed ETF or index Canonical Instrument IDs define explicit required and opti
 
 Market Regime remains authoritative for environment classification. Day12-T1 adds no live fetch, provider dependency, startup wiring, persistence, Decision/Risk/Portfolio change, AI, or execution path. Unified Audit receives only deterministic translation; it remains the audit authority.
 
+## Evidence Fusion Layer Foundation
+
+Day13-T1 adds [Evidence Fusion](specifications/EVIDENCE_FUSION.md) as the stable composition boundary for future multi-domain evidence: `authoritative evidence assessment -> explicit source adapter -> immutable fusion input -> deterministic policy checks -> immutable fusion snapshot -> future Decision/Risk consumers`.
+
+V1 accepts only `BroadMarketEvidenceAssessment` through a dedicated adapter. Fusion preserves source assessment, snapshot, policy, rule, feature, evidence, and audit references without embedding benchmark observations or provider-native data. Missing, partial, stale, future-dated, contradictory, schema-incompatible, or untraceable required evidence produces a blocked snapshot. Only complete, current, policy-compatible evidence produces `READY`.
+
+Fusion does not score evidence, calculate probability, classify a regime, recommend action, or mutate another domain. Future Decision and Risk integrations may consume only a reviewed Fusion Snapshot, never raw benchmark observations. Day13-T1 adds no consumer wiring, live data, AI, persistence, provider, HTTP, trading, or execution behavior.
+
 ---
 
 # Event Contract Framework

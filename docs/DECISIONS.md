@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-21 - Day13-T1 Evidence Fusion Layer Foundation
+
+### Future Decision and Risk Consumers Depend on Fusion, Not Producers
+
+- Decision: Add one provider-neutral Evidence Fusion boundary that validates explicit source inputs and returns one immutable snapshot. Future Decision and Risk integrations may consume that snapshot, never raw benchmark observations or producer-native contracts.
+- Reason: Direct dependencies on Broad Market, Sector, Volatility, Breadth, News, Macro, Calendar, or Liquidity producers would duplicate evidence gates and tightly couple decision logic to source evolution.
+- Consequence: Day13-T1 supports only Broad Market Evidence through an explicit adapter. New evidence domains require a reviewed discriminated source type, adapter, policy entry, fixtures, and version change.
+
+### Fusion Is a Fail-closed Gate Without Scoring Authority
+
+- Decision: Accept only complete, current, schema-compatible, sufficiently referenced required evidence. Preserve missing, incomplete, stale, future-dated, contradictory, and invalid states as explicit blockers or validation failures.
+- Reason: Scores, probabilities, or narrative aggregation could conceal required blockers and violate No Evidence, No Decision.
+- Consequence: `READY` means only that the Fusion evidence gate passed. It is not a market regime, recommendation, trade signal, risk approval, or execution authorization.
+
+### Unified Audit Remains Authoritative
+
+- Decision: Translate Fusion assessments into the existing Unified Audit input and create no Fusion-specific persistence or audit repository.
+- Reason: A second audit authority would fragment traceability and recovery semantics.
+- Consequence: Fusion preserves source assessment/snapshot identity, source and fusion policy versions, evidence references, snapshot fingerprint, issues, contradictions, warnings, and audit references through one deterministic translation.
+
 ## 2026-07-21 - Day12-T1 Broad Market Evidence Foundation
 
 ### Broad-market Composition Precedes Regime Classification

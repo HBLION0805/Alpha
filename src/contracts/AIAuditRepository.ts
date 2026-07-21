@@ -32,6 +32,7 @@ export enum AIAuditRecordType {
   LearningReview = "LEARNING_REVIEW",
   MarketRegimeAssessment = "MARKET_REGIME_ASSESSMENT",
   BroadMarketEvidenceAssessment = "BROAD_MARKET_EVIDENCE_ASSESSMENT",
+  EvidenceFusionAssessment = "EVIDENCE_FUSION_ASSESSMENT",
 }
 
 export enum AIAuditSourceSubsystem {
@@ -57,6 +58,7 @@ export enum AIAuditSourceSubsystem {
   LearningLoop = "LEARNING_LOOP",
   MarketRegimeEngine = "MARKET_REGIME_ENGINE",
   BroadMarketEvidence = "BROAD_MARKET_EVIDENCE",
+  EvidenceFusion = "EVIDENCE_FUSION",
 }
 
 export enum AIAuditRetentionClassification {

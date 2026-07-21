@@ -1,6 +1,6 @@
 # Broad Market Evidence Foundation Specification
 
-Status: Day12-T1 implemented locally, uncommitted, pending owner review
+Status: Day12-T1 owner-approved, committed, and pushed
 
 Schema version: `1.0`
 

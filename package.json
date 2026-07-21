@@ -29,6 +29,7 @@
     "test:market-data-provider-composition": "tsx src/engines/market-data-provider-composition/MarketDataProviderComposition.test.ts",
     "test:market-regime": "tsx src/engines/market-regime/MarketRegimeEngine.test.ts",
     "test:broad-market-evidence": "tsx src/engines/broad-market-evidence/BroadMarketEvidenceEngine.test.ts",
+    "test:evidence-fusion": "tsx src/engines/evidence-fusion/EvidenceFusionEngine.test.ts",
     "test:twelve-data-parser": "tsx src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
     "test:twelve-data-validator": "tsx src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
     "test:twelve-data-normalizer": "tsx src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",

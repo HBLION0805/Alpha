@@ -192,13 +192,21 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Excludes: live/startup wiring, provider calls, AI, signals, recommendations, Risk/Decision/Portfolio mutation, volume/breadth invention, persistence, Dashboard, backtesting, Paper Trading, brokerage, or execution.
    - Exit criteria: missing or contradictory required evidence fails closed; correction remains distinct from bear trend; relief rally remains distinct from bull trend; high volatility can coexist with a primary regime; distribution/accumulation require verified volume and breadth evidence; focused and complete validation pass.
 
-## Day 12 — Broad Market Evidence (In Progress)
+## Day 12 — Broad Market Evidence (Completed)
 
 1. **Day12-T1 — Broad Market Evidence Foundation**
-   - Status: implemented locally, uncommitted, and pending owner review.
+   - Status: completed, committed, and pushed as `35cf0398bd9633dc68063397cbc589edeb9f83c4`.
    - Scope: reviewed Canonical Instrument benchmark membership; immutable provider-independent snapshots; fixed-decimal return, drawdown, rebound, volatility, range, and recovery facts; deterministic cross-benchmark composition quality; provenance; and Unified Audit translation.
    - Excludes: live fetching, VIX/breadth/volume integration, regime behavior changes, signals, Decision/Risk/Portfolio wiring, persistence, replay, backtesting, Dashboard, Paper Trading, AI, broker, or execution.
    - Exit criteria: required and optional membership is explicit; malformed, stale, missing, insufficient, and contradictory evidence fails closed; output contains no regime or action result; focused and complete validation pass; owner reviews before release.
+
+## Day 13 — Evidence Composition (In Progress)
+
+1. **Day13-T1 — Evidence Fusion Layer Foundation**
+   - Status: implemented locally, uncommitted, and pending owner review.
+   - Scope: provider-neutral fusion input, explicit Broad Market Evidence adapter, versioned source policy, immutable assessment/snapshot, deterministic completeness/freshness/quality gates, provenance, and Unified Audit translation.
+   - Excludes: additional evidence producers, Market Regime/Decision/Risk/Dashboard/Portfolio wiring, scoring, probability, AI, live data, provider access, persistence, replay, Paper Trading, brokerage, or execution.
+   - Exit criteria: only complete/current compatible required evidence produces `READY`; all blockers remain explicit; no raw benchmark observations cross the boundary; focused and complete validation pass; owner reviews before release.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 
