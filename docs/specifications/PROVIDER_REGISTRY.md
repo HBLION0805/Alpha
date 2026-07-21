@@ -22,7 +22,7 @@ The Provider Registry is authoritative for:
 - default enabled state;
 - documentation reference.
 
-Adapter descriptors describe implementation compatibility only. They are not provider discovery authority. Domain systems must depend on provider-neutral registry/read contracts and canonical Market Data results, not provider classes, SDKs, schemas, or adapter instances.
+Adapter descriptors describe implementation compatibility only. They are not provider discovery authority. The immutable provider-composition boundary validates adapters against registry records without moving adapter ownership into the registry. Domain systems must depend on provider-neutral registry/read contracts and canonical Market Data results, not provider classes, SDKs, schemas, or adapter instances.
 
 ## Provider Metadata Contract
 
@@ -113,7 +113,7 @@ future provider implementation
   -> Market Data normalization and validation
 ```
 
-The registry does not depend on adapter implementations. Domain systems do not import providers. A future composition root may validate that one adapter implementation matches a registered provider without moving provider metadata into the adapter.
+The registry does not depend on adapter implementations. Domain systems do not import providers. The implemented composition boundary binds adapters after registry construction and validates canonical provider ID, lifecycle/default enablement, capability, and asset-class compatibility. It permits multiple capability-specific adapters for one provider while rejecting duplicates per provider ID plus capability. It performs no selection, routing, fallback, or adapter instantiation.
 
 ## Security and Determinism
 
@@ -130,7 +130,6 @@ Adding a provider requires one reviewed metadata record with a stable provider I
 
 - real provider metadata records and adapters;
 - provider credentials and authentication;
-- adapter-to-registry composition validation;
 - live health state and health polling;
 - runtime enablement configuration;
 - automatic selection, routing, fallback, or dynamic ranking;

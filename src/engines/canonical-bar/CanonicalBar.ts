@@ -96,7 +96,24 @@ export function createCanonicalBarId(value: CanonicalBarInput): string {
 }
 
 export function createCanonicalBarFingerprint(value: CanonicalBarInput): string {
-  return `fnv1a64:${fnv1a64(canonicalize(canonicalInput(value)))}`;
+  const input = canonicalInput(value);
+  const observationContent = {
+    schemaVersion: input.schemaVersion,
+    instrumentId: input.instrument.instrumentId,
+    interval: input.interval,
+    intervalStart: input.intervalStart,
+    intervalEnd: input.intervalEnd,
+    observationTime: input.observationTime,
+    ...(input.providerPublishedAt === undefined ? {} : { providerPublishedAt: input.providerPublishedAt }),
+    value: input.value,
+    currency: input.currency,
+    quantityUnit: input.quantityUnit,
+    status: input.status,
+    session: input.session,
+    adjustment: input.adjustment,
+    source: input.source,
+  };
+  return `fnv1a64:${fnv1a64(canonicalize(observationContent))}`;
 }
 
 export function canonicalBarIdentityEquals(left: CanonicalBar, right: CanonicalBar): boolean {
@@ -104,7 +121,7 @@ export function canonicalBarIdentityEquals(left: CanonicalBar, right: CanonicalB
 }
 
 export function canonicalBarContentEquals(left: CanonicalBar, right: CanonicalBar): boolean {
-  return canonicalize(canonicalInput(left)) === canonicalize(canonicalInput(right));
+  return left.fingerprint === right.fingerprint;
 }
 
 export function canonicalBarFingerprintEquals(left: CanonicalBar, right: CanonicalBar): boolean {

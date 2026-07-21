@@ -22,8 +22,9 @@ import {
   type TwelveDataBarAdapterDependencies,
   type TwelveDataHttpRequest,
   type TwelveDataHttpResponse,
-} from "../../../contracts/TwelveDataAdapter";
+} from "./TwelveDataContracts";
 import { InstrumentAssetClass } from "../../../contracts/CanonicalInstrument";
+import { BarInterval } from "../../../contracts/CanonicalBar";
 import { normalizeTwelveDataBars } from "./TwelveDataBarNormalizer";
 import { parseTwelveDataResponse } from "./TwelveDataResponseParser";
 import { validateTwelveDataResponse } from "./TwelveDataResponseValidator";
@@ -32,6 +33,7 @@ import {
   buildTwelveDataHttpRequest,
   findTwelveDataMapping,
   validateTwelveDataMapping,
+  validateTwelveDataLiveSmokePolicy,
   validateTwelveDataPolicy,
 } from "./TwelveDataProvider";
 
@@ -40,9 +42,9 @@ const DESCRIPTOR: MarketDataProviderDescriptor = deepFreeze({
   adapterId: TWELVE_DATA_ADAPTER_ID,
   adapterVersion: "1.0",
   providerId: TWELVE_DATA_PROVIDER_ID,
-  enabled: true,
-  capabilities: [MarketDataCapability.Bars],
+  capability: MarketDataCapability.Bars,
   supportedAssetClasses: [InstrumentAssetClass.Equity, InstrumentAssetClass.Etf],
+  supportedBarIntervals: [BarInterval.OneMinute, BarInterval.FiveMinutes, BarInterval.FifteenMinutes, BarInterval.OneHour],
 });
 
 interface RawEnvelope {
@@ -57,6 +59,7 @@ export class TwelveDataBarAdapter implements MarketDataBarProviderAdapter {
   readonly #mappings: TwelveDataBarAdapterDependencies["mappings"];
   readonly #policy: TwelveDataBarAdapterDependencies["policy"];
   readonly #executionMode: TwelveDataBarAdapterDependencies["executionMode"];
+  readonly #liveSmokePolicy: TwelveDataBarAdapterDependencies["liveSmokePolicy"];
   readonly #clock: TwelveDataBarAdapterDependencies["clock"];
 
   public constructor(dependencies: TwelveDataBarAdapterDependencies) {
@@ -75,6 +78,10 @@ export class TwelveDataBarAdapter implements MarketDataBarProviderAdapter {
     this.#mappings = deepFreeze(mappings);
     this.#policy = validateTwelveDataPolicy(dependencies.policy);
     this.#executionMode = dependencies.executionMode;
+    this.#liveSmokePolicy = dependencies.liveSmokePolicy;
+    if (this.#executionMode === TwelveDataExecutionMode.BoundedLiveSmoke) {
+      validateTwelveDataLiveSmokePolicy(this.#liveSmokePolicy);
+    }
     this.#clock = dependencies.clock;
   }
 
@@ -93,7 +100,7 @@ export class TwelveDataBarAdapter implements MarketDataBarProviderAdapter {
 
   public buildRequest(request: Readonly<MarketDataBarRequest>): TwelveDataHttpRequest {
     const mapping = findTwelveDataMapping(this.#mappings, request.instrument.instrumentId);
-    return buildTwelveDataHttpRequest(request, mapping, this.#executionMode);
+    return buildTwelveDataHttpRequest(request, mapping, this.#executionMode, this.#liveSmokePolicy);
   }
 
   public async fetchBars(request: Readonly<MarketDataBarRequest>): Promise<MarketDataRawResponse> {
@@ -138,6 +145,7 @@ export class TwelveDataBarAdapter implements MarketDataBarProviderAdapter {
       providerId: normalized.providerId,
       status: normalized.status === "NORMALIZED" ? MarketDataNormalizationStatus.Normalized : MarketDataNormalizationStatus.Rejected,
       bars: normalized.bars,
+      duplicateCount: normalized.duplicateCount,
       blockers: normalized.blockers,
       warnings: normalized.warnings,
     });
@@ -187,6 +195,7 @@ function rejected(code: MarketDataIssueCode, message: string): MarketDataBarNorm
     providerId: TWELVE_DATA_PROVIDER_ID,
     status: MarketDataNormalizationStatus.Rejected,
     bars: [],
+    duplicateCount: 0,
     blockers: [{ code, message }],
     warnings: [],
   });

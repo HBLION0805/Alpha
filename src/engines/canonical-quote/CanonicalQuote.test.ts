@@ -124,6 +124,17 @@ test("identical input produces identical ID and fingerprint", () => {
   assertEqual(left.fingerprint, right.fingerprint, "fingerprint");
 });
 
+test("observation fingerprint excludes local ingestion timestamps", () => {
+  const left = createCanonicalQuote(input());
+  const right = createCanonicalQuote(input({
+    receivedAt: "2026-07-20T11:59:33.000Z",
+    normalizedAt: "2026-07-20T11:59:34.000Z",
+    quality: { ...input().quality, evaluatedAt: "2026-07-20T12:00:05.000Z" },
+  }));
+  assertEqual(left.quoteId, right.quoteId, "stable quote ID");
+  assertEqual(left.fingerprint, right.fingerprint, "stable observation fingerprint");
+});
+
 test("quote identity changes with source observation", () => {
   const left = createCanonicalQuote(input());
   const right = createCanonicalQuote(input({ observationTime: "2026-07-20T11:59:29.000Z" }));

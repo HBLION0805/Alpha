@@ -1,5 +1,19 @@
 # Alpha Changelog
 
+## 2026-07-21 - Day10-T3B Market Data Boundary Consolidation
+
+- Added immutable composition between authoritative Provider Registry metadata and capability-specific Quote/Bar adapters, allowing one provider to expose multiple capabilities while rejecting disagreements and duplicate provider/capability bindings.
+- Reduced `MarketDataService` to a facade over separate Quote and Bar orchestrators; strengthened Bar capability, asset-class, interval, lookback, record-count, canonical-validation, ordering, validation-dimension, and duplicate-reporting gates.
+- Corrected Canonical Quote and Bar observation fingerprints so local ingestion/quality-evaluation timestamps do not create false corrections while changed bid/ask or OHLCV content still does.
+- Moved Twelve Data endpoint, raw response, row, parser, validator, and normalization contracts out of the global shared surface and narrowed public integration exports.
+- Added a fail-closed versioned live-smoke policy contract without adding a concrete transport or making a network request. Registered validation is 1254/1254.
+
+## 2026-07-20 - Day10-T2 First Provider-specific Fixture Adapter Foundation
+
+- Added the reviewed Twelve Data Bars-only provider record, injected transport and credential boundaries, deterministic request construction, private parser/validator/normalizer pipeline, reviewed fixture mappings, and Canonical Bar integration.
+- Added no concrete HTTP transport, live request, SDK, committed credential, polling, persistence, routing/fallback, Quote/Trade support, Paper Trading, broker, or execution behavior.
+- Committed and pushed as `a61d253010e0c963917b1773f2e8d0d2a92ccb60` with the registered baseline at 1235/1235.
+
 ## 2026-07-20 - Day10-T1 Twelve Data Official Evidence and Bar Semantics Review
 
 - Reconciled the first-provider research against current official Twelve Data pricing, coverage, licensing, API, Bar, session, symbol, and EOD documentation.

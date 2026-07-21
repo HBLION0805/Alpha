@@ -1,14 +1,14 @@
 # Alpha Handoff
 
 Date:
-2026-07-20
+2026-07-21
 
 Project Stage:
-Day 9 Canonical Market Domain is committed and pushed; Day 10 External World Integration is in evidence-and-policy review only
+Day 9 Canonical Market Domain is complete; Day10-T1 and Day10-T2 are committed, and Day10-T3B Market Data boundary consolidation awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `0551e2ee20f9ce80ad6608929ed98c49abce77a3` on clean `main`, equal to `origin/main` before Day10-T1.
+Verified baseline: `a61d253010e0c963917b1773f2e8d0d2a92ccb60` on clean `main`, equal to `origin/main` before Day10-T3B.
 
 Day 7 completed:
 
@@ -19,7 +19,9 @@ Day 7 completed:
 
 Day 7 adds no dashboard wiring, mutable cross-runtime operation, graph database, source-authority transfer, AI reasoning, automatic learning, provider/network/API integration, live market data, broker behavior, production persistence, or capital-domain behavior change.
 
-Architecture Checkpoint 1 selected a narrow deterministic sequence. D8-T1 through D8-T3B and D9-T1 through D9-T5 are committed and pushed. Day 9 completed the Market Data Layer, immutable Provider Registry, Canonical Instrument, Canonical Quote, and Canonical Bar foundations without a live provider, selection, or downstream market-data consumer. Day10-T1 adds official-provider evidence and policy only. See `docs/ARCHITECTURE_CHECKPOINT_1.md`, `docs/specifications/KNOWLEDGE_APPROVAL_LAYER.md`, `docs/specifications/MARKET_DATA_LAYER.md`, `docs/specifications/PROVIDER_REGISTRY.md`, and `docs/research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md`.
+Architecture Checkpoint 1 selected a narrow deterministic sequence. Day 8 and Day 9 are complete. Day10-T1 committed official evidence and Bar policy; Day10-T2 committed Alpha's first provider-specific fixture adapter foundation. Day10-T3B now binds adapter compatibility to authoritative Provider Registry metadata, permits multi-capability provider composition, separates Quote and Bar orchestration, corrects observation-fingerprint semantics and Bar-policy parity, and internalizes provider-native contracts. No concrete live transport, network request, polling, persistence, routing/fallback, downstream Evidence/Decision wiring, Paper Trading, broker, or execution path exists. See `docs/specifications/MARKET_DATA_LAYER.md`, `docs/specifications/PROVIDER_REGISTRY.md`, `docs/specifications/TWELVE_DATA_ADAPTER.md`, and `docs/research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md`.
+
+The current registered validation baseline is 1254/1254. The next step is owner review and finalization of Day10-T3B; live smoke execution remains blocked pending a separately approved concrete transport, owner authorization, and resolution of the official live equity-volume unit evidence gate.
 
 ## Day 6 Milestone Review
 

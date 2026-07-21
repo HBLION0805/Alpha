@@ -26,7 +26,7 @@ It does not own predictions, evidence sufficiency, recommendations, risk rules, 
 
 ## Initial Contract Scope
 
-Version 1.0 service behavior supports a latest two-sided quote path and, from Day10-T2, a separate provider-neutral Bar path. It consumes the shared [Canonical Quote Foundation](CANONICAL_QUOTE.md) and [Canonical Bar Foundation](CANONICAL_BAR.md) as Alpha's only accepted representations. The first Bar implementation is the narrowly bounded [Twelve Data Bar Adapter](TWELVE_DATA_ADAPTER.md). Trades, event-contract quotes, foreign exchange, market status, streaming, and provider orchestration remain deferred.
+Version 1.0 service behavior supports a latest two-sided quote path and, from Day10-T2, a separate provider-neutral Bar path. It consumes the shared [Canonical Quote Foundation](CANONICAL_QUOTE.md) and [Canonical Bar Foundation](CANONICAL_BAR.md) as Alpha's only accepted representations. The first Bar implementation is the narrowly bounded [Twelve Data Bar Adapter](TWELVE_DATA_ADAPTER.md). Trades, event-contract quotes, foreign exchange, market status, streaming, automatic provider selection, routing, and fallback remain deferred.
 
 ### Canonical Instrument Identity
 
@@ -55,13 +55,15 @@ All timestamps are canonical UTC ISO-8601 values. Receipt or processing time nev
 
 ## Provider Adapter Port and Capability Model
 
-Each adapter declares a stable provider ID, adapter ID/version, enabled state, canonical instrument asset classes, and explicit capabilities. The v1 service requires `LATEST_QUOTE`; health and identity-resolution capabilities remain independently declared.
+Each capability-specific adapter declares only compatibility facts: stable provider ID, adapter ID/version, one capability, supported canonical instrument asset classes, and Bar intervals where applicable. Provider status, enabled state, display metadata, declared capabilities, and declared asset classes do not belong to adapters.
 
-The D9-T2 [Provider Registry](PROVIDER_REGISTRY.md) is the authoritative discovery source for provider identity, lifecycle metadata, declared capabilities, asset classes, priority, default enablement, and documentation. Adapter descriptors remain implementation compatibility declarations; they are not a competing provider catalog.
+The D9-T2 [Provider Registry](PROVIDER_REGISTRY.md) is the sole authority for provider identity, lifecycle metadata, declared capabilities, asset classes, priority, default enablement, and documentation. A separate immutable composition boundary binds zero or more capability-specific adapters to one registry record and fails closed on provider-ID, capability, asset-class, lifecycle, or enablement disagreement. The same provider may bind one Quote adapter and one Bar adapter; duplicates are rejected per provider ID plus capability. Registry construction never instantiates adapters.
 
 The caller selects one provider explicitly. The service does not rank providers, use AI, perform fallback, or merge providers. A missing, disabled, disallowed, unhealthy, or incapable provider returns an explicit result before transport where possible.
 
-The adapter port contains only descriptor and health reads, raw latest-quote retrieval, explicit quote normalization, and safe provider-error normalization. No provider-specific SDK or schema appears in the canonical contract.
+The Quote and Bar adapter ports contain only compatibility and health reads, capability-specific retrieval, explicit normalization, and safe provider-error normalization. No provider-specific SDK or schema appears in canonical or shared Market Data contracts.
+
+`MarketDataService` is a compatibility facade. It delegates Quote and Bar requests to capability-specific deterministic orchestrators so validation and result construction can evolve without combining the data semantics or creating a universal Market Data base class.
 
 ## Raw and Normalized Boundary
 
@@ -78,11 +80,11 @@ The result separates four stages:
 3. validation: `NOT_RUN`, `PASSED`, or `FAILED`;
 4. operation result: `ACCEPTED`, `REJECTED`, `UNAVAILABLE`, or `UNSUPPORTED`.
 
-An accepted result includes an immutable Canonical Quote with deterministic identity, fingerprint, timestamps, quality-policy metadata, and bounded provenance. Every result preserves request, provider, capability, policy ID/version, trace metadata, blockers, warnings, and timing metadata. There is no confidence score.
+An accepted result includes immutable Canonical Quote or Canonical Bar data with deterministic identity, observation-content fingerprint, timestamps, quality-policy metadata, and bounded provenance. Every result preserves request, provider, capability, policy ID/version, trace metadata, blockers, warnings, validation dimensions, and timing metadata. Bar results also preserve the exact duplicate count. There is no confidence score.
 
 ## Validation and Quality Statuses
 
-Validation checks schema, provider identity, instrument identity, provenance, timestamps, freshness, numeric validity, precision, ordering, internal quote consistency, and exact duplicate handling.
+Validation checks schema, provider identity, instrument identity, provenance, timestamps, freshness, numeric validity, precision, ordering, internal consistency, and exact duplicate handling. Bar orchestration additionally enforces interval support, bounded request windows and record counts, canonical validation for every returned Bar, chronological output, and explicit non-empty passed checks for accepted results.
 
 Quality is categorical: `VALID`, `INVALID`, `STALE`, `INCOMPLETE`, `UNAVAILABLE`, `UNSUPPORTED`, `OUT_OF_ORDER`, or `CONFLICTING`. A large market move is not automatically invalid; contextual anomaly detection is deferred.
 
@@ -104,7 +106,7 @@ Invalid data is never converted to a valid empty snapshot. Conflicts are never s
 
 ## Configuration and Policy
 
-The caller supplies an explicit versioned policy consistent with Alpha configuration conventions. It records allowed providers, required capabilities, duplicate behavior, and per-asset-class quote rules for freshness, timestamp requirement, price precision, and currency.
+The caller supplies an explicit versioned policy consistent with Alpha configuration conventions. Quote policy records allowed providers, required capabilities, duplicate behavior, and per-asset-class rules for freshness, timestamp requirement, price precision, and currency. Bar policy records allowed providers, required capabilities, maximum lookback, and maximum requested records.
 
 There is no universal freshness threshold and no new configuration framework. A later Config System adapter may provide these contracts without changing the service.
 

@@ -69,6 +69,7 @@ const aggregateTestFiles = [
   "src/engines/canonical-bar/CanonicalBar.test.ts",
   "src/engines/market-data/MarketDataService.test.ts",
   "src/engines/market-data-provider-registry/MarketDataProviderRegistry.test.ts",
+  "src/engines/market-data-provider-composition/MarketDataProviderComposition.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
@@ -284,7 +285,12 @@ function checkProviderSdk() {
     "mistralai",
     "groq-sdk",
     "together-ai",
-    "replicate"
+    "replicate",
+    "@polygon.io/client-js",
+    "@alpacahq/alpaca-trade-api",
+    "finnhub",
+    "twelvedata",
+    "twelvedata-js"
   ];
   for (const name of dependencyNames) {
     if (bannedPackages.includes(name.toLowerCase())) {
@@ -299,8 +305,9 @@ function checkNetworkAndProviderCode(files) {
     return [".ts", ".js", ".mjs", ".py"].includes(extension) && !file.endsWith(".test.ts") && !relativePath(file).startsWith("scripts/");
   });
 
-  const providerImportPattern = /\b(?:from\s+["']|import\s*\(?\s*["']|require\s*\(\s*["'])(openai|@anthropic-ai\/sdk|@google\/generative-ai|@google\/genai|google-generative-ai|cohere-ai|@cohere-ai\/sdk|mistralai|groq-sdk|together-ai|replicate)["']/iu;
+  const providerImportPattern = /\b(?:from\s+["']|import\s*\(?\s*["']|require\s*\(\s*["'])(openai|@anthropic-ai\/sdk|@google\/generative-ai|@google\/genai|google-generative-ai|cohere-ai|@cohere-ai\/sdk|mistralai|groq-sdk|together-ai|replicate|@polygon\.io\/client-js|@alpacahq\/alpaca-trade-api|finnhub|twelvedata|twelvedata-js)["']/iu;
   const networkPattern = /\b(fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|axios|node:https|node:http|require\s*\(\s*["']https?["']|https?\.request|requests\.|urllib\.request|aiohttp|socket\.)/iu;
+  const twelveDataConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+TwelveDataHttpTransport\b/u;
 
   for (const file of productionFiles) {
     const text = readText(file);
@@ -309,6 +316,10 @@ function checkNetworkAndProviderCode(files) {
     }
     if (networkPattern.test(text)) {
       recordFailure(`Network/API implementation pattern found in production code: ${file}`);
+    }
+    if (twelveDataConcreteTransportPattern.test(text)
+      && !relativePath(file).endsWith("TwelveDataTestFixtures.ts")) {
+      recordFailure(`Unapproved concrete Twelve Data transport found in production code: ${file}`);
     }
   }
 }
@@ -380,7 +391,10 @@ function checkFileReadability(files) {
 
 console.log("Alpha validation bundle");
 runCheck("Required files", checkRequiredFiles);
-const files = uniqueFiles([...trackedFiles(), ...untrackedFiles()]);
+// A reviewed move/deletion remains in `git ls-files` until commit; scan only paths
+// that still exist while required-file and final working-tree checks retain scope control.
+const files = uniqueFiles([...trackedFiles(), ...untrackedFiles()])
+  .filter((file) => existsSync(join(root, file)));
 runCheck("Tracked-file readability", () => checkFileReadability(files));
 
 runNode(["node_modules/typescript/bin/tsc", "--project", "tsconfig.json"], "TypeScript strict typecheck");

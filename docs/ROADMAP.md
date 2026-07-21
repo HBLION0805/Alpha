@@ -92,7 +92,7 @@ Day 7 Milestone Status:
 - The aggregate baseline is 876/876 TypeScript tests plus 11/11 focused Python integration tests.
 - Day 7 added no dashboard integration, mutable cross-runtime operation, provider or network/API integration, live market data, broker behavior, AI reasoning, automatic learning, production persistence, or capital-domain behavior change.
 
-## Day 8 — Deterministic Intelligence Layer Foundations (In Progress)
+## Day 8 — Deterministic Intelligence Layer Foundations (Completed)
 
 Day 8 begins from explicit evidence links and existing immutable records. It is a small, staged learning/evaluation phase, not a new recommendation platform, memory database, or automation milestone. See [Architecture Checkpoint 1](ARCHITECTURE_CHECKPOINT_1.md) for the full capability analysis and model strategy.
 
@@ -121,9 +121,8 @@ Day 8 begins from explicit evidence links and existing immutable records. It is 
    - Exit criteria: completed and `SUFFICIENT` review evidence is required; blockers fail closed; approval is owner-only; knowledge cannot mutate strategy; focused tests and strict typecheck pass.
 
 5. **D8-T4 — Intelligence Layer Milestone Review**
-   - Build now after D8-T3B as a short documentation/validation closeout.
-   - Reconciles architecture, decisions, roadmap, handoff, test baseline, production limitations, and backlog.
-   - No standalone review engine is created.
+   - Status: milestone reconciled before Day 9 proceeded; no standalone review engine was created.
+   - Reconciled architecture, decisions, roadmap direction, production limitations, and backlog through the subsequent market-domain checkpoint.
 
 The separate Strategy Change Proposal workflow remains backlog and must not delay Phase 1 API or Paper Trading. A separate Candidate-only task, Approval Workflow task, and Approved Knowledge Store task are not planned; the cohesive minimum belongs in D8-T3B.
 
@@ -158,15 +157,26 @@ Day 8 foundations are not production ready. Production persistence, transaction/
    - Scope: Alpha's immutable provider-independent OHLCV Bar, canonical intervals, half-open time boundaries, session/adjustment/quality/provenance metadata, deterministic identity and content fingerprint, equality, serialization, and validation.
    - Excludes: provider adapter, network, calendar, adjustment engine, resampling, streaming, persistence, backtesting, Paper Trading, broker, or execution behavior.
 
-Day 9 is foundation-complete, not production-ready. It owns canonical market identities and records but has no live source, transport, secret, provider mapping, storage, or consumer integration.
+Day 9 is foundation-complete, not production-ready. It owns canonical market identities and records but has no live source, concrete transport, secret, storage, or downstream consumer integration. Day 10 later added a narrowly reviewed fixture mapping and adapter boundary without changing this production-readiness classification.
 
 ## Day 10 — External World Integration (In Progress)
 
 1. **Day10-T1 — Twelve Data Official Evidence and Bar Semantics Review**
-   - Status: documentation and policy prepared for owner review; no adapter implementation.
+   - Status: completed, committed, and pushed as `42027f4d8a234cc9fe3ffb41a72a288985061c21`; no adapter implementation.
    - Scope: current official-source register, constrained provider decision, deterministic Twelve Data intraday Bar normalization policy, minimal immutable Provider Symbol mapping policy, and explicit unresolved semantics.
    - Excludes: provider adapter, live request, credential, network code, public/commercial use, persistence, routing/fallback, streaming, Paper Trading, broker, or execution.
    - Exit criteria: official evidence is traceable; the decision is `APPROVED WITH CONSTRAINTS` or `NOT APPROVED`; unknown facts fail closed; documentation and complete registered validation pass.
+
+2. **Day10-T2 — First Provider-specific Fixture Adapter Foundation**
+   - Status: completed, committed, and pushed as `a61d253010e0c963917b1773f2e8d0d2a92ccb60`.
+   - Scope: Twelve Data REST request contract, injected transport port, environment credential boundary, fixture parser/validator/normalizer, reviewed AAPL mapping, Canonical Bar integration, and provider-neutral Bar service path.
+   - Excludes: concrete live transport, live request, Quote/Trade, streaming, polling, persistence, routing/fallback, Paper Trading, broker, or execution.
+
+3. **Day10-T3B — Market Data Boundary Consolidation**
+   - Status: implemented and validated locally; awaiting owner review and commit.
+   - Scope: authoritative registry/adapter composition, multi-capability binding, Quote/Bar orchestrator separation, Bar-policy parity, observation fingerprint correction semantics, provider-native export cleanup, bounded live-smoke policy, and governance reconciliation.
+   - Excludes: new providers, live network behavior, routing/fallback, persistence, downstream domain wiring, Paper Trading, broker, or execution.
+   - Exit criteria: all D-class consolidation findings are corrected, the complete registered validation passes, and live-smoke blockers remain explicit.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

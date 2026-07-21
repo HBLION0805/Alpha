@@ -1,6 +1,6 @@
 import { BarFreshnessStatus, BarInterval, BarSessionType } from "../../../contracts/CanonicalBar";
 import { MarketDataIssueCode } from "../../../contracts/MarketData";
-import { TwelveDataTransportKind, TwelveDataVolumeEvidenceStatus, type TwelveDataValidatedResponse } from "../../../contracts/TwelveDataAdapter";
+import { TwelveDataTransportKind, TwelveDataVolumeEvidenceStatus, type TwelveDataValidatedResponse } from "./TwelveDataContracts";
 import { normalizeTwelveDataBars } from "./TwelveDataBarNormalizer";
 import { TWELVE_DATA_AAPL_FIXTURE_MAPPING } from "./TwelveDataProvider";
 import { fixturePolicy, fixtureRequest, FIXTURE_NORMALIZED_AT, FIXTURE_RECEIVED_AT } from "./TwelveDataTestFixtures";

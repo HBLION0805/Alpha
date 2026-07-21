@@ -2,7 +2,7 @@
 
 ## Status
 
-Day10-T2 implements a fixture-first provider adapter foundation for Twelve Data REST `time_series` Bars. It adds a real provider-specific request, parser, validator, normalizer, credential boundary, and MarketDataService Bar path. It does not make a network request during tests, add a provider SDK, persist data, stream, route, fail over, trade, or execute.
+Day10-T2 implements Alpha's first provider-specific fixture adapter foundation for Twelve Data REST `time_series` Bars. It adds a provider-specific request, parser, validator, normalizer, credential boundary, and MarketDataService Bar path. It is not live-connected: no concrete HTTP transport or network request exists, and it adds no provider SDK, persistence, streaming, routing, failover, trading, or execution.
 
 The governing evidence and normalization policy is [Twelve Data Official Evidence and Bar Semantics Review](../research/TWELVE_DATA_OFFICIAL_EVIDENCE_AND_BAR_SEMANTICS.md), policy `TWELVE-DATA-BAR-NORMALIZATION-1.0`.
 
@@ -19,7 +19,7 @@ TWELVE_DATA_API_KEY environment value
   -> MarketDataService read result
 ```
 
-Provider-native fields stay inside `src/integration/market-data/twelve-data/`. Canonical consumers receive only validated [Canonical Bars](CANONICAL_BAR.md). Evidence, Decision, Risk, Replay, Portfolio, and Dashboard code do not import Twelve Data contracts.
+Provider-native endpoint, credential, raw-response, row, parser, validator, and normalizer contracts stay inside `src/integration/market-data/twelve-data/` and are not re-exported from Alpha's shared-contract barrel. The integration barrel exposes only the narrow composition surface; tests reach internals by direct module import. Canonical consumers receive only validated [Canonical Bars](CANONICAL_BAR.md). Evidence, Decision, Risk, Replay, Portfolio, and Dashboard code do not import Twelve Data contracts.
 
 ## Provider Metadata
 
@@ -31,7 +31,7 @@ The adapter contributes one reviewed Provider Registry record:
 - status: active and enabled for explicit discovery;
 - priority: static discovery order only, never routing or quality rank.
 
-The Provider Registry stores metadata only. It does not instantiate this adapter or load credentials.
+The Provider Registry stores authoritative metadata only. It does not instantiate this adapter or load credentials. The separate composition boundary verifies that the Bar adapter's provider ID, capability, intervals, and asset classes agree with the registry record before the facade can use it.
 
 ## Credentials and HTTP Transport
 
@@ -89,7 +89,7 @@ The normalizer:
 - rejects open or closure-buffer Bars using a policy minimum of 120 seconds;
 - validates through the authoritative Canonical Bar constructor;
 - sorts by interval start and Bar ID;
-- deduplicates identical rows and rejects conflicting content for one logical Bar;
+- deduplicates identical rows, reports the exact duplicate count and warning, and rejects conflicting content for one logical Bar;
 - preserves an adapter-owned source reference and content fingerprint.
 
 Canonical normalization standardizes structure; it does not upgrade source coverage or accuracy.
@@ -107,7 +107,7 @@ This prevents the first adapter from fabricating unit certainty.
 
 ## MarketDataService Integration
 
-`MarketDataService.getBars` accepts a provider-neutral request, checks explicit provider capability, allow-list policy, health declaration, window and record bounds, then calls a registered Bar adapter. It validates every returned Canonical Bar before returning an immutable deterministic result.
+`MarketDataService.getBars` delegates to the capability-specific Bar orchestrator. The orchestrator checks authoritative registry status/enablement, declared and policy-required capabilities, registry and adapter asset classes, adapter interval support, health, bounded window and record policy, returned-record limits, duplicate reporting, chronological ordering, and every Canonical Bar before returning an immutable deterministic result. Accepted results always contain explicit passed validation dimensions.
 
 The request distinguishes `HISTORICAL` from `INTRADAY`. Stale intraday results fail closed and withhold Bars. Historical results may remain available as explicitly `STALE` historical evidence; they are never relabeled current.
 
@@ -115,15 +115,15 @@ Transport success, parsing, provider validation, normalization, canonical valida
 
 ## Optional Bounded Smoke Policy
 
-A manually composed live smoke adapter may request only:
+A later manually composed live smoke adapter must be governed by one explicit versioned policy containing:
 
-- one approved instrument mapping;
-- one supported interval;
-- at most 20 Bars;
-- one explicit bounded window;
-- one request, with no retry, polling, scheduler, caching, or persistence.
+- the single allowed provider and approved official-evidence references;
+- an allow-list of reviewed symbols and supported intervals;
+- a maximum lookback window, returned-record limit of at most 20 Bars, and maximum API-credit budget per run;
+- `MANUAL_ONE_SHOT` execution only;
+- explicit prohibitions on polling, persistence, and secret logging.
 
-The smoke path still requires credentials outside source control and the live volume evidence gate. Day10-T2 validation never calls it.
+Construction fails closed when any smoke-policy control is missing or exceeded. The smoke path still requires credentials outside source control and the live volume evidence gate. No concrete live transport or smoke execution exists in this milestone.
 
 ## Security
 

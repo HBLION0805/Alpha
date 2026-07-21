@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-21 - Day10-T3B Market Data Boundary Consolidation
+
+### Provider Registry Authority Is Bound Through Explicit Composition
+
+- Decision: Keep the Provider Registry as the sole provider-metadata authority and bind capability-specific adapters through a separate immutable composition boundary. A provider may expose distinct Quote and Bar adapters; duplicate bindings fail per provider ID plus capability.
+- Reason: Registry records and adapter descriptors previously formed catalogs that could disagree, and the service rejected one provider implementing multiple capabilities. Composition validates identity, lifecycle/enablement, capability, and asset-class compatibility without making the registry instantiate adapters.
+- Consequence: `MarketDataService` is a small facade over Quote and Bar orchestrators. There is no universal adapter, runtime reflection, automatic selection, routing, fallback, or live transport.
+
+### Observation Content Is Separate from Local Ingestion Metadata
+
+- Decision: Canonical Quote and Bar fingerprints represent stable provider observation content and exclude receipt, normalization, quality-evaluation, local freshness, and ingestion-run metadata. Logical identity remains separate and stable across content corrections.
+- Reason: Re-fetching unchanged provider content at a later local time must not masquerade as a market-data correction.
+- Consequence: Exact duplicates and provider corrections are classified using the observation fingerprint. A future complete-ingestion-record fingerprint must be separate. FNV-1a remains deterministic local change detection, not cryptographic integrity.
+
+### Live Smoke Requires a Versioned Manual Fail-closed Policy
+
+- Decision: Any future Twelve Data smoke execution must name approved evidence, provider, symbol, interval, lookback, record and API-credit limits and must prohibit polling, persistence, and secret logging.
+- Reason: An injected transport interface is not permission to perform network activity. Live behavior requires explicit bounded owner approval and unresolved volume evidence still blocks acceptance.
+- Consequence: D10-T3B validates the policy contract only; it adds no concrete transport or network request.
+
 ## 2026-07-20 - Day10-T1 Twelve Data Development-Provider Decision
 
 ### Official Evidence Authorizes Only a Constrained Intraday Bar Adapter

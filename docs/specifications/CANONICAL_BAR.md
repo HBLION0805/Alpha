@@ -89,7 +89,7 @@ The field prevents raw and adjusted data from being treated as interchangeable. 
 
 `barId` is Alpha-generated deterministically from canonical instrument identity, canonical interval and boundaries, session identity, adjustment state, provider identity, and source reference. Provider-native bar IDs and display symbols do not participate.
 
-Identity equality compares bar IDs. Content equality compares canonical input values. Fingerprint equality compares the stored deterministic fingerprint. A shared identity with changed content exposes a corrected or conflicting source observation rather than hiding it. The FNV-1a fingerprint is a deterministic change detector, not a cryptographic signature.
+Identity equality compares bar IDs. Observation-content equality compares the stored fingerprint. That fingerprint covers stable provider observation semantics, including OHLCV, interval, lifecycle, adjustment, session, source, and optional provider publication time. It excludes receipt, normalization, quality-evaluation, local freshness, and ingestion-run metadata. A shared logical identity with changed OHLCV therefore exposes a correction, while re-fetching unchanged content at a different ingestion time does not. A future complete-ingestion-record fingerprint would be separate. FNV-1a is deterministic local change detection, not a cryptographic integrity primitive.
 
 ## Validation and Fail-Closed Behavior
 
@@ -134,7 +134,7 @@ The abbreviated example omits required quality, timing, session, adjustment, and
 ## Deferred Work
 
 - live provider adapters, HTTP, WebSocket, credentials, and streaming;
-- Market Data bar retrieval, provider selection, routing, fallback, caching, and persistence;
+- live Market Data retrieval, provider selection, routing, fallback, caching, and persistence;
 - exchange calendars, session calculation, holidays, and timezone-database enforcement;
 - corporate-action adjustment calculation or verification;
 - trade-to-bar aggregation, resampling, gap filling, corrections, and bulk historical ingestion;

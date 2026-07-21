@@ -27,6 +27,18 @@ import {
   type MarketDataRawResponse,
 } from "../../contracts/MarketData";
 import { MarketDataConfigurationError, MarketDataService } from "./MarketDataService";
+import { MarketDataCompositionScope } from "../../contracts/MarketDataProviderComposition";
+import {
+  MARKET_DATA_PROVIDER_REGISTRY_SCHEMA_VERSION,
+  MarketDataProviderNamePolicy,
+  MarketDataProviderStatus,
+  type MarketDataProviderMetadata,
+} from "../../contracts/MarketDataProviderRegistry";
+import { InMemoryMarketDataProviderRegistry } from "../market-data-provider-registry/MarketDataProviderRegistry";
+import {
+  ImmutableMarketDataProviderComposition,
+  MarketDataProviderCompositionError,
+} from "../market-data-provider-composition/MarketDataProviderComposition";
 
 function assertEqual<T>(actual: T, expected: T, label: string): void {
   if (actual !== expected) throw new Error(`${label}: expected ${String(expected)}, received ${String(actual)}.`);
@@ -142,8 +154,7 @@ class FixtureAdapter implements MarketDataProviderAdapter {
       adapterId: "adapter:fixture",
       adapterVersion: "1.0",
       providerId: "provider:fixture",
-      enabled: true,
-      capabilities: [MarketDataCapability.Health, MarketDataCapability.LatestQuote],
+      capability: MarketDataCapability.LatestQuote,
       supportedAssetClasses: [InstrumentAssetClass.Equity],
     },
     public health: MarketDataProviderHealth = {
@@ -176,8 +187,34 @@ class FixtureAdapter implements MarketDataProviderAdapter {
   }
 }
 
-function system(adapter = new FixtureAdapter()): { service: MarketDataService; adapter: FixtureAdapter } {
-  return { service: new MarketDataService([adapter], { now: () => NOW }), adapter };
+function providerMetadata(overrides: Partial<MarketDataProviderMetadata> = {}): MarketDataProviderMetadata {
+  return {
+    schemaVersion: MARKET_DATA_PROVIDER_REGISTRY_SCHEMA_VERSION,
+    metadataVersion: "1.0",
+    identity: { providerId: "provider:fixture", displayName: "Fixture Provider" },
+    status: MarketDataProviderStatus.Active,
+    supportedAssetClasses: [InstrumentAssetClass.Equity],
+    capabilities: [MarketDataCapability.Health, MarketDataCapability.LatestQuote],
+    priority: 1,
+    defaultEnabled: true,
+    documentationReference: "docs/specifications/MARKET_DATA_LAYER.md",
+    ...overrides,
+  };
+}
+
+function system(
+  adapter = new FixtureAdapter(),
+  metadata = providerMetadata(),
+  scope = MarketDataCompositionScope.EnabledActiveOnly,
+): { service: MarketDataService; adapter: FixtureAdapter } {
+  const registry = new InMemoryMarketDataProviderRegistry([metadata], {
+    schemaVersion: MARKET_DATA_PROVIDER_REGISTRY_SCHEMA_VERSION,
+    policyId: "provider-registry-policy:test",
+    version: "1.0",
+    displayNamePolicy: MarketDataProviderNamePolicy.RejectDuplicates,
+  });
+  const composition = new ImmutableMarketDataProviderComposition(registry, [adapter], [], scope);
+  return { service: new MarketDataService(composition, { now: () => NOW }), adapter };
 }
 
 type Test = readonly [string, () => void | Promise<void>];
@@ -191,11 +228,13 @@ test("provider capability declaration is validated and ordered", () => {
 });
 
 test("unsupported capability is explicit and avoids transport", async () => {
-  const adapter = new FixtureAdapter({ ...new FixtureAdapter().descriptor, capabilities: [MarketDataCapability.Health] });
-  const result = await system(adapter).service.getLatestQuote(request());
-  assertEqual(result.status, MarketDataResultStatus.Unsupported, "status");
-  assertEqual(result.qualityStatus, MarketDataQualityStatus.Unsupported, "quality");
-  assertEqual(adapter.fetchCount, 0, "fetch count");
+  let failed = false;
+  try {
+    system(new FixtureAdapter(), providerMetadata({ capabilities: [MarketDataCapability.Health] }));
+  } catch (error) {
+    failed = error instanceof MarketDataProviderCompositionError;
+  }
+  assertTrue(failed, "undeclared adapter capability rejected");
 });
 
 test("every policy-required capability must be declared", async () => {
@@ -234,7 +273,7 @@ test("missing asset-class policy rule fails closed", async () => {
 
 test("undeclared provider asset class fails closed", async () => {
   const adapter = new FixtureAdapter({ ...new FixtureAdapter().descriptor, supportedAssetClasses: [InstrumentAssetClass.Crypto] });
-  assertIssue(await system(adapter).service.getLatestQuote(request()), MarketDataIssueCode.InvalidInstrumentIdentity);
+  assertIssue(await system(adapter, providerMetadata({ supportedAssetClasses: [InstrumentAssetClass.Crypto] })).service.getLatestQuote(request()), MarketDataIssueCode.InvalidInstrumentIdentity);
 });
 
 test("invalid numeric value fails closed", async () => {
@@ -258,7 +297,7 @@ test("invalid currency fails closed", async () => {
 test("missing provider identity is rejected during registration", () => {
   const adapter = new FixtureAdapter({ ...new FixtureAdapter().descriptor, providerId: "" });
   let failed = false;
-  try { new MarketDataService([adapter], { now: () => NOW }); } catch (error) { failed = error instanceof MarketDataConfigurationError; }
+  try { system(adapter); } catch (error) { failed = error instanceof MarketDataProviderCompositionError; }
   assertTrue(failed, "registration rejected");
 });
 
@@ -433,8 +472,9 @@ test("provider unavailability returns UNAVAILABLE", async () => {
 });
 
 test("disabled provider fails before transport", async () => {
-  const adapter = new FixtureAdapter({ ...new FixtureAdapter().descriptor, enabled: false });
-  const result = await system(adapter).service.getLatestQuote(request());
+  const adapter = new FixtureAdapter();
+  const metadata = providerMetadata({ defaultEnabled: false });
+  const result = await system(adapter, metadata, MarketDataCompositionScope.AdministrativeTest).service.getLatestQuote(request());
   assertIssue(result, MarketDataIssueCode.ProviderDisabled);
   assertEqual(adapter.fetchCount, 0, "fetch count");
 });

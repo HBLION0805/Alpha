@@ -1,5 +1,5 @@
 import { BarInterval } from "../../../contracts/CanonicalBar";
-import { TwelveDataValidationIssueCode } from "../../../contracts/TwelveDataAdapter";
+import { TwelveDataValidationIssueCode } from "./TwelveDataContracts";
 import { TWELVE_DATA_AAPL_FIXTURE_MAPPING } from "./TwelveDataProvider";
 import { parseTwelveDataResponse } from "./TwelveDataResponseParser";
 import { validateTwelveDataResponse } from "./TwelveDataResponseValidator";

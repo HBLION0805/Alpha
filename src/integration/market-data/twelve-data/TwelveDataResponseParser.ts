@@ -2,7 +2,7 @@ import {
   TwelveDataValidationIssueCode,
   type TwelveDataAdapterIssue,
   type TwelveDataParsedResponse,
-} from "../../../contracts/TwelveDataAdapter";
+} from "./TwelveDataContracts";
 
 const MAX_RESPONSE_BYTES = 2_000_000;
 

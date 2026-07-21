@@ -24,8 +24,9 @@ import {
   type TwelveDataCredentials,
   type TwelveDataHttpRequest,
   type TwelveDataInstrumentMapping,
+  type TwelveDataLiveSmokePolicy,
   type TwelveDataNormalizationPolicy,
-} from "../../../contracts/TwelveDataAdapter";
+} from "./TwelveDataContracts";
 import type { MarketDataBarRequest } from "../../../contracts/MarketData";
 import { validateCanonicalInstrument } from "../../../engines/canonical-instrument/CanonicalInstrument";
 
@@ -152,6 +153,7 @@ export function buildTwelveDataHttpRequest(
   request: Readonly<MarketDataBarRequest>,
   mapping: Readonly<TwelveDataInstrumentMapping>,
   mode: TwelveDataExecutionMode,
+  liveSmokePolicy?: Readonly<TwelveDataLiveSmokePolicy>,
 ): TwelveDataHttpRequest {
   const providerInterval = INTERVALS[request.interval];
   if (providerInterval === undefined) {
@@ -160,8 +162,17 @@ export function buildTwelveDataHttpRequest(
   if (mapping.reviewStatus !== TwelveDataMappingReviewStatus.Approved) {
     throw new TwelveDataConfigurationError(TwelveDataValidationIssueCode.MappingNotApproved, "Instrument mapping is not approved.");
   }
-  if (mode === TwelveDataExecutionMode.BoundedLiveSmoke && request.maxRecords > 20) {
-    throw new TwelveDataConfigurationError(TwelveDataValidationIssueCode.SmokeLimitExceeded, "A bounded live smoke request is limited to 20 bars.");
+  if (mode === TwelveDataExecutionMode.BoundedLiveSmoke) {
+    const smoke = validateTwelveDataLiveSmokePolicy(liveSmokePolicy);
+    const lookbackSeconds = (Date.parse(request.endTime) - Date.parse(request.startTime)) / 1000;
+    if (request.providerId !== smoke.allowedProviderId
+      || !smoke.allowedSymbols.includes(mapping.providerSymbol)
+      || !smoke.allowedIntervals.includes(request.interval)
+      || request.maxRecords > smoke.maxRecords
+      || lookbackSeconds > smoke.maxLookbackSeconds
+      || smoke.maxApiCreditsPerRun < 1) {
+      throw new TwelveDataConfigurationError(TwelveDataValidationIssueCode.SmokeLimitExceeded, "Request exceeds the approved bounded live-smoke policy.");
+    }
   }
   const query: Array<readonly [string, string]> = [
     ["adjust", "none"],
@@ -181,6 +192,32 @@ export function buildTwelveDataHttpRequest(
     query: query.sort(([left], [right]) => left.localeCompare(right)),
     timeoutMs: 10_000,
   });
+}
+
+export function validateTwelveDataLiveSmokePolicy(value: unknown): TwelveDataLiveSmokePolicy {
+  if (!isRecord(value)
+    || value.schemaVersion !== TWELVE_DATA_ADAPTER_SCHEMA_VERSION
+    || !IDENTIFIER.test(String(value.policyId ?? ""))
+    || !IDENTIFIER.test(String(value.version ?? ""))
+    || value.allowedProviderId !== TWELVE_DATA_PROVIDER_ID
+    || !Array.isArray(value.allowedSymbols) || value.allowedSymbols.length === 0
+    || !value.allowedSymbols.every((entry) => SUPPORTED_SYMBOLS.has(String(entry)))
+    || new Set(value.allowedSymbols).size !== value.allowedSymbols.length
+    || !Array.isArray(value.allowedIntervals) || value.allowedIntervals.length === 0
+    || !value.allowedIntervals.every((entry) => INTERVALS[entry as BarInterval] !== undefined)
+    || new Set(value.allowedIntervals).size !== value.allowedIntervals.length
+    || !Number.isSafeInteger(value.maxLookbackSeconds) || (value.maxLookbackSeconds as number) < 1
+    || !Number.isSafeInteger(value.maxRecords) || (value.maxRecords as number) < 1 || (value.maxRecords as number) > 20
+    || !Number.isSafeInteger(value.maxApiCreditsPerRun) || (value.maxApiCreditsPerRun as number) < 1
+    || !Array.isArray(value.officialEvidenceReferences) || value.officialEvidenceReferences.length === 0
+    || !value.officialEvidenceReferences.every((entry) => typeof entry === "string" && entry.startsWith("docs/") && entry.length <= 240)
+    || value.executionKind !== "MANUAL_ONE_SHOT"
+    || value.pollingAllowed !== false
+    || value.persistenceAllowed !== false
+    || value.secretLoggingAllowed !== false) {
+    throw new TwelveDataConfigurationError(TwelveDataValidationIssueCode.SmokeLimitExceeded, "Bounded live-smoke policy is malformed.");
+  }
+  return deepFreeze(clone(value as unknown as TwelveDataLiveSmokePolicy));
 }
 
 export function findTwelveDataMapping(

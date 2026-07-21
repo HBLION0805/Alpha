@@ -1,12 +1,6 @@
-import type { CanonicalInstrument, InstrumentAssetClass } from "./CanonicalInstrument";
-import type { BarInterval, CanonicalBar } from "./CanonicalBar";
-import type {
-  MarketDataAdapterError,
-  MarketDataNormalizationIssue,
-  MarketDataProviderDescriptor,
-  MarketDataProviderHealth,
-  MarketDataRawResponse,
-} from "./MarketData";
+import type { CanonicalInstrument, InstrumentAssetClass } from "../../../contracts/CanonicalInstrument";
+import type { BarInterval, CanonicalBar } from "../../../contracts/CanonicalBar";
+import type { MarketDataNormalizationIssue } from "../../../contracts/MarketData";
 
 export const TWELVE_DATA_ADAPTER_SCHEMA_VERSION = "1.0" as const;
 export const TWELVE_DATA_PROVIDER_ID = "provider:twelve-data" as const;
@@ -146,6 +140,7 @@ export interface TwelveDataNormalizationResult {
   readonly providerId: typeof TWELVE_DATA_PROVIDER_ID;
   readonly status: "NORMALIZED" | "REJECTED";
   readonly bars: readonly CanonicalBar[];
+  readonly duplicateCount: number;
   readonly blockers: readonly MarketDataNormalizationIssue[];
   readonly warnings: readonly MarketDataNormalizationIssue[];
 }
@@ -163,14 +158,23 @@ export interface TwelveDataBarAdapterDependencies {
   readonly mappings: readonly TwelveDataInstrumentMapping[];
   readonly policy: TwelveDataNormalizationPolicy;
   readonly executionMode: TwelveDataExecutionMode;
+  readonly liveSmokePolicy?: TwelveDataLiveSmokePolicy;
   readonly clock: { now(): string };
 }
 
-export interface TwelveDataBarAdapterContract {
-  getDescriptor(): MarketDataProviderDescriptor;
-  getHealth(): MarketDataProviderHealth;
-  buildRequest(request: unknown): TwelveDataHttpRequest;
-  fetchBars(request: unknown): Promise<MarketDataRawResponse>;
-  normalizeBars(raw: Readonly<MarketDataRawResponse>, request: unknown): TwelveDataNormalizationResult;
-  normalizeError(error: unknown, occurredAt: string): MarketDataAdapterError;
+export interface TwelveDataLiveSmokePolicy {
+  readonly schemaVersion: typeof TWELVE_DATA_ADAPTER_SCHEMA_VERSION;
+  readonly policyId: string;
+  readonly version: string;
+  readonly allowedProviderId: typeof TWELVE_DATA_PROVIDER_ID;
+  readonly allowedSymbols: readonly ("AAPL" | "SPY")[];
+  readonly allowedIntervals: readonly BarInterval[];
+  readonly maxLookbackSeconds: number;
+  readonly maxRecords: number;
+  readonly maxApiCreditsPerRun: number;
+  readonly officialEvidenceReferences: readonly string[];
+  readonly executionKind: "MANUAL_ONE_SHOT";
+  readonly pollingAllowed: false;
+  readonly persistenceAllowed: false;
+  readonly secretLoggingAllowed: false;
 }

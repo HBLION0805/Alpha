@@ -26,3 +26,4 @@ export * from "./canonical-quote";
 export * from "./canonical-bar";
 export * from "./market-data";
 export * from "./market-data-provider-registry";
+export * from "./market-data-provider-composition";

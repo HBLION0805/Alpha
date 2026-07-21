@@ -28,9 +28,9 @@ No provider-native response object, arbitrary extension object, credential, endp
 
 ## Quote Identity and Equality
 
-`quoteId` is derived deterministically from canonical instrument ID, provider ID, observation time, and source reference. It identifies one reported source observation. The content fingerprint covers the full canonical input and changes when accepted content or metadata changes.
+`quoteId` is derived deterministically from canonical instrument ID, provider ID, observation time, and source reference. It identifies one reported source observation. The observation-content fingerprint covers stable provider observation semantics: schema, instrument, quote values, currency, observation/publication times, and source provenance. It excludes local receipt time, normalization time, quality-evaluation time, calculated freshness, and ingestion-run metadata. Re-fetching unchanged observation content therefore preserves the fingerprint while a changed bid or ask changes it.
 
-Identity equality compares quote IDs. Content equality compares fingerprints. Two records may therefore describe the same source observation while revealing different content, which exposes a correction or conflicting normalization instead of hiding it. Neither identifier is a security signature; production integrity signing is deferred.
+Identity equality compares quote IDs. Observation-content equality compares fingerprints. Two records may therefore describe the same source observation while revealing corrected content without mistaking a later ingestion time for a provider correction. A future complete-ingestion-record fingerprint may be added separately; it must not drive observation duplicate/correction classification. FNV-1a is deterministic local change detection, not cryptographic integrity; production signing remains deferred.
 
 ## Fixed-Decimal Semantics
 

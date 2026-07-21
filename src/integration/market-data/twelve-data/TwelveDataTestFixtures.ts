@@ -23,7 +23,7 @@ import {
   type TwelveDataHttpTransport,
   type TwelveDataInstrumentMapping,
   type TwelveDataNormalizationPolicy,
-} from "../../../contracts/TwelveDataAdapter";
+} from "./TwelveDataContracts";
 import { TWELVE_DATA_AAPL_FIXTURE_MAPPING } from "./TwelveDataProvider";
 
 export const FIXTURE_RECEIVED_AT = "2026-07-20T14:45:00.000Z";
@@ -50,6 +50,7 @@ export function fixtureRequest(overrides: Partial<MarketDataBarRequest> = {}): M
       allowedProviderIds: [TWELVE_DATA_PROVIDER_ID],
       requiredCapabilities: [MarketDataCapability.Bars],
       maxRecords: 100,
+      maxLookbackSeconds: 86_400,
     },
     trace: { correlationId: "correlation:twelve-data:1" },
     ...overrides,

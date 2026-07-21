@@ -202,6 +202,17 @@ test("identical input produces deterministic ID and fingerprint", () => {
   assertEqual(left.fingerprint, right.fingerprint, "fingerprint");
 });
 
+test("observation fingerprint excludes local ingestion timestamps", () => {
+  const left = createCanonicalBar(input());
+  const right = createCanonicalBar(input({
+    receivedAt: "2026-07-20T14:35:03.000Z",
+    normalizedAt: "2026-07-20T14:35:04.000Z",
+    quality: { ...input().quality, evaluatedAt: "2026-07-20T14:35:20.000Z" },
+  }));
+  assertEqual(left.barId, right.barId, "stable bar ID");
+  assertEqual(left.fingerprint, right.fingerprint, "stable observation fingerprint");
+});
+
 test("identity equality is separate from content equality", () => {
   const left = createCanonicalBar(input());
   const right = createCanonicalBar(input({

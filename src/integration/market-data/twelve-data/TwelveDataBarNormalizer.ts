@@ -27,7 +27,7 @@ import {
   type TwelveDataNormalizationPolicy,
   type TwelveDataNormalizationResult,
   type TwelveDataValidatedResponse,
-} from "../../../contracts/TwelveDataAdapter";
+} from "./TwelveDataContracts";
 import { canonicalBarIntervalDurationMs, createCanonicalBar } from "../../../engines/canonical-bar/CanonicalBar";
 import { parseTwelveDataUtcDateTime } from "./TwelveDataResponseValidator";
 
@@ -145,7 +145,11 @@ export function normalizeTwelveDataBars(context: Readonly<TwelveDataBarNormaliza
     byId.set(bar.barId, bar.fingerprint);
   }
   const unique = ordered.filter((bar, index) => ordered.findIndex((candidate) => candidate.barId === bar.barId) === index);
-  return deepFreeze({ providerId: TWELVE_DATA_PROVIDER_ID, status: "NORMALIZED", bars: unique, blockers: [], warnings: [] });
+  const duplicateCount = ordered.length - unique.length;
+  const warnings = duplicateCount === 0
+    ? []
+    : [issue(MarketDataIssueCode.DuplicateObservation, `${String(duplicateCount)} exact duplicate Bar observation(s) were removed.`)];
+  return deepFreeze({ providerId: TWELVE_DATA_PROVIDER_ID, status: "NORMALIZED", bars: unique, duplicateCount, blockers: [], warnings });
 }
 
 function decimal(value: string): BarDecimal {
@@ -155,7 +159,7 @@ function decimal(value: string): BarDecimal {
 }
 
 function rejected(blocker: MarketDataNormalizationIssue): TwelveDataNormalizationResult {
-  return deepFreeze({ providerId: TWELVE_DATA_PROVIDER_ID, status: "REJECTED", bars: [], blockers: [blocker], warnings: [] });
+  return deepFreeze({ providerId: TWELVE_DATA_PROVIDER_ID, status: "REJECTED", bars: [], duplicateCount: 0, blockers: [blocker], warnings: [] });
 }
 
 function issue(code: MarketDataIssueCode, message: string): MarketDataNormalizationIssue {

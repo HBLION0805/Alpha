@@ -4,7 +4,7 @@ import {
   type TwelveDataInstrumentMapping,
   type TwelveDataResponseValidationResult,
   type TwelveDataValidatedResponse,
-} from "../../../contracts/TwelveDataAdapter";
+} from "./TwelveDataContracts";
 import type { BarInterval } from "../../../contracts/CanonicalBar";
 
 const DECIMAL = /^\d+(?:\.\d+)?$/u;

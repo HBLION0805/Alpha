@@ -73,7 +73,17 @@ export function createCanonicalQuoteId(value: CanonicalQuoteInput): string {
 }
 
 export function createCanonicalQuoteFingerprint(value: CanonicalQuoteInput): string {
-  return `fnv1a64:${fnv1a64(canonicalize(canonicalInput(value)))}`;
+  const input = canonicalInput(value);
+  const observationContent = {
+    schemaVersion: input.schemaVersion,
+    instrumentId: input.instrument.instrumentId,
+    value: input.value,
+    currency: input.currency,
+    observationTime: input.observationTime,
+    ...(input.providerPublishedAt === undefined ? {} : { providerPublishedAt: input.providerPublishedAt }),
+    source: input.source,
+  };
+  return `fnv1a64:${fnv1a64(canonicalize(observationContent))}`;
 }
 
 export function canonicalQuoteIdentityEquals(left: CanonicalQuote, right: CanonicalQuote): boolean {

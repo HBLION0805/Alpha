@@ -160,14 +160,15 @@ export interface MarketDataInstrumentRequest {
   readonly instrumentId: string;
 }
 
+/** Adapter compatibility declaration. Provider metadata remains authoritative in Provider Registry. */
 export interface MarketDataProviderDescriptor {
   readonly schemaVersion: typeof MARKET_DATA_SCHEMA_VERSION;
   readonly adapterId: string;
   readonly adapterVersion: string;
   readonly providerId: string;
-  readonly enabled: boolean;
-  readonly capabilities: readonly MarketDataCapability[];
+  readonly capability: MarketDataCapability.LatestQuote | MarketDataCapability.Bars;
   readonly supportedAssetClasses: readonly InstrumentAssetClass[];
+  readonly supportedBarIntervals?: readonly BarInterval[];
 }
 
 export interface MarketDataProviderHealth {
@@ -283,6 +284,7 @@ export interface MarketDataBarPolicy {
   readonly allowedProviderIds: readonly string[];
   readonly requiredCapabilities: readonly MarketDataCapability[];
   readonly maxRecords: number;
+  readonly maxLookbackSeconds: number;
 }
 
 export interface MarketDataBarRequest {
@@ -306,6 +308,7 @@ export interface MarketDataBarNormalizationResult {
   readonly providerId: string;
   readonly status: MarketDataNormalizationStatus.Normalized | MarketDataNormalizationStatus.Rejected;
   readonly bars: readonly CanonicalBar[];
+  readonly duplicateCount: number;
   readonly blockers: readonly MarketDataNormalizationIssue[];
   readonly warnings: readonly MarketDataNormalizationIssue[];
 }
@@ -385,6 +388,7 @@ export interface MarketDataBarResult {
   readonly requestedInstrument: MarketDataInstrumentRequest;
   readonly interval: BarInterval;
   readonly data: readonly CanonicalBar[];
+  readonly duplicateCount: number;
   readonly transportStatus: MarketDataTransportStatus;
   readonly normalizationStatus: MarketDataNormalizationStatus;
   readonly validation: MarketDataValidationResult;
