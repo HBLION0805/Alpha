@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-23 - Day15-T2 Event Contract Shadow Ledger
+
+### Outcome Evidence Must Be Bound to the Original Observation
+
+- Decision: Preserve validated event-contract observations in a canonical append-only local ledger and accept one later official settlement only when it matches the exact observation, terms, contract, and declared settlement source.
+- Reason: Calibration based on unrelated, revised, duplicated, or unverifiable outcomes would create false model confidence.
+- Consequence: Exact replay is idempotent, conflicting IDs and second settlements fail closed, repository history is revalidated on reload, and both-side hypothetical net results retain observation and settlement fingerprints.
+
+### Shadow Accounting Does Not Grant Trading Authority
+
+- Decision: Calculate only fee-inclusive hypothetical UP and DOWN outcomes from the recorded order previews and official winning side.
+- Reason: This establishes the evidence needed to measure future model quality without claiming that Alpha made or executed a decision.
+- Consequence: Every result is `SHADOW_ONLY_NOT_TRADE_AUTHORITY`; Day15-T2 adds no probability model, recommendation, sizing, broker integration, credential access, network request, order, or execution path.
+
 ## 2026-07-23 - Day15-T1 BTC Event Contract Observation
 
 ### Contract Facts Precede Probability

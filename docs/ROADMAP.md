@@ -233,14 +233,16 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
 ## Day 15 — Event Contract Evidence and Shadow Validation (In Progress)
 
 1. **Day15-T1 — BTC Event Contract Observation**
-   - Status: implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `9b243e24a1d56aac127b12388ee3fb9e86982383`.
    - Scope: immutable BTC 15-minute contract terms, explicit settlement semantics, BRTI reference-price identity, exact UP/DOWN quotes, exact order-fee previews, evidence binding, fixed-decimal arithmetic, maximum profit, and fee-inclusive break-even probability.
    - Excludes: probability estimation, recommendation, expected value, sizing, live/provider access, credentials, OCR, persistence, Paper Trading, brokerage, orders, or execution.
    - Exit criteria: unknown and incomplete records fail closed; 15-minute chronology and freshness are exact; both sides and all evidence bind; preview arithmetic reconciles; focused and complete validation pass; owner reviews before release.
 
 2. **Day15-T2 — Local Capture and Shadow Observation Ledger**
-   - Status: planned after Day15-T1 owner review.
-   - Intended scope: fixture/console capture and append-only local observation history without trade execution or probability authority.
+   - Status: implemented locally and pending owner review.
+   - Scope: owner-supplied JSON capture, canonical append-only local NDJSON observations, exact official-settlement binding, immutable query/history/summary surfaces, and fee-inclusive hypothetical UP/DOWN outcomes.
+   - Excludes: probability estimation, recommendation, expected value, position sizing, live/provider access, credentials, OCR, Paper Trading, brokerage, orders, or execution.
+   - Exit criteria: exact replay is idempotent; conflicts, duplicate settlement, invalid chronology/reference, unsafe path, and corrupt history fail closed; focused and complete validation pass; owner reviews before release.
 
 3. **Day15-T3 — Calibrated BTC 15-minute Probability Research**
    - Status: planned only after sufficient validated observations exist.

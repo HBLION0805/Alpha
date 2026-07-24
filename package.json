@@ -33,6 +33,8 @@
     "test:event-analyzer": "tsx src/engines/event-analyzer/EventAnalyzerEngine.test.ts",
     "test:capital-allocation": "tsx src/engines/capital-allocation/CapitalAllocationFramework.test.ts",
     "test:event-contract-observation": "tsx src/engines/event-contract-observation/EventContractObservationEngine.test.ts",
+    "test:event-contract-shadow": "tsx src/engines/event-contract-shadow-ledger/EventContractShadowLedgerEngine.test.ts",
+    "event-contract-shadow": "tsx scripts/event-contract-shadow-console.mjs",
     "event-analyzer": "tsx scripts/event-analyzer-console.mjs",
     "test:twelve-data-parser": "tsx src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
     "test:twelve-data-validator": "tsx src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",

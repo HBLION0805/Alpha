@@ -32,3 +32,6 @@ export * from "./LocalNdjsonHistoricalAnalogyRepository";
 export * from "./EventReplayRepository";
 export * from "./InMemoryEventReplayRepository";
 export * from "./LocalNdjsonEventReplayRepository";
+export * from "./EventContractShadowLedgerRepository";
+export * from "./InMemoryEventContractShadowLedgerRepository";
+export * from "./LocalNdjsonEventContractShadowLedgerRepository";

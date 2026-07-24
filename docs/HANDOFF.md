@@ -4,11 +4,11 @@ Date:
 2026-07-23
 
 Project Stage:
-Day14 is committed and pushed; Day15-T1 is implemented locally and awaits owner review
+Day15-T1 is committed and pushed; Day15-T2 is implemented locally and awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48` on `main`, equal to `origin/main` before Day15-T1.
+Verified baseline: `9b243e24a1d56aac127b12388ee3fb9e86982383` on `main`, equal to `origin/main` before Day15-T2.
 
 Day 7 completed:
 
@@ -25,7 +25,9 @@ Day11-T2 is committed and adds a provider-independent deterministic Market Regim
 
 Day12-T1 composes reviewed multi-benchmark canonical observations into immutable fixed-decimal evidence facts and explicit quality before future Market Regime evaluation. Day13-T1 adds a provider-neutral Fusion input adapter, versioned source policy, and immutable fail-closed snapshot for future Decision/Risk consumers. Day13-T2/T3 adds an isolated deterministic BTC 15-minute Event Analyzer console prototype plus bounded PT1M candle correction. Day14-T1 adds an immutable Capital Allocation Recommendation construction boundary after current Portfolio, ready Fusion, accepted Regime, and completed Risk inputs. D13-D14-CORRECTION-1 closes the initial owner-review findings through provenance/time/price coherence, bounded numeric conversion, recursive declared-field enforcement, exact Fusion binding, Risk ordering, constrained-risk requirements, and staged-diff validation. The owner approved and pushed the combined milestone as `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48`.
 
-Day15-T1 locally adds the first immutable BTC event-contract observation boundary. It requires explicit Robinhood/exchange contract identity, exact settlement method and threshold, a 15-minute UTC window, BRTI reference-price identity, both UP/DOWN quotes, both exact order-fee previews, and complete typed evidence. It derives only fee-inclusive break-even probability and maximum profit from reconciled caller-supplied costs. It emits no model probability, recommendation, expected value, size, order, or execution authorization.
+Day15-T1 adds the first immutable BTC event-contract observation boundary. It requires explicit Robinhood/exchange contract identity, exact settlement method and threshold, a 15-minute UTC window, BRTI reference-price identity, both UP/DOWN quotes, both exact order-fee previews, and complete typed evidence. It derives only fee-inclusive break-even probability and maximum profit from reconciled caller-supplied costs. The owner approved and pushed it as `9b243e24a1d56aac127b12388ee3fb9e86982383`.
+
+Day15-T2 locally adds owner-supplied JSON capture and a canonical append-only shadow ledger. It binds one official settlement to the exact observation, terms, contract, and settlement source, then calculates both UP and DOWN fee-inclusive hypothetical outcomes. It provides immutable history, filters, and aggregate summaries solely for later calibration evidence. It emits no model probability, recommendation, expected value, position size, order, or execution authorization.
 
 ## Day 6 Milestone Review
 
@@ -312,6 +314,8 @@ D13-D14-CORRECTION-1 expands focused validation to 80/80 Event Analyzer tests an
 
 Day15-T1 adds 49/49 focused BTC Event Contract Observation tests and raises complete registered validation to 1598/1598. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass. Git reports line-ending normalization warnings for modified working-tree text files; these are environment warnings, not validation failures.
 
+Day15-T2 adds 33/33 focused Event Contract Shadow Ledger tests and raises complete registered validation to 1631/1631. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -396,4 +400,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T1 after focused and complete validation. If approved, Day15-T2 may add a local capture workflow and append-only shadow observation ledger. Do not begin calibrated probability or live integration until the observation boundary is accepted and sufficient validated evidence exists.
+Owner review of Day15-T2 after focused and complete validation. If approved, begin collecting a sufficiently large, clean shadow dataset before designing Day15-T3 calibration research. Do not begin probability claims or live integration from fixture-only evidence.

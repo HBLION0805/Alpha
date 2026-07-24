@@ -53,3 +53,4 @@ export * from "./EvidenceFusion";
 export * from "./EventAnalyzer";
 export * from "./CapitalAllocation";
 export * from "./EventContractObservation";
+export * from "./EventContractShadowLedger";

@@ -618,6 +618,22 @@ Every nested object is allow-listed. BTC instrument identity, 15-minute window, 
 
 Every result is `OBSERVATION_ONLY_NOT_TRADE_AUTHORITY`. Day15-T1 adds no calibrated model, recommendation, expected value, sizing, Prediction Log, Trade Outcome Log, persistence, live Robinhood/exchange/BRTI adapter, API, network, credential, OCR, screenshot ingestion, polling, Dashboard, Paper Trading, broker, order, or execution behavior. See [BTC Event Contract Observation](specifications/EVENT_CONTRACT_OBSERVATION.md).
 
+## Event Contract Shadow Ledger
+
+Day15-T2 adds a local, append-only research history after the Day15-T1 observation gate:
+
+```text
+validated point-in-time observation
+  -> canonical append-only NDJSON
+  -> exact official settlement reference
+  -> hypothetical UP and DOWN fee-inclusive outcomes
+  -> aggregate shadow summary
+```
+
+Observation replay is idempotent only when the complete record matches. A settlement must bind to the exact observation, terms, contract, and declared settlement source; one observation can have only one official settlement. Repository sequence, event fingerprints, canonical serialization, timestamps, and stored domain fingerprints are revalidated during reload. Truncated, malformed, non-canonical, reordered, or reference-invalid history fails closed.
+
+The local console accepts owner-supplied JSON only. The ledger is single-process development persistence and emits `SHADOW_ONLY_NOT_TRADE_AUTHORITY`; it does not estimate probability, recommend a side, size capital, contact Robinhood/BRTI, read credentials, place orders, or authorize execution. See [Event Contract Shadow Ledger](specifications/EVENT_CONTRACT_SHADOW_LEDGER.md).
+
 ---
 
 # Event Contract Framework

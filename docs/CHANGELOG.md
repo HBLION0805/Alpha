@@ -1,11 +1,20 @@
 # Alpha Changelog
 
-## 2026-07-23 - Day15-T1 BTC Event Contract Observation (Pending Owner Review)
+## 2026-07-23 - Day15-T2 Event Contract Shadow Ledger (Pending Owner Review)
+
+- Added owner-supplied JSON capture and official-settlement commands over an append-only canonical local NDJSON repository.
+- Added exact settlement binding to observation, terms, contract, settlement source, source record, and evidence identity; conflicting replay, duplicate settlement, invalid chronology, unsafe path, and corrupt history fail closed.
+- Added immutable history/query/summary surfaces and deterministic fee-inclusive hypothetical outcomes for both UP and DOWN, retaining observation and settlement fingerprints.
+- Added 33 focused deterministic tests and registered the subsystem in the complete validation bundle.
+- Added no probability model, recommendation, position sizing, live Robinhood/BRTI integration, provider SDK, API, network, credential, OCR, screenshot ingestion, polling, broker, order, or execution behavior.
+
+## 2026-07-23 - Day15-T1 BTC Event Contract Observation
 
 - Added immutable BTC 15-minute contract, settlement, reference-price, UP/DOWN quote, order-fee-preview, evidence, derived-economics, validation, and policy contracts.
 - Added strict recursive allow lists, exact 15-minute chronology, millisecond freshness gates, side symmetry, quote-to-preview binding, fixed-decimal bounds, exact subtotal/fee/payout reconciliation, fee-inclusive break-even probability, maximum-profit arithmetic, deterministic fingerprinting, and observation-only authority.
 - Added 49 focused deterministic tests and registered the subsystem in the complete 1,598-test validation bundle.
 - Added no probability model, recommendation, sizing, persistence, live Robinhood/exchange/BRTI integration, API, network, credential, OCR, screenshot ingestion, polling, Dashboard, Paper Trading, broker, order, or execution behavior.
+- Owner approved the milestone; it was committed and pushed as `9b243e24a1d56aac127b12388ee3fb9e86982383`.
 
 ## 2026-07-23 - Day13/Day14 Owner-review Corrections
 
