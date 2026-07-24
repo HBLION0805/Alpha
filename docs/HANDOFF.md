@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B Research Dataset Qualification is committed and pushed; Day15-T3B2 Research Shadow Dataset Assembly is implemented locally and awaits owner review
+Day15-T3B2 Research Shadow Dataset Assembly is committed and pushed; Day15-T3B3 Forward Shadow Collection Control is implemented locally and awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `8f722fb1d527cf00a6b01ec74cbac28f1b56d9fd` on `main`, equal to `origin/main` before Day15-T3B2.
+Verified baseline: `3e03e698657dc532e89f088983fa331de8f81c2a` on `main`, equal to `origin/main` before Day15-T3B3.
 
 Day 7 completed:
 
@@ -33,7 +33,9 @@ Day15-T3A adds the fail-closed point-in-time Research Integrity boundary require
 
 Day15-T3B adds the next research gate: one prospective continuous BTC 15-minute collection plan, exact binding to eligible T3A audits and immutable feature versions, explicit minimum dataset thresholds, and embargoed chronological train/calibration/final-test partitions. The owner approved and pushed it as `8f722fb1d527cf00a6b01ec74cbac28f1b56d9fd`.
 
-Day15-T3B2 locally adds a narrow offline assembly adapter from explicit frozen-plan bindings plus exact settled Day15-T2 ledger histories and recomputed T3A audit inputs into canonical T3B qualification input. Every audit must contain the exact bound observation identity and fingerprint. Missing or unsettled events block rather than being inferred or repaired. It adds no console, persistence, automatic collection, provider/network access, model, probability, recommendation, sizing, order, or execution authority.
+Day15-T3B2 adds a narrow offline assembly adapter from explicit frozen-plan bindings plus exact settled Day15-T2 ledger histories and recomputed T3A audit inputs into canonical T3B qualification input. Every audit must contain the exact bound observation identity and fingerprint. The owner approved and pushed it as `3e03e698657dc532e89f088983fa331de8f81c2a`.
+
+Day15-T3B3 locally adds deterministic continuous future-plan creation and a read-only progress audit over Day15-T2 histories. It reports all upcoming, missing, captured-unsettled, and settled candidates without selecting a sample. Caller-supplied timestamps prove local coherence only. It adds no provider/network access, automatic collection, scheduling, persistence, model, recommendation, sizing, order, or execution authority.
 
 ## Day 6 Milestone Review
 
@@ -328,6 +330,8 @@ Day15-T3B adds 45/45 focused Research Dataset Qualification tests and raises com
 
 Day15-T3B2 adds 10/10 focused Research Shadow Dataset Assembly tests and raises complete registered validation to 1726/1726. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass.
 
+Day15-T3B3 adds 16/16 focused Forward Shadow Collection Control tests and raises complete registered validation to 1742/1742. Strict TypeScript and the complete working-tree validation bundle pass.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -365,6 +369,7 @@ Day15-T3B2 adds 10/10 focused Research Shadow Dataset Assembly tests and raises 
 - `52a62e1565709a1897225c8f455c8f1d73bd2115` — Event Contract Shadow Ledger
 - `4c9ef2dfcecb8ce8623b4629df6f5a2d55d041f4` — Research Integrity and Leakage Prevention
 - `8f722fb1d527cf00a6b01ec74cbac28f1b56d9fd` — Research Dataset Qualification and Temporal Split
+- `3e03e698657dc532e89f088983fa331de8f81c2a` — Research Shadow Dataset Assembly
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -416,4 +421,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B2 after focused and complete validation. If approved, freeze a real forward collection plan and continue manual shadow-data collection. Do not begin Day15-T3C probability research until a real dataset—not fixtures—independently qualifies, and do not begin live trading integration from research eligibility alone.
+Owner review of Day15-T3B3 after focused and complete validation. If approved, preserve one real forward plan before its first cutoff and use the existing manual capture/settle path while monitoring progress. Do not begin Day15-T3C probability research until a real dataset—not fixtures—independently qualifies.

@@ -1,11 +1,19 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B2 Research Shadow Dataset Assembly (Pending Owner Review)
+## 2026-07-24 - Day15-T3B3 Forward Shadow Collection Control (Pending Owner Review)
+
+- Added deterministic bounded creation of continuous aligned BTC-USD 15-minute collection plans with cutoff-derived event identities and canonical T3B plan fingerprints.
+- Added read-only progress auditing over exact Day15-T2 histories with explicit upcoming, missing, captured-unsettled, and settled-candidate event states.
+- Added stable capture/settlement coverage metrics and candidate identities without automatic sample selection.
+- Added 16 focused tests, including future-observation and future-settlement leakage checks, without provider/network access, automatic collection, scheduling, persistence, model, probability, recommendation, sizing, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B2 Research Shadow Dataset Assembly
 
 - Added a deterministic offline boundary that projects explicit frozen-plan bindings and exact settled Day15-T2 histories into canonical Day15-T3B qualification input.
 - Added exact BTC 15-minute cutoff, observation, settlement, recomputed Day15-T3A audit-input evidence binding, and homogeneous feature-version checks.
 - Added ordered missing/unsettled/tampered issue reporting, immutable plan and ledger-snapshot fingerprints, and adversarial focused tests.
 - Added no automated collection, provider/network access, persistence, model, probability, return, recommendation, sizing, broker, order, or execution behavior.
+- Owner approved the milestone; it was committed and pushed as `3e03e698657dc532e89f088983fa331de8f81c2a`.
 
 ## 2026-07-24 - Day15-T3B Research Dataset Qualification and Temporal Split
 

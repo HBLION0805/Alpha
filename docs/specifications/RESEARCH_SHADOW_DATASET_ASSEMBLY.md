@@ -1,6 +1,6 @@
 # Research Shadow Dataset Assembly v1
 
-Status: Day15-T3B2 implemented locally and pending owner review.
+Status: Day15-T3B2 owner approved, committed, and pushed as `3e03e698657dc532e89f088983fa331de8f81c2a`.
 
 Schema: `1.0`
 

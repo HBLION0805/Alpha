@@ -257,12 +257,18 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: incomplete, post-selected, duplicated, imbalanced, policy-mixed, temporally overlapping, or integrity-blocked datasets fail closed; focused and complete validation pass; owner reviews before release.
 
 5. **Day15-T3B2 — Frozen-Plan Shadow Dataset Assembly**
-   - Status: implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `3e03e698657dc532e89f088983fa331de8f81c2a`.
    - Scope: explicit frozen-plan event bindings, read-only Day15-T2 ledger snapshots, exact official settlement labels, eligible Day15-T3A audit binding, homogeneous feature versions, deterministic sample construction, and canonical Day15-T3B qualification input.
    - Excludes: automated collection, provider/network access, persistence, model or feature calculation, probability, return, recommendation, sizing, broker, order, or execution.
    - Exit criteria: missing, unsettled, duplicated, cutoff-mismatched, audit-mismatched, feature-mixed, or tampered inputs fail closed; focused and complete validation pass; owner reviews before release.
 
-6. **Day15-T3C — Baseline Probability Research**
+6. **Day15-T3B3 — Forward Shadow Collection Control**
+   - Status: implemented locally and pending owner review.
+   - Scope: deterministic continuous BTC 15-minute plan creation before the first cutoff plus read-only per-event capture/settlement progress auditing against Day15-T2 histories.
+   - Excludes: provider/network access, automatic collection, scheduling, persistence, sample selection, T3A audit creation, T3B qualification, model, probability, recommendation, sizing, broker, order, or execution.
+   - Exit criteria: late or misaligned plans, rewritten identities, duplicate/tampered histories, missing observations, and unsettled outcomes remain explicit; focused and complete validation pass; owner reviews before release.
+
+7. **Day15-T3C — Baseline Probability Research**
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 

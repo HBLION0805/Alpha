@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B3 Forward Shadow Collection Control
+
+### Plan Identity Is Derived Before Outcomes
+
+- Decision: Generate every BTC 15-minute event identity from one aligned future cutoff sequence and freeze the canonical plan before the first cutoff.
+- Reason: Caller-authored event lists can hide gaps, duplicates, reordering, or post-outcome additions.
+- Consequence: Late, misaligned, discontinuous, duplicated, or rewritten plans fail closed. A changed plan requires a different plan identity or version.
+
+### Progress Reporting Must Not Select Research Samples
+
+- Decision: Report all exact matching observations and settled candidates for every planned event without choosing one.
+- Reason: Silent “best” or “latest” selection can introduce outcome-dependent bias and would take authority away from the explicit T3B2 binding.
+- Consequence: T3B3 reports collection state and coverage only. T3A audit creation, T3B2 binding, and T3B qualification remain separate reviewed steps.
+
 ## 2026-07-24 - Day15-T3B2 Research Shadow Dataset Assembly
 
 ### Missing Evidence Must Remain Missing

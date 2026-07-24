@@ -661,6 +661,12 @@ Day15-T3B2 adds a narrow offline adapter between the append-only Day15-T2 shadow
 
 Missing or unsettled events remain explicit and produce `BLOCKED`; assembly never repairs history, infers a label, or substitutes a favorable record. `ASSEMBLED` means only that a canonical T3B input was constructed. The existing T3B engine remains the sole dataset qualification and temporal-split authority. The boundary adds no console, repository, automated collection, provider, network, model, probability, recommendation, or execution behavior. See [Research Shadow Dataset Assembly](specifications/RESEARCH_SHADOW_DATASET_ASSEMBLY.md).
 
+## Forward Shadow Collection Control
+
+Day15-T3B3 adds a deterministic control surface before T3B2 assembly. It creates a continuous aligned BTC-USD 15-minute plan from one caller-declared creation time, first future cutoff, and bounded event count. Event IDs are derived from UTC cutoffs, and the result uses the canonical T3B collection-plan contract and fingerprint.
+
+A separate read-only audit projects exact Day15-T2 histories into stable `UPCOMING`, `OVERDUE_MISSING`, `CAPTURED_UNSETTLED`, or `SETTLED_CANDIDATE` states. It lists every matching observation and settled candidate without selecting one; later T3B2 binding remains explicit. The caller-supplied creation time proves only local deterministic coherence, not an externally signed freeze time or guaranteed Robinhood listing. The boundary adds no scheduler, network, provider, persistence, automatic capture, model, recommendation, or execution behavior. See [Forward Shadow Collection Control](specifications/FORWARD_SHADOW_COLLECTION_CONTROL.md).
+
 ---
 
 # Event Contract Framework

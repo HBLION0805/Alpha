@@ -37,3 +37,4 @@ export * from "./event-contract-shadow-ledger";
 export * from "./research-integrity";
 export * from "./research-dataset-qualification";
 export * from "./research-shadow-dataset-assembly";
+export * from "./forward-shadow-collection-control";
