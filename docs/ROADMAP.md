@@ -245,14 +245,20 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: exact replay is idempotent; conflicts, duplicate settlement, invalid chronology/reference, unsafe path, and corrupt history fail closed; focused and complete validation pass; owner reviews before release.
 
 3. **Day15-T3A — Research Integrity and Leakage Prevention**
-   - Status: implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `4c9ef2dfcecb8ce8623b4629df6f5a2d55d041f4`.
    - Scope: deterministic point-in-time occurrence/publication/availability/receipt rules, forward-versus-historical semantics, completed-interval enforcement, outcome-leakage blocking, and exact frozen dataset manifests.
    - Excludes: model training, calibration, probability, expected value, returns, recommendation, sizing, live data, persistence, broker, or execution behavior.
    - Exit criteria: future information, post-cutoff revisions, incomplete bars, outcome contamination, and dataset mismatch fail closed; focused and complete validation pass; owner reviews before release.
 
 4. **Day15-T3B — Dataset Qualification and Temporal Split Design**
-   - Status: planned only after Day15-T3A owner approval and sufficient validated observations exist.
-   - Intended scope: minimum sample and coverage rules plus leakage-safe chronological train/calibration/test partitions before any probability model is approved.
+   - Status: implemented locally and pending owner review.
+   - Scope: prospectively frozen BTC 15-minute collection plans, exact sample-to-Research-Integrity binding, minimum sample/day/coverage/outcome-balance gates, one feature and integrity-policy lineage, and deterministic chronological train/calibration/final-test partitions with embargo gaps.
+   - Excludes: model training, probability estimation, threshold selection, return claims, recommendation, expected value, sizing, live/provider access, persistence, broker, order, or execution.
+   - Exit criteria: incomplete, post-selected, duplicated, imbalanced, policy-mixed, temporally overlapping, or integrity-blocked datasets fail closed; focused and complete validation pass; owner reviews before release.
+
+5. **Day15-T3C — Baseline Probability Research**
+   - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
+   - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

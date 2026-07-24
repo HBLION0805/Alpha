@@ -55,3 +55,4 @@ export * from "./CapitalAllocation";
 export * from "./EventContractObservation";
 export * from "./EventContractShadowLedger";
 export * from "./ResearchIntegrity";
+export * from "./ResearchDatasetQualification";

@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B Research Dataset Qualification and Temporal Split
+
+### Collection Intent Must Predate Outcomes
+
+- Decision: Require one continuous BTC 15-minute collection plan to be frozen strictly before its first event cutoff and measure qualification against the full declared plan.
+- Reason: Choosing events after seeing their results creates selection bias even when every individual feature record passes point-in-time leakage checks.
+- Consequence: Missing or unplanned events reduce or invalidate coverage; a clean subset cannot silently replace the declared population.
+
+### Minimum Eligibility Is Not Statistical Proof
+
+- Decision: Require explicit minimum sample, date, coverage, outcome-count, and outcome-balance thresholds plus one immutable feature and Research Integrity policy lineage.
+- Reason: Individually valid observations can still form a dataset too small, narrow, imbalanced, or operationally inconsistent to support honest model research.
+- Consequence: `QUALIFIED` means only that a pre-declared minimum research gate passed; it does not establish predictability, calibration, profitability, or trade authority.
+
+### Time Order and Embargo Protect Evaluation
+
+- Decision: Split deterministically by event cutoff into training, calibration, and sealed final-test partitions, remove embargo samples between adjacent partitions, and require all earlier labels to be known before the next partition begins.
+- Reason: Random shuffling and overlapping outcome windows leak later market states and tuning information into earlier research.
+- Consequence: Any split-integrity issue blocks the dataset and returns no partitions. Day15-T3B adds no model, probability, threshold, recommendation, sizing, or execution behavior.
+
 ## 2026-07-23 - Day15-T3A Research Integrity and Leakage Prevention
 
 ### Information Availability, Not Dataset Download Time, Defines Historical Knowledge

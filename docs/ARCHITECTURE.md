@@ -647,6 +647,14 @@ Day15-T3A adds a deterministic point-in-time eligibility gate before calibration
 
 The result is only `ELIGIBLE` or `BLOCKED` for research integrity and always remains `RESEARCH_ONLY_NOT_TRADE_AUTHORITY`. It does not assess sample sufficiency, train or calibrate a model, report probability or returns, recommend a side, size capital, or authorize execution. See [Research Integrity](specifications/RESEARCH_INTEGRITY.md).
 
+## Research Dataset Qualification and Temporal Split
+
+Day15-T3B adds the deterministic dataset gate after individual Day15-T3A audits and before any model research. A collection plan must be frozen strictly before its first event cutoff and enumerate a continuous BTC-USD 15-minute event sequence. Every completed sample must bind the planned event, exact observation and outcome records, feature schema/version, and one eligible Research Integrity audit.
+
+The default policy requires at least 1,000 completed samples, 30 distinct UTC dates, 90% planned-event and outcome coverage, at least 200 observations for each UP/DOWN outcome, and no outcome above 80%. IDs must be unique, feature and integrity-policy versions cannot be mixed, and every outcome must become known only after its event cutoff.
+
+Qualified samples are sorted by event cutoff and split deterministically into chronological 60% training, 20% calibration, and 20% sealed final-test partitions, with four-sample embargo gaps and label-availability checks between partitions. Any issue produces `BLOCKED` with no split. `QUALIFIED` means only that the declared minimum research gate passed; it is not statistical proof, a probability claim, a profitable backtest, or trading authority. See [Research Dataset Qualification](specifications/RESEARCH_DATASET_QUALIFICATION.md).
+
 ---
 
 # Event Contract Framework

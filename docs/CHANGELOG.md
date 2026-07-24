@@ -1,11 +1,20 @@
 # Alpha Changelog
 
-## 2026-07-23 - Day15-T3A Research Integrity and Leakage Prevention (Pending Owner Review)
+## 2026-07-24 - Day15-T3B Research Dataset Qualification and Temporal Split (Pending Owner Review)
+
+- Added a prospectively frozen BTC 15-minute collection-plan boundary that prevents selecting only favorable events after outcomes are known.
+- Added strict sample binding to exact observation/outcome identities, immutable feature versions, and eligible Day15-T3A audit proofs under one integrity-policy lineage.
+- Added deterministic minimum sample, date, plan coverage, outcome coverage, outcome count, and class-dominance gates.
+- Added chronological train/calibration/final-test partitions with embargo gaps and label-availability checks; blocked datasets receive no split.
+- Added 45 focused adversarial tests and complete validation registration without model training, probability, return, recommendation, expected value, sizing, live/provider access, persistence, broker, order, or execution behavior.
+
+## 2026-07-23 - Day15-T3A Research Integrity and Leakage Prevention
 
 - Added an immutable point-in-time research audit that separates occurrence, source publication, supported availability, local receipt, research cutoff, dataset freeze, and audit evaluation time.
 - Added distinct `FORWARD` and `HISTORICAL_REPLAY` rules so retrospective assembly is permitted without treating post-cutoff source revisions as historically knowable.
 - Added fail-closed completed-Bar checks, outcome/settlement contamination blocking, exact frozen dataset membership and fingerprint binding, deterministic audit fingerprints, and research-only authority.
 - Added 40 focused adversarial tests and complete validation registration without model training, calibration, probability, return, recommendation, expected value, sizing, provider/network access, persistence, broker, order, or execution behavior.
+- Owner approved the milestone; it was committed and pushed as `4c9ef2dfcecb8ce8623b4629df6f5a2d55d041f4`.
 
 ## 2026-07-23 - Day15-T2 Event Contract Shadow Ledger
 

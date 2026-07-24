@@ -1,14 +1,14 @@
 # Alpha Handoff
 
 Date:
-2026-07-23
+2026-07-24
 
 Project Stage:
-Day15-T2 is committed and pushed; Day15-T3A Research Integrity is implemented locally and awaits owner review
+Day15-T3A Research Integrity is committed and pushed; Day15-T3B Research Dataset Qualification is implemented locally and awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `52a62e1565709a1897225c8f455c8f1d73bd2115` on `main`, equal to `origin/main` before Day15-T3A.
+Verified baseline: `4c9ef2dfcecb8ce8623b4629df6f5a2d55d041f4` on `main`, equal to `origin/main` before Day15-T3B.
 
 Day 7 completed:
 
@@ -29,7 +29,9 @@ Day15-T1 adds the first immutable BTC event-contract observation boundary. It re
 
 Day15-T2 adds owner-supplied JSON capture and a canonical append-only shadow ledger. It binds one official settlement to the exact observation, terms, contract, and settlement source, then calculates both UP and DOWN fee-inclusive hypothetical outcomes. The owner approved and pushed it as `52a62e1565709a1897225c8f455c8f1d73bd2115`.
 
-Day15-T3A locally adds the fail-closed point-in-time Research Integrity boundary required before calibration or backtesting. It distinguishes occurrence, publication, availability, and receipt time; applies separate forward and historical-replay rules; requires completed bars; blocks outcome leakage; and binds exact frozen dataset membership. It emits no probability, return, recommendation, expected value, position size, order, or execution authorization.
+Day15-T3A adds the fail-closed point-in-time Research Integrity boundary required before calibration or backtesting. It distinguishes occurrence, publication, availability, and receipt time; applies separate forward and historical-replay rules; requires completed bars; blocks outcome leakage; and binds exact frozen dataset membership. The owner approved and pushed it as `4c9ef2dfcecb8ce8623b4629df6f5a2d55d041f4`.
+
+Day15-T3B locally adds the next research gate: one prospective continuous BTC 15-minute collection plan, exact binding to eligible T3A audits and immutable feature versions, explicit minimum dataset thresholds, and embargoed chronological train/calibration/final-test partitions. A blocked dataset receives no split. It emits no model, probability, return, recommendation, expected value, position size, order, or execution authorization.
 
 ## Day 6 Milestone Review
 
@@ -318,7 +320,9 @@ Day15-T1 adds 49/49 focused BTC Event Contract Observation tests and raises comp
 
 Day15-T2 adds 33/33 focused Event Contract Shadow Ledger tests and raises complete registered validation to 1631/1631. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass.
 
-Day15-T3A adds 40/40 focused Research Integrity tests and raises complete registered validation to 1671/1671. Strict TypeScript and complete working-tree validation are required before owner review.
+Day15-T3A adds 40/40 focused Research Integrity tests and raises complete registered validation to 1671/1671.
+
+Day15-T3B adds 45/45 focused Research Dataset Qualification tests and raises complete registered validation to 1716/1716. Strict TypeScript and the complete working-tree validation bundle pass.
 
 ## Git Milestones
 
@@ -353,6 +357,9 @@ Day15-T3A adds 40/40 focused Research Integrity tests and raises complete regist
 - `35cf0398bd9633dc68063397cbc589edeb9f83c4` — Broad Market Evidence Foundation
 - `7c670acd7a934ece5e6cbee844a9f5aa121c82d0` — Evidence Fusion Layer Foundation
 - `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48` — Event Analyzer, Capital Allocation, and owner-review corrections
+- `9b243e24a1d56aac127b12388ee3fb9e86982383` — BTC Event Contract Observation
+- `52a62e1565709a1897225c8f455c8f1d73bd2115` — Event Contract Shadow Ledger
+- `4c9ef2dfcecb8ce8623b4629df6f5a2d55d041f4` — Research Integrity and Leakage Prevention
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -404,4 +411,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3A after focused and complete validation. If approved, begin Day15-T3B dataset qualification and leakage-safe temporal split design while continuing shadow-data collection. Do not begin probability claims or live integration from fixture-only evidence.
+Owner review of Day15-T3B after focused and complete validation. If approved, continue real shadow-data collection under a frozen plan. Do not begin Day15-T3C probability research until a real dataset—not fixtures—independently qualifies, and do not begin live trading integration from research eligibility alone.

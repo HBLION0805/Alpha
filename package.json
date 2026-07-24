@@ -35,6 +35,7 @@
     "test:event-contract-observation": "tsx src/engines/event-contract-observation/EventContractObservationEngine.test.ts",
     "test:event-contract-shadow": "tsx src/engines/event-contract-shadow-ledger/EventContractShadowLedgerEngine.test.ts",
     "test:research-integrity": "tsx src/engines/research-integrity/ResearchIntegrityEngine.test.ts",
+    "test:research-dataset-qualification": "tsx src/engines/research-dataset-qualification/ResearchDatasetQualificationEngine.test.ts",
     "event-contract-shadow": "tsx scripts/event-contract-shadow-console.mjs",
     "event-analyzer": "tsx scripts/event-analyzer-console.mjs",
     "test:twelve-data-parser": "tsx src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
