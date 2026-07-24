@@ -7,6 +7,10 @@ const root = resolve(process.cwd());
 const failures = [];
 const warnings = [];
 const reporter = new ValidationReporter();
+const gitWhitespaceChecks = Object.freeze([
+  Object.freeze({ args: Object.freeze(["diff", "--check"]), label: "Unstaged Git diff whitespace" }),
+  Object.freeze({ args: Object.freeze(["diff", "--cached", "--check"]), label: "Staged Git diff whitespace" }),
+]);
 
 const requiredFiles = [
   "AGENTS.md",
@@ -36,6 +40,8 @@ const requiredFiles = [
   "docs/specifications/MARKET_REGIME_ENGINE.md",
   "docs/specifications/BROAD_MARKET_EVIDENCE.md",
   "docs/specifications/EVIDENCE_FUSION.md",
+  "docs/specifications/EVENT_ANALYZER_CONSOLE.md",
+  "docs/specifications/CAPITAL_ALLOCATION_FRAMEWORK.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -77,6 +83,8 @@ const aggregateTestFiles = [
   "src/engines/market-regime/MarketRegimeEngine.test.ts",
   "src/engines/broad-market-evidence/BroadMarketEvidenceEngine.test.ts",
   "src/engines/evidence-fusion/EvidenceFusionEngine.test.ts",
+  "src/engines/event-analyzer/EventAnalyzerEngine.test.ts",
+  "src/engines/capital-allocation/CapitalAllocationFramework.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
@@ -444,7 +452,13 @@ runCheck("Credential scan", () => checkSecrets(files));
 runCheck("Runtime-data tracking", () => checkRuntimeData(files));
 runCheck("Python change scope", checkPythonChanges);
 runCheck("Merge markers", () => checkMergeMarkers(files));
-run("git", ["diff", "--check"], "Git diff check");
+runCheck("Git whitespace check coverage", () => {
+  const commands = gitWhitespaceChecks.map((check) => check.args.join(" "));
+  if (!commands.includes("diff --check") || !commands.includes("diff --cached --check") || commands.length !== 2) {
+    throw new Error("Validation must retain separate unstaged and staged whitespace checks.");
+  }
+});
+for (const check of gitWhitespaceChecks) run("git", [...check.args], check.label);
 runCheck("Working tree status", checkGitStatus);
 
 if (warnings.length > 0) {

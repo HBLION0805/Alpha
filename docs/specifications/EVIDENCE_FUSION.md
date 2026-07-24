@@ -1,6 +1,6 @@
 # Evidence Fusion Layer Foundation Specification
 
-Status: Day13-T1 implemented locally, uncommitted, pending owner review
+Status: Day13-T1 completed, committed, and pushed as `7c670acd7a934ece5e6cbee844a9f5aa121c82d0`
 
 Schema version: `1.0`
 
@@ -61,6 +61,8 @@ V1 requires exactly one Broad Market Evidence source and accepts only `COMPLETE`
 - deterministic and read-only markers.
 
 The snapshot contains no recommendation, market regime, trade direction, signal, score, probability, expected return, position size, plan, or execution instruction.
+
+A downstream eligibility reference must bind to the exact accepted assessment ID, snapshot ID, fingerprint, schema version, policy version, rule-set version, evaluation time, accepted state, and authoritative evidence-reference set. Matching only source type or acceptance state is insufficient.
 
 ## Fail-closed Composition
 

@@ -1,5 +1,85 @@
 # Alpha Architecture Decisions
 
+## 2026-07-23 - Day13/Day14 Owner-review Corrections
+
+### Boundary Shape and Provenance Fail Closed
+
+- Decision: Recursively reject undeclared Capital Allocation fields, construct outputs from explicit allow lists, bind each eligible candidate to the exact gated Fusion record, and restrict future evidence sources to the dedicated extension boundary.
+- Reason: Broad cloning or type/state-only evidence checks could preserve hidden ranking, leverage, sizing, provider, credential, AI, order, or unrelated evidence authority.
+- Consequence: Unknown or mismatched nested data produces structured validation failure. Candidates remain `UNRANKED`; no new authority or runtime integration is added.
+
+### Risk and Event Observations Preserve Exact Ordering
+
+- Decision: Require Risk evaluation at or after both Fusion and Market Regime, require unique explicit constraints for `CONSTRAINED`, and bind Event Analyzer candles to the immediately preceding completed PT1M interval, exact current-price close, canonical BTC instrument, event identity, observation time, and bounded local provenance.
+- Reason: A formally valid but stale, unrelated, or temporally impossible record cannot satisfy an evidence or Risk gate.
+- Consequence: Incoherent Event evidence is invalid and `NO_TRADE`; impossible Risk ordering blocks allocation construction. Local provenance remains fixture coherence, not authoritative external market truth.
+
+### Fixed-decimal and Git Validation Are Bounded
+
+- Decision: Bound Event Analyzer atomic values to 24 digits and scales to `0..8`, reject unsafe bigint conversions, keep body-pressure shares exactly complementary, and validate staged and unstaged whitespace separately.
+- Reason: Non-finite numeric output and staged-diff validation blind spots undermine deterministic review evidence.
+- Consequence: Unsafe calculations fail closed before output, JSON cannot silently convert non-finite values to `null`, and staged whitespace defects fail `alpha:validate`.
+
+## 2026-07-22 - Day14-T1 Capital Allocation Framework v1.0
+
+### Capital Allocation Is Downstream of Evidence and Risk
+
+- Decision: Add one deterministic construction boundary that requires a current Portfolio reference, a `READY` Fusion snapshot, an accepted Market Regime assessment, and a `CLEARED` or `CONSTRAINED` Risk assessment before constructing an immutable allocation recommendation.
+- Reason: Prediction or producer-specific evidence must never directly create an allocation. Allocation needs one auditable envelope without duplicating Portfolio, Evidence Fusion, Market Regime, or Risk authority.
+- Consequence: Missing, stale, contradictory, rejected, future-dated, or insufficient upstream state produces structured validation failure and no partial recommendation. Existing engines and source records remain unchanged.
+
+### V1 Standardizes Candidates but Does Not Rank or Size Them
+
+- Decision: Define bounded candidate metadata, optional integer-basis-point weight placeholders, `UNRANKED` priority, deterministic candidate-ID ordering, cash posture, avoid records, and review-oriented actions without an allocation algorithm.
+- Reason: Opportunity Ranking, weight optimization, leverage, and execution each require separate evidence, policy, validation, and ownership. Implementing them inside a foundation contract would hide authority and encourage premature coupling.
+- Consequence: `topCandidates` means eligible for later review, not scored winners. V1 never calculates a weight, score, probability, expected return, leverage ratio, order size, or trade.
+
+### Recommendation Authority Is Not Execution Authority
+
+- Decision: Mark every output `FRAMEWORK_ONLY_NOT_EXECUTION_AUTHORITY` and keep future Leverage Decision and Opportunity Ranking engines external and downstream.
+- Reason: A standardized recommendation is an analytical capital-allocation output, not an approved trade plan, owner approval, Portfolio mutation, broker order, or execution instruction.
+- Consequence: Portfolio System remains capital-state truth, Risk Engine retains constraint authority, and Decision/trade-plan, owner-approval, leverage, ranking, and execution integrations require separate milestones. No AI, API, provider, persistence, or runtime wiring is added.
+
+## 2026-07-21 - Day13-T3 Deterministic One-minute Candle Correction
+
+### Structured Candles Replace Coarse Momentum Authority
+
+- Decision: Add a bounded 5..30 candle `PT1M` input with exact UTC chronology and fixed-decimal OHLCV validation. Derive returns, direction streaks, body pressure, close location, range expansion, acceleration, relative volume, reversal risk, and richer momentum deterministically.
+- Reason: A real v0.1 test returned BUY UP while recent structure was reversing downward. The manually supplied UP label could not represent the weakening evidence and was incorrectly treated as adequate.
+- Consequence: Candle-derived momentum overrides manual momentum. Legacy momentum-only analysis remains visible for comparison but always returns `NO_TRADE`; malformed and insufficient candle evidence also fails closed.
+
+### Candle Influence Is Bounded and Still Uncalibrated
+
+- Decision: Apply versioned, capped candle contributions to the existing target-distance/time heuristic and clamp final output to 10%..90%. No single feature may create an extreme estimate.
+- Reason: Recent structure is relevant but one small window cannot establish a calibrated probability or guarantee the event outcome.
+- Consequence: Every assessment exposes the exact features, quality, contradictions, versions, and `calibrated: false`. Relative volume makes no absolute volume-unit claim, and missing volume contributes nothing.
+
+### Contradiction Blocks the Selected Side, Not Automatically Buys the Opposite
+
+- Decision: Require sufficient evidence, positive edge, acceptable market price, time, and no severe side contradiction for BUY. Up-to-down reversal blocks BUY UP; down-to-up reversal blocks BUY DOWN.
+- Reason: Capital protection requires refusing unstable evidence rather than mechanically flipping into an opposite position.
+- Consequence: `NO_TRADE` remains the fail-closed outcome. Decision, Risk, portfolio, brokerage, and execution authority remain unchanged.
+
+## 2026-07-21 - Day13-T2 Event Analyzer Console Prototype
+
+### Probability Is a Transparent Uncalibrated Test Heuristic
+
+- Decision: Implement one fixed-decimal BTC 15-minute heuristic from target distance, remaining time, and an explicit momentum classification. Preserve its versioned inputs, policy, formula, fingerprint, and `calibrated: false` disclosure.
+- Reason: The first executable workflow needs deterministic output without pretending that Alpha has historical calibration, a statistical model, provider evidence, or AI authority.
+- Consequence: The estimate may be compared with a caller-supplied binary contract price, but it is not a probability guarantee, expected return, or evidence that a strategy is profitable.
+
+### Recommendation Requires Edge and Remains Non-authoritative
+
+- Decision: High probability alone never produces `BUY`. `BUY` requires the selected contract's estimated fair value to exceed market price by the versioned minimum edge while enough time remains; small positive edge produces `HOLD`, and non-positive edge or too little time produces `NO_TRADE`.
+- Reason: Separating outcome likelihood from price paid prevents an expensive high-probability contract from appearing attractive merely because its event is likely.
+- Consequence: Profitability remains `NOT_EVALUATED`; fees, spread, slippage, liquidity, execution quality, sizing, Risk constraints, and portfolio effects are outside the calculation.
+
+### Console Output Does Not Bypass Evidence, Decision, or Risk
+
+- Decision: Treat every Day13-T2 result as `PROTOTYPE_ONLY_NOT_AUTHORIZED`. The console is an isolated test harness, not the Decision Engine, and does not consume live/provider data or issue execution instructions.
+- Reason: Alpha's “No Evidence, No Decision” and capital-control boundaries remain authoritative even when a prototype emits the requested analytical vocabulary.
+- Consequence: A future actionable workflow must separately supply reviewed event evidence through Evidence Fusion, Decision evaluation, Risk evaluation, owner approval, and execution controls. Day13-T2 adds none of those integrations.
+
 ## 2026-07-21 - Day13-T1 Evidence Fusion Layer Foundation
 
 ### Future Decision and Risk Consumers Depend on Fusion, Not Producers

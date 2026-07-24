@@ -1,11 +1,42 @@
 # Alpha Changelog
 
-## 2026-07-21 - Day13-T1 Evidence Fusion Layer Foundation (Pending Owner Review)
+## 2026-07-23 - Day13/Day14 Owner-review Corrections (Pending Owner Review)
+
+- Added recursive declared-field enforcement and explicit allow-listed construction across Capital Allocation requests, candidates, evidence, weights, cash, traces, and upstream read models.
+- Bound every eligible candidate to the exact gated Fusion assessment/snapshot, restricted future evidence sources to `extensionEvidence`, enforced Fusion/Regime-before-Risk ordering, and required unique explicit constraints for `CONSTRAINED` Risk.
+- Bound Event Analyzer candles to canonical BTC/event/observation provenance, the immediately preceding completed PT1M interval, and exact scale-normalized current price; added 24-digit/scale-8 fixed-decimal limits, safe bigint conversion, finite-output enforcement, and exactly complementary body pressure.
+- Added separate staged and unstaged whitespace checks to the validation bundle and corrected staged EOF whitespace defects.
+- Expanded focused validation to 80/80 Event Analyzer tests and 75/75 Capital Allocation tests; complete registered validation passes 1549/1549.
+- Milestones remain uncommitted and pending a new owner review; no Day15, live data, network, provider, credential, AI, persistence, ranking, leverage, sizing, Portfolio mutation, broker, order, or execution work was added.
+
+## 2026-07-22 - Day14-T1 Capital Allocation Framework v1.0 (Pending Owner Review)
+
+- Added immutable versioned allocation-candidate, recommendation, Portfolio-reference, Fusion, Market Regime, Risk, cash, evidence-reference, trace, and validation contracts.
+- Added a deterministic construction boundary that fails closed unless evidence is ready/current/accepted, regime evidence is sufficient, Portfolio state is current, and Risk is cleared or constrained.
+- Preserved candidates as `UNRANKED`, treated ticker as display metadata beside canonical identity, and validated optional weight placeholders without calculating weights, scores, leverage, expected return, orders, or execution.
+- Added 49 focused tests, validation registration, and the Capital Allocation Framework specification; complete registered validation passes 1501/1501 without modifying Python Portfolio/Risk logic or adding AI, provider/API, persistence, broker, or runtime wiring.
+
+## 2026-07-21 - Day13-T3 Event Analyzer One-minute Candle Upgrade (Pending Owner Review)
+
+- Added a bounded immutable PT1M candle-series contract and deterministic recent/short/medium returns, direction streaks, body pressure, close-location, range-expansion, acceleration, relative-volume, reversal-risk, and richer momentum features.
+- Corrected the real 66621.97 target / 66607.57 current / 842-second bearish-reversal shape so it returns `NO_TRADE` instead of BUY UP.
+- Downgraded legacy manual-momentum evidence to `LEGACY_COARSE` and fail-closed `NO_TRADE`; malformed, insufficient, unstable, or side-contradictory candle evidence also blocks trading.
+- Added reviewed bullish, bearish-reversal, neutral/choppy, and malformed local fixtures plus file-based CLI and help behavior without OCR, provider/API, AI, credentials, persistence, polling, portfolio mutation, brokerage, or execution.
+- Expanded the focused Event Analyzer suite to 58/58; complete registered validation passes 1452/1452.
+
+## 2026-07-21 - Day13-T2 Event Analyzer Console Prototype (Pending Owner Review)
+
+- Added immutable versioned BTC 15-minute event input, policy, validation, probability, fair-value, edge, recommendation, reason, and risk-disclosure contracts.
+- Added a deterministic fixed-decimal heuristic over target distance, remaining time, and explicit momentum plus a console argument adapter for YES/NO and UP/DOWN contract prices.
+- Required edge and minimum remaining time in addition to probability before `BUY`; profitability remains unevaluated and every result remains prototype-only without Decision, Risk, owner-approval, or execution authority.
+- Added 42 focused tests, validation registration, and the Event Analyzer Console specification; complete registered validation passes 1436/1436 without UI, provider/API access, AI, credentials, persistence, portfolio mutation, Paper Trading, brokerage, or execution.
+
+## 2026-07-21 - Day13-T1 Evidence Fusion Layer Foundation
 
 - Added immutable `EvidenceFusionInput`, policy, assessment, snapshot, quality, completeness, freshness, issue, contradiction, provenance, and trace contracts.
 - Added the explicit Broad Market Evidence source adapter and deterministic fail-closed composition for missing, incomplete, stale, future-dated, contradictory, schema-incompatible, and insufficiently referenced evidence.
 - Added deterministic snapshot fingerprinting and Unified Audit translation without scoring, probability, regime, recommendation, Decision/Risk wiring, AI, network, provider, persistence, trading, or execution behavior.
-- Added 32 focused tests, validation registration, and the Evidence Fusion specification. The milestone remains uncommitted pending owner review.
+- Added 32 focused tests, validation registration, and the Evidence Fusion specification. The milestone was committed and pushed as `7c670acd7a934ece5e6cbee844a9f5aa121c82d0`.
 
 ## 2026-07-21 - Day12-T1 Broad Market Evidence Foundation
 

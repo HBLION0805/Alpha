@@ -89,10 +89,13 @@ D6-T2 defines this architecture in `docs/PRODUCTION_PERSISTENCE_RECOVERY_SPECIFI
 
 Responsible for:
 
-- Capital allocation
+- Authoritative portfolio and cash state
+- Applying only separately approved future capital-state changes
 - Portfolio tracking
 - Cash management
 - Asset distribution
+
+The Portfolio System does not calculate the Day14 Capital Allocation Recommendation. The Capital Allocation Framework reads an immutable portfolio reference and cannot mutate Portfolio state.
 
 ---
 
@@ -560,6 +563,39 @@ Day13-T1 adds [Evidence Fusion](specifications/EVIDENCE_FUSION.md) as the stable
 V1 accepts only `BroadMarketEvidenceAssessment` through a dedicated adapter. Fusion preserves source assessment, snapshot, policy, rule, feature, evidence, and audit references without embedding benchmark observations or provider-native data. Missing, partial, stale, future-dated, contradictory, schema-incompatible, or untraceable required evidence produces a blocked snapshot. Only complete, current, policy-compatible evidence produces `READY`.
 
 Fusion does not score evidence, calculate probability, classify a regime, recommend action, or mutate another domain. Future Decision and Risk integrations may consume only a reviewed Fusion Snapshot, never raw benchmark observations. Day13-T1 adds no consumer wiring, live data, AI, persistence, provider, HTTP, trading, or execution behavior.
+
+## Event Analyzer Console Prototype
+
+Day13-T2 adds an isolated [Event Analyzer Console](specifications/EVENT_ANALYZER_CONSOLE.md): `explicit BTC 15-minute test inputs -> fixed-decimal validation -> deterministic uncalibrated heuristic -> fair value and edge -> prototype recommendation plus risk explanation`.
+
+The prototype supports only YES/NO or UP/DOWN views of one BTC 15-minute target event. Day13-T3 adds a bounded local `PT1M` candle-series boundary and deterministic returns, candle direction, body pressure, close location, range expansion, acceleration, relative-volume, reversal, and richer momentum features. Candle timestamps are completed interval starts; the final candle, observation time, exact scale-normalized current price, canonical instrument, event identity, and bounded local provenance must agree. Malformed, stale, untraceable, insufficient, legacy-only, unstable, or side-contradictory evidence produces `NO_TRADE`.
+
+High probability alone cannot produce `BUY`; sufficient candle evidence, positive edge, acceptable market price, no severe contradiction, and minimum remaining time are separate gates. Prediction accuracy remains separate from profitability, which is explicitly `NOT_EVALUATED` because fees, liquidity, execution, sizing, portfolio state, and outcome are absent.
+
+The console is not the Decision Engine and does not bypass Evidence Fusion or Risk. Every output is `PROTOTYPE_ONLY_NOT_AUTHORIZED`; future production consumption requires a separate evidence, Decision, Risk, owner-approval, and execution design. Local structured JSON is preferred to screenshots because deterministic validation requires exact values and timestamps. No UI, OCR, provider, API, live data, AI, persistence, portfolio mutation, order, or execution path is present.
+
+## Capital Allocation Framework v1.0
+
+Day14-T1 adds the provider-independent [Capital Allocation Framework](specifications/CAPITAL_ALLOCATION_FRAMEWORK.md) construction boundary: `current Portfolio reference + READY Fusion + accepted Market Regime + completed Risk gate -> deterministic validation -> immutable unranked allocation recommendation`.
+
+The framework owns the standardized `AllocationCandidate` and `AllocationRecommendation` envelopes, not their authoritative upstream facts. Portfolio System remains portfolio truth, Evidence Fusion remains evidence-gate truth, Market Regime remains environment truth, and Risk Engine remains risk authority. Runtime objects are recursively allow-listed, eligible candidates bind to the exact gated Fusion record, and Risk must be evaluated no earlier than Fusion and Regime; `CONSTRAINED` Risk requires explicit unique constraints. Candidate ticker is display metadata beside a required canonical instrument ID. Confidence means evidence strength, never probability.
+
+V1 constructs only an eligible-for-review recommendation. It does not rank candidates, calculate suggested weights, optimize a portfolio, decide leverage, produce a trade plan, mutate Portfolio state, or authorize execution. `topCandidates` remains deterministically ordered by Alpha candidate ID and every candidate priority is `UNRANKED`. Suggested weight is an optional validated basis-point placeholder supplied by a future reviewed workflow, never calculated by v1.
+
+Future Leverage Decision and Opportunity Ranking engines remain external downstream extension points. Earnings Research and Capital Rotation may become upstream evidence only through explicit versioned references or adapters. Event Analyzer output is not accepted as upstream allocation authority. No AI, provider, API, persistence, Dashboard, broker, order, or execution path is added.
+
+Capital allocation pipeline:
+
+```text
+Reviewed Market Evidence
+  -> Evidence Fusion
+  -> Risk Engine Review
+  -> Capital Allocation Framework
+  -> immutable unranked recommendation
+  -> future Leverage Decision Engine (external)
+  -> future Opportunity Ranking Engine (external)
+  -> future owner-approved final allocation
+```
 
 ---
 

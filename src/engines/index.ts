@@ -30,3 +30,5 @@ export * from "./market-data-provider-composition";
 export * from "./market-regime";
 export * from "./broad-market-evidence";
 export * from "./evidence-fusion";
+export * from "./event-analyzer";
+export * from "./capital-allocation";

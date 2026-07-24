@@ -1,14 +1,14 @@
 # Alpha Handoff
 
 Date:
-2026-07-21
+2026-07-22
 
 Project Stage:
-Day12-T1 is committed; Day13-T1 Evidence Fusion foundation awaits owner review
+Day13-T1 is committed; Day13-T2/T3 and Day14-T1 await owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `35cf0398bd9633dc68063397cbc589edeb9f83c4` on clean `main`, equal to `origin/main` before Day13-T1.
+Verified baseline: `7c670acd7a934ece5e6cbee844a9f5aa121c82d0` on clean `main`, equal to `origin/main` before Day13-T2.
 
 Day 7 completed:
 
@@ -23,7 +23,7 @@ Architecture Checkpoint 1 selected a narrow deterministic sequence. Day 8, Day 9
 
 Day11-T2 is committed and adds a provider-independent deterministic Market Regime snapshot, policy, engine, assessment, and Unified Audit translation. Primary price structure remains separate from secondary conditions; distribution and accumulation require verified volume-unit and breadth evidence. The layer does not fetch data, invoke AI, emit trade signals, alter Risk/Decision/Portfolio state, or execute anything. See `docs/specifications/MARKET_REGIME_ENGINE.md`.
 
-Day12-T1 is committed and composes reviewed multi-benchmark canonical observations into immutable fixed-decimal evidence facts and explicit quality before future Market Regime evaluation. Day13-T1 now adds a provider-neutral Fusion input adapter, versioned source policy, and immutable fail-closed snapshot for future Decision/Risk consumers. It accepts only Broad Market Evidence and remains uncommitted pending owner review. A separately authorized live smoke request remains optional and independent; live Canonical Bar acceptance remains blocked by the official equity-volume unit evidence gate regardless of transport success.
+Day12-T1 is committed and composes reviewed multi-benchmark canonical observations into immutable fixed-decimal evidence facts and explicit quality before future Market Regime evaluation. Day13-T1 is committed and adds a provider-neutral Fusion input adapter, versioned source policy, and immutable fail-closed snapshot for future Decision/Risk consumers. Day13-T2/T3 adds an isolated deterministic BTC 15-minute Event Analyzer console prototype plus bounded PT1M candle correction. Day14-T1 adds an immutable Capital Allocation Recommendation construction boundary after current Portfolio, ready Fusion, accepted Regime, and completed Risk inputs. D13-D14-CORRECTION-1 closes the initial owner-review findings through provenance/time/price coherence, bounded numeric conversion, recursive declared-field enforcement, exact Fusion binding, Risk ordering, constrained-risk requirements, and staged-diff validation. The local milestones remain uncommitted pending a new owner review and add no execution authority.
 
 ## Day 6 Milestone Review
 
@@ -283,16 +283,18 @@ Current TypeScript foundations:
 - Evidence Assessment, Strategy Review, Minimal Knowledge Approval, Market Data Layer, Provider Registry, Canonical Instrument, Canonical Quote, and Canonical Bar foundations: completed and pushed
 - Market Regime Engine: deterministic provider-independent snapshot, fixed-decimal features, primary/secondary classification, policy, evidence reasons, and Unified Audit translation completed and pushed; no signal or action authority
 - Broad Market Evidence: explicit reviewed ETF/index membership, immutable canonical-observation snapshots, fixed-decimal benchmark features, deterministic composition quality, provenance, and Unified Audit translation completed and pushed; no regime or action authority
-- Evidence Fusion: provider-neutral source input, Broad Market Evidence adapter, versioned source policy, immutable fail-closed snapshot, provenance, and Unified Audit translation implemented locally for owner review; no score, regime, recommendation, or action authority
+- Evidence Fusion: provider-neutral source input, Broad Market Evidence adapter, versioned source policy, immutable fail-closed snapshot, provenance, and Unified Audit translation completed and pushed; no score, regime, recommendation, or action authority
+- Event Analyzer Console: deterministic fixed-decimal BTC 15-minute prototype with bounded PT1M candle features, exact current-price/time/context/provenance binding, safe numeric limits, richer momentum/reversal risk, an uncalibrated estimate, fair value, edge, non-authoritative recommendation, and risk disclosure implemented locally for owner review
+- Capital Allocation Framework: deterministic provider-independent construction of immutable, recursively allow-listed, unranked allocation recommendations after exact Portfolio/Fusion/Regime/Risk gates; candidate Fusion evidence is identity-bound and Risk ordering/constraints fail closed; no scoring, leverage, portfolio mutation, or execution authority
 
 Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. Day 7 product surfaces and links are TypeScript read models only. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
 
 ## Validation Status
 
-The committed Day12-T1 validation baseline completed successfully at 1362/1362. Day13-T1 validation completed successfully:
+The committed Day13-T1 validation baseline completed successfully at 1394/1394. Combined Day13-T2/T3 validation completed successfully:
 
 - TypeScript strict typecheck passed
-- Registered validation tests: 1394/1394 passed, including 32/32 Evidence Fusion, 40/40 Broad Market Evidence, 29/29 Market Regime, 26/26 Evidence Engine, 35/35 Strategy Review, 46/46 Knowledge Approval, 28/28 Canonical Instrument, 36/36 Canonical Quote, 55/55 Canonical Bar, 45/45 Market Data Layer, 28/28 Provider Registry, 12/12 Provider Composition, 39/39 Twelve Data live-smoke foundation, 15/15 TypeScript Python-integration client, 11/11 Python-side integration, 5/5 Validation Reporting, and all existing deterministic learning, historical, decision, and AI infrastructure suites
+- Registered validation tests: 1452/1452 passed, including 58/58 Event Analyzer, 32/32 Evidence Fusion, 40/40 Broad Market Evidence, 29/29 Market Regime, 26/26 Evidence Engine, 35/35 Strategy Review, 46/46 Knowledge Approval, 28/28 Canonical Instrument, 36/36 Canonical Quote, 55/55 Canonical Bar, 45/45 Market Data Layer, 28/28 Provider Registry, 12/12 Provider Composition, 39/39 Twelve Data live-smoke foundation, 15/15 TypeScript Python-integration client, 11/11 Python-side integration, 5/5 Validation Reporting, and all existing deterministic learning, historical, decision, and AI infrastructure suites
 - Focused Python integration tests: 11/11 passed
 - Provider SDK scan clean; network scan allows only the reviewed Twelve Data one-shot transport and found no unapproved implementation
 - Credential and secret scan clean
@@ -301,7 +303,9 @@ The committed Day12-T1 validation baseline completed successfully at 1362/1362. 
 - Secret-metadata and merge-marker scans clean
 - `git diff --check` passed
 
-The Day13-T1 working tree passed documentation links, paths, fences, required files, provider/network/credential safety, runtime-data, Python-change, merge-marker, and `git diff --check` validation before owner review.
+The Day13-T2/T3 working tree passed documentation links, paths, fences, required files, provider/network/credential safety, runtime-data, Python-change, merge-marker, and Git whitespace validation. D13-D14-CORRECTION-1 additionally requires separate unstaged and staged whitespace checks so an all-staged milestone cannot produce a false clean result. It adds no Python, live data, provider, network, credential, AI, persistence, UI, portfolio mutation, order, or execution behavior.
+
+D13-D14-CORRECTION-1 expands focused validation to 80/80 Event Analyzer tests and 75/75 Capital Allocation Framework tests and raises the complete registered working-tree validation result to 1549/1549. Strict TypeScript, all existing regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, separate staged/unstaged whitespace checks, and the complete HEAD-relative whitespace check pass. The correction adds no Python changes, runtime wiring, AI, provider/API call, persistence, ranking, leverage, portfolio mutation, broker, order, or execution behavior.
 
 ## Git Milestones
 
@@ -334,6 +338,7 @@ The Day13-T1 working tree passed documentation links, paths, fences, required fi
 - `b73387c2b9499db9c5b263d36fcc8b0d8790abda` — Safe Live Smoke Transport Foundation
 - `f51b3251526535cb9f7255e01d3299d0587e1d99` — Market Regime Engine Foundation
 - `35cf0398bd9633dc68063397cbc589edeb9f83c4` — Broad Market Evidence Foundation
+- `7c670acd7a934ece5e6cbee844a9f5aa121c82d0` — Evidence Fusion Layer Foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -385,4 +390,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review and release of Day13-T1 Evidence Fusion Layer Foundation. Do not wire Fusion to Market Regime, Decision, Risk, startup, Dashboard, Portfolio, or execution until a separate consumer-integration design is approved. The next task should define one narrow consumer boundary or add one separately approved evidence-source adapter; it should not add live retrieval or trading behavior.
+New owner review of the corrected combined uncommitted Day13-T2/T3 Event Analyzer work and Day14-T1 Capital Allocation Framework after focused and complete validation. Do not treat Event Analyzer output or an Allocation Recommendation as Decision, owner, Portfolio-mutation, broker, or execution authorization. Future Opportunity Ranking, leverage, final-allocation approval, and runtime integrations remain separate tasks.

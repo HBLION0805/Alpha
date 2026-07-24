@@ -50,3 +50,5 @@ export * from "./MarketDataProviderComposition";
 export * from "./MarketRegime";
 export * from "./BroadMarketEvidence";
 export * from "./EvidenceFusion";
+export * from "./EventAnalyzer";
+export * from "./CapitalAllocation";
