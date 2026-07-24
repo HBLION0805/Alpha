@@ -269,12 +269,22 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: late or misaligned plans, rewritten identities, duplicate/tampered histories, missing observations, and unsettled outcomes remain explicit; focused and complete validation pass; owner reviews before release.
 
 7. **Day15-T3B4 — Local Collection Operator Surface**
-   - Status: implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `95adef5849f5de67a471b720130fa6b7061f1847`.
    - Scope: explicit exclusive `freeze-plan` persistence plus verified, read-only `progress` inspection over one existing Day15-T2 ledger.
    - Excludes: network/provider access, automatic timing or collection, polling, scheduling, repair, sample selection, model, probability, recommendation, sizing, broker, order, or execution.
    - Exit criteria: artifact tampering, overwrite attempts, missing/corrupt ledgers, unsafe store identities, and invalid command options fail closed; focused and complete validation pass; owner reviews before release.
 
-8. **Day15-T3C — Baseline Probability Research**
+8. **Day15-T3B5 — Real Collection Source Architecture and Admission**
+   - Status: architecture implemented locally and pending owner review.
+   - Scope: source-authority classes, exact Robinhood-to-exchange market mapping, provider-neutral adapter requirements, credential isolation, bounded live-read gates, and staged release sequencing.
+   - Excludes: provider SDK, credential, network call, private endpoint, browser/mobile automation, polling, scheduling, persistence, model, probability, recommendation, sizing, broker, order, or execution.
+   - Exit criteria: cross-venue ambiguity fails closed; private Robinhood automation is prohibited; T3B6-T3B10 each retain separate implementation and owner-approval gates; complete validation passes.
+
+9. **Day15-T3B6 — Provider-Neutral Event Contract Source Contracts**
+   - Status: planned after T3B5 owner approval.
+   - Intended scope: deterministic source capabilities, canonical external market identities, exact mapping evidence, provenance times, immutable fingerprints, sanitized errors, and fixture/live execution modes without a provider or network.
+
+10. **Day15-T3C — Baseline Probability Research**
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 

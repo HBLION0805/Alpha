@@ -49,6 +49,7 @@ const requiredFiles = [
   "docs/specifications/RESEARCH_SHADOW_DATASET_ASSEMBLY.md",
   "docs/specifications/FORWARD_SHADOW_COLLECTION_CONTROL.md",
   "docs/specifications/FORWARD_SHADOW_COLLECTION_OPERATOR.md",
+  "docs/specifications/EVENT_CONTRACT_COLLECTION_SOURCE_ARCHITECTURE.md",
   "package.json",
   "tsconfig.json"
 ];

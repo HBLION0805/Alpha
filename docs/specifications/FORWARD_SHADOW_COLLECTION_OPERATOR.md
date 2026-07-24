@@ -1,6 +1,6 @@
 # Forward Shadow Collection Operator v1
 
-Status: Day15-T3B4 implemented locally and pending owner review.
+Status: Day15-T3B4 owner approved, committed, and pushed as `95adef5849f5de67a471b720130fa6b7061f1847`.
 
 Schema: reuses Forward Shadow Collection Control `1.0`
 

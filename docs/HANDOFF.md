@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B3 Forward Shadow Collection Control is committed and pushed; Day15-T3B4 Local Collection Operator Surface is implemented locally and awaits owner review
+Day15-T3B4 Local Collection Operator Surface is committed and pushed; Day15-T3B5 Real Collection Source Architecture is implemented locally and awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `f3effb86c04a901df804de3cf79e1d9094736683` on `main`, equal to `origin/main` before Day15-T3B4.
+Verified baseline: `95adef5849f5de67a471b720130fa6b7061f1847` on `main`, equal to `origin/main` before Day15-T3B5.
 
 Day 7 completed:
 
@@ -37,7 +37,11 @@ Day15-T3B2 adds a narrow offline assembly adapter from explicit frozen-plan bind
 
 Day15-T3B3 adds deterministic continuous future-plan creation and a read-only progress audit over Day15-T2 histories. It reports all upcoming, missing, captured-unsettled, and settled candidates without selecting a sample. Caller-supplied timestamps prove local coherence only. The owner approved and pushed it as `f3effb86c04a901df804de3cf79e1d9094736683`.
 
-Day15-T3B4 locally adds an explicit operator surface for exclusive one-time plan freezing and verified read-only progress inspection. It verifies the complete plan artifact before opening one already-existing T2 ledger, never creates a missing ledger, and fails closed on altered plans or corrupt storage. It adds no provider/network access, polling, scheduling, automatic capture, model, recommendation, sizing, order, or execution authority.
+Day15-T3B4 adds an explicit operator surface for exclusive one-time plan freezing and verified read-only progress inspection. It verifies the complete plan artifact before opening one already-existing T2 ledger, never creates a missing ledger, and fails closed on altered plans or corrupt storage. It adds no provider/network access, polling, scheduling, automatic capture, model, recommendation, sizing, order, or execution authority.
+
+The owner approved and pushed Day15-T3B4 as `95adef5849f5de67a471b720130fa6b7061f1847`.
+
+Day15-T3B5 locally defines the source-admission architecture required before scalable real collection. Robinhood platform evidence, exchange-native evidence, official settlement-reference values, and operator evidence retain separate identities and authority. Any exchange source must prove an exact reviewed Robinhood contract mapping; matching display text, cutoff, or threshold is insufficient. Undocumented Robinhood endpoints and authenticated brokerage-session automation are prohibited. T3B5 adds no provider SDK, credential, network request, polling, scheduler, persistence, model, recommendation, order, or execution behavior.
 
 ## Day 6 Milestone Review
 
@@ -336,6 +340,8 @@ Day15-T3B3 adds 16/16 focused Forward Shadow Collection Control tests and raises
 
 Day15-T3B4 adds 10/10 focused Local Collection Operator tests and raises complete registered validation to 1752/1752. Strict TypeScript and the complete working-tree validation bundle pass.
 
+Day15-T3B5 changes architecture and documentation only. It adds no test cases, so complete registered validation remains 1752/1752.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -375,6 +381,7 @@ Day15-T3B4 adds 10/10 focused Local Collection Operator tests and raises complet
 - `8f722fb1d527cf00a6b01ec74cbac28f1b56d9fd` — Research Dataset Qualification and Temporal Split
 - `3e03e698657dc532e89f088983fa331de8f81c2a` — Research Shadow Dataset Assembly
 - `f3effb86c04a901df804de3cf79e1d9094736683` — Forward Shadow Collection Control
+- `95adef5849f5de67a471b720130fa6b7061f1847` — Local Forward Collection Operator
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -426,4 +433,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B4 after focused and complete validation. If approved, choose the timing and duration of the first real forward plan before running the local `freeze-plan` command; development and tests have not created one. Continue using the existing explicit manual capture/settle path and `progress` inspection. Do not begin Day15-T3C probability research until a real dataset—not fixtures—independently qualifies.
+Owner review of Day15-T3B5 after complete validation. If approved, begin Day15-T3B6 provider-neutral event-contract source contracts and fixture-only validation without selecting a provider or adding network access. Do not run a live-read smoke, create a collection runner, freeze a real plan, or begin Day15-T3C probability research without the later explicit gates.

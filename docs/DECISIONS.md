@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B5 Real Collection Source Architecture
+
+### Cross-Venue Similarity Does Not Establish Contract Identity
+
+- Decision: Require exact reviewed Robinhood-to-exchange mapping across the exchange, market, contract, side semantics, instrument, window, threshold, evaluation, settlement source, and terms version before exchange data can support a platform observation.
+- Reason: Robinhood offers contracts through multiple exchanges, and visually similar events may differ in terms, venue liquidity, timing, or settlement.
+- Consequence: Matching titles, target prices, or cutoff times remain insufficient. Ambiguous mappings fail closed and cannot enter the T1/T2 research ledger.
+
+### Platform and Exchange Evidence Retain Separate Authority
+
+- Decision: Preserve Robinhood quote and fee-preview evidence separately from exchange-native order books, trades, and settlements.
+- Reason: A different venue's price or fee is not proof of what the operator could observe or trade on Robinhood.
+- Consequence: A future adapter cannot relabel exchange quotes as Robinhood quotes, infer Robinhood fees, or fill missing platform evidence.
+
+### Private Brokerage Automation Is Not a Collection Strategy
+
+- Decision: Prohibit undocumented Robinhood endpoints, reverse-engineered mobile traffic, browser/mobile automation with an authenticated brokerage session, and reuse of brokerage credentials.
+- Reason: These paths create material security, reliability, terms, and execution-safety risks before Alpha has a production secret or automation boundary.
+- Consequence: Future collection uses reviewed official sources and separately approved bounded transports. Live reads, scheduling, persistence, and a forward pilot remain independent owner decisions.
+
 ## 2026-07-24 - Day15-T3B4 Local Collection Operator Surface
 
 ### Frozen Plans Are Created Once and Reverified Before Use

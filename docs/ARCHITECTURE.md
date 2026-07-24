@@ -673,6 +673,14 @@ Day15-T3B4 adds an explicit local operator surface over T3B3. `freeze-plan` cons
 
 The operator surface uses strict option parsing, refuses missing or corrupt ledgers, and does not initialize or mutate ledger storage. It remains single-host development tooling with caller-owned paths, not a production persistence or hostile-filesystem sandbox. It adds no network, provider, credential, polling, scheduler, background capture, research-sample selection, model, recommendation, or execution authority. See [Forward Shadow Collection Operator](specifications/FORWARD_SHADOW_COLLECTION_OPERATOR.md).
 
+## Event Contract Collection Source Architecture
+
+Day15-T3B5 defines the admission boundary for future real event-contract evidence. Robinhood platform facts, exchange-native market facts, official settlement-reference values, and operator-captured evidence remain distinct source classes. A single observation may compose them only while preserving every source identity, record identity, timestamp, and authority.
+
+Because Robinhood may offer contracts from multiple exchanges, a future exchange adapter must prove an exact reviewed platform-to-exchange mapping across exchange, market, contract, side semantics, BTC instrument, event window, threshold, evaluation method, settlement source, and terms version. Similar titles, cutoffs, or target prices cannot establish identity. Exchange quotes cannot be relabeled as Robinhood quotes, and exchange fees cannot stand in for a Robinhood order preview.
+
+The staged release sequence requires provider-neutral source contracts, a fixture-only adapter, a separately approved bounded live-read smoke, collection-runner architecture, and only then a limited forward pilot. Undocumented Robinhood interfaces, authenticated brokerage-session automation, direct adapter-to-ledger writes, and any trading authority are prohibited. See [Event Contract Collection Source Architecture](specifications/EVENT_CONTRACT_COLLECTION_SOURCE_ARCHITECTURE.md).
+
 ---
 
 # Event Contract Framework

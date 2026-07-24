@@ -1,11 +1,19 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B4 Local Collection Operator Surface (Pending Owner Review)
+## 2026-07-24 - Day15-T3B5 Real Collection Source Architecture (Pending Owner Review)
+
+- Defined distinct Robinhood-platform, exchange-native, settlement-reference, and operator-evidence source classes for real BTC 15-minute research collection.
+- Required exact reviewed Robinhood-to-exchange market and contract mapping; matching display text, cutoff, or threshold alone cannot establish identity.
+- Prohibited undocumented Robinhood endpoints, authenticated brokerage-session automation, venue relabeling, fee substitution, and direct adapter-to-ledger mutation.
+- Defined separate provider-neutral contract, fixture adapter, bounded live-read, collection-runner, and forward-pilot approval gates without adding provider SDK, credential, network, polling, persistence, model, recommendation, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B4 Local Collection Operator Surface
 
 - Added an explicit local `freeze-plan` command that validates the canonical T3B3 request and creates one fingerprinted plan artifact without overwriting an existing file.
 - Added a local `progress` command that verifies the complete frozen artifact before reading one already-existing Day15-T2 ledger and emits the deterministic T3B3 audit.
 - Added strict command-option and store-identity checks plus fail-closed missing/corrupt-ledger behavior; progress never creates or mutates the ledger.
 - Added 10 focused tests without provider/network access, polling, scheduling, automatic capture, model, probability, recommendation, sizing, broker, order, or execution behavior.
+- Owner approved the milestone; it was committed and pushed as `95adef5849f5de67a471b720130fa6b7061f1847`.
 
 ## 2026-07-24 - Day15-T3B3 Forward Shadow Collection Control
 
