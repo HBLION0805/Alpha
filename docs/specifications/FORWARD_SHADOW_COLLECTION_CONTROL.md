@@ -1,6 +1,6 @@
 # Forward Shadow Collection Control v1
 
-Status: Day15-T3B3 implemented locally and pending owner review.
+Status: Day15-T3B3 owner approved, committed, and pushed as `f3effb86c04a901df804de3cf79e1d9094736683`.
 
 Schema: `1.0`
 

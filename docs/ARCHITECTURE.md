@@ -667,6 +667,12 @@ Day15-T3B3 adds a deterministic control surface before T3B2 assembly. It creates
 
 A separate read-only audit projects exact Day15-T2 histories into stable `UPCOMING`, `OVERDUE_MISSING`, `CAPTURED_UNSETTLED`, or `SETTLED_CANDIDATE` states. It lists every matching observation and settled candidate without selecting one; later T3B2 binding remains explicit. The caller-supplied creation time proves only local deterministic coherence, not an externally signed freeze time or guaranteed Robinhood listing. The boundary adds no scheduler, network, provider, persistence, automatic capture, model, recommendation, or execution behavior. See [Forward Shadow Collection Control](specifications/FORWARD_SHADOW_COLLECTION_CONTROL.md).
 
+## Forward Shadow Collection Operator
+
+Day15-T3B4 adds an explicit local operator surface over T3B3. `freeze-plan` constructs a verified plan from caller-authored JSON and creates one new artifact with exclusive file creation; it never overwrites an existing plan. `progress` reconstructs and verifies that artifact before opening one explicitly named, already-existing Day15-T2 ledger, then emits the unchanged T3B3 read-only audit.
+
+The operator surface uses strict option parsing, refuses missing or corrupt ledgers, and does not initialize or mutate ledger storage. It remains single-host development tooling with caller-owned paths, not a production persistence or hostile-filesystem sandbox. It adds no network, provider, credential, polling, scheduler, background capture, research-sample selection, model, recommendation, or execution authority. See [Forward Shadow Collection Operator](specifications/FORWARD_SHADOW_COLLECTION_OPERATOR.md).
+
 ---
 
 # Event Contract Framework

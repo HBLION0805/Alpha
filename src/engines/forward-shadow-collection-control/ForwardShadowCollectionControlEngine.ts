@@ -28,6 +28,7 @@ import { createResearchCollectionPlanFingerprint } from "../research-dataset-qua
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/u;
 const VERSION = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u;
+const FINGERPRINT = /^fnv1a64:[a-f0-9]{16}$/u;
 const MAX_EVENTS = 100_000;
 const INTERVAL_MILLISECONDS = 900_000;
 const PLAN_REQUEST_KEYS = ["schemaVersion", "planId", "planVersion", "createdAt", "firstCutoffAt", "eventCount"] as const;
@@ -35,6 +36,7 @@ const PROGRESS_INPUT_KEYS = ["schemaVersion", "auditId", "asOfTime", "collection
 const PLAN_KEYS = ["planId", "planVersion", "frozenAt", "instrumentId", "eventType", "intervalSeconds", "plannedEvents"] as const;
 const PLANNED_EVENT_KEYS = ["eventId", "cutoffAt"] as const;
 const HISTORY_KEYS = ["observation", "settlement", "sideOutcomes"] as const;
+const FROZEN_PLAN_KEYS = ["schemaVersion", "createdAt", "collectionPlan", "planFingerprint", "authorizationStatus", "deterministic", "readOnly", "fingerprint"] as const;
 
 export class ForwardShadowCollectionControlValidationError extends Error {
   public constructor(public readonly issues: readonly ForwardShadowCollectionIssue[]) {
@@ -187,6 +189,23 @@ export class ForwardShadowCollectionControlEngine {
     };
     return deepFreeze({ ...base, fingerprint: fingerprint(base) });
   }
+
+  public verifyPlanArtifact(value: unknown): FrozenForwardShadowCollectionPlan {
+    const shapeIssues = validateFrozenPlanShape(value);
+    if (shapeIssues.length > 0) throw new ForwardShadowCollectionControlValidationError(deepFreeze(shapeIssues));
+    const artifact = structuredClone(value) as FrozenForwardShadowCollectionPlan;
+    const issues: ForwardShadowCollectionIssue[] = [];
+    validatePlan(artifact.collectionPlan, issues);
+    const expectedPlanFingerprint = createResearchCollectionPlanFingerprint(artifact.collectionPlan);
+    const { fingerprint: declaredFingerprint, ...base } = artifact;
+    if (artifact.createdAt !== artifact.collectionPlan.frozenAt
+      || artifact.planFingerprint !== expectedPlanFingerprint
+      || declaredFingerprint !== fingerprint(base)) {
+      add(issues, ForwardShadowCollectionIssueCode.InvalidPlan, "$", null, "Frozen plan artifact content or fingerprint is invalid.");
+    }
+    if (issues.length > 0) throw new ForwardShadowCollectionControlValidationError(deepFreeze(issues.sort(compareIssues)));
+    return deepFreeze(artifact);
+  }
 }
 
 function validatePlanRequest(value: unknown): ForwardShadowCollectionIssue[] {
@@ -234,6 +253,31 @@ function validateProgressShape(value: unknown): ForwardShadowCollectionIssue[] {
     if (history.settlement !== null && (!isRecord(history.settlement) || typeof history.settlement.settlementId !== "string" || typeof history.settlement.fingerprint !== "string")) add(issues, ForwardShadowCollectionIssueCode.InvalidRecord, `histories.${String(index)}.settlement`, null, "Settlement must be null or carry identity and fingerprint.");
     if (!Array.isArray(history.sideOutcomes)) add(issues, ForwardShadowCollectionIssueCode.InvalidRecord, `histories.${String(index)}.sideOutcomes`, null, "Side outcomes must be an array.");
   });
+  return issues.sort(compareIssues);
+}
+
+function validateFrozenPlanShape(value: unknown): ForwardShadowCollectionIssue[] {
+  const issues: ForwardShadowCollectionIssue[] = [];
+  if (!isRecord(value)) return [issue(ForwardShadowCollectionIssueCode.InvalidRecord, "$", null, "Frozen plan artifact must be an object.")];
+  exactKeys(issues, value, FROZEN_PLAN_KEYS, "$");
+  if (value.schemaVersion !== FORWARD_SHADOW_COLLECTION_CONTROL_SCHEMA_VERSION
+    || value.authorizationStatus !== ForwardShadowCollectionAuthorizationStatus.ResearchOnly
+    || value.deterministic !== true || value.readOnly !== true) {
+    add(issues, ForwardShadowCollectionIssueCode.InvalidRecord, "$", null, "Frozen plan schema or authority is invalid.");
+  }
+  if (!timestamp(value.createdAt)) add(issues, ForwardShadowCollectionIssueCode.InvalidTimestamp, "createdAt", null, "Creation time must be canonical UTC.");
+  if (typeof value.planFingerprint !== "string" || !FINGERPRINT.test(value.planFingerprint)
+    || typeof value.fingerprint !== "string" || !FINGERPRINT.test(value.fingerprint)) {
+    add(issues, ForwardShadowCollectionIssueCode.InvalidRecord, "fingerprint", null, "Frozen plan fingerprints are invalid.");
+  }
+  const progressShape = validateProgressShape({
+    schemaVersion: FORWARD_SHADOW_COLLECTION_CONTROL_SCHEMA_VERSION,
+    auditId: "artifact-validation",
+    asOfTime: value.createdAt,
+    collectionPlan: value.collectionPlan,
+    histories: [],
+  });
+  issues.push(...progressShape);
   return issues.sort(compareIssues);
 }
 

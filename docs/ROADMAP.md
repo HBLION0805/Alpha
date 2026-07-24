@@ -263,12 +263,18 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: missing, unsettled, duplicated, cutoff-mismatched, audit-mismatched, feature-mixed, or tampered inputs fail closed; focused and complete validation pass; owner reviews before release.
 
 6. **Day15-T3B3 — Forward Shadow Collection Control**
-   - Status: implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `f3effb86c04a901df804de3cf79e1d9094736683`.
    - Scope: deterministic continuous BTC 15-minute plan creation before the first cutoff plus read-only per-event capture/settlement progress auditing against Day15-T2 histories.
    - Excludes: provider/network access, automatic collection, scheduling, persistence, sample selection, T3A audit creation, T3B qualification, model, probability, recommendation, sizing, broker, order, or execution.
    - Exit criteria: late or misaligned plans, rewritten identities, duplicate/tampered histories, missing observations, and unsettled outcomes remain explicit; focused and complete validation pass; owner reviews before release.
 
-7. **Day15-T3C — Baseline Probability Research**
+7. **Day15-T3B4 — Local Collection Operator Surface**
+   - Status: implemented locally and pending owner review.
+   - Scope: explicit exclusive `freeze-plan` persistence plus verified, read-only `progress` inspection over one existing Day15-T2 ledger.
+   - Excludes: network/provider access, automatic timing or collection, polling, scheduling, repair, sample selection, model, probability, recommendation, sizing, broker, order, or execution.
+   - Exit criteria: artifact tampering, overwrite attempts, missing/corrupt ledgers, unsafe store identities, and invalid command options fail closed; focused and complete validation pass; owner reviews before release.
+
+8. **Day15-T3C — Baseline Probability Research**
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 

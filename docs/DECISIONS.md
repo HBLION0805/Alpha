@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B4 Local Collection Operator Surface
+
+### Frozen Plans Are Created Once and Reverified Before Use
+
+- Decision: Persist a prospective plan only through exclusive file creation and reconstruct both its canonical plan fingerprint and outer artifact fingerprint before progress inspection.
+- Reason: Silent overwrite or trusting editable JSON would destroy the evidence that the declared population predated its outcomes.
+- Consequence: Existing outputs and altered artifacts fail closed. A changed plan requires a new explicit artifact path and valid identity/version.
+
+### Progress Inspection Must Not Initialize Collection State
+
+- Decision: Require an already-existing Day15-T2 ledger before constructing its repository and keep `progress` read-only.
+- Reason: A status command that silently creates an empty ledger can conceal an operator path error as zero collection coverage.
+- Consequence: Missing, corrupt, or unsafe ledger identities fail explicitly; capture and settlement remain separate reviewed T1/T2 commands.
+
 ## 2026-07-24 - Day15-T3B3 Forward Shadow Collection Control
 
 ### Plan Identity Is Derived Before Outcomes

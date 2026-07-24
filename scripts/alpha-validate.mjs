@@ -48,6 +48,7 @@ const requiredFiles = [
   "docs/specifications/RESEARCH_DATASET_QUALIFICATION.md",
   "docs/specifications/RESEARCH_SHADOW_DATASET_ASSEMBLY.md",
   "docs/specifications/FORWARD_SHADOW_COLLECTION_CONTROL.md",
+  "docs/specifications/FORWARD_SHADOW_COLLECTION_OPERATOR.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -97,6 +98,7 @@ const aggregateTestFiles = [
   "src/engines/research-dataset-qualification/ResearchDatasetQualificationEngine.test.ts",
   "src/engines/research-shadow-dataset-assembly/ResearchShadowDatasetAssemblyEngine.test.ts",
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlEngine.test.ts",
+  "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",

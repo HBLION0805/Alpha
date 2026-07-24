@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B2 Research Shadow Dataset Assembly is committed and pushed; Day15-T3B3 Forward Shadow Collection Control is implemented locally and awaits owner review
+Day15-T3B3 Forward Shadow Collection Control is committed and pushed; Day15-T3B4 Local Collection Operator Surface is implemented locally and awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `3e03e698657dc532e89f088983fa331de8f81c2a` on `main`, equal to `origin/main` before Day15-T3B3.
+Verified baseline: `f3effb86c04a901df804de3cf79e1d9094736683` on `main`, equal to `origin/main` before Day15-T3B4.
 
 Day 7 completed:
 
@@ -35,7 +35,9 @@ Day15-T3B adds the next research gate: one prospective continuous BTC 15-minute 
 
 Day15-T3B2 adds a narrow offline assembly adapter from explicit frozen-plan bindings plus exact settled Day15-T2 ledger histories and recomputed T3A audit inputs into canonical T3B qualification input. Every audit must contain the exact bound observation identity and fingerprint. The owner approved and pushed it as `3e03e698657dc532e89f088983fa331de8f81c2a`.
 
-Day15-T3B3 locally adds deterministic continuous future-plan creation and a read-only progress audit over Day15-T2 histories. It reports all upcoming, missing, captured-unsettled, and settled candidates without selecting a sample. Caller-supplied timestamps prove local coherence only. It adds no provider/network access, automatic collection, scheduling, persistence, model, recommendation, sizing, order, or execution authority.
+Day15-T3B3 adds deterministic continuous future-plan creation and a read-only progress audit over Day15-T2 histories. It reports all upcoming, missing, captured-unsettled, and settled candidates without selecting a sample. Caller-supplied timestamps prove local coherence only. The owner approved and pushed it as `f3effb86c04a901df804de3cf79e1d9094736683`.
+
+Day15-T3B4 locally adds an explicit operator surface for exclusive one-time plan freezing and verified read-only progress inspection. It verifies the complete plan artifact before opening one already-existing T2 ledger, never creates a missing ledger, and fails closed on altered plans or corrupt storage. It adds no provider/network access, polling, scheduling, automatic capture, model, recommendation, sizing, order, or execution authority.
 
 ## Day 6 Milestone Review
 
@@ -332,6 +334,8 @@ Day15-T3B2 adds 10/10 focused Research Shadow Dataset Assembly tests and raises 
 
 Day15-T3B3 adds 16/16 focused Forward Shadow Collection Control tests and raises complete registered validation to 1742/1742. Strict TypeScript and the complete working-tree validation bundle pass.
 
+Day15-T3B4 adds 10/10 focused Local Collection Operator tests and raises complete registered validation to 1752/1752. Strict TypeScript and the complete working-tree validation bundle pass.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -370,6 +374,7 @@ Day15-T3B3 adds 16/16 focused Forward Shadow Collection Control tests and raises
 - `4c9ef2dfcecb8ce8623b4629df6f5a2d55d041f4` — Research Integrity and Leakage Prevention
 - `8f722fb1d527cf00a6b01ec74cbac28f1b56d9fd` — Research Dataset Qualification and Temporal Split
 - `3e03e698657dc532e89f088983fa331de8f81c2a` — Research Shadow Dataset Assembly
+- `f3effb86c04a901df804de3cf79e1d9094736683` — Forward Shadow Collection Control
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -421,4 +426,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B3 after focused and complete validation. If approved, preserve one real forward plan before its first cutoff and use the existing manual capture/settle path while monitoring progress. Do not begin Day15-T3C probability research until a real dataset—not fixtures—independently qualifies.
+Owner review of Day15-T3B4 after focused and complete validation. If approved, choose the timing and duration of the first real forward plan before running the local `freeze-plan` command; development and tests have not created one. Continue using the existing explicit manual capture/settle path and `progress` inspection. Do not begin Day15-T3C probability research until a real dataset—not fixtures—independently qualifies.
