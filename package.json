@@ -32,6 +32,7 @@
     "test:evidence-fusion": "tsx src/engines/evidence-fusion/EvidenceFusionEngine.test.ts",
     "test:event-analyzer": "tsx src/engines/event-analyzer/EventAnalyzerEngine.test.ts",
     "test:capital-allocation": "tsx src/engines/capital-allocation/CapitalAllocationFramework.test.ts",
+    "test:event-contract-observation": "tsx src/engines/event-contract-observation/EventContractObservationEngine.test.ts",
     "event-analyzer": "tsx scripts/event-analyzer-console.mjs",
     "test:twelve-data-parser": "tsx src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
     "test:twelve-data-validator": "tsx src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",

@@ -597,6 +597,27 @@ Reviewed Market Evidence
   -> future owner-approved final allocation
 ```
 
+## BTC Event Contract Observation Foundation
+
+Day15-T1 adds the first normalized event-market fact boundary:
+
+```text
+owner-supplied Robinhood terms
+  + declared BRTI reference-price observation
+  + exact UP/DOWN quotes
+  + exact UP/DOWN fee previews
+  + bounded evidence identities
+  -> strict validation and chronology
+  -> exact fee arithmetic
+  -> immutable observation record
+```
+
+The exchange contract terms remain settlement truth, the declared settlement source remains reference-price truth, and Robinhood/exchange order previews remain cost truth. The observation boundary owns only the normalized point-in-time capture, deterministic maximum-profit arithmetic, and fee-inclusive break-even probability. It does not estimate the event outcome.
+
+Every nested object is allow-listed. BTC instrument identity, 15-minute window, evaluation method, threshold operator, trading close, evaluation time, reference-price freshness, quote freshness, order-preview freshness, quote-to-preview identity, subtotal, fees, total cost, payout, and evidence type/source/time are validated fail closed. Both UP and DOWN sides are mandatory and are not forced to sum to one dollar.
+
+Every result is `OBSERVATION_ONLY_NOT_TRADE_AUTHORITY`. Day15-T1 adds no calibrated model, recommendation, expected value, sizing, Prediction Log, Trade Outcome Log, persistence, live Robinhood/exchange/BRTI adapter, API, network, credential, OCR, screenshot ingestion, polling, Dashboard, Paper Trading, broker, order, or execution behavior. See [BTC Event Contract Observation](specifications/EVENT_CONTRACT_OBSERVATION.md).
+
 ---
 
 # Event Contract Framework

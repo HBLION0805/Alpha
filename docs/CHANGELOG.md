@@ -1,13 +1,20 @@
 # Alpha Changelog
 
-## 2026-07-23 - Day13/Day14 Owner-review Corrections (Pending Owner Review)
+## 2026-07-23 - Day15-T1 BTC Event Contract Observation (Pending Owner Review)
+
+- Added immutable BTC 15-minute contract, settlement, reference-price, UP/DOWN quote, order-fee-preview, evidence, derived-economics, validation, and policy contracts.
+- Added strict recursive allow lists, exact 15-minute chronology, millisecond freshness gates, side symmetry, quote-to-preview binding, fixed-decimal bounds, exact subtotal/fee/payout reconciliation, fee-inclusive break-even probability, maximum-profit arithmetic, deterministic fingerprinting, and observation-only authority.
+- Added 49 focused deterministic tests and registered the subsystem in the complete 1,598-test validation bundle.
+- Added no probability model, recommendation, sizing, persistence, live Robinhood/exchange/BRTI integration, API, network, credential, OCR, screenshot ingestion, polling, Dashboard, Paper Trading, broker, order, or execution behavior.
+
+## 2026-07-23 - Day13/Day14 Owner-review Corrections
 
 - Added recursive declared-field enforcement and explicit allow-listed construction across Capital Allocation requests, candidates, evidence, weights, cash, traces, and upstream read models.
 - Bound every eligible candidate to the exact gated Fusion assessment/snapshot, restricted future evidence sources to `extensionEvidence`, enforced Fusion/Regime-before-Risk ordering, and required unique explicit constraints for `CONSTRAINED` Risk.
 - Bound Event Analyzer candles to canonical BTC/event/observation provenance, the immediately preceding completed PT1M interval, and exact scale-normalized current price; added 24-digit/scale-8 fixed-decimal limits, safe bigint conversion, finite-output enforcement, and exactly complementary body pressure.
 - Added separate staged and unstaged whitespace checks to the validation bundle and corrected staged EOF whitespace defects.
 - Expanded focused validation to 80/80 Event Analyzer tests and 75/75 Capital Allocation tests; complete registered validation passes 1549/1549.
-- Milestones remain uncommitted and pending a new owner review; no Day15, live data, network, provider, credential, AI, persistence, ranking, leverage, sizing, Portfolio mutation, broker, order, or execution work was added.
+- Owner approved the corrected milestone; it was committed and pushed as `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48`.
 
 ## 2026-07-22 - Day14-T1 Capital Allocation Framework v1.0 (Pending Owner Review)
 

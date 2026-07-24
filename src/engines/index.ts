@@ -32,3 +32,4 @@ export * from "./broad-market-evidence";
 export * from "./evidence-fusion";
 export * from "./event-analyzer";
 export * from "./capital-allocation";
+export * from "./event-contract-observation";

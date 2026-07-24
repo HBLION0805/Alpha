@@ -52,3 +52,4 @@ export * from "./BroadMarketEvidence";
 export * from "./EvidenceFusion";
 export * from "./EventAnalyzer";
 export * from "./CapitalAllocation";
+export * from "./EventContractObservation";

@@ -1,14 +1,14 @@
 # Alpha Handoff
 
 Date:
-2026-07-22
+2026-07-23
 
 Project Stage:
-Day13-T1 is committed; Day13-T2/T3 and Day14-T1 await owner review
+Day14 is committed and pushed; Day15-T1 is implemented locally and awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `7c670acd7a934ece5e6cbee844a9f5aa121c82d0` on clean `main`, equal to `origin/main` before Day13-T2.
+Verified baseline: `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48` on `main`, equal to `origin/main` before Day15-T1.
 
 Day 7 completed:
 
@@ -23,7 +23,9 @@ Architecture Checkpoint 1 selected a narrow deterministic sequence. Day 8, Day 9
 
 Day11-T2 is committed and adds a provider-independent deterministic Market Regime snapshot, policy, engine, assessment, and Unified Audit translation. Primary price structure remains separate from secondary conditions; distribution and accumulation require verified volume-unit and breadth evidence. The layer does not fetch data, invoke AI, emit trade signals, alter Risk/Decision/Portfolio state, or execute anything. See `docs/specifications/MARKET_REGIME_ENGINE.md`.
 
-Day12-T1 is committed and composes reviewed multi-benchmark canonical observations into immutable fixed-decimal evidence facts and explicit quality before future Market Regime evaluation. Day13-T1 is committed and adds a provider-neutral Fusion input adapter, versioned source policy, and immutable fail-closed snapshot for future Decision/Risk consumers. Day13-T2/T3 adds an isolated deterministic BTC 15-minute Event Analyzer console prototype plus bounded PT1M candle correction. Day14-T1 adds an immutable Capital Allocation Recommendation construction boundary after current Portfolio, ready Fusion, accepted Regime, and completed Risk inputs. D13-D14-CORRECTION-1 closes the initial owner-review findings through provenance/time/price coherence, bounded numeric conversion, recursive declared-field enforcement, exact Fusion binding, Risk ordering, constrained-risk requirements, and staged-diff validation. The local milestones remain uncommitted pending a new owner review and add no execution authority.
+Day12-T1 composes reviewed multi-benchmark canonical observations into immutable fixed-decimal evidence facts and explicit quality before future Market Regime evaluation. Day13-T1 adds a provider-neutral Fusion input adapter, versioned source policy, and immutable fail-closed snapshot for future Decision/Risk consumers. Day13-T2/T3 adds an isolated deterministic BTC 15-minute Event Analyzer console prototype plus bounded PT1M candle correction. Day14-T1 adds an immutable Capital Allocation Recommendation construction boundary after current Portfolio, ready Fusion, accepted Regime, and completed Risk inputs. D13-D14-CORRECTION-1 closes the initial owner-review findings through provenance/time/price coherence, bounded numeric conversion, recursive declared-field enforcement, exact Fusion binding, Risk ordering, constrained-risk requirements, and staged-diff validation. The owner approved and pushed the combined milestone as `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48`.
+
+Day15-T1 locally adds the first immutable BTC event-contract observation boundary. It requires explicit Robinhood/exchange contract identity, exact settlement method and threshold, a 15-minute UTC window, BRTI reference-price identity, both UP/DOWN quotes, both exact order-fee previews, and complete typed evidence. It derives only fee-inclusive break-even probability and maximum profit from reconciled caller-supplied costs. It emits no model probability, recommendation, expected value, size, order, or execution authorization.
 
 ## Day 6 Milestone Review
 
@@ -284,8 +286,9 @@ Current TypeScript foundations:
 - Market Regime Engine: deterministic provider-independent snapshot, fixed-decimal features, primary/secondary classification, policy, evidence reasons, and Unified Audit translation completed and pushed; no signal or action authority
 - Broad Market Evidence: explicit reviewed ETF/index membership, immutable canonical-observation snapshots, fixed-decimal benchmark features, deterministic composition quality, provenance, and Unified Audit translation completed and pushed; no regime or action authority
 - Evidence Fusion: provider-neutral source input, Broad Market Evidence adapter, versioned source policy, immutable fail-closed snapshot, provenance, and Unified Audit translation completed and pushed; no score, regime, recommendation, or action authority
-- Event Analyzer Console: deterministic fixed-decimal BTC 15-minute prototype with bounded PT1M candle features, exact current-price/time/context/provenance binding, safe numeric limits, richer momentum/reversal risk, an uncalibrated estimate, fair value, edge, non-authoritative recommendation, and risk disclosure implemented locally for owner review
+- Event Analyzer Console: committed deterministic fixed-decimal BTC 15-minute prototype with bounded PT1M candle features, exact current-price/time/context/provenance binding, safe numeric limits, richer momentum/reversal risk, an uncalibrated estimate, fair value, edge, non-authoritative recommendation, and risk disclosure
 - Capital Allocation Framework: deterministic provider-independent construction of immutable, recursively allow-listed, unranked allocation recommendations after exact Portfolio/Fusion/Regime/Risk gates; candidate Fusion evidence is identity-bound and Risk ordering/constraints fail closed; no scoring, leverage, portfolio mutation, or execution authority
+- BTC Event Contract Observation: immutable exact contract/settlement/reference-price/quote/fee/evidence record with deterministic all-in break-even and maximum-profit arithmetic; no model probability, recommendation, sizing, persistence, provider, or execution authority
 
 Python and TypeScript remain separate runtimes connected by the narrow D7-T1 read-only integration boundary. Day 7 product surfaces and links are TypeScript read models only. The Python prototype does not invoke the TypeScript engines or AI infrastructure, and the TypeScript layer does not mutate Python portfolio or trade state.
 
@@ -306,6 +309,8 @@ The committed Day13-T1 validation baseline completed successfully at 1394/1394. 
 The Day13-T2/T3 working tree passed documentation links, paths, fences, required files, provider/network/credential safety, runtime-data, Python-change, merge-marker, and Git whitespace validation. D13-D14-CORRECTION-1 additionally requires separate unstaged and staged whitespace checks so an all-staged milestone cannot produce a false clean result. It adds no Python, live data, provider, network, credential, AI, persistence, UI, portfolio mutation, order, or execution behavior.
 
 D13-D14-CORRECTION-1 expands focused validation to 80/80 Event Analyzer tests and 75/75 Capital Allocation Framework tests and raises the complete registered working-tree validation result to 1549/1549. Strict TypeScript, all existing regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, separate staged/unstaged whitespace checks, and the complete HEAD-relative whitespace check pass. The correction adds no Python changes, runtime wiring, AI, provider/API call, persistence, ranking, leverage, portfolio mutation, broker, order, or execution behavior.
+
+Day15-T1 adds 49/49 focused BTC Event Contract Observation tests and raises complete registered validation to 1598/1598. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass. Git reports line-ending normalization warnings for modified working-tree text files; these are environment warnings, not validation failures.
 
 ## Git Milestones
 
@@ -339,6 +344,7 @@ D13-D14-CORRECTION-1 expands focused validation to 80/80 Event Analyzer tests an
 - `f51b3251526535cb9f7255e01d3299d0587e1d99` — Market Regime Engine Foundation
 - `35cf0398bd9633dc68063397cbc589edeb9f83c4` — Broad Market Evidence Foundation
 - `7c670acd7a934ece5e6cbee844a9f5aa121c82d0` — Evidence Fusion Layer Foundation
+- `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48` — Event Analyzer, Capital Allocation, and owner-review corrections
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -390,4 +396,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-New owner review of the corrected combined uncommitted Day13-T2/T3 Event Analyzer work and Day14-T1 Capital Allocation Framework after focused and complete validation. Do not treat Event Analyzer output or an Allocation Recommendation as Decision, owner, Portfolio-mutation, broker, or execution authorization. Future Opportunity Ranking, leverage, final-allocation approval, and runtime integrations remain separate tasks.
+Owner review of Day15-T1 after focused and complete validation. If approved, Day15-T2 may add a local capture workflow and append-only shadow observation ledger. Do not begin calibrated probability or live integration until the observation boundary is accepted and sufficient validated evidence exists.

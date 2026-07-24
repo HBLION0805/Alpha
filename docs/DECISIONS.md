@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-23 - Day15-T1 BTC Event Contract Observation
+
+### Contract Facts Precede Probability
+
+- Decision: Add one immutable BTC 15-minute observation boundary that requires exact settlement semantics, BRTI reference-price identity, both UP/DOWN quotes, both order-fee previews, and exact evidence references before later probability work.
+- Reason: A chart title or displayed price cannot establish whether the event is evaluated at expiry or by touch, which source settles it, or what fee-inclusive price must be beaten.
+- Consequence: Missing, stale, future, unrelated, arithmetically inconsistent, or undeclared data fails closed. Day15-T1 emits no recommendation or probability estimate.
+
+### Fee-inclusive Break-even Is Deterministic Observation Arithmetic
+
+- Decision: Derive maximum profit and break-even probability from exact caller-supplied order previews, while leaving mutable fee schedules and actual execution truth with Robinhood and the exchange.
+- Reason: Cheap contracts can have large fee percentages, and high-price contracts can require a materially higher win probability than the headline price suggests.
+- Consequence: Preview price must bind to the exact quote, subtotal and fees must reconcile, payout must equal one dollar per contract, and no-profit previews are rejected. The record remains observation-only and cannot size or execute a position.
+
 ## 2026-07-23 - Day13/Day14 Owner-review Corrections
 
 ### Boundary Shape and Provenance Fail Closed

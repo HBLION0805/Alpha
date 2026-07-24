@@ -200,7 +200,7 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Excludes: live fetching, VIX/breadth/volume integration, regime behavior changes, signals, Decision/Risk/Portfolio wiring, persistence, replay, backtesting, Dashboard, Paper Trading, AI, broker, or execution.
    - Exit criteria: required and optional membership is explicit; malformed, stale, missing, insufficient, and contradictory evidence fails closed; output contains no regime or action result; focused and complete validation pass; owner reviews before release.
 
-## Day 13 — Evidence Composition and Executable Prototype (In Progress)
+## Day 13 — Evidence Composition and Executable Prototype (Completed)
 
 1. **Day13-T1 — Evidence Fusion Layer Foundation**
    - Status: completed, committed, and pushed as `7c670acd7a934ece5e6cbee844a9f5aa121c82d0`.
@@ -209,26 +209,42 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: only complete/current compatible required evidence produces `READY`; all blockers remain explicit; no raw benchmark observations cross the boundary; focused and complete validation pass; owner reviews before release.
 
 2. **Day13-T2 — Event Analyzer Console Prototype**
-   - Status: implemented locally, uncommitted, and pending owner review.
+   - Status: completed, committed, and pushed as `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48`.
    - Scope: one executable BTC 15-minute console workflow with fixed-decimal inputs, a versioned deterministic uncalibrated probability heuristic, contract-side fair value, market comparison, edge, prototype recommendation, and explicit risk explanation.
    - Excludes: production Decision/Risk/Fusion integration, calibrated probability, live/provider data, UI, API, AI, persistence, sizing, portfolio changes, Paper Trading, brokerage, orders, or execution.
    - Exit criteria: high probability alone cannot produce `BUY`; invalid input fails closed; prediction and profitability remain separate; output is immutable and non-authoritative; focused and complete validation pass; owner reviews before release.
 
 3. **Day13-T3 — Deterministic One-minute Candle Feature Correction**
-   - Status: implemented locally with Day13-T2, uncommitted, and pending owner review.
+   - Status: completed with Day13-T2, committed, and pushed as `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48`.
    - Scope: bounded local PT1M candle input, deterministic fixed-decimal features, richer momentum/reversal classification, bounded probability influence, legacy-evidence downgrade, and side-contradiction gates based on the reviewed failed UP test.
    - Excludes: screenshots/OCR, live fetching, provider/BRTI/Robinhood integration, calibrated models, Prediction Log, Decision/Risk/Portfolio wiring, persistence, polling, UI, brokerage, or execution.
    - Exit criteria: the bearish-reversal regression returns `NO_TRADE`; invalid/insufficient/legacy evidence fails closed; feature output is auditable and deterministic; complete validation passes; owner reviews before release.
-   - Correction status: local owner-review corrections bind completed candles to exact observation time, current price, instrument/event identity, bounded provenance, and safe fixed-decimal limits; pending new owner review.
+   - Correction status: owner-review corrections bind completed candles to exact observation time, current price, instrument/event identity, bounded provenance, and safe fixed-decimal limits.
 
-## Day 14 — Capital Allocation Architecture (In Progress)
+## Day 14 — Capital Allocation Architecture (Completed)
 
 1. **Day14-T1 — Capital Allocation Framework v1.0**
-   - Status: implemented locally, uncommitted, and pending owner review.
+   - Status: completed, committed, and pushed as `5cfd0d2568e7216eaff99a8beb710fcd8c3aec48`.
    - Scope: immutable provider-independent candidate/recommendation contracts, current Portfolio/Fusion/Regime/Risk read inputs, fail-closed construction, deterministic ordering/fingerprint, cash posture, avoid records, and explicit extension boundaries.
    - Excludes: Opportunity Ranking/scoring, calculated target weights, optimization, leverage, Decision or Portfolio runtime wiring, persistence, Dashboard, AI, provider/API access, brokerage, orders, or execution.
    - Exit criteria: evidence and Risk gates precede construction; candidates remain `UNRANKED`; output is immutable and non-executable; focused and complete validation pass; owner reviews before release.
-   - Correction status: local owner-review corrections enforce recursive declared fields, exact candidate-to-Fusion identity, Fusion/Regime-before-Risk ordering, and explicit constrained-risk semantics; pending new owner review.
+   - Correction status: owner-review corrections enforce recursive declared fields, exact candidate-to-Fusion identity, Fusion/Regime-before-Risk ordering, and explicit constrained-risk semantics.
+
+## Day 15 — Event Contract Evidence and Shadow Validation (In Progress)
+
+1. **Day15-T1 — BTC Event Contract Observation**
+   - Status: implemented locally and pending owner review.
+   - Scope: immutable BTC 15-minute contract terms, explicit settlement semantics, BRTI reference-price identity, exact UP/DOWN quotes, exact order-fee previews, evidence binding, fixed-decimal arithmetic, maximum profit, and fee-inclusive break-even probability.
+   - Excludes: probability estimation, recommendation, expected value, sizing, live/provider access, credentials, OCR, persistence, Paper Trading, brokerage, orders, or execution.
+   - Exit criteria: unknown and incomplete records fail closed; 15-minute chronology and freshness are exact; both sides and all evidence bind; preview arithmetic reconciles; focused and complete validation pass; owner reviews before release.
+
+2. **Day15-T2 — Local Capture and Shadow Observation Ledger**
+   - Status: planned after Day15-T1 owner review.
+   - Intended scope: fixture/console capture and append-only local observation history without trade execution or probability authority.
+
+3. **Day15-T3 — Calibrated BTC 15-minute Probability Research**
+   - Status: planned only after sufficient validated observations exist.
+   - Intended scope: separate model probability, uncertainty, market probability, fees, profitability, and risk; no live execution authority.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 
