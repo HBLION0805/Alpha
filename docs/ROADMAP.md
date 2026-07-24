@@ -251,12 +251,18 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: future information, post-cutoff revisions, incomplete bars, outcome contamination, and dataset mismatch fail closed; focused and complete validation pass; owner reviews before release.
 
 4. **Day15-T3B — Dataset Qualification and Temporal Split Design**
-   - Status: implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `8f722fb1d527cf00a6b01ec74cbac28f1b56d9fd`.
    - Scope: prospectively frozen BTC 15-minute collection plans, exact sample-to-Research-Integrity binding, minimum sample/day/coverage/outcome-balance gates, one feature and integrity-policy lineage, and deterministic chronological train/calibration/final-test partitions with embargo gaps.
    - Excludes: model training, probability estimation, threshold selection, return claims, recommendation, expected value, sizing, live/provider access, persistence, broker, order, or execution.
    - Exit criteria: incomplete, post-selected, duplicated, imbalanced, policy-mixed, temporally overlapping, or integrity-blocked datasets fail closed; focused and complete validation pass; owner reviews before release.
 
-5. **Day15-T3C — Baseline Probability Research**
+5. **Day15-T3B2 — Frozen-Plan Shadow Dataset Assembly**
+   - Status: implemented locally and pending owner review.
+   - Scope: explicit frozen-plan event bindings, read-only Day15-T2 ledger snapshots, exact official settlement labels, eligible Day15-T3A audit binding, homogeneous feature versions, deterministic sample construction, and canonical Day15-T3B qualification input.
+   - Excludes: automated collection, provider/network access, persistence, model or feature calculation, probability, return, recommendation, sizing, broker, order, or execution.
+   - Exit criteria: missing, unsettled, duplicated, cutoff-mismatched, audit-mismatched, feature-mixed, or tampered inputs fail closed; focused and complete validation pass; owner reviews before release.
+
+6. **Day15-T3C — Baseline Probability Research**
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 

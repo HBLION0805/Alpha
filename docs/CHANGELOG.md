@@ -1,12 +1,20 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B Research Dataset Qualification and Temporal Split (Pending Owner Review)
+## 2026-07-24 - Day15-T3B2 Research Shadow Dataset Assembly (Pending Owner Review)
+
+- Added a deterministic offline boundary that projects explicit frozen-plan bindings and exact settled Day15-T2 histories into canonical Day15-T3B qualification input.
+- Added exact BTC 15-minute cutoff, observation, settlement, recomputed Day15-T3A audit-input evidence binding, and homogeneous feature-version checks.
+- Added ordered missing/unsettled/tampered issue reporting, immutable plan and ledger-snapshot fingerprints, and adversarial focused tests.
+- Added no automated collection, provider/network access, persistence, model, probability, return, recommendation, sizing, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B Research Dataset Qualification and Temporal Split
 
 - Added a prospectively frozen BTC 15-minute collection-plan boundary that prevents selecting only favorable events after outcomes are known.
 - Added strict sample binding to exact observation/outcome identities, immutable feature versions, and eligible Day15-T3A audit proofs under one integrity-policy lineage.
 - Added deterministic minimum sample, date, plan coverage, outcome coverage, outcome count, and class-dominance gates.
 - Added chronological train/calibration/final-test partitions with embargo gaps and label-availability checks; blocked datasets receive no split.
 - Added 45 focused adversarial tests and complete validation registration without model training, probability, return, recommendation, expected value, sizing, live/provider access, persistence, broker, order, or execution behavior.
+- Owner approved the milestone; it was committed and pushed as `8f722fb1d527cf00a6b01ec74cbac28f1b56d9fd`.
 
 ## 2026-07-23 - Day15-T3A Research Integrity and Leakage Prevention
 

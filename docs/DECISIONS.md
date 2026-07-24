@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B2 Research Shadow Dataset Assembly
+
+### Missing Evidence Must Remain Missing
+
+- Decision: Assemble samples only from one explicit frozen-plan binding, one exact reconstructable shadow observation, one exact official settlement, and one eligible reconstructable T3A audit.
+- Reason: Choosing a convenient ledger record, inferring an outcome, or repairing a missing event would silently reintroduce selection and lookahead bias after the integrity gate.
+- Consequence: Missing, unsettled, duplicated, cutoff-mismatched, audit-mismatched, or feature-mixed events block assembly and produce no T3B input.
+
+### Assembly Is an Adapter, Not a Data Pipeline
+
+- Decision: Keep T3B2 as an in-memory deterministic engine over caller-supplied read-only snapshots; do not add a filesystem console, scheduler, provider, or repository.
+- Reason: Existing NDJSON storage is a local single-process development ledger and must not become an implied production collection pipeline.
+- Consequence: Manual T1/T2 capture and T3A audit preparation remain separate. The existing T3B engine retains sole qualification and split authority.
+
 ## 2026-07-24 - Day15-T3B Research Dataset Qualification and Temporal Split
 
 ### Collection Intent Must Predate Outcomes

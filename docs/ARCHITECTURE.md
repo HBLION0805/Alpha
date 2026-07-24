@@ -655,6 +655,12 @@ The default policy requires at least 1,000 completed samples, 30 distinct UTC da
 
 Qualified samples are sorted by event cutoff and split deterministically into chronological 60% training, 20% calibration, and 20% sealed final-test partitions, with four-sample embargo gaps and label-availability checks between partitions. Any issue produces `BLOCKED` with no split. `QUALIFIED` means only that the declared minimum research gate passed; it is not statistical proof, a probability claim, a profitable backtest, or trading authority. See [Research Dataset Qualification](specifications/RESEARCH_DATASET_QUALIFICATION.md).
 
+## Research Shadow Dataset Assembly
+
+Day15-T3B2 adds a narrow offline adapter between the append-only Day15-T2 shadow ledger and the Day15-T3B qualification input. It accepts one owner-supplied frozen plan, explicit event-to-observation bindings, complete Day15-T3A audit inputs, immutable feature versions, and a read-only ledger snapshot. It recomputes each audit and requires the exact observation identity and fingerprint in its evidence before deriving a label exclusively from the official settlement.
+
+Missing or unsettled events remain explicit and produce `BLOCKED`; assembly never repairs history, infers a label, or substitutes a favorable record. `ASSEMBLED` means only that a canonical T3B input was constructed. The existing T3B engine remains the sole dataset qualification and temporal-split authority. The boundary adds no console, repository, automated collection, provider, network, model, probability, recommendation, or execution behavior. See [Research Shadow Dataset Assembly](specifications/RESEARCH_SHADOW_DATASET_ASSEMBLY.md).
+
 ---
 
 # Event Contract Framework

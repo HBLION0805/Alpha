@@ -1,6 +1,6 @@
 # Research Dataset Qualification and Temporal Split v1
 
-Status: Day15-T3B implemented locally and pending owner review.
+Status: Day15-T3B owner approved, committed, and pushed as `8f722fb1d527cf00a6b01ec74cbac28f1b56d9fd`.
 
 Schema: `1.0`
 
