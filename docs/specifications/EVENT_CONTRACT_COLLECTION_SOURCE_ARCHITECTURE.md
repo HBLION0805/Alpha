@@ -1,6 +1,6 @@
 # Event Contract Collection Source Architecture v1
 
-Status: Day15-T3B5 architecture implemented locally and pending owner review.
+Status: Day15-T3B5 owner approved, committed, and pushed as `adf28d24d454d533da8064732aeca381ba7cd0c2`.
 
 Decision date: 2026-07-24
 

@@ -275,14 +275,16 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: artifact tampering, overwrite attempts, missing/corrupt ledgers, unsafe store identities, and invalid command options fail closed; focused and complete validation pass; owner reviews before release.
 
 8. **Day15-T3B5 — Real Collection Source Architecture and Admission**
-   - Status: architecture implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `adf28d24d454d533da8064732aeca381ba7cd0c2`.
    - Scope: source-authority classes, exact Robinhood-to-exchange market mapping, provider-neutral adapter requirements, credential isolation, bounded live-read gates, and staged release sequencing.
    - Excludes: provider SDK, credential, network call, private endpoint, browser/mobile automation, polling, scheduling, persistence, model, probability, recommendation, sizing, broker, order, or execution.
    - Exit criteria: cross-venue ambiguity fails closed; private Robinhood automation is prohibited; T3B6-T3B10 each retain separate implementation and owner-approval gates; complete validation passes.
 
 9. **Day15-T3B6 — Provider-Neutral Event Contract Source Contracts**
-   - Status: planned after T3B5 owner approval.
-   - Intended scope: deterministic source capabilities, canonical external market identities, exact mapping evidence, provenance times, immutable fingerprints, sanitized errors, and fixture/live execution modes without a provider or network.
+   - Status: implemented locally and pending owner review.
+   - Scope: deterministic provider/source capabilities, exact Robinhood-to-exchange identity and terms mappings, provenance chronology, immutable fingerprints, bounded snapshot metadata, and fixture-only admission.
+   - Excludes: concrete provider, SDK, credential loading, network, live-read authorization, persistence, polling, scheduler, model, recommendation, broker, order, or execution.
+   - Exit criteria: undeclared authority, ambiguous mapping, terms mismatch, stale/tampered lineage, invalid chronology, oversized inputs, and bounded-live use fail closed; focused and complete validation pass; owner reviews before release.
 
 10. **Day15-T3C — Baseline Probability Research**
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.

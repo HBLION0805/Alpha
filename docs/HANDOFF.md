@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B4 Local Collection Operator Surface is committed and pushed; Day15-T3B5 Real Collection Source Architecture is implemented locally and awaits owner review
+Day15-T3B5 Real Collection Source Architecture is committed and pushed; Day15-T3B6 Provider-Neutral Event Contract Source Contracts are implemented locally and await owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `95adef5849f5de67a471b720130fa6b7061f1847` on `main`, equal to `origin/main` before Day15-T3B5.
+Verified baseline: `adf28d24d454d533da8064732aeca381ba7cd0c2` on `main`, equal to `origin/main` before Day15-T3B6.
 
 Day 7 completed:
 
@@ -41,7 +41,9 @@ Day15-T3B4 adds an explicit operator surface for exclusive one-time plan freezin
 
 The owner approved and pushed Day15-T3B4 as `95adef5849f5de67a471b720130fa6b7061f1847`.
 
-Day15-T3B5 locally defines the source-admission architecture required before scalable real collection. Robinhood platform evidence, exchange-native evidence, official settlement-reference values, and operator evidence retain separate identities and authority. Any exchange source must prove an exact reviewed Robinhood contract mapping; matching display text, cutoff, or threshold is insufficient. Undocumented Robinhood endpoints and authenticated brokerage-session automation are prohibited. T3B5 adds no provider SDK, credential, network request, polling, scheduler, persistence, model, recommendation, order, or execution behavior.
+Day15-T3B5 defines the source-admission architecture required before scalable real collection. Robinhood platform evidence, exchange-native evidence, official settlement-reference values, and operator evidence retain separate identities and authority. Any exchange source must prove an exact reviewed Robinhood contract mapping; matching display text, cutoff, or threshold is insufficient. Undocumented Robinhood endpoints and authenticated brokerage-session automation are prohibited. The owner approved and pushed it as `adf28d24d454d533da8064732aeca381ba7cd0c2`.
+
+Day15-T3B6 locally implements provider-neutral source contracts and deterministic validation. Provider descriptors restrict capabilities by source class and expose no brokerage credential mode. Exact mappings bind complete Robinhood and external identities and terms. Fixture-only snapshots preserve provenance chronology and bounded payload metadata without raw payload persistence. Declared bounded-live capability is explicitly unauthorized by the current policy. The layer adds no concrete provider, SDK, credential loader, network, persistence, polling, scheduler, model, recommendation, order, or execution behavior.
 
 ## Day 6 Milestone Review
 
@@ -342,6 +344,8 @@ Day15-T3B4 adds 10/10 focused Local Collection Operator tests and raises complet
 
 Day15-T3B5 changes architecture and documentation only. It adds no test cases, so complete registered validation remains 1752/1752.
 
+Day15-T3B6 adds 42/42 focused Event Contract Source tests and raises complete registered validation to 1794/1794.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -382,6 +386,7 @@ Day15-T3B5 changes architecture and documentation only. It adds no test cases, s
 - `3e03e698657dc532e89f088983fa331de8f81c2a` — Research Shadow Dataset Assembly
 - `f3effb86c04a901df804de3cf79e1d9094736683` — Forward Shadow Collection Control
 - `95adef5849f5de67a471b720130fa6b7061f1847` — Local Forward Collection Operator
+- `adf28d24d454d533da8064732aeca381ba7cd0c2` — Event Contract Collection Source Architecture
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -433,4 +438,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B5 after complete validation. If approved, begin Day15-T3B6 provider-neutral event-contract source contracts and fixture-only validation without selecting a provider or adding network access. Do not run a live-read smoke, create a collection runner, freeze a real plan, or begin Day15-T3C probability research without the later explicit gates.
+Owner review of Day15-T3B6 after focused and complete validation. If approved, begin Day15-T3B7 with one official exchange fixture and one explicitly reviewed exact mapping, still without network or credentials. Do not run a live-read smoke, create a collection runner, freeze a real plan, or begin Day15-T3C probability research without the later explicit gates.

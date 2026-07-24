@@ -50,6 +50,7 @@ const requiredFiles = [
   "docs/specifications/FORWARD_SHADOW_COLLECTION_CONTROL.md",
   "docs/specifications/FORWARD_SHADOW_COLLECTION_OPERATOR.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_SOURCE_ARCHITECTURE.md",
+  "docs/specifications/EVENT_CONTRACT_SOURCE_CONTRACTS.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -100,6 +101,7 @@ const aggregateTestFiles = [
   "src/engines/research-shadow-dataset-assembly/ResearchShadowDatasetAssemblyEngine.test.ts",
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlEngine.test.ts",
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
+  "src/engines/event-contract-source/EventContractSourceEngine.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",

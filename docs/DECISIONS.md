@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B6 Provider-Neutral Event Contract Source Contracts
+
+### Capability Must Follow Source Authority
+
+- Decision: Restrict provider capabilities by platform, exchange, settlement-reference, or operator-evidence source class.
+- Reason: A technically available feed cannot claim facts outside the authority of its source.
+- Consequence: Settlement references cannot claim platform quotes, operator evidence cannot claim credentials, and undeclared capabilities cannot produce snapshots.
+
+### Exact Review Is a Deterministic Equality Claim
+
+- Decision: Make `REVIEWED_EXACT` require complete equality across canonical BTC 15-minute terms and matching provider, exchange, and venue identities.
+- Reason: A review label without machine-enforced content equality could conceal a one-field contract difference.
+- Consequence: Any title, version, window, evaluation, threshold, target, settlement-source, or identity mismatch fails closed. Pending and rejected mappings cannot qualify snapshots.
+
+### Declared Live Capability Is Not Live Authorization
+
+- Decision: Represent a future bounded-live mode in provider capabilities while restricting the T3B6 snapshot policy to fixtures.
+- Reason: Contract stability should precede a concrete adapter, but a type declaration must not silently authorize network use.
+- Consequence: Bounded-live snapshot creation fails until the separately reviewed T3B8 policy changes the allowed execution boundary.
+
 ## 2026-07-24 - Day15-T3B5 Real Collection Source Architecture
 
 ### Cross-Venue Similarity Does Not Establish Contract Identity

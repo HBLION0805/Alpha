@@ -681,6 +681,14 @@ Because Robinhood may offer contracts from multiple exchanges, a future exchange
 
 The staged release sequence requires provider-neutral source contracts, a fixture-only adapter, a separately approved bounded live-read smoke, collection-runner architecture, and only then a limited forward pilot. Undocumented Robinhood interfaces, authenticated brokerage-session automation, direct adapter-to-ledger writes, and any trading authority are prohibited. See [Event Contract Collection Source Architecture](specifications/EVENT_CONTRACT_COLLECTION_SOURCE_ARCHITECTURE.md).
 
+## Event Contract Source Contracts
+
+Day15-T3B6 implements the provider-neutral contract layer required by T3B5. Immutable provider descriptors declare one source class, bounded capabilities, supported execution modes, official documentation, and either no credential or a read-only data credential. Credential types with brokerage, session, or write authority do not exist.
+
+Exact mapping records bind one exchange provider to explicit Robinhood and exchange-native identities plus complete canonical BTC 15-minute terms. A `REVIEWED_EXACT` mapping is eligible only when all identity and terms fields agree; pending and rejected mappings remain immutable but ineligible.
+
+Source snapshots preserve provider and mapping fingerprints, one declared capability, provenance chronology, payload fingerprint, and bounded byte/record metadata without retaining a raw payload. T3B6 policy authorizes fixture snapshots only. `BOUNDED_LIVE_READ` remains a reserved type for T3B8 and is rejected by the current engine. Outputs remain research-source evidence, not T1 observations or trade authority. See [Event Contract Source Contracts](specifications/EVENT_CONTRACT_SOURCE_CONTRACTS.md).
+
 ---
 
 # Event Contract Framework

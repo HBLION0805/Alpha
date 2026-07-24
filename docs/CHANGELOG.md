@@ -1,11 +1,19 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B5 Real Collection Source Architecture (Pending Owner Review)
+## 2026-07-24 - Day15-T3B6 Provider-Neutral Event Contract Source Contracts (Pending Owner Review)
+
+- Added immutable provider descriptors with source-class capability restrictions, official documentation references, fixture/live mode declarations, and no credential authority beyond a dedicated read-only data credential.
+- Added exact reviewed Robinhood-to-exchange identity and BTC 15-minute terms mappings; pending and rejected mappings remain explicit and ineligible.
+- Added fixture-only source snapshots with provider/mapping lineage, source chronology, raw-payload fingerprints, bounded byte/record metadata, deterministic output fingerprints, and research-source-only authority.
+- Added 42 focused adversarial tests without a concrete provider, SDK, credential loader, network, live-read authorization, persistence, polling, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B5 Real Collection Source Architecture
 
 - Defined distinct Robinhood-platform, exchange-native, settlement-reference, and operator-evidence source classes for real BTC 15-minute research collection.
 - Required exact reviewed Robinhood-to-exchange market and contract mapping; matching display text, cutoff, or threshold alone cannot establish identity.
 - Prohibited undocumented Robinhood endpoints, authenticated brokerage-session automation, venue relabeling, fee substitution, and direct adapter-to-ledger mutation.
 - Defined separate provider-neutral contract, fixture adapter, bounded live-read, collection-runner, and forward-pilot approval gates without adding provider SDK, credential, network, polling, persistence, model, recommendation, order, or execution behavior.
+- Owner approved the architecture; it was committed and pushed as `adf28d24d454d533da8064732aeca381ba7cd0c2`.
 
 ## 2026-07-24 - Day15-T3B4 Local Collection Operator Surface
 

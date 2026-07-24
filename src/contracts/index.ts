@@ -58,3 +58,4 @@ export * from "./ResearchIntegrity";
 export * from "./ResearchDatasetQualification";
 export * from "./ResearchShadowDatasetAssembly";
 export * from "./ForwardShadowCollectionControl";
+export * from "./EventContractSource";
