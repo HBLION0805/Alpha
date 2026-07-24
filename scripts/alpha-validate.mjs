@@ -44,6 +44,7 @@ const requiredFiles = [
   "docs/specifications/CAPITAL_ALLOCATION_FRAMEWORK.md",
   "docs/specifications/EVENT_CONTRACT_OBSERVATION.md",
   "docs/specifications/EVENT_CONTRACT_SHADOW_LEDGER.md",
+  "docs/specifications/RESEARCH_INTEGRITY.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -89,6 +90,7 @@ const aggregateTestFiles = [
   "src/engines/capital-allocation/CapitalAllocationFramework.test.ts",
   "src/engines/event-contract-observation/EventContractObservationEngine.test.ts",
   "src/engines/event-contract-shadow-ledger/EventContractShadowLedgerEngine.test.ts",
+  "src/engines/research-integrity/ResearchIntegrityEngine.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",

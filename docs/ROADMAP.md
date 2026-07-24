@@ -239,14 +239,20 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: unknown and incomplete records fail closed; 15-minute chronology and freshness are exact; both sides and all evidence bind; preview arithmetic reconciles; focused and complete validation pass; owner reviews before release.
 
 2. **Day15-T2 — Local Capture and Shadow Observation Ledger**
-   - Status: implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `52a62e1565709a1897225c8f455c8f1d73bd2115`.
    - Scope: owner-supplied JSON capture, canonical append-only local NDJSON observations, exact official-settlement binding, immutable query/history/summary surfaces, and fee-inclusive hypothetical UP/DOWN outcomes.
    - Excludes: probability estimation, recommendation, expected value, position sizing, live/provider access, credentials, OCR, Paper Trading, brokerage, orders, or execution.
    - Exit criteria: exact replay is idempotent; conflicts, duplicate settlement, invalid chronology/reference, unsafe path, and corrupt history fail closed; focused and complete validation pass; owner reviews before release.
 
-3. **Day15-T3 — Calibrated BTC 15-minute Probability Research**
-   - Status: planned only after sufficient validated observations exist.
-   - Intended scope: separate model probability, uncertainty, market probability, fees, profitability, and risk; no live execution authority.
+3. **Day15-T3A — Research Integrity and Leakage Prevention**
+   - Status: implemented locally and pending owner review.
+   - Scope: deterministic point-in-time occurrence/publication/availability/receipt rules, forward-versus-historical semantics, completed-interval enforcement, outcome-leakage blocking, and exact frozen dataset manifests.
+   - Excludes: model training, calibration, probability, expected value, returns, recommendation, sizing, live data, persistence, broker, or execution behavior.
+   - Exit criteria: future information, post-cutoff revisions, incomplete bars, outcome contamination, and dataset mismatch fail closed; focused and complete validation pass; owner reviews before release.
+
+4. **Day15-T3B — Dataset Qualification and Temporal Split Design**
+   - Status: planned only after Day15-T3A owner approval and sufficient validated observations exist.
+   - Intended scope: minimum sample and coverage rules plus leakage-safe chronological train/calibration/test partitions before any probability model is approved.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 

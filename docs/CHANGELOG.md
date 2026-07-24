@@ -1,12 +1,20 @@
 # Alpha Changelog
 
-## 2026-07-23 - Day15-T2 Event Contract Shadow Ledger (Pending Owner Review)
+## 2026-07-23 - Day15-T3A Research Integrity and Leakage Prevention (Pending Owner Review)
+
+- Added an immutable point-in-time research audit that separates occurrence, source publication, supported availability, local receipt, research cutoff, dataset freeze, and audit evaluation time.
+- Added distinct `FORWARD` and `HISTORICAL_REPLAY` rules so retrospective assembly is permitted without treating post-cutoff source revisions as historically knowable.
+- Added fail-closed completed-Bar checks, outcome/settlement contamination blocking, exact frozen dataset membership and fingerprint binding, deterministic audit fingerprints, and research-only authority.
+- Added 40 focused adversarial tests and complete validation registration without model training, calibration, probability, return, recommendation, expected value, sizing, provider/network access, persistence, broker, order, or execution behavior.
+
+## 2026-07-23 - Day15-T2 Event Contract Shadow Ledger
 
 - Added owner-supplied JSON capture and official-settlement commands over an append-only canonical local NDJSON repository.
 - Added exact settlement binding to observation, terms, contract, settlement source, source record, and evidence identity; conflicting replay, duplicate settlement, invalid chronology, unsafe path, and corrupt history fail closed.
 - Added immutable history/query/summary surfaces and deterministic fee-inclusive hypothetical outcomes for both UP and DOWN, retaining observation and settlement fingerprints.
 - Added 33 focused deterministic tests and registered the subsystem in the complete validation bundle.
 - Added no probability model, recommendation, position sizing, live Robinhood/BRTI integration, provider SDK, API, network, credential, OCR, screenshot ingestion, polling, broker, order, or execution behavior.
+- Owner approved the milestone; it was committed and pushed as `52a62e1565709a1897225c8f455c8f1d73bd2115`.
 
 ## 2026-07-23 - Day15-T1 BTC Event Contract Observation
 

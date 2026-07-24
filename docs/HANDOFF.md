@@ -4,11 +4,11 @@ Date:
 2026-07-23
 
 Project Stage:
-Day15-T1 is committed and pushed; Day15-T2 is implemented locally and awaits owner review
+Day15-T2 is committed and pushed; Day15-T3A Research Integrity is implemented locally and awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `9b243e24a1d56aac127b12388ee3fb9e86982383` on `main`, equal to `origin/main` before Day15-T2.
+Verified baseline: `52a62e1565709a1897225c8f455c8f1d73bd2115` on `main`, equal to `origin/main` before Day15-T3A.
 
 Day 7 completed:
 
@@ -27,7 +27,9 @@ Day12-T1 composes reviewed multi-benchmark canonical observations into immutable
 
 Day15-T1 adds the first immutable BTC event-contract observation boundary. It requires explicit Robinhood/exchange contract identity, exact settlement method and threshold, a 15-minute UTC window, BRTI reference-price identity, both UP/DOWN quotes, both exact order-fee previews, and complete typed evidence. It derives only fee-inclusive break-even probability and maximum profit from reconciled caller-supplied costs. The owner approved and pushed it as `9b243e24a1d56aac127b12388ee3fb9e86982383`.
 
-Day15-T2 locally adds owner-supplied JSON capture and a canonical append-only shadow ledger. It binds one official settlement to the exact observation, terms, contract, and settlement source, then calculates both UP and DOWN fee-inclusive hypothetical outcomes. It provides immutable history, filters, and aggregate summaries solely for later calibration evidence. It emits no model probability, recommendation, expected value, position size, order, or execution authorization.
+Day15-T2 adds owner-supplied JSON capture and a canonical append-only shadow ledger. It binds one official settlement to the exact observation, terms, contract, and settlement source, then calculates both UP and DOWN fee-inclusive hypothetical outcomes. The owner approved and pushed it as `52a62e1565709a1897225c8f455c8f1d73bd2115`.
+
+Day15-T3A locally adds the fail-closed point-in-time Research Integrity boundary required before calibration or backtesting. It distinguishes occurrence, publication, availability, and receipt time; applies separate forward and historical-replay rules; requires completed bars; blocks outcome leakage; and binds exact frozen dataset membership. It emits no probability, return, recommendation, expected value, position size, order, or execution authorization.
 
 ## Day 6 Milestone Review
 
@@ -316,6 +318,8 @@ Day15-T1 adds 49/49 focused BTC Event Contract Observation tests and raises comp
 
 Day15-T2 adds 33/33 focused Event Contract Shadow Ledger tests and raises complete registered validation to 1631/1631. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass.
 
+Day15-T3A adds 40/40 focused Research Integrity tests and raises complete registered validation to 1671/1671. Strict TypeScript and complete working-tree validation are required before owner review.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -400,4 +404,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T2 after focused and complete validation. If approved, begin collecting a sufficiently large, clean shadow dataset before designing Day15-T3 calibration research. Do not begin probability claims or live integration from fixture-only evidence.
+Owner review of Day15-T3A after focused and complete validation. If approved, begin Day15-T3B dataset qualification and leakage-safe temporal split design while continuing shadow-data collection. Do not begin probability claims or live integration from fixture-only evidence.

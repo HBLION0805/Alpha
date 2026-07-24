@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-23 - Day15-T3A Research Integrity and Leakage Prevention
+
+### Information Availability, Not Dataset Download Time, Defines Historical Knowledge
+
+- Decision: Preserve occurrence, publication, supported availability, and receipt as separate timestamps. Historical replay may receive and freeze a dataset after the simulated cutoff only when the exact source version has a reviewed point-in-time availability reference at or before that cutoff.
+- Reason: Requiring historical files to have been downloaded in the past would make retrospective research impossible, while using later corrections without their original availability time would create lookahead bias.
+- Consequence: `HISTORICAL_REPLAY` and `FORWARD` have different receipt/freeze gates, but neither may use a source version unavailable at the cutoff.
+
+### Completed Intervals and Outcomes Fail Closed
+
+- Decision: Canonical Bar evidence must be final and end no later than the research cutoff. Outcome, settlement, or caller-marked outcome-bearing evidence is forbidden from pre-outcome research.
+- Reason: An unfinished candle and an already-known result can make a weak strategy appear accurate even though neither was available at decision time.
+- Consequence: Leakage remains an explicit `BLOCKED` audit issue; it cannot be averaged away or downgraded to a warning.
+
+### Frozen Manifest Is Research Eligibility, Not Model Authority
+
+- Decision: Bind every audit to one exact dataset manifest of evidence IDs and content fingerprints and emit only `ELIGIBLE` or `BLOCKED` under `RESEARCH_ONLY_NOT_TRADE_AUTHORITY`.
+- Reason: Reproducible model work requires exact inputs, but clean inputs alone do not establish sample sufficiency, calibration, profitability, or a tradable edge.
+- Consequence: Day15-T3A creates no probability, recommendation, expected value, sizing, Decision/Risk/Portfolio mutation, broker, order, or execution path.
+
 ## 2026-07-23 - Day15-T2 Event Contract Shadow Ledger
 
 ### Outcome Evidence Must Be Bound to the Original Observation

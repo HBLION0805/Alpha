@@ -34,3 +34,4 @@ export * from "./event-analyzer";
 export * from "./capital-allocation";
 export * from "./event-contract-observation";
 export * from "./event-contract-shadow-ledger";
+export * from "./research-integrity";

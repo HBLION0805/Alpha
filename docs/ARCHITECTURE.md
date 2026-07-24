@@ -634,6 +634,19 @@ Observation replay is idempotent only when the complete record matches. A settle
 
 The local console accepts owner-supplied JSON only. The ledger is single-process development persistence and emits `SHADOW_ONLY_NOT_TRADE_AUTHORITY`; it does not estimate probability, recommend a side, size capital, contact Robinhood/BRTI, read credentials, place orders, or authorize execution. See [Event Contract Shadow Ledger](specifications/EVENT_CONTRACT_SHADOW_LEDGER.md).
 
+## Research Integrity and Leakage Prevention
+
+Day15-T3A adds a deterministic point-in-time eligibility gate before calibration, backtesting, or model comparison:
+
+- occurrence, source publication, supported availability, and local receipt times remain distinct;
+- `FORWARD` research requires both receipt and dataset freeze by the decision cutoff;
+- `HISTORICAL_REPLAY` may be assembled later but every exact source version must independently prove it was available by the historical cutoff;
+- Canonical Bar evidence must be final and its interval must end by the cutoff;
+- outcome-bearing and settlement evidence cannot enter pre-outcome research;
+- one frozen manifest binds the exact evidence identities and content fingerprints.
+
+The result is only `ELIGIBLE` or `BLOCKED` for research integrity and always remains `RESEARCH_ONLY_NOT_TRADE_AUTHORITY`. It does not assess sample sufficiency, train or calibrate a model, report probability or returns, recommend a side, size capital, or authorize execution. See [Research Integrity](specifications/RESEARCH_INTEGRITY.md).
+
 ---
 
 # Event Contract Framework

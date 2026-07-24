@@ -1,6 +1,6 @@
 # BTC Event Contract Shadow Ledger v1
 
-Status: Day15-T2 implemented locally and pending owner review.
+Status: Day15-T2 owner approved, committed, and pushed.
 
 Schema: `1.0`
 

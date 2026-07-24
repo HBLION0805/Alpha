@@ -1,6 +1,6 @@
 # BTC Event Contract Observation v1
 
-Status: Day15-T1 implemented locally and pending owner review.
+Status: Day15-T1 owner approved, committed, and pushed.
 
 Schema: `1.0`
 
