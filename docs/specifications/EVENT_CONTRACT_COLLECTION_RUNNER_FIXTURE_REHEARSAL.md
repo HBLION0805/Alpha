@@ -4,7 +4,8 @@
 
 Task: `Day15-T3B13-T1`
 
-Status: design complete locally and pending Owner review.
+Status: T1 through T5 are implemented, committed, and pushed. T3B13-MR1 is
+complete locally and pending Owner review.
 
 Reviewed baseline:
 `d9de7636cedff144e29cafbac731411f17e3876f`.
@@ -526,9 +527,13 @@ T3B13 remains separately gated:
    deterministic scenario fingerprint, backup/integrity evidence, crash,
    Stop, replay, and leakage tests.
 6. **T3B13-MR1 — Fixture rehearsal readiness review.**
-7. **Later separately approved operation:** one exact owner-approved rehearsal
-   run; no network.
-8. **Future separately designed work:** continuous runtime, provider admission,
+7. **T3B14-T1 — Durable Fixture Rehearsal Composition and Evidence
+   Architecture:** design-only closure of the MR1 durability, concrete
+   evidence, backup-verification, and end-to-end assembly findings.
+8. **Later separately approved implementation and operation:** implement the
+   reviewed composition, pass its milestone review, and only then run one exact
+   owner-approved network-free rehearsal.
+9. **Future separately designed work:** continuous runtime, provider admission,
    T1/T2 integration, bounded-live Pilot, and commercial infrastructure.
 
 Approval of one task grants no authority to begin the next.
@@ -571,7 +576,18 @@ Approval of one task grants no authority to begin the next.
   fresh-process Stop and leakage rejection.
 - T3B13-T5 has no executable rehearsal command, loop, timer, network request,
   real Pilot, recommendation, broker, order, or execution authority.
-- T3B13-T5 is complete locally and pending Owner review.
+- T3B13-T5 is committed and pushed as
+  `8ecf918e56c01fb6331894b9784c388e06d496b7`.
+- T3B13-MR1 accepts the component foundations but blocks a rehearsal run
+  because the step ledger is in-memory only, the SQLite/backup/validation
+  evidence verifier has no concrete authoritative implementation, the final
+  evidence boundary cannot independently reopen the referenced backup, and no
+  fresh-process drill assembles preparation through final verification.
+- The next permitted task after Owner approval is design-only
+  `Day15-T3B14-T1 — Durable Fixture Rehearsal Composition and Evidence
+  Architecture`.
+- See
+  [Event Contract Collection Runner Fixture Rehearsal Milestone Review](../EVENT_CONTRACT_COLLECTION_RUNNER_FIXTURE_REHEARSAL_MILESTONE_REVIEW.md).
 
 ## Acceptance criteria
 

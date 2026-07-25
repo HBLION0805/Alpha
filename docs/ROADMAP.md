@@ -383,9 +383,12 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B13-T3 excludes: foreground step, loop, timer, network provider, real Pilot, T1/T2 assembly, model, recommendation, broker, order, or execution.
    - T3B13-T4 status: completed, committed, and pushed as `a4c83f8`; validation passes `2244/2244`.
    - T3B13-T4 excludes: executable command, internal loop, timer, scheduler, network provider, real Pilot, T1/T2 assembly, model, recommendation, broker, order, or execution.
-   - T3B13-T5 status: bounded atomic evidence packaging, independent directory verification, exact replay, partial-build quarantine, distinct catalog identities, and child-process crash/Stop/leakage drills are complete locally and pending Owner review; validation passes `2261/2261`.
+   - T3B13-T5 status: completed, committed, and pushed as `8ecf918e56c01fb6331894b9784c388e06d496b7`; bounded atomic evidence packaging, independent directory verification, exact replay, partial-build quarantine, distinct catalog identities, and child-process crash/Stop/leakage drills pass complete validation `2261/2261`.
    - T3B13-T5 excludes: executable rehearsal command, internal loop, timer, scheduler, network provider, real Pilot, T1/T2 assembly, model, recommendation, broker, order, or execution.
-   - T3B13 next sequence: MR1; separately approved rehearsal run.
+   - T3B13-MR1 status: complete locally and pending Owner review.
+   - T3B13-MR1 decision: `FIXTURE_REHEARSAL_FOUNDATION_ACCEPTED / GO_FOR_DURABLE_REHEARSAL_COMPOSITION_DESIGN / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+   - T3B13-MR1 blockers: no durable rehearsal registry across invocations, no concrete SQLite/backup/validation evidence verifier, no independently reopenable backup in the final evidence boundary, and no assembled fresh-process rehearsal drill.
+   - Next task after approval: design-only `Day15-T3B14-T1 — Durable Fixture Rehearsal Composition and Evidence Architecture`; the rehearsal run remains separately blocked.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B13 Fixture Rehearsal Milestone Review
+
+- Decision: accept T3B13 contracts, preparation, one-action coordination, evidence packaging, independent package-directory reread, and package-level process drills as reusable deterministic foundations.
+- Decision: classify readiness as `FIXTURE_REHEARSAL_FOUNDATION_ACCEPTED / GO_FOR_DURABLE_REHEARSAL_COMPOSITION_DESIGN / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+- Rationale: the only rehearsal step-ledger implementation is in memory, so separate process invocations cannot reconstruct authoritative lifecycle, ordinal, replay, and recovery state.
+- Rationale: SQLite, backup, and validation verification is an injected trust boundary with no concrete implementation, and the package verifier cannot independently reopen the referenced backup.
+- Rationale: package child-process drills do not assemble preparation, the real T3B12 foreground step, restart/recovery, backup, package construction, and fresh-process verification.
+- Decision: require a design-only durable rehearsal composition and evidence task before implementation or any rehearsal run.
+- Consequence: T3B13 implementation approval does not authorize fixture execution, a general command, a loop, network access, a real Pilot, T1/T2 delivery, dataset qualification, recommendation, broker, order, or execution.
+
 ## 2026-07-25 - Day15-T3B13-T5 Evidence Package and Process Drills
 
 - Decision: permit package mutation only under a repository-disjoint pre-registered root and only after an injected port verifies bound SQLite, backup, and validation evidence.

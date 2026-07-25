@@ -1,6 +1,16 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B13-T5 Evidence Package and Process Drills (Pending Owner Review)
+## 2026-07-25 - Day15-T3B13 Fixture Rehearsal Milestone Review (Pending Owner Review)
+
+- Reviewed the complete T3B13-T1 through T5 baseline at `8ecf918e56c01fb6331894b9784c388e06d496b7`.
+- Accepted the strict manifest, isolated preparation, one-action coordinator, bounded evidence package, independent package-directory reread, and package-level process drills as reusable fixture foundations.
+- Found that rehearsal lifecycle state is not durable across process invocations because only the in-memory step ledger is implemented.
+- Found that SQLite, backup, and validation truth remains behind an injected verifier port and that the independent directory verifier cannot reopen the referenced backup from the package.
+- Found no end-to-end fresh-process drill composing preparation, the real T3B12 step, recovery, backup, packaging, and final verification.
+- Decision: `FIXTURE_REHEARSAL_FOUNDATION_ACCEPTED / GO_FOR_DURABLE_REHEARSAL_COMPOSITION_DESIGN / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+- Added no source code, runtime command, provider, network, credential, Pilot, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B13-T5 Evidence Package and Process Drills
 
 - Added a repository-disjoint, pre-registered package-root boundary that writes 15 bounded sanitized JSON artifacts into an isolated staging directory and atomically publishes one immutable evidence directory.
 - Added an injected evidence-verification port for SQLite, backup, and validation truth; package construction refuses unverified evidence before filesystem mutation.
@@ -10,6 +20,7 @@
 - Corrected the package contract to preserve distinct catalog-level and catalog-entry fingerprints, matching the T3 preparation boundary.
 - Added 17 focused network-free checks: 12 package/verifier tests, four process drills, and one catalog-identity regression.
 - Complete Alpha validation passes `2261/2261` with zero failures.
+- Owner approved and pushed T3B13-T5 as `8ecf918e56c01fb6331894b9784c388e06d496b7`.
 - Added no executable rehearsal command, scheduler, loop, network provider, real Pilot, recommendation, broker, order, or execution authority.
 
 ## 2026-07-25 - Day15-T3B13-T4 Programmatic Rehearsal Step
