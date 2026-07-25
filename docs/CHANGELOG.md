@@ -1,6 +1,15 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B11-T5 Process Failure and Replay Drills (Pending Owner Review)
+## 2026-07-25 - Day15-T3B11 Fixture Runtime Milestone Review (Pending Owner Review)
+
+- Reviewed the complete T3B11-T1 through T3B11-T5 fixture-runtime foundation at baseline `c72a90c672c2297d381cf76238e642034c419f83`.
+- Accepted immutable configuration, single-process ownership, clocks, deterministic scheduling, one-cycle fixture Worker, Operator/Health, Stop, and initial process drills as reusable foundations.
+- Kept runtime start and bounded-live operation blocked.
+- Identified missing foreground assembly, T6 due-transition ownership, authenticated stale-lock recovery, and transaction-boundary OS-process kill drills.
+- Confirmed that future-market provider admission, Robinhood platform evidence, Outbox delivery, T1/T2 assembly, dataset qualification, and commercial operation remain separately blocked.
+- Recommended `Day15-T3B12-T1 — Fixture Runtime Assembly and Recovery Architecture` as a design-only next task.
+
+## 2026-07-25 - Day15-T3B11-T5 Process Failure and Replay Drills
 
 - Added a real child-process ownership fixture and eight deterministic, network-free drills.
 - Verified that a concurrent process cannot acquire the same runtime ownership and cannot mutate the existing owner record.
@@ -9,6 +18,7 @@
 - Verified exact Stop replay determinism, conflicting replay failure, persistent Stop-barrier precedence, and fail-closed post-Stop health.
 - Registered the process drills in the focused package scripts and the complete Alpha validation bundle.
 - Added no automatic stale-lock recovery, runtime loop, background service, network provider, real Pilot, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B11-T5 as `c72a90c672c2297d381cf76238e642034c419f83`.
 
 ## 2026-07-25 - Day15-T3B11-T4 Local Operator and Health Surface
 

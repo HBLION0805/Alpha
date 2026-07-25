@@ -37,11 +37,16 @@ notification, and a bounded payload-free SQLite Outbox projection. It does not
 add an executable runtime-start command, timer, loop, cross-process control
 server, automatic lock recovery, Outbox delivery, or provider request.
 
-T3B11-T5 now implements eight network-free process failure and replay drills,
-pending Owner review. A real child process proves duplicate ownership rejection,
+T3B11-T5 implements eight network-free process failure and replay drills and
+was Owner-approved, committed, and pushed as `c72a90c`. A real child process proves duplicate ownership rejection,
 forced-exit stale-lock preservation, and fail-closed restart. Deterministic
 drills cover retry timeout, cutoff/deadline and Stop precedence, exact and conflicting
 Stop replay, and post-Stop health.
+
+T3B11-MR1 is implemented locally and pending Owner review. It accepts the
+fixture-runtime foundation, permits assembly design only, and keeps runtime
+start and bounded-live operation blocked. See
+[Event Contract Collection Runner Runtime Milestone Review](../EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_MILESTONE_REVIEW.md).
 
 ## Purpose
 
@@ -765,11 +770,14 @@ T3B11 remains separately gated:
    `c493573`; Preflight, Status, Health, authenticated Stop, process-local
    notification, and bounded Outbox projection. Automatic stale-lock recovery
    remains deferred because T4 does not add lock takeover authority.
-5. **T3B11-T5 — Process drills:** implemented locally and pending Owner review;
-   eight duplicate-process, forced-exit, stale-lock restart, timeout, cutoff/deadline,
+5. **T3B11-T5 — Process drills:** completed and pushed as `c72a90c`; eight
+   duplicate-process, forced-exit, stale-lock restart, timeout, cutoff/deadline,
    Stop, health, and replay tests.
-6. **T3B11-MR1 — Fixture runtime milestone review.**
-7. **Later separately approved work:** exact future-market provider admission
+6. **T3B11-MR1 — Fixture runtime milestone review:** implemented locally and
+   pending Owner review.
+7. **Recommended next design:** T3B12-T1 fixture runtime assembly and recovery
+   architecture.
+8. **Later separately approved work:** exact future-market provider admission
    and bounded-live Shadow Pilot.
 
 No task inherits approval from the previous task.

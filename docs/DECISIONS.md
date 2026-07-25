@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B11 Fixture Runtime Milestone Review
+
+### Accept the Foundation Without Authorizing Runtime Start
+
+- Decision: record `FIXTURE_RUNTIME_FOUNDATION_ACCEPTED / GO_FOR_ASSEMBLY_DESIGN / NO_GO_FOR_RUNTIME_START / NO_GO_FOR_BOUNDED_LIVE`.
+- Rationale: T3B11 establishes strong reusable authority and execution primitives, but no reviewed composition root owns startup, recovery, T6 due transition, one-cycle execution, shutdown, and cleanup as one boundary.
+- Consequence: the existing classes may support the next architecture task, but they cannot be assembled ad hoc into an operating command.
+
+### Require Authenticated Stale-Lock Recovery
+
+- Decision: preserve fail-closed stale locks until a separately designed local Owner procedure binds liveness, boot identity, store integrity, recovery evidence, and one-time authority.
+- Rationale: automatic takeover is unsafe, while manual filesystem deletion is unaudited authority.
+- Consequence: no stale-lock deletion or ownership supersession may be added before T3B12 design review.
+
+### Require Real Transaction-Boundary Process-Kill Drills
+
+- Decision: retain T5 ownership-process drills as valid evidence but classify the full process-kill acceptance gate as partial.
+- Rationale: injected Worker failures do not prove operating-system crash behavior after lease, attempt, validation, or evidence commit.
+- Consequence: runtime start remains blocked until a reviewed foreground fixture composition supports those drills.
+
 ## 2026-07-25 - Day15-T3B11-T5 Process Failure and Replay Drills
 
 ### A Crash Preserves Ownership Ambiguity

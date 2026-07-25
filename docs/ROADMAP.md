@@ -349,9 +349,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B11-T4 status: completed, committed, and pushed as `c4935738e076e5430c46a55850ef23f499b8e6dd`.
    - T3B11-T4 scope: closed health evidence, fail-closed readiness, exact Owner challenge verification, durable Stop adapters, immutable reports, payload-free read queries, and 18 network-free tests.
    - T3B11-T4 excludes: executable runtime start, timers, loops, background services, cross-process server, automatic lock recovery, Outbox delivery, network provider, real Pilot, probability research, recommendation, broker, order, or execution.
-   - T3B11-T5 status: eight network-free process, timeout, cutoff/deadline, Stop, restart, and replay drills are implemented locally and pending Owner review.
+   - T3B11-T5 status: completed, committed, and pushed as `c72a90c672c2297d381cf76238e642034c419f83`.
    - T3B11-T5 scope: real child-process duplicate rejection, forced-exit stale-lock preservation, fail-closed restart, durable retry-transition requirement, cutoff/deadline and Stop precedence, exact Stop replay, conflicting replay rejection, and post-Stop health.
    - T3B11-T5 excludes: automatic stale-lock recovery, runtime loop, timers, background services, provider requests, real Pilot operation, probability research, recommendation, broker, order, or execution.
+   - T3B11-MR1 status: implemented locally and pending Owner review.
+   - T3B11-MR1 decision: `FIXTURE_RUNTIME_FOUNDATION_ACCEPTED / GO_FOR_ASSEMBLY_DESIGN / NO_GO_FOR_RUNTIME_START / NO_GO_FOR_BOUNDED_LIVE`.
+   - T3B11-MR1 blockers: no foreground composition root, no reviewed T6 due-transition owner, no authenticated stale-lock recovery procedure, and no OS-process kill drills at lease/attempt/validation/commit boundaries.
+   - Recommended next task: `Day15-T3B12-T1 — Fixture Runtime Assembly and Recovery Architecture`, design only.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B11-T4 is committed and pushed; Day15-T3B11-T5 Process Failure and Replay Drills are implemented locally and pending Owner review
+Day15-T3B11-T5 is committed and pushed; Day15-T3B11-MR1 Fixture Runtime Milestone Review is implemented locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `c4935738e076e5430c46a55850ef23f499b8e6dd` on `main`, equal to `origin/main` before the T3B11-T5 implementation task.
+Verified baseline: `c72a90c672c2297d381cf76238e642034c419f83` on `main`, equal to `origin/main` before the T3B11-MR1 review task.
 
 Day 7 completed:
 
@@ -83,7 +83,9 @@ Day15-T3B11-T3 is committed and pushed as `ddad4260444142b9b06185ed422b22a5ae7aa
 
 Day15-T3B11-T4 is committed and pushed as `c4935738e076e5430c46a55850ef23f499b8e6dd`. It adds deterministic Preflight/Status/Health reporting, authenticated graceful and Emergency Stop orchestration, a fingerprint-bound process-local notification slot, and a bounded payload-free SQLite read model for Pilot/task/budget/lease/Outbox state. Health is fail-closed unless every safety authority is current. Stop persistence or notification failure cannot clear the process barrier.
 
-Day15-T3B11-T5 is implemented locally and pending Owner review. Eight network-free drills cover real duplicate-process ownership rejection, forced owner exit, stale-lock restart rejection, retry timeout, cutoff/deadline precedence, Stop precedence, exact Stop replay, conflicting replay, and fail-closed post-Stop health. The drill fixture has no provider or persistence authority beyond the existing local ownership record. T5 adds no runtime-start loop, automatic stale-lock recovery, Outbox delivery, network provider, real Pilot startup, model, recommendation, broker, order, or execution authority.
+Day15-T3B11-T5 is committed and pushed as `c72a90c672c2297d381cf76238e642034c419f83`. Eight network-free drills cover real duplicate-process ownership rejection, forced owner exit, stale-lock restart rejection, retry timeout, cutoff/deadline precedence, Stop precedence, exact Stop replay, conflicting replay, and fail-closed post-Stop health. The drill fixture has no provider or persistence authority beyond the existing local ownership record.
+
+Day15-T3B11-MR1 is implemented locally and pending Owner review. The review accepts the T3B11 fixture-runtime components as reusable foundations and permits assembly design only. Runtime start and bounded-live operation remain blocked because no reviewed foreground composition owns startup, T6 due transition, Stop/shutdown, stale-lock recovery, and cleanup, and because OS-process kill drills do not yet cover lease/attempt/validation/commit boundaries.
 
 ## Day 6 Milestone Review
 
@@ -519,4 +521,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B11-T5 Process Failure and Replay Drills. If approved and pushed, begin T3B11-MR1 Fixture Runtime Milestone Review. Do not add a runtime loop, automatic stale-lock recovery, cross-process server, network provider, real Pilot activation, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B11-MR1 Fixture Runtime Milestone Review. If approved and pushed, begin `Day15-T3B12-T1 — Fixture Runtime Assembly and Recovery Architecture` as a design-only task. Do not add a runtime start command, loop, automatic stale-lock recovery, cross-process server, network provider, real Pilot activation, probability research, recommendation, or trading authority.

@@ -751,6 +751,8 @@ Day15-T3B11-T4 adds a local programmatic Operator and Health surface without sta
 
 Day15-T3B11-T5 validates the local runtime boundary through real child-process ownership contention plus deterministic timeout, cutoff/deadline, Stop, restart, and replay drills. A duplicate process is rejected without changing owner evidence; forced exit leaves a stale immutable lock that blocks restart rather than being auto-stolen. Retry-wait work cannot be acquired without its durable due transition, cutoff and deadline prevent acquisition, and Stop has scheduler precedence. Exact Stop replay is deterministic, changed replay fails closed, and post-Stop health cannot be reported healthy. T5 adds test fixtures only and creates no runtime loop, stale-lock recovery authority, network provider, Pilot operation, recommendation, or trading path.
 
+Day15-T3B11-MR1 accepts the T3B11 fixture-runtime components as reusable foundations but does not authorize runtime start. No single reviewed composition root currently owns immutable startup, lock acquisition, SQLite readiness/recovery, process-session binding, T6 due transition, one-cycle execution, Stop/shutdown timeout, clean release, and terminal reporting. Real process-kill evidence also covers ownership only, not the lease/attempt/validation/commit boundaries. The next permitted work is assembly-and-recovery architecture design; automatic stale-lock recovery, background execution, providers, real Pilot activation, and capital authority remain blocked. See [Event Contract Collection Runner Runtime Milestone Review](EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_MILESTONE_REVIEW.md).
+
 ---
 
 # Event Contract Framework
