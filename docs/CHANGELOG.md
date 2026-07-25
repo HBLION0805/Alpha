@@ -1,12 +1,21 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B10 Runner Milestone Review (Pending Owner Review)
+## 2026-07-25 - Day15-T3B11-T1 Shadow Pilot Runtime Architecture (Pending Owner Review)
+
+- Defined one foreground local runtime process, immutable configuration, atomic single-instance ownership, fresh boot/process-session identity, and fail-closed stale-lock recovery.
+- Separated wall, monotonic, and clock-health authority and prohibited hidden current-time decisions inside the scheduler.
+- Defined a pure one-task scheduler, fixture-only Worker transaction sequence, retry/cutoff gates, graceful and Emergency Stop ordering, sanitized status, and replayable outbox integration.
+- Added a runtime threat model and a separately gated T3B11-T2 through T3B11-T5 implementation sequence.
+- Added no code, dependency, command, lock, clock, scheduler, Worker, timer, provider request, Pilot activation, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B10 Runner Milestone Review
 
 - Reviewed the complete T3B9 through T3B10-T4D authority, persistence, recovery, authentication, and drill evidence at baseline `1b7e9744189cd5028a8cae13bc057954648bbb27`.
 - Accepted the foundation for Shadow Pilot Runtime Architecture design only.
 - Kept fixture-worker, continuous-runner, provider-request, and real-Pilot operation blocked.
 - Recorded high-priority gaps in runtime process ownership, single-instance locking, scheduler/clock/worker composition, future-market provider policy, platform evidence, and T1/T2 integration.
 - Defined a separately gated T3B11-T1 through T3B11-T5 sequence before any bounded-live pilot review.
+- Owner approved and pushed T3B10-MR1 as `593f0f54804f64bce4808857e901d66f3babd80a`.
 
 ## 2026-07-25 - Day15-T3B10-T4D Recovery-Control Race and Crash Drills
 

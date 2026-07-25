@@ -1,5 +1,37 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B11-T1 Shadow Pilot Runtime Architecture
+
+### The First Runtime Is Foreground and Fixture-Only
+
+- Decision: The first runtime implementation must be an explicit foreground local process composed only with an injected fixture adapter.
+- Rationale: process ownership, Stop, clock, and crash behavior must be proven before adding background lifetime or network uncertainty.
+- Consequence: T3B11 approval cannot start a daemon, operating-system scheduled job, real provider request, or Pilot.
+
+### Process Authority Begins With an Atomic Lock
+
+- Decision: Derive one local lock identity from store, activation, and configuration fingerprints; acquire it atomically; never steal or delete a stale lock automatically.
+- Rationale: SQLite serializes writes but does not prove which local process owns the runtime and in-memory stop barrier.
+- Consequence: crashes leave a fail-closed stale lock, and only a later Owner-authenticated recovery flow may archive it after process-liveness and store-recovery checks.
+
+### Runtime Identity Is Minted, Not Supplied
+
+- Decision: Create a fresh process nonce after lock acquisition and derive the process session from boot, process, configuration, build, store, and activation identities.
+- Rationale: accepting a process session from arguments or configuration would make restart isolation caller-controlled.
+- Consequence: every restart has a distinct session and an operational Pilot must follow existing recovery authorization rules.
+
+### Time Has Three Separate Authorities
+
+- Decision: Require injected wall-clock, monotonic-clock, and clock-health ports and prohibit hidden clock calls in the deterministic scheduler.
+- Rationale: chronology, elapsed duration, and synchronization confidence have different semantics and failure modes.
+- Consequence: unavailable or stale health evidence blocks acquisition and may trigger Emergency Stop; monotonic values never cross a process identity.
+
+### Outbox Delivery Is Replayable, Not Cross-Store Atomic
+
+- Decision: Keep SQLite source evidence authoritative and require a later T1/T2 consumer to use idempotent target writes and replayable delivery evidence.
+- Rationale: the Runner SQLite store and current shadow ledger do not share one transaction.
+- Consequence: a crash may replay a delivery but may not duplicate, overwrite, or infer missing platform evidence.
+
 ## 2026-07-25 - Day15-T3B10 Runner Milestone Review
 
 ### Foundation Acceptance Does Not Authorize Operation

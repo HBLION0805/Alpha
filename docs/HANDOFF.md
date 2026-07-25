@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B10-T4D is committed and pushed; Day15-T3B10-MR1 Runner milestone review is implemented locally and pending owner review
+Day15-T3B10-MR1 is committed and pushed; Day15-T3B11-T1 Shadow Pilot Runtime Architecture is implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `1b7e9744189cd5028a8cae13bc057954648bbb27` on `main`, equal to `origin/main` before the T3B10-MR1 review task.
+Verified baseline: `593f0f54804f64bce4808857e901d66f3babd80a` on `main`, equal to `origin/main` before the T3B11-T1 design task.
 
 Day 7 completed:
 
@@ -73,7 +73,9 @@ Day15-T3B10-T4C is committed and pushed as `c11cbf844284676ad5dfeee89fd82221cc52
 
 Day15-T3B10-T4D is committed and pushed as `1b7e9744189cd5028a8cae13bc057954648bbb27`. Six network-free drills cover both two-connection Stop/Resume orderings, crash after Resume, crash after Stop, injected atomic Resume failure, and durable Stop persistence failure. The drills found and corrected revoked-session fingerprint drift.
 
-Day15-T3B10-MR1 is implemented locally and pending owner review. It accepts the Runner foundation for T3B11 runtime architecture design only and blocks operation. Missing runtime process ownership, single-instance locking, scheduler/clock/worker composition, complete lifecycle commands, future-market provider admission, platform evidence, T1/T2 integration, and health/outbox consumption remain explicit blockers.
+Day15-T3B10-MR1 is committed and pushed as `593f0f54804f64bce4808857e901d66f3babd80a`. It accepts the Runner foundation for T3B11 runtime architecture design only and blocks operation.
+
+Day15-T3B11-T1 is implemented locally and pending owner review. It specifies one foreground fixture-only runtime, immutable configuration, atomic fail-closed single-instance locking, minted boot/process identity, separate wall/monotonic/health clocks, a pure one-task scheduler, exact Worker transaction ordering, lifecycle controls, sanitized health/outbox projection, replayable T1/T2 integration, and a runtime threat model. It adds no runtime code or operation.
 
 ## Day 6 Milestone Review
 
@@ -454,6 +456,7 @@ Day15-T3B10-T4D adds 6/6 focused recovery-control race/crash drills and raises t
 - `529ddbc1fc53a8d93a1beca77bc277e78fac9c2c` — Event Contract Collection Runner Durable Recovery-Control Transactions
 - `c11cbf844284676ad5dfeee89fd82221cc5282a9` — Event Contract Collection Runner Local Owner Authentication and Session Gate
 - `1b7e9744189cd5028a8cae13bc057954648bbb27` — Event Contract Collection Runner Recovery-Control Race and Crash Drills
+- `593f0f54804f64bce4808857e901d66f3babd80a` — Event Contract Collection Runner Milestone Review
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -505,4 +508,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B10-MR1. If approved and pushed, begin T3B11-T1 Shadow Pilot Runtime Architecture as a design-only task. Do not implement or start a scheduler/worker, real provider request, continuous runner, Pilot activation, probability research, or trading authority.
+Owner review of Day15-T3B11-T1 Shadow Pilot Runtime Architecture. If approved and pushed, begin T3B11-T2 immutable runtime configuration, process ownership, boot/process identity, and clock ports without implementing a scheduler or Worker. Do not start a runtime, provider request, Pilot activation, probability research, or trading authority.

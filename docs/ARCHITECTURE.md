@@ -741,6 +741,8 @@ Day15-T3B10-T4D exercises the recovery-control boundary with temporary, network-
 
 The Day15-T3B10 milestone review accepts the runner foundation for runtime architecture design only. It explicitly blocks operation because no single-instance process owner, runtime clocks, scheduler/worker composition, complete Pilot operator surface, future-market provider composition, automatic platform-evidence lane, T1/T2 assembly path, or health/outbox consumer exists. See [Event Contract Collection Runner Milestone Review](EVENT_CONTRACT_COLLECTION_RUNNER_MILESTONE_REVIEW.md).
 
+Day15-T3B11-T1 specifies the missing local runtime boundary without implementing it. One foreground process must acquire a fail-closed single-instance lock, create rather than accept its boot/process-session identity, validate immutable configuration, use injected wall/monotonic/clock-health ports, and route every mutation through the session-gated repository. The deterministic scheduler may select at most one already-materialized task; the first Worker composition is fixture-only. Runtime Stop, local control, status/outbox projection, evidence integration, crash handling, and bounded-live admission remain separately gated. See [Event Contract Collection Runner Runtime Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME.md).
+
 ---
 
 # Event Contract Framework

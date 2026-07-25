@@ -85,7 +85,7 @@ AI may provide advisory output. Deterministic Alpha systems retain control of ca
 
 See [Architecture](docs/ARCHITECTURE.md), [Roadmap](docs/ROADMAP.md), and [Handoff](docs/HANDOFF.md) for current boundaries and next priorities.
 
-The current Runner readiness decision is recorded in [Event Contract Collection Runner Milestone Review](docs/EVENT_CONTRACT_COLLECTION_RUNNER_MILESTONE_REVIEW.md).
+The current Runner readiness decision is recorded in [Event Contract Collection Runner Milestone Review](docs/EVENT_CONTRACT_COLLECTION_RUNNER_MILESTONE_REVIEW.md). The design-only next boundary is [Event Contract Collection Runner Runtime Architecture](docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME.md).
 
 Day 5 contracts and boundaries are specified in [Prediction Log](docs/PREDICTION_LOG_SPECIFICATION.md), [Alpha Journal](docs/ALPHA_JOURNAL_SPECIFICATION.md), [Research Lab](docs/RESEARCH_LAB_SPECIFICATION.md), [Strategy Versioning](docs/STRATEGY_VERSIONING_SPECIFICATION.md), and [Development Validation Log](docs/DEVELOPMENT_VALIDATION_LOG_SPECIFICATION.md).
 

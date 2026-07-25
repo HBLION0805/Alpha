@@ -10,7 +10,7 @@ Day15-T3B10-T4B implements checksum-bound migration 002 and named recovery-contr
 
 Day15-T3B10-T4C implements the local authenticated Owner command, process-session repository gate, and immediate in-memory stop barrier and is committed and pushed as `c11cbf844284676ad5dfeee89fd82221cc5282a9`.
 
-Day15-T3B10-T4D implements six network-free stop/resume race, crash/restart, transaction-fault, and durable-stop-failure drills locally, pending owner review. The drills found and corrected session-revocation fingerprint drift. T4D adds no scheduler/worker operation, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
+Day15-T3B10-T4D implements six network-free stop/resume race, crash/restart, transaction-fault, and durable-stop-failure drills and is committed and pushed as `1b7e9744189cd5028a8cae13bc057954648bbb27`. The drills found and corrected session-revocation fingerprint drift. T4D adds no scheduler/worker operation, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
 
 ## T4A implementation boundary
 
