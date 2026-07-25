@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B7 is committed and pushed; its official Robinhood mapping-evidence correction is implemented locally and pending owner review
+Day15-T3B7 is committed and pushed; Day15-T3B8 bounded Kalshi live-read smoke is implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `5c6e8daf616e16c4c664cf4156f6a19a229610c2` on `main`, equal to `origin/main` before the Day15-T3B7 mapping-evidence correction.
+Verified baseline: `c9c4444775776dbd0eebfe757f07d4ff39949154` on `main`, equal to `origin/main` before Day15-T3B8.
 
 Day 7 completed:
 
@@ -45,7 +45,9 @@ Day15-T3B5 defines the source-admission architecture required before scalable re
 
 Day15-T3B6 implements provider-neutral source contracts and deterministic validation. Provider descriptors restrict capabilities by source class and expose no brokerage credential mode. Exact mappings bind complete Robinhood and external identities and terms. Fixture-only snapshots preserve provenance chronology and bounded payload metadata without raw payload persistence. Declared bounded-live capability is explicitly unauthorized by the current policy. The owner approved and pushed it as `554274209df6f040a09ee7b7221cb8748a684c5d`.
 
-Day15-T3B7 is committed and pushed as `5c6e8daf616e16c4c664cf4156f6a19a229610c2`. Its local official-evidence correction adds one sanitized fixture from the exact public Robinhood event page. That page exposes the canonical page slug, a routable deep-link UUID, a separately preserved opaque `ec_id`, complete primary and secondary rules, and a direct Kalshi `CRYPTO15M` terms link. The reviewed PDF is content-addressed by SHA-256. Together with the exact Kalshi market and series fixtures, the adapter now creates one `REVIEWED_EXACT` mapping and one fixture-only settlement snapshot for the official DOWN result at `$64,809.04`. It preserves distinct native titles and adds no runtime browser, credential, transport, persistence, live-read authority, quote/fee substitution, model, recommendation, order, or execution behavior.
+Day15-T3B7 including the official-evidence correction is committed and pushed as `c9c4444775776dbd0eebfe757f07d4ff39949154`. One sanitized fixture from the exact public Robinhood event page preserves the canonical page slug, routable deep-link UUID, opaque `ec_id`, complete rules, direct Kalshi terms link, and content-addressed terms PDF. Together with the exact Kalshi market and series fixtures, it creates one `REVIEWED_EXACT` mapping and one fixture-only settlement snapshot for the official DOWN result at `$64,809.04`.
+
+Day15-T3B8 is implemented locally. It adds one credential-free, exact-endpoint Kalshi public HTTPS transport; an exact source-engine bounded-live policy; a manual command that defaults to dry run; strict request, timeout, byte, and record budgets; and sanitized immutable settlement-source output. Automated tests inject transports, and the verified default command reports zero network calls and zero writes. No real request has been executed. The milestone adds no Robinhood private access, discovery, retry, polling, persistence, probability, recommendation, order, or execution authority.
 
 ## Day 6 Milestone Review
 
@@ -352,6 +354,8 @@ Day15-T3B7 adds 24/24 focused Kalshi Event Contract Fixture Adapter tests and ra
 
 The Day15-T3B7 official Robinhood mapping-evidence correction expands the focused adapter suite to 34/34 and the complete registered validation baseline to 1828/1828. It adds strict platform identity, exact-rule, terms-link, content-digest, chronology, unknown-field, mapping-lineage, and fixture-snapshot coverage.
 
+Day15-T3B8 expands Event Contract Source validation from 42/42 to 44/44, adds 12/12 Kalshi public HTTPS transport tests and 14/14 Kalshi live-smoke tests, and raises the complete registered validation baseline to 1856/1856. The manual default dry run reports zero network requests and zero persistence writes.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -444,4 +448,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of the Day15-T3B7 official Robinhood mapping-evidence correction after focused and complete validation. If approved and pushed, specify T3B8's one-shot bounded live-read policy, dry-run command, injected public HTTPS transport, request/byte/record budgets, sanitized errors, and zero-persistence rule before implementation. Do not create a collection runner, freeze a real plan, or begin Day15-T3C probability research.
+Owner review of Day15-T3B8 after focused and complete validation. If approved and pushed, run the default network-free dry command once for operator verification. A single confirmed public request requires separate explicit owner authorization. Do not begin T3B9, freeze a real plan, or begin Day15-T3C probability research.

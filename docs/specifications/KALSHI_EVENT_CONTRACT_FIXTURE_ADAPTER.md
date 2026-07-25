@@ -97,9 +97,11 @@ Completed locally:
 - exact T3B6 mapping and fixture settlement snapshot;
 - strict parsing, identity, terms, settlement, chronology, fingerprint, immutability, and adversarial tests.
 
+Day15-T3B8 separately implements a bounded public live-read smoke around this exact mapping. The fixture adapter itself remains network-free.
+
 Still blocked:
 
-- T3B8 bounded live-read execution until its policy, request budget, transport, zero-persistence behavior, and owner-confirmed smoke command are separately specified and reviewed;
+- execution of the first real T3B8 request until the T3B8 implementation is owner reviewed and the single request is separately authorized;
 - Robinhood quote or fee claims, because this fixture proves contract identity and settlement only.
 
 ## Official references

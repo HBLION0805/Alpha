@@ -52,6 +52,7 @@ const requiredFiles = [
   "docs/specifications/EVENT_CONTRACT_COLLECTION_SOURCE_ARCHITECTURE.md",
   "docs/specifications/EVENT_CONTRACT_SOURCE_CONTRACTS.md",
   "docs/specifications/KALSHI_EVENT_CONTRACT_FIXTURE_ADAPTER.md",
+  "docs/specifications/KALSHI_EVENT_CONTRACT_LIVE_SMOKE.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -104,6 +105,8 @@ const aggregateTestFiles = [
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
   "src/engines/event-contract-source/EventContractSourceEngine.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
+  "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
+  "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
@@ -347,7 +350,9 @@ function checkNetworkAndProviderCode(files) {
   const providerImportPattern = /\b(?:from\s+["']|import\s*\(?\s*["']|require\s*\(\s*["'])(openai|@anthropic-ai\/sdk|@google\/generative-ai|@google\/genai|google-generative-ai|cohere-ai|@cohere-ai\/sdk|mistralai|groq-sdk|together-ai|replicate|@polygon\.io\/client-js|@alpacahq\/alpaca-trade-api|finnhub|twelvedata|twelvedata-js)["']/iu;
   const networkPattern = /\b(fetch\s*\(|fetchFunction\s*\(|XMLHttpRequest|WebSocket|EventSource|axios|node:https|node:http|require\s*\(\s*["']https?["']|https?\.request|requests\.|urllib\.request|aiohttp|socket\.)/iu;
   const twelveDataConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+TwelveDataHttpTransport\b/u;
-  const approvedLiveTransport = "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.ts";
+  const approvedTwelveDataTransport = "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.ts";
+  const approvedKalshiTransport = "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.ts";
+  const approvedLiveTransports = new Set([approvedTwelveDataTransport, approvedKalshiTransport]);
 
   for (const file of productionFiles) {
     const text = readText(file);
@@ -355,21 +360,29 @@ function checkNetworkAndProviderCode(files) {
       recordFailure(`Provider SDK import found in production code: ${file}`);
     }
     const normalizedFile = relativePath(file);
-    if (networkPattern.test(text) && normalizedFile !== approvedLiveTransport) {
+    if (networkPattern.test(text) && !approvedLiveTransports.has(normalizedFile)) {
       recordFailure(`Network/API implementation pattern found in production code: ${file}`);
     }
     if (twelveDataConcreteTransportPattern.test(text)
       && !normalizedFile.endsWith("TwelveDataTestFixtures.ts")
-      && normalizedFile !== approvedLiveTransport) {
+      && normalizedFile !== approvedTwelveDataTransport) {
       recordFailure(`Unapproved concrete Twelve Data transport found in production code: ${file}`);
     }
-    if (normalizedFile === approvedLiveTransport) {
-      const requiredControls = [
-        'https://api.twelvedata.com/time_series',
-        'redirect: "error"',
-        'TwelveDataTransportErrorCode.Timeout',
-        'MAX_RESPONSE_BYTES',
-      ];
+    if (approvedLiveTransports.has(normalizedFile)) {
+      const requiredControls = normalizedFile === approvedTwelveDataTransport
+        ? [
+            "https://api.twelvedata.com/time_series",
+            'redirect: "error"',
+            "TwelveDataTransportErrorCode.Timeout",
+            "MAX_RESPONSE_BYTES",
+          ]
+        : [
+            "https://external-api.kalshi.com/trade-api/v2/markets/",
+            "KXBTC15M-26JUL232045-45",
+            'redirect: "error"',
+            "KalshiPublicTransportErrorCode.Timeout",
+            "MAX_RESPONSE_BYTES",
+          ];
       for (const control of requiredControls) {
         if (!text.includes(control)) recordFailure(`Approved live transport is missing safety control ${control}: ${file}`);
       }

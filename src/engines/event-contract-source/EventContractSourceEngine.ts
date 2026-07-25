@@ -56,6 +56,16 @@ export const DEFAULT_EVENT_CONTRACT_SOURCE_POLICY: EventContractSourcePolicy = d
   maximumRecordCount: 1_000,
 });
 
+/** The only non-fixture source policy authorized by the T3B8 implementation. */
+export const INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY: EventContractSourcePolicy = deepFreeze({
+  policyId: "event-contract-source:bounded-live-read-smoke:1",
+  version: "1.0",
+  ruleSetVersion: "1.0",
+  allowedSnapshotExecutionModes: [EventContractSourceExecutionMode.BoundedLiveRead],
+  maximumRawPayloadBytes: 100_000,
+  maximumRecordCount: 1,
+});
+
 export class EventContractSourceValidationError extends Error {
   public constructor(public readonly issues: readonly EventContractSourceIssue[]) {
     super("Event contract source validation failed.");
@@ -276,7 +286,26 @@ function validatePolicy(value: unknown): EventContractSourceIssue[] {
   version(issues, value.version, "policy.version");
   version(issues, value.ruleSetVersion, "policy.ruleSetVersion");
   uniqueEnums(issues, value.allowedSnapshotExecutionModes, EventContractSourceExecutionMode, "policy.allowedSnapshotExecutionModes", EventContractSourceIssueCode.InvalidExecutionMode);
-  if (!Array.isArray(value.allowedSnapshotExecutionModes) || value.allowedSnapshotExecutionModes.length !== 1 || value.allowedSnapshotExecutionModes[0] !== EventContractSourceExecutionMode.Fixture) add(issues, EventContractSourceIssueCode.UnauthorizedLiveRead, "policy.allowedSnapshotExecutionModes", "T3B6 policy must remain fixture-only.");
+  const fixtureOnly = value.policyId === DEFAULT_EVENT_CONTRACT_SOURCE_POLICY.policyId
+    && value.version === DEFAULT_EVENT_CONTRACT_SOURCE_POLICY.version
+    && value.ruleSetVersion === DEFAULT_EVENT_CONTRACT_SOURCE_POLICY.ruleSetVersion
+    && canonicalize(value.allowedSnapshotExecutionModes) === canonicalize(DEFAULT_EVENT_CONTRACT_SOURCE_POLICY.allowedSnapshotExecutionModes)
+    && value.maximumRawPayloadBytes === DEFAULT_EVENT_CONTRACT_SOURCE_POLICY.maximumRawPayloadBytes
+    && value.maximumRecordCount === DEFAULT_EVENT_CONTRACT_SOURCE_POLICY.maximumRecordCount;
+  const boundedLiveRead = value.policyId === INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY.policyId
+    && value.version === INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY.version
+    && value.ruleSetVersion === INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY.ruleSetVersion
+    && canonicalize(value.allowedSnapshotExecutionModes) === canonicalize(INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY.allowedSnapshotExecutionModes)
+    && value.maximumRawPayloadBytes === INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY.maximumRawPayloadBytes
+    && value.maximumRecordCount === INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY.maximumRecordCount;
+  if (!fixtureOnly && !boundedLiveRead) {
+    add(
+      issues,
+      EventContractSourceIssueCode.UnauthorizedLiveRead,
+      "policy.allowedSnapshotExecutionModes",
+      "Only the exact fixture policy or exact T3B8 bounded-live-read policy is authorized.",
+    );
+  }
   bound(issues, value.maximumRawPayloadBytes, 10_000_000, "policy.maximumRawPayloadBytes");
   bound(issues, value.maximumRecordCount, 100_000, "policy.maximumRecordCount");
   return issues.sort(compare);

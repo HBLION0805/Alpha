@@ -21,6 +21,7 @@ import {
 import {
   EventContractSourceEngine,
   EventContractSourceValidationError,
+  INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY,
 } from "./EventContractSourceEngine";
 
 function assertEqual<T>(actual: T, expected: T, label: string): void {
@@ -308,6 +309,26 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
     () => engine.createSnapshot(snapshotInput({ executionMode: EventContractSourceExecutionMode.BoundedLiveRead })),
     EventContractSourceIssueCode.UnauthorizedLiveRead,
   )],
+  ["arbitrary bounded-live policy remains unauthorized", () => expectIssue(
+    () => new EventContractSourceEngine({
+      ...INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY,
+      maximumRecordCount: 2,
+    }),
+    EventContractSourceIssueCode.UnauthorizedLiveRead,
+  )],
+  ["exact T3B8 policy permits one bounded-live snapshot", () => {
+    const liveEngine = new EventContractSourceEngine(INITIAL_BOUNDED_EVENT_CONTRACT_LIVE_READ_POLICY);
+    const liveProvider = liveEngine.createProvider(providerInput());
+    const liveMapping = liveEngine.createMapping(mappingInput({ provider: liveProvider }));
+    const result = liveEngine.createSnapshot(snapshotInput({
+      provider: liveProvider,
+      mapping: liveMapping,
+      executionMode: EventContractSourceExecutionMode.BoundedLiveRead,
+      rawPayloadBytes: 100_000,
+      recordCount: 1,
+    }));
+    assertEqual(result.executionMode, EventContractSourceExecutionMode.BoundedLiveRead, "live execution mode");
+  }],
   ["snapshot rejects observation after publication", () => expectIssue(
     () => engine.createSnapshot(snapshotInput({ publishedAt: "2026-07-24T12:09:59.999Z" })),
     EventContractSourceIssueCode.InvalidChronology,

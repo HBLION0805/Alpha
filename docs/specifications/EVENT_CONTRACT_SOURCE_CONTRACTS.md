@@ -75,7 +75,7 @@ observedAt <= publishedAt <= receivedAt <= normalizedAt
 
 When publication time is unavailable, observation must still not follow receipt.
 
-T3B6 policy authorizes fixture snapshots only. The type reserves `BOUNDED_LIVE_READ` for the separately reviewed T3B8 policy; declaring the mode does not authorize its use.
+The default T3B6 policy authorizes fixture snapshots only. Day15-T3B8 adds one exact separately named policy that permits only `BOUNDED_LIVE_READ` with a 100,000-byte and one-record ceiling. Altered or caller-invented live policies remain unauthorized; declaring the mode on a provider still does not authorize its use.
 
 ## Output and authority
 
@@ -104,5 +104,5 @@ Day15-T3B6 adds no:
 - pending and rejected mappings cannot qualify an exchange snapshot;
 - provider, mapping, and snapshot fingerprint tampering fails closed;
 - fixture results are deterministic and deeply immutable;
-- bounded-live snapshots remain unauthorized;
+- bounded-live snapshots remain unauthorized except under the exact T3B8 policy and complete provider/mapping/snapshot validation;
 - focused and complete validation pass.

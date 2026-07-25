@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B8 Bounded Kalshi Live-Read Smoke
+
+### One Exact Public Market Before Any Collection Runner
+
+- Decision: Permit only the official public `GET /trade-api/v2/markets/KXBTC15M-26JUL232045-45` endpoint in T3B8.
+- Reason: T3B7 proves the exact cross-venue identity for this market, while discovery or a changing current-market selector would introduce unreviewed mapping and scheduling authority.
+- Consequence: T3B8 can validate one real transport path but cannot collect future events, poll, retry, discover markets, or populate a dataset.
+
+### Default Dry Run and Separate Live Authorization
+
+- Decision: Make the manual command network-free unless `--confirm-live-read` is supplied after a separate owner decision.
+- Reason: Code approval and execution of an external request are distinct authority changes.
+- Consequence: Automated tests and normal command execution make zero network calls. T3B8 implementation does not claim that a real request has run.
+
+### Bounded Live Policy Is an Exact Capability Token
+
+- Decision: Allow the source engine to accept only the existing exact fixture policy or one exact T3B8 policy with a 100,000-byte and one-record ceiling.
+- Reason: Merely declaring `BOUNDED_LIVE_READ` on a provider must not enable arbitrary callers, budgets, or policies.
+- Consequence: Altering the policy identity, execution modes, versions, byte budget, or record budget fails closed.
+
+### Exchange Settlement Is Not a Robinhood Quote
+
+- Decision: Normalize only settlement evidence from this live-read smoke and suppress raw quote, fee, rule, and price fields from the command result.
+- Reason: Kalshi venue data cannot be relabeled as a Robinhood platform observation.
+- Consequence: The smoke creates research-source lineage only and cannot create a T1 observation, ledger entry, probability, recommendation, or trade.
+
 ## 2026-07-24 - Day15-T3B7 Official Robinhood Mapping Evidence Correction
 
 ### Contract-Specific Terms Link Establishes the Exchange Mapping

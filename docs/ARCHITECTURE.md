@@ -687,13 +687,19 @@ Day15-T3B6 implements the provider-neutral contract layer required by T3B5. Immu
 
 Exact mapping records bind one exchange provider to explicit Robinhood and exchange-native identities plus complete canonical BTC 15-minute terms. A `REVIEWED_EXACT` mapping is eligible only when all identity and terms fields agree; pending and rejected mappings remain immutable but ineligible.
 
-Source snapshots preserve provider and mapping fingerprints, one declared capability, provenance chronology, payload fingerprint, and bounded byte/record metadata without retaining a raw payload. T3B6 policy authorizes fixture snapshots only. `BOUNDED_LIVE_READ` remains a reserved type for T3B8 and is rejected by the current engine. Outputs remain research-source evidence, not T1 observations or trade authority. See [Event Contract Source Contracts](specifications/EVENT_CONTRACT_SOURCE_CONTRACTS.md).
+Source snapshots preserve provider and mapping fingerprints, one declared capability, provenance chronology, payload fingerprint, and bounded byte/record metadata without retaining a raw payload. The default T3B6 policy remains fixture-only. T3B8 adds exactly one separately named bounded-live policy with a 100,000-byte and one-record ceiling; all other live policies remain rejected. Outputs remain research-source evidence, not T1 observations or trade authority. See [Event Contract Source Contracts](specifications/EVENT_CONTRACT_SOURCE_CONTRACTS.md).
 
 ## Kalshi Event Contract Fixture Adapter
 
 Day15-T3B7 introduces one concrete fixture-only Kalshi provider and validates the official `KXBTC15M-26JUL232045-45` market together with its `KXBTC15M` series metadata. Its official-evidence correction adds one sanitized fixture from the exact public Robinhood event page. The adapter normalizes exact UTC interval, target, BRTI rule, terms-document references, finalized settlement facts, platform page identity, and content-addressed terms version from bounded static JSON without a runtime transport, credential, network request, persistence path, or raw-payload output.
 
 The exact Robinhood page links directly to Kalshi's `CRYPTO15M` terms and agrees with the Kalshi fixture on the interval, `$64,839.26` target, BRTI source, and complete primary and secondary rules. The mapping preserves each native title separately, the Robinhood page slug, its routable deep-link UUID, and the opaque `ec_id` without assigning undocumented semantics. The output is `NORMALIZED_EXACT_MAPPING`, constructs one T3B6 fixture settlement snapshot, and still has no T1 observation, quote/fee, live-read, or trading authority. See [Kalshi Event Contract Fixture Adapter](specifications/KALSHI_EVENT_CONTRACT_FIXTURE_ADAPTER.md).
+
+## Kalshi Bounded Live-Read Smoke
+
+Day15-T3B8 adds one isolated public HTTPS boundary for `GET /trade-api/v2/markets/KXBTC15M-26JUL232045-45`. The exact endpoint, market, method, timeout, request count, response bytes, and record count are fixed. The path has no credential, query, retry, redirect, polling, scheduling, streaming, persistence, or raw-payload output.
+
+The manual command defaults to network-free dry run. A confirmed invocation requires a separate owner decision and may perform exactly one request. The returned market must pass the complete T3B7 exact-market schema and mapping before the source engine can produce a `BOUNDED_LIVE_READ` settlement snapshot. Kalshi quote fields remain exchange-native and are not surfaced as Robinhood quote or fee evidence. Automated tests inject the transport and never call the network. See [Kalshi Event Contract Bounded Live-Read Smoke](specifications/KALSHI_EVENT_CONTRACT_LIVE_SMOKE.md).
 
 ---
 
