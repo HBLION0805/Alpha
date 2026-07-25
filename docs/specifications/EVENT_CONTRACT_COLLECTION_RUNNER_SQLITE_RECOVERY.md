@@ -2,7 +2,7 @@
 
 ## Status
 
-Day15-T3B10-T3C implements the local research-pilot startup recovery report, verified online backup, offline restore-to-new-path boundary, and network-free corruption drills. It is implemented locally and pending owner review.
+Day15-T3B10-T3C implements the local research-pilot startup recovery report, verified online backup, offline restore-to-new-path boundary, and network-free corruption drills. It is committed and pushed as `47a7a45df7dd9ad03e996389aaa2cc8b394aa699`.
 
 ## Startup recovery
 

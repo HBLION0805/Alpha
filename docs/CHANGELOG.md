@@ -1,6 +1,15 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B10-T3C SQLite Recovery, Backup, Restore, and Corruption Drills (Pending Owner Review)
+## 2026-07-24 - Day15-T3B10-T4 Recovery Control and Emergency Stop Design (Pending Owner Review)
+
+- Specified immutable recovery assessments, owner recovery decisions, and control execution receipts.
+- Defined Resume as a one-time process-session authorization rather than a false `ACTIVE -> ACTIVE` Pilot transition.
+- Defined deterministic recovery dispositions, terminal no-resume rules, restored-store switch separation, and exact owner authority.
+- Made Emergency Stop higher priority than Resume, lease acquisition, retry, and new provider requests, including persistence-failure and transaction-race behavior.
+- Split later implementation into separately reviewed T4A contracts/engine, T4B migration/transactions, T4C authenticated operator/session gate, and T4D crash/race drills.
+- Added no runtime, database migration, command, scheduler, worker, provider, Pilot, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B10-T3C SQLite Recovery, Backup, Restore, and Corruption Drills
 
 - Added immutable fail-closed startup recovery reports covering full integrity, migration/schema identity, canonical fingerprints, transitions, authority, evidence, attempts, leases, counters, committed outbox evidence, and operational-pilot restart state.
 - Blocked repository creation whenever recovery finds an issue; active or stop-requested pilots require explicit owner resume after restart.

@@ -317,9 +317,12 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B10-T3B status: completed, committed, and pushed as `854d2f94021c59dde6974c53a81653864dfd3e29`.
    - T3B10-T3B scope: T2-T10 plus explicit T8B validation-state transition, exact authority/source binding, compare-and-swap versions, durable lease and attempt claims, bounded retry, atomic normalized evidence/outbox commit, sanitized immutable reads, and 31 focused network-free tests.
    - T3B10-T3B excludes: application runtime store creation, scheduler, worker, timer, heartbeat/recovery loop, retry executor, provider request, real pilot activation, outbox publishing, backup/restore tooling, model, recommendation, sizing, broker, order, or execution.
-   - T3B10-T3C status: startup recovery, backup, restore, and corruption drills are implemented locally and pending owner review.
+   - T3B10-T3C status: completed, committed, and pushed as `47a7a45df7dd9ad03e996389aaa2cc8b394aa699`.
    - T3B10-T3C scope: immutable recovery reports, mutation blockers, owner-resume gating, invariant/counter checks, SQLite online backup, canonical digest-bound manifests, offline restore to a new path, and 11 focused network-free drills.
    - T3B10-T3C excludes: scheduler/worker operation, automatic lease resolution, retry execution, real pilot resume, provider requests, configured-store switching, backup retention deletion, repair, model, recommendation, broker, order, or execution.
+   - T3B10-T4 status: Owner Resume, Emergency Stop, and recovery-decision boundaries are specified locally and pending owner review.
+   - T3B10-T4 scope: immutable recovery assessments and owner decisions, deterministic dispositions, one-time process-session authorization, restore/resume separation, Emergency Stop precedence, race rules, and a separately gated T4A-T4D implementation sequence.
+   - T3B10-T4 excludes: contracts, migration 002, repository transactions, operator commands, scheduler/worker operation, provider requests, real activation/resume, model, recommendation, broker, order, or execution.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B10-T3B is committed and pushed; Day15-T3B10-T3C recovery, backup, restore, and corruption drills are implemented locally and pending owner review
+Day15-T3B10-T3C is committed and pushed; Day15-T3B10-T4 Owner Resume, Emergency Stop, and recovery-decision boundaries are specified locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `854d2f94021c59dde6974c53a81653864dfd3e29` on `main`, equal to `origin/main` before the T3B10-T3C implementation task.
+Verified baseline: `47a7a45df7dd9ad03e996389aaa2cc8b394aa699` on `main`, equal to `origin/main` before the T3B10-T4 design task.
 
 Day 7 completed:
 
@@ -61,7 +61,9 @@ Day15-T3B10-T3A is committed and pushed as `3191639fe268b1830ecc1cd70298ef9430db
 
 Day15-T3B10-T3B is committed and pushed as `854d2f94021c59dde6974c53a81653864dfd3e29`. It adds a restricted named repository port for T2-T10 plus the explicit T8B validation transition, with exact authority/source binding, compare-and-swap versions, durable leases and attempt claims, bounded retry, atomic result/evidence/counter/lease/outbox commits, and sanitized immutable reads.
 
-Day15-T3B10-T3C is implemented locally and pending owner review. It adds immutable startup recovery reports and mutation blockers, owner-resume gating after operational-pilot restart, independently verified SQLite online backups with digest-bound canonical manifests, offline restore to a new path, and 11 network-free recovery/corruption drills. It does not switch configured stores, resume a pilot, run a worker, invoke providers, or add trading behavior.
+Day15-T3B10-T3C is committed and pushed as `47a7a45df7dd9ad03e996389aaa2cc8b394aa699`. It adds immutable startup recovery reports and mutation blockers, owner-resume gating after operational-pilot restart, independently verified SQLite online backups with digest-bound canonical manifests, offline restore to a new path, and 11 network-free recovery/corruption drills.
+
+Day15-T3B10-T4 is specified locally and pending owner review. It defines Resume as a one-time owner authorization bound to the exact recovery assessment and new process session, not an `ACTIVE -> ACTIVE` transition. It defines deterministic recovery dispositions, permanent terminal states, restored-store switch separation, Emergency Stop precedence and race handling, and a T4A-T4D implementation split. It adds no runtime or persistence behavior.
 
 ## Day 6 Milestone Review
 
@@ -427,6 +429,7 @@ Day15-T3B10-T3C adds 11/11 focused SQLite recovery tests and raises the complete
 - `3f25aaa9ccc3160de93b92e686fe1f562c22bf28` — Event Contract Collection Runner SQLite Schema and Transaction Boundaries
 - `3191639fe268b1830ecc1cd70298ef9430db2b4e` — Event Contract Collection Runner SQLite Dependency and Migration Foundation
 - `854d2f94021c59dde6974c53a81653864dfd3e29` — Event Contract Collection Runner SQLite Repository Ports and Atomic Transactions
+- `47a7a45df7dd9ad03e996389aaa2cc8b394aa699` — Event Contract Collection Runner SQLite Recovery, Backup, and Restore
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -478,4 +481,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B10-T3C recovery, backup, restore, and corruption drills after complete validation. Do not create an application runtime store, start a scheduler/worker, switch a configured store, freeze or activate a real pilot, repeat live requests, or begin Day15-T3C probability research.
+Owner review of Day15-T3B10-T4 recovery control and Emergency Stop design after complete validation. If approved and pushed, begin T4A control contracts and deterministic decision engine as a separate implementation. Do not add migration 002, operator commands, runtime store, scheduler/worker, real Pilot resume, provider requests, or probability research.

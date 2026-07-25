@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B10-T4 Recovery Control and Emergency Stop
+
+### Resume Is a Session Authorization, Not a State Loop
+
+- Decision: Keep the durable Pilot `ACTIVE` after an eligible restart and authorize mutation through a one-time owner decision bound to a new boot/process session.
+- Rationale: Adding `ACTIVE -> ACTIVE` would fabricate lifecycle movement and blur restart authorization with business state.
+- Consequence: Every later restart requires a fresh assessment and owner decision; the authorization cannot extend time, budgets, attempts, or authority.
+
+### Emergency Stop Always Wins
+
+- Decision: Stop invalidates unconsumed resume/session authority and blocks leases, retries, and new requests before cancellation is attempted.
+- Rationale: Cancellation is best effort, while preventing additional work is deterministic and locally enforceable.
+- Consequence: Persistence failure still stops the process in memory and forces the next startup to expose an unresolved blocker.
+
 ## 2026-07-24 - Day15-T3B10-T3C Recovery, Backup, and Restore
 
 ### Recovery Blockers Disable Mutation

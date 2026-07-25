@@ -729,6 +729,8 @@ Day15-T3B10-T3B adds a restricted repository port over that private store. Named
 
 Day15-T3B10-T3C adds fail-closed startup recovery inspection, independently verified SQLite online backups with digest-bound canonical manifests, and offline restore to a new non-existing path. Recovery blockers prohibit repository mutation, and operational pilots require explicit owner resume after restart. Restore never switches configuration or resumes work. See [Event Contract Collection Runner SQLite Recovery](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_RECOVERY.md).
 
+Day15-T3B10-T4 specifies the subsequent recovery-control plane. Resume is not an `ACTIVE -> ACTIVE` lifecycle mutation; it is a one-time owner decision bound to the exact recovery assessment, activation version, store identity, new boot identity, and process session. Emergency Stop has precedence over resume, leases, retries, and new requests; terminal states never reopen. The task is design only. See [Event Contract Collection Runner Recovery Control](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RECOVERY_CONTROL.md).
+
 ---
 
 # Event Contract Framework

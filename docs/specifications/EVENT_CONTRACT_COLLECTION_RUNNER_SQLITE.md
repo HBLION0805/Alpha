@@ -935,7 +935,7 @@ T3B10-T2 authorizes no code. A future implementation should remain split:
    - implement reviewed backup/restore tooling;
    - complete corruption and restore rehearsals.
 
-T3C is implemented locally in [Event Contract Collection Runner SQLite Recovery](EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_RECOVERY.md) and remains pending owner review.
+T3C is implemented, committed, and pushed as `47a7a45df7dd9ad03e996389aaa2cc8b394aa699`; see [Event Contract Collection Runner SQLite Recovery](EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_RECOVERY.md).
 
 Scheduler, clocks, leases as an active process, retry enforcement, provider composition, monitoring UI, and operator activation remain later separately approved tasks.
 
