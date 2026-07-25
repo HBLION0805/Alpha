@@ -14,6 +14,12 @@ declare module "node:fs" {
   export function mkdtempSync(prefix: string): string;
   export function openSync(path: string, flags: string): number;
   export function readFileSync(path: string, encoding: "utf8"): string;
+  export function lstatSync(path: string): {
+    readonly size: number;
+    isFile(): boolean;
+    isSymbolicLink(): boolean;
+  };
+  export function realpathSync(path: string): string;
   export function rmSync(
     path: string,
     options?: { readonly recursive?: boolean; readonly force?: boolean },
@@ -66,4 +72,62 @@ declare module "node:path" {
 declare module "node:process" {
   export const env: Readonly<Record<string, string | undefined>>;
   export const execPath: string;
+  export const versions: Readonly<{ readonly node: string }>;
+}
+
+declare module "node:crypto" {
+  export interface Hash {
+    update(data: string, inputEncoding?: "utf8"): Hash;
+    digest(encoding: "hex"): string;
+  }
+
+  export function createHash(algorithm: "sha256"): Hash;
+}
+
+declare module "node:sqlite" {
+  export interface DatabaseSyncOptions {
+    readonly open?: boolean;
+    readonly readOnly?: boolean;
+    readonly enableForeignKeyConstraints?: boolean;
+    readonly enableDoubleQuotedStringLiterals?: boolean;
+    readonly allowExtension?: boolean;
+    readonly timeout?: number;
+    readonly readBigInts?: boolean;
+    readonly returnArrays?: boolean;
+    readonly allowBareNamedParameters?: boolean;
+    readonly allowUnknownNamedParameters?: boolean;
+    readonly defensive?: boolean;
+  }
+
+  export interface StatementResultingChanges {
+    readonly changes: number | bigint;
+    readonly lastInsertRowid: number | bigint;
+  }
+
+  export class StatementSync {
+    get(...anonymousParameters: ReadonlyArray<unknown>): Record<string, unknown> | undefined;
+    all(...anonymousParameters: ReadonlyArray<unknown>): Array<Record<string, unknown>>;
+    run(...anonymousParameters: ReadonlyArray<unknown>): StatementResultingChanges;
+  }
+
+  export class DatabaseSync {
+    constructor(path: string, options?: DatabaseSyncOptions);
+    close(): void;
+    exec(sql: string): void;
+    prepare(sql: string): StatementSync;
+  }
+
+  export function backup(
+    sourceDb: DatabaseSync,
+    path: string,
+    options?: {
+      readonly rate?: number;
+      readonly progress?: (
+        progressInfo: Readonly<{
+          readonly totalPages: number;
+          readonly remainingPages: number;
+        }>,
+      ) => void;
+    },
+  ): Promise<void>;
 }

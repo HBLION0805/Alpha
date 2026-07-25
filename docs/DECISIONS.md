@@ -1,5 +1,24 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B10-T3A SQLite Dependency and Migration Foundation
+
+### Use Node's SQLite Binding for the Local Research Pilot
+
+- Decision: Use Node 24.12+ built-in `node:sqlite` rather than adding an npm SQLite package.
+- Reason: The synchronous standard-library boundary is sufficient for deterministic local migration/open checks and avoids a separate native addon, package license, install path, and dependency supply chain.
+- Limitation: Node documents the module as active development. It is approved only for a single-host local research pilot and is not Alpha's commercial or production persistence decision.
+
+### Open and Migrate Fail Closed
+
+- Decision: Canonicalize the approved root, restrict store IDs, reject symbolic-link or non-file database/sidecar identities, disable extensions and ambiguous SQL parameter behavior, enable defensive mode, and verify every safety-critical pragma.
+- Decision: Bind migration 001 to the exact SHA-256 digest of its SQL, apply schema and metadata atomically, reject forward/inconsistent/altered histories, and require the exact 14-table `STRICT` catalog plus clean quick and foreign-key checks.
+- Consequence: The migration layer never silently repairs, downgrades, deletes, or adopts an unversioned database.
+
+### Keep Database Authority Private
+
+- Decision: Expose only sanitized immutable readiness, resolved store path, and close. Do not expose `DatabaseSync`, arbitrary SQL, or repository mutation operations.
+- Consequence: T3B10-T3B must add reviewed named repository transactions instead of allowing callers to bypass domain and persistence invariants.
+
 ## 2026-07-24 - Day15-T3B10-T2 SQLite Schema and Transaction Boundaries
 
 ### The Pilot Store Is SQLite, Not NDJSON

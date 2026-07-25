@@ -35,3 +35,5 @@ export * from "./LocalNdjsonEventReplayRepository";
 export * from "./EventContractShadowLedgerRepository";
 export * from "./InMemoryEventContractShadowLedgerRepository";
 export * from "./LocalNdjsonEventContractShadowLedgerRepository";
+export * from "./EventContractCollectionRunnerSqliteMigrationV1";
+export * from "./EventContractCollectionRunnerSqliteStore";

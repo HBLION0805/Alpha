@@ -1,6 +1,9 @@
 {
   "name": "alpha-contracts",
   "private": true,
+  "engines": {
+    "node": ">=24.12.0"
+  },
   "scripts": {
     "typecheck": "tsc --project tsconfig.json",
     "test": "node scripts/alpha-validate.mjs",
@@ -40,6 +43,7 @@
     "test:forward-shadow-collection-control": "tsx src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlEngine.test.ts && tsx src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
     "test:event-contract-source": "tsx src/engines/event-contract-source/EventContractSourceEngine.test.ts",
     "test:event-contract-collection-runner": "tsx src/engines/event-contract-collection-runner/EventContractCollectionRunnerEngine.test.ts",
+    "test:event-contract-collection-runner-sqlite": "tsx src/repositories/EventContractCollectionRunnerSqliteStore.test.ts",
     "test:kalshi-event-contract-fixture": "tsx src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
     "test:kalshi-public-http-transport": "tsx src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
     "test:kalshi-event-contract-live-smoke": "tsx src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",

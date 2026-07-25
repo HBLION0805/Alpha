@@ -2,9 +2,9 @@
 
 ## Status
 
-Day15-T3B10-T2 specifies the local SQLite persistence boundary required by the Event Contract Collection Runner.
+Day15-T3B10-T2 specifies the local SQLite persistence boundary required by the Event Contract Collection Runner. Day15-T3B10-T3A implements its dependency decision, safe open boundary, and first migration in [Event Contract Collection Runner SQLite Dependency and Migration](EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_MIGRATION.md).
 
-This milestone is design only. It adds no database file, dependency, migration executable, repository adapter, backup tool, scheduler, clock, lease process, retry loop, worker, provider request, persistence write, operator command, pilot activation, model, recommendation, broker, order, or execution behavior.
+T3B10-T2 itself is design only. T3B10-T3A adds a local migration implementation but no checked-in database file, third-party dependency, repository adapter, backup tool, scheduler, clock, lease process, retry loop, worker, provider request, application persistence write, operator command, pilot activation, model, recommendation, broker, order, or execution behavior.
 
 ## Purpose
 

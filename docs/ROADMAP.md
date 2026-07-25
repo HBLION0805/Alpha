@@ -308,9 +308,12 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Status: in progress through separately reviewed tasks; T3B10-T1 runner contracts and state validation are committed and pushed as `b1423fb9d1040febecbde518bf05094623c6f473`.
    - T3B10-T1 scope: immutable runner definitions, owner-approval evidence, exact admission bundles, scheduled tasks, deterministic idempotency, and compare-and-swap pilot/task transitions.
    - T3B10-T1 excludes: repository, SQLite, migration, scheduler, clocks, leases, retry execution, worker, adapter invocation, network, persistence, pilot activation, model, recommendation, sizing, broker, order, or execution.
-   - T3B10-T2 status: SQLite schema and transaction-boundary design is specified locally and pending owner review.
+   - T3B10-T2 status: completed, committed, and pushed as `3f25aaa9ccc3160de93b92e686fe1f562c22bf28`.
    - T3B10-T2 scope: strict local-pilot schema, migration checksums, named atomic transactions, claim/result evidence, durable lease representation, idempotency, outbox, crash recovery, backup, restore, and corruption-test requirements.
    - T3B10-T2 excludes: dependency selection, database/migration/repository implementation, scheduler, clocks, active leases, retry execution, worker, provider request, persistence, pilot activation, model, recommendation, sizing, broker, order, or execution.
+   - T3B10-T3A status: `node:sqlite` dependency decision, safe local open boundary, verified pragmas, capability/integrity gates, and checksum-bound migration 001 are implemented locally and pending owner review.
+   - T3B10-T3A scope: Node 24.12+ runtime pin, no third-party SQLite package, traversal/symlink/file-identity controls, exact 14-table `STRICT` schema, forward-only migration verification, temporary network-free migration tests, and a Git-ignored future runtime path.
+   - T3B10-T3A excludes: repository operations, application runtime store creation, scheduler, clocks, active leases, retry execution, worker, provider request, pilot activation, backup/restore tooling, model, recommendation, sizing, broker, order, or execution.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

@@ -41,3 +41,4 @@ data/runtime/historical-patterns/
 data/runtime/historical-analogies/
 data/runtime/event-replays/
 data/runtime/event-contract-shadow/
+data/runtime/event-contract-collection/

@@ -1,6 +1,15 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B10-T2 SQLite Schema and Transaction Boundary Design (Pending Owner Review)
+## 2026-07-24 - Day15-T3B10-T3A SQLite Dependency and Migration Foundation (Pending Owner Review)
+
+- Selected Node 24.12+ built-in `node:sqlite` for the local research pilot and added no third-party SQLite package.
+- Added safe approved-root/store identity checks, hardened synchronous open options, verified WAL/foreign-key/synchronous/trust/timeout pragmas, SQLite/JSON capability gates, and integrity checks.
+- Implemented checksum-bound forward migration 001 for the exact 14-table `STRICT` T3B10-T2 schema, with atomic rollback and fail-closed future, missing, altered, partial, or unexpected schema behavior.
+- Added a narrow store surface exposing only immutable readiness metadata, resolved path, and idempotent close; no raw database or arbitrary SQL method is public.
+- Added network-free temporary-store tests, Node engine metadata, runtime-data ignore coverage, repository exports, and implementation documentation.
+- Added no repository write operations, application runtime store, scheduler, worker, provider request, pilot activation, backup/restore tool, probability, recommendation, capital mutation, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B10-T2 SQLite Schema and Transaction Boundary Design
 
 - Specified a 14-table SQLite local-pilot schema with strict keys, authority references, bounded fields, append-only histories, unique idempotency, durable leases, budget counters, and a transactional outbox.
 - Defined checksum-bound forward migrations and verified WAL, foreign-key, synchronous, trusted-schema, and read-only connection profiles.

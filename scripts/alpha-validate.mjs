@@ -108,6 +108,7 @@ const aggregateTestFiles = [
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
   "src/engines/event-contract-source/EventContractSourceEngine.test.ts",
   "src/engines/event-contract-collection-runner/EventContractCollectionRunnerEngine.test.ts",
+  "src/repositories/EventContractCollectionRunnerSqliteStore.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",
