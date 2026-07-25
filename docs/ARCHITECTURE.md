@@ -759,6 +759,8 @@ Day15-T3B12-T2 implements only the deterministic seam of that design. Strict imm
 
 Day15-T3B12-T3 implements authenticated ownership recovery without assembling or starting the runtime. A read-only inspector binds exact configuration, path, lock, boot, PID/liveness, store-recovery, Pilot, lease, attempt, and durable Stop evidence. Only verified stale candidates can receive one challenge-bound local Owner decision. The sole mutation writes and flushes an immutable receipt, then atomically renames the complete lock directory into a deterministic same-filesystem quarantine. Invalid evidence, live ownership, uncertain liveness, store failure, Stop state, changed reinspection, or conflicting replay remains fail closed. Quarantine authorizes neither Pilot Resume nor a new runtime session.
 
+Day15-T3B12-T4 implements the first foreground one-action composition boundary. A closed startup session supplies exact fixture-only identity and Preflight; the step samples fresh clocks, reads and verifies one bounded work snapshot, calls the pure planner once, and invokes at most one T6, fixture Worker, or Stop executor. T6 never falls through into fixture work. The step rereads terminal safety, closes resources, and releases ownership only after verified clean completion; any ambiguous mutation or cleanup preserves ownership for recovery. This programmatic boundary adds no executable command, loop, timer, network provider, Pilot activation, recommendation, or trading authority.
+
 ---
 
 # Event Contract Framework

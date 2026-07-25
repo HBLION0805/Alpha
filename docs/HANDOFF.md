@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B12-T2 is committed and pushed; Day15-T3B12-T3 Authenticated Ownership Recovery is implemented locally and pending Owner review
+Day15-T3B12-T3 is committed and pushed; Day15-T3B12-T4 Single Foreground Fixture Step is implemented locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `5ca4c7e25d1f2ef7f927f88330974a659669a176` on `main`, equal to `origin/main` before the T3B12-T3 implementation task.
+Verified baseline: `ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6677` on `main`, equal to `origin/main` before the T3B12-T4 implementation task.
 
 Day 7 completed:
 
@@ -91,7 +91,9 @@ Day15-T3B12-T1 is committed and pushed as `5791a2a69776861ff22464aada2eb72511cb2
 
 Day15-T3B12-T2 is committed and pushed as `5ca4c7e25d1f2ef7f927f88330974a659669a176`. It adds strict immutable lifecycle, work-snapshot, one-action decision, T6, and terminal-report contracts; a bounded snapshot constructor/verifier; a pure deterministic planner with authority/recovery/budget/task gate ordering; exact T6 request construction; lifecycle validation; sanitized terminal reporting; and narrow snapshot-read/T6-executor ports. Its 47 focused tests are network-free, and its approved validation baseline was `2112/2112`.
 
-Day15-T3B12-T3 is implemented locally and pending Owner review. It adds exact stale-lock evidence inspection, explicit liveness and recovery dispositions, invalid-evidence classification without trusting malformed fields, challenge-bound local Owner authorization, a deterministic same-filesystem quarantine destination, exact recovery guards, flushed immutable receipts, owner-record preservation, idempotent replay, and fail-closed conflict handling. Its 26 focused tests and complete `2138/2138` Alpha validation pass. It adds no executable command, recursive deletion, automatic takeover, Pilot Resume, process-session creation, runtime start, SQLite mutation, timer, loop, provider, model, recommendation, broker, order, or execution authority.
+Day15-T3B12-T3 is committed and pushed as `ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6677`. It adds exact stale-lock evidence inspection, explicit liveness and recovery dispositions, invalid-evidence classification without trusting malformed fields, challenge-bound local Owner authorization, a deterministic same-filesystem quarantine destination, exact recovery guards, flushed immutable receipts, owner-record preservation, idempotent replay, and fail-closed conflict handling. Its approved validation baseline was `2138/2138`.
+
+Day15-T3B12-T4 is implemented locally and pending Owner review. It adds a closed foreground-step request and restricted startup, clock, snapshot, T6, fixture, Stop, terminal-state, and resource ports. One invocation performs one Preflight, reads one immutable bounded snapshot, calls the pure planner once, invokes at most one action, rereads current terminal safety, closes resources, and releases ownership only after verified clean completion. Ambiguous mutation or cleanup preserves recovery evidence. Its 17 focused tests and complete `2155/2155` Alpha validation pass. It adds no executable command, timer, loop, sleep, daemon, network provider, real Pilot activation, recommendation, broker, order, or trading authority.
 
 ## Day 6 Milestone Review
 
@@ -527,4 +529,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B12-T3 Authenticated Ownership Recovery. If approved and pushed, begin T3B12-T4 single foreground fixture step. Do not add executable commands beyond that separately reviewed scope, continuous runtime, loops, network providers, real Pilot activation, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B12-T4 Single Foreground Fixture Step. If approved and pushed, begin T3B12-T5 transaction-boundary process drills. Do not add continuous runtime, loops, network providers, real Pilot activation, probability research, recommendation, or trading authority.

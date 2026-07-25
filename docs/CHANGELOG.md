@@ -1,6 +1,18 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B12-T3 Authenticated Ownership Recovery (Pending Owner Review)
+## 2026-07-25 - Day15-T3B12-T4 Single Foreground Fixture Step (Pending Owner Review)
+
+- Added a closed foreground-step request, startup-session identity, clock, fixture, Stop, terminal-state, and cleanup ports.
+- Added one composition root that performs exactly one Preflight, one bounded immutable work-snapshot read, one pure planner call, and at most one T6, fixture Worker, or Stop action before exit.
+- Kept T6 and fixture execution mutually exclusive so a due transition cannot fall through into a provider-capable cycle.
+- Aligned the SQLite T6 missed boundary with the planner so the exact evidence cutoff is terminal and can be marked missed atomically.
+- Added a current terminal-state reread before close and clean ownership release.
+- Preserved ownership and marked recovery required when a mutation, terminal reread, close, or release outcome is ambiguous.
+- Added 17 deterministic network-free focused tests covering T6, fixture, missed, wait, complete, Stop, Preflight blocking, exact call counts, terminal reread, close ordering, ambiguity, identity mismatch, and closed input.
+- Complete Alpha validation passes `2155/2155` with zero failures.
+- Added no executable command, timer, loop, sleep, daemon, background process, network provider, Pilot activation, recommendation, broker, order, or trading behavior.
+
+## 2026-07-25 - Day15-T3B12-T3 Authenticated Ownership Recovery
 
 - Added closed immutable contracts for ownership-liveness evidence, recovery assessment, exact Owner quarantine decisions, and recovery receipts.
 - Added deterministic classification for active ownership, same-boot stale candidates, prior-boot stale candidates, uncertain liveness, invalid lock evidence, blocked stores, and durable Stop.
@@ -11,6 +23,7 @@
 - Added a Node liveness adapter that treats permission-denied process probes as live, missing processes as not live, and unclassified failures as uncertain.
 - Added 26 deterministic network-free ownership recovery tests; complete Alpha validation passes `2138/2138`.
 - Added no executable command, recursive deletion, automatic takeover, Pilot Resume, process-session creation, runtime start, SQLite mutation, network provider, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B12-T3 as `ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6677`.
 
 ## 2026-07-25 - Day15-T3B12-T2 Contracts and Pure Planners
 

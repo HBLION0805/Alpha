@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B12-T4 Single Foreground Fixture Step
+
+### One Invocation Selects and Executes At Most One Action
+
+- Decision: one ready Preflight and one bounded work snapshot feed the pure planner exactly once; the composition then invokes at most one T6, fixture, or Stop executor and exits.
+- Rationale: separating due-state transition, fixture collection, and Stop into distinct invocations makes crash outcomes and durable authority unambiguous.
+- Consequence: no action may fall through into another planner call, Worker cycle, wait, retry, timer, or background operation.
+
+### Clean Release Requires a Fresh Terminal-State Read
+
+- Decision: the composition rereads current terminal safety after the selected action, closes resources, and releases ownership only when both checks complete cleanly.
+- Rationale: a successful executor receipt is not proof that Stop, health, store, or cleanup state remained safe through shutdown.
+- Consequence: uncertain mutation, terminal read, close, or ownership release preserves recovery evidence and cannot report a verified clean shutdown.
+
 ## 2026-07-25 - Day15-T3B12-T3 Authenticated Ownership Recovery
 
 ### Invalid Lock Evidence Is Classified but Never Authorized

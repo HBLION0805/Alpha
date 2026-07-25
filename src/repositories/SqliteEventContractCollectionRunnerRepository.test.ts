@@ -721,11 +721,11 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
           taskId: context.task.taskId,
           expectedAggregateVersion: 1,
           nextState: CollectionRunnerTaskState.Missed,
-          clock: clock("2026-07-24T13:15:00.001Z"),
+          clock: clock("2026-07-24T13:15:00.000Z"),
           expectedBudgetVersion: 2,
           evidence: evidence(
-            "2026-07-24T13:15:00.001Z",
-            "CUTOFF_ELAPSED",
+            "2026-07-24T13:15:00.000Z",
+            "CUTOFF_REACHED",
           ),
         });
         assertEqual(

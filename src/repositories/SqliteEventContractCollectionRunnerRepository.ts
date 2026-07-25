@@ -1023,7 +1023,7 @@ WHERE activation_id = ? AND current_state = ? AND aggregate_version = ?
       }
       if (
         transaction.nextState === CollectionRunnerTaskState.Missed &&
-        observed <= parseUtc(task.evidence_cutoff_at_utc, "task.cutoff")
+        observed < parseUtc(task.evidence_cutoff_at_utc, "task.cutoff")
       ) {
         throw repositoryError(
           CollectionRunnerRepositoryErrorCode.InvalidState,

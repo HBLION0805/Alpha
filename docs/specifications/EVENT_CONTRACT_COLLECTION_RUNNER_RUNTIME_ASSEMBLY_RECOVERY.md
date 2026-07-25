@@ -8,19 +8,23 @@ Day15-T3B12-T1 is committed and pushed as
 Day15-T3B12-T2 is committed and pushed as
 `5ca4c7e25d1f2ef7f927f88330974a659669a176`.
 
-Day15-T3B12-T3 implements authenticated ownership recovery locally and is
+Day15-T3B12-T3 is committed and pushed as
+`ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6677`.
+
+Day15-T3B12-T4 implements the single foreground fixture step locally and is
 pending Owner review.
 
 It follows the T3B11-MR1 decision:
 
 `FIXTURE_RUNTIME_FOUNDATION_ACCEPTED / GO_FOR_ASSEMBLY_DESIGN / NO_GO_FOR_RUNTIME_START / NO_GO_FOR_BOUNDED_LIVE`
 
-The T3B12-T3 reviewed baseline is
-`5ca4c7e25d1f2ef7f927f88330974a659669a176`.
+The T3B12-T4 reviewed baseline is
+`ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6677`.
 
-This task does not implement or expose a runtime command, timer, loop, daemon,
-service, lock-recovery command, provider request, Pilot activation, Outbox
-delivery, model, recommendation, broker, order, or execution behavior.
+This task implements one programmatic foreground step but does not expose an
+executable command, timer, loop, daemon, service, provider request, Pilot
+activation, Outbox delivery, model, recommendation, broker, order, or
+execution behavior.
 
 ## Purpose
 
@@ -564,11 +568,12 @@ T3B12 remains separately gated:
    work-snapshot port, closed action planner, T6 executor contract, and
    sanitized terminal reports; completed and pushed.
 3. **T3B12-T3 — Authenticated ownership recovery:** inspection, Owner decision,
-   atomic quarantine, idempotent receipt, and crash tests; implemented locally
-   and pending Owner review; no runtime step.
+   atomic quarantine, idempotent receipt, and crash tests; completed and
+   pushed; no runtime step.
 4. **T3B12-T4 — Single foreground fixture step:** reviewed composition root and
-   local `preflight`, `step`, `status`, and `stop` commands; exactly one action,
-   no timer, loop, network, or Pilot activation.
+   restricted local Preflight, Step, Status, and Stop boundaries; the
+   programmatic Step composition is implemented locally and pending Owner
+   review; exactly one action, no timer, loop, network, or Pilot activation.
 5. **T3B12-T5 — Transaction-boundary process drills:** real child-process kills
    at T6/T7/T8/validation/T10/Stop/quarantine boundaries.
 6. **T3B12-MR1 — Assembly and recovery milestone review.**
@@ -617,7 +622,7 @@ T3B12-T1/T2 add no:
 
 ## Owner review recommendation
 
-Review T3B12-T3 authenticated ownership recovery. If approved and pushed,
-begin T3B12-T4 single foreground fixture step as a separately gated task. Do
-not combine T3B12-T3 approval with command implementation, runtime start,
-fixture rehearsal, provider admission, or live operation.
+Review T3B12-T4 single foreground fixture step. If approved and pushed, begin
+T3B12-T5 transaction-boundary process drills as a separately gated task. Do
+not combine T3B12-T4 approval with continuous runtime, fixture rehearsal,
+provider admission, or live operation.

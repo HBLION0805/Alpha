@@ -4,8 +4,10 @@ import type {
   CollectionRunnerTaskState,
 } from "./EventContractCollectionRunner";
 import type {
+  CollectionRunnerFixtureWorkerResult,
   CollectionRunnerRuntimeHealthStatus,
   CollectionRunnerRuntimeMode,
+  CollectionRunnerRuntimePreflightReport,
 } from "./EventContractCollectionRunnerRuntime";
 
 export const EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_SCHEMA_VERSION =
@@ -213,4 +215,83 @@ export interface CollectionRunnerRuntimeTerminalReport
   extends CollectionRunnerRuntimeTerminalReportInput {
   readonly deterministic: true;
   readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRuntimeForegroundStepRequest {
+  readonly schemaVersion:
+    typeof EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_SCHEMA_VERSION;
+  readonly invocationId: string;
+  readonly activationId: string;
+  readonly maximumTasks: number;
+}
+
+export interface CollectionRunnerRuntimeForegroundStepIdentity {
+  readonly configurationFingerprint: string;
+  readonly pathFingerprint: string;
+  readonly storeIdentity: string;
+  readonly lockFingerprint: string;
+  readonly bootIdentity: string;
+  readonly processSessionId: string;
+  readonly activationId: string;
+  readonly buildFingerprint: string;
+  readonly runtimeMode: CollectionRunnerRuntimeMode.FixtureOnly;
+}
+
+export interface CollectionRunnerRuntimeForegroundClockSample {
+  readonly observedAtUtc: string;
+  readonly monotonicMilliseconds: number;
+  readonly healthy: boolean;
+}
+
+export interface CollectionRunnerRuntimeForegroundStepSession {
+  readonly identity: CollectionRunnerRuntimeForegroundStepIdentity;
+  createPreflight(
+    observedAtUtc: string,
+  ): CollectionRunnerRuntimePreflightReport;
+}
+
+export interface CollectionRunnerRuntimeForegroundClockPort {
+  sample(): CollectionRunnerRuntimeForegroundClockSample;
+}
+
+export interface CollectionRunnerRuntimeForegroundMutationReceipt {
+  readonly taskId: string | null;
+  readonly receiptFingerprint: string;
+}
+
+export interface CollectionRunnerRuntimeForegroundStopExecutor {
+  execute(
+    action:
+      | CollectionRunnerRuntimeAssemblyAction.TripEmergencyStop
+      | CollectionRunnerRuntimeAssemblyAction.RequestGracefulCompletion,
+    reasonCode: string,
+    observedAtUtc: string,
+  ): CollectionRunnerRuntimeForegroundMutationReceipt;
+}
+
+export interface CollectionRunnerRuntimeForegroundFixtureExecutor {
+  execute(
+    decision: Readonly<CollectionRunnerRuntimeAssemblyDecision>,
+    snapshot: Readonly<CollectionRunnerRuntimeWorkSnapshot>,
+  ): Readonly<{
+    workerResult: CollectionRunnerFixtureWorkerResult;
+    receiptFingerprint: string;
+  }>;
+}
+
+export interface CollectionRunnerRuntimeForegroundTerminalState {
+  readonly healthStatus: CollectionRunnerRuntimeHealthStatus;
+  readonly blockerCodes: readonly string[];
+  readonly stopBarrierTripped: boolean;
+}
+
+export interface CollectionRunnerRuntimeForegroundTerminalStatePort {
+  read(
+    observedAtUtc: string,
+  ): CollectionRunnerRuntimeForegroundTerminalState;
+}
+
+export interface CollectionRunnerRuntimeForegroundResourcePort {
+  close(): void;
+  releaseOwnership(): void;
 }
