@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B11-T4 Local Operator and Health Surface
+
+### Health Is a Conjunction of Current Safety Evidence
+
+- Decision: report `HEALTHY` only when configuration, ownership, store, integrity, clock, recovery session, and Stop-barrier checks all pass.
+- Rationale: partial availability must not be presented as operational safety.
+- Consequence: ownership, session, integrity, or Stop failure is `FAIL_CLOSED`; unavailable store/clock evidence is at best `DEGRADED`, and Preflight is not ready.
+
+### Status and Outbox Are Payload-Free Read Models
+
+- Decision: query a bounded allow-listed SQLite projection and expose only Pilot/task/budget/lease chronology plus Outbox identities and delivery metadata.
+- Rationale: health inspection does not require provider content and must not create a new evidence-export path.
+- Consequence: canonical JSON, normalized snapshots, raw payload, secrets, provider narrative, Portfolio, recommendation, and order data cannot leave the repository through this surface.
+
+### Authenticated Stop Has Barrier Precedence
+
+- Decision: verify the exact local Owner command, trip the irreversible process barrier, persist graceful or Emergency Stop through an existing named boundary, then publish a fingerprint-bound in-process notification.
+- Rationale: loss of SQLite or notification must not allow new work after an authenticated Stop.
+- Consequence: persistence failure returns a sanitized failure while leaving the barrier active; notification failure cannot undo a durable Stop.
+
 ## 2026-07-25 - Day15-T3B11-T3 Fixture Scheduler and Worker
 
 ### Scheduling Is a Pure One-Action Decision

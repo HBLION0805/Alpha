@@ -27,6 +27,10 @@ import type { EventContractCollectionRunnerRecoveryControlRepository } from "./E
 import { createSqliteEventContractCollectionRunnerRepository } from "./SqliteEventContractCollectionRunnerRepository";
 import { createSqliteEventContractCollectionRunnerRecoveryControlRepository } from "./SqliteEventContractCollectionRunnerRecoveryControlRepository";
 import {
+  createSqliteEventContractCollectionRunnerRuntimeProjectionRepository,
+  type EventContractCollectionRunnerRuntimeProjectionRepository,
+} from "./EventContractCollectionRunnerRuntimeProjectionRepository";
+import {
   CollectionRunnerProcessStopBarrier,
   SessionGatedEventContractCollectionRunnerRepository,
   type CollectionRunnerProcessSessionIdentity,
@@ -806,6 +810,18 @@ export class EventContractCollectionRunnerSqliteStore {
         recoveryReportFingerprint: this.#recovery.fingerprint,
         recoveryInspectedAtUtc: this.#recovery.inspectedAtUtc,
       }),
+    );
+  }
+
+  public createRuntimeProjectionRepository(): EventContractCollectionRunnerRuntimeProjectionRepository {
+    if (this.#closed) {
+      throw new EventContractCollectionRunnerSqliteStoreError(
+        EventContractCollectionRunnerSqliteStoreErrorCode.OpenFailed,
+        "Closed SQLite store cannot create a runtime projection repository.",
+      );
+    }
+    return createSqliteEventContractCollectionRunnerRuntimeProjectionRepository(
+      this.#database,
     );
   }
 

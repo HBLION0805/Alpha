@@ -1,6 +1,17 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B11-T3 Fixture Scheduler and Worker (Pending Owner Review)
+## 2026-07-25 - Day15-T3B11-T4 Local Operator and Health Surface (Pending Owner Review)
+
+- Added closed deterministic Preflight and Status reports with explicit `HEALTHY`, `DEGRADED`, and `FAIL_CLOSED` states.
+- Required configuration, lock ownership, SQLite readiness/integrity, clock health, recovery-session authorization, and Stop-barrier evidence before reporting healthy.
+- Added authenticated graceful and Emergency Stop orchestration using the existing local Owner verifier, durable repository boundaries, and an irreversible process barrier.
+- Added fingerprint-bound process-local Stop notification; persistence and notification failures cannot undo Stop.
+- Added a bounded read-only SQLite projection for Pilot, task counts, budgets, lease chronology, receipt/commit times, and unpublished Outbox identities.
+- Excluded Outbox event JSON, normalized snapshot bodies, raw payload, secrets, provider narrative, portfolio, recommendation, and order data from the projection.
+- Added 14 Operator/Health tests and four SQLite projection tests.
+- Added no executable runtime start, timer, loop, daemon, network provider, real Pilot, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B11-T3 Fixture Scheduler and Worker
 
 - Added a pure deterministic scheduler that validates a closed task snapshot and returns exactly one immutable action with stable platform-first ordering.
 - Restricted acquisition to exact `DUE` tasks; scheduled and retry-eligible tasks remain blocked on the existing durable due-transition boundary.
@@ -9,6 +20,7 @@
 - Added cancellation persistence, bounded retry, terminal invalid-snapshot handling, and irreversible Stop on unresolved post-lease ambiguity.
 - Added 26 network-free scheduler/Worker tests and validation-bundle registration.
 - Added no timer, loop, daemon, service, network provider, real Pilot startup, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B11-T3 as `ddad4260444142b9b06185ed422b22a5ae7aaea5`.
 
 ## 2026-07-25 - Day15-T3B11-T2 Runtime Foundation
 

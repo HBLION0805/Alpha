@@ -24,10 +24,18 @@ clock-health ports. T2 does not implement or start a scheduler, Worker, timer,
 command, adapter, provider request, SQLite mutation, or Pilot.
 
 T3B11-T3 now implements the fixture scheduler and one-cycle Worker locally,
-pending Owner review. The scheduler is pure and emits one deterministic action.
+and was Owner-approved, committed, and pushed as `ddad426`. The scheduler is
+pure and emits one deterministic action.
 The Worker is explicitly invoked once, fixture-only, and writes exclusively
 through the existing session-gated repository transactions. T3 adds no timer,
 loop, command, daemon, network provider, or real Pilot startup.
+
+T3B11-T4 now implements the local programmatic Operator and Health surface,
+pending Owner review. It adds deterministic Preflight and Status reports,
+authenticated graceful/Emergency Stop orchestration, process-local Stop
+notification, and a bounded payload-free SQLite Outbox projection. It does not
+add an executable runtime-start command, timer, loop, cross-process control
+server, automatic lock recovery, Outbox delivery, or provider request.
 
 ## Purpose
 
@@ -744,11 +752,13 @@ T3B11 remains separately gated:
 2. **T3B11-T2 — Runtime foundation:** completed and pushed as `3c755126`;
    immutable configuration, path controls, process ownership, boot/process
    identity, clocks, and network-free tests.
-3. **T3B11-T3 — Fixture scheduler and Worker:** implemented locally and pending
-   Owner review; pure planner, one acquisition cycle, fixture adapter,
+3. **T3B11-T3 — Fixture scheduler and Worker:** completed and pushed as
+   `ddad426`; pure planner, one acquisition cycle, fixture adapter,
    cancellation, and repository composition.
-4. **T3B11-T4 — Operator and health surface:** preflight, status, graceful stop,
-   Emergency Stop notification, lock recovery, and outbox projection.
+4. **T3B11-T4 — Operator and health surface:** implemented locally and pending
+   Owner review; Preflight, Status, Health, authenticated Stop, process-local
+   notification, and bounded Outbox projection. Automatic stale-lock recovery
+   remains deferred because T4 does not add lock takeover authority.
 5. **T3B11-T5 — Process drills:** duplicate process, forced child-process exit,
    timeout, cutoff, stop, restart, and replay tests.
 6. **T3B11-MR1 — Fixture runtime milestone review.**

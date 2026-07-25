@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B11-T2 is committed and pushed; Day15-T3B11-T3 Fixture Scheduler and Worker is implemented locally and pending Owner review
+Day15-T3B11-T3 is committed and pushed; Day15-T3B11-T4 Local Operator and Health Surface is implemented locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `3c755126f08844ce222dcb9fcc3c86df286ab3af` on `main`, equal to `origin/main` before the T3B11-T3 implementation task.
+Verified baseline: `ddad4260444142b9b06185ed422b22a5ae7aaea5` on `main`, equal to `origin/main` before the T3B11-T4 implementation task.
 
 Day 7 completed:
 
@@ -79,7 +79,9 @@ Day15-T3B11-T1 is committed and pushed as `6c52284`. It specifies one foreground
 
 Day15-T3B11-T2 is committed and pushed as `3c755126f08844ce222dcb9fcc3c86df286ab3af`. It adds the non-operational fixture-only runtime foundation: strict immutable configuration, canonical safe roots, deterministic path/store identities, atomic single-instance ownership, immutable owner evidence, injected boot and liveness ports, OS-CSPRNG process-session minting, separate clock ports, and fail-closed clock-health validation. Its 26 focused tests include native Windows ownership contention, configuration-drift contention, and release.
 
-Day15-T3B11-T3 is implemented locally and pending Owner review. It adds a pure deterministic one-task scheduler and one explicitly invoked fixture-only Worker cycle. The scheduler selects only exact `DUE` tasks and leaves scheduled/retry due transition outside this task. The Worker verifies exact immutable configuration, activation, task, adapter, clock, cutoff, budget, lease, attempt, and snapshot bindings; every mutation goes through the existing recovery-session gate and T7/T8/T8B/T9/T10 transactions. Post-claim cancellation is durable, retry is bounded, invalid evidence fails terminally, and unresolved post-lease ambiguity trips the irreversible process Stop barrier. It adds no runtime command, timer, loop, background service, network provider, real Pilot startup, model, recommendation, broker, order, or execution authority.
+Day15-T3B11-T3 is committed and pushed as `ddad4260444142b9b06185ed422b22a5ae7aaea5`. It adds a pure deterministic one-task scheduler and one explicitly invoked fixture-only Worker cycle. The scheduler selects only exact `DUE` tasks and leaves scheduled/retry due transition outside this task. The Worker verifies exact immutable configuration, activation, task, adapter, clock, cutoff, budget, lease, attempt, and snapshot bindings; every mutation goes through the existing recovery-session gate and T7/T8/T8B/T9/T10 transactions.
+
+Day15-T3B11-T4 is implemented locally and pending Owner review. It adds deterministic Preflight/Status/Health reporting, authenticated graceful and Emergency Stop orchestration, a fingerprint-bound process-local notification slot, and a bounded payload-free SQLite read model for Pilot/task/budget/lease/Outbox state. Health is fail-closed unless every safety authority is current. Stop persistence or notification failure cannot clear the process barrier. It adds no runtime-start command, timer, loop, cross-process control server, automatic lock recovery, Outbox delivery, provider request, real Pilot startup, model, recommendation, broker, order, or execution authority.
 
 ## Day 6 Milestone Review
 
@@ -463,6 +465,7 @@ Day15-T3B10-T4D adds 6/6 focused recovery-control race/crash drills and raises t
 - `593f0f54804f64bce4808857e901d66f3babd80a` — Event Contract Collection Runner Milestone Review
 - `6c52284` — Event Contract Collection Runner Runtime Architecture
 - `3c755126f08844ce222dcb9fcc3c86df286ab3af` — Event Contract Collection Runner Runtime Foundation
+- `ddad4260444142b9b06185ed422b22a5ae7aaea5` — Event Contract Collection Runner Fixture Scheduler and Worker
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -514,4 +517,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B11-T3 Fixture Scheduler and Worker. If approved and pushed, begin T3B11-T4 as a separately gated operator/health design and implementation task for local preflight, status, Stop, lock recovery, and outbox projection. Do not add a scheduler loop, background service, network provider, real Pilot activation, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B11-T4 Local Operator and Health Surface. If approved and pushed, begin T3B11-T5 process drills for duplicate ownership, forced exit, timeout/cutoff, Stop, restart, and replay. Do not add a runtime loop, cross-process server, network provider, real Pilot activation, probability research, recommendation, or trading authority.

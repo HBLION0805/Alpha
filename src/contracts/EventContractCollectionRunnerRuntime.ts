@@ -27,6 +27,8 @@ export enum CollectionRunnerRuntimeFoundationErrorCode {
   InvalidWorkerInput = "INVALID_WORKER_INPUT",
   AdapterBindingMismatch = "ADAPTER_BINDING_MISMATCH",
   WorkerPersistenceFailed = "WORKER_PERSISTENCE_FAILED",
+  InvalidOperatorInput = "INVALID_OPERATOR_INPUT",
+  StopPersistenceFailed = "STOP_PERSISTENCE_FAILED",
 }
 
 export enum CollectionRunnerSchedulerAction {
@@ -224,4 +226,155 @@ export interface CollectionRunnerFixtureWorkerResult {
   readonly evidenceId: string | null;
   readonly reasonCode: string;
   readonly deterministic: true;
+}
+
+export enum CollectionRunnerRuntimeHealthStatus {
+  Healthy = "HEALTHY",
+  Degraded = "DEGRADED",
+  FailClosed = "FAIL_CLOSED",
+}
+
+export enum CollectionRunnerRuntimeStopMode {
+  Graceful = "GRACEFUL",
+  Emergency = "EMERGENCY",
+}
+
+export interface CollectionRunnerRuntimeSafetyEvidence {
+  readonly configurationVerified: boolean;
+  readonly ownershipVerified: boolean;
+  readonly storeReady: boolean;
+  readonly integrityVerified: boolean;
+  readonly clockHealthy: boolean;
+  readonly sessionAuthorized: boolean;
+  readonly stopBarrierTripped: boolean;
+  readonly blockerCodes: readonly string[];
+}
+
+export interface CollectionRunnerRuntimePreflightInput {
+  readonly observedAtUtc: string;
+  readonly configurationFingerprint: string;
+  readonly pathFingerprint: string;
+  readonly storeIdentity: string;
+  readonly schemaCatalogChecksum: string;
+  readonly recoveryReportFingerprint: string;
+  readonly safety: CollectionRunnerRuntimeSafetyEvidence;
+}
+
+export interface CollectionRunnerRuntimePreflightReport
+  extends CollectionRunnerRuntimePreflightInput {
+  readonly ready: boolean;
+  readonly health: CollectionRunnerRuntimeHealthStatus;
+  readonly deterministic: true;
+  readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRuntimeTaskCount {
+  readonly sourceLane: "PLATFORM" | "EXCHANGE";
+  readonly state: string;
+  readonly count: number;
+}
+
+export interface CollectionRunnerRuntimeBudgetProjection {
+  readonly maximumEvents: number;
+  readonly maximumRequests: number;
+  readonly eventsScheduled: number;
+  readonly requestsStarted: number;
+  readonly retriesStarted: number;
+  readonly evidenceCommitted: number;
+  readonly tasksMissed: number;
+}
+
+export interface CollectionRunnerRuntimeLeaseProjection {
+  readonly taskId: string;
+  readonly workerId: string;
+  readonly acquiredAtUtc: string;
+  readonly heartbeatAtUtc: string;
+  readonly expiresAtUtc: string;
+}
+
+export interface CollectionRunnerRuntimeOutboxProjection {
+  readonly sequence: number;
+  readonly outboxId: string;
+  readonly aggregateType: string;
+  readonly aggregateId: string;
+  readonly aggregateVersion: number;
+  readonly eventType: string;
+  readonly eventFingerprint: string;
+  readonly createdAtUtc: string;
+  readonly publishedAtUtc: string | null;
+  readonly publishAttempts: number;
+  readonly lastFailureCode: string | null;
+}
+
+export interface CollectionRunnerRuntimeStatusInput {
+  readonly observedAtUtc: string;
+  readonly configurationFingerprint: string;
+  readonly buildFingerprint: string;
+  readonly lockFingerprint: string;
+  readonly bootIdentity: string;
+  readonly processSessionId: string;
+  readonly processStartedAtUtc: string;
+  readonly activationId: string;
+  readonly pilotState: string;
+  readonly activationStopsAtUtc: string;
+  readonly taskCounts: readonly CollectionRunnerRuntimeTaskCount[];
+  readonly budget: CollectionRunnerRuntimeBudgetProjection;
+  readonly currentLease: CollectionRunnerRuntimeLeaseProjection | null;
+  readonly lastReceiptAtUtc: string | null;
+  readonly lastCommitAtUtc: string | null;
+  readonly clockOffsetMilliseconds: number | null;
+  readonly outboxBacklog: number;
+  readonly outbox: readonly CollectionRunnerRuntimeOutboxProjection[];
+  readonly recoveryDisposition: string;
+  readonly safety: CollectionRunnerRuntimeSafetyEvidence;
+}
+
+export interface CollectionRunnerRuntimeStatusReport
+  extends CollectionRunnerRuntimeStatusInput {
+  readonly remainingActivationMilliseconds: number;
+  readonly health: CollectionRunnerRuntimeHealthStatus;
+  readonly deterministic: true;
+  readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRuntimeStopCommand {
+  readonly schemaVersion: "1.0";
+  readonly commandId: string;
+  readonly mode: CollectionRunnerRuntimeStopMode;
+  readonly ownerId: string;
+  readonly activationId: string;
+  readonly expectedActivationAggregateVersion: number;
+  readonly configurationFingerprint: string;
+  readonly storeIdentity: string;
+  readonly processSessionId: string;
+  readonly reasonCode: string;
+  readonly verifiedAtUtc: string;
+  readonly authorizationExpiresAtUtc: string;
+  readonly requestedAtUtc: string;
+}
+
+export interface CollectionRunnerRuntimeStopSignal {
+  readonly commandId: string;
+  readonly mode: CollectionRunnerRuntimeStopMode;
+  readonly activationId: string;
+  readonly configurationFingerprint: string;
+  readonly storeIdentity: string;
+  readonly processSessionId: string;
+  readonly authorizationReference: string;
+  readonly reasonCode: string;
+  readonly requestedAtUtc: string;
+  readonly deterministic: true;
+  readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRuntimeStopResult {
+  readonly commandId: string;
+  readonly mode: CollectionRunnerRuntimeStopMode;
+  readonly barrierTripped: true;
+  readonly durableStopRecorded: boolean;
+  readonly processNotified: boolean;
+  readonly receiptFingerprint: string | null;
+  readonly reasonCode: string;
+  readonly deterministic: true;
+  readonly fingerprint: string;
 }
