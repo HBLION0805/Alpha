@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-07-24 - Day15-T3B7 Official Robinhood Mapping Evidence Correction (Pending Owner Review)
+
+- Added a sanitized fixture from the exact public Robinhood `$64,839.26` BTC 15-minute event page, including the canonical page slug, routable deep-link UUID, separately preserved opaque `ec_id`, full rules, and direct Kalshi `CRYPTO15M` terms link.
+- Content-addressed the reviewed Kalshi terms PDF with SHA-256 `418c225a3c45c7ddef028f12a4755652c456658f54ec27c5d365d5489ce5e874`.
+- Replaced the pending mapping result with a deterministic `REVIEWED_EXACT` Robinhood-to-Kalshi mapping and a fixture-only settlement snapshot while preserving distinct native platform titles.
+- Expanded focused validation from 24 to 34 tests, including altered Robinhood identities, rules, terms links, terms digests, chronology, and unknown fields.
+- Added no runtime browser, OCR, credential, Robinhood private endpoint, live-read authorization, persistence, quote/fee substitution, recommendation, order, or execution behavior.
+
 ## 2026-07-24 - Day15-T3B7 Kalshi BTC 15-Minute Fixture Adapter (Pending Owner Review)
 
 - Added one concrete fixture-only Kalshi provider and strict normalization for official market `KXBTC15M-26JUL232045-45` plus series `KXBTC15M`.

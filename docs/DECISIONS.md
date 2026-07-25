@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B7 Official Robinhood Mapping Evidence Correction
+
+### Contract-Specific Terms Link Establishes the Exchange Mapping
+
+- Decision: Treat the exact Robinhood public event page's direct `CRYPTO15M.pdf` link, together with identical window, target, BRTI source, and complete rules, as reviewed evidence that this platform contract maps to Kalshi market `KXBTC15M-26JUL232045-45`.
+- Reason: The evidence is contract-specific and originates on Robinhood's official public event surface; it no longer relies on provider-name inference or display similarity alone.
+- Consequence: The fixture adapter may construct one `REVIEWED_EXACT` mapping and one fixture-only settlement snapshot. The decision does not generalize to other Robinhood events.
+
+### Preserve Native Labels and Opaque Identifiers Without Inventing Semantics
+
+- Decision: Preserve Robinhood and Kalshi native titles separately, use a shared canonical semantic title inside the exact mapping, use the Robinhood page slug as platform market identity, and use the routable `event_contracts?id=` UUID as platform contract identity.
+- Reason: Native titles differ even though the complete settlement rules are identical. Robinhood does not document the separate `ec_id` parameter's meaning.
+- Consequence: Title presentation differences do not create a false mismatch, while `ec_id` remains evidence-only and cannot silently become a market or contract identifier.
+
+### Content-Address the Terms Version
+
+- Decision: Use the complete SHA-256 digest of the reviewed Kalshi `CRYPTO15M.pdf` bytes as the terms version.
+- Reason: The official PDF contains no separate visible version number; a full content digest is reproducible and fails closed if the document changes.
+- Consequence: A changed PDF requires a new evidence review and mapping version. The digest is not represented as a provider-issued human-readable version.
+
 ## 2026-07-24 - Day15-T3B7 Kalshi Fixture and Mapping Evidence Gate
 
 ### Exact Displayed Facts Establish a Candidate, Not Cross-Venue Identity

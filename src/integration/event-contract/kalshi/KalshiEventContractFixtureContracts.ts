@@ -1,15 +1,17 @@
 import type {
   EventContractFixedDecimal,
+  EventContractSourceMapping,
   EventContractSourceProvider,
+  EventContractSourceSnapshot,
 } from "../../../contracts";
 
-export const KALSHI_EVENT_CONTRACT_FIXTURE_SCHEMA_VERSION = "1.0" as const;
+export const KALSHI_EVENT_CONTRACT_FIXTURE_SCHEMA_VERSION = "1.1" as const;
 export const KALSHI_EVENT_CONTRACT_PROVIDER_ID = "provider:kalshi:public-api" as const;
 export const KALSHI_EVENT_CONTRACT_EXCHANGE_ID = "exchange:kalshi-ex" as const;
 export const KALSHI_BTC_FIFTEEN_MINUTE_SERIES_TICKER = "KXBTC15M" as const;
 
 export enum KalshiEventContractFixtureStatus {
-  NormalizedPendingMapping = "NORMALIZED_PENDING_MAPPING",
+  NormalizedExactMapping = "NORMALIZED_EXACT_MAPPING",
   Rejected = "REJECTED",
 }
 
@@ -21,15 +23,6 @@ export enum KalshiEventContractFixtureIssueCode {
   IdentityMismatch = "IDENTITY_MISMATCH",
   InvalidTerms = "INVALID_TERMS",
   InvalidChronology = "INVALID_CHRONOLOGY",
-}
-
-export enum KalshiRobinhoodMappingBlockerCode {
-  MissingDeclaredExchangeIdentity = "MISSING_ROBINHOOD_DECLARED_EXCHANGE_IDENTITY",
-  MissingPlatformMarketIdentity = "MISSING_ROBINHOOD_PLATFORM_MARKET_IDENTITY",
-  MissingPlatformContractIdentity = "MISSING_ROBINHOOD_PLATFORM_CONTRACT_IDENTITY",
-  MissingPlatformTermsIdentity = "MISSING_ROBINHOOD_PLATFORM_TERMS_IDENTITY",
-  MissingPlatformTermsVersion = "MISSING_ROBINHOOD_PLATFORM_TERMS_VERSION",
-  MissingExactTitleAndRuleEvidence = "MISSING_ROBINHOOD_EXACT_TITLE_AND_RULE_EVIDENCE",
 }
 
 export interface KalshiEventContractFixtureIssue {
@@ -48,7 +41,7 @@ export interface KalshiExternalMarketIdentity {
 
 export interface KalshiExternalTermsCandidate {
   readonly title: string;
-  readonly termsVersion: null;
+  readonly termsVersion: string;
   readonly instrumentId: "instrument:crypto:btc-usd";
   readonly outcomePair: "UP_DOWN";
   readonly windowStartsAt: string;
@@ -64,6 +57,24 @@ export interface KalshiExternalTermsCandidate {
   readonly ruleFingerprint: string;
 }
 
+export interface RobinhoodReviewedEventContractEvidence {
+  readonly pageUrl: string;
+  readonly pageSlug: string;
+  readonly pageTitle: string;
+  readonly displayTitle: string;
+  readonly contractLabel: string;
+  readonly contractQuestion: string;
+  readonly deepLinkContractId: string;
+  readonly analyticsEventContractId: string;
+  readonly termsUrl: string;
+  readonly termsProviderHost: "assets.kalshi.com";
+  readonly termsSha256: string;
+  readonly rulesPrimary: string;
+  readonly rulesSecondary: string;
+  readonly retrievedAt: string;
+  readonly evidenceFingerprint: string;
+}
+
 export interface KalshiSettlementFact {
   readonly status: "FINALIZED";
   readonly result: "UP" | "DOWN";
@@ -73,40 +84,47 @@ export interface KalshiSettlementFact {
 }
 
 export interface KalshiRobinhoodMappingAssessment {
-  readonly reviewStatus: "PENDING";
-  readonly eligibleForCollection: false;
-  readonly matchingDisplayedFacts: readonly [
+  readonly reviewStatus: "REVIEWED_EXACT";
+  readonly eligibleForCollection: true;
+  readonly matchingFacts: readonly [
     "BTC_15_MINUTE_WINDOW",
     "TARGET_PRICE",
     "BRTI_SETTLEMENT_SOURCE",
+    "PRIMARY_RULE",
+    "SECONDARY_RULE",
+    "KALSHI_TERMS_LINK",
   ];
-  readonly blockerCodes: readonly KalshiRobinhoodMappingBlockerCode[];
   readonly evidenceIds: readonly string[];
 }
 
 export interface KalshiEventContractFixtureProvenance {
   readonly marketEndpoint: string;
   readonly seriesEndpoint: string;
+  readonly robinhoodPageEndpoint: string;
   readonly marketPayloadFingerprint: string;
   readonly seriesPayloadFingerprint: string;
+  readonly robinhoodEvidenceFingerprint: string;
+  readonly termsSha256: string;
   readonly observedAt: string;
   readonly receivedAt: string;
   readonly normalizedAt: string;
   readonly rawPayloadBytes: number;
-  readonly recordCount: 2;
+  readonly recordCount: 3;
 }
 
 export interface KalshiNormalizedEventContractFixture {
   readonly schemaVersion: typeof KALSHI_EVENT_CONTRACT_FIXTURE_SCHEMA_VERSION;
-  readonly status: KalshiEventContractFixtureStatus.NormalizedPendingMapping;
+  readonly status: KalshiEventContractFixtureStatus.NormalizedExactMapping;
   readonly provider: EventContractSourceProvider;
+  readonly robinhoodEvidence: RobinhoodReviewedEventContractEvidence;
   readonly externalIdentity: KalshiExternalMarketIdentity;
   readonly externalTerms: KalshiExternalTermsCandidate;
   readonly settlement: KalshiSettlementFact;
   readonly mappingAssessment: KalshiRobinhoodMappingAssessment;
+  readonly mapping: EventContractSourceMapping;
   readonly provenance: KalshiEventContractFixtureProvenance;
-  readonly eligibleForSourceSnapshot: false;
-  readonly sourceSnapshot: null;
+  readonly eligibleForSourceSnapshot: true;
+  readonly sourceSnapshot: EventContractSourceSnapshot;
   readonly authorizationStatus: "RESEARCH_FIXTURE_ONLY_NOT_OBSERVATION_OR_TRADE_AUTHORITY";
   readonly deterministic: true;
   readonly readOnly: true;
@@ -128,6 +146,7 @@ export type KalshiEventContractFixtureResult =
 export interface KalshiEventContractFixtureInput {
   readonly marketBody: string;
   readonly seriesBody: string;
+  readonly robinhoodBody: string;
   readonly observedAt: string;
   readonly receivedAt: string;
   readonly normalizedAt: string;

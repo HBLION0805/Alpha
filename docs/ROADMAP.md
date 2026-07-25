@@ -287,12 +287,17 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: undeclared authority, ambiguous mapping, terms mismatch, stale/tampered lineage, invalid chronology, oversized inputs, and bounded-live use fail closed; focused and complete validation pass; owner reviews before release.
 
 10. **Day15-T3B7 — First Exchange Fixture Adapter**
-   - Status: fixture normalization implemented locally and pending owner review; exact mapping exit criterion remains blocked.
-   - Scope: concrete fixture-only Kalshi provider, exact official `KXBTC15M-26JUL232045-45` market and `KXBTC15M` series validation, normalized terms/settlement facts, and machine-readable Robinhood mapping blockers.
+   - Status: committed and pushed as `5c6e8daf616e16c4c664cf4156f6a19a229610c2`; official Robinhood mapping-evidence correction is implemented locally and pending owner review.
+   - Scope: concrete fixture-only Kalshi provider, exact official `KXBTC15M-26JUL232045-45` market and `KXBTC15M` series validation, exact public Robinhood event evidence, content-addressed `CRYPTO15M` terms, reviewed mapping, and fixture settlement snapshot.
    - Excludes: network, credential, transport, live-read authorization, persistence, polling, scheduler, T1/T2 mutation, probability, recommendation, sizing, broker, order, or execution.
-   - Exit criteria: fixture parsing and normalization fail closed and complete validation passes; exact mapping additionally requires Robinhood-declared exchange, platform market/contract/terms identities, terms version, and complete rule evidence. T3B8 remains unauthorized while that evidence is missing.
+   - Exit criteria: all three fixtures parse and normalize fail closed; platform and exchange identities, complete canonical terms, native labels, rules, terms link, and terms digest are retained; exact mapping and fixture snapshot pass focused and complete validation.
 
-11. **Day15-T3C — Baseline Probability Research**
+11. **Day15-T3B8 — Bounded Live-Read Smoke**
+   - Status: planned only; mapping prerequisite is locally satisfied but live-read policy and owner approval remain required.
+   - Intended scope: one official Kalshi public endpoint, one exact mapped market, one request, bounded bytes and records, injected HTTPS transport, zero persistence, sanitized errors, and an explicit manual command that defaults to a network-free dry run.
+   - Excludes: Robinhood private endpoints or authenticated sessions, streaming, polling, retry, scheduling, automatic ledger mutation, quote relabeling, fee inference, model, recommendation, sizing, broker, order, or execution.
+
+12. **Day15-T3C — Baseline Probability Research**
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 

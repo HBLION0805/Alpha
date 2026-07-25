@@ -2,11 +2,16 @@ import {
   EVENT_CONTRACT_OBSERVATION_INSTRUMENT_ID,
   EVENT_CONTRACT_OBSERVATION_OUTCOME_PAIR,
   EVENT_CONTRACT_SOURCE_SCHEMA_VERSION,
+  EventContractEvaluationMethod,
+  EventContractObservationEventType,
   EventContractSourceCapability,
   EventContractSourceClass,
   EventContractSourceCredentialMode,
   EventContractSourceExecutionMode,
+  EventContractSourceMappingReviewStatus,
+  EventContractThresholdOperator,
   type EventContractFixedDecimal,
+  type EventContractSourceTerms,
 } from "../../../contracts";
 import { EventContractSourceEngine } from "../../../engines";
 import {
@@ -16,10 +21,10 @@ import {
   KALSHI_EVENT_CONTRACT_PROVIDER_ID,
   KalshiEventContractFixtureIssueCode,
   KalshiEventContractFixtureStatus,
-  KalshiRobinhoodMappingBlockerCode,
   type KalshiEventContractFixtureInput,
   type KalshiEventContractFixtureIssue,
   type KalshiEventContractFixtureResult,
+  type RobinhoodReviewedEventContractEvidence,
 } from "./KalshiEventContractFixtureContracts";
 
 const MAX_BODY_BYTES = 100_000;
@@ -27,6 +32,13 @@ const MARKET_ENDPOINT = "https://external-api.kalshi.com/trade-api/v2/markets/KX
 const SERIES_ENDPOINT = "https://external-api.kalshi.com/trade-api/v2/series/KXBTC15M";
 const MARKET_TICKER = "KXBTC15M-26JUL232045-45";
 const EVENT_TICKER = "KXBTC15M-26JUL232045";
+const ROBINHOOD_PAGE_URL = "https://robinhood.com/us/en/prediction-markets/crypto/events/btc-15-min-64-83926-target-jul-23-2026/";
+const ROBINHOOD_PAGE_SLUG = "btc-15-min-64-83926-target-jul-23-2026";
+const ROBINHOOD_DEEP_LINK_CONTRACT_ID = "882673e4-25e6-45b3-8d6a-4ff87ff21708";
+const ROBINHOOD_ANALYTICS_EVENT_CONTRACT_ID = "7e129ce2-a081-4cbc-b1b9-c6808ca3ea38";
+const CONTRACT_TERMS_URL = "https://assets.kalshi.com/contract_terms/CRYPTO15M.pdf";
+const CONTRACT_TERMS_SHA256 = "418c225a3c45c7ddef028f12a4755652c456658f54ec27c5d365d5489ce5e874";
+const CANONICAL_MAPPING_TITLE = "BTC-USD 15-minute direction ending 2026-07-24T00:45:00.000Z";
 const MARKET_KEYS = [
   "can_close_early", "close_time", "created_time", "custom_strike", "event_ticker",
   "exchange_index", "expected_expiration_time", "expiration_time", "expiration_value",
@@ -45,10 +57,17 @@ const SERIES_KEYS = [
   "fee_multiplier", "fee_type", "frequency", "last_updated_ts", "product_metadata",
   "settlement_sources", "tags", "ticker", "title",
 ] as const;
+const ROBINHOOD_EVENT_KEYS = [
+  "analytics_event_contract_id", "contract_label", "contract_question",
+  "deep_link_contract_id", "display_title", "page_slug", "page_title", "page_url",
+  "retrieved_at", "rules_primary", "rules_secondary", "terms_provider_host",
+  "terms_sha256", "terms_url",
+] as const;
 const PRIMARY_RULE = "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 8:45 PM EDT on Jul 23, 2026 is at least the simple average of the sixty seconds of CF Benchmarks' BRTI before 8:30 PM EDT on July 23, 2026, then the market resolves to Yes.";
 const SECONDARY_RULE = "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices, rounded to the nearest 2 decimal places.";
 
-const provider = new EventContractSourceEngine().createProvider({
+const sourceEngine = new EventContractSourceEngine();
+const provider = sourceEngine.createProvider({
   schemaVersion: EVENT_CONTRACT_SOURCE_SCHEMA_VERSION,
   providerId: KALSHI_EVENT_CONTRACT_PROVIDER_ID,
   displayName: "Kalshi Public Market API",
@@ -68,7 +87,8 @@ const provider = new EventContractSourceEngine().createProvider({
 });
 
 /**
- * Normalizes two static, official Kalshi API payloads. It has no transport,
+ * Normalizes two static official Kalshi API payloads plus one reviewed,
+ * sanitized Robinhood public-page evidence fixture. It has no transport,
  * credential, persistence, observation, recommendation, or execution path.
  */
 export class KalshiEventContractFixtureAdapter {
@@ -80,30 +100,101 @@ export class KalshiEventContractFixtureAdapter {
     const blockers: KalshiEventContractFixtureIssue[] = [];
     const marketRoot = parse(input.marketBody, "marketBody", blockers);
     const seriesRoot = parse(input.seriesBody, "seriesBody", blockers);
+    const robinhoodRoot = parse(input.robinhoodBody, "robinhoodBody", blockers);
     chronology(input, blockers);
-    if (marketRoot === undefined || seriesRoot === undefined) return rejected(blockers);
+    if (marketRoot === undefined || seriesRoot === undefined || robinhoodRoot === undefined) return rejected(blockers);
 
     exactKeys(marketRoot, ["market"], "marketBody", blockers);
     exactKeys(seriesRoot, ["series"], "seriesBody", blockers);
+    exactKeys(robinhoodRoot, ["event"], "robinhoodBody", blockers);
     const market = record(marketRoot.market, "marketBody.market", blockers);
     const series = record(seriesRoot.series, "seriesBody.series", blockers);
-    if (market === undefined || series === undefined) return rejected(blockers);
+    const robinhood = record(robinhoodRoot.event, "robinhoodBody.event", blockers);
+    if (market === undefined || series === undefined || robinhood === undefined) return rejected(blockers);
     exactKeys(market, MARKET_KEYS, "marketBody.market", blockers);
     exactKeys(series, SERIES_KEYS, "seriesBody.series", blockers);
+    exactKeys(robinhood, ROBINHOOD_EVENT_KEYS, "robinhoodBody.event", blockers);
     validateNestedShape(market, series, blockers);
 
     validateIdentity(market, series, blockers);
     validateTerms(market, series, blockers);
+    validateRobinhoodEvidence(robinhood, market, series, input, blockers);
     validateSettlement(market, blockers);
     if (blockers.length > 0) return rejected(blockers);
 
     const targetPrice = decimalFromNumber(market.floor_strike as number);
     const expirationValue = decimalFromString(market.expiration_value as string);
     const observedAt = input.observedAt;
+    const canonicalTerms: EventContractSourceTerms = {
+      title: CANONICAL_MAPPING_TITLE,
+      termsVersion: CONTRACT_TERMS_SHA256,
+      eventType: EventContractObservationEventType.BtcFifteenMinute,
+      instrumentId: EVENT_CONTRACT_OBSERVATION_INSTRUMENT_ID,
+      outcomePair: EVENT_CONTRACT_OBSERVATION_OUTCOME_PAIR,
+      windowStartsAt: canonicalTimestamp(market.open_time as string),
+      tradingClosesAt: canonicalTimestamp(market.close_time as string),
+      evaluatesAt: canonicalTimestamp(market.close_time as string),
+      evaluationMethod: EventContractEvaluationMethod.AtScheduledTime,
+      thresholdOperator: EventContractThresholdOperator.AtOrAbove,
+      targetPrice,
+      settlementSourceId: "source:cme-cf-brti",
+    };
+    const evidenceIds = [
+      "evidence:official-page:robinhood:btc15m:20260723-2045",
+      "evidence:official-terms:kalshi:CRYPTO15M",
+      "evidence:official-api:kalshi:market:KXBTC15M-26JUL232045-45",
+      "evidence:official-api:kalshi:series:KXBTC15M",
+    ];
+    const mapping = sourceEngine.createMapping({
+      schemaVersion: EVENT_CONTRACT_SOURCE_SCHEMA_VERSION,
+      mappingId: "mapping:robinhood:kalshi:KXBTC15M-26JUL232045-45",
+      version: "1.0",
+      createdAt: canonicalTimestamp(robinhood.retrieved_at as string),
+      reviewStatus: EventContractSourceMappingReviewStatus.ReviewedExact,
+      reviewedAt: input.normalizedAt,
+      reviewerId: "reviewer:codex",
+      evidenceIds,
+      provider,
+      robinhoodIdentity: {
+        exchangeId: KALSHI_EVENT_CONTRACT_EXCHANGE_ID,
+        marketId: `robinhood:event-page:${ROBINHOOD_PAGE_SLUG}`,
+        contractId: `robinhood:deep-link:${ROBINHOOD_DEEP_LINK_CONTRACT_ID}`,
+        termsId: "robinhood:terms-link:CRYPTO15M",
+      },
+      externalIdentity: {
+        providerId: KALSHI_EVENT_CONTRACT_PROVIDER_ID,
+        exchangeId: KALSHI_EVENT_CONTRACT_EXCHANGE_ID,
+        eventId: EVENT_TICKER,
+        marketId: MARKET_TICKER,
+        contractId: MARKET_TICKER,
+        nativeTicker: MARKET_TICKER,
+      },
+      robinhoodTerms: canonicalTerms,
+      externalTerms: canonicalTerms,
+    });
+    const sourceSnapshot = sourceEngine.createSnapshot({
+      schemaVersion: EVENT_CONTRACT_SOURCE_SCHEMA_VERSION,
+      snapshotId: "snapshot:kalshi:settlement:KXBTC15M-26JUL232045-45",
+      provider,
+      mapping,
+      capability: EventContractSourceCapability.Settlement,
+      executionMode: EventContractSourceExecutionMode.Fixture,
+      sourceRecordId: `kalshi:market:${MARKET_TICKER}`,
+      observedAt,
+      publishedAt: null,
+      receivedAt: input.receivedAt,
+      normalizedAt: input.normalizedAt,
+      payloadFingerprint: fingerprint({ market: marketRoot, series: seriesRoot }),
+      rawPayloadBytes: new TextEncoder().encode(input.marketBody).length
+        + new TextEncoder().encode(input.seriesBody).length,
+      recordCount: 2,
+    });
+    const robinhoodEvidence = normalizeRobinhoodEvidence(robinhood);
     const base = {
       schemaVersion: KALSHI_EVENT_CONTRACT_FIXTURE_SCHEMA_VERSION,
-      status: KalshiEventContractFixtureStatus.NormalizedPendingMapping as const,
+      status: KalshiEventContractFixtureStatus.NormalizedExactMapping as const,
       provider,
+      robinhoodEvidence,
       externalIdentity: {
         providerId: KALSHI_EVENT_CONTRACT_PROVIDER_ID,
         exchangeId: KALSHI_EVENT_CONTRACT_EXCHANGE_ID,
@@ -113,7 +204,7 @@ export class KalshiEventContractFixtureAdapter {
       },
       externalTerms: {
         title: market.title as string,
-        termsVersion: null,
+        termsVersion: CONTRACT_TERMS_SHA256,
         instrumentId: EVENT_CONTRACT_OBSERVATION_INSTRUMENT_ID,
         outcomePair: EVENT_CONTRACT_OBSERVATION_OUTCOME_PAIR,
         windowStartsAt: canonicalTimestamp(market.open_time as string),
@@ -123,7 +214,7 @@ export class KalshiEventContractFixtureAdapter {
         thresholdOperator: "AT_OR_ABOVE" as const,
         targetPrice,
         settlementSourceId: "source:cme-cf-brti" as const,
-        contractTermsUrl: series.contract_terms_url as string,
+        contractTermsUrl: CONTRACT_TERMS_URL,
         contractCertificationUrl: series.contract_url as string,
         seriesLastUpdatedAt: canonicalTimestamp(series.last_updated_ts as string),
         ruleFingerprint: fingerprint({
@@ -139,47 +230,96 @@ export class KalshiEventContractFixtureAdapter {
         expirationValue,
       },
       mappingAssessment: {
-        reviewStatus: "PENDING" as const,
-        eligibleForCollection: false as const,
-        matchingDisplayedFacts: [
+        reviewStatus: "REVIEWED_EXACT" as const,
+        eligibleForCollection: true as const,
+        matchingFacts: [
           "BTC_15_MINUTE_WINDOW",
           "TARGET_PRICE",
           "BRTI_SETTLEMENT_SOURCE",
+          "PRIMARY_RULE",
+          "SECONDARY_RULE",
+          "KALSHI_TERMS_LINK",
         ] as const,
-        blockerCodes: [
-          KalshiRobinhoodMappingBlockerCode.MissingDeclaredExchangeIdentity,
-          KalshiRobinhoodMappingBlockerCode.MissingPlatformMarketIdentity,
-          KalshiRobinhoodMappingBlockerCode.MissingPlatformContractIdentity,
-          KalshiRobinhoodMappingBlockerCode.MissingPlatformTermsIdentity,
-          KalshiRobinhoodMappingBlockerCode.MissingPlatformTermsVersion,
-          KalshiRobinhoodMappingBlockerCode.MissingExactTitleAndRuleEvidence,
-        ],
-        evidenceIds: [
-          "evidence:operator:robinhood-screenshot:20260723-2042",
-          "evidence:official-api:kalshi:market:KXBTC15M-26JUL232045-45",
-          "evidence:official-api:kalshi:series:KXBTC15M",
-        ],
+        evidenceIds,
       },
+      mapping,
       provenance: {
         marketEndpoint: MARKET_ENDPOINT,
         seriesEndpoint: SERIES_ENDPOINT,
+        robinhoodPageEndpoint: ROBINHOOD_PAGE_URL,
         marketPayloadFingerprint: fingerprint(marketRoot),
         seriesPayloadFingerprint: fingerprint(seriesRoot),
+        robinhoodEvidenceFingerprint: robinhoodEvidence.evidenceFingerprint,
+        termsSha256: CONTRACT_TERMS_SHA256,
         observedAt,
         receivedAt: input.receivedAt,
         normalizedAt: input.normalizedAt,
         rawPayloadBytes: new TextEncoder().encode(input.marketBody).length
-          + new TextEncoder().encode(input.seriesBody).length,
-        recordCount: 2 as const,
+          + new TextEncoder().encode(input.seriesBody).length
+          + new TextEncoder().encode(input.robinhoodBody).length,
+        recordCount: 3 as const,
       },
-      eligibleForSourceSnapshot: false as const,
-      sourceSnapshot: null,
+      eligibleForSourceSnapshot: true as const,
+      sourceSnapshot,
       authorizationStatus: "RESEARCH_FIXTURE_ONLY_NOT_OBSERVATION_OR_TRADE_AUTHORITY" as const,
       deterministic: true as const,
       readOnly: true as const,
     };
     return deepFreeze({ ...base, fingerprint: fingerprint(base) });
   }
+}
+
+function validateRobinhoodEvidence(
+  robinhood: Record<string, unknown>,
+  market: Record<string, unknown>,
+  series: Record<string, unknown>,
+  input: Readonly<KalshiEventContractFixtureInput>,
+  blockers: KalshiEventContractFixtureIssue[],
+): void {
+  equal(robinhood.page_url, ROBINHOOD_PAGE_URL, "robinhoodBody.event.page_url", blockers);
+  equal(robinhood.page_slug, ROBINHOOD_PAGE_SLUG, "robinhoodBody.event.page_slug", blockers);
+  equal(robinhood.page_title, "July 23, 2026: BTC 15 min · 8:30–8:45 PM EDT Prediction Market", "robinhoodBody.event.page_title", blockers);
+  equal(robinhood.display_title, "BTC 15 min · 8:30–8:45 PM EDT", "robinhoodBody.event.display_title", blockers);
+  equal(robinhood.contract_label, "$64,839.26 or above", "robinhoodBody.event.contract_label", blockers);
+  equal(robinhood.contract_question, "Will the price of Bitcoin be at or above the $64,839.26 target price in the 15-minute window?", "robinhoodBody.event.contract_question", blockers);
+  equal(robinhood.deep_link_contract_id, ROBINHOOD_DEEP_LINK_CONTRACT_ID, "robinhoodBody.event.deep_link_contract_id", blockers);
+  equal(robinhood.analytics_event_contract_id, ROBINHOOD_ANALYTICS_EVENT_CONTRACT_ID, "robinhoodBody.event.analytics_event_contract_id", blockers);
+  equal(robinhood.terms_url, CONTRACT_TERMS_URL, "robinhoodBody.event.terms_url", blockers);
+  equal(robinhood.terms_provider_host, "assets.kalshi.com", "robinhoodBody.event.terms_provider_host", blockers);
+  equal(robinhood.terms_sha256, CONTRACT_TERMS_SHA256, "robinhoodBody.event.terms_sha256", blockers);
+  equal(robinhood.rules_primary, PRIMARY_RULE, "robinhoodBody.event.rules_primary", blockers);
+  equal(robinhood.rules_secondary, SECONDARY_RULE, "robinhoodBody.event.rules_secondary", blockers);
+  equal(robinhood.rules_primary, market.rules_primary, "mapping.rules_primary", blockers);
+  equal(robinhood.rules_secondary, market.rules_secondary, "mapping.rules_secondary", blockers);
+  equal(robinhood.terms_url, series.contract_terms_url, "mapping.terms_url", blockers);
+  validProviderTimestamp(robinhood.retrieved_at, "robinhoodBody.event.retrieved_at", blockers);
+  if (typeof robinhood.retrieved_at === "string") {
+    if (!isCanonicalTimestamp(robinhood.retrieved_at)) {
+      add(blockers, KalshiEventContractFixtureIssueCode.InvalidChronology, "robinhoodBody.event.retrieved_at", "Robinhood evidence retrieval time must be canonical UTC.");
+    } else if (Date.parse(robinhood.retrieved_at) > Date.parse(input.normalizedAt)) {
+      add(blockers, KalshiEventContractFixtureIssueCode.InvalidChronology, "robinhoodBody.event.retrieved_at", "Robinhood evidence retrieval cannot follow normalization.");
+    }
+  }
+}
+
+function normalizeRobinhoodEvidence(value: Record<string, unknown>): RobinhoodReviewedEventContractEvidence {
+  const base = {
+    pageUrl: value.page_url as string,
+    pageSlug: value.page_slug as string,
+    pageTitle: value.page_title as string,
+    displayTitle: value.display_title as string,
+    contractLabel: value.contract_label as string,
+    contractQuestion: value.contract_question as string,
+    deepLinkContractId: value.deep_link_contract_id as string,
+    analyticsEventContractId: value.analytics_event_contract_id as string,
+    termsUrl: value.terms_url as string,
+    termsProviderHost: value.terms_provider_host as "assets.kalshi.com",
+    termsSha256: value.terms_sha256 as string,
+    rulesPrimary: value.rules_primary as string,
+    rulesSecondary: value.rules_secondary as string,
+    retrievedAt: canonicalTimestamp(value.retrieved_at as string),
+  };
+  return deepFreeze({ ...base, evidenceFingerprint: fingerprint(base) });
 }
 
 function parse(body: unknown, field: string, blockers: KalshiEventContractFixtureIssue[]): Record<string, unknown> | undefined {

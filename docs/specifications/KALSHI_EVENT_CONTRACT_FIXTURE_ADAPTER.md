@@ -1,15 +1,16 @@
 # Kalshi Event Contract Fixture Adapter v1
 
-Status: Day15-T3B7 fixture normalization implemented locally; exact Robinhood mapping remains blocked and the milestone is pending owner review.
+Status: Day15-T3B7 official Robinhood evidence correction implemented locally and pending owner review.
 
-Schema: `1.0`
+Schema: `1.1`
 
 ## Purpose
 
-This boundary introduces Alpha's first concrete event-contract source adapter using two static payloads retrieved from official Kalshi public API endpoints:
+This boundary introduces Alpha's first concrete event-contract source adapter using:
 
 - market `KXBTC15M-26JUL232045-45`;
 - series `KXBTC15M`.
+- one sanitized evidence record derived from the exact public Robinhood event page.
 
 The reviewed market corresponds to the operator screenshot displaying the July 23, 2026 8:30–8:45 PM EDT BTC 15-minute interval, target price `$64,839.26`, and BRTI source.
 
@@ -32,38 +33,42 @@ The official Kalshi market payload states:
 
 The series payload identifies CF Benchmarks as the settlement source and links the `CRYPTO15M` contract terms and certification documents.
 
+## Reviewed Robinhood evidence
+
+The exact public Robinhood event page supplies:
+
+- canonical event-page URL and slug;
+- page title, displayed contract title, contract label, and contract question;
+- the routable `event_contracts?id=` UUID exposed by Robinhood's own deep link;
+- the separately preserved `ec_id` UUID without assigning undocumented semantics to it;
+- complete primary and secondary rule text;
+- a direct `contract terms and conditions` link to Kalshi's `CRYPTO15M.pdf`.
+
+The reviewed Kalshi terms PDF has SHA-256:
+
+`418c225a3c45c7ddef028f12a4755652c456658f54ec27c5d365d5489ce5e874`
+
+The digest is the content-addressed terms version. It does not claim that Kalshi printed a separate human-readable version number.
+
 ## Mapping decision
 
-The reviewed Robinhood screenshot and Kalshi payload have three exact displayed facts in common:
+The Robinhood page and Kalshi payload agree exactly on the interval, target, BRTI source, primary rule, secondary rule, and Kalshi terms link. The page slug is retained as platform market identity; the documented deep-link UUID is retained as platform contract identity; the exact terms link is retained as platform terms identity. The separate `ec_id` remains opaque evidence and is not promoted to an undocumented identity meaning.
 
-1. the BTC 15-minute interval;
-2. target price `$64,839.26`;
-3. BRTI settlement-source display.
+Native Robinhood and Kalshi display titles remain distinct evidence. The T3B6 mapping uses one deterministic canonical title derived from the shared contract semantics, so `REVIEWED_EXACT` does not falsely claim that native labels are byte-identical.
 
-That evidence is strong market-candidate evidence, but it is not an exact cross-venue identity under the approved T3B5/T3B6 policy. The available Robinhood evidence does not expose:
-
-- Robinhood-declared exchange identity;
-- platform market ID;
-- platform contract ID;
-- platform terms ID;
-- platform terms version;
-- the complete exact title and rule text.
-
-The adapter therefore emits `NORMALIZED_PENDING_MAPPING`, `eligibleForCollection: false`, and a deterministic blocker for every missing field. It does not construct an `EventContractSourceMapping` or `EventContractSourceSnapshot`.
-
-Alpha must not infer these fields from the matching interval, target, or settlement source. A later owner-reviewed Robinhood terms artifact is required to close the mapping.
+The adapter emits `NORMALIZED_EXACT_MAPPING`, records the technical reviewer separately from owner release approval, creates one immutable `EventContractSourceMapping`, and creates one fixture-only settlement snapshot. Both remain research-source evidence and have no observation or trade authority. The milestone remains unapproved until the owner accepts the diff.
 
 ## Validation and normalization
 
 The adapter:
 
-- limits each fixture body to 100,000 bytes;
+- limits each of the three fixture bodies to 100,000 bytes;
 - requires valid JSON object roots;
-- rejects unknown and missing fields at the market, series, and response roots;
+- rejects unknown and missing fields at the market, series, Robinhood-event, and response roots;
 - requires the exact reviewed series, event, and market tickers;
-- verifies binary BTC 15-minute identity, target, rule text, BRTI source, terms URLs, and finalized settlement;
+- verifies public Robinhood identities, binary BTC 15-minute identity, target, complete rule text, BRTI source, Kalshi terms URL and digest, and finalized settlement;
 - requires a fifteen-minute UTC interval and valid settlement chronology;
-- records separate content fingerprints for the two payloads;
+- records separate content fingerprints for all three evidence records;
 - emits no raw provider payload;
 - returns immutable, deterministic, research-only output.
 
@@ -73,30 +78,29 @@ Provider timestamps with fractional precision are normalized to canonical UTC on
 
 The output is `RESEARCH_FIXTURE_ONLY_NOT_OBSERVATION_OR_TRADE_AUTHORITY`.
 
-Day15-T3B7 adds no:
+Day15-T3B7 and its mapping correction add no:
 
 - HTTP client, network request, transport, credential, API key, authentication, signing, session, cookie, or secret;
 - live-read authorization, polling, scheduler, retry, streaming, persistence, or ledger mutation;
-- Robinhood endpoint, browser/mobile automation, OCR, or screenshot parser;
+- runtime Robinhood endpoint, authenticated browser/mobile automation, OCR, or screenshot parser;
 - T1 observation, T2 append, probability, recommendation, ranking, sizing, broker, order, or execution;
 - claim that Kalshi quotes or fees are Robinhood quotes or fees.
 
 ## Acceptance status
 
-Completed:
+Completed locally:
 
 - one concrete Kalshi provider descriptor;
 - one official BTC 15-minute market fixture and its series fixture;
-- strict parsing, identity, terms, settlement, chronology, fingerprint, immutability, and adversarial tests;
-- explicit machine-readable Robinhood mapping blockers.
+- one reviewed, sanitized official Robinhood public-page evidence fixture;
+- content-addressed Kalshi terms version;
+- exact T3B6 mapping and fixture settlement snapshot;
+- strict parsing, identity, terms, settlement, chronology, fingerprint, immutability, and adversarial tests.
 
-Blocked:
+Still blocked:
 
-- the T3B7 exact-mapping exit criterion;
-- exchange snapshot eligibility;
-- any T3B8 live-read work.
-
-The blocker can be resolved only with a reviewed Robinhood contract-terms artifact containing the missing authoritative identity and version fields.
+- T3B8 bounded live-read execution until its policy, request budget, transport, zero-persistence behavior, and owner-confirmed smoke command are separately specified and reviewed;
+- Robinhood quote or fee claims, because this fixture proves contract identity and settlement only.
 
 ## Official references
 
@@ -105,3 +109,4 @@ The blocker can be resolved only with a reviewed Robinhood contract-terms artifa
 - [Kalshi market endpoint used for the fixture](https://external-api.kalshi.com/trade-api/v2/markets/KXBTC15M-26JUL232045-45)
 - [Kalshi series endpoint used for the fixture](https://external-api.kalshi.com/trade-api/v2/series/KXBTC15M)
 - [Kalshi CRYPTO15M contract terms](https://assets.kalshi.com/contract_terms/CRYPTO15M.pdf)
+- [Robinhood exact BTC 15-minute event page](https://robinhood.com/us/en/prediction-markets/crypto/events/btc-15-min-64-83926-target-jul-23-2026/)

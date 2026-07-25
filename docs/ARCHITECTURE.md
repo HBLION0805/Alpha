@@ -691,9 +691,9 @@ Source snapshots preserve provider and mapping fingerprints, one declared capabi
 
 ## Kalshi Event Contract Fixture Adapter
 
-Day15-T3B7 introduces one concrete fixture-only Kalshi provider and validates the official `KXBTC15M-26JUL232045-45` market together with its `KXBTC15M` series metadata. The adapter normalizes exact UTC interval, target, BRTI rule, terms-document references, and finalized settlement facts from bounded static JSON without a transport, credential, network request, persistence path, or raw-payload output.
+Day15-T3B7 introduces one concrete fixture-only Kalshi provider and validates the official `KXBTC15M-26JUL232045-45` market together with its `KXBTC15M` series metadata. Its official-evidence correction adds one sanitized fixture from the exact public Robinhood event page. The adapter normalizes exact UTC interval, target, BRTI rule, terms-document references, finalized settlement facts, platform page identity, and content-addressed terms version from bounded static JSON without a runtime transport, credential, network request, persistence path, or raw-payload output.
 
-The operator screenshot and official exchange fixture agree on the BTC 15-minute interval, `$64,839.26` target, and BRTI display. They do not establish Robinhood's declared exchange, platform market/contract/terms identities, terms version, or complete rule text. The output is therefore `NORMALIZED_PENDING_MAPPING`, cannot construct a T3B6 exchange snapshot, and has no T1 observation or trading authority. See [Kalshi Event Contract Fixture Adapter](specifications/KALSHI_EVENT_CONTRACT_FIXTURE_ADAPTER.md).
+The exact Robinhood page links directly to Kalshi's `CRYPTO15M` terms and agrees with the Kalshi fixture on the interval, `$64,839.26` target, BRTI source, and complete primary and secondary rules. The mapping preserves each native title separately, the Robinhood page slug, its routable deep-link UUID, and the opaque `ec_id` without assigning undocumented semantics. The output is `NORMALIZED_EXACT_MAPPING`, constructs one T3B6 fixture settlement snapshot, and still has no T1 observation, quote/fee, live-read, or trading authority. See [Kalshi Event Contract Fixture Adapter](specifications/KALSHI_EVENT_CONTRACT_FIXTURE_ADAPTER.md).
 
 ---
 
