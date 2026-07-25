@@ -560,7 +560,18 @@ Approval of one task grants no authority to begin the next.
   replay, and fail-closed or recovery-required evidence.
 - T3B13-T4 has no command, internal loop, timer, scheduler, network request,
   real Pilot, recommendation, broker, order, or execution authority.
-- T3B13-T4 is complete locally and pending Owner review.
+- T3B13-T4 is committed and pushed as `a4c83f8`.
+- T3B13-T5 implements repository-disjoint pre-registered package roots,
+  bounded sanitized artifacts, staging-to-final atomic publication, injected
+  SQLite/backup/validation evidence verification, independent directory
+  reread and digest verification, exact replay, and non-destructive partial
+  staging quarantine.
+- T3B13-T5 process drills terminate real test-only child processes after
+  durable artifacts and after atomic publication, and separately prove
+  fresh-process Stop and leakage rejection.
+- T3B13-T5 has no executable rehearsal command, loop, timer, network request,
+  real Pilot, recommendation, broker, order, or execution authority.
+- T3B13-T5 is complete locally and pending Owner review.
 
 ## Acceptance criteria
 

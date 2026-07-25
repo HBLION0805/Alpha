@@ -773,6 +773,8 @@ Day15-T3B13-T3 adds the separately approved preparation boundary. A trusted comp
 
 Day15-T3B13-T4 adds one programmatic rehearsal invocation boundary. Each call binds an exact manifest, rehearsal, lifecycle version, recovery fingerprint, scenario phase, and ordinal to at most one existing T3B12 foreground action. Exact replay returns the prior sanitized receipt without repeating work; changed replay, substitution, stale state, and skipped ordinals fail closed. The coordinator independently rereads durable task and Pilot truth before recording success, and any ambiguous mutation or identity mismatch moves the rehearsal to recovery-required state. It adds no command, loop, timer, scheduler, provider request, real Pilot, recommendation, broker, order, or execution authority.
 
+Day15-T3B13-T5 adds the post-completion evidence boundary. A trusted evidence port must verify SQLite, backup, and validation identities before a repository-disjoint package root can be mutated. Fifteen bounded sanitized artifacts are written durably to staging and then atomically renamed into one immutable evidence directory. A separate verifier rereads the exact directory, rejects missing or extra files, recomputes lengths and digests, scans excluded data, and invokes the pure package verifier. Exact replay never rewrites the directory; partial staging is quarantined rather than deleted. Test-only child processes prove pre-commit and post-commit crash behavior plus fresh-process Stop and leakage rejection. No executable rehearsal command or operational authority is added.
+
 ---
 
 # Event Contract Framework

@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B13-T5 Evidence Package and Process Drills
+
+- Decision: permit package mutation only under a repository-disjoint pre-registered root and only after an injected port verifies bound SQLite, backup, and validation evidence.
+- Decision: write bounded sanitized artifacts to a staging directory and publish the package through one atomic directory rename.
+- Decision: require an independent verifier to reread the exact file set, recompute byte counts and digests, scan excluded data, and return only `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`.
+- Decision: return exact replay without rewriting, reject changed replay, and quarantine incomplete staging without recursive deletion.
+- Decision: keep catalog identity and catalog-entry identity distinct; the preparation receipt binds the entry while the manifest binds the catalog.
+- Decision: use real test-only child termination to prove behavior before and after atomic publication, and fresh child processes to prove Stop and leakage rejection.
+- Consequence: T3B13 may proceed to MR1 review, but no rehearsal command, network provider, continuous runtime, live Pilot, recommendation, or trading authority is approved.
+
 ## 2026-07-25 - Day15-T3B13-T4 Programmatic Rehearsal Step
 
 - Decision: require a separate explicit call for each exact manifest-declared invocation ordinal and execute at most one existing T3B12 foreground action.

@@ -212,6 +212,28 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
   ["receipt rejects task-state substitution", () => throws(() => createCollectionRunnerRehearsalInvocationReceipt(manifest, receiptInput(1, { resultingTaskState: CollectionRunnerTaskState.Committed })), "INVOCATION_MISMATCH", "state")],
   ["receipt rejects out-of-range ordinal", () => throws(() => createCollectionRunnerRehearsalInvocationReceipt(manifest, receiptInput(1, { ordinal: 9 })), "INVOCATION_MISMATCH", "range")],
   ["complete package passes", () => equal(verifyCollectionRunnerRehearsalEvidencePackage(createCollectionRunnerRehearsalEvidencePackage(packageInput())).disposition, CollectionRunnerRehearsalVerificationDisposition.Pass, "pass")],
+  ["catalog entry identity remains distinct from catalog identity", () => {
+    const distinctReceipt = createCollectionRunnerRehearsalPreparationReceipt(manifest, {
+      rehearsalId: manifest.rehearsalId,
+      manifestFingerprint: manifest.fingerprint,
+      fixtureCatalogEntryFingerprint: D,
+      runtimeConfigurationFingerprint: A,
+      seededStoreFingerprint: B,
+      preparationTransitionFingerprint: transitions[0]!.fingerprint,
+      workspaceIdentity: "workspace:fixture",
+      storePathIdentity: D,
+      schemaCatalogFingerprint: E,
+    });
+    const value = createCollectionRunnerRehearsalEvidencePackage(packageInput({
+      fixtureCatalogEntryFingerprint: D,
+      preparationReceipt: distinctReceipt,
+    }));
+    equal(
+      verifyCollectionRunnerRehearsalEvidencePackage(value).disposition,
+      CollectionRunnerRehearsalVerificationDisposition.Pass,
+      "separate catalog identities",
+    );
+  }],
   ["missing receipt is incomplete", () => equal(verifyCollectionRunnerRehearsalEvidencePackage(createCollectionRunnerRehearsalEvidencePackage(packageInput({ invocationReceipts: receipts.slice(0, 2), terminalReportFingerprints: [A, B] }))).disposition, CollectionRunnerRehearsalVerificationDisposition.Incomplete, "incomplete")],
   ["missing inventory is incomplete", () => equal(verifyCollectionRunnerRehearsalEvidencePackage(createCollectionRunnerRehearsalEvidencePackage(packageInput({ inventory: [] }))).disposition, CollectionRunnerRehearsalVerificationDisposition.Incomplete, "inventory")],
   ["failed SQLite quick check fails closed", () => equal(verifyCollectionRunnerRehearsalEvidencePackage(createCollectionRunnerRehearsalEvidencePackage(packageInput({ sqliteQuickCheckPassed: false }))).disposition, CollectionRunnerRehearsalVerificationDisposition.FailClosed, "quick check")],

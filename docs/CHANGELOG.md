@@ -1,6 +1,18 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B13-T4 Programmatic Rehearsal Step (Pending Owner Review)
+## 2026-07-25 - Day15-T3B13-T5 Evidence Package and Process Drills (Pending Owner Review)
+
+- Added a repository-disjoint, pre-registered package-root boundary that writes 15 bounded sanitized JSON artifacts into an isolated staging directory and atomically publishes one immutable evidence directory.
+- Added an injected evidence-verification port for SQLite, backup, and validation truth; package construction refuses unverified evidence before filesystem mutation.
+- Added an independent directory verifier that rereads the final package, enforces its exact file set, recomputes every byte length and digest, scans for excluded data, and delegates final `PASS`, `FAIL_CLOSED`, or `INCOMPLETE` classification to the pure verifier.
+- Added exact immutable package replay, changed-replay rejection, Stop-before-mutation enforcement, incomplete-staging quarantine, and distinct execution-versus-scenario fingerprints.
+- Added real child-process termination drills before atomic package publication and immediately after publication, plus fresh-process Stop and leakage drills.
+- Corrected the package contract to preserve distinct catalog-level and catalog-entry fingerprints, matching the T3 preparation boundary.
+- Added 17 focused network-free checks: 12 package/verifier tests, four process drills, and one catalog-identity regression.
+- Complete Alpha validation passes `2261/2261` with zero failures.
+- Added no executable rehearsal command, scheduler, loop, network provider, real Pilot, recommendation, broker, order, or execution authority.
+
+## 2026-07-25 - Day15-T3B13-T4 Programmatic Rehearsal Step
 
 - Added one explicit, exact-ordinal programmatic rehearsal step over the existing T3B12 foreground one-action boundary.
 - Bound every invocation to the immutable manifest, rehearsal, lifecycle version, recovery fingerprint, scenario phase, and invocation identity.
@@ -9,6 +21,7 @@
 - Added 22 focused network-free tests covering the three-invocation fixture sequence, replay, lifecycle, local Owner authorization, foreground, durable-state, recovery, and terminal-state boundaries.
 - Complete Alpha validation passes `2244/2244` with zero failures.
 - Added no executable command, loop, timer, scheduling, provider request, real Pilot, model, recommendation, broker, order, or execution authority.
+- Owner approved and pushed T3B13-T4 as `a4c83f8`.
 
 ## 2026-07-25 - Day15-T3B13-T3 Isolated Workspace and Preparation Foundation
 

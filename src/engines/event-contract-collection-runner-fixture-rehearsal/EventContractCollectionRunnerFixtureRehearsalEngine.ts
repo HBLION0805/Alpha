@@ -350,7 +350,6 @@ export function verifyCollectionRunnerRehearsalEvidencePackage(
     if (
       value.preparationReceipt.deterministic !== true ||
       value.preparationReceipt.fingerprint !== verifiedPreparation.fingerprint ||
-      value.fixtureCatalogEntryFingerprint !== value.manifest.fixtureCatalogFingerprint ||
       value.preparationReceipt.fixtureCatalogEntryFingerprint !== value.fixtureCatalogEntryFingerprint
     ) issues.push("PREPARATION_RECEIPT_MISMATCH");
     value.lifecycleTransitions.forEach((transition) => {
