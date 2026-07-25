@@ -27,6 +27,11 @@ import type { EventContractCollectionRunnerRecoveryControlRepository } from "./E
 import { createSqliteEventContractCollectionRunnerRepository } from "./SqliteEventContractCollectionRunnerRepository";
 import { createSqliteEventContractCollectionRunnerRecoveryControlRepository } from "./SqliteEventContractCollectionRunnerRecoveryControlRepository";
 import {
+  CollectionRunnerProcessStopBarrier,
+  SessionGatedEventContractCollectionRunnerRepository,
+  type CollectionRunnerProcessSessionIdentity,
+} from "./SessionGatedEventContractCollectionRunnerRepository";
+import {
   EventContractCollectionRunnerSqliteRecoveryManager,
   inspectCollectionRunnerStartupRecovery,
   type CollectionRunnerStartupRecoveryReport,
@@ -801,6 +806,31 @@ export class EventContractCollectionRunnerSqliteStore {
         recoveryReportFingerprint: this.#recovery.fingerprint,
         recoveryInspectedAtUtc: this.#recovery.inspectedAtUtc,
       }),
+    );
+  }
+
+  public createAuthorizedRunnerRepository(
+    session: CollectionRunnerProcessSessionIdentity,
+    observedAtUtc: string,
+    stopBarrier: CollectionRunnerProcessStopBarrier,
+  ): EventContractCollectionRunnerRepository {
+    if (this.#closed) {
+      throw new EventContractCollectionRunnerSqliteStoreError(
+        EventContractCollectionRunnerSqliteStoreErrorCode.OpenFailed,
+        "Closed SQLite store cannot create an authorized runner repository.",
+      );
+    }
+    const control = this.createRecoveryControlRepository();
+    control.validateRecoverySessionGate({
+      ...session,
+      observedAtUtc,
+      taskId: null,
+    });
+    return new SessionGatedEventContractCollectionRunnerRepository(
+      createSqliteEventContractCollectionRunnerRepository(this.#database),
+      control,
+      session,
+      stopBarrier,
     );
   }
 

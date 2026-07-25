@@ -61,6 +61,16 @@ export interface ExecuteEmergencyStopTransaction {
   readonly executedAtUtc: string;
 }
 
+export interface ValidateRecoverySessionGateInput {
+  readonly sessionAuthorizationId: string;
+  readonly authorizationFingerprint: string;
+  readonly activationId: string;
+  readonly bootIdentity: string;
+  readonly processSessionId: string;
+  readonly observedAtUtc: string;
+  readonly taskId: string | null;
+}
+
 export interface CollectionRunnerRecoverySessionAuthorization {
   readonly sessionAuthorizationId: string;
   readonly authorizationFingerprint: string;
@@ -109,6 +119,9 @@ export interface EventContractCollectionRunnerRecoveryControlRepository {
   executeEmergencyStop(
     transaction: ExecuteEmergencyStopTransaction,
   ): CollectionRunnerControlExecutionReceipt;
+  validateRecoverySessionGate(
+    input: ValidateRecoverySessionGateInput,
+  ): CollectionRunnerRecoverySessionAuthorization;
   getRecoveryAssessment(
     assessmentId: string,
   ): CollectionRunnerRecoveryAssessment | null;

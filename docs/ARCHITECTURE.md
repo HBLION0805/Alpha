@@ -735,6 +735,8 @@ Day15-T3B10-T4A implements the provider-neutral immutable contracts and pure det
 
 Day15-T3B10-T4B adds checksum-bound migration 002 and a separately restricted recovery-control repository. Five new `STRICT` tables preserve assessments, owner decisions, session authorizations, Emergency Stop evidence, and execution receipts. Named `BEGIN IMMEDIATE` transactions revalidate deterministic records and exact recovery/store/schema/Pilot identities, consume decisions once, give Emergency Stop precedence, use compare-and-swap terminal/stop transitions, and commit receipts with outbox evidence atomically. Resume creates only a one-time session-authorization record; it does not unlock the ordinary runner repository. Populated v1 stores fail closed until a separately verified pre-migration backup exists. T4B adds no operator command, authenticated runtime gate, scheduler/worker, provider request, or real resume.
 
+Day15-T3B10-T4C adds a local-only Owner command and an authenticated process-session repository gate. Owner secrets enter only through standard input, are checked with fixed-policy `scrypt` and constant-time comparison, and are never placed in command arguments, environment options, output, decisions, receipts, or audit records. The exact command becomes the authentication challenge. A resumed repository rejects new definitions, Pilots, and task authority; every allowed write revalidates the unexpired, unrevoked session, exact store/report/schema/Pilot version, process/boot identity, task membership, and absence of a later Emergency Stop. An irreversible process-local stop barrier blocks writes even if durable stop persistence fails. T4C still starts no scheduler, worker, provider request, or continuous runner.
+
 ---
 
 # Event Contract Framework

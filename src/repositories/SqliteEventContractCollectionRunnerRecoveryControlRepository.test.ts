@@ -13,10 +13,28 @@ import {
 } from "../contracts";
 import { EventContractCollectionRunnerRecoveryControlEngine } from "../engines/event-contract-collection-runner-recovery-control";
 import {
+  CollectionRunnerLocalOwnerAuthenticationError,
+  CollectionRunnerLocalOwnerAuthenticationErrorCode,
+  deriveCollectionRunnerLocalOwnerSecretForProvisioning,
+  EventContractCollectionRunnerRecoveryControlOperator,
+  ScryptCollectionRunnerLocalOwnerVerifier,
+} from "../engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlOperator";
+import {
+  COLLECTION_RUNNER_RECOVERY_CONTROL_HELP,
+  runCollectionRunnerRecoveryControlConsole,
+} from "../engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlConsole";
+import {
   CollectionRunnerRecoveryControlRepositoryError,
   CollectionRunnerRecoveryControlRepositoryErrorCode,
 } from "./EventContractCollectionRunnerRecoveryControlRepository";
+import {
+  CollectionRunnerRepositoryError,
+  CollectionRunnerRepositoryErrorCode,
+} from "./EventContractCollectionRunnerRepository";
 import { EventContractCollectionRunnerSqliteStore } from "./EventContractCollectionRunnerSqliteStore";
+import {
+  CollectionRunnerProcessStopBarrier,
+} from "./SessionGatedEventContractCollectionRunnerRepository";
 
 const BUILD = "fnv1a64:1111111111111111";
 const ACTIVATION_FINGERPRINT = "fnv1a64:2222222222222222";
@@ -55,6 +73,59 @@ function expectRepositoryError(
     return;
   }
   throw new Error(`Expected ${code}.`);
+}
+
+function expectAuthenticationError(
+  run: () => unknown,
+  code: CollectionRunnerLocalOwnerAuthenticationErrorCode,
+): void {
+  try {
+    run();
+  } catch (error) {
+    assertTrue(
+      error instanceof CollectionRunnerLocalOwnerAuthenticationError,
+      "typed authentication error",
+    );
+    assertEqual(
+      (error as CollectionRunnerLocalOwnerAuthenticationError).code,
+      code,
+      "authentication error code",
+    );
+    return;
+  }
+  throw new Error(`Expected ${code}.`);
+}
+
+function expectRunnerRepositoryError(
+  run: () => unknown,
+  code: CollectionRunnerRepositoryErrorCode,
+): void {
+  try {
+    run();
+  } catch (error) {
+    assertTrue(
+      error instanceof CollectionRunnerRepositoryError,
+      "typed runner repository error",
+    );
+    assertEqual(
+      (error as CollectionRunnerRepositoryError).code,
+      code,
+      "runner repository error code",
+    );
+    return;
+  }
+  throw new Error(`Expected ${code}.`);
+}
+
+function expectErrorMessage(run: () => unknown, fragment: string): void {
+  try {
+    run();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    assertTrue(message.includes(fragment), `error contains ${fragment}`);
+    return;
+  }
+  throw new Error(`Expected error containing ${fragment}.`);
 }
 
 function withRoot(run: (root: string) => void): void {
@@ -211,22 +282,48 @@ function createResumeDecision(
 
 const tests: ReadonlyArray<readonly [string, () => void]> = [
   [
+    "local recovery-control command keeps secrets off arguments",
+    () => {
+      const help = runCollectionRunnerRecoveryControlConsole(["--help"]);
+      assertEqual(
+        help,
+        COLLECTION_RUNNER_RECOVERY_CONTROL_HELP,
+        "help output",
+      );
+      assertTrue(help.includes("standard input"), "secret input boundary");
+      assertTrue(!help.includes("--secret"), "no secret option");
+    },
+  ],
+  [
+    "local recovery-control command rejects unknown options before work",
+    () =>
+      expectErrorMessage(
+        () =>
+          runCollectionRunnerRecoveryControlConsole([
+            "owner-decision",
+            "--secret=forbidden",
+          ]),
+        "Unknown option",
+      ),
+  ],
+  [
     "approved resume is durable, idempotent, and does not mutate Pilot state",
     () =>
       withRoot((root) => {
         const store = prepareActiveStore(root);
-        const repository = store.createRecoveryControlRepository();
-        const assessment = createAssessment(store);
-        repository.persistRecoveryAssessment({
-          assessment,
-          recordedAtUtc: "2026-07-25T13:00:01.000Z",
-        });
-        const decision = createResumeDecision(assessment);
-        repository.persistOwnerRecoveryDecision({
-          decision,
-          recordedAtUtc: "2026-07-25T13:00:03.000Z",
-        });
-        const context = {
+        try {
+          const repository = store.createRecoveryControlRepository();
+          const assessment = createAssessment(store);
+          repository.persistRecoveryAssessment({
+            assessment,
+            recordedAtUtc: "2026-07-25T13:00:01.000Z",
+          });
+          const decision = createResumeDecision(assessment);
+          repository.persistOwnerRecoveryDecision({
+            decision,
+            recordedAtUtc: "2026-07-25T13:00:03.000Z",
+          });
+          const context = {
           decisionId: decision.decisionId,
           expectedDecisionFingerprint: decision.fingerprint,
           currentRecoveryReportFingerprint:
@@ -235,20 +332,91 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
           currentSchemaCatalogChecksum:
             store.getReadiness().schemaCatalogChecksum,
           executedAtUtc: "2026-07-25T13:00:04.000Z",
-        };
-        const first = repository.executeOwnerRecoveryDecision(context);
-        const replay = repository.executeOwnerRecoveryDecision(context);
-        assertEqual(replay.receiptId, first.receiptId, "idempotent receipt");
-        assertEqual(first.fromState, CollectionRunnerPilotState.Active, "from");
-        assertEqual(first.toState, CollectionRunnerPilotState.Active, "to");
-        assertEqual(first.fromAggregateVersion, 1, "from version");
-        assertEqual(first.toAggregateVersion, 1, "to version");
-        assertTrue(first.sessionAuthorizationId !== null, "session authority");
-        assertTrue(
-          repository.getSessionAuthorization("process:new") !== null,
-          "session persisted",
-        );
-        store.close();
+          };
+          const first = repository.executeOwnerRecoveryDecision(context);
+          const replay = repository.executeOwnerRecoveryDecision(context);
+          assertEqual(replay.receiptId, first.receiptId, "idempotent receipt");
+          assertEqual(first.fromState, CollectionRunnerPilotState.Active, "from");
+          assertEqual(first.toState, CollectionRunnerPilotState.Active, "to");
+          assertEqual(first.fromAggregateVersion, 1, "from version");
+          assertEqual(first.toAggregateVersion, 1, "to version");
+          assertTrue(first.sessionAuthorizationId !== null, "session authority");
+          const authorization =
+            repository.getSessionAuthorization("process:new");
+          assertTrue(authorization !== null, "session persisted");
+          const barrier = new CollectionRunnerProcessStopBarrier();
+          const gated = store.createAuthorizedRunnerRepository(
+          {
+            sessionAuthorizationId:
+              authorization?.sessionAuthorizationId ?? "",
+            authorizationFingerprint:
+              authorization?.authorizationFingerprint ?? "",
+            activationId: "pilot-1",
+            bootIdentity: "boot:new",
+            processSessionId: "process:new",
+          },
+          "2026-07-25T13:00:05.000Z",
+          barrier,
+          );
+          assertEqual(
+          gated.getPilotState("pilot-1")?.state,
+          CollectionRunnerPilotState.Active,
+          "authorized read",
+          );
+          expectRepositoryError(
+          () =>
+            repository.validateRecoverySessionGate({
+              sessionAuthorizationId:
+                authorization?.sessionAuthorizationId ?? "",
+              authorizationFingerprint:
+                authorization?.authorizationFingerprint ?? "",
+              activationId: "pilot-1",
+              bootIdentity: "boot:new",
+              processSessionId: "process:wrong",
+              observedAtUtc: "2026-07-25T13:00:05.000Z",
+              taskId: null,
+            }),
+          CollectionRunnerRecoveryControlRepositoryErrorCode.AuthorityMismatch,
+          );
+          expectRepositoryError(
+          () =>
+            repository.validateRecoverySessionGate({
+              sessionAuthorizationId:
+                authorization?.sessionAuthorizationId ?? "",
+              authorizationFingerprint:
+                authorization?.authorizationFingerprint ?? "",
+              activationId: "pilot-1",
+              bootIdentity: "boot:new",
+              processSessionId: "process:new",
+              observedAtUtc: "2026-07-25T13:08:00.000Z",
+              taskId: null,
+            }),
+          CollectionRunnerRecoveryControlRepositoryErrorCode.AuthorityMismatch,
+          );
+          barrier.trip("OWNER_STOP");
+          assertTrue(barrier.isTripped(), "barrier is irreversible");
+          expectRunnerRepositoryError(
+          () =>
+            gated.transitionPilot({
+              activationId: "pilot-1",
+              expectedAggregateVersion: 1,
+              nextState: CollectionRunnerPilotState.StopRequested,
+              clock: {
+                observedAtUtc: "2026-07-25T13:00:06.000Z",
+                absoluteOffsetMilliseconds: 0,
+                healthy: true,
+              },
+              recoveryBlockerCount: 0,
+              evidence: {
+                occurredAtUtc: "2026-07-25T13:00:06.000Z",
+                reasonCode: "OWNER_STOP",
+              },
+            }),
+          CollectionRunnerRepositoryErrorCode.AuthorityMismatch,
+          );
+        } finally {
+          store.close();
+        }
       }),
   ],
   [
@@ -309,6 +477,89 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
           CollectionRunnerRecoveryControlRepositoryErrorCode.DecisionInvalidated,
         );
         store.close();
+      }),
+  ],
+  [
+    "local Owner verifier executes an exact command and rejects bad secrets",
+    () =>
+      withRoot((root) => {
+        const store = prepareActiveStore(root);
+        try {
+          const repository = store.createRecoveryControlRepository();
+          const assessment = createAssessment(store);
+          repository.persistRecoveryAssessment({
+            assessment,
+            recordedAtUtc: "2026-07-25T13:00:01.000Z",
+          });
+          const secret = "correct horse battery staple";
+          const saltHex = "11".repeat(16);
+          const verifier =
+            new ScryptCollectionRunnerLocalOwnerVerifier({
+            schemaVersion: "1.0",
+            ownerId: "owner-1",
+            verifierId: "local-owner-verifier",
+            verifierVersion: "1.0",
+            algorithm: "SCRYPT_SHA256",
+            saltHex,
+            derivedKeyHex:
+              deriveCollectionRunnerLocalOwnerSecretForProvisioning(
+                secret,
+                saltHex,
+              ),
+              cost: 16384,
+              blockSize: 8,
+              parallelization: 1,
+              keyLength: 32,
+            });
+          const operator =
+            new EventContractCollectionRunnerRecoveryControlOperator(
+              repository,
+              verifier,
+            );
+          const command = {
+          schemaVersion: "1.0",
+          commandId: "command:resume-1",
+          assessmentId: assessment.assessmentId,
+          expectedAssessmentFingerprint: assessment.fingerprint,
+          decisionId: "decision:operator-1",
+          expectedActivationAggregateVersion: 1,
+          action: CollectionRunnerOwnerDecisionAction.ApproveResume,
+          reasonCode: "OWNER_REVIEWED_RECOVERY",
+          proposedBootIdentity: "boot:new",
+          proposedProcessSessionId: "process:new",
+          verifiedAtUtc: "2026-07-25T13:00:02.000Z",
+          authorizationExpiresAtUtc: "2026-07-25T13:04:00.000Z",
+          decidedAtUtc: "2026-07-25T13:00:03.000Z",
+          decisionExpiresAtUtc: "2026-07-25T13:03:00.000Z",
+          currentRecoveryReportFingerprint:
+            store.getStartupRecoveryReport().fingerprint,
+          currentStorePathIdentity: sha256(resolve(store.getStorePath())),
+          currentSchemaCatalogChecksum:
+            store.getReadiness().schemaCatalogChecksum,
+          executedAtUtc: "2026-07-25T13:00:04.000Z",
+          } as const;
+          expectAuthenticationError(
+            () => operator.executeOwnerCommand(command, "wrong secret value"),
+            CollectionRunnerLocalOwnerAuthenticationErrorCode.AuthenticationFailed,
+          );
+          assertEqual(
+            repository.getOwnerRecoveryDecision("decision:operator-1"),
+            null,
+            "bad secret creates no decision",
+          );
+          const receipt = operator.executeOwnerCommand(command, secret);
+          assertEqual(
+            receipt.action,
+            CollectionRunnerOwnerDecisionAction.ApproveResume,
+            "owner command action",
+          );
+          assertTrue(
+            repository.getSessionAuthorization("process:new") !== null,
+            "owner command session",
+          );
+        } finally {
+          store.close();
+        }
       }),
   ],
   [

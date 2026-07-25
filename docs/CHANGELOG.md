@@ -1,12 +1,22 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B10-T4B Recovery-Control SQLite Transactions (Pending Owner Review)
+## 2026-07-25 - Day15-T3B10-T4C Local Owner Command and Session Gate (Pending Owner Review)
+
+- Added a local-only Owner command whose secret is accepted only through standard input and is never persisted or printed.
+- Added fixed-policy `scrypt` verification, constant-time comparison, exact command challenge binding, and generic authentication failure responses.
+- Added a separately gated resumed repository that prohibits new authority and revalidates session, activation, task, expiry, revocation, store, schema, recovery-report, and Emergency Stop facts before every write.
+- Added an irreversible process-local stop barrier that blocks mutation even when durable Emergency Stop persistence fails.
+- Added focused tests for secret argument prohibition, invalid authentication with zero decision writes, valid authenticated execution, wrong-session and expired-session denial, and stop-barrier precedence.
+- Added no scheduler, worker, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B10-T4B Recovery-Control SQLite Transactions
 
 - Added checksum-bound migration 002 and expanded the exact local schema from 14 to 19 `STRICT` tables without altering migration 001.
 - Added restricted persistence for immutable recovery assessments, exact-owner decisions, one-time session authorizations, Emergency Stop evidence, and execution receipts.
 - Added named atomic execution transactions with deterministic revalidation, exact recovery/store/schema/Pilot binding, compare-and-swap state, decision consumption, stop precedence, authority invalidation, and transactional outbox evidence.
 - Required populated v1 stores to fail closed until a separately verified pre-migration backup exists; empty v1 stores migrate deterministically.
 - Added 3 focused recovery-control transaction tests and 2 migration upgrade tests. Added no owner command, authenticated runtime gate, ordinary runner unlock, scheduler/worker, provider request, or real resume.
+- Owner approved and pushed T4B as `529ddbc1fc53a8d93a1beca77bc277e78fac9c2c`.
 
 ## 2026-07-25 - Day15-T3B10-T4A Recovery Control Contracts and Deterministic Engine
 

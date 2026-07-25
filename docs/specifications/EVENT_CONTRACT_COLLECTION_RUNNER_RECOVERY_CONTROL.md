@@ -6,7 +6,9 @@ Day15-T3B10-T4 defines the explicit Owner Resume, Emergency Stop, and recovery-d
 
 Day15-T3B10-T4A implements the provider-neutral immutable control contracts and deterministic validation/classification engine and is committed and pushed as `12848f9621e6d9abf9477cdb5c24260b50351a97`.
 
-Day15-T3B10-T4B implements checksum-bound migration 002 and named recovery-control transactions locally, pending owner review. It adds no owner command, authenticated runtime session gate, scheduler/worker operation, provider request, real pilot activation/resume, model, recommendation, broker, order, or execution behavior.
+Day15-T3B10-T4B implements checksum-bound migration 002 and named recovery-control transactions and is committed and pushed as `529ddbc1fc53a8d93a1beca77bc277e78fac9c2c`.
+
+Day15-T3B10-T4C implements the local authenticated Owner command, process-session repository gate, and immediate in-memory stop barrier locally, pending owner review. It adds no scheduler/worker operation, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
 
 ## T4A implementation boundary
 
@@ -33,6 +35,20 @@ T4B adds:
 - one-time decision consumption, session-authorization persistence without `ACTIVE -> ACTIVE`, Emergency Stop precedence, compare-and-swap transitions, authority invalidation, and atomic receipt/outbox evidence.
 
 T4B does not authenticate an operator or activate the session authorization. The ordinary runner repository remains blocked after an operational-pilot restart; T4C owns the authenticated command and process-session gate.
+
+## T4C implementation boundary
+
+T4C adds:
+
+- one local `owner-decision` command over an exact recovery assessment and T4B transaction;
+- a pre-provisioned `scrypt` verifier with fixed reviewed parameters and constant-time comparison;
+- standard-input-only secret handling, regular non-symlink request/verifier files, generic authentication failures, and no secret persistence or output;
+- exact command-fingerprint challenge binding and exact Owner/assessment/Pilot/session chronology;
+- a resumed repository wrapper that rejects new definitions, Pilots, and task authority;
+- durable session validation before every permitted write, including exact store/recovery/schema/Pilot/process/boot/task identity, expiry, revocation, and Emergency Stop checks;
+- an irreversible process-local stop barrier that is set before durable Emergency Stop is attempted.
+
+T4C does not provision or recover Owner credentials, authenticate remotely, start a runtime loop, schedule work, invoke a provider, or grant any trading authority. The verifier remains local research-pilot infrastructure and requires a separate commercial credential-security review.
 
 ## Purpose
 

@@ -8,7 +8,7 @@ import {
   type CollectionRunnerOwnerRecoveryDecision,
   type CollectionRunnerRecoveryAssessment,
 } from "../contracts";
-import { EventContractCollectionRunnerRecoveryControlEngine } from "../engines/event-contract-collection-runner-recovery-control";
+import { EventContractCollectionRunnerRecoveryControlEngine } from "../engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlEngine";
 import {
   CollectionRunnerRecoveryControlRepositoryError,
   CollectionRunnerRecoveryControlRepositoryErrorCode,
@@ -19,6 +19,7 @@ import {
   type ExecuteOwnerRecoveryDecisionTransaction,
   type PersistOwnerRecoveryDecisionTransaction,
   type PersistRecoveryAssessmentTransaction,
+  type ValidateRecoverySessionGateInput,
 } from "./EventContractCollectionRunnerRecoveryControlRepository";
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$/u;
@@ -223,6 +224,15 @@ const EMERGENCY_STOP_KEYS = [
   "expectedActivationAggregateVersion",
   "assessment",
   "executedAtUtc",
+] as const;
+const SESSION_GATE_KEYS = [
+  "sessionAuthorizationId",
+  "authorizationFingerprint",
+  "activationId",
+  "bootIdentity",
+  "processSessionId",
+  "observedAtUtc",
+  "taskId",
 ] as const;
 
 export class SqliteEventContractCollectionRunnerRecoveryControlRepository
@@ -618,6 +628,91 @@ INSERT INTO emergency_stop_events (
     identifier(assessmentId, "assessmentId");
     const row = this.#assessmentRow(assessmentId);
     return row === undefined ? null : this.#decodeAssessment(row);
+  }
+
+  public validateRecoverySessionGate(
+    input: ValidateRecoverySessionGateInput,
+  ): CollectionRunnerRecoverySessionAuthorization {
+    exactKeys(input, SESSION_GATE_KEYS, "session gate");
+    identifier(input.sessionAuthorizationId, "sessionAuthorizationId");
+    fingerprintValue(
+      input.authorizationFingerprint,
+      "authorizationFingerprint",
+    );
+    identifier(input.activationId, "activationId");
+    identifier(input.bootIdentity, "bootIdentity");
+    identifier(input.processSessionId, "processSessionId");
+    const observedAt = utc(input.observedAtUtc, "observedAtUtc");
+    if (input.taskId !== null) identifier(input.taskId, "taskId");
+    const row = this.database
+      .prepare(`
+SELECT s.*
+FROM recovery_session_authorizations s
+JOIN owner_recovery_decisions d ON d.decision_id = s.decision_id
+JOIN recovery_assessments a ON a.assessment_id = s.assessment_id
+JOIN pilot_activations p ON p.activation_id = s.activation_id
+WHERE s.session_authorization_id = ?
+  AND s.authorization_fingerprint = ?
+  AND s.activation_id = ?
+  AND s.boot_identity = ?
+  AND s.process_session_id = ?
+  AND s.revoked_at_utc IS NULL
+  AND s.authorized_at_utc <= ?
+  AND s.expires_at_utc > ?
+  AND d.action = 'APPROVE_RESUME'
+  AND d.consumed_at_utc IS NOT NULL
+  AND d.invalidated_at_utc IS NULL
+  AND a.store_id = ?
+  AND a.store_path_identity = ?
+  AND a.schema_catalog_checksum = ?
+  AND a.recovery_report_fingerprint = ?
+  AND p.current_state = 'ACTIVE'
+  AND p.aggregate_version = s.expected_activation_aggregate_version
+  AND NOT EXISTS (
+    SELECT 1 FROM emergency_stop_events e
+    WHERE e.activation_id = s.activation_id
+      AND e.evaluated_at_utc >= s.authorized_at_utc
+  )
+  AND (
+    ? IS NULL OR EXISTS (
+      SELECT 1 FROM scheduled_tasks t
+      WHERE t.task_id = ? AND t.activation_id = s.activation_id
+    )
+  )
+`)
+      .get(
+        input.sessionAuthorizationId,
+        input.authorizationFingerprint,
+        input.activationId,
+        input.bootIdentity,
+        input.processSessionId,
+        input.observedAtUtc,
+        input.observedAtUtc,
+        this.context.storeId,
+        this.context.storePathIdentity,
+        this.context.schemaCatalogChecksum,
+        this.context.recoveryReportFingerprint,
+        input.taskId,
+        input.taskId,
+      );
+    if (row === undefined) {
+      throw error(
+        CollectionRunnerRecoveryControlRepositoryErrorCode.AuthorityMismatch,
+        "Recovery session gate is absent, expired, revoked, stopped, stale, or bound to different work.",
+      );
+    }
+    const authorization = this.#sessionFromRow(row);
+    if (
+      authorization.authorizationFingerprint !==
+        input.authorizationFingerprint ||
+      observedAt < utc(authorization.authorizedAtUtc, "authorizedAtUtc")
+    ) {
+      throw error(
+        CollectionRunnerRecoveryControlRepositoryErrorCode.AuthorityMismatch,
+        "Recovery session authorization is not valid at the observation time.",
+      );
+    }
+    return authorization;
   }
 
   public getOwnerRecoveryDecision(

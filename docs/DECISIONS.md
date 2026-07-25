@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B10-T4C Local Authentication and Session Gate
+
+### Secrets Never Enter Command Arguments or Durable Evidence
+
+- Decision: Accept the local Owner secret only through standard input, verify it with a pre-provisioned fixed-policy `scrypt` verifier and constant-time comparison, and bind the exact command fingerprint as the challenge.
+- Rationale: Arguments and environment values are routinely exposed through process inspection, shell history, logs, and diagnostics.
+- Consequence: verifier provisioning and recovery remain separate owner-controlled operations; the command emits only sanitized receipt evidence and a generic authentication failure.
+
+### Resume Authority Is Rechecked Before Every Write
+
+- Decision: Wrap the ordinary repository and validate the exact session authorization, process/boot identity, activation version, task membership, expiry, revocation, store/schema/recovery identity, and Emergency Stop state before each permitted mutation.
+- Rationale: Checking only when a repository handle is created would leave a stale handle usable after stop, expiry, revocation, or Pilot change.
+- Consequence: recovery sessions cannot create runner definitions, Pilots, or new task authority, and any changed durable fact immediately fails closed.
+
+### In-Memory Stop Does Not Depend on SQLite Success
+
+- Decision: Trip an irreversible process-local stop barrier before attempting durable Emergency Stop execution.
+- Rationale: database failure must not allow the process to continue acquiring work.
+- Consequence: persistence failure leaves durable ambiguity for the next startup, while the current process remains mutation-blocked.
+
 ## 2026-07-25 - Day15-T3B10-T4B Durable Recovery-Control Transactions
 
 ### Recovery Authority Uses a Separate Restricted Repository
