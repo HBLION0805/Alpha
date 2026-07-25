@@ -5,6 +5,7 @@
 - Review: `Day15-T3B13-MR1`
 - Review date: `2026-07-25`
 - Reviewed baseline: `8ecf918e56c01fb6331894b9784c388e06d496b7`
+- Owner-approved review commit: `b02cadc`
 - Registered validation baseline: `2261/2261`
 - Focused T3B13 validation: `95/95`
 - Scope: Day15-T3B13-T1 through Day15-T3B13-T5

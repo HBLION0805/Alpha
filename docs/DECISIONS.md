@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-T1 Durable Fixture Rehearsal Composition
+
+- Decision: use an explicit `FIXTURE_REHEARSAL_V3` schema profile only for newly created isolated rehearsal stores; ordinary runner stores remain `RUNNER_BASE_V2`.
+- Decision: keep durable rehearsal lifecycle and the synthetic Runner/Pilot/task state in the same SQLite database so one independently reopened backup contains all authoritative scenario truth.
+- Decision: preserve a compare-and-swap current projection and separate append-only transitions, operation claims, receipts, failures, and artifact bindings.
+- Decision: permit one future closed Owner-invoked phase per process and prohibit automatic phase progression, internal loops, caller paths, arbitrary ports, and caller evidence truth.
+- Decision: reconcile a committed runner action without a rehearsal receipt from durable task, attempt, lease, evidence, Outbox, Stop, and recovery records; never repeat or guess the action.
+- Decision: publish exactly one online backup, manifest, fixed validation receipt, sanitized package, and envelope manifest as one content-addressed immutable envelope.
+- Decision: require the final verifier to run in a fresh process, reopen the backup, reconstruct durable truth, and prove two-run scenario-fingerprint stability.
+- Consequence: T3B14-T1 is design-only and grants no migration, implementation, command, rehearsal run, provider, Pilot, dataset, recommendation, or trading authority.
+
 ## 2026-07-25 - Day15-T3B13 Fixture Rehearsal Milestone Review
 
 - Decision: accept T3B13 contracts, preparation, one-action coordination, evidence packaging, independent package-directory reread, and package-level process drills as reusable deterministic foundations.

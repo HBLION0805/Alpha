@@ -385,10 +385,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B13-T4 excludes: executable command, internal loop, timer, scheduler, network provider, real Pilot, T1/T2 assembly, model, recommendation, broker, order, or execution.
    - T3B13-T5 status: completed, committed, and pushed as `8ecf918e56c01fb6331894b9784c388e06d496b7`; bounded atomic evidence packaging, independent directory verification, exact replay, partial-build quarantine, distinct catalog identities, and child-process crash/Stop/leakage drills pass complete validation `2261/2261`.
    - T3B13-T5 excludes: executable rehearsal command, internal loop, timer, scheduler, network provider, real Pilot, T1/T2 assembly, model, recommendation, broker, order, or execution.
-   - T3B13-MR1 status: complete locally and pending Owner review.
+   - T3B13-MR1 status: completed, committed, and pushed as `b02cadc`.
    - T3B13-MR1 decision: `FIXTURE_REHEARSAL_FOUNDATION_ACCEPTED / GO_FOR_DURABLE_REHEARSAL_COMPOSITION_DESIGN / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
    - T3B13-MR1 blockers: no durable rehearsal registry across invocations, no concrete SQLite/backup/validation evidence verifier, no independently reopenable backup in the final evidence boundary, and no assembled fresh-process rehearsal drill.
-   - Next task after approval: design-only `Day15-T3B14-T1 — Durable Fixture Rehearsal Composition and Evidence Architecture`; the rehearsal run remains separately blocked.
+   - T3B14-T1 status: design complete locally and pending Owner review; complete validation passes `2261/2261`.
+   - T3B14-T1 scope: rehearsal-only SQLite schema profile, durable lifecycle/claim/receipt/artifact authority, one closed Owner phase per process, crash ambiguity reconciliation, terminal freeze, online backup, fixed validation evidence, atomic portable envelope, fresh-process verification, two-run determinism, and 20 required process drills.
+   - T3B14-T1 excludes: implementation, migration 003, executable command, rehearsal run, loop, timer, network provider, real Pilot, T1/T2 delivery, model, recommendation, broker, order, or execution.
+   - T3B14 next sequence: T2 contracts and migration 003; T3 durable phase coordinator; T4 evidence envelope; T5 end-to-end process drills; MR1; separately approved rehearsal run.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

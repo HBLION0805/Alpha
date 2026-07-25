@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B13-T5 is committed and pushed; Day15-T3B13-MR1 is complete locally and pending Owner review
+Day15-T3B13-MR1 is committed and pushed; Day15-T3B14-T1 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `8ecf918e56c01fb6331894b9784c388e06d496b7` on `main`, equal to `origin/main` before the T3B13-MR1 review task.
+Verified baseline: `b02cadc` on `main`, equal to `origin/main` before the T3B14-T1 design task.
 
 Day 7 completed:
 
@@ -109,7 +109,9 @@ Day15-T3B13-T4 is committed and pushed as `a4c83f8`. It adds one exact-ordinal p
 
 Day15-T3B13-T5 is committed and pushed as `8ecf918e56c01fb6331894b9784c388e06d496b7`. It adds repository-disjoint package roots, bounded sanitized artifacts, atomic package publication, an injected SQLite/backup/validation evidence gate, independent directory verification, exact replay, incomplete-staging quarantine, and process-level crash/Stop/leakage drills. Its 17 focused checks and complete `2261/2261` Alpha validation pass. Package tests and child processes use only test-owned temporary directories. It adds no executable rehearsal command, loop, timer, provider request, real Pilot, Robinhood automation, model, recommendation, broker, order, or execution authority.
 
-Day15-T3B13-MR1 is complete locally and pending Owner review. It accepts the T3B13 component foundations but returns `NO_GO_FOR_REHEARSAL_RUN`: the step ledger is in-memory only, the SQLite/backup/validation evidence verifier has no concrete authoritative implementation, the final package cannot itself reopen the referenced backup, and no process drill assembles preparation through fresh-process final verification. The recommended next task is design-only `Day15-T3B14-T1 — Durable Fixture Rehearsal Composition and Evidence Architecture`.
+Day15-T3B13-MR1 is committed and pushed as `b02cadc`. It accepts the T3B13 component foundations but returns `NO_GO_FOR_REHEARSAL_RUN`: the step ledger is in-memory only, the SQLite/backup/validation evidence verifier has no concrete authoritative implementation, the final package cannot itself reopen the referenced backup, and no process drill assembles preparation through fresh-process final verification.
+
+Day15-T3B14-T1 is complete locally and pending Owner review. It designs an explicit rehearsal-only schema profile, durable lifecycle/claim/receipt/artifact truth in the same isolated SQLite store, one closed Owner-invoked phase per process, durable ambiguity reconciliation, terminal freeze, one online backup, fixed validation evidence, an atomic portable envelope, fresh-process backup verification, and two-run/end-to-end crash drills. It adds documentation only and complete validation passes `2261/2261`. The recommended next task after approval is `Day15-T3B14-T2 — Rehearsal-profile Contracts and Migration 003`.
 
 ## Day 6 Milestone Review
 

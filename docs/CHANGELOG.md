@@ -1,6 +1,17 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B13 Fixture Rehearsal Milestone Review (Pending Owner Review)
+## 2026-07-25 - Day15-T3B14-T1 Durable Fixture Rehearsal Composition and Evidence Architecture (Pending Owner Review)
+
+- Added a design-only architecture that closes every T3B13-MR1 blocker without authorizing a rehearsal run.
+- Defined an explicit `FIXTURE_REHEARSAL_V3` schema profile for new isolated rehearsal stores while preserving ordinary runner schema v2.
+- Defined durable compare-and-swap rehearsal state plus append-only transitions, operation claims, success/failure receipts, and artifact bindings in the same SQLite store as Runner/Pilot/task truth.
+- Defined one closed Owner-invoked phase per process, exact gate ordering, crash ambiguity reconciliation, and no automatic next phase.
+- Defined terminal freeze, one online backup, fixed local validation evidence, one atomic portable evidence envelope, and a fresh-process verifier that reopens the backup.
+- Defined two-run scenario determinism and 20 required end-to-end process drills.
+- Added no source code, migration, command, runtime data, network, provider, real Pilot, T1/T2, recommendation, broker, order, or execution behavior.
+- Complete Alpha validation passes `2261/2261` with zero failures.
+
+## 2026-07-25 - Day15-T3B13 Fixture Rehearsal Milestone Review
 
 - Reviewed the complete T3B13-T1 through T5 baseline at `8ecf918e56c01fb6331894b9784c388e06d496b7`.
 - Accepted the strict manifest, isolated preparation, one-action coordinator, bounded evidence package, independent package-directory reread, and package-level process drills as reusable fixture foundations.
@@ -9,6 +20,7 @@
 - Found no end-to-end fresh-process drill composing preparation, the real T3B12 step, recovery, backup, packaging, and final verification.
 - Decision: `FIXTURE_REHEARSAL_FOUNDATION_ACCEPTED / GO_FOR_DURABLE_REHEARSAL_COMPOSITION_DESIGN / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
 - Added no source code, runtime command, provider, network, credential, Pilot, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B13-MR1 as `b02cadc`.
 
 ## 2026-07-25 - Day15-T3B13-T5 Evidence Package and Process Drills
 

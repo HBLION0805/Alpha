@@ -4,8 +4,8 @@
 
 Task: `Day15-T3B13-T1`
 
-Status: T1 through T5 are implemented, committed, and pushed. T3B13-MR1 is
-complete locally and pending Owner review.
+Status: T1 through T5 and T3B13-MR1 are implemented, reviewed, committed, and
+pushed.
 
 Reviewed baseline:
 `d9de7636cedff144e29cafbac731411f17e3876f`.
@@ -583,6 +583,7 @@ Approval of one task grants no authority to begin the next.
   evidence verifier has no concrete authoritative implementation, the final
   evidence boundary cannot independently reopen the referenced backup, and no
   fresh-process drill assembles preparation through final verification.
+- T3B13-MR1 is committed and pushed as `b02cadc`.
 - The next permitted task after Owner approval is design-only
   `Day15-T3B14-T1 — Durable Fixture Rehearsal Composition and Evidence
   Architecture`.
