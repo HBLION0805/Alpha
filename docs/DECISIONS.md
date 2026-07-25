@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B13-T4 Programmatic Rehearsal Step
+
+- Decision: require a separate explicit call for each exact manifest-declared invocation ordinal and execute at most one existing T3B12 foreground action.
+- Decision: bind the call to the current lifecycle version, recovery fingerprint, scenario phase, and invocation identity before foreground execution.
+- Decision: require an injected local verifier to affirm that every Stop/recovery Owner authorization reference is valid and unexpired.
+- Decision: return exact replay from the append-only step ledger without a second foreground action; reject every changed replay.
+- Decision: reread and fingerprint durable Pilot/task truth independently after the foreground action and before creating the sanitized invocation receipt.
+- Decision: classify substituted actions and unambiguous clean failures as fail closed, while ambiguous mutation, identity disagreement, or durable-state mismatch requires recovery.
+- Consequence: T3B13-T5 may package and process-drill these programmatic results, but T4 grants no executable command, loop, network, live Pilot, recommendation, or trading authority.
+
 ## 2026-07-25 - Day15-T3B13-T3 Isolated Preparation Boundary
 
 - Decision: callers select only pre-registered catalog and allowed-root identities; they cannot supply fixture payloads or arbitrary workspace paths.

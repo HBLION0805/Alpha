@@ -378,10 +378,12 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B13-T2 status: completed, committed, and pushed as `f5e35c253e74a794e32c4961d1b8cea201075d95`.
    - T3B13-T2 scope: strict immutable records, contiguous exact ordinals, closed schemas, bounded sanitized evidence, `PASS`/`FAIL_CLOSED`/`INCOMPLETE`, changed-replay rejection, and environment-independent scenario fingerprints.
    - T3B13-T2 excludes: filesystem, SQLite, command, runtime data, fixture execution, network, real Pilot, model, recommendation, broker, order, or execution.
-   - T3B13-T3 status: isolated workspace, allow-listed catalog, synthetic SQLite preparation, immutable replay, and quarantine retention are complete locally and pending Owner review; validation passes `2222/2222`.
+   - T3B13-T3 status: completed, committed, and pushed as `642a150786778ebe58d79eda5e2ca6e67b1ab7ce`; validation passes `2222/2222`.
    - T3B13-T3 scope: exact catalog/manifest binding, repository-disjoint pre-registered roots, derived workspace identity, strict migrations, synthetic Runner/Pilot/task seeding, preparation receipt, and replay.
    - T3B13-T3 excludes: foreground step, loop, timer, network provider, real Pilot, T1/T2 assembly, model, recommendation, broker, order, or execution.
-   - T3B13 next sequence: T4 programmatic step/evidence; T5 package/process drills; MR1; separately approved rehearsal run.
+   - T3B13-T4 status: one exact-ordinal programmatic invocation, local Owner authorization verification, foreground action, independent durable-state observation, sanitized receipt, lifecycle transition, exact replay, and recovery-required handling are complete locally and pending Owner review; validation passes `2244/2244`.
+   - T3B13-T4 excludes: executable command, internal loop, timer, scheduler, network provider, real Pilot, T1/T2 assembly, model, recommendation, broker, order, or execution.
+   - T3B13 next sequence: T5 package/process drills; MR1; separately approved rehearsal run.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

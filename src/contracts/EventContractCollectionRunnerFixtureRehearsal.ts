@@ -57,6 +57,14 @@ export enum CollectionRunnerRehearsalFaultScenario {
   ChangedReplay = "CHANGED_REPLAY_REJECTION",
 }
 
+export enum CollectionRunnerRehearsalScenarioPhase {
+  DueTransition = "DUE_TRANSITION",
+  FixtureWorker = "FIXTURE_WORKER",
+  TerminalObservation = "TERMINAL_OBSERVATION",
+  Stop = "STOP",
+  Recovery = "RECOVERY",
+}
+
 export interface CollectionRunnerRehearsalExpectedInvocation {
   readonly ordinal: number;
   readonly action: CollectionRunnerRuntimeAssemblyAction;
@@ -268,6 +276,44 @@ export interface CollectionRunnerRehearsalPreparationResult {
   readonly runtimePaths: CollectionRunnerRuntimePaths;
   readonly lifecycleTransition: CollectionRunnerRehearsalLifecycleTransition;
   readonly preparationReceipt: CollectionRunnerRehearsalPreparationReceipt;
+  readonly replayed: boolean;
+  readonly deterministic: true;
+  readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRehearsalStepRequest {
+  readonly rehearsalId: string;
+  readonly manifestFingerprint: string;
+  readonly expectedInvocationOrdinal: number;
+  readonly expectedLifecycleVersion: number;
+  readonly expectedRecoveryFingerprint: string;
+  readonly scenarioPhase: CollectionRunnerRehearsalScenarioPhase;
+  readonly invocationId: string;
+  readonly maximumTasks: number;
+  readonly ownerAuthorizationId: string | null;
+}
+
+export interface CollectionRunnerRehearsalDurableStateObservation {
+  readonly rehearsalId: string;
+  readonly manifestFingerprint: string;
+  readonly invocationOrdinal: number;
+  readonly pilotState: CollectionRunnerPilotState;
+  readonly taskState: CollectionRunnerTaskState;
+  readonly recoveryFingerprint: string;
+  readonly stateVersion: number;
+  readonly observedAtUtc: string;
+  readonly deterministic: true;
+  readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRehearsalStepResult {
+  readonly request: CollectionRunnerRehearsalStepRequest;
+  readonly terminalReport: import("./EventContractCollectionRunnerRuntimeAssembly").CollectionRunnerRuntimeTerminalReport;
+  readonly durableState: CollectionRunnerRehearsalDurableStateObservation;
+  readonly invocationReceipt: CollectionRunnerRehearsalInvocationReceipt;
+  readonly lifecycleTransitions: readonly CollectionRunnerRehearsalLifecycleTransition[];
+  readonly resultingLifecycleState: CollectionRunnerRehearsalLifecycleState;
+  readonly resultingLifecycleVersion: number;
   readonly replayed: boolean;
   readonly deterministic: true;
   readonly fingerprint: string;

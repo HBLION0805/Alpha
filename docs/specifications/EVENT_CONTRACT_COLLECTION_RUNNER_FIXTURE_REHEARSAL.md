@@ -552,7 +552,15 @@ Approval of one task grants no authority to begin the next.
   migration and synthetic Runner/Pilot/task seeding, immutable preparation
   replay, and quarantine-on-failure retention.
 - T3B13-T3 does not execute a foreground step and makes no network request.
-- T3B13-T4 remains unstarted and requires separate Owner approval.
+- T3B13-T3 is committed and pushed as
+  `642a150786778ebe58d79eda5e2ca6e67b1ab7ce`.
+- T3B13-T4 implements one exact-ordinal programmatic invocation over the
+  existing T3B12 foreground one-action port, independent durable-state
+  observation, lifecycle advancement, sanitized receipt construction, exact
+  replay, and fail-closed or recovery-required evidence.
+- T3B13-T4 has no command, internal loop, timer, scheduler, network request,
+  real Pilot, recommendation, broker, order, or execution authority.
+- T3B13-T4 is complete locally and pending Owner review.
 
 ## Acceptance criteria
 

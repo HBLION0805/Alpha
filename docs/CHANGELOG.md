@@ -1,6 +1,16 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B13-T3 Isolated Workspace and Preparation Foundation (Pending Owner Review)
+## 2026-07-25 - Day15-T3B13-T4 Programmatic Rehearsal Step (Pending Owner Review)
+
+- Added one explicit, exact-ordinal programmatic rehearsal step over the existing T3B12 foreground one-action boundary.
+- Bound every invocation to the immutable manifest, rehearsal, lifecycle version, recovery fingerprint, scenario phase, and invocation identity.
+- Added exact replay without a second foreground action and fail-closed rejection for changed replay, skipped ordinals, stale lifecycle state, substituted actions, and mismatched durable observations.
+- Required independently reread durable task/Pilot state before issuing a sanitized invocation receipt; ambiguous mutation or identity mismatch enters recovery-required state.
+- Added 22 focused network-free tests covering the three-invocation fixture sequence, replay, lifecycle, local Owner authorization, foreground, durable-state, recovery, and terminal-state boundaries.
+- Complete Alpha validation passes `2244/2244` with zero failures.
+- Added no executable command, loop, timer, scheduling, provider request, real Pilot, model, recommendation, broker, order, or execution authority.
+
+## 2026-07-25 - Day15-T3B13-T3 Isolated Workspace and Preparation Foundation
 
 - Added an allow-listed immutable fixture-catalog entry binding the reviewed source snapshot, runner definition, synthetic Pilot/task artifacts, payload metadata, and expected task transitions.
 - Added a manifest-bound runtime-configuration template identity and preparation service that derives one exclusive workspace under a pre-registered local root.
@@ -10,6 +20,7 @@
 - Added 18 focused network-free tests using only test-owned temporary directories and synthetic fixture state.
 - Complete Alpha validation passes `2222/2222` with zero failures.
 - Added no foreground step, loop, timer, provider request, real Pilot, Robinhood automation, model, recommendation, broker, order, or execution authority.
+- Owner approved and pushed T3B13-T3 as `642a150786778ebe58d79eda5e2ca6e67b1ab7ce`.
 
 ## 2026-07-25 - Day15-T3B13-T2 Rehearsal Contracts and Pure Verification
 

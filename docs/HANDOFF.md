@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B13-T2 is committed and pushed; Day15-T3B13-T3 is complete locally and pending Owner review
+Day15-T3B13-T3 is committed and pushed; Day15-T3B13-T4 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `f5e35c253e74a794e32c4961d1b8cea201075d95` on `main`, equal to `origin/main` before the T3B13-T3 implementation task.
+Verified baseline: `642a150786778ebe58d79eda5e2ca6e67b1ab7ce` on `main`, equal to `origin/main` before the T3B13-T4 implementation task.
 
 Day 7 completed:
 
@@ -103,7 +103,9 @@ Day15-T3B13-T1 is committed and pushed as `d687c2061ecb8b54233759de54942a147e5f2
 
 Day15-T3B13-T2 is committed and pushed as `f5e35c253e74a794e32c4961d1b8cea201075d95`. It adds strict immutable manifest, lifecycle, preparation/invocation receipt, evidence-package, inventory, Outbox chronology, and verification-result contracts plus pure deterministic constructors and an independent verifier. Verification returns only `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`; environment-specific execution identity is separated from stable scenario truth. Its 38 focused tests are network-free.
 
-Day15-T3B13-T3 is complete locally and pending Owner review. It adds immutable allow-listed catalog entries, manifest-bound runtime-template identity, repository-disjoint allow-listed roots, one derived exclusive workspace, strict SQLite migration and synthetic Runner/Pilot/task seeding, exact immutable preparation replay, and quarantine-on-failure retention. Its 18 focused tests use test-owned temporary roots and make no network request; complete validation passes `2222/2222`. It adds no foreground step, loop, timer, real Pilot, provider request, Robinhood automation, model, recommendation, broker, order, or execution authority. The recommended next task after approval is T3B13-T4 programmatic one-step rehearsal and evidence collection.
+Day15-T3B13-T3 is committed and pushed as `642a150786778ebe58d79eda5e2ca6e67b1ab7ce`. It adds immutable allow-listed catalog entries, manifest-bound runtime-template identity, repository-disjoint allow-listed roots, one derived exclusive workspace, strict SQLite migration and synthetic Runner/Pilot/task seeding, exact immutable preparation replay, and quarantine-on-failure retention. Its 18 focused tests use test-owned temporary roots and make no network request; complete validation passes `2222/2222`.
+
+Day15-T3B13-T4 is complete locally and pending Owner review. It adds one exact-ordinal programmatic invocation over the existing T3B12 foreground one-action boundary, exact replay without duplicate work, an injected unexpired-local-Owner-authorization verifier for Stop/recovery phases, independent durable Pilot/task observation, sanitized invocation receipts, and explicit fail-closed versus recovery-required outcomes. Its 22 focused tests are network-free; complete validation passes `2244/2244`. It adds no executable command, loop, timer, scheduler, real Pilot, provider request, Robinhood automation, model, recommendation, broker, order, or execution authority. The recommended next task after approval is T3B13-T5 evidence packaging and process drills.
 
 ## Day 6 Milestone Review
 

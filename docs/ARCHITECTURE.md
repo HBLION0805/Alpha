@@ -771,6 +771,8 @@ Day15-T3B13-T2 implements only the pure contract boundary from that design. The 
 
 Day15-T3B13-T3 adds the separately approved preparation boundary. A trusted composition root registers immutable catalog entries and pre-existing allowed roots; runtime requests choose only their identifiers. The workspace name derives from the manifest fingerprint and cannot overlap the repository, a filesystem root, or pre-existing unrelated content. Preparation creates separate control and SQLite roots, applies the existing strict migrations, writes one synthetic fixture-only Runner/Pilot/task set through named repository transactions, verifies the seeded state, closes SQLite, and writes one exclusive canonical preparation record. Exact replay reopens and verifies the same store and receipt. Failure preserves the workspace through quarantine rename; it does not recursively delete evidence.
 
+Day15-T3B13-T4 adds one programmatic rehearsal invocation boundary. Each call binds an exact manifest, rehearsal, lifecycle version, recovery fingerprint, scenario phase, and ordinal to at most one existing T3B12 foreground action. Exact replay returns the prior sanitized receipt without repeating work; changed replay, substitution, stale state, and skipped ordinals fail closed. The coordinator independently rereads durable task and Pilot truth before recording success, and any ambiguous mutation or identity mismatch moves the rehearsal to recovery-required state. It adds no command, loop, timer, scheduler, provider request, real Pilot, recommendation, broker, order, or execution authority.
+
 ---
 
 # Event Contract Framework
