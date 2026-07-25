@@ -43,10 +43,15 @@ forced-exit stale-lock preservation, and fail-closed restart. Deterministic
 drills cover retry timeout, cutoff/deadline and Stop precedence, exact and conflicting
 Stop replay, and post-Stop health.
 
-T3B11-MR1 is implemented locally and pending Owner review. It accepts the
-fixture-runtime foundation, permits assembly design only, and keeps runtime
-start and bounded-live operation blocked. See
+T3B11-MR1 accepts the fixture-runtime foundation, permits assembly design only,
+and keeps runtime start and bounded-live operation blocked. It was
+Owner-approved, committed, and pushed as `31d5d90`. See
 [Event Contract Collection Runner Runtime Milestone Review](../EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_MILESTONE_REVIEW.md).
+
+T3B12-T1 now specifies the separately gated foreground assembly, deterministic
+T6 ownership, authenticated stale-lock quarantine, and transaction-boundary
+process-drill architecture. It is design-only and pending Owner review. See
+[Event Contract Collection Runner Runtime Assembly and Recovery Architecture](EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_RECOVERY.md).
 
 ## Purpose
 
@@ -773,10 +778,10 @@ T3B11 remains separately gated:
 5. **T3B11-T5 — Process drills:** completed and pushed as `c72a90c`; eight
    duplicate-process, forced-exit, stale-lock restart, timeout, cutoff/deadline,
    Stop, health, and replay tests.
-6. **T3B11-MR1 — Fixture runtime milestone review:** implemented locally and
-   pending Owner review.
-7. **Recommended next design:** T3B12-T1 fixture runtime assembly and recovery
-   architecture.
+6. **T3B11-MR1 — Fixture runtime milestone review:** completed and pushed as
+   `31d5d90`.
+7. **T3B12-T1 — Fixture runtime assembly and recovery architecture:**
+   implemented locally and pending Owner review.
 8. **Later separately approved work:** exact future-market provider admission
    and bounded-live Shadow Pilot.
 

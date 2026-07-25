@@ -1,6 +1,17 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B11 Fixture Runtime Milestone Review (Pending Owner Review)
+## 2026-07-25 - Day15-T3B12-T1 Fixture Runtime Assembly and Recovery Architecture (Pending Owner Review)
+
+- Defined the first assembled form as one foreground fixture step that performs at most one deterministic action and exits.
+- Defined one closed startup-to-close lifecycle, bounded work-snapshot repository, pure action planner, exact T6 executor ownership, and sanitized terminal report.
+- Kept T6 transition and fixture Worker execution in separate invocations so a due-state commit cannot be confused with a provider request.
+- Defined local Preflight, Step, Status, Stop, and ownership-recovery command boundaries without implementing them.
+- Defined authenticated stale-lock inspection and atomic quarantine with immutable replayable receipts instead of deletion or automatic takeover.
+- Defined real child-process kill points across lock, session, T6, lease, attempt, validation, T10, Stop, and quarantine boundaries.
+- Split T3B12 into separately approved contracts/planner, ownership recovery, single-step assembly, process-drill, and milestone-review tasks.
+- Added no code, dependency, command, timer, loop, provider, Pilot activation, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B11 Fixture Runtime Milestone Review
 
 - Reviewed the complete T3B11-T1 through T3B11-T5 fixture-runtime foundation at baseline `c72a90c672c2297d381cf76238e642034c419f83`.
 - Accepted immutable configuration, single-process ownership, clocks, deterministic scheduling, one-cycle fixture Worker, Operator/Health, Stop, and initial process drills as reusable foundations.
@@ -8,6 +19,7 @@
 - Identified missing foreground assembly, T6 due-transition ownership, authenticated stale-lock recovery, and transaction-boundary OS-process kill drills.
 - Confirmed that future-market provider admission, Robinhood platform evidence, Outbox delivery, T1/T2 assembly, dataset qualification, and commercial operation remain separately blocked.
 - Recommended `Day15-T3B12-T1 — Fixture Runtime Assembly and Recovery Architecture` as a design-only next task.
+- Owner approved and pushed T3B11-MR1 as `31d5d9028eebc4ec5058c42932ee6e935033ddf6`.
 
 ## 2026-07-25 - Day15-T3B11-T5 Process Failure and Replay Drills
 

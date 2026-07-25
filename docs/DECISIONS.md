@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B12-T1 Fixture Runtime Assembly and Recovery Architecture
+
+### The First Assembly Is One Foreground Step
+
+- Decision: the first executable composition will perform at most one deterministic action and exit.
+- Rationale: a single step can prove startup, T6, Worker, Stop, cleanup, crash, and replay ordering without creating timer or continuous-run authority.
+- Consequence: `WAIT_AND_EXIT` reports the next time but never sleeps or schedules another invocation; loops and background operation remain separately blocked.
+
+### T6 and Fixture Work Are Separate Steps
+
+- Decision: a T6 due or missed transition ends the current invocation; fixture work may begin only in a later invocation that observes the durable state.
+- Rationale: a crash after T6 must be distinguishable from lease acquisition or provider invocation.
+- Consequence: the action planner is closed and one invocation cannot fall through from `TRANSITION_EXACT_TASK_DUE` into Worker execution.
+
+### Stale Ownership Is Quarantined, Not Deleted
+
+- Decision: only an exact locally authenticated Owner decision may move verified stale ownership into an allow-listed same-filesystem quarantine.
+- Rationale: automatic takeover is unsafe and deletion destroys crash evidence.
+- Consequence: recovery preserves the original owner record and an immutable receipt; Pilot Resume remains a separate SQLite authority.
+
+### Real Crash Drills Precede Runtime Start
+
+- Decision: require operating-system child-process kills at lock, session, T6, lease, attempt, validation, T10, Stop, and quarantine boundaries.
+- Rationale: injected exceptions do not prove durable restart behavior at every authority boundary.
+- Consequence: implementation may use fixture-only checkpoint observation, but production code receives no crash command or unrestricted fault-injection API.
+
 ## 2026-07-25 - Day15-T3B11 Fixture Runtime Milestone Review
 
 ### Accept the Foundation Without Authorizing Runtime Start

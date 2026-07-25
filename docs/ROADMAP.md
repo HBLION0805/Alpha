@@ -352,10 +352,14 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B11-T5 status: completed, committed, and pushed as `c72a90c672c2297d381cf76238e642034c419f83`.
    - T3B11-T5 scope: real child-process duplicate rejection, forced-exit stale-lock preservation, fail-closed restart, durable retry-transition requirement, cutoff/deadline and Stop precedence, exact Stop replay, conflicting replay rejection, and post-Stop health.
    - T3B11-T5 excludes: automatic stale-lock recovery, runtime loop, timers, background services, provider requests, real Pilot operation, probability research, recommendation, broker, order, or execution.
-   - T3B11-MR1 status: implemented locally and pending Owner review.
+   - T3B11-MR1 status: completed, committed, and pushed as `31d5d9028eebc4ec5058c42932ee6e935033ddf6`.
    - T3B11-MR1 decision: `FIXTURE_RUNTIME_FOUNDATION_ACCEPTED / GO_FOR_ASSEMBLY_DESIGN / NO_GO_FOR_RUNTIME_START / NO_GO_FOR_BOUNDED_LIVE`.
    - T3B11-MR1 blockers: no foreground composition root, no reviewed T6 due-transition owner, no authenticated stale-lock recovery procedure, and no OS-process kill drills at lease/attempt/validation/commit boundaries.
    - Recommended next task: `Day15-T3B12-T1 — Fixture Runtime Assembly and Recovery Architecture`, design only.
+   - T3B12-T1 status: architecture is implemented locally and pending Owner review.
+   - T3B12-T1 scope: one foreground one-action fixture step, closed startup/close lifecycle, bounded work snapshot, pure action planner, deterministic T6 ownership, local lifecycle-command boundaries, Stop/shutdown ordering, authenticated stale-lock quarantine, and real transaction-boundary child-process drill design.
+   - T3B12-T1 excludes: implementation, command, timer, loop, daemon, automatic stale-lock takeover, provider request, Pilot activation, Outbox delivery, T1/T2 assembly, probability research, recommendation, broker, order, or execution.
+   - T3B12 next sequence: T2 contracts/pure planners; T3 authenticated ownership recovery; T4 single foreground fixture step; T5 transaction-boundary process drills; MR1.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 
