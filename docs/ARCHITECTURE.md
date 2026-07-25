@@ -790,6 +790,21 @@ remain incompatible and unchanged. No phase coordinator, command, rehearsal
 execution, backup/envelope production, provider, real Pilot, T1/T2 delivery,
 recommendation, broker, order, or execution authority is added.
 
+Day15-T3B14-T3 composes the first three closed durable phases without adding
+an executable operation surface. `PREPARE` reuses the registered T3B13
+preparation boundary and then atomically records `PLANNED -> PREPARING ->
+PREPARED` in the new v3 store. `STEP` atomically commits its immutable claim
+and `READY -> STEPPING` transition before invoking the T3B12 foreground
+boundary at most once; a verified terminal report and independent durable
+observation are required before its receipt and completion transition commit.
+An interrupted or failed post-claim process remains explicitly ambiguous.
+Exact replay cannot repeat the action. Owner-authenticated `RECOVER` only
+reconciles existing Runner, task, Outbox, and recovery evidence: proven exact
+success may write the missing receipt, while unknown or conflicting evidence
+becomes `RECOVERY_REQUIRED` or `FAILED_CLOSED`. Stop precedes ownership and
+each mutation/action boundary, and ownership is released only after a clean
+result.
+
 ---
 
 # Event Contract Framework

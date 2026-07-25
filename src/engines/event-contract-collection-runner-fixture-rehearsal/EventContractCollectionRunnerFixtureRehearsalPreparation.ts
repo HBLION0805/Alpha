@@ -35,6 +35,9 @@ import {
   EventContractCollectionRunnerSqliteStore,
   type OpenEventContractCollectionRunnerSqliteStoreOptions,
 } from "../../repositories/EventContractCollectionRunnerSqliteStore";
+import type {
+  EventContractCollectionRunnerRepository,
+} from "../../repositories/EventContractCollectionRunnerRepository";
 import {
   createCollectionRunnerRehearsalLifecycleTransition,
   createCollectionRunnerRehearsalPreparationReceipt,
@@ -72,13 +75,21 @@ export interface CollectionRunnerRehearsalAllowedRoot {
   readonly path: string;
 }
 
+export interface CollectionRunnerRehearsalPreparationStorePort {
+  createRunnerRepository(): EventContractCollectionRunnerRepository;
+  getReadiness(): {
+    readonly schemaCatalogChecksum: string;
+  };
+  close(): void;
+}
+
 export interface CollectionRunnerRehearsalPreparationDependencies {
   readonly repositoryRoot: string;
   readonly allowedRoots: readonly CollectionRunnerRehearsalAllowedRoot[];
   readonly catalog: readonly CollectionRunnerRehearsalFixtureCatalogEntry[];
   readonly openStore?: (
     options: OpenEventContractCollectionRunnerSqliteStoreOptions,
-  ) => EventContractCollectionRunnerSqliteStore;
+  ) => CollectionRunnerRehearsalPreparationStorePort;
 }
 
 interface PreparationRecord {
@@ -257,7 +268,7 @@ export class EventContractCollectionRunnerFixtureRehearsalPreparation {
   readonly #catalog: ReadonlyMap<string, CollectionRunnerRehearsalFixtureCatalogEntry>;
   readonly #openStore: (
     options: OpenEventContractCollectionRunnerSqliteStoreOptions,
-  ) => EventContractCollectionRunnerSqliteStore;
+  ) => CollectionRunnerRehearsalPreparationStorePort;
 
   public constructor(dependencies: CollectionRunnerRehearsalPreparationDependencies) {
     this.#repositoryRoot = canonicalExistingDirectory(dependencies.repositoryRoot, "repositoryRoot");

@@ -1,12 +1,22 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B14-T2 Rehearsal-profile Contracts and Migration 003 (Pending Owner Review)
+## 2026-07-25 - Day15-T3B14-T3 Durable Phase Coordinator and Recovery Reconciliation (Pending Owner Review)
+
+- Added a closed `PREPARE`/`STEP`/`RECOVER` request and result boundary with strict field, phase, identity, lifecycle-version, ordinal, recovery-fingerprint, and authorization validation.
+- Added an exact rehearsal-profile SQLite repository. Claim plus lifecycle transition, invocation receipt plus completion transition, and recovery disposition plus terminal transition each commit atomically with compare-and-swap protection.
+- Added one-phase orchestration with Stop checks before ownership and mutation, clean-release versus preserved-ambiguity handling, exact replay without repeated work, and authenticated recovery that reconciles but never executes another fixture action.
+- Added a v3 store composition surface, a real T3B13 preparation adapter, and a real T3B12 foreground-step adapter with terminal-report reconstruction and independent durable observation.
+- Focused checks pass `32/32` contracts, `17/17` coordinator/repository, `6/6` step adapter, `19/19` preparation, and `18/18` migration/profile tests. Complete Alpha validation passes `2335/2335`.
+- No command, rehearsal run, loop, timer, network provider, real Pilot, T1/T2 delivery, model, recommendation, broker, order, or execution authority was added.
+
+## 2026-07-25 - Day15-T3B14-T2 Rehearsal-profile Contracts and Migration 003
 
 - Added strict immutable durable rehearsal registry, transition, operation-claim, invocation-receipt, failure-receipt, evidence-plan, aggregate-snapshot, and verification-result contracts.
 - Added deterministic constructors and a pure fail-closed aggregate verifier for fingerprints, lifecycle history, exact ordinals, claim settlement, projection state, and evidence-plan placement.
 - Added new-store-only SQLite Migration 003 with six `STRICT` rehearsal tables, foreign keys, uniqueness constraints, phase/ordinal checks, and append-only history triggers.
 - Added deterministic read-only profile inspection for exact Migration 001-003 history, build lineage, schema contract versions, foreign-key enforcement, table catalog, strict typing, integrity checks, and schema-catalog checksum.
 - Added `30/30` contract tests and `17/17` migration/profile tests; complete Alpha validation passes `2308/2308`.
+- Owner approved and pushed T3B14-T2 as `80fb117`.
 - Added no phase command, coordinator, rehearsal run, backup/package implementation, provider, network, real Pilot, T1/T2 delivery, recommendation, broker, order, or execution authority.
 
 ## 2026-07-25 - Day15-T3B14-T1 Durable Fixture Rehearsal Composition and Evidence Architecture

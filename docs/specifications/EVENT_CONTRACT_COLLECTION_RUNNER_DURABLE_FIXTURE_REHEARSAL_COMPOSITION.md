@@ -4,11 +4,12 @@
 
 Task: `Day15-T3B14-T1`
 
-Status: T3B14-T1 design committed and pushed as `30780ba`; T3B14-T2
-contracts and Migration 003 are complete locally and pending Owner review.
+Status: T3B14-T1 design and T3B14-T2 contracts/Migration 003 are committed
+and pushed; T3B14-T3 durable phase coordination is complete locally and
+pending Owner review.
 
 Reviewed baseline:
-`30780ba`.
+`80fb117`.
 
 This design follows the T3B13-MR1 decision:
 
@@ -42,6 +43,38 @@ T1/T2 delivery, model, recommendation, broker, order, or execution behavior.
   enforcement, quick check, foreign-key check, and full catalog checksum.
 - Focused validation passes `30/30` contract checks and `17/17` migration
   checks; complete Alpha validation passes `2308/2308`.
+
+## T3B14-T3 implementation
+
+- A strict programmatic request exposes only `PREPARE`, `STEP`, and `RECOVER`
+  in this task. Registered manifest/phase identities, lifecycle version,
+  invocation ordinal, recovery fingerprint, invocation identity, and optional
+  Owner authorization are explicit and unknown fields fail closed.
+- The SQLite repository reconstructs and verifies the complete durable
+  snapshot before every state decision. Claim plus transition, result plus
+  transition, and recovery disposition plus terminal transition use
+  `BEGIN IMMEDIATE`, compare-and-swap versions, and rollback on failure.
+- `PREPARE` reuses the approved T3B13 preparation boundary against a new v3
+  store, then atomically initializes the durable registry and its first two
+  append-only transitions.
+- `STEP` commits its claim and `READY -> STEPPING` transition before calling
+  the T3B12 foreground boundary exactly once. The adapter reconstructs the
+  terminal report fingerprint, binds process session/boot/invocation
+  identities, rejects Stop/recovery/ambiguity, and rereads durable outcome
+  evidence before success can be committed.
+- Exact successful replay returns its prior receipt. An unresolved claim never
+  repeats work and requires `RECOVER`.
+- `RECOVER` requires local Owner authorization and never calls the foreground
+  action. Proven exact success writes the missing STEP receipt; unknown or
+  conflicting durable evidence enters `RECOVERY_REQUIRED` or `FAILED_CLOSED`.
+- Stop is checked before ownership and immediately before every mutation or
+  action. A post-claim failure preserves ownership ambiguity for recovery.
+- Focused checks pass `32/32` contracts, `17/17` coordinator/repository,
+  `6/6` step adapter, `19/19` preparation, and `18/18` migration/profile
+  checks; complete Alpha validation passes `2335/2335`.
+- This task adds no executable command, rehearsal run, multi-phase loop,
+  timer, backup/envelope production, network/provider request, real Pilot,
+  T1/T2 delivery, model, recommendation, broker, order, or execution authority.
 
 ## AI dispatch card
 
@@ -627,13 +660,10 @@ T3B14 remains separately gated:
 
 1. **T3B14-T1 — Durable Fixture Rehearsal Composition and Evidence
    Architecture:** this design.
-2. **T3B14-T2 — Rehearsal-profile contracts and migration 003:** completed
-   locally with strict registry/history records, new-store-only profile
-   creation, read-only profile inspection, and pure verification; no operation
-   command or lifecycle mutation coordinator.
+2. **T3B14-T2 — Rehearsal-profile contracts and migration 003:** completed,
+   committed, and pushed as `80fb117`.
 3. **T3B14-T3 — Durable phase coordinator and recovery reconciliation:**
-   concrete preparation, one-action step, and recovery composition over
-   registered roots and ports; no internal loop.
+   implementation complete locally and pending Owner review.
 4. **T3B14-T4 — Backup, validation, envelope, and fresh-process verifier:**
    concrete evidence reconstruction and portable immutable envelope.
 5. **T3B14-T5 — End-to-end process drills:** clean, two-run, crash, Stop,
@@ -685,7 +715,7 @@ T3B14-T1 does not authorize:
 
 After Owner approval, begin:
 
-`Day15-T3B14-T3 — Durable Phase Coordinator and Recovery Reconciliation`
+`Day15-T3B14-T4 — Backup, Validation, Envelope, and Fresh-process Verifier`
 
 Do not combine T3 approval with evidence-envelope implementation, rehearsal
 execution, provider admission, or capital authority.

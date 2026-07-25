@@ -139,6 +139,7 @@ const TRANSITIONS: Readonly<Record<DurableFixtureRehearsalLifecycleState, readon
     ],
     [DurableFixtureRehearsalLifecycleState.Ready]: [
       DurableFixtureRehearsalLifecycleState.Stepping,
+      DurableFixtureRehearsalLifecycleState.Completed,
       DurableFixtureRehearsalLifecycleState.FailedClosed,
       DurableFixtureRehearsalLifecycleState.RecoveryRequired,
     ],
@@ -502,11 +503,30 @@ export function verifyDurableFixtureRehearsalSnapshot(
   }
 
   const unresolved = [...claimsById.keys()].filter((id) => !settledClaims.has(id));
-  if (
-    unresolved.length > 1 ||
-    (unresolved.length === 1 &&
-      registry.lifecycleState !== DurableFixtureRehearsalLifecycleState.Stepping)
-  ) issues.push("UNRESOLVED_CLAIM_MISMATCH");
+  const unresolvedClaims = unresolved
+    .map((id) => claimsById.get(id))
+    .filter((claim): claim is DurableFixtureRehearsalOperationClaim =>
+      claim !== undefined);
+  const unresolvedStepping =
+    registry.lifecycleState === DurableFixtureRehearsalLifecycleState.Stepping &&
+    (
+      (
+        unresolvedClaims.length === 1 &&
+        unresolvedClaims[0]!.phase === DurableFixtureRehearsalPhase.Step
+      ) ||
+      (
+        unresolvedClaims.length === 2 &&
+        unresolvedClaims.filter(
+          ({ phase }) => phase === DurableFixtureRehearsalPhase.Step,
+        ).length === 1 &&
+        unresolvedClaims.filter(
+          ({ phase }) => phase === DurableFixtureRehearsalPhase.Recover,
+        ).length === 1
+      )
+    );
+  if (unresolvedClaims.length > 0 && !unresolvedStepping) {
+    issues.push("UNRESOLVED_CLAIM_MISMATCH");
+  }
   const nextOrdinal = orderedOrdinals.length + 1;
   if (registry.nextInvocationOrdinal !== nextOrdinal) {
     issues.push("NEXT_INVOCATION_ORDINAL_MISMATCH");

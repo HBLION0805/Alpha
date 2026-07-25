@@ -21,6 +21,9 @@ import {
   createNewCollectionRunnerFixtureRehearsalSqliteProfile,
   inspectCollectionRunnerFixtureRehearsalSqliteProfile,
 } from "./EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3";
+import {
+  EventContractCollectionRunnerFixtureRehearsalSqliteStore,
+} from "./EventContractCollectionRunnerFixtureRehearsalSqliteStore";
 
 const BUILD = "fnv1a64:1111111111111111";
 const AT = "2026-07-25T16:00:00.000Z";
@@ -89,6 +92,27 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
       assertEqual(result.migrationName, COLLECTION_RUNNER_FIXTURE_REHEARSAL_SQLITE_MIGRATION_V3_NAME, "migration");
       assertEqual(result.migrationChecksum, COLLECTION_RUNNER_FIXTURE_REHEARSAL_SQLITE_MIGRATION_V3_CHECKSUM, "checksum");
       assertTrue(Object.isFrozen(result), "readiness");
+    })],
+  ["fixture-profile store exposes existing runner and durable repositories", () =>
+    withRoot((root) => {
+      const store = EventContractCollectionRunnerFixtureRehearsalSqliteStore.open(
+        options(root),
+      );
+      try {
+        assertEqual(store.getReadiness().schemaVersion, 3, "schema version");
+        assertEqual(
+          store.createRunnerRepository().getRunnerDefinition("missing", "1.0"),
+          null,
+          "runner repository",
+        );
+        assertEqual(
+          store.createDurableRehearsalRepository().readSnapshot("missing"),
+          null,
+          "durable repository",
+        );
+      } finally {
+        store.close();
+      }
     })],
   ["migration creates the exact strict table catalog", () =>
     withRoot((root) => {

@@ -391,10 +391,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B14-T1 status: completed, committed, and pushed as `30780ba`; complete validation passes `2261/2261`.
    - T3B14-T1 scope: rehearsal-only SQLite schema profile, durable lifecycle/claim/receipt/artifact authority, one closed Owner phase per process, crash ambiguity reconciliation, terminal freeze, online backup, fixed validation evidence, atomic portable envelope, fresh-process verification, two-run determinism, and 20 required process drills.
    - T3B14-T1 excludes: implementation, migration 003, executable command, rehearsal run, loop, timer, network provider, real Pilot, T1/T2 delivery, model, recommendation, broker, order, or execution.
-   - T3B14-T2 status: implementation complete locally and pending Owner review; focused contract tests pass `30/30`, focused Migration 003 tests pass `17/17`, and complete validation passes `2308/2308`.
+   - T3B14-T2 status: completed, committed, and pushed as `80fb117`; focused contract tests pass `30/30`, focused Migration 003 tests pass `17/17`, and its approved complete validation baseline is `2308/2308`.
    - T3B14-T2 scope: strict durable rehearsal records, pure aggregate verification, and an exact new-store-only `FIXTURE_REHEARSAL_V3` SQLite profile with Migration 003.
    - T3B14-T2 excludes: phase command/coordinator, rehearsal execution, backup/envelope production, network provider, real Pilot, T1/T2 delivery, model, recommendation, broker, order, or execution.
-   - T3B14 next sequence: T3 durable phase coordinator; T4 evidence envelope; T5 end-to-end process drills; MR1; separately approved rehearsal run.
+   - T3B14-T3 status: implementation complete locally and pending Owner review; focused checks pass `32/32` contracts, `17/17` coordinator/repository, `6/6` step adapter, `19/19` preparation, and `18/18` migration/profile checks; complete validation passes `2335/2335`.
+   - T3B14-T3 scope: closed PREPARE/STEP/RECOVER coordinator, exact durable SQLite claims/receipts/CAS transitions, v3 store composition, T3B13 preparation reuse, T3B12 one-action reuse, Stop/ownership ordering, exact replay, and authenticated recovery reconciliation.
+   - T3B14-T3 excludes: executable command, rehearsal run, loop, timer, backup/envelope production, network provider, real Pilot, T1/T2 delivery, model, recommendation, broker, order, or execution.
+   - T3B14 next sequence: T4 backup/validation/envelope/fresh-process verifier; T5 end-to-end process drills; MR1; separately approved rehearsal run.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

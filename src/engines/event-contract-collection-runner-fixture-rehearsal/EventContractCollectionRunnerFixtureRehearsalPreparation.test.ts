@@ -7,9 +7,12 @@ import {
   CollectionRunnerPilotState,
   CollectionRunnerRehearsalFaultScenario,
   CollectionRunnerRehearsalLifecycleState,
+  DurableFixtureRehearsalLifecycleState,
+  DurableFixtureRehearsalPhase,
   CollectionRunnerRuntimeAssemblyAction,
   CollectionRunnerTaskState,
   EVENT_CONTRACT_COLLECTION_RUNNER_FIXTURE_REHEARSAL_SCHEMA_VERSION,
+  EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_COORDINATOR_SCHEMA_VERSION,
   EVENT_CONTRACT_COLLECTION_RUNNER_SCHEMA_VERSION,
   EventContractSourceCapability,
   EventContractSourceExecutionMode,
@@ -37,6 +40,12 @@ import {
   createCollectionRunnerRehearsalFixtureCatalogEntry,
   createCollectionRunnerRehearsalRuntimeTemplateFingerprint,
 } from "./EventContractCollectionRunnerFixtureRehearsalPreparation";
+import {
+  EventContractCollectionRunnerFixtureRehearsalSqliteStore,
+} from "../../repositories/EventContractCollectionRunnerFixtureRehearsalSqliteStore";
+import {
+  EventContractCollectionRunnerDurableFixtureRehearsalPreparationAdapter,
+} from "../event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalPreparationAdapter";
 
 const BUILD = "fnv1a64:aaaaaaaaaaaaaaaa";
 const PLAN = "fnv1a64:bbbbbbbbbbbbbbbb";
@@ -240,6 +249,86 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
     truth(existsSync(result.runtimePaths.storePath), "SQLite store exists");
     truth(existsSync(resolve(result.workspace.workspaceRoot, "preparation.json")), "receipt record exists");
   })],
+  ["preparation seeds the explicit v3 rehearsal profile through the reviewed adapter", () => {
+    const root = mkdtempSync(resolve(tmpdir(), "alpha-rehearsal-v3-preparation-"));
+    const allowed = resolve(root, "allowed");
+    mkdirSync(allowed);
+    const fixture = buildFixture();
+    try {
+      const preparation = new EventContractCollectionRunnerFixtureRehearsalPreparation({
+        repositoryRoot: resolve("."),
+        allowedRoots: [{ allowedRootId: "root:test", path: allowed }],
+        catalog: [fixture.entry],
+        openStore: EventContractCollectionRunnerFixtureRehearsalSqliteStore.open,
+      });
+      const preparationRequest = {
+        manifest: fixture.manifest,
+        catalogEntryId: fixture.entry.catalogEntryId,
+        allowedRootId: "root:test",
+        preparedAtUtc: PREPARED_AT,
+      };
+      const adapter =
+        new EventContractCollectionRunnerDurableFixtureRehearsalPreparationAdapter(
+          preparation,
+          {
+            resolve: () => preparationRequest,
+          },
+        );
+      const evidence = adapter.prepare({
+        schemaVersion:
+          EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_COORDINATOR_SCHEMA_VERSION,
+        registeredManifestId: "manifest:test",
+        registeredPhaseId: "phase:prepare",
+        rehearsalId: fixture.manifest.rehearsalId,
+        manifestFingerprint: fixture.manifest.fingerprint,
+        phase: DurableFixtureRehearsalPhase.Prepare,
+        expectedLifecycleVersion: 1,
+        expectedInvocationOrdinal: null,
+        expectedRecoveryFingerprint: APPROVAL,
+        invocationId: "invocation:prepare",
+        ownerAuthorizationId: null,
+      }, {
+        processSessionId: "session:test",
+        bootIdentity: "boot:test",
+        observedAtUtc: PREPARED_AT,
+      });
+      equal(
+        evidence.registry.lifecycleState,
+        DurableFixtureRehearsalLifecycleState.Prepared,
+        "durable lifecycle",
+      );
+      equal(evidence.registry.lifecycleVersion, 3, "durable lifecycle version");
+      const result = preparation.prepare(preparationRequest);
+      equal(result.replayed, true, "adapter prepared exact workspace");
+      const store = EventContractCollectionRunnerFixtureRehearsalSqliteStore.open({
+        rootDirectory: result.runtimeConfiguration.sqliteRoot,
+        storeId: result.runtimeConfiguration.storeId,
+        applicationBuildFingerprint: result.manifest.buildFingerprint,
+        appliedAtUtc: PREPARED_AT,
+      });
+      try {
+        equal(store.getReadiness().schemaVersion, 3, "schema version");
+        equal(
+          store.createRunnerRepository().getPilotState(
+            fixture.entry.pilotActivation.activationId,
+          )?.state,
+          CollectionRunnerPilotState.Active,
+          "seeded pilot",
+        );
+        equal(
+          store.createDurableRehearsalRepository().readSnapshot(
+            fixture.manifest.rehearsalId,
+          ),
+          null,
+          "coordinator owns registry initialization",
+        );
+      } finally {
+        store.close();
+      }
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }],
   ["preparation is deeply immutable", () => withHarness(({ preparation, request }) => {
     const result = preparation.prepare(request);
     truth(Object.isFrozen(result) && Object.isFrozen(result.workspace) && Object.isFrozen(result.preparationReceipt), "immutable");

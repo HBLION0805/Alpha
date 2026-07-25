@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-T3 Durable Phase Coordinator and Recovery Reconciliation
+
+- Decision: expose only the closed `PREPARE`, `STEP`, and `RECOVER` programmatic phases in T3; do not add an executable command or multi-phase runner.
+- Decision: commit a STEP claim and `READY -> STEPPING` transition before invoking the existing foreground action, then commit the exact receipt and terminal/ready transition only after independently rereading durable truth.
+- Decision: an unresolved STEP claim is durable ambiguity. Exact STEP replay cannot repeat work; only an Owner-authenticated RECOVER phase may reconcile it.
+- Decision: RECOVER never executes fixture work. Exactly proven success may settle the original STEP claim; unknown evidence becomes `RECOVERY_REQUIRED`, conflicting evidence becomes `FAILED_CLOSED`.
+- Decision: Stop is checked before ownership and immediately before mutation/action. Ownership is released only after verified clean completion; post-claim failure preserves ambiguity.
+- Decision: preparation and foreground execution reuse the reviewed T3B13 and T3B12 boundaries through narrow adapters, while the v3 store exposes both existing Runner truth and new durable-rehearsal truth.
+- Consequence: T3 closes the durable phase/ambiguity blocker for later evidence composition, but grants no command, rehearsal run, loop, provider, real Pilot, T1/T2 delivery, recommendation, or trading authority.
+
 ## 2026-07-25 - Day15-T3B14-T2 Rehearsal-profile Contracts and Migration 003
 
 - Decision: implement only the strict immutable records, pure aggregate verifier, and isolated SQLite schema profile required before durable phase composition.

@@ -406,6 +406,49 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
     });
     assertTrue(result.issueCodes.includes("UNRESOLVED_CLAIM_MISMATCH"), "issue");
   }],
+  ["STEPPING permits one unresolved STEP and one unresolved RECOVER claim", () => {
+    const value = validSnapshot();
+    const recoveryClaim = createDurableFixtureRehearsalOperationClaim(claimInput({
+      claimId: "claim-recover",
+      phase: DurableFixtureRehearsalPhase.Recover,
+      invocationOrdinal: null,
+      expectedLifecycleVersion: 5,
+      requestFingerprint: FP1,
+      ownerAuthorizationId: "authorization-1",
+    }));
+    const steppingTransitions = transitions().slice(0, 4);
+    const result = verifyDurableFixtureRehearsalSnapshot({
+      ...value,
+      transitions: steppingTransitions,
+      claims: [claim(), recoveryClaim],
+      invocationReceipts: [],
+      registry: createDurableFixtureRehearsalRegistry(registryInput({
+        lifecycleState: DurableFixtureRehearsalLifecycleState.Stepping,
+        lifecycleVersion: 5,
+        nextInvocationOrdinal: 1,
+      })),
+    });
+    assertEqual(result.valid, true, "valid");
+  }],
+  ["READY may complete without entering another step", () => {
+    const completed = createDurableFixtureRehearsalTransition({
+      transitionId: "transition-ready-complete",
+      rehearsalId: "rehearsal-1",
+      manifestFingerprint: FP1,
+      ordinal: 1,
+      fromState: DurableFixtureRehearsalLifecycleState.Ready,
+      fromVersion: 4,
+      toState: DurableFixtureRehearsalLifecycleState.Completed,
+      reasonCode: "SCENARIO_COMPLETE",
+      occurredAtUtc: NOW,
+    });
+    assertEqual(
+      completed.toState,
+      DurableFixtureRehearsalLifecycleState.Completed,
+      "to state",
+    );
+    assertEqual(completed.toVersion, 5, "to version");
+  }],
   ["evidence-frozen registry requires a plan", () => {
     const value = validSnapshot();
     const extra = [
