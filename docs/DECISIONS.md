@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B10 Runner Milestone Review
+
+### Foundation Acceptance Does Not Authorize Operation
+
+- Decision: Accept T3B10 as sufficient to begin a Shadow Pilot Runtime Architecture design, while retaining a hard no-go on fixture-worker, continuous-runner, provider-request, and real-Pilot operation.
+- Rationale: authority, SQLite transactions, recovery, Owner authentication, and stop/crash behavior are validated, but no reviewed runtime process owns clocks, locking, scheduling, provider composition, lifecycle commands, or evidence integration.
+- Consequence: the next task is T3B11-T1 design only and cannot be combined with worker implementation or live authorization.
+
+### Runtime Ownership Precedes Scheduling
+
+- Decision: Require one explicit local process owner, single-instance lock, immutable runtime configuration, and exact boot/process-session issuance before implementing the scheduler or worker.
+- Rationale: SQLite transaction serialization protects records but does not determine which process owns runtime authority.
+- Consequence: duplicate-process and child-process crash drills become mandatory before a fixture runtime can pass its own milestone review.
+
+### Exchange-Only Collection Cannot Claim Dataset Readiness
+
+- Decision: Treat the current fixed-market Kalshi source as bounded transport evidence, not as an operating provider for future plans or a substitute for Robinhood platform evidence.
+- Rationale: the transport is bound to one historical market, and Kalshi cannot provide the Robinhood quote and fee-preview evidence required by T1.
+- Consequence: future runtime work remains fixture-only until exact future-market admission and a reviewed platform-evidence operating plan are separately approved.
+
 ## 2026-07-25 - Day15-T3B10-T4D Recovery-Control Drills
 
 ### Race Safety Is Proven by Both Durable Commit Orderings

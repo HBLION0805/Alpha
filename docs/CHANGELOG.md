@@ -1,12 +1,21 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B10-T4D Recovery-Control Race and Crash Drills (Pending Owner Review)
+## 2026-07-25 - Day15-T3B10 Runner Milestone Review (Pending Owner Review)
+
+- Reviewed the complete T3B9 through T3B10-T4D authority, persistence, recovery, authentication, and drill evidence at baseline `1b7e9744189cd5028a8cae13bc057954648bbb27`.
+- Accepted the foundation for Shadow Pilot Runtime Architecture design only.
+- Kept fixture-worker, continuous-runner, provider-request, and real-Pilot operation blocked.
+- Recorded high-priority gaps in runtime process ownership, single-instance locking, scheduler/clock/worker composition, future-market provider policy, platform evidence, and T1/T2 integration.
+- Defined a separately gated T3B11-T1 through T3B11-T5 sequence before any bounded-live pilot review.
+
+## 2026-07-25 - Day15-T3B10-T4D Recovery-Control Race and Crash Drills
 
 - Added six network-free drills covering both two-connection Stop/Resume orderings, restart after Resume, restart after Stop, injected Resume transaction failure, and durable Emergency Stop persistence failure.
 - Proved that a restart preserves immutable authorization evidence but rejects the prior recovery context and ordinary mutation path.
 - Proved that injected Resume failure atomically rolls back decision consumption, session creation, and receipt creation.
 - Corrected Emergency Stop session revocation so lifecycle fields and the authorization fingerprint change atomically and revoked sessions remain deterministically readable.
 - Added no scheduler, worker, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T4D as `1b7e9744189cd5028a8cae13bc057954648bbb27`.
 
 ## 2026-07-25 - Day15-T3B10-T4C Local Owner Command and Session Gate
 

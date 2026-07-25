@@ -739,6 +739,8 @@ Day15-T3B10-T4C adds a local-only Owner command and an authenticated process-ses
 
 Day15-T3B10-T4D exercises the recovery-control boundary with temporary, network-free SQLite stores. Two independent store connections cover both Stop/Resume commit orderings; close/reopen drills prove old recovery contexts cannot reuse a prior session; an injected SQLite abort proves the Resume transaction leaves no partial consumption, session, or receipt; and an injected durable-stop failure proves the process barrier still blocks mutation. Revoking a session now updates its lifecycle fields and authorization fingerprint in the same transaction so durable reads remain coherent. T4D adds validation evidence only and starts no runtime loop.
 
+The Day15-T3B10 milestone review accepts the runner foundation for runtime architecture design only. It explicitly blocks operation because no single-instance process owner, runtime clocks, scheduler/worker composition, complete Pilot operator surface, future-market provider composition, automatic platform-evidence lane, T1/T2 assembly path, or health/outbox consumer exists. See [Event Contract Collection Runner Milestone Review](EVENT_CONTRACT_COLLECTION_RUNNER_MILESTONE_REVIEW.md).
+
 ---
 
 # Event Contract Framework

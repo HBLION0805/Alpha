@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B10-T4C is committed and pushed; Day15-T3B10-T4D network-free recovery-control race and crash drills are implemented locally and pending owner review
+Day15-T3B10-T4D is committed and pushed; Day15-T3B10-MR1 Runner milestone review is implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `c11cbf844284676ad5dfeee89fd82221cc5282a9` on `main`, equal to `origin/main` before the T3B10-T4D implementation task.
+Verified baseline: `1b7e9744189cd5028a8cae13bc057954648bbb27` on `main`, equal to `origin/main` before the T3B10-MR1 review task.
 
 Day 7 completed:
 
@@ -71,7 +71,9 @@ Day15-T3B10-T4B is committed and pushed as `529ddbc1fc53a8d93a1beca77bc277e78fac
 
 Day15-T3B10-T4C is committed and pushed as `c11cbf844284676ad5dfeee89fd82221cc5282a9`. It adds stdin-only local Owner secret handling, fixed-policy `scrypt` authentication, exact command challenge binding, an executable local command, a session-gated repository wrapper with per-write durable revalidation, and an irreversible in-memory stop barrier.
 
-Day15-T3B10-T4D is implemented locally and pending owner review. Six network-free drills cover both two-connection Stop/Resume orderings, crash after Resume, crash after Stop, injected atomic Resume failure, and durable Stop persistence failure. The drills found and corrected revoked-session fingerprint drift. T4D adds no credential enrollment/recovery, remote authentication, scheduler/worker, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
+Day15-T3B10-T4D is committed and pushed as `1b7e9744189cd5028a8cae13bc057954648bbb27`. Six network-free drills cover both two-connection Stop/Resume orderings, crash after Resume, crash after Stop, injected atomic Resume failure, and durable Stop persistence failure. The drills found and corrected revoked-session fingerprint drift.
+
+Day15-T3B10-MR1 is implemented locally and pending owner review. It accepts the Runner foundation for T3B11 runtime architecture design only and blocks operation. Missing runtime process ownership, single-instance locking, scheduler/clock/worker composition, complete lifecycle commands, future-market provider admission, platform evidence, T1/T2 integration, and health/outbox consumption remain explicit blockers.
 
 ## Day 6 Milestone Review
 
@@ -451,6 +453,7 @@ Day15-T3B10-T4D adds 6/6 focused recovery-control race/crash drills and raises t
 - `12848f9621e6d9abf9477cdb5c24260b50351a97` — Event Contract Collection Runner Recovery-Control Contracts and Deterministic Engine
 - `529ddbc1fc53a8d93a1beca77bc277e78fac9c2c` — Event Contract Collection Runner Durable Recovery-Control Transactions
 - `c11cbf844284676ad5dfeee89fd82221cc5282a9` — Event Contract Collection Runner Local Owner Authentication and Session Gate
+- `1b7e9744189cd5028a8cae13bc057954648bbb27` — Event Contract Collection Runner Recovery-Control Race and Crash Drills
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -502,4 +505,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B10-T4D network-free stop/resume race and crash drills after complete validation. If approved and pushed, perform a milestone review before authorizing any scheduler/worker or real provider pilot. Do not start a scheduler/worker, real provider request, continuous runner, probability research, or trading authority.
+Owner review of Day15-T3B10-MR1. If approved and pushed, begin T3B11-T1 Shadow Pilot Runtime Architecture as a design-only task. Do not implement or start a scheduler/worker, real provider request, continuous runner, Pilot activation, probability research, or trading authority.

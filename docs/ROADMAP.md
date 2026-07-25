@@ -332,9 +332,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B10-T4C status: completed, committed, and pushed as `c11cbf844284676ad5dfeee89fd82221cc5282a9`.
    - T3B10-T4C scope: stdin-only Owner secret, fixed-policy `scrypt` verifier, exact command challenge, authenticated decision execution, session-bound repository wrapper, per-write durable authorization checks, task/activation binding, expiry/revocation/stop enforcement, and irreversible in-memory Emergency Stop barrier.
    - T3B10-T4C excludes: credential enrollment or recovery, remote authentication, scheduler/worker operation, provider requests, continuous runner startup, model, recommendation, broker, order, or execution.
-   - T3B10-T4D status: six network-free stop/resume race, crash/restart, transaction-fault, and durable-stop-failure drills implemented locally and pending owner review.
+   - T3B10-T4D status: completed, committed, and pushed as `1b7e9744189cd5028a8cae13bc057954648bbb27`.
    - T3B10-T4D scope: both two-connection commit orderings, stale-session rejection after restart, durable STOP_REQUESTED/revocation recovery, atomic Resume rollback, process-barrier precedence, and revoked-session fingerprint coherence.
    - T3B10-T4D excludes: scheduler/worker operation, provider requests, continuous runner startup, credential enrollment, real Pilot execution, model, recommendation, broker, order, or execution.
+   - T3B10-MR1 status: milestone review implemented locally and pending owner review.
+   - T3B10-MR1 decision: `GO_FOR_DESIGN` for T3B11-T1 and `NO_GO_FOR_OPERATION` for any worker, continuous runner, provider request, or real Pilot.
+   - T3B11-T1 next scope: Shadow Pilot Runtime Architecture covering one process owner, single-instance lock, immutable configuration, clocks, fixture-only scheduler/worker composition, lifecycle commands, health/outbox projection, evidence integration ownership, and later crash-test boundaries.
+   - T3B11-T1 excludes: implementation, runtime startup, provider request, Pilot activation, dynamic discovery, automatic Robinhood access, probability research, recommendation, broker, order, or execution.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 
