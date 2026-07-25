@@ -765,6 +765,8 @@ Day15-T3B12-T5 validates that composition and its existing repository boundaries
 
 Day15-T3B12-MR1 accepts the assembled fixture-runtime and recovery foundations and permits only a separately reviewed fixture-rehearsal design. The current boundary remains programmatic and one-action; it cannot be wrapped in a loop or exposed as a general runtime command. A future rehearsal must be owner-invoked, network-free, content-addressed, temporary, sanitized, and explicit that fixture success does not establish live-source, Robinhood-platform, T1/T2, dataset, recommendation, or trading readiness. See [Event Contract Collection Runner Runtime Assembly Milestone Review](EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_MILESTONE_REVIEW.md).
 
+Day15-T3B13-T1 designs that fixture rehearsal without implementing or running it. One immutable manifest and allow-listed catalog entry bind a synthetic isolated Pilot, exact fixture source, expected per-invocation actions, bounds, and evidence policy. Separate manual foreground invocations each execute at most one T3B12 action; no internal loop arranges the next step. A bounded content-addressed evidence package retains sanitized receipts, terminal reports, recovery/quarantine identities, payload-free Outbox chronology, SQLite integrity/backup evidence, and a mandatory non-authority declaration. An independent verifier distinguishes the environment-specific execution package from the deterministic scenario result. See [Event Contract Collection Runner Fixture Rehearsal and Evidence Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_FIXTURE_REHEARSAL.md).
+
 ---
 
 # Event Contract Framework

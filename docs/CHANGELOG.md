@@ -1,14 +1,23 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B12 Assembly and Recovery Milestone Review (Pending Owner Review)
+## 2026-07-25 - Day15-T3B13-T1 Fixture Rehearsal and Evidence Architecture (Pending Owner Review)
+
+- Designed one owner-approved, local, fixture-only, network-free rehearsal over one isolated synthetic Pilot and one action per process invocation.
+- Defined a strict content-addressed rehearsal manifest, allow-listed fixture catalog, isolated workspace rules, append-only lifecycle, exact invocation ordinals, Stop/recovery precedence, and no-loop sequencing.
+- Defined bounded sanitized evidence packages, independent verification, separate execution/scenario fingerprints, SQLite backup/integrity evidence, replay, retention, and leakage requirements.
+- Split later work into separately approved contracts, workspace preparation, programmatic step collection, package/process drills, milestone review, and one explicit rehearsal-run gate.
+- Added no code, command, dependency, runtime data, fixture execution, provider, network request, Pilot operation, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B12 Assembly and Recovery Milestone Review
 
 - Reviewed T3B12-T1 through T3B12-T5 at baseline `54a5c05ac912f6a2919d8b7dffa5280578b99c5d` with complete `2166/2166` and focused `101/101` validation.
 - Accepted the assembly, pure planning, T6 ownership, authenticated quarantine, one-action fixture boundary, and real transaction-crash evidence.
 - Recorded `GO_FOR_FIXTURE_REHEARSAL_DESIGN` while retaining `NO_GO` decisions for executable runtime, continuous runtime, and bounded-live operation.
 - Identified remaining rehearsal-manifest/evidence, continuous supervision, Outbox integration, future-provider, Robinhood platform-evidence, dataset, and commercial blockers.
 - Recommended `Day15-T3B13-T1 — Fixture Rehearsal and Evidence Architecture` as a design-only next task.
+- Owner approved and pushed T3B12-MR1 as `d9de7636cedff144e29cafbac731411f17e3876f`.
 
-## 2026-07-25 - Day15-T3B12-T5 Transaction-Boundary Process Drills (Pending Owner Review)
+## 2026-07-25 - Day15-T3B12-T5 Transaction-Boundary Process Drills
 
 - Added 11 network-free drills that launch a real child process, wait for an explicit durable checkpoint, terminate the process, reopen SQLite/WAL, and inspect committed truth.
 - Covered crash boundaries before ownership, after ownership, after store open, after T6, after T7 lease, after T8 attempt claim, during validation, after authenticated Resume, during Stop persistence, after quarantine rename, and after T10 evidence commit.

@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B12-T5 is committed and pushed; Day15-T3B12-MR1 is complete locally and pending Owner review
+Day15-T3B12-MR1 is committed and pushed; Day15-T3B13-T1 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `54a5c05ac912f6a2919d8b7dffa5280578b99c5d` on `main`, equal to `origin/main` before the T3B12-MR1 review task.
+Verified baseline: `d9de7636cedff144e29cafbac731411f17e3876f` on `main`, equal to `origin/main` before the T3B13-T1 design task.
 
 Day 7 completed:
 
@@ -97,7 +97,9 @@ Day15-T3B12-T4 is committed and pushed as `285ec30f9e820d5eee6c7b142261eb000e0a0
 
 Day15-T3B12-T5 is committed and pushed as `54a5c05ac912f6a2919d8b7dffa5280578b99c5d`. Eleven network-free drills terminate real fixture child processes at startup ownership/store, T6, T7 lease, T8 attempt, validation, authenticated-session, Stop transaction, quarantine rename, and T10 commit boundaries. Reopened SQLite/WAL truth proves stale ownership preservation, old-session rejection, unknown-attempt preservation, complete Stop rollback, and exact evidence/quarantine replay. Its approved validation baseline was `2166/2166`.
 
-Day15-T3B12-MR1 is complete locally and pending Owner review. It accepts the assembly/recovery foundation and permits fixture-rehearsal design only. Executable runtime, continuous runtime, bounded-live operation, future-market provider use, Robinhood platform automation, T1/T2 integration, dataset qualification, recommendation, broker, order, and execution remain blocked. The recommended next task is design-only `Day15-T3B13-T1 — Fixture Rehearsal and Evidence Architecture`.
+Day15-T3B12-MR1 is committed and pushed as `d9de7636cedff144e29cafbac731411f17e3876f`. It accepts the assembly/recovery foundation and permits fixture-rehearsal design only. Executable runtime, continuous runtime, bounded-live operation, future-market provider use, Robinhood platform automation, T1/T2 integration, dataset qualification, recommendation, broker, order, and execution remain blocked.
+
+Day15-T3B13-T1 is complete locally and pending Owner review. It defines one content-addressed Owner-approved manifest, one allow-listed fixture catalog, isolated rehearsal roots, a synthetic fixture-only Pilot, manual exact-ordinal foreground steps, bounded sanitized evidence packages, independent verification, separate execution/scenario fingerprints, Stop/recovery/replay behavior, and non-destructive retention. It adds documentation only and does not run a rehearsal. The recommended next task is T3B13-T2 contracts and pure verification.
 
 ## Day 6 Milestone Review
 

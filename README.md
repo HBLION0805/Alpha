@@ -105,6 +105,8 @@ The T3B10-T3A implementation boundary is specified in [Event Contract Collection
 
 [Event Contract Collection Runner Runtime Assembly and Recovery](docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_RECOVERY.md) defines and implements the fixture-only one-action composition boundary, authenticated stale-ownership quarantine, and real child-process transaction recovery drills. Its [milestone review](docs/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_MILESTONE_REVIEW.md) accepts those foundations for fixture-rehearsal design only. It still exposes no executable runtime command, continuous loop, network provider, real Pilot activation, recommendation, broker, order, or trading authority.
 
+[Event Contract Collection Runner Fixture Rehearsal and Evidence Architecture](docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_FIXTURE_REHEARSAL.md) defines the next network-free system rehearsal: one immutable manifest, one allow-listed fixture catalog, isolated temporary state, separate one-action invocations, bounded sanitized evidence packaging, and independent deterministic verification. The design does not implement or run the rehearsal.
+
 ## Repository Structure
 
 ```text

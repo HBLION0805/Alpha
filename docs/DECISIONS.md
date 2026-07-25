@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B13-T1 Fixture Rehearsal and Evidence Architecture
+
+### Rehearsal Is Manual, Fixture-Only, and One Action Per Invocation
+
+- Decision: advance one frozen rehearsal only through separate explicit foreground invocations, each bound to an exact ordinal and permitted to execute at most one T3B12 action.
+- Rationale: repeating the step internally would silently create the continuous runtime that T3B12-MR1 prohibited.
+- Consequence: the first rehearsal has no timer, wait, polling, self-invocation, daemon, network transport, or real Pilot authority.
+
+### Manifest and Fixture Catalog Own Rehearsal Admission
+
+- Decision: bind every build, fixture, provider, mapping, synthetic Pilot, task, expected action, bound, and evidence policy through one immutable manifest and one allow-listed catalog entry.
+- Rationale: caller-selected business records, paths, or provider identities would bypass reviewed source and runtime authority.
+- Consequence: a changed manifest receives a new rehearsal identity; undeclared fields, catalog drift, arbitrary paths, and dynamic discovery fail closed.
+
+### Package Verification Is Independent From Package Construction
+
+- Decision: preserve both an execution-specific package fingerprint and an environment-independent scenario-result fingerprint, then require a pure independent verifier to return `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`.
+- Rationale: process identity and timing legitimately vary, while the frozen scenario's actions and durable outcome must remain deterministic.
+- Consequence: two clean runs must have the same scenario-result fingerprint; `INCOMPLETE` is never treated as success.
+
+### Fixture Success Grants No Market or Capital Authority
+
+- Decision: require a versioned non-authority declaration in every manifest, package, and review output.
+- Rationale: local fixture orchestration cannot establish live-source availability, complete Robinhood evidence, dataset qualification, model edge, or trading readiness.
+- Consequence: rehearsal evidence cannot contain or support predictions, recommendations, sizing, Portfolio changes, broker actions, orders, or execution.
+
 ## 2026-07-25 - Day15-T3B12 Assembly and Recovery Milestone Review
 
 ### Accept Assembly and Recovery Without Authorizing Operation
