@@ -1,6 +1,15 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B14-T5 End-to-end Process and Failure Drills (Pending Owner Review)
+## 2026-07-25 - Day15-T3B14 Durable Fixture Rehearsal Milestone Review (Pending Owner Review)
+
+- Added a milestone review over T3B14-T1 through T3B14-T5 and baseline `a692f6f`.
+- Accepted the durable schema, PREPARE/STEP/RECOVER, recovery, freeze, backup, envelope, and fresh-verifier components.
+- Recorded that T5 directly seeds terminal state and a synthetic passing validation receipt, so its process drills prove the evidence boundary rather than an assembled phase-by-phase rehearsal.
+- Recorded incomplete VALIDATE/FREEZE/PACKAGE operation composition, validation-authority binding, post-freeze writer rejection, and exact 20-drill traceability.
+- Decision: `DURABLE_REHEARSAL_COMPONENTS_ACCEPTED / GO_FOR_REHEARSAL_READINESS_CORRECTION / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+- No source behavior, rehearsal command, network path, real Pilot, recommendation, broker, order, or execution authority was added.
+
+## 2026-07-25 - Day15-T3B14-T5 End-to-end Process and Failure Drills
 
 - Added a deterministic frozen v3 rehearsal/evidence fixture containing terminal Pilot, task, attempt/result, normalized evidence, budget, Outbox, and rehearsal history.
 - Added child-process evidence build and verification boundaries with test-only backup, staging, and publication checkpoints.

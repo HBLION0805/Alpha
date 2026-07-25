@@ -4,12 +4,12 @@
 
 Task: `Day15-T3B14-T1`
 
-Status: T3B14-T1 design and T3B14-T2 contracts/Migration 003 are committed
-and pushed; T3B14-T3 durable phase coordination is complete locally and
-pending Owner review.
+Status: T3B14-T1 through T3B14-T5 are committed and pushed. T3B14-MR1 is
+complete locally and pending Owner review; it accepts the durable components
+but returns `NO_GO_FOR_REHEARSAL_RUN` pending T3B14-C1 correction.
 
 Reviewed baseline:
-`80fb117`.
+`a692f6f`.
 
 This design follows the T3B13-MR1 decision:
 
@@ -666,12 +666,17 @@ T3B14 remains separately gated:
    completed, committed, and pushed as `0522075`.
 4. **T3B14-T4 — Backup, validation, envelope, and fresh-process verifier:**
    completed, committed, and pushed as `b3be96c`.
-5. **T3B14-T5 — End-to-end process drills:** implementation complete locally
-   and pending Owner review; clean, two-run, crash, Stop, replay, backup,
-   validation, leakage, and source-isolation coverage passes.
-6. **T3B14-MR1 — Durable fixture-rehearsal readiness review.**
-7. **Later separately approved operation:** one exact Owner-approved,
-   network-free rehearsal run.
+5. **T3B14-T5 — Evidence-boundary process drills:** completed, committed, and
+   pushed as `a692f6f`; clean, two-run, backup/publication crash,
+   substitution, missing-backup, and source-isolation coverage passes.
+6. **T3B14-MR1 — Durable fixture-rehearsal readiness review:** complete
+   locally and pending Owner approval; durable components are accepted but a
+   rehearsal run remains blocked.
+7. **T3B14-C1 — End-to-end phase composition and validation-authority
+   correction:** required before another readiness review.
+8. **T3B14-MR2 — Corrected rehearsal-readiness review.**
+9. **Later separately approved operation:** one exact Owner-approved,
+   network-free rehearsal run only if MR2 explicitly permits it.
 
 Approval of one task grants no authority to begin the next.
 
@@ -716,7 +721,7 @@ T3B14-T1 does not authorize:
 
 After Owner approval, begin:
 
-`Day15-T3B14-MR1 — Durable Fixture Rehearsal Readiness Review`
+`Day15-T3B14-C1 — End-to-end Phase Composition and Validation Authority Correction`
 
-Do not combine T5 approval with a real rehearsal execution, provider
-admission, or capital authority.
+Then perform a separate T3B14-MR2. Do not combine correction approval with a
+real rehearsal execution, provider admission, or capital authority.

@@ -400,10 +400,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B14-T4 status: completed, committed, and pushed as `b3be96c`; its approved complete validation baseline is `2343/2343`.
    - T3B14-T4 scope: fixed local validation receipts, atomic FREEZE claim/evidence-plan binding, online SQLite backup, bounded fixed-file evidence package, atomic immutable envelope publication, and registered-root independent verification.
    - T3B14-T4 excludes: executable phase command, actual rehearsal run, process/crash drills, provider/network access, real Pilot, T1/T2 delivery, recommendation, broker, order, or execution.
-   - T3B14-T5 status: implementation complete locally and pending Owner review; new durable-evidence process drills pass `12/12`, combined T5 process/Stop/transaction/package checks pass `45/45`, and complete Alpha validation passes `2355/2355`.
+   - T3B14-T5 status: completed, committed, and pushed as `a692f6f`; new durable-evidence process drills pass `12/12`, combined T5 process/Stop/transaction/package checks pass `45/45`, and complete Alpha validation passes `2355/2355`.
    - T3B14-T5 scope: isolated child-process build and verification, two-run determinism, backup/publication crash boundaries, staging quarantine, substitution/leakage/missing-backup gates, mutable-source isolation, and reconstruction of terminal Runner and rehearsal truth from the backup.
    - T3B14-T5 excludes: production phase command, real rehearsal, provider/network admission, real Pilot, T1/T2 delivery, recommendation, broker, order, or execution.
-   - T3B14 next sequence: MR1 durable fixture-rehearsal readiness review; separately approved rehearsal run only if MR1 explicitly approves it.
+   - T3B14-MR1 status: review complete locally and pending Owner approval.
+   - T3B14-MR1 decision: `DURABLE_REHEARSAL_COMPONENTS_ACCEPTED / GO_FOR_REHEARSAL_READINESS_CORRECTION / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+   - T3B14-MR1 blockers: the T5 clean drill directly seeds terminal state, directly constructs validation truth, exposes no complete one-phase-per-process operation, does not prove a store-wide post-freeze writer barrier, and lacks an exact assembled mapping for all 20 required drills.
+   - T3B14 next sequence: T3B14-C1 end-to-end phase composition and validation-authority correction, then a separate T3B14-MR2; no rehearsal run is authorized.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

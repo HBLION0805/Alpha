@@ -832,6 +832,18 @@ evidence for committed tasks, coherent budget counters, Outbox evidence, and
 valid durable rehearsal history. These remain fixture drills, not authority to
 run a real rehearsal.
 
+Day15-T3B14-MR1 accepts the durable schema, coordinator, recovery, freeze,
+backup, envelope, and independent-verification components, but keeps
+`NO_GO_FOR_REHEARSAL_RUN`. The T5 clean process fixture directly seeds terminal
+Runner and rehearsal records and directly constructs a passing validation
+receipt; it therefore proves the evidence boundary, not the complete reviewed
+phase sequence or fixed-validator authority. The coordinator also remains
+limited to programmatic `PREPARE`, `STEP`, and `RECOVER`, and post-freeze
+source immutability is not yet proven as a store-wide writer barrier. The next
+permitted work is the narrow T3B14-C1 end-to-end phase-composition and
+validation-authority correction, followed by a separate MR2. See
+[Event Contract Collection Runner Durable Fixture Rehearsal Milestone Review](EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_MILESTONE_REVIEW.md).
+
 ---
 
 # Event Contract Framework

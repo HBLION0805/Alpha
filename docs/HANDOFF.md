@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-T4 is committed and pushed; Day15-T3B14-T5 is complete locally and pending Owner review
+Day15-T3B14-T5 is committed and pushed; Day15-T3B14-MR1 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `b3be96c` on `main`, equal to `origin/main` before the T3B14-T5 implementation task.
+Verified baseline: `a692f6f` on `main`, equal to `origin/main` before the T3B14-MR1 review task.
 
 Day 7 completed:
 
@@ -119,7 +119,9 @@ Day15-T3B14-T3 is committed and pushed as `0522075`. It adds the closed PREPARE/
 
 Day15-T3B14-T4 is committed and pushed as `b3be96c`. It adds a fixed-process local validation adapter and immutable receipt, atomic terminal-freeze claim/evidence-plan binding without changing Migration 003, reviewed online SQLite backup, a bounded fixed-name evidence package, same-filesystem atomic envelope publication, and a read-only independent verifier that resolves only registered roots and returns `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`. Its approved complete validation baseline is `2343/2343`.
 
-Day15-T3B14-T5 is complete locally and pending Owner review. Twelve new OS-process drills prove clean independent verification, two isolated runs with equal scenario and different execution identities, crashes after backup/before publication/after publication, partial-stage quarantine, backup/manifest/validation substitution rejection, extra-file rejection, missing-backup `INCOMPLETE`, mutable-source isolation, and expected-identity drift. The independent verifier now also reconstructs terminal Pilot/task, lease, attempt/result, normalized evidence, budget-counter, Outbox, and durable rehearsal truth from the backup. Combined T5 evidence/coordinator/transaction/package process checks pass `45/45`, and complete Alpha validation passes `2355/2355`. No production command or real rehearsal was run.
+Day15-T3B14-T5 is committed and pushed as `a692f6f`. Twelve new OS-process drills prove clean independent verification, two isolated runs with equal scenario and different execution identities, crashes after backup/before publication/after publication, partial-stage quarantine, backup/manifest/validation substitution rejection, extra-file rejection, missing-backup `INCOMPLETE`, mutable-source isolation, and expected-identity drift. Combined T5 evidence/coordinator/transaction/package process checks pass `45/45`, and complete Alpha validation passes `2355/2355`. No production command or real rehearsal was run.
+
+Day15-T3B14-MR1 is complete locally and pending Owner review. It accepts the durable schema, PREPARE/STEP/RECOVER, recovery, freeze, backup, envelope, and fresh-verifier components, but returns `NO_GO_FOR_REHEARSAL_RUN`. The T5 clean drill directly seeds terminal Runner/rehearsal state and directly constructs a passing validation receipt rather than executing each reviewed phase and the fixed validation adapter in separate processes. The coordinator exposes no complete VALIDATE/FREEZE/PACKAGE phase operation, post-freeze writer rejection is not yet proven as a store-wide invariant, and the 20 required drills lack an exact assembled traceability matrix. The recommended next task is T3B14-C1 correction followed by a separate MR2.
 
 ## Day 6 Milestone Review
 

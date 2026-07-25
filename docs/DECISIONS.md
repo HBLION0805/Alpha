@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14 Durable Fixture Rehearsal Milestone Review
+
+- Decision: accept the rehearsal-only SQLite profile, durable PREPARE/STEP/RECOVER components, terminal evidence transaction, online backup, immutable envelope, and fresh-process verifier as reusable deterministic foundations.
+- Decision: classify readiness as `DURABLE_REHEARSAL_COMPONENTS_ACCEPTED / GO_FOR_REHEARSAL_READINESS_CORRECTION / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+- Rationale: the T5 clean process fixture directly seeds terminal Runner/rehearsal state instead of executing the reviewed phase sequence through one new process per phase.
+- Rationale: the T5 fixture directly constructs a passing validation receipt, while the independent verifier proves only receipt self-consistency and has no registered expected commit, suite fingerprint, or test-total authority.
+- Rationale: the concrete coordinator exposes only PREPARE, STEP, and RECOVER; no closed VALIDATE/FREEZE/PACKAGE phase operation or store-wide post-freeze mutation barrier is yet proven.
+- Decision: require T3B14-C1 to compose actual phases, invoke fixed validation, bind verifier authority, enforce frozen-store immutability, and map all 20 required process drills before a second readiness review.
+- Consequence: MR1 documentation and passing component tests do not authorize a fixture rehearsal, general command, loop, provider access, real Pilot, T1/T2 delivery, recommendation, or capital behavior.
+
 ## 2026-07-25 - Day15-T3B14-T5 Durable Evidence Drills
 
 - Decision: run every new evidence build and verification assertion in a separate OS process using only test-owned temporary roots.
