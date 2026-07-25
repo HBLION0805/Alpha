@@ -1,6 +1,6 @@
 # Event Contract Source Contracts v1
 
-Status: Day15-T3B6 implemented locally and pending owner review.
+Status: Day15-T3B6 owner approved, committed, and pushed as `554274209df6f040a09ee7b7221cb8748a684c5d`.
 
 Schema: `1.0`
 

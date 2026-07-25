@@ -51,6 +51,7 @@ const requiredFiles = [
   "docs/specifications/FORWARD_SHADOW_COLLECTION_OPERATOR.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_SOURCE_ARCHITECTURE.md",
   "docs/specifications/EVENT_CONTRACT_SOURCE_CONTRACTS.md",
+  "docs/specifications/KALSHI_EVENT_CONTRACT_FIXTURE_ADAPTER.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -102,6 +103,7 @@ const aggregateTestFiles = [
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlEngine.test.ts",
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
   "src/engines/event-contract-source/EventContractSourceEngine.test.ts",
+  "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",

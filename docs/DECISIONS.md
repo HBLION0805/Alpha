@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B7 Kalshi Fixture and Mapping Evidence Gate
+
+### Exact Displayed Facts Establish a Candidate, Not Cross-Venue Identity
+
+- Decision: Admit the official Kalshi BTC 15-minute payload as a concrete fixture while keeping the Robinhood mapping `PENDING`.
+- Reason: The interval, target `$64,839.26`, and BRTI source match the operator screenshot, but the screenshot does not expose Robinhood's declared exchange, platform market/contract/terms IDs, terms version, or complete rule text.
+- Consequence: Alpha can validate and normalize the exchange fixture, but it cannot create an eligible T3B6 mapping or exchange snapshot. T3B8 remains blocked until authoritative platform terms evidence closes every missing field.
+
+### Provider Lifecycle Time Is Not Contract Evaluation Time
+
+- Decision: Derive the reviewed evaluation time from the exact contract rule and market close, not from Kalshi's later `occurrence_datetime`.
+- Reason: The fixture rule evaluates the BRTI averages at 8:30 and 8:45 PM EDT, while the lifecycle field is 8:50 PM EDT.
+- Consequence: The adapter preserves the exact 15-minute contract semantics and does not shift the label by five minutes.
+
 ## 2026-07-24 - Day15-T3B6 Provider-Neutral Event Contract Source Contracts
 
 ### Capability Must Follow Source Authority

@@ -281,12 +281,18 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: cross-venue ambiguity fails closed; private Robinhood automation is prohibited; T3B6-T3B10 each retain separate implementation and owner-approval gates; complete validation passes.
 
 9. **Day15-T3B6 — Provider-Neutral Event Contract Source Contracts**
-   - Status: implemented locally and pending owner review.
+   - Status: owner approved, committed, and pushed as `554274209df6f040a09ee7b7221cb8748a684c5d`.
    - Scope: deterministic provider/source capabilities, exact Robinhood-to-exchange identity and terms mappings, provenance chronology, immutable fingerprints, bounded snapshot metadata, and fixture-only admission.
    - Excludes: concrete provider, SDK, credential loading, network, live-read authorization, persistence, polling, scheduler, model, recommendation, broker, order, or execution.
    - Exit criteria: undeclared authority, ambiguous mapping, terms mismatch, stale/tampered lineage, invalid chronology, oversized inputs, and bounded-live use fail closed; focused and complete validation pass; owner reviews before release.
 
-10. **Day15-T3C — Baseline Probability Research**
+10. **Day15-T3B7 — First Exchange Fixture Adapter**
+   - Status: fixture normalization implemented locally and pending owner review; exact mapping exit criterion remains blocked.
+   - Scope: concrete fixture-only Kalshi provider, exact official `KXBTC15M-26JUL232045-45` market and `KXBTC15M` series validation, normalized terms/settlement facts, and machine-readable Robinhood mapping blockers.
+   - Excludes: network, credential, transport, live-read authorization, persistence, polling, scheduler, T1/T2 mutation, probability, recommendation, sizing, broker, order, or execution.
+   - Exit criteria: fixture parsing and normalization fail closed and complete validation passes; exact mapping additionally requires Robinhood-declared exchange, platform market/contract/terms identities, terms version, and complete rule evidence. T3B8 remains unauthorized while that evidence is missing.
+
+11. **Day15-T3C — Baseline Probability Research**
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 

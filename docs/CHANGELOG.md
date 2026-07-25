@@ -1,11 +1,20 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B6 Provider-Neutral Event Contract Source Contracts (Pending Owner Review)
+## 2026-07-24 - Day15-T3B7 Kalshi BTC 15-Minute Fixture Adapter (Pending Owner Review)
+
+- Added one concrete fixture-only Kalshi provider and strict normalization for official market `KXBTC15M-26JUL232045-45` plus series `KXBTC15M`.
+- Preserved exact UTC interval, `$64,839.26` target, BRTI average rule, official terms links, finalized DOWN result, `$64,809.04` expiration value, and source payload fingerprints.
+- Recorded that the Robinhood screenshot matches the interval, target, and BRTI display while remaining insufficient for an exact mapping because authoritative platform identity, terms version, and complete rule evidence are absent.
+- Added deterministic mapping blockers and prohibited exchange snapshot creation; no network, credential, live read, persistence, T1/T2 mutation, probability, recommendation, broker, order, or execution behavior was added.
+- Added 24 focused adversarial tests.
+
+## 2026-07-24 - Day15-T3B6 Provider-Neutral Event Contract Source Contracts
 
 - Added immutable provider descriptors with source-class capability restrictions, official documentation references, fixture/live mode declarations, and no credential authority beyond a dedicated read-only data credential.
 - Added exact reviewed Robinhood-to-exchange identity and BTC 15-minute terms mappings; pending and rejected mappings remain explicit and ineligible.
 - Added fixture-only source snapshots with provider/mapping lineage, source chronology, raw-payload fingerprints, bounded byte/record metadata, deterministic output fingerprints, and research-source-only authority.
 - Added 42 focused adversarial tests without a concrete provider, SDK, credential loader, network, live-read authorization, persistence, polling, model, recommendation, broker, order, or execution behavior.
+- Owner approved the milestone; it was committed and pushed as `554274209df6f040a09ee7b7221cb8748a684c5d`.
 
 ## 2026-07-24 - Day15-T3B5 Real Collection Source Architecture
 

@@ -689,6 +689,12 @@ Exact mapping records bind one exchange provider to explicit Robinhood and excha
 
 Source snapshots preserve provider and mapping fingerprints, one declared capability, provenance chronology, payload fingerprint, and bounded byte/record metadata without retaining a raw payload. T3B6 policy authorizes fixture snapshots only. `BOUNDED_LIVE_READ` remains a reserved type for T3B8 and is rejected by the current engine. Outputs remain research-source evidence, not T1 observations or trade authority. See [Event Contract Source Contracts](specifications/EVENT_CONTRACT_SOURCE_CONTRACTS.md).
 
+## Kalshi Event Contract Fixture Adapter
+
+Day15-T3B7 introduces one concrete fixture-only Kalshi provider and validates the official `KXBTC15M-26JUL232045-45` market together with its `KXBTC15M` series metadata. The adapter normalizes exact UTC interval, target, BRTI rule, terms-document references, and finalized settlement facts from bounded static JSON without a transport, credential, network request, persistence path, or raw-payload output.
+
+The operator screenshot and official exchange fixture agree on the BTC 15-minute interval, `$64,839.26` target, and BRTI display. They do not establish Robinhood's declared exchange, platform market/contract/terms identities, terms version, or complete rule text. The output is therefore `NORMALIZED_PENDING_MAPPING`, cannot construct a T3B6 exchange snapshot, and has no T1 observation or trading authority. See [Kalshi Event Contract Fixture Adapter](specifications/KALSHI_EVENT_CONTRACT_FIXTURE_ADAPTER.md).
+
 ---
 
 # Event Contract Framework

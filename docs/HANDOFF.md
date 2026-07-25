@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B5 Real Collection Source Architecture is committed and pushed; Day15-T3B6 Provider-Neutral Event Contract Source Contracts are implemented locally and await owner review
+Day15-T3B6 Provider-Neutral Event Contract Source Contracts is committed and pushed; Day15-T3B7 Kalshi fixture normalization is implemented locally, while exact Robinhood mapping remains blocked and awaits owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `adf28d24d454d533da8064732aeca381ba7cd0c2` on `main`, equal to `origin/main` before Day15-T3B6.
+Verified baseline: `554274209df6f040a09ee7b7221cb8748a684c5d` on `main`, equal to `origin/main` before Day15-T3B7.
 
 Day 7 completed:
 
@@ -43,7 +43,9 @@ The owner approved and pushed Day15-T3B4 as `95adef5849f5de67a471b720130fa6b7061
 
 Day15-T3B5 defines the source-admission architecture required before scalable real collection. Robinhood platform evidence, exchange-native evidence, official settlement-reference values, and operator evidence retain separate identities and authority. Any exchange source must prove an exact reviewed Robinhood contract mapping; matching display text, cutoff, or threshold is insufficient. Undocumented Robinhood endpoints and authenticated brokerage-session automation are prohibited. The owner approved and pushed it as `adf28d24d454d533da8064732aeca381ba7cd0c2`.
 
-Day15-T3B6 locally implements provider-neutral source contracts and deterministic validation. Provider descriptors restrict capabilities by source class and expose no brokerage credential mode. Exact mappings bind complete Robinhood and external identities and terms. Fixture-only snapshots preserve provenance chronology and bounded payload metadata without raw payload persistence. Declared bounded-live capability is explicitly unauthorized by the current policy. The layer adds no concrete provider, SDK, credential loader, network, persistence, polling, scheduler, model, recommendation, order, or execution behavior.
+Day15-T3B6 implements provider-neutral source contracts and deterministic validation. Provider descriptors restrict capabilities by source class and expose no brokerage credential mode. Exact mappings bind complete Robinhood and external identities and terms. Fixture-only snapshots preserve provenance chronology and bounded payload metadata without raw payload persistence. Declared bounded-live capability is explicitly unauthorized by the current policy. The owner approved and pushed it as `554274209df6f040a09ee7b7221cb8748a684c5d`.
+
+Day15-T3B7 locally adds a concrete fixture-only Kalshi provider and strict normalization for official market `KXBTC15M-26JUL232045-45` plus series `KXBTC15M`. The official payload agrees with the reviewed Robinhood screenshot on the July 23 8:30–8:45 PM EDT interval, `$64,839.26` target, and BRTI display. It also proves the official DOWN settlement at `$64,809.04`. The screenshot does not expose Robinhood's declared exchange, platform market/contract/terms identities, terms version, or complete rule text, so the adapter emits deterministic mapping blockers and cannot create a T3B6 exchange snapshot. No network, credential, transport, persistence, live-read authority, model, recommendation, order, or execution behavior was added.
 
 ## Day 6 Milestone Review
 
@@ -346,6 +348,8 @@ Day15-T3B5 changes architecture and documentation only. It adds no test cases, s
 
 Day15-T3B6 adds 42/42 focused Event Contract Source tests and raises complete registered validation to 1794/1794.
 
+Day15-T3B7 adds 24/24 focused Kalshi Event Contract Fixture Adapter tests and raises complete registered validation to 1818/1818. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -438,4 +442,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B6 after focused and complete validation. If approved, begin Day15-T3B7 with one official exchange fixture and one explicitly reviewed exact mapping, still without network or credentials. Do not run a live-read smoke, create a collection runner, freeze a real plan, or begin Day15-T3C probability research without the later explicit gates.
+Owner review of the Day15-T3B7 fixture adapter after focused and complete validation. The exact-mapping criterion remains blocked until a Robinhood terms artifact supplies the declared exchange, platform market/contract/terms identities, terms version, and complete rule text. Do not begin T3B8 live-read work, create a collection runner, freeze a real plan, or begin Day15-T3C probability research while that blocker remains.
