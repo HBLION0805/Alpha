@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B13-MR1 is committed and pushed; Day15-T3B14-T1 is complete locally and pending Owner review
+Day15-T3B14-T1 is committed and pushed; Day15-T3B14-T2 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `b02cadc` on `main`, equal to `origin/main` before the T3B14-T1 design task.
+Verified baseline: `30780ba` on `main`, equal to `origin/main` before the T3B14-T2 implementation task.
 
 Day 7 completed:
 
@@ -111,7 +111,9 @@ Day15-T3B13-T5 is committed and pushed as `8ecf918e56c01fb6331894b9784c388e06d49
 
 Day15-T3B13-MR1 is committed and pushed as `b02cadc`. It accepts the T3B13 component foundations but returns `NO_GO_FOR_REHEARSAL_RUN`: the step ledger is in-memory only, the SQLite/backup/validation evidence verifier has no concrete authoritative implementation, the final package cannot itself reopen the referenced backup, and no process drill assembles preparation through fresh-process final verification.
 
-Day15-T3B14-T1 is complete locally and pending Owner review. It designs an explicit rehearsal-only schema profile, durable lifecycle/claim/receipt/artifact truth in the same isolated SQLite store, one closed Owner-invoked phase per process, durable ambiguity reconciliation, terminal freeze, one online backup, fixed validation evidence, an atomic portable envelope, fresh-process backup verification, and two-run/end-to-end crash drills. It adds documentation only and complete validation passes `2261/2261`. The recommended next task after approval is `Day15-T3B14-T2 — Rehearsal-profile Contracts and Migration 003`.
+Day15-T3B14-T1 is committed and pushed as `30780ba`. It designs an explicit rehearsal-only schema profile, durable lifecycle/claim/receipt/artifact truth in the same isolated SQLite store, one closed Owner-invoked phase per process, durable ambiguity reconciliation, terminal freeze, one online backup, fixed validation evidence, an atomic portable envelope, fresh-process backup verification, and two-run/end-to-end crash drills.
+
+Day15-T3B14-T2 is complete locally and pending Owner review. It adds strict immutable durable-rehearsal contracts, pure aggregate reconstruction and verification, and new-store-only SQLite Migration 003 with six `STRICT` tables, append-only history triggers, exact 001-003/build lineage, foreign-key and integrity checks, and full schema-catalog verification. Focused tests pass `30/30` and `17/17`; complete validation passes `2308/2308`. It adds no phase command, coordinator, rehearsal run, backup/package production, provider, real Pilot, T1/T2 delivery, recommendation, broker, order, or execution authority. The recommended next task after approval is `Day15-T3B14-T3 — Durable Phase Coordinator and Recovery Reconciliation`.
 
 ## Day 6 Milestone Review
 

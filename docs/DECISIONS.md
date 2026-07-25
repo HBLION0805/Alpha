@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-T2 Rehearsal-profile Contracts and Migration 003
+
+- Decision: implement only the strict immutable records, pure aggregate verifier, and isolated SQLite schema profile required before durable phase composition.
+- Decision: apply Migration 003 only while creating a new empty rehearsal store; never upgrade, replace, or reinterpret an ordinary v2, populated, unversioned, or altered store.
+- Decision: preserve durable lifecycle projection separately from append-only transitions, claims, invocation receipts, failure receipts, and evidence plans, while binding all records to the rehearsal and manifest.
+- Decision: verify the exact 001-003 migration chain, common build lineage, foreign-key enforcement, strict table catalog, integrity checks, and complete schema-catalog checksum on every profile inspection.
+- Decision: keep aggregate verification pure and fail closed on unknown fields, fingerprint drift, transition/ordinal gaps, duplicate or unresolved claims, receipt mismatch, projection drift, and invalid evidence-plan placement.
+- Consequence: T3B14-T3 may implement a durable one-phase coordinator over this closed profile, but T2 grants no command, rehearsal run, backup/package production, provider, real Pilot, T1/T2 delivery, recommendation, or trading authority.
+
 ## 2026-07-25 - Day15-T3B14-T1 Durable Fixture Rehearsal Composition
 
 - Decision: use an explicit `FIXTURE_REHEARSAL_V3` schema profile only for newly created isolated rehearsal stores; ordinary runner stores remain `RUNNER_BASE_V2`.

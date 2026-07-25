@@ -4,19 +4,44 @@
 
 Task: `Day15-T3B14-T1`
 
-Status: design complete locally and pending Owner review.
+Status: T3B14-T1 design committed and pushed as `30780ba`; T3B14-T2
+contracts and Migration 003 are complete locally and pending Owner review.
 
 Reviewed baseline:
-`b02cadc`.
+`30780ba`.
 
 This design follows the T3B13-MR1 decision:
 
 `FIXTURE_REHEARSAL_FOUNDATION_ACCEPTED / GO_FOR_DURABLE_REHEARSAL_COMPOSITION_DESIGN / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`
 
-T3B14-T1 adds documentation only. It creates no contract, migration, table,
-repository, command, process, rehearsal data, backup, package, provider
-request, Pilot activation, T1/T2 delivery, model, recommendation, broker,
-order, or execution behavior.
+T3B14-T1 adds documentation only. T3B14-T2 implements the closed contract and
+schema foundation described below: immutable durable rehearsal records, a pure
+aggregate verifier, and Migration 003 for a newly created isolated
+`FIXTURE_REHEARSAL_V3` store. T3B14-T2 creates no phase command, coordinator,
+rehearsal data, backup, package, provider request, real Pilot activation,
+T1/T2 delivery, model, recommendation, broker, order, or execution behavior.
+
+## T3B14-T2 implementation
+
+- Strict immutable contracts cover the registry, lifecycle transitions,
+  operation claims, invocation and failure receipts, evidence plans, and
+  independently verifiable aggregate snapshots.
+- The pure verifier reconstructs lifecycle/version/ordinal truth, verifies
+  every record fingerprint, enforces exact claim-to-receipt binding, and fails
+  closed on unknown fields, gaps, replay conflicts, unresolved claims, or
+  misplaced evidence plans.
+- SQLite Migration 003 adds six `STRICT` tables to the exact Migration
+  001/002 foundation, with foreign keys, uniqueness constraints, bounded
+  invocation ordinals, phase authority checks, append-only triggers, and an
+  exact schema-catalog checksum.
+- The profile may be created only as a new empty isolated store. Ordinary v2,
+  populated, unversioned, altered, or already-existing stores are never
+  upgraded or replaced.
+- Read-only inspection verifies the exact 001-003 history, one build lineage,
+  schema contract versions, table catalog, strict typing, foreign-key
+  enforcement, quick check, foreign-key check, and full catalog checksum.
+- Focused validation passes `30/30` contract checks and `17/17` migration
+  checks; complete Alpha validation passes `2308/2308`.
 
 ## AI dispatch card
 
@@ -168,8 +193,8 @@ Migration 003 must define strict closed tables for:
    plus the exact planned backup, package, envelope, and retention identities
    that must be satisfied after database freeze.
 
-The exact table names remain subject to T3B14-T2 contract and migration review,
-but their authority separation is mandatory.
+T3B14-T2 fixes these exact table names and authority boundaries in Migration
+003.
 
 The current row in `fixture_rehearsals` is a compare-and-swap projection. It
 does not replace append-only transition and receipt history.
@@ -602,9 +627,10 @@ T3B14 remains separately gated:
 
 1. **T3B14-T1 — Durable Fixture Rehearsal Composition and Evidence
    Architecture:** this design.
-2. **T3B14-T2 — Rehearsal-profile contracts and migration 003:** strict
-   registry records, lifecycle transactions, schema-profile opening, and pure
-   verification; no operation command.
+2. **T3B14-T2 — Rehearsal-profile contracts and migration 003:** completed
+   locally with strict registry/history records, new-store-only profile
+   creation, read-only profile inspection, and pure verification; no operation
+   command or lifecycle mutation coordinator.
 3. **T3B14-T3 — Durable phase coordinator and recovery reconciliation:**
    concrete preparation, one-action step, and recovery composition over
    registered roots and ports; no internal loop.
@@ -659,8 +685,7 @@ T3B14-T1 does not authorize:
 
 After Owner approval, begin:
 
-`Day15-T3B14-T2 — Rehearsal-profile Contracts and Migration 003`
+`Day15-T3B14-T3 — Durable Phase Coordinator and Recovery Reconciliation`
 
-Do not combine T2 approval with implementation of the durable phase operation,
-evidence envelope, rehearsal execution, provider admission, or capital
-authority.
+Do not combine T3 approval with evidence-envelope implementation, rehearsal
+execution, provider admission, or capital authority.

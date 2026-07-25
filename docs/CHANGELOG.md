@@ -1,6 +1,15 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B14-T1 Durable Fixture Rehearsal Composition and Evidence Architecture (Pending Owner Review)
+## 2026-07-25 - Day15-T3B14-T2 Rehearsal-profile Contracts and Migration 003 (Pending Owner Review)
+
+- Added strict immutable durable rehearsal registry, transition, operation-claim, invocation-receipt, failure-receipt, evidence-plan, aggregate-snapshot, and verification-result contracts.
+- Added deterministic constructors and a pure fail-closed aggregate verifier for fingerprints, lifecycle history, exact ordinals, claim settlement, projection state, and evidence-plan placement.
+- Added new-store-only SQLite Migration 003 with six `STRICT` rehearsal tables, foreign keys, uniqueness constraints, phase/ordinal checks, and append-only history triggers.
+- Added deterministic read-only profile inspection for exact Migration 001-003 history, build lineage, schema contract versions, foreign-key enforcement, table catalog, strict typing, integrity checks, and schema-catalog checksum.
+- Added `30/30` contract tests and `17/17` migration/profile tests; complete Alpha validation passes `2308/2308`.
+- Added no phase command, coordinator, rehearsal run, backup/package implementation, provider, network, real Pilot, T1/T2 delivery, recommendation, broker, order, or execution authority.
+
+## 2026-07-25 - Day15-T3B14-T1 Durable Fixture Rehearsal Composition and Evidence Architecture
 
 - Added a design-only architecture that closes every T3B13-MR1 blocker without authorizing a rehearsal run.
 - Defined an explicit `FIXTURE_REHEARSAL_V3` schema profile for new isolated rehearsal stores while preserving ordinary runner schema v2.
@@ -10,6 +19,7 @@
 - Defined two-run scenario determinism and 20 required end-to-end process drills.
 - Added no source code, migration, command, runtime data, network, provider, real Pilot, T1/T2, recommendation, broker, order, or execution behavior.
 - Complete Alpha validation passes `2261/2261` with zero failures.
+- Owner approved and pushed T3B14-T1 as `30780ba`.
 
 ## 2026-07-25 - Day15-T3B13 Fixture Rehearsal Milestone Review
 

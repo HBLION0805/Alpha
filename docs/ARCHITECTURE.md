@@ -779,6 +779,17 @@ Day15-T3B13-MR1 accepts the T3B13 components as deterministic fixture-rehearsal 
 
 Day15-T3B14-T1 designs that missing composition without implementing it. A new rehearsal-only SQLite schema profile would keep a durable compare-and-swap projection plus append-only lifecycle, operation-claim, receipt, failure, and artifact-binding history in the same isolated database as the synthetic Runner/Pilot/task truth. Each future Owner invocation selects one closed phase and exits; a committed runner action without a rehearsal receipt enters deterministic recovery rather than replay. After terminal freeze, one online backup, fixed local validation receipt, bounded package, and envelope manifest are atomically published together. A fresh process must reopen the backup and reconstruct registry, Runner, Outbox, validation, and package truth before returning `PASS`. See [Durable Fixture Rehearsal Composition and Evidence Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_COMPOSITION.md).
 
+Day15-T3B14-T2 implements only the durable record and database-profile
+foundation. Closed immutable contracts and a pure verifier reconstruct
+lifecycle, exact invocation ordinals, claims, receipts, failure disposition,
+and evidence-plan placement. Migration 003 extends only a newly created empty
+v2 foundation into the explicit `FIXTURE_REHEARSAL_V3` profile with six
+`STRICT` tables, append-only history triggers, exact migration/build lineage,
+and deterministic read-only schema inspection. Ordinary runner v2 stores
+remain incompatible and unchanged. No phase coordinator, command, rehearsal
+execution, backup/envelope production, provider, real Pilot, T1/T2 delivery,
+recommendation, broker, order, or execution authority is added.
+
 ---
 
 # Event Contract Framework

@@ -37,6 +37,7 @@ export * from "./InMemoryEventContractShadowLedgerRepository";
 export * from "./LocalNdjsonEventContractShadowLedgerRepository";
 export * from "./EventContractCollectionRunnerSqliteMigrationV1";
 export * from "./EventContractCollectionRunnerSqliteStore";
+export * from "./EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3";
 export * from "./EventContractCollectionRunnerRepository";
 export * from "./EventContractCollectionRunnerSqliteRecovery";
 export * from "./EventContractCollectionRunnerRecoveryControlRepository";
