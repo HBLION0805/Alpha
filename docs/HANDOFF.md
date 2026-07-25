@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B10-MR1 is committed and pushed; Day15-T3B11-T1 Shadow Pilot Runtime Architecture is implemented locally and pending owner review
+Day15-T3B11-T1 is committed and pushed; Day15-T3B11-T2 Runtime Foundation is implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `593f0f54804f64bce4808857e901d66f3babd80a` on `main`, equal to `origin/main` before the T3B11-T1 design task.
+Verified baseline: `6c52284` on `main`, equal to `origin/main` before the T3B11-T2 implementation task.
 
 Day 7 completed:
 
@@ -75,7 +75,9 @@ Day15-T3B10-T4D is committed and pushed as `1b7e9744189cd5028a8cae13bc057954648b
 
 Day15-T3B10-MR1 is committed and pushed as `593f0f54804f64bce4808857e901d66f3babd80a`. It accepts the Runner foundation for T3B11 runtime architecture design only and blocks operation.
 
-Day15-T3B11-T1 is implemented locally and pending owner review. It specifies one foreground fixture-only runtime, immutable configuration, atomic fail-closed single-instance locking, minted boot/process identity, separate wall/monotonic/health clocks, a pure one-task scheduler, exact Worker transaction ordering, lifecycle controls, sanitized health/outbox projection, replayable T1/T2 integration, and a runtime threat model. It adds no runtime code or operation.
+Day15-T3B11-T1 is committed and pushed as `6c52284`. It specifies one foreground fixture-only runtime, immutable configuration, atomic fail-closed single-instance locking, minted boot/process identity, separate wall/monotonic/health clocks, a pure one-task scheduler, exact Worker transaction ordering, lifecycle controls, sanitized health/outbox projection, replayable T1/T2 integration, and a runtime threat model.
+
+Day15-T3B11-T2 is implemented locally and pending owner review. It adds the non-operational fixture-only runtime foundation: strict immutable configuration, canonical safe roots, deterministic path/store identities, atomic single-instance ownership, immutable owner evidence, injected boot and liveness ports, OS-CSPRNG process-session minting, separate clock ports, and fail-closed clock-health validation. Its 26 focused tests include native Windows ownership contention, configuration-drift contention, and release. It starts no runtime, scheduler, Worker, timer, adapter, network request, SQLite mutation, or Pilot.
 
 ## Day 6 Milestone Review
 
@@ -457,6 +459,7 @@ Day15-T3B10-T4D adds 6/6 focused recovery-control race/crash drills and raises t
 - `c11cbf844284676ad5dfeee89fd82221cc5282a9` — Event Contract Collection Runner Local Owner Authentication and Session Gate
 - `1b7e9744189cd5028a8cae13bc057954648bbb27` — Event Contract Collection Runner Recovery-Control Race and Crash Drills
 - `593f0f54804f64bce4808857e901d66f3babd80a` — Event Contract Collection Runner Milestone Review
+- `6c52284` — Event Contract Collection Runner Runtime Architecture
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -508,4 +511,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B11-T1 Shadow Pilot Runtime Architecture. If approved and pushed, begin T3B11-T2 immutable runtime configuration, process ownership, boot/process identity, and clock ports without implementing a scheduler or Worker. Do not start a runtime, provider request, Pilot activation, probability research, or trading authority.
+Owner review of Day15-T3B11-T2 Runtime Foundation. If approved and pushed, begin T3B11-T3 with the pure deterministic scheduler design/implementation boundary first, followed only by a separately bounded fixture Worker using existing session-gated repository transactions. Do not add a network provider, real Pilot activation, probability research, recommendation, or trading authority.

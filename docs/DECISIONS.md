@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B11-T2 Runtime Foundation
+
+### Runtime Configuration Cannot Grant Operation
+
+- Decision: T2 accepts exactly one `FIXTURE_ONLY` configuration shape and derives immutable configuration, path, store, lock, and session identities from it.
+- Rationale: configuration must narrow authority rather than provide hidden provider, network, Worker, or caller-selected session extension points.
+- Consequence: `networkPermitted` is always false and `maximumWorkers` is zero until a separately reviewed later task changes composition.
+
+### Local Ownership Uses Atomic Directory Creation
+
+- Decision: derive one stable lock address from canonical store and activation identity, acquire it with atomic non-recursive directory creation, bind the exact configuration/path fingerprints in one canonical immutable owner record, and refuse every existing directory without inspecting it as authority to take over.
+- Rationale: the primitive is supported by the current Node runtime on Windows and prevents two cooperating Alpha processes from becoming owner.
+- Consequence: incomplete or stale locks remain fail-closed and require the separately designed authenticated recovery command; T2 implements no lock stealing.
+
+### Process Session Identity Is System-Minted
+
+- Decision: derive the process session from configuration, path, store, activation, boot, process ID, build, and an operating-system CSPRNG nonce after lock acquisition.
+- Rationale: a caller-selected or restart-reused process session would defeat recovery-control isolation.
+- Consequence: the T2 acquisition API has no process-session input, and every new acquisition produces a new session when the nonce changes.
+
+### Unverified Local Time Is Not Healthy Time
+
+- Decision: expose separate wall, monotonic, and clock-health ports; the default local health probe returns `UNKNOWN` and cannot pass the healthy snapshot gate.
+- Rationale: the local system clock alone cannot prove synchronization or offset without reviewed external evidence.
+- Consequence: later runtime composition must inject a reviewed health source; unavailable, stale, future-dated, expired, unsynchronized, or excessive-offset evidence fails closed.
+
 ## 2026-07-25 - Day15-T3B11-T1 Shadow Pilot Runtime Architecture
 
 ### The First Runtime Is Foreground and Fixture-Only
@@ -10,7 +36,7 @@
 
 ### Process Authority Begins With an Atomic Lock
 
-- Decision: Derive one local lock identity from store, activation, and configuration fingerprints; acquire it atomically; never steal or delete a stale lock automatically.
+- Decision: Derive one stable local lock address from store and activation identity, bind the configuration fingerprint inside its ownership evidence, acquire it atomically, and never steal or delete a stale lock automatically.
 - Rationale: SQLite serializes writes but does not prove which local process owns the runtime and in-memory stop barrier.
 - Consequence: crashes leave a fail-closed stale lock, and only a later Owner-authenticated recovery flow may archive it after process-liveness and store-recovery checks.
 

@@ -61,3 +61,4 @@ export * from "./ForwardShadowCollectionControl";
 export * from "./EventContractSource";
 export * from "./EventContractCollectionRunner";
 export * from "./EventContractCollectionRunnerRecoveryControl";
+export * from "./EventContractCollectionRunnerRuntime";

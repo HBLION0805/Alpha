@@ -14,6 +14,14 @@ The reviewed baseline is
 `593f0f54804f64bce4808857e901d66f3babd80a`. The T3B10 milestone decision is
 `GO_FOR_DESIGN / NO_GO_FOR_OPERATION`.
 
+T3B11-T1 was Owner-approved, committed, and pushed as `6c52284`.
+T3B11-T2 now implements the runtime foundation locally, pending Owner review:
+strict immutable `FIXTURE_ONLY` configuration, canonical safe roots, atomic
+single-instance ownership, canonical owner evidence, injected boot/liveness
+ports, OS-CSPRNG process-session minting, and separated wall, monotonic, and
+clock-health ports. T2 does not implement or start a scheduler, Worker, timer,
+command, adapter, provider request, SQLite mutation, or Pilot.
+
 ## Purpose
 
 T3B10 provides durable state machines, transactional idempotency, recovery,
@@ -205,11 +213,14 @@ Reload-on-change is prohibited.
 The lock is a dedicated directory under an approved local runtime-control root,
 separate from the SQLite file and from Git-tracked source.
 
-The path is derived from:
+The stable lock address is derived from:
 
 - store path identity;
-- Pilot Activation ID;
-- runtime configuration fingerprint.
+- Pilot Activation ID.
+
+The immutable ownership record binds that stable address to the exact runtime
+configuration and path fingerprints. Configuration drift therefore contends on
+the same lock instead of creating a parallel ownership namespace.
 
 Caller-supplied lock paths are prohibited.
 
@@ -723,8 +734,9 @@ single-owner research-pilot boundary.
 T3B11 remains separately gated:
 
 1. **T3B11-T1 — Runtime architecture and threat model:** this document only.
-2. **T3B11-T2 — Runtime foundation:** immutable configuration, path controls,
-   process ownership, boot/process identity, clocks, and network-free tests.
+2. **T3B11-T2 — Runtime foundation:** implemented locally and pending Owner
+   review; immutable configuration, path controls, process ownership,
+   boot/process identity, clocks, and network-free tests.
 3. **T3B11-T3 — Fixture scheduler and Worker:** pure planner, one acquisition
    cycle, fixture adapter, cancellation, and repository composition.
 4. **T3B11-T4 — Operator and health surface:** preflight, status, graceful stop,
@@ -775,14 +787,14 @@ The fixture runtime milestone may pass only when:
 
 ## Explicit exclusions
 
-T3B11-T1 adds no:
+T3B11-T1 and T3B11-T2 add no:
 
-- TypeScript contract or source implementation;
+- operational runtime composition;
 - SQLite schema or repository mutation;
 - package dependency;
 - executable command;
-- process lock;
-- clock implementation;
+- stale-lock recovery or automatic lock takeover;
+- production synchronized-clock source;
 - scheduler, Worker, timer, loop, daemon, or service;
 - provider adapter or network request;
 - market discovery;

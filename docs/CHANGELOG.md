@@ -1,12 +1,23 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B11-T1 Shadow Pilot Runtime Architecture (Pending Owner Review)
+## 2026-07-25 - Day15-T3B11-T2 Runtime Foundation (Pending Owner Review)
+
+- Added a strict immutable `FIXTURE_ONLY` runtime configuration with recursive unknown-field rejection, bounded clock policy, deterministic fingerprints, zero Worker authority, and no network authority.
+- Added safe canonical runtime-control and SQLite roots, exact store/path identities, and rejection of UNC, traversal, substituted roots, links, and non-file SQLite entries.
+- Added atomic single-process lock-directory ownership, canonical immutable owner records, exact ownership revalidation, clean verified release, duplicate-process rejection, and fail-closed stale-lock preservation.
+- Added injected boot-identity and process-liveness ports, OS-CSPRNG process nonces, and minted restart-specific process-session identities.
+- Added separate wall-clock, monotonic-clock, and clock-health ports with fail-closed freshness, synchronization, chronology, and offset enforcement.
+- Added 26 network-free tests, including native Windows lock-contention, configuration-drift contention, and release behavior.
+- Added no scheduler, Worker, timer, command, adapter, provider request, SQLite mutation, Pilot activation, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B11-T1 Shadow Pilot Runtime Architecture
 
 - Defined one foreground local runtime process, immutable configuration, atomic single-instance ownership, fresh boot/process-session identity, and fail-closed stale-lock recovery.
 - Separated wall, monotonic, and clock-health authority and prohibited hidden current-time decisions inside the scheduler.
 - Defined a pure one-task scheduler, fixture-only Worker transaction sequence, retry/cutoff gates, graceful and Emergency Stop ordering, sanitized status, and replayable outbox integration.
 - Added a runtime threat model and a separately gated T3B11-T2 through T3B11-T5 implementation sequence.
 - Added no code, dependency, command, lock, clock, scheduler, Worker, timer, provider request, Pilot activation, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B11-T1 as `6c52284`.
 
 ## 2026-07-25 - Day15-T3B10 Runner Milestone Review
 

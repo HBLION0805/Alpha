@@ -17,17 +17,20 @@ declare module "node:fs" {
   export function readFileSync(path: string): Uint8Array;
   export function lstatSync(path: string): {
     readonly size: number;
+    isDirectory(): boolean;
     isFile(): boolean;
     isSymbolicLink(): boolean;
   };
   export function realpathSync(path: string): string;
   export function renameSync(oldPath: string, newPath: string): void;
+  export function rmdirSync(path: string): void;
   export function rmSync(
     path: string,
     options?: { readonly recursive?: boolean; readonly force?: boolean },
   ): void;
   export function statSync(path: string): { readonly size: number };
   export function truncateSync(path: string, length?: number): void;
+  export function unlinkSync(path: string): void;
   export function statSync(
     path: string,
     options: { readonly bigint: true },
@@ -89,6 +92,11 @@ declare module "node:path" {
 declare module "node:process" {
   export const env: Readonly<Record<string, string | undefined>>;
   export const execPath: string;
+  export function kill(pid: number, signal?: 0 | string): true;
+  export const pid: number;
+  export const hrtime: {
+    bigint(): bigint;
+  };
   export const versions: Readonly<{ readonly node: string }>;
 }
 
@@ -100,6 +108,7 @@ declare module "node:crypto" {
   }
 
   export function createHash(algorithm: "sha256"): Hash;
+  export function randomBytes(size: number): Uint8Array;
 }
 
 declare module "node:sqlite" {

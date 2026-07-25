@@ -337,10 +337,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B10-T4D excludes: scheduler/worker operation, provider requests, continuous runner startup, credential enrollment, real Pilot execution, model, recommendation, broker, order, or execution.
    - T3B10-MR1 status: completed, committed, and pushed as `593f0f54804f64bce4808857e901d66f3babd80a`.
    - T3B10-MR1 decision: `GO_FOR_DESIGN` for T3B11-T1 and `NO_GO_FOR_OPERATION` for any worker, continuous runner, provider request, or real Pilot.
-   - T3B11-T1 status: Shadow Pilot Runtime Architecture and threat model implemented locally and pending owner review.
+   - T3B11-T1 status: completed, committed, and pushed as `6c52284`.
    - T3B11-T1 scope: one foreground process owner, atomic fail-closed lock, immutable configuration, minted process identity, separate wall/monotonic/health clocks, pure one-task scheduler, fixture-only Worker sequence, lifecycle commands, health/outbox projection, evidence integration ownership, and later crash-test boundaries.
    - T3B11-T1 excludes: implementation, runtime startup, provider request, Pilot activation, dynamic discovery, automatic Robinhood access, probability research, recommendation, broker, order, or execution.
-   - T3B11-T2 next scope: immutable runtime configuration, safe local paths, process ownership, boot/process identity, injected clocks, and network-free tests; no scheduler or Worker.
+   - T3B11-T2 status: immutable runtime configuration, safe local paths, process ownership, boot/process identity, injected clocks, and 26 network-free tests are implemented locally and pending owner review.
+   - T3B11-T2 scope: `FIXTURE_ONLY`, zero-Worker/no-network configuration authority; separate canonical local roots; atomic lock-directory ownership; canonical owner evidence; OS-CSPRNG session minting; process-liveness and boot ports; separate wall, monotonic, and fail-closed clock-health ports.
+   - T3B11-T2 excludes: preflight or lifecycle commands, scheduler, Worker, adapter, timer, SQLite mutation, provider request, Pilot activation, probability research, recommendation, broker, order, or execution.
+   - T3B11-T3 next scope: a pure deterministic one-task planner and a separately bounded fixture-only Worker composition using existing named repository transactions; no network provider.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 
