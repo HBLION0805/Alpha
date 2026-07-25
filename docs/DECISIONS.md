@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-T5 Durable Evidence Drills
+
+- Decision: run every new evidence build and verification assertion in a separate OS process using only test-owned temporary roots.
+- Decision: expose deterministic observer checkpoints only for tests; production code receives no sleep, retry, kill, or arbitrary fault-injection input.
+- Decision: quarantine a pre-existing staging directory by a deterministic identity before rebuilding, and never overwrite a published envelope.
+- Decision: normalize the staged backup to rollback-journal mode before hashing so the immutable envelope has exactly one SQLite file and no WAL/SHM sidecars.
+- Decision: require terminal Pilot/task truth, no live lease, no unresolved attempt, committed evidence, coherent budget counters, Outbox evidence, and valid durable rehearsal reconstruction before `PASS`.
+- Consequence: T3B14-MR1 may review fixture readiness, but only a later explicit Owner approval may authorize one exact real rehearsal.
+
 ## 2026-07-25 - Day15-T3B14-T4 Durable Evidence Boundary
 
 - Decision: preserve immutable Migration 003 and settle the `FREEZE` claim through the evidence plan in the same final transaction; fixed validation is read-only and its exact receipt fingerprint is committed with the terminal freeze.

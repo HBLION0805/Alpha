@@ -167,9 +167,9 @@ function writeJson(path: string, value: unknown): number {
   const text = `${canonical(value)}\n`;
   const byteLength = new TextEncoder().encode(text).length;
   if (byteLength > MAX_JSON_BYTES) throw new Error("Evidence JSON exceeds its bound.");
-  writeFileSync(path, text, { flag: "wx" });
-  const handle = openSync(path, "r");
+  const handle = openSync(path, "wx");
   try {
+    writeFileSync(handle, text, { encoding: "utf8" });
     fsyncSync(handle);
   } finally {
     closeSync(handle);
@@ -388,6 +388,15 @@ export interface DurableFixtureRehearsalEnvelopeBuildRequest {
   readonly frozenEvidence: DurableFixtureRehearsalFrozenEvidence;
 }
 
+export interface DurableFixtureRehearsalEnvelopeBuildObserver {
+  reached(
+    checkpoint:
+      | "BACKUP_DURABLE"
+      | "ENVELOPE_STAGED"
+      | "ENVELOPE_PUBLISHED",
+  ): void;
+}
+
 export class DurableFixtureRehearsalEnvelopeBuilder {
   readonly #roots: ReadonlyMap<string, string>;
   readonly #stores: ReadonlyMap<string, DurableFixtureRehearsalSourceStore>;
@@ -396,6 +405,7 @@ export class DurableFixtureRehearsalEnvelopeBuilder {
     repositoryRoot: string,
     roots: readonly DurableFixtureRehearsalEnvelopeRoot[],
     stores: readonly DurableFixtureRehearsalSourceStore[],
+    private readonly observer?: DurableFixtureRehearsalEnvelopeBuildObserver,
   ) {
     this.#roots = new Map(roots.map((item) => [
       item.evidenceRootId,
@@ -441,11 +451,24 @@ export class DurableFixtureRehearsalEnvelopeBuilder {
     }
     const finalDirectory = join(root, `rehearsal-${request.envelopeId}-evidence`);
     const staging = `${finalDirectory}.staging`;
-    if (existsSync(finalDirectory) || existsSync(staging)) {
+    if (existsSync(finalDirectory)) {
       throw new DurableFixtureRehearsalEvidenceError(
         DurableFixtureRehearsalEvidenceErrorCode.EnvelopeConflict,
         "Envelope identity already exists and will not be overwritten.",
       );
+    }
+    if (existsSync(staging)) {
+      const quarantine = `${staging}.quarantine-${sha({
+        envelopeId: request.envelopeId,
+        publishedAtUtc: request.publishedAtUtc,
+      }).slice(-16)}`;
+      if (existsSync(quarantine)) {
+        throw new DurableFixtureRehearsalEvidenceError(
+          DurableFixtureRehearsalEvidenceErrorCode.EnvelopeConflict,
+          "Incomplete envelope quarantine identity already exists.",
+        );
+      }
+      renameSync(staging, quarantine);
     }
     mkdirSync(join(staging, "backup"), { recursive: true });
     mkdirSync(join(staging, "package"));
@@ -469,10 +492,11 @@ export class DurableFixtureRehearsalEnvelopeBuilder {
       source.close();
     }
     const backupDatabase = new DatabaseSync(backupPath, {
-      readOnly: true, defensive: true, enableForeignKeyConstraints: true,
+      readOnly: false, defensive: true, enableForeignKeyConstraints: true,
     });
     let pageCount: number;
     try {
+      backupDatabase.exec("PRAGMA wal_checkpoint(TRUNCATE); PRAGMA journal_mode = DELETE;");
       pageCount = Number(Object.values(
         backupDatabase.prepare("PRAGMA page_count").get() ?? {},
       )[0]);
@@ -481,6 +505,7 @@ export class DurableFixtureRehearsalEnvelopeBuilder {
     }
     const backupBytes = statSync(backupPath).size;
     const backupDigest = sha(readFileSync(backupPath));
+    this.observer?.reached("BACKUP_DURABLE");
     const backupManifest = createDurableFixtureRehearsalBackupManifest({
       backupId: evidencePlan.plannedBackupId,
       rehearsalId: snapshot.registry.rehearsalId,
@@ -548,7 +573,9 @@ export class DurableFixtureRehearsalEnvelopeBuilder {
       nonAuthorityDeclaration: DURABLE_FIXTURE_REHEARSAL_EVIDENCE_NON_AUTHORITY,
     });
     writeJson(join(staging, "envelope-manifest.json"), manifest);
+    this.observer?.reached("ENVELOPE_STAGED");
     renameSync(staging, finalDirectory);
+    this.observer?.reached("ENVELOPE_PUBLISHED");
     return manifest;
   }
 }
@@ -580,6 +607,7 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
     expectedEnvelopeFingerprint: string,
     expectedManifestFingerprint: string,
   ): DurableFixtureRehearsalEnvelopeVerificationResult {
+    let stage = "REQUEST";
     try {
       const root = this.#roots.get(evidenceRootId);
       if (root === undefined || !FP.test(expectedEnvelopeFingerprint) || !FP.test(expectedManifestFingerprint)) {
@@ -596,26 +624,39 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
       });
       if (matches.length === 0) return verification(DurableFixtureRehearsalEvidenceDisposition.Incomplete, ["ENVELOPE_MISSING"], null, null, null);
       if (matches.length !== 1) return verification(DurableFixtureRehearsalEvidenceDisposition.FailClosed, ["ENVELOPE_IDENTITY_AMBIGUOUS"], null, null, null);
+      stage = "FILE_SET";
       const directory = realpathSync(matches[0]!);
       if (!contained(root, directory) || lstatSync(directory).isSymbolicLink()) throw new Error();
       const top = readdirSync(directory).sort();
       if (canonical(top) !== canonical(["backup", "envelope-manifest.json", "package"])) throw new Error();
       const backupNames = readdirSync(join(directory, "backup")).sort();
       const packageNames = readdirSync(join(directory, "package")).sort();
+      const backupMissing = !backupNames.includes("runner.sqlite3");
       if (
-        canonical(backupNames) !== canonical(["backup-manifest.json", "runner.sqlite3"]) ||
+        canonical(backupNames) !== canonical(
+          backupMissing
+            ? ["backup-manifest.json"]
+            : ["backup-manifest.json", "runner.sqlite3"],
+        ) ||
         canonical(packageNames) !== canonical([...PACKAGE_FILES].sort())
       ) throw new Error();
       const envelope = JSON.parse(readFileSync(join(directory, "envelope-manifest.json"), "utf8")) as DurableFixtureRehearsalEnvelopeManifest;
+      stage = "ENVELOPE_MANIFEST";
       const { deterministic: _ed, fingerprint: _ef, ...envelopeInput } = envelope;
       const rebuiltEnvelope = createDurableFixtureRehearsalEnvelopeManifest(envelopeInput);
-      if (rebuiltEnvelope.fingerprint !== expectedEnvelopeFingerprint || envelope.manifestFingerprint !== expectedManifestFingerprint) throw new Error();
+      if (
+        envelope.deterministic !== true ||
+        envelope.fingerprint !== rebuiltEnvelope.fingerprint ||
+        rebuiltEnvelope.fingerprint !== expectedEnvelopeFingerprint ||
+        envelope.manifestFingerprint !== expectedManifestFingerprint
+      ) throw new Error();
       const expectedInventory = PACKAGE_FILES.map((name) => `package/${name}`).sort();
       if (
         canonical(envelope.packageInventory.map(({ relativePath }) => relativePath).sort()) !==
         canonical(expectedInventory)
       ) throw new Error();
       let packageBytes = 0;
+      stage = "PACKAGE";
       for (const entry of envelope.packageInventory) {
         const path = resolve(directory, entry.relativePath);
         regular(path);
@@ -625,7 +666,7 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
       }
       if (packageBytes !== envelope.packageBytesExcludingBackup) throw new Error();
       const backupPath = join(directory, "backup", "runner.sqlite3");
-      if (!existsSync(backupPath)) {
+      if (backupMissing || !existsSync(backupPath)) {
         return verification(
           DurableFixtureRehearsalEvidenceDisposition.Incomplete,
           ["BACKUP_MISSING"],
@@ -635,6 +676,7 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
         );
       }
       regular(backupPath);
+      stage = "BACKUP_MANIFEST";
       if (statSync(backupPath).size !== envelope.backupBytes || sha(readFileSync(backupPath)) !== envelope.backupDigest) throw new Error();
       const backupManifestPath = join(directory, "backup", "backup-manifest.json");
       regular(backupManifestPath);
@@ -644,6 +686,8 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
       const { deterministic: _bd, fingerprint: _bf, ...backupInput } = backupManifest;
       const rebuiltBackup = createDurableFixtureRehearsalBackupManifest(backupInput);
       if (
+        backupManifest.deterministic !== true ||
+        backupManifest.fingerprint !== rebuiltBackup.fingerprint ||
         rebuiltBackup.fingerprint !== envelope.backupManifestFingerprint ||
         backupManifest.backupBytes !== envelope.backupBytes ||
         backupManifest.backupDigest !== envelope.backupDigest ||
@@ -656,9 +700,13 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
       const rebuiltValidation =
         createDurableFixtureRehearsalValidationReceipt(validationInput);
       if (
+        validation.deterministic !== true ||
+        validation.passed !== rebuiltValidation.passed ||
+        validation.fingerprint !== rebuiltValidation.fingerprint ||
         !rebuiltValidation.passed ||
         rebuiltValidation.fingerprint !== envelope.validationReceiptFingerprint
       ) throw new Error();
+      stage = "BACKUP_PROFILE";
       inspectCollectionRunnerFixtureRehearsalSqliteProfile({
         rootDirectory: join(directory, "backup"),
         storeId: "runner",
@@ -667,6 +715,7 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
         readOnly: true, defensive: true, enableForeignKeyConstraints: true,
       });
       try {
+        stage = "DURABLE_SNAPSHOT";
         const snapshotJson = JSON.parse(readFileSync(join(directory, "package", "snapshot.json"), "utf8")) as DurableFixtureRehearsalFrozenEvidence["snapshot"];
         const snapshot = createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(database)
           .readSnapshot(snapshotJson.registry.rehearsalId);
@@ -675,6 +724,46 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
           !verifyDurableFixtureRehearsalSnapshot(snapshot).valid ||
           sha(snapshot) !== envelope.snapshotFingerprint ||
           canonical(snapshot) !== canonical(snapshotJson)
+        ) throw new Error();
+        const scalar = (sql: string, ...parameters: readonly unknown[]): number =>
+          Number(Object.values(database.prepare(sql).get(...parameters) ?? {})[0]);
+        const activationId = snapshot.registry.activationId;
+        if (
+          scalar(
+            "SELECT COUNT(*) FROM pilot_activations WHERE activation_id = ? AND current_state = 'COMPLETED'",
+            activationId,
+          ) !== 1 ||
+          scalar(
+            "SELECT COUNT(*) FROM scheduled_tasks WHERE activation_id = ?",
+            activationId,
+          ) < 1 ||
+          scalar(
+            "SELECT COUNT(*) FROM scheduled_tasks WHERE activation_id = ? AND current_state NOT IN ('COMMITTED','MISSED','TERMINAL_FAILED','CANCELLED')",
+            activationId,
+          ) !== 0 ||
+          scalar(
+            "SELECT COUNT(*) FROM task_leases l JOIN scheduled_tasks t ON t.task_id = l.task_id WHERE t.activation_id = ?",
+            activationId,
+          ) !== 0 ||
+          scalar(`
+SELECT COUNT(*) FROM attempt_records a
+JOIN scheduled_tasks t ON t.task_id = a.task_id
+LEFT JOIN attempt_results r ON r.attempt_id = a.attempt_id
+WHERE t.activation_id = ? AND r.attempt_id IS NULL
+`, activationId) !== 0 ||
+          scalar(`
+SELECT COUNT(*) FROM scheduled_tasks t
+LEFT JOIN normalized_source_evidence e ON e.task_id = t.task_id
+WHERE t.activation_id = ? AND t.current_state = 'COMMITTED' AND e.evidence_id IS NULL
+`, activationId) !== 0 ||
+          scalar(
+            "SELECT COUNT(*) FROM activation_budget_counters WHERE activation_id = ? AND evidence_committed >= 1",
+            activationId,
+          ) !== 1 ||
+          scalar(
+            "SELECT COUNT(*) FROM transactional_outbox WHERE aggregate_id IN (SELECT task_id FROM scheduled_tasks WHERE activation_id = ?)",
+            activationId,
+          ) < 1
         ) throw new Error();
         return verification(
           DurableFixtureRehearsalEvidenceDisposition.Pass, [],
@@ -685,7 +774,13 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
         database.close();
       }
     } catch {
-      return verification(DurableFixtureRehearsalEvidenceDisposition.FailClosed, ["EVIDENCE_VERIFICATION_FAILED"], null, null, null);
+      return verification(
+        DurableFixtureRehearsalEvidenceDisposition.FailClosed,
+        [`EVIDENCE_VERIFICATION_FAILED_${stage}`],
+        null,
+        null,
+        null,
+      );
     }
   }
 }

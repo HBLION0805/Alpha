@@ -397,10 +397,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B14-T3 status: completed, committed, and pushed as `0522075`; its approved complete validation baseline is `2335/2335`.
    - T3B14-T3 scope: closed PREPARE/STEP/RECOVER coordinator, exact durable SQLite claims/receipts/CAS transitions, v3 store composition, T3B13 preparation reuse, T3B12 one-action reuse, Stop/ownership ordering, exact replay, and authenticated recovery reconciliation.
    - T3B14-T3 excludes: executable command, rehearsal run, loop, timer, backup/envelope production, network provider, real Pilot, T1/T2 delivery, model, recommendation, broker, order, or execution.
-   - T3B14-T4 status: implementation complete locally and pending Owner review; focused evidence, contract, coordinator/repository, and migration/profile checks pass `75/75`; complete validation passes `2343/2343`.
+   - T3B14-T4 status: completed, committed, and pushed as `b3be96c`; its approved complete validation baseline is `2343/2343`.
    - T3B14-T4 scope: fixed local validation receipts, atomic FREEZE claim/evidence-plan binding, online SQLite backup, bounded fixed-file evidence package, atomic immutable envelope publication, and registered-root independent verification.
    - T3B14-T4 excludes: executable phase command, actual rehearsal run, process/crash drills, provider/network access, real Pilot, T1/T2 delivery, recommendation, broker, order, or execution.
-   - T3B14 next sequence: T5 end-to-end fresh-process/crash/substitution/two-run drills; MR1; separately approved rehearsal run.
+   - T3B14-T5 status: implementation complete locally and pending Owner review; new durable-evidence process drills pass `12/12`, combined T5 process/Stop/transaction/package checks pass `45/45`, and complete Alpha validation passes `2355/2355`.
+   - T3B14-T5 scope: isolated child-process build and verification, two-run determinism, backup/publication crash boundaries, staging quarantine, substitution/leakage/missing-backup gates, mutable-source isolation, and reconstruction of terminal Runner and rehearsal truth from the backup.
+   - T3B14-T5 excludes: production phase command, real rehearsal, provider/network admission, real Pilot, T1/T2 delivery, recommendation, broker, order, or execution.
+   - T3B14 next sequence: MR1 durable fixture-rehearsal readiness review; separately approved rehearsal run only if MR1 explicitly approves it.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

@@ -819,6 +819,19 @@ manifest fingerprints, recomputes all digests, inspects the v3 backup, and
 reconstructs durable rehearsal truth. Full OS-process and crash proof remains
 T3B14-T5 work.
 
+Day15-T3B14-T5 proves the evidence boundary in separate Node processes and
+test-owned temporary roots. The drills kill builders after the online backup,
+after complete staging, and after atomic publication; incomplete staging is
+quarantined and cannot be mistaken for a valid envelope. Independent verifier
+processes reject backup, backup-manifest, validation-receipt, extra-file, and
+expected-identity substitution; a missing backup is `INCOMPLETE`, never
+`PASS`. Two isolated stores preserve one scenario-result fingerprint while
+their execution-package fingerprints differ. Final backup inspection also
+requires a completed Pilot, terminal tasks, no leases, no unresolved attempts,
+evidence for committed tasks, coherent budget counters, Outbox evidence, and
+valid durable rehearsal history. These remain fixture drills, not authority to
+run a real rehearsal.
+
 ---
 
 # Event Contract Framework

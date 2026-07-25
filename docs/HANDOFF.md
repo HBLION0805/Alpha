@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-T3 is committed and pushed; Day15-T3B14-T4 is complete locally and pending Owner review
+Day15-T3B14-T4 is committed and pushed; Day15-T3B14-T5 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `0522075` on `main`, equal to `origin/main` before the T3B14-T4 implementation task.
+Verified baseline: `b3be96c` on `main`, equal to `origin/main` before the T3B14-T5 implementation task.
 
 Day 7 completed:
 
@@ -117,7 +117,9 @@ Day15-T3B14-T2 is committed and pushed as `80fb117`. It adds strict immutable du
 
 Day15-T3B14-T3 is committed and pushed as `0522075`. It adds the closed PREPARE/STEP/RECOVER coordinator, exact SQLite compare-and-swap repository transactions, v3 Runner/rehearsal store composition, reviewed preparation and one-action adapters, Stop/ownership ordering, exact replay, and authenticated no-repeat recovery reconciliation. Its approved complete validation baseline is `2335/2335`.
 
-Day15-T3B14-T4 is complete locally and pending Owner review. It adds a fixed-process local validation adapter and immutable receipt, atomic terminal-freeze claim/evidence-plan binding without changing Migration 003, reviewed online SQLite backup, a bounded fixed-name evidence package, same-filesystem atomic envelope publication, and a read-only independent verifier that resolves only registered roots and returns `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`. Focused checks pass `7/7` evidence tests, `32/32` contracts, `18/18` coordinator/repository, and `18/18` migration/profile tests; complete validation passes `2343/2343`. It adds no executable phase command or rehearsal run; T3B14-T5 remains responsible for fresh-OS-process, crash, substitution, Stop, leakage, and two-run drills.
+Day15-T3B14-T4 is committed and pushed as `b3be96c`. It adds a fixed-process local validation adapter and immutable receipt, atomic terminal-freeze claim/evidence-plan binding without changing Migration 003, reviewed online SQLite backup, a bounded fixed-name evidence package, same-filesystem atomic envelope publication, and a read-only independent verifier that resolves only registered roots and returns `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`. Its approved complete validation baseline is `2343/2343`.
+
+Day15-T3B14-T5 is complete locally and pending Owner review. Twelve new OS-process drills prove clean independent verification, two isolated runs with equal scenario and different execution identities, crashes after backup/before publication/after publication, partial-stage quarantine, backup/manifest/validation substitution rejection, extra-file rejection, missing-backup `INCOMPLETE`, mutable-source isolation, and expected-identity drift. The independent verifier now also reconstructs terminal Pilot/task, lease, attempt/result, normalized evidence, budget-counter, Outbox, and durable rehearsal truth from the backup. Combined T5 evidence/coordinator/transaction/package process checks pass `45/45`, and complete Alpha validation passes `2355/2355`. No production command or real rehearsal was run.
 
 ## Day 6 Milestone Review
 

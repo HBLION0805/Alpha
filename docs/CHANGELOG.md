@@ -1,6 +1,16 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B14-T4 Backup, Validation, Envelope, and Fresh-process Verifier (Pending Owner Review)
+## 2026-07-25 - Day15-T3B14-T5 End-to-end Process and Failure Drills (Pending Owner Review)
+
+- Added a deterministic frozen v3 rehearsal/evidence fixture containing terminal Pilot, task, attempt/result, normalized evidence, budget, Outbox, and rehearsal history.
+- Added child-process evidence build and verification boundaries with test-only backup, staging, and publication checkpoints.
+- Added 12 OS-process drills for clean verification, two-run determinism, three crash boundaries, partial-stage quarantine, substitution, extra-file leakage, missing backup, source isolation, and identity drift.
+- Strengthened backup verification to reconstruct terminal Runner truth in addition to durable rehearsal history.
+- Corrected Windows-safe evidence JSON durability and normalized backup journal mode so immutable envelopes contain no SQLite sidecars.
+- New focused process drills pass `12/12`, combined T5 boundary checks pass `45/45`, and complete Alpha validation passes `2355/2355`.
+- No production command, real rehearsal, provider, network, recommendation, broker, order, or execution authority was added.
+
+## 2026-07-25 - Day15-T3B14-T4 Backup, Validation, Envelope, and Fresh-process Verifier
 
 - Added immutable fixed-validation, backup-manifest, envelope-manifest, and three-state verification contracts.
 - Added a fixed local validation adapter with no caller-selected executable, arguments, network, or credential inputs.
