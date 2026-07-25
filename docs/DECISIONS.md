@@ -1,5 +1,37 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B10-T2 SQLite Schema and Transaction Boundaries
+
+### The Pilot Store Is SQLite, Not NDJSON
+
+- Decision: Specify one local SQLite `STRICT`/WAL store with one writer and transactional repository ports for the collection pilot.
+- Reason: Runner state requires compare-and-swap updates, unique idempotency, durable leases, multi-record atomic commit, and crash recovery that current single-process NDJSON repositories cannot provide.
+- Consequence: This is a local research-pilot storage direction only. Production and commercial persistence remain separately blocked.
+
+### Invocation Claims and Results Are Separate Immutable Records
+
+- Decision: Insert an immutable attempt claim before transport and append one immutable result afterward instead of updating one historical attempt row.
+- Reason: Recovery must distinguish a durable invocation claim with no known result from a completed attempt without rewriting history.
+- Consequence: Claim/result mismatches become explicit startup blockers, and one attempt cannot receive two results.
+
+### Monotonic Time Cannot Cross a Restart Boundary
+
+- Decision: Persist UTC lease chronology plus boot identity, process-session identity, and monotonic values; use monotonic comparison only within the same boot/session.
+- Reason: A monotonic clock origin can change across process or system restart and cannot independently prove durable lease expiry.
+- Consequence: Cross-restart recovery requires healthy UTC, the persisted expiry, a safety margin, explicit recovery evidence, and operator resume.
+
+### Evidence Commit Is One Transaction
+
+- Decision: Commit attempt result, normalized evidence, task transition, counters, lease removal, and outbox event atomically under `BEGIN IMMEDIATE`.
+- Reason: Any partial combination would make recovery guess whether evidence was accepted and could duplicate or lose a research sample.
+- Consequence: Commit acknowledgement loss is reconciled by idempotency key and fingerprint; conflicting evidence is an integrity incident and is never overwritten.
+
+### Backup and Restore Must Prove Integrity
+
+- Decision: Use a reviewed SQLite online backup mechanism, validate every backup independently, restore only to a new offline path, and require owner approval before switching stores.
+- Reason: Ordinary copying of a live WAL database or in-place restore can produce inconsistent or destructive results.
+- Consequence: Backup, restore, and corruption drills are implementation prerequisites before a real pilot.
+
 ## 2026-07-24 - Day15-T3B10-T1 Runner Contracts and State Validation
 
 ### Lifecycle Authority Is Validated Before Persistence Exists

@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B9 is committed and pushed; Day15-T3B10-T1 Runner Contracts and State Validation are implemented locally and pending owner review
+Day15-T3B10-T1 is committed and pushed; Day15-T3B10-T2 SQLite Schema and Transaction Boundary Design is specified locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `a8d0fcdd22997e78b3038e44ad03267b35e97826` on `main`, equal to `origin/main` before the T3B10-T1 implementation task.
+Verified baseline: `b1423fb9d1040febecbde518bf05094623c6f473` on `main`, equal to `origin/main` before the T3B10-T2 design task.
 
 Day 7 completed:
 
@@ -52,6 +52,10 @@ Day15-T3B8 is committed and pushed as `e0fd00586c802a1e386fcb14f5a05f0d096ffe79`
 Day15-T3B9 is committed and pushed as `a8d0fcdd22997e78b3038e44ad03267b35e97826`. It defines frozen-plan and owner-activation admission, separate Robinhood platform and exchange evidence lanes, deterministic scheduling and clock health, single-worker leases, one bounded retry, append-only attempt history, transactional idempotency, SQLite/WAL pilot storage direction, crash recovery, sanitized monitoring, and emergency stop. It explicitly records that Kalshi automation cannot supply Robinhood quotes or fee previews and therefore cannot by itself create complete T1 observations or qualify a dataset.
 
 Day15-T3B10-T1 implements the first architecture prerequisite: immutable provider-neutral runner definitions, pilot-approval evidence, exact admission bundles, scheduled tasks, deterministic idempotency, and compare-and-swap pilot/task state validation. It fixes the initial concurrency/rate/clock/retry ceilings and keeps platform and exchange lanes separate. It adds no repository, SQLite, scheduler, clock, lease, retry execution, worker, adapter invocation, request, persistence, model, or trading authority.
+
+The owner approved and pushed Day15-T3B10-T1 as `b1423fb9d1040febecbde518bf05094623c6f473`.
+
+Day15-T3B10-T2 is specified locally as design only. It defines a 14-table SQLite local-pilot schema, verified connection pragmas, checksum-bound migrations, exact authority foreign keys, append-only transition and attempt claim/result history, durable lease representation, compare-and-swap updates, 12 named write transactions, atomic evidence/outbox commit, startup recovery, invariant checks, backup, offline restore, and corruption drills. It adds no dependency, database file, migration code, repository, process, request, persistence, or pilot authority.
 
 ## Day 6 Milestone Review
 
@@ -407,6 +411,7 @@ Day15-T3B10-T1 adds 40/40 focused Event Contract Collection Runner tests and rai
 - `adf28d24d454d533da8064732aeca381ba7cd0c2` — Event Contract Collection Source Architecture
 - `e0fd00586c802a1e386fcb14f5a05f0d096ffe79` — Bounded Kalshi Event Live-Read Smoke
 - `a8d0fcdd22997e78b3038e44ad03267b35e97826` — Event Contract Collection Runner Architecture
+- `b1423fb9d1040febecbde518bf05094623c6f473` — Event Contract Collection Runner Contracts and State Validation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -458,4 +463,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B10-T1 after complete validation. If approved and pushed, begin the separately reviewed T3B10-T2 SQLite schema and transaction-boundary task without adding a scheduler, worker, provider request, or pilot activation. Do not freeze a real pilot plan, repeat live requests, or begin Day15-T3C probability research.
+Owner review of the Day15-T3B10-T2 SQLite schema and transaction-boundary design after complete validation. If approved and pushed, begin T3B10-T3A SQLite dependency decision and migration foundation as a separately reviewed implementation. Do not create a real pilot store, start a scheduler/worker, freeze a real pilot plan, repeat live requests, or begin Day15-T3C probability research.

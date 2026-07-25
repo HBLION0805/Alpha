@@ -55,6 +55,7 @@ const requiredFiles = [
   "docs/specifications/KALSHI_EVENT_CONTRACT_LIVE_SMOKE.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_ARCHITECTURE.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_CONTRACTS.md",
+  "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE.md",
   "package.json",
   "tsconfig.json"
 ];

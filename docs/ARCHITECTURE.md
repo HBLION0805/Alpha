@@ -717,6 +717,12 @@ Day15-T3B10-T1 turns the T3B9 authority and lifecycle model into provider-neutra
 
 The initial ceilings remain one pilot, one worker, one in-flight request, one request per second, two total task attempts, and a one-second clock-offset policy. Exchange tasks require an admitted exact mapping while platform tasks prohibit exchange mapping identity. The implementation adds no current-time decision, clock, lease, retry execution, repository, SQLite store, scheduler, worker, adapter invocation, network request, observation, ledger mutation, model, or trading authority. See [Event Contract Collection Runner Contracts](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_CONTRACTS.md).
 
+### Runner SQLite and Transaction Boundary Design
+
+Day15-T3B10-T2 specifies a single-host local research store using SQLite `STRICT` tables, WAL, `synchronous=FULL`, verified foreign-key enforcement, checksum-bound forward migrations, compare-and-swap aggregate updates, immutable attempt claims/results, unique evidence idempotency, and a transactional outbox.
+
+The critical evidence transaction verifies pilot/task/lease/attempt/budget and exact source authority, appends the attempt result and normalized evidence, moves the task to `COMMITTED`, updates counters, removes the lease, and appends the outbox event in one `BEGIN IMMEDIATE` transaction. The design also separates same-session monotonic timing from restart-safe UTC recovery, defines invariant checks, and requires verified backup, offline restore, and corruption drills. No SQLite dependency, schema implementation, database file, repository, or runtime behavior is added. See [Event Contract Collection Runner SQLite](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE.md).
+
 ---
 
 # Event Contract Framework

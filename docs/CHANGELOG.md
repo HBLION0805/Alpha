@@ -1,6 +1,15 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B10-T1 Runner Contracts and State Validation (Pending Owner Review)
+## 2026-07-24 - Day15-T3B10-T2 SQLite Schema and Transaction Boundary Design (Pending Owner Review)
+
+- Specified a 14-table SQLite local-pilot schema with strict keys, authority references, bounded fields, append-only histories, unique idempotency, durable leases, budget counters, and a transactional outbox.
+- Defined checksum-bound forward migrations and verified WAL, foreign-key, synchronous, trusted-schema, and read-only connection profiles.
+- Defined 12 named `BEGIN IMMEDIATE` write transactions including complete task materialization, durable invocation claim, failure finalization, atomic normalized-evidence commit, lease heartbeat, and outbox acknowledgement.
+- Separated attempt claims from immutable attempt results and prohibited raw provider-body persistence.
+- Defined crash-point outcomes, same-boot monotonic versus cross-restart UTC handling, startup invariants, backup, offline restore, and corruption drills.
+- Added no SQLite dependency, database, migration code, repository, scheduler, worker, network request, persistence, pilot activation, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B10-T1 Runner Contracts and State Validation
 
 - Added immutable provider-neutral runner definition, pilot activation, admission-bundle, scheduled-task, and lifecycle-state contracts.
 - Added strict recursive allow lists, exact authority and chronology binding, fixed pilot ceilings, bounded task budgets, deterministic idempotency, and deep immutability.
