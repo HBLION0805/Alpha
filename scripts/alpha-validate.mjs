@@ -54,6 +54,7 @@ const requiredFiles = [
   "docs/specifications/KALSHI_EVENT_CONTRACT_FIXTURE_ADAPTER.md",
   "docs/specifications/KALSHI_EVENT_CONTRACT_LIVE_SMOKE.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_ARCHITECTURE.md",
+  "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_CONTRACTS.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -105,6 +106,7 @@ const aggregateTestFiles = [
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlEngine.test.ts",
   "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
   "src/engines/event-contract-source/EventContractSourceEngine.test.ts",
+  "src/engines/event-contract-collection-runner/EventContractCollectionRunnerEngine.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",

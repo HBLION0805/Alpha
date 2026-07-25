@@ -39,3 +39,4 @@ export * from "./research-dataset-qualification";
 export * from "./research-shadow-dataset-assembly";
 export * from "./forward-shadow-collection-control";
 export * from "./event-contract-source";
+export * from "./event-contract-collection-runner";

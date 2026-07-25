@@ -1,5 +1,31 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B10-T1 Runner Contracts and State Validation
+
+### Lifecycle Authority Is Validated Before Persistence Exists
+
+- Decision: Implement immutable provider-neutral runner records and deterministic transition validation before adding SQLite, scheduling, or worker behavior.
+- Reason: Persistence and orchestration must consume one reviewed state model rather than each inventing lifecycle and authority rules.
+- Consequence: T3B10-T1 can construct research-only records and validate state edges, but it cannot activate, schedule, lease, retry, collect, or persist anything.
+
+### Runner Ceilings Are Constants in the First Contract Version
+
+- Decision: Require exactly one pilot, one worker, one in-flight request, one request per second, and a 1,000-millisecond clock-offset threshold; bound task attempts to two.
+- Reason: Caller-configurable expansion would allow a future composition to bypass the reviewed pilot safety envelope.
+- Consequence: Increasing concurrency, rate, clock tolerance, or retry count requires a new reviewed contract version.
+
+### Platform and Exchange Admission Are Mutually Exclusive
+
+- Decision: Require a complete admitted mapping for exchange-lane tasks and prohibit mapping fields on platform-lane tasks.
+- Reason: An exchange mapping proves cross-venue identity but must not relabel exchange-native evidence as Robinhood-displayed platform evidence.
+- Consequence: Each evidence lane remains explicit through task construction and incomplete platform evidence cannot be silently repaired.
+
+### State Changes Use Compare-and-Swap Versions
+
+- Decision: Require every pilot and task transition to provide the current aggregate version and an equal expected version, then increment exactly once.
+- Reason: Later persistence needs deterministic stale-writer rejection and append-only transition ordering.
+- Consequence: Same-state, skipped, reverse, stale-version, unknown, and terminal-state transitions fail closed before repository implementation.
+
 ## 2026-07-24 - Day15-T3B9 Collection Runner Architecture
 
 ### A Runner Coordinates Admitted Evidence; It Does Not Discover Authority

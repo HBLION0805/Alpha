@@ -299,13 +299,15 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: exact policy authorization, dry-run isolation, transport allow-listing, strict T3B7 normalization, bounded-live source lineage, sanitized output, focused tests, and complete validation pass; owner reviews before any single live request is separately authorized.
 
 12. **Day15-T3B9 — Collection Runner Architecture**
-   - Status: specified locally and pending owner review; no runner implementation, database, scheduler, background process, or request was added.
+   - Status: owner approved, committed, and pushed as `a8d0fcdd22997e78b3038e44ad03267b35e97826`.
    - Scope: frozen-plan admission bundles, independent platform/exchange evidence lanes, pilot and task state machines, injected wall/monotonic clocks, single-worker leases, one bounded retry, transactional idempotency, SQLite pilot storage direction, crash recovery, sanitized monitoring, and emergency stop.
    - Excludes: runner implementation, dynamic discovery, automatic mapping approval, Robinhood private access, automatic platform quote/fee capture, backfill, raw-response persistence, multi-worker execution, model, recommendation, sizing, broker, order, or execution.
    - Exit criteria: authority, clock, cutoff, retry, lease, storage, recovery, monitoring, and platform-evidence gaps are explicit; T3B10 prerequisites remain separately gated; complete validation passes.
 
 13. **Day15-T3B10 — Forward Collection Pilot**
-   - Status: planned only after T3B9 architecture approval and separately reviewed implementation tasks.
+   - Status: in progress through separately reviewed implementation tasks; T3B10-T1 runner contracts and state validation are implemented locally and pending owner review.
+   - T3B10-T1 scope: immutable runner definitions, owner-approval evidence, exact admission bundles, scheduled tasks, deterministic idempotency, and compare-and-swap pilot/task transitions.
+   - T3B10-T1 excludes: repository, SQLite, migration, scheduler, clocks, leases, retry execution, worker, adapter invocation, network, persistence, pilot activation, model, recommendation, sizing, broker, order, or execution.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

@@ -711,6 +711,12 @@ The architecture defines pilot and task state machines, injected UTC and monoton
 
 The current Kalshi source can scale exchange-native evidence but cannot automatically supply Robinhood quotes or fee previews. Therefore T3B9 cannot claim complete T1 observations or dataset qualification. It adds no implementation, database, scheduler, background worker, request, or trading authority. See [Event Contract Collection Runner Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_ARCHITECTURE.md).
 
+### Runner Contract and State-Validation Foundation
+
+Day15-T3B10-T1 turns the T3B9 authority and lifecycle model into provider-neutral immutable contracts. The deterministic engine constructs and verifies runner definitions, owner-approval evidence, exact per-task admission bundles, and scheduled tasks; derives the complete idempotency identity; and enforces compare-and-swap pilot and task transitions.
+
+The initial ceilings remain one pilot, one worker, one in-flight request, one request per second, two total task attempts, and a one-second clock-offset policy. Exchange tasks require an admitted exact mapping while platform tasks prohibit exchange mapping identity. The implementation adds no current-time decision, clock, lease, retry execution, repository, SQLite store, scheduler, worker, adapter invocation, network request, observation, ledger mutation, model, or trading authority. See [Event Contract Collection Runner Contracts](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_CONTRACTS.md).
+
 ---
 
 # Event Contract Framework

@@ -1,6 +1,14 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B9 Collection Runner Architecture (Pending Owner Review)
+## 2026-07-24 - Day15-T3B10-T1 Runner Contracts and State Validation (Pending Owner Review)
+
+- Added immutable provider-neutral runner definition, pilot activation, admission-bundle, scheduled-task, and lifecycle-state contracts.
+- Added strict recursive allow lists, exact authority and chronology binding, fixed pilot ceilings, bounded task budgets, deterministic idempotency, and deep immutability.
+- Added compare-and-swap validation for every approved pilot and task transition while rejecting stale, same-state, skipped, reverse, unknown, and terminal transitions.
+- Added 40 network-free focused tests.
+- Added no repository, SQLite database, scheduler, clock, lease, retry execution, worker, provider request, persistence, model, recommendation, sizing, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B9 Collection Runner Architecture
 
 - Specified frozen-plan and owner-activation admission before any scheduled source task.
 - Defined separate platform and exchange evidence lanes; Kalshi-only automation cannot claim Robinhood quotes, fees, complete T1 observations, or dataset qualification.

@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B8 is committed, pushed, and live-smoke verified; Day15-T3B9 Collection Runner Architecture is specified locally and pending owner review
+Day15-T3B9 is committed and pushed; Day15-T3B10-T1 Runner Contracts and State Validation are implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `e0fd00586c802a1e386fcb14f5a05f0d096ffe79` on `main`, equal to `origin/main` before the T3B9 documentation task.
+Verified baseline: `a8d0fcdd22997e78b3038e44ad03267b35e97826` on `main`, equal to `origin/main` before the T3B10-T1 implementation task.
 
 Day 7 completed:
 
@@ -49,7 +49,9 @@ Day15-T3B7 including the official-evidence correction is committed and pushed as
 
 Day15-T3B8 is committed and pushed as `e0fd00586c802a1e386fcb14f5a05f0d096ffe79`. It adds one credential-free, exact-endpoint Kalshi public HTTPS transport; an exact source-engine bounded-live policy; a manual command that defaults to dry run; strict request, timeout, byte, and record budgets; and sanitized immutable settlement-source output. Automated tests inject transports. The owner separately authorized one real request at `2026-07-25T01:52:52.056Z`; it succeeded with one request, zero retries, 2,210 bytes, one `DOWN` settlement record, 307 ms elapsed, and zero persistence writes. Post-run Git status was clean.
 
-Day15-T3B9 is specified locally as architecture only. It defines frozen-plan and owner-activation admission, separate Robinhood platform and exchange evidence lanes, deterministic scheduling and clock health, single-worker leases, one bounded retry, append-only attempt history, transactional idempotency, SQLite/WAL pilot storage direction, crash recovery, sanitized monitoring, and emergency stop. It explicitly records that Kalshi automation cannot supply Robinhood quotes or fee previews and therefore cannot by itself create complete T1 observations or qualify a dataset.
+Day15-T3B9 is committed and pushed as `a8d0fcdd22997e78b3038e44ad03267b35e97826`. It defines frozen-plan and owner-activation admission, separate Robinhood platform and exchange evidence lanes, deterministic scheduling and clock health, single-worker leases, one bounded retry, append-only attempt history, transactional idempotency, SQLite/WAL pilot storage direction, crash recovery, sanitized monitoring, and emergency stop. It explicitly records that Kalshi automation cannot supply Robinhood quotes or fee previews and therefore cannot by itself create complete T1 observations or qualify a dataset.
+
+Day15-T3B10-T1 implements the first architecture prerequisite: immutable provider-neutral runner definitions, pilot-approval evidence, exact admission bundles, scheduled tasks, deterministic idempotency, and compare-and-swap pilot/task state validation. It fixes the initial concurrency/rate/clock/retry ceilings and keeps platform and exchange lanes separate. It adds no repository, SQLite, scheduler, clock, lease, retry execution, worker, adapter invocation, request, persistence, model, or trading authority.
 
 ## Day 6 Milestone Review
 
@@ -360,6 +362,8 @@ Day15-T3B8 expands Event Contract Source validation from 42/42 to 44/44, adds 12
 
 Day15-T3B9 changes architecture and documentation only. It adds no tests, dependency, database, scheduler, worker, provider request, or runtime behavior, so the registered baseline remains 1856/1856.
 
+Day15-T3B10-T1 adds 40/40 focused Event Contract Collection Runner tests and raises the complete registered validation baseline to 1896/1896.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -402,6 +406,7 @@ Day15-T3B9 changes architecture and documentation only. It adds no tests, depend
 - `95adef5849f5de67a471b720130fa6b7061f1847` — Local Forward Collection Operator
 - `adf28d24d454d533da8064732aeca381ba7cd0c2` — Event Contract Collection Source Architecture
 - `e0fd00586c802a1e386fcb14f5a05f0d096ffe79` — Bounded Kalshi Event Live-Read Smoke
+- `a8d0fcdd22997e78b3038e44ad03267b35e97826` — Event Contract Collection Runner Architecture
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -453,4 +458,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of the Day15-T3B9 Collection Runner Architecture after complete validation. If approved and pushed, split implementation into separately reviewed tasks for runner contracts/state validation, SQLite persistence/recovery, scheduler/clock/lease/retry enforcement, and operator monitoring. Do not implement or activate T3B10, freeze a real pilot plan, repeat live requests, or begin Day15-T3C probability research.
+Owner review of Day15-T3B10-T1 after complete validation. If approved and pushed, begin the separately reviewed T3B10-T2 SQLite schema and transaction-boundary task without adding a scheduler, worker, provider request, or pilot activation. Do not freeze a real pilot plan, repeat live requests, or begin Day15-T3C probability research.
