@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B10-T2 is committed and pushed; Day15-T3B10-T3A SQLite Dependency and Migration Foundation is implemented locally and pending owner review
+Day15-T3B10-T3A is committed and pushed; Day15-T3B10-T3B SQLite Repository Ports and Atomic Transactions is implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `3f25aaa9ccc3160de93b92e686fe1f562c22bf28` on `main`, equal to `origin/main` before the T3B10-T3A implementation task.
+Verified baseline: `3191639fe268b1830ecc1cd70298ef9430db2b4e` on `main`, equal to `origin/main` before the T3B10-T3B implementation task.
 
 Day 7 completed:
 
@@ -57,7 +57,9 @@ The owner approved and pushed Day15-T3B10-T1 as `b1423fb9d1040febecbde518bf05094
 
 Day15-T3B10-T2 is committed and pushed as `3f25aaa9ccc3160de93b92e686fe1f562c22bf28`. It defines a 14-table SQLite local-pilot schema, verified connection pragmas, checksum-bound migrations, exact authority foreign keys, append-only transition and attempt claim/result history, durable lease representation, compare-and-swap updates, 12 named write transactions, atomic evidence/outbox commit, startup recovery, invariant checks, backup, offline restore, and corruption drills.
 
-Day15-T3B10-T3A is implemented locally and pending owner review. It selects Node 24.12+ built-in `node:sqlite` with no third-party SQLite package; implements safe local path/file identity, hardened open options, verified pragmas, SQLite/JSON/integrity gates, atomic checksum-bound migration 001, and exact `STRICT` schema verification; and exposes no raw database or repository mutation. Tests create temporary stores only. No application runtime database, scheduler, worker, provider request, pilot activation, backup/restore tool, or trading behavior is active.
+Day15-T3B10-T3A is committed and pushed as `3191639fe268b1830ecc1cd70298ef9430db2b4e`. It selects Node 24.12+ built-in `node:sqlite` with no third-party SQLite package; implements safe local path/file identity, hardened open options, verified pragmas, SQLite/JSON/integrity gates, atomic checksum-bound migration 001, and exact `STRICT` schema verification; and exposes no raw database or arbitrary mutation method.
+
+Day15-T3B10-T3B is implemented locally and pending owner review. It adds a restricted named repository port for T2-T10 plus the explicit T8B validation transition, with exact authority/source binding, compare-and-swap versions, durable leases and attempt claims, bounded retry, atomic result/evidence/counter/lease/outbox commits, and sanitized immutable reads. Its 31 focused temporary-store tests pass. No application runtime database, scheduler, worker, provider request, real pilot activation, backup/restore tool, outbox publisher, or trading behavior is active.
 
 ## Day 6 Milestone Review
 
@@ -372,6 +374,8 @@ Day15-T3B10-T1 adds 40/40 focused Event Contract Collection Runner tests and rai
 
 Day15-T3B10-T3A adds 21/21 focused Event Contract Collection Runner SQLite migration tests and raises the complete registered validation baseline to 1917/1917. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass.
 
+Day15-T3B10-T3B adds 31/31 focused Event Contract Collection Runner SQLite repository tests and raises the complete registered validation baseline to 1948/1948. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -417,6 +421,7 @@ Day15-T3B10-T3A adds 21/21 focused Event Contract Collection Runner SQLite migra
 - `a8d0fcdd22997e78b3038e44ad03267b35e97826` — Event Contract Collection Runner Architecture
 - `b1423fb9d1040febecbde518bf05094623c6f473` — Event Contract Collection Runner Contracts and State Validation
 - `3f25aaa9ccc3160de93b92e686fe1f562c22bf28` — Event Contract Collection Runner SQLite Schema and Transaction Boundaries
+- `3191639fe268b1830ecc1cd70298ef9430db2b4e` — Event Contract Collection Runner SQLite Dependency and Migration Foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -468,4 +473,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of the Day15-T3B10-T3A SQLite dependency and migration foundation after complete validation. If approved and pushed, begin T3B10-T3B named repository ports and atomic transactions as a separately reviewed implementation. Do not create an application runtime store, start a scheduler/worker, freeze or activate a real pilot, repeat live requests, or begin Day15-T3C probability research.
+Owner review of Day15-T3B10-T3B SQLite repository ports and atomic transactions after complete validation. If approved and pushed, begin T3B10-T3C recovery, backup, restore, and corruption drills as a separately reviewed implementation. Do not create an application runtime store, start a scheduler/worker, freeze or activate a real pilot, repeat live requests, or begin Day15-T3C probability research.

@@ -2,9 +2,9 @@
 
 ## Status
 
-Day15-T3B10-T3A implements the local research-pilot SQLite dependency decision, safe store opening, connection-profile verification, schema migration 001, and fail-closed migration/integrity checks.
+Day15-T3B10-T3A implements the local research-pilot SQLite dependency decision, safe store opening, connection-profile verification, schema migration 001, and fail-closed migration/integrity checks. It is committed and pushed as `3191639fe268b1830ecc1cd70298ef9430db2b4e`.
 
-This milestone does not implement runner repository operations, scheduler or worker processes, active leases, retries, provider requests, pilot activation, runtime configuration, backup or restore tooling, monitoring, models, recommendations, capital state, brokers, orders, or execution.
+The separately reviewed T3B repository now consumes this store through a private database boundary. T3A itself does not implement scheduler or worker processes, active lease execution, retries, provider requests, pilot activation, runtime configuration, backup or restore tooling, monitoring, models, recommendations, capital state, brokers, orders, or execution.
 
 ## Dependency decision
 
@@ -84,7 +84,7 @@ Migration code does not repair, delete, overwrite, or downgrade an existing stor
 
 ## Data and authority boundary
 
-No repository writes are authorized in T3A. The SQL schema exists so later reviewed repository transactions can be implemented against a fixed contract. Tests create database files only in operating-system temporary directories and remove them afterward. The application creates no runtime store by default.
+T3A authorizes no repository writes by itself. Its fixed store boundary is now consumed by the separately reviewed T3B named repository implementation. Tests create database files only in operating-system temporary directories and remove them afterward. The application creates no runtime store by default.
 
 The runtime directory is Git-ignored:
 

@@ -725,6 +725,8 @@ The critical evidence transaction verifies pilot/task/lease/attempt/budget and e
 
 Day15-T3B10-T3A selects the Node 24.12+ `node:sqlite` standard-library binding for the local research pilot and implements only safe path resolution, hardened database opening, verified connection pragmas, capability/integrity checks, and checksum-bound migration 001. The public store surface exposes no raw database handle or arbitrary mutation method. No third-party SQLite package, application runtime store, repository transaction, scheduler, worker, provider request, pilot activation, or trading authority is added. The binding remains disallowed for commercial/production persistence while Node documents it as active development. See [Event Contract Collection Runner SQLite Dependency and Migration](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_MIGRATION.md).
 
+Day15-T3B10-T3B adds a restricted repository port over that private store. Named `BEGIN IMMEDIATE` transactions implement T2-T10 plus the explicit T8B `IN_FLIGHT -> VALIDATING` bridge, revalidate exact domain/source authority, enforce compare-and-swap versions and bounded attempts, and atomically bind results, normalized evidence, counters, leases, transitions, and sanitized outbox records. The public surface returns immutable sanitized views and exposes neither SQL nor raw canonical JSON. It still creates no application runtime store and starts no scheduler, worker, retry loop, provider request, real pilot, model, recommendation, broker, order, or execution path. See [Event Contract Collection Runner SQLite Repository](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_REPOSITORY.md).
+
 ---
 
 # Event Contract Framework

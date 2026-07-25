@@ -1,6 +1,15 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B10-T3A SQLite Dependency and Migration Foundation (Pending Owner Review)
+## 2026-07-24 - Day15-T3B10-T3B SQLite Repository Ports and Atomic Transactions (Pending Owner Review)
+
+- Added a restricted Event Contract Collection Runner repository port with named T2-T10 operations and an explicit T8B `IN_FLIGHT -> VALIDATING` transition.
+- Implemented `BEGIN IMMEDIATE` atomic writes, exact request envelopes, domain/source revalidation, canonical fingerprints, compare-and-swap state, authority and policy binding, durable leases and attempt claims, bounded retry, and sanitized immutable reads.
+- Made T10 atomically commit the attempt result, normalized evidence, task transition, budget counters, lease removal, and sanitized outbox record; conflicting replays and late failures roll back.
+- Prohibited the final allowed attempt from returning to `RETRY_WAIT`, preventing an unreachable third-attempt state.
+- Added 31 focused temporary-store tests and registered the suite in the complete validation bundle.
+- Added no application runtime store, scheduler, worker, provider request, pilot activation, outbox publisher, recovery/backup tool, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B10-T3A SQLite Dependency and Migration Foundation
 
 - Selected Node 24.12+ built-in `node:sqlite` for the local research pilot and added no third-party SQLite package.
 - Added safe approved-root/store identity checks, hardened synchronous open options, verified WAL/foreign-key/synchronous/trust/timeout pragmas, SQLite/JSON capability gates, and integrity checks.

@@ -16,6 +16,8 @@ import {
   COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
   COLLECTION_RUNNER_SQLITE_TABLES,
 } from "./EventContractCollectionRunnerSqliteMigrationV1";
+import type { EventContractCollectionRunnerRepository } from "./EventContractCollectionRunnerRepository";
+import { createSqliteEventContractCollectionRunnerRepository } from "./SqliteEventContractCollectionRunnerRepository";
 
 const MINIMUM_NODE_VERSION = Object.freeze([24, 12, 0] as const);
 const STORE_ID_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/u;
@@ -635,6 +637,16 @@ export class EventContractCollectionRunnerSqliteStore {
 
   public getReadiness(): EventContractCollectionRunnerSqliteReadiness {
     return this.#readiness;
+  }
+
+  public createRunnerRepository(): EventContractCollectionRunnerRepository {
+    if (this.#closed) {
+      throw new EventContractCollectionRunnerSqliteStoreError(
+        EventContractCollectionRunnerSqliteStoreErrorCode.OpenFailed,
+        "Closed SQLite store cannot create a runner repository.",
+      );
+    }
+    return createSqliteEventContractCollectionRunnerRepository(this.#database);
   }
 
   public close(): void {

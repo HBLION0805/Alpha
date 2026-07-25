@@ -2,9 +2,9 @@
 
 ## Status
 
-Day15-T3B10-T2 specifies the local SQLite persistence boundary required by the Event Contract Collection Runner. Day15-T3B10-T3A implements its dependency decision, safe open boundary, and first migration in [Event Contract Collection Runner SQLite Dependency and Migration](EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_MIGRATION.md).
+Day15-T3B10-T2 specifies the local SQLite persistence boundary required by the Event Contract Collection Runner. Day15-T3B10-T3A implements its dependency decision, safe open boundary, and first migration in [Event Contract Collection Runner SQLite Dependency and Migration](EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_MIGRATION.md). Day15-T3B10-T3B implements named repository operations T2 through T10 plus the explicit T8B validating transition in [Event Contract Collection Runner SQLite Repository](EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_REPOSITORY.md).
 
-T3B10-T2 itself is design only. T3B10-T3A adds a local migration implementation but no checked-in database file, third-party dependency, repository adapter, backup tool, scheduler, clock, lease process, retry loop, worker, provider request, application persistence write, operator command, pilot activation, model, recommendation, broker, order, or execution behavior.
+T3B10-T2 itself is design only. T3A adds the migration foundation and T3B adds a restricted repository adapter, but neither creates an application runtime database or starts a scheduler, clock, lease process, retry loop, worker, provider request, operator command, pilot activation, model, recommendation, broker, order, or execution behavior.
 
 ## Purpose
 
@@ -686,6 +686,19 @@ Transaction immediately before transport:
 
 The transport may execute only after this durable claim commits.
 
+### T8B — Mark task validating
+
+T3B10-T3B adds this explicit transaction because T10 requires `VALIDATING` while the original T2 sequence did not define the preceding state transition:
+
+1. verify the task is `IN_FLIGHT` with the expected task version;
+2. verify the exact current lease token and attempt claim;
+3. verify healthy clock evidence remains within cutoff and deadline;
+4. transition `IN_FLIGHT -> VALIDATING` by compare-and-swap;
+5. append transition and outbox evidence;
+6. commit.
+
+T8B performs no provider request, inserts no attempt result, and changes no budget counter.
+
 ### T9 — Finalize retryable or terminal failure
 
 Transaction:
@@ -700,6 +713,7 @@ Transaction:
 8. commit.
 
 The repository cannot infer retryability from provider text.
+The final allowed attempt cannot transition to `RETRY_WAIT`; it must enter a terminal state so the store cannot retain an impossible third-attempt path.
 
 ### T10 — Atomic normalized-evidence commit
 
@@ -957,6 +971,7 @@ T3B10-T2 does not:
 
 - [Event Contract Collection Runner Architecture](EVENT_CONTRACT_COLLECTION_RUNNER_ARCHITECTURE.md)
 - [Event Contract Collection Runner Contracts](EVENT_CONTRACT_COLLECTION_RUNNER_CONTRACTS.md)
+- [Event Contract Collection Runner SQLite Repository](EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_REPOSITORY.md)
 - [Event Contract Source Contracts](EVENT_CONTRACT_SOURCE_CONTRACTS.md)
 - [Forward Shadow Collection Control](FORWARD_SHADOW_COLLECTION_CONTROL.md)
 - [Production Persistence and Recovery Architecture](../PRODUCTION_PERSISTENCE_RECOVERY_SPECIFICATION.md)

@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B10-T3B SQLite Repository Ports and Atomic Transactions
+
+### Expose Named Transactions, Not a Database Handle
+
+- Decision: The store constructs one restricted `EventContractCollectionRunnerRepository`; callers receive named T2-T10/T8B commands and sanitized immutable reads only.
+- Rationale: This keeps authority, canonical validation, compare-and-swap, idempotency, budgets, and outbox evidence inseparable from persistence mutations.
+- Consequence: Domain, provider, scheduler, and operator surfaces cannot execute arbitrary SQL or read raw canonical database JSON.
+
+### Add an Explicit Validating Transition
+
+- Decision: Add T8B `markTaskValidating` between the durable T8 attempt claim and T10 evidence commit.
+- Rationale: T10 normatively requires `VALIDATING`, but the T2 transaction sequence did not define how `IN_FLIGHT` reached it.
+- Consequence: The bridge is durable and audited but performs no request, stores no result, and changes no budget counter.
+
+### Exhausted Attempts Cannot Return to Retry Wait
+
+- Decision: T9 rejects `RETRY_WAIT` when the current attempt number has reached the task maximum.
+- Rationale: Allowing the transition would create a task that advertises retry while T8 correctly prohibits a third claim.
+- Consequence: The final attempt must finalize into `MISSED`, `TERMINAL_FAILED`, or `CANCELLED`.
+
 ## 2026-07-24 - Day15-T3B10-T3A SQLite Dependency and Migration Foundation
 
 ### Use Node's SQLite Binding for the Local Research Pilot
