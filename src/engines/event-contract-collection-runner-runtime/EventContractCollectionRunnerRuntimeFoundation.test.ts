@@ -179,7 +179,8 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
         const second = configuration(controlRoot, sqliteRoot);
         assertEqual(first.fingerprint, second.fingerprint, "fingerprint");
         assertEqual(first.networkPermitted, false, "network denied");
-        assertEqual(first.maximumWorkers, 0, "workers absent");
+        assertEqual(first.continuousRunPermitted, false, "continuous run denied");
+        assertEqual(first.maximumWorkers, 1, "single fixture worker");
         assertTrue(Object.isFrozen(first), "configuration frozen");
       }),
   ],
@@ -636,7 +637,7 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
       }),
   ],
   [
-    "foundation exports no scheduler worker or provider request",
+    "foundation helper surface exposes no scheduler worker or provider request",
     () => {
       const forbidden = [
         "schedule",

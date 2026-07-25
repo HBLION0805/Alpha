@@ -1,12 +1,32 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B11-T3 Fixture Scheduler and Worker
+
+### Scheduling Is a Pure One-Action Decision
+
+- Decision: validate one closed caller-supplied snapshot and emit exactly one immutable action using required time, cutoff, deadline, platform-before-exchange lane, and task ID ordering.
+- Rationale: scheduling must be replayable and cannot hide clock reads, sleeps, repository access, or parallel selection.
+- Consequence: only exact `DUE` tasks may be acquired; eligible `SCHEDULED` and `RETRY_WAIT` tasks return an explicit wait reason until the existing durable due transition is separately composed.
+
+### The First Worker Has One Explicit Fixture Cycle
+
+- Decision: allow one explicitly invoked fixture-only Worker cycle and keep continuous-run and network authority permanently false in this task.
+- Rationale: transaction ordering, cancellation, cutoff, retry, and crash ambiguity must be proven independently from process lifetime and provider transport.
+- Consequence: the Worker has no timer, loop, command, daemon, market discovery, or transport construction surface.
+
+### Every Mutation Retains Recovery-Session Authority
+
+- Decision: require the concrete session-gated repository, exact runtime ownership, process Stop barrier, immutable artifacts, and exact fixture adapter policy/source fingerprints before any write.
+- Rationale: accepting the unrestricted repository port or caller-selected source data would bypass Owner Resume and admission authority.
+- Consequence: writes follow only T7/T8/T8B/T9/T10; cancellation after claim is durable, raw payload is not accepted, and unresolved post-lease ambiguity irreversibly stops the process.
+
 ## 2026-07-25 - Day15-T3B11-T2 Runtime Foundation
 
 ### Runtime Configuration Cannot Grant Operation
 
 - Decision: T2 accepts exactly one `FIXTURE_ONLY` configuration shape and derives immutable configuration, path, store, lock, and session identities from it.
 - Rationale: configuration must narrow authority rather than provide hidden provider, network, Worker, or caller-selected session extension points.
-- Consequence: `networkPermitted` is always false and `maximumWorkers` is zero until a separately reviewed later task changes composition.
+- Consequence: T2 grants no Worker operation; `networkPermitted` remains false, and only the separately reviewed T3 composition may set one explicit fixture Worker while continuous run remains prohibited.
 
 ### Local Ownership Uses Atomic Directory Creation
 

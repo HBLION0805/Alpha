@@ -344,7 +344,8 @@ export function createCollectionRunnerRuntimeConfiguration(
     ...input,
     deterministic: true as const,
     networkPermitted: false as const,
-    maximumWorkers: 0 as const,
+    continuousRunPermitted: false as const,
+    maximumWorkers: 1 as const,
   };
   return deepFreeze({
     ...base,

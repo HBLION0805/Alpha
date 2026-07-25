@@ -15,12 +15,19 @@ The reviewed baseline is
 `GO_FOR_DESIGN / NO_GO_FOR_OPERATION`.
 
 T3B11-T1 was Owner-approved, committed, and pushed as `6c52284`.
-T3B11-T2 now implements the runtime foundation locally, pending Owner review:
+T3B11-T2 was Owner-approved, committed, and pushed as
+`3c755126f08844ce222dcb9fcc3c86df286ab3af`. It implements:
 strict immutable `FIXTURE_ONLY` configuration, canonical safe roots, atomic
 single-instance ownership, canonical owner evidence, injected boot/liveness
 ports, OS-CSPRNG process-session minting, and separated wall, monotonic, and
 clock-health ports. T2 does not implement or start a scheduler, Worker, timer,
 command, adapter, provider request, SQLite mutation, or Pilot.
+
+T3B11-T3 now implements the fixture scheduler and one-cycle Worker locally,
+pending Owner review. The scheduler is pure and emits one deterministic action.
+The Worker is explicitly invoked once, fixture-only, and writes exclusively
+through the existing session-gated repository transactions. T3 adds no timer,
+loop, command, daemon, network provider, or real Pilot startup.
 
 ## Purpose
 
@@ -734,11 +741,12 @@ single-owner research-pilot boundary.
 T3B11 remains separately gated:
 
 1. **T3B11-T1 — Runtime architecture and threat model:** this document only.
-2. **T3B11-T2 — Runtime foundation:** implemented locally and pending Owner
-   review; immutable configuration, path controls, process ownership,
-   boot/process identity, clocks, and network-free tests.
-3. **T3B11-T3 — Fixture scheduler and Worker:** pure planner, one acquisition
-   cycle, fixture adapter, cancellation, and repository composition.
+2. **T3B11-T2 — Runtime foundation:** completed and pushed as `3c755126`;
+   immutable configuration, path controls, process ownership, boot/process
+   identity, clocks, and network-free tests.
+3. **T3B11-T3 — Fixture scheduler and Worker:** implemented locally and pending
+   Owner review; pure planner, one acquisition cycle, fixture adapter,
+   cancellation, and repository composition.
 4. **T3B11-T4 — Operator and health surface:** preflight, status, graceful stop,
    Emergency Stop notification, lock recovery, and outbox projection.
 5. **T3B11-T5 — Process drills:** duplicate process, forced child-process exit,
@@ -785,18 +793,29 @@ The fixture runtime milestone may pass only when:
 - the complete validation bundle passes;
 - a separate Owner review approves any later bounded-live work.
 
+## T3B11-T3 transition boundary
+
+The T3 scheduler may acquire only a task already durably marked `DUE`.
+When a `SCHEDULED` task reaches `requiredActionAtUtc`, or a `RETRY_WAIT` task
+reaches `retryEligibleAtUtc`, the scheduler returns an immediate wait decision
+with an explicit transition-required reason. T3 does not perform the existing
+T6 due transition because the approved scheduler action contract contains no
+transition action. Operator/runtime composition must close this boundary in a
+separately reviewed task before any continuous cycle is possible.
+
 ## Explicit exclusions
 
-T3B11-T1 and T3B11-T2 add no:
+T3B11-T1 through T3B11-T3 add no:
 
-- operational runtime composition;
-- SQLite schema or repository mutation;
+- continuous operational runtime composition;
+- new SQLite schema, arbitrary SQL, or mutation outside the named
+  session-gated repository transactions;
 - package dependency;
 - executable command;
 - stale-lock recovery or automatic lock takeover;
 - production synchronized-clock source;
-- scheduler, Worker, timer, loop, daemon, or service;
-- provider adapter or network request;
+- timer, loop, daemon, or service;
+- network provider adapter or network request;
 - market discovery;
 - Pilot creation, activation, or Resume;
 - Robinhood automation;

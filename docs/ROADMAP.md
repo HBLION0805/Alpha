@@ -340,10 +340,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B11-T1 status: completed, committed, and pushed as `6c52284`.
    - T3B11-T1 scope: one foreground process owner, atomic fail-closed lock, immutable configuration, minted process identity, separate wall/monotonic/health clocks, pure one-task scheduler, fixture-only Worker sequence, lifecycle commands, health/outbox projection, evidence integration ownership, and later crash-test boundaries.
    - T3B11-T1 excludes: implementation, runtime startup, provider request, Pilot activation, dynamic discovery, automatic Robinhood access, probability research, recommendation, broker, order, or execution.
-   - T3B11-T2 status: immutable runtime configuration, safe local paths, process ownership, boot/process identity, injected clocks, and 26 network-free tests are implemented locally and pending owner review.
-   - T3B11-T2 scope: `FIXTURE_ONLY`, zero-Worker/no-network configuration authority; separate canonical local roots; atomic lock-directory ownership; canonical owner evidence; OS-CSPRNG session minting; process-liveness and boot ports; separate wall, monotonic, and fail-closed clock-health ports.
+   - T3B11-T2 status: completed, committed, and pushed as `3c755126f08844ce222dcb9fcc3c86df286ab3af`.
+   - T3B11-T2 scope: `FIXTURE_ONLY` and no-network configuration authority; separate canonical local roots; atomic lock-directory ownership; canonical owner evidence; OS-CSPRNG session minting; process-liveness and boot ports; separate wall, monotonic, and fail-closed clock-health ports.
    - T3B11-T2 excludes: preflight or lifecycle commands, scheduler, Worker, adapter, timer, SQLite mutation, provider request, Pilot activation, probability research, recommendation, broker, order, or execution.
-   - T3B11-T3 next scope: a pure deterministic one-task planner and a separately bounded fixture-only Worker composition using existing named repository transactions; no network provider.
+   - T3B11-T3 status: pure deterministic one-task scheduling and one explicitly invoked fixture-only Worker cycle are implemented locally and pending Owner review.
+   - T3B11-T3 scope: closed scheduler snapshots, stable ordering, exact `DUE` acquisition, exact fixture adapter binding, one Worker, session-gated T7/T8/T8B/T9/T10 writes, bounded retry, cancellation, cutoff/budget enforcement, and ambiguity-preserving Stop.
+   - T3B11-T3 excludes: due-transition composition, timers, loops, commands, background services, network providers, real Pilot startup, probability research, recommendation, broker, order, or execution.
+   - T3B11-T4 next scope: local preflight/status/Stop/health and outbox projection only after separate Owner approval.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

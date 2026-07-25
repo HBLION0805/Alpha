@@ -115,6 +115,7 @@ const aggregateTestFiles = [
   "src/repositories/EventContractCollectionRunnerSqliteRecovery.test.ts",
   "src/engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlEngine.test.ts",
   "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeFoundation.test.ts",
+  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeExecution.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",

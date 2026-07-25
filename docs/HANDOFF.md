@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B11-T1 is committed and pushed; Day15-T3B11-T2 Runtime Foundation is implemented locally and pending owner review
+Day15-T3B11-T2 is committed and pushed; Day15-T3B11-T3 Fixture Scheduler and Worker is implemented locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `6c52284` on `main`, equal to `origin/main` before the T3B11-T2 implementation task.
+Verified baseline: `3c755126f08844ce222dcb9fcc3c86df286ab3af` on `main`, equal to `origin/main` before the T3B11-T3 implementation task.
 
 Day 7 completed:
 
@@ -77,7 +77,9 @@ Day15-T3B10-MR1 is committed and pushed as `593f0f54804f64bce4808857e901d66f3bab
 
 Day15-T3B11-T1 is committed and pushed as `6c52284`. It specifies one foreground fixture-only runtime, immutable configuration, atomic fail-closed single-instance locking, minted boot/process identity, separate wall/monotonic/health clocks, a pure one-task scheduler, exact Worker transaction ordering, lifecycle controls, sanitized health/outbox projection, replayable T1/T2 integration, and a runtime threat model.
 
-Day15-T3B11-T2 is implemented locally and pending owner review. It adds the non-operational fixture-only runtime foundation: strict immutable configuration, canonical safe roots, deterministic path/store identities, atomic single-instance ownership, immutable owner evidence, injected boot and liveness ports, OS-CSPRNG process-session minting, separate clock ports, and fail-closed clock-health validation. Its 26 focused tests include native Windows ownership contention, configuration-drift contention, and release. It starts no runtime, scheduler, Worker, timer, adapter, network request, SQLite mutation, or Pilot.
+Day15-T3B11-T2 is committed and pushed as `3c755126f08844ce222dcb9fcc3c86df286ab3af`. It adds the non-operational fixture-only runtime foundation: strict immutable configuration, canonical safe roots, deterministic path/store identities, atomic single-instance ownership, immutable owner evidence, injected boot and liveness ports, OS-CSPRNG process-session minting, separate clock ports, and fail-closed clock-health validation. Its 26 focused tests include native Windows ownership contention, configuration-drift contention, and release.
+
+Day15-T3B11-T3 is implemented locally and pending Owner review. It adds a pure deterministic one-task scheduler and one explicitly invoked fixture-only Worker cycle. The scheduler selects only exact `DUE` tasks and leaves scheduled/retry due transition outside this task. The Worker verifies exact immutable configuration, activation, task, adapter, clock, cutoff, budget, lease, attempt, and snapshot bindings; every mutation goes through the existing recovery-session gate and T7/T8/T8B/T9/T10 transactions. Post-claim cancellation is durable, retry is bounded, invalid evidence fails terminally, and unresolved post-lease ambiguity trips the irreversible process Stop barrier. It adds no runtime command, timer, loop, background service, network provider, real Pilot startup, model, recommendation, broker, order, or execution authority.
 
 ## Day 6 Milestone Review
 
@@ -460,6 +462,7 @@ Day15-T3B10-T4D adds 6/6 focused recovery-control race/crash drills and raises t
 - `1b7e9744189cd5028a8cae13bc057954648bbb27` — Event Contract Collection Runner Recovery-Control Race and Crash Drills
 - `593f0f54804f64bce4808857e901d66f3babd80a` — Event Contract Collection Runner Milestone Review
 - `6c52284` — Event Contract Collection Runner Runtime Architecture
+- `3c755126f08844ce222dcb9fcc3c86df286ab3af` — Event Contract Collection Runner Runtime Foundation
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -511,4 +514,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B11-T2 Runtime Foundation. If approved and pushed, begin T3B11-T3 with the pure deterministic scheduler design/implementation boundary first, followed only by a separately bounded fixture Worker using existing session-gated repository transactions. Do not add a network provider, real Pilot activation, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B11-T3 Fixture Scheduler and Worker. If approved and pushed, begin T3B11-T4 as a separately gated operator/health design and implementation task for local preflight, status, Stop, lock recovery, and outbox projection. Do not add a scheduler loop, background service, network provider, real Pilot activation, probability research, recommendation, or trading authority.

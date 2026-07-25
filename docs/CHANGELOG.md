@@ -1,14 +1,25 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B11-T2 Runtime Foundation (Pending Owner Review)
+## 2026-07-25 - Day15-T3B11-T3 Fixture Scheduler and Worker (Pending Owner Review)
 
-- Added a strict immutable `FIXTURE_ONLY` runtime configuration with recursive unknown-field rejection, bounded clock policy, deterministic fingerprints, zero Worker authority, and no network authority.
+- Added a pure deterministic scheduler that validates a closed task snapshot and returns exactly one immutable action with stable platform-first ordering.
+- Restricted acquisition to exact `DUE` tasks; scheduled and retry-eligible tasks remain blocked on the existing durable due-transition boundary.
+- Added one explicit fixture-only Worker cycle with exact configuration, activation, task, adapter, clock, cutoff, budget, lease, attempt, retry, and evidence bindings.
+- Routed every Worker mutation through the existing recovery-session gate and named T7/T8/T8B/T9/T10 repository transactions.
+- Added cancellation persistence, bounded retry, terminal invalid-snapshot handling, and irreversible Stop on unresolved post-lease ambiguity.
+- Added 26 network-free scheduler/Worker tests and validation-bundle registration.
+- Added no timer, loop, daemon, service, network provider, real Pilot startup, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B11-T2 Runtime Foundation
+
+- Added a strict immutable `FIXTURE_ONLY` runtime configuration with recursive unknown-field rejection, bounded clock policy, deterministic fingerprints, and no network authority.
 - Added safe canonical runtime-control and SQLite roots, exact store/path identities, and rejection of UNC, traversal, substituted roots, links, and non-file SQLite entries.
 - Added atomic single-process lock-directory ownership, canonical immutable owner records, exact ownership revalidation, clean verified release, duplicate-process rejection, and fail-closed stale-lock preservation.
 - Added injected boot-identity and process-liveness ports, OS-CSPRNG process nonces, and minted restart-specific process-session identities.
 - Added separate wall-clock, monotonic-clock, and clock-health ports with fail-closed freshness, synchronization, chronology, and offset enforcement.
 - Added 26 network-free tests, including native Windows lock-contention, configuration-drift contention, and release behavior.
 - Added no scheduler, Worker, timer, command, adapter, provider request, SQLite mutation, Pilot activation, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B11-T2 as `3c755126f08844ce222dcb9fcc3c86df286ab3af`.
 
 ## 2026-07-25 - Day15-T3B11-T1 Shadow Pilot Runtime Architecture
 
