@@ -5,19 +5,27 @@ import {
   mkdirSync,
   realpathSync,
 } from "node:fs";
-import { resolve, sep } from "node:path";
+import { basename, resolve, sep } from "node:path";
 import { versions } from "node:process";
 import { backup, DatabaseSync } from "node:sqlite";
 
 import {
-  COLLECTION_RUNNER_SQLITE_MIGRATION_NAME,
   COLLECTION_RUNNER_SQLITE_MIGRATION_V1_SQL,
+  COLLECTION_RUNNER_SQLITE_MIGRATION_NAME as COLLECTION_RUNNER_SQLITE_MIGRATION_V1_NAME,
+  COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION as COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_V1,
+  COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION as COLLECTION_RUNNER_SQLITE_SCHEMA_V1,
+} from "./EventContractCollectionRunnerSqliteMigrationV1";
+import {
+  COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME,
+  COLLECTION_RUNNER_SQLITE_MIGRATION_V2_SQL,
   COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION,
   COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
   COLLECTION_RUNNER_SQLITE_TABLES,
-} from "./EventContractCollectionRunnerSqliteMigrationV1";
+} from "./EventContractCollectionRunnerRecoveryControlSqliteMigrationV2";
 import type { EventContractCollectionRunnerRepository } from "./EventContractCollectionRunnerRepository";
+import type { EventContractCollectionRunnerRecoveryControlRepository } from "./EventContractCollectionRunnerRecoveryControlRepository";
 import { createSqliteEventContractCollectionRunnerRepository } from "./SqliteEventContractCollectionRunnerRepository";
+import { createSqliteEventContractCollectionRunnerRecoveryControlRepository } from "./SqliteEventContractCollectionRunnerRecoveryControlRepository";
 import {
   EventContractCollectionRunnerSqliteRecoveryManager,
   inspectCollectionRunnerStartupRecovery,
@@ -80,9 +88,9 @@ export interface EventContractCollectionRunnerSqliteReadiness {
   readonly productionApproved: false;
   readonly nodeVersion: string;
   readonly sqliteVersion: string;
-  readonly schemaVersion: 1;
-  readonly schemaContractVersion: "1.0";
-  readonly migrationName: "001_collection_runner_foundation";
+  readonly schemaVersion: 2;
+  readonly schemaContractVersion: "2.0";
+  readonly migrationName: "002_collection_runner_recovery_control";
   readonly migrationChecksum: string;
   readonly schemaCatalogChecksum: string;
   readonly journalMode: "wal";
@@ -131,14 +139,19 @@ function isAtLeastVersion(
   return true;
 }
 
-function migrationChecksum(): string {
+function migrationV1Checksum(): string {
   return `sha256:${createHash("sha256")
     .update(COLLECTION_RUNNER_SQLITE_MIGRATION_V1_SQL, "utf8")
     .digest("hex")}`;
 }
 
 export const COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM =
-  migrationChecksum();
+  migrationV1Checksum();
+
+export const COLLECTION_RUNNER_SQLITE_MIGRATION_V2_CHECKSUM =
+  `sha256:${createHash("sha256")
+    .update(COLLECTION_RUNNER_SQLITE_MIGRATION_V2_SQL, "utf8")
+    .digest("hex")}`;
 
 function sha256(value: string): string {
   return `sha256:${createHash("sha256").update(value, "utf8").digest("hex")}`;
@@ -357,9 +370,83 @@ INSERT INTO schema_migrations (
 ) VALUES (?, ?, ?, ?, ?, ?)
 `)
       .run(
-        COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
-        COLLECTION_RUNNER_SQLITE_MIGRATION_NAME,
+        COLLECTION_RUNNER_SQLITE_SCHEMA_V1,
+        COLLECTION_RUNNER_SQLITE_MIGRATION_V1_NAME,
         COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM,
+        options.appliedAtUtc,
+        options.applicationBuildFingerprint,
+        COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_V1,
+      );
+    database.exec(
+      `PRAGMA user_version = ${COLLECTION_RUNNER_SQLITE_SCHEMA_V1}`,
+    );
+    database.exec("COMMIT");
+  } catch (error) {
+    try {
+      database.exec("ROLLBACK");
+    } catch {
+      // Preserve the original migration error.
+    }
+    throw new EventContractCollectionRunnerSqliteStoreError(
+      EventContractCollectionRunnerSqliteStoreErrorCode.MigrationConflict,
+      "SQLite migration 001 failed and was rolled back.",
+      { cause: error },
+    );
+  }
+}
+
+function isEmptyV1Store(database: DatabaseSync): boolean {
+  return [
+    "runner_definitions",
+    "pilot_activations",
+    "pilot_transitions",
+    "scheduled_tasks",
+    "task_transitions",
+    "task_leases",
+    "attempt_records",
+    "attempt_results",
+    "normalized_source_evidence",
+    "transactional_outbox",
+  ].every((table) => {
+    const row = database
+      .prepare(`SELECT count(*) AS count FROM ${table}`)
+      .get() as { readonly count?: unknown } | undefined;
+    return row?.count === 0;
+  });
+}
+
+function applySecondMigration(
+  database: DatabaseSync,
+  options: OpenEventContractCollectionRunnerSqliteStoreOptions,
+): void {
+  const userVersion = Object.values(
+    database.prepare("PRAGMA user_version").get() ?? {},
+  )[0];
+  if (userVersion !== COLLECTION_RUNNER_SQLITE_SCHEMA_V1) return;
+  if (!isEmptyV1Store(database)) {
+    throw new EventContractCollectionRunnerSqliteStoreError(
+      EventContractCollectionRunnerSqliteStoreErrorCode.MigrationConflict,
+      "Populated migration 001 stores require a separately verified pre-migration backup before migration 002.",
+    );
+  }
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.exec(COLLECTION_RUNNER_SQLITE_MIGRATION_V2_SQL);
+    database
+      .prepare(`
+INSERT INTO schema_migrations (
+  migration_version,
+  migration_name,
+  migration_checksum,
+  applied_at_utc,
+  application_build_fingerprint,
+  schema_contract_version
+) VALUES (?, ?, ?, ?, ?, ?)
+`)
+      .run(
+        COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
+        COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME,
+        COLLECTION_RUNNER_SQLITE_MIGRATION_V2_CHECKSUM,
         options.appliedAtUtc,
         options.applicationBuildFingerprint,
         COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION,
@@ -376,7 +463,7 @@ INSERT INTO schema_migrations (
     }
     throw new EventContractCollectionRunnerSqliteStoreError(
       EventContractCollectionRunnerSqliteStoreErrorCode.MigrationConflict,
-      "SQLite migration 001 failed and was rolled back.",
+      "SQLite migration 002 failed and was rolled back.",
       { cause: error },
     );
   }
@@ -412,16 +499,23 @@ FROM schema_migrations
 ORDER BY migration_version
 `)
     .all() as unknown as ReadonlyArray<MigrationRow>;
-  const row = rows[0];
+  const first = rows[0];
+  const second = rows[1];
   if (
-    rows.length !== 1 ||
-    row?.migration_version !== COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION ||
-    row.migration_name !== COLLECTION_RUNNER_SQLITE_MIGRATION_NAME ||
-    row.migration_checksum !== COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM ||
-    row.schema_contract_version !==
+    rows.length !== 2 ||
+    first?.migration_version !== COLLECTION_RUNNER_SQLITE_SCHEMA_V1 ||
+    first.migration_name !== COLLECTION_RUNNER_SQLITE_MIGRATION_V1_NAME ||
+    first.migration_checksum !== COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM ||
+    first.schema_contract_version !== COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_V1 ||
+    typeof first.application_build_fingerprint !== "string" ||
+    !BUILD_FINGERPRINT_PATTERN.test(first.application_build_fingerprint) ||
+    second?.migration_version !== COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION ||
+    second.migration_name !== COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME ||
+    second.migration_checksum !== COLLECTION_RUNNER_SQLITE_MIGRATION_V2_CHECKSUM ||
+    second.schema_contract_version !==
       COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION ||
-    typeof row.application_build_fingerprint !== "string" ||
-    !BUILD_FINGERPRINT_PATTERN.test(row.application_build_fingerprint)
+    typeof second.application_build_fingerprint !== "string" ||
+    !BUILD_FINGERPRINT_PATTERN.test(second.application_build_fingerprint)
   ) {
     throw new EventContractCollectionRunnerSqliteStoreError(
       EventContractCollectionRunnerSqliteStoreErrorCode.MigrationConflict,
@@ -461,6 +555,7 @@ function expectedSchemaCatalogChecksum(): string {
   });
   try {
     expected.exec(COLLECTION_RUNNER_SQLITE_MIGRATION_V1_SQL);
+    expected.exec(COLLECTION_RUNNER_SQLITE_MIGRATION_V2_SQL);
     return schemaCatalogChecksum(expected);
   } finally {
     expected.close();
@@ -478,7 +573,7 @@ function verifySchema(database: DatabaseSync): string {
   ) {
     throw new EventContractCollectionRunnerSqliteStoreError(
       EventContractCollectionRunnerSqliteStoreErrorCode.SchemaMismatch,
-      "SQLite user-table catalog does not match schema contract v1.",
+      "SQLite user-table catalog does not match schema contract v2.",
     );
   }
   const strictRows = database
@@ -508,7 +603,7 @@ WHERE schema = 'main' AND type = 'table' AND name NOT LIKE 'sqlite_%'
   if (actualCatalogChecksum !== EXPECTED_SCHEMA_CATALOG_CHECKSUM) {
     throw new EventContractCollectionRunnerSqliteStoreError(
       EventContractCollectionRunnerSqliteStoreErrorCode.SchemaMismatch,
-      "SQLite tables, columns, constraints, or indexes differ from migration 001.",
+      "SQLite tables, columns, constraints, or indexes differ from migrations 001-002.",
     );
   }
   return actualCatalogChecksum;
@@ -558,8 +653,8 @@ export class EventContractCollectionRunnerSqliteStore {
       schemaVersion: COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
       schemaContractVersion:
         COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION,
-      migrationName: COLLECTION_RUNNER_SQLITE_MIGRATION_NAME,
-      migrationChecksum: COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM,
+      migrationName: COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME,
+      migrationChecksum: COLLECTION_RUNNER_SQLITE_MIGRATION_V2_CHECKSUM,
       schemaCatalogChecksum: schemaChecksum,
       journalMode: "wal",
       synchronous: 2,
@@ -614,6 +709,7 @@ export class EventContractCollectionRunnerSqliteStore {
       if (!hasMigrationTable(database)) {
         applyFirstMigration(database, options);
       }
+      applySecondMigration(database, options);
       verifyMigrationChain(database);
       const schemaChecksum = verifySchema(database);
       verifyIntegrity(database);
@@ -687,6 +783,25 @@ export class EventContractCollectionRunnerSqliteStore {
       );
     }
     return createSqliteEventContractCollectionRunnerRepository(this.#database);
+  }
+
+  public createRecoveryControlRepository(): EventContractCollectionRunnerRecoveryControlRepository {
+    if (this.#closed) {
+      throw new EventContractCollectionRunnerSqliteStoreError(
+        EventContractCollectionRunnerSqliteStoreErrorCode.OpenFailed,
+        "Closed SQLite store cannot create a recovery-control repository.",
+      );
+    }
+    return createSqliteEventContractCollectionRunnerRecoveryControlRepository(
+      this.#database,
+      Object.freeze({
+        storeId: basename(this.#storePath, ".sqlite3"),
+        storePathIdentity: sha256(resolve(this.#storePath)),
+        schemaCatalogChecksum: this.#readiness.schemaCatalogChecksum,
+        recoveryReportFingerprint: this.#recovery.fingerprint,
+        recoveryInspectedAtUtc: this.#recovery.inspectedAtUtc,
+      }),
+    );
   }
 
   public close(): void {

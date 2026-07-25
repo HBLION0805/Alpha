@@ -71,7 +71,11 @@ const PILOT_TRANSITIONS: Readonly<Record<CollectionRunnerPilotState, readonly Co
     CollectionRunnerPilotState.Completed,
     CollectionRunnerPilotState.FailedClosed,
   ],
-  [CollectionRunnerPilotState.StopRequested]: [CollectionRunnerPilotState.Stopped],
+  [CollectionRunnerPilotState.StopRequested]: [
+    CollectionRunnerPilotState.Stopped,
+    CollectionRunnerPilotState.Revoked,
+    CollectionRunnerPilotState.FailedClosed,
+  ],
   [CollectionRunnerPilotState.Stopped]: [],
   [CollectionRunnerPilotState.Revoked]: [],
   [CollectionRunnerPilotState.Completed]: [],

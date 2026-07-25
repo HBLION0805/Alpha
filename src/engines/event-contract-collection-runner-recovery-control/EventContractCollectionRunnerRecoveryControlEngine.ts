@@ -108,7 +108,23 @@ const DECISION_INPUT_KEYS = [
   "proposedProcessSessionId",
   "emergencyStopObserved",
 ] as const;
+const DECISION_KEYS = [
+  ...DECISION_INPUT_KEYS,
+  "idempotencyKey",
+  "authorizesMutation",
+  "authorizesResume",
+  "deterministic",
+  "fingerprint",
+] as const;
 const STOP_KEYS = ["activationState", "triggers", "evaluatedAtUtc"] as const;
+const STOP_ASSESSMENT_KEYS = [
+  ...STOP_KEYS,
+  "directive",
+  "blocksResume",
+  "blocksNewWork",
+  "deterministic",
+  "fingerprint",
+] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -867,6 +883,41 @@ export class EventContractCollectionRunnerRecoveryControlEngine {
     return deepFreeze({ ...base, fingerprint: fingerprint(base) });
   }
 
+  public verifyOwnerRecoveryDecision(
+    value: unknown,
+  ): CollectionRunnerOwnerRecoveryDecision {
+    const issues: CollectionRunnerRecoveryControlIssue[] = [];
+    if (exactKeys(value, DECISION_KEYS, "decision", issues)) {
+      const input = Object.fromEntries(
+        DECISION_INPUT_KEYS.map((key) => [key, value[key]]),
+      );
+      try {
+        const expected = this.createOwnerRecoveryDecision(input);
+        if (canonicalize(expected) !== canonicalize(value)) {
+          issue(
+            issues,
+            CollectionRunnerRecoveryControlIssueCode.InvalidDecision,
+            "decision",
+            "Decision does not match deterministic input and derived fields.",
+          );
+        }
+      } catch (error) {
+        if (
+          error instanceof
+          EventContractCollectionRunnerRecoveryControlValidationError
+        ) {
+          issues.push(...error.issues);
+        } else {
+          throw error;
+        }
+      }
+    }
+    fail(issues);
+    return deepFreeze(
+      structuredClone(value) as CollectionRunnerOwnerRecoveryDecision,
+    );
+  }
+
   public evaluateEmergencyStop(
     value: unknown,
   ): CollectionRunnerEmergencyStopAssessment {
@@ -926,5 +977,40 @@ export class EventContractCollectionRunnerRecoveryControlEngine {
       deterministic: true as const,
     };
     return deepFreeze({ ...base, fingerprint: fingerprint(base) });
+  }
+
+  public verifyEmergencyStopAssessment(
+    value: unknown,
+  ): CollectionRunnerEmergencyStopAssessment {
+    const issues: CollectionRunnerRecoveryControlIssue[] = [];
+    if (exactKeys(value, STOP_ASSESSMENT_KEYS, "emergencyStop", issues)) {
+      const input = Object.fromEntries(
+        STOP_KEYS.map((key) => [key, value[key]]),
+      );
+      try {
+        const expected = this.evaluateEmergencyStop(input);
+        if (canonicalize(expected) !== canonicalize(value)) {
+          issue(
+            issues,
+            CollectionRunnerRecoveryControlIssueCode.InvalidDisposition,
+            "emergencyStop",
+            "Emergency Stop assessment does not match deterministic input.",
+          );
+        }
+      } catch (error) {
+        if (
+          error instanceof
+          EventContractCollectionRunnerRecoveryControlValidationError
+        ) {
+          issues.push(...error.issues);
+        } else {
+          throw error;
+        }
+      }
+    }
+    fail(issues);
+    return deepFreeze(
+      structuredClone(value) as CollectionRunnerEmergencyStopAssessment,
+    );
   }
 }

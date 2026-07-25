@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B10-T4B Durable Recovery-Control Transactions
+
+### Recovery Authority Uses a Separate Restricted Repository
+
+- Decision: Persist and execute recovery-control evidence through named transactions that remain separate from the ordinary runner repository and never clear its startup recovery blocker.
+- Rationale: Recovery authority must be durable and auditable without allowing an untrusted caller to bypass the exact process-session gate planned for T4C.
+- Consequence: `APPROVE_RESUME` creates a one-time session-authorization record only; T4C must authenticate the operator and enforce that record before ordinary mutation can become available.
+
+### Migration 002 Requires Protected Upgrade Evidence
+
+- Decision: New and empty v1 stores may reach schema v2 automatically, while populated v1 stores fail closed until a separately verified pre-migration backup exists.
+- Rationale: Adding authority-bearing control tables to a store with operational evidence is a recovery-sensitive migration and must not silently proceed without rollback evidence.
+- Consequence: migration 001 remains immutable, migration 002 is checksum-bound, and a later owner-operated upgrade flow must create and verify the backup before reopening a populated v1 store.
+
+### Emergency Stop Invalidates Resume Authority Atomically
+
+- Decision: Emergency Stop, Pilot compare-and-swap, decision/session invalidation, receipt creation, and outbox evidence occur in one `BEGIN IMMEDIATE` transaction.
+- Rationale: A partial stop could leave durable resume authority active after the Pilot has been stopped or failed closed.
+- Consequence: stop wins over unconsumed resume decisions and existing session authorizations; exact idempotent replay returns the original receipt, while altered replay fails closed.
+
 ## 2026-07-25 - Day15-T3B10-T4A Deterministic Recovery-Control Boundary
 
 ### Authorization Evidence Does Not Execute

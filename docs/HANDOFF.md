@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B10-T4 is committed and pushed; Day15-T3B10-T4A recovery-control contracts and deterministic decision engine are implemented locally and pending owner review
+Day15-T3B10-T4A is committed and pushed; Day15-T3B10-T4B recovery-control migration and named SQLite transactions are implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `bfe4751d39ae3d0a9e4c0bc70d6889198f9f0516` on `main`, equal to `origin/main` before the T3B10-T4A implementation task.
+Verified baseline: `12848f9621e6d9abf9477cdb5c24260b50351a97` on `main`, equal to `origin/main` before the T3B10-T4B implementation task.
 
 Day 7 completed:
 
@@ -65,7 +65,9 @@ Day15-T3B10-T3C is committed and pushed as `47a7a45df7dd9ad03e996389aaa2cc8b394a
 
 Day15-T3B10-T4 is committed and pushed as `bfe4751d39ae3d0a9e4c0bc70d6889198f9f0516`. It defines Resume as a one-time owner authorization bound to the exact recovery assessment and new process session, not an `ACTIVE -> ACTIVE` transition. It defines deterministic recovery dispositions, permanent terminal states, restored-store switch separation, Emergency Stop precedence and race handling, and a T4A-T4D implementation split.
 
-Day15-T3B10-T4A is implemented locally and pending owner review. It adds strict immutable recovery activation, assessment, local-owner authorization, owner-decision, and Emergency Stop contracts plus a pure deterministic engine for assessment classification/verification, exact-owner action validation, and stop precedence. Its authorization fields are evidence only. It adds no migration 002, database write, repository transaction, owner command, authenticated session gate, scheduler/worker, provider request, real resume, model, recommendation, broker, order, or execution behavior.
+Day15-T3B10-T4A is committed and pushed as `12848f9621e6d9abf9477cdb5c24260b50351a97`. It adds strict immutable recovery activation, assessment, local-owner authorization, owner-decision, and Emergency Stop contracts plus a pure deterministic engine for assessment classification/verification, exact-owner action validation, and stop precedence.
+
+Day15-T3B10-T4B is implemented locally and pending owner review. It adds checksum-bound migration 002, five recovery-control `STRICT` tables, a restricted repository, deterministic evidence verification, exact recovery/store/schema/Pilot binding, one-time decision consumption, session-authorization persistence, Emergency Stop precedence, compare-and-swap stop/terminal transitions, and atomic receipt/outbox evidence. Resume does not unlock the ordinary runner repository. It adds no owner command, authenticated runtime session gate, scheduler/worker, provider request, real resume, model, recommendation, broker, order, or execution behavior.
 
 ## Day 6 Milestone Review
 
@@ -388,6 +390,8 @@ Day15-T3B10-T4 changes architecture and documentation only, so the registered ba
 
 Day15-T3B10-T4A adds 20/20 focused recovery-control tests and raises the complete registered validation baseline to 1979/1979.
 
+Day15-T3B10-T4B adds 3/3 focused SQLite recovery-control transaction tests and 2 migration-upgrade tests, raising the complete registered validation baseline to 1984/1984.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -436,6 +440,7 @@ Day15-T3B10-T4A adds 20/20 focused recovery-control tests and raises the complet
 - `3191639fe268b1830ecc1cd70298ef9430db2b4e` — Event Contract Collection Runner SQLite Dependency and Migration Foundation
 - `854d2f94021c59dde6974c53a81653864dfd3e29` — Event Contract Collection Runner SQLite Repository Ports and Atomic Transactions
 - `47a7a45df7dd9ad03e996389aaa2cc8b394aa699` — Event Contract Collection Runner SQLite Recovery, Backup, and Restore
+- `12848f9621e6d9abf9477cdb5c24260b50351a97` — Event Contract Collection Runner Recovery-Control Contracts and Deterministic Engine
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -487,4 +492,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B10-T4A recovery-control contracts and deterministic engine after complete validation. If approved and pushed, begin T4B migration 002 and named repository transactions as a separately specified and reviewed task. Do not add operator commands, authenticated runtime sessions, scheduler/worker, real Pilot resume, provider requests, or probability research.
+Owner review of Day15-T3B10-T4B migration 002 and named recovery-control transactions after complete validation. If approved and pushed, begin T4C local authenticated operator commands and process-session gate as a separately specified and reviewed task. Do not add scheduler/worker, real provider requests, probability research, or trading authority.

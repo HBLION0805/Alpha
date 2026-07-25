@@ -421,6 +421,8 @@ const tests: readonly { readonly name: string; readonly run: () => void }[] = [
         [CollectionRunnerPilotState.Active, CollectionRunnerPilotState.Completed],
         [CollectionRunnerPilotState.Active, CollectionRunnerPilotState.FailedClosed],
         [CollectionRunnerPilotState.StopRequested, CollectionRunnerPilotState.Stopped],
+        [CollectionRunnerPilotState.StopRequested, CollectionRunnerPilotState.Revoked],
+        [CollectionRunnerPilotState.StopRequested, CollectionRunnerPilotState.FailedClosed],
       ];
       for (const [current, next] of edges) {
         const result = engine.transitionPilot({

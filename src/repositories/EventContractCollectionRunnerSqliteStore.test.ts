@@ -12,15 +12,21 @@ import { DatabaseSync } from "node:sqlite";
 import {
   COLLECTION_RUNNER_SQLITE_DEPENDENCY_DECISION,
   COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM,
+  COLLECTION_RUNNER_SQLITE_MIGRATION_V2_CHECKSUM,
   EventContractCollectionRunnerSqliteStore,
   EventContractCollectionRunnerSqliteStoreError,
   EventContractCollectionRunnerSqliteStoreErrorCode,
 } from "./EventContractCollectionRunnerSqliteStore";
 import {
-  COLLECTION_RUNNER_SQLITE_MIGRATION_NAME,
+  COLLECTION_RUNNER_SQLITE_MIGRATION_NAME as COLLECTION_RUNNER_SQLITE_MIGRATION_V1_NAME,
+  COLLECTION_RUNNER_SQLITE_MIGRATION_V1_SQL,
+  COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION as COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_V1,
+} from "./EventContractCollectionRunnerSqliteMigrationV1";
+import {
+  COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME,
   COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
   COLLECTION_RUNNER_SQLITE_TABLES,
-} from "./EventContractCollectionRunnerSqliteMigrationV1";
+} from "./EventContractCollectionRunnerRecoveryControlSqliteMigrationV2";
 
 const BUILD_FINGERPRINT = "fnv1a64:1111111111111111";
 const APPLIED_AT = "2026-07-24T15:00:00.000Z";
@@ -82,6 +88,39 @@ function withRawDatabase(path: string, run: (database: DatabaseSync) => void): v
   } finally {
     database.close();
   }
+}
+
+function initializeV1Store(path: string, populated: boolean): void {
+  withRawDatabase(path, (database) => {
+    database.exec(COLLECTION_RUNNER_SQLITE_MIGRATION_V1_SQL);
+    database
+      .prepare(`
+INSERT INTO schema_migrations
+VALUES (1, ?, ?, ?, ?, ?)
+`)
+      .run(
+        COLLECTION_RUNNER_SQLITE_MIGRATION_V1_NAME,
+        COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM,
+        APPLIED_AT,
+        BUILD_FINGERPRINT,
+        COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_V1,
+      );
+    database.exec("PRAGMA user_version = 1");
+    if (populated) {
+      database
+        .prepare(`
+INSERT INTO runner_definitions
+(runner_definition_id, version, fingerprint, build_fingerprint, canonical_record_json, created_at_utc)
+VALUES ('runner-1', '1.0', ?, ?, ?, ?)
+`)
+        .run(
+          "fnv1a64:2222222222222222",
+          BUILD_FINGERPRINT,
+          '{"fingerprint":"fnv1a64:2222222222222222"}',
+          APPLIED_AT,
+        );
+    }
+  });
 }
 
 const tests: ReadonlyArray<readonly [string, () => void]> = [
@@ -151,7 +190,7 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
       }),
   ],
   [
-    "migration creates the exact fourteen-table STRICT schema",
+    "migrations create the exact nineteen-table STRICT schema",
     () =>
       withTemporaryRoot((root) => {
         const store = openStore(root);
@@ -188,22 +227,29 @@ ORDER BY name
         const path = store.getStorePath();
         store.close();
         withRawDatabase(path, (database) => {
-          const row = database
-            .prepare("SELECT * FROM schema_migrations")
-            .get();
+          const rows = database
+            .prepare(
+              "SELECT * FROM schema_migrations ORDER BY migration_version",
+            )
+            .all();
           assertEqual(
-            row?.migration_version,
+            rows.length,
+            2,
+            "migration count",
+          );
+          assertEqual(
+            rows[1]?.migration_version,
             COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
             "migration version",
           );
           assertEqual(
-            row?.migration_name,
-            COLLECTION_RUNNER_SQLITE_MIGRATION_NAME,
+            rows[1]?.migration_name,
+            COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME,
             "migration name",
           );
           assertEqual(
-            row?.migration_checksum,
-            COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM,
+            rows[1]?.migration_checksum,
+            COLLECTION_RUNNER_SQLITE_MIGRATION_V2_CHECKSUM,
             "migration checksum",
           );
           assertEqual(
@@ -227,8 +273,45 @@ ORDER BY name
             database
               .prepare("SELECT count(*) AS count FROM schema_migrations")
               .get()?.count,
-            1,
+            2,
             "migration count",
+          );
+        });
+      }),
+  ],
+  [
+    "empty v1 store migrates deterministically to v2",
+    () =>
+      withTemporaryRoot((root) => {
+        const path = join(root, "collection-runner.sqlite3");
+        initializeV1Store(path, false);
+        const store = openStore(root);
+        assertEqual(store.getReadiness().schemaVersion, 2, "schema version");
+        store.close();
+      }),
+  ],
+  [
+    "populated v1 store requires a verified backup before v2 migration",
+    () =>
+      withTemporaryRoot((root) => {
+        const path = join(root, "collection-runner.sqlite3");
+        initializeV1Store(path, true);
+        expectStoreError(
+          () => openStore(root),
+          EventContractCollectionRunnerSqliteStoreErrorCode.MigrationConflict,
+        );
+        withRawDatabase(path, (database) => {
+          assertEqual(
+            database.prepare("PRAGMA user_version").get()?.user_version,
+            1,
+            "v1 preserved",
+          );
+          assertEqual(
+            database
+              .prepare("SELECT count(*) AS count FROM runner_definitions")
+              .get()?.count,
+            1,
+            "data preserved",
           );
         });
       }),
@@ -318,7 +401,7 @@ ORDER BY name
         const path = store.getStorePath();
         store.close();
         withRawDatabase(path, (database) =>
-          database.exec("PRAGMA user_version = 2"),
+          database.exec("PRAGMA user_version = 3"),
         );
         expectStoreError(
           () => openStore(root),
@@ -500,7 +583,13 @@ VALUES ('missing-activation', 'fnv1a64:2222222222222222')
         /^sha256:[0-9a-f]{64}$/u.test(
           COLLECTION_RUNNER_SQLITE_MIGRATION_V1_CHECKSUM,
         ),
-        "checksum form",
+        "v1 checksum form",
+      );
+      assertTrue(
+        /^sha256:[0-9a-f]{64}$/u.test(
+          COLLECTION_RUNNER_SQLITE_MIGRATION_V2_CHECKSUM,
+        ),
+        "v2 checksum form",
       );
     },
   ],

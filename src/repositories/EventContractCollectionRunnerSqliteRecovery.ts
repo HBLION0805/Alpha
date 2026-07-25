@@ -13,12 +13,18 @@ import { basename, join, resolve, sep } from "node:path";
 import { backup, DatabaseSync } from "node:sqlite";
 
 import {
-  COLLECTION_RUNNER_SQLITE_MIGRATION_NAME,
   COLLECTION_RUNNER_SQLITE_MIGRATION_V1_SQL,
+  COLLECTION_RUNNER_SQLITE_MIGRATION_NAME as COLLECTION_RUNNER_SQLITE_MIGRATION_V1_NAME,
+  COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION as COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_V1,
+  COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION as COLLECTION_RUNNER_SQLITE_SCHEMA_V1,
+} from "./EventContractCollectionRunnerSqliteMigrationV1";
+import {
+  COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME,
+  COLLECTION_RUNNER_SQLITE_MIGRATION_V2_SQL,
   COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION,
   COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
   COLLECTION_RUNNER_SQLITE_TABLES,
-} from "./EventContractCollectionRunnerSqliteMigrationV1";
+} from "./EventContractCollectionRunnerRecoveryControlSqliteMigrationV2";
 import type { EventContractCollectionRunnerSqliteReadiness } from "./EventContractCollectionRunnerSqliteStore";
 
 const SAFE_ID = /^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/u;
@@ -26,8 +32,11 @@ const UTC_MILLISECONDS =
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u;
 const TERMINAL_TASK_STATES =
   "'COMMITTED','MISSED','TERMINAL_FAILED','CANCELLED'";
-const MIGRATION_CHECKSUM = `sha256:${createHash("sha256")
+const MIGRATION_V1_CHECKSUM = `sha256:${createHash("sha256")
   .update(COLLECTION_RUNNER_SQLITE_MIGRATION_V1_SQL, "utf8")
+  .digest("hex")}`;
+const MIGRATION_V2_CHECKSUM = `sha256:${createHash("sha256")
+  .update(COLLECTION_RUNNER_SQLITE_MIGRATION_V2_SQL, "utf8")
   .digest("hex")}`;
 
 export enum CollectionRunnerRecoveryIssueCode {
@@ -63,6 +72,7 @@ export interface CollectionRunnerStartupRecoveryReport {
   readonly ownerResumeRequired: boolean;
   readonly issueCount: number;
   readonly issues: readonly CollectionRunnerRecoveryIssue[];
+  readonly fingerprint: string;
 }
 
 export interface CreateCollectionRunnerBackupOptions {
@@ -81,9 +91,9 @@ export interface CollectionRunnerBackupManifest {
   readonly backupPath: string;
   readonly manifestPath: string;
   readonly createdAtUtc: string;
-  readonly schemaVersion: 1;
-  readonly schemaContractVersion: "1.0";
-  readonly migrationName: "001_collection_runner_foundation";
+  readonly schemaVersion: 2;
+  readonly schemaContractVersion: "2.0";
+  readonly migrationName: "002_collection_runner_recovery_control";
   readonly migrationChecksum: string;
   readonly schemaCatalogChecksum: string;
   readonly sqliteVersion: string;
@@ -246,6 +256,26 @@ function canonicalMismatchCount(database: DatabaseSync): number {
       "canonical_snapshot_json",
       "source_snapshot_fingerprint",
     ],
+    [
+      "recovery_assessments",
+      "canonical_record_json",
+      "assessment_fingerprint",
+    ],
+    [
+      "owner_recovery_decisions",
+      "canonical_record_json",
+      "decision_fingerprint",
+    ],
+    [
+      "emergency_stop_events",
+      "canonical_record_json",
+      "stop_fingerprint",
+    ],
+    [
+      "control_execution_receipts",
+      "canonical_record_json",
+      "receipt_fingerprint",
+    ],
   ] as const) {
     const rows = database
       .prepare(
@@ -273,22 +303,60 @@ function canonicalMismatchCount(database: DatabaseSync): number {
       }
     }
   }
+  const authorizations = database
+    .prepare(`
+SELECT session_authorization_id, authorization_fingerprint, decision_id,
+       assessment_id, activation_id, expected_activation_aggregate_version,
+       boot_identity, process_session_id, authorized_at_utc, expires_at_utc,
+       revoked_at_utc, revocation_reason_code
+FROM recovery_session_authorizations
+`)
+    .all() as ReadonlyArray<Record<string, unknown>>;
+  for (const row of authorizations) {
+    const record = {
+      sessionAuthorizationId: row.session_authorization_id,
+      decisionId: row.decision_id,
+      assessmentId: row.assessment_id,
+      activationId: row.activation_id,
+      expectedActivationAggregateVersion:
+        row.expected_activation_aggregate_version,
+      bootIdentity: row.boot_identity,
+      processSessionId: row.process_session_id,
+      authorizedAtUtc: row.authorized_at_utc,
+      expiresAtUtc: row.expires_at_utc,
+      revokedAtUtc: row.revoked_at_utc,
+      revocationReasonCode: row.revocation_reason_code,
+    };
+    if (
+      `fnv1a64:${fnv1a64(canonicalize(record))}` !==
+      row.authorization_fingerprint
+    ) {
+      count += 1;
+    }
+  }
   return count;
 }
 
 function migrationMismatchCount(database: DatabaseSync): number {
-  const row = database.prepare(`
+  const rows = database.prepare(`
 SELECT migration_version, migration_name, migration_checksum, schema_contract_version
 FROM schema_migrations
-`).get() as Record<string, unknown> | undefined;
+ORDER BY migration_version
+`).all() as ReadonlyArray<Record<string, unknown>>;
+  const first = rows[0];
+  const second = rows[1];
   const userVersion = Object.values(
     database.prepare("PRAGMA user_version").get() ?? {},
   )[0];
-  return row !== undefined &&
-    row.migration_version === COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION &&
-    row.migration_name === COLLECTION_RUNNER_SQLITE_MIGRATION_NAME &&
-    row.migration_checksum === MIGRATION_CHECKSUM &&
-    row.schema_contract_version ===
+  return rows.length === 2 &&
+    first?.migration_version === COLLECTION_RUNNER_SQLITE_SCHEMA_V1 &&
+    first.migration_name === COLLECTION_RUNNER_SQLITE_MIGRATION_V1_NAME &&
+    first.migration_checksum === MIGRATION_V1_CHECKSUM &&
+    first.schema_contract_version === COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_V1 &&
+    second?.migration_version === COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION &&
+    second.migration_name === COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME &&
+    second.migration_checksum === MIGRATION_V2_CHECKSUM &&
+    second.schema_contract_version ===
       COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION &&
     userVersion === COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION
     ? 0
@@ -527,7 +595,7 @@ WHERE t.current_state = 'COMMITTED' AND NOT EXISTS (
     issue(issues, CollectionRunnerRecoveryIssueCode.InspectionFailed, 1);
   }
   issues.sort((left, right) => left.code.localeCompare(right.code));
-  return freeze({
+  const report = {
     inspectedAtUtc,
     storePath,
     mutationAllowed: issues.length === 0,
@@ -538,6 +606,10 @@ WHERE t.current_state = 'COMMITTED' AND NOT EXISTS (
     ),
     issueCount: issues.reduce((sum, value) => sum + value.count, 0),
     issues,
+  };
+  return freeze({
+    ...report,
+    fingerprint: recordFingerprint(report),
   });
 }
 
@@ -648,8 +720,8 @@ export class EventContractCollectionRunnerSqliteRecoveryManager {
         schemaVersion: COLLECTION_RUNNER_SQLITE_SCHEMA_VERSION,
         schemaContractVersion:
           COLLECTION_RUNNER_SQLITE_SCHEMA_CONTRACT_VERSION,
-        migrationName: COLLECTION_RUNNER_SQLITE_MIGRATION_NAME,
-        migrationChecksum: MIGRATION_CHECKSUM,
+        migrationName: COLLECTION_RUNNER_SQLITE_MIGRATION_V2_NAME,
+        migrationChecksum: MIGRATION_V2_CHECKSUM,
         schemaCatalogChecksum: this.readiness.schemaCatalogChecksum,
         sqliteVersion: this.readiness.sqliteVersion,
         pageCount,

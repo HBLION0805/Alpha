@@ -4,7 +4,9 @@
 
 Day15-T3B10-T4 defines the explicit Owner Resume, Emergency Stop, and recovery-decision boundary required after T3C. The owner approved and pushed that design as `bfe4751d39ae3d0a9e4c0bc70d6889198f9f0516`.
 
-Day15-T3B10-T4A now implements the provider-neutral immutable control contracts and deterministic validation/classification engine locally, pending owner review. It adds no tables, migrations, repository transactions, commands, authenticated operator surface, scheduler/worker operation, provider requests, real pilot activation/resume, model, recommendation, broker, order, or execution behavior.
+Day15-T3B10-T4A implements the provider-neutral immutable control contracts and deterministic validation/classification engine and is committed and pushed as `12848f9621e6d9abf9477cdb5c24260b50351a97`.
+
+Day15-T3B10-T4B implements checksum-bound migration 002 and named recovery-control transactions locally, pending owner review. It adds no owner command, authenticated runtime session gate, scheduler/worker operation, provider request, real pilot activation/resume, model, recommendation, broker, order, or execution behavior.
 
 ## T4A implementation boundary
 
@@ -18,6 +20,19 @@ T4A adds:
 - deterministic Emergency Stop evaluation in which integrity/database failure requires fail-closed behavior and all other stop triggers block resume and new work.
 
 T4A produces immutable decision evidence only. `authorizesMutation` and `authorizesResume` are decision facts for a later reviewed executor; they do not open a repository, persist a record, create a runtime session, or mutate Pilot state.
+
+## T4B implementation boundary
+
+T4B adds:
+
+- five `STRICT` tables for assessments, owner decisions, session authorizations, Emergency Stop events, and execution receipts;
+- checksum-bound migration 002, with deterministic empty-v1 upgrade and fail-closed populated-v1 behavior until a verified backup exists;
+- a restricted recovery-control repository that remains distinct from the ordinary runner repository;
+- named atomic transactions for assessment/decision persistence, decision execution, and Emergency Stop execution;
+- deterministic verification on both write and read, exact recovery report/store path/schema/Pilot/version binding, and immutable sanitized results;
+- one-time decision consumption, session-authorization persistence without `ACTIVE -> ACTIVE`, Emergency Stop precedence, compare-and-swap transitions, authority invalidation, and atomic receipt/outbox evidence.
+
+T4B does not authenticate an operator or activate the session authorization. The ordinary runner repository remains blocked after an operational-pilot restart; T4C owns the authenticated command and process-session gate.
 
 ## Purpose
 

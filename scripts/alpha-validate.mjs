@@ -109,6 +109,7 @@ const aggregateTestFiles = [
   "src/engines/event-contract-source/EventContractSourceEngine.test.ts",
   "src/engines/event-contract-collection-runner/EventContractCollectionRunnerEngine.test.ts",
   "src/repositories/EventContractCollectionRunnerSqliteStore.test.ts",
+  "src/repositories/SqliteEventContractCollectionRunnerRecoveryControlRepository.test.ts",
   "src/repositories/SqliteEventContractCollectionRunnerRepository.test.ts",
   "src/repositories/EventContractCollectionRunnerSqliteRecovery.test.ts",
   "src/engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlEngine.test.ts",

@@ -39,3 +39,5 @@ export * from "./EventContractCollectionRunnerSqliteMigrationV1";
 export * from "./EventContractCollectionRunnerSqliteStore";
 export * from "./EventContractCollectionRunnerRepository";
 export * from "./EventContractCollectionRunnerSqliteRecovery";
+export * from "./EventContractCollectionRunnerRecoveryControlRepository";
+export * from "./SqliteEventContractCollectionRunnerRecoveryControlRepository";

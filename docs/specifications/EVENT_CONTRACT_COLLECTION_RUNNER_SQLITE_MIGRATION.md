@@ -4,6 +4,8 @@
 
 Day15-T3B10-T3A implements the local research-pilot SQLite dependency decision, safe store opening, connection-profile verification, schema migration 001, and fail-closed migration/integrity checks. It is committed and pushed as `3191639fe268b1830ecc1cd70298ef9430db2b4e`.
 
+Day15-T3B10-T4B adds checksum-bound migration 002 locally, pending owner review. Migration 002 adds five recovery-control `STRICT` tables and advances the exact catalog to schema version 2. Empty v1 stores migrate deterministically; populated v1 stores fail closed until a separately verified pre-migration backup exists.
+
 The separately reviewed T3B repository now consumes this store through a private database boundary. T3A itself does not implement scheduler or worker processes, active lease execution, retries, provider requests, pilot activation, runtime configuration, backup or restore tooling, monitoring, models, recommendations, capital state, brokers, orders, or execution.
 
 ## Dependency decision

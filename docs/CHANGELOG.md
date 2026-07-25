@@ -1,6 +1,14 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B10-T4A Recovery Control Contracts and Deterministic Engine (Pending Owner Review)
+## 2026-07-25 - Day15-T3B10-T4B Recovery-Control SQLite Transactions (Pending Owner Review)
+
+- Added checksum-bound migration 002 and expanded the exact local schema from 14 to 19 `STRICT` tables without altering migration 001.
+- Added restricted persistence for immutable recovery assessments, exact-owner decisions, one-time session authorizations, Emergency Stop evidence, and execution receipts.
+- Added named atomic execution transactions with deterministic revalidation, exact recovery/store/schema/Pilot binding, compare-and-swap state, decision consumption, stop precedence, authority invalidation, and transactional outbox evidence.
+- Required populated v1 stores to fail closed until a separately verified pre-migration backup exists; empty v1 stores migrate deterministically.
+- Added 3 focused recovery-control transaction tests and 2 migration upgrade tests. Added no owner command, authenticated runtime gate, ordinary runner unlock, scheduler/worker, provider request, or real resume.
+
+## 2026-07-25 - Day15-T3B10-T4A Recovery Control Contracts and Deterministic Engine
 
 - Added immutable provider-neutral recovery activation, assessment, owner authorization/decision, and Emergency Stop contracts.
 - Added strict deterministic assessment creation and verification with explicit resume, reconciliation, stop-completion, expiry, restore-switch, terminal, and fail-closed dispositions.
@@ -8,6 +16,7 @@
 - Added Emergency Stop classification that blocks resume and new work, with fail-closed precedence for integrity and database failures.
 - Added 20 focused tests and registered them in complete validation.
 - Added no migration, database write, repository transaction, owner command, authenticated session gate, scheduler/worker, provider request, real resume, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T4A as `12848f9621e6d9abf9477cdb5c24260b50351a97`.
 
 ## 2026-07-24 - Day15-T3B10-T4 Recovery Control and Emergency Stop Design
 
