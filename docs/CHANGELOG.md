@@ -1,6 +1,14 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B10-T4C Local Owner Command and Session Gate (Pending Owner Review)
+## 2026-07-25 - Day15-T3B10-T4D Recovery-Control Race and Crash Drills (Pending Owner Review)
+
+- Added six network-free drills covering both two-connection Stop/Resume orderings, restart after Resume, restart after Stop, injected Resume transaction failure, and durable Emergency Stop persistence failure.
+- Proved that a restart preserves immutable authorization evidence but rejects the prior recovery context and ordinary mutation path.
+- Proved that injected Resume failure atomically rolls back decision consumption, session creation, and receipt creation.
+- Corrected Emergency Stop session revocation so lifecycle fields and the authorization fingerprint change atomically and revoked sessions remain deterministically readable.
+- Added no scheduler, worker, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B10-T4C Local Owner Command and Session Gate
 
 - Added a local-only Owner command whose secret is accepted only through standard input and is never persisted or printed.
 - Added fixed-policy `scrypt` verification, constant-time comparison, exact command challenge binding, and generic authentication failure responses.
@@ -8,6 +16,7 @@
 - Added an irreversible process-local stop barrier that blocks mutation even when durable Emergency Stop persistence fails.
 - Added focused tests for secret argument prohibition, invalid authentication with zero decision writes, valid authenticated execution, wrong-session and expired-session denial, and stop-barrier precedence.
 - Added no scheduler, worker, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T4C as `c11cbf844284676ad5dfeee89fd82221cc5282a9`.
 
 ## 2026-07-25 - Day15-T3B10-T4B Recovery-Control SQLite Transactions
 

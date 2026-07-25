@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B10-T4B is committed and pushed; Day15-T3B10-T4C local Owner authentication command and process-session gate are implemented locally and pending owner review
+Day15-T3B10-T4C is committed and pushed; Day15-T3B10-T4D network-free recovery-control race and crash drills are implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `529ddbc1fc53a8d93a1beca77bc277e78fac9c2c` on `main`, equal to `origin/main` before the T3B10-T4C implementation task.
+Verified baseline: `c11cbf844284676ad5dfeee89fd82221cc5282a9` on `main`, equal to `origin/main` before the T3B10-T4D implementation task.
 
 Day 7 completed:
 
@@ -69,7 +69,9 @@ Day15-T3B10-T4A is committed and pushed as `12848f9621e6d9abf9477cdb5c24260b5035
 
 Day15-T3B10-T4B is committed and pushed as `529ddbc1fc53a8d93a1beca77bc277e78fac9c2c`. It adds checksum-bound migration 002, five recovery-control `STRICT` tables, a restricted repository, deterministic evidence verification, exact recovery/store/schema/Pilot binding, one-time decision consumption, session-authorization persistence, Emergency Stop precedence, compare-and-swap stop/terminal transitions, and atomic receipt/outbox evidence.
 
-Day15-T3B10-T4C is implemented locally and pending owner review. It adds stdin-only local Owner secret handling, fixed-policy `scrypt` authentication, exact command challenge binding, an executable local command, a session-gated repository wrapper with per-write durable revalidation, and an irreversible in-memory stop barrier. It adds no credential enrollment/recovery, remote authentication, scheduler/worker, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
+Day15-T3B10-T4C is committed and pushed as `c11cbf844284676ad5dfeee89fd82221cc5282a9`. It adds stdin-only local Owner secret handling, fixed-policy `scrypt` authentication, exact command challenge binding, an executable local command, a session-gated repository wrapper with per-write durable revalidation, and an irreversible in-memory stop barrier.
+
+Day15-T3B10-T4D is implemented locally and pending owner review. Six network-free drills cover both two-connection Stop/Resume orderings, crash after Resume, crash after Stop, injected atomic Resume failure, and durable Stop persistence failure. The drills found and corrected revoked-session fingerprint drift. T4D adds no credential enrollment/recovery, remote authentication, scheduler/worker, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
 
 ## Day 6 Milestone Review
 
@@ -396,6 +398,8 @@ Day15-T3B10-T4B adds 3/3 focused SQLite recovery-control transaction tests and 2
 
 Day15-T3B10-T4C raises the focused SQLite recovery-control suite from 3/3 to 6/6 and raises the complete registered validation baseline to 1987/1987.
 
+Day15-T3B10-T4D adds 6/6 focused recovery-control race/crash drills and raises the complete registered validation baseline to 1993/1993.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -446,6 +450,7 @@ Day15-T3B10-T4C raises the focused SQLite recovery-control suite from 3/3 to 6/6
 - `47a7a45df7dd9ad03e996389aaa2cc8b394aa699` — Event Contract Collection Runner SQLite Recovery, Backup, and Restore
 - `12848f9621e6d9abf9477cdb5c24260b50351a97` — Event Contract Collection Runner Recovery-Control Contracts and Deterministic Engine
 - `529ddbc1fc53a8d93a1beca77bc277e78fac9c2c` — Event Contract Collection Runner Durable Recovery-Control Transactions
+- `c11cbf844284676ad5dfeee89fd82221cc5282a9` — Event Contract Collection Runner Local Owner Authentication and Session Gate
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -497,4 +502,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B10-T4C local authentication command and process-session gate after complete validation. If approved and pushed, begin T4D network-free stop/resume race and crash drills. Do not start a scheduler/worker, real provider request, continuous runner, probability research, or trading authority.
+Owner review of Day15-T3B10-T4D network-free stop/resume race and crash drills after complete validation. If approved and pushed, perform a milestone review before authorizing any scheduler/worker or real provider pilot. Do not start a scheduler/worker, real provider request, continuous runner, probability research, or trading authority.

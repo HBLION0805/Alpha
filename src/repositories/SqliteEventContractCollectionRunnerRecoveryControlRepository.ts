@@ -1089,13 +1089,53 @@ WHERE activation_id = ?
         activationId,
         excludingDecisionId ?? "",
       );
-    this.database
+    const activeSessions = this.database
       .prepare(`
-UPDATE recovery_session_authorizations
-SET revoked_at_utc = ?, revocation_reason_code = ?
+SELECT *
+FROM recovery_session_authorizations
 WHERE activation_id = ? AND revoked_at_utc IS NULL
+ORDER BY session_authorization_id
 `)
-      .run(invalidatedAtUtc, reasonCode, activationId);
+      .all(activationId) as readonly Row[];
+    const revoke = this.database.prepare(`
+UPDATE recovery_session_authorizations
+SET authorization_fingerprint = ?,
+    revoked_at_utc = ?,
+    revocation_reason_code = ?
+WHERE session_authorization_id = ?
+  AND authorization_fingerprint = ?
+  AND revoked_at_utc IS NULL
+`);
+    for (const row of activeSessions) {
+      const current = this.#sessionFromRow(row);
+      const revokedBase = {
+        sessionAuthorizationId: current.sessionAuthorizationId,
+        decisionId: current.decisionId,
+        assessmentId: current.assessmentId,
+        activationId: current.activationId,
+        expectedActivationAggregateVersion:
+          current.expectedActivationAggregateVersion,
+        bootIdentity: current.bootIdentity,
+        processSessionId: current.processSessionId,
+        authorizedAtUtc: current.authorizedAtUtc,
+        expiresAtUtc: current.expiresAtUtc,
+        revokedAtUtc: invalidatedAtUtc,
+        revocationReasonCode: reasonCode,
+      };
+      const result = revoke.run(
+        fingerprint(revokedBase),
+        invalidatedAtUtc,
+        reasonCode,
+        current.sessionAuthorizationId,
+        current.authorizationFingerprint,
+      );
+      if (result.changes !== 1) {
+        throw error(
+          CollectionRunnerRecoveryControlRepositoryErrorCode.VersionConflict,
+          "Recovery session authorization changed during revocation.",
+        );
+      }
+    }
   }
 
   #assertCurrentContext(

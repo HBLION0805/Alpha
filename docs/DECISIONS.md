@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B10-T4D Recovery-Control Drills
+
+### Race Safety Is Proven by Both Durable Commit Orderings
+
+- Decision: Exercise Stop-before-Resume and Resume-before-Stop through two independent SQLite store connections rather than relying on timing-sensitive threads.
+- Rationale: `BEGIN IMMEDIATE` serializes the actual durable winner; testing both legal commit orderings is deterministic and covers the safety outcome without flaky wall-clock scheduling.
+- Consequence: Stop-first invalidates an unconsumed decision, while Resume-first may create evidence but the subsequent Stop revokes the session before any further gated mutation.
+
+### Revocation Changes the Session Record Fingerprint Atomically
+
+- Decision: Recompute and compare-and-swap the authorization fingerprint in the same transaction that writes session revocation time and reason.
+- Rationale: A fingerprint over lifecycle fields becomes stale if revocation columns change without the fingerprint, making the safety record unreadable exactly when it is needed.
+- Consequence: the pre-stop fingerprint can no longer authorize work, while the revoked record remains internally verifiable and auditable.
+
+### Fault Drills Preserve Ambiguity Rather Than Inventing Completion
+
+- Decision: Inject transaction and durable-stop failures only at local repository boundaries, then close and reopen the store to inspect committed truth.
+- Rationale: A crash drill must distinguish committed evidence from process-local intent and must not repair, delete, or infer an uncommitted outcome.
+- Consequence: Resume transaction failure leaves no partial authority; durable Stop failure leaves the current process barrier tripped and the next startup mutation-blocked.
+
 ## 2026-07-25 - Day15-T3B10-T4C Local Authentication and Session Gate
 
 ### Secrets Never Enter Command Arguments or Durable Evidence

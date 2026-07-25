@@ -8,7 +8,9 @@ Day15-T3B10-T4A implements the provider-neutral immutable control contracts and 
 
 Day15-T3B10-T4B implements checksum-bound migration 002 and named recovery-control transactions and is committed and pushed as `529ddbc1fc53a8d93a1beca77bc277e78fac9c2c`.
 
-Day15-T3B10-T4C implements the local authenticated Owner command, process-session repository gate, and immediate in-memory stop barrier locally, pending owner review. It adds no scheduler/worker operation, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
+Day15-T3B10-T4C implements the local authenticated Owner command, process-session repository gate, and immediate in-memory stop barrier and is committed and pushed as `c11cbf844284676ad5dfeee89fd82221cc5282a9`.
+
+Day15-T3B10-T4D implements six network-free stop/resume race, crash/restart, transaction-fault, and durable-stop-failure drills locally, pending owner review. The drills found and corrected session-revocation fingerprint drift. T4D adds no scheduler/worker operation, provider request, continuous runner, model, recommendation, broker, order, or execution behavior.
 
 ## T4A implementation boundary
 
@@ -49,6 +51,18 @@ T4C adds:
 - an irreversible process-local stop barrier that is set before durable Emergency Stop is attempted.
 
 T4C does not provision or recover Owner credentials, authenticate remotely, start a runtime loop, schedule work, invoke a provider, or grant any trading authority. The verifier remains local research-pilot infrastructure and requires a separate commercial credential-security review.
+
+## T4D implementation boundary
+
+T4D adds:
+
+- deterministic two-connection ordering drills for Stop-before-Resume and Resume-before-Stop;
+- restart drills proving that durable evidence survives while the previous recovery context and process session cannot be reused;
+- a fault-injected resume transaction proving decision consumption, session insertion, and receipt creation roll back together;
+- a durable-stop failure drill proving the in-memory barrier trips before SQLite persistence and remains authoritative for the current process;
+- regression coverage proving revoked session records remain readable and fingerprint-coherent after Emergency Stop.
+
+The drill suite uses only temporary local SQLite stores, injected failures, and fixture evidence. It performs no network request, scheduling, worker operation, provider call, credential enrollment, model inference, recommendation, broker action, order, or execution.
 
 ## Purpose
 

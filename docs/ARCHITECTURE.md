@@ -737,6 +737,8 @@ Day15-T3B10-T4B adds checksum-bound migration 002 and a separately restricted re
 
 Day15-T3B10-T4C adds a local-only Owner command and an authenticated process-session repository gate. Owner secrets enter only through standard input, are checked with fixed-policy `scrypt` and constant-time comparison, and are never placed in command arguments, environment options, output, decisions, receipts, or audit records. The exact command becomes the authentication challenge. A resumed repository rejects new definitions, Pilots, and task authority; every allowed write revalidates the unexpired, unrevoked session, exact store/report/schema/Pilot version, process/boot identity, task membership, and absence of a later Emergency Stop. An irreversible process-local stop barrier blocks writes even if durable stop persistence fails. T4C still starts no scheduler, worker, provider request, or continuous runner.
 
+Day15-T3B10-T4D exercises the recovery-control boundary with temporary, network-free SQLite stores. Two independent store connections cover both Stop/Resume commit orderings; close/reopen drills prove old recovery contexts cannot reuse a prior session; an injected SQLite abort proves the Resume transaction leaves no partial consumption, session, or receipt; and an injected durable-stop failure proves the process barrier still blocks mutation. Revoking a session now updates its lifecycle fields and authorization fingerprint in the same transaction so durable reads remain coherent. T4D adds validation evidence only and starts no runtime loop.
+
 ---
 
 # Event Contract Framework
