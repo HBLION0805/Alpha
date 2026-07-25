@@ -1,6 +1,18 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B12-T1 Fixture Runtime Assembly and Recovery Architecture (Pending Owner Review)
+## 2026-07-25 - Day15-T3B12-T2 Contracts and Pure Planners (Pending Owner Review)
+
+- Added closed immutable contracts for one runtime invocation, bounded work snapshots, exact T6 requests/results, and sanitized terminal reports.
+- Added a strict deterministic work-snapshot constructor and verifier with explicit task, lease, chronology, retry, budget, and fingerprint checks.
+- Added a pure planner that evaluates configuration, ownership, session, clock, Stop, Pilot, recovery, budget, and task evidence in a fixed fail-closed order and selects at most one action.
+- Kept `TRANSITION_EXACT_TASK_DUE` and `MARK_EXACT_TASK_MISSED` separate from fixture Worker execution.
+- Added closed lifecycle-transition validation, exact T6 request construction, and immutable terminal-report construction.
+- Added narrow bounded snapshot-read and T6-executor ports without repository, SQLite, command, filesystem, provider, or runtime implementation.
+- Added 47 deterministic network-free focused tests and registered them in the complete validation bundle.
+- Complete Alpha validation passes `2112/2112` with zero failures.
+- Added no dependency, command, timer, loop, stale-lock mutation, provider request, Pilot activation, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B12-T1 Fixture Runtime Assembly and Recovery Architecture
 
 - Defined the first assembled form as one foreground fixture step that performs at most one deterministic action and exits.
 - Defined one closed startup-to-close lifecycle, bounded work-snapshot repository, pure action planner, exact T6 executor ownership, and sanitized terminal report.
@@ -10,6 +22,7 @@
 - Defined real child-process kill points across lock, session, T6, lease, attempt, validation, T10, Stop, and quarantine boundaries.
 - Split T3B12 into separately approved contracts/planner, ownership recovery, single-step assembly, process-drill, and milestone-review tasks.
 - Added no code, dependency, command, timer, loop, provider, Pilot activation, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B12-T1 as `5791a2a69776861ff22464aada2eb72511cb20ce`.
 
 ## 2026-07-25 - Day15-T3B11 Fixture Runtime Milestone Review
 

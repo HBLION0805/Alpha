@@ -755,6 +755,8 @@ Day15-T3B11-MR1 accepts the T3B11 fixture-runtime components as reusable foundat
 
 Day15-T3B12-T1 designs that missing composition without implementing it. The first assembled form is one foreground fixture step: immutable startup and recovery gates produce a bounded work snapshot, a pure planner selects exactly one action, and the invocation performs either one T6 transition, one existing fixture Worker cycle, Stop/close, or no mutation before exiting. T6 and Worker execution never occur in the same step. Stale ownership requires exact local Owner authentication and is atomically quarantined with immutable evidence rather than deleted or automatically taken over. Real child-process drills must cover session, T6, lease, attempt, validation, T10, Stop, and quarantine crash points before runtime start can be reviewed. See [Event Contract Collection Runner Runtime Assembly and Recovery Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_RECOVERY.md).
 
+Day15-T3B12-T2 implements only the deterministic seam of that design. Strict immutable contracts describe the invocation lifecycle, bounded sanitized work snapshot, closed one-action decision, exact T6 request/result, and terminal report. A pure planner evaluates current authority and durable evidence in a fixed order, while narrow ports reserve bounded snapshot reads and separately gated T6 execution for later composition. This layer owns no command, filesystem recovery, repository implementation, SQLite connection, provider, clock, wait, loop, or runtime start.
+
 ---
 
 # Event Contract Framework

@@ -56,6 +56,7 @@ const requiredFiles = [
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_ARCHITECTURE.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_CONTRACTS.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE.md",
+  "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_RECOVERY.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -119,6 +120,7 @@ const aggregateTestFiles = [
   "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOperator.test.ts",
   "src/repositories/EventContractCollectionRunnerRuntimeProjectionRepository.test.ts",
   "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeProcessDrill.test.ts",
+  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeAssemblyPlanner.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",

@@ -2,14 +2,18 @@
 
 ## Status
 
-Day15-T3B12-T1 is a design-only task.
+Day15-T3B12-T1 is committed and pushed as
+`5791a2a69776861ff22464aada2eb72511cb20ce`.
+
+Day15-T3B12-T2 implements the reviewed contracts and pure planners locally and
+is pending Owner review.
 
 It follows the T3B11-MR1 decision:
 
 `FIXTURE_RUNTIME_FOUNDATION_ACCEPTED / GO_FOR_ASSEMBLY_DESIGN / NO_GO_FOR_RUNTIME_START / NO_GO_FOR_BOUNDED_LIVE`
 
-The reviewed baseline is
-`31d5d9028eebc4ec5058c42932ee6e935033ddf6`.
+The T3B12-T2 reviewed baseline is
+`5791a2a69776861ff22464aada2eb72511cb20ce`.
 
 This task does not implement or expose a runtime command, timer, loop, daemon,
 service, lock-recovery command, provider request, Pilot activation, Outbox
@@ -552,10 +556,11 @@ durable Stop state. Runtime-control files cannot override SQLite authority.
 
 T3B12 remains separately gated:
 
-1. **T3B12-T1 — Assembly and recovery architecture:** this document only.
+1. **T3B12-T1 — Assembly and recovery architecture:** completed and pushed.
 2. **T3B12-T2 — Contracts and pure planners:** lifecycle contracts, bounded
    work-snapshot port, closed action planner, T6 executor contract, and
-   sanitized terminal reports; no command or filesystem recovery.
+   sanitized terminal reports; implemented locally and pending Owner review;
+   no command or filesystem recovery.
 3. **T3B12-T3 — Authenticated ownership recovery:** inspection, Owner decision,
    atomic quarantine, idempotent receipt, and crash tests; no runtime step.
 4. **T3B12-T4 — Single foreground fixture step:** reviewed composition root and
@@ -593,7 +598,7 @@ T3B12 may pass only when:
 
 ## Explicit exclusions
 
-T3B12-T1 adds no:
+T3B12-T1/T2 add no:
 
 - TypeScript or Python business code;
 - package dependency;
@@ -609,6 +614,8 @@ T3B12-T1 adds no:
 
 ## Owner review recommendation
 
-Approve T3B12-T1 for architecture only, then begin T3B12-T2 contracts and pure
-planners. Do not combine T3B12-T1 approval with command implementation,
-stale-lock mutation, fixture rehearsal, provider admission, or live operation.
+Review T3B12-T2 contracts and pure planners. If approved and pushed, begin
+T3B12-T3 authenticated ownership recovery as a separately gated task. Do not
+combine T3B12-T2 approval with command implementation, runtime start,
+unauthenticated stale-lock mutation, fixture rehearsal, provider admission, or
+live operation.

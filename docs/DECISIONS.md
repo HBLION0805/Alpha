@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B12-T2 Contracts and Pure Planners
+
+### The Planner Selects Exactly One Action From One Verified Snapshot
+
+- Decision: one immutable bounded work snapshot and current process authority produce one closed action, reason code, exact versions, and fingerprint.
+- Rationale: a pure one-action boundary makes ordering, replay, and crash outcomes independently testable before an executable composition exists.
+- Consequence: the planner performs no repository read, SQLite write, filesystem mutation, provider call, wait, retry, or Worker invocation.
+
+### Authority and Recovery Gates Precede Task Selection
+
+- Decision: configuration, lock, session, clock, Emergency Stop, process Stop, Pilot state, expiry, reconciliation, and budget checks run before task ordering.
+- Rationale: task eligibility cannot widen authority after ownership, health, Stop, recovery, or budget evidence fails.
+- Consequence: invalid or ambiguous evidence fails closed or requests the explicit reviewed Stop path before any task action.
+
+### T6 Receives Exact Compare-and-Swap Evidence
+
+- Decision: T6 requests bind the activation, task and budget versions, observation time, work-snapshot fingerprint, planner-decision fingerprint, and reason.
+- Rationale: an executor must not infer a task or reuse a planner result against changed durable state.
+- Consequence: T6 execution remains a separately implemented, session-gated port and cannot fall through into fixture Worker execution.
+
 ## 2026-07-25 - Day15-T3B12-T1 Fixture Runtime Assembly and Recovery Architecture
 
 ### The First Assembly Is One Foreground Step

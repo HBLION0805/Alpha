@@ -43,3 +43,4 @@ export * from "./EventContractCollectionRunnerRecoveryControlRepository";
 export * from "./SqliteEventContractCollectionRunnerRecoveryControlRepository";
 export * from "./SessionGatedEventContractCollectionRunnerRepository";
 export * from "./EventContractCollectionRunnerRuntimeProjectionRepository";
+export * from "./EventContractCollectionRunnerRuntimeAssemblyRepository";

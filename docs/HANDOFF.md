@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B11-MR1 is committed and pushed; Day15-T3B12-T1 Fixture Runtime Assembly and Recovery Architecture is implemented locally and pending Owner review
+Day15-T3B12-T1 is committed and pushed; Day15-T3B12-T2 Contracts and Pure Planners is implemented locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `31d5d9028eebc4ec5058c42932ee6e935033ddf6` on `main`, equal to `origin/main` before the T3B12-T1 design task.
+Verified baseline: `5791a2a69776861ff22464aada2eb72511cb20ce` on `main`, equal to `origin/main` before the T3B12-T2 implementation task.
 
 Day 7 completed:
 
@@ -87,7 +87,9 @@ Day15-T3B11-T5 is committed and pushed as `c72a90c672c2297d381cf76238e642034c419
 
 Day15-T3B11-MR1 is committed and pushed as `31d5d9028eebc4ec5058c42932ee6e935033ddf6`. The review accepts the T3B11 fixture-runtime components as reusable foundations and permits assembly design only. Runtime start and bounded-live operation remain blocked.
 
-Day15-T3B12-T1 is implemented locally and pending Owner review. It defines one foreground one-action fixture step, a closed startup-to-close state machine, a bounded sanitized work snapshot, a pure action planner, exact T6 ownership, separate T6/Worker invocations, local lifecycle-command boundaries, fixed shutdown ambiguity, authenticated stale-lock quarantine, and real child-process crash points through T10 and recovery. It adds no code, command, timer, loop, provider, Pilot activation, model, recommendation, broker, order, or execution authority.
+Day15-T3B12-T1 is committed and pushed as `5791a2a69776861ff22464aada2eb72511cb20ce`. It defines one foreground one-action fixture step, a closed startup-to-close state machine, a bounded sanitized work snapshot, a pure action planner, exact T6 ownership, separate T6/Worker invocations, local lifecycle-command boundaries, fixed shutdown ambiguity, authenticated stale-lock quarantine, and real child-process crash points through T10 and recovery.
+
+Day15-T3B12-T2 is implemented locally and pending Owner review. It adds strict immutable lifecycle, work-snapshot, one-action decision, T6, and terminal-report contracts; a bounded snapshot constructor/verifier; a pure deterministic planner with authority/recovery/budget/task gate ordering; exact T6 request construction; lifecycle validation; sanitized terminal reporting; and narrow snapshot-read/T6-executor ports. Its 47 focused tests are network-free, and complete Alpha validation passes `2112/2112`. It adds no executable command, repository/SQLite implementation, filesystem recovery mutation, runtime start, timer, loop, provider, Pilot activation, model, recommendation, broker, order, or execution authority.
 
 ## Day 6 Milestone Review
 
@@ -523,4 +525,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B12-T1 Fixture Runtime Assembly and Recovery Architecture. If approved and pushed, begin T3B12-T2 contracts and pure planners. Do not add executable commands, filesystem recovery mutation, runtime start, loop, network provider, real Pilot activation, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B12-T2 Contracts and Pure Planners. If approved and pushed, begin T3B12-T3 authenticated ownership recovery. Do not add executable commands, runtime start, unauthenticated filesystem recovery mutation, loops, network providers, real Pilot activation, probability research, recommendation, or trading authority.

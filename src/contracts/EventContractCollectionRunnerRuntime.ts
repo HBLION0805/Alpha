@@ -29,6 +29,9 @@ export enum CollectionRunnerRuntimeFoundationErrorCode {
   WorkerPersistenceFailed = "WORKER_PERSISTENCE_FAILED",
   InvalidOperatorInput = "INVALID_OPERATOR_INPUT",
   StopPersistenceFailed = "STOP_PERSISTENCE_FAILED",
+  InvalidAssemblyInput = "INVALID_ASSEMBLY_INPUT",
+  InvalidLifecycleTransition = "INVALID_LIFECYCLE_TRANSITION",
+  InvalidWorkSnapshot = "INVALID_WORK_SNAPSHOT",
 }
 
 export enum CollectionRunnerSchedulerAction {
