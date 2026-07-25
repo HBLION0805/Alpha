@@ -767,6 +767,8 @@ Day15-T3B12-MR1 accepts the assembled fixture-runtime and recovery foundations a
 
 Day15-T3B13-T1 designs that fixture rehearsal without implementing or running it. One immutable manifest and allow-listed catalog entry bind a synthetic isolated Pilot, exact fixture source, expected per-invocation actions, bounds, and evidence policy. Separate manual foreground invocations each execute at most one T3B12 action; no internal loop arranges the next step. A bounded content-addressed evidence package retains sanitized receipts, terminal reports, recovery/quarantine identities, payload-free Outbox chronology, SQLite integrity/backup evidence, and a mandatory non-authority declaration. An independent verifier distinguishes the environment-specific execution package from the deterministic scenario result. See [Event Contract Collection Runner Fixture Rehearsal and Evidence Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_FIXTURE_REHEARSAL.md).
 
+Day15-T3B13-T2 implements only the pure contract boundary from that design. The content-derived manifest freezes approval, build, runner, plan, fixture, provider/mapping, synthetic Pilot/task, expected action sequence, terminal truth, evidence policy, retention, and non-authority identity. Append-only lifecycle and exact-ordinal receipts cannot reopen terminal states or substitute actions. The independent verifier produces only `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`; its stable scenario fingerprint excludes process, boot, workspace, store, and timing identity, while the execution-package fingerprint preserves them. No filesystem, SQLite, command, fixture execution, or network authority is present.
+
 ---
 
 # Event Contract Framework

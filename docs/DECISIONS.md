@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B13-T2 Pure Rehearsal Verification Boundary
+
+- Decision: construct the rehearsal identity from the complete closed manifest rather than accept a caller-selected rehearsal ID.
+- Decision: require contiguous exact invocation ordinals and bind each receipt to the manifest-declared action and resulting task state.
+- Decision: keep lifecycle transitions append-only and reject backward movement or terminal reopening.
+- Decision: classify independent verification as exactly `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`; missing evidence can never be operator-promoted to success.
+- Decision: use separate fingerprints for environment-specific execution evidence and stable scenario truth.
+- Decision: exclude filesystem, SQLite, command, runtime data, fixture execution, network, real Pilot, model, recommendation, broker, order, and execution behavior from T3B13-T2.
+- Consequence: later preparation and process work can consume reviewed immutable records without inheriting hidden runtime authority.
+
 ## 2026-07-25 - Day15-T3B13-T1 Fixture Rehearsal and Evidence Architecture
 
 ### Rehearsal Is Manual, Fixture-Only, and One Action Per Invocation

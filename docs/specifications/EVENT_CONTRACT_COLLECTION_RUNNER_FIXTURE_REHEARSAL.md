@@ -533,6 +533,20 @@ T3B13 remains separately gated:
 
 Approval of one task grants no authority to begin the next.
 
+### Implementation status
+
+- T3B13-T1 is committed and pushed as
+  `d687c2061ecb8b54233759de54942a147e5f2b4b`.
+- T3B13-T2 implements the strict immutable manifest, lifecycle, preparation and
+  invocation receipt, evidence-package, inventory, Outbox-identity, terminal
+  summary, dual-fingerprint, and verification-result contracts.
+- T3B13-T2 verification is pure and network-free and returns only `PASS`,
+  `FAIL_CLOSED`, or `INCOMPLETE`.
+- T3B13-T2 adds no filesystem, SQLite, command, runtime data, fixture
+  execution, provider, Pilot operation, model, recommendation, broker, order,
+  or execution authority.
+- T3B13-T3 remains unstarted and requires separate Owner approval.
+
 ## Acceptance criteria
 
 T3B13 may pass only when:

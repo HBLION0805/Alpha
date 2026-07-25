@@ -1,12 +1,22 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B13-T1 Fixture Rehearsal and Evidence Architecture (Pending Owner Review)
+## 2026-07-25 - Day15-T3B13-T2 Rehearsal Contracts and Pure Verification (Pending Owner Review)
+
+- Added strict immutable contracts for the content-addressed rehearsal manifest, append-only lifecycle transitions, preparation and invocation receipts, bounded evidence package, terminal summary, Outbox identity chronology, and package inventory.
+- Added pure deterministic construction and independent verification with exactly `PASS`, `FAIL_CLOSED`, or `INCOMPLETE` dispositions.
+- Enforced contiguous invocation ordinals, frozen action/task-state expectations, closed schemas, mandatory non-authority text, evidence bounds, terminal-state coherence, Outbox identity matching, and tamper-evident fingerprints.
+- Separated environment-specific execution-package identity from stable scenario-result identity; process, boot, workspace, store, timing, and package time cannot alter the scenario result.
+- Added 38 network-free focused tests for deterministic replay, unknown-field rejection, invalid lifecycle transitions, changed replay, missing evidence, digest substitution, failed checks, and authority substitution.
+- Added no filesystem, SQLite access, command, runtime data, fixture execution, provider, network request, Pilot operation, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B13-T1 Fixture Rehearsal and Evidence Architecture
 
 - Designed one owner-approved, local, fixture-only, network-free rehearsal over one isolated synthetic Pilot and one action per process invocation.
 - Defined a strict content-addressed rehearsal manifest, allow-listed fixture catalog, isolated workspace rules, append-only lifecycle, exact invocation ordinals, Stop/recovery precedence, and no-loop sequencing.
 - Defined bounded sanitized evidence packages, independent verification, separate execution/scenario fingerprints, SQLite backup/integrity evidence, replay, retention, and leakage requirements.
 - Split later work into separately approved contracts, workspace preparation, programmatic step collection, package/process drills, milestone review, and one explicit rehearsal-run gate.
 - Added no code, command, dependency, runtime data, fixture execution, provider, network request, Pilot operation, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B13-T1 as `d687c2061ecb8b54233759de54942a147e5f2b4b`.
 
 ## 2026-07-25 - Day15-T3B12 Assembly and Recovery Milestone Review
 

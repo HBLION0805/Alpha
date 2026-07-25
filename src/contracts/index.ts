@@ -63,4 +63,5 @@ export * from "./EventContractCollectionRunner";
 export * from "./EventContractCollectionRunnerRecoveryControl";
 export * from "./EventContractCollectionRunnerRuntime";
 export * from "./EventContractCollectionRunnerRuntimeAssembly";
+export * from "./EventContractCollectionRunnerFixtureRehearsal";
 export * from "./EventContractCollectionRunnerRuntimeOwnershipRecovery";
