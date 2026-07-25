@@ -364,10 +364,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B12-T3 status: completed, committed, and pushed as `ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6677`.
    - T3B12-T3 scope: exact stale-lock inspection, closed liveness/disposition classification, challenge-bound local Owner authorization, atomic same-filesystem quarantine, immutable owner/receipt evidence, exact replay, and network-free failure tests.
    - T3B12-T3 excludes: executable command, recursive deletion, automatic takeover, Pilot Resume, new process-session authorization, runtime start, SQLite mutation, timers, loops, providers, models, recommendations, brokers, orders, or execution.
-   - T3B12-T4 status: single foreground fixture step is implemented locally and pending Owner review.
+   - T3B12-T4 status: completed, committed, and pushed as `285ec30f9e820d5eee6c7b142261eb000e0a023a`.
    - T3B12-T4 scope: closed startup-session and execution ports, one Preflight, one bounded snapshot, one planner call, at most one T6/fixture/Stop action, terminal-state reread, ordered close, verified clean release, and ambiguity preservation.
    - T3B12-T4 excludes: executable command, wait, retry, timer, loop, daemon, network provider, real Pilot activation, Outbox delivery, probability research, recommendation, broker, order, or execution.
-   - T3B12 next sequence: T5 transaction-boundary process drills; MR1.
+   - T3B12-T5 status: 11 transaction-boundary child-process drills are implemented locally and pending Owner review.
+   - T3B12-T5 scope: process termination before/after startup ownership, T6/T7/T8/validation/T10 durability, old-session rejection, Stop rollback, stale-lock preservation, and exact quarantine/evidence replay.
+   - T3B12-T5 excludes: production fault injection, executable runtime command, automatic takeover, retry loop, timer, daemon, network provider, real Pilot activation, recommendation, broker, order, or execution.
+   - T3B12 next sequence: T5 Owner review; MR1.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

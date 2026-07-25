@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B12-T5 Transaction-Boundary Process Drills
+
+### Crash Evidence Must Come From Real Process Termination
+
+- Decision: transaction-boundary recovery drills launch a fixture-only child process, wait for an explicit checkpoint, terminate that process, and inspect only reopened durable state.
+- Rationale: same-process exceptions cannot prove OS-handle loss, WAL recovery, stale ownership, or process-session invalidation.
+- Consequence: production code gains no crash switch; all termination controls and fault staging remain isolated under test fixtures.
+
+### Ambiguous Requests and Partial Control Writes Fail Closed
+
+- Decision: a crash after an attempt claim preserves an unresolved attempt without automatic retry, while a crash inside an uncommitted Stop write preserves no partial Stop, receipt, or Pilot transition.
+- Rationale: provider outcome ambiguity and local transaction atomicity are different failure classes and must remain distinguishable.
+- Consequence: restart policy must inspect durable attempt/lease/Stop truth and cannot infer success, retry, or authority from the prior process.
+
+### Durable Completion and Quarantine Are Exactly Replayable
+
+- Decision: T10 evidence commit and stale-ownership quarantine must return their original durable result after process restart.
+- Rationale: a process can die after commit or rename but before reporting success.
+- Consequence: exact replay creates neither duplicate evidence nor a second quarantine mutation; changed replay remains fail closed.
+
 ## 2026-07-25 - Day15-T3B12-T4 Single Foreground Fixture Step
 
 ### One Invocation Selects and Executes At Most One Action

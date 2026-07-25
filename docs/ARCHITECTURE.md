@@ -761,6 +761,8 @@ Day15-T3B12-T3 implements authenticated ownership recovery without assembling or
 
 Day15-T3B12-T4 implements the first foreground one-action composition boundary. A closed startup session supplies exact fixture-only identity and Preflight; the step samples fresh clocks, reads and verifies one bounded work snapshot, calls the pure planner once, and invokes at most one T6, fixture Worker, or Stop executor. T6 never falls through into fixture work. The step rereads terminal safety, closes resources, and releases ownership only after verified clean completion; any ambiguous mutation or cleanup preserves ownership for recovery. This programmatic boundary adds no executable command, loop, timer, network provider, Pilot activation, recommendation, or trading authority.
 
+Day15-T3B12-T5 validates that composition and its existing repository boundaries with real fixture-only child-process termination. Eleven network-free drills cover startup ownership/store boundaries, T6/T7/T8, validation, authenticated-session restart, in-transaction Stop rollback, post-rename quarantine replay, and post-T10 evidence replay. SQLite/WAL is always reopened before committed truth is asserted. Stale ownership remains evidence, old process-session authority is rejected, unknown request outcomes are not retried, uncommitted Stop records vanish atomically, and committed evidence/quarantine receipts replay without duplication. No production fault-injection surface or runtime command is added.
+
 ---
 
 # Event Contract Framework

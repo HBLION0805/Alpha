@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B12-T3 is committed and pushed; Day15-T3B12-T4 Single Foreground Fixture Step is implemented locally and pending Owner review
+Day15-T3B12-T4 is committed and pushed; Day15-T3B12-T5 Transaction-Boundary Process Drills are implemented locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6677` on `main`, equal to `origin/main` before the T3B12-T4 implementation task.
+Verified baseline: `285ec30f9e820d5eee6c7b142261eb000e0a023a` on `main`, equal to `origin/main` before the T3B12-T5 implementation task.
 
 Day 7 completed:
 
@@ -93,7 +93,9 @@ Day15-T3B12-T2 is committed and pushed as `5ca4c7e25d1f2ef7f927f88330974a659669a
 
 Day15-T3B12-T3 is committed and pushed as `ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6677`. It adds exact stale-lock evidence inspection, explicit liveness and recovery dispositions, invalid-evidence classification without trusting malformed fields, challenge-bound local Owner authorization, a deterministic same-filesystem quarantine destination, exact recovery guards, flushed immutable receipts, owner-record preservation, idempotent replay, and fail-closed conflict handling. Its approved validation baseline was `2138/2138`.
 
-Day15-T3B12-T4 is implemented locally and pending Owner review. It adds a closed foreground-step request and restricted startup, clock, snapshot, T6, fixture, Stop, terminal-state, and resource ports. One invocation performs one Preflight, reads one immutable bounded snapshot, calls the pure planner once, invokes at most one action, rereads current terminal safety, closes resources, and releases ownership only after verified clean completion. Ambiguous mutation or cleanup preserves recovery evidence. Its 17 focused tests and complete `2155/2155` Alpha validation pass. It adds no executable command, timer, loop, sleep, daemon, network provider, real Pilot activation, recommendation, broker, order, or trading authority.
+Day15-T3B12-T4 is committed and pushed as `285ec30f9e820d5eee6c7b142261eb000e0a023a`. It adds a closed foreground-step request and restricted startup, clock, snapshot, T6, fixture, Stop, terminal-state, and resource ports. One invocation performs one Preflight, reads one immutable bounded snapshot, calls the pure planner once, invokes at most one action, rereads current terminal safety, closes resources, and releases ownership only after verified clean completion. Ambiguous mutation or cleanup preserves recovery evidence. Its approved validation baseline was `2155/2155`.
+
+Day15-T3B12-T5 is implemented locally and pending Owner review. Eleven network-free drills terminate real fixture child processes at startup ownership/store, T6, T7 lease, T8 attempt, validation, authenticated-session, Stop transaction, quarantine rename, and T10 commit boundaries. Reopened SQLite/WAL truth proves stale ownership preservation, old-session rejection, unknown-attempt preservation, complete Stop rollback, and exact evidence/quarantine replay. Complete Alpha validation passes `2166/2166`. Fault staging exists only in fixture scripts and adds no production crash command, runtime start, network provider, real Pilot activation, recommendation, broker, order, or trading authority.
 
 ## Day 6 Milestone Review
 

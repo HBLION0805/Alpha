@@ -1,6 +1,14 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B12-T4 Single Foreground Fixture Step (Pending Owner Review)
+## 2026-07-25 - Day15-T3B12-T5 Transaction-Boundary Process Drills (Pending Owner Review)
+
+- Added 11 network-free drills that launch a real child process, wait for an explicit durable checkpoint, terminate the process, reopen SQLite/WAL, and inspect committed truth.
+- Covered crash boundaries before ownership, after ownership, after store open, after T6, after T7 lease, after T8 attempt claim, during validation, after authenticated Resume, during Stop persistence, after quarantine rename, and after T10 evidence commit.
+- Proved uncommitted Stop state rolls back atomically, stale ownership evidence remains fail closed, prior process-session authority cannot be reused after restart, quarantine returns the exact original receipt, and T10 replay does not duplicate evidence.
+- Kept fault injection in fixture-only child scripts; added no production crash command, unrestricted fault hook, timer, loop, network request, real Pilot activation, recommendation, broker, order, or execution authority.
+- Complete Alpha validation passes `2166/2166` with zero failures.
+
+## 2026-07-25 - Day15-T3B12-T4 Single Foreground Fixture Step
 
 - Added a closed foreground-step request, startup-session identity, clock, fixture, Stop, terminal-state, and cleanup ports.
 - Added one composition root that performs exactly one Preflight, one bounded immutable work-snapshot read, one pure planner call, and at most one T6, fixture Worker, or Stop action before exit.
@@ -11,6 +19,7 @@
 - Added 17 deterministic network-free focused tests covering T6, fixture, missed, wait, complete, Stop, Preflight blocking, exact call counts, terminal reread, close ordering, ambiguity, identity mismatch, and closed input.
 - Complete Alpha validation passes `2155/2155` with zero failures.
 - Added no executable command, timer, loop, sleep, daemon, background process, network provider, Pilot activation, recommendation, broker, order, or trading behavior.
+- Owner approved and pushed T3B12-T4 as `285ec30f9e820d5eee6c7b142261eb000e0a023a`.
 
 ## 2026-07-25 - Day15-T3B12-T3 Authenticated Ownership Recovery
 
