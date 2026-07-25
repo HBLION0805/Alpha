@@ -1,14 +1,14 @@
 # Alpha Handoff
 
 Date:
-2026-07-24
+2026-07-25
 
 Project Stage:
-Day15-T3B10-T3C is committed and pushed; Day15-T3B10-T4 Owner Resume, Emergency Stop, and recovery-decision boundaries are specified locally and pending owner review
+Day15-T3B10-T4 is committed and pushed; Day15-T3B10-T4A recovery-control contracts and deterministic decision engine are implemented locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `47a7a45df7dd9ad03e996389aaa2cc8b394aa699` on `main`, equal to `origin/main` before the T3B10-T4 design task.
+Verified baseline: `bfe4751d39ae3d0a9e4c0bc70d6889198f9f0516` on `main`, equal to `origin/main` before the T3B10-T4A implementation task.
 
 Day 7 completed:
 
@@ -63,7 +63,9 @@ Day15-T3B10-T3B is committed and pushed as `854d2f94021c59dde6974c53a81653864dfd
 
 Day15-T3B10-T3C is committed and pushed as `47a7a45df7dd9ad03e996389aaa2cc8b394aa699`. It adds immutable startup recovery reports and mutation blockers, owner-resume gating after operational-pilot restart, independently verified SQLite online backups with digest-bound canonical manifests, offline restore to a new path, and 11 network-free recovery/corruption drills.
 
-Day15-T3B10-T4 is specified locally and pending owner review. It defines Resume as a one-time owner authorization bound to the exact recovery assessment and new process session, not an `ACTIVE -> ACTIVE` transition. It defines deterministic recovery dispositions, permanent terminal states, restored-store switch separation, Emergency Stop precedence and race handling, and a T4A-T4D implementation split. It adds no runtime or persistence behavior.
+Day15-T3B10-T4 is committed and pushed as `bfe4751d39ae3d0a9e4c0bc70d6889198f9f0516`. It defines Resume as a one-time owner authorization bound to the exact recovery assessment and new process session, not an `ACTIVE -> ACTIVE` transition. It defines deterministic recovery dispositions, permanent terminal states, restored-store switch separation, Emergency Stop precedence and race handling, and a T4A-T4D implementation split.
+
+Day15-T3B10-T4A is implemented locally and pending owner review. It adds strict immutable recovery activation, assessment, local-owner authorization, owner-decision, and Emergency Stop contracts plus a pure deterministic engine for assessment classification/verification, exact-owner action validation, and stop precedence. Its authorization fields are evidence only. It adds no migration 002, database write, repository transaction, owner command, authenticated session gate, scheduler/worker, provider request, real resume, model, recommendation, broker, order, or execution behavior.
 
 ## Day 6 Milestone Review
 
@@ -382,6 +384,10 @@ Day15-T3B10-T3B adds 31/31 focused Event Contract Collection Runner SQLite repos
 
 Day15-T3B10-T3C adds 11/11 focused SQLite recovery tests and raises the complete registered validation baseline to 1959/1959. Strict TypeScript, all regression suites, documentation validation, provider/network/credential/runtime/Python-scope/merge-marker scans, and staged/unstaged whitespace checks pass.
 
+Day15-T3B10-T4 changes architecture and documentation only, so the registered baseline remains 1959/1959.
+
+Day15-T3B10-T4A adds 20/20 focused recovery-control tests and raises the complete registered validation baseline to 1979/1979.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -481,4 +487,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B10-T4 recovery control and Emergency Stop design after complete validation. If approved and pushed, begin T4A control contracts and deterministic decision engine as a separate implementation. Do not add migration 002, operator commands, runtime store, scheduler/worker, real Pilot resume, provider requests, or probability research.
+Owner review of Day15-T3B10-T4A recovery-control contracts and deterministic engine after complete validation. If approved and pushed, begin T4B migration 002 and named repository transactions as a separately specified and reviewed task. Do not add operator commands, authenticated runtime sessions, scheduler/worker, real Pilot resume, provider requests, or probability research.

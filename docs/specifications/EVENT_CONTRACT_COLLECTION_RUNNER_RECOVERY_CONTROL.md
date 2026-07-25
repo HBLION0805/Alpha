@@ -2,9 +2,22 @@
 
 ## Status
 
-Day15-T3B10-T4 defines the explicit Owner Resume, Emergency Stop, and recovery-decision boundary required after T3C. This task is architecture and specification only.
+Day15-T3B10-T4 defines the explicit Owner Resume, Emergency Stop, and recovery-decision boundary required after T3C. The owner approved and pushed that design as `bfe4751d39ae3d0a9e4c0bc70d6889198f9f0516`.
 
-It does not add contracts, tables, migrations, repository transactions, commands, scheduler/worker operation, provider requests, real pilot activation/resume, model, recommendation, broker, order, or execution behavior.
+Day15-T3B10-T4A now implements the provider-neutral immutable control contracts and deterministic validation/classification engine locally, pending owner review. It adds no tables, migrations, repository transactions, commands, authenticated operator surface, scheduler/worker operation, provider requests, real pilot activation/resume, model, recommendation, broker, order, or execution behavior.
+
+## T4A implementation boundary
+
+T4A adds:
+
+- exact recovery-activation, assessment, local-owner-authorization, owner-decision, and Emergency Stop contracts;
+- closed enums for recovery dispositions, owner actions, stop triggers/directives, clock health, and validation issues;
+- strict unknown-field rejection, UTC chronology, version, identifier, count, fingerprint, and session-binding validation;
+- deterministic recovery classification and assessment fingerprint verification;
+- exact-owner decision validation with an explicit disposition/action matrix;
+- deterministic Emergency Stop evaluation in which integrity/database failure requires fail-closed behavior and all other stop triggers block resume and new work.
+
+T4A produces immutable decision evidence only. `authorizesMutation` and `authorizesResume` are decision facts for a later reviewed executor; they do not open a repository, persist a record, create a runtime session, or mutate Pilot state.
 
 ## Purpose
 

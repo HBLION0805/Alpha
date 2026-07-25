@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B10-T4A Deterministic Recovery-Control Boundary
+
+### Authorization Evidence Does Not Execute
+
+- Decision: T4A may construct immutable owner-decision evidence with explicit authorization facts, but it may not persist, consume, or execute that authorization.
+- Rationale: Separating deterministic validation from later authenticated operator and transactional boundaries prevents a pure engine from silently gaining runtime authority.
+- Consequence: T4B/T4C must independently revalidate the exact assessment, activation version, store identity, boot/process session, expiry, and Emergency Stop state before any mutation can occur.
+
+### Closed Dispositions and Stop Precedence
+
+- Decision: Recovery classification and the allowed owner action for each disposition are closed deterministic mappings; integrity or database stop triggers require fail-closed behavior.
+- Rationale: Ambiguous recovery and stop behavior must not be resolved by caller preference or permissive defaults.
+- Consequence: Unknown fields, altered assessments, owner mismatch, incompatible actions, unhealthy clocks, terminal states, and observed Emergency Stop conditions cannot authorize resume.
+
 ## 2026-07-24 - Day15-T3B10-T4 Recovery Control and Emergency Stop
 
 ### Resume Is a Session Authorization, Not a State Loop

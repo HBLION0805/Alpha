@@ -60,3 +60,4 @@ export * from "./ResearchShadowDatasetAssembly";
 export * from "./ForwardShadowCollectionControl";
 export * from "./EventContractSource";
 export * from "./EventContractCollectionRunner";
+export * from "./EventContractCollectionRunnerRecoveryControl";

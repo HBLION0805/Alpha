@@ -1,6 +1,15 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B10-T4 Recovery Control and Emergency Stop Design (Pending Owner Review)
+## 2026-07-25 - Day15-T3B10-T4A Recovery Control Contracts and Deterministic Engine (Pending Owner Review)
+
+- Added immutable provider-neutral recovery activation, assessment, owner authorization/decision, and Emergency Stop contracts.
+- Added strict deterministic assessment creation and verification with explicit resume, reconciliation, stop-completion, expiry, restore-switch, terminal, and fail-closed dispositions.
+- Added exact-owner, activation-version, boot/session, chronology, expiry, and disposition/action validation for immutable owner decisions.
+- Added Emergency Stop classification that blocks resume and new work, with fail-closed precedence for integrity and database failures.
+- Added 20 focused tests and registered them in complete validation.
+- Added no migration, database write, repository transaction, owner command, authenticated session gate, scheduler/worker, provider request, real resume, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B10-T4 Recovery Control and Emergency Stop Design
 
 - Specified immutable recovery assessments, owner recovery decisions, and control execution receipts.
 - Defined Resume as a one-time process-session authorization rather than a false `ACTIVE -> ACTIVE` Pilot transition.
@@ -8,6 +17,7 @@
 - Made Emergency Stop higher priority than Resume, lease acquisition, retry, and new provider requests, including persistence-failure and transaction-race behavior.
 - Split later implementation into separately reviewed T4A contracts/engine, T4B migration/transactions, T4C authenticated operator/session gate, and T4D crash/race drills.
 - Added no runtime, database migration, command, scheduler, worker, provider, Pilot, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed the design as `bfe4751d39ae3d0a9e4c0bc70d6889198f9f0516`.
 
 ## 2026-07-24 - Day15-T3B10-T3C SQLite Recovery, Backup, Restore, and Corruption Drills
 
