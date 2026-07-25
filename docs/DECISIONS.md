@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B12-T3 Authenticated Ownership Recovery
+
+### Invalid Lock Evidence Is Classified but Never Authorized
+
+- Decision: malformed, replaced, missing, linked, or identity-mismatched ownership evidence receives a sanitized content fingerprint and `LOCK_EVIDENCE_INVALID`, with no trusted ownership object.
+- Rationale: recovery inspection must preserve auditable evidence without treating unverified fields as authority.
+- Consequence: invalid evidence remains fail closed and cannot create an Owner challenge, decision, guard, receipt, or quarantine mutation.
+
+### Quarantine Is the Only Ownership-Recovery Mutation
+
+- Decision: one exact local Owner authorization may atomically rename a verified stale lock into a deterministic same-filesystem quarantine directory.
+- Rationale: deletion loses crash evidence and automatic takeover can create two owners.
+- Consequence: the original owner record and flushed recovery receipt remain preserved; the decision cannot Resume a Pilot, create a session, or start runtime work.
+
+### Recovery Guards and Receipts Are Exactly Replayable
+
+- Decision: a per-lock guard binds the assessment, Owner decision, stale ownership, and quarantine destination; exact replay may complete or return the original receipt.
+- Rationale: interruption before or after rename must not create a second mutation or require deleting ambiguous evidence.
+- Consequence: changed replay, guard conflict, destination conflict, or reinspection drift fails closed and leaves evidence for later recovery.
+
 ## 2026-07-25 - Day15-T3B12-T2 Contracts and Pure Planners
 
 ### The Planner Selects Exactly One Action From One Verified Snapshot

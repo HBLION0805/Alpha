@@ -1,6 +1,18 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B12-T2 Contracts and Pure Planners (Pending Owner Review)
+## 2026-07-25 - Day15-T3B12-T3 Authenticated Ownership Recovery (Pending Owner Review)
+
+- Added closed immutable contracts for ownership-liveness evidence, recovery assessment, exact Owner quarantine decisions, and recovery receipts.
+- Added deterministic classification for active ownership, same-boot stale candidates, prior-boot stale candidates, uncertain liveness, invalid lock evidence, blocked stores, and durable Stop.
+- Restricted Owner review to exact `STALE_CANDIDATE` and `PRIOR_BOOT_STALE_CANDIDATE` assessments with a maximum five-minute authority window.
+- Reused the existing stdin-oriented local Owner verifier while excluding secrets from decisions, guards, receipts, and output.
+- Added an atomic same-filesystem quarantine boundary with an exact per-lock recovery guard, flushed immutable receipt, owner-record preservation, deterministic destination, and exact replay.
+- Added fail-closed handling for changed evidence, conflicting guards, conflicting destinations, malformed ownership, authorization drift, and missing active/quarantined evidence.
+- Added a Node liveness adapter that treats permission-denied process probes as live, missing processes as not live, and unclassified failures as uncertain.
+- Added 26 deterministic network-free ownership recovery tests; complete Alpha validation passes `2138/2138`.
+- Added no executable command, recursive deletion, automatic takeover, Pilot Resume, process-session creation, runtime start, SQLite mutation, network provider, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B12-T2 Contracts and Pure Planners
 
 - Added closed immutable contracts for one runtime invocation, bounded work snapshots, exact T6 requests/results, and sanitized terminal reports.
 - Added a strict deterministic work-snapshot constructor and verifier with explicit task, lease, chronology, retry, budget, and fingerprint checks.
@@ -11,6 +23,7 @@
 - Added 47 deterministic network-free focused tests and registered them in the complete validation bundle.
 - Complete Alpha validation passes `2112/2112` with zero failures.
 - Added no dependency, command, timer, loop, stale-lock mutation, provider request, Pilot activation, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B12-T2 as `5ca4c7e25d1f2ef7f927f88330974a659669a176`.
 
 ## 2026-07-25 - Day15-T3B12-T1 Fixture Runtime Assembly and Recovery Architecture
 

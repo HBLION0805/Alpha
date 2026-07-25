@@ -32,6 +32,10 @@ export enum CollectionRunnerRuntimeFoundationErrorCode {
   InvalidAssemblyInput = "INVALID_ASSEMBLY_INPUT",
   InvalidLifecycleTransition = "INVALID_LIFECYCLE_TRANSITION",
   InvalidWorkSnapshot = "INVALID_WORK_SNAPSHOT",
+  InvalidOwnershipRecoveryInput = "INVALID_OWNERSHIP_RECOVERY_INPUT",
+  OwnershipRecoveryBlocked = "OWNERSHIP_RECOVERY_BLOCKED",
+  OwnershipRecoveryConflict = "OWNERSHIP_RECOVERY_CONFLICT",
+  OwnershipRecoveryFilesystemFailure = "OWNERSHIP_RECOVERY_FILESYSTEM_FAILURE",
 }
 
 export enum CollectionRunnerSchedulerAction {

@@ -618,6 +618,12 @@ function validateBootIdentity(value: unknown): CollectionRunnerBootIdentity {
     CollectionRunnerBootIdentity;
 }
 
+export function verifyCollectionRunnerBootIdentity(
+  value: unknown,
+): CollectionRunnerBootIdentity {
+  return validateBootIdentity(value);
+}
+
 function createOwnershipRecord(
   configuration: CollectionRunnerRuntimeConfiguration,
   paths: CollectionRunnerRuntimePaths,
@@ -743,6 +749,12 @@ function validateOwnershipRecord(
     CollectionRunnerRuntimeOwnership;
 }
 
+export function verifyCollectionRunnerRuntimeOwnership(
+  value: unknown,
+): CollectionRunnerRuntimeOwnership {
+  return validateOwnershipRecord(value);
+}
+
 function readOwnershipRecord(
   paths: CollectionRunnerRuntimePaths,
 ): CollectionRunnerRuntimeOwnership {
@@ -780,6 +792,12 @@ function readOwnershipRecord(
       error,
     );
   }
+}
+
+export function readCollectionRunnerRuntimeOwnership(
+  paths: CollectionRunnerRuntimePaths,
+): CollectionRunnerRuntimeOwnership {
+  return readOwnershipRecord(paths);
 }
 
 export class CollectionRunnerRuntimeOwnershipHandle {
@@ -845,6 +863,12 @@ export function acquireCollectionRunnerRuntimeOwnership(
     fail(
       CollectionRunnerRuntimeFoundationErrorCode.InvalidPath,
       "Runtime paths do not match the immutable configuration.",
+    );
+  }
+  if (existsSync(`${options.paths.lockDirectory}.recovery-guard`)) {
+    fail(
+      CollectionRunnerRuntimeFoundationErrorCode.DuplicateProcess,
+      "Runtime ownership recovery is incomplete and remains fail closed.",
     );
   }
   try {

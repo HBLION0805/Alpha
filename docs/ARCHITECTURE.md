@@ -757,6 +757,8 @@ Day15-T3B12-T1 designs that missing composition without implementing it. The fir
 
 Day15-T3B12-T2 implements only the deterministic seam of that design. Strict immutable contracts describe the invocation lifecycle, bounded sanitized work snapshot, closed one-action decision, exact T6 request/result, and terminal report. A pure planner evaluates current authority and durable evidence in a fixed order, while narrow ports reserve bounded snapshot reads and separately gated T6 execution for later composition. This layer owns no command, filesystem recovery, repository implementation, SQLite connection, provider, clock, wait, loop, or runtime start.
 
+Day15-T3B12-T3 implements authenticated ownership recovery without assembling or starting the runtime. A read-only inspector binds exact configuration, path, lock, boot, PID/liveness, store-recovery, Pilot, lease, attempt, and durable Stop evidence. Only verified stale candidates can receive one challenge-bound local Owner decision. The sole mutation writes and flushes an immutable receipt, then atomically renames the complete lock directory into a deterministic same-filesystem quarantine. Invalid evidence, live ownership, uncertain liveness, store failure, Stop state, changed reinspection, or conflicting replay remains fail closed. Quarantine authorizes neither Pilot Resume nor a new runtime session.
+
 ---
 
 # Event Contract Framework

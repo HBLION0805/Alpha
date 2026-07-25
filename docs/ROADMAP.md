@@ -358,10 +358,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B12-T1 status: completed, committed, and pushed as `5791a2a69776861ff22464aada2eb72511cb20ce`.
    - T3B12-T1 scope: one foreground one-action fixture step, closed startup/close lifecycle, bounded work snapshot, pure action planner, deterministic T6 ownership, local lifecycle-command boundaries, Stop/shutdown ordering, authenticated stale-lock quarantine, and real transaction-boundary child-process drill design.
    - T3B12-T1 excludes: implementation, command, timer, loop, daemon, automatic stale-lock takeover, provider request, Pilot activation, Outbox delivery, T1/T2 assembly, probability research, recommendation, broker, order, or execution.
-   - T3B12-T2 status: contracts and pure planners are implemented locally and pending Owner review.
+   - T3B12-T2 status: completed, committed, and pushed as `5ca4c7e25d1f2ef7f927f88330974a659669a176`.
    - T3B12-T2 scope: closed lifecycle contracts, bounded immutable work snapshots, deterministic one-action planning, exact T6 request construction, sanitized terminal reports, restricted read/executor ports, and network-free regression tests.
    - T3B12-T2 excludes: command, repository or SQLite implementation, filesystem recovery mutation, runtime start, wait, timer, loop, provider request, Pilot activation, Outbox delivery, T1/T2 assembly, probability research, recommendation, broker, order, or execution.
-   - T3B12 next sequence: T3 authenticated ownership recovery; T4 single foreground fixture step; T5 transaction-boundary process drills; MR1.
+   - T3B12-T3 status: authenticated ownership recovery is implemented locally and pending Owner review.
+   - T3B12-T3 scope: exact stale-lock inspection, closed liveness/disposition classification, challenge-bound local Owner authorization, atomic same-filesystem quarantine, immutable owner/receipt evidence, exact replay, and network-free failure tests.
+   - T3B12-T3 excludes: executable command, recursive deletion, automatic takeover, Pilot Resume, new process-session authorization, runtime start, SQLite mutation, timers, loops, providers, models, recommendations, brokers, orders, or execution.
+   - T3B12 next sequence: T4 single foreground fixture step; T5 transaction-boundary process drills; MR1.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 
