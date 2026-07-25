@@ -103,7 +103,7 @@ The deterministic Intelligence Layer direction is documented in [Architecture Ch
 
 The T3B10-T3A implementation boundary is specified in [Event Contract Collection Runner SQLite Dependency and Migration](docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_MIGRATION.md). T3A implements safe local store opening and migration 001; [T3B](docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_REPOSITORY.md) adds the named repository transactions while runner operation remains deferred.
 
-[Event Contract Collection Runner Runtime Assembly and Recovery](docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_RECOVERY.md) defines and implements the fixture-only one-action composition boundary, authenticated stale-ownership quarantine, and real child-process transaction recovery drills. It still exposes no executable runtime command, continuous loop, network provider, real Pilot activation, recommendation, broker, order, or trading authority.
+[Event Contract Collection Runner Runtime Assembly and Recovery](docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_RECOVERY.md) defines and implements the fixture-only one-action composition boundary, authenticated stale-ownership quarantine, and real child-process transaction recovery drills. Its [milestone review](docs/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_MILESTONE_REVIEW.md) accepts those foundations for fixture-rehearsal design only. It still exposes no executable runtime command, continuous loop, network provider, real Pilot activation, recommendation, broker, order, or trading authority.
 
 ## Repository Structure
 

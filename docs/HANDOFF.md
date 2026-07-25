@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B12-T4 is committed and pushed; Day15-T3B12-T5 Transaction-Boundary Process Drills are implemented locally and pending Owner review
+Day15-T3B12-T5 is committed and pushed; Day15-T3B12-MR1 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `285ec30f9e820d5eee6c7b142261eb000e0a023a` on `main`, equal to `origin/main` before the T3B12-T5 implementation task.
+Verified baseline: `54a5c05ac912f6a2919d8b7dffa5280578b99c5d` on `main`, equal to `origin/main` before the T3B12-MR1 review task.
 
 Day 7 completed:
 
@@ -95,7 +95,9 @@ Day15-T3B12-T3 is committed and pushed as `ddbbe52cb32eeff60bdd48a1e9a1d87c3d7d6
 
 Day15-T3B12-T4 is committed and pushed as `285ec30f9e820d5eee6c7b142261eb000e0a023a`. It adds a closed foreground-step request and restricted startup, clock, snapshot, T6, fixture, Stop, terminal-state, and resource ports. One invocation performs one Preflight, reads one immutable bounded snapshot, calls the pure planner once, invokes at most one action, rereads current terminal safety, closes resources, and releases ownership only after verified clean completion. Ambiguous mutation or cleanup preserves recovery evidence. Its approved validation baseline was `2155/2155`.
 
-Day15-T3B12-T5 is implemented locally and pending Owner review. Eleven network-free drills terminate real fixture child processes at startup ownership/store, T6, T7 lease, T8 attempt, validation, authenticated-session, Stop transaction, quarantine rename, and T10 commit boundaries. Reopened SQLite/WAL truth proves stale ownership preservation, old-session rejection, unknown-attempt preservation, complete Stop rollback, and exact evidence/quarantine replay. Complete Alpha validation passes `2166/2166`. Fault staging exists only in fixture scripts and adds no production crash command, runtime start, network provider, real Pilot activation, recommendation, broker, order, or trading authority.
+Day15-T3B12-T5 is committed and pushed as `54a5c05ac912f6a2919d8b7dffa5280578b99c5d`. Eleven network-free drills terminate real fixture child processes at startup ownership/store, T6, T7 lease, T8 attempt, validation, authenticated-session, Stop transaction, quarantine rename, and T10 commit boundaries. Reopened SQLite/WAL truth proves stale ownership preservation, old-session rejection, unknown-attempt preservation, complete Stop rollback, and exact evidence/quarantine replay. Its approved validation baseline was `2166/2166`.
+
+Day15-T3B12-MR1 is complete locally and pending Owner review. It accepts the assembly/recovery foundation and permits fixture-rehearsal design only. Executable runtime, continuous runtime, bounded-live operation, future-market provider use, Robinhood platform automation, T1/T2 integration, dataset qualification, recommendation, broker, order, and execution remain blocked. The recommended next task is design-only `Day15-T3B13-T1 — Fixture Rehearsal and Evidence Architecture`.
 
 ## Day 6 Milestone Review
 

@@ -763,6 +763,8 @@ Day15-T3B12-T4 implements the first foreground one-action composition boundary. 
 
 Day15-T3B12-T5 validates that composition and its existing repository boundaries with real fixture-only child-process termination. Eleven network-free drills cover startup ownership/store boundaries, T6/T7/T8, validation, authenticated-session restart, in-transaction Stop rollback, post-rename quarantine replay, and post-T10 evidence replay. SQLite/WAL is always reopened before committed truth is asserted. Stale ownership remains evidence, old process-session authority is rejected, unknown request outcomes are not retried, uncommitted Stop records vanish atomically, and committed evidence/quarantine receipts replay without duplication. No production fault-injection surface or runtime command is added.
 
+Day15-T3B12-MR1 accepts the assembled fixture-runtime and recovery foundations and permits only a separately reviewed fixture-rehearsal design. The current boundary remains programmatic and one-action; it cannot be wrapped in a loop or exposed as a general runtime command. A future rehearsal must be owner-invoked, network-free, content-addressed, temporary, sanitized, and explicit that fixture success does not establish live-source, Robinhood-platform, T1/T2, dataset, recommendation, or trading readiness. See [Event Contract Collection Runner Runtime Assembly Milestone Review](EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_MILESTONE_REVIEW.md).
+
 ---
 
 # Event Contract Framework

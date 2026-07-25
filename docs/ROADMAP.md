@@ -367,10 +367,12 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B12-T4 status: completed, committed, and pushed as `285ec30f9e820d5eee6c7b142261eb000e0a023a`.
    - T3B12-T4 scope: closed startup-session and execution ports, one Preflight, one bounded snapshot, one planner call, at most one T6/fixture/Stop action, terminal-state reread, ordered close, verified clean release, and ambiguity preservation.
    - T3B12-T4 excludes: executable command, wait, retry, timer, loop, daemon, network provider, real Pilot activation, Outbox delivery, probability research, recommendation, broker, order, or execution.
-   - T3B12-T5 status: 11 transaction-boundary child-process drills are implemented locally and pending Owner review.
+   - T3B12-T5 status: completed, committed, and pushed as `54a5c05ac912f6a2919d8b7dffa5280578b99c5d`.
    - T3B12-T5 scope: process termination before/after startup ownership, T6/T7/T8/validation/T10 durability, old-session rejection, Stop rollback, stale-lock preservation, and exact quarantine/evidence replay.
    - T3B12-T5 excludes: production fault injection, executable runtime command, automatic takeover, retry loop, timer, daemon, network provider, real Pilot activation, recommendation, broker, order, or execution.
-   - T3B12 next sequence: T5 Owner review; MR1.
+   - T3B12-MR1 status: milestone review is complete locally and pending Owner review.
+   - T3B12-MR1 decision: `ASSEMBLY_RECOVERY_FOUNDATION_ACCEPTED / GO_FOR_FIXTURE_REHEARSAL_DESIGN / NO_GO_FOR_EXECUTABLE_RUNTIME / NO_GO_FOR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+   - T3B12 next sequence: MR1 Owner review; then design-only `T3B13-T1 Fixture Rehearsal and Evidence Architecture`.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

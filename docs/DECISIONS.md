@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B12 Assembly and Recovery Milestone Review
+
+### Accept Assembly and Recovery Without Authorizing Operation
+
+- Decision: record `ASSEMBLY_RECOVERY_FOUNDATION_ACCEPTED / GO_FOR_FIXTURE_REHEARSAL_DESIGN / NO_GO_FOR_EXECUTABLE_RUNTIME / NO_GO_FOR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+- Rationale: T3B12 closes the reviewed assembly, T6, stale-lock recovery, and real process-kill gaps, but still exposes only a programmatic one-action fixture boundary.
+- Consequence: Alpha may design a network-free fixture rehearsal, but may not add or invoke a general runtime command, loop, provider, or real Pilot.
+
+### Rehearsal Evidence Must Not Claim Source or Dataset Readiness
+
+- Decision: a future fixture rehearsal may prove deterministic orchestration and recovery only.
+- Rationale: frozen fixtures do not prove future-market admission, Robinhood platform evidence, API reliability, complete T1/T2 assembly, or prospective dataset qualification.
+- Consequence: every rehearsal report must preserve those blockers and contain no probability, recommendation, or trading claim.
+
+### Continuous Runtime Requires New Architecture
+
+- Decision: prohibit wrapping the foreground step in an external loop under current authority.
+- Rationale: supervision, wake-up, cross-process Stop, suspend/resume, retention, and operator recovery are not consequences of repeating a safe single step.
+- Consequence: continuous runtime remains a separately specified and Owner-approved subsystem.
+
 ## 2026-07-25 - Day15-T3B12-T5 Transaction-Boundary Process Drills
 
 ### Crash Evidence Must Come From Real Process Termination

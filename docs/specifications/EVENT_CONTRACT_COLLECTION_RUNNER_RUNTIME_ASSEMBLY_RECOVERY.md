@@ -14,16 +14,21 @@ Day15-T3B12-T3 is committed and pushed as
 Day15-T3B12-T4 is committed and pushed as
 `285ec30f9e820d5eee6c7b142261eb000e0a023a`.
 
-Day15-T3B12-T5 implements 11 real child-process transaction-boundary drills
-locally and is pending Owner review. Complete Alpha validation passes
-`2166/2166`.
+Day15-T3B12-T5 is committed and pushed as
+`54a5c05ac912f6a2919d8b7dffa5280578b99c5d`. Its 11 real child-process
+transaction-boundary drills and complete `2166/2166` validation pass.
+
+Day15-T3B12-MR1 is complete locally and pending Owner review. Its proposed
+decision is:
+
+`ASSEMBLY_RECOVERY_FOUNDATION_ACCEPTED / GO_FOR_FIXTURE_REHEARSAL_DESIGN / NO_GO_FOR_EXECUTABLE_RUNTIME / NO_GO_FOR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`
 
 It follows the T3B11-MR1 decision:
 
 `FIXTURE_RUNTIME_FOUNDATION_ACCEPTED / GO_FOR_ASSEMBLY_DESIGN / NO_GO_FOR_RUNTIME_START / NO_GO_FOR_BOUNDED_LIVE`
 
-The T3B12-T5 reviewed baseline is
-`285ec30f9e820d5eee6c7b142261eb000e0a023a`.
+The T3B12-MR1 reviewed baseline is
+`54a5c05ac912f6a2919d8b7dffa5280578b99c5d`.
 
 This task validates process-loss recovery around the programmatic foreground
 step and existing SQLite transactions. Its kill controls exist only in test
@@ -581,8 +586,9 @@ T3B12 remains separately gated:
    activation.
 5. **T3B12-T5 — Transaction-boundary process drills:** real child-process kills
    before/after startup ownership and at T6/T7/T8/validation/session/T10/Stop/
-   quarantine boundaries; implemented locally and pending Owner review.
-6. **T3B12-MR1 — Assembly and recovery milestone review.**
+   quarantine boundaries; completed and pushed.
+6. **T3B12-MR1 — Assembly and recovery milestone review:** complete locally
+   and pending Owner review.
 7. **Later separately approved work:** fixture rehearsal, continuous runtime
    architecture, future-market provider admission, and bounded-live Pilot.
 
@@ -628,7 +634,8 @@ T3B12-T1/T2 add no:
 
 ## Owner review recommendation
 
-Review the T3B12-T5 transaction-boundary process drills. If approved and
-pushed, begin T3B12-MR1 as a separately gated milestone review. Do not combine
-T3B12-T5 approval with continuous runtime, fixture rehearsal, provider
-admission, or live operation.
+Review T3B12-MR1 and its separate
+[milestone-review report](../EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_MILESTONE_REVIEW.md).
+If approved and pushed, begin design-only T3B13-T1. Do not combine milestone
+approval with rehearsal execution, continuous runtime, provider admission, or
+live operation.

@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B12 Assembly and Recovery Milestone Review (Pending Owner Review)
+
+- Reviewed T3B12-T1 through T3B12-T5 at baseline `54a5c05ac912f6a2919d8b7dffa5280578b99c5d` with complete `2166/2166` and focused `101/101` validation.
+- Accepted the assembly, pure planning, T6 ownership, authenticated quarantine, one-action fixture boundary, and real transaction-crash evidence.
+- Recorded `GO_FOR_FIXTURE_REHEARSAL_DESIGN` while retaining `NO_GO` decisions for executable runtime, continuous runtime, and bounded-live operation.
+- Identified remaining rehearsal-manifest/evidence, continuous supervision, Outbox integration, future-provider, Robinhood platform-evidence, dataset, and commercial blockers.
+- Recommended `Day15-T3B13-T1 — Fixture Rehearsal and Evidence Architecture` as a design-only next task.
+
 ## 2026-07-25 - Day15-T3B12-T5 Transaction-Boundary Process Drills (Pending Owner Review)
 
 - Added 11 network-free drills that launch a real child process, wait for an explicit durable checkpoint, terminate the process, reopen SQLite/WAL, and inspect committed truth.
