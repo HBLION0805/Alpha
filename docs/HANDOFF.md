@@ -4,11 +4,11 @@ Date:
 2026-07-24
 
 Project Stage:
-Day15-T3B7 is committed and pushed; Day15-T3B8 bounded Kalshi live-read smoke is implemented locally and pending owner review
+Day15-T3B8 is committed, pushed, and live-smoke verified; Day15-T3B9 Collection Runner Architecture is specified locally and pending owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `c9c4444775776dbd0eebfe757f07d4ff39949154` on `main`, equal to `origin/main` before Day15-T3B8.
+Verified baseline: `e0fd00586c802a1e386fcb14f5a05f0d096ffe79` on `main`, equal to `origin/main` before the T3B9 documentation task.
 
 Day 7 completed:
 
@@ -47,7 +47,9 @@ Day15-T3B6 implements provider-neutral source contracts and deterministic valida
 
 Day15-T3B7 including the official-evidence correction is committed and pushed as `c9c4444775776dbd0eebfe757f07d4ff39949154`. One sanitized fixture from the exact public Robinhood event page preserves the canonical page slug, routable deep-link UUID, opaque `ec_id`, complete rules, direct Kalshi terms link, and content-addressed terms PDF. Together with the exact Kalshi market and series fixtures, it creates one `REVIEWED_EXACT` mapping and one fixture-only settlement snapshot for the official DOWN result at `$64,809.04`.
 
-Day15-T3B8 is implemented locally. It adds one credential-free, exact-endpoint Kalshi public HTTPS transport; an exact source-engine bounded-live policy; a manual command that defaults to dry run; strict request, timeout, byte, and record budgets; and sanitized immutable settlement-source output. Automated tests inject transports, and the verified default command reports zero network calls and zero writes. No real request has been executed. The milestone adds no Robinhood private access, discovery, retry, polling, persistence, probability, recommendation, order, or execution authority.
+Day15-T3B8 is committed and pushed as `e0fd00586c802a1e386fcb14f5a05f0d096ffe79`. It adds one credential-free, exact-endpoint Kalshi public HTTPS transport; an exact source-engine bounded-live policy; a manual command that defaults to dry run; strict request, timeout, byte, and record budgets; and sanitized immutable settlement-source output. Automated tests inject transports. The owner separately authorized one real request at `2026-07-25T01:52:52.056Z`; it succeeded with one request, zero retries, 2,210 bytes, one `DOWN` settlement record, 307 ms elapsed, and zero persistence writes. Post-run Git status was clean.
+
+Day15-T3B9 is specified locally as architecture only. It defines frozen-plan and owner-activation admission, separate Robinhood platform and exchange evidence lanes, deterministic scheduling and clock health, single-worker leases, one bounded retry, append-only attempt history, transactional idempotency, SQLite/WAL pilot storage direction, crash recovery, sanitized monitoring, and emergency stop. It explicitly records that Kalshi automation cannot supply Robinhood quotes or fee previews and therefore cannot by itself create complete T1 observations or qualify a dataset.
 
 ## Day 6 Milestone Review
 
@@ -356,6 +358,8 @@ The Day15-T3B7 official Robinhood mapping-evidence correction expands the focuse
 
 Day15-T3B8 expands Event Contract Source validation from 42/42 to 44/44, adds 12/12 Kalshi public HTTPS transport tests and 14/14 Kalshi live-smoke tests, and raises the complete registered validation baseline to 1856/1856. The manual default dry run reports zero network requests and zero persistence writes.
 
+Day15-T3B9 changes architecture and documentation only. It adds no tests, dependency, database, scheduler, worker, provider request, or runtime behavior, so the registered baseline remains 1856/1856.
+
 ## Git Milestones
 
 - `3e47739ffb956621fdba8c22b39e023ac544eb27` — AI Router foundation
@@ -397,6 +401,7 @@ Day15-T3B8 expands Event Contract Source validation from 42/42 to 44/44, adds 12
 - `f3effb86c04a901df804de3cf79e1d9094736683` — Forward Shadow Collection Control
 - `95adef5849f5de67a471b720130fa6b7061f1847` — Local Forward Collection Operator
 - `adf28d24d454d533da8064732aeca381ba7cd0c2` — Event Contract Collection Source Architecture
+- `e0fd00586c802a1e386fcb14f5a05f0d096ffe79` — Bounded Kalshi Event Live-Read Smoke
 
 At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da91dfbac7ccb2fed5b861132dab80d951`, and the working tree was clean.
 
@@ -404,7 +409,7 @@ At the start of D6-T1, local `main` and `origin/main` both resolved to `424c92da
 
 Acceptable current development limitations:
 
-- Neutral fixtures only; no production provider adapter or live AI API integration
+- One owner-authorized Kalshi public smoke completed; no continuous provider runtime, collection runner, or live AI API integration
 - No production credential handling or provider-health polling
 - Reservation and workflow result repositories are in memory
 - Local ledger, audit, learning, historical-pattern, historical-analogy, and event-replay NDJSON repositories are single-owner, single-process development persistence
@@ -448,4 +453,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B8 after focused and complete validation. If approved and pushed, run the default network-free dry command once for operator verification. A single confirmed public request requires separate explicit owner authorization. Do not begin T3B9, freeze a real plan, or begin Day15-T3C probability research.
+Owner review of the Day15-T3B9 Collection Runner Architecture after complete validation. If approved and pushed, split implementation into separately reviewed tasks for runner contracts/state validation, SQLite persistence/recovery, scheduler/clock/lease/retry enforcement, and operator monitoring. Do not implement or activate T3B10, freeze a real pilot plan, repeat live requests, or begin Day15-T3C probability research.

@@ -701,6 +701,16 @@ Day15-T3B8 adds one isolated public HTTPS boundary for `GET /trade-api/v2/market
 
 The manual command defaults to network-free dry run. A confirmed invocation requires a separate owner decision and may perform exactly one request. The returned market must pass the complete T3B7 exact-market schema and mapping before the source engine can produce a `BOUNDED_LIVE_READ` settlement snapshot. Kalshi quote fields remain exchange-native and are not surfaced as Robinhood quote or fee evidence. Automated tests inject the transport and never call the network. See [Kalshi Event Contract Bounded Live-Read Smoke](specifications/KALSHI_EVENT_CONTRACT_LIVE_SMOKE.md).
 
+The owner-authorized first request completed successfully with one request, one normalized settlement record, zero retries, zero credentials, and zero persistence writes. This validates the transport and exact mapping for the single historical market only; it does not authorize repetition or scheduling.
+
+## Event Contract Collection Runner Architecture
+
+Day15-T3B9 defines the future continuous collector as a deterministic research orchestrator over frozen plans and already admitted sources. It separates platform and exchange evidence lanes, requires an immutable admission bundle per source task, and preserves missed pre-event evidence as `MISSED` rather than backfilling it.
+
+The architecture defines pilot and task state machines, injected UTC and monotonic clocks, one-worker leases, a maximum of two attempts, strict retry classification, deadlines, budgets, graceful and emergency stop, sanitized health, and crash recovery. A future local pilot uses transactional SQLite with unique idempotency keys and an atomic task/attempt/evidence/outbox commit; existing NDJSON repositories are not sufficient for this concurrency and recovery boundary.
+
+The current Kalshi source can scale exchange-native evidence but cannot automatically supply Robinhood quotes or fee previews. Therefore T3B9 cannot claim complete T1 observations or dataset qualification. It adds no implementation, database, scheduler, background worker, request, or trading authority. See [Event Contract Collection Runner Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_ARCHITECTURE.md).
+
 ---
 
 # Event Contract Framework

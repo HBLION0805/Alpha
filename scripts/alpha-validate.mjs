@@ -53,6 +53,7 @@ const requiredFiles = [
   "docs/specifications/EVENT_CONTRACT_SOURCE_CONTRACTS.md",
   "docs/specifications/KALSHI_EVENT_CONTRACT_FIXTURE_ADAPTER.md",
   "docs/specifications/KALSHI_EVENT_CONTRACT_LIVE_SMOKE.md",
+  "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_ARCHITECTURE.md",
   "package.json",
   "tsconfig.json"
 ];

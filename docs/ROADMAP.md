@@ -293,12 +293,23 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Exit criteria: all three fixtures parse and normalize fail closed; platform and exchange identities, complete canonical terms, native labels, rules, terms link, and terms digest are retained; exact mapping and fixture snapshot pass focused and complete validation.
 
 11. **Day15-T3B8 — Bounded Live-Read Smoke**
-   - Status: implemented locally and pending owner review; automated validation and the manual default dry run execute zero network requests. No real request has been executed.
+   - Status: committed and pushed as `e0fd00586c802a1e386fcb14f5a05f0d096ffe79`; the separately owner-authorized first request succeeded with one request, one record, zero retries, and zero writes.
    - Scope: one official Kalshi public endpoint, one exact mapped finalized market, one request, 100,000-byte and one-record bounds, injected HTTPS transport, zero credentials, zero persistence, sanitized errors, and an explicit manual command that defaults to a network-free dry run.
    - Excludes: Robinhood private endpoints or authenticated sessions, streaming, polling, retry, scheduling, automatic ledger mutation, quote relabeling, fee inference, model, recommendation, sizing, broker, order, or execution.
    - Exit criteria: exact policy authorization, dry-run isolation, transport allow-listing, strict T3B7 normalization, bounded-live source lineage, sanitized output, focused tests, and complete validation pass; owner reviews before any single live request is separately authorized.
 
-12. **Day15-T3C — Baseline Probability Research**
+12. **Day15-T3B9 — Collection Runner Architecture**
+   - Status: specified locally and pending owner review; no runner implementation, database, scheduler, background process, or request was added.
+   - Scope: frozen-plan admission bundles, independent platform/exchange evidence lanes, pilot and task state machines, injected wall/monotonic clocks, single-worker leases, one bounded retry, transactional idempotency, SQLite pilot storage direction, crash recovery, sanitized monitoring, and emergency stop.
+   - Excludes: runner implementation, dynamic discovery, automatic mapping approval, Robinhood private access, automatic platform quote/fee capture, backfill, raw-response persistence, multi-worker execution, model, recommendation, sizing, broker, order, or execution.
+   - Exit criteria: authority, clock, cutoff, retry, lease, storage, recovery, monitoring, and platform-evidence gaps are explicit; T3B10 prerequisites remain separately gated; complete validation passes.
+
+13. **Day15-T3B10 — Forward Collection Pilot**
+   - Status: planned only after T3B9 architecture approval and separately reviewed implementation tasks.
+   - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
+   - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
+
+14. **Day15-T3C — Baseline Probability Research**
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 

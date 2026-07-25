@@ -2,7 +2,7 @@
 
 ## Status
 
-Day15-T3B8 implements the smallest owner-triggered public Kalshi live-read foundation. Automated validation uses injected transports and performs no network request. The first real request remains a separate owner-authorized operation.
+Day15-T3B8 implements the smallest owner-triggered public Kalshi live-read foundation. Automated validation uses injected transports and performs no network request. The owner separately authorized and completed the first real request after the implementation was committed.
 
 This milestone adds no Robinhood authentication, private endpoint, credential, account session, persistence, polling, scheduling, model, recommendation, sizing, order, or execution behavior.
 
@@ -70,7 +70,7 @@ The output remains `RESEARCH_SOURCE_ONLY_NOT_OBSERVATION_OR_TRADE_AUTHORITY`. It
 
 ## Safety and rollback
 
-Before the first real request:
+The first real request used this sequence:
 
 1. review the complete T3B8 diff and green validation report;
 2. run the command without confirmation and verify `DRY_RUN`, zero requests, and zero writes;
@@ -80,9 +80,29 @@ Before the first real request:
 
 Rollback removes the manual script, transport export, policy, and package commands. No data cleanup is required because the smoke writes nothing.
 
+## First live verification record
+
+The owner-authorized command completed successfully on `2026-07-25T01:52:52.056Z`:
+
+- fixed market: `KXBTC15M-26JUL232045-45`;
+- network requests: `1`;
+- retries: `0`;
+- received bytes: `2,210`;
+- normalized records: `1`;
+- elapsed time: `307 ms`;
+- mapping: `REVIEWED_EXACT`;
+- normalization: `NORMALIZED_EXACT_MAPPING`;
+- settlement side: `DOWN`;
+- payload fingerprint: `fnv1a64:869807d6757d9ae0`;
+- source-snapshot fingerprint: `fnv1a64:6015aac2a6e8c021`;
+- credential mode: `NONE`;
+- persistence writes: `0`.
+
+Post-run Git status was clean, and local `HEAD` remained equal to `origin/main` at `e0fd00586c802a1e386fcb14f5a05f0d096ffe79`. This record preserves sanitized execution evidence only; no raw provider body was persisted.
+
 ## Deferred
 
-- execution of the first public request;
+- any repeated or scheduled public request;
 - a currently open market or repeated event selection;
 - market discovery, order books, trades, candlesticks, or reference-price feeds;
 - Robinhood quotes, fee previews, or platform observations;

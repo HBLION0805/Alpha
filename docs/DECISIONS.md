@@ -1,5 +1,37 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B9 Collection Runner Architecture
+
+### A Runner Coordinates Admitted Evidence; It Does Not Discover Authority
+
+- Decision: Require every scheduled source task to bind a prospectively frozen event, provider fingerprint, exact mapping fingerprint, capability, source record, budgets, cutoff, and owner-approved pilot activation before transport.
+- Reason: Dynamic discovery or mapping inside the runner would combine scheduling with source authority and could silently collect the wrong contract.
+- Consequence: The initial runner architecture cannot discover markets, approve mappings, extend plans, or start without a separately approved activation.
+
+### Platform and Exchange Evidence Remain Separate Lanes
+
+- Decision: Preserve independent Robinhood platform and exchange-native evidence tasks through collection and commit.
+- Reason: Kalshi data does not establish Robinhood-displayed quotes, order-preview fees, or platform observation time.
+- Consequence: Kalshi-only automation cannot create a complete T1 observation or qualify the research dataset. Missing platform evidence remains explicitly missing.
+
+### Missed Pre-Event Evidence Is Never Backfilled
+
+- Decision: Mark an observation task `MISSED` when its evidence cutoff passes without eligible evidence.
+- Reason: Later quotes, candlesticks, screenshots, or outcomes would contaminate a forward sample.
+- Consequence: Runner failures reduce coverage instead of improving results through hindsight.
+
+### At-Least-Once Reads End in Idempotent Atomic Commits
+
+- Decision: Use append-only attempt history, durable leases, unique task idempotency keys, expected aggregate versions, and one atomic attempt/evidence/task/outbox transaction.
+- Reason: A read-only provider call can be repeated after ambiguous failure, but accepted evidence must never be duplicated or overwritten.
+- Consequence: A conflicting fingerprint is a terminal integrity incident. T3B10 should use single-host SQLite in WAL mode rather than concurrent NDJSON writes.
+
+### One Retry and One Worker Are the Initial Hard Ceiling
+
+- Decision: Permit one worker, one in-flight request, and at most two total attempts per task.
+- Reason: The pilot must establish clock, cutoff, recovery, and idempotency behavior before adding throughput or distributed coordination.
+- Consequence: Only timeout, connection failure, `429`, `5xx`, or an expired crash lease may retry, and no retry may cross the evidence deadline.
+
 ## 2026-07-24 - Day15-T3B8 Bounded Kalshi Live-Read Smoke
 
 ### One Exact Public Market Before Any Collection Runner
@@ -12,7 +44,7 @@
 
 - Decision: Make the manual command network-free unless `--confirm-live-read` is supplied after a separate owner decision.
 - Reason: Code approval and execution of an external request are distinct authority changes.
-- Consequence: Automated tests and normal command execution make zero network calls. T3B8 implementation does not claim that a real request has run.
+- Consequence: Automated tests and normal command execution make zero network calls. The owner later authorized exactly one successful real request, which does not authorize repetition or scheduling.
 
 ### Bounded Live Policy Is an Exact Capability Token
 

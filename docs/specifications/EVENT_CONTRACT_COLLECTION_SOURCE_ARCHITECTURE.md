@@ -123,6 +123,12 @@ The provider adapter may discover, retrieve, and normalize evidence. It may not 
 
 T3B8 through T3B10 are not authorized by approving this specification.
 
+Current release status:
+
+- T3B8 implementation is owner approved, committed, pushed, and verified by one separately authorized public request.
+- T3B9 is specified in [Event Contract Collection Runner Architecture](EVENT_CONTRACT_COLLECTION_RUNNER_ARCHITECTURE.md) without implementation.
+- T3B10 remains unauthorized.
+
 ## Rejected shortcuts
 
 - undocumented Robinhood endpoints or reverse-engineered application traffic;

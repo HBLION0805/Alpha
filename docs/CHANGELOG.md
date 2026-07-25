@@ -1,10 +1,25 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B8 Bounded Kalshi Live-Read Smoke (Pending Owner Review)
+## 2026-07-24 - Day15-T3B9 Collection Runner Architecture (Pending Owner Review)
+
+- Specified frozen-plan and owner-activation admission before any scheduled source task.
+- Defined separate platform and exchange evidence lanes; Kalshi-only automation cannot claim Robinhood quotes, fees, complete T1 observations, or dataset qualification.
+- Defined deterministic pilot/task state machines, UTC and monotonic clocks, one-second clock-health gate, one worker, durable leases, graceful/emergency stop, and missed-evidence behavior.
+- Limited retry to one additional attempt for explicit transient categories without crossing evidence cutoffs.
+- Selected transactional single-host SQLite/WAL direction for the future pilot, with atomic attempt/evidence/task/outbox commit, unique idempotency keys, recovery, and integrity checks.
+- Added no implementation, database, dependency, scheduler, worker, provider request, persistence, probability, recommendation, order, or execution behavior.
+
+## 2026-07-24 - Day15-T3B8 First Owner-Authorized Live Verification
+
+- Completed exactly one public request for `KXBTC15M-26JUL232045-45` with zero retries, no credential, 2,210 received bytes, one normalized record, and 307 ms elapsed time.
+- Confirmed `REVIEWED_EXACT`, `NORMALIZED_EXACT_MAPPING`, and official `DOWN` settlement under research-source-only authority.
+- Persisted no provider body or runtime data; post-run Git status was clean and `HEAD` remained equal to `origin/main` at `e0fd00586c802a1e386fcb14f5a05f0d096ffe79`.
+
+## 2026-07-24 - Day15-T3B8 Bounded Kalshi Live-Read Smoke
 
 - Added one credential-free public HTTPS transport restricted to the exact reviewed Kalshi market endpoint, one request, a finite timeout, 100,000 response bytes, and one record.
 - Added an exact T3B8 source policy while preserving the default fixture-only policy and rejecting every altered bounded-live policy.
-- Added a manual command that defaults to a zero-network dry run; confirmed execution remains separately owner-authorized and has not been run.
+- Added a manual command that defaults to a zero-network dry run; confirmed execution requires separate owner authorization.
 - Reused strict T3B7 normalization and exact mapping before creating one immutable bounded-live settlement source snapshot.
 - Added 12 transport and 14 smoke tests plus two source-policy regression tests, all using injected network-free execution.
 - Added no Robinhood session, credential, private endpoint, market discovery, retry, polling, persistence, quote/fee relabeling, probability, recommendation, sizing, order, or execution behavior.
