@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B11-T3 is committed and pushed; Day15-T3B11-T4 Local Operator and Health Surface is implemented locally and pending Owner review
+Day15-T3B11-T4 is committed and pushed; Day15-T3B11-T5 Process Failure and Replay Drills are implemented locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `ddad4260444142b9b06185ed422b22a5ae7aaea5` on `main`, equal to `origin/main` before the T3B11-T4 implementation task.
+Verified baseline: `c4935738e076e5430c46a55850ef23f499b8e6dd` on `main`, equal to `origin/main` before the T3B11-T5 implementation task.
 
 Day 7 completed:
 
@@ -81,7 +81,9 @@ Day15-T3B11-T2 is committed and pushed as `3c755126f08844ce222dcb9fcc3c86df286ab
 
 Day15-T3B11-T3 is committed and pushed as `ddad4260444142b9b06185ed422b22a5ae7aaea5`. It adds a pure deterministic one-task scheduler and one explicitly invoked fixture-only Worker cycle. The scheduler selects only exact `DUE` tasks and leaves scheduled/retry due transition outside this task. The Worker verifies exact immutable configuration, activation, task, adapter, clock, cutoff, budget, lease, attempt, and snapshot bindings; every mutation goes through the existing recovery-session gate and T7/T8/T8B/T9/T10 transactions.
 
-Day15-T3B11-T4 is implemented locally and pending Owner review. It adds deterministic Preflight/Status/Health reporting, authenticated graceful and Emergency Stop orchestration, a fingerprint-bound process-local notification slot, and a bounded payload-free SQLite read model for Pilot/task/budget/lease/Outbox state. Health is fail-closed unless every safety authority is current. Stop persistence or notification failure cannot clear the process barrier. It adds no runtime-start command, timer, loop, cross-process control server, automatic lock recovery, Outbox delivery, provider request, real Pilot startup, model, recommendation, broker, order, or execution authority.
+Day15-T3B11-T4 is committed and pushed as `c4935738e076e5430c46a55850ef23f499b8e6dd`. It adds deterministic Preflight/Status/Health reporting, authenticated graceful and Emergency Stop orchestration, a fingerprint-bound process-local notification slot, and a bounded payload-free SQLite read model for Pilot/task/budget/lease/Outbox state. Health is fail-closed unless every safety authority is current. Stop persistence or notification failure cannot clear the process barrier.
+
+Day15-T3B11-T5 is implemented locally and pending Owner review. Eight network-free drills cover real duplicate-process ownership rejection, forced owner exit, stale-lock restart rejection, retry timeout, cutoff/deadline precedence, Stop precedence, exact Stop replay, conflicting replay, and fail-closed post-Stop health. The drill fixture has no provider or persistence authority beyond the existing local ownership record. T5 adds no runtime-start loop, automatic stale-lock recovery, Outbox delivery, network provider, real Pilot startup, model, recommendation, broker, order, or execution authority.
 
 ## Day 6 Milestone Review
 
@@ -517,4 +519,4 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B11-T4 Local Operator and Health Surface. If approved and pushed, begin T3B11-T5 process drills for duplicate ownership, forced exit, timeout/cutoff, Stop, restart, and replay. Do not add a runtime loop, cross-process server, network provider, real Pilot activation, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B11-T5 Process Failure and Replay Drills. If approved and pushed, begin T3B11-MR1 Fixture Runtime Milestone Review. Do not add a runtime loop, automatic stale-lock recovery, cross-process server, network provider, real Pilot activation, probability research, recommendation, or trading authority.

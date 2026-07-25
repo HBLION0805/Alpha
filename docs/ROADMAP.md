@@ -346,10 +346,12 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B11-T3 status: completed, committed, and pushed as `ddad4260444142b9b06185ed422b22a5ae7aaea5`.
    - T3B11-T3 scope: closed scheduler snapshots, stable ordering, exact `DUE` acquisition, exact fixture adapter binding, one Worker, session-gated T7/T8/T8B/T9/T10 writes, bounded retry, cancellation, cutoff/budget enforcement, and ambiguity-preserving Stop.
    - T3B11-T3 excludes: due-transition composition, timers, loops, commands, background services, network providers, real Pilot startup, probability research, recommendation, broker, order, or execution.
-   - T3B11-T4 status: local deterministic Preflight/Status/Health, authenticated graceful/Emergency Stop orchestration, process-local Stop notification, and bounded sanitized SQLite Outbox projection are implemented locally and pending Owner review.
+   - T3B11-T4 status: completed, committed, and pushed as `c4935738e076e5430c46a55850ef23f499b8e6dd`.
    - T3B11-T4 scope: closed health evidence, fail-closed readiness, exact Owner challenge verification, durable Stop adapters, immutable reports, payload-free read queries, and 18 network-free tests.
    - T3B11-T4 excludes: executable runtime start, timers, loops, background services, cross-process server, automatic lock recovery, Outbox delivery, network provider, real Pilot, probability research, recommendation, broker, order, or execution.
-   - T3B11-T5 next scope: process-level duplicate, kill, timeout, cutoff, Stop, restart, and replay drills after separate Owner approval.
+   - T3B11-T5 status: eight network-free process, timeout, cutoff/deadline, Stop, restart, and replay drills are implemented locally and pending Owner review.
+   - T3B11-T5 scope: real child-process duplicate rejection, forced-exit stale-lock preservation, fail-closed restart, durable retry-transition requirement, cutoff/deadline and Stop precedence, exact Stop replay, conflicting replay rejection, and post-Stop health.
+   - T3B11-T5 excludes: automatic stale-lock recovery, runtime loop, timers, background services, provider requests, real Pilot operation, probability research, recommendation, broker, order, or execution.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

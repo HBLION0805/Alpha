@@ -30,12 +30,18 @@ The Worker is explicitly invoked once, fixture-only, and writes exclusively
 through the existing session-gated repository transactions. T3 adds no timer,
 loop, command, daemon, network provider, or real Pilot startup.
 
-T3B11-T4 now implements the local programmatic Operator and Health surface,
-pending Owner review. It adds deterministic Preflight and Status reports,
+T3B11-T4 implements the local programmatic Operator and Health surface and was
+Owner-approved, committed, and pushed as `c493573`. It adds deterministic Preflight and Status reports,
 authenticated graceful/Emergency Stop orchestration, process-local Stop
 notification, and a bounded payload-free SQLite Outbox projection. It does not
 add an executable runtime-start command, timer, loop, cross-process control
 server, automatic lock recovery, Outbox delivery, or provider request.
+
+T3B11-T5 now implements eight network-free process failure and replay drills,
+pending Owner review. A real child process proves duplicate ownership rejection,
+forced-exit stale-lock preservation, and fail-closed restart. Deterministic
+drills cover retry timeout, cutoff/deadline and Stop precedence, exact and conflicting
+Stop replay, and post-Stop health.
 
 ## Purpose
 
@@ -755,12 +761,13 @@ T3B11 remains separately gated:
 3. **T3B11-T3 — Fixture scheduler and Worker:** completed and pushed as
    `ddad426`; pure planner, one acquisition cycle, fixture adapter,
    cancellation, and repository composition.
-4. **T3B11-T4 — Operator and health surface:** implemented locally and pending
-   Owner review; Preflight, Status, Health, authenticated Stop, process-local
+4. **T3B11-T4 — Operator and health surface:** completed and pushed as
+   `c493573`; Preflight, Status, Health, authenticated Stop, process-local
    notification, and bounded Outbox projection. Automatic stale-lock recovery
    remains deferred because T4 does not add lock takeover authority.
-5. **T3B11-T5 — Process drills:** duplicate process, forced child-process exit,
-   timeout, cutoff, stop, restart, and replay tests.
+5. **T3B11-T5 — Process drills:** implemented locally and pending Owner review;
+   eight duplicate-process, forced-exit, stale-lock restart, timeout, cutoff/deadline,
+   Stop, health, and replay tests.
 6. **T3B11-MR1 — Fixture runtime milestone review.**
 7. **Later separately approved work:** exact future-market provider admission
    and bounded-live Shadow Pilot.

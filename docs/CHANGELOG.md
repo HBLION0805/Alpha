@@ -1,6 +1,16 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B11-T4 Local Operator and Health Surface (Pending Owner Review)
+## 2026-07-25 - Day15-T3B11-T5 Process Failure and Replay Drills (Pending Owner Review)
+
+- Added a real child-process ownership fixture and eight deterministic, network-free drills.
+- Verified that a concurrent process cannot acquire the same runtime ownership and cannot mutate the existing owner record.
+- Forced the owning process to exit and verified that the immutable stale-lock evidence blocks restart until separately authorized recovery.
+- Verified retry timeout, cutoff/deadline, and process Stop precedence before task acquisition.
+- Verified exact Stop replay determinism, conflicting replay failure, persistent Stop-barrier precedence, and fail-closed post-Stop health.
+- Registered the process drills in the focused package scripts and the complete Alpha validation bundle.
+- Added no automatic stale-lock recovery, runtime loop, background service, network provider, real Pilot, model, recommendation, broker, order, or execution behavior.
+
+## 2026-07-25 - Day15-T3B11-T4 Local Operator and Health Surface
 
 - Added closed deterministic Preflight and Status reports with explicit `HEALTHY`, `DEGRADED`, and `FAIL_CLOSED` states.
 - Required configuration, lock ownership, SQLite readiness/integrity, clock health, recovery-session authorization, and Stop-barrier evidence before reporting healthy.
@@ -10,6 +20,7 @@
 - Excluded Outbox event JSON, normalized snapshot bodies, raw payload, secrets, provider narrative, portfolio, recommendation, and order data from the projection.
 - Added 14 Operator/Health tests and four SQLite projection tests.
 - Added no executable runtime start, timer, loop, daemon, network provider, real Pilot, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B11-T4 as `c4935738e076e5430c46a55850ef23f499b8e6dd`.
 
 ## 2026-07-25 - Day15-T3B11-T3 Fixture Scheduler and Worker
 

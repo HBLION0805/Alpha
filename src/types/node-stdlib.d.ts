@@ -75,6 +75,38 @@ declare module "node:child_process" {
       readonly killSignal: "SIGTERM";
     },
   ): SpawnSyncResult;
+
+  export interface ChildProcessWithoutNullStreams {
+    readonly stdout: {
+      setEncoding(encoding: "utf8"): void;
+      on(event: "data", listener: (chunk: string) => void): void;
+    };
+    readonly stderr: {
+      setEncoding(encoding: "utf8"): void;
+      on(event: "data", listener: (chunk: string) => void): void;
+    };
+    readonly exitCode: number | null;
+    kill(signal?: "SIGTERM"): boolean;
+    once(event: "exit", listener: (code: number | null) => void): void;
+  }
+
+  export function spawn(
+    command: string,
+    args: ReadonlyArray<string>,
+    options: {
+      readonly stdio: readonly ["ignore", "pipe", "pipe"];
+      readonly windowsHide: boolean;
+    },
+  ): ChildProcessWithoutNullStreams;
+}
+
+declare module "node:events" {
+  export function once(
+    emitter: {
+      once(event: "exit", listener: (code: number | null) => void): void;
+    },
+    event: "exit",
+  ): Promise<readonly [number | null]>;
 }
 
 declare module "node:os" {
@@ -90,14 +122,26 @@ declare module "node:path" {
 }
 
 declare module "node:process" {
+  export const argv: readonly string[];
+  export function cwd(): string;
   export const env: Readonly<Record<string, string | undefined>>;
   export const execPath: string;
+  export let exitCode: number | undefined;
   export function kill(pid: number, signal?: 0 | string): true;
   export const pid: number;
   export const hrtime: {
     bigint(): bigint;
   };
   export const versions: Readonly<{ readonly node: string }>;
+  export const stdout: { write(value: string): boolean };
+  export const stderr: { write(value: string): boolean };
+  const process: {
+    readonly argv: readonly string[];
+    exitCode: number | undefined;
+    readonly stdout: { write(value: string): boolean };
+    readonly stderr: { write(value: string): boolean };
+  };
+  export default process;
 }
 
 declare module "node:crypto" {

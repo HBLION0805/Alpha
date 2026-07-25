@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B11-T5 Process Failure and Replay Drills
+
+### A Crash Preserves Ownership Ambiguity
+
+- Decision: forced process exit leaves the immutable ownership directory and owner record intact, and a restart must fail closed.
+- Rationale: process disappearance alone does not prove that recovery, store integrity, or prior mutation outcomes are safe.
+- Consequence: there is no automatic stale-lock deletion or takeover; recovery remains an explicit separately authorized Owner boundary.
+
+### Stop and Time Boundaries Outrank Acquisition
+
+- Decision: Stop, retry-transition requirements, and cutoff state are evaluated before any task acquisition in the process drill matrix.
+- Rationale: a wake-up or retry opportunity cannot widen authority after Stop or after evidence timing becomes invalid.
+- Consequence: Stop requests graceful completion, `RETRY_WAIT` requires its durable due transition, and a task at cutoff is marked missed rather than acquired.
+
+### Replay Must Be Exact
+
+- Decision: an exact repeated Stop command is deterministic, while a changed command using the same durable identity fails closed.
+- Rationale: idempotency must prevent duplicate side effects without accepting authority drift.
+- Consequence: conflicting replay leaves the process Stop barrier active and cannot restore healthy status.
+
 ## 2026-07-25 - Day15-T3B11-T4 Local Operator and Health Surface
 
 ### Health Is a Conjunction of Current Safety Evidence
