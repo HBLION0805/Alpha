@@ -14,18 +14,34 @@ declare module "node:fs" {
   export function mkdtempSync(prefix: string): string;
   export function openSync(path: string, flags: string): number;
   export function readFileSync(path: string, encoding: "utf8"): string;
+  export function readFileSync(path: string): Uint8Array;
   export function lstatSync(path: string): {
     readonly size: number;
     isFile(): boolean;
     isSymbolicLink(): boolean;
   };
   export function realpathSync(path: string): string;
+  export function renameSync(oldPath: string, newPath: string): void;
   export function rmSync(
     path: string,
     options?: { readonly recursive?: boolean; readonly force?: boolean },
   ): void;
   export function statSync(path: string): { readonly size: number };
-  export function writeFileSync(path: string | number, data: string): void;
+  export function truncateSync(path: string, length?: number): void;
+  export function statSync(
+    path: string,
+    options: { readonly bigint: true },
+  ): {
+    readonly dev: bigint;
+    readonly ino: bigint;
+    readonly size: bigint;
+    readonly mtimeNs: bigint;
+  };
+  export function writeFileSync(
+    path: string | number,
+    data: string,
+    options?: { readonly encoding?: "utf8"; readonly flag?: string },
+  ): void;
   export function writeSync(fd: number, data: string): number;
 }
 
@@ -63,6 +79,7 @@ declare module "node:os" {
 }
 
 declare module "node:path" {
+  export function basename(path: string, suffix?: string): string;
   export function dirname(path: string): string;
   export function join(...paths: ReadonlyArray<string>): string;
   export function resolve(...paths: ReadonlyArray<string>): string;
@@ -78,6 +95,7 @@ declare module "node:process" {
 declare module "node:crypto" {
   export interface Hash {
     update(data: string, inputEncoding?: "utf8"): Hash;
+    update(data: Uint8Array): Hash;
     digest(encoding: "hex"): string;
   }
 

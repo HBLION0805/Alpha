@@ -18,6 +18,11 @@ import {
 } from "./EventContractCollectionRunnerSqliteMigrationV1";
 import type { EventContractCollectionRunnerRepository } from "./EventContractCollectionRunnerRepository";
 import { createSqliteEventContractCollectionRunnerRepository } from "./SqliteEventContractCollectionRunnerRepository";
+import {
+  EventContractCollectionRunnerSqliteRecoveryManager,
+  inspectCollectionRunnerStartupRecovery,
+  type CollectionRunnerStartupRecoveryReport,
+} from "./EventContractCollectionRunnerSqliteRecovery";
 
 const MINIMUM_NODE_VERSION = Object.freeze([24, 12, 0] as const);
 const STORE_ID_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/u;
@@ -64,6 +69,7 @@ export interface OpenEventContractCollectionRunnerSqliteStoreOptions {
   readonly storeId?: string;
   readonly applicationBuildFingerprint: string;
   readonly appliedAtUtc: string;
+  readonly recoveryInspectedAtUtc?: string;
 }
 
 export interface EventContractCollectionRunnerSqliteReadiness {
@@ -533,6 +539,7 @@ export class EventContractCollectionRunnerSqliteStore {
   readonly #database: DatabaseSync;
   readonly #storePath: string;
   readonly #readiness: EventContractCollectionRunnerSqliteReadiness;
+  readonly #recovery: CollectionRunnerStartupRecoveryReport;
   #closed = false;
 
   private constructor(
@@ -540,6 +547,7 @@ export class EventContractCollectionRunnerSqliteStore {
     storePath: string,
     sqliteVersion: string,
     schemaChecksum: string,
+    recovery: CollectionRunnerStartupRecoveryReport,
   ) {
     this.#database = database;
     this.#storePath = storePath;
@@ -564,6 +572,7 @@ export class EventContractCollectionRunnerSqliteStore {
       onlineBackupAvailable: true,
       walCheckpointAvailable: true,
     });
+    this.#recovery = recovery;
   }
 
   public static open(
@@ -608,11 +617,17 @@ export class EventContractCollectionRunnerSqliteStore {
       verifyMigrationChain(database);
       const schemaChecksum = verifySchema(database);
       verifyIntegrity(database);
+      const recovery = inspectCollectionRunnerStartupRecovery(
+        database,
+        storePath,
+        options.recoveryInspectedAtUtc ?? options.appliedAtUtc,
+      );
       return new EventContractCollectionRunnerSqliteStore(
         database,
         storePath,
         sqliteVersion,
         schemaChecksum,
+        recovery,
       );
     } catch (error) {
       try {
@@ -639,11 +654,36 @@ export class EventContractCollectionRunnerSqliteStore {
     return this.#readiness;
   }
 
+  public getStartupRecoveryReport(): CollectionRunnerStartupRecoveryReport {
+    return this.#recovery;
+  }
+
+  public createRecoveryManager(): EventContractCollectionRunnerSqliteRecoveryManager {
+    if (this.#closed) {
+      throw new EventContractCollectionRunnerSqliteStoreError(
+        EventContractCollectionRunnerSqliteStoreErrorCode.OpenFailed,
+        "Closed SQLite store cannot create a recovery manager.",
+      );
+    }
+    return new EventContractCollectionRunnerSqliteRecoveryManager(
+      this.#database,
+      this.#storePath,
+      this.#readiness,
+      this.#recovery,
+    );
+  }
+
   public createRunnerRepository(): EventContractCollectionRunnerRepository {
     if (this.#closed) {
       throw new EventContractCollectionRunnerSqliteStoreError(
         EventContractCollectionRunnerSqliteStoreErrorCode.OpenFailed,
         "Closed SQLite store cannot create a runner repository.",
+      );
+    }
+    if (!this.#recovery.mutationAllowed) {
+      throw new EventContractCollectionRunnerSqliteStoreError(
+        EventContractCollectionRunnerSqliteStoreErrorCode.IntegrityFailed,
+        "SQLite startup recovery blockers prohibit repository mutation.",
       );
     }
     return createSqliteEventContractCollectionRunnerRepository(this.#database);

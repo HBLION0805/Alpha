@@ -1,6 +1,13 @@
 # Alpha Changelog
 
-## 2026-07-24 - Day15-T3B10-T3B SQLite Repository Ports and Atomic Transactions (Pending Owner Review)
+## 2026-07-24 - Day15-T3B10-T3C SQLite Recovery, Backup, Restore, and Corruption Drills (Pending Owner Review)
+
+- Added immutable fail-closed startup recovery reports covering full integrity, migration/schema identity, canonical fingerprints, transitions, authority, evidence, attempts, leases, counters, committed outbox evidence, and operational-pilot restart state.
+- Blocked repository creation whenever recovery finds an issue; active or stop-requested pilots require explicit owner resume after restart.
+- Added independently verified SQLite online backups with immutable canonical manifests and offline restore to a new non-existing target.
+- Added 11 temporary-store corruption and recovery drills with no network or application runtime writes.
+
+## 2026-07-24 - Day15-T3B10-T3B SQLite Repository Ports and Atomic Transactions
 
 - Added a restricted Event Contract Collection Runner repository port with named T2-T10 operations and an explicit T8B `IN_FLIGHT -> VALIDATING` transition.
 - Implemented `BEGIN IMMEDIATE` atomic writes, exact request envelopes, domain/source revalidation, canonical fingerprints, compare-and-swap state, authority and policy binding, durable leases and attempt claims, bounded retry, and sanitized immutable reads.

@@ -45,6 +45,7 @@
     "test:event-contract-collection-runner": "tsx src/engines/event-contract-collection-runner/EventContractCollectionRunnerEngine.test.ts",
     "test:event-contract-collection-runner-sqlite": "tsx src/repositories/EventContractCollectionRunnerSqliteStore.test.ts",
     "test:event-contract-collection-runner-repository": "tsx src/repositories/SqliteEventContractCollectionRunnerRepository.test.ts",
+    "test:event-contract-collection-runner-recovery": "tsx src/repositories/EventContractCollectionRunnerSqliteRecovery.test.ts",
     "test:kalshi-event-contract-fixture": "tsx src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
     "test:kalshi-public-http-transport": "tsx src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
     "test:kalshi-event-contract-live-smoke": "tsx src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",

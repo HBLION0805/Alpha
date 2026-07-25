@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-24 - Day15-T3B10-T3C Recovery, Backup, and Restore
+
+### Recovery Blockers Disable Mutation
+
+- Decision: Every open produces an immutable recovery report, and any issue prevents creation of the writable repository.
+- Rationale: Detecting drift without enforcing it would still permit corrupted or ambiguous state to gain persistence authority.
+- Consequence: Operational pilots after restart require a separately reviewed explicit owner-resume transaction.
+
+### Back Up Through SQLite and Restore Only to a New Path
+
+- Decision: Use the SQLite online backup API, bind every backup to a canonical SHA-256 manifest, and restore only to a non-existing target.
+- Rationale: Ordinary live-file copying can split WAL state, while overwriting an active store destroys rollback evidence.
+- Consequence: Restore verification never switches application configuration and always requires owner switch plus operator resume.
+
 ## 2026-07-24 - Day15-T3B10-T3B SQLite Repository Ports and Atomic Transactions
 
 ### Expose Named Transactions, Not a Database Handle

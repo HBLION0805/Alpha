@@ -727,6 +727,8 @@ Day15-T3B10-T3A selects the Node 24.12+ `node:sqlite` standard-library binding f
 
 Day15-T3B10-T3B adds a restricted repository port over that private store. Named `BEGIN IMMEDIATE` transactions implement T2-T10 plus the explicit T8B `IN_FLIGHT -> VALIDATING` bridge, revalidate exact domain/source authority, enforce compare-and-swap versions and bounded attempts, and atomically bind results, normalized evidence, counters, leases, transitions, and sanitized outbox records. The public surface returns immutable sanitized views and exposes neither SQL nor raw canonical JSON. It still creates no application runtime store and starts no scheduler, worker, retry loop, provider request, real pilot, model, recommendation, broker, order, or execution path. See [Event Contract Collection Runner SQLite Repository](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_REPOSITORY.md).
 
+Day15-T3B10-T3C adds fail-closed startup recovery inspection, independently verified SQLite online backups with digest-bound canonical manifests, and offline restore to a new non-existing path. Recovery blockers prohibit repository mutation, and operational pilots require explicit owner resume after restart. Restore never switches configuration or resumes work. See [Event Contract Collection Runner SQLite Recovery](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE_RECOVERY.md).
+
 ---
 
 # Event Contract Framework
