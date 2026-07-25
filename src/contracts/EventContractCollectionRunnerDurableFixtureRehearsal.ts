@@ -166,6 +166,7 @@ export interface DurableFixtureRehearsalFailureReceipt
 
 export interface DurableFixtureRehearsalEvidencePlanInput {
   readonly evidencePlanId: string;
+  readonly freezeClaimId: string;
   readonly rehearsalId: string;
   readonly manifestFingerprint: string;
   readonly validationReceiptFingerprint: string;

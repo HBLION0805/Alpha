@@ -340,7 +340,7 @@ export function createDurableFixtureRehearsalEvidencePlan(
   input: DurableFixtureRehearsalEvidencePlanInput,
 ): DurableFixtureRehearsalEvidencePlan {
   exact(input, [
-    "evidencePlanId", "rehearsalId", "manifestFingerprint",
+    "evidencePlanId", "freezeClaimId", "rehearsalId", "manifestFingerprint",
     "validationReceiptFingerprint", "validationSuiteFingerprint",
     "plannedBackupId", "plannedPackageId", "plannedEnvelopeId",
     "retentionPolicyVersion", "terminalFreezeFingerprint",
@@ -348,6 +348,7 @@ export function createDurableFixtureRehearsalEvidencePlan(
   ], "durable rehearsal evidence plan");
   for (const [label, value] of [
     ["evidencePlanId", input.evidencePlanId],
+    ["freezeClaimId", input.freezeClaimId],
     ["rehearsalId", input.rehearsalId],
     ["plannedBackupId", input.plannedBackupId],
     ["plannedPackageId", input.plannedPackageId],
@@ -500,6 +501,18 @@ export function verifyDurableFixtureRehearsalSnapshot(
       settledClaims.has(failure.claimId)
     ) issues.push("FAILURE_RECEIPT_BINDING_MISMATCH");
     settledClaims.add(failure.claimId);
+  }
+  if (snapshot.evidencePlan !== null) {
+    const freezeClaim = claimsById.get(snapshot.evidencePlan.freezeClaimId);
+    if (
+      freezeClaim === undefined ||
+      freezeClaim.phase !== DurableFixtureRehearsalPhase.Freeze ||
+      settledClaims.has(freezeClaim.claimId)
+    ) {
+      issues.push("EVIDENCE_PLAN_CLAIM_MISMATCH");
+    } else {
+      settledClaims.add(freezeClaim.claimId);
+    }
   }
 
   const unresolved = [...claimsById.keys()].filter((id) => !settledClaims.has(id));

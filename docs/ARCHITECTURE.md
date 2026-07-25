@@ -805,6 +805,20 @@ becomes `RECOVERY_REQUIRED` or `FAILED_CLOSED`. Stop precedes ownership and
 each mutation/action boundary, and ownership is released only after a clean
 result.
 
+Day15-T3B14-T4 closes the durable evidence-production boundary. A reviewed
+fixed-process adapter binds clean repository commit, fixed validation-suite
+identity, registered test total, exit status, timing, and sanitized output
+digest into an immutable receipt. The final SQLite transaction binds one
+`FREEZE` claim, that receipt fingerprint, planned backup/package/envelope
+identities, and `COMPLETED -> VALIDATED -> EVIDENCE_FROZEN` history without
+altering Migration 003. Packaging opens the frozen store read-only, uses the
+Node SQLite online-backup boundary, writes fixed bounded JSON artifacts, and
+publishes the complete envelope by same-filesystem rename. The independent
+verifier receives only a registered evidence-root ID and expected envelope and
+manifest fingerprints, recomputes all digests, inspects the v3 backup, and
+reconstructs durable rehearsal truth. Full OS-process and crash proof remains
+T3B14-T5 work.
+
 ---
 
 # Event Contract Framework

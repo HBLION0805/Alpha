@@ -304,6 +304,7 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
   ["evidence plan binds planned immutable identities", () => {
     const plan = createDurableFixtureRehearsalEvidencePlan({
       evidencePlanId: "plan-1",
+      freezeClaimId: "claim-freeze-1",
       rehearsalId: "rehearsal-1",
       manifestFingerprint: FP1,
       validationReceiptFingerprint: FP2,
@@ -469,6 +470,7 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
     const value = validSnapshot();
     const plan = createDurableFixtureRehearsalEvidencePlan({
       evidencePlanId: "plan-1",
+      freezeClaimId: "claim-freeze-1",
       rehearsalId: "rehearsal-1",
       manifestFingerprint: FP1,
       validationReceiptFingerprint: FP2,

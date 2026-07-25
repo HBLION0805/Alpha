@@ -22,6 +22,7 @@ declare module "node:fs" {
     isSymbolicLink(): boolean;
   };
   export function realpathSync(path: string): string;
+  export function readdirSync(path: string): string[];
   export function renameSync(oldPath: string, newPath: string): void;
   export function rmdirSync(path: string): void;
   export function rmSync(
@@ -42,7 +43,7 @@ declare module "node:fs" {
   };
   export function writeFileSync(
     path: string | number,
-    data: string,
+    data: string | Uint8Array,
     options?: { readonly encoding?: "utf8"; readonly flag?: string },
   ): void;
   export function writeSync(fd: number, data: string): number;

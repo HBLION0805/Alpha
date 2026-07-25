@@ -1,5 +1,13 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-T4 Durable Evidence Boundary
+
+- Decision: preserve immutable Migration 003 and settle the `FREEZE` claim through the evidence plan in the same final transaction; fixed validation is read-only and its exact receipt fingerprint is committed with the terminal freeze.
+- Decision: forbid caller-selected validation commands and arguments; only the version-controlled Alpha validation bundle, clean commit identity, registered suite fingerprint, and registered test total can produce a passing receipt.
+- Decision: build one fixed-name envelope in an isolated staging directory, use SQLite online backup for the frozen source, and publish only by same-filesystem atomic rename without overwrite.
+- Decision: keep final verification independent and read-only. It resolves a registered evidence root, requires the backup, recomputes all file identities, verifies the exact v3 profile, and reconstructs durable state from the backup.
+- Consequence: T3B14-T5 must still prove the boundary in fresh OS processes and cover crash, Stop, substitution, leakage, missing-backup, source-isolation, and two-run determinism drills before milestone review.
+
 ## 2026-07-25 - Day15-T3B14-T3 Durable Phase Coordinator and Recovery Reconciliation
 
 - Decision: expose only the closed `PREPARE`, `STEP`, and `RECOVER` programmatic phases in T3; do not add an executable command or multi-phase runner.

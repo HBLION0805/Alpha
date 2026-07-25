@@ -2,6 +2,7 @@ import type { DatabaseSync } from "node:sqlite";
 
 import {
   DurableFixtureRehearsalLifecycleState,
+  DurableFixtureRehearsalPhase,
   type DurableFixtureRehearsalEvidencePlan,
   type DurableFixtureRehearsalFailureReceipt,
   type DurableFixtureRehearsalInvocationReceipt,
@@ -79,6 +80,13 @@ export interface DurableFixtureRehearsalRepository {
     expectedLifecycleVersion: number,
     receipts: readonly DurableFixtureRehearsalFailureReceipt[],
     transition: DurableFixtureRehearsalTransition,
+    registry: DurableFixtureRehearsalRegistry,
+  ): DurableFixtureRehearsalSnapshot;
+  freezeEvidence(
+    expectedLifecycleVersion: number,
+    claim: DurableFixtureRehearsalOperationClaim,
+    evidencePlan: DurableFixtureRehearsalEvidencePlan,
+    transitions: readonly DurableFixtureRehearsalTransition[],
     registry: DurableFixtureRehearsalRegistry,
   ): DurableFixtureRehearsalSnapshot;
 }
@@ -334,6 +342,37 @@ WHERE rehearsal_id = ? AND request_fingerprint = ?
       this.#assertStepping(expectedLifecycleVersion, registry.rehearsalId);
       receipts.forEach((receipt) => this.#insertFailureReceipt(receipt));
       this.#insertTransition(transition);
+      this.#updateRegistry(expectedLifecycleVersion, registry);
+      return this.#requireSnapshot(registry.rehearsalId);
+    });
+  }
+
+  public freezeEvidence(
+    expectedLifecycleVersion: number,
+    claim: DurableFixtureRehearsalOperationClaim,
+    evidencePlan: DurableFixtureRehearsalEvidencePlan,
+    transitions: readonly DurableFixtureRehearsalTransition[],
+    registry: DurableFixtureRehearsalRegistry,
+  ): DurableFixtureRehearsalSnapshot {
+    return this.#transaction(() => {
+      const current = this.#requireSnapshot(registry.rehearsalId);
+      if (
+        current.registry.lifecycleVersion !== expectedLifecycleVersion ||
+        current.registry.lifecycleState !==
+          DurableFixtureRehearsalLifecycleState.Completed ||
+        claim.phase !== DurableFixtureRehearsalPhase.Freeze ||
+        claim.expectedLifecycleVersion !== expectedLifecycleVersion ||
+        evidencePlan.freezeClaimId !== claim.claimId ||
+        evidencePlan.rehearsalId !== registry.rehearsalId
+      ) {
+        fail(
+          DurableFixtureRehearsalRepositoryErrorCode.StateConflict,
+          "Durable rehearsal is not at the exact terminal-freeze boundary.",
+        );
+      }
+      this.#insertClaim(claim);
+      transitions.forEach((item) => this.#insertTransition(item));
+      this.#insertEvidencePlan(evidencePlan);
       this.#updateRegistry(expectedLifecycleVersion, registry);
       return this.#requireSnapshot(registry.rehearsalId);
     });
@@ -707,6 +746,34 @@ INSERT INTO fixture_rehearsal_failure_receipts (
       receipt.fingerprint,
       receipt.occurredAtUtc,
       json(receipt),
+    );
+  }
+
+  #insertEvidencePlan(plan: DurableFixtureRehearsalEvidencePlan): void {
+    this.database.prepare(`
+INSERT INTO fixture_rehearsal_evidence_plans (
+ evidence_plan_id, rehearsal_id, manifest_fingerprint,
+ validation_receipt_fingerprint, validation_suite_fingerprint,
+ planned_backup_id, planned_package_id, planned_envelope_id,
+ retention_policy_version, terminal_freeze_fingerprint,
+ non_authority_declaration, evidence_plan_fingerprint, frozen_at_utc,
+ canonical_record_json
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`).run(
+      plan.evidencePlanId,
+      plan.rehearsalId,
+      plan.manifestFingerprint,
+      plan.validationReceiptFingerprint,
+      plan.validationSuiteFingerprint,
+      plan.plannedBackupId,
+      plan.plannedPackageId,
+      plan.plannedEnvelopeId,
+      plan.retentionPolicyVersion,
+      plan.terminalFreezeFingerprint,
+      plan.nonAuthorityDeclaration,
+      plan.fingerprint,
+      plan.frozenAtUtc,
+      json(plan),
     );
   }
 

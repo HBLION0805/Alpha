@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B14-T4 Backup, Validation, Envelope, and Fresh-process Verifier (Pending Owner Review)
+
+- Added immutable fixed-validation, backup-manifest, envelope-manifest, and three-state verification contracts.
+- Added a fixed local validation adapter with no caller-selected executable, arguments, network, or credential inputs.
+- Added atomic `FREEZE` claim, validation-receipt binding, evidence plan, and terminal lifecycle persistence while preserving Migration 003.
+- Added online SQLite backup, fixed-name bounded package construction, no-overwrite staging, and same-filesystem atomic envelope publication.
+- Added an independent read-only verifier that accepts only a registered root ID plus expected envelope and manifest fingerprints, verifies every digest and byte count, opens the backup read-only, verifies the exact v3 profile, and reconstructs durable rehearsal truth.
+- Added focused fail-closed tests. No executable phase command, rehearsal run, provider, real Pilot, T1/T2 delivery, recommendation, broker, order, or execution authority was added.
+
 ## 2026-07-25 - Day15-T3B14-T3 Durable Phase Coordinator and Recovery Reconciliation (Pending Owner Review)
 
 - Added a closed `PREPARE`/`STEP`/`RECOVER` request and result boundary with strict field, phase, identity, lifecycle-version, ordinal, recovery-fingerprint, and authorization validation.

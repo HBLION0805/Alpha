@@ -663,9 +663,9 @@ T3B14 remains separately gated:
 2. **T3B14-T2 — Rehearsal-profile contracts and migration 003:** completed,
    committed, and pushed as `80fb117`.
 3. **T3B14-T3 — Durable phase coordinator and recovery reconciliation:**
-   implementation complete locally and pending Owner review.
+   completed, committed, and pushed as `0522075`.
 4. **T3B14-T4 — Backup, validation, envelope, and fresh-process verifier:**
-   concrete evidence reconstruction and portable immutable envelope.
+   implementation complete locally and pending Owner review.
 5. **T3B14-T5 — End-to-end process drills:** clean, two-run, crash, Stop,
    replay, backup, validation, leakage, and source-isolation drills.
 6. **T3B14-MR1 — Durable fixture-rehearsal readiness review.**
@@ -715,7 +715,7 @@ T3B14-T1 does not authorize:
 
 After Owner approval, begin:
 
-`Day15-T3B14-T4 — Backup, Validation, Envelope, and Fresh-process Verifier`
+`Day15-T3B14-T5 — End-to-end Process, Crash, Substitution, and Two-run Drills`
 
-Do not combine T3 approval with evidence-envelope implementation, rehearsal
-execution, provider admission, or capital authority.
+Do not combine T4 approval with a real rehearsal execution, provider
+admission, or capital authority.

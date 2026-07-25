@@ -19,6 +19,13 @@ import {
   type DurableFixtureRehearsalStepEvidence,
 } from "../../contracts";
 import {
+  createDurableFixtureRehearsalEvidencePlan,
+  createDurableFixtureRehearsalOperationClaim,
+  createDurableFixtureRehearsalRegistry,
+  createDurableFixtureRehearsalTransition,
+  verifyDurableFixtureRehearsalSnapshot,
+} from "./EventContractCollectionRunnerDurableFixtureRehearsalEngine";
+import {
   CollectionRunnerRuntimeAssemblyAction,
   CollectionRunnerRuntimeStepOutcome,
 } from "../../contracts/EventContractCollectionRunnerRuntimeAssembly";
@@ -374,6 +381,90 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
       assertEqual(snapshot.registry.nextInvocationOrdinal, 2, "next ordinal");
       assertEqual(snapshot.claims.length, 1, "claims");
       assertEqual(snapshot.invocationReceipts.length, 1, "receipts");
+    } finally {
+      harness.close();
+    }
+  }],
+  ["FREEZE atomically binds its claim, validation receipt, and terminal plan", () => {
+    const harness = createHarness();
+    try {
+      prepare(harness);
+      new EventContractCollectionRunnerDurableFixtureRehearsalCoordinator(
+        harness.dependencies,
+      ).execute(request(DurableFixtureRehearsalPhase.Step));
+      const before = harness.repository.readSnapshot("rehearsal-1")!;
+      const claim = createDurableFixtureRehearsalOperationClaim({
+        claimId: "claim-freeze-1",
+        rehearsalId: "rehearsal-1",
+        manifestFingerprint: FP1,
+        phase: DurableFixtureRehearsalPhase.Freeze,
+        invocationOrdinal: null,
+        expectedLifecycleVersion: before.registry.lifecycleVersion,
+        expectedRecoveryFingerprint: before.registry.recoveryFingerprint,
+        requestFingerprint: FP2,
+        processSessionId: "session-1",
+        bootIdentity: "boot-1",
+        ownerAuthorizationId: null,
+        claimedAtUtc: AT,
+      });
+      const validated = createDurableFixtureRehearsalTransition({
+        transitionId: "transition-validate-1",
+        rehearsalId: "rehearsal-1",
+        manifestFingerprint: FP1,
+        ordinal: 1,
+        fromState: DurableFixtureRehearsalLifecycleState.Completed,
+        fromVersion: before.registry.lifecycleVersion,
+        toState: DurableFixtureRehearsalLifecycleState.Validated,
+        reasonCode: "FIXED_VALIDATION_RECEIPT_COMMITTED",
+        occurredAtUtc: AT,
+      });
+      const frozen = createDurableFixtureRehearsalTransition({
+        transitionId: "transition-freeze-1",
+        rehearsalId: "rehearsal-1",
+        manifestFingerprint: FP1,
+        ordinal: 1,
+        fromState: DurableFixtureRehearsalLifecycleState.Validated,
+        fromVersion: validated.toVersion,
+        toState: DurableFixtureRehearsalLifecycleState.EvidenceFrozen,
+        reasonCode: "TERMINAL_EVIDENCE_FROZEN",
+        occurredAtUtc: AT,
+      });
+      const plan = createDurableFixtureRehearsalEvidencePlan({
+        evidencePlanId: "evidence-plan-1",
+        freezeClaimId: claim.claimId,
+        rehearsalId: "rehearsal-1",
+        manifestFingerprint: FP1,
+        validationReceiptFingerprint: FP2,
+        validationSuiteFingerprint: FP3,
+        plannedBackupId: "backup-1",
+        plannedPackageId: "package-1",
+        plannedEnvelopeId: "envelope-1",
+        retentionPolicyVersion: "1.0",
+        terminalFreezeFingerprint: frozen.fingerprint,
+        nonAuthorityDeclaration: "FIXTURE_ONLY",
+        frozenAtUtc: AT,
+      });
+      const {
+        schemaProfile: _profile,
+        deterministic: _deterministic,
+        fingerprint: _fingerprint,
+        ...registryInput
+      } = before.registry;
+      const registry = createDurableFixtureRehearsalRegistry({
+        ...registryInput,
+        lifecycleState: DurableFixtureRehearsalLifecycleState.EvidenceFrozen,
+        lifecycleVersion: frozen.toVersion,
+      });
+      const after = harness.repository.freezeEvidence(
+        before.registry.lifecycleVersion,
+        claim,
+        plan,
+        [validated, frozen],
+        registry,
+      );
+      assertEqual(after.registry.lifecycleState, DurableFixtureRehearsalLifecycleState.EvidenceFrozen, "state");
+      assertEqual(after.evidencePlan?.freezeClaimId, claim.claimId, "claim binding");
+      assertEqual(verifyDurableFixtureRehearsalSnapshot(after).valid, true, "verified");
     } finally {
       harness.close();
     }
