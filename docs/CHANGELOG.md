@@ -1,6 +1,17 @@
 # Alpha Changelog
 
-## 2026-07-25 - Day15-T3B13-T2 Rehearsal Contracts and Pure Verification (Pending Owner Review)
+## 2026-07-25 - Day15-T3B13-T3 Isolated Workspace and Preparation Foundation (Pending Owner Review)
+
+- Added an allow-listed immutable fixture-catalog entry binding the reviewed source snapshot, runner definition, synthetic Pilot/task artifacts, payload metadata, and expected task transitions.
+- Added a manifest-bound runtime-configuration template identity and preparation service that derives one exclusive workspace under a pre-registered local root.
+- Added fail-closed protection against repository overlap, broad or missing roots, path substitution, pre-existing unrelated workspaces, catalog substitution, changed replay, and altered preparation records.
+- Reused the existing strict SQLite migrations and repository transactions to seed and verify one synthetic fixture-only Runner, Pilot, budget, and task, then close the store cleanly.
+- Added exact preparation replay and quarantine-on-failure behavior without recursive deletion or overwrite.
+- Added 18 focused network-free tests using only test-owned temporary directories and synthetic fixture state.
+- Complete Alpha validation passes `2222/2222` with zero failures.
+- Added no foreground step, loop, timer, provider request, real Pilot, Robinhood automation, model, recommendation, broker, order, or execution authority.
+
+## 2026-07-25 - Day15-T3B13-T2 Rehearsal Contracts and Pure Verification
 
 - Added strict immutable contracts for the content-addressed rehearsal manifest, append-only lifecycle transitions, preparation and invocation receipts, bounded evidence package, terminal summary, Outbox identity chronology, and package inventory.
 - Added pure deterministic construction and independent verification with exactly `PASS`, `FAIL_CLOSED`, or `INCOMPLETE` dispositions.
@@ -8,6 +19,7 @@
 - Separated environment-specific execution-package identity from stable scenario-result identity; process, boot, workspace, store, timing, and package time cannot alter the scenario result.
 - Added 38 network-free focused tests for deterministic replay, unknown-field rejection, invalid lifecycle transitions, changed replay, missing evidence, digest substitution, failed checks, and authority substitution.
 - Added no filesystem, SQLite access, command, runtime data, fixture execution, provider, network request, Pilot operation, model, recommendation, broker, order, or execution behavior.
+- Owner approved and pushed T3B13-T2 as `f5e35c253e74a794e32c4961d1b8cea201075d95`.
 
 ## 2026-07-25 - Day15-T3B13-T1 Fixture Rehearsal and Evidence Architecture
 

@@ -545,7 +545,14 @@ Approval of one task grants no authority to begin the next.
 - T3B13-T2 adds no filesystem, SQLite, command, runtime data, fixture
   execution, provider, Pilot operation, model, recommendation, broker, order,
   or execution authority.
-- T3B13-T3 remains unstarted and requires separate Owner approval.
+- T3B13-T2 is committed and pushed as
+  `f5e35c253e74a794e32c4961d1b8cea201075d95`.
+- T3B13-T3 implements allow-listed catalog resolution, repository-disjoint
+  pre-registered roots, one manifest-derived workspace, strict SQLite
+  migration and synthetic Runner/Pilot/task seeding, immutable preparation
+  replay, and quarantine-on-failure retention.
+- T3B13-T3 does not execute a foreground step and makes no network request.
+- T3B13-T4 remains unstarted and requires separate Owner approval.
 
 ## Acceptance criteria
 

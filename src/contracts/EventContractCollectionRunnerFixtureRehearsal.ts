@@ -1,11 +1,19 @@
 import type {
+  CollectionRunnerDefinition,
   CollectionRunnerPilotState,
+  CollectionRunnerPilotActivation,
+  CollectionRunnerScheduledTask,
   CollectionRunnerTaskState,
 } from "./EventContractCollectionRunner";
+import type { EventContractSourceSnapshot } from "./EventContractSource";
 import type {
   CollectionRunnerRuntimeAssemblyAction,
   CollectionRunnerRuntimeStepOutcome,
 } from "./EventContractCollectionRunnerRuntimeAssembly";
+import type {
+  CollectionRunnerRuntimeConfiguration,
+  CollectionRunnerRuntimePaths,
+} from "./EventContractCollectionRunnerRuntime";
 
 export const EVENT_CONTRACT_COLLECTION_RUNNER_FIXTURE_REHEARSAL_SCHEMA_VERSION =
   "1.0" as const;
@@ -117,6 +125,9 @@ export interface CollectionRunnerRehearsalPreparationReceiptInput {
   readonly runtimeConfigurationFingerprint: string;
   readonly seededStoreFingerprint: string;
   readonly preparationTransitionFingerprint: string;
+  readonly workspaceIdentity: string;
+  readonly storePathIdentity: string;
+  readonly schemaCatalogFingerprint: string;
 }
 
 export interface CollectionRunnerRehearsalPreparationReceipt
@@ -208,6 +219,56 @@ export interface CollectionRunnerRehearsalVerificationResult {
   readonly disposition: CollectionRunnerRehearsalVerificationDisposition;
   readonly issueCodes: readonly string[];
   readonly scenarioResultFingerprint: string | null;
+  readonly deterministic: true;
+  readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRehearsalFixtureCatalogEntry {
+  readonly catalogVersion: string;
+  readonly catalogEntryId: string;
+  readonly catalogFingerprint: string;
+  readonly fixturePackageFingerprint: string;
+  readonly fixtureAdapterIdentity: string;
+  readonly fixtureAdapterVersion: string;
+  readonly sourceRecordId: string;
+  readonly payloadFingerprint: string;
+  readonly rawPayloadBytes: number;
+  readonly recordCount: number;
+  readonly runnerDefinition: CollectionRunnerDefinition;
+  readonly pilotActivation: CollectionRunnerPilotActivation;
+  readonly scheduledTasks: readonly CollectionRunnerScheduledTask[];
+  readonly sourceSnapshot: EventContractSourceSnapshot;
+  readonly expectedTaskTransitions: readonly CollectionRunnerTaskState[];
+  readonly deterministic: true;
+  readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRehearsalPreparationRequest {
+  readonly manifest: CollectionRunnerRehearsalManifest;
+  readonly catalogEntryId: string;
+  readonly allowedRootId: string;
+  readonly preparedAtUtc: string;
+}
+
+export interface CollectionRunnerRehearsalWorkspace {
+  readonly allowedRootId: string;
+  readonly workspaceRoot: string;
+  readonly runtimeControlRoot: string;
+  readonly sqliteRoot: string;
+  readonly workspaceIdentity: string;
+  readonly deterministic: true;
+  readonly fingerprint: string;
+}
+
+export interface CollectionRunnerRehearsalPreparationResult {
+  readonly manifest: CollectionRunnerRehearsalManifest;
+  readonly catalogEntry: CollectionRunnerRehearsalFixtureCatalogEntry;
+  readonly workspace: CollectionRunnerRehearsalWorkspace;
+  readonly runtimeConfiguration: CollectionRunnerRuntimeConfiguration;
+  readonly runtimePaths: CollectionRunnerRuntimePaths;
+  readonly lifecycleTransition: CollectionRunnerRehearsalLifecycleTransition;
+  readonly preparationReceipt: CollectionRunnerRehearsalPreparationReceipt;
+  readonly replayed: boolean;
   readonly deterministic: true;
   readonly fingerprint: string;
 }

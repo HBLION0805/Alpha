@@ -375,10 +375,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B13-T1 status: completed, committed, and pushed as `d687c2061ecb8b54233759de54942a147e5f2b4b`.
    - T3B13-T1 scope: one immutable manifest, allow-listed fixture catalog, isolated synthetic workspace, manual one-action invocations, bounded evidence package, independent verification, deterministic scenario fingerprint, replay, Stop, recovery, and retention design.
    - T3B13-T1 excludes: implementation, command, runtime data, rehearsal execution, loop, network provider, real Pilot, T1/T2 assembly, dataset qualification, recommendation, broker, order, or execution.
-   - T3B13-T2 status: manifest, lifecycle, receipt, evidence-package, dual-fingerprint, and pure independent-verification contracts are complete locally and pending Owner review.
+   - T3B13-T2 status: completed, committed, and pushed as `f5e35c253e74a794e32c4961d1b8cea201075d95`.
    - T3B13-T2 scope: strict immutable records, contiguous exact ordinals, closed schemas, bounded sanitized evidence, `PASS`/`FAIL_CLOSED`/`INCOMPLETE`, changed-replay rejection, and environment-independent scenario fingerprints.
    - T3B13-T2 excludes: filesystem, SQLite, command, runtime data, fixture execution, network, real Pilot, model, recommendation, broker, order, or execution.
-   - T3B13 next sequence: T3 workspace/preparation; T4 programmatic step/evidence; T5 package/process drills; MR1; separately approved rehearsal run.
+   - T3B13-T3 status: isolated workspace, allow-listed catalog, synthetic SQLite preparation, immutable replay, and quarantine retention are complete locally and pending Owner review; validation passes `2222/2222`.
+   - T3B13-T3 scope: exact catalog/manifest binding, repository-disjoint pre-registered roots, derived workspace identity, strict migrations, synthetic Runner/Pilot/task seeding, preparation receipt, and replay.
+   - T3B13-T3 excludes: foreground step, loop, timer, network provider, real Pilot, T1/T2 assembly, model, recommendation, broker, order, or execution.
+   - T3B13 next sequence: T4 programmatic step/evidence; T5 package/process drills; MR1; separately approved rehearsal run.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

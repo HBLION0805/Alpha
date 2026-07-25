@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B13-T3 Isolated Preparation Boundary
+
+- Decision: callers select only pre-registered catalog and allowed-root identities; they cannot supply fixture payloads or arbitrary workspace paths.
+- Decision: derive the exclusive workspace name from the verified manifest fingerprint and prohibit overlap with the source repository or a filesystem root.
+- Decision: reuse the existing strict SQLite migration/store/repository boundary to seed the synthetic Runner, Pilot, budget, and task.
+- Decision: treat partial preparation as non-valid until the canonical exclusive preparation record exists.
+- Decision: return exact replay only when manifest, catalog, workspace, runtime configuration, paths, transition, timestamp, store, and receipt identities all match.
+- Decision: quarantine failed preparation directories and never recursively delete or overwrite unresolved content.
+- Consequence: T3B13-T4 may consume one verified prepared fixture workspace, but T3B13-T3 grants no authority to execute a foreground step.
+
 ## 2026-07-25 - Day15-T3B13-T2 Pure Rehearsal Verification Boundary
 
 - Decision: construct the rehearsal identity from the complete closed manifest rather than accept a caller-selected rehearsal ID.

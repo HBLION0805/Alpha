@@ -59,6 +59,7 @@
     "test:event-contract-collection-runner-runtime-transaction-drill": "tsx src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeTransactionDrill.test.ts",
     "test:event-contract-collection-runner-runtime-ownership-recovery": "tsx src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOwnershipRecovery.test.ts",
     "test:event-contract-collection-runner-fixture-rehearsal": "tsx src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalEngine.test.ts",
+    "test:event-contract-collection-runner-fixture-rehearsal-preparation": "tsx src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPreparation.test.ts",
     "collection-runner:recovery-control": "tsx scripts/collection-runner-recovery-control.mjs",
     "test:kalshi-event-contract-fixture": "tsx src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
     "test:kalshi-public-http-transport": "tsx src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",

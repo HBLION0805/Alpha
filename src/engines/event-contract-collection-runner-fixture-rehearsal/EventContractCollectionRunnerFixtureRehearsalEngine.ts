@@ -30,7 +30,7 @@ const ID = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/u;
 const VERSION = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/u;
 const CODE = /^[A-Z][A-Z0-9_]{0,63}$/u;
 const UTC = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u;
-const FP = /^sha256:[0-9a-f]{64}$/u;
+const FP = /^(?:fnv1a64:[0-9a-f]{16}|sha256:[0-9a-f]{64})$/u;
 const PATH = /^[A-Za-z0-9][A-Za-z0-9._/-]{0,239}$/u;
 
 export class CollectionRunnerRehearsalContractError extends Error {
@@ -228,11 +228,13 @@ export function createCollectionRunnerRehearsalPreparationReceipt(
   input: CollectionRunnerRehearsalPreparationReceiptInput,
 ): CollectionRunnerRehearsalPreparationReceipt {
   if (!verifyCollectionRunnerRehearsalManifest(manifest)) fail("INVALID_MANIFEST", "Manifest verification failed.");
-  exact(input, ["rehearsalId", "manifestFingerprint", "fixtureCatalogEntryFingerprint", "runtimeConfigurationFingerprint", "seededStoreFingerprint", "preparationTransitionFingerprint"], "preparationReceipt");
+  exact(input, ["rehearsalId", "manifestFingerprint", "fixtureCatalogEntryFingerprint", "runtimeConfigurationFingerprint", "seededStoreFingerprint", "preparationTransitionFingerprint", "workspaceIdentity", "storePathIdentity", "schemaCatalogFingerprint"], "preparationReceipt");
   if (input.rehearsalId !== manifest.rehearsalId || input.manifestFingerprint !== manifest.fingerprint) {
     fail("PREPARATION_MISMATCH", "Preparation receipt does not bind the manifest.");
   }
   for (const [field, value] of Object.entries(input).filter(([key]) => key.endsWith("Fingerprint"))) fp(value, field);
+  text(input.workspaceIdentity, ID, "workspaceIdentity");
+  fp(input.storePathIdentity, "storePathIdentity");
   const body = { ...input, deterministic: true as const };
   return freeze({ ...body, fingerprint: digest(body) }) as CollectionRunnerRehearsalPreparationReceipt;
 }
@@ -292,7 +294,7 @@ export function createCollectionRunnerRehearsalEvidencePackage(
   input: CollectionRunnerRehearsalEvidencePackageInput,
 ): CollectionRunnerRehearsalEvidencePackage {
   exact(input, ["manifest", "fixtureCatalogEntryFingerprint", "preparationReceipt", "lifecycleTransitions", "invocationReceipts", "terminalReportFingerprints", "recoveryReportFingerprints", "ownershipReceiptIds", "terminalSummary", "outboxRecords", "sqliteQuickCheckPassed", "sqliteIntegrityCheckPassed", "backupManifestFingerprint", "backupDigest", "validationSuiteFingerprint", "validationPassed", "archiveDisposition", "inventory", "packageBytesExcludingBackup", "workspaceIdentity", "storeIdentity", "packageCreatedAtUtc", "nonAuthorityDeclaration"], "evidencePackage");
-  exact(input.preparationReceipt, ["rehearsalId", "manifestFingerprint", "fixtureCatalogEntryFingerprint", "runtimeConfigurationFingerprint", "seededStoreFingerprint", "preparationTransitionFingerprint", "deterministic", "fingerprint"], "preparationReceipt");
+  exact(input.preparationReceipt, ["rehearsalId", "manifestFingerprint", "fixtureCatalogEntryFingerprint", "runtimeConfigurationFingerprint", "seededStoreFingerprint", "preparationTransitionFingerprint", "workspaceIdentity", "storePathIdentity", "schemaCatalogFingerprint", "deterministic", "fingerprint"], "preparationReceipt");
   input.lifecycleTransitions.forEach((entry, index) => exact(entry, ["rehearsalId", "manifestFingerprint", "ordinal", "fromState", "fromVersion", "toState", "reasonCode", "toVersion", "deterministic", "fingerprint"], `lifecycleTransitions[${index}]`));
   input.invocationReceipts.forEach((entry, index) => exact(entry, ["rehearsalId", "manifestFingerprint", "ordinal", "expectedStateVersion", "recoveryFingerprint", "selectedAction", "resultingTaskState", "outcome", "durableTransitionFingerprint", "terminalReportFingerprint", "processSessionId", "bootIdentity", "observedAtUtc", "elapsedMonotonicMilliseconds", "deterministic", "fingerprint"], `invocationReceipts[${index}]`));
   exact(input.terminalSummary, ["pilotState", "taskState", "budgetFingerprint", "leaseOpen", "attemptOpen"], "terminalSummary");
@@ -340,6 +342,9 @@ export function verifyCollectionRunnerRehearsalEvidencePackage(
       runtimeConfigurationFingerprint: value.preparationReceipt.runtimeConfigurationFingerprint,
       seededStoreFingerprint: value.preparationReceipt.seededStoreFingerprint,
       preparationTransitionFingerprint: value.preparationReceipt.preparationTransitionFingerprint,
+      workspaceIdentity: value.preparationReceipt.workspaceIdentity,
+      storePathIdentity: value.preparationReceipt.storePathIdentity,
+      schemaCatalogFingerprint: value.preparationReceipt.schemaCatalogFingerprint,
     };
     const verifiedPreparation = createCollectionRunnerRehearsalPreparationReceipt(value.manifest, preparationBody);
     if (

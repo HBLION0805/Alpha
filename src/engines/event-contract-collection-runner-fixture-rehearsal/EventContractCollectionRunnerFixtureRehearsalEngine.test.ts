@@ -143,6 +143,9 @@ const preparationReceipt = createCollectionRunnerRehearsalPreparationReceipt(man
   runtimeConfigurationFingerprint: A,
   seededStoreFingerprint: B,
   preparationTransitionFingerprint: transitions[0]!.fingerprint,
+  workspaceIdentity: "workspace:fixture",
+  storePathIdentity: D,
+  schemaCatalogFingerprint: E,
 });
 
 function packageInput(

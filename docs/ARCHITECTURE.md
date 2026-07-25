@@ -769,6 +769,8 @@ Day15-T3B13-T1 designs that fixture rehearsal without implementing or running it
 
 Day15-T3B13-T2 implements only the pure contract boundary from that design. The content-derived manifest freezes approval, build, runner, plan, fixture, provider/mapping, synthetic Pilot/task, expected action sequence, terminal truth, evidence policy, retention, and non-authority identity. Append-only lifecycle and exact-ordinal receipts cannot reopen terminal states or substitute actions. The independent verifier produces only `PASS`, `FAIL_CLOSED`, or `INCOMPLETE`; its stable scenario fingerprint excludes process, boot, workspace, store, and timing identity, while the execution-package fingerprint preserves them. No filesystem, SQLite, command, fixture execution, or network authority is present.
 
+Day15-T3B13-T3 adds the separately approved preparation boundary. A trusted composition root registers immutable catalog entries and pre-existing allowed roots; runtime requests choose only their identifiers. The workspace name derives from the manifest fingerprint and cannot overlap the repository, a filesystem root, or pre-existing unrelated content. Preparation creates separate control and SQLite roots, applies the existing strict migrations, writes one synthetic fixture-only Runner/Pilot/task set through named repository transactions, verifies the seeded state, closes SQLite, and writes one exclusive canonical preparation record. Exact replay reopens and verifies the same store and receipt. Failure preserves the workspace through quarantine rename; it does not recursively delete evidence.
+
 ---
 
 # Event Contract Framework

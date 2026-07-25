@@ -125,6 +125,7 @@ const aggregateTestFiles = [
   "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeTransactionDrill.test.ts",
   "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOwnershipRecovery.test.ts",
   "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalEngine.test.ts",
+  "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPreparation.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",
