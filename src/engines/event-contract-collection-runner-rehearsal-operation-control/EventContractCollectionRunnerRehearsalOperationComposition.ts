@@ -27,14 +27,18 @@ const COMPOSED_PHASES = Object.freeze([
   CollectionRunnerRehearsalOperationPhase.Package,
 ] as const);
 
-export interface CollectionRunnerRehearsalOperationComposedPhaseAdapter
-  extends CollectionRunnerRehearsalOperationPhasePort,
-    CollectionRunnerRehearsalOperationDurableTruthPort {}
-
-export type CollectionRunnerRehearsalOperationComposedPhaseSet = Readonly<
+export type CollectionRunnerRehearsalOperationMutationPhaseSet = Readonly<
   Record<
     (typeof COMPOSED_PHASES)[number],
-    CollectionRunnerRehearsalOperationComposedPhaseAdapter
+    CollectionRunnerRehearsalOperationPhasePort
+  >
+>;
+
+export type CollectionRunnerRehearsalOperationDurableObservationPhaseSet =
+  Readonly<
+  Record<
+    (typeof COMPOSED_PHASES)[number],
+    CollectionRunnerRehearsalOperationDurableTruthPort
   >
 >;
 
@@ -53,33 +57,38 @@ function sha(value: unknown): string {
     .digest("hex")}`;
 }
 
-export class ClosedCollectionRunnerRehearsalOperationPhaseComposition
-  implements
-    CollectionRunnerRehearsalOperationPhasePort,
-    CollectionRunnerRehearsalOperationDurableTruthPort
-{
+function assertExactPhaseSet(
+  phases: Readonly<Record<string, unknown>>,
+  method: "invokeOne" | "observe",
+  label: string,
+): void {
+  const actual = Object.keys(phases).sort();
+  const expected = [...COMPOSED_PHASES].sort();
+  if (
+    actual.length !== expected.length ||
+    actual.some((value, index) => value !== expected[index])
+  ) throw new Error(`${label} is not the exact closed set.`);
+  for (const phase of COMPOSED_PHASES) {
+    if (
+      typeof (phases[phase] as Record<string, unknown> | undefined)?.[method] !==
+      "function"
+    ) throw new Error(`${label} ${phase} adapter is incomplete.`);
+  }
+}
+
+export class ClosedCollectionRunnerRehearsalOperationMutationComposition
+  implements CollectionRunnerRehearsalOperationPhasePort {
   public readonly policy =
     COLLECTION_RUNNER_REHEARSAL_OPERATION_COMPOSITION_POLICY;
   public readonly fingerprint: string;
-  readonly #phases: CollectionRunnerRehearsalOperationComposedPhaseSet;
+  readonly #phases: CollectionRunnerRehearsalOperationMutationPhaseSet;
 
-  public constructor(phases: CollectionRunnerRehearsalOperationComposedPhaseSet) {
-    const actual = Object.keys(phases).sort();
-    const expected = [...COMPOSED_PHASES].sort();
-    if (
-      actual.length !== expected.length ||
-      actual.some((value, index) => value !== expected[index])
-    ) throw new Error("Operation phase composition is not the exact closed set.");
-    for (const phase of COMPOSED_PHASES) {
-      const adapter = phases[phase];
-      if (
-        typeof adapter?.invokeOne !== "function" ||
-        typeof adapter.observe !== "function"
-      ) throw new Error(`Operation ${phase} adapter is incomplete.`);
-    }
+  public constructor(phases: CollectionRunnerRehearsalOperationMutationPhaseSet) {
+    assertExactPhaseSet(phases, "invokeOne", "Operation mutation composition");
     this.#phases = Object.freeze({ ...phases });
     this.fingerprint = sha({
       policy: this.policy,
+      authority: "MUTATION",
       phases: COMPOSED_PHASES,
       networkPermitted: false,
       credentialAccessPermitted: false,
@@ -100,6 +109,49 @@ export class ClosedCollectionRunnerRehearsalOperationPhaseComposition
     );
   }
 
+  public adapterIdentity(
+    phase: CollectionRunnerRehearsalOperationPhase,
+  ): object {
+    return this.#adapter(phase);
+  }
+
+  #adapter(
+    phase: CollectionRunnerRehearsalOperationPhase,
+  ): CollectionRunnerRehearsalOperationPhasePort {
+    if (!COMPOSED_PHASES.includes(
+      phase as (typeof COMPOSED_PHASES)[number],
+    )) throw new Error("Phase is outside the closed mutation composition.");
+    return this.#phases[phase as (typeof COMPOSED_PHASES)[number]];
+  }
+}
+
+export class ClosedCollectionRunnerRehearsalOperationDurableTruthComposition
+  implements CollectionRunnerRehearsalOperationDurableTruthPort {
+  public readonly policy =
+    COLLECTION_RUNNER_REHEARSAL_OPERATION_COMPOSITION_POLICY;
+  public readonly fingerprint: string;
+  readonly #phases: CollectionRunnerRehearsalOperationDurableObservationPhaseSet;
+
+  public constructor(
+    phases: CollectionRunnerRehearsalOperationDurableObservationPhaseSet,
+  ) {
+    assertExactPhaseSet(
+      phases,
+      "observe",
+      "Operation durable-observation composition",
+    );
+    this.#phases = Object.freeze({ ...phases });
+    this.fingerprint = sha({
+      policy: this.policy,
+      authority: "INDEPENDENT_READ_ONLY_DURABLE_OBSERVATION",
+      phases: COMPOSED_PHASES,
+      networkPermitted: false,
+      credentialAccessPermitted: false,
+      callerSelectedTransportPermitted: false,
+    });
+    Object.freeze(this);
+  }
+
   public observe(
     manifest: CollectionRunnerRehearsalOperationManifest,
     command: CollectionRunnerRehearsalOperationPhaseCommand,
@@ -114,12 +166,20 @@ export class ClosedCollectionRunnerRehearsalOperationPhaseComposition
     );
   }
 
+  public adapterIdentity(
+    phase: CollectionRunnerRehearsalOperationPhase,
+  ): object {
+    return this.#adapter(phase);
+  }
+
   #adapter(
     phase: CollectionRunnerRehearsalOperationPhase,
-  ): CollectionRunnerRehearsalOperationComposedPhaseAdapter {
+  ): CollectionRunnerRehearsalOperationDurableTruthPort {
     if (!COMPOSED_PHASES.includes(
       phase as (typeof COMPOSED_PHASES)[number],
-    )) throw new Error("Phase is outside the closed operation composition.");
+    )) throw new Error(
+      "Phase is outside the closed durable-observation composition.",
+    );
     return this.#phases[phase as (typeof COMPOSED_PHASES)[number]];
   }
 }
@@ -127,13 +187,27 @@ export class ClosedCollectionRunnerRehearsalOperationPhaseComposition
 export class FixedCollectionRunnerRehearsalOperationCapabilityInspection
   implements CollectionRunnerRehearsalOperationCapabilityInspectionPort {
   public constructor(
-    private readonly composition:
-      ClosedCollectionRunnerRehearsalOperationPhaseComposition,
+    private readonly mutation:
+      ClosedCollectionRunnerRehearsalOperationMutationComposition,
+    private readonly durableTruth:
+      ClosedCollectionRunnerRehearsalOperationDurableTruthComposition,
   ) {
     if (
-      composition.policy !==
+      mutation.policy !==
+        COLLECTION_RUNNER_REHEARSAL_OPERATION_COMPOSITION_POLICY ||
+      durableTruth.policy !==
         COLLECTION_RUNNER_REHEARSAL_OPERATION_COMPOSITION_POLICY
     ) throw new Error("Operation composition policy is not exact.");
+    for (const phase of COMPOSED_PHASES) {
+      if (
+        mutation.adapterIdentity(phase) ===
+        durableTruth.adapterIdentity(phase)
+      ) {
+        throw new Error(
+          `Operation ${phase} mutation and durable observation are not independent.`,
+        );
+      }
+    }
     Object.freeze(this);
   }
 

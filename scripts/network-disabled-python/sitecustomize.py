@@ -26,5 +26,30 @@ subprocess.check_call = _deny
 subprocess.check_output = _deny
 os.system = _deny
 os.popen = _deny
+for _name in (
+    "execl",
+    "execle",
+    "execlp",
+    "execlpe",
+    "execv",
+    "execve",
+    "execvp",
+    "execvpe",
+    "spawnl",
+    "spawnle",
+    "spawnlp",
+    "spawnlpe",
+    "spawnv",
+    "spawnve",
+    "spawnvp",
+    "spawnvpe",
+    "posix_spawn",
+    "posix_spawnp",
+    "fork",
+    "forkpty",
+    "startfile",
+):
+    if hasattr(os, _name):
+        setattr(os, _name, _deny)
 os.environ["ALPHA_PYTHON_NETWORK_GUARD_ACTIVE"] = "1"
 os.environ["ALPHA_PYTHON_SUBPROCESS_GUARD_ACTIVE"] = "1"

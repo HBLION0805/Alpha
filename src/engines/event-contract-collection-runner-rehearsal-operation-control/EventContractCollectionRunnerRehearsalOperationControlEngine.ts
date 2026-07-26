@@ -20,6 +20,7 @@ import {
   type CollectionRunnerRehearsalOperationResultReceiptInput,
   type CollectionRunnerRehearsalOperationStatusReport,
   type CollectionRunnerRehearsalOperationStopReceipt,
+  type CollectionRunnerRehearsalOperationValidationReceipt,
   type CollectionRunnerRehearsalOperationStopCommand,
   type CollectionRunnerRehearsalOperationStopCommandInput,
 } from "../../contracts";
@@ -88,6 +89,10 @@ export interface CollectionRunnerRehearsalOperationControlRepository {
   appendResult(
     receipt: CollectionRunnerRehearsalOperationResultReceipt,
   ): CollectionRunnerRehearsalOperationResultReceipt;
+  appendValidationResult(
+    validationReceipt: CollectionRunnerRehearsalOperationValidationReceipt,
+    resultReceipt: CollectionRunnerRehearsalOperationResultReceipt,
+  ): CollectionRunnerRehearsalOperationResultReceipt;
   appendStop(
     receipt: CollectionRunnerRehearsalOperationStopReceipt,
   ): CollectionRunnerRehearsalOperationStopReceipt;
@@ -139,6 +144,12 @@ export interface CollectionRunnerRehearsalOperationDurableTruthPort {
   ): CollectionRunnerRehearsalOperationPhaseEvidence;
 }
 
+export interface CollectionRunnerRehearsalOperationValidationReceiptStagingPort {
+  take(
+    fingerprint: string,
+  ): CollectionRunnerRehearsalOperationValidationReceipt;
+}
+
 export interface CollectionRunnerRehearsalOperationPhaseGateDependencies {
   readonly registry: CollectionRunnerRehearsalOperationRegistry;
   readonly repository: CollectionRunnerRehearsalOperationControlRepository;
@@ -148,6 +159,8 @@ export interface CollectionRunnerRehearsalOperationPhaseGateDependencies {
   readonly ownership: CollectionRunnerRehearsalOperationOwnershipPort;
   readonly phase: CollectionRunnerRehearsalOperationPhasePort;
   readonly durableTruth: CollectionRunnerRehearsalOperationDurableTruthPort;
+  readonly validationReceipts:
+    CollectionRunnerRehearsalOperationValidationReceiptStagingPort;
 }
 
 function fail(
@@ -175,6 +188,32 @@ function sha(value: unknown): string {
   return `sha256:${createHash("sha256")
     .update(canonical(value), "utf8")
     .digest("hex")}`;
+}
+
+function authoritySeal(
+  manifest: CollectionRunnerRehearsalOperationManifest,
+  command: CollectionRunnerRehearsalOperationPhaseCommand,
+  observation: CollectionRunnerRehearsalOperationReadinessObservation,
+  validationAuthorityFingerprint: string,
+): string {
+  return sha({
+    commandFingerprint: command.fingerprint,
+    manifestFingerprint: manifest.fingerprint,
+    validationAuthorityFingerprint,
+    alphaCommit: observation.alphaCommit,
+    trackedTreeClean: observation.trackedTreeClean,
+    packageFingerprint: observation.packageFingerprint,
+    validationSuiteFingerprint: observation.validationSuiteFingerprint,
+    registeredTestTotal: observation.registeredTestTotal,
+    rootRegistryFingerprint: observation.rootRegistryFingerprint,
+    rootsVerified: observation.rootsVerified,
+    fixtureBindingsVerified: observation.fixtureBindingsVerified,
+    networkCapabilityAbsent: observation.networkCapabilityAbsent,
+    credentialCapabilityAbsent: observation.credentialCapabilityAbsent,
+    approvalValid: observation.approvalValid,
+    processStopTripped: observation.processStopTripped,
+    durableStopTripped: observation.durableStopTripped,
+  });
 }
 
 function freeze<T>(value: T): T {
@@ -616,7 +655,16 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
   public constructor(
     private readonly dependencies:
       CollectionRunnerRehearsalOperationPhaseGateDependencies,
-  ) {}
+  ) {
+    if (
+      dependencies.phase as unknown ===
+      dependencies.durableTruth as unknown
+    ) {
+      throw new Error(
+        "Mutation and durable-observation authorities must be independent.",
+      );
+    }
+  }
 
   public preflight(
     commandValue: CollectionRunnerRehearsalOperationPhaseCommandInput,
@@ -751,6 +799,44 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
           "Authoritative state changed after ownership acquisition.",
         );
       }
+      const sealedAuthorityFingerprint = authoritySeal(
+        manifest,
+        command,
+        postOwnershipObservation,
+        authority.fingerprint,
+      );
+      const sealedObservation = this.dependencies.readiness.inspect(
+        manifest,
+        command,
+      );
+      const sealedReport = createCollectionRunnerRehearsalOperationPreflightReport(
+        manifest,
+        command,
+        {
+          ...sealedObservation,
+          ownershipAvailable: true,
+          blockerCodes: sealedObservation.blockerCodes.filter(
+            (code) => code !== "OWNERSHIP_UNAVAILABLE",
+          ),
+        },
+        authority,
+        this.dependencies.repository.readSnapshot(command.operationId),
+      );
+      if (
+        sealedReport.disposition !==
+          CollectionRunnerRehearsalOperationPreflightDisposition.Eligible ||
+        authoritySeal(
+          manifest,
+          command,
+          sealedObservation,
+          authority.fingerprint,
+        ) !== sealedAuthorityFingerprint
+      ) {
+        fail(
+          CollectionRunnerRehearsalOperationControlErrorCode.PreflightRejected,
+          "Authority seal changed before authorization consumption.",
+        );
+      }
       this.dependencies.stop.assertClear(command.operationId);
       const ordinal = phasePlanOrdinal(manifest, command);
       const authorization = this.dependencies.repository.authorizeAndConsume(
@@ -796,8 +882,23 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
           "Independent durable truth does not match phase evidence.",
         );
       }
-      const result = this.dependencies.repository.appendResult(
-        resultReceipt({
+      const afterPhaseObservation = this.dependencies.readiness.inspect(
+        manifest,
+        command,
+      );
+      const afterPhaseSeal = authoritySeal(
+        manifest,
+        command,
+        afterPhaseObservation,
+        authority.fingerprint,
+      );
+      if (afterPhaseSeal !== sealedAuthorityFingerprint) {
+        fail(
+          CollectionRunnerRehearsalOperationControlErrorCode.PhaseFailed,
+          "Authority seal changed during phase execution.",
+        );
+      }
+      const preparedResult = resultReceipt({
           resultId: `operation-result:${authorization.fingerprint.slice(7, 39)}`,
           authorizationId: authorization.authorizationId,
           authorizationFingerprint: authorization.fingerprint,
@@ -821,8 +922,16 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
           completedAtUtc: evidence.completedAtUtc,
           nonAuthorityDeclaration:
             COLLECTION_RUNNER_REHEARSAL_OPERATION_NON_AUTHORITY_DECLARATION,
-        }),
-      );
+        });
+      const result =
+        command.phase === CollectionRunnerRehearsalOperationPhase.Validate
+          ? this.dependencies.repository.appendValidationResult(
+            this.dependencies.validationReceipts.take(
+              evidence.authorityEvidenceFingerprint,
+            ),
+            preparedResult,
+          )
+          : this.dependencies.repository.appendResult(preparedResult);
       ownership.releaseClean();
       return result;
     } catch (cause) {

@@ -1,6 +1,9 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { mkdtempSync, readFileSync, realpathSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { DatabaseSync } from "node:sqlite";
 
 import {
   COLLECTION_RUNNER_REHEARSAL_OPERATION_NON_AUTHORITY_DECLARATION,
@@ -17,6 +20,7 @@ import {
   type CollectionRunnerRehearsalOperationReadinessObservation,
   type CollectionRunnerRehearsalOperationResultReceipt,
   type CollectionRunnerRehearsalOperationStopReceipt,
+  type CollectionRunnerRehearsalOperationValidationReceipt,
   type CollectionRunnerRehearsalOperationRootRegistration,
 } from "../../contracts";
 import {
@@ -44,12 +48,19 @@ import {
 } from "./EventContractCollectionRunnerRehearsalOperationControlConsole";
 import {
   CollectionRunnerRehearsalOperationFixedRootResolver,
+  FixedCollectionRunnerRehearsalOperationGit,
   FixedLocalCollectionRunnerRehearsalOperationAlphaInspection,
+  type CollectionRunnerRehearsalOperationFixedGitPort,
 } from "./EventContractCollectionRunnerRehearsalOperationPreflight";
 import {
-  ClosedCollectionRunnerRehearsalOperationPhaseComposition,
+  ClosedCollectionRunnerRehearsalOperationDurableTruthComposition,
+  ClosedCollectionRunnerRehearsalOperationMutationComposition,
   FixedCollectionRunnerRehearsalOperationCapabilityInspection,
 } from "./EventContractCollectionRunnerRehearsalOperationComposition";
+import {
+  COLLECTION_RUNNER_REHEARSAL_OPERATION_RUNTIME_DISPOSITION,
+  ClosedNonExecutableCollectionRunnerRehearsalOperationRuntime,
+} from "./EventContractCollectionRunnerRehearsalOperationRuntimeComposition";
 
 const FP = (character: string) => `sha256:${character.repeat(64)}`;
 const COMMIT = "a".repeat(40);
@@ -65,6 +76,31 @@ function equal<T>(actual: T, expected: T, label: string): void {
 
 function truth(value: boolean, label: string): void {
   if (!value) throw new Error(`${label}: expected true.`);
+}
+
+function canonicalRecord(value: unknown): string {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalRecord).join(",")}]`;
+  }
+  return `{${Object.entries(value as Record<string, unknown>)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, nested]) =>
+      `${JSON.stringify(key)}:${canonicalRecord(nested)}`)
+    .join(",")}}`;
+}
+
+function immutableRecord<T extends object>(
+  body: T,
+): T & { readonly deterministic: true; readonly fingerprint: string } {
+  return {
+    ...body,
+    deterministic: true,
+    fingerprint:
+      `sha256:${createHash("sha256")
+        .update(canonicalRecord(body), "utf8")
+        .digest("hex")}`,
+  };
 }
 
 function controlError(
@@ -234,6 +270,12 @@ class InMemoryControlRepository
     this.result = receipt;
     return receipt;
   }
+  public appendValidationResult(
+    _validationReceipt: CollectionRunnerRehearsalOperationValidationReceipt,
+    receipt: CollectionRunnerRehearsalOperationResultReceipt,
+  ) {
+    return this.appendResult(receipt);
+  }
   public appendStop(receipt: CollectionRunnerRehearsalOperationStopReceipt) {
     this.stop = receipt;
     return receipt;
@@ -327,6 +369,11 @@ function gate(options: {
           : claimedEvidence.resultingLifecycleFingerprint,
       }),
     },
+    validationReceipts: {
+      take: () => {
+        throw new Error("No validation receipt is staged.");
+      },
+    },
   });
   return {
     service,
@@ -407,7 +454,7 @@ const tests: readonly [string, () => void][] = [
   ["closed phase composition rejects missing or extra authority", () => {
     let rejected = false;
     try {
-      new ClosedCollectionRunnerRehearsalOperationPhaseComposition(
+      new ClosedCollectionRunnerRehearsalOperationMutationComposition(
         {} as never,
       );
     } catch {
@@ -427,21 +474,32 @@ const tests: readonly [string, () => void][] = [
       startedAtUtc: INVOKED,
       completedAtUtc: "2026-07-25T20:01:01.000Z",
     };
-    const adapter = {
+    const mutationAdapter = {
       invokeOne: () => evidence,
+    };
+    const observationAdapter = {
       observe: () => evidence,
     };
-    const composition =
-      new ClosedCollectionRunnerRehearsalOperationPhaseComposition({
-        [CollectionRunnerRehearsalOperationPhase.Prepare]: adapter,
-        [CollectionRunnerRehearsalOperationPhase.Step]: adapter,
-        [CollectionRunnerRehearsalOperationPhase.Validate]: adapter,
-        [CollectionRunnerRehearsalOperationPhase.Freeze]: adapter,
-        [CollectionRunnerRehearsalOperationPhase.Package]: adapter,
+    const mutation =
+      new ClosedCollectionRunnerRehearsalOperationMutationComposition({
+        [CollectionRunnerRehearsalOperationPhase.Prepare]: mutationAdapter,
+        [CollectionRunnerRehearsalOperationPhase.Step]: mutationAdapter,
+        [CollectionRunnerRehearsalOperationPhase.Validate]: mutationAdapter,
+        [CollectionRunnerRehearsalOperationPhase.Freeze]: mutationAdapter,
+        [CollectionRunnerRehearsalOperationPhase.Package]: mutationAdapter,
+      });
+    const durable =
+      new ClosedCollectionRunnerRehearsalOperationDurableTruthComposition({
+        [CollectionRunnerRehearsalOperationPhase.Prepare]: observationAdapter,
+        [CollectionRunnerRehearsalOperationPhase.Step]: observationAdapter,
+        [CollectionRunnerRehearsalOperationPhase.Validate]: observationAdapter,
+        [CollectionRunnerRehearsalOperationPhase.Freeze]: observationAdapter,
+        [CollectionRunnerRehearsalOperationPhase.Package]: observationAdapter,
       });
     const capability =
       new FixedCollectionRunnerRehearsalOperationCapabilityInspection(
-        composition,
+        mutation,
+        durable,
       ).inspect(
         manifest,
         createCollectionRunnerRehearsalOperationPhaseCommand(command()),
@@ -452,6 +510,95 @@ const tests: readonly [string, () => void][] = [
       capability.credentialCapabilityAbsent,
       "credential capability absent",
     );
+  }],
+  ["closed phase composition rejects shared mutation and observation adapters", () => {
+    const shared = {
+      invokeOne: () => {
+        throw new Error("not invoked");
+      },
+      observe: () => {
+        throw new Error("not observed");
+      },
+    };
+    const mutation =
+      new ClosedCollectionRunnerRehearsalOperationMutationComposition({
+        PREPARE: shared, STEP: shared, VALIDATE: shared,
+        FREEZE: shared, PACKAGE: shared,
+      });
+    const durable =
+      new ClosedCollectionRunnerRehearsalOperationDurableTruthComposition({
+        PREPARE: shared, STEP: shared, VALIDATE: shared,
+        FREEZE: shared, PACKAGE: shared,
+      });
+    let rejected = false;
+    try {
+      new FixedCollectionRunnerRehearsalOperationCapabilityInspection(
+        mutation,
+        durable,
+      );
+    } catch {
+      rejected = true;
+    }
+    truth(rejected, "shared adapter rejected");
+  }],
+  ["closed runtime assembly remains non-executable pending MR3", () => {
+    const evidence = {
+      disposition: CollectionRunnerRehearsalOperationResultDisposition.Completed,
+      priorLifecycleVersion: 1,
+      resultingLifecycleVersion: 1,
+      priorLifecycleFingerprint: FP("1"),
+      resultingLifecycleFingerprint: FP("1"),
+      authorityEvidenceFingerprint: FP("2"),
+      sanitizedOutputDigest: FP("3"),
+      startedAtUtc: INVOKED,
+      completedAtUtc: INVOKED,
+    };
+    const mutation =
+      new ClosedCollectionRunnerRehearsalOperationMutationComposition({
+        PREPARE: { invokeOne: () => evidence },
+        STEP: { invokeOne: () => evidence },
+        VALIDATE: { invokeOne: () => evidence },
+        FREEZE: { invokeOne: () => evidence },
+        PACKAGE: { invokeOne: () => evidence },
+      });
+    const durable =
+      new ClosedCollectionRunnerRehearsalOperationDurableTruthComposition({
+        PREPARE: { observe: () => evidence },
+        STEP: { observe: () => evidence },
+        VALIDATE: { observe: () => evidence },
+        FREEZE: { observe: () => evidence },
+        PACKAGE: { observe: () => evidence },
+      });
+    const runtime = new ClosedNonExecutableCollectionRunnerRehearsalOperationRuntime({
+      registry: registry(),
+      repository: new InMemoryControlRepository(),
+      readiness: { inspect: () => observation() },
+      ownerVerifier: new FakeVerifier(),
+      stop: {
+        assertClear: () => undefined,
+        trip: () => FP("4"),
+      },
+      ownership: {
+        acquire: () => ({
+          releaseClean: () => undefined,
+          preserveAmbiguity: () => undefined,
+        }),
+      },
+      mutation,
+      durableTruth: durable,
+      validationReceipts: {
+        take: () => {
+          throw new Error("not staged");
+        },
+      },
+      finalVerifier: {} as never,
+    });
+    equal(
+      runtime.disposition,
+      COLLECTION_RUNNER_REHEARSAL_OPERATION_RUNTIME_DISPOSITION,
+      "runtime disposition",
+    );
+    truth(!("executeOne" in runtime), "runtime has no execute authority");
   }],
   ["phase command is immutable and deterministic", () => {
     const value = createCollectionRunnerRehearsalOperationPhaseCommand(command());
@@ -621,12 +768,61 @@ const tests: readonly [string, () => void][] = [
     truth(rejected, "identity substitution rejected");
   }],
   ["fixed Alpha inspector is read-only and reports the actual commit", () => {
+    const git: CollectionRunnerRehearsalOperationFixedGitPort = {
+      canonicalExecutablePath: "test-fixed-git",
+      executableFingerprint: FP("e"),
+      run: (repositoryRoot, args) => {
+        const result = spawnSync("git", [...args], {
+          cwd: repositoryRoot,
+          input: "",
+          encoding: "utf8",
+          shell: false,
+          timeout: 10_000,
+          maxBuffer: 1024 * 1024,
+          windowsHide: true,
+          killSignal: "SIGTERM",
+        });
+        return {
+          status: result.status,
+          stdout: result.stdout ?? "",
+          stderr: result.stderr ?? "",
+          errorCode: result.error?.code ?? null,
+        };
+      },
+    };
     const report =
-      new FixedLocalCollectionRunnerRehearsalOperationAlphaInspection(2408)
+      new FixedLocalCollectionRunnerRehearsalOperationAlphaInspection(2408, git)
         .inspect(resolve("."));
     truth(/^[0-9a-f]{40}$/u.test(report.alphaCommit), "full commit");
     equal(report.registeredTestTotal, 2408, "registered total");
     truth(report.packageFingerprint.startsWith("sha256:"), "package fingerprint");
+  }],
+  ["fixed Git authority rejects executable substitution", () => {
+    const gitPath = (
+      spawnSync("where.exe", ["git"], {
+        cwd: resolve("."), input: "", encoding: "utf8", shell: false,
+        timeout: 10_000, maxBuffer: 1024 * 1024,
+        windowsHide: true, killSignal: "SIGTERM",
+      }).stdout ?? ""
+    ).split(/\r?\n/u).find(Boolean);
+    truth(gitPath !== undefined, "Git path available");
+    let rejected = false;
+    try {
+      new FixedCollectionRunnerRehearsalOperationGit(gitPath!, FP("0"));
+    } catch {
+      rejected = true;
+    }
+    truth(rejected, "changed Git fingerprint rejected");
+    const canonicalGit = realpathSync(gitPath!);
+    const fingerprint =
+      `sha256:${createHash("sha256")
+        .update(readFileSync(canonicalGit))
+        .digest("hex")}`;
+    const fixed = new FixedCollectionRunnerRehearsalOperationGit(
+      canonicalGit,
+      fingerprint,
+    );
+    equal(fixed.canonicalExecutablePath, canonicalGit, "fixed Git path");
   }],
   ["one eligible invocation appends authorization and result", () => {
     const fixture = gate();
@@ -664,6 +860,25 @@ const tests: readonly [string, () => void][] = [
     const fixture = gate({
       readinessAtCall: (call) => observation({
         trackedTreeClean: call < 2,
+      }),
+    });
+    controlError(
+      () => fixture.service.executeOne(
+        command(), "correct owner secret", INVOKED,
+      ),
+      CollectionRunnerRehearsalOperationControlErrorCode.PreflightRejected,
+    );
+    equal(
+      fixture.repository.readSnapshot(manifest.operationId).authorizationCount,
+      0,
+      "authorization count",
+    );
+    equal(fixture.counters.phaseCalls(), 0, "phase calls");
+  }],
+  ["authority seal drift immediately before authorization fails closed", () => {
+    const fixture = gate({
+      readinessAtCall: (call) => observation({
+        packageFingerprint: call === 3 ? FP("f") : FP("5"),
       }),
     });
     controlError(
@@ -778,6 +993,91 @@ const tests: readonly [string, () => void][] = [
       rmSync(root, { recursive: true, force: true });
     }
   }],
+  ["empty Control 1.0 migrates atomically to 1.1", () => {
+    const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-v10-"));
+    const path = join(root, "rehearsal-operation-control.sqlite3");
+    const database = new DatabaseSync(path);
+    try {
+      database.exec(`
+CREATE TABLE operation_control_metadata (
+  singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
+  schema_version TEXT NOT NULL CHECK (schema_version = '1.0')
+) STRICT;
+INSERT INTO operation_control_metadata VALUES (1, '1.0');
+CREATE TABLE operation_phase_authorizations (id TEXT) STRICT;
+CREATE TABLE operation_phase_results (id TEXT) STRICT;
+CREATE TABLE operation_stop_receipts (id TEXT) STRICT;
+`);
+    } finally {
+      database.close();
+    }
+    try {
+      const store =
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
+          root,
+          { createIfMissing: true },
+        );
+      store.close();
+      const verification = new DatabaseSync(path, { readOnly: true });
+      const version = verification.prepare(
+        "SELECT schema_version FROM operation_control_metadata WHERE singleton = 1",
+      ).get() as { readonly schema_version: string };
+      const validationTable = verification.prepare(
+        "SELECT 1 AS present FROM sqlite_schema WHERE name = 'operation_validation_receipts'",
+      ).get();
+      equal(version.schema_version, "1.1", "schema version");
+      truth(validationTable !== undefined, "validation table");
+      verification.close();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }],
+  ["non-empty Control 1.0 is unchanged and requires explicit recovery", () => {
+    const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-v10-"));
+    const path = join(root, "rehearsal-operation-control.sqlite3");
+    const database = new DatabaseSync(path);
+    try {
+      database.exec(`
+CREATE TABLE operation_control_metadata (
+  singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
+  schema_version TEXT NOT NULL CHECK (schema_version = '1.0')
+) STRICT;
+INSERT INTO operation_control_metadata VALUES (1, '1.0');
+CREATE TABLE operation_phase_authorizations (id TEXT) STRICT;
+INSERT INTO operation_phase_authorizations VALUES ('existing');
+CREATE TABLE operation_phase_results (id TEXT) STRICT;
+CREATE TABLE operation_stop_receipts (id TEXT) STRICT;
+`);
+    } finally {
+      database.close();
+    }
+    try {
+      let rejected = false;
+      try {
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
+          root,
+          { createIfMissing: true },
+        );
+      } catch (error) {
+        rejected =
+          error instanceof CollectionRunnerRehearsalOperationControlStoreError &&
+          error.code === "MIGRATION_REQUIRED";
+      }
+      truth(rejected, "non-empty migration rejected");
+      const verification = new DatabaseSync(path, { readOnly: true });
+      const version = verification.prepare(
+        "SELECT schema_version FROM operation_control_metadata WHERE singleton = 1",
+      ).get() as { readonly schema_version: string };
+      const validationTable = verification.prepare(
+        "SELECT 1 AS present FROM sqlite_schema WHERE name = 'operation_validation_receipts'",
+      ).get();
+      equal(version.schema_version, "1.0", "schema remains 1.0");
+      equal(validationTable, undefined, "no partial validation table");
+      verification.close();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }],
   ["SQLite control store persists exact authorization and result", () => {
     const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-"));
     try {
@@ -801,6 +1101,103 @@ const tests: readonly [string, () => void][] = [
         "read-only history",
       );
       reopened.close();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }],
+  ["Validate receipt and result commit or roll back as one transaction", () => {
+    const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-atomic-"));
+    try {
+      const store =
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
+          root,
+          { createIfMissing: true },
+        );
+      const authorization = immutableRecord({
+        authorizationId: "authorization:validate:atomic",
+        commandId: "command:validate:atomic",
+        commandFingerprint: FP("1"),
+        operationId: "operation:validate:atomic",
+        manifestFingerprint: FP("2"),
+        phase: CollectionRunnerRehearsalOperationPhase.Validate,
+        phasePlanOrdinal: 1,
+        expectedLifecycleVersion: 1,
+        expectedInvocationOrdinal: null,
+        expectedRecoveryFingerprint: FP("3"),
+        ownerId: "owner:test",
+        ownerAuthorizationReference: FP("4"),
+        bootIdentity: "boot:test",
+        processSessionId: "session:validate:atomic",
+        authorizedAtUtc: INVOKED,
+        expiresAtUtc: EXPIRES,
+        consumedAtUtc: INVOKED,
+        consumed: true,
+      }) as CollectionRunnerRehearsalOperationAuthorizationReceipt;
+      store.authorizeAndConsume(authorization);
+      const validation = immutableRecord({
+        receiptId: "validation:atomic",
+        operationId: authorization.operationId,
+        manifestFingerprint: authorization.manifestFingerprint,
+      }) as CollectionRunnerRehearsalOperationValidationReceipt;
+      const resultBody = {
+        resultId: "result:validate:atomic",
+        authorizationId: authorization.authorizationId,
+        authorizationFingerprint: authorization.fingerprint,
+        commandId: authorization.commandId,
+        commandFingerprint: authorization.commandFingerprint,
+        operationId: authorization.operationId,
+        manifestFingerprint: authorization.manifestFingerprint,
+        phase: authorization.phase,
+        phasePlanOrdinal: authorization.phasePlanOrdinal,
+        expectedInvocationOrdinal: null,
+        processSessionId: authorization.processSessionId,
+        bootIdentity: authorization.bootIdentity,
+        disposition:
+          CollectionRunnerRehearsalOperationResultDisposition.Completed,
+        priorLifecycleVersion: 1,
+        resultingLifecycleVersion: 1,
+        priorLifecycleFingerprint: FP("5"),
+        resultingLifecycleFingerprint: FP("5"),
+        authorityEvidenceFingerprint: validation.fingerprint,
+        sanitizedOutputDigest: FP("6"),
+        startedAtUtc: INVOKED,
+        completedAtUtc: "2026-07-25T20:02:00.000Z",
+        nonAuthorityDeclaration:
+          COLLECTION_RUNNER_REHEARSAL_OPERATION_NON_AUTHORITY_DECLARATION,
+      };
+      const invalid = immutableRecord({
+        ...resultBody,
+        authorizationFingerprint: FP("f"),
+      }) as CollectionRunnerRehearsalOperationResultReceipt;
+      let rejected = false;
+      try {
+        store.appendValidationResult(validation, invalid);
+      } catch {
+        rejected = true;
+      }
+      truth(rejected, "invalid result rejected");
+      let orphanPresent = true;
+      try {
+        store.readValidationReceipt(validation.fingerprint);
+      } catch {
+        orphanPresent = false;
+      }
+      equal(orphanPresent, false, "orphan validation receipt");
+      const result = immutableRecord(
+        resultBody,
+      ) as CollectionRunnerRehearsalOperationResultReceipt;
+      store.appendValidationResult(validation, result);
+      equal(
+        store.readSnapshot(authorization.operationId).resultCount,
+        1,
+        "atomic result count",
+      );
+      equal(
+        store.readValidationReceipt(validation.fingerprint).fingerprint,
+        validation.fingerprint,
+        "atomic validation receipt",
+      );
+      store.close();
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

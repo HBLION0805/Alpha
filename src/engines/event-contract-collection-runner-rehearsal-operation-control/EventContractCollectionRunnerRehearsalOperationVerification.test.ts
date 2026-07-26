@@ -31,6 +31,9 @@ import {
   type FixedValidationProcessPort,
   type FixedValidationProcessResult,
 } from "./EventContractCollectionRunnerRehearsalOperationVerification";
+import type {
+  CollectionRunnerRehearsalOperationFixedGitPort,
+} from "./EventContractCollectionRunnerRehearsalOperationPreflight";
 
 const root = realpathSync(resolve("."));
 const commit = "a".repeat(40);
@@ -123,18 +126,23 @@ class ProcessFixture implements FixedValidationProcessPort {
     },
   ): FixedValidationProcessResult {
     this.calls.push({ executable, args, environment: options.environment });
-    if (args[0] === "rev-parse") {
-      return { status: 0, signal: null, stdout: `${commit}\n`, stderr: "", errorCode: null };
-    }
-    if (args[0] === "status") {
-      return { status: 0, signal: null, stdout: "", stderr: "", errorCode: null };
-    }
     return {
       status: 0, signal: null, stdout: this.validationOutput,
       stderr: "", errorCode: null,
     };
   }
 }
+
+const git: CollectionRunnerRehearsalOperationFixedGitPort = {
+  canonicalExecutablePath: realpathSync(execPath),
+  executableFingerprint: fp("fixed-git"),
+  run: (_repositoryRoot, args) => ({
+    status: 0,
+    stdout: args[0] === "rev-parse" ? `${commit}\n` : "",
+    stderr: "",
+    errorCode: null,
+  }),
+};
 
 function request() {
   return {
@@ -151,24 +159,23 @@ const tests: readonly [string, () => void][] = [
       '{"overall":{"testsExecuted":2434,"passed":2434,"failed":0}}',
     );
     const receipt = new FixedActualAlphaValidationAdapter(
-      root, registry, process, () => "2026-07-25T20:02:00.000Z",
+      root, registry, git, execPath, process,
+      () => "2026-07-25T20:02:00.000Z",
     ).run(request());
     if (!receipt.passed || receipt.failedCount !== 0 ||
       receipt.validationAuthorityFingerprint !== authority.fingerprint) {
       throw new Error("Validation receipt did not bind exact authority.");
     }
-    if (process.calls.length !== 3 ||
-      process.calls[2]!.environment.ALPHA_FIXED_VALIDATION_PROCESS !== "1" ||
-      process.calls[2]!.environment.ALPHA_NETWORK_DISABLED !== "1") {
+    if (process.calls.length !== 1 ||
+      process.calls[0]!.environment.ALPHA_FIXED_VALIDATION_PROCESS !== "1" ||
+      process.calls[0]!.environment.ALPHA_NETWORK_DISABLED !== "1") {
       throw new Error("Fixed process boundary was not enforced.");
     }
     if (
-      process.calls[1]!.args.join(" ") !==
-        "status --porcelain --untracked-files=all" ||
-      process.calls[2]!.executable !== realpathSync(execPath) ||
-      !process.calls[2]!.args[0]?.endsWith("npm-cli.js")
+      process.calls[0]!.executable !== realpathSync(execPath) ||
+      !process.calls[0]!.args[0]?.endsWith("alpha-validate.mjs")
     ) throw new Error("Clean-tree or executable identity is not fixed.");
-    if (Object.keys(process.calls[2]!.environment)
+    if (Object.keys(process.calls[0]!.environment)
       .some((key) => /TOKEN|SECRET|PASSWORD|CREDENTIAL|AUTH/u.test(key))) {
       throw new Error("Credential-like environment leaked.");
     }
@@ -179,7 +186,8 @@ const tests: readonly [string, () => void][] = [
     );
     let rejected = false;
     try {
-      new FixedActualAlphaValidationAdapter(root, registry, process).run(request());
+      new FixedActualAlphaValidationAdapter(root, registry, git, execPath, process)
+        .run(request());
     } catch { rejected = true; }
     if (!rejected) throw new Error("Changed test total was accepted.");
   }],
@@ -188,7 +196,8 @@ const tests: readonly [string, () => void][] = [
     let rejected = false;
     try {
       new FixedActualAlphaValidationAdapter(
-        root, registry, new ProcessFixture(`${report}\n${report}`),
+        root, registry, git, execPath,
+        new ProcessFixture(`${report}\n${report}`),
       ).run(request());
     } catch { rejected = true; }
     if (!rejected) throw new Error("Ambiguous accounting was accepted.");
@@ -197,6 +206,8 @@ const tests: readonly [string, () => void][] = [
     const validationReceipt = new FixedActualAlphaValidationAdapter(
       root,
       registry,
+      git,
+      execPath,
       new ProcessFixture(
         '{"overall":{"testsExecuted":2434,"passed":2434,"failed":0}}',
       ),

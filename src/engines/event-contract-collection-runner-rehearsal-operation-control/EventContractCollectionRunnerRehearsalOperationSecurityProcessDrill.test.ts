@@ -23,6 +23,7 @@ import {
   type CollectionRunnerRehearsalOperationPhaseCommandInput,
   type CollectionRunnerRehearsalOperationReadinessObservation,
   type CollectionRunnerRehearsalOperationValidationAuthority,
+  type CollectionRunnerRehearsalOperationValidationReceipt,
 } from "../../contracts";
 import {
   EventContractCollectionRunnerRehearsalOperationControlSqliteStore,
@@ -43,6 +44,9 @@ import {
   type FixedValidationProcessPort,
   type FixedValidationProcessResult,
 } from "./EventContractCollectionRunnerRehearsalOperationVerification";
+import type {
+  CollectionRunnerRehearsalOperationFixedGitPort,
+} from "./EventContractCollectionRunnerRehearsalOperationPreflight";
 
 const FP = (character: string) => `sha256:${character.repeat(64)}`;
 const COMMIT = "a".repeat(40);
@@ -53,6 +57,13 @@ const ARTIFACT = "phase-artifact.json";
 const STOP = "durable-stop.marker";
 const LOCK = "operation-owner.lock";
 const CREATED = "2026-07-26T14:00:00.000Z";
+const FIXED_PYTHON = (
+  spawnSync("where.exe", ["python"], {
+    cwd: cwd(), input: "", encoding: "utf8", shell: false,
+    timeout: 10_000, maxBuffer: 1024 * 1024,
+    windowsHide: true, killSignal: "SIGTERM",
+  }).stdout ?? ""
+).split(/\r?\n/u).find(Boolean) ?? "C:\\Python314\\python.exe";
 const INVOKED = "2026-07-26T14:01:00.000Z";
 const EXPIRES = "2026-07-26T14:05:00.000Z";
 
@@ -172,9 +183,8 @@ class Verifier implements CollectionRunnerLocalOwnerVerifier {
 function childResult(root: string) {
   const storeExists = existsSync(join(root, CONTROL_FILE));
   const store = storeExists
-    ? EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
-      root, { createIfMissing: false },
-    )
+    ? EventContractCollectionRunnerRehearsalOperationControlSqliteStore
+      .openReadOnly(root)
     : null;
   try {
     const snapshot = store?.readSnapshot(OPERATION);
@@ -218,6 +228,8 @@ function childMain(mode: string, root: string, resultPath: string, variant: stri
         readSnapshot: (operationId) => store.readSnapshot(operationId),
         authorizeAndConsume: (receipt) => store.authorizeAndConsume(receipt),
         appendStop: (receipt) => store.appendStop(receipt),
+        appendValidationResult: (validation, result) =>
+          store.appendValidationResult(validation, result),
         appendResult: (receipt) => {
           store.appendResult(receipt);
           store.close();
@@ -299,6 +311,12 @@ function childMain(mode: string, root: string, resultPath: string, variant: stri
           : claimedEvidence.resultingLifecycleFingerprint,
       }),
     },
+    validationReceipts: {
+      take: (_fingerprint: string):
+        CollectionRunnerRehearsalOperationValidationReceipt => {
+        throw new Error("No validation receipt is staged in this drill.");
+      },
+    },
   });
   try {
     const result = gate.executeOne(command(variant), "owner-secret", INVOKED);
@@ -369,7 +387,6 @@ function equal<T>(actual: T, expected: T, label: string): void {
 }
 
 class OsEnvironmentProbeProcess implements FixedValidationProcessPort {
-  private calls = 0;
   public run(
     _executable: string,
     args: readonly string[],
@@ -380,22 +397,20 @@ class OsEnvironmentProbeProcess implements FixedValidationProcessPort {
       readonly maxOutputBytes: number;
     },
   ): FixedValidationProcessResult {
-    this.calls += 1;
-    if (this.calls === 1) {
-      return { status: 0, signal: null, stdout: `${COMMIT}\n`, stderr: "", errorCode: null };
-    }
-    if (this.calls === 2) {
-      return { status: 0, signal: null, stdout: "", stderr: "", errorCode: null };
-    }
-    const pythonProbe = spawnSync("python", ["-c", `
+    const pythonProbe = spawnSync(options.environment.ALPHA_PYTHON_EXECUTABLE!, ["-c", `
 import os, socket
 denied = False
 try:
     socket.socket()
 except RuntimeError:
     denied = True
+exec_denied = False
+try:
+    os.execv(os.environ["ALPHA_PYTHON_EXECUTABLE"], [os.environ["ALPHA_PYTHON_EXECUTABLE"], "-V"])
+except RuntimeError:
+    exec_denied = True
 active = os.environ.get("ALPHA_PYTHON_NETWORK_GUARD_ACTIVE") == "1"
-raise SystemExit(0 if denied and active else 8)
+raise SystemExit(0 if denied and exec_denied and active else 8)
 `], {
       cwd: options.cwd, env: options.environment, input: "", encoding: "utf8",
       shell: false, timeout: options.timeoutMs, maxBuffer: options.maxOutputBytes,
@@ -420,12 +435,19 @@ catch { networkDenied = true; }
 let subprocessDenied = false;
 try { require("node:child_process").spawnSync("curl", ["https://example.com"]); }
 catch { subprocessDenied = true; }
+let clearedEnvironmentDenied = false;
+try {
+  require("node:child_process").spawnSync(process.execPath, ["-e", ""], {env:{}});
+} catch { clearedEnvironmentDenied = true; }
+let workerDenied = false;
+try { new (require("node:worker_threads").Worker)("0", {eval:true}); }
+catch { workerDenied = true; }
 const ok = process.env.ALPHA_FIXED_VALIDATION_PROCESS === "1" &&
   process.env.ALPHA_NETWORK_DISABLED === "1" &&
   process.env.ALPHA_NETWORK_GUARD_ACTIVE === "1" &&
   process.env.ALPHA_SUBPROCESS_GUARD_ACTIVE === "1" &&
   process.env.NO_PROXY === "*" && forbidden.length === 0 &&
-  networkDenied && subprocessDenied;
+  networkDenied && subprocessDenied && clearedEnvironmentDenied && workerDenied;
 console.log(JSON.stringify({overall:{testsExecuted:2438,passed:2438,failed:0},ok}));
 process.exit(ok ? 0 : 9);
 `], {
@@ -440,6 +462,17 @@ process.exit(ok ? 0 : 9);
     };
   }
 }
+
+const validationGit: CollectionRunnerRehearsalOperationFixedGitPort = {
+  canonicalExecutablePath: execPath,
+  executableFingerprint: FP("e"),
+  run: (_root, args) => ({
+    status: 0,
+    stdout: args[0] === "rev-parse" ? `${COMMIT}\n` : "",
+    stderr: "",
+    errorCode: null,
+  }),
+};
 
 function validationRegistry(): CollectionRunnerRehearsalOperationRegistry {
   const packageBytes = readFileSync(join(cwd(), "package.json"));
@@ -597,7 +630,9 @@ async function parentMain(): Promise<void> {
       mutableEnv.ALPHA_DEMO_SECRET = "must-not-cross";
       try {
         const receipt = new FixedActualAlphaValidationAdapter(
-          cwd(), validationRegistry(), new OsEnvironmentProbeProcess(),
+          cwd(), validationRegistry(), validationGit,
+          FIXED_PYTHON,
+          new OsEnvironmentProbeProcess(),
           () => "2026-07-26T14:02:00.000Z",
         ).run({
           receiptId: "validation:environment-drill",
@@ -619,7 +654,9 @@ async function parentMain(): Promise<void> {
       let rejected = false;
       try {
         new FixedActualAlphaValidationAdapter(
-          cwd(), validationRegistry(), new OsEnvironmentProbeProcess(),
+          cwd(), validationRegistry(), validationGit,
+          FIXED_PYTHON,
+          new OsEnvironmentProbeProcess(),
         ).run({
           receiptId: "validation:recursive",
           operationId: OPERATION,

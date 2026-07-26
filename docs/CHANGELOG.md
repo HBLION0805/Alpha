@@ -1,5 +1,30 @@
 # Alpha Changelog
 
+## 2026-07-26 - Day15-T3B15-C2 Independent Authority and Isolation Correction
+
+- Split the five mutation adapters from five independently supplied read-only
+  durable-observation adapters and reject shared concrete instances.
+- Added a fixed Git authority bound to canonical executable path and SHA-256
+  digest; fixed validation now invokes Alpha directly with registered Node,
+  Git, and Python executable identities.
+- Added a structural authority seal rechecked immediately before authorization
+  and after phase observation, failing closed on authority drift.
+- Added atomic empty-store Control `1.0` to `1.1` migration while non-empty
+  `1.0` requires explicit Owner-reviewed recovery without partial mutation.
+- Made the operation validation receipt and matching phase result one SQLite
+  transaction, eliminating the durable receipt-without-result state.
+- Closed environment-clearing, Worker-thread, unreviewed child executable,
+  Git action, and Python `os.exec*`/spawn escape paths.
+- Changed every security-drill inspection child to reopen the Control store
+  through its query-only read path in a separate OS process.
+- Added one closed production-shaped runtime composition that exposes only
+  Preflight, Status, and final verification; it has no execution method pending
+  independent T3B15-MR3.
+- Focused control, verification, and security process suites pass `40/40`,
+  `4/4`, and `11/11`; complete Alpha validation passes `2463/2463`.
+- No real operation manifest, rehearsal, network request, provider,
+  recommendation, order, execution, or capital action was created or performed.
+
 ## 2026-07-26 - Day15-T3B15-MR2 Independent Corrected Readiness Review
 
 - Independently reviewed exact C1 commit

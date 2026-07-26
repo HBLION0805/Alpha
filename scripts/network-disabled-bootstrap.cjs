@@ -13,30 +13,58 @@ const originalSpawn = childProcess.spawn;
 const originalSpawnSync = childProcess.spawnSync;
 const originalExecFile = childProcess.execFile;
 const originalExecFileSync = childProcess.execFileSync;
-const allowedExecutable = /^(?:node(?:\.exe)?|python(?:3)?(?:\.exe)?|git(?:\.exe)?)$/iu;
-const networkGitAction = /^(?:clone|fetch|pull|push|ls-remote|remote|submodule)$/u;
+const fs = require("node:fs");
+const path = require("node:path");
+const allowedGitAction = new Set(["diff", "ls-files", "rev-parse", "status"]);
+const fixedExecutables = new Map([
+  ["node", process.env.ALPHA_ALLOWED_NODE_EXECUTABLE],
+  ["python", process.env.ALPHA_ALLOWED_PYTHON_EXECUTABLE],
+  ["git", process.env.ALPHA_ALLOWED_GIT_EXECUTABLE],
+]);
 
-const executableName = (command) =>
-  String(command).replaceAll("\\", "/").split("/").at(-1) ?? "";
+const canonicalExecutable = (command) => {
+  const value = String(command);
+  if (!path.isAbsolute(value)) deny();
+  try {
+    return fs.realpathSync(value).toLocaleLowerCase();
+  } catch {
+    deny();
+  }
+};
 
 const assertChildPolicy = (command, args, options) => {
-  const name = executableName(command);
-  if (!allowedExecutable.test(name) || options?.shell === true) deny();
+  if (options?.shell === true) deny();
+  const executable = canonicalExecutable(command);
+  const role = [...fixedExecutables.entries()].find(([, value]) => {
+    if (typeof value !== "string" || !path.isAbsolute(value)) return false;
+    try {
+      return fs.realpathSync(value).toLocaleLowerCase() === executable;
+    } catch {
+      return false;
+    }
+  })?.[0];
+  if (role === undefined) deny();
   const values = Array.isArray(args) ? args.map(String) : [];
-  if (/^git(?:\.exe)?$/iu.test(name) && networkGitAction.test(values[0] ?? "")) {
+  if (role === "git" && !allowedGitAction.has(values[0] ?? "")) {
     deny();
   }
   if (
-    /^python(?:3)?(?:\.exe)?$/iu.test(name) &&
+    role === "python" &&
     values.some((value) => ["-S", "-E", "-I"].includes(value))
   ) deny();
-  if (options?.env !== undefined) {
-    if (
-      options.env.ALPHA_NETWORK_DISABLED !== "1" ||
-      typeof options.env.NODE_OPTIONS !== "string" ||
-      !options.env.NODE_OPTIONS.includes("network-disabled-bootstrap.cjs")
-    ) deny();
-  }
+  const effectiveEnvironment = options?.env ?? process.env;
+  if (
+    effectiveEnvironment.ALPHA_NETWORK_DISABLED !== "1" ||
+    typeof effectiveEnvironment.NODE_OPTIONS !== "string" ||
+    !effectiveEnvironment.NODE_OPTIONS.includes("network-disabled-bootstrap.cjs")
+  ) deny();
+  if (
+    role === "python" &&
+    (
+      typeof effectiveEnvironment.PYTHONPATH !== "string" ||
+      !effectiveEnvironment.PYTHONPATH.includes("network-disabled-python")
+    )
+  ) deny();
 };
 
 childProcess.spawn = function guardedSpawn(command, args, options) {
@@ -57,6 +85,13 @@ childProcess.execFileSync = function guardedExecFileSync(file, args, options) {
 };
 childProcess.exec = deny;
 childProcess.execSync = deny;
+
+const workerThreads = require("node:worker_threads");
+workerThreads.Worker = class DisabledWorker {
+  constructor() {
+    deny();
+  }
+};
 
 for (const moduleName of [
   "node:http",

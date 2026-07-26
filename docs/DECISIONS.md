@@ -1,5 +1,23 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Day15-T3B15-C2 Independent Authority and Isolation Correction
+
+- Decision: mutation and durable observation are separate closed five-phase
+  compositions, and the same concrete adapter cannot cross that boundary.
+- Decision: bind Git, Node, and Python to reviewed canonical executable
+  identities; allow only fixed local Git read actions during validation.
+- Decision: recheck a content-derived structural authority seal immediately
+  before authorization and after phase observation; drift preserves ambiguity
+  and cannot commit a success result.
+- Decision: migrate only an empty Control `1.0` store atomically to `1.1`;
+  non-empty `1.0` fails with `MIGRATION_REQUIRED` and remains unchanged.
+- Decision: persist a Validate receipt only in the same transaction as its
+  bound operation result.
+- Decision: provide one closed production-shaped but non-executable runtime
+  assembly. Independent T3B15-MR3 remains mandatory before any rehearsal.
+- Consequence: C2 closes implementation blockers but grants no run, network,
+  provider, recommendation, order, execution, or capital authority.
+
 ## 2026-07-26 - Day15-T3B15-MR2 Corrected Operation Readiness Review
 
 - Decision: return `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` for exact C1

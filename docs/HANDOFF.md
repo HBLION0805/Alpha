@@ -4,11 +4,11 @@ Date:
 2026-07-26
 
 Project Stage:
-Day15-T3B15-C1 is committed and pushed; independent Day15-T3B15-MR2 is complete locally and pending Owner review
+Day15-T3B15-MR2 is committed and pushed; Day15-T3B15-C2 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `c6d6bc947d066cba16249f48fef11fc0a59cb8d7` on `main`, equal to `origin/main`.
+Verified baseline: `8e20a238c81f6641cf910ef3fd4c6f49ac834040` on `main`, equal to `origin/main`.
 
 Day 7 completed:
 
@@ -244,7 +244,7 @@ Focused control, verification, and fresh-process suites pass `33/33`, `4/4`,
 and `11/11`; complete Alpha validation passes `2456/2456`. No real manifest
 or rehearsal was created or run.
 
-Independent Day15-T3B15-MR2 is complete locally and pending Owner review. It
+Independent Day15-T3B15-MR2 was completed and later approved and pushed. It
 confirms the C1 Stop/result, authorization-consumption, non-completed-result,
 validation-receipt, Control-history, and untracked-file corrections, but returns
 `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. Five high blockers remain:
@@ -253,6 +253,21 @@ composition exists; Git identity remains ambient; application-level network
 isolation retains concrete escape paths; and authoritative filesystem state may
 drift after post-ownership inspection. Control schema `1.1`, validation-receipt
 crash reconciliation, and missing process evidence also require T3B15-C2.
+
+Day15-T3B15-MR2 was approved and pushed as `8e20a23`. Day15-T3B15-C2 is
+complete locally and pending Owner review. C2 replaces the shared phase adapter
+with disjoint mutation and durable-observation compositions, binds Git by
+canonical path and SHA-256 digest, rechecks a structural authority seal before
+authorization and after phase observation, migrates only empty Control `1.0`
+stores atomically, and commits Validate evidence with its result in one
+transaction. Its fixed environment denies unreviewed child executables, Git
+network actions, cleared-environment children, Worker threads, and Python
+`os.exec*`/spawn escape. One closed production-shaped runtime exposes only
+Preflight, Status, and final verification; it deliberately has no execution
+method. Security inspection children reopen Control query-only in separate OS
+processes. Independent T3B15-MR3 remains required, and no real rehearsal was
+run. Focused control, verification, and security process suites pass `40/40`,
+`4/4`, and `11/11`; complete Alpha validation passes `2463/2463`.
 
 ## Day 6 Milestone Review
 
@@ -688,12 +703,11 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-MR2. If approved, commit and push the review, then
-begin `Day15-T3B15-C2 — Independent Durable Authority, Fixed Executable, Closed
-Runtime Composition, and Isolation Proof Correction`. C2 must separate mutation
-from independently reopened durable observation, add one closed non-executed
-real composition, fix Git identity and post-inspection TOCTOU, define schema and
-validation-receipt recovery, and add adversarial process evidence. Do not run a
-rehearsal, add continuous runtime, loops, network providers, real Pilot
-activation, T1/T2 delivery, probability research, recommendation, or trading
-authority.
+Owner review of Day15-T3B15-C2. If approved, commit and push C2, then begin an
+independent `Day15-T3B15-MR3 — Corrected Exact Operation Readiness Review`.
+MR3 must review the complete diff, rerun all focused and complete validation,
+inspect migration and atomic receipt/result evidence, and decide whether the
+exact operation can be authorized. Until MR3 explicitly returns
+`GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`, do not run a rehearsal or add an
+execution command, continuous runtime, loops, network providers, real Pilot,
+T1/T2 delivery, probability research, recommendation, or trading authority.

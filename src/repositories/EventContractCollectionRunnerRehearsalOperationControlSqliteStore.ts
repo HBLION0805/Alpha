@@ -139,6 +139,7 @@ export class CollectionRunnerRehearsalOperationControlStoreError extends Error {
       | "AUTHORIZATION_CONFLICT"
       | "RESULT_CONFLICT"
       | "STOP_TRIPPED"
+      | "MIGRATION_REQUIRED"
       | "TRANSACTION_FAILURE",
     message: string,
     options?: { readonly cause?: unknown },
@@ -264,6 +265,83 @@ function validateReceipt(
   }
 }
 
+function tableExists(database: DatabaseSync, table: string): boolean {
+  return database.prepare(
+    "SELECT 1 AS present FROM sqlite_schema WHERE type = 'table' AND name = ?",
+  ).get(table) !== undefined;
+}
+
+function readSchemaVersion(database: DatabaseSync): string | null {
+  if (!tableExists(database, "operation_control_metadata")) return null;
+  const metadata = database.prepare(
+    "SELECT schema_version FROM operation_control_metadata WHERE singleton = 1",
+  ).get() as Row | undefined;
+  return typeof metadata?.schema_version === "string"
+    ? metadata.schema_version
+    : null;
+}
+
+function migrateEmptyV10ToV11(database: DatabaseSync): void {
+  const requiredV10Tables = [
+    "operation_phase_authorizations",
+    "operation_phase_results",
+    "operation_stop_receipts",
+  ] as const;
+  if (requiredV10Tables.some((table) => !tableExists(database, table))) {
+    fail("INTEGRITY_FAILURE", "Control 1.0 schema is incomplete.");
+  }
+  const populated = requiredV10Tables.some((table) => {
+    const row = database.prepare(
+      `SELECT COUNT(*) AS count FROM ${table}`,
+    ).get() as Row;
+    return row.count !== 0;
+  });
+  if (populated) {
+    fail(
+      "MIGRATION_REQUIRED",
+      "Non-empty Control 1.0 requires explicit Owner-reviewed recovery.",
+    );
+  }
+  database.exec("BEGIN IMMEDIATE");
+  try {
+    database.exec(`
+CREATE TABLE operation_control_metadata_v11 (
+  singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
+  schema_version TEXT NOT NULL CHECK (schema_version = '1.1')
+) STRICT;
+INSERT INTO operation_control_metadata_v11 (singleton, schema_version)
+VALUES (1, '1.1');
+DROP TABLE operation_control_metadata;
+ALTER TABLE operation_control_metadata_v11 RENAME TO operation_control_metadata;
+
+CREATE TABLE operation_validation_receipts (
+  receipt_id TEXT PRIMARY KEY,
+  operation_id TEXT NOT NULL UNIQUE,
+  manifest_fingerprint TEXT NOT NULL,
+  record_fingerprint TEXT NOT NULL UNIQUE,
+  canonical_record_json TEXT NOT NULL CHECK (
+    json_valid(canonical_record_json)
+    AND json_type(canonical_record_json) = 'object'
+  )
+) STRICT;
+CREATE TRIGGER operation_validation_receipts_no_update
+BEFORE UPDATE ON operation_validation_receipts
+BEGIN SELECT RAISE(ABORT, 'append-only operation validation receipts'); END;
+CREATE TRIGGER operation_validation_receipts_no_delete
+BEFORE DELETE ON operation_validation_receipts
+BEGIN SELECT RAISE(ABORT, 'append-only operation validation receipts'); END;
+`);
+    database.exec("COMMIT");
+  } catch (cause) {
+    try {
+      database.exec("ROLLBACK");
+    } catch {
+      // Preserve the migration failure.
+    }
+    fail("INTEGRITY_FAILURE", "Control 1.0 migration failed atomically.", cause);
+  }
+}
+
 export class EventContractCollectionRunnerRehearsalOperationControlSqliteStore
   implements CollectionRunnerRehearsalOperationControlRepository {
   readonly #database: DatabaseSync;
@@ -287,7 +365,8 @@ export class EventContractCollectionRunnerRehearsalOperationControlSqliteStore
       fail("INVALID_CONFIGURATION", "Control-store open options are invalid.");
     }
     const path = resolveStorePath(controlRoot);
-    if (!options.createIfMissing && !existsSync(path)) {
+    const existed = existsSync(path);
+    if (!options.createIfMissing && !existed) {
       fail("STORE_MISSING", "Operation control store does not exist.");
     }
     const database = new DatabaseSync(path, {
@@ -305,13 +384,24 @@ PRAGMA foreign_keys = ON;
 PRAGMA trusted_schema = OFF;
 PRAGMA recursive_triggers = OFF;
 `);
-      if (options.createIfMissing) {
+      if (!existed && options.createIfMissing) {
         database.exec(COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQL);
       }
-      const metadata = database.prepare(
-        "SELECT schema_version FROM operation_control_metadata WHERE singleton = 1",
-      ).get() as Row | undefined;
-      if (metadata?.schema_version !== COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQLITE_SCHEMA) {
+      let schemaVersion = readSchemaVersion(database);
+      if (schemaVersion === "1.0") {
+        if (!options.createIfMissing) {
+          fail(
+            "MIGRATION_REQUIRED",
+            "Control 1.0 cannot be opened without explicit migration authority.",
+          );
+        }
+        migrateEmptyV10ToV11(database);
+        schemaVersion = readSchemaVersion(database);
+      }
+      if (
+        schemaVersion !==
+        COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQLITE_SCHEMA
+      ) {
         fail("INTEGRITY_FAILURE", "Operation control schema is not exact.");
       }
       return new EventContractCollectionRunnerRehearsalOperationControlSqliteStore(
@@ -349,11 +439,8 @@ PRAGMA foreign_keys = ON;
 PRAGMA trusted_schema = OFF;
 PRAGMA query_only = ON;
 `);
-      const metadata = database.prepare(
-        "SELECT schema_version FROM operation_control_metadata WHERE singleton = 1",
-      ).get() as Row | undefined;
       if (
-        metadata?.schema_version !==
+        readSchemaVersion(database) !==
           COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQLITE_SCHEMA
       ) {
         fail("INTEGRITY_FAILURE", "Operation control schema is not exact.");
@@ -525,6 +612,62 @@ INSERT INTO operation_validation_receipts (
     });
   }
 
+  public appendValidationResult(
+    validationReceipt: CollectionRunnerRehearsalOperationValidationReceipt,
+    resultReceipt: CollectionRunnerRehearsalOperationResultReceipt,
+  ): CollectionRunnerRehearsalOperationResultReceipt {
+    validateReceipt(validationReceipt, "Operation validation receipt");
+    validateReceipt(resultReceipt, "Operation result");
+    if (
+      resultReceipt.phase !== "VALIDATE" ||
+      validationReceipt.operationId !== resultReceipt.operationId ||
+      validationReceipt.manifestFingerprint !==
+        resultReceipt.manifestFingerprint ||
+      validationReceipt.fingerprint !==
+        resultReceipt.authorityEvidenceFingerprint
+    ) {
+      fail(
+        "RESULT_CONFLICT",
+        "Validation receipt and operation result are not exactly bound.",
+      );
+    }
+    return this.#transaction(() => {
+      const existingValidation = this.#database.prepare(`
+SELECT canonical_record_json, record_fingerprint
+FROM operation_validation_receipts
+WHERE operation_id = ?
+`).get(validationReceipt.operationId) as Row | undefined;
+      if (existingValidation !== undefined) {
+        const stored =
+          verifyRecord<CollectionRunnerRehearsalOperationValidationReceipt>(
+            existingValidation,
+            "Operation validation receipt",
+          );
+        if (stored.fingerprint !== validationReceipt.fingerprint) {
+          fail(
+            "RESULT_CONFLICT",
+            "A different operation validation receipt already exists.",
+          );
+        }
+      } else {
+        this.#database.prepare(`
+INSERT INTO operation_validation_receipts (
+  receipt_id, operation_id, manifest_fingerprint, record_fingerprint,
+  canonical_record_json
+) VALUES (?, ?, ?, ?, ?)
+`).run(
+          validationReceipt.receiptId,
+          validationReceipt.operationId,
+          validationReceipt.manifestFingerprint,
+          validationReceipt.fingerprint,
+          JSON.stringify(validationReceipt),
+        );
+      }
+      this.#insertResult(resultReceipt);
+      return this.#requireResult(resultReceipt.resultId);
+    });
+  }
+
   public readValidationReceipt(
     fingerprint: string,
   ): CollectionRunnerRehearsalOperationValidationReceipt {
@@ -598,50 +741,7 @@ INSERT INTO operation_phase_authorizations (
   ): CollectionRunnerRehearsalOperationResultReceipt {
     validateReceipt(receipt, "Operation result");
     return this.#transaction(() => {
-      const stop = this.#database.prepare(
-        "SELECT stop_id FROM operation_stop_receipts WHERE operation_id = ?",
-      ).get(receipt.operationId);
-      if (stop !== undefined) {
-        fail("STOP_TRIPPED", "Durable operation Stop precedes result commit.");
-      }
-      const authorization = this.#requireAuthorization(receipt.authorizationId);
-      if (
-        authorization.fingerprint !== receipt.authorizationFingerprint ||
-        authorization.commandFingerprint !== receipt.commandFingerprint ||
-        authorization.operationId !== receipt.operationId ||
-        authorization.manifestFingerprint !== receipt.manifestFingerprint ||
-        authorization.phase !== receipt.phase ||
-        authorization.phasePlanOrdinal !== receipt.phasePlanOrdinal
-      ) {
-        fail("RESULT_CONFLICT", "Operation result does not bind its authorization.");
-      }
-      try {
-        this.#database.prepare(`
-INSERT INTO operation_phase_results (
-  result_id, authorization_id, operation_id, manifest_fingerprint,
-  command_fingerprint, phase, phase_plan_ordinal, disposition,
-  completed_at_utc, canonical_record_json, record_fingerprint
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-`).run(
-          receipt.resultId,
-          receipt.authorizationId,
-          receipt.operationId,
-          receipt.manifestFingerprint,
-          receipt.commandFingerprint,
-          receipt.phase,
-          receipt.phasePlanOrdinal,
-          receipt.disposition,
-          receipt.completedAtUtc,
-          JSON.stringify(receipt),
-          receipt.fingerprint,
-        );
-      } catch (cause) {
-        fail(
-          "RESULT_CONFLICT",
-          "Operation result conflicts with durable truth.",
-          cause,
-        );
-      }
+      this.#insertResult(receipt);
       return this.#requireResult(receipt.resultId);
     });
   }
@@ -703,6 +803,55 @@ FROM operation_phase_authorizations WHERE authorization_id = ?
       fail("INTEGRITY_FAILURE", "Operation authorization is not consumed.");
     }
     return receipt;
+  }
+
+  #insertResult(
+    receipt: CollectionRunnerRehearsalOperationResultReceipt,
+  ): void {
+    const stop = this.#database.prepare(
+      "SELECT stop_id FROM operation_stop_receipts WHERE operation_id = ?",
+    ).get(receipt.operationId);
+    if (stop !== undefined) {
+      fail("STOP_TRIPPED", "Durable operation Stop precedes result commit.");
+    }
+    const authorization = this.#requireAuthorization(receipt.authorizationId);
+    if (
+      authorization.fingerprint !== receipt.authorizationFingerprint ||
+      authorization.commandFingerprint !== receipt.commandFingerprint ||
+      authorization.operationId !== receipt.operationId ||
+      authorization.manifestFingerprint !== receipt.manifestFingerprint ||
+      authorization.phase !== receipt.phase ||
+      authorization.phasePlanOrdinal !== receipt.phasePlanOrdinal
+    ) {
+      fail("RESULT_CONFLICT", "Operation result does not bind its authorization.");
+    }
+    try {
+      this.#database.prepare(`
+INSERT INTO operation_phase_results (
+  result_id, authorization_id, operation_id, manifest_fingerprint,
+  command_fingerprint, phase, phase_plan_ordinal, disposition,
+  completed_at_utc, canonical_record_json, record_fingerprint
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`).run(
+        receipt.resultId,
+        receipt.authorizationId,
+        receipt.operationId,
+        receipt.manifestFingerprint,
+        receipt.commandFingerprint,
+        receipt.phase,
+        receipt.phasePlanOrdinal,
+        receipt.disposition,
+        receipt.completedAtUtc,
+        JSON.stringify(receipt),
+        receipt.fingerprint,
+      );
+    } catch (cause) {
+      fail(
+        "RESULT_CONFLICT",
+        "Operation result conflicts with durable truth.",
+        cause,
+      );
+    }
   }
 
   #requireResult(resultId: string): CollectionRunnerRehearsalOperationResultReceipt {

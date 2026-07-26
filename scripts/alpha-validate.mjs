@@ -21,6 +21,16 @@ if (
 }
 
 const root = resolve(process.cwd());
+const gitExecutable =
+  process.env.ALPHA_FIXED_VALIDATION_PROCESS === "1"
+    ? process.env.ALPHA_FIXED_GIT_EXECUTABLE
+    : "git";
+if (
+  typeof gitExecutable !== "string" ||
+  gitExecutable.length === 0
+) {
+  throw new Error("Fixed validation requires a registered Git executable.");
+}
 const failures = [];
 const warnings = [];
 const reporter = new ValidationReporter();
@@ -281,12 +291,12 @@ function capture(command, args) {
 }
 
 function trackedFiles() {
-  const output = capture("git", ["ls-files", "-z"]);
+  const output = capture(gitExecutable, ["ls-files", "-z"]);
   return output.split("\0").filter(Boolean);
 }
 
 function untrackedFiles() {
-  const output = capture("git", ["ls-files", "--others", "--exclude-standard", "-z"]);
+  const output = capture(gitExecutable, ["ls-files", "--others", "--exclude-standard", "-z"]);
   return output.split("\0").filter(Boolean);
 }
 
@@ -295,7 +305,7 @@ function uniqueFiles(files) {
 }
 
 function changedFiles() {
-  const output = capture("git", ["diff", "--name-only", "HEAD", "--"]);
+  const output = capture(gitExecutable, ["diff", "--name-only", "HEAD", "--"]);
   return uniqueFiles([...output.split(/\r?\n/u).filter(Boolean), ...untrackedFiles()]);
 }
 
@@ -503,7 +513,7 @@ function checkMergeMarkers(files) {
 }
 
 function checkGitStatus() {
-  const status = capture("git", ["status", "--short"]);
+  const status = capture(gitExecutable, ["status", "--short"]);
   if (status.trim() !== "") {
     recordWarning("Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.");
   }
@@ -550,7 +560,9 @@ runCheck("Git whitespace check coverage", () => {
     throw new Error("Validation must retain separate unstaged and staged whitespace checks.");
   }
 });
-for (const check of gitWhitespaceChecks) run("git", [...check.args], check.label);
+for (const check of gitWhitespaceChecks) {
+  run(gitExecutable, [...check.args], check.label);
+}
 runCheck("Working tree status", checkGitStatus);
 
 if (warnings.length > 0) {

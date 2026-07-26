@@ -1028,6 +1028,34 @@ result needs deterministic recovery. Therefore the architecture retains
 `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` and permits only T3B15-C2
 correction followed by a new independent MR3.
 
+Day15-T3B15-C2 makes those authorities structurally distinct. One exact
+five-phase mutation composition can only invoke phase adapters; a second exact
+five-phase composition can only reopen and observe durable truth. The same
+concrete object is rejected at assembly. A closed production-shaped runtime
+binds registry, Control, readiness, local Owner verification, Stop, ownership,
+both compositions, staged validation evidence, and fresh final verification.
+It intentionally exposes Preflight, Status, and final verification only—there
+is no execution method or package command before MR3.
+
+Git is a registered canonical executable plus SHA-256 file identity, and
+validation uses fixed Node, Git, and Python identities. A structural authority
+seal over commit, clean-tree, package, suite, registered total, registered
+roots, fixture binding, capabilities, approval, and Stop state is checked
+again immediately before authorization and after phase observation. Drift
+fails closed; post-authorization drift preserves ambiguity.
+
+Control `1.0` handling is explicit: a structurally present empty store may
+migrate to `1.1` in one immediate transaction, while a non-empty `1.0` store
+returns `MIGRATION_REQUIRED` without adding `1.1` objects. Validate evidence is
+staged only in process and is persisted in the same SQLite transaction as its
+bound phase result, so a durable validation receipt cannot exist without that
+result. Node isolation rejects non-absolute or unregistered executables,
+non-read-only Git actions, cleared guard environments, and Worker threads;
+Python additionally denies subprocess, spawn, `posix_spawn`, fork, and
+`os.exec*` escape. These remain application-level trusted-code controls, not a
+host firewall. C2 grants no rehearsal authority and requires independent
+T3B15-MR3.
+
 ---
 
 # Event Contract Framework

@@ -33,6 +33,9 @@ import {
 import {
   CollectionRunnerRehearsalOperationRegistry,
 } from "../event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine";
+import type {
+  CollectionRunnerRehearsalOperationFixedGitPort,
+} from "./EventContractCollectionRunnerRehearsalOperationPreflight";
 
 const FP = /^(?:fnv1a64:[0-9a-f]{16}|sha256:[0-9a-f]{64})$/u;
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/u;
@@ -134,7 +137,11 @@ class LocalFixedValidationProcess implements FixedValidationProcessPort {
   }
 }
 
-function isolatedEnvironment(repositoryRoot: string): Readonly<Record<string, string>> {
+function isolatedEnvironment(
+  repositoryRoot: string,
+  git: CollectionRunnerRehearsalOperationFixedGitPort,
+  pythonExecutablePath: string,
+): Readonly<Record<string, string>> {
   const allowed = [
     "PATH", "Path", "PATHEXT", "SystemRoot", "SYSTEMROOT", "WINDIR",
     "TEMP", "TMP", "TMPDIR", "ComSpec",
@@ -144,7 +151,17 @@ function isolatedEnvironment(repositoryRoot: string): Readonly<Record<string, st
     if (typeof env[key] === "string") clean[key] = env[key]!;
   }
   clean[PROCESS_MARKER] = "1";
+  if (!existsSync(pythonExecutablePath)) {
+    throw new Error("Registered Python executable is unavailable.");
+  }
+  const fixedPython = realpathSync(pythonExecutablePath);
   clean.ALPHA_NETWORK_DISABLED = "1";
+  clean.ALPHA_FIXED_GIT_EXECUTABLE = git.canonicalExecutablePath;
+  clean.ALPHA_FIXED_GIT_FINGERPRINT = git.executableFingerprint;
+  clean.ALPHA_ALLOWED_NODE_EXECUTABLE = realpathSync(execPath);
+  clean.ALPHA_ALLOWED_GIT_EXECUTABLE = git.canonicalExecutablePath;
+  clean.ALPHA_ALLOWED_PYTHON_EXECUTABLE = fixedPython;
+  clean.ALPHA_PYTHON_EXECUTABLE = fixedPython;
   clean.NODE_OPTIONS =
     `--require=${join(repositoryRoot, "scripts", "network-disabled-bootstrap.cjs")}`;
   clean.PYTHONPATH = join(
@@ -157,20 +174,15 @@ function isolatedEnvironment(repositoryRoot: string): Readonly<Record<string, st
   return freeze(clean);
 }
 
-function npmInvocation(): { readonly executable: string; readonly args: readonly string[] } {
-  const npmCli = join(
-    dirname(realpathSync(execPath)),
-    "node_modules",
-    "npm",
-    "bin",
-    "npm-cli.js",
+function alphaValidationInvocation(
+  repositoryRoot: string,
+): { readonly executable: string; readonly args: readonly string[] } {
+  const validationEntry = realpathSync(
+    join(repositoryRoot, "scripts", "alpha-validate.mjs"),
   );
-  if (!existsSync(npmCli)) {
-    throw new Error("Registered Node installation does not contain fixed npm CLI.");
-  }
   return {
     executable: realpathSync(execPath),
-    args: [realpathSync(npmCli), "run", "alpha:validate"],
+    args: [validationEntry],
   };
 }
 
@@ -194,6 +206,8 @@ export class FixedActualAlphaValidationAdapter {
   public constructor(
     private readonly repositoryRoot: string,
     private readonly registry: CollectionRunnerRehearsalOperationRegistry,
+    private readonly git: CollectionRunnerRehearsalOperationFixedGitPort,
+    private readonly pythonExecutablePath: string,
     private readonly process: FixedValidationProcessPort =
       new LocalFixedValidationProcess(),
     private readonly endedAtUtc: () => string = () => new Date().toISOString(),
@@ -229,13 +243,18 @@ export class FixedActualAlphaValidationAdapter {
     }
     const fixed = {
       cwd: root,
-      environment: isolatedEnvironment(root),
+      environment: isolatedEnvironment(
+        root,
+        this.git,
+        this.pythonExecutablePath,
+      ),
       timeoutMs: 600_000,
       maxOutputBytes: MAX_OUTPUT_BYTES,
     };
-    const commit = this.process.run("git", ["rev-parse", "HEAD"], fixed);
-    const clean = this.process.run(
-      "git", ["status", "--porcelain", "--untracked-files=all"], fixed,
+    const commit = this.git.run(root, ["rev-parse", "HEAD"]);
+    const clean = this.git.run(
+      root,
+      ["status", "--porcelain", "--untracked-files=all"],
     );
     const packageBytes = readFileSync(join(root, "package.json"));
     const validationBytes = readFileSync(join(root, "scripts", "alpha-validate.mjs"));
@@ -252,14 +271,14 @@ export class FixedActualAlphaValidationAdapter {
       .update(packageBytes)
       .digest("hex");
     if (
-      commit.status !== 0 || commit.signal !== null || commit.errorCode !== null ||
-      clean.status !== 0 || clean.signal !== null || clean.errorCode !== null ||
+      commit.status !== 0 || commit.errorCode !== null ||
+      clean.status !== 0 || clean.errorCode !== null ||
       commit.stdout.trim() !== authority.alphaCommit ||
       clean.stdout.trim() !== "" ||
       sha(packageBytes) !== authority.packageFingerprint ||
       `sha256:${suiteHash}` !== authority.validationSuiteFingerprint
     ) throw new Error("Repository, commit, tree, package, or suite identity drifted.");
-    const invocation = npmInvocation();
+    const invocation = alphaValidationInvocation(root);
     const result = this.process.run(invocation.executable, invocation.args, fixed);
     const raw = `${result.stdout}\n${result.stderr}`;
     const outputBytes = new TextEncoder().encode(raw).byteLength;
@@ -334,18 +353,15 @@ export interface CollectionRunnerRehearsalValidationLifecyclePort {
   read(rehearsalId: string): CollectionRunnerRehearsalValidationLifecycleSnapshot;
 }
 
-export interface CollectionRunnerRehearsalOperationValidationReceiptRepository {
-  appendValidationReceipt(
-    receipt: CollectionRunnerRehearsalOperationValidationReceipt,
-  ): CollectionRunnerRehearsalOperationValidationReceipt;
-}
-
 export class CollectionRunnerRehearsalOperationValidationPhaseAdapter {
+  readonly #pending = new Map<
+    string,
+    CollectionRunnerRehearsalOperationValidationReceipt
+  >();
+
   public constructor(
     private readonly validation: FixedActualAlphaValidationAdapter,
     private readonly lifecycle: CollectionRunnerRehearsalValidationLifecyclePort,
-    private readonly receipts:
-      CollectionRunnerRehearsalOperationValidationReceiptRepository,
     private readonly now: () => string = () => new Date().toISOString(),
   ) {}
 
@@ -361,17 +377,21 @@ export class CollectionRunnerRehearsalOperationValidationPhaseAdapter {
       authorization.manifestFingerprint !== manifest.fingerprint
     ) throw new Error("Validation phase bindings are invalid.");
     const before = this.lifecycle.read(manifest.proposal.rehearsalId);
-    const receipt = this.receipts.appendValidationReceipt(this.validation.run({
+    const receipt = this.validation.run({
       receiptId: `operation-validation:${authorization.fingerprint.slice(7, 39)}`,
       operationId: manifest.operationId,
       manifestFingerprint: manifest.fingerprint,
       startedAtUtc: this.now(),
-    }));
+    });
     const after = this.lifecycle.read(manifest.proposal.rehearsalId);
     if (
       before.lifecycleVersion !== after.lifecycleVersion ||
       before.lifecycleFingerprint !== after.lifecycleFingerprint
     ) throw new Error("Validation changed durable rehearsal lifecycle state.");
+    if (this.#pending.has(receipt.fingerprint)) {
+      throw new Error("Validation receipt is already staged.");
+    }
+    this.#pending.set(receipt.fingerprint, receipt);
     return freeze({
       disposition: CollectionRunnerRehearsalOperationResultDisposition.Completed,
       priorLifecycleVersion: before.lifecycleVersion,
@@ -383,6 +403,17 @@ export class CollectionRunnerRehearsalOperationValidationPhaseAdapter {
       startedAtUtc: receipt.startedAtUtc,
       completedAtUtc: receipt.endedAtUtc,
     });
+  }
+
+  public take(
+    fingerprint: string,
+  ): CollectionRunnerRehearsalOperationValidationReceipt {
+    const receipt = this.#pending.get(fingerprint);
+    if (receipt === undefined) {
+      throw new Error("Validation receipt is not staged in this process.");
+    }
+    this.#pending.delete(fingerprint);
+    return receipt;
   }
 }
 

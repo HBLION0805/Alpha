@@ -53,9 +53,100 @@ export interface CollectionRunnerRehearsalOperationAlphaInspectionPort {
     CollectionRunnerRehearsalOperationAlphaInspection;
 }
 
+export interface CollectionRunnerRehearsalOperationFixedGitResult {
+  readonly status: number | null;
+  readonly stdout: string;
+  readonly stderr: string;
+  readonly errorCode: string | null;
+}
+
+export interface CollectionRunnerRehearsalOperationFixedGitPort {
+  readonly canonicalExecutablePath: string;
+  readonly executableFingerprint: string;
+  run(
+    repositoryRoot: string,
+    args: readonly string[],
+  ): CollectionRunnerRehearsalOperationFixedGitResult;
+}
+
+export class FixedCollectionRunnerRehearsalOperationGit
+  implements CollectionRunnerRehearsalOperationFixedGitPort {
+  public readonly canonicalExecutablePath: string;
+  public readonly executableFingerprint: string;
+
+  public constructor(
+    executablePath: string,
+    expectedExecutableFingerprint: string,
+  ) {
+    if (resolve(executablePath) !== executablePath) {
+      throw new Error("Registered Git executable path must be absolute.");
+    }
+    const status = lstatSync(executablePath);
+    const canonical = realpathSync(executablePath);
+    const fingerprint =
+      `sha256:${createHash("sha256")
+        .update(readFileSync(canonical))
+        .digest("hex")}`;
+    if (
+      !status.isFile() ||
+      status.isSymbolicLink() ||
+      !/^sha256:[0-9a-f]{64}$/u.test(expectedExecutableFingerprint) ||
+      fingerprint !== expectedExecutableFingerprint
+    ) {
+      throw new Error("Registered Git executable identity is invalid.");
+    }
+    this.canonicalExecutablePath = canonical;
+    this.executableFingerprint = fingerprint;
+    Object.freeze(this);
+  }
+
+  public run(
+    repositoryRoot: string,
+    args: readonly string[],
+  ): CollectionRunnerRehearsalOperationFixedGitResult {
+    const currentStatus = lstatSync(this.canonicalExecutablePath);
+    const currentFingerprint =
+      `sha256:${createHash("sha256")
+        .update(readFileSync(this.canonicalExecutablePath))
+        .digest("hex")}`;
+    if (
+      !currentStatus.isFile() ||
+      currentStatus.isSymbolicLink() ||
+      realpathSync(this.canonicalExecutablePath) !==
+        this.canonicalExecutablePath ||
+      currentFingerprint !== this.executableFingerprint
+    ) {
+      throw new Error("Registered Git executable identity changed.");
+    }
+    const result = spawnSync(
+      this.canonicalExecutablePath,
+      [...args],
+      {
+        cwd: repositoryRoot,
+        input: "",
+        encoding: "utf8",
+        shell: false,
+        timeout: 10_000,
+        windowsHide: true,
+        maxBuffer: 1024 * 1024,
+        killSignal: "SIGTERM",
+      },
+    );
+    return Object.freeze({
+      status: result.status,
+      stdout: result.stdout ?? "",
+      stderr: result.stderr ?? "",
+      errorCode: result.error?.code ?? null,
+    });
+  }
+}
+
 export class FixedLocalCollectionRunnerRehearsalOperationAlphaInspection
   implements CollectionRunnerRehearsalOperationAlphaInspectionPort {
-  public constructor(private readonly registeredTestTotal: number) {
+  public constructor(
+    private readonly registeredTestTotal: number,
+    private readonly git: CollectionRunnerRehearsalOperationFixedGitPort,
+  ) {
     if (
       !Number.isSafeInteger(registeredTestTotal) ||
       registeredTestTotal < 1
@@ -67,25 +158,16 @@ export class FixedLocalCollectionRunnerRehearsalOperationAlphaInspection
   public inspect(
     repositoryRoot: string,
   ): CollectionRunnerRehearsalOperationAlphaInspection {
-    const options = {
-      cwd: repositoryRoot,
-      input: "",
-      encoding: "utf8" as const,
-      shell: false as const,
-      timeout: 10_000,
-      windowsHide: true,
-      maxBuffer: 1024 * 1024,
-      killSignal: "SIGTERM" as const,
-    };
-    const commit = spawnSync("git", ["rev-parse", "HEAD"], options);
-    const tracked = spawnSync(
-      "git",
+    const commit = this.git.run(repositoryRoot, ["rev-parse", "HEAD"]);
+    const tracked = this.git.run(
+      repositoryRoot,
       ["status", "--porcelain", "--untracked-files=all"],
-      options,
     );
     if (
       commit.status !== 0 ||
       tracked.status !== 0 ||
+      commit.errorCode !== null ||
+      tracked.errorCode !== null ||
       !/^[0-9a-f]{40}\r?\n?$/u.test(commit.stdout)
     ) {
       throw new Error("Alpha repository inspection failed closed.");
