@@ -4,11 +4,11 @@ Date:
 2026-07-26
 
 Project Stage:
-Day15-T3B15-MR1 is committed and pushed; Day15-T3B15-C1 is complete locally and pending Owner review
+Day15-T3B15-C1 is committed and pushed; independent Day15-T3B15-MR2 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `217d0ba` on `main`, equal to `origin/main` before the T3B15-C1 correction task.
+Verified baseline: `c6d6bc947d066cba16249f48fef11fc0a59cb8d7` on `main`, equal to `origin/main`.
 
 Day 7 completed:
 
@@ -234,8 +234,7 @@ blocks non-completed results from advancing the normal plan. Complete Alpha
 validation passes `2447/2447`; no real manifest or rehearsal was created or
 run.
 
-Day15-T3B15-MR1 is committed and pushed as `217d0ba`. Day15-T3B15-C1 is
-complete locally and pending Owner review. C1 adds post-ownership authority
+Day15-T3B15-C1 is committed and pushed as `c6d6bc9`. C1 adds post-ownership authority
 revalidation, atomic Stop/result precedence, independent durable-truth
 observation, append-only operation validation receipts and complete
 Control-ledger verification, fixed Node/npm executable identity, untracked-file
@@ -244,6 +243,16 @@ integrity, non-completed-result blocking, and Node/Python subprocess denial.
 Focused control, verification, and fresh-process suites pass `33/33`, `4/4`,
 and `11/11`; complete Alpha validation passes `2456/2456`. No real manifest
 or rehearsal was created or run.
+
+Independent Day15-T3B15-MR2 is complete locally and pending Owner review. It
+confirms the C1 Stop/result, authorization-consumption, non-completed-result,
+validation-receipt, Control-history, and untracked-file corrections, but returns
+`NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. Five high blockers remain:
+mutation and observation use the same concrete adapter; no closed runnable
+composition exists; Git identity remains ambient; application-level network
+isolation retains concrete escape paths; and authoritative filesystem state may
+drift after post-ownership inspection. Control schema `1.1`, validation-receipt
+crash reconciliation, and missing process evidence also require T3B15-C2.
 
 ## Day 6 Milestone Review
 
@@ -679,10 +688,12 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-C1. If approved, commit and push C1, then conduct
-an independent T3B15-MR2 over the exact committed correction. MR2 must decide
-whether the trusted-code application-level isolation model is sufficient; no
-one-rehearsal authorization exists unless MR2 explicitly returns
-`GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. Do not run a rehearsal, add
-continuous runtime, loops, network providers, real Pilot activation, T1/T2
-delivery, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B15-MR2. If approved, commit and push the review, then
+begin `Day15-T3B15-C2 — Independent Durable Authority, Fixed Executable, Closed
+Runtime Composition, and Isolation Proof Correction`. C2 must separate mutation
+from independently reopened durable observation, add one closed non-executed
+real composition, fix Git identity and post-inspection TOCTOU, define schema and
+validation-receipt recovery, and add adversarial process evidence. Do not run a
+rehearsal, add continuous runtime, loops, network providers, real Pilot
+activation, T1/T2 delivery, probability research, recommendation, or trading
+authority.

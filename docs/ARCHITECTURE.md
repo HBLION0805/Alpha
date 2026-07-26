@@ -1010,6 +1010,24 @@ durable-observation authority. This remains application-level trusted-code
 isolation, not a host firewall. C1 grants no run authority; independent MR2
 must review the correction before any separate rehearsal decision.
 
+Independent Day15-T3B15-MR2 confirms the C1 Stop/result, authorization,
+non-completed-result, validation-receipt, Control-history, and untracked-file
+corrections, but does not accept the operation for rehearsal. The current
+composition delegates action and observation to the same concrete phase
+adapter, so the observation is not structurally independent. There is also no
+production composition root or exact package command binding the real five
+phase adapters, registry, writable Control store, query-only fresh verifier,
+Owner authentication, Stop, and ownership boundaries.
+
+Git authority is still resolved from ambient `PATH`; filesystem authority may
+drift after post-ownership inspection and before invocation; and the
+trusted-code Node/Python guard retains untested child-process, worker, Python
+exec, and Git escape classes. Control schema `1.1` also needs an explicit
+upgrade/replacement rule, and a validation receipt committed before its Control
+result needs deterministic recovery. Therefore the architecture retains
+`NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` and permits only T3B15-C2
+correction followed by a new independent MR3.
+
 ---
 
 # Event Contract Framework

@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Day15-T3B15-MR2 Corrected Operation Readiness Review
+
+- Decision: return `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` for exact C1
+  commit `c6d6bc947d066cba16249f48fef11fc0a59cb8d7`.
+- Decision: do not treat a shared adapter's mutation and observation methods as
+  independent durable authority.
+- Decision: require one closed, non-executed composition root and a separate
+  process that reopens the Control store query-only before rehearsal can be
+  considered.
+- Decision: bind Git to a reviewed canonical executable and close the
+  post-inspection filesystem TOCTOU interval.
+- Decision: application-level network guards remain defense in depth until a
+  closed real composition and adversarial escape evidence prove the accepted
+  isolation threat model.
+- Decision: require T3B15-C2 to define Control `1.0` to `1.1` handling and
+  validation-receipt/result crash reconciliation, followed by independent MR3.
+- Consequence: no real Operation Manifest, rehearsal, provider/network access,
+  Pilot activation, recommendation, order, execution, or capital authority is
+  permitted.
+
 ## 2026-07-26 - Day15-T3B15-C1 Operation Boundary Correction
 
 - Decision: revalidate all external authority after ownership and before

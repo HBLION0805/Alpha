@@ -3,8 +3,8 @@
 ## Status
 
 - Task: `Day15-T3B15-T1`
-- Mode: implementation through T4; no rehearsal authority
-- Reviewed baseline: `b682921`
+- Mode: implementation through C1 and independent MR2; no rehearsal authority
+- Reviewed baseline: `c6d6bc947d066cba16249f48fef11fc0a59cb8d7`
 - T3B15-T1: committed and pushed as `b27687c`
 - T3B15-T2: committed and pushed as `f42e482`
 - T3B15-T3: committed and pushed as `21d263f`
@@ -12,7 +12,9 @@
 - T3B15-T5: committed and pushed as `483d4e3`
 - T3B15-MR1: committed and pushed as `217d0ba`; returns
   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
-- T3B15-C1: correction complete locally and pending Owner review
+- T3B15-C1: committed and pushed as `c6d6bc9`
+- T3B15-MR2: independent review complete locally; returns
+  `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
 - T5/MR1 validation baseline: complete Alpha bundle passes `2447/2447`
@@ -577,11 +579,16 @@ Approval of one item grants no authority for the next:
    complete Control-history verification, fixed executable identity,
    untracked-file rejection, closed composition, authorization integrity,
    non-completed-result blocking, and subprocess isolation.
-8. **T3B15-MR2 — Independent Corrected Operation Readiness Review:** required
-   after C1 is committed and pushed.
-9. **Separate Owner authorization for one exact rehearsal:** only if MR2
-   explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
-10. **Post-rehearsal independent review:** evidence review before any further
+8. **T3B15-MR2 — Independent Corrected Operation Readiness Review:** completed
+   over exact C1 commit `c6d6bc9`; confirms material closures but returns
+   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+9. **T3B15-C2 — Independent Durable Authority, Fixed Executable, Closed Runtime
+   Composition, and Isolation Proof Correction:** required before a new
+   independent MR3.
+10. **Separate Owner authorization for one exact rehearsal:** only if a later
+   independent review explicitly returns
+   `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+11. **Post-rehearsal independent review:** evidence review before any further
    rehearsal or expansion.
 
 There is no standing, repeatable, continuous, or implied run authority.
