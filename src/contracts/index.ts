@@ -70,3 +70,4 @@ export * from "./EventContractCollectionRunnerDurableFixtureRehearsalEvidence";
 export * from "./EventContractCollectionRunnerRuntimeOwnershipRecovery";
 export * from "./EventContractCollectionRunnerRehearsalOperation";
 export * from "./EventContractCollectionRunnerRehearsalOperationControl";
+export * from "./EventContractCollectionRunnerRehearsalOperationVerification";

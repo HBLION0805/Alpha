@@ -74,6 +74,7 @@ declare module "node:child_process" {
       readonly maxBuffer: number;
       readonly windowsHide: boolean;
       readonly killSignal: "SIGTERM";
+      readonly env?: Readonly<Record<string, string>>;
     },
   ): SpawnSyncResult;
 

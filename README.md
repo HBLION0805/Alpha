@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B15-T2 are complete and pushed. Day15-T3B15-T3 is complete locally and pending Owner review. It adds the closed local Owner command boundary, read-only Preflight and Status, fixed-root resolution, an append-only Control-root SQLite authorization/result ledger, authenticated Stop, and a one-phase-per-process gate while retaining `NO_GO_FOR_REHEARSAL_EXECUTION`. No registered real operation, complete rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+Day 8 Intelligence foundations through Day15-T3B15-T3 are complete and pushed. Day15-T3B15-T4 is complete locally and pending Owner review. It adds fixed actual-Alpha validation, recursion and exact-suite guards, operation-bound validation receipts, and read-only fresh-process final verification while retaining `NO_GO_FOR_REHEARSAL_EXECUTION`. No registered real operation, complete rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
 
 Implemented Python prototype/runtime:
 

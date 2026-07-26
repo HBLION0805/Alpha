@@ -3,6 +3,18 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { ValidationReporter } from "./validation-reporting.mjs";
 
+if (process.env.ALPHA_REHEARSAL_OPERATION_PROCESS === "1") {
+  throw new Error(
+    "The Alpha validation bundle cannot run inside a rehearsal-operation phase process.",
+  );
+}
+if (
+  process.env.ALPHA_FIXED_VALIDATION_PROCESS === "1" &&
+  process.env.ALPHA_NETWORK_DISABLED !== "1"
+) {
+  throw new Error("Fixed rehearsal validation requires the network-disabled marker.");
+}
+
 const root = resolve(process.cwd());
 const failures = [];
 const warnings = [];
@@ -140,6 +152,7 @@ const aggregateTestFiles = [
   "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC3ProcessDrill.test.ts",
   "src/engines/event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine.test.ts",
   "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationControlEngine.test.ts",
+  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationVerification.test.ts",
   "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",

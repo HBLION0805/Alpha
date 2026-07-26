@@ -396,10 +396,9 @@ const tests: readonly [string, () => void][] = [
     } as unknown as CollectionRunnerRehearsalOperationPhaseCommandInput),
     CollectionRunnerRehearsalOperationControlErrorCode.InvalidInput,
   )],
-  ["phase command rejects deferred RECOVER, VALIDATE, and VERIFY authority", () => {
+  ["phase command rejects deferred RECOVER and VERIFY authority", () => {
     for (const phase of [
       CollectionRunnerRehearsalOperationPhase.Recover,
-      CollectionRunnerRehearsalOperationPhase.Validate,
       CollectionRunnerRehearsalOperationPhase.Verify,
     ]) {
       controlError(

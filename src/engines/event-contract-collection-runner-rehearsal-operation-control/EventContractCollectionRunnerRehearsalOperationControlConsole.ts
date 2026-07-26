@@ -4,10 +4,14 @@ import {
   EVENT_CONTRACT_COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SCHEMA_VERSION,
   type CollectionRunnerRehearsalOperationPhaseCommandInput,
   type CollectionRunnerRehearsalOperationStopCommandInput,
+  type CollectionRunnerRehearsalOperationFinalVerificationRequest,
 } from "../../contracts";
 import {
   EventContractCollectionRunnerRehearsalOperationPhaseGate,
 } from "./EventContractCollectionRunnerRehearsalOperationControlEngine";
+import {
+  CollectionRunnerRehearsalOperationFreshProcessVerifier,
+} from "./EventContractCollectionRunnerRehearsalOperationVerification";
 
 export const COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_USAGE = [
   "Usage:",
@@ -15,6 +19,7 @@ export const COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_USAGE = [
   "  rehearsal-operation status <closed identity options>",
   "  rehearsal-operation phase <closed identity options>",
   "  rehearsal-operation stop <closed Stop options>",
+  "  rehearsal-operation verify <closed evidence identity options>",
 ].join("\n");
 
 export const COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_HELP = [
@@ -32,6 +37,7 @@ export interface CollectionRunnerRehearsalOperationConsoleDependencies {
   readonly bootIdentity: () => string;
   readonly mintProcessSessionId: () => string;
   readonly invokedAtUtc: () => string;
+  readonly finalVerifier?: CollectionRunnerRehearsalOperationFreshProcessVerifier;
 }
 
 function parseOptions(args: readonly string[]): ReadonlyMap<string, string> {
@@ -67,6 +73,10 @@ const PHASE = [
   "expected-recovery-fingerprint",
 ] as const;
 const STOP = [...COMMON, "mode", "reason-code"] as const;
+const VERIFY = [
+  "operation-id", "manifest-fingerprint", "evidence-root-id",
+  "envelope-fingerprint", "validation-receipt-fingerprint",
+] as const;
 
 function exactOptions(
   options: ReadonlyMap<string, string>,
@@ -139,11 +149,29 @@ export function runCollectionRunnerRehearsalOperationControlConsole(
     return COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_HELP;
   }
   const action = args[0];
-  if (!["preflight", "status", "phase", "stop"].includes(action ?? "")) {
+  if (!["preflight", "status", "phase", "stop", "verify"].includes(action ?? "")) {
     throw new Error(COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_USAGE);
   }
   const options = parseOptions(args.slice(1));
   const invokedAtUtc = dependencies.invokedAtUtc();
+  if (action === "verify") {
+    exactOptions(options, VERIFY);
+    if (dependencies.finalVerifier === undefined) {
+      throw new Error("Fresh-process verifier is not composed.");
+    }
+    const request: CollectionRunnerRehearsalOperationFinalVerificationRequest = {
+      operationId: required(options, "operation-id"),
+      manifestFingerprint: required(options, "manifest-fingerprint"),
+      evidenceRootId: required(options, "evidence-root-id"),
+      envelopeFingerprint: required(options, "envelope-fingerprint"),
+      validationReceiptFingerprint: required(
+        options,
+        "validation-receipt-fingerprint",
+      ),
+      observedAtUtc: invokedAtUtc,
+    };
+    return JSON.stringify(dependencies.finalVerifier.verify(request), null, 2);
+  }
   if (action === "stop") {
     const receipt = dependencies.gate.requestStop(
       stopCommand(options),

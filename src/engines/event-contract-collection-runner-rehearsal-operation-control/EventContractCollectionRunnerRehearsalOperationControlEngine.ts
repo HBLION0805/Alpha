@@ -42,6 +42,7 @@ const MUTABLE_PHASES = new Set<CollectionRunnerRehearsalOperationPhase>([
   CollectionRunnerRehearsalOperationPhase.Step,
   CollectionRunnerRehearsalOperationPhase.Freeze,
   CollectionRunnerRehearsalOperationPhase.Package,
+  CollectionRunnerRehearsalOperationPhase.Validate,
 ]);
 
 export enum CollectionRunnerRehearsalOperationControlErrorCode {

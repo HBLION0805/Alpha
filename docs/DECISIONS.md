@@ -1,5 +1,21 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B15-T4 Validation and Final Verification
+
+- Decision: retain the reviewed T3B14 envelope format and add an operation-level
+  validation receipt, preventing an unreviewed rewrite of durable evidence.
+- Decision: allow `VALIDATE` through the Owner phase gate only when the trusted
+  composition supplies the fixed actual-Alpha adapter; keep executable,
+  arguments, repository root, environment, timeout, and test filters outside
+  the caller contract.
+- Decision: require one unambiguous unified-report `overall` object whose
+  total and passing count exactly equal the manifest authority and whose failed
+  count is zero.
+- Decision: expose final verification as a fresh, read-only `verify` command
+  with no Owner secret or mutable authorization.
+- Consequence: T4 proves fixture-operation evidence only and still grants no
+  rehearsal, network, provider, recommendation, order, or capital authority.
+
 ## 2026-07-25 - Day15-T3B15-T3 Local Operation Control Boundary
 
 - Decision: store one-use operation authorization, result, and Stop truth in

@@ -426,10 +426,13 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B15-T2 scope: strict root/validation/proposal/approval/manifest contracts, deterministic verification, exact fixture and authority binding, and a defensive read-only registry.
    - T3B15-T2 persistence decision: no Migration 004; durable authorization/result transactions remain T3B15-T3 work after separate review.
    - T3B15-T2 exclusions: no filesystem mutation, Owner command, phase execution, runtime data, rehearsal, network, real Pilot, T1/T2 delivery, recommendation, broker, order, execution, or capital authority.
-   - T3B15-T3 status: complete locally and pending Owner review; `26/26` focused tests and complete Alpha validation `2434/2434` pass.
+   - T3B15-T3 status: committed and pushed as `21d263f`; `26/26` focused tests and complete Alpha validation `2434/2434` passed.
    - T3B15-T3 scope: closed local commands, fixed-root resolution, read-only Preflight/Status, stdin Owner authentication, Control-root SQLite one-use authorization/result/Stop receipts, Stop precedence, exclusive ownership, and exactly one injected phase per invocation.
-   - T3B15-T3 exclusions: RECOVER/VALIDATE/VERIFY remain fail-closed; no registered real operation, actual Alpha validation execution, rehearsal, loop, network, provider, recommendation, order, execution, or capital authority.
-   - T3B15 next sequence: after Owner approval, commit/push T3B15-T3 and begin T3B15-T4 Actual Alpha Validation and Final Verification Binding; independent MR1 and one exact rehearsal authorization remain separate gates.
+   - T3B15-T3 exclusions: RECOVER/VALIDATE/VERIFY remained fail-closed in that milestone; no registered real operation, actual Alpha validation execution, rehearsal, loop, network, provider, recommendation, order, execution, or capital authority.
+   - T3B15-T4 status: complete locally and pending Owner review; `4/4` focused tests and complete Alpha validation `2438/2438` pass.
+   - T3B15-T4 scope: fixed actual-Alpha validation, clean commit/package/suite binding, recursion and environment guards, exact suite accounting, immutable operation validation receipt, validation phase adapter, and read-only fresh-process final verification.
+   - T3B15-T4 exclusions: no registered real operation or rehearsal, RECOVER authority, loop, network, provider, recommendation, order, execution, or capital authority.
+   - T3B15 next sequence: after Owner approval, commit/push T3B15-T4 and begin T3B15-T5 Operation Security, Crash, Stop, and Replay Drills; independent MR1 and one exact rehearsal authorization remain separate gates.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

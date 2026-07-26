@@ -948,9 +948,23 @@ Runner or rehearsal lifecycle truth. The phase gate orders Preflight, Owner
 authentication, Stop, exclusive ownership, atomic authorization consumption,
 a second Stop check, exactly one injected T3B14 phase, evidence validation,
 durable result append, and exit. An authorization without a result remains
-ambiguous and cannot be replayed. VERIFY and actual Alpha validation remain
-T3B15-T4 work; explicit RECOVER authorization/reconciliation remains part of
-the later crash and recovery boundary.
+ambiguous and cannot be replayed.
+
+Day15-T3B15-T4 binds VALIDATE to the actual registered Alpha repository through
+one fixed executable/argument policy. It rechecks the exact clean commit,
+package and validation-suite fingerprints before execution, strips
+credential-bearing environment state, requires the network-disabled process
+marker, rejects recursive invocation, bounds output, and accepts exactly one
+unified validation summary whose registered, passed, and failed counts match
+the immutable authority. Its operation validation receipt is separate from,
+and content-bound to, the existing T3B14 evidence receipt.
+
+Final `verify` is a read-only fresh-process command. It accepts only registered
+operation/evidence identities and binds the operation manifest and validation
+receipt to the existing envelope inventory, digests, backup, SQLite profile,
+durable snapshot, and validation-authority verifier. It never reads an Owner
+secret or creates a mutable authorization. Explicit RECOVER reconciliation
+remains part of the later crash and recovery boundary.
 
 ---
 

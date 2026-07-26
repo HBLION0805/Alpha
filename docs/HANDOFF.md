@@ -192,7 +192,7 @@ boundary. Focused typecheck and dependency checks pass, the new focused suite
 passes `31/31`, and complete Alpha validation passes `2408/2408`. No
 filesystem mutation, command, phase invocation, or rehearsal was added.
 
-Day15-T3B15-T3 is complete locally and pending Owner review. It adds closed
+Day15-T3B15-T3 is committed and pushed as `21d263f`. It adds closed
 phase and Stop command parsing, fixed registered-root resolution, read-only
 Preflight and Status, and the fixed-name Control-root SQLite ledger for
 append-only one-use authorizations, results, and Stops. The phase gate
@@ -201,10 +201,16 @@ stdin-only Owner authentication, Stop checks before and after authorization,
 exclusive ownership, one durable consumed authorization, exactly one
 injected phase call, validated sanitized evidence, and one durable result.
 An authorization without a result remains ambiguous. The focused suite
-passes `26/26`, and complete Alpha validation passes `2434/2434`; actual
-validation execution, VERIFY, a real registered operation, and any rehearsal
-remain unimplemented or unauthorized. RECOVER, VALIDATE, and VERIFY commands
-fail closed until their later reviewed bindings exist.
+passes `26/26`, and its complete Alpha validation passed `2434/2434`.
+
+Day15-T3B15-T4 is complete locally and pending Owner review. It adds fixed
+actual-Alpha validation with clean commit/package/suite binding, recursion
+and environment guards, exact unified-report accounting, immutable operation
+validation receipts, a validation-only phase adapter, and a read-only
+fresh-process `verify` command bound to the existing T3B14 envelope and backup
+verifier. The new focused suite passes `4/4`, and complete Alpha validation
+passes `2438/2438`. RECOVER remains fail-closed; no real operation or
+rehearsal was registered or run.
 
 ## Day 6 Milestone Review
 
@@ -640,8 +646,8 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-T3 Local Owner Command, Preflight, Status, and
-Phase Gate. If approved, commit and push T3, then begin T3B15-T4 Actual Alpha
-Validation and Final Verification Binding. Do not run a rehearsal, add
+Owner review of Day15-T3B15-T4 Actual Alpha Validation and Final Verification
+Binding. If approved, commit and push T4, then begin T3B15-T5 Operation
+Security, Crash, Stop, and Replay Drills. Do not run a rehearsal, add
 continuous runtime, loops, network providers, real Pilot activation, T1/T2
 delivery, probability research, recommendation, or trading authority.

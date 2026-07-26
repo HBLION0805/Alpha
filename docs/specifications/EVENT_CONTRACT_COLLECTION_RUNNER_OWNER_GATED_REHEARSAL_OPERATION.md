@@ -3,14 +3,15 @@
 ## Status
 
 - Task: `Day15-T3B15-T1`
-- Mode: implementation through T3; no rehearsal authority
-- Reviewed baseline: `f42e482`
+- Mode: implementation through T4; no rehearsal authority
+- Reviewed baseline: `21d263f`
 - T3B15-T1: committed and pushed as `b27687c`
 - T3B15-T2: committed and pushed as `f42e482`
-- T3B15-T3: implementation complete locally and pending Owner review
+- T3B15-T3: committed and pushed as `21d263f`
+- T3B15-T4: implementation complete locally and pending Owner review
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
-- Validation: complete Alpha bundle passes `2434/2434`
+- Validation: complete Alpha bundle passes `2438/2438`
 
 This design follows the T3B14-MR4 decision:
 
@@ -549,12 +550,14 @@ Approval of one item grants no authority for the next:
    manifest/root/approval/validation contracts, pure verification, and a
    read-only registry are implemented without a new migration.
 3. **T3B15-T3 — Local Owner Command, Preflight, Status, and Phase Gate:**
-   complete locally and pending Owner review; stdin-only authentication,
+   committed and pushed as `21d263f`; stdin-only authentication,
    fixed-root resolution, one-use authorization, one-phase invocation, Stop,
    and sanitized reporting are implemented without running a rehearsal.
 4. **T3B15-T4 — Actual Alpha Validation and Final Verification Binding:**
-   clean-commit validation, recursion guard, exact suite accounting, envelope
-   authority, and fresh-process verification.
+   complete locally and pending Owner review; clean-commit validation,
+   recursion guard, exact suite accounting, operation validation receipt,
+   envelope authority, and fresh-process verification are implemented without
+   running a rehearsal.
 5. **T3B15-T5 — Operation Security, Crash, Stop, and Replay Drills:** exact
    process evidence across every authorization and artifact boundary.
 6. **T3B15-MR1 — Independent Operation Readiness Review:** independent review

@@ -1,5 +1,20 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B15-T4 Actual Validation and Verification Binding
+
+- Added an operation-bound fixed Alpha validation adapter that requires the
+  registered repository, clean exact commit, package and suite fingerprints,
+  fixed command, credential-scrubbed environment, network-disabled marker,
+  recursion guard, bounded output, and exact passing test accounting.
+- Added immutable operation validation receipts with explicit passed/failed
+  counts and a validation-only phase adapter that proves validation did not
+  mutate rehearsal lifecycle state.
+- Added a read-only `verify` command and fresh-process verifier binding the
+  operation manifest, validation authority/receipt, evidence root, envelope,
+  backup, and existing T3B14 verification result.
+- Added `4/4` focused validation/verification tests. No rehearsal, network,
+  provider, credential, recommendation, order, or capital action was run.
+
 ## 2026-07-25 - Day15-T3B15-T3 Local Owner Command and Phase Gate
 
 - Added strict closed phase and Stop commands with five-minute maximum
@@ -16,8 +31,8 @@
 - Added `26/26` focused tests. No real manifest, rehearsal phase, network,
   credential, provider, recommendation, order, or capital authority was
   created or exercised.
-- RECOVER, VALIDATE, and VERIFY remain fail-closed until their separately
-  reviewed recovery, validation, and verification bindings exist.
+- RECOVER and VERIFY remained fail-closed pending their separately reviewed
+  bindings; VALIDATE is enabled only by the T4 fixed adapter.
 
 ## 2026-07-25 - Day15-T3B15-T2 Operation Manifest and Registry Foundation
 
