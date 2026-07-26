@@ -406,8 +406,11 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B14-MR1 status: review complete locally and pending Owner approval.
    - T3B14-MR1 decision: `DURABLE_REHEARSAL_COMPONENTS_ACCEPTED / GO_FOR_REHEARSAL_READINESS_CORRECTION / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
    - T3B14-MR1 blockers: the T5 clean drill directly seeds terminal state, directly constructs validation truth, exposes no complete one-phase-per-process operation, does not prove a store-wide post-freeze writer barrier, and lacks an exact assembled mapping for all 20 required drills.
-   - T3B14-C1 status: complete locally and pending Owner review; two clean test-only runs execute PREPARE, three foreground STEP actions, fixed validation, freeze, package, and verify in separate processes, bind verifier validation authority, and reject post-freeze mutable repositories. Focused C1 drills pass `3/3`; complete validation passes `2346/2346`.
-   - T3B14 next sequence: Owner review/commit of T3B14-C1, then a separate T3B14-MR2; no rehearsal run is authorized.
+   - T3B14-C1 status: committed and pushed as `e8f1ec2`; two clean test-only runs execute PREPARE, three foreground STEP actions, fixed validation, freeze, package, and verify in separate processes, bind verifier validation authority, and reject post-freeze mutable repositories.
+   - T3B14-MR2 status: complete locally and pending Owner review.
+   - T3B14-MR2 decision: `C1_CORE_CORRECTIONS_ACCEPTED / GO_FOR_NARROW_PROCESS_EVIDENCE_CORRECTION / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+   - T3B14-MR2 blockers: C1's clean evidence action bypasses the reviewed Worker transaction chain, several required cases cite component rather than fresh-process evidence, and the normalized report does not count the executed durable-evidence `14/14`.
+   - T3B14 next sequence: Owner review/commit of T3B14-MR2, then T3B14-C2 and a separate T3B14-MR3; no rehearsal run is authorized.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

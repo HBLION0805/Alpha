@@ -1,5 +1,20 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B14-MR2 Corrected Readiness Review
+
+- Reviewed pushed C1 baseline `e8f1ec2` and reran focused plus complete
+  validation.
+- Accepted separate phase processes, registered validation authority, explicit
+  Pilot completion, and frozen-store mutable-repository rejection.
+- Found that the C1 fixture executor bypasses the reviewed Worker transaction
+  chain, several required cases remain component rather than process evidence,
+  and normalized validation omits the executed durable-evidence `14/14`.
+- Decision: `C1_CORE_CORRECTIONS_ACCEPTED /
+  GO_FOR_NARROW_PROCESS_EVIDENCE_CORRECTION / NO_GO_FOR_REHEARSAL_RUN /
+  NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+- No runtime, rehearsal, provider, recommendation, or capital authority was
+  added.
+
 ## 2026-07-25 - Day15-T3B14-C1 End-to-end Phase Correction
 
 - Added a test-only one-phase-per-process chain for PREPARE, three real

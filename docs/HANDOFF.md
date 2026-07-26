@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-MR1 is committed and pushed; Day15-T3B14-C1 is complete locally and pending Owner review
+Day15-T3B14-C1 is committed and pushed; Day15-T3B14-MR2 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `a692f6f` on `main`, equal to `origin/main` before the T3B14-MR1 review task.
+Verified baseline: `e8f1ec2` on `main`, equal to `origin/main` before the T3B14-MR2 review task.
 
 Day 7 completed:
 
@@ -121,10 +121,18 @@ Day15-T3B14-T4 is committed and pushed as `b3be96c`. It adds a fixed-process loc
 
 Day15-T3B14-T5 is committed and pushed as `a692f6f`. Twelve new OS-process drills prove clean independent verification, two isolated runs with equal scenario and different execution identities, crashes after backup/before publication/after publication, partial-stage quarantine, backup/manifest/validation substitution rejection, extra-file rejection, missing-backup `INCOMPLETE`, mutable-source isolation, and expected-identity drift. Combined T5 evidence/coordinator/transaction/package process checks pass `45/45`, and complete Alpha validation passes `2355/2355`. No production command or real rehearsal was run.
 
-Day15-T3B14-MR1 is committed and pushed as `4bec6a3`. Day15-T3B14-C1 is complete locally and pending Owner review. C1 adds explicit Pilot completion persistence, registered validation authority at fresh verification, a post-freeze query-only/mutable-repository barrier, a Windows-safe fixed npm validation boundary, and a test-only phase command whose PREPARE, three STEP actions, VALIDATE, FREEZE, PACKAGE, and VERIFY each run in a separate process. Two clean roots reconstruct equal scenario truth and different execution identity. The exact twenty-requirement mapping is recorded in `EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_C1_EVIDENCE_MATRIX.md`. A separate T3B14-MR2 remains required; no rehearsal run is authorized.
+Day15-T3B14-MR1 is committed and pushed as `4bec6a3`. Day15-T3B14-C1 is committed and pushed as `e8f1ec2`. C1 adds explicit Pilot completion persistence, registered validation authority at fresh verification, a post-freeze query-only/mutable-repository barrier, a Windows-safe fixed npm validation boundary, and a test-only phase command whose PREPARE, three STEP actions, VALIDATE, FREEZE, PACKAGE, and VERIFY each run in a separate process. Two clean roots reconstruct equal scenario truth and different execution identity.
 
 T3B14-C1 focused phase-composition drills pass `3/3`, durable evidence process
 drills pass `14/14`, and complete Alpha validation passes `2346/2346`.
+
+Day15-T3B14-MR2 is complete locally and pending Owner review. It accepts the
+core C1 corrections but retains `NO_GO_FOR_REHEARSAL_RUN`: the clean C1 STEP
+uses a direct-SQL test executor instead of composing the reviewed Worker
+transaction chain, several of the twenty required cases map only to component
+tests, and normalized validation records the executed durable evidence
+`14/14` as zero. The recommended correction is T3B14-C2, followed by a
+separate T3B14-MR3.
 
 ## Day 6 Milestone Review
 

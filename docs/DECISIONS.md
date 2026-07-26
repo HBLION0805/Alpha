@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-MR2 Corrected Readiness Review
+
+- Decision: accept C1's one-phase-per-process chain, validation-authority
+  binding, explicit Pilot completion, and post-freeze read-only barrier.
+- Decision: retain `NO_GO_FOR_REHEARSAL_RUN` because the clean STEP fixture
+  directly writes Worker-owned transaction records and several required
+  crash/Stop/replay cases remain component rather than fresh-process evidence.
+- Decision: treat normalized validation accounting as incomplete while the
+  executed durable evidence `14/14` is recorded as zero by the count parser.
+- Decision: require T3B14-C2 Worker-composed process evidence and validation
+  accounting correction, followed by a separate T3B14-MR3.
+- Consequence: no rehearsal command, loop, provider, real Pilot, T1/T2,
+  recommendation, broker, order, execution, or capital authority is granted.
+
 ## 2026-07-25 - Day15-T3B14-C1 Phase Composition Correction
 
 - Decision: close the MR1 composition gap with a test-only, manifest-bound,

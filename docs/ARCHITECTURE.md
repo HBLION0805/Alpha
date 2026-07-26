@@ -852,6 +852,15 @@ test-total authority, and an evidence-frozen source store exposes no mutable
 repository. C1 remains non-operational and requires T3B14-MR2; it grants no
 rehearsal-run, provider, continuous-runtime, or capital authority.
 
+Day15-T3B14-MR2 accepts C1's process separation, validation authority, Pilot
+completion, and frozen-store controls but retains `NO_GO_FOR_REHEARSAL_RUN`.
+The C1 evidence action reaches the real foreground-step boundary yet uses a
+direct-SQL test executor instead of the reviewed T7/T8/T8B/T10 Worker
+transaction composition. Several required crash, Stop, recovery, and replay
+cases remain component rather than fresh-process evidence, and validation
+reporting omits the executed durable-evidence process count. T3B14-C2 must
+close those narrow evidence gaps before a separate T3B14-MR3.
+
 ---
 
 # Event Contract Framework
