@@ -4,14 +4,13 @@
 
 Task: `Day15-T3B14-T1`
 
-Status: T3B14-T1 through T3B14-T5 and C1 through C3 are committed and pushed.
-T3B14-MR4 is complete locally and pending Owner review. It accepts the durable
-foundation and all twenty process drills but retains
-`NO_GO_FOR_REHEARSAL_EXECUTION` pending a separately reviewed Owner-gated
-operation.
+Status: T3B14-T1 through T3B14-T5, C1 through C3, and T3B14-MR4 are committed
+and pushed. MR4 accepts the durable foundation and all twenty process drills
+but retains `NO_GO_FOR_REHEARSAL_EXECUTION` pending a separately reviewed
+Owner-gated operation.
 
 Reviewed baseline:
-`fa5836b`.
+`f476d43`.
 
 This design follows the T3B13-MR1 decision:
 
@@ -673,11 +672,12 @@ T3B14 remains separately gated:
    substitution, missing-backup, and source-isolation coverage passes.
 6. **T3B14-MR1 through T3B14-MR3 and C1 through C3:** completed, reviewed,
    committed, and pushed through `fa5836b`.
-7. **T3B14-MR4 — Final foundation readiness review:** complete locally and
-   pending Owner review; foundation and twenty drills are accepted, while
+7. **T3B14-MR4 — Final foundation readiness review:** completed, committed,
+   and pushed as `f476d43`; foundation and twenty drills are accepted, while
    execution remains blocked.
 8. **T3B15-T1 — Exact Owner-Gated Network-Free Rehearsal Operation
-   Architecture:** design-only next task after Owner approval.
+   Architecture:** complete locally and pending Owner review; documentation
+   only, with implementation and execution still blocked.
 9. **Later separately approved operation:** one exact Owner-approved,
    network-free rehearsal only after operation implementation and independent
    review explicitly permit it.

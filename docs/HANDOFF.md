@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-C3 is committed and pushed; Day15-T3B14-MR4 is complete locally and pending Owner review
+Day15-T3B14-MR4 is committed and pushed; design-only Day15-T3B15-T1 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `fa5836b` on `main`, equal to `origin/main` before the T3B14-MR4 review task.
+Verified baseline: `f476d43` on `main`, equal to `origin/main` before the T3B15-T1 design task.
 
 Day 7 completed:
 
@@ -159,15 +159,25 @@ passes `5/5`, and complete Alpha validation passes `2377/2377`. A separate
 T3B14-MR4 remains required, and no real rehearsal was run or authorized.
 
 Day15-T3B14-C3 is committed and pushed as `fa5836b`. Day15-T3B14-MR4 is
-complete locally and pending Owner review. MR4 accepts the durable
-fixture-rehearsal foundation and all twenty matching process drills. Focused
-C1/C2/C3 evidence passes `3/3`, `5/5`, and `5/5`; runtime transaction,
-durable evidence, and package process drills pass `11/11`, `14/14`, and
-`4/4`; complete Alpha validation passes `2377/2377`. Rehearsal execution
-remains blocked because the existing child is a test fixture, not an
-Owner-authenticated fixed-root operation bound to the actual Alpha commit and
-complete validation suite. The recommended next task is design-only
-T3B15-T1.
+committed and pushed as `f476d43`. MR4 accepts the durable fixture-rehearsal
+foundation and all twenty matching process drills. Focused C1/C2/C3 evidence
+passes `3/3`, `5/5`, and `5/5`; runtime transaction, durable evidence, and
+package process drills pass `11/11`, `14/14`, and `4/4`; complete Alpha
+validation passes `2377/2377`. Rehearsal execution remains blocked because
+the existing child is a test fixture, not an Owner-authenticated fixed-root
+operation bound to the actual Alpha commit and complete validation suite.
+
+Day15-T3B15-T1 is complete locally and pending Owner review. It defines one
+immutable operation manifest bound to the exact clean Alpha commit, approved
+fixture and mapping, registered roots, phase plan, validation suite/test
+total, Owner approval, expiry, and non-authority declaration. Every mutable
+phase requires fresh stdin-only local Owner authentication and one durable
+one-use authorization; one foreground process performs exactly one phase and
+exits. Preflight and Status are read-only, Stop has precedence, crash
+ambiguity cannot be automatically retried, validation targets the actual
+complete Alpha repository, and final verification starts in a fresh process.
+T3B15-T1 adds documentation only and does not authorize implementation or a
+rehearsal. Complete Alpha validation passes `2377/2377`.
 
 ## Day 6 Milestone Review
 
@@ -603,4 +613,9 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B12-T4 Single Foreground Fixture Step. If approved and pushed, begin T3B12-T5 transaction-boundary process drills. Do not add continuous runtime, loops, network providers, real Pilot activation, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B15-T1 Exact Owner-Gated Network-Free Rehearsal
+Operation Architecture. If approved, commit and push the design, then begin
+T3B15-T2 Operation Manifest Contracts and Registry Foundation. Do not
+implement the executable command, run a rehearsal, add continuous runtime,
+loops, network providers, real Pilot activation, T1/T2 delivery, probability
+research, recommendation, or trading authority.

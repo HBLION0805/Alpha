@@ -1,5 +1,23 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B15-T1 Owner-Gated Rehearsal Operation Architecture
+
+- Defined one immutable operation manifest bound to the exact clean Alpha
+  commit, reviewed fixture/mapping, registered roots, closed phase sequence,
+  complete validation authority, Owner approval, expiry, and non-authority
+  declaration.
+- Defined stdin-only local Owner authentication, one-use phase authorization,
+  one foreground process per phase, durable sanitized result receipts, and
+  no automatic next-phase behavior.
+- Defined fixed-root Preflight/Status/Stop boundaries, actual complete Alpha
+  validation with recursion protection, crash/recovery/replay rules, and
+  fresh-process final verification.
+- Split later work into contracts/registry, command/gate, validation/verifier,
+  process drills, independent review, and a separate explicit authorization
+  for one rehearsal.
+- Documentation only; no command, schema, runtime data, rehearsal, network,
+  provider, recommendation, or capital authority was added.
+
 ## 2026-07-25 - Day15-T3B14-MR4 Final Foundation Readiness Review
 
 - Independently reviewed pushed C3 baseline `fa5836b`, the exact twenty-drill

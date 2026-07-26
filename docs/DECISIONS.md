@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B15-T1 Exact Owner-Gated Rehearsal Operation
+
+- Decision: one future rehearsal operation must be bound to one immutable
+  Owner-approved manifest, one exact clean Alpha commit, one fixture catalog
+  entry, one registered root set, and one complete validation authority.
+- Decision: every mutable phase requires fresh local Owner authentication and
+  one durable one-use authorization; one foreground process performs exactly
+  one phase and exits.
+- Decision: expose only read-only Preflight/Status, authenticated phase and
+  Stop, and read-only fresh-process Verify; prohibit run-all, continuation,
+  loops, timers, polling, daemons, scheduling, and automatic next-phase work.
+- Decision: validate the actual registered Alpha repository and exact complete
+  suite; generated validation repositories and caller-selected paths,
+  executables, arguments, filters, or expected totals are not authority.
+- Decision: separate T3B15 implementation, independent MR1, and explicit
+  authorization for one exact rehearsal.
+- Consequence: retain `NO_GO_FOR_REHEARSAL_EXECUTION`,
+  `NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME`, and
+  `NO_GO_FOR_BOUNDED_LIVE`.
+
 ## 2026-07-25 - Day15-T3B14-MR4 Final Foundation Readiness Review
 
 - Decision: accept the T3B14 durable fixture-rehearsal foundation and exact

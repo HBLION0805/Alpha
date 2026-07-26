@@ -902,6 +902,20 @@ as a rehearsal. The next permitted work is design-only T3B15-T1 for one exact
 Owner-gated, fixed-root, actual-Alpha-validation, network-free rehearsal
 operation.
 
+Day15-T3B15-T1 designs that operation boundary without implementing or running
+it. One content-addressed operation manifest binds the exact clean Alpha
+commit, fixture catalog and mapping, runtime build, registered fixed roots,
+phase plan, complete validation suite and test total, Owner approval, expiry,
+and non-authority declaration. Every mutable invocation requires stdin-only
+local Owner authentication, consumes one durable authorization, invokes one
+closed phase in one foreground process, records one sanitized result, and
+exits. Preflight and Status are read-only; Stop has precedence; crash ambiguity
+cannot be retried automatically; validation must run the actual complete Alpha
+bundle with recursion blocked; and final verification starts in a fresh
+process from a registered evidence root. Implementation, independent review,
+and authorization for one rehearsal remain separate future decisions. See
+[Exact Owner-Gated Network-Free Rehearsal Operation Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_OWNER_GATED_REHEARSAL_OPERATION.md).
+
 ---
 
 # Event Contract Framework
