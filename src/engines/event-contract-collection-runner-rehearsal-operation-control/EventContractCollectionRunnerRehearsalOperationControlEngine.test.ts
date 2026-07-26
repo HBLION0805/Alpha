@@ -24,6 +24,7 @@ import {
   type CollectionRunnerRehearsalOperationRootRegistration,
 } from "../../contracts";
 import {
+  COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_V10_SQL,
   CollectionRunnerRehearsalOperationControlStoreError,
   EventContractCollectionRunnerRehearsalOperationControlSqliteStore,
 } from "../../repositories/EventContractCollectionRunnerRehearsalOperationControlSqliteStore";
@@ -836,6 +837,13 @@ const tests: readonly [string, () => void][] = [
     equal(fixture.counters.released(), 1, "clean release");
     equal(fixture.repository.readSnapshot(manifest.operationId).authorizationCount, 1, "authorization count");
     equal(fixture.repository.readSnapshot(manifest.operationId).resultCount, 1, "result count");
+    truth(
+      /^sha256:[0-9a-f]{64}$/u.test(
+        fixture.repository.readSnapshot(manifest.operationId)
+          .latestAuthorization!.authoritySnapshotFingerprint,
+      ),
+      "immutable authority snapshot is bound into authorization",
+    );
   }],
   ["authentication failure mutates nothing", () => {
     const fixture = gate();
@@ -998,16 +1006,7 @@ const tests: readonly [string, () => void][] = [
     const path = join(root, "rehearsal-operation-control.sqlite3");
     const database = new DatabaseSync(path);
     try {
-      database.exec(`
-CREATE TABLE operation_control_metadata (
-  singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
-  schema_version TEXT NOT NULL CHECK (schema_version = '1.0')
-) STRICT;
-INSERT INTO operation_control_metadata VALUES (1, '1.0');
-CREATE TABLE operation_phase_authorizations (id TEXT) STRICT;
-CREATE TABLE operation_phase_results (id TEXT) STRICT;
-CREATE TABLE operation_stop_receipts (id TEXT) STRICT;
-`);
+      database.exec(COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_V10_SQL);
     } finally {
       database.close();
     }
@@ -1037,16 +1036,17 @@ CREATE TABLE operation_stop_receipts (id TEXT) STRICT;
     const path = join(root, "rehearsal-operation-control.sqlite3");
     const database = new DatabaseSync(path);
     try {
+      database.exec(COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_V10_SQL);
       database.exec(`
-CREATE TABLE operation_control_metadata (
-  singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
-  schema_version TEXT NOT NULL CHECK (schema_version = '1.0')
-) STRICT;
-INSERT INTO operation_control_metadata VALUES (1, '1.0');
-CREATE TABLE operation_phase_authorizations (id TEXT) STRICT;
-INSERT INTO operation_phase_authorizations VALUES ('existing');
-CREATE TABLE operation_phase_results (id TEXT) STRICT;
-CREATE TABLE operation_stop_receipts (id TEXT) STRICT;
+INSERT INTO operation_phase_authorizations (
+  authorization_id, operation_id, manifest_fingerprint, command_id,
+  command_fingerprint, phase, phase_plan_ordinal, process_session_id,
+  consumed_at_utc, canonical_record_json, record_fingerprint
+) VALUES (
+  'existing', 'operation', '${FP("a")}', 'command', '${FP("b")}',
+  'PREPARE', 1, 'session', '${CREATED}',
+  '{"deterministic":true,"fingerprint":"${FP("c")}"}', '${FP("c")}'
+);
 `);
     } finally {
       database.close();
@@ -1074,6 +1074,96 @@ CREATE TABLE operation_stop_receipts (id TEXT) STRICT;
       equal(version.schema_version, "1.0", "schema remains 1.0");
       equal(validationTable, undefined, "no partial validation table");
       verification.close();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }],
+  ["lookalike Control 1.0 schema is rejected without mutation", () => {
+    const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-v10-"));
+    const path = join(root, "rehearsal-operation-control.sqlite3");
+    const database = new DatabaseSync(path);
+    try {
+      database.exec(`
+CREATE TABLE operation_control_metadata (
+  singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
+  schema_version TEXT NOT NULL CHECK (schema_version = '1.0')
+) STRICT;
+INSERT INTO operation_control_metadata VALUES (1, '1.0');
+CREATE TABLE operation_phase_authorizations (id TEXT) STRICT;
+CREATE TABLE operation_phase_results (id TEXT) STRICT;
+CREATE TABLE operation_stop_receipts (id TEXT) STRICT;
+`);
+    } finally {
+      database.close();
+    }
+    try {
+      let rejected = false;
+      try {
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
+          root,
+          { createIfMissing: true },
+        );
+      } catch (error) {
+        rejected =
+          error instanceof CollectionRunnerRehearsalOperationControlStoreError &&
+          error.code === "INTEGRITY_FAILURE";
+      }
+      truth(rejected, "lookalike rejected");
+      const verification = new DatabaseSync(path, { readOnly: true });
+      equal(
+        verification.prepare(
+          "SELECT schema_version FROM operation_control_metadata WHERE singleton = 1",
+        ).get()!.schema_version as string,
+        "1.0",
+        "schema remains 1.0",
+      );
+      verification.close();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }],
+  ["orphan validation receipt requires explicit recovery", () => {
+    const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-orphan-"));
+    const path = join(root, "rehearsal-operation-control.sqlite3");
+    try {
+      const store =
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
+          root,
+          { createIfMissing: true },
+        );
+      store.close();
+      const database = new DatabaseSync(path);
+      try {
+        database.prepare(`
+INSERT INTO operation_validation_receipts (
+  receipt_id, operation_id, manifest_fingerprint, record_fingerprint,
+  canonical_record_json
+) VALUES (?, ?, ?, ?, ?)
+`).run(
+          "receipt:orphan",
+          "operation:orphan",
+          FP("a"),
+          FP("b"),
+          JSON.stringify({
+            operationId: "operation:orphan",
+            manifestFingerprint: FP("a"),
+            deterministic: true,
+            fingerprint: FP("b"),
+          }),
+        );
+      } finally {
+        database.close();
+      }
+      let rejected = false;
+      try {
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore
+          .openReadOnly(root);
+      } catch (error) {
+        rejected =
+          error instanceof CollectionRunnerRehearsalOperationControlStoreError &&
+          error.code === "MIGRATION_REQUIRED";
+      }
+      truth(rejected, "orphan rejected");
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
@@ -1124,6 +1214,7 @@ CREATE TABLE operation_stop_receipts (id TEXT) STRICT;
         expectedLifecycleVersion: 1,
         expectedInvocationOrdinal: null,
         expectedRecoveryFingerprint: FP("3"),
+        authoritySnapshotFingerprint: FP("a"),
         ownerId: "owner:test",
         ownerAuthorizationReference: FP("4"),
         bootIdentity: "boot:test",

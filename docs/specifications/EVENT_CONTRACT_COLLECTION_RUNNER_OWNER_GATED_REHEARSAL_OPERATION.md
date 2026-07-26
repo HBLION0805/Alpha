@@ -597,12 +597,17 @@ Approval of one item grants no authority for the next:
    exact C2 commit `385aa9b`; confirms material closures but returns
    `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
 11. **T3B15-C3 — Closed Durable Composition, Exact Authority, Migration, and
-   Fresh-process Verification Correction:** required to close all MR3 blockers,
-   followed by a new independent MR4.
-12. **Separate Owner authorization for one exact rehearsal:** only if a later
+   Fresh-process Verification Correction:** complete locally; concrete
+   query-only durable observation, a fixed non-executable composition root,
+   exact executable/guard/Git authority, exact Control migration, atomic
+   Validate recovery rules, and dual-store child-process verification pass
+   complete validation `2469/2469`.
+12. **T3B15-MR4 — Independent C3 Readiness Review:** required after
+   Owner-approved C3 commit/push.
+13. **Separate Owner authorization for one exact rehearsal:** only if a later
    independent review explicitly returns
    `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
-13. **Post-rehearsal independent review:** evidence review before any further
+14. **Post-rehearsal independent review:** evidence review before any further
    rehearsal or expansion.
 
 There is no standing, repeatable, continuous, or implied run authority.
@@ -642,12 +647,7 @@ T3B15-T1 does not authorize:
 
 ## Recommended next task
 
-After Owner review and explicit approval, commit and push T3B15-MR3, then
-begin:
-
-`Day15-T3B15-C3 — Closed Durable Composition, Exact Authority, Migration, and
-Fresh-process Verification Correction`
-
-C3 must be followed by an independent MR4. The closed runtime remains
-non-executable and no rehearsal may run unless MR4 explicitly returns
-`GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+After Owner review and explicit approval, commit and push T3B15-C3, then begin
+an independent `Day15-T3B15-MR4` over the exact pushed commit. The closed
+runtime remains non-executable and no rehearsal may run unless MR4 explicitly
+returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.

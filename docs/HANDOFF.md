@@ -4,11 +4,11 @@ Date:
 2026-07-26
 
 Project Stage:
-Day15-T3B15-C2 is committed and pushed; independent Day15-T3B15-MR3 is complete locally, returns NO-GO, and is pending Owner review
+Day15-T3B15-MR3 is committed and pushed; Day15-T3B15-C3 is complete locally, non-executable, and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `385aa9b6e61c606c84c6cc65c3fab578472ca555` on `main`, equal to `origin/main`.
+Verified baseline: `6746947` on `main`, equal to `origin/main`; the C3 working diff is not committed.
 
 Day 7 completed:
 
@@ -716,10 +716,14 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of independent Day15-T3B15-MR3. If approved, commit and push the
-review record, then begin `Day15-T3B15-C3 — Closed Durable Composition, Exact
-Authority, Migration, and Fresh-process Verification Correction`. C3 must close
-all MR3 blockers and be followed by a new independent MR4. Until MR4 explicitly
-returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`, do not run a rehearsal or add
-an execution command, continuous runtime, loops, network providers, real Pilot,
-T1/T2 delivery, probability research, recommendation, or trading authority.
+Owner review of Day15-T3B15-C3. The local correction adds exact Control schema
+recognition, atomic Validate recovery rules, query-only rehearsal observation,
+a fixed non-executable composition, digest-bound executable/guard identities,
+authority-snapshot binding, exact child/Git admission, and a dedicated
+dual-store verifier. Focused C3 authority tests pass `3/3`, Control passes
+`42/42`, and complete validation passes `2469/2469`. If approved, commit and
+push C3, then begin an independent T3B15-MR4 over that exact commit. Until MR4
+explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`, do not run a
+rehearsal or add an execution command, continuous runtime, loops, network
+providers, real Pilot, T1/T2 delivery, probability research, recommendation,
+or trading authority.

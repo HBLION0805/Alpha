@@ -127,6 +127,22 @@ BEFORE DELETE ON operation_validation_receipts
 BEGIN SELECT RAISE(ABORT, 'append-only operation validation receipts'); END;
 `;
 
+export const COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_V10_SQL =
+  COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQL
+    .replaceAll("'1.1'", "'1.0'")
+    .replace(
+      /CREATE TABLE IF NOT EXISTS operation_validation_receipts \([\s\S]*?\) STRICT;\r?\n\r?\n/u,
+      "",
+    )
+    .replace(
+      /CREATE TRIGGER IF NOT EXISTS operation_validation_receipts_no_update[\s\S]*?END;\r?\n/u,
+      "",
+    )
+    .replace(
+      /CREATE TRIGGER IF NOT EXISTS operation_validation_receipts_no_delete[\s\S]*?END;\r?\n/u,
+      "",
+    );
+
 type Row = Readonly<Record<string, unknown>>;
 
 export class CollectionRunnerRehearsalOperationControlStoreError extends Error {
@@ -281,7 +297,98 @@ function readSchemaVersion(database: DatabaseSync): string | null {
     : null;
 }
 
+function schemaCatalog(database: DatabaseSync): readonly object[] {
+  return (
+    database.prepare(`
+SELECT type, name, tbl_name, sql
+FROM sqlite_schema
+WHERE name NOT LIKE 'sqlite_%'
+ORDER BY type, name
+`).all() as unknown as readonly Row[]
+  ).map((row) => ({
+    type: row.type,
+    name: row.name,
+    table: row.tbl_name,
+    sql: row.sql,
+  }));
+}
+
+function exactV10SchemaFingerprint(): string {
+  const expected = new DatabaseSync(":memory:", {
+    enableForeignKeyConstraints: true,
+    enableDoubleQuotedStringLiterals: false,
+    allowExtension: false,
+    defensive: true,
+  });
+  try {
+    expected.exec(COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_V10_SQL);
+    return sha(schemaCatalog(expected));
+  } finally {
+    expected.close();
+  }
+}
+
+const EXACT_V10_SCHEMA_FINGERPRINT = exactV10SchemaFingerprint();
+
+function exactV11SchemaFingerprint(): string {
+  const expected = new DatabaseSync(":memory:", {
+    enableForeignKeyConstraints: true,
+    enableDoubleQuotedStringLiterals: false,
+    allowExtension: false,
+    defensive: true,
+  });
+  try {
+    expected.exec(COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQL);
+    return sha(schemaCatalog(expected));
+  } finally {
+    expected.close();
+  }
+}
+
+const EXACT_V11_SCHEMA_FINGERPRINT = exactV11SchemaFingerprint();
+
+function assertExactV10Schema(database: DatabaseSync): void {
+  if (sha(schemaCatalog(database)) !== EXACT_V10_SCHEMA_FINGERPRINT) {
+    fail(
+      "INTEGRITY_FAILURE",
+      "Control 1.0 schema does not exactly match the reviewed legacy schema.",
+    );
+  }
+}
+
+function assertExactV11Schema(database: DatabaseSync): void {
+  if (sha(schemaCatalog(database)) !== EXACT_V11_SCHEMA_FINGERPRINT) {
+    fail(
+      "INTEGRITY_FAILURE",
+      "Control 1.1 schema does not exactly match the reviewed schema.",
+    );
+  }
+}
+
+function assertNoOrphanValidationReceipt(database: DatabaseSync): void {
+  const orphan = database.prepare(`
+SELECT validation.record_fingerprint
+FROM operation_validation_receipts AS validation
+LEFT JOIN operation_phase_results AS result
+  ON result.operation_id = validation.operation_id
+ AND result.phase = 'VALIDATE'
+ AND json_extract(
+       result.canonical_record_json,
+       '$.authorityEvidenceFingerprint'
+     ) = validation.record_fingerprint
+WHERE result.result_id IS NULL
+LIMIT 1
+`).get();
+  if (orphan !== undefined) {
+    fail(
+      "MIGRATION_REQUIRED",
+      "Control 1.1 contains an orphan validation receipt and requires explicit Owner-reviewed recovery.",
+    );
+  }
+}
+
 function migrateEmptyV10ToV11(database: DatabaseSync): void {
+  assertExactV10Schema(database);
   const requiredV10Tables = [
     "operation_phase_authorizations",
     "operation_phase_results",
@@ -305,32 +412,9 @@ function migrateEmptyV10ToV11(database: DatabaseSync): void {
   database.exec("BEGIN IMMEDIATE");
   try {
     database.exec(`
-CREATE TABLE operation_control_metadata_v11 (
-  singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
-  schema_version TEXT NOT NULL CHECK (schema_version = '1.1')
-) STRICT;
-INSERT INTO operation_control_metadata_v11 (singleton, schema_version)
-VALUES (1, '1.1');
 DROP TABLE operation_control_metadata;
-ALTER TABLE operation_control_metadata_v11 RENAME TO operation_control_metadata;
-
-CREATE TABLE operation_validation_receipts (
-  receipt_id TEXT PRIMARY KEY,
-  operation_id TEXT NOT NULL UNIQUE,
-  manifest_fingerprint TEXT NOT NULL,
-  record_fingerprint TEXT NOT NULL UNIQUE,
-  canonical_record_json TEXT NOT NULL CHECK (
-    json_valid(canonical_record_json)
-    AND json_type(canonical_record_json) = 'object'
-  )
-) STRICT;
-CREATE TRIGGER operation_validation_receipts_no_update
-BEFORE UPDATE ON operation_validation_receipts
-BEGIN SELECT RAISE(ABORT, 'append-only operation validation receipts'); END;
-CREATE TRIGGER operation_validation_receipts_no_delete
-BEFORE DELETE ON operation_validation_receipts
-BEGIN SELECT RAISE(ABORT, 'append-only operation validation receipts'); END;
 `);
+    database.exec(COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQL);
     database.exec("COMMIT");
   } catch (cause) {
     try {
@@ -404,6 +488,8 @@ PRAGMA recursive_triggers = OFF;
       ) {
         fail("INTEGRITY_FAILURE", "Operation control schema is not exact.");
       }
+      assertExactV11Schema(database);
+      assertNoOrphanValidationReceipt(database);
       return new EventContractCollectionRunnerRehearsalOperationControlSqliteStore(
         database,
         path,
@@ -445,6 +531,8 @@ PRAGMA query_only = ON;
       ) {
         fail("INTEGRITY_FAILURE", "Operation control schema is not exact.");
       }
+      assertExactV11Schema(database);
+      assertNoOrphanValidationReceipt(database);
       return new EventContractCollectionRunnerRehearsalOperationControlSqliteStore(
         database,
         path,
@@ -575,43 +663,6 @@ WHERE operation_id = ?
     });
   }
 
-  public appendValidationReceipt(
-    receipt: CollectionRunnerRehearsalOperationValidationReceipt,
-  ): CollectionRunnerRehearsalOperationValidationReceipt {
-    validateReceipt(receipt, "Operation validation receipt");
-    return this.#transaction(() => {
-      const existing = this.#database.prepare(`
-SELECT canonical_record_json, record_fingerprint
-FROM operation_validation_receipts
-WHERE operation_id = ?
-`).get(receipt.operationId) as Row | undefined;
-      if (existing !== undefined) {
-        const stored =
-          verifyRecord<CollectionRunnerRehearsalOperationValidationReceipt>(
-            existing, "Operation validation receipt",
-          );
-        if (stored.fingerprint === receipt.fingerprint) return stored;
-        fail(
-          "RESULT_CONFLICT",
-          "A different operation validation receipt already exists.",
-        );
-      }
-      this.#database.prepare(`
-INSERT INTO operation_validation_receipts (
-  receipt_id, operation_id, manifest_fingerprint, record_fingerprint,
-  canonical_record_json
-) VALUES (?, ?, ?, ?, ?)
-`).run(
-        receipt.receiptId,
-        receipt.operationId,
-        receipt.manifestFingerprint,
-        receipt.fingerprint,
-        JSON.stringify(receipt),
-      );
-      return this.readValidationReceipt(receipt.fingerprint);
-    });
-  }
-
   public appendValidationResult(
     validationReceipt: CollectionRunnerRehearsalOperationValidationReceipt,
     resultReceipt: CollectionRunnerRehearsalOperationResultReceipt,
@@ -688,6 +739,12 @@ WHERE record_fingerprint = ?
     receipt: CollectionRunnerRehearsalOperationAuthorizationReceipt,
   ): CollectionRunnerRehearsalOperationAuthorizationReceipt {
     validateReceipt(receipt, "Operation authorization");
+    if (!FP.test(receipt.authoritySnapshotFingerprint)) {
+      fail(
+        "INTEGRITY_FAILURE",
+        "Operation authorization authority snapshot is invalid.",
+      );
+    }
     return this.#transaction(() => {
       const stop = this.#database.prepare(
         "SELECT stop_id FROM operation_stop_receipts WHERE operation_id = ?",

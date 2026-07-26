@@ -114,6 +114,33 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
         store.close();
       }
     })],
+  ["query-only fixture store exposes no mutable repository surface", () =>
+    withRoot((root) => {
+      createNewCollectionRunnerFixtureRehearsalSqliteProfile(options(root));
+      const store =
+        EventContractCollectionRunnerFixtureRehearsalSqliteStore.openReadOnly(
+          options(root),
+        );
+      try {
+        const repository =
+          store.createReadOnlyDurableRehearsalRepository();
+        assertEqual(repository.readSnapshot("missing"), null, "read snapshot");
+        assertEqual(
+          typeof (repository as Record<string, unknown>).claimStep,
+          "undefined",
+          "no mutation method",
+        );
+        let blocked = false;
+        try {
+          store.createRunnerRepository();
+        } catch {
+          blocked = true;
+        }
+        assertTrue(blocked, "runner mutation blocked");
+      } finally {
+        store.close();
+      }
+    })],
   ["migration creates the exact strict table catalog", () =>
     withRoot((root) => {
       const result = createNewCollectionRunnerFixtureRehearsalSqliteProfile(options(root));

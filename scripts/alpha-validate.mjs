@@ -35,8 +35,8 @@ const failures = [];
 const warnings = [];
 const reporter = new ValidationReporter();
 const gitWhitespaceChecks = Object.freeze([
-  Object.freeze({ args: Object.freeze(["diff", "--check"]), label: "Unstaged Git diff whitespace" }),
-  Object.freeze({ args: Object.freeze(["diff", "--cached", "--check"]), label: "Staged Git diff whitespace" }),
+  Object.freeze({ args: Object.freeze(["diff", "--no-ext-diff", "--no-textconv", "--check"]), label: "Unstaged Git diff whitespace" }),
+  Object.freeze({ args: Object.freeze(["diff", "--no-ext-diff", "--no-textconv", "--cached", "--check"]), label: "Staged Git diff whitespace" }),
 ]);
 
 const requiredFiles = [
@@ -169,6 +169,7 @@ const aggregateTestFiles = [
   "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationControlEngine.test.ts",
   "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationVerification.test.ts",
   "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationSecurityProcessDrill.test.ts",
+  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationC3Authority.test.ts",
   "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
@@ -305,7 +306,7 @@ function uniqueFiles(files) {
 }
 
 function changedFiles() {
-  const output = capture(gitExecutable, ["diff", "--name-only", "HEAD", "--"]);
+  const output = capture(gitExecutable, ["diff", "--no-ext-diff", "--no-textconv", "--name-only", "HEAD", "--"]);
   return uniqueFiles([...output.split(/\r?\n/u).filter(Boolean), ...untrackedFiles()]);
 }
 
@@ -556,7 +557,11 @@ runCheck("Python change scope", checkPythonChanges);
 runCheck("Merge markers", () => checkMergeMarkers(files));
 runCheck("Git whitespace check coverage", () => {
   const commands = gitWhitespaceChecks.map((check) => check.args.join(" "));
-  if (!commands.includes("diff --check") || !commands.includes("diff --cached --check") || commands.length !== 2) {
+  if (
+    !commands.includes("diff --no-ext-diff --no-textconv --check") ||
+    !commands.includes("diff --no-ext-diff --no-textconv --cached --check") ||
+    commands.length !== 2
+  ) {
     throw new Error("Validation must retain separate unstaged and staged whitespace checks.");
   }
 });

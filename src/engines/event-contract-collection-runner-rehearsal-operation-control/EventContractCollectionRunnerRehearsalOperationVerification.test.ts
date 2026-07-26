@@ -224,6 +224,7 @@ const tests: readonly [string, () => void][] = [
       expectedLifecycleVersion: 1,
       expectedInvocationOrdinal: null,
       expectedRecoveryFingerprint: fp("recovery"),
+      authoritySnapshotFingerprint: fp("authority-snapshot"),
       ownerId: "owner:test",
       ownerAuthorizationReference: fp("owner-authorization"),
       bootIdentity: "boot:test",
@@ -279,21 +280,11 @@ const tests: readonly [string, () => void][] = [
     const evidence = {
       verify: () => envelopeResult,
     } as unknown as DurableFixtureRehearsalFreshProcessVerifier;
-    const controlRoot = mkdtempSync(
-      join(tmpdir(), "alpha-operation-verification-"),
-    );
-    const receiptStore =
-      EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
-        controlRoot,
-        { createIfMissing: true },
-      );
-    receiptStore.appendValidationReceipt(validationReceipt);
     const result = new CollectionRunnerRehearsalOperationFreshProcessVerifier(
       registry,
       evidence,
       {
-        readValidationReceipt: (fingerprint) =>
-          receiptStore.readValidationReceipt(fingerprint),
+        readValidationReceipt: () => validationReceipt,
         readHistory: () => ({
           authorizations: [authorization],
           results: [operationResult],
@@ -351,8 +342,6 @@ const tests: readonly [string, () => void][] = [
       verifyWith(validationReceipt, [operationResult], true).disposition !==
         CollectionRunnerRehearsalOperationVerificationDisposition.FailClosed
     ) throw new Error("Stopped operation history was accepted.");
-    receiptStore.close();
-    rmSync(controlRoot, { recursive: true, force: true });
   }],
 ];
 

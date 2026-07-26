@@ -851,6 +851,7 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
           expectedLifecycleVersion: command.expectedLifecycleVersion,
           expectedInvocationOrdinal: command.expectedInvocationOrdinal,
           expectedRecoveryFingerprint: command.expectedRecoveryFingerprint,
+          authoritySnapshotFingerprint: sealedAuthorityFingerprint,
           ownerId: ownerAuthorization.ownerId,
           ownerAuthorizationReference:
             ownerAuthorization.authorizationReference,

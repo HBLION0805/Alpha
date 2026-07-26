@@ -109,6 +109,47 @@ WHERE lifecycle_state = 'EVIDENCE_FROZEN'
     }
   }
 
+  public static openReadOnly(
+    options: Pick<
+      OpenEventContractCollectionRunnerSqliteStoreOptions,
+      "rootDirectory" | "storeId"
+    >,
+  ): EventContractCollectionRunnerFixtureRehearsalSqliteStore {
+    const storeId = options.storeId ?? "collection-runner";
+    if (!STORE_ID.test(storeId)) {
+      throw new Error("Fixture rehearsal SQLite store identity is invalid.");
+    }
+    const readiness = inspectCollectionRunnerFixtureRehearsalSqliteProfile({
+      rootDirectory: options.rootDirectory,
+      storeId,
+    });
+    const database = new DatabaseSync(readiness.storePath, {
+      open: true,
+      readOnly: true,
+      enableForeignKeyConstraints: true,
+      enableDoubleQuotedStringLiterals: false,
+      allowExtension: false,
+      timeout: 5000,
+      defensive: true,
+    });
+    try {
+      database.exec(`
+PRAGMA foreign_keys = ON;
+PRAGMA busy_timeout = 5000;
+PRAGMA trusted_schema = OFF;
+PRAGMA query_only = ON;
+`);
+      return new EventContractCollectionRunnerFixtureRehearsalSqliteStore(
+        database,
+        readiness,
+        true,
+      );
+    } catch (error) {
+      database.close();
+      throw error;
+    }
+  }
+
   public getReadiness(): CollectionRunnerFixtureRehearsalSqliteProfileReadiness {
     this.#assertOpen();
     return this.#readiness;
@@ -127,6 +168,26 @@ WHERE lifecycle_state = 'EVIDENCE_FROZEN'
     return createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
       this.#database,
     );
+  }
+
+  public createReadOnlyDurableRehearsalRepository():
+    Pick<DurableFixtureRehearsalRepository, "readSnapshot" | "findClaimByRequestFingerprint"> {
+    this.#assertOpen();
+    const repository =
+      createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
+      this.#database,
+    );
+    return Object.freeze({
+      readSnapshot: (rehearsalId: string) =>
+        repository.readSnapshot(rehearsalId),
+      findClaimByRequestFingerprint: (
+        rehearsalId: string,
+        requestFingerprint: string,
+      ) => repository.findClaimByRequestFingerprint(
+        rehearsalId,
+        requestFingerprint,
+      ),
+    });
   }
 
   public isEvidenceFrozen(): boolean {

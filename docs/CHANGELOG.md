@@ -1,5 +1,32 @@
 # Alpha Changelog
 
+## 2026-07-26 - Day15-T3B15-C3 Closed Durable Authority Correction
+
+- Added a concrete rehearsal observer that reopens the registered fixture
+  SQLite store read-only/query-only for every durable-truth observation.
+- Added a fixed non-executable composition root that constructs its Control
+  store, durable observer, and final verifier from registered roots rather than
+  accepting those authorities as caller-supplied implementations.
+- Added a dedicated-process verifier that independently reopens the source
+  rehearsal store, Control store, and packaged-backup verification boundary.
+- Bound the immutable post-ownership authority snapshot into every consumed
+  phase authorization.
+- Digest-bound and rechecked Node, Python, Git, and both network guard files
+  immediately around actual Alpha validation.
+- Replaced broad child/Git admission with exact commands, executable digests,
+  exact guard paths, disabled external diff/text conversion, and rejection of
+  Git helper/config environment injection.
+- Restricted Control 1.0 migration to the exact reviewed schema, rejected
+  lookalikes, removed standalone validation-receipt writes, and made orphan
+  receipts an explicit recovery condition.
+- Added a query-only fixture-store API that exposes no mutable Runner or
+  rehearsal repository.
+- Focused C3 authority tests pass `3/3`; Control tests pass `42/42`; complete
+  Alpha validation passes `2469/2469`.
+- C3 remains non-executable. It creates no real operation or rehearsal and
+  grants no network, provider, recommendation, order, execution, or capital
+  authority. Independent T3B15-MR4 remains mandatory.
+
 ## 2026-07-26 - Day15-T3B15-MR3 Independent Corrected Readiness Review
 
 - Independently reviewed exact C2 commit

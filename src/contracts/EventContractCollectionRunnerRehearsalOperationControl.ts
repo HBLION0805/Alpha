@@ -101,6 +101,7 @@ export interface CollectionRunnerRehearsalOperationAuthorizationReceiptInput {
   readonly expectedLifecycleVersion: number;
   readonly expectedInvocationOrdinal: number | null;
   readonly expectedRecoveryFingerprint: string;
+  readonly authoritySnapshotFingerprint: string;
   readonly ownerId: string;
   readonly ownerAuthorizationReference: string;
   readonly bootIdentity: string;

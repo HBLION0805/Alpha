@@ -1076,6 +1076,31 @@ query-only in a fresh OS process.
 Therefore the next permitted work is T3B15-C3 correction followed by a new
 independent MR4. No real Operation Manifest or rehearsal is authorized.
 
+Day15-T3B15-C3 closes those implementation gaps while preserving the
+non-executable boundary. A concrete durable observer independently opens the
+registered rehearsal database read-only/query-only and reconstructs verified
+phase truth. The fixed composition root constructs its Control repository,
+durable observer, and child-only final verifier from registered roots; those
+authorities can no longer be replaced by caller implementations. Final
+verification requires a dedicated process and independently reopens the live
+rehearsal store, query-only Control history, and the immutable packaged backup.
+
+Git, Node, Python, and both network guards are bound to canonical paths and
+SHA-256 identities and are checked immediately before and after validation.
+Consumed authorization records bind the immutable post-ownership authority
+snapshot. Git and child admission use exact argument sets, exact guard
+environment values, disabled external diff/text conversion, and no ambient
+Git helper/config environment. Control migration recognizes only the exact
+reviewed 1.0 schema, verifies exact 1.1 on every open, rejects lookalikes, and
+classifies an orphan validation receipt as explicit recovery-required truth.
+The public standalone validation-receipt write is removed.
+
+C3 focused authority evidence passes `3/3`, Control passes `42/42`, and the
+complete validation bundle passes `2469/2469`. The new fixed runtime remains
+`NON_EXECUTABLE_PENDING_INDEPENDENT_MR4`; C3 creates no real manifest, invokes
+no rehearsal, and grants no provider, network, recommendation, order,
+execution, or capital authority.
+
 ---
 
 # Event Contract Framework

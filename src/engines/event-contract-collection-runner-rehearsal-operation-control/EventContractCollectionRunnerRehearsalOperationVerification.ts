@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, realpathSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { env, execPath } from "node:process";
 
@@ -29,7 +29,15 @@ import {
 } from "../../contracts";
 import {
   DurableFixtureRehearsalFreshProcessVerifier,
+  type DurableFixtureRehearsalEnvelopeRoot,
+  type DurableFixtureRehearsalValidationAuthority,
 } from "../event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEvidence";
+import {
+  EventContractCollectionRunnerFixtureRehearsalSqliteStore,
+} from "../../repositories/EventContractCollectionRunnerFixtureRehearsalSqliteStore";
+import {
+  EventContractCollectionRunnerRehearsalOperationControlSqliteStore,
+} from "../../repositories/EventContractCollectionRunnerRehearsalOperationControlSqliteStore";
 import {
   CollectionRunnerRehearsalOperationRegistry,
 } from "../event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine";
@@ -44,6 +52,7 @@ const COMMIT = /^[0-9a-f]{40}$/u;
 const MAX_OUTPUT_BYTES = 16 * 1024 * 1024;
 const DIGEST_INPUT_BYTES = 64 * 1024;
 const PROCESS_MARKER = "ALPHA_FIXED_VALIDATION_PROCESS";
+const FINAL_VERIFY_PROCESS_MARKER = "ALPHA_REHEARSAL_FINAL_VERIFY_PROCESS";
 
 function canonical(value: unknown): string {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
@@ -70,6 +79,49 @@ function freeze<T>(value: T): T {
     for (const nested of Object.values(value)) freeze(nested);
   }
   return value;
+}
+
+export interface FixedLocalFileIdentity {
+  readonly canonicalPath: string;
+  readonly fingerprint: string;
+  assertCurrent(): void;
+}
+
+export class DigestBoundLocalFileIdentity implements FixedLocalFileIdentity {
+  public readonly canonicalPath: string;
+  public readonly fingerprint: string;
+
+  public constructor(path: string, expectedFingerprint?: string) {
+    if (!existsSync(path)) throw new Error("Registered local file is unavailable.");
+    const status = lstatSync(path);
+    const canonicalPath = realpathSync(path);
+    const fingerprint = sha(readFileSync(canonicalPath));
+    if (
+      !status.isFile() ||
+      status.isSymbolicLink() ||
+      (
+        expectedFingerprint !== undefined &&
+        expectedFingerprint !== fingerprint
+      )
+    ) {
+      throw new Error("Registered local file identity is invalid.");
+    }
+    this.canonicalPath = canonicalPath;
+    this.fingerprint = fingerprint;
+    Object.freeze(this);
+  }
+
+  public assertCurrent(): void {
+    const status = lstatSync(this.canonicalPath);
+    if (
+      !status.isFile() ||
+      status.isSymbolicLink() ||
+      realpathSync(this.canonicalPath) !== this.canonicalPath ||
+      sha(readFileSync(this.canonicalPath)) !== this.fingerprint
+    ) {
+      throw new Error("Registered local file identity changed.");
+    }
+  }
 }
 
 function exact(value: unknown, keys: readonly string[]): void {
@@ -140,7 +192,10 @@ class LocalFixedValidationProcess implements FixedValidationProcessPort {
 function isolatedEnvironment(
   repositoryRoot: string,
   git: CollectionRunnerRehearsalOperationFixedGitPort,
-  pythonExecutablePath: string,
+  node: FixedLocalFileIdentity,
+  python: FixedLocalFileIdentity,
+  nodeGuard: FixedLocalFileIdentity,
+  pythonGuard: FixedLocalFileIdentity,
 ): Readonly<Record<string, string>> {
   const allowed = [
     "PATH", "Path", "PATHEXT", "SystemRoot", "SYSTEMROOT", "WINDIR",
@@ -151,24 +206,28 @@ function isolatedEnvironment(
     if (typeof env[key] === "string") clean[key] = env[key]!;
   }
   clean[PROCESS_MARKER] = "1";
-  if (!existsSync(pythonExecutablePath)) {
-    throw new Error("Registered Python executable is unavailable.");
+  for (const identity of [node, python, nodeGuard, pythonGuard]) {
+    identity.assertCurrent();
   }
-  const fixedPython = realpathSync(pythonExecutablePath);
   clean.ALPHA_NETWORK_DISABLED = "1";
+  clean.ALPHA_VALIDATION_REPOSITORY_ROOT = repositoryRoot;
   clean.ALPHA_FIXED_GIT_EXECUTABLE = git.canonicalExecutablePath;
   clean.ALPHA_FIXED_GIT_FINGERPRINT = git.executableFingerprint;
-  clean.ALPHA_ALLOWED_NODE_EXECUTABLE = realpathSync(execPath);
+  clean.ALPHA_ALLOWED_NODE_EXECUTABLE = node.canonicalPath;
+  clean.ALPHA_ALLOWED_NODE_FINGERPRINT = node.fingerprint;
   clean.ALPHA_ALLOWED_GIT_EXECUTABLE = git.canonicalExecutablePath;
-  clean.ALPHA_ALLOWED_PYTHON_EXECUTABLE = fixedPython;
-  clean.ALPHA_PYTHON_EXECUTABLE = fixedPython;
-  clean.NODE_OPTIONS =
-    `--require=${join(repositoryRoot, "scripts", "network-disabled-bootstrap.cjs")}`;
-  clean.PYTHONPATH = join(
-    repositoryRoot,
-    "scripts",
-    "network-disabled-python",
-  );
+  clean.ALPHA_ALLOWED_GIT_FINGERPRINT = git.executableFingerprint;
+  clean.ALPHA_ALLOWED_PYTHON_EXECUTABLE = python.canonicalPath;
+  clean.ALPHA_ALLOWED_PYTHON_FINGERPRINT = python.fingerprint;
+  clean.ALPHA_PYTHON_EXECUTABLE = python.canonicalPath;
+  clean.ALPHA_NODE_GUARD_PATH = nodeGuard.canonicalPath;
+  clean.ALPHA_NODE_GUARD_FINGERPRINT = nodeGuard.fingerprint;
+  clean.ALPHA_PYTHON_GUARD_PATH = pythonGuard.canonicalPath;
+  clean.ALPHA_PYTHON_GUARD_FINGERPRINT = pythonGuard.fingerprint;
+  clean.NODE_OPTIONS = `--require=${nodeGuard.canonicalPath}`;
+  clean.PYTHONPATH = dirname(pythonGuard.canonicalPath);
+  clean.GIT_CONFIG_NOSYSTEM = "1";
+  clean.GIT_CONFIG_GLOBAL = "NUL";
   clean.NO_PROXY = "*";
   clean.no_proxy = "*";
   return freeze(clean);
@@ -203,6 +262,11 @@ function parseOverall(output: string): {
 }
 
 export class FixedActualAlphaValidationAdapter {
+  readonly #node: FixedLocalFileIdentity;
+  readonly #python: FixedLocalFileIdentity;
+  readonly #nodeGuard: FixedLocalFileIdentity;
+  readonly #pythonGuard: FixedLocalFileIdentity;
+
   public constructor(
     private readonly repositoryRoot: string,
     private readonly registry: CollectionRunnerRehearsalOperationRegistry,
@@ -211,7 +275,21 @@ export class FixedActualAlphaValidationAdapter {
     private readonly process: FixedValidationProcessPort =
       new LocalFixedValidationProcess(),
     private readonly endedAtUtc: () => string = () => new Date().toISOString(),
-  ) {}
+  ) {
+    this.#node = new DigestBoundLocalFileIdentity(execPath);
+    this.#python = new DigestBoundLocalFileIdentity(pythonExecutablePath);
+    this.#nodeGuard = new DigestBoundLocalFileIdentity(
+      join(repositoryRoot, "scripts", "network-disabled-bootstrap.cjs"),
+    );
+    this.#pythonGuard = new DigestBoundLocalFileIdentity(
+      join(
+        repositoryRoot,
+        "scripts",
+        "network-disabled-python",
+        "sitecustomize.py",
+      ),
+    );
+  }
 
   public run(
     request: CollectionRunnerRehearsalOperationValidationRequest,
@@ -246,7 +324,10 @@ export class FixedActualAlphaValidationAdapter {
       environment: isolatedEnvironment(
         root,
         this.git,
-        this.pythonExecutablePath,
+        this.#node,
+        this.#python,
+        this.#nodeGuard,
+        this.#pythonGuard,
       ),
       timeoutMs: 600_000,
       maxOutputBytes: MAX_OUTPUT_BYTES,
@@ -279,7 +360,27 @@ export class FixedActualAlphaValidationAdapter {
       `sha256:${suiteHash}` !== authority.validationSuiteFingerprint
     ) throw new Error("Repository, commit, tree, package, or suite identity drifted.");
     const invocation = alphaValidationInvocation(root);
+    for (
+      const identity of [
+        this.#node,
+        this.#python,
+        this.#nodeGuard,
+        this.#pythonGuard,
+      ]
+    ) {
+      identity.assertCurrent();
+    }
     const result = this.process.run(invocation.executable, invocation.args, fixed);
+    for (
+      const identity of [
+        this.#node,
+        this.#python,
+        this.#nodeGuard,
+        this.#pythonGuard,
+      ]
+    ) {
+      identity.assertCurrent();
+    }
     const raw = `${result.stdout}\n${result.stderr}`;
     const outputBytes = new TextEncoder().encode(raw).byteLength;
     if (
@@ -479,6 +580,7 @@ function verifyControlHistory(
       authorization.phasePlanOrdinal !== expected.ordinal ||
       authorization.phase !== expected.phase ||
       authorization.expectedInvocationOrdinal !== expected.expectedStepOrdinal ||
+      !FP.test(authorization.authoritySnapshotFingerprint) ||
       authorization.consumed !== true ||
       authorization.deterministic !== true ||
       authorization.fingerprint !== sha(immutableRecordBody(authorization)) ||
@@ -613,5 +715,78 @@ export class CollectionRunnerRehearsalOperationFreshProcessVerifier {
       deterministic: true as const,
     };
     return freeze({ ...body, fingerprint: sha(body) });
+  }
+}
+
+/**
+ * Concrete child-process final-verification entry.
+ *
+ * It cannot run in the phase process. The child independently reopens the
+ * live rehearsal store and Control store query-only, while the envelope
+ * verifier independently reopens the packaged backup.
+ */
+export class FixedFreshProcessDualStoreOperationVerifier {
+  readonly #evidenceVerifier: DurableFixtureRehearsalFreshProcessVerifier;
+  readonly #controlRoot: string;
+  readonly #rehearsalRoot: string;
+
+  public constructor(
+    private readonly registry: CollectionRunnerRehearsalOperationRegistry,
+    evidenceRoots: readonly DurableFixtureRehearsalEnvelopeRoot[],
+    validationAuthorities:
+      readonly DurableFixtureRehearsalValidationAuthority[],
+    controlRoot: string,
+    rehearsalRoot: string,
+    private readonly rehearsalStoreId: string,
+  ) {
+    this.#evidenceVerifier = new DurableFixtureRehearsalFreshProcessVerifier(
+      evidenceRoots,
+      validationAuthorities,
+    );
+    this.#controlRoot = realpathSync(controlRoot);
+    this.#rehearsalRoot = realpathSync(rehearsalRoot);
+  }
+
+  public verify(
+    request: CollectionRunnerRehearsalOperationFinalVerificationRequest,
+  ): CollectionRunnerRehearsalOperationFinalVerificationReport {
+    if (env[FINAL_VERIFY_PROCESS_MARKER] !== "1") {
+      throw new Error("Final verification requires a dedicated fresh process.");
+    }
+    const manifest = this.registry.getOperation(request.operationId);
+    if (
+      manifest === null ||
+      manifest.fingerprint !== request.manifestFingerprint
+    ) {
+      throw new Error("Final verification manifest is unavailable.");
+    }
+    const rehearsal =
+      EventContractCollectionRunnerFixtureRehearsalSqliteStore.openReadOnly({
+        rootDirectory: this.#rehearsalRoot,
+        storeId: this.rehearsalStoreId,
+      });
+    const control =
+      EventContractCollectionRunnerRehearsalOperationControlSqliteStore
+        .openReadOnly(this.#controlRoot);
+    try {
+      const snapshot = rehearsal
+        .createReadOnlyDurableRehearsalRepository()
+        .readSnapshot(manifest.proposal.rehearsalId);
+      if (
+        snapshot === null ||
+        snapshot.registry.manifestFingerprint !==
+          manifest.proposal.rehearsalManifestFingerprint
+      ) {
+        throw new Error("Final verification rehearsal truth is unavailable.");
+      }
+      return new CollectionRunnerRehearsalOperationFreshProcessVerifier(
+        this.registry,
+        this.#evidenceVerifier,
+        control,
+      ).verify(request);
+    } finally {
+      control.close();
+      rehearsal.close();
+    }
   }
 }
