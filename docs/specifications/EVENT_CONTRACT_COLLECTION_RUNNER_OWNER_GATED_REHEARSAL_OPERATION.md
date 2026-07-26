@@ -3,8 +3,8 @@
 ## Status
 
 - Task: `Day15-T3B15-T1`
-- Mode: implementation through C2; independent MR3 returns NO-GO; no rehearsal authority
-- Reviewed baseline: `385aa9b6e61c606c84c6cc65c3fab578472ca555`
+- Mode: implementation through C3; independent MR4 returns NO-GO; no rehearsal authority
+- Reviewed baseline: `43bcca8ee62a313be744e6e6d6e3349704e429e4`
 - T3B15-T1: committed and pushed as `b27687c`
 - T3B15-T2: committed and pushed as `f42e482`
 - T3B15-T3: committed and pushed as `21d263f`
@@ -16,7 +16,10 @@
 - T3B15-MR2: committed and pushed as `8e20a23`; returns
   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
 - T3B15-C2: committed and pushed as `385aa9b`
-- T3B15-MR3: complete locally; returns
+- T3B15-MR3: committed and pushed as `6746947`; returns
+  `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
+- T3B15-C3: committed and pushed as `43bcca8`
+- T3B15-MR4: complete locally; returns
   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
@@ -24,6 +27,8 @@
 - C1 validation: complete Alpha bundle passes `2456/2456`
 - C2 validation: focused suites pass `40/40`, `4/4`, and `11/11`; complete
   Alpha bundle passes `2463/2463`
+- C3/MR4 validation: focused suites pass `3/3`, `42/42`, `4/4`, `11/11`,
+  `19/19`, and `6/6`; complete Alpha bundle passes `2469/2469`
 
 This design follows the T3B14-MR4 decision:
 
@@ -602,12 +607,16 @@ Approval of one item grants no authority for the next:
    exact executable/guard/Git authority, exact Control migration, atomic
    Validate recovery rules, and dual-store child-process verification pass
    complete validation `2469/2469`.
-12. **T3B15-MR4 — Independent C3 Readiness Review:** required after
-   Owner-approved C3 commit/push.
-13. **Separate Owner authorization for one exact rehearsal:** only if a later
+12. **T3B15-MR4 — Independent C3 Readiness Review:** complete locally over
+   exact C3 commit `43bcca8`; confirms material C3 closures but returns
+   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+13. **T3B15-C4 — Real Adapter Composition, Fully Reconstructed Durable
+   Evidence, and Positive Fresh-process Verification Correction:** required
+   before any further rehearsal-readiness decision.
+14. **Separate Owner authorization for one exact rehearsal:** only if a later
    independent review explicitly returns
    `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
-14. **Post-rehearsal independent review:** evidence review before any further
+15. **Post-rehearsal independent review:** evidence review before any further
    rehearsal or expansion.
 
 There is no standing, repeatable, continuous, or implied run authority.
@@ -647,7 +656,10 @@ T3B15-T1 does not authorize:
 
 ## Recommended next task
 
-After Owner review and explicit approval, commit and push T3B15-C3, then begin
-an independent `Day15-T3B15-MR4` over the exact pushed commit. The closed
-runtime remains non-executable and no rehearsal may run unless MR4 explicitly
-returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+After Owner review and explicit approval, commit and push T3B15-MR4, then begin
+`Day15-T3B15-C4`. C4 must internally construct the real five-phase adapters,
+reconstruct complete phase evidence from durable records, bind full authority
+at every phase boundary, and prove a positive fresh-process verification path.
+The runtime remains non-executable and no rehearsal may run unless a later
+independent T3B15-MR5 explicitly returns
+`GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.

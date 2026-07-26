@@ -1101,6 +1101,25 @@ complete validation bundle passes `2469/2469`. The new fixed runtime remains
 no rehearsal, and grants no provider, network, recommendation, order,
 execution, or capital authority.
 
+Independent Day15-T3B15-MR4 reviews exact C3 commit `43bcca8` and returns
+`NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It accepts C3's exact Control
+schema recognition, transactional Validate path, orphan-receipt handling,
+query-only durable-store access, digest-bound executable/guard identities, and
+narrowed Git/child admission.
+
+MR4 finds that the non-executable composition still accepts caller-supplied
+phase adapters and several critical authorities rather than internally
+constructing the real five-stage T3B14 composition. The durable observer
+reopens SQLite query-only but still incorporates claimed evidence instead of
+rebuilding the entire phase result from durable records. Authorization binds a
+partial readiness snapshot rather than complete executable, guard, root,
+store, and adapter authority at every phase boundary. The fresh-process test
+proves a safe fail-closed path, not a positive `PASS` over real Control,
+rehearsal, envelope, and packaged-backup evidence.
+
+Therefore the next permitted implementation is T3B15-C4 followed by an
+independent MR5. No real Operation Manifest or rehearsal is authorized.
+
 ---
 
 # Event Contract Framework

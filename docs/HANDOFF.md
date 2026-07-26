@@ -4,11 +4,11 @@ Date:
 2026-07-26
 
 Project Stage:
-Day15-T3B15-MR3 is committed and pushed; Day15-T3B15-C3 is complete locally, non-executable, and pending Owner review
+Day15-T3B15-C3 is committed and pushed; independent Day15-T3B15-MR4 is complete locally and returns NO-GO
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `6746947` on `main`, equal to `origin/main`; the C3 working diff is not committed.
+Verified baseline: `43bcca8` on `main`, equal to `origin/main`; the MR4 documentation diff is not committed.
 
 Day 7 completed:
 
@@ -281,6 +281,18 @@ recognition are not exact, standalone validation-receipt writes remain
 reachable, and final verification does not independently reopen both durable
 stores in a fresh process. T3B15-C3 and a later independent MR4 are required.
 No real manifest or rehearsal was created or run.
+
+Day15-T3B15-C3 is committed and pushed as `43bcca8`. Independent
+Day15-T3B15-MR4 reviews that exact commit and returns
+`NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It confirms C3's exact Control
+schemas, atomic Validate persistence, orphan detection, query-only stores,
+digest-bound executables/guards, and narrowed process admission. It blocks a
+rehearsal because the fixed composition still accepts caller-supplied phase
+authority, the observer does not rebuild all evidence only from durable truth,
+the authorization snapshot does not bind complete phase-wide authority, and
+the fresh-process test proves safe failure rather than a positive complete
+verification. T3B15-C4 and a later independent MR5 are required. No real
+manifest or rehearsal was created or run.
 
 ## Day 6 Milestone Review
 
@@ -716,14 +728,13 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-C3. The local correction adds exact Control schema
-recognition, atomic Validate recovery rules, query-only rehearsal observation,
-a fixed non-executable composition, digest-bound executable/guard identities,
-authority-snapshot binding, exact child/Git admission, and a dedicated
-dual-store verifier. Focused C3 authority tests pass `3/3`, Control passes
-`42/42`, and complete validation passes `2469/2469`. If approved, commit and
-push C3, then begin an independent T3B15-MR4 over that exact commit. Until MR4
-explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`, do not run a
-rehearsal or add an execution command, continuous runtime, loops, network
-providers, real Pilot, T1/T2 delivery, probability research, recommendation,
-or trading authority.
+Owner review of Day15-T3B15-MR4. The independent review of exact C3 commit
+`43bcca8` returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It confirms
+exact Control schema and recovery behavior, query-only durable access,
+digest-bound executable/guard identities, and narrowed process admission, but
+requires T3B15-C4 to construct real phase adapters internally, rebuild complete
+evidence from durable truth, bind full authority at every phase boundary, and
+prove a positive fresh-process verification path. If approved, commit and push
+MR4, then begin T3B15-C4. Do not run a rehearsal or add an execution command,
+continuous runtime, loops, network providers, real Pilot, T1/T2 delivery,
+probability research, recommendation, or trading authority.
