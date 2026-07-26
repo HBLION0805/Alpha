@@ -4,7 +4,7 @@ Date:
 2026-07-26
 
 Project Stage:
-Day15-T3B15-C3 is committed and pushed; independent Day15-T3B15-MR4 is complete locally and returns NO-GO
+Day15-T3B15-MR4 is committed and pushed; Day15-T3B15-C4 is complete locally and remains non-executable pending independent MR5
 
 ## Current Architecture Checkpoint
 
@@ -728,13 +728,14 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-MR4. The independent review of exact C3 commit
-`43bcca8` returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It confirms
-exact Control schema and recovery behavior, query-only durable access,
-digest-bound executable/guard identities, and narrowed process admission, but
-requires T3B15-C4 to construct real phase adapters internally, rebuild complete
-evidence from durable truth, bind full authority at every phase boundary, and
-prove a positive fresh-process verification path. If approved, commit and push
-MR4, then begin T3B15-C4. Do not run a rehearsal or add an execution command,
-continuous runtime, loops, network providers, real Pilot, T1/T2 delivery,
-probability research, recommendation, or trading authority.
+Owner review of Day15-T3B15-C4. MR4 is committed and pushed as `a66a111`. C4
+reconstructs complete phase evidence from query-only durable records, journals
+validation receipts, binds six registered roots and reviewed executable,
+guard, and phase-source digests at every authorization boundary, corrects the
+underlying rehearsal-manifest verification binding, and proves positive and
+adversarial fresh-process verification. Focused tests pass Control `44/44`, C3
+authority `3/3`, and C4 authority `3/3`; complete validation passes
+`2474/2474`. If approved, commit and push C4, then begin independent
+T3B15-MR5. Do not run a rehearsal or add an execution command, continuous
+runtime, loops, network providers, real Pilot, T1/T2 delivery, probability
+research, recommendation, or trading authority.

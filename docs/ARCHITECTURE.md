@@ -1117,8 +1117,34 @@ store, and adapter authority at every phase boundary. The fresh-process test
 proves a safe fail-closed path, not a positive `PASS` over real Control,
 rehearsal, envelope, and packaged-backup evidence.
 
-Therefore the next permitted implementation is T3B15-C4 followed by an
-independent MR5. No real Operation Manifest or rehearsal is authorized.
+Day15-T3B15-C4 removes claimed phase evidence from the authority path. The
+observer now rebuilds PREPARE and STEP from registry, transition, claim, and
+invocation records; VALIDATE from an append-only fsync-backed validation
+journal; FREEZE from the durable evidence plan and transition history; and
+PACKAGE from the published immutable envelope manifest. The operation
+validation adapter writes its receipt to the journal before returning claimed
+evidence, while Control still commits the bound validation receipt and result
+atomically.
+
+One digest-bound phase-authority snapshot now includes all six registered
+root identities, Node, both network guards, reviewed real phase-source files,
+the closed mutation composition, and the query-only durable-truth composition.
+The gate recomputes it before authorization and after mutation; pre-consumption
+drift mutates nothing, while post-consumption drift preserves ambiguity.
+Final envelope verification now binds to the underlying rehearsal manifest
+fingerprint carried by the Operation Manifest proposal.
+
+C4 positive evidence builds the real T3B14 rehearsal state, Control history,
+published envelope, and packaged backup, then verifies all four in a new OS
+process. Adversarial coverage rejects phase-authority drift, validation-journal
+tampering, and packaged-artifact substitution. Focused Control tests pass
+`44/44`, C3 authority tests pass `3/3`, C4 authority tests pass `3/3`, and the
+complete validation bundle passes `2474/2474`.
+
+The corrected runtime remains
+`NON_EXECUTABLE_PENDING_INDEPENDENT_MR5`. The next permitted task is an
+independent T3B15-MR5 review. No real Operation Manifest, rehearsal, provider,
+network, recommendation, order, execution, or capital authority is authorized.
 
 ---
 

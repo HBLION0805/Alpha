@@ -1,6 +1,16 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
+import {
+  closeSync,
+  existsSync,
+  fsyncSync,
+  lstatSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  realpathSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { env, execPath } from "node:process";
 
@@ -445,6 +455,61 @@ export class FixedActualAlphaValidationAdapter {
   }
 }
 
+/**
+ * Append-only local bridge between the actual validation process and the
+ * independent query-only phase observer. An interrupted validation may leave
+ * an orphan file, but that file can never authorize a Control result.
+ */
+export class FixedOperationValidationReceiptJournal {
+  public readonly root: string;
+
+  public constructor(root: string) {
+    mkdirSync(root, { recursive: true });
+    this.root = realpathSync(root);
+    Object.freeze(this);
+  }
+
+  public append(
+    authorizationId: string,
+    receipt: CollectionRunnerRehearsalOperationValidationReceipt,
+  ): void {
+    if (
+      !ID.test(authorizationId) ||
+      receipt.deterministic !== true ||
+      receipt.fingerprint !== sha(validationReceiptBody(receipt))
+    ) throw new Error("Validation journal receipt is invalid.");
+    const descriptor = openSync(this.#path(authorizationId), "wx");
+    try {
+      writeFileSync(descriptor, `${JSON.stringify(receipt)}\n`, {
+        encoding: "utf8",
+      });
+      fsyncSync(descriptor);
+    } finally {
+      closeSync(descriptor);
+    }
+  }
+
+  public read(
+    authorizationId: string,
+  ): CollectionRunnerRehearsalOperationValidationReceipt {
+    if (!ID.test(authorizationId)) {
+      throw new Error("Validation journal authorization is invalid.");
+    }
+    const receipt = JSON.parse(
+      readFileSync(this.#path(authorizationId), "utf8"),
+    ) as CollectionRunnerRehearsalOperationValidationReceipt;
+    if (
+      receipt.deterministic !== true ||
+      receipt.fingerprint !== sha(validationReceiptBody(receipt))
+    ) throw new Error("Validation journal receipt integrity failed.");
+    return freeze(receipt);
+  }
+
+  #path(authorizationId: string): string {
+    return join(this.root, `validation-${sha(authorizationId).slice(7)}.json`);
+  }
+}
+
 export interface CollectionRunnerRehearsalValidationLifecycleSnapshot {
   readonly lifecycleVersion: number;
   readonly lifecycleFingerprint: string;
@@ -464,6 +529,7 @@ export class CollectionRunnerRehearsalOperationValidationPhaseAdapter {
     private readonly validation: FixedActualAlphaValidationAdapter,
     private readonly lifecycle: CollectionRunnerRehearsalValidationLifecyclePort,
     private readonly now: () => string = () => new Date().toISOString(),
+    private readonly journal?: FixedOperationValidationReceiptJournal,
   ) {}
 
   public invokeOne(
@@ -492,6 +558,7 @@ export class CollectionRunnerRehearsalOperationValidationPhaseAdapter {
     if (this.#pending.has(receipt.fingerprint)) {
       throw new Error("Validation receipt is already staged.");
     }
+    this.journal?.append(authorization.authorizationId, receipt);
     this.#pending.set(receipt.fingerprint, receipt);
     return freeze({
       disposition: CollectionRunnerRehearsalOperationResultDisposition.Completed,
@@ -679,7 +746,8 @@ export class CollectionRunnerRehearsalOperationFreshProcessVerifier {
       envelope = this.evidenceVerifier.verify(
         request.evidenceRootId,
         request.envelopeFingerprint,
-        request.manifestFingerprint,
+        manifest?.proposal.rehearsalManifestFingerprint ??
+          request.manifestFingerprint,
       );
       if (envelope.disposition === DurableFixtureRehearsalEvidenceDisposition.FailClosed) {
         issues.push("EVIDENCE_ENVELOPE_FAILED");

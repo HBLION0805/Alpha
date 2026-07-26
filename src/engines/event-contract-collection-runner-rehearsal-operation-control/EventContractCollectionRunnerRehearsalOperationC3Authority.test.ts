@@ -261,7 +261,9 @@ INSERT INTO fixture_rehearsal_transitions (
         manifestFingerprint: FP("b"),
         fingerprint: FP("c"),
         phase: CollectionRunnerRehearsalOperationPhase.Prepare,
+        expectedLifecycleVersion: 1,
         expectedInvocationOrdinal: null,
+        expectedRecoveryFingerprint: FP("9"),
       } as CollectionRunnerRehearsalOperationPhaseCommand;
       const authorization = {
         commandFingerprint: FP("c"),
@@ -292,16 +294,23 @@ INSERT INTO fixture_rehearsal_transitions (
         reconstructed.resultingLifecycleFingerprint === registry.fingerprint,
         "durable registry reconstructed",
       );
-      let rejected = false;
-      try {
-        observer.observe(manifest, command, authorization, {
+      const independentlyRebuilt = observer.observe(
+        manifest,
+        command,
+        authorization,
+        {
           ...evidence,
           authorityEvidenceFingerprint: FP("e"),
-        });
-      } catch {
-        rejected = true;
-      }
-      truth(rejected, "claimed in-memory authority substitution rejected");
+          sanitizedOutputDigest: FP("f"),
+        },
+      );
+      truth(
+        independentlyRebuilt.authorityEvidenceFingerprint ===
+          registry.fingerprint &&
+          independentlyRebuilt.sanitizedOutputDigest ===
+            reconstructed.sanitizedOutputDigest,
+        "claimed in-memory evidence is ignored during reconstruction",
+      );
       const controlRoot = join(root, "control");
       const evidenceRoot = join(root, "evidence");
       mkdirSync(controlRoot);
@@ -380,7 +389,7 @@ INSERT INTO fixture_rehearsal_transitions (
           },
         });
       truth(
-        fixedRuntime.disposition === "NON_EXECUTABLE_PENDING_INDEPENDENT_MR4",
+        fixedRuntime.disposition === "NON_EXECUTABLE_PENDING_INDEPENDENT_MR5",
         "fixed runtime remains non-executable",
       );
       fixedRuntime.close();

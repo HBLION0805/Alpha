@@ -1,3 +1,8 @@
+import { createHash } from "node:crypto";
+import { readFileSync, realpathSync } from "node:fs";
+import { join } from "node:path";
+import { execPath } from "node:process";
+
 import type {
   CollectionRunnerRehearsalOperationFinalVerificationReport,
   CollectionRunnerRehearsalOperationFinalVerificationRequest,
@@ -9,6 +14,7 @@ import {
   EventContractCollectionRunnerRehearsalOperationPhaseGate,
   type CollectionRunnerRehearsalOperationControlRepository,
   type CollectionRunnerRehearsalOperationOwnershipPort,
+  type CollectionRunnerRehearsalOperationPhaseAuthorityPort,
   type CollectionRunnerRehearsalOperationReadinessPort,
   type CollectionRunnerRehearsalOperationStopPort,
   type CollectionRunnerRehearsalOperationValidationReceiptStagingPort,
@@ -40,6 +46,108 @@ import type {
 import type {
   CollectionRunnerRehearsalOperationRegistry,
 } from "../event-contract-collection-runner-rehearsal-operation";
+import {
+  CollectionRunnerRehearsalOperationRootPurpose,
+} from "../../contracts";
+
+function canonical(value: unknown): string {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  return `{${Object.entries(value as Record<string, unknown>)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, nested]) => `${JSON.stringify(key)}:${canonical(nested)}`)
+    .join(",")}}`;
+}
+
+function sha(value: unknown): string {
+  return `sha256:${createHash("sha256")
+    .update(canonical(value), "utf8")
+    .digest("hex")}`;
+}
+
+function fileDigest(path: string): string {
+  return `sha256:${createHash("sha256")
+    .update(readFileSync(path))
+    .digest("hex")}`;
+}
+
+const REAL_PHASE_AUTHORITY_FILES = Object.freeze([
+  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalPreparationAdapter.ts",
+  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalStepAdapter.ts",
+  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalCoordinator.ts",
+  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEvidence.ts",
+  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationVerification.ts",
+  "scripts/network-disabled-bootstrap.cjs",
+  "scripts/network-disabled-python/sitecustomize.py",
+] as const);
+
+/**
+ * Rebuilds one complete phase authority fingerprint at every phase boundary.
+ * It binds all six registered roots plus the reviewed real PREPARE/STEP/
+ * VALIDATE/FREEZE/PACKAGE source files, Node, guards, mutation composition,
+ * and query-only observer.
+ */
+export class FixedDigestBoundOperationPhaseAuthority
+  implements CollectionRunnerRehearsalOperationPhaseAuthorityPort {
+  public constructor(
+    private readonly registry: CollectionRunnerRehearsalOperationRegistry,
+    private readonly mutation:
+      ClosedCollectionRunnerRehearsalOperationMutationComposition,
+    private readonly durableTruth:
+      ClosedCollectionRunnerRehearsalOperationDurableTruthComposition,
+  ) {}
+
+  public inspect(
+    manifest: import("../../contracts")
+      .CollectionRunnerRehearsalOperationManifest,
+    command: import("../../contracts")
+      .CollectionRunnerRehearsalOperationPhaseCommand,
+  ): string {
+    if (
+      command.operationId !== manifest.operationId ||
+      command.manifestFingerprint !== manifest.fingerprint
+    ) throw new Error("Phase authority command binding is invalid.");
+    const roots = manifest.proposal.rootBindings.map((binding) => {
+      const registration = this.registry.getRoot(binding.rootId);
+      if (
+        registration === null ||
+        registration.purpose !== binding.purpose ||
+        registration.fingerprint !== binding.rootFingerprint ||
+        realpathSync(registration.canonicalPath) !==
+          registration.canonicalPath
+      ) throw new Error("Registered phase root authority changed.");
+      return {
+        purpose: binding.purpose,
+        rootId: binding.rootId,
+        registrationFingerprint: registration.fingerprint,
+        filesystemIdentityFingerprint:
+          registration.filesystemIdentityFingerprint,
+        canonicalPath: registration.canonicalPath,
+      };
+    }).sort((left, right) => left.purpose.localeCompare(right.purpose));
+    const repository = roots.find(({ purpose }) =>
+      purpose === CollectionRunnerRehearsalOperationRootPurpose.AlphaRepository
+    );
+    if (repository === undefined || roots.length !== 6) {
+      throw new Error("Complete registered phase roots are unavailable.");
+    }
+    const files = REAL_PHASE_AUTHORITY_FILES.map((relativePath) => {
+      const path = realpathSync(join(repository.canonicalPath, relativePath));
+      return { relativePath, path, fingerprint: fileDigest(path) };
+    });
+    const node = realpathSync(execPath);
+    return sha({
+      policy: "FIXED_REAL_DURABLE_REHEARSAL_PHASE_AUTHORITY_V1",
+      manifestFingerprint: manifest.fingerprint,
+      commandFingerprint: command.fingerprint,
+      roots,
+      files,
+      node: { path: node, fingerprint: fileDigest(node) },
+      mutationCompositionFingerprint: this.mutation.fingerprint,
+      durableTruthCompositionFingerprint: this.durableTruth.fingerprint,
+    });
+  }
+}
 
 export const COLLECTION_RUNNER_REHEARSAL_OPERATION_RUNTIME_DISPOSITION =
   "NON_EXECUTABLE_PENDING_INDEPENDENT_MR3" as const;
@@ -65,6 +173,8 @@ export interface ClosedCollectionRunnerRehearsalOperationRuntimeDependencies {
     CollectionRunnerRehearsalOperationValidationReceiptStagingPort;
   readonly finalVerifier:
     CollectionRunnerRehearsalOperationFinalVerifierPort;
+  readonly phaseAuthority?:
+    CollectionRunnerRehearsalOperationPhaseAuthorityPort;
 }
 
 /**
@@ -98,6 +208,9 @@ export class ClosedNonExecutableCollectionRunnerRehearsalOperationRuntime {
       phase: dependencies.mutation,
       durableTruth: dependencies.durableTruth,
       validationReceipts: dependencies.validationReceipts,
+      ...(dependencies.phaseAuthority === undefined
+        ? {}
+        : { phaseAuthority: dependencies.phaseAuthority }),
     });
     this.#finalVerifier = dependencies.finalVerifier;
     Object.freeze(this);
@@ -149,7 +262,7 @@ export interface FixedClosedCollectionRunnerRehearsalOperationAuthority {
  */
 export class FixedClosedNonExecutableCollectionRunnerRehearsalOperationRuntime {
   public readonly disposition =
-    "NON_EXECUTABLE_PENDING_INDEPENDENT_MR4" as const;
+    "NON_EXECUTABLE_PENDING_INDEPENDENT_MR5" as const;
   readonly #runtime: ClosedNonExecutableCollectionRunnerRehearsalOperationRuntime;
   readonly #control:
     EventContractCollectionRunnerRehearsalOperationControlSqliteStore;
@@ -198,6 +311,11 @@ export class FixedClosedNonExecutableCollectionRunnerRehearsalOperationRuntime {
           durableTruth,
           validationReceipts: authority.validationReceipts,
           finalVerifier,
+          phaseAuthority: new FixedDigestBoundOperationPhaseAuthority(
+            authority.registry,
+            mutation,
+            durableTruth,
+          ),
         });
       this.#control = control;
       Object.freeze(this);

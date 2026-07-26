@@ -1,5 +1,24 @@
 # Alpha Changelog
 
+## 2026-07-26 - Day15-T3B15-C4 Durable Evidence and Positive Verification Correction
+
+- Reconstructed PREPARE, STEP, VALIDATE, FREEZE, and PACKAGE evidence from
+  query-only durable rehearsal, Control, validation-journal, and envelope
+  records without trusting the mutation adapter's claimed evidence.
+- Added an append-only, fsync-backed validation receipt journal so independent
+  observation can bind actual Alpha validation to the exact authorization
+  before the receipt/result pair commits atomically to Control.
+- Bound all six registered roots, Node, network guards, reviewed phase sources,
+  mutation composition, and durable-observation composition into a phase
+  authority fingerprint checked before authorization and after mutation.
+- Corrected final envelope verification to use the underlying rehearsal
+  manifest fingerprint rather than the outer Operation Manifest fingerprint.
+- Added a positive new-process verifier over the real rehearsal store, Control
+  store, published envelope, and packaged backup, plus validation-journal,
+  phase-authority drift, and package-substitution adversarial coverage.
+- Kept the runtime non-executable pending independent T3B15-MR5; no rehearsal
+  or downstream capital authority was granted.
+
 ## 2026-07-26 - Day15-T3B15-MR4 Independent C3 Readiness Review
 
 - Independently reviewed exact C3 commit

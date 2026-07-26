@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B15-C3 are complete and pushed at `43bcca8`. Independent Day15-T3B15-MR4 is complete locally and returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. MR4 confirms C3's exact Control schema handling, atomic Validate persistence, orphan detection, query-only stores, digest-bound executables/guards, and narrowed process admission, but blocks rehearsal on caller-injected phase authority, incomplete durable-evidence reconstruction, partial authority-snapshot binding, and the absence of a positive fresh-process verification path. Complete validation passes `2469/2469`. The next permitted task after Owner-approved MR4 commit/push is T3B15-C4. No registered real operation, rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+Day 8 Intelligence foundations through Day15-T3B15-MR4 are complete and pushed at `a66a111`. Day15-T3B15-C4 is complete locally and remains non-executable pending independent T3B15-MR5. C4 reconstructs phase evidence from query-only durable records, journals actual validation receipts before Control commit, binds registered roots plus executable/guard/phase-source digests into the authorization seal at every boundary, fixes rehearsal-manifest verification binding, and proves both a positive fresh-process verification path and package/journal substitution rejection. Complete validation passes `2474/2474`. No registered real operation, rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
 
 Implemented Python prototype/runtime:
 

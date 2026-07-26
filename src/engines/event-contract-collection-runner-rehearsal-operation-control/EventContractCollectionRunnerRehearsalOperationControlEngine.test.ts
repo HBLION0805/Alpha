@@ -309,12 +309,14 @@ function gate(options: {
   readonly phaseDisposition?: CollectionRunnerRehearsalOperationResultDisposition;
   readonly durableTruthMismatch?: boolean;
   readonly stopInitially?: boolean;
+  readonly phaseAuthorityAtCall?: (call: number) => string;
 } = {}) {
   const repository = options.repository ?? new InMemoryControlRepository();
   const verifier = new FakeVerifier();
   let stopped = options.stopInitially ?? false;
   let phaseCalls = 0;
   let readinessCalls = 0;
+  let phaseAuthorityCalls = 0;
   let released = 0;
   let ambiguous = 0;
   const ownership: CollectionRunnerRehearsalOperationOwnershipHandle = {
@@ -375,6 +377,12 @@ function gate(options: {
         throw new Error("No validation receipt is staged.");
       },
     },
+    phaseAuthority: {
+      inspect: () => {
+        phaseAuthorityCalls += 1;
+        return options.phaseAuthorityAtCall?.(phaseAuthorityCalls) ?? FP("d");
+      },
+    },
   });
   return {
     service,
@@ -382,6 +390,7 @@ function gate(options: {
     verifier,
     counters: {
       phaseCalls: () => phaseCalls,
+      phaseAuthorityCalls: () => phaseAuthorityCalls,
       released: () => released,
       ambiguous: () => ambiguous,
     },
@@ -901,6 +910,47 @@ const tests: readonly [string, () => void][] = [
       "authorization count",
     );
     equal(fixture.counters.phaseCalls(), 0, "phase calls");
+  }],
+  ["phase implementation drift before authorization fails closed", () => {
+    const fixture = gate({
+      phaseAuthorityAtCall: (call) => call === 2 ? FP("e") : FP("d"),
+    });
+    controlError(
+      () => fixture.service.executeOne(
+        command(), "correct owner secret", INVOKED,
+      ),
+      CollectionRunnerRehearsalOperationControlErrorCode.PreflightRejected,
+    );
+    equal(
+      fixture.repository.readSnapshot(manifest.operationId).authorizationCount,
+      0,
+      "authorization count",
+    );
+    equal(fixture.counters.phaseCalls(), 0, "phase calls");
+    equal(fixture.counters.phaseAuthorityCalls(), 2, "authority inspections");
+  }],
+  ["phase implementation drift after mutation preserves ambiguity", () => {
+    const fixture = gate({
+      phaseAuthorityAtCall: (call) => call === 3 ? FP("e") : FP("d"),
+    });
+    controlError(
+      () => fixture.service.executeOne(
+        command(), "correct owner secret", INVOKED,
+      ),
+      CollectionRunnerRehearsalOperationControlErrorCode.PhaseFailed,
+    );
+    equal(
+      fixture.repository.readSnapshot(manifest.operationId).authorizationCount,
+      1,
+      "authorization count",
+    );
+    equal(
+      fixture.repository.readSnapshot(manifest.operationId).resultCount,
+      0,
+      "result count",
+    );
+    equal(fixture.counters.phaseCalls(), 1, "phase calls");
+    equal(fixture.counters.ambiguous(), 1, "ambiguity preserved");
   }],
   ["independent durable truth mismatch preserves ambiguity", () => {
     const fixture = gate({ durableTruthMismatch: true });

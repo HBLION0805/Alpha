@@ -1,5 +1,23 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Day15-T3B15-C4 Durable Authority Correction
+
+- Decision: claimed phase evidence is non-authoritative; the Control result
+  must be reconstructed from query-only durable rehearsal, validation-journal,
+  or published-envelope records appropriate to the phase.
+- Decision: bind the six registered roots and reviewed phase, executable, and
+  guard file digests into one phase-authority fingerprint and compare it at
+  every authorization boundary.
+- Decision: journal the actual Alpha validation receipt before observation;
+  an orphan journal entry cannot authorize or substitute a Control result.
+- Decision: final verification binds the Operation Manifest to the underlying
+  rehearsal manifest carried by the evidence envelope.
+- Decision: require a positive verifier run in a new OS process as well as
+  negative substitution evidence.
+- Consequence: C4 remains non-executable pending independent T3B15-MR5 and
+  grants no rehearsal, network, provider, recommendation, execution, or
+  capital authority.
+
 ## 2026-07-26 - Day15-T3B15-MR3 Corrected Operation Readiness Review
 
 - Decision: return `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` for exact C2

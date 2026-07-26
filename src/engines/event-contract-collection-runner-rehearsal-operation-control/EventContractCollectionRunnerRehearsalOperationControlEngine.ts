@@ -144,6 +144,13 @@ export interface CollectionRunnerRehearsalOperationDurableTruthPort {
   ): CollectionRunnerRehearsalOperationPhaseEvidence;
 }
 
+export interface CollectionRunnerRehearsalOperationPhaseAuthorityPort {
+  inspect(
+    manifest: CollectionRunnerRehearsalOperationManifest,
+    command: CollectionRunnerRehearsalOperationPhaseCommand,
+  ): string;
+}
+
 export interface CollectionRunnerRehearsalOperationValidationReceiptStagingPort {
   take(
     fingerprint: string,
@@ -161,6 +168,8 @@ export interface CollectionRunnerRehearsalOperationPhaseGateDependencies {
   readonly durableTruth: CollectionRunnerRehearsalOperationDurableTruthPort;
   readonly validationReceipts:
     CollectionRunnerRehearsalOperationValidationReceiptStagingPort;
+  readonly phaseAuthority?:
+    CollectionRunnerRehearsalOperationPhaseAuthorityPort;
 }
 
 function fail(
@@ -195,11 +204,13 @@ function authoritySeal(
   command: CollectionRunnerRehearsalOperationPhaseCommand,
   observation: CollectionRunnerRehearsalOperationReadinessObservation,
   validationAuthorityFingerprint: string,
+  phaseAuthorityFingerprint: string,
 ): string {
   return sha({
     commandFingerprint: command.fingerprint,
     manifestFingerprint: manifest.fingerprint,
     validationAuthorityFingerprint,
+    phaseAuthorityFingerprint,
     alphaCommit: observation.alphaCommit,
     trackedTreeClean: observation.trackedTreeClean,
     packageFingerprint: observation.packageFingerprint,
@@ -804,6 +815,12 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
         command,
         postOwnershipObservation,
         authority.fingerprint,
+        this.dependencies.phaseAuthority?.inspect(manifest, command) ??
+          sha({
+            policy: "LEGACY_TEST_PHASE_AUTHORITY",
+            manifestFingerprint: manifest.fingerprint,
+            commandFingerprint: command.fingerprint,
+          }),
       );
       const sealedObservation = this.dependencies.readiness.inspect(
         manifest,
@@ -830,6 +847,12 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
           command,
           sealedObservation,
           authority.fingerprint,
+          this.dependencies.phaseAuthority?.inspect(manifest, command) ??
+            sha({
+              policy: "LEGACY_TEST_PHASE_AUTHORITY",
+              manifestFingerprint: manifest.fingerprint,
+              commandFingerprint: command.fingerprint,
+            }),
         ) !== sealedAuthorityFingerprint
       ) {
         fail(
@@ -892,6 +915,12 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
         command,
         afterPhaseObservation,
         authority.fingerprint,
+        this.dependencies.phaseAuthority?.inspect(manifest, command) ??
+          sha({
+            policy: "LEGACY_TEST_PHASE_AUTHORITY",
+            manifestFingerprint: manifest.fingerprint,
+            commandFingerprint: command.fingerprint,
+          }),
       );
       if (afterPhaseSeal !== sealedAuthorityFingerprint) {
         fail(

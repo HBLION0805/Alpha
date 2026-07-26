@@ -21,6 +21,7 @@
 - T3B15-C3: committed and pushed as `43bcca8`
 - T3B15-MR4: complete locally; returns
   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
+- T3B15-C4: complete locally; non-executable pending independent T3B15-MR5
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
 - T5/MR1 validation baseline: complete Alpha bundle passes `2447/2447`
@@ -611,12 +612,17 @@ Approval of one item grants no authority for the next:
    exact C3 commit `43bcca8`; confirms material C3 closures but returns
    `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
 13. **T3B15-C4 — Real Adapter Composition, Fully Reconstructed Durable
-   Evidence, and Positive Fresh-process Verification Correction:** required
-   before any further rehearsal-readiness decision.
-14. **Separate Owner authorization for one exact rehearsal:** only if a later
+   Evidence, and Positive Fresh-process Verification Correction:** complete
+   locally; durable phase evidence reconstruction, validation journaling,
+   phase-wide source/root/executable authority binding, corrected underlying
+   rehearsal-manifest verification, and positive/negative fresh-process
+   verification evidence are implemented.
+14. **T3B15-MR5 — Independent C4 Readiness Review:** required before any
+   rehearsal-readiness decision.
+15. **Separate Owner authorization for one exact rehearsal:** only if a later
    independent review explicitly returns
    `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
-15. **Post-rehearsal independent review:** evidence review before any further
+16. **Post-rehearsal independent review:** evidence review before any further
    rehearsal or expansion.
 
 There is no standing, repeatable, continuous, or implied run authority.
@@ -656,10 +662,7 @@ T3B15-T1 does not authorize:
 
 ## Recommended next task
 
-After Owner review and explicit approval, commit and push T3B15-MR4, then begin
-`Day15-T3B15-C4`. C4 must internally construct the real five-phase adapters,
-reconstruct complete phase evidence from durable records, bind full authority
-at every phase boundary, and prove a positive fresh-process verification path.
-The runtime remains non-executable and no rehearsal may run unless a later
-independent T3B15-MR5 explicitly returns
+After Owner review and explicit approval, commit and push T3B15-C4, then begin
+the independent `Day15-T3B15-MR5` readiness review. The runtime remains
+non-executable and no rehearsal may run unless T3B15-MR5 explicitly returns
 `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
