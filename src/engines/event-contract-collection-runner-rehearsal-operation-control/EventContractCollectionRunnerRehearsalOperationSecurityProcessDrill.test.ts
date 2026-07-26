@@ -119,6 +119,7 @@ function command(variant = "exact"): CollectionRunnerRehearsalOperationPhaseComm
 
 function observation(
   root: string,
+  changes: Partial<CollectionRunnerRehearsalOperationReadinessObservation> = {},
 ): CollectionRunnerRehearsalOperationReadinessObservation {
   return {
     operationId: OPERATION,
@@ -146,6 +147,7 @@ function observation(
     durableStopTripped: existsSync(join(root, STOP)),
     blockerCodes: [],
     incompleteCodes: [],
+    ...changes,
   };
 }
 
@@ -209,6 +211,7 @@ function childMain(mode: string, root: string, resultPath: string, variant: stri
       root, { createIfMissing: true },
     );
   let stopChecks = 0;
+  let readinessChecks = 0;
   const repository: CollectionRunnerRehearsalOperationControlRepository =
     mode === "crash-after-result"
       ? {
@@ -226,12 +229,20 @@ function childMain(mode: string, root: string, resultPath: string, variant: stri
   const gate = new EventContractCollectionRunnerRehearsalOperationPhaseGate({
     registry: registry(),
     repository,
-    readiness: { inspect: () => observation(root) },
+    readiness: {
+      inspect: () => {
+        readinessChecks += 1;
+        return observation(root, mode === "post-ownership-drift" &&
+          readinessChecks > 1
+          ? { trackedTreeClean: false }
+          : {});
+      },
+    },
     verifier: new Verifier(),
     stop: {
       assertClear: () => {
         stopChecks += 1;
-        if (mode === "stop-after-authorization" && stopChecks === 3) {
+        if (mode === "stop-after-authorization" && stopChecks === 4) {
           writeFileSync(join(root, STOP), "STOP\n", { flag: "wx" });
         }
         if (existsSync(join(root, STOP))) throw new Error("Stop tripped.");
@@ -279,6 +290,14 @@ function childMain(mode: string, root: string, resultPath: string, variant: stri
           completedAtUtc: "2026-07-26T14:01:01.000Z",
         };
       },
+    },
+    durableTruth: {
+      observe: (_manifest, _command, _authorization, claimedEvidence) => ({
+        ...structuredClone(claimedEvidence),
+        resultingLifecycleFingerprint: mode === "durable-truth-mismatch"
+          ? FP("f")
+          : claimedEvidence.resultingLifecycleFingerprint,
+      }),
     },
   });
   try {
@@ -398,10 +417,15 @@ const forbidden = Object.keys(process.env).filter((key) =>
 let networkDenied = false;
 try { require("node:net").connect({host:"127.0.0.1",port:9}); }
 catch { networkDenied = true; }
+let subprocessDenied = false;
+try { require("node:child_process").spawnSync("curl", ["https://example.com"]); }
+catch { subprocessDenied = true; }
 const ok = process.env.ALPHA_FIXED_VALIDATION_PROCESS === "1" &&
   process.env.ALPHA_NETWORK_DISABLED === "1" &&
   process.env.ALPHA_NETWORK_GUARD_ACTIVE === "1" &&
-  process.env.NO_PROXY === "*" && forbidden.length === 0 && networkDenied;
+  process.env.ALPHA_SUBPROCESS_GUARD_ACTIVE === "1" &&
+  process.env.NO_PROXY === "*" && forbidden.length === 0 &&
+  networkDenied && subprocessDenied;
 console.log(JSON.stringify({overall:{testsExecuted:2438,passed:2438,failed:0},ok}));
 process.exit(ok ? 0 : 9);
 `], {
@@ -538,6 +562,24 @@ async function parentMain(): Promise<void> {
       equal(state.artifactExists, false, "Stop-after artifact");
       equal(state.stopMarkerExists, true, "Stop-after marker");
       pass("Stop racing authorization prevents phase artifact and preserves ambiguity");
+    }
+    {
+      const value = root("post-ownership-drift");
+      invoke(value, "post-ownership-drift", 1, false);
+      const state = inspect(value, 2);
+      equal(state.authorizationCount, 0, "drift authorization");
+      equal(state.artifactExists, false, "drift artifact");
+      pass("fresh post-ownership drift check rejects before authorization");
+    }
+    {
+      const value = root("durable-truth-mismatch");
+      invoke(value, "durable-truth-mismatch", 1, false);
+      const state = inspect(value, 2);
+      equal(state.authorizationCount, 1, "truth mismatch authorization");
+      equal(state.resultCount, 0, "truth mismatch result");
+      equal(state.artifactExists, true, "truth mismatch artifact");
+      equal(state.ownershipPreserved, true, "truth mismatch ownership");
+      pass("independent durable truth mismatch remains ambiguous");
     }
     {
       const value = root("clean");

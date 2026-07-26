@@ -46,6 +46,10 @@ import {
   CollectionRunnerRehearsalOperationFixedRootResolver,
   FixedLocalCollectionRunnerRehearsalOperationAlphaInspection,
 } from "./EventContractCollectionRunnerRehearsalOperationPreflight";
+import {
+  ClosedCollectionRunnerRehearsalOperationPhaseComposition,
+  FixedCollectionRunnerRehearsalOperationCapabilityInspection,
+} from "./EventContractCollectionRunnerRehearsalOperationComposition";
 
 const FP = (character: string) => `sha256:${character.repeat(64)}`;
 const COMMIT = "a".repeat(40);
@@ -254,13 +258,20 @@ function registry(): CollectionRunnerRehearsalOperationRegistry {
 function gate(options: {
   readonly repository?: CollectionRunnerRehearsalOperationControlRepository;
   readonly readiness?: CollectionRunnerRehearsalOperationReadinessObservation;
+  readonly readinessAtCall?: (
+    call: number,
+  ) => CollectionRunnerRehearsalOperationReadinessObservation;
   readonly phaseFailure?: boolean;
+  readonly phaseHook?: () => void;
+  readonly phaseDisposition?: CollectionRunnerRehearsalOperationResultDisposition;
+  readonly durableTruthMismatch?: boolean;
   readonly stopInitially?: boolean;
 } = {}) {
   const repository = options.repository ?? new InMemoryControlRepository();
   const verifier = new FakeVerifier();
   let stopped = options.stopInitially ?? false;
   let phaseCalls = 0;
+  let readinessCalls = 0;
   let released = 0;
   let ambiguous = 0;
   const ownership: CollectionRunnerRehearsalOperationOwnershipHandle = {
@@ -271,9 +282,12 @@ function gate(options: {
     registry: registry(),
     repository,
     readiness: {
-      inspect: () => options.readiness ?? observation({
-        durableStopTripped: stopped,
-      }),
+      inspect: () => {
+        readinessCalls += 1;
+        return options.readinessAtCall?.(readinessCalls) ??
+          options.readiness ??
+          observation({ durableStopTripped: stopped });
+      },
     },
     verifier,
     stop: {
@@ -290,8 +304,10 @@ function gate(options: {
       invokeOne: () => {
         phaseCalls += 1;
         if (options.phaseFailure) throw new Error("phase crashed");
+        options.phaseHook?.();
         return {
-          disposition: CollectionRunnerRehearsalOperationResultDisposition.Completed,
+          disposition: options.phaseDisposition ??
+            CollectionRunnerRehearsalOperationResultDisposition.Completed,
           priorLifecycleVersion: 1,
           resultingLifecycleVersion: 3,
           priorLifecycleFingerprint: FP("9"),
@@ -302,6 +318,14 @@ function gate(options: {
           completedAtUtc: "2026-07-25T20:01:01.000Z",
         };
       },
+    },
+    durableTruth: {
+      observe: (_manifest, _command, _authorization, claimedEvidence) => ({
+        ...structuredClone(claimedEvidence),
+        resultingLifecycleFingerprint: options.durableTruthMismatch
+          ? FP("f")
+          : claimedEvidence.resultingLifecycleFingerprint,
+      }),
     },
   });
   return {
@@ -380,6 +404,55 @@ function rootResolver(changedIdentity = false) {
 }
 
 const tests: readonly [string, () => void][] = [
+  ["closed phase composition rejects missing or extra authority", () => {
+    let rejected = false;
+    try {
+      new ClosedCollectionRunnerRehearsalOperationPhaseComposition(
+        {} as never,
+      );
+    } catch {
+      rejected = true;
+    }
+    truth(rejected, "incomplete composition rejected");
+  }],
+  ["closed phase composition attests only composed phases", () => {
+    const evidence = {
+      disposition: CollectionRunnerRehearsalOperationResultDisposition.Completed,
+      priorLifecycleVersion: 1,
+      resultingLifecycleVersion: 3,
+      priorLifecycleFingerprint: FP("9"),
+      resultingLifecycleFingerprint: FP("a"),
+      authorityEvidenceFingerprint: FP("b"),
+      sanitizedOutputDigest: FP("c"),
+      startedAtUtc: INVOKED,
+      completedAtUtc: "2026-07-25T20:01:01.000Z",
+    };
+    const adapter = {
+      invokeOne: () => evidence,
+      observe: () => evidence,
+    };
+    const composition =
+      new ClosedCollectionRunnerRehearsalOperationPhaseComposition({
+        [CollectionRunnerRehearsalOperationPhase.Prepare]: adapter,
+        [CollectionRunnerRehearsalOperationPhase.Step]: adapter,
+        [CollectionRunnerRehearsalOperationPhase.Validate]: adapter,
+        [CollectionRunnerRehearsalOperationPhase.Freeze]: adapter,
+        [CollectionRunnerRehearsalOperationPhase.Package]: adapter,
+      });
+    const capability =
+      new FixedCollectionRunnerRehearsalOperationCapabilityInspection(
+        composition,
+      ).inspect(
+        manifest,
+        createCollectionRunnerRehearsalOperationPhaseCommand(command()),
+        {} as never,
+      );
+    truth(capability.networkCapabilityAbsent, "network capability absent");
+    truth(
+      capability.credentialCapabilityAbsent,
+      "credential capability absent",
+    );
+  }],
   ["phase command is immutable and deterministic", () => {
     const value = createCollectionRunnerRehearsalOperationPhaseCommand(command());
     truth(Object.isFrozen(value), "command frozen");
@@ -587,6 +660,38 @@ const tests: readonly [string, () => void][] = [
     );
     equal(fixture.verifier.calls, 0, "verifier calls");
   }],
+  ["post-ownership authoritative drift fails before authorization", () => {
+    const fixture = gate({
+      readinessAtCall: (call) => observation({
+        trackedTreeClean: call < 2,
+      }),
+    });
+    controlError(
+      () => fixture.service.executeOne(
+        command(), "correct owner secret", INVOKED,
+      ),
+      CollectionRunnerRehearsalOperationControlErrorCode.PreflightRejected,
+    );
+    equal(
+      fixture.repository.readSnapshot(manifest.operationId).authorizationCount,
+      0,
+      "authorization count",
+    );
+    equal(fixture.counters.phaseCalls(), 0, "phase calls");
+  }],
+  ["independent durable truth mismatch preserves ambiguity", () => {
+    const fixture = gate({ durableTruthMismatch: true });
+    controlError(
+      () => fixture.service.executeOne(
+        command(), "correct owner secret", INVOKED,
+      ),
+      CollectionRunnerRehearsalOperationControlErrorCode.PhaseFailed,
+    );
+    const snapshot = fixture.repository.readSnapshot(manifest.operationId);
+    equal(snapshot.authorizationCount, 1, "authorization count");
+    equal(snapshot.resultCount, 0, "result count");
+    equal(fixture.counters.ambiguous(), 1, "ambiguity preserved");
+  }],
   ["phase crash preserves authorization ambiguity", () => {
     const fixture = gate({ phaseFailure: true });
     controlError(
@@ -639,6 +744,26 @@ const tests: readonly [string, () => void][] = [
     );
     equal(first.fingerprint, second.fingerprint, "Stop replay");
   }],
+  ["non-completed result cannot advance the normal phase plan", () => {
+    const fixture = gate({
+      phaseDisposition:
+        CollectionRunnerRehearsalOperationResultDisposition.Incomplete,
+    });
+    fixture.service.executeOne(command(), "correct owner secret", INVOKED);
+    const next = command({
+      commandId: "command:step:1",
+      phase: CollectionRunnerRehearsalOperationPhase.Step,
+      expectedInvocationOrdinal: 1,
+      expectedLifecycleVersion: 3,
+      processSessionId: "session:step",
+      challengeNonce: "nonce-operation-step-0001",
+    });
+    const report = fixture.service.preflight(next);
+    truth(
+      report.blockerCodes.includes("PRIOR_OPERATION_RESULT_NOT_COMPLETED"),
+      "non-completed blocker",
+    );
+  }],
   ["SQLite store uses one fixed filename", () => {
     const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-"));
     try {
@@ -665,14 +790,64 @@ const tests: readonly [string, () => void][] = [
       fixture.service.executeOne(command(), "correct owner secret", INVOKED);
       store.close();
       const reopened =
-        EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
-          root,
-          { createIfMissing: false },
-        );
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore
+          .openReadOnly(root);
       const snapshot = reopened.readSnapshot(manifest.operationId);
       equal(snapshot.authorizationCount, 1, "authorization count");
       equal(snapshot.resultCount, 1, "result count");
+      equal(
+        reopened.readHistory(manifest.operationId).results.length,
+        1,
+        "read-only history",
+      );
       reopened.close();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }],
+  ["SQLite result commit fails atomically when Stop races the phase", () => {
+    const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-"));
+    try {
+      const store =
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
+          root,
+          { createIfMissing: true },
+        );
+      let fixture: ReturnType<typeof gate>;
+      fixture = gate({
+        repository: store,
+        phaseHook: () => {
+          fixture.service.requestStop(
+            {
+              schemaVersion:
+                EVENT_CONTRACT_COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SCHEMA_VERSION,
+              commandId: "command:stop:during-phase",
+              operationId: manifest.operationId,
+              manifestFingerprint: manifest.fingerprint,
+              alphaCommit: COMMIT,
+              rootRegistryFingerprint: FP("2"),
+              mode: CollectionRunnerRehearsalOperationStopMode.Emergency,
+              reasonCode: "STOP_DURING_PHASE",
+              createdAtUtc: CREATED,
+              expiresAtUtc: EXPIRES,
+              challengeNonce: "nonce-stop-during-phase-0001",
+            },
+            "correct owner secret",
+            INVOKED,
+          );
+        },
+      });
+      controlError(
+        () => fixture.service.executeOne(
+          command(), "correct owner secret", INVOKED,
+        ),
+        CollectionRunnerRehearsalOperationControlErrorCode.PhaseFailed,
+      );
+      const snapshot = store.readSnapshot(manifest.operationId);
+      equal(snapshot.authorizationCount, 1, "authorization count");
+      equal(snapshot.resultCount, 0, "result count");
+      truth(snapshot.stopReceipt !== null, "Stop receipt");
+      store.close();
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
@@ -690,6 +865,39 @@ const tests: readonly [string, () => void][] = [
       controlError(
         () => fixture.service.executeOne(command(), "correct owner secret", INVOKED),
         CollectionRunnerRehearsalOperationControlErrorCode.PreflightRejected,
+      );
+      store.close();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }],
+  ["SQLite store rejects authorization consumption tampering", () => {
+    const source = gate();
+    source.service.executeOne(command(), "correct owner secret", INVOKED);
+    const authorization =
+      source.repository.readSnapshot(manifest.operationId).latestAuthorization!;
+    const root = mkdtempSync(join(tmpdir(), "alpha-operation-control-"));
+    try {
+      const store =
+        EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
+          root,
+          { createIfMissing: true },
+        );
+      let rejected = false;
+      try {
+        store.authorizeAndConsume({
+          ...authorization,
+          consumed: false,
+        } as unknown as CollectionRunnerRehearsalOperationAuthorizationReceipt);
+      } catch (error) {
+        rejected =
+          error instanceof CollectionRunnerRehearsalOperationControlStoreError;
+      }
+      truth(rejected, "consumption tamper rejected");
+      equal(
+        store.readSnapshot(manifest.operationId).authorizationCount,
+        0,
+        "tampered authorization rollback",
       );
       store.close();
     } finally {

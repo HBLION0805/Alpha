@@ -1,5 +1,25 @@
 # Alpha Changelog
 
+## 2026-07-26 - Day15-T3B15-C1 Operation Authority and Verification Correction
+
+- Added post-ownership authoritative revalidation and an independent
+  durable-truth observation boundary before operation result creation.
+- Made durable Stop precede result commit atomically and blocked all
+  non-completed results from advancing the normal phase plan.
+- Upgraded the fixture-only Control store to schema `1.1` with append-only
+  validation receipts, complete authorization/result/Stop history, and a
+  query-only open mode for final verification.
+- Replaced injected in-memory validation receipt trust with full fingerprint,
+  commit, package, suite, policy, total, environment, and Control-history
+  reconstruction.
+- Fixed Node/npm executable identity, included untracked files in repository
+  cleanliness, added an exact closed phase composition, and extended Node and
+  Python guards to reject unapproved subprocess escape.
+- Focused tests pass `33/33`, `4/4`, and `11/11`; complete Alpha validation
+  passes `2456/2456`.
+- No real manifest, rehearsal, network request, provider, recommendation,
+  order, execution, or capital action was added or performed.
+
 ## 2026-07-26 - Day15-T3B15-MR1 Independent Readiness Review
 
 - Independently reviewed T3B15-T1 through T3B15-T5 at

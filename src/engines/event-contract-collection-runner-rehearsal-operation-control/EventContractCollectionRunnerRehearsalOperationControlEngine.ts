@@ -130,6 +130,15 @@ export interface CollectionRunnerRehearsalOperationPhasePort {
   ): CollectionRunnerRehearsalOperationPhaseEvidence;
 }
 
+export interface CollectionRunnerRehearsalOperationDurableTruthPort {
+  observe(
+    manifest: CollectionRunnerRehearsalOperationManifest,
+    command: CollectionRunnerRehearsalOperationPhaseCommand,
+    authorization: CollectionRunnerRehearsalOperationAuthorizationReceipt,
+    claimedEvidence: CollectionRunnerRehearsalOperationPhaseEvidence,
+  ): CollectionRunnerRehearsalOperationPhaseEvidence;
+}
+
 export interface CollectionRunnerRehearsalOperationPhaseGateDependencies {
   readonly registry: CollectionRunnerRehearsalOperationRegistry;
   readonly repository: CollectionRunnerRehearsalOperationControlRepository;
@@ -138,6 +147,7 @@ export interface CollectionRunnerRehearsalOperationPhaseGateDependencies {
   readonly stop: CollectionRunnerRehearsalOperationStopPort;
   readonly ownership: CollectionRunnerRehearsalOperationOwnershipPort;
   readonly phase: CollectionRunnerRehearsalOperationPhasePort;
+  readonly durableTruth: CollectionRunnerRehearsalOperationDurableTruthPort;
 }
 
 function fail(
@@ -412,6 +422,13 @@ export function createCollectionRunnerRehearsalOperationPreflightReport(
   if (control.authorizationCount !== control.resultCount) {
     blockers.push("OPERATION_AUTHORIZATION_UNRESOLVED");
   }
+  if (
+    control.latestResult !== null &&
+    control.latestResult.disposition !==
+      CollectionRunnerRehearsalOperationResultDisposition.Completed
+  ) {
+    blockers.push("PRIOR_OPERATION_RESULT_NOT_COMPLETED");
+  }
   if (requestedPlanOrdinal !== control.resultCount + 1) {
     blockers.push("OPERATION_PHASE_ORDER_MISMATCH");
   }
@@ -465,10 +482,12 @@ export function createCollectionRunnerRehearsalOperationPreflightReport(
 function authorizationReceipt(
   input: CollectionRunnerRehearsalOperationAuthorizationReceiptInput,
 ): CollectionRunnerRehearsalOperationAuthorizationReceipt {
-  const body = structuredClone(input);
+  const body = {
+    ...structuredClone(input),
+    consumed: true as const,
+  };
   return freeze({
     ...body,
-    consumed: true as const,
     deterministic: true as const,
     fingerprint: sha(body),
   });
@@ -551,6 +570,13 @@ export function createCollectionRunnerRehearsalOperationStatusReport(
   if (observation.unresolvedClaim) blockers.push("UNRESOLVED_CLAIM");
   if (control.authorizationCount !== control.resultCount) {
     blockers.push("OPERATION_AUTHORIZATION_UNRESOLVED");
+  }
+  if (
+    control.latestResult !== null &&
+    control.latestResult.disposition !==
+      CollectionRunnerRehearsalOperationResultDisposition.Completed
+  ) {
+    blockers.push("PRIOR_OPERATION_RESULT_NOT_COMPLETED");
   }
   const body = {
     operationId: manifest.operationId,
@@ -691,6 +717,41 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
     let authorizationCommitted = false;
     try {
       this.dependencies.stop.assertClear(command.operationId);
+      const authority = this.dependencies.registry.getValidationAuthority(
+        manifest.proposal.validationAuthorityFingerprint,
+      );
+      if (authority === null) {
+        fail(
+          CollectionRunnerRehearsalOperationControlErrorCode.ManifestMismatch,
+          "Registered validation authority is unavailable after ownership.",
+        );
+      }
+      const postOwnershipObservation =
+        this.dependencies.readiness.inspect(manifest, command);
+      const postOwnershipReport =
+        createCollectionRunnerRehearsalOperationPreflightReport(
+          manifest,
+          command,
+          {
+            ...postOwnershipObservation,
+            ownershipAvailable: true,
+            blockerCodes: postOwnershipObservation.blockerCodes.filter(
+              (code) => code !== "OWNERSHIP_UNAVAILABLE",
+            ),
+          },
+          authority,
+          this.dependencies.repository.readSnapshot(command.operationId),
+        );
+      if (
+        postOwnershipReport.disposition !==
+        CollectionRunnerRehearsalOperationPreflightDisposition.Eligible
+      ) {
+        fail(
+          CollectionRunnerRehearsalOperationControlErrorCode.PreflightRejected,
+          "Authoritative state changed after ownership acquisition.",
+        );
+      }
+      this.dependencies.stop.assertClear(command.operationId);
       const ordinal = phasePlanOrdinal(manifest, command);
       const authorization = this.dependencies.repository.authorizeAndConsume(
         authorizationReceipt({
@@ -716,12 +777,25 @@ export class EventContractCollectionRunnerRehearsalOperationPhaseGate {
       );
       authorizationCommitted = true;
       this.dependencies.stop.assertClear(command.operationId);
-      const evidence = this.dependencies.phase.invokeOne(
+      const claimedEvidence = this.dependencies.phase.invokeOne(
         manifest,
         command,
         authorization,
       );
+      validatePhaseEvidence(claimedEvidence, command);
+      const evidence = this.dependencies.durableTruth.observe(
+        manifest,
+        command,
+        authorization,
+        claimedEvidence,
+      );
       validatePhaseEvidence(evidence, command);
+      if (canonical(evidence) !== canonical(claimedEvidence)) {
+        fail(
+          CollectionRunnerRehearsalOperationControlErrorCode.PhaseFailed,
+          "Independent durable truth does not match phase evidence.",
+        );
+      }
       const result = this.dependencies.repository.appendResult(
         resultReceipt({
           resultId: `operation-result:${authorization.fingerprint.slice(7, 39)}`,

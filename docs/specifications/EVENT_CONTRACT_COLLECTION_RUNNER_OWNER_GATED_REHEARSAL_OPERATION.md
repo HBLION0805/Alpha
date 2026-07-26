@@ -10,11 +10,13 @@
 - T3B15-T3: committed and pushed as `21d263f`
 - T3B15-T4: committed and pushed as `b682921`
 - T3B15-T5: committed and pushed as `483d4e3`
-- T3B15-MR1: independent review complete locally; returns
+- T3B15-MR1: committed and pushed as `217d0ba`; returns
   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
+- T3B15-C1: correction complete locally and pending Owner review
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
-- Validation: complete Alpha bundle passes `2447/2447`
+- T5/MR1 validation baseline: complete Alpha bundle passes `2447/2447`
+- C1 validation: complete Alpha bundle passes `2456/2456`
 
 This design follows the T3B14-MR4 decision:
 
@@ -569,9 +571,17 @@ Approval of one item grants no authority for the next:
    of implementation, complete validation, threat model, and process matrix
    returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`; T3B15-C1 correction
    and a new independent MR2 are required.
-7. **Separate Owner authorization for one exact rehearsal:** only if MR1
+7. **T3B15-C1 — Operation Authority, Verification, Isolation, and Process
+   Evidence Correction:** post-ownership revalidation, atomic Stop/result
+   precedence, independent durable observation, immutable validation receipts,
+   complete Control-history verification, fixed executable identity,
+   untracked-file rejection, closed composition, authorization integrity,
+   non-completed-result blocking, and subprocess isolation.
+8. **T3B15-MR2 — Independent Corrected Operation Readiness Review:** required
+   after C1 is committed and pushed.
+9. **Separate Owner authorization for one exact rehearsal:** only if MR2
    explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
-8. **Post-rehearsal independent review:** evidence review before any further
+10. **Post-rehearsal independent review:** evidence review before any further
    rehearsal or expansion.
 
 There is no standing, repeatable, continuous, or implied run authority.

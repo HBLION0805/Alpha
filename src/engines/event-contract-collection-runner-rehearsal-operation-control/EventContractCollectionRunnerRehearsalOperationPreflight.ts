@@ -80,7 +80,7 @@ export class FixedLocalCollectionRunnerRehearsalOperationAlphaInspection
     const commit = spawnSync("git", ["rev-parse", "HEAD"], options);
     const tracked = spawnSync(
       "git",
-      ["status", "--porcelain", "--untracked-files=no"],
+      ["status", "--porcelain", "--untracked-files=all"],
       options,
     );
     if (
@@ -147,6 +147,17 @@ export interface CollectionRunnerRehearsalOperationStopInspectionPort {
   inspect(operationId: string): {
     readonly processStopTripped: boolean;
     readonly durableStopTripped: boolean;
+  };
+}
+
+export interface CollectionRunnerRehearsalOperationCapabilityInspectionPort {
+  inspect(
+    manifest: CollectionRunnerRehearsalOperationManifest,
+    command: CollectionRunnerRehearsalOperationPhaseCommand,
+    roots: CollectionRunnerRehearsalOperationResolvedRoots,
+  ): {
+    readonly networkCapabilityAbsent: boolean;
+    readonly credentialCapabilityAbsent: boolean;
   };
 }
 
@@ -262,6 +273,8 @@ export class LocalCollectionRunnerRehearsalOperationReadiness
       CollectionRunnerRehearsalOperationStoreInspectionPort,
     private readonly stop:
       CollectionRunnerRehearsalOperationStopInspectionPort,
+    private readonly capabilities:
+      CollectionRunnerRehearsalOperationCapabilityInspectionPort,
     private readonly now: () => string,
   ) {}
 
@@ -287,8 +300,8 @@ export class LocalCollectionRunnerRehearsalOperationReadiness
         rootRegistryFingerprint: command.rootRegistryFingerprint,
         rootsVerified: false,
         fixtureBindingsVerified: false,
-        networkCapabilityAbsent: true,
-        credentialCapabilityAbsent: true,
+        networkCapabilityAbsent: false,
+        credentialCapabilityAbsent: false,
         approvalValid: false,
         storeState: "INVALID",
         lifecycleState: null,
@@ -306,6 +319,7 @@ export class LocalCollectionRunnerRehearsalOperationReadiness
     const alpha = this.alpha.inspect(resolved.alphaRepositoryRoot);
     const store = this.store.inspect(manifest, command, resolved);
     const stop = this.stop.inspect(manifest.operationId);
+    const capabilities = this.capabilities.inspect(manifest, command, resolved);
     if (Date.parse(observedAtUtc) >= Date.parse(manifest.ownerApproval.expiresAtUtc)) {
       blockers.push("APPROVAL_EXPIRED");
     }
@@ -321,8 +335,8 @@ export class LocalCollectionRunnerRehearsalOperationReadiness
       rootRegistryFingerprint: resolved.rootRegistryFingerprint,
       rootsVerified: true,
       fixtureBindingsVerified: store.fixtureBindingsVerified,
-      networkCapabilityAbsent: true,
-      credentialCapabilityAbsent: true,
+      networkCapabilityAbsent: capabilities.networkCapabilityAbsent,
+      credentialCapabilityAbsent: capabilities.credentialCapabilityAbsent,
       approvalValid: blockers.length === 0,
       storeState: store.storeState,
       lifecycleState: store.lifecycleState,

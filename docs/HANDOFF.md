@@ -4,11 +4,11 @@ Date:
 2026-07-26
 
 Project Stage:
-Day15-T3B15-T5 is committed and pushed; independent Day15-T3B15-MR1 is complete locally and pending Owner review
+Day15-T3B15-MR1 is committed and pushed; Day15-T3B15-C1 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `483d4e346a03931ead9a1ff15ff71b7d45b3cba8` on `main`, equal to `origin/main` before the T3B15-MR1 documentation task.
+Verified baseline: `217d0ba` on `main`, equal to `origin/main` before the T3B15-C1 correction task.
 
 Day 7 completed:
 
@@ -221,8 +221,7 @@ completion; credential-scrubbed validation children; active Node/Python network
 denial; and recursive validation rejection. Complete Alpha validation passes
 `2447/2447`. No real operation or rehearsal was registered or run.
 
-Independent Day15-T3B15-MR1 is complete locally and pending Owner review.
-It returns
+Independent Day15-T3B15-MR1 is committed and pushed as `217d0ba`. It returns
 `T3B15_OPERATION_FOUNDATION_NOT_ACCEPTED_FOR_REHEARSAL /
 GO_FOR_T3B15_C1_CORRECTION / NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL /
 NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
@@ -234,6 +233,17 @@ composition, and authorization fingerprint integrity. One medium finding
 blocks non-completed results from advancing the normal plan. Complete Alpha
 validation passes `2447/2447`; no real manifest or rehearsal was created or
 run.
+
+Day15-T3B15-MR1 is committed and pushed as `217d0ba`. Day15-T3B15-C1 is
+complete locally and pending Owner review. C1 adds post-ownership authority
+revalidation, atomic Stop/result precedence, independent durable-truth
+observation, append-only operation validation receipts and complete
+Control-ledger verification, fixed Node/npm executable identity, untracked-file
+rejection, an exact closed five-phase composition, authorization-consumption
+integrity, non-completed-result blocking, and Node/Python subprocess denial.
+Focused control, verification, and fresh-process suites pass `33/33`, `4/4`,
+and `11/11`; complete Alpha validation passes `2456/2456`. No real manifest
+or rehearsal was created or run.
 
 ## Day 6 Milestone Review
 
@@ -669,9 +679,10 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of independent Day15-T3B15-MR1. If approved, commit and push the
-review documentation, then begin T3B15-C1 to close every MR1 finding. A new
-independent T3B15-MR2 is required before any possible one-rehearsal
-authorization. Do not run a rehearsal, add
+Owner review of Day15-T3B15-C1. If approved, commit and push C1, then conduct
+an independent T3B15-MR2 over the exact committed correction. MR2 must decide
+whether the trusted-code application-level isolation model is sufficient; no
+one-rehearsal authorization exists unless MR2 explicitly returns
+`GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. Do not run a rehearsal, add
 continuous runtime, loops, network providers, real Pilot activation, T1/T2
 delivery, probability research, recommendation, or trading authority.

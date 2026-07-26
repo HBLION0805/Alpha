@@ -1,5 +1,22 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Day15-T3B15-C1 Operation Boundary Correction
+
+- Decision: revalidate all external authority after ownership and before
+  authorization, and require an independent durable observation after phase
+  invocation.
+- Decision: durable Stop is checked inside result-commit transaction and any
+  non-`COMPLETED` result blocks normal phase progression.
+- Decision: upgrade the isolated Control store to schema `1.1` with immutable
+  operation validation receipts and read-only complete-history verification.
+- Decision: resolve only the fixed Node-adjacent npm CLI, include untracked
+  files in cleanliness, and extend network guards to deny unapproved native
+  subprocess escape.
+- Decision: add an exact closed five-phase composition; no executable command
+  or real manifest is authorized by C1.
+- Consequence: require independent T3B15-MR2 and retain
+  `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+
 ## 2026-07-26 - Day15-T3B15-MR1 Independent Operation Readiness Review
 
 - Decision: return `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.

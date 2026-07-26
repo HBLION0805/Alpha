@@ -1,9 +1,13 @@
 import { createHash } from "node:crypto";
-import { readFileSync, realpathSync } from "node:fs";
-import { resolve } from "node:path";
+import { mkdtempSync, readFileSync, realpathSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { execPath } from "node:process";
 
 import {
   COLLECTION_RUNNER_REHEARSAL_OPERATION_RECURSION_POLICY,
+  CollectionRunnerRehearsalOperationPhase,
+  CollectionRunnerRehearsalOperationResultDisposition,
   CollectionRunnerRehearsalOperationVerificationDisposition,
   DurableFixtureRehearsalEvidenceDisposition,
   type CollectionRunnerRehearsalOperationManifest,
@@ -19,6 +23,9 @@ import {
   CollectionRunnerRehearsalOperationRegistry,
 } from "../event-contract-collection-runner-rehearsal-operation";
 import {
+  EventContractCollectionRunnerRehearsalOperationControlSqliteStore,
+} from "../../repositories/EventContractCollectionRunnerRehearsalOperationControlSqliteStore";
+import {
   CollectionRunnerRehearsalOperationFreshProcessVerifier,
   FixedActualAlphaValidationAdapter,
   type FixedValidationProcessPort,
@@ -29,6 +36,16 @@ const root = realpathSync(resolve("."));
 const commit = "a".repeat(40);
 const fp = (value: string) =>
   `sha256:${createHash("sha256").update(value).digest("hex")}`;
+function canonical(value: unknown): string {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  return `{${Object.entries(value as Record<string, unknown>)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, nested]) => `${JSON.stringify(key)}:${canonical(nested)}`)
+    .join(",")}}`;
+}
+const recordFingerprint = (value: object) =>
+  `sha256:${createHash("sha256").update(canonical(value)).digest("hex")}`;
 const packageBytes = readFileSync(resolve("package.json"));
 const validationBytes = readFileSync(resolve("scripts", "alpha-validate.mjs"));
 const networkGuardBytes = readFileSync(
@@ -60,6 +77,18 @@ const manifest = {
   proposal: {
     rehearsalId: "rehearsal:test",
     validationAuthorityFingerprint: authority.fingerprint,
+    phasePlan: [
+      {
+        ordinal: 1,
+        phase: CollectionRunnerRehearsalOperationPhase.Validate,
+        expectedStepOrdinal: null,
+      },
+      {
+        ordinal: 2,
+        phase: CollectionRunnerRehearsalOperationPhase.Verify,
+        expectedStepOrdinal: null,
+      },
+    ],
   },
 } as unknown as CollectionRunnerRehearsalOperationManifest;
 const rootRegistration = {
@@ -133,6 +162,12 @@ const tests: readonly [string, () => void][] = [
       process.calls[2]!.environment.ALPHA_NETWORK_DISABLED !== "1") {
       throw new Error("Fixed process boundary was not enforced.");
     }
+    if (
+      process.calls[1]!.args.join(" ") !==
+        "status --porcelain --untracked-files=all" ||
+      process.calls[2]!.executable !== realpathSync(execPath) ||
+      !process.calls[2]!.args[0]?.endsWith("npm-cli.js")
+    ) throw new Error("Clean-tree or executable identity is not fixed.");
     if (Object.keys(process.calls[2]!.environment)
       .some((key) => /TOKEN|SECRET|PASSWORD|CREDENTIAL|AUTH/u.test(key))) {
       throw new Error("Credential-like environment leaked.");
@@ -159,16 +194,68 @@ const tests: readonly [string, () => void][] = [
     if (!rejected) throw new Error("Ambiguous accounting was accepted.");
   }],
   ["binds operation validation to fresh-process envelope verification", () => {
-    const validationReceipt = {
-      ...request(),
-      rehearsalId: "rehearsal:test",
-      validationAuthorityFingerprint: authority.fingerprint,
-      registeredTestTotal: 2434,
-      passedCount: 2434,
-      failedCount: 0,
-      passed: true,
-      fingerprint: fp("validation-receipt"),
-    } as unknown as CollectionRunnerRehearsalOperationValidationReceipt;
+    const validationReceipt = new FixedActualAlphaValidationAdapter(
+      root,
+      registry,
+      new ProcessFixture(
+        '{"overall":{"testsExecuted":2434,"passed":2434,"failed":0}}',
+      ),
+      () => "2026-07-25T20:02:00.000Z",
+    ).run(request());
+    const authorizationBody = {
+      authorizationId: "authorization:validate",
+      commandId: "command:validate",
+      commandFingerprint: fp("command"),
+      operationId: manifest.operationId,
+      manifestFingerprint: manifest.fingerprint,
+      phase: CollectionRunnerRehearsalOperationPhase.Validate,
+      phasePlanOrdinal: 1,
+      expectedLifecycleVersion: 1,
+      expectedInvocationOrdinal: null,
+      expectedRecoveryFingerprint: fp("recovery"),
+      ownerId: "owner:test",
+      ownerAuthorizationReference: fp("owner-authorization"),
+      bootIdentity: "boot:test",
+      processSessionId: "session:test",
+      authorizedAtUtc: "2026-07-25T20:00:00.000Z",
+      expiresAtUtc: "2026-07-25T20:05:00.000Z",
+      consumedAtUtc: "2026-07-25T20:00:00.000Z",
+      consumed: true,
+    } as const;
+    const authorization = {
+      ...authorizationBody,
+      deterministic: true,
+      fingerprint: recordFingerprint(authorizationBody),
+    } as const;
+    const operationResultBody = {
+      resultId: "result:validate",
+      authorizationId: authorization.authorizationId,
+      authorizationFingerprint: authorization.fingerprint,
+      commandId: authorization.commandId,
+      commandFingerprint: authorization.commandFingerprint,
+      operationId: manifest.operationId,
+      manifestFingerprint: manifest.fingerprint,
+      phase: CollectionRunnerRehearsalOperationPhase.Validate,
+      phasePlanOrdinal: 1,
+      expectedInvocationOrdinal: null,
+      processSessionId: authorization.processSessionId,
+      bootIdentity: authorization.bootIdentity,
+      disposition: CollectionRunnerRehearsalOperationResultDisposition.Completed,
+      priorLifecycleVersion: 1,
+      resultingLifecycleVersion: 1,
+      priorLifecycleFingerprint: fp("lifecycle"),
+      resultingLifecycleFingerprint: fp("lifecycle"),
+      authorityEvidenceFingerprint: validationReceipt.fingerprint,
+      sanitizedOutputDigest: fp("output"),
+      startedAtUtc: "2026-07-25T20:00:00.000Z",
+      completedAtUtc: "2026-07-25T20:02:00.000Z",
+      nonAuthorityDeclaration: "fixture-only",
+    } as const;
+    const operationResult = {
+      ...operationResultBody,
+      deterministic: true,
+      fingerprint: recordFingerprint(operationResultBody),
+    } as const;
     const envelopeResult = {
       disposition: DurableFixtureRehearsalEvidenceDisposition.Pass,
       issueCodes: [],
@@ -181,8 +268,27 @@ const tests: readonly [string, () => void][] = [
     const evidence = {
       verify: () => envelopeResult,
     } as unknown as DurableFixtureRehearsalFreshProcessVerifier;
+    const controlRoot = mkdtempSync(
+      join(tmpdir(), "alpha-operation-verification-"),
+    );
+    const receiptStore =
+      EventContractCollectionRunnerRehearsalOperationControlSqliteStore.open(
+        controlRoot,
+        { createIfMissing: true },
+      );
+    receiptStore.appendValidationReceipt(validationReceipt);
     const result = new CollectionRunnerRehearsalOperationFreshProcessVerifier(
-      registry, evidence, [validationReceipt],
+      registry,
+      evidence,
+      {
+        readValidationReceipt: (fingerprint) =>
+          receiptStore.readValidationReceipt(fingerprint),
+        readHistory: () => ({
+          authorizations: [authorization],
+          results: [operationResult],
+          stopReceipt: null,
+        }),
+      },
     ).verify({
       operationId: manifest.operationId,
       manifestFingerprint: manifest.fingerprint,
@@ -195,6 +301,47 @@ const tests: readonly [string, () => void][] = [
       CollectionRunnerRehearsalOperationVerificationDisposition.Pass) {
       throw new Error("Exact operation/envelope binding did not pass.");
     }
+    const verifyWith = (
+      receipt: CollectionRunnerRehearsalOperationValidationReceipt,
+      results: readonly (typeof operationResult)[],
+      stopped = false,
+    ) => new CollectionRunnerRehearsalOperationFreshProcessVerifier(
+      registry,
+      evidence,
+      {
+        readValidationReceipt: () => receipt,
+        readHistory: () => ({
+          authorizations: [authorization],
+          results,
+          stopReceipt: stopped ? ({} as never) : null,
+        }),
+      },
+    ).verify({
+      operationId: manifest.operationId,
+      manifestFingerprint: manifest.fingerprint,
+      evidenceRootId: "evidence-root",
+      envelopeFingerprint: envelopeResult.envelopeFingerprint!,
+      validationReceiptFingerprint: receipt.fingerprint,
+      observedAtUtc: "2026-07-25T20:03:00.000Z",
+    });
+    const forged = {
+      ...validationReceipt,
+      repositoryCommit: "b".repeat(40),
+    };
+    if (
+      verifyWith(forged, [operationResult]).disposition !==
+        CollectionRunnerRehearsalOperationVerificationDisposition.FailClosed
+    ) throw new Error("Forged validation receipt was accepted.");
+    if (
+      verifyWith(validationReceipt, []).disposition !==
+        CollectionRunnerRehearsalOperationVerificationDisposition.FailClosed
+    ) throw new Error("Unresolved operation history was accepted.");
+    if (
+      verifyWith(validationReceipt, [operationResult], true).disposition !==
+        CollectionRunnerRehearsalOperationVerificationDisposition.FailClosed
+    ) throw new Error("Stopped operation history was accepted.");
+    receiptStore.close();
+    rmSync(controlRoot, { recursive: true, force: true });
   }],
 ];
 

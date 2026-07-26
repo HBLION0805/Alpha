@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B15-T5 are complete and pushed. Independent Day15-T3B15-MR1 is complete locally and returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`: operation authority revalidation, in-flight Stop semantics, durable truth reconstruction, Control-ledger final verification, fixed executable identity, untracked-file rejection, network isolation, closed composition, authorization integrity, and non-completed phase progression require correction. No registered real operation, rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+Day 8 Intelligence foundations through Day15-T3B15-MR1 are complete and pushed. Day15-T3B15-C1 is complete locally and pending Owner review. It corrects post-ownership authority revalidation, atomic Stop/result precedence, independent durable-truth observation, append-only validation receipt and Control-ledger verification, fixed executable identity, untracked-file rejection, closed phase composition, authorization integrity, non-completed phase blocking, and Node/Python subprocess isolation. Independent MR2 remains required and `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` remains in force. No registered real operation, rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
 
 Implemented Python prototype/runtime:
 

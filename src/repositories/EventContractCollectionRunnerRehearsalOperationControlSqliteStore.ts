@@ -11,6 +11,7 @@ import type {
   CollectionRunnerRehearsalOperationAuthorizationReceipt,
   CollectionRunnerRehearsalOperationResultReceipt,
   CollectionRunnerRehearsalOperationStopReceipt,
+  CollectionRunnerRehearsalOperationValidationReceipt,
 } from "../contracts";
 import type {
   CollectionRunnerRehearsalOperationControlRepository,
@@ -22,15 +23,15 @@ const FP = /^(?:fnv1a64:[0-9a-f]{16}|sha256:[0-9a-f]{64})$/u;
 const ID = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,159}$/u;
 
 export const COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQLITE_SCHEMA =
-  "1.0" as const;
+  "1.1" as const;
 
 export const COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQL = `
 CREATE TABLE IF NOT EXISTS operation_control_metadata (
   singleton INTEGER PRIMARY KEY CHECK (singleton = 1),
-  schema_version TEXT NOT NULL CHECK (schema_version = '1.0')
+  schema_version TEXT NOT NULL CHECK (schema_version = '1.1')
 ) STRICT;
 INSERT OR IGNORE INTO operation_control_metadata (singleton, schema_version)
-VALUES (1, '1.0');
+VALUES (1, '1.1');
 
 CREATE TABLE IF NOT EXISTS operation_phase_authorizations (
   authorization_id TEXT PRIMARY KEY,
@@ -89,6 +90,17 @@ CREATE TABLE IF NOT EXISTS operation_stop_receipts (
   record_fingerprint TEXT NOT NULL UNIQUE
 ) STRICT;
 
+CREATE TABLE IF NOT EXISTS operation_validation_receipts (
+  receipt_id TEXT PRIMARY KEY,
+  operation_id TEXT NOT NULL UNIQUE,
+  manifest_fingerprint TEXT NOT NULL,
+  record_fingerprint TEXT NOT NULL UNIQUE,
+  canonical_record_json TEXT NOT NULL CHECK (
+    json_valid(canonical_record_json)
+    AND json_type(canonical_record_json) = 'object'
+  )
+) STRICT;
+
 CREATE TRIGGER IF NOT EXISTS operation_authorizations_no_update
 BEFORE UPDATE ON operation_phase_authorizations
 BEGIN SELECT RAISE(ABORT, 'append-only operation authorizations'); END;
@@ -107,6 +119,12 @@ BEGIN SELECT RAISE(ABORT, 'append-only operation stops'); END;
 CREATE TRIGGER IF NOT EXISTS operation_stops_no_delete
 BEFORE DELETE ON operation_stop_receipts
 BEGIN SELECT RAISE(ABORT, 'append-only operation stops'); END;
+CREATE TRIGGER IF NOT EXISTS operation_validation_receipts_no_update
+BEFORE UPDATE ON operation_validation_receipts
+BEGIN SELECT RAISE(ABORT, 'append-only operation validation receipts'); END;
+CREATE TRIGGER IF NOT EXISTS operation_validation_receipts_no_delete
+BEFORE DELETE ON operation_validation_receipts
+BEGIN SELECT RAISE(ABORT, 'append-only operation validation receipts'); END;
 `;
 
 type Row = Readonly<Record<string, unknown>>;
@@ -214,9 +232,8 @@ function verifyRecord<T extends {
   const {
     deterministic,
     fingerprint,
-    consumed: _consumed,
     ...body
-  } = value as T & { readonly consumed?: unknown };
+  } = value;
   if (
     deterministic !== true ||
     !FP.test(fingerprint) ||
@@ -310,6 +327,54 @@ PRAGMA recursive_triggers = OFF;
     }
   }
 
+  public static openReadOnly(
+    controlRoot: string,
+  ): EventContractCollectionRunnerRehearsalOperationControlSqliteStore {
+    const path = resolveStorePath(controlRoot);
+    if (!existsSync(path)) {
+      fail("STORE_MISSING", "Operation control store does not exist.");
+    }
+    const database = new DatabaseSync(path, {
+      open: true,
+      readOnly: true,
+      enableForeignKeyConstraints: true,
+      enableDoubleQuotedStringLiterals: false,
+      allowExtension: false,
+      timeout: 5000,
+      defensive: true,
+    });
+    try {
+      database.exec(`
+PRAGMA foreign_keys = ON;
+PRAGMA trusted_schema = OFF;
+PRAGMA query_only = ON;
+`);
+      const metadata = database.prepare(
+        "SELECT schema_version FROM operation_control_metadata WHERE singleton = 1",
+      ).get() as Row | undefined;
+      if (
+        metadata?.schema_version !==
+          COLLECTION_RUNNER_REHEARSAL_OPERATION_CONTROL_SQLITE_SCHEMA
+      ) {
+        fail("INTEGRITY_FAILURE", "Operation control schema is not exact.");
+      }
+      return new EventContractCollectionRunnerRehearsalOperationControlSqliteStore(
+        database,
+        path,
+      );
+    } catch (error) {
+      database.close();
+      if (error instanceof CollectionRunnerRehearsalOperationControlStoreError) {
+        throw error;
+      }
+      fail(
+        "INTEGRITY_FAILURE",
+        "Read-only operation control store failed verification.",
+        error,
+      );
+    }
+  }
+
   public getStorePath(): string {
     return this.#path;
   }
@@ -378,6 +443,104 @@ WHERE operation_id = ?
     });
   }
 
+  public readHistory(operationId: string): {
+    readonly authorizations:
+      readonly CollectionRunnerRehearsalOperationAuthorizationReceipt[];
+    readonly results: readonly CollectionRunnerRehearsalOperationResultReceipt[];
+    readonly stopReceipt: CollectionRunnerRehearsalOperationStopReceipt | null;
+  } {
+    if (!ID.test(operationId)) {
+      fail("INTEGRITY_FAILURE", "Operation identity is invalid.");
+    }
+    const authorizations = this.#database.prepare(`
+SELECT canonical_record_json, record_fingerprint
+FROM operation_phase_authorizations
+WHERE operation_id = ?
+ORDER BY phase_plan_ordinal
+`).all(operationId) as unknown as readonly Row[];
+    const results = this.#database.prepare(`
+SELECT canonical_record_json, record_fingerprint
+FROM operation_phase_results
+WHERE operation_id = ?
+ORDER BY phase_plan_ordinal
+`).all(operationId) as unknown as readonly Row[];
+    const stop = this.#database.prepare(`
+SELECT canonical_record_json, record_fingerprint
+FROM operation_stop_receipts
+WHERE operation_id = ?
+`).get(operationId) as Row | undefined;
+    return freeze({
+      authorizations: authorizations.map((row) =>
+        verifyRecord<CollectionRunnerRehearsalOperationAuthorizationReceipt>(
+          row, "Operation authorization",
+        ),
+      ),
+      results: results.map((row) =>
+        verifyRecord<CollectionRunnerRehearsalOperationResultReceipt>(
+          row, "Operation result",
+        ),
+      ),
+      stopReceipt: stop === undefined
+        ? null
+        : verifyRecord<CollectionRunnerRehearsalOperationStopReceipt>(
+          stop, "Operation Stop receipt",
+        ),
+    });
+  }
+
+  public appendValidationReceipt(
+    receipt: CollectionRunnerRehearsalOperationValidationReceipt,
+  ): CollectionRunnerRehearsalOperationValidationReceipt {
+    validateReceipt(receipt, "Operation validation receipt");
+    return this.#transaction(() => {
+      const existing = this.#database.prepare(`
+SELECT canonical_record_json, record_fingerprint
+FROM operation_validation_receipts
+WHERE operation_id = ?
+`).get(receipt.operationId) as Row | undefined;
+      if (existing !== undefined) {
+        const stored =
+          verifyRecord<CollectionRunnerRehearsalOperationValidationReceipt>(
+            existing, "Operation validation receipt",
+          );
+        if (stored.fingerprint === receipt.fingerprint) return stored;
+        fail(
+          "RESULT_CONFLICT",
+          "A different operation validation receipt already exists.",
+        );
+      }
+      this.#database.prepare(`
+INSERT INTO operation_validation_receipts (
+  receipt_id, operation_id, manifest_fingerprint, record_fingerprint,
+  canonical_record_json
+) VALUES (?, ?, ?, ?, ?)
+`).run(
+        receipt.receiptId,
+        receipt.operationId,
+        receipt.manifestFingerprint,
+        receipt.fingerprint,
+        JSON.stringify(receipt),
+      );
+      return this.readValidationReceipt(receipt.fingerprint);
+    });
+  }
+
+  public readValidationReceipt(
+    fingerprint: string,
+  ): CollectionRunnerRehearsalOperationValidationReceipt {
+    if (!FP.test(fingerprint)) {
+      fail("INTEGRITY_FAILURE", "Validation receipt fingerprint is invalid.");
+    }
+    return verifyRecord<CollectionRunnerRehearsalOperationValidationReceipt>(
+      this.#database.prepare(`
+SELECT canonical_record_json, record_fingerprint
+FROM operation_validation_receipts
+WHERE record_fingerprint = ?
+`).get(fingerprint) as Row | undefined,
+      "Operation validation receipt",
+    );
+  }
+
   public authorizeAndConsume(
     receipt: CollectionRunnerRehearsalOperationAuthorizationReceipt,
   ): CollectionRunnerRehearsalOperationAuthorizationReceipt {
@@ -435,6 +598,12 @@ INSERT INTO operation_phase_authorizations (
   ): CollectionRunnerRehearsalOperationResultReceipt {
     validateReceipt(receipt, "Operation result");
     return this.#transaction(() => {
+      const stop = this.#database.prepare(
+        "SELECT stop_id FROM operation_stop_receipts WHERE operation_id = ?",
+      ).get(receipt.operationId);
+      if (stop !== undefined) {
+        fail("STOP_TRIPPED", "Durable operation Stop precedes result commit.");
+      }
       const authorization = this.#requireAuthorization(receipt.authorizationId);
       if (
         authorization.fingerprint !== receipt.authorizationFingerprint ||
@@ -522,13 +691,18 @@ FROM operation_stop_receipts WHERE stop_id = ?
   #requireAuthorization(
     authorizationId: string,
   ): CollectionRunnerRehearsalOperationAuthorizationReceipt {
-    return verifyRecord<CollectionRunnerRehearsalOperationAuthorizationReceipt>(
+    const receipt =
+      verifyRecord<CollectionRunnerRehearsalOperationAuthorizationReceipt>(
       this.#database.prepare(`
 SELECT canonical_record_json, record_fingerprint
 FROM operation_phase_authorizations WHERE authorization_id = ?
 `).get(authorizationId) as Row | undefined,
       "Operation authorization",
     );
+    if (receipt.consumed !== true) {
+      fail("INTEGRITY_FAILURE", "Operation authorization is not consumed.");
+    }
+    return receipt;
   }
 
   #requireResult(resultId: string): CollectionRunnerRehearsalOperationResultReceipt {

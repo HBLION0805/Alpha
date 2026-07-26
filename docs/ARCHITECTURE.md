@@ -993,6 +993,23 @@ phase progression also require correction. The architecture therefore retains
 `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` and permits only T3B15-C1
 correction followed by a new independent MR2.
 
+Day15-T3B15-C1 corrects the operation authority chain. After ownership, the
+gate reopens readiness and Control truth before authorization. Phase evidence
+must match a separate durable observation, durable Stop is checked inside the
+result transaction, and non-completed results cannot advance the plan.
+Control schema `1.1` stores immutable operation validation receipts and exposes
+query-only complete history for final verification. Final verification
+reconstructs validation and authorization/result/Stop authority rather than
+accepting caller-injected receipt objects.
+
+Validation resolves the real Node executable and its adjacent npm CLI, rejects
+all influential untracked files, and inherits Node/Python guards that also
+deny unapproved subprocess escape. An exact closed composition exposes only
+PREPARE, STEP, VALIDATE, FREEZE, and PACKAGE adapters with separate action and
+durable-observation authority. This remains application-level trusted-code
+isolation, not a host firewall. C1 grants no run authority; independent MR2
+must review the correction before any separate rehearsal decision.
+
 ---
 
 # Event Contract Framework

@@ -19,6 +19,8 @@ import {
   type CollectionRunnerRehearsalOperationManifest,
   type CollectionRunnerRehearsalOperationPhaseCommand,
   type CollectionRunnerRehearsalOperationPhaseEvidence,
+  type CollectionRunnerRehearsalOperationResultReceipt,
+  type CollectionRunnerRehearsalOperationStopReceipt,
   type DurableFixtureRehearsalEnvelopeVerificationResult,
 } from "../../contracts";
 import {
@@ -156,16 +158,20 @@ function isolatedEnvironment(repositoryRoot: string): Readonly<Record<string, st
 }
 
 function npmInvocation(): { readonly executable: string; readonly args: readonly string[] } {
-  const windows = env.OS === "Windows_NT" ||
-    execPath.toLocaleLowerCase().endsWith("\\node.exe");
-  const npmCli = typeof env.npm_execpath === "string" &&
-    env.npm_execpath.endsWith("npm-cli.js") &&
-    existsSync(env.npm_execpath)
-    ? env.npm_execpath
-    : join(dirname(execPath), "node_modules", "npm", "bin", "npm-cli.js");
-  return windows && existsSync(npmCli)
-    ? { executable: execPath, args: [npmCli, "run", "alpha:validate"] }
-    : { executable: "npm", args: ["run", "alpha:validate"] };
+  const npmCli = join(
+    dirname(realpathSync(execPath)),
+    "node_modules",
+    "npm",
+    "bin",
+    "npm-cli.js",
+  );
+  if (!existsSync(npmCli)) {
+    throw new Error("Registered Node installation does not contain fixed npm CLI.");
+  }
+  return {
+    executable: realpathSync(execPath),
+    args: [realpathSync(npmCli), "run", "alpha:validate"],
+  };
 }
 
 function parseOverall(output: string): {
@@ -229,7 +235,7 @@ export class FixedActualAlphaValidationAdapter {
     };
     const commit = this.process.run("git", ["rev-parse", "HEAD"], fixed);
     const clean = this.process.run(
-      "git", ["status", "--porcelain", "--untracked-files=no"], fixed,
+      "git", ["status", "--porcelain", "--untracked-files=all"], fixed,
     );
     const packageBytes = readFileSync(join(root, "package.json"));
     const validationBytes = readFileSync(join(root, "scripts", "alpha-validate.mjs"));
@@ -297,9 +303,12 @@ export class FixedActualAlphaValidationAdapter {
       networkPermitted: false as const,
       credentialAccessPermitted: false as const,
       passed: true as const,
-      deterministic: true as const,
     };
-    return freeze({ ...body, fingerprint: sha(body) });
+    return freeze({
+      ...body,
+      deterministic: true as const,
+      fingerprint: sha(body),
+    });
   }
 
   #assertAuthority(
@@ -325,10 +334,18 @@ export interface CollectionRunnerRehearsalValidationLifecyclePort {
   read(rehearsalId: string): CollectionRunnerRehearsalValidationLifecycleSnapshot;
 }
 
+export interface CollectionRunnerRehearsalOperationValidationReceiptRepository {
+  appendValidationReceipt(
+    receipt: CollectionRunnerRehearsalOperationValidationReceipt,
+  ): CollectionRunnerRehearsalOperationValidationReceipt;
+}
+
 export class CollectionRunnerRehearsalOperationValidationPhaseAdapter {
   public constructor(
     private readonly validation: FixedActualAlphaValidationAdapter,
     private readonly lifecycle: CollectionRunnerRehearsalValidationLifecyclePort,
+    private readonly receipts:
+      CollectionRunnerRehearsalOperationValidationReceiptRepository,
     private readonly now: () => string = () => new Date().toISOString(),
   ) {}
 
@@ -344,12 +361,12 @@ export class CollectionRunnerRehearsalOperationValidationPhaseAdapter {
       authorization.manifestFingerprint !== manifest.fingerprint
     ) throw new Error("Validation phase bindings are invalid.");
     const before = this.lifecycle.read(manifest.proposal.rehearsalId);
-    const receipt = this.validation.run({
+    const receipt = this.receipts.appendValidationReceipt(this.validation.run({
       receiptId: `operation-validation:${authorization.fingerprint.slice(7, 39)}`,
       operationId: manifest.operationId,
       manifestFingerprint: manifest.fingerprint,
       startedAtUtc: this.now(),
-    });
+    }));
     const after = this.lifecycle.read(manifest.proposal.rehearsalId);
     if (
       before.lifecycleVersion !== after.lifecycleVersion ||
@@ -369,19 +386,101 @@ export class CollectionRunnerRehearsalOperationValidationPhaseAdapter {
   }
 }
 
-export class CollectionRunnerRehearsalOperationFreshProcessVerifier {
-  readonly #receipts: ReadonlyMap<string, CollectionRunnerRehearsalOperationValidationReceipt>;
+export interface CollectionRunnerRehearsalOperationVerificationControlHistory {
+  readonly authorizations:
+    readonly CollectionRunnerRehearsalOperationAuthorizationReceipt[];
+  readonly results: readonly CollectionRunnerRehearsalOperationResultReceipt[];
+  readonly stopReceipt: CollectionRunnerRehearsalOperationStopReceipt | null;
+}
 
+export interface CollectionRunnerRehearsalOperationVerificationControlPort {
+  readValidationReceipt(
+    fingerprint: string,
+  ): CollectionRunnerRehearsalOperationValidationReceipt;
+  readHistory(
+    operationId: string,
+  ): CollectionRunnerRehearsalOperationVerificationControlHistory;
+}
+
+function validationReceiptBody(
+  receipt: CollectionRunnerRehearsalOperationValidationReceipt,
+): object {
+  const {
+    deterministic: _deterministic,
+    fingerprint: _fingerprint,
+    ...body
+  } = receipt;
+  return body;
+}
+
+function immutableRecordBody(
+  record: { readonly deterministic: true; readonly fingerprint: string },
+): object {
+  const {
+    deterministic: _deterministic,
+    fingerprint: _fingerprint,
+    ...body
+  } = record;
+  return body;
+}
+
+function verifyControlHistory(
+  manifest: CollectionRunnerRehearsalOperationManifest,
+  validationReceipt: CollectionRunnerRehearsalOperationValidationReceipt,
+  history: CollectionRunnerRehearsalOperationVerificationControlHistory,
+): boolean {
+  const plan = manifest.proposal.phasePlan.filter(
+    (entry) => entry.phase !== CollectionRunnerRehearsalOperationPhase.Verify,
+  );
+  if (
+    history.stopReceipt !== null ||
+    history.authorizations.length !== plan.length ||
+    history.results.length !== plan.length
+  ) return false;
+  let validationBound = false;
+  for (let index = 0; index < plan.length; index += 1) {
+    const expected = plan[index]!;
+    const authorization = history.authorizations[index]!;
+    const result = history.results[index]!;
+    if (
+      authorization.operationId !== manifest.operationId ||
+      authorization.manifestFingerprint !== manifest.fingerprint ||
+      authorization.phasePlanOrdinal !== expected.ordinal ||
+      authorization.phase !== expected.phase ||
+      authorization.expectedInvocationOrdinal !== expected.expectedStepOrdinal ||
+      authorization.consumed !== true ||
+      authorization.deterministic !== true ||
+      authorization.fingerprint !== sha(immutableRecordBody(authorization)) ||
+      result.operationId !== manifest.operationId ||
+      result.manifestFingerprint !== manifest.fingerprint ||
+      result.phasePlanOrdinal !== expected.ordinal ||
+      result.phase !== expected.phase ||
+      result.expectedInvocationOrdinal !== expected.expectedStepOrdinal ||
+      result.authorizationId !== authorization.authorizationId ||
+      result.authorizationFingerprint !== authorization.fingerprint ||
+      result.commandFingerprint !== authorization.commandFingerprint ||
+      result.deterministic !== true ||
+      result.fingerprint !== sha(immutableRecordBody(result)) ||
+      result.disposition !==
+        CollectionRunnerRehearsalOperationResultDisposition.Completed
+    ) return false;
+    if (result.phase === CollectionRunnerRehearsalOperationPhase.Validate) {
+      if (
+        validationBound ||
+        result.authorityEvidenceFingerprint !== validationReceipt.fingerprint
+      ) return false;
+      validationBound = true;
+    }
+  }
+  return validationBound;
+}
+
+export class CollectionRunnerRehearsalOperationFreshProcessVerifier {
   public constructor(
     private readonly registry: CollectionRunnerRehearsalOperationRegistry,
     private readonly evidenceVerifier: DurableFixtureRehearsalFreshProcessVerifier,
-    receipts: readonly CollectionRunnerRehearsalOperationValidationReceipt[],
-  ) {
-    this.#receipts = new Map(receipts.map((receipt) => [receipt.fingerprint, receipt]));
-    if (this.#receipts.size !== receipts.length) {
-      throw new Error("Validation receipt authority is ambiguous.");
-    }
-  }
+    private readonly control: CollectionRunnerRehearsalOperationVerificationControlPort,
+  ) {}
 
   public verify(
     request: CollectionRunnerRehearsalOperationFinalVerificationRequest,
@@ -401,19 +500,49 @@ export class CollectionRunnerRehearsalOperationFreshProcessVerifier {
         !UTC.test(request.observedAtUtc)
       ) throw new Error();
       const manifest = this.registry.getOperation(request.operationId);
-      const receipt = this.#receipts.get(request.validationReceiptFingerprint);
+      const receipt = this.control.readValidationReceipt(
+        request.validationReceiptFingerprint,
+      );
+      const authority = manifest === null
+        ? null
+        : this.registry.getValidationAuthority(
+          manifest.proposal.validationAuthorityFingerprint,
+        );
       if (
         manifest === null ||
         manifest.fingerprint !== request.manifestFingerprint ||
-        receipt === undefined ||
+        authority === null ||
         receipt.operationId !== request.operationId ||
+        receipt.rehearsalId !== manifest.proposal.rehearsalId ||
         receipt.manifestFingerprint !== request.manifestFingerprint ||
         receipt.validationAuthorityFingerprint !==
           manifest.proposal.validationAuthorityFingerprint ||
+        receipt.repositoryCommit !== authority.alphaCommit ||
+        receipt.packageFingerprint !== authority.packageFingerprint ||
+        receipt.validationSuiteFingerprint !==
+          authority.validationSuiteFingerprint ||
+        receipt.validationPolicyVersion !==
+          COLLECTION_RUNNER_REHEARSAL_OPERATION_VALIDATION_POLICY ||
+        receipt.recursionPolicyVersion !==
+          COLLECTION_RUNNER_REHEARSAL_OPERATION_RECURSION_POLICY ||
+        receipt.registeredTestTotal !== authority.registeredTestTotal ||
         receipt.registeredTestTotal !== receipt.passedCount ||
         receipt.failedCount !== 0 ||
-        receipt.passed !== true
+        receipt.exitStatus !== 0 ||
+        receipt.networkPermitted !== false ||
+        receipt.credentialAccessPermitted !== false ||
+        receipt.passed !== true ||
+        receipt.deterministic !== true ||
+        receipt.fingerprint !== sha(validationReceiptBody(receipt))
       ) issues.push("OPERATION_VALIDATION_BINDING_FAILED");
+      if (
+        manifest !== null &&
+        !verifyControlHistory(
+          manifest,
+          receipt,
+          this.control.readHistory(request.operationId),
+        )
+      ) issues.push("OPERATION_CONTROL_HISTORY_FAILED");
       envelope = this.evidenceVerifier.verify(
         request.evidenceRootId,
         request.envelopeFingerprint,
