@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-C1 is committed and pushed; Day15-T3B14-MR2 is complete locally and pending Owner review
+Day15-T3B14-MR2 is committed and pushed; Day15-T3B14-C2 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `e8f1ec2` on `main`, equal to `origin/main` before the T3B14-MR2 review task.
+Verified baseline: `dc7645a` on `main`, equal to `origin/main` before the T3B14-C2 correction task.
 
 Day 7 completed:
 
@@ -126,13 +126,17 @@ Day15-T3B14-MR1 is committed and pushed as `4bec6a3`. Day15-T3B14-C1 is committe
 T3B14-C1 focused phase-composition drills pass `3/3`, durable evidence process
 drills pass `14/14`, and complete Alpha validation passes `2346/2346`.
 
-Day15-T3B14-MR2 is complete locally and pending Owner review. It accepts the
-core C1 corrections but retains `NO_GO_FOR_REHEARSAL_RUN`: the clean C1 STEP
-uses a direct-SQL test executor instead of composing the reviewed Worker
-transaction chain, several of the twenty required cases map only to component
-tests, and normalized validation records the executed durable evidence
-`14/14` as zero. The recommended correction is T3B14-C2, followed by a
-separate T3B14-MR3.
+Day15-T3B14-MR2 is committed and pushed as `dc7645a`. Day15-T3B14-C2 is
+complete locally and pending Owner review. C2 replaces direct Worker-owned
+fixture writes with the real fixture Worker transaction sequence, adds
+fresh-process crash-after-claim, Stop-after-claim, all-phase Stop precedence,
+exact replay, and changed replay evidence, and corrects normalized accounting
+for `drills passed` suites. The twenty required drills now map to exact test
+files, cases, and process boundaries. Focused C2 process evidence passes `5/5`,
+C1 composition passes `3/3`, durable evidence passes `14/14`, and validation
+reporting regression tests pass `6/6`. Complete Alpha validation passes
+`2372/2372`. A separate T3B14-MR3 is required; no real rehearsal has been run
+or authorized.
 
 ## Day 6 Milestone Review
 

@@ -1,28 +1,34 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import {
+  existsSync,
   mkdirSync,
   readFileSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
+import process from "node:process";
 import { DatabaseSync } from "node:sqlite";
 
 import {
   CollectionRunnerPilotState,
-  CollectionRunnerFixtureWorkerOutcome,
   CollectionRunnerRuntimeAssemblyAction,
+  CollectionRunnerClockSynchronizationStatus,
   CollectionRunnerRuntimeHealthStatus,
   CollectionRunnerRuntimeMode,
-  CollectionRunnerSourceLane,
   CollectionRunnerTaskState,
   DURABLE_FIXTURE_REHEARSAL_EVIDENCE_NON_AUTHORITY,
   DURABLE_FIXTURE_REHEARSAL_VALIDATION_POLICY,
   DurableFixtureRehearsalLifecycleState,
   DurableFixtureRehearsalPhase,
+  EventContractSourceCapability,
+  EventContractSourceExecutionMode,
+  CollectionRunnerFixtureAdapterOutcome,
   EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_COORDINATOR_SCHEMA_VERSION,
   EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_SCHEMA_VERSION,
   EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_SCHEMA_VERSION,
+  EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_SCHEMA_VERSION,
   type DurableFixtureRehearsalPhaseRequest,
   type DurableFixtureRehearsalProcessContext,
   type DurableFixtureRehearsalRegistry,
@@ -30,9 +36,13 @@ import {
   type DurableFixtureRehearsalValidationReceipt,
 } from "../../src/contracts";
 import {
+  acquireCollectionRunnerRuntimeOwnership,
+  createCollectionRunnerRuntimeConfiguration,
   createCollectionRunnerRuntimeWorkSnapshot,
   EventContractCollectionRunnerRuntimeAssemblyPlanner,
+  EventContractCollectionRunnerFixtureWorker,
   EventContractCollectionRunnerRuntimeForegroundStep,
+  resolveCollectionRunnerRuntimePaths,
 } from "../../src/engines/event-contract-collection-runner-runtime";
 import {
   createDurableFixtureRehearsalEvidencePlan,
@@ -51,16 +61,26 @@ import {
 import {
   createNewCollectionRunnerFixtureRehearsalSqliteProfile,
   createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository,
+  CollectionRunnerProcessStopBarrier,
+  SessionGatedEventContractCollectionRunnerRepository,
 } from "../../src/repositories";
 import {
   createSqliteEventContractCollectionRunnerRepository,
 } from "../../src/repositories/SqliteEventContractCollectionRunnerRepository";
+import {
+  createCollectionRunnerTransactionDrillDomain,
+  createTransactionDrillSnapshot,
+  TRANSACTION_DRILL_BUILD,
+} from "./collection-runner-transaction-drill-fixture";
 
 const AT = "2026-07-25T20:00:00.000Z";
 const FP = (value: string): string =>
   `fnv1a64:${value.repeat(16).slice(0, 16)}`;
-const BUILD = FP("2");
+const BUILD = TRANSACTION_DRILL_BUILD;
 const MANIFEST = FP("1");
+const ACTIVATION_ID = "activation:transaction-drill";
+const TASK_ID = "task:transaction-drill";
+const STOP_FILE = "owner-stop.requested";
 
 export interface C1PhaseState {
   readonly root: string;
@@ -105,6 +125,21 @@ function statePath(root: string): string {
   return join(root, "c1-phase-state.json");
 }
 
+function assertC2StopClear(root: string): void {
+  if (existsSync(join(root, STOP_FILE))) {
+    throw new Error("C2 Owner Stop blocks the mutable phase.");
+  }
+}
+
+export function setC2Stop(root: string, active: boolean): void {
+  const path = join(root, STOP_FILE);
+  if (active) {
+    writeFileSync(path, "STOP\n", { encoding: "utf8", flag: "wx" });
+  } else if (existsSync(path)) {
+    unlinkSync(path);
+  }
+}
+
 function save(state: C1PhaseState): void {
   writeFileSync(
     statePath(state.root),
@@ -118,58 +153,48 @@ export function readC1PhaseState(root: string): C1PhaseState {
 }
 
 function seedInitialRunner(database: DatabaseSync): void {
-  database.prepare(`
-INSERT INTO runner_definitions (
- runner_definition_id, version, fingerprint, build_fingerprint,
- canonical_record_json, created_at_utc
-) VALUES (?, ?, ?, ?, '{}', ?)
-`).run("runner-1", "1.0", FP("3"), BUILD, AT);
-  database.prepare(`
-INSERT INTO pilot_activations (
- activation_id, activation_fingerprint, owner_id, approved_at_utc,
- starts_at_utc, stops_at_utc, frozen_plan_id, frozen_plan_fingerprint,
- runner_definition_id, runner_definition_version, maximum_events,
- maximum_requests, current_state, aggregate_version,
- canonical_record_json, created_at_utc
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 'ACTIVE', 1, '{}', ?)
-`).run(
-    "activation-1", FP("e"), "owner-1",
-    "2026-07-25T19:00:00.000Z", "2026-07-25T19:30:00.000Z",
-    "2026-07-25T21:00:00.000Z", "plan-1", FP("4"),
-    "runner-1", "1.0", AT,
-  );
-  database.prepare(
-    "INSERT INTO pilot_activation_providers (activation_id, provider_fingerprint) VALUES (?, ?)",
-  ).run("activation-1", FP("6"));
-  database.prepare(
-    "INSERT INTO pilot_activation_mappings (activation_id, mapping_fingerprint) VALUES (?, ?)",
-  ).run("activation-1", FP("7"));
-  database.prepare(`
-INSERT INTO scheduled_tasks (
- task_id, task_fingerprint, idempotency_key, activation_id, frozen_plan_id,
- frozen_plan_fingerprint, planned_event_id, observation_slot, source_lane,
- provider_id, provider_fingerprint, mapping_id, mapping_version,
- mapping_fingerprint, capability, execution_mode, source_record_id,
- request_policy_id, request_policy_version, scheduled_at_utc,
- evidence_cutoff_at_utc, deadline_at_utc, activation_expires_at_utc,
- maximum_attempts, maximum_raw_payload_bytes, maximum_record_count,
- request_deadline_milliseconds, current_state, aggregate_version,
- canonical_record_json, created_at_utc
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'EXCHANGE', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1000, 10, 1000, 'SCHEDULED', 1, '{}', ?)
-`).run(
-    "task-1", FP("1"), FP("2"), "activation-1", "plan-1", FP("4"),
-    "event-1", "slot-1", "fixture-provider", FP("6"), "mapping-1",
-    "1.0", FP("7"), "EVENT_CONTRACT", "FIXTURE", "source-1",
-    "request-policy-1", "1.0", AT, AT, AT,
-    "2026-07-25T21:00:00.000Z", AT,
-  );
-  database.prepare(`
-INSERT INTO activation_budget_counters (
- activation_id, aggregate_version, events_scheduled, requests_started,
- bytes_received, records_received, retries_started, evidence_committed,
- tasks_missed, updated_at_utc
-) VALUES (?, 1, 1, 0, 0, 0, 0, 0, 0, ?)
-`).run("activation-1", AT);
+  const repository =
+    createSqliteEventContractCollectionRunnerRepository(database);
+  const { definition, activation, task } =
+    createCollectionRunnerTransactionDrillDomain();
+  repository.registerRunnerDefinition({
+    definition,
+    evidence: {
+      occurredAtUtc: "2026-07-25T12:31:00.000Z",
+      reasonCode: "DEFINITION_REVIEWED",
+    },
+  });
+  repository.createPilotArtifact({
+    activation,
+    evidence: {
+      occurredAtUtc: "2026-07-25T12:32:00.000Z",
+      reasonCode: "OWNER_APPROVAL_RECORDED",
+    },
+  });
+  repository.materializeTasks({
+    activationId: activation.activationId,
+    expectedBudgetVersion: 1,
+    tasks: [task],
+    evidence: {
+      occurredAtUtc: "2026-07-25T12:33:00.000Z",
+      reasonCode: "TASK_SET_FROZEN",
+    },
+  });
+  repository.transitionPilot({
+    activationId: activation.activationId,
+    expectedAggregateVersion: 1,
+    nextState: CollectionRunnerPilotState.Active,
+    clock: {
+      observedAtUtc: "2026-07-25T13:00:00.000Z",
+      absoluteOffsetMilliseconds: 10,
+      healthy: true,
+    },
+    recoveryBlockerCount: 0,
+    evidence: {
+      occurredAtUtc: "2026-07-25T13:00:00.000Z",
+      reasonCode: "OWNER_ACTIVATED",
+    },
+  });
 }
 
 function createValidationRepository(root: string): {
@@ -236,7 +261,7 @@ function registryInput(
     catalogFingerprint: FP("5"),
     providerFingerprint: FP("6"),
     mappingFingerprint: FP("7"),
-    activationId: "activation-1",
+    activationId: ACTIVATION_ID,
     taskSetFingerprint: FP("8"),
     workspaceIdentity: FP(variant === "a" ? "9" : "a"),
     storeIdentity: FP(variant === "a" ? "b" : "c"),
@@ -276,26 +301,52 @@ function request(
   };
 }
 
-function context(ordinal: number): DurableFixtureRehearsalProcessContext {
-  return {
-    processSessionId: `session-c1-${String(ordinal)}`,
-    bootIdentity: `boot-c1-${String(ordinal)}`,
-    observedAtUtc: new Date(Date.parse(AT) + ordinal * 100).toISOString(),
-  };
+function phaseObservedAt(ordinal: number): string {
+  return [
+    "2026-07-25T13:00:00.000Z",
+    "2026-07-25T13:05:00.000Z",
+    "2026-07-25T13:06:00.000Z",
+    "2026-07-25T13:07:00.000Z",
+  ][ordinal] ?? "2026-07-25T13:08:00.000Z";
 }
 
 function coordinator(
   database: DatabaseSync,
+  root: string,
   variant: "a" | "b",
   ordinal: number,
+  afterClaimFault: "STOP" | "CRASH" | null = null,
 ): EventContractCollectionRunnerDurableFixtureRehearsalCoordinator {
   const durable =
     createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
       database,
     );
   const runner = createSqliteEventContractCollectionRunnerRepository(database);
-  const processContext = context(ordinal);
-  const sampleBase = Date.parse(processContext.observedAtUtc);
+  const domain = createCollectionRunnerTransactionDrillDomain();
+  mkdirSync(join(root, "runtime-control"), { recursive: true });
+  const configuration = createCollectionRunnerRuntimeConfiguration({
+    schemaVersion: EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_SCHEMA_VERSION,
+    runtimeId: "runtime:c2-rehearsal",
+    runtimeMode: CollectionRunnerRuntimeMode.FixtureOnly,
+    runtimeControlRoot: join(root, "runtime-control"),
+    sqliteRoot: join(root, "source"),
+    storeId: "runner",
+    activationId: domain.activation.activationId,
+    applicationBuildFingerprint:
+      domain.activation.runnerDefinition.buildFingerprint,
+    runnerDefinitionFingerprint: domain.activation.runnerDefinition.fingerprint,
+    frozenPlanFingerprint: domain.activation.frozenPlanFingerprint,
+    fixtureProviderFingerprint: domain.provider.fingerprint,
+    maximumClockOffsetMilliseconds: 1_000,
+    maximumClockHealthAgeMilliseconds: 300_000,
+  });
+  const paths = resolveCollectionRunnerRuntimePaths(configuration);
+  let runtimeOwnership:
+    ReturnType<typeof acquireCollectionRunnerRuntimeOwnership> | null = null;
+  const runtimeStopBarrier = new CollectionRunnerProcessStopBarrier();
+  const observedAtUtc = phaseObservedAt(ordinal);
+  let stopChecks = 0;
+  const sampleBase = Date.parse(observedAtUtc);
   let sampleIndex = 0;
   const foreground = new EventContractCollectionRunnerRuntimeForegroundStep({
     clock: {
@@ -307,23 +358,150 @@ function coordinator(
     },
     planner: new EventContractCollectionRunnerRuntimeAssemblyPlanner(),
     startup: {
-      start: () => ({
+      start: () => {
+        if (runtimeOwnership === null) {
+          throw new Error("C2 runtime ownership must precede foreground work.");
+        }
+        const ownership = runtimeOwnership;
+        const session = {
+          sessionAuthorizationId: `authorization-c2-${String(ordinal)}`,
+          authorizationFingerprint: FP("c"),
+          activationId: ACTIVATION_ID,
+          bootIdentity: ownership.ownership.bootIdentity,
+          processSessionId: ownership.ownership.processSessionId,
+        };
+        const gatedRepository =
+          new SessionGatedEventContractCollectionRunnerRepository(
+            runner,
+            {
+              persistRecoveryAssessment: () => {
+                throw new Error("C2 recovery assessment is outside clean run.");
+              },
+              persistOwnerRecoveryDecision: () => {
+                throw new Error("C2 recovery decision is outside clean run.");
+              },
+              executeOwnerRecoveryDecision: () => {
+                throw new Error("C2 recovery execution is outside clean run.");
+              },
+              executeEmergencyStop: () => {
+                throw new Error("C2 Emergency Stop is outside clean run.");
+              },
+              validateRecoverySessionGate: (input) => {
+                if (
+                  input.activationId !== session.activationId ||
+                  input.bootIdentity !== session.bootIdentity ||
+                  input.processSessionId !== session.processSessionId ||
+                  input.sessionAuthorizationId !==
+                    session.sessionAuthorizationId ||
+                  input.authorizationFingerprint !==
+                    session.authorizationFingerprint
+                ) {
+                  throw new Error("C2 recovery-session gate rejected identity.");
+                }
+                return Object.freeze({
+                  sessionAuthorizationId: session.sessionAuthorizationId,
+                  authorizationFingerprint: session.authorizationFingerprint,
+                  decisionId: "decision:c2",
+                  assessmentId: "assessment:c2",
+                  activationId: session.activationId,
+                  expectedActivationAggregateVersion: 2,
+                  bootIdentity: session.bootIdentity,
+                  processSessionId: session.processSessionId,
+                  authorizedAtUtc: "2026-07-25T13:00:00.000Z",
+                  expiresAtUtc: "2026-07-25T14:00:00.000Z",
+                  revokedAtUtc: null,
+                  revocationReasonCode: null,
+                });
+              },
+              getRecoveryAssessment: () => null,
+              getOwnerRecoveryDecision: () => null,
+              getSessionAuthorization: () => null,
+              getControlExecutionReceipt: () => null,
+            },
+            session,
+            runtimeStopBarrier,
+          );
+        const workerWallTimes = [
+          "2026-07-25T13:06:00.000Z",
+          "2026-07-25T13:06:00.100Z",
+          "2026-07-25T13:06:00.500Z",
+          "2026-07-25T13:06:00.600Z",
+        ];
+        let wallIndex = 0;
+        const workerMonotonic = [
+          0n,
+          1_000_000_000n,
+          1_100_000_000n,
+          1_500_000_000n,
+          1_600_000_000n,
+        ];
+        let monotonicIndex = 0;
+        const snapshot = createTransactionDrillSnapshot({
+          repository: runner,
+          provider: domain.provider,
+          mapping: domain.mapping,
+          task: domain.task,
+        });
+        const worker = new EventContractCollectionRunnerFixtureWorker(
+          gatedRepository,
+          ownership,
+          runtimeStopBarrier,
+          configuration,
+          {
+            nowUtc: () =>
+              workerWallTimes[wallIndex++] ??
+              workerWallTimes[workerWallTimes.length - 1]!,
+          },
+          {
+            nowNanoseconds: () =>
+              workerMonotonic[monotonicIndex++] ??
+              workerMonotonic[workerMonotonic.length - 1]!,
+          },
+          {
+            observe: () => ({
+              observedAtUtc: "2026-07-25T13:05:59.000Z",
+              synchronizationStatus:
+                CollectionRunnerClockSynchronizationStatus.Synchronized,
+              estimatedAbsoluteUtcOffsetMilliseconds: 10,
+              source: "C2_TEST_CLOCK",
+              policyVersion: "1.0",
+              freshnessDeadlineUtc: "2026-07-25T13:10:00.000Z",
+            }),
+          },
+          {
+            adapterId: "adapter:c2-fixture",
+            adapterVersion: "1.0",
+            policyVersion: domain.task.admission.requestPolicyVersion,
+            executionMode: EventContractSourceExecutionMode.Fixture,
+            providerFingerprint: domain.provider.fingerprint,
+            mappingFingerprint: domain.mapping.fingerprint,
+            capability: EventContractSourceCapability.TopOfBook,
+            sourceRecordId: domain.task.admission.sourceRecordId,
+            collect: () => ({
+              outcome: CollectionRunnerFixtureAdapterOutcome.Snapshot,
+              snapshot,
+              finishedAtUtc: "2026-07-25T13:06:00.500Z",
+            }),
+          },
+          { isCancellationRequested: () => false },
+        );
+        return {
         identity: {
-          configurationFingerprint: FP("a"),
-          pathFingerprint: FP("b"),
-          storeIdentity: FP("c"),
-          lockFingerprint: FP("d"),
-          bootIdentity: processContext.bootIdentity,
-          processSessionId: processContext.processSessionId,
-          activationId: "activation-1",
+          configurationFingerprint: configuration.fingerprint,
+          pathFingerprint: paths.pathFingerprint,
+          storeIdentity: sha(paths.storePath),
+          lockFingerprint: ownership.ownership.fingerprint,
+          bootIdentity: ownership.ownership.bootIdentity,
+          processSessionId: ownership.ownership.processSessionId,
+          activationId: ACTIVATION_ID,
           buildFingerprint: BUILD,
           runtimeMode: CollectionRunnerRuntimeMode.FixtureOnly,
         },
         createPreflight: (observedAtUtc) => ({
           observedAtUtc,
-          configurationFingerprint: FP("a"),
-          pathFingerprint: FP("b"),
-          storeIdentity: FP("c"),
+          configurationFingerprint: configuration.fingerprint,
+          pathFingerprint: paths.pathFingerprint,
+          storeIdentity: sha(paths.storePath),
           schemaCatalogChecksum: FP("d"),
           recoveryReportFingerprint: FP("e"),
           safety: {
@@ -343,9 +521,9 @@ function coordinator(
         }),
         workSnapshots: {
           readWorkSnapshot: ({ observedAtUtc }) => {
-            const pilot = runner.getPilotState("activation-1")!;
-            const task = runner.getTaskState("task-1")!;
-            const budget = runner.getBudgetCounters("activation-1")!;
+            const pilot = runner.getPilotState(ACTIVATION_ID)!;
+            const task = runner.getTaskState(TASK_ID)!;
+            const budget = runner.getBudgetCounters(ACTIVATION_ID)!;
             const terminal = [
               CollectionRunnerTaskState.Committed,
               CollectionRunnerTaskState.Missed,
@@ -355,12 +533,12 @@ function coordinator(
             return createCollectionRunnerRuntimeWorkSnapshot({
               schemaVersion:
                 EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_SCHEMA_VERSION,
-              activationId: "activation-1",
+              activationId: ACTIVATION_ID,
               pilotState: pilot.state,
               pilotAggregateVersion: pilot.aggregateVersion,
-              activationStopsAtUtc: "2026-07-25T21:00:00.000Z",
+              activationStopsAtUtc: domain.activation.stopsAt,
               sessionAuthorizationId: `authorization-c1-${String(ordinal)}`,
-              sessionAuthorizationExpiresAtUtc: "2026-07-25T21:00:00.000Z",
+              sessionAuthorizationExpiresAtUtc: domain.activation.stopsAt,
               emergencyStopObserved: false,
               budget: {
                 aggregateVersion: budget.aggregateVersion,
@@ -375,16 +553,16 @@ function coordinator(
               currentLease: null,
               openAttemptId: null,
               tasks: terminal ? [] : [{
-                taskId: "task-1",
-                sourceLane: CollectionRunnerSourceLane.Exchange,
+                taskId: TASK_ID,
+                sourceLane: domain.task.admission.sourceLane,
                 state: task.state,
                 aggregateVersion: task.aggregateVersion,
-                requiredActionAtUtc: AT,
-                evidenceCutoffAtUtc: "2026-07-25T20:10:00.000Z",
-                deadlineAtUtc: "2026-07-25T20:20:00.000Z",
+                requiredActionAtUtc: domain.task.scheduledAt,
+                evidenceCutoffAtUtc: domain.task.admission.evidenceCutoffAt,
+                deadlineAtUtc: domain.task.deadlineAt,
                 retryEligibleAtUtc: null,
                 attemptsStarted: budget.requestsStarted,
-                taskFingerprint: FP("1"),
+                taskFingerprint: domain.task.fingerprint,
               }],
               observedAtUtc,
             });
@@ -392,14 +570,31 @@ function coordinator(
         },
         t6Executor: {
           execute: (input) => {
-            database.prepare(
-              "UPDATE scheduled_tasks SET current_state = 'DUE', aggregate_version = aggregate_version + 1 WHERE task_id = ? AND current_state = 'SCHEDULED' AND aggregate_version = ?",
-            ).run(input.taskId, input.expectedTaskVersion);
+            const resultingState =
+              input.action ===
+                CollectionRunnerRuntimeAssemblyAction.TransitionExactTaskDue
+                ? CollectionRunnerTaskState.Due
+                : CollectionRunnerTaskState.Missed;
+            const next = gatedRepository.transitionTask({
+              taskId: input.taskId,
+              expectedAggregateVersion: input.expectedTaskVersion,
+              nextState: resultingState,
+              clock: {
+                observedAtUtc: input.observedAtUtc,
+                absoluteOffsetMilliseconds: 10,
+                healthy: true,
+              },
+              expectedBudgetVersion: input.expectedBudgetVersion,
+              evidence: {
+                occurredAtUtc: input.observedAtUtc,
+                reasonCode: input.reasonCode,
+              },
+            });
             return {
               taskId: input.taskId,
-              resultingState: CollectionRunnerTaskState.Due,
-              resultingAggregateVersion: input.expectedTaskVersion + 1,
-              transitionReceiptFingerprint: FP("a"),
+              resultingState,
+              resultingAggregateVersion: next.aggregateVersion,
+              transitionReceiptFingerprint: sha(JSON.stringify(next)),
               deterministic: true,
               fingerprint: FP("b"),
             };
@@ -407,90 +602,46 @@ function coordinator(
         },
         fixtureExecutor: {
           execute: (decision) => {
-            database.exec("BEGIN IMMEDIATE");
-            try {
-              database.prepare(
-                "UPDATE scheduled_tasks SET current_state = 'COMMITTED', aggregate_version = aggregate_version + 1 WHERE task_id = 'task-1' AND current_state = 'DUE'",
-              ).run();
-              database.prepare(`
-INSERT INTO attempt_records (
- attempt_id, task_id, attempt_number, lease_token, scheduled_at_utc,
- started_at_utc, request_count, adapter_version, policy_version,
- attempt_fingerprint, created_at_utc
-) VALUES (?, ?, 1, ?, ?, ?, 1, ?, ?, ?, ?)
-`).run("attempt-1", "task-1", "lease-c1", AT, AT, "fixture-1", "1.0", FP("3"), AT);
-              database.prepare(`
-INSERT INTO attempt_results (
- attempt_id, finished_at_utc, received_at_utc, normalized_at_utc,
- outcome_code, retry_disposition, raw_payload_bytes, record_count,
- response_fingerprint, normalized_snapshot_fingerprint,
- result_fingerprint, created_at_utc
-) VALUES (?, ?, ?, ?, ?, ?, 10, 1, ?, ?, ?, ?)
-`).run("attempt-1", AT, AT, AT, "COMMITTED", "NONE", FP("4"), FP("5"), FP("6"), AT);
-              database.prepare(`
-INSERT INTO normalized_source_evidence (
- evidence_id, task_id, task_idempotency_key, attempt_id,
- provider_fingerprint, mapping_fingerprint, source_snapshot_fingerprint,
- payload_fingerprint, capability, source_lane, observed_at_utc,
- received_at_utc, normalized_at_utc, raw_payload_bytes, record_count,
- canonical_snapshot_json, committed_at_utc
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'EXCHANGE', ?, ?, ?, 10, 1, '{}', ?)
-`).run(
-                "evidence-1", "task-1", FP("2"), "attempt-1", FP("6"),
-                FP("7"), FP("8"), FP("9"), "EVENT_CONTRACT", AT, AT, AT, AT,
-              );
-              database.prepare(`
-UPDATE activation_budget_counters
-SET aggregate_version = aggregate_version + 1, requests_started = 1,
-    bytes_received = 10, records_received = 1, evidence_committed = 1,
-    updated_at_utc = ?
-WHERE activation_id = 'activation-1'
-`).run(AT);
-              database.prepare(`
-INSERT INTO transactional_outbox (
- outbox_id, aggregate_type, aggregate_id, aggregate_version, event_type,
- event_fingerprint, sanitized_event_json, created_at_utc
-) VALUES (?, 'TASK', ?, 3, 'EVIDENCE_COMMITTED', ?, '{}', ?)
-`).run("outbox-1", "task-1", FP("a"), AT);
-              database.exec("COMMIT");
-            } catch (error) {
-              database.exec("ROLLBACK");
-              throw error;
-            }
+            const task = runner.getTaskState(TASK_ID)!;
+            const budget = runner.getBudgetCounters(ACTIVATION_ID)!;
+            const workerResult = worker.runOneCycle({
+              activation: domain.activation,
+              task: domain.task,
+              expectedTaskVersion: task.aggregateVersion,
+              expectedBudgetVersion: budget.aggregateVersion,
+              completedAttemptCount: budget.requestsStarted,
+              workerId: "worker:c2-fixture",
+              leaseDurationMilliseconds: 5_000,
+            });
             return {
-              workerResult: {
-                outcome:
-                  CollectionRunnerFixtureWorkerOutcome.EvidenceCommitted,
-                taskId: decision.taskId!,
-                attemptId: "attempt-1",
-                evidenceId: "evidence-1",
-                reasonCode: "FIXTURE_EVIDENCE_COMMITTED",
-                deterministic: true,
-              },
-              receiptFingerprint: FP("b"),
+              workerResult,
+              receiptFingerprint: sha(JSON.stringify({
+                decisionFingerprint: decision.fingerprint,
+                workerResult,
+              })),
             };
           },
         },
         completionExecutor: {
           execute: (_reason, observedAtUtc, expectedPilotVersion) => {
-            const result = database.prepare(`
-UPDATE pilot_activations
-SET current_state = 'COMPLETED',
-    aggregate_version = aggregate_version + 1
-WHERE activation_id = 'activation-1'
-  AND current_state = 'ACTIVE'
-  AND aggregate_version = ?
-`).run(expectedPilotVersion);
-            if (result.changes !== 1) {
-              throw new Error("C1 Pilot completion compare-and-swap failed.");
-            }
+            const result = gatedRepository.transitionPilot({
+              activationId: ACTIVATION_ID,
+              expectedAggregateVersion: expectedPilotVersion,
+              nextState: CollectionRunnerPilotState.Completed,
+              clock: {
+                observedAtUtc,
+                absoluteOffsetMilliseconds: 10,
+                healthy: true,
+              },
+              recoveryBlockerCount: 0,
+              evidence: {
+                occurredAtUtc: observedAtUtc,
+                reasonCode: "C2_FIXTURE_COMPLETED",
+              },
+            });
             return {
               taskId: null,
-              receiptFingerprint: sha(JSON.stringify({
-                activationId: "activation-1",
-                expectedPilotVersion,
-                observedAtUtc,
-              })),
+              receiptFingerprint: sha(JSON.stringify(result)),
             };
           },
         },
@@ -503,11 +654,12 @@ WHERE activation_id = 'activation-1'
           read: () => ({
             healthStatus: CollectionRunnerRuntimeHealthStatus.Healthy,
             blockerCodes: [],
-            stopBarrierTripped: false,
+            stopBarrierTripped: runtimeStopBarrier.isTripped(),
           }),
         },
         resources: { close() {}, releaseOwnership() {} },
-      }),
+      };
+      },
     },
   });
   const step = new EventContractCollectionRunnerDurableFixtureRehearsalStepAdapter(
@@ -530,14 +682,14 @@ WHERE activation_id = 'activation-1'
         schemaVersion:
           EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_SCHEMA_VERSION,
         invocationId: phaseRequest.invocationId,
-        activationId: "activation-1",
+        activationId: ACTIVATION_ID,
         maximumTasks: 1,
       }),
     },
     {
       read: () => {
-        const pilot = runner.getPilotState("activation-1")!;
-        const task = runner.getTaskState("task-1")!;
+        const pilot = runner.getPilotState(ACTIVATION_ID)!;
+        const task = runner.getTaskState(TASK_ID)!;
         return {
           resultingPilotState: pilot.state,
           resultingTaskState: task.state,
@@ -552,14 +704,48 @@ WHERE activation_id = 'activation-1'
       resolveExisting: () => durable,
       resolvePrepared: () => durable,
     },
-    stop: { assertClear() {} },
+    stop: {
+      assertClear: () => {
+        stopChecks += 1;
+        if (afterClaimFault !== null && stopChecks === 3) {
+          if (afterClaimFault === "CRASH") {
+            (process as unknown as { exit(code: number): never }).exit(91);
+          }
+          throw new Error("C2 injected Stop after durable phase claim.");
+        }
+      },
+    },
     ownerAuthorization: { verify: () => true },
     ownership: {
-      acquire: () => ({
-        context: processContext,
-        releaseClean() {},
-        preserveAmbiguity() {},
-      }),
+      acquire: () => {
+        runtimeOwnership = acquireCollectionRunnerRuntimeOwnership({
+          configuration,
+          paths,
+          bootIdentityPort: {
+            readBootIdentity: () => ({
+              bootIdentity: `boot:c2:${String(ordinal)}`,
+              source: "C2_TEST_BOOT",
+              sourceVersion: "1.0",
+            }),
+          },
+          processNoncePort: {
+            createNonce: () => sha(
+              `${variant}:${String(ordinal)}:${paths.pathFingerprint}`,
+            ),
+          },
+          processId: 20_000 + ordinal,
+          wallClock: { nowUtc: () => observedAtUtc },
+        });
+        return {
+          context: {
+            processSessionId: runtimeOwnership.ownership.processSessionId,
+            bootIdentity: runtimeOwnership.ownership.bootIdentity,
+            observedAtUtc,
+          },
+          releaseClean: () => runtimeOwnership?.releaseCleanly(),
+          preserveAmbiguity() {},
+        };
+      },
     },
     preparation: {
       prepare: () => ({
@@ -587,6 +773,7 @@ WHERE activation_id = 'activation-1'
 }
 
 export function prepareC1Phase(root: string, variant: "a" | "b"): C1PhaseState {
+  assertC2StopClear(root);
   const sourceRoot = join(root, "source");
   const evidenceRoot = join(root, "evidence");
   const validationRoot = join(root, "validation-authority");
@@ -603,7 +790,7 @@ export function prepareC1Phase(root: string, variant: "a" | "b"): C1PhaseState {
   const database = openDatabase(readiness.storePath);
   try {
     seedInitialRunner(database);
-    coordinator(database, variant, 0).execute(
+    coordinator(database, root, variant, 0).execute(
       request(DurableFixtureRehearsalPhase.Prepare),
     );
   } finally {
@@ -630,6 +817,7 @@ export function prepareC1Phase(root: string, variant: "a" | "b"): C1PhaseState {
 }
 
 export function stepC1Phase(root: string): DurableFixtureRehearsalRegistry {
+  assertC2StopClear(root);
   const state = readC1PhaseState(root);
   const database = openDatabase(state.sourceStorePath);
   try {
@@ -639,7 +827,7 @@ export function stepC1Phase(root: string): DurableFixtureRehearsalRegistry {
       );
     const current = repository.readSnapshot("rehearsal-1")!.registry;
     const ordinal = current.nextInvocationOrdinal;
-    coordinator(database, state.variant, ordinal).execute(
+    coordinator(database, root, state.variant, ordinal).execute(
       request(DurableFixtureRehearsalPhase.Step, current, ordinal),
     );
     return repository.readSnapshot("rehearsal-1")!.registry;
@@ -648,7 +836,139 @@ export function stepC1Phase(root: string): DurableFixtureRehearsalRegistry {
   }
 }
 
+export function replayC2Step(
+  root: string,
+  ordinal: number,
+  changed: boolean,
+) {
+  assertC2StopClear(root);
+  const state = readC1PhaseState(root);
+  const database = openDatabase(state.sourceStorePath);
+  try {
+    const repository =
+      createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
+        database,
+      );
+    const snapshot = repository.readSnapshot("rehearsal-1")!;
+    const claim = snapshot.claims.find(
+      (item) =>
+        item.phase === DurableFixtureRehearsalPhase.Step &&
+        item.invocationOrdinal === ordinal,
+    );
+    if (claim === undefined) {
+      throw new Error("C2 replay requires the exact prior STEP claim.");
+    }
+    const replayRequest = request(
+      DurableFixtureRehearsalPhase.Step,
+      {
+        lifecycleVersion: claim.expectedLifecycleVersion,
+        recoveryFingerprint: claim.expectedRecoveryFingerprint,
+      } as DurableFixtureRehearsalRegistry,
+      ordinal,
+    );
+    return coordinator(database, root, state.variant, ordinal + 20).execute({
+      ...replayRequest,
+      invocationId: changed
+        ? `${replayRequest.invocationId}-changed`
+        : replayRequest.invocationId,
+    });
+  } finally {
+    database.close();
+  }
+}
+
+export function stopAfterClaimC2Phase(root: string): never {
+  assertC2StopClear(root);
+  const state = readC1PhaseState(root);
+  const database = openDatabase(state.sourceStorePath);
+  try {
+    const repository =
+      createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
+        database,
+      );
+    const current = repository.readSnapshot("rehearsal-1")!.registry;
+    const ordinal = current.nextInvocationOrdinal;
+    coordinator(database, root, state.variant, ordinal, "STOP").execute(
+      request(DurableFixtureRehearsalPhase.Step, current, ordinal),
+    );
+    throw new Error("C2 Stop-after-claim drill unexpectedly completed.");
+  } finally {
+    database.close();
+  }
+}
+
+export function crashAfterClaimC2Phase(root: string): never {
+  assertC2StopClear(root);
+  const state = readC1PhaseState(root);
+  const database = openDatabase(state.sourceStorePath);
+  const repository =
+    createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
+      database,
+    );
+  const current = repository.readSnapshot("rehearsal-1")!.registry;
+  const ordinal = current.nextInvocationOrdinal;
+  coordinator(database, root, state.variant, ordinal, "CRASH").execute(
+    request(DurableFixtureRehearsalPhase.Step, current, ordinal),
+  );
+  throw new Error("C2 crash-after-claim drill unexpectedly completed.");
+}
+
+export interface C2DurableInspection {
+  readonly lifecycleState: DurableFixtureRehearsalLifecycleState;
+  readonly claimCount: number;
+  readonly invocationReceiptCount: number;
+  readonly unresolvedClaimCount: number;
+  readonly taskTransitions: readonly string[];
+  readonly attemptCount: number;
+  readonly attemptResultCount: number;
+  readonly evidenceCount: number;
+  readonly liveLeaseCount: number;
+}
+
+export function inspectC2Durable(root: string): C2DurableInspection {
+  const state = readC1PhaseState(root);
+  const database = openDatabase(state.sourceStorePath, true);
+  try {
+    const snapshot =
+      createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
+        database,
+      ).readSnapshot("rehearsal-1")!;
+    const receipts = new Set(
+      snapshot.invocationReceipts.map(({ claimId }) => claimId),
+    );
+    const failures = new Set(
+      snapshot.failureReceipts.map(({ claimId }) => claimId),
+    );
+    const taskTransitions = database.prepare(`
+SELECT to_state
+FROM task_transitions
+WHERE task_id = ?
+ORDER BY transition_sequence
+`).all(TASK_ID).map((row) => String(row.to_state));
+    const scalar = (table: string): number =>
+      Number(Object.values(database.prepare(
+        `SELECT COUNT(*) FROM ${table}`,
+      ).get() ?? {})[0]);
+    return {
+      lifecycleState: snapshot.registry.lifecycleState,
+      claimCount: snapshot.claims.length,
+      invocationReceiptCount: snapshot.invocationReceipts.length,
+      unresolvedClaimCount: snapshot.claims.filter(
+        ({ claimId }) => !receipts.has(claimId) && !failures.has(claimId),
+      ).length,
+      taskTransitions,
+      attemptCount: scalar("attempt_records"),
+      attemptResultCount: scalar("attempt_results"),
+      evidenceCount: scalar("normalized_source_evidence"),
+      liveLeaseCount: scalar("task_leases"),
+    };
+  } finally {
+    database.close();
+  }
+}
+
 export function validateC1Phase(root: string): DurableFixtureRehearsalValidationReceipt {
+  assertC2StopClear(root);
   const state = readC1PhaseState(root);
   const receipt = new FixedLocalDurableFixtureRehearsalValidationAdapter(
     state.validationRoot,
@@ -683,6 +1003,7 @@ function withoutDerived(
 }
 
 export function freezeC1Phase(root: string): DurableFixtureRehearsalRegistry {
+  assertC2StopClear(root);
   const state = readC1PhaseState(root);
   const receiptValue = JSON.parse(
     readFileSync(state.validationReceiptPath, "utf8"),
@@ -747,19 +1068,19 @@ export function freezeC1Phase(root: string): DurableFixtureRehearsalRegistry {
     const pilot = database.prepare(`
 SELECT current_state, aggregate_version
 FROM pilot_activations
-WHERE activation_id = 'activation-1'
-`).get();
+WHERE activation_id = ?
+`).get(ACTIVATION_ID);
     const task = database.prepare(`
 SELECT current_state, aggregate_version
 FROM scheduled_tasks
-WHERE task_id = 'task-1'
-`).get();
+WHERE task_id = ?
+`).get(TASK_ID);
     const budget = database.prepare(`
 SELECT events_scheduled, requests_started, bytes_received, records_received,
        retries_started, evidence_committed, tasks_missed
 FROM activation_budget_counters
-WHERE activation_id = 'activation-1'
-`).get();
+WHERE activation_id = ?
+`).get(ACTIVATION_ID);
     const scenario = sha(JSON.stringify({
       actions: completedSnapshot.invocationReceipts.map((item) => ({
         ordinal: item.invocationOrdinal,
@@ -822,6 +1143,7 @@ WHERE activation_id = 'activation-1'
 }
 
 export async function packageC1Phase(root: string): Promise<string> {
+  assertC2StopClear(root);
   const state = readC1PhaseState(root);
   const database = openDatabase(state.sourceStorePath, true);
   try {

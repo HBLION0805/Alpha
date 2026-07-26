@@ -2,10 +2,15 @@ import { writeFileSync } from "node:fs";
 import process from "node:process";
 
 import {
+  crashAfterClaimC2Phase,
   freezeC1Phase,
+  inspectC2Durable,
   packageC1Phase,
   prepareC1Phase,
+  replayC2Step,
+  setC2Stop,
   stepC1Phase,
+  stopAfterClaimC2Phase,
   validateC1Phase,
   verifyC1Phase,
 } from "./collection-runner-durable-rehearsal-c1-phase-fixture";
@@ -26,6 +31,29 @@ async function main(): Promise<void> {
       return;
     case "step":
       write(stepC1Phase(root!));
+      return;
+    case "replay-step":
+      write(replayC2Step(root!, Number(variant), false));
+      return;
+    case "changed-replay-step":
+      write(replayC2Step(root!, Number(variant), true));
+      return;
+    case "stop-after-claim":
+      write(stopAfterClaimC2Phase(root!));
+      return;
+    case "crash-after-claim":
+      write(crashAfterClaimC2Phase(root!));
+      return;
+    case "inspect":
+      write(inspectC2Durable(root!));
+      return;
+    case "stop-on":
+      setC2Stop(root!, true);
+      write({ stopped: true });
+      return;
+    case "stop-off":
+      setC2Stop(root!, false);
+      write({ stopped: false });
       return;
     case "validate":
       write(validateC1Phase(root!));

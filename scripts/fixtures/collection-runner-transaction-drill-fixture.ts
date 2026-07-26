@@ -127,7 +127,7 @@ function createMapping(
   });
 }
 
-function createTransactionDrillDomain() {
+export function createCollectionRunnerTransactionDrillDomain() {
   const provider = createProvider();
   const mapping = createMapping(provider);
   const definition = runnerEngine.createRunnerDefinition({
@@ -206,7 +206,7 @@ export function createCollectionRunnerTransactionDrillFixture(
   });
   const repository = store.createRunnerRepository();
   const { provider, mapping, definition, activation, task } =
-    createTransactionDrillDomain();
+    createCollectionRunnerTransactionDrillDomain();
 
   repository.registerRunnerDefinition({
     definition,
@@ -372,7 +372,7 @@ export function replayTransactionDrillEvidence(sqliteRoot: string) {
   const database = new DatabaseSync(storePath);
   try {
     const { provider, mapping, activation, task } =
-      createTransactionDrillDomain();
+      createCollectionRunnerTransactionDrillDomain();
     return commitTransactionDrillEvidence({
       repository: createSqliteEventContractCollectionRunnerRepository(database),
       provider,

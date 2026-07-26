@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B14-C1 are complete and pushed. Day15-T3B14-MR2 is complete locally and pending Owner review. It accepts C1's phase-process, validation-authority, and frozen-store corrections but does not approve a rehearsal run: C1's evidence-commit executor still bypasses the reviewed Worker transaction chain, several required cases remain component rather than fresh-process evidence, and normalized validation undercounts one executed process suite. No executable or continuous runtime, real rehearsal, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+Day 8 Intelligence foundations through Day15-T3B14-MR2 are complete and pushed. Day15-T3B14-C2 is complete locally and pending Owner review. C2 composes the real fixture Worker transaction chain in the test-only phase surface, adds fresh-process crash/Stop/replay evidence for the previously component-only cases, and counts the durable-evidence process suite in normalized validation. A separate T3B14-MR3 is still required. No executable or continuous runtime, real rehearsal, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
 
 Implemented Python prototype/runtime:
 

@@ -1,5 +1,21 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B14-C2 Worker-composed Process Evidence Correction
+
+- Replaced direct fixture seeding and evidence writes in the C1 STEP surface
+  with the reviewed fixture Worker and its T7, T8, T8B, and T10 repository
+  transaction chain.
+- Added fresh-process evidence for crash after a durable phase claim, Stop
+  after claim, Stop before every mutable phase, exact replay, and changed
+  replay rejection without duplicate mutation.
+- Corrected normalized validation accounting so process-suite output in
+  `drills passed: x/y` form contributes to the registered total.
+- Replaced the broad twenty-drill references with exact test file, test case,
+  and OS-process-boundary mappings.
+- C2 remains test-only and authorizes no real rehearsal, continuous runtime,
+  provider, recommendation, or capital action. A separate T3B14-MR3 is
+  required.
+
 ## 2026-07-25 - Day15-T3B14-MR2 Corrected Readiness Review
 
 - Reviewed pushed C1 baseline `e8f1ec2` and reran focused plus complete

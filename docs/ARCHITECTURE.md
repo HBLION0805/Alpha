@@ -861,6 +861,17 @@ cases remain component rather than fresh-process evidence, and validation
 reporting omits the executed durable-evidence process count. T3B14-C2 must
 close those narrow evidence gaps before a separate T3B14-MR3.
 
+Day15-T3B14-C2 closes those narrow gaps locally. The test-only STEP phase now
+constructs the real fixture Worker and session-gated repository, so its single
+foreground cycle executes the reviewed T7 lease, T8 attempt claim, T8B
+validation transition, and T10 atomic evidence commit. New child-process
+drills persist and inspect crash-after-claim and Stop-after-claim ambiguity,
+prove Stop precedence before every mutable phase, and prove exact replay plus
+changed-replay rejection without duplicate mutation. Normalized validation now
+counts the durable process suite's `drills passed` output. These are evidence
+and accounting corrections only; a separate T3B14-MR3 remains required and no
+real rehearsal or runtime authority is granted.
+
 ---
 
 # Event Contract Framework

@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-C2 Worker-composed Process Evidence
+
+- Decision: require the clean test-only STEP phase to invoke the reviewed
+  fixture Worker instead of directly constructing Worker-owned transaction
+  rows.
+- Decision: close requirements 4, 10, 13, and 14 with fresh child-process
+  crash, Stop, exact-replay, and changed-replay evidence.
+- Decision: count both `tests passed` and `drills passed` result formats in
+  normalized validation and lock that behavior with a regression test.
+- Decision: retain `NO_GO_FOR_REHEARSAL_RUN` until a separate T3B14-MR3
+  independently reviews C2 and the complete validation evidence.
+- Consequence: C2 grants no command, loop, timer, provider, real Pilot, T1/T2,
+  recommendation, broker, order, execution, or capital authority.
+
 ## 2026-07-25 - Day15-T3B14-MR2 Corrected Readiness Review
 
 - Decision: accept C1's one-phase-per-process chain, validation-authority

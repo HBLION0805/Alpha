@@ -30,6 +30,17 @@ const tests = [
     ),
   },
   {
+    name: "extracts process-drill pass counts",
+    run: () => assertDeepEqual(
+      extractValidationCounts(
+        "Durable Fixture Rehearsal process drills passed: 14/14.",
+        true,
+      ),
+      { testsExecuted: 14, passed: 14, failed: 0 },
+      "process drill counts",
+    ),
+  },
+  {
     name: "extracts Python unittest counts",
     run: () => assertDeepEqual(
       extractValidationCounts("Ran 11 tests in 0.001s\n\nOK", true),

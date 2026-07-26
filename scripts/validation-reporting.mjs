@@ -12,7 +12,7 @@ export function extractValidationCounts(output, succeeded) {
   const text = typeof output === "string" ? output : "";
   const fractionMatches = [
     ...text.matchAll(/(\d+)\s*\/\s*(\d+)\s*(?:tests?\s*)?passed/giu),
-    ...text.matchAll(/tests?\s+passed:\s*(\d+)\s*\/\s*(\d+)/giu),
+    ...text.matchAll(/(?:tests?|drills?)\s+passed:\s*(\d+)\s*\/\s*(\d+)/giu),
   ];
   const fraction = fractionMatches.at(-1);
   if (fraction !== undefined) {
