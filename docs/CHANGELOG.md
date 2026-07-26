@@ -1,5 +1,23 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B15-T2 Operation Manifest and Registry Foundation
+
+- Added strict immutable contracts for fixed rehearsal roots, actual-Alpha
+  validation authority, closed phase plans, manifest proposals,
+  proposal-bound Owner approvals, final operation manifests, and registry
+  snapshots.
+- Added deterministic constructors and fail-closed validation for the exact
+  six-root set, canonical disjoint paths, complete validation identity,
+  contiguous STEP ordinals, terminal phase order, approval chronology, and
+  mandatory non-authority declaration.
+- Added a read-only registry that verifies exact root, fixture catalog,
+  provider/mapping, Runner/plan, validation commit, and rehearsal bindings and
+  returns defensive immutable records.
+- Added `31/31` focused tests and validation-bundle registration.
+- Added no SQLite migration, filesystem mutation, Owner command, phase
+  authorization, rehearsal execution, network, provider, recommendation, or
+  capital authority.
+
 ## 2026-07-25 - Day15-T3B15-T1 Owner-Gated Rehearsal Operation Architecture
 
 - Defined one immutable operation manifest bound to the exact clean Alpha

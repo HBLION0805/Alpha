@@ -1,5 +1,24 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B15-T2 Operation Manifest Contracts and Registry
+
+- Decision: implement T2 as pure immutable contracts, deterministic
+  constructors/verifiers, and a read-only in-memory registry.
+- Decision: do not add Migration 004 in T2; durable one-use phase
+  authorization and result transactions belong to the separately reviewed
+  command/gate boundary.
+- Decision: require exactly six registered root purposes, pairwise-disjoint
+  canonical paths, inspected filesystem identities, and a read-only Alpha
+  repository root.
+- Decision: separate the content-addressed manifest proposal from Owner
+  approval so approval can bind an exact proposal without a circular
+  fingerprint.
+- Decision: require the validation authority to bind one full Alpha commit,
+  clean-tree enforcement, fixed command, exact suite/test total, recursion
+  policy, and zero network/credential authority.
+- Consequence: T2 grants no command, phase transaction, rehearsal execution,
+  continuous runtime, bounded-live, or capital authority.
+
 ## 2026-07-25 - Day15-T3B15-T1 Exact Owner-Gated Rehearsal Operation
 
 - Decision: one future rehearsal operation must be bound to one immutable

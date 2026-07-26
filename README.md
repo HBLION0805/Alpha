@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B14-MR4 are complete and pushed. Design-only Day15-T3B15-T1 is complete locally and pending Owner review. It defines one exact Owner-gated, fixed-root, actual-Alpha-validation, network-free fixture-rehearsal operation while retaining `NO_GO_FOR_REHEARSAL_EXECUTION`. No command implementation, executable or continuous runtime, real rehearsal, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+Day 8 Intelligence foundations through Day15-T3B15-T1 are complete and pushed. Day15-T3B15-T2 is complete locally and pending Owner review. It adds strict immutable operation-manifest, root-registry, validation-authority, and proposal-bound Owner-approval contracts plus a read-only exact-binding registry while retaining `NO_GO_FOR_REHEARSAL_EXECUTION`. No command implementation, executable or continuous runtime, real rehearsal, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
 
 Implemented Python prototype/runtime:
 
@@ -78,6 +78,7 @@ Implemented and tested TypeScript foundations:
 - Pure deterministic collection-runner scheduling plus one explicit fixture-only Worker cycle with exact adapter binding, bounded retry, cutoff/budget enforcement, cancellation, session-gated persistence, and ambiguity-preserving Stop behavior
 - Local collection-runner Operator and Health surface with fail-closed Preflight/Status reports, authenticated graceful/Emergency Stop orchestration, in-process Stop notification, and bounded payload-free SQLite Outbox projection
 - Process-level collection-runner drills covering duplicate ownership, forced exit, stale-lock restart, retry timeout, cutoff, Stop precedence, replay conflict, and fail-closed health
+- Owner-gated rehearsal-operation contract foundation with exact six-root registration, actual-Alpha validation authority, proposal-bound Owner approval, content-addressed manifests, and a read-only exact-binding registry
 
 The TypeScript application layer can now invoke one registered read-only Python Risk Engine calculation through a versioned typed client and fixed local subprocess adapter. No dashboard or business consumer is wired to the boundary yet, Python does not invoke TypeScript, and no mutable cross-runtime operation exists. The TypeScript AI infrastructure still uses neutral fixtures only: there is no production provider adapter, provider SDK, credential handling, network/API call, or live AI execution.
 

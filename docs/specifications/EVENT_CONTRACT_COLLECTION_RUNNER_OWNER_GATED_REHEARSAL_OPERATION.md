@@ -4,11 +4,12 @@
 
 - Task: `Day15-T3B15-T1`
 - Mode: design only
-- Reviewed baseline: `f476d43`
-- Implementation: not started
+- Reviewed baseline: `b27687c`
+- T3B15-T1: committed and pushed as `b27687c`
+- T3B15-T2: implementation complete locally and pending Owner review
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
-- Validation: complete Alpha bundle passes `2377/2377`
+- Validation: complete Alpha bundle passes `2408/2408`
 
 This design follows the T3B14-MR4 decision:
 
@@ -22,6 +23,33 @@ NO_GO_FOR_BOUNDED_LIVE`
 T3B15-T1 changes documentation only. It does not create a command, database
 migration, credential, runtime root, operation manifest, rehearsal record, or
 evidence package, and it does not invoke any rehearsal phase.
+
+## T3B15-T2 implementation
+
+T3B15-T2 implements only the immutable contract and read-only registry
+foundation:
+
+- exact closed records for six fixed root purposes, filesystem inspection
+  identities, validation authority, phase plans, manifest proposals,
+  proposal-bound Owner approvals, final manifests, and registry snapshots;
+- deterministic content-addressed construction with recursive freezing and
+  unknown-field rejection;
+- exact root completeness, uniqueness, canonical-path, disjointness,
+  creation-policy, and no-link/reparse evidence checks;
+- fixed actual-Alpha validation authority with a full Git commit, clean-tree
+  requirement, exact package/suite/test-total identities, fixed command and
+  recursion policy, and no network or credential permission;
+- closed normal phase order with contiguous STEP ordinals and RECOVER reserved
+  for the separately gated recovery path;
+- an immutable registry that verifies root, fixture catalog,
+  provider/mapping, Runner/plan, validation, rehearsal, and approval bindings
+  and exposes defensive read-only queries;
+- `31/31` focused deterministic tests.
+
+T2 adds no Migration 004. One-use phase authorization, consumption, and result
+transactions belong to T3B15-T3 after separate Owner review. T2 performs no
+filesystem inspection or mutation, local authentication, command execution,
+phase invocation, validation process, evidence construction, or rehearsal.
 
 ## Purpose
 
@@ -487,9 +515,9 @@ Approval of one item grants no authority for the next:
 1. **T3B15-T1 — Exact Owner-Gated Network-Free Rehearsal Operation
    Architecture:** this documentation-only design.
 2. **T3B15-T2 — Operation Manifest Contracts and Registry Foundation:**
-   immutable manifest/root/approval contracts, pure verification, and
-   separately reviewed durable schema/transaction design if persistence is
-   required.
+   complete locally and pending Owner review; immutable
+   manifest/root/approval/validation contracts, pure verification, and a
+   read-only registry are implemented without a new migration.
 3. **T3B15-T3 — Local Owner Command, Preflight, Status, and Phase Gate:**
    stdin-only authentication, fixed-root resolution, one-use authorization,
    one-phase invocation, Stop, and sanitized reporting.
@@ -542,8 +570,9 @@ T3B15-T1 does not authorize:
 
 ## Recommended next task
 
-After Owner review and explicit approval, commit and push T3B15-T1, then begin:
+After Owner review and explicit approval, commit and push T3B15-T2, then begin:
 
-`Day15-T3B15-T2 — Operation Manifest Contracts and Registry Foundation`
+`Day15-T3B15-T3 — Local Owner Command, Preflight, Status, and Phase Gate`
 
-T3B15-T2 must not implement the executable command or run a rehearsal.
+T3B15-T3 must remain one-phase-per-process, network-free, and must not run a
+rehearsal during implementation.

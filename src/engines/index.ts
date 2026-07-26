@@ -44,3 +44,4 @@ export * from "./event-contract-collection-runner-recovery-control";
 export * from "./event-contract-collection-runner-runtime";
 export * from "./event-contract-collection-runner-fixture-rehearsal";
 export * from "./event-contract-collection-runner-durable-fixture-rehearsal";
+export * from "./event-contract-collection-runner-rehearsal-operation";

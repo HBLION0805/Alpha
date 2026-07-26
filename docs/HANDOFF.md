@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-MR4 is committed and pushed; design-only Day15-T3B15-T1 is complete locally and pending Owner review
+Day15-T3B15-T1 is committed and pushed; Day15-T3B15-T2 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `f476d43` on `main`, equal to `origin/main` before the T3B15-T1 design task.
+Verified baseline: `b27687c` on `main`, equal to `origin/main` before the T3B15-T2 implementation task.
 
 Day 7 completed:
 
@@ -167,7 +167,7 @@ validation passes `2377/2377`. Rehearsal execution remains blocked because
 the existing child is a test fixture, not an Owner-authenticated fixed-root
 operation bound to the actual Alpha commit and complete validation suite.
 
-Day15-T3B15-T1 is complete locally and pending Owner review. It defines one
+Day15-T3B15-T1 defined one
 immutable operation manifest bound to the exact clean Alpha commit, approved
 fixture and mapping, registered roots, phase plan, validation suite/test
 total, Owner approval, expiry, and non-authority declaration. Every mutable
@@ -176,8 +176,21 @@ one-use authorization; one foreground process performs exactly one phase and
 exits. Preflight and Status are read-only, Stop has precedence, crash
 ambiguity cannot be automatically retried, validation targets the actual
 complete Alpha repository, and final verification starts in a fresh process.
-T3B15-T1 adds documentation only and does not authorize implementation or a
-rehearsal. Complete Alpha validation passes `2377/2377`.
+T3B15-T1 added documentation only and did not authorize implementation or a
+rehearsal. Its approved complete Alpha validation baseline is `2377/2377`.
+
+Day15-T3B15-T1 is committed and pushed as `b27687c`. Day15-T3B15-T2 is
+complete locally and pending Owner review. T2 adds strict immutable contracts
+for the exact six registered roots, actual-Alpha validation authority, closed
+phase plan, content-addressed manifest proposal, proposal-bound Owner
+approval, and final operation manifest. Its read-only in-memory registry
+reconstructs and verifies root, fixture catalog, provider/mapping,
+Runner/plan, validation commit, and rehearsal bindings and returns defensive
+immutable records. T2 intentionally adds no Migration 004 because durable
+authorization consumption belongs to the later command/gate transaction
+boundary. Focused typecheck and dependency checks pass, the new focused suite
+passes `31/31`, and complete Alpha validation passes `2408/2408`. No
+filesystem mutation, command, phase invocation, or rehearsal was added.
 
 ## Day 6 Milestone Review
 
@@ -613,9 +626,8 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-T1 Exact Owner-Gated Network-Free Rehearsal
-Operation Architecture. If approved, commit and push the design, then begin
-T3B15-T2 Operation Manifest Contracts and Registry Foundation. Do not
-implement the executable command, run a rehearsal, add continuous runtime,
-loops, network providers, real Pilot activation, T1/T2 delivery, probability
-research, recommendation, or trading authority.
+Owner review of Day15-T3B15-T2 Operation Manifest Contracts and Registry
+Foundation. If approved, commit and push T2, then begin T3B15-T3 Local Owner
+Command, Preflight, Status, and Phase Gate. Do not run a rehearsal, add
+continuous runtime, loops, network providers, real Pilot activation, T1/T2
+delivery, probability research, recommendation, or trading authority.

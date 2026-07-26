@@ -916,6 +916,22 @@ process from a registered evidence root. Implementation, independent review,
 and authorization for one rehearsal remain separate future decisions. See
 [Exact Owner-Gated Network-Free Rehearsal Operation Architecture](specifications/EVENT_CONTRACT_COLLECTION_RUNNER_OWNER_GATED_REHEARSAL_OPERATION.md).
 
+Day15-T3B15-T2 implements the non-operational contract and registry
+foundation. Six immutable root registrations must cover Control, Workspace,
+SQLite, Backup, Evidence, and the read-only Alpha repository exactly once,
+with canonical non-overlapping paths and inspected filesystem identities. A
+fixed validation authority binds one full 40-character Alpha commit, clean
+tree, package and suite fingerprints, exact registered test total, fixed
+validation command, recursion policy, zero network, and zero credential
+access. The operation proposal freezes the catalog/mapping/Runner/plan/root/
+validation identities and closed PREPARE/STEP/VALIDATE/FREEZE/PACKAGE/VERIFY
+sequence before Owner approval; the approval binds that proposal fingerprint,
+and the final manifest derives its operation identity from both records. A
+read-only in-memory registry verifies every cross-binding and exposes only
+defensive queries. T2 adds no SQLite migration, phase authorization
+transaction, filesystem inspection, Owner command, phase invocation, or
+rehearsal authority.
+
 ---
 
 # Event Contract Framework

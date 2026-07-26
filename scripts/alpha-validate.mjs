@@ -57,6 +57,7 @@ const requiredFiles = [
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_CONTRACTS.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_SQLITE.md",
   "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_RECOVERY.md",
+  "docs/specifications/EVENT_CONTRACT_COLLECTION_RUNNER_OWNER_GATED_REHEARSAL_OPERATION.md",
   "package.json",
   "tsconfig.json"
 ];
@@ -137,6 +138,7 @@ const aggregateTestFiles = [
   "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC1ProcessDrill.test.ts",
   "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC2ProcessDrill.test.ts",
   "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC3ProcessDrill.test.ts",
+  "src/engines/event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine.test.ts",
   "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
