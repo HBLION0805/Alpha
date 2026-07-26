@@ -1,5 +1,18 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-C3 Exact Process Boundary Evidence
+
+- Decision: place C3 crash checkpoints around the assembled rehearsal
+  `claimStep` and `completeStep` boundaries without adding production
+  fault-injection APIs.
+- Decision: require fresh-process no-mutation evidence for each changed phase,
+  ordinal, recovery fingerprint, and manifest fingerprint.
+- Decision: require a published package artifact to be modified before an
+  independent verifier process rejects the envelope.
+- Decision: require a separate T3B14-MR4 before any rehearsal-run decision.
+- Consequence: C3 grants no command, loop, timer, provider, real Pilot, T1/T2,
+  recommendation, broker, order, execution, or capital authority.
+
 ## 2026-07-25 - Day15-T3B14-MR3 Independent Readiness Review
 
 - Decision: accept C2's real Worker transaction composition, durable

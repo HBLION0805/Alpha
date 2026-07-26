@@ -1,5 +1,19 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B14-C3 Exact Process Boundary Evidence Correction
+
+- Added assembled STEP child-process exits before rehearsal claim commit,
+  after T6 but before the rehearsal receipt, and after Worker T10 but before
+  the rehearsal receipt.
+- Added separate fresh-process rejection for changed phase, ordinal, recovery
+  fingerprint, and manifest fingerprint with post-failure no-mutation checks.
+- Added published package-artifact substitution in one child and independent
+  fresh-verifier rejection in another.
+- Corrected matrix rows 3, 5, 9, 14, and 17 to cite exact C3 cases and
+  process boundaries.
+- C3 remains test-only and grants no rehearsal, runtime, provider,
+  recommendation, or capital authority. A separate T3B14-MR4 is required.
+
 ## 2026-07-25 - Day15-T3B14-MR3 Independent Readiness Review
 
 - Independently reviewed pushed C2 baseline `a9dbeda` and reran Worker,

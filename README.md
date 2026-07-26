@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B14-C2 are complete and pushed. Day15-T3B14-MR3 is complete locally and pending Owner review. MR3 accepts the Worker composition, claim/Stop/exact-replay evidence, and corrected `2372/2372` validation accounting, but retains `NO_GO_FOR_REHEARSAL_RUN`: several twenty-drill matrix entries do not prove their exact rehearsal-phase boundary. A narrow T3B14-C3 process-evidence correction and separate MR4 are required. No executable or continuous runtime, real rehearsal, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+Day 8 Intelligence foundations through Day15-T3B14-MR3 are complete and pushed. Day15-T3B14-C3 is complete locally and pending Owner review. C3 adds exact assembled pre-claim, post-T6/pre-receipt, and post-T10/pre-receipt crash evidence; separate changed phase/ordinal/recovery/manifest replay rejection; and fresh-process package-artifact substitution rejection. A separate T3B14-MR4 is still required. No executable or continuous runtime, real rehearsal, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
 
 Implemented Python prototype/runtime:
 

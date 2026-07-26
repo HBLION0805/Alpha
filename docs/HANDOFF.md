@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-C2 is committed and pushed; Day15-T3B14-MR3 is complete locally and pending Owner review
+Day15-T3B14-MR3 is committed and pushed; Day15-T3B14-C3 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `a9dbeda` on `main`, equal to `origin/main` before the T3B14-MR3 review task.
+Verified baseline: `27050ae` on `main`, equal to `origin/main` before the T3B14-C3 correction task.
 
 Day 7 completed:
 
@@ -148,6 +148,15 @@ not perform package-artifact substitution in a fresh verifier process.
 Focused reviews pass `5/5`, `3/3`, `11/11`, `14/14`, `4/4`, and `6/6`;
 complete Alpha validation passes `2372/2372`. The recommended next task is
 T3B14-C3 followed by a separate T3B14-MR4.
+
+Day15-T3B14-MR3 is committed and pushed as `27050ae`. Day15-T3B14-C3 is
+complete locally and pending Owner review. C3 adds exact assembled child
+process exits before the rehearsal claim, after T6 and before its receipt, and
+after T10 and before its receipt; proves separate phase, ordinal, recovery,
+and manifest replay changes fail without mutation; and proves a fresh verifier
+rejects a substituted published package artifact. C3 focused process evidence
+passes `5/5`, and complete Alpha validation passes `2377/2377`. A separate
+T3B14-MR4 remains required, and no real rehearsal was run or authorized.
 
 ## Day 6 Milestone Review
 

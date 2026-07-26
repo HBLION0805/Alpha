@@ -2,15 +2,19 @@ import { writeFileSync } from "node:fs";
 import process from "node:process";
 
 import {
+  crashAfterForegroundC3Phase,
   crashAfterClaimC2Phase,
+  crashBeforeClaimC3Phase,
   freezeC1Phase,
   inspectC2Durable,
   packageC1Phase,
   prepareC1Phase,
   replayC2Step,
+  replayC3ChangedStep,
   setC2Stop,
   stepC1Phase,
   stopAfterClaimC2Phase,
+  substituteC3PackageArtifact,
   validateC1Phase,
   verifyC1Phase,
 } from "./collection-runner-durable-rehearsal-c1-phase-fixture";
@@ -44,6 +48,24 @@ async function main(): Promise<void> {
     case "crash-after-claim":
       write(crashAfterClaimC2Phase(root!));
       return;
+    case "crash-before-claim":
+      write(crashBeforeClaimC3Phase(root!));
+      return;
+    case "crash-after-foreground":
+      write(crashAfterForegroundC3Phase(root!));
+      return;
+    case "changed-phase-replay":
+      write(replayC3ChangedStep(root!, 1, "PHASE"));
+      return;
+    case "changed-ordinal-replay":
+      write(replayC3ChangedStep(root!, 1, "ORDINAL"));
+      return;
+    case "changed-recovery-replay":
+      write(replayC3ChangedStep(root!, 1, "RECOVERY"));
+      return;
+    case "changed-manifest-replay":
+      write(replayC3ChangedStep(root!, 1, "MANIFEST"));
+      return;
     case "inspect":
       write(inspectC2Durable(root!));
       return;
@@ -66,6 +88,10 @@ async function main(): Promise<void> {
       return;
     case "verify":
       write(verifyC1Phase(root!));
+      return;
+    case "substitute-package-artifact":
+      substituteC3PackageArtifact(root!);
+      write({ substituted: true });
       return;
     default:
       throw new Error("Unknown C1 phase.");

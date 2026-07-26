@@ -883,6 +883,16 @@ package-artifact substitution. T3B14-C3 must add those exact child-process
 boundaries before a separate MR4. MR3 grants no rehearsal or runtime
 authority.
 
+Day15-T3B14-C3 closes the exact MR3 evidence gaps locally without changing the
+production coordinator contract. Test-only fault checkpoints now exit the
+assembled STEP child before `claimStep`, after foreground T6 and before
+`completeStep`, or after Worker T10 and before `completeStep`; a new process
+then reconstructs both Runner and rehearsal truth. Four separate replay
+children alter phase, ordinal, recovery fingerprint, or manifest fingerprint
+and prove no mutation. A package-substitution child changes one published
+artifact before an independent verifier rejects the envelope. C3 remains
+non-operational and requires a separate T3B14-MR4.
+
 ---
 
 # Event Contract Framework

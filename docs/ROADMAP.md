@@ -412,10 +412,12 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B14-MR2 blockers: C1's clean evidence action bypasses the reviewed Worker transaction chain, several required cases cite component rather than fresh-process evidence, and the normalized report does not count the executed durable-evidence `14/14`.
    - T3B14-C2 status: committed and pushed as `a9dbeda`; focused Worker-composed process evidence passes `5/5`, C1 phase composition passes `3/3`, durable evidence passes `14/14`, validation-reporting regression tests pass `6/6`, and complete Alpha validation passes `2372/2372`.
    - T3B14-C2 scope: real fixture Worker composition for STEP, fresh-process crash-after-claim and Stop-after-claim ambiguity, Stop precedence for all mutable phases, exact/changed replay evidence, exact twenty-drill traceability, and normalized `drills passed` accounting.
-   - T3B14-MR3 status: complete locally and pending Owner review.
+   - T3B14-MR3 status: committed and pushed as `27050ae`.
    - T3B14-MR3 decision: `C2_CORE_CORRECTIONS_ACCEPTED / PROCESS_EVIDENCE_MATRIX_NOT_ACCEPTED / GO_FOR_C3_EXACT_PROCESS_DRILL_CORRECTION / NO_GO_FOR_REHEARSAL_RUN / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
    - T3B14-MR3 blockers: rows 3, 5, and 9 do not prove the assembled rehearsal claim/receipt boundary; row 14 changes invocation ID rather than phase/ordinal/recovery/manifest; row 17 does not perform fresh-process package-artifact substitution.
-   - T3B14 next sequence: Owner review/commit of T3B14-MR3, narrow T3B14-C3, then a separate T3B14-MR4; no rehearsal run is authorized.
+   - T3B14-C3 status: complete locally and pending Owner review; exact assembled process-boundary tests pass `5/5` and complete Alpha validation passes `2377/2377`.
+   - T3B14-C3 scope: pre-claim, post-T6/pre-receipt, post-T10/pre-receipt crash evidence; independent changed phase/ordinal/recovery/manifest replay rejection; and fresh-process package-artifact substitution rejection.
+   - T3B14 next sequence: Owner review/commit of T3B14-C3, then a separate T3B14-MR4; no rehearsal run is authorized.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

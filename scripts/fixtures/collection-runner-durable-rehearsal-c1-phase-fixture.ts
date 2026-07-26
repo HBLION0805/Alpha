@@ -315,7 +315,12 @@ function coordinator(
   root: string,
   variant: "a" | "b",
   ordinal: number,
-  afterClaimFault: "STOP" | "CRASH" | null = null,
+  fault:
+    | "STOP_AFTER_CLAIM"
+    | "CRASH_AFTER_CLAIM"
+    | "CRASH_BEFORE_CLAIM"
+    | "CRASH_AFTER_FOREGROUND"
+    | null = null,
 ): EventContractCollectionRunnerDurableFixtureRehearsalCoordinator {
   const durable =
     createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
@@ -666,6 +671,9 @@ function coordinator(
     {
       run: (value) => {
         const report = foreground.run(value);
+        if (fault === "CRASH_AFTER_FOREGROUND") {
+          (process as unknown as { exit(code: number): never }).exit(93);
+        }
         if (
           report.healthStatus !==
             CollectionRunnerRuntimeHealthStatus.Healthy ||
@@ -707,8 +715,17 @@ function coordinator(
     stop: {
       assertClear: () => {
         stopChecks += 1;
-        if (afterClaimFault !== null && stopChecks === 3) {
-          if (afterClaimFault === "CRASH") {
+        if (fault === "CRASH_BEFORE_CLAIM" && stopChecks === 2) {
+          (process as unknown as { exit(code: number): never }).exit(92);
+        }
+        if (
+          (
+            fault === "STOP_AFTER_CLAIM" ||
+            fault === "CRASH_AFTER_CLAIM"
+          ) &&
+          stopChecks === 3
+        ) {
+          if (fault === "CRASH_AFTER_CLAIM") {
             (process as unknown as { exit(code: number): never }).exit(91);
           }
           throw new Error("C2 injected Stop after durable phase claim.");
@@ -877,6 +894,73 @@ export function replayC2Step(
   }
 }
 
+export type C3ReplayChange =
+  | "PHASE"
+  | "ORDINAL"
+  | "RECOVERY"
+  | "MANIFEST";
+
+export function replayC3ChangedStep(
+  root: string,
+  ordinal: number,
+  change: C3ReplayChange,
+) {
+  assertC2StopClear(root);
+  const state = readC1PhaseState(root);
+  const database = openDatabase(state.sourceStorePath);
+  try {
+    const repository =
+      createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
+        database,
+      );
+    const snapshot = repository.readSnapshot("rehearsal-1")!;
+    const claim = snapshot.claims.find(
+      (item) =>
+        item.phase === DurableFixtureRehearsalPhase.Step &&
+        item.invocationOrdinal === ordinal,
+    );
+    if (claim === undefined) {
+      throw new Error("C3 replay requires the exact prior STEP claim.");
+    }
+    const exact = request(
+      DurableFixtureRehearsalPhase.Step,
+      {
+        lifecycleVersion: claim.expectedLifecycleVersion,
+        recoveryFingerprint: claim.expectedRecoveryFingerprint,
+      } as DurableFixtureRehearsalRegistry,
+      ordinal,
+    );
+    const changed: DurableFixtureRehearsalPhaseRequest =
+      change === "PHASE"
+        ? {
+            ...exact,
+            registeredPhaseId: "phase-recover",
+            phase: DurableFixtureRehearsalPhase.Recover,
+            expectedInvocationOrdinal: null,
+            ownerAuthorizationId: "authorization-c3",
+          }
+        : change === "ORDINAL"
+          ? {
+              ...exact,
+              expectedInvocationOrdinal: ordinal + 1,
+            }
+          : change === "RECOVERY"
+            ? {
+                ...exact,
+                expectedRecoveryFingerprint: FP("e"),
+              }
+            : {
+                ...exact,
+                manifestFingerprint: FP("e"),
+              };
+    return coordinator(database, root, state.variant, ordinal + 30).execute(
+      changed,
+    );
+  } finally {
+    database.close();
+  }
+}
+
 export function stopAfterClaimC2Phase(root: string): never {
   assertC2StopClear(root);
   const state = readC1PhaseState(root);
@@ -888,7 +972,13 @@ export function stopAfterClaimC2Phase(root: string): never {
       );
     const current = repository.readSnapshot("rehearsal-1")!.registry;
     const ordinal = current.nextInvocationOrdinal;
-    coordinator(database, root, state.variant, ordinal, "STOP").execute(
+    coordinator(
+      database,
+      root,
+      state.variant,
+      ordinal,
+      "STOP_AFTER_CLAIM",
+    ).execute(
       request(DurableFixtureRehearsalPhase.Step, current, ordinal),
     );
     throw new Error("C2 Stop-after-claim drill unexpectedly completed.");
@@ -907,10 +997,56 @@ export function crashAfterClaimC2Phase(root: string): never {
     );
   const current = repository.readSnapshot("rehearsal-1")!.registry;
   const ordinal = current.nextInvocationOrdinal;
-  coordinator(database, root, state.variant, ordinal, "CRASH").execute(
+  coordinator(
+    database,
+    root,
+    state.variant,
+    ordinal,
+    "CRASH_AFTER_CLAIM",
+  ).execute(
     request(DurableFixtureRehearsalPhase.Step, current, ordinal),
   );
   throw new Error("C2 crash-after-claim drill unexpectedly completed.");
+}
+
+export function crashBeforeClaimC3Phase(root: string): never {
+  assertC2StopClear(root);
+  const state = readC1PhaseState(root);
+  const database = openDatabase(state.sourceStorePath);
+  const repository =
+    createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
+      database,
+    );
+  const current = repository.readSnapshot("rehearsal-1")!.registry;
+  const ordinal = current.nextInvocationOrdinal;
+  coordinator(
+    database,
+    root,
+    state.variant,
+    ordinal,
+    "CRASH_BEFORE_CLAIM",
+  ).execute(request(DurableFixtureRehearsalPhase.Step, current, ordinal));
+  throw new Error("C3 crash-before-claim drill unexpectedly completed.");
+}
+
+export function crashAfterForegroundC3Phase(root: string): never {
+  assertC2StopClear(root);
+  const state = readC1PhaseState(root);
+  const database = openDatabase(state.sourceStorePath);
+  const repository =
+    createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
+      database,
+    );
+  const current = repository.readSnapshot("rehearsal-1")!.registry;
+  const ordinal = current.nextInvocationOrdinal;
+  coordinator(
+    database,
+    root,
+    state.variant,
+    ordinal,
+    "CRASH_AFTER_FOREGROUND",
+  ).execute(request(DurableFixtureRehearsalPhase.Step, current, ordinal));
+  throw new Error("C3 crash-after-foreground drill unexpectedly completed.");
 }
 
 export interface C2DurableInspection {
@@ -1196,4 +1332,22 @@ export function verifyC1Phase(root: string) {
       registeredTestTotal: state.registeredTestTotal,
     }],
   ).verify("evidence-root-c1", state.envelopeFingerprint, MANIFEST);
+}
+
+export function substituteC3PackageArtifact(root: string): void {
+  const state = readC1PhaseState(root);
+  const artifactPath = join(
+    state.evidenceRoot,
+    "rehearsal-envelope-c1-evidence",
+    "package",
+    "build-record.json",
+  );
+  const artifact = JSON.parse(
+    readFileSync(artifactPath, "utf8"),
+  ) as Record<string, unknown>;
+  writeFileSync(
+    artifactPath,
+    `${JSON.stringify({ ...artifact, substitutedByC3: true })}\n`,
+    { encoding: "utf8", flag: "w" },
+  );
 }
