@@ -1,5 +1,20 @@
 # Alpha Changelog
 
+## 2026-07-26 - Day15-T3B15-MR1 Independent Readiness Review
+
+- Independently reviewed T3B15-T1 through T3B15-T5 at
+  `483d4e346a03931ead9a1ff15ff71b7d45b3cba8`.
+- Recorded ten high-severity operation-boundary findings covering authority
+  revalidation, Stop races, durable phase truth, validation receipt authority,
+  Control-ledger verification, executable identity, untracked files, network
+  isolation, closed composition, and authorization fingerprint integrity.
+- Recorded one medium finding: non-completed results can advance the normal
+  phase plan.
+- Complete Alpha validation passes `2447/2447`, but the decision remains
+  `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+- No runtime code, real manifest, rehearsal, network request, provider,
+  recommendation, order, execution, or capital action was added or performed.
+
 ## 2026-07-26 - Day15-T3B15-T5 Operation Security Process Drills
 
 - Added nine fresh-process drills spanning crash before authorization, crash

@@ -9,7 +9,9 @@
 - T3B15-T2: committed and pushed as `f42e482`
 - T3B15-T3: committed and pushed as `21d263f`
 - T3B15-T4: committed and pushed as `b682921`
-- T3B15-T5: process drills complete locally and pending Owner review
+- T3B15-T5: committed and pushed as `483d4e3`
+- T3B15-MR1: independent review complete locally; returns
+  `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
 - Validation: complete Alpha bundle passes `2447/2447`
@@ -559,12 +561,14 @@ Approval of one item grants no authority for the next:
    recursion guard, exact suite accounting, operation validation receipt,
    envelope authority, and fresh-process verification are implemented without
    running a rehearsal.
-5. **T3B15-T5 — Operation Security, Crash, Stop, and Replay Drills:** exact
-   complete locally and pending Owner review; nine fresh-process drills cover
+5. **T3B15-T5 — Operation Security, Crash, Stop, and Replay Drills:** committed
+   and pushed as `483d4e3`; nine fresh-process drills cover
    authorization, result, artifact, Stop, replay, recursion, environment, and
    active Node network-isolation boundaries without running a rehearsal.
 6. **T3B15-MR1 — Independent Operation Readiness Review:** independent review
-   of implementation, complete validation, threat model, and process matrix.
+   of implementation, complete validation, threat model, and process matrix
+   returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`; T3B15-C1 correction
+   and a new independent MR2 are required.
 7. **Separate Owner authorization for one exact rehearsal:** only if MR1
    explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
 8. **Post-rehearsal independent review:** evidence review before any further

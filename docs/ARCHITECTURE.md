@@ -982,6 +982,17 @@ suite fingerprint, while the fixed environment removes credential-like and
 proxy state. This is a validation-process isolation boundary, not a general
 host firewall or permission to compose network providers.
 
+Independent Day15-T3B15-MR1 does not accept this foundation for rehearsal
+execution. Post-ownership authority is not fully revalidated, Stop can race
+phase/result completion, returned phase evidence is not independently
+reconstructed, and fresh verification does not open the T3B15 Control ledger
+or reconstruct validation-receipt authority. Ambient executable resolution,
+ignored untracked files, runtime-only network guards, the missing closed
+composition root, authorization-consumption integrity, and non-completed
+phase progression also require correction. The architecture therefore retains
+`NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` and permits only T3B15-C1
+correction followed by a new independent MR2.
+
 ---
 
 # Event Contract Framework

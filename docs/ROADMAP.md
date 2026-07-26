@@ -432,9 +432,11 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B15-T4 status: committed and pushed as `b682921`; `4/4` focused tests and complete Alpha validation `2438/2438` passed.
    - T3B15-T4 scope: fixed actual-Alpha validation, clean commit/package/suite binding, recursion and environment guards, exact suite accounting, immutable operation validation receipt, validation phase adapter, and read-only fresh-process final verification.
    - T3B15-T4 exclusions: no registered real operation or rehearsal, RECOVER authority, loop, network, provider, recommendation, order, execution, or capital authority.
-   - T3B15-T5 status: complete locally and pending Owner review; `9/9` fresh-process drills and complete Alpha validation `2447/2447` pass.
+   - T3B15-T5 status: committed and pushed as `483d4e3`; `9/9` fresh-process drills and complete Alpha validation `2447/2447` pass.
    - T3B15-T5 scope: crashes around authorization/artifact/result, Stop races, exact and changed replay, persistent ambiguity, terminal idempotency, credential scrubbing, recursive validation rejection, and active Node/Python network denial inherited by validation children.
-   - T3B15 next sequence: after Owner approval, commit/push T3B15-T5 and begin independent T3B15-MR1; one exact rehearsal authorization remains a later separate gate.
+   - T3B15-MR1 status: independent review complete locally; decision `T3B15_OPERATION_FOUNDATION_NOT_ACCEPTED_FOR_REHEARSAL / GO_FOR_T3B15_C1_CORRECTION / NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL / NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+   - T3B15-MR1 scope: ten high findings cover post-ownership authority drift, Stop/result races, missing independent durable reread, untrusted validation receipts, omitted Control-ledger verification, ambient executable resolution, ignored untracked files, runtime-only network guards, missing closed composition, and unprotected authorization consumption; one medium finding blocks non-completed results from advancing the normal plan.
+   - T3B15 next sequence: Owner review of MR1, then T3B15-C1 correction and a new independent T3B15-MR2. One exact rehearsal remains blocked unless that later review explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Day15-T3B15-MR1 Independent Operation Readiness Review
+
+- Decision: return `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+- Decision: passing `2447/2447` validation does not override missing
+  post-ownership authority revalidation, in-flight Stop enforcement,
+  independent durable phase observation, or exact Control-ledger verification.
+- Decision: treat runtime API guards as defense-in-depth, not sufficient proof
+  of an independently enforced network-isolation boundary.
+- Decision: require `T3B15-C1` to close all MR1 findings, followed by a new
+  independent `T3B15-MR2`.
+- Consequence: no Operation Manifest, rehearsal phase, complete rehearsal,
+  continuous runtime, provider/network access, or capital authority is
+  permitted.
+
 ## 2026-07-26 - Day15-T3B15-T5 Operation Security Drills
 
 - Decision: exercise authorization and artifact boundaries in separate OS

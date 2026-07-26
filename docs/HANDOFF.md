@@ -1,14 +1,14 @@
 # Alpha Handoff
 
 Date:
-2026-07-25
+2026-07-26
 
 Project Stage:
-Day15-T3B15-T2 is committed and pushed; Day15-T3B15-T3 is complete locally and pending Owner review
+Day15-T3B15-T5 is committed and pushed; independent Day15-T3B15-MR1 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `f42e482` on `main`, equal to `origin/main` before the T3B15-T3 implementation task.
+Verified baseline: `483d4e346a03931ead9a1ff15ff71b7d45b3cba8` on `main`, equal to `origin/main` before the T3B15-MR1 documentation task.
 
 Day 7 completed:
 
@@ -212,7 +212,7 @@ verifier. The new focused suite passes `4/4`, and complete Alpha validation
 passes `2438/2438`. RECOVER remains fail-closed; no real operation or
 rehearsal was registered or run.
 
-Day15-T3B15-T5 is complete locally and pending Owner review. Nine
+Day15-T3B15-T5 is committed and pushed as `483d4e3`. Nine
 fresh-process drills use the
 actual append-only operation Control SQLite store to prove crash behavior
 before/after authorization, after artifact publication, and after result
@@ -220,6 +220,20 @@ commit; Stop precedence and races; exact/changed replay rejection; clean
 completion; credential-scrubbed validation children; active Node/Python network
 denial; and recursive validation rejection. Complete Alpha validation passes
 `2447/2447`. No real operation or rehearsal was registered or run.
+
+Independent Day15-T3B15-MR1 is complete locally and pending Owner review.
+It returns
+`T3B15_OPERATION_FOUNDATION_NOT_ACCEPTED_FOR_REHEARSAL /
+GO_FOR_T3B15_C1_CORRECTION / NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL /
+NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+Ten high findings cover post-ownership authority drift, Stop/result races,
+missing independent durable truth observation, untrusted validation receipts,
+omitted Control-ledger final verification, ambient executable identity,
+ignored untracked files, runtime-only network guards, missing closed
+composition, and authorization fingerprint integrity. One medium finding
+blocks non-completed results from advancing the normal plan. Complete Alpha
+validation passes `2447/2447`; no real manifest or rehearsal was created or
+run.
 
 ## Day 6 Milestone Review
 
@@ -655,8 +669,9 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-T5 Operation Security, Crash, Stop, and Replay
-Drills. If approved, commit and push T5, then begin independent T3B15-MR1.
-Do not run a rehearsal, add
+Owner review of independent Day15-T3B15-MR1. If approved, commit and push the
+review documentation, then begin T3B15-C1 to close every MR1 finding. A new
+independent T3B15-MR2 is required before any possible one-rehearsal
+authorization. Do not run a rehearsal, add
 continuous runtime, loops, network providers, real Pilot activation, T1/T2
 delivery, probability research, recommendation, or trading authority.
