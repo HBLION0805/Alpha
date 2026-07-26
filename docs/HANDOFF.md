@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-MR2 is committed and pushed; Day15-T3B14-C2 is complete locally and pending Owner review
+Day15-T3B14-C2 is committed and pushed; Day15-T3B14-MR3 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `dc7645a` on `main`, equal to `origin/main` before the T3B14-C2 correction task.
+Verified baseline: `a9dbeda` on `main`, equal to `origin/main` before the T3B14-MR3 review task.
 
 Day 7 completed:
 
@@ -135,8 +135,19 @@ for `drills passed` suites. The twenty required drills now map to exact test
 files, cases, and process boundaries. Focused C2 process evidence passes `5/5`,
 C1 composition passes `3/3`, durable evidence passes `14/14`, and validation
 reporting regression tests pass `6/6`. Complete Alpha validation passes
-`2372/2372`. A separate T3B14-MR3 is required; no real rehearsal has been run
-or authorized.
+`2372/2372`. C2 was subsequently approved and pushed; no real rehearsal was
+run or authorized.
+
+Day15-T3B14-C2 is committed and pushed as `a9dbeda`. Day15-T3B14-MR3 is
+complete locally and pending Owner review. MR3 accepts the real Worker
+T7/T8/T8B/T10 composition, durable claim/Stop/exact-replay process evidence,
+and corrected validation accounting. It retains `NO_GO_FOR_REHEARSAL_RUN`
+because matrix rows 3, 5, and 9 do not prove the assembled rehearsal
+claim/receipt boundaries, row 14 changes only invocation ID, and row 17 does
+not perform package-artifact substitution in a fresh verifier process.
+Focused reviews pass `5/5`, `3/3`, `11/11`, `14/14`, `4/4`, and `6/6`;
+complete Alpha validation passes `2372/2372`. The recommended next task is
+T3B14-C3 followed by a separate T3B14-MR4.
 
 ## Day 6 Milestone Review
 

@@ -1,5 +1,18 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-MR3 Independent Readiness Review
+
+- Decision: accept C2's real Worker transaction composition, durable
+  claim/Stop/exact-replay evidence, and normalized validation accounting.
+- Decision: do not accept the twenty-drill matrix while rows 3, 5, 9, 14, and
+  17 cite a different process boundary or mutation from the architecture's
+  exact requirement.
+- Decision: require narrow T3B14-C3 assembled crash/replay/substitution process
+  evidence, followed by a separate T3B14-MR4.
+- Consequence: retain `NO_GO_FOR_REHEARSAL_RUN`,
+  `NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME`, and
+  `NO_GO_FOR_BOUNDED_LIVE`.
+
 ## 2026-07-25 - Day15-T3B14-C2 Worker-composed Process Evidence
 
 - Decision: require the clean test-only STEP phase to invoke the reviewed

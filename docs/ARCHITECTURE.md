@@ -872,6 +872,17 @@ counts the durable process suite's `drills passed` output. These are evidence
 and accounting corrections only; a separate T3B14-MR3 remains required and no
 real rehearsal or runtime authority is granted.
 
+Day15-T3B14-MR3 independently accepts C2's real Worker composition, new
+claim/Stop/replay process evidence, and corrected validation accounting. It
+does not accept the exact twenty-drill gate. The current matrix maps a runtime
+pre-ownership crash to the rehearsal pre-claim requirement; maps T6/T10
+runtime crashes without a rehearsal claim or receipt to assembled
+pre-receipt requirements; changes only invocation ID for the changed
+phase/ordinal/recovery/manifest requirement; and maps a package-build crash to
+package-artifact substitution. T3B14-C3 must add those exact child-process
+boundaries before a separate MR4. MR3 grants no rehearsal or runtime
+authority.
+
 ---
 
 # Event Contract Framework

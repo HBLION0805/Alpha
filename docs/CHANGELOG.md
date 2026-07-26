@@ -1,5 +1,21 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B14-MR3 Independent Readiness Review
+
+- Independently reviewed pushed C2 baseline `a9dbeda` and reran Worker,
+  phase-composition, runtime transaction, durable evidence, package process,
+  reporting, and complete validation suites.
+- Accepted real Worker T7/T8/T8B/T10 composition, crash/Stop/exact-replay
+  process evidence, and corrected normalized validation accounting.
+- Found that matrix rows 3, 5, 9, 14, and 17 do not yet prove their exact
+  rehearsal-phase or substitution semantics in fresh processes.
+- Decision: `C2_CORE_CORRECTIONS_ACCEPTED /
+  PROCESS_EVIDENCE_MATRIX_NOT_ACCEPTED /
+  GO_FOR_C3_EXACT_PROCESS_DRILL_CORRECTION / NO_GO_FOR_REHEARSAL_RUN /
+  NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME / NO_GO_FOR_BOUNDED_LIVE`.
+- No implementation, real rehearsal, runtime, provider, recommendation, or
+  capital authority was added.
+
 ## 2026-07-25 - Day15-T3B14-C2 Worker-composed Process Evidence Correction
 
 - Replaced direct fixture seeding and evidence writes in the C1 STEP surface
