@@ -38,6 +38,7 @@ export * from "./LocalNdjsonEventContractShadowLedgerRepository";
 export * from "./EventContractCollectionRunnerSqliteMigrationV1";
 export * from "./EventContractCollectionRunnerSqliteStore";
 export * from "./EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3";
+export * from "./EventContractCollectionRunnerRehearsalOperationControlSqliteStore";
 export * from "./EventContractCollectionRunnerFixtureRehearsalSqliteStore";
 export * from "./SqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository";
 export * from "./EventContractCollectionRunnerRepository";

@@ -1,5 +1,27 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B15-T3 Local Operation Control Boundary
+
+- Decision: store one-use operation authorization, result, and Stop truth in
+  one independent fixed-name SQLite ledger under the registered Control root.
+  PREPARE cannot depend on the rehearsal store because that store does not
+  exist until PREPARE succeeds.
+- Decision: preserve the rehearsal-profile SQLite store as the sole Runner
+  and rehearsal lifecycle authority; the control ledger records only command
+  authority and operation-level receipts.
+- Decision: require phase ordering to be enforced both by the immutable
+  manifest and a `BEGIN IMMEDIATE` append transaction. An authorization
+  without a result is ambiguous and cannot be automatically replayed.
+- Decision: expose closed Preflight, Status, phase, and Stop command parsing;
+  accept no caller path, executable, environment, network, payload, retry,
+  schedule, provider, probability, recommendation, or capital field.
+- Decision: keep VERIFY, actual full-suite execution, recursion protection,
+  envelope authority, and fresh-process final verification in T3B15-T4.
+- Decision: keep RECOVER fail-closed until its unresolved-authorization
+  reconciliation and crash evidence boundary is implemented and drilled.
+- Consequence: T3 remains network-free and fixture-only and grants no
+  authorization to run a real rehearsal.
+
 ## 2026-07-25 - Day15-T3B15-T2 Operation Manifest Contracts and Registry
 
 - Decision: implement T2 as pure immutable contracts, deterministic

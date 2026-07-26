@@ -139,6 +139,7 @@ const aggregateTestFiles = [
   "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC2ProcessDrill.test.ts",
   "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC3ProcessDrill.test.ts",
   "src/engines/event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine.test.ts",
+  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationControlEngine.test.ts",
   "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",

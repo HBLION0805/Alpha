@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B15-T1 is committed and pushed; Day15-T3B15-T2 is complete locally and pending Owner review
+Day15-T3B15-T2 is committed and pushed; Day15-T3B15-T3 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `b27687c` on `main`, equal to `origin/main` before the T3B15-T2 implementation task.
+Verified baseline: `f42e482` on `main`, equal to `origin/main` before the T3B15-T3 implementation task.
 
 Day 7 completed:
 
@@ -180,7 +180,7 @@ T3B15-T1 added documentation only and did not authorize implementation or a
 rehearsal. Its approved complete Alpha validation baseline is `2377/2377`.
 
 Day15-T3B15-T1 is committed and pushed as `b27687c`. Day15-T3B15-T2 is
-complete locally and pending Owner review. T2 adds strict immutable contracts
+committed and pushed as `f42e482`. T2 adds strict immutable contracts
 for the exact six registered roots, actual-Alpha validation authority, closed
 phase plan, content-addressed manifest proposal, proposal-bound Owner
 approval, and final operation manifest. Its read-only in-memory registry
@@ -191,6 +191,20 @@ authorization consumption belongs to the later command/gate transaction
 boundary. Focused typecheck and dependency checks pass, the new focused suite
 passes `31/31`, and complete Alpha validation passes `2408/2408`. No
 filesystem mutation, command, phase invocation, or rehearsal was added.
+
+Day15-T3B15-T3 is complete locally and pending Owner review. It adds closed
+phase and Stop command parsing, fixed registered-root resolution, read-only
+Preflight and Status, and the fixed-name Control-root SQLite ledger for
+append-only one-use authorizations, results, and Stops. The phase gate
+requires exact manifest/commit/root/lifecycle/ordinal/recovery identity,
+stdin-only Owner authentication, Stop checks before and after authorization,
+exclusive ownership, one durable consumed authorization, exactly one
+injected phase call, validated sanitized evidence, and one durable result.
+An authorization without a result remains ambiguous. The focused suite
+passes `26/26`, and complete Alpha validation passes `2434/2434`; actual
+validation execution, VERIFY, a real registered operation, and any rehearsal
+remain unimplemented or unauthorized. RECOVER, VALIDATE, and VERIFY commands
+fail closed until their later reviewed bindings exist.
 
 ## Day 6 Milestone Review
 
@@ -626,8 +640,8 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-T2 Operation Manifest Contracts and Registry
-Foundation. If approved, commit and push T2, then begin T3B15-T3 Local Owner
-Command, Preflight, Status, and Phase Gate. Do not run a rehearsal, add
+Owner review of Day15-T3B15-T3 Local Owner Command, Preflight, Status, and
+Phase Gate. If approved, commit and push T3, then begin T3B15-T4 Actual Alpha
+Validation and Final Verification Binding. Do not run a rehearsal, add
 continuous runtime, loops, network providers, real Pilot activation, T1/T2
 delivery, probability research, recommendation, or trading authority.

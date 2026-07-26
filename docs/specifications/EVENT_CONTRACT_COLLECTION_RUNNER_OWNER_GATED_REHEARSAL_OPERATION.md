@@ -3,13 +3,14 @@
 ## Status
 
 - Task: `Day15-T3B15-T1`
-- Mode: design only
-- Reviewed baseline: `b27687c`
+- Mode: implementation through T3; no rehearsal authority
+- Reviewed baseline: `f42e482`
 - T3B15-T1: committed and pushed as `b27687c`
-- T3B15-T2: implementation complete locally and pending Owner review
+- T3B15-T2: committed and pushed as `f42e482`
+- T3B15-T3: implementation complete locally and pending Owner review
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
-- Validation: complete Alpha bundle passes `2408/2408`
+- Validation: complete Alpha bundle passes `2434/2434`
 
 This design follows the T3B14-MR4 decision:
 
@@ -50,6 +51,35 @@ T2 adds no Migration 004. One-use phase authorization, consumption, and result
 transactions belong to T3B15-T3 after separate Owner review. T2 performs no
 filesystem inspection or mutation, local authentication, command execution,
 phase invocation, validation process, evidence construction, or rehearsal.
+
+## T3B15-T3 implementation
+
+T3B15-T3 implements the network-free local control boundary:
+
+- closed immutable phase and Stop commands with exact manifest, commit, root,
+  lifecycle, ordinal, recovery, process, time, and nonce bindings;
+- a five-minute maximum command lifetime and the existing stdin-only scrypt
+  Owner verifier;
+- fixed-root resolution through registered IDs plus current non-link
+  filesystem inspection;
+- read-only repository/package/suite inspection, deterministic Preflight, and
+  bounded sanitized Status;
+- a fixed `rehearsal-operation-control.sqlite3` ledger under `CONTROL_ROOT`
+  with append-only authorization, result, and Stop tables;
+- `BEGIN IMMEDIATE` one-use authorization consumption, strict phase-plan
+  ordering, replay rejection, and unresolved-authorization ambiguity;
+- Stop-before-ownership, Stop-before-authorization, and Stop-before-phase
+  checks, exclusive ownership, exactly one injected phase call, validated
+  phase evidence, and one durable result;
+- `26/26` focused deterministic and SQLite persistence tests.
+
+The Control-root ledger is separate from the rehearsal-profile store because
+PREPARE must be authorized before that store exists. It owns no Runner,
+rehearsal lifecycle, evidence, or execution truth. T3 does not compose VERIFY,
+run actual Alpha validation, create a real manifest, invoke a rehearsal, or
+grant network, provider, recommendation, order, execution, or capital
+authority. RECOVER, VALIDATE, and VERIFY fail closed until their separately
+reviewed reconciliation, validation, and verification bindings exist.
 
 ## Purpose
 
@@ -515,12 +545,13 @@ Approval of one item grants no authority for the next:
 1. **T3B15-T1 — Exact Owner-Gated Network-Free Rehearsal Operation
    Architecture:** this documentation-only design.
 2. **T3B15-T2 — Operation Manifest Contracts and Registry Foundation:**
-   complete locally and pending Owner review; immutable
+   committed and pushed as `f42e482`; immutable
    manifest/root/approval/validation contracts, pure verification, and a
    read-only registry are implemented without a new migration.
 3. **T3B15-T3 — Local Owner Command, Preflight, Status, and Phase Gate:**
-   stdin-only authentication, fixed-root resolution, one-use authorization,
-   one-phase invocation, Stop, and sanitized reporting.
+   complete locally and pending Owner review; stdin-only authentication,
+   fixed-root resolution, one-use authorization, one-phase invocation, Stop,
+   and sanitized reporting are implemented without running a rehearsal.
 4. **T3B15-T4 — Actual Alpha Validation and Final Verification Binding:**
    clean-commit validation, recursion guard, exact suite accounting, envelope
    authority, and fresh-process verification.

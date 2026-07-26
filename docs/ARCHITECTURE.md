@@ -932,6 +932,26 @@ defensive queries. T2 adds no SQLite migration, phase authorization
 transaction, filesystem inspection, Owner command, phase invocation, or
 rehearsal authority.
 
+Day15-T3B15-T3 implements the local operation-control boundary without
+creating or running a real rehearsal. The command parser accepts only closed
+operation, manifest, phase, lifecycle, ordinal, recovery, commit, time, and
+nonce identities; phase and Stop secrets use the existing stdin-only local
+Owner-verifier boundary. Registered roots resolve through manifest IDs and
+current non-link filesystem inspection, never caller paths. Preflight and
+Status are bounded read-only projections.
+
+One fixed `rehearsal-operation-control.sqlite3` ledger under the registered
+Control root owns append-only one-use authorization, result, and Stop
+receipts. This separate ledger is required because PREPARE must be authorized
+before the rehearsal-profile SQLite store exists. It does not duplicate
+Runner or rehearsal lifecycle truth. The phase gate orders Preflight, Owner
+authentication, Stop, exclusive ownership, atomic authorization consumption,
+a second Stop check, exactly one injected T3B14 phase, evidence validation,
+durable result append, and exit. An authorization without a result remains
+ambiguous and cannot be replayed. VERIFY and actual Alpha validation remain
+T3B15-T4 work; explicit RECOVER authorization/reconciliation remains part of
+the later crash and recovery boundary.
+
 ---
 
 # Event Contract Framework

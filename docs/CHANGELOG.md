@@ -1,5 +1,24 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B15-T3 Local Owner Command and Phase Gate
+
+- Added strict closed phase and Stop commands with five-minute maximum
+  lifetime, exact manifest/commit/root/phase binding, minted process identity,
+  and stdin-only Owner authentication.
+- Added fixed registered-root resolution, read-only Alpha Git/package/suite
+  inspection, fail-closed Preflight, and bounded sanitized Status.
+- Added a fixed-name Control-root SQLite ledger with append-only one-use
+  authorization, result, and Stop receipts plus transaction and replay
+  enforcement.
+- Added a one-phase gate with Stop precedence, exclusive ownership,
+  authorization-before-action ordering, post-action result persistence, and
+  crash ambiguity preservation.
+- Added `26/26` focused tests. No real manifest, rehearsal phase, network,
+  credential, provider, recommendation, order, or capital authority was
+  created or exercised.
+- RECOVER, VALIDATE, and VERIFY remain fail-closed until their separately
+  reviewed recovery, validation, and verification bindings exist.
+
 ## 2026-07-25 - Day15-T3B15-T2 Operation Manifest and Registry Foundation
 
 - Added strict immutable contracts for fixed rehearsal roots, actual-Alpha
