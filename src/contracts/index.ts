@@ -71,3 +71,8 @@ export * from "./EventContractCollectionRunnerRuntimeOwnershipRecovery";
 export * from "./EventContractCollectionRunnerRehearsalOperation";
 export * from "./EventContractCollectionRunnerRehearsalOperationControl";
 export * from "./EventContractCollectionRunnerRehearsalOperationVerification";
+export * from "./PersonalDecision";
+export * from "./PersonalCandidateScan";
+export * from "./PersonalWatchlistMapping";
+export * from "./PersonalMarketDataComposition";
+export * from "./PersonalMarketDataProviderCoverage";

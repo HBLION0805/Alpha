@@ -46,3 +46,8 @@ export * from "./event-contract-collection-runner-fixture-rehearsal";
 export * from "./event-contract-collection-runner-durable-fixture-rehearsal";
 export * from "./event-contract-collection-runner-rehearsal-operation";
 export * from "./event-contract-collection-runner-rehearsal-operation-control";
+export * from "./personal-decision";
+export * from "./personal-candidate-scan";
+export * from "./personal-watchlist-mapping";
+export * from "./personal-market-data-composition";
+export * from "./personal-market-data-provider-coverage";

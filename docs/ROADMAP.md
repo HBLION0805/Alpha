@@ -461,6 +461,20 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Status: planned only after Day15-T3B owner approval and a real dataset independently qualifies.
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 
+15. **Personal MVP-T1 through MVP-T3G — Daily ETF Decision Support**
+   - Status: implemented and Owner-reviewed; local commit complete, push pending.
+   - T1: fail-closed personal decision contract with explicit `TRADE`, `WAIT`, and `NO_TRADE` boundaries.
+   - T2: deterministic candidate scan for the Owner's four themes.
+   - T3A: Owner-approved underlying-to-bullish/inverse ETF mapping for MU, TSLA, SPCX, and SKHY.
+   - T3B: exact daily, hourly, 15-minute, and 5-minute canonical-bar composition plus ETF quote and liquidity binding.
+   - T3C: provider coverage registry and readiness gate. Alpaca Basic IEX is the proposed zero-cost bounded-smoke path; it remains single-venue evidence and every exact symbol remains live-smoke pending.
+   - T3D: network-free Alpaca IEX request planner and strict provider-response validator for four bar intervals and latest two-sided quotes. The plan is capped at five requests and has no credential, transport, persistence, pagination, retry, polling, streaming, recommendation, or execution authority.
+   - T3E: Canonical Bars/Quotes normalization with exact 12-symbol identity binding, 100-share round-lot conversion, provider nanosecond content integrity, completed-Bar enforcement, explicit P1D session boundaries, interval-specific freshness, and permanent IEX single-venue quality semantics.
+   - T3F: redacted two-variable credentials, exact-host one-shot HTTPS transport, 10-second timeout, cancellation, redirect rejection, 1,000,000-byte response cap, sanitized failures, and an injected default dry-run that validates five requests while executing zero network calls.
+   - T3G: manually confirmed one-shot live-read operation boundary. It executes the exact five-request plan once, stops on first failure, validates every response through T3D, normalizes through T3E, exposes only redacted counts and warnings, and has no retry, persistence, recommendation, or trading authority. Implementation testing is network-free; the first real request remains separately Owner-gated.
+   - T3G-C1: formal local CLI and completed-session correction are complete locally; one canonical clock is evaluated before credential copying, `sessionClose` plus the reviewed 60-second buffer must have elapsed, and 11/11 network-free command tests pass. The first real request remains separately Owner-gated.
+   - Boundaries: no automatic or background live network authority, automatic order, broker credential, portfolio mutation, or commercial product.
+
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
 
 The Alpha Journal local foundation now preserves deterministic point-in-time context, rationale, reflection, amendments, and lessons without replacing Prediction Log or other source records.

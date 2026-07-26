@@ -103,6 +103,18 @@ const textExtensions = new Set([
 
 const aggregateTestFiles = [
   "src/engines/opportunity/OpportunityScoreEngine.test.ts",
+  "src/engines/personal-decision/PersonalDecisionEngine.test.ts",
+  "src/engines/personal-candidate-scan/PersonalCandidateScanEngine.test.ts",
+  "src/engines/personal-watchlist-mapping/PersonalWatchlistMappingRegistry.test.ts",
+  "src/engines/personal-market-data-composition/PersonalMarketDataCompositionEngine.test.ts",
+  "src/engines/personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine.test.ts",
+  "src/integration/market-data/alpaca/AlpacaPersonalMarketDataAdapter.test.ts",
+  "src/integration/market-data/alpaca/AlpacaPersonalMarketDataNormalizer.test.ts",
+  "src/integration/market-data/alpaca/AlpacaCredentials.test.ts",
+  "src/integration/market-data/alpaca/AlpacaHttpsTransport.test.ts",
+  "src/integration/market-data/alpaca/AlpacaTransportDryRun.test.ts",
+  "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmoke.test.ts",
+  "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmokeCommand.test.ts",
   "src/engines/prediction/PredictionEngine.test.ts",
   "src/engines/prediction-log/PredictionLog.test.ts",
   "src/engines/alpha-journal/AlphaJournal.test.ts",
@@ -421,9 +433,11 @@ function checkNetworkAndProviderCode(files) {
   const providerImportPattern = /\b(?:from\s+["']|import\s*\(?\s*["']|require\s*\(\s*["'])(openai|@anthropic-ai\/sdk|@google\/generative-ai|@google\/genai|google-generative-ai|cohere-ai|@cohere-ai\/sdk|mistralai|groq-sdk|together-ai|replicate|@polygon\.io\/client-js|@alpacahq\/alpaca-trade-api|finnhub|twelvedata|twelvedata-js)["']/iu;
   const networkPattern = /\b(fetch\s*\(|fetchFunction\s*\(|XMLHttpRequest|WebSocket|EventSource|axios|node:https|node:http|require\s*\(\s*["']https?["']|https?\.request|requests\.|urllib\.request|aiohttp|socket\.)/iu;
   const twelveDataConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+TwelveDataHttpTransport\b/u;
+  const alpacaConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+AlpacaHttpTransport\b/u;
   const approvedTwelveDataTransport = "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.ts";
   const approvedKalshiTransport = "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.ts";
-  const approvedLiveTransports = new Set([approvedTwelveDataTransport, approvedKalshiTransport]);
+  const approvedAlpacaTransport = "src/integration/market-data/alpaca/AlpacaHttpsTransport.ts";
+  const approvedLiveTransports = new Set([approvedTwelveDataTransport, approvedKalshiTransport, approvedAlpacaTransport]);
 
   for (const file of productionFiles) {
     const text = readText(file);
@@ -439,6 +453,9 @@ function checkNetworkAndProviderCode(files) {
       && normalizedFile !== approvedTwelveDataTransport) {
       recordFailure(`Unapproved concrete Twelve Data transport found in production code: ${file}`);
     }
+    if (alpacaConcreteTransportPattern.test(text) && normalizedFile !== approvedAlpacaTransport) {
+      recordFailure(`Unapproved concrete Alpaca transport found in production code: ${file}`);
+    }
     if (approvedLiveTransports.has(normalizedFile)) {
       const requiredControls = normalizedFile === approvedTwelveDataTransport
         ? [
@@ -447,11 +464,18 @@ function checkNetworkAndProviderCode(files) {
             "TwelveDataTransportErrorCode.Timeout",
             "MAX_RESPONSE_BYTES",
           ]
-        : [
+        : normalizedFile === approvedKalshiTransport ? [
             "https://external-api.kalshi.com/trade-api/v2/markets/",
             "KXBTC15M-26JUL232045-45",
             'redirect: "error"',
             "KalshiPublicTransportErrorCode.Timeout",
+            "MAX_RESPONSE_BYTES",
+          ]
+        : [
+            "https://data.alpaca.markets/v2/stocks/bars",
+            "https://data.alpaca.markets/v2/stocks/quotes/latest",
+            'redirect: "error"',
+            "AlpacaTransportErrorCode.Timeout",
             "MAX_RESPONSE_BYTES",
           ];
       for (const control of requiredControls) {
