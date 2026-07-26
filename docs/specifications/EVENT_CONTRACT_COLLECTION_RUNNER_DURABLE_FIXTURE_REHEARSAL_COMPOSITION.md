@@ -4,12 +4,14 @@
 
 Task: `Day15-T3B14-T1`
 
-Status: T3B14-T1 through T3B14-T5 are committed and pushed. T3B14-MR1 is
-complete locally and pending Owner review; it accepts the durable components
-but returns `NO_GO_FOR_REHEARSAL_RUN` pending T3B14-C1 correction.
+Status: T3B14-T1 through T3B14-T5 and C1 through C3 are committed and pushed.
+T3B14-MR4 is complete locally and pending Owner review. It accepts the durable
+foundation and all twenty process drills but retains
+`NO_GO_FOR_REHEARSAL_EXECUTION` pending a separately reviewed Owner-gated
+operation.
 
 Reviewed baseline:
-`a692f6f`.
+`fa5836b`.
 
 This design follows the T3B13-MR1 decision:
 
@@ -669,14 +671,16 @@ T3B14 remains separately gated:
 5. **T3B14-T5 — Evidence-boundary process drills:** completed, committed, and
    pushed as `a692f6f`; clean, two-run, backup/publication crash,
    substitution, missing-backup, and source-isolation coverage passes.
-6. **T3B14-MR1 — Durable fixture-rehearsal readiness review:** complete
-   locally and pending Owner approval; durable components are accepted but a
-   rehearsal run remains blocked.
-7. **T3B14-C1 — End-to-end phase composition and validation-authority
-   correction:** required before another readiness review.
-8. **T3B14-MR2 — Corrected rehearsal-readiness review.**
+6. **T3B14-MR1 through T3B14-MR3 and C1 through C3:** completed, reviewed,
+   committed, and pushed through `fa5836b`.
+7. **T3B14-MR4 — Final foundation readiness review:** complete locally and
+   pending Owner review; foundation and twenty drills are accepted, while
+   execution remains blocked.
+8. **T3B15-T1 — Exact Owner-Gated Network-Free Rehearsal Operation
+   Architecture:** design-only next task after Owner approval.
 9. **Later separately approved operation:** one exact Owner-approved,
-   network-free rehearsal run only if MR2 explicitly permits it.
+   network-free rehearsal only after operation implementation and independent
+   review explicitly permit it.
 
 Approval of one task grants no authority to begin the next.
 
@@ -721,7 +725,7 @@ T3B14-T1 does not authorize:
 
 After Owner approval, begin:
 
-`Day15-T3B14-C1 — End-to-end Phase Composition and Validation Authority Correction`
+`Day15-T3B15-T1 — Exact Owner-Gated Network-Free Rehearsal Operation Architecture`
 
-Then perform a separate T3B14-MR2. Do not combine correction approval with a
-real rehearsal execution, provider admission, or capital authority.
+This is design-only. Do not combine its approval with implementation, a real
+rehearsal execution, provider admission, or capital authority.

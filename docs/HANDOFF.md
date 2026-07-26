@@ -4,11 +4,11 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-MR3 is committed and pushed; Day15-T3B14-C3 is complete locally and pending Owner review
+Day15-T3B14-C3 is committed and pushed; Day15-T3B14-MR4 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `27050ae` on `main`, equal to `origin/main` before the T3B14-C3 correction task.
+Verified baseline: `fa5836b` on `main`, equal to `origin/main` before the T3B14-MR4 review task.
 
 Day 7 completed:
 
@@ -157,6 +157,17 @@ and manifest replay changes fail without mutation; and proves a fresh verifier
 rejects a substituted published package artifact. C3 focused process evidence
 passes `5/5`, and complete Alpha validation passes `2377/2377`. A separate
 T3B14-MR4 remains required, and no real rehearsal was run or authorized.
+
+Day15-T3B14-C3 is committed and pushed as `fa5836b`. Day15-T3B14-MR4 is
+complete locally and pending Owner review. MR4 accepts the durable
+fixture-rehearsal foundation and all twenty matching process drills. Focused
+C1/C2/C3 evidence passes `3/3`, `5/5`, and `5/5`; runtime transaction,
+durable evidence, and package process drills pass `11/11`, `14/14`, and
+`4/4`; complete Alpha validation passes `2377/2377`. Rehearsal execution
+remains blocked because the existing child is a test fixture, not an
+Owner-authenticated fixed-root operation bound to the actual Alpha commit and
+complete validation suite. The recommended next task is design-only
+T3B15-T1.
 
 ## Day 6 Milestone Review
 

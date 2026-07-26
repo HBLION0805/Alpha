@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-MR4 Final Foundation Readiness Review
+
+- Decision: accept the T3B14 durable fixture-rehearsal foundation and exact
+  twenty-drill process evidence at baseline `fa5836b`.
+- Decision: do not authorize rehearsal execution through the test fixture,
+  which lacks an Owner-approved operation manifest, authenticated phase
+  command, registered fixed roots, and binding to actual complete Alpha
+  validation.
+- Decision: permit design-only T3B15-T1 for one exact Owner-gated,
+  network-free rehearsal operation.
+- Consequence: retain `NO_GO_FOR_REHEARSAL_EXECUTION`,
+  `NO_GO_FOR_EXECUTABLE_OR_CONTINUOUS_RUNTIME`, and
+  `NO_GO_FOR_BOUNDED_LIVE`.
+
 ## 2026-07-25 - Day15-T3B14-C3 Exact Process Boundary Evidence
 
 - Decision: place C3 crash checkpoints around the assembled rehearsal

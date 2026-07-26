@@ -893,6 +893,15 @@ and prove no mutation. A package-substitution child changes one published
 artifact before an independent verifier rejects the envelope. C3 remains
 non-operational and requires a separate T3B14-MR4.
 
+Day15-T3B14-MR4 accepts the durable fixture-rehearsal foundation and all twenty
+matching process drills. It preserves the operation boundary: the existing
+phase child remains a test harness with test-selected roots, hard-coded
+synthetic identities, fault modes, and a generated one-test validation
+repository. It is not an Owner-authenticated operation and may not be invoked
+as a rehearsal. The next permitted work is design-only T3B15-T1 for one exact
+Owner-gated, fixed-root, actual-Alpha-validation, network-free rehearsal
+operation.
+
 ---
 
 # Event Contract Framework
