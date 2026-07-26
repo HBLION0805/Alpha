@@ -451,7 +451,9 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3B15-MR4 status: committed and pushed as `a66a111`; decision `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
    - T3B15-C4 status: complete locally; focused Control authority tests pass `44/44`, C3 authority tests pass `3/3`, C4 positive/adversarial authority tests pass `3/3`, and complete validation passes `2474/2474`.
    - T3B15-C4 scope: durable-only phase evidence reconstruction, append-only validation receipt journal, six-root and reviewed-source digest authority seals at every boundary, corrected rehearsal-manifest binding, and positive fresh-process verification over real rehearsal/Control/envelope/backup state.
-   - T3B15 next sequence: Owner review of C4, commit/push only after approval, then independent T3B15-MR5. One exact rehearsal remains blocked unless MR5 explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+   - T3B15-MR5 status: complete locally; decision `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`; complete validation passes `2474/2474`.
+   - T3B15-MR5 scope: confirms C4's durable evidence and verifier improvements, but blocks on caller-injected adapters/raw paths, missing observer journal/evidence wiring, non-adapter-specific composition fingerprints, optional phase authority, and a positive test that bypasses the target runtime/gate.
+   - T3B15 next sequence: Owner review of MR5, commit/push only after approval, then T3B15-C5 and independent T3B15-MR6. One exact rehearsal remains blocked unless a later independent review explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
    - Intended scope: one owner-selected frozen plan, one active single-host runner, one admitted provider composition, fixed start/stop times, shadow-only evidence, and independent post-pilot review.
    - Blocker: no approved automatic Robinhood quote or fee-preview source exists, so an exchange-only pilot cannot claim complete T1 observations or dataset qualification.
 

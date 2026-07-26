@@ -1,5 +1,24 @@
 # Alpha Changelog
 
+## 2026-07-26 - Day15-T3B15-MR5 Independent C4 Readiness Review
+
+- Independently reviewed exact C4 commit
+  `7d1e11a62943ed02d2f432067278c8664e8c7dbb`.
+- Confirmed durable-only evidence reconstruction, validation-journal
+  integrity, phase-authority rechecks, positive fresh-process verification,
+  and package-substitution rejection.
+- Found that the fixed runtime still accepts caller-supplied phase adapters,
+  authorities, and raw store paths, while its composition fingerprint does
+  not bind actual adapter identity.
+- Found that the fixed runtime does not supply the new validation journal or
+  evidence root to its observer, so VALIDATE and PACKAGE cannot complete
+  through that composition.
+- Found that the positive test manually creates Control history and does not
+  execute the target fixed runtime or Operation gate.
+- Re-ran complete validation at `2474/2474` with zero failures.
+- Returned `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`; no rehearsal or
+  downstream capital authority was granted.
+
 ## 2026-07-26 - Day15-T3B15-C4 Durable Evidence and Positive Verification Correction
 
 - Reconstructed PREPARE, STEP, VALIDATE, FREEZE, and PACKAGE evidence from

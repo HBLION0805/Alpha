@@ -1146,6 +1146,28 @@ The corrected runtime remains
 independent T3B15-MR5 review. No real Operation Manifest, rehearsal, provider,
 network, recommendation, order, execution, or capital authority is authorized.
 
+Independent Day15-T3B15-MR5 reviews exact C4 commit `7d1e11a` and returns
+`NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It confirms C4's durable-only
+observation, validation journal, repeated phase-authority calculation, and
+positive fresh-process verifier.
+
+MR5 finds that the target fixed runtime still accepts caller-supplied
+mutation adapters, readiness, Owner, Stop, ownership, validation staging, and
+raw Control/Rehearsal/evidence paths. Its composition fingerprint does not
+identify the actual adapters. Registered-root authority can therefore describe
+different paths from those the runtime opens. The runtime also fails to pass
+the new validation journal and evidence root into its observer, making
+VALIDATE and PACKAGE incomplete through that composition. Finally, the
+positive C4 process test manually prepares Control history rather than driving
+the target fixed runtime and Operation gate.
+
+The next permitted implementation is T3B15-C5: a truly closed composition that
+uses only registry-resolved roots, internally constructs every mutable and
+control authority, binds concrete adapter identities, wires journal/evidence
+observation, and proves one end-to-end gate-generated positive process path.
+Independent MR6 remains mandatory. No real Operation Manifest or rehearsal is
+authorized.
+
 ---
 
 # Event Contract Framework

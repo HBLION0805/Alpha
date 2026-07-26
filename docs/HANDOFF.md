@@ -4,7 +4,7 @@ Date:
 2026-07-26
 
 Project Stage:
-Day15-T3B15-MR4 is committed and pushed; Day15-T3B15-C4 is complete locally and remains non-executable pending independent MR5
+Day15-T3B15-C4 is committed and pushed; independent Day15-T3B15-MR5 is complete locally and returns NO-GO
 
 ## Current Architecture Checkpoint
 
@@ -728,14 +728,14 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-C4. MR4 is committed and pushed as `a66a111`. C4
-reconstructs complete phase evidence from query-only durable records, journals
-validation receipts, binds six registered roots and reviewed executable,
-guard, and phase-source digests at every authorization boundary, corrects the
-underlying rehearsal-manifest verification binding, and proves positive and
-adversarial fresh-process verification. Focused tests pass Control `44/44`, C3
-authority `3/3`, and C4 authority `3/3`; complete validation passes
-`2474/2474`. If approved, commit and push C4, then begin independent
-T3B15-MR5. Do not run a rehearsal or add an execution command, continuous
-runtime, loops, network providers, real Pilot, T1/T2 delivery, probability
-research, recommendation, or trading authority.
+Owner review of Day15-T3B15-MR5. C4 is committed and pushed as `7d1e11a`.
+Independent MR5 returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It
+confirms durable-only reconstruction, validation-journal integrity,
+phase-authority rechecks, and positive fresh-process verification, but finds
+that the fixed runtime still accepts caller-supplied phase adapters,
+authorities, and raw paths; does not connect the new validation journal and
+evidence root to its observer; and is bypassed by the manually prepared
+positive Control history. Complete validation passes `2474/2474`. If approved,
+commit and push MR5, then begin T3B15-C5. Do not create an Operation Manifest,
+run a rehearsal, or add network, provider, recommendation, execution, or
+capital authority.

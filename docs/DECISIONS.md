@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Day15-T3B15-MR5 C4 Readiness Review
+
+- Decision: return `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` for exact C4
+  commit `7d1e11a62943ed02d2f432067278c8664e8c7dbb`.
+- Decision: source-file digests do not prove that the fixed runtime uses those
+  adapters when caller-supplied phase objects remain accepted.
+- Decision: registered-root authority and actual store paths must be one
+  structural identity, not separately supplied values.
+- Decision: a positive verifier over manually prepared Control history does
+  not prove the target Operation gate can generate that history.
+- Decision: require a truly closed composition and end-to-end gate-generated
+  positive process test in T3B15-C5, followed by independent MR6.
+- Consequence: no Operation Manifest, rehearsal, network, provider,
+  recommendation, execution, or capital authority is permitted.
+
 ## 2026-07-26 - Day15-T3B15-C4 Durable Authority Correction
 
 - Decision: claimed phase evidence is non-authoritative; the Control result

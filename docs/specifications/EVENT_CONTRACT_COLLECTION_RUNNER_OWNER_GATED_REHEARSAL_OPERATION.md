@@ -22,6 +22,8 @@
 - T3B15-MR4: complete locally; returns
   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
 - T3B15-C4: complete locally; non-executable pending independent T3B15-MR5
+- T3B15-MR5: complete locally; returns
+  `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
 - T5/MR1 validation baseline: complete Alpha bundle passes `2447/2447`
@@ -618,11 +620,14 @@ Approval of one item grants no authority for the next:
    rehearsal-manifest verification, and positive/negative fresh-process
    verification evidence are implemented.
 14. **T3B15-MR5 — Independent C4 Readiness Review:** required before any
-   rehearsal-readiness decision.
-15. **Separate Owner authorization for one exact rehearsal:** only if a later
+   rehearsal-readiness decision; complete locally and returns
+   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+15. **T3B15-C5 — Truly Closed Operation Composition and End-to-end Gate
+   Evidence Correction:** required before the next readiness review.
+16. **Separate Owner authorization for one exact rehearsal:** only if a later
    independent review explicitly returns
    `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
-16. **Post-rehearsal independent review:** evidence review before any further
+17. **Post-rehearsal independent review:** evidence review before any further
    rehearsal or expansion.
 
 There is no standing, repeatable, continuous, or implied run authority.
@@ -662,7 +667,9 @@ T3B15-T1 does not authorize:
 
 ## Recommended next task
 
-After Owner review and explicit approval, commit and push T3B15-C4, then begin
-the independent `Day15-T3B15-MR5` readiness review. The runtime remains
-non-executable and no rehearsal may run unless T3B15-MR5 explicitly returns
-`GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+After Owner review and explicit approval, commit and push T3B15-MR5, then begin
+`Day15-T3B15-C5`. C5 must close the actual runtime composition, registered-root
+path use, observer journal/evidence wiring, concrete adapter identity, and
+end-to-end gate-generated positive process evidence. The runtime remains
+non-executable and no rehearsal may run unless a later independent review
+explicitly returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
