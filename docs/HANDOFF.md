@@ -203,7 +203,7 @@ injected phase call, validated sanitized evidence, and one durable result.
 An authorization without a result remains ambiguous. The focused suite
 passes `26/26`, and its complete Alpha validation passed `2434/2434`.
 
-Day15-T3B15-T4 is complete locally and pending Owner review. It adds fixed
+Day15-T3B15-T4 is committed and pushed as `b682921`. It adds fixed
 actual-Alpha validation with clean commit/package/suite binding, recursion
 and environment guards, exact unified-report accounting, immutable operation
 validation receipts, a validation-only phase adapter, and a read-only
@@ -211,6 +211,15 @@ fresh-process `verify` command bound to the existing T3B14 envelope and backup
 verifier. The new focused suite passes `4/4`, and complete Alpha validation
 passes `2438/2438`. RECOVER remains fail-closed; no real operation or
 rehearsal was registered or run.
+
+Day15-T3B15-T5 is complete locally and pending Owner review. Nine
+fresh-process drills use the
+actual append-only operation Control SQLite store to prove crash behavior
+before/after authorization, after artifact publication, and after result
+commit; Stop precedence and races; exact/changed replay rejection; clean
+completion; credential-scrubbed validation children; active Node/Python network
+denial; and recursive validation rejection. Complete Alpha validation passes
+`2447/2447`. No real operation or rehearsal was registered or run.
 
 ## Day 6 Milestone Review
 
@@ -646,8 +655,8 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-T4 Actual Alpha Validation and Final Verification
-Binding. If approved, commit and push T4, then begin T3B15-T5 Operation
-Security, Crash, Stop, and Replay Drills. Do not run a rehearsal, add
+Owner review of Day15-T3B15-T5 Operation Security, Crash, Stop, and Replay
+Drills. If approved, commit and push T5, then begin independent T3B15-MR1.
+Do not run a rehearsal, add
 continuous runtime, loops, network providers, real Pilot activation, T1/T2
 delivery, probability research, recommendation, or trading authority.

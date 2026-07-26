@@ -10,9 +10,14 @@ if (process.env.ALPHA_REHEARSAL_OPERATION_PROCESS === "1") {
 }
 if (
   process.env.ALPHA_FIXED_VALIDATION_PROCESS === "1" &&
-  process.env.ALPHA_NETWORK_DISABLED !== "1"
+  (
+    process.env.ALPHA_NETWORK_DISABLED !== "1" ||
+    process.env.ALPHA_NETWORK_GUARD_ACTIVE !== "1"
+  )
 ) {
-  throw new Error("Fixed rehearsal validation requires the network-disabled marker.");
+  throw new Error(
+    "Fixed rehearsal validation requires the active network-disabled guard.",
+  );
 }
 
 const root = resolve(process.cwd());
@@ -153,6 +158,7 @@ const aggregateTestFiles = [
   "src/engines/event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine.test.ts",
   "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationControlEngine.test.ts",
   "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationVerification.test.ts",
+  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationSecurityProcessDrill.test.ts",
   "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.test.ts",
   "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
   "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
@@ -183,6 +189,9 @@ const allowedPythonChangePrefixes = process.argv
   .map((argument) => argument.slice("--allow-python-change-prefix=".length))
   .filter((prefix) => prefix.length > 0)
   .map((prefix) => relativePath(prefix));
+const fixedValidationPythonFiles = new Set([
+  "scripts/network-disabled-python/sitecustomize.py",
+]);
 
 function recordFailure(message) {
   failures.push(message);
@@ -471,9 +480,10 @@ function checkRuntimeData(files) {
 function checkPythonChanges() {
   for (const file of changedFiles()) {
     const normalizedFile = relativePath(file);
-    const allowed = allowedPythonChangePrefixes.some((prefix) =>
-      normalizedFile.startsWith(prefix)
-    );
+    const allowed = fixedValidationPythonFiles.has(normalizedFile) ||
+      allowedPythonChangePrefixes.some((prefix) =>
+        normalizedFile.startsWith(prefix)
+      );
     if (extname(file).toLowerCase() === ".py" && !allowed) {
       recordFailure(`Python file changed in working tree: ${file}`);
     }

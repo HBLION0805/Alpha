@@ -4,14 +4,15 @@
 
 - Task: `Day15-T3B15-T1`
 - Mode: implementation through T4; no rehearsal authority
-- Reviewed baseline: `21d263f`
+- Reviewed baseline: `b682921`
 - T3B15-T1: committed and pushed as `b27687c`
 - T3B15-T2: committed and pushed as `f42e482`
 - T3B15-T3: committed and pushed as `21d263f`
-- T3B15-T4: implementation complete locally and pending Owner review
+- T3B15-T4: committed and pushed as `b682921`
+- T3B15-T5: process drills complete locally and pending Owner review
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
-- Validation: complete Alpha bundle passes `2438/2438`
+- Validation: complete Alpha bundle passes `2447/2447`
 
 This design follows the T3B14-MR4 decision:
 
@@ -554,12 +555,14 @@ Approval of one item grants no authority for the next:
    fixed-root resolution, one-use authorization, one-phase invocation, Stop,
    and sanitized reporting are implemented without running a rehearsal.
 4. **T3B15-T4 — Actual Alpha Validation and Final Verification Binding:**
-   complete locally and pending Owner review; clean-commit validation,
+   committed and pushed as `b682921`; clean-commit validation,
    recursion guard, exact suite accounting, operation validation receipt,
    envelope authority, and fresh-process verification are implemented without
    running a rehearsal.
 5. **T3B15-T5 — Operation Security, Crash, Stop, and Replay Drills:** exact
-   process evidence across every authorization and artifact boundary.
+   complete locally and pending Owner review; nine fresh-process drills cover
+   authorization, result, artifact, Stop, replay, recursion, environment, and
+   active Node network-isolation boundaries without running a rehearsal.
 6. **T3B15-MR1 — Independent Operation Readiness Review:** independent review
    of implementation, complete validation, threat model, and process matrix.
 7. **Separate Owner authorization for one exact rehearsal:** only if MR1

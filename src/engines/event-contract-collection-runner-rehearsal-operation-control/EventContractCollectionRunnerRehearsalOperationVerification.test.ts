@@ -31,8 +31,16 @@ const fp = (value: string) =>
   `sha256:${createHash("sha256").update(value).digest("hex")}`;
 const packageBytes = readFileSync(resolve("package.json"));
 const validationBytes = readFileSync(resolve("scripts", "alpha-validate.mjs"));
+const networkGuardBytes = readFileSync(
+  resolve("scripts", "network-disabled-bootstrap.cjs"),
+);
+const pythonNetworkGuardBytes = readFileSync(
+  resolve("scripts", "network-disabled-python", "sitecustomize.py"),
+);
 const suite = `sha256:${createHash("sha256")
-  .update(validationBytes).update(packageBytes).digest("hex")}`;
+  .update(validationBytes).update(networkGuardBytes)
+  .update(pythonNetworkGuardBytes)
+  .update(packageBytes).digest("hex")}`;
 const authority = {
   fingerprint: fp("authority"),
   repositoryRootId: "alpha-root",

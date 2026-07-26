@@ -1,5 +1,24 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Day15-T3B15-T5 Operation Security Drills
+
+- Decision: exercise authorization and artifact boundaries in separate OS
+  processes against the actual append-only Control-root SQLite repository.
+- Decision: a process exit after authorization but before a result is
+  ambiguous regardless of whether an artifact exists; neither exact nor
+  changed commands may automatically replay it.
+- Decision: a committed result remains terminal even if the process exits
+  before reporting success, and subsequent commands cannot duplicate it.
+- Decision: strengthen the network-disabled marker with inherited Node and
+  Python bootstraps that replace network constructors with deterministic
+  rejection and include both in the validation-suite fingerprint.
+- Decision: permit exactly
+  `scripts/network-disabled-python/sitecustomize.py` through the Python-change
+  scope check; all other Python changes retain the existing fail-closed rule.
+- Consequence: Node and Python validation children are actively network-blocked and
+  credential-scrubbed. This remains fixture-operation evidence, not authority
+  to run a rehearsal or connect to a provider.
+
 ## 2026-07-25 - Day15-T3B15-T4 Validation and Final Verification
 
 - Decision: retain the reviewed T3B14 envelope format and add an operation-level

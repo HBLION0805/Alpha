@@ -94,10 +94,23 @@ export class FixedLocalCollectionRunnerRehearsalOperationAlphaInspection
     const validationBytes = readFileSync(
       join(repositoryRoot, "scripts", "alpha-validate.mjs"),
     );
+    const networkGuardBytes = readFileSync(
+      join(repositoryRoot, "scripts", "network-disabled-bootstrap.cjs"),
+    );
+    const pythonNetworkGuardBytes = readFileSync(
+      join(
+        repositoryRoot,
+        "scripts",
+        "network-disabled-python",
+        "sitecustomize.py",
+      ),
+    );
     const packageFingerprint =
       `sha256:${createHash("sha256").update(packageBytes).digest("hex")}`;
     const suiteHash = createHash("sha256");
     suiteHash.update(validationBytes);
+    suiteHash.update(networkGuardBytes);
+    suiteHash.update(pythonNetworkGuardBytes);
     suiteHash.update(packageBytes);
     return Object.freeze({
       alphaCommit: commit.stdout.trim(),

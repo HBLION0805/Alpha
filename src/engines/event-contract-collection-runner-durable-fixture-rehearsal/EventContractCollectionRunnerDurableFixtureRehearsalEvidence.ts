@@ -323,6 +323,15 @@ export class FixedLocalDurableFixtureRehearsalValidationAdapter {
     const clean = spawnSync("git", ["status", "--porcelain"], processOptions);
     const suiteHash = createHash("sha256");
     suiteHash.update(readFileSync(join(this.repositoryRoot, "scripts", "alpha-validate.mjs")));
+    suiteHash.update(readFileSync(
+      join(this.repositoryRoot, "scripts", "network-disabled-bootstrap.cjs"),
+    ));
+    suiteHash.update(readFileSync(join(
+      this.repositoryRoot,
+      "scripts",
+      "network-disabled-python",
+      "sitecustomize.py",
+    )));
     suiteHash.update(readFileSync(join(this.repositoryRoot, "package.json")));
     const suite = `sha256:${suiteHash.digest("hex")}`;
     if (

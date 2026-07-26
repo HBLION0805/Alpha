@@ -966,6 +966,22 @@ durable snapshot, and validation-authority verifier. It never reads an Owner
 secret or creates a mutable authorization. Explicit RECOVER reconciliation
 remains part of the later crash and recovery boundary.
 
+Day15-T3B15-T5 exercises the operation boundary in fresh OS processes. The
+drills use the real append-only operation Control SQLite store and inject
+process termination before authorization, after authorization, after artifact
+publication, and after result commit. They also race durable Stop around
+authorization, attempt exact and changed replay, and independently inspect
+authorization, result, artifact, Stop, and ownership truth after restart.
+
+Fixed Alpha validation additionally preloads version-controlled Node
+`network-disabled-bootstrap.cjs` and Python `sitecustomize.py` guards into
+validation children. The guards
+replaces HTTP, HTTPS, socket, TLS, datagram, DNS, Fetch, and WebSocket entry
+points with deterministic rejection. Their bytes participate in the validation
+suite fingerprint, while the fixed environment removes credential-like and
+proxy state. This is a validation-process isolation boundary, not a general
+host firewall or permission to compose network providers.
+
 ---
 
 # Event Contract Framework

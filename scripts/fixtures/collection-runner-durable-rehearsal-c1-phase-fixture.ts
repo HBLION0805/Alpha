@@ -202,13 +202,19 @@ function createValidationRepository(root: string): {
   readonly suite: string;
 } {
   const scripts = join(root, "scripts");
+  const pythonGuard = join(scripts, "network-disabled-python");
   mkdirSync(scripts, { recursive: true });
+  mkdirSync(pythonGuard, { recursive: true });
   const packageText = `${JSON.stringify({
     private: true,
     scripts: { "alpha:validate": "node scripts/alpha-validate.mjs" },
   }, null, 2)}\n`;
   const validationText =
     "console.log(JSON.stringify({overall:{testsExecuted:1,passed:1,failed:0}}));\n";
+  const networkGuardText =
+    "\"use strict\";\nprocess.env.ALPHA_NETWORK_GUARD_ACTIVE = \"1\";\n";
+  const pythonNetworkGuardText =
+    "import os\nos.environ['ALPHA_PYTHON_NETWORK_GUARD_ACTIVE'] = '1'\n";
   writeFileSync(
     join(root, "package.json"),
     packageText,
@@ -217,6 +223,16 @@ function createValidationRepository(root: string): {
   writeFileSync(
     join(scripts, "alpha-validate.mjs"),
     validationText,
+    { encoding: "utf8" },
+  );
+  writeFileSync(
+    join(scripts, "network-disabled-bootstrap.cjs"),
+    networkGuardText,
+    { encoding: "utf8" },
+  );
+  writeFileSync(
+    join(pythonGuard, "sitecustomize.py"),
+    pythonNetworkGuardText,
     { encoding: "utf8" },
   );
   const run = (args: readonly string[]): string => {
@@ -236,10 +252,18 @@ function createValidationRepository(root: string): {
   run(["init", "--quiet"]);
   run(["config", "user.name", "Alpha Fixture"]);
   run(["config", "user.email", "fixture@alpha.invalid"]);
-  run(["add", "--", "package.json", "scripts/alpha-validate.mjs"]);
+  run([
+    "add", "--", "package.json", "scripts/alpha-validate.mjs",
+    "scripts/network-disabled-bootstrap.cjs",
+    "scripts/network-disabled-python/sitecustomize.py",
+  ]);
   run(["commit", "--quiet", "-m", "fixture validation authority"]);
   const suiteHash = createHash("sha256");
   suiteHash.update(readFileSync(join(scripts, "alpha-validate.mjs")));
+  suiteHash.update(readFileSync(
+    join(scripts, "network-disabled-bootstrap.cjs"),
+  ));
+  suiteHash.update(readFileSync(join(pythonGuard, "sitecustomize.py")));
   suiteHash.update(readFileSync(join(root, "package.json")));
   return {
     commit: run(["rev-parse", "HEAD"]),

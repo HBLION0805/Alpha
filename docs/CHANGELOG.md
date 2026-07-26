@@ -1,5 +1,20 @@
 # Alpha Changelog
 
+## 2026-07-26 - Day15-T3B15-T5 Operation Security Process Drills
+
+- Added nine fresh-process drills spanning crash before authorization, crash
+  after authorization, artifact-before-result ambiguity, result-before-exit,
+  Stop before authorization, Stop racing authorization, clean completion,
+  validation environment isolation, and recursive validation rejection.
+- Proved unresolved authorizations and changed replays cannot repeat a phase,
+  terminal results cannot duplicate, Stop prevents later artifacts, and
+  ambiguous ownership remains preserved for explicit recovery.
+- Added version-controlled Node and Python bootstraps inherited by validation
+  children that reject HTTP, HTTPS, socket, TLS, datagram, DNS, Fetch, and
+  WebSocket construction; both guards are included in the suite fingerprint.
+- No real operation, rehearsal, provider, external network request,
+  recommendation, order, execution, or capital action was performed.
+
 ## 2026-07-25 - Day15-T3B15-T4 Actual Validation and Verification Binding
 
 - Added an operation-bound fixed Alpha validation adapter that requires the

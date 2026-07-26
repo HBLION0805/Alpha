@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B15-T3 are complete and pushed. Day15-T3B15-T4 is complete locally and pending Owner review. It adds fixed actual-Alpha validation, recursion and exact-suite guards, operation-bound validation receipts, and read-only fresh-process final verification while retaining `NO_GO_FOR_REHEARSAL_EXECUTION`. No registered real operation, complete rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+Day 8 Intelligence foundations through Day15-T3B15-T4 are complete and pushed. Day15-T3B15-T5 is complete locally and pending Owner review. It adds fresh-process crash/Stop/replay drills across operation authorization and artifact boundaries plus fingerprint-bound Node and Python network guards inherited by validation children, while retaining `NO_GO_FOR_REHEARSAL_EXECUTION`. No registered real operation, complete rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
 
 Implemented Python prototype/runtime:
 

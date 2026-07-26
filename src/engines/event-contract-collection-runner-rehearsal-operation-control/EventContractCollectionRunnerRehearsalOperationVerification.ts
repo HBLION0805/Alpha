@@ -132,7 +132,7 @@ class LocalFixedValidationProcess implements FixedValidationProcessPort {
   }
 }
 
-function isolatedEnvironment(): Readonly<Record<string, string>> {
+function isolatedEnvironment(repositoryRoot: string): Readonly<Record<string, string>> {
   const allowed = [
     "PATH", "Path", "PATHEXT", "SystemRoot", "SYSTEMROOT", "WINDIR",
     "TEMP", "TMP", "TMPDIR", "ComSpec",
@@ -143,6 +143,13 @@ function isolatedEnvironment(): Readonly<Record<string, string>> {
   }
   clean[PROCESS_MARKER] = "1";
   clean.ALPHA_NETWORK_DISABLED = "1";
+  clean.NODE_OPTIONS =
+    `--require=${join(repositoryRoot, "scripts", "network-disabled-bootstrap.cjs")}`;
+  clean.PYTHONPATH = join(
+    repositoryRoot,
+    "scripts",
+    "network-disabled-python",
+  );
   clean.NO_PROXY = "*";
   clean.no_proxy = "*";
   return freeze(clean);
@@ -216,7 +223,7 @@ export class FixedActualAlphaValidationAdapter {
     }
     const fixed = {
       cwd: root,
-      environment: isolatedEnvironment(),
+      environment: isolatedEnvironment(root),
       timeoutMs: 600_000,
       maxOutputBytes: MAX_OUTPUT_BYTES,
     };
@@ -226,8 +233,16 @@ export class FixedActualAlphaValidationAdapter {
     );
     const packageBytes = readFileSync(join(root, "package.json"));
     const validationBytes = readFileSync(join(root, "scripts", "alpha-validate.mjs"));
+    const networkGuardBytes = readFileSync(
+      join(root, "scripts", "network-disabled-bootstrap.cjs"),
+    );
+    const pythonNetworkGuardBytes = readFileSync(
+      join(root, "scripts", "network-disabled-python", "sitecustomize.py"),
+    );
     const suiteHash = createHash("sha256")
       .update(validationBytes)
+      .update(networkGuardBytes)
+      .update(pythonNetworkGuardBytes)
       .update(packageBytes)
       .digest("hex");
     if (
