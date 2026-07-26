@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-07-25 - Day15-T3B14-C1 Phase Composition Correction
+
+- Decision: close the MR1 composition gap with a test-only, manifest-bound,
+  one-phase-per-process surface; no phase may invoke the next phase.
+- Decision: require fresh verification to match registered repository commit,
+  validation policy, suite fingerprint, and test total.
+- Decision: treat `EVIDENCE_FROZEN` as a store-wide read-only boundary for the
+  reviewed store composition.
+- Consequence: T3B14-MR2 is required before any exact rehearsal operation can
+  be considered, and no rehearsal-run or capital authority is granted.
+
 ## 2026-07-25 - Day15-T3B14 Durable Fixture Rehearsal Milestone Review
 
 - Decision: accept the rehearsal-only SQLite profile, durable PREPARE/STEP/RECOVER components, terminal evidence transaction, online backup, immutable envelope, and fresh-process verifier as reusable deterministic foundations.

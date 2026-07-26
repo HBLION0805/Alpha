@@ -218,6 +218,15 @@ function harness(
                 };
               },
             },
+            completionExecutor: {
+              execute: () => {
+                calls.push("complete");
+                return {
+                  taskId: null,
+                  receiptFingerprint: SHA_D,
+                };
+              },
+            },
             stopExecutor: {
               execute: () => {
                 calls.push("stop");
@@ -362,7 +371,7 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
     },
   ],
   [
-    "no open tasks completes without mutation",
+    "no open tasks completes the active Pilot through one explicit mutation",
     () => {
       const context = harness(CollectionRunnerTaskState.Committed);
       const report = context.step.run(request());
@@ -371,7 +380,9 @@ const tests: ReadonlyArray<readonly [string, () => void]> = [
         CollectionRunnerRuntimeAssemblyAction.CompleteAndExit,
         "action",
       );
-      assertEqual(report.durableMutationAttempted, false, "mutation");
+      assertEqual(report.durableMutationAttempted, true, "mutation");
+      assertEqual(context.calls.filter((value) => value === "complete").length, 1, "complete");
+      assertEqual(report.durableReceiptFingerprint, SHA_D, "receipt");
     },
   ],
   [

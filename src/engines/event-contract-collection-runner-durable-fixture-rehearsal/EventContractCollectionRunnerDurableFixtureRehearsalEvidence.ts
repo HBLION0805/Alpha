@@ -15,6 +15,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
+import { env, execPath } from "node:process";
 import { backup, DatabaseSync } from "node:sqlite";
 
 import {
@@ -334,7 +335,37 @@ export class FixedLocalDurableFixtureRehearsalValidationAdapter {
       DurableFixtureRehearsalEvidenceErrorCode.ValidationFailed,
       "Repository identity, cleanliness, or fixed validation suite changed.",
     );
-    const execution = spawnSync("npm.cmd", ["run", "alpha:validate"], {
+    const windows =
+      env.OS === "Windows_NT" ||
+      execPath.toLocaleLowerCase().endsWith("\\node.exe");
+    const npmCliCandidate = windows
+      ? (
+          typeof env.npm_execpath === "string" &&
+          env.npm_execpath.endsWith("npm-cli.js") &&
+          existsSync(env.npm_execpath)
+            ? env.npm_execpath
+            : join(
+                dirname(execPath),
+                "node_modules",
+                "npm",
+                "bin",
+                "npm-cli.js",
+              )
+        )
+      : null;
+    const execution =
+      windows && existsSync(npmCliCandidate!)
+      ? spawnSync(execPath, [npmCliCandidate!, "run", "alpha:validate"], {
+          cwd: this.repositoryRoot,
+          input: "",
+          encoding: "utf8",
+          shell: false,
+          timeout: 600_000,
+          windowsHide: true,
+          maxBuffer: 16 * 1024 * 1024,
+          killSignal: "SIGTERM",
+        })
+      : spawnSync("npm", ["run", "alpha:validate"], {
       cwd: this.repositoryRoot,
       input: "",
       encoding: "utf8",
@@ -372,6 +403,14 @@ export class FixedLocalDurableFixtureRehearsalValidationAdapter {
 export interface DurableFixtureRehearsalEnvelopeRoot {
   readonly evidenceRootId: string;
   readonly path: string;
+}
+
+export interface DurableFixtureRehearsalValidationAuthority {
+  readonly manifestFingerprint: string;
+  readonly repositoryCommit: string;
+  readonly validationPolicyVersion: string;
+  readonly validationSuiteFingerprint: string;
+  readonly registeredTestTotal: number;
 }
 
 export interface DurableFixtureRehearsalSourceStore {
@@ -596,10 +635,39 @@ function verification(
 
 export class DurableFixtureRehearsalFreshProcessVerifier {
   readonly #roots: ReadonlyMap<string, string>;
-  public constructor(roots: readonly DurableFixtureRehearsalEnvelopeRoot[]) {
+  readonly #validationAuthorities:
+    ReadonlyMap<string, DurableFixtureRehearsalValidationAuthority>;
+  public constructor(
+    roots: readonly DurableFixtureRehearsalEnvelopeRoot[],
+    validationAuthorities:
+      readonly DurableFixtureRehearsalValidationAuthority[],
+  ) {
     this.#roots = new Map(roots.map((item) => [
       item.evidenceRootId, safeRoot(item.path),
     ]));
+    this.#validationAuthorities = new Map(
+      validationAuthorities.map((authority) => [
+        authority.manifestFingerprint,
+        seal(structuredClone(authority)),
+      ]),
+    );
+    if (
+      this.#validationAuthorities.size !== validationAuthorities.length ||
+      validationAuthorities.some((authority) =>
+        !FP.test(authority.manifestFingerprint) ||
+        !COMMIT.test(authority.repositoryCommit) ||
+        authority.validationPolicyVersion !==
+          DURABLE_FIXTURE_REHEARSAL_VALIDATION_POLICY ||
+        !FP.test(authority.validationSuiteFingerprint) ||
+        !Number.isSafeInteger(authority.registeredTestTotal) ||
+        authority.registeredTestTotal < 1
+      )
+    ) {
+      throw new DurableFixtureRehearsalEvidenceError(
+        DurableFixtureRehearsalEvidenceErrorCode.InvalidRequest,
+        "Validation authorities are invalid or duplicated.",
+      );
+    }
   }
 
   public verify(
@@ -699,12 +767,23 @@ export class DurableFixtureRehearsalFreshProcessVerifier {
       const { deterministic: _vd, fingerprint: _vf, passed: _vp, ...validationInput } = validation;
       const rebuiltValidation =
         createDurableFixtureRehearsalValidationReceipt(validationInput);
+      const validationAuthority =
+        this.#validationAuthorities.get(expectedManifestFingerprint);
       if (
+        validationAuthority === undefined ||
         validation.deterministic !== true ||
         validation.passed !== rebuiltValidation.passed ||
         validation.fingerprint !== rebuiltValidation.fingerprint ||
         !rebuiltValidation.passed ||
-        rebuiltValidation.fingerprint !== envelope.validationReceiptFingerprint
+        rebuiltValidation.fingerprint !== envelope.validationReceiptFingerprint ||
+        rebuiltValidation.repositoryCommit !==
+          validationAuthority.repositoryCommit ||
+        rebuiltValidation.validationPolicyVersion !==
+          validationAuthority.validationPolicyVersion ||
+        rebuiltValidation.validationSuiteFingerprint !==
+          validationAuthority.validationSuiteFingerprint ||
+        rebuiltValidation.registeredTestTotal !==
+          validationAuthority.registeredTestTotal
       ) throw new Error();
       stage = "BACKUP_PROFILE";
       inspectCollectionRunnerFixtureRehearsalSqliteProfile({

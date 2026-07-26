@@ -44,6 +44,14 @@ export interface DurableEvidenceDrillFixture {
   readonly scenarioResultFingerprint: string;
   readonly executionPackageFingerprint: string;
   readonly envelopeFingerprint: string;
+  readonly validationAuthority: {
+    readonly manifestFingerprint: string;
+    readonly repositoryCommit: string;
+    readonly validationPolicyVersion:
+      typeof DURABLE_FIXTURE_REHEARSAL_VALIDATION_POLICY;
+    readonly validationSuiteFingerprint: string;
+    readonly registeredTestTotal: number;
+  };
 }
 
 function registryInput(
@@ -416,5 +424,17 @@ export async function createDurableEvidenceDrillFixture(
     scenarioResultFingerprint: scenario,
     executionPackageFingerprint: execution,
     envelopeFingerprint: manifest.fingerprint,
+    validationAuthority: {
+      manifestFingerprint:
+        frozenEvidence.validationReceipt.manifestFingerprint,
+      repositoryCommit:
+        frozenEvidence.validationReceipt.repositoryCommit,
+      validationPolicyVersion:
+        frozenEvidence.validationReceipt.validationPolicyVersion,
+      validationSuiteFingerprint:
+        frozenEvidence.validationReceipt.validationSuiteFingerprint,
+      registeredTestTotal:
+        frozenEvidence.validationReceipt.registeredTestTotal,
+    },
   };
 }

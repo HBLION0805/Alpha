@@ -1,5 +1,6 @@
 import {
   COLLECTION_RUNNER_RUNTIME_MAXIMUM_WORK_SNAPSHOT_TASKS,
+  CollectionRunnerPilotState,
   CollectionRunnerRuntimeAssemblyAction,
   CollectionRunnerRuntimeCleanupDisposition,
   CollectionRunnerRuntimeFoundationErrorCode,
@@ -9,6 +10,7 @@ import {
   EVENT_CONTRACT_COLLECTION_RUNNER_RUNTIME_ASSEMBLY_SCHEMA_VERSION,
   type CollectionRunnerRuntimeAssemblyDecision,
   type CollectionRunnerRuntimeForegroundClockPort,
+  type CollectionRunnerRuntimeForegroundCompletionExecutor,
   type CollectionRunnerRuntimeForegroundFixtureExecutor,
   type CollectionRunnerRuntimeForegroundResourcePort,
   type CollectionRunnerRuntimeForegroundStepSession,
@@ -48,6 +50,8 @@ export interface EventContractCollectionRunnerRuntimeForegroundStartedSession
   readonly workSnapshots: EventContractCollectionRunnerRuntimeWorkSnapshotRepository;
   readonly t6Executor: EventContractCollectionRunnerRuntimeT6Executor;
   readonly fixtureExecutor: CollectionRunnerRuntimeForegroundFixtureExecutor;
+  readonly completionExecutor:
+    CollectionRunnerRuntimeForegroundCompletionExecutor;
   readonly stopExecutor: CollectionRunnerRuntimeForegroundStopExecutor;
   readonly terminalState: CollectionRunnerRuntimeForegroundTerminalStatePort;
   readonly resources: CollectionRunnerRuntimeForegroundResourcePort;
@@ -293,11 +297,29 @@ export class EventContractCollectionRunnerRuntimeForegroundStep {
           ambiguityPreserved = true;
           state = CollectionRunnerRuntimeInvocationState.FailedClosed;
         } else if (
-          decision.action === CollectionRunnerRuntimeAssemblyAction.WaitAndExit ||
+          decision.action === CollectionRunnerRuntimeAssemblyAction.WaitAndExit
+        ) {
+          outcome = noWorkOutcome(decision.action);
+          health = CollectionRunnerRuntimeHealthStatus.Healthy;
+          state = transitionCollectionRunnerRuntimeInvocation(
+            state,
+            CollectionRunnerRuntimeInvocationState.Reporting,
+          );
+        } else if (
           decision.action ===
             CollectionRunnerRuntimeAssemblyAction.CompleteAndExit
         ) {
-          outcome = noWorkOutcome(decision.action);
+          if (snapshot.pilotState === CollectionRunnerPilotState.Active) {
+            durableMutationAttempted = true;
+            durableReceiptFingerprint = receiptFingerprint(
+              session.completionExecutor.execute(
+                decision.reasonCode,
+                actionClock.observedAtUtc,
+                snapshot.pilotAggregateVersion,
+              ),
+            );
+          }
+          outcome = CollectionRunnerRuntimeStepOutcome.Completed;
           health = CollectionRunnerRuntimeHealthStatus.Healthy;
           state = transitionCollectionRunnerRuntimeInvocation(
             state,

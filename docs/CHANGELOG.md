@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## 2026-07-25 - Day15-T3B14-C1 End-to-end Phase Correction
+
+- Added a test-only one-phase-per-process chain for PREPARE, three real
+  foreground STEP actions, fixed validation, terminal freeze, package, and
+  fresh verification.
+- Added registered validation-authority binding, explicit Pilot completion,
+  and a post-freeze query-only mutable-repository barrier.
+- Added two-run scenario/execution identity evidence and the twenty-drill
+  traceability matrix.
+- No real rehearsal, continuous runtime, provider, recommendation, or capital
+  authority was added.
+
 ## 2026-07-25 - Day15-T3B14 Durable Fixture Rehearsal Milestone Review (Pending Owner Review)
 
 - Added a milestone review over T3B14-T1 through T3B14-T5 and baseline `a692f6f`.

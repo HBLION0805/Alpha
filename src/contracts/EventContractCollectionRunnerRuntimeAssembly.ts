@@ -269,6 +269,14 @@ export interface CollectionRunnerRuntimeForegroundStopExecutor {
   ): CollectionRunnerRuntimeForegroundMutationReceipt;
 }
 
+export interface CollectionRunnerRuntimeForegroundCompletionExecutor {
+  execute(
+    reasonCode: string,
+    observedAtUtc: string,
+    expectedPilotVersion: number,
+  ): CollectionRunnerRuntimeForegroundMutationReceipt;
+}
+
 export interface CollectionRunnerRuntimeForegroundFixtureExecutor {
   execute(
     decision: Readonly<CollectionRunnerRuntimeAssemblyDecision>,

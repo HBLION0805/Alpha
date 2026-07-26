@@ -30,14 +30,17 @@ export class EventContractCollectionRunnerFixtureRehearsalSqliteStore
   implements CollectionRunnerRehearsalPreparationStorePort {
   readonly #database: DatabaseSync;
   readonly #readiness: CollectionRunnerFixtureRehearsalSqliteProfileReadiness;
+  readonly #frozen: boolean;
   #closed = false;
 
   private constructor(
     database: DatabaseSync,
     readiness: CollectionRunnerFixtureRehearsalSqliteProfileReadiness,
+    frozen: boolean,
   ) {
     this.#database = database;
     this.#readiness = readiness;
+    this.#frozen = frozen;
   }
 
   public static open(
@@ -80,16 +83,25 @@ export class EventContractCollectionRunnerFixtureRehearsalSqliteStore
     try {
       database.exec(`
 PRAGMA foreign_keys = ON;
-PRAGMA journal_mode = WAL;
-PRAGMA synchronous = FULL;
 PRAGMA busy_timeout = 5000;
 PRAGMA trusted_schema = OFF;
 PRAGMA recursive_triggers = OFF;
 PRAGMA temp_store = MEMORY;
 `);
+      const frozen = Number(Object.values(database.prepare(`
+SELECT COUNT(*)
+FROM fixture_rehearsals
+WHERE lifecycle_state = 'EVIDENCE_FROZEN'
+`).get() ?? {})[0]) > 0;
+      database.exec(
+        frozen
+          ? "PRAGMA query_only = ON;"
+          : "PRAGMA journal_mode = WAL; PRAGMA synchronous = FULL;",
+      );
       return new EventContractCollectionRunnerFixtureRehearsalSqliteStore(
         database,
         readiness,
+        frozen,
       );
     } catch (error) {
       database.close();
@@ -104,15 +116,22 @@ PRAGMA temp_store = MEMORY;
 
   public createRunnerRepository(): EventContractCollectionRunnerRepository {
     this.#assertOpen();
+    this.#assertMutable();
     return createSqliteEventContractCollectionRunnerRepository(this.#database);
   }
 
   public createDurableRehearsalRepository():
     DurableFixtureRehearsalRepository {
     this.#assertOpen();
+    this.#assertMutable();
     return createSqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository(
       this.#database,
     );
+  }
+
+  public isEvidenceFrozen(): boolean {
+    this.#assertOpen();
+    return this.#frozen;
   }
 
   public close(): void {
@@ -124,6 +143,14 @@ PRAGMA temp_store = MEMORY;
   #assertOpen(): void {
     if (this.#closed) {
       throw new Error("Fixture rehearsal SQLite store is closed.");
+    }
+  }
+
+  #assertMutable(): void {
+    if (this.#frozen) {
+      throw new Error(
+        "EVIDENCE_FROZEN fixture rehearsal stores expose no mutable repository.",
+      );
     }
   }
 }

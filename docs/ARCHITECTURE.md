@@ -844,6 +844,14 @@ permitted work is the narrow T3B14-C1 end-to-end phase-composition and
 validation-authority correction, followed by a separate MR2. See
 [Event Contract Collection Runner Durable Fixture Rehearsal Milestone Review](EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_MILESTONE_REVIEW.md).
 
+Day15-T3B14-C1 closes that correction locally with a test-only closed phase
+surface. PREPARE, three real foreground STEP invocations, VALIDATE, FREEZE,
+PACKAGE, and VERIFY each execute in a fresh process without arranging the
+next phase. Fresh verification requires registered commit, suite, policy, and
+test-total authority, and an evidence-frozen source store exposes no mutable
+repository. C1 remains non-operational and requires T3B14-MR2; it grants no
+rehearsal-run, provider, continuous-runtime, or capital authority.
+
 ---
 
 # Event Contract Framework

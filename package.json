@@ -68,6 +68,7 @@
     "test:event-contract-collection-runner-durable-fixture-rehearsal-step-adapter": "tsx src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalStepAdapter.test.ts",
     "test:event-contract-collection-runner-durable-fixture-rehearsal-evidence": "tsx src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEvidence.test.ts",
     "test:event-contract-collection-runner-durable-fixture-rehearsal-process-drill": "tsx src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalProcessDrill.test.ts",
+    "test:event-contract-collection-runner-durable-fixture-rehearsal-c1-process-drill": "tsx src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC1ProcessDrill.test.ts",
     "test:event-contract-collection-runner-fixture-rehearsal-sqlite-v3": "tsx src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.test.ts",
     "collection-runner:recovery-control": "tsx scripts/collection-runner-recovery-control.mjs",
     "test:kalshi-event-contract-fixture": "tsx src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",

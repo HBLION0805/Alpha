@@ -80,16 +80,39 @@ async function verify(
   resultName: string,
   envelopeFingerprint = fixture.envelopeFingerprint,
   manifestFingerprint = fixture.manifestFingerprint,
+  validationAuthority = fixture.validationAuthority,
 ): Promise<DurableFixtureRehearsalEnvelopeVerificationResult> {
   const resultPath = join(fixture.evidenceRoot, "..", resultName);
   const process = child([
     "verify", fixture.evidenceRoot, "a", resultPath, join(fixture.evidenceRoot, "unused"),
     envelopeFingerprint, manifestFingerprint,
+    JSON.stringify(validationAuthority),
   ]);
   await waitFor(resultPath, process);
   const code = await exitCode(process);
   equal(code, 0, "verify exit");
   return JSON.parse(readFileSync(resultPath, "utf8")) as DurableFixtureRehearsalEnvelopeVerificationResult;
+}
+
+async function attemptFrozenMutation(
+  fixture: DurableEvidenceDrillFixture,
+): Promise<{
+  readonly evidenceFrozen: boolean;
+  readonly runnerRejected: boolean;
+  readonly rehearsalRejected: boolean;
+}> {
+  const resultPath = join(fixture.evidenceRoot, "..", "frozen-mutation.json");
+  const process = child([
+    "mutate-frozen", fixture.sourceStorePath, "a", resultPath,
+    join(fixture.evidenceRoot, "unused"),
+  ]);
+  await waitFor(resultPath, process);
+  equal(await exitCode(process), 0, "frozen mutation exit");
+  return JSON.parse(readFileSync(resultPath, "utf8")) as {
+    readonly evidenceFrozen: boolean;
+    readonly runnerRejected: boolean;
+    readonly rehearsalRejected: boolean;
+  };
 }
 
 async function crash(
@@ -174,6 +197,13 @@ const tests: ReadonlyArray<readonly [string, () => Promise<void>]> = [
         scenarioResultFingerprint: "",
         executionPackageFingerprint: "",
         envelopeFingerprint: envelope.fingerprint,
+        validationAuthority: {
+          manifestFingerprint: envelope.manifestFingerprint,
+          repositoryCommit: "a".repeat(40),
+          validationPolicyVersion: "ALPHA_FIXED_LOCAL_VALIDATION_V1" as const,
+          validationSuiteFingerprint: `fnv1a64:${"7".repeat(16)}`,
+          registeredTestTotal: 2343,
+        },
       };
       equal((await verify(fixture, "verify-published.json")).disposition, DurableFixtureRehearsalEvidenceDisposition.Pass, "published");
     } finally { await removeRoot(state.root); }
@@ -209,6 +239,36 @@ const tests: ReadonlyArray<readonly [string, () => Promise<void>]> = [
       value.passed = false;
       writeFileSync(path, `${JSON.stringify(value)}\n`);
       equal((await verify(fixture, "verify-validation-sub.json")).disposition, DurableFixtureRehearsalEvidenceDisposition.FailClosed, "disposition");
+    } finally { await removeRoot(root); }
+  }],
+  ["unregistered validation authority fails closed", async () => {
+    const root = mkdtempSync(join(tmpdir(), "alpha-t5-validation-authority-"));
+    try {
+      const fixture = await build(root);
+      const result = await verify(
+        fixture,
+        "verify-validation-authority.json",
+        fixture.envelopeFingerprint,
+        fixture.manifestFingerprint,
+        {
+          ...fixture.validationAuthority,
+          repositoryCommit: "b".repeat(40),
+        },
+      );
+      equal(
+        result.disposition,
+        DurableFixtureRehearsalEvidenceDisposition.FailClosed,
+        "disposition",
+      );
+    } finally { await removeRoot(root); }
+  }],
+  ["fresh process cannot obtain mutable repositories after freeze", async () => {
+    const root = mkdtempSync(join(tmpdir(), "alpha-t5-freeze-guard-"));
+    try {
+      const result = await attemptFrozenMutation(await build(root));
+      truth(result.evidenceFrozen, "frozen");
+      truth(result.runnerRejected, "runner rejected");
+      truth(result.rehearsalRejected, "rehearsal rejected");
     } finally { await removeRoot(root); }
   }],
   ["extra evidence file fails closed", async () => {

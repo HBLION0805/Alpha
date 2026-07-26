@@ -4,7 +4,7 @@ Date:
 2026-07-25
 
 Project Stage:
-Day15-T3B14-T5 is committed and pushed; Day15-T3B14-MR1 is complete locally and pending Owner review
+Day15-T3B14-MR1 is committed and pushed; Day15-T3B14-C1 is complete locally and pending Owner review
 
 ## Current Architecture Checkpoint
 
@@ -121,7 +121,10 @@ Day15-T3B14-T4 is committed and pushed as `b3be96c`. It adds a fixed-process loc
 
 Day15-T3B14-T5 is committed and pushed as `a692f6f`. Twelve new OS-process drills prove clean independent verification, two isolated runs with equal scenario and different execution identities, crashes after backup/before publication/after publication, partial-stage quarantine, backup/manifest/validation substitution rejection, extra-file rejection, missing-backup `INCOMPLETE`, mutable-source isolation, and expected-identity drift. Combined T5 evidence/coordinator/transaction/package process checks pass `45/45`, and complete Alpha validation passes `2355/2355`. No production command or real rehearsal was run.
 
-Day15-T3B14-MR1 is complete locally and pending Owner review. It accepts the durable schema, PREPARE/STEP/RECOVER, recovery, freeze, backup, envelope, and fresh-verifier components, but returns `NO_GO_FOR_REHEARSAL_RUN`. The T5 clean drill directly seeds terminal Runner/rehearsal state and directly constructs a passing validation receipt rather than executing each reviewed phase and the fixed validation adapter in separate processes. The coordinator exposes no complete VALIDATE/FREEZE/PACKAGE phase operation, post-freeze writer rejection is not yet proven as a store-wide invariant, and the 20 required drills lack an exact assembled traceability matrix. The recommended next task is T3B14-C1 correction followed by a separate MR2.
+Day15-T3B14-MR1 is committed and pushed as `4bec6a3`. Day15-T3B14-C1 is complete locally and pending Owner review. C1 adds explicit Pilot completion persistence, registered validation authority at fresh verification, a post-freeze query-only/mutable-repository barrier, a Windows-safe fixed npm validation boundary, and a test-only phase command whose PREPARE, three STEP actions, VALIDATE, FREEZE, PACKAGE, and VERIFY each run in a separate process. Two clean roots reconstruct equal scenario truth and different execution identity. The exact twenty-requirement mapping is recorded in `EVENT_CONTRACT_COLLECTION_RUNNER_DURABLE_FIXTURE_REHEARSAL_C1_EVIDENCE_MATRIX.md`. A separate T3B14-MR2 remains required; no rehearsal run is authorized.
+
+T3B14-C1 focused phase-composition drills pass `3/3`, durable evidence process
+drills pass `14/14`, and complete Alpha validation passes `2346/2346`.
 
 ## Day 6 Milestone Review
 

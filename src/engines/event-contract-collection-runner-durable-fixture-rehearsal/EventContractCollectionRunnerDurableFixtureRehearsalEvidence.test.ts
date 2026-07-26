@@ -47,6 +47,14 @@ const validationInput = {
   sanitizedOutputDigest: FP3,
 } as const;
 
+const validationAuthorities = [{
+  manifestFingerprint: validationInput.manifestFingerprint,
+  repositoryCommit: validationInput.repositoryCommit,
+  validationPolicyVersion: validationInput.validationPolicyVersion,
+  validationSuiteFingerprint: validationInput.validationSuiteFingerprint,
+  registeredTestTotal: validationInput.registeredTestTotal,
+}] as const;
+
 const tests: readonly [string, () => void][] = [
   ["validation receipt is deterministic and passing", () => {
     const first = createDurableFixtureRehearsalValidationReceipt(validationInput);
@@ -117,7 +125,7 @@ const tests: readonly [string, () => void][] = [
     try {
       const result = new DurableFixtureRehearsalFreshProcessVerifier([
         { evidenceRootId: "root-1", path: root },
-      ]).verify("root-1", FP1, FP2);
+      ], validationAuthorities).verify("root-1", FP1, FP2);
       equal(result.disposition, DurableFixtureRehearsalEvidenceDisposition.Incomplete, "disposition");
       truthy(result.issueCodes.includes("ENVELOPE_MISSING"), "issue");
     } finally {
@@ -129,7 +137,7 @@ const tests: readonly [string, () => void][] = [
     try {
       const result = new DurableFixtureRehearsalFreshProcessVerifier([
         { evidenceRootId: "root-1", path: root },
-      ]).verify("unknown", FP1, FP2);
+      ], validationAuthorities).verify("unknown", FP1, FP2);
       equal(result.disposition, DurableFixtureRehearsalEvidenceDisposition.FailClosed, "disposition");
     } finally {
       rmSync(root, { recursive: true, force: true });
