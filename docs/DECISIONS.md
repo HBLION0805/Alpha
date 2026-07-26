@@ -1,5 +1,24 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Day15-T3B15-MR3 Corrected Operation Readiness Review
+
+- Decision: return `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` for exact C2
+  commit `385aa9b6e61c606c84c6cc65c3fab578472ca555`.
+- Decision: object-reference separation and injected observation ports do not
+  prove independent query-only reconstruction from durable rehearsal truth.
+- Decision: require one fully closed, fixed, non-executable composition over
+  real mutation adapters, durable observers, six roots, both stores, Owner,
+  Stop, ownership, executable identities, and fresh-process verification.
+- Decision: digest-bind Node, Python, and guard files; close transient
+  substitution and full child/Git invocation escape paths.
+- Decision: recognize only the exact reviewed Control `1.0` schema, remove
+  standalone validation-receipt persistence, and define existing-orphan
+  recovery.
+- Decision: require T3B15-C3 followed by a new independent T3B15-MR4.
+- Consequence: no Operation Manifest, rehearsal, provider/network access,
+  Pilot activation, T1/T2 delivery, recommendation, order, execution, or
+  capital authority is permitted.
+
 ## 2026-07-26 - Day15-T3B15-C2 Independent Authority and Isolation Correction
 
 - Decision: mutation and durable observation are separate closed five-phase

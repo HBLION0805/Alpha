@@ -1,5 +1,23 @@
 # Alpha Changelog
 
+## 2026-07-26 - Day15-T3B15-MR3 Independent Corrected Readiness Review
+
+- Independently reviewed exact C2 commit
+  `385aa9b6e61c606c84c6cc65c3fab578472ca555`.
+- Confirmed canonical and digest-bound Git, atomic normal Validate
+  receipt/result persistence, fail-closed non-empty legacy handling, tested
+  Node/Python escape denial, query-only Control reads, and the absence of an
+  execution method on the production-shaped runtime.
+- Recorded high blockers for concrete durable observation, closed real
+  composition, Node/Python digest authority, transient substitution, exact
+  guard/Git allowlists, exact legacy schema recognition, standalone receipt
+  writes, and fresh-process verification over both durable stores.
+- Recorded missing real-composition OS-process evidence as a medium blocker.
+- Independent validation passes `2463/2463`, but the decision remains
+  `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+- No manifest, rehearsal, network request, provider, recommendation, order,
+  execution, or capital action was created or performed.
+
 ## 2026-07-26 - Day15-T3B15-C2 Independent Authority and Isolation Correction
 
 - Split the five mutation adapters from five independently supplied read-only

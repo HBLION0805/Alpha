@@ -4,11 +4,11 @@ Date:
 2026-07-26
 
 Project Stage:
-Day15-T3B15-MR2 is committed and pushed; Day15-T3B15-C2 is complete locally and pending Owner review
+Day15-T3B15-C2 is committed and pushed; independent Day15-T3B15-MR3 is complete locally, returns NO-GO, and is pending Owner review
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `8e20a238c81f6641cf910ef3fd4c6f49ac834040` on `main`, equal to `origin/main`.
+Verified baseline: `385aa9b6e61c606c84c6cc65c3fab578472ca555` on `main`, equal to `origin/main`.
 
 Day 7 completed:
 
@@ -254,8 +254,8 @@ isolation retains concrete escape paths; and authoritative filesystem state may
 drift after post-ownership inspection. Control schema `1.1`, validation-receipt
 crash reconciliation, and missing process evidence also require T3B15-C2.
 
-Day15-T3B15-MR2 was approved and pushed as `8e20a23`. Day15-T3B15-C2 is
-complete locally and pending Owner review. C2 replaces the shared phase adapter
+Day15-T3B15-MR2 was approved and pushed as `8e20a23`. Day15-T3B15-C2 was
+approved and pushed as `385aa9b`. C2 replaces the shared phase adapter
 with disjoint mutation and durable-observation compositions, binds Git by
 canonical path and SHA-256 digest, rechecks a structural authority seal before
 authorization and after phase observation, migrates only empty Control `1.0`
@@ -265,9 +265,22 @@ network actions, cleared-environment children, Worker threads, and Python
 `os.exec*`/spawn escape. One closed production-shaped runtime exposes only
 Preflight, Status, and final verification; it deliberately has no execution
 method. Security inspection children reopen Control query-only in separate OS
-processes. Independent T3B15-MR3 remains required, and no real rehearsal was
-run. Focused control, verification, and security process suites pass `40/40`,
-`4/4`, and `11/11`; complete Alpha validation passes `2463/2463`.
+processes. C2 itself granted no rehearsal authority. Focused control,
+verification, and security process suites pass `40/40`, `4/4`, and `11/11`;
+complete Alpha validation passes `2463/2463`.
+
+Independent Day15-T3B15-MR3 reviewed exact commit `385aa9b` and returns
+`NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It confirms C2's canonical
+digest-bound Git, atomic normal Validate persistence, fail-closed non-empty
+legacy handling, tested Node/Python escape denial, query-only Control reads,
+and non-executable runtime. It finds that durable observation is still injected
+rather than concretely reconstructed query-only, the runtime is not a fully
+fixed real composition, Node/Python lack digest authority, transient
+substitution remains possible, guard/Git allowlists and legacy-schema
+recognition are not exact, standalone validation-receipt writes remain
+reachable, and final verification does not independently reopen both durable
+stores in a fresh process. T3B15-C3 and a later independent MR4 are required.
+No real manifest or rehearsal was created or run.
 
 ## Day 6 Milestone Review
 
@@ -703,11 +716,10 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-C2. If approved, commit and push C2, then begin an
-independent `Day15-T3B15-MR3 — Corrected Exact Operation Readiness Review`.
-MR3 must review the complete diff, rerun all focused and complete validation,
-inspect migration and atomic receipt/result evidence, and decide whether the
-exact operation can be authorized. Until MR3 explicitly returns
-`GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`, do not run a rehearsal or add an
-execution command, continuous runtime, loops, network providers, real Pilot,
+Owner review of independent Day15-T3B15-MR3. If approved, commit and push the
+review record, then begin `Day15-T3B15-C3 — Closed Durable Composition, Exact
+Authority, Migration, and Fresh-process Verification Correction`. C3 must close
+all MR3 blockers and be followed by a new independent MR4. Until MR4 explicitly
+returns `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`, do not run a rehearsal or add
+an execution command, continuous runtime, loops, network providers, real Pilot,
 T1/T2 delivery, probability research, recommendation, or trading authority.

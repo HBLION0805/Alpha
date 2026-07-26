@@ -6,7 +6,7 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B15-MR2 are complete and pushed at `8e20a23`. Day15-T3B15-C2 is complete locally and pending Owner review. C2 separates mutation from independently supplied durable observation, fixes Git by canonical path and digest, binds authorization to a rechecked structural authority seal, defines atomic empty-store Control `1.0` to `1.1` migration, commits validation evidence and result in one transaction, closes Node Worker/environment and Python `os.exec*` escapes, and adds one closed production-shaped runtime that deliberately exposes no execution method. A new independent T3B15-MR3 is required. No registered real operation, rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+Day 8 Intelligence foundations through Day15-T3B15-C2 are complete and pushed at `385aa9b`. Independent Day15-T3B15-MR3 is complete locally and returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. C2 materially improves Git identity, atomic Validate persistence, Control migration, authority drift detection, and trusted-code isolation, but MR3 finds that the real durable observer/composition is not closed, Node/Python are not digest-bound, transient authority substitution remains possible, legacy-schema and child/Git allowlists are not exact, and fresh-process final verification over both durable stores is not proven. The next permitted task is T3B15-C3 correction. No registered real operation, rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
 
 Implemented Python prototype/runtime:
 

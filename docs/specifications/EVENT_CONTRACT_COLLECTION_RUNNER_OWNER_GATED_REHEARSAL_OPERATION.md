@@ -3,8 +3,8 @@
 ## Status
 
 - Task: `Day15-T3B15-T1`
-- Mode: implementation through C2; independent MR3 required; no rehearsal authority
-- Reviewed baseline: `8e20a238c81f6641cf910ef3fd4c6f49ac834040`
+- Mode: implementation through C2; independent MR3 returns NO-GO; no rehearsal authority
+- Reviewed baseline: `385aa9b6e61c606c84c6cc65c3fab578472ca555`
 - T3B15-T1: committed and pushed as `b27687c`
 - T3B15-T2: committed and pushed as `f42e482`
 - T3B15-T3: committed and pushed as `21d263f`
@@ -15,7 +15,9 @@
 - T3B15-C1: committed and pushed as `c6d6bc9`
 - T3B15-MR2: committed and pushed as `8e20a23`; returns
   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
-- T3B15-C2: complete locally; pending Owner review
+- T3B15-C2: committed and pushed as `385aa9b`
+- T3B15-MR3: complete locally; returns
+  `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`
 - Rehearsal execution: not authorized
 - Authority: local fixture-rehearsal operation design only
 - T5/MR1 validation baseline: complete Alpha bundle passes `2447/2447`
@@ -586,16 +588,21 @@ Approval of one item grants no authority for the next:
    over exact C1 commit `c6d6bc9`; confirms material closures but returns
    `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
 9. **T3B15-C2 — Independent Durable Authority, Fixed Executable, Closed Runtime
-   Composition, and Isolation Proof Correction:** complete locally; mutation
+   Composition, and Isolation Proof Correction:** committed and pushed as
+   `385aa9b`; mutation
    and durable observation are disjoint, Git is content-bound, the authority
    seal is rechecked, Control migration and Validate transactions are atomic,
    process escapes are denied, and the closed runtime remains non-executable.
-10. **T3B15-MR3 — Independent Corrected Readiness Review:** required before
-   any rehearsal authorization.
-11. **Separate Owner authorization for one exact rehearsal:** only if a later
+10. **T3B15-MR3 — Independent Corrected Readiness Review:** complete over
+   exact C2 commit `385aa9b`; confirms material closures but returns
+   `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
+11. **T3B15-C3 — Closed Durable Composition, Exact Authority, Migration, and
+   Fresh-process Verification Correction:** required to close all MR3 blockers,
+   followed by a new independent MR4.
+12. **Separate Owner authorization for one exact rehearsal:** only if a later
    independent review explicitly returns
    `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.
-12. **Post-rehearsal independent review:** evidence review before any further
+13. **Post-rehearsal independent review:** evidence review before any further
    rehearsal or expansion.
 
 There is no standing, repeatable, continuous, or implied run authority.
@@ -635,10 +642,12 @@ T3B15-T1 does not authorize:
 
 ## Recommended next task
 
-After Owner review and explicit approval, commit and push T3B15-C2, then begin:
+After Owner review and explicit approval, commit and push T3B15-MR3, then
+begin:
 
-`Day15-T3B15-MR3 — Corrected Exact Operation Readiness Review`
+`Day15-T3B15-C3 — Closed Durable Composition, Exact Authority, Migration, and
+Fresh-process Verification Correction`
 
-MR3 must be independent. The closed runtime remains non-executable and no
-rehearsal may run unless MR3 explicitly returns
+C3 must be followed by an independent MR4. The closed runtime remains
+non-executable and no rehearsal may run unless MR4 explicitly returns
 `GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`.

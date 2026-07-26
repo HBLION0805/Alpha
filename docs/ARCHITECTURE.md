@@ -1056,6 +1056,26 @@ Python additionally denies subprocess, spawn, `posix_spawn`, fork, and
 host firewall. C2 grants no rehearsal authority and requires independent
 T3B15-MR3.
 
+Independent Day15-T3B15-MR3 reviews exact C2 commit `385aa9b` and returns
+`NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It accepts C2's canonical
+digest-bound Git, atomic normal Validate receipt/result path, fail-closed
+non-empty legacy handling, tested Node/Python escape denial, query-only Control
+reads, and deliberate absence of an execution method.
+
+The operation is still not closed end to end. Durable observation is an
+injected interface rather than a concrete query-only reconstruction from the
+rehearsal SQLite store. The production-shaped runtime receives rather than
+fixes its real adapters, six roots, stores, Owner, Stop, ownership, executable
+identities, and verifier. Node and Python lack digest identity; transient
+authority substitution may occur between seal checks; guard/Git allowlists do
+not bind the complete child invocation; legacy migration does not recognize an
+exact schema; standalone validation-receipt persistence remains reachable; and
+final verification does not independently reopen both durable stores
+query-only in a fresh OS process.
+
+Therefore the next permitted work is T3B15-C3 correction followed by a new
+independent MR4. No real Operation Manifest or rehearsal is authorized.
+
 ---
 
 # Event Contract Framework
