@@ -1,5 +1,21 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Personal MVP-T3G-C7 Reference Diagnostic Boundary
+
+- Decision: use current official `GET /etfs/list`, not the legacy `/etf`
+  reference path.
+- Decision: freeze `symbol=MULS`, `country=US`, `format=JSON`, `page=1`, and
+  `outputsize=1`; callers cannot select request parameters or endpoints.
+- Decision: require default dry run and a later operation-bound Owner
+  confirmation before at most one real request and one credit.
+- Decision: accept reference evidence only for exactly one matching US ETF
+  record with a valid MIC; zero, multiple, mismatched, or malformed records fail
+  closed under sanitized result codes.
+- Decision: retain all C6 market-data, Quote, quantity, P1D, and budget blockers
+  even if reference presence is later confirmed.
+- Consequence: C7 is design-only and grants no implementation, credential,
+  network, persistence, recommendation, or trading authority.
+
 ## 2026-07-26 - Personal MVP-T3G-C6 Twelve Data Qualification
 
 - Decision: use only the official evidence frozen on 2026-07-20 and the current

@@ -1212,6 +1212,14 @@ the intended five-minute 12-symbol decision cadence. Twelve Data remains a
 Bars-research candidate only and gains no network, collection, recommendation,
 or trading authority. See [Personal Market Data Twelve Data Qualification](specifications/PERSONAL_MARKET_DATA_TWELVE_DATA_QUALIFICATION.md).
 
+Personal MVP-T3G-C7 is a design-only boundary for one exact Twelve Data `MULS`
+ETF reference diagnostic. It freezes `GET /etfs/list` with exact symbol and
+country filters, one page, one record, one request, one credit, a ten-second
+timeout, bounded response size, default dry run, strict identity validation,
+sanitized results, and terminal stop semantics. It explicitly rejects the
+legacy `/etf` path and grants no implementation or network authority. See
+[Twelve Data Personal MULS Reference Diagnostic](specifications/TWELVE_DATA_PERSONAL_MULS_REFERENCE_DIAGNOSTIC.md).
+
 ---
 
 # Event Contract Framework

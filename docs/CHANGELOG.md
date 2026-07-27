@@ -1,5 +1,18 @@
 # Alpha Changelog
 
+## 2026-07-26 - Personal MVP-T3G-C7 MULS Reference Diagnostic Design
+
+- Designed one exact default-zero-network Twelve Data ETF-directory diagnostic
+  for `MULS`.
+- Froze the current `/etfs/list` endpoint, exact symbol/country filters,
+  one-record/page/request/credit limits, timeout, response bound, credential
+  isolation, and sanitized result codes.
+- Required exact count/list/symbol/country/MIC validation and rejected the
+  legacy `/etf` path, pagination, retry, fallback, persistence, and caller
+  request selection.
+- Added no command, transport, credential use, live request, collection,
+  recommendation, or trading authority.
+
 ## 2026-07-26 - Personal MVP-T3G-C6 Twelve Data Qualification
 
 - Added a deterministic, network-free assessment of exact MULS reference
