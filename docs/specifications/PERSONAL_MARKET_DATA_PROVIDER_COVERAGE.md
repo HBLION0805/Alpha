@@ -49,6 +49,12 @@ Bars response cannot distinguish no IEX observation from other metadata,
 halt, or provider availability causes. Alpha therefore fails the complete
 provider qualification without inventing data or declaring the ticker invalid.
 
+The later separately authorized Paper Assets diagnostic also returned
+`ASSET_NOT_FOUND` for exact `MULS`. This narrows the reviewed Alpaca path:
+neither the IEX P1D response nor the Paper asset directory resolved the symbol
+for those operations. It does not invalidate the issuer-confirmed ticker or
+prove that another provider cannot cover it.
+
 ### Deferred premium path: Alpaca SIP
 
 The paid SIP plan is recorded as a future option when consolidated US-exchange
@@ -68,6 +74,20 @@ MVP provider because:
 
 It remains a possible bounded bars backup after its adapter and evidence gaps
 are closed.
+
+T3G-C5 prioritizes a network-free Twelve Data capability review before any
+additional request. Exact `MULS` reference coverage, current adapter P1D
+support, two-sided Quote and size semantics, and request-budget feasibility
+must all be established before an Owner-authorized bounded smoke can be
+proposed.
+
+### Architecture-only option: multi-provider composition
+
+A split-provider path is not currently authorized. Any future design must bind
+each required symbol and capability to a reviewed provider, preserve
+provider-specific provenance and coverage, synchronize freshness and session
+boundaries, and fail closed on conflicts or missing evidence. It cannot be
+enabled through configuration alone.
 
 ## Readiness states
 

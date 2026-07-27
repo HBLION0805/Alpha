@@ -1,5 +1,18 @@
 # Alpha Changelog
 
+## 2026-07-26 - Personal MVP-T3G-C5 Alternative Provider Qualification
+
+- Recorded the separately Owner-authorized one-request `MULS` Paper Assets
+  outcome as sanitized `ASSET_NOT_FOUND`, with zero retries and writes.
+- Added a deterministic plan that preserves all 12 symbols and selects no
+  provider while qualification remains incomplete.
+- Rejected Alpaca Basic for the exact complete path, prioritized network-free
+  Twelve Data capability research, deferred Alpaca SIP behind exact coverage
+  and Owner cost approval, and held multi-provider composition for architecture
+  review.
+- Added fail-closed evidence substitution tests and explicit zero network,
+  subscription, collection, recommendation, and trading authority.
+
 ## 2026-07-26 - Personal MVP-T3G-C4 MULS Asset Metadata Diagnostic
 
 - Added an exact-symbol, read-only Alpaca Paper Assets diagnostic for `MULS`.

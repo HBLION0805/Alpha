@@ -76,3 +76,4 @@ export * from "./PersonalCandidateScan";
 export * from "./PersonalWatchlistMapping";
 export * from "./PersonalMarketDataComposition";
 export * from "./PersonalMarketDataProviderCoverage";
+export * from "./PersonalMarketDataAlternativeProviderQualification";

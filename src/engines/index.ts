@@ -51,3 +51,4 @@ export * from "./personal-candidate-scan";
 export * from "./personal-watchlist-mapping";
 export * from "./personal-market-data-composition";
 export * from "./personal-market-data-provider-coverage";
+export * from "./personal-market-data-alternative-provider-qualification";

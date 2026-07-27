@@ -92,3 +92,12 @@ warnings, and explicit zero persistence, recommendation, and trading authority.
 ## Non-authority declaration
 
 C4 is diagnostic-only. It cannot modify the T3G-C3 provider qualification by
+itself and grants no later network authority.
+
+## Owner-authorized operation outcome
+
+After implementation review, the Owner separately authorized one exact real
+read. The command attempted and completed one request, received HTTP `404`, and
+returned sanitized `ASSET_NOT_FOUND`. It made zero retries and zero persistence
+writes and accessed no account, balance, position, order, or market-data
+endpoint. T3G-C5 records this outcome without retaining the provider body.

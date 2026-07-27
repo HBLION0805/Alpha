@@ -1191,6 +1191,17 @@ an active/tradable result cannot qualify IEX Bars, Quotes, liquidity, or the
 complete provider. No real C4 request is authorized by this implementation. See
 [Alpaca MULS Asset Metadata Diagnostic](specifications/ALPACA_PERSONAL_MULS_ASSET_METADATA_DIAGNOSTIC.md).
 
+Personal MVP-T3G-C5 records the later Owner-authorized C4 result: one exact
+Paper Assets request completed with HTTP 404 and sanitized `ASSET_NOT_FOUND`,
+with zero retries, writes, account access, or order access. A deterministic
+alternative-provider planner preserves all 12 symbols and selects no provider.
+It rejects Alpaca Basic for the complete path, prioritizes network-free Twelve
+Data capability research, defers Alpaca SIP until exact coverage and cost
+approval exist, and keeps multi-provider composition behind a separate
+architecture review. It grants no network, purchase, collection,
+recommendation, or trading authority. See [Personal Market Data Alternative
+Provider Qualification](specifications/PERSONAL_MARKET_DATA_ALTERNATIVE_PROVIDER_QUALIFICATION.md).
+
 ---
 
 # Event Contract Framework

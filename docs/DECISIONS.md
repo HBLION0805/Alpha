@@ -1,5 +1,21 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Personal MVP-T3G-C5 Resolution Strategy
+
+- Decision: record the exact Paper Assets `ASSET_NOT_FOUND` outcome without raw
+  payload, credential, account, price, quantity, or order data.
+- Decision: retain the issuer-approved `MULS` mapping and the exact 12-symbol
+  requirement; the failed provider must not redefine the instrument universe.
+- Decision: select no replacement provider in C5.
+- Decision: prioritize network-free Twelve Data exact-symbol, daily-Bar, Quote,
+  and request-budget research before proposing another bounded smoke.
+- Decision: do not purchase Alpaca SIP unless exact `MULS` coverage is proven
+  and the Owner separately approves cost.
+- Decision: require a separate architecture review before any multi-provider
+  composition can bind evidence into the personal decision path.
+- Consequence: personal live collection remains blocked and C5 grants no later
+  network, purchase, collection, recommendation, or trading authority.
+
 ## 2026-07-26 - Personal MVP-T3G-C4 MULS Asset Metadata Boundary
 
 - Decision: use only Alpaca Paper `GET /v2/assets/MULS` for the next diagnostic;
