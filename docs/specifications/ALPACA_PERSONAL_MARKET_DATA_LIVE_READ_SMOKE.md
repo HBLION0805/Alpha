@@ -49,6 +49,12 @@ exchange holidays and daylight-saving boundaries.
 
 Any rejected response or Canonical conversion stops the remaining requests.
 No partial response is described as a successful rehearsal.
+A provider-validation failure may expose only a bounded diagnostic containing
+the request ordinal, declared request scope, stable issue codes, and sorted
+missing, unexpected, or invalid symbol identifiers. It exposes no provider
+body, prices, quantities, timestamps, credentials, or provider narrative.
+
+
 
 ## Output boundary
 

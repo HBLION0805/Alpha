@@ -1,4 +1,5 @@
 import { BarInterval } from "../../../contracts/CanonicalBar";
+import { AlpacaPersonalIssueCode } from "./AlpacaPersonalMarketDataContracts";
 import type {
   AlpacaCredentials,
   AlpacaHttpResponse,
@@ -148,14 +149,14 @@ test("all responses cross strict validation and Canonical normalization", async 
     transport: new FixtureTransport(), clock,
   });
   equal(result.validatedResponses, 5, "validated responses");
-  equal(result.canonicalBarCount, 96, "canonical bars");
+  equal(result.canonicalBarCount, 84, "canonical bars");
   equal(result.canonicalQuoteCount, 12, "canonical quotes");
 });
 
-test("missing exact symbol stops after the first response without retry", async () => {
+test("missing exact symbols produce bounded diagnostics and stop without retry", async () => {
   const transport = new FixtureTransport();
   transport.invalidFirstResponse = true;
-  await expectSmokeFailure(
+  const error = await expectSmokeFailure(
     () => runAlpacaPersonalMarketDataLiveSmoke({
       confirmed: true, plan: plan(), policy, dailyBoundaries, environment, transport, clock,
     }),
@@ -163,6 +164,13 @@ test("missing exact symbol stops after the first response without retry", async 
     1,
   );
   equal(transport.calls, 1, "transport calls");
+  assert(error.diagnostic !== undefined, "diagnostic present");
+  equal(error.diagnostic.requestOrdinal, 1, "request ordinal");
+  equal(error.diagnostic.requestScope, "P1D", "request scope");
+  equal(error.diagnostic.missingSymbols.length, 12, "missing symbol count");
+  equal(error.diagnostic.unexpectedSymbols.length, 0, "unexpected symbol count");
+  assert(error.diagnostic.issueCodes.includes(AlpacaPersonalIssueCode.MissingSymbol), "missing-symbol code");
+  assert(!JSON.stringify(error).includes("\"bars\""), "raw body leaked");
 });
 
 test("missing reviewed P1D boundaries stops after the first response", async () => {
@@ -239,7 +247,7 @@ function responseBody(request: Readonly<AlpacaPersonalHttpRequest>): string {
   }
   const timeframe = new Map(request.query).get("timeframe");
   const timestamps = timeframe === "1Day"
-    ? ["2026-06-01T00:00:00.000Z", "2026-06-02T00:00:00.000Z"]
+    ? ["2026-06-01T00:00:00.000Z"]
     : timeframe === "1Hour"
       ? ["2026-07-20T13:30:00.000Z", "2026-07-20T14:30:00.000Z"]
       : timeframe === "15Min"
@@ -268,7 +276,7 @@ async function expectSmokeFailure(
   run: () => Promise<unknown>,
   safeCode: AlpacaLiveReadSmokeErrorCode,
   completedNetworkRequests: number,
-): Promise<void> {
+): Promise<AlpacaLiveReadSmokeError> {
   try {
     await run();
     throw new Error("Expected smoke failure.");
@@ -277,6 +285,7 @@ async function expectSmokeFailure(
     equal(error.safeCode, safeCode, "safe code");
     equal(error.completedNetworkRequests, completedNetworkRequests, "completed requests");
     assert(!JSON.stringify(error).includes(SECRET), "secret leaked");
+    return error;
   }
 }
 

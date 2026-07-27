@@ -1,10 +1,12 @@
 import { BarInterval } from "../../../contracts/CanonicalBar";
 import {
   ALPACA_PERSONAL_MARKET_DATA_PROVIDER_ID,
+  AlpacaPersonalIssueCode,
   AlpacaPersonalRequestKind,
   AlpacaPersonalResponseStatus,
   type AlpacaCredentialDiagnostic,
   type AlpacaHttpTransport,
+  type AlpacaPersonalIssue,
   type AlpacaPersonalDailyBarBoundary,
   type AlpacaPersonalDryRunInput,
   type AlpacaPersonalHttpRequest,
@@ -29,23 +31,44 @@ export enum AlpacaLiveReadSmokeErrorCode {
   CanonicalNormalizationFailed = "CANONICAL_NORMALIZATION_FAILED",
   RequestBindingFailed = "REQUEST_BINDING_FAILED",
 }
+export interface AlpacaLiveReadFailureDiagnostic {
+  readonly requestOrdinal: number;
+  readonly requestKind: AlpacaPersonalRequestKind;
+  readonly requestScope: "P1D" | "PT1H" | "PT15M" | "PT5M" | "LATEST_QUOTES";
+  readonly issueCodes: readonly AlpacaPersonalIssueCode[];
+  readonly missingSymbols: readonly string[];
+  readonly unexpectedSymbols: readonly string[];
+  readonly invalidSymbols: readonly string[];
+}
+
 
 export class AlpacaLiveReadSmokeError extends Error {
+  public readonly diagnostic: AlpacaLiveReadFailureDiagnostic | undefined;
+
   public constructor(
     public readonly safeCode: AlpacaLiveReadSmokeErrorCode,
     public readonly completedNetworkRequests: number,
     public readonly attemptedNetworkRequests = completedNetworkRequests,
+    diagnostic?: Readonly<AlpacaLiveReadFailureDiagnostic>,
   ) {
     super(`Alpaca one-shot live-read smoke failed: ${safeCode}.`);
     this.name = "AlpacaLiveReadSmokeError";
+    this.diagnostic = diagnostic === undefined ? undefined : deepFreeze({
+      ...diagnostic,
+      issueCodes: [...diagnostic.issueCodes],
+      missingSymbols: [...diagnostic.missingSymbols],
+      unexpectedSymbols: [...diagnostic.unexpectedSymbols],
+      invalidSymbols: [...diagnostic.invalidSymbols],
+    });
   }
 
   public toJSON(): Readonly<Record<string, unknown>> {
-    return Object.freeze({
+    return deepFreeze({
       providerId: ALPACA_PERSONAL_MARKET_DATA_PROVIDER_ID,
       safeCode: this.safeCode,
       completedNetworkRequests: this.completedNetworkRequests,
       attemptedNetworkRequests: this.attemptedNetworkRequests,
+      ...(this.diagnostic === undefined ? {} : { diagnostic: this.diagnostic }),
     });
   }
 }
@@ -170,6 +193,8 @@ export async function runAlpacaPersonalMarketDataLiveSmoke(
       throw new AlpacaLiveReadSmokeError(
         AlpacaLiveReadSmokeErrorCode.ProviderValidationFailed,
         completedNetworkRequests,
+        completedNetworkRequests,
+        providerFailureDiagnostic(validated.blockers, request, completedNetworkRequests),
       );
     }
     validatedResponses += 1;
@@ -242,6 +267,46 @@ export async function runAlpacaPersonalMarketDataLiveSmoke(
     ],
     elapsedMs: elapsed(startedAt, clock.now()),
   });
+}
+
+function providerFailureDiagnostic(
+  blockers: readonly AlpacaPersonalIssue[],
+  request: Readonly<AlpacaPersonalHttpRequest>,
+  requestOrdinal: number,
+): AlpacaLiveReadFailureDiagnostic {
+  const symbolsFor = (code: AlpacaPersonalIssueCode): readonly string[] => boundedSymbols(
+    blockers.filter((blocker) => blocker.code === code).map((blocker) => blocker.field),
+  );
+  const invalidSymbols = boundedSymbols(blockers
+    .filter((blocker) => blocker.code === AlpacaPersonalIssueCode.InvalidBar
+      || blocker.code === AlpacaPersonalIssueCode.InvalidQuote)
+    .map((blocker) => /^(?:bars|quotes)\.([A-Z][A-Z0-9.]{0,14})/u.exec(blocker.field)?.[1] ?? ""));
+  return deepFreeze({
+    requestOrdinal,
+    requestKind: request.kind,
+    requestScope: requestScope(request),
+    issueCodes: [...new Set(blockers.map((blocker) => blocker.code))].sort(),
+    missingSymbols: symbolsFor(AlpacaPersonalIssueCode.MissingSymbol),
+    unexpectedSymbols: symbolsFor(AlpacaPersonalIssueCode.UnexpectedSymbol),
+    invalidSymbols,
+  });
+}
+
+function boundedSymbols(values: readonly string[]): readonly string[] {
+  return [...new Set(values.filter((value) => /^[A-Z][A-Z0-9.]{0,14}$/u.test(value)))]
+    .sort()
+    .slice(0, 24);
+}
+
+function requestScope(
+  request: Readonly<AlpacaPersonalHttpRequest>,
+): AlpacaLiveReadFailureDiagnostic["requestScope"] {
+  if (request.kind === AlpacaPersonalRequestKind.LatestQuotes) return "LATEST_QUOTES";
+  const timeframe = new Map(request.query).get("timeframe");
+  if (timeframe === "1Day") return "P1D";
+  if (timeframe === "1Hour") return "PT1H";
+  if (timeframe === "15Min") return "PT15M";
+  return "PT5M";
 }
 
 function requestBinding(

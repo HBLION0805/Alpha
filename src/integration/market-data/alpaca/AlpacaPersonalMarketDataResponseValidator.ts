@@ -77,8 +77,8 @@ function validateBars(payload: unknown, expectedSymbols: readonly string[]): Alp
   const bars: AlpacaPersonalValidatedBar[] = [];
   for (const symbol of expectedSymbols) {
     const rows = payload.bars[symbol];
-    if (!Array.isArray(rows) || rows.length < 2 || rows.length > 1_000) {
-      blockers.push(issue(AlpacaPersonalIssueCode.InvalidBar, `bars.${symbol}`, "Each symbol requires 2 to 1,000 bounded bars."));
+    if (!Array.isArray(rows) || rows.length < 1 || rows.length > 1_000) {
+      blockers.push(issue(AlpacaPersonalIssueCode.InvalidBar, `bars.${symbol}`, "Each symbol requires 1 to 1,000 bounded bars."));
       continue;
     }
     let previous = -Infinity;

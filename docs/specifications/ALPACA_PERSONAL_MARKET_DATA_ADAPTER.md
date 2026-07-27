@@ -30,7 +30,8 @@ The planner fixes:
 - `currency=USD`;
 - raw, ascending bars;
 - explicit UTC start and end windows;
-- 2 to 1,000 response records per bars request;
+- 1 to 1,000 response records per symbol and bars request, allowing one exact
+  completed P1D session while retaining the hard upper bound;
 - 10-second future transport timeout;
 - 1,000,000-byte future response limit; and
 - a total budget of five requests.
