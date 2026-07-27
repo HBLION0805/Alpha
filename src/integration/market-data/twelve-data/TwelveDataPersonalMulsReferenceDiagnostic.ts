@@ -172,6 +172,13 @@ TwelveDataPersonalMulsReferenceRequest {
   });
 }
 
+export function createTwelveDataPersonalMulsReferenceRequestFingerprint(
+  request: Readonly<TwelveDataPersonalMulsReferenceRequest> =
+    createTwelveDataPersonalMulsReferenceRequest(),
+): string {
+  return `twelve-data-muls-reference:${fnv1a64(canonicalize(request))}`;
+}
+
 export function validateTwelveDataPersonalMulsReferenceResponse(
   body: unknown,
 ): TwelveDataPersonalMulsReferenceValidation {
@@ -241,7 +248,7 @@ export async function runTwelveDataPersonalMulsReferenceDiagnostic(
     symbol: TWELVE_DATA_PERSONAL_MULS_REFERENCE_SYMBOL,
     endpointHost: "api.twelvedata.com" as const,
     endpointPath: "/etfs/list" as const,
-    requestFingerprint: `twelve-data-muls-reference:${fnv1a64(canonicalize(request))}`,
+    requestFingerprint: createTwelveDataPersonalMulsReferenceRequestFingerprint(request),
     requestBudget: 1 as const,
     creditBudget: 1 as const,
     credential: credentials.toRedactedDiagnostic(),

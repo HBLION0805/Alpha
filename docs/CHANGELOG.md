@@ -1,5 +1,19 @@
 # Alpha Changelog
 
+## 2026-07-27 - Personal MVP-T3G-C9 Owner-gated MULS Live Reference Operation
+
+- Added a dedicated exact-host HTTPS Transport for the frozen Twelve Data
+  `/etfs/list` request with in-memory `Authorization: apikey` injection.
+- Added a default-zero-network local command whose live gate requires the exact
+  confirmation flag, current UTC date, and deterministic request fingerprint.
+- Added terminal timeout, cancellation, size, HTTP, network, receipt-clock, and
+  authorization failures with sanitized one-request accounting.
+- Added 25 network-free tests across the Transport, live operation, and command;
+  C8 regression coverage remains 15/15.
+- Added no standing network authority, persistence, collection loop, provider
+  qualification, recommendation, portfolio mutation, broker, order, or trading
+  behavior.
+
 ## 2026-07-26 - Personal MVP-T3G-C8 Network-free MULS Reference Core
 
 - Implemented immutable exact-request contracts and a fixed `/etfs/list` planner

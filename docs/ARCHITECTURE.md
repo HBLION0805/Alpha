@@ -1228,6 +1228,17 @@ no Transport; fixture rehearsal invokes it once while network request counts
 remain zero. No concrete HTTPS Transport, CLI, persistence, provider selection,
 recommendation, or trading authority exists.
 
+Personal MVP-T3G-C9 adds a dedicated exact-host HTTPS Transport and local
+command around the C8 parser. The Transport accepts only the frozen
+`/etfs/list` request, injects the official `Authorization: apikey` header only
+in memory, rejects every endpoint/query/budget mutation, and terminates after
+one response or failure. The command remains zero-network by default; a live
+attempt requires the exact confirmation flag, current UTC date, and immutable
+request fingerprint. Automated tests inject a fake executor. No real request is
+authorized by the implementation, and no persistence, collection, provider
+qualification, recommendation, portfolio, broker, order, or trading path is
+added. See [Twelve Data Personal MULS Reference Live Operation](specifications/TWELVE_DATA_PERSONAL_MULS_REFERENCE_LIVE_OPERATION.md).
+
 ---
 
 # Event Contract Framework

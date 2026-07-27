@@ -196,6 +196,9 @@ const aggregateTestFiles = [
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarAdapter.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceDiagnostic.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceHttpsTransport.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceLiveOperation.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceCommand.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataCredentials.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataLiveSmokePolicy.test.ts",
@@ -440,11 +443,13 @@ function checkNetworkAndProviderCode(files) {
   const twelveDataConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+TwelveDataHttpTransport\b/u;
   const alpacaConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+AlpacaHttpTransport\b/u;
   const approvedTwelveDataTransport = "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.ts";
+  const approvedTwelveDataMulsReferenceTransport = "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceHttpsTransport.ts";
   const approvedKalshiTransport = "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.ts";
   const approvedAlpacaTransport = "src/integration/market-data/alpaca/AlpacaHttpsTransport.ts";
   const approvedAlpacaAssetMetadataTransport = "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataTransport.ts";
   const approvedLiveTransports = new Set([
     approvedTwelveDataTransport,
+    approvedTwelveDataMulsReferenceTransport,
     approvedKalshiTransport,
     approvedAlpacaTransport,
     approvedAlpacaAssetMetadataTransport,
@@ -474,6 +479,13 @@ function checkNetworkAndProviderCode(files) {
             'redirect: "error"',
             "TwelveDataTransportErrorCode.Timeout",
             "MAX_RESPONSE_BYTES",
+          ]
+        : normalizedFile === approvedTwelveDataMulsReferenceTransport ? [
+            "TWELVE_DATA_PERSONAL_MULS_REFERENCE_ENDPOINT",
+            "Authorization: `apikey ${credentials.revealForTransport()}`",
+            'redirect: "error"',
+            "TwelveDataPersonalMulsReferenceTransportErrorCode.Timeout",
+            "maxResponseCharacters",
           ]
         : normalizedFile === approvedKalshiTransport ? [
             "https://external-api.kalshi.com/trade-api/v2/markets/",

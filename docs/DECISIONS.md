@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-07-27 - Personal MVP-T3G-C9 Live Reference Operation Boundary
+
+- Decision: isolate the exact `/etfs/list` capability in a dedicated Transport
+  instead of widening the existing `/time_series` smoke Transport.
+- Decision: use the official `Authorization: apikey <API_KEY>` header and
+  construct it only inside the HTTPS boundary; the URL remains credential-free.
+- Decision: require a three-part live gate: exact confirmation flag, current UTC
+  operation date, and the immutable C8 request fingerprint.
+- Decision: keep no-argument execution as dry run and require every automated
+  test to inject a fake executor with zero real network requests.
+- Decision: stop after the first response or failure with no retry, pagination,
+  fallback, persistence, scheduling, collection, or downstream decision wiring.
+- Consequence: C9 creates a callable local capability but grants no real-request
+  authority; independent review and fresh Owner authorization remain mandatory.
+
 ## 2026-07-26 - Personal MVP-T3G-C8 Fixture-only Implementation Boundary
 
 - Decision: implement the C7 request, parser, validation, and credential contracts

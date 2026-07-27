@@ -16,6 +16,12 @@ and a `FIXTURE_ONLY` injected Transport seam. It adds no HTTPS Transport or CLI.
 C8 `confirmed=true` means fixture rehearsal only; network capability remains
 structurally false and network request counts remain zero.
 
+T3G-C8 has passed Owner review and is committed and pushed. T3G-C9 adds the
+separate exact-host HTTPS Transport, current-UTC-date and request-fingerprint
+authorization gate, and default-zero-network local command. C9 implementation
+does not authorize a real request; independent review and fresh operation-bound
+Owner authorization remain required.
+
 ## Purpose
 
 The diagnostic answers only:
@@ -167,10 +173,9 @@ exact reference-directory presence.
 ## Required Implementation Sequence
 
 1. T3G-C7 design review, selective commit, and push are complete.
-2. T3G-C8 network-free contracts, planner, parser, validator, redacted
-   credential boundary, fixture-only seam, and tests require Owner review.
-3. A later T3G-C9 must separately design and implement any concrete HTTPS
-   Transport and local command, then pass independent review.
+2. T3G-C8 network-free core review, selective commit, and push are complete.
+3. T3G-C9 concrete HTTPS Transport, local command, and network-free tests are
+   complete locally and require independent Owner review.
 4. Default dry-run execution must prove zero network.
 5. A real request requires a new, operation-bound Owner authorization.
 6. Record only the sanitized result and reassess the exact-symbol gate.

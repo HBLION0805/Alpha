@@ -1,5 +1,14 @@
 export * from "./TwelveDataProvider";
 export * from "./TwelveDataPersonalMulsReferenceDiagnostic";
+export * from "./TwelveDataPersonalMulsReferenceCommand";
+export * from "./TwelveDataPersonalMulsReferenceLiveOperation";
+export {
+  TwelveDataPersonalMulsReferenceHttpsTransport,
+  TwelveDataPersonalMulsReferenceTransportError,
+  TwelveDataPersonalMulsReferenceTransportErrorCode,
+  type TwelveDataPersonalMulsReferenceHttpsTransportOptions,
+  type TwelveDataPersonalMulsReferenceLiveTransport,
+} from "./TwelveDataPersonalMulsReferenceHttpsTransport";
 export * from "./TwelveDataBarAdapter";
 export {
   TwelveDataHttpsTransport,
