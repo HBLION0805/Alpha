@@ -1,5 +1,18 @@
 # Alpha Changelog
 
+## 2026-07-26 - Personal MVP-T3G-C8 Network-free MULS Reference Core
+
+- Implemented immutable exact-request contracts and a fixed `/etfs/list` planner
+  for `MULS`, `US`, one page, one record, one request, and one credit.
+- Added strict bounded parsing for confirmed, not-found, ambiguous, identity
+  mismatch, provider rejection, HTTP failure, and invalid response outcomes.
+- Reused the redacted Twelve Data credential boundary and copied only its one
+  declared environment variable.
+- Added a `FIXTURE_ONLY`, `networkCapable=false` Transport seam; dry run invokes
+  no Transport and fixture rehearsal records zero network requests.
+- Added 15 deterministic tests with no HTTPS Transport, CLI, persistence,
+  collection, recommendation, or trading authority.
+
 ## 2026-07-26 - Personal MVP-T3G-C7 MULS Reference Diagnostic Design
 
 - Designed one exact default-zero-network Twelve Data ETF-directory diagnostic

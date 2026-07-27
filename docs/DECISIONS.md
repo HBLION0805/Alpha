@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Personal MVP-T3G-C8 Fixture-only Implementation Boundary
+
+- Decision: implement the C7 request, parser, validation, and credential contracts
+  without adding a concrete HTTPS Transport or command.
+- Decision: require every injected Transport to attest `FIXTURE_ONLY` and
+  `networkCapable=false`; reject any other implementation before invocation.
+- Decision: treat C8 confirmation as fixture rehearsal only and keep all network
+  request counters at zero.
+- Decision: strip fund name, family, type, provider narrative, raw payload, and
+  credentials from all results and errors.
+- Decision: keep reference outcomes separate from market-data coverage and leave
+  all C6 blockers active.
+- Consequence: real network execution remains structurally unavailable and needs
+  a later independently reviewed module plus fresh Owner authorization.
+
 ## 2026-07-26 - Personal MVP-T3G-C7 Reference Diagnostic Boundary
 
 - Decision: use current official `GET /etfs/list`, not the legacy `/etf`

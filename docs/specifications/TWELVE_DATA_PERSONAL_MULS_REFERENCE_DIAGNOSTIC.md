@@ -10,6 +10,12 @@ data adapter, recommendation, or trading behavior.
 Implementation and any real request are separate tasks with separate Owner
 approval.
 
+T3G-C8 implements the network-free core: immutable contracts, the fixed request
+planner, strict parser and validator, reuse of the redacted credential handle,
+and a `FIXTURE_ONLY` injected Transport seam. It adds no HTTPS Transport or CLI.
+C8 `confirmed=true` means fixture rehearsal only; network capability remains
+structurally false and network request counts remain zero.
+
 ## Purpose
 
 The diagnostic answers only:
@@ -160,14 +166,14 @@ exact reference-directory presence.
 
 ## Required Implementation Sequence
 
-1. T3G-C7 Owner review and selective commit.
-2. T3G-C8 contracts, fixed request planner, parser, validator, redacted
-   credential boundary, injected zero-network transport seam, and tests.
-3. Independent Owner review of the implementation and complete Alpha
-   validation.
-4. Default dry-run execution proving zero network.
-5. Separate Owner authorization for at most one real request.
-6. Record only the sanitized outcome and reassess the exact-symbol gate.
+1. T3G-C7 design review, selective commit, and push are complete.
+2. T3G-C8 network-free contracts, planner, parser, validator, redacted
+   credential boundary, fixture-only seam, and tests require Owner review.
+3. A later T3G-C9 must separately design and implement any concrete HTTPS
+   Transport and local command, then pass independent review.
+4. Default dry-run execution must prove zero network.
+5. A real request requires a new, operation-bound Owner authorization.
+6. Record only the sanitized result and reassess the exact-symbol gate.
 
 ## Official Sources
 

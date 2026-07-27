@@ -195,6 +195,7 @@ const aggregateTestFiles = [
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarAdapter.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceDiagnostic.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataCredentials.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataLiveSmokePolicy.test.ts",

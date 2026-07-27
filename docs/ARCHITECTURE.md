@@ -1220,6 +1220,14 @@ sanitized results, and terminal stop semantics. It explicitly rejects the
 legacy `/etf` path and grants no implementation or network authority. See
 [Twelve Data Personal MULS Reference Diagnostic](specifications/TWELVE_DATA_PERSONAL_MULS_REFERENCE_DIAGNOSTIC.md).
 
+Personal MVP-T3G-C8 implements the network-free C7 core: immutable fixed-request
+contracts, an exact `/etfs/list` planner, strict bounded response validation,
+the existing redacted Twelve Data credential handle, and an injected Transport
+seam that must attest `FIXTURE_ONLY` and `networkCapable=false`. Dry run invokes
+no Transport; fixture rehearsal invokes it once while network request counts
+remain zero. No concrete HTTPS Transport, CLI, persistence, provider selection,
+recommendation, or trading authority exists.
+
 ---
 
 # Event Contract Framework

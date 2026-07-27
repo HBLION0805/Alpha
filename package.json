@@ -108,6 +108,7 @@
     "test:twelve-data-validator": "tsx src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
     "test:twelve-data-normalizer": "tsx src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
     "test:twelve-data-adapter": "tsx src/integration/market-data/twelve-data/TwelveDataBarAdapter.test.ts",
+    "test:twelve-data-muls-reference-diagnostic": "tsx src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceDiagnostic.test.ts",
     "test:twelve-data-credentials": "tsx src/integration/market-data/twelve-data/TwelveDataCredentials.test.ts",
     "test:twelve-data-http-transport": "tsx src/integration/market-data/twelve-data/TwelveDataHttpsTransport.test.ts",
     "test:twelve-data-live-smoke-policy": "tsx src/integration/market-data/twelve-data/TwelveDataLiveSmokePolicy.test.ts",

@@ -1,4 +1,5 @@
 export * from "./TwelveDataProvider";
+export * from "./TwelveDataPersonalMulsReferenceDiagnostic";
 export * from "./TwelveDataBarAdapter";
 export {
   TwelveDataHttpsTransport,
