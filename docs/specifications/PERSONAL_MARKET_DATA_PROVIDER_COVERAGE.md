@@ -5,6 +5,10 @@
 MVP-T3C implements a deterministic, fail-closed provider coverage and readiness
 assessment. It does not make a network request, store a credential, place an
 order, or authorize live collection.
+T3G-C3 records the first exact live-smoke result: Alpaca Basic IEX omitted
+`MULS` from the completed 2026-07-24 P1D response. The adapter is implemented,
+but the complete 12-symbol provider path is now `BLOCKED`.
+
 
 ## Personal MVP requirement
 
@@ -24,9 +28,9 @@ thinly traded listings remain unverified until the exact instrument is observed.
 
 ## Provider decision
 
-### Proposed primary: Alpaca Basic using IEX
+### Blocked complete-provider candidate: Alpaca Basic using IEX
 
-Alpaca Basic is the proposed first bounded-smoke provider because the official
+Alpaca Basic was selected for the first bounded smoke because the official
 material documents:
 
 - zero monthly plan cost;
@@ -38,6 +42,12 @@ material documents:
 IEX is a single venue. Alpha must preserve `SINGLE_VENUE` coverage and must not
 describe its quotes as NBBO, its volume as consolidated market volume, or its
 evidence as complete market truth.
+
+The Owner-authorized smoke completed one P1D request and stopped because
+`MULS` was absent. Issuer evidence confirms the ticker, but a single-venue
+Bars response cannot distinguish no IEX observation from other metadata,
+halt, or provider availability causes. Alpha therefore fails the complete
+provider qualification without inventing data or declaring the ticker invalid.
 
 ### Deferred premium path: Alpaca SIP
 

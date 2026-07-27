@@ -115,6 +115,8 @@ const aggregateTestFiles = [
   "src/integration/market-data/alpaca/AlpacaTransportDryRun.test.ts",
   "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmoke.test.ts",
   "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmokeCommand.test.ts",
+  "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataDiagnostic.test.ts",
+  "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataTransport.test.ts",
   "src/engines/prediction/PredictionEngine.test.ts",
   "src/engines/prediction-log/PredictionLog.test.ts",
   "src/engines/alpha-journal/AlphaJournal.test.ts",
@@ -437,7 +439,13 @@ function checkNetworkAndProviderCode(files) {
   const approvedTwelveDataTransport = "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.ts";
   const approvedKalshiTransport = "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.ts";
   const approvedAlpacaTransport = "src/integration/market-data/alpaca/AlpacaHttpsTransport.ts";
-  const approvedLiveTransports = new Set([approvedTwelveDataTransport, approvedKalshiTransport, approvedAlpacaTransport]);
+  const approvedAlpacaAssetMetadataTransport = "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataTransport.ts";
+  const approvedLiveTransports = new Set([
+    approvedTwelveDataTransport,
+    approvedKalshiTransport,
+    approvedAlpacaTransport,
+    approvedAlpacaAssetMetadataTransport,
+  ]);
 
   for (const file of productionFiles) {
     const text = readText(file);
@@ -469,6 +477,13 @@ function checkNetworkAndProviderCode(files) {
             "KXBTC15M-26JUL232045-45",
             'redirect: "error"',
             "KalshiPublicTransportErrorCode.Timeout",
+            "MAX_RESPONSE_BYTES",
+          ]
+        : normalizedFile === approvedAlpacaAssetMetadataTransport ? [
+            "paper-api.alpaca.markets",
+            "ALPACA_PERSONAL_MULS_ASSET_ENDPOINT",
+            'redirect: "error"',
+            "AlpacaPersonalAssetMetadataTransportErrorCode.Timeout",
             "MAX_RESPONSE_BYTES",
           ]
         : [

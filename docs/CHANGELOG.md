@@ -1,5 +1,35 @@
 # Alpha Changelog
 
+## 2026-07-26 - Personal MVP-T3G-C4 MULS Asset Metadata Diagnostic
+
+- Added an exact-symbol, read-only Alpaca Paper Assets diagnostic for `MULS`.
+- Fixed the operation to one bounded `GET /v2/assets/MULS` request with default
+  dry-run behavior and a separate exact Owner confirmation flag.
+- Added strict response-shape, symbol, size, clock, host, path, method, timeout,
+  cancellation, redirect, and credential-boundary validation.
+- Limited output to sanitized asset status/class/exchange/tradability
+  classifications; raw payload, identifier, name, borrow, and credential data are
+  never returned or persisted.
+- Preserved provider qualification boundaries: asset metadata cannot prove IEX
+  Bars, Quotes, observation availability, liquidity, or full-provider readiness.
+- Added 24 zero-network regression tests and registered them in full validation.
+- No real request, retry, persistence, recommendation, order, or capital action
+  was authorized or executed.
+
+## 2026-07-26 - Personal MVP-T3G-C3 Provider Coverage Qualification
+
+- Recorded the corrected Owner-authorized Alpaca Basic IEX smoke outcome:
+  one completed P1D response omitted `MULS` and stopped the remaining requests.
+- Confirmed the reviewed Alpaca adapter is implemented while keeping all
+  uncompleted symbol/interval/quote verification pending.
+- Marked `MULS` exact-symbol verification failed and therefore set the complete
+  12-symbol Alpaca Basic IEX provider path to `BLOCKED`.
+- Preserved the cause boundary: the evidence does not distinguish no IEX
+  observation from asset metadata, halt, provider, or other availability causes.
+- Added deterministic regression coverage with no additional network request,
+  credential access, persistence, recommendation, or trading authority.
+
+
 ## 2026-07-26 - Day15-T3B15-MR5 Independent C4 Readiness Review
 
 - Independently reviewed exact C4 commit

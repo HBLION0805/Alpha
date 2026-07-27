@@ -1168,6 +1168,29 @@ observation, and proves one end-to-end gate-generated positive process path.
 Independent MR6 remains mandatory. No real Operation Manifest or rehearsal is
 authorized.
 
+Personal MVP-T3G-C3 binds the first corrected live-smoke evidence back into the
+deterministic provider coverage gate. Alpaca Basic IEX has a reviewed adapter,
+but its 2026-07-24 P1D response omitted required symbol `MULS`; the exact
+12-symbol provider path is therefore `BLOCKED`. The other symbols remain
+pending because PT1H, PT15M, PT5M, and latest Quotes did not run. The diagnosis
+does not infer whether the omission was caused by no IEX observation, metadata,
+halt, or provider availability. A missing Bar cannot be synthesized,
+substituted, or treated as full-market evidence. This correction adds no new
+network, persistence, recommendation, or trading authority. See
+[Alpaca Personal Market Data Coverage Diagnosis](specifications/ALPACA_PERSONAL_MARKET_DATA_COVERAGE_DIAGNOSIS.md).
+
+Personal MVP-T3G-C4 introduces a separately Owner-gated, read-only diagnostic for
+exact symbol `MULS` through Alpaca's Paper Assets endpoint. The default operation
+is a zero-network dry run. A later confirmed operation can issue exactly one
+`GET /v2/assets/MULS` request with no retry, redirect, pagination, persistence,
+or access to orders, accounts, or positions. The validator accepts only the
+reviewed bounded asset schema and emits a sanitized classification from symbol,
+asset class, exchange, status, and tradability; raw provider payloads, asset IDs,
+names, credentials, and borrow details never cross the diagnostic boundary. Even
+an active/tradable result cannot qualify IEX Bars, Quotes, liquidity, or the
+complete provider. No real C4 request is authorized by this implementation. See
+[Alpaca MULS Asset Metadata Diagnostic](specifications/ALPACA_PERSONAL_MULS_ASSET_METADATA_DIAGNOSTIC.md).
+
 ---
 
 # Event Contract Framework

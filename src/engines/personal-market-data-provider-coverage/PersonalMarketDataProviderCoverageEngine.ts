@@ -41,6 +41,10 @@ export function createPersonalMarketDataProviderCatalog(): readonly PersonalMark
   const pending = Object.fromEntries(
     PERSONAL_MARKET_DATA_SYMBOLS.map((symbol) => [symbol, PersonalMarketDataVerificationStatus.PendingLiveSmoke]),
   );
+  const alpacaBasicVerification = {
+    ...pending,
+    MULS: PersonalMarketDataVerificationStatus.Failed,
+  };
   const retrievedAt = "2026-07-26T16:00:00.000Z";
   const authority = (evidenceId: string, url: string, assertion: string) => ({
     evidenceId, url, assertion, retrievedAt,
@@ -56,13 +60,14 @@ export function createPersonalMarketDataProviderCatalog(): readonly PersonalMark
       supportedIntervals: PERSONAL_MARKET_DATA_INTERVALS,
       latestTwoSidedQuoteDocumented: true,
       quoteSizesDocumented: true,
-      adapterImplemented: false,
-      symbolVerification: pending,
+      adapterImplemented: true,
+      symbolVerification: alpacaBasicVerification,
       authorities: [
         authority("alpaca:market-data:basic", "https://alpaca.markets/data", "Basic is a zero-monthly-fee US stock and ETF market-data plan using IEX."),
         authority("alpaca:historical-bars", "https://docs.alpaca.markets/us/v1.4.2/reference/stockbars", "Historical bars document minute, hour, and day aggregations."),
         authority("alpaca:latest-quote", "https://docs.alpaca.markets/us/reference/stocklatestquotesingle-1", "Latest quote provides the best bid and ask; stock quote fields document bid and ask sizes."),
         authority("alpaca:market-data:faq", "https://docs.alpaca.markets/us/docs/market-data-faq", "Free live stock data is IEX-only rather than consolidated SIP."),
+        authority("graniteshares:muls", "https://graniteshares.com/media/ybrjp1hr/graniteshares-etf-trust-s-l-single-stock-etfs-prospectus.pdf", "GraniteShares identifies MULS as the ticker for its 2x Short MU Daily ETF."),
       ],
     },
     {
@@ -132,7 +137,7 @@ export function assessPersonalMarketDataProvider(
   for (const symbol of requirement.requiredSymbols) {
     const status = profile.symbolVerification[symbol];
     if (status === PersonalMarketDataVerificationStatus.Failed || status === undefined) {
-      blockers.push(blocker("SYMBOL_FAILED", `symbolVerification.${symbol}`, `${symbol} failed or is absent from exact-symbol verification.`));
+      blockers.push(blocker("SYMBOL_FAILED", `symbolVerification.${symbol}`, `${symbol} failed or is absent from exact-symbol live verification.`));
     } else if (status !== PersonalMarketDataVerificationStatus.Verified) {
       blockers.push(blocker("SYMBOL_UNVERIFIED", `symbolVerification.${symbol}`, `${symbol} still requires a bounded live smoke check.`));
     }

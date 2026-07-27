@@ -6,6 +6,13 @@ MVP-T3G implements the reviewed operation boundary for one manually confirmed
 Alpaca Basic IEX market-data rehearsal. The implementation and tests use
 injected network-free transports. No real Alpaca request was executed while
 building or validating T3G.
+The first two Owner-authorized invocations each stopped after one P1D response
+and made no retry. T3G-C2 corrected the original invalid two-Bar minimum. The
+corrected invocation then diagnosed `MULS` as absent from the exact response.
+T3G-C3 consequently blocks Alpaca Basic IEX as the complete 12-symbol personal
+provider. No invocation completed all five requests, and no later network
+authority is implied.
+
 
 ## Owner gate
 

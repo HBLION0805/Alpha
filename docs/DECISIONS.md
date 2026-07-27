@@ -1,5 +1,34 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Personal MVP-T3G-C4 MULS Asset Metadata Boundary
+
+- Decision: use only Alpaca Paper `GET /v2/assets/MULS` for the next diagnostic;
+  orders, accounts, positions, list-assets pagination, and symbol substitution are
+  structurally outside the operation.
+- Decision: default to zero-network dry run and require a new exact Owner
+  confirmation before the sole real request.
+- Decision: expose only sanitized classification evidence; never expose or persist
+  the raw asset payload, provider asset ID/name, credentials, or borrow details.
+- Decision: treat active/tradable metadata as asset eligibility evidence only, not
+  proof of IEX Bars, Quotes, observation availability, liquidity, or provider
+  qualification.
+- Consequence: T3G-C3 remains blocked until later market-data evidence qualifies
+  all required symbols and intervals; C4 alone cannot clear the provider gate.
+
+## 2026-07-26 - Personal MVP-T3G-C3 Provider Qualification
+
+- Decision: keep the Owner-approved `MULS` mapping because current issuer
+  evidence confirms the GraniteShares 2x Short MU Daily ETF ticker.
+- Decision: classify the 2026-07-24 result only as failed exact-symbol IEX
+  coverage; do not claim a more specific cause from a redacted Bars response.
+- Decision: mark Alpaca Basic IEX `BLOCKED` for the complete personal 12-symbol
+  requirement while `MULS` is failed and all uncompleted checks remain pending.
+- Decision: never fill, substitute, infer, or silently drop a missing required
+  symbol to qualify a provider.
+- Consequence: a separately reviewed metadata probe, later smoke, paid SIP
+  evaluation, or alternate-provider qualification is required before collection.
+
+
 ## 2026-07-26 - Day15-T3B15-MR5 C4 Readiness Review
 
 - Decision: return `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL` for exact C4

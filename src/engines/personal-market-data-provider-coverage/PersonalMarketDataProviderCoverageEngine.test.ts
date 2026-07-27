@@ -72,13 +72,18 @@ test("catalog declares exactly the personal MVP provider candidates", () => {
   ]);
 });
 
-test("Alpaca Basic is only ready for bounded smoke before implementation and verification", () => {
+test("Alpaca Basic is blocked after MULS fails exact live-smoke coverage", () => {
+  const source = profile(PersonalMarketDataProviderId.AlpacaBasicIex);
   const result = assessPersonalMarketDataProvider(profile(PersonalMarketDataProviderId.AlpacaBasicIex), requirement());
-  assert.equal(result.readiness, PersonalMarketDataProviderReadiness.ReadyForBoundedSmoke);
+  assert.equal(source.adapterImplemented, true);
+  assert.equal(source.symbolVerification.MULS, PersonalMarketDataVerificationStatus.Failed);
+  assert.equal(result.readiness, PersonalMarketDataProviderReadiness.Blocked);
   assert.equal(result.monthlyCostUsd, 0);
   assert.equal(result.coverage, PersonalMarketDataFeedCoverage.SingleVenue);
+  assert.ok(result.blockers.some((entry) =>
+    entry.code === "SYMBOL_FAILED" && entry.field === "symbolVerification.MULS"));
   assert.ok(result.blockers.some((entry) => entry.code === "SYMBOL_UNVERIFIED"));
-  assert.ok(result.blockers.some((entry) => entry.code === "ADAPTER_NOT_IMPLEMENTED"));
+  assert.ok(!result.blockers.some((entry) => entry.code === "ADAPTER_NOT_IMPLEMENTED"));
 });
 
 test("single-venue data carries a mandatory non-NBBO warning", () => {
@@ -130,7 +135,7 @@ test("all exact symbols, adapter, credentials, and Owner approval produce collec
     PERSONAL_MARKET_DATA_SYMBOLS.map((symbol) => [symbol, PersonalMarketDataVerificationStatus.Verified]),
   );
   const result = assessPersonalMarketDataProvider(
-    { ...source, adapterImplemented: true, symbolVerification: verified },
+    { ...source, symbolVerification: verified },
     requirement({ ownerApproved: true, credentialsAvailable: true }),
   );
   assert.equal(result.readiness, PersonalMarketDataProviderReadiness.ReadyForPersonalCollection);
@@ -139,7 +144,10 @@ test("all exact symbols, adapter, credentials, and Owner approval produce collec
 
 test("credentials and Owner approval remain separate explicit gates", () => {
   const source = profile(PersonalMarketDataProviderId.AlpacaBasicIex);
-  const result = assessPersonalMarketDataProvider(source, requirement());
+  const verified = Object.fromEntries(
+    PERSONAL_MARKET_DATA_SYMBOLS.map((symbol) => [symbol, PersonalMarketDataVerificationStatus.Verified]),
+  );
+  const result = assessPersonalMarketDataProvider({ ...source, symbolVerification: verified }, requirement());
   assert.ok(result.blockers.some((entry) => entry.code === "OWNER_APPROVAL_MISSING"));
   assert.ok(result.blockers.some((entry) => entry.code === "CREDENTIALS_MISSING"));
 });

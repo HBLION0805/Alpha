@@ -7,3 +7,6 @@ export * from "./AlpacaHttpsTransport";
 export * from "./AlpacaTransportDryRun";
 export * from "./AlpacaPersonalMarketDataLiveSmoke";
 export * from "./AlpacaPersonalMarketDataLiveSmokeCommand";
+export * from "./AlpacaPersonalAssetMetadataDiagnostic";
+export * from "./AlpacaPersonalAssetMetadataTransport";
+export * from "./AlpacaPersonalAssetMetadataCommand";
