@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-26 - Personal MVP-T3G-C6 Twelve Data Qualification
+
+- Decision: use only the official evidence frozen on 2026-07-20 and the current
+  repository implementation; do not call Twelve Data or read credentials.
+- Decision: do not infer exact `MULS` support from broad U.S. ETF coverage.
+- Decision: retain fail-closed P1D, two-sided Quote, Quote-size, and live Bar
+  volume-unit blockers.
+- Decision: use only the verified one-credit-per-symbol `/time_series` cost for
+  a Bars-only budget lower bound; exclude Quote cost and still reject Basic.
+- Decision: classify Twelve Data as a Bars-research candidate only, not Alpha's
+  complete personal market-data provider.
+- Consequence: the next task may design one bounded exact-symbol reference
+  diagnostic, but no real request or downstream authority is implied.
+
 ## 2026-07-26 - Personal MVP-T3G-C5 Resolution Strategy
 
 - Decision: record the exact Paper Assets `ASSET_NOT_FOUND` outcome without raw

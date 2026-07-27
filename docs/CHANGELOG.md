@@ -1,5 +1,18 @@
 # Alpha Changelog
 
+## 2026-07-26 - Personal MVP-T3G-C6 Twelve Data Qualification
+
+- Added a deterministic, network-free assessment of exact MULS reference
+  coverage, four Bar intervals, two-sided Quotes, Quote sizes, live volume
+  units, and Basic request-budget feasibility.
+- Proved that Bars alone require 48 credits and at least six minutes for one
+  complete 12-symbol/four-interval snapshot, while the minimum five-minute
+  Bar cadence requires 972 credits per regular session before Quote cost.
+- Classified Twelve Data Basic as `NOT_QUALIFIED_AS_COMPLETE_PROVIDER` and
+  retained it only as a Bars-research candidate.
+- Added fail-closed C5-plan binding and explicit zero network, credential,
+  collection, recommendation, and trading authority.
+
 ## 2026-07-26 - Personal MVP-T3G-C5 Alternative Provider Qualification
 
 - Recorded the separately Owner-authorized one-request `MULS` Paper Assets

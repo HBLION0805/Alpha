@@ -1202,6 +1202,16 @@ architecture review. It grants no network, purchase, collection,
 recommendation, or trading authority. See [Personal Market Data Alternative
 Provider Qualification](specifications/PERSONAL_MARKET_DATA_ALTERNATIVE_PROVIDER_QUALIFICATION.md).
 
+Personal MVP-T3G-C6 performs the planned network-free Twelve Data qualification.
+It binds the exact C5 plan, preserves all 12 symbols and four Bar intervals, and
+calculates provider-credit feasibility without using a credential or transport.
+The result is `NOT_QUALIFIED_AS_COMPLETE_PROVIDER`: exact `MULS` coverage,
+two-sided Quote fields, and Quote quantity semantics remain unverified; P1D and
+live Bar volume units remain blocked; and the Basic allowance cannot support
+the intended five-minute 12-symbol decision cadence. Twelve Data remains a
+Bars-research candidate only and gains no network, collection, recommendation,
+or trading authority. See [Personal Market Data Twelve Data Qualification](specifications/PERSONAL_MARKET_DATA_TWELVE_DATA_QUALIFICATION.md).
+
 ---
 
 # Event Contract Framework
