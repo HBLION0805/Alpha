@@ -234,7 +234,7 @@ test("exact approved canonical observations compose one scan request", () => {
   assertEqual(result.automatedExecutionAllowed, false, "execution authority");
 });
 
-test("Owner approval binds the exact complete eight-mapping registry", () => {
+test("Owner approval binds the exact complete seven-mapping registry", () => {
   const registry = approvedRegistry();
   assertTrue(registry.mappings.every((entry) => activate(entry)), "all mappings active");
 });

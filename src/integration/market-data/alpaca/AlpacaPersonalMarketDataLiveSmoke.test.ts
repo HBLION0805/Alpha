@@ -149,8 +149,8 @@ test("all responses cross strict validation and Canonical normalization", async 
     transport: new FixtureTransport(), clock,
   });
   equal(result.validatedResponses, 5, "validated responses");
-  equal(result.canonicalBarCount, 84, "canonical bars");
-  equal(result.canonicalQuoteCount, 12, "canonical quotes");
+  equal(result.canonicalBarCount, 77, "canonical bars");
+  equal(result.canonicalQuoteCount, 11, "canonical quotes");
 });
 
 test("missing exact symbols produce bounded diagnostics and stop without retry", async () => {
@@ -167,7 +167,7 @@ test("missing exact symbols produce bounded diagnostics and stop without retry",
   assert(error.diagnostic !== undefined, "diagnostic present");
   equal(error.diagnostic.requestOrdinal, 1, "request ordinal");
   equal(error.diagnostic.requestScope, "P1D", "request scope");
-  equal(error.diagnostic.missingSymbols.length, 12, "missing symbol count");
+  equal(error.diagnostic.missingSymbols.length, 11, "missing symbol count");
   equal(error.diagnostic.unexpectedSymbols.length, 0, "unexpected symbol count");
   assert(error.diagnostic.issueCodes.includes(AlpacaPersonalIssueCode.MissingSymbol), "missing-symbol code");
   assert(!JSON.stringify(error).includes("\"bars\""), "raw body leaked");

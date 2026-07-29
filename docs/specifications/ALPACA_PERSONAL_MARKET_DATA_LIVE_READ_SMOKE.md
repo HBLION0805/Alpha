@@ -13,6 +13,9 @@ T3G-C3 consequently blocks Alpaca Basic IEX as the complete 12-symbol personal
 provider. No invocation completed all five requests, and no later network
 authority is implied.
 
+T3G-C13 later withdraws `MULS` prospectively. The active operation now binds
+the exact ordered eleven-symbol set. The historical failed run remains
+twelve-symbol evidence and does not count as a successful eleven-symbol run.
 
 ## Owner gate
 
@@ -44,7 +47,7 @@ response because network outcome may be ambiguous.
 
 Every completed response must:
 
-1. contain the exact ordered 12-symbol set;
+1. contain the exact ordered 11-symbol active set;
 2. pass the T3D provider-envelope and row validation;
 3. preserve `feed=iex` and `SINGLE_VENUE`;
 4. pass T3E identity, chronology, freshness, and completed-Bar rules; and

@@ -1279,3 +1279,15 @@
 - Corrected stale references that described established architecture systems as future systems.
 - Added missing cross-system integrations and handoffs.
 - Recorded that no application behavior or source code changed.
+# 2026-07-29 - Personal MVP-T3G-C13 Eleven-symbol Scope Correction
+
+- Removed `MULS` from the active personal watchlist and Alpaca request set while
+  preserving MU and its bullish `MULL` vehicle.
+- Added an explicit legacy twelve-symbol constant so T3G-C5 through C12 retain
+  their original evidence and deterministic results.
+- Returned Alpaca Basic IEX from symbol-blocked to bounded-smoke readiness;
+  every active symbol and all five requests remain pending fresh verification.
+- Added regression coverage for the eleven-symbol mapping, provider gate,
+  Canonical normalization, and one-shot live-read operation.
+- Added no real request, account access, persistence, recommendation, order, or
+  execution authority.

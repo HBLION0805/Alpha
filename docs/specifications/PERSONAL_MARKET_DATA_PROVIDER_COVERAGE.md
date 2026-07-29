@@ -6,15 +6,16 @@ MVP-T3C implements a deterministic, fail-closed provider coverage and readiness
 assessment. It does not make a network request, store a credential, place an
 order, or authorize live collection.
 T3G-C3 records the first exact live-smoke result: Alpaca Basic IEX omitted
-`MULS` from the completed 2026-07-24 P1D response. The adapter is implemented,
-but the complete 12-symbol provider path is now `BLOCKED`.
+`MULS` from the completed 2026-07-24 P1D response. The Owner subsequently
+withdrew `MULS`; the active eleven-symbol provider path is now
+`READY_FOR_BOUNDED_SMOKE`, not collection-ready.
 
 
 ## Personal MVP requirement
 
-The provider path must support the exact 12-symbol set:
+The active provider path must support the exact 11-symbol set:
 
-- MU, MULL, and MULS
+- MU and MULL
 - TSLA, TSLL, and TSLQ
 - SPCX, SPCH, and SSPC
 - SKHY, SKUU, and SKDD
@@ -28,7 +29,7 @@ thinly traded listings remain unverified until the exact instrument is observed.
 
 ## Provider decision
 
-### Blocked complete-provider candidate: Alpaca Basic using IEX
+### Bounded-smoke candidate: Alpaca Basic using IEX
 
 Alpaca Basic was selected for the first bounded smoke because the official
 material documents:
@@ -37,17 +38,20 @@ material documents:
 - US stock and ETF market data;
 - minute, hour, and day bar aggregations;
 - a free IEX feed; and
-- a symbol allowance larger than the 12-symbol MVP set.
+- a symbol allowance larger than the 11-symbol MVP set.
 
 IEX is a single venue. Alpha must preserve `SINGLE_VENUE` coverage and must not
 describe its quotes as NBBO, its volume as consolidated market volume, or its
 evidence as complete market truth.
 
-The Owner-authorized smoke completed one P1D request and stopped because
+Under the former twelve-symbol requirement, the Owner-authorized smoke
+completed one P1D request and stopped because
 `MULS` was absent. Issuer evidence confirms the ticker, but a single-venue
 Bars response cannot distinguish no IEX observation from other metadata,
 halt, or provider availability causes. Alpha therefore fails the complete
 provider qualification without inventing data or declaring the ticker invalid.
+That historical failure is preserved. It no longer blocks the active
+eleven-symbol requirement, but the complete active operation remains pending.
 
 The later separately authorized Paper Assets diagnostic also returned
 `ASSET_NOT_FOUND` for exact `MULS`. This narrows the reviewed Alpaca path:
@@ -75,11 +79,10 @@ MVP provider because:
 It remains a possible bounded bars backup after its adapter and evidence gaps
 are closed.
 
-T3G-C5 prioritizes a network-free Twelve Data capability review before any
-additional request. Exact `MULS` reference coverage, current adapter P1D
-support, two-sided Quote and size semantics, and request-budget feasibility
-must all be established before an Owner-authorized bounded smoke can be
-proposed.
+T3G-C5 through C12 completed the historical alternative-provider review.
+T3G-C13 ends that search for the current scope. Twelve Data remains unselected
+because the active two-sided Quote and request-budget requirements are still
+not satisfied.
 
 ### Architecture-only option: multi-provider composition
 

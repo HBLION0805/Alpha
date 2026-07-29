@@ -252,7 +252,7 @@ function validateCommon(
     issues.push(issue(AlpacaPersonalIssueCode.InvalidInput, "policy", "Normalization policy is invalid."));
   }
   if (!exactMappings(context.mappings)) {
-    issues.push(issue(AlpacaPersonalIssueCode.SymbolSetMismatch, "mappings", "Mappings must bind the exact 12-symbol personal set."));
+    issues.push(issue(AlpacaPersonalIssueCode.SymbolSetMismatch, "mappings", "Mappings must bind the exact 11-symbol personal set."));
   }
   return issues;
 }

@@ -9,7 +9,7 @@ import {
 } from "../../contracts/PersonalMarketDataTwelveDataQualification";
 import {
   PERSONAL_MARKET_DATA_INTERVALS,
-  PERSONAL_MARKET_DATA_SYMBOLS,
+  PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
 } from "../personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine";
 import {
   createMulsAssetNotFoundEvidence,
@@ -109,7 +109,7 @@ export function createPersonalMarketDataTwelveDataQualification(
   const budget = createBudgetAssessment();
   const identity = {
     providerId: "TWELVE_DATA_BASIC",
-    requiredSymbols: PERSONAL_MARKET_DATA_SYMBOLS,
+    requiredSymbols: PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
     requiredIntervals: PERSONAL_MARKET_DATA_INTERVALS,
     findings,
     budget,
@@ -120,7 +120,7 @@ export function createPersonalMarketDataTwelveDataQualification(
     qualificationId: `personal-twelve-data-qualification:${fnv1a64(canonicalize(identity))}`,
     providerId: "TWELVE_DATA_BASIC",
     evidenceAccessDate: "2026-07-20",
-    requiredSymbols: [...PERSONAL_MARKET_DATA_SYMBOLS],
+    requiredSymbols: [...PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS],
     requiredIntervals: [...PERSONAL_MARKET_DATA_INTERVALS],
     findings,
     budget,
@@ -139,7 +139,7 @@ export function createPersonalMarketDataTwelveDataQualification(
 }
 
 function createBudgetAssessment(): PersonalMarketDataTwelveDataBudgetAssessment {
-  const symbols = PERSONAL_MARKET_DATA_SYMBOLS.length;
+  const symbols = PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS.length;
   const requiredIntervals = PERSONAL_MARKET_DATA_INTERVALS.length;
   const creditsPerSymbolProduct = 1;
   const freeCreditsPerMinute = 8;

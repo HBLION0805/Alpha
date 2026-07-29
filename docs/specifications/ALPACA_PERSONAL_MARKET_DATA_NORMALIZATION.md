@@ -9,9 +9,9 @@ execution.
 
 ## Exact instrument binding
 
-Normalization requires the exact 12-symbol mapping catalog:
+Normalization requires the exact 11-symbol mapping catalog:
 
-`MU,MULL,MULS,TSLA,TSLL,TSLQ,SPCX,SPCH,SSPC,SKHY,SKUU,SKDD`
+`MU,MULL,TSLA,TSLL,TSLQ,SPCX,SPCH,SSPC,SKHY,SKUU,SKDD`
 
 Each provider symbol must match the Canonical Instrument display symbol.
 Missing, reordered, substituted, or extra mappings fail before Canonical

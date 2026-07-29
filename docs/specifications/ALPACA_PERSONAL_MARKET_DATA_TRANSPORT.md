@@ -29,7 +29,7 @@ The transport permits `GET` only to:
 - `https://data.alpaca.markets/v2/stocks/bars`
 - `https://data.alpaca.markets/v2/stocks/quotes/latest`
 
-The scheme, host, port, credentials, path, query keys, exact ordered 12-symbol
+The scheme, host, port, credentials, path, query keys, exact ordered 11-symbol
 set, `feed=iex`, and `currency=USD` are revalidated immediately before a
 request. Bar requests additionally require one approved timeframe, a canonical
 UTC interval, raw adjustment, ascending order, and a record limit from 2 to

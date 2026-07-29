@@ -2123,3 +2123,17 @@
 - Context or problem: Implementing orchestration before stable system contracts would create unclear dependencies and provider coupling.
 - Rationale: Deterministic contracts provide reliable ownership, validation, storage, and enforcement boundaries.
 - Consequences: Day 4 followed this order through AI Infrastructure v1. Future major subsystems must continue to stabilize specifications, record ownership, and persistence behavior before orchestration or external integration.
+# 2026-07-29 - Personal MVP-T3G-C13 Eleven-symbol Active Scope
+
+- Decision: withdraw `MULS` from the prospective personal MVP after the Owner
+  determined that capital growth does not depend on preserving every ETF.
+- Decision: freeze the active ordered set at
+  `MU,MULL,TSLA,TSLL,TSLQ,SPCX,SPCH,SSPC,SKHY,SKUU,SKDD`.
+- Decision: retain the earlier twelve-symbol Alpaca and Twelve Data evidence as
+  historical audit truth rather than rewriting it.
+- Decision: restore Alpaca Basic IEX only to bounded-smoke eligibility; require
+  a fresh exact eleven-symbol five-request validation before collection use.
+- Decision: do not continue Tradier work unless a later requirement creates a
+  new data gap.
+- Decision: add no Paper-account, recommendation, order, execution,
+  commercialization, or new live-network authority.

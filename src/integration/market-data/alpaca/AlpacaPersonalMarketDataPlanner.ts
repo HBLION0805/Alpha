@@ -12,7 +12,7 @@ import {
 } from "./AlpacaPersonalMarketDataContracts";
 
 export const ALPACA_PERSONAL_EXACT_SYMBOLS = Object.freeze([
-  "MU", "MULL", "MULS",
+  "MU", "MULL",
   "TSLA", "TSLL", "TSLQ",
   "SPCX", "SPCH", "SSPC",
   "SKHY", "SKUU", "SKDD",

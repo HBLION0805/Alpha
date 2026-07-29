@@ -14,7 +14,7 @@ a trade, size a position, submit an order, or connect to Robinhood.
 
 | Analysis instrument | Bullish vehicle | Bearish vehicle | Daily target |
 | --- | --- | --- | --- |
-| MU | MULL | MULS | +2x / -2x |
+| MU | MULL | None in active scope | +2x only |
 | TSLA | TSLL | TSLQ | +2x / -2x |
 | SPCX | SPCH | SSPC | +2x / -2x |
 | SKHY | SKUU | SKDD | +2x / -2x |
@@ -56,7 +56,7 @@ Failing any condition produces blockers and no reviewed candidate mapping.
 
 ## Authority sources reviewed on 2026-07-26
 
-- GraniteShares issuer materials for MULL, MULS, SKUU, and SKDD.
+- GraniteShares issuer materials for MULL, SKUU, and SKDD.
 - Direxion issuer materials for TSLL.
 - Tradr issuer materials for TSLQ.
 - Leverage Shares issuer materials for SPCH and SSPC.

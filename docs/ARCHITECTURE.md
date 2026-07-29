@@ -1266,6 +1266,17 @@ brokerage API surface. It advances only to a read-only credential-isolation and
 exact-symbol diagnostic design review; it is not selected or authorized. See
 [Personal Market Data Zero-cost Provider Screening](specifications/PERSONAL_MARKET_DATA_ZERO_COST_PROVIDER_SCREENING.md).
 
+Personal MVP-T3G-C13 records the Owner's prospective withdrawal of `MULS` and
+freezes the active personal set at eleven ordered symbols. Historical C5-C12
+evidence continues to bind the former twelve-symbol requirement. Active
+watchlist mapping, Alpaca planning, normalization, and provider assessment no
+longer include `MULS`; the MU bullish `MULL` path remains. Alpaca Basic IEX
+returns to `READY_FOR_BOUNDED_SMOKE`, not collection readiness, because the
+complete four-interval plus latest-Quote path still requires a fresh bounded
+verification. No network request, Tradier integration, Paper-account access,
+recommendation, order, or trading authority is added. See
+[Personal Market Data Eleven-symbol Scope Correction](specifications/PERSONAL_MARKET_DATA_ELEVEN_SYMBOL_SCOPE_CORRECTION.md).
+
 ---
 
 # Event Contract Framework

@@ -6,7 +6,7 @@ import {
   type PersonalMarketDataResolutionCandidate,
 } from "../../contracts/PersonalMarketDataAlternativeProviderQualification";
 import {
-  PERSONAL_MARKET_DATA_SYMBOLS,
+  PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
 } from "../personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine";
 import {
   PersonalMarketDataAlternativeProviderQualificationError,
@@ -75,7 +75,7 @@ test("rejects changed missing or authority-beating evidence", () => {
 
 test("preserves the exact twelve symbols and four required intervals", () => {
   const plan = subjectPlan();
-  deepEqual(plan.requiredSymbols, PERSONAL_MARKET_DATA_SYMBOLS);
+  deepEqual(plan.requiredSymbols, PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS);
   deepEqual(plan.requiredIntervals, [
     BarInterval.OneDay,
     BarInterval.OneHour,

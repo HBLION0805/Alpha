@@ -72,16 +72,15 @@ test("catalog declares exactly the personal MVP provider candidates", () => {
   ]);
 });
 
-test("Alpaca Basic is blocked after MULS fails exact live-smoke coverage", () => {
+test("Alpaca Basic returns to bounded-smoke readiness for the Owner-approved 11-symbol scope", () => {
   const source = profile(PersonalMarketDataProviderId.AlpacaBasicIex);
   const result = assessPersonalMarketDataProvider(profile(PersonalMarketDataProviderId.AlpacaBasicIex), requirement());
   assert.equal(source.adapterImplemented, true);
-  assert.equal(source.symbolVerification.MULS, PersonalMarketDataVerificationStatus.Failed);
-  assert.equal(result.readiness, PersonalMarketDataProviderReadiness.Blocked);
+  assert.equal(PERSONAL_MARKET_DATA_SYMBOLS.length, 11);
+  assert.equal("MULS" in source.symbolVerification, false);
+  assert.equal(result.readiness, PersonalMarketDataProviderReadiness.ReadyForBoundedSmoke);
   assert.equal(result.monthlyCostUsd, 0);
   assert.equal(result.coverage, PersonalMarketDataFeedCoverage.SingleVenue);
-  assert.ok(result.blockers.some((entry) =>
-    entry.code === "SYMBOL_FAILED" && entry.field === "symbolVerification.MULS"));
   assert.ok(result.blockers.some((entry) => entry.code === "SYMBOL_UNVERIFIED"));
   assert.ok(!result.blockers.some((entry) => entry.code === "ADAPTER_NOT_IMPLEMENTED"));
 });

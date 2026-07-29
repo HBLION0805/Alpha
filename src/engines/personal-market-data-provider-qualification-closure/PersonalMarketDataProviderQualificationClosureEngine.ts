@@ -14,7 +14,7 @@ import {
   createPersonalMarketDataTwelveDataQualification,
 } from "../personal-market-data-twelve-data-qualification/PersonalMarketDataTwelveDataQualificationEngine";
 import {
-  PERSONAL_MARKET_DATA_SYMBOLS,
+  PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
 } from "../personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine";
 
 export class PersonalMarketDataProviderQualificationClosureError extends Error {
@@ -73,8 +73,8 @@ export function createPersonalMarketDataProviderQualificationClosure(
   if (c5Plan.selection !== "NO_PROVIDER_SELECTED"
     || c6Qualification.result !== "NOT_QUALIFIED_AS_COMPLETE_PROVIDER"
     || c6Qualification.permittedRole !== "BARS_RESEARCH_CANDIDATE_ONLY"
-    || PERSONAL_MARKET_DATA_SYMBOLS.length !== 12
-    || !PERSONAL_MARKET_DATA_SYMBOLS.includes("MULS")) {
+    || PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS.length !== 12
+    || !PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS.includes("MULS")) {
     throw new PersonalMarketDataProviderQualificationClosureError();
   }
 
@@ -131,7 +131,7 @@ export function createPersonalMarketDataProviderQualificationClosure(
 
   const identity = {
     twelveDataEvidenceId: evidence.evidenceId,
-    requiredSymbols: PERSONAL_MARKET_DATA_SYMBOLS,
+    requiredSymbols: PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
     providerLanes,
   };
   return deepFreeze({

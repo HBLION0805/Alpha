@@ -50,17 +50,23 @@ const assert: TestAssert = {
   },
 };
 
-test("catalog contains the four approved research themes and eight proposed vehicles", () => {
+test("catalog contains the four approved research themes and seven current vehicles", () => {
   const catalog = createResearchVerifiedPersonalWatchlistCatalog();
-  assert.equal(catalog.mappings.length, 8);
+  assert.equal(catalog.mappings.length, 7);
   assert.deepEqual(
     [...new Set(catalog.mappings.map((mapping) => mapping.analysisInstrument.displaySymbol))].sort(),
     ["MU", "SKHY", "SPCX", "TSLA"],
   );
   assert.deepEqual(
     catalog.mappings.map((mapping) => mapping.tradeVehicle.displaySymbol).sort(),
-    ["MULL", "MULS", "SKDD", "SKUU", "SPCH", "SSPC", "TSLL", "TSLQ"],
+    ["MULL", "SKDD", "SKUU", "SPCH", "SSPC", "TSLL", "TSLQ"],
   );
+});
+
+test("Owner-withdrawn MULS is absent while the MU bullish path remains", () => {
+  const catalog = createResearchVerifiedPersonalWatchlistCatalog();
+  assert.equal(catalog.mappings.some((mapping) => mapping.tradeVehicle.displaySymbol === "MULS"), false);
+  assert.equal(catalog.mappings.some((mapping) => mapping.tradeVehicle.displaySymbol === "MULL"), true);
 });
 
 test("catalog preserves exact bullish and bearish daily targets", () => {

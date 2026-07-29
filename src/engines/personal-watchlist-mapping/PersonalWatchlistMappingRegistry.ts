@@ -211,7 +211,6 @@ export function createResearchVerifiedPersonalWatchlistCatalog(): PersonalWatchl
   const instrumentIds: Readonly<Record<string, string>> = Object.freeze({
     MU: "instrument:00000000000000000000000101",
     MULL: "instrument:00000000000000000000000102",
-    MULS: "instrument:00000000000000000000000103",
     TSLA: "instrument:00000000000000000000000104",
     TSLL: "instrument:00000000000000000000000105",
     TSLQ: "instrument:00000000000000000000000106",
@@ -289,9 +288,6 @@ export function createResearchVerifiedPersonalWatchlistCatalog(): PersonalWatchl
     mappings: [
       proposal("mapping:mu:mull", "theme:mu", mu, etf("MULL", "GraniteShares 2x Long MU Daily ETF", "2024-10-25T13:30:00.000Z"), PersonalCandidateExposure.Bullish, [
         evidence("issuer:graniteshares:mull", "ISSUER", "https://graniteshares.com/etfs/mull/", "MULL targets +200% of MU daily performance."),
-      ]),
-      proposal("mapping:mu:muls", "theme:mu", mu, etf("MULS", "GraniteShares 2x Short MU Daily ETF", "2025-05-05T13:30:00.000Z"), PersonalCandidateExposure.Bearish, [
-        evidence("issuer:graniteshares:muls", "ISSUER", "https://graniteshares.com/media/ajsppsn2/graniteshares-etf-trust-s-l-single-stock-etfs-prospectus.pdf", "MULS targets -200% of MU daily performance."),
       ]),
       proposal("mapping:tsla:tsll", "theme:tsla", tsla, etf("TSLL", "Direxion Daily TSLA Bull 2X Shares", "2022-08-09T13:30:00.000Z"), PersonalCandidateExposure.Bullish, [
         evidence("issuer:direxion:tsll", "ISSUER", "https://www.direxion.com/product/daily-tsla-bull-and-bear-leveraged-single-stock-etfs", "TSLL targets +200% of TSLA daily performance."),

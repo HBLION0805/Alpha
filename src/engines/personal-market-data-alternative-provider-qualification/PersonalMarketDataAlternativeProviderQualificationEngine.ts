@@ -10,7 +10,7 @@ import {
 import { PersonalMarketDataProviderId } from "../../contracts/PersonalMarketDataProviderCoverage";
 import {
   PERSONAL_MARKET_DATA_INTERVALS,
-  PERSONAL_MARKET_DATA_SYMBOLS,
+  PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
   createPersonalMarketDataProviderCatalog,
 } from "../personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine";
 
@@ -140,12 +140,12 @@ export function createPersonalMarketDataAlternativeProviderQualificationPlan(
     schemaVersion: PERSONAL_MARKET_DATA_ALTERNATIVE_PROVIDER_QUALIFICATION_SCHEMA_VERSION,
     planId: `personal-alternative-provider-plan:${fnv1a64(canonicalize({
       evidenceId: expectedEvidence.evidenceId,
-      requiredSymbols: PERSONAL_MARKET_DATA_SYMBOLS,
+      requiredSymbols: PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
       requiredIntervals: PERSONAL_MARKET_DATA_INTERVALS,
       candidates: frozenCandidates,
     }))}`,
     evidenceId: expectedEvidence.evidenceId,
-    requiredSymbols: [...PERSONAL_MARKET_DATA_SYMBOLS],
+    requiredSymbols: [...PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS],
     requiredIntervals: [...PERSONAL_MARKET_DATA_INTERVALS],
     candidates: frozenCandidates,
     selection: "NO_PROVIDER_SELECTED",

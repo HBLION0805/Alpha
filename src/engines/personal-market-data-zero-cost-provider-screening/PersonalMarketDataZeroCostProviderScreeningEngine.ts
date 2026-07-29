@@ -11,7 +11,7 @@ import {
   createTwelveDataMulsNotFoundEvidence,
 } from "../personal-market-data-provider-qualification-closure/PersonalMarketDataProviderQualificationClosureEngine";
 import {
-  PERSONAL_MARKET_DATA_SYMBOLS,
+  PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
 } from "../personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine";
 
 const REVIEW_DATE = "2026-07-29" as const;
@@ -30,8 +30,8 @@ export function createPersonalMarketDataZeroCostProviderScreening(
     createTwelveDataMulsNotFoundEvidence(),
   );
   if (canonicalize(rawC11Closure) !== canonicalize(expectedClosure)
-    || PERSONAL_MARKET_DATA_SYMBOLS.length !== 12
-    || !PERSONAL_MARKET_DATA_SYMBOLS.includes("MULS")) {
+    || PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS.length !== 12
+    || !PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS.includes("MULS")) {
     throw new PersonalMarketDataZeroCostProviderScreeningError();
   }
 
@@ -39,7 +39,7 @@ export function createPersonalMarketDataZeroCostProviderScreening(
   const candidates = createCandidates();
   const identity = {
     c11ClosureId: expectedClosure.closureId,
-    requiredSymbols: PERSONAL_MARKET_DATA_SYMBOLS,
+    requiredSymbols: PERSONAL_MARKET_DATA_LEGACY_TWELVE_SYMBOLS,
     authorities,
     candidates,
   };

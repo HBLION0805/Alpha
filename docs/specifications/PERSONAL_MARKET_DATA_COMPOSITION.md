@@ -15,7 +15,7 @@ size, access a broker, or submit an order.
 On 2026-07-26 the Owner approved the complete eight-relationship MVP mapping
 set defined by `PERSONAL_WATCHLIST_MAPPING.md`:
 
-- MU to MULL and MULS;
+- MU to MULL; no inverse MU vehicle is active;
 - TSLA to TSLL and TSLQ;
 - SPCX to SPCH and SSPC;
 - SKHY to SKUU and SKDD.
@@ -96,7 +96,7 @@ The output is:
 The current Twelve Data adapter does not yet cover this complete watchlist or
 the required daily interval. Before real collection, Alpha still needs:
 
-- provider-specific symbol and exchange mappings for all twelve instruments;
+- provider-specific symbol and exchange mappings for all eleven instruments;
 - reviewed P1D support;
 - official volume-unit verification;
 - quote capability and top-of-book source review;

@@ -114,7 +114,7 @@ function barContext(
   };
 }
 
-test("mapping catalog binds the exact 12 personal symbols", () => {
+test("mapping catalog binds the exact 11 personal symbols", () => {
   equal(
     JSON.stringify(createAlpacaPersonalInstrumentMappings().map((entry) => entry.symbol)),
     JSON.stringify(ALPACA_PERSONAL_EXACT_SYMBOLS),
@@ -125,7 +125,7 @@ test("mapping catalog binds the exact 12 personal symbols", () => {
 test("quotes normalize into Canonical Quotes with IEX provenance", () => {
   const result = normalizeAlpacaPersonalQuotes(quoteContext());
   equal(result.status, "NORMALIZED", "status");
-  equal(result.quotes.length, 12, "quote count");
+  equal(result.quotes.length, 11, "quote count");
   equal(result.quotes[0]?.source.providerId, "provider:alpaca-basic-iex", "provider");
   assert(result.warnings[0]?.includes("not NBBO"), "NBBO warning");
 });
@@ -163,7 +163,7 @@ test("completed PT5M rows become final Canonical Bars", () => {
     providerBar("2026-07-26T13:50:00.000000000Z", 101),
   ]));
   equal(result.status, "NORMALIZED", "status");
-  equal(result.bars.length, 24, "bar count");
+  equal(result.bars.length, 22, "bar count");
   equal(result.bars[0]?.interval, BarInterval.FiveMinutes, "interval");
   equal(result.bars[0]?.intervalEnd, "2026-07-26T13:50:00.000Z", "end");
 });
@@ -235,7 +235,7 @@ test("P1D accepts exact explicit trading-day boundaries", () => {
     },
   ));
   equal(result.status, "NORMALIZED", "status");
-  equal(result.bars.length, 24, "bars");
+  equal(result.bars.length, 22, "bars");
 });
 
 test("mapping substitution fails before Canonical construction", () => {

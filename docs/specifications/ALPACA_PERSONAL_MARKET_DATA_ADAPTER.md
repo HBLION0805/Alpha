@@ -19,7 +19,7 @@ One dry-run plan contains exactly five requests:
 
 Every request contains the exact ordered set:
 
-`MU,MULL,MULS,TSLA,TSLL,TSLQ,SPCX,SPCH,SSPC,SKHY,SKUU,SKDD`
+`MU,MULL,TSLA,TSLL,TSLQ,SPCX,SPCH,SSPC,SKHY,SKUU,SKDD`
 
 The planner fixes:
 
@@ -102,4 +102,4 @@ Before one bounded live read:
 4. add injected network-free transport tests;
 5. rerun dry-run and verify zero network and zero persistence;
 6. receive separate Owner approval for one bounded smoke operation; and
-7. verify all 12 exact symbols without automatically following pagination.
+7. verify all 11 active exact symbols without automatically following pagination.
