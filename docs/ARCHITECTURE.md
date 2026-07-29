@@ -1248,6 +1248,15 @@ unobservable. C10 changes diagnostic quality only: the one-request limit, fresh
 Owner authorization, no-retry rule, zero persistence, and absence of market,
 recommendation, account, order, and trading authority remain unchanged.
 
+Personal MVP-T3G-C11 closes the current complete-provider qualification round.
+It converts the separately authorized C10 result into immutable
+`SYMBOL_NOT_FOUND` evidence without retaining the provider narrative or raw
+payload. Alpaca Basic IEX and Twelve Data Basic remain rejected as complete
+providers for the exact 12-symbol requirement; Alpaca SIP remains deferred;
+no replacement provider is selected. The only permitted continuation is
+network-free research of new zero-cost candidates. See
+[Personal Market Data Provider Qualification Closure](specifications/PERSONAL_MARKET_DATA_PROVIDER_QUALIFICATION_CLOSURE.md).
+
 ---
 
 # Event Contract Framework

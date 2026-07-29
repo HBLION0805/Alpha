@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-07-29 - Close the current complete-provider qualification round
+
+- Decision: record the one-request Twelve Data `SYMBOL_NOT_FOUND` result as
+  immutable bounded evidence and reject Twelve Data Basic as a complete
+  provider for the exact 12-symbol personal requirement.
+- Decision: retain Twelve Data only as a narrow Bars research candidate; do not
+  upgrade it through inference, substitution, or a reduced symbol set.
+- Decision: keep Alpaca Basic IEX rejected and Alpaca SIP deferred pending exact
+  coverage proof, adapter review, cost approval, and a separate bounded smoke.
+- Decision: select no complete provider and permit only network-free research
+  of the next zero-cost candidates.
+- Boundary: no new network, credential, subscription, persistence, collection,
+  recommendation, portfolio, order, or trading authority is created.
+
 ## 2026-07-28 - Personal MVP-T3G-C10 Provider-error Disclosure Boundary
 
 - Decision: inspect a non-success provider body only when it is a JSON object

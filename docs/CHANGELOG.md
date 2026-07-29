@@ -1,5 +1,18 @@
 # Alpha Changelog
 
+## 2026-07-29 - T3G-C11 Provider Qualification Closure
+
+- Added immutable evidence for the single Owner-authorized Twelve Data MULS
+  reference result, retaining only bounded request accounting and
+  `SYMBOL_NOT_FOUND`.
+- Added a deterministic provider-lane closure: Alpaca Basic IEX and Twelve Data
+  Basic are rejected as complete 12-symbol providers, Alpaca SIP remains
+  deferred, and no replacement provider is selected.
+- Added fail-closed regression coverage for evidence tampering, exact-symbol
+  preservation, authority boundaries, provider roles, and deterministic output.
+- Added no network request, credential use, persistence, subscription,
+  recommendation, portfolio mutation, order, or execution authority.
+
 ## 2026-07-28 - Personal MVP-T3G-C10 Bounded Provider-error Diagnostic
 
 - Added a 4,096-character, top-level-only Twelve Data provider-error parser
