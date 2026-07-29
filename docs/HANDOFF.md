@@ -739,3 +739,55 @@ positive Control history. Complete validation passes `2474/2474`. If approved,
 commit and push MR5, then begin T3B15-C5. Do not create an Operation Manifest,
 run a rehearsal, or add network, provider, recommendation, execution, or
 capital authority.
+
+## T3G-C13 Eleven-symbol Active Scope
+
+On 2026-07-29 the Owner withdrew `MULS` from the prospective personal MVP.
+The active exact set is now
+`MU,MULL,TSLA,TSLL,TSLQ,SPCX,SPCH,SSPC,SKHY,SKUU,SKDD`. MU and its bullish
+`MULL` path remain; MU has no active inverse ETF. The former twelve-symbol
+C5-C12 evidence remains immutable and is reconstructed through a separate
+legacy constant.
+
+Active watchlist mapping, Alpaca planning, validation, normalization, Transport
+and command paths now bind exactly eleven symbols. Alpaca Basic IEX is no longer
+blocked by `MULS`, but is only `READY_FOR_BOUNDED_SMOKE`: the complete P1D,
+PT1H, PT15M, PT5M and latest-Quote sequence still requires a fresh exact
+Owner-authorized verification. C13 adds no network authorization, Paper-account
+access, recommendation, broker, order, execution, Tradier, or commercialization
+authority.
+
+## T3G-C13-C1 Registry and Retired-command Correction
+
+The active seven-mapping catalog now preserves immutable identity as
+`personal-watchlist:mvp-2026-07` version `1.1`, created at
+`2026-07-29T15:30:00.000Z`. Its 2026-07-26 research evidence timestamps remain
+unchanged.
+
+The real Alpaca and Twelve Data MULS package commands are removed. Both retained
+foreground scripts now reject with the bounded
+`MULS_RETIRED_FROM_ACTIVE_SCOPE` result before parsing arguments, inspecting
+environment credentials, or constructing a Transport. Historical engines,
+fixtures, and tests remain available only for audit. No network request,
+Paper-account access, recommendation, order, or execution authority is added.
+
+## T3G-C13-C2 Handoff Reconciliation
+
+T3G-C13 is committed and pushed as `e886c7b`. T3G-C13-C1 is committed and
+pushed as `23e2644`. The independent C13-C1 review confirmed the registry
+version correction, removal of both real-MULS package commands, fail-closed
+direct-script behavior, and exclusion of paused T3B15-C5 work. It found no
+market-data, credential, account, recommendation, order, or execution authority
+regression.
+
+The remaining review blocker was documentation-only: the remote Handoff did
+not contain the C13/C13-C1 state because this working file also contains
+unrelated paused changes. C13-C2 reconciles only the two sections above plus
+this closure record. It must be selected independently and must not carry the
+paused T3B15-C5 content.
+
+No eleven-symbol live read is authorized by this reconciliation. After C13-C2
+is reviewed, committed, and pushed, the next permitted action is to request a
+new date-bound Owner authorization for one Alpaca read-only smoke covering
+exactly `MU,MULL,TSLA,TSLL,TSLQ,SPCX,SPCH,SSPC,SKHY,SKUU,SKDD`, with at most
+five requests, no retry, no persistence, and no order or account mutation.
