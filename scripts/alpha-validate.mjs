@@ -196,6 +196,7 @@ const aggregateTestFiles = [
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarAdapter.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceDiagnostic.test.ts",
+  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceErrorDiagnostic.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceHttpsTransport.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceLiveOperation.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceCommand.test.ts",
@@ -482,7 +483,8 @@ function checkNetworkAndProviderCode(files) {
           ]
         : normalizedFile === approvedTwelveDataMulsReferenceTransport ? [
             "TWELVE_DATA_PERSONAL_MULS_REFERENCE_ENDPOINT",
-            "Authorization: `apikey ${credentials.revealForTransport()}`",
+            "const credential = credentials.revealForTransport()",
+            "Authorization: `apikey ${credential}`",
             'redirect: "error"',
             "TwelveDataPersonalMulsReferenceTransportErrorCode.Timeout",
             "maxResponseCharacters",

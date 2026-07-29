@@ -1239,6 +1239,15 @@ authorized by the implementation, and no persistence, collection, provider
 qualification, recommendation, portfolio, broker, order, or trading path is
 added. See [Twelve Data Personal MULS Reference Live Operation](specifications/TWELVE_DATA_PERSONAL_MULS_REFERENCE_LIVE_OPERATION.md).
 
+Personal MVP-T3G-C10 adds a second fail-closed disclosure boundary for non-2xx
+responses from that exact operation. It reads only a bounded JSON object,
+copies only allow-listed top-level provider-error fields, normalizes and caps
+the message, redacts configured and secret-shaped credentials, and re-sanitizes
+the result at the live-operation boundary. Unknown fields and raw bodies remain
+unobservable. C10 changes diagnostic quality only: the one-request limit, fresh
+Owner authorization, no-retry rule, zero persistence, and absence of market,
+recommendation, account, order, and trading authority remain unchanged.
+
 ---
 
 # Event Contract Framework

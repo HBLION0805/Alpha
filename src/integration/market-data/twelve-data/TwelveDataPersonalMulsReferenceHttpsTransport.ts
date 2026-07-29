@@ -5,6 +5,10 @@ import {
   type TwelveDataPersonalMulsReferenceRequest,
   type TwelveDataPersonalMulsReferenceResponse,
 } from "./TwelveDataPersonalMulsReferenceDiagnostic";
+import {
+  parseTwelveDataPersonalMulsReferenceProviderError,
+  type TwelveDataPersonalMulsReferenceProviderErrorDiagnostic,
+} from "./TwelveDataPersonalMulsReferenceErrorDiagnostic";
 
 const APPROVED_HOSTNAME = "api.twelvedata.com";
 const EXPECTED_QUERY = Object.freeze([
@@ -30,6 +34,8 @@ export class TwelveDataPersonalMulsReferenceTransportError extends Error {
   public constructor(
     public readonly safeCode: TwelveDataPersonalMulsReferenceTransportErrorCode,
     public readonly statusCode?: number,
+    public readonly providerError?:
+      Readonly<TwelveDataPersonalMulsReferenceProviderErrorDiagnostic>,
   ) {
     super(`Twelve Data MULS reference transport failed: ${safeCode}.`);
     this.name = "TwelveDataPersonalMulsReferenceTransportError";
@@ -112,9 +118,10 @@ implements TwelveDataPersonalMulsReferenceLiveTransport {
     for (const [key, value] of request.query) {
       target.searchParams.append(key, value);
     }
+    const credential = credentials.revealForTransport();
     const headers = Object.freeze({
       accept: "application/json",
-      Authorization: `apikey ${credentials.revealForTransport()}`,
+      Authorization: `apikey ${credential}`,
     });
 
     let response: TwelveDataPersonalMulsReferenceExecutorResponse;
@@ -152,6 +159,10 @@ implements TwelveDataPersonalMulsReferenceLiveTransport {
       throw new TwelveDataPersonalMulsReferenceTransportError(
         TwelveDataPersonalMulsReferenceTransportErrorCode.HttpFailure,
         response.statusCode,
+        parseTwelveDataPersonalMulsReferenceProviderError(
+          response.body,
+          [credential],
+        ),
       );
     }
 

@@ -1,5 +1,6 @@
 export * from "./TwelveDataProvider";
 export * from "./TwelveDataPersonalMulsReferenceDiagnostic";
+export * from "./TwelveDataPersonalMulsReferenceErrorDiagnostic";
 export * from "./TwelveDataPersonalMulsReferenceCommand";
 export * from "./TwelveDataPersonalMulsReferenceLiveOperation";
 export {

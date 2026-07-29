@@ -16,6 +16,10 @@ import {
   TwelveDataPersonalMulsReferenceTransportErrorCode,
   type TwelveDataPersonalMulsReferenceLiveTransport,
 } from "./TwelveDataPersonalMulsReferenceHttpsTransport";
+import {
+  sanitizeTwelveDataPersonalMulsReferenceProviderError,
+  type TwelveDataPersonalMulsReferenceProviderErrorDiagnostic,
+} from "./TwelveDataPersonalMulsReferenceErrorDiagnostic";
 import { loadTwelveDataCredentials } from "./TwelveDataProvider";
 
 export const TWELVE_DATA_PERSONAL_MULS_REFERENCE_CONFIRMATION =
@@ -57,6 +61,8 @@ export class TwelveDataPersonalMulsReferenceLiveError extends Error {
     public readonly attemptedNetworkRequests: 0 | 1,
     public readonly completedNetworkRequests: 0 | 1,
     public readonly statusCode?: number,
+    public readonly providerError?:
+      Readonly<TwelveDataPersonalMulsReferenceProviderErrorDiagnostic>,
   ) {
     super(`Twelve Data MULS live reference operation failed: ${safeCode}.`);
     this.name = "TwelveDataPersonalMulsReferenceLiveError";
@@ -70,6 +76,9 @@ export class TwelveDataPersonalMulsReferenceLiveError extends Error {
       attemptedNetworkRequests: this.attemptedNetworkRequests,
       completedNetworkRequests: this.completedNetworkRequests,
       ...(this.statusCode === undefined ? {} : { statusCode: this.statusCode }),
+      ...(this.providerError === undefined
+        ? {}
+        : { providerError: this.providerError }),
     });
   }
 }
@@ -191,7 +200,7 @@ export async function runTwelveDataPersonalMulsReferenceLiveOperation(
   try {
     response = await transport.execute(request, credentials, input.signal);
   } catch (error) {
-    throw translateTransportError(error);
+    throw translateTransportError(error, credentials.revealForTransport());
   }
   const parsed = validateTwelveDataPersonalMulsReferenceResponse(response.body);
   return deepFreeze({
@@ -238,6 +247,7 @@ function validateAuthorization(
 
 function translateTransportError(
   error: unknown,
+  credential: string,
 ): TwelveDataPersonalMulsReferenceLiveError {
   if (!(error instanceof TwelveDataPersonalMulsReferenceTransportError)) {
     return new TwelveDataPersonalMulsReferenceLiveError(
@@ -272,6 +282,11 @@ function translateTransportError(
       TwelveDataPersonalMulsReferenceTransportErrorCode.InvalidClock
     ? 1
     : 0;
+  const providerError =
+    sanitizeTwelveDataPersonalMulsReferenceProviderError(
+      error.providerError,
+      [credential],
+    );
   return new TwelveDataPersonalMulsReferenceLiveError(
     code[error.safeCode],
     error.safeCode ===
@@ -282,6 +297,7 @@ function translateTransportError(
       : 1,
     completed,
     error.statusCode,
+    providerError,
   );
 }
 

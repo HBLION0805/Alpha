@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-07-28 - Personal MVP-T3G-C10 Provider-error Disclosure Boundary
+
+- Decision: inspect a non-success provider body only when it is a JSON object
+  no longer than 4,096 characters.
+- Decision: emit only exact top-level `status="error"`, safe-integer HTTP-like
+  `code`, and a normalized message capped at 240 Unicode characters.
+- Decision: redact the configured credential, labelled API-key or Authorization
+  values, and 32-character hexadecimal secret-shaped tokens before output.
+- Decision: ignore unknown and nested fields and retain only HTTP status when
+  the diagnostic is malformed, oversized, or wholly unrecognized.
+- Decision: re-sanitize typed errors at the live-operation boundary so an
+  injected Transport cannot smuggle unknown fields or the configured key.
+- Consequence: C10 can explain a future HTTP failure without exposing the raw
+  response, but it does not authorize a retry or another real request.
+
 ## 2026-07-27 - Personal MVP-T3G-C9 Live Reference Operation Boundary
 
 - Decision: isolate the exact `/etfs/list` capability in a dedicated Transport

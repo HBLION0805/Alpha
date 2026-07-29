@@ -1,5 +1,19 @@
 # Alpha Changelog
 
+## 2026-07-28 - Personal MVP-T3G-C10 Bounded Provider-error Diagnostic
+
+- Added a 4,096-character, top-level-only Twelve Data provider-error parser
+  with an exact `status`, `code`, and `message` allow list.
+- Added one-line 240-character message bounds, explicit truncation, configured
+  credential redaction, labelled credential redaction, and secret-shape
+  redaction.
+- Bound sanitized diagnostics through the exact MULS HTTPS Transport and live
+  operation while preserving one-request accounting and status-only fallback.
+- Added 9/9 parser tests and one new Transport and live-operation regression
+  test each; all tests remain injected and network-free.
+- Added no retry, second-request, persistence, provider qualification,
+  recommendation, account, order, or trading authority.
+
 ## 2026-07-27 - Personal MVP-T3G-C9 Owner-gated MULS Live Reference Operation
 
 - Added a dedicated exact-host HTTPS Transport for the frozen Twelve Data

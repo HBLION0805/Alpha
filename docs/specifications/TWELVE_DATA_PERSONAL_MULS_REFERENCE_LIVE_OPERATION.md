@@ -1,4 +1,4 @@
-# Twelve Data Personal MULS Reference Live Operation v1.0
+# Twelve Data Personal MULS Reference Live Operation v1.1
 
 ## Status
 
@@ -77,7 +77,9 @@ retry, timeout, or budget override.
 Only `ALPHA_TWELVE_DATA_API_KEY` is copied from the command environment.
 The public request, URL, output, errors, tests, and documentation must not
 contain the key. The concrete Transport may reveal it only long enough to build
-the in-memory `Authorization` header passed to the HTTPS executor.
+the in-memory `Authorization` header passed to the HTTPS executor and the live
+operation may reveal it only long enough to re-sanitize a typed provider-error
+diagnostic. Neither boundary retains or emits the revealed value.
 
 ## Result and Failure Boundary
 
@@ -88,6 +90,26 @@ country and MIC when confirmed, elapsed time, and bounded warnings.
 Raw payloads, provider narratives, headers, credentials, fund name, fund family,
 fund type, prices, quantities, balances, positions, accounts, and orders cannot
 cross the boundary.
+
+T3G-C10 permits one narrowly bounded exception for failed HTTP responses:
+
+- only a JSON object no longer than 4,096 characters may be inspected;
+- only top-level `status`, `code`, and `message` are allow-listed;
+- `status` is emitted only when it is exactly `error`;
+- `code` is emitted only when it is a safe integer from 100 through 599;
+- `message` is normalized to one line and capped at 240 Unicode characters;
+- the configured credential, labelled API-key or Authorization values, and
+  32-character hexadecimal secret-shaped tokens are replaced with
+  `[REDACTED]`;
+- truncation is declared explicitly;
+- unknown fields, nested values, headers, URLs, and the raw response body are
+  never emitted or retained.
+
+Malformed, oversized, non-object, or wholly unrecognized error payloads retain
+only the existing sanitized HTTP status. Diagnostic parsing does not authorize
+a retry or a second request. Direct Transport-error serialization remains
+status-only; the diagnostic can be emitted only after the live-operation
+boundary re-sanitizes it against the configured credential.
 
 Timeout, cancellation, network failure, HTTP failure, oversized response,
 invalid receipt time, malformed response, provider rejection, not found,
@@ -102,6 +124,8 @@ requests. They cover:
 - exact URL and authorization-header construction;
 - host, path, query, method, field, timeout, and size rejection;
 - cancellation, timeout, HTTP, size, clock, and unknown failure sanitization;
+- bounded provider-error parsing, allow-listing, truncation, and credential
+  redaction;
 - dry-run zero-network behavior;
 - exact date and fingerprint authorization binding;
 - one confirmed injected execution;

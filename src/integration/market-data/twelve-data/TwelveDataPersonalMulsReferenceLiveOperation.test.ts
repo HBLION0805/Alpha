@@ -236,6 +236,36 @@ test("transport failures preserve bounded request accounting", async () => {
   }
 });
 
+test("HTTP failure carries only the sanitized provider diagnostic", async () => {
+  const transport = new LiveFixtureTransport();
+  transport.failure = new TwelveDataPersonalMulsReferenceTransportError(
+    TwelveDataPersonalMulsReferenceTransportErrorCode.HttpFailure,
+    400,
+    Object.freeze({
+      status: "error",
+      code: 400,
+      message: `Invalid ${API_KEY}`,
+      messageTruncated: false,
+      unknown: `must-not-cross ${API_KEY}`,
+    }) as unknown as ConstructorParameters<
+      typeof TwelveDataPersonalMulsReferenceTransportError
+    >[2],
+  );
+  const error = await expectLiveError({
+    ...base(transport),
+    confirmed: true,
+    authorization,
+  }, TwelveDataPersonalMulsReferenceLiveErrorCode.HttpFailure);
+  equal(error.providerError?.status, "error", "provider status");
+  equal(error.providerError?.code, 400, "provider code");
+  equal(error.providerError?.message, "Invalid [REDACTED]", "message");
+  equal(error.statusCode, 400, "HTTP status");
+  const serialized = JSON.stringify(error);
+  assert(!serialized.includes(API_KEY), "credential leaked");
+  assert(!serialized.includes("body"), "raw-body field leaked");
+  assert(!serialized.includes("must-not-cross"), "unknown field leaked");
+});
+
 test("unknown transport and readiness failures are sanitized", async () => {
   const executeTransport = new LiveFixtureTransport();
   executeTransport.failure = new Error(`unsafe ${API_KEY}`);

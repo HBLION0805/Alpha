@@ -146,15 +146,41 @@ test("pre-cancelled request executes zero calls", async () => {
   equal(executor.calls, 0, "calls");
 });
 
-test("HTTP failure exposes status but never body or credential", async () => {
+test("HTTP failure exposes only bounded provider diagnostics", async () => {
   const executor = new CapturingExecutor();
-  executor.response = { statusCode: 429, body: `unsafe ${API_KEY}` };
+  executor.response = {
+    statusCode: 429,
+    body: JSON.stringify({
+      status: "error",
+      code: 429,
+      message: `unsafe ${API_KEY}`,
+      raw: `must-not-cross ${API_KEY}`,
+    }),
+  };
   const error = await executeFailure(
     executor,
     TwelveDataPersonalMulsReferenceTransportErrorCode.HttpFailure,
   );
   equal(error.statusCode, 429, "status");
-  assert(!JSON.stringify(error).includes(API_KEY), "secret leaked");
+  equal(error.providerError?.status, "error", "provider status");
+  equal(error.providerError?.code, 429, "provider code");
+  equal(error.providerError?.message, "unsafe [REDACTED]", "message");
+  const serialized = JSON.stringify(error);
+  assert(!serialized.includes(API_KEY), "secret leaked");
+  assert(!serialized.includes("must-not-cross"), "unknown field leaked");
+  assert(!serialized.includes("providerError"), "internal diagnostic leaked");
+});
+
+test("unrecognized HTTP failure body retains status only", async () => {
+  const executor = new CapturingExecutor();
+  executor.response = { statusCode: 400, body: `unsafe ${API_KEY}` };
+  const error = await executeFailure(
+    executor,
+    TwelveDataPersonalMulsReferenceTransportErrorCode.HttpFailure,
+  );
+  equal(error.statusCode, 400, "status");
+  equal(error.providerError, undefined, "provider diagnostic");
+  assert(!JSON.stringify(error).includes(API_KEY), "body leaked");
 });
 
 test("oversized UTF-8 response is terminal", async () => {

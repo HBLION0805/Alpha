@@ -462,7 +462,7 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 
 15. **Personal MVP-T1 through MVP-T3G — Daily ETF Decision Support**
-   - Status: T1 through T3G-C8 are implemented, reviewed, committed, and pushed; T3G-C9 is complete locally pending Owner review.
+   - Status: T1 through T3G-C9 are implemented, reviewed, committed, and pushed; the single Owner-authorized C9 request completed once with sanitized HTTP 400 and no retry. T3G-C10 is complete locally pending Owner review.
    - T1: fail-closed personal decision contract with explicit `TRADE`, `WAIT`, and `NO_TRADE` boundaries.
    - T2: deterministic candidate scan for the Owner's four themes.
    - T3A: Owner-approved underlying-to-bullish/inverse ETF mapping for MU, TSLA, SPCX, and SKHY.
@@ -480,7 +480,8 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3G-C6: complete locally; binds the exact C5 plan, finds Twelve Data unqualified as the complete provider, retains it only for Bars research, and proves the frozen Basic request limits cannot sustain the intended 12-symbol five-minute cadence.
    - T3G-C7: design complete locally; freezes one default-zero-network `/etfs/list` diagnostic for exact `MULS` US ETF reference presence, rejects the legacy endpoint, and leaves implementation and any real request separately Owner-gated.
    - T3G-C8: complete locally; implements fixed request contracts, strict sanitized parsing, redacted credentials, and a fixture-only injected Transport seam with zero network authority and 15 deterministic tests.
-   - T3G-C9: complete locally; adds an exact-host HTTPS Transport, UTC-date and immutable-fingerprint Owner gate, default-zero-network local command, sanitized one-request accounting, and 25 network-free tests. No real request is authorized.
+   - T3G-C9: committed and pushed as `5bd6a6a`; adds an exact-host HTTPS Transport, UTC-date and immutable-fingerprint Owner gate, default-zero-network local command, and sanitized one-request accounting. Its separately authorized request completed exactly once with HTTP 400; the authorization is consumed and was not retried.
+   - T3G-C10: complete locally; permits only a 4,096-character JSON provider-error envelope, allow-lists top-level status/code/message, caps normalized messages at 240 Unicode characters, redacts credentials and secret-shaped tokens, re-sanitizes injected errors, and retains status-only fallback. It adds 11 network-free regression cases and no new request authority.
    - Boundaries: no automatic or background live network authority, automatic order, broker credential, portfolio mutation, or commercial product.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.
