@@ -6,10 +6,15 @@ import {
   AlpacaPersonalAssetMetadataError,
   runAlpacaPersonalMulsAssetMetadataDiagnostic,
 } from "../src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataDiagnostic.ts";
+import {
+  PersonalMulsScopeRetiredError,
+  rejectRetiredPersonalMulsLiveOperation,
+} from "../src/integration/market-data/PersonalMulsScopeRetirement.ts";
 
 async function main() {
-  console.log("ASSET METADATA READ ONLY -- NO MARKET DATA, ACCOUNT, OR TRADING AUTHORITY");
   try {
+    rejectRetiredPersonalMulsLiveOperation();
+    console.log("ASSET METADATA READ ONLY -- NO MARKET DATA, ACCOUNT, OR TRADING AUTHORITY");
     const options = parseAlpacaPersonalAssetMetadataCommandArguments(process.argv.slice(2));
     const input = createAlpacaPersonalAssetMetadataCommandInput(options, process.env);
     const result = await runAlpacaPersonalMulsAssetMetadataDiagnostic(input);
@@ -18,7 +23,9 @@ async function main() {
       console.log("Dry run complete. A real read requires fresh Owner authorization and the exact confirmation flag.");
     }
   } catch (error) {
-    if (error instanceof AlpacaPersonalAssetMetadataError) {
+    if (error instanceof PersonalMulsScopeRetiredError) {
+      console.error(JSON.stringify(error.toJSON()));
+    } else if (error instanceof AlpacaPersonalAssetMetadataError) {
       console.error(JSON.stringify(error.toJSON()));
     } else {
       console.error("Alpaca MULS asset-metadata command failed safely.");

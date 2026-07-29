@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-07-29 - T3G-C13-C1 Registry and MULS Command Correction
+
+- Upgraded the changed active personal-watchlist catalog to immutable registry
+  version `1.1` with a distinct creation timestamp.
+- Removed the two real-MULS package command surfaces and added a shared
+  fail-closed retirement gate before arguments, credentials, or Transport.
+- Preserved historical MULS diagnostic engines, fixtures, and tests as
+  audit-only evidence.
+- Added no network, account, recommendation, order, or execution authority.
+
 ## 2026-07-29 - T3G-C12 Zero-cost Provider Screening
 
 - Added a deterministic official-evidence screen for Tradier Brokerage,

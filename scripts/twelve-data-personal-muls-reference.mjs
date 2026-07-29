@@ -6,12 +6,17 @@ import {
   TwelveDataPersonalMulsReferenceLiveError,
   runTwelveDataPersonalMulsReferenceLiveOperation,
 } from "../src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceLiveOperation.ts";
+import {
+  PersonalMulsScopeRetiredError,
+  rejectRetiredPersonalMulsLiveOperation,
+} from "../src/integration/market-data/PersonalMulsScopeRetirement.ts";
 
 async function main() {
-  console.log(
-    "REFERENCE DATA READ ONLY -- NO MARKET DATA, ACCOUNT, OR TRADING AUTHORITY",
-  );
   try {
+    rejectRetiredPersonalMulsLiveOperation();
+    console.log(
+      "REFERENCE DATA READ ONLY -- NO MARKET DATA, ACCOUNT, OR TRADING AUTHORITY",
+    );
     const options =
       parseTwelveDataPersonalMulsReferenceCommandArguments(process.argv.slice(2));
     const input = createTwelveDataPersonalMulsReferenceCommandInput(
@@ -27,7 +32,9 @@ async function main() {
       );
     }
   } catch (error) {
-    if (error instanceof TwelveDataPersonalMulsReferenceLiveError) {
+    if (error instanceof PersonalMulsScopeRetiredError) {
+      console.error(JSON.stringify(error.toJSON()));
+    } else if (error instanceof TwelveDataPersonalMulsReferenceLiveError) {
       console.error(JSON.stringify(error.toJSON()));
     } else {
       console.error(

@@ -52,6 +52,9 @@ const assert: TestAssert = {
 
 test("catalog contains the four approved research themes and seven current vehicles", () => {
   const catalog = createResearchVerifiedPersonalWatchlistCatalog();
+  assert.equal(catalog.registryId, "personal-watchlist:mvp-2026-07");
+  assert.equal(catalog.version, "1.1");
+  assert.equal(catalog.createdAt, "2026-07-29T15:30:00.000Z");
   assert.equal(catalog.mappings.length, 7);
   assert.deepEqual(
     [...new Set(catalog.mappings.map((mapping) => mapping.analysisInstrument.displaySymbol))].sort(),

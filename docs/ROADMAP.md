@@ -462,7 +462,7 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 
 15. **Personal MVP-T1 through MVP-T3G — Daily ETF Decision Support**
-   - Status: T1 through T3G-C12 are implemented, reviewed, committed, and pushed. T3G-C13 is complete and Owner-approved with full validation passing; it applies the eleven-symbol active scope without rewriting historical evidence.
+   - Status: T1 through T3G-C12 are implemented, reviewed, committed, and pushed. T3G-C13 is committed and pushed. T3G-C13-C1 is implemented locally pending Owner review; it corrects registry identity and retires all live MULS command surfaces.
    - T1: fail-closed personal decision contract with explicit `TRADE`, `WAIT`, and `NO_TRADE` boundaries.
    - T2: deterministic candidate scan for the Owner's four themes.
    - T3A: Owner-approved underlying-to-bullish/inverse ETF mapping for MU, TSLA, SPCX, and SKHY.
@@ -485,6 +485,7 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3G-C11: complete locally pending review; records the single C10 `SYMBOL_NOT_FOUND` result without provider narrative or raw payload, rejects Alpaca Basic IEX and Twelve Data Basic as complete 12-symbol providers, keeps Alpaca SIP deferred, selects no provider, and permits only network-free next-candidate research.
    - T3G-C12: complete locally pending review; screens five official zero-cost candidates, rejects Massive Basic, Finnhub Free, Alpha Vantage Free, and FMP Basic, and prioritizes Tradier only for a credential-isolation and exact-symbol diagnostic design review. No provider is selected and no account opening or network authority is granted.
    - T3G-C13: complete and Owner-approved; removes `MULS` from the prospective active set, preserves the former twelve-symbol C5-C12 evidence, retains MU and `MULL`, and returns Alpaca Basic IEX only to eleven-symbol bounded-smoke eligibility. No new network request, account, recommendation, order, or execution authority is granted.
+   - T3G-C13-C1: implemented locally pending Owner review; upgrades the changed active catalog to registry version `1.1`, gives it a distinct creation time, removes the two real-MULS package commands, and makes both retained scripts reject before arguments, credentials, or network construction. Historical diagnostic code and fixtures remain audit-only.
    - Boundaries: no automatic or background live network authority, automatic order, broker credential, portfolio mutation, or commercial product.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.

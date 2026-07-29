@@ -1,4 +1,4 @@
-# Personal Watchlist Mapping v1.0
+# Personal Watchlist Mapping v1.1
 
 ## Purpose
 
@@ -21,9 +21,11 @@ a trade, size a position, submit an order, or connect to Robinhood.
 
 Each relationship is supported by issuer, SEC, or exchange evidence. Research
 verification is not Owner approval. The built-in catalog therefore ships with
-every relationship in `PENDING` Owner state. The Owner approved the complete
-eight-mapping MVP set on 2026-07-26; runtime activation still requires the
-structured approval command to bind all exact mapping identities.
+every relationship in `PENDING` Owner state. The Owner originally approved the
+complete eight-mapping research set on 2026-07-26. On 2026-07-29 the Owner
+withdrew `MULS`; the active seven-mapping catalog is registry version `1.1`.
+Runtime activation still requires the structured approval command to bind all
+exact mapping identities.
 
 ## Activation rule
 

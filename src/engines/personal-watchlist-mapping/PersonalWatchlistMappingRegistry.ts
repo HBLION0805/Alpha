@@ -207,6 +207,7 @@ export function approvePersonalWatchlistMappingRegistry(
 
 export function createResearchVerifiedPersonalWatchlistCatalog(): PersonalWatchlistMappingRegistry {
   const retrievedAt = "2026-07-26T16:00:00.000Z";
+  const createdAt = "2026-07-29T15:30:00.000Z";
   const pending = { status: PersonalWatchlistOwnerStatus.Pending } as const;
   const instrumentIds: Readonly<Record<string, string>> = Object.freeze({
     MU: "instrument:00000000000000000000000101",
@@ -283,8 +284,8 @@ export function createResearchVerifiedPersonalWatchlistCatalog(): PersonalWatchl
   });
   return createPersonalWatchlistMappingRegistry({
     registryId: "personal-watchlist:mvp-2026-07",
-    version: "1.0",
-    createdAt: retrievedAt,
+    version: "1.1",
+    createdAt,
     mappings: [
       proposal("mapping:mu:mull", "theme:mu", mu, etf("MULL", "GraniteShares 2x Long MU Daily ETF", "2024-10-25T13:30:00.000Z"), PersonalCandidateExposure.Bullish, [
         evidence("issuer:graniteshares:mull", "ISSUER", "https://graniteshares.com/etfs/mull/", "MULL targets +200% of MU daily performance."),

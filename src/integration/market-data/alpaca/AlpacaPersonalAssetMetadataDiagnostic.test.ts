@@ -21,6 +21,11 @@ import {
   type AlpacaPersonalAssetMetadataResponse,
   type AlpacaPersonalAssetMetadataTransport,
 } from "./AlpacaPersonalAssetMetadataDiagnostic";
+import {
+  PERSONAL_MULS_SCOPE_RETIREMENT_CODE,
+  PersonalMulsScopeRetiredError,
+  rejectRetiredPersonalMulsLiveOperation,
+} from "../PersonalMulsScopeRetirement";
 
 type Test = readonly [string, () => void | Promise<void>];
 const tests: Test[] = [];
@@ -37,6 +42,21 @@ const SECRET_KEY = "test-secret-key-123456789";
 const environment = Object.freeze({
   [ALPACA_API_KEY_ID_ENVIRONMENT_VARIABLE]: KEY_ID,
   [ALPACA_API_SECRET_KEY_ENVIRONMENT_VARIABLE]: SECRET_KEY,
+});
+
+test("retired MULS live operations fail closed with a bounded diagnostic", () => {
+  try {
+    rejectRetiredPersonalMulsLiveOperation();
+    throw new Error("Expected the retired MULS scope to reject the operation.");
+  } catch (error) {
+    assert(error instanceof PersonalMulsScopeRetiredError, "typed retirement error");
+    equal(error.safeCode, PERSONAL_MULS_SCOPE_RETIREMENT_CODE, "safe retirement code");
+    equal(
+      JSON.stringify(error.toJSON()),
+      '{"code":"MULS_RETIRED_FROM_ACTIVE_SCOPE","retiredAt":"2026-07-29T15:30:00.000Z"}',
+      "bounded retirement diagnostic",
+    );
+  }
 });
 
 function validBody(overrides: Readonly<Record<string, unknown>> = {}): string {

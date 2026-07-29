@@ -44,8 +44,29 @@ T3G-C5 through C12 continue to use the frozen legacy twelve-symbol set when
 reconstructing their historical decisions. Active planning, watchlist mapping,
 normalization, and provider readiness use the eleven-symbol set.
 
-The prior Alpaca and Twelve Data `MULS` diagnostics remain available for audit,
-but they grant no current collection or provider-selection authority.
+The prior Alpaca and Twelve Data `MULS` diagnostic engines, fixtures, and tests
+remain available for historical audit. Their package command surfaces are
+retired, and both retained foreground scripts fail closed before argument
+parsing, credential inspection, or Transport construction.
+
+## C13-C1 Authority Correction
+
+The seven-mapping active catalog is a new immutable registry version:
+
+- registry identity: `personal-watchlist:mvp-2026-07`;
+- registry version: `1.1`;
+- registry creation time: `2026-07-29T15:30:00.000Z`;
+- unchanged mapping records retain their own `1.0` versions.
+
+This separates the new catalog's creation time from the 2026-07-26 authority
+evidence retrieval time. Reusing registry version `1.0` for different
+membership is forbidden.
+
+Both former real-MULS package commands are removed. Direct invocation of either
+retained script returns only `MULS_RETIRED_FROM_ACTIVE_SCOPE` and the fixed
+retirement time before reading process arguments or environment credentials.
+Historical diagnostic components remain testable but are not live operational
+surfaces.
 
 ## Authority and Exclusions
 
@@ -70,3 +91,6 @@ C13 adds no:
 - Alpaca Basic IEX is `READY_FOR_BOUNDED_SMOKE`, not collection-ready.
 - Historical C5-C12 results continue to bind the legacy twelve-symbol set.
 - Strict TypeScript, focused suites, and complete Alpha validation pass.
+- The active registry uses version `1.1` and a distinct creation timestamp.
+- No package command or direct foreground script can initiate a live `MULS`
+  request.

@@ -1277,6 +1277,13 @@ verification. No network request, Tradier integration, Paper-account access,
 recommendation, order, or trading authority is added. See
 [Personal Market Data Eleven-symbol Scope Correction](specifications/PERSONAL_MARKET_DATA_ELEVEN_SYMBOL_SCOPE_CORRECTION.md).
 
+T3G-C13-C1 corrects the active catalog's immutable identity to registry version
+`1.1` with a new creation time. It removes both real-MULS package command
+surfaces and installs a shared fail-closed retirement gate at the start of each
+retained foreground script, before arguments, credentials, or Transport can be
+examined. Historical diagnostic engines and fixtures remain auditable; they
+carry no live operational authority.
+
 ---
 
 # Event Contract Framework

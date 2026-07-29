@@ -1,5 +1,18 @@
 # Alpha Architecture Decisions
 
+## 2026-07-29 - Version the reduced catalog and retire MULS operations
+
+- Decision: preserve `personal-watchlist:mvp-2026-07` as the stable registry
+  identity while advancing the changed seven-mapping catalog to version `1.1`.
+- Decision: use a new registry creation time without rewriting the earlier
+  authority-evidence retrieval timestamps or unchanged mapping versions.
+- Decision: remove the real Alpaca and Twelve Data MULS package commands and
+  fail closed at the start of each retained script before process arguments,
+  credentials, or Transport are inspected.
+- Decision: retain historical diagnostic engines and fixtures for audit only.
+- Boundary: no new live read, account, persistence, recommendation, order, or
+  execution authority is granted.
+
 ## 2026-07-29 - Prioritize Tradier only for read-only architecture review
 
 - Decision: reject Massive Stocks Basic, Finnhub Free, Alpha Vantage Free, and
