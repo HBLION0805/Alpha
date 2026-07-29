@@ -18,6 +18,7 @@
     "test:personal-market-data-alternative-provider-qualification": "tsx src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.test.ts",
     "test:personal-market-data-twelve-data-qualification": "tsx src/engines/personal-market-data-twelve-data-qualification/PersonalMarketDataTwelveDataQualificationEngine.test.ts",
     "test:personal-provider-qualification-closure": "tsx src/engines/personal-market-data-provider-qualification-closure/PersonalMarketDataProviderQualificationClosureEngine.test.ts",
+    "test:personal-zero-cost-provider-screening": "tsx src/engines/personal-market-data-zero-cost-provider-screening/PersonalMarketDataZeroCostProviderScreeningEngine.test.ts",
     "test:alpaca-personal-market-data-adapter": "tsx src/integration/market-data/alpaca/AlpacaPersonalMarketDataAdapter.test.ts",
     "test:alpaca-personal-market-data-normalizer": "tsx src/integration/market-data/alpaca/AlpacaPersonalMarketDataNormalizer.test.ts",
     "test:alpaca-credentials": "tsx src/integration/market-data/alpaca/AlpacaCredentials.test.ts",

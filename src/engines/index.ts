@@ -54,3 +54,4 @@ export * from "./personal-market-data-provider-coverage";
 export * from "./personal-market-data-alternative-provider-qualification";
 export * from "./personal-market-data-twelve-data-qualification";
 export * from "./personal-market-data-provider-qualification-closure";
+export * from "./personal-market-data-zero-cost-provider-screening";

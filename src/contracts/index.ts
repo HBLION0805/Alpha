@@ -79,3 +79,4 @@ export * from "./PersonalMarketDataProviderCoverage";
 export * from "./PersonalMarketDataAlternativeProviderQualification";
 export * from "./PersonalMarketDataTwelveDataQualification";
 export * from "./PersonalMarketDataProviderQualificationClosure";
+export * from "./PersonalMarketDataZeroCostProviderScreening";

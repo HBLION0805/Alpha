@@ -462,7 +462,7 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - Intended scope: pre-declared baseline models and calibration diagnostics using the sealed temporal partitions; the final-test partition remains untouched until model and threshold choices are frozen.
 
 15. **Personal MVP-T1 through MVP-T3G — Daily ETF Decision Support**
-   - Status: T1 through T3G-C10 are implemented, reviewed, committed, and pushed; the single Owner-authorized C10 diagnostic completed once with sanitized `SYMBOL_NOT_FOUND` and no retry. T3G-C11 is complete locally pending Owner review.
+   - Status: T1 through T3G-C11 are implemented, reviewed, committed, and pushed; the single Owner-authorized C10 diagnostic completed once with sanitized `SYMBOL_NOT_FOUND` and no retry. T3G-C12 is complete locally pending Owner review.
    - T1: fail-closed personal decision contract with explicit `TRADE`, `WAIT`, and `NO_TRADE` boundaries.
    - T2: deterministic candidate scan for the Owner's four themes.
    - T3A: Owner-approved underlying-to-bullish/inverse ETF mapping for MU, TSLA, SPCX, and SKHY.
@@ -483,6 +483,7 @@ Day 9 is foundation-complete, not production-ready. It owns canonical market ide
    - T3G-C9: committed and pushed as `5bd6a6a`; adds an exact-host HTTPS Transport, UTC-date and immutable-fingerprint Owner gate, default-zero-network local command, and sanitized one-request accounting. Its separately authorized request completed exactly once with HTTP 400; the authorization is consumed and was not retried.
    - T3G-C10: complete locally; permits only a 4,096-character JSON provider-error envelope, allow-lists top-level status/code/message, caps normalized messages at 240 Unicode characters, redacts credentials and secret-shaped tokens, re-sanitizes injected errors, and retains status-only fallback. It adds 11 network-free regression cases and no new request authority.
    - T3G-C11: complete locally pending review; records the single C10 `SYMBOL_NOT_FOUND` result without provider narrative or raw payload, rejects Alpaca Basic IEX and Twelve Data Basic as complete 12-symbol providers, keeps Alpaca SIP deferred, selects no provider, and permits only network-free next-candidate research.
+   - T3G-C12: complete locally pending review; screens five official zero-cost candidates, rejects Massive Basic, Finnhub Free, Alpha Vantage Free, and FMP Basic, and prioritizes Tradier only for a credential-isolation and exact-symbol diagnostic design review. No provider is selected and no account opening or network authority is granted.
    - Boundaries: no automatic or background live network authority, automatic order, broker credential, portfolio mutation, or commercial product.
 
 The Prediction Log local foundation now preserves deterministic immutable forecasts, append-only lifecycle history, outcomes, and reviews. Production durability, cross-record transactions, signing, and integration with later business systems remain future work.

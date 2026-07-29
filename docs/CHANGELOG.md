@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## 2026-07-29 - T3G-C12 Zero-cost Provider Screening
+
+- Added a deterministic official-evidence screen for Tradier Brokerage,
+  Massive Stocks Basic, Finnhub Free, Alpha Vantage Free, and FMP Basic.
+- Rejected four free layers for missing intraday, current two-sided Quote,
+  quote-size, freshness, or budget capabilities.
+- Prioritized Tradier only for read-only credential isolation and exact-symbol
+  diagnostic design; no provider was selected.
+- Preserved exact 12-symbol coverage as unverified and added no account,
+  credential, network, subscription, collection, recommendation, or trading
+  authority.
+
 ## 2026-07-29 - T3G-C11 Provider Qualification Closure
 
 - Added immutable evidence for the single Owner-authorized Twelve Data MULS

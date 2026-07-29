@@ -1,5 +1,21 @@
 # Alpha Architecture Decisions
 
+## 2026-07-29 - Prioritize Tradier only for read-only architecture review
+
+- Decision: reject Massive Stocks Basic, Finnhub Free, Alpha Vantage Free, and
+  FMP Basic because their free layers fail required intraday Bars, current
+  two-sided Quotes, quote sizes, freshness, or request-budget gates.
+- Decision: prioritize Tradier Brokerage only for design because official
+  documentation covers consolidated real-time equities/ETFs, bid/ask sizes,
+  daily and intraday history, and 120 market-data requests per minute.
+- Decision: do not select Tradier because exact 12-symbol coverage is unverified
+  and real-time access requires a production brokerage credential that may
+  reach broader account or trading surfaces.
+- Decision: require a separate read-only credential/endpoint isolation design
+  before any account, credential, adapter, or bounded diagnostic work.
+- Boundary: no network request, account opening, credential use, subscription,
+  collection, recommendation, order, or trading authority is granted.
+
 ## 2026-07-29 - Close the current complete-provider qualification round
 
 - Decision: record the one-request Twelve Data `SYMBOL_NOT_FOUND` result as

@@ -1257,6 +1257,15 @@ no replacement provider is selected. The only permitted continuation is
 network-free research of new zero-cost candidates. See
 [Personal Market Data Provider Qualification Closure](specifications/PERSONAL_MARKET_DATA_PROVIDER_QUALIFICATION_CLOSURE.md).
 
+Personal MVP-T3G-C12 performs a network-free official-evidence screen of five
+zero-cost candidates. Massive Basic, Finnhub Free, Alpha Vantage Free, and FMP
+Basic fail the exact intraday Bars and current two-sided Quote requirement.
+Tradier documents the strongest capability fit, but its real-time data requires
+a brokerage account and a production credential belonging to a broader
+brokerage API surface. It advances only to a read-only credential-isolation and
+exact-symbol diagnostic design review; it is not selected or authorized. See
+[Personal Market Data Zero-cost Provider Screening](specifications/PERSONAL_MARKET_DATA_ZERO_COST_PROVIDER_SCREENING.md).
+
 ---
 
 # Event Contract Framework

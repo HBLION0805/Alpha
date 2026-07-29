@@ -111,6 +111,7 @@ const aggregateTestFiles = [
   "src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.test.ts",
   "src/engines/personal-market-data-twelve-data-qualification/PersonalMarketDataTwelveDataQualificationEngine.test.ts",
   "src/engines/personal-market-data-provider-qualification-closure/PersonalMarketDataProviderQualificationClosureEngine.test.ts",
+  "src/engines/personal-market-data-zero-cost-provider-screening/PersonalMarketDataZeroCostProviderScreeningEngine.test.ts",
   "src/integration/market-data/alpaca/AlpacaPersonalMarketDataAdapter.test.ts",
   "src/integration/market-data/alpaca/AlpacaPersonalMarketDataNormalizer.test.ts",
   "src/integration/market-data/alpaca/AlpacaCredentials.test.ts",
