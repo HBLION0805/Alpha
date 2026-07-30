@@ -46,6 +46,8 @@ const requiredFiles = [
   "docs/CODEX_DEVELOPMENT_STANDARD.md",
   "docs/CODEX_TASK_TEMPLATE.md",
   "docs/OWNER_REVIEW_TEMPLATE.md",
+  "docs/status/current.json",
+  "docs/status/current.schema.json",
   "docs/ARCHITECTURE.md",
   "docs/CORE_PRINCIPLES.md",
   "docs/ROADMAP.md",
@@ -102,6 +104,7 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "scripts/validate-current-status.test.mjs",
   "src/engines/opportunity/OpportunityScoreEngine.test.ts",
   "src/engines/personal-decision/PersonalDecisionEngine.test.ts",
   "src/engines/personal-candidate-scan/PersonalCandidateScanEngine.test.ts",

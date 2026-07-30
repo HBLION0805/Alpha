@@ -8,6 +8,8 @@
     "typecheck": "tsc --project tsconfig.json",
     "test": "node scripts/alpha-validate.mjs",
     "alpha:validate": "node scripts/alpha-validate.mjs",
+    "validate:current-status": "node scripts/validate-current-status.mjs",
+    "test:current-status": "node scripts/validate-current-status.test.mjs",
     "test:validation-reporting": "node scripts/validation-reporting.test.mjs",
     "test:opportunity": "tsx src/engines/opportunity/OpportunityScoreEngine.test.ts",
     "test:personal-decision": "tsx src/engines/personal-decision/PersonalDecisionEngine.test.ts",
