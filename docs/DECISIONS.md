@@ -1,5 +1,25 @@
 # Alpha Architecture Decisions
 
+## 2026-07-29 - Establish Phase 0 status, ownership, and capital boundaries
+
+- Decision: make `docs/status/current.json` the only machine-readable current
+  milestone authority; README, ROADMAP, and HANDOFF are summaries.
+- Decision: use TypeScript as the only product runtime and retain Python only
+  for research, prototype work, statistical validation, and historical
+  compatibility. The Python terminal Dashboard is deprecated as a product
+  entry, and no Owner daily-use product entry exists in Phase 0.
+- Decision: plan one TypeScript Unified Short-Term Risk Authority shared by ETF
+  and Event candidates. Record the Owner's Phase 0 limits as versioned,
+  non-enforced facts; add no risk business logic in this phase.
+- Decision: preserve legacy `capital_usd` only through an explicit migration to
+  `OPERATING_CAPITAL`, `LONG_TERM_COMPOUNDING_CAPITAL`, and `CASH_RESERVE`.
+  Do not infer allocations, thresholds, or transfers; automatic allocation,
+  migration, and transfer are prohibited.
+- Decision: treat `c9d7cf2` only as the implementation source baseline, never
+  as a self-referential or post-commit current-HEAD claim.
+- Boundary: Phase 1, live network reads, providers, dashboards, accounts,
+  brokers, orders, Paper Trading, and T3B15-C5 remain unauthorized.
+
 ## 2026-07-29 - Version the reduced catalog and retire MULS operations
 
 - Decision: preserve `personal-watchlist:mvp-2026-07` as the stable registry

@@ -1,14 +1,25 @@
 # Alpha Handoff
 
 Date:
-2026-07-26
+2026-07-29
 
 Project Stage:
-Day15-T3B15-C4 is committed and pushed; independent Day15-T3B15-MR5 is complete locally and returns NO-GO
+Dual-Lane Capital MVP Phase 0 is awaiting Owner review; Phase 1 is not approved
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `43bcca8` on `main`, equal to `origin/main`; the MR4 documentation diff is not committed.
+The authoritative current-state record is
+[`docs/status/current.json`](status/current.json). The Phase 0 branch
+`codex/dual-lane-capital-mvp` uses exact pure-HEAD commit
+`c9d7cf22ef1f1fa634c7d80d6cb15d8f5f6f2f10` only as its implementation source
+baseline, not as a post-commit current-HEAD claim. The original worktree and
+its uncommitted T3B15-C5 files and audit packet are frozen and excluded.
+
+TypeScript is the only product runtime. Python is research/prototype-only, and
+is limited to research, prototype work, and statistical validation. Its sample
+terminal Dashboard is deprecated as a product entry. Phase 1 has not started,
+there is no Owner daily-use product entry, and Network, Broker, Paper Trading,
+and Order Execution are closed.
 
 Day 7 completed:
 
@@ -728,17 +739,9 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-MR5. C4 is committed and pushed as `7d1e11a`.
-Independent MR5 returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It
-confirms durable-only reconstruction, validation-journal integrity,
-phase-authority rechecks, and positive fresh-process verification, but finds
-that the fixed runtime still accepts caller-supplied phase adapters,
-authorities, and raw paths; does not connect the new validation journal and
-evidence root to its observer; and is bypassed by the manually prepared
-positive Control history. Complete validation passes `2474/2474`. If approved,
-commit and push MR5, then begin T3B15-C5. Do not create an Operation Manifest,
-run a rehearsal, or add network, provider, recommendation, execution, or
-capital authority.
+Owner review of the complete uncommitted Phase 0 diff and validation evidence.
+Do not begin Phase 1 without a separate Owner-approved benchmark and network
+design. Do not resume or mix T3B15-C5.
 
 ## T3G-C13 Eleven-symbol Active Scope
 

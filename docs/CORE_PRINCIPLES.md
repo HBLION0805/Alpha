@@ -139,3 +139,24 @@ Protect Capital.
 Build Capital.
 
 Compound Capital.
+
+---
+
+# Permanent Mission Hierarchy
+
+Alpha's permanent mission is:
+
+1. Protect capital through explicit evidence, strict risk limits, and
+   fail-closed decisions.
+2. Build operating capital through bounded short-term opportunities without
+   treating short-term trading as the destination.
+3. Move capital only under Owner-approved rules into long-term ownership of
+   quality stocks.
+4. Compound long-term capital until durable passive income can support
+   financial freedom.
+
+Short-term gains never create automatic authority to increase risk or transfer
+capital. Risk limits, bucket allocations, and transfers remain deterministic,
+versioned, auditable, and Owner-controlled. Alpha must not automatically
+allocate, migrate, or transfer funds among `OPERATING_CAPITAL`,
+`LONG_TERM_COMPOUNDING_CAPITAL`, and `CASH_RESERVE`.

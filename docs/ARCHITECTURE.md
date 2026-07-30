@@ -18,7 +18,10 @@ Alpha is a decision-support platform that helps its owner make disciplined finan
 
 # Mission
 
-The mission of Alpha is to transform small amounts of capital into long-term wealth through:
+The permanent mission of Alpha is to use strictly risk-controlled short-term
+decision support to build capital, progressively transfer approved profits
+into long-term ownership of quality stocks, compound that capital, and
+ultimately support financial freedom.
 
 - Capital protection
 - Intelligent allocation
@@ -51,12 +54,31 @@ Alpha consists of the following major systems.
 
 ## Current Runtime Boundary
 
-Alpha currently has two implementation surfaces connected by one narrow local read-only boundary:
+TypeScript is Alpha's only product runtime and owns product orchestration,
+validation, decision support, and the planned unified short-term Risk
+Authority.
 
-- The Python prototype/runtime contains local portfolio models, a terminal dashboard using sample data, deterministic risk calculations, configuration, and early stock/event-contract decision rules.
-- The TypeScript core contains record contracts, repository ports, implemented Opportunity and Prediction engines, AI Infrastructure v1, the Day 5 learning foundations, the Historical Pattern Library, the Historical Analogy Engine foundation, the Event Replay Architecture foundation, and Day 7 read-only validation, evidence-surface, and cross-system-linking foundations.
+- The TypeScript core contains product contracts, deterministic engines,
+  repository ports, validation, provider boundaries, and application
+  integration foundations.
+- Python contains historical portfolio, dashboard, decision, and risk
+  prototypes. It is restricted to research, prototype work, and statistical
+  validation. The sample terminal Dashboard is deprecated as a product entry.
 
-The TypeScript application layer may invoke only the registered `risk.calculate_limits` operation through a versioned client and transport port. A fixed local subprocess entry point validates and dispatches the request to the existing Python Risk Engine. No dashboard or product consumer uses the boundary yet. Python does not invoke TypeScript, and TypeScript does not modify Python portfolio, risk, decision, or trade state.
+The TypeScript application layer may invoke the registered
+`risk.calculate_limits` Python operation only as a compatibility/research
+calculation through the versioned read-only boundary. That operation is not
+product Risk Authority. No product consumer may treat Python output as an
+approval to allocate or risk capital. Python does not invoke TypeScript and
+cannot mutate TypeScript product decisions, journal records, or capital state.
+
+## Phase 0 Operational Boundary
+
+Commit `c9d7cf22ef1f1fa634c7d80d6cb15d8f5f6f2f10` is the implementation source
+baseline; it is not represented as the current HEAD after Phase 0 commits.
+Phase 1 has not started. There is no Owner daily-use product entry. Network,
+Broker, Paper Trading, and Order Execution are closed. T3B15-C5 and the audit
+packet remain excluded in the frozen original worktree.
 
 ## Python-TypeScript Integration Boundary
 
@@ -71,7 +93,13 @@ Responsible for:
 
 The initial transport starts a configured Python executable without a shell and always invokes the fixed `app.integration.entrypoint` module. JSON passes through stdin/stdout under bounded timeout and output limits. The transport is replaceable behind a TypeScript port.
 
-The only v1 operation is the read-only deterministic Risk Engine limit summary. The boundary owns translation and validation only; Python Risk Engine retains calculation authority. There is no dashboard integration, mutable operation, service deployment, remote network, retry loop, AI call, provider SDK, credential, broker, live-market source, or cross-runtime transaction.
+The only v1 operation is the read-only deterministic historical Risk Engine
+limit summary. The boundary owns translation and validation only. Python owns
+that prototype calculation, while the planned TypeScript Unified Short-Term
+Risk Authority owns future product approval. There is no dashboard
+integration, mutable operation, service deployment, remote network, retry
+loop, AI call, provider SDK, credential, broker, live-market source, or
+cross-runtime transaction.
 
 ## Production Persistence and Recovery
 
@@ -96,6 +124,25 @@ Responsible for:
 - Asset distribution
 
 The Portfolio System does not calculate the Day14 Capital Allocation Recommendation. The Capital Allocation Framework reads an immutable portfolio reference and cannot mutate Portfolio state.
+
+---
+
+## Capital Bucket Compatibility
+
+The product capital model must support three independently accounted buckets:
+
+- `OPERATING_CAPITAL` funds separately approved short-term activity.
+- `LONG_TERM_COMPOUNDING_CAPITAL` holds capital transferred for long-term
+  quality-stock ownership and compounding.
+- `CASH_RESERVE` remains outside short-term risk availability.
+
+Existing `capital_usd` inputs are legacy single-balance inputs. They must not be
+silently classified as operating capital. A later versioned migration requires
+an explicit Owner-approved allocation, preserves the original amount and
+provenance, and enforces that short-term risk can consume only
+`OPERATING_CAPITAL`. Transfer percentages, thresholds, and automation are not
+defined or authorized in Phase 0. Automatic allocation, migration, and
+transfer are prohibited.
 
 ---
 
@@ -142,6 +189,15 @@ Responsible for:
 - Maximum daily loss
 - Portfolio exposure
 - Capital preservation
+
+The future product authority is a single TypeScript Unified Short-Term Risk
+Authority shared by ETF and Event candidates. The Owner-approved Phase 0
+record is versioned but not enforced: ETF maximum planned loss `$8`, Event
+maximum cost risk `$5`, daily maximum loss `$20`, weekly maximum loss `$40`,
+total drawdown pause `$80`, initial leveraged-ETF position limit `10%` of
+capital, and one concurrent short-term theme. Implementing or wiring these
+rules requires a later separately approved phase. The record grants no
+recommendation, position-sizing, order, Paper Trading, or execution authority.
 
 ---
 
