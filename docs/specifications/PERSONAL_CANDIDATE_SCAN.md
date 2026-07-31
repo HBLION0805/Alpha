@@ -10,7 +10,8 @@ Design and deterministic implementation foundation for
 The Personal Candidate Scan prepares a small daily watchlist for downstream
 Personal Decision evaluation. It answers:
 
-- Is every required timeframe present, final, current, and traceable?
+- Is every required timeframe present, final, bound to an explicitly completed
+  session, and traceable?
 - Do the daily, one-hour, fifteen-minute, and five-minute structures support the
   same underlying direction?
 - Does the reviewed trade vehicle exposure match that underlying direction?
@@ -51,11 +52,13 @@ One candidate requires exactly:
 - `PT15M` — setup structure;
 - `PT5M` — entry-trigger structure.
 
-Each timeframe binds two completed canonical-bar observations through IDs,
-fingerprints, interval-end times, fixed-decimal closes, freshness state, and
-evidence references. The scanner calculates the return with fixed-decimal
-integer arithmetic and classifies it as `UP`, `DOWN`, or `FLAT` using versioned
-policy thresholds.
+Each timeframe binds two distinct completed canonical-bar observations through
+IDs, fingerprints, interval-end times, fixed-decimal closes,
+`completedSessionValidity`, source freshness metadata, and evidence references.
+The completed-session validity gate is separate from Quote wall-clock
+freshness. The scanner calculates the return with fixed-decimal integer
+arithmetic and classifies it as `UP`, `DOWN`, or `FLAT` using versioned policy
+thresholds.
 
 ## Candidate states
 
@@ -80,8 +83,11 @@ trigger is flat or opposed. The scanner waits instead of chasing.
 
 ### `EXCLUDED`
 
-Any missing, stale, partial, future, conflicting, unreviewed, illiquid,
-wide-spread, or exposure-mismatched input is excluded.
+Any missing, invalid-session, partial, future, conflicting, unreviewed,
+illiquid, wide-spread, or exposure-mismatched input is excluded. A finalized
+Bar's source freshness may become `STALE` after the session without invalidating
+an already verified completed-session binding; a stale Quote still fails the
+separate market-data gate.
 
 ## Authority
 

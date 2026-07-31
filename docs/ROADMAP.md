@@ -7,12 +7,12 @@
 ## Current Delivery Milestone
 
 The authoritative current state is
-[Current Project Status](status/current.json). Alpha is awaiting Owner review
-of Dual-Lane Capital MVP Phase 0. The recorded `c9d7cf2` value is the
-implementation source baseline, not post-commit current HEAD. Phase 1 has not
-started and is not approved. T3B15-C5 remains frozen outside this branch.
-There is no Owner daily-use product entry, and Network, Broker, Paper Trading,
-and Order Execution are closed.
+[Current Project Status](status/current.json). Phase 1A Offline Personal Daily
+Scan Foundation is in progress with offline-only Owner authorization. The
+recorded `574a9c2` value is the implementation source baseline, not
+post-change current HEAD. T3B15-C5 remains frozen outside this branch. The
+only Owner product entry is `alpha:daily-scan` in `dry-run` or `fixture` mode;
+Network, Broker, Paper Trading, and Order Execution are closed.
 
 Before Phase 1 can be proposed, a separate design must define the exact 11
 trade symbols and `BENCHMARK_SCOPE`, QQQ/SMH reads, a real VIX source or

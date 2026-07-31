@@ -4,6 +4,7 @@ import {
   CanonicalBarStatus,
   PERSONAL_CANDIDATE_SCAN_SCHEMA_VERSION,
   PersonalCandidateBlockerCode,
+  PersonalCandidateCompletedSessionValidity,
   PersonalCandidateExposure,
   PersonalCandidateMappingStatus,
   PersonalCandidateSession,
@@ -84,6 +85,8 @@ function timeframe(
     start: endpoint(`${suffix}1`, startEnd, startClose),
     end: endpoint(`${suffix}2`, endEnd, endClose),
     status: CanonicalBarStatus.Final,
+    completedSessionValidity:
+      PersonalCandidateCompletedSessionValidity.Valid,
     freshness: BarFreshnessStatus.Current,
     evidenceReferences: [`evidence:${suffix}`],
   };
@@ -261,7 +264,7 @@ const tests: readonly TestCase[] = [
     },
   },
   {
-    name: "stale timeframe excludes the candidate",
+    name: "source-stale finalized timeframe remains valid after completed-session verification",
     run: () => {
       const value = candidate();
       const frames = value.timeframes.map((item) =>
@@ -270,7 +273,33 @@ const tests: readonly TestCase[] = [
           : item,
       );
       const item = onlyResult(request([{ ...value, timeframes: frames }]));
-      assertTrue(item.blockerCodes.includes(PersonalCandidateBlockerCode.TimeframeDataStale), "freshness blocker");
+      assertEqual(
+        item.status,
+        PersonalCandidateStatus.ReadyForDecision,
+        "source freshness must not replace completed-session validity",
+      );
+    },
+  },
+  {
+    name: "invalid completed-session timeframe excludes the candidate",
+    run: () => {
+      const value = candidate();
+      const frames = value.timeframes.map((item) =>
+        item.interval === BarInterval.FiveMinutes
+          ? {
+              ...item,
+              completedSessionValidity:
+                PersonalCandidateCompletedSessionValidity.Invalid,
+            }
+          : item,
+      );
+      const item = onlyResult(request([{ ...value, timeframes: frames }]));
+      assertTrue(
+        item.blockerCodes.includes(
+          PersonalCandidateBlockerCode.TimeframeCompletedSessionInvalid,
+        ),
+        "completed-session validity blocker",
+      );
     },
   },
   {
@@ -287,7 +316,7 @@ const tests: readonly TestCase[] = [
     },
   },
   {
-    name: "old five-minute observation excludes the candidate",
+    name: "old finalized five-minute observation remains valid after completed-session verification",
     run: () => {
       const value = candidate();
       const frames = value.timeframes.map((item) =>
@@ -296,7 +325,11 @@ const tests: readonly TestCase[] = [
           : item,
       );
       const item = onlyResult(request([{ ...value, timeframes: frames }]));
-      assertTrue(item.blockerCodes.includes(PersonalCandidateBlockerCode.TimeframeObservationTooOld), "age blocker");
+      assertEqual(
+        item.status,
+        PersonalCandidateStatus.ReadyForDecision,
+        "wall-clock age must not replace completed-session validity",
+      );
     },
   },
   {

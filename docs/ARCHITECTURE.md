@@ -72,13 +72,24 @@ product Risk Authority. No product consumer may treat Python output as an
 approval to allocate or risk capital. Python does not invoke TypeScript and
 cannot mutate TypeScript product decisions, journal records, or capital state.
 
-## Phase 0 Operational Boundary
+## Phase 1A Operational Boundary
 
-Commit `c9d7cf22ef1f1fa634c7d80d6cb15d8f5f6f2f10` is the implementation source
-baseline; it is not represented as the current HEAD after Phase 0 commits.
-Phase 1 has not started. There is no Owner daily-use product entry. Network,
-Broker, Paper Trading, and Order Execution are closed. T3B15-C5 and the audit
-packet remain excluded in the frozen original worktree.
+Commit `574a9c2c0329bdb87a94b19ad4517be562c37aa6` is the implementation source
+baseline; it is not represented as the current HEAD after Phase 1A changes.
+Phase 1A is offline-only. The Owner may run `alpha:daily-scan` only in
+`dry-run` or `fixture` mode; `live-readonly` fail-closes before any transport
+or credential path. Network, Broker, Paper Trading, and Order Execution are
+closed. T3B15-C5 and the audit packet remain excluded in the frozen original
+worktree.
+
+Phase 1A-C3 separates current Quote authority from completed-session Bar
+authority. Quotes are evaluated by wall-clock age at Snapshot `asOf`.
+Intraday timeframe endpoints must be two distinct, strictly ordered,
+finalized Bars in the exact Snapshot-selected completed session. `P1D` uses
+the immediately prior completed session plus the selected completed session,
+because one daily Bar cannot occur twice in one session. Source Bar freshness
+remains visible metadata and cannot override the explicit exchange-calendar
+and completed-window proof.
 
 ## Python-TypeScript Integration Boundary
 

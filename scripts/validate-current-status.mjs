@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-const BASE_COMMIT = "c9d7cf22ef1f1fa634c7d80d6cb15d8f5f6f2f10";
+const BASE_COMMIT = "574a9c2c0329bdb87a94b19ad4517be562c37aa6";
 const STATUS_FIELDS = Object.freeze([
   "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
   "completed", "inProgress", "blocked", "frozen", "next", "runtimeOwnership",
@@ -38,14 +38,14 @@ export function validateCurrentStatus(status, schema) {
   if (!isCanonicalTimestamp(status.asOf)) issues.push("asOf must be a canonical UTC timestamp.");
 
   validateExactObject(status.source, "source", {
-    branch: "codex/dual-lane-capital-mvp",
+    branch: "codex/personal-daily-scan-phase1a",
     source_baseline_commit: BASE_COMMIT,
-    implementation_baseline: "PURE_HEAD_NOT_CURRENT_HEAD",
+    implementation_baseline: "TRADINGAGENTS_EXTRACTION_BASELINE_NOT_CURRENT_HEAD",
   }, issues);
   validateExactObject(status.currentMilestone, "currentMilestone", {
-    id: "DUAL_LANE_CAPITAL_MVP_PHASE_0",
-    name: "State Convergence and Clean Baseline",
-    status: "AWAITING_OWNER_REVIEW",
+    id: "PERSONAL_DAILY_SCAN_PHASE_1A",
+    name: "Offline Personal Daily Scan Foundation",
+    status: "IN_PROGRESS",
   }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
     validateStatusItems(status[field], field, issues);
@@ -69,11 +69,11 @@ export function validateCurrentStatus(status, schema) {
     paperTrading: "CLOSED",
     orderExecution: "CLOSED",
   }, issues);
-  exact(status.ownerDailyProductEntry, "NONE", "ownerDailyProductEntry", issues);
+  exact(status.ownerDailyProductEntry, "DRY_RUN_AND_FIXTURE_ONLY", "ownerDailyProductEntry", issues);
   validateValidation(status.validation, issues);
   exact(status.networkAuthority, "NONE", "networkAuthority", issues);
-  exact(status.phase1Status, "NOT_STARTED", "phase1Status", issues);
-  exact(status.phase1Approval, "NOT_GRANTED", "phase1Approval", issues);
+  exact(status.phase1Status, "IN_PROGRESS", "phase1Status", issues);
+  exact(status.phase1Approval, "OFFLINE_ONLY_GRANTED", "phase1Approval", issues);
 
   return result(issues);
 }
@@ -167,12 +167,12 @@ function validateValidation(value, issues) {
     issues.push("validation must be an object.");
     return;
   }
-  const fields = ["headBaseline", "phase0WorkingTree", "coverageBaseline"];
+  const fields = ["headBaseline", "phase1aWorkingTree", "coverageBaseline"];
   allowOnly(value, fields, "validation", issues);
   requireExactly(value, fields, "validation", issues);
-  validateValidationResult(value.headBaseline, "PURE_HEAD_BASELINE", false, "validation.headBaseline", issues);
-  if (value.phase0WorkingTree !== null) {
-    validateValidationResult(value.phase0WorkingTree, "PHASE_0_WORKING_TREE", true, "validation.phase0WorkingTree", issues);
+  validateValidationResult(value.headBaseline, "TRADINGAGENTS_EXTRACTION_BASELINE", false, "validation.headBaseline", issues);
+  if (value.phase1aWorkingTree !== null) {
+    validateValidationResult(value.phase1aWorkingTree, "PHASE_1A_WORKING_TREE", true, "validation.phase1aWorkingTree", issues);
   }
   validateCoverageBaseline(value.coverageBaseline, issues);
 }

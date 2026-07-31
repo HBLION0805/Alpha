@@ -32,11 +32,11 @@
     "riskPolicyRecord": { "$ref": "#/$defs/riskPolicyRecord" },
     "worktreeIsolation": { "$ref": "#/$defs/worktreeIsolation" },
     "executionBoundaries": { "$ref": "#/$defs/executionBoundaries" },
-    "ownerDailyProductEntry": { "const": "NONE" },
+    "ownerDailyProductEntry": { "const": "DRY_RUN_AND_FIXTURE_ONLY" },
     "validation": { "$ref": "#/$defs/validation" },
     "networkAuthority": { "const": "NONE" },
-    "phase1Status": { "const": "NOT_STARTED" },
-    "phase1Approval": { "const": "NOT_GRANTED" }
+    "phase1Status": { "const": "IN_PROGRESS" },
+    "phase1Approval": { "const": "OFFLINE_ONLY_GRANTED" }
   },
   "$defs": {
     "source": {
@@ -44,9 +44,9 @@
       "additionalProperties": false,
       "required": ["branch", "source_baseline_commit", "implementation_baseline"],
       "properties": {
-        "branch": { "const": "codex/dual-lane-capital-mvp" },
-        "source_baseline_commit": { "const": "c9d7cf22ef1f1fa634c7d80d6cb15d8f5f6f2f10" },
-        "implementation_baseline": { "const": "PURE_HEAD_NOT_CURRENT_HEAD" }
+        "branch": { "const": "codex/personal-daily-scan-phase1a" },
+        "source_baseline_commit": { "const": "574a9c2c0329bdb87a94b19ad4517be562c37aa6" },
+        "implementation_baseline": { "const": "TRADINGAGENTS_EXTRACTION_BASELINE_NOT_CURRENT_HEAD" }
       }
     },
     "milestone": {
@@ -54,9 +54,9 @@
       "additionalProperties": false,
       "required": ["id", "name", "status"],
       "properties": {
-        "id": { "const": "DUAL_LANE_CAPITAL_MVP_PHASE_0" },
-        "name": { "const": "State Convergence and Clean Baseline" },
-        "status": { "const": "AWAITING_OWNER_REVIEW" }
+        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1A" },
+        "name": { "const": "Offline Personal Daily Scan Foundation" },
+        "status": { "const": "IN_PROGRESS" }
       }
     },
     "statusItems": {
@@ -143,8 +143,8 @@
         "wallClockDurationMs"
       ],
       "properties": {
-        "kind": { "enum": ["PURE_HEAD_BASELINE", "PHASE_0_WORKING_TREE"] },
-        "source_baseline_commit": { "const": "c9d7cf22ef1f1fa634c7d80d6cb15d8f5f6f2f10" },
+        "kind": { "enum": ["TRADINGAGENTS_EXTRACTION_BASELINE", "PHASE_1A_WORKING_TREE"] },
+        "source_baseline_commit": { "const": "574a9c2c0329bdb87a94b19ad4517be562c37aa6" },
         "includesUncommittedCode": { "type": "boolean" },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": { "const": "PASSED" },
@@ -212,10 +212,10 @@
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["headBaseline", "phase0WorkingTree", "coverageBaseline"],
+      "required": ["headBaseline", "phase1aWorkingTree", "coverageBaseline"],
       "properties": {
         "headBaseline": { "$ref": "#/$defs/validationResult" },
-        "phase0WorkingTree": {
+        "phase1aWorkingTree": {
           "oneOf": [
             { "type": "null" },
             { "$ref": "#/$defs/validationResult" }

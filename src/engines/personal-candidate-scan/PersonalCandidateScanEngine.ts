@@ -6,6 +6,7 @@ import {
 import {
   PERSONAL_CANDIDATE_SCAN_SCHEMA_VERSION,
   PersonalCandidateBlockerCode,
+  PersonalCandidateCompletedSessionValidity,
   PersonalCandidateExposure,
   PersonalCandidateMappingStatus,
   PersonalCandidateReasonCode,
@@ -74,7 +75,7 @@ const CANDIDATE_FIELDS = ["candidateId", "themeId", "analysisInstrument", "trade
 const ANALYSIS_INSTRUMENT_FIELDS = ["instrumentId", "symbol", "assetClass", "currency"] as const;
 const TRADE_VEHICLE_FIELDS = ["instrumentId", "symbol", "assetClass", "currency"] as const;
 const MAPPING_FIELDS = ["mappingId", "version", "status", "exposure", "evidenceReferences"] as const;
-const TIMEFRAME_FIELDS = ["interval", "start", "end", "status", "freshness", "evidenceReferences"] as const;
+const TIMEFRAME_FIELDS = ["interval", "start", "end", "status", "completedSessionValidity", "freshness", "evidenceReferences"] as const;
 const ENDPOINT_FIELDS = ["barId", "fingerprint", "intervalEnd", "close"] as const;
 const DECIMAL_FIELDS = ["atomicValue", "scale"] as const;
 const QUOTE_FIELDS = ["snapshotId", "observedAt", "status", "spreadBasisPoints", "liquidity"] as const;
@@ -123,7 +124,6 @@ function evaluateCandidate(
   const blockers = new Set<PersonalCandidateBlockerCode>();
   const reasonCodes = new Set<PersonalCandidateReasonCode>();
   const evaluatedAt = Date.parse(request.evaluatedAt);
-
   if (candidate.mapping.status !== PersonalCandidateMappingStatus.Reviewed) {
     blockers.add(PersonalCandidateBlockerCode.MappingNotReviewed);
   }
@@ -141,16 +141,13 @@ function evaluateCandidate(
     .map((timeframe) => assessTimeframe(timeframe, policy))
     .sort((left, right) => intervalOrder(left.interval) - intervalOrder(right.interval));
   for (const timeframe of candidate.timeframes) {
-    const intervalPolicy = policy.timeframePolicies.find(({ interval }) => interval === timeframe.interval);
-    if (timeframe.freshness !== BarFreshnessStatus.Current) {
-      blockers.add(PersonalCandidateBlockerCode.TimeframeDataStale);
-    }
     if (
-      intervalPolicy !== undefined &&
-      evaluatedAt - Date.parse(timeframe.end.intervalEnd) > intervalPolicy.maximumObservationAgeSeconds * 1_000
-    ) {
-      blockers.add(PersonalCandidateBlockerCode.TimeframeObservationTooOld);
-    }
+      timeframe.completedSessionValidity !==
+      PersonalCandidateCompletedSessionValidity.Valid
+    )
+      blockers.add(
+        PersonalCandidateBlockerCode.TimeframeCompletedSessionInvalid,
+      );
     if (timeframe.status !== CanonicalBarStatus.Final) {
       blockers.add(PersonalCandidateBlockerCode.PartialBarNotAllowed);
     }
@@ -162,6 +159,7 @@ function evaluateCandidate(
     !hasAny(blockers, [
       PersonalCandidateBlockerCode.TimeframeDataStale,
       PersonalCandidateBlockerCode.TimeframeObservationTooOld,
+      PersonalCandidateBlockerCode.TimeframeCompletedSessionInvalid,
       PersonalCandidateBlockerCode.PartialBarNotAllowed,
       PersonalCandidateBlockerCode.TimeframeEvidenceMissing,
     ])
@@ -435,6 +433,12 @@ function validateTimeframes(
       add(issues, PersonalCandidateValidationIssueCode.InvalidTimestamp, `${itemPath}.end.intervalEnd`, "End observation must follow start observation.");
     }
     enumValue(timeframe.status, CanonicalBarStatus, `${itemPath}.status`, issues);
+    enumValue(
+      timeframe.completedSessionValidity,
+      PersonalCandidateCompletedSessionValidity,
+      `${itemPath}.completedSessionValidity`,
+      issues,
+    );
     enumValue(timeframe.freshness, BarFreshnessStatus, `${itemPath}.freshness`, issues);
     stringArray(timeframe.evidenceReferences, `${itemPath}.evidenceReferences`, issues);
   });

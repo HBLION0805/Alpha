@@ -52,19 +52,19 @@ const tests = [
     assert(validation.issues.includes("riskPolicyRecord.executionAuthority must equal \"NONE\"."));
     assert(validation.issues.includes("executionBoundaries.paperTrading must equal \"CLOSED\"."));
   }],
-  ["network authority and Phase 1 remain closed", () => {
+  ["network authority remains closed while Phase 1A stays offline-only", () => {
     const changed = clone(status);
     changed.networkAuthority = "LIVE_READ";
-    changed.phase1Status = "IN_PROGRESS";
+    changed.phase1Status = "NOT_STARTED";
     changed.phase1Approval = "GRANTED";
     changed.ownerDailyProductEntry = "AVAILABLE";
     changed.worktreeIsolation.t3b15C5Included = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("networkAuthority must equal \"NONE\"."));
-    assert(validation.issues.includes("phase1Status must equal \"NOT_STARTED\"."));
-    assert(validation.issues.includes("phase1Approval must equal \"NOT_GRANTED\"."));
-    assert(validation.issues.includes("ownerDailyProductEntry must equal \"NONE\"."));
+    assert(validation.issues.includes("phase1Status must equal \"IN_PROGRESS\"."));
+    assert(validation.issues.includes("phase1Approval must equal \"OFFLINE_ONLY_GRANTED\"."));
+    assert(validation.issues.includes("ownerDailyProductEntry must equal \"DRY_RUN_AND_FIXTURE_ONLY\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
   ["object schemas must reject unknown fields", () => {

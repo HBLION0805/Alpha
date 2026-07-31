@@ -12,6 +12,7 @@ import {
 } from "../../contracts/CanonicalQuote";
 import {
   PERSONAL_CANDIDATE_SCAN_SCHEMA_VERSION,
+  PersonalCandidateCompletedSessionValidity,
   PersonalCandidateSession,
   type PersonalCandidateInput,
   type PersonalCandidateScanRequest,
@@ -46,6 +47,8 @@ const REQUIRED_INTERVALS = [
   BarInterval.FifteenMinutes,
   BarInterval.FiveMinutes,
 ] as const;
+/** Version 1.0 liquidity assessments are point-in-time and expire after 30 seconds. */
+export const PERSONAL_LIQUIDITY_ASSESSMENT_MAX_AGE_SECONDS = 30;
 
 export class PersonalMarketDataCompositionError extends Error {
   public constructor(public readonly issues: readonly PersonalMarketDataCompositionIssue[]) {
@@ -135,6 +138,7 @@ function validateRequest(value: unknown): PersonalMarketDataCompositionIssue[] {
   }
   const registry = value.mappingRegistry as unknown as PersonalMarketDataCompositionRequest["mappingRegistry"];
   const candidateIds = new Set<string>();
+  const liquidityAssessmentIds = new Set<string>();
   for (const [index, candidate] of value.candidates.entries()) {
     validateCandidate(candidate, registry.mappings, String(value.evaluatedAt), `candidates[${index}]`, issues);
     if (isRecord(candidate) && typeof candidate.candidateId === "string") {
@@ -142,6 +146,21 @@ function validateRequest(value: unknown): PersonalMarketDataCompositionIssue[] {
         issues.push(issue(PersonalMarketDataCompositionIssueCode.InvalidRequest, `candidates[${index}].candidateId`, "Candidate ID is duplicated."));
       }
       candidateIds.add(candidate.candidateId);
+    }
+    if (
+      isRecord(candidate) &&
+      isRecord(candidate.liquidity) &&
+      typeof candidate.liquidity.assessmentId === "string"
+    ) {
+      if (liquidityAssessmentIds.has(candidate.liquidity.assessmentId))
+        issues.push(
+          issue(
+            PersonalMarketDataCompositionIssueCode.InvalidLiquidityAssessment,
+            `candidates[${index}].liquidity.assessmentId`,
+            "Liquidity assessment ID must be unique per candidate binding.",
+          ),
+        );
+      liquidityAssessmentIds.add(candidate.liquidity.assessmentId);
     }
   }
   return sortIssues(issues);
@@ -214,6 +233,24 @@ function validateTimeframe(
   if (Date.parse(start.intervalEnd) >= Date.parse(end.intervalEnd)) {
     issues.push(issue(PersonalMarketDataCompositionIssueCode.BarChronologyInvalid, field, "Start endpoint must precede end endpoint."));
   }
+  if (
+    start.barId === end.barId ||
+    start.fingerprint === end.fingerprint
+  ) {
+    issues.push(issue(PersonalMarketDataCompositionIssueCode.BarChronologyInvalid, field, "Timeframe endpoints must be two distinct Canonical Bars."));
+  }
+  const sameSessionIdentity =
+    start.session.sessionType === end.session.sessionType &&
+    start.session.timezone === end.session.timezone;
+  const validSessionSequence =
+    value.interval === BarInterval.OneDay
+      ? sameSessionIdentity &&
+        start.session.sessionDate < end.session.sessionDate
+      : sameSessionIdentity &&
+        start.session.sessionDate === end.session.sessionDate;
+  if (!validSessionSequence) {
+    issues.push(issue(PersonalMarketDataCompositionIssueCode.BarSessionMismatch, field, "Intraday endpoints must share one session; P1D endpoints must be ordered completed sessions."));
+  }
   if (start.status !== CanonicalBarStatus.Final || end.status !== CanonicalBarStatus.Final
     || Date.parse(end.intervalEnd) > Date.parse(evaluatedAt)) {
     issues.push(issue(PersonalMarketDataCompositionIssueCode.BarChronologyInvalid, field, "Both endpoints must be completed before evaluation."));
@@ -271,8 +308,10 @@ function validateLiquidity(
   }
   if (isRecord(quoteValue) && isTimestamp(quoteValue.observationTime) && isTimestamp(value.evaluatedAt)
     && (Date.parse(value.evaluatedAt) < Date.parse(quoteValue.observationTime)
-      || Date.parse(value.evaluatedAt) > Date.parse(evaluatedAt))) {
-    issues.push(issue(PersonalMarketDataCompositionIssueCode.InvalidLiquidityAssessment, field, "Liquidity evaluation must be between quote observation and scan evaluation."));
+      || Date.parse(value.evaluatedAt) > Date.parse(evaluatedAt)
+      || Date.parse(evaluatedAt) - Date.parse(value.evaluatedAt)
+        > PERSONAL_LIQUIDITY_ASSESSMENT_MAX_AGE_SECONDS * 1_000)) {
+    issues.push(issue(PersonalMarketDataCompositionIssueCode.InvalidLiquidityAssessment, field, "Liquidity evaluation must be current, not future, and no older than the versioned assessment bound."));
   }
 }
 
@@ -322,6 +361,8 @@ function composeTimeframe(binding: PersonalMarketDataTimeframeBinding): Personal
     start: endpoint(binding.start),
     end: endpoint(binding.end),
     status: binding.end.status,
+    completedSessionValidity:
+      PersonalCandidateCompletedSessionValidity.Valid,
     freshness: binding.end.quality.freshness,
     evidenceReferences: uniqueSorted([
       binding.start.barId,

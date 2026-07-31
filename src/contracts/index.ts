@@ -80,3 +80,6 @@ export * from "./PersonalMarketDataAlternativeProviderQualification";
 export * from "./PersonalMarketDataTwelveDataQualification";
 export * from "./PersonalMarketDataProviderQualificationClosure";
 export * from "./PersonalMarketDataZeroCostProviderScreening";
+export * from "./VerifiedMarketSnapshot";
+export * from "./DeterministicFingerprint";
+export * from "./PersonalDailyScan";

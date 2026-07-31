@@ -4,22 +4,23 @@ Date:
 2026-07-29
 
 Project Stage:
-Dual-Lane Capital MVP Phase 0 is awaiting Owner review; Phase 1 is not approved
+Phase 1A Offline Personal Daily Scan Foundation is in progress with offline-only Owner authorization
 
 ## Current Architecture Checkpoint
 
 The authoritative current-state record is
-[`docs/status/current.json`](status/current.json). The Phase 0 branch
-`codex/dual-lane-capital-mvp` uses exact pure-HEAD commit
-`c9d7cf22ef1f1fa634c7d80d6cb15d8f5f6f2f10` only as its implementation source
-baseline, not as a post-commit current-HEAD claim. The original worktree and
+[`docs/status/current.json`](status/current.json). The Phase 1A branch
+`codex/personal-daily-scan-phase1a` uses exact commit
+`574a9c2c0329bdb87a94b19ad4517be562c37aa6` only as its implementation source
+baseline, not as a post-change current-HEAD claim. The original worktree and
 its uncommitted T3B15-C5 files and audit packet are frozen and excluded.
 
 TypeScript is the only product runtime. Python is research/prototype-only, and
 is limited to research, prototype work, and statistical validation. Its sample
-terminal Dashboard is deprecated as a product entry. Phase 1 has not started,
-there is no Owner daily-use product entry, and Network, Broker, Paper Trading,
-and Order Execution are closed.
+terminal Dashboard is deprecated as a product entry. The Owner may run only
+the offline `alpha:daily-scan` product entry in `dry-run` or `fixture` mode;
+`live-readonly` is blocked pending separate authorization. Network, Broker,
+Paper Trading, and Order Execution are closed.
 
 Day 7 completed:
 
@@ -739,9 +740,11 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of the complete uncommitted Phase 0 diff and validation evidence.
-Do not begin Phase 1 without a separate Owner-approved benchmark and network
-design. Do not resume or mix T3B15-C5.
+Owner review of the complete uncommitted Phase 1A-C3 offline Daily Scan diff,
+validation evidence, and `PHASE1A_C3_REVIEW.patch`. C3 closes exact two-Bar
+timeframe binding and separates Quote wall-clock freshness from explicit
+completed-session Bar validity. Do not begin Phase 1B/C, enable a live read,
+or resume or mix T3B15-C5.
 
 ## T3G-C13 Eleven-symbol Active Scope
 
