@@ -5,14 +5,74 @@ import { PersonalDailyScanEligibilityStatus, PersonalDailyScanInstrumentClassifi
 import { createPersonalDailyScanRunId, derivePersonalDailyScanCompletedSessionBarValidity, derivePersonalDailyScanQuoteFreshness, derivePersonalDailyScanLiquidityEvidenceStatus, runPersonalDailyScan, runPersonalDailyScanWithRuntimeForTest, evaluateDailyScanIntentGate } from "./PersonalDailyScanApplication";
 import { composePersonalMarketData } from "../personal-market-data-composition/PersonalMarketDataCompositionEngine";
 import { PersonalCandidateValidationError, scanPersonalCandidates } from "../personal-candidate-scan/PersonalCandidateScanEngine";
-import { VerifiedMarketEvidenceStatus } from "../../contracts/VerifiedMarketSnapshot";
+import {
+  VerifiedMarketEvidenceStatus,
+  VerifiedMarketProviderCapability,
+  type EvidenceResolution,
+} from "../../contracts/VerifiedMarketSnapshot";
 import { buildOfflinePersonalDailyScanFixture, buildOfflinePersonalDailyScanTemporalFixtureForTest, offlinePersonalDailyScanFixtureBuildCountForTest, resetOfflinePersonalDailyScanFixtureBuildCountForTest } from "./PersonalDailyScanFixture";
 import { classifyPersonalWatchlistInstrument, classifyPersonalWatchlistVehicle, evaluatePersonalDailyScanEligibility, mapPersonalDailyScanProductDisplayStatus } from "./PersonalDailyScanEligibility";
+import { verifiedEvidenceResolutionFingerprint } from "../verified-market-snapshot/VerifiedMarketSnapshotEngine";
 
 type Test = readonly [string, () => void];
 const tests: Test[] = [];
 function test(name: string, run: Test[1]): void { tests.push([name, run]); }
 function assert(value: unknown, message: string): asserts value { if (!value) throw new Error(message); }
+
+function resolutionWith(
+  source: EvidenceResolution,
+  change: Partial<EvidenceResolution>,
+): EvidenceResolution {
+  const { resolutionFingerprint: _discarded, ...base } = source;
+  const changed = { ...base, ...change };
+  return {
+    ...changed,
+    resolutionFingerprint: verifiedEvidenceResolutionFingerprint(changed),
+  };
+}
+
+function resolutionAsQuote(source: EvidenceResolution): EvidenceResolution {
+  const {
+    resolutionFingerprint: _discardedFingerprint,
+    interval: _discardedInterval,
+    ...base
+  } = source;
+  const changed = {
+    ...base,
+    capability: VerifiedMarketProviderCapability.LatestQuote,
+  };
+  return {
+    ...changed,
+    resolutionFingerprint: verifiedEvidenceResolutionFingerprint(changed),
+  };
+}
+
+function withSharedBarAndQuoteEvidenceId(
+  fixture: ReturnType<typeof buildOfflinePersonalDailyScanFixture>,
+): ReturnType<typeof buildOfflinePersonalDailyScanFixture> {
+  const source = fixture.snapshotInput;
+  const bar = source.canonicalBarReferences.find((entry) =>
+    source.benchmarkInstrumentIds.includes(entry.canonicalInstrumentId),
+  )!;
+  const quote = source.canonicalQuoteReferences[0]!;
+  return {
+    ...fixture,
+    snapshotInput: {
+      ...source,
+      canonicalBarReferences: source.canonicalBarReferences.map((entry) =>
+        entry.canonicalBarId === bar.canonicalBarId
+          ? { ...entry, canonicalBarId: quote.canonicalQuoteId }
+          : entry,
+      ),
+      evidenceResolutions: source.evidenceResolutions.map((entry) =>
+        entry.capability === VerifiedMarketProviderCapability.Bars &&
+        entry.evidenceId === bar.canonicalBarId
+          ? resolutionWith(entry, { evidenceId: quote.canonicalQuoteId })
+          : entry,
+      ),
+    },
+  };
+}
 
 test("fixture completes the canonical observation to Owner output path deterministically", () => {
   const left = runPersonalDailyScan({ mode: PersonalDailyScanMode.Fixture });
@@ -112,6 +172,177 @@ test("invalid snapshot becomes readable blocked Owner output without side effect
   assert(output.blockingReasons.includes("COVERAGE_MISSING") || output.blockingReasons.includes("COMPOSITION_BINDING_MISMATCH"), "stable Snapshot issue code must be visible");
   assert(output.networkRequests === 0 && output.persistenceWrites === 0, "blocked validation must remain side-effect free");
   assert(output.volatilityEvidenceStatus === VerifiedMarketEvidenceStatus.Invalid, "invalid Snapshot must report invalid volatility context");
+});
+
+test("shared raw Bar and Quote evidence ID completes Snapshot, Composition, and Candidate Scan", () => {
+  const baseline = runPersonalDailyScan({
+    mode: PersonalDailyScanMode.Fixture,
+  });
+  const shared = runPersonalDailyScan({
+    mode: PersonalDailyScanMode.Fixture,
+    fixtureFactory: () =>
+      withSharedBarAndQuoteEvidenceId(
+        buildOfflinePersonalDailyScanFixture(),
+      ),
+  });
+  assert(
+    shared.status === "COMPLETED" && shared.snapshotStatus === "VERIFIED",
+    "typed Bar and Quote evidence must complete the Verified Snapshot",
+  );
+  assert(
+    shared.candidates.length > 0 &&
+      shared.candidates.length === baseline.candidates.length,
+    "Composition and Candidate Scan must produce the complete candidate set",
+  );
+  const { runId: baselineRunId, ...baselineOwnerStructure } = baseline;
+  const { runId: sharedRunId, ...sharedOwnerStructure } = shared;
+  assert(
+    JSON.stringify(sharedOwnerStructure) ===
+      JSON.stringify(baselineOwnerStructure),
+    "shared typed evidence must preserve the normal Owner product structure",
+  );
+  assert(
+    sharedRunId !== baselineRunId,
+    "run identity must still bind the changed Snapshot evidence identity",
+  );
+});
+
+test("typed evidence namespace failures produce deterministic BLOCKED Owner output", () => {
+  const buildCases = (): readonly [
+    string,
+    ReturnType<typeof buildOfflinePersonalDailyScanFixture>,
+    readonly string[],
+  ][] => {
+    const shared = withSharedBarAndQuoteEvidenceId(
+      buildOfflinePersonalDailyScanFixture(),
+    );
+    const sharedId =
+      shared.snapshotInput.canonicalQuoteReferences[0]!.canonicalQuoteId;
+    const barResolution = shared.snapshotInput.evidenceResolutions.find(
+      (entry) =>
+        entry.evidenceId === sharedId &&
+        entry.capability === VerifiedMarketProviderCapability.Bars,
+    )!;
+    return [
+      [
+        "missing Bar resolution",
+        {
+          ...shared,
+          snapshotInput: {
+            ...shared.snapshotInput,
+            evidenceResolutions:
+              shared.snapshotInput.evidenceResolutions.filter(
+                (entry) =>
+                  !(
+                    entry.evidenceId === sharedId &&
+                    entry.capability === VerifiedMarketProviderCapability.Bars
+                  ),
+              ),
+          },
+        },
+        ["EVIDENCE_COVERAGE_MISMATCH"],
+      ],
+      [
+        "missing Quote resolution",
+        {
+          ...shared,
+          snapshotInput: {
+            ...shared.snapshotInput,
+            evidenceResolutions:
+              shared.snapshotInput.evidenceResolutions.filter(
+                (entry) =>
+                  !(
+                    entry.evidenceId === sharedId &&
+                    entry.capability ===
+                      VerifiedMarketProviderCapability.LatestQuote
+                  ),
+              ),
+          },
+        },
+        ["EVIDENCE_COVERAGE_MISMATCH"],
+      ],
+      [
+        "capability and ID crossed",
+        {
+          ...shared,
+          snapshotInput: {
+            ...shared.snapshotInput,
+            evidenceResolutions:
+              shared.snapshotInput.evidenceResolutions.map((entry) =>
+                entry === barResolution
+                  ? resolutionAsQuote(entry)
+                  : entry,
+              ),
+          },
+        },
+        ["EVIDENCE_COVERAGE_MISMATCH", "INVALID_PROVIDER_TRACE"],
+      ],
+      [
+        "duplicate typed evidence resolution",
+        {
+          ...shared,
+          snapshotInput: {
+            ...shared.snapshotInput,
+            evidenceResolutions: [
+              ...shared.snapshotInput.evidenceResolutions,
+              resolutionWith(barResolution, {
+                resolutionId: `${barResolution.resolutionId}:duplicate`,
+              }),
+            ],
+          },
+        },
+        ["EVIDENCE_COVERAGE_MISMATCH"],
+      ],
+      [
+        "resolution targets nonexistent evidence",
+        {
+          ...shared,
+          snapshotInput: {
+            ...shared.snapshotInput,
+            evidenceResolutions: [
+              ...shared.snapshotInput.evidenceResolutions,
+              resolutionWith(barResolution, {
+                resolutionId: `${barResolution.resolutionId}:ghost`,
+                evidenceId: "bar:ghost",
+              }),
+            ],
+          },
+        },
+        ["INVALID_PROVIDER_TRACE"],
+      ],
+    ];
+  };
+  for (const [name, fixture, expectedIssueCodes] of buildCases()) {
+    const left = runPersonalDailyScan({
+      mode: PersonalDailyScanMode.Fixture,
+      fixtureFactory: () => fixture,
+    });
+    const right = runPersonalDailyScan({
+      mode: PersonalDailyScanMode.Fixture,
+      fixtureFactory: () => fixture,
+    });
+    assert(left.status === "BLOCKED", `${name} must block`);
+    assert(
+      left.candidates.length === 0 &&
+        left.networkRequests === 0 &&
+        left.persistenceWrites === 0,
+      `${name} must have zero candidates and side effects`,
+    );
+    assert(
+      JSON.stringify(left.blockingReasons) ===
+        JSON.stringify(expectedIssueCodes),
+      `${name} must expose exactly ${expectedIssueCodes.join(",")}`,
+    );
+    assert(
+      left.blockingReasons.join("|") ===
+        [...left.blockingReasons].sort().join("|"),
+      `${name} issue codes must be sorted`,
+    );
+    assert(
+      left.runId === right.runId && JSON.stringify(left) === JSON.stringify(right),
+      `${name} must deterministically replay one blocked run`,
+    );
+  }
 });
 
 test("premarket 08:30, intraday 10:00, and post-close preserve completed-session Bars while Quotes stay wall-clock current", () => {

@@ -1473,32 +1473,59 @@ function validateProviderTrace(
     readonly start: string;
     readonly end: string;
   };
-  const evidence = new Map<string, Evidence>([
-    ...bars.map((bar): readonly [string, Evidence] => [
-      bar.canonicalBarId,
-      {
-        capability: VerifiedMarketProviderCapability.Bars,
-        interval: bar.interval,
-        canonicalInstrumentId: bar.canonicalInstrumentId,
-        fingerprint: bar.canonicalBarFingerprint,
-        provenance: bar.provenanceReference,
-        start: bar.intervalStart,
-        end: bar.intervalEnd,
-      },
-    ]),
-    ...quotes.map((quote): readonly [string, Evidence] => [
-      quote.canonicalQuoteId,
-      {
-        capability: VerifiedMarketProviderCapability.LatestQuote,
-        interval: undefined,
-        canonicalInstrumentId: quote.canonicalInstrumentId,
-        fingerprint: quote.canonicalQuoteFingerprint,
-        provenance: quote.provenanceReference,
-        start: quote.observationTime,
-        end: quote.observationTime,
-      },
-    ]),
-  ]);
+  type TypedEvidenceKey =
+    `${VerifiedMarketProviderCapability}:${string}`;
+  const typedEvidenceKey = (
+    capability: VerifiedMarketProviderCapability,
+    evidenceId: string,
+  ): TypedEvidenceKey => `${capability}:${evidenceId}`;
+  const requiredEvidence: readonly (Evidence & {
+    readonly evidenceId: string;
+  })[] = [
+    ...bars.map((bar) => ({
+      evidenceId: bar.canonicalBarId,
+      capability: VerifiedMarketProviderCapability.Bars,
+      interval: bar.interval,
+      canonicalInstrumentId: bar.canonicalInstrumentId,
+      fingerprint: bar.canonicalBarFingerprint,
+      provenance: bar.provenanceReference,
+      start: bar.intervalStart,
+      end: bar.intervalEnd,
+    })),
+    ...quotes.map((quote) => ({
+      evidenceId: quote.canonicalQuoteId,
+      capability: VerifiedMarketProviderCapability.LatestQuote,
+      interval: undefined,
+      canonicalInstrumentId: quote.canonicalInstrumentId,
+      fingerprint: quote.canonicalQuoteFingerprint,
+      provenance: quote.provenanceReference,
+      start: quote.observationTime,
+      end: quote.observationTime,
+    })),
+  ];
+  const evidence = new Map<TypedEvidenceKey, Evidence>();
+  for (const item of requiredEvidence) {
+    const key = typedEvidenceKey(item.capability, item.evidenceId);
+    if (evidence.has(key)) {
+      issues.push(
+        issue(
+          VerifiedMarketSnapshotIssueCode.EvidenceCoverageMismatch,
+          "evidenceResolutions",
+          `Snapshot typed evidence ${key} is duplicated.`,
+        ),
+      );
+      continue;
+    }
+    evidence.set(key, {
+      capability: item.capability,
+      interval: item.interval,
+      canonicalInstrumentId: item.canonicalInstrumentId,
+      fingerprint: item.fingerprint,
+      provenance: item.provenance,
+      start: item.start,
+      end: item.end,
+    });
+  }
   if (!Array.isArray(resolutionValue) || resolutionValue.length === 0) {
     issues.push(
       issue(
@@ -1510,7 +1537,7 @@ function validateProviderTrace(
     return;
   }
   const resolutionIds = new Set<string>();
-  const coverage = new Map<string, number>();
+  const coverage = new Map<TypedEvidenceKey, number>();
   const resolutionsPerAttempt = new Map<string, number>();
   resolutionValue.forEach((entry, index) => {
     const field = `evidenceResolutions[${index}]`;
@@ -1549,7 +1576,11 @@ function validateProviderTrace(
       issues,
     );
     const attempt = attempts.get(String(entry.requestAttemptId));
-    const source = evidence.get(String(entry.evidenceId));
+    const key = typedEvidenceKey(
+      entry.capability as VerifiedMarketProviderCapability,
+      String(entry.evidenceId),
+    );
+    const source = evidence.get(key);
     const fingerprintInput = {
       resolutionId: String(entry.resolutionId),
       result: entry.result as VerifiedMarketEvidenceResolutionResult,
@@ -1618,7 +1649,7 @@ function validateProviderTrace(
       return;
     }
     resolutionIds.add(String(entry.resolutionId));
-    if (
+    const bindingInvalid =
       attempt === undefined ||
       attempt.result !== VerifiedMarketProviderAttemptResult.Succeeded ||
       source === undefined ||
@@ -1636,8 +1667,8 @@ function validateProviderTrace(
       Date.parse(source.start) < Date.parse(attempt.requestWindowStart) ||
       Date.parse(source.end) > Date.parse(attempt.requestWindowEnd) ||
       Date.parse(String(entry.observedAt)) < Date.parse(source.end) ||
-      Date.parse(String(entry.observedAt)) > Date.parse(attempt.receivedAt)
-    )
+      Date.parse(String(entry.observedAt)) > Date.parse(attempt.receivedAt);
+    if (bindingInvalid)
       issues.push(
         issue(
           source !== undefined &&
@@ -1650,24 +1681,31 @@ function validateProviderTrace(
           "Resolution must exactly bind Snapshot evidence to its successful batch request and response source.",
         ),
       );
-    if (source !== undefined)
-      coverage.set(
-        String(entry.evidenceId),
-        (coverage.get(String(entry.evidenceId)) ?? 0) + 1,
-      );
-    if (attempt !== undefined)
+    if (!bindingInvalid) coverage.set(key, (coverage.get(key) ?? 0) + 1);
+    if (!bindingInvalid && attempt !== undefined)
       resolutionsPerAttempt.set(
         attempt.requestAttemptId,
         (resolutionsPerAttempt.get(attempt.requestAttemptId) ?? 0) + 1,
       );
   });
-  for (const evidenceId of evidence.keys())
-    if (coverage.get(evidenceId) !== 1)
+  if (
+    evidence.size !== requiredEvidence.length ||
+    coverage.size !== requiredEvidence.length
+  )
+    issues.push(
+      issue(
+        VerifiedMarketSnapshotIssueCode.EvidenceCoverageMismatch,
+        "evidenceResolutions",
+        `Exactly ${requiredEvidence.length} uniquely typed Snapshot evidence resolutions are required; received ${coverage.size}.`,
+      ),
+    );
+  for (const key of evidence.keys())
+    if (coverage.get(key) !== 1)
       issues.push(
         issue(
           VerifiedMarketSnapshotIssueCode.EvidenceCoverageMismatch,
           "evidenceResolutions",
-          `Snapshot evidence ${evidenceId} must have exactly one successful resolution.`,
+          `Snapshot typed evidence ${key} must have exactly one successful resolution.`,
         ),
       );
   for (const attempt of attempts.values()) {

@@ -7,6 +7,7 @@ import type {
 import {
   VerifiedMarketCalendarSessionStatus,
   VerifiedMarketDataOrigin,
+  VerifiedMarketProviderCapability,
   VerifiedMarketSnapshotIssueCode,
 } from "../../contracts/VerifiedMarketSnapshot";
 import { buildOfflinePersonalDailyScanFixture } from "../personal-daily-scan/PersonalDailyScanFixture";
@@ -87,6 +88,47 @@ function resolutionWith(
   return {
     ...changed,
     resolutionFingerprint: verifiedEvidenceResolutionFingerprint(changed),
+  };
+}
+
+function resolutionAsQuote(source: EvidenceResolution): EvidenceResolution {
+  const {
+    resolutionFingerprint: _discardedFingerprint,
+    interval: _discardedInterval,
+    ...base
+  } = source;
+  const changed = {
+    ...base,
+    capability: VerifiedMarketProviderCapability.LatestQuote,
+  };
+  return {
+    ...changed,
+    resolutionFingerprint: verifiedEvidenceResolutionFingerprint(changed),
+  };
+}
+
+function withSharedBarAndQuoteEvidenceId(
+  source: ReturnType<
+    typeof buildOfflinePersonalDailyScanFixture
+  >["snapshotInput"],
+): ReturnType<typeof buildOfflinePersonalDailyScanFixture>["snapshotInput"] {
+  const bar = source.canonicalBarReferences.find((entry) =>
+    source.benchmarkInstrumentIds.includes(entry.canonicalInstrumentId),
+  )!;
+  const quote = source.canonicalQuoteReferences[0]!;
+  return {
+    ...source,
+    canonicalBarReferences: source.canonicalBarReferences.map((entry) =>
+      entry.canonicalBarId === bar.canonicalBarId
+        ? { ...entry, canonicalBarId: quote.canonicalQuoteId }
+        : entry,
+    ),
+    evidenceResolutions: source.evidenceResolutions.map((entry) =>
+      entry.capability === VerifiedMarketProviderCapability.Bars &&
+      entry.evidenceId === bar.canonicalBarId
+        ? resolutionWith(entry, { evidenceId: quote.canonicalQuoteId })
+        : entry,
+    ),
   };
 }
 
@@ -334,18 +376,173 @@ test("one transport attempt represents each real batch request, not each evidenc
 
 test("each Snapshot evidence binds exactly one successful EvidenceResolution", () => {
   const source = buildOfflinePersonalDailyScanFixture().snapshotInput;
-  const evidenceIds = [
-    ...source.canonicalBarReferences.map((entry) => entry.canonicalBarId),
-    ...source.canonicalQuoteReferences.map((entry) => entry.canonicalQuoteId),
+  const typedEvidenceKeys = [
+    ...source.canonicalBarReferences.map(
+      (entry) =>
+        `${VerifiedMarketProviderCapability.Bars}:${entry.canonicalBarId}`,
+    ),
+    ...source.canonicalQuoteReferences.map(
+      (entry) =>
+        `${VerifiedMarketProviderCapability.LatestQuote}:${entry.canonicalQuoteId}`,
+    ),
   ];
-  assert(new Set(source.evidenceResolutions.map((entry) => entry.evidenceId)).size === evidenceIds.length, "resolution evidence IDs must be unique");
-  for (const evidenceId of evidenceIds) {
-    const matches = source.evidenceResolutions.filter((entry) => entry.evidenceId === evidenceId);
-    assert(matches.length === 1, `${evidenceId} must have exactly one EvidenceResolution`);
-    assert(matches[0]!.result === "RESOLVED", `${evidenceId} resolution must be explicitly successful`);
+  assert(
+    new Set(
+      source.evidenceResolutions.map(
+        (entry) => `${entry.capability}:${entry.evidenceId}`,
+      ),
+    ).size === typedEvidenceKeys.length,
+    "typed resolution evidence keys must be unique",
+  );
+  for (const typedKey of typedEvidenceKeys) {
+    const matches = source.evidenceResolutions.filter(
+      (entry) => `${entry.capability}:${entry.evidenceId}` === typedKey,
+    );
+    assert(
+      matches.length === 1,
+      `${typedKey} must have exactly one EvidenceResolution`,
+    );
+    assert(
+      matches[0]!.result === "RESOLVED",
+      `${typedKey} resolution must be explicitly successful`,
+    );
     const attempt = source.providerRequestAttempts.find((entry) => entry.requestAttemptId === matches[0]!.requestAttemptId);
-    assert(attempt?.result === "SUCCEEDED", `${evidenceId} must bind a successful ProviderRequestAttempt`);
-    assert(matches[0]!.responseSourceReference === attempt.responseSourceReference, `${evidenceId} response source must bind its real request`);
+    assert(
+      attempt?.result === "SUCCEEDED",
+      `${typedKey} must bind a successful ProviderRequestAttempt`,
+    );
+    assert(
+      matches[0]!.responseSourceReference === attempt.responseSourceReference,
+      `${typedKey} response source must bind its real request`,
+    );
+  }
+});
+
+test("Bar and Quote may share a raw ID when both typed resolutions are complete", () => {
+  const source = withSharedBarAndQuoteEvidenceId(
+    buildOfflinePersonalDailyScanFixture().snapshotInput,
+  );
+  const sharedId = source.canonicalQuoteReferences[0]!.canonicalQuoteId;
+  const matches = source.evidenceResolutions.filter(
+    (entry) => entry.evidenceId === sharedId,
+  );
+  assert(matches.length === 2, "shared raw ID must retain both resolutions");
+  assert(
+    new Set(matches.map((entry) => entry.capability)).size === 2,
+    "shared raw ID must remain distinct by capability",
+  );
+  assert(
+    validateVerifiedMarketSnapshotInput(source).valid,
+    "complete typed Bar and Quote bindings must validate",
+  );
+});
+
+test("typed evidence coverage rejects missing, crossed, duplicate, and ghost resolutions", () => {
+  const source = withSharedBarAndQuoteEvidenceId(
+    buildOfflinePersonalDailyScanFixture().snapshotInput,
+  );
+  const sharedId = source.canonicalQuoteReferences[0]!.canonicalQuoteId;
+  const barResolution = source.evidenceResolutions.find(
+    (entry) =>
+      entry.evidenceId === sharedId &&
+      entry.capability === VerifiedMarketProviderCapability.Bars,
+  )!;
+  const cases: readonly [string, unknown, VerifiedMarketSnapshotIssueCode][] = [
+    [
+      "missing Bar resolution",
+      {
+        ...source,
+        evidenceResolutions: source.evidenceResolutions.filter(
+          (entry) =>
+            !(
+              entry.evidenceId === sharedId &&
+              entry.capability === VerifiedMarketProviderCapability.Bars
+            ),
+        ),
+      },
+      VerifiedMarketSnapshotIssueCode.EvidenceCoverageMismatch,
+    ],
+    [
+      "missing Quote resolution",
+      {
+        ...source,
+        evidenceResolutions: source.evidenceResolutions.filter(
+          (entry) =>
+            !(
+              entry.evidenceId === sharedId &&
+              entry.capability ===
+                VerifiedMarketProviderCapability.LatestQuote
+            ),
+        ),
+      },
+      VerifiedMarketSnapshotIssueCode.EvidenceCoverageMismatch,
+    ],
+    [
+      "capability and ID crossed",
+      {
+        ...source,
+        evidenceResolutions: source.evidenceResolutions.map((entry) =>
+          entry === barResolution
+            ? resolutionAsQuote(entry)
+            : entry,
+        ),
+      },
+      VerifiedMarketSnapshotIssueCode.InvalidProviderTrace,
+    ],
+    [
+      "duplicate typed evidence resolution",
+      {
+        ...source,
+        evidenceResolutions: [
+          ...source.evidenceResolutions,
+          resolutionWith(barResolution, {
+            resolutionId: `${barResolution.resolutionId}:duplicate`,
+          }),
+        ],
+      },
+      VerifiedMarketSnapshotIssueCode.EvidenceCoverageMismatch,
+    ],
+    [
+      "resolution targets nonexistent evidence",
+      {
+        ...source,
+        evidenceResolutions: [
+          ...source.evidenceResolutions,
+          resolutionWith(barResolution, {
+            resolutionId: `${barResolution.resolutionId}:ghost`,
+            evidenceId: "bar:ghost",
+          }),
+        ],
+      },
+      VerifiedMarketSnapshotIssueCode.InvalidProviderTrace,
+    ],
+  ];
+  for (const [name, input, expected] of cases) {
+    const left = validateVerifiedMarketSnapshotInput(input);
+    const right = validateVerifiedMarketSnapshotInput(input);
+    assert(!left.valid, `${name} must fail closed`);
+    assert(
+      left.issues.some((entry) => entry.code === expected),
+      `${name} must report ${expected}`,
+    );
+    assert(
+      JSON.stringify(left) === JSON.stringify(right),
+      `${name} issue ordering must be deterministic`,
+    );
+    assert(
+      left.issues
+        .map((entry) => `${entry.code}|${entry.field}|${entry.message}`)
+        .join("\n") ===
+        [...left.issues]
+          .sort((a, b) =>
+            `${a.code}|${a.field}|${a.message}`.localeCompare(
+              `${b.code}|${b.field}|${b.message}`,
+            ),
+          )
+          .map((entry) => `${entry.code}|${entry.field}|${entry.message}`)
+          .join("\n"),
+      `${name} issue codes must remain stably sorted`,
+    );
   }
 });
 
