@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 
-const run = (mode) => spawnSync(process.execPath, ["node_modules/tsx/dist/cli.mjs", "scripts/alpha-daily-scan.ts", `--mode=${mode}`], { encoding: "utf8", shell: false });
+const runArguments = (argumentsList) => spawnSync(process.execPath, ["node_modules/tsx/dist/cli.mjs", "scripts/alpha-daily-scan.ts", ...argumentsList], { encoding: "utf8", shell: false });
+const run = (mode) => runArguments([`--mode=${mode}`]);
 const fixture = run("fixture");
 assert.equal(fixture.status, 0, fixture.stderr);
 const fixtureOutput = JSON.parse(fixture.stdout);
@@ -18,4 +19,8 @@ assert.equal(liveOutput.status, "BLOCKED");
 assert.deepEqual(liveOutput.blockingReasons, ["OWNER_NETWORK_AUTHORIZATION_REQUIRED"]);
 assert.equal(liveOutput.networkRequests, 0);
 assert.equal(liveOutput.volatilityEvidenceStatus, "UNAVAILABLE");
-console.log("Personal Daily Scan process commands: 3/3 tests passed.");
+const trustOverride = runArguments(["--mode=live-readonly", "--owner-public-key=attacker-controlled"]);
+assert.equal(trustOverride.status, 2);
+assert.equal(trustOverride.stdout, "");
+assert.match(trustOverride.stderr, /^Usage:/u);
+console.log("Personal Daily Scan process commands: 4/4 tests passed.");

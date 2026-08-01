@@ -58,6 +58,9 @@ const tests = [
     changed.phase1Status = "IN_PROGRESS";
     changed.phase1Approval = "GRANTED";
     changed.phase1BStatus = "STARTED";
+    changed.phase1BDesign.networkAuthority = "GRANTED";
+    changed.phase1BDesign.credentialAccess = "ALLOWED";
+    changed.phase1BDesign.marketDataAcquisition = "IMPLEMENTED";
     changed.optionsStatus = "STARTED";
     changed.brokerStatus = "STARTED";
     changed.paperTradingStatus = "STARTED";
@@ -71,6 +74,9 @@ const tests = [
     assert(validation.issues.includes("phase1Status must equal \"MERGED\"."));
     assert(validation.issues.includes("phase1Approval must equal \"OFFLINE_AVAILABLE\"."));
     assert(validation.issues.includes("phase1BStatus must equal \"NOT_STARTED\"."));
+    assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NONE\"."));
+    assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
+    assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"NOT_IMPLEMENTED\"."));
     assert(validation.issues.includes("optionsStatus must equal \"NOT_STARTED\"."));
     assert(validation.issues.includes("brokerStatus must equal \"NOT_STARTED\"."));
     assert(validation.issues.includes("paperTradingStatus must equal \"NOT_STARTED\"."));
@@ -89,7 +95,7 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.branch must equal \"main\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"MERGED\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"OWNER_REVIEW_REQUIRED\"."));
     assert(validation.issues.includes("validation.phase1aWorkingTree must be null after the Phase 1A merge."));
   }],
   ["post-merge validation does not publish unaudited timing precision", () => {
@@ -105,6 +111,31 @@ const tests = [
     const changedSchema = clone(schema);
     changedSchema.$defs.riskPolicyRecord.additionalProperties = true;
     assertInvalid(status, changedSchema, "schema.$defs.riskPolicyRecord object schema must reject additional properties.");
+  }],
+  ["D2 working-tree validation remains uncommitted and exact", () => {
+    const changed = clone(status);
+    changed.validation.phase1bD2WorkingTree.includesUncommittedCode = false;
+    changed.validation.phase1bD2WorkingTree.testsExecuted = 2736;
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes("validation.phase1bD2WorkingTree.includesUncommittedCode must equal true."));
+    assert(validation.issues.includes("validation.phase1bD2WorkingTree.testsExecuted must equal 2760."));
+  }],
+  ["Phase 1B D2 trust-root and no-network status cannot be widened", () => {
+    const changed = clone(status);
+    changed.phase1BDesign.ownerPublicKey = "caller-supplied";
+    assertInvalid(changed, schema, "phase1BDesign.ownerPublicKey is undeclared.");
+  }],
+  ["D2-C1 records the caller-controlled trust-root blocker without granting authority", () => {
+    assert(status.inProgress.includes("PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"));
+    assert(status.blocked.includes("CALLER_CONTROLLED_OWNER_TRUST_ROOT"));
+    assert.equal(status.phase1BDesign.status, "D2_C1_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED");
+    const changed = clone(status);
+    changed.phase1BDesign.trustedOwnerVerificationKey = "CALLER_RUNTIME_INPUT";
+    assertInvalid(changed, schema, "phase1BDesign.trustedOwnerVerificationKey must equal \"PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED\".");
+    const missingCorrection = clone(status);
+    missingCorrection.blocked = missingCorrection.blocked.filter((item) => item !== "CALLER_CONTROLLED_OWNER_TRUST_ROOT");
+    assertInvalid(missingCorrection, schema, "blocked must include \"CALLER_CONTROLLED_OWNER_TRUST_ROOT\".");
   }],
 ];
 

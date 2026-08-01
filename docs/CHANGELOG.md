@@ -1,5 +1,27 @@
 # Alpha Changelog
 
+## 2026-08-01 - Phase 1B-D2-C1 immutable Owner trust-root correction
+
+- Removed trusted verification keys, fingerprints, key IDs, sources, and
+  verifier selection from live-readonly business input.
+- Added a product-composed Owner verifier with a defensively captured pinned
+  Ed25519 public identity and fail-closed missing-configuration behavior.
+- Added full self-signed attacker, product-key mismatch, independent-signature,
+  domain-swap, runtime/Manifest injection, and CLI override regression tests.
+- Added no credentials, network, D3 acquisition, Provider parsing, persistence,
+  Options, Broker, Paper Trading, order, or execution behavior.
+
+## 2026-08-01 - Phase 1B-D2 offline authorization and calendar contracts
+
+- Added RFC 8785 canonicalization, SHA-256 golden vectors, exact domain-
+  separated Ed25519 approval verification, and fail-closed external trust-root
+  enforcement for a future five-request Personal Daily Scan read.
+- Added versioned, fingerprinted, Owner-approved US equities calendar evidence
+  with explicit premarket, intraday, close-buffer, post-close, weekend,
+  holiday, early-close, and DST semantics.
+- Added no credential read, network transport, D3 acquisition, persistence,
+  account, Broker, Paper Trading, Options, order, or execution authority.
+
 ## 2026-07-29 - Dual-Lane Capital MVP Phase 0
 
 - Added a strict machine-readable current-state record, JSON Schema, validator,

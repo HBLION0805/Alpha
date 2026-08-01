@@ -1,30 +1,35 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.1",
-  "statusId": "alpha-status:personal-daily-scan-phase1a",
-  "asOf": "2026-08-01T15:10:46.392Z",
+  "schemaVersion": "1.2",
+  "statusId": "alpha-status:phase1b-d2-c1-owner-review",
+  "asOf": "2026-08-01T21:00:00.000Z",
   "source": {
     "branch": "main",
-    "source_baseline_commit": "4e4282582b816863c35efc6d5657cdf52d18abc9",
-    "implementation_baseline": "PHASE_1A_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD",
+    "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
+    "implementation_baseline": "PHASE_1A_STATUS_MERGE_COMMIT_NOT_D2_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7"
   },
   "currentMilestone": {
-    "id": "PERSONAL_DAILY_SCAN_PHASE_1A",
-    "name": "Offline Personal Daily Scan Foundation",
-    "status": "MERGED"
+    "id": "PERSONAL_DAILY_SCAN_PHASE_1B_D2",
+    "name": "Authorization and Exchange Calendar Contracts",
+    "status": "OWNER_REVIEW_REQUIRED"
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
     "PERSONAL_DAILY_SCAN_PHASE_1A_MERGED",
     "PHASE_1A_POST_MERGE_VALIDATION_BASELINE"
   ],
-  "inProgress": [],
+  "inProgress": [
+    "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"
+  ],
   "blocked": [
-    "PHASE_1B_NOT_STARTED",
+    "PHASE_1B_LIVE_READONLY_NOT_STARTED",
     "NETWORK_LIVE_READONLY_OWNER_AUTHORIZATION_REQUIRED",
     "VIX_LIVE_SOURCE_NOT_APPROVED",
-    "EVENT_CALENDAR_SOURCE_NOT_APPROVED"
+    "EVENT_CALENDAR_SOURCE_NOT_APPROVED",
+    "CALLER_CONTROLLED_OWNER_TRUST_ROOT",
+    "PHASE_1B_D2_C2_NOT_STARTED",
+    "PHASE_1B_D2_C3_NOT_STARTED"
   ],
   "frozen": [
     "T3B15_C5_UNCOMMITTED_WORK",
@@ -35,7 +40,7 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_REVIEW_PHASE_1A_POST_MERGE_STATUS_CONVERGENCE"
+    "OWNER_REVIEW_PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"
   ],
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
@@ -86,7 +91,7 @@
   "validation": {
     "headBaseline": {
       "kind": "PHASE_1A_MERGED_HEAD",
-      "source_baseline_commit": "4e4282582b816863c35efc6d5657cdf52d18abc9",
+      "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
       "includesUncommittedCode": false,
       "command": "npm.cmd run alpha:validate",
       "status": "PASSED",
@@ -98,6 +103,19 @@
       "wallClockDurationMs": null
     },
     "phase1aWorkingTree": null,
+    "phase1bD2WorkingTree": {
+      "kind": "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE",
+      "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
+      "includesUncommittedCode": true,
+      "command": "npm.cmd run alpha:validate",
+      "status": "PASSED",
+      "componentCount": 137,
+      "testsExecuted": 2760,
+      "passed": 2760,
+      "failed": 0,
+      "durationMs": null,
+      "wallClockDurationMs": null
+    },
     "coverageBaseline": {
       "metric": "REGISTERED_VALIDATION_EXECUTION",
       "status": "ESTABLISHED",
@@ -116,6 +134,14 @@
   "phase1Status": "MERGED",
   "phase1Approval": "OFFLINE_AVAILABLE",
   "phase1BStatus": "NOT_STARTED",
+  "phase1BDesign": {
+    "task": "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS",
+    "status": "D2_C1_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED",
+    "networkAuthority": "NONE",
+    "credentialAccess": "PROHIBITED",
+    "marketDataAcquisition": "NOT_IMPLEMENTED",
+    "trustedOwnerVerificationKey": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED"
+  },
   "optionsStatus": "NOT_STARTED",
   "brokerStatus": "NOT_STARTED",
   "paperTradingStatus": "NOT_STARTED",

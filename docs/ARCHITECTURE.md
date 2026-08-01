@@ -91,6 +91,32 @@ because one daily Bar cannot occur twice in one session. Source Bar freshness
 remains visible metadata and cannot override the explicit exchange-calendar
 and completed-window proof.
 
+## Phase 1B-D2 Offline Authorization Boundary
+
+Phase 1B remains `NOT_STARTED`. D2 adds only offline contracts and deterministic
+preflight validation for a future, single-use Owner-authorized market-data
+read. The signed authorization body binds an exact five-request plan; its
+approval envelope is verified with an actual Ed25519 public key supplied by
+pinned product configuration or a trusted external verifier. Manifest key IDs,
+fingerprints, and caller-provided keys are not trust roots. If the trusted key
+is unavailable, preflight returns
+`OWNER_AUTHORIZATION_VERIFICATION_KEY_UNAVAILABLE` before any credential path.
+
+D2-C1 makes this ownership boundary structural. A product composition root
+constructs one `OwnerAuthorizationVerifier` from an `OwnerTrustRootProvider`
+and captures a defensive copy of the pinned public verification identity.
+`LiveReadonlyPreflightInput` contains only `asOf`, Manifest, and Calendar
+evidence. It cannot carry a key, fingerprint, key ID, trust source, or
+replacement verifier. Unknown input and CLI override fields fail closed. The
+factory is a trusted-code assembly boundary, not a business-request option.
+
+Exchange-calendar evidence has an independent version, fingerprint, approval,
+producer, authority source, validity window, closure buffer, and explicit
+records for trading days, weekends, holidays, early closes, and DST-aware UTC
+offsets. D2 performs no credential read, HTTP request, Snapshot construction,
+persistence, account access, recommendation, or execution. See
+`docs/specifications/PERSONAL_DAILY_SCAN_PHASE_1B_AUTHORIZATION_AND_CALENDAR.md`.
+
 ## Python-TypeScript Integration Boundary
 
 Responsible for:

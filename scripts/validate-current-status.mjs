@@ -2,13 +2,13 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-const BASE_COMMIT = "4e4282582b816863c35efc6d5657cdf52d18abc9";
+const BASE_COMMIT = "f565e9e5250cfd2fca5e6ed9c244b3947add7b28";
 const STATUS_FIELDS = Object.freeze([
   "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
   "completed", "inProgress", "blocked", "frozen", "next", "runtimeOwnership",
   "capitalArchitecture", "riskPolicyRecord", "worktreeIsolation",
   "executionBoundaries", "ownerDailyProductEntry", "validation",
-  "networkAuthority", "phase1Status", "phase1Approval", "phase1BStatus",
+  "networkAuthority", "phase1Status", "phase1Approval", "phase1BStatus", "phase1BDesign",
   "optionsStatus", "brokerStatus", "paperTradingStatus", "orderExecutionStatus",
 ]);
 const STATUS_ITEM = /^[A-Z0-9][A-Z0-9_:-]{2,159}$/u;
@@ -32,7 +32,7 @@ export function validateCurrentStatus(status, schema) {
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
   exact(status.$schema, "./current.schema.json", "$schema", issues);
-  exact(status.schemaVersion, "1.1", "schemaVersion", issues);
+  exact(status.schemaVersion, "1.2", "schemaVersion", issues);
   if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
     issues.push("statusId must be a bounded Alpha status identifier.");
   }
@@ -41,17 +41,22 @@ export function validateCurrentStatus(status, schema) {
   validateExactObject(status.source, "source", {
     branch: "main",
     source_baseline_commit: BASE_COMMIT,
-    implementation_baseline: "PHASE_1A_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD",
+    implementation_baseline: "PHASE_1A_STATUS_MERGE_COMMIT_NOT_D2_HEAD",
     reviewed_c4_commit: "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
   }, issues);
   validateExactObject(status.currentMilestone, "currentMilestone", {
-    id: "PERSONAL_DAILY_SCAN_PHASE_1A",
-    name: "Offline Personal Daily Scan Foundation",
-    status: "MERGED",
+    id: "PERSONAL_DAILY_SCAN_PHASE_1B_D2",
+    name: "Authorization and Exchange Calendar Contracts",
+    status: "OWNER_REVIEW_REQUIRED",
   }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
     validateStatusItems(status[field], field, issues);
   }
+  requireStatusItem(status.inProgress, "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION", "inProgress", issues);
+  requireStatusItem(status.blocked, "CALLER_CONTROLLED_OWNER_TRUST_ROOT", "blocked", issues);
+  requireStatusItem(status.blocked, "PHASE_1B_D2_C2_NOT_STARTED", "blocked", issues);
+  requireStatusItem(status.blocked, "PHASE_1B_D2_C3_NOT_STARTED", "blocked", issues);
+  requireStatusItem(status.next, "OWNER_REVIEW_PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION", "next", issues);
   validateExactObject(status.runtimeOwnership, "runtimeOwnership", {
     productRuntime: "TYPESCRIPT",
     pythonRole: "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY",
@@ -78,6 +83,14 @@ export function validateCurrentStatus(status, schema) {
   exact(status.phase1Status, "MERGED", "phase1Status", issues);
   exact(status.phase1Approval, "OFFLINE_AVAILABLE", "phase1Approval", issues);
   exact(status.phase1BStatus, "NOT_STARTED", "phase1BStatus", issues);
+  validateExactObject(status.phase1BDesign, "phase1BDesign", {
+    task: "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS",
+    status: "D2_C1_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED",
+    networkAuthority: "NONE",
+    credentialAccess: "PROHIBITED",
+    marketDataAcquisition: "NOT_IMPLEMENTED",
+    trustedOwnerVerificationKey: "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
+  }, issues);
   exact(status.optionsStatus, "NOT_STARTED", "optionsStatus", issues);
   exact(status.brokerStatus, "NOT_STARTED", "brokerStatus", issues);
   exact(status.paperTradingStatus, "NOT_STARTED", "paperTradingStatus", issues);
@@ -102,7 +115,7 @@ function validateSchema(schema, issues) {
     return;
   }
   exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
-  exact(schema.$id, "https://alpha.local/schemas/project-status/1.1", "schema.$id", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.2", "schema.$id", issues);
   exact(schema.type, "object", "schema.type", issues);
   exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
   if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {
@@ -175,12 +188,18 @@ function validateValidation(value, issues) {
     issues.push("validation must be an object.");
     return;
   }
-  const fields = ["headBaseline", "phase1aWorkingTree", "coverageBaseline"];
+  const fields = ["headBaseline", "phase1aWorkingTree", "phase1bD2WorkingTree", "coverageBaseline"];
   allowOnly(value, fields, "validation", issues);
   requireExactly(value, fields, "validation", issues);
   validateValidationResult(value.headBaseline, "PHASE_1A_MERGED_HEAD", false, "validation.headBaseline", issues);
   if (value.phase1aWorkingTree !== null) {
     issues.push("validation.phase1aWorkingTree must be null after the Phase 1A merge.");
+  }
+  validateValidationResult(value.phase1bD2WorkingTree, "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE", true, "validation.phase1bD2WorkingTree", issues);
+  if (isRecord(value.phase1bD2WorkingTree)) {
+    exact(value.phase1bD2WorkingTree.componentCount, 137, "validation.phase1bD2WorkingTree.componentCount", issues);
+    exact(value.phase1bD2WorkingTree.testsExecuted, 2760, "validation.phase1bD2WorkingTree.testsExecuted", issues);
+    exact(value.phase1bD2WorkingTree.passed, 2760, "validation.phase1bD2WorkingTree.passed", issues);
   }
   validateCoverageBaseline(value.coverageBaseline, issues);
 }
@@ -248,6 +267,12 @@ function validateStatusItems(value, path, issues) {
   }
   if (value.some((item) => typeof item !== "string" || !STATUS_ITEM.test(item))) {
     issues.push(`${path} contains an invalid status identifier.`);
+  }
+}
+
+function requireStatusItem(value, expected, path, issues) {
+  if (!Array.isArray(value) || !value.includes(expected)) {
+    issues.push(`${path} must include ${JSON.stringify(expected)}.`);
   }
 }
 

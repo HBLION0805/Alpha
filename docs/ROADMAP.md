@@ -8,15 +8,22 @@
 
 The authoritative current state is
 [Current Project Status](status/current.json). Phase 1A Offline Personal Daily
-Scan Foundation is merged and offline available through merge commit
-`4e4282582b816863c35efc6d5657cdf52d18abc9`. That merge commit is the
-implementation baseline, not the later status-update commit. T3B15-C5 remains
+Scan Foundation is merged and offline available. Its implementation merge is
+`4e4282582b816863c35efc6d5657cdf52d18abc9`, and its post-merge status baseline
+is `f565e9e5250cfd2fca5e6ed9c244b3947add7b28`. T3B15-C5 remains
 frozen outside this branch. The only Owner product entry is
 `alpha:daily-scan` in `dry-run` or `fixture` mode; `live-readonly` requires
 separate Owner network authorization. Network, Options, Broker, Paper Trading,
-and Order Execution are closed. Phase 1B has not started.
+and Order Execution are closed. Phase 1B remains `NOT_STARTED`. D2 has added
+only offline Owner-authorization and exchange-calendar contracts for review;
+no trusted key is stored, credential access is prohibited, and D3 acquisition
+has not been implemented. D2-C1 removes caller-selected trust material from
+runtime input and moves verifier construction to the product composition root;
+it remains uncommitted and requires independent Owner review. D2-C2 request-
+scope correction and D2-C3 calendar-continuity correction have not started.
 
-Before Phase 1B can be proposed, the Owner must separately approve its scope.
+Before a Phase 1B live-readonly run can be proposed, the Owner must separately
+approve D2 and later D3 implementation, then approve a date-specific manifest.
 The merged Phase 1A output already preserves explicit QQQ/SMH benchmark,
 VIX/volatility, macro, provenance, freshness, and eligibility states and fails
 closed where required evidence is unavailable. No live read or later-phase

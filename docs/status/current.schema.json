@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.1",
+  "$id": "https://alpha.local/schemas/project-status/1.2",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -10,12 +10,12 @@
     "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
     "worktreeIsolation", "executionBoundaries", "ownerDailyProductEntry",
     "validation", "networkAuthority", "phase1Status", "phase1Approval",
-    "phase1BStatus", "optionsStatus", "brokerStatus", "paperTradingStatus",
+    "phase1BStatus", "phase1BDesign", "optionsStatus", "brokerStatus", "paperTradingStatus",
     "orderExecutionStatus"
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.1" },
+    "schemaVersion": { "const": "1.2" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -40,6 +40,7 @@
     "phase1Status": { "const": "MERGED" },
     "phase1Approval": { "const": "OFFLINE_AVAILABLE" },
     "phase1BStatus": { "const": "NOT_STARTED" },
+    "phase1BDesign": { "$ref": "#/$defs/phase1BDesign" },
     "optionsStatus": { "const": "NOT_STARTED" },
     "brokerStatus": { "const": "NOT_STARTED" },
     "paperTradingStatus": { "const": "NOT_STARTED" },
@@ -52,8 +53,8 @@
       "required": ["branch", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
       "properties": {
         "branch": { "const": "main" },
-        "source_baseline_commit": { "const": "4e4282582b816863c35efc6d5657cdf52d18abc9" },
-        "implementation_baseline": { "const": "PHASE_1A_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD" },
+        "source_baseline_commit": { "const": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28" },
+        "implementation_baseline": { "const": "PHASE_1A_STATUS_MERGE_COMMIT_NOT_D2_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
       }
     },
@@ -62,9 +63,22 @@
       "additionalProperties": false,
       "required": ["id", "name", "status"],
       "properties": {
-        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1A" },
-        "name": { "const": "Offline Personal Daily Scan Foundation" },
-        "status": { "const": "MERGED" }
+        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D2" },
+        "name": { "const": "Authorization and Exchange Calendar Contracts" },
+        "status": { "const": "OWNER_REVIEW_REQUIRED" }
+      }
+    },
+    "phase1BDesign": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task", "status", "networkAuthority", "credentialAccess", "marketDataAcquisition", "trustedOwnerVerificationKey"],
+      "properties": {
+        "task": { "const": "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS" },
+        "status": { "const": "D2_C1_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED" },
+        "networkAuthority": { "const": "NONE" },
+        "credentialAccess": { "const": "PROHIBITED" },
+        "marketDataAcquisition": { "const": "NOT_IMPLEMENTED" },
+        "trustedOwnerVerificationKey": { "const": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED" }
       }
     },
     "statusItems": {
@@ -152,7 +166,7 @@
       ],
       "properties": {
         "kind": { "const": "PHASE_1A_MERGED_HEAD" },
-        "source_baseline_commit": { "const": "4e4282582b816863c35efc6d5657cdf52d18abc9" },
+        "source_baseline_commit": { "const": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28" },
         "includesUncommittedCode": { "type": "boolean" },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": { "const": "PASSED" },
@@ -162,6 +176,27 @@
         "failed": { "const": 0 },
         "durationMs": { "type": ["integer", "null"], "minimum": 1 },
         "wallClockDurationMs": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "phase1bD2ValidationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind", "source_baseline_commit", "includesUncommittedCode", "command", "status",
+        "componentCount", "testsExecuted", "passed", "failed", "durationMs", "wallClockDurationMs"
+      ],
+      "properties": {
+        "kind": { "const": "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE" },
+        "source_baseline_commit": { "const": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28" },
+        "includesUncommittedCode": { "const": true },
+        "command": { "const": "npm.cmd run alpha:validate" },
+        "status": { "const": "PASSED" },
+        "componentCount": { "const": 137 },
+        "testsExecuted": { "const": 2760 },
+        "passed": { "const": 2760 },
+        "failed": { "const": 0 },
+        "durationMs": { "type": "null" },
+        "wallClockDurationMs": { "type": "null" }
       }
     },
     "worktreeIsolation": {
@@ -221,7 +256,7 @@
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["headBaseline", "phase1aWorkingTree", "coverageBaseline"],
+      "required": ["headBaseline", "phase1aWorkingTree", "phase1bD2WorkingTree", "coverageBaseline"],
       "properties": {
         "headBaseline": { "$ref": "#/$defs/validationResult" },
         "phase1aWorkingTree": {
@@ -230,6 +265,7 @@
             { "$ref": "#/$defs/validationResult" }
           ]
         },
+        "phase1bD2WorkingTree": { "$ref": "#/$defs/phase1bD2ValidationResult" },
         "coverageBaseline": { "$ref": "#/$defs/coverageBaseline" }
       }
     }
