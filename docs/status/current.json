@@ -1,0 +1,128 @@
+{
+  "$schema": "./current.schema.json",
+  "schemaVersion": "1.0",
+  "statusId": "alpha-status:personal-daily-scan-phase1a",
+  "asOf": "2026-07-31T00:55:59.294Z",
+  "source": {
+    "branch": "codex/personal-daily-scan-phase1a",
+    "source_baseline_commit": "574a9c2c0329bdb87a94b19ad4517be562c37aa6",
+    "implementation_baseline": "TRADINGAGENTS_EXTRACTION_BASELINE_NOT_CURRENT_HEAD"
+  },
+  "currentMilestone": {
+    "id": "PERSONAL_DAILY_SCAN_PHASE_1A",
+    "name": "Offline Personal Daily Scan Foundation",
+    "status": "IN_PROGRESS"
+  },
+  "completed": [
+    "T3G_C13_C2_HANDOFF_RECONCILIATION",
+    "PURE_HEAD_VALIDATION_BASELINE"
+  ],
+  "inProgress": [
+    "PHASE_1A_C3_TIMEFRAME_BINDING_AND_TIME_VALIDITY_CORRECTION"
+  ],
+  "blocked": [
+    "PHASE_1B_NOT_APPROVED",
+    "NETWORK_LIVE_READONLY_PENDING_OWNER_AUTHORIZATION",
+    "VIX_LIVE_SOURCE_NOT_APPROVED",
+    "EVENT_CALENDAR_SOURCE_NOT_APPROVED"
+  ],
+  "frozen": [
+    "T3B15_C5_UNCOMMITTED_WORK",
+    "ORIGINAL_ALPHA_WORKTREE",
+    "EVENT_BUSINESS_LOGIC",
+    "RISK_BUSINESS_LOGIC",
+    "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
+  ],
+  "next": [
+    "OWNER_REVIEW_PHASE_1A_C3_DIFF_VALIDATION_AND_REVIEW_PATCH"
+  ],
+  "runtimeOwnership": {
+    "productRuntime": "TYPESCRIPT",
+    "pythonRole": "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY",
+    "pythonDashboardStatus": "DEPRECATED_AS_PRODUCT_ENTRY_PROTOTYPE_ONLY",
+    "riskAuthority": "TYPESCRIPT_UNIFIED_SHORT_TERM_RISK_AUTHORITY_PLANNED"
+  },
+  "capitalArchitecture": {
+    "status": "COMPATIBILITY_ARCHITECTURE_ONLY",
+    "legacyField": "capital_usd",
+    "futureBuckets": [
+      "OPERATING_CAPITAL",
+      "LONG_TERM_COMPOUNDING_CAPITAL",
+      "CASH_RESERVE"
+    ],
+    "legacyMigration": "EXPLICIT_OWNER_APPROVAL_REQUIRED",
+    "transferPolicy": "NOT_DEFINED",
+    "automaticAllocation": "PROHIBITED",
+    "automaticMigration": "PROHIBITED",
+    "automaticTransfer": "PROHIBITED"
+  },
+  "riskPolicyRecord": {
+    "policyVersion": "phase0-owner-record-2026-07-29",
+    "status": "RECORDED_NOT_ENFORCED",
+    "executionAuthority": "NONE",
+    "currency": "USD",
+    "etfMaximumPlannedLossCents": 800,
+    "eventMaximumCostRiskCents": 500,
+    "dailyMaximumLossCents": 2000,
+    "weeklyMaximumLossCents": 4000,
+    "totalDrawdownPauseCents": 8000,
+    "initialLeveragedEtfPositionLimitBasisPoints": 1000,
+    "maximumConcurrentShortTermThemes": 1
+  },
+  "worktreeIsolation": {
+    "originalWorktree": "FROZEN",
+    "t3b15C5Included": false,
+    "alphaAuditPacketIncluded": false
+  },
+  "executionBoundaries": {
+    "network": "CLOSED",
+    "broker": "CLOSED",
+    "paperTrading": "CLOSED",
+    "orderExecution": "CLOSED"
+  },
+  "ownerDailyProductEntry": "DRY_RUN_AND_FIXTURE_ONLY",
+  "validation": {
+    "headBaseline": {
+      "kind": "TRADINGAGENTS_EXTRACTION_BASELINE",
+      "source_baseline_commit": "574a9c2c0329bdb87a94b19ad4517be562c37aa6",
+      "includesUncommittedCode": false,
+      "command": "npm.cmd run alpha:validate",
+      "status": "PASSED",
+      "componentCount": 132,
+      "testsExecuted": 2675,
+      "passed": 2675,
+      "failed": 0,
+      "durationMs": 79195,
+      "wallClockDurationMs": 80320
+    },
+    "phase1aWorkingTree": {
+      "kind": "PHASE_1A_WORKING_TREE",
+      "source_baseline_commit": "574a9c2c0329bdb87a94b19ad4517be562c37aa6",
+      "includesUncommittedCode": true,
+      "command": "npm.cmd run alpha:validate",
+      "status": "PASSED",
+      "componentCount": 136,
+      "testsExecuted": 2730,
+      "passed": 2730,
+      "failed": 0,
+      "durationMs": 88828,
+      "wallClockDurationMs": 89600
+    },
+    "coverageBaseline": {
+      "metric": "REGISTERED_VALIDATION_EXECUTION",
+      "status": "ESTABLISHED",
+      "registeredTests": {
+        "executed": 2730,
+        "passed": 2730,
+        "failed": 0
+      },
+      "instrumentedCodeCoverage": {
+        "status": "NOT_AVAILABLE",
+        "reasonCode": "NO_REGISTERED_INSTRUMENTER_AND_V8_ENV_INCOMPATIBLE_WITH_SECURITY_DRILL"
+      }
+    }
+  },
+  "networkAuthority": "NONE",
+  "phase1Status": "IN_PROGRESS",
+  "phase1Approval": "OFFLINE_ONLY_GRANTED"
+}

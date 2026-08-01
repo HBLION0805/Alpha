@@ -1,0 +1,306 @@
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+const BASE_COMMIT = "574a9c2c0329bdb87a94b19ad4517be562c37aa6";
+const STATUS_FIELDS = Object.freeze([
+  "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
+  "completed", "inProgress", "blocked", "frozen", "next", "runtimeOwnership",
+  "capitalArchitecture", "riskPolicyRecord", "worktreeIsolation",
+  "executionBoundaries", "ownerDailyProductEntry", "validation",
+  "networkAuthority", "phase1Status", "phase1Approval",
+]);
+const STATUS_ITEM = /^[A-Z0-9][A-Z0-9_:-]{2,159}$/u;
+
+export class CurrentStatusValidationError extends Error {
+  constructor(issues) {
+    super(`Alpha current status is invalid:\n- ${issues.join("\n- ")}`);
+    this.name = "CurrentStatusValidationError";
+    this.issues = Object.freeze([...issues]);
+  }
+}
+
+export function validateCurrentStatus(status, schema) {
+  const issues = [];
+  validateSchema(schema, issues);
+  if (!isRecord(status)) {
+    issues.push("$ must be an object.");
+    return result(issues);
+  }
+
+  allowOnly(status, STATUS_FIELDS, "$", issues);
+  requireExactly(status, STATUS_FIELDS, "$", issues);
+  exact(status.$schema, "./current.schema.json", "$schema", issues);
+  exact(status.schemaVersion, "1.0", "schemaVersion", issues);
+  if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
+    issues.push("statusId must be a bounded Alpha status identifier.");
+  }
+  if (!isCanonicalTimestamp(status.asOf)) issues.push("asOf must be a canonical UTC timestamp.");
+
+  validateExactObject(status.source, "source", {
+    branch: "codex/personal-daily-scan-phase1a",
+    source_baseline_commit: BASE_COMMIT,
+    implementation_baseline: "TRADINGAGENTS_EXTRACTION_BASELINE_NOT_CURRENT_HEAD",
+  }, issues);
+  validateExactObject(status.currentMilestone, "currentMilestone", {
+    id: "PERSONAL_DAILY_SCAN_PHASE_1A",
+    name: "Offline Personal Daily Scan Foundation",
+    status: "IN_PROGRESS",
+  }, issues);
+  for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
+    validateStatusItems(status[field], field, issues);
+  }
+  validateExactObject(status.runtimeOwnership, "runtimeOwnership", {
+    productRuntime: "TYPESCRIPT",
+    pythonRole: "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY",
+    pythonDashboardStatus: "DEPRECATED_AS_PRODUCT_ENTRY_PROTOTYPE_ONLY",
+    riskAuthority: "TYPESCRIPT_UNIFIED_SHORT_TERM_RISK_AUTHORITY_PLANNED",
+  }, issues);
+  validateCapitalArchitecture(status.capitalArchitecture, issues);
+  validateRiskPolicyRecord(status.riskPolicyRecord, issues);
+  validateExactObject(status.worktreeIsolation, "worktreeIsolation", {
+    originalWorktree: "FROZEN",
+    t3b15C5Included: false,
+    alphaAuditPacketIncluded: false,
+  }, issues);
+  validateExactObject(status.executionBoundaries, "executionBoundaries", {
+    network: "CLOSED",
+    broker: "CLOSED",
+    paperTrading: "CLOSED",
+    orderExecution: "CLOSED",
+  }, issues);
+  exact(status.ownerDailyProductEntry, "DRY_RUN_AND_FIXTURE_ONLY", "ownerDailyProductEntry", issues);
+  validateValidation(status.validation, issues);
+  exact(status.networkAuthority, "NONE", "networkAuthority", issues);
+  exact(status.phase1Status, "IN_PROGRESS", "phase1Status", issues);
+  exact(status.phase1Approval, "OFFLINE_ONLY_GRANTED", "phase1Approval", issues);
+
+  return result(issues);
+}
+
+export function loadAndValidateCurrentStatus(rootDirectory) {
+  const statusPath = resolve(rootDirectory, "docs/status/current.json");
+  const status = JSON.parse(readFileSync(statusPath, "utf8"));
+  const schemaPath = resolve(dirname(statusPath), "current.schema.json");
+  const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
+  const validation = validateCurrentStatus(status, schema);
+  if (!validation.valid) throw new CurrentStatusValidationError(validation.issues);
+  return Object.freeze({ status, schema, statusPath, schemaPath });
+}
+
+function validateSchema(schema, issues) {
+  if (!isRecord(schema)) {
+    issues.push("schema must be an object.");
+    return;
+  }
+  exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.0", "schema.$id", issues);
+  exact(schema.type, "object", "schema.type", issues);
+  exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
+  if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {
+    issues.push("schema.required must contain the exact current-status fields.");
+  }
+  if (!isRecord(schema.properties) || !sameStringSet(Object.keys(schema.properties), STATUS_FIELDS)) {
+    issues.push("schema.properties must contain the exact current-status fields.");
+  }
+  inspectObjectSchemas(schema, "schema", issues);
+}
+
+function inspectObjectSchemas(value, path, issues) {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => inspectObjectSchemas(item, `${path}[${index}]`, issues));
+    return;
+  }
+  if (!isRecord(value)) return;
+  if (value.type === "object" && value.additionalProperties !== false) {
+    issues.push(`${path} object schema must reject additional properties.`);
+  }
+  for (const [key, nested] of Object.entries(value)) {
+    inspectObjectSchemas(nested, `${path}.${key}`, issues);
+  }
+}
+
+function validateCapitalArchitecture(value, issues) {
+  if (!isRecord(value)) {
+    issues.push("capitalArchitecture must be an object.");
+    return;
+  }
+  const fields = [
+    "status", "legacyField", "futureBuckets", "legacyMigration",
+    "transferPolicy", "automaticAllocation", "automaticMigration",
+    "automaticTransfer",
+  ];
+  allowOnly(value, fields, "capitalArchitecture", issues);
+  requireExactly(value, fields, "capitalArchitecture", issues);
+  exact(value.status, "COMPATIBILITY_ARCHITECTURE_ONLY", "capitalArchitecture.status", issues);
+  exact(value.legacyField, "capital_usd", "capitalArchitecture.legacyField", issues);
+  const buckets = ["OPERATING_CAPITAL", "LONG_TERM_COMPOUNDING_CAPITAL", "CASH_RESERVE"];
+  if (!Array.isArray(value.futureBuckets) || JSON.stringify(value.futureBuckets) !== JSON.stringify(buckets)) {
+    issues.push("capitalArchitecture.futureBuckets must contain the exact ordered three-bucket model.");
+  }
+  exact(value.legacyMigration, "EXPLICIT_OWNER_APPROVAL_REQUIRED", "capitalArchitecture.legacyMigration", issues);
+  exact(value.transferPolicy, "NOT_DEFINED", "capitalArchitecture.transferPolicy", issues);
+  exact(value.automaticAllocation, "PROHIBITED", "capitalArchitecture.automaticAllocation", issues);
+  exact(value.automaticMigration, "PROHIBITED", "capitalArchitecture.automaticMigration", issues);
+  exact(value.automaticTransfer, "PROHIBITED", "capitalArchitecture.automaticTransfer", issues);
+}
+
+function validateRiskPolicyRecord(value, issues) {
+  const expected = {
+    policyVersion: "phase0-owner-record-2026-07-29",
+    status: "RECORDED_NOT_ENFORCED",
+    executionAuthority: "NONE",
+    currency: "USD",
+    etfMaximumPlannedLossCents: 800,
+    eventMaximumCostRiskCents: 500,
+    dailyMaximumLossCents: 2000,
+    weeklyMaximumLossCents: 4000,
+    totalDrawdownPauseCents: 8000,
+    initialLeveragedEtfPositionLimitBasisPoints: 1000,
+    maximumConcurrentShortTermThemes: 1,
+  };
+  validateExactObject(value, "riskPolicyRecord", expected, issues);
+}
+
+function validateValidation(value, issues) {
+  if (!isRecord(value)) {
+    issues.push("validation must be an object.");
+    return;
+  }
+  const fields = ["headBaseline", "phase1aWorkingTree", "coverageBaseline"];
+  allowOnly(value, fields, "validation", issues);
+  requireExactly(value, fields, "validation", issues);
+  validateValidationResult(value.headBaseline, "TRADINGAGENTS_EXTRACTION_BASELINE", false, "validation.headBaseline", issues);
+  if (value.phase1aWorkingTree !== null) {
+    validateValidationResult(value.phase1aWorkingTree, "PHASE_1A_WORKING_TREE", true, "validation.phase1aWorkingTree", issues);
+  }
+  validateCoverageBaseline(value.coverageBaseline, issues);
+}
+
+function validateValidationResult(value, kind, includesUncommittedCode, path, issues) {
+  if (!isRecord(value)) {
+    issues.push(`${path} must be an object.`);
+    return;
+  }
+  const fields = [
+    "kind", "source_baseline_commit", "includesUncommittedCode", "command", "status",
+    "componentCount", "testsExecuted", "passed", "failed", "durationMs",
+    "wallClockDurationMs",
+  ];
+  allowOnly(value, fields, path, issues);
+  requireExactly(value, fields, path, issues);
+  exact(value.kind, kind, `${path}.kind`, issues);
+  exact(value.source_baseline_commit, BASE_COMMIT, `${path}.source_baseline_commit`, issues);
+  exact(value.includesUncommittedCode, includesUncommittedCode, `${path}.includesUncommittedCode`, issues);
+  exact(value.command, "npm.cmd run alpha:validate", `${path}.command`, issues);
+  exact(value.status, "PASSED", `${path}.status`, issues);
+  for (const field of ["componentCount", "testsExecuted", "passed", "durationMs", "wallClockDurationMs"]) {
+    if (!Number.isSafeInteger(value[field]) || value[field] <= 0) issues.push(`${path}.${field} must be a positive integer.`);
+  }
+  exact(value.failed, 0, `${path}.failed`, issues);
+  if (Number.isSafeInteger(value.testsExecuted) && Number.isSafeInteger(value.passed) && value.testsExecuted !== value.passed) {
+    issues.push(`${path}.passed must equal testsExecuted when status is PASSED.`);
+  }
+}
+
+function validateCoverageBaseline(value, issues) {
+  if (!isRecord(value)) {
+    issues.push("validation.coverageBaseline must be an object.");
+    return;
+  }
+  const fields = ["metric", "status", "registeredTests", "instrumentedCodeCoverage"];
+  allowOnly(value, fields, "validation.coverageBaseline", issues);
+  requireExactly(value, fields, "validation.coverageBaseline", issues);
+  exact(value.metric, "REGISTERED_VALIDATION_EXECUTION", "validation.coverageBaseline.metric", issues);
+  exact(value.status, "ESTABLISHED", "validation.coverageBaseline.status", issues);
+  if (!isRecord(value.registeredTests)) {
+    issues.push("validation.coverageBaseline.registeredTests must be an object.");
+  } else {
+    const testFields = ["executed", "passed", "failed"];
+    allowOnly(value.registeredTests, testFields, "validation.coverageBaseline.registeredTests", issues);
+    requireExactly(value.registeredTests, testFields, "validation.coverageBaseline.registeredTests", issues);
+    if (!Number.isSafeInteger(value.registeredTests.executed) || value.registeredTests.executed <= 0) {
+      issues.push("validation.coverageBaseline.registeredTests.executed must be positive.");
+    }
+    exact(value.registeredTests.passed, value.registeredTests.executed, "validation.coverageBaseline.registeredTests.passed", issues);
+    exact(value.registeredTests.failed, 0, "validation.coverageBaseline.registeredTests.failed", issues);
+  }
+  validateExactObject(value.instrumentedCodeCoverage, "validation.coverageBaseline.instrumentedCodeCoverage", {
+    status: "NOT_AVAILABLE",
+    reasonCode: "NO_REGISTERED_INSTRUMENTER_AND_V8_ENV_INCOMPATIBLE_WITH_SECURITY_DRILL",
+  }, issues);
+}
+
+function validateStatusItems(value, path, issues) {
+  if (!Array.isArray(value) || value.length > 32 || new Set(value).size !== value.length) {
+    issues.push(`${path} must be a unique bounded array.`);
+    return;
+  }
+  if (value.some((item) => typeof item !== "string" || !STATUS_ITEM.test(item))) {
+    issues.push(`${path} contains an invalid status identifier.`);
+  }
+}
+
+function validateExactObject(value, path, expected, issues) {
+  if (!isRecord(value)) {
+    issues.push(`${path} must be an object.`);
+    return;
+  }
+  const fields = Object.keys(expected);
+  allowOnly(value, fields, path, issues);
+  requireExactly(value, fields, path, issues);
+  for (const [field, expectedValue] of Object.entries(expected)) {
+    exact(value[field], expectedValue, `${path}.${field}`, issues);
+  }
+}
+
+function allowOnly(value, allowedFields, path, issues) {
+  const allowed = new Set(allowedFields);
+  for (const field of Object.keys(value)) {
+    if (!allowed.has(field)) issues.push(`${path}.${field} is undeclared.`);
+  }
+}
+
+function requireExactly(value, requiredFields, path, issues) {
+  for (const field of requiredFields) {
+    if (!Object.hasOwn(value, field)) issues.push(`${path}.${field} is required.`);
+  }
+}
+
+function exact(actual, expected, path, issues) {
+  if (actual !== expected) issues.push(`${path} must equal ${JSON.stringify(expected)}.`);
+}
+
+function sameStringSet(left, right) {
+  return left.length === right.length && [...left].sort().every((item, index) => item === [...right].sort()[index]);
+}
+
+function isCanonicalTimestamp(value) {
+  return typeof value === "string" &&
+    Number.isFinite(Date.parse(value)) &&
+    new Date(Date.parse(value)).toISOString() === value;
+}
+
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function result(issues) {
+  return Object.freeze({
+    valid: issues.length === 0,
+    issues: Object.freeze([...issues].sort()),
+  });
+}
+
+const isMain = process.argv[1] !== undefined &&
+  pathToFileURL(resolve(process.argv[1])).href === import.meta.url;
+if (isMain) {
+  try {
+    const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+    loadAndValidateCurrentStatus(root);
+    console.log("Alpha current status validation passed.");
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}

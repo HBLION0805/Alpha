@@ -39,8 +39,13 @@ Each candidate requires:
    fingerprint.
 
 The two bars are endpoints used to calculate direction for that timeframe.
-They must be ordered, completed before evaluation, and belong to the analysis
-instrument. The quote must belong to the trade vehicle, not the underlying.
+They must be distinct, strictly ordered, finalized before evaluation, and
+belong to the analysis instrument. `PT1H`, `PT15M`, and `PT5M` endpoints must
+both belong to the exact Snapshot-selected completed session. Because one
+`P1D` bar represents one complete session, its endpoints must instead bind the
+immediately prior completed session and the Snapshot-selected completed
+session. Reusing one bar, reversing the endpoints, crossing an intraday
+session, or supplying fewer or more than two bars fails closed.
 
 ## Identity and provenance gates
 
@@ -73,13 +78,15 @@ The conservative upward rounding prevents a fractional spread from being
 reported as cheaper than it is. The Candidate Scan remains responsible for
 comparing the result with the configured maximum.
 
-## Freshness behavior
+## Time validity behavior
 
-Canonical observations preserve their native current or stale status. The
-composition boundary proves identity, chronology, and provenance; the
-Candidate Scan applies its explicit maximum-age policies and excludes stale or
-old observations. No component silently refreshes, repairs, or infers missing
-data.
+Quote freshness and completed-session Bar validity are separate authorities.
+Quotes retain wall-clock freshness against scan `asOf`. Finalized Bars retain
+their Canonical source-freshness metadata for audit, but the Daily Scan does
+not reinterpret an exact completed-session binding as invalid merely because
+the wall clock advanced overnight. Snapshot calendar evidence, exact selected
+session identity, finalized windows, and the two-Bar binding determine Bar
+validity. No component silently refreshes, repairs, or infers missing data.
 
 ## Authority boundary
 

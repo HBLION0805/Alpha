@@ -1,14 +1,26 @@
 # Alpha Handoff
 
 Date:
-2026-07-26
+2026-07-29
 
 Project Stage:
-Day15-T3B15-C4 is committed and pushed; independent Day15-T3B15-MR5 is complete locally and returns NO-GO
+Phase 1A Offline Personal Daily Scan Foundation is in progress with offline-only Owner authorization
 
 ## Current Architecture Checkpoint
 
-Verified baseline: `43bcca8` on `main`, equal to `origin/main`; the MR4 documentation diff is not committed.
+The authoritative current-state record is
+[`docs/status/current.json`](status/current.json). The Phase 1A branch
+`codex/personal-daily-scan-phase1a` uses exact commit
+`574a9c2c0329bdb87a94b19ad4517be562c37aa6` only as its implementation source
+baseline, not as a post-change current-HEAD claim. The original worktree and
+its uncommitted T3B15-C5 files and audit packet are frozen and excluded.
+
+TypeScript is the only product runtime. Python is research/prototype-only, and
+is limited to research, prototype work, and statistical validation. Its sample
+terminal Dashboard is deprecated as a product entry. The Owner may run only
+the offline `alpha:daily-scan` product entry in `dry-run` or `fixture` mode;
+`live-readonly` is blocked pending separate authorization. Network, Broker,
+Paper Trading, and Order Execution are closed.
 
 Day 7 completed:
 
@@ -728,17 +740,11 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Day15-T3B15-MR5. C4 is committed and pushed as `7d1e11a`.
-Independent MR5 returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. It
-confirms durable-only reconstruction, validation-journal integrity,
-phase-authority rechecks, and positive fresh-process verification, but finds
-that the fixed runtime still accepts caller-supplied phase adapters,
-authorities, and raw paths; does not connect the new validation journal and
-evidence root to its observer; and is bypassed by the manually prepared
-positive Control history. Complete validation passes `2474/2474`. If approved,
-commit and push MR5, then begin T3B15-C5. Do not create an Operation Manifest,
-run a rehearsal, or add network, provider, recommendation, execution, or
-capital authority.
+Owner review of the complete uncommitted Phase 1A-C3 offline Daily Scan diff,
+validation evidence, and `PHASE1A_C3_REVIEW.patch`. C3 closes exact two-Bar
+timeframe binding and separates Quote wall-clock freshness from explicit
+completed-session Bar validity. Do not begin Phase 1B/C, enable a live read,
+or resume or mix T3B15-C5.
 
 ## T3G-C13 Eleven-symbol Active Scope
 

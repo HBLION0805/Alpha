@@ -73,6 +73,7 @@ export enum PersonalMarketDataCompositionIssueCode {
   BarInstrumentMismatch = "BAR_INSTRUMENT_MISMATCH",
   BarIntervalMismatch = "BAR_INTERVAL_MISMATCH",
   BarChronologyInvalid = "BAR_CHRONOLOGY_INVALID",
+  BarSessionMismatch = "BAR_SESSION_MISMATCH",
   InvalidCanonicalQuote = "INVALID_CANONICAL_QUOTE",
   QuoteInstrumentMismatch = "QUOTE_INSTRUMENT_MISMATCH",
   LiquidityBindingMismatch = "LIQUIDITY_BINDING_MISMATCH",

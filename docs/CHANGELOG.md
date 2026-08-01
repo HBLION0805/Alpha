@@ -1,5 +1,24 @@
 # Alpha Changelog
 
+## 2026-07-29 - Dual-Lane Capital MVP Phase 0
+
+- Added a strict machine-readable current-state record, JSON Schema, validator,
+  and fail-closed regression tests.
+- Recorded the pure-HEAD validation and registered-test execution baseline.
+- Reconciled README, ROADMAP, HANDOFF, Architecture, and Core Principles around
+  one current-state authority and the permanent capital mission.
+- Declared TypeScript the only product runtime, deprecated the Python terminal
+  Dashboard as a product entry, and retained Python only for research,
+  prototype work, and statistical validation.
+- Recorded the non-enforced Owner risk parameters and the future three-bucket
+  capital compatibility architecture without automatic allocation, migration,
+  transfer, or execution authority.
+- Distinguished the implementation source baseline from post-commit current
+  HEAD and recorded that Phase 1 has not started and no daily product entry
+  exists.
+- Added no Daily Scan, Candidate Scan, Event, Risk business logic, network,
+  provider, dashboard, broker, account, order, or Paper Trading behavior.
+
 ## 2026-07-29 - T3G-C13-C1 Registry and MULS Command Correction
 
 - Upgraded the changed active personal-watchlist catalog to immutable registry

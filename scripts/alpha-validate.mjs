@@ -46,6 +46,8 @@ const requiredFiles = [
   "docs/CODEX_DEVELOPMENT_STANDARD.md",
   "docs/CODEX_TASK_TEMPLATE.md",
   "docs/OWNER_REVIEW_TEMPLATE.md",
+  "docs/status/current.json",
+  "docs/status/current.schema.json",
   "docs/ARCHITECTURE.md",
   "docs/CORE_PRINCIPLES.md",
   "docs/ROADMAP.md",
@@ -102,11 +104,15 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "scripts/validate-current-status.test.mjs",
   "src/engines/opportunity/OpportunityScoreEngine.test.ts",
   "src/engines/personal-decision/PersonalDecisionEngine.test.ts",
   "src/engines/personal-candidate-scan/PersonalCandidateScanEngine.test.ts",
   "src/engines/personal-watchlist-mapping/PersonalWatchlistMappingRegistry.test.ts",
   "src/engines/personal-market-data-composition/PersonalMarketDataCompositionEngine.test.ts",
+  "src/engines/verified-market-snapshot/VerifiedMarketSnapshotEngine.test.ts",
+  "src/engines/personal-daily-scan/PersonalDailyScanApplication.test.ts",
+  "scripts/alpha-daily-scan.test.mjs",
   "src/engines/personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine.test.ts",
   "src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.test.ts",
   "src/engines/personal-market-data-twelve-data-qualification/PersonalMarketDataTwelveDataQualificationEngine.test.ts",

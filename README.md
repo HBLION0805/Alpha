@@ -6,14 +6,32 @@ Alpha is a pre-alpha decision-support system for protecting, allocating, growing
 
 ## Current Status
 
-Day 8 Intelligence foundations through Day15-T3B15-C4 are complete and pushed at `7d1e11a`. Independent Day15-T3B15-MR5 is complete locally and returns `NO_GO_FOR_ONE_EXACT_NETWORK_FREE_REHEARSAL`. MR5 confirms C4's durable-only evidence reconstruction, validation journal, phase-authority rechecks, and positive fresh-process verifier, but blocks rehearsal because the fixed runtime still accepts caller-supplied adapters and raw paths, does not wire the new journal/evidence roots into its observer, and is bypassed by the positive test's manually prepared Control history. Complete validation passes `2474/2474`. The next permitted implementation is T3B15-C5. No registered real operation, rehearsal, continuous runtime, network provider, real Pilot, T1/T2 delivery, recommendation, or trading authority is authorized.
+The machine-readable authority for the current milestone, completed work,
+blockers, frozen work, next action, ownership, and validation state is
+[Current Project Status](docs/status/current.json). Human-facing documents
+summarize that file and must not define a competing current state.
 
-Implemented Python prototype/runtime:
+Phase 1A, Offline Personal Daily Scan Foundation, is in progress with
+offline-only Owner authorization. Exact commit
+`574a9c2c0329bdb87a94b19ad4517be562c37aa6` is the implementation source
+baseline, not a claim about the post-change current HEAD. Paused T3B15-C5
+work and `ALPHA_AUDIT_PACKET.md` remain frozen in the original worktree and
+are not part of this branch.
+
+TypeScript is Alpha's only product runtime. Python is retained for research,
+prototype work, and statistical validation; the sample terminal Dashboard is a
+deprecated product entry. The only Owner product entry is the offline
+`alpha:daily-scan` command in `dry-run` or `fixture` mode. `live-readonly`
+is explicitly blocked pending separate Owner network authorization. Network,
+Broker, Paper Trading, and Order Execution are closed.
+
+Implemented Python research/prototype surface:
 
 - Portfolio models and calculations
-- Terminal dashboard using sample development data
+- Deprecated terminal dashboard using sample development data
 - Deterministic decision rules
-- Configuration and deterministic risk limits
+- Historical configuration and deterministic risk calculations that are not
+  product risk authority
 
 Implemented and tested TypeScript foundations:
 
@@ -145,14 +163,21 @@ npm run alpha:validate
 
 ## Python Prototype
 
-The terminal prototype imports the third-party `rich` package. Python dependencies are not yet pinned in this repository.
+The terminal program is a research/prototype sample, not a supported product
+entry. It imports the unpinned third-party `rich` package and is not
+reproducible from a clean environment without manual installation. Phase 0
+therefore deprecates this entry instead of representing it as a product
+runtime.
 
 ```text
 python -m pip install rich
 python -m app.main
 ```
 
-The Python application currently uses sample portfolio data and is not wired to the TypeScript engines or AI infrastructure.
+The Python application uses sample portfolio data. Its registered local
+read-only integration remains available for research compatibility, but no
+Python output is product Risk Authority and Python cannot mutate TypeScript
+product decisions or capital state.
 
 ## Development Principles
 

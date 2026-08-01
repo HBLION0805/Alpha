@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://alpha.local/schemas/project-status/1.0",
+  "title": "Alpha Current Project Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema", "schemaVersion", "statusId", "asOf", "source",
+    "currentMilestone", "completed", "inProgress", "blocked", "frozen", "next",
+    "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
+    "worktreeIsolation", "executionBoundaries", "ownerDailyProductEntry",
+    "validation", "networkAuthority", "phase1Status", "phase1Approval"
+  ],
+  "properties": {
+    "$schema": { "const": "./current.schema.json" },
+    "schemaVersion": { "const": "1.0" },
+    "statusId": {
+      "type": "string",
+      "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
+      "maxLength": 96
+    },
+    "asOf": { "type": "string", "format": "date-time" },
+    "source": { "$ref": "#/$defs/source" },
+    "currentMilestone": { "$ref": "#/$defs/milestone" },
+    "completed": { "$ref": "#/$defs/statusItems" },
+    "inProgress": { "$ref": "#/$defs/statusItems" },
+    "blocked": { "$ref": "#/$defs/statusItems" },
+    "frozen": { "$ref": "#/$defs/statusItems" },
+    "next": { "$ref": "#/$defs/statusItems" },
+    "runtimeOwnership": { "$ref": "#/$defs/runtimeOwnership" },
+    "capitalArchitecture": { "$ref": "#/$defs/capitalArchitecture" },
+    "riskPolicyRecord": { "$ref": "#/$defs/riskPolicyRecord" },
+    "worktreeIsolation": { "$ref": "#/$defs/worktreeIsolation" },
+    "executionBoundaries": { "$ref": "#/$defs/executionBoundaries" },
+    "ownerDailyProductEntry": { "const": "DRY_RUN_AND_FIXTURE_ONLY" },
+    "validation": { "$ref": "#/$defs/validation" },
+    "networkAuthority": { "const": "NONE" },
+    "phase1Status": { "const": "IN_PROGRESS" },
+    "phase1Approval": { "const": "OFFLINE_ONLY_GRANTED" }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "source_baseline_commit", "implementation_baseline"],
+      "properties": {
+        "branch": { "const": "codex/personal-daily-scan-phase1a" },
+        "source_baseline_commit": { "const": "574a9c2c0329bdb87a94b19ad4517be562c37aa6" },
+        "implementation_baseline": { "const": "TRADINGAGENTS_EXTRACTION_BASELINE_NOT_CURRENT_HEAD" }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "status"],
+      "properties": {
+        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1A" },
+        "name": { "const": "Offline Personal Daily Scan Foundation" },
+        "status": { "const": "IN_PROGRESS" }
+      }
+    },
+    "statusItems": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 160,
+        "pattern": "^[A-Z0-9][A-Z0-9_:-]*$"
+      }
+    },
+    "runtimeOwnership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["productRuntime", "pythonRole", "pythonDashboardStatus", "riskAuthority"],
+      "properties": {
+        "productRuntime": { "const": "TYPESCRIPT" },
+        "pythonRole": { "const": "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY" },
+        "pythonDashboardStatus": { "const": "DEPRECATED_AS_PRODUCT_ENTRY_PROTOTYPE_ONLY" },
+        "riskAuthority": { "const": "TYPESCRIPT_UNIFIED_SHORT_TERM_RISK_AUTHORITY_PLANNED" }
+      }
+    },
+    "capitalArchitecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status", "legacyField", "futureBuckets", "legacyMigration",
+        "transferPolicy", "automaticAllocation", "automaticMigration",
+        "automaticTransfer"
+      ],
+      "properties": {
+        "status": { "const": "COMPATIBILITY_ARCHITECTURE_ONLY" },
+        "legacyField": { "const": "capital_usd" },
+        "futureBuckets": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "OPERATING_CAPITAL" },
+            { "const": "LONG_TERM_COMPOUNDING_CAPITAL" },
+            { "const": "CASH_RESERVE" }
+          ],
+          "items": false,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "legacyMigration": { "const": "EXPLICIT_OWNER_APPROVAL_REQUIRED" },
+        "transferPolicy": { "const": "NOT_DEFINED" },
+        "automaticAllocation": { "const": "PROHIBITED" },
+        "automaticMigration": { "const": "PROHIBITED" },
+        "automaticTransfer": { "const": "PROHIBITED" }
+      }
+    },
+    "riskPolicyRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyVersion", "status", "executionAuthority", "currency", "etfMaximumPlannedLossCents",
+        "eventMaximumCostRiskCents", "dailyMaximumLossCents",
+        "weeklyMaximumLossCents", "totalDrawdownPauseCents",
+        "initialLeveragedEtfPositionLimitBasisPoints",
+        "maximumConcurrentShortTermThemes"
+      ],
+      "properties": {
+        "policyVersion": { "const": "phase0-owner-record-2026-07-29" },
+        "status": { "const": "RECORDED_NOT_ENFORCED" },
+        "executionAuthority": { "const": "NONE" },
+        "currency": { "const": "USD" },
+        "etfMaximumPlannedLossCents": { "const": 800 },
+        "eventMaximumCostRiskCents": { "const": 500 },
+        "dailyMaximumLossCents": { "const": 2000 },
+        "weeklyMaximumLossCents": { "const": 4000 },
+        "totalDrawdownPauseCents": { "const": 8000 },
+        "initialLeveragedEtfPositionLimitBasisPoints": { "const": 1000 },
+        "maximumConcurrentShortTermThemes": { "const": 1 }
+      }
+    },
+    "validationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind", "source_baseline_commit", "includesUncommittedCode", "command", "status",
+        "componentCount", "testsExecuted", "passed", "failed", "durationMs",
+        "wallClockDurationMs"
+      ],
+      "properties": {
+        "kind": { "enum": ["TRADINGAGENTS_EXTRACTION_BASELINE", "PHASE_1A_WORKING_TREE"] },
+        "source_baseline_commit": { "const": "574a9c2c0329bdb87a94b19ad4517be562c37aa6" },
+        "includesUncommittedCode": { "type": "boolean" },
+        "command": { "const": "npm.cmd run alpha:validate" },
+        "status": { "const": "PASSED" },
+        "componentCount": { "type": "integer", "minimum": 1 },
+        "testsExecuted": { "type": "integer", "minimum": 1 },
+        "passed": { "type": "integer", "minimum": 1 },
+        "failed": { "const": 0 },
+        "durationMs": { "type": "integer", "minimum": 1 },
+        "wallClockDurationMs": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "worktreeIsolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "originalWorktree", "t3b15C5Included", "alphaAuditPacketIncluded"
+      ],
+      "properties": {
+        "originalWorktree": { "const": "FROZEN" },
+        "t3b15C5Included": { "const": false },
+        "alphaAuditPacketIncluded": { "const": false }
+      }
+    },
+    "executionBoundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network", "broker", "paperTrading", "orderExecution"],
+      "properties": {
+        "network": { "const": "CLOSED" },
+        "broker": { "const": "CLOSED" },
+        "paperTrading": { "const": "CLOSED" },
+        "orderExecution": { "const": "CLOSED" }
+      }
+    },
+    "coverageBaseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "status", "registeredTests", "instrumentedCodeCoverage"],
+      "properties": {
+        "metric": { "const": "REGISTERED_VALIDATION_EXECUTION" },
+        "status": { "const": "ESTABLISHED" },
+        "registeredTests": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["executed", "passed", "failed"],
+          "properties": {
+            "executed": { "type": "integer", "minimum": 1 },
+            "passed": { "type": "integer", "minimum": 1 },
+            "failed": { "const": 0 }
+          }
+        },
+        "instrumentedCodeCoverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "reasonCode"],
+          "properties": {
+            "status": { "const": "NOT_AVAILABLE" },
+            "reasonCode": {
+              "const": "NO_REGISTERED_INSTRUMENTER_AND_V8_ENV_INCOMPATIBLE_WITH_SECURITY_DRILL"
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headBaseline", "phase1aWorkingTree", "coverageBaseline"],
+      "properties": {
+        "headBaseline": { "$ref": "#/$defs/validationResult" },
+        "phase1aWorkingTree": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/validationResult" }
+          ]
+        },
+        "coverageBaseline": { "$ref": "#/$defs/coverageBaseline" }
+      }
+    }
+  }
+}

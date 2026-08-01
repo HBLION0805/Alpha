@@ -38,6 +38,11 @@ export enum PersonalCandidateTimeframeDirection {
   Flat = "FLAT",
 }
 
+export enum PersonalCandidateCompletedSessionValidity {
+  Valid = "VALID",
+  Invalid = "INVALID",
+}
+
 export enum PersonalCandidateStructure {
   AlignedBullish = "ALIGNED_BULLISH",
   AlignedBearish = "ALIGNED_BEARISH",
@@ -57,6 +62,7 @@ export enum PersonalCandidateBlockerCode {
   MappingEvidenceMissing = "MAPPING_EVIDENCE_MISSING",
   TimeframeDataStale = "TIMEFRAME_DATA_STALE",
   TimeframeObservationTooOld = "TIMEFRAME_OBSERVATION_TOO_OLD",
+  TimeframeCompletedSessionInvalid = "TIMEFRAME_COMPLETED_SESSION_INVALID",
   TimeframeEvidenceMissing = "TIMEFRAME_EVIDENCE_MISSING",
   PartialBarNotAllowed = "PARTIAL_BAR_NOT_ALLOWED",
   TimeframeStructureMixed = "TIMEFRAME_STRUCTURE_MIXED",
@@ -106,6 +112,7 @@ export interface PersonalCandidateTimeframeInput {
   readonly start: PersonalCandidateBarEndpoint;
   readonly end: PersonalCandidateBarEndpoint;
   readonly status: CanonicalBarStatus;
+  readonly completedSessionValidity: PersonalCandidateCompletedSessionValidity;
   readonly freshness: BarFreshnessStatus;
   readonly evidenceReferences: readonly string[];
 }
