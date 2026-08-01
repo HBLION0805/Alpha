@@ -2,13 +2,14 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-const BASE_COMMIT = "574a9c2c0329bdb87a94b19ad4517be562c37aa6";
+const BASE_COMMIT = "4e4282582b816863c35efc6d5657cdf52d18abc9";
 const STATUS_FIELDS = Object.freeze([
   "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
   "completed", "inProgress", "blocked", "frozen", "next", "runtimeOwnership",
   "capitalArchitecture", "riskPolicyRecord", "worktreeIsolation",
   "executionBoundaries", "ownerDailyProductEntry", "validation",
-  "networkAuthority", "phase1Status", "phase1Approval",
+  "networkAuthority", "phase1Status", "phase1Approval", "phase1BStatus",
+  "optionsStatus", "brokerStatus", "paperTradingStatus", "orderExecutionStatus",
 ]);
 const STATUS_ITEM = /^[A-Z0-9][A-Z0-9_:-]{2,159}$/u;
 
@@ -31,21 +32,22 @@ export function validateCurrentStatus(status, schema) {
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
   exact(status.$schema, "./current.schema.json", "$schema", issues);
-  exact(status.schemaVersion, "1.0", "schemaVersion", issues);
+  exact(status.schemaVersion, "1.1", "schemaVersion", issues);
   if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
     issues.push("statusId must be a bounded Alpha status identifier.");
   }
   if (!isCanonicalTimestamp(status.asOf)) issues.push("asOf must be a canonical UTC timestamp.");
 
   validateExactObject(status.source, "source", {
-    branch: "codex/personal-daily-scan-phase1a",
+    branch: "main",
     source_baseline_commit: BASE_COMMIT,
-    implementation_baseline: "TRADINGAGENTS_EXTRACTION_BASELINE_NOT_CURRENT_HEAD",
+    implementation_baseline: "PHASE_1A_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD",
+    reviewed_c4_commit: "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
   }, issues);
   validateExactObject(status.currentMilestone, "currentMilestone", {
     id: "PERSONAL_DAILY_SCAN_PHASE_1A",
     name: "Offline Personal Daily Scan Foundation",
-    status: "IN_PROGRESS",
+    status: "MERGED",
   }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
     validateStatusItems(status[field], field, issues);
@@ -65,15 +67,21 @@ export function validateCurrentStatus(status, schema) {
   }, issues);
   validateExactObject(status.executionBoundaries, "executionBoundaries", {
     network: "CLOSED",
+    options: "CLOSED",
     broker: "CLOSED",
     paperTrading: "CLOSED",
     orderExecution: "CLOSED",
   }, issues);
   exact(status.ownerDailyProductEntry, "DRY_RUN_AND_FIXTURE_ONLY", "ownerDailyProductEntry", issues);
   validateValidation(status.validation, issues);
-  exact(status.networkAuthority, "NONE", "networkAuthority", issues);
-  exact(status.phase1Status, "IN_PROGRESS", "phase1Status", issues);
-  exact(status.phase1Approval, "OFFLINE_ONLY_GRANTED", "phase1Approval", issues);
+  exact(status.networkAuthority, "OWNER_NETWORK_AUTHORIZATION_REQUIRED", "networkAuthority", issues);
+  exact(status.phase1Status, "MERGED", "phase1Status", issues);
+  exact(status.phase1Approval, "OFFLINE_AVAILABLE", "phase1Approval", issues);
+  exact(status.phase1BStatus, "NOT_STARTED", "phase1BStatus", issues);
+  exact(status.optionsStatus, "NOT_STARTED", "optionsStatus", issues);
+  exact(status.brokerStatus, "NOT_STARTED", "brokerStatus", issues);
+  exact(status.paperTradingStatus, "NOT_STARTED", "paperTradingStatus", issues);
+  exact(status.orderExecutionStatus, "NOT_STARTED", "orderExecutionStatus", issues);
 
   return result(issues);
 }
@@ -94,7 +102,7 @@ function validateSchema(schema, issues) {
     return;
   }
   exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
-  exact(schema.$id, "https://alpha.local/schemas/project-status/1.0", "schema.$id", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.1", "schema.$id", issues);
   exact(schema.type, "object", "schema.type", issues);
   exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
   if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {
@@ -170,9 +178,9 @@ function validateValidation(value, issues) {
   const fields = ["headBaseline", "phase1aWorkingTree", "coverageBaseline"];
   allowOnly(value, fields, "validation", issues);
   requireExactly(value, fields, "validation", issues);
-  validateValidationResult(value.headBaseline, "TRADINGAGENTS_EXTRACTION_BASELINE", false, "validation.headBaseline", issues);
+  validateValidationResult(value.headBaseline, "PHASE_1A_MERGED_HEAD", false, "validation.headBaseline", issues);
   if (value.phase1aWorkingTree !== null) {
-    validateValidationResult(value.phase1aWorkingTree, "PHASE_1A_WORKING_TREE", true, "validation.phase1aWorkingTree", issues);
+    issues.push("validation.phase1aWorkingTree must be null after the Phase 1A merge.");
   }
   validateCoverageBaseline(value.coverageBaseline, issues);
 }
@@ -194,9 +202,11 @@ function validateValidationResult(value, kind, includesUncommittedCode, path, is
   exact(value.includesUncommittedCode, includesUncommittedCode, `${path}.includesUncommittedCode`, issues);
   exact(value.command, "npm.cmd run alpha:validate", `${path}.command`, issues);
   exact(value.status, "PASSED", `${path}.status`, issues);
-  for (const field of ["componentCount", "testsExecuted", "passed", "durationMs", "wallClockDurationMs"]) {
+  for (const field of ["componentCount", "testsExecuted", "passed"]) {
     if (!Number.isSafeInteger(value[field]) || value[field] <= 0) issues.push(`${path}.${field} must be a positive integer.`);
   }
+  exact(value.durationMs, null, `${path}.durationMs`, issues);
+  exact(value.wallClockDurationMs, null, `${path}.wallClockDurationMs`, issues);
   exact(value.failed, 0, `${path}.failed`, issues);
   if (Number.isSafeInteger(value.testsExecuted) && Number.isSafeInteger(value.passed) && value.testsExecuted !== value.passed) {
     issues.push(`${path}.passed must equal testsExecuted when status is PASSED.`);

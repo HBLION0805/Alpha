@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.0",
+  "$id": "https://alpha.local/schemas/project-status/1.1",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -9,11 +9,13 @@
     "currentMilestone", "completed", "inProgress", "blocked", "frozen", "next",
     "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
     "worktreeIsolation", "executionBoundaries", "ownerDailyProductEntry",
-    "validation", "networkAuthority", "phase1Status", "phase1Approval"
+    "validation", "networkAuthority", "phase1Status", "phase1Approval",
+    "phase1BStatus", "optionsStatus", "brokerStatus", "paperTradingStatus",
+    "orderExecutionStatus"
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.0" },
+    "schemaVersion": { "const": "1.1" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -34,19 +36,25 @@
     "executionBoundaries": { "$ref": "#/$defs/executionBoundaries" },
     "ownerDailyProductEntry": { "const": "DRY_RUN_AND_FIXTURE_ONLY" },
     "validation": { "$ref": "#/$defs/validation" },
-    "networkAuthority": { "const": "NONE" },
-    "phase1Status": { "const": "IN_PROGRESS" },
-    "phase1Approval": { "const": "OFFLINE_ONLY_GRANTED" }
+    "networkAuthority": { "const": "OWNER_NETWORK_AUTHORIZATION_REQUIRED" },
+    "phase1Status": { "const": "MERGED" },
+    "phase1Approval": { "const": "OFFLINE_AVAILABLE" },
+    "phase1BStatus": { "const": "NOT_STARTED" },
+    "optionsStatus": { "const": "NOT_STARTED" },
+    "brokerStatus": { "const": "NOT_STARTED" },
+    "paperTradingStatus": { "const": "NOT_STARTED" },
+    "orderExecutionStatus": { "const": "NOT_STARTED" }
   },
   "$defs": {
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["branch", "source_baseline_commit", "implementation_baseline"],
+      "required": ["branch", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
       "properties": {
-        "branch": { "const": "codex/personal-daily-scan-phase1a" },
-        "source_baseline_commit": { "const": "574a9c2c0329bdb87a94b19ad4517be562c37aa6" },
-        "implementation_baseline": { "const": "TRADINGAGENTS_EXTRACTION_BASELINE_NOT_CURRENT_HEAD" }
+        "branch": { "const": "main" },
+        "source_baseline_commit": { "const": "4e4282582b816863c35efc6d5657cdf52d18abc9" },
+        "implementation_baseline": { "const": "PHASE_1A_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD" },
+        "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
       }
     },
     "milestone": {
@@ -56,7 +64,7 @@
       "properties": {
         "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1A" },
         "name": { "const": "Offline Personal Daily Scan Foundation" },
-        "status": { "const": "IN_PROGRESS" }
+        "status": { "const": "MERGED" }
       }
     },
     "statusItems": {
@@ -143,8 +151,8 @@
         "wallClockDurationMs"
       ],
       "properties": {
-        "kind": { "enum": ["TRADINGAGENTS_EXTRACTION_BASELINE", "PHASE_1A_WORKING_TREE"] },
-        "source_baseline_commit": { "const": "574a9c2c0329bdb87a94b19ad4517be562c37aa6" },
+        "kind": { "const": "PHASE_1A_MERGED_HEAD" },
+        "source_baseline_commit": { "const": "4e4282582b816863c35efc6d5657cdf52d18abc9" },
         "includesUncommittedCode": { "type": "boolean" },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": { "const": "PASSED" },
@@ -152,8 +160,8 @@
         "testsExecuted": { "type": "integer", "minimum": 1 },
         "passed": { "type": "integer", "minimum": 1 },
         "failed": { "const": 0 },
-        "durationMs": { "type": "integer", "minimum": 1 },
-        "wallClockDurationMs": { "type": "integer", "minimum": 1 }
+        "durationMs": { "type": ["integer", "null"], "minimum": 1 },
+        "wallClockDurationMs": { "type": ["integer", "null"], "minimum": 1 }
       }
     },
     "worktreeIsolation": {
@@ -171,9 +179,10 @@
     "executionBoundaries": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["network", "broker", "paperTrading", "orderExecution"],
+      "required": ["network", "options", "broker", "paperTrading", "orderExecution"],
       "properties": {
         "network": { "const": "CLOSED" },
+        "options": { "const": "CLOSED" },
         "broker": { "const": "CLOSED" },
         "paperTrading": { "const": "CLOSED" },
         "orderExecution": { "const": "CLOSED" }

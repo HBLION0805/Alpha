@@ -1,28 +1,28 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.0",
+  "schemaVersion": "1.1",
   "statusId": "alpha-status:personal-daily-scan-phase1a",
-  "asOf": "2026-07-31T00:55:59.294Z",
+  "asOf": "2026-08-01T15:10:46.392Z",
   "source": {
-    "branch": "codex/personal-daily-scan-phase1a",
-    "source_baseline_commit": "574a9c2c0329bdb87a94b19ad4517be562c37aa6",
-    "implementation_baseline": "TRADINGAGENTS_EXTRACTION_BASELINE_NOT_CURRENT_HEAD"
+    "branch": "main",
+    "source_baseline_commit": "4e4282582b816863c35efc6d5657cdf52d18abc9",
+    "implementation_baseline": "PHASE_1A_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD",
+    "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7"
   },
   "currentMilestone": {
     "id": "PERSONAL_DAILY_SCAN_PHASE_1A",
     "name": "Offline Personal Daily Scan Foundation",
-    "status": "IN_PROGRESS"
+    "status": "MERGED"
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
-    "PURE_HEAD_VALIDATION_BASELINE"
+    "PERSONAL_DAILY_SCAN_PHASE_1A_MERGED",
+    "PHASE_1A_POST_MERGE_VALIDATION_BASELINE"
   ],
-  "inProgress": [
-    "PHASE_1A_C3_TIMEFRAME_BINDING_AND_TIME_VALIDITY_CORRECTION"
-  ],
+  "inProgress": [],
   "blocked": [
-    "PHASE_1B_NOT_APPROVED",
-    "NETWORK_LIVE_READONLY_PENDING_OWNER_AUTHORIZATION",
+    "PHASE_1B_NOT_STARTED",
+    "NETWORK_LIVE_READONLY_OWNER_AUTHORIZATION_REQUIRED",
     "VIX_LIVE_SOURCE_NOT_APPROVED",
     "EVENT_CALENDAR_SOURCE_NOT_APPROVED"
   ],
@@ -31,10 +31,11 @@
     "ORIGINAL_ALPHA_WORKTREE",
     "EVENT_BUSINESS_LOGIC",
     "RISK_BUSINESS_LOGIC",
+    "OPTIONS",
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_REVIEW_PHASE_1A_C3_DIFF_VALIDATION_AND_REVIEW_PATCH"
+    "OWNER_REVIEW_PHASE_1A_POST_MERGE_STATUS_CONVERGENCE"
   ],
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
@@ -76,6 +77,7 @@
   },
   "executionBoundaries": {
     "network": "CLOSED",
+    "options": "CLOSED",
     "broker": "CLOSED",
     "paperTrading": "CLOSED",
     "orderExecution": "CLOSED"
@@ -83,37 +85,25 @@
   "ownerDailyProductEntry": "DRY_RUN_AND_FIXTURE_ONLY",
   "validation": {
     "headBaseline": {
-      "kind": "TRADINGAGENTS_EXTRACTION_BASELINE",
-      "source_baseline_commit": "574a9c2c0329bdb87a94b19ad4517be562c37aa6",
+      "kind": "PHASE_1A_MERGED_HEAD",
+      "source_baseline_commit": "4e4282582b816863c35efc6d5657cdf52d18abc9",
       "includesUncommittedCode": false,
       "command": "npm.cmd run alpha:validate",
       "status": "PASSED",
-      "componentCount": 132,
-      "testsExecuted": 2675,
-      "passed": 2675,
-      "failed": 0,
-      "durationMs": 79195,
-      "wallClockDurationMs": 80320
-    },
-    "phase1aWorkingTree": {
-      "kind": "PHASE_1A_WORKING_TREE",
-      "source_baseline_commit": "574a9c2c0329bdb87a94b19ad4517be562c37aa6",
-      "includesUncommittedCode": true,
-      "command": "npm.cmd run alpha:validate",
-      "status": "PASSED",
       "componentCount": 136,
-      "testsExecuted": 2730,
-      "passed": 2730,
+      "testsExecuted": 2736,
+      "passed": 2736,
       "failed": 0,
-      "durationMs": 88828,
-      "wallClockDurationMs": 89600
+      "durationMs": null,
+      "wallClockDurationMs": null
     },
+    "phase1aWorkingTree": null,
     "coverageBaseline": {
       "metric": "REGISTERED_VALIDATION_EXECUTION",
       "status": "ESTABLISHED",
       "registeredTests": {
-        "executed": 2730,
-        "passed": 2730,
+        "executed": 2736,
+        "passed": 2736,
         "failed": 0
       },
       "instrumentedCodeCoverage": {
@@ -122,7 +112,12 @@
       }
     }
   },
-  "networkAuthority": "NONE",
-  "phase1Status": "IN_PROGRESS",
-  "phase1Approval": "OFFLINE_ONLY_GRANTED"
+  "networkAuthority": "OWNER_NETWORK_AUTHORIZATION_REQUIRED",
+  "phase1Status": "MERGED",
+  "phase1Approval": "OFFLINE_AVAILABLE",
+  "phase1BStatus": "NOT_STARTED",
+  "optionsStatus": "NOT_STARTED",
+  "brokerStatus": "NOT_STARTED",
+  "paperTradingStatus": "NOT_STARTED",
+  "orderExecutionStatus": "NOT_STARTED"
 }
