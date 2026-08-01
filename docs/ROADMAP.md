@@ -8,16 +8,19 @@
 
 The authoritative current state is
 [Current Project Status](status/current.json). Phase 1A Offline Personal Daily
-Scan Foundation is in progress with offline-only Owner authorization. The
-recorded `574a9c2` value is the implementation source baseline, not
-post-change current HEAD. T3B15-C5 remains frozen outside this branch. The
-only Owner product entry is `alpha:daily-scan` in `dry-run` or `fixture` mode;
-Network, Broker, Paper Trading, and Order Execution are closed.
+Scan Foundation is merged and offline available through merge commit
+`4e4282582b816863c35efc6d5657cdf52d18abc9`. That merge commit is the
+implementation baseline, not the later status-update commit. T3B15-C5 remains
+frozen outside this branch. The only Owner product entry is
+`alpha:daily-scan` in `dry-run` or `fixture` mode; `live-readonly` requires
+separate Owner network authorization. Network, Options, Broker, Paper Trading,
+and Order Execution are closed. Phase 1B has not started.
 
-Before Phase 1 can be proposed, a separate design must define the exact 11
-trade symbols and `BENCHMARK_SCOPE`, QQQ/SMH reads, a real VIX source or
-explicit `BLOCKED` state, the additional read-only request budget and Owner
-authorization, and fail-closed behavior when macro evidence is missing.
+Before Phase 1B can be proposed, the Owner must separately approve its scope.
+The merged Phase 1A output already preserves explicit QQQ/SMH benchmark,
+VIX/volatility, macro, provenance, freshness, and eligibility states and fails
+closed where required evidence is unavailable. No live read or later-phase
+authority follows from offline availability.
 
 ---
 

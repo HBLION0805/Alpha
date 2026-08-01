@@ -11,19 +11,20 @@ blockers, frozen work, next action, ownership, and validation state is
 [Current Project Status](docs/status/current.json). Human-facing documents
 summarize that file and must not define a competing current state.
 
-Phase 1A, Offline Personal Daily Scan Foundation, is in progress with
-offline-only Owner authorization. Exact commit
-`574a9c2c0329bdb87a94b19ad4517be562c37aa6` is the implementation source
-baseline, not a claim about the post-change current HEAD. Paused T3B15-C5
-work and `ALPHA_AUDIT_PACKET.md` remain frozen in the original worktree and
-are not part of this branch.
+Phase 1A, Offline Personal Daily Scan Foundation, is merged and offline
+available through merge commit
+`4e4282582b816863c35efc6d5657cdf52d18abc9`; reviewed C4 commit
+`095657cd5c72d095d9c72b2ec76a580b35e9d3c7` is included. The merge commit is
+the implementation baseline, not a claim that it is the later status-update
+commit. Paused T3B15-C5 work and `ALPHA_AUDIT_PACKET.md` remain frozen in the
+original worktree and are not part of this branch.
 
 TypeScript is Alpha's only product runtime. Python is retained for research,
 prototype work, and statistical validation; the sample terminal Dashboard is a
 deprecated product entry. The only Owner product entry is the offline
 `alpha:daily-scan` command in `dry-run` or `fixture` mode. `live-readonly`
-is explicitly blocked pending separate Owner network authorization. Network,
-Broker, Paper Trading, and Order Execution are closed.
+requires separate Owner network authorization. Network, Options, Broker,
+Paper Trading, and Order Execution are closed; Phase 1B has not started.
 
 Implemented Python research/prototype surface:
 
