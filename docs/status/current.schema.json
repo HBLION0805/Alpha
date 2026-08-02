@@ -40,7 +40,7 @@
     "networkAuthority": { "const": "NOT_GRANTED" },
     "phase1Status": { "const": "MERGED" },
     "phase1Approval": { "const": "CLOSED" },
-    "phase1BStatus": { "const": "D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED" },
+    "phase1BStatus": { "const": "D3A_MERGED_CLOSED_D3B_DESIGN_IN_REVIEW" },
     "phase1BDelivery": { "$ref": "#/$defs/phase1BDelivery" },
     "phase1BDesign": { "$ref": "#/$defs/phase1BDesign" },
     "optionsStatus": { "const": "CLOSED" },
@@ -54,9 +54,9 @@
       "additionalProperties": false,
       "required": ["branch", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
       "properties": {
-        "branch": { "const": "main" },
-        "source_baseline_commit": { "const": "bae51dda65dc55f376cb683f873fa93295ed7e2f" },
-        "implementation_baseline": { "const": "PHASE_1B_D3A_POST_MERGE_CORRECTION_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD" },
+        "branch": { "const": "codex/phase1b-d3b-live-readonly-design" },
+        "source_baseline_commit": { "const": "608d9859bc480bf6bc39afc20f6d928e62544e67" },
+        "implementation_baseline": { "const": "PHASE_1B_D3B_DESIGN_SOURCE_BASELINE_NOT_DESIGN_COMMIT_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
       }
     },
@@ -65,23 +65,24 @@
       "additionalProperties": false,
       "required": ["id", "name", "status"],
       "properties": {
-        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D3A" },
-        "name": { "const": "Alpaca Bars Limit Qualification Slice" },
-        "status": { "const": "MERGED_CLOSED" }
+        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D3B_DESIGN" },
+        "name": { "const": "Alpaca Bars Limit Live-Readonly Qualification Protocol" },
+        "status": { "const": "DESIGN_IN_REVIEW" }
       }
     },
     "phase1BDesign": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["task", "status", "networkAuthority", "credentialAccess", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot"],
+      "required": ["task", "status", "networkAuthority", "credentialAccess", "persistenceWrites", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot"],
       "properties": {
-        "task": { "const": "ALPACA_BARS_LIMIT_QUALIFICATION_SLICE" },
-        "status": { "const": "D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED" },
+        "task": { "const": "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL" },
+        "status": { "const": "D3B_DESIGN_IN_REVIEW_LIVE_RUN_NOT_AUTHORIZED" },
         "networkAuthority": { "const": "NOT_GRANTED" },
         "credentialAccess": { "const": "PROHIBITED" },
-        "marketDataAcquisition": { "const": "D3A_RAW_HTTPS_BOUNDARY_MERGED_NOT_EXECUTED" },
+        "persistenceWrites": { "const": 0 },
+        "marketDataAcquisition": { "const": "D3B_DESIGN_ONLY_NOT_IMPLEMENTED" },
         "trustedOwnerVerificationKey": { "const": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED" },
-        "marketScopePolicy": { "const": "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY" },
+        "marketScopePolicy": { "const": "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY" },
         "providerLimitSemantics": { "const": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT" },
         "compositionRoot": { "const": "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE" }
       }
@@ -97,7 +98,7 @@
         "d2C3": { "const": "NOT_STARTED" },
         "d3A": { "const": "MERGED_CLOSED" },
         "d3APostMergeCorrection": { "const": "VERIFIED" },
-        "d3B": { "const": "BLOCKED_NOT_STARTED" },
+        "d3B": { "const": "DESIGN_IN_REVIEW" },
         "newsMacro": { "const": "NOT_STARTED" },
         "providerLimitSemantics": { "const": "UNPROVEN" },
         "fiveRequest43Evidence": { "const": "STRUCTURAL_TARGET_ONLY" },

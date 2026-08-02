@@ -61,9 +61,14 @@ validate structure only. The five-request / 36-Bar / seven-Quote /
 is not granted, full Daily Scan HTTPS acquisition is not implemented, and no
 real HTTP lifecycle has occurred. Real market-data usability remains 0%.
 Injected responses are always `TEST_INJECTED`, keep zero network counters, and
-cannot prove Provider behavior. D2-C3, D3B, full D3 acquisition, and News/Macro
-have not started; D3B remains blocked and requires a separate Owner design
-decision.
+cannot prove Provider behavior. D2-C3, full D3 acquisition, and News/Macro have
+not started. D3B now has a design-only, three-request qualification protocol in
+Owner review: single-symbol `MU`, single-symbol `QQQ`, then multi-symbol
+`MU,QQQ`, all with `1Day` and `limit=2` over one exact approved window. The
+design assumes neither per-symbol nor global semantics. It implements no code,
+reads no credential, grants no network authority, and keeps the future live run
+not authorized. See
+[D3B Live-Readonly Qualification Protocol](docs/specifications/ALPACA_BARS_LIMIT_D3B_LIVE_READONLY_QUALIFICATION_PROTOCOL.md).
 
 Implemented Python research/prototype surface:
 

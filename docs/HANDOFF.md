@@ -1,10 +1,10 @@
 # Alpha Handoff
 
 Date:
-2026-08-01
+2026-08-02
 
 Project Stage:
-Phase 1A Offline Personal Daily Scan Foundation is merged and closed
+Phase 1B-D3B live-readonly qualification protocol is in design review
 
 ## Current Architecture Checkpoint
 
@@ -62,9 +62,13 @@ test responses remain `UNPROVEN` evidence of Provider semantics. PR #7 merged
 the verified D3A evidence-integrity correction through merge commit `bae51dd`.
 D3A is now merged and closed. The correction fixes real-source capability
 spoofing, retains bounded failed-response counts and pagination presence, and
-binds network counts to the product Transport lifecycle. D2-C3, D3B, full D3,
-and News/Macro are explicitly not started; D3B remains blocked pending a
-separate Owner design decision. Real market-data usability remains 0%.
+binds network counts to the product Transport lifecycle. D2-C3, full D3, and
+News/Macro are explicitly not started. D3B design only is now in Owner review.
+Its exact future qualification sequence is `MU`, `QQQ`, and `MU,QQQ`, each
+using `1Day`, `limit=2`, and the same signed completed-session window. The
+design assumes neither per-symbol nor global semantics, and neither implements
+nor authorizes a live run. Network remains closed and real market-data
+usability remains 0%.
 
 Day 7 completed:
 
