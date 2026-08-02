@@ -20,6 +20,7 @@
     "test:personal-daily-scan": "tsx src/engines/personal-daily-scan/PersonalDailyScanApplication.test.ts && node scripts/alpha-daily-scan.test.mjs",
     "test:personal-daily-scan-live-readonly-preflight": "tsx src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyPreflight.test.ts",
     "test:personal-daily-scan-live-readonly-market-scope": "tsx src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyMarketScope.test.ts",
+    "test:alpaca-bars-limit-qualification": "tsx src/engines/personal-daily-scan/AlpacaBarsLimitQualification.test.ts",
     "alpha:daily-scan": "tsx scripts/alpha-daily-scan.ts",
     "test:personal-market-data-provider-coverage": "tsx src/engines/personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine.test.ts",
     "test:personal-market-data-alternative-provider-qualification": "tsx src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.test.ts",

@@ -67,6 +67,7 @@ const requiredFiles = [
   "docs/specifications/TWELVE_DATA_ADAPTER.md",
   "docs/specifications/TWELVE_DATA_LIVE_SMOKE.md",
   "docs/specifications/PERSONAL_DAILY_SCAN_PHASE_1B_AUTHORIZATION_AND_CALENDAR.md",
+  "docs/specifications/ALPACA_BARS_LIMIT_QUALIFICATION.md",
   "docs/specifications/MARKET_REGIME_ENGINE.md",
   "docs/specifications/BROAD_MARKET_EVIDENCE.md",
   "docs/specifications/EVIDENCE_FUSION.md",
@@ -115,6 +116,7 @@ const aggregateTestFiles = [
   "src/engines/personal-daily-scan/PersonalDailyScanApplication.test.ts",
   "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyPreflight.test.ts",
   "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyMarketScope.test.ts",
+  "src/engines/personal-daily-scan/AlpacaBarsLimitQualification.test.ts",
   "scripts/alpha-daily-scan.test.mjs",
   "src/engines/personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine.test.ts",
   "src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.test.ts",
@@ -459,12 +461,14 @@ function checkNetworkAndProviderCode(files) {
   const approvedKalshiTransport = "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.ts";
   const approvedAlpacaTransport = "src/integration/market-data/alpaca/AlpacaHttpsTransport.ts";
   const approvedAlpacaAssetMetadataTransport = "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataTransport.ts";
+  const approvedAlpacaBarsLimitQualificationTransport = "src/integration/market-data/alpaca/AlpacaBarsLimitQualificationHttpsTransport.ts";
   const approvedLiveTransports = new Set([
     approvedTwelveDataTransport,
     approvedTwelveDataMulsReferenceTransport,
     approvedKalshiTransport,
     approvedAlpacaTransport,
     approvedAlpacaAssetMetadataTransport,
+    approvedAlpacaBarsLimitQualificationTransport,
   ]);
 
   for (const file of productionFiles) {
@@ -513,6 +517,13 @@ function checkNetworkAndProviderCode(files) {
             'redirect: "error"',
             "AlpacaPersonalAssetMetadataTransportErrorCode.Timeout",
             "MAX_RESPONSE_BYTES",
+          ]
+        : normalizedFile === approvedAlpacaBarsLimitQualificationTransport ? [
+            "https://data.alpaca.markets/v2/stocks/bars",
+            'redirect: "error"',
+            "readBounded",
+            "maximumResponseBytes",
+            "loadAlpacaCredentials",
           ]
         : [
             "https://data.alpaca.markets/v2/stocks/bars",

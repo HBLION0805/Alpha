@@ -2235,3 +2235,17 @@
   new data gap.
 - Decision: add no Paper-account, recommendation, order, execution,
   commercialization, or new live-network authority.
+## 2026-08-02 - Qualify Alpaca multi-symbol limit semantics with one bounded request
+
+- Decision: do not authorize the full five-request / 43-evidence Daily Scan
+  while Alpaca multi-symbol `limit=2` semantics remain unproven. First build a
+  single-purpose `MU,QQQ` daily Bars qualification slice.
+- Authority: the slice uses a separately signed, one-request Owner Manifest and
+  the existing product-owned trust root and signed Exchange Calendar. A D2
+  five-request Manifest cannot authorize this slice, and caller dependencies
+  cannot replace product authority.
+- Boundary: the raw Transport returns protocol data only. Canonical evidence,
+  Candidate Scan, decisions, persistence, Broker, Options, Paper Trading,
+  orders, and automatic execution are excluded.
+- Status: offline implementation awaits Owner review. No network authorization,
+  credential read, or Provider request occurred.

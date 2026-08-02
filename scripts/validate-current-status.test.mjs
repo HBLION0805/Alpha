@@ -75,10 +75,10 @@ const tests = [
     assert(validation.issues.includes("networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1Status must equal \"MERGED\"."));
     assert(validation.issues.includes("phase1Approval must equal \"CLOSED\"."));
-    assert(validation.issues.includes("phase1BStatus must equal \"OFFLINE_FOUNDATION_MERGED_LIVE_READONLY_NOT_STARTED\"."));
+    assert(validation.issues.includes("phase1BStatus must equal \"D3A_OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED\"."));
     assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
-    assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"NOT_IMPLEMENTED\"."));
+    assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"QUALIFICATION_RAW_HTTPS_TRANSPORT_IMPLEMENTED_NOT_EXECUTED\"."));
     assert(validation.issues.includes("optionsStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("brokerStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("paperTradingStatus must equal \"CLOSED\"."));
@@ -87,7 +87,7 @@ const tests = [
     assert(validation.issues.includes("ownerDailyProductEntry must equal \"DRY_RUN_AND_FIXTURE_ONLY\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
-  ["post-merge source and validation cannot drift back to a review worktree", () => {
+  ["D3A review source and validation cannot drift to another worktree", () => {
     const changed = clone(status);
     changed.source.branch = "codex/personal-daily-scan-phase1a-c4";
     changed.source.source_baseline_commit = changed.source.reviewed_c4_commit;
@@ -95,9 +95,9 @@ const tests = [
     changed.validation.phase1bD2MergedHead.includesUncommittedCode = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
-    assert(validation.issues.includes("source.branch must equal \"main\"."));
+    assert(validation.issues.includes("source.branch must equal \"codex/phase1b-d3a-alpaca-bars-limit-qualification\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"MERGED_OFFLINE_ONLY\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED\"."));
     assert(validation.issues.includes("validation.phase1bD2MergedHead.includesUncommittedCode must equal false."));
   }],
   ["post-merge validation does not publish unaudited timing precision", () => {
@@ -148,7 +148,7 @@ const tests = [
     changed.phase1BDesign.ownerPublicKey = "caller-supplied";
     assertInvalid(changed, schema, "phase1BDesign.ownerPublicKey is undeclared.");
   }],
-  ["merged D2 records unproven Provider semantics and fixed product composition", () => {
+  ["D3A records offline qualification without granting Provider or network authority", () => {
     assert(status.completed.includes("PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"));
     assert(status.completed.includes("PHASE_1B_D1_DESIGN_COMPLETED"));
     assert(status.completed.includes("PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"));
@@ -156,11 +156,12 @@ const tests = [
     assert.equal(status.phase1BDelivery.d1, "DESIGN_COMPLETED");
     assert.equal(status.phase1BDelivery.d2C1, "MERGED");
     assert.equal(status.phase1BDelivery.d2C2R2, "MERGED_OFFLINE_ONLY");
+    assert.equal(status.phase1BDelivery.d3A, "OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED");
     assert.equal(status.phase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
-    assert.equal(status.phase1BDesign.status, "D2_C1_MERGED_D2_C2_R2_MERGED_OFFLINE_ONLY");
+    assert.equal(status.phase1BDesign.status, "D3A_OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED");
     assert.equal(status.phase1BDesign.marketScopePolicy, "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY");
     assert.equal(status.phase1BDesign.providerLimitSemantics, "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT");
-    assert.equal(status.phase1BDesign.compositionRoot, "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE");
+    assert.equal(status.phase1BDesign.compositionRoot, "PRODUCT_FIXED_OWNER_VERIFIER_EXACT_ONE_REQUEST_VALIDATOR_AND_PRODUCT_OWNED_RAW_TRANSPORT");
     const changed = clone(status);
     changed.phase1BDesign.trustedOwnerVerificationKey = "CALLER_RUNTIME_INPUT";
     assertInvalid(changed, schema, "phase1BDesign.trustedOwnerVerificationKey must equal \"PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED\".");

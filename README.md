@@ -38,14 +38,25 @@ normalization and resolution, dispatcher-owned lifecycle counting, and a
 content-addressed mapping registry for the 36-Bar / seven-Quote / 43-resolution
 offline structural budget. The product barrel cannot accept a caller verifier,
 Provider authority, key, fingerprint, or Transport.
+Phase 1B-D3A now has an offline, Owner-review-pending qualification slice for
+exactly one `GET /v2/stocks/bars` request covering `MU,QQQ`, `1Day`, and
+`limit=2`. It reuses the product-owned Owner trust root and signed Exchange
+Calendar boundary, compiles one exact request, exposes a product-owned bounded
+raw HTTPS Transport, strictly validates the raw response, and returns only a
+sanitized qualification result. The product entry accepts no caller verifier,
+key, fingerprint, Provider authority, credential loader, or Transport. No
+signed one-shot Manifest or network authority exists, so the slice remains
+offline and fail-closed before credentials or dispatch.
+
 Repository evidence does not prove Alpaca's multi-symbol `limit=2` semantics,
 so the live-readonly product path returns
 `PROVIDER_LIMIT_SEMANTICS_UNPROVEN` before credentials or Transport. Fixtures
 validate structure only. The five-request / 36-Bar / seven-Quote /
 43-resolution budget is a structural target only. Live network authorization
-is not granted, real HTTPS acquisition is not implemented, and no real HTTP
-lifecycle has occurred. Local counters prove only the deterministic lifecycle
-model. D2-C3, D3, and News/Macro have not started.
+is not granted, full Daily Scan HTTPS acquisition is not implemented, and no
+real HTTP lifecycle has occurred. Local counters and injected responses prove
+only the deterministic lifecycle model. D2-C3, full D3 acquisition, and
+News/Macro have not started.
 
 Implemented Python research/prototype surface:
 

@@ -52,8 +52,8 @@ import {
 } from "../personal-watchlist-mapping/PersonalWatchlistMappingRegistry";
 
 const PROVIDER_ID = "provider:alpaca-basic-iex" as const;
-const MAPPING_REGISTRY_ID = "personal-watchlist:mvp-2026-07" as const;
-const MAPPING_REGISTRY_VERSION = "1.1" as const;
+export const MAPPING_REGISTRY_ID = "personal-watchlist:mvp-2026-07" as const;
+export const MAPPING_REGISTRY_VERSION = "1.1" as const;
 const REQUEST_FIELDS = Object.freeze([
   "ordinal", "method", "host", "path", "capability", "interval", "symbols", "feed", "currency",
   "adjustment", "sort", "start", "end", "limit", "timeoutMs", "maximumResponseBytes",
