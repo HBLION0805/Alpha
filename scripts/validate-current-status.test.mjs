@@ -75,10 +75,10 @@ const tests = [
     assert(validation.issues.includes("networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1Status must equal \"MERGED\"."));
     assert(validation.issues.includes("phase1Approval must equal \"CLOSED\"."));
-    assert(validation.issues.includes("phase1BStatus must equal \"D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED\"."));
+    assert(validation.issues.includes("phase1BStatus must equal \"D3A_MERGED_CLOSED_D3B_DESIGN_IN_REVIEW\"."));
     assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
-    assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"D3A_RAW_HTTPS_BOUNDARY_MERGED_NOT_EXECUTED\"."));
+    assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"D3B_DESIGN_ONLY_NOT_IMPLEMENTED\"."));
     assert(validation.issues.includes("optionsStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("brokerStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("paperTradingStatus must equal \"CLOSED\"."));
@@ -87,7 +87,7 @@ const tests = [
     assert(validation.issues.includes("ownerDailyProductEntry must equal \"DRY_RUN_AND_FIXTURE_ONLY\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
-  ["D3A correction source and merged validation cannot drift", () => {
+  ["D3B design source and merged D3A validation cannot drift", () => {
     const changed = clone(status);
     changed.source.branch = "codex/d3a-post-merge-correction";
     changed.source.source_baseline_commit = changed.source.reviewed_c4_commit;
@@ -95,9 +95,9 @@ const tests = [
     changed.validation.phase1bD3AMergedHead.includesUncommittedCode = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
-    assert(validation.issues.includes("source.branch must equal \"main\"."));
+    assert(validation.issues.includes("source.branch must equal \"codex/phase1b-d3b-live-readonly-design\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"MERGED_CLOSED\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"DESIGN_IN_REVIEW\"."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["post-merge validation does not publish unaudited timing precision", () => {
@@ -148,7 +148,7 @@ const tests = [
     changed.phase1BDesign.ownerPublicKey = "caller-supplied";
     assertInvalid(changed, schema, "phase1BDesign.ownerPublicKey is undeclared.");
   }],
-  ["D3A records the verified PR #7 correction and closes without granting Provider or network authority", () => {
+  ["D3B design review preserves D3A closure without granting Provider or network authority", () => {
     assert(status.completed.includes("PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"));
     assert(status.completed.includes("PHASE_1B_D1_DESIGN_COMPLETED"));
     assert(status.completed.includes("PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"));
@@ -158,16 +158,20 @@ const tests = [
     assert.equal(status.phase1BDelivery.d2C2R2, "MERGED_OFFLINE_ONLY");
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
-    assert.equal(status.source.source_baseline_commit, "bae51dda65dc55f376cb683f873fa93295ed7e2f");
-    assert.equal(status.source.implementation_baseline, "PHASE_1B_D3A_POST_MERGE_CORRECTION_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD");
+    assert.equal(status.source.source_baseline_commit, "608d9859bc480bf6bc39afc20f6d928e62544e67");
+    assert.equal(status.source.implementation_baseline, "PHASE_1B_D3B_DESIGN_SOURCE_BASELINE_NOT_DESIGN_COMMIT_HEAD");
     assert.equal(status.phase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.phase1BDelivery.d3APostMergeCorrection, "VERIFIED");
-    assert.equal(status.phase1BDelivery.d3B, "BLOCKED_NOT_STARTED");
-    assert.deepEqual(status.inProgress, []);
-    assert(status.next.includes("OWNER_DECISION_PHASE_1B_D3B_DESIGN"));
+    assert.equal(status.phase1BDelivery.d3B, "DESIGN_IN_REVIEW");
+    assert.deepEqual(status.inProgress, ["PHASE_1B_D3B_DESIGN_IN_REVIEW"]);
+    assert(status.blocked.includes("PHASE_1B_D3B_LIVE_RUN_NOT_AUTHORIZED"));
+    assert(status.next.includes("OWNER_REVIEW_PHASE_1B_D3B_DESIGN"));
     assert.equal(status.phase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
-    assert.equal(status.phase1BDesign.status, "D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED");
-    assert.equal(status.phase1BDesign.marketScopePolicy, "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY");
+    assert.equal(status.phase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
+    assert.equal(status.phase1BDesign.status, "D3B_DESIGN_IN_REVIEW_LIVE_RUN_NOT_AUTHORIZED");
+    assert.equal(status.phase1BDesign.persistenceWrites, 0);
+    assert.equal(status.phase1BDesign.marketDataAcquisition, "D3B_DESIGN_ONLY_NOT_IMPLEMENTED");
+    assert.equal(status.phase1BDesign.marketScopePolicy, "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY");
     assert.equal(status.phase1BDesign.providerLimitSemantics, "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT");
     assert.equal(status.phase1BDesign.compositionRoot, "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE");
     const changed = clone(status);
@@ -176,6 +180,25 @@ const tests = [
     const missingCorrection = clone(status);
     missingCorrection.blocked = missingCorrection.blocked.filter((item) => item !== "PROVIDER_LIMIT_SEMANTICS_UNPROVEN");
     assertInvalid(missingCorrection, schema, "blocked must include \"PROVIDER_LIMIT_SEMANTICS_UNPROVEN\".");
+  }],
+  ["D3B design review cannot be mistaken for live-run or execution authority", () => {
+    const changed = clone(status);
+    changed.phase1BDelivery.d3B = "LIVE_RUN_AUTHORIZED";
+    changed.phase1BDelivery.liveNetworkAuthorization = "GRANTED";
+    changed.phase1BDesign.networkAuthority = "GRANTED";
+    changed.phase1BDesign.credentialAccess = "ALLOWED";
+    changed.phase1BDesign.persistenceWrites = 1;
+    changed.executionBoundaries.network = "OPEN";
+    changed.automatedExecutionAllowed = true;
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes("phase1BDelivery.d3B must equal \"DESIGN_IN_REVIEW\"."));
+    assert(validation.issues.includes("phase1BDelivery.liveNetworkAuthorization must equal \"NOT_GRANTED\"."));
+    assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
+    assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
+    assert(validation.issues.includes("phase1BDesign.persistenceWrites must equal 0."));
+    assert(validation.issues.includes("executionBoundaries.network must equal \"CLOSED\"."));
+    assert(validation.issues.includes("automatedExecutionAllowed must equal false."));
   }],
   ["D3A merged-head validation binds the PR #7 merge commit and verified count", () => {
     assert.equal(status.validation.phase1bD3AMergedHead.source_baseline_commit, "bae51dda65dc55f376cb683f873fa93295ed7e2f");

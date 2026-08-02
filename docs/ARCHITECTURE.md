@@ -167,6 +167,30 @@ execution are forbidden. Until a separately signed one-shot Manifest is
 approved and a real response is observed, Provider limit semantics remain
 `UNPROVEN` and the full five-request / 43-evidence plan remains blocked.
 
+## Phase 1B-D3B Live-Readonly Qualification Design Boundary
+
+D3B design compares three future requests over the same signed two-session
+window: single-symbol `MU`, single-symbol `QQQ`, and multi-symbol `MU,QQQ`.
+All use `GET /v2/stocks/bars`, `1Day`, `limit=2`, IEX, raw adjustment, ascending
+sort, no retry, and no pagination follow. The comparison assumes neither
+per-symbol nor global limit semantics. Only exact `2+2` and `1+1` batch
+patterns after two exact single-symbol controls may produce
+`OBSERVED_PER_SYMBOL` or `OBSERVED_GLOBAL`. Missing or unexpected symbols, a
+page token, or ambiguous counts remain `INCONCLUSIVE`; authorization,
+transport, parser, window, calendar, source, or other safety failures are
+`BLOCKED`. Neither state grants Provider or network authority.
+
+The lifecycle is design review, design approval, live run not authorized,
+one-shot live run authorized, completed or blocked run, Owner review required,
+and closed. Design approval is deliberately separated from date-bound network
+authorization. Sanitized results may preserve request IDs, lifecycle counts,
+HTTP status, observed counts, response-symbol identities, pagination presence,
+request window, redacted fingerprints, and versioned provenance. They may not
+preserve a page-token value, credentials, a raw response, or account data.
+This draft adds no contract, Transport, credential read, network request,
+persistence, Provider authority, or trading capability. See
+`docs/specifications/ALPACA_BARS_LIMIT_D3B_LIVE_READONLY_QUALIFICATION_PROTOCOL.md`.
+
 Exchange-calendar evidence has an independent version, fingerprint, approval,
 producer, authority source, validity window, closure buffer, and explicit
 records for trading days, weekends, holidays, early closes, and DST-aware UTC

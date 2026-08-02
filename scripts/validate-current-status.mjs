@@ -5,6 +5,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const PHASE_1A_MERGE_COMMIT = "f565e9e5250cfd2fca5e6ed9c244b3947add7b28";
 const PHASE_1B_D2_MERGE_COMMIT = "948192be9eb7d9d5e41abb19e763b73916dbcad4";
 const PHASE_1B_D3A_MERGE_COMMIT = "bae51dda65dc55f376cb683f873fa93295ed7e2f";
+const PHASE_1B_D3B_DESIGN_SOURCE_BASELINE = "608d9859bc480bf6bc39afc20f6d928e62544e67";
 const STATUS_FIELDS = Object.freeze([
   "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
   "completed", "inProgress", "blocked", "frozen", "next", "runtimeOwnership",
@@ -42,15 +43,15 @@ export function validateCurrentStatus(status, schema) {
   if (!isCanonicalTimestamp(status.asOf)) issues.push("asOf must be a canonical UTC timestamp.");
 
   validateExactObject(status.source, "source", {
-    branch: "main",
-    source_baseline_commit: PHASE_1B_D3A_MERGE_COMMIT,
-    implementation_baseline: "PHASE_1B_D3A_POST_MERGE_CORRECTION_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD",
+    branch: "codex/phase1b-d3b-live-readonly-design",
+    source_baseline_commit: PHASE_1B_D3B_DESIGN_SOURCE_BASELINE,
+    implementation_baseline: "PHASE_1B_D3B_DESIGN_SOURCE_BASELINE_NOT_DESIGN_COMMIT_HEAD",
     reviewed_c4_commit: "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
   }, issues);
   validateExactObject(status.currentMilestone, "currentMilestone", {
-    id: "PERSONAL_DAILY_SCAN_PHASE_1B_D3A",
-    name: "Alpaca Bars Limit Qualification Slice",
-    status: "MERGED_CLOSED",
+    id: "PERSONAL_DAILY_SCAN_PHASE_1B_D3B_DESIGN",
+    name: "Alpaca Bars Limit Live-Readonly Qualification Protocol",
+    status: "DESIGN_IN_REVIEW",
   }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
     validateStatusItems(status[field], field, issues);
@@ -62,12 +63,13 @@ export function validateCurrentStatus(status, schema) {
   requireStatusItem(status.completed, "PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED", "completed", issues);
   requireStatusItem(status.blocked, "PROVIDER_LIMIT_SEMANTICS_UNPROVEN", "blocked", issues);
   requireStatusItem(status.blocked, "PHASE_1B_D2_C3_NOT_STARTED", "blocked", issues);
-  if (!Array.isArray(status.inProgress) || status.inProgress.length !== 0) {
-    issues.push("inProgress must be empty after D3A closure.");
+  requireStatusItem(status.inProgress, "PHASE_1B_D3B_DESIGN_IN_REVIEW", "inProgress", issues);
+  if (!Array.isArray(status.inProgress) || status.inProgress.length !== 1) {
+    issues.push("inProgress must contain only the D3B design review.");
   }
   requireStatusItem(status.blocked, "PHASE_1B_D3A_REAL_REQUEST_NOT_AUTHORIZED", "blocked", issues);
-  requireStatusItem(status.blocked, "PHASE_1B_D3B_BLOCKED_NOT_STARTED", "blocked", issues);
-  requireStatusItem(status.next, "OWNER_DECISION_PHASE_1B_D3B_DESIGN", "next", issues);
+  requireStatusItem(status.blocked, "PHASE_1B_D3B_LIVE_RUN_NOT_AUTHORIZED", "blocked", issues);
+  requireStatusItem(status.next, "OWNER_REVIEW_PHASE_1B_D3B_DESIGN", "next", issues);
   validateExactObject(status.runtimeOwnership, "runtimeOwnership", {
     productRuntime: "TYPESCRIPT",
     pythonRole: "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY",
@@ -94,7 +96,7 @@ export function validateCurrentStatus(status, schema) {
   exact(status.networkAuthority, "NOT_GRANTED", "networkAuthority", issues);
   exact(status.phase1Status, "MERGED", "phase1Status", issues);
   exact(status.phase1Approval, "CLOSED", "phase1Approval", issues);
-  exact(status.phase1BStatus, "D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED", "phase1BStatus", issues);
+  exact(status.phase1BStatus, "D3A_MERGED_CLOSED_D3B_DESIGN_IN_REVIEW", "phase1BStatus", issues);
   validateExactObject(status.phase1BDelivery, "phase1BDelivery", {
     d1: "DESIGN_COMPLETED",
     d2C1: "MERGED",
@@ -102,7 +104,7 @@ export function validateCurrentStatus(status, schema) {
     d2C3: "NOT_STARTED",
     d3A: "MERGED_CLOSED",
     d3APostMergeCorrection: "VERIFIED",
-    d3B: "BLOCKED_NOT_STARTED",
+    d3B: "DESIGN_IN_REVIEW",
     newsMacro: "NOT_STARTED",
     providerLimitSemantics: "UNPROVEN",
     fiveRequest43Evidence: "STRUCTURAL_TARGET_ONLY",
@@ -110,13 +112,14 @@ export function validateCurrentStatus(status, schema) {
     liveNetworkAuthorization: "NOT_GRANTED",
   }, issues);
   validateExactObject(status.phase1BDesign, "phase1BDesign", {
-    task: "ALPACA_BARS_LIMIT_QUALIFICATION_SLICE",
-    status: "D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED",
+    task: "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL",
+    status: "D3B_DESIGN_IN_REVIEW_LIVE_RUN_NOT_AUTHORIZED",
     networkAuthority: "NOT_GRANTED",
     credentialAccess: "PROHIBITED",
-    marketDataAcquisition: "D3A_RAW_HTTPS_BOUNDARY_MERGED_NOT_EXECUTED",
+    persistenceWrites: 0,
+    marketDataAcquisition: "D3B_DESIGN_ONLY_NOT_IMPLEMENTED",
     trustedOwnerVerificationKey: "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
-    marketScopePolicy: "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY",
+    marketScopePolicy: "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY",
     providerLimitSemantics: "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
     compositionRoot: "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE",
   }, issues);

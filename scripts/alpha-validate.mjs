@@ -68,6 +68,7 @@ const requiredFiles = [
   "docs/specifications/TWELVE_DATA_LIVE_SMOKE.md",
   "docs/specifications/PERSONAL_DAILY_SCAN_PHASE_1B_AUTHORIZATION_AND_CALENDAR.md",
   "docs/specifications/ALPACA_BARS_LIMIT_QUALIFICATION.md",
+  "docs/specifications/ALPACA_BARS_LIMIT_D3B_LIVE_READONLY_QUALIFICATION_PROTOCOL.md",
   "docs/specifications/MARKET_REGIME_ENGINE.md",
   "docs/specifications/BROAD_MARKET_EVIDENCE.md",
   "docs/specifications/EVIDENCE_FUSION.md",
@@ -107,6 +108,7 @@ const textExtensions = new Set([
 
 const aggregateTestFiles = [
   "scripts/validate-current-status.test.mjs",
+  "scripts/validate-d3b-design.test.mjs",
   "src/engines/opportunity/OpportunityScoreEngine.test.ts",
   "src/engines/personal-decision/PersonalDecisionEngine.test.ts",
   "src/engines/personal-candidate-scan/PersonalCandidateScanEngine.test.ts",
