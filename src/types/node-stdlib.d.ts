@@ -147,6 +147,12 @@ declare module "node:process" {
 }
 
 declare module "node:crypto" {
+  export interface KeyObject {
+    readonly asymmetricKeyType?: string;
+    export(options: { readonly format: "der"; readonly type: "spki" }): Uint8Array;
+    export(options: { readonly format: "pem"; readonly type: "spki" }): string;
+  }
+
   export interface Hash {
     update(data: string, inputEncoding?: "utf8"): Hash;
     update(data: Uint8Array): Hash;
@@ -154,6 +160,18 @@ declare module "node:crypto" {
   }
 
   export function createHash(algorithm: "sha256"): Hash;
+  export function createPublicKey(key: string): KeyObject;
+  export function generateKeyPairSync(algorithm: "ed25519"): {
+    readonly publicKey: KeyObject;
+    readonly privateKey: KeyObject;
+  };
+  export function sign(algorithm: null, data: Uint8Array, key: KeyObject): Uint8Array;
+  export function verify(
+    algorithm: null,
+    data: Uint8Array,
+    key: KeyObject,
+    signature: Uint8Array,
+  ): boolean;
   export function randomBytes(size: number): Uint8Array;
 }
 

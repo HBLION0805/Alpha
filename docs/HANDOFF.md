@@ -12,9 +12,9 @@ The authoritative machine-readable current-state record is
 [`docs/status/current.json`](status/current.json), while Git remains the code
 fact source. Phase 1A was merged to `main` as
 `4e4282582b816863c35efc6d5657cdf52d18abc9`, including reviewed C4 commit
-`095657cd5c72d095d9c72b2ec76a580b35e9d3c7`. The merge commit is the
-implementation baseline, not a claim that it is the later status-update
-commit. The original worktree and its uncommitted T3B15-C5 files and audit
+`095657cd5c72d095d9c72b2ec76a580b35e9d3c7`; its post-merge status baseline is
+`f565e9e5250cfd2fca5e6ed9c244b3947add7b28`. The original worktree and its
+uncommitted T3B15-C5 files and audit
 packet remain frozen and excluded.
 
 TypeScript is the only product runtime. Python is research/prototype-only, and
@@ -22,8 +22,23 @@ is limited to research, prototype work, and statistical validation. Its sample
 terminal Dashboard is deprecated as a product entry. The Owner may run only
 the offline `alpha:daily-scan` product entry in `dry-run` or `fixture` mode;
 `live-readonly` requires separate Owner network authorization. Network,
-Options, Broker, Paper Trading, and Order Execution are closed. Phase 1B has
-not started.
+Options, Broker, Paper Trading, and Order Execution are closed. Phase 1B
+remains `NOT_STARTED`. D2 authorization and exchange-calendar contracts are
+implemented offline and await Owner review. They read no credential and make
+no request. The actual trusted Ed25519 verification key must come from pinned
+product configuration or a trusted external verifier; key IDs, fingerprints,
+and caller-provided keys do not authorize themselves. Without that key,
+preflight returns `OWNER_AUTHORIZATION_VERIFICATION_KEY_UNAVAILABLE`. D3
+market-data acquisition has not started.
+
+D2-C1 is implemented locally and awaits independent Owner review. It removes
+all trust-root material from `LiveReadonlyPreflightInput`; a product
+composition root now constructs and owns the verifier, which defensively
+captures the pinned public verification identity. Fully self-consistent
+attacker keys and signatures, runtime field injection, Manifest injection,
+domain swapping, and CLI trust overrides fail closed with zero candidates and
+zero side effects. The original D2 Owner verdict remains `NO_GO`; D2-C2 and
+D2-C3 are explicitly not started.
 
 Day 7 completed:
 

@@ -1,5 +1,36 @@
 # Alpha Architecture Decisions
 
+## 2026-08-01 - Make the Owner verification identity product-owned
+
+- Decision: remove trusted key material and verifier selection from every
+  Personal Daily Scan business/runtime input.
+- Decision: construct `OwnerAuthorizationVerifier` only at the trusted product
+  composition boundary from an `OwnerTrustRootProvider`, capture its public
+  identity before request evaluation, and fail closed when it is unavailable.
+- Decision: reject runtime fields, Manifest extensions, and CLI arguments that
+  attempt to replace the key, fingerprint, key ID, source, or verifier.
+- Boundary: D2-C1 changes only trust-root ownership and attack coverage. D2-C2
+  request scope, D2-C3 calendar continuity, D3, credentials, network, Provider,
+  persistence, Options, Broker, Paper Trading, orders, and execution remain
+  unchanged or closed.
+
+## 2026-08-01 - Require an external trust root and approved exchange calendar for Phase 1B
+
+- Decision: keep Phase 1B `NOT_STARTED` while implementing D2 as an offline
+  contract foundation only.
+- Decision: verify Owner approvals with an actual Ed25519 public key from
+  pinned product configuration or a trusted external verifier. A key ID,
+  fingerprint, or caller-provided key is not a trust root.
+- Decision: sign RFC 8785-canonical body hashes with distinct authorization
+  and calendar domain separators and bind the future read to exactly five
+  ordered requests.
+- Decision: require independently versioned and Owner-approved New York
+  exchange-calendar evidence, including explicit weekends, holidays, early
+  closes, closure buffer, and DST-aware timestamps; never infer sessions from
+  weekdays.
+- Boundary: D2 reads no credential and performs no network, persistence,
+  account, Broker, Paper Trading, order, Options, Snapshot, or D3 behavior.
+
 ## 2026-07-29 - Establish Phase 0 status, ownership, and capital boundaries
 
 - Decision: make `docs/status/current.json` the only machine-readable current

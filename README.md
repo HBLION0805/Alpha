@@ -12,11 +12,11 @@ blockers, frozen work, next action, ownership, and validation state is
 summarize that file and must not define a competing current state.
 
 Phase 1A, Offline Personal Daily Scan Foundation, is merged and offline
-available through merge commit
-`4e4282582b816863c35efc6d5657cdf52d18abc9`; reviewed C4 commit
-`095657cd5c72d095d9c72b2ec76a580b35e9d3c7` is included. The merge commit is
-the implementation baseline, not a claim that it is the later status-update
-commit. Paused T3B15-C5 work and `ALPHA_AUDIT_PACKET.md` remain frozen in the
+available. Its implementation merge is `4e4282582b816863c35efc6d5657cdf52d18abc9`,
+and the post-merge status baseline is
+`f565e9e5250cfd2fca5e6ed9c244b3947add7b28`. Reviewed C4 commit
+`095657cd5c72d095d9c72b2ec76a580b35e9d3c7` is included. Paused T3B15-C5 work
+and `ALPHA_AUDIT_PACKET.md` remain frozen in the
 original worktree and are not part of this branch.
 
 TypeScript is Alpha's only product runtime. Python is retained for research,
@@ -24,7 +24,14 @@ prototype work, and statistical validation; the sample terminal Dashboard is a
 deprecated product entry. The only Owner product entry is the offline
 `alpha:daily-scan` command in `dry-run` or `fixture` mode. `live-readonly`
 requires separate Owner network authorization. Network, Options, Broker,
-Paper Trading, and Order Execution are closed; Phase 1B has not started.
+Paper Trading, and Order Execution are closed. Phase 1B remains `NOT_STARTED`.
+Its D2 authorization and exchange-calendar contracts are implemented offline
+for Owner review only. D2-C1 removes trust-root material from business inputs:
+the product composition root captures the configured verifier before a request
+is evaluated, and unknown runtime or CLI trust overrides fail closed. No
+trusted Owner key is stored, and the absence of product-owned verification
+configuration fails closed before credentials or network access. D2-C2,
+D2-C3, and D3 have not started.
 
 Implemented Python research/prototype surface:
 

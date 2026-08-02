@@ -11,3 +11,4 @@ export type {
   PersonalDailyScanRunIdentityInput,
 } from "./PersonalDailyScanApplication";
 export * from "./PersonalDailyScanEligibility";
+export { createOwnerAuthorizationVerifier } from "./PersonalDailyScanLiveReadonlyPreflight";

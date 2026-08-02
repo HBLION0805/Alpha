@@ -83,3 +83,4 @@ export * from "./PersonalMarketDataZeroCostProviderScreening";
 export * from "./VerifiedMarketSnapshot";
 export * from "./DeterministicFingerprint";
 export * from "./PersonalDailyScan";
+export * from "./PersonalDailyScanLiveReadonly";
