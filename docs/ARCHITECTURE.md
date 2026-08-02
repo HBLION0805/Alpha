@@ -140,6 +140,27 @@ ID/version-preserving semantic change alters the fingerprint. No concrete
 Alpaca HTTPS Transport is wired; calendar continuity remains D2-C3 and live
 acquisition remains D3.
 
+## Phase 1B-D3A Bars Limit Qualification Boundary
+
+D3A adds one narrow vertical slice, not general market-data acquisition. The
+product-controlled flow is signed Owner authorization and signed Exchange
+Calendar, one exact `MU,QQQ` daily Bars plan, an exact request validator, a raw
+bounded Alpaca HTTPS Transport, strict response validation, and a sanitized
+count-only result. The Transport cannot construct Canonical Bars or
+`EvidenceResolution`, and the product entry cannot accept caller-controlled
+authority or Transport dependencies. Test injection exists only in a
+non-exported testing module.
+
+The one request binds method, host, path, symbol order, `1Day`, `limit=2`,
+start/end, feed, adjustment, sort, currency, ordinal, timeout, byte budget,
+mapping-registry identity and full-content fingerprint, calendar fingerprint,
+and request/plan fingerprints. Preflight and credential failures are `0/0`;
+dispatch begins at `1/0`; only a fully valid bounded response becomes `1/1`.
+Retry, replay, pagination, a second request, partial output, persistence, and
+execution are forbidden. Until a separately signed one-shot Manifest is
+approved and a real response is observed, Provider limit semantics remain
+`UNPROVEN` and the full five-request / 43-evidence plan remains blocked.
+
 Exchange-calendar evidence has an independent version, fingerprint, approval,
 producer, authority source, validity window, closure buffer, and explicit
 records for trading days, weekends, holidays, early closes, and DST-aware UTC

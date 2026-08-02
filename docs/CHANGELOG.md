@@ -1365,3 +1365,14 @@
   Canonical normalization, and one-shot live-read operation.
 - Added no real request, account access, persistence, recommendation, order, or
   execution authority.
+## 2026-08-02 - Phase 1B-D3A offline Alpaca Bars limit qualification slice
+
+- Added a one-request, product-owned, raw HTTPS qualification boundary for
+  `MU,QQQ`, `1Day`, and `limit=2` with exact request fingerprints and bounded
+  response validation.
+- Reused the pinned Owner trust-root and signed Exchange Calendar model through
+  a distinct one-request Manifest; added unsigned draft generation only.
+- Added dispatcher lifecycle, replay, pagination, response-scope, malformed,
+  timeout, HTTP, and oversize tests with no real credential or network access.
+- Kept Provider semantics `UNPROVEN`, full D3 acquisition not started, network
+  authority closed, and all execution surfaces disabled.

@@ -53,7 +53,12 @@ only Alpha structure and cannot enter the product live path. Mapping identity
 binds the normalized approved registry contents, not only ID/version. The
 five-request / 43-evidence plan is a structural target only; live network
 authorization is not granted and real HTTPS acquisition is not implemented.
-No concrete HTTPS Transport or credential reader is wired. D2-C3, D3, and
+Phase 1B-D3A adds an offline, review-pending, product-owned raw HTTPS Transport
+and strict response boundary for one future `MU,QQQ` / `1Day` / `limit=2`
+qualification request. It is not authorized, has not read credentials, and has
+not executed network I/O. The only product entry remains fail-closed without a
+new signed one-shot Manifest and product trust-root configuration. Injected
+test responses remain `UNPROVEN` evidence of Provider semantics. D2-C3, full D3, and
 News/Macro are explicitly not started.
 
 Day 7 completed:

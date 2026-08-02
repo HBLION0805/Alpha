@@ -85,3 +85,4 @@ export * from "./DeterministicFingerprint";
 export * from "./PersonalDailyScan";
 export * from "./PersonalDailyScanLiveReadonly";
 export * from "./PersonalDailyScanLiveReadonlyMarketScope";
+export * from "./AlpacaBarsLimitQualification";

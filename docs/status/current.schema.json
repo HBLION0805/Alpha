@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.3",
+  "$id": "https://alpha.local/schemas/project-status/1.4",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -15,7 +15,7 @@
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.3" },
+    "schemaVersion": { "const": "1.4" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -40,7 +40,7 @@
     "networkAuthority": { "const": "NOT_GRANTED" },
     "phase1Status": { "const": "MERGED" },
     "phase1Approval": { "const": "CLOSED" },
-    "phase1BStatus": { "const": "OFFLINE_FOUNDATION_MERGED_LIVE_READONLY_NOT_STARTED" },
+    "phase1BStatus": { "const": "D3A_OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED" },
     "phase1BDelivery": { "$ref": "#/$defs/phase1BDelivery" },
     "phase1BDesign": { "$ref": "#/$defs/phase1BDesign" },
     "optionsStatus": { "const": "CLOSED" },
@@ -54,9 +54,9 @@
       "additionalProperties": false,
       "required": ["branch", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
       "properties": {
-        "branch": { "const": "main" },
-        "source_baseline_commit": { "const": "948192be9eb7d9d5e41abb19e763b73916dbcad4" },
-        "implementation_baseline": { "const": "PHASE_1B_D2_POST_MERGE_MAIN_HEAD_NOT_STATUS_COMMIT" },
+        "branch": { "const": "codex/phase1b-d3a-alpaca-bars-limit-qualification" },
+        "source_baseline_commit": { "const": "877d195b545233914e2b165d8cdb769fe2b1d2f0" },
+        "implementation_baseline": { "const": "PHASE_1B_D3A_UNCOMMITTED_OWNER_REVIEW" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
       }
     },
@@ -65,9 +65,9 @@
       "additionalProperties": false,
       "required": ["id", "name", "status"],
       "properties": {
-        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D2" },
-        "name": { "const": "Authorization and Exchange Calendar Contracts" },
-        "status": { "const": "MERGED_OFFLINE_ONLY" }
+        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D3A" },
+        "name": { "const": "Alpaca Bars Limit Qualification Slice" },
+        "status": { "const": "OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED" }
       }
     },
     "phase1BDesign": {
@@ -75,26 +75,27 @@
       "additionalProperties": false,
       "required": ["task", "status", "networkAuthority", "credentialAccess", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot"],
       "properties": {
-        "task": { "const": "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS" },
-        "status": { "const": "D2_C1_MERGED_D2_C2_R2_MERGED_OFFLINE_ONLY" },
+        "task": { "const": "ALPACA_BARS_LIMIT_QUALIFICATION_SLICE" },
+        "status": { "const": "D3A_OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED" },
         "networkAuthority": { "const": "NOT_GRANTED" },
         "credentialAccess": { "const": "PROHIBITED" },
-        "marketDataAcquisition": { "const": "NOT_IMPLEMENTED" },
+        "marketDataAcquisition": { "const": "QUALIFICATION_RAW_HTTPS_TRANSPORT_IMPLEMENTED_NOT_EXECUTED" },
         "trustedOwnerVerificationKey": { "const": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED" },
         "marketScopePolicy": { "const": "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY" },
         "providerLimitSemantics": { "const": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT" },
-        "compositionRoot": { "const": "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE" }
+        "compositionRoot": { "const": "PRODUCT_FIXED_OWNER_VERIFIER_EXACT_ONE_REQUEST_VALIDATOR_AND_PRODUCT_OWNED_RAW_TRANSPORT" }
       }
     },
     "phase1BDelivery": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["d1", "d2C1", "d2C2R2", "d2C3", "d3", "newsMacro", "providerLimitSemantics", "fiveRequest43Evidence", "realHttpsAcquisition", "liveNetworkAuthorization"],
+      "required": ["d1", "d2C1", "d2C2R2", "d2C3", "d3A", "d3", "newsMacro", "providerLimitSemantics", "fiveRequest43Evidence", "realHttpsAcquisition", "liveNetworkAuthorization"],
       "properties": {
         "d1": { "const": "DESIGN_COMPLETED" },
         "d2C1": { "const": "MERGED" },
         "d2C2R2": { "const": "MERGED_OFFLINE_ONLY" },
         "d2C3": { "const": "NOT_STARTED" },
+        "d3A": { "const": "OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED" },
         "d3": { "const": "NOT_STARTED" },
         "newsMacro": { "const": "NOT_STARTED" },
         "providerLimitSemantics": { "const": "UNPROVEN" },

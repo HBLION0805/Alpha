@@ -19,6 +19,10 @@ import {
   type OwnerNetworkAuthorizationManifest,
   type TrustedOwnerVerificationKey,
 } from "../../contracts/PersonalDailyScanLiveReadonly";
+import {
+  ALPACA_BARS_LIMIT_QUALIFICATION_SCHEMA_VERSION,
+  type AlpacaBarsLimitQualificationAuthorizationBody,
+} from "../../contracts/AlpacaBarsLimitQualification";
 
 const AUTHORIZATION_BODY_FIELDS = [
   "schemaVersion", "authorizationType", "authorizationId", "ownerDecisionReference",
@@ -61,6 +65,33 @@ const EXPECTED_REQUESTS = Object.freeze([
   Object.freeze({ ordinal: 4, capability: "BARS", interval: "PT5M", maximumEvidenceRecords: 8, symbols: Object.freeze(["MU", "SKHY", "SPCX", "TSLA"]) }),
   Object.freeze({ ordinal: 5, capability: "LATEST_QUOTES", interval: "NONE", maximumEvidenceRecords: 7, symbols: Object.freeze(["MULL", "SKDD", "SKUU", "SPCH", "SSPC", "TSLL", "TSLQ"]) }),
 ] as const);
+const QUALIFICATION_EXPECTED_REQUESTS = Object.freeze([
+  Object.freeze({ ordinal: 1, capability: "BARS", interval: "P1D", maximumEvidenceRecords: 4, symbols: Object.freeze(["MU", "QQQ"]) }),
+] as const);
+interface AuthorizationPolicy {
+  readonly schemaVersion: string;
+  readonly authorizationType: string;
+  readonly maximumNetworkRequests: number;
+  readonly expectedRequests: readonly Readonly<{
+    readonly ordinal: number;
+    readonly capability: string;
+    readonly interval: string;
+    readonly maximumEvidenceRecords: number;
+    readonly symbols: readonly string[];
+  }>[];
+}
+const DAILY_SCAN_POLICY: AuthorizationPolicy = Object.freeze({
+  schemaVersion: LIVE_READONLY_AUTHORIZATION_SCHEMA_VERSION,
+  authorizationType: "PERSONAL_DAILY_SCAN_LIVE_READONLY",
+  maximumNetworkRequests: 5,
+  expectedRequests: EXPECTED_REQUESTS,
+});
+const BARS_LIMIT_QUALIFICATION_POLICY: AuthorizationPolicy = Object.freeze({
+  schemaVersion: ALPACA_BARS_LIMIT_QUALIFICATION_SCHEMA_VERSION,
+  authorizationType: "ALPACA_BARS_LIMIT_QUALIFICATION_LIVE_READONLY",
+  maximumNetworkRequests: 1,
+  expectedRequests: QUALIFICATION_EXPECTED_REQUESTS,
+});
 
 export function canonicalizeRfc8785Jcs(value: unknown): string {
   if (value === null) return "null";
@@ -130,10 +161,23 @@ export function trustedPublicKeyFingerprint(publicKeyPem: string): string {
 export function createOwnerAuthorizationVerifier(
   trustRootProvider: OwnerTrustRootProvider | undefined,
 ): OwnerAuthorizationVerifier {
+  return createPolicyOwnerAuthorizationVerifier(trustRootProvider, DAILY_SCAN_POLICY);
+}
+
+export function createAlpacaBarsLimitQualificationAuthorizationVerifier(
+  trustRootProvider: OwnerTrustRootProvider | undefined,
+): OwnerAuthorizationVerifier {
+  return createPolicyOwnerAuthorizationVerifier(trustRootProvider, BARS_LIMIT_QUALIFICATION_POLICY);
+}
+
+function createPolicyOwnerAuthorizationVerifier(
+  trustRootProvider: OwnerTrustRootProvider | undefined,
+  policy: AuthorizationPolicy,
+): OwnerAuthorizationVerifier {
   const pinnedTrustRoot = loadPinnedTrustRoot(trustRootProvider);
   return Object.freeze({
     evaluate(input: unknown): LiveReadonlyPreflightResult {
-      return evaluateLiveReadonlyPreflight(input, pinnedTrustRoot);
+      return evaluateLiveReadonlyPreflight(input, pinnedTrustRoot, policy);
     },
   });
 }
@@ -141,6 +185,7 @@ export function createOwnerAuthorizationVerifier(
 function evaluateLiveReadonlyPreflight(
   value: unknown,
   pinnedTrustRoot: TrustedOwnerVerificationKey | undefined,
+  policy: AuthorizationPolicy,
 ): LiveReadonlyPreflightResult {
   const issues = new Set<LiveReadonlyPreflightIssueCode>();
   const blocked = (): LiveReadonlyPreflightResult => result("BLOCKED", issues);
@@ -157,7 +202,7 @@ function evaluateLiveReadonlyPreflight(
   if (trust === undefined) return blocked();
 
   const calendar = validateCalendarEvidence(input.calendarEvidence, input.asOf, trust, issues);
-  const manifest = validateManifest(input.manifest, input.asOf, trust, issues);
+  const manifest = validateManifest(input.manifest, input.asOf, trust, issues, policy);
   if (calendar === undefined || manifest === undefined) return blocked();
 
   if (manifest.authorizationBody.calendarEvidenceId !== calendar.body.evidenceId ||
@@ -257,7 +302,8 @@ function validateManifest(
   asOf: string,
   trust: TrustedOwnerVerificationKey,
   issues: Set<LiveReadonlyPreflightIssueCode>,
-): { readonly authorizationBody: OwnerNetworkAuthorizationBody; readonly hash: string } | undefined {
+  policy: AuthorizationPolicy,
+): { readonly authorizationBody: OwnerNetworkAuthorizationBody | AlpacaBarsLimitQualificationAuthorizationBody; readonly hash: string } | undefined {
   if (!isRecord(value) || !hasExactKeys(value, ["authorizationBody", "ownerApprovalEnvelope"])) {
     addUnknownOrInvalid(value, ["authorizationBody", "ownerApprovalEnvelope"], issues, LiveReadonlyPreflightIssueCode.InvalidAuthorizationManifest);
     return undefined;
@@ -270,22 +316,23 @@ function validateManifest(
     return undefined;
   }
   const initialIssueCount = issues.size;
-  validateAuthorizationBody(body, asOf, issues);
+  validateAuthorizationBody(body, asOf, issues, policy);
   const hash = safeSha256Jcs(body, issues, LiveReadonlyPreflightIssueCode.InvalidAuthorizationManifest);
   if (hash === undefined) return undefined;
   if (envelope.manifestSha256 !== hash) issues.add(LiveReadonlyPreflightIssueCode.ManifestHashMismatch);
   validateApprovalEnvelope(envelope, hash, OWNER_AUTHORIZATION_DOMAIN, trust, issues, false);
   if (issues.size > initialIssueCount) return undefined;
-  return { authorizationBody: body as unknown as OwnerNetworkAuthorizationBody, hash };
+  return { authorizationBody: body as unknown as OwnerNetworkAuthorizationBody | AlpacaBarsLimitQualificationAuthorizationBody, hash };
 }
 
 function validateAuthorizationBody(
   body: Record<string, unknown>,
   asOf: string,
   issues: Set<LiveReadonlyPreflightIssueCode>,
+  policy: AuthorizationPolicy,
 ): void {
-  const exact = body.schemaVersion === LIVE_READONLY_AUTHORIZATION_SCHEMA_VERSION &&
-    body.authorizationType === "PERSONAL_DAILY_SCAN_LIVE_READONLY" &&
+  const exact = body.schemaVersion === policy.schemaVersion &&
+    body.authorizationType === policy.authorizationType &&
     isIdentifier(body.authorizationId) && isIdentifier(body.ownerDecisionReference) &&
     body.provider === "ALPACA_MARKET_DATA" && body.feed === "iex" &&
     isIdentifier(body.mappingRegistryId) && isIdentifier(body.mappingRegistryVersion) &&
@@ -293,7 +340,7 @@ function validateAuthorizationBody(
     isIdentifier(body.calendarEvidenceId) &&
     typeof body.calendarEvidenceFingerprint === "string" && SHA256.test(body.calendarEvidenceFingerprint) &&
     typeof body.planFingerprint === "string" && SHA256.test(body.planFingerprint) &&
-    body.maximumNetworkRequests === 5 && body.maximumAttemptsPerRequest === 1 &&
+    body.maximumNetworkRequests === policy.maximumNetworkRequests && body.maximumAttemptsPerRequest === 1 &&
     body.retryAllowed === false && body.paginationAllowed === false && body.pollingAllowed === false &&
     body.streamingAllowed === false && body.backgroundExecutionAllowed === false &&
     body.credentialReadAllowedAfterPreflightOnly === true && body.persistenceAllowed === false &&
@@ -316,12 +363,12 @@ function validateAuthorizationBody(
     issues.add(LiveReadonlyPreflightIssueCode.ExecuteDateConflict);
   }
   const requestPlan = body.requests;
-  if (!Array.isArray(requestPlan) || requestPlan.length !== 5) {
+  if (!Array.isArray(requestPlan) || requestPlan.length !== policy.maximumNetworkRequests) {
     issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
     return;
   }
   requestPlan.forEach((request) => validateRequest(request, issues));
-  if (!requestSetIsExact(requestPlan)) issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
+  if (!requestSetIsExact(requestPlan, policy.expectedRequests)) issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
   try {
     const expected = liveReadonlyPlanFingerprint(
       requestPlan as unknown as readonly LiveReadonlyRequestPlanEntry[],
@@ -377,8 +424,8 @@ function validateRequest(value: unknown, issues: Set<LiveReadonlyPreflightIssueC
   }
 }
 
-function requestSetIsExact(requests: readonly unknown[]): boolean {
-  return EXPECTED_REQUESTS.every((expected, index) => {
+function requestSetIsExact(requests: readonly unknown[], expectedRequests: AuthorizationPolicy["expectedRequests"]): boolean {
+  return expectedRequests.every((expected, index) => {
     const request = requests[index];
     return isRecord(request) && request.ordinal === expected.ordinal && request.capability === expected.capability &&
       request.interval === expected.interval && request.maximumEvidenceRecords === expected.maximumEvidenceRecords &&
