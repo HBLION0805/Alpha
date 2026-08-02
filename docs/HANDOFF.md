@@ -4,7 +4,7 @@ Date:
 2026-08-01
 
 Project Stage:
-Phase 1A Offline Personal Daily Scan Foundation is merged and offline available
+Phase 1A Offline Personal Daily Scan Foundation is merged and closed
 
 ## Current Architecture Checkpoint
 
@@ -21,24 +21,25 @@ TypeScript is the only product runtime. Python is research/prototype-only, and
 is limited to research, prototype work, and statistical validation. Its sample
 terminal Dashboard is deprecated as a product entry. The Owner may run only
 the offline `alpha:daily-scan` product entry in `dry-run` or `fixture` mode;
-`live-readonly` requires separate Owner network authorization. Network,
-Options, Broker, Paper Trading, and Order Execution are closed. Phase 1B
-remains `NOT_STARTED`. D2 authorization and exchange-calendar contracts are
-implemented offline and await Owner review. They read no credential and make
-no request. The actual trusted Ed25519 verification key must come from pinned
+`live-readonly` has no granted Owner network authorization. Network, Options,
+Broker, Paper Trading, and Order Execution are closed; `automatedExecutionAllowed`
+remains `false`. Phase 1B live-readonly
+remains not started; its D1 design is completed and its D2 offline foundation
+is merged. The D2 contracts read no credential and make no request. The actual
+trusted Ed25519 verification key must come from pinned
 product configuration or a trusted external verifier; key IDs, fingerprints,
 and caller-provided keys do not authorize themselves. Without that key,
 preflight returns `OWNER_AUTHORIZATION_VERIFICATION_KEY_UNAVAILABLE`. D3
 market-data acquisition has not started.
 
-D2-C1 is Owner-approved, committed, and pushed as `74cb5f1`. It removes
+D2-C1 is merged as `74cb5f1`. It removes
 all trust-root material from `LiveReadonlyPreflightInput`; a product
 composition root now constructs and owns the verifier, which defensively
 captures the pinned public verification identity. Fully self-consistent
 attacker keys and signatures, runtime field injection, Manifest injection,
 domain swapping, and CLI trust overrides fail closed with zero candidates and
-zero side effects. D2-C2-R2 is implemented offline and awaits independent Owner
-review. The product barrel exposes only a no-argument composition root; it does
+zero side effects. D2-C2-R2 is merged offline-only as `1c20f79` through main
+merge commit `948192b`. The product barrel exposes only a no-argument composition root; it does
 not accept a caller verifier, Provider authority, trust material, or Transport.
 A physically separate test factory drives a raw-response seam, after which
 product code performs parsing, normalization, provenance, attempt, and
@@ -49,9 +50,11 @@ one-to-one resolutions, but repository evidence does not prove that Alpaca's
 multi-symbol `limit=2` is per symbol. The product path therefore returns
 `PROVIDER_LIMIT_SEMANTICS_UNPROVEN` before Transport; flat-mapped fixtures prove
 only Alpha structure and cannot enter the product live path. Mapping identity
-binds the normalized approved registry contents, not only ID/version. No
-concrete HTTPS Transport or credential reader is wired. D2-C3 and D3 are
-explicitly not started.
+binds the normalized approved registry contents, not only ID/version. The
+five-request / 43-evidence plan is a structural target only; live network
+authorization is not granted and real HTTPS acquisition is not implemented.
+No concrete HTTPS Transport or credential reader is wired. D2-C3, D3, and
+News/Macro are explicitly not started.
 
 Day 7 completed:
 

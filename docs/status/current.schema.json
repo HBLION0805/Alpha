@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.2",
+  "$id": "https://alpha.local/schemas/project-status/1.3",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -8,14 +8,14 @@
     "$schema", "schemaVersion", "statusId", "asOf", "source",
     "currentMilestone", "completed", "inProgress", "blocked", "frozen", "next",
     "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
-    "worktreeIsolation", "executionBoundaries", "ownerDailyProductEntry",
+    "worktreeIsolation", "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry",
     "validation", "networkAuthority", "phase1Status", "phase1Approval",
-    "phase1BStatus", "phase1BDesign", "optionsStatus", "brokerStatus", "paperTradingStatus",
+    "phase1BStatus", "phase1BDelivery", "phase1BDesign", "optionsStatus", "brokerStatus", "paperTradingStatus",
     "orderExecutionStatus"
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.2" },
+    "schemaVersion": { "const": "1.3" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -34,17 +34,19 @@
     "riskPolicyRecord": { "$ref": "#/$defs/riskPolicyRecord" },
     "worktreeIsolation": { "$ref": "#/$defs/worktreeIsolation" },
     "executionBoundaries": { "$ref": "#/$defs/executionBoundaries" },
+    "automatedExecutionAllowed": { "const": false },
     "ownerDailyProductEntry": { "const": "DRY_RUN_AND_FIXTURE_ONLY" },
     "validation": { "$ref": "#/$defs/validation" },
-    "networkAuthority": { "const": "OWNER_NETWORK_AUTHORIZATION_REQUIRED" },
+    "networkAuthority": { "const": "NOT_GRANTED" },
     "phase1Status": { "const": "MERGED" },
-    "phase1Approval": { "const": "OFFLINE_AVAILABLE" },
-    "phase1BStatus": { "const": "NOT_STARTED" },
+    "phase1Approval": { "const": "CLOSED" },
+    "phase1BStatus": { "const": "OFFLINE_FOUNDATION_MERGED_LIVE_READONLY_NOT_STARTED" },
+    "phase1BDelivery": { "$ref": "#/$defs/phase1BDelivery" },
     "phase1BDesign": { "$ref": "#/$defs/phase1BDesign" },
-    "optionsStatus": { "const": "NOT_STARTED" },
-    "brokerStatus": { "const": "NOT_STARTED" },
-    "paperTradingStatus": { "const": "NOT_STARTED" },
-    "orderExecutionStatus": { "const": "NOT_STARTED" }
+    "optionsStatus": { "const": "CLOSED" },
+    "brokerStatus": { "const": "CLOSED" },
+    "paperTradingStatus": { "const": "CLOSED" },
+    "orderExecutionStatus": { "const": "CLOSED" }
   },
   "$defs": {
     "source": {
@@ -53,8 +55,8 @@
       "required": ["branch", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
       "properties": {
         "branch": { "const": "main" },
-        "source_baseline_commit": { "const": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28" },
-        "implementation_baseline": { "const": "PHASE_1A_STATUS_MERGE_COMMIT_NOT_D2_HEAD" },
+        "source_baseline_commit": { "const": "948192be9eb7d9d5e41abb19e763b73916dbcad4" },
+        "implementation_baseline": { "const": "PHASE_1B_D2_POST_MERGE_MAIN_HEAD_NOT_STATUS_COMMIT" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
       }
     },
@@ -65,7 +67,7 @@
       "properties": {
         "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D2" },
         "name": { "const": "Authorization and Exchange Calendar Contracts" },
-        "status": { "const": "OWNER_REVIEW_REQUIRED" }
+        "status": { "const": "MERGED_OFFLINE_ONLY" }
       }
     },
     "phase1BDesign": {
@@ -74,14 +76,31 @@
       "required": ["task", "status", "networkAuthority", "credentialAccess", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot"],
       "properties": {
         "task": { "const": "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS" },
-        "status": { "const": "D2_C2_R2_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED" },
-        "networkAuthority": { "const": "NONE" },
+        "status": { "const": "D2_C1_MERGED_D2_C2_R2_MERGED_OFFLINE_ONLY" },
+        "networkAuthority": { "const": "NOT_GRANTED" },
         "credentialAccess": { "const": "PROHIBITED" },
         "marketDataAcquisition": { "const": "NOT_IMPLEMENTED" },
         "trustedOwnerVerificationKey": { "const": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED" },
         "marketScopePolicy": { "const": "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY" },
         "providerLimitSemantics": { "const": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT" },
         "compositionRoot": { "const": "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE" }
+      }
+    },
+    "phase1BDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["d1", "d2C1", "d2C2R2", "d2C3", "d3", "newsMacro", "providerLimitSemantics", "fiveRequest43Evidence", "realHttpsAcquisition", "liveNetworkAuthorization"],
+      "properties": {
+        "d1": { "const": "DESIGN_COMPLETED" },
+        "d2C1": { "const": "MERGED" },
+        "d2C2R2": { "const": "MERGED_OFFLINE_ONLY" },
+        "d2C3": { "const": "NOT_STARTED" },
+        "d3": { "const": "NOT_STARTED" },
+        "newsMacro": { "const": "NOT_STARTED" },
+        "providerLimitSemantics": { "const": "UNPROVEN" },
+        "fiveRequest43Evidence": { "const": "STRUCTURAL_TARGET_ONLY" },
+        "realHttpsAcquisition": { "const": "NOT_IMPLEMENTED" },
+        "liveNetworkAuthorization": { "const": "NOT_GRANTED" }
       }
     },
     "statusItems": {
@@ -189,9 +208,9 @@
         "componentCount", "testsExecuted", "passed", "failed", "durationMs", "wallClockDurationMs"
       ],
       "properties": {
-        "kind": { "const": "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE" },
-        "source_baseline_commit": { "const": "74cb5f1b0be217ec73bc0654807bfc2ddfb106b2" },
-        "includesUncommittedCode": { "const": true },
+        "kind": { "const": "PHASE_1B_D2_MERGED_HEAD" },
+        "source_baseline_commit": { "const": "948192be9eb7d9d5e41abb19e763b73916dbcad4" },
+        "includesUncommittedCode": { "const": false },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": { "const": "PASSED" },
         "componentCount": { "const": 138 },
@@ -259,16 +278,10 @@
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["headBaseline", "phase1aWorkingTree", "phase1bD2WorkingTree", "coverageBaseline"],
+      "required": ["phase1aMergedHead", "phase1bD2MergedHead", "coverageBaseline"],
       "properties": {
-        "headBaseline": { "$ref": "#/$defs/validationResult" },
-        "phase1aWorkingTree": {
-          "oneOf": [
-            { "type": "null" },
-            { "$ref": "#/$defs/validationResult" }
-          ]
-        },
-        "phase1bD2WorkingTree": { "$ref": "#/$defs/phase1bD2ValidationResult" },
+        "phase1aMergedHead": { "$ref": "#/$defs/validationResult" },
+        "phase1bD2MergedHead": { "$ref": "#/$defs/phase1bD2ValidationResult" },
         "coverageBaseline": { "$ref": "#/$defs/coverageBaseline" }
       }
     }
