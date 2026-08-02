@@ -53,17 +53,18 @@ only Alpha structure and cannot enter the product live path. Mapping identity
 binds the normalized approved registry contents, not only ID/version. The
 five-request / 43-evidence plan is a structural target only; live network
 authorization is not granted and real HTTPS acquisition is not implemented.
-Phase 1B-D3A is merged offline-only through PR #6 merge commit `95a30a9`. It adds a product-owned raw HTTPS Transport
+Phase 1B-D3A's initial offline slice was merged through PR #6 merge commit `95a30a9`. It adds a product-owned raw HTTPS Transport
 and strict response boundary for one future `MU,QQQ` / `1Day` / `limit=2`
 qualification request. It is not authorized, has not read credentials, and has
 not executed network I/O. The only product entry remains fail-closed without a
 new signed one-shot Manifest and product trust-root configuration. Injected
-test responses remain `UNPROVEN` evidence of Provider semantics. The isolated
-D3A post-merge correction is implemented but not merged and is awaiting Owner
-review. It fixes real-source capability spoofing, retains bounded failed-response
-counts and pagination presence, and binds network counts to the product
-Transport lifecycle. D2-C3, D3B, full D3, and News/Macro are explicitly not
-started; D3B is blocked. Real market-data usability remains 0%.
+test responses remain `UNPROVEN` evidence of Provider semantics. PR #7 merged
+the verified D3A evidence-integrity correction through merge commit `bae51dd`.
+D3A is now merged and closed. The correction fixes real-source capability
+spoofing, retains bounded failed-response counts and pagination presence, and
+binds network counts to the product Transport lifecycle. D2-C3, D3B, full D3,
+and News/Macro are explicitly not started; D3B remains blocked pending a
+separate Owner design decision. Real market-data usability remains 0%.
 
 Day 7 completed:
 
