@@ -61,6 +61,7 @@ import { createCanonicalInstrument } from "../canonical-instrument/CanonicalInst
 import {
   compositionBindingFromRequest,
   verifiedEvidenceResolutionFingerprint,
+  verifiedMappingRegistryFingerprint,
   verifiedProviderRequestFingerprint,
   verifiedProviderSymbolMappingFingerprint,
 } from "../verified-market-snapshot/VerifiedMarketSnapshotEngine";
@@ -306,7 +307,7 @@ function buildOfflinePersonalDailyScanFixtureForTiming(
     plan,
     snapshotBars,
     snapshotQuotes,
-    registry.version,
+    registry,
     timing,
   );
   const snapshotInput: VerifiedMarketSnapshotInput = {
@@ -715,9 +716,12 @@ function buildProviderTrace(
   plan: ReturnType<typeof planAlpacaPersonalMarketDataDryRun>,
   bars: readonly CanonicalBar[],
   quotes: readonly CanonicalQuote[],
-  mappingRegistryVersion: string,
+  mappingRegistry: PersonalWatchlistMappingRegistry,
   timing: OfflinePersonalDailyScanFixtureTiming,
 ) {
+  const mappingRegistryId = mappingRegistry.registryId;
+  const mappingRegistryVersion = mappingRegistry.version;
+  const mappingRegistryFingerprint = verifiedMappingRegistryFingerprint({ mappingRegistryId, mappingRegistryVersion });
   const requestAttempts = plan["requests"].map((request) => {
     const capability =
       request.kind === AlpacaPersonalRequestKind.Bars
@@ -739,7 +743,9 @@ function buildProviderTrace(
       capability,
       ...(interval === undefined ? {} : { interval }),
       requestedSymbolScope: queryValue(request, "symbols").split(","),
+      mappingRegistryId,
       mappingRegistryVersion,
+      mappingRegistryFingerprint,
       requestWindowStart:
         request.kind === AlpacaPersonalRequestKind.Bars
           ? queryValue(request, "start")
@@ -771,7 +777,9 @@ function buildProviderTrace(
     capability: VerifiedMarketProviderCapability.Bars,
     interval: BarInterval.OneDay,
     requestedSymbolScope: ["QQQ", "SMH"],
+    mappingRegistryId,
     mappingRegistryVersion,
+    mappingRegistryFingerprint,
     requestWindowStart: marketOpen(timing.selectedSessionDate),
     requestWindowEnd: timing.asOf,
   };
@@ -825,6 +833,9 @@ function buildProviderTrace(
         providerSymbol,
         providerSymbolMappingVersion,
         providerSymbolMappingFingerprint,
+        mappingRegistryId,
+        mappingRegistryVersion,
+        mappingRegistryFingerprint,
         capability,
         ...(interval === undefined ? {} : { interval }),
         evidenceWindowStart:

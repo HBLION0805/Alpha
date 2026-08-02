@@ -1,5 +1,39 @@
 # Alpha Architecture Decisions
 
+## 2026-08-01 - Phase 1B-D2-C2-R2 trusted composition and raw response boundary
+
+- Decision: compile only five ordered signed requests: P1D Bars for six
+  underlyings/benchmarks, three intraday Bar requests for four underlyings, and
+  one latest-Quote request for seven vehicles.
+- Finding: repository contracts, tests, and saved evidence do not prove that
+  Alpaca applies `limit=2` independently to every symbol in a multi-symbol Bars
+  request. Structural fixture generation is not Provider authority.
+- Decision: retain the five-request / 36-Bar / seven-Quote / 43-resolution plan
+  only as an offline structural target and return
+  `PROVIDER_LIMIT_SEMANTICS_UNPROVEN` before Transport or credentials in the
+  product path. Do not over-read, trim, paginate, or pretend tests prove it.
+- Decision: expose a no-argument product composition root that fixes C1
+  verification and the unproven Provider authority. Business inputs cannot
+  replace the verifier, Provider authority, trust identity, or Transport. Keep
+  the raw Transport test factory physically separate and out of the product
+  barrel.
+- Decision: constrain the Transport seam to raw bounded response facts. Product
+  code alone parses, normalizes, constructs provenance and
+  ProviderRequestAttempt records, and resolves Canonical evidence.
+- Decision: bind the executable query, response byte ceiling, request ordinal,
+  exact scope, calendar fingerprint, and mapping registry ID/version/fingerprint
+  before any Transport boundary. Pagination, retry, a sixth request, and partial
+  output remain prohibited. Attempted/completed counts belong to a single-use
+  product dispatcher and preserve modeled call stages; these local tests do not
+  claim that real HTTP occurred.
+- Decision: bind mapping identity to normalized registry contents, including
+  canonical/provider identity, classification, leverage semantics,
+  relationships, approval/status, and benchmark records. ID/version alone is
+  insufficient.
+- Boundary: D2-C2-R2 is offline validation and composition only. D2-C3 calendar continuity, D3
+  acquisition, credentials, network, persistence, VIX/news/macro, Options,
+  Broker, Paper Trading, orders, and execution remain closed.
+
 ## 2026-08-01 - Make the Owner verification identity product-owned
 
 - Decision: remove trusted key material and verifier selection from every

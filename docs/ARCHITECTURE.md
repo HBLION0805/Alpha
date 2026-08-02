@@ -110,6 +110,36 @@ evidence. It cannot carry a key, fingerprint, key ID, trust source, or
 replacement verifier. Unknown input and CLI override fields fail closed. The
 factory is a trusted-code assembly boundary, not a business-request option.
 
+D2-C2-R2 makes the no-argument product composition root the only product entry.
+It fixes the absent trust-root configuration and unproven Provider authority
+inside product assembly; business inputs cannot replace the verifier, key,
+fingerprint, authority, or Transport. A physically separate test factory is not
+exported by the product barrel. Raw Manifest bodies and caller-forged
+`VERIFIED` objects cannot enter the chain. Query fingerprints bind ordering, symbols, windows,
+requested limit, feed, currency, adjustment, sort, timeout, response-byte
+ceiling, calendar fingerprint, and mapping registry ID/version/fingerprint.
+Missing, excess, substituted, reordered, non-final, out-of-window, paginated,
+duplicate, ghost, or untraced evidence fails closed with no partial output.
+The Transport boundary returns only allow-listed headers, HTTP status,
+timestamps, and a bounded raw body. Product code performs parsing,
+normalization, provenance, ProviderRequestAttempt, and EvidenceResolution
+construction. A single-use dispatch permit increments attempted calls exactly
+when a local dispatcher reports one request start; completed calls increment
+only after the outer bounded response is accepted. Retry-like second starts are
+blocked. These are offline lifecycle-model tests, not evidence that real HTTP
+has occurred.
+
+The repository has no authoritative evidence that Alpaca applies `limit=2`
+per symbol in a multi-symbol Bars request. The nominal five-request / 36-Bar /
+seven-Quote / 43-resolution budget is therefore structural only. The product
+path uses product-owned unproven Provider-semantics evidence and returns
+`PROVIDER_LIMIT_SEMANTICS_UNPROVEN` before Transport or credential access.
+Fixtures cannot override that authority or enter the product live path. Mapping
+identity hashes the normalized approved mapping contents and benchmarks, so an
+ID/version-preserving semantic change alters the fingerprint. No concrete
+Alpaca HTTPS Transport is wired; calendar continuity remains D2-C3 and live
+acquisition remains D3.
+
 Exchange-calendar evidence has an independent version, fingerprint, approval,
 producer, authority source, validity window, closure buffer, and explicit
 records for trading days, weekends, holidays, early closes, and DST-aware UTC

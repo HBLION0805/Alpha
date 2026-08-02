@@ -23,7 +23,7 @@ import {
 const AUTHORIZATION_BODY_FIELDS = [
   "schemaVersion", "authorizationType", "authorizationId", "ownerDecisionReference",
   "executeDate", "validFrom", "expiresAt", "provider", "feed",
-  "mappingRegistryVersion", "calendarEvidenceId", "calendarEvidenceFingerprint",
+  "mappingRegistryId", "mappingRegistryVersion", "mappingRegistryFingerprint", "calendarEvidenceId", "calendarEvidenceFingerprint",
   "planFingerprint", "maximumNetworkRequests", "maximumAttemptsPerRequest",
   "retryAllowed", "paginationAllowed", "pollingAllowed", "streamingAllowed",
   "backgroundExecutionAllowed", "credentialReadAllowedAfterPreflightOnly",
@@ -33,8 +33,9 @@ const AUTHORIZATION_BODY_FIELDS = [
 ] as const;
 const REQUEST_FIELDS = [
   "ordinal", "method", "host", "path", "capability", "interval", "symbols", "feed",
-  "adjustment", "sort", "start", "end", "limit", "timeoutMs", "maximumResponseBytes",
-  "calendarEvidenceFingerprint", "mappingRegistryVersion",
+  "currency", "adjustment", "sort", "start", "end", "limit", "timeoutMs", "maximumResponseBytes",
+  "maximumEvidenceRecords", "calendarEvidenceFingerprint", "mappingRegistryId", "mappingRegistryVersion", "mappingRegistryFingerprint",
+  "requestFingerprint",
 ] as const;
 const OWNER_ENVELOPE_FIELDS = [
   "manifestSha256", "signatureAlgorithm", "ownerKeyId", "ownerPublicKeyFingerprint", "ownerSignature",
@@ -54,11 +55,11 @@ const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,159}$/u;
 const PEM_PUBLIC_KEY = /^-----BEGIN PUBLIC KEY-----[\s\S]+-----END PUBLIC KEY-----\s*$/u;
 const AUTHORIZATION_MAX_DURATION_MS = 10 * 60 * 1000;
 const EXPECTED_REQUESTS = Object.freeze([
-  Object.freeze({ ordinal: 1, capability: "BARS", interval: "P1D", symbols: Object.freeze(["MU", "QQQ", "SKHY", "SMH", "SPCX", "TSLA"]) }),
-  Object.freeze({ ordinal: 2, capability: "BARS", interval: "PT1H", symbols: Object.freeze(["MU", "SKHY", "SPCX", "TSLA"]) }),
-  Object.freeze({ ordinal: 3, capability: "BARS", interval: "PT15M", symbols: Object.freeze(["MU", "SKHY", "SPCX", "TSLA"]) }),
-  Object.freeze({ ordinal: 4, capability: "BARS", interval: "PT5M", symbols: Object.freeze(["MU", "SKHY", "SPCX", "TSLA"]) }),
-  Object.freeze({ ordinal: 5, capability: "LATEST_QUOTES", interval: "NONE", symbols: Object.freeze(["MULL", "SKDD", "SKUU", "SPCH", "SSPC", "TSLL", "TSLQ"]) }),
+  Object.freeze({ ordinal: 1, capability: "BARS", interval: "P1D", maximumEvidenceRecords: 12, symbols: Object.freeze(["MU", "QQQ", "SKHY", "SMH", "SPCX", "TSLA"]) }),
+  Object.freeze({ ordinal: 2, capability: "BARS", interval: "PT1H", maximumEvidenceRecords: 8, symbols: Object.freeze(["MU", "SKHY", "SPCX", "TSLA"]) }),
+  Object.freeze({ ordinal: 3, capability: "BARS", interval: "PT15M", maximumEvidenceRecords: 8, symbols: Object.freeze(["MU", "SKHY", "SPCX", "TSLA"]) }),
+  Object.freeze({ ordinal: 4, capability: "BARS", interval: "PT5M", maximumEvidenceRecords: 8, symbols: Object.freeze(["MU", "SKHY", "SPCX", "TSLA"]) }),
+  Object.freeze({ ordinal: 5, capability: "LATEST_QUOTES", interval: "NONE", maximumEvidenceRecords: 7, symbols: Object.freeze(["MULL", "SKDD", "SKUU", "SPCH", "SSPC", "TSLL", "TSLQ"]) }),
 ] as const);
 
 export function canonicalizeRfc8785Jcs(value: unknown): string {
@@ -99,9 +100,17 @@ export function sha256Jcs(value: unknown): string {
 export function liveReadonlyPlanFingerprint(
   requestPlan: readonly LiveReadonlyRequestPlanEntry[],
   calendarEvidenceFingerprint: string,
+  mappingRegistryId: string,
   mappingRegistryVersion: string,
+  mappingRegistryFingerprint: string,
 ): string {
-  return sha256Jcs({ calendarEvidenceFingerprint, mappingRegistryVersion, requests: requestPlan });
+  return sha256Jcs({ calendarEvidenceFingerprint, mappingRegistryId, mappingRegistryVersion, mappingRegistryFingerprint, requests: requestPlan });
+}
+
+export function liveReadonlyRequestFingerprint(
+  request: Omit<LiveReadonlyRequestPlanEntry, "requestFingerprint">,
+): string {
+  return sha256Jcs(request);
 }
 
 export function ownerAuthorizationSignatureMessage(manifestSha256: string): Uint8Array {
@@ -157,7 +166,9 @@ function evaluateLiveReadonlyPreflight(
   }
   for (const request of manifest.authorizationBody.requests) {
     if (request.calendarEvidenceFingerprint !== calendar.fingerprint ||
-        request.mappingRegistryVersion !== manifest.authorizationBody.mappingRegistryVersion) {
+        request.mappingRegistryId !== manifest.authorizationBody.mappingRegistryId ||
+        request.mappingRegistryVersion !== manifest.authorizationBody.mappingRegistryVersion ||
+        request.mappingRegistryFingerprint !== manifest.authorizationBody.mappingRegistryFingerprint) {
       issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
     }
   }
@@ -277,7 +288,9 @@ function validateAuthorizationBody(
     body.authorizationType === "PERSONAL_DAILY_SCAN_LIVE_READONLY" &&
     isIdentifier(body.authorizationId) && isIdentifier(body.ownerDecisionReference) &&
     body.provider === "ALPACA_MARKET_DATA" && body.feed === "iex" &&
-    isIdentifier(body.mappingRegistryVersion) && isIdentifier(body.calendarEvidenceId) &&
+    isIdentifier(body.mappingRegistryId) && isIdentifier(body.mappingRegistryVersion) &&
+    typeof body.mappingRegistryFingerprint === "string" && SHA256.test(body.mappingRegistryFingerprint) &&
+    isIdentifier(body.calendarEvidenceId) &&
     typeof body.calendarEvidenceFingerprint === "string" && SHA256.test(body.calendarEvidenceFingerprint) &&
     typeof body.planFingerprint === "string" && SHA256.test(body.planFingerprint) &&
     body.maximumNetworkRequests === 5 && body.maximumAttemptsPerRequest === 1 &&
@@ -313,7 +326,9 @@ function validateAuthorizationBody(
     const expected = liveReadonlyPlanFingerprint(
       requestPlan as unknown as readonly LiveReadonlyRequestPlanEntry[],
       body.calendarEvidenceFingerprint as string,
+      body.mappingRegistryId as string,
       body.mappingRegistryVersion as string,
+      body.mappingRegistryFingerprint as string,
     );
     if (body.planFingerprint !== expected) issues.add(LiveReadonlyPreflightIssueCode.PlanFingerprintMismatch);
   } catch {
@@ -327,14 +342,17 @@ function validateRequest(value: unknown, issues: Set<LiveReadonlyPreflightIssueC
     return;
   }
   const common = Number.isInteger(value.ordinal) && value.method === "GET" && value.host === "data.alpaca.markets" &&
-    value.feed === "iex" && value.timeoutMs === 10_000 && value.maximumResponseBytes === 1_048_576 &&
+    value.feed === "iex" && value.currency === "USD" && value.timeoutMs === 10_000 && value.maximumResponseBytes === 1_048_576 &&
+    Number.isSafeInteger(value.maximumEvidenceRecords) && Number(value.maximumEvidenceRecords) > 0 &&
     typeof value.calendarEvidenceFingerprint === "string" && SHA256.test(value.calendarEvidenceFingerprint) &&
-    isIdentifier(value.mappingRegistryVersion) && isSortedUniqueSymbols(value.symbols);
+    isIdentifier(value.mappingRegistryId) && isIdentifier(value.mappingRegistryVersion) &&
+    typeof value.mappingRegistryFingerprint === "string" && SHA256.test(value.mappingRegistryFingerprint) &&
+    isSortedUniqueSymbols(value.symbols);
   if (!common) issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
   if (value.capability === "BARS") {
     if (value.path !== "/v2/stocks/bars" || !["P1D", "PT1H", "PT15M", "PT5M"].includes(value.interval as string) ||
         value.adjustment !== "raw" || value.sort !== "asc" || timestamp(value.start) === undefined ||
-        timestamp(value.end) === undefined || (timestamp(value.start) ?? 0) >= (timestamp(value.end) ?? 0) || value.limit !== 1000) {
+        timestamp(value.end) === undefined || (timestamp(value.start) ?? 0) >= (timestamp(value.end) ?? 0) || value.limit !== 2) {
       issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
     }
   } else if (value.capability === "LATEST_QUOTES") {
@@ -345,13 +363,26 @@ function validateRequest(value: unknown, issues: Set<LiveReadonlyPreflightIssueC
   } else {
     issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
   }
+  try {
+    const { requestFingerprint, ...descriptor } = value;
+    if (typeof requestFingerprint !== "string" || requestFingerprint !== liveReadonlyRequestFingerprint(
+      descriptor as unknown as Omit<LiveReadonlyRequestPlanEntry, "requestFingerprint">,
+    )) {
+      issues.add(LiveReadonlyPreflightIssueCode.RequestFingerprintMismatch);
+      issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
+    }
+  } catch {
+    issues.add(LiveReadonlyPreflightIssueCode.RequestFingerprintMismatch);
+    issues.add(LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
+  }
 }
 
 function requestSetIsExact(requests: readonly unknown[]): boolean {
   return EXPECTED_REQUESTS.every((expected, index) => {
     const request = requests[index];
     return isRecord(request) && request.ordinal === expected.ordinal && request.capability === expected.capability &&
-      request.interval === expected.interval && JSON.stringify(request.symbols) === JSON.stringify(expected.symbols);
+      request.interval === expected.interval && request.maximumEvidenceRecords === expected.maximumEvidenceRecords &&
+      JSON.stringify(request.symbols) === JSON.stringify(expected.symbols);
   });
 }
 

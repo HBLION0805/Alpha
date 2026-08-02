@@ -31,14 +31,27 @@ and caller-provided keys do not authorize themselves. Without that key,
 preflight returns `OWNER_AUTHORIZATION_VERIFICATION_KEY_UNAVAILABLE`. D3
 market-data acquisition has not started.
 
-D2-C1 is implemented locally and awaits independent Owner review. It removes
+D2-C1 is Owner-approved, committed, and pushed as `74cb5f1`. It removes
 all trust-root material from `LiveReadonlyPreflightInput`; a product
 composition root now constructs and owns the verifier, which defensively
 captures the pinned public verification identity. Fully self-consistent
 attacker keys and signatures, runtime field injection, Manifest injection,
 domain swapping, and CLI trust overrides fail closed with zero candidates and
-zero side effects. The original D2 Owner verdict remains `NO_GO`; D2-C2 and
-D2-C3 are explicitly not started.
+zero side effects. D2-C2-R2 is implemented offline and awaits independent Owner
+review. The product barrel exposes only a no-argument composition root; it does
+not accept a caller verifier, Provider authority, trust material, or Transport.
+A physically separate test factory drives a raw-response seam, after which
+product code performs parsing, normalization, provenance, attempt, and
+resolution construction. Single-use dispatch permits model attempted/completed
+call stages without claiming real HTTP occurred. It proposes five exact
+queries, 36 Bars, seven Quotes, and 43
+one-to-one resolutions, but repository evidence does not prove that Alpaca's
+multi-symbol `limit=2` is per symbol. The product path therefore returns
+`PROVIDER_LIMIT_SEMANTICS_UNPROVEN` before Transport; flat-mapped fixtures prove
+only Alpha structure and cannot enter the product live path. Mapping identity
+binds the normalized approved registry contents, not only ID/version. No
+concrete HTTPS Transport or credential reader is wired. D2-C3 and D3 are
+explicitly not started.
 
 Day 7 completed:
 

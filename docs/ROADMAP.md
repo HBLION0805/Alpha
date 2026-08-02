@@ -19,8 +19,18 @@ only offline Owner-authorization and exchange-calendar contracts for review;
 no trusted key is stored, credential access is prohibited, and D3 acquisition
 has not been implemented. D2-C1 removes caller-selected trust material from
 runtime input and moves verifier construction to the product composition root;
-it remains uncommitted and requires independent Owner review. D2-C2 request-
-scope correction and D2-C3 calendar-continuity correction have not started.
+the Owner-approved correction is committed and pushed as `74cb5f1`. D2-C2-R2
+now implements an uncommitted offline exact-scope compiler, fixed no-argument
+product composition root, isolated test factory, raw-response Transport seam,
+product-owned normalization/resolution, content-bound mapping identity, and
+local lifecycle-model counters for the proposed 36 Bars, seven Quotes, and 43
+Evidence Resolutions.
+The repository does not prove Alpaca's multi-symbol limit semantics; therefore
+the live-readonly path fails closed before Transport with
+`PROVIDER_LIMIT_SEMANTICS_UNPROVEN`. No actual HTTP lifecycle has run.
+D2-C2-R2 requires independent Owner review
+and grants no credential or network authority. D2-C3
+calendar-continuity correction and D3 acquisition have not started.
 
 Before a Phase 1B live-readonly run can be proposed, the Owner must separately
 approve D2 and later D3 implementation, then approve a date-specific manifest.

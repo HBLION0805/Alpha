@@ -30,8 +30,20 @@ for Owner review only. D2-C1 removes trust-root material from business inputs:
 the product composition root captures the configured verifier before a request
 is evaluated, and unknown runtime or CLI trust overrides fail closed. No
 trusted Owner key is stored, and the absence of product-owned verification
-configuration fails closed before credentials or network access. D2-C2,
-D2-C3, and D3 have not started.
+configuration fails closed before credentials or network access. D2-C1 is
+closed. D2-C2-R2 adds the no-argument product composition root, an isolated
+test-only factory, a raw-response-only Transport seam, product-layer
+normalization and resolution, dispatcher-owned lifecycle counting, and a
+content-addressed mapping registry for the 36-Bar / seven-Quote / 43-resolution
+offline structural budget. The product barrel cannot accept a caller verifier,
+Provider authority, key, fingerprint, or Transport.
+Repository evidence does not prove Alpaca's multi-symbol `limit=2` semantics,
+so the live-readonly product path returns
+`PROVIDER_LIMIT_SEMANTICS_UNPROVEN` before credentials or Transport. Fixtures
+validate structure only. The current product configuration has neither a
+trusted Owner key nor D3 Transport; no real HTTP lifecycle has occurred and
+local counters prove only the deterministic lifecycle model. D2-C2-R2 requires
+Owner review; D2-C3 and D3 have not started.
 
 Implemented Python research/prototype surface:
 

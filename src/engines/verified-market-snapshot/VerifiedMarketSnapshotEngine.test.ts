@@ -69,7 +69,9 @@ function requestWith(
     capability: changed.capability,
     ...(changed.interval === undefined ? {} : { interval: changed.interval }),
     requestedSymbolScope: changed.requestedSymbolScope,
+    mappingRegistryId: changed.mappingRegistryId,
     mappingRegistryVersion: changed.mappingRegistryVersion,
+    mappingRegistryFingerprint: changed.mappingRegistryFingerprint,
     requestWindowStart: changed.requestWindowStart,
     requestWindowEnd: changed.requestWindowEnd,
   };

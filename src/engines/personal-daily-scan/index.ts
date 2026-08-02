@@ -12,3 +12,10 @@ export type {
 } from "./PersonalDailyScanApplication";
 export * from "./PersonalDailyScanEligibility";
 export { createOwnerAuthorizationVerifier } from "./PersonalDailyScanLiveReadonlyPreflight";
+export {
+  compileLiveReadonlyMarketScopePlan,
+  validateLiveReadonlyMarketScopeEvidence,
+} from "./PersonalDailyScanLiveReadonlyMarketScope";
+export {
+  createPersonalDailyScanLiveReadonlyProductOperation,
+} from "./PersonalDailyScanLiveReadonlyProductComposition";
