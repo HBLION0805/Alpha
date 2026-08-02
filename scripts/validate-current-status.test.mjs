@@ -75,7 +75,7 @@ const tests = [
     assert(validation.issues.includes("networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1Status must equal \"MERGED\"."));
     assert(validation.issues.includes("phase1Approval must equal \"CLOSED\"."));
-    assert(validation.issues.includes("phase1BStatus must equal \"D3A_MERGED_POST_MERGE_CORRECTION_OWNER_REVIEW_REQUIRED\"."));
+    assert(validation.issues.includes("phase1BStatus must equal \"D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED\"."));
     assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
     assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"D3A_RAW_HTTPS_BOUNDARY_MERGED_NOT_EXECUTED\"."));
@@ -89,15 +89,15 @@ const tests = [
   }],
   ["D3A correction source and merged validation cannot drift", () => {
     const changed = clone(status);
-    changed.source.branch = "codex/personal-daily-scan-phase1a-c4";
+    changed.source.branch = "codex/d3a-post-merge-correction";
     changed.source.source_baseline_commit = changed.source.reviewed_c4_commit;
     changed.currentMilestone.status = "IN_PROGRESS";
     changed.validation.phase1bD3AMergedHead.includesUncommittedCode = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
-    assert(validation.issues.includes("source.branch must equal \"codex/d3a-post-merge-correction\"."));
+    assert(validation.issues.includes("source.branch must equal \"main\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"CORRECTION_IMPLEMENTED_OWNER_REVIEW_REQUIRED\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"MERGED_CLOSED\"."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["post-merge validation does not publish unaudited timing precision", () => {
@@ -148,7 +148,7 @@ const tests = [
     changed.phase1BDesign.ownerPublicKey = "caller-supplied";
     assertInvalid(changed, schema, "phase1BDesign.ownerPublicKey is undeclared.");
   }],
-  ["D3A records the main merge and correction review without granting Provider or network authority", () => {
+  ["D3A records the verified PR #7 correction and closes without granting Provider or network authority", () => {
     assert(status.completed.includes("PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"));
     assert(status.completed.includes("PHASE_1B_D1_DESIGN_COMPLETED"));
     assert(status.completed.includes("PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"));
@@ -157,13 +157,16 @@ const tests = [
     assert.equal(status.phase1BDelivery.d2C1, "MERGED");
     assert.equal(status.phase1BDelivery.d2C2R2, "MERGED_OFFLINE_ONLY");
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "95a30a9a218f2ef94d343ba05f774eedd29f6d68");
-    assert.equal(status.source.implementation_baseline, "PHASE_1B_D3A_MERGED_MAIN");
-    assert.equal(status.phase1BDelivery.d3A, "MERGED_OFFLINE_ONLY");
-    assert.equal(status.phase1BDelivery.d3APostMergeCorrection, "IMPLEMENTED_OWNER_REVIEW_REQUIRED");
+    assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
+    assert.equal(status.source.source_baseline_commit, "bae51dda65dc55f376cb683f873fa93295ed7e2f");
+    assert.equal(status.source.implementation_baseline, "PHASE_1B_D3A_POST_MERGE_CORRECTION_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD");
+    assert.equal(status.phase1BDelivery.d3A, "MERGED_CLOSED");
+    assert.equal(status.phase1BDelivery.d3APostMergeCorrection, "VERIFIED");
     assert.equal(status.phase1BDelivery.d3B, "BLOCKED_NOT_STARTED");
+    assert.deepEqual(status.inProgress, []);
+    assert(status.next.includes("OWNER_DECISION_PHASE_1B_D3B_DESIGN"));
     assert.equal(status.phase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
-    assert.equal(status.phase1BDesign.status, "D3A_MERGED_POST_MERGE_CORRECTION_OWNER_REVIEW_REQUIRED");
+    assert.equal(status.phase1BDesign.status, "D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED");
     assert.equal(status.phase1BDesign.marketScopePolicy, "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY");
     assert.equal(status.phase1BDesign.providerLimitSemantics, "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT");
     assert.equal(status.phase1BDesign.compositionRoot, "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE");
@@ -174,14 +177,14 @@ const tests = [
     missingCorrection.blocked = missingCorrection.blocked.filter((item) => item !== "PROVIDER_LIMIT_SEMANTICS_UNPROVEN");
     assertInvalid(missingCorrection, schema, "blocked must include \"PROVIDER_LIMIT_SEMANTICS_UNPROVEN\".");
   }],
-  ["D3A merged-head validation binds the PR #6 merge commit and historical count", () => {
-    assert.equal(status.validation.phase1bD3AMergedHead.source_baseline_commit, "95a30a9a218f2ef94d343ba05f774eedd29f6d68");
+  ["D3A merged-head validation binds the PR #7 merge commit and verified count", () => {
+    assert.equal(status.validation.phase1bD3AMergedHead.source_baseline_commit, "bae51dda65dc55f376cb683f873fa93295ed7e2f");
     assert.equal(status.validation.phase1bD3AMergedHead.includesUncommittedCode, false);
     assert.equal(status.validation.phase1bD3AMergedHead.componentCount, 139);
-    assert.equal(status.validation.phase1bD3AMergedHead.testsExecuted, 2792);
+    assert.equal(status.validation.phase1bD3AMergedHead.testsExecuted, 2814);
     const changed = clone(status);
     changed.validation.phase1bD3AMergedHead.source_baseline_commit = "877d195b545233914e2b165d8cdb769fe2b1d2f0";
-    assertInvalid(changed, schema, "$.validation.phase1bD3AMergedHead.source_baseline_commit must equal schema const \"95a30a9a218f2ef94d343ba05f774eedd29f6d68\".");
+    assertInvalid(changed, schema, "$.validation.phase1bD3AMergedHead.source_baseline_commit must equal schema const \"bae51dda65dc55f376cb683f873fa93295ed7e2f\".");
   }],
 ];
 

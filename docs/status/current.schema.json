@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.5",
+  "$id": "https://alpha.local/schemas/project-status/1.6",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -15,7 +15,7 @@
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.5" },
+    "schemaVersion": { "const": "1.6" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -40,7 +40,7 @@
     "networkAuthority": { "const": "NOT_GRANTED" },
     "phase1Status": { "const": "MERGED" },
     "phase1Approval": { "const": "CLOSED" },
-    "phase1BStatus": { "const": "D3A_MERGED_POST_MERGE_CORRECTION_OWNER_REVIEW_REQUIRED" },
+    "phase1BStatus": { "const": "D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED" },
     "phase1BDelivery": { "$ref": "#/$defs/phase1BDelivery" },
     "phase1BDesign": { "$ref": "#/$defs/phase1BDesign" },
     "optionsStatus": { "const": "CLOSED" },
@@ -54,9 +54,9 @@
       "additionalProperties": false,
       "required": ["branch", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
       "properties": {
-        "branch": { "const": "codex/d3a-post-merge-correction" },
-        "source_baseline_commit": { "const": "95a30a9a218f2ef94d343ba05f774eedd29f6d68" },
-        "implementation_baseline": { "const": "PHASE_1B_D3A_MERGED_MAIN" },
+        "branch": { "const": "main" },
+        "source_baseline_commit": { "const": "bae51dda65dc55f376cb683f873fa93295ed7e2f" },
+        "implementation_baseline": { "const": "PHASE_1B_D3A_POST_MERGE_CORRECTION_MERGE_COMMIT_NOT_STATUS_COMMIT_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
       }
     },
@@ -65,9 +65,9 @@
       "additionalProperties": false,
       "required": ["id", "name", "status"],
       "properties": {
-        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D3A_POST_MERGE_CORRECTION" },
-        "name": { "const": "D3A Post-Merge Evidence Integrity Correction" },
-        "status": { "const": "CORRECTION_IMPLEMENTED_OWNER_REVIEW_REQUIRED" }
+        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D3A" },
+        "name": { "const": "Alpaca Bars Limit Qualification Slice" },
+        "status": { "const": "MERGED_CLOSED" }
       }
     },
     "phase1BDesign": {
@@ -76,7 +76,7 @@
       "required": ["task", "status", "networkAuthority", "credentialAccess", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot"],
       "properties": {
         "task": { "const": "ALPACA_BARS_LIMIT_QUALIFICATION_SLICE" },
-        "status": { "const": "D3A_MERGED_POST_MERGE_CORRECTION_OWNER_REVIEW_REQUIRED" },
+        "status": { "const": "D3A_MERGED_CLOSED_D3B_BLOCKED_NOT_STARTED" },
         "networkAuthority": { "const": "NOT_GRANTED" },
         "credentialAccess": { "const": "PROHIBITED" },
         "marketDataAcquisition": { "const": "D3A_RAW_HTTPS_BOUNDARY_MERGED_NOT_EXECUTED" },
@@ -95,8 +95,8 @@
         "d2C1": { "const": "MERGED" },
         "d2C2R2": { "const": "MERGED_OFFLINE_ONLY" },
         "d2C3": { "const": "NOT_STARTED" },
-        "d3A": { "const": "MERGED_OFFLINE_ONLY" },
-        "d3APostMergeCorrection": { "const": "IMPLEMENTED_OWNER_REVIEW_REQUIRED" },
+        "d3A": { "const": "MERGED_CLOSED" },
+        "d3APostMergeCorrection": { "const": "VERIFIED" },
         "d3B": { "const": "BLOCKED_NOT_STARTED" },
         "newsMacro": { "const": "NOT_STARTED" },
         "providerLimitSemantics": { "const": "UNPROVEN" },
@@ -232,13 +232,13 @@
       ],
       "properties": {
         "kind": { "const": "PHASE_1B_D3A_MERGED_HEAD" },
-        "source_baseline_commit": { "const": "95a30a9a218f2ef94d343ba05f774eedd29f6d68" },
+        "source_baseline_commit": { "const": "bae51dda65dc55f376cb683f873fa93295ed7e2f" },
         "includesUncommittedCode": { "const": false },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": { "const": "PASSED" },
         "componentCount": { "const": 139 },
-        "testsExecuted": { "const": 2792 },
-        "passed": { "const": 2792 },
+        "testsExecuted": { "const": 2814 },
+        "passed": { "const": 2814 },
         "failed": { "const": 0 },
         "durationMs": { "type": "null" },
         "wallClockDurationMs": { "type": "null" }

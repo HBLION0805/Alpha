@@ -38,20 +38,20 @@ normalization and resolution, dispatcher-owned lifecycle counting, and a
 content-addressed mapping registry for the 36-Bar / seven-Quote / 43-resolution
 offline structural budget. The product barrel cannot accept a caller verifier,
 Provider authority, key, fingerprint, or Transport.
-Phase 1B-D3A was merged through PR #6 at
+Phase 1B-D3A's initial offline slice was merged through PR #6 at
 `95a30a9a218f2ef94d343ba05f774eedd29f6d68`. It is an offline qualification slice for
 exactly one `GET /v2/stocks/bars` request covering `MU,QQQ`, `1Day`, and
 `limit=2`. It reuses the product-owned Owner trust root and signed Exchange
 Calendar boundary, compiles one exact request, exposes a product-owned bounded
 raw HTTPS Transport, strictly validates the raw response, and returns only a
-sanitized qualification result. The product entry accepts no caller verifier,
-key, fingerprint, Provider authority, credential loader, or Transport. No
-signed one-shot Manifest or network authority exists, so the slice remains
-offline and fail-closed before credentials or dispatch. A separate post-merge
-correction is implemented for Owner review; it removes the caller-controlled
-real-source claim, preserves sanitized failed-response observations, and makes
-network counters derive only from the product Transport lifecycle. That
-correction is not yet merged and grants no authority.
+sanitized qualification result. PR #7 merged the verified evidence-integrity
+correction at `bae51dda65dc55f376cb683f873fa93295ed7e2f`. D3A is now merged and
+closed. The correction removes the caller-controlled real-source claim,
+preserves sanitized failed-response observations, and makes network counters
+derive only from the product Transport lifecycle. The product entry accepts no
+caller verifier, key, fingerprint, Provider authority, credential loader, or
+Transport. No signed one-shot Manifest or network authority exists, so the
+slice remains offline and fail-closed before credentials or dispatch.
 
 Repository evidence does not prove Alpaca's multi-symbol `limit=2` semantics,
 so the live-readonly product path returns
@@ -62,7 +62,8 @@ is not granted, full Daily Scan HTTPS acquisition is not implemented, and no
 real HTTP lifecycle has occurred. Real market-data usability remains 0%.
 Injected responses are always `TEST_INJECTED`, keep zero network counters, and
 cannot prove Provider behavior. D2-C3, D3B, full D3 acquisition, and News/Macro
-have not started; D3B is blocked pending this correction review.
+have not started; D3B remains blocked and requires a separate Owner design
+decision.
 
 Implemented Python research/prototype surface:
 
