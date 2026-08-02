@@ -2,14 +2,14 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-const BASE_COMMIT = "f565e9e5250cfd2fca5e6ed9c244b3947add7b28";
-const PHASE_1B_D2_C2_BASE_COMMIT = "74cb5f1b0be217ec73bc0654807bfc2ddfb106b2";
+const PHASE_1A_MERGE_COMMIT = "f565e9e5250cfd2fca5e6ed9c244b3947add7b28";
+const PHASE_1B_D2_MERGE_COMMIT = "948192be9eb7d9d5e41abb19e763b73916dbcad4";
 const STATUS_FIELDS = Object.freeze([
   "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
   "completed", "inProgress", "blocked", "frozen", "next", "runtimeOwnership",
   "capitalArchitecture", "riskPolicyRecord", "worktreeIsolation",
-  "executionBoundaries", "ownerDailyProductEntry", "validation",
-  "networkAuthority", "phase1Status", "phase1Approval", "phase1BStatus", "phase1BDesign",
+  "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry", "validation",
+  "networkAuthority", "phase1Status", "phase1Approval", "phase1BStatus", "phase1BDelivery", "phase1BDesign",
   "optionsStatus", "brokerStatus", "paperTradingStatus", "orderExecutionStatus",
 ]);
 const STATUS_ITEM = /^[A-Z0-9][A-Z0-9_:-]{2,159}$/u;
@@ -34,7 +34,7 @@ export function validateCurrentStatus(status, schema) {
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
   exact(status.$schema, "./current.schema.json", "$schema", issues);
-  exact(status.schemaVersion, "1.2", "schemaVersion", issues);
+  exact(status.schemaVersion, "1.3", "schemaVersion", issues);
   if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
     issues.push("statusId must be a bounded Alpha status identifier.");
   }
@@ -42,24 +42,24 @@ export function validateCurrentStatus(status, schema) {
 
   validateExactObject(status.source, "source", {
     branch: "main",
-    source_baseline_commit: BASE_COMMIT,
-    implementation_baseline: "PHASE_1A_STATUS_MERGE_COMMIT_NOT_D2_HEAD",
+    source_baseline_commit: PHASE_1B_D2_MERGE_COMMIT,
+    implementation_baseline: "PHASE_1B_D2_POST_MERGE_MAIN_HEAD_NOT_STATUS_COMMIT",
     reviewed_c4_commit: "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
   }, issues);
   validateExactObject(status.currentMilestone, "currentMilestone", {
     id: "PERSONAL_DAILY_SCAN_PHASE_1B_D2",
     name: "Authorization and Exchange Calendar Contracts",
-    status: "OWNER_REVIEW_REQUIRED",
+    status: "MERGED_OFFLINE_ONLY",
   }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
     validateStatusItems(status[field], field, issues);
   }
   requireStatusItem(status.completed, "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION", "completed", issues);
-  requireStatusItem(status.inProgress, "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING", "inProgress", issues);
+  requireStatusItem(status.completed, "PHASE_1B_D1_DESIGN_COMPLETED", "completed", issues);
+  requireStatusItem(status.completed, "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING", "completed", issues);
   requireStatusItem(status.blocked, "PROVIDER_LIMIT_SEMANTICS_UNPROVEN", "blocked", issues);
-  requireStatusItem(status.blocked, "PHASE_1B_D2_C2_R2_OWNER_REVIEW_REQUIRED", "blocked", issues);
   requireStatusItem(status.blocked, "PHASE_1B_D2_C3_NOT_STARTED", "blocked", issues);
-  requireStatusItem(status.next, "OWNER_REVIEW_PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING", "next", issues);
+  requireStatusItem(status.next, "OWNER_REVIEW_PHASE_1B_D2_POST_MERGE_STATUS_CONVERGENCE", "next", issues);
   validateExactObject(status.runtimeOwnership, "runtimeOwnership", {
     productRuntime: "TYPESCRIPT",
     pythonRole: "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY",
@@ -80,16 +80,29 @@ export function validateCurrentStatus(status, schema) {
     paperTrading: "CLOSED",
     orderExecution: "CLOSED",
   }, issues);
+  exact(status.automatedExecutionAllowed, false, "automatedExecutionAllowed", issues);
   exact(status.ownerDailyProductEntry, "DRY_RUN_AND_FIXTURE_ONLY", "ownerDailyProductEntry", issues);
   validateValidation(status.validation, issues);
-  exact(status.networkAuthority, "OWNER_NETWORK_AUTHORIZATION_REQUIRED", "networkAuthority", issues);
+  exact(status.networkAuthority, "NOT_GRANTED", "networkAuthority", issues);
   exact(status.phase1Status, "MERGED", "phase1Status", issues);
-  exact(status.phase1Approval, "OFFLINE_AVAILABLE", "phase1Approval", issues);
-  exact(status.phase1BStatus, "NOT_STARTED", "phase1BStatus", issues);
+  exact(status.phase1Approval, "CLOSED", "phase1Approval", issues);
+  exact(status.phase1BStatus, "OFFLINE_FOUNDATION_MERGED_LIVE_READONLY_NOT_STARTED", "phase1BStatus", issues);
+  validateExactObject(status.phase1BDelivery, "phase1BDelivery", {
+    d1: "DESIGN_COMPLETED",
+    d2C1: "MERGED",
+    d2C2R2: "MERGED_OFFLINE_ONLY",
+    d2C3: "NOT_STARTED",
+    d3: "NOT_STARTED",
+    newsMacro: "NOT_STARTED",
+    providerLimitSemantics: "UNPROVEN",
+    fiveRequest43Evidence: "STRUCTURAL_TARGET_ONLY",
+    realHttpsAcquisition: "NOT_IMPLEMENTED",
+    liveNetworkAuthorization: "NOT_GRANTED",
+  }, issues);
   validateExactObject(status.phase1BDesign, "phase1BDesign", {
     task: "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS",
-    status: "D2_C2_R2_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED",
-    networkAuthority: "NONE",
+    status: "D2_C1_MERGED_D2_C2_R2_MERGED_OFFLINE_ONLY",
+    networkAuthority: "NOT_GRANTED",
     credentialAccess: "PROHIBITED",
     marketDataAcquisition: "NOT_IMPLEMENTED",
     trustedOwnerVerificationKey: "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
@@ -97,10 +110,10 @@ export function validateCurrentStatus(status, schema) {
     providerLimitSemantics: "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
     compositionRoot: "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE",
   }, issues);
-  exact(status.optionsStatus, "NOT_STARTED", "optionsStatus", issues);
-  exact(status.brokerStatus, "NOT_STARTED", "brokerStatus", issues);
-  exact(status.paperTradingStatus, "NOT_STARTED", "paperTradingStatus", issues);
-  exact(status.orderExecutionStatus, "NOT_STARTED", "orderExecutionStatus", issues);
+  exact(status.optionsStatus, "CLOSED", "optionsStatus", issues);
+  exact(status.brokerStatus, "CLOSED", "brokerStatus", issues);
+  exact(status.paperTradingStatus, "CLOSED", "paperTradingStatus", issues);
+  exact(status.orderExecutionStatus, "CLOSED", "orderExecutionStatus", issues);
 
   return result(issues);
 }
@@ -121,7 +134,7 @@ function validateSchema(schema, issues) {
     return;
   }
   exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
-  exact(schema.$id, "https://alpha.local/schemas/project-status/1.2", "schema.$id", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.3", "schema.$id", issues);
   exact(schema.type, "object", "schema.type", issues);
   exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
   if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {
@@ -291,23 +304,20 @@ function validateValidation(value, issues) {
     issues.push("validation must be an object.");
     return;
   }
-  const fields = ["headBaseline", "phase1aWorkingTree", "phase1bD2WorkingTree", "coverageBaseline"];
+  const fields = ["phase1aMergedHead", "phase1bD2MergedHead", "coverageBaseline"];
   allowOnly(value, fields, "validation", issues);
   requireExactly(value, fields, "validation", issues);
-  validateValidationResult(value.headBaseline, "PHASE_1A_MERGED_HEAD", false, "validation.headBaseline", issues);
-  if (value.phase1aWorkingTree !== null) {
-    issues.push("validation.phase1aWorkingTree must be null after the Phase 1A merge.");
-  }
-  validateValidationResult(value.phase1bD2WorkingTree, "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE", true, "validation.phase1bD2WorkingTree", issues, PHASE_1B_D2_C2_BASE_COMMIT);
-  if (isRecord(value.phase1bD2WorkingTree)) {
-    exact(value.phase1bD2WorkingTree.componentCount, 138, "validation.phase1bD2WorkingTree.componentCount", issues);
-    exact(value.phase1bD2WorkingTree.testsExecuted, 2792, "validation.phase1bD2WorkingTree.testsExecuted", issues);
-    exact(value.phase1bD2WorkingTree.passed, 2792, "validation.phase1bD2WorkingTree.passed", issues);
+  validateValidationResult(value.phase1aMergedHead, "PHASE_1A_MERGED_HEAD", false, "validation.phase1aMergedHead", issues, PHASE_1A_MERGE_COMMIT);
+  validateValidationResult(value.phase1bD2MergedHead, "PHASE_1B_D2_MERGED_HEAD", false, "validation.phase1bD2MergedHead", issues, PHASE_1B_D2_MERGE_COMMIT);
+  if (isRecord(value.phase1bD2MergedHead)) {
+    exact(value.phase1bD2MergedHead.componentCount, 138, "validation.phase1bD2MergedHead.componentCount", issues);
+    exact(value.phase1bD2MergedHead.testsExecuted, 2792, "validation.phase1bD2MergedHead.testsExecuted", issues);
+    exact(value.phase1bD2MergedHead.passed, 2792, "validation.phase1bD2MergedHead.passed", issues);
   }
   validateCoverageBaseline(value.coverageBaseline, issues);
 }
 
-function validateValidationResult(value, kind, includesUncommittedCode, path, issues, sourceBaselineCommit = BASE_COMMIT) {
+function validateValidationResult(value, kind, includesUncommittedCode, path, issues, sourceBaselineCommit = PHASE_1A_MERGE_COMMIT) {
   if (!isRecord(value)) {
     issues.push(`${path} must be an object.`);
     return;

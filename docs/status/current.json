@@ -1,35 +1,34 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.2",
-  "statusId": "alpha-status:phase1b-d2-c2-r2-owner-review",
-  "asOf": "2026-08-01T23:45:00.000Z",
+  "schemaVersion": "1.3",
+  "statusId": "alpha-status:phase1b-d2-post-merge",
+  "asOf": "2026-08-02T02:22:44.000Z",
   "source": {
     "branch": "main",
-    "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
-    "implementation_baseline": "PHASE_1A_STATUS_MERGE_COMMIT_NOT_D2_HEAD",
+    "source_baseline_commit": "948192be9eb7d9d5e41abb19e763b73916dbcad4",
+    "implementation_baseline": "PHASE_1B_D2_POST_MERGE_MAIN_HEAD_NOT_STATUS_COMMIT",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7"
   },
   "currentMilestone": {
     "id": "PERSONAL_DAILY_SCAN_PHASE_1B_D2",
     "name": "Authorization and Exchange Calendar Contracts",
-    "status": "OWNER_REVIEW_REQUIRED"
+    "status": "MERGED_OFFLINE_ONLY"
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
     "PERSONAL_DAILY_SCAN_PHASE_1A_MERGED",
     "PHASE_1A_POST_MERGE_VALIDATION_BASELINE",
-    "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"
-  ],
-  "inProgress": [
+    "PHASE_1B_D1_DESIGN_COMPLETED",
+    "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION",
     "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"
   ],
+  "inProgress": [],
   "blocked": [
     "PHASE_1B_LIVE_READONLY_NOT_STARTED",
     "NETWORK_LIVE_READONLY_OWNER_AUTHORIZATION_REQUIRED",
     "VIX_LIVE_SOURCE_NOT_APPROVED",
     "EVENT_CALENDAR_SOURCE_NOT_APPROVED",
     "PROVIDER_LIMIT_SEMANTICS_UNPROVEN",
-    "PHASE_1B_D2_C2_R2_OWNER_REVIEW_REQUIRED",
     "PHASE_1B_D2_C3_NOT_STARTED"
   ],
   "frozen": [
@@ -41,7 +40,7 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_REVIEW_PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"
+    "OWNER_REVIEW_PHASE_1B_D2_POST_MERGE_STATUS_CONVERGENCE"
   ],
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
@@ -88,9 +87,10 @@
     "paperTrading": "CLOSED",
     "orderExecution": "CLOSED"
   },
+  "automatedExecutionAllowed": false,
   "ownerDailyProductEntry": "DRY_RUN_AND_FIXTURE_ONLY",
   "validation": {
-    "headBaseline": {
+    "phase1aMergedHead": {
       "kind": "PHASE_1A_MERGED_HEAD",
       "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
       "includesUncommittedCode": false,
@@ -103,11 +103,10 @@
       "durationMs": null,
       "wallClockDurationMs": null
     },
-    "phase1aWorkingTree": null,
-    "phase1bD2WorkingTree": {
-      "kind": "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE",
-      "source_baseline_commit": "74cb5f1b0be217ec73bc0654807bfc2ddfb106b2",
-      "includesUncommittedCode": true,
+    "phase1bD2MergedHead": {
+      "kind": "PHASE_1B_D2_MERGED_HEAD",
+      "source_baseline_commit": "948192be9eb7d9d5e41abb19e763b73916dbcad4",
+      "includesUncommittedCode": false,
       "command": "npm.cmd run alpha:validate",
       "status": "PASSED",
       "componentCount": 138,
@@ -121,8 +120,8 @@
       "metric": "REGISTERED_VALIDATION_EXECUTION",
       "status": "ESTABLISHED",
       "registeredTests": {
-        "executed": 2736,
-        "passed": 2736,
+        "executed": 2792,
+        "passed": 2792,
         "failed": 0
       },
       "instrumentedCodeCoverage": {
@@ -131,14 +130,26 @@
       }
     }
   },
-  "networkAuthority": "OWNER_NETWORK_AUTHORIZATION_REQUIRED",
+  "networkAuthority": "NOT_GRANTED",
   "phase1Status": "MERGED",
-  "phase1Approval": "OFFLINE_AVAILABLE",
-  "phase1BStatus": "NOT_STARTED",
+  "phase1Approval": "CLOSED",
+  "phase1BStatus": "OFFLINE_FOUNDATION_MERGED_LIVE_READONLY_NOT_STARTED",
+  "phase1BDelivery": {
+    "d1": "DESIGN_COMPLETED",
+    "d2C1": "MERGED",
+    "d2C2R2": "MERGED_OFFLINE_ONLY",
+    "d2C3": "NOT_STARTED",
+    "d3": "NOT_STARTED",
+    "newsMacro": "NOT_STARTED",
+    "providerLimitSemantics": "UNPROVEN",
+    "fiveRequest43Evidence": "STRUCTURAL_TARGET_ONLY",
+    "realHttpsAcquisition": "NOT_IMPLEMENTED",
+    "liveNetworkAuthorization": "NOT_GRANTED"
+  },
   "phase1BDesign": {
     "task": "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS",
-    "status": "D2_C2_R2_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED",
-    "networkAuthority": "NONE",
+    "status": "D2_C1_MERGED_D2_C2_R2_MERGED_OFFLINE_ONLY",
+    "networkAuthority": "NOT_GRANTED",
     "credentialAccess": "PROHIBITED",
     "marketDataAcquisition": "NOT_IMPLEMENTED",
     "trustedOwnerVerificationKey": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
@@ -146,8 +157,8 @@
     "providerLimitSemantics": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
     "compositionRoot": "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE"
   },
-  "optionsStatus": "NOT_STARTED",
-  "brokerStatus": "NOT_STARTED",
-  "paperTradingStatus": "NOT_STARTED",
-  "orderExecutionStatus": "NOT_STARTED"
+  "optionsStatus": "CLOSED",
+  "brokerStatus": "CLOSED",
+  "paperTradingStatus": "CLOSED",
+  "orderExecutionStatus": "CLOSED"
 }

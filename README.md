@@ -2,7 +2,7 @@
 
 > A Personal Capital Operating System
 
-Alpha is a pre-alpha decision-support system for protecting, allocating, growing, and compounding capital. It is not a trading bot and does not authorize autonomous capital or trade execution.
+Alpha is a pre-alpha decision-support system for protecting, allocating, growing, and compounding capital. It is not a trading bot and does not authorize autonomous capital or trade execution. `automatedExecutionAllowed` is `false`.
 
 ## Current Status
 
@@ -11,10 +11,10 @@ blockers, frozen work, next action, ownership, and validation state is
 [Current Project Status](docs/status/current.json). Human-facing documents
 summarize that file and must not define a competing current state.
 
-Phase 1A, Offline Personal Daily Scan Foundation, is merged and offline
-available. Its implementation merge is `4e4282582b816863c35efc6d5657cdf52d18abc9`,
-and the post-merge status baseline is
-`f565e9e5250cfd2fca5e6ed9c244b3947add7b28`. Reviewed C4 commit
+Phase 1A, Offline Personal Daily Scan Foundation, is merged and closed. Its
+implementation merge is `4e4282582b816863c35efc6d5657cdf52d18abc9`, and its
+post-merge status baseline is `f565e9e5250cfd2fca5e6ed9c244b3947add7b28`.
+Reviewed C4 commit
 `095657cd5c72d095d9c72b2ec76a580b35e9d3c7` is included. Paused T3B15-C5 work
 and `ALPHA_AUDIT_PACKET.md` remain frozen in the
 original worktree and are not part of this branch.
@@ -23,15 +23,16 @@ TypeScript is Alpha's only product runtime. Python is retained for research,
 prototype work, and statistical validation; the sample terminal Dashboard is a
 deprecated product entry. The only Owner product entry is the offline
 `alpha:daily-scan` command in `dry-run` or `fixture` mode. `live-readonly`
-requires separate Owner network authorization. Network, Options, Broker,
-Paper Trading, and Order Execution are closed. Phase 1B remains `NOT_STARTED`.
-Its D2 authorization and exchange-calendar contracts are implemented offline
-for Owner review only. D2-C1 removes trust-root material from business inputs:
+has no granted Owner network authorization. Network, Options, Broker, Paper
+Trading, and Order Execution are closed. Phase 1B live-readonly remains not
+started, while its D1 design is completed and its D2 offline foundation is
+merged. D2-C1 removes trust-root material from business inputs:
 the product composition root captures the configured verifier before a request
 is evaluated, and unknown runtime or CLI trust overrides fail closed. No
 trusted Owner key is stored, and the absence of product-owned verification
 configuration fails closed before credentials or network access. D2-C1 is
-closed. D2-C2-R2 adds the no-argument product composition root, an isolated
+merged as `74cb5f1`. D2-C2-R2 is merged offline-only as `1c20f79` through
+main merge commit `948192b`; it adds the no-argument product composition root, an isolated
 test-only factory, a raw-response-only Transport seam, product-layer
 normalization and resolution, dispatcher-owned lifecycle counting, and a
 content-addressed mapping registry for the 36-Bar / seven-Quote / 43-resolution
@@ -40,10 +41,11 @@ Provider authority, key, fingerprint, or Transport.
 Repository evidence does not prove Alpaca's multi-symbol `limit=2` semantics,
 so the live-readonly product path returns
 `PROVIDER_LIMIT_SEMANTICS_UNPROVEN` before credentials or Transport. Fixtures
-validate structure only. The current product configuration has neither a
-trusted Owner key nor D3 Transport; no real HTTP lifecycle has occurred and
-local counters prove only the deterministic lifecycle model. D2-C2-R2 requires
-Owner review; D2-C3 and D3 have not started.
+validate structure only. The five-request / 36-Bar / seven-Quote /
+43-resolution budget is a structural target only. Live network authorization
+is not granted, real HTTPS acquisition is not implemented, and no real HTTP
+lifecycle has occurred. Local counters prove only the deterministic lifecycle
+model. D2-C3, D3, and News/Macro have not started.
 
 Implemented Python research/prototype surface:
 

@@ -8,29 +8,30 @@
 
 The authoritative current state is
 [Current Project Status](status/current.json). Phase 1A Offline Personal Daily
-Scan Foundation is merged and offline available. Its implementation merge is
+Scan Foundation is merged and closed. Its implementation merge is
 `4e4282582b816863c35efc6d5657cdf52d18abc9`, and its post-merge status baseline
 is `f565e9e5250cfd2fca5e6ed9c244b3947add7b28`. T3B15-C5 remains
 frozen outside this branch. The only Owner product entry is
 `alpha:daily-scan` in `dry-run` or `fixture` mode; `live-readonly` requires
-separate Owner network authorization. Network, Options, Broker, Paper Trading,
-and Order Execution are closed. Phase 1B remains `NOT_STARTED`. D2 has added
-only offline Owner-authorization and exchange-calendar contracts for review;
-no trusted key is stored, credential access is prohibited, and D3 acquisition
-has not been implemented. D2-C1 removes caller-selected trust material from
-runtime input and moves verifier construction to the product composition root;
-the Owner-approved correction is committed and pushed as `74cb5f1`. D2-C2-R2
-now implements an uncommitted offline exact-scope compiler, fixed no-argument
+no granted Owner network authorization. Network, Options, Broker, Paper
+Trading, and Order Execution are closed; `automatedExecutionAllowed` remains
+`false`. Phase 1B live-readonly remains not
+started; its D1 design is completed and its D2 offline foundation is merged.
+D2-C1 removes caller-selected trust material from runtime input and moves
+verifier construction to the product composition root; it was merged as
+`74cb5f1`. D2-C2-R2 is merged offline-only as `1c20f79` through main merge
+commit `948192b`. It supplies the exact-scope compiler, fixed no-argument
 product composition root, isolated test factory, raw-response Transport seam,
 product-owned normalization/resolution, content-bound mapping identity, and
 local lifecycle-model counters for the proposed 36 Bars, seven Quotes, and 43
 Evidence Resolutions.
 The repository does not prove Alpaca's multi-symbol limit semantics; therefore
 the live-readonly path fails closed before Transport with
-`PROVIDER_LIMIT_SEMANTICS_UNPROVEN`. No actual HTTP lifecycle has run.
-D2-C2-R2 requires independent Owner review
-and grants no credential or network authority. D2-C3
-calendar-continuity correction and D3 acquisition have not started.
+`PROVIDER_LIMIT_SEMANTICS_UNPROVEN`. The five-request / 43-evidence plan is a
+structural target only, live network authorization is not granted, real HTTPS
+acquisition is not implemented, and no actual HTTP lifecycle has run. D2-C3
+calendar-continuity correction, D3 acquisition, and News/Macro work have not
+started.
 
 Before a Phase 1B live-readonly run can be proposed, the Owner must separately
 approve D2 and later D3 implementation, then approve a date-specific manifest.
