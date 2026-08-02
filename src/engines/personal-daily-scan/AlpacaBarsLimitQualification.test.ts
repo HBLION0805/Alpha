@@ -18,6 +18,8 @@ import {
   type AlpacaBarsLimitQualificationRawTransport,
 } from "./AlpacaBarsLimitQualification";
 import { createAlpacaBarsLimitQualificationProductOperation } from "./AlpacaBarsLimitQualificationProductComposition";
+import * as productBarrel from "./index";
+import * as alpacaIntegrationBarrel from "../../integration/market-data/alpaca/index";
 import { createAlpacaBarsLimitQualificationTestOperation } from "./testing/AlpacaBarsLimitQualificationTestFactory";
 import { AlpacaBarsLimitQualificationHttpsTransport } from "../../integration/market-data/alpaca/AlpacaBarsLimitQualificationHttpsTransport";
 import {
@@ -140,13 +142,12 @@ function operation(rawTransport: Omit<AlpacaBarsLimitQualificationRawTransport, 
 async function assertBlocked(
   resultPromise: ReturnType<ReturnType<typeof operation>["run"]>,
   issue: string,
-  attempted: 0 | 1,
 ): Promise<void> {
   const result = await resultPromise;
   equal(result.status, "BLOCKED", "status");
   assert(result.issueCodes.includes(issue as never), `missing ${issue}`);
   equal(result.candidates, [], "candidates");
-  equal([result.attemptedNetworkRequests, result.completedNetworkRequests, result.networkRequests, result.persistenceWrites, result.automatedExecutionAllowed], [attempted, 0, 0, 0, false], "side effects");
+  equal([result.attemptedNetworkRequests, result.completedNetworkRequests, result.networkRequests, result.persistenceWrites, result.automatedExecutionAllowed], [0, 0, 0, 0, false], "side effects");
   equal(result.issueCodes, [...result.issueCodes].sort(), "issue order");
 }
 
@@ -166,9 +167,10 @@ test("unsigned draft binds the exact one-request qualification scope", () => {
 test("test-only response can validate structure but cannot prove Provider semantics", async () => {
   const result = await operation().run(signedInput());
   equal(result.status, "QUALIFICATION_OBSERVED", "status");
-  equal(result.observedBarCounts, { MU: 2, QQQ: 2 }, "counts");
+  equal(result.actualObservedBarsBySymbol, { MU: 2, QQQ: 2 }, "counts");
+  equal(result.responseOrigin, "TEST_INJECTED", "origin");
   equal(result.providerLimitSemantics, "UNPROVEN", "fixture is not proof");
-  equal([result.attemptedNetworkRequests, result.completedNetworkRequests, result.networkRequests, result.persistenceWrites, result.automatedExecutionAllowed], [1, 1, 0, 0, false], "side effects");
+  equal([result.attemptedNetworkRequests, result.completedNetworkRequests, result.networkRequests, result.persistenceWrites, result.automatedExecutionAllowed], [0, 0, 0, 0, false], "side effects");
 });
 
 test("product entry accepts no dependency injection and missing Manifest blocks before network", async () => {
@@ -176,6 +178,36 @@ test("product entry accepts no dependency injection and missing Manifest blocks 
   const result = await createAlpacaBarsLimitQualificationProductOperation().run({ asOf: "2026-07-30T14:00:00.000Z" });
   equal(result.issueCodes, ["OWNER_NETWORK_AUTHORIZATION_REQUIRED"], "authorization issue");
   equal([result.attemptedNetworkRequests, result.completedNetworkRequests, result.persistenceWrites], [0, 0, 0], "zero side effects");
+});
+
+test("product entry ignores caller Transport and authority arguments", async () => {
+  let calls = 0;
+  const forgedFactory = createAlpacaBarsLimitQualificationProductOperation as unknown as (input: unknown) => ReturnType<typeof createAlpacaBarsLimitQualificationProductOperation>;
+  const product = forgedFactory({
+    rawTransport: { dispatchOnce: async () => { calls += 1; return response(); } },
+    responseOrigin: "REAL_HTTPS",
+    providerAuthority: "OBSERVED_ONCE_PROVEN",
+    networkRequests: 1,
+  });
+  const result = await product.run({ asOf: "2026-07-30T14:00:00.000Z" });
+  equal(result.issueCodes, ["OWNER_NETWORK_AUTHORIZATION_REQUIRED"], "product remains fixed");
+  equal([calls, result.responseOrigin, result.networkRequests], [0, "NONE", 0], "caller dependencies ignored");
+});
+
+test("test factory is absent from product barrels and cannot accept the product Transport capability", () => {
+  assert(!Object.hasOwn(productBarrel, "createAlpacaBarsLimitQualificationTestOperation"), "test factory must not be product-exported");
+  assert(!Object.hasOwn(productBarrel, "createAlpacaBarsLimitQualificationTestOperationInternal"), "internal test factory must not be product-exported");
+  assert(!Object.hasOwn(alpacaIntegrationBarrel, "AlpacaBarsLimitQualificationHttpsTransport"), "injectable D3A Transport must not be integration-exported");
+  let rejected = false;
+  try {
+    createAlpacaBarsLimitQualificationTestOperation({
+      authorizationVerifier: verifier,
+      rawTransport: new AlpacaBarsLimitQualificationHttpsTransport(),
+    });
+  } catch {
+    rejected = true;
+  }
+  assert(rejected, "product Transport must be rejected by test composition");
 });
 
 test("missing product trust root blocks before credentials and network", async () => {
@@ -187,7 +219,7 @@ test("missing product trust root blocks before credentials and network", async (
 
 test("caller authority and Transport injection fields are rejected", async () => {
   for (const field of ["verifier", "providerAuthority", "transport", "publicKey", "fingerprint"]) {
-    await assertBlocked(operation().run({ ...signedInput(), [field]: {} } as never), "OWNER_AUTHORIZATION_INVALID", 0);
+    await assertBlocked(operation().run({ ...signedInput(), [field]: {} } as never), "OWNER_AUTHORIZATION_INVALID");
   }
 });
 
@@ -201,7 +233,7 @@ test("query, symbol order, limit, and window mutations block before Transport", 
     { ...original, path: "/v2/stocks/quotes/latest" },
   ];
   for (const request of mutations) {
-    await assertBlocked(operation().run(signedInput({ requests: [request] as never })), "OWNER_AUTHORIZATION_INVALID", 0);
+    await assertBlocked(operation().run(signedInput({ requests: [request] as never })), "OWNER_AUTHORIZATION_INVALID");
   }
 });
 
@@ -209,14 +241,57 @@ test("second request, duplicate request, and reordered ordinals block before Tra
   const base = signedInput().manifest as Readonly<{ authorizationBody: AlpacaBarsLimitQualificationAuthorizationBody }>;
   const request = base.authorizationBody.requests[0];
   for (const requests of [[request, request], [{ ...request, ordinal: 2 }]]) {
-    await assertBlocked(operation().run(signedInput({ maximumNetworkRequests: requests.length as never, requests: requests as never })), "OWNER_AUTHORIZATION_INVALID", 0);
+    await assertBlocked(operation().run(signedInput({ maximumNetworkRequests: requests.length as never, requests: requests as never })), "OWNER_AUTHORIZATION_INVALID");
   }
 });
 
 test("pagination token blocks after one attempt without a second request", async () => {
   let calls = 0;
-  await assertBlocked(operation({ dispatchOnce: async () => { calls += 1; return response(body({ next_page_token: "NEXT" })); } }).run(signedInput()), "PAGINATION_FORBIDDEN", 1);
+  const result = await operation({ dispatchOnce: async () => { calls += 1; return response(body({ next_page_token: "SECRET-NEXT-PAGE" })); } }).run(signedInput());
+  equal(result.status, "BLOCKED", "pagination status");
+  assert(result.issueCodes.includes("PAGINATION_FORBIDDEN" as never), "pagination issue");
+  equal(result.actualObservedBarsBySymbol, { MU: 2, QQQ: 2 }, "pagination counts retained");
+  equal(result.paginationTokenPresent, true, "pagination presence retained");
+  assert(!JSON.stringify(result).includes("SECRET-NEXT-PAGE"), "pagination token is redacted");
+  equal([result.attemptedNetworkRequests, result.completedNetworkRequests, result.networkRequests], [0, 0, 0], "test lifecycle remains zero");
   equal(calls, 1, "one dispatch only");
+});
+
+test("partial symbol coverage preserves sanitized counts and sorted response symbols", async () => {
+  const value = JSON.stringify({
+    bars: {
+      QQQ: [],
+      MU: [bar("2026-07-28T13:30:00Z"), bar("2026-07-29T13:30:00Z")],
+    },
+    next_page_token: null,
+  });
+  const result = await operation({ dispatchOnce: async () => response(value) }).run(signedInput());
+  equal(result.status, "BLOCKED", "status");
+  equal(result.issueCodes, ["BAR_COUNT_MISMATCH"], "stable issue");
+  equal(result.actualObservedBarsBySymbol, { MU: 2, QQQ: 0 }, "actual counts retained");
+  equal(result.responseSymbols, ["MU", "QQQ"], "response symbols normalized");
+  equal([result.candidates, result.persistenceWrites, result.automatedExecutionAllowed], [[], 0, false], "no partial product output");
+});
+
+test("response source declarations cannot override test provenance", async () => {
+  const forged = { ...response(), responseOrigin: "REAL_HTTPS", providerLimitSemantics: "OBSERVED_ONCE_PROVEN" } as never;
+  const result = await operation({ dispatchOnce: async () => forged }).run(signedInput());
+  equal(result.status, "BLOCKED", "status");
+  assert(result.issueCodes.includes("TRANSPORT_FAILURE" as never), "source conflict rejected");
+  equal([result.responseOrigin, result.providerLimitSemantics, result.networkRequests], ["TEST_INJECTED", "UNPROVEN", 0], "provenance cannot be forged");
+});
+
+test("issue order and runId are deterministic across input property order", async () => {
+  const first = await createAlpacaBarsLimitQualificationProductOperation().run({
+    asOf: "2026-07-30T14:00:00.000Z",
+    manifest: undefined,
+  });
+  const second = await createAlpacaBarsLimitQualificationProductOperation().run({
+    manifest: undefined,
+    asOf: "2026-07-30T14:00:00.000Z",
+  });
+  equal(first.issueCodes, second.issueCodes, "issue order");
+  equal(first.runId, second.runId, "run identity");
 });
 
 test("the same signed authorization cannot dispatch a second request or retry", async () => {
@@ -249,22 +324,22 @@ test("missing symbol, one Bar, and more than two Bars block", async () => {
   ];
   for (const value of cases) {
     const result = await operation({ dispatchOnce: async () => response(value) }).run(signedInput());
-    equal(result.status, "BLOCKED", "response block"); equal(result.attemptedNetworkRequests, 1, "attempted"); equal(result.completedNetworkRequests, 0, "completed");
+    equal(result.status, "BLOCKED", "response block"); equal(result.attemptedNetworkRequests, 0, "attempted"); equal(result.completedNetworkRequests, 0, "completed");
   }
 });
 
 test("extra symbol and malformed or out-of-window Bars block", async () => {
   const extra = body({ bars: { MU: [bar("2026-07-28T13:30:00Z"), bar("2026-07-29T13:30:00Z")], QQQ: [bar("2026-07-28T13:30:00Z"), bar("2026-07-29T13:30:00Z")], TSLA: [bar("2026-07-28T13:30:00Z"), bar("2026-07-29T13:30:00Z")] } });
-  await assertBlocked(operation({ dispatchOnce: async () => response(extra) }).run(signedInput()), "RESPONSE_SCOPE_MISMATCH", 1);
+  await assertBlocked(operation({ dispatchOnce: async () => response(extra) }).run(signedInput()), "RESPONSE_SCOPE_MISMATCH");
   const outside = body({ bars: { MU: [bar("2026-07-27T13:30:00Z"), bar("2026-07-29T13:30:00Z")], QQQ: [bar("2026-07-28T13:30:00Z"), bar("2026-07-29T13:30:00Z")] } });
-  await assertBlocked(operation({ dispatchOnce: async () => response(outside) }).run(signedInput()), "INVALID_BAR", 1);
+  await assertBlocked(operation({ dispatchOnce: async () => response(outside) }).run(signedInput()), "INVALID_BAR");
 });
 
-test("HTTP error, timeout, malformed JSON, and oversized response keep real attempt count", async () => {
-  await assertBlocked(operation({ dispatchOnce: async () => ({ ...response(), statusCode: 500 }) }).run(signedInput()), "HTTP_ERROR", 1);
-  await assertBlocked(operation({ dispatchOnce: async () => { throw new AlpacaBarsLimitQualificationTransportError("TIMEOUT"); } }).run(signedInput()), "TRANSPORT_TIMEOUT", 1);
-  await assertBlocked(operation({ dispatchOnce: async () => response("{") }).run(signedInput()), "INVALID_JSON", 1);
-  await assertBlocked(operation({ dispatchOnce: async () => ({ ...response(), rawBytes: new Uint8Array(1_048_577) }) }).run(signedInput()), "RESPONSE_TOO_LARGE", 1);
+test("HTTP error, timeout, malformed JSON, and oversized response keep test lifecycle at zero", async () => {
+  await assertBlocked(operation({ dispatchOnce: async () => ({ ...response(), statusCode: 500 }) }).run(signedInput()), "HTTP_ERROR");
+  await assertBlocked(operation({ dispatchOnce: async () => { throw new AlpacaBarsLimitQualificationTransportError("TIMEOUT"); } }).run(signedInput()), "TRANSPORT_TIMEOUT");
+  await assertBlocked(operation({ dispatchOnce: async () => response("{") }).run(signedInput()), "INVALID_JSON");
+  await assertBlocked(operation({ dispatchOnce: async () => ({ ...response(), rawBytes: new Uint8Array(1_048_577) }) }).run(signedInput()), "RESPONSE_TOO_LARGE");
 });
 
 test("unknown response headers and partial output are rejected", async () => {
@@ -306,6 +381,7 @@ test("product-owned HTTPS boundary emits the exact allow-listed target and bound
   const result = await createAlpacaBarsLimitQualificationTestOperation({ authorizationVerifier: verifier, rawTransport: transport }).run(signedInput());
   equal(result.status, "QUALIFICATION_OBSERVED", "status");
   equal(credentialReads, 1, "credential read after preflight");
+  equal([result.responseOrigin, result.providerLimitSemantics, result.attemptedNetworkRequests, result.completedNetworkRequests, result.networkRequests], ["TEST_INJECTED", "UNPROVEN", 0, 0, 0], "injected HTTPS cannot mint real evidence");
   equal(targetSeen, "https://data.alpaca.markets/v2/stocks/bars?symbols=MU%2CQQQ&timeframe=1Day&start=2026-07-28T13%3A30%3A00.000Z&end=2026-07-29T20%3A00%3A00.000Z&limit=2&adjustment=raw&feed=iex&currency=USD&sort=asc", "exact target");
 });
 
@@ -315,7 +391,7 @@ async function main(): Promise<void> {
     try { await run(); process.stdout.write(`PASS ${name}\n`); }
     catch (error) { failures += 1; process.stderr.write(`FAIL ${name}: ${error instanceof Error ? error.message : String(error)}\n`); }
   }
-  process.stdout.write(`${tests.length - failures}/${tests.length} Alpaca Bars limit qualification tests passed.\n`);
+  process.stdout.write(`Alpaca Bars limit qualification: ${tests.length - failures}/${tests.length} tests passed.\n`);
   if (failures > 0) process.exitCode = 1;
 }
 

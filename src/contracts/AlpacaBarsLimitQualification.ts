@@ -5,8 +5,8 @@ import type {
   OwnerApprovalEnvelope,
 } from "./PersonalDailyScanLiveReadonly";
 
-export const ALPACA_BARS_LIMIT_QUALIFICATION_SCHEMA_VERSION = "1.0" as const;
-export const ALPACA_BARS_LIMIT_QUALIFICATION_POLICY_VERSION = "phase1b-d3a:1.0" as const;
+export const ALPACA_BARS_LIMIT_QUALIFICATION_SCHEMA_VERSION = "1.1" as const;
+export const ALPACA_BARS_LIMIT_QUALIFICATION_POLICY_VERSION = "phase1b-d3a-correction:1.0" as const;
 
 export interface AlpacaBarsLimitQualificationAuthorizationBody {
   readonly schemaVersion: typeof ALPACA_BARS_LIMIT_QUALIFICATION_SCHEMA_VERSION;
@@ -97,7 +97,11 @@ export interface AlpacaBarsLimitQualificationResult {
   readonly symbols: readonly ["MU", "QQQ"];
   readonly timeframe: "1Day";
   readonly requestedLimit: 2;
-  readonly observedBarCounts: Readonly<{ readonly MU: number; readonly QQQ: number }>;
+  readonly runId: string;
+  readonly responseOrigin: "NONE" | "TEST_INJECTED" | "REAL_HTTPS";
+  readonly actualObservedBarsBySymbol: Readonly<{ readonly MU: number; readonly QQQ: number }>;
+  readonly paginationTokenPresent: boolean;
+  readonly responseSymbols: readonly string[];
   readonly providerLimitSemantics: AlpacaBarsLimitProviderSemantics;
   readonly credentialReadPermitted: boolean;
   readonly attemptedNetworkRequests: 0 | 1;
@@ -106,6 +110,13 @@ export interface AlpacaBarsLimitQualificationResult {
   readonly persistenceWrites: 0;
   readonly automatedExecutionAllowed: false;
   readonly candidates: readonly never[];
+}
+
+export class AlpacaBarsLimitQualificationTransportError extends Error {
+  public constructor(public readonly safeCode: "CREDENTIAL_UNAVAILABLE" | "TIMEOUT" | "HTTP_ERROR" | "RESPONSE_TOO_LARGE" | "TRANSPORT_FAILURE") {
+    super(`Alpaca Bars limit qualification Transport failed: ${safeCode}.`);
+    this.name = "AlpacaBarsLimitQualificationTransportError";
+  }
 }
 
 export interface AlpacaBarsLimitQualificationRawResponse {

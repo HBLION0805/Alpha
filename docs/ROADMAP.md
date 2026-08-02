@@ -33,11 +33,14 @@ acquisition is not implemented, and no actual HTTP lifecycle has run. D2-C3
 calendar-continuity correction, D3 acquisition, and News/Macro work have not
 started.
 
-Phase 1B-D3A is offline-implemented and awaiting Owner review. It is limited to
+Phase 1B-D3A is merged offline-only through PR #6 merge commit `95a30a9`. It is limited to
 one future qualification request: `MU,QQQ`, `1Day`, `limit=2` on Alpaca Bars.
 Its raw HTTPS boundary has not executed, no one-shot Manifest has been signed,
 and Provider limit semantics remain `UNPROVEN`. It does not implement the full
-five-request / 43-evidence acquisition or any candidate output.
+five-request / 43-evidence acquisition or any candidate output. Its post-merge
+evidence-integrity correction is implemented on an isolated branch and awaits
+Owner review; it is not merged. D3B is blocked and not started. Real market-data
+usability remains 0%, and all execution authority remains closed.
 
 Before a Phase 1B live-readonly run can be proposed, the Owner must separately
 approve D2 and later D3 implementation, then approve a date-specific manifest.

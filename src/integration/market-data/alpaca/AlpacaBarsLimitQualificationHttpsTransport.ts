@@ -2,10 +2,10 @@ import type { LiveReadonlyRequestPlanEntry } from "../../../contracts/PersonalDa
 import type {
   AlpacaBarsLimitQualificationRawResponse,
 } from "../../../contracts/AlpacaBarsLimitQualification";
+import { AlpacaBarsLimitQualificationTransportError } from "../../../contracts/AlpacaBarsLimitQualification";
 import type { AlpacaCredentials } from "./AlpacaPersonalMarketDataContracts";
 import { loadAlpacaCredentials } from "./AlpacaCredentials";
 import {
-  AlpacaBarsLimitQualificationTransportError,
   assertAlpacaBarsLimitQualificationDispatchPermit,
   type AlpacaBarsLimitQualificationRawTransport,
 } from "../../../engines/personal-daily-scan/AlpacaBarsLimitQualification";
@@ -41,6 +41,26 @@ export interface AlpacaBarsLimitQualificationHttpsTransportOptions {
   readonly clock?: { now(): string };
 }
 
+export interface AlpacaBarsLimitQualificationTransportLifecycle {
+  readonly attemptedNetworkRequests: 0 | 1;
+  readonly completedNetworkRequests: 0 | 1;
+  readonly networkRequests: 0 | 1;
+}
+
+interface MutableTransportLifecycle {
+  attemptedNetworkRequests: 0 | 1;
+  completedNetworkRequests: 0 | 1;
+  networkRequests: 0 | 1;
+}
+
+const PRODUCT_TRANSPORTS = new WeakSet<object>();
+const TRANSPORT_LIFECYCLES = new WeakMap<object, MutableTransportLifecycle>();
+const ZERO_LIFECYCLE: AlpacaBarsLimitQualificationTransportLifecycle = Object.freeze({
+  attemptedNetworkRequests: 0,
+  completedNetworkRequests: 0,
+  networkRequests: 0,
+});
+
 /**
  * Raw product Transport. It owns credential loading and returns only bounded
  * protocol data. It never parses market data or constructs Alpha evidence.
@@ -51,11 +71,14 @@ export class AlpacaBarsLimitQualificationHttpsTransport implements AlpacaBarsLim
   readonly #clock: { now(): string };
   #preparedCredentials: AlpacaCredentials | undefined;
 
-  public constructor(options: AlpacaBarsLimitQualificationHttpsTransportOptions = {}) {
+  public constructor(options?: AlpacaBarsLimitQualificationHttpsTransportOptions) {
+    const resolvedOptions = options ?? {};
     const platformFetch = (globalThis as unknown as { readonly fetch?: QualificationFetch }).fetch;
-    this.#fetch = options.fetchFunction ?? platformFetch ?? unavailableFetch;
-    this.#credentialLoader = options.credentialLoader ?? (() => loadAlpacaCredentials());
-    this.#clock = options.clock ?? { now: () => new Date().toISOString() };
+    this.#fetch = resolvedOptions.fetchFunction ?? platformFetch ?? unavailableFetch;
+    this.#credentialLoader = resolvedOptions.credentialLoader ?? (() => loadAlpacaCredentials());
+    this.#clock = resolvedOptions.clock ?? { now: () => new Date().toISOString() };
+    TRANSPORT_LIFECYCLES.set(this, { attemptedNetworkRequests: 0, completedNetworkRequests: 0, networkRequests: 0 });
+    if (options === undefined) PRODUCT_TRANSPORTS.add(this);
   }
 
   public prepareCredentialsAfterAuthorization(): void {
@@ -79,6 +102,7 @@ export class AlpacaBarsLimitQualificationHttpsTransport implements AlpacaBarsLim
     const timeout = setTimeout(() => controller.abort(), request.timeoutMs);
     const startedAt = requireTimestamp(this.#clock.now());
     try {
+      markDispatchStarted(this);
       const response = await this.#fetch(target, {
         method: "GET",
         headers: Object.freeze({
@@ -104,6 +128,47 @@ export class AlpacaBarsLimitQualificationHttpsTransport implements AlpacaBarsLim
       clearTimeout(timeout);
     }
   }
+}
+
+/**
+ * Only a default-constructed Transport owned by the product composition root
+ * receives the real-HTTPS capability. Any injected constructor option makes
+ * the instance test-only, even when it exercises the same request builder.
+ */
+export function isAlpacaBarsLimitQualificationProductTransport(value: unknown): boolean {
+  return typeof value === "object" && value !== null && PRODUCT_TRANSPORTS.has(value);
+}
+
+export function readAlpacaBarsLimitQualificationProductTransportLifecycle(
+  value: unknown,
+): AlpacaBarsLimitQualificationTransportLifecycle {
+  if (!isAlpacaBarsLimitQualificationProductTransport(value)) return ZERO_LIFECYCLE;
+  return lifecycleSnapshot(value as object);
+}
+
+export function markAlpacaBarsLimitQualificationProductResponseAccepted(value: unknown): void {
+  if (!isAlpacaBarsLimitQualificationProductTransport(value)) return;
+  const lifecycle = TRANSPORT_LIFECYCLES.get(value as object);
+  if (lifecycle?.attemptedNetworkRequests === 1) lifecycle.completedNetworkRequests = 1;
+}
+
+function markDispatchStarted(value: object): void {
+  const lifecycle = TRANSPORT_LIFECYCLES.get(value);
+  if (lifecycle === undefined || lifecycle.attemptedNetworkRequests === 1) {
+    throw new AlpacaBarsLimitQualificationTransportError("TRANSPORT_FAILURE");
+  }
+  lifecycle.attemptedNetworkRequests = 1;
+  lifecycle.networkRequests = 1;
+}
+
+function lifecycleSnapshot(value: object): AlpacaBarsLimitQualificationTransportLifecycle {
+  const lifecycle = TRANSPORT_LIFECYCLES.get(value);
+  if (lifecycle === undefined) return ZERO_LIFECYCLE;
+  return Object.freeze({
+    attemptedNetworkRequests: lifecycle.attemptedNetworkRequests,
+    completedNetworkRequests: lifecycle.completedNetworkRequests,
+    networkRequests: lifecycle.networkRequests,
+  });
 }
 
 function exactTarget(request: LiveReadonlyRequestPlanEntry): string {

@@ -1,5 +1,20 @@
 # Alpha Changelog
 
+## 2026-08-02 - Phase 1B-D3A post-merge evidence-integrity correction
+
+- Removed caller-controlled response-origin and Provider-proof declarations
+  from the D3A operation. The no-argument product composition now creates its
+  verifier and product Transport internally; the isolated test factory can
+  emit only `TEST_INJECTED` with zero network counters.
+- Preserved sanitized response facts on blocked pagination, scope, count,
+  parsing, and source-conflict paths: per-symbol counts, response symbols,
+  pagination presence, lifecycle counts, and stable issue codes.
+- Bound attempted, completed, and network counts to the product Transport
+  lifecycle. No fixture, input field, or response declaration may mint them.
+- Corrected unified validation accounting for the D3A qualification suite and
+  recorded the PR #6 merge without granting network, credential, persistence,
+  Broker, Options, Paper Trading, order, or execution authority.
+
 ## 2026-08-01 - Phase 1B-D2-C2-R2 trusted composition and raw transport accounting
 
 - Recorded that Alpaca multi-symbol `limit=2` semantics are not proven by any

@@ -24,8 +24,8 @@ prototype work, and statistical validation; the sample terminal Dashboard is a
 deprecated product entry. The only Owner product entry is the offline
 `alpha:daily-scan` command in `dry-run` or `fixture` mode. `live-readonly`
 has no granted Owner network authorization. Network, Options, Broker, Paper
-Trading, and Order Execution are closed. Phase 1B live-readonly remains not
-started, while its D1 design is completed and its D2 offline foundation is
+Trading, and Order Execution are closed. Phase 1B real live-readonly use remains
+not started, while its D1 design is completed and its D2 offline foundation is
 merged. D2-C1 removes trust-root material from business inputs:
 the product composition root captures the configured verifier before a request
 is evaluated, and unknown runtime or CLI trust overrides fail closed. No
@@ -38,7 +38,8 @@ normalization and resolution, dispatcher-owned lifecycle counting, and a
 content-addressed mapping registry for the 36-Bar / seven-Quote / 43-resolution
 offline structural budget. The product barrel cannot accept a caller verifier,
 Provider authority, key, fingerprint, or Transport.
-Phase 1B-D3A now has an offline, Owner-review-pending qualification slice for
+Phase 1B-D3A was merged through PR #6 at
+`95a30a9a218f2ef94d343ba05f774eedd29f6d68`. It is an offline qualification slice for
 exactly one `GET /v2/stocks/bars` request covering `MU,QQQ`, `1Day`, and
 `limit=2`. It reuses the product-owned Owner trust root and signed Exchange
 Calendar boundary, compiles one exact request, exposes a product-owned bounded
@@ -46,7 +47,11 @@ raw HTTPS Transport, strictly validates the raw response, and returns only a
 sanitized qualification result. The product entry accepts no caller verifier,
 key, fingerprint, Provider authority, credential loader, or Transport. No
 signed one-shot Manifest or network authority exists, so the slice remains
-offline and fail-closed before credentials or dispatch.
+offline and fail-closed before credentials or dispatch. A separate post-merge
+correction is implemented for Owner review; it removes the caller-controlled
+real-source claim, preserves sanitized failed-response observations, and makes
+network counters derive only from the product Transport lifecycle. That
+correction is not yet merged and grants no authority.
 
 Repository evidence does not prove Alpaca's multi-symbol `limit=2` semantics,
 so the live-readonly product path returns
@@ -54,9 +59,10 @@ so the live-readonly product path returns
 validate structure only. The five-request / 36-Bar / seven-Quote /
 43-resolution budget is a structural target only. Live network authorization
 is not granted, full Daily Scan HTTPS acquisition is not implemented, and no
-real HTTP lifecycle has occurred. Local counters and injected responses prove
-only the deterministic lifecycle model. D2-C3, full D3 acquisition, and
-News/Macro have not started.
+real HTTP lifecycle has occurred. Real market-data usability remains 0%.
+Injected responses are always `TEST_INJECTED`, keep zero network counters, and
+cannot prove Provider behavior. D2-C3, D3B, full D3 acquisition, and News/Macro
+have not started; D3B is blocked pending this correction review.
 
 Implemented Python research/prototype surface:
 

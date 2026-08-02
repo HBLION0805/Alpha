@@ -11,6 +11,7 @@ import {
   ALPACA_BARS_LIMIT_QUALIFICATION_POLICY_VERSION,
   ALPACA_BARS_LIMIT_QUALIFICATION_SCHEMA_VERSION,
   AlpacaBarsLimitQualificationIssueCode,
+  AlpacaBarsLimitQualificationTransportError,
 } from "../../contracts/AlpacaBarsLimitQualification";
 import type {
   LiveReadonlyPreflightResult,
@@ -18,6 +19,7 @@ import type {
   OwnerAuthorizationVerifier,
 } from "../../contracts/PersonalDailyScanLiveReadonly";
 import {
+  createAlpacaBarsLimitQualificationAuthorizationVerifier,
   liveReadonlyPlanFingerprint,
   liveReadonlyRequestFingerprint,
   sha256Jcs,
@@ -27,18 +29,29 @@ import {
   MAPPING_REGISTRY_VERSION,
   liveReadonlyProductMappingRegistryFingerprint,
 } from "./PersonalDailyScanLiveReadonlyMarketScope";
+import {
+  AlpacaBarsLimitQualificationHttpsTransport,
+  isAlpacaBarsLimitQualificationProductTransport,
+  markAlpacaBarsLimitQualificationProductResponseAccepted,
+  readAlpacaBarsLimitQualificationProductTransportLifecycle,
+  type AlpacaBarsLimitQualificationTransportLifecycle,
+} from "../../integration/market-data/alpaca/AlpacaBarsLimitQualificationHttpsTransport";
 
 const SYMBOLS = Object.freeze(["MU", "QQQ"] as const);
-const EMPTY_COUNTS = Object.freeze({ MU: 0, QQQ: 0 });
+const EMPTY_DIAGNOSTICS = Object.freeze({
+  actualObservedBarsBySymbol: Object.freeze({ MU: 0, QQQ: 0 }),
+  paginationTokenPresent: false,
+  responseSymbols: Object.freeze([] as string[]),
+});
+const ZERO_LIFECYCLE: AlpacaBarsLimitQualificationTransportLifecycle = Object.freeze({
+  attemptedNetworkRequests: 0,
+  completedNetworkRequests: 0,
+  networkRequests: 0,
+});
 const MAX_RESPONSE_BYTES = 1_048_576;
 const TIMEOUT_MS = 10_000;
 
-export class AlpacaBarsLimitQualificationTransportError extends Error {
-  public constructor(public readonly safeCode: "CREDENTIAL_UNAVAILABLE" | "TIMEOUT" | "HTTP_ERROR" | "RESPONSE_TOO_LARGE" | "TRANSPORT_FAILURE") {
-    super(`Alpaca Bars limit qualification Transport failed: ${safeCode}.`);
-    this.name = "AlpacaBarsLimitQualificationTransportError";
-  }
-}
+export { AlpacaBarsLimitQualificationTransportError } from "../../contracts/AlpacaBarsLimitQualification";
 
 interface QualificationDispatchPermit {
   readonly authorizationId: string;
@@ -56,7 +69,6 @@ export interface AlpacaBarsLimitQualificationRawTransport {
 interface QualificationDependencies {
   readonly authorizationVerifier: OwnerAuthorizationVerifier;
   readonly rawTransport: AlpacaBarsLimitQualificationRawTransport;
-  readonly responseOrigin: "REAL_HTTPS" | "TEST_INJECTED";
 }
 
 const ISSUED_PERMITS = new WeakSet<object>();
@@ -150,8 +162,29 @@ export function createAlpacaBarsLimitQualificationManifestDraft(
   });
 }
 
-/** Internal assembly seam. Only the product root and the isolated test factory may call this. */
-export function createAlpacaBarsLimitQualificationInternalOperation(
+/** Fixed product composition. No business input can replace authority or Transport. */
+export function createAlpacaBarsLimitQualificationFixedProductOperation(): AlpacaBarsLimitQualificationOperation {
+  const rawTransport = new AlpacaBarsLimitQualificationHttpsTransport();
+  if (!isAlpacaBarsLimitQualificationProductTransport(rawTransport)) {
+    throw new Error("Product Transport capability was not established.");
+  }
+  return createQualificationOperation({
+    authorizationVerifier: createAlpacaBarsLimitQualificationAuthorizationVerifier(undefined),
+    rawTransport,
+  });
+}
+
+/** Test-only assembly seam. It cannot accept or mint the product Transport capability. */
+export function createAlpacaBarsLimitQualificationTestOperationInternal(
+  dependencies: QualificationDependencies,
+): AlpacaBarsLimitQualificationOperation {
+  if (isAlpacaBarsLimitQualificationProductTransport(dependencies.rawTransport)) {
+    throw new Error("The product Transport cannot enter the test composition.");
+  }
+  return createQualificationOperation(dependencies);
+}
+
+function createQualificationOperation(
   dependencies: QualificationDependencies,
 ): AlpacaBarsLimitQualificationOperation {
   return Object.freeze({
@@ -186,14 +219,38 @@ export function createAlpacaBarsLimitQualificationInternalOperation(
       ISSUED_PERMITS.add(permit);
       CONSUMED_MANIFESTS.add(preflight.manifestSha256);
       let response: AlpacaBarsLimitQualificationRawResponse;
+      const responseOrigin = transportResponseOrigin(dependencies.rawTransport);
+      const credentialReadPermitted = responseOrigin === "REAL_HTTPS";
       try {
         response = await dependencies.rawTransport.dispatchOnce(request, permit);
       } catch (error) {
-        return blocked([transportIssue(error)], preflight, 1, 0, dependencies.responseOrigin === "REAL_HTTPS" ? 1 : 0);
+        return blocked(
+          [transportIssue(error)],
+          preflight,
+          readAlpacaBarsLimitQualificationProductTransportLifecycle(dependencies.rawTransport),
+          responseOrigin,
+          EMPTY_DIAGNOSTICS,
+          request.requestFingerprint,
+          credentialReadPermitted,
+        );
       }
       const validation = validateRawResponse(response, request);
-      if (validation.issues.length > 0) return blocked(validation.issues, preflight, 1, 0, dependencies.responseOrigin === "REAL_HTTPS" ? 1 : 0);
-      return deepFreeze({
+      if (validation.issues.length > 0) {
+        return blocked(
+          validation.issues,
+          preflight,
+          readAlpacaBarsLimitQualificationProductTransportLifecycle(dependencies.rawTransport),
+          responseOrigin,
+          validation.diagnostics,
+          request.requestFingerprint,
+          credentialReadPermitted,
+        );
+      }
+      if (responseOrigin === "REAL_HTTPS") {
+        markAlpacaBarsLimitQualificationProductResponseAccepted(dependencies.rawTransport);
+      }
+      const lifecycle = readAlpacaBarsLimitQualificationProductTransportLifecycle(dependencies.rawTransport);
+      return resultWithRunId({
         schemaVersion: ALPACA_BARS_LIMIT_QUALIFICATION_SCHEMA_VERSION,
         policyVersion: ALPACA_BARS_LIMIT_QUALIFICATION_POLICY_VERSION,
         status: "QUALIFICATION_OBSERVED",
@@ -208,12 +265,15 @@ export function createAlpacaBarsLimitQualificationInternalOperation(
         symbols: SYMBOLS,
         timeframe: "1Day",
         requestedLimit: 2,
-        observedBarCounts: validation.counts,
-        providerLimitSemantics: dependencies.responseOrigin === "REAL_HTTPS" ? "OBSERVED_ONCE_NOT_PROVEN" : "UNPROVEN",
-        credentialReadPermitted: true,
-        attemptedNetworkRequests: 1,
-        completedNetworkRequests: 1,
-        networkRequests: dependencies.responseOrigin === "REAL_HTTPS" ? 1 : 0,
+        responseOrigin,
+        actualObservedBarsBySymbol: validation.diagnostics.actualObservedBarsBySymbol,
+        paginationTokenPresent: validation.diagnostics.paginationTokenPresent,
+        responseSymbols: validation.diagnostics.responseSymbols,
+        providerLimitSemantics: responseOrigin === "REAL_HTTPS" ? "OBSERVED_ONCE_NOT_PROVEN" : "UNPROVEN",
+        credentialReadPermitted,
+        attemptedNetworkRequests: lifecycle.attemptedNetworkRequests,
+        completedNetworkRequests: lifecycle.completedNetworkRequests,
+        networkRequests: lifecycle.networkRequests,
         persistenceWrites: 0,
         automatedExecutionAllowed: false,
         candidates: [],
@@ -266,8 +326,18 @@ function exactRequest(request: LiveReadonlyRequestPlanEntry, body: AlpacaBarsLim
 function validateRawResponse(
   response: AlpacaBarsLimitQualificationRawResponse,
   request: LiveReadonlyRequestPlanEntry,
-): { readonly issues: readonly AlpacaBarsLimitQualificationIssueCode[]; readonly counts: Readonly<{ readonly MU: number; readonly QQQ: number }> } {
+): {
+  readonly issues: readonly AlpacaBarsLimitQualificationIssueCode[];
+  readonly diagnostics: {
+    readonly actualObservedBarsBySymbol: Readonly<{ readonly MU: number; readonly QQQ: number }>;
+    readonly paginationTokenPresent: boolean;
+    readonly responseSymbols: readonly string[];
+  };
+} {
   const issues = new Set<AlpacaBarsLimitQualificationIssueCode>();
+  if (!isRecord(response) || !exactKeys(response as unknown as Record<string, unknown>, ["endedAt", "headers", "rawBytes", "startedAt", "statusCode"])) {
+    issues.add(AlpacaBarsLimitQualificationIssueCode.TransportFailure);
+  }
   if (!Number.isSafeInteger(response.statusCode) || response.statusCode < 200 || response.statusCode > 299) issues.add(AlpacaBarsLimitQualificationIssueCode.HttpError);
   if (!canonicalTimestamp(response.startedAt) || !canonicalTimestamp(response.endedAt) || Date.parse(response.endedAt) < Date.parse(response.startedAt)) {
     issues.add(AlpacaBarsLimitQualificationIssueCode.TransportFailure);
@@ -279,14 +349,14 @@ function validateRawResponse(
   if (!validHeaders(response.headers)) issues.add(AlpacaBarsLimitQualificationIssueCode.TransportFailure);
   let payload: unknown;
   try { payload = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(response.rawBytes)); }
-  catch { issues.add(AlpacaBarsLimitQualificationIssueCode.InvalidJson); return { issues: sorted(issues), counts: EMPTY_COUNTS }; }
+  catch { issues.add(AlpacaBarsLimitQualificationIssueCode.InvalidJson); return { issues: sorted(issues), diagnostics: EMPTY_DIAGNOSTICS }; }
+  const diagnostics = responseDiagnostics(payload);
   if (!isRecord(payload) || !exactKeys(payload, ["bars", "next_page_token"]) || !isRecord(payload.bars)) {
     issues.add(AlpacaBarsLimitQualificationIssueCode.ResponseScopeMismatch);
-    return { issues: sorted(issues), counts: EMPTY_COUNTS };
+    return { issues: sorted(issues), diagnostics };
   }
   if (payload.next_page_token !== null && payload.next_page_token !== "") issues.add(AlpacaBarsLimitQualificationIssueCode.PaginationForbidden);
   if (!exactKeys(payload.bars, SYMBOLS)) issues.add(AlpacaBarsLimitQualificationIssueCode.ResponseScopeMismatch);
-  const counts = { MU: Array.isArray(payload.bars.MU) ? payload.bars.MU.length : 0, QQQ: Array.isArray(payload.bars.QQQ) ? payload.bars.QQQ.length : 0 };
   for (const symbol of SYMBOLS) {
     const rows = payload.bars[symbol];
     if (!Array.isArray(rows) || rows.length !== 2) { issues.add(AlpacaBarsLimitQualificationIssueCode.BarCountMismatch); continue; }
@@ -296,7 +366,25 @@ function validateRawResponse(
       prior = Date.parse((row as Record<string, unknown>).t as string);
     }
   }
-  return { issues: sorted(issues), counts: Object.freeze(counts) };
+  return { issues: sorted(issues), diagnostics };
+}
+
+function responseDiagnostics(payload: unknown): {
+  readonly actualObservedBarsBySymbol: Readonly<{ readonly MU: number; readonly QQQ: number }>;
+  readonly paginationTokenPresent: boolean;
+  readonly responseSymbols: readonly string[];
+} {
+  if (!isRecord(payload)) return EMPTY_DIAGNOSTICS;
+  const bars = isRecord(payload.bars) ? payload.bars : undefined;
+  const responseSymbols = bars === undefined ? [] : Object.keys(bars).sort();
+  return deepFreeze({
+    actualObservedBarsBySymbol: {
+      MU: bars !== undefined && Array.isArray(bars.MU) ? bars.MU.length : 0,
+      QQQ: bars !== undefined && Array.isArray(bars.QQQ) ? bars.QQQ.length : 0,
+    },
+    paginationTokenPresent: payload.next_page_token !== null && payload.next_page_token !== "" && payload.next_page_token !== undefined,
+    responseSymbols,
+  });
 }
 
 function validBar(value: unknown, request: LiveReadonlyRequestPlanEntry, prior: number): boolean {
@@ -332,18 +420,24 @@ function transportIssue(error: unknown): AlpacaBarsLimitQualificationIssueCode {
 function blocked(
   issues: readonly AlpacaBarsLimitQualificationIssueCode[],
   preflight?: LiveReadonlyPreflightResult,
-  attempted: 0 | 1 = 0,
-  completed: 0 | 1 = 0,
-  networkRequests: 0 | 1 = 0,
+  lifecycle: AlpacaBarsLimitQualificationTransportLifecycle = ZERO_LIFECYCLE,
+  responseOrigin: "NONE" | "TEST_INJECTED" | "REAL_HTTPS" = "NONE",
+  diagnostics: {
+    readonly actualObservedBarsBySymbol: Readonly<{ readonly MU: number; readonly QQQ: number }>;
+    readonly paginationTokenPresent: boolean;
+    readonly responseSymbols: readonly string[];
+  } = EMPTY_DIAGNOSTICS,
+  requestFingerprint: string | null = null,
+  credentialReadPermitted = false,
 ): AlpacaBarsLimitQualificationResult {
-  return deepFreeze({
+  return resultWithRunId({
     schemaVersion: ALPACA_BARS_LIMIT_QUALIFICATION_SCHEMA_VERSION,
     policyVersion: ALPACA_BARS_LIMIT_QUALIFICATION_POLICY_VERSION,
     status: "BLOCKED",
     issueCodes: [...new Set(issues)].sort(),
     authorizationId: preflight?.authorizationId ?? null,
     manifestSha256: preflight?.manifestSha256 ?? null,
-    requestFingerprint: null,
+    requestFingerprint,
     marketPhase: preflight?.marketPhase ?? null,
     referenceSessionDate: preflight?.referenceSessionDate ?? null,
     provider: "ALPACA_MARKET_DATA",
@@ -351,16 +445,32 @@ function blocked(
     symbols: SYMBOLS,
     timeframe: "1Day",
     requestedLimit: 2,
-    observedBarCounts: EMPTY_COUNTS,
+    responseOrigin,
+    actualObservedBarsBySymbol: diagnostics.actualObservedBarsBySymbol,
+    paginationTokenPresent: diagnostics.paginationTokenPresent,
+    responseSymbols: diagnostics.responseSymbols,
     providerLimitSemantics: "UNPROVEN",
-    credentialReadPermitted: false,
-    attemptedNetworkRequests: attempted,
-    completedNetworkRequests: completed,
-    networkRequests,
+    credentialReadPermitted,
+    attemptedNetworkRequests: lifecycle.attemptedNetworkRequests,
+    completedNetworkRequests: lifecycle.completedNetworkRequests,
+    networkRequests: lifecycle.networkRequests,
     persistenceWrites: 0,
     automatedExecutionAllowed: false,
     candidates: [],
   });
+}
+
+function transportResponseOrigin(
+  transport: AlpacaBarsLimitQualificationRawTransport,
+): "TEST_INJECTED" | "REAL_HTTPS" {
+  return isAlpacaBarsLimitQualificationProductTransport(transport) ? "REAL_HTTPS" : "TEST_INJECTED";
+}
+
+function resultWithRunId(
+  value: Omit<AlpacaBarsLimitQualificationResult, "runId">,
+): AlpacaBarsLimitQualificationResult {
+  const runId = `alpaca-bars-limit-qualification:${sha256Jcs(value)}`;
+  return deepFreeze({ ...value, runId });
 }
 
 function sorted(value: Set<AlpacaBarsLimitQualificationIssueCode>): AlpacaBarsLimitQualificationIssueCode[] { return [...value].sort(); }

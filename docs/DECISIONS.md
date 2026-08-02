@@ -1,5 +1,22 @@
 # Alpha Architecture Decisions
 
+## 2026-08-02 - D3A real-source capability and diagnostic authority
+
+- Decision: only the no-argument product composition may create the product
+  raw-HTTPS capability. Caller-supplied Transports, origins, Provider authority,
+  counters, keys, fingerprints, or verifiers cannot enter that path.
+- Decision: test composition is physically separate, absent from product
+  barrels, rejects the product Transport capability, and always remains
+  `TEST_INJECTED` with zero network lifecycle counts.
+- Decision: product Transport lifecycle events are the only authority for
+  attempted, completed, and network counts. Response content and fixture
+  parameters cannot alter those facts.
+- Decision: fail-closed responses retain bounded diagnostic facts rather than
+  erasing observed per-symbol counts or pagination presence. Tokens, raw
+  payloads, credentials, and secret-bearing queries remain excluded.
+- Boundary: Provider limit semantics remain `UNPROVEN`; D3B and real reads are
+  blocked, and no persistence or execution authority is introduced.
+
 ## 2026-08-01 - Phase 1B-D2-C2-R2 trusted composition and raw response boundary
 
 - Decision: compile only five ordered signed requests: P1D Bars for six

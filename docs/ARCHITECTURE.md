@@ -149,13 +149,19 @@ bounded Alpaca HTTPS Transport, strict response validation, and a sanitized
 count-only result. The Transport cannot construct Canonical Bars or
 `EvidenceResolution`, and the product entry cannot accept caller-controlled
 authority or Transport dependencies. Test injection exists only in a
-non-exported testing module.
+testing-only module that is absent from product barrels, rejects the product
+Transport capability, and can produce only `TEST_INJECTED` results with zero
+network lifecycle counts.
 
 The one request binds method, host, path, symbol order, `1Day`, `limit=2`,
 start/end, feed, adjustment, sort, currency, ordinal, timeout, byte budget,
 mapping-registry identity and full-content fingerprint, calendar fingerprint,
 and request/plan fingerprints. Preflight and credential failures are `0/0`;
-dispatch begins at `1/0`; only a fully valid bounded response becomes `1/1`.
+real product dispatch begins at `1/0`; only a fully valid bounded response
+becomes `1/1`. These counters come from the product Transport lifecycle rather
+than response fields or caller input. A blocked parsed response retains only
+sanitized per-symbol counts, sorted response symbols, and pagination presence;
+it never retains a page token or raw response.
 Retry, replay, pagination, a second request, partial output, persistence, and
 execution are forbidden. Until a separately signed one-shot Manifest is
 approved and a real response is observed, Provider limit semantics remain
