@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const BASE_COMMIT = "f565e9e5250cfd2fca5e6ed9c244b3947add7b28";
+const PHASE_1B_D2_C2_BASE_COMMIT = "74cb5f1b0be217ec73bc0654807bfc2ddfb106b2";
 const STATUS_FIELDS = Object.freeze([
   "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
   "completed", "inProgress", "blocked", "frozen", "next", "runtimeOwnership",
@@ -28,6 +29,7 @@ export function validateCurrentStatus(status, schema) {
     issues.push("$ must be an object.");
     return result(issues);
   }
+  if (isRecord(schema)) validateJsonSchemaInstance(status, schema, schema, "$", issues);
 
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
@@ -52,11 +54,12 @@ export function validateCurrentStatus(status, schema) {
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
     validateStatusItems(status[field], field, issues);
   }
-  requireStatusItem(status.inProgress, "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION", "inProgress", issues);
-  requireStatusItem(status.blocked, "CALLER_CONTROLLED_OWNER_TRUST_ROOT", "blocked", issues);
-  requireStatusItem(status.blocked, "PHASE_1B_D2_C2_NOT_STARTED", "blocked", issues);
+  requireStatusItem(status.completed, "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION", "completed", issues);
+  requireStatusItem(status.inProgress, "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING", "inProgress", issues);
+  requireStatusItem(status.blocked, "PROVIDER_LIMIT_SEMANTICS_UNPROVEN", "blocked", issues);
+  requireStatusItem(status.blocked, "PHASE_1B_D2_C2_R2_OWNER_REVIEW_REQUIRED", "blocked", issues);
   requireStatusItem(status.blocked, "PHASE_1B_D2_C3_NOT_STARTED", "blocked", issues);
-  requireStatusItem(status.next, "OWNER_REVIEW_PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION", "next", issues);
+  requireStatusItem(status.next, "OWNER_REVIEW_PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING", "next", issues);
   validateExactObject(status.runtimeOwnership, "runtimeOwnership", {
     productRuntime: "TYPESCRIPT",
     pythonRole: "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY",
@@ -85,11 +88,14 @@ export function validateCurrentStatus(status, schema) {
   exact(status.phase1BStatus, "NOT_STARTED", "phase1BStatus", issues);
   validateExactObject(status.phase1BDesign, "phase1BDesign", {
     task: "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS",
-    status: "D2_C1_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED",
+    status: "D2_C2_R2_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED",
     networkAuthority: "NONE",
     credentialAccess: "PROHIBITED",
     marketDataAcquisition: "NOT_IMPLEMENTED",
     trustedOwnerVerificationKey: "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
+    marketScopePolicy: "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY",
+    providerLimitSemantics: "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
+    compositionRoot: "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE",
   }, issues);
   exact(status.optionsStatus, "NOT_STARTED", "optionsStatus", issues);
   exact(status.brokerStatus, "NOT_STARTED", "brokerStatus", issues);
@@ -139,6 +145,103 @@ function inspectObjectSchemas(value, path, issues) {
   for (const [key, nested] of Object.entries(value)) {
     inspectObjectSchemas(nested, `${path}.${key}`, issues);
   }
+}
+
+function validateJsonSchemaInstance(value, schemaNode, rootSchema, path, issues) {
+  if (!isRecord(schemaNode)) {
+    issues.push(`${path} schema node must be an object.`);
+    return;
+  }
+  if (typeof schemaNode.$ref === "string") {
+    const resolved = resolveLocalSchemaReference(rootSchema, schemaNode.$ref);
+    if (resolved === undefined) issues.push(`${path} schema reference ${schemaNode.$ref} cannot be resolved.`);
+    else validateJsonSchemaInstance(value, resolved, rootSchema, path, issues);
+    return;
+  }
+  if (Array.isArray(schemaNode.oneOf)) {
+    const matches = schemaNode.oneOf.filter((candidate) => {
+      const candidateIssues = [];
+      validateJsonSchemaInstance(value, candidate, rootSchema, path, candidateIssues);
+      return candidateIssues.length === 0;
+    });
+    if (matches.length !== 1) issues.push(`${path} must match exactly one schema alternative.`);
+    return;
+  }
+  if (Object.hasOwn(schemaNode, "const") && !deepEqual(value, schemaNode.const)) {
+    issues.push(`${path} must equal schema const ${JSON.stringify(schemaNode.const)}.`);
+  }
+  if (Array.isArray(schemaNode.enum) && !schemaNode.enum.some((entry) => deepEqual(value, entry))) {
+    issues.push(`${path} must equal one of the schema enum values.`);
+  }
+  if (schemaNode.type !== undefined && !matchesSchemaType(value, schemaNode.type)) {
+    issues.push(`${path} does not match schema type ${JSON.stringify(schemaNode.type)}.`);
+    return;
+  }
+  if (typeof value === "string") {
+    if (Number.isSafeInteger(schemaNode.minLength) && value.length < schemaNode.minLength) issues.push(`${path} is shorter than schema minLength.`);
+    if (Number.isSafeInteger(schemaNode.maxLength) && value.length > schemaNode.maxLength) issues.push(`${path} is longer than schema maxLength.`);
+    if (typeof schemaNode.pattern === "string" && !new RegExp(schemaNode.pattern, "u").test(value)) issues.push(`${path} does not match schema pattern.`);
+  }
+  if (typeof value === "number" && typeof schemaNode.minimum === "number" && value < schemaNode.minimum) {
+    issues.push(`${path} is below schema minimum.`);
+  }
+  if (Array.isArray(value)) validateJsonSchemaArray(value, schemaNode, rootSchema, path, issues);
+  if (isRecord(value)) validateJsonSchemaObject(value, schemaNode, rootSchema, path, issues);
+}
+
+function validateJsonSchemaObject(value, schemaNode, rootSchema, path, issues) {
+  const required = Array.isArray(schemaNode.required) ? schemaNode.required : [];
+  for (const field of required) if (typeof field === "string" && !Object.hasOwn(value, field)) issues.push(`${path}.${field} is required by schema.`);
+  const properties = isRecord(schemaNode.properties) ? schemaNode.properties : {};
+  if (schemaNode.additionalProperties === false) {
+    for (const field of Object.keys(value)) if (!Object.hasOwn(properties, field)) issues.push(`${path}.${field} is not allowed by schema.`);
+  }
+  for (const [field, childSchema] of Object.entries(properties)) {
+    if (Object.hasOwn(value, field)) validateJsonSchemaInstance(value[field], childSchema, rootSchema, `${path}.${field}`, issues);
+  }
+}
+
+function validateJsonSchemaArray(value, schemaNode, rootSchema, path, issues) {
+  if (Number.isSafeInteger(schemaNode.minItems) && value.length < schemaNode.minItems) issues.push(`${path} has fewer items than schema minItems.`);
+  if (Number.isSafeInteger(schemaNode.maxItems) && value.length > schemaNode.maxItems) issues.push(`${path} has more items than schema maxItems.`);
+  if (schemaNode.uniqueItems === true && new Set(value.map((entry) => JSON.stringify(entry))).size !== value.length) issues.push(`${path} must contain unique items.`);
+  const prefix = Array.isArray(schemaNode.prefixItems) ? schemaNode.prefixItems : [];
+  prefix.forEach((childSchema, index) => {
+    if (index < value.length) validateJsonSchemaInstance(value[index], childSchema, rootSchema, `${path}[${index}]`, issues);
+  });
+  if (schemaNode.items === false && value.length > prefix.length) issues.push(`${path} contains items forbidden by schema.`);
+  else if (isRecord(schemaNode.items)) {
+    for (let index = prefix.length; index < value.length; index += 1) {
+      validateJsonSchemaInstance(value[index], schemaNode.items, rootSchema, `${path}[${index}]`, issues);
+    }
+  }
+}
+
+function resolveLocalSchemaReference(rootSchema, reference) {
+  if (!reference.startsWith("#/")) return undefined;
+  let current = rootSchema;
+  for (const rawPart of reference.slice(2).split("/")) {
+    const part = rawPart.replaceAll("~1", "/").replaceAll("~0", "~");
+    if (!isRecord(current) || !Object.hasOwn(current, part)) return undefined;
+    current = current[part];
+  }
+  return isRecord(current) ? current : undefined;
+}
+
+function matchesSchemaType(value, expected) {
+  const types = Array.isArray(expected) ? expected : [expected];
+  return types.some((type) => type === "null" ? value === null
+    : type === "object" ? isRecord(value)
+    : type === "array" ? Array.isArray(value)
+    : type === "integer" ? Number.isSafeInteger(value)
+    : type === "number" ? typeof value === "number" && Number.isFinite(value)
+    : type === "string" ? typeof value === "string"
+    : type === "boolean" ? typeof value === "boolean"
+    : false);
+}
+
+function deepEqual(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 function validateCapitalArchitecture(value, issues) {
@@ -195,16 +298,16 @@ function validateValidation(value, issues) {
   if (value.phase1aWorkingTree !== null) {
     issues.push("validation.phase1aWorkingTree must be null after the Phase 1A merge.");
   }
-  validateValidationResult(value.phase1bD2WorkingTree, "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE", true, "validation.phase1bD2WorkingTree", issues);
+  validateValidationResult(value.phase1bD2WorkingTree, "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE", true, "validation.phase1bD2WorkingTree", issues, PHASE_1B_D2_C2_BASE_COMMIT);
   if (isRecord(value.phase1bD2WorkingTree)) {
-    exact(value.phase1bD2WorkingTree.componentCount, 137, "validation.phase1bD2WorkingTree.componentCount", issues);
-    exact(value.phase1bD2WorkingTree.testsExecuted, 2760, "validation.phase1bD2WorkingTree.testsExecuted", issues);
-    exact(value.phase1bD2WorkingTree.passed, 2760, "validation.phase1bD2WorkingTree.passed", issues);
+    exact(value.phase1bD2WorkingTree.componentCount, 138, "validation.phase1bD2WorkingTree.componentCount", issues);
+    exact(value.phase1bD2WorkingTree.testsExecuted, 2792, "validation.phase1bD2WorkingTree.testsExecuted", issues);
+    exact(value.phase1bD2WorkingTree.passed, 2792, "validation.phase1bD2WorkingTree.passed", issues);
   }
   validateCoverageBaseline(value.coverageBaseline, issues);
 }
 
-function validateValidationResult(value, kind, includesUncommittedCode, path, issues) {
+function validateValidationResult(value, kind, includesUncommittedCode, path, issues, sourceBaselineCommit = BASE_COMMIT) {
   if (!isRecord(value)) {
     issues.push(`${path} must be an object.`);
     return;
@@ -217,7 +320,7 @@ function validateValidationResult(value, kind, includesUncommittedCode, path, is
   allowOnly(value, fields, path, issues);
   requireExactly(value, fields, path, issues);
   exact(value.kind, kind, `${path}.kind`, issues);
-  exact(value.source_baseline_commit, BASE_COMMIT, `${path}.source_baseline_commit`, issues);
+  exact(value.source_baseline_commit, sourceBaselineCommit, `${path}.source_baseline_commit`, issues);
   exact(value.includesUncommittedCode, includesUncommittedCode, `${path}.includesUncommittedCode`, issues);
   exact(value.command, "npm.cmd run alpha:validate", `${path}.command`, issues);
   exact(value.status, "PASSED", `${path}.status`, issues);

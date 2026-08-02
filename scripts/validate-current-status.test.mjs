@@ -112,6 +112,26 @@ const tests = [
     changedSchema.$defs.riskPolicyRecord.additionalProperties = true;
     assertInvalid(status, changedSchema, "schema.$defs.riskPolicyRecord object schema must reject additional properties.");
   }],
+  ["the declared JSON Schema baseline const is executed against current status", () => {
+    const changedSchema = clone(schema);
+    changedSchema.$defs.phase1bD2ValidationResult.properties.source_baseline_commit.const = "0000000000000000000000000000000000000000";
+    assertInvalid(status, changedSchema, "$.validation.phase1bD2WorkingTree.source_baseline_commit must equal schema const \"0000000000000000000000000000000000000000\".");
+  }],
+  ["the declared JSON Schema registered-test const is executed", () => {
+    const changedSchema = clone(schema);
+    changedSchema.$defs.phase1bD2ValidationResult.properties.testsExecuted.const = 1;
+    assertInvalid(status, changedSchema, "$.validation.phase1bD2WorkingTree.testsExecuted must equal schema const 1.");
+  }],
+  ["the declared JSON Schema phase-state const is executed", () => {
+    const changedSchema = clone(schema);
+    changedSchema.$defs.phase1BDesign.properties.status.const = "D2_COMPLETED";
+    assertInvalid(status, changedSchema, "$.phase1BDesign.status must equal schema const \"D2_COMPLETED\".");
+  }],
+  ["the declared JSON Schema additionalProperties gate rejects unknown status fields", () => {
+    const changed = clone(status);
+    changed.phase1BDesign.ownerPublicKey = "caller-supplied";
+    assertInvalid(changed, schema, "$.phase1BDesign.ownerPublicKey is not allowed by schema.");
+  }],
   ["D2 working-tree validation remains uncommitted and exact", () => {
     const changed = clone(status);
     changed.validation.phase1bD2WorkingTree.includesUncommittedCode = false;
@@ -119,23 +139,28 @@ const tests = [
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("validation.phase1bD2WorkingTree.includesUncommittedCode must equal true."));
-    assert(validation.issues.includes("validation.phase1bD2WorkingTree.testsExecuted must equal 2760."));
+    assert(validation.issues.includes("validation.phase1bD2WorkingTree.testsExecuted must equal 2792."));
   }],
   ["Phase 1B D2 trust-root and no-network status cannot be widened", () => {
     const changed = clone(status);
     changed.phase1BDesign.ownerPublicKey = "caller-supplied";
     assertInvalid(changed, schema, "phase1BDesign.ownerPublicKey is undeclared.");
   }],
-  ["D2-C1 records the caller-controlled trust-root blocker without granting authority", () => {
-    assert(status.inProgress.includes("PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"));
-    assert(status.blocked.includes("CALLER_CONTROLLED_OWNER_TRUST_ROOT"));
-    assert.equal(status.phase1BDesign.status, "D2_C1_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED");
+  ["D2-C2-R2 records unproven Provider semantics and fixed product composition", () => {
+    assert(status.completed.includes("PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"));
+    assert(status.inProgress.includes("PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"));
+    assert(status.blocked.includes("PROVIDER_LIMIT_SEMANTICS_UNPROVEN"));
+    assert(status.blocked.includes("PHASE_1B_D2_C2_R2_OWNER_REVIEW_REQUIRED"));
+    assert.equal(status.phase1BDesign.status, "D2_C2_R2_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED");
+    assert.equal(status.phase1BDesign.marketScopePolicy, "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY");
+    assert.equal(status.phase1BDesign.providerLimitSemantics, "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT");
+    assert.equal(status.phase1BDesign.compositionRoot, "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE");
     const changed = clone(status);
     changed.phase1BDesign.trustedOwnerVerificationKey = "CALLER_RUNTIME_INPUT";
     assertInvalid(changed, schema, "phase1BDesign.trustedOwnerVerificationKey must equal \"PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED\".");
     const missingCorrection = clone(status);
-    missingCorrection.blocked = missingCorrection.blocked.filter((item) => item !== "CALLER_CONTROLLED_OWNER_TRUST_ROOT");
-    assertInvalid(missingCorrection, schema, "blocked must include \"CALLER_CONTROLLED_OWNER_TRUST_ROOT\".");
+    missingCorrection.blocked = missingCorrection.blocked.filter((item) => item !== "PROVIDER_LIMIT_SEMANTICS_UNPROVEN");
+    assertInvalid(missingCorrection, schema, "blocked must include \"PROVIDER_LIMIT_SEMANTICS_UNPROVEN\".");
   }],
 ];
 

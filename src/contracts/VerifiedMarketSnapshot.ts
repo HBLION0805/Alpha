@@ -1,6 +1,6 @@
 import type { BarInterval } from "./CanonicalBar";
 
-export const VERIFIED_MARKET_SNAPSHOT_SCHEMA_VERSION = "1.0" as const;
+export const VERIFIED_MARKET_SNAPSHOT_SCHEMA_VERSION = "1.1" as const;
 
 export enum VerifiedMarketSnapshotStatus {
   Verified = "VERIFIED",
@@ -83,7 +83,9 @@ export interface ProviderRequestAttempt {
   readonly capability: VerifiedMarketProviderCapability;
   readonly interval?: BarInterval;
   readonly requestedSymbolScope: readonly string[];
+  readonly mappingRegistryId: string;
   readonly mappingRegistryVersion: string;
+  readonly mappingRegistryFingerprint: string;
   readonly requestWindowStart: string;
   readonly requestWindowEnd: string;
   readonly requestFingerprint: string;
@@ -107,6 +109,9 @@ export interface EvidenceResolution {
   readonly providerSymbol: string;
   readonly providerSymbolMappingVersion: string;
   readonly providerSymbolMappingFingerprint: string;
+  readonly mappingRegistryId: string;
+  readonly mappingRegistryVersion: string;
+  readonly mappingRegistryFingerprint: string;
   readonly capability: VerifiedMarketProviderCapability;
   readonly interval?: BarInterval;
   readonly evidenceWindowStart: string;
@@ -134,6 +139,7 @@ export interface VerifiedMarketSnapshotCandidateBinding {
 export interface VerifiedMarketSnapshotCompositionBinding {
   readonly mappingRegistryId: string;
   readonly mappingRegistryVersion: string;
+  readonly mappingRegistryFingerprint: string;
   readonly profileId: string;
   readonly profileVersion: string;
   readonly candidates: readonly VerifiedMarketSnapshotCandidateBinding[];

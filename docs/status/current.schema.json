@@ -71,14 +71,17 @@
     "phase1BDesign": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["task", "status", "networkAuthority", "credentialAccess", "marketDataAcquisition", "trustedOwnerVerificationKey"],
+      "required": ["task", "status", "networkAuthority", "credentialAccess", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot"],
       "properties": {
         "task": { "const": "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS" },
-        "status": { "const": "D2_C1_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED" },
+        "status": { "const": "D2_C2_R2_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED" },
         "networkAuthority": { "const": "NONE" },
         "credentialAccess": { "const": "PROHIBITED" },
         "marketDataAcquisition": { "const": "NOT_IMPLEMENTED" },
-        "trustedOwnerVerificationKey": { "const": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED" }
+        "trustedOwnerVerificationKey": { "const": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED" },
+        "marketScopePolicy": { "const": "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY" },
+        "providerLimitSemantics": { "const": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT" },
+        "compositionRoot": { "const": "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE" }
       }
     },
     "statusItems": {
@@ -187,13 +190,13 @@
       ],
       "properties": {
         "kind": { "const": "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE" },
-        "source_baseline_commit": { "const": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28" },
+        "source_baseline_commit": { "const": "74cb5f1b0be217ec73bc0654807bfc2ddfb106b2" },
         "includesUncommittedCode": { "const": true },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": { "const": "PASSED" },
-        "componentCount": { "const": 137 },
-        "testsExecuted": { "const": 2760 },
-        "passed": { "const": 2760 },
+        "componentCount": { "const": 138 },
+        "testsExecuted": { "const": 2792 },
+        "passed": { "const": 2792 },
         "failed": { "const": 0 },
         "durationMs": { "type": "null" },
         "wallClockDurationMs": { "type": "null" }

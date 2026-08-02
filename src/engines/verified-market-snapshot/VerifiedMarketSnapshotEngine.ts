@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { BarInterval } from "../../contracts/CanonicalBar";
 import {
   canonicalizeDeterministicValue,
@@ -29,6 +30,7 @@ import {
 
 const IDENTIFIER = /^[A-Za-z0-9][A-Za-z0-9:._/-]{2,159}$/u;
 const FINGERPRINT = /^fnv1a64:[a-f0-9]{16}$/u;
+const SHA256_FINGERPRINT = /^sha256:[a-f0-9]{64}$/u;
 const REQUIRED_INTERVALS = [
   BarInterval.OneDay,
   BarInterval.OneHour,
@@ -96,6 +98,10 @@ export function compositionBindingFromRequest(
   return freeze({
     mappingRegistryId: request.mappingRegistry.registryId,
     mappingRegistryVersion: request.mappingRegistry.version,
+    mappingRegistryFingerprint: verifiedMappingRegistryFingerprint({
+      mappingRegistryId: request.mappingRegistry.registryId,
+      mappingRegistryVersion: request.mappingRegistry.version,
+    }),
     profileId: request.profileId,
     profileVersion: request.profileVersion,
     candidates: request.candidates
@@ -119,6 +125,28 @@ export function compositionBindingFromRequest(
   });
 }
 
+export function verifiedMappingRegistryFingerprint(input: {
+  readonly mappingRegistryId: string;
+  readonly mappingRegistryVersion: string;
+  readonly contentEntries?: readonly {
+    readonly entryId: string;
+    readonly content: unknown;
+  }[];
+}): string {
+  const descriptor = input.contentEntries === undefined
+    ? input
+    : {
+        mappingRegistryId: input.mappingRegistryId,
+        mappingRegistryVersion: input.mappingRegistryVersion,
+        contentEntries: [...input.contentEntries]
+          .map((entry) => ({ entryId: entry.entryId, content: entry.content }))
+          .sort((left, right) => left.entryId.localeCompare(right.entryId)),
+      };
+  return `sha256:${createHash("sha256")
+    .update(canonicalizeDeterministicValue(descriptor), "utf8")
+    .digest("hex")}`;
+}
+
 export function verifiedProviderSymbolMappingFingerprint(input: {
   readonly canonicalInstrumentId: string;
   readonly providerSymbol: string;
@@ -134,7 +162,9 @@ export function verifiedProviderRequestFingerprint(input: {
   readonly capability: VerifiedMarketProviderCapability;
   readonly interval?: BarInterval;
   readonly requestedSymbolScope: readonly string[];
+  readonly mappingRegistryId: string;
   readonly mappingRegistryVersion: string;
+  readonly mappingRegistryFingerprint: string;
   readonly requestWindowStart: string;
   readonly requestWindowEnd: string;
 }): string {
@@ -316,7 +346,9 @@ export function validateVerifiedMarketSnapshotInput(
     raw.asOf,
     bars,
     quotes,
+    binding?.mappingRegistryId,
     binding?.mappingRegistryVersion,
+    binding?.mappingRegistryFingerprint,
     issues,
   );
   validateRequiredEvidence(raw.requiredEvidenceStatus, issues);
@@ -1009,6 +1041,7 @@ function validateBinding(
     [
       "mappingRegistryId",
       "mappingRegistryVersion",
+      "mappingRegistryFingerprint",
       "profileId",
       "profileVersion",
       "candidates",
@@ -1023,6 +1056,11 @@ function validateBinding(
       value.profileId,
       value.profileVersion,
     ].every((entry) => typeof entry === "string" && IDENTIFIER.test(entry)) ||
+    typeof value.mappingRegistryFingerprint !== "string" ||
+    value.mappingRegistryFingerprint !== verifiedMappingRegistryFingerprint({
+      mappingRegistryId: String(value.mappingRegistryId),
+      mappingRegistryVersion: String(value.mappingRegistryVersion),
+    }) ||
     !Array.isArray(value.candidates) ||
     value.candidates.length !== vehicles.length
   ) {
@@ -1290,7 +1328,9 @@ function validateProviderTrace(
   asOf: string,
   bars: readonly CanonicalBarReference[],
   quotes: readonly CanonicalQuoteReference[],
+  expectedMappingRegistryId: string | undefined,
   expectedMappingRegistryVersion: string | undefined,
+  expectedMappingRegistryFingerprint: string | undefined,
   issues: VerifiedMarketSnapshotIssue[],
 ): void {
   if (!Array.isArray(attemptValue) || attemptValue.length === 0) {
@@ -1327,7 +1367,9 @@ function validateProviderTrace(
         "capability",
         "interval",
         "requestedSymbolScope",
+        "mappingRegistryId",
         "mappingRegistryVersion",
+        "mappingRegistryFingerprint",
         "requestWindowStart",
         "requestWindowEnd",
         "requestFingerprint",
@@ -1353,7 +1395,9 @@ function validateProviderTrace(
       requestedSymbolScope: Array.isArray(entry.requestedSymbolScope)
         ? (entry.requestedSymbolScope as string[])
         : [],
+      mappingRegistryId: String(entry.mappingRegistryId),
       mappingRegistryVersion: String(entry.mappingRegistryVersion),
+      mappingRegistryFingerprint: String(entry.mappingRegistryFingerprint),
       requestWindowStart: String(entry.requestWindowStart),
       requestWindowEnd: String(entry.requestWindowEnd),
     };
@@ -1363,6 +1407,7 @@ function validateProviderTrace(
         entry.requestId,
         entry.requestedProvider,
         entry.actualProvider,
+        entry.mappingRegistryId,
         entry.mappingRegistryVersion,
         entry.responseSourceReference,
         entry.adapterUnderTest,
@@ -1386,7 +1431,11 @@ function validateProviderTrace(
         (symbol) =>
           typeof symbol === "string" && /^[A-Z][A-Z0-9.-]{0,15}$/u.test(symbol),
       ) &&
+      entry.mappingRegistryId === expectedMappingRegistryId &&
       entry.mappingRegistryVersion === expectedMappingRegistryVersion &&
+      entry.mappingRegistryFingerprint === expectedMappingRegistryFingerprint &&
+      typeof entry.mappingRegistryFingerprint === "string" &&
+      SHA256_FINGERPRINT.test(entry.mappingRegistryFingerprint) &&
       timestamp(entry.requestWindowStart) &&
       timestamp(entry.requestWindowEnd) &&
       Date.parse(String(entry.requestWindowStart)) <
@@ -1564,6 +1613,9 @@ function validateProviderTrace(
         "providerSymbol",
         "providerSymbolMappingVersion",
         "providerSymbolMappingFingerprint",
+        "mappingRegistryId",
+        "mappingRegistryVersion",
+        "mappingRegistryFingerprint",
         "capability",
         "interval",
         "evidenceWindowStart",
@@ -1595,6 +1647,9 @@ function validateProviderTrace(
       providerSymbolMappingFingerprint: String(
         entry.providerSymbolMappingFingerprint,
       ),
+      mappingRegistryId: String(entry.mappingRegistryId),
+      mappingRegistryVersion: String(entry.mappingRegistryVersion),
+      mappingRegistryFingerprint: String(entry.mappingRegistryFingerprint),
       capability: entry.capability as VerifiedMarketProviderCapability,
       ...(entry.interval === undefined
         ? {}
@@ -1612,6 +1667,8 @@ function validateProviderTrace(
         entry.evidenceId,
         entry.canonicalInstrumentId,
         entry.providerSymbolMappingVersion,
+        entry.mappingRegistryId,
+        entry.mappingRegistryVersion,
         entry.provenanceReference,
         entry.responseSourceReference,
       ].every(
@@ -1630,6 +1687,11 @@ function validateProviderTrace(
             entry.providerSymbolMappingVersion,
           ),
         }) &&
+      entry.mappingRegistryId === expectedMappingRegistryId &&
+      entry.mappingRegistryVersion === expectedMappingRegistryVersion &&
+      entry.mappingRegistryFingerprint === expectedMappingRegistryFingerprint &&
+      typeof entry.mappingRegistryFingerprint === "string" &&
+      SHA256_FINGERPRINT.test(entry.mappingRegistryFingerprint) &&
       typeof entry.resolutionFingerprint === "string" &&
       entry.result === VerifiedMarketEvidenceResolutionResult.Resolved &&
       entry.resolutionFingerprint ===
@@ -1660,6 +1722,9 @@ function validateProviderTrace(
       source.provenance !== entry.provenanceReference ||
       attempt.capability !== entry.capability ||
       attempt.interval !== entry.interval ||
+      attempt.mappingRegistryId !== entry.mappingRegistryId ||
+      attempt.mappingRegistryVersion !== entry.mappingRegistryVersion ||
+      attempt.mappingRegistryFingerprint !== entry.mappingRegistryFingerprint ||
       !attempt.requestedSymbolScope.includes(String(entry.providerSymbol)) ||
       attempt.responseSourceReference !== entry.responseSourceReference ||
       String(entry.evidenceWindowStart) !== source.start ||

@@ -17,10 +17,12 @@ import {
   createOwnerAuthorizationVerifier,
   exchangeCalendarSignatureMessage,
   liveReadonlyPlanFingerprint,
+  liveReadonlyRequestFingerprint,
   ownerAuthorizationSignatureMessage,
   sha256Jcs,
   trustedPublicKeyFingerprint,
 } from "./PersonalDailyScanLiveReadonlyPreflight";
+import { liveReadonlyProductMappingRegistryFingerprint } from "./PersonalDailyScanLiveReadonlyMarketScope";
 
 type Test = readonly [string, () => void];
 const tests: Test[] = [];
@@ -43,20 +45,26 @@ const productTrustRootProvider = Object.freeze({
 });
 const productVerifier = createOwnerAuthorizationVerifier(productTrustRootProvider);
 const calendarFingerprintPlaceholder = `sha256:${"a".repeat(64)}`;
+const mappingRegistryFingerprint = liveReadonlyProductMappingRegistryFingerprint();
 
 function base64(value: Uint8Array): string { return btoa(String.fromCharCode(...value)); }
 
 function requests(calendarFingerprint: string, dailyStart: string, sessionOpen: string, sessionClose: string): readonly LiveReadonlyRequestPlanEntry[] {
   const common = { method: "GET" as const, host: "data.alpaca.markets" as const, feed: "iex" as const,
     timeoutMs: 10_000, maximumResponseBytes: 1_048_576, calendarEvidenceFingerprint: calendarFingerprint,
-    mappingRegistryVersion: "personal-watchlist-mapping:v1.0" };
-  return Object.freeze([
-    { ...common, ordinal: 1, path: "/v2/stocks/bars", capability: "BARS", interval: "P1D", symbols: ["MU", "QQQ", "SKHY", "SMH", "SPCX", "TSLA"], adjustment: "raw", sort: "asc", start: dailyStart, end: sessionClose, limit: 1000 },
-    { ...common, ordinal: 2, path: "/v2/stocks/bars", capability: "BARS", interval: "PT1H", symbols: ["MU", "SKHY", "SPCX", "TSLA"], adjustment: "raw", sort: "asc", start: sessionOpen, end: sessionClose, limit: 1000 },
-    { ...common, ordinal: 3, path: "/v2/stocks/bars", capability: "BARS", interval: "PT15M", symbols: ["MU", "SKHY", "SPCX", "TSLA"], adjustment: "raw", sort: "asc", start: sessionOpen, end: sessionClose, limit: 1000 },
-    { ...common, ordinal: 4, path: "/v2/stocks/bars", capability: "BARS", interval: "PT5M", symbols: ["MU", "SKHY", "SPCX", "TSLA"], adjustment: "raw", sort: "asc", start: sessionOpen, end: sessionClose, limit: 1000 },
-    { ...common, ordinal: 5, path: "/v2/stocks/quotes/latest", capability: "LATEST_QUOTES", interval: "NONE", symbols: ["MULL", "SKDD", "SKUU", "SPCH", "SSPC", "TSLL", "TSLQ"], adjustment: "NONE", sort: "NONE", start: null, end: null, limit: null },
-  ]);
+    mappingRegistryId: "personal-watchlist:mvp-2026-07", mappingRegistryVersion: "1.1",
+    mappingRegistryFingerprint, currency: "USD" as const };
+  const descriptors = [
+    { ...common, ordinal: 1, path: "/v2/stocks/bars" as const, capability: "BARS" as const, interval: "P1D" as const, symbols: ["MU", "QQQ", "SKHY", "SMH", "SPCX", "TSLA"], adjustment: "raw" as const, sort: "asc" as const, start: dailyStart, end: sessionClose, limit: 2, maximumEvidenceRecords: 12 },
+    { ...common, ordinal: 2, path: "/v2/stocks/bars" as const, capability: "BARS" as const, interval: "PT1H" as const, symbols: ["MU", "SKHY", "SPCX", "TSLA"], adjustment: "raw" as const, sort: "asc" as const, start: sessionOpen, end: sessionClose, limit: 2, maximumEvidenceRecords: 8 },
+    { ...common, ordinal: 3, path: "/v2/stocks/bars" as const, capability: "BARS" as const, interval: "PT15M" as const, symbols: ["MU", "SKHY", "SPCX", "TSLA"], adjustment: "raw" as const, sort: "asc" as const, start: sessionOpen, end: sessionClose, limit: 2, maximumEvidenceRecords: 8 },
+    { ...common, ordinal: 4, path: "/v2/stocks/bars" as const, capability: "BARS" as const, interval: "PT5M" as const, symbols: ["MU", "SKHY", "SPCX", "TSLA"], adjustment: "raw" as const, sort: "asc" as const, start: sessionOpen, end: sessionClose, limit: 2, maximumEvidenceRecords: 8 },
+    { ...common, ordinal: 5, path: "/v2/stocks/quotes/latest" as const, capability: "LATEST_QUOTES" as const, interval: "NONE" as const, symbols: ["MULL", "SKDD", "SKUU", "SPCH", "SSPC", "TSLL", "TSLQ"], adjustment: "NONE" as const, sort: "NONE" as const, start: null, end: null, limit: null, maximumEvidenceRecords: 7 },
+  ] as const;
+  return Object.freeze(descriptors.map((descriptor) => Object.freeze({
+    ...descriptor,
+    requestFingerprint: liveReadonlyRequestFingerprint(descriptor),
+  })));
 }
 
 function calendarBody(sessions: ExchangeCalendarBody["sessions"], overrides: Partial<ExchangeCalendarBody> = {}): ExchangeCalendarBody {
@@ -98,11 +106,12 @@ function manifestBody(calendar: ExchangeCalendarEvidence, asOf = "2026-07-30T14:
   const prior = trading.at(-2)!;
   const plan = requests(fingerprint, prior.marketOpen!, reference.marketOpen!, reference.marketClose!);
   return {
-    schemaVersion: "1.0", authorizationType: "PERSONAL_DAILY_SCAN_LIVE_READONLY", authorizationId: "authorization:phase1b-test",
+    schemaVersion: "1.1", authorizationType: "PERSONAL_DAILY_SCAN_LIVE_READONLY", authorizationId: "authorization:phase1b-test",
     ownerDecisionReference: "owner-decision:phase1b-d2", executeDate: asOf.slice(0, 10), validFrom: "2026-07-30T13:55:00.000Z",
     expiresAt: "2026-07-30T14:05:00.000Z", provider: "ALPACA_MARKET_DATA", feed: "iex",
-    mappingRegistryVersion: "personal-watchlist-mapping:v1.0", calendarEvidenceId: calendar.calendarBody.evidenceId,
-    calendarEvidenceFingerprint: fingerprint, planFingerprint: liveReadonlyPlanFingerprint(plan, fingerprint, "personal-watchlist-mapping:v1.0"),
+    mappingRegistryId: "personal-watchlist:mvp-2026-07", mappingRegistryVersion: "1.1", mappingRegistryFingerprint,
+    calendarEvidenceId: calendar.calendarBody.evidenceId, calendarEvidenceFingerprint: fingerprint,
+    planFingerprint: liveReadonlyPlanFingerprint(plan, fingerprint, "personal-watchlist:mvp-2026-07", "1.1", mappingRegistryFingerprint),
     maximumNetworkRequests: 5, maximumAttemptsPerRequest: 1, retryAllowed: false, paginationAllowed: false,
     pollingAllowed: false, streamingAllowed: false, backgroundExecutionAllowed: false,
     credentialReadAllowedAfterPreflightOnly: true, persistenceAllowed: false, accountAccessAllowed: false,
@@ -184,7 +193,7 @@ test("exact domain-separated signature message contains raw 32-byte hash", () =>
 
 test("trusted Ed25519 approval verifies with zero side effects", () => {
   const result = evaluate(validInput());
-  equal(result.status, "VERIFIED", "status"); equal(result.marketPhase, "REGULAR_SESSION", "phase");
+  equal(result.status, "VERIFIED", `status ${JSON.stringify(result.issueCodes)}`); equal(result.marketPhase, "REGULAR_SESSION", "phase");
   equal(result.referenceSessionDate, "2026-07-29", "completed session");
   equal([result.attemptedNetworkRequests, result.completedNetworkRequests, result.persistenceWrites, result.automatedExecutionAllowed], [0, 0, 0, false], "side effects");
 });
@@ -327,7 +336,13 @@ test("request mutation, expansion, repetition, and sixth request fail before net
   ]) {
     const input = validInput(); const manifest = input.manifest as OwnerNetworkAuthorizationManifest;
     const plan = mutate(manifest.authorizationBody.requests);
-    const body = { ...manifest.authorizationBody, requests: plan, planFingerprint: liveReadonlyPlanFingerprint(plan, manifest.authorizationBody.calendarEvidenceFingerprint, manifest.authorizationBody.mappingRegistryVersion) };
+    const body = { ...manifest.authorizationBody, requests: plan, planFingerprint: liveReadonlyPlanFingerprint(
+      plan,
+      manifest.authorizationBody.calendarEvidenceFingerprint,
+      manifest.authorizationBody.mappingRegistryId,
+      manifest.authorizationBody.mappingRegistryVersion,
+      manifest.authorizationBody.mappingRegistryFingerprint,
+    ) };
     assertBlocked(evaluate({ ...input, manifest: signedManifest(body as OwnerNetworkAuthorizationBody) }), LiveReadonlyPreflightIssueCode.RequestPlanInvalid);
   }
 });

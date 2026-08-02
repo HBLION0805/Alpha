@@ -1,4 +1,4 @@
-export const LIVE_READONLY_AUTHORIZATION_SCHEMA_VERSION = "1.0" as const;
+export const LIVE_READONLY_AUTHORIZATION_SCHEMA_VERSION = "1.1" as const;
 export const EXCHANGE_CALENDAR_EVIDENCE_SCHEMA_VERSION = "1.0" as const;
 export const OWNER_AUTHORIZATION_DOMAIN = "ALPHA_OWNER_NETWORK_AUTHORIZATION_V1\0" as const;
 export const EXCHANGE_CALENDAR_DOMAIN = "ALPHA_EXCHANGE_CALENDAR_EVIDENCE_V1\0" as const;
@@ -15,6 +15,7 @@ export interface LiveReadonlyRequestPlanEntry {
   readonly interval: LiveReadonlyInterval;
   readonly symbols: readonly string[];
   readonly feed: "iex";
+  readonly currency: "USD";
   readonly adjustment: "raw" | "NONE";
   readonly sort: "asc" | "NONE";
   readonly start: string | null;
@@ -22,8 +23,12 @@ export interface LiveReadonlyRequestPlanEntry {
   readonly limit: number | null;
   readonly timeoutMs: number;
   readonly maximumResponseBytes: number;
+  readonly maximumEvidenceRecords: number;
   readonly calendarEvidenceFingerprint: string;
+  readonly mappingRegistryId: string;
   readonly mappingRegistryVersion: string;
+  readonly mappingRegistryFingerprint: string;
+  readonly requestFingerprint: string;
 }
 
 export interface OwnerNetworkAuthorizationBody {
@@ -36,7 +41,9 @@ export interface OwnerNetworkAuthorizationBody {
   readonly expiresAt: string;
   readonly provider: "ALPACA_MARKET_DATA";
   readonly feed: "iex";
+  readonly mappingRegistryId: string;
   readonly mappingRegistryVersion: string;
+  readonly mappingRegistryFingerprint: string;
   readonly calendarEvidenceId: string;
   readonly calendarEvidenceFingerprint: string;
   readonly planFingerprint: string;
@@ -138,6 +145,7 @@ export enum LiveReadonlyPreflightIssueCode {
   AuthorizationExpired = "AUTHORIZATION_EXPIRED",
   ExecuteDateConflict = "EXECUTE_DATE_CONFLICT",
   RequestPlanInvalid = "REQUEST_PLAN_INVALID",
+  RequestFingerprintMismatch = "REQUEST_FINGERPRINT_MISMATCH",
   PlanFingerprintMismatch = "PLAN_FINGERPRINT_MISMATCH",
   ManifestHashMismatch = "MANIFEST_HASH_MISMATCH",
   OwnerKeyMismatch = "OWNER_AUTHORIZATION_KEY_MISMATCH",

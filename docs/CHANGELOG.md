@@ -1,5 +1,28 @@
 # Alpha Changelog
 
+## 2026-08-01 - Phase 1B-D2-C2-R2 trusted composition and raw transport accounting
+
+- Recorded that Alpaca multi-symbol `limit=2` semantics are not proven by any
+  repository authority and blocked the live-readonly product path before
+  Transport with `PROVIDER_LIMIT_SEMANTICS_UNPROVEN`; fixtures remain structural
+  tests only.
+- Added a no-argument product composition root with fixed C1 verification and
+  unproven Provider authority; caller-supplied verifier, authority, trust
+  identity, or Transport cannot enter the product path. The raw Transport test
+  factory is physically and export isolated.
+- Restricted the Transport seam to bounded raw response facts. Product code now
+  owns parsing, Canonical normalization, provenance, ProviderRequestAttempt,
+  EvidenceResolution, and single-use dispatch lifecycle counters.
+- Added an offline response gate for exactly 36 finalized Bars, seven latest
+  Quotes, five batch attempts, and 43 one-to-one Evidence Resolutions.
+- Added fail-closed coverage for request/symbol/ordinal/window mutation,
+  response scope/order/byte overflow, pagination, incomplete or extra records,
+  future/non-final Bars, full content-bound mapping identity drift, Transport failure stages,
+  and ghost/duplicate resolution evidence.
+- Added no credential read, concrete network transport, network request,
+  persistence, D2-C3/D3 behavior, Options, Broker, Paper Trading, orders, or
+  execution authority.
+
 ## 2026-08-01 - Phase 1B-D2-C1 immutable Owner trust-root correction
 
 - Removed trusted verification keys, fingerprints, key IDs, sources, and

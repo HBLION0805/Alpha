@@ -1,8 +1,8 @@
 {
   "$schema": "./current.schema.json",
   "schemaVersion": "1.2",
-  "statusId": "alpha-status:phase1b-d2-c1-owner-review",
-  "asOf": "2026-08-01T21:00:00.000Z",
+  "statusId": "alpha-status:phase1b-d2-c2-r2-owner-review",
+  "asOf": "2026-08-01T23:45:00.000Z",
   "source": {
     "branch": "main",
     "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
@@ -17,18 +17,19 @@
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
     "PERSONAL_DAILY_SCAN_PHASE_1A_MERGED",
-    "PHASE_1A_POST_MERGE_VALIDATION_BASELINE"
+    "PHASE_1A_POST_MERGE_VALIDATION_BASELINE",
+    "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"
   ],
   "inProgress": [
-    "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"
+    "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"
   ],
   "blocked": [
     "PHASE_1B_LIVE_READONLY_NOT_STARTED",
     "NETWORK_LIVE_READONLY_OWNER_AUTHORIZATION_REQUIRED",
     "VIX_LIVE_SOURCE_NOT_APPROVED",
     "EVENT_CALENDAR_SOURCE_NOT_APPROVED",
-    "CALLER_CONTROLLED_OWNER_TRUST_ROOT",
-    "PHASE_1B_D2_C2_NOT_STARTED",
+    "PROVIDER_LIMIT_SEMANTICS_UNPROVEN",
+    "PHASE_1B_D2_C2_R2_OWNER_REVIEW_REQUIRED",
     "PHASE_1B_D2_C3_NOT_STARTED"
   ],
   "frozen": [
@@ -40,7 +41,7 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_REVIEW_PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"
+    "OWNER_REVIEW_PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"
   ],
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
@@ -105,13 +106,13 @@
     "phase1aWorkingTree": null,
     "phase1bD2WorkingTree": {
       "kind": "PHASE_1B_D2_UNCOMMITTED_WORKING_TREE",
-      "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
+      "source_baseline_commit": "74cb5f1b0be217ec73bc0654807bfc2ddfb106b2",
       "includesUncommittedCode": true,
       "command": "npm.cmd run alpha:validate",
       "status": "PASSED",
-      "componentCount": 137,
-      "testsExecuted": 2760,
-      "passed": 2760,
+      "componentCount": 138,
+      "testsExecuted": 2792,
+      "passed": 2792,
       "failed": 0,
       "durationMs": null,
       "wallClockDurationMs": null
@@ -136,11 +137,14 @@
   "phase1BStatus": "NOT_STARTED",
   "phase1BDesign": {
     "task": "AUTHORIZATION_AND_EXCHANGE_CALENDAR_CONTRACTS",
-    "status": "D2_C1_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED",
+    "status": "D2_C2_R2_IMPLEMENTED_OFFLINE_OWNER_REVIEW_REQUIRED",
     "networkAuthority": "NONE",
     "credentialAccess": "PROHIBITED",
     "marketDataAcquisition": "NOT_IMPLEMENTED",
-    "trustedOwnerVerificationKey": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED"
+    "trustedOwnerVerificationKey": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
+    "marketScopePolicy": "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY",
+    "providerLimitSemantics": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
+    "compositionRoot": "PRODUCT_FIXED_C1_VERIFIER_AND_UNPROVEN_PROVIDER_AUTHORITY_RAW_TRANSPORT_OFFLINE"
   },
   "optionsStatus": "NOT_STARTED",
   "brokerStatus": "NOT_STARTED",

@@ -114,6 +114,7 @@ const aggregateTestFiles = [
   "src/engines/verified-market-snapshot/VerifiedMarketSnapshotEngine.test.ts",
   "src/engines/personal-daily-scan/PersonalDailyScanApplication.test.ts",
   "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyPreflight.test.ts",
+  "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyMarketScope.test.ts",
   "scripts/alpha-daily-scan.test.mjs",
   "src/engines/personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine.test.ts",
   "src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.test.ts",
