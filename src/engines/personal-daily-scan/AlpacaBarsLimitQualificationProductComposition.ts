@@ -1,7 +1,5 @@
 import type { AlpacaBarsLimitQualificationOperation } from "../../contracts/AlpacaBarsLimitQualification";
-import { AlpacaBarsLimitQualificationHttpsTransport } from "../../integration/market-data/alpaca/AlpacaBarsLimitQualificationHttpsTransport";
-import { createAlpacaBarsLimitQualificationAuthorizationVerifier } from "./PersonalDailyScanLiveReadonlyPreflight";
-import { createAlpacaBarsLimitQualificationInternalOperation } from "./AlpacaBarsLimitQualification";
+import { createAlpacaBarsLimitQualificationFixedProductOperation } from "./AlpacaBarsLimitQualification";
 
 /**
  * The only product entry. It accepts no caller-controlled authority, key,
@@ -9,9 +7,5 @@ import { createAlpacaBarsLimitQualificationInternalOperation } from "./AlpacaBar
  * product trust-root configuration exists it fails closed before credentials.
  */
 export function createAlpacaBarsLimitQualificationProductOperation(): AlpacaBarsLimitQualificationOperation {
-  return createAlpacaBarsLimitQualificationInternalOperation({
-    authorizationVerifier: createAlpacaBarsLimitQualificationAuthorizationVerifier(undefined),
-    rawTransport: new AlpacaBarsLimitQualificationHttpsTransport(),
-    responseOrigin: "REAL_HTTPS",
-  });
+  return createAlpacaBarsLimitQualificationFixedProductOperation();
 }

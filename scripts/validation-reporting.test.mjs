@@ -30,6 +30,17 @@ const tests = [
     ),
   },
   {
+    name: "counts the D3A qualification component in the unified report",
+    run: () => assertDeepEqual(
+      extractValidationCounts(
+        "Alpaca Bars limit qualification: 20/20 tests passed.",
+        true,
+      ),
+      { testsExecuted: 20, passed: 20, failed: 0 },
+      "D3A qualification counts",
+    ),
+  },
+  {
     name: "extracts process-drill pass counts",
     run: () => assertDeepEqual(
       extractValidationCounts(

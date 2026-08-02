@@ -1,7 +1,7 @@
 import type { OwnerAuthorizationVerifier } from "../../../contracts/PersonalDailyScanLiveReadonly";
 import type { AlpacaBarsLimitQualificationOperation } from "../../../contracts/AlpacaBarsLimitQualification";
 import {
-  createAlpacaBarsLimitQualificationInternalOperation,
+  createAlpacaBarsLimitQualificationTestOperationInternal,
   type AlpacaBarsLimitQualificationRawTransport,
 } from "../AlpacaBarsLimitQualification";
 
@@ -10,9 +10,8 @@ export function createAlpacaBarsLimitQualificationTestOperation(input: {
   readonly authorizationVerifier: OwnerAuthorizationVerifier;
   readonly rawTransport: AlpacaBarsLimitQualificationRawTransport;
 }): AlpacaBarsLimitQualificationOperation {
-  return createAlpacaBarsLimitQualificationInternalOperation({
+  return createAlpacaBarsLimitQualificationTestOperationInternal({
     authorizationVerifier: input.authorizationVerifier,
     rawTransport: input.rawTransport,
-    responseOrigin: "TEST_INJECTED",
   });
 }

@@ -1,18 +1,18 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.4",
-  "statusId": "alpha-status:phase1b-d3a-owner-review",
-  "asOf": "2026-08-02T12:00:00.000Z",
+  "schemaVersion": "1.5",
+  "statusId": "alpha-status:phase1b-d3a-post-merge-correction-review",
+  "asOf": "2026-08-02T17:47:47.692Z",
   "source": {
-    "branch": "codex/phase1b-d3a-alpaca-bars-limit-qualification",
-    "source_baseline_commit": "877d195b545233914e2b165d8cdb769fe2b1d2f0",
-    "implementation_baseline": "PHASE_1B_D3A_UNCOMMITTED_OWNER_REVIEW",
+    "branch": "codex/d3a-post-merge-correction",
+    "source_baseline_commit": "95a30a9a218f2ef94d343ba05f774eedd29f6d68",
+    "implementation_baseline": "PHASE_1B_D3A_MERGED_MAIN",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7"
   },
   "currentMilestone": {
-    "id": "PERSONAL_DAILY_SCAN_PHASE_1B_D3A",
-    "name": "Alpaca Bars Limit Qualification Slice",
-    "status": "OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED"
+    "id": "PERSONAL_DAILY_SCAN_PHASE_1B_D3A_POST_MERGE_CORRECTION",
+    "name": "D3A Post-Merge Evidence Integrity Correction",
+    "status": "CORRECTION_IMPLEMENTED_OWNER_REVIEW_REQUIRED"
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
@@ -20,10 +20,11 @@
     "PHASE_1A_POST_MERGE_VALIDATION_BASELINE",
     "PHASE_1B_D1_DESIGN_COMPLETED",
     "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION",
-    "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"
+    "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING",
+    "PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"
   ],
   "inProgress": [
-    "PHASE_1B_D3A_OWNER_REVIEW"
+    "PHASE_1B_D3A_POST_MERGE_CORRECTION_OWNER_REVIEW"
   ],
   "blocked": [
     "PHASE_1B_LIVE_READONLY_NOT_STARTED",
@@ -32,7 +33,8 @@
     "EVENT_CALENDAR_SOURCE_NOT_APPROVED",
     "PROVIDER_LIMIT_SEMANTICS_UNPROVEN",
     "PHASE_1B_D2_C3_NOT_STARTED",
-    "PHASE_1B_D3A_REAL_REQUEST_NOT_AUTHORIZED"
+    "PHASE_1B_D3A_REAL_REQUEST_NOT_AUTHORIZED",
+    "PHASE_1B_D3B_BLOCKED_NOT_STARTED"
   ],
   "frozen": [
     "T3B15_C5_UNCOMMITTED_WORK",
@@ -43,7 +45,7 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_REVIEW_PHASE_1B_D3A_OFFLINE_IMPLEMENTATION"
+    "OWNER_REVIEW_PHASE_1B_D3A_POST_MERGE_CORRECTION"
   ],
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
@@ -119,6 +121,19 @@
       "durationMs": null,
       "wallClockDurationMs": null
     },
+    "phase1bD3AMergedHead": {
+      "kind": "PHASE_1B_D3A_MERGED_HEAD",
+      "source_baseline_commit": "95a30a9a218f2ef94d343ba05f774eedd29f6d68",
+      "includesUncommittedCode": false,
+      "command": "npm.cmd run alpha:validate",
+      "status": "PASSED",
+      "componentCount": 139,
+      "testsExecuted": 2792,
+      "passed": 2792,
+      "failed": 0,
+      "durationMs": null,
+      "wallClockDurationMs": null
+    },
     "coverageBaseline": {
       "metric": "REGISTERED_VALIDATION_EXECUTION",
       "status": "ESTABLISHED",
@@ -136,14 +151,15 @@
   "networkAuthority": "NOT_GRANTED",
   "phase1Status": "MERGED",
   "phase1Approval": "CLOSED",
-  "phase1BStatus": "D3A_OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED",
+  "phase1BStatus": "D3A_MERGED_POST_MERGE_CORRECTION_OWNER_REVIEW_REQUIRED",
   "phase1BDelivery": {
     "d1": "DESIGN_COMPLETED",
     "d2C1": "MERGED",
     "d2C2R2": "MERGED_OFFLINE_ONLY",
     "d2C3": "NOT_STARTED",
-    "d3A": "OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED",
-    "d3": "NOT_STARTED",
+    "d3A": "MERGED_OFFLINE_ONLY",
+    "d3APostMergeCorrection": "IMPLEMENTED_OWNER_REVIEW_REQUIRED",
+    "d3B": "BLOCKED_NOT_STARTED",
     "newsMacro": "NOT_STARTED",
     "providerLimitSemantics": "UNPROVEN",
     "fiveRequest43Evidence": "STRUCTURAL_TARGET_ONLY",
@@ -152,14 +168,14 @@
   },
   "phase1BDesign": {
     "task": "ALPACA_BARS_LIMIT_QUALIFICATION_SLICE",
-    "status": "D3A_OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED",
+    "status": "D3A_MERGED_POST_MERGE_CORRECTION_OWNER_REVIEW_REQUIRED",
     "networkAuthority": "NOT_GRANTED",
     "credentialAccess": "PROHIBITED",
-    "marketDataAcquisition": "QUALIFICATION_RAW_HTTPS_TRANSPORT_IMPLEMENTED_NOT_EXECUTED",
+    "marketDataAcquisition": "D3A_RAW_HTTPS_BOUNDARY_MERGED_NOT_EXECUTED",
     "trustedOwnerVerificationKey": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
     "marketScopePolicy": "EXACT_5_REQUESTS_43_EVIDENCE_STRUCTURAL_TARGET_ONLY",
     "providerLimitSemantics": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
-    "compositionRoot": "PRODUCT_FIXED_OWNER_VERIFIER_EXACT_ONE_REQUEST_VALIDATOR_AND_PRODUCT_OWNED_RAW_TRANSPORT"
+    "compositionRoot": "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE"
   },
   "optionsStatus": "CLOSED",
   "brokerStatus": "CLOSED",

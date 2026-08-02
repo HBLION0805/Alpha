@@ -1,10 +1,10 @@
 # Alpaca Bars Limit Qualification Slice
 
-Status: `OFFLINE_IMPLEMENTED_OWNER_REVIEW_REQUIRED`
+Status: `MERGED_OFFLINE_ONLY; POST_MERGE_CORRECTION_OWNER_REVIEW_REQUIRED`
 
-Schema: `1.0`
+Schema: `1.1`
 
-Policy: `phase1b-d3a:1.0`
+Policy: `phase1b-d3a-correction:1.0`
 
 ## Purpose
 
@@ -58,7 +58,10 @@ Manifest. It therefore returns `OWNER_NETWORK_AUTHORIZATION_REQUIRED` when the
 Manifest is absent, or `OWNER_AUTHORIZATION_VERIFICATION_KEY_UNAVAILABLE` when
 the product trust root is absent, before credential access or network dispatch.
 The isolated test factory can inject a Transport, but it is absent from every
-product barrel and its response origin cannot prove Provider semantics.
+product barrel and can emit only `TEST_INJECTED` with zero network lifecycle
+counts. It cannot accept the product Transport capability or prove Provider
+semantics. The product factory has no caller arguments and constructs its
+verifier and raw Transport inside the fixed composition root.
 
 ## Raw boundary and lifecycle
 
@@ -69,12 +72,15 @@ and before a dispatch attempt. A preflight or credential failure is `0/0`.
 Dispatch start is `attempted=1`; `completed=1` occurs only after the entire raw
 response passes HTTP, byte, JSON, pagination, symbol, count, chronology, field,
 and window validation. Timeout, HTTP failure, invalid JSON, excess bytes, or
-invalid market data remain `1/0`. A signed Manifest is process-locally
+invalid market data remain `1/0` for the real product Transport. Fixture and
+test-injected paths always report `0/0` and zero network requests. A signed Manifest is process-locally
 single-use; retry and a second dispatch are rejected.
 
 The response must contain exactly `MU` and `QQQ`, exactly two ordered valid Bars
 for each symbol, and an empty page token. No extra symbol or data is silently
-discarded. The result contains only counts and bounded diagnostics. Test
+discarded. A blocked result retains only sanitized actual per-symbol counts,
+the sorted response-symbol set, and a boolean pagination-presence flag; it
+never retains the token or raw payload. Test
 responses always leave `providerLimitSemantics=UNPROVEN`. A future single real
 observation may be reported as `OBSERVED_ONCE_NOT_PROVEN`; it is not sufficient
 to authorize the full five-request / 43-evidence plan.

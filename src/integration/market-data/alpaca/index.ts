@@ -10,4 +10,3 @@ export * from "./AlpacaPersonalMarketDataLiveSmokeCommand";
 export * from "./AlpacaPersonalAssetMetadataDiagnostic";
 export * from "./AlpacaPersonalAssetMetadataTransport";
 export * from "./AlpacaPersonalAssetMetadataCommand";
-export * from "./AlpacaBarsLimitQualificationHttpsTransport";
