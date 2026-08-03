@@ -1,18 +1,18 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.6",
-  "statusId": "alpha-status:phase1b-d3b-design-review",
-  "asOf": "2026-08-02T21:48:04.456Z",
+  "schemaVersion": "1.7",
+  "statusId": "alpha-status:phase1b-d3b-design-approved",
+  "asOf": "2026-08-02T23:46:46.269Z",
   "source": {
-    "branch": "codex/phase1b-d3b-live-readonly-design",
-    "source_baseline_commit": "608d9859bc480bf6bc39afc20f6d928e62544e67",
-    "implementation_baseline": "PHASE_1B_D3B_DESIGN_SOURCE_BASELINE_NOT_DESIGN_COMMIT_HEAD",
+    "branch": "codex/d3b-post-merge-design-status",
+    "source_baseline_commit": "14b5a5aac5157f3284368608a84c890606fc5496",
+    "implementation_baseline": "D3B_POST_MERGE_DESIGN_STATUS_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7"
   },
   "currentMilestone": {
-    "id": "PERSONAL_DAILY_SCAN_PHASE_1B_D3B_DESIGN",
-    "name": "Alpaca Bars Limit Live-Readonly Qualification Protocol",
-    "status": "DESIGN_IN_REVIEW"
+    "id": "PERSONAL_DAILY_SCAN_PHASE_1B_D3B_IMPLEMENTATION",
+    "name": "Alpaca Bars Limit Live-Readonly Qualification Protocol Implementation",
+    "status": "OWNER_APPROVAL_REQUIRED"
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
@@ -22,11 +22,10 @@
     "PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION",
     "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING",
     "PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED",
-    "PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"
+    "PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED",
+    "PHASE_1B_D3B_DESIGN_APPROVED_MERGED"
   ],
-  "inProgress": [
-    "PHASE_1B_D3B_DESIGN_IN_REVIEW"
-  ],
+  "inProgress": [],
   "blocked": [
     "PHASE_1B_LIVE_READONLY_NOT_STARTED",
     "NETWORK_LIVE_READONLY_OWNER_AUTHORIZATION_REQUIRED",
@@ -35,6 +34,7 @@
     "PROVIDER_LIMIT_SEMANTICS_UNPROVEN",
     "PHASE_1B_D2_C3_NOT_STARTED",
     "PHASE_1B_D3A_REAL_REQUEST_NOT_AUTHORIZED",
+    "PHASE_1B_D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED",
     "PHASE_1B_D3B_LIVE_RUN_NOT_AUTHORIZED"
   ],
   "frozen": [
@@ -46,7 +46,7 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_REVIEW_PHASE_1B_D3B_DESIGN"
+    "D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"
   ],
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
@@ -135,12 +135,25 @@
       "durationMs": null,
       "wallClockDurationMs": null
     },
+    "phase1bD3BDesignMergedHead": {
+      "kind": "PHASE_1B_D3B_DESIGN_MERGED_HEAD",
+      "source_baseline_commit": "14b5a5aac5157f3284368608a84c890606fc5496",
+      "includesUncommittedCode": false,
+      "command": "npm.cmd run alpha:validate",
+      "status": "PASSED",
+      "componentCount": 140,
+      "testsExecuted": 2833,
+      "passed": 2833,
+      "failed": 0,
+      "durationMs": null,
+      "wallClockDurationMs": null
+    },
     "coverageBaseline": {
       "metric": "REGISTERED_VALIDATION_EXECUTION",
       "status": "ESTABLISHED",
       "registeredTests": {
-        "executed": 2814,
-        "passed": 2814,
+        "executed": 2833,
+        "passed": 2833,
         "failed": 0
       },
       "instrumentedCodeCoverage": {
@@ -152,7 +165,7 @@
   "networkAuthority": "NOT_GRANTED",
   "phase1Status": "MERGED",
   "phase1Approval": "CLOSED",
-  "phase1BStatus": "D3A_MERGED_CLOSED_D3B_DESIGN_IN_REVIEW",
+  "phase1BStatus": "D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED",
   "phase1BDelivery": {
     "d1": "DESIGN_COMPLETED",
     "d2C1": "MERGED",
@@ -160,7 +173,9 @@
     "d2C3": "NOT_STARTED",
     "d3A": "MERGED_CLOSED",
     "d3APostMergeCorrection": "VERIFIED",
-    "d3B": "DESIGN_IN_REVIEW",
+    "d3B": "DESIGN_APPROVED",
+    "d3BImplementation": "NOT_STARTED",
+    "d3BLiveRun": "NOT_AUTHORIZED",
     "newsMacro": "NOT_STARTED",
     "providerLimitSemantics": "UNPROVEN",
     "fiveRequest43Evidence": "STRUCTURAL_TARGET_ONLY",
@@ -169,15 +184,22 @@
   },
   "phase1BDesign": {
     "task": "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL",
-    "status": "D3B_DESIGN_IN_REVIEW_LIVE_RUN_NOT_AUTHORIZED",
+    "status": "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED",
     "networkAuthority": "NOT_GRANTED",
     "credentialAccess": "PROHIBITED",
     "persistenceWrites": 0,
-    "marketDataAcquisition": "D3B_DESIGN_ONLY_NOT_IMPLEMENTED",
+    "marketDataAcquisition": "D3B_IMPLEMENTATION_NOT_STARTED",
     "trustedOwnerVerificationKey": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
     "marketScopePolicy": "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY",
     "providerLimitSemantics": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
-    "compositionRoot": "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE"
+    "compositionRoot": "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE",
+    "designCommit": "0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b",
+    "designPullRequest": "MERGED_CLOSED",
+    "mergeCommit": "14b5a5aac5157f3284368608a84c890606fc5496",
+    "mergeTimestamp": "2026-08-02T23:34:45.000Z",
+    "designApproval": "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION",
+    "implementationStatus": "NOT_STARTED",
+    "liveRunStatus": "NOT_AUTHORIZED"
   },
   "optionsStatus": "CLOSED",
   "brokerStatus": "CLOSED",
