@@ -1,8 +1,8 @@
 # Phase 1B-D3B Alpaca Bars Limit Live-Readonly Qualification Protocol
 
-Status: `DESIGN_IN_REVIEW`
+Status: `DESIGN_APPROVED`
 
-Protocol version: `phase1b-d3b-live-readonly-qualification:1.0-draft`
+Protocol version: `phase1b-d3b-live-readonly-qualification:1.0-approved-design`
 
 Authority: design only. Network, credential, Provider, account, Broker,
 Options, Paper Trading, Order Execution, persistence, and automated execution
@@ -29,8 +29,11 @@ Paper Trading, and orders remain outside this protocol.
 
 ## 2. Current authority state
 
-Writing and reviewing this specification places D3B in `DESIGN_IN_REVIEW`.
-That state does not authorize implementation or a live run.
+PR #9 merged and closed this design at commit
+`0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b` through merge commit
+`14b5a5aac5157f3284368608a84c890606fc5496`. D3B is
+`DESIGN_APPROVED`; implementation is `NOT_STARTED` and requires a separate
+Owner review. Design approval does not authorize implementation or a live run.
 
 - `Network=CLOSED` and `networkAuthority=NOT_GRANTED`.
 - Alpaca credentials must not be read.
@@ -38,6 +41,8 @@ That state does not authorize implementation or a live run.
 - `persistenceWrites=0`.
 - `automatedExecutionAllowed=false`.
 - Provider limit semantics remain `UNPROVEN`.
+- The future live run remains `NOT_AUTHORIZED`; design approval and network
+  authorization are separate permissions.
 - D3A fixtures and `TEST_INJECTED` responses are structural test evidence,
   never real Provider evidence.
 

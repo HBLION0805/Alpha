@@ -39,16 +39,19 @@ Its raw HTTPS boundary has not executed, no one-shot Manifest has been signed,
 and Provider limit semantics remain `UNPROVEN`. It does not implement the full
 five-request / 43-evidence acquisition or any candidate output. PR #7 merged
 the verified evidence-integrity correction through merge commit `bae51dd`.
-D3A is merged and closed. The Owner has authorized D3B design only. Its draft
-protocol is now in review and compares at most three future requests over one
-exact completed-session window: `MU`, `QQQ`, and `MU,QQQ`, each with `1Day`
-and `limit=2`. The design presumes neither per-symbol nor global semantics and
-does not implement or authorize a live run. Real market-data usability remains
-0%, Network remains closed, and all execution authority remains closed.
+D3A is merged and closed. D3B's design is approved, merged, and closed through PR #9
+(`0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b`; main merge
+`14b5a5aac5157f3284368608a84c890606fc5496`). It specifies at most three
+future requests over one exact completed-session window: `MU`, `QQQ`, and
+`MU,QQQ`, each with `1Day` and `limit=2`. The design presumes neither
+per-symbol nor global semantics. D3B implementation is not started and requires
+separate Owner approval; design approval does not authorize a live run. Real
+market-data usability remains 0%, Network remains closed, and all execution
+authority remains closed.
 
-Before a Phase 1B live-readonly run can be proposed, the Owner must approve the
-D3B design, separately approve implementation, and later approve a
-date-specific three-request Manifest.
+Before a Phase 1B live-readonly run can be proposed, the Owner must separately
+approve D3B implementation and later approve a date-specific three-request
+Manifest.
 The merged Phase 1A output already preserves explicit QQQ/SMH benchmark,
 VIX/volatility, macro, provenance, freshness, and eligibility states and fails
 closed where required evidence is unavailable. No live read or later-phase

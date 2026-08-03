@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.6",
+  "$id": "https://alpha.local/schemas/project-status/1.7",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -15,7 +15,7 @@
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.6" },
+    "schemaVersion": { "const": "1.7" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -40,7 +40,7 @@
     "networkAuthority": { "const": "NOT_GRANTED" },
     "phase1Status": { "const": "MERGED" },
     "phase1Approval": { "const": "CLOSED" },
-    "phase1BStatus": { "const": "D3A_MERGED_CLOSED_D3B_DESIGN_IN_REVIEW" },
+    "phase1BStatus": { "const": "D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED" },
     "phase1BDelivery": { "$ref": "#/$defs/phase1BDelivery" },
     "phase1BDesign": { "$ref": "#/$defs/phase1BDesign" },
     "optionsStatus": { "const": "CLOSED" },
@@ -54,9 +54,9 @@
       "additionalProperties": false,
       "required": ["branch", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
       "properties": {
-        "branch": { "const": "codex/phase1b-d3b-live-readonly-design" },
-        "source_baseline_commit": { "const": "608d9859bc480bf6bc39afc20f6d928e62544e67" },
-        "implementation_baseline": { "const": "PHASE_1B_D3B_DESIGN_SOURCE_BASELINE_NOT_DESIGN_COMMIT_HEAD" },
+        "branch": { "const": "codex/d3b-post-merge-design-status" },
+        "source_baseline_commit": { "const": "14b5a5aac5157f3284368608a84c890606fc5496" },
+        "implementation_baseline": { "const": "D3B_POST_MERGE_DESIGN_STATUS_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
       }
     },
@@ -65,32 +65,39 @@
       "additionalProperties": false,
       "required": ["id", "name", "status"],
       "properties": {
-        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D3B_DESIGN" },
-        "name": { "const": "Alpaca Bars Limit Live-Readonly Qualification Protocol" },
-        "status": { "const": "DESIGN_IN_REVIEW" }
+        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D3B_IMPLEMENTATION" },
+        "name": { "const": "Alpaca Bars Limit Live-Readonly Qualification Protocol Implementation" },
+        "status": { "const": "OWNER_APPROVAL_REQUIRED" }
       }
     },
     "phase1BDesign": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["task", "status", "networkAuthority", "credentialAccess", "persistenceWrites", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot"],
+      "required": ["task", "status", "networkAuthority", "credentialAccess", "persistenceWrites", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot", "designCommit", "designPullRequest", "mergeCommit", "mergeTimestamp", "designApproval", "implementationStatus", "liveRunStatus"],
       "properties": {
         "task": { "const": "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL" },
-        "status": { "const": "D3B_DESIGN_IN_REVIEW_LIVE_RUN_NOT_AUTHORIZED" },
+        "status": { "const": "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED" },
         "networkAuthority": { "const": "NOT_GRANTED" },
         "credentialAccess": { "const": "PROHIBITED" },
         "persistenceWrites": { "const": 0 },
-        "marketDataAcquisition": { "const": "D3B_DESIGN_ONLY_NOT_IMPLEMENTED" },
+        "marketDataAcquisition": { "const": "D3B_IMPLEMENTATION_NOT_STARTED" },
         "trustedOwnerVerificationKey": { "const": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED" },
         "marketScopePolicy": { "const": "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY" },
         "providerLimitSemantics": { "const": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT" },
-        "compositionRoot": { "const": "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE" }
+        "compositionRoot": { "const": "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE" },
+        "designCommit": { "const": "0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b" },
+        "designPullRequest": { "const": "MERGED_CLOSED" },
+        "mergeCommit": { "const": "14b5a5aac5157f3284368608a84c890606fc5496" },
+        "mergeTimestamp": { "const": "2026-08-02T23:34:45.000Z" },
+        "designApproval": { "const": "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION" },
+        "implementationStatus": { "const": "NOT_STARTED" },
+        "liveRunStatus": { "const": "NOT_AUTHORIZED" }
       }
     },
     "phase1BDelivery": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["d1", "d2C1", "d2C2R2", "d2C3", "d3A", "d3APostMergeCorrection", "d3B", "newsMacro", "providerLimitSemantics", "fiveRequest43Evidence", "realHttpsAcquisition", "liveNetworkAuthorization"],
+      "required": ["d1", "d2C1", "d2C2R2", "d2C3", "d3A", "d3APostMergeCorrection", "d3B", "d3BImplementation", "d3BLiveRun", "newsMacro", "providerLimitSemantics", "fiveRequest43Evidence", "realHttpsAcquisition", "liveNetworkAuthorization"],
       "properties": {
         "d1": { "const": "DESIGN_COMPLETED" },
         "d2C1": { "const": "MERGED" },
@@ -98,7 +105,9 @@
         "d2C3": { "const": "NOT_STARTED" },
         "d3A": { "const": "MERGED_CLOSED" },
         "d3APostMergeCorrection": { "const": "VERIFIED" },
-        "d3B": { "const": "DESIGN_IN_REVIEW" },
+        "d3B": { "const": "DESIGN_APPROVED" },
+        "d3BImplementation": { "const": "NOT_STARTED" },
+        "d3BLiveRun": { "const": "NOT_AUTHORIZED" },
         "newsMacro": { "const": "NOT_STARTED" },
         "providerLimitSemantics": { "const": "UNPROVEN" },
         "fiveRequest43Evidence": { "const": "STRUCTURAL_TARGET_ONLY" },
@@ -245,6 +254,27 @@
         "wallClockDurationMs": { "type": "null" }
       }
     },
+    "phase1bD3BDesignValidationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind", "source_baseline_commit", "includesUncommittedCode", "command", "status",
+        "componentCount", "testsExecuted", "passed", "failed", "durationMs", "wallClockDurationMs"
+      ],
+      "properties": {
+        "kind": { "const": "PHASE_1B_D3B_DESIGN_MERGED_HEAD" },
+        "source_baseline_commit": { "const": "14b5a5aac5157f3284368608a84c890606fc5496" },
+        "includesUncommittedCode": { "const": false },
+        "command": { "const": "npm.cmd run alpha:validate" },
+        "status": { "const": "PASSED" },
+        "componentCount": { "const": 140 },
+        "testsExecuted": { "const": 2833 },
+        "passed": { "const": 2833 },
+        "failed": { "const": 0 },
+        "durationMs": { "type": "null" },
+        "wallClockDurationMs": { "type": "null" }
+      }
+    },
     "worktreeIsolation": {
       "type": "object",
       "additionalProperties": false,
@@ -302,11 +332,12 @@
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "coverageBaseline"],
+      "required": ["phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline"],
       "properties": {
         "phase1aMergedHead": { "$ref": "#/$defs/validationResult" },
         "phase1bD2MergedHead": { "$ref": "#/$defs/phase1bD2ValidationResult" },
         "phase1bD3AMergedHead": { "$ref": "#/$defs/phase1bD3AValidationResult" },
+        "phase1bD3BDesignMergedHead": { "$ref": "#/$defs/phase1bD3BDesignValidationResult" },
         "coverageBaseline": { "$ref": "#/$defs/coverageBaseline" }
       }
     }

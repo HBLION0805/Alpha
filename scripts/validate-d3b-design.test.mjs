@@ -118,10 +118,12 @@ const tests = [
     assert(specification.includes("DESIGN_APPROVED` always transitions to `LIVE_RUN_NOT_AUTHORIZED"));
     assert(/approved\s+implementation also remains `LIVE_RUN_NOT_AUTHORIZED/iu.test(specification));
   }],
-  ["machine status remains design-only and fail-closed", () => {
-    assert.equal(status.phase1BDelivery.d3B, "DESIGN_IN_REVIEW");
+  ["approved design status remains implementation-not-started and fail-closed", () => {
+    assert.equal(status.phase1BDelivery.d3B, "DESIGN_APPROVED");
+    assert.equal(status.phase1BDelivery.d3BImplementation, "NOT_STARTED");
+    assert.equal(status.phase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.equal(status.phase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
-    assert.equal(status.phase1BDesign.status, "D3B_DESIGN_IN_REVIEW_LIVE_RUN_NOT_AUTHORIZED");
+    assert.equal(status.phase1BDesign.status, "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED");
     assert.equal(status.phase1BDesign.networkAuthority, "NOT_GRANTED");
     assert.equal(status.phase1BDesign.credentialAccess, "PROHIBITED");
     assert.equal(status.phase1BDesign.persistenceWrites, 0);
@@ -132,6 +134,11 @@ const tests = [
     assert.equal(status.executionBoundaries.paperTrading, "CLOSED");
     assert.equal(status.executionBoundaries.orderExecution, "CLOSED");
     assert.equal(status.automatedExecutionAllowed, false);
+    assert.equal(status.phase1BDesign.designApproval, "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION");
+    assert.equal(status.phase1BDesign.designPullRequest, "MERGED_CLOSED");
+    assert.equal(status.phase1BDesign.implementationStatus, "NOT_STARTED");
+    assert.equal(status.phase1BDesign.liveRunStatus, "NOT_AUTHORIZED");
+    assert(status.next.includes("D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"));
   }],
   ["all three request and response fingerprints bind the conclusion", () => {
     const value = qualificationFingerprint(baseQualificationInput());

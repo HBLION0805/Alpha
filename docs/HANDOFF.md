@@ -4,7 +4,7 @@ Date:
 2026-08-02
 
 Project Stage:
-Phase 1B-D3B live-readonly qualification protocol is in design review
+Phase 1B-D3B live-readonly qualification design is approved; implementation awaits Owner approval
 
 ## Current Architecture Checkpoint
 
@@ -63,12 +63,14 @@ the verified D3A evidence-integrity correction through merge commit `bae51dd`.
 D3A is now merged and closed. The correction fixes real-source capability
 spoofing, retains bounded failed-response counts and pagination presence, and
 binds network counts to the product Transport lifecycle. D2-C3, full D3, and
-News/Macro are explicitly not started. D3B design only is now in Owner review.
-Its exact future qualification sequence is `MU`, `QQQ`, and `MU,QQQ`, each
-using `1Day`, `limit=2`, and the same signed completed-session window. The
-design assumes neither per-symbol nor global semantics, and neither implements
-nor authorizes a live run. Network remains closed and real market-data
-usability remains 0%.
+News/Macro are explicitly not started. D3B's design is approved, merged, and closed
+through PR #9 (`0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b`; main merge
+`14b5a5aac5157f3284368608a84c890606fc5496`). Its exact future qualification
+sequence is `MU`, `QQQ`, and `MU,QQQ`, each using `1Day`, `limit=2`, and the
+same signed completed-session window. The design assumes neither per-symbol nor
+global semantics. Implementation is not started and requires a separate Owner
+approval; design approval neither implements nor authorizes a live run. Network
+remains closed and real market-data usability remains 0%.
 
 Day 7 completed:
 

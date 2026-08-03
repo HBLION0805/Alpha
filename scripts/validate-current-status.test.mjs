@@ -75,10 +75,10 @@ const tests = [
     assert(validation.issues.includes("networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1Status must equal \"MERGED\"."));
     assert(validation.issues.includes("phase1Approval must equal \"CLOSED\"."));
-    assert(validation.issues.includes("phase1BStatus must equal \"D3A_MERGED_CLOSED_D3B_DESIGN_IN_REVIEW\"."));
+    assert(validation.issues.includes("phase1BStatus must equal \"D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED\"."));
     assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
-    assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"D3B_DESIGN_ONLY_NOT_IMPLEMENTED\"."));
+    assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"D3B_IMPLEMENTATION_NOT_STARTED\"."));
     assert(validation.issues.includes("optionsStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("brokerStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("paperTradingStatus must equal \"CLOSED\"."));
@@ -87,17 +87,17 @@ const tests = [
     assert(validation.issues.includes("ownerDailyProductEntry must equal \"DRY_RUN_AND_FIXTURE_ONLY\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
-  ["D3B design source and merged D3A validation cannot drift", () => {
+  ["D3B design merge facts and current implementation approval cannot drift", () => {
     const changed = clone(status);
-    changed.source.branch = "codex/d3a-post-merge-correction";
+    changed.source.branch = "codex/phase1b-d3b-live-readonly-design";
     changed.source.source_baseline_commit = changed.source.reviewed_c4_commit;
     changed.currentMilestone.status = "IN_PROGRESS";
     changed.validation.phase1bD3AMergedHead.includesUncommittedCode = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
-    assert(validation.issues.includes("source.branch must equal \"codex/phase1b-d3b-live-readonly-design\"."));
+    assert(validation.issues.includes("source.branch must equal \"codex/d3b-post-merge-design-status\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"DESIGN_IN_REVIEW\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"OWNER_APPROVAL_REQUIRED\"."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["post-merge validation does not publish unaudited timing precision", () => {
@@ -148,7 +148,7 @@ const tests = [
     changed.phase1BDesign.ownerPublicKey = "caller-supplied";
     assertInvalid(changed, schema, "phase1BDesign.ownerPublicKey is undeclared.");
   }],
-  ["D3B design review preserves D3A closure without granting Provider or network authority", () => {
+  ["D3B approved design preserves D3A closure without granting Provider or network authority", () => {
     assert(status.completed.includes("PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"));
     assert(status.completed.includes("PHASE_1B_D1_DESIGN_COMPLETED"));
     assert(status.completed.includes("PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"));
@@ -158,22 +158,33 @@ const tests = [
     assert.equal(status.phase1BDelivery.d2C2R2, "MERGED_OFFLINE_ONLY");
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
-    assert.equal(status.source.source_baseline_commit, "608d9859bc480bf6bc39afc20f6d928e62544e67");
-    assert.equal(status.source.implementation_baseline, "PHASE_1B_D3B_DESIGN_SOURCE_BASELINE_NOT_DESIGN_COMMIT_HEAD");
+    assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
+    assert.equal(status.source.source_baseline_commit, "14b5a5aac5157f3284368608a84c890606fc5496");
+    assert.equal(status.source.implementation_baseline, "D3B_POST_MERGE_DESIGN_STATUS_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD");
     assert.equal(status.phase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.phase1BDelivery.d3APostMergeCorrection, "VERIFIED");
-    assert.equal(status.phase1BDelivery.d3B, "DESIGN_IN_REVIEW");
-    assert.deepEqual(status.inProgress, ["PHASE_1B_D3B_DESIGN_IN_REVIEW"]);
+    assert.equal(status.phase1BDelivery.d3B, "DESIGN_APPROVED");
+    assert.equal(status.phase1BDelivery.d3BImplementation, "NOT_STARTED");
+    assert.equal(status.phase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
+    assert.deepEqual(status.inProgress, []);
+    assert(status.blocked.includes("PHASE_1B_D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"));
     assert(status.blocked.includes("PHASE_1B_D3B_LIVE_RUN_NOT_AUTHORIZED"));
-    assert(status.next.includes("OWNER_REVIEW_PHASE_1B_D3B_DESIGN"));
+    assert(status.next.includes("D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"));
     assert.equal(status.phase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.phase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
-    assert.equal(status.phase1BDesign.status, "D3B_DESIGN_IN_REVIEW_LIVE_RUN_NOT_AUTHORIZED");
+    assert.equal(status.phase1BDesign.status, "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED");
     assert.equal(status.phase1BDesign.persistenceWrites, 0);
-    assert.equal(status.phase1BDesign.marketDataAcquisition, "D3B_DESIGN_ONLY_NOT_IMPLEMENTED");
+    assert.equal(status.phase1BDesign.marketDataAcquisition, "D3B_IMPLEMENTATION_NOT_STARTED");
     assert.equal(status.phase1BDesign.marketScopePolicy, "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY");
     assert.equal(status.phase1BDesign.providerLimitSemantics, "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT");
     assert.equal(status.phase1BDesign.compositionRoot, "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE");
+    assert.equal(status.phase1BDesign.designCommit, "0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b");
+    assert.equal(status.phase1BDesign.designPullRequest, "MERGED_CLOSED");
+    assert.equal(status.phase1BDesign.mergeCommit, "14b5a5aac5157f3284368608a84c890606fc5496");
+    assert.equal(status.phase1BDesign.mergeTimestamp, "2026-08-02T23:34:45.000Z");
+    assert.equal(status.phase1BDesign.designApproval, "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION");
+    assert.equal(status.phase1BDesign.implementationStatus, "NOT_STARTED");
+    assert.equal(status.phase1BDesign.liveRunStatus, "NOT_AUTHORIZED");
     const changed = clone(status);
     changed.phase1BDesign.trustedOwnerVerificationKey = "CALLER_RUNTIME_INPUT";
     assertInvalid(changed, schema, "phase1BDesign.trustedOwnerVerificationKey must equal \"PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED\".");
@@ -184,6 +195,8 @@ const tests = [
   ["D3B design review cannot be mistaken for live-run or execution authority", () => {
     const changed = clone(status);
     changed.phase1BDelivery.d3B = "LIVE_RUN_AUTHORIZED";
+    changed.phase1BDelivery.d3BImplementation = "IMPLEMENTED";
+    changed.phase1BDelivery.d3BLiveRun = "AUTHORIZED";
     changed.phase1BDelivery.liveNetworkAuthorization = "GRANTED";
     changed.phase1BDesign.networkAuthority = "GRANTED";
     changed.phase1BDesign.credentialAccess = "ALLOWED";
@@ -192,7 +205,9 @@ const tests = [
     changed.automatedExecutionAllowed = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
-    assert(validation.issues.includes("phase1BDelivery.d3B must equal \"DESIGN_IN_REVIEW\"."));
+    assert(validation.issues.includes("phase1BDelivery.d3B must equal \"DESIGN_APPROVED\"."));
+    assert(validation.issues.includes("phase1BDelivery.d3BImplementation must equal \"NOT_STARTED\"."));
+    assert(validation.issues.includes("phase1BDelivery.d3BLiveRun must equal \"NOT_AUTHORIZED\"."));
     assert(validation.issues.includes("phase1BDelivery.liveNetworkAuthorization must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
