@@ -1,5 +1,18 @@
 # Alpha Architecture Decisions
 
+## 2026-08-03 - Close Phase 1A on completed regular sessions only
+
+- Decision: restrict `VerifiedMarketSessionIdentity.sessionType` to `REGULAR`
+  for Phase 1A and bind it to `session:<sessionDate>:regular`.
+- Decision: reject `EXTENDED` session claims with the stable
+  `UNSUPPORTED_SESSION_TYPE` issue code instead of accepting or re-labeling
+  extended-hours evidence.
+- Decision: continue deriving completed-session authority from explicit
+  Exchange Calendar evidence, including weekends, holidays, early closes, and
+  the configured closure buffer.
+- Boundary: premarket and after-hours session support, live reads, Phase 1B,
+  Broker, Paper Trading, and Order Execution remain outside this change.
+
 ## 2026-07-29 - Establish Phase 0 status, ownership, and capital boundaries
 
 - Decision: make `docs/status/current.json` the only machine-readable current

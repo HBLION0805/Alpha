@@ -432,6 +432,59 @@ test("latest completed session selects prior session before and during market, t
   assert(latestCompletedTradingSession("2026-07-28T20:00:05.000Z", [monday, tuesdayCompleted])?.sessionDate === "2026-07-28", "post-close buffer must select current completed session");
 });
 
+test("Phase 1A accepts completed REGULAR sessions and rejects EXTENDED sessions explicitly", () => {
+  const regular = calendarEvidence({
+    sessionDate: "2026-07-28",
+    marketOpen: "2026-07-28T13:30:00.000Z",
+    marketClose: "2026-07-28T20:00:00.000Z",
+    status: VerifiedMarketCalendarSessionStatus.Completed,
+  });
+  assert(
+    latestCompletedTradingSession("2026-07-28T20:00:05.000Z", [regular])?.sessionId ===
+      "session:2026-07-28:regular",
+    "completed REGULAR session must remain selectable",
+  );
+  const extendedBase = {
+    ...regular,
+    sessionId: "session:2026-07-28:extended",
+    sessionType: "EXTENDED",
+  };
+  const extended = {
+    ...extendedBase,
+    calendarEvidenceFingerprint: deterministicFingerprint({
+      calendarEvidenceId: extendedBase.calendarEvidenceId,
+      calendarId: extendedBase.calendarId,
+      sessionId: extendedBase.sessionId,
+      sessionDate: extendedBase.sessionDate,
+      sessionType: extendedBase.sessionType,
+      timezone: extendedBase.timezone,
+      marketOpen: extendedBase.marketOpen,
+      marketClose: extendedBase.marketClose,
+      closureBufferSeconds: extendedBase.closureBufferSeconds,
+      status: extendedBase.status,
+      provenanceReference: extendedBase.provenanceReference,
+      dataOrigin: extendedBase.dataOrigin,
+    }),
+  } as unknown as VerifiedMarketCalendarSessionEvidence;
+  assert(
+    latestCompletedTradingSession("2026-07-28T20:00:05.000Z", [extended]) === undefined,
+    "EXTENDED evidence must not enter completed-session selection",
+  );
+  const source = buildOfflinePersonalDailyScanFixture().snapshotInput;
+  const invalid = {
+    ...source,
+    session: { ...source.session, sessionId: extended.sessionId, sessionType: "EXTENDED" },
+    sessionCalendarEvidence: source.sessionCalendarEvidence.map((entry) =>
+      entry.sessionDate === extended.sessionDate ? extended : entry,
+    ),
+  };
+  const issues = validateVerifiedMarketSnapshotInput(invalid).issues;
+  assert(
+    issues.some((entry) => entry.code === VerifiedMarketSnapshotIssueCode.UnsupportedSessionType),
+    "EXTENDED session must return the stable unsupported-session issue code",
+  );
+});
+
 test("weekend and market-holiday asOf values select the prior explicit completed session", () => {
   const friday = calendarEvidence({
     sessionDate: "2026-07-31",
@@ -511,6 +564,20 @@ test("snapshot validation rejects unclosed, wrong-status, missing-current-date, 
   ];
   for (const input of cases)
     assert(validateVerifiedMarketSnapshotInput(input).issues.some((entry) => entry.code === VerifiedMarketSnapshotIssueCode.InvalidSessionEvidence), "invalid completed-session claim must fail closed");
+});
+
+test("sessionId must bind the selected REGULAR session date exactly", () => {
+  const source = buildOfflinePersonalDailyScanFixture().snapshotInput;
+  const invalid = {
+    ...source,
+    session: { ...source.session, sessionId: "session:2026-07-27:regular" },
+  };
+  assert(
+    validateVerifiedMarketSnapshotInput(invalid).issues.some(
+      (entry) => entry.code === VerifiedMarketSnapshotIssueCode.InvalidSessionEvidence,
+    ),
+    "session ID/date mismatch must fail closed",
+  );
 });
 
 test("VIX remains independent unavailable evidence and missing benchmark blocks", () => {

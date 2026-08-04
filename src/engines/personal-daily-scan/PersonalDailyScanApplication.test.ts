@@ -28,6 +28,33 @@ test("fixture completes the canonical observation to Owner output path determini
   assert(left.volatilityEvidenceStatus === VerifiedMarketEvidenceStatus.Unavailable, "fixture must visibly report unavailable VIX/volatility evidence");
 });
 
+test("unsupported session type becomes stable blocked Owner output", () => {
+  const fixture = buildOfflinePersonalDailyScanFixture();
+  const extended = {
+    ...fixture,
+    snapshotInput: {
+      ...fixture.snapshotInput,
+      session: { ...fixture.snapshotInput.session, sessionType: "EXTENDED" },
+    },
+  } as unknown as typeof fixture;
+  const output = runPersonalDailyScan({
+    mode: PersonalDailyScanMode.Fixture,
+    fixtureFactory: () => extended,
+  });
+  assert(output.status === "BLOCKED", "EXTENDED session must block the Owner output");
+  assert(
+    output.blockingReasons.includes("UNSUPPORTED_SESSION_TYPE"),
+    "Owner output must expose the stable session issue code",
+  );
+  assert(
+    output.candidates.length === 0 &&
+      output.networkRequests === 0 &&
+      output.persistenceWrites === 0 &&
+      output.automatedExecutionAllowed === false,
+    "unsupported session must have no candidates or side effects",
+  );
+});
+
 for (const mapping of buildOfflinePersonalDailyScanFixture().mappingRegistry.mappings) {
   test(`authoritative mapping classifies ${mapping.tradeVehicle.displaySymbol} without ticker inference`, () => {
     const classification = classifyPersonalWatchlistVehicle(mapping);
@@ -446,6 +473,11 @@ test("run identity binds all decision-relevant application inputs deterministica
   assert(baseline === createPersonalDailyScanRunId(base), "identical inputs must replay to one run ID");
   for (const changed of [{ ...base, mode: PersonalDailyScanMode.DryRun }, { ...base, intent: PersonalDailyScanIntent.EventSensitive }, { ...base, inputFingerprint: "fnv1a64:2222222222222222" }, { ...base, asOf: "2026-07-28T20:00:11.000Z" }, { ...base, mappingRegistryVersion: "1.2" }, { ...base, profileId: "profile:other" }, { ...base, profileVersion: "2.0" }, { ...base, evidencePolicyVersion: "2.0" }, { ...base, macroEvidenceStatus: VerifiedMarketEvidenceStatus.Available }, { ...base, benchmarkEvidenceStatus: VerifiedMarketEvidenceStatus.Unavailable }, { ...base, volatilityEvidenceStatus: VerifiedMarketEvidenceStatus.Available }, { ...base, issueCodes: ["ISSUE"] }]) assert(createPersonalDailyScanRunId(changed) !== baseline, "every decision-relevant input must change run ID");
   assert(createPersonalDailyScanRunId({ ...base, issueCodes: ["B", "A"] }) === createPersonalDailyScanRunId({ ...base, issueCodes: ["A", "B"] }), "issue ordering must not change run ID");
+  assert(
+    createPersonalDailyScanRunId({ ...base, issueCodes: ["UNSUPPORTED_SESSION_TYPE", "INVALID_SESSION_EVIDENCE"] }) ===
+      createPersonalDailyScanRunId({ ...base, issueCodes: ["INVALID_SESSION_EVIDENCE", "UNSUPPORTED_SESSION_TYPE"] }),
+    "session issue-code order must not change run ID",
+  );
   assert(runPersonalDailyScan({ mode: PersonalDailyScanMode.LiveReadonly, intent: PersonalDailyScanIntent.Structural }).runId !== runPersonalDailyScan({ mode: PersonalDailyScanMode.LiveReadonly, intent: PersonalDailyScanIntent.EventSensitive }).runId, "blocked modes must bind intent rather than use a fixed run ID");
 });
 

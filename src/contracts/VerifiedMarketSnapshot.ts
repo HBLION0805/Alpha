@@ -39,7 +39,8 @@ export interface VerifiedMarketSessionIdentity {
   readonly calendarId: string;
   readonly sessionId: string;
   readonly sessionDate: string;
-  readonly sessionType: "REGULAR" | "EXTENDED";
+  /** Phase 1A supports completed US-equities regular sessions only. */
+  readonly sessionType: "REGULAR";
   readonly timezone: string;
 }
 export interface VerifiedMarketCalendarSessionEvidence
@@ -198,6 +199,7 @@ export enum VerifiedMarketSnapshotIssueCode {
   CoverageMissing = "COVERAGE_MISSING",
   CompositionBindingMismatch = "COMPOSITION_BINDING_MISMATCH",
   InvalidSessionEvidence = "INVALID_SESSION_EVIDENCE",
+  UnsupportedSessionType = "UNSUPPORTED_SESSION_TYPE",
   RequestWindowMismatch = "REQUEST_WINDOW_MISMATCH",
   EvidenceCoverageMismatch = "EVIDENCE_COVERAGE_MISMATCH",
   TimeframeBarCountMismatch = "TIMEFRAME_BAR_COUNT_MISMATCH",

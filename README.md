@@ -11,8 +11,9 @@ blockers, frozen work, next action, ownership, and validation state is
 [Current Project Status](docs/status/current.json). Human-facing documents
 summarize that file and must not define a competing current state.
 
-Phase 1A, Offline Personal Daily Scan Foundation, is in progress with
-offline-only Owner authorization. Exact commit
+Phase 1A, Offline Personal Daily Scan Foundation, has closed its offline C3
+session contract on this branch and remains limited to offline-only Owner
+authorization. Phase 1B still requires separate Owner approval. Exact commit
 `574a9c2c0329bdb87a94b19ad4517be562c37aa6` is the implementation source
 baseline, not a claim about the post-change current HEAD. Paused T3B15-C5
 work and `ALPHA_AUDIT_PACKET.md` remain frozen in the original worktree and
@@ -24,6 +25,10 @@ deprecated product entry. The only Owner product entry is the offline
 `alpha:daily-scan` command in `dry-run` or `fixture` mode. `live-readonly`
 is explicitly blocked pending separate Owner network authorization. Network,
 Broker, Paper Trading, and Order Execution are closed.
+
+Phase 1A accepts only explicit, completed `REGULAR` US-equities sessions.
+`EXTENDED` session evidence fails closed as `UNSUPPORTED_SESSION_TYPE`; no
+premarket or after-hours session support is implemented.
 
 Implemented Python research/prototype surface:
 

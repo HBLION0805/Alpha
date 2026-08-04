@@ -2,7 +2,7 @@
   "$schema": "./current.schema.json",
   "schemaVersion": "1.0",
   "statusId": "alpha-status:personal-daily-scan-phase1a",
-  "asOf": "2026-07-31T00:55:59.294Z",
+  "asOf": "2026-08-04T00:34:55.850Z",
   "source": {
     "branch": "codex/personal-daily-scan-phase1a",
     "source_baseline_commit": "574a9c2c0329bdb87a94b19ad4517be562c37aa6",
@@ -15,11 +15,10 @@
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
-    "PURE_HEAD_VALIDATION_BASELINE"
+    "PURE_HEAD_VALIDATION_BASELINE",
+    "PHASE_1A_C3_REGULAR_SESSION_CONTRACT_CLOSED"
   ],
-  "inProgress": [
-    "PHASE_1A_C3_TIMEFRAME_BINDING_AND_TIME_VALIDITY_CORRECTION"
-  ],
+  "inProgress": [],
   "blocked": [
     "PHASE_1B_NOT_APPROVED",
     "NETWORK_LIVE_READONLY_PENDING_OWNER_AUTHORIZATION",
@@ -34,7 +33,7 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_REVIEW_PHASE_1A_C3_DIFF_VALIDATION_AND_REVIEW_PATCH"
+    "OWNER_APPROVAL_REQUIRED_BEFORE_PHASE_1B"
   ],
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",

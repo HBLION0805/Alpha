@@ -4,7 +4,7 @@ Date:
 2026-07-29
 
 Project Stage:
-Phase 1A Offline Personal Daily Scan Foundation is in progress with offline-only Owner authorization
+Phase 1A offline C3 session contract is closed on this branch; Phase 1B remains unapproved
 
 ## Current Architecture Checkpoint
 
@@ -21,6 +21,11 @@ terminal Dashboard is deprecated as a product entry. The Owner may run only
 the offline `alpha:daily-scan` product entry in `dry-run` or `fixture` mode;
 `live-readonly` is blocked pending separate authorization. Network, Broker,
 Paper Trading, and Order Execution are closed.
+
+Phase 1A accepts only explicit completed `REGULAR` US-equities sessions with
+identity `session:<sessionDate>:regular`. `EXTENDED` session evidence returns
+`UNSUPPORTED_SESSION_TYPE`; no premarket or after-hours session implementation
+was added.
 
 Day 7 completed:
 
@@ -740,11 +745,11 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of the complete uncommitted Phase 1A-C3 offline Daily Scan diff,
-validation evidence, and `PHASE1A_C3_REVIEW.patch`. C3 closes exact two-Bar
-timeframe binding and separates Quote wall-clock freshness from explicit
-completed-session Bar validity. Do not begin Phase 1B/C, enable a live read,
-or resume or mix T3B15-C5.
+Owner approval is required before Phase 1B. Phase 1A-C3 closes exact two-Bar
+timeframe binding, separates Quote wall-clock freshness from completed-session
+Bar validity, and restricts Snapshot session authority to completed `REGULAR`
+sessions. Do not begin Phase 1B, enable a live read, or resume or mix
+T3B15-C5.
 
 ## T3G-C13 Eleven-symbol Active Scope
 

@@ -84,6 +84,10 @@ worktree.
 
 Phase 1A-C3 separates current Quote authority from completed-session Bar
 authority. Quotes are evaluated by wall-clock age at Snapshot `asOf`.
+The selected exchange session must be an explicit completed `REGULAR` session
+with canonical identity `session:<sessionDate>:regular`. Phase 1A rejects
+`EXTENDED` session input with `UNSUPPORTED_SESSION_TYPE`; premarket and
+after-hours session support remain outside this milestone.
 Intraday timeframe endpoints must be two distinct, strictly ordered,
 finalized Bars in the exact Snapshot-selected completed session. `P1D` uses
 the immediately prior completed session plus the selected completed session,

@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-08-03 - Phase 1A-C3 Regular-session Contract Closure
+
+- Narrowed the Phase 1A verified-session contract to completed `REGULAR`
+  US-equities sessions and canonical regular-session identity.
+- Added explicit fail-closed handling for `EXTENDED` session evidence through
+  `UNSUPPORTED_SESSION_TYPE` and preserved stable blocked Owner output.
+- Added regressions for valid regular sessions, extended-session rejection,
+  session identity binding, and deterministic session blocker ordering.
+- Added no premarket/after-hours support, network authority, persistence,
+  Broker, Paper Trading, order, or automated execution behavior.
+
 ## 2026-07-29 - Dual-Lane Capital MVP Phase 0
 
 - Added a strict machine-readable current-state record, JSON Schema, validator,

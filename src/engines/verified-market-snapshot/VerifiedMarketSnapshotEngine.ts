@@ -156,6 +156,8 @@ export function latestCompletedTradingSession(
   return [...exchangeCalendar]
     .filter(
       (entry) =>
+        entry.sessionType === "REGULAR" &&
+        entry.sessionId === `session:${entry.sessionDate}:regular` &&
         entry.status === VerifiedMarketCalendarSessionStatus.Completed &&
         timestamp(entry.marketClose) &&
         Date.parse(entry.marketClose) +
@@ -387,13 +389,23 @@ function validateSession(
     "session",
     issues,
   );
+  if (value.sessionType === "EXTENDED") {
+    issues.push(
+      issue(
+        VerifiedMarketSnapshotIssueCode.UnsupportedSessionType,
+        "session.sessionType",
+        "Phase 1A supports completed REGULAR sessions only.",
+      ),
+    );
+    return undefined;
+  }
   if (
     ![value.calendarId, value.sessionId, value.timezone].every(
       (item) => typeof item === "string" && IDENTIFIER.test(item),
     ) ||
     typeof value.sessionDate !== "string" ||
     !/^\d{4}-\d{2}-\d{2}$/u.test(value.sessionDate) ||
-    !["REGULAR", "EXTENDED"].includes(String(value.sessionType))
+    value.sessionType !== "REGULAR"
   )
     issues.push(
       issue(
@@ -494,6 +506,16 @@ function validateSessionCalendarEvidence(
     );
     const sessionDate =
       typeof entry.sessionDate === "string" ? entry.sessionDate : "";
+    if (entry.sessionType === "EXTENDED") {
+      issues.push(
+        issue(
+          VerifiedMarketSnapshotIssueCode.UnsupportedSessionType,
+          `${field}.sessionType`,
+          "Phase 1A supports completed REGULAR sessions only.",
+        ),
+      );
+      return;
+    }
     const identityValid =
       [
         entry.calendarEvidenceId,
@@ -505,7 +527,7 @@ function validateSessionCalendarEvidence(
         (item) => typeof item === "string" && IDENTIFIER.test(item),
       ) &&
       /^\d{4}-\d{2}-\d{2}$/u.test(sessionDate) &&
-      ["REGULAR", "EXTENDED"].includes(String(entry.sessionType)) &&
+      entry.sessionType === "REGULAR" &&
       timestamp(entry.marketOpen) &&
       timestamp(entry.marketClose) &&
       Date.parse(String(entry.marketOpen)) <
