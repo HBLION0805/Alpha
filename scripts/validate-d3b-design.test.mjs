@@ -118,27 +118,19 @@ const tests = [
     assert(specification.includes("DESIGN_APPROVED` always transitions to `LIVE_RUN_NOT_AUTHORIZED"));
     assert(/approved\s+implementation also remains `LIVE_RUN_NOT_AUTHORIZED/iu.test(specification));
   }],
-  ["approved design status remains implementation-not-started and fail-closed", () => {
-    assert.equal(status.phase1BDelivery.d3B, "DESIGN_APPROVED");
-    assert.equal(status.phase1BDelivery.d3BImplementation, "NOT_STARTED");
-    assert.equal(status.phase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
-    assert.equal(status.phase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
-    assert.equal(status.phase1BDesign.status, "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED");
-    assert.equal(status.phase1BDesign.networkAuthority, "NOT_GRANTED");
-    assert.equal(status.phase1BDesign.credentialAccess, "PROHIBITED");
-    assert.equal(status.phase1BDesign.persistenceWrites, 0);
-    assert.equal(status.phase1BDesign.providerLimitSemantics, "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT");
+  ["D3B remains preserved but frozen outside the current product direction", () => {
+    assert.equal(status.legacyProductLanes.etfDailyScan.status, "FROZEN_PRODUCT_ENTRY_CODE_RETAINED");
+    assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
+    assert.equal(status.legacyProductLanes.etfDailyScan.expansion, "PROHIBITED_WITHOUT_OWNER_APPROVAL");
+    assert(status.frozen.includes("ALPACA_D3B_NEXT_ACTION"));
+    assert(!status.next.includes("D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"));
+    assert.deepEqual(status.next, ["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1"]);
     assert.equal(status.executionBoundaries.network, "CLOSED");
     assert.equal(status.executionBoundaries.broker, "CLOSED");
-    assert.equal(status.executionBoundaries.options, "CLOSED");
+    assert.equal(status.executionBoundaries.robinhoodAccountRead, "PROHIBITED");
     assert.equal(status.executionBoundaries.paperTrading, "CLOSED");
     assert.equal(status.executionBoundaries.orderExecution, "CLOSED");
     assert.equal(status.automatedExecutionAllowed, false);
-    assert.equal(status.phase1BDesign.designApproval, "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION");
-    assert.equal(status.phase1BDesign.designPullRequest, "MERGED_CLOSED");
-    assert.equal(status.phase1BDesign.implementationStatus, "NOT_STARTED");
-    assert.equal(status.phase1BDesign.liveRunStatus, "NOT_AUTHORIZED");
-    assert(status.next.includes("D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"));
   }],
   ["all three request and response fingerprints bind the conclusion", () => {
     const value = qualificationFingerprint(baseQualificationInput());

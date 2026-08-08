@@ -56,11 +56,14 @@ Alpha prefers securing gains over chasing perfect outcomes.
 
 ---
 
-# 6. Event Contracts Build Capital
+# 6. Defined-Risk Options May Build Operating Capital
 
-Event contracts are temporary tools for increasing investable capital.
+The current early product may recommend only explicitly allowed, defined-risk
+option structures under the versioned Options risk policy.
 
-They are not Alpha's long-term objective.
+Options are temporary tools for increasing investable capital. They are not
+Alpha's long-term objective, and no return is promised. The earlier Event
+Contract product entry is frozen with its code retained.
 
 ---
 
@@ -73,6 +76,10 @@ As capital grows, Alpha gradually shifts toward:
 - Compound growth
 
 Short-term trading should support this transition.
+
+The Personal ETF Daily Scan and Event Contract product entries are frozen.
+Their evidence and infrastructure may be reused, but neither is a current
+product entry or an authorization to trade.
 
 ---
 

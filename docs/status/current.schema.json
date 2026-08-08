@@ -1,21 +1,23 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.7",
+  "$id": "https://alpha.local/schemas/project-status/1.11",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "$schema", "schemaVersion", "statusId", "asOf", "source",
     "currentMilestone", "completed", "inProgress", "blocked", "frozen", "next",
-    "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
+    "productDirection", "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
+    "optionsRiskPolicy", "moduleDisposition", "legacyProductLanes",
     "worktreeIsolation", "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry",
-    "validation", "networkAuthority", "phase1Status", "phase1Approval",
-    "phase1BStatus", "phase1BDelivery", "phase1BDesign", "optionsStatus", "brokerStatus", "paperTradingStatus",
+    "ownerProductEntry",
+    "validation", "networkAuthority", "frozenDailyScanAlpacaHistoricalDelivery",
+    "optionsStatus", "brokerStatus", "paperTradingStatus",
     "orderExecutionStatus"
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.7" },
+    "schemaVersion": { "const": "1.11" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -29,21 +31,22 @@
     "blocked": { "$ref": "#/$defs/statusItems" },
     "frozen": { "$ref": "#/$defs/statusItems" },
     "next": { "$ref": "#/$defs/statusItems" },
+    "productDirection": { "$ref": "#/$defs/productDirection" },
     "runtimeOwnership": { "$ref": "#/$defs/runtimeOwnership" },
     "capitalArchitecture": { "$ref": "#/$defs/capitalArchitecture" },
     "riskPolicyRecord": { "$ref": "#/$defs/riskPolicyRecord" },
+    "optionsRiskPolicy": { "$ref": "#/$defs/optionsRiskPolicy" },
+    "moduleDisposition": { "$ref": "#/$defs/moduleDisposition" },
+    "legacyProductLanes": { "$ref": "#/$defs/legacyProductLanes" },
     "worktreeIsolation": { "$ref": "#/$defs/worktreeIsolation" },
     "executionBoundaries": { "$ref": "#/$defs/executionBoundaries" },
     "automatedExecutionAllowed": { "const": false },
-    "ownerDailyProductEntry": { "const": "DRY_RUN_AND_FIXTURE_ONLY" },
+    "ownerDailyProductEntry": { "const": "FROZEN_CODE_RETAINED" },
+    "ownerProductEntry": { "const": "NONE_PHASE_0" },
     "validation": { "$ref": "#/$defs/validation" },
     "networkAuthority": { "const": "NOT_GRANTED" },
-    "phase1Status": { "const": "MERGED" },
-    "phase1Approval": { "const": "CLOSED" },
-    "phase1BStatus": { "const": "D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED" },
-    "phase1BDelivery": { "$ref": "#/$defs/phase1BDelivery" },
-    "phase1BDesign": { "$ref": "#/$defs/phase1BDesign" },
-    "optionsStatus": { "const": "CLOSED" },
+    "frozenDailyScanAlpacaHistoricalDelivery": { "$ref": "#/$defs/frozenDailyScanAlpacaHistoricalDelivery" },
+    "optionsStatus": { "const": "PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED" },
     "brokerStatus": { "const": "CLOSED" },
     "paperTradingStatus": { "const": "CLOSED" },
     "orderExecutionStatus": { "const": "CLOSED" }
@@ -52,25 +55,53 @@
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["branch", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
+      "required": ["repository", "source_baseline_ref", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
       "properties": {
-        "branch": { "const": "codex/d3b-post-merge-design-status" },
-        "source_baseline_commit": { "const": "14b5a5aac5157f3284368608a84c890606fc5496" },
-        "implementation_baseline": { "const": "D3B_POST_MERGE_DESIGN_STATUS_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD" },
+        "repository": { "const": "HBLION0805/Alpha" },
+        "source_baseline_ref": { "const": "origin/main" },
+        "source_baseline_commit": { "const": "06c0ef2720a6b54fb0e27481efdbdfee786694e4" },
+        "implementation_baseline": { "const": "ORIGIN_MAIN_PHASE0_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
       }
     },
     "milestone": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "name", "status"],
+      "required": ["id", "name", "status", "approvedCommit"],
       "properties": {
-        "id": { "const": "PERSONAL_DAILY_SCAN_PHASE_1B_D3B_IMPLEMENTATION" },
-        "name": { "const": "Alpaca Bars Limit Live-Readonly Qualification Protocol Implementation" },
-        "status": { "const": "OWNER_APPROVAL_REQUIRED" }
+        "id": { "const": "OPTIONS_ONLY_MVP_PHASE_0" },
+        "name": { "const": "Options-Only MVP Governance and Risk Authority Convergence" },
+        "status": { "const": "OWNER_APPROVED" },
+        "approvedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
       }
     },
-    "phase1BDesign": {
+    "productDirection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currentProduct", "currentPhase", "phase0Status", "phase1Status", "permanentMission", "earlyCapitalGrowthTool", "longTermDestination", "fixedReturnPromise"],
+      "properties": {
+        "currentProduct": { "const": "OPTIONS_ONLY_MVP" },
+        "currentPhase": { "const": "PHASE_0" },
+        "phase0Status": { "const": "OWNER_APPROVED" },
+        "phase1Status": { "const": "NOT_STARTED" },
+        "permanentMission": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "PROTECT_CAPITAL" },
+            { "const": "ALLOCATE_CAPITAL" },
+            { "const": "GROW_CAPITAL" },
+            { "const": "COMPOUND_CAPITAL" }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "earlyCapitalGrowthTool": { "const": "DEFINED_RISK_OPTIONS" },
+        "longTermDestination": { "const": "QUALITY_ASSETS_AND_NON_LEVERAGED_COMPOUNDING" },
+        "fixedReturnPromise": { "const": false }
+      }
+    },
+    "frozenDailyScanAlpacaHistoricalPhase1BDesign": {
       "type": "object",
       "additionalProperties": false,
       "required": ["task", "status", "networkAuthority", "credentialAccess", "persistenceWrites", "marketDataAcquisition", "trustedOwnerVerificationKey", "marketScopePolicy", "providerLimitSemantics", "compositionRoot", "designCommit", "designPullRequest", "mergeCommit", "mergeTimestamp", "designApproval", "implementationStatus", "liveRunStatus"],
@@ -94,7 +125,7 @@
         "liveRunStatus": { "const": "NOT_AUTHORIZED" }
       }
     },
-    "phase1BDelivery": {
+    "frozenDailyScanAlpacaHistoricalPhase1BDelivery": {
       "type": "object",
       "additionalProperties": false,
       "required": ["d1", "d2C1", "d2C2R2", "d2C3", "d3A", "d3APostMergeCorrection", "d3B", "d3BImplementation", "d3BLiveRun", "newsMacro", "providerLimitSemantics", "fiveRequest43Evidence", "realHttpsAcquisition", "liveNetworkAuthorization"],
@@ -113,6 +144,21 @@
         "fiveRequest43Evidence": { "const": "STRUCTURAL_TARGET_ONLY" },
         "realHttpsAcquisition": { "const": "NOT_IMPLEMENTED" },
         "liveNetworkAuthorization": { "const": "NOT_GRANTED" }
+      }
+    },
+    "frozenDailyScanAlpacaHistoricalDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "historicalPhase1Status", "historicalPhase1Approval", "historicalPhase1BStatus",
+        "historicalPhase1BDelivery", "historicalPhase1BDesign"
+      ],
+      "properties": {
+        "historicalPhase1Status": { "const": "MERGED" },
+        "historicalPhase1Approval": { "const": "CLOSED" },
+        "historicalPhase1BStatus": { "const": "D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED" },
+        "historicalPhase1BDelivery": { "$ref": "#/$defs/frozenDailyScanAlpacaHistoricalPhase1BDelivery" },
+        "historicalPhase1BDesign": { "$ref": "#/$defs/frozenDailyScanAlpacaHistoricalPhase1BDesign" }
       }
     },
     "statusItems": {
@@ -134,7 +180,7 @@
         "productRuntime": { "const": "TYPESCRIPT" },
         "pythonRole": { "const": "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY" },
         "pythonDashboardStatus": { "const": "DEPRECATED_AS_PRODUCT_ENTRY_PROTOTYPE_ONLY" },
-        "riskAuthority": { "const": "TYPESCRIPT_UNIFIED_SHORT_TERM_RISK_AUTHORITY_PLANNED" }
+        "riskAuthority": { "const": "OWNER_APPROVED_OPTIONS_POLICY_RECORDED_RUNTIME_NOT_IMPLEMENTED" }
       }
     },
     "capitalArchitecture": {
@@ -178,7 +224,7 @@
       ],
       "properties": {
         "policyVersion": { "const": "phase0-owner-record-2026-07-29" },
-        "status": { "const": "RECORDED_NOT_ENFORCED" },
+        "status": { "const": "FROZEN_LEGACY_NOT_OPTIONS_AUTHORITY" },
         "executionAuthority": { "const": "NONE" },
         "currency": { "const": "USD" },
         "etfMaximumPlannedLossCents": { "const": 800 },
@@ -188,6 +234,178 @@
         "totalDrawdownPauseCents": { "const": 8000 },
         "initialLeveragedEtfPositionLimitBasisPoints": { "const": 1000 },
         "maximumConcurrentShortTermThemes": { "const": 1 }
+      }
+    },
+    "optionsRiskPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyVersion", "status", "executionAuthority", "currency", "riskUnit",
+        "contractMultiplier", "eligibleCapitalBucket", "automaticMigrationProhibitedBuckets",
+        "normalMaximumActualLossCents",
+        "eventModeMaximumActualLossCents", "dailyMaximumLossCents",
+        "weeklyMaximumLossCents", "cumulativeDrawdownHardPauseCents",
+        "drawdownPrecedence", "hardPauseRestart", "maximumConcurrentEventPositions",
+        "maximumLossComponents", "eventModeTriggers",
+        "allowedStrategies", "prohibitedStructures", "prohibitedDte", "orderType",
+        "tacticalDteRange", "macroDteRange", "failClosedOutcomes",
+        "initialApprovedUnderlyings", "maximumUniverseSize", "underlyingAdmissionEvidence",
+        "themeCorrelationConcentration", "nonIndependentDiversificationExample"
+      ],
+      "properties": {
+        "policyVersion": { "const": "options-only-mvp-risk-policy-1.0" },
+        "status": { "const": "OWNER_APPROVED_RECORDED_NOT_RUNTIME_ENFORCED" },
+        "executionAuthority": { "const": "NONE" },
+        "currency": { "const": "USD" },
+        "riskUnit": { "const": "ACTUAL_USD" },
+        "contractMultiplier": { "const": 100 },
+        "eligibleCapitalBucket": { "const": "OPERATING_CAPITAL" },
+        "automaticMigrationProhibitedBuckets": { "$ref": "#/$defs/automaticMigrationProhibitedBuckets" },
+        "normalMaximumActualLossCents": { "const": 2500 },
+        "eventModeMaximumActualLossCents": { "const": 1250 },
+        "dailyMaximumLossCents": { "const": 5000 },
+        "weeklyMaximumLossCents": { "const": 10000 },
+        "cumulativeDrawdownHardPauseCents": { "const": 8000 },
+        "drawdownPrecedence": { "const": "GLOBAL_HARD_PAUSE_BEFORE_WEEKLY_LIMIT" },
+        "hardPauseRestart": { "const": "EXPLICIT_OWNER_RESTART_REQUIRED" },
+        "maximumConcurrentEventPositions": { "const": 1 },
+        "maximumLossComponents": { "$ref": "#/$defs/maximumLossComponents" },
+        "eventModeTriggers": { "$ref": "#/$defs/statusItems" },
+        "allowedStrategies": { "$ref": "#/$defs/statusItems" },
+        "prohibitedStructures": { "$ref": "#/$defs/statusItems" },
+        "prohibitedDte": {
+          "type": "array",
+          "prefixItems": [{ "const": 0 }, { "const": 1 }],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "tacticalDteRange": { "$ref": "#/$defs/tacticalDteRange" },
+        "macroDteRange": { "$ref": "#/$defs/macroDteRange" },
+        "orderType": { "const": "LIMIT_ONLY" },
+        "failClosedOutcomes": { "$ref": "#/$defs/failClosedOutcomes" },
+        "initialApprovedUnderlyings": { "$ref": "#/$defs/initialApprovedUnderlyings" },
+        "maximumUniverseSize": { "const": 15 },
+        "underlyingAdmissionEvidence": { "$ref": "#/$defs/underlyingAdmissionEvidence" },
+        "themeCorrelationConcentration": { "const": "DISPLAY_AND_GATE" },
+        "nonIndependentDiversificationExample": { "const": "QQQ_SMH_SOXX_NVDA_SAME_DIRECTION" }
+      }
+    },
+    "automaticMigrationProhibitedBuckets": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "LONG_TERM_COMPOUNDING_CAPITAL" },
+        { "const": "CASH_RESERVE" }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "maximumLossComponents": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "PREMIUM_OR_NET_DEBIT" }, { "const": "CONTRACT_QUANTITY" },
+        { "const": "CONTRACT_MULTIPLIER" }, { "const": "FEES" },
+        { "const": "REGULATORY_CHARGES" }, { "const": "CONFIGURED_SLIPPAGE" },
+        { "const": "RELATED_OR_THEME_CORRELATED_OPEN_POSITIONS" },
+        { "const": "REMAINING_MAXIMUM_LOSS_ON_OPEN_POSITIONS" },
+        { "const": "DAILY_REALIZED_LOSSES" }, { "const": "WEEKLY_REALIZED_LOSSES" },
+        { "const": "CUMULATIVE_REALIZED_DRAWDOWN" }
+      ],
+      "items": false,
+      "minItems": 11,
+      "maxItems": 11
+    },
+    "tacticalDteRange": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minimum", "maximum"],
+      "properties": { "minimum": { "const": 14 }, "maximum": { "const": 45 } }
+    },
+    "macroDteRange": {
+      "type": "object", "additionalProperties": false,
+      "required": ["minimum", "maximum"],
+      "properties": { "minimum": { "const": 45 }, "maximum": { "const": 120 } }
+    },
+    "failClosedOutcomes": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "NO_TRADE / MAX_LOSS_NOT_PROVEN" },
+        { "const": "NO_TRADE / RISK_BUDGET_INSUFFICIENT" }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "initialApprovedUnderlyings": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "QQQ" }, { "const": "SMH" }, { "const": "SOXX" },
+        { "const": "GLD" }, { "const": "TLT" }, { "const": "NVDA" },
+        { "const": "MSFT" }, { "const": "AAPL" }, { "const": "AMZN" },
+        { "const": "TSLA" }
+      ],
+      "items": false,
+      "minItems": 10,
+      "maxItems": 10
+    },
+    "underlyingAdmissionEvidence": {
+      "type": "array",
+      "prefixItems": [
+        { "const": "OPTION_LIQUIDITY" }, { "const": "NEWS_COVERAGE" },
+        { "const": "CANDLE_DATA" }, { "const": "RISK_CLASSIFICATION" }
+      ],
+      "items": false,
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "moduleDisposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["portfolio", "dashboardProductCapability", "legacyPythonAndOfflineDailyScanInterfaces", "decisionEngine", "config", "riskEngine", "alpacaMarketDataComponents", "canonicalBarsQuotes", "evidence", "marketRegime", "capitalAllocation", "journal", "predictionLog", "strategyVersioning", "etfDailyScan", "eventContract", "researchBacktestingFoundations"],
+      "properties": {
+        "portfolio": { "const": "REUSE" },
+        "dashboardProductCapability": { "const": "REUSE" },
+        "legacyPythonAndOfflineDailyScanInterfaces": { "const": "RETIRE_LATER" },
+        "decisionEngine": { "const": "REUSE" },
+        "config": { "const": "REUSE" },
+        "riskEngine": { "const": "REUSE" },
+        "alpacaMarketDataComponents": { "const": "KEEP" },
+        "canonicalBarsQuotes": { "const": "REUSE" },
+        "evidence": { "const": "REUSE" },
+        "marketRegime": { "const": "REUSE" },
+        "capitalAllocation": { "const": "REUSE" },
+        "journal": { "const": "REUSE" },
+        "predictionLog": { "const": "REUSE" },
+        "strategyVersioning": { "const": "REUSE" },
+        "etfDailyScan": { "const": "FREEZE" },
+        "eventContract": { "const": "FREEZE" },
+        "researchBacktestingFoundations": { "const": "REUSE" }
+      }
+    },
+    "legacyProductLanes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["etfDailyScan", "eventContract"],
+      "properties": {
+        "etfDailyScan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "formerNextAction", "expansion"],
+          "properties": {
+            "status": { "const": "FROZEN_PRODUCT_ENTRY_CODE_RETAINED" },
+            "formerNextAction": { "const": "ALPACA_D3B_IMPLEMENTATION" },
+            "expansion": { "const": "PROHIBITED_WITHOUT_OWNER_APPROVAL" }
+          }
+        },
+        "eventContract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "expansion"],
+          "properties": {
+            "status": { "const": "FROZEN_PRODUCT_ENTRY_CODE_RETAINED" },
+            "expansion": { "const": "PROHIBITED_WITHOUT_OWNER_APPROVAL" }
+          }
+        }
       }
     },
     "validationResult": {
@@ -279,24 +497,65 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "originalWorktree", "t3b15C5Included", "alphaAuditPacketIncluded"
+        "originalWorktree", "t3b15C5Included", "alphaAuditPacketIncluded", "phase0R1IsolationAudit"
       ],
       "properties": {
         "originalWorktree": { "const": "FROZEN" },
         "t3b15C5Included": { "const": false },
-        "alphaAuditPacketIncluded": { "const": false }
+        "alphaAuditPacketIncluded": { "const": false },
+        "phase0R1IsolationAudit": { "const": "DEDICATED_WORKTREE_ISOLATED_FROM_ORIGINAL_DIRTY_WORKTREE" }
       }
     },
     "executionBoundaries": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["network", "options", "broker", "paperTrading", "orderExecution"],
+      "required": ["network", "options", "broker", "paperTrading", "orderExecution", "robinhoodAccountRead", "robinhoodCredentialRead", "orderEntry", "orderType"],
       "properties": {
         "network": { "const": "CLOSED" },
-        "options": { "const": "CLOSED" },
+        "options": { "const": "PHASE_0_R1_GOVERNANCE_RECORDED_RUNTIME_NOT_IMPLEMENTED" },
         "broker": { "const": "CLOSED" },
         "paperTrading": { "const": "CLOSED" },
-        "orderExecution": { "const": "CLOSED" }
+        "orderExecution": { "const": "CLOSED" },
+        "robinhoodAccountRead": { "const": "PROHIBITED" },
+        "robinhoodCredentialRead": { "const": "PROHIBITED" },
+        "orderEntry": { "const": "OWNER_MANUAL_OUTSIDE_ALPHA" },
+        "orderType": { "const": "LIMIT_ONLY" }
+      }
+    },
+    "environmentFingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeVersion", "npmVersion", "operatingSystem", "shell", "dependencySource", "packageJsonSha256", "packageLockSha256"],
+      "properties": {
+        "nodeVersion": { "const": "v24.18.0" },
+        "npmVersion": { "const": "11.16.0" },
+        "operatingSystem": { "const": "Windows_NT" },
+        "shell": { "const": "PowerShell" },
+        "dependencySource": { "const": "LOCKED_PACKAGE_LOCK_EXISTING_NODE_MODULES_NO_INSTALL" },
+        "packageJsonSha256": { "const": "58D08C6F8A8B66FCB03BC070BD64721E3306805DFC73732BFA312D3829E81570" },
+        "packageLockSha256": { "const": "A8F0D1D77BF03A5EA4CAAFBF54113A99CEBCD1C14BD680FCFD45931962319673" }
+      }
+    },
+    "phase0ValidationAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source_baseline_commit", "includesUncommittedCode", "command", "environmentFingerprint", "status", "completed", "componentCount", "testsExecuted", "passed", "failed", "durationMs", "networkUsed", "comparability", "rawEvidenceAvailability"],
+      "properties": {
+        "kind": { "enum": ["PHASE_0_R1_CLEAN_BASELINE", "PHASE_0_R1_WORKING_TREE"] },
+        "source_baseline_commit": { "const": "06c0ef2720a6b54fb0e27481efdbdfee786694e4" },
+        "includesUncommittedCode": { "type": "boolean" },
+        "command": { "const": "npm.cmd run alpha:validate" },
+        "environmentFingerprint": { "$ref": "#/$defs/environmentFingerprint" },
+        "status": { "enum": ["PASSED", "BLOCKED_ENVIRONMENT", "NOT_COMPARABLE", "UNAVAILABLE"] },
+        "completed": { "type": "boolean" },
+        "componentCount": { "type": "integer", "minimum": 0 },
+        "testsExecuted": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "durationMs": { "type": ["integer", "null"], "minimum": 0 },
+        "networkUsed": { "const": false },
+        "comparability": { "enum": ["COMPARABLE", "NOT_COMPARABLE"] },
+        "rawEvidenceAvailability": { "enum": ["AVAILABLE_EXTERNAL_TEMP_LOG", "PENDING_CURRENT_R1_RUN", "UNAVAILABLE"] }
       }
     },
     "coverageBaseline": {
@@ -332,13 +591,16 @@
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline"],
+      "required": ["classification", "phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline", "phase0BaselineAttempt", "phase0WorkingTreeAttempt"],
       "properties": {
+        "classification": { "const": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_OBSERVED_ATTEMPTS" },
         "phase1aMergedHead": { "$ref": "#/$defs/validationResult" },
         "phase1bD2MergedHead": { "$ref": "#/$defs/phase1bD2ValidationResult" },
         "phase1bD3AMergedHead": { "$ref": "#/$defs/phase1bD3AValidationResult" },
         "phase1bD3BDesignMergedHead": { "$ref": "#/$defs/phase1bD3BDesignValidationResult" },
-        "coverageBaseline": { "$ref": "#/$defs/coverageBaseline" }
+        "coverageBaseline": { "$ref": "#/$defs/coverageBaseline" },
+        "phase0BaselineAttempt": { "$ref": "#/$defs/phase0ValidationAttempt" },
+        "phase0WorkingTreeAttempt": { "$ref": "#/$defs/phase0ValidationAttempt" }
       }
     }
   }

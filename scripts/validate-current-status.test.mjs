@@ -31,6 +31,59 @@ const tests = [
     changed.riskPolicyRecord.dailyMaximumLossCents = 2500;
     assertInvalid(changed, schema, "riskPolicyRecord.dailyMaximumLossCents must equal 2000.");
   }],
+  ["Options exact risk unit, multiplier, and monetary limits cannot drift", () => {
+    const changed = clone(status);
+    changed.optionsRiskPolicy.riskUnit = "QUOTE_POINTS";
+    changed.optionsRiskPolicy.normalMaximumActualLossCents = 2600;
+    changed.optionsRiskPolicy.eventModeMaximumActualLossCents = 2500;
+    changed.optionsRiskPolicy.contractMultiplier = 1;
+    changed.optionsRiskPolicy.dailyMaximumLossCents = 1;
+    changed.optionsRiskPolicy.weeklyMaximumLossCents = 1;
+    changed.optionsRiskPolicy.cumulativeDrawdownHardPauseCents = 1;
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes("optionsRiskPolicy.riskUnit must equal \"ACTUAL_USD\"."));
+    assert(validation.issues.includes("optionsRiskPolicy.normalMaximumActualLossCents must equal 2500."));
+    assert(validation.issues.includes("optionsRiskPolicy.eventModeMaximumActualLossCents must equal 1250."));
+    assert(validation.issues.includes("optionsRiskPolicy.contractMultiplier must equal 100."));
+    assert(validation.issues.includes("optionsRiskPolicy.dailyMaximumLossCents must equal 5000."));
+    assert(validation.issues.includes("optionsRiskPolicy.weeklyMaximumLossCents must equal 10000."));
+    assert(validation.issues.includes("optionsRiskPolicy.cumulativeDrawdownHardPauseCents must equal 8000."));
+  }],
+  ["Options capital, loss, strategy, DTE, universe, and concentration boundaries cannot drift", () => {
+    const changed = clone(status);
+    changed.optionsRiskPolicy.eligibleCapitalBucket = "CASH_RESERVE";
+    changed.optionsRiskPolicy.maximumLossComponents = ["PREMIUM_OR_NET_DEBIT"];
+    changed.optionsRiskPolicy.failClosedOutcomes = ["TRADE"];
+    changed.optionsRiskPolicy.allowedStrategies = ["SHORT_CALL"];
+    changed.optionsRiskPolicy.prohibitedStructures = ["NAKED_SHORT_OPTIONS"];
+    changed.optionsRiskPolicy.tacticalDteRange.minimum = 0;
+    changed.optionsRiskPolicy.macroDteRange.maximum = 45;
+    changed.optionsRiskPolicy.initialApprovedUnderlyings[0] = "SPY";
+    changed.optionsRiskPolicy.maximumUniverseSize = 16;
+    changed.optionsRiskPolicy.themeCorrelationConcentration = "DISPLAY_ONLY";
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes("optionsRiskPolicy.eligibleCapitalBucket must equal \"OPERATING_CAPITAL\"."));
+    assert(validation.issues.includes("optionsRiskPolicy.maximumLossComponents must equal [\"PREMIUM_OR_NET_DEBIT\",\"CONTRACT_QUANTITY\",\"CONTRACT_MULTIPLIER\",\"FEES\",\"REGULATORY_CHARGES\",\"CONFIGURED_SLIPPAGE\",\"RELATED_OR_THEME_CORRELATED_OPEN_POSITIONS\",\"REMAINING_MAXIMUM_LOSS_ON_OPEN_POSITIONS\",\"DAILY_REALIZED_LOSSES\",\"WEEKLY_REALIZED_LOSSES\",\"CUMULATIVE_REALIZED_DRAWDOWN\"]."));
+    assert(validation.issues.includes("optionsRiskPolicy.failClosedOutcomes must equal [\"NO_TRADE / MAX_LOSS_NOT_PROVEN\",\"NO_TRADE / RISK_BUDGET_INSUFFICIENT\"]."));
+    assert(validation.issues.includes("optionsRiskPolicy.allowedStrategies must equal [\"LONG_CALL\",\"LONG_PUT\",\"BULL_CALL_DEBIT_SPREAD\",\"BEAR_PUT_DEBIT_SPREAD\"]."));
+    assert(validation.issues.includes("optionsRiskPolicy.prohibitedStructures must equal [\"NAKED_SHORT_CALLS\",\"NAKED_SHORT_PUTS\",\"CREDIT_SPREADS\",\"CREDIT_STRATEGIES\",\"SHORT_STRADDLES\",\"SHORT_STRANGLES\",\"RATIO_SPREADS\",\"MARGIN_DEPENDENT_STRATEGIES\",\"UNLIMITED_RISK_STRUCTURES\",\"CALENDARS\",\"DIAGONALS\",\"IRON_CONDORS\",\"AUTOMATIC_ROLLS_OF_LOSING_POSITIONS\",\"AVERAGING_DOWN\",\"MARTINGALE\",\"REVENGE_TRADING\"]."));
+    assert(validation.issues.includes("optionsRiskPolicy.tacticalDteRange must equal {\"minimum\":14,\"maximum\":45}."));
+    assert(validation.issues.includes("optionsRiskPolicy.macroDteRange must equal {\"minimum\":45,\"maximum\":120}."));
+    assert(validation.issues.includes("optionsRiskPolicy.initialApprovedUnderlyings must equal [\"QQQ\",\"SMH\",\"SOXX\",\"GLD\",\"TLT\",\"NVDA\",\"MSFT\",\"AAPL\",\"AMZN\",\"TSLA\"]."));
+    assert(validation.issues.includes("optionsRiskPolicy.maximumUniverseSize must equal 15."));
+    assert(validation.issues.includes("optionsRiskPolicy.themeCorrelationConcentration must equal \"DISPLAY_AND_GATE\"."));
+  }],
+  ["Dashboard capability is reusable while only the legacy interface retires later", () => {
+    const changed = clone(status);
+    changed.moduleDisposition.dashboardProductCapability = "RETIRE_LATER";
+    changed.moduleDisposition.legacyPythonAndOfflineDailyScanInterfaces = "REUSE";
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes('moduleDisposition.dashboardProductCapability must equal "REUSE".'));
+    assert(validation.issues.includes('moduleDisposition.legacyPythonAndOfflineDailyScanInterfaces must equal "RETIRE_LATER".'));
+  }],
   ["TypeScript product ownership cannot be reassigned", () => {
     const changed = clone(status);
     changed.runtimeOwnership.productRuntime = "PYTHON";
@@ -54,15 +107,15 @@ const tests = [
     assert(validation.issues.includes("executionBoundaries.paperTrading must equal \"CLOSED\"."));
     assert(validation.issues.includes("automatedExecutionAllowed must equal false."));
   }],
-  ["merged Phase 1A and offline D2 keep live and execution authority closed", () => {
+  ["frozen Daily Scan/Alpaca history keeps live and execution authority closed", () => {
     const changed = clone(status);
     changed.networkAuthority = "LIVE_READ";
-    changed.phase1Status = "IN_PROGRESS";
-    changed.phase1Approval = "GRANTED";
-    changed.phase1BStatus = "STARTED";
-    changed.phase1BDesign.networkAuthority = "GRANTED";
-    changed.phase1BDesign.credentialAccess = "ALLOWED";
-    changed.phase1BDesign.marketDataAcquisition = "IMPLEMENTED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Status = "IN_PROGRESS";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Approval = "GRANTED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BStatus = "STARTED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority = "GRANTED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess = "ALLOWED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.marketDataAcquisition = "IMPLEMENTED";
     changed.optionsStatus = "STARTED";
     changed.brokerStatus = "STARTED";
     changed.paperTradingStatus = "STARTED";
@@ -73,32 +126,58 @@ const tests = [
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("networkAuthority must equal \"NOT_GRANTED\"."));
-    assert(validation.issues.includes("phase1Status must equal \"MERGED\"."));
-    assert(validation.issues.includes("phase1Approval must equal \"CLOSED\"."));
-    assert(validation.issues.includes("phase1BStatus must equal \"D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED\"."));
-    assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
-    assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
-    assert(validation.issues.includes("phase1BDesign.marketDataAcquisition must equal \"D3B_IMPLEMENTATION_NOT_STARTED\"."));
-    assert(validation.issues.includes("optionsStatus must equal \"CLOSED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Status must equal \"MERGED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Approval must equal \"CLOSED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BStatus must equal \"D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.marketDataAcquisition must equal \"D3B_IMPLEMENTATION_NOT_STARTED\"."));
+    assert(validation.issues.includes("optionsStatus must equal \"PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED\"."));
     assert(validation.issues.includes("brokerStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("paperTradingStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("orderExecutionStatus must equal \"CLOSED\"."));
-    assert(validation.issues.includes("executionBoundaries.options must equal \"CLOSED\"."));
-    assert(validation.issues.includes("ownerDailyProductEntry must equal \"DRY_RUN_AND_FIXTURE_ONLY\"."));
+    assert(validation.issues.includes("executionBoundaries.options must equal \"PHASE_0_R1_GOVERNANCE_RECORDED_RUNTIME_NOT_IMPLEMENTED\"."));
+    assert(validation.issues.includes("ownerDailyProductEntry must equal \"FROZEN_CODE_RETAINED\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
-  ["D3B design merge facts and current implementation approval cannot drift", () => {
+  ["Phase 0 Owner approval and the Phase 1 authorization gate cannot drift", () => {
     const changed = clone(status);
-    changed.source.branch = "codex/phase1b-d3b-live-readonly-design";
+    changed.source.repository = "other/repository";
     changed.source.source_baseline_commit = changed.source.reviewed_c4_commit;
-    changed.currentMilestone.status = "IN_PROGRESS";
+    changed.currentMilestone.status = "IMPLEMENTED_AWAITING_OWNER_REVIEW";
+    changed.currentMilestone.approvedCommit = "0000000000000000000000000000000000000000";
+    changed.productDirection.phase0Status = "IMPLEMENTED_AWAITING_OWNER_REVIEW";
+    changed.productDirection.phase1Status = "IN_PROGRESS";
+    changed.next = ["OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1"];
     changed.validation.phase1bD3AMergedHead.includesUncommittedCode = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
-    assert(validation.issues.includes("source.branch must equal \"codex/d3b-post-merge-design-status\"."));
+    assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"OWNER_APPROVAL_REQUIRED\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"OWNER_APPROVED\"."));
+    assert(validation.issues.includes("currentMilestone.approvedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
+    assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
+    assert(validation.issues.includes("productDirection.phase1Status must equal \"NOT_STARTED\"."));
+    assert(validation.issues.includes("next must contain only OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
+  }],
+  ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
+    assert.equal(status.productDirection.phase1Status, "NOT_STARTED");
+    assert.equal(Object.hasOwn(status, "phase1Status"), false);
+    assert.equal(Object.hasOwn(status, "phase1Approval"), false);
+    assert.equal(Object.hasOwn(status, "phase1BStatus"), false);
+    assert.equal(Object.hasOwn(status, "phase1BDelivery"), false);
+    assert.equal(Object.hasOwn(status, "phase1BDesign"), false);
+    const changed = clone(status);
+    changed.phase1Status = "MERGED";
+    changed.productDirection.phase1Status = "MERGED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Status = "NOT_STARTED";
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes("$.phase1Status is not allowed by schema."));
+    assert(validation.issues.includes("$.phase1Status is undeclared."));
+    assert(validation.issues.includes("productDirection.phase1Status must equal \"NOT_STARTED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Status must equal \"MERGED\"."));
   }],
   ["post-merge validation does not publish unaudited timing precision", () => {
     const changed = clone(status);
@@ -108,6 +187,36 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("validation.phase1aMergedHead.durationMs must equal null."));
     assert(validation.issues.includes("validation.phase1aMergedHead.wallClockDurationMs must equal null."));
+  }],
+  ["validation attempts reject inconsistent completed arithmetic", () => {
+    const changed = clone(status);
+    changed.validation.phase0BaselineAttempt.testsExecuted = 10;
+    changed.validation.phase0BaselineAttempt.passed = 9;
+    changed.validation.phase0BaselineAttempt.failed = 0;
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes("validation.phase0BaselineAttempt.passed must equal testsExecuted when status is PASSED."));
+    assert(validation.issues.includes("validation.phase0BaselineAttempt.testsExecuted must equal passed + failed for completed test outcomes."));
+  }],
+  ["validation attempts reject dishonest passed, blocked, and comparability states", () => {
+    const changed = clone(status);
+    changed.validation.phase0BaselineAttempt.status = "PASSED";
+    changed.validation.phase0BaselineAttempt.completed = false;
+    changed.validation.phase0BaselineAttempt.failed = 1;
+    changed.validation.phase0BaselineAttempt.passed = changed.validation.phase0BaselineAttempt.testsExecuted - 1;
+    changed.validation.phase0WorkingTreeAttempt.status = "BLOCKED_ENVIRONMENT";
+    changed.validation.phase0WorkingTreeAttempt.completed = true;
+    changed.validation.phase0WorkingTreeAttempt.failed = 1;
+    changed.validation.phase0WorkingTreeAttempt.passed = changed.validation.phase0WorkingTreeAttempt.testsExecuted - 1;
+    changed.validation.phase0WorkingTreeAttempt.comparability = "COMPARABLE";
+    changed.validation.phase0WorkingTreeAttempt.environmentFingerprint.npmVersion = "0.0.0";
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes("validation.phase0BaselineAttempt.completed must be true when status is PASSED."));
+    assert(validation.issues.includes("validation.phase0BaselineAttempt.failed must equal 0 when status is PASSED."));
+    assert(validation.issues.includes("validation.phase0WorkingTreeAttempt.completed must be false when status is BLOCKED_ENVIRONMENT."));
+    assert(validation.issues.includes("validation.phase0WorkingTreeAttempt.failed must equal 0 when status is BLOCKED_ENVIRONMENT; infrastructure blocking is not a test failure."));
+    assert(validation.issues.includes("Phase 0 comparable attempts must have identical environmentFingerprint values."));
   }],
   ["object schemas must reject unknown fields", () => {
     const changedSchema = clone(schema);
@@ -126,13 +235,13 @@ const tests = [
   }],
   ["the declared JSON Schema phase-state const is executed", () => {
     const changedSchema = clone(schema);
-    changedSchema.$defs.phase1BDesign.properties.status.const = "D2_COMPLETED";
-    assertInvalid(status, changedSchema, "$.phase1BDesign.status must equal schema const \"D2_COMPLETED\".");
+    changedSchema.$defs.frozenDailyScanAlpacaHistoricalPhase1BDesign.properties.status.const = "D2_COMPLETED";
+    assertInvalid(status, changedSchema, "$.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.status must equal schema const \"D2_COMPLETED\".");
   }],
   ["the declared JSON Schema additionalProperties gate rejects unknown status fields", () => {
     const changed = clone(status);
-    changed.phase1BDesign.ownerPublicKey = "caller-supplied";
-    assertInvalid(changed, schema, "$.phase1BDesign.ownerPublicKey is not allowed by schema.");
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.ownerPublicKey = "caller-supplied";
+    assertInvalid(changed, schema, "$.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.ownerPublicKey is not allowed by schema.");
   }],
   ["D2 merged-head validation remains committed and exact", () => {
     const changed = clone(status);
@@ -145,73 +254,72 @@ const tests = [
   }],
   ["Phase 1B D2 trust-root and no-network status cannot be widened", () => {
     const changed = clone(status);
-    changed.phase1BDesign.ownerPublicKey = "caller-supplied";
-    assertInvalid(changed, schema, "phase1BDesign.ownerPublicKey is undeclared.");
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.ownerPublicKey = "caller-supplied";
+    assertInvalid(changed, schema, "frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.ownerPublicKey is undeclared.");
   }],
-  ["D3B approved design preserves D3A closure without granting Provider or network authority", () => {
+  ["D3B history remains validated but its product lane is frozen", () => {
     assert(status.completed.includes("PHASE_1B_D2_C1_TRUST_ROOT_CORRECTION"));
     assert(status.completed.includes("PHASE_1B_D1_DESIGN_COMPLETED"));
     assert(status.completed.includes("PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING"));
-    assert(status.blocked.includes("PROVIDER_LIMIT_SEMANTICS_UNPROVEN"));
-    assert.equal(status.phase1BDelivery.d1, "DESIGN_COMPLETED");
-    assert.equal(status.phase1BDelivery.d2C1, "MERGED");
-    assert.equal(status.phase1BDelivery.d2C2R2, "MERGED_OFFLINE_ONLY");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d1, "DESIGN_COMPLETED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d2C1, "MERGED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d2C2R2, "MERGED_OFFLINE_ONLY");
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
     assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "14b5a5aac5157f3284368608a84c890606fc5496");
-    assert.equal(status.source.implementation_baseline, "D3B_POST_MERGE_DESIGN_STATUS_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD");
-    assert.equal(status.phase1BDelivery.d3A, "MERGED_CLOSED");
-    assert.equal(status.phase1BDelivery.d3APostMergeCorrection, "VERIFIED");
-    assert.equal(status.phase1BDelivery.d3B, "DESIGN_APPROVED");
-    assert.equal(status.phase1BDelivery.d3BImplementation, "NOT_STARTED");
-    assert.equal(status.phase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
+    assert.equal(status.source.source_baseline_commit, "06c0ef2720a6b54fb0e27481efdbdfee786694e4");
+    assert.equal(status.source.implementation_baseline, "ORIGIN_MAIN_PHASE0_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3A, "MERGED_CLOSED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3APostMergeCorrection, "VERIFIED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B, "DESIGN_APPROVED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BImplementation, "NOT_STARTED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
-    assert(status.blocked.includes("PHASE_1B_D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"));
-    assert(status.blocked.includes("PHASE_1B_D3B_LIVE_RUN_NOT_AUTHORIZED"));
-    assert(status.next.includes("D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"));
-    assert.equal(status.phase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
-    assert.equal(status.phase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
-    assert.equal(status.phase1BDesign.status, "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED");
-    assert.equal(status.phase1BDesign.persistenceWrites, 0);
-    assert.equal(status.phase1BDesign.marketDataAcquisition, "D3B_IMPLEMENTATION_NOT_STARTED");
-    assert.equal(status.phase1BDesign.marketScopePolicy, "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY");
-    assert.equal(status.phase1BDesign.providerLimitSemantics, "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT");
-    assert.equal(status.phase1BDesign.compositionRoot, "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE");
-    assert.equal(status.phase1BDesign.designCommit, "0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b");
-    assert.equal(status.phase1BDesign.designPullRequest, "MERGED_CLOSED");
-    assert.equal(status.phase1BDesign.mergeCommit, "14b5a5aac5157f3284368608a84c890606fc5496");
-    assert.equal(status.phase1BDesign.mergeTimestamp, "2026-08-02T23:34:45.000Z");
-    assert.equal(status.phase1BDesign.designApproval, "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION");
-    assert.equal(status.phase1BDesign.implementationStatus, "NOT_STARTED");
-    assert.equal(status.phase1BDesign.liveRunStatus, "NOT_AUTHORIZED");
+    assert(status.frozen.includes("ALPACA_D3B_NEXT_ACTION"));
+    assert.deepEqual(status.next, ["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1"]);
+    assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.status, "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.persistenceWrites, 0);
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.marketDataAcquisition, "D3B_IMPLEMENTATION_NOT_STARTED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.marketScopePolicy, "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.providerLimitSemantics, "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.compositionRoot, "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.designCommit, "0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.designPullRequest, "MERGED_CLOSED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.mergeCommit, "14b5a5aac5157f3284368608a84c890606fc5496");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.mergeTimestamp, "2026-08-02T23:34:45.000Z");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.designApproval, "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.implementationStatus, "NOT_STARTED");
+    assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.liveRunStatus, "NOT_AUTHORIZED");
     const changed = clone(status);
-    changed.phase1BDesign.trustedOwnerVerificationKey = "CALLER_RUNTIME_INPUT";
-    assertInvalid(changed, schema, "phase1BDesign.trustedOwnerVerificationKey must equal \"PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED\".");
-    const missingCorrection = clone(status);
-    missingCorrection.blocked = missingCorrection.blocked.filter((item) => item !== "PROVIDER_LIMIT_SEMANTICS_UNPROVEN");
-    assertInvalid(missingCorrection, schema, "blocked must include \"PROVIDER_LIMIT_SEMANTICS_UNPROVEN\".");
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.trustedOwnerVerificationKey = "CALLER_RUNTIME_INPUT";
+    assertInvalid(changed, schema, "frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.trustedOwnerVerificationKey must equal \"PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED\".");
+    const missingFreeze = clone(status);
+    missingFreeze.frozen = missingFreeze.frozen.filter((item) => item !== "ALPACA_D3B_NEXT_ACTION");
+    assertInvalid(missingFreeze, schema, "frozen must include \"ALPACA_D3B_NEXT_ACTION\".");
   }],
   ["D3B design review cannot be mistaken for live-run or execution authority", () => {
     const changed = clone(status);
-    changed.phase1BDelivery.d3B = "LIVE_RUN_AUTHORIZED";
-    changed.phase1BDelivery.d3BImplementation = "IMPLEMENTED";
-    changed.phase1BDelivery.d3BLiveRun = "AUTHORIZED";
-    changed.phase1BDelivery.liveNetworkAuthorization = "GRANTED";
-    changed.phase1BDesign.networkAuthority = "GRANTED";
-    changed.phase1BDesign.credentialAccess = "ALLOWED";
-    changed.phase1BDesign.persistenceWrites = 1;
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B = "LIVE_RUN_AUTHORIZED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BImplementation = "IMPLEMENTED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun = "AUTHORIZED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization = "GRANTED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority = "GRANTED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess = "ALLOWED";
+    changed.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.persistenceWrites = 1;
     changed.executionBoundaries.network = "OPEN";
     changed.automatedExecutionAllowed = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
-    assert(validation.issues.includes("phase1BDelivery.d3B must equal \"DESIGN_APPROVED\"."));
-    assert(validation.issues.includes("phase1BDelivery.d3BImplementation must equal \"NOT_STARTED\"."));
-    assert(validation.issues.includes("phase1BDelivery.d3BLiveRun must equal \"NOT_AUTHORIZED\"."));
-    assert(validation.issues.includes("phase1BDelivery.liveNetworkAuthorization must equal \"NOT_GRANTED\"."));
-    assert(validation.issues.includes("phase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
-    assert(validation.issues.includes("phase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
-    assert(validation.issues.includes("phase1BDesign.persistenceWrites must equal 0."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B must equal \"DESIGN_APPROVED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BImplementation must equal \"NOT_STARTED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun must equal \"NOT_AUTHORIZED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization must equal \"NOT_GRANTED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
+    assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.persistenceWrites must equal 0."));
     assert(validation.issues.includes("executionBoundaries.network must equal \"CLOSED\"."));
     assert(validation.issues.includes("automatedExecutionAllowed must equal false."));
   }],

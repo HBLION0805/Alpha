@@ -11,6 +11,30 @@ blockers, frozen work, next action, ownership, and validation state is
 [Current Project Status](docs/status/current.json). Human-facing documents
 summarize that file and must not define a competing current state.
 
+Alpha's current direction is the **Options-Only MVP**. Phase 0 has converged
+the mission, status, risk policy, legacy-module disposition, and Phase 1 plan
+and is now Owner-approved. Phase 1 remains `NOT_STARTED` and requires explicit
+Owner authorization before it may begin. The system remains
+advisory only: it reads no Robinhood account, balance, position, or credential;
+it places no order and connects to no Paper Trading account. The Personal ETF
+Daily Scan and Event Contract product entries are frozen with their code
+retained. See [Options-Only MVP Phase 0](docs/OPTIONS_ONLY_MVP_PHASE_0.md).
+
+Dashboard remains a reusable product capability. Only the audited legacy
+Python sample terminal and frozen Offline Daily Scan interfaces are marked
+`RETIRE_LATER`; an Options Dashboard adapter requires a future approved phase
+and is not implemented here.
+
+Options are a bounded early capital-growth tool, not Alpha's destination. The
+permanent mission remains to protect, allocate, grow, and compound capital,
+including eventual long-term ownership of quality assets. Alpha promises no
+fixed return or capital-doubling schedule.
+
+### Frozen Legacy Implementation Record
+
+The following Daily Scan and Alpaca history is retained for audit and reuse.
+It is not the current product entry, milestone, or next action.
+
 Phase 1A, Offline Personal Daily Scan Foundation, is merged and closed. Its
 implementation merge is `4e4282582b816863c35efc6d5657cdf52d18abc9`, and its
 post-merge status baseline is `f565e9e5250cfd2fca5e6ed9c244b3947add7b28`.

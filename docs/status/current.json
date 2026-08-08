@@ -1,18 +1,20 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.7",
-  "statusId": "alpha-status:phase1b-d3b-design-approved",
-  "asOf": "2026-08-02T23:46:46.269Z",
+  "schemaVersion": "1.11",
+  "statusId": "alpha-status:options-only-mvp-phase0-r1-owner-approved",
+  "asOf": "2026-08-08T21:24:16.410Z",
   "source": {
-    "branch": "codex/d3b-post-merge-design-status",
-    "source_baseline_commit": "14b5a5aac5157f3284368608a84c890606fc5496",
-    "implementation_baseline": "D3B_POST_MERGE_DESIGN_STATUS_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD",
+    "repository": "HBLION0805/Alpha",
+    "source_baseline_ref": "origin/main",
+    "source_baseline_commit": "06c0ef2720a6b54fb0e27481efdbdfee786694e4",
+    "implementation_baseline": "ORIGIN_MAIN_PHASE0_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7"
   },
   "currentMilestone": {
-    "id": "PERSONAL_DAILY_SCAN_PHASE_1B_D3B_IMPLEMENTATION",
-    "name": "Alpaca Bars Limit Live-Readonly Qualification Protocol Implementation",
-    "status": "OWNER_APPROVAL_REQUIRED"
+    "id": "OPTIONS_ONLY_MVP_PHASE_0",
+    "name": "Options-Only MVP Governance and Risk Authority Convergence",
+    "status": "OWNER_APPROVED",
+    "approvedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
@@ -23,7 +25,13 @@
     "PHASE_1B_D2_C2_R2_TRUSTED_COMPOSITION_RAW_TRANSPORT_AND_REGISTRY_BINDING",
     "PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED",
     "PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED",
-    "PHASE_1B_D3B_DESIGN_APPROVED_MERGED"
+    "PHASE_1B_D3B_DESIGN_APPROVED_MERGED",
+    "OPTIONS_ONLY_PRODUCT_MISSION_CONVERGED",
+    "OPTIONS_ONLY_MACHINE_STATUS_CONVERGED",
+    "OPTIONS_RISK_POLICY_RECORDED",
+    "LEGACY_MODULE_DISPOSITION_RECORDED",
+    "OPTIONS_PHASE_1_FILE_PLAN_RECORDED",
+    "OPTIONS_ONLY_MVP_PHASE_0_R1_OWNER_APPROVED"
   ],
   "inProgress": [],
   "blocked": [
@@ -31,28 +39,47 @@
     "NETWORK_LIVE_READONLY_OWNER_AUTHORIZATION_REQUIRED",
     "VIX_LIVE_SOURCE_NOT_APPROVED",
     "EVENT_CALENDAR_SOURCE_NOT_APPROVED",
-    "PROVIDER_LIMIT_SEMANTICS_UNPROVEN",
-    "PHASE_1B_D2_C3_NOT_STARTED",
-    "PHASE_1B_D3A_REAL_REQUEST_NOT_AUTHORIZED",
-    "PHASE_1B_D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED",
-    "PHASE_1B_D3B_LIVE_RUN_NOT_AUTHORIZED"
+    "OPTIONS_PHASE_1_NOT_STARTED",
+    "LIVE_NEWS_NETWORK_NOT_AUTHORIZED",
+    "OPTIONS_MARKET_DATA_NOT_IMPLEMENTED",
+    "OPTIONS_RISK_RUNTIME_NOT_IMPLEMENTED",
+    "ROBINHOOD_ACCOUNT_ACCESS_PROHIBITED",
+    "PAPER_TRADING_PROHIBITED",
+    "ORDER_EXECUTION_PROHIBITED"
   ],
   "frozen": [
     "T3B15_C5_UNCOMMITTED_WORK",
     "ORIGINAL_ALPHA_WORKTREE",
     "EVENT_BUSINESS_LOGIC",
     "RISK_BUSINESS_LOGIC",
-    "OPTIONS",
+    "ETF_DAILY_SCAN_PRODUCT_ENTRY",
+    "EVENT_CONTRACT_PRODUCT_ENTRY",
+    "ALPACA_D3B_NEXT_ACTION",
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"
+    "OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1"
   ],
+  "productDirection": {
+    "currentProduct": "OPTIONS_ONLY_MVP",
+    "currentPhase": "PHASE_0",
+    "phase0Status": "OWNER_APPROVED",
+    "phase1Status": "NOT_STARTED",
+    "permanentMission": [
+      "PROTECT_CAPITAL",
+      "ALLOCATE_CAPITAL",
+      "GROW_CAPITAL",
+      "COMPOUND_CAPITAL"
+    ],
+    "earlyCapitalGrowthTool": "DEFINED_RISK_OPTIONS",
+    "longTermDestination": "QUALITY_ASSETS_AND_NON_LEVERAGED_COMPOUNDING",
+    "fixedReturnPromise": false
+  },
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
     "pythonRole": "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY",
     "pythonDashboardStatus": "DEPRECATED_AS_PRODUCT_ENTRY_PROTOTYPE_ONLY",
-    "riskAuthority": "TYPESCRIPT_UNIFIED_SHORT_TERM_RISK_AUTHORITY_PLANNED"
+    "riskAuthority": "OWNER_APPROVED_OPTIONS_POLICY_RECORDED_RUNTIME_NOT_IMPLEMENTED"
   },
   "capitalArchitecture": {
     "status": "COMPATIBILITY_ARCHITECTURE_ONLY",
@@ -70,7 +97,7 @@
   },
   "riskPolicyRecord": {
     "policyVersion": "phase0-owner-record-2026-07-29",
-    "status": "RECORDED_NOT_ENFORCED",
+    "status": "FROZEN_LEGACY_NOT_OPTIONS_AUTHORITY",
     "executionAuthority": "NONE",
     "currency": "USD",
     "etfMaximumPlannedLossCents": 800,
@@ -81,21 +108,146 @@
     "initialLeveragedEtfPositionLimitBasisPoints": 1000,
     "maximumConcurrentShortTermThemes": 1
   },
+  "optionsRiskPolicy": {
+    "policyVersion": "options-only-mvp-risk-policy-1.0",
+    "status": "OWNER_APPROVED_RECORDED_NOT_RUNTIME_ENFORCED",
+    "executionAuthority": "NONE",
+    "currency": "USD",
+    "riskUnit": "ACTUAL_USD",
+    "contractMultiplier": 100,
+    "eligibleCapitalBucket": "OPERATING_CAPITAL",
+    "automaticMigrationProhibitedBuckets": [
+      "LONG_TERM_COMPOUNDING_CAPITAL",
+      "CASH_RESERVE"
+    ],
+    "normalMaximumActualLossCents": 2500,
+    "eventModeMaximumActualLossCents": 1250,
+    "dailyMaximumLossCents": 5000,
+    "weeklyMaximumLossCents": 10000,
+    "cumulativeDrawdownHardPauseCents": 8000,
+    "drawdownPrecedence": "GLOBAL_HARD_PAUSE_BEFORE_WEEKLY_LIMIT",
+    "hardPauseRestart": "EXPLICIT_OWNER_RESTART_REQUIRED",
+    "maximumConcurrentEventPositions": 1,
+    "maximumLossComponents": [
+      "PREMIUM_OR_NET_DEBIT",
+      "CONTRACT_QUANTITY",
+      "CONTRACT_MULTIPLIER",
+      "FEES",
+      "REGULATORY_CHARGES",
+      "CONFIGURED_SLIPPAGE",
+      "RELATED_OR_THEME_CORRELATED_OPEN_POSITIONS",
+      "REMAINING_MAXIMUM_LOSS_ON_OPEN_POSITIONS",
+      "DAILY_REALIZED_LOSSES",
+      "WEEKLY_REALIZED_LOSSES",
+      "CUMULATIVE_REALIZED_DRAWDOWN"
+    ],
+    "eventModeTriggers": [
+      "EARNINGS",
+      "FOMC",
+      "CPI",
+      "PPI",
+      "NONFARM_PAYROLLS",
+      "GDP",
+      "MAJOR_REGULATORY_EVENT",
+      "MAJOR_GEOPOLITICAL_EVENT"
+    ],
+    "allowedStrategies": [
+      "LONG_CALL",
+      "LONG_PUT",
+      "BULL_CALL_DEBIT_SPREAD",
+      "BEAR_PUT_DEBIT_SPREAD"
+    ],
+    "prohibitedStructures": [
+      "NAKED_SHORT_CALLS",
+      "NAKED_SHORT_PUTS",
+      "CREDIT_SPREADS",
+      "CREDIT_STRATEGIES",
+      "SHORT_STRADDLES",
+      "SHORT_STRANGLES",
+      "RATIO_SPREADS",
+      "MARGIN_DEPENDENT_STRATEGIES",
+      "UNLIMITED_RISK_STRUCTURES",
+      "CALENDARS",
+      "DIAGONALS",
+      "IRON_CONDORS",
+      "AUTOMATIC_ROLLS_OF_LOSING_POSITIONS",
+      "AVERAGING_DOWN",
+      "MARTINGALE",
+      "REVENGE_TRADING"
+    ],
+    "prohibitedDte": [0, 1],
+    "tacticalDteRange": { "minimum": 14, "maximum": 45 },
+    "macroDteRange": { "minimum": 45, "maximum": 120 },
+    "orderType": "LIMIT_ONLY",
+    "failClosedOutcomes": [
+      "NO_TRADE / MAX_LOSS_NOT_PROVEN",
+      "NO_TRADE / RISK_BUDGET_INSUFFICIENT"
+    ],
+    "initialApprovedUnderlyings": [
+      "QQQ", "SMH", "SOXX", "GLD", "TLT", "NVDA", "MSFT", "AAPL", "AMZN", "TSLA"
+    ],
+    "maximumUniverseSize": 15,
+    "underlyingAdmissionEvidence": [
+      "OPTION_LIQUIDITY",
+      "NEWS_COVERAGE",
+      "CANDLE_DATA",
+      "RISK_CLASSIFICATION"
+    ],
+    "themeCorrelationConcentration": "DISPLAY_AND_GATE",
+    "nonIndependentDiversificationExample": "QQQ_SMH_SOXX_NVDA_SAME_DIRECTION"
+  },
+  "moduleDisposition": {
+    "portfolio": "REUSE",
+    "dashboardProductCapability": "REUSE",
+    "legacyPythonAndOfflineDailyScanInterfaces": "RETIRE_LATER",
+    "decisionEngine": "REUSE",
+    "config": "REUSE",
+    "riskEngine": "REUSE",
+    "alpacaMarketDataComponents": "KEEP",
+    "canonicalBarsQuotes": "REUSE",
+    "evidence": "REUSE",
+    "marketRegime": "REUSE",
+    "capitalAllocation": "REUSE",
+    "journal": "REUSE",
+    "predictionLog": "REUSE",
+    "strategyVersioning": "REUSE",
+    "etfDailyScan": "FREEZE",
+    "eventContract": "FREEZE",
+    "researchBacktestingFoundations": "REUSE"
+  },
+  "legacyProductLanes": {
+    "etfDailyScan": {
+      "status": "FROZEN_PRODUCT_ENTRY_CODE_RETAINED",
+      "formerNextAction": "ALPACA_D3B_IMPLEMENTATION",
+      "expansion": "PROHIBITED_WITHOUT_OWNER_APPROVAL"
+    },
+    "eventContract": {
+      "status": "FROZEN_PRODUCT_ENTRY_CODE_RETAINED",
+      "expansion": "PROHIBITED_WITHOUT_OWNER_APPROVAL"
+    }
+  },
   "worktreeIsolation": {
     "originalWorktree": "FROZEN",
     "t3b15C5Included": false,
-    "alphaAuditPacketIncluded": false
+    "alphaAuditPacketIncluded": false,
+    "phase0R1IsolationAudit": "DEDICATED_WORKTREE_ISOLATED_FROM_ORIGINAL_DIRTY_WORKTREE"
   },
   "executionBoundaries": {
     "network": "CLOSED",
-    "options": "CLOSED",
+    "options": "PHASE_0_R1_GOVERNANCE_RECORDED_RUNTIME_NOT_IMPLEMENTED",
     "broker": "CLOSED",
     "paperTrading": "CLOSED",
-    "orderExecution": "CLOSED"
+    "orderExecution": "CLOSED",
+    "robinhoodAccountRead": "PROHIBITED",
+    "robinhoodCredentialRead": "PROHIBITED",
+    "orderEntry": "OWNER_MANUAL_OUTSIDE_ALPHA",
+    "orderType": "LIMIT_ONLY"
   },
   "automatedExecutionAllowed": false,
-  "ownerDailyProductEntry": "DRY_RUN_AND_FIXTURE_ONLY",
+  "ownerDailyProductEntry": "FROZEN_CODE_RETAINED",
+  "ownerProductEntry": "NONE_PHASE_0",
   "validation": {
+    "classification": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_OBSERVED_ATTEMPTS",
     "phase1aMergedHead": {
       "kind": "PHASE_1A_MERGED_HEAD",
       "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
@@ -160,48 +312,100 @@
         "status": "NOT_AVAILABLE",
         "reasonCode": "NO_REGISTERED_INSTRUMENTER_AND_V8_ENV_INCOMPATIBLE_WITH_SECURITY_DRILL"
       }
+    },
+    "phase0BaselineAttempt": {
+      "kind": "PHASE_0_R1_CLEAN_BASELINE",
+      "source_baseline_commit": "06c0ef2720a6b54fb0e27481efdbdfee786694e4",
+      "includesUncommittedCode": false,
+      "command": "npm.cmd run alpha:validate",
+      "environmentFingerprint": {
+        "nodeVersion": "v24.18.0",
+        "npmVersion": "11.16.0",
+        "operatingSystem": "Windows_NT",
+        "shell": "PowerShell",
+        "dependencySource": "LOCKED_PACKAGE_LOCK_EXISTING_NODE_MODULES_NO_INSTALL",
+        "packageJsonSha256": "58D08C6F8A8B66FCB03BC070BD64721E3306805DFC73732BFA312D3829E81570",
+        "packageLockSha256": "A8F0D1D77BF03A5EA4CAAFBF54113A99CEBCD1C14BD680FCFD45931962319673"
+      },
+      "status": "PASSED",
+      "completed": true,
+      "componentCount": 140,
+      "testsExecuted": 2833,
+      "passed": 2833,
+      "failed": 0,
+      "durationMs": 96756,
+      "networkUsed": false,
+      "comparability": "COMPARABLE",
+      "rawEvidenceAvailability": "AVAILABLE_EXTERNAL_TEMP_LOG"
+    },
+    "phase0WorkingTreeAttempt": {
+      "kind": "PHASE_0_R1_WORKING_TREE",
+      "source_baseline_commit": "06c0ef2720a6b54fb0e27481efdbdfee786694e4",
+      "includesUncommittedCode": true,
+      "command": "npm.cmd run alpha:validate",
+      "environmentFingerprint": {
+        "nodeVersion": "v24.18.0",
+        "npmVersion": "11.16.0",
+        "operatingSystem": "Windows_NT",
+        "shell": "PowerShell",
+        "dependencySource": "LOCKED_PACKAGE_LOCK_EXISTING_NODE_MODULES_NO_INSTALL",
+        "packageJsonSha256": "58D08C6F8A8B66FCB03BC070BD64721E3306805DFC73732BFA312D3829E81570",
+        "packageLockSha256": "A8F0D1D77BF03A5EA4CAAFBF54113A99CEBCD1C14BD680FCFD45931962319673"
+      },
+      "status": "PASSED",
+      "completed": true,
+      "componentCount": 140,
+      "testsExecuted": 2838,
+      "passed": 2838,
+      "failed": 0,
+      "durationMs": null,
+      "networkUsed": false,
+      "comparability": "COMPARABLE",
+      "rawEvidenceAvailability": "AVAILABLE_EXTERNAL_TEMP_LOG"
     }
   },
   "networkAuthority": "NOT_GRANTED",
-  "phase1Status": "MERGED",
-  "phase1Approval": "CLOSED",
-  "phase1BStatus": "D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED",
-  "phase1BDelivery": {
-    "d1": "DESIGN_COMPLETED",
-    "d2C1": "MERGED",
-    "d2C2R2": "MERGED_OFFLINE_ONLY",
-    "d2C3": "NOT_STARTED",
-    "d3A": "MERGED_CLOSED",
-    "d3APostMergeCorrection": "VERIFIED",
-    "d3B": "DESIGN_APPROVED",
-    "d3BImplementation": "NOT_STARTED",
-    "d3BLiveRun": "NOT_AUTHORIZED",
-    "newsMacro": "NOT_STARTED",
-    "providerLimitSemantics": "UNPROVEN",
-    "fiveRequest43Evidence": "STRUCTURAL_TARGET_ONLY",
-    "realHttpsAcquisition": "NOT_IMPLEMENTED",
-    "liveNetworkAuthorization": "NOT_GRANTED"
+  "frozenDailyScanAlpacaHistoricalDelivery": {
+    "historicalPhase1Status": "MERGED",
+    "historicalPhase1Approval": "CLOSED",
+    "historicalPhase1BStatus": "D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED",
+    "historicalPhase1BDelivery": {
+      "d1": "DESIGN_COMPLETED",
+      "d2C1": "MERGED",
+      "d2C2R2": "MERGED_OFFLINE_ONLY",
+      "d2C3": "NOT_STARTED",
+      "d3A": "MERGED_CLOSED",
+      "d3APostMergeCorrection": "VERIFIED",
+      "d3B": "DESIGN_APPROVED",
+      "d3BImplementation": "NOT_STARTED",
+      "d3BLiveRun": "NOT_AUTHORIZED",
+      "newsMacro": "NOT_STARTED",
+      "providerLimitSemantics": "UNPROVEN",
+      "fiveRequest43Evidence": "STRUCTURAL_TARGET_ONLY",
+      "realHttpsAcquisition": "NOT_IMPLEMENTED",
+      "liveNetworkAuthorization": "NOT_GRANTED"
+    },
+    "historicalPhase1BDesign": {
+      "task": "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL",
+      "status": "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED",
+      "networkAuthority": "NOT_GRANTED",
+      "credentialAccess": "PROHIBITED",
+      "persistenceWrites": 0,
+      "marketDataAcquisition": "D3B_IMPLEMENTATION_NOT_STARTED",
+      "trustedOwnerVerificationKey": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
+      "marketScopePolicy": "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY",
+      "providerLimitSemantics": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
+      "compositionRoot": "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE",
+      "designCommit": "0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b",
+      "designPullRequest": "MERGED_CLOSED",
+      "mergeCommit": "14b5a5aac5157f3284368608a84c890606fc5496",
+      "mergeTimestamp": "2026-08-02T23:34:45.000Z",
+      "designApproval": "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION",
+      "implementationStatus": "NOT_STARTED",
+      "liveRunStatus": "NOT_AUTHORIZED"
+    }
   },
-  "phase1BDesign": {
-    "task": "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL",
-    "status": "D3B_DESIGN_APPROVED_IMPLEMENTATION_NOT_STARTED_LIVE_RUN_NOT_AUTHORIZED",
-    "networkAuthority": "NOT_GRANTED",
-    "credentialAccess": "PROHIBITED",
-    "persistenceWrites": 0,
-    "marketDataAcquisition": "D3B_IMPLEMENTATION_NOT_STARTED",
-    "trustedOwnerVerificationKey": "PRODUCT_COMPOSITION_ROOT_REQUIRED_FAIL_CLOSED",
-    "marketScopePolicy": "EXACT_3_QUALIFICATION_REQUESTS_DESIGN_ONLY",
-    "providerLimitSemantics": "UNPROVEN_FAIL_CLOSED_BEFORE_TRANSPORT",
-    "compositionRoot": "PRODUCT_FIXED_NO_ARGUMENT_ENTRY_TEST_TRANSPORT_SEPARATE",
-    "designCommit": "0a8d8668b95c0756d91477f9aa3c7b805bf9ce2b",
-    "designPullRequest": "MERGED_CLOSED",
-    "mergeCommit": "14b5a5aac5157f3284368608a84c890606fc5496",
-    "mergeTimestamp": "2026-08-02T23:34:45.000Z",
-    "designApproval": "APPROVED_SEPARATE_FROM_NETWORK_AUTHORIZATION",
-    "implementationStatus": "NOT_STARTED",
-    "liveRunStatus": "NOT_AUTHORIZED"
-  },
-  "optionsStatus": "CLOSED",
+  "optionsStatus": "PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED",
   "brokerStatus": "CLOSED",
   "paperTradingStatus": "CLOSED",
   "orderExecutionStatus": "CLOSED"
