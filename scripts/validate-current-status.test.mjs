@@ -132,7 +132,7 @@ const tests = [
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.marketDataAcquisition must equal \"D3B_IMPLEMENTATION_NOT_STARTED\"."));
-    assert(validation.issues.includes("optionsStatus must equal \"PHASE_0_IMPLEMENTED_AWAITING_OWNER_REVIEW_PHASE_1_NOT_STARTED\"."));
+    assert(validation.issues.includes("optionsStatus must equal \"PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED\"."));
     assert(validation.issues.includes("brokerStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("paperTradingStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("orderExecutionStatus must equal \"CLOSED\"."));
@@ -140,17 +140,25 @@ const tests = [
     assert(validation.issues.includes("ownerDailyProductEntry must equal \"FROZEN_CODE_RETAINED\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
-  ["Phase 0 source and current Owner-review milestone cannot drift", () => {
+  ["Phase 0 Owner approval and the Phase 1 authorization gate cannot drift", () => {
     const changed = clone(status);
     changed.source.repository = "other/repository";
     changed.source.source_baseline_commit = changed.source.reviewed_c4_commit;
-    changed.currentMilestone.status = "IN_PROGRESS";
+    changed.currentMilestone.status = "IMPLEMENTED_AWAITING_OWNER_REVIEW";
+    changed.currentMilestone.approvedCommit = "0000000000000000000000000000000000000000";
+    changed.productDirection.phase0Status = "IMPLEMENTED_AWAITING_OWNER_REVIEW";
+    changed.productDirection.phase1Status = "IN_PROGRESS";
+    changed.next = ["OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1"];
     changed.validation.phase1bD3AMergedHead.includesUncommittedCode = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_AWAITING_OWNER_REVIEW\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"OWNER_APPROVED\"."));
+    assert(validation.issues.includes("currentMilestone.approvedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
+    assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
+    assert(validation.issues.includes("productDirection.phase1Status must equal \"NOT_STARTED\"."));
+    assert(validation.issues.includes("next must contain only OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
@@ -268,7 +276,7 @@ const tests = [
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
     assert(status.frozen.includes("ALPACA_D3B_NEXT_ACTION"));
-    assert.deepEqual(status.next, ["OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1"]);
+    assert.deepEqual(status.next, ["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1"]);
     assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");

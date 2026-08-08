@@ -1,8 +1,8 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.10",
-  "statusId": "alpha-status:options-only-mvp-phase0-r1-owner-review",
-  "asOf": "2026-08-08T18:13:36.914Z",
+  "schemaVersion": "1.11",
+  "statusId": "alpha-status:options-only-mvp-phase0-r1-owner-approved",
+  "asOf": "2026-08-08T21:24:16.410Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/main",
@@ -13,7 +13,8 @@
   "currentMilestone": {
     "id": "OPTIONS_ONLY_MVP_PHASE_0",
     "name": "Options-Only MVP Governance and Risk Authority Convergence",
-    "status": "IMPLEMENTED_AWAITING_OWNER_REVIEW"
+    "status": "OWNER_APPROVED",
+    "approvedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
@@ -29,7 +30,8 @@
     "OPTIONS_ONLY_MACHINE_STATUS_CONVERGED",
     "OPTIONS_RISK_POLICY_RECORDED",
     "LEGACY_MODULE_DISPOSITION_RECORDED",
-    "OPTIONS_PHASE_1_FILE_PLAN_RECORDED"
+    "OPTIONS_PHASE_1_FILE_PLAN_RECORDED",
+    "OPTIONS_ONLY_MVP_PHASE_0_R1_OWNER_APPROVED"
   ],
   "inProgress": [],
   "blocked": [
@@ -56,12 +58,12 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1"
+    "OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1"
   ],
   "productDirection": {
     "currentProduct": "OPTIONS_ONLY_MVP",
     "currentPhase": "PHASE_0",
-    "phase0Status": "IMPLEMENTED_AWAITING_OWNER_REVIEW",
+    "phase0Status": "OWNER_APPROVED",
     "phase1Status": "NOT_STARTED",
     "permanentMission": [
       "PROTECT_CAPITAL",
@@ -403,7 +405,7 @@
       "liveRunStatus": "NOT_AUTHORIZED"
     }
   },
-  "optionsStatus": "PHASE_0_IMPLEMENTED_AWAITING_OWNER_REVIEW_PHASE_1_NOT_STARTED",
+  "optionsStatus": "PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED",
   "brokerStatus": "CLOSED",
   "paperTradingStatus": "CLOSED",
   "orderExecutionStatus": "CLOSED"

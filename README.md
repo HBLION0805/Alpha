@@ -13,7 +13,8 @@ summarize that file and must not define a competing current state.
 
 Alpha's current direction is the **Options-Only MVP**. Phase 0 has converged
 the mission, status, risk policy, legacy-module disposition, and Phase 1 plan
-and now awaits `OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1`. Phase 1 has not started. The system remains
+and is now Owner-approved. Phase 1 remains `NOT_STARTED` and requires explicit
+Owner authorization before it may begin. The system remains
 advisory only: it reads no Robinhood account, balance, position, or credential;
 it places no order and connects to no Paper Trading account. The Personal ETF
 Daily Scan and Event Contract product entries are frozen with their code

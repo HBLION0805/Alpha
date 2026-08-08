@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.10",
+  "$id": "https://alpha.local/schemas/project-status/1.11",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -17,7 +17,7 @@
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.10" },
+    "schemaVersion": { "const": "1.11" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -46,7 +46,7 @@
     "validation": { "$ref": "#/$defs/validation" },
     "networkAuthority": { "const": "NOT_GRANTED" },
     "frozenDailyScanAlpacaHistoricalDelivery": { "$ref": "#/$defs/frozenDailyScanAlpacaHistoricalDelivery" },
-    "optionsStatus": { "const": "PHASE_0_IMPLEMENTED_AWAITING_OWNER_REVIEW_PHASE_1_NOT_STARTED" },
+    "optionsStatus": { "const": "PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED" },
     "brokerStatus": { "const": "CLOSED" },
     "paperTradingStatus": { "const": "CLOSED" },
     "orderExecutionStatus": { "const": "CLOSED" }
@@ -67,11 +67,12 @@
     "milestone": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "name", "status"],
+      "required": ["id", "name", "status", "approvedCommit"],
       "properties": {
         "id": { "const": "OPTIONS_ONLY_MVP_PHASE_0" },
         "name": { "const": "Options-Only MVP Governance and Risk Authority Convergence" },
-        "status": { "const": "IMPLEMENTED_AWAITING_OWNER_REVIEW" }
+        "status": { "const": "OWNER_APPROVED" },
+        "approvedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
       }
     },
     "productDirection": {
@@ -81,7 +82,7 @@
       "properties": {
         "currentProduct": { "const": "OPTIONS_ONLY_MVP" },
         "currentPhase": { "const": "PHASE_0" },
-        "phase0Status": { "const": "IMPLEMENTED_AWAITING_OWNER_REVIEW" },
+        "phase0Status": { "const": "OWNER_APPROVED" },
         "phase1Status": { "const": "NOT_STARTED" },
         "permanentMission": {
           "type": "array",

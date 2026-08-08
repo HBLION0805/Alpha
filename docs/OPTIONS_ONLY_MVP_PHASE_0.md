@@ -1,6 +1,6 @@
 # Alpha Options-Only MVP Phase 0
 
-Status: IMPLEMENTED_AWAITING_OWNER_REVIEW (Phase 0-R1 correction)
+Status: OWNER_APPROVED (Phase 0-R1 correction)
 Date: 2026-08-08
 Authority: Owner-approved product governance; no trading or network authority
 
@@ -9,8 +9,8 @@ Authority: Owner-approved product governance; no trading or network authority
 Alpha's current early product is an Options-Only decision-support MVP. The
 system may eventually research options on approved ETFs and equities, but it
 does not trade stocks, ETFs, Event Contracts, or options. Phase 0 changes
-governance and contracts only; Phase 1 has not started. The only next action
-is `OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1`.
+governance and contracts only; Phase 1 is `NOT_STARTED`. The only next action
+is `OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1`.
 
 `productDirection.phase1Status = NOT_STARTED` is the only current Options
 Phase 1 state. Frozen Daily Scan/Alpaca delivery history is retained only under
@@ -300,7 +300,7 @@ Robinhood data, Paper Trading, orders, and execution.
 
 ## 6. Exit Gate
 
-Phase 0 stops after these governance artifacts and validation evidence are
-presented for Owner review. It grants no Phase 1 start, network, credential,
-provider, persistence, recommendation, account, broker, order, or execution
-authority.
+Phase 0 is Owner-approved and stops after these governance artifacts and
+validation evidence. It grants no Phase 1 start without explicit Owner
+authorization, and no network, credential, provider, persistence,
+recommendation, account, broker, order, or execution authority.

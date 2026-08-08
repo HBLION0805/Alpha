@@ -37,7 +37,7 @@ export function validateCurrentStatus(status, schema) {
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
   exact(status.$schema, "./current.schema.json", "$schema", issues);
-  exact(status.schemaVersion, "1.10", "schemaVersion", issues);
+  exact(status.schemaVersion, "1.11", "schemaVersion", issues);
   if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
     issues.push("statusId must be a bounded Alpha status identifier.");
   }
@@ -53,7 +53,8 @@ export function validateCurrentStatus(status, schema) {
   validateExactObject(status.currentMilestone, "currentMilestone", {
     id: "OPTIONS_ONLY_MVP_PHASE_0",
     name: "Options-Only MVP Governance and Risk Authority Convergence",
-    status: "IMPLEMENTED_AWAITING_OWNER_REVIEW",
+    status: "OWNER_APPROVED",
+    approvedCommit: "febcce0ac6f70bb670fd8e07763c87bc33d4d106",
   }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
     validateStatusItems(status[field], field, issues);
@@ -65,20 +66,21 @@ export function validateCurrentStatus(status, schema) {
   requireStatusItem(status.completed, "PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED", "completed", issues);
   requireStatusItem(status.completed, "PHASE_1B_D3B_DESIGN_APPROVED_MERGED", "completed", issues);
   requireStatusItem(status.completed, "OPTIONS_RISK_POLICY_RECORDED", "completed", issues);
+  requireStatusItem(status.completed, "OPTIONS_ONLY_MVP_PHASE_0_R1_OWNER_APPROVED", "completed", issues);
   requireStatusItem(status.blocked, "OPTIONS_PHASE_1_NOT_STARTED", "blocked", issues);
   if (!Array.isArray(status.inProgress) || status.inProgress.length !== 0) {
-    issues.push("inProgress must be empty during Phase 0 Owner review.");
+    issues.push("inProgress must be empty after Phase 0 Owner approval.");
   }
   requireStatusItem(status.frozen, "ETF_DAILY_SCAN_PRODUCT_ENTRY", "frozen", issues);
   requireStatusItem(status.frozen, "EVENT_CONTRACT_PRODUCT_ENTRY", "frozen", issues);
   requireStatusItem(status.frozen, "ALPACA_D3B_NEXT_ACTION", "frozen", issues);
-  if (!Array.isArray(status.next) || JSON.stringify(status.next) !== JSON.stringify(["OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1"])) {
-    issues.push("next must contain only OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1.");
+  if (!Array.isArray(status.next) || JSON.stringify(status.next) !== JSON.stringify(["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1"])) {
+    issues.push("next must contain only OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1.");
   }
   validateExactObject(status.productDirection, "productDirection", {
     currentProduct: "OPTIONS_ONLY_MVP",
     currentPhase: "PHASE_0",
-    phase0Status: "IMPLEMENTED_AWAITING_OWNER_REVIEW",
+    phase0Status: "OWNER_APPROVED",
     phase1Status: "NOT_STARTED",
     permanentMission: ["PROTECT_CAPITAL", "ALLOCATE_CAPITAL", "GROW_CAPITAL", "COMPOUND_CAPITAL"],
     earlyCapitalGrowthTool: "DEFINED_RISK_OPTIONS",
@@ -194,7 +196,7 @@ export function validateCurrentStatus(status, schema) {
     implementationStatus: "NOT_STARTED",
     liveRunStatus: "NOT_AUTHORIZED",
   }, issues);
-  exact(status.optionsStatus, "PHASE_0_IMPLEMENTED_AWAITING_OWNER_REVIEW_PHASE_1_NOT_STARTED", "optionsStatus", issues);
+  exact(status.optionsStatus, "PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED", "optionsStatus", issues);
   exact(status.brokerStatus, "CLOSED", "brokerStatus", issues);
   exact(status.paperTradingStatus, "CLOSED", "paperTradingStatus", issues);
   exact(status.orderExecutionStatus, "CLOSED", "orderExecutionStatus", issues);
@@ -218,7 +220,7 @@ function validateSchema(schema, issues) {
     return;
   }
   exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
-  exact(schema.$id, "https://alpha.local/schemas/project-status/1.10", "schema.$id", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.11", "schema.$id", issues);
   exact(schema.type, "object", "schema.type", issues);
   exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
   if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {

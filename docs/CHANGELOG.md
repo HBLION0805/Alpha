@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-08-08 - Options-Only MVP Phase 0-R1 Owner Approval
+
+- Recorded formal Owner approval of Phase 0-R1 commit
+  `febcce0ac6f70bb670fd8e07763c87bc33d4d106` in the authoritative current
+  status. Phase 1 remains `NOT_STARTED` and requires explicit Owner
+  authorization before it may begin.
+- Preserved all no-network, no-broker, no-account-read, no-order-entry,
+  no-Paper-Trading, and no-execution boundaries. No product runtime or frozen
+  legacy lane changed.
+
 ## 2026-08-08 - Options-Only MVP Phase 0-R1 Correction
 
 - Reconciled the Phase 0 validation record against a newly observed clean

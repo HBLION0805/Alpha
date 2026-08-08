@@ -8,8 +8,9 @@
 
 The authoritative current state is
 [Current Project Status](status/current.json). The current milestone is
-Options-Only MVP Phase 0-R1, `IMPLEMENTED_AWAITING_OWNER_REVIEW`. Phase 1 news
-infrastructure is planned at file level but has not started. No network,
+Options-Only MVP Phase 0-R1, `OWNER_APPROVED`. Phase 1 news infrastructure is
+planned at file level, remains `NOT_STARTED`, and requires explicit Owner
+authorization before it may begin. No network,
 credential, account, market-data persistence, Paper Trading, order, or
 execution authority is granted. The ETF Daily Scan and Event Contract product
 entries are frozen; their code is retained. See

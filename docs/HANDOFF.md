@@ -4,7 +4,7 @@ Date:
 2026-08-08
 
 Project Stage:
-Options-Only MVP Phase 0-R1 `IMPLEMENTED_AWAITING_OWNER_REVIEW`; Phase 1 not started
+Options-Only MVP Phase 0-R1 `OWNER_APPROVED`; Phase 1 `NOT_STARTED` pending explicit Owner authorization
 
 ## Current Architecture Checkpoint
 
@@ -14,7 +14,8 @@ fact source. Alpha's current direction is the Options-Only MVP. Phase 0 changes
 governance, machine status, risk-policy authority, legacy-module disposition,
 and the Phase 1 file plan only. It adds no news, candle, option-chain, Greeks,
 strategy-selection, Decision Card, broker, order, or execution runtime. Phase
-1 is `NOT_STARTED`; `OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1` is the only next action. See
+1 is `NOT_STARTED`; `OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1` is
+the only next action. See
 [Options-Only MVP Phase 0](OPTIONS_ONLY_MVP_PHASE_0.md).
 
 Dashboard product capability is `REUSE`. Audit confirmed only the legacy
@@ -805,9 +806,10 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of Options-Only MVP Phase 0-R1 only. Do not begin Phase 1, resume the
-ETF Daily Scan or Event Contract product entries, implement Alpaca D3B, enable
-network or credential access, connect Paper Trading, or add order execution.
+Wait for explicit Owner authorization to start Options Phase 1. Do not begin
+Phase 1, resume the ETF Daily Scan or Event Contract product entries, implement
+Alpaca D3B, enable network or credential access, connect Paper Trading, or add
+order execution.
 Historical validation totals elsewhere in this document are historical records
 and are not results rerun for this Phase 0 worktree.
 
