@@ -1,5 +1,52 @@
 # Alpha Architecture Decisions
 
+## 2026-08-08 - Correct Phase 0 validation evidence and complete Options policy record
+
+- Decision: retain Phase 0 as `IMPLEMENTED_AWAITING_OWNER_REVIEW`; the prior
+  Owner-review submission is not self-approved and its next action is
+  `OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1`.
+- Decision: replace the internally inconsistent, dependency-blocked Phase 0
+  baseline record only with a newly observed, clean-baseline run under the
+  same locked toolchain as the R1 working-tree run. Historical merged-head
+  results remain historical records rather than current-run claims.
+- Decision: make the approved Options policy explicit as `ACTUAL_USD` with a
+  `100` contract multiplier, Operating-Capital-only eligibility, full
+  fail-closed, strategy, DTE, universe, and concentration boundaries. It is
+  recorded policy, not runtime enforcement.
+- Decision: source status must record stable repository/baseline facts, not a
+  temporary detached worktree state. Isolation remains an audit fact only.
+
+## 2026-08-08 - Make Options-Only MVP the current product direction
+
+- Decision: replace the current ETF Daily Scan / Alpaca D3B next action with
+  Options-Only MVP Phase 0 and require Owner review before Phase 1 starts.
+- Decision: freeze the ETF Daily Scan and Event Contract product entries while
+  retaining all old code and evidence for audit and selective reuse. This
+  supersedes their earlier status as current product lanes; it does not erase
+  their implementation history.
+- Decision: preserve the permanent mission to protect, allocate, grow, and
+  compound capital. Defined-risk options are an early capital-growth tool, not
+  a replacement for long-term quality-asset ownership, and no fixed return is
+  promised.
+- Decision: establish product-scoped, versioned risk policies. The current
+  Options policy uses actual-dollar maximum loss after the standard 100-share
+  contract multiplier and costs: `$25` normal, `$12.50` `EVENT_MODE`, `$50`
+  daily, `$100` weekly, with a higher-priority `$80` cumulative-drawdown hard
+  pause. Unproven maximum loss produces
+  `NO_TRADE / MAX_LOSS_NOT_PROVEN`.
+- Decision: retain the earlier ETF/Event `$8/$5/$20/$40/$80` record as frozen
+  legacy policy and retain the Python percentage-based engine as research
+  compatibility; neither is Options product authority.
+- Decision: retain Dashboard as a reusable product capability. Phase 0 audit
+  found the Python sample terminal's Cash/Stocks/Event views and the frozen
+  Offline Daily Scan interface unsuitable as Options interfaces; only those
+  legacy interfaces are `RETIRE_LATER`. Options Dashboard adaptation requires
+  separate approval and is not implemented here.
+- Boundary: Phase 0 adds governance and contracts only. News, candles, option
+  chains, Greeks, strategy selection, Decision Cards, Robinhood account or
+  credential reads, Paper Trading, orders, and execution remain unimplemented
+  or prohibited.
+
 ## 2026-08-02 - D3A real-source capability and diagnostic authority
 
 - Decision: only the no-argument product composition may create the product

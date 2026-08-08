@@ -1,16 +1,31 @@
 # Alpha Handoff
 
 Date:
-2026-08-02
+2026-08-08
 
 Project Stage:
-Phase 1B-D3B live-readonly qualification design is approved; implementation awaits Owner approval
+Options-Only MVP Phase 0-R1 `IMPLEMENTED_AWAITING_OWNER_REVIEW`; Phase 1 not started
 
 ## Current Architecture Checkpoint
 
 The authoritative machine-readable current-state record is
 [`docs/status/current.json`](status/current.json), while Git remains the code
-fact source. Phase 1A was merged to `main` as
+fact source. Alpha's current direction is the Options-Only MVP. Phase 0 changes
+governance, machine status, risk-policy authority, legacy-module disposition,
+and the Phase 1 file plan only. It adds no news, candle, option-chain, Greeks,
+strategy-selection, Decision Card, broker, order, or execution runtime. Phase
+1 is `NOT_STARTED`; `OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1` is the only next action. See
+[Options-Only MVP Phase 0](OPTIONS_ONLY_MVP_PHASE_0.md).
+
+Dashboard product capability is `REUSE`. Audit confirmed only the legacy
+Python sample terminal and Offline Daily Scan interfaces as unsuitable for the
+Options-only product contract, so those interfaces alone are `RETIRE_LATER`.
+The future Options Dashboard needs a separately reviewed adapter; none is
+implemented in Phase 0.
+
+The ETF Daily Scan and Event Contract product entries are frozen with code
+retained. The Daily Scan and Alpaca material below is historical implementation
+context for audit and reuse, not the current product milestone. Phase 1A was merged to `main` as
 `4e4282582b816863c35efc6d5657cdf52d18abc9`, including reviewed C4 commit
 `095657cd5c72d095d9c72b2ec76a580b35e9d3c7`; its post-merge status baseline is
 `f565e9e5250cfd2fca5e6ed9c244b3947add7b28`. The original worktree and its
@@ -790,11 +805,11 @@ Backlog without immediate scheduling:
 
 ## Immediate Next Task
 
-Owner review of the uncommitted Phase 1A post-merge status convergence only.
-The merged offline Daily Scan supports `fixture` and `dry-run`; post-merge
-validation passes 136 components and 2736/2736 registered tests. Do not begin
-Phase 1B, enable a live read without separate Owner network authorization, or
-resume or mix T3B15-C5.
+Owner review of Options-Only MVP Phase 0-R1 only. Do not begin Phase 1, resume the
+ETF Daily Scan or Event Contract product entries, implement Alpaca D3B, enable
+network or credential access, connect Paper Trading, or add order execution.
+Historical validation totals elsewhere in this document are historical records
+and are not results rerun for this Phase 0 worktree.
 
 ## T3G-C13 Eleven-symbol Active Scope
 

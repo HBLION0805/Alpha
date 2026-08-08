@@ -1,5 +1,35 @@
 # Alpha Changelog
 
+## 2026-08-08 - Options-Only MVP Phase 0-R1 Correction
+
+- Reconciled the Phase 0 validation record against a newly observed clean
+  baseline under the same existing locked dependency state; historical merged
+  validation records were preserved as history.
+- Expanded the recorded, non-runtime-enforced Options policy with exact risk
+  unit/multiplier, capital eligibility, maximum-loss inputs, strategy/DTE,
+  universe, and concentration boundaries.
+- Completed the Phase 1 planning-only news plan with Source Registry, entity
+  linking, strict contract validation, and all three permitted verification
+  paths. No Phase 1 source files or product logic were created.
+
+## 2026-08-08 - Options-Only MVP Phase 0
+
+- Converged the current product mission on an Options-Only decision-support
+  MVP while preserving the permanent protect/allocate/grow/compound mission
+  and long-term quality-asset destination.
+- Froze the ETF Daily Scan and Event Contract product entries without deleting
+  their code, and replaced Alpaca D3B as the current next action with Phase 0
+  Owner review.
+- Added a machine-readable, product-scoped Options risk policy and retained the
+  older ETF/Event and Python risk meanings as separate non-Options authorities.
+- Recorded module-by-module KEEP/REUSE/FREEZE/RETIRE_LATER disposition and a
+  file-level Phase 1 news-infrastructure plan without implementing Phase 1.
+- Corrected Dashboard disposition: the product capability is reusable; only
+  the audited legacy Python sample terminal and frozen Daily Scan interfaces
+  retire later. No Options Dashboard adapter was implemented.
+- Added no network, dependency, credential, account, persistence, market-data,
+  broker, Paper Trading, order, or execution behavior.
+
 ## 2026-08-02 - Phase 1B-D3A post-merge evidence-integrity correction
 
 - Removed caller-controlled response-origin and Provider-proof declarations

@@ -33,6 +33,32 @@ Short-term trading exists only to support long-term investing.
 
 ---
 
+# Current Options-Only MVP Boundary
+
+The current early product direction is Options-Only. Phase 0-R1 records product
+governance and the versioned Options risk policy; it implements no news,
+candle, option-chain, Greeks, strategy-selection, Decision Card, broker, or
+execution behavior. Phase 1 is `NOT_STARTED` and requires separate Owner
+approval. The Personal ETF Daily Scan and Event Contract product entries are
+frozen, while their code remains available as legacy research, market-data,
+evidence, risk, journal, and learning infrastructure.
+
+Dashboard remains a reusable product capability responsible for presenting
+state and decision support without owning decision or risk authority. The
+legacy Python sample terminal hard-codes Cash, Stocks, and Event Contract views,
+and the Offline Daily Scan interface belongs to the frozen ETF lane; those
+interfaces are preserved but marked `RETIRE_LATER`. A future Options Dashboard
+requires an adapter to reviewed Options contracts and is not implemented in
+Phase 0.
+
+Options are an early defined-risk capital-growth tool. They do not replace
+Alpha's permanent goal of protecting, allocating, growing, and compounding
+capital or the long-term destination of quality-asset ownership. The full
+Phase 0 authority and Phase 1 file plan are defined in
+[Options-Only MVP Phase 0](OPTIONS_ONLY_MVP_PHASE_0.md).
+
+---
+
 # System Philosophy
 
 Protect Capital
@@ -63,7 +89,8 @@ Authority.
   integration foundations.
 - Python contains historical portfolio, dashboard, decision, and risk
   prototypes. It is restricted to research, prototype work, and statistical
-  validation. The sample terminal Dashboard is deprecated as a product entry.
+  validation. The sample terminal Dashboard interface is deprecated as a
+  product entry; Dashboard as a product capability remains reusable.
 
 The TypeScript application layer may invoke the registered
 `risk.calculate_limits` Python operation only as a compatibility/research
@@ -72,7 +99,7 @@ product Risk Authority. No product consumer may treat Python output as an
 approval to allocate or risk capital. Python does not invoke TypeScript and
 cannot mutate TypeScript product decisions, journal records, or capital state.
 
-## Phase 1A Operational Boundary
+## Frozen Legacy Phase 1A Operational Boundary
 
 Commit `574a9c2c0329bdb87a94b19ad4517be562c37aa6` is the implementation source
 baseline; it is not represented as the current HEAD after Phase 1A changes.
@@ -308,14 +335,23 @@ Responsible for:
 - Portfolio exposure
 - Capital preservation
 
-The future product authority is a single TypeScript Unified Short-Term Risk
-Authority shared by ETF and Event candidates. The Owner-approved Phase 0
-record is versioned but not enforced: ETF maximum planned loss `$8`, Event
-maximum cost risk `$5`, daily maximum loss `$20`, weekly maximum loss `$40`,
-total drawdown pause `$80`, initial leveraged-ETF position limit `10%` of
-capital, and one concurrent short-term theme. Implementing or wiring these
-rules requires a later separately approved phase. The record grants no
-recommendation, position-sizing, order, Paper Trading, or execution authority.
+Risk authority is product-scoped and versioned. The current
+`options-only-mvp-risk-policy-1.0` records `riskUnit = ACTUAL_USD`,
+`contractMultiplier = 100`, and actual maximum loss after the standard
+contract multiplier and costs: `$25` normally, `$12.50` in
+`EVENT_MODE`, `$50` daily, `$100` weekly, and a higher-priority `$80`
+cumulative-drawdown global hard pause. If maximum actual loss cannot be proven,
+the required result is `NO_TRADE / MAX_LOSS_NOT_PROVEN`. Only Long Call, Long
+Put, Bull Call Debit Spread, and Bear Put Debit Spread are allowed; 0DTE, 1DTE,
+naked shorts, credit, margin, and unlimited-risk structures are prohibited.
+Only limit orders may be recommended, and the Owner enters any order manually
+in Robinhood outside Alpha.
+
+The earlier ETF/Event `$8/$5/$20/$40/$80` record remains frozen as legacy
+policy and is not Options authority. The Python percentage-based Risk Engine
+remains research compatibility, not product authority. No current policy is
+runtime-enforced in Phase 0, and none grants account access, Paper Trading, or
+execution authority. See [Options-Only MVP Phase 0](OPTIONS_ONLY_MVP_PHASE_0.md).
 
 ---
 

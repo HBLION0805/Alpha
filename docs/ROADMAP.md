@@ -7,7 +7,28 @@
 ## Current Delivery Milestone
 
 The authoritative current state is
-[Current Project Status](status/current.json). Phase 1A Offline Personal Daily
+[Current Project Status](status/current.json). The current milestone is
+Options-Only MVP Phase 0-R1, `IMPLEMENTED_AWAITING_OWNER_REVIEW`. Phase 1 news
+infrastructure is planned at file level but has not started. No network,
+credential, account, market-data persistence, Paper Trading, order, or
+execution authority is granted. The ETF Daily Scan and Event Contract product
+entries are frozen; their code is retained. See
+[Options-Only MVP Phase 0](OPTIONS_ONLY_MVP_PHASE_0.md).
+
+Dashboard remains a reusable long-term product capability. The legacy Python
+sample terminal and frozen Offline Daily Scan interfaces are retained pending
+later retirement. Options Dashboard adaptation is future work and is not part
+of Phase 0 or the Phase 1 news plan.
+
+The permanent mission remains capital protection, allocation, growth, and
+compounding. Options are the bounded early tool; quality-asset ownership and
+non-leveraged compounding remain the long-term destination.
+
+### Frozen Legacy Delivery Record
+
+The following record documents completed Daily Scan and Alpaca work for audit
+and possible infrastructure reuse. It is not the current milestone or next
+action. Phase 1A Offline Personal Daily
 Scan Foundation is merged and closed. Its implementation merge is
 `4e4282582b816863c35efc6d5657cdf52d18abc9`, and its post-merge status baseline
 is `f565e9e5250cfd2fca5e6ed9c244b3947add7b28`. T3B15-C5 remains

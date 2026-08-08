@@ -46,6 +46,7 @@ const requiredFiles = [
   "docs/CODEX_DEVELOPMENT_STANDARD.md",
   "docs/CODEX_TASK_TEMPLATE.md",
   "docs/OWNER_REVIEW_TEMPLATE.md",
+  "docs/OPTIONS_ONLY_MVP_PHASE_0.md",
   "docs/status/current.json",
   "docs/status/current.schema.json",
   "docs/ARCHITECTURE.md",
