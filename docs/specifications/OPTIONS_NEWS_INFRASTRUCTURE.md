@@ -30,8 +30,15 @@ provider. Summary failure cannot change verification.
 
 ## Sources, adapters, and transports
 
-The immutable Source Registry owns Tier and independence policy. Adapters may
-not promote themselves or change publisher lineage. Implemented sources are:
+The immutable Source Registry owns Tier, eligibility, effective-period, and
+independence policy. `OptionsNewsSourceAuthorization` snapshots that registry
+as the pipeline's runtime trust boundary. Before transport it binds the
+adapter's claimed source/provider/publisher/Tier/family/lineage to the Registry.
+After normalization, and before any repository write, it revalidates every
+observation's identity, eligible event/topic scope, effective registration,
+verified upstream origin, and Registry-derived `independenceKey`. Unregistered
+or drifting input fails closed as `REGISTRY_DRIFT`; an adapter's own `source`
+object is never authorization. Implemented sources are:
 
 | Source | Tier | Adapter | Fixture cost | Live state |
 | --- | --- | --- | ---: | --- |
@@ -103,7 +110,9 @@ The versioned combined News + Options Data monthly policy uses a UTC boundary,
 an `$80.00` warning threshold and `$100.00` hard threshold. The in-memory ledger
 requires a known estimate before reservation, accounts for pending reservations,
 reconciles actual simulated cost, releases failures, and cannot be bypassed by
-provider switching. Reconcile and release may transition only `RESERVED`
+provider switching. A non-negative safe-integer actual cost is always recorded,
+including when it exceeds its estimate; reaching or exceeding the hard limit
+blocks every later reservation. Reconcile and release may transition only `RESERVED`
 entries; identical settlements replay, conflicting or cross-terminal
 settlements fail closed, and reconciled actual cost cannot later be released.
 All month selection requires a canonical UTC ISO-8601 timestamp. States are

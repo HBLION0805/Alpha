@@ -8,6 +8,7 @@ const PHASE_1B_D3A_MERGE_COMMIT = "bae51dda65dc55f376cb683f873fa93295ed7e2f";
 const PHASE_1B_D3B_DESIGN_MERGE_COMMIT = "14b5a5aac5157f3284368608a84c890606fc5496";
 const OPTIONS_PHASE_0_BASELINE_COMMIT = "06c0ef2720a6b54fb0e27481efdbdfee786694e4";
 const OPTIONS_PHASE_1_BASELINE_COMMIT = "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9";
+const OPTIONS_PHASE_1_FIRST_CORRECTIVE_COMMIT = "7191d0cb53877f6197bc1c753b013d5ad8b38e08";
 const STATUS_FIELDS = Object.freeze([
   "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
   "completed", "inProgress", "blocked", "frozen", "next", "productDirection", "optionsNewsInfrastructure", "runtimeOwnership",
@@ -38,7 +39,7 @@ export function validateCurrentStatus(status, schema) {
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
   exact(status.$schema, "./current.schema.json", "$schema", issues);
-  exact(status.schemaVersion, "1.12", "schemaVersion", issues);
+  exact(status.schemaVersion, "1.13", "schemaVersion", issues);
   if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
     issues.push("statusId must be a bounded Alpha status identifier.");
   }
@@ -238,7 +239,7 @@ function validateSchema(schema, issues) {
     return;
   }
   exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
-  exact(schema.$id, "https://alpha.local/schemas/project-status/1.12", "schema.$id", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.13", "schema.$id", issues);
   exact(schema.type, "object", "schema.type", issues);
   exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
   if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {
@@ -493,7 +494,7 @@ function validateValidation(value, issues) {
     issues.push("validation must be an object.");
     return;
   }
-  const fields = ["classification", "phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline", "phase0BaselineAttempt", "phase0WorkingTreeAttempt", "phase1NewsWorkingTreeAttempt"];
+  const fields = ["classification", "phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline", "phase0BaselineAttempt", "phase0WorkingTreeAttempt", "phase1NewsWorkingTreeAttempt", "phase1NewsCorrectiveWorkingTreeAttempt"];
   allowOnly(value, fields, "validation", issues);
   requireExactly(value, fields, "validation", issues);
   exact(value.classification, "HISTORICAL_RECORDS_PLUS_PHASE0_R1_AND_PHASE1_NEWS_OBSERVED_ATTEMPTS", "validation.classification", issues);
@@ -533,6 +534,22 @@ function validateValidation(value, issues) {
     networkUsed: false,
     realCostCents: 0,
     rawEvidenceAvailability: "OBSERVED_IN_CODEX_SESSION_OUTPUT",
+  }, issues);
+  validateExactObject(value.phase1NewsCorrectiveWorkingTreeAttempt, "validation.phase1NewsCorrectiveWorkingTreeAttempt", {
+    kind: "PHASE_1_NEWS_MERGE_GATE_CORRECTIVE_WORKING_TREE",
+    source_baseline_commit: OPTIONS_PHASE_1_FIRST_CORRECTIVE_COMMIT,
+    includesUncommittedCode: true,
+    command: "npm.cmd run alpha:validate",
+    status: "PASSED",
+    componentCount: 145,
+    testsExecuted: 2962,
+    passed: 2962,
+    failed: 0,
+    durationMs: null,
+    networkUsed: false,
+    realCostCents: 0,
+    rawEvidenceAvailability: "OBSERVED_IN_CODEX_SESSION_OUTPUT",
+    evidenceAuthority: "LOCAL_CODEX_SESSION_NOT_GITHUB_CI",
   }, issues);
   if (isRecord(value.phase0BaselineAttempt) && isRecord(value.phase0WorkingTreeAttempt)) {
     if (value.phase0BaselineAttempt.comparability === "COMPARABLE" &&

@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "fixture-news-1.0",
+  "articles": [{
+    "id": "iw-0001", "publisher": "publisher:test-independent-wire", "upstreamOriginId": "publisher:test-independent-wire", "headline": "Acme confirms cloud expansion", "url": "https://independent.example.test/acme-cloud-expansion", "publishedAt": "2026-08-07T15:00:00Z", "timezone": "UTC", "receivedAtUtc": "2026-08-07T15:00:15.000Z", "ingestedAtUtc": "2026-08-07T15:00:16.000Z", "normalizedAtUtc": "2026-08-07T15:00:17.000Z", "entities": [{"entityId":"entity:acme","symbol":"ACME","alias":"Acme","mappingSource":"fixture:entity-registry","mappingVersion":"1.0","effectiveFromUtc":"2020-01-01T00:00:00.000Z","effectiveToUtc":null}], "eventType": "CORPORATE_NEWS", "topics": ["TECH"], "keyFacts": {"issuer":"Acme","action":"cloud expansion"}, "primaryDocument": null
+  }]
+}

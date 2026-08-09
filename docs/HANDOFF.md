@@ -21,6 +21,16 @@ health, and four end-to-end acceptance scenarios. The next action is
 `OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2`; Phase 2 is not authorized.
 See [Options News Infrastructure](specifications/OPTIONS_NEWS_INFRASTRUCTURE.md).
 
+The final PR merge-gate correction makes the immutable Source Registry a
+runtime pipeline trust boundary: adapter identity is checked before fixture
+execution and every normalized observation is reauthorized before persistence;
+identity, Tier, publisher, origin, eligibility, effective-period, or
+independence drift returns `REGISTRY_DRIFT`. Registered test-only sources now
+exercise the independent-quorum and cited-primary paths without mutating
+normalized evidence. Budget reconciliation records valid actual cost even
+above estimate and blocks subsequent reservations once actual committed cost
+reaches the hard threshold.
+
 No real network, credential, account, broker, order, Paper Trading, execution,
 or production persistence path was opened. SEC EDGAR, Federal Reserve,
 Finnhub/Reuters and Alpha Vantage/Reuters are fixture-first only. The two

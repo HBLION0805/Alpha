@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.12",
+  "$id": "https://alpha.local/schemas/project-status/1.13",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -17,7 +17,7 @@
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.12" },
+    "schemaVersion": { "const": "1.13" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -625,7 +625,7 @@
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["classification", "phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline", "phase0BaselineAttempt", "phase0WorkingTreeAttempt", "phase1NewsWorkingTreeAttempt"],
+      "required": ["classification", "phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline", "phase0BaselineAttempt", "phase0WorkingTreeAttempt", "phase1NewsWorkingTreeAttempt", "phase1NewsCorrectiveWorkingTreeAttempt"],
       "properties": {
         "classification": { "const": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_AND_PHASE1_NEWS_OBSERVED_ATTEMPTS" },
         "phase1aMergedHead": { "$ref": "#/$defs/validationResult" },
@@ -635,7 +635,8 @@
         "coverageBaseline": { "$ref": "#/$defs/coverageBaseline" },
         "phase0BaselineAttempt": { "$ref": "#/$defs/phase0ValidationAttempt" },
         "phase0WorkingTreeAttempt": { "$ref": "#/$defs/phase0ValidationAttempt" },
-        "phase1NewsWorkingTreeAttempt": { "$ref": "#/$defs/phase1NewsValidationAttempt" }
+        "phase1NewsWorkingTreeAttempt": { "$ref": "#/$defs/phase1NewsValidationAttempt" },
+        "phase1NewsCorrectiveWorkingTreeAttempt": { "$ref": "#/$defs/phase1NewsCorrectiveValidationAttempt" }
       }
     },
     "phase1NewsValidationAttempt": {
@@ -656,6 +657,27 @@
         "networkUsed": { "const": false },
         "realCostCents": { "const": 0 },
         "rawEvidenceAvailability": { "const": "OBSERVED_IN_CODEX_SESSION_OUTPUT" }
+      }
+    },
+    "phase1NewsCorrectiveValidationAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source_baseline_commit", "includesUncommittedCode", "command", "status", "componentCount", "testsExecuted", "passed", "failed", "durationMs", "networkUsed", "realCostCents", "rawEvidenceAvailability", "evidenceAuthority"],
+      "properties": {
+        "kind": { "const": "PHASE_1_NEWS_MERGE_GATE_CORRECTIVE_WORKING_TREE" },
+        "source_baseline_commit": { "const": "7191d0cb53877f6197bc1c753b013d5ad8b38e08" },
+        "includesUncommittedCode": { "const": true },
+        "command": { "const": "npm.cmd run alpha:validate" },
+        "status": { "const": "PASSED" },
+        "componentCount": { "const": 145 },
+        "testsExecuted": { "const": 2962 },
+        "passed": { "const": 2962 },
+        "failed": { "const": 0 },
+        "durationMs": { "const": null },
+        "networkUsed": { "const": false },
+        "realCostCents": { "const": 0 },
+        "rawEvidenceAvailability": { "const": "OBSERVED_IN_CODEX_SESSION_OUTPUT" },
+        "evidenceAuthority": { "const": "LOCAL_CODEX_SESSION_NOT_GITHUB_CI" }
       }
     }
   }

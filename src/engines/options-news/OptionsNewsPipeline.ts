@@ -2,14 +2,25 @@ import { NewsEventStatus, type VerificationTransitionRecord } from "../../contra
 import type { OptionsNewsPipelineResult } from "../../contracts/OptionsNewsOperations";
 import type { NewsFixtureTransport, NewsProviderAdapter, NewsProviderRequest } from "../../contracts/OptionsNewsProvider";
 import type { OptionsNewsRepository } from "../../contracts/OptionsNewsRepository";
+import type { NewsSourceRegistry } from "../../contracts/OptionsNewsSourceRegistry";
 import { buildCanonicalEvent, buildEventEvidenceLinks, transition } from "./OptionsNewsProcessing";
 import { DeterministicNewsSummaryProvider } from "./DeterministicNewsSummary";
+import { OptionsNewsRegistryDriftError, OptionsNewsSourceAuthorization } from "./OptionsNewsSourceAuthorization";
 
 export class OptionsNewsPipeline {
-  public constructor(private readonly repository: OptionsNewsRepository, private readonly summary = new DeterministicNewsSummaryProvider()) {}
+  private readonly sourceAuthorization: OptionsNewsSourceAuthorization;
+  public constructor(private readonly repository: OptionsNewsRepository, registry: NewsSourceRegistry, private readonly summary = new DeterministicNewsSummaryProvider()) { this.sourceAuthorization = new OptionsNewsSourceAuthorization(registry); }
   public run(adapter: NewsProviderAdapter, transport: NewsFixtureTransport, request: NewsProviderRequest, verifiedAtUtc: string): OptionsNewsPipelineResult {
-    const raw = transport.execute(adapter.buildRequest(request)); const evidence = adapter.normalize(raw, request);
+    let registration;
+    try { registration = this.sourceAuthorization.authorizeAdapter(adapter, request); }
+    catch (error) { return registryDrift(error); }
+    const transportRequest = adapter.buildRequest(request);
+    try { this.sourceAuthorization.authorizeTransport(transportRequest, registration); }
+    catch (error) { return registryDrift(error); }
+    const raw = transport.execute(transportRequest); const evidence = adapter.normalize(raw, request);
     if (evidence.length === 0) return { status: NewsEventStatus.Unavailable, eventId: null, reasonCode: "NO_PROVIDER_RECORDS" };
+    try { this.sourceAuthorization.authorizeEvidence(evidence, registration, request.requestedAtUtc); }
+    catch (error) { return registryDrift(error); }
     for (const record of evidence) this.repository.putEvidence(record);
     const candidate = buildCanonicalEvent(evidence, this.summary.summarize({ evidence, generatedAtUtc: verifiedAtUtc }), verifiedAtUtc);
     const previous = this.repository.getEvent(candidate.eventId);
@@ -30,3 +41,5 @@ export class OptionsNewsPipeline {
     return { status: event.verificationStatus, eventId: event.eventId, reasonCode: event.currentStateReasonCode };
   }
 }
+
+function registryDrift(error: unknown): OptionsNewsPipelineResult { if (error instanceof OptionsNewsRegistryDriftError) return { status: NewsEventStatus.Unavailable, eventId: null, reasonCode: error.reasonCode }; throw error; }

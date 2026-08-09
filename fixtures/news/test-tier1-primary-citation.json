@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "fixture-news-1.0",
+  "articles": [{
+    "id": "citation-0001", "publisher": "publisher:test-tier1-citation", "upstreamOriginId": "publisher:test-tier1-citation", "headline": "Acme filing cross-checked against accessible primary document", "url": "https://citation.example.test/acme-form-8-k", "publishedAt": "2026-08-07T18:00:00Z", "timezone": "UTC", "receivedAtUtc": "2026-08-07T18:00:07.000Z", "ingestedAtUtc": "2026-08-07T18:00:08.000Z", "normalizedAtUtc": "2026-08-07T18:00:09.000Z", "entities": [{"entityId":"entity:acme","symbol":"ACME","alias":"Acme","mappingSource":"fixture:entity-registry","mappingVersion":"1.0","effectiveFromUtc":"2020-01-01T00:00:00.000Z","effectiveToUtc":null}], "eventType": "SEC_FILING", "topics": ["TECH"], "keyFacts": {"form":"8-K","issuer":"Acme"}, "primaryDocument": "Fixture SEC primary document: Acme Form 8-K."
+  }]
+}

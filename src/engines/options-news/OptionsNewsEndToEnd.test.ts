@@ -1,56 +1,51 @@
 import { NewsEventStatus, NewsEvidenceRelation, NewsSourceTier, type NewsEvidenceRecord } from "../../contracts/OptionsNewsDomain";
 import { NewsTransportMode, type NewsProviderAdapter, type NewsProviderRequest, type NewsTransportRequest } from "../../contracts/OptionsNewsProvider";
+import { NewsNetworkAuthority, NewsSourceEligibility, OPTIONS_NEWS_SOURCE_REGISTRY_VERSION, type NewsSourceRegistration, type NewsSourceRegistry } from "../../contracts/OptionsNewsSourceRegistry";
 import { env } from "node:process";
+import { FixtureNewsAdapterBase } from "../../integration/news/FixtureNewsAdapterBase";
 import { StaticNewsFixtureTransport } from "../../integration/news/NewsTransports";
+import { OPTIONS_NEWS_SOURCE_REGISTRATIONS } from "../../integration/news/OptionsNewsSources";
 import { InMemoryOptionsNewsRepository } from "../../repositories/InMemoryOptionsNewsRepository";
 import { OptionsNewsEvidenceJournalAdapter } from "../../repositories/OptionsNewsEvidenceJournalAdapter";
 import { OPTIONS_NEWS_BUDGET_POLICY, OptionsNewsBudgetLedger } from "./OptionsNewsBudgetLedger";
 import { fixtureHealth } from "./OptionsNewsHealth";
 import { OptionsNewsPipeline } from "./OptionsNewsPipeline";
-import { adapters, equal, fixture, request, TestHarness, trueValue } from "./OptionsNewsTestSupport";
+import { OptionsNewsSourceRegistry } from "./OptionsNewsSourceRegistry";
+import { adapters, equal, fixture, registry, request, TestHarness, trueValue } from "./OptionsNewsTestSupport";
 
 const all = adapters();
 const evaluatedAtUtc = "2026-08-08T12:00:00.000Z";
 
-function fixedEvidenceAdapter(base: NewsProviderAdapter, record: NewsEvidenceRecord): NewsProviderAdapter {
-  return {
-    adapterName: `FixedEvidenceAdapter:${record.providerId}`,
-    adapterVersion: "test-only:1.0",
-    source: { ...base.source, sourceId: record.sourceId, providerId: record.providerId, publisherId: record.publisherId, tier: record.sourceTier, originalSourceId: record.upstreamOriginId ?? record.publisherId },
-    buildRequest(input: NewsProviderRequest, mode: NewsTransportMode = NewsTransportMode.Fixture): NewsTransportRequest {
-      if (input.sourceId !== record.sourceId || mode !== NewsTransportMode.Fixture) throw new Error("INVALID_TEST_PIPELINE_REQUEST");
-      return { mode, providerId: record.providerId, endpointTemplate: "fixture://fixed-evidence", query: {}, headers: {}, credentialsRequired: false, networkEnabled: false };
-    },
-    normalize(): readonly NewsEvidenceRecord[] { return [structuredClone(record)]; },
-  };
-}
+const testCommon = { registryVersion: OPTIONS_NEWS_SOURCE_REGISTRY_VERSION, independenceGroupingRule: "UPSTREAM_ORIGIN_OR_PUBLISHER" as const, eligibility: NewsSourceEligibility.Eligible, costPerRequestMinorUnits: 0, credentialsRequiredForLive: false, liveNetworkAuthority: NewsNetworkAuthority.Blocked, effectiveFromUtc: "2026-08-08T00:00:00.000Z", effectiveToUtc: null, provenance: "test-only:OptionsNewsEndToEnd" };
+const TEST_REGISTRATIONS: readonly NewsSourceRegistration[] = [
+  { ...testCommon, sourceId: "source:test-independent-wire", providerId: "provider:test-independent-wire", publisherId: "publisher:test-independent-wire", tier: NewsSourceTier.Tier1, sourceFamily: "TEST_INDEPENDENT_WIRE", originalSourceId: "publisher:test-independent-wire", syndicationLineage: [], supportedEventTypes: ["CORPORATE_NEWS"], supportedTopics: ["TECH"], rateLimitDescription: "Fixture-only test registration." },
+  { ...testCommon, sourceId: "source:test-tier1-primary-citation", providerId: "provider:test-tier1-primary-citation", publisherId: "publisher:test-tier1-citation", tier: NewsSourceTier.Tier1, sourceFamily: "TEST_TIER1_CITATION", originalSourceId: "publisher:test-tier1-citation", syndicationLineage: [], supportedEventTypes: ["SEC_FILING"], supportedTopics: ["TECH"], rateLimitDescription: "Fixture-only test registration." },
+];
+const testRegistry = new OptionsNewsSourceRegistry([...OPTIONS_NEWS_SOURCE_REGISTRATIONS, ...TEST_REGISTRATIONS]);
+class IndependentWireTestAdapter extends FixtureNewsAdapterBase { public readonly adapterName = "IndependentWireTestAdapter"; public constructor() { super(testRegistry.get("source:test-independent-wire"), "articles", "fixture://test-independent-wire"); } }
+class Tier1PrimaryCitationTestAdapter extends FixtureNewsAdapterBase { public readonly adapterName = "Tier1PrimaryCitationTestAdapter"; public constructor() { super(testRegistry.get("source:test-tier1-primary-citation"), "articles", "fixture://test-tier1-primary-citation"); } }
 
-function runTwoObservationPipeline(first: { readonly base: NewsProviderAdapter; readonly evidence: NewsEvidenceRecord }, second: { readonly base: NewsProviderAdapter; readonly evidence: NewsEvidenceRecord }): Record<string, any> {
+function runTwoObservationPipeline(first: { readonly adapter: NewsProviderAdapter; readonly raw: unknown }, second: { readonly adapter: NewsProviderAdapter; readonly raw: unknown }, sourceRegistry: NewsSourceRegistry): Record<string, any> {
   const repository = new InMemoryOptionsNewsRepository();
-  const pipeline = new OptionsNewsPipeline(repository);
-  const transport = new StaticNewsFixtureTransport({ [first.evidence.providerId]: {}, [second.evidence.providerId]: {} });
-  const firstResult = pipeline.run(fixedEvidenceAdapter(first.base, first.evidence), transport, request(first.evidence.sourceId), evaluatedAtUtc);
-  const secondResult = pipeline.run(fixedEvidenceAdapter(second.base, second.evidence), transport, request(second.evidence.sourceId), "2026-08-08T12:00:01.000Z");
+  const pipeline = new OptionsNewsPipeline(repository, sourceRegistry);
+  const transport = new StaticNewsFixtureTransport({ [first.adapter.source.providerId]: first.raw, [second.adapter.source.providerId]: second.raw });
+  const firstResult = pipeline.run(first.adapter, transport, request(first.adapter.source.sourceId), evaluatedAtUtc);
+  const secondResult = pipeline.run(second.adapter, transport, request(second.adapter.source.sourceId), "2026-08-08T12:00:01.000Z");
   const event = repository.getEvent(firstResult.eventId!)!;
   return { firstResult, secondResult, event, evidence: repository.listEvidence(event.eventId), links: repository.listLinks(event.eventId), transitions: repository.listTransitions(event.eventId), queryResult: repository.queryEvents({ verificationStatuses: [NewsEventStatus.Verified] }) };
 }
 
 export function buildIndependentSourceQuorumEvidence(): unknown {
-  const first = all.finnhub!.normalize(fixture("finnhub-reuters.json"), request("source:finnhub-reuters"))[0]!;
-  const secondBase = all.alphaVantage!.normalize(fixture("alpha-vantage-reuters.json"), request("source:alpha-vantage-reuters"))[0]!;
-  const second: NewsEvidenceRecord = { ...secondBase, publisherId: "publisher:independent-wire", upstreamOriginId: "publisher:independent-wire", independenceKey: "origin:publisher:independent-wire" };
-  return { scenarioId: "PIPELINE_INDEPENDENT_SOURCE_QUORUM_VERIFIED", expectedReasonCode: "INDEPENDENT_SOURCE_QUORUM", ...runTwoObservationPipeline({ base: all.finnhub!, evidence: first }, { base: all.alphaVantage!, evidence: second }) };
+  return { scenarioId: "PIPELINE_INDEPENDENT_SOURCE_QUORUM_VERIFIED", expectedReasonCode: "INDEPENDENT_SOURCE_QUORUM", ...runTwoObservationPipeline({ adapter: all.finnhub!, raw: fixture("finnhub-reuters.json") }, { adapter: new IndependentWireTestAdapter(), raw: fixture("test-independent-wire.json") }, testRegistry) };
 }
 
 export function buildCitedPrimaryCrossCheckEvidence(): unknown {
-  const primary = all.sec!.normalize(fixture("sec-edgar.json"), request("source:sec-edgar"))[0]!;
-  const citation: NewsEvidenceRecord = { ...primary, evidenceId: "news-evidence:test-tier1:primary-cross-check", providerObservationId: "tier1-primary-cross-check", sourceId: "source:test-tier1-primary-cross-check", sourceTier: NewsSourceTier.Tier1, providerId: "provider:test-tier1-primary-cross-check", publisherId: "publisher:test-tier1", sourceFamily: "TEST_TIER1_CITATION", upstreamOriginId: "publisher:test-tier1", independenceKey: "origin:publisher:test-tier1", originalHeadlineEnglish: "Acme filing cross-checked against accessible primary document", originalUrl: "https://example.test/acme-primary-cross-check", rawPayloadReference: `fixture://provider:test-tier1-primary-cross-check/tier1-primary-cross-check#sha256=${primary.rawPayloadHash}`, adapterName: "FixedEvidenceAdapter:Tier1PrimaryCrossCheck" };
-  return { scenarioId: "PIPELINE_CITED_PRIMARY_CROSS_CHECK_VERIFIED", expectedReasonCode: "CITED_PRIMARY_CROSS_CHECK", ...runTwoObservationPipeline({ base: all.finnhub!, evidence: citation }, { base: all.sec!, evidence: primary }) };
+  return { scenarioId: "PIPELINE_CITED_PRIMARY_CROSS_CHECK_VERIFIED", expectedReasonCode: "CITED_PRIMARY_CROSS_CHECK", ...runTwoObservationPipeline({ adapter: new Tier1PrimaryCitationTestAdapter(), raw: fixture("test-tier1-primary-citation.json") }, { adapter: all.sec!, raw: fixture("sec-edgar.json") }, testRegistry) };
 }
 
 export function buildTier0VerifiedEvidence(): unknown {
   const repository = new InMemoryOptionsNewsRepository();
-  const pipeline = new OptionsNewsPipeline(repository);
+  const pipeline = new OptionsNewsPipeline(repository, registry);
   const transport = new StaticNewsFixtureTransport({
     "provider:sec-edgar": fixture("sec-edgar.json"),
   });
@@ -143,7 +138,7 @@ export function buildTier0VerifiedEvidence(): unknown {
 
 export function buildReutersSameOriginRejectedEvidence(): unknown {
   const repository = new InMemoryOptionsNewsRepository();
-  const pipeline = new OptionsNewsPipeline(repository);
+  const pipeline = new OptionsNewsPipeline(repository, registry);
   const transport = new StaticNewsFixtureTransport({
     "provider:finnhub": fixture("finnhub-reuters.json"),
     "provider:alpha-vantage": fixture("alpha-vantage-reuters.json"),
@@ -268,6 +263,24 @@ export function buildReutersSameOriginRejectedEvidence(): unknown {
   };
 }
 
+function adapterWithDrift(base: NewsProviderAdapter, source: NewsSourceRegistration = base.source, mutateEvidence: (record: NewsEvidenceRecord) => NewsEvidenceRecord = (record) => record): NewsProviderAdapter {
+  return {
+    adapterName: `RegistryDriftProbe:${base.adapterName}`,
+    adapterVersion: base.adapterVersion,
+    source,
+    buildRequest(input: NewsProviderRequest, mode: NewsTransportMode = NewsTransportMode.Fixture): NewsTransportRequest { return base.buildRequest(input, mode); },
+    normalize(raw: unknown, input: NewsProviderRequest): readonly NewsEvidenceRecord[] { return base.normalize(raw, input).map((record) => mutateEvidence(structuredClone(record))); },
+  };
+}
+
+function runRegistryDriftProbe(adapter: NewsProviderAdapter): { readonly result: ReturnType<OptionsNewsPipeline["run"]>; readonly persistedEventCount: number } {
+  const repository = new InMemoryOptionsNewsRepository();
+  const pipeline = new OptionsNewsPipeline(repository, registry);
+  const transport = new StaticNewsFixtureTransport({ "provider:finnhub": fixture("finnhub-reuters.json") });
+  const result = pipeline.run(adapter, transport, request(adapter.source.sourceId), evaluatedAtUtc);
+  return { result, persistedEventCount: repository.queryEvents().length };
+}
+
 const evidenceMode = env.ALPHA_OPTIONS_NEWS_EVIDENCE_SCENARIO;
 if (evidenceMode === "tier0-verified") {
   console.log(JSON.stringify(buildTier0VerifiedEvidence(), null, 2));
@@ -290,7 +303,7 @@ if (evidenceMode === "tier0-verified") {
   });
   h.test("P1 success demo replay is idempotent", () => {
     const repository = new InMemoryOptionsNewsRepository();
-    const pipeline = new OptionsNewsPipeline(repository);
+    const pipeline = new OptionsNewsPipeline(repository, registry);
     const transport = new StaticNewsFixtureTransport({
       "provider:sec-edgar": fixture("sec-edgar.json"),
     });
@@ -331,6 +344,26 @@ if (evidenceMode === "tier0-verified") {
     for (const forbidden of ["buy", "sell", "order", "strike", "expiration", "position size"]) {
       trueValue(!serialized.includes(forbidden), `${forbidden} absent`);
     }
+  });
+  h.test("Pipeline rejects adapter Tier self-promotion before execution", () => {
+    const value = runRegistryDriftProbe(adapterWithDrift(all.finnhub!, { ...all.finnhub!.source, tier: NewsSourceTier.Tier0 }));
+    equal(value.result.reasonCode, "REGISTRY_DRIFT", "reason"); equal(value.persistedEventCount, 0, "events");
+  });
+  h.test("Pipeline rejects normalized publisher drift", () => {
+    const value = runRegistryDriftProbe(adapterWithDrift(all.finnhub!, undefined, (record) => ({ ...record, publisherId: "publisher:forged" })));
+    equal(value.result.reasonCode, "REGISTRY_DRIFT", "reason"); equal(value.persistedEventCount, 0, "events");
+  });
+  h.test("Pipeline rejects normalized upstream origin drift", () => {
+    const value = runRegistryDriftProbe(adapterWithDrift(all.finnhub!, undefined, (record) => ({ ...record, upstreamOriginId: "publisher:forged" })));
+    equal(value.result.reasonCode, "REGISTRY_DRIFT", "reason"); equal(value.persistedEventCount, 0, "events");
+  });
+  h.test("Pipeline rejects forged independence key", () => {
+    const value = runRegistryDriftProbe(adapterWithDrift(all.finnhub!, undefined, (record) => ({ ...record, independenceKey: "origin:publisher:forged" })));
+    equal(value.result.reasonCode, "REGISTRY_DRIFT", "reason"); equal(value.persistedEventCount, 0, "events");
+  });
+  h.test("Pipeline rejects an unregistered source before execution", () => {
+    const value = runRegistryDriftProbe(adapterWithDrift(all.finnhub!, { ...all.finnhub!.source, sourceId: "source:unregistered" }));
+    equal(value.result.reasonCode, "REGISTRY_DRIFT", "reason"); equal(value.persistedEventCount, 0, "events");
   });
   h.run("Options News end-to-end");
 }

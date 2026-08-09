@@ -1,8 +1,8 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.12",
+  "schemaVersion": "1.13",
   "statusId": "alpha-status:options-only-mvp-phase1-news-owner-approved",
-  "asOf": "2026-08-09T02:20:38.597Z",
+  "asOf": "2026-08-09T03:51:01.058Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/main",
@@ -415,6 +415,22 @@
       "networkUsed": false,
       "realCostCents": 0,
       "rawEvidenceAvailability": "OBSERVED_IN_CODEX_SESSION_OUTPUT"
+    },
+    "phase1NewsCorrectiveWorkingTreeAttempt": {
+      "kind": "PHASE_1_NEWS_MERGE_GATE_CORRECTIVE_WORKING_TREE",
+      "source_baseline_commit": "7191d0cb53877f6197bc1c753b013d5ad8b38e08",
+      "includesUncommittedCode": true,
+      "command": "npm.cmd run alpha:validate",
+      "status": "PASSED",
+      "componentCount": 145,
+      "testsExecuted": 2962,
+      "passed": 2962,
+      "failed": 0,
+      "durationMs": null,
+      "networkUsed": false,
+      "realCostCents": 0,
+      "rawEvidenceAvailability": "OBSERVED_IN_CODEX_SESSION_OUTPUT",
+      "evidenceAuthority": "LOCAL_CODEX_SESSION_NOT_GITHUB_CI"
     }
   },
   "networkAuthority": "NOT_GRANTED",

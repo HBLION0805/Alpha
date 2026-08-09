@@ -10,6 +10,9 @@ const schema = JSON.parse(readFileSync(resolve(root, "docs/status/current.schema
 const tests = [
   ["the checked-in status and schema pass strict validation", () => {
     assert.deepEqual(validateCurrentStatus(status, schema), { valid: true, issues: [] });
+    assert.equal(status.validation.phase1NewsWorkingTreeAttempt.passed, 2944);
+    assert.equal(status.validation.phase1NewsCorrectiveWorkingTreeAttempt.passed, 2962);
+    assert.equal(status.validation.phase1NewsCorrectiveWorkingTreeAttempt.evidenceAuthority, "LOCAL_CODEX_SESSION_NOT_GITHUB_CI");
   }],
   ["the implementation baseline cannot masquerade as current HEAD", () => {
     const changed = clone(status);

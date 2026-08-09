@@ -24,5 +24,10 @@ function validate(v: NewsSourceRegistration): void {
   if (v.tier === "TIER_3" && v.eligibility !== NewsSourceEligibility.DiscoveryOnly) throw new Error("INVALID_SOURCE_ELIGIBILITY");
   if (v.liveNetworkAuthority !== "BLOCKED" && v.liveNetworkAuthority !== "OWNER_APPROVAL_REQUIRED") throw new Error("INVALID_NETWORK_AUTHORITY");
   if (v.costPerRequestMinorUnits !== null && (!Number.isSafeInteger(v.costPerRequestMinorUnits) || v.costPerRequestMinorUnits < 0)) throw new Error("INVALID_SOURCE_COST");
+  canonicalUtc(v.effectiveFromUtc);
+  if (v.effectiveToUtc !== null && canonicalUtc(v.effectiveToUtc) <= Date.parse(v.effectiveFromUtc)) throw new Error("INVALID_SOURCE_EFFECTIVE_PERIOD");
+  if (v.originalSourceId !== v.publisherId && !v.syndicationLineage.includes(v.originalSourceId)) throw new Error("INVALID_SOURCE_LINEAGE");
+  if (new Set(v.syndicationLineage).size !== v.syndicationLineage.length) throw new Error("INVALID_SOURCE_LINEAGE");
 }
 function freeze<T>(value: T): T { if (value !== null && typeof value === "object") { Object.freeze(value); for (const nested of Object.values(value)) freeze(nested); } return value; }
+function canonicalUtc(value: string): number { const parsed = Date.parse(value); if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u.test(value) || Number.isNaN(parsed) || new Date(parsed).toISOString() !== value) throw new Error("INVALID_SOURCE_EFFECTIVE_PERIOD"); return parsed; }
