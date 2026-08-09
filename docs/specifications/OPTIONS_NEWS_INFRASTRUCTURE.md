@@ -65,10 +65,16 @@ must pass `DISCOVERED -> NORMALIZED -> VERIFYING`; illegal skips fail closed.
 Expiry requires an event-type TTL policy. Replay uses stable identities and
 does not duplicate canonical events or transitions.
 
-Fingerprinting includes primary-document identity when present, upstream
-origin/publisher, event type, point-in-time entities, sorted key facts, and a
-bounded UTC time window. It is not a headline hash. Clustering retains every
-observation and separates events whose key facts differ.
+Canonical event fingerprinting includes only event type, point-in-time entity
+identity, sorted key facts, and a bounded UTC time window. It deliberately
+excludes provider, publisher, upstream origin, `independenceKey`, and primary
+document identity so separate observations of the same facts can enter one
+event. Source identity and primary-document provenance remain in each
+`NewsEvidenceRecord` and its evidence fingerprint. A matching accessible
+primary-document fingerprint may prove the cited-primary cross-check path, but
+does not split otherwise matching observations. The canonical fingerprint is
+not a headline hash. Clustering retains every observation and separates events
+whose key facts differ.
 
 ## Time and latency
 
@@ -97,7 +103,11 @@ The versioned combined News + Options Data monthly policy uses a UTC boundary,
 an `$80.00` warning threshold and `$100.00` hard threshold. The in-memory ledger
 requires a known estimate before reservation, accounts for pending reservations,
 reconciles actual simulated cost, releases failures, and cannot be bypassed by
-provider switching. States are `NORMAL`, `WARNING`, `BLOCKED_BUDGET`, and
+provider switching. Reconcile and release may transition only `RESERVED`
+entries; identical settlements replay, conflicting or cross-terminal
+settlements fail closed, and reconciled actual cost cannot later be released.
+All month selection requires a canonical UTC ISO-8601 timestamp. States are
+`NORMAL`, `WARNING`, `BLOCKED_BUDGET`, and
 `BLOCKED_COST_UNKNOWN`. This policy grants no spending authority.
 
 Health snapshots expose adapter/transport identity, fixture success time,
@@ -111,5 +121,10 @@ Deterministic tests cover strict contracts, registry drift, entity ambiguity,
 DST, all verification paths, same-origin syndication, clustering, lifecycle,
 replay, queries, budget boundary cases, health and negative scope guards.
 End-to-end acceptance includes a Tier 0 SEC fixture reaching `VERIFIED` with
-complete provenance and a Finnhub/Alpha Vantage Reuters pair remaining
-`VERIFYING` because independence is not proven.
+complete provenance, two fact-consistent independent observations reaching
+`INDEPENDENT_SOURCE_QUORUM / VERIFIED`, a Tier 1 citation plus matching
+accessible Tier 0 primary evidence reaching
+`CITED_PRIMARY_CROSS_CHECK / VERIFIED`, and a Finnhub/Alpha Vantage Reuters
+pair entering the same event while remaining `VERIFYING` because independence
+is not proven. These scenarios execute through `OptionsNewsPipeline`, not only
+the standalone verification rule.

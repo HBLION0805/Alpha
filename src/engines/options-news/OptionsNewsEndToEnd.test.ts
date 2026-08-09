@@ -1,4 +1,5 @@
-import { NewsEventStatus } from "../../contracts/OptionsNewsDomain";
+import { NewsEventStatus, NewsEvidenceRelation, NewsSourceTier, type NewsEvidenceRecord } from "../../contracts/OptionsNewsDomain";
+import { NewsTransportMode, type NewsProviderAdapter, type NewsProviderRequest, type NewsTransportRequest } from "../../contracts/OptionsNewsProvider";
 import { env } from "node:process";
 import { StaticNewsFixtureTransport } from "../../integration/news/NewsTransports";
 import { InMemoryOptionsNewsRepository } from "../../repositories/InMemoryOptionsNewsRepository";
@@ -10,6 +11,42 @@ import { adapters, equal, fixture, request, TestHarness, trueValue } from "./Opt
 
 const all = adapters();
 const evaluatedAtUtc = "2026-08-08T12:00:00.000Z";
+
+function fixedEvidenceAdapter(base: NewsProviderAdapter, record: NewsEvidenceRecord): NewsProviderAdapter {
+  return {
+    adapterName: `FixedEvidenceAdapter:${record.providerId}`,
+    adapterVersion: "test-only:1.0",
+    source: { ...base.source, sourceId: record.sourceId, providerId: record.providerId, publisherId: record.publisherId, tier: record.sourceTier, originalSourceId: record.upstreamOriginId ?? record.publisherId },
+    buildRequest(input: NewsProviderRequest, mode: NewsTransportMode = NewsTransportMode.Fixture): NewsTransportRequest {
+      if (input.sourceId !== record.sourceId || mode !== NewsTransportMode.Fixture) throw new Error("INVALID_TEST_PIPELINE_REQUEST");
+      return { mode, providerId: record.providerId, endpointTemplate: "fixture://fixed-evidence", query: {}, headers: {}, credentialsRequired: false, networkEnabled: false };
+    },
+    normalize(): readonly NewsEvidenceRecord[] { return [structuredClone(record)]; },
+  };
+}
+
+function runTwoObservationPipeline(first: { readonly base: NewsProviderAdapter; readonly evidence: NewsEvidenceRecord }, second: { readonly base: NewsProviderAdapter; readonly evidence: NewsEvidenceRecord }): Record<string, any> {
+  const repository = new InMemoryOptionsNewsRepository();
+  const pipeline = new OptionsNewsPipeline(repository);
+  const transport = new StaticNewsFixtureTransport({ [first.evidence.providerId]: {}, [second.evidence.providerId]: {} });
+  const firstResult = pipeline.run(fixedEvidenceAdapter(first.base, first.evidence), transport, request(first.evidence.sourceId), evaluatedAtUtc);
+  const secondResult = pipeline.run(fixedEvidenceAdapter(second.base, second.evidence), transport, request(second.evidence.sourceId), "2026-08-08T12:00:01.000Z");
+  const event = repository.getEvent(firstResult.eventId!)!;
+  return { firstResult, secondResult, event, evidence: repository.listEvidence(event.eventId), links: repository.listLinks(event.eventId), transitions: repository.listTransitions(event.eventId), queryResult: repository.queryEvents({ verificationStatuses: [NewsEventStatus.Verified] }) };
+}
+
+export function buildIndependentSourceQuorumEvidence(): unknown {
+  const first = all.finnhub!.normalize(fixture("finnhub-reuters.json"), request("source:finnhub-reuters"))[0]!;
+  const secondBase = all.alphaVantage!.normalize(fixture("alpha-vantage-reuters.json"), request("source:alpha-vantage-reuters"))[0]!;
+  const second: NewsEvidenceRecord = { ...secondBase, publisherId: "publisher:independent-wire", upstreamOriginId: "publisher:independent-wire", independenceKey: "origin:publisher:independent-wire" };
+  return { scenarioId: "PIPELINE_INDEPENDENT_SOURCE_QUORUM_VERIFIED", expectedReasonCode: "INDEPENDENT_SOURCE_QUORUM", ...runTwoObservationPipeline({ base: all.finnhub!, evidence: first }, { base: all.alphaVantage!, evidence: second }) };
+}
+
+export function buildCitedPrimaryCrossCheckEvidence(): unknown {
+  const primary = all.sec!.normalize(fixture("sec-edgar.json"), request("source:sec-edgar"))[0]!;
+  const citation: NewsEvidenceRecord = { ...primary, evidenceId: "news-evidence:test-tier1:primary-cross-check", providerObservationId: "tier1-primary-cross-check", sourceId: "source:test-tier1-primary-cross-check", sourceTier: NewsSourceTier.Tier1, providerId: "provider:test-tier1-primary-cross-check", publisherId: "publisher:test-tier1", sourceFamily: "TEST_TIER1_CITATION", upstreamOriginId: "publisher:test-tier1", independenceKey: "origin:publisher:test-tier1", originalHeadlineEnglish: "Acme filing cross-checked against accessible primary document", originalUrl: "https://example.test/acme-primary-cross-check", rawPayloadReference: `fixture://provider:test-tier1-primary-cross-check/tier1-primary-cross-check#sha256=${primary.rawPayloadHash}`, adapterName: "FixedEvidenceAdapter:Tier1PrimaryCrossCheck" };
+  return { scenarioId: "PIPELINE_CITED_PRIMARY_CROSS_CHECK_VERIFIED", expectedReasonCode: "CITED_PRIMARY_CROSS_CHECK", ...runTwoObservationPipeline({ base: all.finnhub!, evidence: citation }, { base: all.sec!, evidence: primary }) };
+}
 
 export function buildTier0VerifiedEvidence(): unknown {
   const repository = new InMemoryOptionsNewsRepository();
@@ -234,6 +271,10 @@ export function buildReutersSameOriginRejectedEvidence(): unknown {
 const evidenceMode = env.ALPHA_OPTIONS_NEWS_EVIDENCE_SCENARIO;
 if (evidenceMode === "tier0-verified") {
   console.log(JSON.stringify(buildTier0VerifiedEvidence(), null, 2));
+} else if (evidenceMode === "independent-quorum-verified") {
+  console.log(JSON.stringify(buildIndependentSourceQuorumEvidence(), null, 2));
+} else if (evidenceMode === "cited-primary-verified") {
+  console.log(JSON.stringify(buildCitedPrimaryCrossCheckEvidence(), null, 2));
 } else if (evidenceMode === "reuters-same-origin-verifying") {
   console.log(JSON.stringify(buildReutersSameOriginRejectedEvidence(), null, 2));
 } else {
@@ -258,6 +299,22 @@ if (evidenceMode === "tier0-verified") {
     equal(second.eventId, first.eventId, "event id");
     equal(repository.queryEvents().length, 1, "events");
     equal(repository.listTransitions(first.eventId!).length, 4, "transitions");
+  });
+  h.test("Pipeline merges two fact-consistent independent sources and reaches VERIFIED quorum", () => {
+    const value = buildIndependentSourceQuorumEvidence() as Record<string, any>;
+    equal(value.firstResult.eventId, value.secondResult.eventId, "canonical event identity");
+    equal(value.event.verificationStatus, NewsEventStatus.Verified, "status");
+    equal(value.event.currentStateReasonCode, "INDEPENDENT_SOURCE_QUORUM", "reason");
+    equal(new Set(value.evidence.map((record: NewsEvidenceRecord) => record.independenceKey)).size, 2, "independent sources");
+    equal(value.queryResult.length, 1, "verified query result");
+  });
+  h.test("Pipeline merges Tier 1 citation with accessible Tier 0 primary and reaches VERIFIED cross-check", () => {
+    const value = buildCitedPrimaryCrossCheckEvidence() as Record<string, any>;
+    equal(value.firstResult.eventId, value.secondResult.eventId, "canonical event identity");
+    equal(value.event.verificationStatus, NewsEventStatus.Verified, "status");
+    equal(value.event.currentStateReasonCode, "CITED_PRIMARY_CROSS_CHECK", "reason");
+    trueValue(value.links.some((link: { readonly relation: NewsEvidenceRelation }) => link.relation === NewsEvidenceRelation.CitesPrimary), "cited-primary link");
+    equal(value.queryResult.length, 1, "verified query result");
   });
   h.test("P1 rejection demo: two providers carrying one Reuters origin remain VERIFYING", () => {
     const value = buildReutersSameOriginRejectedEvidence() as Record<string, any>;

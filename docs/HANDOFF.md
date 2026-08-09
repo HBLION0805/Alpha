@@ -17,7 +17,7 @@ P1-A through P1-D are implemented fixture-only and formally Owner-approved:
 strict news evidence/event contracts, source registry, four offline adapters,
 deterministic entity/fingerprint/dedupe/clustering/verification, in-memory
 persistence and query, read-only Evidence/Journal projection, simulated budget,
-health, and two end-to-end acceptance demos. The next action is
+health, and four end-to-end acceptance scenarios. The next action is
 `OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2`; Phase 2 is not authorized.
 See [Options News Infrastructure](specifications/OPTIONS_NEWS_INFRASTRUCTURE.md).
 

@@ -1,8 +1,8 @@
-import { OPTIONS_NEWS_DOMAIN_VERSION, NewsEventStatus, NewsEvidenceRelation, type EventEvidenceLink, type VerificationTransitionRecord } from "../../contracts/OptionsNewsDomain";
+import { NewsEventStatus, type VerificationTransitionRecord } from "../../contracts/OptionsNewsDomain";
 import type { OptionsNewsPipelineResult } from "../../contracts/OptionsNewsOperations";
 import type { NewsFixtureTransport, NewsProviderAdapter, NewsProviderRequest } from "../../contracts/OptionsNewsProvider";
 import type { OptionsNewsRepository } from "../../contracts/OptionsNewsRepository";
-import { buildCanonicalEvent, transition } from "./OptionsNewsProcessing";
+import { buildCanonicalEvent, buildEventEvidenceLinks, transition } from "./OptionsNewsProcessing";
 import { DeterministicNewsSummaryProvider } from "./DeterministicNewsSummary";
 
 export class OptionsNewsPipeline {
@@ -18,8 +18,9 @@ export class OptionsNewsPipeline {
       ...evidence.map((record) => [record.evidenceId, record] as const),
     ].filter((entry): entry is readonly [string, NonNullable<ReturnType<OptionsNewsRepository["getEvidence"]>>] => entry[1] !== undefined)).values()].sort((a,b) => a.evidenceId.localeCompare(b.evidenceId));
     const event = buildCanonicalEvent(combinedEvidence, this.summary.summarize({ evidence: combinedEvidence, generatedAtUtc: verifiedAtUtc }), verifiedAtUtc); this.repository.putEvent(event);
-    const links: EventEvidenceLink[] = evidence.map((record) => ({ domainVersion: OPTIONS_NEWS_DOMAIN_VERSION, linkId: `${event.eventId}:link:${record.evidenceId}`, eventId: event.eventId, evidenceId: record.evidenceId, relation: NewsEvidenceRelation.Supports, relationshipReasonCode: "MATCHED_CANONICAL_FACTS", checkedFacts: Object.keys(record.keyFacts).sort(), createdAtUtc: verifiedAtUtc, ruleVersion: "options-news-clustering:1.0" }));
-    for (const link of links) this.repository.putLink(link);
+    const links = buildEventEvidenceLinks(combinedEvidence, event.eventId, verifiedAtUtc);
+    const existingLinkIds = new Set(this.repository.listLinks(event.eventId).map((link) => link.linkId));
+    for (const link of links) if (!existingLinkIds.has(link.linkId)) this.repository.putLink(link);
     const transitions: VerificationTransitionRecord[] = previous === undefined
       ? [transition(event.eventId,null,NewsEventStatus.Discovered,"FIRST_OBSERVATION",combinedEvidence.map((v)=>v.evidenceId),event.discoveredAtUtc),transition(event.eventId,NewsEventStatus.Discovered,NewsEventStatus.Normalized,"NORMALIZATION_SUCCEEDED",combinedEvidence.map((v)=>v.evidenceId),event.normalizedAtUtc),transition(event.eventId,NewsEventStatus.Normalized,NewsEventStatus.Verifying,"VERIFICATION_STARTED",combinedEvidence.map((v)=>v.evidenceId),event.verificationStartedAtUtc)]
       : [];
