@@ -12,13 +12,18 @@ blockers, frozen work, next action, ownership, and validation state is
 summarize that file and must not define a competing current state.
 
 Alpha's current direction is the **Options-Only MVP**. Phase 0 has converged
-the mission, status, risk policy, legacy-module disposition, and Phase 1 plan
-and is now Owner-approved. Phase 1 remains `NOT_STARTED` and requires explicit
-Owner authorization before it may begin. The system remains
+the mission, status, risk policy, and legacy-module disposition and is
+Owner-approved. The Owner-authorized Phase 1 P1-A through P1-D news
+infrastructure is implemented fixture-only and `OWNER_APPROVED`. It adds
+separate source-observation and canonical-event contracts, four offline
+adapters, deterministic verification, persistence/query, budget and health
+controls. Phase 2 remains `NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED` and
+requires explicit Owner authorization. The system remains
 advisory only: it reads no Robinhood account, balance, position, or credential;
 it places no order and connects to no Paper Trading account. The Personal ETF
 Daily Scan and Event Contract product entries are frozen with their code
-retained. See [Options-Only MVP Phase 0](docs/OPTIONS_ONLY_MVP_PHASE_0.md).
+retained. See
+[Options News Infrastructure](docs/specifications/OPTIONS_NEWS_INFRASTRUCTURE.md).
 
 Dashboard remains a reusable product capability. Only the audited legacy
 Python sample terminal and frozen Offline Daily Scan interfaces are marked

@@ -48,3 +48,5 @@ export * from "./SqliteEventContractCollectionRunnerRecoveryControlRepository";
 export * from "./SessionGatedEventContractCollectionRunnerRepository";
 export * from "./EventContractCollectionRunnerRuntimeProjectionRepository";
 export * from "./EventContractCollectionRunnerRuntimeAssemblyRepository";
+export * from "./InMemoryOptionsNewsRepository";
+export * from "./OptionsNewsEvidenceJournalAdapter";

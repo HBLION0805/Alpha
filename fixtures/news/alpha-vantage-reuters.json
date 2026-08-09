@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "fixture-news-1.0",
+  "feed": [{
+    "id": "av-0001", "publisher": "publisher:reuters", "upstreamOriginId": "publisher:reuters", "headline": "Cloud expansion announced by Acme", "url": "https://www.reuters.com/technology/acme-cloud-expansion-2026-08-07/?feed=av", "publishedAt": "2026-08-07T15:00:00Z", "timezone": "UTC", "receivedAtUtc": "2026-08-07T15:00:12.000Z", "ingestedAtUtc": "2026-08-07T15:00:13.000Z", "normalizedAtUtc": "2026-08-07T15:00:14.000Z", "entities": [{"entityId":"entity:acme","symbol":"ACME","alias":"Acme","mappingSource":"fixture:entity-registry","mappingVersion":"1.0","effectiveFromUtc":"2020-01-01T00:00:00.000Z","effectiveToUtc":null}], "eventType": "CORPORATE_NEWS", "topics": ["TECH"], "keyFacts": {"issuer":"Acme","action":"cloud expansion"}, "primaryDocument": null
+  }]
+}

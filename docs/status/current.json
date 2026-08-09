@@ -1,20 +1,23 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.11",
-  "statusId": "alpha-status:options-only-mvp-phase0-r1-owner-approved",
-  "asOf": "2026-08-08T21:24:16.410Z",
+  "schemaVersion": "1.13",
+  "statusId": "alpha-status:options-only-mvp-phase1-news-owner-approved",
+  "asOf": "2026-08-09T03:51:01.058Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/main",
-    "source_baseline_commit": "06c0ef2720a6b54fb0e27481efdbdfee786694e4",
-    "implementation_baseline": "ORIGIN_MAIN_PHASE0_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD",
-    "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7"
+    "source_baseline_commit": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9",
+    "implementation_baseline": "ORIGIN_MAIN_PHASE1_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD",
+    "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
+    "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
   },
   "currentMilestone": {
-    "id": "OPTIONS_ONLY_MVP_PHASE_0",
-    "name": "Options-Only MVP Governance and Risk Authority Convergence",
+    "id": "OPTIONS_ONLY_MVP_PHASE_1_NEWS_INFRASTRUCTURE",
+    "name": "Options-Only MVP Phase 1 News Infrastructure",
     "status": "OWNER_APPROVED",
-    "approvedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
+    "authorizedBy": "OWNER_TASK_V1_1_2026_08_08",
+    "implementationBaseline": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9",
+    "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
     "T3G_C13_C2_HANDOFF_RECONCILIATION",
@@ -31,7 +34,13 @@
     "OPTIONS_RISK_POLICY_RECORDED",
     "LEGACY_MODULE_DISPOSITION_RECORDED",
     "OPTIONS_PHASE_1_FILE_PLAN_RECORDED",
-    "OPTIONS_ONLY_MVP_PHASE_0_R1_OWNER_APPROVED"
+    "OPTIONS_ONLY_MVP_PHASE_0_R1_OWNER_APPROVED",
+    "OPTIONS_PHASE_1_P1_A_CONTRACTS_REGISTRY_STATE_TRANSPORT_IMPLEMENTED",
+    "OPTIONS_PHASE_1_P1_B_FOUR_FIXTURE_ADAPTERS_IMPLEMENTED",
+    "OPTIONS_PHASE_1_P1_C_LINKING_DEDUPE_CLUSTERING_VERIFICATION_IMPLEMENTED",
+    "OPTIONS_PHASE_1_P1_D_PERSISTENCE_BUDGET_HEALTH_IMPLEMENTED",
+    "OPTIONS_PHASE_1_END_TO_END_FIXTURE_DEMOS_IMPLEMENTED",
+    "OPTIONS_PHASE_1_NEWS_INFRASTRUCTURE_OWNER_APPROVED"
   ],
   "inProgress": [],
   "blocked": [
@@ -39,7 +48,7 @@
     "NETWORK_LIVE_READONLY_OWNER_AUTHORIZATION_REQUIRED",
     "VIX_LIVE_SOURCE_NOT_APPROVED",
     "EVENT_CALENDAR_SOURCE_NOT_APPROVED",
-    "OPTIONS_PHASE_1_NOT_STARTED",
+    "OPTIONS_PHASE_2_NOT_STARTED",
     "LIVE_NEWS_NETWORK_NOT_AUTHORIZED",
     "OPTIONS_MARKET_DATA_NOT_IMPLEMENTED",
     "OPTIONS_RISK_RUNTIME_NOT_IMPLEMENTED",
@@ -58,13 +67,13 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1"
+    "OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2"
   ],
   "productDirection": {
     "currentProduct": "OPTIONS_ONLY_MVP",
-    "currentPhase": "PHASE_0",
+    "currentPhase": "PHASE_1",
     "phase0Status": "OWNER_APPROVED",
-    "phase1Status": "NOT_STARTED",
+    "phase1Status": "OWNER_APPROVED",
     "permanentMission": [
       "PROTECT_CAPITAL",
       "ALLOCATE_CAPITAL",
@@ -74,6 +83,35 @@
     "earlyCapitalGrowthTool": "DEFINED_RISK_OPTIONS",
     "longTermDestination": "QUALITY_ASSETS_AND_NON_LEVERAGED_COMPOUNDING",
     "fixedReturnPromise": false
+  },
+  "optionsNewsInfrastructure": {
+    "contractVersion": "1.0",
+    "phaseSegments": {
+      "p1A": "IMPLEMENTED",
+      "p1B": "IMPLEMENTED",
+      "p1C": "IMPLEMENTED",
+      "p1D": "IMPLEMENTED"
+    },
+    "providers": [
+      "SEC_EDGAR_FIXTURE",
+      "FEDERAL_RESERVE_FIXTURE",
+      "FINNHUB_FIXTURE",
+      "ALPHA_VANTAGE_FIXTURE"
+    ],
+    "transportAuthority": "FIXTURE_AND_DRY_RUN_ONLY_LIVE_DISABLED",
+    "credentialAuthority": "NOT_GRANTED_NOT_READ",
+    "realCostCents": 0,
+    "persistenceAuthority": "DETERMINISTIC_IN_MEMORY_TEST_ONLY",
+    "verificationAuthority": "DETERMINISTIC_THREE_PATH_TRUTH_VERIFICATION_ONLY",
+    "summaryAuthority": "DETERMINISTIC_FIXTURE_ONLY_NO_LIVE_LLM",
+    "combinedNewsOptionsMonthlyBudget": {
+      "currency": "USD",
+      "softThresholdCents": 8000,
+      "hardThresholdCents": 10000,
+      "boundary": "UTC",
+      "spendingAuthority": "NONE"
+    },
+    "phase2Status": "NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED"
   },
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
@@ -234,7 +272,7 @@
   },
   "executionBoundaries": {
     "network": "CLOSED",
-    "options": "PHASE_0_R1_GOVERNANCE_RECORDED_RUNTIME_NOT_IMPLEMENTED",
+    "options": "PHASE_1_NEWS_FIXTURE_ONLY_NO_TRADING_RUNTIME",
     "broker": "CLOSED",
     "paperTrading": "CLOSED",
     "orderExecution": "CLOSED",
@@ -245,9 +283,9 @@
   },
   "automatedExecutionAllowed": false,
   "ownerDailyProductEntry": "FROZEN_CODE_RETAINED",
-  "ownerProductEntry": "NONE_PHASE_0",
+  "ownerProductEntry": "NONE_PHASE_1",
   "validation": {
-    "classification": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_OBSERVED_ATTEMPTS",
+    "classification": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_AND_PHASE1_NEWS_OBSERVED_ATTEMPTS",
     "phase1aMergedHead": {
       "kind": "PHASE_1A_MERGED_HEAD",
       "source_baseline_commit": "f565e9e5250cfd2fca5e6ed9c244b3947add7b28",
@@ -362,6 +400,37 @@
       "networkUsed": false,
       "comparability": "COMPARABLE",
       "rawEvidenceAvailability": "AVAILABLE_EXTERNAL_TEMP_LOG"
+    },
+    "phase1NewsWorkingTreeAttempt": {
+      "kind": "PHASE_1_NEWS_WORKING_TREE",
+      "source_baseline_commit": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9",
+      "includesUncommittedCode": true,
+      "command": "npm.cmd run alpha:validate",
+      "status": "PASSED",
+      "componentCount": 145,
+      "testsExecuted": 2944,
+      "passed": 2944,
+      "failed": 0,
+      "durationMs": 98000,
+      "networkUsed": false,
+      "realCostCents": 0,
+      "rawEvidenceAvailability": "OBSERVED_IN_CODEX_SESSION_OUTPUT"
+    },
+    "phase1NewsCorrectiveWorkingTreeAttempt": {
+      "kind": "PHASE_1_NEWS_MERGE_GATE_CORRECTIVE_WORKING_TREE",
+      "source_baseline_commit": "7191d0cb53877f6197bc1c753b013d5ad8b38e08",
+      "includesUncommittedCode": true,
+      "command": "npm.cmd run alpha:validate",
+      "status": "PASSED",
+      "componentCount": 145,
+      "testsExecuted": 2962,
+      "passed": 2962,
+      "failed": 0,
+      "durationMs": null,
+      "networkUsed": false,
+      "realCostCents": 0,
+      "rawEvidenceAvailability": "OBSERVED_IN_CODEX_SESSION_OUTPUT",
+      "evidenceAuthority": "LOCAL_CODEX_SESSION_NOT_GITHUB_CI"
     }
   },
   "networkAuthority": "NOT_GRANTED",
@@ -405,7 +474,7 @@
       "liveRunStatus": "NOT_AUTHORIZED"
     }
   },
-  "optionsStatus": "PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED",
+  "optionsStatus": "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_NOT_STARTED",
   "brokerStatus": "CLOSED",
   "paperTradingStatus": "CLOSED",
   "orderExecutionStatus": "CLOSED"

@@ -227,8 +227,12 @@ The minimum canonical event must preserve:
   freshness, latency measurements, and limitations.
 
 Deduplication must not count syndicated copies as independent sources. A
-canonical fingerprint must use normalized original source, bounded event time,
-entities, event type, and core facts; URL equality alone is insufficient.
+canonical event fingerprint must use bounded event time, entities, event type,
+and core facts while excluding provider, publisher, upstream origin, and
+independence identity. Those source identities remain in the observation-level
+evidence fingerprint. URL equality alone is insufficient, and matching primary
+document provenance may support cross-checking without splitting otherwise
+matching facts into separate canonical events.
 
 The Source Registry is versioned provenance, not a provider payload. Entity
 linking is independent from provider mappings: aliases, ambiguity, collisions,

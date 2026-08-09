@@ -8,13 +8,17 @@
 
 The authoritative current state is
 [Current Project Status](status/current.json). The current milestone is
-Options-Only MVP Phase 0-R1, `OWNER_APPROVED`. Phase 1 news infrastructure is
-planned at file level, remains `NOT_STARTED`, and requires explicit Owner
-authorization before it may begin. No network,
+Options-Only MVP Phase 1 News Infrastructure, P1-A through P1-D,
+`OWNER_APPROVED`. Phase 0-R1 remains Owner-approved. Phase 1
+is fixture-only: contracts/registry/transports, four adapters, deterministic
+linking and verification, persistence/query, simulated budget and health are
+implemented and formally Owner-approved. Phase 2 is
+`NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED` and requires explicit Owner
+authorization. No network,
 credential, account, market-data persistence, Paper Trading, order, or
 execution authority is granted. The ETF Daily Scan and Event Contract product
 entries are frozen; their code is retained. See
-[Options-Only MVP Phase 0](OPTIONS_ONLY_MVP_PHASE_0.md).
+[Options News Infrastructure](specifications/OPTIONS_NEWS_INFRASTRUCTURE.md).
 
 Dashboard remains a reusable long-term product capability. The legacy Python
 sample terminal and frozen Offline Daily Scan interfaces are retained pending

@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "fixture-news-1.0",
+  "filings": [{
+    "id": "sec-0001", "publisher": "publisher:sec", "upstreamOriginId": "publisher:sec", "headline": "Acme files current report", "url": "https://www.sec.gov/Archives/edgar/data/0001/report.htm", "publishedAt": "2026-08-07T14:00:00-04:00", "timezone": "America/New_York", "receivedAtUtc": "2026-08-07T18:00:04.000Z", "ingestedAtUtc": "2026-08-07T18:00:05.000Z", "normalizedAtUtc": "2026-08-07T18:00:06.000Z", "entities": [{"entityId":"entity:acme","symbol":"ACME","alias":"Acme","mappingSource":"fixture:entity-registry","mappingVersion":"1.0","effectiveFromUtc":"2020-01-01T00:00:00.000Z","effectiveToUtc":null}], "eventType": "SEC_FILING", "topics": ["TECH"], "keyFacts": {"form":"8-K","issuer":"Acme"}, "primaryDocument": "Fixture SEC primary document: Acme Form 8-K."
+  }]
+}
