@@ -4,7 +4,7 @@ Date:
 2026-08-08
 
 Project Stage:
-Options-Only MVP Phase 0-R1 `OWNER_APPROVED`; Phase 1 `NOT_STARTED` pending explicit Owner authorization
+Options-Only MVP Phase 1 News Infrastructure `OWNER_APPROVED`; Phase 2 `NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED`
 
 ## Current Architecture Checkpoint
 
@@ -12,11 +12,20 @@ The authoritative machine-readable current-state record is
 [`docs/status/current.json`](status/current.json), while Git remains the code
 fact source. Alpha's current direction is the Options-Only MVP. Phase 0 changes
 governance, machine status, risk-policy authority, legacy-module disposition,
-and the Phase 1 file plan only. It adds no news, candle, option-chain, Greeks,
-strategy-selection, Decision Card, broker, order, or execution runtime. Phase
-1 is `NOT_STARTED`; `OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1` is
-the only next action. See
-[Options-Only MVP Phase 0](OPTIONS_ONLY_MVP_PHASE_0.md).
+and the Phase 1 file plan. The Owner then explicitly authorized Phase 1 v1.1.
+P1-A through P1-D are implemented fixture-only and formally Owner-approved:
+strict news evidence/event contracts, source registry, four offline adapters,
+deterministic entity/fingerprint/dedupe/clustering/verification, in-memory
+persistence and query, read-only Evidence/Journal projection, simulated budget,
+health, and two end-to-end acceptance demos. The next action is
+`OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2`; Phase 2 is not authorized.
+See [Options News Infrastructure](specifications/OPTIONS_NEWS_INFRASTRUCTURE.md).
+
+No real network, credential, account, broker, order, Paper Trading, execution,
+or production persistence path was opened. SEC EDGAR, Federal Reserve,
+Finnhub/Reuters and Alpha Vantage/Reuters are fixture-first only. The two
+Reuters provider observations share one independence key and correctly remain
+`VERIFYING`, while parsed Tier 0 primary fixture evidence can reach `VERIFIED`.
 
 Dashboard product capability is `REUSE`. Audit confirmed only the legacy
 Python sample terminal and Offline Daily Scan interfaces as unsuitable for the

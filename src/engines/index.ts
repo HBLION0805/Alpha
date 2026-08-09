@@ -57,3 +57,4 @@ export * from "./personal-market-data-provider-qualification-closure";
 export * from "./personal-market-data-zero-cost-provider-screening";
 export * from "./verified-market-snapshot";
 export * from "./personal-daily-scan";
+export * from "./options-news";

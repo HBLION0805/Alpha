@@ -1,0 +1,33 @@
+import { OPTIONS_NEWS_DOMAIN_VERSION, NewsEventStatus, NewsEvidenceRelation, NewsSourceTier, type EventEvidenceLink, type NewsEvidenceRecord } from "../../contracts/OptionsNewsDomain";
+import { buildCanonicalEvent, canonicalFingerprint, clusterEvidence, evidenceFingerprint, independenceKeys, transition, verificationDecision } from "./OptionsNewsProcessing";
+import { DeterministicNewsSummaryProvider } from "./DeterministicNewsSummary";
+import { adapters, deepEqual, equal, fixture, request, TestHarness, throws, trueValue } from "./OptionsNewsTestSupport";
+
+const h=new TestHarness();const all=adapters();const at="2026-08-08T12:00:00.000Z";
+const sec=all.sec!.normalize(fixture("sec-edgar.json"),request("source:sec-edgar"))[0]!;
+const wireA=all.finnhub!.normalize(fixture("finnhub-reuters.json"),request("source:finnhub-reuters"))[0]!;
+const wireB=all.alphaVantage!.normalize(fixture("alpha-vantage-reuters.json"),request("source:alpha-vantage-reuters"))[0]!;
+function link(record:NewsEvidenceRecord,relation=NewsEvidenceRelation.Supports,facts:readonly string[]=["issuer"]):EventEvidenceLink{return{domainVersion:OPTIONS_NEWS_DOMAIN_VERSION,linkId:`link:${record.evidenceId}:${relation}`,eventId:"event:test",evidenceId:record.evidenceId,relation,relationshipReasonCode:"TEST",checkedFacts:facts,createdAtUtc:at,ruleVersion:"1.0"};}
+h.test("Tier 0 parsed primary evidence verifies",()=>equal(verificationDecision([sec],[link(sec)]).reason,"TIER_0_PRIMARY_EVIDENCE","path"));
+h.test("two independent eligible sources verify",()=>{const independent={...wireB,evidenceId:"news-evidence:independent:1",publisherId:"publisher:ap",upstreamOriginId:"publisher:ap",independenceKey:"origin:publisher:ap"};equal(verificationDecision([wireA,independent],[link(wireA),link(independent)]).reason,"INDEPENDENT_SOURCE_QUORUM","path");});
+h.test("syndicated Reuters observations do not form quorum",()=>equal(verificationDecision([wireA,wireB],[link(wireA),link(wireB)]).state,NewsEventStatus.Verifying,"state"));
+h.test("duplicate relation does not increase quorum",()=>equal(verificationDecision([wireA,wireB],[link(wireA),link(wireB,NewsEvidenceRelation.Duplicates)]).state,NewsEventStatus.Verifying,"state"));
+h.test("Tier 3 observations cannot form verification quorum",()=>{const a={...wireA,sourceTier:NewsSourceTier.Tier3,independenceKey:"social:a"};const b={...wireB,sourceTier:NewsSourceTier.Tier3,independenceKey:"social:b"};equal(verificationDecision([a,b],[link(a),link(b)]).state,NewsEventStatus.Verifying,"state");});
+h.test("cited-primary cross-check path verifies",()=>{const primaryLink=link(sec,NewsEvidenceRelation.CitesPrimary,["issuer","form"]);equal(verificationDecision([wireA,sec],[link(wireA),primaryLink]).reason,"CITED_PRIMARY_CROSS_CHECK","path");});
+h.test("primary citation without checked facts does not verify",()=>equal(verificationDecision([wireA,sec],[link(wireA),link(sec,NewsEvidenceRelation.CitesPrimary,[])]).state,NewsEventStatus.Verifying,"state"));
+h.test("checked fact conflict enters CONFLICTED",()=>equal(verificationDecision([sec],[link(sec,NewsEvidenceRelation.Conflicts)]).state,NewsEventStatus.Conflicted,"state"));
+h.test("retraction enters RETRACTED",()=>equal(verificationDecision([sec],[link(sec,NewsEvidenceRelation.Retracts)]).state,NewsEventStatus.Retracted,"state"));
+h.test("conflicted state may recover only through VERIFYING",()=>equal(transition("event:test",NewsEventStatus.Conflicted,NewsEventStatus.Verifying,"NEW_HIGH_QUALITY_EVIDENCE",[sec.evidenceId],at).toState,NewsEventStatus.Verifying,"state"));
+h.test("conflicted state cannot jump directly to verified",()=>throws(()=>transition("event:test",NewsEventStatus.Conflicted,NewsEventStatus.Verified,"bad",[],at),"ILLEGAL_NEWS_TRANSITION"));
+h.test("retracted state is terminal",()=>throws(()=>transition("event:test",NewsEventStatus.Retracted,NewsEventStatus.Verifying,"bad",[],at),"ILLEGAL_NEWS_TRANSITION"));
+h.test("Reuters rewrites cluster together",()=>{const clusters=clusterEvidence([wireA,wireB]);equal(clusters.length,1,"clusters");equal(clusters[0]!.evidenceIds.length,2,"observations");});
+h.test("different facts do not force merge",()=>{const changed={...wireB,keyFacts:{issuer:"Acme",action:"dividend"}};equal(clusterEvidence([wireA,changed]).length,2,"clusters");});
+h.test("cluster output includes algorithm provenance",()=>equal(clusterEvidence([wireA])[0]!.algorithmVersion,"options-news-clustering:1.0","algorithm"));
+h.test("canonical fingerprint is not a title-only hash",()=>{const changed={...wireA,originalHeadlineEnglish:"Completely different headline"};equal(canonicalFingerprint(wireA),canonicalFingerprint(changed),"fingerprint" );});
+h.test("canonical fingerprint changes with key facts",()=>trueValue(canonicalFingerprint(wireA)!==canonicalFingerprint({...wireA,keyFacts:{issuer:"Acme",action:"other"}}),"fact-sensitive"));
+h.test("evidence fingerprints preserve provider observation differences",()=>trueValue(evidenceFingerprint(wireA)!==evidenceFingerprint(wireB),"observation fingerprints"));
+h.test("independence keys are deterministic and sorted",()=>deepEqual(independenceKeys([{...wireA,independenceKey:"b"},{...wireB,independenceKey:"a"}]),["a","b"],"keys"));
+h.test("canonical event defaults impact hypothesis to UNKNOWN",()=>{const summary=new DeterministicNewsSummaryProvider().summarize({evidence:[sec],generatedAtUtc:at});equal(buildCanonicalEvent([sec],summary,at).impactHypothesis,"UNKNOWN","impact");});
+h.test("canonical event confidence is truth verification only",()=>{const summary=new DeterministicNewsSummaryProvider().summarize({evidence:[sec],generatedAtUtc:at});equal(buildCanonicalEvent([sec],summary,at).verificationConfidence,1,"confidence");});
+h.test("identical replay produces stable event identity",()=>{const summary=new DeterministicNewsSummaryProvider().summarize({evidence:[sec],generatedAtUtc:at});equal(buildCanonicalEvent([sec],summary,at).eventId,buildCanonicalEvent([structuredClone(sec)],summary,at).eventId,"event id");});
+h.run("Options News verification");

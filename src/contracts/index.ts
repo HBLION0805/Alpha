@@ -86,3 +86,8 @@ export * from "./PersonalDailyScan";
 export * from "./PersonalDailyScanLiveReadonly";
 export * from "./PersonalDailyScanLiveReadonlyMarketScope";
 export * from "./AlpacaBarsLimitQualification";
+export * from "./OptionsNewsDomain";
+export * from "./OptionsNewsSourceRegistry";
+export * from "./OptionsNewsProvider";
+export * from "./OptionsNewsRepository";
+export * from "./OptionsNewsOperations";

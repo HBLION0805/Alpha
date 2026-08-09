@@ -89,6 +89,25 @@ const tests = [
     changed.runtimeOwnership.productRuntime = "PYTHON";
     assertInvalid(changed, schema, "runtimeOwnership.productRuntime must equal \"TYPESCRIPT\".");
   }],
+  ["Phase 1 news status cannot widen fixture, credential, cost, persistence, or Phase 2 authority", () => {
+    const changed = clone(status);
+    changed.optionsNewsInfrastructure.transportAuthority = "LIVE";
+    changed.optionsNewsInfrastructure.credentialAuthority = "READ_ALLOWED";
+    changed.optionsNewsInfrastructure.realCostCents = 1;
+    changed.optionsNewsInfrastructure.persistenceAuthority = "PRODUCTION_DATABASE";
+    changed.optionsNewsInfrastructure.combinedNewsOptionsMonthlyBudget.hardThresholdCents = 20000;
+    changed.optionsNewsInfrastructure.combinedNewsOptionsMonthlyBudget.spendingAuthority = "GRANTED";
+    changed.optionsNewsInfrastructure.phase2Status = "STARTED";
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes('optionsNewsInfrastructure.transportAuthority must equal "FIXTURE_AND_DRY_RUN_ONLY_LIVE_DISABLED".'));
+    assert(validation.issues.includes('optionsNewsInfrastructure.credentialAuthority must equal "NOT_GRANTED_NOT_READ".'));
+    assert(validation.issues.includes("optionsNewsInfrastructure.realCostCents must equal 0."));
+    assert(validation.issues.includes('optionsNewsInfrastructure.persistenceAuthority must equal "DETERMINISTIC_IN_MEMORY_TEST_ONLY".'));
+    assert(validation.issues.includes("$.optionsNewsInfrastructure.combinedNewsOptionsMonthlyBudget.hardThresholdCents must equal schema const 10000."));
+    assert(validation.issues.includes('$.optionsNewsInfrastructure.combinedNewsOptionsMonthlyBudget.spendingAuthority must equal schema const "NONE".'));
+    assert(validation.issues.includes('optionsNewsInfrastructure.phase2Status must equal "NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED".'));
+  }],
   ["three capital buckets preserve exact order and identity", () => {
     const changed = clone(status);
     changed.capitalArchitecture.futureBuckets.reverse();
@@ -132,37 +151,37 @@ const tests = [
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.marketDataAcquisition must equal \"D3B_IMPLEMENTATION_NOT_STARTED\"."));
-    assert(validation.issues.includes("optionsStatus must equal \"PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED\"."));
+    assert(validation.issues.includes("optionsStatus must equal \"PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_NOT_STARTED\"."));
     assert(validation.issues.includes("brokerStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("paperTradingStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("orderExecutionStatus must equal \"CLOSED\"."));
-    assert(validation.issues.includes("executionBoundaries.options must equal \"PHASE_0_R1_GOVERNANCE_RECORDED_RUNTIME_NOT_IMPLEMENTED\"."));
+    assert(validation.issues.includes("executionBoundaries.options must equal \"PHASE_1_NEWS_FIXTURE_ONLY_NO_TRADING_RUNTIME\"."));
     assert(validation.issues.includes("ownerDailyProductEntry must equal \"FROZEN_CODE_RETAINED\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
-  ["Phase 0 Owner approval and the Phase 1 authorization gate cannot drift", () => {
+  ["Phase 0 and Phase 1 approvals plus the Phase 2 authorization gate cannot drift", () => {
     const changed = clone(status);
     changed.source.repository = "other/repository";
     changed.source.source_baseline_commit = changed.source.reviewed_c4_commit;
     changed.currentMilestone.status = "IMPLEMENTED_AWAITING_OWNER_REVIEW";
-    changed.currentMilestone.approvedCommit = "0000000000000000000000000000000000000000";
+    changed.currentMilestone.phase0ApprovedCommit = "0000000000000000000000000000000000000000";
     changed.productDirection.phase0Status = "IMPLEMENTED_AWAITING_OWNER_REVIEW";
     changed.productDirection.phase1Status = "IN_PROGRESS";
-    changed.next = ["OWNER_REVIEW_OPTIONS_ONLY_PHASE_0_R1"];
+    changed.next = ["OWNER_REVIEW_OPTIONS_PHASE_1_NEWS_INFRASTRUCTURE"];
     changed.validation.phase1bD3AMergedHead.includesUncommittedCode = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
     assert(validation.issues.includes("currentMilestone.status must equal \"OWNER_APPROVED\"."));
-    assert(validation.issues.includes("currentMilestone.approvedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
+    assert(validation.issues.includes("currentMilestone.phase0ApprovedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
     assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
-    assert(validation.issues.includes("productDirection.phase1Status must equal \"NOT_STARTED\"."));
-    assert(validation.issues.includes("next must contain only OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1."));
+    assert(validation.issues.includes("productDirection.phase1Status must equal \"OWNER_APPROVED\"."));
+    assert(validation.issues.includes("next must contain only OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
-    assert.equal(status.productDirection.phase1Status, "NOT_STARTED");
+    assert.equal(status.productDirection.phase1Status, "OWNER_APPROVED");
     assert.equal(Object.hasOwn(status, "phase1Status"), false);
     assert.equal(Object.hasOwn(status, "phase1Approval"), false);
     assert.equal(Object.hasOwn(status, "phase1BStatus"), false);
@@ -176,7 +195,7 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("$.phase1Status is not allowed by schema."));
     assert(validation.issues.includes("$.phase1Status is undeclared."));
-    assert(validation.issues.includes("productDirection.phase1Status must equal \"NOT_STARTED\"."));
+    assert(validation.issues.includes("productDirection.phase1Status must equal \"OWNER_APPROVED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Status must equal \"MERGED\"."));
   }],
   ["post-merge validation does not publish unaudited timing precision", () => {
@@ -267,8 +286,8 @@ const tests = [
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
     assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "06c0ef2720a6b54fb0e27481efdbdfee786694e4");
-    assert.equal(status.source.implementation_baseline, "ORIGIN_MAIN_PHASE0_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD");
+    assert.equal(status.source.source_baseline_commit, "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9");
+    assert.equal(status.source.implementation_baseline, "ORIGIN_MAIN_PHASE1_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3APostMergeCorrection, "VERIFIED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B, "DESIGN_APPROVED");
@@ -276,7 +295,7 @@ const tests = [
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
     assert(status.frozen.includes("ALPACA_D3B_NEXT_ACTION"));
-    assert.deepEqual(status.next, ["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_1"]);
+    assert.deepEqual(status.next, ["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2"]);
     assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");

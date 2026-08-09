@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "fixture-news-1.0",
+  "releases": [{
+    "id": "fed-0001", "publisher": "publisher:federal-reserve", "upstreamOriginId": "publisher:federal-reserve", "headline": "Federal Reserve issues FOMC statement", "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260807a.htm", "publishedAt": "2026-08-07T14:00:00-04:00", "timezone": "America/New_York", "receivedAtUtc": "2026-08-07T18:00:03.000Z", "ingestedAtUtc": "2026-08-07T18:00:04.000Z", "normalizedAtUtc": "2026-08-07T18:00:05.000Z", "entities": [], "eventType": "FOMC_RATE_DECISION", "topics": ["TREASURY","GOLD"], "keyFacts": {"targetRange":"5.25-5.50","action":"held"}, "primaryDocument": "Fixture Federal Reserve primary statement."
+  }]
+}

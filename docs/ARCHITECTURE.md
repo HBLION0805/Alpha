@@ -36,10 +36,14 @@ Short-term trading exists only to support long-term investing.
 # Current Options-Only MVP Boundary
 
 The current early product direction is Options-Only. Phase 0-R1 records product
-governance and the versioned Options risk policy; it implements no news,
-candle, option-chain, Greeks, strategy-selection, Decision Card, broker, or
-execution behavior. Phase 1 is `NOT_STARTED` and requires separate Owner
-approval. The Personal ETF Daily Scan and Event Contract product entries are
+governance and the versioned Options risk policy. Owner-authorized Phase 1
+P1-A through P1-D now implements fixture-only news evidence infrastructure:
+separate observation/event contracts, immutable source authority, four offline
+adapters, deterministic verification, in-memory persistence/query, simulated
+budget enforcement, and machine-readable health. It implements no candle,
+option-chain, Greeks, strategy-selection, Decision Card, broker, or execution
+behavior. Phase 2 is `NOT_STARTED` and requires separate Owner approval. The
+Personal ETF Daily Scan and Event Contract product entries are
 frozen, while their code remains available as legacy research, market-data,
 evidence, risk, journal, and learning infrastructure.
 
@@ -55,7 +59,14 @@ Options are an early defined-risk capital-growth tool. They do not replace
 Alpha's permanent goal of protecting, allocating, growing, and compounding
 capital or the long-term destination of quality-asset ownership. The full
 Phase 0 authority and Phase 1 file plan are defined in
-[Options-Only MVP Phase 0](OPTIONS_ONLY_MVP_PHASE_0.md).
+[Options News Infrastructure](specifications/OPTIONS_NEWS_INFRASTRUCTURE.md).
+
+The news boundary deliberately separates immutable `NewsEvidenceRecord`
+observations from clustered `CanonicalNewsEvent` facts. Source Registry owns
+Tier and independence; provider adapters cannot elevate either. Verification
+is deterministic and permits only Tier 0 primary evidence, independent-source
+quorum, or a checked cited-primary path. Existing Evidence and Journal
+semantics are preserved through a read-only namespaced projection.
 
 ---
 

@@ -1,0 +1,8 @@
+import { NewsBudgetState, NewsHealthState, type NewsHealthSnapshot } from "../../contracts/OptionsNewsOperations";
+import { NewsLatencyState } from "../../contracts/OptionsNewsDomain";
+import { NewsTransportMode } from "../../contracts/OptionsNewsProvider";
+
+export function fixtureHealth(input: { readonly providerId: string; readonly adapterName: string; readonly adapterVersion: string; readonly atUtc: string; readonly requestCount: number; readonly parseCount: number; readonly normalizeCount: number; readonly verifyCount: number; readonly budgetState?: NewsBudgetState; readonly latencySampleCount?: number }): NewsHealthSnapshot {
+  const budget = input.budgetState ?? NewsBudgetState.Normal; const latencySamples = input.latencySampleCount ?? 0;
+  return { providerId: input.providerId, adapterName: input.adapterName, adapterVersion: input.adapterVersion, transportMode: NewsTransportMode.Fixture, state: budget === NewsBudgetState.BlockedBudget ? NewsHealthState.BlockedBudget : NewsHealthState.Healthy, lastSuccessfulFixtureAtUtc: input.atUtc, failureClass: null, reasonCode: "FIXTURE_REPLAY_ONLY", requestCount: input.requestCount, parseCount: input.parseCount, normalizeCount: input.normalizeCount, verifyCount: input.verifyCount, latency: { state: latencySamples > 0 ? NewsLatencyState.Measured : NewsLatencyState.Unmeasured, reasonCode: latencySamples > 0 ? null : "NO_COMPLETE_SAMPLE", publishToProviderReceiveMs: null, providerReceiveToIngestMs: null, ingestToNormalizeMs: null, normalizeToVerifyMs: null, publishToVerifyMs: null }, latencySampleCount: latencySamples, estimatedMinorUnits: 0, actualMinorUnits: 0, reservedMinorUnits: 0, budgetState: budget, networkAuthority: "BLOCKED", credentialAuthority: "NOT_READ", dataFreshness: "FIXTURE_ONLY" };
+}

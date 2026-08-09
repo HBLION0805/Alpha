@@ -1,5 +1,24 @@
 # Alpha Changelog
 
+## 2026-08-08 - Options-Only MVP Phase 1 News Infrastructure
+
+- Recorded formal Owner approval after the Phase 1 evidence-completion review;
+  Phase 2 remains `NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED` and requires a
+  separate explicit Owner authorization.
+- Implemented Owner-authorized P1-A through P1-D as fixture-only TypeScript
+  infrastructure: separated news evidence/event contracts, immutable Source
+  Registry, strict validators and transports, and SEC EDGAR, Federal Reserve,
+  Finnhub and Alpha Vantage adapters.
+- Added deterministic entity linking, versioned fingerprint/dedupe/clustering,
+  three-path verification, conflict/retraction/recovery/expiry handling,
+  Chinese deterministic summary envelopes, UTC/ET and latency handling.
+- Added an idempotent in-memory repository, read-only Evidence/Journal
+  projection, topic/entity/symbol/type/state/time queries, combined monthly
+  budget circuit breaker, provider health, and success/rejection end-to-end
+  fixtures.
+- Preserved zero network calls, credentials, real cost, account/broker/order,
+  Paper Trading, execution, and production persistence. Phase 2 is not started.
+
 ## 2026-08-08 - Options-Only MVP Phase 0-R1 Owner Approval
 
 - Recorded formal Owner approval of Phase 0-R1 commit

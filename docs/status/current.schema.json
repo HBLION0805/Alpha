@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.11",
+  "$id": "https://alpha.local/schemas/project-status/1.12",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "$schema", "schemaVersion", "statusId", "asOf", "source",
     "currentMilestone", "completed", "inProgress", "blocked", "frozen", "next",
-    "productDirection", "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
+    "productDirection", "optionsNewsInfrastructure", "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
     "optionsRiskPolicy", "moduleDisposition", "legacyProductLanes",
     "worktreeIsolation", "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry",
     "ownerProductEntry",
@@ -17,7 +17,7 @@
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.11" },
+    "schemaVersion": { "const": "1.12" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -32,6 +32,7 @@
     "frozen": { "$ref": "#/$defs/statusItems" },
     "next": { "$ref": "#/$defs/statusItems" },
     "productDirection": { "$ref": "#/$defs/productDirection" },
+    "optionsNewsInfrastructure": { "$ref": "#/$defs/optionsNewsInfrastructure" },
     "runtimeOwnership": { "$ref": "#/$defs/runtimeOwnership" },
     "capitalArchitecture": { "$ref": "#/$defs/capitalArchitecture" },
     "riskPolicyRecord": { "$ref": "#/$defs/riskPolicyRecord" },
@@ -42,11 +43,11 @@
     "executionBoundaries": { "$ref": "#/$defs/executionBoundaries" },
     "automatedExecutionAllowed": { "const": false },
     "ownerDailyProductEntry": { "const": "FROZEN_CODE_RETAINED" },
-    "ownerProductEntry": { "const": "NONE_PHASE_0" },
+    "ownerProductEntry": { "const": "NONE_PHASE_1" },
     "validation": { "$ref": "#/$defs/validation" },
     "networkAuthority": { "const": "NOT_GRANTED" },
     "frozenDailyScanAlpacaHistoricalDelivery": { "$ref": "#/$defs/frozenDailyScanAlpacaHistoricalDelivery" },
-    "optionsStatus": { "const": "PHASE_0_OWNER_APPROVED_PHASE_1_NOT_STARTED" },
+    "optionsStatus": { "const": "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_NOT_STARTED" },
     "brokerStatus": { "const": "CLOSED" },
     "paperTradingStatus": { "const": "CLOSED" },
     "orderExecutionStatus": { "const": "CLOSED" }
@@ -55,24 +56,27 @@
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["repository", "source_baseline_ref", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit"],
+      "required": ["repository", "source_baseline_ref", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit", "phase0_owner_approval_commit"],
       "properties": {
         "repository": { "const": "HBLION0805/Alpha" },
         "source_baseline_ref": { "const": "origin/main" },
-        "source_baseline_commit": { "const": "06c0ef2720a6b54fb0e27481efdbdfee786694e4" },
-        "implementation_baseline": { "const": "ORIGIN_MAIN_PHASE0_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD" },
-        "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" }
+        "source_baseline_commit": { "const": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9" },
+        "implementation_baseline": { "const": "ORIGIN_MAIN_PHASE1_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD" },
+        "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" },
+        "phase0_owner_approval_commit": { "const": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a" }
       }
     },
     "milestone": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "name", "status", "approvedCommit"],
+      "required": ["id", "name", "status", "authorizedBy", "implementationBaseline", "phase0ApprovedCommit"],
       "properties": {
-        "id": { "const": "OPTIONS_ONLY_MVP_PHASE_0" },
-        "name": { "const": "Options-Only MVP Governance and Risk Authority Convergence" },
+        "id": { "const": "OPTIONS_ONLY_MVP_PHASE_1_NEWS_INFRASTRUCTURE" },
+        "name": { "const": "Options-Only MVP Phase 1 News Infrastructure" },
         "status": { "const": "OWNER_APPROVED" },
-        "approvedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
+        "authorizedBy": { "const": "OWNER_TASK_V1_1_2026_08_08" },
+        "implementationBaseline": { "const": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9" },
+        "phase0ApprovedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
       }
     },
     "productDirection": {
@@ -81,9 +85,9 @@
       "required": ["currentProduct", "currentPhase", "phase0Status", "phase1Status", "permanentMission", "earlyCapitalGrowthTool", "longTermDestination", "fixedReturnPromise"],
       "properties": {
         "currentProduct": { "const": "OPTIONS_ONLY_MVP" },
-        "currentPhase": { "const": "PHASE_0" },
+        "currentPhase": { "const": "PHASE_1" },
         "phase0Status": { "const": "OWNER_APPROVED" },
-        "phase1Status": { "const": "NOT_STARTED" },
+        "phase1Status": { "const": "OWNER_APPROVED" },
         "permanentMission": {
           "type": "array",
           "prefixItems": [
@@ -99,6 +103,36 @@
         "earlyCapitalGrowthTool": { "const": "DEFINED_RISK_OPTIONS" },
         "longTermDestination": { "const": "QUALITY_ASSETS_AND_NON_LEVERAGED_COMPOUNDING" },
         "fixedReturnPromise": { "const": false }
+      }
+    },
+    "optionsNewsInfrastructure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contractVersion", "phaseSegments", "providers", "transportAuthority", "credentialAuthority", "realCostCents", "persistenceAuthority", "verificationAuthority", "summaryAuthority", "combinedNewsOptionsMonthlyBudget", "phase2Status"],
+      "properties": {
+        "contractVersion": { "const": "1.0" },
+        "phaseSegments": {
+          "type": "object", "additionalProperties": false,
+          "required": ["p1A", "p1B", "p1C", "p1D"],
+          "properties": { "p1A": { "const": "IMPLEMENTED" }, "p1B": { "const": "IMPLEMENTED" }, "p1C": { "const": "IMPLEMENTED" }, "p1D": { "const": "IMPLEMENTED" } }
+        },
+        "providers": {
+          "type": "array",
+          "prefixItems": [{ "const": "SEC_EDGAR_FIXTURE" }, { "const": "FEDERAL_RESERVE_FIXTURE" }, { "const": "FINNHUB_FIXTURE" }, { "const": "ALPHA_VANTAGE_FIXTURE" }],
+          "items": false, "minItems": 4, "maxItems": 4
+        },
+        "transportAuthority": { "const": "FIXTURE_AND_DRY_RUN_ONLY_LIVE_DISABLED" },
+        "credentialAuthority": { "const": "NOT_GRANTED_NOT_READ" },
+        "realCostCents": { "const": 0 },
+        "persistenceAuthority": { "const": "DETERMINISTIC_IN_MEMORY_TEST_ONLY" },
+        "verificationAuthority": { "const": "DETERMINISTIC_THREE_PATH_TRUTH_VERIFICATION_ONLY" },
+        "summaryAuthority": { "const": "DETERMINISTIC_FIXTURE_ONLY_NO_LIVE_LLM" },
+        "combinedNewsOptionsMonthlyBudget": {
+          "type": "object", "additionalProperties": false,
+          "required": ["currency", "softThresholdCents", "hardThresholdCents", "boundary", "spendingAuthority"],
+          "properties": { "currency": { "const": "USD" }, "softThresholdCents": { "const": 8000 }, "hardThresholdCents": { "const": 10000 }, "boundary": { "const": "UTC" }, "spendingAuthority": { "const": "NONE" } }
+        },
+        "phase2Status": { "const": "NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED" }
       }
     },
     "frozenDailyScanAlpacaHistoricalPhase1BDesign": {
@@ -512,7 +546,7 @@
       "required": ["network", "options", "broker", "paperTrading", "orderExecution", "robinhoodAccountRead", "robinhoodCredentialRead", "orderEntry", "orderType"],
       "properties": {
         "network": { "const": "CLOSED" },
-        "options": { "const": "PHASE_0_R1_GOVERNANCE_RECORDED_RUNTIME_NOT_IMPLEMENTED" },
+        "options": { "const": "PHASE_1_NEWS_FIXTURE_ONLY_NO_TRADING_RUNTIME" },
         "broker": { "const": "CLOSED" },
         "paperTrading": { "const": "CLOSED" },
         "orderExecution": { "const": "CLOSED" },
@@ -591,16 +625,37 @@
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["classification", "phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline", "phase0BaselineAttempt", "phase0WorkingTreeAttempt"],
+      "required": ["classification", "phase1aMergedHead", "phase1bD2MergedHead", "phase1bD3AMergedHead", "phase1bD3BDesignMergedHead", "coverageBaseline", "phase0BaselineAttempt", "phase0WorkingTreeAttempt", "phase1NewsWorkingTreeAttempt"],
       "properties": {
-        "classification": { "const": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_OBSERVED_ATTEMPTS" },
+        "classification": { "const": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_AND_PHASE1_NEWS_OBSERVED_ATTEMPTS" },
         "phase1aMergedHead": { "$ref": "#/$defs/validationResult" },
         "phase1bD2MergedHead": { "$ref": "#/$defs/phase1bD2ValidationResult" },
         "phase1bD3AMergedHead": { "$ref": "#/$defs/phase1bD3AValidationResult" },
         "phase1bD3BDesignMergedHead": { "$ref": "#/$defs/phase1bD3BDesignValidationResult" },
         "coverageBaseline": { "$ref": "#/$defs/coverageBaseline" },
         "phase0BaselineAttempt": { "$ref": "#/$defs/phase0ValidationAttempt" },
-        "phase0WorkingTreeAttempt": { "$ref": "#/$defs/phase0ValidationAttempt" }
+        "phase0WorkingTreeAttempt": { "$ref": "#/$defs/phase0ValidationAttempt" },
+        "phase1NewsWorkingTreeAttempt": { "$ref": "#/$defs/phase1NewsValidationAttempt" }
+      }
+    },
+    "phase1NewsValidationAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source_baseline_commit", "includesUncommittedCode", "command", "status", "componentCount", "testsExecuted", "passed", "failed", "durationMs", "networkUsed", "realCostCents", "rawEvidenceAvailability"],
+      "properties": {
+        "kind": { "const": "PHASE_1_NEWS_WORKING_TREE" },
+        "source_baseline_commit": { "const": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9" },
+        "includesUncommittedCode": { "const": true },
+        "command": { "const": "npm.cmd run alpha:validate" },
+        "status": { "const": "PASSED" },
+        "componentCount": { "const": 145 },
+        "testsExecuted": { "const": 2944 },
+        "passed": { "const": 2944 },
+        "failed": { "const": 0 },
+        "durationMs": { "const": 98000 },
+        "networkUsed": { "const": false },
+        "realCostCents": { "const": 0 },
+        "rawEvidenceAvailability": { "const": "OBSERVED_IN_CODEX_SESSION_OUTPUT" }
       }
     }
   }

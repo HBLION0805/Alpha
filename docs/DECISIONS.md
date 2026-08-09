@@ -1,5 +1,22 @@
 # Alpha Architecture Decisions
 
+## 2026-08-08 - Implement Options Phase 1 news infrastructure fixture-only
+
+- Decision: implement the Owner-authorized v1.1 P1-A through P1-D scope as a
+  deterministic TypeScript evidence subsystem and submit it for Owner review.
+- Decision: keep source observations, canonical factual events, evidence links,
+  transition history, and summaries as separate contracts. Source Registry,
+  not adapters, owns Tier and independence.
+- Decision: permit `VERIFIED` only through parsed Tier 0 primary evidence, two
+  fact-consistent independence groups, or a checked cited-primary path.
+  Finnhub and Alpha Vantage copies of Reuters remain one independence group.
+- Decision: reuse existing Evidence/Journal vocabulary only through a read-only
+  `OPTIONS_NEWS` projection; do not silently change existing semantics.
+- Decision: use only fixtures, deterministic in-memory persistence, simulated
+  zero cost, an `$80` warning and `$100` combined hard budget boundary. Live
+  network, credentials, paid use, broker/account/order/Paper Trading/execution,
+  and Phase 2 remain prohibited.
+
 ## 2026-08-08 - Correct Phase 0 validation evidence and complete Options policy record
 
 - Decision: retain Phase 0 as `IMPLEMENTED_AWAITING_OWNER_REVIEW`; the prior
