@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Alpha is a Personal Capital Operating System. It is designed to help manage capital through structured portfolio visibility, decision support, configuration, and risk awareness.
+Alpha is a Personal Capital Operating System focused on GLD and IBIT options on Robinhood. It supports capital protection through deterministic risk diagnostics, source-attributed market context, and research evidence.
 
 This document is the permanent development guide for AI coding agents working on the Alpha project.
 
@@ -80,15 +80,21 @@ Push
 
 ## Current Implemented Systems
 
-- Python prototype/runtime: Portfolio, terminal Dashboard, Config, Risk Engine, and early deterministic Decision Engine rules
+- Options retail feasibility v2: premium stops, all-in planned cash risk, net R targets, whole-contract constraints and separate full-premium stress limits
+- Options driver monitor: 16 factor families, 94 catalog indicators, six fixed public headline feeds, versioned local history and explicit coverage gaps
+- Options news and market-context fixture infrastructure, canonical data and shared calendar validation
 - TypeScript core: contract and repository-port layer, Opportunity Score Engine v1, and Prediction Engine v1
 - Alpha AI Infrastructure v1: Router, Cost Governor, Provider Adapter boundary, Execution Coordinator, Reservation Manager, Cost Ledger, Unified Audit Repository, and Runtime Workflow foundations
 - Alpha Learning Infrastructure v1: Prediction Log, Alpha Journal, Research Lab, Strategy Versioning, and Development Validation Log foundations
 - Historical Evidence Infrastructure: Historical Pattern Library, deterministic Historical Analogy Engine, and Event Replay Architecture foundations
 - Day 6 Development Efficiency Standard v1 documentation: Codex development standard, task template, owner review template, and deterministic validation bundle foundation
-- Day 7 integration and evidence foundations: versioned local Python-TypeScript read boundary, unified validation reporting, read-only Historical Evidence Product Surface, and typed Cross-System Evidence Linking
+- Read-only Historical Evidence Product Surface, typed Cross-System Evidence Linking and unified validation reporting
 
-The Python and TypeScript surfaces now have one narrow local read-only integration boundary, but they are not a unified product runtime. Day 7 read models and links do not add dashboard wiring, recommendations, automatic learning, mutable cross-runtime operations, or Python-to-TypeScript calls. TypeScript local NDJSON repositories are single-process development persistence. No production AI provider adapter, live AI API integration, live market-data integration, or automated capital execution exists.
+The Owner authorized removal of the unrelated Python, Event Contract/Kalshi and Personal ETF/stock Daily Scan product lanes on 2026-09-06. Their code was removed after dependency review; Git history and historical design records remain. Generic research, history, audit, AI and market-data capabilities remain reusable by Options.
+
+Only the six fixed public headline feeds have live read-only access. Numerical driver connectors, verified GLD/IBIT option chains, complete portfolio enforcement, calibrated outcomes, brokerage access and order execution are not implemented. Local NDJSON persistence is single-process. An hourly Codex heartbeat checks the public feeds while the local computer/app and worktree are available; it does not execute trades. See docs/HANDOFF.md and docs/status/current.json for current evidence.
+
+For the current GLD/IBIT work, the Owner explicitly authorized development, saving, commits and pushes without further confirmation. This recorded authorization satisfies the Git workflow above; it does not authorize brokerage transactions.
 
 ## Required Completion Report
 

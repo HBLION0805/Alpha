@@ -1,5 +1,26 @@
 # Alpha Architecture Decisions
 
+## 2026-09-06 - Options-only risk v2 and bounded public driver monitoring
+
+- Apply the Owner's latest 1.5R-2R target preference and request to reconsider
+  the premium stop. Choose 20% as an unvalidated research default, compare
+  10%-25%, and limit all-in planned cash R to 0.5% of equity. The prior 2%
+  stop and 50% premium target below are superseded historical inputs.
+- Treat the USD 1,000-to-50,000 aspiration as scenario analysis only. Do not
+  increase risk, extend holding or infer an 80% win probability from that goal.
+- Expand driver coverage explicitly; headline candidates never establish a
+  numerical observation, verified economic effect or trade authorization.
+  Live access is limited to six fixed public feeds without account credentials.
+- Preserve first-seen history and corrections, reject damaged journal batches,
+  and distinguish source failures, stale observations and unconnected factors.
+  An external hourly Codex heartbeat invokes the one-shot command locally.
+- Remove unrelated product code under the Owner's explicit scope instruction;
+  retain dependency-reviewed reusable modules and historical audit documents.
+  The reviewed [specification](specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md)
+  and [deletion manifest](OPTIONS_FOCUS_DELETION_MANIFEST.json) define scope.
+- Existing save/commit/push authorization persists. No brokerage transaction,
+  credential access or paid data subscription is part of this implementation.
+
 ## 2026-09-06 - Honor GLD / IBIT scope without inventing a profitable policy
 
 - The Owner explicitly authorized implementation, saving, commits and pushes.

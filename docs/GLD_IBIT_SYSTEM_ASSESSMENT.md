@@ -1,5 +1,9 @@
 # GLD / IBIT system assessment and delivery
 
+Historical v1 assessment: the six-dimensional discussion remains useful, but
+the 2% stop/fixed-target policy and delivery counts below are superseded by
+[Options focus v2](OPTIONS_FOCUS_V2_DELIVERY.md).
+
 Date: 2026-09-06. This assessment uses repository inspection, deterministic
 calculations and official product documentation. It does not claim personal
 trading experience, a verified trading edge, or a guaranteed return.

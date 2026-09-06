@@ -1,0 +1,1185 @@
+{
+  "schemaVersion": "1.0",
+  "baselineCommit": "53a905a5f8360afeea1d24eaa084110f6ef85bdc",
+  "authorization": "OWNER_2026_09_06_OPTIONS_ONLY_SCOPE_AND_UNRELATED_CODE_REMOVAL",
+  "scope": "GLD and IBIT options on Robinhood",
+  "pathSafety": "Every absolute resolved file path was verified within this worktree before deletion. No runtime data, Git metadata, dependencies, or other checkouts are included.",
+  "preservedCapabilities": [
+    "Canonical instruments, quotes, bars and provider registries",
+    "Generic Twelve Data Bar adapter and bounded transport",
+    "Extracted market-calendar validation and bar references",
+    "Options news, market context and retail feasibility",
+    "Historical evidence, replay, research integrity, AI, audit and journals"
+  ],
+  "deletedFileCount": 292,
+  "files": [
+    {
+      "path": "app/__init__.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/dashboard.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/decision_engine.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/integration/__init__.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/integration/contract.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/integration/entrypoint.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/integration/registry.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/main.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/market.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/models.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/portfolio.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/risk_engine.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/strategy.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "app/utils.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "config/_init_.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "config/decision_rules.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "config/risk_config.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "fixtures/event-analyzer/bearish-reversal.json",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "fixtures/event-analyzer/bullish-continuation.json",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "fixtures/event-analyzer/malformed.json",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "fixtures/event-analyzer/neutral-choppy.json",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/alpaca-personal-asset-metadata.mjs",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "scripts/alpaca-personal-market-data-live-smoke.mjs",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "scripts/alpha-daily-scan.test.mjs",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "scripts/alpha-daily-scan.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "scripts/collection-runner-recovery-control.mjs",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/event-analyzer-console.mjs",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/event-contract-shadow-console.mjs",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-durable-rehearsal-c1-phase-child.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-durable-rehearsal-c1-phase-fixture.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-durable-rehearsal-evidence-drill-child.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-durable-rehearsal-evidence-drill-fixture.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-quarantine-drill-fixture.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-rehearsal-package-drill-child.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-runtime-child.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-session-drill-fixture.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-transaction-drill-child.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/fixtures/collection-runner-transaction-drill-fixture.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/forward-shadow-collection-console.mjs",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/kalshi-event-contract-live-smoke.mjs",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/network-disabled-bootstrap.cjs",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/network-disabled-python/sitecustomize.py",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "scripts/run-python-integration-tests.mjs",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "scripts/twelve-data-personal-muls-reference.mjs",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "scripts/validate-d3b-design.test.mjs",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/AlpacaBarsLimitQualification.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/EventAnalyzer.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunner.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerDurableFixtureRehearsal.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerDurableFixtureRehearsalCoordinator.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerDurableFixtureRehearsalEvidence.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerFixtureRehearsal.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerRecoveryControl.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerRehearsalOperation.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerRehearsalOperationControl.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerRehearsalOperationVerification.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerRuntime.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerRuntimeAssembly.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractCollectionRunnerRuntimeOwnershipRecovery.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractObservation.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractShadowLedger.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/EventContractSource.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/ForwardShadowCollectionControl.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/PersonalCandidateScan.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalDailyScan.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalDailyScanLiveReadonly.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalDailyScanLiveReadonlyMarketScope.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalDecision.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalMarketDataAlternativeProviderQualification.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalMarketDataComposition.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalMarketDataProviderCoverage.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalMarketDataProviderQualificationClosure.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalMarketDataTwelveDataQualification.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalMarketDataZeroCostProviderScreening.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PersonalWatchlistMapping.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/contracts/PythonIntegration.ts",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "src/contracts/PythonIntegrationValidation.ts",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "src/contracts/ResearchDatasetQualification.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/ResearchShadowDatasetAssembly.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/contracts/VerifiedMarketSnapshot.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/event-analyzer/EventAnalyzerCandleFeatures.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-analyzer/EventAnalyzerConsole.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-analyzer/EventAnalyzerEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-analyzer/EventAnalyzerEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-analyzer/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC1ProcessDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC2ProcessDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC3ProcessDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalCoordinator.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalCoordinator.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEvidence.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEvidence.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalPreparationAdapter.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalProcessDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalStepAdapter.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalStepAdapter.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPackage.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPackage.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPackageProcessDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPreparation.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPreparation.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalStep.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalStep.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-fixture-rehearsal/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlConsole.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlOperator.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-recovery-control/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationC3Authority.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationC4Authority.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationComposition.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationControlConsole.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationControlEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationControlEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationDurableObservation.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationPreflight.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationRuntimeComposition.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationSecurityProcessDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationVerification.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationVerification.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation-control/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-rehearsal-operation/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerFixtureWorker.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeAssemblyPlanner.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeAssemblyPlanner.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeExecution.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeForegroundStep.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeForegroundStep.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeFoundation.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeFoundation.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOperator.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOperator.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOwnershipQuarantine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOwnershipRecovery.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOwnershipRecovery.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeProcessDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeTransactionDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerScheduler.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner-runtime/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner/EventContractCollectionRunnerEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner/EventContractCollectionRunnerEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-collection-runner/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-observation/EventContractObservationEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-observation/EventContractObservationEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-observation/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-shadow-ledger/EventContractShadowLedger.fixtures.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-shadow-ledger/EventContractShadowLedgerEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-shadow-ledger/EventContractShadowLedgerEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-shadow-ledger/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-source/EventContractSourceEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-source/EventContractSourceEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/event-contract-source/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/forward-shadow-collection-control/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/personal-candidate-scan/PersonalCandidateScanEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-candidate-scan/PersonalCandidateScanEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-candidate-scan/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/AlpacaBarsLimitQualification.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/AlpacaBarsLimitQualification.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/AlpacaBarsLimitQualificationProductComposition.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanApplication.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanApplication.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanEligibility.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanFixture.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyMarketScope.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyMarketScope.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyPreflight.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyPreflight.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyProductComposition.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/testing/AlpacaBarsLimitQualificationTestFactory.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-daily-scan/testing/PersonalDailyScanLiveReadonlyTestFactory.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-decision/PersonalDecisionEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-decision/PersonalDecisionEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-decision/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-alternative-provider-qualification/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-composition/PersonalMarketDataCompositionEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-composition/PersonalMarketDataCompositionEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-composition/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-provider-coverage/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-provider-qualification-closure/PersonalMarketDataProviderQualificationClosureEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-provider-qualification-closure/PersonalMarketDataProviderQualificationClosureEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-provider-qualification-closure/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-twelve-data-qualification/PersonalMarketDataTwelveDataQualificationEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-twelve-data-qualification/PersonalMarketDataTwelveDataQualificationEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-twelve-data-qualification/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-zero-cost-provider-screening/PersonalMarketDataZeroCostProviderScreeningEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-zero-cost-provider-screening/PersonalMarketDataZeroCostProviderScreeningEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-market-data-zero-cost-provider-screening/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-watchlist-mapping/PersonalWatchlistMappingRegistry.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-watchlist-mapping/PersonalWatchlistMappingRegistry.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/personal-watchlist-mapping/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/research-dataset-qualification/ResearchDatasetQualificationEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/research-dataset-qualification/ResearchDatasetQualificationEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/research-dataset-qualification/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/research-shadow-dataset-assembly/ResearchShadowDatasetAssemblyEngine.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/research-shadow-dataset-assembly/ResearchShadowDatasetAssemblyEngine.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/research-shadow-dataset-assembly/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/engines/verified-market-snapshot/VerifiedMarketSnapshotEngine.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/verified-market-snapshot/VerifiedMarketSnapshotEngine.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/engines/verified-market-snapshot/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiEventContractFixtureContracts.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiEventContractReviewedEvidence.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiEventContractTestFixtures.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/event-contract/kalshi/index.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/integration/market-data/PersonalMulsScopeRetirement.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaBarsLimitQualificationHttpsTransport.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaCredentials.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaCredentials.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaHttpsTransport.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaHttpsTransport.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataCommand.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataDiagnostic.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataDiagnostic.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataTransport.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataTransport.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataAdapter.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataContracts.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmoke.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmoke.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmokeCommand.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmokeCommand.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataNormalizer.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataNormalizer.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataPlanner.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaPersonalMarketDataResponseValidator.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaTransportDryRun.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/AlpacaTransportDryRun.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/alpaca/index.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceCommand.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceCommand.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceDiagnostic.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceDiagnostic.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceErrorDiagnostic.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceErrorDiagnostic.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceHttpsTransport.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceHttpsTransport.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceLiveOperation.test.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceLiveOperation.ts",
+      "reason": "FROZEN_ETF_DAILY_SCAN_AND_FIXED_SCOPE_PROVIDERS"
+    },
+    {
+      "path": "src/integration/python/AlphaIntegrationError.ts",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "src/integration/python/PythonIntegration.test.ts",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "src/integration/python/PythonIntegrationClient.ts",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "src/integration/python/SubprocessPythonIntegrationTransport.ts",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "src/integration/python/index.ts",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteStore.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerRecoveryControlDrill.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerRecoveryControlRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerRecoveryControlSqliteMigrationV2.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerRehearsalOperationControlSqliteStore.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerRuntimeAssemblyRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerRuntimeProjectionRepository.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerRuntimeProjectionRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerSqliteMigrationV1.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerSqliteRecovery.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerSqliteRecovery.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerSqliteStore.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractCollectionRunnerSqliteStore.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/EventContractShadowLedgerRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/InMemoryEventContractShadowLedgerRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/LocalNdjsonEventContractShadowLedgerRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/SessionGatedEventContractCollectionRunnerRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/SqliteEventContractCollectionRunnerDurableFixtureRehearsalRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/SqliteEventContractCollectionRunnerRecoveryControlRepository.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/SqliteEventContractCollectionRunnerRecoveryControlRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/SqliteEventContractCollectionRunnerRepository.test.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "src/repositories/SqliteEventContractCollectionRunnerRepository.ts",
+      "reason": "EVENT_CONTRACT_AND_COLLECTION_PRODUCT"
+    },
+    {
+      "path": "tests/__init__.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    },
+    {
+      "path": "tests/test_python_integration.py",
+      "reason": "LEGACY_PYTHON_PRODUCT"
+    }
+  ]
+}

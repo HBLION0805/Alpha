@@ -1,23 +1,50 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.15",
+  "$id": "https://alpha.local/schemas/project-status/1.16",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "$schema", "schemaVersion", "statusId", "asOf", "source",
-    "currentMilestone", "completed", "inProgress", "blocked", "frozen", "next",
-    "productDirection", "optionsNewsInfrastructure", "optionsMarketContext", "ownerOptionsProfile", "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
-    "optionsRiskPolicy", "moduleDisposition", "legacyProductLanes",
-    "worktreeIsolation", "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry",
+    "$schema",
+    "schemaVersion",
+    "statusId",
+    "asOf",
+    "source",
+    "currentMilestone",
+    "completed",
+    "inProgress",
+    "blocked",
+    "frozen",
+    "next",
+    "productDirection",
+    "optionsNewsInfrastructure",
+    "optionsMarketContext",
+    "ownerOptionsProfile",
+    "runtimeOwnership",
+    "capitalArchitecture",
+    "riskPolicyRecord",
+    "optionsRiskPolicy",
+    "moduleDisposition",
+    "legacyProductLanes",
+    "worktreeIsolation",
+    "executionBoundaries",
+    "automatedExecutionAllowed",
+    "ownerDailyProductEntry",
     "ownerProductEntry",
-    "validation", "networkAuthority", "frozenDailyScanAlpacaHistoricalDelivery",
-    "optionsStatus", "brokerStatus", "paperTradingStatus",
-    "orderExecutionStatus"
+    "validation",
+    "networkAuthority",
+    "frozenDailyScanAlpacaHistoricalDelivery",
+    "optionsStatus",
+    "brokerStatus",
+    "paperTradingStatus",
+    "orderExecutionStatus",
+    "capitalAspiration",
+    "optionsDriverMonitor",
+    "currentDeliveryValidation"
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.15" },
+    "schemaVersion": { "const": "1.16" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -44,18 +71,99 @@
     "worktreeIsolation": { "$ref": "#/$defs/worktreeIsolation" },
     "executionBoundaries": { "$ref": "#/$defs/executionBoundaries" },
     "automatedExecutionAllowed": { "const": false },
-    "ownerDailyProductEntry": { "const": "FROZEN_CODE_RETAINED" },
-    "ownerProductEntry": { "const": "OFFLINE_OPTIONS_FEASIBILITY_DIAGNOSTIC" },
+    "ownerDailyProductEntry": { "const": "REMOVED_OWNER_AUTHORIZED" },
+    "ownerProductEntry": { "const": "OPTIONS_FEASIBILITY_AND_DRIVER_MONITOR" },
     "validation": { "$ref": "#/$defs/validation" },
-    "networkAuthority": { "const": "NOT_GRANTED" },
+    "networkAuthority": { "const": "OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_ONLY" },
     "frozenDailyScanAlpacaHistoricalDelivery": { "$ref": "#/$defs/frozenDailyScanAlpacaHistoricalDelivery" },
-    "optionsStatus": { "const": "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_AWAITING_REVIEW" },
+    "optionsStatus": { "const": "GLD_IBIT_DIAGNOSTIC_AND_DRIVER_MONITOR_IMPLEMENTED_TRADING_RUNTIME_NOT_IMPLEMENTED" },
     "brokerStatus": { "const": "CLOSED" },
     "paperTradingStatus": { "const": "CLOSED" },
-    "orderExecutionStatus": { "const": "CLOSED" }
+    "orderExecutionStatus": { "const": "CLOSED" },
+    "capitalAspiration": {
+      "$ref": "#/$defs/capitalAspiration"
+    },
+    "optionsDriverMonitor": {
+      "$ref": "#/$defs/optionsDriverMonitor"
+    },
+    "currentDeliveryValidation": {
+      "$ref": "#/$defs/currentDeliveryValidation"
+    }
   },
   "$defs": {
-    "ownerOptionsProfile": { "const": {"profileVersion":"owner-gld-ibit-2026-09-06","broker":"ROBINHOOD","intendedUnderlyings":["GLD","IBIT"],"initialEquityCents":100000,"normalAllocationBps":500,"conditionalAllocationBps":1000,"plannedStopBps":200,"plannedStopBasis":"ENTRY_PREMIUM","normalProfitTargetBps":5000,"maximumConfiguredProfitTargetBps":8000,"conditionalWinProbabilityThresholdBps":8000,"conditionalEscalation":"BLOCKED_NO_CALIBRATED_OPTION_OUTCOMES","longerHolding":"REQUIRES_THESIS_AND_TIME_REVIEW","maximumLossMeaning":"FULL_PREMIUM_PLUS_FEES_NOT_PLANNED_STOP","legacyLossCaps":"RETAINED_SEPARATE_CONSTRAINT","feasibility":"NO_TRADE_CURRENT_STOP_TICK_AND_LEGACY_CAP_INCOMPATIBLE","dataAuthority":"MANUAL_SCENARIO_ONLY","executionAllowed":false,"developmentPublication":"OWNER_AUTHORIZED_COMMIT_AND_PUSH","specification":"docs/specifications/GLD_IBIT_RETAIL_FEASIBILITY.md"} },
+    "ownerOptionsProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profileVersion",
+        "broker",
+        "intendedUnderlyings",
+        "initialEquityCents",
+        "normalAllocationBps",
+        "conditionalAllocationBps",
+        "plannedStopBps",
+        "comparisonStopBps",
+        "minimumStopBps",
+        "maximumStopBps",
+        "stopPolicyStatus",
+        "plannedStopBasis",
+        "plannedAccountRiskBudgetBps",
+        "normalFullPremiumStressCapCents",
+        "minimumRewardMultipleMilliR",
+        "maximumRewardMultipleMilliR",
+        "defaultRewardMultipleMilliR",
+        "rewardBasis",
+        "maximumConfiguredProfitTargetBps",
+        "profitTargetCapBasis",
+        "conditionalWinProbabilityThresholdBps",
+        "conditionalEscalation",
+        "longerHolding",
+        "maximumLossMeaning",
+        "legacyLossCaps",
+        "feasibility",
+        "dataAuthority",
+        "executionAllowed",
+        "developmentPublication",
+        "specification"
+      ],
+      "properties": {
+        "profileVersion": { "const": "owner-gld-ibit-2026-09-06-v2" },
+        "broker": { "const": "ROBINHOOD" },
+        "intendedUnderlyings": {
+          "const": [
+            "GLD",
+            "IBIT"
+          ]
+        },
+        "initialEquityCents": { "const": 100000 },
+        "normalAllocationBps": { "const": 500 },
+        "conditionalAllocationBps": { "const": 1000 },
+        "plannedStopBps": { "const": 2000 },
+        "comparisonStopBps": { "const": 1000 },
+        "minimumStopBps": { "const": 1000 },
+        "maximumStopBps": { "const": 2500 },
+        "stopPolicyStatus": { "const": "RESEARCH_DEFAULT_NOT_VALIDATED_LIVE_RULE" },
+        "plannedStopBasis": { "const": "ENTRY_PREMIUM_PLUS_COSTS" },
+        "plannedAccountRiskBudgetBps": { "const": 50 },
+        "normalFullPremiumStressCapCents": { "const": 2500 },
+        "minimumRewardMultipleMilliR": { "const": 1500 },
+        "maximumRewardMultipleMilliR": { "const": 2000 },
+        "defaultRewardMultipleMilliR": { "const": 2000 },
+        "rewardBasis": { "const": "NET_CASH_GAIN_MULTIPLE_OF_ALL_IN_PLANNED_R" },
+        "maximumConfiguredProfitTargetBps": { "const": 8000 },
+        "profitTargetCapBasis": { "const": "ROUNDED_GROSS_PREMIUM_GAIN" },
+        "conditionalWinProbabilityThresholdBps": { "const": 8000 },
+        "conditionalEscalation": { "const": "BLOCKED_NO_CALIBRATED_OPTION_OUTCOMES" },
+        "longerHolding": { "const": "REQUIRES_THESIS_AND_TIME_REVIEW" },
+        "maximumLossMeaning": { "const": "FULL_PREMIUM_PLUS_FEES_NOT_PLANNED_STOP" },
+        "legacyLossCaps": { "const": "RETAINED_SEPARATE_CONSTRAINT" },
+        "feasibility": { "const": "ECONOMICS_ONLY_NO_EXECUTION_UNKNOWN_COSTS_FAIL_CLOSED" },
+        "dataAuthority": { "const": "MANUAL_SCENARIO_ONLY" },
+        "executionAllowed": { "const": false },
+        "developmentPublication": { "const": "OWNER_AUTHORIZED_COMMIT_AND_PUSH" },
+        "specification": { "const": "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md" }
+      }
+    },
     "optionsMarketContext": {
       "type": "object",
       "additionalProperties": false,
@@ -127,9 +235,9 @@
       "required": ["repository", "source_baseline_ref", "source_baseline_commit", "implementation_baseline", "reviewed_c4_commit", "phase0_owner_approval_commit"],
       "properties": {
         "repository": { "const": "HBLION0805/Alpha" },
-        "source_baseline_ref": { "const": "origin/main" },
-        "source_baseline_commit": { "const": "ff1a345f4958c9acc75203533263b8166c07dff0" },
-        "implementation_baseline": { "const": "PHASE2_PLANNING_MERGE_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
+        "source_baseline_ref": { "const": "origin/codex/gld-ibit-options-foundation" },
+        "source_baseline_commit": { "const": "53a905a5f8360afeea1d24eaa084110f6ef85bdc" },
+        "implementation_baseline": { "const": "GLD_IBIT_FEASIBILITY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" },
         "phase0_owner_approval_commit": { "const": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a" }
       }
@@ -139,11 +247,11 @@
       "additionalProperties": false,
       "required": ["id", "name", "status", "authorizedBy", "implementationBaseline", "phase0ApprovedCommit"],
       "properties": {
-        "id": { "const": "GLD_IBIT_OPTIONS_RETAIL_FEASIBILITY" },
-        "name": { "const": "GLD / IBIT Options Retail Feasibility" },
+        "id": { "const": "GLD_IBIT_OPTIONS_DRIVER_MONITOR_AND_RISK_V2" },
+        "name": { "const": "GLD / IBIT Options Driver Monitor and Risk v2" },
         "status": { "const": "IMPLEMENTED_DIAGNOSTIC_ONLY" },
         "authorizedBy": { "const": "OWNER_GLD_IBIT_SCOPE_AND_AUTONOMOUS_DEVELOPMENT_2026_09_06" },
-        "implementationBaseline": { "const": "ff1a345f4958c9acc75203533263b8166c07dff0" },
+        "implementationBaseline": { "const": "53a905a5f8360afeea1d24eaa084110f6ef85bdc" },
         "phase0ApprovedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
       }
     },
@@ -280,9 +388,9 @@
       "required": ["productRuntime", "pythonRole", "pythonDashboardStatus", "riskAuthority"],
       "properties": {
         "productRuntime": { "const": "TYPESCRIPT" },
-        "pythonRole": { "const": "RESEARCH_PROTOTYPE_AND_STATISTICAL_VALIDATION_ONLY" },
-        "pythonDashboardStatus": { "const": "DEPRECATED_AS_PRODUCT_ENTRY_PROTOTYPE_ONLY" },
-        "riskAuthority": { "const": "OWNER_APPROVED_OPTIONS_POLICY_RECORDED_RUNTIME_NOT_IMPLEMENTED" }
+        "pythonRole": { "const": "LEGACY_PRODUCT_AND_INTEGRATION_REMOVED" },
+        "pythonDashboardStatus": { "const": "REMOVED_OWNER_AUTHORIZED" },
+        "riskAuthority": { "const": "OFFLINE_DIAGNOSTIC_ONLY_FULL_PORTFOLIO_RISK_NOT_IMPLEMENTED" }
       }
     },
     "capitalArchitecture": {
@@ -452,15 +560,35 @@
     "moduleDisposition": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["portfolio", "dashboardProductCapability", "legacyPythonAndOfflineDailyScanInterfaces", "decisionEngine", "config", "riskEngine", "alpacaMarketDataComponents", "canonicalBarsQuotes", "evidence", "marketRegime", "capitalAllocation", "journal", "predictionLog", "strategyVersioning", "etfDailyScan", "eventContract", "researchBacktestingFoundations"],
+      "required": [
+        "portfolio",
+        "dashboardProductCapability",
+        "legacyPythonAndOfflineDailyScanInterfaces",
+        "legacyPythonIntegrationBoundary",
+        "decisionEngine",
+        "config",
+        "riskEngine",
+        "alpacaMarketDataComponents",
+        "genericTwelveDataBarAdapter",
+        "canonicalBarsQuotes",
+        "evidence",
+        "marketRegime",
+        "capitalAllocation",
+        "journal",
+        "predictionLog",
+        "strategyVersioning",
+        "etfDailyScan",
+        "eventContract",
+        "researchBacktestingFoundations"
+      ],
       "properties": {
-        "portfolio": { "const": "REUSE" },
-        "dashboardProductCapability": { "const": "REUSE" },
-        "legacyPythonAndOfflineDailyScanInterfaces": { "const": "RETIRE_LATER" },
-        "decisionEngine": { "const": "REUSE" },
-        "config": { "const": "REUSE" },
-        "riskEngine": { "const": "REUSE" },
-        "alpacaMarketDataComponents": { "const": "KEEP" },
+        "portfolio": { "const": "RETAINED_GENERIC_CONTRACTS_PRODUCT_RUNTIME_REMOVED" },
+        "dashboardProductCapability": { "const": "FUTURE_OPTIONS_INTERFACE_NOT_IMPLEMENTED" },
+        "legacyPythonAndOfflineDailyScanInterfaces": { "const": "REMOVED_OWNER_AUTHORIZED" },
+        "decisionEngine": { "const": "RETAINED_GENERIC_FOUNDATIONS_PYTHON_RUNTIME_REMOVED" },
+        "config": { "const": "RETAINED_AI_CONFIG_PYTHON_PRODUCT_CONFIG_REMOVED" },
+        "riskEngine": { "const": "OFFLINE_OPTIONS_DIAGNOSTIC_ONLY_LEGACY_PYTHON_REMOVED" },
+        "alpacaMarketDataComponents": { "const": "REMOVED_OBSOLETE_FIXED_PRODUCT_LANE" },
         "canonicalBarsQuotes": { "const": "REUSE" },
         "evidence": { "const": "REUSE" },
         "marketRegime": { "const": "REUSE" },
@@ -468,24 +596,36 @@
         "journal": { "const": "REUSE" },
         "predictionLog": { "const": "REUSE" },
         "strategyVersioning": { "const": "REUSE" },
-        "etfDailyScan": { "const": "FREEZE" },
-        "eventContract": { "const": "FREEZE" },
-        "researchBacktestingFoundations": { "const": "REUSE" }
+        "etfDailyScan": { "const": "REMOVED_OWNER_AUTHORIZED" },
+        "eventContract": { "const": "REMOVED_OWNER_AUTHORIZED" },
+        "researchBacktestingFoundations": { "const": "REUSE" },
+        "legacyPythonIntegrationBoundary": {
+          "const": "REMOVED_OWNER_AUTHORIZED"
+        },
+        "genericTwelveDataBarAdapter": {
+          "const": "KEEP"
+        }
       }
     },
     "legacyProductLanes": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["etfDailyScan", "eventContract"],
+      "required": [
+        "etfDailyScan",
+        "eventContract",
+        "legacyPython",
+        "removalEvidence",
+        "removedFileCount"
+      ],
       "properties": {
         "etfDailyScan": {
           "type": "object",
           "additionalProperties": false,
           "required": ["status", "formerNextAction", "expansion"],
           "properties": {
-            "status": { "const": "FROZEN_PRODUCT_ENTRY_CODE_RETAINED" },
+            "status": { "const": "REMOVED_OWNER_AUTHORIZED" },
             "formerNextAction": { "const": "ALPACA_D3B_IMPLEMENTATION" },
-            "expansion": { "const": "PROHIBITED_WITHOUT_OWNER_APPROVAL" }
+            "expansion": { "const": "OUT_OF_CURRENT_PRODUCT_SCOPE" }
           }
         },
         "eventContract": {
@@ -493,9 +633,27 @@
           "additionalProperties": false,
           "required": ["status", "expansion"],
           "properties": {
-            "status": { "const": "FROZEN_PRODUCT_ENTRY_CODE_RETAINED" },
-            "expansion": { "const": "PROHIBITED_WITHOUT_OWNER_APPROVAL" }
+            "status": { "const": "REMOVED_OWNER_AUTHORIZED" },
+            "expansion": { "const": "OUT_OF_CURRENT_PRODUCT_SCOPE" }
           }
+        },
+        "legacyPython": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "integrationBoundary"
+          ],
+          "properties": {
+            "status": { "const": "REMOVED_OWNER_AUTHORIZED" },
+            "integrationBoundary": { "const": "REMOVED_OWNER_AUTHORIZED" }
+          }
+        },
+        "removalEvidence": {
+          "const": "docs/OPTIONS_FOCUS_DELETION_MANIFEST.json"
+        },
+        "removedFileCount": {
+          "const": 292
         }
       }
     },
@@ -602,8 +760,8 @@
       "additionalProperties": false,
       "required": ["network", "options", "broker", "paperTrading", "orderExecution", "robinhoodAccountRead", "robinhoodCredentialRead", "orderEntry", "orderType"],
       "properties": {
-        "network": { "const": "CLOSED" },
-        "options": { "const": "FIXTURE_CONTEXT_AND_MANUAL_FEASIBILITY_NO_TRADING_RUNTIME" },
+        "network": { "const": "FIXED_PUBLIC_DRIVER_FEEDS_ONLY" },
+        "options": { "const": "FIXTURE_CONTEXT_MANUAL_RISK_AND_PUBLIC_HEADLINES_NO_TRADING_RUNTIME" },
         "broker": { "const": "CLOSED" },
         "paperTrading": { "const": "CLOSED" },
         "orderExecution": { "const": "CLOSED" },
@@ -735,6 +893,159 @@
         "realCostCents": { "const": 0 },
         "rawEvidenceAvailability": { "const": "OBSERVED_IN_CODEX_SESSION_OUTPUT" },
         "evidenceAuthority": { "const": "LOCAL_CODEX_SESSION_NOT_GITHUB_CI" }
+      }
+    },
+    "capitalAspiration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "initialEquityCents",
+        "targetEquityCents",
+        "targetDate",
+        "classification",
+        "expectedReturnPromise",
+        "riskOverrides"
+      ],
+      "properties": {
+        "initialEquityCents": { "const": 100000 },
+        "targetEquityCents": { "const": 5000000 },
+        "targetDate": { "const": "2026-12-31" },
+        "classification": { "const": "OWNER_ASPIRATION_SCENARIO_ONLY" },
+        "expectedReturnPromise": { "const": false },
+        "riskOverrides": { "const": false }
+      }
+    },
+    "optionsDriverMonitor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractVersion",
+        "status",
+        "factorFamilyCount",
+        "indicatorCount",
+        "fixedPublicFeedCount",
+        "sourceIds",
+        "sourceEndpointReview",
+        "catalogCoverage",
+        "networkAuthority",
+        "persistenceAuthority",
+        "quantitativeDataConnectors",
+        "headlineInterpretation",
+        "calibratedWinRate",
+        "historicalOptionOutcomes",
+        "missingAndStaleEvidence",
+        "continuousMonitoring",
+        "credentialAuthority",
+        "paidSubscriptions",
+        "executionAllowed",
+        "specification"
+      ],
+      "properties": {
+        "contractVersion": { "const": "1.0" },
+        "status": { "const": "IMPLEMENTED_BOUNDED_PUBLIC_HEADLINE_MONITOR" },
+        "factorFamilyCount": { "const": 16 },
+        "indicatorCount": { "const": 94 },
+        "fixedPublicFeedCount": { "const": 6 },
+        "sourceIds": {
+          "const": [
+            "fed",
+            "bls",
+            "bea",
+            "ecb",
+            "ofac",
+            "sec"
+          ]
+        },
+        "sourceEndpointReview": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "date",
+            "status",
+            "meaning"
+          ],
+          "properties": {
+            "date": { "const": "2026-09-06" },
+            "status": { "const": "HTTP_200_VERIFIED" },
+            "meaning": { "const": "ENDPOINT_REACHABILITY_NOT_CURRENT_OBSERVATION_FRESHNESS" }
+          }
+        },
+        "catalogCoverage": { "const": "EXTENSIBLE_NON_EXHAUSTIVE" },
+        "networkAuthority": { "const": "OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_ONLY" },
+        "persistenceAuthority": { "const": "LOCAL_APPEND_ONLY_HEADLINE_VERSION_HISTORY" },
+        "quantitativeDataConnectors": { "const": "NOT_IMPLEMENTED" },
+        "headlineInterpretation": { "const": "CANDIDATE_FACTOR_TAGS_ONLY" },
+        "calibratedWinRate": { "const": "NOT_AVAILABLE" },
+        "historicalOptionOutcomes": { "const": "NOT_IMPLEMENTED" },
+        "missingAndStaleEvidence": { "const": "UNKNOWN_NOT_NEUTRAL" },
+        "continuousMonitoring": { "const": "HOURLY_CODEX_HEARTBEAT_CONFIGURED_REQUIRES_LOCAL_APP" },
+        "credentialAuthority": { "const": "NOT_GRANTED_NOT_READ" },
+        "paidSubscriptions": { "const": "NOT_ENABLED" },
+        "executionAllowed": { "const": false },
+        "specification": { "const": "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md" }
+      }
+    },
+    "currentDeliveryValidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "command",
+        "status",
+        "componentCount",
+        "testsExecuted",
+        "passed",
+        "failed",
+        "durationMs",
+        "evidence",
+        "historicalCountsAreCurrentResult"
+      ],
+      "properties": {
+        "classification": { "const": "CURRENT_OPTIONS_FOCUS_V2_WORKING_TREE" },
+        "command": { "const": "npm.cmd run alpha:validate" },
+        "status": {
+          "enum": [
+            "PENDING_AGGREGATE_VALIDATION",
+            "PASSED"
+          ]
+        },
+        "componentCount": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "testsExecuted": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "passed": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "failed": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "durationMs": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "evidence": { "const": "docs/OPTIONS_FOCUS_V2_DELIVERY.md" },
+        "historicalCountsAreCurrentResult": { "const": false }
       }
     }
   }

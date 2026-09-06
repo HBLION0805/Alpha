@@ -9,7 +9,7 @@ import type {
 const REQUIRED_FIELDS = [
   "symbol", "strategy", "currentEquityCents", "settledCashCents", "quantity",
   "contractMultiplier", "bidPerShareCents", "askPerShareCents", "minimumPriceTickCents",
-  "roundTripFeesCents", "slippageReserveCents", "mode", "profitTargetBps",
+  "roundTripFeesCents", "slippageReserveCents", "mode", "stopLossBps", "rewardMultipleMilliR",
 ] as const;
 const OPTIONAL_FIELDS = ["claimedWinProbabilityBps"] as const;
 const MAX_SAFE = BigInt(Number.MAX_SAFE_INTEGER);
@@ -22,13 +22,14 @@ const UNVERIFIED_REQUIREMENTS = Object.freeze([
 ]);
 const DISCLOSURES = Object.freeze([
   "Manual scenarios are not verified market quotes, trade recommendations or execution permission.",
-  "With the current $25 stress cap, a 2% premium stop, and cent-denominated standard 100-share ticks, no scenario can satisfy both stop executability and the stress cap.",
-  "The requested stop is 2% of entry premium, not account equity, and is not a guaranteed maximum loss or fill price.",
+  "Stops from 10% through 25% of entry premium are offline comparison scenarios. The 20% research default is not a validated live rule.",
+  "One R is the planned premium decline plus round-trip fees and the exit slippage reserve; it is capped at 0.5% of current equity and is not a guaranteed maximum loss or fill price.",
   "Entry assumes a limit fill at the stated ask with no entry slippage; the slippage reserve models exit slippage only.",
   "Capital and pre-exercise stress loss include the full round-trip fee reserve. Stress loss is full premium plus fees and excludes stock exposure after exercise.",
   "An explicit zero fee or slippage reserve is an unverified zero-cost scenario assumption.",
-  "The gross profit target is a mathematical threshold, not an executable order price; independent tick rounding and order checks would be required.",
-  "The 80% conditional target ceiling limits the configured target, not the actual realized outcome.",
+  "The requested target is 1.5R through 2R of net cash gain. Costs are added once to derive the required gross premium gain, then the indicative exit is rounded upward to the declared quote tick.",
+  "The indicative exit is not an executable order price, verified quote or order recommendation; liquidity and order checks remain unverified.",
+  "The 80% premium-gain ceiling applies to the rounded configured target, not the actual realized outcome.",
   "A claimed probability never authorizes conditional allocation or a longer holding period; holding longer requires a separately reviewed thesis and time exit.",
   "The legacy $12.50 event cap is reported only; event-mode assessment is unsupported.",
 ]);
@@ -47,7 +48,7 @@ function result(
   blockers: readonly OptionsRetailFeasibilityBlocker[],
 ): OptionsRetailFeasibilityResult {
   return immutable({
-    schemaVersion: "1.0",
+    schemaVersion: "2.0",
     status: blockers.length > 0 ? "NO_TRADE" : "ECONOMICALLY_FEASIBLE_SCENARIO",
     executionAllowed: false,
     evidenceOrigin: "MANUAL_SCENARIO",
@@ -96,10 +97,13 @@ function validate(input: unknown): { scenario: OptionsRetailFeasibilityInput | n
   if (values.strategy !== "LONG_CALL" && values.strategy !== "LONG_PUT") issues.push("Only standard long calls and long puts are supported.");
   if (values.contractMultiplier !== 100) issues.push("contractMultiplier must equal 100; adjusted contracts are unsupported.");
   if (values.mode !== "NORMAL" && values.mode !== "CONDITIONAL") issues.push("mode must be NORMAL or CONDITIONAL.");
-  integer("profitTargetBps", 5000);
-  if (typeof values.profitTargetBps === "number" &&
-      (values.profitTargetBps > 8000 || (values.mode === "NORMAL" && values.profitTargetBps !== 5000))) {
-    issues.push("Normal profit target must be 5000 bps; conditional target must be 5000 through 8000 bps.");
+  integer("stopLossBps", 1000);
+  if (typeof values.stopLossBps === "number" && values.stopLossBps > 2500) {
+    issues.push("stopLossBps must be 1000 through 2500 for offline comparison.");
+  }
+  integer("rewardMultipleMilliR", 1500);
+  if (typeof values.rewardMultipleMilliR === "number" && values.rewardMultipleMilliR > 2000) {
+    issues.push("rewardMultipleMilliR must be 1500 through 2000 of planned all-in R.");
   }
   if (Object.hasOwn(values, "claimedWinProbabilityBps") && values.claimedWinProbabilityBps !== null) {
     integer("claimedWinProbabilityBps", 0);
@@ -137,17 +141,25 @@ export function evaluateOptionsRetailFeasibility(input: unknown): OptionsRetailF
     const quantityMultiplier = BigInt(scenario.quantity) * 100n;
     const premium = BigInt(scenario.askPerShareCents) * quantityMultiplier;
     const tickLoss = BigInt(scenario.minimumPriceTickCents) * quantityMultiplier;
-    const stop = premium * 200n / 10000n;
+    const grossStop = premium * BigInt(scenario.stopLossBps) / 10000n;
+    const riskBudget = equity * 50n / 10000n;
     const normalBudget = equity * 500n / 10000n;
     const requestedBudget = equity * (scenario.mode === "CONDITIONAL" ? 1000n : 500n) / 10000n;
-    const grossTarget = (premium * BigInt(scenario.profitTargetBps) + 9999n) / 10000n;
     const fees = scenario.roundTripFeesCents === null ? null : BigInt(scenario.roundTripFeesCents);
     const slippage = scenario.slippageReserveCents === null ? null : BigInt(scenario.slippageReserveCents);
     const capital = fees === null ? null : premium + fees;
+    const exitCosts = fees === null || slippage === null ? null : fees + slippage;
+    const stop = exitCosts === null ? null : grossStop + exitCosts;
     const friction = fees === null || slippage === null ? null :
-      BigInt(scenario.askPerShareCents - scenario.bidPerShareCents) * quantityMultiplier + fees + slippage;
-    const remainingStop = friction === null ? null : stop - friction;
-    const netTarget = fees === null || slippage === null ? null : grossTarget - fees - slippage;
+      (BigInt(scenario.askPerShareCents) - BigInt(scenario.bidPerShareCents)) * quantityMultiplier + fees + slippage;
+    const remainingStop = friction === null || stop === null ? null : stop - friction;
+    const netTarget = stop === null ? null : (stop * BigInt(scenario.rewardMultipleMilliR) + 999n) / 1000n;
+    const grossTarget = netTarget === null || exitCosts === null ? null : netTarget + exitCosts;
+    const exitPrice = grossTarget === null ? null :
+      ((premium + grossTarget + tickLoss - 1n) / tickLoss) * BigInt(scenario.minimumPriceTickCents);
+    const roundedGrossTarget = exitPrice === null ? null :
+      (exitPrice - BigInt(scenario.askPerShareCents)) * quantityMultiplier;
+    const roundedNetTarget = roundedGrossTarget === null || exitCosts === null ? null : roundedGrossTarget - exitCosts;
     const nullableMoney = (value: bigint | null): number | null => value === null ? null : money(value);
     const economics: OptionsRetailFeasibilityEconomics = {
       normalAllocationBudgetCents: money(normalBudget),
@@ -155,12 +167,20 @@ export function evaluateOptionsRetailFeasibility(input: unknown): OptionsRetailF
       applicableAllocationBudgetCents: money(normalBudget),
       premiumCents: money(premium),
       capitalRequiredCents: nullableMoney(capital),
-      plannedStopBasis: "ENTRY_PREMIUM",
-      plannedStopBps: 200,
-      plannedStopCents: money(stop),
+      plannedStopBasis: "ENTRY_PREMIUM_PLUS_COSTS",
+      plannedStopBps: scenario.stopLossBps,
+      grossStopLossCents: money(grossStop),
+      plannedStopCents: nullableMoney(stop),
+      plannedRiskBudgetBps: 50,
+      plannedRiskBudgetCents: money(riskBudget),
       oneTickLossCents: money(tickLoss),
-      grossProfitTargetCents: money(grossTarget),
+      rewardMultipleMilliR: scenario.rewardMultipleMilliR,
+      grossProfitTargetCents: nullableMoney(grossTarget),
       netProfitTargetCents: nullableMoney(netTarget),
+      indicativeExitLimitPerShareCents: nullableMoney(exitPrice),
+      profitTargetPriceIsIndicative: true,
+      roundedGrossProfitTargetCents: nullableMoney(roundedGrossTarget),
+      roundedNetProfitTargetCents: nullableMoney(roundedNetTarget),
       immediateLiquidationFrictionCents: nullableMoney(friction),
       remainingStopCapacityCents: nullableMoney(remainingStop),
       stressLossCents: nullableMoney(capital),
@@ -174,8 +194,12 @@ export function evaluateOptionsRetailFeasibility(input: unknown): OptionsRetailF
     // Premium alone can prove a shortfall even when the fee reserve is unknown.
     if ((capital ?? premium) > normalBudget) block("ALLOCATION_BUDGET_EXCEEDED", "Required capital exceeds the applicable normal 5% allocation ceiling; a conditional request does not raise it.");
     if ((capital ?? premium) > BigInt(scenario.settledCashCents)) block("SETTLED_CASH_INSUFFICIENT", "Required capital exceeds the stated settled cash.");
-    if (tickLoss > stop || (friction !== null && (friction >= stop || remainingStop! < tickLoss))) {
-      block("STOP_BUDGET_NOT_EXECUTABLE", "The 2% premium stop cannot absorb stated liquidation friction and at least one full position-sized price tick. Stop fills remain unguaranteed.");
+    if (stop !== null && friction !== null && (friction >= stop || remainingStop! < tickLoss)) {
+      block("STOP_BUDGET_NOT_EXECUTABLE", "The planned cash-loss budget cannot absorb stated liquidation friction and at least one full position-sized price tick. Stop fills remain unguaranteed.");
+    }
+    if (stop !== null && stop > riskBudget) block("PLANNED_RISK_BUDGET_EXCEEDED", "Planned premium decline plus round-trip fees and exit slippage exceeds the fixed 0.5% current-equity risk budget.");
+    if (roundedGrossTarget !== null && roundedGrossTarget * 10000n > premium * 8000n) {
+      block("PROFIT_TARGET_CAP_EXCEEDED", "The indicative exit rounded to the declared quote tick requires more than the configured 80% premium-gain ceiling.");
     }
     if ((capital ?? premium) > 2500n) block("LEGACY_MAX_LOSS_LIMIT_EXCEEDED", "Full premium plus the fee reserve exceeds the separately recorded $25 normal stress-loss cap; the planned stop does not replace this cap.");
     return result(scenario, economics, blockers);

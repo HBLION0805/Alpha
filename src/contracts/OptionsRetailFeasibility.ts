@@ -14,7 +14,10 @@ export interface OptionsRetailFeasibilityInput {
   /** Exit slippage only; entry is assumed to fill at the stated ask. */
   readonly slippageReserveCents: number | null;
   readonly mode: "NORMAL" | "CONDITIONAL";
-  readonly profitTargetBps: number;
+  /** Offline comparison range 10%-25%; 20% is an unvalidated research default. */
+  readonly stopLossBps: number;
+  /** Net cash profit target in thousandths of planned all-in R: 1500 through 2000. */
+  readonly rewardMultipleMilliR: number;
   /** An unverified caller claim cannot authorize larger allocation. */
   readonly claimedWinProbabilityBps?: number | null;
 }
@@ -26,6 +29,8 @@ export type OptionsRetailFeasibilityBlockerCode =
   | "ALLOCATION_BUDGET_EXCEEDED"
   | "SETTLED_CASH_INSUFFICIENT"
   | "STOP_BUDGET_NOT_EXECUTABLE"
+  | "PLANNED_RISK_BUDGET_EXCEEDED"
+  | "PROFIT_TARGET_CAP_EXCEEDED"
   | "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"
   | "UNCALIBRATED_WIN_RATE";
 
@@ -42,12 +47,22 @@ export interface OptionsRetailFeasibilityEconomics {
   readonly applicableAllocationBudgetCents: number;
   readonly premiumCents: number;
   readonly capitalRequiredCents: number | null;
-  readonly plannedStopBasis: "ENTRY_PREMIUM";
-  readonly plannedStopBps: 200;
-  readonly plannedStopCents: number;
+  readonly plannedStopBasis: "ENTRY_PREMIUM_PLUS_COSTS";
+  readonly plannedStopBps: number;
+  readonly grossStopLossCents: number;
+  /** One R: gross premium decline plus round-trip fees and exit slippage reserve. */
+  readonly plannedStopCents: number | null;
+  readonly plannedRiskBudgetBps: 50;
+  readonly plannedRiskBudgetCents: number;
   readonly oneTickLossCents: number;
-  readonly grossProfitTargetCents: number;
+  readonly rewardMultipleMilliR: number;
+  /** Mathematical premium gain required to retain the requested net R target. */
+  readonly grossProfitTargetCents: number | null;
   readonly netProfitTargetCents: number | null;
+  readonly indicativeExitLimitPerShareCents: number | null;
+  readonly profitTargetPriceIsIndicative: true;
+  readonly roundedGrossProfitTargetCents: number | null;
+  readonly roundedNetProfitTargetCents: number | null;
   readonly immediateLiquidationFrictionCents: number | null;
   readonly remainingStopCapacityCents: number | null;
   readonly stressLossCents: number | null;
@@ -56,7 +71,7 @@ export interface OptionsRetailFeasibilityEconomics {
 }
 
 export interface OptionsRetailFeasibilityResult {
-  readonly schemaVersion: "1.0";
+  readonly schemaVersion: "2.0";
   readonly status: "NO_TRADE" | "ECONOMICALLY_FEASIBLE_SCENARIO";
   readonly executionAllowed: false;
   readonly evidenceOrigin: "MANUAL_SCENARIO";

@@ -3,9 +3,9 @@ import { deterministicFingerprint } from "../../contracts/DeterministicFingerpri
 import type { OptionsBarFixtureBinding } from "../../contracts/OptionsBarFixtureBinding";
 import type { OptionsCandlePolicy, OptionsContextInterval } from "../../contracts/OptionsCandlePolicy";
 import type { OptionsQualifiedSeries } from "../../contracts/OptionsMarketContext";
-import { VerifiedMarketCalendarSessionStatus, VerifiedMarketDataOrigin, type VerifiedMarketCalendarSessionEvidence } from "../../contracts/VerifiedMarketSnapshot";
+import { MarketCalendarSessionStatus, MarketDataOrigin, type MarketCalendarSessionEvidence } from "../../contracts/MarketCalendar";
 import { validateCanonicalBar } from "../canonical-bar/CanonicalBar";
-import { latestCompletedTradingSession, validateVerifiedMarketCalendarEvidence } from "../verified-market-snapshot/VerifiedMarketSnapshotEngine";
+import { latestCompletedTradingSession, validateMarketCalendarEvidence } from "../market-calendar/MarketCalendarValidation";
 import { requireAuthorizedOptionsBarBatch } from "./OptionsBarSourceAuthorization";
 import { exactFields, fingerprintBody, freezeContext, requireContext, validUtc, validateOptionsCandlePolicy } from "./OptionsMarketContextValidation";
 
@@ -16,8 +16,8 @@ export function requireIssuedOptionsQualifiedSeries(series: OptionsQualifiedSeri
 }
 
 /** Grid composition uses explicit calendar open/close; it does not determine trading days. */
-export function optionsSessionGrid(session: VerifiedMarketCalendarSessionEvidence, interval: OptionsContextInterval) {
-  if (session.status === VerifiedMarketCalendarSessionStatus.HolidayClosed) return [];
+export function optionsSessionGrid(session: MarketCalendarSessionEvidence, interval: OptionsContextInterval) {
+  if (session.status === MarketCalendarSessionStatus.HolidayClosed) return [];
   const open = Date.parse(session.marketOpen);
   const close = Date.parse(session.marketClose);
   if (interval === BarInterval.OneDay) return [{start: session.marketOpen, end: session.marketClose, slotId: "P1D:0"}];
@@ -34,7 +34,7 @@ export function qualifyOptionsCandleSeries(bars: readonly CanonicalBar[], interv
   binding: OptionsBarFixtureBinding, inputPolicy: OptionsCandlePolicy, asOf: string): OptionsQualifiedSeries {
   requireAuthorizedOptionsBarBatch(bars, interval, binding, asOf);
   const policy = validateOptionsCandlePolicy(inputPolicy);
-  requireContext(validUtc(asOf) && validateVerifiedMarketCalendarEvidence(binding.calendar, asOf).valid
+  requireContext(validUtc(asOf) && validateMarketCalendarEvidence(binding.calendar, asOf).valid
     && deterministicFingerprint(binding.calendar) === binding.calendarFingerprint, "SESSION_CALENDAR_DRIFT");
   requireContext(Array.isArray(bars) && bars.length > 0 && bars.length <= policy.maxBarsPerSeries, "INSUFFICIENT_HISTORY");
   const action = binding.corporateAction;
@@ -46,10 +46,10 @@ export function qualifyOptionsCandleSeries(bars: readonly CanonicalBar[], interv
     && validUtc(action.windowStart) && validUtc(action.windowEnd)
     && action.sourceReference.length > 0 && action.policyId.length > 0 && action.version.length > 0,
   "UNRESOLVED_CORPORATE_ACTION");
-  const sessions = binding.calendar.filter((session) => session.status === VerifiedMarketCalendarSessionStatus.Completed);
+  const sessions = binding.calendar.filter((session) => session.status === MarketCalendarSessionStatus.Completed);
   requireContext(sessions.length > 0 && binding.calendar.every((session, index) => session.calendarId === binding.calendarId
     && session.sessionType === "REGULAR" && session.timezone === "America/New_York"
-    && session.dataOrigin === VerifiedMarketDataOrigin.Fixture
+    && session.dataOrigin === MarketDataOrigin.Fixture
     && (index === 0 || binding.calendar[index - 1]!.sessionDate < session.sessionDate)), "SESSION_CALENDAR_DRIFT");
   const expected = sessions.flatMap((session) => optionsSessionGrid(session, interval).map((slot) => ({session, ...slot})));
   requireContext(expected.length === bars.length, "GAPPED_SERIES");

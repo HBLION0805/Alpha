@@ -16,7 +16,7 @@ A large loss is not.
 
 # 2. Stable Growth Beats Maximum Growth
 
-Alpha seeks repeatable and sustainable profits instead of chasing the highest possible return from a single trade.
+Alpha seeks repeatable and sustainable profits instead of chasing the highest possible return from a single trade. The Owner's USD 50,000 year-end aspiration is a scenario, never permission to override risk limits.
 
 Consistency is more valuable than excitement.
 
@@ -59,11 +59,11 @@ Alpha prefers securing gains over chasing perfect outcomes.
 # 6. Defined-Risk Options May Build Operating Capital
 
 The current early product may recommend only explicitly allowed, defined-risk
-option structures under the versioned Options risk policy.
+option structures under the versioned Options risk policy, exclusively on GLD and IBIT.
 
 Options are temporary tools for increasing investable capital. They are not
 Alpha's long-term objective, and no return is promised. The earlier Event
-Contract product entry is frozen with its code retained.
+Contract product implementation was removed by Owner instruction; its Git history remains.
 
 ---
 
@@ -77,9 +77,9 @@ As capital grows, Alpha gradually shifts toward:
 
 Short-term trading should support this transition.
 
-The Personal ETF Daily Scan and Event Contract product entries are frozen.
-Their evidence and infrastructure may be reused, but neither is a current
-product entry or an authorization to trade.
+The Personal ETF Daily Scan and Event Contract product implementations were
+removed by Owner instruction. Generic evidence and historical research remain
+reusable; they are not authorization to trade another product.
 
 ---
 

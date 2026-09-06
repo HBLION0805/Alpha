@@ -9,7 +9,7 @@ import { MarketDataProviderNamePolicy, MarketDataProviderStatus, type MarketData
 import { MarketRegimeVolatilityMetric } from "../../../contracts/MarketRegime";
 import type { OptionsBarFixtureBinding } from "../../../contracts/OptionsBarFixtureBinding";
 import { OPTIONS_CONTEXT_INTERVALS, type OptionsCandlePolicy, type OptionsContextInterval } from "../../../contracts/OptionsCandlePolicy";
-import { VerifiedMarketCalendarSessionStatus, VerifiedMarketDataOrigin, type VerifiedMarketCalendarSessionEvidence } from "../../../contracts/VerifiedMarketSnapshot";
+import { MarketCalendarSessionStatus, MarketDataOrigin, type MarketCalendarSessionEvidence } from "../../../contracts/MarketCalendar";
 import type { OptionsRawFixtureBar } from "../../../integration/options-market-context/OptionsBarFixtureSchemas";
 import { optionsMappingFingerprint } from "../OptionsBarSourceAuthorization";
 import { optionsSessionGrid } from "../OptionsCandleSeriesIntegrityEngine";
@@ -56,13 +56,13 @@ export function buildContextFixture(vector: keyof typeof CALENDAR_VECTORS = "nor
   const descriptor: MarketDataProviderDescriptor = {schemaVersion: "1.0", providerId: provider.identity.providerId,
     adapterId: "adapter:options-fixture", adapterVersion: "1.0", capability: MarketDataCapability.Bars,
     supportedAssetClasses: [InstrumentAssetClass.Etf], supportedBarIntervals: OPTIONS_CONTEXT_INTERVALS};
-  const calendar: VerifiedMarketCalendarSessionEvidence[] = CALENDAR_VECTORS[vector].map((entry) => {
+  const calendar: MarketCalendarSessionEvidence[] = CALENDAR_VECTORS[vector].map((entry) => {
     const [date, open, close] = entry;
     const body = {calendarEvidenceId: `calendar-evidence:${date}`, calendarId: "calendar:options-fixture",
       sessionId: `session:${date}:regular`, sessionDate: date, sessionType: "REGULAR" as const, timezone: "America/New_York",
       marketOpen: `${date}T${open}:00.000Z`, marketClose: `${date}T${close}:00.000Z`, closureBufferSeconds: 60,
-      status: entry.length === 4 ? VerifiedMarketCalendarSessionStatus.HolidayClosed : VerifiedMarketCalendarSessionStatus.Completed,
-      provenanceReference: `fixture:calendar:${date}`, dataOrigin: VerifiedMarketDataOrigin.Fixture};
+      status: entry.length === 4 ? MarketCalendarSessionStatus.HolidayClosed : MarketCalendarSessionStatus.Completed,
+      provenanceReference: `fixture:calendar:${date}`, dataOrigin: MarketDataOrigin.Fixture};
     return {...body, calendarEvidenceFingerprint: deterministicFingerprint(body)};
   });
   const asOf = new Date(Date.parse(calendar[calendar.length - 1]!.marketClose) + 120000).toISOString();

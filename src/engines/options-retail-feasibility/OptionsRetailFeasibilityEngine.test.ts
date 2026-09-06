@@ -6,9 +6,9 @@ import type {
 import { evaluateOptionsRetailFeasibility as evaluate } from "./OptionsRetailFeasibilityEngine";
 
 let passed = 0;
-function test(label: string, run: () => void): void { run(); passed++; console.log(`PASS ${label}`); }
+function test(label: string, run: () => void): void { run(); passed++; console.log('PASS ' + label); }
 function equal(actual: unknown, expected: unknown): void {
-  if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`Expected ${JSON.stringify(expected)}; got ${JSON.stringify(actual)}.`);
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error('Expected ' + JSON.stringify(expected) + '; got ' + JSON.stringify(actual));
 }
 function truth(value: unknown): asserts value { if (!value) throw new Error("Assertion failed."); }
 function has(result: OptionsRetailFeasibilityResult, code: OptionsRetailFeasibilityBlockerCode): boolean {
@@ -19,141 +19,171 @@ function economics(result: OptionsRetailFeasibilityResult) {
 }
 const base: OptionsRetailFeasibilityInput = {
   symbol: "GLD", strategy: "LONG_CALL", currentEquityCents: 100000, settledCashCents: 100000,
-  quantity: 1, contractMultiplier: 100, bidPerShareCents: 47, askPerShareCents: 50,
+  quantity: 1, contractMultiplier: 100, bidPerShareCents: 24, askPerShareCents: 25,
   minimumPriceTickCents: 1, roundTripFeesCents: 0, slippageReserveCents: 0,
-  mode: "NORMAL", profitTargetBps: 5000,
+  mode: "NORMAL", stopLossBps: 2000, rewardMultipleMilliR: 2000,
 };
 function changed(overrides: Partial<OptionsRetailFeasibilityInput> = {}) { return { ...base, ...overrides }; }
 
-test("$1000 account / $50 premium means a $1 premium-based stop and $25 gross target", () => {
+test("$25 premium / 20% stop / 2R is a feasible $5 risk and $10 net gain scenario", () => {
   const output = evaluate(base); const amounts = economics(output);
-  equal(amounts.normalAllocationBudgetCents, 5000); equal(amounts.premiumCents, 5000);
-  equal(amounts.plannedStopCents, 100); equal(amounts.plannedStopBasis, "ENTRY_PREMIUM");
-  equal(amounts.plannedStopBps, 200); equal(amounts.grossProfitTargetCents, 2500);
-  equal(amounts.stressLossCents, 5000); equal(output.status, "NO_TRADE");
+  equal(output.schemaVersion, "2.0"); equal(output.status, "ECONOMICALLY_FEASIBLE_SCENARIO");
+  equal(output.blockers, []); equal(output.executionAllowed, false);
+  equal(amounts.normalAllocationBudgetCents, 5000); equal(amounts.premiumCents, 2500);
+  equal(amounts.grossStopLossCents, 500); equal(amounts.plannedStopCents, 500);
+  equal(amounts.plannedStopBasis, "ENTRY_PREMIUM_PLUS_COSTS"); equal(amounts.plannedStopBps, 2000);
+  equal(amounts.plannedRiskBudgetCents, 500); equal(amounts.plannedRiskBudgetBps, 50);
+  equal(amounts.netProfitTargetCents, 1000); equal(amounts.grossProfitTargetCents, 1000);
+  equal(amounts.indicativeExitLimitPerShareCents, 35); equal(amounts.profitTargetPriceIsIndicative, true);
+  equal(amounts.roundedGrossProfitTargetCents, 1000); equal(amounts.roundedNetProfitTargetCents, 1000);
+  equal(amounts.stressLossCents, 2500);
 });
-test("bid $0.47 / ask $0.50 costs $3 to liquidate one standard contract before fees", () => {
-  const output = evaluate(base); const amounts = economics(output);
-  equal(amounts.immediateLiquidationFrictionCents, 300); equal(amounts.remainingStopCapacityCents, -200);
-  equal(amounts.oneTickLossCents, 100); truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
-  truth(has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"));
+test("10% and 20% compare explicit risk dollars without claiming either stop is optimal", () => {
+  const tighter = economics(evaluate(changed({ stopLossBps: 1000 })));
+  const wider = economics(evaluate(base));
+  equal(tighter.plannedStopCents, 250); equal(tighter.netProfitTargetCents, 500);
+  equal(tighter.indicativeExitLimitPerShareCents, 30);
+  equal(wider.plannedStopCents, 500); equal(wider.netProfitTargetCents, 1000);
 });
-test("$100 conditional premium means $2 stop but no approved increase", () => {
-  const output = evaluate(changed({ mode: "CONDITIONAL", askPerShareCents: 100, bidPerShareCents: 100,
-    profitTargetBps: 8000, claimedWinProbabilityBps: 10000 }));
+test("1.5R requested gain and upward quote rounding are displayed separately", () => {
+  const output = evaluate(changed({ rewardMultipleMilliR: 1500 })); const amounts = economics(output);
+  equal(output.status, "ECONOMICALLY_FEASIBLE_SCENARIO");
+  equal(amounts.netProfitTargetCents, 750); equal(amounts.grossProfitTargetCents, 750);
+  equal(amounts.indicativeExitLimitPerShareCents, 33);
+  equal(amounts.roundedGrossProfitTargetCents, 800); equal(amounts.roundedNetProfitTargetCents, 800);
+});
+test("$50 premium fits allocation but fails both the $25 full-loss cap and $5 planned risk", () => {
+  const output = evaluate(changed({ bidPerShareCents: 49, askPerShareCents: 50 }));
+  equal(economics(output).plannedStopCents, 1000);
+  truth(has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED")); truth(has(output, "PLANNED_RISK_BUDGET_EXCEEDED"));
+  truth(!has(output, "ALLOCATION_BUDGET_EXCEEDED"));
+});
+test("one cent of fees pushes the boundary scenario beyond both independent loss budgets", () => {
+  const output = evaluate(changed({ roundTripFeesCents: 1 })); const amounts = economics(output);
+  equal(amounts.stressLossCents, 2501); equal(amounts.plannedStopCents, 501);
+  truth(has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED")); truth(has(output, "PLANNED_RISK_BUDGET_EXCEEDED"));
+});
+test("all-in R includes fees/slippage exactly once and targets preserve net R after those costs", () => {
+  const output = evaluate(changed({ bidPerShareCents: 19, askPerShareCents: 20, roundTripFeesCents: 10, slippageReserveCents: 20 }));
   const amounts = economics(output);
-  equal(amounts.premiumCents, 10000); equal(amounts.plannedStopCents, 200);
-  equal(amounts.grossProfitTargetCents, 8000); equal(amounts.requestedAllocationBudgetCents, 10000);
-  equal(amounts.normalAllocationBudgetCents, 5000); equal(amounts.applicableAllocationBudgetCents, 5000);
-  truth(has(output, "UNCALIBRATED_WIN_RATE")); truth(has(output, "ALLOCATION_BUDGET_EXCEEDED"));
+  equal(output.status, "ECONOMICALLY_FEASIBLE_SCENARIO");
+  equal(amounts.grossStopLossCents, 400); equal(amounts.plannedStopCents, 430);
+  equal(amounts.capitalRequiredCents, 2010); equal(amounts.stressLossCents, 2010);
+  equal(amounts.immediateLiquidationFrictionCents, 130); equal(amounts.remainingStopCapacityCents, 300);
+  equal(amounts.netProfitTargetCents, 860); equal(amounts.grossProfitTargetCents, 890);
+  equal(amounts.indicativeExitLimitPerShareCents, 29);
+  equal(amounts.roundedGrossProfitTargetCents, 900); equal(amounts.roundedNetProfitTargetCents, 870);
 });
-test("zero-spread $25 premium still cannot fit a full $1 tick inside its $0.50 stop", () => {
-  const output = evaluate(changed({ askPerShareCents: 25, bidPerShareCents: 25 }));
+test("fees alone cannot manufacture additional stop room", () => {
+  const free = economics(evaluate(changed({ bidPerShareCents: 19, askPerShareCents: 20 })));
+  const costly = economics(evaluate(changed({ bidPerShareCents: 19, askPerShareCents: 20, roundTripFeesCents: 100 })));
+  equal(free.remainingStopCapacityCents, costly.remainingStopCapacityCents);
+  equal(costly.plannedStopCents, 500); equal(costly.immediateLiquidationFrictionCents, 200);
+});
+test("known exit slippage can exceed the account risk budget without changing full-premium stress", () => {
+  const output = evaluate(changed({ slippageReserveCents: 1 }));
+  equal(economics(output).plannedStopCents, 501); equal(economics(output).stressLossCents, 2500);
+  truth(has(output, "PLANNED_RISK_BUDGET_EXCEEDED")); truth(!has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"));
+});
+test("exactly one full price tick beyond liquidation friction passes the stop check", () => {
+  const output = evaluate(changed({ bidPerShareCents: 8, askPerShareCents: 10 }));
+  equal(economics(output).remainingStopCapacityCents, 0); truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
+  const feasible = evaluate(changed({ bidPerShareCents: 9, askPerShareCents: 10 }));
+  equal(economics(feasible).remainingStopCapacityCents, 100); truth(!has(feasible, "STOP_BUDGET_NOT_EXECUTABLE"));
+});
+test("one cent below an extra full tick fails even when costs are zero", () => {
+  const output = evaluate(changed({ bidPerShareCents: 9, askPerShareCents: 10, stopLossBps: 1999 }));
+  equal(economics(output).grossStopLossCents, 199); equal(economics(output).remainingStopCapacityCents, 99);
+  truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
+});
+test("a five-cent tick may consume the entire $5 stop before any additional movement", () => {
+  const output = evaluate(changed({ minimumPriceTickCents: 5, bidPerShareCents: 20, askPerShareCents: 25 }));
+  equal(economics(output).oneTickLossCents, 500); truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
+});
+test("full-position quantity is used for loss, spread and indicative target grid", () => {
+  const output = evaluate(changed({ quantity: 2, bidPerShareCents: 9, askPerShareCents: 10 }));
   const amounts = economics(output);
-  equal(amounts.plannedStopCents, 50); equal(amounts.oneTickLossCents, 100);
-  equal(amounts.legacyNormalMaxLossCents, 2500); equal(amounts.legacyEventMaxLossCents, 1250);
-  truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE")); truth(!has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"));
+  equal(output.status, "ECONOMICALLY_FEASIBLE_SCENARIO");
+  equal(amounts.premiumCents, 2000); equal(amounts.plannedStopCents, 400);
+  equal(amounts.oneTickLossCents, 200); equal(amounts.immediateLiquidationFrictionCents, 200);
+  equal(amounts.remainingStopCapacityCents, 200); equal(amounts.indicativeExitLimitPerShareCents, 14);
+  equal(amounts.roundedNetProfitTargetCents, 800);
 });
-test("adding one cent of fees to the $25 premium exceeds legacy stress cap", () => {
-  const output = evaluate(changed({ askPerShareCents: 25, bidPerShareCents: 25, roundTripFeesCents: 1 }));
-  equal(economics(output).stressLossCents, 2501); truth(has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"));
+test("net fractional-cent targets round up before the quote grid", () => {
+  const output = evaluate(changed({ askPerShareCents: 21, bidPerShareCents: 20, stopLossBps: 1001, rewardMultipleMilliR: 1501 }));
+  const amounts = economics(output);
+  equal(amounts.grossStopLossCents, 210); equal(amounts.netProfitTargetCents, 316);
+  equal(amounts.indicativeExitLimitPerShareCents, 25); equal(amounts.roundedNetProfitTargetCents, 400);
 });
-test("all zero-friction integer-cent premiums remain blocked by incompatible stop/tick/cap policies", () => {
-  for (let price = 1; price <= 200; price++) {
-    const output = evaluate(changed({ bidPerShareCents: price, askPerShareCents: price }));
-    equal(output.status, "NO_TRADE");
-    truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE") || has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"));
-    truth(output.disclosures.some((message) => message.includes("no scenario can satisfy both")));
-  }
+test("target cap includes upward tick rounding even when unrounded gain is below 80%", () => {
+  const output = evaluate(changed({ bidPerShareCents: 1, askPerShareCents: 1, roundTripFeesCents: 10 }));
+  const amounts = economics(output);
+  equal(amounts.grossProfitTargetCents, 70); equal(amounts.roundedGrossProfitTargetCents, 100);
+  truth(has(output, "PROFIT_TARGET_CAP_EXCEEDED")); equal(output.executionAllowed, false);
+});
+test("exactly 80% rounded gain is allowed by the target-cap check", () => {
+  const output = evaluate(changed({ bidPerShareCents: 5, askPerShareCents: 5, roundTripFeesCents: 60 }));
+  equal(economics(output).roundedGrossProfitTargetCents, 400);
+  truth(!has(output, "PROFIT_TARGET_CAP_EXCEEDED"));
+});
+test("fees can require a mathematical target beyond the premium-gain ceiling", () => {
+  const output = evaluate(changed({ roundTripFeesCents: 1000 }));
+  equal(economics(output).netProfitTargetCents, 3000); equal(economics(output).grossProfitTargetCents, 4000);
+  truth(has(output, "PROFIT_TARGET_CAP_EXCEEDED"));
 });
 for (const symbol of ["GLD", "IBIT"] as const) for (const strategy of ["LONG_CALL", "LONG_PUT"] as const) {
-  test(`${symbol} ${strategy} is evaluated without granting execution or verified origin`, () => {
+  test(symbol + ' ' + strategy + ' economics never grant execution or verified evidence', () => {
     const output = evaluate(changed({ symbol, strategy }));
-    truth(!has(output, "INVALID_INPUT")); equal(output.executionAllowed, false);
+    equal(output.status, "ECONOMICALLY_FEASIBLE_SCENARIO"); equal(output.executionAllowed, false);
     equal(output.evidenceOrigin, "MANUAL_SCENARIO"); equal(output.unverifiedRequirements.length, 5);
   });
 }
 for (const claim of [null, 0, 7999, 8000, 8001, 10000]) {
-  test(`claimed probability ${claim} cannot increase allocation or change economics`, () => {
+  test('claimed probability ' + claim + ' cannot increase allocation or change economics', () => {
     const reference = evaluate(changed({ mode: "CONDITIONAL" }));
     const output = evaluate(changed({ mode: "CONDITIONAL", claimedWinProbabilityBps: claim }));
     equal(output.economics, reference.economics); equal(output.blockers, reference.blockers);
+    equal(economics(output).requestedAllocationBudgetCents, 10000);
+    equal(economics(output).applicableAllocationBudgetCents, 5000);
     truth(has(output, "UNCALIBRATED_WIN_RATE")); equal(output.executionAllowed, false);
   });
 }
-test("normal-mode 100% probability claim leaves normal policy and economics unchanged", () => {
+test("normal-mode probability claims do not change policy", () => {
   const output = evaluate(changed({ claimedWinProbabilityBps: 10000 }));
   equal(output.economics, evaluate(base).economics); equal(output.blockers, evaluate(base).blockers);
 });
 for (const field of ["roundTripFeesCents", "slippageReserveCents"] as const) {
-  test(`unknown ${field} blocks and does not invent a numerical friction or net target`, () => {
+  test('unknown ' + field + ' makes R and all target values unknown', () => {
     const output = evaluate(changed({ [field]: null })); const amounts = economics(output);
-    truth(has(output, "COSTS_UNKNOWN")); equal(amounts.immediateLiquidationFrictionCents, null);
-    equal(amounts.netProfitTargetCents, null); equal(amounts.remainingStopCapacityCents, null);
+    truth(has(output, "COSTS_UNKNOWN")); equal(amounts.plannedStopCents, null);
+    equal(amounts.grossProfitTargetCents, null); equal(amounts.netProfitTargetCents, null);
+    equal(amounts.indicativeExitLimitPerShareCents, null); equal(amounts.roundedGrossProfitTargetCents, null);
+    equal(amounts.roundedNetProfitTargetCents, null); equal(amounts.immediateLiquidationFrictionCents, null);
+    equal(amounts.remainingStopCapacityCents, null); equal(amounts.grossStopLossCents, 500);
     if (field === "roundTripFeesCents") { equal(amounts.capitalRequiredCents, null); equal(amounts.stressLossCents, null); }
-    else { equal(amounts.capitalRequiredCents, 5000); equal(amounts.stressLossCents, 5000); }
+    else { equal(amounts.capitalRequiredCents, 2500); equal(amounts.stressLossCents, 2500); }
   });
 }
-test("fees and exit slippage have explicitly different capital and stress roles", () => {
-  const output = evaluate(changed({ bidPerShareCents: 50, roundTripFeesCents: 10, slippageReserveCents: 20 }));
-  const amounts = economics(output);
-  equal(amounts.capitalRequiredCents, 5010); equal(amounts.stressLossCents, 5010);
-  equal(amounts.immediateLiquidationFrictionCents, 30); equal(amounts.netProfitTargetCents, 2470);
-  equal(amounts.remainingStopCapacityCents, 70); truth(has(output, "ALLOCATION_BUDGET_EXCEEDED"));
-  truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
-});
-test("a gross target may produce a negative net result after explicit costs", () => {
-  const amounts = economics(evaluate(changed({ roundTripFeesCents: 2600, slippageReserveCents: 50 })));
-  equal(amounts.grossProfitTargetCents, 2500); equal(amounts.netProfitTargetCents, -150);
-});
-test("exactly one full tick remaining passes only the stop check", () => {
-  const output = evaluate(changed({ askPerShareCents: 100, bidPerShareCents: 99 }));
-  equal(economics(output).remainingStopCapacityCents, 100); truth(!has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
-  truth(has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED")); equal(output.executionAllowed, false);
-});
-test("one cent less than a full tick remaining fails the stop check", () => {
-  const output = evaluate(changed({ askPerShareCents: 100, bidPerShareCents: 99, slippageReserveCents: 1 }));
-  equal(economics(output).remainingStopCapacityCents, 99); truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
-});
-test("friction equal to planned stop is insufficient", () => {
-  const output = evaluate(changed({ askPerShareCents: 100, bidPerShareCents: 98 }));
-  equal(economics(output).remainingStopCapacityCents, 0); truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
-});
-test("a five-cent quote tick costs $5 per standard contract even at zero spread", () => {
-  const output = evaluate(changed({ minimumPriceTickCents: 5, askPerShareCents: 100, bidPerShareCents: 100 }));
-  equal(economics(output).oneTickLossCents, 500); truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
-});
-test("all tick and quote movements use full position quantity", () => {
-  const output = evaluate(changed({ quantity: 2, askPerShareCents: 100, bidPerShareCents: 99 }));
-  const amounts = economics(output);
-  equal(amounts.premiumCents, 20000); equal(amounts.plannedStopCents, 400);
-  equal(amounts.oneTickLossCents, 200); equal(amounts.immediateLiquidationFrictionCents, 200);
-  equal(amounts.remainingStopCapacityCents, 200); truth(!has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
-});
-test("allocation is rounded down from current equity instead of fixed initial $1000", () => {
+test("equity-based budgets use current equity and round down", () => {
   const amounts = economics(evaluate(changed({ currentEquityCents: 100019 })));
-  equal(amounts.normalAllocationBudgetCents, 5000);
-  equal(economics(evaluate(changed({ currentEquityCents: 50000 }))).normalAllocationBudgetCents, 2500);
+  equal(amounts.normalAllocationBudgetCents, 5000); equal(amounts.plannedRiskBudgetCents, 500);
+  const smaller = evaluate(changed({ currentEquityCents: 50000 }));
+  equal(economics(smaller).normalAllocationBudgetCents, 2500); equal(economics(smaller).plannedRiskBudgetCents, 250);
+  truth(has(smaller, "PLANNED_RISK_BUDGET_EXCEEDED"));
 });
-test("fractional-cent gross targets round up conservatively", () => {
-  const amounts = economics(evaluate(changed({ askPerShareCents: 3, bidPerShareCents: 3,
-    mode: "CONDITIONAL", profitTargetBps: 5111 })));
-  equal(amounts.premiumCents, 300); equal(amounts.grossProfitTargetCents, 154);
-  equal(amounts.plannedStopCents, 6);
-});
-test("settled cash is checked separately from equity and premium budget", () => {
-  const output = evaluate(changed({ settledCashCents: 4999 }));
+test("settled cash is checked independently from equity", () => {
+  const output = evaluate(changed({ settledCashCents: 2499 }));
   truth(has(output, "SETTLED_CASH_INSUFFICIENT")); truth(!has(output, "ALLOCATION_BUDGET_EXCEEDED"));
-  truth(!has(evaluate(changed({ settledCashCents: 5000 })), "SETTLED_CASH_INSUFFICIENT"));
+  truth(!has(evaluate(changed({ settledCashCents: 2500 })), "SETTLED_CASH_INSUFFICIENT"));
 });
-test("unknown fees do not hide proven premium-only cash and allocation shortfalls", () => {
+test("unknown fees do not hide known premium-only funding or stress failures", () => {
   const output = evaluate(changed({ askPerShareCents: 51, settledCashCents: 4999, roundTripFeesCents: null }));
   truth(has(output, "COSTS_UNKNOWN")); truth(has(output, "SETTLED_CASH_INSUFFICIENT"));
   truth(has(output, "ALLOCATION_BUDGET_EXCEEDED")); truth(has(output, "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"));
 });
-test("zero bid is an explicit illiquid scenario and not an invalid negative quote", () => {
+test("zero bid represents illiquid liquidation economics, never a free exit", () => {
   const output = evaluate(changed({ bidPerShareCents: 0 }));
-  truth(!has(output, "INVALID_INPUT")); equal(economics(output).immediateLiquidationFrictionCents, 5000);
+  truth(!has(output, "INVALID_INPUT")); equal(economics(output).immediateLiquidationFrictionCents, 2500);
   truth(has(output, "STOP_BUDGET_NOT_EXECUTABLE"));
 });
 
@@ -165,7 +195,7 @@ const invalidInputs: readonly [string, unknown][] = [
   ["zero contracts", { ...base, quantity: 0 }],
   ["nonstandard multiplier", { ...base, contractMultiplier: 10 }],
   ["negative quote", { ...base, bidPerShareCents: -1 }],
-  ["crossed quote", { ...base, bidPerShareCents: 51 }],
+  ["crossed quote", { ...base, bidPerShareCents: 26 }],
   ["off-tick bid", { ...base, minimumPriceTickCents: 5 }],
   ["off-tick ask", { ...base, bidPerShareCents: 45, askPerShareCents: 51, minimumPriceTickCents: 5 }],
   ["zero tick", { ...base, minimumPriceTickCents: 0 }],
@@ -180,10 +210,14 @@ const invalidInputs: readonly [string, unknown][] = [
   ["unsafe integer quote", { ...base, askPerShareCents: Number.MAX_SAFE_INTEGER + 1 }],
   ["numeric string", { ...base, quantity: "1" }],
   ["event mode unsupported", { ...base, mode: "EVENT" }],
-  ["normal target not 50%", { ...base, profitTargetBps: 5100 }],
-  ["conditional target below 50%", { ...base, mode: "CONDITIONAL", profitTargetBps: 4999 }],
-  ["conditional target exceeds 80%", { ...base, mode: "CONDITIONAL", profitTargetBps: 8001 }],
-  ["fractional target bps", { ...base, mode: "CONDITIONAL", profitTargetBps: 5500.5 }],
+  ["obsolete premium target field", { ...base, profitTargetBps: 5000 }],
+  ["stop below 10%", { ...base, stopLossBps: 999 }],
+  ["stop above 25%", { ...base, stopLossBps: 2501 }],
+  ["fractional stop bps", { ...base, stopLossBps: 1500.5 }],
+  ["reward below 1.5R", { ...base, rewardMultipleMilliR: 1499 }],
+  ["reward above 2R", { ...base, rewardMultipleMilliR: 2001 }],
+  ["fractional reward units", { ...base, rewardMultipleMilliR: 1500.5 }],
+  ["caller cannot override account risk budget", { ...base, plannedRiskBudgetBps: 100 }],
   ["probability exceeds 100%", { ...base, claimedWinProbabilityBps: 10001 }],
   ["negative probability", { ...base, claimedWinProbabilityBps: -1 }],
   ["undefined probability is not JSON null", { ...base, claimedWinProbabilityBps: undefined }],
@@ -235,7 +269,7 @@ test("all output objects and arrays are deeply frozen without freezing caller in
     }
   }
   assertFrozen(output); truth(!Object.isFrozen(input));
-  input.askPerShareCents = 100; equal(output.scenario?.askPerShareCents, 50);
+  input.askPerShareCents = 100; equal(output.scenario?.askPerShareCents, 25);
   assertFrozen(evaluate(null));
 });
 test("JSON roundtrip preserves numerical diagnostic and execution prohibition", () => {

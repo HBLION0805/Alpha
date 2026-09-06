@@ -1,5 +1,9 @@
 # TradingAgents Design Extraction
 
+> Historical review: the retired product code referenced below is linked to the
+> immutable pre-removal Git snapshot. Current scope is GLD/IBIT options; see
+> [the deletion manifest](../OPTIONS_FOCUS_DELETION_MANIFEST.json).
+
 Status: Phase 0.5 design review only
 
 Alpha baseline: `1cdd76416a0036be30449882ef9565ec96e8a3ea`
@@ -617,11 +621,11 @@ Governance and current state:
 Personal scanning and market evidence:
 
 - [Personal Candidate Scan specification](../specifications/PERSONAL_CANDIDATE_SCAN.md)
-- [Personal Candidate Scan contract](../../src/contracts/PersonalCandidateScan.ts)
-- [Personal Candidate Scan engine](../../src/engines/personal-candidate-scan/PersonalCandidateScanEngine.ts)
+- [Personal Candidate Scan contract](https://github.com/HBLION0805/Alpha/blob/53a905a5f8360afeea1d24eaa084110f6ef85bdc/src/contracts/PersonalCandidateScan.ts)
+- [Personal Candidate Scan engine](https://github.com/HBLION0805/Alpha/blob/53a905a5f8360afeea1d24eaa084110f6ef85bdc/src/engines/personal-candidate-scan/PersonalCandidateScanEngine.ts)
 - [Personal Market Data Composition specification](../specifications/PERSONAL_MARKET_DATA_COMPOSITION.md)
-- [Personal Market Data Composition contract](../../src/contracts/PersonalMarketDataComposition.ts)
-- [Personal Market Data Composition engine](../../src/engines/personal-market-data-composition/PersonalMarketDataCompositionEngine.ts)
+- [Personal Market Data Composition contract](https://github.com/HBLION0805/Alpha/blob/53a905a5f8360afeea1d24eaa084110f6ef85bdc/src/contracts/PersonalMarketDataComposition.ts)
+- [Personal Market Data Composition engine](https://github.com/HBLION0805/Alpha/blob/53a905a5f8360afeea1d24eaa084110f6ef85bdc/src/engines/personal-market-data-composition/PersonalMarketDataCompositionEngine.ts)
 - [Market Regime specification](../specifications/MARKET_REGIME_ENGINE.md)
 - [Market Regime contract](../../src/contracts/MarketRegime.ts)
 - [Market Regime engine](../../src/engines/market-regime/MarketRegimeEngine.ts)
@@ -643,9 +647,9 @@ Advisory, learning, and risk boundaries:
 - [Alpha Journal specification](../ALPHA_JOURNAL_SPECIFICATION.md)
 - [Alpha Journal contract](../../src/contracts/AlphaJournal.ts)
 - [Alpha Journal engine](../../src/engines/alpha-journal/AlphaJournal.ts)
-- [Personal Decision contract](../../src/contracts/PersonalDecision.ts)
+- [Personal Decision contract](https://github.com/HBLION0805/Alpha/blob/53a905a5f8360afeea1d24eaa084110f6ef85bdc/src/contracts/PersonalDecision.ts)
 - [Capital Allocation contract](../../src/contracts/CapitalAllocation.ts)
-- [Python prototype Risk Engine](../../app/risk_engine.py)
+- [Python prototype Risk Engine](https://github.com/HBLION0805/Alpha/blob/53a905a5f8360afeea1d24eaa084110f6ef85bdc/app/risk_engine.py)
 
 ## 14. Final boundary statement
 

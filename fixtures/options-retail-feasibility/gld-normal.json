@@ -5,12 +5,13 @@
   "settledCashCents": 100000,
   "quantity": 1,
   "contractMultiplier": 100,
-  "bidPerShareCents": 47,
-  "askPerShareCents": 50,
+  "bidPerShareCents": 24,
+  "askPerShareCents": 25,
   "minimumPriceTickCents": 1,
   "roundTripFeesCents": 0,
   "slippageReserveCents": 0,
   "mode": "NORMAL",
-  "profitTargetBps": 5000,
+  "stopLossBps": 2000,
+  "rewardMultipleMilliR": 2000,
   "claimedWinProbabilityBps": null
 }

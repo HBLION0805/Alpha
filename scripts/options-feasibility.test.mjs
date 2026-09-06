@@ -9,16 +9,21 @@ function run(args = []) {
   return spawnSync(process.execPath, [resolve(root, "node_modules/tsx/dist/cli.mjs"), resolve(root, "scripts/options-feasibility.mjs"), ...args], { cwd: root, encoding: "utf8", timeout: 30000 });
 }
 const tests = [
-  ["demo exposes exact premium stop basis and blocks both scenarios", () => {
+  ["demo exposes a feasible research example and blocks conditional allocation", () => {
     const result = run(["--demo"]);
     assert.equal(result.status, 0, result.stderr);
     const body = JSON.parse(result.stdout);
     assert.equal(body.pricesAreIllustrative, true);
     assert.equal(body.executionAllowed, false);
     assert.equal(body.scenarios.length, 2);
-    assert.deepEqual(body.scenarios.map(({ result: r }) => r.economics.plannedStopCents), [100, 200]);
+    assert.equal(body.researchDefaultStopLossBps, 2000);
+    assert.equal(body.researchDefaultIsValidated, false);
+    assert.deepEqual(body.scenarios.map(({ result: r }) => r.economics.plannedStopCents), [500, 2000]);
+    assert.deepEqual(body.scenarios.map(({ result: r }) => r.status), ["ECONOMICALLY_FEASIBLE_SCENARIO", "NO_TRADE"]);
+    assert.equal(body.scenarios[0].result.economics.netProfitTargetCents, 1000);
+    assert.equal(body.scenarios[0].result.economics.indicativeExitLimitPerShareCents, 35);
+    assert(body.scenarios[1].result.blockers.some(({ code }) => code === "UNCALIBRATED_WIN_RATE"));
     for (const { result: r } of body.scenarios) {
-      assert.equal(r.status, "NO_TRADE");
       assert.equal(r.executionAllowed, false);
       assert.equal(r.evidenceOrigin, "MANUAL_SCENARIO");
     }
@@ -27,13 +32,18 @@ const tests = [
     const result = run(["--input", "fixtures/options-retail-feasibility/gld-normal.json"]);
     assert.equal(result.status, 0, result.stderr);
     const body = JSON.parse(result.stdout);
-    assert.equal(body.economics.immediateLiquidationFrictionCents, 300);
-    assert.equal(body.economics.stressLossCents, 5000);
+    assert.equal(body.schemaVersion, "2.0");
+    assert.equal(body.economics.immediateLiquidationFrictionCents, 100);
+    assert.equal(body.economics.stressLossCents, 2500);
+    assert.equal(body.economics.plannedStopBasis, "ENTRY_PREMIUM_PLUS_COSTS");
+    assert.equal(body.economics.plannedRiskBudgetCents, 500);
+    assert.equal(body.economics.plannedStopBps, 2000);
   }],
   ["help describes the offline boundary", () => {
     const result = run(["--help"]);
     assert.equal(result.status, 0);
     assert.match(result.stdout, /manual scenarios, not verified quotes/);
+    assert.match(result.stdout, /unvalidated 20% research default/);
   }],
   ["live and unknown arguments are rejected", () => {
     for (const args of [["--live"], ["--demo", "--live"], ["--input"], ["--input", "--demo"]]) {

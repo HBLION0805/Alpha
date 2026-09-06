@@ -3,7 +3,7 @@ import { deterministicFingerprint } from "../../contracts/DeterministicFingerpri
 import { MarketDataProviderStatus } from "../../contracts/MarketDataProviderRegistry";
 import { OptionsBarSourceAuthorization } from "./OptionsBarSourceAuthorization";
 import { fingerprintBody, validateOptionsCandlePolicy } from "./OptionsMarketContextValidation";
-import { validateVerifiedMarketCalendarEvidence } from "../verified-market-snapshot/VerifiedMarketSnapshotEngine";
+import { validateMarketCalendarEvidence } from "../market-calendar/MarketCalendarValidation";
 import { buildContextFixture } from "./testing/OptionsMarketContextFixtures";
 import { equal, harness, throws, truth } from "./testing/OptionsContextTestSupport";
 
@@ -51,13 +51,13 @@ h.test("disabled and unknown providers fail existing registry composition", () =
     fixture.providers.map((provider) => ({...provider, status: MarketDataProviderStatus.Inactive}))));
 });
 h.test("single calendar validator works without a fabricated market snapshot", () => {
-  truth(validateVerifiedMarketCalendarEvidence(fixture.binding.calendar, fixture.asOf).valid);
-  truth(!validateVerifiedMarketCalendarEvidence(fixture.binding.calendar, "invalid").valid);
-  truth(!validateVerifiedMarketCalendarEvidence([], fixture.asOf).valid);
+  truth(validateMarketCalendarEvidence(fixture.binding.calendar, fixture.asOf).valid);
+  truth(!validateMarketCalendarEvidence(fixture.binding.calendar, "invalid").valid);
+  truth(!validateMarketCalendarEvidence([], fixture.asOf).valid);
 });
 h.test("calendar evidence alterations fail the existing fingerprint check", () => {
   const calendar = fixture.binding.calendar.map((entry, index) => index === 0 ? {...entry, timezone: "UTC"} : entry);
-  truth(!validateVerifiedMarketCalendarEvidence(calendar, fixture.asOf).valid);
+  truth(!validateMarketCalendarEvidence(calendar, fixture.asOf).valid);
   truth(deterministicFingerprint(calendar) !== fixture.binding.calendarFingerprint);
 });
 h.test("one-minute timeframe cannot enter the binding", () => {

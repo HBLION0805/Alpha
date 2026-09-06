@@ -18,6 +18,8 @@ try {
     console.log("Usage: npm run options:feasibility -- --demo");
     console.log("       npm run options:feasibility -- --input <scenario.json>");
     console.log("Inputs are manual scenarios, not verified quotes. NO_TRADE is a normal diagnostic result.");
+    console.log("Compare premium stops from 10% to 25% and net 1.5R to 2R targets. Demo uses an unvalidated 20% research default.");
+    console.log("One R includes round-trip fees and exit slippage, with a fixed 0.5% equity budget and separate $25 full-premium stress cap.");
     console.log("No brokerage connection, probability prediction, or trading permission is provided.");
   } else if (args.length === 0 || (args.length === 1 && args[0] === "--demo")) {
     const scenarios = ["gld-normal", "ibit-conditional"].map((name) => ({
@@ -28,6 +30,8 @@ try {
       title: "Alpha GLD / IBIT Options Feasibility",
       evidenceOrigin: "MANUAL_SCENARIO",
       pricesAreIllustrative: true,
+      researchDefaultStopLossBps: 2000,
+      researchDefaultIsValidated: false,
       executionAllowed: false,
       scenarios,
     }, null, 2));

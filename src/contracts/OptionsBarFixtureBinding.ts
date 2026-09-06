@@ -1,7 +1,7 @@
 import type { CanonicalInstrument } from "./CanonicalInstrument";
 import type { MarketDataProviderDescriptor } from "./MarketData";
 import type { MarketDataProviderRegistryPolicy } from "./MarketDataProviderRegistry";
-import type { VerifiedMarketCalendarSessionEvidence } from "./VerifiedMarketSnapshot";
+import type { MarketCalendarSessionEvidence } from "./MarketCalendar";
 import type { OptionsContextInterval } from "./OptionsCandlePolicy";
 
 export interface OptionsCorporateActionQualification {
@@ -35,7 +35,7 @@ export interface OptionsBarFixtureBinding {
   readonly calendarId: string;
   readonly calendarVersion: string;
   readonly calendarFingerprint: string;
-  readonly calendar: readonly VerifiedMarketCalendarSessionEvidence[];
+  readonly calendar: readonly MarketCalendarSessionEvidence[];
   readonly corporateAction: OptionsCorporateActionQualification;
   readonly contentDigests: Readonly<Record<OptionsContextInterval, string>>;
   readonly provenanceReference: string;

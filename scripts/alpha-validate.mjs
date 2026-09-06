@@ -3,34 +3,8 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, extname, join, normalize, resolve, sep } from "node:path";
 import { ValidationReporter } from "./validation-reporting.mjs";
 
-if (process.env.ALPHA_REHEARSAL_OPERATION_PROCESS === "1") {
-  throw new Error(
-    "The Alpha validation bundle cannot run inside a rehearsal-operation phase process.",
-  );
-}
-if (
-  process.env.ALPHA_FIXED_VALIDATION_PROCESS === "1" &&
-  (
-    process.env.ALPHA_NETWORK_DISABLED !== "1" ||
-    process.env.ALPHA_NETWORK_GUARD_ACTIVE !== "1"
-  )
-) {
-  throw new Error(
-    "Fixed rehearsal validation requires the active network-disabled guard.",
-  );
-}
-
 const root = resolve(process.cwd());
-const gitExecutable =
-  process.env.ALPHA_FIXED_VALIDATION_PROCESS === "1"
-    ? process.env.ALPHA_FIXED_GIT_EXECUTABLE
-    : "git";
-if (
-  typeof gitExecutable !== "string" ||
-  gitExecutable.length === 0
-) {
-  throw new Error("Fixed validation requires a registered Git executable.");
-}
+const gitExecutable = "git";
 const failures = [];
 const warnings = [];
 const reporter = new ValidationReporter();
@@ -40,6 +14,8 @@ const gitWhitespaceChecks = Object.freeze([
 ]);
 
 const requiredFiles = [
+  "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md",
+  "docs/OPTIONS_FOCUS_DELETION_MANIFEST.json",
   "AGENTS.md",
   "README.md",
   "docs/DEVELOPMENT_STANDARD.md",
@@ -51,6 +27,7 @@ const requiredFiles = [
   "docs/specifications/OPTIONS_MARKET_CONTEXT_AND_CANDLE_ANALYSIS.md",
   "docs/specifications/OPTIONS_MARKET_CONTEXT_INTEGRITY_ADDENDUM.md",
   "docs/specifications/GLD_IBIT_RETAIL_FEASIBILITY.md",
+  "docs/OPTIONS_FOCUS_V2_DELIVERY.md",
   "docs/GLD_IBIT_SYSTEM_ASSESSMENT.md",
   "docs/OPTIONS_NEWS_PHASE_2_PLAN.md",
   "docs/status/current.json",
@@ -114,8 +91,9 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "scripts/options-focus-scope.test.mjs",
+  "src/engines/market-calendar/MarketCalendarValidation.test.ts",
   "scripts/validate-current-status.test.mjs",
-  "scripts/validate-d3b-design.test.mjs",
   "src/engines/options-news/OptionsNewsContractsAndRegistry.test.ts",
   "src/integration/news/NewsFixtureAdapters.test.ts",
   "src/engines/options-news/OptionsNewsVerification.test.ts",
@@ -127,31 +105,9 @@ const aggregateTestFiles = [
   "src/engines/options-market-context/OptionsMarketContextIntegrity.test.ts",
   "src/engines/options-retail-feasibility/OptionsRetailFeasibilityEngine.test.ts",
   "scripts/options-feasibility.test.mjs",
+  "src/engines/options-drivers/OptionsDriverMonitorEngine.test.ts",
+  "scripts/options-drivers.test.mjs",
   "src/engines/opportunity/OpportunityScoreEngine.test.ts",
-  "src/engines/personal-decision/PersonalDecisionEngine.test.ts",
-  "src/engines/personal-candidate-scan/PersonalCandidateScanEngine.test.ts",
-  "src/engines/personal-watchlist-mapping/PersonalWatchlistMappingRegistry.test.ts",
-  "src/engines/personal-market-data-composition/PersonalMarketDataCompositionEngine.test.ts",
-  "src/engines/verified-market-snapshot/VerifiedMarketSnapshotEngine.test.ts",
-  "src/engines/personal-daily-scan/PersonalDailyScanApplication.test.ts",
-  "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyPreflight.test.ts",
-  "src/engines/personal-daily-scan/PersonalDailyScanLiveReadonlyMarketScope.test.ts",
-  "src/engines/personal-daily-scan/AlpacaBarsLimitQualification.test.ts",
-  "scripts/alpha-daily-scan.test.mjs",
-  "src/engines/personal-market-data-provider-coverage/PersonalMarketDataProviderCoverageEngine.test.ts",
-  "src/engines/personal-market-data-alternative-provider-qualification/PersonalMarketDataAlternativeProviderQualificationEngine.test.ts",
-  "src/engines/personal-market-data-twelve-data-qualification/PersonalMarketDataTwelveDataQualificationEngine.test.ts",
-  "src/engines/personal-market-data-provider-qualification-closure/PersonalMarketDataProviderQualificationClosureEngine.test.ts",
-  "src/engines/personal-market-data-zero-cost-provider-screening/PersonalMarketDataZeroCostProviderScreeningEngine.test.ts",
-  "src/integration/market-data/alpaca/AlpacaPersonalMarketDataAdapter.test.ts",
-  "src/integration/market-data/alpaca/AlpacaPersonalMarketDataNormalizer.test.ts",
-  "src/integration/market-data/alpaca/AlpacaCredentials.test.ts",
-  "src/integration/market-data/alpaca/AlpacaHttpsTransport.test.ts",
-  "src/integration/market-data/alpaca/AlpacaTransportDryRun.test.ts",
-  "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmoke.test.ts",
-  "src/integration/market-data/alpaca/AlpacaPersonalMarketDataLiveSmokeCommand.test.ts",
-  "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataDiagnostic.test.ts",
-  "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataTransport.test.ts",
   "src/engines/prediction/PredictionEngine.test.ts",
   "src/engines/prediction-log/PredictionLog.test.ts",
   "src/engines/alpha-journal/AlphaJournal.test.ts",
@@ -175,70 +131,17 @@ const aggregateTestFiles = [
   "src/engines/market-regime/MarketRegimeEngine.test.ts",
   "src/engines/broad-market-evidence/BroadMarketEvidenceEngine.test.ts",
   "src/engines/evidence-fusion/EvidenceFusionEngine.test.ts",
-  "src/engines/event-analyzer/EventAnalyzerEngine.test.ts",
   "src/engines/capital-allocation/CapitalAllocationFramework.test.ts",
-  "src/engines/event-contract-observation/EventContractObservationEngine.test.ts",
-  "src/engines/event-contract-shadow-ledger/EventContractShadowLedgerEngine.test.ts",
   "src/engines/research-integrity/ResearchIntegrityEngine.test.ts",
-  "src/engines/research-dataset-qualification/ResearchDatasetQualificationEngine.test.ts",
-  "src/engines/research-shadow-dataset-assembly/ResearchShadowDatasetAssemblyEngine.test.ts",
-  "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlEngine.test.ts",
-  "src/engines/forward-shadow-collection-control/ForwardShadowCollectionControlConsole.test.ts",
-  "src/engines/event-contract-source/EventContractSourceEngine.test.ts",
-  "src/engines/event-contract-collection-runner/EventContractCollectionRunnerEngine.test.ts",
-  "src/repositories/EventContractCollectionRunnerSqliteStore.test.ts",
-  "src/repositories/SqliteEventContractCollectionRunnerRecoveryControlRepository.test.ts",
-  "src/repositories/EventContractCollectionRunnerRecoveryControlDrill.test.ts",
-  "src/repositories/SqliteEventContractCollectionRunnerRepository.test.ts",
-  "src/repositories/EventContractCollectionRunnerSqliteRecovery.test.ts",
-  "src/engines/event-contract-collection-runner-recovery-control/EventContractCollectionRunnerRecoveryControlEngine.test.ts",
-  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeFoundation.test.ts",
-  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeExecution.test.ts",
-  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOperator.test.ts",
-  "src/repositories/EventContractCollectionRunnerRuntimeProjectionRepository.test.ts",
-  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeProcessDrill.test.ts",
-  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeAssemblyPlanner.test.ts",
-  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeForegroundStep.test.ts",
-  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeTransactionDrill.test.ts",
-  "src/engines/event-contract-collection-runner-runtime/EventContractCollectionRunnerRuntimeOwnershipRecovery.test.ts",
-  "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalEngine.test.ts",
-  "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPreparation.test.ts",
-  "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalStep.test.ts",
-  "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPackage.test.ts",
-  "src/engines/event-contract-collection-runner-fixture-rehearsal/EventContractCollectionRunnerFixtureRehearsalPackageProcessDrill.test.ts",
-  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEngine.test.ts",
-  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalCoordinator.test.ts",
-  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalStepAdapter.test.ts",
-  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalEvidence.test.ts",
-  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalProcessDrill.test.ts",
-  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC1ProcessDrill.test.ts",
-  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC2ProcessDrill.test.ts",
-  "src/engines/event-contract-collection-runner-durable-fixture-rehearsal/EventContractCollectionRunnerDurableFixtureRehearsalC3ProcessDrill.test.ts",
-  "src/engines/event-contract-collection-runner-rehearsal-operation/EventContractCollectionRunnerRehearsalOperationEngine.test.ts",
-  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationControlEngine.test.ts",
-  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationVerification.test.ts",
-  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationSecurityProcessDrill.test.ts",
-  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationC3Authority.test.ts",
-  "src/engines/event-contract-collection-runner-rehearsal-operation-control/EventContractCollectionRunnerRehearsalOperationC4Authority.test.ts",
-  "src/repositories/EventContractCollectionRunnerFixtureRehearsalSqliteMigrationV3.test.ts",
-  "src/integration/event-contract/kalshi/KalshiEventContractFixtureAdapter.test.ts",
-  "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.test.ts",
-  "src/integration/event-contract/kalshi/KalshiEventContractLiveSmoke.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseParser.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataResponseValidator.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarNormalizer.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataBarAdapter.test.ts",
-  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceDiagnostic.test.ts",
-  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceErrorDiagnostic.test.ts",
-  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceHttpsTransport.test.ts",
-  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceLiveOperation.test.ts",
-  "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceCommand.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataCredentials.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataLiveSmokePolicy.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataLiveSmokeDryRun.test.ts",
   "src/integration/market-data/twelve-data/TwelveDataLiveSmokeCommand.test.ts",
-  "src/integration/python/PythonIntegration.test.ts",
   "src/contracts/AIRouter.test.ts",
   "src/engines/ai-router/AIRouterEngine.test.ts",
   "src/engines/ai-cost-governor/AICostGovernor.test.ts",
@@ -249,15 +152,6 @@ const aggregateTestFiles = [
   "src/engines/ai-audit-repository/AIAuditRepository.test.ts",
   "src/engines/ai-runtime-workflow/AIRuntimeWorkflow.test.ts"
 ];
-
-const allowedPythonChangePrefixes = process.argv
-  .filter((argument) => argument.startsWith("--allow-python-change-prefix="))
-  .map((argument) => argument.slice("--allow-python-change-prefix=".length))
-  .filter((prefix) => prefix.length > 0)
-  .map((prefix) => relativePath(prefix));
-const fixedValidationPythonFiles = new Set([
-  "scripts/network-disabled-python/sitecustomize.py",
-]);
 
 function recordFailure(message) {
   failures.push(message);
@@ -475,21 +369,8 @@ function checkNetworkAndProviderCode(files) {
   const providerImportPattern = /\b(?:from\s+["']|import\s*\(?\s*["']|require\s*\(\s*["'])(openai|@anthropic-ai\/sdk|@google\/generative-ai|@google\/genai|google-generative-ai|cohere-ai|@cohere-ai\/sdk|mistralai|groq-sdk|together-ai|replicate|@polygon\.io\/client-js|@alpacahq\/alpaca-trade-api|finnhub|twelvedata|twelvedata-js)["']/iu;
   const networkPattern = /\b(fetch\s*\(|fetchFunction\s*\(|XMLHttpRequest|WebSocket|EventSource|axios|node:https|node:http|require\s*\(\s*["']https?["']|https?\.request|requests\.|urllib\.request|aiohttp|socket\.)/iu;
   const twelveDataConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+TwelveDataHttpTransport\b/u;
-  const alpacaConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+AlpacaHttpTransport\b/u;
   const approvedTwelveDataTransport = "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.ts";
-  const approvedTwelveDataMulsReferenceTransport = "src/integration/market-data/twelve-data/TwelveDataPersonalMulsReferenceHttpsTransport.ts";
-  const approvedKalshiTransport = "src/integration/event-contract/kalshi/KalshiPublicHttpsTransport.ts";
-  const approvedAlpacaTransport = "src/integration/market-data/alpaca/AlpacaHttpsTransport.ts";
-  const approvedAlpacaAssetMetadataTransport = "src/integration/market-data/alpaca/AlpacaPersonalAssetMetadataTransport.ts";
-  const approvedAlpacaBarsLimitQualificationTransport = "src/integration/market-data/alpaca/AlpacaBarsLimitQualificationHttpsTransport.ts";
-  const approvedLiveTransports = new Set([
-    approvedTwelveDataTransport,
-    approvedTwelveDataMulsReferenceTransport,
-    approvedKalshiTransport,
-    approvedAlpacaTransport,
-    approvedAlpacaAssetMetadataTransport,
-    approvedAlpacaBarsLimitQualificationTransport,
-  ]);
+  const approvedLiveTransports = new Set([approvedTwelveDataTransport]);
 
   for (const file of productionFiles) {
     const text = readText(file);
@@ -505,53 +386,13 @@ function checkNetworkAndProviderCode(files) {
       && normalizedFile !== approvedTwelveDataTransport) {
       recordFailure(`Unapproved concrete Twelve Data transport found in production code: ${file}`);
     }
-    if (alpacaConcreteTransportPattern.test(text) && normalizedFile !== approvedAlpacaTransport) {
-      recordFailure(`Unapproved concrete Alpaca transport found in production code: ${file}`);
-    }
     if (approvedLiveTransports.has(normalizedFile)) {
-      const requiredControls = normalizedFile === approvedTwelveDataTransport
-        ? [
-            "https://api.twelvedata.com/time_series",
-            'redirect: "error"',
-            "TwelveDataTransportErrorCode.Timeout",
-            "MAX_RESPONSE_BYTES",
-          ]
-        : normalizedFile === approvedTwelveDataMulsReferenceTransport ? [
-            "TWELVE_DATA_PERSONAL_MULS_REFERENCE_ENDPOINT",
-            "const credential = credentials.revealForTransport()",
-            "Authorization: `apikey ${credential}`",
-            'redirect: "error"',
-            "TwelveDataPersonalMulsReferenceTransportErrorCode.Timeout",
-            "maxResponseCharacters",
-          ]
-        : normalizedFile === approvedKalshiTransport ? [
-            "https://external-api.kalshi.com/trade-api/v2/markets/",
-            "KXBTC15M-26JUL232045-45",
-            'redirect: "error"',
-            "KalshiPublicTransportErrorCode.Timeout",
-            "MAX_RESPONSE_BYTES",
-          ]
-        : normalizedFile === approvedAlpacaAssetMetadataTransport ? [
-            "paper-api.alpaca.markets",
-            "ALPACA_PERSONAL_MULS_ASSET_ENDPOINT",
-            'redirect: "error"',
-            "AlpacaPersonalAssetMetadataTransportErrorCode.Timeout",
-            "MAX_RESPONSE_BYTES",
-          ]
-        : normalizedFile === approvedAlpacaBarsLimitQualificationTransport ? [
-            "https://data.alpaca.markets/v2/stocks/bars",
-            'redirect: "error"',
-            "readBounded",
-            "maximumResponseBytes",
-            "loadAlpacaCredentials",
-          ]
-        : [
-            "https://data.alpaca.markets/v2/stocks/bars",
-            "https://data.alpaca.markets/v2/stocks/quotes/latest",
-            'redirect: "error"',
-            "AlpacaTransportErrorCode.Timeout",
-            "MAX_RESPONSE_BYTES",
-          ];
+      const requiredControls = [
+        "https://api.twelvedata.com/time_series",
+        'redirect: "error"',
+        "TwelveDataTransportErrorCode.Timeout",
+        "MAX_RESPONSE_BYTES",
+      ];
       for (const control of requiredControls) {
         if (!text.includes(control)) recordFailure(`Approved live transport is missing safety control ${control}: ${file}`);
       }
@@ -583,19 +424,6 @@ function checkRuntimeData(files) {
   for (const file of files) {
     if (relativePath(file).startsWith("data/runtime/")) {
       recordFailure(`Runtime data is tracked by Git: ${file}`);
-    }
-  }
-}
-
-function checkPythonChanges() {
-  for (const file of changedFiles()) {
-    const normalizedFile = relativePath(file);
-    const allowed = fixedValidationPythonFiles.has(normalizedFile) ||
-      allowedPythonChangePrefixes.some((prefix) =>
-        normalizedFile.startsWith(prefix)
-      );
-    if (extname(file).toLowerCase() === ".py" && !allowed) {
-      recordFailure(`Python file changed in working tree: ${file}`);
     }
   }
 }
@@ -644,7 +472,6 @@ runNode(["node_modules/typescript/bin/tsc", "--project", "tsconfig.json"], "Type
 for (const file of aggregateTestFiles) {
   runNode(["node_modules/tsx/dist/cli.mjs", file], `Focused/aggregate test: ${file}`);
 }
-runNode(["scripts/run-python-integration-tests.mjs"], "Focused Python integration tests");
 runNode(["scripts/validation-reporting.test.mjs"], "Validation Reporting tests");
 
 runCheck("Markdown links, paths, and fences", () => checkMarkdown(files));
@@ -652,7 +479,6 @@ runCheck("Provider SDK dependencies", checkProviderSdk);
 runCheck("Provider and network code", () => checkNetworkAndProviderCode(files));
 runCheck("Credential scan", () => checkSecrets(files));
 runCheck("Runtime-data tracking", () => checkRuntimeData(files));
-runCheck("Python change scope", checkPythonChanges);
 runCheck("Merge markers", () => checkMergeMarkers(files));
 runCheck("Git whitespace check coverage", () => {
   const commands = gitWhitespaceChecks.map((check) => check.args.join(" "));

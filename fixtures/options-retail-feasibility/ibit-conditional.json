@@ -11,6 +11,7 @@
   "roundTripFeesCents": 0,
   "slippageReserveCents": 0,
   "mode": "CONDITIONAL",
-  "profitTargetBps": 8000,
+  "stopLossBps": 2000,
+  "rewardMultipleMilliR": 1500,
   "claimedWinProbabilityBps": 8500
 }

@@ -1,5 +1,23 @@
 # Alpha Changelog
 
+## 2026-09-06 - GLD / IBIT risk v2, public drivers and product scope cleanup
+
+- Replaced the historical 2% stop and fixed 50% target diagnostic with a 20%
+  research-default stop, 10%-25% comparisons, all-in cash R and 1.5R-2R net targets.
+  Added a 0.5% equity planned-risk ceiling; retained allocation and full-loss caps.
+- Added 16 driver families and 94 indicators with explicit source/coverage gaps,
+  six bounded public headline feeds, source health and versioned local history.
+  The first actual refresh saved 118 observations. No numerical driver feed,
+  calibrated option win probability or trading authority is implied.
+- Configured an external hourly Codex heartbeat for meaningful public-feed
+  changes; the local computer and app must remain available.
+- Removed 292 unrelated product files and 83 obsolete npm commands after
+  dependency review. Extracted reusable calendar validation, retained Options
+  dependencies and added import/scope/registration regressions.
+- Updated current status to schema 1.16. See
+  [current delivery](OPTIONS_FOCUS_V2_DELIVERY.md) for current validation;
+  earlier counts and policies below remain historical.
+
 ## 2026-09-06 - GLD / IBIT scope, feasibility and integrity correction
 
 - Recorded the Owner's Robinhood GLD/IBIT-only profile, confirmed premium-based

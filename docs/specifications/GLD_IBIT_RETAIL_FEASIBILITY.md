@@ -1,5 +1,9 @@
 # GLD / IBIT Retail Options Feasibility v1
 
+Historical specification. The Owner's subsequent stop review and 1.5R-2R exit
+request are implemented in [v2](OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md), which
+supersedes this input contract and policy. Retained here as decision history.
+
 ## Owner request and scope
 
 On 2026-09-06 the Owner restricted the intended trading universe to GLD and

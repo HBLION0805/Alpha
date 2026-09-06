@@ -1,7 +1,7 @@
 import type { BarDecimal, CanonicalBar } from "./CanonicalBar";
 import type { MarketRegimeAssessment, RegimeInputSnapshot } from "./MarketRegime";
 import type { OptionsContextInterval } from "./OptionsCandlePolicy";
-import type { CanonicalBarReference } from "./VerifiedMarketSnapshot";
+import type { CanonicalBarReference } from "./MarketCalendar";
 
 export type OptionsContextRejectionCode =
   | "INVALID_CONTRACT" | "INVALID_POLICY" | "INVALID_CANONICAL_BAR"
