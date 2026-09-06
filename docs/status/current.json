@@ -1,22 +1,22 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.20",
-  "statusId": "alpha-status:gld-ibit-research-input-preparation-v1",
-  "asOf": "2026-09-06T23:36:35.000Z",
+  "schemaVersion": "1.21",
+  "statusId": "alpha-status:gld-ibit-robinhood-data-readiness-v1",
+  "asOf": "2026-09-06T23:57:58.000Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/codex/gld-ibit-options-foundation",
-    "source_baseline_commit": "684a2625c0142fdb68472ff32ff49a44cc0e6922",
-    "implementation_baseline": "OPTIONS_HISTORICAL_REPLAY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
+    "source_baseline_commit": "ef2e554e0e53f49e3c7ef0154b5b928ae68725be",
+    "implementation_baseline": "OPTIONS_RESEARCH_PREPARATION_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
     "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
   },
   "currentMilestone": {
-    "id": "OPTIONS_RESEARCH_INPUT_PREPARATION_V1",
-    "name": "GLD / IBIT Research Input Preparation v1",
-    "status": "IMPLEMENTED_PREPARATION_ACTUAL_DATA_UNAVAILABLE",
-    "authorizedBy": "OWNER_CONTINUE_RESEARCH_PREPARATION_2026_09_06",
-    "implementationBaseline": "684a2625c0142fdb68472ff32ff49a44cc0e6922",
+    "id": "OPTIONS_ROBINHOOD_DATA_READINESS_V1",
+    "name": "GLD / IBIT Robinhood Data Readiness v1",
+    "status": "IMPLEMENTED_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_HTTP_PROBE",
+    "authorizedBy": "OWNER_CONTINUE_ROBINHOOD_DATA_PREPARATION_2026_09_06",
+    "implementationBaseline": "ef2e554e0e53f49e3c7ef0154b5b928ae68725be",
     "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
@@ -53,7 +53,8 @@
     "GLD_IBIT_POST_TRADE_REVIEW_AND_MISTAKE_NOTEBOOK_IMPLEMENTED",
     "GLD_IBIT_LOCAL_MARKET_EVIDENCE_IMPORT_AND_REPLAY_GATE_IMPLEMENTED",
     "GLD_IBIT_HISTORICAL_SAMPLED_REPLAY_AND_REVIEW_IMPLEMENTED",
-    "GLD_IBIT_RESEARCH_INPUT_LINKING_AND_DATED_BROKER_FEES_IMPLEMENTED"
+    "GLD_IBIT_RESEARCH_INPUT_LINKING_AND_DATED_BROKER_FEES_IMPLEMENTED",
+    "GLD_IBIT_ROBINHOOD_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_PROBE_IMPLEMENTED"
   ],
   "inProgress": [],
   "blocked": [
@@ -71,13 +72,14 @@
     "BROKER_ACCOUNT_ORDER_AND_BROKER_PAPER_TRADING"
   ],
   "next": [
-    "CONTINUE_LOCAL_PREPARATION_PAID_DATA_DEFERRED_BY_OWNER",
-    "ASSESS_AUTHORIZED_READ_ONLY_GLD_IBIT_DATA_ROUTE_WITHOUT_PAID_PROCUREMENT",
-    "RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"
+    "OBTAIN_OWNER_AUTHORIZATION_BEFORE_AUTHENTICATED_ROBINHOOD_CONNECTION_OR_ONBOARDING",
+    "INSPECT_AUTHORIZED_RUNTIME_SCHEMAS_AND_DATA_SEMANTICS_BEFORE_SEPARATE_ROBINHOOD_ADAPTER",
+    "RUN_ASSUMPTION_LABELED_REAL_QUOTE_REPLAY_WITH_REVIEW_WHEN_EVIDENCE_QUALIFIES",
+    "PAID_DATA_PROCUREMENT_DEFERRED_BY_OWNER"
   ],
   "productDirection": {
     "currentProduct": "OPTIONS_ONLY_MVP",
-    "currentPhase": "RESEARCH_INPUT_PREPARATION_V1",
+    "currentPhase": "ROBINHOOD_DATA_READINESS_V1",
     "phase0Status": "OWNER_APPROVED",
     "phase1Status": "OWNER_APPROVED",
     "permanentMission": [
@@ -318,7 +320,7 @@
     "phase0R1IsolationAudit": "DEDICATED_WORKTREE_ISOLATED_FROM_ORIGINAL_DIRTY_WORKTREE"
   },
   "executionBoundaries": {
-    "network": "FIXED_PUBLIC_DRIVER_FEEDS_ONLY",
+    "network": "FIXED_PUBLIC_DRIVER_FEEDS_AND_FIXED_ANONYMOUS_ROBINHOOD_GET_ONLY",
     "options": "LOCAL_OPTIONS_SIMULATION_AND_PUBLIC_HEADLINES_NO_BROKER_ACCESS",
     "broker": "CLOSED",
     "paperTrading": "LOCAL_SIMULATION_ONLY_NO_BROKER",
@@ -480,7 +482,7 @@
       "evidenceAuthority": "LOCAL_CODEX_SESSION_NOT_GITHUB_CI"
     }
   },
-  "networkAuthority": "OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_ONLY",
+  "networkAuthority": "OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_AND_FIXED_ANONYMOUS_ROBINHOOD_GET_ONLY",
   "frozenDailyScanAlpacaHistoricalDelivery": {
     "historicalPhase1Status": "MERGED",
     "historicalPhase1Approval": "CLOSED",
@@ -602,15 +604,15 @@
     "specification": "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md"
   },
   "currentDeliveryValidation": {
-    "classification": "CURRENT_OPTIONS_RESEARCH_PREPARATION_V1_WORKING_TREE",
+    "classification": "CURRENT_OPTIONS_ROBINHOOD_DATA_READINESS_V1_WORKING_TREE",
     "command": "npm.cmd run alpha:validate",
     "status": "PASSED",
-    "componentCount": 89,
-    "testsExecuted": 2369,
-    "passed": 2369,
+    "componentCount": 91,
+    "testsExecuted": 2429,
+    "passed": 2429,
     "failed": 0,
-    "durationMs": 41060,
-    "evidence": "docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md",
+    "durationMs": 43738,
+    "evidence": "docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md",
     "historicalCountsAreCurrentResult": false
   },
   "optionsLocalTradeLifecycle": {
@@ -770,5 +772,21 @@
     "executionAllowed": false,
     "winProbability": null,
     "specification": "docs/specifications/OPTIONS_RESEARCH_INPUT_PREPARATION_V1.md"
+  },
+  "optionsRobinhoodDataReadiness": {
+    "engineVersion": "ROBINHOOD_DATA_READINESS_V1",
+    "status": "IMPLEMENTED_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_HTTP_PROBE",
+    "endpoint": "https://agent.robinhood.com/mcp/trading",
+    "runtimeSchemas": "NOT_OBTAINED",
+    "marketDataConnected": false,
+    "accountAccessPerformed": false,
+    "schemaSemanticsVerified": false,
+    "configurationInstalled": false,
+    "filterAuthority": "CLIENT_TOOL_NAMES_NOT_OAUTH_SCOPE_OR_SYMBOL_ENFORCEMENT",
+    "paidData": "DEFERRED_BY_OWNER",
+    "actualQuoteReplay": "NOT_RUN",
+    "executionAllowed": false,
+    "winProbability": null,
+    "specification": "docs/specifications/OPTIONS_ROBINHOOD_DATA_READINESS_V1.md"
   }
 }

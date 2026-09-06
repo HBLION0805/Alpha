@@ -8,6 +8,102 @@ const status = JSON.parse(readFileSync(resolve(root, "docs/status/current.json")
 const schema = JSON.parse(readFileSync(resolve(root, "docs/status/current.schema.json"), "utf8"));
 
 const tests = [
+  ["Robinhood readiness records preparation without a runtime schema or data connection", () => {
+    const value = status.optionsRobinhoodDataReadiness;
+    assert.equal(status.schemaVersion, "1.21");
+    assert.equal(status.currentMilestone.id, "OPTIONS_ROBINHOOD_DATA_READINESS_V1");
+    assert.equal(status.productDirection.currentPhase, "ROBINHOOD_DATA_READINESS_V1");
+    assert.equal(value.engineVersion, "ROBINHOOD_DATA_READINESS_V1");
+    assert.equal(value.status, "IMPLEMENTED_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_HTTP_PROBE");
+    assert.equal(value.runtimeSchemas, "NOT_OBTAINED");
+    assert.equal(value.paidData, "DEFERRED_BY_OWNER");
+    assert.equal(value.winProbability, null);
+    assert.equal(Object.keys(value).length, 14);
+    assert.equal(schema.$defs.optionsRobinhoodDataReadiness.additionalProperties, false);
+    assert.deepEqual(schema.$defs.optionsRobinhoodDataReadiness.required, Object.keys(value));
+    assert.equal(status.currentDeliveryValidation.classification, "CURRENT_OPTIONS_ROBINHOOD_DATA_READINESS_V1_WORKING_TREE");
+    assert.equal(status.currentDeliveryValidation.evidence, "docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md");
+  }],
+  ["catalog declarations and HTTP responses cannot individually escalate readiness under a weakened schema", () => {
+    for (const [field, value] of Object.entries({
+      status: "CONNECTED", runtimeSchemas: "AUTHENTICATED_RUNTIME_CAPTURE", marketDataConnected: true,
+      accountAccessPerformed: true, schemaSemanticsVerified: true, configurationInstalled: true,
+      filterAuthority: "READ_ONLY_OAUTH_SCOPE_AND_GLD_IBIT_ENFORCEMENT", paidData: "PROCUREMENT_AUTHORIZED",
+      actualQuoteReplay: "PASSED_REAL_DATA", executionAllowed: true, winProbability: 0.8,
+    })) {
+      const changed = clone(status), weakened = clone(schema);
+      weakened.$defs.optionsRobinhoodDataReadiness = {};
+      changed.optionsRobinhoodDataReadiness[field] = value;
+      const validation = validateCurrentStatus(changed, weakened);
+      assert.equal(validation.valid, false, field);
+      assert(validation.issues.some((issue) => issue.includes(`optionsRobinhoodDataReadiness.${field}`)), field);
+    }
+  }],
+  ["readiness remains mandatory with exact bounded keys independently of its schema", () => {
+    const weakened = clone(schema);
+    weakened.$defs.optionsRobinhoodDataReadiness = {};
+    weakened.required = weakened.required.filter((field) => field !== "optionsRobinhoodDataReadiness");
+    const missing = clone(status);
+    delete missing.optionsRobinhoodDataReadiness;
+    assert.equal(validateCurrentStatus(missing, weakened).valid, false);
+    for (const field of Object.keys(status.optionsRobinhoodDataReadiness)) {
+      const changed = clone(status);
+      delete changed.optionsRobinhoodDataReadiness[field];
+      assert.equal(validateCurrentStatus(changed, weakened).valid, false, field);
+    }
+    for (const field of ["bearerToken", "accountNumber", "providerAuthenticated", "observedHttpStatus", "realBrokerTradesExecuted"]) {
+      const changed = clone(status);
+      changed.optionsRobinhoodDataReadiness[field] = "undeclared";
+      const validation = validateCurrentStatus(changed, weakened);
+      assert.equal(validation.valid, false, field);
+      assert(validation.issues.some((issue) => issue.includes(`optionsRobinhoodDataReadiness.${field}`)), field);
+    }
+  }],
+  ["the preparation version, fixed endpoint and reviewed specification cannot be swapped", () => {
+    for (const [field, value] of Object.entries({
+      engineVersion: "ROBINHOOD_LIVE_EXECUTION_V1",
+      endpoint: "https://example.com/mcp/trading",
+      specification: "docs/OWNER_AUTHORIZED_ALL_TRADING.md",
+    })) {
+      const changed = clone(status), weakened = clone(schema);
+      weakened.$defs.optionsRobinhoodDataReadiness = {};
+      changed.optionsRobinhoodDataReadiness[field] = value;
+      assert.equal(validateCurrentStatus(changed, weakened).valid, false, field);
+    }
+  }],
+  ["anonymous endpoint authority does not expand the driver feeds or authorize authenticated requests", () => {
+    assert.equal(status.optionsDriverMonitor.networkAuthority, "OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_ONLY");
+    assert.equal(status.networkAuthority, "OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_AND_FIXED_ANONYMOUS_ROBINHOOD_GET_ONLY");
+    assert.equal(status.executionBoundaries.network, "FIXED_PUBLIC_DRIVER_FEEDS_AND_FIXED_ANONYMOUS_ROBINHOOD_GET_ONLY");
+    const changed = clone(status), weakened = clone(schema);
+    weakened.properties.networkAuthority = {};
+    weakened.$defs.executionBoundaries = {};
+    changed.networkAuthority = "AUTHENTICATED_ROBINHOOD_AND_ARBITRARY_NETWORK";
+    changed.executionBoundaries.network = "ROBINHOOD_TOOLS_LIST_AND_CALL_ALLOWED";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.some((issue) => issue.startsWith("networkAuthority must equal")));
+    assert(validation.issues.some((issue) => issue.startsWith("executionBoundaries.network must equal")));
+  }],
+  ["the next step cannot skip connection authorization, source review or deferred procurement", () => {
+    for (const item of ["CONNECT_ROBINHOOD_WITHOUT_OWNER_LOGIN", "RELABEL_ROBINHOOD_RESPONSE_AS_CBOE", "PURCHASE_DATA_NOW"]) {
+      const changed = clone(status), weakened = clone(schema);
+      weakened.$defs.statusItems = {};
+      changed.next = [item];
+      const validation = validateCurrentStatus(changed, weakened);
+      assert.equal(validation.valid, false);
+      assert(validation.issues.some((issue) => issue.startsWith("next must require owner authorization")));
+    }
+  }],
+  ["the readiness completion marker is required while actual probe outcomes remain unasserted", () => {
+    const marker = "GLD_IBIT_ROBINHOOD_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_PROBE_IMPLEMENTED";
+    assert(status.completed.includes(marker));
+    assert.equal(Object.hasOwn(status.optionsRobinhoodDataReadiness, "observedHttpStatus"), false);
+    const changed = clone(status), weakened = clone(schema);
+    weakened.$defs.statusItems = {};
+    changed.completed = changed.completed.filter((item) => item !== marker);
+    assertInvalid(changed, weakened, `completed must include "${marker}".`);
+  }],
   ["research preparation links inputs without inventing data, fees or account access", () => {
     assert.equal(status.optionsResearchPreparation.engineVersion, "INPUT_PREPARATION_V1");
     assert.equal(status.optionsResearchPreparation.actualTargetData, "NOT_ACQUIRED");
@@ -33,8 +129,8 @@ const tests = [
     assert.equal(validateCurrentStatus(changed, weakened).valid, false);
   }],
   ["historical replay retains the counterfactual clock and retrospective plan declaration", () => {
-    assert.equal(status.schemaVersion, "1.20");
-    assert.equal(status.currentMilestone.id, "OPTIONS_RESEARCH_INPUT_PREPARATION_V1");
+    assert.equal(status.schemaVersion, "1.21");
+    assert.equal(status.currentMilestone.id, "OPTIONS_ROBINHOOD_DATA_READINESS_V1");
     assert.equal(status.optionsHistoricalReplay.engineVersion, "SAMPLED_OPTIONS_REPLAY_V1");
     assert.equal(status.optionsHistoricalReplay.clockModel, "COUNTERFACTUAL_SNAPSHOT_TIME");
     assert.equal(status.optionsHistoricalReplay.planSelection, "RETROSPECTIVE_DECLARATION");
@@ -128,9 +224,9 @@ const tests = [
     assert(validation.issues.includes("completed must be a unique bounded array."));
   }],
   ["historical replay milestone retains the actual lack of a source file or API", () => {
-    assert.equal(status.currentMilestone.id, "OPTIONS_RESEARCH_INPUT_PREPARATION_V1");
-    assert.equal(status.currentMilestone.status, "IMPLEMENTED_PREPARATION_ACTUAL_DATA_UNAVAILABLE");
-    assert.equal(status.productDirection.currentPhase, "RESEARCH_INPUT_PREPARATION_V1");
+    assert.equal(status.currentMilestone.id, "OPTIONS_ROBINHOOD_DATA_READINESS_V1");
+    assert.equal(status.currentMilestone.status, "IMPLEMENTED_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_HTTP_PROBE");
+    assert.equal(status.productDirection.currentPhase, "ROBINHOOD_DATA_READINESS_V1");
     assert.deepEqual(status.optionsMarketEvidence.ownerDataAccess, {
       platform: "ROBINHOOD_ONLY", providerApi: "NOT_AVAILABLE", authorizedSourceFile: "NOT_AVAILABLE", confirmedBy: "OWNER_2026_09_06",
     });
@@ -379,7 +475,7 @@ const tests = [
     changed.worktreeIsolation.t3b15C5Included = true;
     const validation = validateCurrentStatus(changed, schema);
     assert.equal(validation.valid, false);
-    assert(validation.issues.includes("networkAuthority must equal \"OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_ONLY\"."));
+    assert(validation.issues.includes("networkAuthority must equal \"OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_AND_FIXED_ANONYMOUS_ROBINHOOD_GET_ONLY\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Status must equal \"MERGED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1Approval must equal \"CLOSED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BStatus must equal \"D3A_MERGED_CLOSED_D3B_DESIGN_APPROVED\"."));
@@ -408,11 +504,11 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_PREPARATION_ACTUAL_DATA_UNAVAILABLE\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_HTTP_PROBE\"."));
     assert(validation.issues.includes("currentMilestone.phase0ApprovedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
     assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
     assert(validation.issues.includes("productDirection.phase1Status must equal \"OWNER_APPROVED\"."));
-    assert(validation.issues.includes("next must preserve deferred paid procurement, authorized read-only data assessment and assumption-labeled replay with outcome review."));
+    assert(validation.issues.includes("next must require owner authorization before Robinhood connection, a separate schema-reviewed adapter, qualified real-quote replay and deferred procurement."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
@@ -521,8 +617,8 @@ const tests = [
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
     assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "684a2625c0142fdb68472ff32ff49a44cc0e6922");
-    assert.equal(status.source.implementation_baseline, "OPTIONS_HISTORICAL_REPLAY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
+    assert.equal(status.source.source_baseline_commit, "ef2e554e0e53f49e3c7ef0154b5b928ae68725be");
+    assert.equal(status.source.implementation_baseline, "OPTIONS_RESEARCH_PREPARATION_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3APostMergeCorrection, "VERIFIED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B, "DESIGN_APPROVED");
@@ -530,7 +626,12 @@ const tests = [
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
     assert.equal(status.legacyProductLanes.etfDailyScan.status, "REMOVED_OWNER_AUTHORIZED");
-    assert.deepEqual(status.next, ["CONTINUE_LOCAL_PREPARATION_PAID_DATA_DEFERRED_BY_OWNER", "ASSESS_AUTHORIZED_READ_ONLY_GLD_IBIT_DATA_ROUTE_WITHOUT_PAID_PROCUREMENT", "RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"]);
+    assert.deepEqual(status.next, [
+      "OBTAIN_OWNER_AUTHORIZATION_BEFORE_AUTHENTICATED_ROBINHOOD_CONNECTION_OR_ONBOARDING",
+      "INSPECT_AUTHORIZED_RUNTIME_SCHEMAS_AND_DATA_SEMANTICS_BEFORE_SEPARATE_ROBINHOOD_ADAPTER",
+      "RUN_ASSUMPTION_LABELED_REAL_QUOTE_REPLAY_WITH_REVIEW_WHEN_EVIDENCE_QUALIFIES",
+      "PAID_DATA_PROCUREMENT_DEFERRED_BY_OWNER",
+    ]);
     assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
@@ -574,7 +675,7 @@ const tests = [
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.persistenceWrites must equal 0."));
-    assert(validation.issues.includes("executionBoundaries.network must equal \"FIXED_PUBLIC_DRIVER_FEEDS_ONLY\"."));
+    assert(validation.issues.includes("executionBoundaries.network must equal \"FIXED_PUBLIC_DRIVER_FEEDS_AND_FIXED_ANONYMOUS_ROBINHOOD_GET_ONLY\"."));
     assert(validation.issues.includes("automatedExecutionAllowed must equal false."));
   }],
   ["D3A merged-head validation binds the PR #7 merge commit and verified count", () => {
@@ -587,8 +688,8 @@ const tests = [
     assertInvalid(changed, schema, "$.validation.phase1bD3AMergedHead.source_baseline_commit must equal schema const \"bae51dda65dc55f376cb683f873fa93295ed7e2f\".");
   }],
   ["v2 records 20% research stop, net 1.5R-2R and separate account and stress limits", () => {
-    assert.equal(status.schemaVersion, "1.20");
-    assert.equal(status.currentMilestone.id, "OPTIONS_RESEARCH_INPUT_PREPARATION_V1");
+    assert.equal(status.schemaVersion, "1.21");
+    assert.equal(status.currentMilestone.id, "OPTIONS_ROBINHOOD_DATA_READINESS_V1");
     assert.equal(status.ownerOptionsProfile.plannedStopBps, 2000);
     assert.equal(status.ownerOptionsProfile.minimumStopBps, 1000);
     assert.equal(status.ownerOptionsProfile.maximumStopBps, 2500);

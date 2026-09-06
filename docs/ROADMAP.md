@@ -1,13 +1,19 @@
 # Alpha Roadmap
 
-Current delivery adds research input preparation, dated Robinhood fee estimates
-and public-source broker references to the historical research workflow. The
+Current delivery adds Robinhood data-access preparation: public capabilities,
+bounded local catalog inspection, an anonymous endpoint check and a disabled
+configuration example. No authenticated quote connection is established. The
 [machine status](status/current.json) is authoritative. See
-[delivery evidence](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
+[delivery evidence](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md),
+[previous preparation](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
 [broker reference](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
 
 ## Implemented
 
+- Separate data-readiness report and local catalog assessment with five fixed
+  candidates, schema fingerprints, unknown hints and pagination blockers. The
+  anonymous fixed-endpoint probe cannot invoke tools or establish data readiness.
+  Its disabled example is not installed; existing journals remain unchanged.
 - Manifest/child/metadata/plan preparation with chronology checks and optional
   immutable records. A linked result certifies only coherent declared inputs;
   no market import, replay, account access or trade follows automatically.
@@ -35,11 +41,17 @@ and public-source broker references to the historical research workflow. The
 ## Ordered completion work
 
 1. Continue local workflow preparation under the Owner's decision to defer paid
-   market data. Assess authorized read-only Robinhood Trading MCP capabilities and schemas,
+   market data. Use the new readiness report and offline catalog inspection to
+   prepare a concrete Robinhood scope/schema review. Authentication and potential
+   account onboarding require the Owner's later consent, not yet granted. Assess
+   authorized read-only Robinhood Trading MCP capabilities and actual response semantics,
    or obtain an entitled local GLD/IBIT quote file. Official MCP documents now
    include option historical OHLC, live quotes and instruments; it is not
    connected, and historical bid/ask sizes or access terms remain unverified.
    Do not assume paid Cboe data is the only route or substitute OHLC for quotes.
+   A client tool filter does not restrict server scope or enforce GLD/IBIT. Design
+   a separate source adapter if compatible data is established; never relabel a
+   Robinhood response as Cboe evidence or backdate prospective captures.
    Official samples inspected so far contain no GLD/IBIT observations. For a
    supplied file, extract a documented subset, prepare the linked inputs, inspect
    source/contract/session/cost evidence and test affordability before the

@@ -6,9 +6,10 @@ Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
 
 The latest instruction continues toward real-price testing. The Owner has
 Robinhood; no account/API connection or entitled target-ETF quote file is available
-to Alpha. This delivery adds input preparation, immutable preparation records and
-a dated standalone fee estimate to the existing historical lifecycle and notebook.
-See [current delivery](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
+to Alpha. This delivery adds a public capability report, offline local catalog
+inspection, one anonymous endpoint check and a disabled configuration example.
+See [current delivery](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md),
+[previous preparation](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
 [broker research reference](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
 
 The Owner requested a more realistic premium stop, 1.5R-2R exits, broad
@@ -20,6 +21,11 @@ workflow. The earlier procurement question has been answered; no purchase is pen
 
 ## Delivered state
 
+- Robinhood data readiness: five fixed candidate tools, bounded unverified local
+  tools/list assessment and anonymous fixed-endpoint HTTP classification. No MCP
+  invocation, authenticated connection, configuration installation or new quote
+  adapter. All connectivity/semantic/execution flags remain false; actual quote
+  replay remains NOT_RUN. Existing accepted records and fingerprints are unchanged.
 - Preparation links the extraction manifest, exact child hash, metadata and
   frozen configuration, checks counts/date/contracts/chronology, and optionally
   saves an immutable report. INPUTS_LINKED_FOR_RESEARCH means coherent declared
@@ -82,6 +88,18 @@ Its documented access includes all-account read visibility and trading tools, so
 an authorized read-only capability assessment must preserve scope. Do not assume
 Cboe purchase is the only route. Exact sources are in the
 [reference document](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
+The disabled example is a client tool-name filter, not a narrower server-side
+permission grant or GLD/IBIT argument check. Authentication/account onboarding has
+not been authorized. Exact response units, clocks, sizes and contract linkage
+remain unverified; any adapter must preserve a separate Robinhood source identity.
+
+Use `npm run options:robinhood-data -- --report` for the dated preparation report,
+`--inspect-tools <JSON>` for offline catalog inspection, or `--probe-public` for
+one anonymous fixed-endpoint GET. The probe neither reads a response body nor
+invokes MCP. HTTP status cannot prove quote availability. Its final observed result
+and validation are recorded in the [delivery](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md).
+The [configuration example](../fixtures/options-robinhood-data/codex.disabled.example.toml)
+remains disabled and uninstalled; no credentials are requested or stored.
 
 Use `npm run options:research-preflight -- --manifest <JSON> --metadata <JSON> --config <JSON>`
 for preparation; add `--save` to preserve the first report and clock. Use
@@ -115,8 +133,8 @@ command. An external hourly Codex heartbeat (automation id: gld-ibit) is active
 for this task; it requires the computer/app and this worktree to be available.
 It reports meaningful related changes or source failures, not routine no-change updates.
 
-See [current delivery](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md),
-[preparation specification](specifications/OPTIONS_RESEARCH_INPUT_PREPARATION_V1.md)
+See [current delivery](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md),
+[data-readiness specification](specifications/OPTIONS_ROBINHOOD_DATA_READINESS_V1.md)
 and [machine status](status/current.json) for validation and exact boundaries.
 Old milestone/test records remain historical; never report 3145 as the current
 post-deletion test count.
@@ -124,8 +142,12 @@ post-deletion test count.
 ## Next work
 
 Continue local preparation without purchasing data. Assess authorized read-only
-Robinhood MCP capabilities before assuming a paid
-file is necessary; historical OHLC by itself does not meet the replay input needs.
+Robinhood MCP capabilities using the reviewable readiness output before assuming
+a paid file is necessary. Any authenticated connection requires later concrete
+Owner consent to its actual scope and onboarding; that consent has not been given.
+Historical OHLC by itself does not meet replay input needs. A future adapter needs
+its own source/clock semantics; prospective capture cannot be backdated and cannot
+inherit the existing Cboe source label, interval model or size cutoff.
 Alternatively obtain an entitled local file, prepare its linked inputs, then
 inspect actual GLD/IBIT source/contract/session/cost evidence, evaluate feasibility
 and run a small explicitly assumed research trial if it qualifies. Modern recorded

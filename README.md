@@ -6,6 +6,9 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Robinhood data-access preparation: dated public capabilities, bounded local
+  tool-catalog inspection, one anonymous endpoint check and a disabled example.
+  No authenticated connection, quote adapter or actual-price replay is established.
 - Research input preparation links an extraction manifest, exact child bytes,
   source metadata and frozen plan, with optional immutable local records.
   INPUTS_LINKED_FOR_RESEARCH means coherent declarations, not validated trading inputs.
@@ -46,7 +49,8 @@ fill. A USD 25 premium with zero assumed costs, 20% stop and 2R has a USD 5 plan
 loss and USD 10 net profit target. No passing diagnostic authorizes a trade.
 
 The USD 1,000-to-USD 50,000 year-end aspiration is a scenario only and cannot
-increase risk limits. Read [current delivery](docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md),
+increase risk limits. Read [current delivery](docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md),
+the [previous preparation delivery](docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md),
 the [dated broker reference](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md)
 and the authoritative [machine status](docs/status/current.json).
 
@@ -60,6 +64,9 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:robinhood-data -- --report` | Show dated capabilities, missing field semantics and the disabled example |
+| `npm run options:robinhood-data -- --inspect-tools <JSON>` | Inspect a bounded local tools/list declaration without connecting |
+| `npm run options:robinhood-data -- --probe-public` | Check the fixed public endpoint once without authentication or reading its body |
 | `npm run options:research-preflight -- --manifest <JSON> --metadata <JSON> --config <JSON>` | Check source/selection/plan linkage without importing or replaying |
 | `npm run options:research-preflight -- --manifest <JSON> --metadata <JSON> --config <JSON> --save` | Preserve an immutable preparation record with its original clock |
 | `npm run options:broker-reference -- --reference` | Show the dated broker research scope and limits |
@@ -145,9 +152,14 @@ market-validated option-outcome replay or Options Dashboard is implemented yet.
 Robinhood's current official Trading MCP documents option historical OHLC bars,
 real-time quotes and contract lookup. It is not connected to Alpha. Public
 documentation does not establish historical bid/ask sizes, retention or GLD/IBIT
-entitlements. Assess authorized read-only capabilities before treating paid Cboe
-data as the only route; OHLC bars cannot substitute for missing quote-side data.
-See the [public-source review](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
+entitlements. The new preparation command separates documented tools, local
+catalog declarations and unresolved response semantics. Its five-tool filter is
+client-side only; it cannot narrow server authorization or enforce GLD/IBIT inputs.
+The [example](fixtures/options-robinhood-data/codex.disabled.example.toml) stays
+disabled and uninstalled. Authentication/account onboarding has not been authorized.
+An eventual Robinhood adapter needs separate source semantics; responses cannot
+be relabeled as Cboe evidence. OHLC cannot substitute for missing quote-side data.
+See [data readiness](docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md).
 
 Local paper history lives in `data/runtime/options-paper/sessions.ndjson`, excluded
 from Git. Each batch preserves its input, result and review. Reopening recomputes
@@ -162,8 +174,8 @@ The refresh command is one-shot. A separate hourly Codex heartbeat named
 requires the local computer and app to remain available; no server daemon is
 installed. Meaningful related changes and source failures are the notification
 criteria.
-No account, credentials, paid subscription, brokerage paper account or order
-endpoint is accessed. Original news fixtures retain their separate verification
+No account lookup, credential use, paid subscription, brokerage paper account or
+order operation is performed. Original news fixtures retain their separate verification
 rules; live headlines cannot inherit their verified status.
 
 ## Focused architecture

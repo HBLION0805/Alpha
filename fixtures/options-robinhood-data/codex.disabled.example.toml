@@ -1,0 +1,10 @@
+# Review-only example; this file is not installed or loaded by Codex.
+# Client tool filtering does not narrow Robinhood OAuth scopes or enforce symbols.
+# Owner authorization and official login are required before enabling a connection.
+[mcp_servers.robinhood_alpha_market_data]
+url = "https://agent.robinhood.com/mcp/trading"
+enabled = false
+required = false
+enabled_tools = ["get_option_chains", "get_option_instruments", "get_option_quotes", "get_option_historicals", "get_equity_quotes"]
+startup_timeout_sec = 15
+tool_timeout_sec = 20

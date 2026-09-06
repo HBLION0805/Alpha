@@ -1,5 +1,19 @@
 # Alpha Changelog
 
+## 2026-09-06 - Robinhood data-access preparation
+
+- Added `options:robinhood-data` report, bounded offline tools/list inspection and
+  one anonymous fixed-endpoint probe. Tool presence, local schema fingerprints
+  and HTTP status remain distinct from authenticated data or semantic compatibility.
+- Added a disabled, uninstalled Codex example with five fixed candidate tools and
+  explicit client-filter limits. No login, account onboarding or MCP tool invocation.
+- Documented required quote sides, size units/timing, contract linkage, source and
+  receipt clocks, underlying alignment and rights before any future adapter.
+  Historical OHLC cannot replace quotes or backdate prospective observations.
+- Preserved Cboe source semantics, accepted plans, dated fees and old journal
+  fingerprints. Continued the Owner's no-purchase local work. See
+  [delivery and validation](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md).
+
 ## 2026-09-06 - Research input preparation and dated broker reference
 
 - Recorded the Owner's decision to defer paid market data and continue local

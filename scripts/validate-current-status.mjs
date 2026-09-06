@@ -16,7 +16,7 @@ const STATUS_FIELDS = Object.freeze([
   "worktreeIsolation", "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry", "ownerProductEntry", "validation",
   "networkAuthority", "frozenDailyScanAlpacaHistoricalDelivery",
   "optionsStatus", "brokerStatus", "paperTradingStatus", "orderExecutionStatus",
-  "capitalAspiration", "optionsDriverMonitor", "currentDeliveryValidation", "optionsLocalTradeLifecycle", "optionsMarketEvidence", "optionsHistoricalReplay", "optionsResearchPreparation",
+  "capitalAspiration", "optionsDriverMonitor", "currentDeliveryValidation", "optionsLocalTradeLifecycle", "optionsMarketEvidence", "optionsHistoricalReplay", "optionsResearchPreparation", "optionsRobinhoodDataReadiness",
 ]);
 const STATUS_ITEM = /^[A-Z0-9][A-Z0-9_:-]{2,159}$/u;
 
@@ -40,7 +40,7 @@ export function validateCurrentStatus(status, schema) {
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
   exact(status.$schema, "./current.schema.json", "$schema", issues);
-  exact(status.schemaVersion, "1.20", "schemaVersion", issues);
+  exact(status.schemaVersion, "1.21", "schemaVersion", issues);
   if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
     issues.push("statusId must be a bounded Alpha status identifier.");
   }
@@ -49,17 +49,17 @@ export function validateCurrentStatus(status, schema) {
   validateExactObject(status.source, "source", {
   "repository": "HBLION0805/Alpha",
   "source_baseline_ref": "origin/codex/gld-ibit-options-foundation",
-  "source_baseline_commit": "684a2625c0142fdb68472ff32ff49a44cc0e6922",
-  "implementation_baseline": "OPTIONS_HISTORICAL_REPLAY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
+  "source_baseline_commit": "ef2e554e0e53f49e3c7ef0154b5b928ae68725be",
+  "implementation_baseline": "OPTIONS_RESEARCH_PREPARATION_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
   "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
   "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
 }, issues);
   validateExactObject(status.currentMilestone, "currentMilestone", {
-  "id": "OPTIONS_RESEARCH_INPUT_PREPARATION_V1",
-  "name": "GLD / IBIT Research Input Preparation v1",
-  "status": "IMPLEMENTED_PREPARATION_ACTUAL_DATA_UNAVAILABLE",
-  "authorizedBy": "OWNER_CONTINUE_RESEARCH_PREPARATION_2026_09_06",
-  "implementationBaseline": "684a2625c0142fdb68472ff32ff49a44cc0e6922",
+  "id": "OPTIONS_ROBINHOOD_DATA_READINESS_V1",
+  "name": "GLD / IBIT Robinhood Data Readiness v1",
+  "status": "IMPLEMENTED_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_HTTP_PROBE",
+  "authorizedBy": "OWNER_CONTINUE_ROBINHOOD_DATA_PREPARATION_2026_09_06",
+  "implementationBaseline": "ef2e554e0e53f49e3c7ef0154b5b928ae68725be",
   "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
 }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
@@ -76,7 +76,7 @@ export function validateCurrentStatus(status, schema) {
   for (const item of ["OPTIONS_PHASE_1_P1_A_CONTRACTS_REGISTRY_STATE_TRANSPORT_IMPLEMENTED", "OPTIONS_PHASE_1_P1_B_FOUR_FIXTURE_ADAPTERS_IMPLEMENTED", "OPTIONS_PHASE_1_P1_C_LINKING_DEDUPE_CLUSTERING_VERIFICATION_IMPLEMENTED", "OPTIONS_PHASE_1_P1_D_PERSISTENCE_BUDGET_HEALTH_IMPLEMENTED", "OPTIONS_PHASE_1_END_TO_END_FIXTURE_DEMOS_IMPLEMENTED", "OPTIONS_PHASE_1_NEWS_INFRASTRUCTURE_OWNER_APPROVED"]) requireStatusItem(status.completed, item, "completed", issues);
   requireStatusItem(status.completed, "OPTIONS_PHASE_2_P2_A_THROUGH_P2_D_IMPLEMENTED", "completed", issues);
   if (!Array.isArray(status.inProgress) || status.inProgress.length !== 0) {
-    issues.push("inProgress must be empty at the completed Options research input preparation checkpoint.");
+    issues.push("inProgress must be empty at the completed Options Robinhood data readiness checkpoint.");
   }
   for (const item of ["GLD_IBIT_RISK_V2_ALL_IN_R_DIAGNOSTIC_IMPLEMENTED","GLD_IBIT_DRIVER_CATALOG_AND_PUBLIC_FEED_MONITOR_IMPLEMENTED","OWNER_AUTHORIZED_UNRELATED_PRODUCT_CODE_REMOVAL_COMPLETED"]) requireStatusItem(status.completed, item, "completed", issues);
   validateExactObject(status.capitalAspiration, "capitalAspiration", {
@@ -282,17 +282,34 @@ export function validateCurrentStatus(status, schema) {
   "specification": "docs/specifications/OPTIONS_RESEARCH_INPUT_PREPARATION_V1.md"
 }, issues);
   requireStatusItem(status.completed, "GLD_IBIT_RESEARCH_INPUT_LINKING_AND_DATED_BROKER_FEES_IMPLEMENTED", "completed", issues);
+  validateExactObject(status.optionsRobinhoodDataReadiness, "optionsRobinhoodDataReadiness", {
+  "engineVersion": "ROBINHOOD_DATA_READINESS_V1",
+  "status": "IMPLEMENTED_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_HTTP_PROBE",
+  "endpoint": "https://agent.robinhood.com/mcp/trading",
+  "runtimeSchemas": "NOT_OBTAINED",
+  "marketDataConnected": false,
+  "accountAccessPerformed": false,
+  "schemaSemanticsVerified": false,
+  "configurationInstalled": false,
+  "filterAuthority": "CLIENT_TOOL_NAMES_NOT_OAUTH_SCOPE_OR_SYMBOL_ENFORCEMENT",
+  "paidData": "DEFERRED_BY_OWNER",
+  "actualQuoteReplay": "NOT_RUN",
+  "executionAllowed": false,
+  "winProbability": null,
+  "specification": "docs/specifications/OPTIONS_ROBINHOOD_DATA_READINESS_V1.md"
+}, issues);
+  requireStatusItem(status.completed, "GLD_IBIT_ROBINHOOD_LOCAL_CATALOG_REVIEW_AND_ANONYMOUS_PROBE_IMPLEMENTED", "completed", issues);
   validateCurrentDeliveryValidation(status.currentDeliveryValidation, issues);
   for (const field of ["blocked", "frozen"]) {
     const required = field === "blocked" ? ["VERIFIED_GLD_IBIT_OPTION_CHAIN_NOT_IMPLEMENTED","QUANTITATIVE_DRIVER_CONNECTORS_NOT_IMPLEMENTED","CALIBRATED_COST_AWARE_OPTION_OUTCOMES_NOT_AVAILABLE","FULL_BROKER_ACCOUNT_PORTFOLIO_RISK_RUNTIME_NOT_IMPLEMENTED","ROBINHOOD_ACCOUNT_ACCESS_PROHIBITED","BROKER_PAPER_TRADING_PROHIBITED","ORDER_EXECUTION_PROHIBITED"] : ["T3B15_C5_UNCOMMITTED_WORK","ORIGINAL_ALPHA_WORKTREE","BROKER_ACCOUNT_ORDER_AND_BROKER_PAPER_TRADING"];
     if (!deepEqual(status[field], required)) issues.push(`${field} must contain the exact current scope and closed account boundaries.`);
   }
-  if (!Array.isArray(status.next) || JSON.stringify(status.next) !== JSON.stringify(["CONTINUE_LOCAL_PREPARATION_PAID_DATA_DEFERRED_BY_OWNER", "ASSESS_AUTHORIZED_READ_ONLY_GLD_IBIT_DATA_ROUTE_WITHOUT_PAID_PROCUREMENT", "RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"])) {
-    issues.push("next must preserve deferred paid procurement, authorized read-only data assessment and assumption-labeled replay with outcome review.");
+  if (!Array.isArray(status.next) || JSON.stringify(status.next) !== JSON.stringify(["OBTAIN_OWNER_AUTHORIZATION_BEFORE_AUTHENTICATED_ROBINHOOD_CONNECTION_OR_ONBOARDING", "INSPECT_AUTHORIZED_RUNTIME_SCHEMAS_AND_DATA_SEMANTICS_BEFORE_SEPARATE_ROBINHOOD_ADAPTER", "RUN_ASSUMPTION_LABELED_REAL_QUOTE_REPLAY_WITH_REVIEW_WHEN_EVIDENCE_QUALIFIES", "PAID_DATA_PROCUREMENT_DEFERRED_BY_OWNER"])) {
+    issues.push("next must require owner authorization before Robinhood connection, a separate schema-reviewed adapter, qualified real-quote replay and deferred procurement.");
   }
   validateExactObject(status.productDirection, "productDirection", {
     currentProduct: "OPTIONS_ONLY_MVP",
-    currentPhase: "RESEARCH_INPUT_PREPARATION_V1",
+    currentPhase: "ROBINHOOD_DATA_READINESS_V1",
     phase0Status: "OWNER_APPROVED",
     phase1Status: "OWNER_APPROVED",
     permanentMission: ["PROTECT_CAPITAL", "ALLOCATE_CAPITAL", "GROW_CAPITAL", "COMPOUND_CAPITAL"],
@@ -395,7 +412,7 @@ export function validateCurrentStatus(status, schema) {
     phase0R1IsolationAudit: "DEDICATED_WORKTREE_ISOLATED_FROM_ORIGINAL_DIRTY_WORKTREE",
   }, issues);
   validateExactObject(status.executionBoundaries, "executionBoundaries", {
-  "network": "FIXED_PUBLIC_DRIVER_FEEDS_ONLY",
+  "network": "FIXED_PUBLIC_DRIVER_FEEDS_AND_FIXED_ANONYMOUS_ROBINHOOD_GET_ONLY",
   "options": "LOCAL_OPTIONS_SIMULATION_AND_PUBLIC_HEADLINES_NO_BROKER_ACCESS",
   "broker": "CLOSED",
   "paperTrading": "LOCAL_SIMULATION_ONLY_NO_BROKER",
@@ -409,7 +426,7 @@ export function validateCurrentStatus(status, schema) {
   exact(status.ownerDailyProductEntry, "REMOVED_OWNER_AUTHORIZED", "ownerDailyProductEntry", issues);
   exact(status.ownerProductEntry, "OPTIONS_LOCAL_LIFECYCLE_FEASIBILITY_AND_DRIVER_MONITOR", "ownerProductEntry", issues);
   validateValidation(status.validation, issues);
-  exact(status.networkAuthority, "OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_ONLY", "networkAuthority", issues);
+  exact(status.networkAuthority, "OWNER_AUTHORIZED_FIXED_PUBLIC_DRIVER_FEEDS_AND_FIXED_ANONYMOUS_ROBINHOOD_GET_ONLY", "networkAuthority", issues);
   validateExactObject(status.frozenDailyScanAlpacaHistoricalDelivery, "frozenDailyScanAlpacaHistoricalDelivery", {
     historicalPhase1Status: "MERGED",
     historicalPhase1Approval: "CLOSED",
@@ -510,7 +527,7 @@ function validateSchema(schema, issues) {
     return;
   }
   exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
-  exact(schema.$id, "https://alpha.local/schemas/project-status/1.20", "schema.$id", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.21", "schema.$id", issues);
   exact(schema.type, "object", "schema.type", issues);
   exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
   if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {
@@ -638,9 +655,9 @@ function validateCurrentDeliveryValidation(value, issues) {
   const fields = ["classification", "command", "status", "componentCount", "testsExecuted", "passed", "failed", "durationMs", "evidence", "historicalCountsAreCurrentResult"];
   allowOnly(value, fields, "currentDeliveryValidation", issues);
   requireExactly(value, fields, "currentDeliveryValidation", issues);
-  exact(value.classification, "CURRENT_OPTIONS_RESEARCH_PREPARATION_V1_WORKING_TREE", "currentDeliveryValidation.classification", issues);
+  exact(value.classification, "CURRENT_OPTIONS_ROBINHOOD_DATA_READINESS_V1_WORKING_TREE", "currentDeliveryValidation.classification", issues);
   exact(value.command, "npm.cmd run alpha:validate", "currentDeliveryValidation.command", issues);
-  exact(value.evidence, "docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md", "currentDeliveryValidation.evidence", issues);
+  exact(value.evidence, "docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md", "currentDeliveryValidation.evidence", issues);
   exact(value.historicalCountsAreCurrentResult, false, "currentDeliveryValidation.historicalCountsAreCurrentResult", issues);
   const counters = ["componentCount", "testsExecuted", "passed", "failed", "durationMs"];
   if (value.status === "PENDING_AGGREGATE_VALIDATION") {

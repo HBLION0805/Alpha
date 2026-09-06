@@ -39,6 +39,30 @@ The older Options News subsystem remains fixture-only with deterministic
 verification and provider-authority rules. The live headline monitor cannot
 promote itself into that subsystem's VERIFIED state.
 
+## Robinhood data-access preparation
+
+`options-robinhood-data.mjs` is a separate capability-preparation composition.
+Its report and bounded local tools/list inspection do not connect to a server.
+The pure catalog assessment emits only five fixed candidate names, presence,
+schema fingerprints, read-only hints, exclusions and pagination; untrusted schemas
+and descriptions cannot grant semantic compatibility or execution authority.
+
+The anonymous probe sends one GET to the fixed official endpoint, omits credentials,
+refuses redirects and reads no response body. A total 12-second deadline includes
+cancellation. Numeric status and authentication-header presence are the only
+retained HTTP details. HTTP success is not an authenticated connection or quote.
+No mode invokes MCP tools, authenticates, installs configuration or writes journals.
+
+The disabled fixture exposes only chain, instrument, option quote, option historical
+and equity quote candidate names. This client filter does not restrict server
+OAuth scope or enforce symbols. The future adapter must establish actual schemas,
+units, contract linkage, quote and underlying clocks, alignment, liquidity and
+rights independently. Historical OHLC is insufficient for sampled execution.
+Robinhood responses cannot enter the existing Cboe path under a changed label:
+its interval clock and size cutoff are source-specific. Preserve old engines,
+accepted records and fingerprints. See [delivery](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md)
+and [specification](specifications/OPTIONS_ROBINHOOD_DATA_READINESS_V1.md).
+
 ## Price and calendar foundations
 
 `CboeOptionQuotesCsv` reads bounded local licensed-format files. It preserves
@@ -213,7 +237,8 @@ and an Options Dashboard remain to be implemented.
 Robinhood's documented Trading MCP offers option contract lookup, real-time quotes
 and historical OHLC tools, but no connector or authenticated access is implemented.
 The public descriptions do not prove historical bid/ask/size coverage or the
-Owner's entitlement. A separately authorized read-only capability assessment is
-a candidate next source step; OHLC cannot be relabeled as quote-side evidence.
+Owner's entitlement. The new local readiness assessment prepares a later,
+separately authorized review of actual schemas and data. OHLC cannot be relabeled
+as quote-side evidence, and an anonymous HTTP result cannot establish connectivity.
 The USD 50,000 aspiration never grants a risk override. See the
 [v2 specification](specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md).

@@ -1,5 +1,26 @@
 # Alpha Architecture Decisions
 
+## 2026-09-06 - Prepare Robinhood data access without authenticating
+
+- Continue the Owner's local work and deferred-purchase direction. Public official
+  options-tool descriptions justify a capability review, not an account connection
+  or a claim that historical bid/ask sizes are available.
+- Separate dated public facts, bounded local catalog declarations and still-unknown
+  response semantics. Only five fixed market-data candidates may appear in output;
+  schema fingerprints and read-only hints cannot establish entitlement or authority.
+- Permit one anonymous fixed-endpoint GET with no credentials, redirects, body
+  reading or MCP calls. HTTP status classifies only that request; even success
+  cannot mark Alpha connected or replay-ready. Preserve actual request clocks.
+- Keep the Codex example disabled and uninstalled. Client tool filtering does not
+  narrow server OAuth permissions, verify behavior or enforce GLD/IBIT arguments.
+  Later authentication/account onboarding requires concrete Owner consent.
+- Preserve source-specific Cboe timing/size semantics and all accepted journal
+  fingerprints. A future Robinhood adapter needs its own reviewed provenance,
+  clocks, units, liquidity and contract mapping; no relabeling or backdating.
+- See [specification](specifications/OPTIONS_ROBINHOOD_DATA_READINESS_V1.md) and
+  [delivery](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md). No procurement request,
+  authenticated access, calibration or brokerage execution is part of this change.
+
 ## 2026-09-06 - Link research inputs and isolate dated broker assumptions
 
 - The Owner deferred paid data after the procurement question and directed

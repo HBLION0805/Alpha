@@ -80,6 +80,7 @@ Push
 
 ## Current Implemented Systems
 
+- Robinhood data-access preparation: dated public report, bounded offline tool-catalog assessment, anonymous fixed-endpoint HTTP probe and disabled five-tool example; no authentication, quote adapter or market-data connection
 - Local research input preparation: source manifest/child/metadata/config linkage, explicit blockers and immutable preparation artifacts; INPUTS_LINKED_FOR_RESEARCH is not market validation
 - Dated Robinhood single-execution fee estimates for September 4, 2026 and primary-source contract/calendar/order/account reference; no automatic change to accepted replay fee inputs
 - Independent GLD/IBIT historical interval research: frozen counterfactual plans, declared contract/session/cost assumptions, later-snapshot assumed fills, isolated USD 1,000 accounts, all-outcome reviews and candidate lessons using actual recording time
@@ -105,6 +106,8 @@ Historical research has its own versioned engine and journal. It retains origina
 Preparation links declarations and retains the actual preparation clock; it does not import data, authenticate the parent source, run a replay or grant authority. Preserve accepted preparation artifacts and existing journals. Dated fee estimates cannot silently update frozen plans. See [preparation delivery](docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and [Robinhood research reference](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
 
 Robinhood's official Trading MCP now documents options tools, but Alpha is not connected. Its public historical-data description is OHLC, not confirmed historical bid/ask sizes. Assess an authorized read-only capability/schema review before assuming a paid provider is the only data route; public documentation is not account access, entitlement or execution authority.
+
+The data-readiness command inspects local declarations and can make one anonymous fixed-endpoint GET without reading a body or invoking MCP. Its example remains disabled and uninstalled. The five-tool client filter does not narrow server-side permissions or enforce GLD/IBIT arguments. Authentication/account onboarding requires later concrete Owner consent, not yet granted. Never relabel a Robinhood response as Cboe evidence: future integration requires separate source, clock, size and contract semantics. Preserve existing journals and fingerprints. See [data-readiness delivery](docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md).
 
 On 2026-09-06, the Owner deferred paid market data and directed continued local workflow preparation. The earlier capped purchase question is resolved; continue the authorized local work without another procurement request.
 
