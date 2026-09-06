@@ -1,0 +1,16 @@
+{
+  "symbol": "IBIT",
+  "strategy": "LONG_PUT",
+  "currentEquityCents": 100000,
+  "settledCashCents": 100000,
+  "quantity": 1,
+  "contractMultiplier": 100,
+  "bidPerShareCents": 99,
+  "askPerShareCents": 100,
+  "minimumPriceTickCents": 1,
+  "roundTripFeesCents": 0,
+  "slippageReserveCents": 0,
+  "mode": "CONDITIONAL",
+  "profitTargetBps": 8000,
+  "claimedWinProbabilityBps": 8500
+}

@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.13",
+  "$id": "https://alpha.local/schemas/project-status/1.15",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "$schema", "schemaVersion", "statusId", "asOf", "source",
     "currentMilestone", "completed", "inProgress", "blocked", "frozen", "next",
-    "productDirection", "optionsNewsInfrastructure", "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
+    "productDirection", "optionsNewsInfrastructure", "optionsMarketContext", "ownerOptionsProfile", "runtimeOwnership", "capitalArchitecture", "riskPolicyRecord",
     "optionsRiskPolicy", "moduleDisposition", "legacyProductLanes",
     "worktreeIsolation", "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry",
     "ownerProductEntry",
@@ -17,7 +17,7 @@
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.13" },
+    "schemaVersion": { "const": "1.15" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -33,6 +33,8 @@
     "next": { "$ref": "#/$defs/statusItems" },
     "productDirection": { "$ref": "#/$defs/productDirection" },
     "optionsNewsInfrastructure": { "$ref": "#/$defs/optionsNewsInfrastructure" },
+    "optionsMarketContext": { "$ref": "#/$defs/optionsMarketContext" },
+    "ownerOptionsProfile": { "$ref": "#/$defs/ownerOptionsProfile" },
     "runtimeOwnership": { "$ref": "#/$defs/runtimeOwnership" },
     "capitalArchitecture": { "$ref": "#/$defs/capitalArchitecture" },
     "riskPolicyRecord": { "$ref": "#/$defs/riskPolicyRecord" },
@@ -43,16 +45,82 @@
     "executionBoundaries": { "$ref": "#/$defs/executionBoundaries" },
     "automatedExecutionAllowed": { "const": false },
     "ownerDailyProductEntry": { "const": "FROZEN_CODE_RETAINED" },
-    "ownerProductEntry": { "const": "NONE_PHASE_1" },
+    "ownerProductEntry": { "const": "OFFLINE_OPTIONS_FEASIBILITY_DIAGNOSTIC" },
     "validation": { "$ref": "#/$defs/validation" },
     "networkAuthority": { "const": "NOT_GRANTED" },
     "frozenDailyScanAlpacaHistoricalDelivery": { "$ref": "#/$defs/frozenDailyScanAlpacaHistoricalDelivery" },
-    "optionsStatus": { "const": "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_NOT_STARTED" },
+    "optionsStatus": { "const": "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_AWAITING_REVIEW" },
     "brokerStatus": { "const": "CLOSED" },
     "paperTradingStatus": { "const": "CLOSED" },
     "orderExecutionStatus": { "const": "CLOSED" }
   },
   "$defs": {
+    "ownerOptionsProfile": { "const": {"profileVersion":"owner-gld-ibit-2026-09-06","broker":"ROBINHOOD","intendedUnderlyings":["GLD","IBIT"],"initialEquityCents":100000,"normalAllocationBps":500,"conditionalAllocationBps":1000,"plannedStopBps":200,"plannedStopBasis":"ENTRY_PREMIUM","normalProfitTargetBps":5000,"maximumConfiguredProfitTargetBps":8000,"conditionalWinProbabilityThresholdBps":8000,"conditionalEscalation":"BLOCKED_NO_CALIBRATED_OPTION_OUTCOMES","longerHolding":"REQUIRES_THESIS_AND_TIME_REVIEW","maximumLossMeaning":"FULL_PREMIUM_PLUS_FEES_NOT_PLANNED_STOP","legacyLossCaps":"RETAINED_SEPARATE_CONSTRAINT","feasibility":"NO_TRADE_CURRENT_STOP_TICK_AND_LEGACY_CAP_INCOMPATIBLE","dataAuthority":"MANUAL_SCENARIO_ONLY","executionAllowed":false,"developmentPublication":"OWNER_AUTHORIZED_COMMIT_AND_PUSH","specification":"docs/specifications/GLD_IBIT_RETAIL_FEASIBILITY.md"} },
+    "optionsMarketContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractVersion",
+        "phaseSegments",
+        "authorization",
+        "acceptance",
+        "dataOrigin",
+        "intervals",
+        "provider",
+        "persistenceAuthority",
+        "realCostCents",
+        "validationStatus",
+        "validationEvidence"
+      ],
+      "properties": {
+        "contractVersion": {
+          "const": "1.0"
+        },
+        "phaseSegments": {
+          "const": {
+            "p2A": "IMPLEMENTED",
+            "p2B": "IMPLEMENTED",
+            "p2C": "IMPLEMENTED",
+            "p2D": "IMPLEMENTED"
+          }
+        },
+        "authorization": {
+          "const": "OWNER_CONTINUE_ALPHA_AND_DELEGATE_OFFLINE_PATH_2026_09_06"
+        },
+        "acceptance": {
+          "const": "IMPLEMENTED_AWAITING_OWNER_REVIEW"
+        },
+        "dataOrigin": {
+          "const": "FIXTURE"
+        },
+        "intervals": {
+          "const": [
+            "P1D",
+            "PT1H",
+            "PT15M",
+            "PT5M"
+          ]
+        },
+        "provider": {
+          "const": "TEST_ONLY_EXISTING_REGISTRY"
+        },
+        "persistenceAuthority": {
+          "const": "DETERMINISTIC_IN_MEMORY_TEST_ONLY"
+        },
+        "realCostCents": {
+          "const": 0
+        },
+        "validationStatus": {
+          "enum": [
+            "FOCUSED_PASSED_AGGREGATE_PENDING",
+            "PASSED"
+          ]
+        },
+        "validationEvidence": {
+          "const": "docs/OPTIONS_PHASE_2_DELIVERY_REVIEW.md"
+        }
+      }
+    },
     "source": {
       "type": "object",
       "additionalProperties": false,
@@ -60,8 +128,8 @@
       "properties": {
         "repository": { "const": "HBLION0805/Alpha" },
         "source_baseline_ref": { "const": "origin/main" },
-        "source_baseline_commit": { "const": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9" },
-        "implementation_baseline": { "const": "ORIGIN_MAIN_PHASE1_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD" },
+        "source_baseline_commit": { "const": "ff1a345f4958c9acc75203533263b8166c07dff0" },
+        "implementation_baseline": { "const": "PHASE2_PLANNING_MERGE_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" },
         "phase0_owner_approval_commit": { "const": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a" }
       }
@@ -71,11 +139,11 @@
       "additionalProperties": false,
       "required": ["id", "name", "status", "authorizedBy", "implementationBaseline", "phase0ApprovedCommit"],
       "properties": {
-        "id": { "const": "OPTIONS_ONLY_MVP_PHASE_1_NEWS_INFRASTRUCTURE" },
-        "name": { "const": "Options-Only MVP Phase 1 News Infrastructure" },
-        "status": { "const": "OWNER_APPROVED" },
-        "authorizedBy": { "const": "OWNER_TASK_V1_1_2026_08_08" },
-        "implementationBaseline": { "const": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9" },
+        "id": { "const": "GLD_IBIT_OPTIONS_RETAIL_FEASIBILITY" },
+        "name": { "const": "GLD / IBIT Options Retail Feasibility" },
+        "status": { "const": "IMPLEMENTED_DIAGNOSTIC_ONLY" },
+        "authorizedBy": { "const": "OWNER_GLD_IBIT_SCOPE_AND_AUTONOMOUS_DEVELOPMENT_2026_09_06" },
+        "implementationBaseline": { "const": "ff1a345f4958c9acc75203533263b8166c07dff0" },
         "phase0ApprovedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
       }
     },
@@ -85,7 +153,7 @@
       "required": ["currentProduct", "currentPhase", "phase0Status", "phase1Status", "permanentMission", "earlyCapitalGrowthTool", "longTermDestination", "fixedReturnPromise"],
       "properties": {
         "currentProduct": { "const": "OPTIONS_ONLY_MVP" },
-        "currentPhase": { "const": "PHASE_1" },
+        "currentPhase": { "const": "PHASE_2" },
         "phase0Status": { "const": "OWNER_APPROVED" },
         "phase1Status": { "const": "OWNER_APPROVED" },
         "permanentMission": {
@@ -132,7 +200,7 @@
           "required": ["currency", "softThresholdCents", "hardThresholdCents", "boundary", "spendingAuthority"],
           "properties": { "currency": { "const": "USD" }, "softThresholdCents": { "const": 8000 }, "hardThresholdCents": { "const": 10000 }, "boundary": { "const": "UTC" }, "spendingAuthority": { "const": "NONE" } }
         },
-        "phase2Status": { "const": "NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED" }
+        "phase2Status": { "const": "IMPLEMENTED_AWAITING_OWNER_REVIEW" }
       }
     },
     "frozenDailyScanAlpacaHistoricalPhase1BDesign": {
@@ -319,7 +387,7 @@
         "orderType": { "const": "LIMIT_ONLY" },
         "failClosedOutcomes": { "$ref": "#/$defs/failClosedOutcomes" },
         "initialApprovedUnderlyings": { "$ref": "#/$defs/initialApprovedUnderlyings" },
-        "maximumUniverseSize": { "const": 15 },
+        "maximumUniverseSize": { "const": 2 },
         "underlyingAdmissionEvidence": { "$ref": "#/$defs/underlyingAdmissionEvidence" },
         "themeCorrelationConcentration": { "const": "DISPLAY_AND_GATE" },
         "nonIndependentDiversificationExample": { "const": "QQQ_SMH_SOXX_NVDA_SAME_DIRECTION" }
@@ -370,18 +438,7 @@
       "minItems": 2,
       "maxItems": 2
     },
-    "initialApprovedUnderlyings": {
-      "type": "array",
-      "prefixItems": [
-        { "const": "QQQ" }, { "const": "SMH" }, { "const": "SOXX" },
-        { "const": "GLD" }, { "const": "TLT" }, { "const": "NVDA" },
-        { "const": "MSFT" }, { "const": "AAPL" }, { "const": "AMZN" },
-        { "const": "TSLA" }
-      ],
-      "items": false,
-      "minItems": 10,
-      "maxItems": 10
-    },
+    "initialApprovedUnderlyings": { "const": ["GLD", "IBIT"] },
     "underlyingAdmissionEvidence": {
       "type": "array",
       "prefixItems": [
@@ -546,7 +603,7 @@
       "required": ["network", "options", "broker", "paperTrading", "orderExecution", "robinhoodAccountRead", "robinhoodCredentialRead", "orderEntry", "orderType"],
       "properties": {
         "network": { "const": "CLOSED" },
-        "options": { "const": "PHASE_1_NEWS_FIXTURE_ONLY_NO_TRADING_RUNTIME" },
+        "options": { "const": "FIXTURE_CONTEXT_AND_MANUAL_FEASIBILITY_NO_TRADING_RUNTIME" },
         "broker": { "const": "CLOSED" },
         "paperTrading": { "const": "CLOSED" },
         "orderExecution": { "const": "CLOSED" },

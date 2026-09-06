@@ -50,3 +50,5 @@ export * from "./EventContractCollectionRunnerRuntimeProjectionRepository";
 export * from "./EventContractCollectionRunnerRuntimeAssemblyRepository";
 export * from "./InMemoryOptionsNewsRepository";
 export * from "./OptionsNewsEvidenceJournalAdapter";
+export * from "./InMemoryOptionsMarketContextRepository";
+export * from "./OptionsMarketContextEvidenceAdapter";

@@ -124,7 +124,7 @@ const tests = [
     assert.equal(status.legacyProductLanes.etfDailyScan.expansion, "PROHIBITED_WITHOUT_OWNER_APPROVAL");
     assert(status.frozen.includes("ALPACA_D3B_NEXT_ACTION"));
     assert(!status.next.includes("D3B_IMPLEMENTATION_OWNER_APPROVAL_REQUIRED"));
-    assert.deepEqual(status.next, ["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2"]);
+    assert.deepEqual(status.next, ["IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK"]);
     assert.equal(status.executionBoundaries.network, "CLOSED");
     assert.equal(status.executionBoundaries.broker, "CLOSED");
     assert.equal(status.executionBoundaries.robinhoodAccountRead, "PROHIBITED");

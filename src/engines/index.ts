@@ -58,3 +58,5 @@ export * from "./personal-market-data-zero-cost-provider-screening";
 export * from "./verified-market-snapshot";
 export * from "./personal-daily-scan";
 export * from "./options-news";
+export * from "./options-market-context";
+export * from "./options-retail-feasibility/OptionsRetailFeasibilityEngine";

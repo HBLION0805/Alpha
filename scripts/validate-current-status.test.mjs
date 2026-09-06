@@ -8,6 +8,43 @@ const status = JSON.parse(readFileSync(resolve(root, "docs/status/current.json")
 const schema = JSON.parse(readFileSync(resolve(root, "docs/status/current.schema.json"), "utf8"));
 
 const tests = [
+  ["Owner stop basis and probability gate cannot become trading authority", () => {
+    const changed = clone(status);
+    changed.ownerOptionsProfile.plannedStopBasis = "ACCOUNT_EQUITY";
+    changed.ownerOptionsProfile.conditionalEscalation = "ENABLED_BY_AI_SCORE";
+    changed.ownerOptionsProfile.executionAllowed = true;
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    for (const field of ["plannedStopBasis", "conditionalEscalation", "executionAllowed"]) {
+      assert(validation.issues.some((issue) => issue.includes(`ownerOptionsProfile.${field}`)));
+    }
+  }],
+  ["GLD and IBIT scope is required even with a weakened JSON schema", () => {
+    const changed = clone(status);
+    changed.ownerOptionsProfile.intendedUnderlyings = ["QQQ"];
+    const weakened = clone(schema);
+    weakened.$defs.ownerOptionsProfile = {};
+    assert.equal(validateCurrentStatus(changed, weakened).valid, false);
+  }],
+  ["Phase 2 fixture implementation cannot self-approve or enable later phases", () => {
+    const changed = clone(status);
+    changed.currentMilestone.status = "OWNER_APPROVED";
+    changed.optionsMarketContext.acceptance = "OWNER_APPROVED";
+    changed.optionsMarketContext.dataOrigin = "NETWORK";
+    changed.optionsMarketContext.realCostCents = 100;
+    changed.optionsMarketContext.orderExecution = true;
+    const validation = validateCurrentStatus(changed, schema);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.some((issue) => issue.includes("optionsMarketContext.acceptance")));
+    assert(validation.issues.some((issue) => issue.includes("optionsMarketContext.dataOrigin")));
+    assert(validation.issues.some((issue) => issue.includes("optionsMarketContext.realCostCents")));
+    assert(validation.issues.some((issue) => issue.includes("optionsMarketContext.orderExecution")));
+  }],
+  ["Phase 2 validation status cannot imply unknown success", () => {
+    const changed = clone(status);
+    changed.optionsMarketContext.validationStatus = "OWNER_APPROVED";
+    assert.equal(validateCurrentStatus(changed,schema).valid,false);
+  }],
   ["the checked-in status and schema pass strict validation", () => {
     assert.deepEqual(validateCurrentStatus(status, schema), { valid: true, issues: [] });
     assert.equal(status.validation.phase1NewsWorkingTreeAttempt.passed, 2944);
@@ -74,8 +111,8 @@ const tests = [
     assert(validation.issues.includes("optionsRiskPolicy.prohibitedStructures must equal [\"NAKED_SHORT_CALLS\",\"NAKED_SHORT_PUTS\",\"CREDIT_SPREADS\",\"CREDIT_STRATEGIES\",\"SHORT_STRADDLES\",\"SHORT_STRANGLES\",\"RATIO_SPREADS\",\"MARGIN_DEPENDENT_STRATEGIES\",\"UNLIMITED_RISK_STRUCTURES\",\"CALENDARS\",\"DIAGONALS\",\"IRON_CONDORS\",\"AUTOMATIC_ROLLS_OF_LOSING_POSITIONS\",\"AVERAGING_DOWN\",\"MARTINGALE\",\"REVENGE_TRADING\"]."));
     assert(validation.issues.includes("optionsRiskPolicy.tacticalDteRange must equal {\"minimum\":14,\"maximum\":45}."));
     assert(validation.issues.includes("optionsRiskPolicy.macroDteRange must equal {\"minimum\":45,\"maximum\":120}."));
-    assert(validation.issues.includes("optionsRiskPolicy.initialApprovedUnderlyings must equal [\"QQQ\",\"SMH\",\"SOXX\",\"GLD\",\"TLT\",\"NVDA\",\"MSFT\",\"AAPL\",\"AMZN\",\"TSLA\"]."));
-    assert(validation.issues.includes("optionsRiskPolicy.maximumUniverseSize must equal 15."));
+    assert(validation.issues.includes("optionsRiskPolicy.initialApprovedUnderlyings must equal [\"GLD\",\"IBIT\"]."));
+    assert(validation.issues.includes("optionsRiskPolicy.maximumUniverseSize must equal 2."));
     assert(validation.issues.includes("optionsRiskPolicy.themeCorrelationConcentration must equal \"DISPLAY_AND_GATE\"."));
   }],
   ["Dashboard capability is reusable while only the legacy interface retires later", () => {
@@ -109,7 +146,7 @@ const tests = [
     assert(validation.issues.includes('optionsNewsInfrastructure.persistenceAuthority must equal "DETERMINISTIC_IN_MEMORY_TEST_ONLY".'));
     assert(validation.issues.includes("$.optionsNewsInfrastructure.combinedNewsOptionsMonthlyBudget.hardThresholdCents must equal schema const 10000."));
     assert(validation.issues.includes('$.optionsNewsInfrastructure.combinedNewsOptionsMonthlyBudget.spendingAuthority must equal schema const "NONE".'));
-    assert(validation.issues.includes('optionsNewsInfrastructure.phase2Status must equal "NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED".'));
+    assert(validation.issues.includes('optionsNewsInfrastructure.phase2Status must equal "IMPLEMENTED_AWAITING_OWNER_REVIEW".'));
   }],
   ["three capital buckets preserve exact order and identity", () => {
     const changed = clone(status);
@@ -154,11 +191,11 @@ const tests = [
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.marketDataAcquisition must equal \"D3B_IMPLEMENTATION_NOT_STARTED\"."));
-    assert(validation.issues.includes("optionsStatus must equal \"PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_NOT_STARTED\"."));
+    assert(validation.issues.includes("optionsStatus must equal \"PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_AWAITING_REVIEW\"."));
     assert(validation.issues.includes("brokerStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("paperTradingStatus must equal \"CLOSED\"."));
     assert(validation.issues.includes("orderExecutionStatus must equal \"CLOSED\"."));
-    assert(validation.issues.includes("executionBoundaries.options must equal \"PHASE_1_NEWS_FIXTURE_ONLY_NO_TRADING_RUNTIME\"."));
+    assert(validation.issues.includes("executionBoundaries.options must equal \"FIXTURE_CONTEXT_AND_MANUAL_FEASIBILITY_NO_TRADING_RUNTIME\"."));
     assert(validation.issues.includes("ownerDailyProductEntry must equal \"FROZEN_CODE_RETAINED\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
@@ -166,7 +203,7 @@ const tests = [
     const changed = clone(status);
     changed.source.repository = "other/repository";
     changed.source.source_baseline_commit = changed.source.reviewed_c4_commit;
-    changed.currentMilestone.status = "IMPLEMENTED_AWAITING_OWNER_REVIEW";
+    changed.currentMilestone.status = "OWNER_APPROVED";
     changed.currentMilestone.phase0ApprovedCommit = "0000000000000000000000000000000000000000";
     changed.productDirection.phase0Status = "IMPLEMENTED_AWAITING_OWNER_REVIEW";
     changed.productDirection.phase1Status = "IN_PROGRESS";
@@ -176,11 +213,11 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"OWNER_APPROVED\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_DIAGNOSTIC_ONLY\"."));
     assert(validation.issues.includes("currentMilestone.phase0ApprovedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
     assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
     assert(validation.issues.includes("productDirection.phase1Status must equal \"OWNER_APPROVED\"."));
-    assert(validation.issues.includes("next must contain only OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2."));
+    assert(validation.issues.includes("next must contain only IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
@@ -289,8 +326,8 @@ const tests = [
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
     assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9");
-    assert.equal(status.source.implementation_baseline, "ORIGIN_MAIN_PHASE1_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD");
+    assert.equal(status.source.source_baseline_commit, "ff1a345f4958c9acc75203533263b8166c07dff0");
+    assert.equal(status.source.implementation_baseline, "PHASE2_PLANNING_MERGE_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3APostMergeCorrection, "VERIFIED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B, "DESIGN_APPROVED");
@@ -298,7 +335,7 @@ const tests = [
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
     assert(status.frozen.includes("ALPACA_D3B_NEXT_ACTION"));
-    assert.deepEqual(status.next, ["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2"]);
+    assert.deepEqual(status.next, ["IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK"]);
     assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");

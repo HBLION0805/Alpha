@@ -14,16 +14,39 @@ summarize that file and must not define a competing current state.
 Alpha's current direction is the **Options-Only MVP**. Phase 0 has converged
 the mission, status, risk policy, and legacy-module disposition and is
 Owner-approved. The Owner-authorized Phase 1 P1-A through P1-D news
-infrastructure is implemented fixture-only and `OWNER_APPROVED`. It adds
-separate source-observation and canonical-event contracts, four offline
-adapters, deterministic verification, persistence/query, budget and health
-controls. Phase 2 remains `NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED` and
-requires explicit Owner authorization. The system remains
+infrastructure is implemented fixture-only and `OWNER_APPROVED`. Phase 2
+Market Context and Candle Analysis is now `IMPLEMENTED_AWAITING_OWNER_REVIEW`.
+It adds source-authorized QQQ fixtures across daily, hourly, 15-minute and
+5-minute intervals, session-grid qualification, fixed-decimal ATR and realized
+volatility, same-slot volume context, existing Market Regime references,
+in-memory queries and rejection health. See the
+[Phase 2 delivery review](docs/OPTIONS_PHASE_2_DELIVERY_REVIEW.md) and
+[specification](docs/specifications/OPTIONS_MARKET_CONTEXT_AND_CANDLE_ANALYSIS.md).
+The Owner's latest scope is **GLD and IBIT options on Robinhood**. The current
+delivery checkpoint adds an offline retail-feasibility diagnostic with the
+confirmed USD 1,000 / 5% allocation / 2%-of-premium stop / 50% target profile.
+It separates the planned stop from full premium loss and rejects unsupported
+contracts, insufficient budgets, unknown costs and unvalidated 10% escalation.
+The retained USD 25 stress cap and a whole-cent standard-contract tick are
+incompatible with the requested 2% stop; current scenarios report `NO_TRADE`.
+Read the [assessment and delivery record](docs/GLD_IBIT_SYSTEM_ASSESSMENT.md).
+The system remains
 advisory only: it reads no Robinhood account, balance, position, or credential;
 it places no order and connects to no Paper Trading account. The Personal ETF
 Daily Scan and Event Contract product entries are frozen with their code
 retained. See
 [Options News Infrastructure](docs/specifications/OPTIONS_NEWS_INFRASTRUCTURE.md).
+
+To verify the new offline foundation, run `npm run test:options-context-contracts`,
+`npm run test:options-context-features`, and `npm run test:options-context-e2e`.
+The last command emits machine-readable synthetic acceptance evidence. This is
+a development test entry; there is no Options Dashboard or trading product entry.
+Run `npm run options:feasibility -- --demo` for the local diagnostic, or
+`npm run options:feasibility -- --input fixtures/options-retail-feasibility/gld-normal.json`
+for one manual scenario. Demo prices and zero costs are illustrative assumptions.
+Development, commit and push are Owner-authorized; account and order access
+remain closed. The next implementation step is verified GLD/IBIT option data
+and complete account/portfolio risk enforcement, as recorded in current status.
 
 Dashboard remains a reusable product capability. Only the audited legacy
 Python sample terminal and frozen Offline Daily Scan interfaces are marked

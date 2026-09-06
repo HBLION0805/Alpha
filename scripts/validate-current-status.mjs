@@ -7,11 +7,12 @@ const PHASE_1B_D2_MERGE_COMMIT = "948192be9eb7d9d5e41abb19e763b73916dbcad4";
 const PHASE_1B_D3A_MERGE_COMMIT = "bae51dda65dc55f376cb683f873fa93295ed7e2f";
 const PHASE_1B_D3B_DESIGN_MERGE_COMMIT = "14b5a5aac5157f3284368608a84c890606fc5496";
 const OPTIONS_PHASE_0_BASELINE_COMMIT = "06c0ef2720a6b54fb0e27481efdbdfee786694e4";
+const OPTIONS_PHASE_2_BASELINE_COMMIT = "ff1a345f4958c9acc75203533263b8166c07dff0";
 const OPTIONS_PHASE_1_BASELINE_COMMIT = "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9";
 const OPTIONS_PHASE_1_FIRST_CORRECTIVE_COMMIT = "7191d0cb53877f6197bc1c753b013d5ad8b38e08";
 const STATUS_FIELDS = Object.freeze([
   "$schema", "schemaVersion", "statusId", "asOf", "source", "currentMilestone",
-  "completed", "inProgress", "blocked", "frozen", "next", "productDirection", "optionsNewsInfrastructure", "runtimeOwnership",
+  "completed", "inProgress", "blocked", "frozen", "next", "productDirection", "optionsNewsInfrastructure", "optionsMarketContext", "ownerOptionsProfile", "runtimeOwnership",
   "capitalArchitecture", "riskPolicyRecord", "optionsRiskPolicy", "moduleDisposition", "legacyProductLanes",
   "worktreeIsolation", "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry", "ownerProductEntry", "validation",
   "networkAuthority", "frozenDailyScanAlpacaHistoricalDelivery",
@@ -39,7 +40,7 @@ export function validateCurrentStatus(status, schema) {
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
   exact(status.$schema, "./current.schema.json", "$schema", issues);
-  exact(status.schemaVersion, "1.13", "schemaVersion", issues);
+  exact(status.schemaVersion, "1.15", "schemaVersion", issues);
   if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
     issues.push("statusId must be a bounded Alpha status identifier.");
   }
@@ -48,17 +49,17 @@ export function validateCurrentStatus(status, schema) {
   validateExactObject(status.source, "source", {
     repository: "HBLION0805/Alpha",
     source_baseline_ref: "origin/main",
-    source_baseline_commit: OPTIONS_PHASE_1_BASELINE_COMMIT,
-    implementation_baseline: "ORIGIN_MAIN_PHASE1_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD",
+    source_baseline_commit: OPTIONS_PHASE_2_BASELINE_COMMIT,
+    implementation_baseline: "PHASE2_PLANNING_MERGE_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
     reviewed_c4_commit: "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
     phase0_owner_approval_commit: "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a",
   }, issues);
   validateExactObject(status.currentMilestone, "currentMilestone", {
-    id: "OPTIONS_ONLY_MVP_PHASE_1_NEWS_INFRASTRUCTURE",
-    name: "Options-Only MVP Phase 1 News Infrastructure",
-    status: "OWNER_APPROVED",
-    authorizedBy: "OWNER_TASK_V1_1_2026_08_08",
-    implementationBaseline: OPTIONS_PHASE_1_BASELINE_COMMIT,
+    id: "GLD_IBIT_OPTIONS_RETAIL_FEASIBILITY",
+    name: "GLD / IBIT Options Retail Feasibility",
+    status: "IMPLEMENTED_DIAGNOSTIC_ONLY",
+    authorizedBy: "OWNER_GLD_IBIT_SCOPE_AND_AUTONOMOUS_DEVELOPMENT_2026_09_06",
+    implementationBaseline: OPTIONS_PHASE_2_BASELINE_COMMIT,
     phase0ApprovedCommit: "febcce0ac6f70bb670fd8e07763c87bc33d4d106",
   }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
@@ -73,19 +74,19 @@ export function validateCurrentStatus(status, schema) {
   requireStatusItem(status.completed, "OPTIONS_RISK_POLICY_RECORDED", "completed", issues);
   requireStatusItem(status.completed, "OPTIONS_ONLY_MVP_PHASE_0_R1_OWNER_APPROVED", "completed", issues);
   for (const item of ["OPTIONS_PHASE_1_P1_A_CONTRACTS_REGISTRY_STATE_TRANSPORT_IMPLEMENTED", "OPTIONS_PHASE_1_P1_B_FOUR_FIXTURE_ADAPTERS_IMPLEMENTED", "OPTIONS_PHASE_1_P1_C_LINKING_DEDUPE_CLUSTERING_VERIFICATION_IMPLEMENTED", "OPTIONS_PHASE_1_P1_D_PERSISTENCE_BUDGET_HEALTH_IMPLEMENTED", "OPTIONS_PHASE_1_END_TO_END_FIXTURE_DEMOS_IMPLEMENTED", "OPTIONS_PHASE_1_NEWS_INFRASTRUCTURE_OWNER_APPROVED"]) requireStatusItem(status.completed, item, "completed", issues);
-  requireStatusItem(status.blocked, "OPTIONS_PHASE_2_NOT_STARTED", "blocked", issues);
+  requireStatusItem(status.completed, "OPTIONS_PHASE_2_P2_A_THROUGH_P2_D_IMPLEMENTED", "completed", issues);
   if (!Array.isArray(status.inProgress) || status.inProgress.length !== 0) {
-    issues.push("inProgress must be empty after Phase 1 Owner approval.");
+    issues.push("inProgress must be empty at the completed offline feasibility checkpoint.");
   }
   requireStatusItem(status.frozen, "ETF_DAILY_SCAN_PRODUCT_ENTRY", "frozen", issues);
   requireStatusItem(status.frozen, "EVENT_CONTRACT_PRODUCT_ENTRY", "frozen", issues);
   requireStatusItem(status.frozen, "ALPACA_D3B_NEXT_ACTION", "frozen", issues);
-  if (!Array.isArray(status.next) || JSON.stringify(status.next) !== JSON.stringify(["OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2"])) {
-    issues.push("next must contain only OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2.");
+  if (!Array.isArray(status.next) || JSON.stringify(status.next) !== JSON.stringify(["IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK"])) {
+    issues.push("next must contain only IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK.");
   }
   validateExactObject(status.productDirection, "productDirection", {
     currentProduct: "OPTIONS_ONLY_MVP",
-    currentPhase: "PHASE_1",
+    currentPhase: "PHASE_2",
     phase0Status: "OWNER_APPROVED",
     phase1Status: "OWNER_APPROVED",
     permanentMission: ["PROTECT_CAPITAL", "ALLOCATE_CAPITAL", "GROW_CAPITAL", "COMPOUND_CAPITAL"],
@@ -104,7 +105,36 @@ export function validateCurrentStatus(status, schema) {
     verificationAuthority: "DETERMINISTIC_THREE_PATH_TRUTH_VERIFICATION_ONLY",
     summaryAuthority: "DETERMINISTIC_FIXTURE_ONLY_NO_LIVE_LLM",
     combinedNewsOptionsMonthlyBudget: { currency: "USD", softThresholdCents: 8000, hardThresholdCents: 10000, boundary: "UTC", spendingAuthority: "NONE" },
-    phase2Status: "NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED",
+    phase2Status: "IMPLEMENTED_AWAITING_OWNER_REVIEW",
+  }, issues);
+  if (!isRecord(status.optionsMarketContext) || !["FOCUSED_PASSED_AGGREGATE_PENDING", "PASSED"].includes(status.optionsMarketContext.validationStatus)) {
+    issues.push("optionsMarketContext.validationStatus must record pending or observed aggregate validation.");
+  }
+  validateExactObject(status.optionsMarketContext, "optionsMarketContext", {
+    ...{
+  "contractVersion": "1.0",
+  "phaseSegments": {
+    "p2A": "IMPLEMENTED",
+    "p2B": "IMPLEMENTED",
+    "p2C": "IMPLEMENTED",
+    "p2D": "IMPLEMENTED"
+  },
+  "authorization": "OWNER_CONTINUE_ALPHA_AND_DELEGATE_OFFLINE_PATH_2026_09_06",
+  "acceptance": "IMPLEMENTED_AWAITING_OWNER_REVIEW",
+  "dataOrigin": "FIXTURE",
+  "intervals": [
+    "P1D",
+    "PT1H",
+    "PT15M",
+    "PT5M"
+  ],
+  "provider": "TEST_ONLY_EXISTING_REGISTRY",
+  "persistenceAuthority": "DETERMINISTIC_IN_MEMORY_TEST_ONLY",
+  "realCostCents": 0,
+  "validationStatus": "FOCUSED_PASSED_AGGREGATE_PENDING",
+  "validationEvidence": "docs/OPTIONS_PHASE_2_DELIVERY_REVIEW.md"
+},
+    validationStatus: status.optionsMarketContext?.validationStatus,
   }, issues);
   validateExactObject(status.runtimeOwnership, "runtimeOwnership", {
     productRuntime: "TYPESCRIPT",
@@ -112,6 +142,31 @@ export function validateCurrentStatus(status, schema) {
     pythonDashboardStatus: "DEPRECATED_AS_PRODUCT_ENTRY_PROTOTYPE_ONLY",
     riskAuthority: "OWNER_APPROVED_OPTIONS_POLICY_RECORDED_RUNTIME_NOT_IMPLEMENTED",
   }, issues);
+  validateExactObject(status.ownerOptionsProfile, "ownerOptionsProfile", {
+  "profileVersion": "owner-gld-ibit-2026-09-06",
+  "broker": "ROBINHOOD",
+  "intendedUnderlyings": [
+    "GLD",
+    "IBIT"
+  ],
+  "initialEquityCents": 100000,
+  "normalAllocationBps": 500,
+  "conditionalAllocationBps": 1000,
+  "plannedStopBps": 200,
+  "plannedStopBasis": "ENTRY_PREMIUM",
+  "normalProfitTargetBps": 5000,
+  "maximumConfiguredProfitTargetBps": 8000,
+  "conditionalWinProbabilityThresholdBps": 8000,
+  "conditionalEscalation": "BLOCKED_NO_CALIBRATED_OPTION_OUTCOMES",
+  "longerHolding": "REQUIRES_THESIS_AND_TIME_REVIEW",
+  "maximumLossMeaning": "FULL_PREMIUM_PLUS_FEES_NOT_PLANNED_STOP",
+  "legacyLossCaps": "RETAINED_SEPARATE_CONSTRAINT",
+  "feasibility": "NO_TRADE_CURRENT_STOP_TICK_AND_LEGACY_CAP_INCOMPATIBLE",
+  "dataAuthority": "MANUAL_SCENARIO_ONLY",
+  "executionAllowed": false,
+  "developmentPublication": "OWNER_AUTHORIZED_COMMIT_AND_PUSH",
+  "specification": "docs/specifications/GLD_IBIT_RETAIL_FEASIBILITY.md"
+}, issues);
   validateCapitalArchitecture(status.capitalArchitecture, issues);
   validateRiskPolicyRecord(status.riskPolicyRecord, issues);
   validateOptionsRiskPolicy(status.optionsRiskPolicy, issues);
@@ -125,7 +180,7 @@ export function validateCurrentStatus(status, schema) {
   }, issues);
   validateExactObject(status.executionBoundaries, "executionBoundaries", {
     network: "CLOSED",
-    options: "PHASE_1_NEWS_FIXTURE_ONLY_NO_TRADING_RUNTIME",
+    options: "FIXTURE_CONTEXT_AND_MANUAL_FEASIBILITY_NO_TRADING_RUNTIME",
     broker: "CLOSED",
     paperTrading: "CLOSED",
     orderExecution: "CLOSED",
@@ -136,7 +191,7 @@ export function validateCurrentStatus(status, schema) {
   }, issues);
   exact(status.automatedExecutionAllowed, false, "automatedExecutionAllowed", issues);
   exact(status.ownerDailyProductEntry, "FROZEN_CODE_RETAINED", "ownerDailyProductEntry", issues);
-  exact(status.ownerProductEntry, "NONE_PHASE_1", "ownerProductEntry", issues);
+  exact(status.ownerProductEntry, "OFFLINE_OPTIONS_FEASIBILITY_DIAGNOSTIC", "ownerProductEntry", issues);
   validateValidation(status.validation, issues);
   exact(status.networkAuthority, "NOT_GRANTED", "networkAuthority", issues);
   validateExactObject(status.frozenDailyScanAlpacaHistoricalDelivery, "frozenDailyScanAlpacaHistoricalDelivery", {
@@ -215,7 +270,7 @@ export function validateCurrentStatus(status, schema) {
     implementationStatus: "NOT_STARTED",
     liveRunStatus: "NOT_AUTHORIZED",
   }, issues);
-  exact(status.optionsStatus, "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_NOT_STARTED", "optionsStatus", issues);
+  exact(status.optionsStatus, "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_AWAITING_REVIEW", "optionsStatus", issues);
   exact(status.brokerStatus, "CLOSED", "brokerStatus", issues);
   exact(status.paperTradingStatus, "CLOSED", "paperTradingStatus", issues);
   exact(status.orderExecutionStatus, "CLOSED", "orderExecutionStatus", issues);
@@ -239,7 +294,7 @@ function validateSchema(schema, issues) {
     return;
   }
   exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
-  exact(schema.$id, "https://alpha.local/schemas/project-status/1.13", "schema.$id", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.15", "schema.$id", issues);
   exact(schema.type, "object", "schema.type", issues);
   exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
   if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {
@@ -441,8 +496,8 @@ function validateOptionsRiskPolicy(value, issues) {
     macroDteRange: { minimum: 45, maximum: 120 },
     orderType: "LIMIT_ONLY",
     failClosedOutcomes: ["NO_TRADE / MAX_LOSS_NOT_PROVEN", "NO_TRADE / RISK_BUDGET_INSUFFICIENT"],
-    initialApprovedUnderlyings: ["QQQ", "SMH", "SOXX", "GLD", "TLT", "NVDA", "MSFT", "AAPL", "AMZN", "TSLA"],
-    maximumUniverseSize: 15,
+    initialApprovedUnderlyings: ["GLD", "IBIT"],
+    maximumUniverseSize: 2,
     underlyingAdmissionEvidence: ["OPTION_LIQUIDITY", "NEWS_COVERAGE", "CANDLE_DATA", "RISK_CLASSIFICATION"],
     themeCorrelationConcentration: "DISPLAY_AND_GATE",
     nonIndependentDiversificationExample: "QQQ_SMH_SOXX_NVDA_SAME_DIRECTION",

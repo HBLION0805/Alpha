@@ -1,5 +1,30 @@
 # Alpha Changelog
 
+## 2026-09-06 - GLD / IBIT scope, feasibility and integrity correction
+
+- Recorded the Owner's Robinhood GLD/IBIT-only profile, confirmed premium-based
+  2% stop and authorization for development, commits and pushes.
+- Added an offline deterministic feasibility engine and CLI separating
+  allocation, planned stop, full premium risk, friction and target thresholds.
+- Kept probability-based escalation closed and surfaced the incompatibility
+  between the requested stop, contract tick and retained USD 25 loss cap.
+- Recomputed all market-context features and required exact authorized input
+  and output instances to prevent self-rehashed forged evidence persistence.
+- Added focused diagnostic, command and integrity regressions and updated
+  current status to schema 1.15 without enabling account or trading authority.
+
+## 2026-09-06 - Options Phase 2 fixture market context
+
+- Added immutable context, candle policy, fixture-binding and repository
+  contracts, strict fixture normalization, source authorization, session-series
+  qualification, BigInt ATR/RV and same-slot volume calculations.
+- Added exact existing Regime bindings, disagreement-preserving composition,
+  idempotent in-memory queries and read-only evidence projection.
+- Added synthetic QQQ fixtures and deterministic numerical, provenance,
+  rejection, replay and lifecycle tests. Aggregate validation includes the new suites.
+- Status is `IMPLEMENTED_AWAITING_OWNER_REVIEW`; Phase 1 approval is preserved.
+  No network, credentials, paid use, accounts, orders or execution was enabled.
+
 ## 2026-08-08 - Options-Only MVP Phase 1 News Infrastructure
 
 - Recorded formal Owner approval after the Phase 1 evidence-completion review;

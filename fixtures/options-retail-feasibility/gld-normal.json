@@ -1,0 +1,16 @@
+{
+  "symbol": "GLD",
+  "strategy": "LONG_CALL",
+  "currentEquityCents": 100000,
+  "settledCashCents": 100000,
+  "quantity": 1,
+  "contractMultiplier": 100,
+  "bidPerShareCents": 47,
+  "askPerShareCents": 50,
+  "minimumPriceTickCents": 1,
+  "roundTripFeesCents": 0,
+  "slippageReserveCents": 0,
+  "mode": "NORMAL",
+  "profitTargetBps": 5000,
+  "claimedWinProbabilityBps": null
+}

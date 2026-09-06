@@ -476,6 +476,21 @@ function validateSession(
   return invalid ? undefined : latest;
 }
 
+/** Reuse calendar validation without fabricating quote or request evidence. */
+export function validateVerifiedMarketCalendarEvidence(
+  value: unknown,
+  asOf: string,
+): VerifiedMarketSnapshotValidationResult {
+  const issues: VerifiedMarketSnapshotIssue[] = [];
+  if (!timestamp(asOf)) {
+    issues.push(issue(VerifiedMarketSnapshotIssueCode.InvalidSessionEvidence,
+      "asOf", "A canonical as-of timestamp is required."));
+  } else {
+    validateSessionCalendarEvidence(value, asOf, issues);
+  }
+  return Object.freeze({ valid: issues.length === 0, issues: Object.freeze(issues) });
+}
+
 function validateSessionCalendarEvidence(
   value: unknown,
   asOf: string,

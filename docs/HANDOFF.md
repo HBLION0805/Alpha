@@ -1,14 +1,35 @@
 # Alpha Handoff
 
 Date:
-2026-08-08
+2026-09-06
 
 Project Stage:
-Options-Only MVP Phase 1 News Infrastructure `OWNER_APPROVED`; Phase 2 `NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED`
+GLD / IBIT Options Retail Feasibility `IMPLEMENTED_DIAGNOSTIC_ONLY`
 
 ## Current Architecture Checkpoint
 
-The authoritative machine-readable current-state record is
+The 2026-09-06 Owner continuation request and delegated delivery choice selected
+the offline path. P2-A through P2-D now implement QQQ four-timeframe market
+context under the previously merged plan. Review
+[the delivery record](OPTIONS_PHASE_2_DELIVERY_REVIEW.md) and
+[the specification](specifications/OPTIONS_MARKET_CONTEXT_AND_CANDLE_ANALYSIS.md).
+`docs/status/current.json` remains current-state authority. The Owner subsequently
+authorized autonomous development, commit and push, restricted the target
+universe to GLD/IBIT on Robinhood, and confirmed a stop of 2% of premium.
+The current delivery adds a runnable manual-scenario feasibility diagnostic
+and corrects source, feature and repository integrity defects. It does not
+claim a complete Options risk runtime or a trading product.
+The next checkpoint is `IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK`.
+See [current assessment and delivery record](GLD_IBIT_SYSTEM_ASSESSMENT.md) for
+the exact profile, rule conflict, commands, validation evidence and Git record.
+The QQQ Phase 2 fixture remains benchmark-only; its review marker is not a
+block on the Owner-authorized development continuation. Live market-data
+integration, contract selection, Dashboard and calibrated outcomes are still
+absent. Account, credentials and execution remain closed.
+
+### Historical Phase 1 checkpoint
+
+At Phase 1 closure, the authoritative machine-readable current-state record was
 [`docs/status/current.json`](status/current.json), while Git remains the code
 fact source. Alpha's current direction is the Options-Only MVP. Phase 0 changes
 governance, machine status, risk-policy authority, legacy-module disposition,
@@ -18,7 +39,8 @@ strict news evidence/event contracts, source registry, four offline adapters,
 deterministic entity/fingerprint/dedupe/clustering/verification, in-memory
 persistence and query, read-only Evidence/Journal projection, simulated budget,
 health, and four end-to-end acceptance scenarios. The next action is
-`OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2`; Phase 2 is not authorized.
+`OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2`; that historical next
+action is superseded by the Phase 2 implementation review above.
 See [Options News Infrastructure](specifications/OPTIONS_NEWS_INFRASTRUCTURE.md).
 
 The final PR merge-gate correction makes the immutable Source Registry a

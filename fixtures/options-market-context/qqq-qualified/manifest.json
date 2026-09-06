@@ -1,0 +1,237 @@
+{
+  "binding": {
+    "schemaVersion": "1.0",
+    "manifestId": "manifest:options-qqq",
+    "version": "1.0",
+    "dataOrigin": "FIXTURE",
+    "registryPolicy": {
+      "schemaVersion": "1.0",
+      "policyId": "registry:options-fixture",
+      "version": "1.0",
+      "displayNamePolicy": "REJECT_DUPLICATES"
+    },
+    "registryFingerprint": "fnv1a64:9a11e213e32e0fdb",
+    "descriptor": {
+      "schemaVersion": "1.0",
+      "providerId": "provider:options-fixture",
+      "adapterId": "adapter:options-fixture",
+      "adapterVersion": "1.0",
+      "capability": "BARS",
+      "supportedAssetClasses": [
+        "ETF"
+      ],
+      "supportedBarIntervals": [
+        "P1D",
+        "PT1H",
+        "PT15M",
+        "PT5M"
+      ]
+    },
+    "descriptorFingerprint": "fnv1a64:4a9993f1cdf9af4e",
+    "instrument": {
+      "schemaVersion": "1.0",
+      "instrumentId": "instrument:00000000000000000000000002",
+      "metadataVersion": "1.0",
+      "displaySymbol": "QQQ",
+      "displayName": "QQQ synthetic fixture",
+      "assetClass": "ETF",
+      "instrumentType": "EXCHANGE_TRADED_FUND",
+      "status": "ACTIVE",
+      "currency": "USD",
+      "exchange": "XNAS",
+      "timezone": "America/New_York",
+      "effectiveFrom": "2026-01-01T00:00:00.000Z"
+    },
+    "providerSymbol": "QQQ.FIXTURE",
+    "mappingPolicyId": "mapping:options-fixture",
+    "mappingVersion": "1.0",
+    "mappingFingerprint": "fnv1a64:be8f920500c047b6",
+    "intervals": [
+      "P1D",
+      "PT1H",
+      "PT15M",
+      "PT5M"
+    ],
+    "calendarId": "calendar:options-fixture",
+    "calendarVersion": "1.0",
+    "calendarFingerprint": "fnv1a64:a949ce071938f44f",
+    "calendar": [
+      {
+        "calendarEvidenceId": "calendar-evidence:2026-11-23",
+        "calendarId": "calendar:options-fixture",
+        "sessionId": "session:2026-11-23:regular",
+        "sessionDate": "2026-11-23",
+        "sessionType": "REGULAR",
+        "timezone": "America/New_York",
+        "marketOpen": "2026-11-23T14:30:00.000Z",
+        "marketClose": "2026-11-23T21:00:00.000Z",
+        "closureBufferSeconds": 60,
+        "status": "COMPLETED_TRADING_SESSION",
+        "provenanceReference": "fixture:calendar:2026-11-23",
+        "dataOrigin": "FIXTURE",
+        "calendarEvidenceFingerprint": "fnv1a64:ede9c2f1861f7bc0"
+      },
+      {
+        "calendarEvidenceId": "calendar-evidence:2026-11-24",
+        "calendarId": "calendar:options-fixture",
+        "sessionId": "session:2026-11-24:regular",
+        "sessionDate": "2026-11-24",
+        "sessionType": "REGULAR",
+        "timezone": "America/New_York",
+        "marketOpen": "2026-11-24T14:30:00.000Z",
+        "marketClose": "2026-11-24T21:00:00.000Z",
+        "closureBufferSeconds": 60,
+        "status": "COMPLETED_TRADING_SESSION",
+        "provenanceReference": "fixture:calendar:2026-11-24",
+        "dataOrigin": "FIXTURE",
+        "calendarEvidenceFingerprint": "fnv1a64:d3868e65d260fa26"
+      },
+      {
+        "calendarEvidenceId": "calendar-evidence:2026-11-25",
+        "calendarId": "calendar:options-fixture",
+        "sessionId": "session:2026-11-25:regular",
+        "sessionDate": "2026-11-25",
+        "sessionType": "REGULAR",
+        "timezone": "America/New_York",
+        "marketOpen": "2026-11-25T14:30:00.000Z",
+        "marketClose": "2026-11-25T21:00:00.000Z",
+        "closureBufferSeconds": 60,
+        "status": "COMPLETED_TRADING_SESSION",
+        "provenanceReference": "fixture:calendar:2026-11-25",
+        "dataOrigin": "FIXTURE",
+        "calendarEvidenceFingerprint": "fnv1a64:cc125f847f6e879c"
+      },
+      {
+        "calendarEvidenceId": "calendar-evidence:2026-11-26",
+        "calendarId": "calendar:options-fixture",
+        "sessionId": "session:2026-11-26:regular",
+        "sessionDate": "2026-11-26",
+        "sessionType": "REGULAR",
+        "timezone": "America/New_York",
+        "marketOpen": "2026-11-26T14:30:00.000Z",
+        "marketClose": "2026-11-26T21:00:00.000Z",
+        "closureBufferSeconds": 60,
+        "status": "MARKET_HOLIDAY",
+        "provenanceReference": "fixture:calendar:2026-11-26",
+        "dataOrigin": "FIXTURE",
+        "calendarEvidenceFingerprint": "fnv1a64:0258ec42aead43fb"
+      },
+      {
+        "calendarEvidenceId": "calendar-evidence:2026-11-27",
+        "calendarId": "calendar:options-fixture",
+        "sessionId": "session:2026-11-27:regular",
+        "sessionDate": "2026-11-27",
+        "sessionType": "REGULAR",
+        "timezone": "America/New_York",
+        "marketOpen": "2026-11-27T14:30:00.000Z",
+        "marketClose": "2026-11-27T18:00:00.000Z",
+        "closureBufferSeconds": 60,
+        "status": "COMPLETED_TRADING_SESSION",
+        "provenanceReference": "fixture:calendar:2026-11-27",
+        "dataOrigin": "FIXTURE",
+        "calendarEvidenceFingerprint": "fnv1a64:ed913505e418ebe0"
+      },
+      {
+        "calendarEvidenceId": "calendar-evidence:2026-11-30",
+        "calendarId": "calendar:options-fixture",
+        "sessionId": "session:2026-11-30:regular",
+        "sessionDate": "2026-11-30",
+        "sessionType": "REGULAR",
+        "timezone": "America/New_York",
+        "marketOpen": "2026-11-30T14:30:00.000Z",
+        "marketClose": "2026-11-30T21:00:00.000Z",
+        "closureBufferSeconds": 60,
+        "status": "COMPLETED_TRADING_SESSION",
+        "provenanceReference": "fixture:calendar:2026-11-30",
+        "dataOrigin": "FIXTURE",
+        "calendarEvidenceFingerprint": "fnv1a64:a56a7205b941bc38"
+      }
+    ],
+    "corporateAction": {
+      "policyId": "actions:fixture",
+      "version": "1.0",
+      "instrumentId": "instrument:00000000000000000000000002",
+      "metadataVersion": "1.0",
+      "windowStart": "2026-11-23T14:30:00.000Z",
+      "windowEnd": "2026-11-30T21:00:00.000Z",
+      "sourceReference": "fixture:actions:none",
+      "adjustment": "RAW",
+      "resolution": "NO_UNRESOLVED_ACTIONS",
+      "knownEvents": [],
+      "fingerprint": "fnv1a64:146dae0cb4fbdf44"
+    },
+    "contentDigests": {
+      "P1D": "sha256:4666862dcadf861c2ea087fa0e7625801b3d63046b38ae7cf2cec1dacc3713b8",
+      "PT1H": "sha256:c394fbb0e3020d5e7439fa3d97f218d70d46834c0b212beeeb71606fc3c1da27",
+      "PT15M": "sha256:fa49a88fb64dece892adfec1ac4747410dc0b058a8133c936bec8fc4cc21a758",
+      "PT5M": "sha256:003a68ab53abcd6927dde8841d8eb7fa46cd3e26a0df06fc76aac13d2b9977e3"
+    },
+    "provenanceReference": "fixture:options-qqq",
+    "effectiveFrom": "2026-11-23T14:30:00.000Z",
+    "effectiveTo": "2026-12-07T21:02:00.000Z",
+    "fingerprint": "fnv1a64:238467616fe7902f"
+  },
+  "providers": [
+    {
+      "schemaVersion": "1.0",
+      "metadataVersion": "1.0",
+      "identity": {
+        "providerId": "provider:options-fixture",
+        "displayName": "Options fixture only"
+      },
+      "status": "ACTIVE",
+      "supportedAssetClasses": [
+        "ETF"
+      ],
+      "capabilities": [
+        "BARS"
+      ],
+      "priority": 1,
+      "defaultEnabled": true,
+      "documentationReference": "docs/specifications/OPTIONS_MARKET_CONTEXT_AND_CANDLE_ANALYSIS.md"
+    }
+  ],
+  "policy": {
+    "schemaVersion": "1.0",
+    "policyId": "options-candle:fixture",
+    "version": "1.0",
+    "sessionType": "REGULAR",
+    "gridVersion": "REGULAR_OPEN_FULL_WINDOWS_V1",
+    "pairVersion": "SESSION_LOCAL_INTRADAY_V1",
+    "annualizationVersion": "REGULAR_SESSION_FIXED_PERIODS_V1",
+    "periodsPerYear": {
+      "P1D": 252,
+      "PT1H": 1512,
+      "PT15M": 6552,
+      "PT5M": 19656
+    },
+    "atrWindowN": 3,
+    "rvReturnWindowN": 3,
+    "volumeSessionWindowN": 2,
+    "lowRelativeVolumeBps": 8000,
+    "highRelativeVolumeBps": 12000,
+    "maxAgeSeconds": {
+      "P1D": 3600,
+      "PT1H": 3600,
+      "PT15M": 3600,
+      "PT5M": 3600
+    },
+    "maxBarsPerSeries": 10000,
+    "regimePolicy": {
+      "policyId": "options-regime:fixture",
+      "version": "1.0",
+      "ruleSetVersion": "1.0",
+      "shortTrendWindow": 3,
+      "mediumTrendWindow": 5,
+      "correctionDrawdownThresholdBasisPoints": 500,
+      "reliefRallyReboundThresholdBasisPoints": 300,
+      "highVolatilityThresholdBasisPoints": 400,
+      "rangeBoundThresholdBasisPoints": 150,
+      "freshnessThresholdSeconds": 3600,
+      "minimumRequiredObservations": 5,
+      "strongEvidenceMinimumObservations": 10,
+      "volatilityMetric": "MAXIMUM_ABSOLUTE_RETURN_BASIS_POINTS"
+    }
+  },
+  "asOf": "2026-11-30T21:02:00.000Z"
+}

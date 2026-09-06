@@ -1,0 +1,13 @@
+{
+  "policyId": "actions:fixture",
+  "version": "1.0",
+  "instrumentId": "instrument:00000000000000000000000002",
+  "metadataVersion": "1.0",
+  "windowStart": "2026-11-23T14:30:00.000Z",
+  "windowEnd": "2026-11-30T21:00:00.000Z",
+  "sourceReference": "fixture:actions:none",
+  "adjustment": "RAW",
+  "resolution": "NO_UNRESOLVED_ACTIONS",
+  "knownEvents": [],
+  "fingerprint": "fnv1a64:146dae0cb4fbdf44"
+}

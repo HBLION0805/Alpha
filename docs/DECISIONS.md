@@ -1,5 +1,43 @@
 # Alpha Architecture Decisions
 
+## 2026-09-06 - Honor GLD / IBIT scope without inventing a profitable policy
+
+- The Owner explicitly authorized implementation, saving, commits and pushes.
+  Earlier publication approval requirements are superseded for this work.
+- Restrict intended trading assets to GLD and IBIT. Preserve QQQ fixtures as
+  benchmark tests; they cannot prove ETF-specific or option-chain readiness.
+- Preserve the clarified stop basis exactly: 2% of entry premium. Treat 5%
+  allocation as a maximum, never an obligation to spend or remain invested.
+- Retain recorded monetary stress caps as a separate constraint until a
+  replacement is chosen. The present combination cannot accommodate even
+  one whole-cent standard-contract tick; report the conflict openly.
+- A claimed 80% probability cannot enable 10% allocation or longer holding.
+  Later probability qualification must use locked, cost-aware GLD/IBIT option
+  outcomes and target-before-stop/time-exit definitions, with uncertainty.
+- Add only the deterministic offline feasibility boundary now; it cannot
+  authorize a trade. Review specification and test the impossible combination
+  instead of weakening it to obtain a passing example.
+- Correct evidence-integrity defects independently of trading-policy choices.
+  See [assessment](GLD_IBIT_SYSTEM_ASSESSMENT.md) and
+  [specification](specifications/GLD_IBIT_RETAIL_FEASIBILITY.md).
+
+## 2026-09-06 - Implement the offline Options market-context foundation
+
+- The Owner asked to continue Alpha and delegated the delivery choice. Select
+  the offline MVP path and implement the previously merged P2-A through P2-D
+  plan; completed implementation remains subject to Owner review.
+- Reuse existing Canonical Bar, Registry/Composition, calendar-evidence and
+  Market Regime authority. Expose a wrapper around the existing calendar
+  validator instead of inventing another calendar or fabricating a snapshot.
+- Recompute Wilder state from complete qualified history; do not accept
+  external ATR state. Preserve session-local intraday returns, the reviewed
+  hourly residual exclusion, fixed annualization and same-slot volume baselines.
+- Stage all four timeframe results before one idempotent in-memory write.
+  Rejections carry health and provenance without becoming valid context records.
+- Keep fixture parameters and source registrations test-only. No live data,
+  credentials, subscription, option-chain, risk-rule, broker or execution change.
+- See [Phase 2 specification](specifications/OPTIONS_MARKET_CONTEXT_AND_CANDLE_ANALYSIS.md).
+
 ## 2026-08-08 - Implement Options Phase 1 news infrastructure fixture-only
 
 - Decision: implement the Owner-authorized v1.1 P1-A through P1-D scope as a

@@ -8,13 +8,19 @@
 
 The authoritative current state is
 [Current Project Status](status/current.json). The current milestone is
-Options-Only MVP Phase 1 News Infrastructure, P1-A through P1-D,
-`OWNER_APPROVED`. Phase 0-R1 remains Owner-approved. Phase 1
-is fixture-only: contracts/registry/transports, four adapters, deterministic
-linking and verification, persistence/query, simulated budget and health are
-implemented and formally Owner-approved. Phase 2 is
-`NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED` and requires explicit Owner
-authorization. No network,
+GLD / IBIT Options Retail Feasibility, `IMPLEMENTED_DIAGNOSTIC_ONLY`.
+Phase 0-R1 and Phase 1 news remain
+Owner-approved. Phase 2 adds four-timeframe QQQ fixtures, source/session
+qualification, ATR, realized volatility, same-slot volume and existing Regime
+references. The new manual-scenario diagnostic records the Owner's GLD/IBIT
+profile and explains why the stop/tick/retained loss-cap combination cannot
+currently pass. Next implement verified GLD/IBIT option data and complete
+portfolio risk checks; then persistent offline paper records and cost-aware
+path validation, followed by calibrated outcomes and a usable Options UI.
+These are ordered completion gates, not implemented capabilities. See
+[current assessment](GLD_IBIT_SYSTEM_ASSESSMENT.md) and the historical
+[Phase 2 delivery review](OPTIONS_PHASE_2_DELIVERY_REVIEW.md).
+No network,
 credential, account, market-data persistence, Paper Trading, order, or
 execution authority is granted. The ETF Daily Scan and Event Contract product
 entries are frozen; their code is retained. See

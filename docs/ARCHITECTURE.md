@@ -35,6 +35,23 @@ Short-term trading exists only to support long-term investing.
 
 # Current Options-Only MVP Boundary
 
+The intended trading universe is GLD and IBIT options on Robinhood. The
+`OptionsRetailFeasibilityEngine` is a pure manual-scenario diagnostic: exact
+cent arithmetic, premium-based stops, fee/spread/tick checks, retained loss
+caps and blocked uncalibrated position escalation. Its CLI has no network or
+broker mode and every result has `executionAllowed: false`. It is not the
+portfolio risk authority. The current requested thresholds are incompatible;
+no passing trade is manufactured. See the
+[reviewed specification](specifications/GLD_IBIT_RETAIL_FEASIBILITY.md).
+
+QQQ market-context fixtures remain separate benchmark evidence. Their fixed
+BroadMarket regime scope cannot be relabeled as GLD/IBIT. Numeric features are
+recomputed during composition, normalized Bars must match the raw authorized
+manifest, and in-memory persistence accepts only exact verified instances.
+These issuance capabilities are process-local and do not authorize reloaded
+JSON or production persistence. See the
+[integrity addendum](specifications/OPTIONS_MARKET_CONTEXT_INTEGRITY_ADDENDUM.md).
+
 The current early product direction is Options-Only. Phase 0-R1 records product
 governance and the versioned Options risk policy. Owner-authorized Phase 1
 P1-A through P1-D now implements fixture-only news evidence infrastructure:
@@ -42,7 +59,16 @@ separate observation/event contracts, immutable source authority, four offline
 adapters, deterministic verification, in-memory persistence/query, simulated
 budget enforcement, and machine-readable health. It implements no candle,
 option-chain, Greeks, strategy-selection, Decision Card, broker, or execution
-behavior. Phase 2 is `NOT_STARTED` and requires separate Owner approval. The
+behavior. Phase 2 now adds fixture-only Options Market Context and Candle Analysis,
+`IMPLEMENTED_AWAITING_OWNER_REVIEW`. It reuses Canonical Bar validation,
+Registry/Composition authorization, the existing calendar-evidence validator,
+and unchanged Market Regime assessments. It adds cross-series qualification,
+fixed-decimal ATR/RV and same-slot volume facts, four independent timeframe
+bindings, in-memory persistence/query and read-only evidence projection.
+All four series qualify before calculations and one complete context is staged
+before persistence. See the
+[Phase 2 specification](specifications/OPTIONS_MARKET_CONTEXT_AND_CANDLE_ANALYSIS.md).
+The
 Personal ETF Daily Scan and Event Contract product entries are
 frozen, while their code remains available as legacy research, market-data,
 evidence, risk, journal, and learning infrastructure.

@@ -91,3 +91,8 @@ export * from "./OptionsNewsSourceRegistry";
 export * from "./OptionsNewsProvider";
 export * from "./OptionsNewsRepository";
 export * from "./OptionsNewsOperations";
+export * from "./OptionsBarFixtureBinding";
+export * from "./OptionsCandlePolicy";
+export * from "./OptionsCandleRepository";
+export * from "./OptionsMarketContext";
+export * from "./OptionsRetailFeasibility";

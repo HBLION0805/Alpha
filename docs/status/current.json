@@ -1,22 +1,22 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.13",
-  "statusId": "alpha-status:options-only-mvp-phase1-news-owner-approved",
-  "asOf": "2026-08-09T03:51:01.058Z",
+  "schemaVersion": "1.15",
+  "statusId": "alpha-status:gld-ibit-options-retail-feasibility",
+  "asOf": "2026-09-06T19:32:41.524Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/main",
-    "source_baseline_commit": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9",
-    "implementation_baseline": "ORIGIN_MAIN_PHASE1_SOURCE_BASELINE_NOT_STATUS_COMMIT_HEAD",
+    "source_baseline_commit": "ff1a345f4958c9acc75203533263b8166c07dff0",
+    "implementation_baseline": "PHASE2_PLANNING_MERGE_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
     "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
   },
   "currentMilestone": {
-    "id": "OPTIONS_ONLY_MVP_PHASE_1_NEWS_INFRASTRUCTURE",
-    "name": "Options-Only MVP Phase 1 News Infrastructure",
-    "status": "OWNER_APPROVED",
-    "authorizedBy": "OWNER_TASK_V1_1_2026_08_08",
-    "implementationBaseline": "609e5a750f26e47d79ad9f4c48a8526fad9cf5f9",
+    "id": "GLD_IBIT_OPTIONS_RETAIL_FEASIBILITY",
+    "name": "GLD / IBIT Options Retail Feasibility",
+    "status": "IMPLEMENTED_DIAGNOSTIC_ONLY",
+    "authorizedBy": "OWNER_GLD_IBIT_SCOPE_AND_AUTONOMOUS_DEVELOPMENT_2026_09_06",
+    "implementationBaseline": "ff1a345f4958c9acc75203533263b8166c07dff0",
     "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
@@ -40,7 +40,11 @@
     "OPTIONS_PHASE_1_P1_C_LINKING_DEDUPE_CLUSTERING_VERIFICATION_IMPLEMENTED",
     "OPTIONS_PHASE_1_P1_D_PERSISTENCE_BUDGET_HEALTH_IMPLEMENTED",
     "OPTIONS_PHASE_1_END_TO_END_FIXTURE_DEMOS_IMPLEMENTED",
-    "OPTIONS_PHASE_1_NEWS_INFRASTRUCTURE_OWNER_APPROVED"
+    "OPTIONS_PHASE_1_NEWS_INFRASTRUCTURE_OWNER_APPROVED",
+    "OPTIONS_PHASE_2_P2_A_THROUGH_P2_D_IMPLEMENTED",
+    "GLD_IBIT_OWNER_PROFILE_RECORDED",
+    "GLD_IBIT_OFFLINE_FEASIBILITY_IMPLEMENTED",
+    "OPTIONS_PHASE_2_INTEGRITY_AUDIT_CORRECTED"
   ],
   "inProgress": [],
   "blocked": [
@@ -48,7 +52,6 @@
     "NETWORK_LIVE_READONLY_OWNER_AUTHORIZATION_REQUIRED",
     "VIX_LIVE_SOURCE_NOT_APPROVED",
     "EVENT_CALENDAR_SOURCE_NOT_APPROVED",
-    "OPTIONS_PHASE_2_NOT_STARTED",
     "LIVE_NEWS_NETWORK_NOT_AUTHORIZED",
     "OPTIONS_MARKET_DATA_NOT_IMPLEMENTED",
     "OPTIONS_RISK_RUNTIME_NOT_IMPLEMENTED",
@@ -67,11 +70,11 @@
     "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
   ],
   "next": [
-    "OWNER_AUTHORIZATION_REQUIRED_TO_START_OPTIONS_PHASE_2"
+    "IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK"
   ],
   "productDirection": {
     "currentProduct": "OPTIONS_ONLY_MVP",
-    "currentPhase": "PHASE_1",
+    "currentPhase": "PHASE_2",
     "phase0Status": "OWNER_APPROVED",
     "phase1Status": "OWNER_APPROVED",
     "permanentMission": [
@@ -111,7 +114,30 @@
       "boundary": "UTC",
       "spendingAuthority": "NONE"
     },
-    "phase2Status": "NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED"
+    "phase2Status": "IMPLEMENTED_AWAITING_OWNER_REVIEW"
+  },
+  "optionsMarketContext": {
+    "contractVersion": "1.0",
+    "phaseSegments": {
+      "p2A": "IMPLEMENTED",
+      "p2B": "IMPLEMENTED",
+      "p2C": "IMPLEMENTED",
+      "p2D": "IMPLEMENTED"
+    },
+    "authorization": "OWNER_CONTINUE_ALPHA_AND_DELEGATE_OFFLINE_PATH_2026_09_06",
+    "acceptance": "IMPLEMENTED_AWAITING_OWNER_REVIEW",
+    "dataOrigin": "FIXTURE",
+    "intervals": [
+      "P1D",
+      "PT1H",
+      "PT15M",
+      "PT5M"
+    ],
+    "provider": "TEST_ONLY_EXISTING_REGISTRY",
+    "persistenceAuthority": "DETERMINISTIC_IN_MEMORY_TEST_ONLY",
+    "realCostCents": 0,
+    "validationStatus": "PASSED",
+    "validationEvidence": "docs/OPTIONS_PHASE_2_DELIVERY_REVIEW.md"
   },
   "runtimeOwnership": {
     "productRuntime": "TYPESCRIPT",
@@ -213,18 +239,28 @@
       "MARTINGALE",
       "REVENGE_TRADING"
     ],
-    "prohibitedDte": [0, 1],
-    "tacticalDteRange": { "minimum": 14, "maximum": 45 },
-    "macroDteRange": { "minimum": 45, "maximum": 120 },
+    "prohibitedDte": [
+      0,
+      1
+    ],
+    "tacticalDteRange": {
+      "minimum": 14,
+      "maximum": 45
+    },
+    "macroDteRange": {
+      "minimum": 45,
+      "maximum": 120
+    },
     "orderType": "LIMIT_ONLY",
     "failClosedOutcomes": [
       "NO_TRADE / MAX_LOSS_NOT_PROVEN",
       "NO_TRADE / RISK_BUDGET_INSUFFICIENT"
     ],
     "initialApprovedUnderlyings": [
-      "QQQ", "SMH", "SOXX", "GLD", "TLT", "NVDA", "MSFT", "AAPL", "AMZN", "TSLA"
+      "GLD",
+      "IBIT"
     ],
-    "maximumUniverseSize": 15,
+    "maximumUniverseSize": 2,
     "underlyingAdmissionEvidence": [
       "OPTION_LIQUIDITY",
       "NEWS_COVERAGE",
@@ -272,7 +308,7 @@
   },
   "executionBoundaries": {
     "network": "CLOSED",
-    "options": "PHASE_1_NEWS_FIXTURE_ONLY_NO_TRADING_RUNTIME",
+    "options": "FIXTURE_CONTEXT_AND_MANUAL_FEASIBILITY_NO_TRADING_RUNTIME",
     "broker": "CLOSED",
     "paperTrading": "CLOSED",
     "orderExecution": "CLOSED",
@@ -283,7 +319,7 @@
   },
   "automatedExecutionAllowed": false,
   "ownerDailyProductEntry": "FROZEN_CODE_RETAINED",
-  "ownerProductEntry": "NONE_PHASE_1",
+  "ownerProductEntry": "OFFLINE_OPTIONS_FEASIBILITY_DIAGNOSTIC",
   "validation": {
     "classification": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_AND_PHASE1_NEWS_OBSERVED_ATTEMPTS",
     "phase1aMergedHead": {
@@ -474,8 +510,33 @@
       "liveRunStatus": "NOT_AUTHORIZED"
     }
   },
-  "optionsStatus": "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_NOT_STARTED",
+  "optionsStatus": "PHASE_0_OWNER_APPROVED_PHASE_1_OWNER_APPROVED_PHASE_2_AWAITING_REVIEW",
   "brokerStatus": "CLOSED",
   "paperTradingStatus": "CLOSED",
-  "orderExecutionStatus": "CLOSED"
+  "orderExecutionStatus": "CLOSED",
+  "ownerOptionsProfile": {
+    "profileVersion": "owner-gld-ibit-2026-09-06",
+    "broker": "ROBINHOOD",
+    "intendedUnderlyings": [
+      "GLD",
+      "IBIT"
+    ],
+    "initialEquityCents": 100000,
+    "normalAllocationBps": 500,
+    "conditionalAllocationBps": 1000,
+    "plannedStopBps": 200,
+    "plannedStopBasis": "ENTRY_PREMIUM",
+    "normalProfitTargetBps": 5000,
+    "maximumConfiguredProfitTargetBps": 8000,
+    "conditionalWinProbabilityThresholdBps": 8000,
+    "conditionalEscalation": "BLOCKED_NO_CALIBRATED_OPTION_OUTCOMES",
+    "longerHolding": "REQUIRES_THESIS_AND_TIME_REVIEW",
+    "maximumLossMeaning": "FULL_PREMIUM_PLUS_FEES_NOT_PLANNED_STOP",
+    "legacyLossCaps": "RETAINED_SEPARATE_CONSTRAINT",
+    "feasibility": "NO_TRADE_CURRENT_STOP_TICK_AND_LEGACY_CAP_INCOMPATIBLE",
+    "dataAuthority": "MANUAL_SCENARIO_ONLY",
+    "executionAllowed": false,
+    "developmentPublication": "OWNER_AUTHORIZED_COMMIT_AND_PUSH",
+    "specification": "docs/specifications/GLD_IBIT_RETAIL_FEASIBILITY.md"
+  }
 }

@@ -1,5 +1,11 @@
 # Options-Only MVP Phase 2 File-Level Plan (Planning Only)
 
+Historical planning record: the 2026-09-06 Owner continuation request selected
+the offline implementation path. Current implementation and validation are
+recorded in [the delivery review](OPTIONS_PHASE_2_DELIVERY_REVIEW.md) and
+[current status](status/current.json). The planning-only authority statements
+below describe this document's original scope, not the current milestone.
+
 ## Authority, status, and objective
 
 Phase 2 is `NOT_STARTED_OWNER_AUTHORIZATION_REQUIRED`. This document is a

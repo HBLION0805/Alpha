@@ -16,6 +16,9 @@
     "test:options-news-verification": "tsx src/engines/options-news/OptionsNewsVerification.test.ts",
     "test:options-news-persistence-budget-health": "tsx src/engines/options-news/OptionsNewsPersistenceBudgetHealth.test.ts",
     "test:options-news-e2e": "tsx src/engines/options-news/OptionsNewsEndToEnd.test.ts",
+    "test:options-context-contracts": "tsx src/engines/options-market-context/OptionsMarketContextContracts.test.ts",
+    "test:options-context-features": "tsx src/engines/options-market-context/OptionsTechnicalFeatureEngine.test.ts",
+    "test:options-context-e2e": "tsx src/engines/options-market-context/OptionsMarketContextEndToEnd.test.ts",
     "test:validation-reporting": "node scripts/validation-reporting.test.mjs",
     "test:opportunity": "tsx src/engines/opportunity/OpportunityScoreEngine.test.ts",
     "test:personal-decision": "tsx src/engines/personal-decision/PersonalDecisionEngine.test.ts",
@@ -143,7 +146,11 @@
     "test:ai-reservation-manager": "tsx src/engines/ai-reservation-manager/AIReservationManager.test.ts",
     "test:ai-cost-ledger": "tsx src/engines/ai-cost-ledger/AICostLedger.test.ts",
     "test:ai-audit-repository": "tsx src/engines/ai-audit-repository/AIAuditRepository.test.ts",
-    "test:ai-runtime-workflow": "tsx src/engines/ai-runtime-workflow/AIRuntimeWorkflow.test.ts"
+    "test:ai-runtime-workflow": "tsx src/engines/ai-runtime-workflow/AIRuntimeWorkflow.test.ts",
+    "options:feasibility": "tsx scripts/options-feasibility.mjs",
+    "test:options-retail-feasibility": "tsx src/engines/options-retail-feasibility/OptionsRetailFeasibilityEngine.test.ts",
+    "test:options-feasibility-cli": "node scripts/options-feasibility.test.mjs",
+    "test:options-context-integrity": "tsx src/engines/options-market-context/OptionsMarketContextIntegrity.test.ts"
   },
   "devDependencies": {
     "tsx": "^4.23.1",
