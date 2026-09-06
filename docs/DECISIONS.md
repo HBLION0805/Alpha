@@ -1,5 +1,32 @@
 # Alpha Architecture Decisions
 
+## 2026-09-06 - Separate counterfactual historical research from execution evidence
+
+- The Owner authorized the next historical-data testing step. Add an independent
+  sampled research engine and journal while preserving the original market
+  NO_REPLAY qualification, paper account and review fingerprints.
+- Record original interval timestamps, actual source ingestion and research-run
+  recording times independently. Historical decisions and contract subsets are
+  retrospective declarations, not demonstrated feed availability or pre-registration.
+- Require explicit contract/session/cost assumptions and counterfactual
+  acknowledgement. Modern Cboe size timing blocks the contemporaneous-size mode;
+  the optional recorded-size assumption still requires positive sufficient sizes.
+  Every modeled fill stays ASSUMED_FILL and never grants execution authority.
+- Reuse retail risk limits in isolated USD 1,000 runs. Entry and exit require later
+  usable snapshots; triggers remain sticky, target-triggered exits may lose money,
+  and missing exits cannot be replaced by a fabricated closing price or settlement.
+- Review every run, including blocked and unresolved outcomes. Candidate gap,
+  liquidity, risk and data lessons use actual research-recording order and preserve
+  source separation. They cannot approve knowledge or mutate frozen plans.
+- Add bounded source-preserving extraction with declared session/contracts,
+  parent/child hashes and row counts. Do not silently truncate full-chain files,
+  overwrite partial outputs or reinterpret selected winners as a historical signal.
+- Official sample inspection has not supplied actual GLD/IBIT data. No purchase,
+  account or credential action is authorized by routine testing. Continue with
+  entitled observations and source/contract/session/cost qualification when available.
+- See the [specification](specifications/OPTIONS_HISTORICAL_REPLAY_V1.md) and
+  [delivery report](OPTIONS_HISTORICAL_REPLAY_DELIVERY.md).
+
 ## 2026-09-06 - Preserve quote provenance before real-price replay
 
 - The Owner authorized the next implementation step and confirmed Robinhood is

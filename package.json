@@ -81,7 +81,13 @@
     "options:market-data": "tsx scripts/options-market-data.mjs",
     "test:options-market-csv": "tsx src/integration/options-market-evidence/CboeOptionQuotesCsv.test.ts",
     "test:options-market-evidence": "tsx src/engines/options-market-evidence/OptionsMarketEvidenceEngine.test.ts",
-    "test:options-market-data-io": "tsx scripts/options-market-data.test.mjs"
+    "test:options-market-data-io": "tsx scripts/options-market-data.test.mjs",
+    "options:historical-replay": "tsx scripts/options-historical-replay.mjs",
+    "options:market-extract": "tsx scripts/options-market-extract.mjs",
+    "test:options-historical-replay": "tsx src/engines/options-historical-replay/OptionsHistoricalReplayEngine.test.ts",
+    "test:options-historical-review": "tsx src/engines/options-historical-replay/OptionsHistoricalReplayReview.test.ts",
+    "test:options-historical-replay-io": "tsx scripts/options-historical-replay.test.mjs",
+    "test:options-market-extract": "tsx scripts/options-market-extract.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

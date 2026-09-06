@@ -1,11 +1,18 @@
 # Alpha Roadmap
 
-Current delivery adds the GLD/IBIT market-evidence import and qualification gate. The
+Current delivery adds independent GLD/IBIT historical interval research and bounded
+source-preserving extraction. The
 [machine status](status/current.json) is authoritative. See
-[delivery evidence](OPTIONS_MARKET_EVIDENCE_DELIVERY.md).
+[delivery evidence](OPTIONS_HISTORICAL_REPLAY_DELIVERY.md).
 
 ## Implemented
 
+- A separate counterfactual sampled-replay engine with declared contract/session/
+  cost assumptions, later-snapshot assumed fills, isolated USD 1,000 runs,
+  unresolved positions and reviews for all outcomes. Actual-time candidate lessons
+  remain unapproved; old paper and market-qualification fingerprints are unchanged.
+- Bounded extraction of one session and up to four selected contracts with parent/
+  child hashes, row counts and a selection manifest. No silent file truncation.
 - Documented Cboe DataShop CSV import, source/ingestion history and deterministic
   path-quality reports. Actual data access remains unavailable: the Owner has
   Robinhood only and no authorized API or historical file has been supplied.
@@ -21,9 +28,12 @@ Current delivery adds the GLD/IBIT market-evidence import and qualification gate
 ## Ordered completion work
 
 1. Obtain authorized GLD/IBIT option observations through a licensed local file
-   or entitled read-only provider. Then qualify contract metadata, calendars,
-   historical availability, fees and a versioned sampled-path fill model before
-   producing real-price simulations. The new gate explicitly identifies these gaps.
+   or entitled read-only provider. Official samples inspected so far contain no
+   GLD/IBIT observations; no purchase or entitlement exists. Extract a small
+   documented subset, inspect source/contract/session/cost evidence and test
+   affordability before running the explicit counterfactual model. Unknown sizes
+   still block fills. Separately qualify stricter historical availability and
+   execution models; the current assumptions do not establish real fills.
 2. Quantitative macro and asset-specific connectors with point-in-time vintages,
    release calendars, consensus-surprise inputs where licensed, ETF share/flow
    distinction, COT lags, gold reserves and crypto/on-chain provenance.

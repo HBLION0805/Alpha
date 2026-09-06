@@ -62,6 +62,15 @@ NO_REPLAY pending independent contract/calendar, historical availability and
 cost/fill-model qualification. Existing paper inputs, outputs, reviews and
 fingerprints are unchanged; importedAt is never substituted for historical time.
 
+`options-market-extract.mjs` streams a bounded local source before import. A
+declared selection contains one Eastern session and one to four GLD/IBIT contract
+keys. The extractor validates source records, preserves selected cells, normalizes
+record separators to LF, and saves parent/child SHA-256, selection and row counts
+in a manifest. Source limits are 64 MiB / 250,000 rows; the child retains the
+importer's 4 MiB / 10,000-row limits. Empty selections produce NO_MATCH evidence.
+Exclusive output creation and integrity checks prevent silent partial rewrites.
+Selection remains retrospective and cannot authenticate a source or its usage rights.
+
 Canonical Instruments, Quotes, Bars, provider registration/composition and
 reusable Twelve Data foundations remain. The old verified-snapshot product
 composition depended on removed Daily Scan modules. Its calendar contracts and
@@ -91,6 +100,49 @@ No stop guarantees a fill or loss cap. Account eligibility, settled-cash proof,
 aggregate exposure, event/drawdown limits, expiry and exercise still require a
 complete risk runtime. An economic pass is not trade permission. An AI score
 cannot authorize 10% allocation or extend the holding plan.
+
+## Independent historical interval research
+
+`OptionsHistoricalReplayEngine` reads validated market evidence through a separate
+`SAMPLED_OPTIONS_REPLAY_V1` model. It does not relax the existing NO_REPLAY gate or
+reuse the paper account. Each run starts with its own USD 1,000 and one long
+GLD/IBIT contract plan, within one declared session and 14-45 DTE. One-minute
+through 15-minute historical intervals are supported; delayed intraday delivery
+is excluded. A missing dataset produces a recorded BLOCKED result.
+
+`COUNTERFACTUAL_SNAPSHOT_TIME` assumes original interval timestamps are decision
+clocks. The actual import/run clocks and source-file/evidence fingerprints remain
+unchanged. Plan and subset selection are RETROSPECTIVE_DECLARATION, not proof of
+historical information availability or pre-registration. Contract, calendar and
+cost references remain owner declarations even when structurally valid.
+
+The engine reuses retail economics before an entry order and again at its modeled
+fill. It requires a later ask within the limit, positive prices and sufficient
+recorded sizes. Modern Cboe size timing blocks the contemporaneous-size model;
+an explicit recorded-size assumption is available for research only. Every fill
+is labeled ASSUMED_FILL. Stop, target and time triggers remain sticky; an exit
+requires a strictly later usable bid less declared slippage. A target-triggered
+exit may lose money. A zero bid can trigger a stop but cannot supply an exit fill.
+
+Events keep observation clocks distinct from the trigger time. Processing stops
+at the supplied session close; subsequent source coverage cannot fabricate fills.
+Open/pending positions and missing final bid marks remain unresolved. Sale proceeds
+stay unsettled, and no aggregate account growth is computed across independent runs.
+
+`OptionsHistoricalReplayReview` reviews blocked, unfilled, open and closed runs.
+Closed results reuse the unchanged trade review with explicit owner-file to
+UNVERIFIED_IMPORT mapping inside the original provenance wrapper. Observed gaps,
+liquidity delays and missing evidence become candidate lessons, not invented market
+causes. Notebook links use actual research-recording order and matching source,
+symbol, strategy and setup; they do not claim historical foreknowledge or change plans.
+
+`LocalOptionsHistoricalReplayRepository` persists full inputs, evidence, clocks,
+results and reviews in its own 16 MiB / 1,000-batch hash-linked journal. Recovery
+recomputes results. Same-ID repeats preserve the original recording clock;
+changed inputs or a later retry after a missing-data result require a new ID.
+Single-writer scope and uncertain-write poisoning prevent stale-state retries.
+See the [specification](specifications/OPTIONS_HISTORICAL_REPLAY_V1.md) and
+[delivery evidence](OPTIONS_HISTORICAL_REPLAY_DELIVERY.md).
 
 ## Reuse and removal
 

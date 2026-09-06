@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.18",
+  "$id": "https://alpha.local/schemas/project-status/1.19",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -42,11 +42,12 @@
     "optionsDriverMonitor",
     "currentDeliveryValidation",
     "optionsLocalTradeLifecycle",
-    "optionsMarketEvidence"
+    "optionsMarketEvidence",
+    "optionsHistoricalReplay"
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.18" },
+    "schemaVersion": { "const": "1.19" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -92,9 +93,174 @@
       "$ref": "#/$defs/currentDeliveryValidation"
     },
     "optionsLocalTradeLifecycle": { "$ref": "#/$defs/optionsLocalTradeLifecycle" },
-    "optionsMarketEvidence": { "$ref": "#/$defs/optionsMarketEvidence" }
+    "optionsMarketEvidence": { "$ref": "#/$defs/optionsMarketEvidence" },
+    "optionsHistoricalReplay": { "$ref": "#/$defs/optionsHistoricalReplay" }
   },
   "$defs": {
+    "optionsHistoricalReplay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractVersion",
+        "engineVersion",
+        "status",
+        "authorization",
+        "contractScope",
+        "dataOrigins",
+        "actualMarketDataset",
+        "actualMarketTradeOutcomes",
+        "clockModel",
+        "planSelection",
+        "fillModel",
+        "quoteIntervalMinutes",
+        "accountModel",
+        "riskAuthority",
+        "contractCalendarCosts",
+        "sourceAuthentication",
+        "historicalFeedAvailability",
+        "intradayDelayedDelivery",
+        "sizeTiming",
+        "persistenceAuthority",
+        "priorHistories",
+        "postRunReview",
+        "mistakeNotebook",
+        "priorLessons",
+        "automaticStrategyChanges",
+        "winProbability",
+        "strategyPerformance",
+        "realBrokerTradesExecuted",
+        "brokerAccountAccess",
+        "executionAllowed",
+        "acquisitionResearch",
+        "specification"
+      ],
+      "properties": {
+        "contractVersion": {
+          "const": "1.0"
+        },
+        "engineVersion": {
+          "const": "SAMPLED_OPTIONS_REPLAY_V1"
+        },
+        "status": {
+          "const": "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE"
+        },
+        "authorization": {
+          "const": "OWNER_START_GLD_IBIT_HISTORICAL_REPLAY_2026_09_06"
+        },
+        "contractScope": {
+          "const": "STANDARD_100_SHARE_GLD_IBIT_LONG_CALL_PUT_ONLY"
+        },
+        "dataOrigins": {
+          "const": [
+            "SYNTHETIC_FIXTURE",
+            "OWNER_PROVIDED_FILE"
+          ]
+        },
+        "actualMarketDataset": {
+          "const": "NOT_AVAILABLE"
+        },
+        "actualMarketTradeOutcomes": {
+          "const": "NOT_RUN_NO_AUTHORIZED_GLD_IBIT_DATA"
+        },
+        "clockModel": {
+          "const": "COUNTERFACTUAL_SNAPSHOT_TIME"
+        },
+        "planSelection": {
+          "const": "RETROSPECTIVE_DECLARATION"
+        },
+        "fillModel": {
+          "const": "NEXT_SNAPSHOT_MARKET_EXIT_ASSUMPTIONS_NOT_ACTUAL_FILLS"
+        },
+        "quoteIntervalMinutes": {
+          "const": {
+            "minimum": 1,
+            "maximum": 15
+          }
+        },
+        "accountModel": {
+          "const": "ISOLATED_1000_USD_RESEARCH_ACCOUNT_NO_CROSS_RUN_COMPOUNDING"
+        },
+        "riskAuthority": {
+          "const": "REUSE_EXISTING_5_PERCENT_ALLOCATION_0_5_PERCENT_RISK_25_USD_STRESS_CAP"
+        },
+        "contractCalendarCosts": {
+          "const": "DECLARED_ASSUMPTIONS_NOT_INDEPENDENTLY_VERIFIED"
+        },
+        "sourceAuthentication": {
+          "const": "NOT_PROVEN"
+        },
+        "historicalFeedAvailability": {
+          "const": "NOT_RECONSTRUCTED"
+        },
+        "intradayDelayedDelivery": {
+          "const": "NOT_SUPPORTED_BY_THIS_MODEL"
+        },
+        "sizeTiming": {
+          "const": "CONTEMPORANEOUS_MODEL_OR_EXPLICIT_ASSUMED_POSITIVE_RECORDED_SIZE"
+        },
+        "persistenceAuthority": {
+          "const": "SEPARATE_HASH_LINKED_RUN_EVIDENCE_RESULT_REVIEW_JOURNAL"
+        },
+        "priorHistories": {
+          "const": "EXISTING_PAPER_AND_MARKET_EVIDENCE_RESULTS_UNCHANGED"
+        },
+        "postRunReview": {
+          "const": "ALL_BLOCKED_UNFILLED_OPEN_AND_CLOSED_RUNS"
+        },
+        "mistakeNotebook": {
+          "const": "CANDIDATE_OBSERVATIONS_NOT_APPROVED_KNOWLEDGE"
+        },
+        "priorLessons": {
+          "const": "ACTUAL_RESEARCH_DISCOVERY_TIME_NOT_BACKDATED"
+        },
+        "automaticStrategyChanges": {
+          "const": "PROHIBITED"
+        },
+        "winProbability": {
+          "const": null
+        },
+        "strategyPerformance": {
+          "const": "NOT_CALIBRATED_OR_CERTIFIED"
+        },
+        "realBrokerTradesExecuted": {
+          "const": 0
+        },
+        "brokerAccountAccess": {
+          "const": "CLOSED"
+        },
+        "executionAllowed": {
+          "const": false
+        },
+        "acquisitionResearch": {
+          "const": {
+            "reviewedDate": "2026-09-06",
+            "publicSampleSource": "https://datashop.cboe.com/download/sample/215",
+            "publicSampleCsvCount": 5,
+            "targetRowsInPublicSamples": 0,
+            "sampleSymbols": [
+              "AAPL",
+              "^SPX"
+            ],
+            "quoteSource": "https://datashop.cboe.com/option-quote-intervals",
+            "quotedUnderlyings": [
+              "GLD",
+              "IBIT"
+            ],
+            "quotedSessionDate": "2026-09-04",
+            "quotedIntervalMinutes": 1,
+            "currency": "USD",
+            "basicQuotedSubtotalCents": 4800,
+            "withGreeksAndOpenInterestQuotedSubtotalCents": 8000,
+            "quoteMeaning": "NONBINDING_SUBTOTAL_NOT_PURCHASE_DATA_DELIVERY_OR_FINAL_CHECKOUT_PRICE",
+            "purchaseStatus": "NOT_PURCHASED",
+            "sourceDataRights": "NOT_ACQUIRED"
+          }
+        },
+        "specification": {
+          "const": "docs/specifications/OPTIONS_HISTORICAL_REPLAY_V1.md"
+        }
+      }
+    },
     "optionsMarketEvidence": {
       "type": "object",
       "additionalProperties": false,
@@ -500,8 +666,8 @@
       "properties": {
         "repository": { "const": "HBLION0805/Alpha" },
         "source_baseline_ref": { "const": "origin/codex/gld-ibit-options-foundation" },
-        "source_baseline_commit": { "const": "e38e877368893fa5572520f0b3c9141047d62411" },
-        "implementation_baseline": { "const": "OPTIONS_LOCAL_LIFECYCLE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
+        "source_baseline_commit": { "const": "4db85e97db53b104191b1e097cf47624f77de9f6" },
+        "implementation_baseline": { "const": "OPTIONS_MARKET_EVIDENCE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" },
         "phase0_owner_approval_commit": { "const": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a" }
       }
@@ -511,11 +677,11 @@
       "additionalProperties": false,
       "required": ["id", "name", "status", "authorizedBy", "implementationBaseline", "phase0ApprovedCommit"],
       "properties": {
-        "id": { "const": "OPTIONS_MARKET_EVIDENCE_IMPORT_V1" },
-        "name": { "const": "GLD / IBIT Market Evidence Import v1" },
-        "status": { "const": "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE" },
-        "authorizedBy": { "const": "OWNER_CONTINUE_GLD_IBIT_OPTION_DATA_STEP_2026_09_06" },
-        "implementationBaseline": { "const": "e38e877368893fa5572520f0b3c9141047d62411" },
+        "id": { "const": "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1" },
+        "name": { "const": "GLD / IBIT Historical Sampled Replay v1" },
+        "status": { "const": "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE" },
+        "authorizedBy": { "const": "OWNER_START_GLD_IBIT_HISTORICAL_REPLAY_2026_09_06" },
+        "implementationBaseline": { "const": "4db85e97db53b104191b1e097cf47624f77de9f6" },
         "phase0ApprovedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
       }
     },
@@ -525,7 +691,7 @@
       "required": ["currentProduct", "currentPhase", "phase0Status", "phase1Status", "permanentMission", "earlyCapitalGrowthTool", "longTermDestination", "fixedReturnPromise"],
       "properties": {
         "currentProduct": { "const": "OPTIONS_ONLY_MVP" },
-        "currentPhase": { "const": "MARKET_EVIDENCE_IMPORT_V1" },
+        "currentPhase": { "const": "HISTORICAL_SAMPLED_REPLAY_V1" },
         "phase0Status": { "const": "OWNER_APPROVED" },
         "phase1Status": { "const": "OWNER_APPROVED" },
         "permanentMission": {
@@ -637,7 +803,7 @@
     },
     "statusItems": {
       "type": "array",
-      "maxItems": 32,
+      "maxItems": 40,
       "uniqueItems": true,
       "items": {
         "type": "string",
@@ -1265,7 +1431,7 @@
         "historicalCountsAreCurrentResult"
       ],
       "properties": {
-        "classification": { "const": "CURRENT_OPTIONS_MARKET_EVIDENCE_V1_WORKING_TREE" },
+        "classification": { "const": "CURRENT_OPTIONS_HISTORICAL_REPLAY_V1_WORKING_TREE" },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": {
           "enum": [
@@ -1308,7 +1474,7 @@
           ],
           "minimum": 0
         },
-        "evidence": { "const": "docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md" },
+        "evidence": { "const": "docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md" },
         "historicalCountsAreCurrentResult": { "const": false }
       }
     }

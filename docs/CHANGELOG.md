@@ -1,5 +1,23 @@
 # Alpha Changelog
 
+## 2026-09-06 - Independent historical interval research and source extraction
+
+- Added a separate counterfactual research lifecycle with frozen GLD/IBIT plans,
+  declared contract/session/cost assumptions, existing R-based risk checks,
+  later-snapshot assumed fills and isolated USD 1,000 accounts.
+- Preserved original source/import/run clocks, explicit retrospective selection,
+  unknown liquidity, sticky triggers, unresolved exits and unsettled proceeds.
+  Target triggers do not guarantee target-price fills or profitable outcomes.
+- Added process reviews for all outcomes and a source-separated candidate
+  notebook using actual research-recording order, without automatic strategy changes.
+- Added bounded local CSV subset extraction with one session, up to four contracts,
+  parent/child hashes, row-count manifest, no-match reporting and integrity checks.
+- Added research demo/input/report and source-extraction commands. Official samples
+  contained no GLD/IBIT observations; no data purchase or actual target-ETF replay
+  is claimed. Existing market NO_REPLAY and paper/review fingerprints remain unchanged.
+- See [delivery evidence](OPTIONS_HISTORICAL_REPLAY_DELIVERY.md) for current
+  validation, source-access observations and remaining prerequisites.
+
 ## 2026-09-06 - Market evidence import and replay qualification
 
 - Added the documented Cboe DataShop CSV format with exact prices, nullable

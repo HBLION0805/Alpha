@@ -6,6 +6,12 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Independent historical interval research: frozen GLD/IBIT plans, explicit
+  contract/session/cost assumptions, later-snapshot modeled fills, unresolved
+  positions and a process review for every outcome. Runs use isolated USD 1,000
+  accounts and remain counterfactual; no actual target-ETF dataset is available.
+- Bounded extraction of one session and up to four declared contracts from a
+  larger local CSV, retaining source/child hashes, selection and row-count manifest.
 - Source-labeled Cboe DataShop option CSV import, exact prices and Eastern-time
   normalization, missing-data checks and a separate integrity-checked history.
   The Owner currently has Robinhood only; no authorized option data file/API
@@ -34,7 +40,7 @@ fill. A USD 25 premium with zero assumed costs, 20% stop and 2R has a USD 5 plan
 loss and USD 10 net profit target. No passing diagnostic authorizes a trade.
 
 The USD 1,000-to-USD 50,000 year-end aspiration is a scenario only and cannot
-increase risk limits. Read [current delivery](docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md)
+increase risk limits. Read [current delivery](docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md)
 and the authoritative [machine status](docs/status/current.json).
 
 ## Run locally
@@ -44,6 +50,11 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:historical-replay -- --demo` | Run isolated synthetic historical research cases without saving |
+| `npm run options:historical-replay -- --record-demo` | Save synthetic research runs, reviews and candidate lessons separately |
+| `npm run options:historical-replay -- --input <config JSON>` | Look up an imported dataset and record a research result, including missing-data blockers |
+| `npm run options:historical-replay -- --report` | Recompute independent research runs and their candidate notebook |
+| `npm run options:market-extract -- --input <CSV> --selection <JSON>` | Extract a declared session/contract subset with an integrity manifest |
 | `npm run options:market-data -- --catalog` | Inspect reviewed source options and access limitations |
 | `npm run options:market-data -- --demo` | Inspect synthetic quote-path qualification without saving |
 | `npm run options:market-data -- --import <CSV> --metadata <JSON>` | Save a supported local file with explicit origin and usage declaration |
@@ -69,15 +80,37 @@ rotation/export requires a reviewed operation rather than silent deletion.
 
 ## Boundaries
 
+Historical research lives in `data/runtime/options-historical-replay/runs.ndjson`.
+It preserves source snapshot times, actual import time and actual run-recording
+time separately. Contract selection and historical decisions are retrospective
+declarations. Its `COUNTERFACTUAL_SNAPSHOT_TIME` model uses later-snapshot ask
+entries and bid-minus-slippage exits; every fill is `ASSUMED_FILL`. A target
+trigger does not guarantee the final profit. Missing exits remain unresolved,
+and independent USD 1,000 runs never compound into a shared account.
+
+The strict size model blocks modern Cboe size timing. The optional recorded-size
+assumption still requires positive sufficient quantities; it never invents missing
+liquidity. Every research outcome receives a review. Candidate lessons use actual
+research-recording time, preserve source origin, and cannot change frozen plans
+or approve a strategy. See the [configuration example](fixtures/options-historical-replay/config.example.json).
+
+Extraction accepts at most 64 MiB / 250,000 source rows and produces at most
+4 MiB / 10,000 selected rows. It writes a manifest beneath the separate research
+directory, records the original source hash and normalizes record separators to
+LF. No match produces a manifest rather than an invented dataset. Existing or
+partial outputs cannot be overwritten. The [selection example](fixtures/options-historical-replay/selection.example.json)
+contains illustrative identities, not selected trades or independently verified listings.
+
 Market evidence is stored separately in `data/runtime/options-market-evidence/`.
 Its importer supports the documented Cboe DataShop format, not dashboard scraping.
 See the [metadata example](fixtures/options-market-evidence/metadata.example.json)
 and [import instructions](docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md). A source name
 and local checksum do not prove publisher identity or data rights. Unknown sizes,
 sampled paths and delivery limitations remain explicit. Until contract/calendar,
-availability and cost/fill-model evidence is qualified, the gate returns `NO_REPLAY`
-and zero trades. There is no adapter into the older paper engine that backdates
-historical quotes or fills missing liquidity.
+availability and cost/fill-model evidence is qualified, its original gate returns
+`NO_REPLAY` and zero trades. The separate research model does not change that gate
+or the old paper/review output fingerprints. There is no adapter into the older
+paper engine that backdates historical quotes or fills missing liquidity.
 
 A public headline is an unverified source assertion. Keyword tags only suggest
 which factors deserve review; they do not establish causality, direction or

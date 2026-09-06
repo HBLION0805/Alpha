@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0",
+  "runId": "example-not-a-selected-trade",
+  "datasetId": "gld-ibit-2026-09-04-selected",
+  "contractKey": "GLD:2026-09-25:CALL:48000",
+  "plan": {
+    "strategyVersion": "sampled-research-v1",
+    "setupKey": "manual-template-not-a-signal",
+    "decisionAt": "2026-09-04T14:00:00.000Z",
+    "entryDeadlineAt": "2026-09-04T14:02:00.000Z",
+    "timeExitAt": "2026-09-04T14:05:00.000Z",
+    "entryLimitPerShareCents": 20,
+    "quantity": 1,
+    "stopLossBps": 2000,
+    "rewardMultipleMilliR": 2000,
+    "maxEntrySpreadPerShareCents": 2,
+    "thesis": {
+      "direction": "BULLISH",
+      "magnitude": "Replace this illustrative template with a documented research thesis",
+      "horizon": "Intraday",
+      "volatility": "Unqualified",
+      "path": "Unqualified",
+      "invalidation": "Frozen planned cash-risk and time-exit rules",
+      "monthlyContext": "Unqualified",
+      "dailySetup": "Unqualified",
+      "intradayTrigger": "No signal established by this template"
+    }
+  },
+  "assumptions": {
+    "contractTerms": null,
+    "session": null,
+    "costs": null,
+    "liquidityModel": "REQUIRE_CONTEMPORANEOUS_SIZE",
+    "acknowledgeCounterfactual": false
+  }
+}

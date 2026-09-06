@@ -42,3 +42,5 @@ export * from "./options-contract-quote/OptionsContractQuoteEngine";
 export * from "./options-paper/OptionsPaperTradingEngine";
 export * from "./options-trade-review/OptionsTradeReviewEngine";
 export * from "./options-market-evidence/OptionsMarketEvidenceEngine";
+export * from "./options-historical-replay/OptionsHistoricalReplayEngine";
+export * from "./options-historical-replay/OptionsHistoricalReplayReview";

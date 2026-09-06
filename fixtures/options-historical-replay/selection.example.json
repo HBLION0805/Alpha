@@ -1,0 +1,9 @@
+{
+  "selectionId": "example-not-a-selected-dataset",
+  "sessionDate": "2026-09-04",
+  "contractKeys": [
+    "GLD:2026-09-25:CALL:48000",
+    "IBIT:2026-09-25:PUT:6000"
+  ],
+  "rationale": "Illustrative identities only. Confirm actual listed contracts and freeze a research selection rule before evaluating exit outcomes."
+}

@@ -8,10 +8,105 @@ const status = JSON.parse(readFileSync(resolve(root, "docs/status/current.json")
 const schema = JSON.parse(readFileSync(resolve(root, "docs/status/current.schema.json"), "utf8"));
 
 const tests = [
-  ["market-evidence milestone records the actual lack of a source file or API", () => {
-    assert.equal(status.currentMilestone.id, "OPTIONS_MARKET_EVIDENCE_IMPORT_V1");
-    assert.equal(status.currentMilestone.status, "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE");
-    assert.equal(status.productDirection.currentPhase, "MARKET_EVIDENCE_IMPORT_V1");
+  ["historical replay retains the counterfactual clock and retrospective plan declaration", () => {
+    assert.equal(status.schemaVersion, "1.19");
+    assert.equal(status.currentMilestone.id, "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1");
+    assert.equal(status.optionsHistoricalReplay.engineVersion, "SAMPLED_OPTIONS_REPLAY_V1");
+    assert.equal(status.optionsHistoricalReplay.clockModel, "COUNTERFACTUAL_SNAPSHOT_TIME");
+    assert.equal(status.optionsHistoricalReplay.planSelection, "RETROSPECTIVE_DECLARATION");
+    assert.equal(status.optionsHistoricalReplay.actualMarketDataset, "NOT_AVAILABLE");
+    assert.equal(status.optionsHistoricalReplay.winProbability, null);
+    assert.equal(status.optionsMarketEvidence.replayQualification, "NO_REPLAY_UNTIL_INDEPENDENT_EVIDENCE");
+  }],
+  ["historical research cannot claim a provider feed, real data outcomes, probability or execution", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsHistoricalReplay = {};
+    Object.assign(changed.optionsHistoricalReplay, {
+      actualMarketDataset: "VERIFIED_PROVIDER_FEED", actualMarketTradeOutcomes: "VALIDATED_LIVE_RESULTS",
+      sourceAuthentication: "VERIFIED", winProbability: 0.8, strategyPerformance: "CERTIFIED",
+      realBrokerTradesExecuted: 1, brokerAccountAccess: "ENABLED", executionAllowed: true,
+    });
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["actualMarketDataset", "actualMarketTradeOutcomes", "sourceAuthentication", "winProbability", "strategyPerformance", "realBrokerTradesExecuted", "brokerAccountAccess", "executionAllowed"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsHistoricalReplay.${field}`)));
+    }
+  }],
+  ["declared clock, fills, metadata and data availability cannot become independently verified history", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsHistoricalReplay = {};
+    Object.assign(changed.optionsHistoricalReplay, {
+      clockModel: "RECONSTRUCTED_REALTIME", planSelection: "PREREGISTERED", fillModel: "GUARANTEED_EXECUTION",
+      contractCalendarCosts: "INDEPENDENTLY_VERIFIED", historicalFeedAvailability: "PROVEN",
+      intradayDelayedDelivery: "ENABLED_AS_REALTIME", sizeTiming: "ASSUMED_ALWAYS_AVAILABLE",
+    });
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["clockModel", "planSelection", "fillModel", "contractCalendarCosts", "historicalFeedAvailability", "intradayDelayedDelivery", "sizeTiming"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsHistoricalReplay.${field}`)));
+    }
+  }],
+  ["historical journal and candidate reviews cannot rewrite prior accounts or strategy knowledge", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsHistoricalReplay = {};
+    Object.assign(changed.optionsHistoricalReplay, {
+      persistenceAuthority: "WRITE_EXISTING_PAPER_JOURNAL", priorHistories: "REWRITE_AS_VERIFIED",
+      postRunReview: "WINNING_TRADES_ONLY", mistakeNotebook: "APPROVED_KNOWLEDGE",
+      priorLessons: "BACKDATED_TO_HISTORICAL_DECISION", automaticStrategyChanges: "ENABLED",
+    });
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["persistenceAuthority", "priorHistories", "postRunReview", "mistakeNotebook", "priorLessons", "automaticStrategyChanges"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsHistoricalReplay.${field}`)));
+    }
+  }],
+  ["historical account isolation and retained risk caps cannot become compounding or extra authority", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsHistoricalReplay = {};
+    Object.assign(changed.optionsHistoricalReplay, { accountModel: "COMPOUND_ALL_SELECTED_WINNERS", riskAuthority: "TEN_PERCENT_AI_OVERRIDE", contractScope: "ANY_OPTION", quoteIntervalMinutes: { minimum: 1, maximum: 405 } });
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["accountModel", "riskAuthority", "contractScope", "quoteIntervalMinutes"]) assert(validation.issues.some((issue) => issue.includes(`optionsHistoricalReplay.${field}`)));
+  }],
+  ["public samples and nonbinding quotes do not establish purchased GLD or IBIT data", () => {
+    const research = status.optionsHistoricalReplay.acquisitionResearch;
+    assert.equal(research.publicSampleCsvCount, 5);
+    assert.equal(research.targetRowsInPublicSamples, 0);
+    assert.equal(research.basicQuotedSubtotalCents, 4800);
+    assert.equal(research.withGreeksAndOpenInterestQuotedSubtotalCents, 8000);
+    assert.equal(research.purchaseStatus, "NOT_PURCHASED");
+    assert.equal(research.sourceDataRights, "NOT_ACQUIRED");
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsHistoricalReplay = {};
+    changed.optionsHistoricalReplay.acquisitionResearch.purchaseStatus = "PURCHASED";
+    changed.optionsHistoricalReplay.acquisitionResearch.targetRowsInPublicSamples = 100;
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.some((issue) => issue.includes("optionsHistoricalReplay.acquisitionResearch")));
+  }],
+  ["historical replay is required and refuses undeclared live capabilities", () => {
+    const missing = clone(status); delete missing.optionsHistoricalReplay;
+    assert.equal(validateCurrentStatus(missing, schema).valid, false);
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsHistoricalReplay = {};
+    changed.optionsHistoricalReplay.liveProvider = "ROBINHOOD";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.some((issue) => issue.includes("optionsHistoricalReplay.liveProvider")));
+  }],
+  ["status history bound grows to forty without becoming unbounded under a weakened schema", () => {
+    assert.equal(schema.$defs.statusItems.maxItems, 40);
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.statusItems = {};
+    while (changed.completed.length < 41) changed.completed.push(`TEST_HISTORY_${changed.completed.length}`);
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.includes("completed must be a unique bounded array."));
+  }],
+  ["historical replay milestone retains the actual lack of a source file or API", () => {
+    assert.equal(status.currentMilestone.id, "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1");
+    assert.equal(status.currentMilestone.status, "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE");
+    assert.equal(status.productDirection.currentPhase, "HISTORICAL_SAMPLED_REPLAY_V1");
     assert.deepEqual(status.optionsMarketEvidence.ownerDataAccess, {
       platform: "ROBINHOOD_ONLY", providerApi: "NOT_AVAILABLE", authorizedSourceFile: "NOT_AVAILABLE", confirmedBy: "OWNER_2026_09_06",
     });
@@ -289,11 +384,11 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE\"."));
     assert(validation.issues.includes("currentMilestone.phase0ApprovedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
     assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
     assert(validation.issues.includes("productDirection.phase1Status must equal \"OWNER_APPROVED\"."));
-    assert(validation.issues.includes("next must contain authorized data acquisition and independent contract/calendar/cost/availability/fill-model qualification."));
+    assert(validation.issues.includes("next must contain authorized sample acquisition and assumption-labeled replay with outcome review."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
@@ -402,8 +497,8 @@ const tests = [
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
     assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "e38e877368893fa5572520f0b3c9141047d62411");
-    assert.equal(status.source.implementation_baseline, "OPTIONS_LOCAL_LIFECYCLE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
+    assert.equal(status.source.source_baseline_commit, "4db85e97db53b104191b1e097cf47624f77de9f6");
+    assert.equal(status.source.implementation_baseline, "OPTIONS_MARKET_EVIDENCE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3APostMergeCorrection, "VERIFIED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B, "DESIGN_APPROVED");
@@ -411,7 +506,7 @@ const tests = [
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
     assert.equal(status.legacyProductLanes.etfDailyScan.status, "REMOVED_OWNER_AUTHORIZED");
-    assert.deepEqual(status.next, ["ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_DATA_WITHOUT_BROKER_ORDER_ACCESS", "QUALIFY_CONTRACT_CALENDAR_COST_HISTORICAL_AVAILABILITY_AND_FILL_MODEL"]);
+    assert.deepEqual(status.next, ["ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_SAMPLE_WITH_OWNER_DATA_COST_DECISION", "RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"]);
     assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
@@ -468,8 +563,8 @@ const tests = [
     assertInvalid(changed, schema, "$.validation.phase1bD3AMergedHead.source_baseline_commit must equal schema const \"bae51dda65dc55f376cb683f873fa93295ed7e2f\".");
   }],
   ["v2 records 20% research stop, net 1.5R-2R and separate account and stress limits", () => {
-    assert.equal(status.schemaVersion, "1.18");
-    assert.equal(status.currentMilestone.id, "OPTIONS_MARKET_EVIDENCE_IMPORT_V1");
+    assert.equal(status.schemaVersion, "1.19");
+    assert.equal(status.currentMilestone.id, "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1");
     assert.equal(status.ownerOptionsProfile.plannedStopBps, 2000);
     assert.equal(status.ownerOptionsProfile.minimumStopBps, 1000);
     assert.equal(status.ownerOptionsProfile.maximumStopBps, 2500);

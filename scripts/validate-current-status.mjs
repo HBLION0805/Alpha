@@ -16,7 +16,7 @@ const STATUS_FIELDS = Object.freeze([
   "worktreeIsolation", "executionBoundaries", "automatedExecutionAllowed", "ownerDailyProductEntry", "ownerProductEntry", "validation",
   "networkAuthority", "frozenDailyScanAlpacaHistoricalDelivery",
   "optionsStatus", "brokerStatus", "paperTradingStatus", "orderExecutionStatus",
-  "capitalAspiration", "optionsDriverMonitor", "currentDeliveryValidation", "optionsLocalTradeLifecycle", "optionsMarketEvidence",
+  "capitalAspiration", "optionsDriverMonitor", "currentDeliveryValidation", "optionsLocalTradeLifecycle", "optionsMarketEvidence", "optionsHistoricalReplay",
 ]);
 const STATUS_ITEM = /^[A-Z0-9][A-Z0-9_:-]{2,159}$/u;
 
@@ -40,7 +40,7 @@ export function validateCurrentStatus(status, schema) {
   allowOnly(status, STATUS_FIELDS, "$", issues);
   requireExactly(status, STATUS_FIELDS, "$", issues);
   exact(status.$schema, "./current.schema.json", "$schema", issues);
-  exact(status.schemaVersion, "1.18", "schemaVersion", issues);
+  exact(status.schemaVersion, "1.19", "schemaVersion", issues);
   if (typeof status.statusId !== "string" || !/^alpha-status:[A-Za-z0-9._-]+$/u.test(status.statusId)) {
     issues.push("statusId must be a bounded Alpha status identifier.");
   }
@@ -49,17 +49,17 @@ export function validateCurrentStatus(status, schema) {
   validateExactObject(status.source, "source", {
   "repository": "HBLION0805/Alpha",
   "source_baseline_ref": "origin/codex/gld-ibit-options-foundation",
-  "source_baseline_commit": "e38e877368893fa5572520f0b3c9141047d62411",
-  "implementation_baseline": "OPTIONS_LOCAL_LIFECYCLE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
+  "source_baseline_commit": "4db85e97db53b104191b1e097cf47624f77de9f6",
+  "implementation_baseline": "OPTIONS_MARKET_EVIDENCE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
   "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
   "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
 }, issues);
   validateExactObject(status.currentMilestone, "currentMilestone", {
-  "id": "OPTIONS_MARKET_EVIDENCE_IMPORT_V1",
-  "name": "GLD / IBIT Market Evidence Import v1",
-  "status": "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE",
-  "authorizedBy": "OWNER_CONTINUE_GLD_IBIT_OPTION_DATA_STEP_2026_09_06",
-  "implementationBaseline": "e38e877368893fa5572520f0b3c9141047d62411",
+  "id": "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1",
+  "name": "GLD / IBIT Historical Sampled Replay v1",
+  "status": "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE",
+  "authorizedBy": "OWNER_START_GLD_IBIT_HISTORICAL_REPLAY_2026_09_06",
+  "implementationBaseline": "4db85e97db53b104191b1e097cf47624f77de9f6",
   "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
 }, issues);
   for (const field of ["completed", "inProgress", "blocked", "frozen", "next"]) {
@@ -76,7 +76,7 @@ export function validateCurrentStatus(status, schema) {
   for (const item of ["OPTIONS_PHASE_1_P1_A_CONTRACTS_REGISTRY_STATE_TRANSPORT_IMPLEMENTED", "OPTIONS_PHASE_1_P1_B_FOUR_FIXTURE_ADAPTERS_IMPLEMENTED", "OPTIONS_PHASE_1_P1_C_LINKING_DEDUPE_CLUSTERING_VERIFICATION_IMPLEMENTED", "OPTIONS_PHASE_1_P1_D_PERSISTENCE_BUDGET_HEALTH_IMPLEMENTED", "OPTIONS_PHASE_1_END_TO_END_FIXTURE_DEMOS_IMPLEMENTED", "OPTIONS_PHASE_1_NEWS_INFRASTRUCTURE_OWNER_APPROVED"]) requireStatusItem(status.completed, item, "completed", issues);
   requireStatusItem(status.completed, "OPTIONS_PHASE_2_P2_A_THROUGH_P2_D_IMPLEMENTED", "completed", issues);
   if (!Array.isArray(status.inProgress) || status.inProgress.length !== 0) {
-    issues.push("inProgress must be empty at the completed local Options market-evidence import checkpoint.");
+    issues.push("inProgress must be empty at the completed Options historical sampled-replay implementation checkpoint.");
   }
   for (const item of ["GLD_IBIT_RISK_V2_ALL_IN_R_DIAGNOSTIC_IMPLEMENTED","GLD_IBIT_DRIVER_CATALOG_AND_PUBLIC_FEED_MONITOR_IMPLEMENTED","OWNER_AUTHORIZED_UNRELATED_PRODUCT_CODE_REMOVAL_COMPLETED"]) requireStatusItem(status.completed, item, "completed", issues);
   validateExactObject(status.capitalAspiration, "capitalAspiration", {
@@ -195,17 +195,80 @@ export function validateCurrentStatus(status, schema) {
   "specification": "docs/specifications/OPTIONS_MARKET_EVIDENCE_V1.md"
 }, issues);
   requireStatusItem(status.completed, "GLD_IBIT_LOCAL_MARKET_EVIDENCE_IMPORT_AND_REPLAY_GATE_IMPLEMENTED", "completed", issues);
+  validateExactObject(status.optionsHistoricalReplay, "optionsHistoricalReplay", {
+  "contractVersion": "1.0",
+  "engineVersion": "SAMPLED_OPTIONS_REPLAY_V1",
+  "status": "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE",
+  "authorization": "OWNER_START_GLD_IBIT_HISTORICAL_REPLAY_2026_09_06",
+  "contractScope": "STANDARD_100_SHARE_GLD_IBIT_LONG_CALL_PUT_ONLY",
+  "dataOrigins": [
+    "SYNTHETIC_FIXTURE",
+    "OWNER_PROVIDED_FILE"
+  ],
+  "actualMarketDataset": "NOT_AVAILABLE",
+  "actualMarketTradeOutcomes": "NOT_RUN_NO_AUTHORIZED_GLD_IBIT_DATA",
+  "clockModel": "COUNTERFACTUAL_SNAPSHOT_TIME",
+  "planSelection": "RETROSPECTIVE_DECLARATION",
+  "fillModel": "NEXT_SNAPSHOT_MARKET_EXIT_ASSUMPTIONS_NOT_ACTUAL_FILLS",
+  "quoteIntervalMinutes": {
+    "minimum": 1,
+    "maximum": 15
+  },
+  "accountModel": "ISOLATED_1000_USD_RESEARCH_ACCOUNT_NO_CROSS_RUN_COMPOUNDING",
+  "riskAuthority": "REUSE_EXISTING_5_PERCENT_ALLOCATION_0_5_PERCENT_RISK_25_USD_STRESS_CAP",
+  "contractCalendarCosts": "DECLARED_ASSUMPTIONS_NOT_INDEPENDENTLY_VERIFIED",
+  "sourceAuthentication": "NOT_PROVEN",
+  "historicalFeedAvailability": "NOT_RECONSTRUCTED",
+  "intradayDelayedDelivery": "NOT_SUPPORTED_BY_THIS_MODEL",
+  "sizeTiming": "CONTEMPORANEOUS_MODEL_OR_EXPLICIT_ASSUMED_POSITIVE_RECORDED_SIZE",
+  "persistenceAuthority": "SEPARATE_HASH_LINKED_RUN_EVIDENCE_RESULT_REVIEW_JOURNAL",
+  "priorHistories": "EXISTING_PAPER_AND_MARKET_EVIDENCE_RESULTS_UNCHANGED",
+  "postRunReview": "ALL_BLOCKED_UNFILLED_OPEN_AND_CLOSED_RUNS",
+  "mistakeNotebook": "CANDIDATE_OBSERVATIONS_NOT_APPROVED_KNOWLEDGE",
+  "priorLessons": "ACTUAL_RESEARCH_DISCOVERY_TIME_NOT_BACKDATED",
+  "automaticStrategyChanges": "PROHIBITED",
+  "winProbability": null,
+  "strategyPerformance": "NOT_CALIBRATED_OR_CERTIFIED",
+  "realBrokerTradesExecuted": 0,
+  "brokerAccountAccess": "CLOSED",
+  "executionAllowed": false,
+  "acquisitionResearch": {
+    "reviewedDate": "2026-09-06",
+    "publicSampleSource": "https://datashop.cboe.com/download/sample/215",
+    "publicSampleCsvCount": 5,
+    "targetRowsInPublicSamples": 0,
+    "sampleSymbols": [
+      "AAPL",
+      "^SPX"
+    ],
+    "quoteSource": "https://datashop.cboe.com/option-quote-intervals",
+    "quotedUnderlyings": [
+      "GLD",
+      "IBIT"
+    ],
+    "quotedSessionDate": "2026-09-04",
+    "quotedIntervalMinutes": 1,
+    "currency": "USD",
+    "basicQuotedSubtotalCents": 4800,
+    "withGreeksAndOpenInterestQuotedSubtotalCents": 8000,
+    "quoteMeaning": "NONBINDING_SUBTOTAL_NOT_PURCHASE_DATA_DELIVERY_OR_FINAL_CHECKOUT_PRICE",
+    "purchaseStatus": "NOT_PURCHASED",
+    "sourceDataRights": "NOT_ACQUIRED"
+  },
+  "specification": "docs/specifications/OPTIONS_HISTORICAL_REPLAY_V1.md"
+}, issues);
+  requireStatusItem(status.completed, "GLD_IBIT_HISTORICAL_SAMPLED_REPLAY_AND_REVIEW_IMPLEMENTED", "completed", issues);
   validateCurrentDeliveryValidation(status.currentDeliveryValidation, issues);
   for (const field of ["blocked", "frozen"]) {
     const required = field === "blocked" ? ["VERIFIED_GLD_IBIT_OPTION_CHAIN_NOT_IMPLEMENTED","QUANTITATIVE_DRIVER_CONNECTORS_NOT_IMPLEMENTED","CALIBRATED_COST_AWARE_OPTION_OUTCOMES_NOT_AVAILABLE","FULL_BROKER_ACCOUNT_PORTFOLIO_RISK_RUNTIME_NOT_IMPLEMENTED","ROBINHOOD_ACCOUNT_ACCESS_PROHIBITED","BROKER_PAPER_TRADING_PROHIBITED","ORDER_EXECUTION_PROHIBITED"] : ["T3B15_C5_UNCOMMITTED_WORK","ORIGINAL_ALPHA_WORKTREE","BROKER_ACCOUNT_ORDER_AND_BROKER_PAPER_TRADING"];
     if (!deepEqual(status[field], required)) issues.push(`${field} must contain the exact current scope and closed account boundaries.`);
   }
-  if (!Array.isArray(status.next) || JSON.stringify(status.next) !== JSON.stringify(["ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_DATA_WITHOUT_BROKER_ORDER_ACCESS","QUALIFY_CONTRACT_CALENDAR_COST_HISTORICAL_AVAILABILITY_AND_FILL_MODEL"])) {
-    issues.push("next must contain authorized data acquisition and independent contract/calendar/cost/availability/fill-model qualification.");
+  if (!Array.isArray(status.next) || JSON.stringify(status.next) !== JSON.stringify(["ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_SAMPLE_WITH_OWNER_DATA_COST_DECISION","RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"])) {
+    issues.push("next must contain authorized sample acquisition and assumption-labeled replay with outcome review.");
   }
   validateExactObject(status.productDirection, "productDirection", {
     currentProduct: "OPTIONS_ONLY_MVP",
-    currentPhase: "MARKET_EVIDENCE_IMPORT_V1",
+    currentPhase: "HISTORICAL_SAMPLED_REPLAY_V1",
     phase0Status: "OWNER_APPROVED",
     phase1Status: "OWNER_APPROVED",
     permanentMission: ["PROTECT_CAPITAL", "ALLOCATE_CAPITAL", "GROW_CAPITAL", "COMPOUND_CAPITAL"],
@@ -423,7 +486,7 @@ function validateSchema(schema, issues) {
     return;
   }
   exact(schema.$schema, "https://json-schema.org/draft/2020-12/schema", "schema.$schema", issues);
-  exact(schema.$id, "https://alpha.local/schemas/project-status/1.18", "schema.$id", issues);
+  exact(schema.$id, "https://alpha.local/schemas/project-status/1.19", "schema.$id", issues);
   exact(schema.type, "object", "schema.type", issues);
   exact(schema.additionalProperties, false, "schema.additionalProperties", issues);
   if (!Array.isArray(schema.required) || !sameStringSet(schema.required, STATUS_FIELDS)) {
@@ -551,9 +614,9 @@ function validateCurrentDeliveryValidation(value, issues) {
   const fields = ["classification", "command", "status", "componentCount", "testsExecuted", "passed", "failed", "durationMs", "evidence", "historicalCountsAreCurrentResult"];
   allowOnly(value, fields, "currentDeliveryValidation", issues);
   requireExactly(value, fields, "currentDeliveryValidation", issues);
-  exact(value.classification, "CURRENT_OPTIONS_MARKET_EVIDENCE_V1_WORKING_TREE", "currentDeliveryValidation.classification", issues);
+  exact(value.classification, "CURRENT_OPTIONS_HISTORICAL_REPLAY_V1_WORKING_TREE", "currentDeliveryValidation.classification", issues);
   exact(value.command, "npm.cmd run alpha:validate", "currentDeliveryValidation.command", issues);
-  exact(value.evidence, "docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md", "currentDeliveryValidation.evidence", issues);
+  exact(value.evidence, "docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md", "currentDeliveryValidation.evidence", issues);
   exact(value.historicalCountsAreCurrentResult, false, "currentDeliveryValidation.historicalCountsAreCurrentResult", issues);
   const counters = ["componentCount", "testsExecuted", "passed", "failed", "durationMs"];
   if (value.status === "PENDING_AGGREGATE_VALIDATION") {
@@ -901,7 +964,7 @@ function validateCoverageBaseline(value, issues) {
 }
 
 function validateStatusItems(value, path, issues) {
-  if (!Array.isArray(value) || value.length > 32 || new Set(value).size !== value.length) {
+  if (!Array.isArray(value) || value.length > 40 || new Set(value).size !== value.length) {
     issues.push(`${path} must be a unique bounded array.`);
     return;
   }

@@ -1,22 +1,22 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.18",
-  "statusId": "alpha-status:gld-ibit-options-market-evidence-import-v1",
-  "asOf": "2026-09-06T21:21:28.172Z",
+  "schemaVersion": "1.19",
+  "statusId": "alpha-status:gld-ibit-historical-sampled-replay-v1",
+  "asOf": "2026-09-06T22:47:12.795Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/codex/gld-ibit-options-foundation",
-    "source_baseline_commit": "e38e877368893fa5572520f0b3c9141047d62411",
-    "implementation_baseline": "OPTIONS_LOCAL_LIFECYCLE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
+    "source_baseline_commit": "4db85e97db53b104191b1e097cf47624f77de9f6",
+    "implementation_baseline": "OPTIONS_MARKET_EVIDENCE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
     "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
   },
   "currentMilestone": {
-    "id": "OPTIONS_MARKET_EVIDENCE_IMPORT_V1",
-    "name": "GLD / IBIT Market Evidence Import v1",
-    "status": "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE",
-    "authorizedBy": "OWNER_CONTINUE_GLD_IBIT_OPTION_DATA_STEP_2026_09_06",
-    "implementationBaseline": "e38e877368893fa5572520f0b3c9141047d62411",
+    "id": "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1",
+    "name": "GLD / IBIT Historical Sampled Replay v1",
+    "status": "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE",
+    "authorizedBy": "OWNER_START_GLD_IBIT_HISTORICAL_REPLAY_2026_09_06",
+    "implementationBaseline": "4db85e97db53b104191b1e097cf47624f77de9f6",
     "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
@@ -51,7 +51,8 @@
     "GLD_IBIT_LOCAL_CONTRACT_QUOTE_BOUNDARY_IMPLEMENTED",
     "GLD_IBIT_LOCAL_TRADE_LIFECYCLE_IMPLEMENTED",
     "GLD_IBIT_POST_TRADE_REVIEW_AND_MISTAKE_NOTEBOOK_IMPLEMENTED",
-    "GLD_IBIT_LOCAL_MARKET_EVIDENCE_IMPORT_AND_REPLAY_GATE_IMPLEMENTED"
+    "GLD_IBIT_LOCAL_MARKET_EVIDENCE_IMPORT_AND_REPLAY_GATE_IMPLEMENTED",
+    "GLD_IBIT_HISTORICAL_SAMPLED_REPLAY_AND_REVIEW_IMPLEMENTED"
   ],
   "inProgress": [],
   "blocked": [
@@ -69,12 +70,12 @@
     "BROKER_ACCOUNT_ORDER_AND_BROKER_PAPER_TRADING"
   ],
   "next": [
-    "ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_DATA_WITHOUT_BROKER_ORDER_ACCESS",
-    "QUALIFY_CONTRACT_CALENDAR_COST_HISTORICAL_AVAILABILITY_AND_FILL_MODEL"
+    "ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_SAMPLE_WITH_OWNER_DATA_COST_DECISION",
+    "RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"
   ],
   "productDirection": {
     "currentProduct": "OPTIONS_ONLY_MVP",
-    "currentPhase": "MARKET_EVIDENCE_IMPORT_V1",
+    "currentPhase": "HISTORICAL_SAMPLED_REPLAY_V1",
     "phase0Status": "OWNER_APPROVED",
     "phase1Status": "OWNER_APPROVED",
     "permanentMission": [
@@ -599,15 +600,15 @@
     "specification": "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md"
   },
   "currentDeliveryValidation": {
-    "classification": "CURRENT_OPTIONS_MARKET_EVIDENCE_V1_WORKING_TREE",
+    "classification": "CURRENT_OPTIONS_HISTORICAL_REPLAY_V1_WORKING_TREE",
     "command": "npm.cmd run alpha:validate",
     "status": "PASSED",
-    "componentCount": 82,
-    "testsExecuted": 2176,
-    "passed": 2176,
+    "componentCount": 86,
+    "testsExecuted": 2302,
+    "passed": 2302,
     "failed": 0,
-    "durationMs": 30907,
-    "evidence": "docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md",
+    "durationMs": 43373,
+    "evidence": "docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md",
     "historicalCountsAreCurrentResult": false
   },
   "optionsLocalTradeLifecycle": {
@@ -682,5 +683,67 @@
     "brokerAccountAccess": "CLOSED",
     "executionAllowed": false,
     "specification": "docs/specifications/OPTIONS_MARKET_EVIDENCE_V1.md"
+  },
+  "optionsHistoricalReplay": {
+    "contractVersion": "1.0",
+    "engineVersion": "SAMPLED_OPTIONS_REPLAY_V1",
+    "status": "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE",
+    "authorization": "OWNER_START_GLD_IBIT_HISTORICAL_REPLAY_2026_09_06",
+    "contractScope": "STANDARD_100_SHARE_GLD_IBIT_LONG_CALL_PUT_ONLY",
+    "dataOrigins": [
+      "SYNTHETIC_FIXTURE",
+      "OWNER_PROVIDED_FILE"
+    ],
+    "actualMarketDataset": "NOT_AVAILABLE",
+    "actualMarketTradeOutcomes": "NOT_RUN_NO_AUTHORIZED_GLD_IBIT_DATA",
+    "clockModel": "COUNTERFACTUAL_SNAPSHOT_TIME",
+    "planSelection": "RETROSPECTIVE_DECLARATION",
+    "fillModel": "NEXT_SNAPSHOT_MARKET_EXIT_ASSUMPTIONS_NOT_ACTUAL_FILLS",
+    "quoteIntervalMinutes": {
+      "minimum": 1,
+      "maximum": 15
+    },
+    "accountModel": "ISOLATED_1000_USD_RESEARCH_ACCOUNT_NO_CROSS_RUN_COMPOUNDING",
+    "riskAuthority": "REUSE_EXISTING_5_PERCENT_ALLOCATION_0_5_PERCENT_RISK_25_USD_STRESS_CAP",
+    "contractCalendarCosts": "DECLARED_ASSUMPTIONS_NOT_INDEPENDENTLY_VERIFIED",
+    "sourceAuthentication": "NOT_PROVEN",
+    "historicalFeedAvailability": "NOT_RECONSTRUCTED",
+    "intradayDelayedDelivery": "NOT_SUPPORTED_BY_THIS_MODEL",
+    "sizeTiming": "CONTEMPORANEOUS_MODEL_OR_EXPLICIT_ASSUMED_POSITIVE_RECORDED_SIZE",
+    "persistenceAuthority": "SEPARATE_HASH_LINKED_RUN_EVIDENCE_RESULT_REVIEW_JOURNAL",
+    "priorHistories": "EXISTING_PAPER_AND_MARKET_EVIDENCE_RESULTS_UNCHANGED",
+    "postRunReview": "ALL_BLOCKED_UNFILLED_OPEN_AND_CLOSED_RUNS",
+    "mistakeNotebook": "CANDIDATE_OBSERVATIONS_NOT_APPROVED_KNOWLEDGE",
+    "priorLessons": "ACTUAL_RESEARCH_DISCOVERY_TIME_NOT_BACKDATED",
+    "automaticStrategyChanges": "PROHIBITED",
+    "winProbability": null,
+    "strategyPerformance": "NOT_CALIBRATED_OR_CERTIFIED",
+    "realBrokerTradesExecuted": 0,
+    "brokerAccountAccess": "CLOSED",
+    "executionAllowed": false,
+    "acquisitionResearch": {
+      "reviewedDate": "2026-09-06",
+      "publicSampleSource": "https://datashop.cboe.com/download/sample/215",
+      "publicSampleCsvCount": 5,
+      "targetRowsInPublicSamples": 0,
+      "sampleSymbols": [
+        "AAPL",
+        "^SPX"
+      ],
+      "quoteSource": "https://datashop.cboe.com/option-quote-intervals",
+      "quotedUnderlyings": [
+        "GLD",
+        "IBIT"
+      ],
+      "quotedSessionDate": "2026-09-04",
+      "quotedIntervalMinutes": 1,
+      "currency": "USD",
+      "basicQuotedSubtotalCents": 4800,
+      "withGreeksAndOpenInterestQuotedSubtotalCents": 8000,
+      "quoteMeaning": "NONBINDING_SUBTOTAL_NOT_PURCHASE_DATA_DELIVERY_OR_FINAL_CHECKOUT_PRICE",
+      "purchaseStatus": "NOT_PURCHASED",
+      "sourceDataRights": "NOT_ACQUIRED"
+    },
+    "specification": "docs/specifications/OPTIONS_HISTORICAL_REPLAY_V1.md"
   }
 }
