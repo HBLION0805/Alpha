@@ -1,22 +1,22 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.16",
-  "statusId": "alpha-status:gld-ibit-options-driver-monitor-risk-v2",
-  "asOf": "2026-09-06T20:08:26.077Z",
+  "schemaVersion": "1.17",
+  "statusId": "alpha-status:gld-ibit-local-options-trade-lifecycle-v1",
+  "asOf": "2026-09-06T20:42:51.880Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/codex/gld-ibit-options-foundation",
-    "source_baseline_commit": "53a905a5f8360afeea1d24eaa084110f6ef85bdc",
-    "implementation_baseline": "GLD_IBIT_FEASIBILITY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
+    "source_baseline_commit": "4e27789b297cc8bff759fe3d3a66396497fbc6af",
+    "implementation_baseline": "GLD_IBIT_FOCUS_V2_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
     "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
   },
   "currentMilestone": {
-    "id": "GLD_IBIT_OPTIONS_DRIVER_MONITOR_AND_RISK_V2",
-    "name": "GLD / IBIT Options Driver Monitor and Risk v2",
-    "status": "IMPLEMENTED_DIAGNOSTIC_ONLY",
-    "authorizedBy": "OWNER_GLD_IBIT_SCOPE_AND_AUTONOMOUS_DEVELOPMENT_2026_09_06",
-    "implementationBaseline": "53a905a5f8360afeea1d24eaa084110f6ef85bdc",
+    "id": "LOCAL_OPTIONS_TRADE_LIFECYCLE_V1",
+    "name": "GLD / IBIT Local Trade Lifecycle v1",
+    "status": "IMPLEMENTED_LOCAL_SIMULATION_ONLY",
+    "authorizedBy": "OWNER_COMPLETE_LOCAL_TRADE_PROCESS_AND_REVIEWS_2026_09_06",
+    "implementationBaseline": "4e27789b297cc8bff759fe3d3a66396497fbc6af",
     "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
@@ -47,30 +47,33 @@
     "OPTIONS_PHASE_2_INTEGRITY_AUDIT_CORRECTED",
     "GLD_IBIT_RISK_V2_ALL_IN_R_DIAGNOSTIC_IMPLEMENTED",
     "GLD_IBIT_DRIVER_CATALOG_AND_PUBLIC_FEED_MONITOR_IMPLEMENTED",
-    "OWNER_AUTHORIZED_UNRELATED_PRODUCT_CODE_REMOVAL_COMPLETED"
+    "OWNER_AUTHORIZED_UNRELATED_PRODUCT_CODE_REMOVAL_COMPLETED",
+    "GLD_IBIT_LOCAL_CONTRACT_QUOTE_BOUNDARY_IMPLEMENTED",
+    "GLD_IBIT_LOCAL_TRADE_LIFECYCLE_IMPLEMENTED",
+    "GLD_IBIT_POST_TRADE_REVIEW_AND_MISTAKE_NOTEBOOK_IMPLEMENTED"
   ],
   "inProgress": [],
   "blocked": [
     "VERIFIED_GLD_IBIT_OPTION_CHAIN_NOT_IMPLEMENTED",
     "QUANTITATIVE_DRIVER_CONNECTORS_NOT_IMPLEMENTED",
     "CALIBRATED_COST_AWARE_OPTION_OUTCOMES_NOT_AVAILABLE",
-    "FULL_ACCOUNT_PORTFOLIO_RISK_RUNTIME_NOT_IMPLEMENTED",
+    "FULL_BROKER_ACCOUNT_PORTFOLIO_RISK_RUNTIME_NOT_IMPLEMENTED",
     "ROBINHOOD_ACCOUNT_ACCESS_PROHIBITED",
-    "PAPER_TRADING_PROHIBITED",
+    "BROKER_PAPER_TRADING_PROHIBITED",
     "ORDER_EXECUTION_PROHIBITED"
   ],
   "frozen": [
     "T3B15_C5_UNCOMMITTED_WORK",
     "ORIGINAL_ALPHA_WORKTREE",
-    "BROKER_ACCOUNT_ORDER_AND_PAPER_TRADING"
+    "BROKER_ACCOUNT_ORDER_AND_BROKER_PAPER_TRADING"
   ],
   "next": [
-    "IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK",
-    "ADD_QUALIFIED_QUANTITATIVE_DRIVERS_AND_OPTIONS_OUTCOME_REPLAY"
+    "QUALIFY_POINT_IN_TIME_GLD_IBIT_OPTION_DATA_FOR_LOCAL_REPLAY",
+    "ADD_ACCOUNT_RULES_SETTLEMENT_AND_INDEPENDENT_COST_AWARE_OUTCOME_EVIDENCE"
   ],
   "productDirection": {
     "currentProduct": "OPTIONS_ONLY_MVP",
-    "currentPhase": "PHASE_2",
+    "currentPhase": "LOCAL_TRADE_LIFECYCLE_V1",
     "phase0Status": "OWNER_APPROVED",
     "phase1Status": "OWNER_APPROVED",
     "permanentMission": [
@@ -139,7 +142,7 @@
     "productRuntime": "TYPESCRIPT",
     "pythonRole": "LEGACY_PRODUCT_AND_INTEGRATION_REMOVED",
     "pythonDashboardStatus": "REMOVED_OWNER_AUTHORIZED",
-    "riskAuthority": "OFFLINE_DIAGNOSTIC_ONLY_FULL_PORTFOLIO_RISK_NOT_IMPLEMENTED"
+    "riskAuthority": "LOCAL_SIMULATION_RISK_ONLY_FULL_BROKER_PORTFOLIO_RISK_NOT_IMPLEMENTED"
   },
   "capitalArchitecture": {
     "status": "COMPATIBILITY_ARCHITECTURE_ONLY",
@@ -273,7 +276,7 @@
     "legacyPythonIntegrationBoundary": "REMOVED_OWNER_AUTHORIZED",
     "decisionEngine": "RETAINED_GENERIC_FOUNDATIONS_PYTHON_RUNTIME_REMOVED",
     "config": "RETAINED_AI_CONFIG_PYTHON_PRODUCT_CONFIG_REMOVED",
-    "riskEngine": "OFFLINE_OPTIONS_DIAGNOSTIC_ONLY_LEGACY_PYTHON_REMOVED",
+    "riskEngine": "OPTIONS_DIAGNOSTIC_AND_LOCAL_SIMULATION_RISK_LEGACY_PYTHON_REMOVED",
     "alpacaMarketDataComponents": "REMOVED_OBSOLETE_FIXED_PRODUCT_LANE",
     "genericTwelveDataBarAdapter": "KEEP",
     "canonicalBarsQuotes": "REUSE",
@@ -312,9 +315,9 @@
   },
   "executionBoundaries": {
     "network": "FIXED_PUBLIC_DRIVER_FEEDS_ONLY",
-    "options": "FIXTURE_CONTEXT_MANUAL_RISK_AND_PUBLIC_HEADLINES_NO_TRADING_RUNTIME",
+    "options": "LOCAL_OPTIONS_SIMULATION_AND_PUBLIC_HEADLINES_NO_BROKER_ACCESS",
     "broker": "CLOSED",
-    "paperTrading": "CLOSED",
+    "paperTrading": "LOCAL_SIMULATION_ONLY_NO_BROKER",
     "orderExecution": "CLOSED",
     "robinhoodAccountRead": "PROHIBITED",
     "robinhoodCredentialRead": "PROHIBITED",
@@ -323,7 +326,7 @@
   },
   "automatedExecutionAllowed": false,
   "ownerDailyProductEntry": "REMOVED_OWNER_AUTHORIZED",
-  "ownerProductEntry": "OPTIONS_FEASIBILITY_AND_DRIVER_MONITOR",
+  "ownerProductEntry": "OPTIONS_LOCAL_LIFECYCLE_FEASIBILITY_AND_DRIVER_MONITOR",
   "validation": {
     "classification": "HISTORICAL_RECORDS_PLUS_PHASE0_R1_AND_PHASE1_NEWS_OBSERVED_ATTEMPTS",
     "phase1aMergedHead": {
@@ -514,9 +517,9 @@
       "liveRunStatus": "NOT_AUTHORIZED"
     }
   },
-  "optionsStatus": "GLD_IBIT_DIAGNOSTIC_AND_DRIVER_MONITOR_IMPLEMENTED_TRADING_RUNTIME_NOT_IMPLEMENTED",
+  "optionsStatus": "GLD_IBIT_LOCAL_SIMULATION_IMPLEMENTED_LIVE_TRADING_NOT_IMPLEMENTED",
   "brokerStatus": "CLOSED",
-  "paperTradingStatus": "CLOSED",
+  "paperTradingStatus": "LOCAL_SIMULATION_ONLY_NO_BROKER",
   "orderExecutionStatus": "CLOSED",
   "ownerOptionsProfile": {
     "profileVersion": "owner-gld-ibit-2026-09-06-v2",
@@ -595,15 +598,51 @@
     "specification": "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md"
   },
   "currentDeliveryValidation": {
-    "classification": "CURRENT_OPTIONS_FOCUS_V2_WORKING_TREE",
+    "classification": "CURRENT_OPTIONS_LOCAL_LIFECYCLE_V1_WORKING_TREE",
     "command": "npm.cmd run alpha:validate",
     "status": "PASSED",
-    "componentCount": 75,
-    "testsExecuted": 1896,
-    "passed": 1896,
+    "componentCount": 79,
+    "testsExecuted": 2047,
+    "passed": 2047,
     "failed": 0,
-    "durationMs": 21185,
-    "evidence": "docs/OPTIONS_FOCUS_V2_DELIVERY.md",
+    "durationMs": 24642,
+    "evidence": "docs/OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md",
     "historicalCountsAreCurrentResult": false
+  },
+  "optionsLocalTradeLifecycle": {
+    "contractVersion": "1.0",
+    "status": "IMPLEMENTED_LOCAL_SIMULATION_ONLY",
+    "authorization": "OWNER_COMPLETE_LOCAL_TRADE_PROCESS_AND_REVIEWS_2026_09_06",
+    "dataOrigins": [
+      "SYNTHETIC_FIXTURE",
+      "UNVERIFIED_IMPORT"
+    ],
+    "contractScope": "STANDARD_100_SHARE_GLD_IBIT_LONG_CALL_PUT_ONLY",
+    "liveVerifiedOptionChain": "NOT_IMPLEMENTED",
+    "planAuthority": "FROZEN_SIX_DIMENSION_THESIS_AND_EXIT_PLAN",
+    "holdingWindow": "INTRADAY_PLANS_ONLY",
+    "timeframeAuthority": "MONTHLY_CONTEXT_DAILY_SETUP_INTRADAY_TIMING_NO_VALIDATED_WEIGHTS",
+    "simulatedFills": "SUBSEQUENT_ELIGIBLE_QUOTE_ASK_BUY_BID_SELL_WITH_COSTS",
+    "cashAccounting": "ENTRY_RESERVATIONS_ONE_OPEN_POSITION_UNSETTLED_SALE_PROCEEDS",
+    "settlementAuthority": "NO_SAME_DAY_REUSE_OR_FABRICATED_SETTLEMENT_CREDIT",
+    "persistenceAuthority": "LOCAL_APPEND_ONLY_SCENARIO_RESULT_REVIEW_HISTORY",
+    "restartRecovery": "RECOMPUTE_AND_COMPARE_STORED_HISTORY",
+    "postTradeReview": "EVERY_CLOSED_TRADE_FACTS_AND_CANDIDATE_CAUSES",
+    "mistakeNotebook": "CANDIDATE_LESSONS_WITH_OBJECTIVE_PRE_ENTRY_GUARDS",
+    "automaticStrategyChanges": "PROHIBITED",
+    "calibratedWinRate": "NOT_AVAILABLE",
+    "outcomeEvidence": "SCRIPTED_ENGINEERING_CASES_NOT_STRATEGY_PERFORMANCE",
+    "simulationRiskGuards": {
+      "sessionRealizedLossLimitInitialEquityBps": 100,
+      "sessionLossBasis": "NET_REALIZED_PNL",
+      "highWaterDrawdownLimitBps": 500,
+      "newEntryRiskMustFitRemainingSessionAndDrawdownBudget": true,
+      "maximumOpenPositions": 1,
+      "classification": "CONSERVATIVE_SIMULATION_ASSUMPTIONS_NOT_PRODUCTION_VALIDATED"
+    },
+    "brokerPaperAccount": "CLOSED",
+    "brokerAccountAccess": "CLOSED",
+    "liveOrderExecutionAllowed": false,
+    "specification": "docs/specifications/OPTIONS_LOCAL_TRADE_LIFECYCLE_V1.md"
   }
 }

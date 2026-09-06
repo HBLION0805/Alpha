@@ -6,6 +6,11 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- A complete local simulated trade lifecycle: GLD/IBIT contract/quote inputs,
+  frozen plans, risk checks, cash reservations, modeled fills/exits and recovery.
+- Every closed trade receives a review and candidate mistake checks for future
+  entries. Synthetic or unverified imports only; no calibrated win rate.
+- Intraday plans, 14-45 day expiries, one position and separate unsettled proceeds.
 - Six official public headline feeds: Federal Reserve, BLS, BEA, ECB, OFAC and SEC.
 - An extensible catalog of 16 driver families and 94 indicators, with mechanisms,
   primary sources, expected release cadence and coverage limitations.
@@ -25,7 +30,7 @@ fill. A USD 25 premium with zero assumed costs, 20% stop and 2R has a USD 5 plan
 loss and USD 10 net profit target. No passing diagnostic authorizes a trade.
 
 The USD 1,000-to-USD 50,000 year-end aspiration is a scenario only and cannot
-increase risk limits. Read [current delivery](docs/OPTIONS_FOCUS_V2_DELIVERY.md)
+increase risk limits. Read [current delivery](docs/OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md)
 and the authoritative [machine status](docs/status/current.json).
 
 ## Run locally
@@ -35,6 +40,10 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:paper -- --demo` | Run scripted round trips and failure cases without saving |
+| `npm run options:paper -- --record-demo` | Save the demo, including restart/resume and trade reviews |
+| `npm run options:paper -- --input fixtures/options-paper/gld-target.json` | Append one local scenario |
+| `npm run options:paper -- --report` | Recompute saved trades, balances, reviews and mistake notebook |
 | `npm run options:feasibility -- --demo` | Compare illustrative options risk/R scenarios |
 | `npm run options:feasibility -- --input fixtures/options-retail-feasibility/gld-normal.json` | Check one manually supplied scenario |
 | `npm run options:drivers -- --catalog` | Show all driver families, indicators and source gaps |
@@ -56,7 +65,15 @@ A public headline is an unverified source assertion. Keyword tags only suggest
 which factors deserve review; they do not establish causality, direction or
 probability. Coverage remains incomplete. No quantitative-driver or verified
 GLD/IBIT option-chain connector, complete portfolio-risk runtime, calibrated
-option-outcome replay or Options Dashboard is implemented yet.
+market-validated option-outcome replay or Options Dashboard is implemented yet.
+
+Local paper history lives in `data/runtime/options-paper/sessions.ndjson`, excluded
+from Git. Each batch preserves its input, result and review. Reopening recomputes
+results and checks the hash chain. Damage or an existing writer lock blocks the
+command; do not erase history or locks to bypass a failure. Only the latest active
+scenario can resume by appending quotes received after its previous as-of time.
+Frozen plans and earlier quotes cannot change. Synthetic and imported cases
+cannot share one account. Sale proceeds remain unsettled; no settlement is invented.
 
 The refresh command is one-shot. A separate hourly Codex heartbeat named
 "GLD and IBIT official information monitoring" is configured for this task. It

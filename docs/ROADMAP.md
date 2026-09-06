@@ -1,11 +1,14 @@
 # Alpha Roadmap
 
-Current delivery is GLD/IBIT Options Driver Monitor and Risk v2. The
+Current delivery is the first GLD/IBIT local options lifecycle. The
 [machine status](status/current.json) is authoritative. See
-[delivery evidence](OPTIONS_FOCUS_V2_DELIVERY.md).
+[delivery evidence](OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md).
 
 ## Implemented
 
+- Contract/quote qualification, frozen plans, simulated round trips, persistent
+  cash/position recovery and per-trade candidate mistake checks. Local synthetic
+  or unverified inputs; intraday plans, one position and 14-45 DTE contracts.
 - Six official public headline feeds, local version history, freshness and
   source-health reporting; 16 driver families and 94 cataloged indicators.
 - Offline R-based economics, cost/tick checks and conservative risk ceilings.
@@ -14,15 +17,15 @@ Current delivery is GLD/IBIT Options Driver Monitor and Risk v2. The
 
 ## Ordered completion work
 
-1. Verified GLD/IBIT option chains: exact contract, strike/expiry/multiplier,
-   executable bid/ask and sizes, fees, session status, IV and Greeks.
+1. Qualify actual GLD/IBIT option-chain and quote-path sources: coverage,
+   licensing, latency, sizes, fees, IV/Greeks and point-in-time provenance.
 2. Quantitative macro and asset-specific connectors with point-in-time vintages,
    release calendars, consensus-surprise inputs where licensed, ETF share/flow
    distinction, COT lags, gold reserves and crypto/on-chain provenance.
 3. Complete account/portfolio/event/drawdown/expiry risk and account-eligible
    structure comparison, with no-trade outcomes when one contract cannot fit.
-4. Locked direction/magnitude/time/volatility/path/risk theses, persistent offline
-   paper decisions and net-cost target-before-stop/time-exit outcomes.
+4. Replace manual synthetic thesis inputs with qualified signals and evaluate
+   net-cost target-before-stop/time-exit outcomes using independent market data.
 5. Walk-forward testing, independent holdouts, calibration, uncertainty and drift
    checks. More headlines cannot substitute for evidence of a trading edge.
 6. An Options Dashboard and expanded operational source monitoring. The initial

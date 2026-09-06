@@ -1,0 +1,92 @@
+{
+  "scenarioId": "demo-liquidity",
+  "contract": {
+    "contractId": "GLD:2026-10-16:CALL:50000",
+    "symbol": "GLD",
+    "optionType": "CALL",
+    "strikePriceCents": 50000,
+    "expiryDate": "2026-10-16",
+    "multiplier": 100,
+    "minimumPriceTickCents": 1,
+    "deliverable": "STANDARD_100_SHARES_USD",
+    "exerciseStyle": "AMERICAN"
+  },
+  "plan": {
+    "planId": "demo-liquidity:plan",
+    "strategyVersion": "research-v1",
+    "setupKey": "directional-intraday-fixture",
+    "createdAt": "2026-09-08T14:25:00.000Z",
+    "entryDeadlineAt": "2026-09-08T14:27:00.000Z",
+    "timeExitAt": "2026-09-08T14:28:00.000Z",
+    "entryLimitPerShareCents": 20,
+    "quantity": 1,
+    "stopLossBps": 2000,
+    "rewardMultipleMilliR": 2000,
+    "entryFeeCents": 10,
+    "exitFeeCents": 10,
+    "exitSlippagePerShareCents": 0,
+    "maxEntrySpreadPerShareCents": 1,
+    "thesis": {
+      "direction": "BULLISH",
+      "magnitude": "Synthetic modest directional move",
+      "horizon": "Intraday engineering scenario",
+      "volatility": "IV is supplied synthetic context; no validated pricing edge",
+      "path": "Scripted quote sequence",
+      "invalidation": "Predefined premium stop or time exit; thesis invalidation is not automatically inferred",
+      "monthlyContext": "Synthetic context only",
+      "dailySetup": "Synthetic directional setup",
+      "intradayTrigger": "Subsequent quote and limit-price condition"
+    }
+  },
+  "quotes": [
+    {
+      "quoteId": "demo-liquidity:q0",
+      "contractId": "GLD:2026-10-16:CALL:50000",
+      "observedAt": "2026-09-08T14:25:00.000Z",
+      "receivedAt": "2026-09-08T14:25:00.000Z",
+      "bidPerShareCents": 19,
+      "askPerShareCents": 20,
+      "bidSizeContracts": 10,
+      "askSizeContracts": 10,
+      "underlyingPriceCents": 50000,
+      "sourceId": "synthetic:alpha-lifecycle-v1",
+      "origin": "SYNTHETIC_FIXTURE",
+      "session": "REGULAR",
+      "ivBps": 4000,
+      "deltaBps": 3000
+    },
+    {
+      "quoteId": "demo-liquidity:q1",
+      "contractId": "GLD:2026-10-16:CALL:50000",
+      "observedAt": "2026-09-08T14:26:00.000Z",
+      "receivedAt": "2026-09-08T14:26:00.000Z",
+      "bidPerShareCents": 19,
+      "askPerShareCents": 20,
+      "bidSizeContracts": 10,
+      "askSizeContracts": 10,
+      "underlyingPriceCents": 50000,
+      "sourceId": "synthetic:alpha-lifecycle-v1",
+      "origin": "SYNTHETIC_FIXTURE",
+      "session": "REGULAR",
+      "ivBps": 4000,
+      "deltaBps": 3000
+    },
+    {
+      "quoteId": "demo-liquidity:q2",
+      "contractId": "GLD:2026-10-16:CALL:50000",
+      "observedAt": "2026-09-08T14:27:00.000Z",
+      "receivedAt": "2026-09-08T14:27:00.000Z",
+      "bidPerShareCents": 16,
+      "askPerShareCents": 17,
+      "bidSizeContracts": 0,
+      "askSizeContracts": 10,
+      "underlyingPriceCents": 50000,
+      "sourceId": "synthetic:alpha-lifecycle-v1",
+      "origin": "SYNTHETIC_FIXTURE",
+      "session": "REGULAR",
+      "ivBps": 4000,
+      "deltaBps": 3000
+    }
+  ],
+  "asOf": "2026-09-08T14:28:00.000Z"
+}

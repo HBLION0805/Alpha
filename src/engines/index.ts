@@ -38,3 +38,6 @@ export * from "./options-retail-feasibility/OptionsRetailFeasibilityEngine";
 export * from "./market-calendar";
 export * from "./options-drivers/OptionsDriverMonitorEngine";
 export * from "./options-drivers/OptionsDriverCatalog";
+export * from "./options-contract-quote/OptionsContractQuoteEngine";
+export * from "./options-paper/OptionsPaperTradingEngine";
+export * from "./options-trade-review/OptionsTradeReviewEngine";

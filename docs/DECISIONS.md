@@ -1,5 +1,24 @@
 # Alpha Architecture Decisions
 
+## 2026-09-06 - Complete the local trade process and review every outcome
+
+- The Owner's latest instruction supersedes the blanket paper-test prohibition
+  for local simulation only. Existing development/commit/push authority persists.
+- Keep an option-specific identity boundary and explicit synthetic/unverified
+  quote origins. First scope is one long GLD/IBIT position, 14-45 DTE and intraday.
+- Reuse retail R calculations; add 1% initial-equity NET session-loss and 5%
+  high-water drawdown entry guards as simulation assumptions. Gains offset losses
+  in the session counter. New R must fit remaining capacity; exits remain allowed.
+- Require later quotes and displayed sizes for modeled fills. Keep pending exits
+  and unsettled proceeds; never invent settlement, exercise or broker executions.
+- Freeze six-dimensional plans and monthly/daily/intraday roles. Evaluate each
+  closed trade, but distinguish observed facts from causal hypotheses. Normal
+  losses are not automatically mistakes; lucky wins do not excuse rule violations.
+- Candidate lessons feed objective pre-entry checks without automatically
+  approving knowledge, changing weights or increasing risk. Preserve and replay
+  accepted inputs; reject retroactive histories and conflicting identifiers.
+- See [reviewed specification](specifications/OPTIONS_LOCAL_TRADE_LIFECYCLE_V1.md).
+
 ## 2026-09-06 - Options-only risk v2 and bounded public driver monitoring
 
 - Apply the Owner's latest 1.5R-2R target preference and request to reconsider

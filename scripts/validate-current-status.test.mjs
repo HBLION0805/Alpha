@@ -163,7 +163,7 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("capitalArchitecture.automaticTransfer must equal \"PROHIBITED\"."));
     assert(validation.issues.includes("riskPolicyRecord.executionAuthority must equal \"NONE\"."));
-    assert(validation.issues.includes("executionBoundaries.paperTrading must equal \"CLOSED\"."));
+    assert(validation.issues.includes("executionBoundaries.paperTrading must equal \"LOCAL_SIMULATION_ONLY_NO_BROKER\"."));
     assert(validation.issues.includes("automatedExecutionAllowed must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history keeps live and execution authority closed", () => {
@@ -191,11 +191,11 @@ const tests = [
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.networkAuthority must equal \"NOT_GRANTED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.credentialAccess must equal \"PROHIBITED\"."));
     assert(validation.issues.includes("frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.marketDataAcquisition must equal \"D3B_IMPLEMENTATION_NOT_STARTED\"."));
-    assert(validation.issues.includes("optionsStatus must equal \"GLD_IBIT_DIAGNOSTIC_AND_DRIVER_MONITOR_IMPLEMENTED_TRADING_RUNTIME_NOT_IMPLEMENTED\"."));
+    assert(validation.issues.includes("optionsStatus must equal \"GLD_IBIT_LOCAL_SIMULATION_IMPLEMENTED_LIVE_TRADING_NOT_IMPLEMENTED\"."));
     assert(validation.issues.includes("brokerStatus must equal \"CLOSED\"."));
-    assert(validation.issues.includes("paperTradingStatus must equal \"CLOSED\"."));
+    assert(validation.issues.includes("paperTradingStatus must equal \"LOCAL_SIMULATION_ONLY_NO_BROKER\"."));
     assert(validation.issues.includes("orderExecutionStatus must equal \"CLOSED\"."));
-    assert(validation.issues.includes("executionBoundaries.options must equal \"FIXTURE_CONTEXT_MANUAL_RISK_AND_PUBLIC_HEADLINES_NO_TRADING_RUNTIME\"."));
+    assert(validation.issues.includes("executionBoundaries.options must equal \"LOCAL_OPTIONS_SIMULATION_AND_PUBLIC_HEADLINES_NO_BROKER_ACCESS\"."));
     assert(validation.issues.includes("ownerDailyProductEntry must equal \"REMOVED_OWNER_AUTHORIZED\"."));
     assert(validation.issues.includes("worktreeIsolation.t3b15C5Included must equal false."));
   }],
@@ -213,11 +213,11 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_DIAGNOSTIC_ONLY\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_LOCAL_SIMULATION_ONLY\"."));
     assert(validation.issues.includes("currentMilestone.phase0ApprovedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
     assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
     assert(validation.issues.includes("productDirection.phase1Status must equal \"OWNER_APPROVED\"."));
-    assert(validation.issues.includes("next must contain the ordered verified option-data/risk and quantitative-driver/outcome-replay work."));
+    assert(validation.issues.includes("next must contain the ordered option-data qualification and account-rule/outcome-evidence work."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
@@ -326,8 +326,8 @@ const tests = [
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
     assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "53a905a5f8360afeea1d24eaa084110f6ef85bdc");
-    assert.equal(status.source.implementation_baseline, "GLD_IBIT_FEASIBILITY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
+    assert.equal(status.source.source_baseline_commit, "4e27789b297cc8bff759fe3d3a66396497fbc6af");
+    assert.equal(status.source.implementation_baseline, "GLD_IBIT_FOCUS_V2_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3APostMergeCorrection, "VERIFIED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B, "DESIGN_APPROVED");
@@ -335,7 +335,7 @@ const tests = [
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
     assert.equal(status.legacyProductLanes.etfDailyScan.status, "REMOVED_OWNER_AUTHORIZED");
-    assert.deepEqual(status.next, ["IMPLEMENT_GLD_IBIT_VERIFIED_OPTION_DATA_AND_RISK", "ADD_QUALIFIED_QUANTITATIVE_DRIVERS_AND_OPTIONS_OUTCOME_REPLAY"]);
+    assert.deepEqual(status.next, ["QUALIFY_POINT_IN_TIME_GLD_IBIT_OPTION_DATA_FOR_LOCAL_REPLAY", "ADD_ACCOUNT_RULES_SETTLEMENT_AND_INDEPENDENT_COST_AWARE_OUTCOME_EVIDENCE"]);
     assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
@@ -392,8 +392,8 @@ const tests = [
     assertInvalid(changed, schema, "$.validation.phase1bD3AMergedHead.source_baseline_commit must equal schema const \"bae51dda65dc55f376cb683f873fa93295ed7e2f\".");
   }],
   ["v2 records 20% research stop, net 1.5R-2R and separate account and stress limits", () => {
-    assert.equal(status.schemaVersion, "1.16");
-    assert.equal(status.currentMilestone.id, "GLD_IBIT_OPTIONS_DRIVER_MONITOR_AND_RISK_V2");
+    assert.equal(status.schemaVersion, "1.17");
+    assert.equal(status.currentMilestone.id, "LOCAL_OPTIONS_TRADE_LIFECYCLE_V1");
     assert.equal(status.ownerOptionsProfile.plannedStopBps, 2000);
     assert.equal(status.ownerOptionsProfile.minimumStopBps, 1000);
     assert.equal(status.ownerOptionsProfile.maximumStopBps, 2500);
@@ -449,7 +449,7 @@ const tests = [
     const manifest = JSON.parse(readFileSync(resolve(root, "docs/OPTIONS_FOCUS_DELETION_MANIFEST.json"), "utf8"));
     assert.equal(status.legacyProductLanes.removedFileCount, manifest.deletedFileCount);
     assert.equal(status.legacyProductLanes.removedFileCount, 292);
-    assert.equal(status.ownerProductEntry, "OPTIONS_FEASIBILITY_AND_DRIVER_MONITOR");
+    assert.equal(status.ownerProductEntry, "OPTIONS_LOCAL_LIFECYCLE_FEASIBILITY_AND_DRIVER_MONITOR");
     const changed = clone(status);
     changed.legacyProductLanes.eventContract.status = "FROZEN_PRODUCT_ENTRY_CODE_RETAINED";
     changed.moduleDisposition.alpacaMarketDataComponents = "KEEP";
@@ -471,6 +471,108 @@ const tests = [
       const invalid = clone(changed); Object.assign(invalid.currentDeliveryValidation, overrides);
       assert.equal(validateCurrentStatus(invalid, schema).valid, false);
     }
+  }],
+  ["local simulation authorization remains separate from brokerage paper and live orders", () => {
+    assert.equal(status.paperTradingStatus, "LOCAL_SIMULATION_ONLY_NO_BROKER");
+    assert.equal(status.executionBoundaries.paperTrading, "LOCAL_SIMULATION_ONLY_NO_BROKER");
+    assert.equal(status.optionsLocalTradeLifecycle.brokerPaperAccount, "CLOSED");
+    assert.equal(status.optionsLocalTradeLifecycle.brokerAccountAccess, "CLOSED");
+    assert.equal(status.optionsLocalTradeLifecycle.liveOrderExecutionAllowed, false);
+    assert.equal(status.blocked.includes("PAPER_TRADING_PROHIBITED"), false);
+    assert(status.blocked.includes("BROKER_PAPER_TRADING_PROHIBITED"));
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsLocalTradeLifecycle = {};
+    changed.optionsLocalTradeLifecycle.brokerPaperAccount = "AUTHORIZED";
+    changed.optionsLocalTradeLifecycle.brokerAccountAccess = "AUTHORIZED";
+    changed.optionsLocalTradeLifecycle.liveOrderExecutionAllowed = true;
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["brokerPaperAccount", "brokerAccountAccess", "liveOrderExecutionAllowed"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsLocalTradeLifecycle.${field}`)));
+    }
+  }],
+  ["synthetic and unverified quote data cannot claim live market performance", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsLocalTradeLifecycle = {};
+    changed.optionsLocalTradeLifecycle.dataOrigins = ["VERIFIED_LIVE"];
+    changed.optionsLocalTradeLifecycle.liveVerifiedOptionChain = "IMPLEMENTED";
+    changed.optionsLocalTradeLifecycle.calibratedWinRate = 0.8;
+    changed.optionsLocalTradeLifecycle.outcomeEvidence = "PROVEN_STRATEGY_PERFORMANCE";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["dataOrigins", "liveVerifiedOptionChain", "calibratedWinRate", "outcomeEvidence"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsLocalTradeLifecycle.${field}`)));
+    }
+  }],
+  ["simulation guard settings and their unvalidated classification cannot drift", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsLocalTradeLifecycle = {};
+    changed.optionsLocalTradeLifecycle.simulationRiskGuards = {
+      sessionRealizedLossLimitInitialEquityBps: 1000,
+      highWaterDrawdownLimitBps: 5000,
+      maximumOpenPositions: 10,
+      classification: "PRODUCTION_VALIDATED",
+    };
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.some((issue) => issue.includes("optionsLocalTradeLifecycle.simulationRiskGuards")));
+  }],
+  ["intraday holding and remaining net-session risk constraints cannot drift", () => {
+    assert.equal(status.optionsLocalTradeLifecycle.holdingWindow, "INTRADAY_PLANS_ONLY");
+    assert.equal(status.optionsLocalTradeLifecycle.simulationRiskGuards.sessionLossBasis, "NET_REALIZED_PNL");
+    assert.equal(status.optionsLocalTradeLifecycle.simulationRiskGuards.newEntryRiskMustFitRemainingSessionAndDrawdownBudget, true);
+    for (const change of [
+      (value) => { value.holdingWindow = "OVERNIGHT_AND_MULTI_MONTH"; },
+      (value) => { value.simulationRiskGuards.sessionLossBasis = "GROSS_LOSSES_WITHOUT_PROFIT_OFFSETS"; },
+      (value) => { value.simulationRiskGuards.newEntryRiskMustFitRemainingSessionAndDrawdownBudget = false; },
+    ]) {
+      const changed = clone(status); const weakened = clone(schema);
+      weakened.$defs.optionsLocalTradeLifecycle = {};
+      change(changed.optionsLocalTradeLifecycle);
+      const validation = validateCurrentStatus(changed, weakened);
+      assert.equal(validation.valid, false);
+      assert(validation.issues.some((issue) => issue.includes("optionsLocalTradeLifecycle.")));
+    }
+  }],
+  ["reviews and mistake candidates cannot become automatic strategy approval", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsLocalTradeLifecycle = {};
+    changed.optionsLocalTradeLifecycle.postTradeReview = "LOSING_TRADES_ONLY";
+    changed.optionsLocalTradeLifecycle.mistakeNotebook = "AUTOMATICALLY_APPROVED_KNOWLEDGE";
+    changed.optionsLocalTradeLifecycle.automaticStrategyChanges = "ENABLED";
+    changed.optionsLocalTradeLifecycle.timeframeAuthority = "VALIDATED_MONTHLY_WEIGHT_80_PERCENT";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["postTradeReview", "mistakeNotebook", "automaticStrategyChanges", "timeframeAuthority"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsLocalTradeLifecycle.${field}`)));
+    }
+  }],
+  ["local cash and persistence limitations cannot imply settlement or broker reconstruction", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsLocalTradeLifecycle = {};
+    changed.optionsLocalTradeLifecycle.settlementAuthority = "BROKER_T_PLUS_ONE_CERTIFIED";
+    changed.optionsLocalTradeLifecycle.cashAccounting = "IMMEDIATE_SALE_PROCEEDS_REUSE";
+    changed.optionsLocalTradeLifecycle.simulatedFills = "GUARANTEED_STOP_PRICE";
+    changed.optionsLocalTradeLifecycle.persistenceAuthority = "MUTABLE_RESULT_REWRITES_ALLOWED";
+    changed.optionsLocalTradeLifecycle.restartRecovery = "TRUST_STORED_RESULT_WITHOUT_REPLAY";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["settlementAuthority", "cashAccounting", "simulatedFills", "persistenceAuthority", "restartRecovery"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsLocalTradeLifecycle.${field}`)));
+    }
+  }],
+  ["new lifecycle fields remain declared, mandatory and restricted to GLD and IBIT", () => {
+    const missing = clone(status);
+    delete missing.optionsLocalTradeLifecycle;
+    assert.equal(validateCurrentStatus(missing, schema).valid, false);
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsLocalTradeLifecycle = {};
+    changed.optionsLocalTradeLifecycle.contractScope = "ANY_SYMBOL_AND_ADJUSTED_DELIVERABLES";
+    changed.optionsLocalTradeLifecycle.brokerCredentialPath = "caller-supplied";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    assert(validation.issues.some((issue) => issue.includes("optionsLocalTradeLifecycle.contractScope")));
+    assert(validation.issues.some((issue) => issue.includes("optionsLocalTradeLifecycle.brokerCredentialPath")));
   }],
 ];
 

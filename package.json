@@ -72,7 +72,12 @@
     "test:options-focus-scope": "node scripts/options-focus-scope.test.mjs",
     "options:drivers": "tsx scripts/options-drivers.mjs",
     "test:options-drivers": "tsx src/engines/options-drivers/OptionsDriverMonitorEngine.test.ts",
-    "test:options-drivers-io": "node scripts/options-drivers.test.mjs"
+    "test:options-drivers-io": "node scripts/options-drivers.test.mjs",
+    "options:paper": "tsx scripts/options-paper.mjs",
+    "test:options-contract-quote": "tsx src/engines/options-contract-quote/OptionsContractQuoteEngine.test.ts",
+    "test:options-paper": "tsx src/engines/options-paper/OptionsPaperTradingEngine.test.ts",
+    "test:options-paper-io": "tsx scripts/options-paper.test.mjs",
+    "test:options-trade-review": "tsx src/engines/options-trade-review/OptionsTradeReviewEngine.test.ts"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

@@ -86,9 +86,29 @@ from reappearing. Historical documents link deleted code to fixed Git snapshots.
 
 ## Completion gates
 
+The local trade-process foundation is implemented. `OptionsContractQuoteEngine`
+qualifies local contract and quote inputs. `OptionsPaperTradingEngine` reuses
+retail economics and adds one-position cash reservations, 14-45 DTE intraday
+plans, later-quote fills, sticky stop/time exits and unsettled proceeds. An order
+can consume its own reserved cash; a later order cannot reuse sale proceeds.
+Net realized session loss is limited to 1% of initial paper equity, with gains
+offsetting losses. The high-water drawdown limit is 5%. New R must fit remaining
+capacity. These are simulation rules, not validated production recommendations.
+
+`LocalOptionsPaperRepository` saves one scenario revision and replay result per
+hash-linked batch, with bounded size and a writer lock. Handles expire when the
+lock scope closes. Reopening recomputes outputs. New data must arrive after the
+prior as-of cutoff, and new plans cannot displace an unresolved position/order.
+No hypothetical fill, settlement credit or exercise result repairs missing data.
+
+`OptionsTradeReviewEngine` reviews all closed trades, including wins and normal
+losses. Objective pre-entry checks link time-qualified candidate lessons. Exit
+mechanisms and accounting facts do not establish why a market moved. Monthly,
+daily and intraday roles are frozen narrative inputs, not learned signal weights.
+
 Verified GLD/IBIT contract metadata and executable option chains, qualified
-quantitative driver connectors, a complete account/portfolio risk runtime,
-locked six-dimensional decision plans, persistent paper decisions, cost-aware
-path replay, calibration and an Options Dashboard remain to be implemented.
+quantitative driver connectors, complete account/event/settlement/exercise rules,
+validated decision signals, independent historical/forward outcomes, calibration
+and an Options Dashboard remain to be implemented.
 The USD 50,000 aspiration never grants a risk override. See the
 [v2 specification](specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md).

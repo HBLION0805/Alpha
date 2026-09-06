@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## 2026-09-06 - First local options lifecycle and mistake notebook
+
+- Added strict GLD/IBIT standard contract/quote inputs, frozen plans, modeled
+  limit entries and exits, fees/slippage, cash reservations and unsettled proceeds.
+- Added replay-checked persistent history, idempotent commands, active-position
+  recovery and rejection of retroactive quote/frozen-plan changes.
+- Added every-closed-trade reviews and candidate mistake guards without automatic
+  strategy, risk or timeframe-weight changes. Local simulation is now permitted;
+  brokerage accounts and real orders remain closed.
+- Added scripted full-process demos and scope/financial/persistence regressions.
+  See [delivery evidence](OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md).
+
 ## 2026-09-06 - GLD / IBIT risk v2, public drivers and product scope cleanup
 
 - Replaced the historical 2% stop and fixed 50% target diagnostic with a 20%
