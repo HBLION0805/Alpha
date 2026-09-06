@@ -1,22 +1,22 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.19",
-  "statusId": "alpha-status:gld-ibit-historical-sampled-replay-v1",
-  "asOf": "2026-09-06T22:47:12.795Z",
+  "schemaVersion": "1.20",
+  "statusId": "alpha-status:gld-ibit-research-input-preparation-v1",
+  "asOf": "2026-09-06T23:36:35.000Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/codex/gld-ibit-options-foundation",
-    "source_baseline_commit": "4db85e97db53b104191b1e097cf47624f77de9f6",
-    "implementation_baseline": "OPTIONS_MARKET_EVIDENCE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
+    "source_baseline_commit": "684a2625c0142fdb68472ff32ff49a44cc0e6922",
+    "implementation_baseline": "OPTIONS_HISTORICAL_REPLAY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
     "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
   },
   "currentMilestone": {
-    "id": "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1",
-    "name": "GLD / IBIT Historical Sampled Replay v1",
-    "status": "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE",
-    "authorizedBy": "OWNER_START_GLD_IBIT_HISTORICAL_REPLAY_2026_09_06",
-    "implementationBaseline": "4db85e97db53b104191b1e097cf47624f77de9f6",
+    "id": "OPTIONS_RESEARCH_INPUT_PREPARATION_V1",
+    "name": "GLD / IBIT Research Input Preparation v1",
+    "status": "IMPLEMENTED_PREPARATION_ACTUAL_DATA_UNAVAILABLE",
+    "authorizedBy": "OWNER_CONTINUE_RESEARCH_PREPARATION_2026_09_06",
+    "implementationBaseline": "684a2625c0142fdb68472ff32ff49a44cc0e6922",
     "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
@@ -52,7 +52,8 @@
     "GLD_IBIT_LOCAL_TRADE_LIFECYCLE_IMPLEMENTED",
     "GLD_IBIT_POST_TRADE_REVIEW_AND_MISTAKE_NOTEBOOK_IMPLEMENTED",
     "GLD_IBIT_LOCAL_MARKET_EVIDENCE_IMPORT_AND_REPLAY_GATE_IMPLEMENTED",
-    "GLD_IBIT_HISTORICAL_SAMPLED_REPLAY_AND_REVIEW_IMPLEMENTED"
+    "GLD_IBIT_HISTORICAL_SAMPLED_REPLAY_AND_REVIEW_IMPLEMENTED",
+    "GLD_IBIT_RESEARCH_INPUT_LINKING_AND_DATED_BROKER_FEES_IMPLEMENTED"
   ],
   "inProgress": [],
   "blocked": [
@@ -70,12 +71,13 @@
     "BROKER_ACCOUNT_ORDER_AND_BROKER_PAPER_TRADING"
   ],
   "next": [
-    "ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_SAMPLE_WITH_OWNER_DATA_COST_DECISION",
+    "CONTINUE_LOCAL_PREPARATION_PAID_DATA_DEFERRED_BY_OWNER",
+    "ASSESS_AUTHORIZED_READ_ONLY_GLD_IBIT_DATA_ROUTE_WITHOUT_PAID_PROCUREMENT",
     "RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"
   ],
   "productDirection": {
     "currentProduct": "OPTIONS_ONLY_MVP",
-    "currentPhase": "HISTORICAL_SAMPLED_REPLAY_V1",
+    "currentPhase": "RESEARCH_INPUT_PREPARATION_V1",
     "phase0Status": "OWNER_APPROVED",
     "phase1Status": "OWNER_APPROVED",
     "permanentMission": [
@@ -600,15 +602,15 @@
     "specification": "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md"
   },
   "currentDeliveryValidation": {
-    "classification": "CURRENT_OPTIONS_HISTORICAL_REPLAY_V1_WORKING_TREE",
+    "classification": "CURRENT_OPTIONS_RESEARCH_PREPARATION_V1_WORKING_TREE",
     "command": "npm.cmd run alpha:validate",
     "status": "PASSED",
-    "componentCount": 86,
-    "testsExecuted": 2302,
-    "passed": 2302,
+    "componentCount": 89,
+    "testsExecuted": 2369,
+    "passed": 2369,
     "failed": 0,
-    "durationMs": 43373,
-    "evidence": "docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md",
+    "durationMs": 41060,
+    "evidence": "docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md",
     "historicalCountsAreCurrentResult": false
   },
   "optionsLocalTradeLifecycle": {
@@ -745,5 +747,28 @@
       "sourceDataRights": "NOT_ACQUIRED"
     },
     "specification": "docs/specifications/OPTIONS_HISTORICAL_REPLAY_V1.md"
+  },
+  "optionsResearchPreparation": {
+    "engineVersion": "INPUT_PREPARATION_V1",
+    "status": "IMPLEMENTED_INPUT_LINKING_ONLY",
+    "sourceLineage": "EXTRACTION_MANIFEST_CHILD_HASH_METADATA_CONFIG_CONSISTENCY",
+    "parentFileReverified": false,
+    "publisherAuthenticated": false,
+    "dataRightsVerified": false,
+    "actualTargetData": "NOT_ACQUIRED",
+    "actualQuoteReplay": "NOT_RUN",
+    "persistence": "OPTIONAL_IMMUTABLE_LOCAL_PREPARATION_ARTIFACT",
+    "existingJournals": "UNCHANGED",
+    "feeEngineVersion": "ROBINHOOD_OPTION_FEE_ESTIMATE_V1",
+    "feeResearchDate": "2026-09-04",
+    "feeAuthority": "PUBLIC_SCHEDULE_SINGLE_EXECUTION_ESTIMATE_NOT_BROKER_CONFIRMATION",
+    "robinhoodDataRoute": "OFFICIAL_OPTIONS_MCP_DOCUMENTED_NOT_CONNECTED_HISTORICAL_NBBO_UNVERIFIED",
+    "brokerAccountVerified": false,
+    "purchaseAction": "ADD_TO_CART_REJECTED_BY_AUTOMATIC_APPROVAL_REVIEW",
+    "purchaseApproval": "OWNER_DEFERRED_PAID_DATA_CONTINUE_LOCAL_PREPARATION",
+    "purchaseCompleted": false,
+    "executionAllowed": false,
+    "winProbability": null,
+    "specification": "docs/specifications/OPTIONS_RESEARCH_INPUT_PREPARATION_V1.md"
   }
 }

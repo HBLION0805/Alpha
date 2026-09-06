@@ -6,6 +6,12 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Research input preparation links an extraction manifest, exact child bytes,
+  source metadata and frozen plan, with optional immutable local records.
+  INPUTS_LINKED_FOR_RESEARCH means coherent declarations, not validated trading inputs.
+- A dated Robinhood fee reference estimates one ordinary GLD/IBIT option execution
+  on September 4, 2026, preserving component rounding and sale-proceeds dependence.
+  It does not automatically change existing replay fees.
 - Independent historical interval research: frozen GLD/IBIT plans, explicit
   contract/session/cost assumptions, later-snapshot modeled fills, unresolved
   positions and a process review for every outcome. Runs use isolated USD 1,000
@@ -40,8 +46,12 @@ fill. A USD 25 premium with zero assumed costs, 20% stop and 2R has a USD 5 plan
 loss and USD 10 net profit target. No passing diagnostic authorizes a trade.
 
 The USD 1,000-to-USD 50,000 year-end aspiration is a scenario only and cannot
-increase risk limits. Read [current delivery](docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md)
+increase risk limits. Read [current delivery](docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md),
+the [dated broker reference](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md)
 and the authoritative [machine status](docs/status/current.json).
+
+The Owner's current direction is to defer paid market data and continue preparing
+the local workflow. No data purchase is pending.
 
 ## Run locally
 
@@ -50,6 +60,10 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:research-preflight -- --manifest <JSON> --metadata <JSON> --config <JSON>` | Check source/selection/plan linkage without importing or replaying |
+| `npm run options:research-preflight -- --manifest <JSON> --metadata <JSON> --config <JSON> --save` | Preserve an immutable preparation record with its original clock |
+| `npm run options:broker-reference -- --reference` | Show the dated broker research scope and limits |
+| `npm run options:broker-reference -- --fees <JSON>` | Estimate fees for one supported September 4, 2026 execution |
 | `npm run options:historical-replay -- --demo` | Run isolated synthetic historical research cases without saving |
 | `npm run options:historical-replay -- --record-demo` | Save synthetic research runs, reviews and candidate lessons separately |
 | `npm run options:historical-replay -- --input <config JSON>` | Look up an imported dataset and record a research result, including missing-data blockers |
@@ -79,6 +93,16 @@ first checking whether another monitor is running. History is bounded at 16 MiB;
 rotation/export requires a reviewed operation rather than silent deletion.
 
 ## Boundaries
+
+Preparation validates child hashes, selected contracts/dates, metadata, plan
+linkage and chronology. Saved artifacts live under the ignored research
+`preparations/` directory. Same-ID repeats preserve the first clock; changed inputs
+or corrupt/partial artifacts fail. Parent source hashes remain linked manifest
+claims because preparation does not reread the parent. A linked package does not
+certify rights, contract listing, affordability, liquidity, fees or an account.
+It neither imports evidence nor runs a trade simulation. The separate fee estimator
+is limited to its reviewed date and single-execution assumptions; old journals,
+engine outputs and frozen cost inputs remain unchanged.
 
 Historical research lives in `data/runtime/options-historical-replay/runs.ndjson`.
 It preserves source snapshot times, actual import time and actual run-recording
@@ -117,6 +141,13 @@ which factors deserve review; they do not establish causality, direction or
 probability. Coverage remains incomplete. No quantitative-driver or verified
 GLD/IBIT option-chain connector, complete portfolio-risk runtime, calibrated
 market-validated option-outcome replay or Options Dashboard is implemented yet.
+
+Robinhood's current official Trading MCP documents option historical OHLC bars,
+real-time quotes and contract lookup. It is not connected to Alpha. Public
+documentation does not establish historical bid/ask sizes, retention or GLD/IBIT
+entitlements. Assess authorized read-only capabilities before treating paid Cboe
+data as the only route; OHLC bars cannot substitute for missing quote-side data.
+See the [public-source review](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
 
 Local paper history lives in `data/runtime/options-paper/sessions.ndjson`, excluded
 from Git. Each batch preserves its input, result and review. Reopening recomputes

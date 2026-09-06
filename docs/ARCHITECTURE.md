@@ -71,6 +71,23 @@ importer's 4 MiB / 10,000-row limits. Empty selections produce NO_MATCH evidence
 Exclusive output creation and integrity checks prevent silent partial rewrites.
 Selection remains retrospective and cannot authenticate a source or its usage rights.
 
+`options-research-preflight.mjs` composes the existing validators without changing
+their outputs. It verifies a workspace extraction manifest, exact child hash and
+counts, session/contract selection, source metadata and frozen configuration.
+Only the literal child path under the checked extraction directory is read;
+the parent hash is retained as a manifest claim and the parent path is not followed.
+Manifest/extraction/preparation chronology is checked. Its evidence candidate uses
+the actual preparation clock and is explicitly not a saved market import.
+
+INPUTS_LINKED_FOR_RESEARCH means internally coherent declarations. It does not
+certify rights, source identity, contract terms, calendar, costs, affordability,
+liquidity or brokerage eligibility. The command cannot append a market/replay
+journal or create fills. Optional `--save` publishes an exclusive, bounded artifact
+under research `preparations/`, with semantic input identity and full output hash.
+Recovery checks current supplied bytes, recomputes the original-clock report and
+preserves that clock on an identical repeat. Changed inputs under one run ID and
+partial/corrupt artifacts fail visibly.
+
 Canonical Instruments, Quotes, Bars, provider registration/composition and
 reusable Twelve Data foundations remain. The old verified-snapshot product
 composition depended on removed Daily Scan modules. Its calendar contracts and
@@ -100,6 +117,16 @@ No stop guarantees a fill or loss cap. Account eligibility, settled-cash proof,
 aggregate exposure, event/drawdown limits, expiry and exercise still require a
 complete risk runtime. An economic pass is not trade permission. An AI score
 cannot authorize 10% allocation or extend the holding plan.
+
+`OptionsBrokerFeeEngine` provides a separate reference estimate for one ordinary,
+nonprofessional GLD/IBIT option execution on 2026-09-04. Integer arithmetic retains
+sale-principal-dependent SEC fees and the distinct component rounding rules.
+Unsupported dates and fragmented executions are outside its reviewed scope.
+`options-broker-reference.mjs` exposes reference/fee commands; it does not modify
+the original economics engines or automatically insert costs into a frozen replay.
+Contract, session, order and account findings are dated evidence, not account
+verification. See [preparation delivery](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md)
+and [broker research reference](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
 
 ## Independent historical interval research
 
@@ -183,5 +210,10 @@ Verified GLD/IBIT contract metadata and executable option chains, qualified
 quantitative driver connectors, complete account/event/settlement/exercise rules,
 validated decision signals, independent historical/forward outcomes, calibration
 and an Options Dashboard remain to be implemented.
+Robinhood's documented Trading MCP offers option contract lookup, real-time quotes
+and historical OHLC tools, but no connector or authenticated access is implemented.
+The public descriptions do not prove historical bid/ask/size coverage or the
+Owner's entitlement. A separately authorized read-only capability assessment is
+a candidate next source step; OHLC cannot be relabeled as quote-side evidence.
 The USD 50,000 aspiration never grants a risk override. See the
 [v2 specification](specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md).

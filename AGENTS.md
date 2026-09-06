@@ -80,6 +80,8 @@ Push
 
 ## Current Implemented Systems
 
+- Local research input preparation: source manifest/child/metadata/config linkage, explicit blockers and immutable preparation artifacts; INPUTS_LINKED_FOR_RESEARCH is not market validation
+- Dated Robinhood single-execution fee estimates for September 4, 2026 and primary-source contract/calendar/order/account reference; no automatic change to accepted replay fee inputs
 - Independent GLD/IBIT historical interval research: frozen counterfactual plans, declared contract/session/cost assumptions, later-snapshot assumed fills, isolated USD 1,000 accounts, all-outcome reviews and candidate lessons using actual recording time
 - Bounded local source extraction: one session / up to four declared contracts, source/child hashes and selection/row-count manifest; no actual target-ETF dataset has been acquired
 - GLD/IBIT source-format market evidence: Cboe DataShop local CSV import, source/time/nullable-liquidity checks, independent integrity journal and explicit NO_REPLAY gate; no actual authorized file or API has been provided
@@ -99,6 +101,12 @@ The Owner authorized removal of the unrelated Python, Event Contract/Kalshi and 
 Only the six fixed public headline feeds have live read-only access. Numerical driver connectors, verified GLD/IBIT option chains, complete portfolio enforcement, calibrated outcomes, brokerage access and order execution are not implemented. Local NDJSON persistence is single-process. An hourly Codex heartbeat checks the public feeds while the local computer/app and worktree are available; it does not execute trades. See docs/HANDOFF.md and docs/status/current.json for current evidence.
 
 Historical research has its own versioned engine and journal. It retains original source clocks and actual import/run-recording clocks; plan and subset selection are retrospective declarations. Every fill is assumed, missing or zero sizes cannot be invented, and unresolved positions remain unresolved. Do not alter the original market-evidence NO_REPLAY gate or old paper/review fingerprints. Research lessons are candidates recorded in actual research time, not verified historical knowledge or authority to change a strategy. See docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md for delivery evidence and remaining actual-data requirements.
+
+Preparation links declarations and retains the actual preparation clock; it does not import data, authenticate the parent source, run a replay or grant authority. Preserve accepted preparation artifacts and existing journals. Dated fee estimates cannot silently update frozen plans. See [preparation delivery](docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and [Robinhood research reference](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
+
+Robinhood's official Trading MCP now documents options tools, but Alpha is not connected. Its public historical-data description is OHLC, not confirmed historical bid/ask sizes. Assess an authorized read-only capability/schema review before assuming a paid provider is the only data route; public documentation is not account access, entitlement or execution authority.
+
+On 2026-09-06, the Owner deferred paid market data and directed continued local workflow preparation. The earlier capped purchase question is resolved; continue the authorized local work without another procurement request.
 
 For the current GLD/IBIT work, the Owner explicitly authorized development, saving, commits and pushes without further confirmation. This recorded authorization satisfies the Git workflow above; it does not authorize brokerage transactions.
 

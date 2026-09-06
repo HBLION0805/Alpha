@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.19",
+  "$id": "https://alpha.local/schemas/project-status/1.20",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -43,11 +43,12 @@
     "currentDeliveryValidation",
     "optionsLocalTradeLifecycle",
     "optionsMarketEvidence",
-    "optionsHistoricalReplay"
+    "optionsHistoricalReplay",
+    "optionsResearchPreparation"
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.19" },
+    "schemaVersion": { "const": "1.20" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -94,9 +95,102 @@
     },
     "optionsLocalTradeLifecycle": { "$ref": "#/$defs/optionsLocalTradeLifecycle" },
     "optionsMarketEvidence": { "$ref": "#/$defs/optionsMarketEvidence" },
-    "optionsHistoricalReplay": { "$ref": "#/$defs/optionsHistoricalReplay" }
+    "optionsHistoricalReplay": { "$ref": "#/$defs/optionsHistoricalReplay" },
+    "optionsResearchPreparation": { "$ref": "#/$defs/optionsResearchPreparation" }
   },
   "$defs": {
+    "optionsResearchPreparation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engineVersion",
+        "status",
+        "sourceLineage",
+        "parentFileReverified",
+        "publisherAuthenticated",
+        "dataRightsVerified",
+        "actualTargetData",
+        "actualQuoteReplay",
+        "persistence",
+        "existingJournals",
+        "feeEngineVersion",
+        "feeResearchDate",
+        "feeAuthority",
+        "robinhoodDataRoute",
+        "brokerAccountVerified",
+        "purchaseAction",
+        "purchaseApproval",
+        "purchaseCompleted",
+        "executionAllowed",
+        "winProbability",
+        "specification"
+      ],
+      "properties": {
+        "engineVersion": {
+          "const": "INPUT_PREPARATION_V1"
+        },
+        "status": {
+          "const": "IMPLEMENTED_INPUT_LINKING_ONLY"
+        },
+        "sourceLineage": {
+          "const": "EXTRACTION_MANIFEST_CHILD_HASH_METADATA_CONFIG_CONSISTENCY"
+        },
+        "parentFileReverified": {
+          "const": false
+        },
+        "publisherAuthenticated": {
+          "const": false
+        },
+        "dataRightsVerified": {
+          "const": false
+        },
+        "actualTargetData": {
+          "const": "NOT_ACQUIRED"
+        },
+        "actualQuoteReplay": {
+          "const": "NOT_RUN"
+        },
+        "persistence": {
+          "const": "OPTIONAL_IMMUTABLE_LOCAL_PREPARATION_ARTIFACT"
+        },
+        "existingJournals": {
+          "const": "UNCHANGED"
+        },
+        "feeEngineVersion": {
+          "const": "ROBINHOOD_OPTION_FEE_ESTIMATE_V1"
+        },
+        "feeResearchDate": {
+          "const": "2026-09-04"
+        },
+        "feeAuthority": {
+          "const": "PUBLIC_SCHEDULE_SINGLE_EXECUTION_ESTIMATE_NOT_BROKER_CONFIRMATION"
+        },
+        "robinhoodDataRoute": {
+          "const": "OFFICIAL_OPTIONS_MCP_DOCUMENTED_NOT_CONNECTED_HISTORICAL_NBBO_UNVERIFIED"
+        },
+        "brokerAccountVerified": {
+          "const": false
+        },
+        "purchaseAction": {
+          "const": "ADD_TO_CART_REJECTED_BY_AUTOMATIC_APPROVAL_REVIEW"
+        },
+        "purchaseApproval": {
+          "const": "OWNER_DEFERRED_PAID_DATA_CONTINUE_LOCAL_PREPARATION"
+        },
+        "purchaseCompleted": {
+          "const": false
+        },
+        "executionAllowed": {
+          "const": false
+        },
+        "winProbability": {
+          "const": null
+        },
+        "specification": {
+          "const": "docs/specifications/OPTIONS_RESEARCH_INPUT_PREPARATION_V1.md"
+        }
+      }
+    },
     "optionsHistoricalReplay": {
       "type": "object",
       "additionalProperties": false,
@@ -666,8 +760,8 @@
       "properties": {
         "repository": { "const": "HBLION0805/Alpha" },
         "source_baseline_ref": { "const": "origin/codex/gld-ibit-options-foundation" },
-        "source_baseline_commit": { "const": "4db85e97db53b104191b1e097cf47624f77de9f6" },
-        "implementation_baseline": { "const": "OPTIONS_MARKET_EVIDENCE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
+        "source_baseline_commit": { "const": "684a2625c0142fdb68472ff32ff49a44cc0e6922" },
+        "implementation_baseline": { "const": "OPTIONS_HISTORICAL_REPLAY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" },
         "phase0_owner_approval_commit": { "const": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a" }
       }
@@ -677,11 +771,11 @@
       "additionalProperties": false,
       "required": ["id", "name", "status", "authorizedBy", "implementationBaseline", "phase0ApprovedCommit"],
       "properties": {
-        "id": { "const": "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1" },
-        "name": { "const": "GLD / IBIT Historical Sampled Replay v1" },
-        "status": { "const": "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE" },
-        "authorizedBy": { "const": "OWNER_START_GLD_IBIT_HISTORICAL_REPLAY_2026_09_06" },
-        "implementationBaseline": { "const": "4db85e97db53b104191b1e097cf47624f77de9f6" },
+        "id": { "const": "OPTIONS_RESEARCH_INPUT_PREPARATION_V1" },
+        "name": { "const": "GLD / IBIT Research Input Preparation v1" },
+        "status": { "const": "IMPLEMENTED_PREPARATION_ACTUAL_DATA_UNAVAILABLE" },
+        "authorizedBy": { "const": "OWNER_CONTINUE_RESEARCH_PREPARATION_2026_09_06" },
+        "implementationBaseline": { "const": "684a2625c0142fdb68472ff32ff49a44cc0e6922" },
         "phase0ApprovedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
       }
     },
@@ -691,7 +785,7 @@
       "required": ["currentProduct", "currentPhase", "phase0Status", "phase1Status", "permanentMission", "earlyCapitalGrowthTool", "longTermDestination", "fixedReturnPromise"],
       "properties": {
         "currentProduct": { "const": "OPTIONS_ONLY_MVP" },
-        "currentPhase": { "const": "HISTORICAL_SAMPLED_REPLAY_V1" },
+        "currentPhase": { "const": "RESEARCH_INPUT_PREPARATION_V1" },
         "phase0Status": { "const": "OWNER_APPROVED" },
         "phase1Status": { "const": "OWNER_APPROVED" },
         "permanentMission": {
@@ -1431,7 +1525,7 @@
         "historicalCountsAreCurrentResult"
       ],
       "properties": {
-        "classification": { "const": "CURRENT_OPTIONS_HISTORICAL_REPLAY_V1_WORKING_TREE" },
+        "classification": { "const": "CURRENT_OPTIONS_RESEARCH_PREPARATION_V1_WORKING_TREE" },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": {
           "enum": [
@@ -1474,7 +1568,7 @@
           ],
           "minimum": 0
         },
-        "evidence": { "const": "docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md" },
+        "evidence": { "const": "docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md" },
         "historicalCountsAreCurrentResult": { "const": false }
       }
     }

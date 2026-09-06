@@ -1,0 +1,9 @@
+{
+  "symbol": "IBIT",
+  "tradeDate": "2026-09-04",
+  "side": "SELL",
+  "quantity": 1,
+  "grossPremiumCents": 3000,
+  "executionCount": 1,
+  "customerClassification": "NONPROFESSIONAL"
+}

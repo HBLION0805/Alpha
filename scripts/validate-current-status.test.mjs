@@ -8,9 +8,33 @@ const status = JSON.parse(readFileSync(resolve(root, "docs/status/current.json")
 const schema = JSON.parse(readFileSync(resolve(root, "docs/status/current.schema.json"), "utf8"));
 
 const tests = [
+  ["research preparation links inputs without inventing data, fees or account access", () => {
+    assert.equal(status.optionsResearchPreparation.engineVersion, "INPUT_PREPARATION_V1");
+    assert.equal(status.optionsResearchPreparation.actualTargetData, "NOT_ACQUIRED");
+    assert.equal(status.optionsResearchPreparation.parentFileReverified, false);
+    assert.equal(status.optionsResearchPreparation.feeResearchDate, "2026-09-04");
+    assert.equal(status.optionsResearchPreparation.purchaseCompleted, false);
+    assert.equal(status.optionsResearchPreparation.executionAllowed, false);
+  }],
+  ["preparation cannot upgrade data rights or execution under a weakened schema", () => {
+    const changed = clone(status), weakened = clone(schema);
+    weakened.$defs.optionsResearchPreparation = {};
+    Object.assign(changed.optionsResearchPreparation, { publisherAuthenticated: true, dataRightsVerified: true, actualQuoteReplay: "COMPLETE", brokerAccountVerified: true, executionAllowed: true });
+    const result = validateCurrentStatus(changed, weakened);
+    assert.equal(result.valid, false);
+    for (const field of ["publisherAuthenticated", "dataRightsVerified", "actualQuoteReplay", "brokerAccountVerified", "executionAllowed"]) assert(result.issues.some((issue) => issue.includes(`optionsResearchPreparation.${field}`)));
+  }],
+  ["preparation is required and fee date and purchase state cannot be invented", () => {
+    const missing = clone(status); delete missing.optionsResearchPreparation;
+    assert.equal(validateCurrentStatus(missing, schema).valid, false);
+    const changed = clone(status), weakened = clone(schema);
+    weakened.$defs.optionsResearchPreparation = {};
+    Object.assign(changed.optionsResearchPreparation, { feeResearchDate: "2026-12-31", purchaseCompleted: true });
+    assert.equal(validateCurrentStatus(changed, weakened).valid, false);
+  }],
   ["historical replay retains the counterfactual clock and retrospective plan declaration", () => {
-    assert.equal(status.schemaVersion, "1.19");
-    assert.equal(status.currentMilestone.id, "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1");
+    assert.equal(status.schemaVersion, "1.20");
+    assert.equal(status.currentMilestone.id, "OPTIONS_RESEARCH_INPUT_PREPARATION_V1");
     assert.equal(status.optionsHistoricalReplay.engineVersion, "SAMPLED_OPTIONS_REPLAY_V1");
     assert.equal(status.optionsHistoricalReplay.clockModel, "COUNTERFACTUAL_SNAPSHOT_TIME");
     assert.equal(status.optionsHistoricalReplay.planSelection, "RETROSPECTIVE_DECLARATION");
@@ -104,9 +128,9 @@ const tests = [
     assert(validation.issues.includes("completed must be a unique bounded array."));
   }],
   ["historical replay milestone retains the actual lack of a source file or API", () => {
-    assert.equal(status.currentMilestone.id, "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1");
-    assert.equal(status.currentMilestone.status, "IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE");
-    assert.equal(status.productDirection.currentPhase, "HISTORICAL_SAMPLED_REPLAY_V1");
+    assert.equal(status.currentMilestone.id, "OPTIONS_RESEARCH_INPUT_PREPARATION_V1");
+    assert.equal(status.currentMilestone.status, "IMPLEMENTED_PREPARATION_ACTUAL_DATA_UNAVAILABLE");
+    assert.equal(status.productDirection.currentPhase, "RESEARCH_INPUT_PREPARATION_V1");
     assert.deepEqual(status.optionsMarketEvidence.ownerDataAccess, {
       platform: "ROBINHOOD_ONLY", providerApi: "NOT_AVAILABLE", authorizedSourceFile: "NOT_AVAILABLE", confirmedBy: "OWNER_2026_09_06",
     });
@@ -384,11 +408,11 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_RESEARCH_MODEL_ACTUAL_DATA_UNAVAILABLE\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_PREPARATION_ACTUAL_DATA_UNAVAILABLE\"."));
     assert(validation.issues.includes("currentMilestone.phase0ApprovedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
     assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
     assert(validation.issues.includes("productDirection.phase1Status must equal \"OWNER_APPROVED\"."));
-    assert(validation.issues.includes("next must contain authorized sample acquisition and assumption-labeled replay with outcome review."));
+    assert(validation.issues.includes("next must preserve deferred paid procurement, authorized read-only data assessment and assumption-labeled replay with outcome review."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
@@ -497,8 +521,8 @@ const tests = [
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
     assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "4db85e97db53b104191b1e097cf47624f77de9f6");
-    assert.equal(status.source.implementation_baseline, "OPTIONS_MARKET_EVIDENCE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
+    assert.equal(status.source.source_baseline_commit, "684a2625c0142fdb68472ff32ff49a44cc0e6922");
+    assert.equal(status.source.implementation_baseline, "OPTIONS_HISTORICAL_REPLAY_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3APostMergeCorrection, "VERIFIED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B, "DESIGN_APPROVED");
@@ -506,7 +530,7 @@ const tests = [
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
     assert.equal(status.legacyProductLanes.etfDailyScan.status, "REMOVED_OWNER_AUTHORIZED");
-    assert.deepEqual(status.next, ["ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_SAMPLE_WITH_OWNER_DATA_COST_DECISION", "RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"]);
+    assert.deepEqual(status.next, ["CONTINUE_LOCAL_PREPARATION_PAID_DATA_DEFERRED_BY_OWNER", "ASSESS_AUTHORIZED_READ_ONLY_GLD_IBIT_DATA_ROUTE_WITHOUT_PAID_PROCUREMENT", "RUN_ASSUMPTION_LABELED_SAMPLE_REPLAY_AND_REVIEW_NET_COST_OUTCOMES"]);
     assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
@@ -563,8 +587,8 @@ const tests = [
     assertInvalid(changed, schema, "$.validation.phase1bD3AMergedHead.source_baseline_commit must equal schema const \"bae51dda65dc55f376cb683f873fa93295ed7e2f\".");
   }],
   ["v2 records 20% research stop, net 1.5R-2R and separate account and stress limits", () => {
-    assert.equal(status.schemaVersion, "1.19");
-    assert.equal(status.currentMilestone.id, "OPTIONS_HISTORICAL_SAMPLED_REPLAY_V1");
+    assert.equal(status.schemaVersion, "1.20");
+    assert.equal(status.currentMilestone.id, "OPTIONS_RESEARCH_INPUT_PREPARATION_V1");
     assert.equal(status.ownerOptionsProfile.plannedStopBps, 2000);
     assert.equal(status.ownerOptionsProfile.minimumStopBps, 1000);
     assert.equal(status.ownerOptionsProfile.maximumStopBps, 2500);

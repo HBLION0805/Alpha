@@ -1,5 +1,33 @@
 # Alpha Architecture Decisions
 
+## 2026-09-06 - Link research inputs and isolate dated broker assumptions
+
+- The Owner deferred paid data after the procurement question and directed
+  continued local workflow preparation. No purchase is pending; this does not
+  interrupt already authorized development, saving or Git publication.
+- Add a local preflight composition for source manifests, exact child bytes,
+  metadata and frozen plans. Preserve source/selection/preparation clocks and
+  reject mismatched identity, counts, hashes or chronology. Parent hashes remain
+  linked extractor claims; preparation does not follow a parent source path.
+- INPUTS_LINKED_FOR_RESEARCH means coherent declarations, not verified rights,
+  contracts, fees, liquidity, account eligibility or trading authority. Keep
+  explicit import and replay steps separate; preserve all original engines and
+  accepted journal fingerprints.
+- Save preparation artifacts exclusively with semantic input identity, original
+  clocks and recomputed integrity. Changed inputs under one run ID and partial
+  or corrupt records fail rather than being repaired or silently overwritten.
+- Isolate the Robinhood fee estimate to a reviewed September 4, 2026 ordinary
+  GLD/IBIT single execution. Preserve proceeds dependence and component rounding;
+  do not automatically replace fees in accepted research plans.
+- Update source discovery from current primary documentation: Robinhood's
+  official Trading MCP includes option historical OHLC and real-time quote tools.
+  No connection or historical bid/ask/size entitlement is established. Assess
+  authorized read-only capabilities before treating paid Cboe data as the only
+  route; retain missing-data blockers until suitable observations are available.
+- See [preparation specification](specifications/OPTIONS_RESEARCH_INPUT_PREPARATION_V1.md),
+  [delivery](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and
+  [dated reference](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
+
 ## 2026-09-06 - Separate counterfactual historical research from execution evidence
 
 - The Owner authorized the next historical-data testing step. Add an independent

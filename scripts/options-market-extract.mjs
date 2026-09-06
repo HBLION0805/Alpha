@@ -14,7 +14,7 @@ function date(value) {
   return typeof value === "string" && /^[1-9]\d{3}-\d{2}-\d{2}$/.test(value)
     && Number.isFinite(Date.parse(value + "T00:00:00.000Z")) && new Date(value + "T00:00:00.000Z").toISOString().slice(0, 10) === value;
 }
-function validateSelection(input) {
+export function validateSelection(input) {
   if (!input || typeof input !== "object" || Array.isArray(input) || ![Object.prototype, null].includes(Object.getPrototypeOf(input))) throw new Error("EXTRACT_INVALID_SELECTION");
   const descriptors = Object.getOwnPropertyDescriptors(input);
   if (Reflect.ownKeys(input).length !== SELECTION_KEYS.length || SELECTION_KEYS.some((key) => !Object.hasOwn(descriptors, key)

@@ -1,0 +1,9 @@
+{
+  "symbol": "GLD",
+  "tradeDate": "2026-09-04",
+  "side": "BUY",
+  "quantity": 1,
+  "grossPremiumCents": 2000,
+  "executionCount": 1,
+  "customerClassification": "NONPROFESSIONAL"
+}

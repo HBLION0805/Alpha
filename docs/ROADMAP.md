@@ -1,12 +1,19 @@
 # Alpha Roadmap
 
-Current delivery adds independent GLD/IBIT historical interval research and bounded
-source-preserving extraction. The
+Current delivery adds research input preparation, dated Robinhood fee estimates
+and public-source broker references to the historical research workflow. The
 [machine status](status/current.json) is authoritative. See
-[delivery evidence](OPTIONS_HISTORICAL_REPLAY_DELIVERY.md).
+[delivery evidence](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
+[broker reference](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
 
 ## Implemented
 
+- Manifest/child/metadata/plan preparation with chronology checks and optional
+  immutable records. A linked result certifies only coherent declared inputs;
+  no market import, replay, account access or trade follows automatically.
+- A standalone fee estimate for a single supported September 4, 2026 GLD/IBIT
+  execution, with explicit components and rounding. Accepted engine outputs,
+  frozen fee assumptions and existing journals remain unchanged.
 - A separate counterfactual sampled-replay engine with declared contract/session/
   cost assumptions, later-snapshot assumed fills, isolated USD 1,000 runs,
   unresolved positions and reviews for all outcomes. Actual-time candidate lessons
@@ -27,13 +34,17 @@ source-preserving extraction. The
 
 ## Ordered completion work
 
-1. Obtain authorized GLD/IBIT option observations through a licensed local file
-   or entitled read-only provider. Official samples inspected so far contain no
-   GLD/IBIT observations; no purchase or entitlement exists. Extract a small
-   documented subset, inspect source/contract/session/cost evidence and test
-   affordability before running the explicit counterfactual model. Unknown sizes
-   still block fills. Separately qualify stricter historical availability and
-   execution models; the current assumptions do not establish real fills.
+1. Continue local workflow preparation under the Owner's decision to defer paid
+   market data. Assess authorized read-only Robinhood Trading MCP capabilities and schemas,
+   or obtain an entitled local GLD/IBIT quote file. Official MCP documents now
+   include option historical OHLC, live quotes and instruments; it is not
+   connected, and historical bid/ask sizes or access terms remain unverified.
+   Do not assume paid Cboe data is the only route or substitute OHLC for quotes.
+   Official samples inspected so far contain no GLD/IBIT observations. For a
+   supplied file, extract a documented subset, prepare the linked inputs, inspect
+   source/contract/session/cost evidence and test affordability before the
+   counterfactual run. Unknown sizes still block fills. Separately qualify
+   historical availability and execution models; assumptions do not establish fills.
 2. Quantitative macro and asset-specific connectors with point-in-time vintages,
    release calendars, consensus-surprise inputs where licensed, ETF share/flow
    distinction, COT lags, gold reserves and crypto/on-chain provenance.

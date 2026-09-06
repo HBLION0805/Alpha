@@ -1,5 +1,25 @@
 # Alpha Changelog
 
+## 2026-09-06 - Research input preparation and dated broker reference
+
+- Recorded the Owner's decision to defer paid market data and continue local
+  workflow preparation, resolving the previous purchase question.
+- Added source-manifest/child/metadata/config preflight, explicit linkage and
+  chronology checks, and optional immutable preparation artifacts. Linked inputs
+  remain declarations; the command does not import evidence or simulate trades.
+- Added September 4, 2026 single-execution Robinhood GLD/IBIT fee estimates with
+  exact component rounding and proceeds-dependent sell fees. Old economics,
+  frozen costs, qualification outputs and accepted journals remain unchanged.
+- Added dated primary references for terms, ticks, sessions, fees and order/account
+  boundaries. Verified the public September 4 penny reference for both symbols;
+  no target-ETF quote path was acquired.
+- Documented current official Robinhood MCP options tools without connecting.
+  Historical OHLC availability does not establish historical bid/ask sizes or
+  entitlement; assess authorized read-only capabilities as a potential source.
+- Added `options:research-preflight` and `options:broker-reference` commands.
+  See [delivery and validation](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and
+  [dated reference](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
+
 ## 2026-09-06 - Independent historical interval research and source extraction
 
 - Added a separate counterfactual research lifecycle with frozen GLD/IBIT plans,

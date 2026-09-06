@@ -14,6 +14,9 @@ const gitWhitespaceChecks = Object.freeze([
 ]);
 
 const requiredFiles = [
+  "docs/specifications/OPTIONS_RESEARCH_INPUT_PREPARATION_V1.md",
+  "docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md",
+  "docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md",
   "docs/specifications/OPTIONS_HISTORICAL_REPLAY_V1.md",
   "docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md",
   "docs/specifications/OPTIONS_MARKET_EVIDENCE_V1.md",
@@ -97,6 +100,9 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-broker-reference/OptionsBrokerFeeEngine.test.ts",
+  "scripts/options-research-preflight.test.mjs",
+  "scripts/options-broker-reference.test.mjs",
   "src/engines/options-historical-replay/OptionsHistoricalReplayEngine.test.ts",
   "src/engines/options-historical-replay/OptionsHistoricalReplayReview.test.ts",
   "scripts/options-historical-replay.test.mjs",

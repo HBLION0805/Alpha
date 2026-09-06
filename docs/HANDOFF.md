@@ -4,20 +4,31 @@ Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
-The latest instruction continues toward real-price testing. The Owner confirmed
-they have Robinhood only, with no options API or authorized historical file.
-The local lifecycle/review/notebook and market import are implemented. This
-delivery adds a separate historical interval research engine, all-outcome process
-reviews, actual-time candidate lessons and bounded source subset extraction.
-See [current delivery](OPTIONS_HISTORICAL_REPLAY_DELIVERY.md).
+The latest instruction continues toward real-price testing. The Owner has
+Robinhood; no account/API connection or entitled target-ETF quote file is available
+to Alpha. This delivery adds input preparation, immutable preparation records and
+a dated standalone fee estimate to the existing historical lifecycle and notebook.
+See [current delivery](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
+[broker research reference](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
 
 The Owner requested a more realistic premium stop, 1.5R-2R exits, broad
 historical/news/geopolitical driver coverage and deletion of unrelated code.
 The USD 1,000-to-USD 50,000 end-2026 target is recorded as an aspiration only.
 Development, commits and pushes remain explicitly authorized.
+The Owner subsequently chose to defer paid data and continue preparing the local
+workflow. The earlier procurement question has been answered; no purchase is pending.
 
 ## Delivered state
 
+- Preparation links the extraction manifest, exact child hash, metadata and
+  frozen configuration, checks counts/date/contracts/chronology, and optionally
+  saves an immutable report. INPUTS_LINKED_FOR_RESEARCH means coherent declared
+  inputs only; no import/replay, fee accuracy or trading readiness is certified.
+- Dated fee estimates cover one ordinary GLD/IBIT execution on September 4, 2026,
+  with proceeds-dependent SEC fees and each component's rounding. They do not
+  automatically replace existing replay costs. The reference also records both
+  products' normal 16:15 ET close, September 8 scheduled sale settlement and
+  explicit account/order/early-close uncertainties.
 - Historical research: isolated USD 1,000 counterfactual runs, frozen intraday
   plans, declared contract/session/cost assumptions, later-snapshot assumed fills,
   pending exits and unsettled proceeds. Target triggers do not guarantee profits.
@@ -56,6 +67,29 @@ No order, payment, subscription or target-ETF data acquisition occurred. These a
 dated quote observations, not guaranteed current prices; supporting detail is in
 the [delivery report](OPTIONS_HISTORICAL_REPLAY_DELIVERY.md).
 
+Subsequent acquisition attempt on September 6 configured the same USD 48 basic
+Cboe request in the public UI. **Automatic approval review rejected Add to cart.**
+No item was added, and no payment, credentials or data acquisition followed.
+The Owner subsequently answered the one-off, maximum-USD-50 purchase question by
+deferring paid data and directing continued local workflow preparation. The
+historical rejection remains recorded; the procurement decision is no longer pending.
+
+New public-source finding: Robinhood's official Trading MCP lists
+`get_option_historicals` (OHLC), `get_option_quotes` (real-time), chain and
+instrument queries. No connection/authentication was performed. Historical
+bid/ask sizes, interval limits, retention and GLD/IBIT entitlements are unverified.
+Its documented access includes all-account read visibility and trading tools, so
+an authorized read-only capability assessment must preserve scope. Do not assume
+Cboe purchase is the only route. Exact sources are in the
+[reference document](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
+
+Use `npm run options:research-preflight -- --manifest <JSON> --metadata <JSON> --config <JSON>`
+for preparation; add `--save` to preserve the first report and clock. Use
+`npm run options:broker-reference -- --reference` for the dated scope, or
+`npm run options:broker-reference -- --fees <JSON>` for a supported fee estimate.
+Preparation does not import the candidate or run the research engine. Preserve
+the manifest and preparation record alongside the explicit subsequent steps.
+
 Use `npm run options:historical-replay -- --demo` for synthetic cases,
 `--record-demo` to persist them separately, `--input <config JSON>` to look up a
 locally imported dataset, and `--report` to reconstruct runs and the notebook.
@@ -81,17 +115,21 @@ command. An external hourly Codex heartbeat (automation id: gld-ibit) is active
 for this task; it requires the computer/app and this worktree to be available.
 It reports meaningful related changes or source failures, not routine no-change updates.
 
-See [current delivery](OPTIONS_HISTORICAL_REPLAY_DELIVERY.md), [research specification](specifications/OPTIONS_HISTORICAL_REPLAY_V1.md)
+See [current delivery](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md),
+[preparation specification](specifications/OPTIONS_RESEARCH_INPUT_PREPARATION_V1.md)
 and [machine status](status/current.json) for validation and exact boundaries.
 Old milestone/test records remain historical; never report 3145 as the current
 post-deletion test count.
 
 ## Next work
 
-Obtain an authorized local file or read-only data entitlement, then inspect actual
-GLD/IBIT source/contract/session/cost evidence, evaluate feasibility and run a small
-explicitly assumed research trial if it qualifies. Modern recorded sizes require
-the declared assumption mode and still must be positive and sufficient. Follow
+Continue local preparation without purchasing data. Assess authorized read-only
+Robinhood MCP capabilities before assuming a paid
+file is necessary; historical OHLC by itself does not meet the replay input needs.
+Alternatively obtain an entitled local file, prepare its linked inputs, then
+inspect actual GLD/IBIT source/contract/session/cost evidence, evaluate feasibility
+and run a small explicitly assumed research trial if it qualifies. Modern recorded
+sizes require the declared assumption mode and still must be positive and sufficient. Follow
 with stricter availability/fill evidence, broker-specific risk/settlement,
 quantitative drivers, independent outcomes, calibration and UI.
 Paper history is in `data/runtime/options-paper/`, excluded from Git. Never

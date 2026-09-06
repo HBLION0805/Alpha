@@ -87,7 +87,12 @@
     "test:options-historical-replay": "tsx src/engines/options-historical-replay/OptionsHistoricalReplayEngine.test.ts",
     "test:options-historical-review": "tsx src/engines/options-historical-replay/OptionsHistoricalReplayReview.test.ts",
     "test:options-historical-replay-io": "tsx scripts/options-historical-replay.test.mjs",
-    "test:options-market-extract": "tsx scripts/options-market-extract.test.mjs"
+    "test:options-market-extract": "tsx scripts/options-market-extract.test.mjs",
+    "options:research-preflight": "tsx scripts/options-research-preflight.mjs",
+    "test:options-research-preflight": "tsx scripts/options-research-preflight.test.mjs",
+    "options:broker-reference": "tsx scripts/options-broker-reference.mjs",
+    "test:options-broker-fees": "tsx src/engines/options-broker-reference/OptionsBrokerFeeEngine.test.ts",
+    "test:options-broker-reference": "tsx scripts/options-broker-reference.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",
