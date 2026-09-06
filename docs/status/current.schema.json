@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://alpha.local/schemas/project-status/1.17",
+  "$id": "https://alpha.local/schemas/project-status/1.18",
   "title": "Alpha Current Project Status",
   "type": "object",
   "additionalProperties": false,
@@ -41,11 +41,12 @@
     "capitalAspiration",
     "optionsDriverMonitor",
     "currentDeliveryValidation",
-    "optionsLocalTradeLifecycle"
+    "optionsLocalTradeLifecycle",
+    "optionsMarketEvidence"
   ],
   "properties": {
     "$schema": { "const": "./current.schema.json" },
-    "schemaVersion": { "const": "1.17" },
+    "schemaVersion": { "const": "1.18" },
     "statusId": {
       "type": "string",
       "pattern": "^alpha-status:[A-Za-z0-9._-]+$",
@@ -90,9 +91,134 @@
     "currentDeliveryValidation": {
       "$ref": "#/$defs/currentDeliveryValidation"
     },
-    "optionsLocalTradeLifecycle": { "$ref": "#/$defs/optionsLocalTradeLifecycle" }
+    "optionsLocalTradeLifecycle": { "$ref": "#/$defs/optionsLocalTradeLifecycle" },
+    "optionsMarketEvidence": { "$ref": "#/$defs/optionsMarketEvidence" }
   },
   "$defs": {
+    "optionsMarketEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contractVersion",
+        "status",
+        "authorization",
+        "scope",
+        "adapter",
+        "dataOrigins",
+        "ownerDataAccess",
+        "formatAuthority",
+        "publisherAuthentication",
+        "usageRightsProof",
+        "liveMarketFeed",
+        "actualQuotePathReplay",
+        "persistenceAuthority",
+        "hashAuthority",
+        "replayQualification",
+        "simulatorImport",
+        "paperHistory",
+        "contractMetadata",
+        "marketCalendar",
+        "costEvidence",
+        "historicalAvailability",
+        "fillModel",
+        "realTradesExecuted",
+        "calibratedWinRate",
+        "brokerAccountAccess",
+        "executionAllowed",
+        "specification"
+      ],
+      "properties": {
+        "contractVersion": {
+          "const": "1.0"
+        },
+        "status": {
+          "const": "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE"
+        },
+        "authorization": {
+          "const": "OWNER_CONTINUE_GLD_IBIT_OPTION_DATA_STEP_2026_09_06"
+        },
+        "scope": {
+          "const": "GLD_IBIT_OPTION_EVIDENCE_ONLY"
+        },
+        "adapter": {
+          "const": "CBOE_OPTION_QUOTES_CSV_V1"
+        },
+        "dataOrigins": {
+          "const": [
+            "SYNTHETIC_FIXTURE",
+            "OWNER_PROVIDED_FILE"
+          ]
+        },
+        "ownerDataAccess": {
+          "const": {
+            "platform": "ROBINHOOD_ONLY",
+            "providerApi": "NOT_AVAILABLE",
+            "authorizedSourceFile": "NOT_AVAILABLE",
+            "confirmedBy": "OWNER_2026_09_06"
+          }
+        },
+        "formatAuthority": {
+          "const": "STRICT_LOCAL_SOURCE_FORMAT_VALIDATION_ONLY"
+        },
+        "publisherAuthentication": {
+          "const": "NOT_PROVEN"
+        },
+        "usageRightsProof": {
+          "const": "NOT_PROVEN_OWNER_DECLARATION_ONLY"
+        },
+        "liveMarketFeed": {
+          "const": "NOT_CONNECTED"
+        },
+        "actualQuotePathReplay": {
+          "const": "NOT_RUN_ACTUAL_DATA_UNAVAILABLE"
+        },
+        "persistenceAuthority": {
+          "const": "LOCAL_SEPARATE_HASH_LINKED_EVIDENCE_JOURNAL"
+        },
+        "hashAuthority": {
+          "const": "LOCAL_INTEGRITY_NOT_SOURCE_AUTHENTICATION"
+        },
+        "replayQualification": {
+          "const": "NO_REPLAY_UNTIL_INDEPENDENT_EVIDENCE"
+        },
+        "simulatorImport": {
+          "const": "PROHIBITED_UNTIL_SEPARATE_VALIDATED_REPLAY_BOUNDARY"
+        },
+        "paperHistory": {
+          "const": "PRESERVED_RECOMPUTED_NOT_REWRITTEN"
+        },
+        "contractMetadata": {
+          "const": "NOT_VERIFIED"
+        },
+        "marketCalendar": {
+          "const": "NOT_VERIFIED"
+        },
+        "costEvidence": {
+          "const": "NOT_VERIFIED"
+        },
+        "historicalAvailability": {
+          "const": "NOT_ESTABLISHED"
+        },
+        "fillModel": {
+          "const": "NOT_IMPLEMENTED"
+        },
+        "realTradesExecuted": {
+          "const": 0
+        },
+        "calibratedWinRate": {
+          "const": "NOT_AVAILABLE"
+        },
+        "brokerAccountAccess": {
+          "const": "CLOSED"
+        },
+        "executionAllowed": {
+          "const": false
+        },
+        "specification": {
+          "const": "docs/specifications/OPTIONS_MARKET_EVIDENCE_V1.md"
+        }
+      }
+    },
     "optionsLocalTradeLifecycle": {
       "type": "object",
       "additionalProperties": false,
@@ -374,8 +500,8 @@
       "properties": {
         "repository": { "const": "HBLION0805/Alpha" },
         "source_baseline_ref": { "const": "origin/codex/gld-ibit-options-foundation" },
-        "source_baseline_commit": { "const": "4e27789b297cc8bff759fe3d3a66396497fbc6af" },
-        "implementation_baseline": { "const": "GLD_IBIT_FOCUS_V2_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
+        "source_baseline_commit": { "const": "e38e877368893fa5572520f0b3c9141047d62411" },
+        "implementation_baseline": { "const": "OPTIONS_LOCAL_LIFECYCLE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD" },
         "reviewed_c4_commit": { "const": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7" },
         "phase0_owner_approval_commit": { "const": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a" }
       }
@@ -385,11 +511,11 @@
       "additionalProperties": false,
       "required": ["id", "name", "status", "authorizedBy", "implementationBaseline", "phase0ApprovedCommit"],
       "properties": {
-        "id": { "const": "LOCAL_OPTIONS_TRADE_LIFECYCLE_V1" },
-        "name": { "const": "GLD / IBIT Local Trade Lifecycle v1" },
-        "status": { "const": "IMPLEMENTED_LOCAL_SIMULATION_ONLY" },
-        "authorizedBy": { "const": "OWNER_COMPLETE_LOCAL_TRADE_PROCESS_AND_REVIEWS_2026_09_06" },
-        "implementationBaseline": { "const": "4e27789b297cc8bff759fe3d3a66396497fbc6af" },
+        "id": { "const": "OPTIONS_MARKET_EVIDENCE_IMPORT_V1" },
+        "name": { "const": "GLD / IBIT Market Evidence Import v1" },
+        "status": { "const": "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE" },
+        "authorizedBy": { "const": "OWNER_CONTINUE_GLD_IBIT_OPTION_DATA_STEP_2026_09_06" },
+        "implementationBaseline": { "const": "e38e877368893fa5572520f0b3c9141047d62411" },
         "phase0ApprovedCommit": { "const": "febcce0ac6f70bb670fd8e07763c87bc33d4d106" }
       }
     },
@@ -399,7 +525,7 @@
       "required": ["currentProduct", "currentPhase", "phase0Status", "phase1Status", "permanentMission", "earlyCapitalGrowthTool", "longTermDestination", "fixedReturnPromise"],
       "properties": {
         "currentProduct": { "const": "OPTIONS_ONLY_MVP" },
-        "currentPhase": { "const": "LOCAL_TRADE_LIFECYCLE_V1" },
+        "currentPhase": { "const": "MARKET_EVIDENCE_IMPORT_V1" },
         "phase0Status": { "const": "OWNER_APPROVED" },
         "phase1Status": { "const": "OWNER_APPROVED" },
         "permanentMission": {
@@ -1139,7 +1265,7 @@
         "historicalCountsAreCurrentResult"
       ],
       "properties": {
-        "classification": { "const": "CURRENT_OPTIONS_LOCAL_LIFECYCLE_V1_WORKING_TREE" },
+        "classification": { "const": "CURRENT_OPTIONS_MARKET_EVIDENCE_V1_WORKING_TREE" },
         "command": { "const": "npm.cmd run alpha:validate" },
         "status": {
           "enum": [
@@ -1182,7 +1308,7 @@
           ],
           "minimum": 0
         },
-        "evidence": { "const": "docs/OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md" },
+        "evidence": { "const": "docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md" },
         "historicalCountsAreCurrentResult": { "const": false }
       }
     }

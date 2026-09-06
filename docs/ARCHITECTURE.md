@@ -41,6 +41,27 @@ promote itself into that subsystem's VERIFIED state.
 
 ## Price and calendar foundations
 
+`CboeOptionQuotesCsv` reads bounded local licensed-format files. It preserves
+nullable liquidity and exact integer-cent prices, converts interval-end Eastern
+timestamps with DST checks, and rejects conflicts at one contract/time. Optional
+IV zero is unavailable; optional Greeks remain source decimals. No account or
+download connector is implied by this parser.
+
+`OptionsMarketEvidenceEngine` binds source-file SHA-256, metadata, actual
+ingestion time and normalized rows. Qualification distinguishes single snapshots
+from sampled paths and reports missing fields, gaps, nonstandard roots and
+source-owned limitations. Post-2026-06-22 DataShop sizes may describe the last
+price change. Intraday delivery is delayed; interval snapshots do not reveal
+tick order. Format acceptance cannot confer provenance or execution authority.
+
+`LocalOptionsMarketEvidenceRepository` stores separate bounded hash-linked
+imports and recomputes qualification during recovery. Same-ID repeats preserve
+first-seen time; corrections require a new ID. Checksums establish local integrity
+only. Its CLI has no network or credential access. The integration gate returns
+NO_REPLAY pending independent contract/calendar, historical availability and
+cost/fill-model qualification. Existing paper inputs, outputs, reviews and
+fingerprints are unchanged; importedAt is never substituted for historical time.
+
 Canonical Instruments, Quotes, Bars, provider registration/composition and
 reusable Twelve Data foundations remain. The old verified-snapshot product
 composition depended on removed Daily Scan modules. Its calendar contracts and

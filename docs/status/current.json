@@ -1,22 +1,22 @@
 {
   "$schema": "./current.schema.json",
-  "schemaVersion": "1.17",
-  "statusId": "alpha-status:gld-ibit-local-options-trade-lifecycle-v1",
-  "asOf": "2026-09-06T20:42:51.880Z",
+  "schemaVersion": "1.18",
+  "statusId": "alpha-status:gld-ibit-options-market-evidence-import-v1",
+  "asOf": "2026-09-06T21:21:28.172Z",
   "source": {
     "repository": "HBLION0805/Alpha",
     "source_baseline_ref": "origin/codex/gld-ibit-options-foundation",
-    "source_baseline_commit": "4e27789b297cc8bff759fe3d3a66396497fbc6af",
-    "implementation_baseline": "GLD_IBIT_FOCUS_V2_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
+    "source_baseline_commit": "e38e877368893fa5572520f0b3c9141047d62411",
+    "implementation_baseline": "OPTIONS_LOCAL_LIFECYCLE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD",
     "reviewed_c4_commit": "095657cd5c72d095d9c72b2ec76a580b35e9d3c7",
     "phase0_owner_approval_commit": "819a7dd8d3aa680e952dfe1763f2ded17ff1b71a"
   },
   "currentMilestone": {
-    "id": "LOCAL_OPTIONS_TRADE_LIFECYCLE_V1",
-    "name": "GLD / IBIT Local Trade Lifecycle v1",
-    "status": "IMPLEMENTED_LOCAL_SIMULATION_ONLY",
-    "authorizedBy": "OWNER_COMPLETE_LOCAL_TRADE_PROCESS_AND_REVIEWS_2026_09_06",
-    "implementationBaseline": "4e27789b297cc8bff759fe3d3a66396497fbc6af",
+    "id": "OPTIONS_MARKET_EVIDENCE_IMPORT_V1",
+    "name": "GLD / IBIT Market Evidence Import v1",
+    "status": "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE",
+    "authorizedBy": "OWNER_CONTINUE_GLD_IBIT_OPTION_DATA_STEP_2026_09_06",
+    "implementationBaseline": "e38e877368893fa5572520f0b3c9141047d62411",
     "phase0ApprovedCommit": "febcce0ac6f70bb670fd8e07763c87bc33d4d106"
   },
   "completed": [
@@ -50,7 +50,8 @@
     "OWNER_AUTHORIZED_UNRELATED_PRODUCT_CODE_REMOVAL_COMPLETED",
     "GLD_IBIT_LOCAL_CONTRACT_QUOTE_BOUNDARY_IMPLEMENTED",
     "GLD_IBIT_LOCAL_TRADE_LIFECYCLE_IMPLEMENTED",
-    "GLD_IBIT_POST_TRADE_REVIEW_AND_MISTAKE_NOTEBOOK_IMPLEMENTED"
+    "GLD_IBIT_POST_TRADE_REVIEW_AND_MISTAKE_NOTEBOOK_IMPLEMENTED",
+    "GLD_IBIT_LOCAL_MARKET_EVIDENCE_IMPORT_AND_REPLAY_GATE_IMPLEMENTED"
   ],
   "inProgress": [],
   "blocked": [
@@ -68,12 +69,12 @@
     "BROKER_ACCOUNT_ORDER_AND_BROKER_PAPER_TRADING"
   ],
   "next": [
-    "QUALIFY_POINT_IN_TIME_GLD_IBIT_OPTION_DATA_FOR_LOCAL_REPLAY",
-    "ADD_ACCOUNT_RULES_SETTLEMENT_AND_INDEPENDENT_COST_AWARE_OUTCOME_EVIDENCE"
+    "ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_DATA_WITHOUT_BROKER_ORDER_ACCESS",
+    "QUALIFY_CONTRACT_CALENDAR_COST_HISTORICAL_AVAILABILITY_AND_FILL_MODEL"
   ],
   "productDirection": {
     "currentProduct": "OPTIONS_ONLY_MVP",
-    "currentPhase": "LOCAL_TRADE_LIFECYCLE_V1",
+    "currentPhase": "MARKET_EVIDENCE_IMPORT_V1",
     "phase0Status": "OWNER_APPROVED",
     "phase1Status": "OWNER_APPROVED",
     "permanentMission": [
@@ -598,15 +599,15 @@
     "specification": "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md"
   },
   "currentDeliveryValidation": {
-    "classification": "CURRENT_OPTIONS_LOCAL_LIFECYCLE_V1_WORKING_TREE",
+    "classification": "CURRENT_OPTIONS_MARKET_EVIDENCE_V1_WORKING_TREE",
     "command": "npm.cmd run alpha:validate",
     "status": "PASSED",
-    "componentCount": 79,
-    "testsExecuted": 2047,
-    "passed": 2047,
+    "componentCount": 82,
+    "testsExecuted": 2176,
+    "passed": 2176,
     "failed": 0,
-    "durationMs": 24642,
-    "evidence": "docs/OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md",
+    "durationMs": 30907,
+    "evidence": "docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md",
     "historicalCountsAreCurrentResult": false
   },
   "optionsLocalTradeLifecycle": {
@@ -644,5 +645,42 @@
     "brokerAccountAccess": "CLOSED",
     "liveOrderExecutionAllowed": false,
     "specification": "docs/specifications/OPTIONS_LOCAL_TRADE_LIFECYCLE_V1.md"
+  },
+  "optionsMarketEvidence": {
+    "contractVersion": "1.0",
+    "status": "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE",
+    "authorization": "OWNER_CONTINUE_GLD_IBIT_OPTION_DATA_STEP_2026_09_06",
+    "scope": "GLD_IBIT_OPTION_EVIDENCE_ONLY",
+    "adapter": "CBOE_OPTION_QUOTES_CSV_V1",
+    "dataOrigins": [
+      "SYNTHETIC_FIXTURE",
+      "OWNER_PROVIDED_FILE"
+    ],
+    "ownerDataAccess": {
+      "platform": "ROBINHOOD_ONLY",
+      "providerApi": "NOT_AVAILABLE",
+      "authorizedSourceFile": "NOT_AVAILABLE",
+      "confirmedBy": "OWNER_2026_09_06"
+    },
+    "formatAuthority": "STRICT_LOCAL_SOURCE_FORMAT_VALIDATION_ONLY",
+    "publisherAuthentication": "NOT_PROVEN",
+    "usageRightsProof": "NOT_PROVEN_OWNER_DECLARATION_ONLY",
+    "liveMarketFeed": "NOT_CONNECTED",
+    "actualQuotePathReplay": "NOT_RUN_ACTUAL_DATA_UNAVAILABLE",
+    "persistenceAuthority": "LOCAL_SEPARATE_HASH_LINKED_EVIDENCE_JOURNAL",
+    "hashAuthority": "LOCAL_INTEGRITY_NOT_SOURCE_AUTHENTICATION",
+    "replayQualification": "NO_REPLAY_UNTIL_INDEPENDENT_EVIDENCE",
+    "simulatorImport": "PROHIBITED_UNTIL_SEPARATE_VALIDATED_REPLAY_BOUNDARY",
+    "paperHistory": "PRESERVED_RECOMPUTED_NOT_REWRITTEN",
+    "contractMetadata": "NOT_VERIFIED",
+    "marketCalendar": "NOT_VERIFIED",
+    "costEvidence": "NOT_VERIFIED",
+    "historicalAvailability": "NOT_ESTABLISHED",
+    "fillModel": "NOT_IMPLEMENTED",
+    "realTradesExecuted": 0,
+    "calibratedWinRate": "NOT_AVAILABLE",
+    "brokerAccountAccess": "CLOSED",
+    "executionAllowed": false,
+    "specification": "docs/specifications/OPTIONS_MARKET_EVIDENCE_V1.md"
   }
 }

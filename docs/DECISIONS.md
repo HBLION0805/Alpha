@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-09-06 - Preserve quote provenance before real-price replay
+
+- The Owner authorized the next implementation step and confirmed Robinhood is
+  their only current service. No licensed historical file or API is available.
+- Cboe/Nasdaq display pages are not a supported scraping source. Documented
+  APIs require rights/credentials; modified indicative prices are not OPRA.
+- Add Cboe DataShop local file parsing and separate evidence history now. A
+  metadata declaration or matching format cannot authenticate the publisher.
+- Preserve missing liquidity, actual ingestion time, interval sampling and
+  delivery/size semantics. Never backdate v1 receivedAt or fabricate sizes.
+- Require contract/calendar/availability/cost/fill evidence before bridging to
+  replay. The current gate returns NO_REPLAY and makes no trades or probabilities.
+- Keep existing paper results/reviews byte-for-byte reproducible. See the
+  [reviewed specification](specifications/OPTIONS_MARKET_EVIDENCE_V1.md).
+
 ## 2026-09-06 - Complete the local trade process and review every outcome
 
 - The Owner's latest instruction supersedes the blanket paper-test prohibition

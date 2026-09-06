@@ -77,7 +77,11 @@
     "test:options-contract-quote": "tsx src/engines/options-contract-quote/OptionsContractQuoteEngine.test.ts",
     "test:options-paper": "tsx src/engines/options-paper/OptionsPaperTradingEngine.test.ts",
     "test:options-paper-io": "tsx scripts/options-paper.test.mjs",
-    "test:options-trade-review": "tsx src/engines/options-trade-review/OptionsTradeReviewEngine.test.ts"
+    "test:options-trade-review": "tsx src/engines/options-trade-review/OptionsTradeReviewEngine.test.ts",
+    "options:market-data": "tsx scripts/options-market-data.mjs",
+    "test:options-market-csv": "tsx src/integration/options-market-evidence/CboeOptionQuotesCsv.test.ts",
+    "test:options-market-evidence": "tsx src/engines/options-market-evidence/OptionsMarketEvidenceEngine.test.ts",
+    "test:options-market-data-io": "tsx scripts/options-market-data.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

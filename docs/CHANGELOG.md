@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-06 - Market evidence import and replay qualification
+
+- Added the documented Cboe DataShop CSV format with exact prices, nullable
+  liquidity/analytics, Eastern/DST time checks and conflicting-snapshot rejection.
+- Added actual ingestion/source metadata, bounded independent journal, idempotent
+  import, correction IDs, integrity/recovery checks and dataset/path reports.
+- Added catalog/demo/import/report commands. Data and integration gaps produce
+  NO_REPLAY, zero trades and no probability; no new market access is claimed.
+- Preserved existing local trade outcomes, reviews and mistake notebook. See
+  [delivery evidence](OPTIONS_MARKET_EVIDENCE_DELIVERY.md).
+
 ## 2026-09-06 - First local options lifecycle and mistake notebook
 
 - Added strict GLD/IBIT standard contract/quote inputs, frozen plans, modeled

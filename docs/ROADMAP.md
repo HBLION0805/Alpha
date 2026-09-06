@@ -1,11 +1,14 @@
 # Alpha Roadmap
 
-Current delivery is the first GLD/IBIT local options lifecycle. The
+Current delivery adds the GLD/IBIT market-evidence import and qualification gate. The
 [machine status](status/current.json) is authoritative. See
-[delivery evidence](OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md).
+[delivery evidence](OPTIONS_MARKET_EVIDENCE_DELIVERY.md).
 
 ## Implemented
 
+- Documented Cboe DataShop CSV import, source/ingestion history and deterministic
+  path-quality reports. Actual data access remains unavailable: the Owner has
+  Robinhood only and no authorized API or historical file has been supplied.
 - Contract/quote qualification, frozen plans, simulated round trips, persistent
   cash/position recovery and per-trade candidate mistake checks. Local synthetic
   or unverified inputs; intraday plans, one position and 14-45 DTE contracts.
@@ -17,8 +20,10 @@ Current delivery is the first GLD/IBIT local options lifecycle. The
 
 ## Ordered completion work
 
-1. Qualify actual GLD/IBIT option-chain and quote-path sources: coverage,
-   licensing, latency, sizes, fees, IV/Greeks and point-in-time provenance.
+1. Obtain authorized GLD/IBIT option observations through a licensed local file
+   or entitled read-only provider. Then qualify contract metadata, calendars,
+   historical availability, fees and a versioned sampled-path fill model before
+   producing real-price simulations. The new gate explicitly identifies these gaps.
 2. Quantitative macro and asset-specific connectors with point-in-time vintages,
    release calendars, consensus-surprise inputs where licensed, ETF share/flow
    distinction, COT lags, gold reserves and crypto/on-chain provenance.

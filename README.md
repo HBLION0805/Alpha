@@ -6,6 +6,10 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Source-labeled Cboe DataShop option CSV import, exact prices and Eastern-time
+  normalization, missing-data checks and a separate integrity-checked history.
+  The Owner currently has Robinhood only; no authorized option data file/API
+  has been supplied. File parsing does not establish real-price replay readiness.
 - A complete local simulated trade lifecycle: GLD/IBIT contract/quote inputs,
   frozen plans, risk checks, cash reservations, modeled fills/exits and recovery.
 - Every closed trade receives a review and candidate mistake checks for future
@@ -30,7 +34,7 @@ fill. A USD 25 premium with zero assumed costs, 20% stop and 2R has a USD 5 plan
 loss and USD 10 net profit target. No passing diagnostic authorizes a trade.
 
 The USD 1,000-to-USD 50,000 year-end aspiration is a scenario only and cannot
-increase risk limits. Read [current delivery](docs/OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md)
+increase risk limits. Read [current delivery](docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md)
 and the authoritative [machine status](docs/status/current.json).
 
 ## Run locally
@@ -40,6 +44,10 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:market-data -- --catalog` | Inspect reviewed source options and access limitations |
+| `npm run options:market-data -- --demo` | Inspect synthetic quote-path qualification without saving |
+| `npm run options:market-data -- --import <CSV> --metadata <JSON>` | Save a supported local file with explicit origin and usage declaration |
+| `npm run options:market-data -- --report` | Recompute saved data-quality reports; no fill simulation |
 | `npm run options:paper -- --demo` | Run scripted round trips and failure cases without saving |
 | `npm run options:paper -- --record-demo` | Save the demo, including restart/resume and trade reviews |
 | `npm run options:paper -- --input fixtures/options-paper/gld-target.json` | Append one local scenario |
@@ -60,6 +68,16 @@ first checking whether another monitor is running. History is bounded at 16 MiB;
 rotation/export requires a reviewed operation rather than silent deletion.
 
 ## Boundaries
+
+Market evidence is stored separately in `data/runtime/options-market-evidence/`.
+Its importer supports the documented Cboe DataShop format, not dashboard scraping.
+See the [metadata example](fixtures/options-market-evidence/metadata.example.json)
+and [import instructions](docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md). A source name
+and local checksum do not prove publisher identity or data rights. Unknown sizes,
+sampled paths and delivery limitations remain explicit. Until contract/calendar,
+availability and cost/fill-model evidence is qualified, the gate returns `NO_REPLAY`
+and zero trades. There is no adapter into the older paper engine that backdates
+historical quotes or fills missing liquidity.
 
 A public headline is an unverified source assertion. Keyword tags only suggest
 which factors deserve review; they do not establish causality, direction or

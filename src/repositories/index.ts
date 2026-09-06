@@ -37,3 +37,4 @@ export * from "./OptionsNewsEvidenceJournalAdapter";
 export * from "./InMemoryOptionsMarketContextRepository";
 export * from "./OptionsMarketContextEvidenceAdapter";
 export * from "./LocalOptionsPaperRepository";
+export * from "./LocalOptionsMarketEvidenceRepository";

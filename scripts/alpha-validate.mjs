@@ -14,6 +14,8 @@ const gitWhitespaceChecks = Object.freeze([
 ]);
 
 const requiredFiles = [
+  "docs/specifications/OPTIONS_MARKET_EVIDENCE_V1.md",
+  "docs/OPTIONS_MARKET_EVIDENCE_DELIVERY.md",
   "docs/specifications/OPTIONS_LOCAL_TRADE_LIFECYCLE_V1.md",
   "docs/OPTIONS_LOCAL_LIFECYCLE_DELIVERY.md",
   "docs/specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md",
@@ -93,6 +95,9 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/integration/options-market-evidence/CboeOptionQuotesCsv.test.ts",
+  "src/engines/options-market-evidence/OptionsMarketEvidenceEngine.test.ts",
+  "scripts/options-market-data.test.mjs",
   "src/engines/options-contract-quote/OptionsContractQuoteEngine.test.ts",
   "src/engines/options-paper/OptionsPaperTradingEngine.test.ts",
   "src/engines/options-trade-review/OptionsTradeReviewEngine.test.ts",

@@ -8,6 +8,82 @@ const status = JSON.parse(readFileSync(resolve(root, "docs/status/current.json")
 const schema = JSON.parse(readFileSync(resolve(root, "docs/status/current.schema.json"), "utf8"));
 
 const tests = [
+  ["market-evidence milestone records the actual lack of a source file or API", () => {
+    assert.equal(status.currentMilestone.id, "OPTIONS_MARKET_EVIDENCE_IMPORT_V1");
+    assert.equal(status.currentMilestone.status, "IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE");
+    assert.equal(status.productDirection.currentPhase, "MARKET_EVIDENCE_IMPORT_V1");
+    assert.deepEqual(status.optionsMarketEvidence.ownerDataAccess, {
+      platform: "ROBINHOOD_ONLY", providerApi: "NOT_AVAILABLE", authorizedSourceFile: "NOT_AVAILABLE", confirmedBy: "OWNER_2026_09_06",
+    });
+    assert.equal(status.optionsMarketEvidence.realTradesExecuted, 0);
+    assert.equal(status.optionsMarketEvidence.actualQuotePathReplay, "NOT_RUN_ACTUAL_DATA_UNAVAILABLE");
+  }],
+  ["market evidence cannot claim live access or source authentication under a weakened schema", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsMarketEvidence = {};
+    Object.assign(changed.optionsMarketEvidence, {
+      liveMarketFeed: "CONNECTED", publisherAuthentication: "VERIFIED", usageRightsProof: "PROVEN_BY_HASH",
+      formatAuthority: "VERIFIED_MARKET_DATA", hashAuthority: "PUBLISHER_SIGNATURE",
+    });
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["liveMarketFeed", "publisherAuthentication", "usageRightsProof", "formatAuthority", "hashAuthority"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsMarketEvidence.${field}`)));
+    }
+  }],
+  ["source-format imports cannot become replay, real trades, broker access or 80% probability", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsMarketEvidence = {};
+    Object.assign(changed.optionsMarketEvidence, {
+      actualQuotePathReplay: "PASSED_REAL_DATA", replayQualification: "REPLAY_ALLOWED", simulatorImport: "ENABLED",
+      realTradesExecuted: 1, brokerAccountAccess: "ENABLED", executionAllowed: true, calibratedWinRate: 0.8,
+    });
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["actualQuotePathReplay", "replayQualification", "simulatorImport", "realTradesExecuted", "brokerAccountAccess", "executionAllowed", "calibratedWinRate"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsMarketEvidence.${field}`)));
+    }
+  }],
+  ["owner-only Robinhood access cannot imply a provider API or authorized dataset", () => {
+    for (const change of [{ providerApi: "AVAILABLE" }, { authorizedSourceFile: "AVAILABLE" }, { platform: "ANY_BROKER" }]) {
+      const changed = clone(status); const weakened = clone(schema);
+      weakened.$defs.optionsMarketEvidence = {};
+      Object.assign(changed.optionsMarketEvidence.ownerDataAccess, change);
+      const validation = validateCurrentStatus(changed, weakened);
+      assert.equal(validation.valid, false);
+      assert(validation.issues.some((issue) => issue.includes("optionsMarketEvidence.ownerDataAccess")));
+    }
+  }],
+  ["contract, calendar, costs, availability and fill model remain independent proof gaps", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsMarketEvidence = {};
+    for (const field of ["contractMetadata", "marketCalendar", "costEvidence", "historicalAvailability", "fillModel"]) changed.optionsMarketEvidence[field] = "ASSUMED_VERIFIED";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["contractMetadata", "marketCalendar", "costEvidence", "historicalAvailability", "fillModel"]) {
+      assert(validation.issues.some((issue) => issue.includes(`optionsMarketEvidence.${field}`)));
+    }
+  }],
+  ["market evidence must retain its separate journal and preserve paper history", () => {
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsMarketEvidence = {};
+    changed.optionsMarketEvidence.persistenceAuthority = "MUTATE_EXISTING_PAPER_JOURNAL";
+    changed.optionsMarketEvidence.paperHistory = "REWRITTEN_AS_REAL_PRICE_RESULTS";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["persistenceAuthority", "paperHistory"]) assert(validation.issues.some((issue) => issue.includes(`optionsMarketEvidence.${field}`)));
+  }],
+  ["market-evidence field is required and cannot accept undeclared capability fields", () => {
+    const missing = clone(status); delete missing.optionsMarketEvidence;
+    assert.equal(validateCurrentStatus(missing, schema).valid, false);
+    const changed = clone(status); const weakened = clone(schema);
+    weakened.$defs.optionsMarketEvidence = {};
+    changed.optionsMarketEvidence.dataOrigins = ["VERIFIED_LIVE"];
+    changed.optionsMarketEvidence.arbitrarySourceUrl = "https://example.test/";
+    const validation = validateCurrentStatus(changed, weakened);
+    assert.equal(validation.valid, false);
+    for (const field of ["dataOrigins", "arbitrarySourceUrl"]) assert(validation.issues.some((issue) => issue.includes(`optionsMarketEvidence.${field}`)));
+  }],
   ["Owner stop basis and probability gate cannot become trading authority", () => {
     const changed = clone(status);
     changed.ownerOptionsProfile.plannedStopBasis = "ACCOUNT_EQUITY";
@@ -213,11 +289,11 @@ const tests = [
     assert.equal(validation.valid, false);
     assert(validation.issues.includes("source.repository must equal \"HBLION0805/Alpha\"."));
     assert(validation.issues.includes(`source.source_baseline_commit must equal \"${status.source.source_baseline_commit}\".`));
-    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_LOCAL_SIMULATION_ONLY\"."));
+    assert(validation.issues.includes("currentMilestone.status must equal \"IMPLEMENTED_LOCAL_IMPORT_ACTUAL_DATA_UNAVAILABLE\"."));
     assert(validation.issues.includes("currentMilestone.phase0ApprovedCommit must equal \"febcce0ac6f70bb670fd8e07763c87bc33d4d106\"."));
     assert(validation.issues.includes("productDirection.phase0Status must equal \"OWNER_APPROVED\"."));
     assert(validation.issues.includes("productDirection.phase1Status must equal \"OWNER_APPROVED\"."));
-    assert(validation.issues.includes("next must contain the ordered option-data qualification and account-rule/outcome-evidence work."));
+    assert(validation.issues.includes("next must contain authorized data acquisition and independent contract/calendar/cost/availability/fill-model qualification."));
     assert(validation.issues.includes("validation.phase1bD3AMergedHead.includesUncommittedCode must equal false."));
   }],
   ["frozen Daily Scan/Alpaca history cannot masquerade as the current Options Phase 1", () => {
@@ -326,8 +402,8 @@ const tests = [
     assert(status.completed.includes("PHASE_1B_D3A_OFFLINE_IMPLEMENTATION_MERGED"));
     assert(status.completed.includes("PHASE_1B_D3A_POST_MERGE_CORRECTION_VERIFIED"));
     assert(status.completed.includes("PHASE_1B_D3B_DESIGN_APPROVED_MERGED"));
-    assert.equal(status.source.source_baseline_commit, "4e27789b297cc8bff759fe3d3a66396497fbc6af");
-    assert.equal(status.source.implementation_baseline, "GLD_IBIT_FOCUS_V2_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
+    assert.equal(status.source.source_baseline_commit, "e38e877368893fa5572520f0b3c9141047d62411");
+    assert.equal(status.source.implementation_baseline, "OPTIONS_LOCAL_LIFECYCLE_V1_REVIEWED_SOURCE_BASELINE_NOT_WORKING_TREE_HEAD");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3A, "MERGED_CLOSED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3APostMergeCorrection, "VERIFIED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3B, "DESIGN_APPROVED");
@@ -335,7 +411,7 @@ const tests = [
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.d3BLiveRun, "NOT_AUTHORIZED");
     assert.deepEqual(status.inProgress, []);
     assert.equal(status.legacyProductLanes.etfDailyScan.status, "REMOVED_OWNER_AUTHORIZED");
-    assert.deepEqual(status.next, ["QUALIFY_POINT_IN_TIME_GLD_IBIT_OPTION_DATA_FOR_LOCAL_REPLAY", "ADD_ACCOUNT_RULES_SETTLEMENT_AND_INDEPENDENT_COST_AWARE_OUTCOME_EVIDENCE"]);
+    assert.deepEqual(status.next, ["ACQUIRE_AUTHORIZED_GLD_IBIT_OPTION_DATA_WITHOUT_BROKER_ORDER_ACCESS", "QUALIFY_CONTRACT_CALENDAR_COST_HISTORICAL_AVAILABILITY_AND_FILL_MODEL"]);
     assert.equal(status.legacyProductLanes.etfDailyScan.formerNextAction, "ALPACA_D3B_IMPLEMENTATION");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDelivery.liveNetworkAuthorization, "NOT_GRANTED");
     assert.equal(status.frozenDailyScanAlpacaHistoricalDelivery.historicalPhase1BDesign.task, "ALPACA_BARS_LIMIT_LIVE_READONLY_QUALIFICATION_PROTOCOL");
@@ -392,8 +468,8 @@ const tests = [
     assertInvalid(changed, schema, "$.validation.phase1bD3AMergedHead.source_baseline_commit must equal schema const \"bae51dda65dc55f376cb683f873fa93295ed7e2f\".");
   }],
   ["v2 records 20% research stop, net 1.5R-2R and separate account and stress limits", () => {
-    assert.equal(status.schemaVersion, "1.17");
-    assert.equal(status.currentMilestone.id, "LOCAL_OPTIONS_TRADE_LIFECYCLE_V1");
+    assert.equal(status.schemaVersion, "1.18");
+    assert.equal(status.currentMilestone.id, "OPTIONS_MARKET_EVIDENCE_IMPORT_V1");
     assert.equal(status.ownerOptionsProfile.plannedStopBps, 2000);
     assert.equal(status.ownerOptionsProfile.minimumStopBps, 1000);
     assert.equal(status.ownerOptionsProfile.maximumStopBps, 2500);

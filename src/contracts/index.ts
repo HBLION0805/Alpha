@@ -66,3 +66,4 @@ export * from "./OptionsDriverMonitor";
 export * from "./OptionsContractQuote";
 export * from "./OptionsPaperTrading";
 export * from "./OptionsTradeReview";
+export type * from "./OptionsMarketEvidence";

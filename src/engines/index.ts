@@ -41,3 +41,4 @@ export * from "./options-drivers/OptionsDriverCatalog";
 export * from "./options-contract-quote/OptionsContractQuoteEngine";
 export * from "./options-paper/OptionsPaperTradingEngine";
 export * from "./options-trade-review/OptionsTradeReviewEngine";
+export * from "./options-market-evidence/OptionsMarketEvidenceEngine";
