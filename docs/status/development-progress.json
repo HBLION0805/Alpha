@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-07T21:47:05.892Z",
+  "recordedAt": "2026-09-07T21:55:31.569Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "a066ccd",
+  "comparedWithCommit": "843ba4f",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -98,8 +98,8 @@
     }
   ],
   "currentWorkstream": "08",
-  "currentUnit": "Robinhood paper-adapter qualification design",
-  "currentUnitAcceptance": "Design reviewed and 66 original regression checks passed; no adapter implementation or acceptance gate advanced.",
+  "currentUnit": "Public source-use and quote-clock qualification review",
+  "currentUnitAcceptance": "Official customer and US options terms reviewed; specific retention/research applicability and independent option event clocks remain unresolved. No gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,7 +134,7 @@
     ]
   },
   "criticalDependency": "Eligible GLD/IBIT option evidence from the frozen September 8 09:30-09:50 New York opening pilot, followed by semantics/cost/account qualification.",
-  "nextAction": "Review official source documentation for unresolved retention/research-use and quote-clock semantics; evaluate the frozen opening series when available before implementing an adapter.",
+  "nextAction": "Specify bounded hypothetical displayed-quote fills with explicit unknowns; assess actual opening evidence before source-specific implementation and qualification.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
@@ -142,5 +142,5 @@
     "failed": 0,
     "componentCount": 144
   },
-  "latestOperationalEvidence": "docs/status/robinhood-paper-qualification.json"
+  "latestOperationalEvidence": "docs/status/robinhood-source-use.json"
 }

@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The [public source-use review](OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md) adds dated
+customer/US options agreement evidence while retaining unresolved retention and
+clock semantics. Next define hypothetical snapshot fill assumptions without
+asserting source qualification. Counts and actual-price gates remain unchanged.
+
 The [Robinhood paper qualification design](OPTIONS_ROBINHOOD_PAPER_QUALIFICATION_DELIVERY.md)
 now maps source fields and evidence requirements before a separate adapter.
 No implementation or real-price gate advanced; actual eligible quotes and

@@ -21,6 +21,13 @@ and its current checkpoint, including the separate six first-paper-flow gates.
 Count local acceptance separately from missing real-price validation; do not
 report an invented overall percentage. See [reporting update](OPTIONS_OVERALL_PROGRESS_REPORTING_DELIVERY.md).
 
+The [public source-use review](OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md) now records
+current customer and US options agreement evidence. Personal-use provisions do
+not resolve specific retention/research applicability or independent option
+event clocks. Counts and gates are unchanged. Next specify a bounded hypothetical
+snapshot fill model preserving unknowns, then assess actual opening evidence;
+do not turn public-document review into source qualification or consent.
+
 The [paper-adapter qualification design](OPTIONS_ROBINHOOD_PAPER_QUALIFICATION_DELIVERY.md)
 now fixes source-precision/lineage, research timing, contract/session/use/cost
 evidence and fill/outcome requirements. It implements no adapter. Actual closeout
