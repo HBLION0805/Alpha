@@ -4,8 +4,10 @@ Current delivery arms automatic GLD/IBIT quote collection for the frozen Septemb
 8, 09:30-09:50 New York observation window. The existing news heartbeat shares
 this window and restores its original daily 09:00 schedule afterward. The local
 collector and host tick are tested; actual in-window collection is pending.
-See [opening-window correction](OPTIONS_ROBINHOOD_OPENING_WINDOW.md) and
-[latest operational status](status/robinhood-opening-collection.json).
+The deterministic final closeout now distinguishes missing request evidence,
+source failures and unusable observations, preserving reports at actual clocks.
+See [closeout delivery](OPTIONS_ROBINHOOD_CLOSEOUT_DELIVERY.md) and
+[latest operational status](status/robinhood-closeout.json).
 
 The preceding delivery added Robinhood capture assessment and immutable storage.
 Host OAuth and all five market tools work. Four actual option quotes were stale
@@ -21,6 +23,9 @@ and authentication facts only. See
 
 ## Implemented
 
+- Deterministic collection closeout with completed-slot and per-contract coverage,
+  explicit source/missing-data diagnostics, candidate operational lessons and
+  immutable reports bound to original input prefixes and recording clocks.
 - Window/cadence-checked quote collection, immutable successful replies and
   sanitized failed attempts, restart recovery and a verified host schedule.
   One frozen diagnostic window only; no source-specific replay or orders.

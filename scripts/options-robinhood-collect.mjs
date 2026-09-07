@@ -82,6 +82,26 @@ function readAttempt(root, path, { plan, frames, artifact }) {
   }
   return { old, reply };
 }
+
+/** Validated reporting input; raw provider replies stay behind this storage boundary. */
+export function readRobinhoodCollectionSnapshot(id, { workspaceRoot = process.cwd(), now = () => new Date().toISOString() } = {}) {
+  const root = realpathSync(workspaceRoot);
+  observationId(id);
+  const dir = io.contained(root, resolve(root, 'data/runtime/options-robinhood-data/collection-attempts', id));
+  const finish = (snapshot, entries) => ({ plan: snapshot.plan, frames: snapshot.frames, assessedAt: observationClock(now()),
+    attempts: entries.map(({ old, reply }) => ({ attemptId: reply.attemptId, attemptSha256: old.artifactSha256,
+      recordedAt: old.recordedAt, status: old.status, frameSha256: old.frameSha256,
+      sourceCalls: reply.outcomes.map(o => ({ tool: o.tool, requestedAt: o.requestedAt, receivedAt: o.receivedAt, errorCode: o.errorCode ?? null })) })) });
+  // Match the writer's lock order so a saved frame and its attempt are read together.
+  const withAttempts = () => io.locked(root, dir, () => {
+    const snapshot = state(root, id);
+    return finish(snapshot, attemptNames(dir).map(name => readAttempt(root, resolve(dir, name), snapshot)));
+  });
+  if (existsSync(dir)) return withAttempts();
+  const snapshot = state(root, id);
+  // A first writer may have created the directory while the study was being read.
+  return existsSync(dir) ? withAttempts() : finish(snapshot, []);
+}
 export function runRobinhoodCollectCommand(args, { workspaceRoot = process.cwd(), now = () => new Date().toISOString() } = {}) {
   if (args.length === 1 && args[0] === '--help') return { usage: ['options:robinhood-collect -- --prepare <study-id>', 'options:robinhood-collect -- --accept-base64 <study-id> <reply>'], networkAccess: false, executionAllowed: false };
   if (!((args.length === 2 && args[0] === '--prepare') || (args.length === 3 && args[0] === '--accept-base64'))) fail('UNSUPPORTED_COMMAND');

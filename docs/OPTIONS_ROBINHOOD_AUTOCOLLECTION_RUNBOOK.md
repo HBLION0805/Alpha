@@ -32,7 +32,10 @@ the checked-in [wrapper prompt](OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt).
   Change only this heartbeat through `automation_update`, never create a cron.
 - At or after `2026-09-08T13:50:00.000Z`, first restore the exact original fields
   in `docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json` using `automation_update`.
-  Then run the observation review and preserve its actual-time coverage report.
+  Then run `node node_modules/tsx/dist/cli.mjs scripts/options-robinhood-closeout.mjs --save gld-ibit-observe-open-20260908`.
+  This saves a hash-checked actual-time report and returns its compact receipt.
+  It distinguishes pending slots, missing request evidence, source failures and
+  unusable quotes; diagnostic coverage is not win probability.
   If the original daily news check is due at this wake, execute its preserved
   prompt too (09:00 through strictly before 09:30 New York; the normal 09:50
   completion does not repeat news). A corrupt collection record must not prevent restoration of news.
@@ -121,7 +124,7 @@ if (prepared.action !== "COLLECT") {
   A later scheduled tick can retry. Surface a meaningful new source/authentication
   failure or required user action; do not repeat unchanged failures every minute.
 - FINISH: restore the shared heartbeat's original public-news fields as described
-  above, run the existing observation `--review` command, and retain its actual-time
+  above, run the closeout `--save` command, and retain its immutable actual-time
   coverage/gap report under the ignored runtime directory. Do not place a trade or start
   an unreviewed replay. Report only a meaningful failure or required action.
 - A thrown local integrity/scope error: stop the tick and report the exact safe

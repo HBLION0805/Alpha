@@ -1,5 +1,17 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 UTC - Keep collection coverage distinct from source and trade success
+
+- Combine the existing observation review with validated source-attempt summaries
+  in a separate closeout engine. Distinguish pending slots, missing request
+  evidence, failed calls and unusable market observations; none is a trade loss.
+- Preserve exact frame/attempt prefixes and actual assessment clocks in immutable
+  reports. Later data cannot silently revise an earlier report or hide an earlier
+  failed attempt. Operational lessons stay candidate data-quality rules.
+- Replace ad hoc final output saving with the tested closeout CLI, after restoring
+  the original shared news heartbeat. Do not change the frozen opening window,
+  source quality rules, risk budgets or NO_REPLAY boundary.
+
 ## 2026-09-07 UTC - Collect the opening interval
 
 - The Owner questioned the initial 10:00 start. Collection has no requirement to

@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-07 UTC - Deterministic collection acceptance reports
+
+- Added a closeout engine and CLI that combine exact quote-frame diagnostics
+  with source failure attempts and elapsed request-slot coverage. Future slots
+  stay pending; complete diagnostic coverage never authorizes a trade.
+- Added exclusive report save/recovery using original input prefixes and clocks,
+  and candidate operational lessons without changing accepted trade lessons.
+- The final scheduled step restores original news before invoking closeout save.
+  The opening window, contracts and raw journals remain unchanged. See
+  [delivery](OPTIONS_ROBINHOOD_CLOSEOUT_DELIVERY.md).
+
 ## 2026-09-07 UTC - Start the first collection window at the open
 
 - Moved the active first window to September 8, 09:30-09:50 New York by freezing

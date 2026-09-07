@@ -4,6 +4,16 @@ Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The Owner requested continued autonomous development while away, with automatic
+orders still excluded. RH-CLOSEOUT-1 adds the deterministic final acceptance
+report: completed request slots, source failures, missing/unusable quotes,
+per-contract coverage and candidate operational lessons. Reports recover their
+original input prefixes and assessment clocks after later records arrive.
+The final host step restores original news first, then runs the closeout CLI
+`--save`; the opening window and original restoration fields are unchanged.
+See [delivery](OPTIONS_ROBINHOOD_CLOSEOUT_DELIVERY.md) and
+[latest checkpoint](status/robinhood-closeout.json). Actual opening data is pending.
+
 The Owner questioned the 10:00 collection start. The active first window now
 begins at the market open: September 8, 09:30-09:50 New York, using a new frozen
 study `gld-ibit-observe-open-20260908`. The old 10:00 plan and all records are
