@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - Complete synthetic collection-window rehearsals
+
+- Added three isolated twenty-minute scenarios joining the Host tick, local
+  collector, saved observations, closeout recovery and candidate data-quality lessons.
+- Healthy/mixed/slow scenarios preserve 20/13/0 complete usable slots, with actual
+  run clocks separate from simulated times. Actual market sources and the active
+  heartbeat are unchanged. See [delivery](OPTIONS_COLLECTION_REHEARSAL_DELIVERY.md).
+
 ## 2026-09-07 - Journal context cutoff reconstruction
 
 - Added a local receipt/discovery-time reconstruction command for headlines,

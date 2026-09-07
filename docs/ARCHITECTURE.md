@@ -11,6 +11,14 @@ Robinhood checkpoint; [current.json](status/current.json) retains the prior buil
 
 ## Host collection boundary
 
+`options-collection-rehearsal.mjs` binds the hash-checked Host program to isolated
+synthetic workspace/study/contract constants. Fake quote ports and in-process
+command ports exercise the original local collector and closeout across complete
+windows; no shell, network or host mutation is involved. Actual run clocks remain
+separate from simulated source/recording clocks. See
+[delivery](OPTIONS_COLLECTION_REHEARSAL_DELIVERY.md). The actual Host scheduler,
+entitlement, provider latency and unresolved tool calls are not tested by this model.
+
 `options-robinhood-collect.mjs` is a network-free composition root over existing
 observation storage. It prepares a fixed quote batch only within the frozen
 window and minimum cadence, accepts bounded data-only replies, and saves exact

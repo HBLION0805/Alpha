@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Rehearse complete collection windows in isolated storage
+
+- Execute the known checked-in Host control flow through fake quote ports and
+  real in-process local repository functions. Rebind only seven literal constants
+  for the synthetic workspace, study, plan hash and four contract identifiers.
+- Keep simulated clocks explicit, use fresh temporary directories and preserve
+  pre-window reports through final closeout and restart verification. Exercise
+  missed wakes, source errors, unusable quotes and responses received after close.
+- Declare the busy-wake scheduler model. It does not measure the actual host or
+  prove that a never-settling provider call will release. No live program changes.
+
 ## 2026-09-07 - Reconstruct context from stored receipt clocks
 
 - Validate full current histories before selecting receipt/discovery-time prefixes;

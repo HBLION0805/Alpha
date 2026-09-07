@@ -4,6 +4,15 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-COLLECT-REHEARSE-1 completed three full synthetic collection windows in a fresh
+temporary workspace: healthy 20 usable slots, mixed 13 and slow zero. The original
+Host control flow runs through isolated ports and real local repository functions;
+live runbook/host/source/observation code is unchanged. Actual run receipt is in
+data/runtime/options-readiness/collection-rehearsal-receipt.json. See
+[delivery](OPTIONS_COLLECTION_REHEARSAL_DELIVERY.md) and
+[checkpoint](status/collection-rehearsal.json). Do not import these simulated
+records or candidate lessons into the active quote study or actual knowledge.
+
 OPT-CONTEXT-CUT-1 adds a read-only four-source reconstruction at an explicit UTC
 cutoff. The actual 04:30 UTC result contains 118 news observations, one Treasury
 retrieval and no BTC/BLS observations received by that cutoff. Current stores

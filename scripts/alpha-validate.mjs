@@ -117,6 +117,7 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "scripts/options-collection-rehearsal.test.mjs",
   "src/engines/options-readiness/OptionsContextCutoff.test.ts",
   "scripts/options-context-cutoff.test.mjs",
   "src/engines/options-readiness/OptionsOperatorBrief.test.ts",

@@ -1,5 +1,11 @@
 # Alpha Roadmap
 
+The [synthetic full-window rehearsal](OPTIONS_COLLECTION_REHEARSAL_DELIVERY.md)
+now joins Host control flow to persistent local collection and final reports.
+Healthy, mixed-failure and slow-response outcomes are retained independently.
+Actual host scheduling and the first in-market quotes remain unverified by this
+offline exercise; it does not unlock a real-price trade replay.
+
 The [context cutoff consumer](OPTIONS_CONTEXT_CUTOFF_DELIVERY.md) can now rebuild
 local background observations at an explicit historical receipt/discovery cutoff.
 It excludes later records without changing source engines or qualifying a trade

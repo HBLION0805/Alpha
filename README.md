@@ -6,6 +6,10 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Complete synthetic collection-window rehearsals join the checked-in Host tick,
+  local collector, persistent observation records and final coverage/lesson reports.
+  Normal, mixed-failure and slow-response scenarios retain explicit simulated
+  clocks and isolated evidence. See [delivery](docs/OPTIONS_COLLECTION_REHEARSAL_DELIVERY.md).
 - Historical context can be reconstructed at an explicit UTC cutoff using only
   stored receipt/discovery clocks. Later observations are excluded, failures are
   preserved and each current history is validated first. This does not prove an
