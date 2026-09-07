@@ -1,8 +1,8 @@
 {
   "version": "OPTIONS_WORK_CONTINUATION_DELIVERY_V1",
-  "recordedAt": "2026-09-07T19:14:34.590Z",
+  "recordedAt": "2026-09-07T19:15:43.735Z",
   "sourceBaseCommit": "42a6ea1",
-  "status": "VALIDATED_PENDING_ACTIVATION",
+  "status": "SHARED_CONTINUATION_ACTIVE_HOST_FIELDS_VERIFIED",
   "validation": {
     "status": "PASSED",
     "componentCount": 135,
@@ -75,5 +75,33 @@
     "Actual later execution depends on app, computer, allowance and previous-turn availability.",
     "Restoration v6 and frozen quote code/window are retained; only the shared wrapper/cadence change intentionally."
   ],
-  "activation": null
+  "activation": {
+    "verifiedAt": "2026-09-07T19:15:43.735Z",
+    "status": "ACTIVE_HOST_FIELDS_VERIFIED",
+    "automationId": "gld-ibit",
+    "matchedFieldCount": 8,
+    "matches": {
+      "id": true,
+      "kind": true,
+      "name": true,
+      "prompt": true,
+      "rrule": true,
+      "status": true,
+      "targetThreadId": true,
+      "notificationPolicy": true
+    },
+    "changedFields": [
+      "prompt",
+      "rrule"
+    ],
+    "hostBeforeSha256": "f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310",
+    "hostAfterSha256": "b41849aea7039ea4d886ac0de1f78950d3952ea2d720a3613a01e0b19f061934",
+    "protectedFiles": 508,
+    "preservedUnchanged": 507,
+    "intentionallyChangedFiles": [
+      "C:/Users/liuha/.codex/automations/gld-ibit/automation.toml"
+    ],
+    "firstLaterWakeObserved": false
+  },
+  "implementationCommit": "25f00a9"
 }

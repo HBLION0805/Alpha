@@ -66,6 +66,19 @@ passed. Expected warnings concern the uncommitted tree and Windows LF/CRLF
 conversion. Original v6, phase, runbook and prompt hashes all matched before
 activation. No live source or broker call was made by validation or routing.
 
+Activation was verified at **2026-09-07T19:15:43.735Z** after implementation
+commit `25f00a9` had been pushed. The supported app update returned ACTIVE and
+all **eight stored host fields matched** the reviewed manifest. Only `prompt`
+and `rrule` changed; identity, target, status, name and notification preference
+were preserved. The actual host hash changed from
+`f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310` to
+`b41849aea7039ea4d886ac0de1f78950d3952ea2d720a3613a01e0b19f061934`.
+Of the original 508 protected files, **507 remained byte-identical** and only
+that explicitly authorized host file changed. Before/after copies and field
+comparisons are retained under ignored `data/runtime/options-sample-partition/`.
+No second automation exists. The first actual later wake remains unobserved;
+the current read-only router returned DEVELOPMENT without executing source calls.
+
 The two rejected creation attempts made no automation: the first required a
 thread destination; the second established the one-heartbeat constraint. They
 were app argument/state validation failures, not approval-review rejections.
