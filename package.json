@@ -158,7 +158,10 @@
     "test:options-sample-partition-io": "tsx scripts/options-sample-partition.test.mjs",
     "options:sample-inventory": "tsx scripts/options-sample-inventory.mjs",
     "test:options-sample-inventory": "tsx src/engines/options-sample-partition/OptionsSampleInventory.test.ts",
-    "test:options-sample-inventory-io": "tsx scripts/options-sample-inventory.test.mjs"
+    "test:options-sample-inventory-io": "tsx scripts/options-sample-inventory.test.mjs",
+    "options:work-continuation": "tsx scripts/options-work-continuation.mjs",
+    "test:options-work-continuation": "tsx src/engines/options-readiness/OptionsWorkContinuation.test.ts",
+    "test:options-work-continuation-host": "tsx scripts/options-work-continuation.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

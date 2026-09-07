@@ -1,5 +1,9 @@
 # Alpha Roadmap
 
+[Shared continuation](OPTIONS_WORK_CONTINUATION_DELIVERY.md) carries authorized
+development between reports while yielding to the pending opening observation.
+Actual next-wake execution remains distinct from saved scheduler configuration.
+
 [Sample validation infrastructure](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md) audits
 declared time partitions and inventories existing journals. Actual inventory:
 15 cases, nine closed reviews, zero complete partition inputs. Feature manifests,

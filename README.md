@@ -10,6 +10,11 @@ test dependencies. It links original evidence without changing historical clocks
 
 ## Current capabilities
 
+- **Automatic development continuation:** the existing shared task can resume
+  useful work between reports while daily context and the frozen opening window
+  retain priority. Saved routing/configuration is not proof of a later wake.
+  [Delivery](docs/OPTIONS_WORK_CONTINUATION_DELIVERY.md).
+
 - **Sample partition and journal inventory:** chronological declared windows
   reject overlapping information and reused cross-group evidence. The inventory
   retains all existing cases and missing point-in-time sampling facts. Neither

@@ -1,0 +1,79 @@
+{
+  "version": "OPTIONS_WORK_CONTINUATION_DELIVERY_V1",
+  "recordedAt": "2026-09-07T19:14:34.590Z",
+  "sourceBaseCommit": "42a6ea1",
+  "status": "VALIDATED_PENDING_ACTIVATION",
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 135,
+    "testsExecuted": 3390,
+    "passed": 3390,
+    "failed": 0,
+    "durationMs": 69395,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_CURRENT_OPERATIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "focused": {
+    "router": 15,
+    "host": 8
+  },
+  "sourcePreservation": {
+    "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json": {
+      "expected": "e91032e033c40163defa0abac3f6444dab6a6faac90e75972de1e2068d0668a9",
+      "actual": "e91032e033c40163defa0abac3f6444dab6a6faac90e75972de1e2068d0668a9"
+    },
+    "docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json": {
+      "expected": "32e4a22e9f684addb1adcb252e16f1ff2aa6780f1fb6f0c8aa3d8f8fd79b0fcd",
+      "actual": "32e4a22e9f684addb1adcb252e16f1ff2aa6780f1fb6f0c8aa3d8f8fd79b0fcd"
+    },
+    "docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md": {
+      "expected": "2bac7e22c79421341755bfc9aa90a854920f13aa2f3baa107db74bd46681cdcc",
+      "actual": "2bac7e22c79421341755bfc9aa90a854920f13aa2f3baa107db74bd46681cdcc"
+    },
+    "docs/OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt": {
+      "expected": "63f3c126a69c2ca37a0bba8aabfc2de68436118454c1b182f4a5863228cb219e",
+      "actual": "63f3c126a69c2ca37a0bba8aabfc2de68436118454c1b182f4a5863228cb219e"
+    }
+  },
+  "hostBeforeSha256": "f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310",
+  "currentRouter": {
+    "version": "OPTIONS_WORK_CONTINUATION_ROUTE_V1",
+    "phase": "armed",
+    "asOf": "2026-09-07T19:13:53.239Z",
+    "action": "DEVELOPMENT",
+    "newYorkClock": "15:13:53",
+    "developmentStopAt": "2026-09-07T19:23:53.239Z",
+    "maximumNewWorkMinutes": 10,
+    "marketContextRefreshDue": false,
+    "frozenQuoteTickDue": false,
+    "restoreV6BeforeCollectionEvidence": false,
+    "brokerAccountAllowed": false,
+    "orderExecutionAllowed": false,
+    "sourceCallExecuted": false,
+    "schedulerUpdated": false,
+    "note": "A routing result does not prove the host will wake or finish on time. Preserve all actual gaps and the original quote/restore workflow.",
+    "routeSha256": "876f0cab3df7e811626e77393394da7ff20c891e455694de9cb8863619d80dfd"
+  },
+  "firstLaterWakeObserved": false,
+  "newAutomationsCreated": 0,
+  "sharedAutomationId": "gld-ibit",
+  "executionAllowed": false,
+  "marketSourceCalls": 0,
+  "limitations": [
+    "Quarter-hour follow-up is not immediate event-triggered execution.",
+    "Actual later execution depends on app, computer, allowance and previous-turn availability.",
+    "Restoration v6 and frozen quote code/window are retained; only the shared wrapper/cadence change intentionally."
+  ],
+  "activation": null
+}

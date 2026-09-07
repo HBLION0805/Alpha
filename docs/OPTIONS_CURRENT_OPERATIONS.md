@@ -1,5 +1,11 @@
 # GLD/IBIT operations: evidence and next test
 
+Current shared host continuation: [development follow-up](OPTIONS_WORK_CONTINUATION_DELIVERY.md)
+adds quarter-hour development routing to the existing task. Use its versioned
+host fields and activation checkpoint; old schedule descriptions below remain
+dated evidence. The opening tick/window and restore-v6-before-evidence order are
+preserved, with daily 09:00 context and opening-day development avoidance.
+
 Newest local capability: [sample validation](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md)
 adds declared time partitions and a complete inventory of current paper/research
 cases. Fifteen cases retain nine closed reviews; none has complete feature-time

@@ -8,15 +8,26 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+Latest operational continuation: **OPT-WORK-CONTINUATION-1** shares the single
+`gld-ibit` heartbeat for development, daily context and frozen opening collection.
+Use `docs/OPTIONS_WORK_CONTINUATION_HOST_V1.json` and
+`options:work-continuation -- --route armed|daily`; see
+[delivery](OPTIONS_WORK_CONTINUATION_DELIVERY.md) and
+[actual activation status](status/work-continuation.json). Quarter-hour non-quote
+wakes and a ten-minute development allowance supersede the old armed cadence;
+September 8 09:00-10:00 New York reserves context/collection priority. The exact
+quote tick and window remain unchanged. At window end restore v6 first, install
+post-window continuation second, and only then inspect/save closeout. Preserve
+all original snapshots. Never create or delete another/shared heartbeat.
+
 The Owner explicitly requests continuation after reports without another
 "continue" message. Sample partition/inventory work has now been completed:
 15 existing cases and nine closed reviews remain, with zero complete sampling
 inputs. The independent declared partition audit does not seal a holdout or
 calibrate a strategy. See [delivery](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md) and
-[checkpoint](status/sample-validation.json). The next operational task is to
-share the existing heartbeat for authorized development continuation; a second
-heartbeat was rejected by the app's one-per-task constraint. Preserve opening
-collection priority and implement any host change through a reviewed design.
+[checkpoint](status/sample-validation.json). Sharing the existing heartbeat is
+implemented by the continuation delivery above; a second heartbeat was rejected
+by the app's one-per-task constraint. Preserve opening collection priority.
 
 Latest continuation: **OPT-STRUCTURE-COMPARE-1** adds the bounded structure
 comparison requested after portfolio diagnostics. `options:structures -- --demo`

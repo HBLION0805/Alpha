@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - Shared automatic development continuation
+
+- Added a deterministic time router, tested priority boundaries and versioned
+  fields for the existing heartbeat's authorized development follow-up.
+- Preserved original v6, phase/runbook bytes, frozen quote requests and window;
+  non-quote cadence and wrapper prompt change through the app tool only.
+  See [delivery and activation evidence](OPTIONS_WORK_CONTINUATION_DELIVERY.md).
+
 ## 2026-09-07 - Declared sample partitions and existing-journal inventory
 
 - Added chronological interval, gap and cross-partition reuse audits with all

@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Share the existing heartbeat for authorized continuation
+
+- The Owner requested continuation after reports; the app allows one heartbeat
+  per task. Update `gld-ibit` using the supported tool, with no workaround cron.
+- Quarter-hour development yields to daily context and the frozen opening
+  window. Preserve exact quote calls and restore v6 before any closeout evidence.
+- Stop the development responsibility by restoring an appropriate original
+  schedule, never by deleting the shared ongoing news task. See
+  [delivery](OPTIONS_WORK_CONTINUATION_DELIVERY.md).
+
 ## 2026-09-07 - Preserve all cases while auditing declared sample separation
 
 - Assign windows from decision clocks, with explicit elapsed gaps and whole

@@ -1,5 +1,14 @@
 # Alpha Architecture
 
+## Shared host development continuation
+
+A pure UTC/New York routing helper selects daily context, bounded development,
+opening collection, restoration-first closeout or yielding. A new immutable host
+manifest retains the original v6 and frozen quote workflow while sharing the
+single available heartbeat. Only the app tool mutates host schedule fields;
+the router has no source, scheduler or trading side effects. See
+[design](specifications/OPTIONS_WORK_CONTINUATION_V1.md).
+
 ## Options sample validation (September 7, 2026)
 
 `OptionsSamplePartitionEngine` audits explicit chronological windows and whole
