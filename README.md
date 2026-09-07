@@ -6,6 +6,10 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Public BLS release schedules preserve Eastern/UTC event times, actual retrieval
+  clocks and changed or missing event identities. One actual calendar and restart
+  recovery are verified; daily integration is a separate next step. See
+  [delivery](docs/OPTIONS_BLS_RELEASE_CALENDAR_DELIVERY.md).
 - Local evidence exports preserve exact selected-study, review and context bytes
   with a verifiable manifest. Verification is independent of current source stores;
   this is a local copy, not an off-device backup. See [delivery](docs/OPTIONS_EVIDENCE_EXPORT_DELIVERY.md).
@@ -108,6 +112,8 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:release-calendar -- --refresh` | Retrieve and preserve one public BLS scheduled-release calendar |
+| `npm run options:release-calendar -- --report` | Read upcoming releases, schedule changes, unknown metadata and collection age |
 | `npm run options:evidence-rehearsal -- --rehearse <package-id>` | Test repository recovery in a fresh temporary workspace while preserving active data and the source package |
 | `npm run options:evidence-export -- --create <study-id> <package-id>` | Create one immutable local copy of the selected study and fixed journals |
 | `npm run options:evidence-export -- --verify <package-id>` | Independently verify every copied byte against its bounded manifest |

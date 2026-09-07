@@ -4,6 +4,15 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-CALENDAR-1 adds standalone BLS scheduled-release collection and recovery.
+The first actual runtime retrieval at 2026-09-07T06:08:21.599Z retained 313 events;
+upcoming PPI/CPI times agree with the official September page. Source DTSTAMP and
+LAST-MODIFIED are absent and remain unknown. Existing journals, frozen studies
+and active v3 shared heartbeat are unchanged. See
+[delivery](OPTIONS_BLS_RELEASE_CALENDAR_DELIVERY.md). Integrate daily calendar
+context only after this independent source delivery; there is no automatic
+calendar refresh yet and no change to option collection/trading authority.
+
 OPT-EXPORT-2 rehearsed actual package recovery in a fresh temporary workspace:
 six components readable, imports missing, none blocked; all five closed paper
 trades retain five reviews and four candidate lessons, with fifteen separate

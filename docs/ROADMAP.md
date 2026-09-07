@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The official BLS scheduled-release calendar is now a standalone public context
+source with exact Eastern/UTC times, actual receipt history and explicit
+schedule-change semantics. Daily integration is next; non-BLS and unscheduled
+events remain coverage gaps. See [delivery](OPTIONS_BLS_RELEASE_CALENDAR_DELIVERY.md).
+
 Immutable local evidence packages now preserve a selected study and fixed
 trade/research/context journals. Independent byte verification and explicit
 missing-component coverage support retention; off-device backup and automatic

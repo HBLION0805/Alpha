@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Observe scheduled BLS releases with actual knowledge clocks
+
+- Add the one official BLS calendar source as GLD/IBIT context. Preserve exact
+  raw snapshots, source UIDs and actual receipt times; missing original
+  creation/modification metadata stays unknown.
+- Use explicit Eastern DST conversion and reject unsupported calendar semantics.
+  Compare consecutive successful snapshots only; missing identities are not
+  cancellations and changed schedules are recorded when actually observed.
+- Keep this journal, command and version independent. No changes to option plans,
+  accepted source/review evidence, shared timer, risk rules or replay authority.
+
 ## 2026-09-07 - Rehearse recovery without restoring the active runtime
 
 - Reconstruct a verified evidence package only in a fresh temporary workspace.

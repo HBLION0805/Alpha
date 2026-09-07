@@ -122,7 +122,10 @@
     "test:options-robinhood-capture-io": "tsx scripts/options-robinhood-capture.test.mjs",
     "options:robinhood-data": "tsx scripts/options-robinhood-data.mjs",
     "test:options-robinhood-data": "tsx src/engines/options-robinhood-data/RobinhoodDataReadinessEngine.test.ts",
-    "test:options-robinhood-data-io": "tsx scripts/options-robinhood-data.test.mjs"
+    "test:options-robinhood-data-io": "tsx scripts/options-robinhood-data.test.mjs",
+    "options:release-calendar": "tsx scripts/options-release-calendar.mjs",
+    "test:options-release-calendar": "tsx src/engines/options-release-calendar/BlsReleaseCalendarEngine.test.ts",
+    "test:options-release-calendar-io": "tsx scripts/options-release-calendar.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

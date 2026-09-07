@@ -37,6 +37,15 @@ before invoking this deterministic save. Coverage has no execution authority.
 
 ## Context and evidence
 
+`BlsReleaseCalendarEngine` owns a restricted BLS ICS profile, verified Eastern
+timezone conversion, scheduled events and consecutive-snapshot changes. It keeps
+actual receipt time separate from missing source publication metadata. Removed
+UIDs are absent observations, not inferred cancellations. A separate bounded
+transport/journal stores one official calendar per explicit refresh; the current
+readiness and daily heartbeat remain unchanged in this standalone delivery.
+No released values, event-impact scores, calibrated risk windows or order rights
+are inferred. See [specification](specifications/OPTIONS_BLS_RELEASE_CALENDAR_V1.md).
+
 `OptionsEvidenceExportEngine` defines exact selected-study and fixed-journal
 source mappings, limits and manifest invariants. The script copies raw bytes into
 one exclusive local package, checks source inventories before/after copying and

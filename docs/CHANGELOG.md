@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-07 - Official BLS scheduled-release context
+
+- Added bounded public ICS retrieval, explicit Eastern/UTC clocks and missing
+  source metadata, upcoming events and consecutive schedule-change diagnostics.
+- Added a separate restart-verified journal with clock, integrity and writer
+  lifetime checks. One actual retrieval contains 313 scheduled events.
+- Preserved existing journals and host scheduling. See
+  [delivery](OPTIONS_BLS_RELEASE_CALENDAR_DELIVERY.md).
+
 ## 2026-09-07 - Isolated evidence recovery rehearsal
 
 - Added package-to-temporary-workspace reconstruction using bounded export
