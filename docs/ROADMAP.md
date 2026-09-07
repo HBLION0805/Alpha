@@ -1,5 +1,16 @@
 # Alpha Roadmap
 
+## September 7, 2026 portfolio diagnostics checkpoint
+
+Completed a separate declared-scenario portfolio module: receipt-time settlement,
+pending cash, aggregate GLD/IBIT exposure, daily loss/drawdown and event coverage.
+It is a local diagnostic, not full broker-account enforcement. Existing accepted
+paper/research ledgers remain unchanged. See [delivery](OPTIONS_PORTFOLIO_RISK_DELIVERY.md).
+Independent next work can compare bounded option structures and their cost/risk
+tradeoffs; actual-data qualification, a Robinhood paper adapter, account evidence
+and out-of-sample calibration remain unfinished. The frozen opening pilot is
+still September 8, 09:30-09:50 New York; automatic orders remain disabled.
+
 The [local operations completion batch](OPTIONS_LOCAL_COMPLETION_DELIVERY.md)
 delivers the offline dashboard, all-disposition outcome audit and BLS/FOMC
 evidence export/recovery v2. These are local operational capabilities. Real

@@ -10,6 +10,13 @@ test dependencies. It links original evidence without changing historical clocks
 
 ## Current capabilities
 
+- **Declared portfolio risk diagnostics:** `npm run options:portfolio-risk -- --demo`
+  combines GLD/IBIT holdings, pending reservations, settlement receipts, daily
+  losses, drawdown and manual event coverage in one $1,000 cash scenario. Saved
+  reports recompute in a fresh process. This is not live account enforcement.
+  [Delivery](docs/OPTIONS_PORTFOLIO_RISK_DELIVERY.md),
+  [specification](docs/specifications/OPTIONS_PORTFOLIO_RISK_V1.md).
+
 - The [local completion batch](docs/OPTIONS_LOCAL_COMPLETION_DELIVERY.md) adds
   an offline operator dashboard, recomputed all-outcome audit and opt-in v2
   evidence packages including both BLS and FOMC journals. It preserves old

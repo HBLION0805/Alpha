@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-07 - Independent GLD/IBIT portfolio risk scenarios
+
+- Added receipt-time cash/settlement accounting, aggregate position and pending
+  reservations, daily loss/drawdown capacity, unresolved exits and manual event
+  coverage checks in a separate $1,000 scenario engine.
+- Added bounded JSON/demo commands, exclusive saved artifacts, fresh-process
+  recomputation, focused tests and aggregate validation registration.
+- Preserved old paper/research outputs, notebooks, sources and host settings;
+  no account access, orders or strategy-size escalation. See
+  [delivery](OPTIONS_PORTFOLIO_RISK_DELIVERY.md).
+
 ## 2026-09-07 - Local outcomes, dashboard and calendar evidence v2
 
 - Added a deterministic all-outcome audit with exact cost/net-risk arithmetic,

@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Diagnose a declared portfolio without inventing account evidence
+
+- Keep a single declared cash scenario separate from independent historical
+  trials and the original paper account. Reuse existing validators and limits.
+- Credit declared settlement only at its receipt clock; never infer available
+  cash from elapsed days or release an unconfirmed pending order on timeout.
+- Sum GLD/IBIT exposure without assumed diversification. Preserve premium risk
+  when marks are missing and include giveback from current marks to planned stops.
+- Flag reached stop/target/time exits without creating a fill. Treat simultaneous
+  mixed outcomes as an unknown trailing-loss order, not an arbitrary equity peak.
+- Save immutable diagnostic reports; do not turn manual account/event assertions
+  into verified broker facts, calibrated probabilities or execution authority.
+  See [delivery](OPTIONS_PORTFOLIO_RISK_DELIVERY.md).
+
 ## 2026-09-07 - Complete local operations without inferring market readiness
 
 - Recompute outcomes from original repository inputs; no caller-supplied PnL

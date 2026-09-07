@@ -1,5 +1,18 @@
 # Alpha Architecture
 
+## Declared options portfolio diagnostics (September 7, 2026)
+
+The independent `OptionsPortfolioRiskEngine` composes existing paper-definition,
+quote, retail-feasibility and closed-review validators. One declared $1,000 cash
+scenario supplies its own history, open holdings, pending entries and optional
+candidate. Receipt-time cash accounting and aggregate limits do not merge
+independent research accounts or mutate their journals. Unknown account evidence,
+marks and event coverage remain blocking diagnostics. The bounded offline CLI
+saves exclusive artifacts and verifies them through deterministic recomputation.
+No broker account, order, calendar-derived blackout or strategy authority is added.
+See [design](specifications/OPTIONS_PORTFOLIO_RISK_V1.md) and
+[delivery](OPTIONS_PORTFOLIO_RISK_DELIVERY.md).
+
 `OptionsOutcomeAudit` recomputes original paper scenarios and research runs,
 then derives exact closed-case arithmetic, all-disposition counts and grouped
 candidate evidence. Shared paper cash and independent historical accounts stay

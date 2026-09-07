@@ -1,5 +1,11 @@
 # GLD/IBIT operations: evidence and next test
 
+Newest local capability: [portfolio scenario diagnostics](OPTIONS_PORTFOLIO_RISK_DELIVERY.md)
+adds combined GLD/IBIT exposure, pending reserves, receipt-time settlement and
+daily loss/drawdown/event checks. Its seven-case saved rehearsal is separate from
+the existing dashboard and original paper/research journals. It inspects no
+broker account and does not alter the frozen collection window or v6 restoration.
+
 Latest local capability: [completion batch](OPTIONS_LOCAL_COMPLETION_DELIVERY.md)
 adds an offline dashboard, recomputed outcome audit and calendar-inclusive
 evidence export/recovery v2. The dashboard snapshot is saved under

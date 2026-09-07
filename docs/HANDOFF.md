@@ -8,6 +8,17 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+Latest completed continuation: **OPT-PORTFOLIO-RISK-1**, independent declared
+portfolio diagnostics. Run `npm run options:portfolio-risk -- --demo`, or use
+`--input fixtures/options-portfolio-risk/portfolio.synthetic.json` and optional
+`--save <new-id>`; `--verify <saved-id>` recomputes saved results. The actual
+seven-case rehearsal is `portfolio-rehearsal-20260907`; it contains five blocked
+scenarios and two within declared limits, not trade outcomes or a win rate.
+See [delivery](OPTIONS_PORTFOLIO_RISK_DELIVERY.md) and
+[checkpoint](status/portfolio-risk.json). Original journals, saved dashboards,
+opening study and v6 host fields remain unchanged. Full live-account enforcement
+is still absent. No account tools, automatic orders or purchases are authorized.
+
 The Owner requested continuous module work and one consolidated report. The
 [local completion batch](OPTIONS_LOCAL_COMPLETION_DELIVERY.md) adds recomputed
 outcome audits, a local HTML/JSON dashboard and calendar-inclusive export v2

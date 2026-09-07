@@ -1,0 +1,463 @@
+{
+  "version": "OPTIONS_PORTFOLIO_RISK_DELIVERY_V1",
+  "recordedAt": "2026-09-07T17:54:14.617Z",
+  "sourceBaseCommit": "d02d8d7",
+  "scope": "INDEPENDENT_DECLARED_PORTFOLIO_SCENARIOS",
+  "overallSystemComplete": false,
+  "moduleStatus": "IMPLEMENTED_SAVED_AND_INDEPENDENTLY_RECOMPUTED",
+  "policy": {
+    "version": "OPTIONS_PORTFOLIO_RESEARCH_LIMITS_V1",
+    "allocationBps": 500,
+    "plannedRiskBps": 50,
+    "fullPremiumStressCents": 2500,
+    "maxPositionsAndOrders": 1,
+    "dailyLossCents": 1000,
+    "drawdownBps": 500,
+    "dailyBasis": "NET_REALIZED_NEW_YORK_EXIT_DATE",
+    "settlementBasis": "EXPLICIT_DECLARATION_RECEIPT_NOT_ELAPSED_TIME",
+    "externalCashFlowsSupported": false,
+    "diversificationOffsetAllowed": false
+  },
+  "demo": {
+    "status": "PORTFOLIO_ARTIFACT_SAVED_AND_RECOMPUTED",
+    "artifactId": "portfolio-rehearsal-20260907",
+    "recordedAt": "2026-09-07T17:44:47.002Z",
+    "checkedAt": "2026-09-07T17:44:47.018Z",
+    "artifactSha256": "6ef571cf6997889887c26e710b29651d5dd7af07643d6e11af0d33d4c9857906",
+    "caseCount": 7,
+    "blockedScenarios": 5,
+    "existingJournalAppends": 0,
+    "executionAllowed": false,
+    "path": "data/runtime/options-portfolio-risk/portfolio-rehearsal-20260907.json"
+  },
+  "localFile": {
+    "status": "PORTFOLIO_ARTIFACT_SAVED_AND_RECOMPUTED",
+    "artifactId": "portfolio-input-20260907",
+    "recordedAt": "2026-09-07T17:44:47.019Z",
+    "checkedAt": "2026-09-07T17:44:47.022Z",
+    "artifactSha256": "e47315de05be7527d031f7b98a41e8efc4ae56ea1db284fb204b6a1c1837dc30",
+    "caseCount": 1,
+    "blockedScenarios": 0,
+    "existingJournalAppends": 0,
+    "executionAllowed": false,
+    "path": "data/runtime/options-portfolio-risk/portfolio-input-20260907.json"
+  },
+  "freshProcess": [
+    {
+      "status": "PORTFOLIO_ARTIFACT_RECOMPUTED",
+      "artifactId": "portfolio-rehearsal-20260907",
+      "recordedAt": "2026-09-07T17:44:47.002Z",
+      "checkedAt": "2026-09-07T17:52:26.175Z",
+      "artifactSha256": "6ef571cf6997889887c26e710b29651d5dd7af07643d6e11af0d33d4c9857906",
+      "caseCount": 7,
+      "blockedScenarios": 5,
+      "existingJournalAppends": 0,
+      "executionAllowed": false
+    },
+    {
+      "status": "PORTFOLIO_ARTIFACT_RECOMPUTED",
+      "artifactId": "portfolio-input-20260907",
+      "recordedAt": "2026-09-07T17:44:47.019Z",
+      "checkedAt": "2026-09-07T17:52:26.176Z",
+      "artifactSha256": "e47315de05be7527d031f7b98a41e8efc4ae56ea1db284fb204b6a1c1837dc30",
+      "caseCount": 1,
+      "blockedScenarios": 0,
+      "existingJournalAppends": 0,
+      "executionAllowed": false
+    }
+  ],
+  "cases": [
+    {
+      "scenarioId": "portfolio-base",
+      "origin": "SYNTHETIC_FIXTURE",
+      "asOf": "2026-09-08T14:02:00.000Z",
+      "status": "SCENARIO_WITHIN_LIMITS",
+      "account": {
+        "initialEquityCents": 100000,
+        "settledCashCents": 100000,
+        "unsettledCashCents": 0,
+        "reservedCashCents": 0,
+        "availableSettledCashCents": 100000,
+        "currentEquityCents": 100000,
+        "minimumHistoricalSettledCashCents": 100000,
+        "realizedNetPnlCents": 0,
+        "dailyNetPnlCents": 0,
+        "dailyDateNewYork": "2026-09-08",
+        "consecutiveClosedLosses": 0,
+        "closedOutcomeOrder": "EXIT_CLOCK_GROUPS_MIXED_SIMULTANEOUS_OUTCOMES_UNKNOWN",
+        "effectiveHighWaterEquityCents": 100000,
+        "dailyCapacityCents": 1000,
+        "allocationBudgetCents": 5000,
+        "plannedRiskBudgetCents": 500
+      },
+      "exposure": {
+        "count": 1,
+        "fullPremiumAndFeesCents": 2020,
+        "originalPlannedRiskCents": 420,
+        "capacityRiskCents": 420,
+        "currentMarkToZeroCents": 0
+      },
+      "blockers": []
+    },
+    {
+      "scenarioId": "portfolio-second-position",
+      "origin": "SYNTHETIC_FIXTURE",
+      "asOf": "2026-09-08T14:02:00.000Z",
+      "status": "SCENARIO_BLOCKED",
+      "account": {
+        "initialEquityCents": 100000,
+        "settledCashCents": 97990,
+        "unsettledCashCents": 0,
+        "reservedCashCents": 0,
+        "availableSettledCashCents": 97990,
+        "currentEquityCents": 99880,
+        "minimumHistoricalSettledCashCents": 97990,
+        "realizedNetPnlCents": 0,
+        "dailyNetPnlCents": 0,
+        "dailyDateNewYork": "2026-09-08",
+        "consecutiveClosedLosses": 0,
+        "closedOutcomeOrder": "EXIT_CLOCK_GROUPS_MIXED_SIMULTANEOUS_OUTCOMES_UNKNOWN",
+        "effectiveHighWaterEquityCents": 100000,
+        "dailyCapacityCents": 1000,
+        "allocationBudgetCents": 4994,
+        "plannedRiskBudgetCents": 499
+      },
+      "exposure": {
+        "count": 2,
+        "fullPremiumAndFeesCents": 4040,
+        "originalPlannedRiskCents": 840,
+        "capacityRiskCents": 840,
+        "currentMarkToZeroCents": 1900
+      },
+      "blockers": [
+        {
+          "code": "PORTFOLIO_FULL_PREMIUM_STRESS_LIMIT",
+          "subject": "portfolio"
+        },
+        {
+          "code": "PORTFOLIO_PLANNED_RISK_LIMIT",
+          "subject": "portfolio"
+        },
+        {
+          "code": "PORTFOLIO_POSITION_OR_ORDER_LIMIT",
+          "subject": "portfolio"
+        }
+      ]
+    },
+    {
+      "scenarioId": "portfolio-missing-mark",
+      "origin": "SYNTHETIC_FIXTURE",
+      "asOf": "2026-09-08T14:02:00.000Z",
+      "status": "SCENARIO_BLOCKED",
+      "account": {
+        "initialEquityCents": 100000,
+        "settledCashCents": 97990,
+        "unsettledCashCents": 0,
+        "reservedCashCents": 0,
+        "availableSettledCashCents": 97990,
+        "currentEquityCents": null,
+        "minimumHistoricalSettledCashCents": 97990,
+        "realizedNetPnlCents": 0,
+        "dailyNetPnlCents": 0,
+        "dailyDateNewYork": "2026-09-08",
+        "consecutiveClosedLosses": 0,
+        "closedOutcomeOrder": "EXIT_CLOCK_GROUPS_MIXED_SIMULTANEOUS_OUTCOMES_UNKNOWN",
+        "effectiveHighWaterEquityCents": 100000,
+        "dailyCapacityCents": 1000,
+        "allocationBudgetCents": null,
+        "plannedRiskBudgetCents": null
+      },
+      "exposure": {
+        "count": 1,
+        "fullPremiumAndFeesCents": 2020,
+        "originalPlannedRiskCents": 420,
+        "capacityRiskCents": 420,
+        "currentMarkToZeroCents": null
+      },
+      "blockers": [
+        {
+          "code": "CURRENT_EQUITY_UNKNOWN",
+          "subject": "portfolio"
+        },
+        {
+          "code": "POSITION_MARK_MISSING",
+          "subject": "portfolio-open"
+        }
+      ]
+    },
+    {
+      "scenarioId": "portfolio-unsettled-sale",
+      "origin": "SYNTHETIC_FIXTURE",
+      "asOf": "2026-09-08T14:02:00.000Z",
+      "status": "SCENARIO_WITHIN_LIMITS",
+      "account": {
+        "initialEquityCents": 100000,
+        "settledCashCents": 97990,
+        "unsettledCashCents": 2890,
+        "reservedCashCents": 0,
+        "availableSettledCashCents": 97990,
+        "currentEquityCents": 100880,
+        "minimumHistoricalSettledCashCents": 97990,
+        "realizedNetPnlCents": 880,
+        "dailyNetPnlCents": 880,
+        "dailyDateNewYork": "2026-09-08",
+        "consecutiveClosedLosses": 0,
+        "closedOutcomeOrder": "EXIT_CLOCK_GROUPS_MIXED_SIMULTANEOUS_OUTCOMES_UNKNOWN",
+        "effectiveHighWaterEquityCents": 100880,
+        "dailyCapacityCents": 1880,
+        "allocationBudgetCents": 5044,
+        "plannedRiskBudgetCents": 504
+      },
+      "exposure": {
+        "count": 1,
+        "fullPremiumAndFeesCents": 2020,
+        "originalPlannedRiskCents": 420,
+        "capacityRiskCents": 420,
+        "currentMarkToZeroCents": 0
+      },
+      "blockers": []
+    },
+    {
+      "scenarioId": "portfolio-date-only-event",
+      "origin": "SYNTHETIC_FIXTURE",
+      "asOf": "2026-09-08T14:02:00.000Z",
+      "status": "SCENARIO_BLOCKED",
+      "account": {
+        "initialEquityCents": 100000,
+        "settledCashCents": 100000,
+        "unsettledCashCents": 0,
+        "reservedCashCents": 0,
+        "availableSettledCashCents": 100000,
+        "currentEquityCents": 100000,
+        "minimumHistoricalSettledCashCents": 100000,
+        "realizedNetPnlCents": 0,
+        "dailyNetPnlCents": 0,
+        "dailyDateNewYork": "2026-09-08",
+        "consecutiveClosedLosses": 0,
+        "closedOutcomeOrder": "EXIT_CLOCK_GROUPS_MIXED_SIMULTANEOUS_OUTCOMES_UNKNOWN",
+        "effectiveHighWaterEquityCents": 100000,
+        "dailyCapacityCents": 1000,
+        "allocationBudgetCents": 5000,
+        "plannedRiskBudgetCents": 500
+      },
+      "exposure": {
+        "count": 1,
+        "fullPremiumAndFeesCents": 2020,
+        "originalPlannedRiskCents": 420,
+        "capacityRiskCents": 420,
+        "currentMarkToZeroCents": 0
+      },
+      "blockers": [
+        {
+          "code": "DATE_ONLY_EVENT_REQUIRES_REVIEW",
+          "subject": "portfolio-candidate"
+        }
+      ]
+    },
+    {
+      "scenarioId": "portfolio-overdue-order",
+      "origin": "SYNTHETIC_FIXTURE",
+      "asOf": "2026-09-08T14:02:00.000Z",
+      "status": "SCENARIO_BLOCKED",
+      "account": {
+        "initialEquityCents": 100000,
+        "settledCashCents": 100000,
+        "unsettledCashCents": 0,
+        "reservedCashCents": 2020,
+        "availableSettledCashCents": 97980,
+        "currentEquityCents": 100000,
+        "minimumHistoricalSettledCashCents": 100000,
+        "realizedNetPnlCents": 0,
+        "dailyNetPnlCents": 0,
+        "dailyDateNewYork": "2026-09-08",
+        "consecutiveClosedLosses": 0,
+        "closedOutcomeOrder": "EXIT_CLOCK_GROUPS_MIXED_SIMULTANEOUS_OUTCOMES_UNKNOWN",
+        "effectiveHighWaterEquityCents": 100000,
+        "dailyCapacityCents": 1000,
+        "allocationBudgetCents": 5000,
+        "plannedRiskBudgetCents": 500
+      },
+      "exposure": {
+        "count": 2,
+        "fullPremiumAndFeesCents": 4040,
+        "originalPlannedRiskCents": 840,
+        "capacityRiskCents": 840,
+        "currentMarkToZeroCents": 0
+      },
+      "blockers": [
+        {
+          "code": "PENDING_ORDER_EXPIRY_UNCONFIRMED",
+          "subject": "pending-order"
+        },
+        {
+          "code": "PORTFOLIO_FULL_PREMIUM_STRESS_LIMIT",
+          "subject": "portfolio"
+        },
+        {
+          "code": "PORTFOLIO_PLANNED_RISK_LIMIT",
+          "subject": "portfolio"
+        },
+        {
+          "code": "PORTFOLIO_POSITION_OR_ORDER_LIMIT",
+          "subject": "portfolio"
+        }
+      ]
+    },
+    {
+      "scenarioId": "portfolio-unknown-account",
+      "origin": "SYNTHETIC_FIXTURE",
+      "asOf": "2026-09-08T14:02:00.000Z",
+      "status": "SCENARIO_BLOCKED",
+      "account": {
+        "initialEquityCents": 100000,
+        "settledCashCents": 100000,
+        "unsettledCashCents": 0,
+        "reservedCashCents": 0,
+        "availableSettledCashCents": 100000,
+        "currentEquityCents": 100000,
+        "minimumHistoricalSettledCashCents": 100000,
+        "realizedNetPnlCents": 0,
+        "dailyNetPnlCents": 0,
+        "dailyDateNewYork": "2026-09-08",
+        "consecutiveClosedLosses": 0,
+        "closedOutcomeOrder": "EXIT_CLOCK_GROUPS_MIXED_SIMULTANEOUS_OUTCOMES_UNKNOWN",
+        "effectiveHighWaterEquityCents": null,
+        "dailyCapacityCents": 1000,
+        "allocationBudgetCents": 5000,
+        "plannedRiskBudgetCents": 500
+      },
+      "exposure": {
+        "count": 1,
+        "fullPremiumAndFeesCents": 2020,
+        "originalPlannedRiskCents": 420,
+        "capacityRiskCents": 420,
+        "currentMarkToZeroCents": 0
+      },
+      "blockers": [
+        {
+          "code": "ACCOUNT_MODE_UNKNOWN",
+          "subject": "portfolio"
+        },
+        {
+          "code": "EVENT_REVIEW_UNKNOWN",
+          "subject": "portfolio"
+        },
+        {
+          "code": "HIGH_WATER_UNKNOWN",
+          "subject": "portfolio"
+        },
+        {
+          "code": "HISTORY_INCOMPLETE",
+          "subject": "portfolio"
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 127,
+    "testsExecuted": 3238,
+    "passed": 3238,
+    "failed": 0,
+    "durationMs": 63149,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_CURRENT_OPERATIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "focused": {
+    "engine": {
+      "passed": 41,
+      "failed": 0
+    },
+    "cliIo": {
+      "passed": 18,
+      "failed": 0
+    }
+  },
+  "commands": [
+    "npm run test:options-portfolio-risk",
+    "npm run test:options-portfolio-risk-io",
+    "npm run typecheck",
+    "node scripts/alpha-validate.mjs",
+    "options:portfolio-risk -- --demo --save portfolio-rehearsal-20260907",
+    "options:portfolio-risk -- --input fixtures/options-portfolio-risk/portfolio.synthetic.json --save portfolio-input-20260907",
+    "options:portfolio-risk -- --verify portfolio-rehearsal-20260907",
+    "options:portfolio-risk -- --verify portfolio-input-20260907"
+  ],
+  "resolvedIssues": [
+    "TypeScript narrowing corrected for the throwing validator.",
+    "Windows child-process tsx import uses a package specifier instead of a drive URL.",
+    "Final review aligned percentage-stop tick rounding with the existing paper engine and added regression coverage.",
+    "Initial aggregate found two links to the not-yet-created checkpoint; checkpoint created and final full bundle passed."
+  ],
+  "initialValidationFailureLog": "data/runtime/options-portfolio-risk/validation.initial-failed.log",
+  "preservation": {
+    "recordedAt": "2026-09-07T17:54:14.576Z",
+    "protectedCount": 488,
+    "changed": [],
+    "hostSha256": "f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310",
+    "expectedHostSha256": "f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310",
+    "hostMatches": true
+  },
+  "artifacts": {
+    "data/runtime/options-portfolio-risk/demo-delivery-receipt.json": "f754f5f3ce1887b103b1d693a9026e6ac3712bb8f036cc5e6a20f97864628166",
+    "data/runtime/options-portfolio-risk/final-restart-receipts.json": "423f32e975255381444a64c64f10c89a9e7c67a305496e0c3119f7ac619235a7",
+    "data/runtime/options-portfolio-risk/input-delivery-receipt.json": "099cd34eade80a347e8ff76df42ac88af77d0a04580f8bc3b7591b0fda588023",
+    "data/runtime/options-portfolio-risk/operator-brief.txt": "e4cbd64eddca5b01f810365bd9f96597b0b296500eaa233c5378c38742159659",
+    "data/runtime/options-portfolio-risk/portfolio-input-20260907.json": "f1a78710e11459a33931139edea8142e805517dfeace4b70da34ca39524b04f0",
+    "data/runtime/options-portfolio-risk/portfolio-rehearsal-20260907.json": "933edced2b1dccd02ca01da9b3662d2978718ef8596f6f57f550a8da48874ef1",
+    "data/runtime/options-portfolio-risk/preservation-after.json": "7b966c5bff39cf35d97aecf7aba65c8cbadf597040ea7fa7a2d39a4b2a441e97",
+    "data/runtime/options-portfolio-risk/preservation-final.json": "f62dcef2de692c9997ea078ac2da658ae4008419ffbebc76dc181f502eb28276",
+    "data/runtime/options-portfolio-risk/protected-before.json": "f5326e5b01131af9ffff98dbd077c8caea972e019d08b2baef90056b3bcc9876",
+    "data/runtime/options-portfolio-risk/restart-receipt.json": "d097045673befca1a5c2c355622269b64e1f071ab7d0fa29b83de5293a0e9fb8",
+    "data/runtime/options-portfolio-risk/validation.final.log": "baf9df4ee62e434f4f33232b982a06d470aa2dca58d461e4e1bc5c6267df0c12",
+    "data/runtime/options-portfolio-risk/validation.initial-failed.log": "e3c636c2a932b209b04aef8d4ecb53ca4f601e958a577bedfcef6797b11c61d0",
+    "data/runtime/options-portfolio-risk/validation.log": "e3c636c2a932b209b04aef8d4ecb53ca4f601e958a577bedfcef6797b11c61d0"
+  },
+  "assumptions": [
+    "One complete declared $1,000 cash scenario without external cash flows.",
+    "History, account mode, costs, fills, settlement, high water and event review are unverified declarations.",
+    "Scenario clocks may be hypothetical; artifact recording clocks are actual.",
+    "Stops, marks and pre-exercise full-premium stress do not guarantee execution or bound exercise exposure."
+  ],
+  "remaining": [
+    "LIVE_BROKER_ACCOUNT_EVIDENCE_AND_ACTIVE_PORTFOLIO_ENFORCEMENT",
+    "FROZEN_OPENING_QUOTES_PENDING",
+    "SOURCE_TIMING_SIZE_CONTRACT_TERMS_AND_FILL_QUALIFICATION",
+    "SOURCE_SPECIFIC_ROBINHOOD_PAPER_ADAPTER",
+    "MULTI_STRUCTURE_COST_RISK_COMPARISON",
+    "NUMERICAL_DRIVER_SOURCES_AND_SIGNAL_QUALIFICATION",
+    "INDEPENDENT_HOLDOUT_OUTCOMES_AND_CALIBRATION"
+  ],
+  "next": "Bounded local option structure/cost/risk comparison; independently preserve the September 8 09:30-09:50 New York collection and v6 context restoration.",
+  "oldJournalAppends": 0,
+  "sourceRefreshes": 0,
+  "brokerToolCalls": 0,
+  "hostMutations": 0,
+  "newTrades": 0,
+  "publicDocumentationRead": [
+    "https://robinhood.com/us/en/support/articles/T1-settlements/",
+    "https://robinhood.com/us/en/support/articles/360001226946/"
+  ],
+  "liveAccountInspected": false,
+  "automaticOrdersEnabled": false,
+  "executionAllowed": false,
+  "sizeEscalationAllowed": false,
+  "winProbability": null,
+  "git": {
+    "ownerAuthorization": "STANDING_DEVELOPMENT_COMMIT_PUSH_AUTHORIZATION",
+    "deliveryRevision": "RECORDED_IN_FINAL_CONVERSATION_AFTER_COMMIT",
+    "runtimeArtifactsIgnored": true
+  }
+}
