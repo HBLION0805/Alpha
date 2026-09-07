@@ -5,13 +5,27 @@ Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
 ## Latest Owner direction
 
 The Owner now requests continuous progress without separate step reports.
+The latest instruction explicitly authorizes automatic collection and excludes
+automatic orders. RH-AUTO-1 is armed and independently read back at
+`2026-09-07T02:49:23.328Z`. The host permits one heartbeat per task; update the
+existing `gld-ibit`, never create a workaround cron or delete the news task.
+Its original daily 09:00 New York news workflow remains in the restoration
+snapshot. The temporary 09:00/10:00 schedule switches to one-minute collection
+inside the frozen September 8 window, then restores the exact original fields
+before reviewing any collection files. See the
+[collection delivery](OPTIONS_ROBINHOOD_AUTOCOLLECTION_DELIVERY.md),
+[runbook](OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md) and
+[current operational status](status/robinhood-autocollection.json).
+Preflight returned WAIT with no new quote requests or automatic attempts; actual
+in-window collection remains pending. Keep the host awake and app running.
+
 RH-OBSERVE-1 adds bounded budget screening, prospective study freeze, linked frame
 records and data-quality review/recovery. Eight actual sampled contracts remain
 NO_TRADE. Study `gld-ibit-observe-20260908` is frozen for September 8, 10:00-10:20
 a.m. New York. Its first actual smoke frame is outside that window and has zero
-usable observations; four candidate data-quality lessons are retained. No quote
-scheduler is enabled. See [current delivery](OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md)
-and [operational status](status/robinhood-observation.json). This supersedes the
+usable observations; four candidate data-quality lessons are retained. Its
+pre-scheduler [delivery](OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md)
+and [operational status](status/robinhood-observation.json) remain historical. This superseded the
 earlier capture checkpoint operationally; all accepted artifacts remain intact.
 
 The preceding "start next step" completed RH-CAPTURE-1: five callable market tools,

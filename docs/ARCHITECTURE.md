@@ -6,8 +6,24 @@ Alpha supports decisions about GLD and IBIT options on Robinhood. Capital
 preservation and explicit risk precede growth targets. TypeScript owns the
 current product logic. Legacy Python, Event Contract/Kalshi, Daily Scan and
 fixed-universe Alpaca product implementations have been removed by Owner
-instruction. The [observation status](status/robinhood-observation.json) records the latest
+instruction. The [collection status](status/robinhood-autocollection.json) records the latest
 Robinhood checkpoint; [current.json](status/current.json) retains the prior build.
+
+## Host collection boundary
+
+`options-robinhood-collect.mjs` is a network-free composition root over existing
+observation storage. It prepares a fixed quote batch only within the frozen
+window and minimum cadence, accepts bounded data-only replies, and saves exact
+capture/frame links or sanitized source failures. A writer lock, exclusive
+attempt files and checked hashes preserve retries and partial-write recovery.
+The observation engine and its existing outputs remain unchanged.
+
+The Codex host invokes two authorized market tools using the tested
+[runbook](OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md). Its existing news heartbeat
+temporarily schedules the first bounded collection window. Absolute UTC phases
+restore the original news fields before reading collection records at window end.
+Host scheduling, source quality and execution authority are separate: an enabled
+schedule does not establish a recorded or eligible quote, replay or trade.
 
 ## Context and evidence
 

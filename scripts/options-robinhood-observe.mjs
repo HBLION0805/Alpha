@@ -88,6 +88,9 @@ function loadStudy(root, study) {
   return { plan, frames, sources, artifact };
 }
 
+// Shared local storage boundary; existing command outputs and artifacts are unchanged.
+export const robinhoodObservationStorage = Object.freeze({ contained, read, directory, writeExclusive, sealed, unseal, locked, studyPath, loadStudy });
+
 export function runRobinhoodObserveCommand(args, { workspaceRoot = process.cwd(), now = () => new Date().toISOString() } = {}) {
   if (args.length === 1 && args[0] === '--help') return { usage: [
     'options:robinhood-observe -- --screen <capture JSON> [more captures, max 16]',

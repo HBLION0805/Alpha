@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## 2026-09-07 UTC - Arm bounded automatic Robinhood collection
+
+- Added a window/cadence-checked collection CLI and tested two-tool host tick,
+  with immutable replies, sanitized failures and partial-write recovery.
+- Updated and independently verified the existing gld-ibit heartbeat. It preserves
+  daily news checks, uses a target one-minute cadence during the frozen September
+  8 window, then restores the exact original news configuration. The app permits
+  one heartbeat per task; no second task or workaround cron was created.
+- Actual automatic market collection is pending. Existing plans, frames,
+  journals, risk limits and NO_REPLAY gates remain unchanged. See
+  [delivery](OPTIONS_ROBINHOOD_AUTOCOLLECTION_DELIVERY.md). Automatic orders excluded.
+
 ## 2026-09-07 UTC - Budget screening and prospective Robinhood observations
 
 - Added `options:robinhood-observe`: bounded sample screening, immutable study

@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 UTC - Share the existing heartbeat for authorized quote collection
+
+- The Owner explicitly requests automatic collection only. Add the frozen
+  September 8 GLD/IBIT quote window to the existing gld-ibit news heartbeat because
+  the host permits only one heartbeat per task. Do not create a workaround cron.
+- Preserve the exact original daily 09:00 New York news fields. Arm 09:00/10:00
+  wakes, switch to one-minute intervals within the absolute UTC window, and
+  restore news before loading collection records after the cutoff. Never delete
+  the shared heartbeat. Missed windows remain gaps, including after restart.
+- The deterministic CLI enforces scope, actual clocks, cadence, reply limits and
+  immutable persistence. Host calls are confined to the frozen option IDs and
+  GLD/IBIT equity quotes. No credentials, account/orders, paid data or execution.
+- A schedule is operational intent, not captured evidence. Existing accepted
+  parser outputs and checkpoints remain unchanged; record activation separately.
+
 ## 2026-09-07 UTC - Separate budget screens and prospective source observations
 
 - Compose capture v1 without changing its accepted outputs or old journal hashes.

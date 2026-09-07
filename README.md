@@ -6,12 +6,17 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Automatic Robinhood collection is armed for September 8, 2026, 10:00-10:20
+  a.m. New York: GLD/IBIT equity quotes and four frozen option contracts, with a
+  target sixty-second cadence. The existing news heartbeat temporarily shares
+  this window, then restores its original daily 09:00 news schedule. Actual
+  market collection is pending; the local computer and Codex app must be running.
 - Robinhood budget screening and prospective observation records: bounded sample
   screening, immutable contract/window selection, linked quote frames, source-time
   and underlying alignment checks, restart verification and candidate data-quality
   lessons. Eight contracts were sampled; all quotes were stale. The first actual
-  out-of-window frame is retained as failed evidence. No automatic quote collector
-  or source-specific replay is enabled.
+  out-of-window frame is retained as failed evidence. No source-specific replay
+  or automatic orders are enabled.
 - Robinhood capture assessment: the authorized five-tool connection returned
   four real GLD/IBIT option quotes and 120 historical bars. The bounded local
   parser records stale prices, interpolation, linkage and budget blockers, with
@@ -61,11 +66,12 @@ fill. A USD 25 premium with zero assumed costs, 20% stop and 2R has a USD 5 plan
 loss and USD 10 net profit target. No passing diagnostic authorizes a trade.
 
 The USD 1,000-to-USD 50,000 year-end aspiration is a scenario only and cannot
-increase risk limits. Read [current delivery](docs/OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md),
+increase risk limits. Read [current delivery](docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_DELIVERY.md),
+the [observation delivery](docs/OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md),
 the [capture delivery](docs/OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md),
 the [previous preparation delivery](docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md),
 the [dated broker reference](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md)
-and the latest [observation status](docs/status/robinhood-observation.json). The older
+and the latest [collection status](docs/status/robinhood-autocollection.json). The older
 [build status](docs/status/current.json) remains a dated pre-connection checkpoint.
 
 The Owner's current direction is to defer paid market data and continue preparing
@@ -78,6 +84,7 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:robinhood-collect -- --prepare gld-ibit-observe-20260908` | Check the frozen collection window and cadence; only the authorized host tick invokes market tools |
 | `npm run options:robinhood-observe -- --help` | Screen samples, freeze a prospective study, record exact quote captures and review gaps/lessons |
 | `npm run options:robinhood-capture -- --inspect <JSON> [--save]` | Assess a bounded capture at actual time; optionally preserve an immutable local record |
 | `npm run options:robinhood-data -- --report` | Show dated capabilities, missing field semantics and the disabled example |
@@ -192,8 +199,9 @@ scenario can resume by appending quotes received after its previous as-of time.
 Frozen plans and earlier quotes cannot change. Synthetic and imported cases
 cannot share one account. Sale proceeds remain unsettled; no settlement is invented.
 
-The refresh command is one-shot. A separate hourly Codex heartbeat named
-"GLD and IBIT official information monitoring" is configured for this task. It
+The refresh command is one-shot. The existing `gld-ibit` Codex heartbeat preserves
+its original daily 09:00 New York news workflow while sharing the bounded quote
+window described in the collection runbook. It
 requires the local computer and app to remain available; no server daemon is
 installed. Meaningful related changes and source failures are the notification
 criteria.

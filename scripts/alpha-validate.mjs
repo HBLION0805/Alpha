@@ -14,6 +14,13 @@ const gitWhitespaceChecks = Object.freeze([
 ]);
 
 const requiredFiles = [
+  "docs/specifications/OPTIONS_ROBINHOOD_AUTOCOLLECTION_V1.md",
+  "docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md",
+  "docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_DELIVERY.md",
+  "docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json",
+  "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json",
+  "docs/OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt",
+  "docs/status/robinhood-autocollection.json",
   "docs/specifications/OPTIONS_ROBINHOOD_OBSERVATION_V1.md",
   "docs/OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md",
   "docs/status/robinhood-observation.json",
@@ -107,6 +114,8 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "scripts/options-robinhood-collect.test.mjs",
+  "scripts/options-robinhood-collection-host.test.mjs",
   "src/engines/options-robinhood-data/RobinhoodObservationEngine.test.ts",
   "scripts/options-robinhood-observe.test.mjs",
   "src/engines/options-robinhood-data/RobinhoodCaptureEngine.test.ts",

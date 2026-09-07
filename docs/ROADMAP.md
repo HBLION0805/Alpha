@@ -1,11 +1,11 @@
 # Alpha Roadmap
 
-Current delivery adds budget screening and a prospective Robinhood observation
-workflow with frozen selection, linked quote frames and data-quality reviews.
-The first real frame is an excluded out-of-window smoke check. A September 8
-observation window is declared, with no automatic collector or eligible series.
-See [observation delivery](OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md) and
-[latest operational status](status/robinhood-observation.json).
+Current delivery arms automatic GLD/IBIT quote collection for the frozen September
+8, 10:00-10:20 New York observation window. The existing news heartbeat shares
+this window and restores its original daily 09:00 schedule afterward. The local
+collector and host tick are tested; actual in-window collection is pending.
+See [collection delivery](OPTIONS_ROBINHOOD_AUTOCOLLECTION_DELIVERY.md) and
+[latest operational status](status/robinhood-autocollection.json).
 
 The preceding delivery added Robinhood capture assessment and immutable storage.
 Host OAuth and all five market tools work. Four actual option quotes were stale
@@ -21,6 +21,9 @@ and authentication facts only. See
 
 ## Implemented
 
+- Window/cadence-checked quote collection, immutable successful replies and
+  sanitized failed attempts, restart recovery and a verified host schedule.
+  One frozen diagnostic window only; no source-specific replay or orders.
 - Bounded whole-contract sample screening, immutable prospective plans, exact
   quote request templates, linked frame recording and restart-verified candidate
   data-quality review. Old quotes, missing responses and repeated polls cannot
@@ -65,8 +68,9 @@ and authentication facts only. See
    preserve the dated public review separately from captured evidence. Host login,
    five-tool loading and the first bounded response review are complete. Next
    collect fresh prospective quotes during the frozen eligible-session window;
-   screening and the local observation workflow are implemented. No automatic
-   collector is enabled. Stop before new-account or paid steps. See
+   screening and the local observation workflow are implemented. The first bounded
+   collector is armed; assess its actual coverage and gaps before extending it.
+   Stop before new-account or paid steps. See
    [host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md). Assess
    authorized read-only Robinhood Trading MCP capabilities and actual response semantics,
    or obtain an entitled local GLD/IBIT quote file. Official MCP documents now
@@ -91,8 +95,9 @@ and authentication facts only. See
    net-cost target-before-stop/time-exit outcomes using independent market data.
 5. Walk-forward testing, independent holdouts, calibration, uncertainty and drift
    checks. More headlines cannot substitute for evidence of a trading edge.
-6. An Options Dashboard and expanded operational source monitoring. The initial
-   hourly Codex heartbeat is configured separately; it requires the local host/app.
+6. An Options Dashboard and expanded operational source monitoring. The shared
+   news/collection heartbeat requires the local host/app. Its original news
+   schedule is daily 09:00 New York; older hourly descriptions were inaccurate.
 
 No fixed success probability or year-end balance is promised. 10% allocation
 escalation and brokerage execution remain closed. Macro/broad-market references
