@@ -4,7 +4,8 @@ import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, readdirSync
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { isAbsolute, join, relative, resolve } from "node:path";
-import { runOptionsContextCutoffCommand as run } from "./options-context-cutoff.mjs";
+import { runOptionsContextCutoffCommand as run, loadOptionsContextCutoffHistories } from "./options-context-cutoff.mjs";
+import { buildOptionsContextManifest } from "../src/engines/options-readiness/OptionsContextManifest.ts";
 import { withDriverJournal } from "./lib/options-driver-io.mjs";
 import { withTreasuryJournal } from "./lib/options-treasury-io.mjs";
 import { withBtcContextJournal } from "./lib/options-btc-context-io.mjs";
@@ -113,5 +114,17 @@ await test("v2 future cutoff and extra execution arguments fail before filesyste
     assert.rejects(run(["--at-v2", "today"], options), /CLOCK/),
     assert.rejects(run(["--at-v2", cutoff, "--refresh"], options), /ARGUMENTS/),
   ]);
+});
+await test("reusable loader composes exact v2 manifest without changing journals or clock sequence", () => temporary(async d => {
+  await seed(d); await appendFomc(d); const before = files(d); let clockCalls = 0;
+  const loaded = await loadOptionsContextCutoffHistories(cutoff, { workspaceRoot: d, v2: true, now: () => { clockCalls++; return checked; } });
+  const result = buildOptionsContextManifest(loaded.histories, cutoff, loaded.constructedAt);
+  assert.equal(clockCalls, 7); assert.deepEqual(result.reconstruction, await readV2(d));
+  assert.equal(result.manifest.components[3].members.length, 0);
+  assert.equal(result.manifest.components[4].members.length, 1);
+  assert.equal(result.manifest.prospectiveCaptureReceipt, false); assert.deepEqual(files(d), before);
+}));
+await test("reusable loader rejects an ambiguous source version before filesystem access", async () => {
+  await assert.rejects(loadOptionsContextCutoffHistories(cutoff, { workspaceRoot: join(root, "missing-loader-root"), v2: "true", now: () => checked }), /CONTEXT_CUTOFF_ARGUMENTS/);
 });
 console.log(`${passed}/${passed} tests passed.`);

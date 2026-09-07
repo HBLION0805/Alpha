@@ -15,7 +15,15 @@ export async function runOptionsContextCutoffCommand(args, { workspaceRoot = pro
   if (args.length === 1 && args[0] === "--help") return { usage: "options:context-cutoff -- --at <canonical-UTC-time> | --at-v2 <canonical-UTC-time>", meaning: "Reconstruct context from local journal receipt/discovery times. V1 has four components; opt-in v2 adds FOMC date calendars. No network, source writes, trade replay or claim that a historical decision used this data.", executionAllowed: false };
   if (args.length !== 2 || !["--at", "--at-v2"].includes(args[0])) throw Error("CONTEXT_CUTOFF_ARGUMENTS");
   const v2 = args[0] === "--at-v2";
-  const cutoff = args[1], startedAt = now(); readinessClock(cutoff); readinessClock(startedAt);
+  const cutoff = args[1];
+  const { histories, constructedAt } = await loadOptionsContextCutoffHistories(cutoff, { workspaceRoot, now, v2 });
+  return (v2 ? reconstructOptionsContextV2 : reconstructOptionsContext)(histories, cutoff, constructedAt);
+}
+
+/** Recover original source inputs; consumers must run the cutoff engine before use. */
+export async function loadOptionsContextCutoffHistories(cutoff, { workspaceRoot = process.cwd(), now = () => new Date().toISOString(), v2 = false } = {}) {
+  if (typeof v2 !== "boolean") throw Error("CONTEXT_CUTOFF_ARGUMENTS");
+  const startedAt = now(); readinessClock(cutoff); readinessClock(startedAt);
   if (cutoff > startedAt) throw Error("CONTEXT_CUTOFF_FUTURE_CUTOFF");
   const root = realpathSync(workspaceRoot), histories = {};
   const sources = {
@@ -40,7 +48,7 @@ export async function runOptionsContextCutoffCommand(args, { workspaceRoot = pro
       histories[id] = { state: missing ? "MISSING" : "BLOCKED", checkedAt, payload: null, errorCode };
     }
   }
-  return (v2 ? reconstructOptionsContextV2 : reconstructOptionsContext)(histories, cutoff, now());
+  return { histories, constructedAt: now() };
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try { const report = await runOptionsContextCutoffCommand(process.argv.slice(2), { workspaceRoot: resolve(import.meta.dirname, "..") }); console.log(JSON.stringify(report, null, 2)); if (report.blockedStores?.length) process.exitCode = 3; }

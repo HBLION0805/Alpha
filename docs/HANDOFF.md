@@ -8,6 +8,12 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The [shared context history loader](OPTIONS_CONTEXT_LOADER_DELIVERY.md) is now
+extracted with unchanged v1/v2 CLI semantics. Next unit is the actual
+inspect/capture/recovery command and exclusive payload/receipt pairs; loader
+reuse and pure member composition are complete. New inspections still have no
+durable capture receipt and cannot backfill existing sample knowledge clocks.
+
 The first context-manifest implementation unit now composes unchanged cutoff v2
 with exact source/category/index membership and canonical record hashes. See
 [engine delivery](OPTIONS_CONTEXT_MANIFEST_ENGINE_DELIVERY.md). It has no CLI or

@@ -1,0 +1,72 @@
+{
+  "version": "OPTIONS_CONTEXT_LOADER_DELIVERY_V1",
+  "recordedAt": "2026-09-07T19:54:55.020Z",
+  "sourceBaseCommit": "f2ff10d",
+  "status": "LOADER_AND_MANIFEST_VALIDATED_CAPTURE_PENDING",
+  "routerAsOf": "2026-09-07T19:46:12.511Z",
+  "developmentStopAt": "2026-09-07T19:56:12.511Z",
+  "focusedCliTests": {
+    "passed": 25,
+    "failed": 0,
+    "originalTestsRetained": 23
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 136,
+    "testsExecuted": 3405,
+    "passed": 3405,
+    "failed": 0,
+    "durationMs": 70865,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-context-cutoff.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-context-cutoff.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "validationLogSha256": "7af386b4a4819d53aea1d870be6a32b1c71b8580c68d31680939be404e01e489",
+  "preservation": {
+    "protectedFileCount": 522,
+    "changed": []
+  },
+  "actualInspection": {
+    "cutoffAt": "2026-09-07T19:53:59.806Z",
+    "constructedAt": "2026-09-07T19:53:59.875Z",
+    "manifestSha256": "78f8d4c3f3f0178e463c7458f2829587e8daf591ac45fd944eba20a7b3ee8cf5",
+    "memberCount": 174,
+    "components": [
+      {
+        "source": "headlines",
+        "state": "AVAILABLE",
+        "members": 166
+      },
+      {
+        "source": "treasury",
+        "state": "AVAILABLE",
+        "members": 2
+      },
+      {
+        "source": "btc",
+        "state": "AVAILABLE",
+        "members": 2
+      },
+      {
+        "source": "blsCalendar",
+        "state": "AVAILABLE",
+        "members": 2
+      },
+      {
+        "source": "fomcCalendar",
+        "state": "AVAILABLE",
+        "members": 2
+      }
+    ],
+    "fileSha256": "69be785059df6d1675a756b7985d84ee084a31bd904daff7ebcf0c79a726f209",
+    "prospectiveCaptureReceipt": false
+  },
+  "sourceJournalAppends": 0,
+  "hostChanges": 0,
+  "marketSourceCalls": 0,
+  "executionAllowed": false,
+  "nextStep": "EXCLUSIVE_CAPTURE_PAIR_STORAGE_AND_RECOVERY"
+}
