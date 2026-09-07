@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - Paper and headline uncertain-write recovery
+
+- Block cached paper access after uncertain persistence until restart recovery.
+- Expire headline append capability with the synchronous callback, reject
+  thenable lock ownership and block further writes after uncertain persistence.
+- Reproduce complete/partial write faults and preserve all accepted history;
+  2,716 aggregate tests pass. See [correction](OPTIONS_JOURNAL_RECOVERY_CORRECTION.md).
+
 ## 2026-09-07 - Treasury writer lifetime and uncertain persistence
 
 - Reject append calls after the exclusive callback exits and require verified

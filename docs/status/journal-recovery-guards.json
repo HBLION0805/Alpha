@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "PAPER_AND_HEADLINE_JOURNAL_RECOVERY_GUARDS",
+  "recordedAt": "2026-09-07T04:40:27.035Z",
+  "scope": [
+    "GLD",
+    "IBIT"
+  ],
+  "changes": [
+    "Paper repository blocks reads and appends after uncertain persistence until recovery",
+    "Headline journal expires append capability after the synchronous callback and refuses thenable lock ownership",
+    "Headline journal blocks further appends after uncertain persistence; truncated data stays intact"
+  ],
+  "recovery": {
+    "path": "data/runtime/options-readiness/journal-guard-recovery.json",
+    "fileSha256": "1dd6e054d32aa0d6bdff46b1425faa1c17ffc2a427a32beabe78abeecafaeb80",
+    "assessedAt": "2026-09-07T04:37:27.893Z",
+    "reportSha256": "7c329f825c38a3873f1e01e4e1f0c059dbcecdf73589b2328b94a636b9509cc9",
+    "closedPaperReviewCoverage": {
+      "closed": 5,
+      "reviewed": 5,
+      "missing": 0,
+      "consistent": true
+    },
+    "candidateNotebooks": {
+      "paper": 4,
+      "historical": 15,
+      "collectionOperations": 0,
+      "quoteQuality": 0,
+      "approvedKnowledge": false,
+      "causalSuccessOrFailureEstablished": false,
+      "automaticStrategyChanges": false
+    },
+    "blockedStores": [],
+    "missingStores": [
+      "imports"
+    ]
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 103,
+    "testsExecuted": 2716,
+    "passed": 2716,
+    "failed": 0,
+    "durationMs": 44538,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'scripts/lib/options-driver-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-drivers.test.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-paper.test.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'src/repositories/LocalOptionsPaperRepository.ts', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "command": "npm run alpha:validate",
+    "log": "data/runtime/options-readiness/journal-guard-validation.log",
+    "paperIoTestsPassed": 18,
+    "headlineIoTestsPassed": 20,
+    "treasuryIoTestsPassed": 31,
+    "readinessIoTestsPassed": 16,
+    "preFixRegressions": [
+      "Paper cached read was still allowed after injected fsync failure",
+      "Expired headline append capability was still callable"
+    ],
+    "engineeringTestsAreStrategyEvidence": false
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c",
+      "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+      "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+      "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5",
+      "data/runtime/options-driver-monitor/refreshes.ndjson": "b38823063dc5642f9f14b95ef369155af6af76b7cac4b8a3f323c84ebb5de4c9",
+      "data/runtime/options-treasury-rates/retrievals.ndjson": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json": "9ae78b5832c090c5f959d8b97a05ced60d76d3f5b5e6ebf6b81539a88c36108a",
+      "docs/status/treasury-real-yields.json": "0c448c9dbacc28d28088c07b3e1d8c50aaafe91fa7b3a1d7c7425d963af3f31f"
+    },
+    "allUnchanged": true,
+    "hostConfigSha256": "ec4f6a67d8672467dd6b25b639835b09b8eefd814c0927db513a1c7a72ac0da2",
+    "hostScheduleUnchanged": true
+  },
+  "boundaries": {
+    "networkCalls": 0,
+    "journalAppends": 0,
+    "newTrades": 0,
+    "automaticOrdersEnabled": false,
+    "realPriceReplayReady": false,
+    "winProbability": null
+  }
+}

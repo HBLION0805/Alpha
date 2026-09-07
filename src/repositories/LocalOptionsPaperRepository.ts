@@ -28,8 +28,11 @@ export function withOptionsPaperRepository<T>(workspace: string, operation: (rep
   }
   const path = resolve(directory, "sessions.ndjson"), lock = resolve(directory, "writer.lock");
   const lockFd = openSync(lock, "wx");
-  let active = true;
-  const requireActive = () => { if (!active) throw new Error("PAPER_REPOSITORY_SCOPE_CLOSED"); };
+  let active = true, uncertainWrite = false;
+  const requireActive = () => {
+    if (!active) throw new Error("PAPER_REPOSITORY_SCOPE_CLOSED");
+    if (uncertainWrite) throw new Error("PAPER_WRITE_UNCERTAIN_REOPEN_REQUIRED");
+  };
   try {
     let source = "";
     if (existsSync(path)) {
@@ -69,9 +72,11 @@ export function withOptionsPaperRepository<T>(workspace: string, operation: (rep
         const fingerprint = paperFingerprint(body);
         const data = JSON.stringify({ ...body, fingerprint }) + "\n";
         if ((existsSync(path) ? lstatSync(path).size : 0) + new TextEncoder().encode(data).byteLength > MAX_BYTES) throw new Error("PAPER_JOURNAL_ROTATION_REQUIRED");
+        uncertainWrite = true;
         appendFileSync(path, data, { encoding: "utf8" });
         const fd = openSync(path, "r+"); try { fsyncSync(fd); } finally { closeSync(fd); }
         scenarios = update.scenarios; report = nextReport; previousFingerprint = fingerprint; sequence++;
+        uncertainWrite = false;
         return { changed: true, report };
       },
     };

@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import { appendFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
@@ -114,5 +116,38 @@ const tests = [
     }
   }],
 ];
+tests.push(
+  ["headline append capability expires after the writer callback returns", () => temporary(directory => {
+    const escaped = withDriverJournal(directory, store => store);
+    assert.throws(() => escaped.appendBatch([{ example: 1 }], []), /SCOPE_CLOSED/);
+    withDriverJournal(directory, store => assert.equal(store.observations.length, 0));
+  })],
+  ["headline thenables cannot claim asynchronous lock ownership", () => temporary(directory => {
+    assert.throws(() => withDriverJournal(directory, () => ({ then: () => {} })), /REQUIRES_SYNCHRONOUS_CALLBACK/);
+    withDriverJournal(directory, store => store.appendBatch([{ example: 1 }], []));
+  })],
+  ["uncertain headline persistence stops appends until checked recovery", () => temporary(directory => {
+    withDriverJournal(directory, store => {
+      const original = fs.fsyncSync;
+      fs.fsyncSync = () => { throw Error("SIMULATED_DRIVER_SYNC_FAILURE"); }; syncBuiltinESMExports();
+      try { assert.throws(() => store.appendBatch([{ example: 1 }], []), /SIMULATED_DRIVER_SYNC_FAILURE/); }
+      finally { fs.fsyncSync = original; syncBuiltinESMExports(); }
+      assert.throws(() => store.appendBatch([{ example: 2 }], []), /WRITE_UNCERTAIN/);
+    });
+    withDriverJournal(directory, store => { assert.equal(store.observations.length, 1); store.appendBatch([{ example: 2 }], []); });
+    withDriverJournal(directory, store => assert.equal(store.observations.length, 2));
+  })],
+  ["partial headline append remains intact and blocks recovery", () => temporary(directory => {
+    withDriverJournal(directory, store => {
+      const original = fs.appendFileSync;
+      fs.appendFileSync = (path, data, options) => { original(path, data.slice(0, 15), options); throw Error("SIMULATED_PARTIAL_DRIVER_WRITE"); }; syncBuiltinESMExports();
+      try { assert.throws(() => store.appendBatch([{ example: 1 }], []), /SIMULATED_PARTIAL_DRIVER_WRITE/); }
+      finally { fs.appendFileSync = original; syncBuiltinESMExports(); }
+      assert.throws(() => store.appendBatch([{ example: 2 }], []), /WRITE_UNCERTAIN/);
+    });
+    const path = join(directory, "data/runtime/options-driver-monitor/refreshes.ndjson"), before = readFileSync(path, "utf8");
+    assert.throws(() => withDriverJournal(directory, () => {}), /TRUNCATED/); assert.equal(readFileSync(path, "utf8"), before);
+  })],
+);
 for (const [name, run] of tests) { await run(); console.log(`PASS ${name}`); }
 console.log(`Options Driver IO and CLI: ${tests.length}/${tests.length} tests passed.`);

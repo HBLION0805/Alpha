@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, writeFileSync, existsSync, rmSync, realpathSync, appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -134,5 +136,33 @@ test("report reading leaves journal byte-for-byte unchanged", () => temp((direct
   withOptionsPaperRepository(directory, (repository) => repository.append(paperFixture()));
   const before = fileHash(journal(directory)); json(runCli(directory, ["--report"]));
   assert.equal(fileHash(journal(directory)), before);
+}));
+test("uncertain paper persistence blocks cached reads and appends until recovery", () => temp((directory) => {
+  const fixture = paperFixture();
+  withOptionsPaperRepository(directory, repository => {
+    const original = fs.fsyncSync;
+    fs.fsyncSync = () => { throw Error("SIMULATED_PAPER_SYNC_FAILURE"); }; syncBuiltinESMExports();
+    try { assert.throws(() => repository.append(fixture), /SIMULATED_PAPER_SYNC_FAILURE/); }
+    finally { fs.fsyncSync = original; syncBuiltinESMExports(); }
+    assert.throws(() => repository.readReport(), /WRITE_UNCERTAIN/);
+    assert.throws(() => repository.readScenario(fixture.scenarioId), /WRITE_UNCERTAIN/);
+    assert.throws(() => repository.append(fixture), /WRITE_UNCERTAIN/);
+  });
+  const recovered = withOptionsPaperRepository(directory, repository => repository.readReport());
+  assert.equal(recovered.trades.length, 1); assert.equal(recovered.reviews.length, 1);
+  assert.equal(withOptionsPaperRepository(directory, repository => repository.append(fixture)).changed, false);
+}));
+test("partial paper append is preserved and requires explicit recovery review", () => temp((directory) => {
+  const fixture = paperFixture();
+  withOptionsPaperRepository(directory, repository => {
+    const original = fs.appendFileSync;
+    fs.appendFileSync = (path, data, options) => { original(path, data.slice(0, 15), options); throw Error("SIMULATED_PARTIAL_PAPER_WRITE"); }; syncBuiltinESMExports();
+    try { assert.throws(() => repository.append(fixture), /SIMULATED_PARTIAL_PAPER_WRITE/); }
+    finally { fs.appendFileSync = original; syncBuiltinESMExports(); }
+    assert.throws(() => repository.append(fixture), /WRITE_UNCERTAIN/);
+  });
+  const before = readFileSync(journal(directory), "utf8");
+  assert.throws(() => withOptionsPaperRepository(directory, repository => repository.readReport()), /TRUNCATED/);
+  assert.equal(readFileSync(journal(directory), "utf8"), before);
 }));
 console.log(`Options paper repository and CLI: ${passed}/${passed} passed.`);

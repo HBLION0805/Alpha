@@ -97,6 +97,7 @@ export function withDriverJournal(workspace, operation) {
   const path = resolve(directory, "refreshes.ndjson");
   const lock = resolve(directory, "writer.lock");
   const lockFd = openSync(lock, "wx");
+  let active = true, uncertainWrite = false;
   try {
     const read = (file) => {
       if (!existsSync(file)) return [];
@@ -121,17 +122,23 @@ export function withDriverJournal(workspace, operation) {
       previousFingerprint = fingerprint;
     }
     const appendBatch = (newObservations, newHealth) => {
+      if (!active) throw new Error("DRIVER_JOURNAL_SCOPE_CLOSED");
+      if (uncertainWrite) throw new Error("DRIVER_JOURNAL_WRITE_UNCERTAIN_REOPEN_REQUIRED");
       if (!newObservations.length && !newHealth.length) return;
       if (newObservations.length > 600 || newHealth.length > 6) throw new Error("DRIVER_BATCH_LIMIT_EXCEEDED");
       const body = { schemaVersion: "1.0", previousFingerprint, observations: newObservations, health: newHealth };
       const fingerprint = `sha256:${createHash("sha256").update(JSON.stringify(body)).digest("hex")}`;
       const data = JSON.stringify({ ...body, fingerprint }) + "\n";
       if ((existsSync(path) ? lstatSync(path).size : 0) + Buffer.byteLength(data) > MAX_JOURNAL_BYTES) throw new Error("DRIVER_JOURNAL_ROTATION_REQUIRED");
+      uncertainWrite = true;
       appendFileSync(path, data, "utf8");
       const fd = openSync(path, "r+");
       try { fsyncSync(fd); } finally { closeSync(fd); }
       previousFingerprint = fingerprint;
+      uncertainWrite = false;
     };
-    return operation({ observations, health, appendBatch, directory });
-  } finally { closeSync(lockFd); unlinkSync(lock); }
+    const result = operation({ observations, health, appendBatch, directory });
+    if (result && (typeof result === "object" || typeof result === "function") && "then" in result) throw new Error("DRIVER_JOURNAL_REQUIRES_SYNCHRONOUS_CALLBACK");
+    return result;
+  } finally { active = false; closeSync(lockFd); unlinkSync(lock); }
 }

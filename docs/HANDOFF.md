@@ -4,6 +4,13 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+Paper and headline journals now apply the same uncertain-persistence discipline:
+paper cached access and further appends require restart after a failed write;
+headline append capability is scoped to its synchronous lock callback. Complete
+and partial write faults are tested, with 2,716 aggregate tests passing and all
+accepted artifacts unchanged. See [correction](OPTIONS_JOURNAL_RECOVERY_CORRECTION.md)
+and [checkpoint](status/journal-recovery-guards.json).
+
 The Treasury writer now rejects append capabilities used outside the locked
 callback and prohibits another append after uncertain persistence until restart
 recovery. Focused fault-injection and integration checks pass; actual journal
