@@ -6,6 +6,11 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- A separate local calendar brief combines BLS release times and FOMC date ranges
+  with explicit missing metadata, source health and unknown intraday timing. It
+  preserves existing report formats and gives no trade signal. See
+  [delivery](docs/OPTIONS_CALENDAR_BRIEF_DELIVERY.md).
+
 - A standalone Federal Reserve meeting calendar preserves date-only FOMC ranges,
   projection markers, actual receipts and explicit unknown confirmation/intraday
   timing. Its first official retrieval and restart recovery are verified, and
@@ -129,6 +134,7 @@ Node.js 24.12 or later is required. Install locked dependencies with
 | Command | Purpose |
 | --- | --- |
 | `npm run options:brief -- --report gld-ibit-observe-open-20260908` | Print a readable local collection, review and source-context brief; add `--json` for bound report hashes |
+| `npm run options:calendar-brief -- --report` | Print a separate thirty-date BLS/FOMC calendar brief with explicit temporal precision; add `--json` for bound source hashes |
 | `npm run options:release-calendar -- --refresh` | Retrieve and preserve one public BLS scheduled-release calendar |
 | `npm run options:release-calendar -- --report` | Read upcoming releases, schedule changes, unknown metadata and collection age |
 | `npm run options:evidence-rehearsal -- --rehearse <package-id>` | Test repository recovery in a fresh temporary workspace while preserving active data and the source package |

@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## 2026-09-07 - Public calendar context brief
+
+- Added a read-only thirty-date BLS/FOMC brief that preserves scheduled instants,
+  date-only precision, missing metadata and independent storage/source failures.
+- Saved an actual thirteen-entry brief without changing source journals, prior
+  reports or active v5 collection. See [delivery](OPTIONS_CALENDAR_BRIEF_DELIVERY.md).
+
 ## 2026-09-07 - Daily FOMC date-calendar collection
 
 - Added v5 restoration fields and one independent FOMC report/refresh pair while

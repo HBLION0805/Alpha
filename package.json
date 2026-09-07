@@ -136,7 +136,10 @@
     "test:options-collection-rehearsal": "tsx scripts/options-collection-rehearsal.test.mjs",
     "options:fomc-calendar": "tsx scripts/options-fomc-calendar.mjs",
     "test:options-fomc-calendar": "tsx src/engines/options-fomc-calendar/FomcCalendarEngine.test.ts",
-    "test:options-fomc-calendar-io": "tsx scripts/options-fomc-calendar.test.mjs"
+    "test:options-fomc-calendar-io": "tsx scripts/options-fomc-calendar.test.mjs",
+    "options:calendar-brief": "tsx scripts/options-calendar-brief.mjs",
+    "test:options-calendar-brief": "tsx src/engines/options-readiness/OptionsCalendarBrief.test.ts",
+    "test:options-calendar-brief-io": "tsx scripts/options-calendar-brief.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

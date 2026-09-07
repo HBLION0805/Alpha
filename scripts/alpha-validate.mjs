@@ -117,6 +117,8 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-readiness/OptionsCalendarBrief.test.ts",
+  "scripts/options-calendar-brief.test.mjs",
   "src/engines/options-fomc-calendar/FomcCalendarEngine.test.ts",
   "scripts/options-fomc-calendar.test.mjs",
   "scripts/options-collection-rehearsal.test.mjs",

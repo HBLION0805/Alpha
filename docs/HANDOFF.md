@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-CALENDAR-BRIEF-1 adds a standalone thirty-date calendar brief. The actual
+2026-09-07T08:06:06.562Z report contains twelve BLS release instants and one FOMC
+date interval, preserving independent source checks and temporal precision.
+Twenty-five protected files and the active v5 host matched. See
+[delivery](OPTIONS_CALENDAR_BRIEF_DELIVERY.md) and
+[checkpoint](status/calendar-brief.json). Existing readiness, operator brief,
+cutoff and export versions remain unchanged; the new calendar brief is separate.
+
 OPT-FOMC-2 integrated the verified FOMC calendar into daily context. Active shared
 restoration is now v5; all original/v2/v3/v4 snapshots remain byte-identical.
 Eight stored host fields matched at 2026-09-07T07:42:06.866Z. The exact quote Host
