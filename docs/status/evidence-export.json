@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "OPTIONS_LOCAL_EVIDENCE_EXPORT",
+  "recordedAt": "2026-09-07T05:34:30.486Z",
+  "scope": [
+    "GLD",
+    "IBIT"
+  ],
+  "package": {
+    "manifestPath": "data/runtime/options-evidence-exports/gld-ibit-prewindow-20260907/manifest.json",
+    "manifestFileSha256": "fb2b4359a555da1c01650e69af6c64b7510e7854bb04c006a0fd68c232594f9f",
+    "manifestSha256": "1922da33ec4e58053ef429cc44b4c218aed9f222b7cd77f1e1c1e2fd7ae12f41",
+    "packageId": "gld-ibit-prewindow-20260907",
+    "studyId": "gld-ibit-observe-open-20260908",
+    "startedAt": "2026-09-07T05:23:29.757Z",
+    "completedAt": "2026-09-07T05:23:29.781Z",
+    "fileCount": 7,
+    "totalBytes": 522292,
+    "missingComponents": [
+      "imports",
+      "attempts"
+    ],
+    "sourceFiles": [
+      {
+        "sourcePath": "data/runtime/options-btc-context/retrievals.ndjson",
+        "payloadName": "payload-0001.bin",
+        "component": "btc",
+        "bytes": 1374,
+        "sha256": "c923886c16f1e67b0dd9e72c14eee7bdc40c1dd96696501f06b0d746d50cfb50"
+      },
+      {
+        "sourcePath": "data/runtime/options-driver-monitor/refreshes.ndjson",
+        "payloadName": "payload-0002.bin",
+        "component": "headlines",
+        "bytes": 81403,
+        "sha256": "b38823063dc5642f9f14b95ef369155af6af76b7cac4b8a3f323c84ebb5de4c9"
+      },
+      {
+        "sourcePath": "data/runtime/options-historical-replay/runs.ndjson",
+        "payloadName": "payload-0003.bin",
+        "component": "historical",
+        "bytes": 100688,
+        "sha256": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62"
+      },
+      {
+        "sourcePath": "data/runtime/options-paper/sessions.ndjson",
+        "payloadName": "payload-0004.bin",
+        "component": "paper",
+        "bytes": 281403,
+        "sha256": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b"
+      },
+      {
+        "sourcePath": "data/runtime/options-robinhood-data/collection-reports/gld-ibit-observe-open-20260908/report-669c5207123bef8b83810033514ef1c27c8e8b9cf276c677c7c4868e5ee041c9.json",
+        "payloadName": "payload-0005.bin",
+        "component": "closeout",
+        "bytes": 28000,
+        "sha256": "7cecc22e1d1d2afa066921e052d0755b5c21f435ae34518364d3a8263be560a7"
+      },
+      {
+        "sourcePath": "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json",
+        "payloadName": "payload-0006.bin",
+        "component": "study",
+        "bytes": 22644,
+        "sha256": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7"
+      },
+      {
+        "sourcePath": "data/runtime/options-treasury-rates/retrievals.ndjson",
+        "payloadName": "payload-0007.bin",
+        "component": "treasury",
+        "bytes": 6780,
+        "sha256": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2"
+      }
+    ]
+  },
+  "verification": {
+    "status": "PACKAGE_BYTES_VERIFIED",
+    "packageId": "gld-ibit-prewindow-20260907",
+    "studyId": "gld-ibit-observe-open-20260908",
+    "path": "data/runtime/options-evidence-exports/gld-ibit-prewindow-20260907",
+    "manifestSha256": "1922da33ec4e58053ef429cc44b4c218aed9f222b7cd77f1e1c1e2fd7ae12f41",
+    "fileCount": 7,
+    "totalBytes": 522292,
+    "missingComponents": [
+      "imports",
+      "attempts"
+    ],
+    "startedAt": "2026-09-07T05:23:29.757Z",
+    "completedAt": "2026-09-07T05:23:29.781Z",
+    "verifiedAt": "2026-09-07T05:23:30.419Z",
+    "sourceStoresRead": false,
+    "semanticValidationPerformed": false,
+    "offDeviceBackup": false,
+    "executionAllowed": false,
+    "outputPath": "data/runtime/options-evidence-exports/prewindow-verification.json",
+    "outputSha256": "ca2afc52bffd2b517ccf2c61699f0dba63e0e475666e04f53c23e8c98925a73a"
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 108,
+    "testsExecuted": 2839,
+    "passed": 2839,
+    "failed": 0,
+    "durationMs": 47296,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "command": "npm run alpha:validate",
+    "log": "data/runtime/options-evidence-exports/validation.log",
+    "engineTests": 17,
+    "ioTests": 22,
+    "engineeringTestsAreStrategyEvidence": false
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c",
+      "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+      "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+      "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5",
+      "data/runtime/options-driver-monitor/refreshes.ndjson": "b38823063dc5642f9f14b95ef369155af6af76b7cac4b8a3f323c84ebb5de4c9",
+      "data/runtime/options-treasury-rates/retrievals.ndjson": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json": "9ae78b5832c090c5f959d8b97a05ced60d76d3f5b5e6ebf6b81539a88c36108a",
+      "docs/status/treasury-real-yields.json": "0c448c9dbacc28d28088c07b3e1d8c50aaafe91fa7b3a1d7c7425d963af3f31f",
+      "data/runtime/options-btc-context/retrievals.ndjson": "c923886c16f1e67b0dd9e72c14eee7bdc40c1dd96696501f06b0d746d50cfb50",
+      "docs/status/btc-spot-context.json": "fd231b18eee0341e2119d193798d6f6dee5a8933d0733e06326e6f61707c3cac",
+      "docs/status/operational-readiness.json": "1b5998144af8a38340044e557f80f826f40d71c4072ec976be392daf77cade1f",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json": "5bf04fcbcb951907bc84fa2cd17d0285e5f527ee328a03fb21f151932293ab67"
+    },
+    "allUnchanged": true,
+    "hostConfigSha256": "66a5bad3cd80d32fc893f4bdff32b06a1937e9b676df97d8546db9f93c25bbc5",
+    "hostUnchanged": true
+  },
+  "boundaries": {
+    "newSourceCalls": 0,
+    "sourceJournalAppends": 0,
+    "newTrades": 0,
+    "automaticOrdersEnabled": false,
+    "automaticRestoreEnabled": false,
+    "offDeviceBackup": false,
+    "semanticRecoveryRehearsalPerformed": false,
+    "realPriceReplayReady": false
+  }
+}

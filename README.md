@@ -6,6 +6,9 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Local evidence exports preserve exact selected-study, review and context bytes
+  with a verifiable manifest. Verification is independent of current source stores;
+  this is a local copy, not an off-device backup. See [delivery](docs/OPTIONS_EVIDENCE_EXPORT_DELIVERY.md).
 - Public BTC-USD context for IBIT: exact single-venue bid/ask and
   aggregate sizes, nanosecond source clocks, actual retrieval history and explicit
   stale/auction/missing-data checks. Daily collection and readiness v2 integrate
@@ -102,6 +105,8 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:evidence-export -- --create <study-id> <package-id>` | Create one immutable local copy of the selected study and fixed journals |
+| `npm run options:evidence-export -- --verify <package-id>` | Independently verify every copied byte against its bounded manifest |
 | `npm run options:btc-context -- --refresh` | Read one public Coinbase BTC-USD level 1 snapshot as IBIT context and save it locally |
 | `npm run options:btc-context -- --report` | Recover source/receipt clocks, context health and changes between consecutive saved snapshots |
 | `npm run options:readiness -- --report gld-ibit-observe-open-20260908` | Recover seven local components, preserve v1 review coverage and show real-price test dependencies plus optional BTC context |

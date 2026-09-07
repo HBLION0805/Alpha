@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-EXPORT-1 adds an immutable local evidence package and independent verification.
+Package `gld-ibit-prewindow-20260907` holds seven files / 522,292 bytes from the
+opening study, five present journals and the existing closeout. Imported evidence
+and collection attempts are explicitly absent. The original clocks and bytes
+remain intact; this is no off-device backup or semantic-recovery guarantee.
+See [delivery](OPTIONS_EVIDENCE_EXPORT_DELIVERY.md). No automatic exports or
+restores are scheduled and all source/host records remain unchanged.
+
 OPT-BTC-2 integrates the verified BTC source into daily 09:00 context and readiness
 v2. The shared wrapper restores [v3](OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json);
 v1/v2 snapshots and the opening study are unchanged. The CLI now returns seven

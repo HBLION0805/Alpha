@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Preserve exact local study and review evidence
+
+- Export only the named study and six fixed journals into an exclusive local
+  package. Preserve all original bytes/clocks and declare missing components.
+- Recheck source inventories and copied hashes before writing a final manifest;
+  leave partial packages intact on failure and refuse same-ID overwrite/resume.
+- Independent verification confirms byte identity, not semantic source recovery,
+  authenticated history, transactional snapshot or off-device durability. No
+  automatic restore, source-file mutation or scheduler change is introduced.
+
 ## 2026-09-07 - Extend context without revising accepted study or review outputs
 
 - Version daily context restoration to v3 for one independent BTC snapshot at

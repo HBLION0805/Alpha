@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+Immutable local evidence packages now preserve a selected study and fixed
+trade/research/context journals. Independent byte verification and explicit
+missing-component coverage support retention; off-device backup and automatic
+restore remain outside this version. See [delivery](OPTIONS_EVIDENCE_EXPORT_DELIVERY.md).
+
 Public single-venue BTC-USD book context is independently connected for IBIT.
 Source nanoseconds, exact prices/sizes and actual retrieval clocks are preserved;
 auction, missing, crossed and stale data remain explicit. Daily scheduling and

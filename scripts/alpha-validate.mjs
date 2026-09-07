@@ -118,6 +118,8 @@ const textExtensions = new Set([
 
 const aggregateTestFiles = [
   "src/engines/options-readiness/OptionsReadinessEngine.test.ts",
+  "src/engines/options-evidence-export/OptionsEvidenceExportEngine.test.ts",
+  "scripts/options-evidence-export.test.mjs",
   "src/engines/options-readiness/OptionsContextReadinessEngine.test.ts",
   "scripts/options-readiness.test.mjs",
   "src/engines/options-treasury/TreasuryRealYieldEngine.test.ts",

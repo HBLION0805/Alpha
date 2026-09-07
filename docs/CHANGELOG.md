@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-07 - Verifiable local evidence export
+
+- Added a bounded allowlist for selected-study artifacts and fixed context,
+  paper-review and historical-research journals.
+- Added exclusive byte-copy packages, before/after inventory checks and
+  independent manifest/payload verification with no source writes or restore.
+- Saved one pre-window package while preserving source and host bytes. See
+  [delivery](OPTIONS_EVIDENCE_EXPORT_DELIVERY.md).
+
 ## 2026-09-07 - Daily BTC collection and readiness v2
 
 - Added v3 daily context restoration with independent news, Treasury and BTC

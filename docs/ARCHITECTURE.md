@@ -37,6 +37,13 @@ before invoking this deterministic save. Coverage has no execution authority.
 
 ## Context and evidence
 
+`OptionsEvidenceExportEngine` defines exact selected-study and fixed-journal
+source mappings, limits and manifest invariants. The script copies raw bytes into
+one exclusive local package, checks source inventories before/after copying and
+writes the manifest last. Verification never consults current source stores.
+This supports record preservation without source writes, semantic-recovery claims,
+automatic restore or an off-device backup. See [specification](specifications/OPTIONS_EVIDENCE_EXPORT_V1.md).
+
 `BtcSpotContextEngine` owns the bounded Coinbase Exchange BTC-USD book schema,
 exact decimal/nanosecond arithmetic and consecutive-observation diagnostics.
 `options-btc-context.mjs` has one fixed anonymous level 1 GET and a separate
