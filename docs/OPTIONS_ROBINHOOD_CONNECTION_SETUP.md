@@ -93,3 +93,8 @@ or model turn was started. It does not invalidate OAuth or require another login
 The active [v4 daily baseline](OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json)
 and [shared runbook](OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md) remain the
 verified operating path, subject to host/app and Codex execution availability.
+
+A later [timeout configuration assessment](OPTIONS_HOST_TIMEOUT_ASSESSMENT.md)
+confirmed the existing twenty-second per-tool and fifteen-second startup values
+without changing the host. Configuration evidence is separate from a measured
+stalled runtime request; no restart, login or additional quote call is needed.

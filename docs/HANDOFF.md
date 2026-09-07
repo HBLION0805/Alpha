@@ -4,6 +4,12 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The [host timeout assessment](OPTIONS_HOST_TIMEOUT_ASSESSMENT.md) verified existing
+Robinhood configuration values: tool timeout 20 seconds, startup 15 seconds.
+No host/code change or deliberate stalled quote request was needed. Effective
+runtime enforcement remains unmeasured; the synthetic slow scenario does not
+model this MCP timeout and must not predict actual host scheduling behavior.
+
 OPT-COLLECT-REHEARSE-1 completed three full synthetic collection windows in a fresh
 temporary workspace: healthy 20 usable slots, mixed 13 and slow zero. The original
 Host control flow runs through isolated ports and real local repository functions;

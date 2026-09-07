@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "EXISTING_HOST_TIMEOUT_CONFIGURATION",
+  "checkedAt": "2026-09-07T07:21:11.094Z",
+  "server": "robinhood_alpha_market_data",
+  "observedFields": {
+    "startup_timeout_sec": 15,
+    "tool_timeout_sec": 20
+  },
+  "reference": "https://learn.chatgpt.com/docs/config-file/config-reference",
+  "configurationChanged": false,
+  "loadedRuntimeTimeoutVerified": false,
+  "realStalledRequestTested": false,
+  "remoteCancellationProven": false,
+  "sourceCalls": 0,
+  "credentialContentsInspected": false,
+  "protectedFilesVerified": 22,
+  "hostFileSha256": "0c3ff0d2440178c242e36f8a7dd0a7af8f4c9b030992b29c1455c67819ca2fc5",
+  "hostUnchanged": true,
+  "codeTestsRerun": false,
+  "latestCodeTestsPassed": 3012
+}
