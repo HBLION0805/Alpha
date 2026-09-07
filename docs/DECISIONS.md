@@ -1,5 +1,17 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Retain public BTC spot observations as IBIT context
+
+- Add only Coinbase Exchange's fixed anonymous BTC-USD level 1 source. Keep
+  its venue, aggregate size and book timestamp semantics; do not derive an IBIT
+  conversion, ETF opening gap, consolidated price or option fill.
+- Use exact decimal and nanosecond arithmetic. Require consecutive usable
+  observations with increasing source time and sequence before comparing prices.
+  Missing/failed/repeated records remain visible rather than interpolated.
+- Store accepted raw evidence and actual retrieval clocks in a separate guarded
+  journal. First delivery is standalone; preserve the existing scheduler, risk
+  rules, frozen study and every accepted journal. More context is not a probability.
+
 ## 2026-09-07 - Report actual readiness without promoting evidence
 
 - Compose existing recovered reports instead of defining another journal format

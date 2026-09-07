@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-BTC-1 adds standalone public Coinbase Exchange BTC-USD level 1 context for
+IBIT, with exact nanosecond/decimal validation and a separate recovery-checked
+journal. One actual retrieval at 2026-09-07T04:55:22.743Z passed the at-receipt
+context checks; it is a single venue observation and no longer-current prices
+must not be described as live. See [delivery](OPTIONS_BTC_SPOT_CONTEXT_DELIVERY.md).
+The shared heartbeat and six-component readiness report have not yet been changed
+to include this source. Next integrate daily collection after this bounded delivery.
+
 Paper and headline journals now apply the same uncertain-persistence discipline:
 paper cached access and further appends require restart after a failed write;
 headline append capability is scoped to its synchronous lock callback. Complete

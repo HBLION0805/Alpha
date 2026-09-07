@@ -6,6 +6,9 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Standalone public BTC-USD context for IBIT: exact single-venue bid/ask and
+  aggregate sizes, nanosecond source clocks, actual retrieval history and explicit
+  stale/auction/missing-data checks. See [delivery](docs/OPTIONS_BTC_SPOT_CONTEXT_DELIVERY.md).
 - One local readiness report joins actual recovery of the selected quote study,
   paper reviews, historical research, imported evidence, headlines and Treasury
   context. Missing/busy/corrupt stores stay separate; it lists the dependencies
@@ -98,6 +101,8 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:btc-context -- --refresh` | Read one public Coinbase BTC-USD level 1 snapshot as IBIT context and save it locally |
+| `npm run options:btc-context -- --report` | Recover source/receipt clocks, context health and changes between consecutive saved snapshots |
 | `npm run options:readiness -- --report gld-ibit-observe-open-20260908` | Recover six local components, check review coverage and show the remaining real-price test dependencies |
 | `npm run options:treasury -- --refresh` | Read Treasury's current-month daily real yields once and save source history |
 | `npm run options:treasury -- --report` | Recompute local retrieval health, dated yields and revisions without network access |
@@ -187,9 +192,10 @@ paper engine that backdates historical quotes or fills missing liquidity.
 
 A public headline is an unverified source assertion. Keyword tags only suggest
 which factors deserve review; they do not establish causality, direction or
-probability. Coverage remains incomplete. No quantitative-driver or verified
-GLD/IBIT option-chain connector, complete portfolio-risk runtime, calibrated
-market-validated option-outcome replay or Options Dashboard is implemented yet.
+probability. Coverage remains incomplete. Treasury real yields and standalone BTC
+spot context are connected; verified GLD/IBIT option chains, complete portfolio-risk
+runtime, calibrated market-validated option-outcome replay and the Options Dashboard
+remain unfinished.
 
 Robinhood's current official Trading MCP documents option historical OHLC bars,
 real-time quotes and contract lookup. Alpha has no verified quote adapter. Public

@@ -37,6 +37,15 @@ before invoking this deterministic save. Coverage has no execution authority.
 
 ## Context and evidence
 
+`BtcSpotContextEngine` owns the bounded Coinbase Exchange BTC-USD book schema,
+exact decimal/nanosecond arithmetic and consecutive-observation diagnostics.
+`options-btc-context.mjs` has one fixed anonymous level 1 GET and a separate
+checksum-linked single-writer journal with recovery and uncertain-write guards.
+This standalone IBIT context source cannot produce ETF prices, continuous paths,
+signals, replay fills or execution authority. The original six-component readiness
+report and daily heartbeat are unchanged by its first delivery. See the
+[specification](specifications/OPTIONS_BTC_SPOT_CONTEXT_V1.md).
+
 `options-readiness.mjs` sequentially recovers the selected collection study,
 paper account, historical research, imported evidence, headline history and
 Treasury history through their existing repositories. The pure

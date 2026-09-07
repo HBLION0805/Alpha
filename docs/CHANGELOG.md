@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-07 - Public BTC spot context for IBIT
+
+- Added a fixed anonymous BTC-USD level 1 collector with exact prices, aggregate
+  sizes, nanosecond source clocks and actual receipt history.
+- Added explicit stale/auction/missing-data diagnostics, consecutive observation
+  comparisons and bounded checksum-linked journal recovery with write-fault guards.
+- Kept the existing heartbeat, frozen option study, paper reviews and risk rules
+  unchanged. See [delivery](OPTIONS_BTC_SPOT_CONTEXT_DELIVERY.md).
+
 ## 2026-09-07 - Paper and headline uncertain-write recovery
 
 - Block cached paper access after uncertain persistence until restart recovery.

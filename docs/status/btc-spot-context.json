@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "PUBLIC_BTC_SPOT_CONTEXT",
+  "recordedAt": "2026-09-07T04:59:54.989Z",
+  "scope": {
+    "trading": [
+      "GLD",
+      "IBIT"
+    ],
+    "contextProduct": "BTC-USD",
+    "contextFor": [
+      "IBIT"
+    ],
+    "source": "COINBASE_EXCHANGE",
+    "endpoint": "https://api.exchange.coinbase.com/products/BTC-USD/book?level=1"
+  },
+  "actualObservation": {
+    "requestedAt": "2026-09-07T04:55:22.620Z",
+    "receivedAt": "2026-09-07T04:55:22.743Z",
+    "sourceTime": "2026-09-07T04:55:20.377548941Z",
+    "sourceSha256": "7fc96f9e960a81ac3a9c5842cc5a7111da410fac1ad997e90281e9d4374e1113",
+    "sourceBytes": 174,
+    "status": "OBSERVED_CONTEXT",
+    "journalPath": "data/runtime/options-btc-context/retrievals.ndjson",
+    "journalSha256": "c923886c16f1e67b0dd9e72c14eee7bdc40c1dd96696501f06b0d746d50cfb50",
+    "recordFingerprint": "8c636d39e7951c1703f0d415133ab3814410edfb6e83c6f1f437ea2d367a1f93",
+    "retrievalCount": 1
+  },
+  "recovery": {
+    "path": "data/runtime/options-btc-context/recovery.json",
+    "sha256": "31d47462a59a56fe6afcf2b950062b40740994d84e4fae927085bb582ee09325",
+    "assessedAt": "2026-09-07T04:55:23.427Z",
+    "retrievalCount": 1,
+    "comparisonIssues": [
+      "TWO_OBSERVATIONS_REQUIRED"
+    ]
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 105,
+    "testsExecuted": 2771,
+    "passed": 2771,
+    "failed": 0,
+    "durationMs": 45462,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "command": "npm run alpha:validate",
+    "log": "data/runtime/options-btc-context/validation.log",
+    "focusedEngineTests": 30,
+    "focusedIoTests": 25,
+    "engineeringTestsAreStrategyEvidence": false
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c",
+      "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+      "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+      "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5",
+      "data/runtime/options-driver-monitor/refreshes.ndjson": "b38823063dc5642f9f14b95ef369155af6af76b7cac4b8a3f323c84ebb5de4c9",
+      "data/runtime/options-treasury-rates/retrievals.ndjson": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json": "9ae78b5832c090c5f959d8b97a05ced60d76d3f5b5e6ebf6b81539a88c36108a",
+      "docs/status/treasury-real-yields.json": "0c448c9dbacc28d28088c07b3e1d8c50aaafe91fa7b3a1d7c7425d963af3f31f"
+    },
+    "allUnchanged": true,
+    "hostConfigSha256": "ec4f6a67d8672467dd6b25b639835b09b8eefd814c0927db513a1c7a72ac0da2",
+    "hostScheduleUnchanged": true
+  },
+  "boundaries": {
+    "publicInspectionCalls": 1,
+    "runtimePublicCalls": 1,
+    "newRobinhoodCalls": 0,
+    "newTrades": 0,
+    "automaticOrdersEnabled": false,
+    "realPriceReplayReady": false,
+    "winProbability": null,
+    "heartbeatIntegrated": false,
+    "readinessIntegrated": false
+  }
+}

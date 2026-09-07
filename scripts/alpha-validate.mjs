@@ -120,6 +120,8 @@ const aggregateTestFiles = [
   "src/engines/options-readiness/OptionsReadinessEngine.test.ts",
   "scripts/options-readiness.test.mjs",
   "src/engines/options-treasury/TreasuryRealYieldEngine.test.ts",
+  "src/engines/options-btc-context/BtcSpotContextEngine.test.ts",
+  "scripts/options-btc-context.test.mjs",
   "scripts/options-treasury.test.mjs",
   "src/engines/options-robinhood-data/RobinhoodCloseoutEngine.test.ts",
   "scripts/options-robinhood-closeout.test.mjs",
