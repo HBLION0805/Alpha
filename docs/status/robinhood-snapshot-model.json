@@ -1,0 +1,102 @@
+{
+  "version": "OPTIONS_ROBINHOOD_SNAPSHOT_MODEL_DESIGN_V1",
+  "recordedAt": "2026-09-07T22:09:30.453Z",
+  "sourceBaseCommit": "cb2608f",
+  "status": "DESIGN_REVIEWED_ADAPTER_NOT_IMPLEMENTED",
+  "developmentDisposition": "WAITING_FOR_OPENING_EVIDENCE",
+  "routerAsOf": "2026-09-07T22:01:43.435Z",
+  "developmentStopAt": "2026-09-07T22:11:43.435Z",
+  "sources": [
+    {
+      "path": "src/engines/options-paper/OptionsPaperTradingEngine.ts",
+      "sha256": "bbc80edc93ac0759d9ad6b962d32d0cf07e2ca05f0ac6db2d9c4ddc0eb09d03f"
+    },
+    {
+      "path": "src/engines/options-historical-replay/OptionsHistoricalReplayEngine.ts",
+      "sha256": "8893e7f67f52b53ac207a6e5498f400b14581a5b0e67e5b1bdc1c9a3920321f1"
+    },
+    {
+      "path": "src/engines/options-retail-feasibility/OptionsRetailFeasibilityEngine.ts",
+      "sha256": "edf03f4d03b186e7ae3122d592665c27c3ae01950e2de62496c7160f87a3e211"
+    },
+    {
+      "path": "docs/specifications/OPTIONS_ROBINHOOD_PAPER_QUALIFICATION_V1.md",
+      "sha256": "5311d35c7ace83cd791f223dbe67cd941bcce4d2b8ff5daa6912f0bcb882c28b"
+    },
+    {
+      "path": "docs/OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md",
+      "sha256": "711008babc7047f8c1820d10dac8d88e1af0c9949f74fb1326fa495aee5bda5b"
+    }
+  ],
+  "regressions": {
+    "commands": [
+      "node node_modules/tsx/dist/cli.mjs src/engines/options-historical-replay/OptionsHistoricalReplayEngine.test.ts",
+      "node node_modules/tsx/dist/cli.mjs src/engines/options-retail-feasibility/OptionsRetailFeasibilityEngine.test.ts",
+      "node node_modules/tsx/dist/cli.mjs src/engines/options-paper/OptionsPaperTradingEngine.test.ts"
+    ],
+    "historicalPassed": 54,
+    "retailPassed": 82,
+    "paperPassed": 50,
+    "totalPassed": 186,
+    "failed": 0
+  },
+  "arithmeticReview": {
+    "path": "data/runtime/options-context-manifest/snapshot-model-review.json",
+    "sha256": "081f6036488549b46cd4da40f5796f553464981cd3adb05677f0f91b8fc7bdcc",
+    "recordedAt": "2026-09-07T22:07:56.878Z",
+    "values": {
+      "capital": 1820,
+      "risk": 480,
+      "target": 720,
+      "stopBid": 15,
+      "targetSignalNet": 780,
+      "reversalFillNet": -220,
+      "stopGapFillNet": -820
+    },
+    "classification": "SYNTHETIC_ARITHMETIC_NOT_ADAPTER_VALIDATION"
+  },
+  "waitingHostVerification": {
+    "manifest": "docs/OPTIONS_WORK_CONTINUATION_HOST_V3.json",
+    "fieldSet": "waitingForOpeningFields",
+    "matchedFields": [
+      "id",
+      "kind",
+      "name",
+      "prompt",
+      "rrule",
+      "status",
+      "targetThreadId",
+      "notificationPolicy"
+    ],
+    "alreadyActive": true,
+    "identicalToActiveFields": true,
+    "sha256": "79d611316a563a5491a136501f3621ff99a0113a7883c6debd08d7662e0c729b",
+    "schedulerMutation": false
+  },
+  "protectedFilesMatched": 524,
+  "priorFullValidation": {
+    "commit": "a066ccd",
+    "passed": 3510,
+    "components": 144,
+    "rerunThisUnit": false
+  },
+  "workstreamCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "firstPaperFlow": {
+    "localComponents": 3,
+    "totalGates": 6,
+    "gateAdvanced": false
+  },
+  "resumeEvidence": "Completed frozen opening study and source qualification; otherwise genuinely new relevant evidence enabling useful implementation.",
+  "marketCalls": 0,
+  "sourceJournalAppends": 0,
+  "schedulerChanges": 0,
+  "accountOrOrderCalls": 0,
+  "productionCodeChanged": false,
+  "adapterImplemented": false,
+  "replayAllowed": false,
+  "executionAllowed": false
+}

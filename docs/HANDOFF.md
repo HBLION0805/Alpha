@@ -21,6 +21,17 @@ and its current checkpoint, including the separate six first-paper-flow gates.
 Count local acceptance separately from missing real-price validation; do not
 report an invented overall percentage. See [reporting update](OPTIONS_OVERALL_PROGRESS_REPORTING_DELIVERY.md).
 
+Current disposition: **WAITING_FOR_OPENING_EVIDENCE** after the
+[snapshot model design](OPTIONS_ROBINHOOD_SNAPSHOT_MODEL_DELIVERY.md). The model
+requires separate trigger/fill snapshots and preserves unknowns; 186 original
+regressions passed, but no adapter or real-price gate advanced. Actual host fields
+already match V3 waitingForOpeningFields, which equal activeFields; no host write
+occurred. Continue the prescribed router and quarter-hour overall reports. During
+DEVELOPMENT with this dependency unchanged, report waiting without manufacturing
+new modules or extra source calls. Resume useful implementation after actual
+opening/closeout qualification or genuinely new relevant evidence. Daily context,
+opening guard and restore-before-evidence ordering remain unchanged.
+
 The [public source-use review](OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md) now records
 current customer and US options agreement evidence. Personal-use provisions do
 not resolve specific retention/research applicability or independent option
