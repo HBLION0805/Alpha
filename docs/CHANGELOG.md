@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-07 - Readable local options test brief
+
+- Added a plain-text/JSON command combining the selected quote window, storage
+  status, paper/research review coverage, candidate lessons and source context.
+- Preserved exact readiness-v2 semantics and independently recovered BLS clocks;
+  missing/busy/corrupt stores and stale observations remain explicit.
+- Generated one actual local brief without source writes. See
+  [delivery](OPTIONS_OPERATOR_BRIEF_DELIVERY.md).
+
 ## 2026-09-07 - Daily BLS calendar collection
 
 - Added a v4 daily restoration snapshot with one independent calendar refresh,

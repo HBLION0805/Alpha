@@ -37,6 +37,14 @@ before invoking this deterministic save. Coverage has no execution authority.
 
 ## Context and evidence
 
+`OptionsOperatorBrief` projects the unchanged readiness v2 and independently
+recovered BLS calendar into plain English text. It recomputes v1/v2 exactly,
+retains component check clocks/report hashes and escapes provider control text.
+Its command recovers local stores only; calendar failures cannot hide paper
+review coverage. This is a separate consumer, not a new readiness/replay gate or
+an extension to the existing export format. See
+[specification](specifications/OPTIONS_OPERATOR_BRIEF_V1.md).
+
 `BlsReleaseCalendarEngine` owns a restricted BLS ICS profile, verified Eastern
 timezone conversion, scheduled events and consecutive-snapshot changes. It keeps
 actual receipt time separate from missing source publication metadata. Removed

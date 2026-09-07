@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Present local test evidence without changing its authority
+
+- Add a readable operator brief around exact readiness-v2 recomputation and
+  independently recovered BLS history. Preserve separate clocks and fingerprints.
+- Unknown review coverage remains unknown; stale prices and candidate lessons
+  retain their labels. Bound event display and visibly escape control text.
+- The command performs no source refresh, append, repair, host inspection or
+  trade. Existing readiness versions, source journals and exports are unchanged.
+
 ## 2026-09-07 - Add daily BLS context without widening the quote window
 
 - Version the daily restoration baseline to v4, preserving exact prior snapshots,

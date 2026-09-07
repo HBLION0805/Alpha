@@ -117,6 +117,8 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-readiness/OptionsOperatorBrief.test.ts",
+  "scripts/options-brief.test.mjs",
   "src/engines/options-release-calendar/BlsReleaseCalendarEngine.test.ts",
   "scripts/options-release-calendar.test.mjs",
   "src/engines/options-readiness/OptionsReadinessEngine.test.ts",

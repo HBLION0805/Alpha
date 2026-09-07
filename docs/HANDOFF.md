@@ -4,6 +4,15 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-BRIEF-1 adds `options:brief -- --report <study-id> [--json]`. The actual local
+brief at 2026-09-07T06:26:30.711Z shows the unchanged 09:30 opening window, no
+collected frames yet, all five closed-paper reviews, four paper candidates and
+fifteen separate historical candidates, plus source clocks and four upcoming
+BLS releases. It is saved in data/runtime/options-readiness/operator-brief.txt
+with a bound JSON counterpart. See [delivery](OPTIONS_OPERATOR_BRIEF_DELIVERY.md).
+No source, host or journal changes; readiness v1/v2 and export versions remain
+unchanged. The brief is a new consumer, not evidence of market test readiness.
+
 OPT-CALENDAR-2 integrates the verified BLS calendar into the shared daily 09:00
 workflow. Active restoration baseline is now v4, with all prior snapshots and
 the exact option Host tick preserved. News, Treasury, BTC and calendar subflows

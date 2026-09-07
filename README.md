@@ -6,6 +6,10 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- One readable local test brief joins the selected collection window, source
+  clocks, review coverage, candidate notebooks and upcoming BLS releases. It
+  preserves readiness v2 and performs no source refresh or trade. See
+  [delivery](docs/OPTIONS_OPERATOR_BRIEF_DELIVERY.md).
 - Public BLS release schedules preserve Eastern/UTC event times, actual retrieval
   clocks and changed or missing event identities. One actual calendar and restart
   recovery are verified. The existing daily 09:00 context workflow includes this
@@ -112,6 +116,7 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:brief -- --report gld-ibit-observe-open-20260908` | Print a readable local collection, review and source-context brief; add `--json` for bound report hashes |
 | `npm run options:release-calendar -- --refresh` | Retrieve and preserve one public BLS scheduled-release calendar |
 | `npm run options:release-calendar -- --report` | Read upcoming releases, schedule changes, unknown metadata and collection age |
 | `npm run options:evidence-rehearsal -- --rehearse <package-id>` | Test repository recovery in a fresh temporary workspace while preserving active data and the source package |

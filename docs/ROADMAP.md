@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The [local operator brief](OPTIONS_OPERATOR_BRIEF_DELIVERY.md) now presents the
+opening test, review coverage and source context in one readable report. It
+composes existing readiness and independent BLS recovery without changing either
+version or making a trading decision. Actual opening data remains pending.
+
 The official BLS scheduled-release calendar is now a standalone public context
 source with exact Eastern/UTC times, actual receipt history and explicit
 schedule-change semantics. The daily v4 workflow integrates it; non-BLS and
