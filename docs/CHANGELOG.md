@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-07 - Journal context cutoff reconstruction
+
+- Added a local receipt/discovery-time reconstruction command for headlines,
+  Treasury, BTC and BLS, with independent storage failure states and fingerprints.
+- Verified an actual 04:30 UTC cutoff excludes BTC and BLS received later while
+  preserving 118 news observations and one Treasury retrieval. Existing source
+  engines, accepted journals and the host schedule are unchanged. See
+  [delivery](OPTIONS_CONTEXT_CUTOFF_DELIVERY.md).
+
 ## 2026-09-07 - Headline timeout and storage boundary correction
 
 - Added total public-feed deadlines, nonblocking cancellation, strict UTF-8 and

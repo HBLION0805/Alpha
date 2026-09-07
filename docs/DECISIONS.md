@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Reconstruct context from stored receipt clocks
+
+- Validate full current histories before selecting receipt/discovery-time prefixes;
+  preserve failures and correction order through unchanged source report engines.
+- Separate stable historical context fingerprints from actual reconstruction
+  clocks. Do not substitute publication dates or request starts for receipt.
+- Treat independent feed completion order separately from per-source clock
+  regression. Missing or corrupt stores cannot become neutral context values.
+- Exact durable append time, publisher vintage and actual historical decisions
+  remain unknown; the new consumer grants no replay or trading authority.
+
 ## 2026-09-07 - Bound older headline transport and direct journal access
 
 - Enforce one public-feed deadline across headers/body without awaiting an

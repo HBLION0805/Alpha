@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-CONTEXT-CUT-1 adds a read-only four-source reconstruction at an explicit UTC
+cutoff. The actual 04:30 UTC result contains 118 news observations, one Treasury
+retrieval and no BTC/BLS observations received by that cutoff. Current stores
+are all available; empty historical prefixes are not missing current stores.
+Source/report versions, twenty-one protected files and the active v4 host remain
+unchanged. See [delivery](OPTIONS_CONTEXT_CUTOFF_DELIVERY.md) and
+[checkpoint](status/context-cutoff.json). No simulated or actual trade was added.
+
 Current operating references in AGENTS.md now point to the verified v4 daily
 baseline and preserve all prior snapshots. A separate
 [direct-control assessment](OPTIONS_HOST_CONTROL_ASSESSMENT.md) records the

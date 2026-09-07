@@ -37,6 +37,14 @@ before invoking this deterministic save. Coverage has no execution authority.
 
 ## Context and evidence
 
+`OptionsContextCutoff` independently validates current headline, Treasury, BTC
+and BLS histories before filtering by stored receipt/discovery clocks. It uses
+unchanged source engines at the selected cutoff. Its context hash excludes later
+unselected records and current check clocks; its artifact hash includes recovery
+and construction clocks. Exact append times and actual historical decisions
+remain unproven. The bounded read-only CLI does not grant replay authority; see
+[delivery](OPTIONS_CONTEXT_CUTOFF_DELIVERY.md).
+
 `OptionsOperatorBrief` projects the unchanged readiness v2 and independently
 recovered BLS calendar into plain English text. It recomputes v1/v2 exactly,
 retains component check clocks/report hashes and escapes provider control text.

@@ -6,6 +6,10 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Historical context can be reconstructed at an explicit UTC cutoff using only
+  stored receipt/discovery clocks. Later observations are excluded, failures are
+  preserved and each current history is validated first. This does not prove an
+  actual historical decision or permit a replay. See [delivery](docs/OPTIONS_CONTEXT_CUTOFF_DELIVERY.md).
 - One readable local test brief joins the selected collection window, source
   clocks, review coverage, candidate notebooks and upcoming BLS releases. It
   preserves readiness v2 and performs no source refresh or trade. See

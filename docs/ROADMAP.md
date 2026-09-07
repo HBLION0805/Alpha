@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The [context cutoff consumer](OPTIONS_CONTEXT_CUTOFF_DELIVERY.md) can now rebuild
+local background observations at an explicit historical receipt/discovery cutoff.
+It excludes later records without changing source engines or qualifying a trade
+replay. Connecting this evidence to prospective trade plans remains separate work.
+
 The [local operator brief](OPTIONS_OPERATOR_BRIEF_DELIVERY.md) now presents the
 opening test, review coverage and source context in one readable report. It
 composes existing readiness and independent BLS recovery without changing either
