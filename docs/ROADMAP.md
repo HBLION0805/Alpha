@@ -1,6 +1,13 @@
 # Alpha Roadmap
 
-Current delivery adds bounded Robinhood capture assessment and immutable storage.
+Current delivery adds budget screening and a prospective Robinhood observation
+workflow with frozen selection, linked quote frames and data-quality reviews.
+The first real frame is an excluded out-of-window smoke check. A September 8
+observation window is declared, with no automatic collector or eligible series.
+See [observation delivery](OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md) and
+[latest operational status](status/robinhood-observation.json).
+
+The preceding delivery added Robinhood capture assessment and immutable storage.
 Host OAuth and all five market tools work. Four actual option quotes were stale
 and over budget; 120 sampled historical bars were interpolated. There is no
 qualified real-price replay. See [capture delivery](OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md)
@@ -14,6 +21,10 @@ and authentication facts only. See
 
 ## Implemented
 
+- Bounded whole-contract sample screening, immutable prospective plans, exact
+  quote request templates, linked frame recording and restart-verified candidate
+  data-quality review. Old quotes, missing responses and repeated polls cannot
+  become a qualified path. No trade or probability is inferred.
 - Network-free Robinhood capture parsing, scope/identity/clock checks, interpolation
   diagnostics, unchanged-budget lower bounds, immutable recovery and four candidate
   data-quality lessons. Seven real market-only calls are recorded separately from
@@ -53,8 +64,9 @@ and authentication facts only. See
    market data. Use the new readiness report and offline catalog inspection to
    preserve the dated public review separately from captured evidence. Host login,
    five-tool loading and the first bounded response review are complete. Next
-   screen contracts within existing budgets and capture fresh prospective quotes
-   during an eligible session. Stop before new-account or paid steps. See
+   collect fresh prospective quotes during the frozen eligible-session window;
+   screening and the local observation workflow are implemented. No automatic
+   collector is enabled. Stop before new-account or paid steps. See
    [host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md). Assess
    authorized read-only Robinhood Trading MCP capabilities and actual response semantics,
    or obtain an entitled local GLD/IBIT quote file. Official MCP documents now

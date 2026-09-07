@@ -4,7 +4,17 @@ Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
-The latest "start next step" completed RH-CAPTURE-1: five callable market tools,
+The Owner now requests continuous progress without separate step reports.
+RH-OBSERVE-1 adds bounded budget screening, prospective study freeze, linked frame
+records and data-quality review/recovery. Eight actual sampled contracts remain
+NO_TRADE. Study `gld-ibit-observe-20260908` is frozen for September 8, 10:00-10:20
+a.m. New York. Its first actual smoke frame is outside that window and has zero
+usable observations; four candidate data-quality lessons are retained. No quote
+scheduler is enabled. See [current delivery](OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md)
+and [operational status](status/robinhood-observation.json). This supersedes the
+earlier capture checkpoint operationally; all accepted artifacts remain intact.
+
+The preceding "start next step" completed RH-CAPTURE-1: five callable market tools,
 seven bounded live reads, four real option quotes and 120 history bars. All four
 quotes are stale and exceed the unchanged budgets; all 120 sampled bars are
 interpolated. The local capture diagnostic, immutable save/recovery and four
@@ -165,9 +175,14 @@ post-deletion test count.
 
 ## Next work
 
-Continue without purchasing data. Next implement bounded affordability/liquidity
-screening and prospective capture during an eligible session, retaining source,
-request and receipt clocks. The four probes are not a complete chain search.
+Continue without purchasing data. Screening, prospective capture preparation,
+recording and quality review are implemented. Use the frozen September 8 study's
+`--review` and `--template` commands, then capture the two approved quote responses
+at actual time during its window. Record every attempted market frame, including
+missing or bad data. There is no automatic quote scheduler and no current usable
+series. If the window is missed, preserve it and freeze a new future study. The
+eight probes are not a complete chain search and cheap options are not a proven
+high-win-rate strategy. See the current delivery for exact paths and commands.
 Host OAuth, tool loading and the first actual schema/quote assessment are complete;
 stop before any new-account or paid step. Do not repeat completed login or consent.
 Historical OHLC by itself does not meet replay input needs. A future adapter needs

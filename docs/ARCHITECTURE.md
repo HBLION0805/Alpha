@@ -6,7 +6,7 @@ Alpha supports decisions about GLD and IBIT options on Robinhood. Capital
 preservation and explicit risk precede growth targets. TypeScript owns the
 current product logic. Legacy Python, Event Contract/Kalshi, Daily Scan and
 fixed-universe Alpaca product implementations have been removed by Owner
-instruction. The [capture status](status/robinhood-capture.json) records the latest
+instruction. The [observation status](status/robinhood-observation.json) records the latest
 Robinhood checkpoint; [current.json](status/current.json) retains the prior build.
 
 ## Context and evidence
@@ -65,6 +65,20 @@ accepted records and fingerprints. See [delivery](OPTIONS_ROBINHOOD_DATA_READINE
 and [specification](specifications/OPTIONS_ROBINHOOD_DATA_READINESS_V1.md).
 
 ## Price and calendar foundations
+
+`RobinhoodObservationEngine` composes the unchanged capture parser into two
+separate diagnostics: bounded sample affordability screening and prospective
+source observations. Frozen contracts and a declared future session window precede
+new quote requests. Each frame preserves original precision/clocks, reports missing
+or stale sides/sizes, duplicate/regressed/conflicting source times, underlying skew
+and collection gaps. Candidate data-quality lessons retain actual recording time.
+`options-robinhood-observe.mjs` writes immutable plans and checksum-linked numbered
+frames, replay-verifies all prior records and uses an exclusive single-process lock.
+Its host request template invokes nothing; no daemon, scheduler or credential store
+is added. Passing diagnostics remain NO_REPLAY and cannot populate the non-null
+execution semantics of `OptionQuote`. See the
+[specification](specifications/OPTIONS_ROBINHOOD_OBSERVATION_V1.md) and
+[delivery](OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md).
 
 `RobinhoodCaptureEngine` is a separate offline source-response diagnostic.
 It consumes at most 512 KiB, twelve declared approved calls and four contracts,

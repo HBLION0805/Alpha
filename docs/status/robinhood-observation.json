@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "ROBINHOOD_OBSERVATION_V1_DELIVERY",
+  "recordedAt": "2026-09-07T02:08:42.479Z",
+  "scope": ["GLD", "IBIT"],
+  "hostConnection": {
+    "oauthVerified": true,
+    "approvedMarketToolCount": 5,
+    "newMarketCallsThisDelivery": 8,
+    "accountOrOrderCalls": 0,
+    "newAccountOrPaidSteps": 0
+  },
+  "sampleScreen": {
+    "captureCount": 2,
+    "distinctContracts": 8,
+    "staleQuoteCount": 8,
+    "premiumWithinBothBudgetLowerBoundsCount": 1,
+    "costsVerified": false,
+    "chainCoverageComplete": false,
+    "eligibleTradeCount": 0
+  },
+  "study": {
+    "studyId": "gld-ibit-observe-20260908",
+    "frozenAt": "2026-09-07T02:04:53.532Z",
+    "planSha256": "a5e14b121c3454640f0986a519bda2f4259ca4faf08e265196317d3d98166bff",
+    "declaredWindowStartAt": "2026-09-08T14:00:00.000Z",
+    "declaredWindowEndAt": "2026-09-08T14:20:00.000Z",
+    "declaredCalendarReference": "https://www.cboe.com/about/hours/us-options",
+    "contractCount": 4,
+    "frameCount": 1,
+    "frameRecordedAt": "2026-09-07T02:05:21.251Z",
+    "frameSha256": "dfe6bb5805ecbe5891ca5966f679b600a242cf690fb7290215d224cb0d8cf769",
+    "outOfWindowSmokeFrameCount": 1,
+    "diagnosticUsableObservations": 0,
+    "candidateDataQualityLessons": 4,
+    "savedRecordRecoveryVerified": true,
+    "originalRecordingTimesPreserved": true,
+    "automaticCollectionEnabled": false,
+    "stageAtCheckpoint": "WAITING_FOR_WINDOW"
+  },
+  "preservation": {
+    "initialCaptureArtifactSha256": "82348d0e5dbebcacca711f70d1d144e3117db97ca7b0f4587b3ccd5dfb831a4c",
+    "newCaptureSourceSha256": "a7db184100fb1ea39d7982eff551453bbea58f40c743fae6f3e25a1f7e27e18a",
+    "newCaptureArtifactSha256": "12c8e588c6a3d49d47a60f79dd51049ede8b38920fb902acf996a132b6d8ec16",
+    "paperJournalSha256": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+    "historicalJournalSha256": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+    "priorBuildCheckpointUnchanged": true
+  },
+  "boundaries": {
+    "status": "NO_REPLAY",
+    "executionAllowed": false,
+    "realPriceTradeReplay": "NOT_RUN",
+    "realTradeCount": 0,
+    "winProbability": null,
+    "sizeEscalationAllowed": false,
+    "publicFeedHeartbeatExpanded": false,
+    "sourceDeclarationAuthenticatedByParser": false
+  },
+  "validation": {
+    "command": "npm run alpha:validate",
+    "status": "PASSED",
+    "componentCount": 95,
+    "testsExecuted": 2531,
+    "passed": 2531,
+    "failed": 0,
+    "durationMs": 47969,
+    "focusedEngineTests": 42,
+    "focusedStorageTests": 20,
+    "engineeringTestsAreStrategyEvidence": false
+  },
+  "nextDependency": "Eligible-session sequential source observations; then review source semantics and explicit research assumptions before a separate paper adapter."
+}

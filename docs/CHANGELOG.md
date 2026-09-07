@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## 2026-09-07 UTC - Budget screening and prospective Robinhood observations
+
+- Added `options:robinhood-observe`: bounded sample screening, immutable study
+  freeze, exact quote request templates, linked frame recording and gap/lesson
+  review with restart verification. No network calls or automatic scheduling.
+- Screened eight sampled contracts without relaxing risk limits. All quotes were
+  stale; only one sample passed both premium-only bounds, with costs unresolved.
+- Frozen a September 8 observation window and recorded one actual excluded
+  off-window smoke frame with four candidate data-quality lessons. Real-price
+  trade replay remains NOT_RUN. See the
+  [delivery](OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md).
+
 ## 2026-09-07 UTC - First real Robinhood option capture assessment
 
 - Verified the five-tool runtime with bounded GLD/IBIT market-only reads.

@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 UTC - Separate budget screens and prospective source observations
+
+- Compose capture v1 without changing its accepted outputs or old journal hashes.
+  Preserve every sampled contract and the latest missing response; do not treat a
+  cheap premium or provider expiry model as a high-win-rate recommendation.
+- Freeze selection and session declarations before new quote requests. Record
+  failed observations as data-quality evidence, never synthetic trade outcomes.
+  Verify immutable plans and linked frames on recovery; fail closed on corruption.
+- Keep raw Robinhood snapshots separate from execution contracts because side/size
+  event clocks, aligned paths, costs and account rules remain unverified. A request
+  template is not an automatic collector. No existing heartbeat is expanded.
+- Follow the Owner's instruction to continue without individual step reports and
+  use standing commit/push authorization. See the
+  [specification](specifications/OPTIONS_ROBINHOOD_OBSERVATION_V1.md).
+
 ## 2026-09-07 UTC - Assess real Robinhood captures without a replay adapter
 
 - The Owner-approved five-tool connection now works. Preserve a bounded export
