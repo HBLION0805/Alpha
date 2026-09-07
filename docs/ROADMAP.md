@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The [research observation design](OPTIONS_RESEARCH_OBSERVATION_DESIGN_DELIVERY.md)
+has been reviewed against the two existing storage verifiers. Implementation is
+next: read-only reference resolution, then exclusive observation storage and
+three-pair recovery. This design creates no records or qualified sample inputs.
+
 The [protocol registration workflow](OPTIONS_RESEARCH_PROTOCOL_REGISTRATION_DELIVERY.md)
 now preserves actual post-write registration clocks and independently recovers
 the complete declaration. A synthetic isolated rehearsal passed; formal dataset

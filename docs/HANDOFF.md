@@ -16,6 +16,13 @@ priority, with no per-minute reporting spam or pre-restoration evidence reads.
 See [activation](OPTIONS_WORK_PROGRESS_DELIVERY.md) and
 [verified host fields](status/work-progress.json).
 
+The [research observation design](OPTIONS_RESEARCH_OBSERVATION_DESIGN_DELIVERY.md)
+now fixes the exact observation/no-trade input and reference-based recovery through
+the existing protocol and context verifiers. Implementation is pending. Next unit
+is read-only resolution; actual verification must precede the new observation clock,
+and source freshness remains assessed at its original cutoff. Preserve unknown
+feature/outcome facts and retain all three pairs for later isolated recovery.
+
 The [protocol registration command](OPTIONS_RESEARCH_PROTOCOL_REGISTRATION_DELIVERY.md)
 now saves exclusive payload/receipt pairs with actual post-write clocks and
 independent recovery. Its synthetic isolated rehearsal passed; no formal protocol

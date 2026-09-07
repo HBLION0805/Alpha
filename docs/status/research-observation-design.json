@@ -1,0 +1,35 @@
+{
+  "version": "OPTIONS_RESEARCH_OBSERVATION_DESIGN_CHECKPOINT_V1",
+  "recordedAt": "2026-09-07T20:53:33.443Z",
+  "status": "DESIGN_REVIEWED_IMPLEMENTATION_PENDING",
+  "specification": "docs/specifications/OPTIONS_RESEARCH_OBSERVATION_V1.md",
+  "reviewedAgainst": [
+    "scripts/options-context-capture.mjs",
+    "scripts/options-research-protocol.mjs",
+    "src/engines/options-readiness/OptionsContextManifest.ts",
+    "src/contracts/OptionsSamplePartition.ts"
+  ],
+  "focusedRegression": {
+    "commands": [
+      "node node_modules/tsx/dist/cli.mjs scripts/options-context-capture.test.mjs",
+      "node node_modules/tsx/dist/cli.mjs scripts/options-research-protocol.test.mjs"
+    ],
+    "contextCapturePassed": 19,
+    "protocolRegistrationPassed": 18,
+    "failed": 0
+  },
+  "priorFullValidation": {
+    "commit": "53a0ba0",
+    "passed": 3459,
+    "rerunForThisDesign": false
+  },
+  "protectedFileCount": 524,
+  "protectedFilesUnchanged": true,
+  "sourceJournalAppends": 0,
+  "observationRecordsCreated": 0,
+  "activeProtocolsCreated": 0,
+  "implementationTestsAdded": 0,
+  "nextUnit": "Exact declaration validation and read-only resolution through existing dependency verifiers",
+  "executionAllowed": false,
+  "replayAllowed": false
+}
