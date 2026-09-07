@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-09-07 - Treasury daily real-yield context
+
+- Added a fixed public Treasury XML source, five exact real-yield tenors,
+  separate source/retrieval clocks, null/negative values, source health and
+  actual-time revision history. No signal or execution authority is inferred.
+- Added bounded transport, immutable linked journal, strict recovery, tests and
+  one actual CLI retrieval. Daily context monitoring now includes Treasury under
+  a versioned baseline; original news and opening quote artifacts are preserved.
+  See [delivery](OPTIONS_TREASURY_REAL_YIELDS_DELIVERY.md).
+
 ## 2026-09-07 UTC - Deterministic collection acceptance reports
 
 - Added a closeout engine and CLI that combine exact quote-frame diagnostics

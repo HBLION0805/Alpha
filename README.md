@@ -6,6 +6,10 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Public Treasury daily real-yield context for GLD/IBIT: five tenors, exact
+  basis-point values, separate source and retrieval clocks, correction history,
+  bounded local recovery and explicit failed/empty states. This is one numerical
+  source, not a calibrated signal. See [delivery](docs/OPTIONS_TREASURY_REAL_YIELDS_DELIVERY.md).
 - Collection acceptance reports distinguish elapsed coverage, missing request
   evidence, source-call failures and unusable quotes. Reports and candidate
   operational lessons retain exact input hashes and original assessment clocks;
@@ -13,7 +17,7 @@ risk arithmetic. It promises no return and has no order-execution authority.
 - Automatic Robinhood collection is armed for September 8, 2026, 09:30-09:50
   a.m. New York: GLD/IBIT equity quotes and four frozen option contracts, with a
   target sixty-second cadence. The existing news heartbeat temporarily shares
-  this window, then restores its original daily 09:00 news schedule. Actual
+  this window, then restores daily 09:00 news and Treasury context checks. Actual
   market collection is pending; the local computer and Codex app must be running.
 - Robinhood budget screening and prospective observation records: bounded sample
   screening, immutable contract/window selection, linked quote frames, source-time
@@ -89,6 +93,8 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:treasury -- --refresh` | Read Treasury's current-month daily real yields once and save source history |
+| `npm run options:treasury -- --report` | Recompute local retrieval health, dated yields and revisions without network access |
 | `npm run options:robinhood-closeout -- --report gld-ibit-observe-open-20260908` | Recompute request, failure and usable-data coverage without saving a report |
 | `npm run options:robinhood-closeout -- --save gld-ibit-observe-open-20260908` | Save an immutable actual-time acceptance report and return its receipt |
 | `npm run options:robinhood-collect -- --prepare gld-ibit-observe-open-20260908` | Check the frozen collection window and cadence; only the authorized host tick invokes market tools |
@@ -206,8 +212,8 @@ scenario can resume by appending quotes received after its previous as-of time.
 Frozen plans and earlier quotes cannot change. Synthetic and imported cases
 cannot share one account. Sale proceeds remain unsettled; no settlement is invented.
 
-The refresh command is one-shot. The existing `gld-ibit` Codex heartbeat preserves
-its original daily 09:00 New York news workflow while sharing the bounded quote
+The refresh commands are one-shot. The existing `gld-ibit` Codex heartbeat preserves
+the daily 09:00 New York news workflow and adds Treasury context while sharing the bounded quote
 window described in the collection runbook. It
 requires the local computer and app to remain available; no server daemon is
 installed. Meaningful related changes and source failures are the notification

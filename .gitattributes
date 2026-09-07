@@ -1,0 +1,4 @@
+# Preserve exact saved heartbeat prompt/snapshot bytes across Windows checkouts.
+docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json text eol=lf
+docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json text eol=lf
+docs/OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt text eol=lf

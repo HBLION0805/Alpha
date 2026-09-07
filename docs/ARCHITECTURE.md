@@ -21,7 +21,9 @@ The observation engine and its existing outputs remain unchanged.
 The Codex host invokes two authorized market tools using the tested
 [runbook](OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md). Its existing news heartbeat
 temporarily schedules the first bounded collection window. Absolute UTC phases
-restore the original news fields before reading collection records at window end.
+restore the active daily context fields before reading collection records at window end.
+The v2 baseline retains the news workflow and adds one Treasury refresh; the
+original news-only restoration snapshot remains immutable.
 Host scheduling, source quality and execution authority are separate: an enabled
 schedule does not establish a recorded or eligible quote, replay or trade.
 
@@ -34,6 +36,21 @@ clock, even after later frames/attempts arrive. The final host step restores new
 before invoking this deterministic save. Coverage has no execution authority.
 
 ## Context and evidence
+
+`TreasuryRealYieldEngine` parses a strict bounded Treasury Atom/XML subset into
+five whole-basis-point daily par real yields. It separates source dates, feed
+metadata and actual retrieval clocks; negative yields and missing values retain
+their meaning. Reports expose dated observations, consecutive-source-date changes,
+missing tenors, failed/empty current retrievals and actual-time revisions. They
+do not establish a publication calendar, historical vintage or trading signal.
+
+`options-treasury.mjs` and its script-owned transport issue one anonymous GET for
+the current New York month, with a fixed endpoint, deadline and byte limit.
+The separate `options-treasury-rates/retrievals.ndjson` journal retains successful
+raw XML, sanitized failures, assessments and a checksum chain. Exclusive locking,
+path/link/size checks and deterministic recovery protect existing local records.
+Its daily scheduler branch is separate from the one-minute option quote branch.
+The six-feed headline engine and all accepted option journals remain unchanged.
 
 `OptionsDriverCatalog` defines 16 economically plausible driver families and 94
 indicators. Each has affected assets, conditional mechanism, source references,

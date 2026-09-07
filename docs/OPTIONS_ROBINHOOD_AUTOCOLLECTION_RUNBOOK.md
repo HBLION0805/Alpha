@@ -19,27 +19,32 @@ First apply the shared-heartbeat phase rules below using actual UTC time; they
 take precedence over loading collection files. The host allows only one active
 heartbeat in this task. The existing ID `gld-ibit` serves both workflows.
 Use the exact [phase update fields](OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json) and
-[original restoration fields](OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json), preserving
+[active daily context restoration fields](OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json), preserving
 the checked-in [wrapper prompt](OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt).
 
 - Before `2026-09-08T13:30:00.000Z`, retain the armed daily 09:00/09:30 schedule.
-  At the normal 09:00 New York wake, execute the exact original public-news prompt
-  from `docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json`. At other pre-window wakes,
+  At the normal 09:00 New York wake, execute the daily news and Treasury context prompt
+  from `docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json`. At other pre-window wakes,
   perform only the collector's no-op preflight. Never change quote timestamps.
 - From `13:30:00` through strictly before `13:50:00` UTC on September 8, ensure
   the existing heartbeat uses a one-minute interval, preserving the wrapper prompt,
   name, thread target and notification settings. Then execute the host tick below.
   Change only this heartbeat through `automation_update`, never create a cron.
-- At or after `2026-09-08T13:50:00.000Z`, first restore the exact original fields
-  in `docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json` using `automation_update`.
+- At or after `2026-09-08T13:50:00.000Z`, first restore the active daily context fields
+  in `docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json` using `automation_update`.
   Then run `node node_modules/tsx/dist/cli.mjs scripts/options-robinhood-closeout.mjs --save gld-ibit-observe-open-20260908`.
   This saves a hash-checked actual-time report and returns its compact receipt.
   It distinguishes pending slots, missing request evidence, source failures and
   unusable quotes; diagnostic coverage is not win probability.
-  If the original daily news check is due at this wake, execute its preserved
+  If the daily news/context check is due at this wake, execute its saved
   prompt too (09:00 through strictly before 09:30 New York; the normal 09:50
   completion does not repeat news). A corrupt collection record must not prevent restoration of news.
   **Never delete the shared heartbeat.** Its original news purpose remains active.
+
+The [original news-only restoration snapshot](OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json)
+remains immutable. The active v2 baseline adds one Treasury refresh to the daily
+09:00 workflow; it never runs during each minute of option collection. Quote
+contracts, opening window and cadence are unchanged.
 
 Copy the JavaScript below into `functions.exec`. If it yields, use `functions.wait`
 with at most sixty seconds per wait until completion. The script uses no account,

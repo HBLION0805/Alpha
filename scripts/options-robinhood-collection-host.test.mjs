@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 const document = readFileSync('docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md', 'utf8');
 const body = /```javascript\r?\n([\s\S]+?)\r?\n```/.exec(document)?.[1];
@@ -55,5 +56,25 @@ await test('stdout chunks from a running local command are reconstructed', async
   const p=preparation('WAIT'), data=JSON.stringify(p);
   const r=await execute(p,t=>{t.exec_command=async()=>({output:data.slice(0,20),session_id:99});t.write_stdin=async()=>({output:data.slice(20),exit_code:0});});
   assert.equal(r.outputs[0].action,'WAIT');
+});
+await test('daily context baseline preserves the original news snapshot and non-prompt fields', () => {
+  const priorBytes = readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json');
+  const prior = JSON.parse(priorBytes), next = JSON.parse(readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json', 'utf8'));
+  assert.equal(createHash('sha256').update(priorBytes).digest('hex'), '2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040');
+  assert.equal(next.previousSnapshotFileSha256, createHash('sha256').update(priorBytes).digest('hex'));
+  const {prompt:oldPrompt,...oldFields}=prior.restoreFields, {prompt:newPrompt,...newFields}=next.restoreFields;
+  assert.deepEqual(newFields,oldFields); assert(newPrompt.includes(oldPrompt));
+  assert(newPrompt.includes('scripts/options-treasury.mjs --report')); assert(newPrompt.includes('scripts/options-treasury.mjs --refresh'));
+});
+await test('both collection phases use the active daily baseline without changing the quote window', () => {
+  const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
+  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json');
+  assert.equal(phases.windowStartAt,'2026-09-08T13:30:00.000Z'); assert.equal(phases.windowEndAt,'2026-09-08T13:50:00.000Z');
+  assert.equal(phases.armedFields.rrule,'RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0,30;BYDAY=SU,MO,TU,WE,TH,FR,SA');
+  assert.equal(phases.collectionFields.rrule,'RRULE:FREQ=MINUTELY;INTERVAL=1');
+  assert.equal(phases.armedFields.prompt,phases.collectionFields.prompt);
+  assert.equal(phases.armedFields.prompt,readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt','utf8').trimEnd());
+  assert(phases.armedFields.prompt.includes(phases.restoreSnapshot));
+  assert(!phases.armedFields.prompt.includes('docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json'));
 });
 console.log(`${passed}/${passed} tests passed.`);

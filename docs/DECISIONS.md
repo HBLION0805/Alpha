@@ -1,5 +1,17 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Add one attributable numerical context source
+
+- Use Treasury's documented anonymous current-month XML GET for daily par real
+  yields. Keep exact hundredths of a percentage point, nulls and source clocks;
+  retrieval times establish Alpha's first observation, not historical publication.
+- Keep successful raw source bytes and sanitized failures in a separate bounded
+  journal. Recover all assessments and revisions deterministically; never treat
+  an older observation as current after a failed or empty retrieval.
+- Version the daily news restoration baseline to add one Treasury refresh while
+  preserving the original snapshot byte-for-byte. Keep one shared heartbeat,
+  frozen opening quote window and cadence. No trades or risk-rule changes.
+
 ## 2026-09-07 UTC - Keep collection coverage distinct from source and trade success
 
 - Combine the existing observation review with validated source-attempt summaries

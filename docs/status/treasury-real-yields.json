@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "TREASURY_REAL_YIELDS_V1_DELIVERY",
+  "recordedAt": "2026-09-07T04:06:17.420Z",
+  "scope": [
+    "GLD",
+    "IBIT"
+  ],
+  "source": {
+    "version": "TREASURY_REAL_YIELDS_V1",
+    "requestedAt": "2026-09-07T04:01:13.631Z",
+    "receivedAt": "2026-09-07T04:01:13.937Z",
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_real_yield_curve&field_tdr_date_value_month=202609",
+    "queryMonth": "2026-09",
+    "status": "OK",
+    "errorCode": null,
+    "sourceSha256": "b8349abe7d7490a2dd186c9254e1aad27c3b1c547a406ffedf46c349a0207912",
+    "feedUpdatedAt": "2026-09-06T02:03:13.000Z",
+    "rows": [
+      {
+        "sourceId": 307,
+        "sourceDate": "2026-09-01",
+        "entryUpdatedAt": "2026-09-06T02:03:13.000Z",
+        "ratesBps": {
+          "5": 218,
+          "7": 230,
+          "10": 244,
+          "20": 278,
+          "30": 298
+        }
+      },
+      {
+        "sourceId": 308,
+        "sourceDate": "2026-09-02",
+        "entryUpdatedAt": "2026-09-06T02:03:13.000Z",
+        "ratesBps": {
+          "5": 219,
+          "7": 231,
+          "10": 245,
+          "20": 278,
+          "30": 298
+        }
+      },
+      {
+        "sourceId": 309,
+        "sourceDate": "2026-09-03",
+        "entryUpdatedAt": "2026-09-06T02:03:13.000Z",
+        "ratesBps": {
+          "5": 215,
+          "7": 227,
+          "10": 242,
+          "20": 276,
+          "30": 296
+        }
+      },
+      {
+        "sourceId": 310,
+        "sourceDate": "2026-09-04",
+        "entryUpdatedAt": "2026-09-06T02:03:13.000Z",
+        "ratesBps": {
+          "5": 217,
+          "7": 229,
+          "10": 243,
+          "20": 277,
+          "30": 296
+        }
+      }
+    ],
+    "rawBytes": 5094,
+    "journalPath": "data/runtime/options-treasury-rates/retrievals.ndjson",
+    "journalFileSha256": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2",
+    "appendFingerprint": "e19561b1ca82a8350260570e535ee967e71c699c137de1f8f4069296d9432619"
+  },
+  "recovery": {
+    "verifiedAt": "2026-09-07T04:01:34.875Z",
+    "retrievalCount": 1,
+    "versionCount": 4,
+    "reportSha256": "84a1e4a18468c5b3267c3dde4622a7e80acfbc3dd6c48454c8af0f6b21ed5995",
+    "additionalHttpCalls": 0
+  },
+  "hostSchedule": {
+    "automationId": "gld-ibit",
+    "activeBaseline": "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json",
+    "dailyContextTime": "09:00 America/New_York",
+    "openingStudyId": "gld-ibit-observe-open-20260908",
+    "windowStartAt": "2026-09-08T13:30:00.000Z",
+    "windowEndAt": "2026-09-08T13:50:00.000Z",
+    "originalSnapshotPreserved": true,
+    "activation": "VERIFIED_ACTIVE",
+    "verifiedAt": "2026-09-07T04:08:53.148Z",
+    "configSha256": "ec4f6a67d8672467dd6b25b639835b09b8eefd814c0927db513a1c7a72ac0da2",
+    "armedRrule": "RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0,30;BYDAY=SU,MO,TU,WE,TH,FR,SA",
+    "collectionRrule": "RRULE:FREQ=MINUTELY;INTERVAL=1",
+    "fieldsReadbackVerified": true
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c",
+      "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+      "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+      "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5"
+    },
+    "priorNewsSnapshotSha256": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040"
+  },
+  "boundaries": {
+    "automaticOrdersEnabled": false,
+    "executionAllowed": false,
+    "winProbability": null,
+    "qualifiedOptionReplay": false,
+    "newRobinhoodCalls": 0,
+    "newTreasuryCliReads": 1,
+    "priorIndependentSourceProbes": 1,
+    "numericalFamiliesConnected": 1,
+    "tenorsConnected": 5,
+    "allFactorsCovered": false,
+    "historicalPublicationTimesKnown": false,
+    "releaseCalendarVerified": false
+  },
+  "validation": {
+    "status": "PASSED",
+    "engineTestsPassed": 32,
+    "ioTestsPassed": 29,
+    "hostTestsPassed": 10,
+    "typecheck": "PASSED",
+    "engineeringTestsAreStrategyEvidence": false,
+    "componentCount": 101,
+    "testsExecuted": 2664,
+    "passed": 2664,
+    "failed": 0,
+    "durationMs": 43053,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-robinhood-collection-host.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "command": "npm run alpha:validate",
+    "log": "data/runtime/options-treasury-rates/validation.log",
+    "operationalCheckCorrection": "Initial readback used an incorrect local TOML key; target_thread_id then matched exactly without reapplying the automation."
+  }
+}

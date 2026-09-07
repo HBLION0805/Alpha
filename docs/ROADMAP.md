@@ -1,8 +1,15 @@
 # Alpha Roadmap
 
+Treasury daily real-yield context is connected as the first numerical driver
+source. Five tenors retain exact source/retrieval clocks and revisions in a
+separate journal; daily context monitoring uses a versioned baseline while
+preserving the original news snapshot. See [delivery](OPTIONS_TREASURY_REAL_YIELDS_DELIVERY.md)
+and [status](status/treasury-real-yields.json). Other numerical driver families
+remain incomplete; no trading signal or win-rate claim follows from this source.
+
 Current delivery arms automatic GLD/IBIT quote collection for the frozen September
 8, 09:30-09:50 New York observation window. The existing news heartbeat shares
-this window and restores its original daily 09:00 schedule afterward. The local
+this window and restores its daily 09:00 context schedule afterward. The local
 collector and host tick are tested; actual in-window collection is pending.
 The deterministic final closeout now distinguishes missing request evidence,
 source failures and unusable observations, preserving reports at actual clocks.
@@ -91,7 +98,7 @@ and authentication facts only. See
    source/contract/session/cost evidence and test affordability before the
    counterfactual run. Unknown sizes still block fills. Separately qualify
    historical availability and execution models; assumptions do not establish fills.
-2. Quantitative macro and asset-specific connectors with point-in-time vintages,
+2. Additional quantitative macro and asset-specific connectors with point-in-time vintages,
    release calendars, consensus-surprise inputs where licensed, ETF share/flow
    distinction, COT lags, gold reserves and crypto/on-chain provenance.
 3. Complete account/portfolio/event/drawdown/expiry risk and account-eligible

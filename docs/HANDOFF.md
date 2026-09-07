@@ -1,8 +1,20 @@
 # Alpha Handoff
 
-Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
+Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
+
+OPT-RATES-1 adds the first public numerical context source: Treasury daily par
+real yields at 5, 7, 10, 20 and 30 years. One actual CLI retrieval and independent
+restart recovery are recorded in [delivery](OPTIONS_TREASURY_REAL_YIELDS_DELIVERY.md)
+and [checkpoint](status/treasury-real-yields.json). Raw XML stays in its own
+checksum-linked journal; missing values, failures and original publication times
+remain explicit. This does not qualify option quotes or enable replay/trades.
+The shared heartbeat's active daily restoration baseline is now
+[v2 news plus Treasury](OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json), retaining
+the original news-only snapshot byte-for-byte. Treasury refreshes once in the
+daily 09:00 workflow; the frozen 09:30-09:50 opening window is unchanged.
+The prior delivery chronology below retains its original restoration evidence.
 
 The Owner requested continued autonomous development while away, with automatic
 orders still excluded. RH-CLOSEOUT-1 adds the deterministic final acceptance
