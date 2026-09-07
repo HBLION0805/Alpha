@@ -8,8 +8,8 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 - A standalone Federal Reserve meeting calendar preserves date-only FOMC ranges,
   projection markers, actual receipts and explicit unknown confirmation/intraday
-  timing. Its first official retrieval and restart recovery are verified; it is
-  not yet in daily scheduling. See [delivery](docs/OPTIONS_FOMC_CALENDAR_DELIVERY.md).
+  timing. Its first official retrieval and restart recovery are verified, and
+  daily v5 context includes it. See [integration](docs/OPTIONS_FOMC_DAILY_CONTEXT_DELIVERY.md).
 - Complete synthetic collection-window rehearsals join the checked-in Host tick,
   local collector, persistent observation records and final coverage/lesson reports.
   Normal, mixed-failure and slow-response scenarios retain explicit simulated
@@ -52,7 +52,7 @@ risk arithmetic. It promises no return and has no order-execution authority.
 - Automatic Robinhood collection is armed for September 8, 2026, 09:30-09:50
   a.m. New York: GLD/IBIT equity quotes and four frozen option contracts, with a
   target sixty-second cadence. The existing news heartbeat temporarily shares
-  this window, then restores daily 09:00 news, Treasury, BTC and BLS calendar checks. Actual
+  this window, then restores daily 09:00 news, Treasury, BTC, BLS and FOMC calendar checks. Actual
   market collection is pending; the local computer and Codex app must be running.
 - Robinhood budget screening and prospective observation records: bounded sample
   screening, immutable contract/window selection, linked quote frames, source-time

@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - Daily FOMC date-calendar collection
+
+- Added v5 restoration fields and one independent FOMC report/refresh pair while
+  preserving all four prior daily source subflows and historical snapshot bytes.
+- Updated the existing shared heartbeat, independently verified all eight stored
+  fields, and retained the exact quote program and window. See
+  [integration delivery](OPTIONS_FOMC_DAILY_CONTEXT_DELIVERY.md).
+
 ## 2026-09-07 - Official FOMC date-calendar context
 
 - Added bounded public HTML collection, exact same/cross-month date intervals,

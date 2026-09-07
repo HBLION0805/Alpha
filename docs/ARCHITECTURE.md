@@ -30,8 +30,8 @@ The Codex host invokes two authorized market tools using the tested
 [runbook](OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md). Its existing news heartbeat
 temporarily schedules the first bounded collection window. Absolute UTC phases
 restore the active daily context fields before reading collection records at window end.
-The v4 baseline retains news/Treasury/BTC and adds one BLS calendar refresh;
-the original news-only, v2 and v3 restoration snapshots remain immutable.
+The v5 baseline retains news/Treasury/BTC/BLS and adds one FOMC date-calendar refresh;
+the original news-only, v2, v3 and v4 restoration snapshots remain immutable.
 Host scheduling, source quality and execution authority are separate: an enabled
 schedule does not establish a recorded or eligible quote, replay or trade.
 
@@ -51,7 +51,9 @@ projection markers without inventing intraday or confirmed-event timestamps.
 Its separate bounded journal retains raw receipt history; consecutive same-year
 comparisons do not interpret absent date-derived keys as cancellation. See
 [delivery](OPTIONS_FOMC_CALENDAR_DELIVERY.md). Existing BLS, readiness, context
-cutoff, brief, export and daily-host versions are unchanged in this delivery.
+cutoff, brief and export versions are unchanged. The separate
+[daily v5 integration](OPTIONS_FOMC_DAILY_CONTEXT_DELIVERY.md) includes FOMC in
+the shared 09:00 context branch without changing the quote Host program.
 
 `OptionsContextCutoff` independently validates current headline, Treasury, BTC
 and BLS histories before filtering by stored receipt/discovery clocks. It uses

@@ -68,7 +68,7 @@ await test('daily context baseline preserves the original news snapshot and non-
 });
 await test('both collection phases use the active daily baseline without changing the quote window', () => {
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
-  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json');
+  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json');
   assert.equal(phases.windowStartAt,'2026-09-08T13:30:00.000Z'); assert.equal(phases.windowEndAt,'2026-09-08T13:50:00.000Z');
   assert.equal(phases.armedFields.rrule,'RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0,30;BYDAY=SU,MO,TU,WE,TH,FR,SA');
   assert.equal(phases.collectionFields.rrule,'RRULE:FREQ=MINUTELY;INTERVAL=1');
@@ -94,7 +94,7 @@ await test('v3 binds unchanged v2 bytes and keeps all non-prompt schedule fields
 await test('daily BTC context cannot widen the frozen quote host program', () => {
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
   assert(!body.includes('btc-context')); assert(!body.includes('treasury'));
-  assert(phases.armedFields.prompt.includes('财政部、BTC 现货和 BLS 日历刷新只在每日新闻分支执行'));
+  assert(phases.armedFields.prompt.includes('财政部、BTC 现货、BLS 日历和 FOMC 日期刷新只在每日新闻分支执行'));
   assert(phases.armedFields.prompt.includes('不得自动兑换额度重置或购买额度'));
 });
 await test('v4 binds exact v3 bytes and preserves all three prior source subflows', () => {
@@ -116,6 +116,27 @@ await test('daily calendar context leaves the precise frozen quote program intac
   assert.equal(createHash('sha256').update(body.replaceAll('\r\n','\n')).digest('hex'),'2e3a24d5ca223922d001047b58aaa689d17575e60dd0e89908daa14655ec4def');
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
   assert(!phases.armedFields.prompt.includes('RESTORE_V3.json'));
-  assert(document.includes('OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json'));
+  assert(document.includes('OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json'));
+});
+await test('v5 binds exact v4 bytes and preserves all four prior source subflows', () => {
+  const bytes=readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json'), prior=JSON.parse(bytes);
+  const next=JSON.parse(readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json','utf8'));
+  const sha=createHash('sha256').update(bytes).digest('hex');
+  assert.equal(sha,'673364912eb61b2871caa03d899c0ec332d599a2c9b0662727602b6e9b3bae75'); assert.equal(next.previousSnapshotFileSha256,sha);
+  assert.equal(next.previousSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json');
+  const {prompt:oldPrompt,...oldFields}=prior.restoreFields, {prompt:newPrompt,...newFields}=next.restoreFields;
+  assert.deepEqual(newFields,oldFields);
+  assert(newPrompt.includes(oldPrompt.slice(oldPrompt.indexOf('新闻子流程：'),oldPrompt.indexOf('\n\n四个流程均只做本次只读监测。'))));
+  assert.equal(newPrompt.split('scripts/options-fomc-calendar.mjs --report').length-1,1);
+  assert.equal(newPrompt.split('scripts/options-fomc-calendar.mjs --refresh').length-1,1);
+  assert(newPrompt.includes('五个子流程独立尝试')); assert(newPrompt.includes('不能自动补出 14:00'));
+  assert(newPrompt.includes('键消失仅表示本次未列出')); assert(newPrompt.includes('首次看到日期不代表刚刚发生变更'));
+});
+await test('FOMC integration preserves quote control flow and updates only active restoration references', () => {
+  assert(!body.includes('fomc-calendar'));
+  assert.equal(createHash('sha256').update(body.replaceAll('\r\n','\n')).digest('hex'),'2e3a24d5ca223922d001047b58aaa689d17575e60dd0e89908daa14655ec4def');
+  const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
+  assert(!phases.armedFields.prompt.includes('RESTORE_V4.json')); assert(phases.armedFields.prompt.includes('RESTORE_V5.json'));
+  assert(document.includes('active v5 baseline'));
 });
 console.log(`${passed}/${passed} tests passed.`);

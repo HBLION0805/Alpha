@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-FOMC-2 integrated the verified FOMC calendar into daily context. Active shared
+restoration is now v5; all original/v2/v3/v4 snapshots remain byte-identical.
+Eight stored host fields matched at 2026-09-07T07:42:06.866Z. The exact quote Host
+program, frozen study/window and twenty-three protected source/report files are
+unchanged. See [delivery](OPTIONS_FOMC_DAILY_CONTEXT_DELIVERY.md) and
+[checkpoint](status/fomc-daily-context.json). Existing readiness, brief, cutoff
+and export formats do not yet include FOMC and must not silently claim it.
+
 OPT-FOMC-1 adds standalone public FOMC date-calendar collection. The actual
 2026-09-07T07:32:40.377Z receipt retains 16 listed 2026/2027 meetings; independent
 recovery matched. Upcoming September 15-16 dates retain unknown intraday timing

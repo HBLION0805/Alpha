@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Add FOMC dates to shared daily context
+
+- Version the daily restoration baseline to v5, bound to unchanged v4 bytes.
+  Preserve all four prior source subflows and every non-prompt schedule field.
+- Add one independent FOMC report/refresh pair to daily 09:00 only; preserve the
+  exact quote Host program, four contracts and September 8 09:30-09:50 window.
+- Update only the existing heartbeat and verify its eight stored fields. Date-only
+  precision, unknown confirmation, no cancellation inference and quiet routine
+  monitoring remain explicit. Existing report/export formats are not widened.
+
 ## 2026-09-07 - Retain FOMC calendar date precision
 
 - Add only the official Federal Reserve calendar URL as a separate public source.

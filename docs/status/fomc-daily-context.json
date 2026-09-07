@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "FOMC_DAILY_CONTEXT_V5",
+  "recordedAt": "2026-09-07T07:42:06.866Z",
+  "host": {
+    "automationId": "gld-ibit",
+    "verifiedFields": {
+      "id": true,
+      "kind": true,
+      "name": true,
+      "prompt": true,
+      "rrule": true,
+      "status": true,
+      "targetThreadId": true,
+      "notificationPolicy": true
+    },
+    "allEightFieldsMatch": true,
+    "activeArmedSchedule": "RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0,30;BYDAY=SU,MO,TU,WE,TH,FR,SA",
+    "previousFileSha256": "0c3ff0d2440178c242e36f8a7dd0a7af8f4c9b030992b29c1455c67819ca2fc5",
+    "fileSha256": "66c1e3d5640ee8cc9e746aa90800beb613010829d9b3f0800d224e3576b72f6f",
+    "restoreSnapshot": "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json",
+    "restoreSnapshotSha256": "9ed8af11a3bc6728f2ec9136389313ea56d3ccf0a5f88886f65a24c173f90014",
+    "nextQuoteWindowStartAt": "2026-09-08T13:30:00.000Z",
+    "nextQuoteWindowEndAt": "2026-09-08T13:50:00.000Z",
+    "quoteProgramSha256": "2e3a24d5ca223922d001047b58aaa689d17575e60dd0e89908daa14655ec4def"
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c",
+      "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+      "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+      "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5",
+      "data/runtime/options-driver-monitor/refreshes.ndjson": "b38823063dc5642f9f14b95ef369155af6af76b7cac4b8a3f323c84ebb5de4c9",
+      "data/runtime/options-treasury-rates/retrievals.ndjson": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json": "9ae78b5832c090c5f959d8b97a05ced60d76d3f5b5e6ebf6b81539a88c36108a",
+      "docs/status/treasury-real-yields.json": "0c448c9dbacc28d28088c07b3e1d8c50aaafe91fa7b3a1d7c7425d963af3f31f",
+      "data/runtime/options-btc-context/retrievals.ndjson": "c923886c16f1e67b0dd9e72c14eee7bdc40c1dd96696501f06b0d746d50cfb50",
+      "docs/status/btc-spot-context.json": "fd231b18eee0341e2119d193798d6f6dee5a8933d0733e06326e6f61707c3cac",
+      "docs/status/operational-readiness.json": "1b5998144af8a38340044e557f80f826f40d71c4072ec976be392daf77cade1f",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json": "5bf04fcbcb951907bc84fa2cd17d0285e5f527ee328a03fb21f151932293ab67",
+      "data/runtime/options-release-calendar/retrievals.ndjson": "7795744632fac68781d71bc380af66b3f40eea2e0d810945dac96e0121355516",
+      "docs/status/bls-release-calendar.json": "791774a40705280e485bcfaca7681480294dd8fb5115e561028ff91b21ddff6a",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json": "673364912eb61b2871caa03d899c0ec332d599a2c9b0662727602b6e9b3bae75",
+      "data/runtime/options-readiness/operator-brief.json": "4d238f48cfb3220a486ab24b3d5ffe9564266882bbd622bc009863e6a19d61d0",
+      "data/runtime/options-readiness/operator-brief.txt": "ad320b05013febeac086715e334b12c2461bb178ba10dcb650d84ee8a4aad602",
+      "data/runtime/options-readiness/context-cutoff-0430.json": "ebcd6c2e52640cd568141638f637e34b1a0acfa2839c7824fca00fb236e05451",
+      "data/runtime/options-fomc-calendar/retrievals.ndjson": "bc92776d33b468e937ea1a2c935668d3aff7f9f6fc802067d7864c415accb40c"
+    },
+    "allUnchanged": true
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 118,
+    "testsExecuted": 3076,
+    "passed": 3076,
+    "failed": 0,
+    "durationMs": 58836,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-robinhood-collection-host.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "command": "npm run alpha:validate",
+    "log": "data/runtime/options-fomc-calendar/daily-integration-validation.log",
+    "hostTests": 16,
+    "engineeringTestsAreStrategyEvidence": false
+  },
+  "boundaries": {
+    "integrationSourceCalls": 0,
+    "journalAppends": 0,
+    "newTasks": 0,
+    "newAutomations": 0,
+    "automaticOrdersEnabled": false,
+    "readinessBriefCutoffExportVersionsUnchanged": true
+  },
+  "validationRecordedAt": "2026-09-07T07:46:12.582Z"
+}
