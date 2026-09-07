@@ -1,0 +1,36 @@
+{
+  "version": "OPTIONS_RESEARCH_PROTOCOL_DECLARATION_DELIVERY_V1",
+  "recordedAt": "2026-09-07T20:24:39.541Z",
+  "sourceBaseCommit": "14ec922",
+  "status": "DECLARATION_ASSESSMENT_VALIDATED_REGISTRATION_PENDING",
+  "routerAsOf": "2026-09-07T20:16:42.999Z",
+  "developmentStopAt": "2026-09-07T20:26:42.999Z",
+  "focusedTests": {
+    "passed": 12,
+    "failed": 0
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 138,
+    "testsExecuted": 3436,
+    "passed": 3436,
+    "failed": 0,
+    "durationMs": 75966,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "validationLogSha256": "ea40aaede349308984fd2f6a284c934284c1a37c725e9635e070637cc25e4cb2",
+  "preservation": {
+    "protectedFileCount": 524,
+    "changed": []
+  },
+  "actualProtocolsRegistered": 0,
+  "actualDecisionsRecorded": 0,
+  "sourceJournalAppends": 0,
+  "hostChanges": 0,
+  "marketSourceCalls": 0,
+  "executionAllowed": false,
+  "nextStep": "EXCLUSIVE_PROTOCOL_REGISTRATION_AND_ISOLATED_RECOVERY"
+}

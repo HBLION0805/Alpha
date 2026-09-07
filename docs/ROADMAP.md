@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The [research protocol declaration assessment](OPTIONS_RESEARCH_PROTOCOL_DECLARATION_DELIVERY.md)
+now preserves complete definitions and declared chronology while retaining zero
+samples and empty-partition blockers. Actual registration storage and subsequent
+decision references remain next; no protocol has been registered by this unit.
+
 The [context capture workflow](OPTIONS_CONTEXT_CAPTURE_DELIVERY.md) now saves
 and independently recovers five-source payload/receipt pairs. Its first actual
 local capture retains 174 source members and a post-payload-write save clock.

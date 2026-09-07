@@ -8,6 +8,14 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The [research protocol declaration](OPTIONS_RESEARCH_PROTOCOL_DECLARATION_DELIVERY.md)
+has a reviewed design and typed pure assessment. Complete feature/outcome text,
+strategy and windows are hashed; original sample validation retains empty
+partitions. Its clock is DECLARED_UNVERIFIED and no protocol is registered.
+Next unit: exclusive protocol payload/receipt storage with actual post-write
+clocks and isolated recovery, then new decision references. Do not choose a
+dataset split or backfill existing cases from the synthetic protocol tests.
+
 The [context capture command](OPTIONS_CONTEXT_CAPTURE_DELIVERY.md) now saves
 exclusive payload/receipt pairs with actual post-fsync clocks and isolated
 recomputation. Actual capture `context-first-local-20260907` contains 174 members
