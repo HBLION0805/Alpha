@@ -8,29 +8,27 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
-The Owner now explicitly requests Chinese development progress every 15 minutes,
-including in-progress or waiting states. The active shared fields are
-`docs/OPTIONS_WORK_CONTINUATION_HOST_V3.json`; v1/v2 are preserved as history.
-Use NOTIFY for due reports and continue work afterward. Opening quotes retain
-priority, with no per-minute reporting spam or pre-restoration evidence reads.
-See [activation](OPTIONS_WORK_PROGRESS_DELIVERY.md) and
-[verified host fields](status/work-progress.json).
+The Owner cancelled the shared task and then explicitly restored market collection
+with development only in this conversation. Current disposition:
+**CONVERSATION_ONLY_DEVELOPMENT**. Automatic development and quarter-hour reports
+are disabled. The original gld-ibit ID is ACTIVE again with the original market
+armed fields; see [restoration](OPTIONS_MARKET_COLLECTION_RESTORATION.md) and its
+[verified checkpoint](status/market-collection-restoration.json).
 
-Reports must now compare against the [ten-workstream baseline](OPTIONS_DEVELOPMENT_PROGRESS.md)
-and its current checkpoint, including the separate six first-paper-flow gates.
-Count local acceptance separately from missing real-price validation; do not
-report an invented overall percentage. See [reporting update](OPTIONS_OVERALL_PROGRESS_REPORTING_DELIVERY.md).
+Use `docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json`, the unchanged Host runbook and
+v6 daily restoration. Before opening: daily 09:00 context and 09:30 opening wake;
+inside the frozen September 8 09:30-09:50 New York window: original minute quotes;
+afterward: restore v6 before collection evidence, then original closeout. Never
+install V3 post-window development fields. V1/V2/V3 remain historical snapshots.
+Routine WAIT/collection stays quiet under the restored prompt.
 
-Current disposition: **WAITING_FOR_OPENING_EVIDENCE** after the
-[snapshot model design](OPTIONS_ROBINHOOD_SNAPSHOT_MODEL_DELIVERY.md). The model
-requires separate trigger/fill snapshots and preserves unknowns; 186 original
-regressions passed, but no adapter or real-price gate advanced. Actual host fields
-already match V3 waitingForOpeningFields, which equal activeFields; no host write
-occurred. Continue the prescribed router and quarter-hour overall reports. During
-DEVELOPMENT with this dependency unchanged, report waiting without manufacturing
-new modules or extra source calls. Resume useful implementation after actual
-opening/closeout qualification or genuinely new relevant evidence. Daily context,
-opening guard and restore-before-evidence ordering remain unchanged.
+Conversation progress reports still use the [ten-workstream baseline](OPTIONS_DEVELOPMENT_PROGRESS.md)
+and six first-paper gates. Current totals remain 4 local / 3 partial / 3 unvalidated;
+three first-paper local components are available. The snapshot model is design-only,
+and source-specific implementation/acceptance still needs actual quote review.
+This dependency does not block all local development: the proposed next independent
+unit is modeled-account/portfolio-risk integration, scoped and reviewed first.
+No live account access, automatic order or strategy-size authority follows.
 
 The [public source-use review](OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md) now records
 current customer and US options agreement evidence. Personal-use provisions do

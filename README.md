@@ -10,10 +10,10 @@ test dependencies. It links original evidence without changing historical clocks
 
 ## Current capabilities
 
-- **Automatic development continuation:** the existing shared task can resume
-  useful work between reports while daily context and the frozen opening window
-  retain priority. Saved routing/configuration is not proof of a later wake.
-  [Delivery](docs/OPTIONS_WORK_CONTINUATION_DELIVERY.md).
+- **Scheduled market collection:** the Owner restored the original opening
+  collection and daily market-context task. Automatic development and quarter-hour
+  progress reports are disabled; development continues in the current conversation.
+  [Restoration](docs/OPTIONS_MARKET_COLLECTION_RESTORATION.md).
 
 - **Sample partition and journal inventory:** chronological declared windows
   reject overlapping information and reused cross-group evidence. The inventory

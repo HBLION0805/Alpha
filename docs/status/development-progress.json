@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-07T22:09:30.453Z",
+  "recordedAt": "2026-09-07T23:38:57.079Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "cb2608f",
+  "comparedWithCommit": "5a32beb",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "08",
-  "currentUnit": "Hypothetical snapshot fill model design",
-  "currentUnitAcceptance": "Design reviewed, 186 original regression tests passed and synthetic arithmetic checked. No adapter implementation or market-evidence gate advanced.",
+  "currentWorkstream": "03",
+  "currentUnit": "Market collection restoration; development stays in conversation",
+  "currentUnitAcceptance": "Original armed fields restored and eight host fields verified; 17 original host tests passed. No qualified quote or real-price gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,7 +134,7 @@
     ]
   },
   "criticalDependency": "Eligible GLD/IBIT option evidence from the frozen September 8 09:30-09:50 New York opening pilot, followed by semantics/cost/account qualification.",
-  "nextAction": "Preserve quarter-hour overall reports and scheduled source/quote workflow. Review actual completed opening evidence before source-specific implementation; no extra source calls or invented modules during unchanged waiting.",
+  "nextAction": "Continue independently scoped modeled-account/portfolio-risk development in conversation. The original market heartbeat handles the frozen opening pilot and daily context; review eligible quote evidence before source-specific adapter implementation.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
@@ -142,6 +142,8 @@
     "failed": 0,
     "componentCount": 144
   },
-  "latestOperationalEvidence": "docs/status/robinhood-snapshot-model.json",
-  "developmentDisposition": "WAITING_FOR_OPENING_EVIDENCE"
+  "latestOperationalEvidence": "docs/status/market-collection-restoration.json",
+  "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
+  "automaticDevelopment": false,
+  "periodicDevelopmentReports": false
 }

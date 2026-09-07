@@ -1,10 +1,12 @@
 # Alpha Roadmap
 
 The [hypothetical snapshot model](OPTIONS_ROBINHOOD_SNAPSHOT_MODEL_DELIVERY.md)
-now defines later-fill timing and preserved risk/accounting assumptions. Current
-first-paper development waits for actual opening evidence before an adapter;
-overall reports and the existing source/collection schedule continue. This is
-design acceptance only: all 10-workstream and six-gate counts remain unchanged.
+defines later-fill timing and preserved risk/accounting assumptions. Actual
+opening evidence still gates the source adapter; independent local work can
+continue in conversation. The Owner [restored market collection](OPTIONS_MARKET_COLLECTION_RESTORATION.md)
+and disabled automatic development/quarter-hour reports. Next conversation work
+can scope modeled-account/portfolio-risk integration. Workstream and gate counts
+remain unchanged; design acceptance is separate from real-price validation.
 
 The [public source-use review](OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md) adds dated
 customer/US options agreement evidence while retaining unresolved retention and

@@ -1,0 +1,78 @@
+{
+  "version": "OPTIONS_MARKET_COLLECTION_RESTORATION_V1",
+  "recordedAt": "2026-09-07T23:38:57.079Z",
+  "sourceBaseCommit": "5a32beb",
+  "ownerDirection": "RESTORE_MARKET_COLLECTION_DEVELOPMENT_IN_CURRENT_CONVERSATION_ONLY",
+  "automationId": "gld-ibit",
+  "status": "ACTIVE_ORIGINAL_MARKET_ARMED_FIELDS_VERIFIED",
+  "recreatedAfterOwnerCancellation": true,
+  "initialUpdateResult": "AUTOMATION_NOT_FOUND",
+  "createResult": "ACTIVE",
+  "finalUpdateResult": "ACTIVE",
+  "activeManifest": "docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json",
+  "activeFieldSet": "armedFields",
+  "dailyRestore": "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json",
+  "developmentManifestsHistorical": [
+    "docs/OPTIONS_WORK_CONTINUATION_HOST_V1.json",
+    "docs/OPTIONS_WORK_CONTINUATION_HOST_V2.json",
+    "docs/OPTIONS_WORK_CONTINUATION_HOST_V3.json"
+  ],
+  "hostVerifiedAt": "2026-09-07T23:34:57.397Z",
+  "hostFieldsMatched": [
+    "id",
+    "kind",
+    "name",
+    "prompt",
+    "rrule",
+    "status",
+    "targetThreadId",
+    "notificationPolicy"
+  ],
+  "hostSha256": "6c24977024401f4e5deb99b04d8418e7246f82c10b63f1545d2b303605b3125a",
+  "priorDeletedDevelopmentHostSha256": "79d611316a563a5491a136501f3621ff99a0113a7883c6debd08d7662e0c729b",
+  "automaticDevelopment": false,
+  "periodicDevelopmentReports": false,
+  "preflight": {
+    "schemaVersion": "1.0",
+    "studyId": "gld-ibit-observe-open-20260908",
+    "preparedAt": "2026-09-07T23:34:57.245Z",
+    "planSha256": "8e60f2a53ea47be83c30024e20d7a8ae1cc63fe1dca69ba8bc0e8540420f5c8d",
+    "windowStartAt": "2026-09-08T13:30:00.000Z",
+    "windowEndAt": "2026-09-08T13:50:00.000Z",
+    "nextRequestAt": "2026-09-08T13:30:00.000Z",
+    "action": "WAIT",
+    "requests": [],
+    "attemptCount": 0,
+    "sourceFailureCount": 0,
+    "frameCount": 0,
+    "usableObservations": 0,
+    "status": "NO_REPLAY",
+    "networkAccess": false,
+    "executionAllowed": false
+  },
+  "focusedTests": {
+    "command": "node node_modules/tsx/dist/cli.mjs scripts/options-robinhood-collection-host.test.mjs",
+    "passed": 17,
+    "failed": 0
+  },
+  "protectedArtifactsUnchanged": 523,
+  "authorizedRestoredHostCount": 1,
+  "immutableSourceHashesMatched": 6,
+  "actualInWindowQuotesObserved": false,
+  "exposedQuoteToolNames": [
+    "mcp__robinhood_alpha_market_data__get_option_quotes",
+    "mcp__robinhood_alpha_market_data__get_equity_quotes"
+  ],
+  "marketToolCalls": 0,
+  "accountOrOrderCalls": 0,
+  "sourceJournalAppends": 0,
+  "productionCodeChanged": false,
+  "firstPaperFlowGateAdvanced": false,
+  "executionAllowed": false,
+  "priorFullValidation": {
+    "commit": "a066ccd",
+    "passed": 3510,
+    "components": 144,
+    "rerunThisUnit": false
+  }
+}

@@ -1,7 +1,8 @@
 # Development progress against the complete scope
 
-The Owner requests a comparison with total development scope in every 15-minute
-Chinese report. This fixed ten-workstream view is an engineering reporting
+The Owner requests development reports against total scope. After restoring
+market collection on September 7, automatic quarter-hour reports are disabled;
+development reporting stays in the current conversation. This fixed ten-workstream view is an engineering reporting
 baseline, not an estimate of effort, profitability or production readiness.
 Use [the current checkpoint](status/development-progress.json) for dated counts,
 before/after status, evidence and the current unit. Do not turn module counts
