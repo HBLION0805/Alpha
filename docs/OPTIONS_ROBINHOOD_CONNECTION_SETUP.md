@@ -83,3 +83,13 @@ whitespace checks. Product code and dependencies are unchanged; no simulation or
 live trade was run. Existing trade/review/notebook journals remain untouched.
 That setup checkpoint is complete. Follow the capture delivery for the next
 bounded screening/forward-capture work; do not repeat completed OAuth or restart.
+
+## Later direct-control investigation
+
+The [September 7 direct-control assessment](OPTIONS_HOST_CONTROL_ASSESSMENT.md)
+is separate from this working MCP connection. Its bounded CLI proxy probe again
+failed before initialization with Windows error 10050; no alternative collector
+or model turn was started. It does not invalidate OAuth or require another login.
+The active [v4 daily baseline](OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json)
+and [shared runbook](OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md) remain the
+verified operating path, subject to host/app and Codex execution availability.

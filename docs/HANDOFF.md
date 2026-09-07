@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+Current operating references in AGENTS.md now point to the verified v4 daily
+baseline and preserve all prior snapshots. A separate
+[direct-control assessment](OPTIONS_HOST_CONTROL_ASSESSMENT.md) records the
+unsuccessful Windows proxy route; it is not a failure of the working five-tool
+MCP connection and must not trigger another login/restart. No quota-independent
+collector or new task was installed. The existing heartbeat still requires host,
+app, network and Codex execution capacity; no usage resets are authorized.
+
 OPT-NEWS-GUARDS-2 corrects the older headline transport's total deadline,
 cancellation and UTF-8 handling, sanitizes CLI failures and rejects hard-linked
 journals during direct recovery/append. Existing as-of discovery filtering,

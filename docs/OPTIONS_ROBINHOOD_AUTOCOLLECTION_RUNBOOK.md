@@ -129,7 +129,7 @@ if (prepared.action !== "COLLECT") {
 - SOURCE_CALL_FAILED: a sanitized attempt is saved, with no invented frame.
   A later scheduled tick can retry. Surface a meaningful new source/authentication
   failure or required user action; do not repeat unchanged failures every minute.
-- FINISH: restore the shared heartbeat's original public-news fields as described
+- FINISH: restore the shared heartbeat's active daily context fields as described
   above, run the closeout `--save` command, and retain its immutable actual-time
   coverage/gap report under the ignored runtime directory. Do not place a trade or start
   an unreviewed replay. Report only a meaningful failure or required action.
@@ -138,5 +138,5 @@ if (prepared.action !== "COLLECT") {
   read credentials, redo login or fabricate an outcome to make the run succeed.
 
 On a missed window, FINISH still records zero/partial coverage and restores the
-original news schedule. Scheduling is host-owned; this runbook does not guarantee a
+active daily context schedule. Scheduling is host-owned; this runbook does not guarantee a
 run when the computer is asleep, the app is closed or a prior turn is still busy.
