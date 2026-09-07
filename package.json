@@ -82,6 +82,8 @@
     "options:research-observation": "tsx scripts/options-research-observation.mjs",
     "test:options-research-observation": "tsx scripts/options-research-observation.test.mjs",
     "test:options-research-observation-storage": "tsx scripts/options-research-observation-storage.test.mjs",
+    "options:research-evidence": "tsx scripts/options-research-evidence.mjs",
+    "test:options-research-evidence": "tsx scripts/options-research-evidence.test.mjs",
     "test:options-research-protocol": "tsx scripts/options-research-protocol.test.mjs",
     "options:evidence-export": "tsx scripts/options-evidence-export.mjs",
     "options:evidence-rehearsal": "tsx scripts/options-evidence-rehearsal.mjs",

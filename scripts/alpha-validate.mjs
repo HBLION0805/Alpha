@@ -145,6 +145,7 @@ const aggregateTestFiles = [
   "scripts/options-research-protocol.test.mjs",
   "scripts/options-research-observation.test.mjs",
   "scripts/options-research-observation-storage.test.mjs",
+  "scripts/options-research-evidence.test.mjs",
   "scripts/options-context-cutoff.test.mjs",
   "scripts/options-context-capture.test.mjs",
   "src/engines/options-readiness/OptionsOperatorBrief.test.ts",

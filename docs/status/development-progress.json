@@ -1,13 +1,13 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-07T21:27:27.914Z",
+  "recordedAt": "2026-09-07T21:38:29.359Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "bf150ec",
+  "comparedWithCommit": "ef7dec2",
   "previousCounts": {
-    "LOCAL_VALIDATED": 3,
-    "PARTIAL": 4,
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
     "NOT_VALIDATED": 3
   },
   "currentCounts": {
@@ -43,7 +43,7 @@
     {
       "id": "04",
       "name": "Protocol and observation evidence",
-      "previousStatus": "PARTIAL",
+      "previousStatus": "LOCAL_VALIDATED",
       "status": "LOCAL_VALIDATED",
       "detail": "Exclusive note receipts and original protocol/context recovery passed isolated tests; full feature lineage is separate.",
       "evidence": "docs/OPTIONS_RESEARCH_OBSERVATION_STORAGE_DELIVERY.md"
@@ -98,8 +98,8 @@
     }
   ],
   "currentWorkstream": "04",
-  "currentUnit": "Observation storage and independent three-pair recovery",
-  "currentUnitAcceptance": "All 35 observation tests, actual-clock isolated recovery and full integrated validation passed.",
+  "currentUnit": "Selected observation package and isolated recovery",
+  "currentUnitAcceptance": "Thirteen package tests, actual-clock seven-file independent recovery and full validation passed; no workstream count or first-paper gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,12 +134,13 @@
     ]
   },
   "criticalDependency": "Eligible GLD/IBIT option evidence from the frozen September 8 09:30-09:50 New York opening pilot, followed by semantics/cost/account qualification.",
-  "nextAction": "Specify a bounded export/recovery extension retaining all three evidence pairs while preserving old formats; qualify the frozen opening data before a source-specific paper adapter.",
+  "nextAction": "Prepare bounded Robinhood paper-adapter qualification criteria from existing source/schema evidence, then assess actual frozen opening data before implementation.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 3497,
+    "passed": 3510,
     "failed": 0,
-    "componentCount": 143
-  }
+    "componentCount": 144
+  },
+  "latestOperationalEvidence": "docs/status/research-evidence-package.json"
 }

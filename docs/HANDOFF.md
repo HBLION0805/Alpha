@@ -21,6 +21,13 @@ and its current checkpoint, including the separate six first-paper-flow gates.
 Count local acceptance separately from missing real-price validation; do not
 report an invented overall percentage. See [reporting update](OPTIONS_OVERALL_PROGRESS_REPORTING_DELIVERY.md).
 
+The [selected observation package](OPTIONS_RESEARCH_EVIDENCE_PACKAGE_DELIVERY.md)
+now exports exactly three pairs plus a manifest and verifies them in an isolated
+temporary workspace using original readers. Study-based export v1/v2 is unchanged.
+This strengthens local workstream 04 without advancing the three real-price gates.
+Next prepare explicit adapter qualification criteria from existing schema evidence;
+assess actual opening data before implementing any source-specific assumptions.
+
 The [observation storage](OPTIONS_RESEARCH_OBSERVATION_STORAGE_DELIVERY.md) now
 exclusively saves actual-clock payload/receipt pairs and independently recovers
 with both original dependencies. Six-file isolated recovery passed. This closes

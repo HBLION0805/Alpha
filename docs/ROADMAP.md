@@ -1,5 +1,9 @@
 # Alpha Roadmap
 
+Selected observation evidence can now be packaged with both prerequisites and
+independently recovered without active source stores. See [delivery](OPTIONS_RESEARCH_EVIDENCE_PACKAGE_DELIVERY.md).
+No workstream or real-price gate count changes from this operational extension.
+
 Use the [ten-workstream baseline](OPTIONS_DEVELOPMENT_PROGRESS.md) for progress
 against total scope and the six first-real-price-paper-flow gates. Observation
 storage and three-pair recovery now close local workstream 04. This leaves three
