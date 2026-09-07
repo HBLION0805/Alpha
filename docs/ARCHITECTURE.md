@@ -22,8 +22,8 @@ The Codex host invokes two authorized market tools using the tested
 [runbook](OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md). Its existing news heartbeat
 temporarily schedules the first bounded collection window. Absolute UTC phases
 restore the active daily context fields before reading collection records at window end.
-The v3 baseline retains the news/Treasury workflow and adds one public BTC refresh;
-the original news-only and v2 restoration snapshots remain immutable.
+The v4 baseline retains news/Treasury/BTC and adds one BLS calendar refresh;
+the original news-only, v2 and v3 restoration snapshots remain immutable.
 Host scheduling, source quality and execution authority are separate: an enabled
 schedule does not establish a recorded or eligible quote, replay or trade.
 
@@ -41,8 +41,9 @@ before invoking this deterministic save. Coverage has no execution authority.
 timezone conversion, scheduled events and consecutive-snapshot changes. It keeps
 actual receipt time separate from missing source publication metadata. Removed
 UIDs are absent observations, not inferred cancellations. A separate bounded
-transport/journal stores one official calendar per explicit refresh; the current
-readiness and daily heartbeat remain unchanged in this standalone delivery.
+transport/journal stores one official calendar per explicit refresh. Daily v4
+context now includes this independent source; readiness v1/v2 and the previous
+evidence-export format remain unchanged and exclude its separate journal.
 No released values, event-impact scores, calibrated risk windows or order rights
 are inferred. See [specification](specifications/OPTIONS_BLS_RELEASE_CALENDAR_V1.md).
 

@@ -68,7 +68,7 @@ await test('daily context baseline preserves the original news snapshot and non-
 });
 await test('both collection phases use the active daily baseline without changing the quote window', () => {
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
-  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json');
+  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json');
   assert.equal(phases.windowStartAt,'2026-09-08T13:30:00.000Z'); assert.equal(phases.windowEndAt,'2026-09-08T13:50:00.000Z');
   assert.equal(phases.armedFields.rrule,'RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0,30;BYDAY=SU,MO,TU,WE,TH,FR,SA');
   assert.equal(phases.collectionFields.rrule,'RRULE:FREQ=MINUTELY;INTERVAL=1');
@@ -94,7 +94,28 @@ await test('v3 binds unchanged v2 bytes and keeps all non-prompt schedule fields
 await test('daily BTC context cannot widen the frozen quote host program', () => {
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
   assert(!body.includes('btc-context')); assert(!body.includes('treasury'));
-  assert(phases.armedFields.prompt.includes('财政部和 BTC 现货刷新只在每日新闻分支执行'));
+  assert(phases.armedFields.prompt.includes('财政部、BTC 现货和 BLS 日历刷新只在每日新闻分支执行'));
   assert(phases.armedFields.prompt.includes('不得自动兑换额度重置或购买额度'));
+});
+await test('v4 binds exact v3 bytes and preserves all three prior source subflows', () => {
+  const bytes=readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json'), prior=JSON.parse(bytes);
+  const next=JSON.parse(readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json','utf8'));
+  const sha=createHash('sha256').update(bytes).digest('hex');
+  assert.equal(sha,'5bf04fcbcb951907bc84fa2cd17d0285e5f527ee328a03fb21f151932293ab67'); assert.equal(next.previousSnapshotFileSha256,sha);
+  assert.equal(next.previousSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json');
+  const {prompt:oldPrompt,...oldFields}=prior.restoreFields, {prompt:newPrompt,...newFields}=next.restoreFields;
+  assert.deepEqual(newFields,oldFields);
+  assert(newPrompt.includes(oldPrompt.slice(oldPrompt.indexOf('新闻子流程：'),oldPrompt.indexOf('\n\n三个流程均只做本次只读监测。'))));
+  assert.equal(newPrompt.split('scripts/options-release-calendar.mjs --report').length-1,1);
+  assert.equal(newPrompt.split('scripts/options-release-calendar.mjs --refresh').length-1,1);
+  assert(newPrompt.includes('四个子流程独立尝试')); assert(newPrompt.includes('UID 消失仅表示本次未列出'));
+  assert(newPrompt.includes('不把首次见到的事件当作刚发生的变更'));
+});
+await test('daily calendar context leaves the precise frozen quote program intact', () => {
+  assert(!body.includes('release-calendar'));
+  assert.equal(createHash('sha256').update(body.replaceAll('\r\n','\n')).digest('hex'),'2e3a24d5ca223922d001047b58aaa689d17575e60dd0e89908daa14655ec4def');
+  const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
+  assert(!phases.armedFields.prompt.includes('RESTORE_V3.json'));
+  assert(document.includes('OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json'));
 });
 console.log(`${passed}/${passed} tests passed.`);

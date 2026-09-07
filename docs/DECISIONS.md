@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Add daily BLS context without widening the quote window
+
+- Version the daily restoration baseline to v4, preserving exact prior snapshots,
+  their source subflows and all non-prompt schedule fields. Add one independent
+  report/refresh pair for the verified BLS calendar.
+- Update only the existing shared heartbeat. Preserve the frozen option plan,
+  request arguments and Host tick program. Calendar context does not run inside
+  one-minute quote collection or qualify a trading/replay decision.
+- Routine updates remain quiet; missing event UIDs cannot become cancellation
+  notices. Existing readiness and export versions do not silently include BLS.
+
 ## 2026-09-07 - Observe scheduled BLS releases with actual knowledge clocks
 
 - Add the one official BLS calendar source as GLD/IBIT context. Preserve exact

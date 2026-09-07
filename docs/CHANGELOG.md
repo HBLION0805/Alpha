@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - Daily BLS calendar collection
+
+- Added a v4 daily restoration snapshot with one independent calendar refresh,
+  retaining news, Treasury, BTC and exact prior snapshot hashes.
+- Updated the existing shared wrapper and runbook references while preserving
+  the frozen 09:30-09:50 quote window and Host tick. See
+  [integration delivery](OPTIONS_BLS_DAILY_CONTEXT_DELIVERY.md).
+
 ## 2026-09-07 - Official BLS scheduled-release context
 
 - Added bounded public ICS retrieval, explicit Eastern/UTC clocks and missing

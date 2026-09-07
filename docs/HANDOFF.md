@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-CALENDAR-2 integrates the verified BLS calendar into the shared daily 09:00
+workflow. Active restoration baseline is now v4, with all prior snapshots and
+the exact option Host tick preserved. News, Treasury, BTC and calendar subflows
+remain independent. See [delivery](OPTIONS_BLS_DAILY_CONTEXT_DELIVERY.md) and
+[readback evidence](status/bls-daily-context.json). No new source calls or journal
+changes were needed for integration. Existing readiness v2 and the original
+evidence-export package exclude BLS and must not claim otherwise.
+
 OPT-CALENDAR-1 adds standalone BLS scheduled-release collection and recovery.
 The first actual runtime retrieval at 2026-09-07T06:08:21.599Z retained 313 events;
 upcoming PPI/CPI times agree with the official September page. Source DTSTAMP and

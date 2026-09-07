@@ -8,8 +8,8 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 - Public BLS release schedules preserve Eastern/UTC event times, actual retrieval
   clocks and changed or missing event identities. One actual calendar and restart
-  recovery are verified; daily integration is a separate next step. See
-  [delivery](docs/OPTIONS_BLS_RELEASE_CALENDAR_DELIVERY.md).
+  recovery are verified. The existing daily 09:00 context workflow includes this
+  independent source; see [integration](docs/OPTIONS_BLS_DAILY_CONTEXT_DELIVERY.md).
 - Local evidence exports preserve exact selected-study, review and context bytes
   with a verifiable manifest. Verification is independent of current source stores;
   this is a local copy, not an off-device backup. See [delivery](docs/OPTIONS_EVIDENCE_EXPORT_DELIVERY.md).
@@ -36,7 +36,7 @@ risk arithmetic. It promises no return and has no order-execution authority.
 - Automatic Robinhood collection is armed for September 8, 2026, 09:30-09:50
   a.m. New York: GLD/IBIT equity quotes and four frozen option contracts, with a
   target sixty-second cadence. The existing news heartbeat temporarily shares
-  this window, then restores daily 09:00 news, Treasury and BTC context checks. Actual
+  this window, then restores daily 09:00 news, Treasury, BTC and BLS calendar checks. Actual
   market collection is pending; the local computer and Codex app must be running.
 - Robinhood budget screening and prospective observation records: bounded sample
   screening, immutable contract/window selection, linked quote frames, source-time
