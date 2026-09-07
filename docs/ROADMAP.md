@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The [Robinhood paper qualification design](OPTIONS_ROBINHOOD_PAPER_QUALIFICATION_DELIVERY.md)
+now maps source fields and evidence requirements before a separate adapter.
+No implementation or real-price gate advanced; actual eligible quotes and
+unresolved source-use/contract/cost evidence remain dependencies.
+
 Selected observation evidence can now be packaged with both prerequisites and
 independently recovered without active source stores. See [delivery](OPTIONS_RESEARCH_EVIDENCE_PACKAGE_DELIVERY.md).
 No workstream or real-price gate count changes from this operational extension.

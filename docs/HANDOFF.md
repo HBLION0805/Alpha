@@ -21,6 +21,13 @@ and its current checkpoint, including the separate six first-paper-flow gates.
 Count local acceptance separately from missing real-price validation; do not
 report an invented overall percentage. See [reporting update](OPTIONS_OVERALL_PROGRESS_REPORTING_DELIVERY.md).
 
+The [paper-adapter qualification design](OPTIONS_ROBINHOOD_PAPER_QUALIFICATION_DELIVERY.md)
+now fixes source-precision/lineage, research timing, contract/session/use/cost
+evidence and fill/outcome requirements. It implements no adapter. Actual closeout
+review remains WAITING_FOR_WINDOW with 20 future slots and no data. Next review
+official source-use/clock documentation, then assess actual opening evidence.
+Do not construct a retrospective plan and call it a prospective trade decision.
+
 The [selected observation package](OPTIONS_RESEARCH_EVIDENCE_PACKAGE_DELIVERY.md)
 now exports exactly three pairs plus a manifest and verifies them in an isolated
 temporary workspace using original readers. Study-based export v1/v2 is unchanged.

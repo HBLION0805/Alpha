@@ -1,0 +1,99 @@
+{
+  "version": "OPTIONS_ROBINHOOD_PAPER_QUALIFICATION_DESIGN_V1",
+  "recordedAt": "2026-09-07T21:47:05.892Z",
+  "status": "DESIGN_REVIEWED_ADAPTER_NOT_IMPLEMENTED",
+  "assessmentMethod": "MANUAL_REVIEW_OF_DATED_SOURCE_METADATA_AND_EXISTING_CODE_WITH_ORIGINAL_CLOSEOUT_RECOMPUTATION",
+  "sources": [
+    {
+      "path": "docs/OPTIONS_ROBINHOOD_SCHEMA_SEMANTICS.md",
+      "sha256": "53ac886e8a5356e315eb0617fe2cdc598c39daf30564d58ac3f3e243c5d13f8c"
+    },
+    {
+      "path": "docs/status/robinhood-schema-semantics.json",
+      "sha256": "d9a7c880a92b1262e5104b8105ccbf31a2924acc8204b684e7e47e6be748825d"
+    },
+    {
+      "path": "data/runtime/options-robinhood-data/loaded-market-tool-schema-20260907.json",
+      "sha256": "51405c03262afa02ae9961dfbf2871917083854b390bdd0aac8317c9bcd1acf3"
+    },
+    {
+      "path": "docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md",
+      "sha256": "54fc697ab4e29a3f7549b5a4429f8bcb8f0a4e593c3b269cda7a248a558ff910"
+    },
+    {
+      "path": "src/contracts/OptionsContractQuote.ts",
+      "sha256": "d15cc9ce26d179e458cdcf317af029fe1ce1549ea60f2e66dcabee15e2bb7e5c"
+    },
+    {
+      "path": "src/engines/options-robinhood-data/RobinhoodObservationEngine.ts",
+      "sha256": "e935694b75395fbebd9568d37c2de8234090f2252dcc0a90f6b389c86c4ee961"
+    },
+    {
+      "path": "src/engines/options-robinhood-data/RobinhoodCloseoutEngine.ts",
+      "sha256": "b2bf0e362ea01860edabbca1c72b9dd9ad7c5b4717b85dc62080d5bcc40134b3"
+    }
+  ],
+  "originalSchemaAssessedAt": "2026-09-07T08:15:16.154Z",
+  "originalSchemaCatalogRecordedAt": "2026-09-07T08:14:07.000Z",
+  "preflight": {
+    "path": "data/runtime/options-context-manifest/adapter-qualification-preflight.json",
+    "sha256": "07208092d411fed9fe1758843e102b46db206c833aa65f347dbb77433eb5aa86",
+    "reportSha256": "875467d6cec73eec25e2bb4a7eed6b9de93a564a70ead0662654a32f333d41b9",
+    "assessedAt": "2026-09-07T21:41:41.238Z",
+    "stage": "WAITING_FOR_WINDOW",
+    "planSha256": "8e60f2a53ea47be83c30024e20d7a8ae1cc63fe1dca69ba8bc0e8540420f5c8d",
+    "declaredSlotCount": 20,
+    "elapsedSlotCount": 0,
+    "completedCoverage": {
+      "requestSlots": 0,
+      "frameSlots": 0,
+      "completeUsableSlots": 0,
+      "requestCoverageBps": null,
+      "frameCoverageBps": null,
+      "completeUsableCoverageBps": null
+    },
+    "totals": {
+      "automaticAttempts": 0,
+      "sourceFailureAttempts": 0,
+      "savedFrames": 0,
+      "inWindowRequestedFrames": 0,
+      "manualFrames": 0,
+      "unlinkedAutomaticFrames": 0,
+      "diagnosticUsableObservations": 0
+    }
+  },
+  "remainingRequirements": [
+    "ELIGIBLE_COMPLETED_WINDOW_EVIDENCE",
+    "SOURCE_PRECISION_AND_REFRESH_CLOCK_PROFILE",
+    "CONTRACT_AND_SESSION_SPECIFIC_EVIDENCE",
+    "RETENTION_AND_RESEARCH_USE_EVIDENCE",
+    "EXPLICIT_COST_AND_ACCOUNT_ASSUMPTIONS",
+    "REVIEWED_RESEARCH_TIMING_AND_FILL_MODEL",
+    "SOURCE_SPECIFIC_IMPLEMENTATION",
+    "ACTUAL_DATA_END_TO_END_ACCEPTANCE"
+  ],
+  "focusedRegression": {
+    "commands": [
+      "node node_modules/tsx/dist/cli.mjs src/engines/options-robinhood-data/RobinhoodCloseoutEngine.test.ts",
+      "node node_modules/tsx/dist/cli.mjs src/engines/options-robinhood-data/RobinhoodObservationEngine.test.ts"
+    ],
+    "closeoutPassed": 24,
+    "observationPassed": 42,
+    "failed": 0
+  },
+  "priorFullValidation": {
+    "passed": 3510,
+    "components": 144,
+    "commit": "a066ccd",
+    "rerunThisDesignUnit": false
+  },
+  "protectedFilesMatched": 524,
+  "productionCodeChanged": false,
+  "marketCalls": 0,
+  "sourceJournalAppends": 0,
+  "schedulerChanges": 0,
+  "tradeCount": 0,
+  "adapterImplemented": false,
+  "replayAllowed": false,
+  "executionAllowed": false
+}

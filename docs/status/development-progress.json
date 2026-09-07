@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-07T21:38:29.359Z",
+  "recordedAt": "2026-09-07T21:47:05.892Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "ef7dec2",
+  "comparedWithCommit": "a066ccd",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "04",
-  "currentUnit": "Selected observation package and isolated recovery",
-  "currentUnitAcceptance": "Thirteen package tests, actual-clock seven-file independent recovery and full validation passed; no workstream count or first-paper gate advanced.",
+  "currentWorkstream": "08",
+  "currentUnit": "Robinhood paper-adapter qualification design",
+  "currentUnitAcceptance": "Design reviewed and 66 original regression checks passed; no adapter implementation or acceptance gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,7 +134,7 @@
     ]
   },
   "criticalDependency": "Eligible GLD/IBIT option evidence from the frozen September 8 09:30-09:50 New York opening pilot, followed by semantics/cost/account qualification.",
-  "nextAction": "Prepare bounded Robinhood paper-adapter qualification criteria from existing source/schema evidence, then assess actual frozen opening data before implementation.",
+  "nextAction": "Review official source documentation for unresolved retention/research-use and quote-clock semantics; evaluate the frozen opening series when available before implementing an adapter.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
@@ -142,5 +142,5 @@
     "failed": 0,
     "componentCount": 144
   },
-  "latestOperationalEvidence": "docs/status/research-evidence-package.json"
+  "latestOperationalEvidence": "docs/status/robinhood-paper-qualification.json"
 }
