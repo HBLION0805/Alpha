@@ -4,6 +4,13 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The [read-only environment check](OPTIONS_SCHEDULING_ENVIRONMENT_CHECK.md) verified
+Windows Eastern time with the current minus-four-hour offset: the frozen UTC
+start converts to September 8, 09:30 local. AC/DC idle-sleep values are zero;
+hibernate zero is retained as a raw value with adaptive semantics, not a blanket
+always-awake guarantee. No Windows/Codex setting changed. See
+[checkpoint](status/scheduling-environment.json).
+
 The [small-premium cost sensitivity](OPTIONS_SMALL_PREMIUM_COST_SENSITIVITY.md)
 evaluated fifteen explicit hypothetical inputs with the unchanged retail engine.
 A $21 premium at the existing 20% research stop leaves only $0.80 of the $5 planned

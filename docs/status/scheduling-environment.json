@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "READ_ONLY_SCHEDULING_ENVIRONMENT",
+  "recordedAt": "2026-09-07T08:29:08.830Z",
+  "windowsTimeZoneId": "Eastern Standard Time",
+  "supportsDaylightSavingTime": true,
+  "currentUtcOffset": "-04:00:00",
+  "frozenWindowUtc": "2026-09-08T13:30:00.000Z",
+  "frozenWindowLocal": "2026-09-08T09:30:00",
+  "sleepIdleSeconds": {
+    "AC": 0,
+    "DC": 0
+  },
+  "hibernateIdleRawSeconds": {
+    "AC": 0,
+    "DC": 0
+  },
+  "hibernateZeroIsUnconditionalOff": false,
+  "windowsSettingsChanged": false,
+  "codexSettingsChanged": false,
+  "sourceCalls": 0,
+  "executionAllowed": false,
+  "artifactPath": "data/runtime/options-readiness/host-scheduling-environment.json",
+  "artifactSha256": "ed2fd2990d9f4888a51598fd14fed959537e89b955851786a693eaddbb93c20a",
+  "preservation": {
+    "fileCount": 27,
+    "allMatched": true,
+    "hostUnchanged": true
+  },
+  "sourceJournalAppends": 0,
+  "publicReferences": [
+    "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/sleep-settings-sleep-idle-timeout",
+    "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/sleep-settings-hibernate-idle-timeout"
+  ]
+}
