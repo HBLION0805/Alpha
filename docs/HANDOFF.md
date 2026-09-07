@@ -4,6 +4,13 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The [loaded schema review](OPTIONS_ROBINHOOD_SCHEMA_SEMANTICS.md) saved the current
+five-tool declarations without invoking market tools. It confirms contract size
+units and quote-refresh timing, while independent option-side/size clocks and
+historical executable bid/ask paths remain absent from the reviewed schemas.
+No source qualification, replay permission, risk change or host update follows
+from this finding. See [checkpoint](status/robinhood-schema-semantics.json).
+
 The [first-opening handoff audit](OPTIONS_FIRST_OPENING_HANDOFF.md) verified
 actual WAIT/no-request behavior at 2026-09-07T08:10:57.002Z, all eight armed host
 fields and twenty-seven preserved files. Five of five simulated closed trades

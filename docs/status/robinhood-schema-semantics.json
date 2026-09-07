@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "ROBINHOOD_LOADED_SCHEMA_SEMANTICS_REVIEW",
+  "assessedAt": "2026-09-07T08:15:16.154Z",
+  "catalog": {
+    "path": "data/runtime/options-robinhood-data/loaded-market-tool-schema-20260907.json",
+    "recordedAt": "2026-09-07T08:14:07.000Z",
+    "sha256": "51405c03262afa02ae9961dfbf2871917083854b390bdd0aac8317c9bcd1acf3",
+    "toolCount": 5,
+    "toolNames": [
+      "mcp__robinhood_alpha_market_data__get_equity_quotes",
+      "mcp__robinhood_alpha_market_data__get_option_chains",
+      "mcp__robinhood_alpha_market_data__get_option_historicals",
+      "mcp__robinhood_alpha_market_data__get_option_instruments",
+      "mcp__robinhood_alpha_market_data__get_option_quotes"
+    ],
+    "provenance": "CURRENT_CODEX_LOADED_TOOL_METADATA"
+  },
+  "boundedDescriptionChecks": {
+    "optionQuoteRefreshClockDeclared": true,
+    "optionBidContractsDeclared": true,
+    "optionAskContractsDeclared": true,
+    "optionIndependentSideClocksDeclared": false,
+    "optionIndependentSizeClocksDeclared": false,
+    "equitySideClocksDeclared": true,
+    "historicalBidAskSizesDeclared": false,
+    "historicalBarVolumeDeclared": false,
+    "interpolatedHistoryFlagDeclared": true,
+    "expiryProfitModelDeclared": true
+  },
+  "sourceScope": "Only the currently loaded five-tool declarations and listed public pages were reviewed; no claim of exhaustive provider documentation.",
+  "publicReferences": [
+    "https://robinhood.com/us/en/support/articles/trading-with-your-agent/",
+    "https://robinhood.com/us/en/support/articles/options-chain-metrics/",
+    "https://robinhood.com/us/en/support/articles/agentic-trading-overview/"
+  ],
+  "determination": {
+    "sizeUnit": "CONTRACTS_DECLARED",
+    "optionClock": "QUOTE_REFRESH_DECLARED",
+    "independentSideAndSizeClocks": "NOT_EXPOSED_IN_REVIEWED_OPTION_QUOTE_SCHEMA",
+    "historicalExecutableQuotePath": "NOT_EXPOSED_IN_REVIEWED_OHLC_SCHEMA",
+    "actualFillAvailability": "NOT_ESTABLISHED",
+    "targetBeforeStopProbability": "NOT_ESTABLISHED",
+    "retentionAndReplayTerms": "UNVERIFIED",
+    "sourceQualifiedForReplay": false
+  },
+  "preservation": {
+    "fileCount": 27,
+    "allMatched": true,
+    "hostUnchanged": true,
+    "hostFileSha256": "66c1e3d5640ee8cc9e746aa90800beb613010829d9b3f0800d224e3576b72f6f"
+  },
+  "calls": {
+    "marketDataTools": 0,
+    "accountOrOrderTools": 0,
+    "sourceJournalAppends": 0,
+    "hostUpdates": 0
+  },
+  "validation": {
+    "codeChanged": false,
+    "loadedDescriptionChecksPassed": 10,
+    "repeatedFullBundle": false
+  },
+  "status": "NO_REPLAY",
+  "executionAllowed": false,
+  "winProbability": null
+}

@@ -9,6 +9,8 @@ risk arithmetic. It promises no return and has no order-execution authority.
 The [first-opening handoff](docs/OPTIONS_FIRST_OPENING_HANDOFF.md) records the
 latest local collection preflight, preserved reviews, active schedule and the
 evidence still needed before a Robinhood real-price paper test.
+The [loaded schema assessment](docs/OPTIONS_ROBINHOOD_SCHEMA_SEMANTICS.md) separates
+documented contract quantities and refresh clocks from unverified fill/timing semantics.
 
 - A separate local calendar brief combines BLS release times and FOMC date ranges
   with explicit missing metadata, source health and unknown intraday timing. It
