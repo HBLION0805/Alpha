@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## 2026-09-07 - Treasury writer lifetime and uncertain persistence
+
+- Reject append calls after the exclusive callback exits and require verified
+  recovery after an uncertain write/fsync. Add reproduced regression and fault
+  injection tests; preserve existing raw source and accepted journal format.
+  See [evidence](status/treasury-writer-guards.json).
+
 ## 2026-09-07 - Unified local readiness and review coverage
 
 - Added one read-only entry point for the selected quote study, paper reviews,

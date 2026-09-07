@@ -1,5 +1,26 @@
 # Treasury daily real-yield context delivery
 
+## September 7 writer-guard correction
+
+Review found that a caller retaining the append function could use it after the
+exclusive writer callback returned. An append/fsync exception also left the
+callback able to try another append from an uncertain in-memory predecessor.
+The two guards now reject expired capabilities and require restart recovery
+after any uncertain persistence. Source parsing, journal format and accepted
+assessments remain unchanged; no real record was affected during this review.
+
+Changed `scripts/lib/options-treasury-io.mjs` and its I/O tests. The expired-scope
+regression failed before the fix. All 31 Treasury I/O and 16 readiness I/O tests
+passed after the fix, including simulated fsync failure and successful restart.
+One actual read-only recovery verified the original source and twelve protected
+files without network calls or journal appends. The previous full bundle remains
+the 2,708-test readiness checkpoint; this isolated JavaScript correction used
+47 focused checks. See [correction evidence](status/treasury-writer-guards.json).
+Local single-writer and finite-capacity limitations remain. Next, continue source
+collection preparation while preserving the frozen opening window.
+
+## Original module delivery
+
 Task OPT-RATES-1, September 7, 2026. The Owner requested continued autonomous
 GLD/IBIT development and relevant factor collection while away. Automatic orders,
 paid data, account access and risk escalation remain excluded.

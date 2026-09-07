@@ -75,6 +75,7 @@ export async function withTreasuryJournal(workspace, operation, assessedAt = new
   }
   const path = resolve(directory, "retrievals.ndjson"), lock = resolve(directory, "writer.lock");
   const fd = openSync(lock, "wx");
+  let active = true, uncertainWrite = false;
   try {
     const text = existsSync(path) ? (safeFile(path), readFileSync(path, "utf8")) : "";
     if (text && !text.endsWith("\n")) fail("TRUNCATED_JOURNAL_REQUIRES_REVIEW");
@@ -94,6 +95,8 @@ export async function withTreasuryJournal(workspace, operation, assessedAt = new
     }
     reportTreasuryHistory(inputs, assessedAt);
     const append = (input, savedAt = new Date().toISOString()) => {
+      if (!active) fail("JOURNAL_SCOPE_CLOSED");
+      if (uncertainWrite) fail("JOURNAL_WRITE_UNCERTAIN_REOPEN_REQUIRED");
       const next = structuredClone(input), assessment = assessTreasuryRetrieval(next);
       reportTreasuryHistory([...inputs, next], savedAt);
       if (inputs.length >= MAX_RETRIEVALS) fail("JOURNAL_LIMIT");
@@ -101,12 +104,14 @@ export async function withTreasuryJournal(workspace, operation, assessedAt = new
       const fingerprint = treasuryFingerprint(body), line = JSON.stringify({ ...body, fingerprint }) + "\n";
       const currentSize = existsSync(path) ? safeFile(path).size : 0;
       if (currentSize + Buffer.byteLength(line) > MAX_JOURNAL_BYTES) fail("JOURNAL_ROTATION_REQUIRED");
+      uncertainWrite = true;
       appendFileSync(path, line, { encoding: "utf8", flag: existsSync(path) ? "a" : "wx" });
       const syncFd = openSync(path, "r+");
       try { fsyncSync(syncFd); } finally { closeSync(syncFd); }
       inputs.push(next); previousFingerprint = fingerprint;
+      uncertainWrite = false;
       return { fingerprint, retrievalCount: inputs.length, assessment };
     };
     return await operation({ directory, path, inputs: structuredClone(inputs), previousFingerprint, append });
-  } finally { closeSync(fd); unlinkSync(lock); }
+  } finally { active = false; closeSync(fd); unlinkSync(lock); }
 }

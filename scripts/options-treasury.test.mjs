@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import { syncBuiltinESMExports } from "node:module";
 import { appendFileSync, existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, truncateSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
@@ -116,4 +118,20 @@ await test("CLI rejects arbitrary URLs, dates, roots and trading modes before an
 await test("CLI help is local and states source limits", () => {
   const r = spawnSync(process.execPath, [join(root, "node_modules/tsx/dist/cli.mjs"), join(root, "scripts/options-treasury.mjs"), "--help"], { encoding: "utf8", timeout: 30000 }); assert.equal(r.status, 0); assert.match(r.stdout, /daily indicative/);
 });
+await test("append capability expires when the writer callback has returned", () => temporary(async directory => {
+  const escaped = await journal(directory, s => s);
+  assert.throws(() => escaped.append(input(), at), /SCOPE_CLOSED/);
+  await journal(directory, s => assert.equal(s.inputs.length, 0));
+}));
+await test("uncertain persistence blocks another append until verified recovery", () => temporary(async directory => {
+  await journal(directory, s => {
+    const original = fs.fsyncSync;
+    fs.fsyncSync = () => { throw Error("SIMULATED_SYNC_FAILURE"); }; syncBuiltinESMExports();
+    try { assert.throws(() => s.append(input(), at), /SIMULATED_SYNC_FAILURE/); }
+    finally { fs.fsyncSync = original; syncBuiltinESMExports(); }
+    assert.throws(() => s.append(input(xml, later), later), /WRITE_UNCERTAIN/);
+  });
+  await journal(directory, s => { assert.equal(s.inputs.length, 1); s.append(input(xml, later), later); });
+  await journal(directory, s => assert.equal(s.inputs.length, 2));
+}));
 console.log(`${passed}/${passed} tests passed.`);

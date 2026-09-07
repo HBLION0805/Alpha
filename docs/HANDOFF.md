@@ -4,6 +4,11 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The Treasury writer now rejects append capabilities used outside the locked
+callback and prohibits another append after uncertain persistence until restart
+recovery. Focused fault-injection and integration checks pass; actual journal
+bytes and host scheduling remain unchanged. See [correction evidence](status/treasury-writer-guards.json).
+
 OPT-READY-1 adds the unified local readiness command for an explicitly selected
 study. It recovers six existing components, reports missing/busy/corrupt stores
 independently, checks all closed paper trades have matching reviews, retains
