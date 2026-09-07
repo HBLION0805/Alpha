@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "COLLECTION_COVERAGE_BUDGET_INTERPRETATION",
+  "recordedAt": "2026-09-07T08:21:33.964Z",
+  "productionImplementationChanged": false,
+  "addedRegressionTests": 1,
+  "validation": {
+    "closeoutTests": {
+      "passed": 24,
+      "failed": 0
+    },
+    "hostTests": {
+      "passed": 16,
+      "failed": 0
+    },
+    "typecheck": "PASSED",
+    "latestAggregateTests": 3107,
+    "aggregateRerun": false
+  },
+  "syntheticExample": {
+    "premiumCents": 10000,
+    "automaticAttempts": 1,
+    "sourceFailureAttempts": 0,
+    "savedFrames": 1,
+    "requestCoverageBps": 10000,
+    "frameCoverageBps": 10000,
+    "completeUsableCoverageBps": 0,
+    "blockerCodes": [
+      "PREMIUM_ALONE_EXCEEDS_ALLOCATION",
+      "PREMIUM_ALONE_EXCEEDS_STRESS_CAP"
+    ],
+    "tradeCount": 0,
+    "winProbability": null
+  },
+  "preservation": {
+    "fileCount": 27,
+    "allMatched": true,
+    "hostUnchanged": true,
+    "hostFileSha256": "66c1e3d5640ee8cc9e746aa90800beb613010829d9b3f0800d224e3576b72f6f",
+    "quoteProgramSha256": "2e3a24d5ca223922d001047b58aaa689d17575e60dd0e89908daa14655ec4def"
+  },
+  "sourceCalls": 0,
+  "sourceAppends": 0,
+  "executionAllowed": false,
+  "status": "NO_REPLAY"
+}

@@ -13,6 +13,13 @@ to the frozen four contracts and GLD/IBIT equities. The first window is Septembe
 seconds, with actual times retained. Late wakeups and tool delays can reduce the
 sample; never create a past timestamp or missing frame to fill a gap.
 
+After collection, distinguish recorded request/frame coverage from complete usable
+coverage. The last also applies the existing per-contract budget/stress exclusions;
+zero complete usable coverage is not by itself a source-call failure. The legacy
+`sourceBlockerCounts` contains both quote-quality and budget codes, counted once
+per affected frame/code. See the [handoff interpretation](OPTIONS_FIRST_OPENING_HANDOFF.md).
+Keep frozen contracts, risk limits, denominators and original report fields intact.
+
 ## Host tick
 
 First apply the shared-heartbeat phase rules below using actual UTC time; they

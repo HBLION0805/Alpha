@@ -4,6 +4,12 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The [coverage interpretation check](OPTIONS_COVERAGE_INTERPRETATION.md) verifies
+that an over-budget but successfully recorded quote remains request/frame
+coverage without becoming a failed source call. Complete-usable coverage includes
+risk exclusions. One regression and runbook prose clarify the existing metrics;
+production calculations, frozen scope and the exact quote Host are unchanged.
+
 The [loaded schema review](OPTIONS_ROBINHOOD_SCHEMA_SEMANTICS.md) saved the current
 five-tool declarations without invoking market tools. It confirms contract size
 units and quote-refresh timing, while independent option-side/size clocks and

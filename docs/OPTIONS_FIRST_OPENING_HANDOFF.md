@@ -79,6 +79,22 @@ historical sample was entirely interpolated and cannot supply a missing bid/ask
 path. Current source semantics, costs and account eligibility remain unverified;
 account/order calls remain outside the authorized scope.
 
+Interpret the three existing coverage metrics separately. `requestCoverageBps`
+records request evidence; `frameCoverageBps` records saved frames;
+`completeUsableCoverageBps` also requires every selected contract to pass the
+existing observation diagnostics, including premium allocation/stress limits.
+Its value can be zero even when every request and frame is recorded successfully.
+The legacy `sourceBlockerCounts` field includes those budget exclusions; its
+name must not be read as a count of transport failures. It counts affected frames
+per code, so summing codes double-counts frames with multiple exclusions.
+
+For example, the existing one-contract synthetic fixture repriced to a $1.00
+per-unit ask has a $100 premium. One completed request/frame can have 100% request
+and frame coverage, zero complete-usable coverage, and zero failed tool calls.
+This is an unchanged risk rejection, not an observed market failure or a lost
+trade. Do not lower limits, remove contracts from the frozen denominator or retry
+the source solely to improve that metric. Inspect the exact blocker codes.
+
 After collection, inspect the saved closeout and its candidate operational
 lessons before selecting the next adapter task. Preserve the existing NO_REPLAY
 gate until that separate qualification and implementation are complete.

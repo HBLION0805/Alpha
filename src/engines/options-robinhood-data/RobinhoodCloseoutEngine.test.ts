@@ -63,6 +63,20 @@ test("recorded stale quotes do not become usable coverage", () => {
   const f = frame(0, [], false, v => { v.calls[2].data.results[0].quote.updated_at = "2026-09-04T13:30:00.000Z"; });
   const r = report(plan, [f], [], time(1)); eq(r.completedCoverage.frameCoverageBps, 10000); eq(r.completedCoverage.completeUsableCoverageBps, 0); ok(r.sourceBlockerCounts.some(v => v.code.includes("STALE")));
 });
+
+test("budget exclusions retain successful collection coverage without becoming source failures", () => {
+  const f = frame(0, [], true, v => {
+    const quote = v.calls.find((c: any) => c.tool === "get_option_quotes").data.results[0].quote;
+    quote.bid_price = "0.98"; quote.ask_price = "1.00";
+  });
+  const r = report(plan, [f], [attempt(0, f)], time(1));
+  eq(r.totals.automaticAttempts, 1); eq(r.totals.sourceFailureAttempts, 0); eq(r.totals.savedFrames, 1);
+  eq(r.completedCoverage.requestCoverageBps, 10000); eq(r.completedCoverage.frameCoverageBps, 10000);
+  eq(r.completedCoverage.completeUsableCoverageBps, 0);
+  eq(r.sourceBlockerCounts.map(v => v.code), ["PREMIUM_ALONE_EXCEEDS_ALLOCATION", "PREMIUM_ALONE_EXCEEDS_STRESS_CAP"]);
+  eq(r.gaps.map(g => g.reason), ["NO_COMPLETE_USABLE_CONTRACT_SET"]);
+  eq(r.slots[0]!.sourceErrors, []); eq(r.operationalLessons, []); eq(r.tradeCount, 0); eq(r.winProbability, null);
+});
 test("repeated source clocks do not add usable slot coverage", () => {
   const a = frame(), b = frame(1, [a], false, v => { v.calls[2].data.results[0].quote.updated_at = time(0); });
   const r = report(plan, [a, b], [], time(2)); eq(r.completedCoverage.completeUsableCoverageBps, 5000); ok(r.sourceBlockerCounts.some(v => v.code === "REPEATED_SOURCE_OBSERVATION"));
