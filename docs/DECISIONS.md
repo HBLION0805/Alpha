@@ -1,5 +1,17 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Preserve all cases while auditing declared sample separation
+
+- Assign windows from decision clocks, with explicit elapsed gaps and whole
+  information intervals. Keep purged, unresolved, no-entry and blocked cases.
+- Block every participant in cross-partition date, episode, evidence or
+  observation reuse. Within-partition reuse never implies independence.
+- Recompute original journals before inventorying them; retain actual recording
+  versus declared decision and modeled exit semantics. Missing feature knowledge
+  cannot be fabricated from an available quote or a successful review.
+- Keep partition declarations separate from a sealed holdout, model validation
+  or calibrated risk authority. See [delivery](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md).
+
 ## 2026-09-07 - Compare terminal structures without inventing multi-leg authority
 
 - Support eight explicitly bounded shapes inferred from standard GLD/IBIT

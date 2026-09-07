@@ -80,6 +80,8 @@ Push
 
 ## Current Implemented Systems
 
+- Options sample validation: chronological declared windows, whole information intervals and cross-partition date/episode/evidence/observation reuse checks retain all cases. Existing-journal inventory recomputes originals and preserves unknown feature/outcome-knowledge clocks. Actual inventory has 15 cases, nine closed reviews and zero complete partition inputs. No sealed holdout, independence claim, model, probability or orders. See docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md and docs/status/sample-validation.json.
+
 - Declared structure comparisons: eight GLD/IBIT long-option, vertical and purchased-volatility shapes use existing contract/quote validation, explicit costs, exact terminal extrema/rational roots and independent saved/recomputed artifacts. Credit is not free risk capital. Single-leg feasibility is composed unchanged; multi-leg stops, pre-expiry pricing, account/portfolio integration and execution remain unsupported. No ranking, probability or order. See docs/OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md and docs/status/structure-comparison.json.
 
 - Declared portfolio risk diagnostics: independent $1,000 cash scenarios aggregate GLD/IBIT holdings, pending reservations, receipt-time settlements, daily loss/drawdown and manual event coverage; unknown marks preserve exposure. Reached stops/targets flag unconfirmed exits. Exclusive local reports recompute without touching old journals. No live account enforcement, auto-settlement, trade or size authority. See docs/OPTIONS_PORTFOLIO_RISK_DELIVERY.md and docs/status/portfolio-risk.json.

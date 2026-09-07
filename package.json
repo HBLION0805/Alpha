@@ -152,7 +152,13 @@
     "test:options-portfolio-risk-io": "tsx scripts/options-portfolio-risk.test.mjs",
     "options:structures": "tsx scripts/options-structures.mjs",
     "test:options-structures": "tsx src/engines/options-structure-comparison/OptionsStructureComparisonEngine.test.ts",
-    "test:options-structures-io": "tsx scripts/options-structures.test.mjs"
+    "test:options-structures-io": "tsx scripts/options-structures.test.mjs",
+    "options:sample-partition": "tsx scripts/options-sample-partition.mjs",
+    "test:options-sample-partition": "tsx src/engines/options-sample-partition/OptionsSamplePartitionEngine.test.ts",
+    "test:options-sample-partition-io": "tsx scripts/options-sample-partition.test.mjs",
+    "options:sample-inventory": "tsx scripts/options-sample-inventory.mjs",
+    "test:options-sample-inventory": "tsx src/engines/options-sample-partition/OptionsSampleInventory.test.ts",
+    "test:options-sample-inventory-io": "tsx scripts/options-sample-inventory.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

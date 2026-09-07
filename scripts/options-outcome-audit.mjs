@@ -10,6 +10,12 @@ import { withOptionsHistoricalReplayRepository } from "../src/repositories/Local
 export function runOptionsOutcomeAuditCommand(args, { workspaceRoot = process.cwd(), now = () => new Date().toISOString() } = {}) {
   if (args.length === 1 && args[0] === "--help") return { usage: "options:outcome-audit -- --report", meaning: "Read and recompute saved local outcomes; no HTTP, writes to journals, strategy changes or trades.", executionAllowed: false };
   if (args.length !== 1 || args[0] !== "--report") throw Error("OUTCOME_AUDIT_ARGUMENTS");
+  const { histories, constructedAt } = loadOptionsOutcomeHistories({ workspaceRoot, now });
+  return auditOptionsOutcomes(histories, constructedAt);
+}
+
+/** Shared recovery sequence for read-only consumers; no new repository writer. */
+export function loadOptionsOutcomeHistories({ workspaceRoot = process.cwd(), now = () => new Date().toISOString() } = {}) {
   const root = realpathSync(workspaceRoot), histories = {}, start = now(); readinessClock(start); let previous = start;
   const sources = {
     paper: { file: "options-paper/sessions.ndjson", read: () => withOptionsPaperRepository(root, r => r.readReport().trades.map(t => r.readScenario(t.tradeId))) },
@@ -26,7 +32,7 @@ export function runOptionsOutcomeAuditCommand(args, { workspaceRoot = process.cw
       histories[id] = { state: missing ? "MISSING" : "BLOCKED", checkedAt, payload: null, errorCode };
     }
   }
-  return auditOptionsOutcomes(histories, now());
+  return { histories, constructedAt: now() };
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try { const report = runOptionsOutcomeAuditCommand(process.argv.slice(2), { workspaceRoot: resolve(import.meta.dirname, "..") }); console.log(JSON.stringify(report, null, 2)); if (report.blockedStores?.length) process.exitCode = 3; }

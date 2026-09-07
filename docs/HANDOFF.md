@@ -8,6 +8,16 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner explicitly requests continuation after reports without another
+"continue" message. Sample partition/inventory work has now been completed:
+15 existing cases and nine closed reviews remain, with zero complete sampling
+inputs. The independent declared partition audit does not seal a holdout or
+calibrate a strategy. See [delivery](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md) and
+[checkpoint](status/sample-validation.json). The next operational task is to
+share the existing heartbeat for authorized development continuation; a second
+heartbeat was rejected by the app's one-per-task constraint. Preserve opening
+collection priority and implement any host change through a reviewed design.
+
 Latest continuation: **OPT-STRUCTURE-COMPARE-1** adds the bounded structure
 comparison requested after portfolio diagnostics. `options:structures -- --demo`
 compares GLD/IBIT alternatives; `--input` supports one declared file, `--save`
@@ -19,8 +29,8 @@ creates an exclusive artifact and `--verify` recomputes it. The actual
 opening study and v6 host are unchanged. Multi-leg stops, early-close pricing,
 account eligibility and portfolio/lifecycle integration remain unsupported.
 
-Next independent work can specify sample partitioning, holdout isolation and
-all-outcome validation without inventing a calibrated strategy. The actual
+Sample partition declarations and all-case inventory are now implemented;
+sealed holdout evaluation and point-in-time sample evidence remain absent. The actual
 opening data/closeout still precede qualification of the Robinhood paper
 adapter. No account tools, automatic orders, OAuth or purchases are authorized.
 

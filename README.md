@@ -10,6 +10,12 @@ test dependencies. It links original evidence without changing historical clocks
 
 ## Current capabilities
 
+- **Sample partition and journal inventory:** chronological declared windows
+  reject overlapping information and reused cross-group evidence. The inventory
+  retains all existing cases and missing point-in-time sampling facts. Neither
+  command seals a holdout or calculates a calibrated win rate.
+  [Delivery](docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md).
+
 - **Declared structure comparisons:** `npm run options:structures -- --demo`
   compares eight single-leg, vertical and purchased-volatility structures on
   GLD/IBIT, with exact terminal payoffs, cost/friction diagnostics and unknown

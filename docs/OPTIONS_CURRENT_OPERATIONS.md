@@ -1,5 +1,10 @@
 # GLD/IBIT operations: evidence and next test
 
+Newest local capability: [sample validation](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md)
+adds declared time partitions and a complete inventory of current paper/research
+cases. Fifteen cases retain nine closed reviews; none has complete feature-time
+sampling evidence. No sealed holdout, model result or win probability is claimed.
+
 Newest local capability: [structure comparison](OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md)
 adds eight declared payoff shapes, correct quote-side costs and terminal risk
 diagnostics, with independent saved/recomputed reports. It does not modify the

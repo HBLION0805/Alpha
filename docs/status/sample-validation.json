@@ -1,0 +1,106 @@
+{
+  "version": "OPTIONS_SAMPLE_VALIDATION_DELIVERY_V1",
+  "recordedAt": "2026-09-07T19:02:04.215Z",
+  "sourceBaseCommit": "a9fab64",
+  "status": "DECLARED_PARTITIONS_AND_EXISTING_SAMPLE_INVENTORY_IMPLEMENTED",
+  "partition": {
+    "status": "SAMPLE_PARTITION_ARTIFACT_RECOMPUTED",
+    "artifactId": "partition-rehearsal-20260907",
+    "recordedAt": "2026-09-07T18:47:31.582Z",
+    "checkedAt": "2026-09-07T19:01:21.242Z",
+    "artifactSha256": "0d19e3012054f3d78b12f3460ed02067104483337ea791ed5f72fef1afd810fd",
+    "comparisonCount": 2,
+    "sampleCounts": [
+      {
+        "datasetId": "synthetic-sample-partitions",
+        "status": "DECLARED_PARTITION_AUDITED",
+        "counts": {
+          "total": 6,
+          "assigned": 6,
+          "purged": 0,
+          "blocked": 0,
+          "unassigned": 0
+        }
+      },
+      {
+        "datasetId": "synthetic-overlap-and-unknown",
+        "status": "DECLARED_PARTITION_BLOCKED",
+        "counts": {
+          "total": 6,
+          "assigned": 1,
+          "purged": 2,
+          "blocked": 3,
+          "unassigned": 0
+        }
+      }
+    ],
+    "existingJournalAppends": 0,
+    "executionAllowed": false
+  },
+  "inventory": {
+    "status": "SAMPLE_INVENTORY_ARTIFACT_RECOMPUTED",
+    "artifactId": "sample-inventory-20260907",
+    "recordedAt": "2026-09-07T18:53:44.696Z",
+    "checkedAt": "2026-09-07T19:01:21.423Z",
+    "artifactSha256": "4c9fb78f893523806a7a71da9603af5aa71d79c0c34bf1b704c32fb8cdb235db",
+    "totalCases": 15,
+    "closedReviews": 9,
+    "completePartitionInputCount": 0,
+    "blockedStores": [],
+    "missingStores": [],
+    "existingJournalAppends": 0,
+    "executionAllowed": false
+  },
+  "validation": {
+    "recordedAt": "2026-09-07T18:59:44.750Z",
+    "protectedFiles": 508,
+    "changed": [],
+    "aggregate": {
+      "status": "PASSED",
+      "componentCount": 133,
+      "testsExecuted": 3367,
+      "passed": 3367,
+      "failed": 0,
+      "durationMs": 71367,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/options-outcome-audit.mjs', LF will be replaced by CRLF the next time Git touches it"
+      ]
+    }
+  },
+  "focused": {
+    "partition": 29,
+    "partitionStorage": 16,
+    "inventory": 12,
+    "inventoryStorage": 13,
+    "existingOutcomeStorage": 9
+  },
+  "correctedDevelopmentFailures": [
+    "Initial test-only node:assert/strict import lacked declarations in the restricted TS environment; replaced with established local assertion conventions.",
+    "Initial inventory fixture expectation checked OPEN; the original source correctly reports EXIT_PENDING. Corrected the unresolved-state assertion."
+  ],
+  "protectedFilesChanged": 0,
+  "sourceJournalAppends": 0,
+  "newTrades": 0,
+  "marketSourceRefreshes": 0,
+  "executionAllowed": false,
+  "marketValidated": false,
+  "heldOutAccessSealed": false,
+  "winProbability": null,
+  "remaining": [
+    "Point-in-time feature manifests",
+    "Prospective protocol and actual holdout isolation",
+    "Qualified live quote path and account/cost declarations"
+  ],
+  "evidenceHashes": {
+    "data/runtime/options-sample-partition/partition-rehearsal-20260907.json": "1cf09936c33e758a20a9c8b07226eaae1ebbdab6e19653aff1b6a9d56b8c168e",
+    "data/runtime/options-sample-partition/sample-inventory-20260907.json": "b295f261d5a1937dcef048d1464c5d7b45623b23582ff93342bbf3c3ff4dd35f",
+    "data/runtime/options-sample-partition/partition-restart.json": "75f0c005ddb6fc6754863fa9021fc5726c8a335271ec23bb78616385d569d838",
+    "data/runtime/options-sample-partition/inventory-restart.json": "b9557c02f1bb1cc9100b6de2b424b6fa2e7e90e59ce4998f927bda0160e0c2f1",
+    "data/runtime/options-sample-partition/validated-preservation.json": "2f076b934dc414295e9507fe9ca380d39acec5a3fb63aaf0b2afc855c222e61a",
+    "data/runtime/options-sample-partition/validation.log": "af46b3e796f0e69ebfa05e36e8072f6478f480736ffbfa593955fc125914324a"
+  }
+}

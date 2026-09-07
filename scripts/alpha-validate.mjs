@@ -117,6 +117,10 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-sample-partition/OptionsSamplePartitionEngine.test.ts",
+  "scripts/options-sample-partition.test.mjs",
+  "src/engines/options-sample-partition/OptionsSampleInventory.test.ts",
+  "scripts/options-sample-inventory.test.mjs",
   "src/engines/options-structure-comparison/OptionsStructureComparisonEngine.test.ts",
   "scripts/options-structures.test.mjs",
   "src/engines/options-portfolio-risk/OptionsPortfolioRiskEngine.test.ts",

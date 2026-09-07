@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-07 - Declared sample partitions and existing-journal inventory
+
+- Added chronological interval, gap and cross-partition reuse audits with all
+  supplied cases retained; no performance-driven selection or model authority.
+- Added a read-only inventory of current paper/research cases and missing
+  point-in-time sampling fields, plus exclusive saves and restart verification.
+- Reused the original outcome history loader without changing source reports.
+  See [delivery](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md).
+
 ## 2026-09-07 - Independent GLD/IBIT structure comparison
 
 - Added eight-shape quote/cost comparisons with exact terminal extrema,

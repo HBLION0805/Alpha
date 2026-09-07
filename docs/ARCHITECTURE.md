@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## Options sample validation (September 7, 2026)
+
+`OptionsSamplePartitionEngine` audits explicit chronological windows and whole
+information intervals, retaining excluded cases and cross-partition dependence
+conflicts. `OptionsSampleInventory` recomputes original outcomes before exposing
+case identity, declared clocks, exact-path reuse and missing sampling metadata.
+Both preserve unknown independence, no sealed access and no model authority.
+The inventory reuses the extracted, unchanged outcome CLI history-loader sequence;
+exclusive artifacts retain their actual clocks and recompute in fresh processes.
+See [delivery](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md) and the two linked specs.
+
 ## Declared structure comparison (September 7, 2026)
 
 `OptionsStructureComparisonEngine` validates one-symbol, same-expiry declared

@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+[Sample validation infrastructure](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md) audits
+declared time partitions and inventories existing journals. Actual inventory:
+15 cases, nine closed reviews, zero complete partition inputs. Feature manifests,
+prospective protocol enforcement and an actual sealed evaluation remain open.
+
 [Declared structure comparison](OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md) now
 covers eight shapes with exact terminal economics and cost/quote diagnostics.
 This is not account-eligible selection, pre-expiry pricing or a multi-leg
