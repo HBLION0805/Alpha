@@ -117,6 +117,10 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-readiness/OptionsOutcomeAudit.test.ts",
+  "scripts/options-outcome-audit.test.mjs",
+  "scripts/options-evidence-v2.test.mjs",
+  "scripts/options-dashboard.test.mjs",
   "src/engines/options-readiness/OptionsCalendarBrief.test.ts",
   "scripts/options-calendar-brief.test.mjs",
   "src/engines/options-fomc-calendar/FomcCalendarEngine.test.ts",

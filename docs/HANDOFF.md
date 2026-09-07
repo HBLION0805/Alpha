@@ -8,6 +8,23 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner requested continuous module work and one consolidated report. The
+[local completion batch](OPTIONS_LOCAL_COMPLETION_DELIVERY.md) adds recomputed
+outcome audits, a local HTML/JSON dashboard and calendar-inclusive export v2
+with isolated recovery. Read [its checkpoint](status/local-completion.json)
+for actual validation and preservation evidence. The current dashboard snapshot
+is `data/runtime/options-dashboard/preopening-20260907-v2/index.html`.
+It is static; rebuilding with a new ID reads only saved stores. It is not a
+live host or broker monitor. Existing v1 export packages remain reproducible.
+All prior source, study, review, notebook and v6 host bytes remain protected.
+
+This completes the independently testable local operations batch, not the
+entire trading system. First-window data, source/fill qualification, independent
+strategy validation and account-specific rules remain external dependencies.
+The calendar backup and synthetic outcome ratios do not remove these gates.
+Continue with the existing September 8 opening collection and quality closeout;
+do not invent a source adapter before reviewing the actual eligible evidence.
+
 The latest continuation adds [opt-in context cutoff v2](OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md).
 `options:context-cutoff -- --at-v2 <UTC>` includes FOMC receipts; original `--at`
 remains four-source v1. Actual first-receipt boundary checks passed and the old

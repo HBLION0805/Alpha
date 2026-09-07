@@ -1,5 +1,12 @@
 # GLD/IBIT operations: evidence and next test
 
+Latest local capability: [completion batch](OPTIONS_LOCAL_COMPLETION_DELIVERY.md)
+adds an offline dashboard, recomputed outcome audit and calendar-inclusive
+evidence export/recovery v2. The dashboard snapshot is saved under
+`data/runtime/options-dashboard/preopening-20260907-v2/`. It reads local stores
+and preserves source clocks; it is not a live refresh. The dated index below
+retains its original v1/v5 descriptions; the active daily restoration is v6.
+
 Subsequent capability: [five-source context cutoff v2](OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md)
 adds FOMC receipt-time reconstruction while preserving v1. It performs local
 reads only and does not alter the scheduled opening test.

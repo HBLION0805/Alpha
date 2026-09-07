@@ -1,5 +1,11 @@
 # Alpha Roadmap
 
+The [local operations completion batch](OPTIONS_LOCAL_COMPLETION_DELIVERY.md)
+delivers the offline dashboard, all-disposition outcome audit and BLS/FOMC
+evidence export/recovery v2. These are local operational capabilities. Real
+price replay, numerical connectors without sources, qualified signals,
+portfolio/account qualification and independent calibration remain open.
+
 [Context cutoff v2](OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md) now includes FOMC
 receipt history through an opt-in command. Original v1 remains reproducible.
 Binding this context to an actual prospective trade plan and qualified quote
@@ -157,7 +163,8 @@ and authentication facts only. See
    net-cost target-before-stop/time-exit outcomes using independent market data.
 5. Walk-forward testing, independent holdouts, calibration, uncertainty and drift
    checks. More headlines cannot substitute for evidence of a trading edge.
-6. An Options Dashboard and expanded operational source monitoring. The shared
+6. Expanded operational source monitoring beyond the delivered offline Options
+   Dashboard. The shared
    news/collection heartbeat requires the local host/app. Its original news
    schedule is daily 09:00 New York; older hourly descriptions were inaccurate.
 

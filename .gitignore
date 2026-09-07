@@ -53,3 +53,5 @@ data/runtime/options-btc-context/
 data/runtime/options-evidence-exports/
 data/runtime/options-release-calendar/
 data/runtime/options-fomc-calendar/
+data/runtime/options-dashboard/
+data/runtime/local-completion-batch/

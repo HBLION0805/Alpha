@@ -140,7 +140,13 @@
     "test:options-fomc-calendar-io": "tsx scripts/options-fomc-calendar.test.mjs",
     "options:calendar-brief": "tsx scripts/options-calendar-brief.mjs",
     "test:options-calendar-brief": "tsx src/engines/options-readiness/OptionsCalendarBrief.test.ts",
-    "test:options-calendar-brief-io": "tsx scripts/options-calendar-brief.test.mjs"
+    "test:options-calendar-brief-io": "tsx scripts/options-calendar-brief.test.mjs",
+    "options:outcome-audit": "tsx scripts/options-outcome-audit.mjs",
+    "test:options-outcome-audit": "tsx src/engines/options-readiness/OptionsOutcomeAudit.test.ts",
+    "test:options-outcome-audit-io": "tsx scripts/options-outcome-audit.test.mjs",
+    "test:options-evidence-v2": "tsx scripts/options-evidence-v2.test.mjs",
+    "options:dashboard": "tsx scripts/options-dashboard.mjs",
+    "test:options-dashboard": "tsx scripts/options-dashboard.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

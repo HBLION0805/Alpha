@@ -1,5 +1,18 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Complete local operations without inferring market readiness
+
+- Recompute outcomes from original repository inputs; no caller-supplied PnL
+  assertions, cross-trial compounding, calibrated probabilities or strategy changes.
+- Show every disposition and candidate lesson separately from causal claims.
+  A target-triggered exit can lose money on the later assumed execution.
+- Generate immutable, script-free local HTML/JSON snapshots using existing
+  readers. Keep source/store freshness and host/account unknowns visible.
+- Extend evidence copies with opt-in v2 calendar paths and isolated semantic
+  recovery. Preserve the original v1 format and all prior accepted packages.
+- Keep actual quotation/fill and account qualification explicit, unfinished
+  dependencies; completing local code does not complete trading validation.
+
 ## 2026-09-07 - Include FOMC receipts in opt-in historical context
 
 - Add v2 through composition; keep original v1 engine/results unchanged and

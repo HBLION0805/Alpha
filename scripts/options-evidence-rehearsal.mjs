@@ -5,7 +5,8 @@ import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { runOptionsEvidenceExportCommand, optionsEvidenceExportStorage as io } from "./options-evidence-export.mjs";
 import { runOptionsContextReadinessCommand } from "./options-readiness.mjs";
-import { exportId, exportClock, validateExportManifest, exportSourcePolicy } from "../src/engines/options-evidence-export/OptionsEvidenceExportEngine.ts";
+import { runOptionsCalendarBriefCommand } from "./options-calendar-brief.mjs";
+import { exportId, exportClock, validateExportManifest, exportSourcePolicy, EXPORT_VERSION_V2 } from "../src/engines/options-evidence-export/OptionsEvidenceExportEngine.ts";
 
 const sha = bytes => createHash("sha256").update(bytes).digest("hex");
 function fail(code) { throw Error("OPTIONS_REHEARSAL_" + code); }
@@ -37,25 +38,27 @@ export async function runOptionsEvidenceRehearsalCommand(args, { workspaceRoot =
   if (isAbsolute(rel) || rel.startsWith("..") || !rel.startsWith("alpha-evidence-rehearsal-") || lstatSync(isolatedWorkspace).isSymbolicLink()) fail("UNSAFE_TEMPORARY_WORKSPACE");
   try {
     for (const file of manifest.files) {
-      const policy = exportSourcePolicy(manifest.studyId, file.sourcePath), bytes = io.readBytes(root, base + "/" + file.payloadName, policy.maxBytes);
+      const policy = exportSourcePolicy(manifest.studyId, file.sourcePath, manifest.version), bytes = io.readBytes(root, base + "/" + file.payloadName, policy.maxBytes);
       if (bytes.length !== file.bytes || sha(bytes) !== file.sha256) fail("PACKAGE_CHANGED");
       io.directory(isolatedWorkspace, file.sourcePath.slice(0, file.sourcePath.lastIndexOf("/")));
       io.writeExclusive(isolatedWorkspace, file.sourcePath, bytes);
     }
     const report = await runOptionsContextReadinessCommand(["--report", manifest.studyId], { workspaceRoot: isolatedWorkspace, now });
+    const calendarReport = manifest.version === EXPORT_VERSION_V2 ? await runOptionsCalendarBriefCommand(["--report", "--json"], { workspaceRoot: isolatedWorkspace, now }) : null;
     if (report.assessedAt < startedAt) fail("CLOCK_ORDER");
     const expected = manifest.files.map(file => file.sourcePath).sort();
     if (inventory(isolatedWorkspace).join() !== expected.join()) fail("RESTORED_INVENTORY_CHANGED");
     for (const file of manifest.files) {
-      const bytes = io.readBytes(isolatedWorkspace, file.sourcePath, exportSourcePolicy(manifest.studyId, file.sourcePath).maxBytes);
+      const bytes = io.readBytes(isolatedWorkspace, file.sourcePath, exportSourcePolicy(manifest.studyId, file.sourcePath, manifest.version).maxBytes);
       if (bytes.length !== file.bytes || sha(bytes) !== file.sha256) fail("RESTORED_BYTES_CHANGED");
     }
     const rechecked = runOptionsEvidenceExportCommand(["--verify", packageId], { workspaceRoot: root, now });
     if (rechecked.manifestSha256 !== manifest.manifestSha256) fail("PACKAGE_CHANGED");
-    const completedAt = now(); exportClock(completedAt); if (completedAt < report.assessedAt) fail("CLOCK_ORDER");
-    return { status: report.blockedStores.length ? "REHEARSAL_HAS_BLOCKED_COMPONENTS" : "RESTORED_COMPONENTS_READABLE", packageId,
+    const completedAt = now(); exportClock(completedAt); if (completedAt < report.assessedAt || calendarReport && (calendarReport.assessedAt < report.assessedAt || completedAt < calendarReport.assessedAt)) fail("CLOCK_ORDER");
+    return { status: report.blockedStores.length || calendarReport?.blockedStores.length ? "REHEARSAL_HAS_BLOCKED_COMPONENTS" : "RESTORED_COMPONENTS_READABLE", packageId,
       packageManifestSha256: manifest.manifestSha256, isolatedWorkspace, startedAt, completedAt, copiedFiles: manifest.files.length,
       copiedBytes: manifest.totalBytes, packageMissingComponents: manifest.missingComponents, report,
+      ...(calendarReport ? { exportVersion: manifest.version, calendarReport } : {}),
       originalPackageUnchanged: true, restoredSourceBytesUnchanged: true, activeRuntimeRestored: false,
       isolatedWorkspaceRetained: true, networkAccess: false, executionAllowed: false };
   } catch (error) {

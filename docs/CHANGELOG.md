@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-07 - Local outcomes, dashboard and calendar evidence v2
+
+- Added a deterministic all-outcome audit with exact cost/net-risk arithmetic,
+  descriptive group metrics, retained unresolved cases and candidate notebooks.
+- Added an immutable offline operator dashboard of collection, source clocks,
+  calendar context, simulation/research reviews and remaining test dependencies.
+- Added opt-in evidence export v2 and isolated BLS/FOMC recovery; v1 stays the
+  default and prior package/source bytes remain unchanged.
+- Registered focused tests and excluded both new runtime output directories
+  from Git. See `OPTIONS_LOCAL_COMPLETION_DELIVERY.md` for actual evidence.
+
 ## 2026-09-07 - FOMC receipt-time reconstruction
 
 - Added opt-in `options:context-cutoff -- --at-v2 <UTC time>` for five-source

@@ -10,6 +10,13 @@ test dependencies. It links original evidence without changing historical clocks
 
 ## Current capabilities
 
+- The [local completion batch](docs/OPTIONS_LOCAL_COMPLETION_DELIVERY.md) adds
+  an offline operator dashboard, recomputed all-outcome audit and opt-in v2
+  evidence packages including both BLS and FOMC journals. It preserves old
+  reports, independent research accounts and candidate-only lessons. Run
+  `npm run options:dashboard -- --build <study-id> <new-snapshot-id>` to read
+  saved stores into a new local HTML/JSON snapshot; this does not refresh data.
+
 The [first-opening handoff](docs/OPTIONS_FIRST_OPENING_HANDOFF.md) records the
 latest local collection preflight, preserved reviews, active schedule and the
 evidence still needed before a Robinhood real-price paper test.

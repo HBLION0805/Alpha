@@ -80,6 +80,7 @@ Push
 
 ## Current Implemented Systems
 
+- Local outcome audit, offline dashboard and calendar-inclusive evidence export/recovery v2: original paper/research engines recompute descriptive all-case metrics and candidate evidence; immutable HTML/JSON reads saved stores without source refresh. Export v2 opts into BLS/FOMC journals and isolated calendar recovery while preserving default v1. No calibration, compounded research account, host inspection or orders. See docs/OPTIONS_LOCAL_COMPLETION_DELIVERY.md and docs/status/local-completion.json.
 - Journal context cutoff: v1 preserves four-source receipt/discovery-time reconstruction; opt-in v2 adds FOMC dates through the existing calendar engine, without hindsight or historical-decision claims. Use --at for v1 and --at-v2 for v2. See docs/OPTIONS_CONTEXT_CUTOFF_DELIVERY.md and docs/OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md. Other readiness/export versions are unchanged.
 - Complete synthetic collection-window rehearsals: isolated Host control flow through real local repositories, normal/mixed/slow scenarios, preserved reviews and candidate data-quality lessons. No real host scheduler or market test. See docs/OPTIONS_COLLECTION_REHEARSAL_DELIVERY.md.
 - Official FOMC date-calendar context: restricted current/next-year HTML panels, date-only precision, unknown intraday/confirmation metadata, actual receipt journal and daily v5 integration. No calendar-to-trade rule. See docs/OPTIONS_FOMC_DAILY_CONTEXT_DELIVERY.md.

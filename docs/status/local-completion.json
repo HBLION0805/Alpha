@@ -1,0 +1,238 @@
+{
+  "version": "OPTIONS_LOCAL_COMPLETION_DELIVERY_V1",
+  "recordedAt": "2026-09-07T16:44:03.011Z",
+  "sourceBaseCommit": "a64e3df",
+  "scope": "GLD_IBIT_LOCAL_OPERATIONS_COMPLETION_BATCH",
+  "overallSystemComplete": false,
+  "modules": {
+    "outcomeAudit": "IMPLEMENTED_AND_RECOMPUTED",
+    "offlineDashboard": "GENERATED_AND_FILE_HASH_VERIFIED",
+    "calendarEvidenceV2": "EXPORTED_AND_ISOLATED_RECOVERY_VERIFIED"
+  },
+  "audit": {
+    "constructedAt": "2026-09-07T16:34:36.134Z",
+    "paper": {
+      "caseCount": 7,
+      "statusCounts": {
+        "CANCELLED": 1,
+        "CLOSED": 5,
+        "NO_TRADE": 1
+      },
+      "closedCount": 5,
+      "netPositiveCount": 2,
+      "netNegativeCount": 3,
+      "breakevenCount": 0,
+      "openExposureCount": 0,
+      "targetExitCount": 1,
+      "stopExitCount": 3,
+      "timeExitCount": 1,
+      "grossPnlCents": -900,
+      "feesCents": 100,
+      "netPnlCents": -1000,
+      "positiveNetPnlCents": 960,
+      "absoluteNegativeNetPnlCents": 1960,
+      "closedCaseNetPositiveShareBps": 4000,
+      "meanNetPnl": {
+        "numeratorCents": -1000,
+        "denominatorClosedCases": 5
+      },
+      "profitFactorMilli": 489,
+      "netToTotalPlannedRiskMilli": -476,
+      "lossBeyondPlannedRiskCount": 2,
+      "exitLiquidityDelayedCount": 1,
+      "quoteGapObservedCount": 2,
+      "processViolationCount": 0,
+      "candidateLessonOccurrenceCount": 5
+    },
+    "historical": {
+      "caseCount": 8,
+      "statusCounts": {
+        "BLOCKED": 2,
+        "CLOSED": 4,
+        "EXIT_PENDING": 1,
+        "NO_TRADE": 1
+      },
+      "closedCount": 4,
+      "netPositiveCount": 2,
+      "netNegativeCount": 2,
+      "breakevenCount": 0,
+      "openExposureCount": 1,
+      "targetExitCount": 2,
+      "stopExitCount": 1,
+      "timeExitCount": 1,
+      "grossPnlCents": -300,
+      "feesCents": 80,
+      "netPnlCents": -380,
+      "positiveNetPnlCents": 1160,
+      "absoluteNegativeNetPnlCents": 1540,
+      "closedCaseNetPositiveShareBps": 5000,
+      "meanNetPnl": {
+        "numeratorCents": -380,
+        "denominatorClosedCases": 4
+      },
+      "profitFactorMilli": 753,
+      "netToTotalPlannedRiskMilli": -226,
+      "lossBeyondPlannedRiskCount": 2,
+      "exitLiquidityDelayedCount": 0,
+      "quoteGapObservedCount": 2,
+      "processViolationCount": 0,
+      "candidateLessonOccurrenceCount": 17
+    },
+    "paperNotebookCount": 4,
+    "historicalNotebookCount": 15,
+    "winProbability": null,
+    "calibrated": false
+  },
+  "dashboard": {
+    "path": "data/runtime/options-dashboard/preopening-20260907-v2/index.html",
+    "manifest": {
+      "version": "OPTIONS_LOCAL_DASHBOARD_FILES_V1",
+      "snapshotId": "preopening-20260907-v2",
+      "studyId": "gld-ibit-observe-open-20260908",
+      "startedAt": "2026-09-07T16:41:00.348Z",
+      "completedAt": "2026-09-07T16:41:00.650Z",
+      "reportArtifactSha256": "9ec58a1419864c2bc59297977f144d3d281fc83d6e11b56910a4ab5a559e8f78",
+      "files": [
+        {
+          "name": "index.html",
+          "bytes": 77580,
+          "sha256": "72730779afdebd23c64c885ffa1b7fd95866a3c6ddd6dbbf43f60d2bcc5883a7"
+        },
+        {
+          "name": "report.json",
+          "bytes": 116638,
+          "sha256": "d725dc721f82f1f1fa3101ded1dba55183bdabcc6cf757d41e10af7f3d604cbc"
+        }
+      ],
+      "sourceWrites": 0,
+      "networkAccess": false,
+      "executionAllowed": false
+    },
+    "blockedStores": {
+      "readiness": [],
+      "calendar": [],
+      "outcomes": []
+    },
+    "crossReportChecks": [
+      {
+        "component": "paper",
+        "state": "MATCHED"
+      },
+      {
+        "component": "historical",
+        "state": "MATCHED"
+      }
+    ],
+    "browserTesting": "NOT_REQUESTED_NOT_RUN",
+    "appPreviewHandoff": "FILE_OPEN_QUEUED_NO_RENDER_CLAIM"
+  },
+  "evidenceExport": {
+    "status": "PACKAGE_BYTES_VERIFIED",
+    "packageId": "preopening-context-v2-20260907",
+    "studyId": "gld-ibit-observe-open-20260908",
+    "path": "data/runtime/options-evidence-exports/preopening-context-v2-20260907",
+    "manifestSha256": "274f7822b13b3baac961a42b5e4b7f9b9ba40f5aa53b1355da4ccf7a9d260ff7",
+    "fileCount": 9,
+    "totalBytes": 1260668,
+    "missingComponents": [
+      "imports",
+      "attempts"
+    ],
+    "startedAt": "2026-09-07T16:34:36.446Z",
+    "completedAt": "2026-09-07T16:34:36.477Z",
+    "verifiedAt": "2026-09-07T16:34:36.481Z",
+    "sourceStoresRead": true,
+    "semanticValidationPerformed": false,
+    "offDeviceBackup": false,
+    "executionAllowed": false,
+    "exportVersion": "OPTIONS_LOCAL_EVIDENCE_EXPORT_V2",
+    "sourceInventoriesMatched": true
+  },
+  "recovery": {
+    "status": "RESTORED_COMPONENTS_READABLE",
+    "isolatedWorkspace": "C:\\Users\\liuha\\AppData\\Local\\Temp\\alpha-evidence-rehearsal-RW6TpI",
+    "calendarEntryCount": 13,
+    "calendarBlocked": [],
+    "readinessBlocked": [],
+    "activeRuntimeRestored": false
+  },
+  "legacyCompatibility": {
+    "status": "RESTORED_COMPONENTS_READABLE",
+    "manifestSha256": "1922da33ec4e58053ef429cc44b4c218aed9f222b7cd77f1e1c1e2fd7ae12f41",
+    "copiedFiles": 7,
+    "closedReviews": 5,
+    "calendarReportAdded": false
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 125,
+    "testsExecuted": 3179,
+    "passed": 3179,
+    "failed": 0,
+    "durationMs": 69124,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_CURRENT_OPERATIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-evidence-export.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-evidence-rehearsal.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'src/engines/options-evidence-export/OptionsEvidenceExportEngine.ts', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "initialValidationFailure": {
+    "reason": "New output directories lacked narrow Git ignore rules; no runtime files staged or committed.",
+    "resolved": true,
+    "log": "data/runtime/local-completion-batch/validation.initial-failed.log"
+  },
+  "preservation": {
+    "recordedAt": "2026-09-07T16:44:03.006Z",
+    "protectedCount": 459,
+    "changed": [],
+    "hostSha256": "f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310",
+    "expectedHostSha256": "f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310",
+    "hostMatches": true
+  },
+  "artifacts": {
+    "data/runtime/local-completion-batch/dashboard-build-final.json": "0a565b1fbe53f5846dc0aa5a51b133d627b9eea998604699264291e1ccec72c8",
+    "data/runtime/local-completion-batch/dashboard-build.json": "aacc9d6e64223d21cb6a7d8a9d29131d3875134c1dcdc9d82cd20973a7b35580",
+    "data/runtime/local-completion-batch/evidence-export-v2.json": "a8c014f6090297a44151ec051f1756343bc118403af67c62528ee735bbdd0cf5",
+    "data/runtime/local-completion-batch/evidence-rehearsal-v2.json": "a4dce6afed23214fa5372235bbfdf1f280559dfa79fa2f24ea76a768cd6d2d00",
+    "data/runtime/local-completion-batch/legacy-package-rehearsal.json": "c4653509068c07875f9176f0fa0bc62d310072b768c6ad3eab9c690325600ca2",
+    "data/runtime/local-completion-batch/outcome-audit.json": "f987ae64c84339b62fa6588a6f8e3bee555c1c2a0975710c8d014fc1c0ce884c",
+    "data/runtime/local-completion-batch/package-compatibility.json": "b09bc4f2337189137100ee326b9a2170de2e15d357d06d0c05341a2a444e0fcf",
+    "data/runtime/local-completion-batch/preservation.final.json": "8552a102e5ff393694fd5a210c2c9d069cec551a66329d13ac902bb4e8719b6e",
+    "data/runtime/local-completion-batch/preservation.json": "3cfba88f5d025f12b134f9e2ba7f657ddd467267d82ff611bb77c152e0334e1a",
+    "data/runtime/local-completion-batch/protected-before.json": "fcc3ba06716b037537732a8b062a3e9f5d50046cd3d6391a4e9e2c455d116c71",
+    "data/runtime/local-completion-batch/validation.final.log": "3622839348e979f92932211c379658e442f78f01c625671f956060810db4c18c",
+    "data/runtime/local-completion-batch/validation.initial-failed.log": "28e239c04a77a43e4e3afac4f46c5d145d695e985d81475ee6dc583e623218e7",
+    "data/runtime/local-completion-batch/validation.log": "28e239c04a77a43e4e3afac4f46c5d145d695e985d81475ee6dc583e623218e7",
+    "data/runtime/options-dashboard/preopening-20260907-v2/index.html": "72730779afdebd23c64c885ffa1b7fd95866a3c6ddd6dbbf43f60d2bcc5883a7",
+    "data/runtime/options-dashboard/preopening-20260907-v2/report.json": "d725dc721f82f1f1fa3101ded1dba55183bdabcc6cf757d41e10af7f3d604cbc",
+    "data/runtime/options-dashboard/preopening-20260907-v2/manifest.json": "6f3e4b485ff7967679be8d26765238a9b09b818459a930ce17a59aff16e37790"
+  },
+  "remaining": [
+    "FIRST_FROZEN_OPENING_QUOTES_PENDING",
+    "ROBINHOOD_SOURCE_TIMING_SIZE_TERMS_AND_FILL_QUALIFICATION",
+    "SOURCE_SPECIFIC_REAL_PRICE_PAPER_ADAPTER",
+    "ADDITIONAL_NUMERICAL_SOURCE_VINTAGES",
+    "QUALIFIED_SIGNALS_AND_STRUCTURE_COMPARISON",
+    "ACCOUNT_SPECIFIC_PORTFOLIO_AND_SETTLEMENT_RULES",
+    "INDEPENDENT_HOLDOUT_OUTCOMES_AND_CALIBRATION"
+  ],
+  "next": "Existing September 8 09:30-09:50 New York opening collection and source-quality closeout before a separate paper adapter.",
+  "networkCalls": 0,
+  "sourceAppends": 0,
+  "newTrades": 0,
+  "hostMutations": 0,
+  "executionAllowed": false,
+  "automaticOrdersEnabled": false
+}

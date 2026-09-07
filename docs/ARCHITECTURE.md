@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+`OptionsOutcomeAudit` recomputes original paper scenarios and research runs,
+then derives exact closed-case arithmetic, all-disposition counts and grouped
+candidate evidence. Shared paper cash and independent historical accounts stay
+separate. The offline dashboard composes current repository readers, calendar
+brief and audit without HTTP or source appends; hashes bind immutable HTML/JSON
+snapshots, and repeated paper/research report checks expose cross-read changes.
+Export v2 opts into BLS/FOMC paths under the existing bounded I/O and manifest
+validation, while the default v1 allowlist and accepted package hashes remain
+unchanged. Isolated recovery invokes the calendar reader only for v2 packages.
+See [batch specification](specifications/OPTIONS_LOCAL_COMPLETION_BATCH.md).
+
 Opt-in `OptionsContextCutoffV2` composes the unchanged four-source context engine
 with FOMC receipt-time selection through its existing calendar report engine.
 It validates complete histories before filtering, isolates blocked sources and
