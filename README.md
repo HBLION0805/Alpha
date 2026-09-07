@@ -4,6 +4,10 @@ A focused decision-support system for **GLD and IBIT options on Robinhood**.
 Alpha combines attributable context, explicit uncertainty and deterministic
 risk arithmetic. It promises no return and has no order-execution authority.
 
+Start with the [dated operations index](docs/OPTIONS_CURRENT_OPERATIONS.md) for
+the active collection window, completed capabilities and remaining real-price
+test dependencies. It links original evidence without changing historical clocks.
+
 ## Current capabilities
 
 The [first-opening handoff](docs/OPTIONS_FIRST_OPENING_HANDOFF.md) records the

@@ -2,6 +2,10 @@
 
 Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
+Start with the [operations index](OPTIONS_CURRENT_OPERATIONS.md), recorded at
+2026-09-07T08:32:58.024Z, for the compact current-state map. Detailed dated
+deliveries below retain their original evidence and historical context.
+
 ## Latest Owner direction
 
 The [read-only environment check](OPTIONS_SCHEDULING_ENVIRONMENT_CHECK.md) verified

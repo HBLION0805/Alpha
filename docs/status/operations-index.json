@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "GLD_IBIT_OPERATIONAL_EVIDENCE_INDEX",
+  "recordedAt": "2026-09-07T08:32:58.024Z",
+  "kind": "DATED_INDEX_NOT_A_LIVE_READINESS_REPORT",
+  "reviewedGitCommit": "0f8714a",
+  "scope": {
+    "symbols": [
+      "GLD",
+      "IBIT"
+    ],
+    "platform": "Robinhood",
+    "mode": "AUTOMATIC_MARKET_CONTEXT_COLLECTION_ONLY",
+    "accountOrOrderToolsAllowed": false,
+    "executionAllowed": false,
+    "paidDataDeferred": true
+  },
+  "host": {
+    "automationId": "gld-ibit",
+    "verifiedFileSha256": "66c1e3d5640ee8cc9e746aa90800beb613010829d9b3f0800d224e3576b72f6f",
+    "activeRestorationSnapshot": "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json",
+    "activeRestorationSnapshotSha256": "9ed8af11a3bc6728f2ec9136389313ea56d3ccf0a5f88886f65a24c173f90014",
+    "quoteProgramSha256": "2e3a24d5ca223922d001047b58aaa689d17575e60dd0e89908daa14655ec4def",
+    "windowStartAt": "2026-09-08T13:30:00.000Z",
+    "windowEndAt": "2026-09-08T13:50:00.000Z",
+    "defaultContextHourNewYork": "09:00",
+    "targetQuoteCadenceSeconds": 60,
+    "futureExecutionGuaranteed": false
+  },
+  "latestRecordedPreflight": {
+    "assessedAt": "2026-09-07T08:10:57.002Z",
+    "prepare": {
+      "schemaVersion": "1.0",
+      "studyId": "gld-ibit-observe-open-20260908",
+      "preparedAt": "2026-09-07T08:10:56.833Z",
+      "planSha256": "8e60f2a53ea47be83c30024e20d7a8ae1cc63fe1dca69ba8bc0e8540420f5c8d",
+      "windowStartAt": "2026-09-08T13:30:00.000Z",
+      "windowEndAt": "2026-09-08T13:50:00.000Z",
+      "nextRequestAt": "2026-09-08T13:30:00.000Z",
+      "action": "WAIT",
+      "requests": [],
+      "attemptCount": 0,
+      "sourceFailureCount": 0,
+      "frameCount": 0,
+      "usableObservations": 0,
+      "status": "NO_REPLAY",
+      "networkAccess": false,
+      "executionAllowed": false
+    },
+    "paper": {
+      "closed": 5,
+      "reviewed": 5,
+      "missing": 0,
+      "consistent": true
+    },
+    "candidateNotebooks": {
+      "paper": 4,
+      "historical": 15,
+      "collectionOperations": 0,
+      "quoteQuality": 0,
+      "approvedKnowledge": false,
+      "causalSuccessOrFailureEstablished": false,
+      "automaticStrategyChanges": false
+    },
+    "sourceStates": {
+      "collection": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T08:10:56.834Z",
+        "errorCode": null
+      },
+      "paper": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T08:10:56.848Z",
+        "errorCode": null
+      },
+      "historical": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T08:10:56.887Z",
+        "errorCode": null
+      },
+      "imports": {
+        "state": "MISSING",
+        "checkedAt": "2026-09-07T08:10:56.905Z",
+        "errorCode": "STORE_MISSING"
+      },
+      "headlines": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T08:10:56.905Z",
+        "errorCode": null
+      },
+      "treasury": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T08:10:56.927Z",
+        "errorCode": null
+      },
+      "btc": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T08:10:56.933Z",
+        "errorCode": null
+      }
+    }
+  },
+  "validation": {
+    "latestAggregate": {
+      "status": "PASSED",
+      "componentCount": 120,
+      "testsExecuted": 3107,
+      "passed": 3107,
+      "failed": 0,
+      "durationMs": 59755,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+      ]
+    },
+    "aggregateCheckpoint": "docs/status/calendar-brief.json",
+    "subsequentFocused": {
+      "closeoutTests": {
+        "passed": 24,
+        "failed": 0
+      },
+      "hostTests": {
+        "passed": 16,
+        "failed": 0
+      },
+      "typecheck": "PASSED",
+      "latestAggregateTests": 3107,
+      "aggregateRerun": false
+    },
+    "newFocusedRegressionCount": 1,
+    "fullAggregateAfterNewRegression": false
+  },
+  "pending": [
+    "PROSPECTIVE_OPENING_QUOTES",
+    "INDEPENDENT_OPTION_SIDE_SIZE_TIME_SEMANTICS",
+    "FROZEN_VERIFIED_COST_AND_FILL_ASSUMPTIONS",
+    "QUALIFIED_ROBINHOOD_PAPER_ADAPTER",
+    "REAL_PRICE_OUTCOMES_AND_CALIBRATION"
+  ],
+  "status": "NO_REPLAY",
+  "realPriceReplay": "NOT_RUN",
+  "winProbability": null,
+  "checkpointFileSha256s": {
+    "docs/status/robinhood-capture.json": "e738acb26f590f6fd36a9aa9554a59e7552d9ad2c3e63d72e24a0b135b9700e4",
+    "docs/status/robinhood-observation.json": "c83fdae6e1c6d2a91c682297bc53bc233946a8b3a51e2aadff439391289b1084",
+    "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+    "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5",
+    "docs/status/treasury-real-yields.json": "0c448c9dbacc28d28088c07b3e1d8c50aaafe91fa7b3a1d7c7425d963af3f31f",
+    "docs/status/btc-spot-context.json": "fd231b18eee0341e2119d193798d6f6dee5a8933d0733e06326e6f61707c3cac",
+    "docs/status/bls-release-calendar.json": "791774a40705280e485bcfaca7681480294dd8fb5115e561028ff91b21ddff6a",
+    "docs/status/fomc-calendar.json": "efb6482f78b7f1a6a4b67c7b0d1f7817633a9745e4962d92f28746880e0abadc",
+    "docs/status/fomc-daily-context.json": "b8df9adf3c54039b91b8146f41953b57716c2658ed9b90d92e6600cfda1e3f34",
+    "docs/status/operational-readiness.json": "1b5998144af8a38340044e557f80f826f40d71c4072ec976be392daf77cade1f",
+    "docs/status/operator-brief.json": "e900bab5204d9e0ee7ffeba02088a243986a5ee59f91435979800f62cd4b9f7d",
+    "docs/status/calendar-brief.json": "cb11e5811bab2ef7eebb3afb30cad74a2768f15d29f535332c45745258209ec0",
+    "docs/status/context-cutoff.json": "ab24efb95e022eb8355547bdedea8f61d6de716a49fad987f6a13bd788d694cf",
+    "docs/status/evidence-export.json": "a61efcbdd1ebd3ca49f1c1644f023b437005e04753e6ce9f38a157761b9a0799",
+    "docs/status/evidence-rehearsal.json": "992c5a861b9b3e628666b48a86b6acc0a2ca52a3706dbed11cba28bef25b3e16",
+    "docs/status/collection-rehearsal.json": "6e74b30700b6a35abc2866a3d4d9edc0d34c84b7bd0bd19b9f785743e2b23e78",
+    "docs/status/host-timeout.json": "edd701644d96dbf85d8903fa70de6c66a2cb81fb9b18ba10c698feefbb059bda",
+    "docs/status/headline-transport-guards.json": "030fbccaa123a84ea94d2e833cafe470f24d1b6f0b74234ebdae038469aa7a9a",
+    "docs/status/pre-opening-handoff.json": "67420dfa160623c52c97e3292c4f11140e1f649751da4d854849c3fadee0de94",
+    "docs/status/robinhood-schema-semantics.json": "d9a7c880a92b1262e5104b8105ccbf31a2924acc8204b684e7e47e6be748825d",
+    "docs/status/coverage-interpretation.json": "e0199e05f336594dc1d0a687108f3f3d478c324599a98787e2a294565cd09762",
+    "docs/status/cost-sensitivity.json": "aa7e843a41bddef0f53b103dd34728efc968981937d00bc02222f2629f3b58d9",
+    "docs/status/scheduling-environment.json": "0f97a66afb30ee24f76abc231200d3378d534a8a62a3c0e06c5f706781bbf527"
+  },
+  "protectedFileCount": 27,
+  "sourceCallsDuringIndexBuild": 0,
+  "sourceJournalAppends": 0,
+  "hostUpdates": 0,
+  "earlierCheckpointsUnchanged": true
+}
