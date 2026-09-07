@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The [research observation inspector](OPTIONS_RESEARCH_OBSERVATION_INSPECTION_DELIVERY.md)
+now independently resolves declared protocol/context references with actual local
+chronology and unchanged original context reports. Observation persistence and
+three-pair recovery are next; inspection creates no sample, outcome or trade.
+
 The [research observation design](OPTIONS_RESEARCH_OBSERVATION_DESIGN_DELIVERY.md)
 has been reviewed against the two existing storage verifiers. Implementation is
 next: read-only reference resolution, then exclusive observation storage and

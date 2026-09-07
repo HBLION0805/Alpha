@@ -142,6 +142,7 @@ const aggregateTestFiles = [
   "src/engines/options-readiness/OptionsContextManifest.test.ts",
   "src/engines/options-sample-partition/OptionsResearchProtocol.test.ts",
   "scripts/options-research-protocol.test.mjs",
+  "scripts/options-research-observation.test.mjs",
   "scripts/options-context-cutoff.test.mjs",
   "scripts/options-context-capture.test.mjs",
   "src/engines/options-readiness/OptionsOperatorBrief.test.ts",

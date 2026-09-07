@@ -16,6 +16,14 @@ priority, with no per-minute reporting spam or pre-restoration evidence reads.
 See [activation](OPTIONS_WORK_PROGRESS_DELIVERY.md) and
 [verified host fields](status/work-progress.json).
 
+The [research observation inspector](OPTIONS_RESEARCH_OBSERVATION_INSPECTION_DELIVERY.md)
+now validates exact GLD/IBIT notes and independently resolves both original saved
+pairs before a new actual clock. It preserves context freshness at the original
+cutoff and all unknown feature/outcome facts. Full validation: 3,478 tests across
+141 components, zero failures. Actual-clock isolated inspection passed using a
+synthetic protocol and copied saved context; no formal protocol or observation
+was created. Next unit is exclusive observation storage and three-pair recovery.
+
 The [research observation design](OPTIONS_RESEARCH_OBSERVATION_DESIGN_DELIVERY.md)
 now fixes the exact observation/no-trade input and reference-based recovery through
 the existing protocol and context verifiers. Implementation is pending. Next unit

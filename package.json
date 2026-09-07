@@ -79,6 +79,8 @@
     "options:context-capture": "tsx scripts/options-context-capture.mjs",
     "test:options-context-capture": "tsx scripts/options-context-capture.test.mjs",
     "options:research-protocol": "tsx scripts/options-research-protocol.mjs",
+    "options:research-observation": "tsx scripts/options-research-observation.mjs",
+    "test:options-research-observation": "tsx scripts/options-research-observation.test.mjs",
     "test:options-research-protocol": "tsx scripts/options-research-protocol.test.mjs",
     "options:evidence-export": "tsx scripts/options-evidence-export.mjs",
     "options:evidence-rehearsal": "tsx scripts/options-evidence-rehearsal.mjs",

@@ -1,0 +1,53 @@
+{
+  "version": "OPTIONS_RESEARCH_OBSERVATION_INSPECTION_CHECKPOINT_V1",
+  "recordedAt": "2026-09-07T21:08:45.587Z",
+  "status": "READ_ONLY_REFERENCE_RESOLUTION_IMPLEMENTED",
+  "focusedTests": {
+    "passed": 19,
+    "failed": 0
+  },
+  "validationCommand": "node scripts/alpha-validate.mjs",
+  "overall": {
+    "status": "PASSED",
+    "componentCount": 141,
+    "testsExecuted": 3478,
+    "passed": 3478,
+    "failed": 0,
+    "durationMs": 76144,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "actualIsolatedRehearsal": {
+    "recordedAt": "2026-09-07T21:08:00.814Z",
+    "kind": "ISOLATED_SYNTHETIC_PROTOCOL_WITH_COPIED_SAVED_CONTEXT",
+    "firstObservationAt": "2026-09-07T21:08:00.514Z",
+    "secondObservationAt": "2026-09-07T21:08:00.798Z",
+    "protocolPayloadSha256": "aeeb1347dcf274cb21c3f85e91a11e59892db41d73941e748884da30f681b847",
+    "contextPayloadSha256": "1159f5bc98748b24e2a3f63d9c371828f0c5d430273b815457d0d3911a5ce228",
+    "contextManifestSha256": "d1aef242e17aeabd694afc22caeac5f52d0b7d2f4d3fbea4220205a963897c5f",
+    "contextMemberCount": 174,
+    "missingStores": [],
+    "blockedStores": [],
+    "freshProcess": true,
+    "actualClockUsed": true,
+    "recordSaved": false,
+    "activeProtocolCreated": false,
+    "sourceStoresRead": false,
+    "sourceJournalAppends": 0,
+    "executionAllowed": false
+  },
+  "temporaryWorkspaceRemoved": true,
+  "protectedFilesChecked": 524,
+  "protectedFilesUnchanged": true,
+  "observationStorageImplemented": false,
+  "observationRecordsCreated": 0,
+  "formalProtocolRegistered": false,
+  "sampleInputGenerated": false,
+  "sourceJournalAppends": 0,
+  "executionAllowed": false,
+  "replayAllowed": false,
+  "nextUnit": "Exclusive observation payload/receipt storage and independent three-pair recovery"
+}
