@@ -150,15 +150,17 @@ GLD/IBIT option-chain connector, complete portfolio-risk runtime, calibrated
 market-validated option-outcome replay or Options Dashboard is implemented yet.
 
 Robinhood's current official Trading MCP documents option historical OHLC bars,
-real-time quotes and contract lookup. It is not connected to Alpha. Public
+real-time quotes and contract lookup. Alpha has no verified quote adapter. Public
 documentation does not establish historical bid/ask sizes, retention or GLD/IBIT
 entitlements. The new preparation command separates documented tools, local
 catalog declarations and unresolved response semantics. Its five-tool filter is
 client-side only; it cannot narrow server authorization or enforce GLD/IBIT inputs.
 The [example](fixtures/options-robinhood-data/codex.disabled.example.toml) stays
 disabled. The Owner subsequently authorized the five-tool host connection and
-official login; its enabled host copy is installed, with login completion still
-unobserved. New-account and paid steps remain excluded. See the
+official login and explicitly accepted the broader connection grant. The enabled
+host copy is installed; OAuth completion and `o_auth` status are verified, with
+the same five tools. Runtime reload and actual tool/quote verification remain;
+the local refresh proxy could not connect. New-account and paid steps remain excluded. See the
 [host setup record](docs/OPTIONS_ROBINHOOD_CONNECTION_SETUP.md).
 An eventual Robinhood adapter needs separate source semantics; responses cannot
 be relabeled as Cboe evidence. OHLC cannot substitute for missing quote-side data.

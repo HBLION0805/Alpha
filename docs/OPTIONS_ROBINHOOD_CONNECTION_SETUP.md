@@ -23,18 +23,37 @@ host-side verification confirmed the new entry. No existing server was replaced.
 The checked-in example stays disabled; the enabled copy lives only in the host's
 Codex user configuration, outside the repository. No credentials are copied here.
 
-## Login handoff
+## Verified OAuth completion
 
 `codex mcp login robinhood_alpha_market_data` started the official OAuth flow.
 The browser reached Robinhood's existing-account login page, with email/password
 and passkey options. The page was handed to the Owner without filling credentials.
-No new-account or payment step has been accepted. Authentication completion has
-not yet been observed; runtime tool schemas and actual quotes remain unavailable.
+No new-account or payment step was accepted by the agent.
 
-The first login attempt subsequently timed out waiting for its OAuth callback
-(CLI exit 1). This was not authentication success or a data-access test. A fresh
-official login may be started under the same approval; the installed filter stays
-unchanged and the Owner must use the currently active authorization page.
+The first two attempts timed out waiting for their OAuth callback (CLI exit 1).
+The third attempt completed successfully. Verification on 2026-09-07 UTC
+(2026-09-06 America/New_York) observed CLI exit 0 with
+`Successfully logged in to MCP server 'robinhood_alpha_market_data'.`
+A separate effective-host `codex mcp list --json` readback reported `o_auth`,
+and `codex mcp get` reconfirmed the enabled endpoint and exactly the five tools.
+This proves saved host authentication, not successful quote retrieval.
+
+Automatic review rejected the agent's earlier Allow click because the consent
+page includes all-account visibility and Agentic-account trading capability.
+The Owner subsequently explicitly accepted that broader connection grant and
+completed the official flow. No further connection-consent question is pending.
+This does not authorize account-tool calls or brokerage transactions.
+
+The current task's callable tool inventory still contains no Robinhood tools.
+A documented `config/mcpServer/reload` attempt through `codex app-server proxy`
+could not reach the local control socket (Windows error 10050); the proxy exited
+before initialization or reload. This is a local refresh failure, not evidence
+of failed OAuth. No MCP tool call or qualified quote acquisition occurred.
+Use the desktop Settings > MCP servers > Restart control to reload the installed
+configuration, then verify the five actual tool schemas. The official
+[MCP setup instructions](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)
+document this Restart step. Schema units, timestamps, bid/ask sizes, historical
+coverage and GLD/IBIT entitlements remain unverified.
 
 Do not store the temporary authorization URL, callback state, tokens or account
 identifiers in Git. If login times out, restart the same approved login when the
@@ -43,7 +62,7 @@ permission question. If onboarding or a charge is required, stop at that step.
 
 ## Authority and evidence
 
-The Owner accepted the previously explained broad server authorization. The
+The Owner explicitly accepted the previously explained broad server authorization. The
 local five-name filter does not narrow Robinhood OAuth scopes or enforce ticker
 arguments. Future data requests remain limited to GLD/IBIT and require actual
 schema inspection; account, order and spot-crypto tools remain outside scope.
@@ -51,13 +70,15 @@ Official source: [Robinhood access and connection overview](https://robinhood.co
 
 This is a host-operations record after the reviewed build snapshot in
 [current.json](status/current.json). It supersedes that snapshot's installation
-and pending-consent facts only; it does not rewrite its tests, source evidence,
+and authentication facts only; it does not rewrite its tests, source evidence,
 engine outputs, or lack of qualified quotes. The offline readiness report is a
 dated preparation report, not discovery of the current host configuration.
 
 Validation for this setup: TOML parse and equality of all unrelated configuration,
-effective host five-tool readback, official login-page inspection and Git whitespace
-checks. Product code and dependencies are unchanged; no simulation or live trade
-was run. Existing trade/review/notebook journals remain untouched. The next step
-depends on the Owner completing official login, then verifying actual market-data
-tools and schemas within the approved scope.
+effective host five-tool readback, OAuth CLI completion and independent auth-status
+readback, official login-page inspection, status-snapshot validation and Git
+whitespace checks. Product code and dependencies are unchanged; no simulation or
+live trade was run. Existing trade/review/notebook journals remain untouched.
+The next step is runtime reload and actual market-data tool/schema verification
+within the approved scope. Do not restart OAuth solely because this task's tool
+inventory has not refreshed.

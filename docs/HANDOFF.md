@@ -6,16 +6,20 @@ Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
 
 After delivery `9915d79`, the Owner explicitly approved enabling only the five
 reviewed market-data tools and personally completing official login. The enabled
-host configuration is installed and verified; the official existing-account login
-page has been opened for the Owner. Completion has not yet been observed. Stop
+host configuration is installed and verified. The Owner explicitly accepted the
+broader official connection grant, and OAuth completed with CLI exit 0 and a
+separate `o_auth` readback on 2026-09-07 UTC (September 6 New York). The five-tool
+allowlist is unchanged; this task's runtime tools and actual quotes remain unavailable.
+The local refresh proxy failed before initialization (Windows socket error 10050).
+Use Settings > MCP servers > Restart, then inspect actual schemas. Stop
 before any new-account or paid step; do not repeat the connection permission
 question. See [host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md). The build snapshot
 below and in current.json predates this host operation and remains historical
 validation evidence, not a live configuration inventory.
 
 The latest instruction continues toward real-price testing. The Owner has
-Robinhood; no account/API connection or entitled target-ETF quote file is available
-to Alpha. This delivery adds a public capability report, offline local catalog
+Robinhood; host OAuth is verified, but no runtime quote response or entitled
+target-ETF quote file is available to Alpha. The preceding build added a public capability report, offline local catalog
 inspection, one anonymous endpoint check and a disabled configuration example.
 See [current delivery](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md),
 [previous preparation](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
@@ -91,15 +95,16 @@ historical rejection remains recorded; the procurement decision is no longer pen
 
 New public-source finding: Robinhood's official Trading MCP lists
 `get_option_historicals` (OHLC), `get_option_quotes` (real-time), chain and
-instrument queries. No connection/authentication was performed. Historical
+instrument queries. That public-source review performed no authentication;
+the later host OAuth verification is recorded above. Historical
 bid/ask sizes, interval limits, retention and GLD/IBIT entitlements are unverified.
 Its documented access includes all-account read visibility and trading tools, so
 an authorized read-only capability assessment must preserve scope. Do not assume
 Cboe purchase is the only route. Exact sources are in the
 [reference document](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
 The disabled example is a client tool-name filter, not a narrower server-side
-permission grant or GLD/IBIT argument check. Connection/login has since been
-authorized as recorded above; new-account onboarding remains excluded. Exact response units, clocks, sizes and contract linkage
+permission grant or GLD/IBIT argument check. Host login has since succeeded as
+recorded above; account/order calls and new-account onboarding remain excluded. Exact response units, clocks, sizes and contract linkage
 remain unverified; any adapter must preserve a separate Robinhood source identity.
 
 Use `npm run options:robinhood-data -- --report` for the dated preparation report,
@@ -152,8 +157,9 @@ post-deletion test count.
 
 Continue local preparation without purchasing data. Assess authorized read-only
 Robinhood MCP capabilities using the reviewable readiness output before assuming
-a paid file is necessary. Complete the already authorized official login with the
-Owner, stopping before any new-account or paid step.
+a paid file is necessary. Host OAuth is complete. Reload the installed MCP
+configuration in the desktop app and inspect the five actual market-data tools;
+stop before any new-account or paid step. Do not repeat completed login or consent.
 Historical OHLC by itself does not meet replay input needs. A future adapter needs
 its own source/clock semantics; prospective capture cannot be backdated and cannot
 inherit the existing Cboe source label, interval model or size cutoff.
@@ -167,8 +173,8 @@ Paper history is in `data/runtime/options-paper/`, excluded from Git. Never
 rewrite accepted plans or quotes or report scripted outcomes as a strategy win rate.
 No whole contract fitting the constraints means no trade.
 Do not chase the 50x aspiration by increasing risk or pretending an AI confidence
-score is an 80% option-outcome probability. No brokerage access or execution is
-implemented.
+score is an 80% option-outcome probability. No product brokerage-account adapter
+or order execution is implemented; host OAuth does not establish either capability.
 
 Do not scrape Cboe/Nasdaq display pages or silently substitute Alpaca indicative
 quotes for OPRA. Do not purchase subscriptions or access account credentials as

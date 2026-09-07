@@ -2,8 +2,11 @@
 
 Current delivery adds Robinhood data-access preparation: public capabilities,
 bounded local catalog inspection, an anonymous endpoint check and a disabled
-configuration example. No authenticated quote connection is established. The
-[machine status](status/current.json) is authoritative. See
+configuration example. Subsequent host OAuth completed, with the five-tool
+allowlist verified; runtime schemas and quotes are still unavailable. The
+[machine status](status/current.json) describes the preceding build; the
+[host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md) supersedes its installation
+and authentication facts only. See
 [delivery evidence](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md),
 [previous preparation](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
 [broker reference](OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md).
@@ -13,7 +16,8 @@ configuration example. No authenticated quote connection is established. The
 - Separate data-readiness report and local catalog assessment with five fixed
   candidates, schema fingerprints, unknown hints and pagination blockers. The
   anonymous fixed-endpoint probe cannot invoke tools or establish data readiness.
-  Its disabled example is not installed; existing journals remain unchanged.
+  Its checked-in example remains disabled; the authorized host copy is enabled
+  and OAuth-authenticated. Runtime reload is outstanding; existing journals remain unchanged.
 - Manifest/child/metadata/plan preparation with chronology checks and optional
   immutable records. A linked result certifies only coherent declared inputs;
   no market import, replay, account access or trade follows automatically.
@@ -28,7 +32,7 @@ configuration example. No authenticated quote connection is established. The
   child hashes, row counts and a selection manifest. No silent file truncation.
 - Documented Cboe DataShop CSV import, source/ingestion history and deterministic
   path-quality reports. Actual data access remains unavailable: the Owner has
-  Robinhood only and no authorized API or historical file has been supplied.
+  Robinhood only and no actual API quote response or historical file has been supplied.
 - Contract/quote qualification, frozen plans, simulated round trips, persistent
   cash/position recovery and per-trade candidate mistake checks. Local synthetic
   or unverified inputs; intraday plans, one position and 14-45 DTE contracts.
@@ -43,13 +47,14 @@ configuration example. No authenticated quote connection is established. The
 1. Continue local workflow preparation under the Owner's decision to defer paid
    market data. Use the new readiness report and offline catalog inspection to
    prepare a concrete Robinhood scope/schema review. The Owner has now approved
-   the five-tool connection; complete official login with the Owner using the
-   installed host configuration. Stop before new-account or paid steps. See
+   the five-tool connection and broader official grant; host login is verified.
+   Reload the installed MCP configuration in the desktop app, then inspect the
+   actual tools. Stop before new-account or paid steps. See
    [host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md). Assess
    authorized read-only Robinhood Trading MCP capabilities and actual response semantics,
    or obtain an entitled local GLD/IBIT quote file. Official MCP documents now
-   include option historical OHLC, live quotes and instruments; it is not
-   connected, and historical bid/ask sizes or access terms remain unverified.
+   include option historical OHLC, live quotes and instruments; actual runtime
+   schemas, historical bid/ask sizes and entitlements remain unverified.
    Do not assume paid Cboe data is the only route or substitute OHLC for quotes.
    A client tool filter does not restrict server scope or enforce GLD/IBIT. Design
    a separate source adapter if compatible data is established; never relabel a
