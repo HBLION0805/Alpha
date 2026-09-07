@@ -31,6 +31,11 @@ and passkey options. The page was handed to the Owner without filling credential
 No new-account or payment step has been accepted. Authentication completion has
 not yet been observed; runtime tool schemas and actual quotes remain unavailable.
 
+The first login attempt subsequently timed out waiting for its OAuth callback
+(CLI exit 1). This was not authentication success or a data-access test. A fresh
+official login may be started under the same approval; the installed filter stays
+unchanged and the Owner must use the currently active authorization page.
+
 Do not store the temporary authorization URL, callback state, tokens or account
 identifiers in Git. If login times out, restart the same approved login when the
 Owner is ready; the authorization and five-tool limit persist without a new
