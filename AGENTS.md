@@ -80,7 +80,7 @@ Push
 
 ## Current Implemented Systems
 
-- Shared automatic development continuation: Owner explicitly requested resuming after reports. The app allows one heartbeat in this task; use docs/OPTIONS_WORK_CONTINUATION_HOST_V1.json for the existing gld-ibit wrapper and phase fields, with a pure time router, quarter-hour non-quote wakes, ten-minute development units and opening-day 09:00-10:00 New York priority guard. This supersedes the old armed cadence only. Exact quote Host code/contracts/window remain unchanged; at/after window end restore v6 first, install post-window continuation second, then inspect/save closeout. Original phase/runbook/v6 bytes remain immutable. Never delete the shared news task when development ends; restore appropriate original fields. See docs/OPTIONS_WORK_CONTINUATION_DELIVERY.md and docs/status/work-continuation.json for actual activation evidence.
+- Shared automatic development continuation: Owner explicitly requested resuming after reports. The app allows one heartbeat in this task; use docs/OPTIONS_WORK_CONTINUATION_HOST_V2.json for the existing gld-ibit wrapper and phase fields, with a pure time router, quarter-hour non-quote wakes, ten-minute development units and opening-day 09:00-10:00 New York priority guard. This supersedes the old armed cadence only. Exact quote Host code/contracts/window remain unchanged; at/after window end restore v6 first, install post-window continuation second, then inspect/save closeout. Original phase/runbook/v6 bytes remain immutable. Never delete the shared news task when development ends; restore appropriate original fields. See docs/OPTIONS_WORK_CONTINUATION_DELIVERY.md and docs/status/work-continuation.json for actual activation evidence.
 
 - Options sample validation: chronological declared windows, whole information intervals and cross-partition date/episode/evidence/observation reuse checks retain all cases. Existing-journal inventory recomputes originals and preserves unknown feature/outcome-knowledge clocks. Actual inventory has 15 cases, nine closed reviews and zero complete partition inputs. No sealed holdout, independence claim, model, probability or orders. See docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md and docs/status/sample-validation.json.
 
@@ -139,7 +139,7 @@ On 2026-09-06, the Owner deferred paid market data and directed continued local 
 
 For the current GLD/IBIT work, the Owner explicitly authorized development, saving, commits and pushes without further confirmation. This recorded authorization satisfies the Git workflow above; it does not authorize brokerage transactions.
 
-The latest Owner instruction requests continuous work without individual step reports. Continue independent authorized work and retain detailed evidence in delivery documents; surface only material blockers or information the Owner must supply.
+The Owner requests continuous work and, as of September 7, 2026, explicitly requests a concise Chinese development progress report every 15 minutes, including when work is still in progress or waiting. This supersedes older quiet development-reporting instructions. Use docs/OPTIONS_WORK_CONTINUATION_HOST_V2.json for active phase fields; v1 remains an immutable historical snapshot. Continue authorized work after reports. Preserve the exact quote window, restore-v6-before-evidence ordering and all trading restrictions. See docs/OPTIONS_WORK_PROGRESS_DELIVERY.md and docs/status/work-progress.json for activation evidence.
 
 ## Required Completion Report
 

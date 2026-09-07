@@ -118,6 +118,7 @@ const textExtensions = new Set([
 
 const aggregateTestFiles = [
   "src/engines/options-readiness/OptionsWorkContinuation.test.ts",
+  "scripts/options-work-progress.test.mjs",
   "scripts/options-work-continuation.test.mjs",
   "src/engines/options-sample-partition/OptionsSamplePartitionEngine.test.ts",
   "scripts/options-sample-partition.test.mjs",

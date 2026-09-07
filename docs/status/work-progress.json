@@ -1,0 +1,31 @@
+{
+  "version": "OPTIONS_WORK_PROGRESS_ACTIVATION_V1",
+  "recordedAt": "2026-09-07T20:31:37.858Z",
+  "ownerRequest": "Send development progress every 15 minutes",
+  "automationId": "gld-ibit",
+  "status": "ACTIVE_HOST_FIELDS_VERIFIED",
+  "manifest": "docs/OPTIONS_WORK_CONTINUATION_HOST_V2.json",
+  "hostFieldsMatched": [
+    "id",
+    "kind",
+    "name",
+    "prompt",
+    "rrule",
+    "status",
+    "targetThreadId",
+    "notificationPolicy"
+  ],
+  "hostSha256": "8baf0f9443d3616842769e19f3213a15fc0c229d8056c152689a4323e8043f99",
+  "cadenceUnchanged": true,
+  "onlyActiveBusinessFieldChanged": "prompt",
+  "focusedTests": {
+    "progressManifest": 5,
+    "originalHostAndCli": 8,
+    "timeRouter": 15,
+    "passed": 28,
+    "failed": 0
+  },
+  "firstNewProgressWakeObserved": false,
+  "sourceJournalAppends": 0,
+  "orderExecutionAllowed": false
+}

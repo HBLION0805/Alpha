@@ -8,6 +8,14 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner now explicitly requests Chinese development progress every 15 minutes,
+including in-progress or waiting states. The active shared fields are
+`docs/OPTIONS_WORK_CONTINUATION_HOST_V2.json`; v1 is preserved as history.
+Use NOTIFY for due reports and continue work afterward. Opening quotes retain
+priority, with no per-minute reporting spam or pre-restoration evidence reads.
+See [activation](OPTIONS_WORK_PROGRESS_DELIVERY.md) and
+[verified host fields](status/work-progress.json).
+
 The [research protocol declaration](OPTIONS_RESEARCH_PROTOCOL_DECLARATION_DELIVERY.md)
 has a reviewed design and typed pure assessment. Complete feature/outcome text,
 strategy and windows are hashed; original sample validation retains empty
@@ -50,7 +58,7 @@ checkpoint remains a dated pre-first-wake record and is not rewritten.
 
 Latest operational continuation: **OPT-WORK-CONTINUATION-1** shares the single
 `gld-ibit` heartbeat for development, daily context and frozen opening collection.
-Use `docs/OPTIONS_WORK_CONTINUATION_HOST_V1.json` and
+Use `docs/OPTIONS_WORK_CONTINUATION_HOST_V2.json` for current fields (v1 is preserved) and
 `options:work-continuation -- --route armed|daily`; see
 [delivery](OPTIONS_WORK_CONTINUATION_DELIVERY.md) and
 [actual activation status](status/work-continuation.json). Quarter-hour non-quote
