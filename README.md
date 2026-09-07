@@ -9,6 +9,9 @@ risk arithmetic. It promises no return and has no order-execution authority.
 - Local evidence exports preserve exact selected-study, review and context bytes
   with a verifiable manifest. Verification is independent of current source stores;
   this is a local copy, not an off-device backup. See [delivery](docs/OPTIONS_EVIDENCE_EXPORT_DELIVERY.md).
+- Isolated recovery rehearsals reconstruct verified package data in a fresh
+  temporary workspace and run the existing repository readers. The first actual
+  rehearsal recovered all five closed-trade reviews. See [rehearsal](docs/OPTIONS_EVIDENCE_REHEARSAL_DELIVERY.md).
 - Public BTC-USD context for IBIT: exact single-venue bid/ask and
   aggregate sizes, nanosecond source clocks, actual retrieval history and explicit
   stale/auction/missing-data checks. Daily collection and readiness v2 integrate
@@ -105,6 +108,7 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:evidence-rehearsal -- --rehearse <package-id>` | Test repository recovery in a fresh temporary workspace while preserving active data and the source package |
 | `npm run options:evidence-export -- --create <study-id> <package-id>` | Create one immutable local copy of the selected study and fixed journals |
 | `npm run options:evidence-export -- --verify <package-id>` | Independently verify every copied byte against its bounded manifest |
 | `npm run options:btc-context -- --refresh` | Read one public Coinbase BTC-USD level 1 snapshot as IBIT context and save it locally |

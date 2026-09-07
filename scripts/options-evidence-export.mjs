@@ -76,6 +76,8 @@ function writeExclusive(root, path, bytes) {
   const fd = openSync(safePath(root, path), "wx");
   try { writeFileSync(fd, bytes); fsyncSync(fd); } finally { closeSync(fd); }
 }
+// Internal bounded byte/path helpers for isolated recovery rehearsals; CLI scope is unchanged.
+export const optionsEvidenceExportStorage = Object.freeze({ readBytes, directory, writeExclusive });
 function verify(root, packageId, now) {
   const base = BASE + "/" + packageId, raw = readBytes(root, base + "/manifest.json", MANIFEST_MAX);
   let parsed;

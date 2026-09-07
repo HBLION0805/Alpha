@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "ISOLATED_OPTIONS_EVIDENCE_REHEARSAL",
+  "recordedAt": "2026-09-07T05:48:41.028Z",
+  "scope": [
+    "GLD",
+    "IBIT"
+  ],
+  "rehearsal": {
+    "path": "data/runtime/options-evidence-exports/prewindow-rehearsal.json",
+    "fileSha256": "5cb661936abdfcd7a679374c54b98a0d751bfd174e4a09a3285245384ef66240",
+    "status": "RESTORED_COMPONENTS_READABLE",
+    "isolatedWorkspace": "C:\\Users\\liuha\\AppData\\Local\\Temp\\alpha-evidence-rehearsal-a3vALm",
+    "startedAt": "2026-09-07T05:41:17.438Z",
+    "completedAt": "2026-09-07T05:41:17.565Z",
+    "copiedFiles": 7,
+    "copiedBytes": 522292,
+    "packageManifestSha256": "1922da33ec4e58053ef429cc44b4c218aed9f222b7cd77f1e1c1e2fd7ae12f41",
+    "reportSha256": "49dac4956fde00afdd77c3764f049cc62e47363c617dad6b5ea620ed7a22585e",
+    "availableStores": [
+      "collection",
+      "paper",
+      "historical",
+      "headlines",
+      "treasury",
+      "btc"
+    ],
+    "missingStores": [
+      "imports"
+    ],
+    "blockedStores": [],
+    "closedPaperReviewCoverage": {
+      "closed": 5,
+      "reviewed": 5,
+      "missing": 0,
+      "consistent": true
+    },
+    "candidateNotebooks": {
+      "paper": 4,
+      "historical": 15,
+      "collectionOperations": 0,
+      "quoteQuality": 0,
+      "approvedKnowledge": false,
+      "causalSuccessOrFailureEstablished": false,
+      "automaticStrategyChanges": false
+    }
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 109,
+    "testsExecuted": 2849,
+    "passed": 2849,
+    "failed": 0,
+    "durationMs": 49096,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-evidence-export.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "command": "npm run alpha:validate",
+    "log": "data/runtime/options-evidence-exports/rehearsal-validation.log",
+    "rehearsalTests": 10,
+    "exportIoTests": 22,
+    "engineeringTestsAreStrategyEvidence": false
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c",
+      "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+      "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+      "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5",
+      "data/runtime/options-driver-monitor/refreshes.ndjson": "b38823063dc5642f9f14b95ef369155af6af76b7cac4b8a3f323c84ebb5de4c9",
+      "data/runtime/options-treasury-rates/retrievals.ndjson": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json": "9ae78b5832c090c5f959d8b97a05ced60d76d3f5b5e6ebf6b81539a88c36108a",
+      "docs/status/treasury-real-yields.json": "0c448c9dbacc28d28088c07b3e1d8c50aaafe91fa7b3a1d7c7425d963af3f31f",
+      "data/runtime/options-btc-context/retrievals.ndjson": "c923886c16f1e67b0dd9e72c14eee7bdc40c1dd96696501f06b0d746d50cfb50",
+      "docs/status/btc-spot-context.json": "fd231b18eee0341e2119d193798d6f6dee5a8933d0733e06326e6f61707c3cac",
+      "docs/status/operational-readiness.json": "1b5998144af8a38340044e557f80f826f40d71c4072ec976be392daf77cade1f",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json": "5bf04fcbcb951907bc84fa2cd17d0285e5f527ee328a03fb21f151932293ab67"
+    },
+    "allUnchanged": true,
+    "hostConfigSha256": "66a5bad3cd80d32fc893f4bdff32b06a1937e9b676df97d8546db9f93c25bbc5",
+    "hostUnchanged": true,
+    "originalPackageUnchanged": true,
+    "restoredSourceBytesUnchanged": true
+  },
+  "boundaries": {
+    "newSourceCalls": 0,
+    "sourceJournalAppends": 0,
+    "newTrades": 0,
+    "activeRuntimeRestored": false,
+    "automaticOrdersEnabled": false,
+    "offDeviceBackup": false,
+    "realPriceReplayReady": false
+  }
+}

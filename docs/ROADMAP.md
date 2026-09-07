@@ -4,6 +4,8 @@ Immutable local evidence packages now preserve a selected study and fixed
 trade/research/context journals. Independent byte verification and explicit
 missing-component coverage support retention; off-device backup and automatic
 restore remain outside this version. See [delivery](OPTIONS_EVIDENCE_EXPORT_DELIVERY.md).
+An isolated [recovery rehearsal](OPTIONS_EVIDENCE_REHEARSAL_DELIVERY.md) now
+verifies existing readers can reconstruct the actual package and its trade reviews.
 
 Public single-venue BTC-USD book context is independently connected for IBIT.
 Source nanoseconds, exact prices/sizes and actual retrieval clocks are preserved;

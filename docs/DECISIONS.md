@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Rehearse recovery without restoring the active runtime
+
+- Reconstruct a verified evidence package only in a fresh temporary workspace.
+  Reuse existing repository recovery and actual check clocks, with no alternative
+  journal parser or lookup in current active source stores.
+- Preserve both package and reconstructed byte hashes. Report blocked components
+  separately from byte verification and keep the temporary copy for inspection.
+  No automatic write-back, deletion, source refresh, scheduler or trading action.
+
 ## 2026-09-07 - Preserve exact local study and review evidence
 
 - Export only the named study and six fixed journals into an exclusive local

@@ -44,6 +44,12 @@ writes the manifest last. Verification never consults current source stores.
 This supports record preservation without source writes, semantic-recovery claims,
 automatic restore or an off-device backup. See [specification](specifications/OPTIONS_EVIDENCE_EXPORT_V1.md).
 
+`options-evidence-rehearsal.mjs` reconstructs only verified, allowlisted package
+data beneath a fresh temporary workspace, then invokes the existing readiness v2
+recovery there. It rechecks both package and reconstructed bytes afterward and
+retains isolated data for inspection. Missing/corrupt components remain explicit;
+no active data, strategy or host configuration is restored or overwritten.
+
 `BtcSpotContextEngine` owns the bounded Coinbase Exchange BTC-USD book schema,
 exact decimal/nanosecond arithmetic and consecutive-observation diagnostics.
 `options-btc-context.mjs` has one fixed anonymous level 1 GET and a separate

@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - Isolated evidence recovery rehearsal
+
+- Added package-to-temporary-workspace reconstruction using bounded export
+  helpers and the existing readiness v2 repository recovery.
+- Preserved source/package bytes and separated missing or corrupted archived
+  components from successful byte checks. The actual rehearsal retains all five
+  closed-trade reviews. See [delivery](OPTIONS_EVIDENCE_REHEARSAL_DELIVERY.md).
+
 ## 2026-09-07 - Verifiable local evidence export
 
 - Added a bounded allowlist for selected-study artifacts and fixed context,

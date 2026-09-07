@@ -4,6 +4,13 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-EXPORT-2 rehearsed actual package recovery in a fresh temporary workspace:
+six components readable, imports missing, none blocked; all five closed paper
+trades retain five reviews and four candidate lessons, with fifteen separate
+historical candidates. Original package and active runtime bytes are unchanged.
+See [rehearsal delivery](OPTIONS_EVIDENCE_REHEARSAL_DELIVERY.md). This validates
+local repository recovery, not market outcomes or live execution readiness.
+
 OPT-EXPORT-1 adds an immutable local evidence package and independent verification.
 Package `gld-ibit-prewindow-20260907` holds seven files / 522,292 bytes from the
 opening study, five present journals and the existing closeout. Imported evidence
