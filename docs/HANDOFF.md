@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The [first-opening handoff audit](OPTIONS_FIRST_OPENING_HANDOFF.md) verified
+actual WAIT/no-request behavior at 2026-09-07T08:10:57.002Z, all eight armed host
+fields and twenty-seven preserved files. Five of five simulated closed trades
+have reviews; no new trade or source call was made. The frozen September 8
+09:30-09:50 New York window remains pending. See
+[checkpoint](status/pre-opening-handoff.json). Keep the existing v5 phase rules;
+quota exhaustion can prevent future Codex execution even with the computer awake.
+
 OPT-CALENDAR-BRIEF-1 adds a standalone thirty-date calendar brief. The actual
 2026-09-07T08:06:06.562Z report contains twelve BLS release instants and one FOMC
 date interval, preserving independent source checks and temporal precision.

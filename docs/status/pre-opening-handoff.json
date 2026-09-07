@@ -1,0 +1,206 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "PRE_OPENING_LOCAL_HANDOFF_AUDIT",
+  "assessedAt": "2026-09-07T08:10:57.002Z",
+  "implementationCommit": "23fe13f",
+  "artifactPath": "data/runtime/options-readiness/pre-opening-handoff-20260907.json",
+  "artifactFileSha256": "6d8515f4313d21204ad289fbb999d4c2dc9186015e9e263f705d93461f25c725",
+  "host": {
+    "verifiedFields": {
+      "id": true,
+      "kind": true,
+      "name": true,
+      "prompt": true,
+      "rrule": true,
+      "status": true,
+      "targetThreadId": true,
+      "notificationPolicy": true
+    },
+    "fileSha256": "66c1e3d5640ee8cc9e746aa90800beb613010829d9b3f0800d224e3576b72f6f",
+    "unchanged": true
+  },
+  "prepare": {
+    "schemaVersion": "1.0",
+    "studyId": "gld-ibit-observe-open-20260908",
+    "preparedAt": "2026-09-07T08:10:56.833Z",
+    "planSha256": "8e60f2a53ea47be83c30024e20d7a8ae1cc63fe1dca69ba8bc0e8540420f5c8d",
+    "windowStartAt": "2026-09-08T13:30:00.000Z",
+    "windowEndAt": "2026-09-08T13:50:00.000Z",
+    "nextRequestAt": "2026-09-08T13:30:00.000Z",
+    "action": "WAIT",
+    "requests": [],
+    "attemptCount": 0,
+    "sourceFailureCount": 0,
+    "frameCount": 0,
+    "usableObservations": 0,
+    "status": "NO_REPLAY",
+    "networkAccess": false,
+    "executionAllowed": false
+  },
+  "sourceStates": {
+    "collection": {
+      "state": "AVAILABLE",
+      "checkedAt": "2026-09-07T08:10:56.834Z",
+      "errorCode": null
+    },
+    "paper": {
+      "state": "AVAILABLE",
+      "checkedAt": "2026-09-07T08:10:56.848Z",
+      "errorCode": null
+    },
+    "historical": {
+      "state": "AVAILABLE",
+      "checkedAt": "2026-09-07T08:10:56.887Z",
+      "errorCode": null
+    },
+    "imports": {
+      "state": "MISSING",
+      "checkedAt": "2026-09-07T08:10:56.905Z",
+      "errorCode": "STORE_MISSING"
+    },
+    "headlines": {
+      "state": "AVAILABLE",
+      "checkedAt": "2026-09-07T08:10:56.905Z",
+      "errorCode": null
+    },
+    "treasury": {
+      "state": "AVAILABLE",
+      "checkedAt": "2026-09-07T08:10:56.927Z",
+      "errorCode": null
+    },
+    "btc": {
+      "state": "AVAILABLE",
+      "checkedAt": "2026-09-07T08:10:56.933Z",
+      "errorCode": null
+    }
+  },
+  "paper": {
+    "closed": 5,
+    "reviewed": 5,
+    "missing": 0,
+    "consistent": true
+  },
+  "candidateNotebooks": {
+    "paper": 4,
+    "historical": 15,
+    "collectionOperations": 0,
+    "quoteQuality": 0,
+    "approvedKnowledge": false,
+    "causalSuccessOrFailureEstablished": false,
+    "automaticStrategyChanges": false
+  },
+  "collectionState": "WAITING_FOR_WINDOW",
+  "dependencies": [
+    {
+      "code": "RECOVER_LOCAL_STORES",
+      "state": "CHECKED",
+      "detail": "Recoverable local integrity is distinct from successful source data. Missing optional histories are listed separately."
+    },
+    {
+      "code": "RETAIN_EVERY_CLOSED_TRADE_REVIEW",
+      "state": "CHECKED",
+      "detail": "Counts refer only to the local simulated account; no brokerage trades are inspected."
+    },
+    {
+      "code": "RETAIN_EVERY_HISTORICAL_RUN_REVIEW",
+      "state": "CHECKED",
+      "detail": "Independent counterfactual runs include missing-data and unresolved outcomes; their accounts are never combined."
+    },
+    {
+      "code": "COLLECT_FROZEN_OPTION_WINDOW",
+      "state": "WAITING_FOR_WINDOW",
+      "detail": "Pending windows are not failed source calls; recorded coverage is a diagnostic."
+    },
+    {
+      "code": "QUALIFY_ROBINHOOD_SOURCE_SEMANTICS",
+      "state": "UNVERIFIED",
+      "detail": "Independent quote-side and size clocks, source/calendar declarations and usage semantics remain unresolved."
+    },
+    {
+      "code": "FREEZE_COSTS_AND_PAPER_FILL_ASSUMPTIONS",
+      "state": "UNVERIFIED",
+      "detail": "Verify fees, price grids, whole-contract affordability and adverse fills without altering accepted plans."
+    },
+    {
+      "code": "IMPLEMENT_QUALIFIED_ROBINHOOD_PAPER_ADAPTER",
+      "state": "NOT_IMPLEMENTED",
+      "detail": "The existing generic local lifecycle and historical research do not qualify a Robinhood replay adapter."
+    },
+    {
+      "code": "VALIDATE_REAL_PRICE_OUTCOMES_AND_CALIBRATION",
+      "state": "NOT_ESTABLISHED",
+      "detail": "Synthetic or imported assumed fills cannot establish a target-before-stop probability or authorize size escalation."
+    }
+  ],
+  "nextStep": "WAIT_FOR_FROZEN_OPENING_WINDOW",
+  "calendar": {
+    "assessedAt": "2026-09-07T08:10:56.969Z",
+    "reportSha256": "451f157e3d2f94f9510c0c5d332dcad69422d6ce75ade246fbd207460b4ef821",
+    "entryCount": 13,
+    "sourceStates": {
+      "bls": "AVAILABLE",
+      "fomc": "AVAILABLE"
+    }
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c",
+      "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+      "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+      "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5",
+      "data/runtime/options-driver-monitor/refreshes.ndjson": "b38823063dc5642f9f14b95ef369155af6af76b7cac4b8a3f323c84ebb5de4c9",
+      "data/runtime/options-treasury-rates/retrievals.ndjson": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json": "9ae78b5832c090c5f959d8b97a05ced60d76d3f5b5e6ebf6b81539a88c36108a",
+      "docs/status/treasury-real-yields.json": "0c448c9dbacc28d28088c07b3e1d8c50aaafe91fa7b3a1d7c7425d963af3f31f",
+      "data/runtime/options-btc-context/retrievals.ndjson": "c923886c16f1e67b0dd9e72c14eee7bdc40c1dd96696501f06b0d746d50cfb50",
+      "docs/status/btc-spot-context.json": "fd231b18eee0341e2119d193798d6f6dee5a8933d0733e06326e6f61707c3cac",
+      "docs/status/operational-readiness.json": "1b5998144af8a38340044e557f80f826f40d71c4072ec976be392daf77cade1f",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json": "5bf04fcbcb951907bc84fa2cd17d0285e5f527ee328a03fb21f151932293ab67",
+      "data/runtime/options-release-calendar/retrievals.ndjson": "7795744632fac68781d71bc380af66b3f40eea2e0d810945dac96e0121355516",
+      "docs/status/bls-release-calendar.json": "791774a40705280e485bcfaca7681480294dd8fb5115e561028ff91b21ddff6a",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json": "673364912eb61b2871caa03d899c0ec332d599a2c9b0662727602b6e9b3bae75",
+      "data/runtime/options-readiness/operator-brief.json": "4d238f48cfb3220a486ab24b3d5ffe9564266882bbd622bc009863e6a19d61d0",
+      "data/runtime/options-readiness/operator-brief.txt": "ad320b05013febeac086715e334b12c2461bb178ba10dcb650d84ee8a4aad602",
+      "data/runtime/options-readiness/context-cutoff-0430.json": "ebcd6c2e52640cd568141638f637e34b1a0acfa2839c7824fca00fb236e05451",
+      "data/runtime/options-fomc-calendar/retrievals.ndjson": "bc92776d33b468e937ea1a2c935668d3aff7f9f6fc802067d7864c415accb40c",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json": "9ed8af11a3bc6728f2ec9136389313ea56d3ccf0a5f88886f65a24c173f90014",
+      "docs/status/fomc-daily-context.json": "b8df9adf3c54039b91b8146f41953b57716c2658ed9b90d92e6600cfda1e3f34",
+      "data/runtime/options-readiness/calendar-brief.json": "29e4f6cb14b6e7daf0ce1f79a89c635841f9e844beba6401adebb6fb9115cb13",
+      "data/runtime/options-readiness/calendar-brief.txt": "fb75df8d10c4025d9391f3f52d6fd90e126a2fd4fc4ac4be27009ce8f3abf130"
+    },
+    "allMatched": true
+  },
+  "validation": {
+    "codeChanged": false,
+    "currentFullBundle": {
+      "status": "PASSED",
+      "componentCount": 120,
+      "testsExecuted": 3107,
+      "passed": 3107,
+      "failed": 0,
+      "durationMs": 59755,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+      ]
+    },
+    "repeatedFullBundle": false
+  },
+  "boundaries": {
+    "sourceCalls": 0,
+    "sourceAppends": 0,
+    "hostUpdates": 0,
+    "accountOrOrderCalls": 0,
+    "realPriceReplay": "NOT_RUN",
+    "executionAllowed": false,
+    "winProbability": null
+  }
+}

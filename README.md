@@ -6,6 +6,10 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+The [first-opening handoff](docs/OPTIONS_FIRST_OPENING_HANDOFF.md) records the
+latest local collection preflight, preserved reviews, active schedule and the
+evidence still needed before a Robinhood real-price paper test.
+
 - A separate local calendar brief combines BLS release times and FOMC date ranges
   with explicit missing metadata, source health and unknown intraday timing. It
   preserves existing report formats and gives no trade signal. See
