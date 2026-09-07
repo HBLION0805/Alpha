@@ -7,14 +7,14 @@ assert(body, 'The runnable host tick must remain present');
 const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 // Execute only the checked-in host program with isolated test ports, never provider data.
 const program = new AsyncFunction('tools', 'text', 'Date', body);
-const current = Date.parse('2026-09-08T14:01:00.000Z');
+const current = Date.parse('2026-09-08T13:31:00.000Z');
 class Clock extends Date { constructor(...args) { super(...(args.length ? args : [current])); } static now() { return current; } }
 const expected = [
   {tool:'get_option_quotes',args:{instrument_ids:['4378bc78-8f9a-4526-a9e4-7b0877ce2df7','bb7fc41e-6cc4-43ca-ad1e-d634f8cae569','f488dcbf-f643-45a6-b84f-3b25cde51bf6','f84d1132-41b7-4588-8b03-da553313fbca']}},
   {tool:'get_equity_quotes',args:{symbols:['GLD','IBIT']}}
 ];
-function preparation(action) { return { action, studyId:'gld-ibit-observe-20260908', planSha256:'a5e14b121c3454640f0986a519bda2f4259ca4faf08e265196317d3d98166bff',
-  windowStartAt:'2026-09-08T14:00:00.000Z',windowEndAt:'2026-09-08T14:20:00.000Z',nextRequestAt:null,requests:action==='COLLECT'?expected:[] }; }
+function preparation(action) { return { action, studyId:'gld-ibit-observe-open-20260908', planSha256:'8e60f2a53ea47be83c30024e20d7a8ae1cc63fe1dca69ba8bc0e8540420f5c8d',
+  windowStartAt:'2026-09-08T13:30:00.000Z',windowEndAt:'2026-09-08T13:50:00.000Z',nextRequestAt:null,requests:action==='COLLECT'?expected:[] }; }
 async function execute(prepared, change = () => {}) {
   const calls = [], outputs = [], replies = [], commands = [];
   const tools = {

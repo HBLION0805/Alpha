@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 UTC - Start the first collection window at the open
+
+- Moved the active first window to September 8, 09:30-09:50 New York by freezing
+  a new study. Old plans, frames, activation records and journals are untouched.
+- Updated the existing heartbeat and tested host plan/hash/clocks while retaining
+  the original daily news restoration fields, quote scope and quality rules.
+  See [the correction](OPTIONS_ROBINHOOD_OPENING_WINDOW.md). No order execution.
+
 ## 2026-09-07 UTC - Arm bounded automatic Robinhood collection
 
 - Added a window/cadence-checked collection CLI and tested two-tool host tick,

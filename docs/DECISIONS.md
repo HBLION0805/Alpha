@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 UTC - Collect the opening interval
+
+- The Owner questioned the initial 10:00 start. Collection has no requirement to
+  wait thirty minutes after the open; begin the first twenty-minute diagnostic
+  interval at 09:30 New York. Opening data still passes the same quality checks.
+- Freeze a new prospective study with the same contracts and preserve the old
+  10:00 study byte-for-byte. Update the existing shared timer; keep the original
+  news restoration snapshot. No backdating, additional tools or execution.
+
 ## 2026-09-07 UTC - Share the existing heartbeat for authorized quote collection
 
 - The Owner explicitly requests automatic collection only. Add the frozen

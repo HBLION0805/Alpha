@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "ROBINHOOD_OPENING_WINDOW_CORRECTION",
+  "recordedAt": "2026-09-07T03:07:43.164Z",
+  "supersedesOperationally": "docs/status/robinhood-autocollection.json",
+  "hostSchedule": {
+    "automationId": "gld-ibit",
+    "status": "ACTIVE",
+    "phase": "ARMED_WAITING_FOR_WINDOW",
+    "automaticCollectionEnabled": true,
+    "rrule": "RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0,30;BYDAY=SU,MO,TU,WE,TH,FR,SA",
+    "collectionPhaseRrule": "RRULE:FREQ=MINUTELY;INTERVAL=1",
+    "configSha256": "0af3bf2ae10071403e50a2afa7a9e5836fe80a37addc75acc54d5606f12b16fc",
+    "fieldsReadbackVerified": true,
+    "windowTimeZone": "America/New_York",
+    "targetCadenceSeconds": 60,
+    "sharedNewsHeartbeat": true,
+    "restoreBeforeCollectionReview": true,
+    "restorationSnapshot": "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json"
+  },
+  "study": {
+    "studyId": "gld-ibit-observe-open-20260908",
+    "planSha256": "8e60f2a53ea47be83c30024e20d7a8ae1cc63fe1dca69ba8bc0e8540420f5c8d",
+    "planFileSha256": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+    "frozenAt": "2026-09-07T03:05:12.104Z",
+    "windowStartAt": "2026-09-08T13:30:00.000Z",
+    "windowEndAt": "2026-09-08T13:50:00.000Z",
+    "contractCount": 4,
+    "frameCount": 0,
+    "diagnosticUsableObservations": 0
+  },
+  "preflight": {
+    "recordedAt": "2026-09-07T03:06:12.058Z",
+    "action": "WAIT",
+    "preparedRequestCount": 0,
+    "attemptCount": 0,
+    "newMarketCallsThisDelivery": 0
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c"
+    },
+    "previousObservationCheckpointUnchanged": true,
+    "originalNewsSnapshot": "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json",
+    "previousActivationCheckpointSha256": "d95a78475fae468f446c8a315ba9401823d1137fc314c02950abe7ec4d8cc1d4",
+    "newsRestorationFileSha256": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040"
+  },
+  "boundaries": {
+    "status": "NO_REPLAY",
+    "executionAllowed": false,
+    "automaticOrdersEnabled": false,
+    "accountOrOrderCalls": 0,
+    "realPriceTradeReplay": "NOT_RUN",
+    "realTradeCount": 0,
+    "winProbability": null,
+    "sizeEscalationAllowed": false,
+    "sourceDeclarationAuthenticatedByParser": false
+  },
+  "validation": {
+    "focusedHostTestsPassed": 8,
+    "focusedCollectionTestsPassed": 20,
+    "aggregateStatus": "PASSED",
+    "command": "npm run alpha:validate",
+    "status": "PASSED",
+    "componentCount": 97,
+    "testsExecuted": 2559,
+    "passed": 2559,
+    "failed": 0,
+    "durationMs": 42237,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/specifications/OPTIONS_ROBINHOOD_AUTOCOLLECTION_V1.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-robinhood-collection-host.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "log": "data/runtime/options-robinhood-data/opening-validation.log",
+    "recordedAt": "2026-09-07T03:09:14.091Z",
+    "sourceSelectionCalendarAndPhaseBindingsVerified": true
+  },
+  "nextDependency": "Actual opening-session observations and coverage review; no automatic orders."
+}

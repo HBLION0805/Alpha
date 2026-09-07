@@ -4,6 +4,14 @@ Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The Owner questioned the 10:00 collection start. The active first window now
+begins at the market open: September 8, 09:30-09:50 New York, using a new frozen
+study `gld-ibit-observe-open-20260908`. The old 10:00 plan and all records are
+preserved. Armed wakes are daily 09:00/09:30; the original news restoration
+snapshot remains unchanged. See [the correction](OPTIONS_ROBINHOOD_OPENING_WINDOW.md)
+and [latest operational status](status/robinhood-opening-collection.json).
+The chronology below retains the preceding 10:00 activation evidence.
+
 The Owner now requests continuous progress without separate step reports.
 The latest instruction explicitly authorizes automatic collection and excludes
 automatic orders. RH-AUTO-1 is armed and independently read back at

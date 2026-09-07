@@ -1,11 +1,11 @@
 # Alpha Roadmap
 
 Current delivery arms automatic GLD/IBIT quote collection for the frozen September
-8, 10:00-10:20 New York observation window. The existing news heartbeat shares
+8, 09:30-09:50 New York observation window. The existing news heartbeat shares
 this window and restores its original daily 09:00 schedule afterward. The local
 collector and host tick are tested; actual in-window collection is pending.
-See [collection delivery](OPTIONS_ROBINHOOD_AUTOCOLLECTION_DELIVERY.md) and
-[latest operational status](status/robinhood-autocollection.json).
+See [opening-window correction](OPTIONS_ROBINHOOD_OPENING_WINDOW.md) and
+[latest operational status](status/robinhood-opening-collection.json).
 
 The preceding delivery added Robinhood capture assessment and immutable storage.
 Host OAuth and all five market tools work. Four actual option quotes were stale

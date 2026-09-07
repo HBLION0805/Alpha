@@ -6,7 +6,7 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
-- Automatic Robinhood collection is armed for September 8, 2026, 10:00-10:20
+- Automatic Robinhood collection is armed for September 8, 2026, 09:30-09:50
   a.m. New York: GLD/IBIT equity quotes and four frozen option contracts, with a
   target sixty-second cadence. The existing news heartbeat temporarily shares
   this window, then restores its original daily 09:00 news schedule. Actual
@@ -66,12 +66,12 @@ fill. A USD 25 premium with zero assumed costs, 20% stop and 2R has a USD 5 plan
 loss and USD 10 net profit target. No passing diagnostic authorizes a trade.
 
 The USD 1,000-to-USD 50,000 year-end aspiration is a scenario only and cannot
-increase risk limits. Read [current delivery](docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_DELIVERY.md),
+increase risk limits. Read [current delivery](docs/OPTIONS_ROBINHOOD_OPENING_WINDOW.md),
 the [observation delivery](docs/OPTIONS_ROBINHOOD_OBSERVATION_DELIVERY.md),
 the [capture delivery](docs/OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md),
 the [previous preparation delivery](docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md),
 the [dated broker reference](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md)
-and the latest [collection status](docs/status/robinhood-autocollection.json). The older
+and the latest [collection status](docs/status/robinhood-opening-collection.json). The older
 [build status](docs/status/current.json) remains a dated pre-connection checkpoint.
 
 The Owner's current direction is to defer paid market data and continue preparing
@@ -84,7 +84,7 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
-| `npm run options:robinhood-collect -- --prepare gld-ibit-observe-20260908` | Check the frozen collection window and cadence; only the authorized host tick invokes market tools |
+| `npm run options:robinhood-collect -- --prepare gld-ibit-observe-open-20260908` | Check the frozen collection window and cadence; only the authorized host tick invokes market tools |
 | `npm run options:robinhood-observe -- --help` | Screen samples, freeze a prospective study, record exact quote captures and review gaps/lessons |
 | `npm run options:robinhood-capture -- --inspect <JSON> [--save]` | Assess a bounded capture at actual time; optionally preserve an immutable local record |
 | `npm run options:robinhood-data -- --report` | Show dated capabilities, missing field semantics and the disabled example |

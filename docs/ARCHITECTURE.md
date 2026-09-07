@@ -6,7 +6,7 @@ Alpha supports decisions about GLD and IBIT options on Robinhood. Capital
 preservation and explicit risk precede growth targets. TypeScript owns the
 current product logic. Legacy Python, Event Contract/Kalshi, Daily Scan and
 fixed-universe Alpaca product implementations have been removed by Owner
-instruction. The [collection status](status/robinhood-autocollection.json) records the latest
+instruction. The [collection status](status/robinhood-opening-collection.json) records the latest
 Robinhood checkpoint; [current.json](status/current.json) retains the prior build.
 
 ## Host collection boundary

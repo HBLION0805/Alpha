@@ -1,5 +1,10 @@
 # Robinhood automatic collection v1
 
+Schedule amendment: [the opening-window correction](../OPTIONS_ROBINHOOD_OPENING_WINDOW.md)
+supersedes the 10:00 window below with a newly frozen September 8, 09:30-09:50 New
+York study and daily 09:00/09:30 armed wakes. All collector semantics remain as
+specified. The original design chronology and immutable study remain preserved.
+
 Task RH-AUTO-1. The Owner explicitly requests automatic GLD/IBIT market-data
 collection and explicitly excludes automatic orders. The host permits only one
 active heartbeat per thread, so extend the existing public-news heartbeat under
