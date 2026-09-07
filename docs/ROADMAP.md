@@ -1,13 +1,12 @@
 # Alpha Roadmap
 
-The [context member engine](OPTIONS_CONTEXT_MANIFEST_ENGINE_DELIVERY.md) now
-preserves exact cutoff-selected record identities across five source histories.
-Capture/recovery and actual post-write receipts are the next implementation unit.
-
-[Context member manifest/capture design](specifications/OPTIONS_CONTEXT_MANIFEST_V1.md)
-is reviewed; implementation is the next bounded continuation unit. It separates
-source receipt/discovery clocks from a subsequently compiled payload's actual
-save clock. No prospective capture or complete predictive feature set exists yet.
+The [context capture workflow](OPTIONS_CONTEXT_CAPTURE_DELIVERY.md) now saves
+and independently recovers five-source payload/receipt pairs. Its first actual
+local capture retains 174 source members and a post-payload-write save clock.
+Prospective research decision/protocol binding is next; complete predictive
+features and qualified real-price paper execution remain separate gaps. The
+[member engine](OPTIONS_CONTEXT_MANIFEST_ENGINE_DELIVERY.md) and original
+[design](specifications/OPTIONS_CONTEXT_MANIFEST_V1.md) retain their dated evidence.
 
 [Shared continuation](OPTIONS_WORK_CONTINUATION_DELIVERY.md) carries authorized
 development between reports while yielding to the pending opening observation.

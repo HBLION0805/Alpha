@@ -1,0 +1,70 @@
+{
+  "version": "OPTIONS_CONTEXT_CAPTURE_DELIVERY_V1",
+  "recordedAt": "2026-09-07T20:09:54.700Z",
+  "sourceBaseCommit": "7acc6d5",
+  "status": "LOCAL_CAPTURE_AND_ISOLATED_RECOVERY_VERIFIED",
+  "routerAsOf": "2026-09-07T20:02:11.429Z",
+  "developmentStopAt": "2026-09-07T20:12:11.429Z",
+  "focusedTests": {
+    "passed": 19,
+    "failed": 0
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 137,
+    "testsExecuted": 3424,
+    "passed": 3424,
+    "failed": 0,
+    "durationMs": 76462,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "validationLogSha256": "a40823b273f1270e547def3676ddeb10101462401306ddbf97337add87028433",
+  "preservation": {
+    "protectedFileCount": 522,
+    "changed": []
+  },
+  "actualRecovery": {
+    "recordedAt": "2026-09-07T20:08:30.211Z",
+    "report": {
+      "status": "CONTEXT_CAPTURE_PAIR_RECOMPUTED",
+      "captureId": "context-first-local-20260907",
+      "path": "data/runtime/options-context-captures/context-first-local-20260907",
+      "cutoffAt": "2026-09-07T20:07:38.974Z",
+      "constructedAt": "2026-09-07T20:07:39.057Z",
+      "payloadSavedAt": "2026-09-07T20:07:39.199Z",
+      "receiptPreparedAt": "2026-09-07T20:07:39.199Z",
+      "verifiedAt": "2026-09-07T20:08:30.198Z",
+      "payloadSha256": "1159f5bc98748b24e2a3f63d9c371828f0c5d430273b815457d0d3911a5ce228",
+      "receiptSha256": "1baf78c0f2c04fb1556dd7178ac208b9f24b176be7a3d8dd5dc629954f280ed2",
+      "manifestSha256": "d1aef242e17aeabd694afc22caeac5f52d0b7d2f4d3fbea4220205a963897c5f",
+      "contextSha256": "6794a405f3bec8940806400bbce0d75612d1017d5318266495e39a5dc4a9bd87",
+      "memberCount": 174,
+      "blockedStores": [],
+      "missingStores": [],
+      "captureReceiptVerified": true,
+      "sourceStoresRead": false,
+      "snapshotAtomicAcrossStores": false,
+      "historicalDecisionProven": false,
+      "globalKnowledgeCoverageComplete": false,
+      "externalTimestampAttested": false,
+      "sourceJournalAppends": 0,
+      "networkAccess": false,
+      "executionAllowed": false,
+      "replayAllowed": false
+    },
+    "isolatedWorkspace": true,
+    "activeSourceJournalsPresent": false,
+    "temporaryWorkspaceRemoved": true
+  },
+  "sourceJournalAppends": 0,
+  "hostChanges": 0,
+  "marketSourceCalls": 0,
+  "newTrades": 0,
+  "executionAllowed": false,
+  "nextStep": "DESIGN_PROSPECTIVE_RESEARCH_PROTOCOL_AND_DECISION_BINDING"
+}

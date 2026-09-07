@@ -8,6 +8,14 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The [context capture command](OPTIONS_CONTEXT_CAPTURE_DELIVERY.md) now saves
+exclusive payload/receipt pairs with actual post-fsync clocks and isolated
+recomputation. Actual capture `context-first-local-20260907` contains 174 members
+and has passed independent recovery without source journals. Next bounded unit:
+specify prospective research decision/protocol references using existing sample
+contracts. Do not bind this new receipt retroactively to old plans or manufacture
+complete sampling inputs. The frozen opening study remains unchanged.
+
 The [shared context history loader](OPTIONS_CONTEXT_LOADER_DELIVERY.md) is now
 extracted with unchanged v1/v2 CLI semantics. Next unit is the actual
 inspect/capture/recovery command and exclusive payload/receipt pairs; loader

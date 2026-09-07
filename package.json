@@ -76,6 +76,8 @@
     "test:options-btc-context": "tsx src/engines/options-btc-context/BtcSpotContextEngine.test.ts",
     "test:options-btc-context-io": "tsx scripts/options-btc-context.test.mjs",
     "options:readiness": "tsx scripts/options-readiness.mjs",
+    "options:context-capture": "tsx scripts/options-context-capture.mjs",
+    "test:options-context-capture": "tsx scripts/options-context-capture.test.mjs",
     "options:evidence-export": "tsx scripts/options-evidence-export.mjs",
     "options:evidence-rehearsal": "tsx scripts/options-evidence-rehearsal.mjs",
     "test:options-evidence-rehearsal": "tsx scripts/options-evidence-rehearsal.test.mjs",
