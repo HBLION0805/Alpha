@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Recover news access without changing global permissions
+
+- A restricted Fed probe returned EACCES; the approved fixed six-feed command
+  succeeded for all sources. Distinguish structured access denial from unknown
+  network failures and remote HTTP responses, without storing exception text.
+- Preserve v5 bytes and publish v6 restoration instructions for supported
+  per-command network approval before the single scheduled news refresh.
+- Keep four other daily source flows, all non-prompt host fields, the exact quote
+  Host program and frozen September 8 window unchanged. A rejected approval
+  remains a blocker and cannot trigger endpoint or identity substitution.
+
 ## 2026-09-07 - Add FOMC dates to shared daily context
 
 - Version the daily restoration baseline to v5, bound to unchanged v4 bytes.

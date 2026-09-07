@@ -8,6 +8,14 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner requested fixing news refresh and then continuing preparation.
+[News access recovery](OPTIONS_NEWS_ACCESS_RECOVERY.md) confirms a local EACCES
+failure and successful approved six-feed refresh at 15:42:28 UTC. The active
+daily restoration is now **v6**; use the current phase fields and runbook, while
+retaining every older snapshot and dated delivery. v6 supplies the previously
+missing news network-approval instruction; global permissions are unchanged.
+The opening study, exact quote Host and September 8 window remain frozen.
+
 The [final preparation validation](OPTIONS_FINAL_PREPARATION_VALIDATION.md),
 recorded at 2026-09-07T08:38:11.456Z, passed 3,108/3,108 tests across 120 components,
 zero failures/warnings. This includes the later budget-exclusion regression.

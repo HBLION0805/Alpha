@@ -1,5 +1,10 @@
 # GLD/IBIT operations: evidence and next test
 
+Subsequent operational correction: [news access recovery](OPTIONS_NEWS_ACCESS_RECOVERY.md)
+restores six feeds and advances the active daily restoration to v6. The dated
+index and checkpoints below retain their original clocks and hashes; use the
+current phase fields and runbook for the scheduled task.
+
 Recorded **2026-09-07T08:32:58.024Z**. This is a dated navigation and evidence index.
 Its [machine-readable companion](status/operations-index.json) hashes twenty-three
 checkpoints without changing them. It is not a live dashboard or a replacement

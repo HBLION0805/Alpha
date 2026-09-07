@@ -68,7 +68,7 @@ await test('daily context baseline preserves the original news snapshot and non-
 });
 await test('both collection phases use the active daily baseline without changing the quote window', () => {
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
-  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json');
+  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json');
   assert.equal(phases.windowStartAt,'2026-09-08T13:30:00.000Z'); assert.equal(phases.windowEndAt,'2026-09-08T13:50:00.000Z');
   assert.equal(phases.armedFields.rrule,'RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0,30;BYDAY=SU,MO,TU,WE,TH,FR,SA');
   assert.equal(phases.collectionFields.rrule,'RRULE:FREQ=MINUTELY;INTERVAL=1');
@@ -116,7 +116,7 @@ await test('daily calendar context leaves the precise frozen quote program intac
   assert.equal(createHash('sha256').update(body.replaceAll('\r\n','\n')).digest('hex'),'2e3a24d5ca223922d001047b58aaa689d17575e60dd0e89908daa14655ec4def');
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
   assert(!phases.armedFields.prompt.includes('RESTORE_V3.json'));
-  assert(document.includes('OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json'));
+  assert(document.includes('OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json'));
 });
 await test('v5 binds exact v4 bytes and preserves all four prior source subflows', () => {
   const bytes=readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V4.json'), prior=JSON.parse(bytes);
@@ -136,7 +136,20 @@ await test('FOMC integration preserves quote control flow and updates only activ
   assert(!body.includes('fomc-calendar'));
   assert.equal(createHash('sha256').update(body.replaceAll('\r\n','\n')).digest('hex'),'2e3a24d5ca223922d001047b58aaa689d17575e60dd0e89908daa14655ec4def');
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
-  assert(!phases.armedFields.prompt.includes('RESTORE_V4.json')); assert(phases.armedFields.prompt.includes('RESTORE_V5.json'));
-  assert(document.includes('active v5 baseline'));
+  assert(!phases.armedFields.prompt.includes('RESTORE_V4.json')); assert(phases.armedFields.prompt.includes('RESTORE_V6.json'));
+  assert(document.includes('active v6 baseline'));
+});
+await test('v6 preserves v5 bytes and every prior flow while adding bounded news network approval', () => {
+  const path='docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json', bytes=readFileSync(path), prior=JSON.parse(bytes);
+  const next=JSON.parse(readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json','utf8'));
+  const sha=createHash('sha256').update(bytes).digest('hex');
+  assert.equal(sha,'9ed8af11a3bc6728f2ec9136389313ea56d3ccf0a5f88886f65a24c173f90014');
+  assert.equal(next.previousSnapshot,path); assert.equal(next.previousSnapshotFileSha256,sha);
+  const {prompt:oldPrompt,...oldFields}=prior.restoreFields, {prompt:newPrompt,...newFields}=next.restoreFields;
+  assert.deepEqual(newFields,oldFields);
+  assert.equal(newPrompt.replace(/\n\n新闻联网执行规则（v6）：[^\n]+/,''),oldPrompt);
+  assert(newPrompt.includes('require_escalated')); assert(newPrompt.includes('FEED_NETWORK_ACCESS_DENIED'));
+  assert(newPrompt.includes('每个新闻子流程只执行一次刷新')); assert(newPrompt.includes('不绕过拒绝'));
+  assert(newPrompt.includes('不得全局关闭沙箱')); assert(newPrompt.includes('无需先制造一轮已知失败'));
 });
 console.log(`${passed}/${passed} tests passed.`);

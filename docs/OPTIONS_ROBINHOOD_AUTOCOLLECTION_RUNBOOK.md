@@ -26,19 +26,19 @@ First apply the shared-heartbeat phase rules below using actual UTC time; they
 take precedence over loading collection files. The host allows only one active
 heartbeat in this task. The existing ID `gld-ibit` serves both workflows.
 Use the exact [phase update fields](OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json) and
-[active daily context restoration fields](OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json), preserving
+[active daily context restoration fields](OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json), preserving
 the checked-in [wrapper prompt](OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt).
 
 - Before `2026-09-08T13:30:00.000Z`, retain the armed daily 09:00/09:30 schedule.
   At the normal 09:00 New York wake, execute the daily news, Treasury, BTC, BLS and FOMC calendar context prompt
-  from `docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json`. At other pre-window wakes,
+  from `docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json`. At other pre-window wakes,
   perform only the collector's no-op preflight. Never change quote timestamps.
 - From `13:30:00` through strictly before `13:50:00` UTC on September 8, ensure
   the existing heartbeat uses a one-minute interval, preserving the wrapper prompt,
   name, thread target and notification settings. Then execute the host tick below.
   Change only this heartbeat through `automation_update`, never create a cron.
 - At or after `2026-09-08T13:50:00.000Z`, first restore the active daily context fields
-  in `docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json` using `automation_update`.
+  in `docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json` using `automation_update`.
   Then run `node node_modules/tsx/dist/cli.mjs scripts/options-robinhood-closeout.mjs --save gld-ibit-observe-open-20260908`.
   This saves a hash-checked actual-time report and returns its compact receipt.
   It distinguishes pending slots, missing request evidence, source failures and
@@ -49,7 +49,7 @@ the checked-in [wrapper prompt](OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt).
   **Never delete the shared heartbeat.** Its original news purpose remains active.
 
 The [original news-only restoration snapshot](OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json)
-remains immutable. The active v5 baseline retains news/Treasury/BTC/BLS
+remains immutable. The active v6 baseline retains news/Treasury/BTC/BLS
 and adds one FOMC date-calendar refresh at daily 09:00; context refreshes never run during each
 minute of option collection. Quote
 contracts, opening window and cadence are unchanged.

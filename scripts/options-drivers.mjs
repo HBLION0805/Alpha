@@ -29,7 +29,7 @@ try {
           diagnostic: parsed.rejectedItems ? `${parsed.rejectedItems} invalid headline items rejected` : null } };
       } catch (error) {
         return { observations: [], health: { sourceId: source.id, observedAt: new Date().toISOString(), status: "FAILED", itemsReceived: 0, truncated: false,
-          diagnostic: /^(?:HTTP_[1-5]\d{2}|FEED_HTTP_STATUS|FEED_DEADLINE_EXCEEDED|FEED_NETWORK_FAILED|FEED_TOO_LARGE|UNEXPECTED_CONTENT_TYPE|INVALID_CONTENT_LENGTH|INVALID_FEED_UTF8|UNSUPPORTED_OR_INCOMPLETE_FEED|MALFORMED_FEED_ITEMS|EMPTY_RESPONSE_BODY)$/.test(error?.message) ? error.message : "FETCH_OR_PARSE_FAILED" } };
+          diagnostic: /^(?:HTTP_[1-5]\d{2}|FEED_HTTP_STATUS|FEED_DEADLINE_EXCEEDED|FEED_NETWORK_FAILED|FEED_NETWORK_ACCESS_DENIED|FEED_TOO_LARGE|UNEXPECTED_CONTENT_TYPE|INVALID_CONTENT_LENGTH|INVALID_FEED_UTF8|UNSUPPORTED_OR_INCOMPLETE_FEED|MALFORMED_FEED_ITEMS|EMPTY_RESPONSE_BODY)$/.test(error?.message) ? error.message : "FETCH_OR_PARSE_FAILED" } };
       }
     })) : [];
     const report = withDriverJournal(root, (store) => {

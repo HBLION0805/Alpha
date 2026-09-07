@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - News access diagnosis and recovery
+
+- Recovered all six official headline feeds through the approved network path.
+  Added sanitized FEED_NETWORK_ACCESS_DENIED handling for EACCES/EPERM wrappers.
+- Versioned daily restoration to v6 and updated the existing heartbeat while
+  preserving schedules, prior source flows and frozen quote control flow. See
+  [delivery](OPTIONS_NEWS_ACCESS_RECOVERY.md).
+
 ## 2026-09-07 - Public calendar context brief
 
 - Added a read-only thirty-date BLS/FOMC brief that preserves scheduled instants,

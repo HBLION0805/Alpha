@@ -53,6 +53,23 @@ export function parseDriverFeed(xml, sourceId, observedAt, origin = "PUBLIC_FEED
   return { items, rejectedItems, truncated: blocks.length > 100, sourceItemCount: blocks.length };
 }
 
+// Inspect only fixed system codes, never error messages/URLs. Node fetch may
+// wrap Windows socket errors inside a cause and an IPv4/IPv6 AggregateError.
+function networkFailureCode(error) {
+  const pending = [error], seen = new Set();
+  for (let i = 0; i < pending.length && i < 16; i++) {
+    const value = pending[i];
+    if (!value || typeof value !== "object" || seen.has(value)) continue;
+    seen.add(value);
+    if (value.code === "EACCES" || value.code === "EPERM") return "FEED_NETWORK_ACCESS_DENIED";
+    if (value.cause && pending.length < 16) pending.push(value.cause);
+    if (Array.isArray(value.errors)) {
+      for (const child of value.errors.slice(0, 16 - pending.length)) pending.push(child);
+    }
+  }
+  return "FEED_NETWORK_FAILED";
+}
+
 export async function readPublicDriverFeed(sourceId, fetchImplementation = globalThis.fetch, { deadlineMs = 12000 } = {}) {
   if (!Object.hasOwn(PUBLIC_SOURCE_URLS, sourceId)) throw new Error("UNREGISTERED_DRIVER_SOURCE");
   if (!Number.isSafeInteger(deadlineMs) || deadlineMs < 1 || deadlineMs > 12000) throw Error("DRIVER_DEADLINE_CONFIGURATION");
@@ -84,7 +101,7 @@ export async function readPublicDriverFeed(sourceId, fetchImplementation = globa
     catch { throw Error("INVALID_FEED_UTF8"); }
   } catch (error) {
     const safe = /^(?:HTTP_[1-5]\d{2}|FEED_HTTP_STATUS|FEED_DEADLINE_EXCEEDED|FEED_TOO_LARGE|UNEXPECTED_CONTENT_TYPE|INVALID_CONTENT_LENGTH|EMPTY_RESPONSE_BODY|INVALID_FEED_UTF8)$/.test(error?.message);
-    throw Error(safe ? error.message : "FEED_NETWORK_FAILED");
+    throw Error(safe ? error.message : networkFailureCode(error));
   } finally {
     clearTimeout(timer); controller.abort();
     if (reader) void Promise.resolve().then(() => reader.cancel()).catch(() => {});

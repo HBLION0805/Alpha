@@ -125,6 +125,49 @@ const tests = [
   }],
 ];
 tests.push(
+  ["system permission codes survive direct and Node fetch error wrappers with one request", async () => {
+    const denied = code => Object.assign(Error("PRIVATE_SOCKET_DETAILS"), { code });
+    for (const failure of [denied("EACCES"), denied("EPERM"), new TypeError("fetch failed", { cause: denied("EACCES") }),
+      new TypeError("fetch failed", { cause: new AggregateError([denied("ECONNREFUSED"), denied("EACCES")]) })]) {
+      let requests = 0;
+      await assert.rejects(readPublicDriverFeed("fed", async () => { requests++; throw failure; }),
+        error => error.message === "FEED_NETWORK_ACCESS_DENIED");
+      assert.equal(requests, 1);
+    }
+  }],
+  ["unknown errors and permission words in messages do not imply access denial", async () => {
+    for (const failure of [Error("EACCES PRIVATE_MESSAGE"), { code: "PRIVATE_CODE" }, { cause: { code: "ENOTFOUND" } }])
+      await assert.rejects(readPublicDriverFeed("fed", async () => { throw failure; }), error => error.message === "FEED_NETWORK_FAILED");
+    await assert.rejects(readPublicDriverFeed("fed", async () => new Response("denied", { status: 403 })), error => error.message === "HTTP_403");
+  }],
+  ["cyclic or oversized exception trees are bounded", async () => {
+    const cyclic = {}; cyclic.cause = cyclic;
+    const many = { errors: [...Array.from({ length: 20 }, () => ({})), { code: "EACCES" }] };
+    for (const failure of [cyclic, many])
+      await assert.rejects(readPublicDriverFeed("fed", async () => { throw failure; }), error => error.message === "FEED_NETWORK_FAILED");
+  }],
+  ["body permission failures are sanitized like header failures", async () => {
+    const body = new ReadableStream({ start(controller) { controller.error(Object.assign(Error("PRIVATE_BODY_DETAILS"), { code: "EPERM" })); } });
+    await assert.rejects(readPublicDriverFeed("fed", async () => new Response(body, { headers: { "content-type": "text/xml" } })),
+      error => error.message === "FEED_NETWORK_ACCESS_DENIED");
+  }],
+  ["CLI persists access failure then recovery without deleting the failed batch", () => temporary(directory => {
+    const command = isolatedCli(directory), preload = join(directory, "network-provider.mjs");
+    const invoke = mode => spawnSync(process.execPath, ["--import", "tsx", "--import", pathToFileURL(preload).href, command, mode], { cwd: root, encoding: "utf8", timeout: 30000 });
+    writeFileSync(preload, 'globalThis.fetch = async () => { throw new TypeError("PRIVATE_PROVIDER_MESSAGE", { cause: new AggregateError([Object.assign(new Error("PRIVATE_ADDRESS"), { code: "EACCES" })]) }); };');
+    const failed = invoke("--refresh"); assert.equal(failed.status, 3, failed.stderr);
+    assert(JSON.parse(failed.stdout).sources.every(s => s.health.diagnostic === "FEED_NETWORK_ACCESS_DENIED"));
+    const journal = join(directory, "data/runtime/options-driver-monitor/refreshes.ndjson"), prefix = readFileSync(journal);
+    assert(!prefix.toString().includes("PRIVATE"));
+    writeFileSync(preload, `globalThis.fetch = async () => new Response(${JSON.stringify(rss(item()))}, { headers: { "content-type": "text/xml" } });`);
+    const recovered = invoke("--refresh"); assert.equal(recovered.status, 0, recovered.stderr);
+    const result = JSON.parse(recovered.stdout); assert(result.sources.every(s => s.health.status === "OK"));
+    const after = readFileSync(journal); assert(after.subarray(0, prefix.length).equals(prefix));
+    assert.equal(after.toString().trimEnd().split("\n").length, 2);
+    const restart = invoke("--report"); assert.equal(restart.status, 0, restart.stderr);
+    assert.deepEqual(JSON.parse(restart.stdout).sources.map(s => s.health), result.sources.map(s => s.health));
+    assert(readFileSync(journal).equals(after));
+  })],
   ["CLI corruption errors do not expose the invalid journal body", () => temporary(directory => {
     const command = isolatedCli(directory);
     withDriverJournal(directory, s => s.appendBatch([{ example: 1 }], []));

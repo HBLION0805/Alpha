@@ -11,6 +11,14 @@ Robinhood checkpoint; [current.json](status/current.json) retains the prior buil
 
 ## Host collection boundary
 
+Daily restoration v6 adds the supported per-command network approval path for
+news in a restricted host environment. The public transport recognizes bounded
+structured EACCES/EPERM wrappers as FEED_NETWORK_ACCESS_DENIED; the host owns
+approval, and the CLI performs one fixed-source attempt. No internal elevation,
+retry, endpoint substitution or global permission change is introduced. Prior
+snapshots and quote Host code remain unchanged. See
+[network recovery](OPTIONS_NEWS_ACCESS_RECOVERY.md).
+
 `options-collection-rehearsal.mjs` binds the hash-checked Host program to isolated
 synthetic workspace/study/contract constants. Fake quote ports and in-process
 command ports exercise the original local collector and closeout across complete

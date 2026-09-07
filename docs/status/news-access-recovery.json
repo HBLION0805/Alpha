@@ -1,0 +1,150 @@
+{
+  "taskId": "OPT-NEWS-ACCESS-1",
+  "recordedAt": "2026-09-07T15:50:40.547Z",
+  "cause": {
+    "restrictedFedProbe": "EACCES",
+    "approvedSixSourceRefreshExitCode": 0,
+    "interpretation": "Confirmed local access restriction for this incident; earlier generic errors not retrospectively reclassified."
+  },
+  "recovery": {
+    "reportAt": "2026-09-07T15:48:24.654Z",
+    "observationsInHistory": 118,
+    "newlySavedObservations": 0,
+    "sources": [
+      {
+        "sourceId": "fed",
+        "observedAt": "2026-09-07T15:42:28.029Z",
+        "status": "OK",
+        "itemsReceived": 20,
+        "truncated": false,
+        "diagnostic": null
+      },
+      {
+        "sourceId": "bls",
+        "observedAt": "2026-09-07T15:42:28.046Z",
+        "status": "OK",
+        "itemsReceived": 1,
+        "truncated": false,
+        "diagnostic": null
+      },
+      {
+        "sourceId": "bea",
+        "observedAt": "2026-09-07T15:42:28.126Z",
+        "status": "OK",
+        "itemsReceived": 47,
+        "truncated": false,
+        "diagnostic": "1 invalid headline items rejected"
+      },
+      {
+        "sourceId": "ecb",
+        "observedAt": "2026-09-07T15:42:28.313Z",
+        "status": "OK",
+        "itemsReceived": 15,
+        "truncated": false,
+        "diagnostic": null
+      },
+      {
+        "sourceId": "ofac",
+        "observedAt": "2026-09-07T15:42:28.115Z",
+        "status": "OK",
+        "itemsReceived": 10,
+        "truncated": false,
+        "diagnostic": null
+      },
+      {
+        "sourceId": "sec",
+        "observedAt": "2026-09-07T15:42:28.094Z",
+        "status": "OK",
+        "itemsReceived": 25,
+        "truncated": false,
+        "diagnostic": null
+      }
+    ],
+    "retainedFailedBatches": 2
+  },
+  "host": {
+    "verifiedAt": "2026-09-07T15:48:23.736Z",
+    "matchedFields": 8,
+    "hostFileSha256": "f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310",
+    "restoreSnapshot": "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json"
+  },
+  "preservation": {
+    "baselineAt": "2026-09-07T15:45:06.038Z",
+    "filesCompared": 440,
+    "allUnchanged": true,
+    "scope": "All runtime files present after the successful refresh and before implementation; original failure batches remain."
+  },
+  "continuation": {
+    "preflight": {
+      "schemaVersion": "1.0",
+      "studyId": "gld-ibit-observe-open-20260908",
+      "preparedAt": "2026-09-07T15:48:23.664Z",
+      "planSha256": "8e60f2a53ea47be83c30024e20d7a8ae1cc63fe1dca69ba8bc0e8540420f5c8d",
+      "windowStartAt": "2026-09-08T13:30:00.000Z",
+      "windowEndAt": "2026-09-08T13:50:00.000Z",
+      "nextRequestAt": "2026-09-08T13:30:00.000Z",
+      "action": "WAIT",
+      "requests": [],
+      "attemptCount": 0,
+      "sourceFailureCount": 0,
+      "frameCount": 0,
+      "usableObservations": 0,
+      "status": "NO_REPLAY",
+      "networkAccess": false,
+      "executionAllowed": false
+    },
+    "operatorBrief": {
+      "assessedAt": "2026-09-07T15:48:24.168Z",
+      "reportSha256": "2e2e0d263295e2085e5fd93d09ab46399e6b247549d1c2047a90c3645a8cd93b",
+      "blockedStores": [],
+      "missingStores": [
+        "imports"
+      ]
+    },
+    "calendarBrief": {
+      "assessedAt": "2026-09-07T15:48:24.439Z",
+      "reportSha256": "257ae6bb19ec7143f18a2452c167874b1f0e23fe35538bd3a7a78ffb72253785",
+      "entryCount": 13,
+      "blockedStores": []
+    },
+    "modeledClosedTrades": 5,
+    "matchedTradeReviews": 5,
+    "paperCandidateLessons": 4,
+    "historicalCandidateLessons": 15,
+    "actualOpeningQuotes": 0,
+    "realPriceTradeReplay": "NOT_RUN"
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 120,
+    "testsExecuted": 3114,
+    "passed": 3114,
+    "failed": 0,
+    "durationMs": 67265,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_CURRENT_OPERATIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-driver-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-drivers.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-drivers.test.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-robinhood-collection-host.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "artifacts": {
+    "data/runtime/options-driver-monitor/news-access-collection-preflight.json": "6a29c47e97358b0d522ffe597d5f8c69e4caf811536944bf79829c88143037be",
+    "data/runtime/options-driver-monitor/news-access-operator-brief.json": "6adf8044a09015b075556c9a11dfdedba5410a1b8526d950ee4f79fe2d763b38",
+    "data/runtime/options-driver-monitor/news-access-calendar-brief.json": "70f7f911cf7c948e5d2a438b62d2ac0dcaefe42b38d0e5b847782ebfb9713d40",
+    "data/runtime/options-driver-monitor/news-access-recovered-report.json": "3b944bf75c00d5b88fadbf1c31eaf12730074b5de5ce03c1251d4c0d3bc46409",
+    "data/runtime/options-driver-monitor/news-access-validation.log": "dad33400f574e9fb8a24b6fe46a520d579be8b999c04d3b0c35a49b8414809e2",
+    "data/runtime/options-driver-monitor/news-access-host-after.json": "2a2a99176dcde054e49709864892f4f023056a3deb06cafda7e39f0c5ae0f9c8",
+    "data/runtime/options-driver-monitor/news-access-preservation-before.json": "3077ba9715bceea5959a80e9eff7deb56c07d0377c5cc0fc972bdeb2c5420fef"
+  },
+  "executionAllowed": false
+}
