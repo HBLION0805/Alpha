@@ -4,6 +4,13 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The [small-premium cost sensitivity](OPTIONS_SMALL_PREMIUM_COST_SENSITIVITY.md)
+evaluated fifteen explicit hypothetical inputs with the unchanged retail engine.
+A $21 premium at the existing 20% research stop leaves only $0.80 of the $5 planned
+risk budget for assumed fees/exit reserve. Unknown costs remain blocked. These
+are scenario calculations, not refreshed quotes, actual fees or trading results.
+See [checkpoint](status/cost-sensitivity.json). No journal, rule or host changed.
+
 The [coverage interpretation check](OPTIONS_COVERAGE_INTERPRETATION.md) verifies
 that an over-budget but successfully recorded quote remains request/frame
 coverage without becoming a failed source call. Complete-usable coverage includes

@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "ILLUSTRATIVE_SMALL_PREMIUM_COST_SENSITIVITY",
+  "recordedAt": "2026-09-07T08:24:04.735Z",
+  "artifactPath": "data/runtime/options-readiness/cost-sensitivity-20260907.json",
+  "artifactSha256": "8b9fb542b12c92ad300f9bf0c6c45190090391bcff4ab40b3e75b21a59f257f9",
+  "scenarioCount": 15,
+  "quoteOrigin": "HYPOTHETICAL_PRICES_NOT_A_LIVE_OFFER",
+  "feeOrigin": "ILLUSTRATIVE_GRID_NOT_A_BROKER_FEE_ESTIMATE",
+  "summary": [
+    {
+      "label": "Unknown costs",
+      "status": "NO_TRADE",
+      "premiumCents": 2100,
+      "plannedStopCents": null,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": null,
+      "indicativeExitLimitPerShareCents": null,
+      "blockerCodes": [
+        "COSTS_UNKNOWN"
+      ]
+    },
+    {
+      "label": "Fees 0c / exit reserve 0c",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2100,
+      "plannedStopCents": 420,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 900,
+      "indicativeExitLimitPerShareCents": 30,
+      "blockerCodes": []
+    },
+    {
+      "label": "Fees 0c / exit reserve 25c",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2100,
+      "plannedStopCents": 445,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 975,
+      "indicativeExitLimitPerShareCents": 31,
+      "blockerCodes": []
+    },
+    {
+      "label": "Fees 0c / exit reserve 50c",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2100,
+      "plannedStopCents": 470,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 950,
+      "indicativeExitLimitPerShareCents": 31,
+      "blockerCodes": []
+    },
+    {
+      "label": "Fees 0c / exit reserve 100c",
+      "status": "NO_TRADE",
+      "premiumCents": 2100,
+      "plannedStopCents": 520,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 1100,
+      "indicativeExitLimitPerShareCents": 33,
+      "blockerCodes": [
+        "PLANNED_RISK_BUDGET_EXCEEDED"
+      ]
+    },
+    {
+      "label": "Fees 25c / exit reserve 0c",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2100,
+      "plannedStopCents": 445,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 975,
+      "indicativeExitLimitPerShareCents": 31,
+      "blockerCodes": []
+    },
+    {
+      "label": "Fees 25c / exit reserve 25c",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2100,
+      "plannedStopCents": 470,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 950,
+      "indicativeExitLimitPerShareCents": 31,
+      "blockerCodes": []
+    },
+    {
+      "label": "Fees 25c / exit reserve 50c",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2100,
+      "plannedStopCents": 495,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 1025,
+      "indicativeExitLimitPerShareCents": 32,
+      "blockerCodes": []
+    },
+    {
+      "label": "Fees 25c / exit reserve 100c",
+      "status": "NO_TRADE",
+      "premiumCents": 2100,
+      "plannedStopCents": 545,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 1175,
+      "indicativeExitLimitPerShareCents": 34,
+      "blockerCodes": [
+        "PLANNED_RISK_BUDGET_EXCEEDED"
+      ]
+    },
+    {
+      "label": "Fees 50c / exit reserve 0c",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2100,
+      "plannedStopCents": 470,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 950,
+      "indicativeExitLimitPerShareCents": 31,
+      "blockerCodes": []
+    },
+    {
+      "label": "Fees 50c / exit reserve 25c",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2100,
+      "plannedStopCents": 495,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 1025,
+      "indicativeExitLimitPerShareCents": 32,
+      "blockerCodes": []
+    },
+    {
+      "label": "Fees 50c / exit reserve 50c",
+      "status": "NO_TRADE",
+      "premiumCents": 2100,
+      "plannedStopCents": 520,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 1100,
+      "indicativeExitLimitPerShareCents": 33,
+      "blockerCodes": [
+        "PLANNED_RISK_BUDGET_EXCEEDED"
+      ]
+    },
+    {
+      "label": "Fees 50c / exit reserve 100c",
+      "status": "NO_TRADE",
+      "premiumCents": 2100,
+      "plannedStopCents": 570,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 1150,
+      "indicativeExitLimitPerShareCents": 34,
+      "blockerCodes": [
+        "PLANNED_RISK_BUDGET_EXCEEDED"
+      ]
+    },
+    {
+      "label": "$25 premium, explicit zero costs",
+      "status": "ECONOMICALLY_FEASIBLE_SCENARIO",
+      "premiumCents": 2500,
+      "plannedStopCents": 500,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 1000,
+      "indicativeExitLimitPerShareCents": 35,
+      "blockerCodes": []
+    },
+    {
+      "label": "$25 premium, assumed 25c fees",
+      "status": "NO_TRADE",
+      "premiumCents": 2500,
+      "plannedStopCents": 525,
+      "plannedRiskBudgetCents": 500,
+      "roundedNetProfitTargetCents": 1075,
+      "indicativeExitLimitPerShareCents": 36,
+      "blockerCodes": [
+        "PLANNED_RISK_BUDGET_EXCEEDED",
+        "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"
+      ]
+    }
+  ],
+  "preservation": {
+    "fileCount": 27,
+    "allMatched": true,
+    "hostUnchanged": true
+  },
+  "productionCodeChanged": false,
+  "sourceCalls": 0,
+  "sourceAppends": 0,
+  "paperJournalAppends": 0,
+  "executionAllowed": false,
+  "winProbability": null
+}
