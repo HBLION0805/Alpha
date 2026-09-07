@@ -149,7 +149,10 @@
     "test:options-dashboard": "tsx scripts/options-dashboard.test.mjs",
     "options:portfolio-risk": "tsx scripts/options-portfolio-risk.mjs",
     "test:options-portfolio-risk": "tsx src/engines/options-portfolio-risk/OptionsPortfolioRiskEngine.test.ts",
-    "test:options-portfolio-risk-io": "tsx scripts/options-portfolio-risk.test.mjs"
+    "test:options-portfolio-risk-io": "tsx scripts/options-portfolio-risk.test.mjs",
+    "options:structures": "tsx scripts/options-structures.mjs",
+    "test:options-structures": "tsx src/engines/options-structure-comparison/OptionsStructureComparisonEngine.test.ts",
+    "test:options-structures-io": "tsx scripts/options-structures.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

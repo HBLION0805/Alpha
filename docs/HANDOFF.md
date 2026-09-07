@@ -8,6 +8,22 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+Latest continuation: **OPT-STRUCTURE-COMPARE-1** adds the bounded structure
+comparison requested after portfolio diagnostics. `options:structures -- --demo`
+compares GLD/IBIT alternatives; `--input` supports one declared file, `--save`
+creates an exclusive artifact and `--verify` recomputes it. The actual
+`structure-rehearsal-20260907` has 20 candidates across two synthetic comparisons:
+18 calculated and two cost-unknown, not trades or a win rate. See
+[delivery](OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md) and
+[checkpoint](status/structure-comparison.json). Existing portfolios, dashboards,
+opening study and v6 host are unchanged. Multi-leg stops, early-close pricing,
+account eligibility and portfolio/lifecycle integration remain unsupported.
+
+Next independent work can specify sample partitioning, holdout isolation and
+all-outcome validation without inventing a calibrated strategy. The actual
+opening data/closeout still precede qualification of the Robinhood paper
+adapter. No account tools, automatic orders, OAuth or purchases are authorized.
+
 Latest completed continuation: **OPT-PORTFOLIO-RISK-1**, independent declared
 portfolio diagnostics. Run `npm run options:portfolio-risk -- --demo`, or use
 `--input fixtures/options-portfolio-risk/portfolio.synthetic.json` and optional

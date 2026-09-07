@@ -1,5 +1,21 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Compare terminal structures without inventing multi-leg authority
+
+- Support eight explicitly bounded shapes inferred from standard GLD/IBIT
+  legs; reject mixed expiries, naked shorts, ratios and conflicting labels.
+- Use correct entry/closing quote sides, explicit total fees/reserves and
+  exact piecewise terminal arithmetic. Never use a finite graph grid to infer
+  a maximum gain or round fractional break-even into an execution price.
+- Treat credit, modeled terminal risk reserve, gross leg costs and short-strike
+  notionals as different quantities. Actual collateral and intermediate
+  assignment/exercise exposures remain unmodeled.
+- Compose existing single-leg 20%/2R research diagnostics unchanged. Do not
+  apply their stop rule to credit spreads or promote a benchmark comparison
+  into a multi-leg policy, portfolio permission, ranking or calibrated edge.
+- Retain unknown costs/quotes, anomalies and all alternatives in independent
+  saved reports. See [delivery](OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md).
+
 ## 2026-09-07 - Diagnose a declared portfolio without inventing account evidence
 
 - Keep a single declared cash scenario separate from independent historical

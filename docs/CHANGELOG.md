@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-07 - Independent GLD/IBIT structure comparison
+
+- Added eight-shape quote/cost comparisons with exact terminal extrema,
+  rational break-even prices, liquidity/freshness diagnostics and explicit
+  early-close/assignment/account limitations.
+- Added synthetic GLD/IBIT cases, bounded local file input, exclusive saved
+  artifacts and deterministic verification in a fresh process.
+- Preserved old portfolio/replay/feasibility engines, journals and host setup.
+  No multi-leg execution, source refresh, ranking or probability was added.
+  See [delivery](OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md).
+
 ## 2026-09-07 - Independent GLD/IBIT portfolio risk scenarios
 
 - Added receipt-time cash/settlement accounting, aggregate position and pending

@@ -1,5 +1,18 @@
 # Alpha Architecture
 
+## Declared structure comparison (September 7, 2026)
+
+`OptionsStructureComparisonEngine` validates one-symbol, same-expiry declared
+alternatives through the existing contract/quote validators. Signed intrinsic
+functions, strike knots and the right tail establish exact terminal extrema and
+rational break-even prices. Quote-side size, receipt/freshness, fee references
+and anomalous premiums remain explicit. Single-leg checks reuse retail
+feasibility; multi-leg portfolio accounting, stops, pricing and lifecycle remain
+unsupported. A separate offline CLI preserves exclusive scenario/result
+artifacts with actual recording clocks and fresh-process recomputation.
+No source adapter, ranking, trade, account access or old engine change follows.
+See [design](specifications/OPTIONS_STRUCTURE_COMPARISON_V1.md).
+
 ## Declared options portfolio diagnostics (September 7, 2026)
 
 The independent `OptionsPortfolioRiskEngine` composes existing paper-definition,

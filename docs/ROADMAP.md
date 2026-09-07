@@ -1,5 +1,11 @@
 # Alpha Roadmap
 
+[Declared structure comparison](OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md) now
+covers eight shapes with exact terminal economics and cost/quote diagnostics.
+This is not account-eligible selection, pre-expiry pricing or a multi-leg
+lifecycle. Sample partitioning and independent outcome-validation infrastructure
+remain useful local work while actual quote qualification is pending.
+
 ## September 7, 2026 portfolio diagnostics checkpoint
 
 Completed a separate declared-scenario portfolio module: receipt-time settlement,

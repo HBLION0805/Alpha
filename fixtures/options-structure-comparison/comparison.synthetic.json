@@ -1,0 +1,548 @@
+{
+  "version": "OPTIONS_STRUCTURE_COMPARISON_INPUT_V1",
+  "comparisonId": "structure-demo-gld",
+  "origin": "SYNTHETIC_FIXTURE",
+  "symbol": "GLD",
+  "asOf": "2026-09-08T14:00:00.000Z",
+  "expiryDate": "2026-10-16",
+  "referencePriceCents": 50000,
+  "initialEquityCents": 100000,
+  "availableSettledCashCents": 100000,
+  "terminalPricesCents": [
+    0,
+    49850,
+    49900,
+    49950,
+    50000,
+    50050,
+    50100,
+    50150,
+    100000
+  ],
+  "candidates": [
+    {
+      "candidateId": "GLD:LONG_CALL",
+      "structure": "LONG_CALL",
+      "quantity": 1,
+      "legs": [
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:CALL:50000",
+            "symbol": "GLD",
+            "optionType": "CALL",
+            "strikePriceCents": 50000,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:CALL:50000:q1",
+            "contractId": "GLD:2026-10-16:CALL:50000",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 19,
+            "askPerShareCents": 20,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        }
+      ],
+      "costs": {
+        "entryFeesCents": 10,
+        "exitFeesCents": 10,
+        "exitSlippageReserveCents": 0,
+        "reference": "Synthetic fee and zero-slippage assumptions; not verified broker costs"
+      }
+    },
+    {
+      "candidateId": "GLD:LONG_PUT",
+      "structure": "LONG_PUT",
+      "quantity": 1,
+      "legs": [
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:PUT:50000",
+            "symbol": "GLD",
+            "optionType": "PUT",
+            "strikePriceCents": 50000,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:PUT:50000:q1",
+            "contractId": "GLD:2026-10-16:PUT:50000",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 19,
+            "askPerShareCents": 20,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        }
+      ],
+      "costs": {
+        "entryFeesCents": 10,
+        "exitFeesCents": 10,
+        "exitSlippageReserveCents": 0,
+        "reference": "Synthetic fee and zero-slippage assumptions; not verified broker costs"
+      }
+    },
+    {
+      "candidateId": "GLD:BULL_CALL_DEBIT",
+      "structure": "BULL_CALL_DEBIT",
+      "quantity": 1,
+      "legs": [
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:CALL:50000",
+            "symbol": "GLD",
+            "optionType": "CALL",
+            "strikePriceCents": 50000,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:CALL:50000:q1",
+            "contractId": "GLD:2026-10-16:CALL:50000",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 19,
+            "askPerShareCents": 20,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        },
+        {
+          "side": "SELL",
+          "contract": {
+            "contractId": "GLD:2026-10-16:CALL:50100",
+            "symbol": "GLD",
+            "optionType": "CALL",
+            "strikePriceCents": 50100,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:CALL:50100:q1",
+            "contractId": "GLD:2026-10-16:CALL:50100",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 11,
+            "askPerShareCents": 12,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        }
+      ],
+      "costs": {
+        "entryFeesCents": 20,
+        "exitFeesCents": 20,
+        "exitSlippageReserveCents": 0,
+        "reference": "Synthetic fee and zero-slippage assumptions; not verified broker costs"
+      }
+    },
+    {
+      "candidateId": "GLD:BEAR_PUT_DEBIT",
+      "structure": "BEAR_PUT_DEBIT",
+      "quantity": 1,
+      "legs": [
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:PUT:50000",
+            "symbol": "GLD",
+            "optionType": "PUT",
+            "strikePriceCents": 50000,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:PUT:50000:q1",
+            "contractId": "GLD:2026-10-16:PUT:50000",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 19,
+            "askPerShareCents": 20,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        },
+        {
+          "side": "SELL",
+          "contract": {
+            "contractId": "GLD:2026-10-16:PUT:49900",
+            "symbol": "GLD",
+            "optionType": "PUT",
+            "strikePriceCents": 49900,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:PUT:49900:q1",
+            "contractId": "GLD:2026-10-16:PUT:49900",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 11,
+            "askPerShareCents": 12,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        }
+      ],
+      "costs": {
+        "entryFeesCents": 20,
+        "exitFeesCents": 20,
+        "exitSlippageReserveCents": 0,
+        "reference": "Synthetic fee and zero-slippage assumptions; not verified broker costs"
+      }
+    },
+    {
+      "candidateId": "GLD:BULL_PUT_CREDIT",
+      "structure": "BULL_PUT_CREDIT",
+      "quantity": 1,
+      "legs": [
+        {
+          "side": "SELL",
+          "contract": {
+            "contractId": "GLD:2026-10-16:PUT:50000",
+            "symbol": "GLD",
+            "optionType": "PUT",
+            "strikePriceCents": 50000,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:PUT:50000:q1",
+            "contractId": "GLD:2026-10-16:PUT:50000",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 19,
+            "askPerShareCents": 20,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        },
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:PUT:49900",
+            "symbol": "GLD",
+            "optionType": "PUT",
+            "strikePriceCents": 49900,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:PUT:49900:q1",
+            "contractId": "GLD:2026-10-16:PUT:49900",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 11,
+            "askPerShareCents": 12,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        }
+      ],
+      "costs": {
+        "entryFeesCents": 20,
+        "exitFeesCents": 20,
+        "exitSlippageReserveCents": 0,
+        "reference": "Synthetic fee and zero-slippage assumptions; not verified broker costs"
+      }
+    },
+    {
+      "candidateId": "GLD:BEAR_CALL_CREDIT",
+      "structure": "BEAR_CALL_CREDIT",
+      "quantity": 1,
+      "legs": [
+        {
+          "side": "SELL",
+          "contract": {
+            "contractId": "GLD:2026-10-16:CALL:50000",
+            "symbol": "GLD",
+            "optionType": "CALL",
+            "strikePriceCents": 50000,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:CALL:50000:q1",
+            "contractId": "GLD:2026-10-16:CALL:50000",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 19,
+            "askPerShareCents": 20,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        },
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:CALL:50100",
+            "symbol": "GLD",
+            "optionType": "CALL",
+            "strikePriceCents": 50100,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:CALL:50100:q1",
+            "contractId": "GLD:2026-10-16:CALL:50100",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 11,
+            "askPerShareCents": 12,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        }
+      ],
+      "costs": {
+        "entryFeesCents": 20,
+        "exitFeesCents": 20,
+        "exitSlippageReserveCents": 0,
+        "reference": "Synthetic fee and zero-slippage assumptions; not verified broker costs"
+      }
+    },
+    {
+      "candidateId": "GLD:LONG_STRADDLE",
+      "structure": "LONG_STRADDLE",
+      "quantity": 1,
+      "legs": [
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:CALL:50000",
+            "symbol": "GLD",
+            "optionType": "CALL",
+            "strikePriceCents": 50000,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:CALL:50000:q1",
+            "contractId": "GLD:2026-10-16:CALL:50000",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 19,
+            "askPerShareCents": 20,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        },
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:PUT:50000",
+            "symbol": "GLD",
+            "optionType": "PUT",
+            "strikePriceCents": 50000,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:PUT:50000:q1",
+            "contractId": "GLD:2026-10-16:PUT:50000",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 19,
+            "askPerShareCents": 20,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        }
+      ],
+      "costs": {
+        "entryFeesCents": 20,
+        "exitFeesCents": 20,
+        "exitSlippageReserveCents": 0,
+        "reference": "Synthetic fee and zero-slippage assumptions; not verified broker costs"
+      }
+    },
+    {
+      "candidateId": "GLD:LONG_STRANGLE",
+      "structure": "LONG_STRANGLE",
+      "quantity": 1,
+      "legs": [
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:CALL:50100",
+            "symbol": "GLD",
+            "optionType": "CALL",
+            "strikePriceCents": 50100,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:CALL:50100:q1",
+            "contractId": "GLD:2026-10-16:CALL:50100",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 11,
+            "askPerShareCents": 12,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        },
+        {
+          "side": "BUY",
+          "contract": {
+            "contractId": "GLD:2026-10-16:PUT:49900",
+            "symbol": "GLD",
+            "optionType": "PUT",
+            "strikePriceCents": 49900,
+            "expiryDate": "2026-10-16",
+            "multiplier": 100,
+            "minimumPriceTickCents": 1,
+            "deliverable": "STANDARD_100_SHARES_USD",
+            "exerciseStyle": "AMERICAN"
+          },
+          "quote": {
+            "quoteId": "GLD:PUT:49900:q1",
+            "contractId": "GLD:2026-10-16:PUT:49900",
+            "observedAt": "2026-09-08T14:00:00.000Z",
+            "receivedAt": "2026-09-08T14:00:00.000Z",
+            "bidPerShareCents": 11,
+            "askPerShareCents": 12,
+            "bidSizeContracts": 10,
+            "askSizeContracts": 10,
+            "underlyingPriceCents": 50000,
+            "sourceId": "synthetic:structure-comparison-v1",
+            "origin": "SYNTHETIC_FIXTURE",
+            "session": "REGULAR",
+            "ivBps": null,
+            "deltaBps": null
+          }
+        }
+      ],
+      "costs": {
+        "entryFeesCents": 20,
+        "exitFeesCents": 20,
+        "exitSlippageReserveCents": 0,
+        "reference": "Synthetic fee and zero-slippage assumptions; not verified broker costs"
+      }
+    }
+  ]
+}

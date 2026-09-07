@@ -1,5 +1,10 @@
 # GLD/IBIT operations: evidence and next test
 
+Newest local capability: [structure comparison](OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md)
+adds eight declared payoff shapes, correct quote-side costs and terminal risk
+diagnostics, with independent saved/recomputed reports. It does not modify the
+older dashboard, portfolio, quote plan, v6 host or any trading authority.
+
 Newest local capability: [portfolio scenario diagnostics](OPTIONS_PORTFOLIO_RISK_DELIVERY.md)
 adds combined GLD/IBIT exposure, pending reserves, receipt-time settlement and
 daily loss/drawdown/event checks. Its seven-case saved rehearsal is separate from

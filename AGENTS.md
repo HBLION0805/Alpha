@@ -80,6 +80,8 @@ Push
 
 ## Current Implemented Systems
 
+- Declared structure comparisons: eight GLD/IBIT long-option, vertical and purchased-volatility shapes use existing contract/quote validation, explicit costs, exact terminal extrema/rational roots and independent saved/recomputed artifacts. Credit is not free risk capital. Single-leg feasibility is composed unchanged; multi-leg stops, pre-expiry pricing, account/portfolio integration and execution remain unsupported. No ranking, probability or order. See docs/OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md and docs/status/structure-comparison.json.
+
 - Declared portfolio risk diagnostics: independent $1,000 cash scenarios aggregate GLD/IBIT holdings, pending reservations, receipt-time settlements, daily loss/drawdown and manual event coverage; unknown marks preserve exposure. Reached stops/targets flag unconfirmed exits. Exclusive local reports recompute without touching old journals. No live account enforcement, auto-settlement, trade or size authority. See docs/OPTIONS_PORTFOLIO_RISK_DELIVERY.md and docs/status/portfolio-risk.json.
 
 - Local outcome audit, offline dashboard and calendar-inclusive evidence export/recovery v2: original paper/research engines recompute descriptive all-case metrics and candidate evidence; immutable HTML/JSON reads saved stores without source refresh. Export v2 opts into BLS/FOMC journals and isolated calendar recovery while preserving default v1. No calibration, compounded research account, host inspection or orders. See docs/OPTIONS_LOCAL_COMPLETION_DELIVERY.md and docs/status/local-completion.json.

@@ -10,6 +10,12 @@ test dependencies. It links original evidence without changing historical clocks
 
 ## Current capabilities
 
+- **Declared structure comparisons:** `npm run options:structures -- --demo`
+  compares eight single-leg, vertical and purchased-volatility structures on
+  GLD/IBIT, with exact terminal payoffs, cost/friction diagnostics and unknown
+  account eligibility. Saved comparisons recompute without ranking a trade or
+  implementing multi-leg execution. [Delivery](docs/OPTIONS_STRUCTURE_COMPARISON_DELIVERY.md).
+
 - **Declared portfolio risk diagnostics:** `npm run options:portfolio-risk -- --demo`
   combines GLD/IBIT holdings, pending reservations, settlement receipts, daily
   losses, drawdown and manual event coverage in one $1,000 cash scenario. Saved

@@ -117,6 +117,8 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-structure-comparison/OptionsStructureComparisonEngine.test.ts",
+  "scripts/options-structures.test.mjs",
   "src/engines/options-portfolio-risk/OptionsPortfolioRiskEngine.test.ts",
   "scripts/options-portfolio-risk.test.mjs",
   "src/engines/options-readiness/OptionsOutcomeAudit.test.ts",
