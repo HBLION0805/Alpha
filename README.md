@@ -6,11 +6,12 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
-- Standalone public BTC-USD context for IBIT: exact single-venue bid/ask and
+- Public BTC-USD context for IBIT: exact single-venue bid/ask and
   aggregate sizes, nanosecond source clocks, actual retrieval history and explicit
-  stale/auction/missing-data checks. See [delivery](docs/OPTIONS_BTC_SPOT_CONTEXT_DELIVERY.md).
+  stale/auction/missing-data checks. Daily collection and readiness v2 integrate
+  this source. See [integration](docs/OPTIONS_BTC_CONTEXT_INTEGRATION_DELIVERY.md).
 - One local readiness report joins actual recovery of the selected quote study,
-  paper reviews, historical research, imported evidence, headlines and Treasury
+  paper reviews, historical research, imported evidence, headlines, Treasury and BTC
   context. Missing/busy/corrupt stores stay separate; it lists the dependencies
   before a real-price test without inventing a readiness score or win probability.
   See [delivery](docs/OPTIONS_OPERATIONAL_READINESS_DELIVERY.md).
@@ -25,7 +26,7 @@ risk arithmetic. It promises no return and has no order-execution authority.
 - Automatic Robinhood collection is armed for September 8, 2026, 09:30-09:50
   a.m. New York: GLD/IBIT equity quotes and four frozen option contracts, with a
   target sixty-second cadence. The existing news heartbeat temporarily shares
-  this window, then restores daily 09:00 news and Treasury context checks. Actual
+  this window, then restores daily 09:00 news, Treasury and BTC context checks. Actual
   market collection is pending; the local computer and Codex app must be running.
 - Robinhood budget screening and prospective observation records: bounded sample
   screening, immutable contract/window selection, linked quote frames, source-time
@@ -103,7 +104,7 @@ Node.js 24.12 or later is required. Install locked dependencies with
 | --- | --- |
 | `npm run options:btc-context -- --refresh` | Read one public Coinbase BTC-USD level 1 snapshot as IBIT context and save it locally |
 | `npm run options:btc-context -- --report` | Recover source/receipt clocks, context health and changes between consecutive saved snapshots |
-| `npm run options:readiness -- --report gld-ibit-observe-open-20260908` | Recover six local components, check review coverage and show the remaining real-price test dependencies |
+| `npm run options:readiness -- --report gld-ibit-observe-open-20260908` | Recover seven local components, preserve v1 review coverage and show real-price test dependencies plus optional BTC context |
 | `npm run options:treasury -- --refresh` | Read Treasury's current-month daily real yields once and save source history |
 | `npm run options:treasury -- --report` | Recompute local retrieval health, dated yields and revisions without network access |
 | `npm run options:robinhood-closeout -- --report gld-ibit-observe-open-20260908` | Recompute request, failure and usable-data coverage without saving a report |
@@ -192,7 +193,7 @@ paper engine that backdates historical quotes or fills missing liquidity.
 
 A public headline is an unverified source assertion. Keyword tags only suggest
 which factors deserve review; they do not establish causality, direction or
-probability. Coverage remains incomplete. Treasury real yields and standalone BTC
+probability. Coverage remains incomplete. Treasury real yields and BTC
 spot context are connected; verified GLD/IBIT option chains, complete portfolio-risk
 runtime, calibrated market-validated option-outcome replay and the Options Dashboard
 remain unfinished.
@@ -225,7 +226,7 @@ Frozen plans and earlier quotes cannot change. Synthetic and imported cases
 cannot share one account. Sale proceeds remain unsettled; no settlement is invented.
 
 The refresh commands are one-shot. The existing `gld-ibit` Codex heartbeat preserves
-the daily 09:00 New York news workflow and adds Treasury context while sharing the bounded quote
+the daily 09:00 New York news workflow and adds Treasury and BTC context while sharing the bounded quote
 window described in the collection runbook. It
 requires the local computer and app to remain available; no server daemon is
 installed. Meaningful related changes and source failures are the notification

@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Extend context without revising accepted study or review outputs
+
+- Version daily context restoration to v3 for one independent BTC snapshot at
+  09:00 New York. Preserve exact v1/v2 bytes, original news/Treasury workflows,
+  shared automation identity and the frozen opening quote window/cadence.
+- Compose readiness v2 around exact recomputation of v1. Keep source-derived BTC
+  summaries separate from mandatory quote/review dependencies and retain the v1
+  export. No source refresh or append occurs during readiness recovery.
+- An active heartbeat requires later Codex execution capacity; computer uptime
+  alone cannot guarantee the first collection. Do not silently redeem usage resets.
+
 ## 2026-09-07 - Retain public BTC spot observations as IBIT context
 
 - Add only Coinbase Exchange's fixed anonymous BTC-USD level 1 source. Keep

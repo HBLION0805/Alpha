@@ -22,8 +22,8 @@ The Codex host invokes two authorized market tools using the tested
 [runbook](OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md). Its existing news heartbeat
 temporarily schedules the first bounded collection window. Absolute UTC phases
 restore the active daily context fields before reading collection records at window end.
-The v2 baseline retains the news workflow and adds one Treasury refresh; the
-original news-only restoration snapshot remains immutable.
+The v3 baseline retains the news/Treasury workflow and adds one public BTC refresh;
+the original news-only and v2 restoration snapshots remain immutable.
 Host scheduling, source quality and execution authority are separate: an enabled
 schedule does not establish a recorded or eligible quote, replay or trade.
 
@@ -42,8 +42,8 @@ exact decimal/nanosecond arithmetic and consecutive-observation diagnostics.
 `options-btc-context.mjs` has one fixed anonymous level 1 GET and a separate
 checksum-linked single-writer journal with recovery and uncertain-write guards.
 This standalone IBIT context source cannot produce ETF prices, continuous paths,
-signals, replay fills or execution authority. The original six-component readiness
-report and daily heartbeat are unchanged by its first delivery. See the
+signals, replay fills or execution authority. Its daily refresh is isolated from
+the one-minute option collector. See the
 [specification](specifications/OPTIONS_BTC_SPOT_CONTEXT_V1.md).
 
 `options-readiness.mjs` sequentially recovers the selected collection study,
@@ -56,6 +56,12 @@ and performs no network/scheduler operation. A readable journal can still contai
 failed source attempts; an unavailable component never hides recovered peers.
 The report is not atomic across stores, does not inspect the live host schedule
 and never combines independent simulated accounts or emits a trading permission.
+
+The CLI now composes a v2 report through `OptionsContextReadinessEngine`: the exact
+v1 report is recomputed and checked, then independent BTC recovery adds one data-only
+summary. Original core completion, dependencies, reviews and fingerprints remain
+linked; optional BTC issues have a separate context next step. The original v1
+engine and exported recovery function remain callable without changed outputs.
 
 `TreasuryRealYieldEngine` parses a strict bounded Treasury Atom/XML subset into
 five whole-basis-point daily par real yields. It separates source dates, feed

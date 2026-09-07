@@ -4,6 +4,15 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-BTC-2 integrates the verified BTC source into daily 09:00 context and readiness
+v2. The shared wrapper restores [v3](OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json);
+v1/v2 snapshots and the opening study are unchanged. The CLI now returns seven
+components while the original v1 engine/export remains reproducible. See
+[integration delivery](OPTIONS_BTC_CONTEXT_INTEGRATION_DELIVERY.md) for actual
+host readback and validation. Optional BTC failures cannot alter core review
+calculations or qualify a replay. Subsequent Codex wakes depend on available
+account allowance as well as the host/app; no reset credits may be consumed.
+
 OPT-BTC-1 adds standalone public Coinbase Exchange BTC-USD level 1 context for
 IBIT, with exact nanosecond/decimal validation and a separate recovery-checked
 journal. One actual retrieval at 2026-09-07T04:55:22.743Z passed the at-receipt

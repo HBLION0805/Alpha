@@ -68,7 +68,7 @@ await test('daily context baseline preserves the original news snapshot and non-
 });
 await test('both collection phases use the active daily baseline without changing the quote window', () => {
   const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
-  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json');
+  assert.equal(phases.restoreSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json');
   assert.equal(phases.windowStartAt,'2026-09-08T13:30:00.000Z'); assert.equal(phases.windowEndAt,'2026-09-08T13:50:00.000Z');
   assert.equal(phases.armedFields.rrule,'RRULE:FREQ=WEEKLY;BYHOUR=9;BYMINUTE=0,30;BYDAY=SU,MO,TU,WE,TH,FR,SA');
   assert.equal(phases.collectionFields.rrule,'RRULE:FREQ=MINUTELY;INTERVAL=1');
@@ -76,5 +76,25 @@ await test('both collection phases use the active daily baseline without changin
   assert.equal(phases.armedFields.prompt,readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt','utf8').trimEnd());
   assert(phases.armedFields.prompt.includes(phases.restoreSnapshot));
   assert(!phases.armedFields.prompt.includes('docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json'));
+});
+await test('v3 binds unchanged v2 bytes and keeps all non-prompt schedule fields', () => {
+  const bytes=readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json'), prior=JSON.parse(bytes);
+  const next=JSON.parse(readFileSync('docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V3.json','utf8'));
+  const sha=createHash('sha256').update(bytes).digest('hex');
+  assert.equal(sha,'9ae78b5832c090c5f959d8b97a05ced60d76d3f5b5e6ebf6b81539a88c36108a'); assert.equal(next.previousSnapshotFileSha256,sha);
+  assert.equal(next.previousSnapshot,'docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json');
+  const {prompt:oldPrompt,...oldFields}=prior.restoreFields, {prompt:newPrompt,...newFields}=next.restoreFields;
+  assert.deepEqual(newFields,oldFields);
+  assert(newPrompt.includes(oldPrompt.slice(oldPrompt.indexOf('新闻子流程：'),oldPrompt.indexOf('\n\n两个流程均只做本次只读监测。'))));
+  for(const name of ['options-drivers','options-treasury','options-btc-context']) {
+    assert.equal(newPrompt.split(`scripts/${name}.mjs --report`).length-1,1);
+    if(name!=='options-drivers')assert.equal(newPrompt.split(`scripts/${name}.mjs --refresh`).length-1,1);
+  }
+});
+await test('daily BTC context cannot widen the frozen quote host program', () => {
+  const phases=JSON.parse(readFileSync('docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json','utf8'));
+  assert(!body.includes('btc-context')); assert(!body.includes('treasury'));
+  assert(phases.armedFields.prompt.includes('财政部和 BTC 现货刷新只在每日新闻分支执行'));
+  assert(phases.armedFields.prompt.includes('不得自动兑换额度重置或购买额度'));
 });
 console.log(`${passed}/${passed} tests passed.`);

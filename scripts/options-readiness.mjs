@@ -10,6 +10,8 @@ import { reportTreasuryHistory } from "../src/engines/options-treasury/TreasuryR
 import { withDriverJournal } from "./lib/options-driver-io.mjs";
 import { withTreasuryJournal } from "./lib/options-treasury-io.mjs";
 import { runRobinhoodCloseoutCommand } from "./options-robinhood-closeout.mjs";
+import { createBtcReadinessEvidence, buildOptionsContextReadiness } from "../src/engines/options-readiness/OptionsContextReadinessEngine.ts";
+import { withBtcContextJournal } from "./lib/options-btc-context-io.mjs";
 
 const unavailable = (state, checkedAt, errorCode) => ({ state, checkedAt, reportSha256: null, summary: null, errorCode });
 function checkStore(root, path, maxBytes) {
@@ -97,9 +99,25 @@ export async function runOptionsReadinessCommand(args, { workspaceRoot = process
   }
   return buildOptionsReadiness(studyId, evidence, now());
 }
+/** Preserve v1 recovery for previous consumers; extend only the CLI's versioned result. */
+export async function runOptionsContextReadinessCommand(args, { workspaceRoot = process.cwd(), now = () => new Date().toISOString() } = {}) {
+  const core = await runOptionsReadinessCommand(args, { workspaceRoot, now });
+  if (args[0] === "--help") return { ...core, version: "OPTIONS_OPERATIONAL_READINESS_V2", context: "Seven local components including public BTC spot context for IBIT." };
+  const root = realpathSync(workspaceRoot), checkedAt = now(); readinessClock(checkedAt);
+  let evidence;
+  try {
+    const path = resolve(root, "data/runtime/options-btc-context/retrievals.ndjson");
+    evidence = !checkStore(root, path, 16 * 1024 * 1024) ? unavailable("MISSING", checkedAt, "STORE_MISSING") :
+      await withBtcContextJournal(root, store => createBtcReadinessEvidence(store.inputs, checkedAt), checkedAt);
+  } catch (error) {
+    const code = error?.code === "EEXIST" ? "STORE_BUSY" : error?.message === "READINESS_STORE_UNSAFE" ? "STORE_UNSAFE" : "RECOVERY_FAILED";
+    evidence = unavailable("BLOCKED", checkedAt, code);
+  }
+  return buildOptionsContextReadiness(core, evidence, now());
+}
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try {
-    const report = await runOptionsReadinessCommand(process.argv.slice(2), { workspaceRoot: resolve(import.meta.dirname, "..") });
+    const report = await runOptionsContextReadinessCommand(process.argv.slice(2), { workspaceRoot: resolve(import.meta.dirname, "..") });
     console.log(JSON.stringify(report, null, 2));
     if (report.blockedStores?.length) process.exitCode = 3;
   } catch (error) {

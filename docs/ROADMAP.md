@@ -3,11 +3,11 @@
 Public single-venue BTC-USD book context is independently connected for IBIT.
 Source nanoseconds, exact prices/sizes and actual retrieval clocks are preserved;
 auction, missing, crossed and stale data remain explicit. Daily scheduling and
-unified readiness integration are next; the frozen option study remains unchanged.
-See [delivery](OPTIONS_BTC_SPOT_CONTEXT_DELIVERY.md).
+readiness v2 now include BTC; the frozen option study remains unchanged.
+See [integration](OPTIONS_BTC_CONTEXT_INTEGRATION_DELIVERY.md).
 
 The unified [operational readiness report](OPTIONS_OPERATIONAL_READINESS_DELIVERY.md)
-now joins six recoverable local components, review coverage and candidate notebooks
+now joins seven recoverable local components, review coverage and candidate notebooks
 without source refreshes or new simulated trades. It separates pending market
 collection from source/storage failures and lists the remaining test dependencies.
 

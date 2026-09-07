@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { isAbsolute, join, relative, resolve } from "node:path";
 import { createHash } from "node:crypto";
-import { runOptionsReadinessCommand as run, summarizeReadinessComponent as summarize } from "./options-readiness.mjs";
+import { runOptionsReadinessCommand as run, runOptionsContextReadinessCommand as runContext, summarizeReadinessComponent as summarize } from "./options-readiness.mjs";
 import { runRobinhoodObserveCommand } from "./options-robinhood-observe.mjs";
 import { optionsPaperDemoScenarios } from "../src/engines/options-paper/OptionsPaperFixtures.ts";
 import { replayOptionsPaperAccount, appendOptionsPaperScenario } from "../src/engines/options-paper/OptionsPaperTradingEngine.ts";
@@ -15,6 +15,8 @@ import { withOptionsMarketEvidenceRepository } from "../src/repositories/LocalOp
 import { withDriverJournal } from "./lib/options-driver-io.mjs";
 import { withTreasuryJournal } from "./lib/options-treasury-io.mjs";
 import { treasuryUrl } from "../src/engines/options-treasury/TreasuryRealYieldEngine.ts";
+import { withBtcContextJournal } from "./lib/options-btc-context-io.mjs";
+import { BTC_CONTEXT_URL } from "../src/engines/options-btc-context/BtcSpotContextEngine.ts";
 
 const root = resolve(import.meta.dirname, ".."), at = "2026-09-07T14:00:00.000Z";
 const config = JSON.parse(readFileSync(join(root, "fixtures/options-robinhood-data/observation-plan.synthetic.json"), "utf8")), study = config.studyId;
@@ -44,6 +46,11 @@ function files(directory) {
   walk(directory); return result;
 }
 function paperReport() { let scenarios = []; for (const s of optionsPaperDemoScenarios()) scenarios = appendOptionsPaperScenario(scenarios, s).scenarios; return replayOptionsPaperAccount(scenarios); }
+const readContext = (directory, clock = () => at) => runContext(["--report", study], { workspaceRoot: directory, now: clock });
+async function seedBtc(directory, failure = false) {
+  const sourceText = readFileSync(join(root, "fixtures/options-btc-context/book.synthetic.json"), "utf8").replace("04:00:00.000000001Z", "13:59:59.000000001Z");
+  await withBtcContextJournal(directory, store => store.append({ requestedAt: at, receivedAt: at, url: BTC_CONTEXT_URL, sourceText: failure ? null : sourceText, errorCode: failure ? "NETWORK_FAILED" : null }, at), at);
+}
 let passed = 0;
 async function test(name, work) { await work(); passed++; console.log(`PASS ${name}`); }
 await test("all six repositories recover without appending any source or trade", () => temporary(async directory => {
@@ -103,4 +110,28 @@ await test("help makes no workspace or scheduler access", async () => { const re
 await test("mid-read clock rollback fails even when the final time has recovered", () => temporary(async directory => {
   let calls = 0; await assert.rejects(read(directory, () => ++calls === 2 ? "2026-09-07T13:59:59.000Z" : at), /CHECK_CLOCK_REGRESSION/);
 }));
+await test("v2 recovers seven components while leaving every source and trade byte unchanged", () => temporary(async directory => {
+  await seed(directory); await seedBtc(directory); const before=files(directory), v1=await read(directory), original=globalThis.fetch;
+  globalThis.fetch=async()=>{throw Error("NO_NETWORK");};
+  try { const r=await readContext(directory); assert.equal(r.version,"OPTIONS_OPERATIONAL_READINESS_V2"); assert.equal(r.coreReportSha256,v1.reportSha256); assert.equal(r.evidence.btc.state,"AVAILABLE"); assert.equal(r.evidence.btc.summary.midpointUsd,"80000.005"); assert.equal(r.missingStores.length,0); assert.equal(r.blockedStores.length,0); assert.equal(r.closedPaperReviewCoverage.reviewed,5); assert.equal(r.candidateNotebooks.paper,4); assert.deepEqual(files(directory),before); } finally {globalThis.fetch=original;}
+}));
+await test("v2 missing optional BTC neither creates storage nor changes v1 next work", () => temporary(async directory => {
+  await seed(directory); const r=await readContext(directory); assert.deepEqual(r.missingStores,["btc"]); assert.equal(r.nextStep,(await read(directory)).nextStep); assert.equal(existsSync(join(directory,"data/runtime/options-btc-context")),false);
+}));
+await test("v2 broken BTC journal preserves paper reviews and sanitizes errors", () => temporary(async directory => {
+  await seed(directory); await seedBtc(directory); const path=join(directory,"data/runtime/options-btc-context/retrievals.ndjson"); writeFileSync(path,"PRIVATE_BODY"); const r=await readContext(directory); assert.deepEqual(r.blockedStores,["btc"]); assert.equal(r.evidence.btc.errorCode,"RECOVERY_FAILED"); assert.equal(r.closedPaperReviewCoverage.consistent,true); assert.equal(r.evidence.treasury.state,"AVAILABLE"); assert(!JSON.stringify(r).includes("PRIVATE_BODY")); assert.equal(readFileSync(path,"utf8"),"PRIVATE_BODY");
+}));
+await test("v2 BTC writer lock blocks only BTC and is never removed", () => temporary(async directory => {
+  await seed(directory); await seedBtc(directory); const path=join(directory,"data/runtime/options-btc-context/writer.lock"); writeFileSync(path,"held"); const r=await readContext(directory); assert.equal(r.evidence.btc.errorCode,"STORE_BUSY"); assert.equal(readFileSync(path,"utf8"),"held"); assert.equal(r.evidence.paper.state,"AVAILABLE");
+}));
+await test("v2 BTC source failure remains available storage without a stale price", () => temporary(async directory => {
+  await seed(directory); await seedBtc(directory,true); const r=await readContext(directory); assert.equal(r.evidence.btc.state,"AVAILABLE"); assert.equal(r.evidence.btc.summary.status,"FAILED"); assert.equal(r.evidence.btc.summary.midpointUsd,null); assert.equal(r.evidence.btc.summary.displayFreshAtCheck,false); assert.equal(r.contextNextStep,"REVIEW_BTC_SOURCE_FAILURE"); assert.equal(r.blockedStores.length,0);
+}));
+await test("v2 path checks reject hard-linked BTC data before recovery", () => temporary(async directory => {
+  await seed(directory); await seedBtc(directory); linkSync(join(directory,"data/runtime/options-btc-context/retrievals.ndjson"),join(directory,"btc-alias.ndjson")); const r=await readContext(directory); assert.equal(r.evidence.btc.errorCode,"STORE_UNSAFE"); assert.equal(r.evidence.paper.state,"AVAILABLE");
+}));
+await test("v2 check and completion clocks follow the v1 completion", () => temporary(async directory => {
+  await seed(directory); await seedBtc(directory); let ticks=0; const r=await readContext(directory,()=>new Date(Date.parse(at)+ticks++).toISOString()); assert(r.coreAssessedAt<r.evidence.btc.checkedAt); assert(r.evidence.btc.checkedAt<r.assessedAt); ticks=0; await assert.rejects(readContext(directory,()=>++ticks===8?"2026-09-07T13:59:59.000Z":at),/CHECK_CLOCK_ORDER/);
+}));
+await test("v2 help describes the extension without reading any store", async () => { const r=await runContext(["--help"],{workspaceRoot:"nonexistent"}); assert.equal(r.version,"OPTIONS_OPERATIONAL_READINESS_V2"); assert.match(r.context,/Seven local components/); assert.equal(r.networkAccess,false); });
 console.log(`${passed}/${passed} tests passed.`);

@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-07 - Daily BTC collection and readiness v2
+
+- Added v3 daily context restoration with independent news, Treasury and BTC
+  workflows, preserving the prior snapshots and frozen option collection scope.
+- Added a seven-component readiness composition with exact v1 verification,
+  data-only BTC summaries, clock checks and isolated optional-context failures.
+- Preserved all prior review calculations, mandatory replay gates and journals.
+  See [integration delivery](OPTIONS_BTC_CONTEXT_INTEGRATION_DELIVERY.md).
+
 ## 2026-09-07 - Public BTC spot context for IBIT
 
 - Added a fixed anonymous BTC-USD level 1 collector with exact prices, aggregate

@@ -77,6 +77,7 @@
     "test:options-btc-context-io": "tsx scripts/options-btc-context.test.mjs",
     "options:readiness": "tsx scripts/options-readiness.mjs",
     "test:options-readiness": "tsx src/engines/options-readiness/OptionsReadinessEngine.test.ts",
+    "test:options-context-readiness": "tsx src/engines/options-readiness/OptionsContextReadinessEngine.test.ts",
     "test:options-readiness-io": "tsx scripts/options-readiness.test.mjs",
     "test:options-treasury": "tsx src/engines/options-treasury/TreasuryRealYieldEngine.test.ts",
     "test:options-treasury-io": "tsx scripts/options-treasury.test.mjs",
