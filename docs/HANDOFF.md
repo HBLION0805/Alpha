@@ -8,6 +8,17 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+First automatic development wake was actually observed on September 7 at
+19:31:46.064 UTC, routed to DEVELOPMENT with a 19:41:46.064 UTC deadline. It
+completed the [context manifest/capture design](specifications/OPTIONS_CONTEXT_MANIFEST_V1.md)
+and a read-only five-store context inspection. Implementation remains pending.
+Next bounded unit: typed member manifest and pure composition/tests, preserving
+original cutoff v1/v2 outputs; then exclusive capture-pair storage and actual
+post-payload-write clocks. Do not call a design-inspection snapshot a prospective
+receipt or fill existing sample gaps from it. See
+[wake evidence](status/first-development-wake.json). The original activation
+checkpoint remains a dated pre-first-wake record and is not rewritten.
+
 Latest operational continuation: **OPT-WORK-CONTINUATION-1** shares the single
 `gld-ibit` heartbeat for development, daily context and frozen opening collection.
 Use `docs/OPTIONS_WORK_CONTINUATION_HOST_V1.json` and

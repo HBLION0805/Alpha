@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+[Context member manifest/capture design](specifications/OPTIONS_CONTEXT_MANIFEST_V1.md)
+is reviewed; implementation is the next bounded continuation unit. It separates
+source receipt/discovery clocks from a subsequently compiled payload's actual
+save clock. No prospective capture or complete predictive feature set exists yet.
+
 [Shared continuation](OPTIONS_WORK_CONTINUATION_DELIVERY.md) carries authorized
 development between reports while yielding to the pending opening observation.
 Actual next-wake execution remains distinct from saved scheduler configuration.
