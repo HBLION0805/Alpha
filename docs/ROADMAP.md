@@ -1,5 +1,11 @@
 # Alpha Roadmap
 
+The [protocol registration workflow](OPTIONS_RESEARCH_PROTOCOL_REGISTRATION_DELIVERY.md)
+now preserves actual post-write registration clocks and independently recovers
+the complete declaration. A synthetic isolated rehearsal passed; formal dataset
+selection and new decision binding remain open. No active research protocol or
+trade was created by the rehearsal.
+
 The [research protocol declaration assessment](OPTIONS_RESEARCH_PROTOCOL_DECLARATION_DELIVERY.md)
 now preserves complete definitions and declared chronology while retaining zero
 samples and empty-partition blockers. Actual registration storage and subsequent

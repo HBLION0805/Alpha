@@ -16,6 +16,14 @@ priority, with no per-minute reporting spam or pre-restoration evidence reads.
 See [activation](OPTIONS_WORK_PROGRESS_DELIVERY.md) and
 [verified host fields](status/work-progress.json).
 
+The [protocol registration command](OPTIONS_RESEARCH_PROTOCOL_REGISTRATION_DELIVERY.md)
+now saves exclusive payload/receipt pairs with actual post-write clocks and
+independent recovery. Its synthetic isolated rehearsal passed; no formal protocol
+or dataset split was registered in the active workspace. Next unit is verified
+context/protocol references for a new research observation or no-trade record.
+Refine that decision schema before implementation; preserve all unknown feature
+and outcome facts and never backfill existing plans.
+
 The [research protocol declaration](OPTIONS_RESEARCH_PROTOCOL_DECLARATION_DELIVERY.md)
 has a reviewed design and typed pure assessment. Complete feature/outcome text,
 strategy and windows are hashed; original sample validation retains empty
