@@ -1,0 +1,41 @@
+{
+  "version": "OPTIONS_CONTEXT_MANIFEST_ENGINE_DELIVERY_V1",
+  "recordedAt": "2026-09-07T19:51:25.861Z",
+  "sourceBaseCommit": "ce1b8c7",
+  "status": "PURE_ENGINE_VALIDATED_CAPTURE_PENDING",
+  "routerAsOf": "2026-09-07T19:46:12.511Z",
+  "developmentStopAt": "2026-09-07T19:56:12.511Z",
+  "focusedTests": {
+    "passed": 13,
+    "failed": 0
+  },
+  "typecheck": "PASSED",
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 136,
+    "testsExecuted": 3403,
+    "passed": 3403,
+    "failed": 0,
+    "durationMs": 70061,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "validationLogSha256": "9fb9a7fb9699368c5a6053657aff14a6827a93e3792ada5df5051c7c67c71a3d",
+  "preservation": {
+    "protectedFileCount": 522,
+    "changed": []
+  },
+  "sourceJournalAppends": 0,
+  "hostChanges": 0,
+  "marketSourceCalls": 0,
+  "prospectiveCaptures": 0,
+  "executionAllowed": false,
+  "remaining": [
+    "CAPTURE_CLI_AND_EXCLUSIVE_RECEIPT_PAIR",
+    "POST_PAYLOAD_SAVE_CLOCK",
+    "ISOLATED_RECOVERY",
+    "ACTUAL_PROSPECTIVE_CAPTURE"
+  ]
+}

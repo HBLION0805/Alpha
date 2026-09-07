@@ -1,5 +1,9 @@
 # Alpha Roadmap
 
+The [context member engine](OPTIONS_CONTEXT_MANIFEST_ENGINE_DELIVERY.md) now
+preserves exact cutoff-selected record identities across five source histories.
+Capture/recovery and actual post-write receipts are the next implementation unit.
+
 [Context member manifest/capture design](specifications/OPTIONS_CONTEXT_MANIFEST_V1.md)
 is reviewed; implementation is the next bounded continuation unit. It separates
 source receipt/discovery clocks from a subsequently compiled payload's actual

@@ -8,6 +8,13 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The first context-manifest implementation unit now composes unchanged cutoff v2
+with exact source/category/index membership and canonical record hashes. See
+[engine delivery](OPTIONS_CONTEXT_MANIFEST_ENGINE_DELIVERY.md). It has no CLI or
+durable capture receipt yet. Next bounded unit is loader reuse and exclusive
+payload/receipt persistence from the reviewed design. Existing sample inputs
+remain incomplete; do not relabel retrospective inspection as prospective use.
+
 First automatic development wake was actually observed on September 7 at
 19:31:46.064 UTC, routed to DEVELOPMENT with a 19:41:46.064 UTC deadline. It
 completed the [context manifest/capture design](specifications/OPTIONS_CONTEXT_MANIFEST_V1.md)
