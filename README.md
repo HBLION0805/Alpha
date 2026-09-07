@@ -156,7 +156,10 @@ entitlements. The new preparation command separates documented tools, local
 catalog declarations and unresolved response semantics. Its five-tool filter is
 client-side only; it cannot narrow server authorization or enforce GLD/IBIT inputs.
 The [example](fixtures/options-robinhood-data/codex.disabled.example.toml) stays
-disabled and uninstalled. Authentication/account onboarding has not been authorized.
+disabled. The Owner subsequently authorized the five-tool host connection and
+official login; its enabled host copy is installed, with login completion still
+unobserved. New-account and paid steps remain excluded. See the
+[host setup record](docs/OPTIONS_ROBINHOOD_CONNECTION_SETUP.md).
 An eventual Robinhood adapter needs separate source semantics; responses cannot
 be relabeled as Cboe evidence. OHLC cannot substitute for missing quote-side data.
 See [data readiness](docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md).

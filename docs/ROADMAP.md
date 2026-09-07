@@ -42,8 +42,10 @@ configuration example. No authenticated quote connection is established. The
 
 1. Continue local workflow preparation under the Owner's decision to defer paid
    market data. Use the new readiness report and offline catalog inspection to
-   prepare a concrete Robinhood scope/schema review. Authentication and potential
-   account onboarding require the Owner's later consent, not yet granted. Assess
+   prepare a concrete Robinhood scope/schema review. The Owner has now approved
+   the five-tool connection; complete official login with the Owner using the
+   installed host configuration. Stop before new-account or paid steps. See
+   [host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md). Assess
    authorized read-only Robinhood Trading MCP capabilities and actual response semantics,
    or obtain an entitled local GLD/IBIT quote file. Official MCP documents now
    include option historical OHLC, live quotes and instruments; it is not
