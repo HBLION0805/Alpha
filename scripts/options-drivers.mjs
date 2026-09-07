@@ -6,7 +6,7 @@ import { parseDriverFeed, readPublicDriverFeed, withDriverJournal } from "./lib/
 const root = resolve(import.meta.dirname, "..");
 try {
   const args = process.argv.slice(2);
-  if (args.length > 1 || (args.length === 1 && !["--catalog", "--refresh", "--report", "--demo", "--help"].includes(args[0]))) throw new Error("Use --catalog, --refresh, --report, --demo or --help; arbitrary sources and brokerage modes are unsupported.");
+  if (args.length > 1 || (args.length === 1 && !["--catalog", "--refresh", "--report", "--demo", "--help"].includes(args[0]))) throw new Error("DRIVER_ARGUMENTS");
   const mode = args[0] ?? "--report";
   const asOf = new Date().toISOString();
   if (mode === "--help") {
@@ -29,7 +29,7 @@ try {
           diagnostic: parsed.rejectedItems ? `${parsed.rejectedItems} invalid headline items rejected` : null } };
       } catch (error) {
         return { observations: [], health: { sourceId: source.id, observedAt: new Date().toISOString(), status: "FAILED", itemsReceived: 0, truncated: false,
-          diagnostic: /^(?:HTTP_\d+|FEED_TOO_LARGE|UNEXPECTED_CONTENT_TYPE|UNSUPPORTED_OR_INCOMPLETE_FEED|MALFORMED_FEED_ITEMS|EMPTY_RESPONSE_BODY)$/.test(error.message) ? error.message : "FETCH_OR_PARSE_FAILED" } };
+          diagnostic: /^(?:HTTP_[1-5]\d{2}|FEED_HTTP_STATUS|FEED_DEADLINE_EXCEEDED|FEED_NETWORK_FAILED|FEED_TOO_LARGE|UNEXPECTED_CONTENT_TYPE|INVALID_CONTENT_LENGTH|INVALID_FEED_UTF8|UNSUPPORTED_OR_INCOMPLETE_FEED|MALFORMED_FEED_ITEMS|EMPTY_RESPONSE_BODY)$/.test(error?.message) ? error.message : "FETCH_OR_PARSE_FAILED" } };
       }
     })) : [];
     const report = withDriverJournal(root, (store) => {
@@ -46,6 +46,8 @@ try {
     if (refreshed.some((batch) => batch.health.status === "FAILED")) process.exitCode = 3;
   }
 } catch (error) {
-  console.error(JSON.stringify({ status: "DRIVER_MONITOR_ERROR", executionAllowed: false, message: error.message }));
+  const codes = ["DRIVER_ARGUMENTS", "DRIVER_STORE_PATH_ESCAPE", "UNSAFE_DRIVER_STORE_DIRECTORY", "UNSAFE_OR_OVERSIZED_DRIVER_JOURNAL", "TRUNCATED_DRIVER_JOURNAL_REQUIRES_REVIEW", "INVALID_DRIVER_BATCH", "DRIVER_BATCH_INTEGRITY_FAILURE", "DRIVER_JOURNAL_SCOPE_CLOSED", "DRIVER_JOURNAL_WRITE_UNCERTAIN_REOPEN_REQUIRED", "DRIVER_BATCH_LIMIT_EXCEEDED", "DRIVER_JOURNAL_ROTATION_REQUIRED", "DRIVER_JOURNAL_REQUIRES_SYNCHRONOUS_CALLBACK", "INVALID_DRIVER_OBSERVATION", "INVALID_DRIVER_FIELDS", "INVALID_DRIVER_LINK", "INVALID_DRIVER_JOURNAL", "DRIVER_JOURNAL_INTEGRITY_FAILURE", "INVALID_DRIVER_HEALTH", "INVALID_DRIVER_HEALTH_COUNTS", "DRIVER_OBSERVATION_CLOCK_REGRESSION", "INVALID_DRIVER_AS_OF"];
+  const message = error?.code === "EEXIST" ? "DRIVER_WRITER_LOCKED" : codes.includes(error?.message) ? error.message : "DRIVER_LOCAL_FAILURE";
+  console.error(JSON.stringify({ status: "DRIVER_MONITOR_ERROR", executionAllowed: false, message }));
   process.exitCode = 2;
 }

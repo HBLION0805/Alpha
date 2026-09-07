@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## 2026-09-07 - Headline timeout and storage boundary correction
+
+- Added total public-feed deadlines, nonblocking cancellation, strict UTF-8 and
+  metadata checks, fixed failure messages and direct journal hard-link checks.
+- Preserved original source/engine outputs and journals; added fault and isolated
+  CLI tests. See [correction evidence](OPTIONS_HEADLINE_TRANSPORT_CORRECTION.md).
+
 ## 2026-09-07 - Readable local options test brief
 
 - Added a plain-text/JSON command combining the selected quote window, storage

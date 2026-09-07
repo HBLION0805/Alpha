@@ -53,29 +53,42 @@ export function parseDriverFeed(xml, sourceId, observedAt, origin = "PUBLIC_FEED
   return { items, rejectedItems, truncated: blocks.length > 100, sourceItemCount: blocks.length };
 }
 
-export async function readPublicDriverFeed(sourceId, fetchImplementation = globalThis.fetch) {
+export async function readPublicDriverFeed(sourceId, fetchImplementation = globalThis.fetch, { deadlineMs = 12000 } = {}) {
   if (!Object.hasOwn(PUBLIC_SOURCE_URLS, sourceId)) throw new Error("UNREGISTERED_DRIVER_SOURCE");
-  const response = await fetchImplementation(PUBLIC_SOURCE_URLS[sourceId], {
-    redirect: "manual", credentials: "omit", signal: AbortSignal.timeout(12000),
-    headers: { "User-Agent": "Alpha-Options-Research/0.2 (public-feed monitor)", Accept: "application/rss+xml, application/atom+xml, text/xml, application/xml" },
-  });
-  if (response.status !== 200) throw new Error(`HTTP_${response.status}`);
-  if (!/(?:xml|rss|atom)/i.test(response.headers.get("content-type") ?? "")) throw new Error("UNEXPECTED_CONTENT_TYPE");
-  if (Number(response.headers.get("content-length") ?? 0) > MAX_FEED_BYTES) throw new Error("FEED_TOO_LARGE");
-  if (!response.body) throw new Error("EMPTY_RESPONSE_BODY");
-  const reader = response.body.getReader();
-  const chunks = [];
-  let bytes = 0;
+  if (!Number.isSafeInteger(deadlineMs) || deadlineMs < 1 || deadlineMs > 12000) throw Error("DRIVER_DEADLINE_CONFIGURATION");
+  const controller = new AbortController(); let timer, reader;
+  const deadline = new Promise((_, reject) => { timer = setTimeout(() => { controller.abort(); reject(Error("FEED_DEADLINE_EXCEEDED")); }, deadlineMs); });
+  const withinDeadline = work => Promise.race([work, deadline]);
   try {
+    const response = await withinDeadline(fetchImplementation(PUBLIC_SOURCE_URLS[sourceId], {
+      redirect: "manual", credentials: "omit", signal: controller.signal,
+      headers: { "User-Agent": "Alpha-Options-Research/0.2 (public-feed monitor)", Accept: "application/rss+xml, application/atom+xml, text/xml, application/xml" },
+    }));
+    if (response.status !== 200 || response.redirected) throw Error(Number.isInteger(response.status) && response.status >= 100 && response.status <= 599 && response.status !== 200 ? `HTTP_${response.status}` : "FEED_HTTP_STATUS");
+    if (!/^(?:text|application)\/(?:xml|rss\+xml|atom\+xml)(?:\s*;\s*charset\s*=\s*(?:utf-?8|"utf-?8"))?\s*$/i.test(response.headers.get("content-type") ?? "")) throw Error("UNEXPECTED_CONTENT_TYPE");
+    const length = response.headers.get("content-length");
+    if (length !== null && !/^\d+$/.test(length)) throw Error("INVALID_CONTENT_LENGTH");
+    if (length !== null && Number(length) > MAX_FEED_BYTES) throw Error("FEED_TOO_LARGE");
+    if (!response.body) throw Error("EMPTY_RESPONSE_BODY");
+    reader = response.body.getReader();
+    const chunks = []; let bytes = 0;
     while (true) {
-      const { done, value } = await reader.read();
+      const { done, value } = await withinDeadline(reader.read());
       if (done) break;
       bytes += value.byteLength;
       if (bytes > MAX_FEED_BYTES) throw new Error("FEED_TOO_LARGE");
       chunks.push(value);
     }
-  } finally { await reader.cancel(); }
-  return Buffer.concat(chunks).toString("utf8");
+    if (!bytes) throw Error("EMPTY_RESPONSE_BODY");
+    try { return new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(Buffer.concat(chunks)); }
+    catch { throw Error("INVALID_FEED_UTF8"); }
+  } catch (error) {
+    const safe = /^(?:HTTP_[1-5]\d{2}|FEED_HTTP_STATUS|FEED_DEADLINE_EXCEEDED|FEED_TOO_LARGE|UNEXPECTED_CONTENT_TYPE|INVALID_CONTENT_LENGTH|EMPTY_RESPONSE_BODY|INVALID_FEED_UTF8)$/.test(error?.message);
+    throw Error(safe ? error.message : "FEED_NETWORK_FAILED");
+  } finally {
+    clearTimeout(timer); controller.abort();
+    if (reader) void Promise.resolve().then(() => reader.cancel()).catch(() => {});
+  }
 }
 
 function within(root, candidate) {
@@ -102,7 +115,7 @@ export function withDriverJournal(workspace, operation) {
     const read = (file) => {
       if (!existsSync(file)) return [];
       const stat = lstatSync(file);
-      if (stat.isSymbolicLink() || !stat.isFile() || stat.size > MAX_JOURNAL_BYTES) throw new Error("UNSAFE_OR_OVERSIZED_DRIVER_JOURNAL");
+      if (stat.isSymbolicLink() || !stat.isFile() || stat.nlink !== 1 || stat.size > MAX_JOURNAL_BYTES) throw new Error("UNSAFE_OR_OVERSIZED_DRIVER_JOURNAL");
       const text = readFileSync(file, "utf8");
       if (text && !text.endsWith("\n")) throw new Error("TRUNCATED_DRIVER_JOURNAL_REQUIRES_REVIEW");
       return text ? text.trimEnd().split("\n").map((line) => JSON.parse(line)) : [];
@@ -129,7 +142,13 @@ export function withDriverJournal(workspace, operation) {
       const body = { schemaVersion: "1.0", previousFingerprint, observations: newObservations, health: newHealth };
       const fingerprint = `sha256:${createHash("sha256").update(JSON.stringify(body)).digest("hex")}`;
       const data = JSON.stringify({ ...body, fingerprint }) + "\n";
-      if ((existsSync(path) ? lstatSync(path).size : 0) + Buffer.byteLength(data) > MAX_JOURNAL_BYTES) throw new Error("DRIVER_JOURNAL_ROTATION_REQUIRED");
+      let size = 0;
+      if (existsSync(path)) {
+        const stat = lstatSync(path);
+        if (stat.isSymbolicLink() || !stat.isFile() || stat.nlink !== 1 || stat.size > MAX_JOURNAL_BYTES) throw Error("UNSAFE_OR_OVERSIZED_DRIVER_JOURNAL");
+        size = stat.size;
+      }
+      if (size + Buffer.byteLength(data) > MAX_JOURNAL_BYTES) throw new Error("DRIVER_JOURNAL_ROTATION_REQUIRED");
       uncertainWrite = true;
       appendFileSync(path, data, "utf8");
       const fd = openSync(path, "r+");

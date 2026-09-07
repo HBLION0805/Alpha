@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-NEWS-GUARDS-2 corrects the older headline transport's total deadline,
+cancellation and UTF-8 handling, sanitizes CLI failures and rejects hard-linked
+journals during direct recovery/append. Existing as-of discovery filtering,
+valid parser/engine outputs, source URLs, accepted history and host scheduling
+remain unchanged. See [review](OPTIONS_HEADLINE_TRANSPORT_CORRECTION.md) and
+[checkpoint](status/headline-transport-guards.json). No new live requests were
+needed; injected failure tests use isolated temporary workspaces.
+
 OPT-BRIEF-1 adds `options:brief -- --report <study-id> [--json]`. The actual local
 brief at 2026-09-07T06:26:30.711Z shows the unchanged 09:30 opening window, no
 collected frames yet, all five closed-paper reviews, four paper candidates and

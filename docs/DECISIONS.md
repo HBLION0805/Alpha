@@ -1,5 +1,13 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Bound older headline transport and direct journal access
+
+- Enforce one public-feed deadline across headers/body without awaiting an
+  unbounded cancellation; reject malformed UTF-8 and unsupported response metadata.
+- Keep fixed diagnostic codes through the CLI and check hard-link safety both
+  before journal recovery and before append. Retain existing successful response,
+  journal-format and as-of discovery-time semantics without adding source calls.
+
 ## 2026-09-07 - Present local test evidence without changing its authority
 
 - Add a readable operator brief around exact readiness-v2 recomputation and

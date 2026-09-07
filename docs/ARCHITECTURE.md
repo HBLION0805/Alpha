@@ -118,6 +118,11 @@ not an exhaustive causal model or a signed scoring rule.
 code-owned HTTPS endpoints, with no credentials, redirects or arbitrary URL
 input, a 12-second timeout and 512 KiB body limit per request. Its bounded RSS/Atom
 parser saves titles and links, not full articles, and rejects entity declarations.
+The transport now enforces its deadline across headers/body independently of
+provider cancellation, validates UTF-8 without replacement and retains fixed
+failure codes. Direct journal reads/appends reject hard links as well as unsafe
+paths. Existing source URLs, parser outputs and journal hashes are unchanged by
+this correction; see [review](OPTIONS_HEADLINE_TRANSPORT_CORRECTION.md).
 
 Every headline binds source, publication time when available, first observation,
 origin, content identity and complete-record checksum. The local journal stores

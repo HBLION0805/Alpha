@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
-import { appendFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { appendFileSync, copyFileSync, existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
-import { isAbsolute, join, relative, resolve } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { parseDriverFeed, PUBLIC_SOURCE_URLS, readPublicDriverFeed, withDriverJournal } from "./lib/options-driver-io.mjs";
 
 const root = resolve(import.meta.dirname, "..");
@@ -21,6 +22,13 @@ async function temporary(run) {
     if (isAbsolute(rel) || rel.startsWith("..") || !rel.startsWith("alpha-driver-test-")) throw new Error("UNSAFE_TEST_CLEANUP");
     rmSync(directory, { recursive: true });
   }
+}
+function isolatedCli(directory) {
+  for (const file of ["scripts/options-drivers.mjs", "scripts/lib/options-driver-io.mjs", "src/engines/options-drivers/OptionsDriverMonitorEngine.ts", "src/engines/options-drivers/OptionsDriverCatalog.ts", "src/contracts/OptionsDriverMonitor.ts"]) {
+    mkdirSync(dirname(join(directory, file)), { recursive: true }); copyFileSync(join(root, file), join(directory, file));
+  }
+  writeFileSync(join(directory, "package.json"), '{"type":"module"}');
+  return join(directory, "scripts/options-drivers.mjs");
 }
 const tests = [
   ["RSS parser preserves source and canonical publication time", () => {
@@ -117,6 +125,69 @@ const tests = [
   }],
 ];
 tests.push(
+  ["CLI corruption errors do not expose the invalid journal body", () => temporary(directory => {
+    const command = isolatedCli(directory);
+    withDriverJournal(directory, s => s.appendBatch([{ example: 1 }], []));
+    const path = join(directory, "data/runtime/options-driver-monitor/refreshes.ndjson"); writeFileSync(path, "{PRIVATE_JOURNAL_CONTENT}\n");
+    const r = spawnSync(process.execPath, ["--import", "tsx", command, "--report"], { cwd: root, encoding: "utf8", timeout: 30000 });
+    assert.equal(r.status, 2); assert.equal(JSON.parse(r.stderr).message, "DRIVER_LOCAL_FAILURE"); assert(!r.stderr.includes("PRIVATE")); assert.equal(readFileSync(path, "utf8"), "{PRIVATE_JOURNAL_CONTENT}\n");
+  })],
+  ["CLI records fixed source failures for all six feeds without leaking provider errors", () => temporary(directory => {
+    const command = isolatedCli(directory), preload = join(directory, "fault-provider.mjs");
+    writeFileSync(preload, 'globalThis.fetch = async () => { throw Error("PRIVATE_PROVIDER_MESSAGE"); };');
+    const r = spawnSync(process.execPath, ["--import", "tsx", "--import", pathToFileURL(preload).href, command, "--refresh"], { cwd: root, encoding: "utf8", timeout: 30000 });
+    assert.equal(r.status, 3, r.stderr); const result = JSON.parse(r.stdout); assert.equal(result.sources.length, 6);
+    assert(result.sources.every(s => s.health.status === "FAILED" && s.health.diagnostic === "FEED_NETWORK_FAILED"));
+    assert(!r.stdout.includes("PRIVATE")); assert(!readFileSync(join(directory, "data/runtime/options-driver-monitor/refreshes.ndjson"), "utf8").includes("PRIVATE"));
+  })],
+  ["deadline bounds headers even when a transport ignores its abort signal", async () => {
+    await assert.rejects(readPublicDriverFeed("fed", () => new Promise(() => {}), { deadlineMs: 5 }), /FEED_DEADLINE_EXCEEDED/);
+  }],
+  ["one deadline bounds body reads and a stalled cancellation cannot block it", async () => {
+    const response = { status: 200, headers: new Headers({ "content-type": "text/xml" }), body: { getReader: () => ({ read: () => new Promise(() => {}), cancel: () => new Promise(() => {}) }) } };
+    await assert.rejects(readPublicDriverFeed("fed", async () => response, { deadlineMs: 5 }), /FEED_DEADLINE_EXCEEDED/);
+  }],
+  ["successful bytes are returned even if cleanup never resolves or rejects", async () => {
+    for (const cancel of [() => new Promise(() => {}), async () => { throw Error("PRIVATE_CANCEL_FAILURE"); }]) {
+      let read = false;
+      const response = { status: 200, headers: new Headers({ "content-type": "application/rss+xml; charset=UTF-8" }), body: { getReader: () => ({ read: async () => read ? { done: true } : (read = true, { done: false, value: Buffer.from(rss(item())) }), cancel }) } };
+      assert.equal(await readPublicDriverFeed("fed", async () => response, { deadlineMs: 10 }), rss(item()));
+    }
+  }],
+  ["invalid UTF-8 is rejected rather than altered into replacement characters", async () => {
+    await assert.rejects(readPublicDriverFeed("fed", async () => new Response(new Uint8Array([0xc3, 0x28]), { headers: { "content-type": "text/xml" } })), /INVALID_FEED_UTF8/);
+  }],
+  ["unsupported charset and deceptive content-type values are rejected", async () => {
+    for (const value of ["text/html; charset=xml", "application/xmlish", "text/xml; charset=latin1"])
+      await assert.rejects(readPublicDriverFeed("fed", async () => new Response(rss(item()), { headers: { "content-type": value } })), /UNEXPECTED_CONTENT_TYPE/);
+  }],
+  ["malformed Content-Length and empty streams retain distinct fixed failures", async () => {
+    for (const value of ["-1", "NaN", "1.2"])
+      await assert.rejects(readPublicDriverFeed("fed", async () => new Response(rss(item()), { headers: { "content-type": "text/xml", "content-length": value } })), /INVALID_CONTENT_LENGTH/);
+    await assert.rejects(readPublicDriverFeed("fed", async () => new Response("", { headers: { "content-type": "text/xml" } })), /EMPTY_RESPONSE_BODY/);
+  }],
+  ["provider status and network error text cannot become stored diagnostics", async () => {
+    await assert.rejects(readPublicDriverFeed("fed", async () => { throw Error("PRIVATE_TOKEN_VALUE"); }), error => error.message === "FEED_NETWORK_FAILED");
+    await assert.rejects(readPublicDriverFeed("fed", async () => ({ status: "PRIVATE_TOKEN_VALUE" })), error => error.message === "FEED_HTTP_STATUS");
+    await assert.rejects(readPublicDriverFeed("fed", async () => ({ status: 200, redirected: true })), /FEED_HTTP_STATUS/);
+  }],
+  ["unbounded or invalid deadline overrides fail before any source call", async () => {
+    for (const deadlineMs of [0, -1, 12001, 1.1, Infinity]) {
+      let called = false; await assert.rejects(readPublicDriverFeed("fed", async () => { called = true; }, { deadlineMs }), /DEADLINE_CONFIGURATION/); assert.equal(called, false);
+    }
+  }],
+  ["direct journal recovery rejects hard links without appending any bytes", () => temporary(directory => {
+    withDriverJournal(directory, s => s.appendBatch([{ example: 1 }], []));
+    const path = join(directory, "data/runtime/options-driver-monitor/refreshes.ndjson"), before = readFileSync(path);
+    linkSync(path, join(directory, "alias")); assert.throws(() => withDriverJournal(directory, () => {}), /UNSAFE/); assert.deepEqual(readFileSync(path), before);
+  })],
+  ["append rechecks link safety after the journal callback begins", () => temporary(directory => {
+    withDriverJournal(directory, s => s.appendBatch([{ example: 1 }], []));
+    withDriverJournal(directory, s => {
+      const path = join(s.directory, "refreshes.ndjson"), before = readFileSync(path); linkSync(path, join(directory, "alias"));
+      assert.throws(() => s.appendBatch([{ example: 2 }], []), /UNSAFE/); assert.deepEqual(readFileSync(path), before);
+    });
+  })],
   ["headline append capability expires after the writer callback returns", () => temporary(directory => {
     const escaped = withDriverJournal(directory, store => store);
     assert.throws(() => escaped.appendBatch([{ example: 1 }], []), /SCOPE_CLOSED/);
