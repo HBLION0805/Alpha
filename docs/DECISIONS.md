@@ -1,5 +1,17 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Retain FOMC calendar date precision
+
+- Add only the official Federal Reserve calendar URL as a separate public source.
+  Bound HTML parsing to current/next-year panels and known date-label structure;
+  never execute page scripts, follow links or infer dates from free-form notes.
+- Preserve date-only start/end, projection marker, nullable page update date and
+  actual receipt clocks. Meeting confirmation and intraday release times remain
+  unknown; a page update is not the original publication time of each meeting.
+- Compare date-derived keys only across consecutive successful same-year scopes.
+  Missing keys do not prove cancellation or rescheduling. Daily scheduling and
+  existing report/export formats require separate integration.
+
 ## 2026-09-07 - Rehearse complete collection windows in isolated storage
 
 - Execute the known checked-in Host control flow through fake quote ports and

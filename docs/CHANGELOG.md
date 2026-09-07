@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - Official FOMC date-calendar context
+
+- Added bounded public HTML collection, exact same/cross-month date intervals,
+  projection markers and explicit unknown confirmation/intraday metadata.
+- Saved one actual current/next-year source with 16 meetings, verified independent
+  recovery and preserved existing source/host records. See
+  [delivery](OPTIONS_FOMC_CALENDAR_DELIVERY.md).
+
 ## 2026-09-07 - Complete synthetic collection-window rehearsals
 
 - Added three isolated twenty-minute scenarios joining the Host tick, local

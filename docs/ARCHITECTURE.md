@@ -45,6 +45,14 @@ before invoking this deterministic save. Coverage has no execution authority.
 
 ## Context and evidence
 
+`FomcCalendarEngine` parses a restricted, non-executing public HTML profile for
+the receipt's New York year and next-year panel. It keeps date intervals and
+projection markers without inventing intraday or confirmed-event timestamps.
+Its separate bounded journal retains raw receipt history; consecutive same-year
+comparisons do not interpret absent date-derived keys as cancellation. See
+[delivery](OPTIONS_FOMC_CALENDAR_DELIVERY.md). Existing BLS, readiness, context
+cutoff, brief, export and daily-host versions are unchanged in this delivery.
+
 `OptionsContextCutoff` independently validates current headline, Treasury, BTC
 and BLS histories before filtering by stored receipt/discovery clocks. It uses
 unchanged source engines at the selected cutoff. Its context hash excludes later

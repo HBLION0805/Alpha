@@ -6,6 +6,10 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- A standalone Federal Reserve meeting calendar preserves date-only FOMC ranges,
+  projection markers, actual receipts and explicit unknown confirmation/intraday
+  timing. Its first official retrieval and restart recovery are verified; it is
+  not yet in daily scheduling. See [delivery](docs/OPTIONS_FOMC_CALENDAR_DELIVERY.md).
 - Complete synthetic collection-window rehearsals join the checked-in Host tick,
   local collector, persistent observation records and final coverage/lesson reports.
   Normal, mixed-failure and slow-response scenarios retain explicit simulated

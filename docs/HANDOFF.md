@@ -4,6 +4,14 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-FOMC-1 adds standalone public FOMC date-calendar collection. The actual
+2026-09-07T07:32:40.377Z receipt retains 16 listed 2026/2027 meetings; independent
+recovery matched. Upcoming September 15-16 dates retain unknown intraday timing
+and confirmation. See [delivery](OPTIONS_FOMC_CALENDAR_DELIVERY.md) and
+[checkpoint](status/fomc-calendar.json). Existing sources, active v4 scheduling,
+readiness/brief/cutoff/export versions and quote plans remain unchanged. Integrate
+daily FOMC context separately; no automatic FOMC refresh is implied by this step.
+
 The [host timeout assessment](OPTIONS_HOST_TIMEOUT_ASSESSMENT.md) verified existing
 Robinhood configuration values: tool timeout 20 seconds, startup 15 seconds.
 No host/code change or deliberate stalled quote request was needed. Effective

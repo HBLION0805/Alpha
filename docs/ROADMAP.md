@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The standalone [FOMC date calendar](OPTIONS_FOMC_CALENDAR_DELIVERY.md) now retains
+official listed current/next-year meetings and actual retrieval history. The
+existing daily host/readiness/brief/cutoff/export versions do not yet include
+this source. Date-only listings cannot be treated as precise trading risk windows.
+
 The [synthetic full-window rehearsal](OPTIONS_COLLECTION_REHEARSAL_DELIVERY.md)
 now joins Host control flow to persistent local collection and final reports.
 Healthy, mixed-failure and slow-response outcomes are retained independently.
