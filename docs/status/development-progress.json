@@ -1,0 +1,145 @@
+{
+  "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
+  "recordedAt": "2026-09-07T21:27:27.914Z",
+  "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
+  "denominator": 10,
+  "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
+  "comparedWithCommit": "bf150ec",
+  "previousCounts": {
+    "LOCAL_VALIDATED": 3,
+    "PARTIAL": 4,
+    "NOT_VALIDATED": 3
+  },
+  "currentCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "workstreams": [
+    {
+      "id": "01",
+      "name": "Single-trade risk and planning",
+      "previousStatus": "LOCAL_VALIDATED",
+      "status": "LOCAL_VALIDATED",
+      "detail": "Declared whole-contract, cost and risk diagnostics; real input qualification is separate.",
+      "evidence": "docs/OPTIONS_COVERAGE_INTERPRETATION.md"
+    },
+    {
+      "id": "02",
+      "name": "News macro and BTC context",
+      "previousStatus": "PARTIAL",
+      "status": "PARTIAL",
+      "detail": "Six headline feeds and Treasury/BTC/BLS/FOMC sources work; numerical driver coverage remains incomplete.",
+      "evidence": "docs/OPTIONS_NEWS_ACCESS_RECOVERY.md"
+    },
+    {
+      "id": "03",
+      "name": "GLD/IBIT option collection",
+      "previousStatus": "PARTIAL",
+      "status": "PARTIAL",
+      "detail": "Authorized connection and frozen opening collector; eligible prospective series still pending.",
+      "evidence": "docs/OPTIONS_ROBINHOOD_OPENING_WINDOW.md"
+    },
+    {
+      "id": "04",
+      "name": "Protocol and observation evidence",
+      "previousStatus": "PARTIAL",
+      "status": "LOCAL_VALIDATED",
+      "detail": "Exclusive note receipts and original protocol/context recovery passed isolated tests; full feature lineage is separate.",
+      "evidence": "docs/OPTIONS_RESEARCH_OBSERVATION_STORAGE_DELIVERY.md"
+    },
+    {
+      "id": "05",
+      "name": "Local single-leg paper lifecycle",
+      "previousStatus": "LOCAL_VALIDATED",
+      "status": "LOCAL_VALIDATED",
+      "detail": "Modeled entry/fill/exit/accounting works with frozen assumptions; no qualified Robinhood adapter.",
+      "evidence": "docs/OPTIONS_HISTORICAL_REPLAY_DELIVERY.md"
+    },
+    {
+      "id": "06",
+      "name": "Reviews and candidate mistake notebook",
+      "previousStatus": "LOCAL_VALIDATED",
+      "status": "LOCAL_VALIDATED",
+      "detail": "All local cases retained with nine closed reviews; candidate lessons are not approved trading rules.",
+      "evidence": "docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md"
+    },
+    {
+      "id": "07",
+      "name": "Portfolio and account qualification",
+      "previousStatus": "PARTIAL",
+      "status": "PARTIAL",
+      "detail": "Declared portfolio diagnostics work; real account evidence and full integration remain incomplete.",
+      "evidence": "docs/OPTIONS_PORTFOLIO_RISK_DELIVERY.md"
+    },
+    {
+      "id": "08",
+      "name": "Robinhood real-price paper adapter",
+      "previousStatus": "NOT_VALIDATED",
+      "status": "NOT_VALIDATED",
+      "detail": "Not implemented; source-specific contract/session/quote/cost evidence must qualify first.",
+      "evidence": "docs/OPTIONS_CURRENT_OPERATIONS.md"
+    },
+    {
+      "id": "09",
+      "name": "First qualified real-price paper flow",
+      "previousStatus": "NOT_VALIDATED",
+      "status": "NOT_VALIDATED",
+      "detail": "Not run; requires qualified quotes and adapter followed by durable review/restart checks.",
+      "evidence": "docs/OPTIONS_CURRENT_OPERATIONS.md"
+    },
+    {
+      "id": "10",
+      "name": "Signal evaluation and calibration",
+      "previousStatus": "NOT_VALIDATED",
+      "status": "NOT_VALIDATED",
+      "detail": "No complete partition input, sealed evaluation or calibrated strategy probability.",
+      "evidence": "docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md"
+    }
+  ],
+  "currentWorkstream": "04",
+  "currentUnit": "Observation storage and independent three-pair recovery",
+  "currentUnitAcceptance": "All 35 observation tests, actual-clock isolated recovery and full integrated validation passed.",
+  "firstPaperFlow": {
+    "totalGates": 6,
+    "localComponentsAvailable": 3,
+    "openGates": 3,
+    "realPriceRun": "NOT_RUN",
+    "gateAdvancedThisUnit": false,
+    "gates": [
+      {
+        "name": "Local risk and planning",
+        "status": "LOCAL_VALIDATED"
+      },
+      {
+        "name": "Qualified option quotes",
+        "status": "AWAITING_ELIGIBLE_DATA"
+      },
+      {
+        "name": "Source-specific Robinhood paper adapter",
+        "status": "NOT_IMPLEMENTED"
+      },
+      {
+        "name": "Local modeled lifecycle",
+        "status": "LOCAL_VALIDATED"
+      },
+      {
+        "name": "Outcome review and candidate notebook",
+        "status": "LOCAL_VALIDATED"
+      },
+      {
+        "name": "Qualified real-price end-to-end run",
+        "status": "NOT_RUN"
+      }
+    ]
+  },
+  "criticalDependency": "Eligible GLD/IBIT option evidence from the frozen September 8 09:30-09:50 New York opening pilot, followed by semantics/cost/account qualification.",
+  "nextAction": "Specify a bounded export/recovery extension retaining all three evidence pairs while preserving old formats; qualify the frozen opening data before a source-specific paper adapter.",
+  "winProbability": null,
+  "executionAllowed": false,
+  "finalIntegratedValidation": {
+    "passed": 3497,
+    "failed": 0,
+    "componentCount": 143
+  }
+}

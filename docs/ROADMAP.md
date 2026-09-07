@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+Use the [ten-workstream baseline](OPTIONS_DEVELOPMENT_PROGRESS.md) for progress
+against total scope and the six first-real-price-paper-flow gates. Observation
+storage and three-pair recovery now close local workstream 04. This leaves three
+real-price gates open; test counts and module counts are not completion percentages.
+
 The [research observation inspector](OPTIONS_RESEARCH_OBSERVATION_INSPECTION_DELIVERY.md)
 now independently resolves declared protocol/context references with actual local
 chronology and unchanged original context reports. Observation persistence and

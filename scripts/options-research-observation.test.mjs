@@ -32,9 +32,9 @@ async function seed(d, registrationAt = at) {
 }
 let passed = 0; async function test(name, work) { await work(); passed++; console.log(`PASS ${name}`); }
 
-await test("help and unsupported recording or clock arguments never read workspace", async () => {
+await test("help and malformed recording or clock arguments never read workspace", async () => {
   const opts = { workspaceRoot: join(root, "missing-observation-root") }; assert.equal((await run(["--help"], opts)).recordSaved, false);
-  for (const args of [["--record", "x"], ["--verify", "x"], ["--inspect", "x", "--at", at], ["--inspect"]]) await assert.rejects(run(args, opts), /ARGUMENTS/);
+  for (const args of [["--record"], ["--verify", "x", "--extra"], ["--inspect", "x", "--at", at], ["--inspect"]]) await assert.rejects(run(args, opts), /ARGUMENTS/);
 });
 await test("exact input rejects scope authority clocks unsafe IDs and absent reasons", () => {
   for (const extra of ["observationAt", "executionAllowed", "winProbability", "outcomeState", "featuresKnownAt"]) assert.throws(() => validate({ ...fixture(), [extra]: null }), /SHAPE/);

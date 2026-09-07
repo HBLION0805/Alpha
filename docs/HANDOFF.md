@@ -10,11 +10,22 @@ deliveries below retain their original evidence and historical context.
 
 The Owner now explicitly requests Chinese development progress every 15 minutes,
 including in-progress or waiting states. The active shared fields are
-`docs/OPTIONS_WORK_CONTINUATION_HOST_V2.json`; v1 is preserved as history.
+`docs/OPTIONS_WORK_CONTINUATION_HOST_V3.json`; v1/v2 are preserved as history.
 Use NOTIFY for due reports and continue work afterward. Opening quotes retain
 priority, with no per-minute reporting spam or pre-restoration evidence reads.
 See [activation](OPTIONS_WORK_PROGRESS_DELIVERY.md) and
 [verified host fields](status/work-progress.json).
+
+Reports must now compare against the [ten-workstream baseline](OPTIONS_DEVELOPMENT_PROGRESS.md)
+and its current checkpoint, including the separate six first-paper-flow gates.
+Count local acceptance separately from missing real-price validation; do not
+report an invented overall percentage. See [reporting update](OPTIONS_OVERALL_PROGRESS_REPORTING_DELIVERY.md).
+
+The [observation storage](OPTIONS_RESEARCH_OBSERVATION_STORAGE_DELIVERY.md) now
+exclusively saves actual-clock payload/receipt pairs and independently recovers
+with both original dependencies. Six-file isolated recovery passed. This closes
+local workstream 04; qualified quotes, the Robinhood adapter and the first actual
+data paper run remain open. Original inspection behavior and old journals persist.
 
 The [research observation inspector](OPTIONS_RESEARCH_OBSERVATION_INSPECTION_DELIVERY.md)
 now validates exact GLD/IBIT notes and independently resolves both original saved
@@ -81,7 +92,7 @@ checkpoint remains a dated pre-first-wake record and is not rewritten.
 
 Latest operational continuation: **OPT-WORK-CONTINUATION-1** shares the single
 `gld-ibit` heartbeat for development, daily context and frozen opening collection.
-Use `docs/OPTIONS_WORK_CONTINUATION_HOST_V2.json` for current fields (v1 is preserved) and
+Use `docs/OPTIONS_WORK_CONTINUATION_HOST_V3.json` for current fields (v1/v2 are preserved) and
 `options:work-continuation -- --route armed|daily`; see
 [delivery](OPTIONS_WORK_CONTINUATION_DELIVERY.md) and
 [actual activation status](status/work-continuation.json). Quarter-hour non-quote
