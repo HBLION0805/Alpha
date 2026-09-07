@@ -8,6 +8,12 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The [final preparation validation](OPTIONS_FINAL_PREPARATION_VALIDATION.md),
+recorded at 2026-09-07T08:38:11.456Z, passed 3,108/3,108 tests across 120 components,
+zero failures/warnings. This includes the later budget-exclusion regression.
+Twenty-three indexed checkpoints, twenty-seven protected files and the active
+v5 host matched. No actual opening quote path or real-price replay is implied.
+
 The [read-only environment check](OPTIONS_SCHEDULING_ENVIRONMENT_CHECK.md) verified
 Windows Eastern time with the current minus-four-hour offset: the frozen UTC
 start converts to September 8, 09:30 local. AC/DC idle-sleep values are zero;

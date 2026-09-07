@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "FINAL_COLLECTION_PREPARATION_VALIDATION_20260907",
+  "recordedAt": "2026-09-07T08:38:11.456Z",
+  "testedGitCommit": "7a7824e",
+  "command": "npm run alpha:validate",
+  "aggregate": {
+    "status": "PASSED",
+    "componentCount": 120,
+    "testsExecuted": 3108,
+    "passed": 3108,
+    "failed": 0,
+    "durationMs": 59649,
+    "warnings": []
+  },
+  "logPath": "data/runtime/options-readiness/final-validation-20260907.log",
+  "logFileSha256": "541a6f805b153521f5cc23957b6bf06f343ba87fc2c45c92ea2ba75b3e9d5db9",
+  "preservation": {
+    "indexedCheckpointCount": 23,
+    "indexedCheckpointHashesMatched": true,
+    "protectedSourceReportFileCount": 27,
+    "protectedFilesMatched": true,
+    "hostUnchanged": true,
+    "hostFileSha256": "66c1e3d5640ee8cc9e746aa90800beb613010829d9b3f0800d224e3576b72f6f"
+  },
+  "actualOpeningCollection": "WAITING_FOR_FROZEN_WINDOW",
+  "realPriceReplay": "NOT_RUN",
+  "sourceCallsDuringValidation": 0,
+  "productionJournalAppends": 0,
+  "executionAllowed": false,
+  "winProbability": null
+}

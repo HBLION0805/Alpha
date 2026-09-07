@@ -68,6 +68,11 @@ unchanged. These constraints do not guarantee a maximum realized loss or a retur
 
 ## Validation and delivery record
 
+Subsequent validation recorded at **08:38:11.456 UTC** passed the complete
+**3,108-test** bundle, including the later regression. See
+[final validation](OPTIONS_FINAL_PREPARATION_VALIDATION.md). The following
+paragraph preserves the index's earlier 08:32 assessment state.
+
 The latest full bundle passed **3,107/3,107 tests across 120 components**. A later
 budget-exclusion regression passed within **24/24 closeout tests**, alongside
 **16/16 Host tests** and typechecking. The full bundle has not been rerun after
