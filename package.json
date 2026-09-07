@@ -131,6 +131,7 @@
     "test:options-brief-io": "tsx scripts/options-brief.test.mjs",
     "options:context-cutoff": "tsx scripts/options-context-cutoff.mjs",
     "test:options-context-cutoff": "tsx src/engines/options-readiness/OptionsContextCutoff.test.ts",
+    "test:options-context-cutoff-v2": "tsx src/engines/options-readiness/OptionsContextCutoffV2.test.ts",
     "test:options-context-cutoff-io": "tsx scripts/options-context-cutoff.test.mjs",
     "options:collection-rehearsal": "tsx scripts/options-collection-rehearsal.mjs",
     "test:options-collection-rehearsal": "tsx scripts/options-collection-rehearsal.test.mjs",

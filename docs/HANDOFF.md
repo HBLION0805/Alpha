@@ -8,6 +8,13 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The latest continuation adds [opt-in context cutoff v2](OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md).
+`options:context-cutoff -- --at-v2 <UTC>` includes FOMC receipts; original `--at`
+remains four-source v1. Actual first-receipt boundary checks passed and the old
+04:30 UTC v1 context hash reproduced. This prepares later reviews without
+claiming a historical decision or running a trade. The v6 host and opening
+window are unchanged; source-quality assessment still precedes a paper adapter.
+
 The Owner requested fixing news refresh and then continuing preparation.
 [News access recovery](OPTIONS_NEWS_ACCESS_RECOVERY.md) confirms a local EACCES
 failure and successful approved six-feed refresh at 15:42:28 UTC. The active

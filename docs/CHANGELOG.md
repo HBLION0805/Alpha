@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-07 - FOMC receipt-time reconstruction
+
+- Added opt-in `options:context-cutoff -- --at-v2 <UTC time>` for five-source
+  context, retaining v1 compatibility and explicit unknown intraday timing.
+- Verified actual first-receipt inclusion and one-millisecond-earlier exclusion,
+  reproduced the old v1 context and preserved source/host bytes. See
+  [delivery](OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md).
+
 ## 2026-09-07 - News access diagnosis and recovery
 
 - Recovered all six official headline feeds through the approved network path.

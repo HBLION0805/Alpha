@@ -33,6 +33,9 @@ documented contract quantities and refresh clocks from unverified fill/timing se
   stored receipt/discovery clocks. Later observations are excluded, failures are
   preserved and each current history is validated first. This does not prove an
   actual historical decision or permit a replay. See [delivery](docs/OPTIONS_CONTEXT_CUTOFF_DELIVERY.md).
+- Opt-in context reconstruction v2 adds FOMC date calendars to the same receipt
+  cutoff, preserving the original four-source output and unknown release times.
+  See [v2 delivery](docs/OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md).
 - One readable local test brief joins the selected collection window, source
   clocks, review coverage, candidate notebooks and upcoming BLS releases. It
   preserves readiness v2 and performs no source refresh or trade. See

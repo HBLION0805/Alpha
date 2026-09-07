@@ -1,5 +1,13 @@
 # Alpha Architecture
 
+Opt-in `OptionsContextCutoffV2` composes the unchanged four-source context engine
+with FOMC receipt-time selection through its existing calendar report engine.
+It validates complete histories before filtering, isolates blocked sources and
+binds v1 context, selected-prefix and report hashes. The existing cutoff CLI's
+`--at-v2` reads a fifth journal; `--at` retains v1 and never opens that journal.
+No source, quote, host, replay or trade authority changes. See
+[specification](specifications/OPTIONS_CONTEXT_CUTOFF_V2.md).
+
 ## Product scope and ownership
 
 Alpha supports decisions about GLD and IBIT options on Robinhood. Capital

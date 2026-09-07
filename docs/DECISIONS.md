@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Include FOMC receipts in opt-in historical context
+
+- Add v2 through composition; keep original v1 engine/results unchanged and
+  reference its context hash from the five-source context.
+- Filter FOMC only by actual receivedAt after full-history validation. Earlier
+  request/page/meeting dates cannot establish earlier local knowledge.
+- Preserve failures, date-only precision, fixed storage errors and candidate
+  evidence boundaries. No scheduler change or automatic trade follows.
+
 ## 2026-09-07 - Recover news access without changing global permissions
 
 - A restricted Fed probe returned EACCES; the approved fixed six-feed command

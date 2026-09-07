@@ -80,7 +80,7 @@ Push
 
 ## Current Implemented Systems
 
-- Journal context cutoff: receipt/discovery-time reconstruction across headlines, Treasury, BTC and BLS, without hindsight or historical-decision claims. FOMC is not in this v1 consumer. See docs/OPTIONS_CONTEXT_CUTOFF_DELIVERY.md.
+- Journal context cutoff: v1 preserves four-source receipt/discovery-time reconstruction; opt-in v2 adds FOMC dates through the existing calendar engine, without hindsight or historical-decision claims. Use --at for v1 and --at-v2 for v2. See docs/OPTIONS_CONTEXT_CUTOFF_DELIVERY.md and docs/OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md. Other readiness/export versions are unchanged.
 - Complete synthetic collection-window rehearsals: isolated Host control flow through real local repositories, normal/mixed/slow scenarios, preserved reviews and candidate data-quality lessons. No real host scheduler or market test. See docs/OPTIONS_COLLECTION_REHEARSAL_DELIVERY.md.
 - Official FOMC date-calendar context: restricted current/next-year HTML panels, date-only precision, unknown intraday/confirmation metadata, actual receipt journal and daily v5 integration. No calendar-to-trade rule. See docs/OPTIONS_FOMC_DAILY_CONTEXT_DELIVERY.md.
 - Readable local operator brief: exact readiness-v2 projection plus independent BLS calendar recovery, selected-window status, source clocks, paper/research reviews and candidate notebooks. No new trade or source request. See docs/OPTIONS_OPERATOR_BRIEF_DELIVERY.md and docs/status/operator-brief.json.

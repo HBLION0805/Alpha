@@ -123,6 +123,7 @@ const aggregateTestFiles = [
   "scripts/options-fomc-calendar.test.mjs",
   "scripts/options-collection-rehearsal.test.mjs",
   "src/engines/options-readiness/OptionsContextCutoff.test.ts",
+  "src/engines/options-readiness/OptionsContextCutoffV2.test.ts",
   "scripts/options-context-cutoff.test.mjs",
   "src/engines/options-readiness/OptionsOperatorBrief.test.ts",
   "scripts/options-brief.test.mjs",

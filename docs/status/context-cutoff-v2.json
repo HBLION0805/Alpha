@@ -1,0 +1,67 @@
+{
+  "taskId": "OPT-CONTEXT-CUT-2",
+  "recordedAt": "2026-09-07T15:59:33.362Z",
+  "firstFomcReceivedAt": "2026-09-07T07:32:40.377Z",
+  "currentFomcRetrievalCount": 2,
+  "beforeFirst": {
+    "cutoffAt": "2026-09-07T07:32:40.376Z",
+    "selected": 0
+  },
+  "atFirst": {
+    "cutoffAt": "2026-09-07T07:32:40.377Z",
+    "selected": 1,
+    "meetings": 16
+  },
+  "oldV1ContextSha256": "62e925af61c861b5c9b4109c445c96f05db3dcec25cf7443a701ac7858d5d146",
+  "v1Reproduced": true,
+  "v2BaseMatchesV1": true,
+  "filesCompared": 455,
+  "allPreserved": true,
+  "reportArtifacts": {
+    "data/runtime/options-readiness/context-cutoff-v2-before-first.json": "c48a9efef950aa04673d18f297ab79d2ddc195235f552059bc6649fd5593ca16",
+    "data/runtime/options-readiness/context-cutoff-v2-at-first.json": "4df6bea805135c15579c85d80f35f33619b929ffa48b60931aa4ad97d3ae5113",
+    "data/runtime/options-readiness/context-cutoff-v2-v1-0430.json": "e7113dfcdb4127cdbc89b9f96187b39ebe2b217b65922b1f23bb990febbc6de4",
+    "data/runtime/options-readiness/context-cutoff-v2-v2-0430.json": "bd5975c917bc4abfefacf7c5e57dfe9803b708602b72ea7a5447fe70405a6773"
+  },
+  "hostChanged": false,
+  "sourceAppends": 0,
+  "executionAllowed": false,
+  "focusedValidation": {
+    "typecheck": "PASSED",
+    "v2EngineTests": 15,
+    "cutoffIoTests": 23,
+    "failures": 0
+  },
+  "aggregateValidation": {
+    "status": "PASSED",
+    "componentCount": 121,
+    "testsExecuted": 3137,
+    "passed": 3137,
+    "failed": 0,
+    "durationMs": 63711,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_CURRENT_OPERATIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-context-cutoff.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-context-cutoff.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "actualTradeReplay": "NOT_RUN",
+  "nextStep": "FROZEN_OPENING_COLLECTION_AND_SOURCE_QUALITY_REVIEW",
+  "finalVerification": {
+    "recordedAt": "2026-09-07T16:02:53.791Z",
+    "filesCompared": 455,
+    "allPreserved": true,
+    "validationLogSha256": "f44f0930228691f83eb6c2804a3a78405e372a5dcce41b9debbec1b58e15b8af",
+    "preservationArtifactSha256": "da7ac26768389bcdd32d55f516dec46269d24f08a079595a8da2f27f3fd577b8"
+  }
+}

@@ -1,5 +1,9 @@
 # GLD/IBIT operations: evidence and next test
 
+Subsequent capability: [five-source context cutoff v2](OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md)
+adds FOMC receipt-time reconstruction while preserving v1. It performs local
+reads only and does not alter the scheduled opening test.
+
 Subsequent operational correction: [news access recovery](OPTIONS_NEWS_ACCESS_RECOVERY.md)
 restores six feeds and advances the active daily restoration to v6. The dated
 index and checkpoints below retain their original clocks and hashes; use the

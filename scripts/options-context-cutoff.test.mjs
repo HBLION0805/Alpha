@@ -9,6 +9,8 @@ import { withDriverJournal } from "./lib/options-driver-io.mjs";
 import { withTreasuryJournal } from "./lib/options-treasury-io.mjs";
 import { withBtcContextJournal } from "./lib/options-btc-context-io.mjs";
 import { withReleaseCalendarJournal } from "./lib/options-release-calendar-io.mjs";
+import { withFomcCalendarJournal } from "./lib/options-fomc-calendar-io.mjs";
+import { FOMC_CALENDAR_URL } from "../src/engines/options-fomc-calendar/FomcCalendarEngine.ts";
 import { createDriverObservation, buildOptionsDriverReport } from "../src/engines/options-drivers/OptionsDriverMonitorEngine.ts";
 import { treasuryUrl } from "../src/engines/options-treasury/TreasuryRealYieldEngine.ts";
 import { BTC_CONTEXT_URL } from "../src/engines/options-btc-context/BtcSpotContextEngine.ts";
@@ -57,4 +59,59 @@ await test("future and malformed cutoff and unsupported arguments fail before fi
   ...[["--refresh"], ["--at", cutoff, "--root", "other"], ["--at"], ["--url", "https://private.invalid"]].map(args => assert.rejects(run(args, options), /ARGUMENTS/))]); });
 await test("recovery clocks cannot regress even for absent stores", () => temporary(async d => { let i = 0; const clocks = [checked, checked, "2026-09-07T05:59:59.000Z"]; await assert.rejects(run(["--at", cutoff], { workspaceRoot: d, now: () => clocks[i++] ?? checked }), /CHECK_CLOCK_ORDER/); assert.deepEqual(readdirSync(d), []); }));
 await test("CLI help documents restricted reconstruction without opening any store", () => { const r = spawnSync(process.execPath, [join(root, "node_modules/tsx/dist/cli.mjs"), join(root, "scripts/options-context-cutoff.mjs"), "--help"], { encoding: "utf8", timeout: 30000 }); assert.equal(r.status, 0); assert.match(JSON.parse(r.stdout).meaning, /No network, source writes/); });
+const fomcPath = d => join(d, "data/runtime/options-fomc-calendar/retrievals.ndjson");
+const fomcSource = readFileSync(join(root, "fixtures/options-fomc-calendar/calendar.synthetic.html"), "utf8");
+const fomcInput = (receivedAt = cutoff) => ({ requestedAt: receivedAt, receivedAt, url: FOMC_CALENDAR_URL, sourceText: fomcSource, errorCode: null });
+const appendFomc = (d, input = fomcInput()) => withFomcCalendarJournal(d, s => s.append(input, checked), checked);
+const readV2 = (d, at = cutoff) => run(["--at-v2", at], { workspaceRoot: d, now: () => checked });
+await test("v2 adds exact FOMC receipts while preserving v1 hashes and all journal bytes", () => temporary(async d => {
+  await seed(d); await appendFomc(d); const before = files(d), v1 = await read(d), r = await readV2(d);
+  assert.equal(r.context.components.fomcCalendar.report.retrievalCount, 1); assert.equal(r.context.baseContextSha256, v1.contextSha256);
+  const { fomcCalendar, ...original } = r.context.components; assert.deepEqual(original, v1.context.components);
+  assert.deepEqual(r.blockedStores, []); assert.deepEqual(await read(d), v1); assert.deepEqual(files(d), before);
+}));
+await test("v2 excludes late calendar receipts and keeps earlier context after a later append", () => temporary(async d => {
+  await seed(d); await appendFomc(d, { ...fomcInput(later), requestedAt: early });
+  const a = await readV2(d); assert.equal(a.context.components.fomcCalendar.report.retrievalCount, 0);
+  await appendFomc(d, { ...fomcInput(checked), sourceText: null, errorCode: "NETWORK_FAILED" });
+  assert.equal((await readV2(d)).contextSha256, a.contextSha256);
+}));
+await test("v2 missing fifth store stays absent and v1 does not inspect a corrupt FOMC store", () => temporary(async d => {
+  await seed(d); const before = await read(d), r = await readV2(d); assert.deepEqual(r.missingStores, ["fomcCalendar"]);
+  assert(!existsSync(join(d, "data/runtime/options-fomc-calendar")));
+  await appendFomc(d); writeFileSync(fomcPath(d), "PRIVATE_CORRUPTION");
+  assert.deepEqual(await read(d), before); const blocked = await readV2(d);
+  assert.deepEqual(blocked.blockedStores, ["fomcCalendar"]); assert(!JSON.stringify(blocked).includes("PRIVATE"));
+  assert.equal(readFileSync(fomcPath(d), "utf8"), "PRIVATE_CORRUPTION");
+}));
+await test("v2 isolates a busy fifth store and preserves its lock", () => temporary(async d => {
+  await seed(d); await appendFomc(d); const lock = join(d, "data/runtime/options-fomc-calendar/writer.lock"); writeFileSync(lock, "held");
+  const r = await readV2(d); assert.deepEqual(r.blockedStores, ["fomcCalendar"]); assert.equal(r.context.components.fomcCalendar.errorCode, "STORE_BUSY");
+  assert.equal(readFileSync(lock, "utf8"), "held"); assert.equal(r.context.components.headlines.state, "AVAILABLE");
+}));
+await test("v2 rejects a hard-linked FOMC journal without modifying it", () => temporary(async d => {
+  await seed(d); await appendFomc(d); linkSync(fomcPath(d), join(d, "fomc-alias")); const before = files(d), r = await readV2(d);
+  assert.equal(r.context.components.fomcCalendar.errorCode, "STORE_UNSAFE"); assert.deepEqual(files(d), before);
+}));
+await test("v2 validates complete later journal integrity before selecting earlier receipts", () => temporary(async d => {
+  await seed(d); await appendFomc(d); await appendFomc(d, fomcInput(later));
+  const path = fomcPath(d), text = readFileSync(path, "utf8"); writeFileSync(path, text.slice(0, -1));
+  const r = await readV2(d); assert.equal(r.context.components.fomcCalendar.errorCode, "RECOVERY_FAILED");
+  assert.equal(r.context.components.fomcCalendar.report, null); assert.equal(readFileSync(path, "utf8"), text.slice(0, -1));
+}));
+await test("v2 performs no source calls or writes during successful restart recovery", () => temporary(async d => {
+  await seed(d); await appendFomc(d); const before = files(d), original = globalThis.fetch; let calls = 0;
+  globalThis.fetch = async () => { calls++; throw Error("FORBIDDEN_SOURCE_CALL"); };
+  try { const a = await readV2(d); assert.deepEqual(await readV2(d), a); assert.equal(a.sourceAppends, 0); assert.equal(a.context.replayAllowed, false); }
+  finally { globalThis.fetch = original; }
+  assert.equal(calls, 0); assert.deepEqual(files(d), before);
+}));
+await test("v2 future cutoff and extra execution arguments fail before filesystem access", () => {
+  const options = { workspaceRoot: join(root, "missing-v2-root"), now: () => checked };
+  return Promise.all([
+    assert.rejects(run(["--at-v2", "2026-09-08T00:00:00.000Z"], options), /FUTURE_CUTOFF/),
+    assert.rejects(run(["--at-v2", "today"], options), /CLOCK/),
+    assert.rejects(run(["--at-v2", cutoff, "--refresh"], options), /ARGUMENTS/),
+  ]);
+});
 console.log(`${passed}/${passed} tests passed.`);

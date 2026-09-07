@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+[Context cutoff v2](OPTIONS_CONTEXT_CUTOFF_V2_DELIVERY.md) now includes FOMC
+receipt history through an opt-in command. Original v1 remains reproducible.
+Binding this context to an actual prospective trade plan and qualified quote
+path remains subsequent work; reconstruction alone does not prove a decision.
+
 The [FOMC date calendar](OPTIONS_FOMC_CALENDAR_DELIVERY.md) retains listed
 current/next-year meetings and actual retrieval history. Daily v5 context now
 [integrates this source](OPTIONS_FOMC_DAILY_CONTEXT_DELIVERY.md); existing
