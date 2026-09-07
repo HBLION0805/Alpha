@@ -6,9 +6,15 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- Robinhood capture assessment: the authorized five-tool connection returned
+  four real GLD/IBIT option quotes and 120 historical bars. The bounded local
+  parser records stale prices, interpolation, linkage and budget blockers, with
+  immutable capture recovery and candidate data-quality lessons. All four sampled
+  quotes are stale and over budget; all sampled bars are interpolated. No replay.
 - Robinhood data-access preparation: dated public capabilities, bounded local
   tool-catalog inspection, one anonymous endpoint check and a disabled example.
-  No authenticated connection, quote adapter or actual-price replay is established.
+  This older preparation report does not discover the now-authenticated host;
+  no qualified replay adapter or actual-price trade replay is established.
 - Research input preparation links an extraction manifest, exact child bytes,
   source metadata and frozen plan, with optional immutable local records.
   INPUTS_LINKED_FOR_RESEARCH means coherent declarations, not validated trading inputs.
@@ -18,13 +24,13 @@ risk arithmetic. It promises no return and has no order-execution authority.
 - Independent historical interval research: frozen GLD/IBIT plans, explicit
   contract/session/cost assumptions, later-snapshot modeled fills, unresolved
   positions and a process review for every outcome. Runs use isolated USD 1,000
-  accounts and remain counterfactual; no actual target-ETF dataset is available.
+  accounts and remain counterfactual; no qualified historical bid/ask path is available.
 - Bounded extraction of one session and up to four declared contracts from a
   larger local CSV, retaining source/child hashes, selection and row-count manifest.
 - Source-labeled Cboe DataShop option CSV import, exact prices and Eastern-time
   normalization, missing-data checks and a separate integrity-checked history.
-  The Owner currently has Robinhood only; no authorized option data file/API
-  has been supplied. File parsing does not establish real-price replay readiness.
+  The Owner has Robinhood; its responses stay in a separate source capture.
+  Cboe file parsing does not establish real-price replay readiness.
 - A complete local simulated trade lifecycle: GLD/IBIT contract/quote inputs,
   frozen plans, risk checks, cash reservations, modeled fills/exits and recovery.
 - Every closed trade receives a review and candidate mistake checks for future
@@ -49,10 +55,11 @@ fill. A USD 25 premium with zero assumed costs, 20% stop and 2R has a USD 5 plan
 loss and USD 10 net profit target. No passing diagnostic authorizes a trade.
 
 The USD 1,000-to-USD 50,000 year-end aspiration is a scenario only and cannot
-increase risk limits. Read [current delivery](docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md),
+increase risk limits. Read [current delivery](docs/OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md),
 the [previous preparation delivery](docs/OPTIONS_RESEARCH_PREPARATION_DELIVERY.md),
 the [dated broker reference](docs/OPTIONS_ROBINHOOD_RESEARCH_REFERENCE.md)
-and the authoritative [machine status](docs/status/current.json).
+and the latest [capture status](docs/status/robinhood-capture.json). The older
+[build status](docs/status/current.json) remains a dated pre-connection checkpoint.
 
 The Owner's current direction is to defer paid market data and continue preparing
 the local workflow. No data purchase is pending.
@@ -64,6 +71,7 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:robinhood-capture -- --inspect <JSON> [--save]` | Assess a bounded capture at actual time; optionally preserve an immutable local record |
 | `npm run options:robinhood-data -- --report` | Show dated capabilities, missing field semantics and the disabled example |
 | `npm run options:robinhood-data -- --inspect-tools <JSON>` | Inspect a bounded local tools/list declaration without connecting |
 | `npm run options:robinhood-data -- --probe-public` | Check the fixed public endpoint once without authentication or reading its body |
@@ -159,8 +167,10 @@ The [example](fixtures/options-robinhood-data/codex.disabled.example.toml) stays
 disabled. The Owner subsequently authorized the five-tool host connection and
 official login and explicitly accepted the broader connection grant. The enabled
 host copy is installed; OAuth completion and `o_auth` status are verified, with
-the same five tools. Runtime reload and actual tool/quote verification remain;
-the local refresh proxy could not connect. New-account and paid steps remain excluded. See the
+the same five tools. Runtime loading and the first bounded market-data smoke
+test now succeeded. Option side prices, sizes and quote-refresh timestamps are
+present; independent side/size clocks and retention rights remain unverified.
+New-account and paid steps remain excluded. See the
 [host setup record](docs/OPTIONS_ROBINHOOD_CONNECTION_SETUP.md).
 An eventual Robinhood adapter needs separate source semantics; responses cannot
 be relabeled as Cboe evidence. OHLC cannot substitute for missing quote-side data.
@@ -179,7 +189,7 @@ The refresh command is one-shot. A separate hourly Codex heartbeat named
 requires the local computer and app to remain available; no server daemon is
 installed. Meaningful related changes and source failures are the notification
 criteria.
-No account lookup, credential use, paid subscription, brokerage paper account or
+The headline monitor performs no account lookup, credential use, paid subscription, brokerage paper account or
 order operation is performed. Original news fixtures retain their separate verification
 rules; live headlines cannot inherit their verified status.
 

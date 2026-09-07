@@ -6,7 +6,8 @@ Alpha supports decisions about GLD and IBIT options on Robinhood. Capital
 preservation and explicit risk precede growth targets. TypeScript owns the
 current product logic. Legacy Python, Event Contract/Kalshi, Daily Scan and
 fixed-universe Alpaca product implementations have been removed by Owner
-instruction. The [machine status](status/current.json) records current authority.
+instruction. The [capture status](status/robinhood-capture.json) records the latest
+Robinhood checkpoint; [current.json](status/current.json) retains the prior build.
 
 ## Context and evidence
 
@@ -64,6 +65,21 @@ accepted records and fingerprints. See [delivery](OPTIONS_ROBINHOOD_DATA_READINE
 and [specification](specifications/OPTIONS_ROBINHOOD_DATA_READINESS_V1.md).
 
 ## Price and calendar foundations
+
+`RobinhoodCaptureEngine` is a separate offline source-response diagnostic.
+It consumes at most 512 KiB, twelve declared approved calls and four contracts,
+checks UUID/OCC linkage and clocks, separates interpolated bars and reuses retail
+economics with unknown costs. Source precision is preserved; age arithmetic uses
+milliseconds. A 60-second diagnostic is not a production execution policy.
+It always returns NO_REPLAY and cannot alter the old Cboe/paper gates.
+
+`options-robinhood-capture.mjs` optionally stores one exclusive, checksum-bound
+artifact beneath the ignored Robinhood captures directory. Recovery verifies
+input bytes, original report and recording clock; later assessments still use
+actual time. Local files remain declarations, not authenticated provider data.
+The authorized host smoke test is separate from this network-free CLI. See
+[specification](specifications/OPTIONS_ROBINHOOD_CAPTURE_V1.md) and
+[delivery](OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md).
 
 `CboeOptionQuotesCsv` reads bounded local licensed-format files. It preserves
 nullable liquidity and exact integer-cent prices, converts interval-end Eastern
@@ -234,11 +250,10 @@ Verified GLD/IBIT contract metadata and executable option chains, qualified
 quantitative driver connectors, complete account/event/settlement/exercise rules,
 validated decision signals, independent historical/forward outcomes, calibration
 and an Options Dashboard remain to be implemented.
-Robinhood's documented Trading MCP offers option contract lookup, real-time quotes
-and historical OHLC tools, but no connector or authenticated access is implemented.
-The public descriptions do not prove historical bid/ask/size coverage or the
-Owner's entitlement. The new local readiness assessment prepares a later,
-separately authorized review of actual schemas and data. OHLC cannot be relabeled
-as quote-side evidence, and an anonymous HTTP result cannot establish connectivity.
+Robinhood host authentication and five-tool loading are verified. A bounded
+smoke test returned four stale, unaffordable option quotes and 120 interpolated
+historical bars. No source-specific replay adapter, historical bid/ask/size path,
+fresh aligned quote stream or retention-rights assessment is established.
+OHLC cannot become quote-side evidence; local captures cannot authenticate themselves.
 The USD 50,000 aspiration never grants a risk override. See the
 [v2 specification](specifications/OPTIONS_FOCUS_RISK_AND_DRIVERS_V2.md).

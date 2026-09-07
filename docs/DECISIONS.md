@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 UTC - Assess real Robinhood captures without a replay adapter
+
+- The Owner-approved five-tool connection now works. Preserve a bounded export
+  of actual market responses and keep authentication proof separate from local
+  parser claims. No account/order tools or paid procurement are authorized.
+- Add the separate capture diagnostic and immutable artifact described in the
+  [specification](specifications/OPTIONS_ROBINHOOD_CAPTURE_V1.md). Reuse existing
+  retail economics, keeping costs unknown and every accepted risk limit unchanged.
+- Interpolated OHLC cannot supply an observed price path or executable quotes.
+  Source refresh clocks do not prove side/size event timing. Provider expiry-profit
+  estimates do not establish Alpha outcome probabilities or allow size escalation.
+- Record candidate data-quality lessons separately from trade outcomes. Preserve
+  Cboe/paper gates and old journals. Next screening cannot imply a trade exists.
+
 ## 2026-09-06 - Prepare Robinhood data access without authenticating
 
 - Continue the Owner's local work and deferred-purchase direction. Public official

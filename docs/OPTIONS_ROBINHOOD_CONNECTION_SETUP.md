@@ -44,16 +44,18 @@ The Owner subsequently explicitly accepted that broader connection grant and
 completed the official flow. No further connection-consent question is pending.
 This does not authorize account-tool calls or brokerage transactions.
 
-The current task's callable tool inventory still contains no Robinhood tools.
+At the initial OAuth checkpoint, this task had no callable Robinhood tools.
 A documented `config/mcpServer/reload` attempt through `codex app-server proxy`
 could not reach the local control socket (Windows error 10050); the proxy exited
 before initialization or reload. This is a local refresh failure, not evidence
 of failed OAuth. No MCP tool call or qualified quote acquisition occurred.
-Use the desktop Settings > MCP servers > Restart control to reload the installed
-configuration, then verify the five actual tool schemas. The official
+After the Owner checked desktop MCP settings, all five tools loaded and returned
+market data. No further restart is needed. The official
 [MCP setup instructions](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)
-document this Restart step. Schema units, timestamps, bid/ask sizes, historical
-coverage and GLD/IBIT entitlements remain unverified.
+document the Restart step used for configuration changes. The subsequent
+[capture assessment](OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md) records actual quote
+sides, sizes, source clocks and historical interpolation; independent side/size
+timing, qualified replay paths and retention rights remain unverified.
 
 Do not store the temporary authorization URL, callback state, tokens or account
 identifiers in Git. If login times out, restart the same approved login when the
@@ -79,6 +81,5 @@ effective host five-tool readback, OAuth CLI completion and independent auth-sta
 readback, official login-page inspection, status-snapshot validation and Git
 whitespace checks. Product code and dependencies are unchanged; no simulation or
 live trade was run. Existing trade/review/notebook journals remain untouched.
-The next step is runtime reload and actual market-data tool/schema verification
-within the approved scope. Do not restart OAuth solely because this task's tool
-inventory has not refreshed.
+That setup checkpoint is complete. Follow the capture delivery for the next
+bounded screening/forward-capture work; do not repeat completed OAuth or restart.

@@ -1,9 +1,10 @@
 # Alpha Roadmap
 
-Current delivery adds Robinhood data-access preparation: public capabilities,
-bounded local catalog inspection, an anonymous endpoint check and a disabled
-configuration example. Subsequent host OAuth completed, with the five-tool
-allowlist verified; runtime schemas and quotes are still unavailable. The
+Current delivery adds bounded Robinhood capture assessment and immutable storage.
+Host OAuth and all five market tools work. Four actual option quotes were stale
+and over budget; 120 sampled historical bars were interpolated. There is no
+qualified real-price replay. See [capture delivery](OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md)
+and [latest operational status](status/robinhood-capture.json). The
 [machine status](status/current.json) describes the preceding build; the
 [host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md) supersedes its installation
 and authentication facts only. See
@@ -13,11 +14,15 @@ and authentication facts only. See
 
 ## Implemented
 
+- Network-free Robinhood capture parsing, scope/identity/clock checks, interpolation
+  diagnostics, unchanged-budget lower bounds, immutable recovery and four candidate
+  data-quality lessons. Seven real market-only calls are recorded separately from
+  synthetic tests. No execution adapter or trade review is fabricated.
 - Separate data-readiness report and local catalog assessment with five fixed
   candidates, schema fingerprints, unknown hints and pagination blockers. The
   anonymous fixed-endpoint probe cannot invoke tools or establish data readiness.
   Its checked-in example remains disabled; the authorized host copy is enabled
-  and OAuth-authenticated. Runtime reload is outstanding; existing journals remain unchanged.
+  and OAuth-authenticated. Runtime loading is verified; existing journals remain unchanged.
 - Manifest/child/metadata/plan preparation with chronology checks and optional
   immutable records. A linked result certifies only coherent declared inputs;
   no market import, replay, account access or trade follows automatically.
@@ -31,8 +36,8 @@ and authentication facts only. See
 - Bounded extraction of one session and up to four selected contracts with parent/
   child hashes, row counts and a selection manifest. No silent file truncation.
 - Documented Cboe DataShop CSV import, source/ingestion history and deterministic
-  path-quality reports. Actual data access remains unavailable: the Owner has
-  Robinhood only and no actual API quote response or historical file has been supplied.
+  path-quality reports. Robinhood responses have their own capture identity;
+  no Cboe file or qualified historical bid/ask path has been supplied.
 - Contract/quote qualification, frozen plans, simulated round trips, persistent
   cash/position recovery and per-trade candidate mistake checks. Local synthetic
   or unverified inputs; intraday plans, one position and 14-45 DTE contracts.
@@ -46,15 +51,16 @@ and authentication facts only. See
 
 1. Continue local workflow preparation under the Owner's decision to defer paid
    market data. Use the new readiness report and offline catalog inspection to
-   prepare a concrete Robinhood scope/schema review. The Owner has now approved
-   the five-tool connection and broader official grant; host login is verified.
-   Reload the installed MCP configuration in the desktop app, then inspect the
-   actual tools. Stop before new-account or paid steps. See
+   preserve the dated public review separately from captured evidence. Host login,
+   five-tool loading and the first bounded response review are complete. Next
+   screen contracts within existing budgets and capture fresh prospective quotes
+   during an eligible session. Stop before new-account or paid steps. See
    [host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md). Assess
    authorized read-only Robinhood Trading MCP capabilities and actual response semantics,
    or obtain an entitled local GLD/IBIT quote file. Official MCP documents now
-   include option historical OHLC, live quotes and instruments; actual runtime
-   schemas, historical bid/ask sizes and entitlements remain unverified.
+   include option historical OHLC, live quotes and instruments. Runtime schemas
+   show quote sides and sizes, but historical bid/ask paths, independent side/size
+   event clocks, aligned underlying data and retention terms remain unverified.
    Do not assume paid Cboe data is the only route or substitute OHLC for quotes.
    A client tool filter does not restrict server scope or enforce GLD/IBIT. Design
    a separate source adapter if compatible data is established; never relabel a

@@ -93,6 +93,9 @@
     "options:broker-reference": "tsx scripts/options-broker-reference.mjs",
     "test:options-broker-fees": "tsx src/engines/options-broker-reference/OptionsBrokerFeeEngine.test.ts",
     "test:options-broker-reference": "tsx scripts/options-broker-reference.test.mjs",
+    "options:robinhood-capture": "tsx scripts/options-robinhood-capture.mjs",
+    "test:options-robinhood-capture": "tsx src/engines/options-robinhood-data/RobinhoodCaptureEngine.test.ts",
+    "test:options-robinhood-capture-io": "tsx scripts/options-robinhood-capture.test.mjs",
     "options:robinhood-data": "tsx scripts/options-robinhood-data.mjs",
     "test:options-robinhood-data": "tsx src/engines/options-robinhood-data/RobinhoodDataReadinessEngine.test.ts",
     "test:options-robinhood-data-io": "tsx scripts/options-robinhood-data.test.mjs"

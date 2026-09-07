@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0",
+  "asOf": "2026-09-07T01:35:51.839Z",
+  "milestone": "ROBINHOOD_CAPTURE_V1",
+  "precedingBuildCheckpoint": "current.json",
+  "delivery": "../OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md",
+  "host": {
+    "oauthVerified": true,
+    "approvedToolCount": 5,
+    "runtimeToolsLoaded": true,
+    "marketOnlySmokeCalls": 7,
+    "accountOrOrderCalls": 0
+  },
+  "capture": {
+    "id": "rh-gld-ibit-20260907-0112",
+    "sourceSha256": "0e0cd5dfaf08f810184ae09c2e7357ecae079f2af1d3bf0983b909a84f178e46",
+    "recordedAt": "2026-09-07T01:27:39.498Z",
+    "artifactSha256": "82348d0e5dbebcacca711f70d1d144e3117db97ca7b0f4587b3ccd5dfb831a4c",
+    "contractCount": 4,
+    "staleOptionQuoteCount": 4,
+    "premiumOverAllocationCount": 4,
+    "historicalBarCount": 120,
+    "interpolatedBarCount": 120,
+    "explicitNonInterpolatedBarCount": 0,
+    "candidateDataQualityLessonCount": 4,
+    "immutableRecoveryVerified": true
+  },
+  "boundaries": {
+    "executionAllowed": false,
+    "tradeCount": 0,
+    "realPriceReplay": "NOT_RUN",
+    "winProbability": null,
+    "localParserAuthenticatesSource": false,
+    "riskOverrides": false
+  },
+  "validation": {
+    "status": "PASSED",
+    "aggregateCommand": "npm run alpha:validate",
+    "testsExecuted": 2469,
+    "passed": 2469,
+    "failed": 0,
+    "componentCount": 93,
+    "durationMs": 42912,
+    "newEngineTests": 30,
+    "newIoTests": 10,
+    "protectedJournalHashesUnchanged": true
+  },
+  "next": [
+    "BOUNDED_CONTRACT_SCREENING_WITH_EXISTING_RISK_LIMITS",
+    "PROSPECTIVE_ALIGNED_QUOTES_DURING_ELIGIBLE_SESSION",
+    "SOURCE_SPECIFIC_PAPER_ADAPTER_ONLY_AFTER_EVIDENCE_QUALIFICATION"
+  ]
+}

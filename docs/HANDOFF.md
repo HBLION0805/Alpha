@@ -4,22 +4,32 @@ Date: 2026-09-06. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+The latest "start next step" completed RH-CAPTURE-1: five callable market tools,
+seven bounded live reads, four real option quotes and 120 history bars. All four
+quotes are stale and exceed the unchanged budgets; all 120 sampled bars are
+interpolated. The local capture diagnostic, immutable save/recovery and four
+candidate data-quality lessons are implemented. Source payloads are local only.
+See [delivery](OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md) and
+[latest capture status](status/robinhood-capture.json). Prior current.json remains
+the dated pre-connection build checkpoint. Real-price trade replay is NOT_RUN.
+
 After delivery `9915d79`, the Owner explicitly approved enabling only the five
 reviewed market-data tools and personally completing official login. The enabled
 host configuration is installed and verified. The Owner explicitly accepted the
 broader official connection grant, and OAuth completed with CLI exit 0 and a
 separate `o_auth` readback on 2026-09-07 UTC (September 6 New York). The five-tool
-allowlist is unchanged; this task's runtime tools and actual quotes remain unavailable.
+allowlist is unchanged. Runtime loading and actual bounded quote retrieval have
+now succeeded, as recorded above.
 The local refresh proxy failed before initialization (Windows socket error 10050).
-Use Settings > MCP servers > Restart, then inspect actual schemas. Stop
+That earlier refresh failure is resolved; do not repeat restart or login. Stop
 before any new-account or paid step; do not repeat the connection permission
 question. See [host setup](OPTIONS_ROBINHOOD_CONNECTION_SETUP.md). The build snapshot
 below and in current.json predates this host operation and remains historical
 validation evidence, not a live configuration inventory.
 
 The latest instruction continues toward real-price testing. The Owner has
-Robinhood; host OAuth is verified, but no runtime quote response or entitled
-target-ETF quote file is available to Alpha. The preceding build added a public capability report, offline local catalog
+Robinhood; host OAuth and sampled quote access are verified, but no qualified
+historical bid/ask path is available. The preceding build added a public capability report, offline local catalog
 inspection, one anonymous endpoint check and a disabled configuration example.
 See [current delivery](OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md),
 [previous preparation](OPTIONS_RESEARCH_PREPARATION_DELIVERY.md) and the
@@ -155,10 +165,10 @@ post-deletion test count.
 
 ## Next work
 
-Continue local preparation without purchasing data. Assess authorized read-only
-Robinhood MCP capabilities using the reviewable readiness output before assuming
-a paid file is necessary. Host OAuth is complete. Reload the installed MCP
-configuration in the desktop app and inspect the five actual market-data tools;
+Continue without purchasing data. Next implement bounded affordability/liquidity
+screening and prospective capture during an eligible session, retaining source,
+request and receipt clocks. The four probes are not a complete chain search.
+Host OAuth, tool loading and the first actual schema/quote assessment are complete;
 stop before any new-account or paid step. Do not repeat completed login or consent.
 Historical OHLC by itself does not meet replay input needs. A future adapter needs
 its own source/clock semantics; prospective capture cannot be backdated and cannot

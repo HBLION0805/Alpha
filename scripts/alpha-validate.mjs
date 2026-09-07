@@ -14,6 +14,7 @@ const gitWhitespaceChecks = Object.freeze([
 ]);
 
 const requiredFiles = [
+  "docs/specifications/OPTIONS_ROBINHOOD_CAPTURE_V1.md",
   "docs/specifications/OPTIONS_ROBINHOOD_DATA_READINESS_V1.md",
   "docs/OPTIONS_ROBINHOOD_DATA_READINESS_DELIVERY.md",
   "fixtures/options-robinhood-data/codex.disabled.example.toml",
@@ -103,6 +104,8 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-robinhood-data/RobinhoodCaptureEngine.test.ts",
+  "scripts/options-robinhood-capture.test.mjs",
   "src/engines/options-robinhood-data/RobinhoodDataReadinessEngine.test.ts",
   "scripts/options-robinhood-data.test.mjs",
   "src/engines/options-broker-reference/OptionsBrokerFeeEngine.test.ts",

@@ -1,0 +1,174 @@
+{
+  "schemaVersion": "1.0",
+  "captureId": "synthetic-capture",
+  "declaredOrigin": "SYNTHETIC",
+  "calls": [
+    {
+      "tool": "get_option_chains",
+      "args": {
+        "underlying_symbol": "GLD"
+      },
+      "data": {
+        "chains": [
+          {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "symbol": "GLD",
+            "expiration_dates": [
+              "2026-09-25"
+            ],
+            "trade_value_multiplier": "100.0000",
+            "cash_component": null,
+            "underlying_instruments": [
+              {
+                "symbol": "GLD",
+                "instrument": "https://example.invalid/synthetic"
+              }
+            ]
+          }
+        ]
+      },
+      "requestedAt": "2026-09-04T14:00:00.000Z",
+      "receivedAt": "2026-09-04T14:00:01.000Z"
+    },
+    {
+      "tool": "get_option_instruments",
+      "args": {
+        "chain_id": "00000000-0000-4000-8000-000000000001",
+        "expiration_dates": "2026-09-25",
+        "strike_price": "410",
+        "state": "active",
+        "tradability": "tradable"
+      },
+      "data": {
+        "instruments": [
+          {
+            "id": "00000000-0000-4000-8000-000000000002",
+            "chain_id": "00000000-0000-4000-8000-000000000001",
+            "chain_symbol": "GLD",
+            "expiration_date": "2026-09-25",
+            "strike_price": "410.0000",
+            "type": "call",
+            "underlying_type": "equity",
+            "trade_value_multiplier": "100.0000",
+            "state": "active",
+            "tradability": "tradable",
+            "sellout_datetime": "2026-09-25T19:45:00Z",
+            "min_ticks": {
+              "below_tick": "0.01",
+              "above_tick": "0.05",
+              "cutoff_price": "3.00"
+            }
+          }
+        ]
+      },
+      "requestedAt": "2026-09-04T14:00:00.000Z",
+      "receivedAt": "2026-09-04T14:00:01.000Z"
+    },
+    {
+      "tool": "get_option_quotes",
+      "args": {
+        "instrument_ids": [
+          "00000000-0000-4000-8000-000000000002"
+        ]
+      },
+      "data": {
+        "results": [
+          {
+            "quote": {
+              "instrument_id": "00000000-0000-4000-8000-000000000002",
+              "bid_price": "0.230000",
+              "ask_price": "0.250000",
+              "bid_size": 10,
+              "ask_size": 12,
+              "updated_at": "2026-09-04T13:59:59.900123456Z",
+              "mark_price": "0.245000",
+              "chance_of_profit_long": "0.990000",
+              "volume": 20,
+              "open_interest": 100
+            },
+            "close": {
+              "instrument_id": "00000000-0000-4000-8000-000000000002",
+              "symbol": "GLD",
+              "date": "2026-09-03",
+              "price": "0.21",
+              "interpolated": false,
+              "source": "SYNTHETIC"
+            }
+          }
+        ]
+      },
+      "requestedAt": "2026-09-04T14:00:00.000Z",
+      "receivedAt": "2026-09-04T14:00:01.000Z"
+    },
+    {
+      "tool": "get_option_historicals",
+      "args": {
+        "instrument_ids": [
+          "00000000-0000-4000-8000-000000000002"
+        ],
+        "start_time": "2026-09-04T13:58:00Z",
+        "end_time": "2026-09-04T14:00:00Z",
+        "interval": "minute",
+        "bounds": "regular"
+      },
+      "data": {
+        "results": [
+          {
+            "instrument_id": "00000000-0000-4000-8000-000000000002",
+            "symbol": "GLD",
+            "occ_symbol": "GLD   260925C00410000",
+            "bounds": "regular",
+            "interval": "minute",
+            "bars": [
+              {
+                "begins_at": "2026-09-04T13:58:00Z",
+                "open_price": "0.20",
+                "high_price": "0.25",
+                "low_price": "0.15",
+                "close_price": "0.23",
+                "session": "reg",
+                "interpolated": false
+              },
+              {
+                "begins_at": "2026-09-04T13:59:00Z",
+                "open_price": "0.23",
+                "high_price": "0.23",
+                "low_price": "0.23",
+                "close_price": "0.23",
+                "session": "reg",
+                "interpolated": true
+              }
+            ]
+          }
+        ]
+      },
+      "requestedAt": "2026-09-04T14:00:00.000Z",
+      "receivedAt": "2026-09-04T14:00:01.000Z"
+    },
+    {
+      "tool": "get_equity_quotes",
+      "args": {
+        "symbols": [
+          "GLD"
+        ]
+      },
+      "data": {
+        "results": [
+          {
+            "quote": {
+              "symbol": "GLD",
+              "state": "active",
+              "has_traded": true,
+              "bid_price": "400.00",
+              "ask_price": "400.01",
+              "venue_bid_time": "2026-09-04T13:59:59Z",
+              "venue_ask_time": "2026-09-04T13:59:59Z"
+            }
+          }
+        ]
+      },
+      "requestedAt": "2026-09-04T14:00:00.000Z",
+      "receivedAt": "2026-09-04T14:00:01.000Z"
+    }
+  ]
+}

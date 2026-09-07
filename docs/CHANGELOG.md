@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-07 UTC - First real Robinhood option capture assessment
+
+- Verified the five-tool runtime with bounded GLD/IBIT market-only reads.
+- Added `options:robinhood-capture -- --inspect <JSON> [--save]`: source clocks,
+  contract linkage, exact quotes/sizes, interpolation and budget diagnostics,
+  immutable recovery and candidate data-quality lessons. No network in the CLI.
+- Four sampled option quotes were stale and unaffordable; all 120 sampled minute
+  bars were interpolated. No source-specific replay or trade was run. See the
+  [delivery](OPTIONS_ROBINHOOD_CAPTURE_DELIVERY.md) for actual source/recording
+  clocks and limitations. Existing journal and gate fingerprints are unchanged.
+
 ## 2026-09-06 - Robinhood data-access preparation
 
 - Added `options:robinhood-data` report, bounded offline tools/list inspection and
