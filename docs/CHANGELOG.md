@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-09-07 - Unified local readiness and review coverage
+
+- Added one read-only entry point for the selected quote study, paper reviews,
+  historical research, imported evidence, headline history and Treasury context.
+- Isolated missing, busy and corrupt storage from recovered source health; added
+  clock/scope/count checks and per-closed-trade review identity checks.
+- Retained separate candidate notebooks and explicit source/cost/adapter gaps.
+  No journal, market-data, scheduler or trading mutation is performed. See
+  [delivery](OPTIONS_OPERATIONAL_READINESS_DELIVERY.md).
+
 ## 2026-09-07 - Treasury daily real-yield context
 
 - Added a fixed public Treasury XML source, five exact real-yield tenors,

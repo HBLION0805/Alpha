@@ -14,6 +14,7 @@ const gitWhitespaceChecks = Object.freeze([
 ]);
 
 const requiredFiles = [
+  "docs/specifications/OPTIONS_OPERATIONAL_READINESS_V1.md",
   "docs/specifications/OPTIONS_TREASURY_REAL_YIELDS_V1.md",
   "docs/specifications/OPTIONS_ROBINHOOD_CLOSEOUT_V1.md",
   "docs/specifications/OPTIONS_ROBINHOOD_AUTOCOLLECTION_V1.md",
@@ -116,6 +117,8 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-readiness/OptionsReadinessEngine.test.ts",
+  "scripts/options-readiness.test.mjs",
   "src/engines/options-treasury/TreasuryRealYieldEngine.test.ts",
   "scripts/options-treasury.test.mjs",
   "src/engines/options-robinhood-data/RobinhoodCloseoutEngine.test.ts",

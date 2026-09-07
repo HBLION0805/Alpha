@@ -1,5 +1,17 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Report actual readiness without promoting evidence
+
+- Compose existing recovered reports instead of defining another journal format
+  or trusting dated status files as current runtime evidence. Missing, blocked
+  and available storage are distinct from source status and quote eligibility.
+- Check all closed simulated trades have matching reviews; keep historical runs
+  and their candidate lessons separate. Hypothetical paper clocks remain scenario
+  clocks, including scripted future dates, rather than actual recording times.
+- Pending collection is an external dependency. Complete diagnostic coverage
+  still cannot satisfy unreviewed source semantics, costs, a missing adapter or
+  calibration. Avoid a combined readiness percentage or automatic trading gate.
+
 ## 2026-09-07 - Add one attributable numerical context source
 
 - Use Treasury's documented anonymous current-month XML GET for daily par real

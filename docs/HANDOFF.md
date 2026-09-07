@@ -4,6 +4,15 @@ Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
 
 ## Latest Owner direction
 
+OPT-READY-1 adds the unified local readiness command for an explicitly selected
+study. It recovers six existing components, reports missing/busy/corrupt stores
+independently, checks all closed paper trades have matching reviews, retains
+separate candidate notebook counts and lists the remaining source/cost/adapter
+dependencies. It cannot refresh sources, append records, inspect the host timer
+or authorize replay. See [delivery](OPTIONS_OPERATIONAL_READINESS_DELIVERY.md)
+and [checkpoint](status/operational-readiness.json). Existing paper fixture clocks
+remain hypothetical scenario times; they are not actual broker trade timestamps.
+
 OPT-RATES-1 adds the first public numerical context source: Treasury daily par
 real yields at 5, 7, 10, 20 and 30 years. One actual CLI retrieval and independent
 restart recovery are recorded in [delivery](OPTIONS_TREASURY_REAL_YIELDS_DELIVERY.md)

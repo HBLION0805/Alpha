@@ -37,6 +37,17 @@ before invoking this deterministic save. Coverage has no execution authority.
 
 ## Context and evidence
 
+`options-readiness.mjs` sequentially recovers the selected collection study,
+paper account, historical research, imported evidence, headline history and
+Treasury history through their existing repositories. The pure
+`OptionsReadinessEngine` validates report-bound summaries and check clocks, then
+lists storage issues, paper/research review coverage, separate candidate notebook
+counts and explicit source/cost/adapter dependencies. It creates no new journal
+and performs no network/scheduler operation. A readable journal can still contain
+failed source attempts; an unavailable component never hides recovered peers.
+The report is not atomic across stores, does not inspect the live host schedule
+and never combines independent simulated accounts or emits a trading permission.
+
 `TreasuryRealYieldEngine` parses a strict bounded Treasury Atom/XML subset into
 five whole-basis-point daily par real yields. It separates source dates, feed
 metadata and actual retrieval clocks; negative yields and missing values retain

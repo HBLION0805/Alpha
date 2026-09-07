@@ -6,6 +6,11 @@ risk arithmetic. It promises no return and has no order-execution authority.
 
 ## Current capabilities
 
+- One local readiness report joins actual recovery of the selected quote study,
+  paper reviews, historical research, imported evidence, headlines and Treasury
+  context. Missing/busy/corrupt stores stay separate; it lists the dependencies
+  before a real-price test without inventing a readiness score or win probability.
+  See [delivery](docs/OPTIONS_OPERATIONAL_READINESS_DELIVERY.md).
 - Public Treasury daily real-yield context for GLD/IBIT: five tenors, exact
   basis-point values, separate source and retrieval clocks, correction history,
   bounded local recovery and explicit failed/empty states. This is one numerical
@@ -93,6 +98,7 @@ Node.js 24.12 or later is required. Install locked dependencies with
 
 | Command | Purpose |
 | --- | --- |
+| `npm run options:readiness -- --report gld-ibit-observe-open-20260908` | Recover six local components, check review coverage and show the remaining real-price test dependencies |
 | `npm run options:treasury -- --refresh` | Read Treasury's current-month daily real yields once and save source history |
 | `npm run options:treasury -- --report` | Recompute local retrieval health, dated yields and revisions without network access |
 | `npm run options:robinhood-closeout -- --report gld-ibit-observe-open-20260908` | Recompute request, failure and usable-data coverage without saving a report |

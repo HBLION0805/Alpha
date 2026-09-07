@@ -1,0 +1,233 @@
+{
+  "schemaVersion": "1.0",
+  "checkpoint": "OPTIONS_OPERATIONAL_READINESS_V1_DELIVERY",
+  "recordedAt": "2026-09-07T04:26:39.744Z",
+  "scope": [
+    "GLD",
+    "IBIT"
+  ],
+  "actualRead": {
+    "path": "data/runtime/options-readiness/report.json",
+    "fileSha256": "40149da2a065c85fd53e65235845f4464d1452109734d17b732269706bd5e0e6",
+    "reportSha256": "85d1ec7d9ef59755810b341383275f148fecc5d76d9589429b00ab8f30afebdd",
+    "assessedAt": "2026-09-07T04:26:00.307Z",
+    "studyId": "gld-ibit-observe-open-20260908",
+    "collectionState": "WAITING_FOR_WINDOW",
+    "blockedStores": [],
+    "missingStores": [
+      "imports"
+    ],
+    "evidence": {
+      "collection": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T04:26:00.212Z",
+        "reportSha256": "ee0e4a502a53e8e109786bd366caec25d5ed4d57cc91708b1628a56dc9756b07",
+        "summary": {
+          "studyId": "gld-ibit-observe-open-20260908",
+          "stage": "WAITING_FOR_WINDOW",
+          "windowStartAt": "2026-09-08T13:30:00.000Z",
+          "windowEndAt": "2026-09-08T13:50:00.000Z",
+          "declaredSlots": 20,
+          "elapsedSlots": 0,
+          "completeUsableSlots": 0,
+          "automaticAttempts": 0,
+          "sourceFailures": 0,
+          "savedFrames": 0,
+          "usableObservations": 0,
+          "operationalLessons": 0,
+          "quoteQualityLessons": 0,
+          "blockerCodes": [
+            "CALENDAR_AND_SOURCE_ARE_LOCAL_DECLARATIONS",
+            "COSTS_AND_ACCOUNT_RULES_UNVERIFIED",
+            "NO_PROSPECTIVE_FRAMES",
+            "REPLAY_ADAPTER_NOT_IMPLEMENTED",
+            "SIDE_AND_SIZE_EVENT_CLOCKS_UNVERIFIED"
+          ]
+        },
+        "errorCode": null
+      },
+      "paper": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T04:26:00.229Z",
+        "reportSha256": "6e175ed9351b0e8a1c01300b0f4797524b8d31518b054fce368a99bb2e608cd2",
+        "summary": {
+          "origin": "SYNTHETIC_FIXTURE",
+          "tradeCount": 7,
+          "closedTradeCount": 5,
+          "reviewCount": 5,
+          "missingReviewCount": 0,
+          "openPositionCount": 0,
+          "pendingOrderCount": 0,
+          "candidateLessonCount": 4,
+          "notebookFingerprint": "sha256:4f31249b205054ca7b135b41bc1b1477d143e85c795ab97df598bd1e3e9de5aa"
+        },
+        "errorCode": null
+      },
+      "historical": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T04:26:00.268Z",
+        "reportSha256": "b1bcf6573198f412a33f56270d44d40228fd60a8db74a2a71100dab47daa0b68",
+        "summary": {
+          "runCount": 8,
+          "closedTradeCount": 4,
+          "reviewedRunCount": 8,
+          "candidateLessonCount": 15,
+          "syntheticRuns": 6,
+          "importedRuns": 0,
+          "missingDataRuns": 2
+        },
+        "errorCode": null
+      },
+      "imports": {
+        "state": "MISSING",
+        "checkedAt": "2026-09-07T04:26:00.285Z",
+        "reportSha256": null,
+        "summary": null,
+        "errorCode": "STORE_MISSING"
+      },
+      "headlines": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T04:26:00.285Z",
+        "reportSha256": "fa3a0b406aef9ea545df08977fea1da7941bd6e76dfa2d7249339eee671186ac",
+        "summary": {
+          "observationsInHistory": 118,
+          "sources": [
+            {
+              "id": "fed",
+              "status": "OK",
+              "observedAt": "2026-09-06T23:39:12.334Z",
+              "refreshOverdue": true
+            },
+            {
+              "id": "bls",
+              "status": "OK",
+              "observedAt": "2026-09-06T23:39:12.370Z",
+              "refreshOverdue": true
+            },
+            {
+              "id": "bea",
+              "status": "OK",
+              "observedAt": "2026-09-06T23:39:12.455Z",
+              "refreshOverdue": true
+            },
+            {
+              "id": "ecb",
+              "status": "OK",
+              "observedAt": "2026-09-06T23:39:12.579Z",
+              "refreshOverdue": true
+            },
+            {
+              "id": "ofac",
+              "status": "OK",
+              "observedAt": "2026-09-06T23:39:12.513Z",
+              "refreshOverdue": true
+            },
+            {
+              "id": "sec",
+              "status": "OK",
+              "observedAt": "2026-09-06T23:39:12.380Z",
+              "refreshOverdue": true
+            }
+          ]
+        },
+        "errorCode": null
+      },
+      "treasury": {
+        "state": "AVAILABLE",
+        "checkedAt": "2026-09-07T04:26:00.303Z",
+        "reportSha256": "f9d0dba34aa2af760cca66fd57f225e2f0235adf7c941e86e7672e05fd0164ba",
+        "summary": {
+          "retrievalCount": 1,
+          "status": "OK",
+          "receivedAt": "2026-09-07T04:01:13.937Z",
+          "sourceDate": "2026-09-04",
+          "ratesBps": {
+            "5": 217,
+            "7": 229,
+            "10": 243,
+            "20": 277,
+            "30": 296
+          },
+          "dateLagDays": 3,
+          "missingTenors": [],
+          "versionCount": 4
+        },
+        "errorCode": null
+      }
+    },
+    "closedPaperReviewCoverage": {
+      "closed": 5,
+      "reviewed": 5,
+      "missing": 0,
+      "consistent": true
+    },
+    "candidateNotebooks": {
+      "paper": 4,
+      "historical": 15,
+      "collectionOperations": 0,
+      "quoteQuality": 0,
+      "approvedKnowledge": false,
+      "causalSuccessOrFailureEstablished": false,
+      "automaticStrategyChanges": false
+    },
+    "nextStep": "WAIT_FOR_FROZEN_OPENING_WINDOW"
+  },
+  "preservation": {
+    "files": {
+      "data/runtime/options-paper/sessions.ndjson": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b",
+      "data/runtime/options-historical-replay/runs.ndjson": "f34d16cf9852cfcaadd84e716172b1359beb139ece976ae5109ff6cdf4395b62",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/plan.json": "cdfecca741947e647d3146d0b18d7a6e307db371e109b34147e1759cfbbc39cc",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-20260908/frame-0001.json": "75ea45a63bfefd9364ca87d3efd3dd506998a071583d9aa59800b52ea2a6e13c",
+      "docs/OPTIONS_ROBINHOOD_HEARTBEAT_RESTORE.json": "2d7e93b79d5343711c443296121021f70c6f214df84ed27af57105a38a7cc040",
+      "data/runtime/options-robinhood-data/studies/gld-ibit-observe-open-20260908/plan.json": "be7aecdaab601581825bfaf5494f04ca18c6cde5c4deefc6988b7d1200e125b7",
+      "docs/status/robinhood-opening-collection.json": "e6d0b6bd02cfcddcc39d44897bb985afee886f57db1de5ca659dfe0348ad2aff",
+      "docs/status/robinhood-closeout.json": "1804f8bdf8cc4db161fb596ed0cb5a2e4d25af7128f5bb1a5b962228316563b5",
+      "data/runtime/options-driver-monitor/refreshes.ndjson": "b38823063dc5642f9f14b95ef369155af6af76b7cac4b8a3f323c84ebb5de4c9",
+      "data/runtime/options-treasury-rates/retrievals.ndjson": "287a127c9ff4cf08053d3a54cc6d5faf7c49a94f3cb1b50648d611fba53657e2",
+      "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V2.json": "9ae78b5832c090c5f959d8b97a05ced60d76d3f5b5e6ebf6b81539a88c36108a",
+      "docs/status/treasury-real-yields.json": "0c448c9dbacc28d28088c07b3e1d8c50aaafe91fa7b3a1d7c7425d963af3f31f"
+    },
+    "allUnchanged": true,
+    "hostConfigSha256": "ec4f6a67d8672467dd6b25b639835b09b8eefd814c0927db513a1c7a72ac0da2",
+    "hostScheduleUnchanged": true
+  },
+  "boundaries": {
+    "status": "NO_REPLAY",
+    "realPriceTestReady": false,
+    "realPriceTradeCount": 0,
+    "automaticOrdersEnabled": false,
+    "winProbability": null,
+    "sourceRefreshes": 0,
+    "journalAppends": 0,
+    "hostUpdates": 0,
+    "snapshotAtomicAcrossStores": false,
+    "liveAccountInspected": false
+  },
+  "validation": {
+    "status": "PASSED",
+    "engineTestsPassed": 28,
+    "ioTestsPassed": 16,
+    "engineeringTestsAreStrategyEvidence": false,
+    "componentCount": 103,
+    "testsExecuted": 2708,
+    "passed": 2708,
+    "failed": 0,
+    "durationMs": 44391,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "command": "npm run alpha:validate",
+    "log": "data/runtime/options-readiness/validation-final.log",
+    "initialFailure": "The fixture factory needed explicit mapped component types; corrected without changing runtime behavior or weakening strict checking."
+  }
+}

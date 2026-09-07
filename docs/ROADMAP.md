@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+The unified [operational readiness report](OPTIONS_OPERATIONAL_READINESS_DELIVERY.md)
+now joins six recoverable local components, review coverage and candidate notebooks
+without source refreshes or new simulated trades. It separates pending market
+collection from source/storage failures and lists the remaining test dependencies.
+
 Treasury daily real-yield context is connected as the first numerical driver
 source. Five tenors retain exact source/retrieval clocks and revisions in a
 separate journal; daily context monitoring uses a versioned baseline while
