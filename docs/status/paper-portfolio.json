@@ -1,0 +1,127 @@
+{
+  "version": "OPTIONS_PAPER_PORTFOLIO_DELIVERY_V1",
+  "recordedAt": "2026-09-08T00:07:06.352Z",
+  "sourceBaseCommit": "d2b160c",
+  "status": "LOCAL_PROJECTION_AND_RECOVERY_VERIFIED",
+  "focusedTests": {
+    "enginePassed": 29,
+    "cliPassed": 20,
+    "failed": 0
+  },
+  "integratedValidation": {
+    "status": "PASSED",
+    "componentCount": 146,
+    "testsExecuted": 3559,
+    "passed": 3559,
+    "failed": 0,
+    "durationMs": 76032,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_CURRENT_OPERATIONS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_DEVELOPMENT_PROGRESS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/status/development-progress.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ]
+  },
+  "actualJournalSnapshot": {
+    "path": "data/runtime/options-paper-portfolio/current-paper-account-20260907.json",
+    "recordedAt": "2026-09-07T23:59:07.076Z",
+    "verifiedInNewProcessAt": "2026-09-07T23:59:07.813Z",
+    "source": {
+      "kind": "RECOVERED_PAPER_JOURNAL",
+      "requestSha256": "06cd6c1c0779f25c640ce0728b5b9ca0b4ac3d42fb6883e2a4badb3eac118147",
+      "journalSha256": "3e4f4e3bc453e69f64987a1ab0c2e3dc3fd743f082ca6bf5fae0bdff0cfd549b"
+    },
+    "artifactFingerprint": "sha256:3a46a68e4d79ee19774e3193581d9971ce51cc871358866d26e09cdf1f05084e",
+    "reportFingerprint": "sha256:e42850ab5a545987b2bea68fb3a14ab6c499441ff60a032133939eb3498faf65",
+    "tradeCount": 7,
+    "closedReviews": 5,
+    "candidateLessons": 4,
+    "diagnosticStatus": "ACCOUNT_DIAGNOSTICS_ONLY",
+    "blockers": [
+      {
+        "source": "PORTFOLIO",
+        "code": "EVENT_REVIEW_UNKNOWN",
+        "subject": "portfolio"
+      },
+      {
+        "source": "PORTFOLIO",
+        "code": "MODELED_COSTS_UNREVIEWED",
+        "subject": "portfolio"
+      },
+      {
+        "source": "PORTFOLIO",
+        "code": "PORTFOLIO_DAILY_LOSS_LIMIT",
+        "subject": "portfolio"
+      }
+    ],
+    "reconciliation": {
+      "cashAndRealizedPnlMatched": true,
+      "exitFeeReclassificationCents": 50,
+      "openExitFeeReservationCents": 0,
+      "totalCashCents": 99000,
+      "conservativeAvailableSettledCashCents": 89900,
+      "paperEquityCents": 99000,
+      "portfolioEquityCents": 99000,
+      "equityBasis": "PAPER_LAST_ACKNOWLEDGED_SLIPPAGE_MARK_VS_PORTFOLIO_ASSESSMENT_GROSS_QUALIFIED_BID",
+      "settlementInferred": false,
+      "highWaterBasis": "ORIGINAL_MODELED_PATH_NOT_VERIFIED_BROKER_PEAK"
+    },
+    "finalRecomputedAt": "2026-09-08T00:05:58.603Z"
+  },
+  "syntheticCandidateDemo": {
+    "path": "data/runtime/options-paper-portfolio/paper-portfolio-demo-20260907.json",
+    "reportFingerprint": "sha256:4d46ecad348d2cd0f4ec4cc22fe3ca8cde760c9df4dc10d3f92d267f1b91f6c9",
+    "status": "MODELED_CANDIDATE_BLOCKED",
+    "blockers": [
+      {
+        "source": "PORTFOLIO",
+        "code": "PORTFOLIO_DAILY_LOSS_LIMIT",
+        "subject": "portfolio"
+      },
+      {
+        "source": "PORTFOLIO",
+        "code": "PORTFOLIO_DAILY_RISK_CAPACITY",
+        "subject": "portfolio"
+      },
+      {
+        "source": "PAPER_CANDIDATE",
+        "code": "PAPER_SESSION_LOSS_LIMIT",
+        "subject": "bridge-demo-candidate"
+      },
+      {
+        "source": "PAPER_CANDIDATE",
+        "code": "PAPER_SESSION_RISK_CAPACITY",
+        "subject": "bridge-demo-candidate"
+      },
+      {
+        "source": "PAPER_CANDIDATE",
+        "code": "RISK_LIMIT_EXCEEDED",
+        "subject": "bridge-demo-candidate"
+      }
+    ]
+  },
+  "preservation": {
+    "checkedAt": "2026-09-08T00:07:36.862Z",
+    "nonHostFilesUnchanged": 523,
+    "immutableSourceHashesMatched": 6,
+    "changed": []
+  },
+  "existingJournalAppends": 0,
+  "newTrades": 0,
+  "newReviews": 0,
+  "newApprovedLessons": 0,
+  "marketSourceCalls": 0,
+  "firstPaperFlowGateAdvanced": false,
+  "executionAllowed": false,
+  "nextStep": "LOCAL_OPERATOR_CANDIDATE_REVIEW_INTEGRATION",
+  "validationLogSha256": "9317d121202f701e0fac898bd19f082217c069bbf19a149fee5f0355a428358f",
+  "resolvedValidationFailure": "Initial bundle detected the missing dedicated runtime ignore rule; corrected and full bundle passed."
+}

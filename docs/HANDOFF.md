@@ -8,27 +8,30 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
-The Owner cancelled the shared task and then explicitly restored market collection
-with development only in this conversation. Current disposition:
-**CONVERSATION_ONLY_DEVELOPMENT**. Automatic development and quarter-hour reports
-are disabled. The original gld-ibit ID is ACTIVE again with the original market
-armed fields; see [restoration](OPTIONS_MARKET_COLLECTION_RESTORATION.md) and its
-[verified checkpoint](status/market-collection-restoration.json).
+The Owner cancelled the September 8 09:30-09:50 New York opening quote pilot and
+will supply ETF opening-price screenshots later. The existing gld-ibit task is
+ACTIVE with exact v6 daily 09:00 context fields; eight host fields were verified.
+See [cancellation](OPTIONS_OPENING_COLLECTION_CANCELLATION.md) and
+[checkpoint](status/opening-collection-cancellation.json). Do not reinstall quote
+or development phases or manufacture a cancelled-pilot closeout. Preserve all
+old manifests, plans and journals as historical evidence.
 
-Use `docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json`, the unchanged Host runbook and
-v6 daily restoration. Before opening: daily 09:00 context and 09:30 opening wake;
-inside the frozen September 8 09:30-09:50 New York window: original minute quotes;
-afterward: restore v6 before collection evidence, then original closeout. Never
-install V3 post-window development fields. V1/V2/V3 remain historical snapshots.
-Routine WAIT/collection stays quiet under the restored prompt.
+Current disposition: **CONVERSATION_ONLY_DEVELOPMENT**. Automatic development and
+quarter-hour reports remain disabled. ETF screenshots are underlying context;
+actual option bid/ask/size, clocks, costs and source qualification remain open.
 
 Conversation progress reports still use the [ten-workstream baseline](OPTIONS_DEVELOPMENT_PROGRESS.md)
 and six first-paper gates. Current totals remain 4 local / 3 partial / 3 unvalidated;
 three first-paper local components are available. The snapshot model is design-only,
 and source-specific implementation/acceptance still needs actual quote review.
-This dependency does not block all local development: the proposed next independent
-unit is modeled-account/portfolio-risk integration, scoped and reviewed first.
-No live account access, automatic order or strategy-size authority follows.
+The independent [paper account/portfolio integration](OPTIONS_PAPER_PORTFOLIO_DELIVERY.md)
+is now implemented: automatic state projection, explicit fee reconciliation,
+unrecorded candidate preview through both original guards, exclusive snapshots
+and independent recovery. Existing seven modeled cases retain five closed reviews
+and four candidate lessons. The stored account's modeled daily loss remains a
+blocker, not a real brokerage loss. No current cost/event review was invented.
+Next integrate saved diagnostics into local operator candidate review. No live
+account access, automatic order, settlement or strategy-size authority follows.
 
 The [public source-use review](OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md) now records
 current customer and US options agreement evidence. Personal-use provisions do

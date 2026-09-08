@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-07T23:38:57.079Z",
+  "recordedAt": "2026-09-08T00:07:06.352Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "5a32beb",
+  "comparedWithCommit": "d2b160c",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -37,8 +37,8 @@
       "name": "GLD/IBIT option collection",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Authorized connection and frozen opening collector; eligible prospective series still pending.",
-      "evidence": "docs/OPTIONS_ROBINHOOD_OPENING_WINDOW.md"
+      "detail": "Opening pilot cancelled by Owner; source access and local collector remain preserved. Qualified option evidence is still missing.",
+      "evidence": "docs/OPTIONS_OPENING_COLLECTION_CANCELLATION.md"
     },
     {
       "id": "04",
@@ -69,8 +69,8 @@
       "name": "Portfolio and account qualification",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Declared portfolio diagnostics work; real account evidence and full integration remain incomplete.",
-      "evidence": "docs/OPTIONS_PORTFOLIO_RISK_DELIVERY.md"
+      "detail": "Original paper-account projection, dual candidate guards, conservative fee reconciliation and saved recovery work. Real account qualification, live enforcement and operator integration remain incomplete.",
+      "evidence": "docs/OPTIONS_PAPER_PORTFOLIO_DELIVERY.md"
     },
     {
       "id": "08",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "03",
-  "currentUnit": "Market collection restoration; development stays in conversation",
-  "currentUnitAcceptance": "Original armed fields restored and eight host fields verified; 17 original host tests passed. No qualified quote or real-price gate advanced.",
+  "currentWorkstream": "07",
+  "currentUnit": "Paper account and portfolio risk integration",
+  "currentUnitAcceptance": "49 new tests and original-journal independent recovery passed; seven cases retain five reviews and four candidate lessons. No actual-price gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -133,16 +133,16 @@
       }
     ]
   },
-  "criticalDependency": "Eligible GLD/IBIT option evidence from the frozen September 8 09:30-09:50 New York opening pilot, followed by semantics/cost/account qualification.",
-  "nextAction": "Continue independently scoped modeled-account/portfolio-risk development in conversation. The original market heartbeat handles the frozen opening pilot and daily context; review eligible quote evidence before source-specific adapter implementation.",
+  "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
+  "nextAction": "Integrate saved modeled-account diagnostics into local operator candidate review in this conversation. Keep only daily 09:00 context scheduled; no quote or development wakes.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 3510,
+    "passed": 3559,
     "failed": 0,
-    "componentCount": 144
+    "componentCount": 146
   },
-  "latestOperationalEvidence": "docs/status/market-collection-restoration.json",
+  "latestOperationalEvidence": "docs/status/opening-collection-cancellation.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": false

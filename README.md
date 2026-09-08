@@ -5,15 +5,21 @@ Alpha combines attributable context, explicit uncertainty and deterministic
 risk arithmetic. It promises no return and has no order-execution authority.
 
 Start with the [dated operations index](docs/OPTIONS_CURRENT_OPERATIONS.md) for
-the active collection window, completed capabilities and remaining real-price
+the current daily context schedule, completed capabilities and remaining real-price
 test dependencies. It links original evidence without changing historical clocks.
 
 ## Current capabilities
 
-- **Scheduled market collection:** the Owner restored the original opening
-  collection and daily market-context task. Automatic development and quarter-hour
-  progress reports are disabled; development continues in the current conversation.
-  [Restoration](docs/OPTIONS_MARKET_COLLECTION_RESTORATION.md).
+- **Daily market context:** the Owner cancelled the opening quote pilot. Daily
+  09:00 New York context remains active. Development continues in this conversation;
+  automatic development and quarter-hour reports are disabled.
+  [Current schedule](docs/OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
+
+- **Paper account and portfolio integration:** `npm run options:paper-portfolio -- --demo`
+  reconstructs one modeled account, checks combined GLD/IBIT exposure and previews
+  a candidate through existing risk and mistake guards. It reconciles fee buckets
+  and saves independently recoverable snapshots without appending trades.
+  [Delivery and journal usage](docs/OPTIONS_PAPER_PORTFOLIO_DELIVERY.md).
 
 - **Sample partition and journal inventory:** chronological declared windows
   reject overlapping information and reused cross-group evidence. The inventory

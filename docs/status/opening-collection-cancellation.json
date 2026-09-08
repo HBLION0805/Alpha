@@ -1,0 +1,39 @@
+{
+  "version": "OPTIONS_OPENING_COLLECTION_CANCELLATION_V1",
+  "recordedAt": "2026-09-08T00:03:13.203Z",
+  "sourceBaseCommit": "d2b160c",
+  "ownerDirection": "CANCEL_OPENING_QUOTE_PILOT_KEEP_DAILY_CONTEXT_DEVELOP_IN_CONVERSATION",
+  "automationId": "gld-ibit",
+  "status": "ACTIVE_DAILY_CONTEXT_ONLY_VERIFIED",
+  "cancelledStudyId": "gld-ibit-observe-open-20260908",
+  "studyDisposition": "OWNER_CANCELLED_BEFORE_WINDOW",
+  "providerFailure": false,
+  "closeoutCreated": false,
+  "activeManifest": "docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json",
+  "activeFieldSet": "restoreFields",
+  "hostFieldsMatched": {
+    "id": true,
+    "kind": true,
+    "name": true,
+    "prompt": true,
+    "rrule": true,
+    "status": true,
+    "targetThreadId": true,
+    "notificationPolicy": true
+  },
+  "hostVerifiedAt": "2026-09-08T00:03:13.203Z",
+  "hostSha256": "c75b241b7bc8b23f88e91f4c50059e8b054c1329ecdb75c99a13650db3541e5d",
+  "dailyContextTimeNewYork": "09:00",
+  "openingQuoteScheduleActive": false,
+  "automaticDevelopment": false,
+  "periodicDevelopmentReports": false,
+  "preservation": {
+    "checkedAt": "2026-09-08T00:07:36.862Z",
+    "nonHostFilesUnchanged": 523,
+    "immutableSourceHashesMatched": 6,
+    "changed": []
+  },
+  "marketToolCalls": 0,
+  "accountOrOrderCalls": 0,
+  "executionAllowed": false
+}

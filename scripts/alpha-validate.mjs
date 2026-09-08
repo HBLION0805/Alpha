@@ -129,6 +129,8 @@ const aggregateTestFiles = [
   "scripts/options-structures.test.mjs",
   "src/engines/options-portfolio-risk/OptionsPortfolioRiskEngine.test.ts",
   "scripts/options-portfolio-risk.test.mjs",
+  "src/engines/options-portfolio-risk/OptionsPaperPortfolio.test.ts",
+  "scripts/options-paper-portfolio.test.mjs",
   "src/engines/options-readiness/OptionsOutcomeAudit.test.ts",
   "scripts/options-outcome-audit.test.mjs",
   "scripts/options-evidence-v2.test.mjs",

@@ -12,11 +12,11 @@ into a completion percentage: these workstreams differ in cost and uncertainty.
 | --- | --- | --- | --- |
 | 01 | Single-trade risk and planning | Deterministic declared GLD/IBIT whole-contract, cost and risk diagnostics | Actual input/cost and account qualification remain separate |
 | 02 | News, macro and BTC context | Attributable retrieval, source clocks, correction and failure histories | Numerical factor coverage and predictive impact remain incomplete |
-| 03 | GLD/IBIT option collection | Authorized source access, frozen collection, exact capture and quality checks | Eligible prospective quote series remains pending |
+| 03 | GLD/IBIT option collection | Authorized source access, preserved collector, exact capture and quality checks | Opening pilot cancelled; qualified option evidence remains missing |
 | 04 | Protocol and observation evidence | Exact protocol/context binding, actual save receipts, independent note recovery | Does not prove full features or historical knowledge |
 | 05 | Local single-leg paper lifecycle | Modeled entry, fill, exit and cash accounting with frozen assumptions | Qualified Robinhood source adapter is separate |
 | 06 | Reviews and candidate mistake notebook | Preserve all local outcomes, review closed cases and retain candidate lessons | Candidate lessons are not approved rules or a measured win rate |
-| 07 | Portfolio and account qualification | Aggregate declared exposure, reservations, settlements and loss limits | Broker-specific account evidence and full integration remain incomplete |
+| 07 | Portfolio and account qualification | Declared diagnostics plus original paper-account projection, candidate guards and fee reconciliation | Live account evidence, enforcement and operator integration remain incomplete |
 | 08 | Robinhood real-price paper adapter | Qualified contract/session/quote semantics, explicit costs and fill assumptions | Not implemented; must follow actual evidence review |
 | 09 | First qualified real-price paper flow | One complete actual-data paper run, durable outcome, review and restart verification | Not run; no real transaction is requested |
 | 10 | Signal evaluation and calibration | Complete chronological samples, independent outcomes, out-of-sample evidence | No complete partition input, sealed evaluation or calibrated probability |

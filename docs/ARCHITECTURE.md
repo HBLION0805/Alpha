@@ -1,6 +1,21 @@
 # Alpha Architecture
 
-## Shared host development continuation
+## Paper account and portfolio bridge
+
+`OptionsPaperPortfolio` reconstructs one modeled account with the unchanged paper
+engine, projects its dispositions into the unchanged portfolio engine and checks
+an unrecorded initial-quote candidate through both. Closed reviews, candidate
+lessons, unknown marks and pending reservations retain their original semantics.
+An explicit fee-bucket reconciliation exposes conservative available cash without
+balancing entries. The CLI reads only the paper journal, binds its bytes and saves
+an exclusive deterministic snapshot; independent research accounts stay separate.
+See [specification](specifications/OPTIONS_PAPER_PORTFOLIO_V1.md).
+
+## Historical shared host development continuation
+
+The Owner has cancelled both automatic development and the opening quote pilot.
+Only exact v6 daily context fields are active. The design below remains historical;
+see [current schedule](OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
 
 A pure UTC/New York routing helper selects daily context, bounded development,
 opening collection, restoration-first closeout or yielding. A new immutable host

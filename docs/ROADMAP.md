@@ -1,12 +1,19 @@
 # Alpha Roadmap
 
-The [hypothetical snapshot model](OPTIONS_ROBINHOOD_SNAPSHOT_MODEL_DELIVERY.md)
-defines later-fill timing and preserved risk/accounting assumptions. Actual
-opening evidence still gates the source adapter; independent local work can
-continue in conversation. The Owner [restored market collection](OPTIONS_MARKET_COLLECTION_RESTORATION.md)
-and disabled automatic development/quarter-hour reports. Next conversation work
-can scope modeled-account/portfolio-risk integration. Workstream and gate counts
-remain unchanged; design acceptance is separate from real-price validation.
+The [paper account/portfolio bridge](OPTIONS_PAPER_PORTFOLIO_DELIVERY.md) now derives
+aggregate diagnostics from the original modeled journal, checks unrecorded
+candidates through both original engines and verifies exclusive snapshots.
+Workstream 07 advances locally while real account qualification remains partial.
+Next connect these diagnostics to the operator's local candidate review surface,
+preserving their saved evidence and explicit unknowns. Actual qualified option
+quotes still gate the source-specific adapter and first real-price paper flow.
+
+The Owner [cancelled the opening pilot](OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
+Only daily 09:00 context remains scheduled; development continues in conversation.
+ETF opening-price screenshots can provide context without proving option fills.
+The [hypothetical snapshot model](OPTIONS_ROBINHOOD_SNAPSHOT_MODEL_DELIVERY.md) and
+all original plans remain historical design/evidence. Counts stay 4 local,
+3 partial and 3 unvalidated; no actual-price gate advanced.
 
 The [public source-use review](OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md) adds dated
 customer/US options agreement evidence while retaining unresolved retention and

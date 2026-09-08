@@ -1,10 +1,15 @@
 # GLD/IBIT operations: evidence and next test
 
-Current shared host continuation: [development follow-up](OPTIONS_WORK_CONTINUATION_DELIVERY.md)
-adds quarter-hour development routing to the existing task. Use its versioned
-host fields and activation checkpoint; old schedule descriptions below remain
-dated evidence. The opening tick/window and restore-v6-before-evidence order are
-preserved, with daily 09:00 context and opening-day development avoidance.
+Current Owner direction: [opening pilot cancelled](OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
+The existing task uses exact v6 daily 09:00 New York context fields only. Automatic
+quote collection, development and periodic development reports are disabled.
+All opening/continuation descriptions below are dated historical evidence and
+must not be used to reinstall a schedule. Development stays in this conversation.
+
+Latest local capability: [paper account/portfolio integration](OPTIONS_PAPER_PORTFOLIO_DELIVERY.md)
+recovers the original account and checks an unrecorded candidate through existing
+risk and mistake guards. Actual option quote qualification remains open; ETF
+opening-price screenshots alone cannot qualify option fills.
 
 Newest local capability: [sample validation](OPTIONS_SAMPLE_VALIDATION_DELIVERY.md)
 adds declared time partitions and a complete inventory of current paper/research
@@ -48,7 +53,7 @@ options on Robinhood**, deterministic risk diagnostics, local modeled lifecycle
 tests, persistent reviews and candidate mistake records. Automatic orders and
 account/order tools remain outside the authorized scope. Paid data remains deferred.
 
-## Next actual collection
+## Historical planned collection (cancelled September 7)
 
 The existing shared `gld-ibit` heartbeat is armed for one frozen opening study:
 **September 8, 2026, 09:30-09:50 New York**, targeting one capture per minute.
