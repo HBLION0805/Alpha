@@ -10,6 +10,11 @@ export const PUBLIC_SOURCE_URLS = Object.freeze({
   ofac: "https://ofac.treasury.gov/rss.xml",
   sec: "https://www.sec.gov/news/pressreleases.rss",
 });
+export const FOCUSED_SOURCE_URLS = Object.freeze({
+  fed_speeches: "https://www.federalreserve.gov/feeds/speeches_and_testimony.xml",
+  eia_energy: "https://www.eia.gov/rss/todayinenergy.xml",
+  coindesk: "https://www.coindesk.com/arc/outboundfeeds/rss",
+});
 const MAX_FEED_BYTES = 524288;
 const MAX_JOURNAL_BYTES = 16 * 1024 * 1024;
 
@@ -34,6 +39,13 @@ function published(value) {
 /** Bounded RSS 2.0 / Atom headline subset. DTD/entity declarations are never interpreted. */
 export function parseDriverFeed(xml, sourceId, observedAt, origin = "PUBLIC_FEED") {
   if (!Object.hasOwn(PUBLIC_SOURCE_URLS, sourceId)) throw new Error("UNREGISTERED_DRIVER_SOURCE");
+  return parseFeedSubset(xml, sourceId, observedAt, origin);
+}
+export function parseFocusedFeed(xml, sourceId, observedAt) {
+  if (!Object.hasOwn(FOCUSED_SOURCE_URLS, sourceId)) throw new Error("UNREGISTERED_FOCUSED_SOURCE");
+  return parseFeedSubset(xml, sourceId, observedAt, "PUBLIC_FEED");
+}
+function parseFeedSubset(xml, sourceId, observedAt, origin) {
   if (typeof xml !== "string" || Buffer.byteLength(xml, "utf8") > MAX_FEED_BYTES) throw new Error("FEED_TOO_LARGE");
   if (/<!DOCTYPE|<!ENTITY/i.test(xml) || !/<(?:rss|feed)(?:\s|>)/i.test(xml) || !/<\/(?:rss|feed)>\s*$/i.test(xml)) throw new Error("UNSUPPORTED_OR_INCOMPLETE_FEED");
   const blocks = [...xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1\s*>/gi)];
@@ -72,12 +84,19 @@ function networkFailureCode(error) {
 
 export async function readPublicDriverFeed(sourceId, fetchImplementation = globalThis.fetch, { deadlineMs = 12000 } = {}) {
   if (!Object.hasOwn(PUBLIC_SOURCE_URLS, sourceId)) throw new Error("UNREGISTERED_DRIVER_SOURCE");
+  return readFixedFeed(PUBLIC_SOURCE_URLS[sourceId], fetchImplementation, deadlineMs);
+}
+export async function readPublicFocusedFeed(sourceId, fetchImplementation = globalThis.fetch, { deadlineMs = 12000 } = {}) {
+  if (!Object.hasOwn(FOCUSED_SOURCE_URLS, sourceId)) throw new Error("UNREGISTERED_FOCUSED_SOURCE");
+  return readFixedFeed(FOCUSED_SOURCE_URLS[sourceId], fetchImplementation, deadlineMs);
+}
+async function readFixedFeed(url, fetchImplementation, deadlineMs) {
   if (!Number.isSafeInteger(deadlineMs) || deadlineMs < 1 || deadlineMs > 12000) throw Error("DRIVER_DEADLINE_CONFIGURATION");
   const controller = new AbortController(); let timer, reader;
   const deadline = new Promise((_, reject) => { timer = setTimeout(() => { controller.abort(); reject(Error("FEED_DEADLINE_EXCEEDED")); }, deadlineMs); });
   const withinDeadline = work => Promise.race([work, deadline]);
   try {
-    const response = await withinDeadline(fetchImplementation(PUBLIC_SOURCE_URLS[sourceId], {
+    const response = await withinDeadline(fetchImplementation(url, {
       redirect: "manual", credentials: "omit", signal: controller.signal,
       headers: { "User-Agent": "Alpha-Options-Research/0.2 (public-feed monitor)", Accept: "application/rss+xml, application/atom+xml, text/xml, application/xml" },
     }));

@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+[Focused gold/Bitcoin news](OPTIONS_FOCUSED_NEWS_DELIVERY.md) extends the nine-feed
+headline view with direct/indirect relevance and daily Host web review. It does
+not complete numerical ETF-flow, oil, dollar, funding or liquidation connectors,
+continuous breaking-news coverage, or any strategy validation gate.
+
 Daily guidance is now implemented alongside its frontend and hourly public
 context service. See [delivery](OPTIONS_DAILY_GUIDANCE_DELIVERY.md). Current
 recommendations can remain WATCH; broader quantitative coverage, prospective

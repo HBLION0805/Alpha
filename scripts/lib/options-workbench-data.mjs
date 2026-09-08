@@ -20,6 +20,7 @@ import { readinessClock } from '../../src/engines/options-readiness/OptionsReadi
 import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import { parseChainSurveyJson } from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import { guidanceView, saveGuidanceSettings } from './options-guidance-io.mjs';
+import { focusedNewsView } from './options-focused-news-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -29,7 +30,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|FOCUSED_NEWS_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -92,6 +93,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
       chain,manual,activity:study,headlines,treasury,btc,calendar,outcomes,progress:progressState,
       access:'LOCAL_SAVED_DATA',sourceRefresh:false,accountAccessed:false,executionAllowed:false};
     result.guidance=await component(()=>guidanceView(root,result),at);
+    result.focusedNews=await component(()=>focusedNewsView(root,headlines.data,at),at);
     return result;
   }
   function preview(command){

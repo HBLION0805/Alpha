@@ -17,6 +17,13 @@ below are historical where they conflict with this newer direction. Candidate
 plans remain conditional and may be WATCH; never force a daily trade or fabricate
 probability, stops as guaranteed fills, missing data, realized outcomes or lessons.
 
+The Owner's later screenshot request adds focused gold/Bitcoin monitoring:
+three supplemental hourly feeds (Fed speeches, EIA energy, CoinDesk), direct and
+indirect macro filtering, and bounded daily WGC/issuer/macro Host web review.
+See docs/OPTIONS_FOCUSED_NEWS_DELIVERY.md and docs/status/focused-news.json.
+Original six-feed journals and all Host schedule/restore fields remain unchanged.
+Do not treat screenshot claims or another ChatGPT task as verified source data.
+
 ## Project Overview
 
 Alpha is a Personal Capital Operating System focused on GLD and IBIT options on Robinhood. It supports capital protection through deterministic risk diagnostics, source-attributed market context, and research evidence.

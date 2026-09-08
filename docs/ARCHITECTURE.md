@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## Focused gold / Bitcoin news
+
+A separate three-feed metadata store reuses the original hardened RSS transport
+without expanding its six-source allowlist or modifying old journals. A pure
+relevance projection joins both stores; keyword mechanisms remain conditional,
+with no numerical driver or directional authority. An independent hourly claim
+preserves existing service receipts. News & calendar and the compact Host brief
+read the same source clocks and health. Broader daily web analysis uses the
+existing analyst-note format and Host schedule. See
+[specification](specifications/OPTIONS_FOCUSED_NEWS_V1.md).
+
 ## Daily guidance and public refresh
 
 The new pure OptionsDailyGuidance engine composes source-attributed analysis,

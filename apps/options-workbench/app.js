@@ -6,7 +6,7 @@ import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
 const drafts={register:registerDefaults(),fill:fillDefaults(),correct:fillDefaults()};
-const ui={chain:defaultFilters(),plannerDraft:plannerDefaults(),plannerResult:null,planningSource:null,journalMode:'register',journalDraft:drafts.register,reviewScope:'trades',lessonOrigin:'',reviewSearch:'',newsSource:'',newsSearch:''};
+const ui={chain:defaultFilters(),plannerDraft:plannerDefaults(),plannerResult:null,planningSource:null,journalMode:'register',journalDraft:drafts.register,reviewScope:'trades',lessonOrigin:'',reviewSearch:'',newsSource:'',newsSearch:'',newsAsset:''};
 let state=null,pending=null,pendingKey=null,requestId=null,loading=false,saving=false,calculating=false,previewing=false,toastTimer;
 const dirty=new Set();
 function syncNavigation(){
@@ -93,7 +93,7 @@ async function saveRecord(){
   finally{saving=false;$('#confirm-save').disabled=false;}
 }
 function download(kind){
-  const components={chain:{chain:state.chain,activity:state.activity},manual:{ledgerId:state.ledgerId,manual:state.manual},reviews:{manual:state.manual,outcomes:state.outcomes,activity:state.activity},context:{headlines:state.headlines,treasury:state.treasury,btc:state.btc,calendar:state.calendar}};
+  const components={chain:{chain:state.chain,activity:state.activity},manual:{ledgerId:state.ledgerId,manual:state.manual},reviews:{manual:state.manual,outcomes:state.outcomes,activity:state.activity},context:{headlines:state.headlines,focusedNews:state.focusedNews,treasury:state.treasury,btc:state.btc,calendar:state.calendar}};
   if(!Object.hasOwn(components,kind))return;
   const data={version:'OPTIONS_WORKBENCH_DOWNLOAD_V1',exportedAt:new Date().toISOString(),loadedAt:state.loadedAt,...components[kind],executionAllowed:false,accountAccessed:false};
   const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`alpha-${kind}-${state.loadedAt.slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Evidence download requested. The original local stores remain unchanged.');
@@ -109,7 +109,7 @@ document.addEventListener('change',event=>{void(async()=>{
   if(el.closest('form')){updateDraft(el);if(el.type==='checkbox'||['action','tradeId','fillId'].includes(el.name))render();return;}
   if(el.id==='board-select'){ui.chain.page=1;await reload(el.value);return;}
   if(el.dataset.chainFilter){ui.chain[el.dataset.chainFilter]=el.value;ui.chain.page=1;if(el.dataset.chainFilter==='symbol')ui.chain.expiry='';render();return;}
-  const map={'lesson-origin':'lessonOrigin','news-source':'newsSource'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
+  const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
   if(event.target.id==='guidance-settings-form'){

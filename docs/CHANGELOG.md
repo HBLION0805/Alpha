@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-09-08 - Focus news monitoring on gold and Bitcoin
+
+- Added independent hourly Fed speech, EIA energy and CoinDesk metadata reads,
+  with the original six-feed boundary and history preserved.
+- Added direct asset / indirect macro classification, source health and clock
+  visibility, filtering and attributed interpretation to News & calendar.
+- Added bounded daily WGC/issuer/macro review to the existing Host runbook,
+  without new schedules, accounts, paid providers or numerical-flow claims.
+- See [delivery](OPTIONS_FOCUSED_NEWS_DELIVERY.md) for actual source and UI evidence.
+
 ## 2026-09-08 - Daily guidance page and hourly public context
 
 - Added a bounded GLD/IBIT contract screen, descriptive trend, event waiting

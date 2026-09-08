@@ -7,10 +7,10 @@ import {guidanceLocal} from "../src/engines/options-daily-guidance/OptionsDailyG
 import {createWorkbenchData} from "./lib/options-workbench-data.mjs";
 import {publishGuidance} from "./lib/options-guidance-io.mjs";
 const BASE="data/runtime/options-context-service";
-const COMMANDS={headlines:"scripts/options-drivers.mjs",btc:"scripts/options-btc-context.mjs",treasury:"scripts/options-treasury.mjs",bls:"scripts/options-release-calendar.mjs",fomc:"scripts/options-fomc-calendar.mjs"};
+const COMMANDS={headlines:"scripts/options-drivers.mjs",btc:"scripts/options-btc-context.mjs",treasury:"scripts/options-treasury.mjs",bls:"scripts/options-release-calendar.mjs",fomc:"scripts/options-fomc-calendar.mjs",focused_news:"scripts/options-focused-news.mjs"};
 export function contextRefreshSlots(at) {
   const local=guidanceLocal(at),hour=at.slice(0,13).replace(/:/g,"-");
-  return [{key:"hourly-"+hour,sources:["headlines","btc"]},...(local.minute>=540&&local.minute<1080?[{key:"daily-"+local.date,sources:["treasury","bls","fomc"]}]:[])];
+  return [{key:"hourly-"+hour,sources:["headlines","btc"]},...(local.minute>=540&&local.minute<1080?[{key:"daily-"+local.date,sources:["treasury","bls","fomc"]}]:[]),{key:"focused-hourly-"+hour,sources:["focused_news"]}];
 }
 export async function runPublicContextOnce({workspaceRoot=process.cwd(),now=()=>new Date().toISOString(),execute,issue=true}={}) {
   const root=realpathSync(workspaceRoot),at=now(),results=[];

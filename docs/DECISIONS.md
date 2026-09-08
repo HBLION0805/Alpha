@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-08 - Focus news on gold and Bitcoin while retaining macro transmission
+
+- Preserve rates, currencies, inflation, oil, liquidity and geopolitics as context
+  for GLD/IBIT; exclude unrelated individual-stock and token stories from the view.
+- Keep the six original feed journals and add three separate fixed public feeds.
+  Distinguish primary publisher, attributed reporting and bounded Host web review.
+- Preserve source clocks, failures, unknown publication times and coverage gaps.
+  Keyword relevance does not establish direction, institutional buying or a trade.
+- Use the existing Host schedule for daily source review; no new automation,
+  brokerage access, paid source or other-ChatGPT-task synchronization is added.
+
 ## 2026-09-08 - Issue conditional daily guidance without forcing trades
 
 - Combine attributable Host analysis with deterministic trend, event, quote and

@@ -8,6 +8,15 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner's screenshot request adds focused gold/Bitcoin news coverage. The new
+supplemental hourly feeds are Fed speeches, EIA energy and CoinDesk; the original
+six source journals remain intact. News & calendar now filters direct asset and
+indirect macro relevance and displays actual health, dates, interpretation and
+gaps. The existing Host runbook adds bounded daily WGC/issuer/macro web review;
+its schedule, close captures and restoration fields are unchanged. See
+[delivery](OPTIONS_FOCUSED_NEWS_DELIVERY.md) and [checkpoint](status/focused-news.json).
+Screenshots and outside ChatGPT tasks are not verified or synchronized sources.
+
 The latest Owner request is ongoing daily news and GLD/IBIT advisory views,
 developed with the frontend and without development reports. The seventh page
 and hourly public refresh are implemented. Use

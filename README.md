@@ -1,5 +1,10 @@
 # Alpha
 
+Latest news expansion: [focused gold / Bitcoin monitoring](docs/OPTIONS_FOCUSED_NEWS_DELIVERY.md).
+Nine fixed RSS feeds, relevant macro filtering and a daily attributed Host web
+review now share the News & calendar page. Missing numerical coverage remains
+explicit; other ChatGPT tasks are not synchronized.
+
 Latest development: [daily guidance and public context refresh](docs/OPTIONS_DAILY_GUIDANCE_DELIVERY.md). The seventh page is the default landing view. Public headlines/BTC refresh hourly while Alpha runs; the existing Host provides scheduled market-only quote reads. See the [current runbook](docs/OPTIONS_DAILY_GUIDANCE_RUNBOOK.md). No automated orders or calibrated win-rate claim.
 
 Latest local delivery: [six-page options workbench](docs/OPTIONS_WORKBENCH_DELIVERY.md).
