@@ -4,12 +4,13 @@ import { pathToFileURL } from "node:url";
 import { createWorkbenchData, workbenchError } from "./lib/options-workbench-data.mjs";
 import { recordGuidanceMarket, publishGuidance, recordAnalystNote, claimGuidanceSlot, verifyGuidanceRecord } from "./lib/options-guidance-io.mjs";
 import { collectGuidanceMarket, routeDailyGuidance } from "./lib/options-guidance-host.mjs";
+import { activeEventResearchContracts } from "./lib/options-event-research-io.mjs";
 export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=()=>new Date().toISOString()}={}) {
   const root=realpathSync(workspaceRoot),[mode,arg]=args;
   if(args.length>2)throw Error("GUIDANCE_ARGUMENTS");
   if(mode==="--route"&&args.length===1)return routeDailyGuidance(now());
   if(mode==="--route-ongoing"&&args.length===1)return routeDailyGuidance(now(),{ongoing:true});
-  if(mode==="--host-source"&&args.length===1)return {source:collectGuidanceMarket.toString()};
+  if(mode==="--host-source"&&args.length===1){const tracked=activeEventResearchContracts(root,now());return {source:tracked.length?`async function(params){return (${collectGuidanceMarket.toString()})({...params,trackedContracts:${JSON.stringify(tracked)}});}`:collectGuidanceMarket.toString(),trackedContracts:tracked.length};}
   if(mode==="--begin-slot"&&args.length===2)return claimGuidanceSlot(root,arg);
   if(mode==="--record"&&args.length===2)return {path:recordGuidanceMarket(root,arg),executionAllowed:false};
   if(mode==="--analysis"&&args.length===2)return {path:recordAnalystNote(root,arg),executionAllowed:false};

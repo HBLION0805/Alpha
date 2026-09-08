@@ -130,6 +130,15 @@ The collector bounds calls to 24, pagination to eight pages per symbol and quote
 selection to 36 existing IDs, in batches <=20, with a three-minute request-start
 deadline. A pending call may complete later. Preserve null/missing replies.
 
+The returned source also embeds at most six contracts from verified active event
+research plans. It rechecks their metadata in current instrument replies and
+gives them priority inside the same 18-per-ETF / 36-total limit. Missing tracked
+contracts and pagination/deadline exhaustion remain failures. Extra expiry dates
+share the existing call/page limits. After a study's final observation window,
+its priority ends. The Host fields, scheduled times and close workflow do not
+change. The Event research page consumes these saved captures automatically;
+it cannot invoke the Host or create an order.
+
 Save exact JSON with apply_patch Add File to a NEW actual-timestamp path under
 data/runtime/options-daily-guidance-inputs. Never interpolate provider JSON into
 shell commands. Then run `--record <workspace-relative-input-path>` and verify the

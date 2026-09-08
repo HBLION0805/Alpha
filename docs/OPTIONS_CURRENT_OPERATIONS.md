@@ -1,5 +1,12 @@
 # GLD/IBIT operations: evidence and next test
 
+Latest research step: [event phase comparison](OPTIONS_EVENT_RESEARCH_DELIVERY.md)
+and [dated checkpoint](status/event-research.json). Two frozen PPI experiments
+await September 9/10 observations. The existing Host prioritizes four identities
+inside the original market-read limits. No additional schedule, source, account
+access or order was enabled. The seventh/eighth frontend pages are separate from
+the three still-open first-real-price-paper-flow gates.
+
 Latest operating direction: [daily guidance and hourly public context](OPTIONS_DAILY_GUIDANCE_DELIVERY.md).
 Use [the new shared Host runbook](OPTIONS_DAILY_GUIDANCE_RUNBOOK.md) and verify
 [activation status](status/daily-guidance.json). It retains the bounded close

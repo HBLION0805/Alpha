@@ -2,6 +2,7 @@ import {focusedContext} from './focused-news.js';
 import {esc,words,dollars,cents,number,timestamp,filterChain,collectLessons,lesson,safeLink} from './model.js';
 import {plannerForm,journalForm} from './forms.js';
 import {guidancePage} from './guidance.js';
+import {eventResearchPage} from './event-research.js';
 export const tag=(text,tone='gray')=>`<span class="tag ${tone}">${esc(text)}</span>`;
 export const detail=(label,data)=>`<details><summary>${esc(label)}</summary><pre>${esc(JSON.stringify(data,null,2))}</pre></details>`;
 export const notice=(text,tone='')=>`<div class="notice ${tone}"><span aria-hidden="true">ⓘ</span><div>${text}</div></div>`;
@@ -72,4 +73,4 @@ export function reviews(s,ui){
   return heading('LEARN FROM THE RECORD','Reviews & lessons','Separate what happened, what is known and what still needs evidence.',`<button class="button secondary" data-export="reviews">↓ Export review evidence</button>`)+`<div class="tabs">${[['trades','Trade reviews'],['lessons','Mistake notebook'],['activity','Activity study']].map(([k,l])=>`<button data-review-scope="${k}" class="${scope===k?'active':''}" aria-pressed="${scope===k}">${l}</button>`).join('')}</div>`+body;
 }
 export function context(s,ui){return focusedContext(s,ui);}
-export const routes={overview,chain:chainView,planner,journal,reviews,context,guidance:guidancePage};
+export const routes={overview,chain:chainView,planner,journal,reviews,context,guidance:guidancePage,'event-research':eventResearchPage};

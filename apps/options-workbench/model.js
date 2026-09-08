@@ -44,11 +44,21 @@ export function collectLessons(state){
   for(const t of state.manual.data?.trades??[])for(const l of t.candidateLessons)result.push({...l,origin:state.manual.data.origin==='SYNTHETIC_FIXTURE'?'Synthetic ledger':'Owner reported',support:t.tradeId,title:lesson(l.code)[0],nextCheck:lesson(l.code)[1]});
   for(const id of ['paper','historical'])for(const l of state.outcomes.data?.components[id]?.audit?.candidateNotebook.entries??[])result.push({...l,origin:id==='paper'?'Paper simulation':'Historical research',support:(l.supportingTradeIds??l.supportingRunIds??[]).join(', '),title:words(l.code),nextCheck:l.nextCheck??l.observation});
   for(const l of state.activity.data?.candidateLessons??[])result.push({...l,origin:'Activity research',support:l.candidateId??l.contractId??'',title:words(l.code),nextCheck:l.nextCheck??l.observation??'Inspect the saved comparison and its evidence limits.'});
+  for(const s of state.eventResearch?.data?.studies??[])for(const l of s.candidateLessons)result.push({...l,origin:'Event phase research',support:s.plan.id,title:words(l.code),nextCheck:l.text});
   return result;
 }
 export function safeLink(value){try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password?url.href:null;}catch{return null;}}
 export function explainError(code){
   const explanations={
+    EVENT_RESEARCH_WINDOW_ORDER:'All observation windows must be future when registered. PRE ends before the event; POST starts at least 30 minutes after release.',
+    EVENT_RESEARCH_REGULAR_SESSION_WINDOW_REQUIRED:'Use weekday windows starting between 09:30 and 15:40 New York. Holidays and early closes still require separate verification.',
+    EVENT_RESEARCH_TIMED_FUTURE_EVENT_REQUIRED:'Select a future official event with a known release time within 14 days.',
+    EVENT_RESEARCH_SETTINGS_CHANGED:'Risk settings changed while this draft was open. Reset the draft and review the new settings.',
+    EVENT_RESEARCH_POST_PAIR:'The POST call and put must use the same ETF and expiration, with different contract identities.',
+    EVENT_RESEARCH_REQUEST_CONFLICT:'This study ID already has a different frozen plan. Reset the draft to register a separate study.',
+    EVENT_RESEARCH_EVENT_NOT_IN_CALENDAR:'The selected event is no longer available in the current saved calendar. Reset and review the calendar.',
+    EVENT_RESEARCH_CONTRACT_NOT_IN_CAPTURE:'A selected contract is not in the frozen capture. Reset the draft and review the available contracts.',
+    EVENT_RESEARCH_TRACKING_LIMIT:'Active studies can track at most six distinct contracts within the existing capture limit. Reuse tracked contracts or wait for a study window to finish.',
     SESSION_REQUIRED:'The local server session changed. Close the preview, reload saved data and preview your retained draft again.',
     WORKBENCH_LEDGER_CHANGED_REVIEW_AGAIN:'The ledger changed after this preview. Return to the draft and preview it again.',
     MANUAL_LEDGER_TRADE_ID_OR_BOUND:'This trade ID is already registered or the ledger has reached its trade limit. Use the existing trade for fills.',

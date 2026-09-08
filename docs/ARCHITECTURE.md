@@ -1,5 +1,18 @@
 # Alpha Architecture
 
+## Prospective event phase research
+
+`OptionsEventResearch` reads verified saved guidance frames through an independent
+adapter, freezes event/contract/settings/window declarations, selects timely
+endpoints and composes the unchanged feasibility engine. PRE_ONLY, POST_ONLY and
+COMBINED are separate reference accounts; sparse quotes never imply stop fills.
+Exclusive registrations and copied-input snapshots independently recover. The
+eighth frontend page and candidate notebook read this projection; protected local
+POSTs cannot call a broker. The existing Host reserves up to six active identities
+inside its unchanged 24-call, 36-quote limits, rechecking instrument metadata.
+No scheduler fields or original journals change. See
+[specification](specifications/OPTIONS_EVENT_PHASE_RESEARCH_V1.md).
+
 ## Focused gold / Bitcoin news
 
 A separate three-feed metadata store reuses the original hardened RSS transport

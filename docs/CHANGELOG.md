@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-08 - Add prospective event anticipation/reaction research
+
+- Added frozen future event plans, first-window quote selection, three-mode
+  reference accounting, shared risk and independently recoverable snapshots.
+- Added Event research, the eighth English page, plus process candidates in the
+  existing review notebook. No fill, probability or automated strategy upgrade.
+- Prioritized active frozen contracts within the existing Host call/quote limits;
+  retained schedules, old stores and the unqualified real-price paper gates.
+- Registered two GLD/IBIT PPI studies from actual saved market data. Future
+  endpoints and net returns remain unknown. See [delivery](OPTIONS_EVENT_RESEARCH_DELIVERY.md).
+
 ## 2026-09-08 - Focus news monitoring on gold and Bitcoin
 
 - Added independent hourly Fed speech, EIA energy and CoinDesk metadata reads,

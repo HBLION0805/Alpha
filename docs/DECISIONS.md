@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## 2026-09-08 - Freeze event phases before observing outcomes
+
+- Keep GLD/IBIT PRE_ONLY, POST_ONLY and COMBINED as separate quote-reference
+  experiments with identical frozen rules and no account/order authority.
+- Use the first timely, usable snapshot in each fixed window. Never substitute
+  a later profitable quote, infer a stop fill or erase a missing observation.
+- Reuse original feasibility. Prior losses consume one event allowance; gains
+  do not enlarge it and same-day exit proceeds are not assumed settled.
+- Reserve at most six active-study identities inside the existing Host bounds;
+  recheck metadata and stop tracking after the final window. No schedule change.
+- Preserve copied-input immutable snapshots and candidate-only process lessons.
+  This establishes infrastructure, not a new profitable strategy or calibrated
+  probability. See [specification](specifications/OPTIONS_EVENT_PHASE_RESEARCH_V1.md).
+
 ## 2026-09-08 - Focus news on gold and Bitcoin while retaining macro transmission
 
 - Preserve rates, currencies, inflation, oil, liquidity and geopolitics as context

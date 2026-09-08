@@ -2,6 +2,7 @@ import {request} from './api.js';
 import {routes,contractDetail,tradeDetail,plannerResult,detail,notice,table,empty} from './views.js';
 import {esc,words,dollars,timestamp,exactUsd,decimalText,decimalInteger,filterChain} from './model.js';
 import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand} from './forms.js';
+import {eventRequest} from './event-research.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -13,7 +14,7 @@ function syncNavigation(){
   const hidden=matchMedia('(max-width: 650px)').matches&&!document.body.classList.contains('menu-open');
   $('#sidebar').inert=hidden;if(hidden)$('#sidebar').setAttribute('aria-hidden','true');else $('#sidebar').removeAttribute('aria-hidden');
 }
-const labels={overview:'Overview',chain:'Options & activity',planner:'Trade planner',journal:'Trade journal',reviews:'Reviews & lessons',context:'News & calendar',guidance:'Daily guidance'};
+const labels={overview:'Overview',chain:'Options & activity',planner:'Trade planner',journal:'Trade journal',reviews:'Reviews & lessons',context:'News & calendar',guidance:'Daily guidance','event-research':'Event research'};
 function route(){const key=location.hash.slice(1);return Object.hasOwn(routes,key)?key:'guidance';}
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),5500);}
 function render(focus=false){
@@ -49,6 +50,7 @@ function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
   if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));dirty.add('guidance');return;}
+  if(form.id==='event-research-form'){Object.assign(ui.eventDraft,Object.fromEntries(new FormData(form)));dirty.add('event-research');return;}
   const key=form.id==='planner-form'?'planner':ui.journalMode,d=key==='planner'?ui.plannerDraft:drafts[key];
   d[el.name]=el.type==='checkbox'?el.checked:el.value;dirty.add(key);
   if(key==='planner'){ui.plannerResult=null;const panel=$('#planner-result');if(panel)panel.innerHTML=plannerResult(null);}
@@ -112,6 +114,10 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='event-research-form'){
+    event.preventDefault();if(saving)return;saving=true;const button=event.submitter;button.disabled=true;
+    void(async()=>{try{await request('/api/event-research',{action:'REGISTER',request:eventRequest(ui.eventDraft)});ui.eventDraft=null;ui.eventChoices=null;dirty.delete('event-research');await reload();toast('Research plan frozen. Future observations will retain their actual clocks.');}catch(e){fail(e,'#event-research-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='guidance-settings-form'){
     event.preventDefault();const button=event.submitter;button.disabled=true;
     void(async()=>{try{const d=Object.fromEntries(new FormData(event.target));const value={currentEquityCents:decimalInteger(d.currentEquityCents),settledCashCents:decimalInteger(d.settledCashCents),roundTripFeesCents:decimalInteger(d.roundTripFeesCents,2,true),slippageReserveCents:decimalInteger(d.slippageReserveCents,2,true),stopLossBps:Number(d.stopLossBps),rewardMultipleMilliR:Number(d.rewardMultipleMilliR)};await request('/api/guidance-settings',value);ui.guidanceSettingsDraft=null;dirty.delete('guidance');await reload();toast('Declared assumptions saved. Existing issued recommendations retain their original inputs.');}catch(e){fail(e,'#guidance-settings-error');}finally{if(button.isConnected)button.disabled=false;}})();return;
@@ -143,6 +149,8 @@ document.addEventListener('click',event=>{void(async()=>{
     ui.planningSource={...q,bid:toUsd(q.bidCents),ask:toUsd(q.askCents),quoteUpdatedAt:q.updatedAt};ui.plannerResult=null;dirty.add('planner');navigate('planner');return;
   }
   if(el.id==='reset-guidance-assumptions'){ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}
+  if(el.id==='reset-event-research'){ui.eventDraft=null;ui.eventChoices=null;dirty.delete('event-research');render();return;}
+  if(el.dataset.eventSave){if(saving)return;saving=true;el.disabled=true;try{await request('/api/event-research',{action:'SAVE_REPORT',id:el.dataset.eventSave});toast('Independent research snapshot saved and verified.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reset-planner'){ui.plannerDraft=plannerDefaults();ui.plannerResult=null;ui.planningSource=null;dirty.delete('planner');render();return;}
   if(el.id==='plan-to-journal'){transferPlan();return;}
   if(el.dataset.journalMode){ui.journalMode=el.dataset.journalMode;render();return;}

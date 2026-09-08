@@ -1,0 +1,351 @@
+{
+  "task": "OPT-EVENT-PHASE-RESEARCH-1",
+  "status": "LOCAL_VALIDATED_PROSPECTIVE_STUDIES_REGISTERED",
+  "scope": [
+    "GLD",
+    "IBIT"
+  ],
+  "frontendPages": 8,
+  "actualTrades": 0,
+  "futureObservedEndpoints": 0,
+  "calibrated": false,
+  "executionAllowed": false,
+  "hostFieldsChanged": false,
+  "scheduledCloseDatesPreserved": 7,
+  "trackedContracts": 4,
+  "maximumActiveTrackedContracts": 6,
+  "callLimit": 24,
+  "quoteLimit": 36,
+  "paidDataUsed": false,
+  "accountAccessed": false,
+  "workstreams": {
+    "locallyValidated": 4,
+    "partial": 3,
+    "notValidated": 3
+  },
+  "realPriceGates": {
+    "available": 3,
+    "open": 3
+  },
+  "observedAt": "2026-09-08T17:40:46.651Z",
+  "validation": {
+    "focusedTests": 64,
+    "aggregateTests": 3987,
+    "components": 158,
+    "failed": 0,
+    "durationMs": 80439,
+    "latestTestFixtureCheck": "64/64 after storage fixtures were made relative to actual test time"
+  },
+  "browserAcceptance": {
+    "registrationSaved": true,
+    "draftPreservedAcrossNavigation": true,
+    "selectionBlockersVisible": true,
+    "newYorkWindowsVisible": true,
+    "phoneViewport": "390x844",
+    "horizontalOverflow": false,
+    "phonePhaseWidth": 309,
+    "consoleErrors": 0,
+    "notebookCandidates": 2
+  },
+  "marketCapture": {
+    "path": "data/runtime/options-daily-guidance/captures/2026-09-08/2026-09-08T17-27-40-624Z-791efc49-8e8f-42fd-b1b6-93d7152ff684.json",
+    "fingerprint": "sha256:3f17d33d8dd02c7d809b22e67bef0506b0884cfea94c9a1bf575668a43624255",
+    "capturedAt": "2026-09-08T17:27:24.000Z",
+    "calls": 15,
+    "quotes": 36,
+    "failures": 0
+  },
+  "selectionCapture": "data/runtime/options-daily-guidance/captures/2026-09-08/2026-09-08T16-58-21-401Z-2be71b1a-b216-4039-9284-2b711987eff2.json",
+  "studies": [
+    {
+      "id": "event-e7ef7723-4f95-46b6-984a-eb736cd8b06a",
+      "title": "PPI: GLD call anticipation and observed reaction",
+      "createdAt": "2026-09-08T17:24:19.665Z",
+      "registration": "data/runtime/options-event-research/plans/event-e7ef7723-4f95-46b6-984a-eb736cd8b06a.json",
+      "phases": [
+        {
+          "phase": "PRE",
+          "status": "WAITING",
+          "entry": "WAITING",
+          "exit": "WAITING",
+          "netReferencePnlCents": null
+        },
+        {
+          "phase": "POST",
+          "status": "WAITING",
+          "entry": "WAITING",
+          "exit": "NOT_SELECTED",
+          "netReferencePnlCents": null
+        }
+      ],
+      "selectionBlockers": [
+        {
+          "id": "0c65dc43-5f2d-4b29-8daf-a8aeee04f249",
+          "askCents": 1245,
+          "blockers": [
+            "COSTS_UNKNOWN",
+            "ALLOCATION_BUDGET_EXCEEDED",
+            "SETTLED_CASH_INSUFFICIENT",
+            "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"
+          ]
+        },
+        {
+          "id": "0c65dc43-5f2d-4b29-8daf-a8aeee04f249",
+          "askCents": 1245,
+          "blockers": [
+            "COSTS_UNKNOWN",
+            "ALLOCATION_BUDGET_EXCEEDED",
+            "SETTLED_CASH_INSUFFICIENT",
+            "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"
+          ]
+        },
+        {
+          "id": "27a05b2a-c66d-4a2c-9a73-14581e09ec2e",
+          "askCents": 1140,
+          "blockers": [
+            "COSTS_UNKNOWN",
+            "ALLOCATION_BUDGET_EXCEEDED",
+            "SETTLED_CASH_INSUFFICIENT",
+            "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "mode": "PRE_ONLY",
+          "status": "INCOMPLETE",
+          "acceptedReferences": 0,
+          "netReferencePnlCents": null,
+          "lossConsumedCents": 0,
+          "remainingEventLossCents": 500,
+          "steps": [
+            {
+              "phase": "PRE",
+              "status": "INCOMPLETE",
+              "blockers": [],
+              "referencePnlCents": null,
+              "remainingEventLossCents": 500,
+              "conservativeRemainingCashCents": 100000
+            }
+          ]
+        },
+        {
+          "mode": "POST_ONLY",
+          "status": "INCOMPLETE",
+          "acceptedReferences": 0,
+          "netReferencePnlCents": null,
+          "lossConsumedCents": 0,
+          "remainingEventLossCents": 500,
+          "steps": [
+            {
+              "phase": "POST",
+              "status": "INCOMPLETE",
+              "blockers": [
+                "REACTION_BASELINE_WAITING"
+              ],
+              "referencePnlCents": null,
+              "remainingEventLossCents": 500,
+              "conservativeRemainingCashCents": 100000
+            }
+          ]
+        },
+        {
+          "mode": "COMBINED",
+          "status": "INCOMPLETE",
+          "acceptedReferences": 0,
+          "netReferencePnlCents": null,
+          "lossConsumedCents": 0,
+          "remainingEventLossCents": 500,
+          "steps": [
+            {
+              "phase": "PRE",
+              "status": "INCOMPLETE",
+              "blockers": [],
+              "referencePnlCents": null,
+              "remainingEventLossCents": 500,
+              "conservativeRemainingCashCents": 100000
+            },
+            {
+              "phase": "POST",
+              "status": "INCOMPLETE",
+              "blockers": [
+                "REACTION_BASELINE_WAITING",
+                "PRIOR_PHASE_UNRESOLVED"
+              ],
+              "referencePnlCents": null,
+              "remainingEventLossCents": 500,
+              "conservativeRemainingCashCents": 100000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ppi-20260910-ibit-call-reaction",
+      "title": "PPI: IBIT call anticipation and observed reaction",
+      "createdAt": "2026-09-08T17:26:54.088Z",
+      "registration": "data/runtime/options-event-research/plans/ppi-20260910-ibit-call-reaction.json",
+      "phases": [
+        {
+          "phase": "PRE",
+          "status": "WAITING",
+          "entry": "WAITING",
+          "exit": "WAITING",
+          "netReferencePnlCents": null
+        },
+        {
+          "phase": "POST",
+          "status": "WAITING",
+          "entry": "WAITING",
+          "exit": "NOT_SELECTED",
+          "netReferencePnlCents": null
+        }
+      ],
+      "selectionBlockers": [
+        {
+          "id": "d84f0997-0025-4edb-bb75-62969bc06b83",
+          "askCents": 221,
+          "blockers": [
+            "COSTS_UNKNOWN",
+            "ALLOCATION_BUDGET_EXCEEDED",
+            "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"
+          ]
+        },
+        {
+          "id": "d84f0997-0025-4edb-bb75-62969bc06b83",
+          "askCents": 221,
+          "blockers": [
+            "COSTS_UNKNOWN",
+            "ALLOCATION_BUDGET_EXCEEDED",
+            "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"
+          ]
+        },
+        {
+          "id": "3a1452c0-e03d-4915-8b54-1b24ce1f8f77",
+          "askCents": 200,
+          "blockers": [
+            "COSTS_UNKNOWN",
+            "ALLOCATION_BUDGET_EXCEEDED",
+            "LEGACY_MAX_LOSS_LIMIT_EXCEEDED"
+          ]
+        }
+      ],
+      "comparisons": [
+        {
+          "mode": "PRE_ONLY",
+          "status": "INCOMPLETE",
+          "acceptedReferences": 0,
+          "netReferencePnlCents": null,
+          "lossConsumedCents": 0,
+          "remainingEventLossCents": 500,
+          "steps": [
+            {
+              "phase": "PRE",
+              "status": "INCOMPLETE",
+              "blockers": [],
+              "referencePnlCents": null,
+              "remainingEventLossCents": 500,
+              "conservativeRemainingCashCents": 100000
+            }
+          ]
+        },
+        {
+          "mode": "POST_ONLY",
+          "status": "INCOMPLETE",
+          "acceptedReferences": 0,
+          "netReferencePnlCents": null,
+          "lossConsumedCents": 0,
+          "remainingEventLossCents": 500,
+          "steps": [
+            {
+              "phase": "POST",
+              "status": "INCOMPLETE",
+              "blockers": [
+                "REACTION_BASELINE_WAITING"
+              ],
+              "referencePnlCents": null,
+              "remainingEventLossCents": 500,
+              "conservativeRemainingCashCents": 100000
+            }
+          ]
+        },
+        {
+          "mode": "COMBINED",
+          "status": "INCOMPLETE",
+          "acceptedReferences": 0,
+          "netReferencePnlCents": null,
+          "lossConsumedCents": 0,
+          "remainingEventLossCents": 500,
+          "steps": [
+            {
+              "phase": "PRE",
+              "status": "INCOMPLETE",
+              "blockers": [],
+              "referencePnlCents": null,
+              "remainingEventLossCents": 500,
+              "conservativeRemainingCashCents": 100000
+            },
+            {
+              "phase": "POST",
+              "status": "INCOMPLETE",
+              "blockers": [
+                "REACTION_BASELINE_WAITING",
+                "PRIOR_PHASE_UNRESOLVED"
+              ],
+              "referencePnlCents": null,
+              "remainingEventLossCents": 500,
+              "conservativeRemainingCashCents": 100000
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "registrations": [
+    {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-event-research/plans/event-e7ef7723-4f95-46b6-984a-eb736cd8b06a.json",
+      "fingerprint": "sha256:b404cd00a8327b25710735c6c2f3733b2dff5d82c31933d84ef30f3cab442c97",
+      "executionAllowed": false
+    },
+    {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-event-research/plans/ppi-20260910-ibit-call-reaction.json",
+      "fingerprint": "sha256:9747b3a87878b41dc38965094f27dfcae12ec92bb131d7f27591da2bc2956c41",
+      "executionAllowed": false
+    }
+  ],
+  "snapshots": [
+    {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-event-research/reports/event-e7ef7723-4f95-46b6-984a-eb736cd8b06a/2026-09-08T17-33-25-660Z-bd62612d-4e2d-4f38-8bfa-ba558cd2c7f5.json",
+      "fingerprint": "sha256:146d9d350e60f7ef3537fbfb327b69c176dc49aad571ea3e49c95031e754aa94",
+      "executionAllowed": false
+    },
+    {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-event-research/reports/ppi-20260910-ibit-call-reaction/2026-09-08T17-33-25-725Z-8ef62a6b-95fc-4276-a307-d036b490e3c5.json",
+      "fingerprint": "sha256:07b68e19e92ecec824199dcc08bdb7e57e134053344dc4be73db676f7f3c08b9",
+      "executionAllowed": false
+    }
+  ],
+  "analystNote": "data/runtime/options-daily-guidance/analysis/2026-09-08/2026-09-08T17-33-23-693Z-f7b78987-5549-4252-84e8-8c0ab0413dc3.json",
+  "issuedReport": "data/runtime/options-daily-guidance/reports/2026-09-08/2026-09-08T17-33-25-593Z-214a7409-8160-4774-aa34-911e659e5d12.json",
+  "dispositions": [
+    {
+      "symbol": "GLD",
+      "disposition": "WATCH"
+    },
+    {
+      "symbol": "IBIT",
+      "disposition": "WATCH"
+    }
+  ],
+  "contextRefreshEnabled": true,
+  "finalRestartCheckedAt": "2026-09-08T17:40:44.740Z",
+  "ownerLedgerTrades": 0,
+  "ownerLedgerHead": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c",
+  "quotesOutsideWindowsAreNotOutcomes": true,
+  "stopPathQualified": false,
+  "historyDisplayCutoffInherited": false
+}

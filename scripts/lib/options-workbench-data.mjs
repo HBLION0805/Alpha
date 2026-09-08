@@ -21,6 +21,7 @@ import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTr
 import { parseChainSurveyJson } from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import { guidanceView, saveGuidanceSettings } from './options-guidance-io.mjs';
 import { focusedNewsView } from './options-focused-news-io.mjs';
+import { readEventResearch, registerEventResearch, saveEventResearchReport } from './options-event-research-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -30,7 +31,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|FOCUSED_NEWS_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|FOCUSED_NEWS_|EVENT_RESEARCH_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -94,6 +95,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
       access:'LOCAL_SAVED_DATA',sourceRefresh:false,accountAccessed:false,executionAllowed:false};
     result.guidance=await component(()=>guidanceView(root,result),at);
     result.focusedNews=await component(()=>focusedNewsView(root,headlines.data,at),at);
+    result.eventResearch=await component(()=>readEventResearch(root,at),at);
     return result;
   }
   function preview(command){
@@ -111,5 +113,11 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     io.writeExclusive(root,path,Buffer.from(JSON.stringify(p.command,null,2)+'\n'));
     return runOptionsManualLedgerCommand(['--append',ledgerId,path],options());
   }
-  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,evaluate:evaluateOptionsRetailFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  async function eventResearch(body){
+    if(!body||!['REGISTER','SAVE_REPORT'].includes(body.action))fail('EVENT_RESEARCH_ACTION');
+    if(body.action==='SAVE_REPORT'){if(Object.keys(body).sort().join()!=='action,id')fail('EVENT_RESEARCH_FIELDS');return saveEventResearchReport(root,body.id,now());}
+    if(Object.keys(body).sort().join()!=='action,request')fail('EVENT_RESEARCH_FIELDS');
+    const current=await state();return registerEventResearch(root,body.request,current.guidance.data,now());
+  }
+  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,evaluate:evaluateOptionsRetailFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

@@ -107,6 +107,19 @@ export function recordGuidanceMarket(root,path) {
   if(normal.capturedAt>new Date().toISOString())fail("FUTURE_CAPTURE");
   return save(root,"captures",input,normal).path;
 }
+export function readGuidanceResearchFrames(root) {
+  const base=BASE+'/captures',days=children(root,base).filter(v=>/^\d{4}-\d\d-\d\d$/.test(v.name));
+  if(days.some(v=>!v.isDirectory()||v.isSymbolicLink()))fail('UNSAFE_DIRECTORY');
+  const entries=[];
+  for(const day of days.sort((a,b)=>a.name.localeCompare(b.name))){
+    const items=children(root,base+'/'+day.name);if(items.length>200)fail('DAILY_LIMIT');
+    entries.push(...items.filter(v=>v.name.endsWith('.json')).map(v=>base+'/'+day.name+'/'+v.name));
+    if(entries.length>1000)fail('RESEARCH_CAPTURE_LIMIT');
+  }
+  return entries.map(path=>{const r=verified(root,path,"captures"),v=normalizeGuidanceCapture(r.input);
+    if(paperFingerprint(v)!==r.reportFingerprint)fail("CAPTURE_RECOMPUTE");
+    return {path,recordedAt:r.recordedAt,capturedAt:v.capturedAt,origin:v.origin,quotes:v.quotes,equities:v.equities};});
+}
 export function saveGuidanceSettings(root,value){return save(root,"settings",validateGuidanceSettings(value)).path;}
 export function guidanceSettings(root){const latest=paths(root,"settings",1)[0];return latest?validateGuidanceSettings(verified(root,latest,"settings").input):defaultGuidanceSettings();}
 export function guidanceView(root,state) {

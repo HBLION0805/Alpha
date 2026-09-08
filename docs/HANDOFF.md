@@ -8,6 +8,18 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner approved the event anticipation/reaction research step with working
+GLD/IBIT Robinhood reads. The eighth Event research page now freezes prospective
+windows, compares three separate quote-reference modes and shares losses/cash
+conservatively across phases. Two PPI hypotheses are registered before September
+9/10 observations; there are no future results or owner fills. Selection is over
+budget and costs are unknown. Four frozen identities are prioritized within the
+existing bounded Host market calls, without changing schedules or close work.
+Use [delivery and commands](OPTIONS_EVENT_RESEARCH_DELIVERY.md) and
+[dated evidence](status/event-research.json). SPY remains outside this stage;
+the optional scope question received no answer. Read-only snapshots do not qualify
+the original paper adapter, stops/targets, candle signals or a probability model.
+
 The Owner's screenshot request adds focused gold/Bitcoin news coverage. The new
 supplemental hourly feeds are Fed speeches, EIA energy and CoinDesk; the original
 six source journals remain intact. News & calendar now filters direct asset and

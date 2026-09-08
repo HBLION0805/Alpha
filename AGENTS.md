@@ -104,6 +104,17 @@ Push
 
 ## Current Implemented Systems
 
+- Prospective event phase research: immutable GLD/IBIT plans and copied-input
+  snapshots compare PRE_ONLY, POST_ONLY and COMBINED using first eligible saved
+  quotes, shared event losses and non-recycled sale proceeds. The eighth English
+  page and review notebook show windows, blockers, gaps and candidate process
+  lessons. Two PPI hypotheses await September 9/10 observations; no future
+  outcomes, candle confirmation, stop fills, qualified replay or probability.
+  The existing Host rechecks at most six active frozen identities inside its
+  unchanged 24-call / 36-quote bounds. No schedule fields, orders, account tools,
+  old journals or real-price gate statuses change. See
+  docs/OPTIONS_EVENT_RESEARCH_DELIVERY.md and docs/status/event-research.json.
+
 - Local options workbench frontend: six responsive English pages over original local readers and engines, bounded 127.0.0.1 service, exact manual forms with preview/idempotent save/corrections, original event drilldown, candidate notebooks and saved source clocks. Use `npm run options:workbench` or `Start Alpha.cmd`. Owner ledger remains empty; frontend mutation QA is isolated and synthetic. No source refresh, brokerage access, automatic order, new dependency or schedule change. Six UI acceptances do not advance the three open real-price gates. See docs/OPTIONS_WORKBENCH_DELIVERY.md, docs/OPTIONS_WORKBENCH_GUIDE.md and docs/status/workbench.json. This latest frontend direction is conversation-only; older automatic-development activation records below remain historical.
 
 - Owner-reported fill ledger and review desk: separate standard long GLD/IBIT

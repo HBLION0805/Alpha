@@ -192,7 +192,9 @@
     "test:options-guidance": "tsx scripts/options-daily-guidance.test.mjs",
     "test:options-context-service": "tsx scripts/options-context-service.test.mjs",
     "options:focused-news": "tsx scripts/options-focused-news.mjs",
-    "test:options-focused-news": "tsx scripts/options-focused-news.test.mjs"
+    "test:options-focused-news": "tsx scripts/options-focused-news.test.mjs",
+    "options:event-research": "tsx scripts/options-event-research.mjs",
+    "test:options-event-research": "tsx scripts/options-event-research.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

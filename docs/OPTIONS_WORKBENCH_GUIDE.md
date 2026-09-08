@@ -1,5 +1,14 @@
 # Alpha options workbench
 
+Event research is the eighth page. Register a future timed BLS/FOMC event with
+one PRE contract and a matching POST call/put pair. Review four UTC window starts
+and the frozen cost assumptions before pressing **Freeze research plan**. This
+records a local research declaration, never an order. The saved view shows New
+York windows, actual observation clocks, selection blockers and PRE_ONLY /
+POST_ONLY / COMBINED reference comparisons. **Save evidence snapshot** creates
+an independently recoverable copy. Process candidates also appear in Reviews &
+lessons. See [research scope and commands](OPTIONS_EVENT_RESEARCH_DELIVERY.md).
+
 Daily guidance is now the default seventh page. It shows the current conditional
 view, attributed news interpretation, event waiting windows, bounded contract
 candidates, indicative stops/targets and immutable issued history. Declare fees

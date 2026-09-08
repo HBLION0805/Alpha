@@ -1,5 +1,10 @@
 # Alpha
 
+Latest research: [before/after event comparison](docs/OPTIONS_EVENT_RESEARCH_DELIVERY.md).
+The eighth page freezes GLD/IBIT observation rules, follows the same contracts,
+compares three separate reference scenarios with a shared event risk allowance,
+and adds process notes to Reviews & lessons. Research plans are not trade advice.
+
 Latest news expansion: [focused gold / Bitcoin monitoring](docs/OPTIONS_FOCUSED_NEWS_DELIVERY.md).
 Nine fixed RSS feeds, relevant macro filtering and a daily attributed Host web
 review now share the News & calendar page. Missing numerical coverage remains

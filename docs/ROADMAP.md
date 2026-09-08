@@ -1,5 +1,15 @@
 # Alpha Roadmap
 
+[Event phase research](OPTIONS_EVENT_RESEARCH_DELIVERY.md) now links prospective
+PRE/POST windows, identical tracked contracts, shared risk and candidate process
+notes to an eighth page. Next assess the frozen September 9/10 PPI observations
+with actual source/receipt clocks; retain unavailable windows and budget blocks.
+The two initial call-anticipation hypotheses are unvalidated, not recommended
+entries. Dense noninterpolated bars, executable option evidence, full costs and
+independent out-of-sample outcomes remain needed. The fixed ten-workstream
+comparison remains 4 locally validated / 3 partial / 3 not validated; the six
+real-price gates remain 3 available / 3 open.
+
 [Focused gold/Bitcoin news](OPTIONS_FOCUSED_NEWS_DELIVERY.md) extends the nine-feed
 headline view with direct/indirect relevance and daily Host web review. It does
 not complete numerical ETF-flow, oil, dollar, funding or liquidation connectors,
