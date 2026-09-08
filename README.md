@@ -1,6 +1,7 @@
 # Alpha
 
-Latest local delivery: [GLD/IBIT full-chain activity and account review](docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md),
+Latest local delivery: [frozen activity follow-up and matched-control reviews](docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md),
+building on [GLD/IBIT full-chain activity and account review](docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md),
 with [daily close collection through September 16](docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md).
 The cancelled opening pilot and automatic development remain disabled. No automatic orders.
 
@@ -14,10 +15,17 @@ test dependencies. It links original evidence without changing historical clocks
 
 ## Current capabilities
 
+- **Prospective activity follow-up:** 224 frozen candidates, 167 distinct controls
+  and all 57 unmatched cases. `npm run options:activity-study -- --update fomc-activity-20260908`
+  reads saved close boards, retains assumed-cost reference outcomes and candidate
+  lessons, and verifies immutable reports. Zero future outcomes currently exist;
+  this does not establish profitability or run paper trades.
+  [Study and commands](docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md).
+
 - **Daily market context:** the Owner cancelled the opening quote pilot. Daily
   09:00 New York context remains active. Development continues in this conversation;
   automatic development and quarter-hour reports are disabled.
-  [Current schedule](docs/OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
+  [Current daily-context and bounded close schedule](docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md).
 
 - **Paper account and portfolio integration:** `npm run options:paper-portfolio -- --demo`
   reconstructs one modeled account, checks combined GLD/IBIT exposure and previews

@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-09-07 - Prospective activity study and matched-control reviews
+
+- Registered all 224 baseline activity candidates, 167 distinct controls and 57
+  unmatched cases before future closes. Zero actual follow-up outcomes exist.
+- Added fixed-horizon Ask/Bid reference comparisons, explicit cost sensitivities,
+  $50 affordability, unavailable outcomes, descriptive paired summaries and
+  separate candidate lessons, with immutable save/recovery and offline runbook use.
+- Preserved paper journals, baseline evidence, daily schedule and trading limits.
+  See [delivery and validation evidence](OPTIONS_ACTIVITY_STUDY_DELIVERY.md).
+
 ## 2026-09-07 - Shared automatic development continuation
 
 - Added a deterministic time router, tested priority boundaries and versioned

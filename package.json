@@ -5,6 +5,9 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "options:activity-study": "tsx scripts/options-activity-study.mjs",
+    "test:options-activity-study": "tsx src/engines/options-robinhood-data/OptionsActivityStudy.test.ts",
+    "test:options-activity-study-storage": "tsx scripts/options-activity-study.test.mjs",
     "typecheck": "tsc --project tsconfig.json",
     "test": "node scripts/alpha-validate.mjs",
     "alpha:validate": "node scripts/alpha-validate.mjs",

@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Freeze activity research before future observations
+
+- Preserve all baseline candidates and select nearby controls without replacement
+  before new data. Fix the primary horizon, secondary horizons and cost scenarios;
+  missing, expired, unmatched and unaffordable cases remain in the report.
+- Use independent long-option closing-reference arithmetic with exact decimals.
+  Do not bypass the existing paper engine's DTE/source requirements, fabricate
+  intraday stop fills, or conflate positive returns with incremental signal value.
+- Save actual-clock study receipts and independently recoverable outcome packages.
+  Existing daily close runbook performs offline follow-up after capture and required
+  restoration; no additional market requests or host schedule change.
+- Keep candidate lessons separate from approved knowledge. Source/execution
+  qualification and independent validation remain necessary before future use.
+  See [specification](specifications/OPTIONS_ACTIVITY_STUDY_V1.md).
+
 ## 2026-09-07 - Share the existing heartbeat for authorized continuation
 
 - The Owner requested continuation after reports; the app allows one heartbeat

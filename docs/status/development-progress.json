@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-08T01:04:16.127Z",
+  "recordedAt": "2026-09-08T02:16:04.970Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "a0bf29a",
+  "comparedWithCommit": "2fcf9a5",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -93,13 +93,13 @@
       "name": "Signal evaluation and calibration",
       "previousStatus": "NOT_VALIDATED",
       "status": "NOT_VALIDATED",
-      "detail": "No complete partition input, sealed evaluation or calibrated strategy probability.",
-      "evidence": "docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md"
+      "detail": "Prospective descriptive activity study and matched-control outcomes implemented and frozen. No actual future outcome, independent evaluation, complete partition input, sealed holdout or calibrated probability.",
+      "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "03",
-  "currentUnit": "Full-chain activity review, local account board and daily close activation",
-  "currentUnitAcceptance": "All 2,100 source contracts retained; 224 descriptive candidates and original account diagnostics displayed. Seven daily close sessions configured, not yet run. No actual-price gate advanced.",
+  "currentWorkstream": "10",
+  "currentUnit": "Frozen prospective activity study with matched controls and candidate reviews",
+  "currentUnitAcceptance": "224 candidates, 167 distinct matched controls and 57 unmatched cases registered before future windows. Exact-cost reference outcomes and immutable recovery locally tested; zero actual future outcomes. Signal acceptance and all three real-price gates remain open.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Review the first actual closing receipt, expired-contract scope, clock freshness and reported-counter comparison. Continue independent development only in this conversation.",
+  "nextAction": "Verify actual September 8 close evidence, then the fixed September 9 primary comparison; preserve gaps and all outcomes.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 3606,
+    "passed": 3672,
     "failed": 0,
-    "componentCount": 148
+    "componentCount": 150
   },
-  "latestOperationalEvidence": "docs/status/chain-close-activation.json",
+  "latestOperationalEvidence": "docs/status/activity-study.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": false

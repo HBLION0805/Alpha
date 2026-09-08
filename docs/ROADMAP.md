@@ -1,5 +1,13 @@
 # Alpha Roadmap
 
+The [frozen activity study](OPTIONS_ACTIVITY_STUDY_DELIVERY.md) now links baseline
+selection, distinct nearby controls, daily close evidence, assumed-cost reference
+outcomes and candidate lessons. Its 224 cases are registered before future data;
+no actual outcome is yet available. Workstream 10 gains bounded local research
+infrastructure but remains NOT_VALIDATED for signal evaluation/calibration.
+Next inspect the first close and fixed primary comparison; independent future
+validation and the three real-price paper gates remain open.
+
 The [full-chain activity and account board](OPTIONS_CHAIN_REVIEW_DELIVERY.md) now
 connects the saved diagnostics below to an immutable English operator surface.
 All 2,100 GLD/IBIT baseline contracts and 224 descriptive activity candidates are

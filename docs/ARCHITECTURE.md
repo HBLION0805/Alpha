@@ -1,5 +1,17 @@
 # Alpha Architecture
 
+## Prospective activity follow-up
+
+`OptionsActivityStudy` composes the unchanged chain survey into a frozen cohort,
+distinct control matches, declared closing references and exact cost arithmetic.
+Its separate CLI verifies an existing baseline board, saves a study and actual
+receipt, and copies later verified close sources into immutable report packages.
+It produces descriptive comparisons and candidate lessons with no paper orders,
+account integration, execution inference, win probability or strategy authority.
+The original observation-only and 14–45 DTE paper engines remain unchanged.
+See [specification](specifications/OPTIONS_ACTIVITY_STUDY_V1.md) and
+[delivery](OPTIONS_ACTIVITY_STUDY_DELIVERY.md).
+
 ## Paper account and portfolio bridge
 
 `OptionsPaperPortfolio` reconstructs one modeled account with the unchanged paper
@@ -14,8 +26,9 @@ See [specification](specifications/OPTIONS_PAPER_PORTFOLIO_V1.md).
 ## Historical shared host development continuation
 
 The Owner has cancelled both automatic development and the opening quote pilot.
-Only exact v6 daily context fields are active. The design below remains historical;
-see [current schedule](OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
+The active task combines daily context with seven authorized close records through
+September 16, then restores exact v6. The design below remains historical;
+see [current schedule](OPTIONS_CHAIN_CLOSE_RUNBOOK.md).
 
 A pure UTC/New York routing helper selects daily context, bounded development,
 opening collection, restoration-first closeout or yielding. A new immutable host

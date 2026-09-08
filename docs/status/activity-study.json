@@ -1,0 +1,148 @@
+{
+  "version": "OPTIONS_ACTIVITY_STUDY_DELIVERY_V1",
+  "recordedAt": "2026-09-08T02:16:04.970Z",
+  "scope": "GLD_IBIT_PROSPECTIVE_ACTIVITY_REFERENCE_STUDY_NO_TRADES",
+  "studyId": "fomc-activity-20260908",
+  "studyFingerprint": "sha256:10f3ed20b968a31d0da0b1635b9653d422bde88164a5a9c59583f8040e4359bc",
+  "registeredAt": "2026-09-08T02:06:12.694Z",
+  "savedAt": "2026-09-08T02:06:13.077Z",
+  "prospectiveAtSave": true,
+  "baseline": {
+    "boardId": "fomc-baseline-review-20260907",
+    "sourceQuoteDate": "2026-09-04",
+    "origin": "HOST_MARKET_TOOL_RESPONSES",
+    "sourceSha256": "1aa84a35d9dbf0999598330657459fae779e788d43372318d69a7148d6137945"
+  },
+  "actualRecovery": {
+    "reportId": "state-32262936e743da633884bdf7226651ce2bb21bac220579521db1a8387fe9e03b",
+    "reportPath": "data/runtime/options-activity-studies/fomc-activity-20260908/reports/state-32262936e743da633884bdf7226651ce2bb21bac220579521db1a8387fe9e03b/report.json",
+    "reportFingerprint": "sha256:684264f2af931e027df1ef440d5c631273c2b2dc82c8de332381225f2a437fb5",
+    "assessedAt": "2026-09-08T02:06:51.865Z",
+    "counts": {
+      "baselineContracts": 2100,
+      "candidates": 224,
+      "matched": 167,
+      "unmatched": 57,
+      "observedSessions": 0,
+      "scheduledSessions": 7,
+      "primaryEvaluableCandidates": 0
+    },
+    "matches": {
+      "MATCHED": 167,
+      "NO_ELIGIBLE_UNUSED_NEARBY_CONTROL": 57
+    },
+    "cohorts": {
+      "SEPTEMBER_18_COMPARISON": 58,
+      "THROUGH_SEPTEMBER_16": 166
+    },
+    "candidateLessonCodes": {
+      "MATCHED_CONTROL_UNAVAILABLE": 57,
+      "PRIMARY_OUTCOME_UNAVAILABLE": 34,
+      "SMALL_REPORTED_OI_BASE": 44
+    }
+  },
+  "design": {
+    "entrySession": "2026-09-08",
+    "primaryExit": "2026-09-09",
+    "secondaryExits": [
+      "2026-09-10",
+      "2026-09-11",
+      "2026-09-14",
+      "2026-09-15",
+      "2026-09-16"
+    ],
+    "contractQuantity": 1,
+    "allocationUsd": 50,
+    "costs": [
+      {
+        "id": "SPREAD_ONLY",
+        "feePerSideUsd": "0.000000",
+        "adversePerShareUsd": "0.000000"
+      },
+      {
+        "id": "ILLUSTRATIVE_BASE",
+        "feePerSideUsd": "0.500000",
+        "adversePerShareUsd": "0.010000"
+      },
+      {
+        "id": "ILLUSTRATIVE_STRESS",
+        "feePerSideUsd": "1.000000",
+        "adversePerShareUsd": "0.020000"
+      }
+    ],
+    "costStatus": "DECLARED_SENSITIVITY_ASSUMPTIONS_NOT_VERIFIED_BROKER_FEES",
+    "noIntradayStopOrTargetInference": true,
+    "independentSampleCount": null,
+    "originalPaperEligibilityChanged": false
+  },
+  "validation": {
+    "newEngineTests": 42,
+    "newStorageTests": 24,
+    "isolatedSevenSessionFixturePassed": true,
+    "fullBundle": {
+      "overall": {
+        "status": "PASSED",
+        "componentCount": 150,
+        "testsExecuted": 3672,
+        "passed": 3672,
+        "failed": 0,
+        "durationMs": 79476,
+        "warnings": [
+          "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+          "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'docs/status/development-progress.json', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+        ]
+      },
+      "componentCount": 150
+    },
+    "preservation": {
+      "checkedAt": "2026-09-08T02:16:04.897Z",
+      "checkedFiles": 538,
+      "failures": []
+    }
+  },
+  "integration": {
+    "runbook": "docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md",
+    "step": 7,
+    "hostFieldsChanged": false,
+    "marketCallsAdded": 0,
+    "hostSha256": "80b0342beca179404856ee396f598f1e31aa13e76356cb86293f1f7fdb68ccbc",
+    "firstScheduledCloseVerified": false,
+    "finalDayRestoreV6First": true
+  },
+  "acceptance": {
+    "before": {
+      "LOCAL_VALIDATED": 4,
+      "PARTIAL": 3,
+      "NOT_VALIDATED": 3
+    },
+    "after": {
+      "LOCAL_VALIDATED": 4,
+      "PARTIAL": 3,
+      "NOT_VALIDATED": 3
+    },
+    "firstPaperFlow": {
+      "totalGates": 6,
+      "localComponentsAvailable": 3,
+      "openGates": 3,
+      "gateAdvanced": false
+    },
+    "signalValidation": "NOT_VALIDATED"
+  },
+  "nextAction": "Verify actual September 8 close evidence, then the fixed September 9 primary comparison; preserve gaps and all outcomes.",
+  "actualTrades": 0,
+  "validatedEdge": false,
+  "winProbability": null,
+  "strategyChangeAuthorized": false,
+  "executionAllowed": false
+}

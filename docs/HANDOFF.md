@@ -8,6 +8,19 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner approved prospective activity follow-up as possible future research
+evidence, conditional on outcome verification. Study `fomc-activity-20260908` is
+now registered before the first reference window: 224 candidates, 167 distinct
+controls, 57 unmatched, zero future close boards/outcomes. See
+[delivery](OPTIONS_ACTIVITY_STUDY_DELIVERY.md), [status](status/activity-study.json)
+and [frozen specification](specifications/OPTIONS_ACTIVITY_STUDY_V1.md).
+The September 8 entry-reference/September 9 primary-exit design is fixed; later
+horizons are secondary and September 18 expiries are a separate cohort. Runbook
+step 7 adds offline reports and candidate lessons after capture, with final-day
+v6 restoration still first. No host fields, source calls or schedules changed.
+Do not add future winners, infer institutions, rewrite assumptions or promote
+reference returns into paper fills, a validated edge or allocation authority.
+
 The Owner now authorizes seven daily after-close full-chain records for September
 8–16 at 16:20 New York, with September 18 expirations as comparison. The existing
 gld-ibit task now combines that bounded market workflow with original daily 09:00

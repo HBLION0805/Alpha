@@ -27,6 +27,8 @@ Do not supply a historical clock to a live host run.
 - `RESTORE_V6`: call the app automation tool with the exact v6 `restoreFields`
   before reading any collection artifacts. Verify all restored host fields. If
   this is the morning 09:00–10:00 wake, then execute that day's v6 context once.
+  After restoration, run the offline activity update in step 7 once so a missed
+  final close remains visible in the final follow-up. Do not backfill quotes.
 - `YIELD`: no source call. Weekend afternoon wakes are quiet no-ops.
 
 September 16: after the bounded capture attempt, restore exact v6 fields in a
@@ -40,6 +42,8 @@ If that wake never happens, the first later wake restores v6 before other work.
    capture, receipt or board already exists, do not recollect or overwrite it.
    Verify existing completed evidence; interrupted artifacts remain explicit
    gaps requiring local investigation, not permission to duplicate a session.
+   Skip source acquisition and proceed to offline step 7 for an existing attempt,
+   after required final-day restoration when applicable.
 2. Load only these four authorized host tools: get_option_chains,
    get_option_instruments, get_option_quotes, get_equity_quotes. Do not load
    account/order tools or use historical bars as historical volume.
@@ -102,6 +106,21 @@ a delayed capture and report the inability to create an in-window close receipt.
    `--compare <before-id> close-YYYYMMDD changes-YYYYMMDD`, then
    `--verify-comparison changes-YYYYMMDD`. No earlier successful close means use
    the dated September 4 source baseline, not a fabricated yesterday snapshot.
+7. Run the authorized **offline activity follow-up**, including when a session
+   has no usable board, after the final-day v6 restoration when applicable:
+   `node node_modules/tsx/dist/cli.mjs scripts/options-activity-study.mjs --update fomc-activity-20260908`.
+   The registered study freezes 224 candidates and 167 distinct matched controls;
+   no new source request, future candidate selection or simulated order is
+   authorized by this step. It reads canonical saved close boards and saves an
+   immutable report with all unavailable cases, assumed-cost reference changes,
+   matched comparisons and candidate lessons. Verify the returned artifact with
+   `--verify-report fomc-activity-20260908 <returned-report-id>`.
+   An unchanged verified input state is a no-op. A partial/tampered board or
+   report fails closed; preserve it and report the local verification failure,
+   without recollection or rewriting evidence. A collection/comparison failure
+   must not bypass required v6 restoration. This offline observational arithmetic
+   does not place paper trades, use the paper account, or enable development.
+   See [the frozen study specification](specifications/OPTIONS_ACTIVITY_STUDY_V1.md).
 
 ## What each record means
 
@@ -119,6 +138,10 @@ totals reset: a difference is not extra contracts traded. High call or put volum
 does not prove direction, institution identity, new positions or FOMC causality.
 No option quote is promoted into the separate simulated account or an execution
 adapter. Closed paper reviews and candidate notebooks remain untouched.
+The separate activity-study candidate notebook records evidence limits and
+reference outcomes. It cannot approve a rule, establish profitability, promote a
+win probability, or change allocation. September 9 is the predeclared primary
+comparison; later horizons and September 18 expiries are explicitly secondary.
 
 Save each session even without a material change. Notify only a meaningful new
 activity change, source failure/recovery, completed final series, or required

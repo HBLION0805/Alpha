@@ -80,6 +80,19 @@ Push
 
 ## Current Implemented Systems
 
+- Current activity follow-up: the Owner approved research of flagged GLD/IBIT
+  contracts as possible future evidence, conditional on validation. Frozen study
+  `fomc-activity-20260908` has 224 candidates, 167 distinct controls and 57 unmatched
+  cases, with zero future outcomes at registration. Primary references are the
+  September 8 and 9 closes; secondary horizons through September 16 and September
+  18 expiry comparison remain separate. Offline close-runbook step 7 saves
+  assumed-cost reference outcomes and candidate lessons after required v6
+  restoration; host schedule/fields and source calls are unchanged. Never infer
+  fills, institutions, a validated edge or sizing authority. Existing paper
+  engines/journals remain unchanged. See docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md
+  and docs/status/activity-study.json. Current close workflow supersedes the
+  historical opening/automatic-development activation descriptions below.
+
 - Latest Owner authorization (September 7, 2026): daily after-close GLD/IBIT full-chain records for September 8–16 at 16:20 New York, September 18 expiry comparison, preserving daily 09:00 context in the existing gld-ibit heartbeat. Use docs/OPTIONS_CHAIN_CLOSE_HOST_V1.json and docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md; actual eight-field activation evidence is docs/status/chain-close-activation.json. This supersedes all older active quote/development phase descriptions below. Opening collection remains cancelled, development remains conversation-only, and quarter-hour automatic development reports remain disabled. Restore exact immutable v6 after the final September 16 capture attempt or before any work on a later wake; never delete the daily context task. No actual scheduled close capture exists yet.
 - Full-chain activity review and local operator board: immutable full source, all-contract and flagged-contract reports, declared volume/OI/peer screening, actual/source clocks, current-day expired lookup, verified saved-board comparisons and original paper-account diagnostics. Baseline: 2,100 contracts/quotes, 224 descriptive candidates, all option refresh dates September 4. No historical volume baseline, verified causes, source-specific replay adapter, calibrated probability, account access or orders. See docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md. The new daily full-chain market authorization expands the old four-contract pilot request scope only; the cancelled pilot's artifacts stay immutable.
 
