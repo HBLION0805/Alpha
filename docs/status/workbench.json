@@ -1,0 +1,166 @@
+{
+  "version": "OPTIONS_WORKBENCH_DELIVERY_V1",
+  "recordedAt": "2026-09-08T04:27:09.311Z",
+  "comparedWithCommit": "7581b64",
+  "scope": "LOCAL_GLD_IBIT_FRONTEND_NO_AUTOMATIC_ORDERS",
+  "frontend": {
+    "pages": 6,
+    "accepted": 6,
+    "acceptanceMeaning": "Bounded local UI acceptance, separate from overall market-readiness gates",
+    "routes": [
+      "overview",
+      "chain",
+      "planner",
+      "journal",
+      "reviews",
+      "context"
+    ],
+    "dataMode": "SAVED_LOCAL_EVIDENCE",
+    "language": "English",
+    "desktop": "BROWSER_VERIFIED",
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "overflow": "TABLES_CONTAINED",
+      "menu": "HIDDEN_NAVIGATION_INERT",
+      "formColumns": 1
+    }
+  },
+  "components": {
+    "catalog": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "chain": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "manual": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "activity": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "headlines": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "treasury": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "btc": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "calendar": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "outcomes": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "progress": {
+      "state": "AVAILABLE",
+      "error": null
+    }
+  },
+  "currentData": {
+    "contracts": 2100,
+    "activityCandidates": 224,
+    "quoteDates": [
+      "2026-09-04"
+    ],
+    "headlines": 118,
+    "calendarEntries": 13,
+    "studyObservedSessions": 0,
+    "studyScheduledSessions": 7
+  },
+  "ownerLedger": {
+    "id": "owner-manual-gld-ibit",
+    "origin": "OWNER_REPORTED_UNVERIFIED",
+    "eventCount": 0,
+    "trades": 0,
+    "headSha256": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c"
+  },
+  "syntheticBrowserQa": {
+    "workspace": "data/runtime/options-workbench-development/browser-qa",
+    "ledgerId": "browser-qa",
+    "origin": "SYNTHETIC_FIXTURE",
+    "eventCount": 12,
+    "closedTrades": 2,
+    "tradeId": "browser-gld-01",
+    "partialNetUsd": "9.850000",
+    "correctedPartialNetUsd": "-10.150000",
+    "voidRestoredOpenContracts": 2,
+    "finalClosedNetUsd": "-10.200000",
+    "finalOpenContracts": 0,
+    "candidateCodes": [
+      "CORRECTED_RECORDS_REVIEW",
+      "DOCUMENT_EVIDENCE_MISSING",
+      "NEGATIVE_REPORTED_OUTCOME",
+      "PLAN_MISSING"
+    ],
+    "originalHistoryRecovered": true,
+    "reportFingerprint": "sha256:24be354b732ece8215dad02d2e2893c11dc91b4af9fb6bae97948c39f46bed1c",
+    "actualExecution": false
+  },
+  "preservation": {
+    "filesChecked": 561,
+    "changedFiles": [],
+    "automationChanged": false,
+    "openingCollectionRestored": false,
+    "automaticDevelopmentEnabled": false
+  },
+  "validation": {
+    "focused": {
+      "passed": 57,
+      "failed": 0
+    },
+    "full": {
+      "state": "PASSED",
+      "passed": 3809,
+      "failed": 0,
+      "componentCount": 154,
+      "durationMs": 83674,
+      "logSha256": "4e492faec0489a683564722e4a3d627c5b00f2486d21caf338ed817127c14c3a"
+    },
+    "browser": "SIX_PAGES_AND_SYNTHETIC_FORM_TO_REVIEW_VERIFIED",
+    "serviceRestart": "RECOVERED",
+    "launcher": "START_AND_REUSE_VERIFIED",
+    "browserViewportRestored": true,
+    "syntheticQaService": "STOPPED_AFTER_VALIDATION"
+  },
+  "overall": {
+    "previous": {
+      "LOCAL_VALIDATED": 4,
+      "PARTIAL": 3,
+      "NOT_VALIDATED": 3
+    },
+    "current": {
+      "LOCAL_VALIDATED": 4,
+      "PARTIAL": 3,
+      "NOT_VALIDATED": 3
+    },
+    "firstPaperFlow": {
+      "localComponentsAvailable": 3,
+      "openGates": 3,
+      "advanced": false
+    }
+  },
+  "limits": [
+    "No qualified real-price paper adapter or run",
+    "No account synchronization, order or source-refresh endpoint",
+    "No multi-leg manual fills or multi-user transaction service",
+    "No calibrated win probability or approved causal lesson",
+    "In-memory unsaved drafts; close prompt prevents silent loss only when honored by the browser"
+  ],
+  "nextAction": "Inspect the authorized September 8 close evidence and genuine owner-reported fills when supplied; preserve the frozen activity design and qualify sources before an adapter.",
+  "executionAllowed": false,
+  "accountAccessed": false,
+  "sourceRefresh": false,
+  "winProbability": null
+}

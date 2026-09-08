@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-08 - Complete local options workbench frontend
+
+- Added six responsive English pages for existing GLD/IBIT evidence, risk
+  calculations, reported fills/corrections, reviews and saved context.
+- Added a bounded loopback service and local launcher with explicit workspace
+  identity; no external dependency, source refresh, order or schedule change.
+- Exercised the complete synthetic form-to-review flow and service restart;
+  retained the empty owner ledger and protected original stores. Registered the
+  focused frontend/service suite in full validation. See
+  [delivery](OPTIONS_WORKBENCH_DELIVERY.md) and [guide](OPTIONS_WORKBENCH_GUIDE.md).
+
 ## 2026-09-07 - Reported-fill ledger and consolidated review desk
 
 - Added manual GLD/IBIT long-option records, partial-close FIFO accounting,

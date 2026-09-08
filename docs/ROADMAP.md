@@ -1,5 +1,14 @@
 # Alpha Roadmap
 
+The [six-page frontend phase](OPTIONS_WORKBENCH_DELIVERY.md) is locally complete:
+overview, option activity, risk planning, reported trade entry, reviews/notebook
+and saved news/calendar. It uses the existing engines and records; its acceptance
+is separate from market readiness. The overall baseline remains 4 local validated,
+3 partial and 3 not validated. Qualified option evidence, the Robinhood paper
+adapter and the first qualified end-to-end run remain open. Next inspect the
+authorized close evidence and any genuine reported fills, without inventing
+missing quotes, outcomes or a strategy win rate.
+
 The [reported-fill ledger and review desk](OPTIONS_MANUAL_LEDGER_DELIVERY.md)
 now support exact manual entry/exit reconciliation, partial closes, correction
 history and plan-review candidates before future market data arrives. The owner

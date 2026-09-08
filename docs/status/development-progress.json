@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-08T03:14:09.873Z",
+  "recordedAt": "2026-09-08T04:27:09.311Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "1b5adca",
+  "comparedWithCommit": "7581b64",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -69,8 +69,8 @@
       "name": "Portfolio and account qualification",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Original modeled account retained; separate owner-reported FIFO ledger, partial exits and correction recovery now implemented. Live account qualification, settlement and enforcement remain incomplete.",
-      "evidence": "docs/OPTIONS_MANUAL_LEDGER_DELIVERY.md"
+      "detail": "Declared account/risk diagnostics and a six-page local workbench with reviewed manual ledger forms are available; live account qualification and enforcement remain incomplete.",
+      "evidence": "docs/OPTIONS_WORKBENCH_DELIVERY.md"
     },
     {
       "id": "08",
@@ -98,8 +98,8 @@
     }
   ],
   "currentWorkstream": "07",
-  "currentUnit": "Reported-fill ledger, deterministic plan review and consolidated saved evidence desk",
-  "currentUnitAcceptance": "Empty owner ledger created; exact FIFO partial exits, nullable costs, correction history and candidate notes locally validated. Saved desk independently recovers the original activity and paper evidence. No actual owner fills, future outcomes or real-price gate advancement.",
+  "currentUnit": "Six-page local options workbench frontend",
+  "currentUnitAcceptance": "Six UI pages locally accepted, including independent synthetic form-to-save-to-correction-to-review and service restart. Owner ledger remains empty; 561 protected originals unchanged. No real-price gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,16 +134,21 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Use genuine reported fills when supplied and inspect the already scheduled September 8 close evidence before the frozen September 9 activity comparison.",
+  "nextAction": "Inspect the authorized September 8 close evidence and genuine owner-reported fills when supplied; preserve the frozen activity design and qualify sources before an adapter.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 3752,
+    "passed": 3809,
     "failed": 0,
-    "componentCount": 153
+    "componentCount": 154
   },
-  "latestOperationalEvidence": "docs/status/manual-ledger.json",
+  "latestOperationalEvidence": "docs/status/workbench.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
-  "periodicDevelopmentReports": false
+  "periodicDevelopmentReports": false,
+  "frontendAcceptance": {
+    "pages": 6,
+    "locallyAccepted": 6,
+    "notOverallCompletionPercentage": true
+  }
 }

@@ -1,12 +1,26 @@
 # Alpha Handoff
 
-Date: 2026-09-07. Current scope: GLD/IBIT options on Robinhood.
+Date: 2026-09-08. Current scope: GLD/IBIT options on Robinhood.
 
 Start with the [operations index](OPTIONS_CURRENT_OPERATIONS.md), recorded at
 2026-09-07T08:32:58.024Z, for the compact current-state map. Detailed dated
 deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
+
+The Owner approved completing the frontend phase. The six-page local workbench
+is implemented at `apps/options-workbench`, served by `options:workbench` on
+127.0.0.1:4173. Use [the guide](OPTIONS_WORKBENCH_GUIDE.md),
+[delivery](OPTIONS_WORKBENCH_DELIVERY.md) and [status](status/workbench.json).
+It reads original local evidence and appends only explicit reported ledger
+commands after preview. No account/order/source-refresh route exists. English
+product text, original clocks, unknown fees and candidate-only lessons remain.
+The owner ledger still has zero events; all frontend mutation QA used a separate
+synthetic workspace. The existing daily close/context automation is unchanged.
+All six UI pages are accepted separately from the unchanged ten-workstream counts
+and three open real-price gates. Development remains in this conversation only.
+
+Previous local batch:
 
 The Owner approved the next local batch: manual reported fills, plan-versus-fill
 reviews and a consolidated saved desk. These are implemented separately from

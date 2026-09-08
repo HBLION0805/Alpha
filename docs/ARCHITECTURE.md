@@ -1,5 +1,17 @@
 # Alpha Architecture
 
+## Local options workbench
+
+Modular browser ES modules in `apps/options-workbench` compose six English pages
+over a bounded Node loopback service. A fixed same-origin browser client reads
+recomputed original stores and submits typed manual-ledger previews/saves. The
+service uses the existing financial engines and immutable readers; it does not
+refresh sources, access a brokerage account or expose orders. Missing components
+fail independently. Original events remain available for correction drilldown.
+The separate launcher verifies workspace/ledger identity before reusing a server.
+See [specification](specifications/OPTIONS_WORKBENCH_V1.md),
+[operator guide](OPTIONS_WORKBENCH_GUIDE.md) and [delivery](OPTIONS_WORKBENCH_DELIVERY.md).
+
 ## Owner-reported fills and consolidated review
 
 `OptionsManualLedger` is an independent exact-decimal FIFO projection of reported

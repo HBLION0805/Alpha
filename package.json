@@ -5,6 +5,8 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "options:workbench": "tsx scripts/options-workbench.mjs",
+    "test:options-workbench": "tsx scripts/options-workbench.test.mjs",
     "options:manual-ledger": "tsx scripts/options-manual-ledger.mjs",
     "options:review-desk": "tsx scripts/options-review-desk.mjs",
     "test:options-manual-ledger": "tsx src/engines/options-manual-ledger/OptionsManualLedger.test.ts",

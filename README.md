@@ -1,6 +1,12 @@
 # Alpha
 
-Latest local delivery: [owner-reported fill ledger and consolidated review desk](docs/OPTIONS_MANUAL_LEDGER_DELIVERY.md),
+Latest local delivery: [six-page options workbench](docs/OPTIONS_WORKBENCH_DELIVERY.md).
+Run `npm run options:workbench` and open **http://127.0.0.1:4173**, or double-click
+`Start Alpha.cmd`. The [workbench guide](docs/OPTIONS_WORKBENCH_GUIDE.md) covers
+filters, planning, reported fills, corrections, reviews and saved news/calendar.
+It reads local evidence and records manual declarations; it cannot place orders.
+
+Underlying systems include the [owner-reported fill ledger and consolidated review desk](docs/OPTIONS_MANUAL_LEDGER_DELIVERY.md),
 alongside [frozen activity follow-up and matched-control reviews](docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md),
 building on [GLD/IBIT full-chain activity and account review](docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md),
 with [daily close collection through September 16](docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md).

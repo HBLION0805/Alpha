@@ -1,0 +1,95 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync,mkdirSync,readFileSync,readdirSync,writeFileSync,rmSync,realpathSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join,relative,isAbsolute} from 'node:path';
+import {request as rawRequest} from 'node:http';
+import {createWorkbenchData} from './lib/options-workbench-data.mjs';
+import {startOptionsWorkbench} from './options-workbench.mjs';
+import {runOptionsManualLedgerCommand as manual,readManualLedger} from './options-manual-ledger.mjs';
+import {manualDemoCommands} from '../src/engines/options-manual-ledger/OptionsManualLedgerFixtures.ts';
+import {validateManualLedgerCommand} from '../src/engines/options-manual-ledger/OptionsManualLedger.ts';
+import {buildScenario,buildCommand,plannerDefaults,registerDefaults,fillDefaults,plannerForm,journalForm} from '../apps/options-workbench/forms.js';
+import {decimalInteger,decimalText,filterChain,esc,safeLink,collectLessons,explainError} from '../apps/options-workbench/model.js';
+import {routes} from '../apps/options-workbench/views.js';
+
+const at='2026-09-07T20:00:00.000Z',ledgerId='test-ledger';let passed=0;
+async function test(name,fn){await fn();passed++;console.log('PASS '+name);}
+async function temp(fn){const root=mkdtempSync(join(tmpdir(),'alpha-workbench-test-'));try{return await fn(root);}finally{const path=realpathSync(root),rel=relative(realpathSync(tmpdir()),path);if(isAbsolute(rel)||rel.startsWith('..')||!rel.startsWith('alpha-workbench-test-'))throw Error('UNSAFE_TEST_CLEANUP');rmSync(path,{recursive:true,force:true});}}
+const options=root=>({workspaceRoot:root,ledgerId,now:()=>at});
+const seed=(root,demo=false)=>manual([demo?'--demo':'--create',ledgerId],options(root));
+const store=root=>createWorkbenchData(options(root));
+const count=root=>readManualLedger(root,ledgerId,()=>at).input.events.length;
+const registration=()=>({...registerDefaults(),tradeId:'new-trade',expiry:'2026-09-18',strikeUsd:'410'});
+const fill=()=>({...fillDefaults(),tradeId:'new-trade',fillId:'fill-buy',executionSequence:'1',executedAt:'2026-09-07T14:00:00.123456789Z',pricePerShareUsd:'0.20',feesUsd:'0.10'});
+
+await test('cent and micro-dollar conversion is exact, including nullable costs',()=>{assert.equal(decimalInteger('1.01'),101);assert.equal(decimalInteger('0.000001',6),1);assert.equal(decimalInteger('',2,true),null);assert.equal(decimalInteger('0',2,true),0);});
+for(const invalid of ['','NaN','1e2','-0','01.20','0.001','Infinity','1,000'])await test('invalid cent input stays rejected: '+invalid,()=>assert.throws(()=>decimalInteger(invalid)));
+await test('planner preserves blank costs and normal mode without probability',()=>{const d={...plannerDefaults(),bid:'0.19',ask:'0.20'};const s=buildScenario(d);assert.equal(s.roundTripFeesCents,null);assert.equal(s.slippageReserveCents,null);assert.equal(s.stopLossBps,2000);assert.equal(s.rewardMultipleMilliR,2000);assert.equal(s.mode,'NORMAL');assert(!Object.hasOwn(s,'claimedWinRateBps'));});
+await test('scenario form uses existing labels and no fill action',()=>{const html=plannerForm(plannerDefaults());assert(html.includes('Blank means unknown'));assert(!html.includes('BUY_TO_OPEN'));});
+await test('scenario transfer preserves integer strike zeros and sub-cent precision',()=>{assert.equal(decimalText('500'),'500');assert.equal(decimalText('410.0000'),'410');assert.equal(decimalText('0.000100'),'0.0001');assert.equal(decimalText(null),'');assert.match(explainError('MANUAL_LEDGER_OVERSELL'),/exceeds the recorded open contracts/);});
+await test('registration never creates a fill or invents a plan',()=>{const c=buildCommand('register',registration(),'request-one');assert.equal(c.type,'REGISTER_TRADE');assert.equal(c.plan,null);assert.equal(c.activityReference,null);assert(!Object.hasOwn(c,'fill'));validateManualLedgerCommand(c,at);});
+await test('declared plan retains explicit UTC and optional unknowns',()=>{const d={...registration(),includePlan:true,declaredAt:'2026-09-07T13:00:00.000Z',maxEntryDebitUsd:'20.10',plannedRiskUsd:'4.30',targetNetProfitUsd:'8.70',thesis:'Declared sample'};const c=buildCommand('register',d,'request-one');assert.equal(c.plan.timeExitAt,null);assert.equal(c.plan.stopPremiumUsd,null);validateManualLedgerCommand(c,at);});
+await test('execution nanoseconds and missing fees are preserved',()=>{const c=buildCommand('fill',{...fill(),feesUsd:''},'request-one');assert.equal(c.fill.feesUsd,null);assert.equal(c.fill.executedAt,fill().executedAt);assert.equal(c.fill.exitReason,'NOT_APPLICABLE');validateManualLedgerCommand(c,at);});
+await test('evidence digest cannot lose its description silently',()=>assert.throws(()=>buildCommand('fill',{...fill(),documentSha256:'a'.repeat(64)},'request-one'),/description/));
+await test('void builds a null replacement with a mandatory revision',()=>{const c=buildCommand('correct',{...fillDefaults(),tradeId:'new-trade',fillId:'fill-buy',expectedRevision:'2',reason:'Wrong reported record',voidFill:true},'request-two');assert.equal(c.replacement,null);assert.equal(c.expectedRevision,2);validateManualLedgerCommand(c,at);});
+await test('non-UTC input is not silently interpreted as local time',()=>assert.throws(()=>buildCommand('fill',{...fill(),executedAt:'2026-09-07T10:00:00-04:00'},'request-one'),/UTC/));
+await test('fractional contract counts fail before preview',()=>assert.throws(()=>buildCommand('fill',{...fill(),quantity:'0.5'},'request-one'),/whole/));
+await test('forms escape owner text, including correction reasons',()=>{const h=journalForm('register',{trades:[]},{...registration(),tradeId:'"><img src=x>'});assert(h.includes('&quot;&gt;&lt;img'));assert(!h.includes('<img'));assert.equal(esc('<&"\''),'&lt;&amp;&quot;&#39;');});
+await test('headline links accept only HTTPS without embedded credentials',()=>{assert.equal(safeLink('javascript:alert(1)'),null);assert.equal(safeLink('https://user:password@example.com'),null);assert.equal(safeLink('https://example.com/a'),'https://example.com/a');});
+const rows=Array.from({length:60},(_,i)=>({id:String(i).padStart(3,'0'),symbol:i%2?'IBIT':'GLD',expiry:'2026-09-18',type:i%2?'put':'call',strike:String(400+i),ask:'0.2',volume:i===59?null:i,openInterest:i,reviewCandidate:i%3===0}));
+await test('combined filters retain all matches and do not mutate source order',()=>{const before=JSON.stringify(rows),r=filterChain(rows,{symbol:'GLD',flagged:true,search:'2026',sort:'volume',direction:'desc'});assert.equal(r.total,10);assert.equal(r.rows[0].volume,54);assert.equal(JSON.stringify(rows),before);});
+await test('null volume sorts last in both directions and pagination clamps',()=>{for(const direction of ['asc','desc']){const r=filterChain(rows,{sort:'volume',direction,page:99});assert.equal(r.pages,3);assert.equal(r.page,3);assert.equal(r.rows.at(-1).volume,null);}});
+
+await test('GET composition does not initialize missing ledger and isolates missing stores',()=>temp(async root=>{const s=await store(root).state();assert.equal(s.manual.state,'MISSING');assert.equal(s.chain.state,'BLOCKED');assert.equal(s.headlines.state,'MISSING');assert.equal(s.executionAllowed,false);assert.equal(s.sourceRefresh,false);assert.equal(readdirSync(root).length,0);}));
+await test('six pages render missing evidence without inventing prices or outcomes',()=>temp(async root=>{const s=await store(root).state(),ui={chain:{},plannerDraft:plannerDefaults(),plannerResult:null,journalMode:'register',journalDraft:registration(),reviewScope:'trades',newsSearch:'',newsSource:''};for(const [name,view] of Object.entries(routes)){const html=view(s,ui);assert(html.includes('<h1>'),name);assert(!html.includes('NaN'),name);}assert.equal(collectLessons(s).length,0);}));
+await test('preview has no writes; saved registration survives independent recovery',()=>temp(root=>{seed(root);const service=store(root),p=service.preview(buildCommand('register',registration(),'request-one'));assert.equal(count(root),0);assert.equal(p.report.counts.trades,1);service.save({command:p.command,expectedHeadSha256:p.headSha256});assert.equal(count(root),1);assert.equal(store(root).preview(p.command).alreadyRecorded,true);}));
+await test('same saved request is idempotent even with an old expected head',()=>temp(root=>{seed(root);const s=store(root),p=s.preview(buildCommand('register',registration(),'request-one'));s.save({command:p.command,expectedHeadSha256:p.headSha256});s.save({command:p.command,expectedHeadSha256:p.headSha256});assert.equal(count(root),1);}));
+await test('changed payload cannot reuse a previous request identity',()=>temp(root=>{seed(root);const s=store(root),p=s.preview(buildCommand('register',registration(),'request-one'));s.save({command:p.command,expectedHeadSha256:p.headSha256});assert.throws(()=>s.preview({...p.command,tradeId:'other-trade'}),/REQUEST_CONFLICT/);assert.equal(count(root),1);}));
+await test('newer ledger evidence requires preview again',()=>temp(root=>{seed(root);const s=store(root),a=s.preview(buildCommand('register',registration(),'request-one')),b=s.preview(buildCommand('register',{...registration(),tradeId:'second-trade'},'request-two'));s.save({command:a.command,expectedHeadSha256:a.headSha256});assert.throws(()=>s.save({command:b.command,expectedHeadSha256:b.headSha256}),/LEDGER_CHANGED/);assert.equal(count(root),1);}));
+await test('record, partial close, correction, void and restart use the unchanged ledger',()=>temp(root=>{seed(root);const s=store(root);function save(c){const p=s.preview(c);s.save({command:p.command,expectedHeadSha256:p.headSha256});}
+  save(buildCommand('register',registration(),'request-one'));save(buildCommand('fill',{...fill(),quantity:'2'},'request-two'));
+  save(buildCommand('fill',{...fill(),fillId:'fill-sell',executionSequence:'2',executedAt:'2026-09-07T15:00:00.000Z',action:'SELL_TO_CLOSE',pricePerShareUsd:'0.30',exitReason:'TARGET'},'request-three'));
+  let r=readManualLedger(root,ledgerId,()=>at).report;assert.equal(r.trades[0].status,'PARTIALLY_CLOSED');assert.equal(r.trades[0].realizedNetPnlUsd,'9.850000');
+  save(buildCommand('correct',{...fill(),fillId:'fill-sell',executionSequence:'2',executedAt:'2026-09-07T15:00:00.000Z',action:'SELL_TO_CLOSE',pricePerShareUsd:'0.10',exitReason:'STOP',expectedRevision:'1',reason:'Corrected reported premium'},'request-four'));
+  r=readManualLedger(root,ledgerId,()=>at).report;assert.equal(r.trades[0].realizedNetPnlUsd,'-10.150000');
+  save(buildCommand('correct',{...fill(),fillId:'fill-sell',expectedRevision:'2',reason:'Duplicate record removed',voidFill:true},'request-five'));
+  r=readManualLedger(root,ledgerId,()=>at).report;assert.equal(r.trades[0].openContracts,2);assert.equal(r.counts.voidedFills,1);assert.equal(r.eventCount,5);assert(r.trades[0].candidateLessons.some(l=>l.code==='CORRECTED_RECORDS_REVIEW'));
+}));
+await test('unsafe selected-board traversal cannot reach arbitrary files',()=>temp(async root=>{await assert.rejects(()=>store(root).state('../private'));assert.equal(readdirSync(root).length,0);}));
+await test('corrupt manual evidence blocks its panel while other components still respond',()=>temp(async root=>{seed(root,true);const path=join(root,'data/runtime/options-manual-ledger',ledgerId,'000001.json');writeFileSync(path,readFileSync(path,'utf8')+' ');const s=await store(root).state();assert.equal(s.manual.state,'BLOCKED');assert.equal(s.catalog.state,'AVAILABLE');assert.throws(()=>store(root).preview(manualDemoCommands()[0]));}));
+await test('blank-cost planner returns an explicit blocked scenario',()=>temp(root=>{const r=store(root).evaluate(buildScenario({...plannerDefaults(),bid:'0.19',ask:'0.20'}));assert.equal(r.status,'NO_TRADE');assert.equal(r.economics.plannedStopCents,null);}));
+await test('declared feasible scenario keeps original exact risk and tick target',()=>temp(root=>{const r=store(root).evaluate(buildScenario({...plannerDefaults(),bid:'0.19',ask:'0.20',fees:'0.10',slippage:'0.20'}));assert.equal(r.status,'ECONOMICALLY_FEASIBLE_SCENARIO');assert.equal(r.economics.plannedStopCents,430);assert.equal(r.economics.indicativeExitLimitPerShareCents,29);assert.equal(r.economics.roundedNetProfitTargetCents,870);}));
+await test('invalid initialization does not create arbitrary ledger IDs',()=>temp(root=>{assert.throws(()=>createWorkbenchData({...options(root),ledgerId:'../escape'}));assert.equal(readdirSync(root).length,0);}));
+await test('malformed progress metadata blocks one component instead of the workbench',()=>temp(async root=>{mkdirSync(join(root,'docs/status'),{recursive:true});writeFileSync(join(root,'docs/status/development-progress.json'),'{}');const s=await store(root).state();assert.equal(s.progress.state,'BLOCKED');assert.equal(s.catalog.state,'AVAILABLE');}));
+await test('recovered manual state includes original event and correction history',()=>temp(async root=>{seed(root,true);const s=await store(root).state();assert.equal(s.manual.data.events.length,6);assert.equal(s.manual.data.events[5].command.type,'CORRECT_FILL');assert.equal(s.manual.data.events[4].command.fill.pricePerShareUsd,'0.15');assert.equal(s.manual.data.events[5].command.replacement.pricePerShareUsd,'0.05');assert(collectLessons(s).every(l=>l.origin==='Synthetic ledger'));}));
+
+await temp(async root=>{
+  seed(root);const app=await startOptionsWorkbench({port:0,...options(root)}),base=app.url;
+  try{
+    const initial=await (await fetch(base+'/api/state')).json(),session=initial.session;
+    const headers={'Content-Type':'application/json',Origin:base,'X-Alpha-Session':session};
+    const post=(path,body,change={})=>fetch(base+path,{method:'POST',headers:{...headers,...change},body:typeof body==='string'?body:JSON.stringify(body)});
+    await test('service binds IPv4 loopback and reads with a process-specific session',()=>{assert.equal(app.server.address().address,'127.0.0.1');assert.match(session,/^[0-9a-f]{64}$/);assert.equal(initial.manual.data.eventCount,0);});
+    for(const path of ['/','/app.js','/forms.js','/styles.css','/icon.svg'])await test('fixed asset served with CSP and no-store: '+path,async()=>{const r=await fetch(base+path);assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');assert(r.headers.get('content-security-policy').includes("frame-ancestors 'none'"));assert((await r.text()).length>20);});
+    await test('external Origin cannot read local state',async()=>assert.equal((await fetch(base+'/api/state',{headers:{Origin:'https://example.com'}})).status,403));
+    await test('cross-site fetch metadata cannot read local state',async()=>assert.equal((await fetch(base+'/api/state',{headers:{'Sec-Fetch-Site':'cross-site'}})).status,403));
+    await test('foreign Host is rejected before route dispatch',async()=>{const status=await new Promise((yes,no)=>{const q=rawRequest(base+'/api/state',{headers:{Host:'evil.example'}},r=>{r.resume();r.on('end',()=>yes(r.statusCode));});q.on('error',no);q.end();});assert.equal(status,403);});
+    await test('missing or wrong session cannot preview a mutation',async()=>{for(const token of ['', '0'.repeat(64)])assert.equal((await post('/api/preview',{}, {'X-Alpha-Session':token})).status,403);});
+    await test('same origin is mandatory for writes even with session',async()=>assert.equal((await post('/api/initialize',{}, {Origin:''})).status,403));
+    await test('arbitrary files, accounts and orders have no route',async()=>{for(const path of ['/package.json','/data/runtime/options-manual-ledger/test-ledger/manifest.json','/api/account','/api/orders'])assert.equal((await fetch(base+path)).status,404);assert.equal((await post('/api/orders',{})).status,404);});
+    await test('request queries cannot select arbitrary roots or ledgers',async()=>{assert.equal((await fetch(base+'/api/state?workspace=other')).status,400);assert.equal((await fetch(base+'/api/state?board=one&board=two')).status,400);assert.equal((await post('/api/save?ledger=other',{})).status,404);});
+    await test('non-JSON, duplicate keys, malformed UTF8 and BOM are rejected',async()=>{assert.equal((await post('/api/initialize',{}, {'Content-Type':'text/plain'})).status,415);for(const body of ['{"a":1,"a":2}','\ufeff{}','{'])assert.equal((await post('/api/initialize',body)).status,400);const r=await fetch(base+'/api/initialize',{method:'POST',headers,body:new Uint8Array([255])});assert.equal(r.status,400);});
+    await test('oversized and encoded request bodies are refused',async()=>{assert.equal((await post('/api/initialize',' '.repeat(65537))).status,413);assert.equal((await post('/api/initialize',{}, {'Content-Encoding':'gzip'})).status,415);});
+    await test('initialization accepts only an empty plain JSON object',async()=>{for(const body of ['4','null','[]','{"ledgerId":"escape"}'])assert.equal((await post('/api/initialize',body)).status,400);assert.equal(count(root),0);});
+    await test('HTTP preview, save and uncertain retry create exactly one event',async()=>{const c=buildCommand('register',registration(),'http-request-one'),p=await(await post('/api/preview',c)).json();assert.equal(p.report.counts.trades,1);assert.equal(count(root),0);for(let i=0;i<2;i++)assert.equal((await post('/api/save',{command:c,expectedHeadSha256:p.headSha256})).status,200);assert.equal(count(root),1);});
+    await test('unknown save fields cannot bypass typed commands',async()=>{assert.equal((await post('/api/save',{command:{},expectedHeadSha256:'x',path:'outside'})).status,409);assert.equal(count(root),1);});
+    await test('HTTP planner uses exact existing arithmetic',async()=>{const r=await(await post('/api/evaluate',buildScenario({...plannerDefaults(),bid:'0.19',ask:'0.20',fees:'0.10',slippage:'0.20'}))).json();assert.equal(r.economics.plannedStopCents,430);});
+  }finally{await app.close();}
+});
+
+await test('browser client strips session tokens and uses only same-origin fixed routes',async()=>{
+  const previousFetch=globalThis.fetch,previousLocation=globalThis.location;let seen;
+  globalThis.location={origin:'http://127.0.0.1:4173'};globalThis.fetch=async(path,options)=>{seen={path,options};return {ok:true,json:async()=>({session:'test-process-token',value:1})};};
+  try{const api=await import('../apps/options-workbench/api.js');const state=await api.request('/api/state');assert(!Object.hasOwn(state,'session'));await api.request('/api/preview',{});assert.equal(seen.options.headers['X-Alpha-Session'],'test-process-token');assert.equal(seen.options.credentials,'omit');assert.equal(seen.options.redirect,'error');await assert.rejects(()=>api.request('https://example.com/api/state'),/Unsupported/);await assert.rejects(()=>api.request('/api/orders'),/Unsupported/);}finally{globalThis.fetch=previousFetch;if(previousLocation===undefined)delete globalThis.location;else globalThis.location=previousLocation;}
+});
+console.log(`${passed}/${passed} tests passed.`);

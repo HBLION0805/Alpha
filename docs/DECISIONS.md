@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-09-08 - Compose the frontend over original local engines
+
+- Use browser ES modules and a loopback-only Node service for the current six-page
+  scope. Existing TypeScript engines remain authoritative; no framework or
+  external data dependency is needed for this local stage.
+- Separate a declared scenario, an owner-reported execution and assumed research
+  fills. Preview/save uses existing append-only ledger commands and request IDs;
+  source read failures remain visible in their own panels.
+- Keep the route allowlist explicit, reject foreign hosts/origins, check a
+  process-specific mutation header and bind launcher reuse to one workspace and
+  ledger. No cloud hosting, multi-user access, source refresh or order endpoints.
+- Count six frontend page acceptances separately; no real-price or calibration
+  gate advances because a presentation layer is complete. See
+  [specification](specifications/OPTIONS_WORKBENCH_V1.md).
+
 ## 2026-09-07 - Keep reported execution evidence independent of assumed fills
 
 - Use a separate bounded ledger for owner-reported standard long GLD/IBIT fills;

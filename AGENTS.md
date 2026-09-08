@@ -80,6 +80,8 @@ Push
 
 ## Current Implemented Systems
 
+- Local options workbench frontend: six responsive English pages over original local readers and engines, bounded 127.0.0.1 service, exact manual forms with preview/idempotent save/corrections, original event drilldown, candidate notebooks and saved source clocks. Use `npm run options:workbench` or `Start Alpha.cmd`. Owner ledger remains empty; frontend mutation QA is isolated and synthetic. No source refresh, brokerage access, automatic order, new dependency or schedule change. Six UI acceptances do not advance the three open real-price gates. See docs/OPTIONS_WORKBENCH_DELIVERY.md, docs/OPTIONS_WORKBENCH_GUIDE.md and docs/status/workbench.json. This latest frontend direction is conversation-only; older automatic-development activation records below remain historical.
+
 - Owner-reported fill ledger and review desk: separate standard long GLD/IBIT
   accounting with exact FIFO partial closes, unknown fees, durable plan timing,
   append-only corrections and candidate review notes. Owner ledger

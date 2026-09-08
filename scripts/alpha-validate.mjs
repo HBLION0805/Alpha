@@ -117,6 +117,7 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "scripts/options-workbench.test.mjs",
   "src/engines/options-manual-ledger/OptionsManualLedger.test.ts",
   "scripts/options-manual-ledger.test.mjs",
   "scripts/options-review-desk.test.mjs",
@@ -475,6 +476,7 @@ function checkNetworkAndProviderCode(files) {
   const twelveDataConcreteTransportPattern = /\bclass\s+[A-Za-z0-9_]+\s+implements\s+TwelveDataHttpTransport\b/u;
   const approvedTwelveDataTransport = "src/integration/market-data/twelve-data/TwelveDataHttpsTransport.ts";
   const approvedLiveTransports = new Set([approvedTwelveDataTransport]);
+  const approvedLocalClient = "apps/options-workbench/api.js";
 
   for (const file of productionFiles) {
     const text = readText(file);
@@ -482,8 +484,14 @@ function checkNetworkAndProviderCode(files) {
       recordFailure(`Provider SDK import found in production code: ${file}`);
     }
     const normalizedFile = relativePath(file);
-    if (networkPattern.test(text) && !approvedLiveTransports.has(normalizedFile)) {
+    if (networkPattern.test(text) && !approvedLiveTransports.has(normalizedFile) && normalizedFile !== approvedLocalClient) {
       recordFailure(`Network/API implementation pattern found in production code: ${file}`);
+    }
+    if (normalizedFile === approvedLocalClient) {
+      for (const control of ["url.origin!==location.origin", "!ROUTES.has(url.pathname)", "fetch(url.pathname+url.search", "mode:'same-origin'", "redirect:'error'", "credentials:'omit'", "X-Alpha-Session", "controller.abort()"])
+        if (!text.includes(control)) recordFailure(`Approved local browser client is missing control ${control}: ${file}`);
+      if (/https?:\/\/|WebSocket|EventSource|XMLHttpRequest|setInterval|node:http|node:https/u.test(text))
+        recordFailure(`External or streaming transport in local browser client: ${file}`);
     }
     if (twelveDataConcreteTransportPattern.test(text)
       && !normalizedFile.endsWith("TwelveDataTestFixtures.ts")
