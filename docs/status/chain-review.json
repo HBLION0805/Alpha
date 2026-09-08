@@ -1,0 +1,90 @@
+{
+  "version": "OPTIONS_CHAIN_REVIEW_DELIVERY_V1",
+  "recordedAt": "2026-09-08T01:04:16.127Z",
+  "sourceBaseCommit": "a0bf29a",
+  "scope": "GLD_IBIT_FOMC_CHAIN_ACTIVITY_AND_LOCAL_OPERATOR_REVIEW",
+  "boardId": "fomc-baseline-review-20260907",
+  "boardFingerprint": "sha256:ad0164eac58f18636778344f60cb8874674c9b7e025e6c948eab9083739c230c",
+  "boardPath": "data/runtime/options-chain-survey/fomc-baseline-review-20260907/index.html",
+  "rawSha256": "1aa84a35d9dbf0999598330657459fae779e788d43372318d69a7148d6137945",
+  "sourceCalls": {
+    "chains": 2,
+    "instrumentPages": 22,
+    "optionQuoteBatches": 106,
+    "equityQuotes": 1,
+    "total": 131,
+    "accountOrOrder": 0
+  },
+  "instrumentCount": 2100,
+  "quoteCount": 2100,
+  "activityCandidates": 224,
+  "sourceQuoteDates": [
+    "2026-09-04"
+  ],
+  "independentVolumeSessionProvided": false,
+  "independentOiDateProvided": false,
+  "historicalAnomalyConfirmed": false,
+  "causesConfirmed": false,
+  "originalPaper": {
+    "artifactId": "current-paper-account-20260907",
+    "artifactFingerprint": "sha256:3a46a68e4d79ee19774e3193581d9971ce51cc871358866d26e09cdf1f05084e",
+    "caseCount": 7,
+    "closedReviews": 5,
+    "candidateLessons": 4
+  },
+  "newTradeReviews": 0,
+  "sourceJournalAppends": 0,
+  "executionAllowed": false,
+  "firstRealPriceGateAdvanced": false,
+  "activation": "docs/status/chain-close-activation.json",
+  "scheduledCloseCaptures": 0,
+  "visualInspection": {
+    "browser": "Codex in-app browser localhost",
+    "landingMetrics": true,
+    "expiryNavigation": true,
+    "expandedIbitSeptember11Quotes": true,
+    "externalHosting": false
+  },
+  "finalValidation": {
+    "status": "PASSED",
+    "passed": 3606,
+    "failed": 0,
+    "componentCount": 148,
+    "logPath": "data/runtime/options-chain-survey/validation-final.log",
+    "logSha256": "140c2bd46cace0490910acbdd4c398f4f1da1ab030bafa9ea35a4bc3b8822df7",
+    "newTests": 47
+  },
+  "preservation": {
+    "checkedAt": "2026-09-08T01:00:22.849Z",
+    "nonHostFilesUnchanged": 523,
+    "immutableSourceHashesMatched": 6,
+    "changed": []
+  },
+  "boardRecomputedAt": "2026-09-08T01:01:54.613Z",
+  "filesChanged": [
+    ".gitignore",
+    "AGENTS.md",
+    "README.md",
+    "docs/HANDOFF.md",
+    "docs/OPTIONS_DEVELOPMENT_PROGRESS.md",
+    "docs/ROADMAP.md",
+    "docs/status/development-progress.json",
+    "package.json",
+    "scripts/alpha-validate.mjs",
+    "docs/OPTIONS_CHAIN_CLOSE_HOST_V1.json",
+    "docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md",
+    "docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md",
+    "docs/OPTIONS_FOMC_CHAIN_BASELINE_20260907.md",
+    "docs/specifications/OPTIONS_CHAIN_REVIEW_V1.md",
+    "docs/status/chain-close-activation.json",
+    "docs/status/chain-review.json",
+    "scripts/lib/options-chain-close-host.mjs",
+    "scripts/lib/options-chain-review-render.mjs",
+    "scripts/options-chain-review.mjs",
+    "scripts/options-chain-review.test.mjs",
+    "src/engines/options-robinhood-data/RobinhoodChainComparison.ts",
+    "src/engines/options-robinhood-data/RobinhoodChainSurvey.test.ts",
+    "src/engines/options-robinhood-data/RobinhoodChainSurvey.ts",
+    "src/engines/options-robinhood-data/RobinhoodChainSurveyFixtures.ts"
+  ]
+}

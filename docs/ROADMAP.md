@@ -1,15 +1,25 @@
 # Alpha Roadmap
 
+The [full-chain activity and account board](OPTIONS_CHAIN_REVIEW_DELIVERY.md) now
+connects the saved diagnostics below to an immutable English operator surface.
+All 2,100 GLD/IBIT baseline contracts and 224 descriptive activity candidates are
+retained; source quote dates are September 4. The Owner authorized
+[seven daily close captures through September 16](OPTIONS_CHAIN_CLOSE_RUNBOOK.md),
+now configured in the existing market-only task alongside daily 09:00 context.
+Next inspect the first actual close receipt, same-day expired-contract coverage
+and recorded-counter comparison. No real-price paper gate advanced.
+
 The [paper account/portfolio bridge](OPTIONS_PAPER_PORTFOLIO_DELIVERY.md) now derives
 aggregate diagnostics from the original modeled journal, checks unrecorded
 candidates through both original engines and verifies exclusive snapshots.
 Workstream 07 advances locally while real account qualification remains partial.
-Next connect these diagnostics to the operator's local candidate review surface,
+These diagnostics now appear in the local operator review surface,
 preserving their saved evidence and explicit unknowns. Actual qualified option
 quotes still gate the source-specific adapter and first real-price paper flow.
 
 The Owner [cancelled the opening pilot](OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
-Only daily 09:00 context remains scheduled; development continues in conversation.
+The newer close authorization adds only bounded market collection; development
+continues in conversation and the opening pilot remains cancelled.
 ETF opening-price screenshots can provide context without proving option fills.
 The [hypothetical snapshot model](OPTIONS_ROBINHOOD_SNAPSHOT_MODEL_DELIVERY.md) and
 all original plans remain historical design/evidence. Counts stay 4 local,

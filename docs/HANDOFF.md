@@ -8,11 +8,29 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner now authorizes seven daily after-close full-chain records for September
+8–16 at 16:20 New York, with September 18 expirations as comparison. The existing
+gld-ibit task now combines that bounded market workflow with original daily 09:00
+context; eight fields were verified against the actual host after activation.
+See [runbook](OPTIONS_CHAIN_CLOSE_RUNBOOK.md), [host manifest](OPTIONS_CHAIN_CLOSE_HOST_V1.json)
+and [activation](status/chain-close-activation.json). This supersedes the earlier
+daily-context-only active field set below, while preserving its immutable v6
+restoration source. No new task, opening capture or development schedule was added.
+
+The [chain review and operator board](OPTIONS_CHAIN_REVIEW_DELIVERY.md) retains
+2,100 actual source contracts and quotes, all refreshed September 4, plus all 224
+descriptive activity candidates. These are stale baseline snapshots, not future
+prices, historical abnormal-volume proof or qualified replay inputs. Original
+paper-account diagnostics are now included in the local board; originals remain
+unchanged. Daily close capture has not yet run. The next evidence step is the
+first actual close receipt, expired-contract coverage and reported-counter
+comparison; quote-source qualification and paper execution remain separate.
+
 The Owner cancelled the September 8 09:30-09:50 New York opening quote pilot and
-will supply ETF opening-price screenshots later. The existing gld-ibit task is
-ACTIVE with exact v6 daily 09:00 context fields; eight host fields were verified.
+will supply ETF opening-price screenshots later. The prior cancellation checkpoint
+verified exact v6 daily 09:00 context fields before the newer close authorization.
 See [cancellation](OPTIONS_OPENING_COLLECTION_CANCELLATION.md) and
-[checkpoint](status/opening-collection-cancellation.json). Do not reinstall quote
+[checkpoint](status/opening-collection-cancellation.json). Do not reinstall old opening
 or development phases or manufacture a cancelled-pilot closeout. Preserve all
 old manifests, plans and journals as historical evidence.
 
@@ -30,7 +48,7 @@ unrecorded candidate preview through both original guards, exclusive snapshots
 and independent recovery. Existing seven modeled cases retain five closed reviews
 and four candidate lessons. The stored account's modeled daily loss remains a
 blocker, not a real brokerage loss. No current cost/event review was invented.
-Next integrate saved diagnostics into local operator candidate review. No live
+Saved diagnostics are now integrated into local operator candidate review. No live
 account access, automatic order, settlement or strategy-size authority follows.
 
 The [public source-use review](OPTIONS_ROBINHOOD_SOURCE_USE_REVIEW.md) now records

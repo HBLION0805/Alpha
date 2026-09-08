@@ -117,6 +117,8 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "src/engines/options-robinhood-data/RobinhoodChainSurvey.test.ts",
+  "scripts/options-chain-review.test.mjs",
   "src/engines/options-readiness/OptionsWorkContinuation.test.ts",
   "scripts/options-work-progress.test.mjs",
   "scripts/options-overall-progress.test.mjs",

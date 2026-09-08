@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-08T00:07:06.352Z",
+  "recordedAt": "2026-09-08T01:04:16.127Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "d2b160c",
+  "comparedWithCommit": "a0bf29a",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -37,8 +37,8 @@
       "name": "GLD/IBIT option collection",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Opening pilot cancelled by Owner; source access and local collector remain preserved. Qualified option evidence is still missing.",
-      "evidence": "docs/OPTIONS_OPENING_COLLECTION_CANCELLATION.md"
+      "detail": "Full-chain baseline and daily close workflow through September 16 configured. All baseline quotes refreshed September 4; scheduled close and source qualification remain unverified.",
+      "evidence": "docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md"
     },
     {
       "id": "04",
@@ -69,8 +69,8 @@
       "name": "Portfolio and account qualification",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Original paper-account projection, dual candidate guards, conservative fee reconciliation and saved recovery work. Real account qualification, live enforcement and operator integration remain incomplete.",
-      "evidence": "docs/OPTIONS_PAPER_PORTFOLIO_DELIVERY.md"
+      "detail": "Original modeled account, guards, fees and preserved reviews now displayed in an immutable local operator board. Live account qualification and enforcement remain incomplete.",
+      "evidence": "docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md"
     },
     {
       "id": "08",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "07",
-  "currentUnit": "Paper account and portfolio risk integration",
-  "currentUnitAcceptance": "49 new tests and original-journal independent recovery passed; seven cases retain five reviews and four candidate lessons. No actual-price gate advanced.",
+  "currentWorkstream": "03",
+  "currentUnit": "Full-chain activity review, local account board and daily close activation",
+  "currentUnitAcceptance": "All 2,100 source contracts retained; 224 descriptive candidates and original account diagnostics displayed. Seven daily close sessions configured, not yet run. No actual-price gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Integrate saved modeled-account diagnostics into local operator candidate review in this conversation. Keep only daily 09:00 context scheduled; no quote or development wakes.",
+  "nextAction": "Review the first actual closing receipt, expired-contract scope, clock freshness and reported-counter comparison. Continue independent development only in this conversation.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 3559,
+    "passed": 3606,
     "failed": 0,
-    "componentCount": 146
+    "componentCount": 148
   },
-  "latestOperationalEvidence": "docs/status/opening-collection-cancellation.json",
+  "latestOperationalEvidence": "docs/status/chain-close-activation.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": false

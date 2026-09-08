@@ -1,5 +1,9 @@
 # Alpha
 
+Latest local delivery: [GLD/IBIT full-chain activity and account review](docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md),
+with [daily close collection through September 16](docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md).
+The cancelled opening pilot and automatic development remain disabled. No automatic orders.
+
 A focused decision-support system for **GLD and IBIT options on Robinhood**.
 Alpha combines attributable context, explicit uncertainty and deterministic
 risk arithmetic. It promises no return and has no order-execution authority.

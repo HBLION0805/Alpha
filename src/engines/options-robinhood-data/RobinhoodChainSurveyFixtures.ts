@@ -1,0 +1,10 @@
+export function chainSurveyFixture() {
+  const clock = "2026-09-08 20:21:00 UTC", chain = (n: number) => "00000000-0000-4000-8000-" + String(n).padStart(12, "0");
+  const symbols = ["GLD", "IBIT"] as const;
+  const lists = symbols.map((symbol, n) => Array.from({ length: 6 }, (_, k) => ({ id: chain(100 + n * 10 + k), chain_id: chain(n + 1), chain_symbol: symbol, expiration_date: "2026-09-09", strike_price: String(400 + k), type: "call", trade_value_multiplier: "100", underlying_type: "equity", state: "active", tradability: "tradable" })));
+  return { version: "ROBINHOOD_CHAIN_SURVEY_CAPTURE_V1", scope: { symbols: [...symbols], expirationStart: "2026-09-08", expirationEnd: "2026-09-16", comparisonExpirations: ["2026-09-18"] }, capturedAt: clock, receiptClockPrecision: "SECOND", origin: "SYNTHETIC_FIXTURE",
+    chains: symbols.map((symbol, n) => ({ symbol, request: { underlying_symbol: symbol }, requestedAt: clock, receivedAt: clock, response: { data: { chains: [{ id: chain(n + 1), symbol, expiration_dates: ["2026-09-09"] }] } } })),
+    instruments: symbols.map((symbol, n) => ({ symbol, expirations: ["2026-09-09"], pages: [{ request: { chain_id: chain(n + 1), expiration_dates: "2026-09-09", state: "active" }, requestedAt: clock, receivedAt: clock, response: { data: { instruments: lists[n]!, next: null as string | null } } }], next: null as string | null })),
+    quotes: symbols.map((symbol, n) => ({ symbol, totalRequested: 6, batches: [{ symbol, request: { instrument_ids: lists[n]!.map(i => i.id) }, requestedAt: clock, receivedAt: clock, response: { data: { results: lists[n]!.map((i, k) => ({ quote: { instrument_id: i.id, bid_price: "0.100001", ask_price: "0.120001", mark_price: "0.110001", bid_size: 5, ask_size: 5, volume: [10, 20, 20, 30, 100, 1000][k]!, open_interest: k === 4 ? 30 : 500, updated_at: "2026-09-08T20:20:59.123456789Z" } })) } } }] })),
+    equities: null, readOnly: true, accountAccessed: false, ordersEnabled: false, volumeSessionDateProvided: false, openInterestAsOfProvided: false };
+}

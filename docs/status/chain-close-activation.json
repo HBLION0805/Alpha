@@ -1,0 +1,35 @@
+{
+  "version": "OPTIONS_CHAIN_CLOSE_ACTIVATION_V1",
+  "verifiedAt": "2026-09-08T00:54:25.832Z",
+  "automationId": "gld-ibit",
+  "status": "ACTIVE_FIELDS_VERIFIED",
+  "manifest": "docs/OPTIONS_CHAIN_CLOSE_HOST_V1.json",
+  "hostFieldsMatched": {
+    "id": true,
+    "kind": true,
+    "name": true,
+    "prompt": true,
+    "rrule": true,
+    "status": true,
+    "targetThreadId": true,
+    "notificationPolicy": true
+  },
+  "hostSha256": "80b0342beca179404856ee396f598f1e31aa13e76356cb86293f1f7fdb68ccbc",
+  "sessions": [
+    "2026-09-08",
+    "2026-09-09",
+    "2026-09-10",
+    "2026-09-11",
+    "2026-09-14",
+    "2026-09-15",
+    "2026-09-16"
+  ],
+  "closeTimeNewYork": "16:20",
+  "dailyContextTimeNewYork": "09:00",
+  "recurrenceExpansion": "Independent dateutil expansion selects exactly 09:00 and 16:20 daily; afternoon weekend wakes yield. App accepted and persisted exact fields. Scheduled execution not yet observed.",
+  "originalOpeningPilot": "CANCELLED",
+  "automaticDevelopment": false,
+  "automaticOrders": false,
+  "actualCloseCaptures": 0,
+  "realScheduledRunVerified": false
+}

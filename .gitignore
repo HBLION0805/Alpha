@@ -57,6 +57,7 @@ data/runtime/options-dashboard/
 data/runtime/local-completion-batch/
 data/runtime/options-portfolio-risk/
 data/runtime/options-paper-portfolio/
+data/runtime/options-chain-survey/
 data/runtime/options-structure-comparison/
 data/runtime/options-sample-partition/
 data/runtime/options-context-manifest/
