@@ -1,5 +1,11 @@
 # GLD/IBIT operations: evidence and next test
 
+Latest operating direction: [daily guidance and hourly public context](OPTIONS_DAILY_GUIDANCE_DELIVERY.md).
+Use [the new shared Host runbook](OPTIONS_DAILY_GUIDANCE_RUNBOOK.md) and verify
+[activation status](status/daily-guidance.json). It retains the bounded close
+study below, then transitions to ongoing guidance after restoring v6 first.
+The cancelled opening/development jobs remain disabled. No broker orders.
+
 Current Owner direction: [daily close collection](OPTIONS_CHAIN_CLOSE_RUNBOOK.md)
 at 16:20 New York on September 8, 9, 10, 11, 14, 15 and 16, alongside daily 09:00
 context in the existing `gld-ibit` task. Use `OPTIONS_CHAIN_CLOSE_HOST_V1.json`.

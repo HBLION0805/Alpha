@@ -1,5 +1,18 @@
 # Alpha Architecture
 
+## Daily guidance and public refresh
+
+The new pure OptionsDailyGuidance engine composes source-attributed analysis,
+recent official closes, event posture and unchanged retail feasibility. Separate
+exclusive captures, settings, interpretations and issued reports preserve clocks
+and recompute inputs. The seventh page reads current and issued views; protected
+settings writes only declare local assumptions. A fixed-command public context
+service runs hourly within the workbench process, sharing durable slot claims
+with the Host. It has no brokerage credentials; only the existing authorized Host
+calls market tools. The older workbench paragraph below describes its original
+six-page delivery. See [specification](specifications/OPTIONS_DAILY_GUIDANCE_V1.md)
+and [delivery](OPTIONS_DAILY_GUIDANCE_DELIVERY.md).
+
 ## Local options workbench
 
 Modular browser ES modules in `apps/options-workbench` compose six English pages

@@ -1,5 +1,12 @@
 # Alpha Roadmap
 
+Daily guidance is now implemented alongside its frontend and hourly public
+context service. See [delivery](OPTIONS_DAILY_GUIDANCE_DELIVERY.md). Current
+recommendations can remain WATCH; broader quantitative coverage, prospective
+validation and qualified real-price paper gates remain open. Follow the
+[new ongoing runbook](OPTIONS_DAILY_GUIDANCE_RUNBOOK.md) while retaining the
+bounded close study. This does not change the fixed ten-workstream counts.
+
 The [six-page frontend phase](OPTIONS_WORKBENCH_DELIVERY.md) is locally complete:
 overview, option activity, risk planning, reported trade entry, reviews/notebook
 and saved news/calendar. It uses the existing engines and records; its acceptance

@@ -1,0 +1,62 @@
+{
+  "version": "OPTIONS_DAILY_GUIDANCE_DELIVERY_V1",
+  "state": "LOCAL_VALIDATED_WITH_BOUNDED_LIVE_SMOKE",
+  "asOf": "2026-09-08",
+  "workbenchPages": 7,
+  "focusedTests": {
+    "guidance": 65,
+    "contextService": 8,
+    "workbench": 57
+  },
+  "liveSmoke": {
+    "marketCalls": 15,
+    "selectedContracts": 36,
+    "returnedQuotes": 24,
+    "missingQuotes": 12,
+    "qualifiedLiveEntries": 0
+  },
+  "aggregateValidation": {
+    "status": "PASSED",
+    "components": 156,
+    "testsExecuted": 3882,
+    "passed": 3882,
+    "failed": 0,
+    "durationMs": 78931
+  },
+  "automationActivation": {
+    "id": "gld-ibit",
+    "status": "ACTIVE",
+    "phase": "TRANSITIONAL",
+    "verifiedAt": "2026-09-08T05:51:04.455Z",
+    "matchedFields": 8,
+    "wakesPerDay": 28,
+    "developmentEnabled": false
+  },
+  "publicRefresh": {
+    "serviceEnabled": true,
+    "requiresRunningWorkbench": true,
+    "automaticHourlyReceipt": "2026-09-08T06:00:47.293Z",
+    "headlines": "OK",
+    "btc": "OK",
+    "brokerConnection": false
+  },
+  "browserAcceptance": {
+    "pages": 7,
+    "mobileWidth": 390,
+    "horizontalOverflow": false,
+    "draftRetentionAndDiscard": "PASSED",
+    "candidatePlannerTransfer": "PASSED",
+    "applicationConsoleErrors": 0
+  },
+  "overallWorkstreams": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "firstPaperGates": {
+    "availableLocalComponents": 3,
+    "openDependencies": 3
+  },
+  "executionAllowed": false,
+  "winProbability": null
+}

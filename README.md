@@ -1,5 +1,7 @@
 # Alpha
 
+Latest development: [daily guidance and public context refresh](docs/OPTIONS_DAILY_GUIDANCE_DELIVERY.md). The seventh page is the default landing view. Public headlines/BTC refresh hourly while Alpha runs; the existing Host provides scheduled market-only quote reads. See the [current runbook](docs/OPTIONS_DAILY_GUIDANCE_RUNBOOK.md). No automated orders or calibrated win-rate claim.
+
 Latest local delivery: [six-page options workbench](docs/OPTIONS_WORKBENCH_DELIVERY.md).
 Run `npm run options:workbench` and open **http://127.0.0.1:4173**, or double-click
 `Start Alpha.cmd`. The [workbench guide](docs/OPTIONS_WORKBENCH_GUIDE.md) covers

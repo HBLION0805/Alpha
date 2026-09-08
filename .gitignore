@@ -71,3 +71,6 @@ data/runtime/options-manual-development/
 data/runtime/options-manual-ledger-inputs/
 data/runtime/options-workbench-inputs/
 data/runtime/options-workbench-development/
+data/runtime/options-daily-guidance/
+data/runtime/options-daily-guidance-inputs/
+data/runtime/options-context-service/

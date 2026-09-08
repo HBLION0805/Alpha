@@ -1,5 +1,18 @@
 # Alpha options workbench
 
+Daily guidance is now the default seventh page. It shows the current conditional
+view, attributed news interpretation, event waiting windows, bounded contract
+candidates, indicative stops/targets and immutable issued history. Declare fees
+and slippage explicitly before expecting net-R targets. Inspect a candidate in
+the existing planner; this never sends an order. Discard changes clears only an
+unsaved guidance-assumption draft. See [delivery](OPTIONS_DAILY_GUIDANCE_DELIVERY.md).
+
+While the local workbench process runs, public headlines/BTC refresh hourly and
+Treasury/BLS/FOMC refresh daily after 09:00 New York. The browser reads local
+updates every minute while visible and idle; it preserves drafts and open dialogs.
+Robinhood quote reads require the separately configured Host schedule. Neither
+an open browser nor a successful past login guarantees current option quotes.
+
 Double-click [Start Alpha.cmd](<../Start Alpha.cmd>) in this checkout, or run:
 
 ```powershell

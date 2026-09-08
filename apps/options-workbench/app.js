@@ -1,6 +1,6 @@
 import {request} from './api.js';
 import {routes,contractDetail,tradeDetail,plannerResult,detail,notice,table,empty} from './views.js';
-import {esc,words,dollars,timestamp,exactUsd,decimalText,filterChain} from './model.js';
+import {esc,words,dollars,timestamp,exactUsd,decimalText,decimalInteger,filterChain} from './model.js';
 import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand} from './forms.js';
 
 const $=selector=>document.querySelector(selector);
@@ -13,8 +13,8 @@ function syncNavigation(){
   const hidden=matchMedia('(max-width: 650px)').matches&&!document.body.classList.contains('menu-open');
   $('#sidebar').inert=hidden;if(hidden)$('#sidebar').setAttribute('aria-hidden','true');else $('#sidebar').removeAttribute('aria-hidden');
 }
-const labels={overview:'Overview',chain:'Options & activity',planner:'Trade planner',journal:'Trade journal',reviews:'Reviews & lessons',context:'News & calendar'};
-function route(){const key=location.hash.slice(1);return Object.hasOwn(routes,key)?key:'overview';}
+const labels={overview:'Overview',chain:'Options & activity',planner:'Trade planner',journal:'Trade journal',reviews:'Reviews & lessons',context:'News & calendar',guidance:'Daily guidance'};
+function route(){const key=location.hash.slice(1);return Object.hasOwn(routes,key)?key:'guidance';}
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),5500);}
 function render(focus=false){
   if(!state)return;
@@ -33,7 +33,7 @@ async function reload(board=state?.selectedBoardId??null){
   try{
     state=await request('/api/state'+(board?'?board='+encodeURIComponent(board):''));
     const unavailable=Object.values(state).filter(v=>v&&typeof v==='object'&&['MISSING','BLOCKED'].includes(v.state)).length;
-    $('#connection').innerHTML=notice(`${state.manual.data?.origin==='SYNTHETIC_FIXTURE'?'<strong>ISOLATED SYNTHETIC LEDGER.</strong> ':''}<strong>Saved local evidence</strong> · Market prices are not refreshed here.${unavailable?` ${unavailable} component(s) unavailable; see the affected page.`:''}`,unavailable?'error':'');
+    $('#connection').innerHTML=notice(`${state.manual.data?.origin==='SYNTHETIC_FIXTURE'?'<strong>ISOLATED SYNTHETIC LEDGER.</strong> ':''}<strong>Saved local evidence</strong> · ${state.backgroundContextRefreshEnabled?'Public context refreshes hourly while Alpha is running. Option quotes follow the scheduled reads.':'Market prices are not refreshed here.'}${unavailable?` ${unavailable} component(s) unavailable; see the affected page.`:''}`,unavailable?'error':'');
     $('#loaded-at').textContent='Local files checked '+timestamp(state.loadedAt);render();
   }catch(e){$('#connection').innerHTML=notice(esc(e.message),'error');if(!state)$('#main').innerHTML=empty('Workspace unavailable','Start the local Alpha server, then use Reload saved data.');}
   finally{loading=false;$('#reload').disabled=false;}
@@ -48,6 +48,7 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));dirty.add('guidance');return;}
   const key=form.id==='planner-form'?'planner':ui.journalMode,d=key==='planner'?ui.plannerDraft:drafts[key];
   d[el.name]=el.type==='checkbox'?el.checked:el.value;dirty.add(key);
   if(key==='planner'){ui.plannerResult=null;const panel=$('#planner-result');if(panel)panel.innerHTML=plannerResult(null);}
@@ -111,6 +112,10 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='guidance-settings-form'){
+    event.preventDefault();const button=event.submitter;button.disabled=true;
+    void(async()=>{try{const d=Object.fromEntries(new FormData(event.target));const value={currentEquityCents:decimalInteger(d.currentEquityCents),settledCashCents:decimalInteger(d.settledCashCents),roundTripFeesCents:decimalInteger(d.roundTripFeesCents,2,true),slippageReserveCents:decimalInteger(d.slippageReserveCents,2,true),stopLossBps:Number(d.stopLossBps),rewardMultipleMilliR:Number(d.rewardMultipleMilliR)};await request('/api/guidance-settings',value);ui.guidanceSettingsDraft=null;dirty.delete('guidance');await reload();toast('Declared assumptions saved. Existing issued recommendations retain their original inputs.');}catch(e){fail(e,'#guidance-settings-error');}finally{if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(!['planner-form','journal-form'].includes(event.target.id))return;event.preventDefault();
   if(event.target.id==='journal-form'){void previewRecord();return;}
   if(calculating)return;calculating=true;const button=event.submitter;button.disabled=true;
@@ -130,6 +135,14 @@ document.addEventListener('click',event=>{void(async()=>{
   if(el.id==='clear-filters'){ui.chain=defaultFilters();render();return;}
   if(el.dataset.contract){const row=state.chain.data?.chain.rows.find(r=>r.id===el.dataset.contract);if(row)showDetail('Contract & activity evidence',contractDetail(row,state));return;}
   if(el.dataset.planContract){const row=state.chain.data?.chain.rows.find(r=>r.id===el.dataset.planContract);if(row)prepareContract(row);return;}
+  if(el.dataset.guidancePlan){
+    const c=state.guidance.data.current.assets.flatMap(a=>a.candidates).find(c=>c.contract.id===el.dataset.guidancePlan);if(!c)return;
+    if(dirty.has('planner'))throw Error('Your planner draft is preserved. Clear or finish it before inspecting a candidate.');
+    const q=c.contract,v=c.scenario,toUsd=n=>n===null||n<0?'':exactUsd(n);
+    ui.plannerDraft={symbol:q.symbol,strategy:v.strategy,equity:toUsd(v.currentEquityCents),cash:toUsd(v.settledCashCents),quantity:'1',tick:toUsd(q.tickCents),bid:toUsd(q.bidCents),ask:toUsd(q.askCents),fees:toUsd(v.roundTripFeesCents),slippage:toUsd(v.slippageReserveCents),stop:String(v.stopLossBps/100),reward:String(v.rewardMultipleMilliR/1000)};
+    ui.planningSource={...q,bid:toUsd(q.bidCents),ask:toUsd(q.askCents),quoteUpdatedAt:q.updatedAt};ui.plannerResult=null;dirty.add('planner');navigate('planner');return;
+  }
+  if(el.id==='reset-guidance-assumptions'){ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}
   if(el.id==='reset-planner'){ui.plannerDraft=plannerDefaults();ui.plannerResult=null;ui.planningSource=null;dirty.delete('planner');render();return;}
   if(el.id==='plan-to-journal'){transferPlan();return;}
   if(el.dataset.journalMode){ui.journalMode=el.dataset.journalMode;render();return;}
@@ -145,3 +158,4 @@ window.addEventListener('resize',syncNavigation);
 window.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.body.classList.contains('menu-open')){document.body.classList.remove('menu-open');$('#menu-toggle').setAttribute('aria-expanded','false');syncNavigation();$('#menu-toggle').focus();}});
 window.addEventListener('beforeunload',event=>{if(dirty.size||saving){event.preventDefault();event.returnValue='';}});
 syncNavigation();void reload();
+setInterval(()=>{if(document.visibilityState==='visible'&&!dirty.size&&!saving&&!previewing&&!calculating&&!loading&&!document.querySelector('dialog[open]'))void reload(state?.selectedBoardId??'');},60000);

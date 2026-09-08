@@ -1,5 +1,11 @@
 # Daily GLD/IBIT close capture through September 16, 2026
 
+The newer [daily-guidance wrapper](OPTIONS_DAILY_GUIDANCE_RUNBOOK.md) preserves
+this collector and its 16:20–18:00 acceptance window. For current Host operation,
+use that wrapper's routing and exclusive slot claim. After required final-day
+v6 restoration, install its ongoing guidance fields before final evidence reads.
+Original v6 snapshots and this study's captures remain unchanged.
+
 Owner authorization: seven daily after-close market-data records, September 8,
 9, 10, 11, 14, 15 and 16, at 16:20 America/New_York. This is one full-chain snapshot
 per session, not continuous monitoring or an official synchronized closing tape.

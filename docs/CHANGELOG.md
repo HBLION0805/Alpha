@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## 2026-09-08 - Daily guidance page and hourly public context
+
+- Added a bounded GLD/IBIT contract screen, descriptive trend, event waiting
+  windows, source-attributed interpretation, indicative stops and net-R scenarios.
+- Added exclusive market/analysis/settings/recommendation records and verification.
+- Added the seventh frontend page, draft-safe local auto-read and protected cost
+  assumptions; retained the existing manual trade/review workflow.
+- Added hourly fixed public refresh with durable deduplication and a reviewed
+  ongoing Host workflow preserving the seven close captures. See
+  [delivery](OPTIONS_DAILY_GUIDANCE_DELIVERY.md).
+
 ## 2026-09-08 - Complete local options workbench frontend
 
 - Added six responsive English pages for existing GLD/IBIT evidence, risk

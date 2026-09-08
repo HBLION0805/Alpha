@@ -19,6 +19,7 @@ import { exportId } from '../../src/engines/options-evidence-export/OptionsEvide
 import { readinessClock } from '../../src/engines/options-readiness/OptionsReadinessEngine.ts';
 import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import { parseChainSurveyJson } from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
+import { guidanceView, saveGuidanceSettings } from './options-guidance-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -28,7 +29,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -87,9 +88,11 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     const calendar=await component(()=>runOptionsCalendarBriefCommand(['--report','--json'],{workspaceRoot:root,now:()=>at}),at);
     const outcomes=await component(()=>runOptionsOutcomeAuditCommand(['--report'],options()),at);
     const progressState=await component(progress,at);
-    return {version:'OPTIONS_WORKBENCH_STATE_V1',loadedAt:at,ledgerId,selectedBoardId:selected,catalog:catalogs,
+    const result={version:'OPTIONS_WORKBENCH_STATE_V1',loadedAt:at,ledgerId,selectedBoardId:selected,catalog:catalogs,
       chain,manual,activity:study,headlines,treasury,btc,calendar,outcomes,progress:progressState,
       access:'LOCAL_SAVED_DATA',sourceRefresh:false,accountAccessed:false,executionAllowed:false};
+    result.guidance=await component(()=>guidanceView(root,result),at);
+    return result;
   }
   function preview(command){
     const r=ledger(),at=now(),c=validateManualLedgerCommand(command,at);
@@ -106,5 +109,5 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     io.writeExclusive(root,path,Buffer.from(JSON.stringify(p.command,null,2)+'\n'));
     return runOptionsManualLedgerCommand(['--append',ledgerId,path],options());
   }
-  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,evaluate:evaluateOptionsRetailFeasibility,initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,evaluate:evaluateOptionsRetailFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

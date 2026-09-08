@@ -1,5 +1,22 @@
 # Alpha Development Standard v1.0
 
+## Latest Owner direction — September 8, 2026
+
+The Owner requests daily source refresh and explicit GLD/IBIT advisory views,
+with module/frontend developed together, and no development reports. Use
+`docs/OPTIONS_DAILY_GUIDANCE_RUNBOOK.md` and its Host snapshot for the new
+workflow; check `docs/status/daily-guidance.json` for actual activation evidence.
+Public headlines/BTC refresh hourly in the running local workbench; Treasury/BLS/
+FOMC retain daily coverage. Only the existing authorized Host reads brokerage
+market data. It is not a persistent account connection. No account or order tools,
+transactions, paid data, login/consent or quota resets are authorized.
+Retain all seven legacy close captures. On the final close restore immutable v6
+first, install the new ongoing fields second, then inspect final evidence. Do not
+resume cancelled opening/development jobs. Old continuation/report paragraphs
+below are historical where they conflict with this newer direction. Candidate
+plans remain conditional and may be WATCH; never force a daily trade or fabricate
+probability, stops as guaranteed fills, missing data, realized outcomes or lessons.
+
 ## Project Overview
 
 Alpha is a Personal Capital Operating System focused on GLD and IBIT options on Robinhood. It supports capital protection through deterministic risk diagnostics, source-attributed market context, and research evidence.

@@ -1,5 +1,18 @@
 # Alpha Architecture Decisions
 
+## 2026-09-08 - Issue conditional daily guidance without forcing trades
+
+- Combine attributable Host analysis with deterministic trend, event, quote and
+  existing budget checks. Unknown costs or incompatible evidence block a plan.
+- Separate current reassessment from immutable issued views; retain missing quotes
+  and keep all owner executions in the existing reported-fill ledger.
+- Run public context reads locally each hour; keep broker market access in the
+  existing authorized Host. No persistent broker socket or order integration.
+- Update the shared recurrence only after local acceptance; retain original close
+  restoration ordering before installing ongoing guidance. The latest Owner
+  direction suppresses development reports. See
+  [specification](specifications/OPTIONS_DAILY_GUIDANCE_V1.md).
+
 ## 2026-09-08 - Compose the frontend over original local engines
 
 - Use browser ES modules and a loopback-only Node service for the current six-page

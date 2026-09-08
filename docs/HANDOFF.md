@@ -8,6 +8,17 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The latest Owner request is ongoing daily news and GLD/IBIT advisory views,
+developed with the frontend and without development reports. The seventh page
+and hourly public refresh are implemented. Use
+[the guidance delivery](OPTIONS_DAILY_GUIDANCE_DELIVERY.md),
+[current Host runbook](OPTIONS_DAILY_GUIDANCE_RUNBOOK.md) and
+[activation checkpoint](status/daily-guidance.json). Regular market reads are
+scheduled through the existing authorized Host; no account or order access.
+Preserve the seven close captures, restoring v6 first and then installing ongoing
+guidance fields at final close or the first expired-window transitional wake.
+The older six-page/daily-only descriptions below retain their delivery history.
+
 The Owner approved completing the frontend phase. The six-page local workbench
 is implemented at `apps/options-workbench`, served by `options:workbench` on
 127.0.0.1:4173. Use [the guide](OPTIONS_WORKBENCH_GUIDE.md),
