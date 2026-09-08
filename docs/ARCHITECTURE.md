@@ -1,5 +1,15 @@
 # Alpha Architecture
 
+## Option candle evidence projection
+
+`RobinhoodBarQuality` composes the unchanged capture validator and derives exact
+slot provenance and descriptive rational returns. The read-only saved-capture
+adapter verifies both original hashes and original recomputation. Event research
+displays only the latest saved market history, with raw unknown candles and gaps.
+It does not feed guidance, prospective outcomes, market-context technical features
+or the execution adapter. No writer, scheduler or network route is added. See
+[specification](specifications/OPTIONS_BAR_QUALITY_V1.md).
+
 ## Prospective event phase research
 
 `OptionsEventResearch` reads verified saved guidance frames through an independent

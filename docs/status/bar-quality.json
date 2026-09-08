@@ -1,0 +1,165 @@
+{
+  "version": "OPTIONS_BAR_QUALITY_CHECKPOINT_V1",
+  "recordedAt": "2026-09-08T19:43:23.889Z",
+  "status": "LOCAL_VALIDATED_SOURCE_PROVENANCE_INCOMPLETE",
+  "scope": [
+    "GLD",
+    "IBIT"
+  ],
+  "frontendPages": 8,
+  "marketCalls": 5,
+  "accountCalls": 0,
+  "orderCalls": 0,
+  "hostChanges": 0,
+  "paidDataUsed": false,
+  "executionAllowed": false,
+  "winProbability": null,
+  "capture": {
+    "path": "data/runtime/options-robinhood-data/captures/event-bars-20260908-1927.json",
+    "artifactSha256": "53e629c2042c5b5f6f729aa39f2d139c0790303dcd585fcf549facac2de23b26",
+    "sourceSha256": "32f25be3e4180ef4e9fd30dce46d10c978e66655b47c4e9f1a4c122e26fce2c4",
+    "recordedAt": "2026-09-08T19:27:26.639Z",
+    "series": [
+      {
+        "instrumentId": "0c65dc43-5f2d-4b29-8daf-a8aeee04f249",
+        "symbol": "GLD",
+        "expiry": "2026-10-09",
+        "strike": "403.0000",
+        "type": "call",
+        "startAt": "2026-09-08T18:27:00.000Z",
+        "endAt": "2026-09-08T19:27:00.000Z",
+        "requestedAt": "2026-09-08T19:27:13.000Z",
+        "receivedAt": "2026-09-08T19:27:13.000Z",
+        "expectedSlotCount": 60,
+        "counts": {
+          "declaredNoninterpolated": 0,
+          "interpolated": 0,
+          "unknown": 60,
+          "missing": 0
+        },
+        "windowReturnBps": null
+      },
+      {
+        "instrumentId": "27a05b2a-c66d-4a2c-9a73-14581e09ec2e",
+        "symbol": "GLD",
+        "expiry": "2026-10-09",
+        "strike": "403.0000",
+        "type": "put",
+        "startAt": "2026-09-08T18:27:00.000Z",
+        "endAt": "2026-09-08T19:27:00.000Z",
+        "requestedAt": "2026-09-08T19:27:13.000Z",
+        "receivedAt": "2026-09-08T19:27:13.000Z",
+        "expectedSlotCount": 60,
+        "counts": {
+          "declaredNoninterpolated": 0,
+          "interpolated": 0,
+          "unknown": 60,
+          "missing": 0
+        },
+        "windowReturnBps": null
+      },
+      {
+        "instrumentId": "3a1452c0-e03d-4915-8b54-1b24ce1f8f77",
+        "symbol": "IBIT",
+        "expiry": "2026-10-09",
+        "strike": "44.5000",
+        "type": "put",
+        "startAt": "2026-09-08T18:27:00.000Z",
+        "endAt": "2026-09-08T19:27:00.000Z",
+        "requestedAt": "2026-09-08T19:27:13.000Z",
+        "receivedAt": "2026-09-08T19:27:13.000Z",
+        "expectedSlotCount": 60,
+        "counts": {
+          "declaredNoninterpolated": 0,
+          "interpolated": 0,
+          "unknown": 60,
+          "missing": 0
+        },
+        "windowReturnBps": null
+      },
+      {
+        "instrumentId": "d84f0997-0025-4edb-bb75-62969bc06b83",
+        "symbol": "IBIT",
+        "expiry": "2026-10-09",
+        "strike": "44.5000",
+        "type": "call",
+        "startAt": "2026-09-08T18:27:00.000Z",
+        "endAt": "2026-09-08T19:27:00.000Z",
+        "requestedAt": "2026-09-08T19:27:13.000Z",
+        "receivedAt": "2026-09-08T19:27:13.000Z",
+        "expectedSlotCount": 60,
+        "counts": {
+          "declaredNoninterpolated": 0,
+          "interpolated": 0,
+          "unknown": 60,
+          "missing": 0
+        },
+        "windowReturnBps": null
+      }
+    ]
+  },
+  "ownerLedger": {
+    "events": 0,
+    "headSha256": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c"
+  },
+  "studies": [
+    {
+      "id": "event-e7ef7723-4f95-46b6-984a-eb736cd8b06a",
+      "fingerprint": "sha256:b404cd00a8327b25710735c6c2f3733b2dff5d82c31933d84ef30f3cab442c97"
+    },
+    {
+      "id": "ppi-20260910-ibit-call-reaction",
+      "fingerprint": "sha256:9747b3a87878b41dc38965094f27dfcae12ec92bb131d7f27591da2bc2956c41"
+    }
+  ],
+  "observedFutureEndpoints": 0,
+  "validation": {
+    "focusedTests": 35,
+    "status": "PASSED",
+    "componentCount": 159,
+    "testsExecuted": 4022,
+    "passed": 4022,
+    "failed": 0,
+    "durationMs": 81900,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'apps/options-workbench/event-research.js', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'apps/options-workbench/styles.css', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-workbench-data.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-workbench.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "log": "data/runtime/options-event-research-inputs/bar-quality-validation.log",
+    "logSha256": "26550836b6708cda2446d3fd177c5ad0f0b38555b4b68f5bb9c7194acea40735"
+  },
+  "browser": {
+    "desktop": true,
+    "phoneViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "phoneCardWidth": 309,
+    "horizontalOverflow": false,
+    "unknownCandles": 240,
+    "expandedTableRows": 60,
+    "consoleErrors": 0,
+    "viewportReset": true
+  },
+  "serviceRestarted": true,
+  "workstreams": {
+    "locallyValidated": 4,
+    "partial": 3,
+    "notValidated": 3
+  },
+  "realPriceGates": {
+    "available": 3,
+    "open": 3
+  },
+  "remaining": [
+    "OMITTED_INTERPOLATION_FLAG_SEMANTICS",
+    "ETF_CANDLES_AND_VOLUME",
+    "SOURCE_SPECIFIC_EXECUTABLE_QUOTE_PATH",
+    "FROZEN_FUTURE_OBSERVATIONS"
+  ]
+}

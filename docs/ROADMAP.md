@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+[Option candle evidence](OPTIONS_BAR_QUALITY_DELIVERY.md) now exposes source
+provenance and gaps in Event research. The actual 240-bar intraday sample has
+unknown interpolation flags. Next qualify those semantics and ETF candle/volume
+coverage before enabling technical signals; keep the three real-price gates open.
+
 [Event phase research](OPTIONS_EVENT_RESEARCH_DELIVERY.md) now links prospective
 PRE/POST windows, identical tracked contracts, shared risk and candidate process
 notes to an eighth page. Next assess the frozen September 9/10 PPI observations

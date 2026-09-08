@@ -8,6 +8,15 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The next step adds [option candle evidence](OPTIONS_BAR_QUALITY_DELIVERY.md) to
+Event research. Five authorized market reads saved four October 9 GLD/IBIT
+histories for September 8, 14:27-15:27 New York. All 240 bars omit the interpolation
+flag; preserve UNKNOWN rather than assuming false. The original capture format,
+hashes and NO_REPLAY assessment are unchanged. The new read-only projection and
+frontend show source prices, all interval slots and exact clocks. Two frozen PPI
+plans remain WAITING and cannot use these retrospective bars as future endpoints.
+See [checkpoint](status/bar-quality.json). No Host schedule change was made.
+
 The Owner approved the event anticipation/reaction research step with working
 GLD/IBIT Robinhood reads. The eighth Event research page now freezes prospective
 windows, compares three separate quote-reference modes and shares losses/cash

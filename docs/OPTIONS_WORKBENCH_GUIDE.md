@@ -1,5 +1,13 @@
 # Alpha options workbench
 
+Event research also contains **Option candle evidence**. Gray candles have an
+omitted interpolation flag; colored candles have an explicit noninterpolated
+source declaration. Missing/interpolated slots stay gaps. Expand a contract's
+table to inspect every interval and exact raw price. Source history is dated and
+read from saved files. Reloading does not collect Robinhood history. These are
+option candles, not an ETF/VWAP trend or evidence of executable stops. See
+[scope and source check](OPTIONS_BAR_QUALITY_DELIVERY.md).
+
 Event research is the eighth page. Register a future timed BLS/FOMC event with
 one PRE contract and a matching POST call/put pair. Review four UTC window starts
 and the frozen cost assumptions before pressing **Freeze research plan**. This

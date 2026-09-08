@@ -1,5 +1,9 @@
 # Alpha
 
+Latest evidence check: [option candles and provenance](docs/OPTIONS_BAR_QUALITY_DELIVERY.md).
+Event research now shows saved option OHLC, missing intervals and unknown
+interpolation flags. Retrospective candles do not become prospective outcomes.
+
 Latest research: [before/after event comparison](docs/OPTIONS_EVENT_RESEARCH_DELIVERY.md).
 The eighth page freezes GLD/IBIT observation rules, follows the same contracts,
 compares three separate reference scenarios with a shared event risk allowance,

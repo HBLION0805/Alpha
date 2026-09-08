@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-08 - Preserve omitted candle provenance as unknown
+
+- Compose the original capture validator and immutable artifact format instead
+  of creating another market writer or changing existing capture assessments.
+- Do not infer noninterpolation from changing prices or complete interval counts.
+  Display unknown source OHLC in gray; exclude it from calculated window returns.
+- Preserve missing slots and source clocks. Do not merge revised histories or
+  substitute old complete captures for the latest incomplete capture.
+- Keep retrospective candle evidence separate from frozen event outcomes and
+  trading authority. See [specification](specifications/OPTIONS_BAR_QUALITY_V1.md).
+
 ## 2026-09-08 - Freeze event phases before observing outcomes
 
 - Keep GLD/IBIT PRE_ONLY, POST_ONLY and COMBINED as separate quote-reference

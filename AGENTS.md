@@ -104,6 +104,15 @@ Push
 
 ## Current Implemented Systems
 
+- Option candle evidence: pure grid/provenance checks and a read-only adapter
+  over unchanged original Robinhood capture artifacts. Event research displays
+  gray unknown source OHLC and missing/interpolated gaps with exact tables and
+  clocks. The September 8 intraday check returned 240 bars with omitted flags;
+  UNKNOWN must not default to noninterpolated. Retrospective history cannot enter
+  frozen prospective endpoints or enable technical signals, VWAP, stops, replay
+  or probability. No new schedule, source, account or order route. See
+  docs/OPTIONS_BAR_QUALITY_DELIVERY.md and docs/status/bar-quality.json.
+
 - Prospective event phase research: immutable GLD/IBIT plans and copied-input
   snapshots compare PRE_ONLY, POST_ONLY and COMBINED using first eligible saved
   quotes, shared event losses and non-recycled sale proceeds. The eighth English

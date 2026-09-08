@@ -1,5 +1,10 @@
 # GLD/IBIT operations: evidence and next test
 
+Latest data qualification: [option candle evidence](OPTIONS_BAR_QUALITY_DELIVERY.md)
+and [dated checkpoint](status/bar-quality.json). The original saved capture path
+now feeds gray unknown-provenance candles and explicit gaps in Event research.
+No new schedule or paper-flow gate acceptance follows from this display.
+
 Latest research step: [event phase comparison](OPTIONS_EVENT_RESEARCH_DELIVERY.md)
 and [dated checkpoint](status/event-research.json). Two frozen PPI experiments
 await September 9/10 observations. The existing Host prioritizes four identities

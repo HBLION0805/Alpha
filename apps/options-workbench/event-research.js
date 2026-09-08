@@ -1,4 +1,5 @@
 import {esc,words,cents,timestamp} from './model.js';
+import {barQualityPanel} from './bar-quality.js';
 const money=v=>v===null||v===undefined?'Pending / unknown':cents(v);
 const quoteLabel=q=>`${q.symbol} · ${q.expiry} · ${q.strike} ${q.type.toUpperCase()}`;
 const key=e=>[e.source,e.scheduledAt,e.title].join('|');
@@ -60,7 +61,7 @@ export function eventResearchPage(s,ui={}) {
   if(!ui.eventDraft){ui.eventDraft=eventDraft(s);ui.eventChoices={capturedAt:g.current.marketCapturedAt,quotes:structuredClone(g.input.quotes),events:structuredClone(g.input.events.filter(e=>e.scheduledAt&&e.scheduledAt>s.loadedAt))};}
   const d=ui.eventDraft,choice=ui.eventChoices;
   const select=(name,label,entries)=>`<label class="form-field">${label}<select name="${name}" required><option value="">Choose…</option>${entries.map(([v,t])=>`<option value="${esc(v)}"${d[name]===v?' selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
-  return head+'<div class="notice"><div><strong>Prospective quote-reference research.</strong> Freeze the rules before collecting outcomes. Scheduled snapshots do not establish candle trends, stop fills or executable returns.</div></div>'+
+  return head+'<div class="notice"><div><strong>Prospective quote-reference research.</strong> Freeze the rules before collecting outcomes. Scheduled snapshots do not establish candle trends, stop fills or executable returns.</div></div>'+barQualityPanel(s.barQuality,s.loadedAt)+
     `<details class="card section-space" ${desk?.data?.studies?.length?'':'open'}><summary>Register a future event experiment</summary><form id="event-research-form"><div class="form-grid">`+
     `<label class="form-field full">Experiment name<input name="title" value="${esc(d.title)}" maxlength="160" required></label>`+
     select('eventKey','Saved official event',choice.events.map(e=>[key(e),e.title+' · '+timestamp(e.scheduledAt)]))+

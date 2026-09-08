@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-08 - Add saved option candle evidence to Event research
+
+- Added a pure provenance/grid projection over original Robinhood captures,
+  verified local recovery, a read-only CLI and responsive OHLC/table views.
+- Captured four GLD/IBIT histories with 240 minute bars. All omit interpolation
+  flags and remain unknown; no trend signal or executable return was inferred.
+- Preserved event plans, owner ledger, original assessments and scheduled reads.
+  See [delivery](OPTIONS_BAR_QUALITY_DELIVERY.md).
+
 ## 2026-09-08 - Add prospective event anticipation/reaction research
 
 - Added frozen future event plans, first-window quote selection, three-mode

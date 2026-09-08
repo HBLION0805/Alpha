@@ -8,7 +8,7 @@ import { parseChainSurveyJson } from '../src/engines/options-robinhood-data/Robi
 import { startPublicContextService } from './options-context-service.mjs';
 
 const assetRoot=resolve(import.meta.dirname,'../apps/options-workbench');
-const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','focused-news.js','event-research.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
+const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','focused-news.js','event-research.js','bar-quality.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
 const MAX_BODY=65536;
 export async function startOptionsWorkbench({port=4173,refreshContext=false,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
