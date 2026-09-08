@@ -65,3 +65,7 @@ data/runtime/options-context-captures/
 data/runtime/options-research-protocols/
 data/runtime/options-activity-studies/
 data/runtime/options-activity-development/
+data/runtime/options-manual-ledger/
+data/runtime/options-review-desk/
+data/runtime/options-manual-development/
+data/runtime/options-manual-ledger-inputs/

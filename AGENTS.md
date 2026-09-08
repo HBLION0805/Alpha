@@ -80,6 +80,16 @@ Push
 
 ## Current Implemented Systems
 
+- Owner-reported fill ledger and review desk: separate standard long GLD/IBIT
+  accounting with exact FIFO partial closes, unknown fees, durable plan timing,
+  append-only corrections and candidate review notes. Owner ledger
+  `owner-manual-gld-ibit` starts empty; synthetic examples never become owner
+  fills. Saved desk `owner-review-20260907` independently recovers copied manual,
+  activity and original paper-account evidence without changing old journals,
+  host fields or trading authority. No source authentication, live balance,
+  stop-path inference, tax/settlement accounting, calibrated probability or orders.
+  See docs/OPTIONS_MANUAL_LEDGER_DELIVERY.md and docs/status/manual-ledger.json.
+
 - Current activity follow-up: the Owner approved research of flagged GLD/IBIT
   contracts as possible future evidence, conditional on validation. Frozen study
   `fomc-activity-20260908` has 224 candidates, 167 distinct controls and 57 unmatched

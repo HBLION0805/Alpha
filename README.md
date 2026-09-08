@@ -1,6 +1,7 @@
 # Alpha
 
-Latest local delivery: [frozen activity follow-up and matched-control reviews](docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md),
+Latest local delivery: [owner-reported fill ledger and consolidated review desk](docs/OPTIONS_MANUAL_LEDGER_DELIVERY.md),
+alongside [frozen activity follow-up and matched-control reviews](docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md),
 building on [GLD/IBIT full-chain activity and account review](docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md),
 with [daily close collection through September 16](docs/OPTIONS_CHAIN_CLOSE_RUNBOOK.md).
 The cancelled opening pilot and automatic development remain disabled. No automatic orders.
@@ -15,6 +16,12 @@ test dependencies. It links original evidence without changing historical clocks
 
 ## Current capabilities
 
+- **Reported-fill accounting and review:** manual GLD/IBIT long-option entries,
+  partial exits, exact fees, append-only corrections and plan-deviation candidate
+  notes. `npm run options:manual-ledger -- --verify owner-manual-gld-ibit` checks
+  the initially empty owner ledger. [Recording guide](docs/OPTIONS_MANUAL_LEDGER_GUIDE.md).
+  `options:review-desk` saves an independently recoverable English view of manual
+  records, activity cases and separate original paper-account diagnostics.
 - **Prospective activity follow-up:** 224 frozen candidates, 167 distinct controls
   and all 57 unmatched cases. `npm run options:activity-study -- --update fomc-activity-20260908`
   reads saved close boards, retains assumed-cost reference outcomes and candidate

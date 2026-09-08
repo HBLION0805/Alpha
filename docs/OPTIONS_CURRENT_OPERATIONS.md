@@ -1,10 +1,20 @@
 # GLD/IBIT operations: evidence and next test
 
-Current Owner direction: [opening pilot cancelled](OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
-The existing task uses exact v6 daily 09:00 New York context fields only. Automatic
-quote collection, development and periodic development reports are disabled.
-All opening/continuation descriptions below are dated historical evidence and
-must not be used to reinstall a schedule. Development stays in this conversation.
+Current Owner direction: [daily close collection](OPTIONS_CHAIN_CLOSE_RUNBOOK.md)
+at 16:20 New York on September 8, 9, 10, 11, 14, 15 and 16, alongside daily 09:00
+context in the existing `gld-ibit` task. Use `OPTIONS_CHAIN_CLOSE_HOST_V1.json`.
+Restore exact v6 after the final September 16 attempt or before work on a later
+wake. The [opening pilot remains cancelled](OPTIONS_OPENING_COLLECTION_CANCELLATION.md).
+Automatic development and periodic development reports are disabled. Development
+stays in this conversation; older opening/continuation schedules are historical.
+
+Latest local capability: [reported-fill ledger and review desk](OPTIONS_MANUAL_LEDGER_DELIVERY.md).
+The owner ledger is empty and ready for supplied fill records. The saved desk
+combines these records with the original paper diagnostics and
+[224 frozen activity candidates](OPTIONS_ACTIVITY_STUDY_DELIVERY.md), retaining
+distinct origins and September 4 quote clocks. Zero actual future closes or
+primary outcomes are available at this checkpoint. Manual accounting does not
+close the quote-qualification, source-adapter or real-price paper-flow gates.
 
 Latest local capability: [paper account/portfolio integration](OPTIONS_PAPER_PORTFOLIO_DELIVERY.md)
 recovers the original account and checks an unrecorded candidate through existing

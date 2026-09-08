@@ -1,5 +1,13 @@
 # Alpha Roadmap
 
+The [reported-fill ledger and review desk](OPTIONS_MANUAL_LEDGER_DELIVERY.md)
+now support exact manual entry/exit reconciliation, partial closes, correction
+history and plan-review candidates before future market data arrives. The owner
+ledger starts empty. This advances workstream 07 locally and extends workstream
+06; it does not validate live account integration, a signal or a real-price paper
+gate. Next use genuine owner-reported fills when supplied and inspect the scheduled
+close evidence against the already frozen activity study.
+
 The [frozen activity study](OPTIONS_ACTIVITY_STUDY_DELIVERY.md) now links baseline
 selection, distinct nearby controls, daily close evidence, assumed-cost reference
 outcomes and candidate lessons. Its 224 cases are registered before future data;

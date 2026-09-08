@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-09-07 - Reported-fill ledger and consolidated review desk
+
+- Added manual GLD/IBIT long-option records, partial-close FIFO accounting,
+  nullable costs, preserved corrections and deterministic plan-review candidates.
+- Added an immutable English desk with copied original activity and paper-account
+  evidence. Created an empty owner ledger; no actual fills were supplied.
+- Registered focused tests and aggregate validation. Preserved original journals,
+  source captures and the daily close schedule. See
+  [delivery and evidence](OPTIONS_MANUAL_LEDGER_DELIVERY.md).
+
 ## 2026-09-07 - Prospective activity study and matched-control reviews
 
 - Registered all 224 baseline activity candidates, 167 distinct controls and 57

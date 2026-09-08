@@ -1,5 +1,19 @@
 # Alpha Architecture
 
+## Owner-reported fills and consolidated review
+
+`OptionsManualLedger` is an independent exact-decimal FIFO projection of reported
+long GLD/IBIT fills. Nullable costs, original execution clocks, durable registration
+receipts and append-only corrections produce recomputable plan reviews and
+candidate lessons. They never enter the older simulated-fill engines or journals.
+The CLI composes existing safe-file, strict JSON, fingerprint and clock helpers.
+`options-review-desk` copies a ledger plus optional original chain/account and
+activity evidence, then reruns their original readers at the saved clock. Static
+HTML keeps each evidence origin and unknown state visible. No HTTP, account call,
+source refresh, schedule or order path is added. See
+[specification](specifications/OPTIONS_MANUAL_LEDGER_V1.md) and
+[delivery](OPTIONS_MANUAL_LEDGER_DELIVERY.md).
+
 ## Prospective activity follow-up
 
 `OptionsActivityStudy` composes the unchanged chain survey into a frozen cohort,

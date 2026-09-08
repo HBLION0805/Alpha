@@ -1,5 +1,20 @@
 # Alpha Architecture Decisions
 
+## 2026-09-07 - Keep reported execution evidence independent of assumed fills
+
+- Use a separate bounded ledger for owner-reported standard long GLD/IBIT fills;
+  the old paper review contract requires modeled execution facts that manual
+  records cannot supply. Preserve both evidence origins and old fingerprints.
+- Use BigInt micro-USD, FIFO matching and remainder-conserving fee allocation.
+  Missing fees make affected net results unknown. Corrections are new events;
+  original bytes and receipts remain recoverable and request IDs are idempotent.
+- Review recorded plan deviations without inferring intraday stop paths, market
+  causes, brokerage balances or strategy probabilities. Candidate notes never
+  grant strategy or allocation authority.
+- Compose a saved English desk from independently verified copied dependencies.
+  Initialize the owner ledger empty. Keep examples synthetic and the scheduled
+  close workflow unchanged. See [delivery](OPTIONS_MANUAL_LEDGER_DELIVERY.md).
+
 ## 2026-09-07 - Freeze activity research before future observations
 
 - Preserve all baseline candidates and select nearby controls without replacement

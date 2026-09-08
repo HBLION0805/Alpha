@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-08T02:16:04.970Z",
+  "recordedAt": "2026-09-08T03:14:09.873Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "2fcf9a5",
+  "comparedWithCommit": "1b5adca",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -61,16 +61,16 @@
       "name": "Reviews and candidate mistake notebook",
       "previousStatus": "LOCAL_VALIDATED",
       "status": "LOCAL_VALIDATED",
-      "detail": "All local cases retained with nine closed reviews; candidate lessons are not approved trading rules.",
-      "evidence": "docs/OPTIONS_SAMPLE_VALIDATION_DELIVERY.md"
+      "detail": "Existing paper/research reviews preserved; independent manual-fill plan diagnostics and candidate notes now recompute through a saved desk. No approved rules or causal inference.",
+      "evidence": "docs/OPTIONS_MANUAL_LEDGER_DELIVERY.md"
     },
     {
       "id": "07",
       "name": "Portfolio and account qualification",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Original modeled account, guards, fees and preserved reviews now displayed in an immutable local operator board. Live account qualification and enforcement remain incomplete.",
-      "evidence": "docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md"
+      "detail": "Original modeled account retained; separate owner-reported FIFO ledger, partial exits and correction recovery now implemented. Live account qualification, settlement and enforcement remain incomplete.",
+      "evidence": "docs/OPTIONS_MANUAL_LEDGER_DELIVERY.md"
     },
     {
       "id": "08",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "10",
-  "currentUnit": "Frozen prospective activity study with matched controls and candidate reviews",
-  "currentUnitAcceptance": "224 candidates, 167 distinct matched controls and 57 unmatched cases registered before future windows. Exact-cost reference outcomes and immutable recovery locally tested; zero actual future outcomes. Signal acceptance and all three real-price gates remain open.",
+  "currentWorkstream": "07",
+  "currentUnit": "Reported-fill ledger, deterministic plan review and consolidated saved evidence desk",
+  "currentUnitAcceptance": "Empty owner ledger created; exact FIFO partial exits, nullable costs, correction history and candidate notes locally validated. Saved desk independently recovers the original activity and paper evidence. No actual owner fills, future outcomes or real-price gate advancement.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Verify actual September 8 close evidence, then the fixed September 9 primary comparison; preserve gaps and all outcomes.",
+  "nextAction": "Use genuine reported fills when supplied and inspect the already scheduled September 8 close evidence before the frozen September 9 activity comparison.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 3672,
+    "passed": 3752,
     "failed": 0,
-    "componentCount": 150
+    "componentCount": 153
   },
-  "latestOperationalEvidence": "docs/status/activity-study.json",
+  "latestOperationalEvidence": "docs/status/manual-ledger.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": false

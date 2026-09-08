@@ -5,6 +5,11 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "options:manual-ledger": "tsx scripts/options-manual-ledger.mjs",
+    "options:review-desk": "tsx scripts/options-review-desk.mjs",
+    "test:options-manual-ledger": "tsx src/engines/options-manual-ledger/OptionsManualLedger.test.ts",
+    "test:options-manual-ledger-storage": "tsx scripts/options-manual-ledger.test.mjs",
+    "test:options-review-desk": "tsx scripts/options-review-desk.test.mjs",
     "options:activity-study": "tsx scripts/options-activity-study.mjs",
     "test:options-activity-study": "tsx src/engines/options-robinhood-data/OptionsActivityStudy.test.ts",
     "test:options-activity-study-storage": "tsx scripts/options-activity-study.test.mjs",

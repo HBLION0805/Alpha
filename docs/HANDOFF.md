@@ -8,6 +8,17 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner approved the next local batch: manual reported fills, plan-versus-fill
+reviews and a consolidated saved desk. These are implemented separately from
+paper/research journals. `owner-manual-gld-ibit` has zero entries; no owner fill
+was supplied. Saved desk `owner-review-20260907` copies the original 224 activity
+cases and paper diagnostics, with each evidence origin explicit. See
+[delivery](OPTIONS_MANUAL_LEDGER_DELIVERY.md), [status](status/manual-ledger.json)
+and [recording/correction guide](OPTIONS_MANUAL_LEDGER_GUIDE.md). Record only the
+information supplied; preserve unknown fees and retrospective plan timing. No
+broker access, order, schedule or source refresh was added. Rebuild with a new
+desk ID after new records; never overwrite a prior snapshot.
+
 The Owner approved prospective activity follow-up as possible future research
 evidence, conditional on outcome verification. Study `fomc-activity-20260908` is
 now registered before the first reference window: 224 candidates, 167 distinct

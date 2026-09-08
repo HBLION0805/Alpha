@@ -1,0 +1,89 @@
+{
+  "version": "OPTIONS_MANUAL_LEDGER_DELIVERY_V1",
+  "recordedAt": "2026-09-08T03:14:09.873Z",
+  "comparedWithCommit": "1b5adca",
+  "scope": "OWNER_REPORTED_LONG_GLD_IBIT_FILLS_AND_SAVED_REVIEW_DESK",
+  "ownerLedger": {
+    "id": "owner-manual-gld-ibit",
+    "createdAt": "2026-09-08T03:00:58.291Z",
+    "origin": "OWNER_REPORTED_UNVERIFIED",
+    "events": 0,
+    "trades": 0,
+    "actualFillsSupplied": false
+  },
+  "savedDesk": {
+    "id": "owner-review-20260907",
+    "createdAt": "2026-09-08T03:00:59.694Z",
+    "reportFingerprint": "sha256:21a7036c8ba92ec0ec0550c29c65e8fac704a12412b562d84891dabbcb32bf24",
+    "activityCandidates": 224,
+    "distinctControls": 167,
+    "unmatchedCandidates": 57,
+    "actualFutureCloses": 0,
+    "evaluablePrimaryOutcomes": 0,
+    "paperAccountOrigin": "SYNTHETIC_FIXTURE"
+  },
+  "validation": {
+    "finalBundle": {
+      "passed": 3752,
+      "failed": 0,
+      "componentCount": 153
+    },
+    "protectedFiles": {
+      "checkedAt": "2026-09-08T03:14:09.824Z",
+      "checkedFiles": 545,
+      "failures": []
+    },
+    "browser": "DEFAULT_VIEWPORT_RENDER_NAVIGATION_AND_PAPER_DETAILS_INSPECTED",
+    "mobileViewportTested": false,
+    "newProcessesRecoverCopiedEvidence": true,
+    "focusedTests": [
+      {
+        "component": "Focused/aggregate test: src/engines/options-manual-ledger/OptionsManualLedger.test.ts",
+        "passed": 41,
+        "failed": 0
+      },
+      {
+        "component": "Focused/aggregate test: scripts/options-manual-ledger.test.mjs",
+        "passed": 23,
+        "failed": 0
+      },
+      {
+        "component": "Focused/aggregate test: scripts/options-review-desk.test.mjs",
+        "passed": 16,
+        "failed": 0
+      }
+    ],
+    "logSha256": "e3c41dce807cd9320e3a7d787a969211bf75cb0b2c3165be83349b6b2154d0d1",
+    "initialBundleIssue": "All 3751 initial tests passed; the static network scan misclassified a local request-ID Set named requests. Renamed it without weakening the scan, tightened document-hash types with an additional test, and reran the full bundle.",
+    "typecheck": "PASSED_IN_FINAL_BUNDLE",
+    "freshProcessOwnerLedger": "MANUAL_LEDGER_RECOMPUTED",
+    "freshProcessDesk": "REVIEW_DESK_RECOMPUTED",
+    "activeHostSha256": "80b0342beca179404856ee396f598f1e31aa13e76356cb86293f1f7fdb68ccbc",
+    "restoreV6Sha256": "e91032e033c40163defa0abac3f6444dab6a6faac90e75972de1e2068d0668a9"
+  },
+  "workstreamCountsBefore": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "workstreamCountsAfter": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "firstPaperFlow": {
+    "totalGates": 6,
+    "localAvailable": 3,
+    "openGates": 3,
+    "gateAdvanced": false,
+    "realPriceRun": "NOT_RUN"
+  },
+  "brokerVerified": false,
+  "accountAccessed": false,
+  "sourceRefreshed": false,
+  "automationChanged": false,
+  "approvedKnowledge": false,
+  "winProbability": null,
+  "executionAllowed": false,
+  "nextAction": "Use genuine reported fills when supplied and inspect the already scheduled September 8 close evidence before the frozen September 9 activity comparison."
+}
