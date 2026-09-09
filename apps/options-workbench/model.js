@@ -49,6 +49,9 @@ export function collectLessons(state){
 }
 export function safeLink(value){try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password?url.href:null;}catch{return null;}}
 export function explainError(code){
+  if(code==='WORKBENCH_COST_SCENARIO')return 'Enter valid planner prices, a quote tick and complete scenario inputs before comparing costs.';
+  if(code==='WORKBENCH_COST_BOUNDS')return 'Cost comparisons support 1–100 contracts and bounded premium/cost amounts. Reduce the scenario size.';
+  if(['WORKBENCH_COST_INPUT','WORKBENCH_COST_OVERFLOW','WORKBENCH_COST_CONVERGENCE'].includes(code))return 'The cost comparison could not be calculated safely. Review the inputs and retry.';
   const explanations={
     GUIDANCE_TRADE_BUDGET:'Enter positive budget amounts in whole cents. The maximum must be at least the minimum and no more than $1,000,000. Independent loss limits still apply.',
     EVENT_RESEARCH_WINDOW_ORDER:'All observation windows must be future when registered. PRE ends before the event; POST starts at least 30 minutes after release.',

@@ -1,5 +1,9 @@
 # Alpha
 
+Latest planner addition: [fees and exit-allowance comparisons](docs/OPTIONS_COST_DESK_DELIVERY.md).
+Compare declared costs or an explicit dated rate assumption across four adverse
+exit allowances. Original settings and independent risk caps remain unchanged.
+
 Current allocation: [owner-declared $100–$500 per trade](docs/OPTIONS_TRADE_BUDGET_DELIVERY.md)
 with $1,000 total capital. Independent planned-loss and stress caps remain;
 budget membership alone does not qualify a trade.

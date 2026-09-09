@@ -125,6 +125,7 @@ const aggregateTestFiles = [
   "scripts/options-bar-quality.test.mjs",
   "scripts/options-candidate-checks.test.mjs",
   "scripts/options-trade-budget.test.mjs",
+  "scripts/options-cost-desk.test.mjs",
   "src/engines/options-manual-ledger/OptionsManualLedger.test.ts",
   "scripts/options-manual-ledger.test.mjs",
   "scripts/options-review-desk.test.mjs",

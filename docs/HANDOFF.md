@@ -8,6 +8,15 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+Continued development adds the read-only [cost desk](OPTIONS_COST_DESK_DELIVERY.md)
+below Trade planner. It compares original declared fees (null preserved) or an
+explicit reviewed nonprofessional single-execution assumption across 0/1/2/5 exit
+ticks. Fee reserves converge with the original net-R target; no guidance setting,
+recorded plan, journal, Host field or source qualification is changed. The saved
+36-contract example yields 144 blocked scenarios under existing risk caps.
+See [checkpoint](status/cost-desk.json). Next resolve the allocation/risk-policy
+incompatibility and source qualification before a real-price paper adapter.
+
 The Owner explicitly changed allocation to $100–$500 **per trade**, retaining
 $1,000 total capital. The versioned declaration is saved and active across
 guidance, candidate checks, overview and planning. The independent $5 planned
@@ -21,7 +30,8 @@ The Owner requested continued development toward a real-price paper flow.
 guidance/feasibility engine into 15 grouped checks on the Daily guidance page.
 Filters retain the complete sampled denominator; explicit snapshot saves copy
 normalized inputs and independently recompute without changing issued guidance.
-The current 36-contract 14–45 DTE sample has zero premium-affordable candidates.
+That pre-allocation 36-contract 14–45 DTE checkpoint had zero premium-affordable
+candidates; the later range update above supersedes its affordability count.
 Costs remain unknown, the owner ledger remains empty and no source-specific
 paper adapter or order route is enabled. See [checkpoint](status/candidate-checks.json).
 Next qualify quote-side/size clocks, contract/session and source/cost evidence

@@ -116,6 +116,15 @@ Push
 
 ## Current Implemented Systems
 
+- Planner cost desk: read-only 0/1/2/5 exit-tick comparisons using declared fees
+  (null preserved) or an explicit dated nonprofessional single-execution rate
+  assumption. Entry/target-sale fees converge with net R; costs are counted once.
+  Original calculations/settings, historical fee profile and frozen records stay
+  unchanged. No fee assumption enters guidance or the owner ledger automatically.
+  The saved 36-contract example produces 144 blocked scenarios under independent
+  risk caps. See docs/OPTIONS_COST_DESK_DELIVERY.md and docs/status/cost-desk.json.
+  No source/account/order calls, schedule changes or real-price gate acceptance.
+
 - Candidate checks: an independent 15-group projection over unchanged daily
   guidance and retail feasibility, with premium/all-in/planned-loss/stress
   distinctions, original blockers, asset/budget filters and desktop/mobile

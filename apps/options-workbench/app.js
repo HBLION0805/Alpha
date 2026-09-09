@@ -4,11 +4,15 @@ import {esc,words,dollars,timestamp,exactUsd,decimalText,decimalInteger,filterCh
 import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand,plannerBudgetDraft,tradeBudgetFromFields} from './forms.js';
 import {eventRequest} from './event-research.js';
 import {candidateCheckDetail} from './candidate-checks.js';
+import {costDeskResult,costRequestMatches} from './cost-desk.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
 const drafts={register:registerDefaults(),fill:fillDefaults(),correct:fillDefaults()};
-const ui={chain:defaultFilters(),plannerDraft:plannerDefaults(),plannerResult:null,planningSource:null,journalMode:'register',journalDraft:drafts.register,reviewScope:'trades',lessonOrigin:'',reviewSearch:'',newsSource:'',newsSearch:'',newsAsset:''};
+const ui={chain:defaultFilters(),plannerDraft:plannerDefaults(),plannerResult:null,planningSource:null,costFeeBasis:'DECLARED_FEES',costDeskResult:null,journalMode:'register',journalDraft:drafts.register,reviewScope:'trades',lessonOrigin:'',reviewSearch:'',newsSource:'',newsSearch:'',newsAsset:''};
+let comparingCosts=false;
+function costRequest(){return {scenario:buildScenario(plannerBudgetDraft(ui.plannerDraft,state.guidance?.data?.current.settings)),feeBasis:ui.costFeeBasis};}
+function clearCosts(){ui.costDeskResult=null;const panel=$('#cost-desk-result');if(panel)panel.innerHTML=costDeskResult(null);}
 let state=null,pending=null,pendingKey=null,requestId=null,loading=false,saving=false,calculating=false,previewing=false,toastTimer;
 const dirty=new Set();
 function syncNavigation(){
@@ -34,6 +38,7 @@ async function reload(board=state?.selectedBoardId??null){
   if(loading)return;loading=true;$('#reload').disabled=true;$('#connection').textContent='Checking saved evidence…';
   try{
     state=await request('/api/state'+(board?'?board='+encodeURIComponent(board):''));
+    if(ui.costDeskResult&&!costRequestMatches({scenario:ui.costDeskResult.original.scenario,feeBasis:ui.costDeskResult.feeBasis},costRequest())){clearCosts();ui.plannerResult=null;}
     const unavailable=Object.values(state).filter(v=>v&&typeof v==='object'&&['MISSING','BLOCKED'].includes(v.state)).length;
     $('#connection').innerHTML=notice(`${state.manual.data?.origin==='SYNTHETIC_FIXTURE'?'<strong>ISOLATED SYNTHETIC LEDGER.</strong> ':''}<strong>Saved local evidence</strong> · ${state.backgroundContextRefreshEnabled?'Public context refreshes hourly while Alpha is running. Option quotes follow the scheduled reads.':'Market prices are not refreshed here.'}${unavailable?` ${unavailable} component(s) unavailable; see the affected page.`:''}`,unavailable?'error':'');
     $('#loaded-at').textContent='Local files checked '+timestamp(state.loadedAt);render();
@@ -54,13 +59,13 @@ function updateDraft(el){
   if(form.id==='event-research-form'){Object.assign(ui.eventDraft,Object.fromEntries(new FormData(form)));dirty.add('event-research');return;}
   const key=form.id==='planner-form'?'planner':ui.journalMode,d=key==='planner'?ui.plannerDraft:drafts[key];
   d[el.name]=el.type==='checkbox'?el.checked:el.value;dirty.add(key);
-  if(key==='planner'){ui.plannerResult=null;const panel=$('#planner-result');if(panel)panel.innerHTML=plannerResult(null);}
+  if(key==='planner'){ui.plannerResult=null;clearCosts();const panel=$('#planner-result');if(panel)panel.innerHTML=plannerResult(null);}
   if(key==='correct'&&el.name==='tradeId'){d.fillId='';d.expectedRevision='';}
   if(key==='correct'&&el.name==='fillId')chooseFill();
 }
 function prepareContract(row){
   ui.plannerDraft={...ui.plannerDraft,symbol:row.symbol,strategy:row.type==='call'?'LONG_CALL':'LONG_PUT',bid:decimalText(row.bid),ask:decimalText(row.ask)};
-  ui.planningSource=row;ui.plannerResult=null;dirty.add('planner');$('#detail-dialog').close();navigate('planner');
+  ui.planningSource=row;ui.plannerResult=null;clearCosts();dirty.add('planner');$('#detail-dialog').close();navigate('planner');
 }
 function transferPlan(){
   const r=ui.plannerResult,s=r?.scenario,e=r?.economics;if(!s||!e)throw Error('Calculate a scenario first.');
@@ -111,6 +116,7 @@ document.addEventListener('change',event=>{void(async()=>{
   const el=event.target;
   if(el.closest('form')){updateDraft(el);if(el.type==='checkbox'||['action','tradeId','fillId'].includes(el.name))render();return;}
   if(el.id==='board-select'){ui.chain.page=1;await reload(el.value);return;}
+  if(el.id==='cost-fee-basis'){ui.costFeeBasis=el.value;clearCosts();return;}
   if(['candidate-check-asset','candidate-check-budget'].includes(el.id)){ui.candidateCheckFilter={...ui.candidateCheckFilter,[el.id==='candidate-check-asset'?'asset':'budget']:el.value};render();return;}
   if(el.dataset.chainFilter){ui.chain[el.dataset.chainFilter]=el.value;ui.chain.page=1;if(el.dataset.chainFilter==='symbol')ui.chain.expiry='';render();return;}
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
@@ -134,6 +140,11 @@ document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
   if(el.dataset.close){if(saving&&el.dataset.close==='preview-dialog')return;$('#'+el.dataset.close).close();return;}
   if(el.id==='reload'){await reload();return;}
+  if(el.id==='compare-costs'){
+    if(comparingCosts)return;comparingCosts=true;el.disabled=true;$('#cost-desk-error').textContent='';
+    try{const input=costRequest(),r=await request('/api/cost-desk',input);if(!costRequestMatches(input,costRequest()))throw Error('Inputs changed during comparison. Compare again.');ui.costDeskResult=r;ui.plannerResult=r.original;render();}
+    catch(e){fail(e,'#cost-desk-error');}finally{comparingCosts=false;if(el.isConnected)el.disabled=false;}return;
+  }
   if(el.id==='menu-toggle'){const open=document.body.classList.toggle('menu-open');el.setAttribute('aria-expanded',String(open));syncNavigation();return;}
   if(el.dataset.asset){ui.chain={...defaultFilters(),symbol:el.dataset.asset};navigate('chain');return;}
   if(el.dataset.export){download(el.dataset.export);return;}
@@ -148,14 +159,14 @@ document.addEventListener('click',event=>{void(async()=>{
     if(dirty.has('planner'))throw Error('Your planner draft is preserved. Clear or finish it before inspecting a candidate.');
     const q=c.contract,v=c.scenario,toUsd=n=>n===null||n<0?'':exactUsd(n);
     ui.plannerDraft={symbol:q.symbol,strategy:v.strategy,equity:toUsd(v.currentEquityCents),cash:toUsd(v.settledCashCents),quantity:'1',tick:toUsd(q.tickCents),bid:toUsd(q.bidCents),ask:toUsd(q.askCents),fees:toUsd(v.roundTripFeesCents),slippage:toUsd(v.slippageReserveCents),stop:String(v.stopLossBps/100),reward:String(v.rewardMultipleMilliR/1000),budgetMin:v.tradeBudget?exactUsd(v.tradeBudget.minCents):'',budgetMax:v.tradeBudget?exactUsd(v.tradeBudget.maxCents):''};
-    ui.planningSource={...q,bid:toUsd(q.bidCents),ask:toUsd(q.askCents),quoteUpdatedAt:q.updatedAt};ui.plannerResult=null;dirty.add('planner');navigate('planner');return;
+    ui.planningSource={...q,bid:toUsd(q.bidCents),ask:toUsd(q.askCents),quoteUpdatedAt:q.updatedAt};ui.plannerResult=null;clearCosts();dirty.add('planner');navigate('planner');return;
   }
   if(el.id==='reset-guidance-assumptions'){ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}
   if(el.dataset.candidateCheck){const r=state.candidateChecks?.data?.current,row=r?.rows.find(x=>x.contract.id===el.dataset.candidateCheck);if(row)showDetail('Candidate checks',candidateCheckDetail(row,r));return;}
   if(el.id==='save-candidate-checks'){if(saving)return;if(dirty.has('guidance'))throw Error('Save or discard the planning-assumption draft first.');saving=true;el.disabled=true;try{const r=await request('/api/candidate-checks',{});await reload();toast('Check snapshot saved and verified at '+timestamp(r.assessedAt)+'. No trade was created.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reset-event-research'){ui.eventDraft=null;ui.eventChoices=null;dirty.delete('event-research');render();return;}
   if(el.dataset.eventSave){if(saving)return;saving=true;el.disabled=true;try{await request('/api/event-research',{action:'SAVE_REPORT',id:el.dataset.eventSave});toast('Independent research snapshot saved and verified.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
-  if(el.id==='reset-planner'){ui.plannerDraft=plannerDefaults();ui.plannerResult=null;ui.planningSource=null;dirty.delete('planner');render();return;}
+  if(el.id==='reset-planner'){ui.plannerDraft=plannerDefaults();ui.plannerResult=null;ui.planningSource=null;ui.costFeeBasis='DECLARED_FEES';clearCosts();dirty.delete('planner');render();return;}
   if(el.id==='plan-to-journal'){transferPlan();return;}
   if(el.dataset.journalMode){ui.journalMode=el.dataset.journalMode;render();return;}
   if(el.id==='reset-journal'){drafts[ui.journalMode]=ui.journalMode==='register'?registerDefaults():fillDefaults();dirty.delete(ui.journalMode);render();return;}

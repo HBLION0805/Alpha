@@ -1,5 +1,10 @@
 # GLD/IBIT operations: evidence and next test
 
+Latest planning addition: [fees and exit allowances](OPTIONS_COST_DESK_DELIVERY.md),
+with [checkpoint](status/cost-desk.json). The explicit dated fee assumption is
+comparison-only. Current $100–$500 allocation remains independent of $5 planned
+loss/$25 full-premium stress; the saved sample does not qualify a paper trade.
+
 Latest data qualification: [option candle evidence](OPTIONS_BAR_QUALITY_DELIVERY.md)
 and [dated checkpoint](status/bar-quality.json). The original saved capture path
 now feeds gray unknown-provenance candles and explicit gaps in Event research.

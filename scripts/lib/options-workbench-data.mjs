@@ -24,6 +24,7 @@ import { readEventResearch, registerEventResearch, saveEventResearchReport } fro
 import { readBarQualityDesk } from './options-bar-quality-io.mjs';
 import { candidateChecksView, saveCandidateChecks } from './options-candidate-checks-io.mjs';
 import { evaluateOptionsPlanningFeasibility } from '../../src/engines/options-retail-feasibility/OptionsTradeBudget.ts';
+import { assessOptionsCostDesk } from '../../src/engines/options-retail-feasibility/OptionsCostDesk.ts';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -129,5 +130,5 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(current.candidateChecks.state!=='AVAILABLE')throw Error(current.candidateChecks.error);
     return saveCandidateChecks(root,current.guidance.data);
   }
-  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,costDesk:assessOptionsCostDesk,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }
