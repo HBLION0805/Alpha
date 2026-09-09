@@ -1,5 +1,12 @@
 # Alpha Roadmap
 
+[Candidate checks](OPTIONS_CANDIDATE_CHECKS_DELIVERY.md) now make the quote,
+cost, allocation and independent loss requirements inspectable and saveable.
+This prepares review before the source-specific paper adapter. It does not
+advance the three open real-price gates or relax risk to admit a contract.
+Next resolve the remaining source/session/cost qualification and use the frozen
+event windows as observations arrive; no future return is available yet.
+
 [Option candle evidence](OPTIONS_BAR_QUALITY_DELIVERY.md) now exposes source
 provenance and gaps in Event research. The actual 240-bar intraday sample has
 unknown interpolation flags. Next qualify those semantics and ETF candle/volume

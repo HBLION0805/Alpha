@@ -1,5 +1,10 @@
 # Alpha
 
+Latest planning step: [candidate quote, cost and risk checks](docs/OPTIONS_CANDIDATE_CHECKS_DELIVERY.md).
+Daily guidance now separates premium affordability from all-in allocation,
+planned loss and full-premium stress, with inspectable blockers and independently
+recoverable check snapshots. Passing local checks does not qualify paper fills.
+
 Latest evidence check: [option candles and provenance](docs/OPTIONS_BAR_QUALITY_DELIVERY.md).
 Event research now shows saved option OHLC, missing intervals and unknown
 interpolation flags. Retrospective candles do not become prospective outcomes.

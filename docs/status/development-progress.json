@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-08T04:27:09.311Z",
+  "recordedAt": "2026-09-09T01:14:16.700Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "7581b64",
+  "comparedWithCommit": "0d600fa",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -37,7 +37,7 @@
       "name": "GLD/IBIT option collection",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Full-chain baseline and daily close workflow through September 16 configured. All baseline quotes refreshed September 4; scheduled close and source qualification remain unverified.",
+      "detail": "September 8 close saved 2,100 contracts/quotes with September 8 refresh dates; scheduled later closes and independent source-side/session qualification remain separate.",
       "evidence": "docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md"
     },
     {
@@ -77,8 +77,8 @@
       "name": "Robinhood real-price paper adapter",
       "previousStatus": "NOT_VALIDATED",
       "status": "NOT_VALIDATED",
-      "detail": "Not implemented; source-specific contract/session/quote/cost evidence must qualify first.",
-      "evidence": "docs/OPTIONS_CURRENT_OPERATIONS.md"
+      "detail": "Source-specific adapter remains unimplemented. Independent candidate checks expose current quote/cost/risk blockers and preserve original guidance; source qualification remains open.",
+      "evidence": "docs/OPTIONS_CANDIDATE_CHECKS_DELIVERY.md"
     },
     {
       "id": "09",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "07",
-  "currentUnit": "Six-page local options workbench frontend",
-  "currentUnitAcceptance": "Six UI pages locally accepted, including independent synthetic form-to-save-to-correction-to-review and service restart. Owner ledger remains empty; 561 protected originals unchanged. No real-price gate advanced.",
+  "currentWorkstream": "08",
+  "currentUnit": "Candidate quote, cost and risk checks before the Robinhood paper adapter",
+  "currentUnitAcceptance": "15 grouped local checks with preserved original decisions, desktop/mobile filtering, protected snapshots and independent recovery; zero real-price gates advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,21 +134,21 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Inspect the authorized September 8 close evidence and genuine owner-reported fills when supplied; preserve the frozen activity design and qualify sources before an adapter.",
+  "nextAction": "Resolve quote-side/size clocks, contract/session and source/cost qualification before the paper adapter; assess frozen event windows as eligible evidence arrives.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 3809,
+    "passed": 4057,
     "failed": 0,
-    "componentCount": 154
+    "componentCount": 160
   },
-  "latestOperationalEvidence": "docs/status/workbench.json",
+  "latestOperationalEvidence": "docs/status/candidate-checks.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": false,
   "frontendAcceptance": {
-    "pages": 6,
-    "locallyAccepted": 6,
+    "pages": 8,
+    "locallyAccepted": 8,
     "notOverallCompletionPercentage": true
   }
 }

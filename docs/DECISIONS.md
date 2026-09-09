@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## 2026-09-08 - Separate affordability from risk and source qualification
+
+- Compose the accepted guidance and feasibility engines without changing their
+  outputs or old issued fingerprints. Retain all original blockers in the new view.
+- Keep unknown fees distinct from an explicit zero-cost declaration. Known
+  premium-budget excess remains blocked even when total costs are unknown.
+- Use a separate copied-input snapshot store; reading the page never writes it.
+  Local PASS labels cannot authorize a source adapter or establish a fill.
+- Preserve existing DTE, allocation and loss policies rather than changing them
+  to produce a candidate. See [specification](specifications/OPTIONS_CANDIDATE_CHECKS_V1.md).
+
 ## 2026-09-08 - Preserve omitted candle provenance as unknown
 
 - Compose the original capture validator and immutable artifact format instead

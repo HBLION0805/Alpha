@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## Candidate checks projection
+
+`OptionsCandidateChecks` calls the unchanged daily guidance engine and retains
+every original decision, blocker and feasibility result. It groups evidence
+checks and distinguishes premium affordability from all-in allocation and
+independent loss caps. The workbench component adds no source fetch or execution.
+An explicit protected local POST or offline CLI saves copied normalized inputs
+and recomputable fingerprints in a separate exclusive store. Existing captures,
+issued guidance and paper journals are unchanged. See
+[specification](specifications/OPTIONS_CANDIDATE_CHECKS_V1.md).
+
 ## Option candle evidence projection
 
 `RobinhoodBarQuality` composes the unchanged capture validator and derives exact

@@ -8,7 +8,7 @@ import { parseChainSurveyJson } from '../src/engines/options-robinhood-data/Robi
 import { startPublicContextService } from './options-context-service.mjs';
 
 const assetRoot=resolve(import.meta.dirname,'../apps/options-workbench');
-const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','focused-news.js','event-research.js','bar-quality.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
+const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','candidate-checks.js','focused-news.js','event-research.js','bar-quality.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
 const MAX_BODY=65536;
 export async function startOptionsWorkbench({port=4173,refreshContext=false,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
@@ -33,7 +33,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
         if([...url.searchParams.keys()].some(k=>k!=='board')||url.searchParams.getAll('board').length>1)return reject(400,'QUERY_INVALID');
         return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,session});
       }
-      if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
+      if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
       const provided=req.headers['x-alpha-session'];
       if(req.headers.origin!==origin||typeof provided!=='string'||provided.length!==session.length||!timingSafeEqual(Buffer.from(provided),Buffer.from(session)))return reject(403,'SESSION_REQUIRED');
       if(req.headers['content-type']!=='application/json')return reject(415,'JSON_REQUIRED');
@@ -47,6 +47,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
       if(url.pathname==='/api/save')return send(200,service.save(body));
       if(url.pathname==='/api/guidance-settings')return send(200,service.saveGuidanceSettings(body));
       if(url.pathname==='/api/event-research')return send(200,await service.eventResearch(body));
+      if(url.pathname==='/api/candidate-checks')return send(200,await service.candidateChecks(body));
       if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length!==0)return reject(400,'INITIALIZE_INPUT');
       return send(200,service.initialize());
     }catch(e){reject(409,workbenchError(e));}

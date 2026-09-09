@@ -104,6 +104,16 @@ Push
 
 ## Current Implemented Systems
 
+- Candidate checks: an independent 15-group projection over unchanged daily
+  guidance and retail feasibility, with premium/all-in/planned-loss/stress
+  distinctions, original blockers, asset/budget filters and desktop/mobile
+  details. Explicit local snapshots copy normalized inputs and recompute without
+  source stores; issued guidance and original journals remain unchanged. Current
+  bounded 14–45 DTE sample has 36 over-budget contracts, unknown costs and zero
+  conditional candidates. No paper qualification, source/account/order calls or
+  schedule changes. See docs/OPTIONS_CANDIDATE_CHECKS_DELIVERY.md and
+  docs/status/candidate-checks.json.
+
 - Option candle evidence: pure grid/provenance checks and a read-only adapter
   over unchanged original Robinhood capture artifacts. Event research displays
   gray unknown source OHLC and missing/interpolated gaps with exact tables and

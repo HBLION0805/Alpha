@@ -1,4 +1,5 @@
 import {esc,words,cents,dollars,timestamp,safeLink} from "./model.js";
+import {candidateChecksPanel} from './candidate-checks.js';
 const money=v=>v===null||v===undefined?"Unknown":cents(v);
 const notice=s=>'<div class="notice"><div>'+s+'</div></div>';
 const detail=(label,data)=>'<details><summary>'+esc(label)+'</summary><pre>'+esc(JSON.stringify(data,null,2))+'</pre></details>';
@@ -20,7 +21,7 @@ export function guidancePage(s,ui={}) {
   const settings=r.settings,form=ui.guidanceSettingsDraft,note=view.interpretation,staleNote=note&&Date.parse(s.loadedAt)-Date.parse(note.assessedAt)>24*3600000;
   return header+notice('<strong>Current reassessment</strong> '+esc(timestamp(r.assessedAt))+' · Market capture '+esc(timestamp(r.marketCapturedAt))+'. Source clocks below decide freshness. A scheduled reader updates the saved evidence; this page checks local files every minute when idle.')+
     '<div class="metrics"><div class="metric"><div class="metric-label">Normal allocation</div><strong>'+money(Math.floor(settings.currentEquityCents*0.05))+'</strong><small>5% of declared equity · whole contracts</small></div><div class="metric"><div class="metric-label">Illustrative premium stop</div><strong>'+(settings.stopLossBps/100)+'%</strong><small>A trigger cannot guarantee the exit loss</small></div><div class="metric"><div class="metric-label">Net reward target</div><strong>'+(settings.rewardMultipleMilliR/1000)+'R</strong><small>Requires declared fees and slippage</small></div><div class="metric"><div class="metric-label">Win probability</div><strong>Unverified</strong><small>No 80% claim or automatic size increase</small></div></div>'+
-    '<div class="grid-two guidance-assets">'+r.assets.map(a=>{
+    candidateChecksPanel(s.candidateChecks,ui)+'<div class="grid-two guidance-assets">'+r.assets.map(a=>{
       const n=note?.assets.find(n=>n.symbol===a.symbol),qualifying=a.candidates.filter(c=>c.disposition==="CONDITIONAL_RESEARCH").length;
       return '<section class="card guidance-asset"><div class="card-head"><div><p class="eyebrow">'+a.symbol+'</p><h2>'+esc(words(a.disposition))+'</h2></div><span class="tag '+(a.trend.direction==="UP"?"green":a.trend.direction==="DOWN"?"red":"amber")+'">'+esc(words(a.trend.direction))+'</span></div>'+
         '<p>Latest observed ETF price <strong>'+dollars(a.equity?.price)+'</strong> · '+esc(timestamp(a.equity?.sourceAt))+'</p><p>'+esc(a.trend.reason)+'</p>'+

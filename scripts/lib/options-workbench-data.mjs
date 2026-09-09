@@ -23,6 +23,7 @@ import { guidanceView, saveGuidanceSettings } from './options-guidance-io.mjs';
 import { focusedNewsView } from './options-focused-news-io.mjs';
 import { readEventResearch, registerEventResearch, saveEventResearchReport } from './options-event-research-io.mjs';
 import { readBarQualityDesk } from './options-bar-quality-io.mjs';
+import { candidateChecksView, saveCandidateChecks } from './options-candidate-checks-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -32,7 +33,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -95,6 +96,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
       chain,manual,activity:study,headlines,treasury,btc,calendar,outcomes,progress:progressState,
       access:'LOCAL_SAVED_DATA',sourceRefresh:false,accountAccessed:false,executionAllowed:false};
     result.guidance=await component(()=>guidanceView(root,result),at);
+    result.candidateChecks=await component(()=>candidateChecksView(root,result.guidance.data,at),at);
     result.focusedNews=await component(()=>focusedNewsView(root,headlines.data,at),at);
     result.eventResearch=await component(()=>readEventResearch(root,at),at);
     result.barQuality=await component(()=>readBarQualityDesk(root,at),at);
@@ -121,5 +123,11 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(Object.keys(body).sort().join()!=='action,request')fail('EVENT_RESEARCH_FIELDS');
     const current=await state();return registerEventResearch(root,body.request,current.guidance.data,now());
   }
-  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,evaluate:evaluateOptionsRetailFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  async function candidateChecks(body){
+    if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)fail('CANDIDATE_CHECKS_FIELDS');
+    const current=await state();
+    if(current.candidateChecks.state!=='AVAILABLE')throw Error(current.candidateChecks.error);
+    return saveCandidateChecks(root,current.guidance.data);
+  }
+  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,evaluate:evaluateOptionsRetailFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

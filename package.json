@@ -196,7 +196,9 @@
     "options:event-research": "tsx scripts/options-event-research.mjs",
     "test:options-event-research": "tsx scripts/options-event-research.test.mjs",
     "options:bar-quality": "tsx scripts/options-bar-quality.mjs",
-    "test:options-bar-quality": "tsx scripts/options-bar-quality.test.mjs"
+    "test:options-bar-quality": "tsx scripts/options-bar-quality.test.mjs",
+    "options:candidate-checks": "tsx scripts/options-candidate-checks.mjs",
+    "test:options-candidate-checks": "tsx scripts/options-candidate-checks.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

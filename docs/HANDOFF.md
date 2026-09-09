@@ -8,6 +8,17 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner requested continued development toward a real-price paper flow.
+[Candidate checks](OPTIONS_CANDIDATE_CHECKS_DELIVERY.md) now project the unchanged
+guidance/feasibility engine into 15 grouped checks on the Daily guidance page.
+Filters retain the complete sampled denominator; explicit snapshot saves copy
+normalized inputs and independently recompute without changing issued guidance.
+The current 36-contract 14–45 DTE sample has zero premium-affordable candidates.
+Costs remain unknown, the owner ledger remains empty and no source-specific
+paper adapter or order route is enabled. See [checkpoint](status/candidate-checks.json).
+Next qualify quote-side/size clocks, contract/session and source/cost evidence
+before an execution adapter. The existing Host schedules remain unchanged.
+
 The next step adds [option candle evidence](OPTIONS_BAR_QUALITY_DELIVERY.md) to
 Event research. Five authorized market reads saved four October 9 GLD/IBIT
 histories for September 8, 14:27-15:27 New York. All 240 bars omit the interpolation

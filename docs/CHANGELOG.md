@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-08 - Add candidate quote, cost and risk checks
+
+- Added 15 grouped checks over unchanged guidance and feasibility decisions,
+  with explicit unknown inputs and separate allocation, planned-loss and stress caps.
+- Added desktop/mobile filtering and detail views, draft protection, exclusive
+  snapshot saves, offline verification and independently copied input recovery.
+- Kept source qualification open, old journals unchanged and all orders disabled.
+  See [delivery](OPTIONS_CANDIDATE_CHECKS_DELIVERY.md).
+
 ## 2026-09-08 - Add saved option candle evidence to Event research
 
 - Added a pure provenance/grid projection over original Robinhood captures,

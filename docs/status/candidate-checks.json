@@ -1,0 +1,146 @@
+{
+  "version": "OPTIONS_CANDIDATE_CHECKS_CHECKPOINT_V1",
+  "recordedAt": "2026-09-09T01:14:16.700Z",
+  "status": "LOCAL_VALIDATED_SOURCE_QUALIFICATION_OPEN",
+  "scope": [
+    "GLD",
+    "IBIT"
+  ],
+  "frontendPages": 8,
+  "newPages": 0,
+  "marketCalls": 0,
+  "accountCalls": 0,
+  "orderCalls": 0,
+  "hostChanges": 0,
+  "paidDataUsed": false,
+  "executionAllowed": false,
+  "winProbability": null,
+  "paperAdapterQualified": false,
+  "snapshot": {
+    "path": "data/runtime/options-candidate-checks/2026-09-09T01-05-32-047Z-96f5e859-8411-4095-9f8d-7acacad28b1c.json",
+    "recordedAt": "2026-09-09T01:05:32.047Z",
+    "assessedAt": "2026-09-09T01:05:29.732Z",
+    "marketCapturedAt": "2026-09-08T19:52:08Z",
+    "reportFingerprint": "sha256:ba5c5c45b5a46dc162c6744ae83b862d2e78046fca02073c9001225d501747ca",
+    "counts": {
+      "sampled": 36,
+      "premiumWithinBudget": 0,
+      "premiumOverBudget": 36,
+      "premiumUnknown": 0,
+      "conditionalResearch": 0,
+      "blocked": 36
+    },
+    "scope": "LATEST_BOUNDED_14_TO_45_DTE_GUIDANCE_SAMPLE_NOT_ALL_LISTED_CONTRACTS",
+    "independentCliRecovery": "VERIFIED"
+  },
+  "validation": {
+    "focused": {
+      "passed": 35,
+      "failed": 0
+    },
+    "aggregate": {
+      "status": "PASSED",
+      "componentCount": 160,
+      "testsExecuted": 4057,
+      "passed": 4057,
+      "failed": 0,
+      "durationMs": 84029,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'apps/options-workbench/api.js', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'apps/options-workbench/app.js', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'apps/options-workbench/guidance.js', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'apps/options-workbench/styles.css', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/status/development-progress.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/lib/options-workbench-data.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/options-workbench.mjs', LF will be replaced by CRLF the next time Git touches it"
+      ],
+      "log": "data/runtime/options-workbench-development/candidate-checks-validation-delivery.log"
+    },
+    "browser": {
+      "desktop": true,
+      "mobileViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mobileClientWidth": 375,
+      "mobileScrollWidth": 375,
+      "dialogWidth": 343,
+      "checkGroups": 15,
+      "assetFilterRows": 18,
+      "unfilteredRows": 36,
+      "premiumWithinFilterRows": 0,
+      "draftPreserved": true,
+      "draftSaveDisabled": true,
+      "discardRestoresUnknownFees": true,
+      "actualSnapshotSaved": true,
+      "consoleErrors": 0,
+      "viewportReset": true,
+      "serviceRestartRecovered": true
+    },
+    "finalFrontendClockDetailFocusedTests": {
+      "passed": 35,
+      "failed": 0,
+      "log": "data/runtime/options-workbench-development/candidate-checks-focused-final.log"
+    }
+  },
+  "preserved": {
+    "ownerLedger": {
+      "headSha256": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c",
+      "events": 0,
+      "trades": 0
+    },
+    "eventPlans": [
+      {
+        "id": "event-e7ef7723-4f95-46b6-984a-eb736cd8b06a",
+        "fingerprint": "sha256:b404cd00a8327b25710735c6c2f3733b2dff5d82c31933d84ef30f3cab442c97"
+      },
+      {
+        "id": "ppi-20260910-ibit-call-reaction",
+        "fingerprint": "sha256:9747b3a87878b41dc38965094f27dfcae12ec92bb131d7f27591da2bc2956c41"
+      }
+    ],
+    "originalIssuedGuidance": {
+      "path": "data/runtime/options-daily-guidance/reports/2026-09-09/2026-09-09T00-22-26-520Z-3e1e4ccf-a371-4608-9929-d9bba6c7ccdf.json",
+      "inputFingerprint": "sha256:1dae67bc5b604631e4f6a4d131aceebcb8440d7e325424c758c74876cbfb068e"
+    },
+    "all15WorkbenchComponents": "AVAILABLE"
+  },
+  "service": {
+    "url": "http://127.0.0.1:4173",
+    "hourlyPublicContextEnabled": true,
+    "lastHourlyReceipt": "data/runtime/options-context-service/2026-09-09/hourly-2026-09-09T01.receipt.json",
+    "lastFocusedReceipt": "data/runtime/options-context-service/2026-09-09/focused-hourly-2026-09-09T01.receipt.json",
+    "sourcesCommandStatus": "OK"
+  },
+  "progress": {
+    "localValidated": 4,
+    "partial": 3,
+    "notValidated": 3,
+    "firstFlowAvailable": 3,
+    "firstFlowOpen": 3,
+    "gateAdvanced": false
+  },
+  "remaining": [
+    "Independent option-side and size timing",
+    "Full contract/deliverable and exchange-session evidence",
+    "Source-use qualification and reviewed paper execution model",
+    "Declared fees/slippage and separate account qualification",
+    "First qualified real-price lifecycle and prospective outcome validation"
+  ],
+  "git": {
+    "baseCommit": "0d600fa3aee8824c838b805be6cf4214a2e16552",
+    "authorization": "OWNER_PREVIOUSLY_AUTHORIZED_COMMIT_AND_PUSH",
+    "runtimeExcluded": true
+  }
+}
