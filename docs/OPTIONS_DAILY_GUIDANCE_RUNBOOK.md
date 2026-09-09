@@ -34,6 +34,16 @@ with independent sanitized source receipts and no brokerage access. An existing
 same-hour/day claim prevents duplicate reads. A failed source remains failed;
 do not retry to manufacture success or relabel old headlines as new.
 
+When starting the persistent workbench from Codex, use the supported approved
+per-command network path for `node scripts/start-options-workbench.mjs --no-open`.
+A child started in the restricted command environment can inherit its network
+denial. The launcher checks loopback interface identity only; it cannot upgrade
+an already running process or establish successful outbound reads. Before a
+needed restart, identify the exact Alpha workspace/script process and matching
+127.0.0.1:4173 listener. Keep claims/failed receipts and verify the next natural
+hourly collection. Do not change global security settings or create a collector.
+See [startup correction](OPTIONS_COLLECTOR_STARTUP_CORRECTION.md).
+
 The public service also has an independent hourly `focused_news` claim. It reads
 three fixed supplemental feeds: Federal Reserve speeches, EIA Today in Energy
 and CoinDesk. Original six-feed claims and journals remain unchanged. A completed

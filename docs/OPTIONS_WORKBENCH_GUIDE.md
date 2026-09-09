@@ -42,6 +42,14 @@ opens the browser. It reuses an existing matching service. Node 24.12 or newer
 and the repository dependencies are required; install missing dependencies with
 `npm ci`. No paid service or new package was added for this frontend.
 
+The launch message confirms only the local interface. Successful public source
+reads have separate timestamps in News & calendar. If the collector reports a
+local network permission denial, the message does not identify who configured
+it. A Codex-started service needs the supported approved network execution path;
+simply reusing a restricted process does not change its permissions. The
+[startup correction](OPTIONS_COLLECTOR_STARTUP_CORRECTION.md) preserves prior
+failures and uses the next ordinary hourly collection to verify recovery.
+
 The terminal command runs in the foreground; Ctrl+C stops that instance. A
 different development port can be selected with
 `npm run options:workbench -- --port 4174`. Do not run multiple writers against

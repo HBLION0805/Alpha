@@ -8,6 +8,18 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+Public collector startup was corrected after a restricted launch produced nine
+local access-denied feed results and a failed BTC read. The existing service was
+restarted through the supported per-command network approval path; its loopback
+health alone is not verification. Keep the failed hour's claims and receipts;
+use the next natural hourly source records to assess recovery. The frontend now
+distinguishes a scheduled collector from successful reads. See
+[startup correction](OPTIONS_COLLECTOR_STARTUP_CORRECTION.md). Actual next-hour
+verification succeeded: nine feeds OK (BEA partial), BTC usable at receipt,
+unchanged failed evidence and empty owner ledger. See
+[recovery delivery](OPTIONS_COLLECTOR_STARTUP_DELIVERY.md) and
+[checkpoint](status/collector-startup.json). This does not qualify a paper trade.
+
 Continued development adds the read-only [cost desk](OPTIONS_COST_DESK_DELIVERY.md)
 below Trade planner. It compares original declared fees (null preserved) or an
 explicit reviewed nonprofessional single-execution assumption across 0/1/2/5 exit

@@ -5,7 +5,7 @@ import {join,relative,isAbsolute} from 'node:path';
 import {classifyFocusedHeadline,buildFocusedNews,FOCUSED_NEWS_SOURCES} from '../src/engines/options-drivers/OptionsFocusedNews.ts';
 import {parseDriverFeed,parseFocusedFeed,readPublicDriverFeed,readPublicFocusedFeed,FOCUSED_SOURCE_URLS} from './lib/options-driver-io.mjs';
 import {refreshFocusedNews,readFocusedSupplement,verifyFocusedNews,focusedNewsView} from './lib/options-focused-news-io.mjs';
-import {focusedContext,filterFocusedNews} from '../apps/options-workbench/focused-news.js';
+import {focusedContext,filterFocusedNews,deniedNewsSources,newsAccessNotice} from '../apps/options-workbench/focused-news.js';
 import {contextRefreshSlots,runPublicContextOnce} from './options-context-service.mjs';
 import {startOptionsWorkbench} from './options-workbench.mjs';
 
@@ -82,4 +82,16 @@ await test('asset and macro filters retain only matching focused rows',()=>{cons
 await test('focused page escapes headlines and preserves unknown dates',()=>{const f=buildFocusedNews([item('Bitcoin <script>alert(1)</script>',{publishedAt:null})],[],at);const html=focusedContext({focusedNews:{data:f}});assert(html.includes('&lt;script&gt;'));assert(!html.includes('<script>'));assert(html.includes('Publication Time Unknown'));assert(html.includes('No attributed interpretation'));});
 await test('focused frontend asset is served with existing CSP',()=>temp(async root=>{const app=await startOptionsWorkbench({port:0,workspaceRoot:root});try{const r=await fetch(app.url+'/focused-news.js');assert.equal(r.status,200);assert(r.headers.get('content-security-policy'));assert((await r.text()).includes('filterFocusedNews'));}finally{await app.close();}}));
 
+await test('access denial notice identifies only structured current permission failures',()=>{
+  const sources=[{id:'fed',status:'FAILED',diagnostic:'FEED_NETWORK_ACCESS_DENIED'},{id:'sec',status:'FAILED',diagnostic:'HTTP_403'},{id:'bea',status:'FAILED',diagnostic:'FEED_NETWORK_FAILED'}],before=JSON.stringify(sources);
+  assert.deepEqual(deniedNewsSources(sources).map(s=>s.id),['fed']);const html=newsAccessNotice(sources);assert(html.includes('1 feed recorded a local permission denial'));assert(html.includes('not who set a restriction'));assert.equal(JSON.stringify(sources),before);
+});
+await test('successful recovery removes current denial notice without changing original evidence',()=>{
+  const failed={id:'fed',status:'FAILED',diagnostic:'FEED_NETWORK_ACCESS_DENIED'},recovered={...failed,status:'OK',diagnostic:null};assert(newsAccessNotice([failed]));assert.equal(newsAccessNotice([recovered]),'');assert.equal(failed.status,'FAILED');assert.equal(newsAccessNotice([{...failed,status:'OK'}]),'');
+});
+await test('missing and nonpermission failures do not invent local restrictions',()=>{assert.equal(newsAccessNotice(),'');assert.deepEqual(deniedNewsSources(),[]);assert.equal(newsAccessNotice([{status:'FAILED',diagnostic:'HTTP_403'},{status:'FAILED',diagnostic:'NETWORK_FAILED'}]),'');});
+await test('focused page displays transport gaps and retains source observation clocks',()=>{
+  const sources=[{id:'fed',label:'Federal Reserve',kind:'PRIMARY_PUBLISHER',status:'FAILED',observedAt:at,diagnostic:'FEED_NETWORK_ACCESS_DENIED',partial:true}],f=buildFocusedNews([item('Gold demand')],sources,at),html=focusedContext({focusedNews:{data:f}});
+  assert(html.includes('Public news collection needs network access.'));assert(html.includes('Gold demand'));assert(html.includes('FEED_NETWORK_ACCESS_DENIED'));assert(html.includes('Last feed read'));
+});
 console.log(passed+'/'+passed+' tests passed.');

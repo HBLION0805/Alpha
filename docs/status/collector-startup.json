@@ -1,0 +1,177 @@
+{
+  "version": "OPTIONS_COLLECTOR_STARTUP_CHECKPOINT_V1",
+  "recordedAt": "2026-09-09T03:05:27.799Z",
+  "status": "NATURAL_HOURLY_PUBLIC_RECOVERY_VERIFIED",
+  "oldPid": 22976,
+  "newPid": 23484,
+  "newProcessStartedAt": "2026-09-09T02:51:55.296Z",
+  "verifiedHour": "2026-09-09T03",
+  "evidence": {
+    "path": "data/runtime/options-workbench-development/collector-startup-after-20260909.json",
+    "recordedAt": "2026-09-09T03:03:37.355Z",
+    "sha256": "b49f9c7bb6ddcb492d3f9fe9de659c8cf10c1078e60144dc58672928b4e8cb28"
+  },
+  "sourceHealth": [
+    {
+      "id": "fed",
+      "label": "Federal Reserve releases",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:55.766Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": false
+    },
+    {
+      "id": "bls",
+      "label": "BLS economic indicators",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:55.779Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": false
+    },
+    {
+      "id": "bea",
+      "label": "BEA economic releases",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:55.898Z",
+      "diagnostic": "1 invalid headline items rejected",
+      "partial": true,
+      "refreshOverdue": false
+    },
+    {
+      "id": "ecb",
+      "label": "European Central Bank releases",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:56.141Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": false
+    },
+    {
+      "id": "ofac",
+      "label": "US Treasury OFAC actions",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:56.014Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": false
+    },
+    {
+      "id": "sec",
+      "label": "SEC press releases",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:55.882Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": false
+    },
+    {
+      "id": "fed_speeches",
+      "label": "Federal Reserve speeches & testimony",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:56.733Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": false
+    },
+    {
+      "id": "eia_energy",
+      "label": "EIA Today in Energy",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:56.771Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": false
+    },
+    {
+      "id": "coindesk",
+      "label": "CoinDesk reporting",
+      "kind": "NEWS_REPORTING",
+      "status": "OK",
+      "observedAt": "2026-09-09T03:00:56.768Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": false
+    }
+  ],
+  "btc": {
+    "receivedAt": "2026-09-09T03:00:56.442Z",
+    "sourceTime": "2026-09-09T03:00:54.375466312Z",
+    "status": "OBSERVED_CONTEXT",
+    "usableAtReceipt": true
+  },
+  "preservation": {
+    "filesVerified": 12,
+    "journalPrefixesVerified": 2,
+    "failedHourReattempted": false,
+    "ownerLedgerEvents": 0,
+    "ownerLedgerHeadSha256": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c",
+    "settingsUnchanged": true
+  },
+  "guidance": {
+    "automaticReportVerified": true,
+    "recoveryNoteVerified": true,
+    "latestReport": {
+      "path": "data/runtime/options-daily-guidance/reports/2026-09-09/2026-09-09T03-02-37-729Z-443b414d-1e54-45ff-b772-4bdc5d58a850.json",
+      "issuedAt": "2026-09-09T03:02:37.729Z",
+      "assessedAt": "2026-09-09T03:02:35.133Z",
+      "assets": [
+        {
+          "symbol": "GLD",
+          "disposition": "WATCH",
+          "trend": "INSUFFICIENT_HISTORY"
+        },
+        {
+          "symbol": "IBIT",
+          "disposition": "WATCH",
+          "trend": "INSUFFICIENT_HISTORY"
+        }
+      ],
+      "inputFingerprint": "sha256:7b209b933cffa6cb885bb83223d692af8635b6b52660dc84c3dcc23cb091b506"
+    },
+    "latestReportVerified": true
+  },
+  "validation": {
+    "focusedNewsPassed": 45,
+    "aggregatePassed": 4116,
+    "aggregateFailed": 0,
+    "aggregateComponents": 162,
+    "typecheck": "PASSED",
+    "logPath": "data/runtime/options-workbench-development/collector-startup-validation.log",
+    "desktopBeforeAfterInspected": true,
+    "browser": {
+      "beforeDenialNotice": true,
+      "afterDenialNotice": false,
+      "recoveryInterpretation": true,
+      "width": 1265,
+      "scrollWidth": 1265,
+      "errorCount": 0
+    },
+    "launcherReuseVerified": true
+  },
+  "workstreamCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "firstPaperFlowGates": {
+    "available": 3,
+    "open": 3
+  },
+  "sourceQualified": false,
+  "accountAccessed": false,
+  "executionAllowed": false,
+  "scheduleChanges": false,
+  "globalSecurityChanges": false,
+  "continuousAvailabilityGuaranteed": false,
+  "next": "Reconcile incompatible allocation/risk declarations; independently qualify aligned source, contract and session evidence before a real-price paper adapter."
+}

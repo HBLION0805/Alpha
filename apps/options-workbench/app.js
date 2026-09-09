@@ -5,6 +5,7 @@ import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand
 import {eventRequest} from './event-research.js';
 import {candidateCheckDetail} from './candidate-checks.js';
 import {costDeskResult,costRequestMatches} from './cost-desk.js';
+import {deniedNewsSources} from './focused-news.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -40,7 +41,8 @@ async function reload(board=state?.selectedBoardId??null){
     state=await request('/api/state'+(board?'?board='+encodeURIComponent(board):''));
     if(ui.costDeskResult&&!costRequestMatches({scenario:ui.costDeskResult.original.scenario,feeBasis:ui.costDeskResult.feeBasis},costRequest())){clearCosts();ui.plannerResult=null;}
     const unavailable=Object.values(state).filter(v=>v&&typeof v==='object'&&['MISSING','BLOCKED'].includes(v.state)).length;
-    $('#connection').innerHTML=notice(`${state.manual.data?.origin==='SYNTHETIC_FIXTURE'?'<strong>ISOLATED SYNTHETIC LEDGER.</strong> ':''}<strong>Saved local evidence</strong> · ${state.backgroundContextRefreshEnabled?'Public context refreshes hourly while Alpha is running. Option quotes follow the scheduled reads.':'Market prices are not refreshed here.'}${unavailable?` ${unavailable} component(s) unavailable; see the affected page.`:''}`,unavailable?'error':'');
+    const newsDenied=deniedNewsSources(state.focusedNews?.data?.sources).length;
+    $('#connection').innerHTML=notice(`${state.manual.data?.origin==='SYNTHETIC_FIXTURE'?'<strong>ISOLATED SYNTHETIC LEDGER.</strong> ':''}<strong>Saved local evidence</strong> · ${newsDenied?'Public news collection recorded local network permission failures. See News & calendar for source clocks.':state.backgroundContextRefreshEnabled?'Public context is scheduled hourly while Alpha runs. Check News & calendar for successful reads. Option quotes follow their scheduled reads.':'Market prices are not refreshed here.'}${unavailable?` ${unavailable} component(s) unavailable; see the affected page.`:''}`,unavailable||newsDenied?'error':'');
     $('#loaded-at').textContent='Local files checked '+timestamp(state.loadedAt);render();
   }catch(e){$('#connection').innerHTML=notice(esc(e.message),'error');if(!state)$('#main').innerHTML=empty('Workspace unavailable','Start the local Alpha server, then use Reload saved data.');}
   finally{loading=false;$('#reload').disabled=false;}

@@ -1,5 +1,11 @@
 # Alpha
 
+Collector startup: [network access and actual source receipts](docs/OPTIONS_COLLECTOR_STARTUP_CORRECTION.md).
+Local interface availability does not prove a successful public-data refresh;
+News & calendar displays actual source health and receipt clocks.
+The [September 8 recovery check](docs/OPTIONS_COLLECTOR_STARTUP_DELIVERY.md)
+verified the next automatic hourly news/BTC read while retaining failed records.
+
 Latest planner addition: [fees and exit-allowance comparisons](docs/OPTIONS_COST_DESK_DELIVERY.md).
 Compare declared costs or an explicit dated rate assumption across four adverse
 exit allowances. Original settings and independent risk caps remain unchanged.

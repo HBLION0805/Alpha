@@ -23,6 +23,7 @@ try{
     for(let i=0;i<30;i++){await new Promise(resolveWait=>setTimeout(resolveWait,500));state=await health();if(state==='ALPHA')break;}
     if(state!=='ALPHA')throw Error('Alpha did not start. Check data/runtime/options-workbench-development/server-error.log.');
   }
-  console.log('Alpha is ready: '+url+' (local saved data; no automatic orders)');
+  console.log('Alpha local interface is ready: '+url+' (no automatic orders)');
+  console.log('Interface availability does not verify public network access. Check News & calendar for actual source receipts.');
   if(process.platform==='win32'&&!process.argv.includes('--no-open')){const browser=spawn('explorer.exe',[url],{detached:true,windowsHide:true,stdio:'ignore'});browser.on('error',()=>console.log('Open '+url+' in your browser.'));browser.unref();}
 }catch(error){console.error(error.message);process.exitCode=1;}

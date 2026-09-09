@@ -1,5 +1,18 @@
 # Alpha Development Standard v1.0
 
+## Public collector startup correction — September 8, 2026 late evening
+
+When launching the existing workbench from Codex, use the supported per-command
+network approval path. A detached collector inherits its launch environment;
+loopback health and `backgroundContextRefreshEnabled` do not verify outbound
+reads. Reusing a restricted process cannot upgrade its permissions. Match the
+exact workspace command and listener before restarting only that process.
+Preserve failed hourly claims/receipts and verify the next natural hourly read.
+See docs/OPTIONS_COLLECTOR_STARTUP_CORRECTION.md. No global security, endpoint,
+authentication, schedule, brokerage or risk-policy changes are included.
+Actual next-hour recovery: nine feeds OK (BEA partial) and BTC usable at receipt.
+See docs/OPTIONS_COLLECTOR_STARTUP_DELIVERY.md and docs/status/collector-startup.json.
+
 ## Latest allocation update — September 8, 2026 evening
 
 The Owner confirmed $100–$500 per trade with total capital still $1,000.
