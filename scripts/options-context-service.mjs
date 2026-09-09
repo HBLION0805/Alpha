@@ -7,15 +7,18 @@ import {guidanceLocal} from "../src/engines/options-daily-guidance/OptionsDailyG
 import {createWorkbenchData} from "./lib/options-workbench-data.mjs";
 import {publishGuidance} from "./lib/options-guidance-io.mjs";
 const BASE="data/runtime/options-context-service";
-const COMMANDS={headlines:"scripts/options-drivers.mjs",btc:"scripts/options-btc-context.mjs",treasury:"scripts/options-treasury.mjs",bls:"scripts/options-release-calendar.mjs",fomc:"scripts/options-fomc-calendar.mjs",focused_news:"scripts/options-focused-news.mjs"};
+const COMMANDS={headlines:"scripts/options-drivers.mjs",btc:"scripts/options-btc-context.mjs",treasury:"scripts/options-treasury.mjs",bls:"scripts/options-release-calendar.mjs",fomc:"scripts/options-fomc-calendar.mjs",focused_news:"scripts/options-focused-news.mjs",macro_context:"scripts/options-macro-context.mjs"};
 export function contextRefreshSlots(at) {
   const local=guidanceLocal(at),hour=at.slice(0,13).replace(/:/g,"-");
-  return [{key:"hourly-"+hour,sources:["headlines","btc"]},...(local.minute>=540&&local.minute<1080?[{key:"daily-"+local.date,sources:["treasury","bls","fomc"]}]:[]),{key:"focused-hourly-"+hour,sources:["focused_news"]}];
+  return [{key:"hourly-"+hour,sources:["headlines","btc"]},...(local.minute>=540&&local.minute<1080?[{key:"daily-"+local.date,sources:["treasury","bls","fomc"]}]:[]),{key:"focused-hourly-"+hour,sources:["focused_news"]},...(local.minute>=1020?[{key:"macro-daily-"+local.date,sources:["macro_context"]}]:[])];
 }
 export async function runPublicContextOnce({workspaceRoot=process.cwd(),now=()=>new Date().toISOString(),execute,issue=true}={}) {
   const root=realpathSync(workspaceRoot),at=now(),results=[];
   for(const slot of contextRefreshSlots(at)) {
-    const parent=BASE+"/"+at.slice(0,10),claim=parent+"/"+slot.key+".claim.json";
+    // The after-17:00 slot spans UTC midnight. Keep its claim under its New York
+    // date so the same local day cannot acquire a second claim in a new folder.
+    const claimDate=slot.key.startsWith("macro-daily-")?slot.key.slice("macro-daily-".length):at.slice(0,10);
+    const parent=BASE+"/"+claimDate,claim=parent+"/"+slot.key+".claim.json";
     io.directory(root,parent);
     if(existsSync(resolve(root,claim))){io.readBytes(root,claim,10000);results.push({slot:slot.key,status:"ALREADY_ATTEMPTED"});continue;}
     try{io.writeExclusive(root,claim,Buffer.from(JSON.stringify({at,slot:slot.key,sources:slot.sources,status:"STARTED"})+"\n"));}

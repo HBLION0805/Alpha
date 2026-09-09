@@ -7,6 +7,7 @@ import {candidateCheckDetail} from './candidate-checks.js';
 import {costDeskResult,costRequestMatches} from './cost-desk.js';
 import {deniedNewsSources} from './focused-news.js';
 import {capitalPolicyPanel,capitalPolicyMatches,policySettingsFromFields} from './capital-policy.js';
+import {macroComparisonRequest,macroPreviewMatches,macroComparisonResult} from './macro-context.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -60,6 +61,7 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.id==='macro-comparison-form'){ui.macroDraft=Object.fromEntries(new FormData(form));ui.macroPreview=null;dirty.add('macro');const p=$('#macro-comparison-preview');if(p)p.innerHTML=macroComparisonResult(null);const b=$('#save-macro-comparison');if(b)b.disabled=true;return;}
   if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));clearPolicyPreview();dirty.add('guidance');const snapshot=$('#save-candidate-checks');if(snapshot)snapshot.disabled=true;return;}
   if(form.id==='event-research-form'){Object.assign(ui.eventDraft,Object.fromEntries(new FormData(form)));dirty.add('event-research');return;}
   const key=form.id==='planner-form'?'planner':ui.journalMode,d=key==='planner'?ui.plannerDraft:drafts[key];
@@ -106,7 +108,7 @@ async function saveRecord(){
   finally{saving=false;$('#confirm-save').disabled=false;}
 }
 function download(kind){
-  const components={chain:{chain:state.chain,activity:state.activity},manual:{ledgerId:state.ledgerId,manual:state.manual},reviews:{manual:state.manual,outcomes:state.outcomes,activity:state.activity},context:{goldFramework:state.goldFramework,headlines:state.headlines,focusedNews:state.focusedNews,treasury:state.treasury,btc:state.btc,calendar:state.calendar}};
+  const components={chain:{chain:state.chain,activity:state.activity},manual:{ledgerId:state.ledgerId,manual:state.manual},reviews:{manual:state.manual,outcomes:state.outcomes,activity:state.activity},context:{macroContext:state.macroContext,goldFramework:state.goldFramework,headlines:state.headlines,focusedNews:state.focusedNews,treasury:state.treasury,btc:state.btc,calendar:state.calendar}};
   if(!Object.hasOwn(components,kind))return;
   const data={version:'OPTIONS_WORKBENCH_DOWNLOAD_V1',exportedAt:new Date().toISOString(),loadedAt:state.loadedAt,...components[kind],executionAllowed:false,accountAccessed:false};
   const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`alpha-${kind}-${state.loadedAt.slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Evidence download requested. The original local stores remain unchanged.');
@@ -127,6 +129,15 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='macro-comparison-form'){
+    event.preventDefault();if(saving||previewing)return;const action=event.submitter.value,button=event.submitter;
+    if(action==='SAVE'&&!macroPreviewMatches(ui.macroPreview,ui.macroDraft)){fail(Error('Preview the current values before saving.'),'#macro-comparison-error');return;}
+    const requestBody=macroComparisonRequest(ui.macroDraft);previewing=true;button.disabled=true;
+    void(async()=>{try{const result=await request('/api/macro-comparison',{action,request:requestBody});
+      if(action==='SAVE'){ui.macroPreview=null;dirty.delete('macro');await reload();toast('Model comparison saved. Actual remains owner-reported and unverified.');}
+      else if(JSON.stringify(requestBody)===JSON.stringify(macroComparisonRequest(ui.macroDraft))){ui.macroPreview=result;$('#macro-comparison-preview').innerHTML=macroComparisonResult(result);$('#save-macro-comparison').disabled=false;$('#macro-comparison-error').textContent='';}
+    }catch(e){fail(e,'#macro-comparison-error');}finally{previewing=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='event-research-form'){
     event.preventDefault();if(saving)return;saving=true;const button=event.submitter;button.disabled=true;
     void(async()=>{try{await request('/api/event-research',{action:'REGISTER',request:eventRequest(ui.eventDraft)});ui.eventDraft=null;ui.eventChoices=null;dirty.delete('event-research');await reload();toast('Research plan frozen. Future observations will retain their actual clocks.');}catch(e){fail(e,'#event-research-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;

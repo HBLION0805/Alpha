@@ -53,6 +53,15 @@ export function explainError(code){
   if(code==='WORKBENCH_COST_BOUNDS')return 'Cost comparisons support 1–100 contracts and bounded premium/cost amounts. Reduce the scenario size.';
   if(['WORKBENCH_COST_INPUT','WORKBENCH_COST_OVERFLOW','WORKBENCH_COST_CONVERGENCE'].includes(code))return 'The cost comparison could not be calculated safely. Review the inputs and retry.';
   const explanations={
+    MACRO_BENCHMARK_NOT_PROSPECTIVE_OR_RELEASE_FUTURE:'Use a model snapshot saved strictly before the actual release. The release must already have happened; check its UTC time.',
+    MACRO_BENCHMARK_UNAVAILABLE:'This saved source does not contain a usable inflation model. Select another saved benchmark.',
+    MACRO_BENCHMARK_CELL_MISSING:'The selected measure or period has no saved model value. Blank cells cannot be compared with an actual.',
+    MACRO_ADJUSTMENT_MISMATCH:'Match the seasonal adjustment of the actual to the saved model: SA or NSA.',
+    MACRO_ACTUAL_VALUE:'Enter the reported percent change with at most two decimal places, such as 0.30 or -0.10.',
+    MACRO_ACTUAL_SOURCE:'Use an HTTPS official release link: bls.gov for CPI or bea.gov for PCE. The reported value remains unverified.',
+    MACRO_REQUEST_ID:'Use a unique comparison ID with 3–80 lowercase letters, digits or hyphens.',
+    MACRO_REQUEST_CONFLICT:'This comparison ID already contains different inputs. Review the saved comparison or use a new ID.',
+    MACRO_METRIC:'Select a saved CPI or PCE model for the matching month and measure. This source does not provide PPI.',
     GUIDANCE_TRADE_BUDGET:'Enter positive budget amounts in whole cents. The maximum must be at least the minimum and no more than $1,000,000. Independent loss limits still apply.',
     EVENT_RESEARCH_WINDOW_ORDER:'All observation windows must be future when registered. PRE ends before the event; POST starts at least 30 minutes after release.',
     EVENT_RESEARCH_REGULAR_SESSION_WINDOW_REQUIRED:'Use weekday windows starting between 09:30 and 15:40 New York. Holidays and early closes still require separate verification.',

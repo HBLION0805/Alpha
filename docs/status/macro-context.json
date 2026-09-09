@@ -1,0 +1,86 @@
+{
+  "version": "OPTIONS_MACRO_CONTEXT_CHECKPOINT_V1",
+  "recordedAt": "2026-09-09T23:37:07.637Z",
+  "status": "PUBLIC_SOURCE_COLLECTION_ACTIVE_CONTEXT_PARTIAL",
+  "sources": [
+    {
+      "id": "nominal",
+      "status": "OK",
+      "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value_month=202609",
+      "receivedAt": "2026-09-09T23:29:29.810Z",
+      "recordedAt": "2026-09-09T23:29:29.950Z",
+      "path": "data/runtime/options-macro-context/2026-09-09/2026-09-09T23-29-29-950Z-53715d68-9e41-421d-a636-e84fabd4c1c2.json",
+      "sourceSha256": "34ff3a5f84fe04a8241426158eb6c111c1ca0eec2f0cea2488640bfd6e3d34a6",
+      "latestObservationDate": "2026-09-09"
+    },
+    {
+      "id": "dollar",
+      "status": "OK",
+      "url": "https://www.federalreserve.gov/releases/h10/current/",
+      "receivedAt": "2026-09-09T23:29:29.950Z",
+      "recordedAt": "2026-09-09T23:29:29.950Z",
+      "path": "data/runtime/options-macro-context/2026-09-09/2026-09-09T23-29-29-950Z-53715d68-9e41-421d-a636-e84fabd4c1c2.json",
+      "sourceSha256": "7c025d2861442274fceeef96e386eccee1dc0e87ce4dc5e764499446245d5eac",
+      "latestObservationDate": "2026-09-04"
+    },
+    {
+      "id": "nowcast",
+      "status": "OK",
+      "url": "https://www.clevelandfed.org/indicators-and-data/inflation-nowcasting",
+      "receivedAt": "2026-09-09T23:29:29.718Z",
+      "recordedAt": "2026-09-09T23:29:29.950Z",
+      "path": "data/runtime/options-macro-context/2026-09-09/2026-09-09T23-29-29-950Z-53715d68-9e41-421d-a636-e84fabd4c1c2.json",
+      "sourceSha256": "f22bc94d9d1ecea4a1a9bfdb85fef159c06058adf49d96bb0489dd7603b29874",
+      "latestObservationDate": null
+    }
+  ],
+  "sourceCadence": "ONCE_DAILY_AFTER_1700_AMERICA_NEW_YORK_WHILE_SERVICE_RUNNING",
+  "sourceClaim": "macro-daily-2026-09-09",
+  "hostScheduleChanged": false,
+  "oldSourceClaimsUnchanged": true,
+  "utcMidnightDuplicatePrevented": true,
+  "parCurveComparison": {
+    "status": "MISSING_OR_MISMATCHED_DATES",
+    "sourceDate": null,
+    "nominalMinusRealBps": null,
+    "meaning": "Par-curve spread only; not fitted breakeven, pure inflation expectations or intraday repricing."
+  },
+  "productionComparisons": 0,
+  "ownerLedgerEvents": 0,
+  "ownerLedgerHead": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c",
+  "evidence": {
+    "path": "data/runtime/options-workbench-development/macro-context-evidence-20260909.json",
+    "sha256": "78b79fae60e201804a2001236f40b9ecc508d107c65f29a36beb5b20c0623b36",
+    "preservedArtifacts": 20
+  },
+  "validation": {
+    "newMacroTests": 57,
+    "aggregateTests": 4238,
+    "failed": 0,
+    "typecheck": "PASSED",
+    "desktopWidth": 1265,
+    "desktopScrollWidth": 1265,
+    "mobileViewport": [
+      390,
+      844
+    ],
+    "mobileContentWidth": 375,
+    "mobileScrollWidth": 375,
+    "browserErrors": 0
+  },
+  "progressCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "firstPaperFlow": {
+    "available": 3,
+    "open": 3
+  },
+  "pendingCapitalPolicyInstruction": true,
+  "intradayRatesAndDxy": "NOT_CONNECTED",
+  "consensus": "NOT_CONNECTED",
+  "automatedActuals": "NOT_CONNECTED",
+  "ppiModel": "NOT_PROVIDED",
+  "executionAllowed": false
+}

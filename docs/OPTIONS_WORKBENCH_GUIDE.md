@@ -1,5 +1,16 @@
 # Alpha options workbench
 
+Open **News & calendar → Rates, dollar & inflation benchmarks** for Treasury
+nominal yields, Fed broad USD/FX and Cleveland CPI/PCE models. Tables show source
+periods separately from actual read times. Collection is once daily after 17:00
+New York while the service runs; these are not intraday DXY or consensus feeds.
+Expand **Compare a released actual with a saved pre-release model** only after
+release: select its previously saved period/measure, enter the reported actual,
+matching SA/NSA, release UTC and BLS/BEA link, then preview and save. Missing or
+post-release benchmarks are rejected. Saved actuals remain Owner-reported and
+unverified; the result is model error in percentage points. Editing a draft
+invalidates its preview. See [delivery](OPTIONS_MACRO_CONTEXT_DELIVERY.md).
+
 Open **News & calendar → Gold driver cross-check** to inspect all 14 supplied
 factor areas and seven added checks. Expand a horizon profile for its declared
 review order, then expand a factor for existing families, new checks, source

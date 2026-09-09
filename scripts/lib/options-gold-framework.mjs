@@ -11,6 +11,12 @@ export function goldFrameworkView(state, at) {
     try{readinessClock(value);return value<=at;}catch{return false;}
   };
   const tr=treasury?.latestRetrieval,row=treasury?.currentRow;
+  const macro=read('macroContext');
+  const macroEvidence=id=>{const s=macro?.sources?.find(s=>s.id===id);return s?.status==='OK'&&s.latest?.status==='OK'&&knownClock(s.latest.receivedAt)&&knownClock(s.latest.recordedAt)?s.latest:null;};
+  const dollar=macroEvidence('dollar'),nowcast=macroEvidence('nowcast'),nominal=macroEvidence('nominal');
+  const dollarRow=dollar?.data.rows.at(-1);
+  const nominalRow=nominal?.data.rows.at(-1);
+  const nominalRate=nominalRow?.ratesBps?.[10]!=null?{kind:'DAILY_NOMINAL_PAR_YIELD',sourceDate:nominalRow.sourceDate,receivedAt:nominal.receivedAt,url:nominal.url,tenYearNominalYieldBps:nominalRow.ratesBps[10],description:'Treasury 10Y nominal par yield '+(nominalRow.ratesBps[10]/100).toFixed(2)+'%; daily context, not an intraday reaction.'}:null;
   const realRate=tr?.status==='OK' && knownClock(tr.receivedAt) && row
     && /^\d{4}-\d{2}-\d{2}$/.test(row.sourceDate) && row.sourceDate<=at.slice(0,10)
     && Number.isSafeInteger(row.ratesBps?.[10])
@@ -26,8 +32,11 @@ export function goldFrameworkView(state, at) {
       const key=h.link||`${h.sourceId}:${h.itemId}`;
       if(seen.has(key))return false;seen.add(key);return true;
     });
-    return {...entry,numericalCoverage:entry.id==='real_rates'&&realRate?'PARTIAL_DAILY_REAL_YIELD':'NOT_CONNECTED_FOR_CHECKLIST',
-      numericEvidence:entry.id==='real_rates'?realRate:null,
+    const extra=entry.id==='dollar'&&dollarRow?.broadIndexE4!=null?{kind:'BROAD_USD_NOT_DXY',sourceDate:dollarRow.sourceDate,receivedAt:dollar.receivedAt,url:dollar.url,description:'Fed broad USD '+(dollarRow.broadIndexE4/10000).toFixed(4)+'; daily observations in a delayed weekly release.'}:
+      entry.id==='inflation'&&nowcast?.data.rows.some(r=>r.valueBps!==null)?{kind:'MODEL_ESTIMATES_NOT_ACTUAL_OR_CONSENSUS',sourceDate:null,receivedAt:nowcast.receivedAt,url:nowcast.url,description:'Saved Cleveland Fed CPI/PCE model estimates. See the macro desk for period, adjustment and benchmark clocks.'}:null;
+    const rateEvidence=realRate?(nominalRate?{...realRate,nominal:nominalRate}:realRate):nominalRate;
+    return {...entry,numericalCoverage:entry.id==='real_rates'&&rateEvidence?(nominalRate?'PARTIAL_DAILY_RATE_CONTEXT':'PARTIAL_DAILY_REAL_YIELD'):extra?'PARTIAL_'+extra.kind:'NOT_CONNECTED_FOR_CHECKLIST',
+      numericEvidence:entry.id==='real_rates'?rateEvidence:extra,
       headlineLeadCount:matching.length,
       headlineLeads:matching.slice(0,3).map(h=>({headline:h.headline,url:h.link,publishedAt:h.publishedAt,receivedAt:h.observedAt,
         freshness:!knownClock(h.publishedAt)?'UNKNOWN_OR_FUTURE_PUBLICATION':Date.parse(at)-Date.parse(h.publishedAt)>72*3600000?'STALE':'RECENT',
@@ -42,7 +51,7 @@ export function goldFrameworkView(state, at) {
       marketUse:'Saved quote sample only; current underlying OHLCV, NAV and executable option paths are not established.',
       calendarSources:Object.entries(calendar?.sources??{}).filter(([,s])=>s.state==='AVAILABLE'&&knownClock(s.latestReceivedAt)).map(([id,s])=>({id,receivedAt:s.latestReceivedAt,
         refreshOverdue:s.refreshOverdue??null,scope:'SCHEDULE_ONLY_NOT_ACTUAL_OR_CONSENSUS'})),
-      readerStates:Object.fromEntries(['treasury','focusedNews','guidance','calendar','barQuality'].map(k=>[k,state[k]?.state??'UNAVAILABLE']))},
+      readerStates:Object.fromEntries(['treasury','macroContext','focusedNews','guidance','calendar','barQuality'].map(k=>[k,state[k]?.state??'UNAVAILABLE']))},
     limitations:[
       'All 14 screenshot areas are cross-referenced, not fully monitored numerical factors. Seven overlays expand the review checklist.',
       'Prior coverage means catalog content, never live data availability. References are research documentation, not newly connected feeds.',

@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## 2026-09-09 - Connect official macro context and prospective model comparisons
+
+- Added three bounded sources for nominal yields, broad USD/FX and CPI/PCE models.
+- Integrated raw-source recovery, source clocks, failure/last-known states and a
+  protected preview/save comparison desk into the frontend and Host context.
+- Added a separate daily after-17:00 New York claim, including DST and UTC-date
+  rollover checks. Preserved old schedules, journals, settings and order scope.
+- Verified all three actual source reads. No production actuals were entered.
+  See [delivery](OPTIONS_MACRO_CONTEXT_DELIVERY.md).
+
 ## 2026-09-09 - Cross-check gold drivers and show actual monitoring gaps
 
 - Added 14 screenshot mappings, seven explicit review checks and five horizon /

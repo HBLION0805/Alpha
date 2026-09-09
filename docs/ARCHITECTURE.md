@@ -1,5 +1,17 @@
 # Alpha Architecture
 
+## Public macro numerical context
+
+OptionsMacroContext validates fixed Treasury nominal, Fed H.10 and Cleveland
+nowcast schemas. Independent source batches retain raw text, clocks and hashes;
+readers reparse and reject corrupted or ambiguous evidence. Separate model-error
+comparisons require a saved benchmark strictly before an Owner-declared actual
+release and recompute on recovery. No consensus or verified actual is inferred.
+Workbench/context export/Host brief and the gold projection consume this desk.
+A separate New York date claim adds the three daily after-17:00 reads without
+changing old slot identities or Host fields. See
+[specification](specifications/OPTIONS_MACRO_CONTEXT_V1.md).
+
 ## Gold driver review framework
 
 `OptionsGoldFramework` adds an immutable crosswalk over the unchanged 16-family

@@ -44,7 +44,7 @@ function decode(value: string): string {
   return replaced;
 }
 /** Deliberately restricted XML, not a general XML or HTML interpreter. */
-function xmlTree(source: string): XmlNode {
+export function xmlTree(source: string): XmlNode {
   if (new TextEncoder().encode(source).byteLength > TREASURY_MAX_BYTES) fail("BODY_TOO_LARGE");
   if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f\ufffe\uffff]/u.test(source) || /[\ud800-\udfff]/u.test(source)) fail("XML_CHARACTER");
   let xml = source;

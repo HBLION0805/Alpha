@@ -8,6 +8,15 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+Public macro context is now active: three daily official sources, raw-source
+recovery and prospective model-error comparisons with frontend parity. Latest
+actual receipts and limitations are in [delivery](OPTIONS_MACRO_CONTEXT_DELIVERY.md)
+and [checkpoint](status/macro-context.json). Old source/Host fields remain intact;
+after-17:00 macro collection has its own New York date claim. DXY, consensus and
+automatic official actuals are still absent. No reported actual or trade was
+added to production. The separate $100-minimum capital-policy instruction below
+remains pending.
+
 September 9 gold screenshot cross-check is implemented in News & calendar,
 context export and Host brief: 14 mapped areas, seven extra checks, five declared
 review profiles and explicit numeric/news gaps. The original 16/94 catalog is

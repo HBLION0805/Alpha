@@ -1,5 +1,21 @@
 # Alpha Development Standard v1.0
 
+## Public macro context — September 9, 2026
+
+Three new fixed anonymous sources are active through the local context service:
+Treasury nominal par yields, Fed H.10 broad USD/FX, and Cleveland inflation
+nowcasts. The independent macro-daily claim runs after 17:00 New York and uses
+its local date across UTC midnight; all old claims and Host fields stay intact.
+Current receipts are in docs/status/macro-context.json. Broad USD is not DXY;
+model estimates are not official actuals or consensus. Compare only a model
+saved strictly before the Owner-declared release with a matching reported
+actual; actual/time remain unverified. No production actuals have been saved.
+Retain all original journals and source clocks. See
+[delivery](docs/OPTIONS_MACRO_CONTEXT_DELIVERY.md) and
+[specification](docs/specifications/OPTIONS_MACRO_CONTEXT_V1.md). The Owner's
+separate old-capital-plan cancellation with $100 minimum remains pending; do
+not re-ask the obsolete clarification or claim this source change resolved it.
+
 ## Gold driver cross-check — September 9, 2026
 
 The latest screenshot request is implemented as 14 mapped areas plus seven

@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-09-09 - Preserve source lag and prospective inflation model benchmarks
+
+Use bounded free official nominal yields, broad USD/FX and inflation nowcasts
+as dated macro context. Do not substitute broad USD for DXY, a par-curve spread
+for fitted breakeven, or a model estimate for survey consensus. Record benchmarks
+before releases and label reported actuals as unverified. A new independent
+local-date claim after 17:00 avoids UTC-midnight duplicate collection while old
+claims stay unchanged. See [delivery](OPTIONS_MACRO_CONTEXT_DELIVERY.md).
+
 ## 2026-09-09 - Separate gold review priorities from fitted trading signals
 
 Cross-reference the Owner's 14 gold areas and add seven review overlays while

@@ -1,5 +1,10 @@
 # Alpha
 
+Latest macro context: [official rates, dollar and inflation benchmarks](docs/OPTIONS_MACRO_CONTEXT_DELIVERY.md).
+News & calendar now shows dated Treasury nominal yields, Fed broad USD/FX and
+Cleveland Fed model estimates. Daily collection is after 17:00 New York while
+Alpha runs. Broad USD is not DXY; model error is not market-consensus surprise.
+
 Gold research: [factor cross-check and horizon priorities](docs/OPTIONS_GOLD_FRAMEWORK_DELIVERY.md).
 News & calendar maps all 14 Owner framework areas and seven added checks to
 existing coverage. Saved daily values, news leads and missing feeds stay distinct.

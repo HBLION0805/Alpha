@@ -5,6 +5,16 @@ workspace C:/Users/liuha/.codex/worktrees/8f09/Alpha. Development stays in the
 current conversation. No development continuation, progress reports, orders,
 account tools, paid steps, re-login, consent, quota resets or new tasks.
 
+## Public macro context addition
+
+The local context service also claims three official macro reads once per New
+York date after 17:00: Treasury nominal, Fed H.10 broad USD/FX and Cleveland CPI/PCE
+models. Its macro-daily claim uses the local date across UTC midnight. This does
+not change Host schedule/restore fields or existing source claims. The Host
+brief exposes saved macroContext: retain its source lag and distinguish model
+estimates from consensus and reported actuals. No second refresh is required
+when today's macro claim already exists. See [delivery](OPTIONS_MACRO_CONTEXT_DELIVERY.md).
+
 ## Route and claim
 
 Run `node node_modules/tsx/dist/cli.mjs scripts/options-daily-guidance.mjs --route`

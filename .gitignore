@@ -78,3 +78,6 @@ data/runtime/options-context-service/
 data/runtime/options-focused-news/
 data/runtime/options-event-research/
 data/runtime/options-event-research-inputs/
+data/runtime/options-macro-context/
+data/runtime/options-macro-context-probe/
+data/runtime/options-macro-comparisons/
