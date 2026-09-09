@@ -8,6 +8,14 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The Owner explicitly changed allocation to $100–$500 **per trade**, retaining
+$1,000 total capital. The versioned declaration is saved and active across
+guidance, candidate checks, overview and planning. The independent $5 planned
+loss/$25 full-premium caps still apply. Seventeen of the current 36 sampled
+premiums fall in the new range; all remain NO_TRADE under other checks. Old
+reports and the two frozen PPI studies retain their original $50 budgets.
+See [delivery](OPTIONS_TRADE_BUDGET_DELIVERY.md) and [activation](status/trade-budget.json).
+
 The Owner requested continued development toward a real-price paper flow.
 [Candidate checks](OPTIONS_CANDIDATE_CHECKS_DELIVERY.md) now project the unchanged
 guidance/feasibility engine into 15 grouped checks on the Daily guidance page.

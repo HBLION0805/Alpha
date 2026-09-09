@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-08 - Activate owner-declared per-trade allocation
+
+- Saved the confirmed $100–$500 range with $1,000 equity and synchronized
+  guidance, candidate filters, overview and planner transfer/calculation.
+- Preserved separate loss caps, unknown costs and all original saved records.
+  A below-minimum contract never creates an automatic quantity increase.
+- Added versioned allocation-only evaluation and boundary/recovery tests.
+  See [delivery](OPTIONS_TRADE_BUDGET_DELIVERY.md).
+
 ## 2026-09-08 - Add candidate quote, cost and risk checks
 
 - Added 15 grouped checks over unchanged guidance and feasibility decisions,

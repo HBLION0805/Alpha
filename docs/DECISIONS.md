@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-09-08 - Version owner allocation without rewriting risk history
+
+The Owner confirmed $100–$500 per trade at $1,000 equity. A new declaration
+replaces the allocation comparison only, preserving the original calculator
+and every independent risk check. Its minimum applies to selection and never
+increases quantity. Old reports and studies retain their frozen declarations;
+only new settings/views use the new range. See
+[specification](specifications/OPTIONS_TRADE_BUDGET_V1.md).
+
 ## 2026-09-08 - Separate affordability from risk and source qualification
 
 - Compose the accepted guidance and feasibility engines without changing their

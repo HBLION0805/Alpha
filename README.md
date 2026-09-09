@@ -1,5 +1,9 @@
 # Alpha
 
+Current allocation: [owner-declared $100–$500 per trade](docs/OPTIONS_TRADE_BUDGET_DELIVERY.md)
+with $1,000 total capital. Independent planned-loss and stress caps remain;
+budget membership alone does not qualify a trade.
+
 Latest planning step: [candidate quote, cost and risk checks](docs/OPTIONS_CANDIDATE_CHECKS_DELIVERY.md).
 Daily guidance now separates premium affordability from all-in allocation,
 planned loss and full-premium stress, with inspectable blockers and independently

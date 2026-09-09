@@ -1,5 +1,5 @@
 import type { GuidanceInput, GuidanceQuote, GuidanceSettings, GuidanceSymbol, GuidanceScenario } from "../../contracts/OptionsDailyGuidance";
-import { evaluateOptionsRetailFeasibility } from "../options-retail-feasibility/OptionsRetailFeasibilityEngine";
+import { evaluateOptionsPlanningFeasibility, validateTradeBudget } from "../options-retail-feasibility/OptionsTradeBudget";
 import { readinessClock } from "../options-readiness/OptionsReadinessEngine";
 import { exchangeLocalDate } from "../market-calendar/MarketCalendarValidation";
 
@@ -15,13 +15,13 @@ export function guidanceLocal(at: string) {
   return { date: exchangeLocalDate(at,"America/New_York"), minute:Number(p.hour)*60+Number(p.minute), weekday:p.weekday };
 }
 export function validateGuidanceSettings(value: GuidanceSettings): GuidanceSettings {
-  if (!value || Object.keys(value).sort().join() !== ["currentEquityCents","settledCashCents","roundTripFeesCents","slippageReserveCents","stopLossBps","rewardMultipleMilliR"].sort().join()) fail("SETTINGS_FIELDS");
+  if (!value || Object.keys(value).sort().join() !== ["currentEquityCents","settledCashCents","roundTripFeesCents","slippageReserveCents","stopLossBps","rewardMultipleMilliR",...(Object.hasOwn(value,"tradeBudget")?["tradeBudget"]:[])].sort().join()) fail("SETTINGS_FIELDS");
   for (const k of ["currentEquityCents","settledCashCents","roundTripFeesCents","slippageReserveCents"] as const) {
     const v=value[k]; if ((k==="roundTripFeesCents" || k==="slippageReserveCents") && v===null) continue;
     if (typeof v!=="number" || !Number.isSafeInteger(v) || v<0 || v>100000000) fail("SETTINGS_MONEY");
   }
   if (!positive(value.currentEquityCents) || !Number.isInteger(value.stopLossBps) || value.stopLossBps<1000 || value.stopLossBps>2500 || ![1500,2000].includes(value.rewardMultipleMilliR)) fail("SETTINGS_POLICY");
-  return {...value};
+  return {...value,...(Object.hasOwn(value,"tradeBudget")?{tradeBudget:validateTradeBudget(value.tradeBudget)}:{})};
 }
 export const defaultGuidanceSettings = (): GuidanceSettings => ({currentEquityCents:100000,settledCashCents:100000,roundTripFeesCents:null,slippageReserveCents:null,stopLossBps:2000,rewardMultipleMilliR:2000});
 
@@ -89,7 +89,7 @@ export function assessDailyGuidance(input: GuidanceInput) {
       if(q.updatedAt&&equity?.sourceAt&&Math.abs(Date.parse(q.updatedAt)-Date.parse(equity.sourceAt))>120000)blockers.push("UNDERLYING_OPTION_CLOCK_MISMATCH");
       if(direction.direction==="UP"&&q.type!=="call"||direction.direction==="DOWN"&&q.type!=="put")blockers.push("OPPOSES_OBSERVED_TREND");
       const scenario: GuidanceScenario={...settings,symbol,strategy:q.type==="call"?"LONG_CALL":"LONG_PUT",quantity:1,contractMultiplier:100,bidPerShareCents:q.bidCents??-1,askPerShareCents:q.askCents??-1,minimumPriceTickCents:q.tickCents??-1,mode:"NORMAL"};
-      const feasibility=evaluateOptionsRetailFeasibility(scenario);
+      const feasibility=evaluateOptionsPlanningFeasibility(scenario);
       blockers.push(...feasibility.blockers.map(b=>b.code));
       const ask=q.askCents,tick=q.tickCents;
       const stopTrigger=ask!==null&&tick!==null&&positive(tick)&&positive(ask)?Math.ceil(ask*(10000-settings.stopLossBps)/(10000*tick))*tick:null;
@@ -102,8 +102,8 @@ export function assessDailyGuidance(input: GuidanceInput) {
     candidates.sort((a,b)=>Number(a.disposition==="NO_TRADE")-Number(b.disposition==="NO_TRADE")||(a.contract.askCents??Infinity)-(b.contract.askCents??Infinity)||a.contract.expiry.localeCompare(b.contract.expiry)||a.contract.id.localeCompare(b.contract.id));
     return {symbol,equity:equity??null,trend:direction,disposition:candidates.some(c=>c.disposition==="CONDITIONAL_RESEARCH")?"CONDITIONAL_RESEARCH":"WATCH",blockers:[...new Set(assetBlockers)],candidates};
   });
-  return {version:"OPTIONS_DAILY_GUIDANCE_V1",assessedAt:input.at,marketCapturedAt:input.captureAt,assets,events:upcoming,sourceHealth:input.sourceHealth,headlines:input.headlines,context:input.context,settings,
-    policy:"Illustrative 20% premium-stop default, existing net 1.5R–2R economics and unchanged $50 allocation/$25 full-premium stress caps at $1,000. Cost declarations are scenarios, not verified brokerage fees.",
+  return {version:settings.tradeBudget?"OPTIONS_DAILY_GUIDANCE_V2":"OPTIONS_DAILY_GUIDANCE_V1",assessedAt:input.at,marketCapturedAt:input.captureAt,assets,events:upcoming,sourceHealth:input.sourceHealth,headlines:input.headlines,context:input.context,settings,
+    policy:settings.tradeBudget?`Owner-declared per-trade capital range $${(settings.tradeBudget.minCents/100).toFixed(2)}–$${(settings.tradeBudget.maxCents/100).toFixed(2)}, including the declared fee reserve. The independent 0.5% planned-loss and $25 full-premium stress caps remain. Cost declarations are scenarios, not verified brokerage fees.`:"Illustrative 20% premium-stop default, existing net 1.5R–2R economics and unchanged $50 allocation/$25 full-premium stress caps at $1,000. Cost declarations are scenarios, not verified brokerage fees.",
     coverage:"Six headline feeds and separate Treasury/BTC/calendar sources are not all 94 catalog indicators. A successful refresh does not mean new headlines. Scheduled snapshots are not continuous quotes.",
     ...(Object.hasOwn(input,"analyst")?{analyst:input.analyst??null}:{}),winProbability:null,executionAllowed:false,accountAccessed:false,rankingIsProfitForecast:false};
 }

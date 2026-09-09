@@ -1,5 +1,17 @@
 # Alpha Development Standard v1.0
 
+## Latest allocation update — September 8, 2026 evening
+
+The Owner confirmed $100–$500 per trade with total capital still $1,000.
+New settings carry `OWNER_TRADE_BUDGET_V1`; Daily guidance, Candidate checks,
+Overview and Trade planner use this range. Only allocation changed: the
+independent 0.5% planned-loss and $25 full-premium stress caps remain. A lower
+selection bound never implies buying more contracts. Unknown costs remain
+unknown. Old settings, issued reports, snapshots and frozen studies retain their
+original policies. See docs/OPTIONS_TRADE_BUDGET_DELIVERY.md and
+docs/status/trade-budget.json. Older $50 active-allocation descriptions below
+are historical; do not restore that setting. No source schedule or order change.
+
 ## Latest Owner direction — September 8, 2026
 
 The Owner requests daily source refresh and explicit GLD/IBIT advisory views,

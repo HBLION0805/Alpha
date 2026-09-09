@@ -1,0 +1,103 @@
+{
+  "version": "OPTIONS_TRADE_BUDGET_CHECKPOINT_V1",
+  "recordedAt": "2026-09-09T01:38:07.426Z",
+  "status": "ACTIVE_ALLOCATION_ONLY",
+  "ownerDirection": {
+    "equityCents": 100000,
+    "perTradeMinCents": 10000,
+    "perTradeMaxCents": 50000
+  },
+  "settingsPath": "data/runtime/options-daily-guidance/settings/2026-09-09/2026-09-09T01-28-40-613Z-77597bbd-9ff0-4930-a187-0fa48e78f63a.json",
+  "savedAt": "2026-09-09T01:28:40.613Z",
+  "retained": {
+    "plannedRiskBudgetBps": 50,
+    "plannedRiskBudgetCents": 500,
+    "fullPremiumStressCents": 2500,
+    "stopLossBps": 2000,
+    "rewardMultipleMilliR": 2000,
+    "roundTripFeesCents": null,
+    "slippageReserveCents": null,
+    "wholeContractsOnly": true,
+    "quantityIncreaseFromMinimum": false
+  },
+  "snapshot": {
+    "path": "data/runtime/options-candidate-checks/2026-09-09T01-30-12-199Z-b29b7564-22fd-46f3-bab0-786f1dc64992.json",
+    "assessedAt": "2026-09-09T01:30:10.092Z",
+    "recordedAt": "2026-09-09T01:30:12.199Z",
+    "reportFingerprint": "sha256:140237e61cf84983b57e1d97e213db00ffc64279073d0d4b9f8e55301a534a00",
+    "counts": {
+      "sampled": 36,
+      "premiumWithinBudget": 17,
+      "premiumOverBudget": 18,
+      "premiumBelowBudget": 1,
+      "premiumUnknown": 0,
+      "conditionalResearch": 0,
+      "blocked": 36
+    },
+    "scope": "SAVED_14_TO_45_DTE_GUIDANCE_SAMPLE_ONLY"
+  },
+  "preservation": {
+    "legacyCandidateReportFingerprint": "sha256:ba5c5c45b5a46dc162c6744ae83b862d2e78046fca02073c9001225d501747ca",
+    "legacyGuidanceInputFingerprint": "sha256:1dae67bc5b604631e4f6a4d131aceebcb8440d7e325424c758c74876cbfb068e",
+    "frozenPpiPlansVerified": 2,
+    "ownerLedgerEvents": 0,
+    "ownerLedgerHead": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c",
+    "noOldRecordsRewritten": true
+  },
+  "validation": {
+    "focused": {
+      "passed": 29,
+      "failed": 0
+    },
+    "aggregate": {
+      "status": "PASSED",
+      "passed": 4086,
+      "failed": 0,
+      "components": 161,
+      "log": "data/runtime/options-workbench-development/trade-budget-validation-final.log"
+    },
+    "browser": {
+      "overviewAndGuidanceMatch": true,
+      "plannerInheritsRange": true,
+      "contractTransferPreservesRange": true,
+      "withinRows": 17,
+      "belowRows": 1,
+      "illustrativePremiumCents": 15000,
+      "illustrativePlannedLossCents": 3000,
+      "illustrativeStressCents": 15000,
+      "allocationAcceptedButBothLossCapsBlocked": true,
+      "noIllustrativeRecordSaved": true,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "clientWidth": 375,
+      "scrollWidth": 375,
+      "consoleErrors": 0,
+      "viewportReset": true,
+      "serviceRestartRecovered": true,
+      "contextRefreshStillEnabled": true
+    },
+    "settingsRestart": "ACTUAL_SERVICE_AND_ISOLATED_HTTP_VERIFIED"
+  },
+  "marketCalls": 0,
+  "accountCalls": 0,
+  "orderCalls": 0,
+  "hostChanges": 0,
+  "executionAllowed": false,
+  "winProbability": null,
+  "paperAdapterQualified": false,
+  "progress": {
+    "localValidated": 4,
+    "partial": 3,
+    "notValidated": 3,
+    "firstFlowAvailable": 3,
+    "firstFlowOpen": 3,
+    "gateAdvanced": false
+  },
+  "git": {
+    "baseCommit": "e1d2955ebbea7ef0f5a04b27433ca4c449335453",
+    "runtimeExcluded": true,
+    "authorization": "OWNER_STANDING_COMMIT_PUSH_AUTHORIZATION"
+  }
+}

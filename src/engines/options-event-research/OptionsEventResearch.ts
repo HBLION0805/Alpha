@@ -1,7 +1,7 @@
 import type { EventResearchPlan, EventResearchFrame } from '../../contracts/OptionsEventResearch';
 import type { GuidanceQuote, GuidanceEquity } from '../../contracts/OptionsDailyGuidance';
 import { guidanceLocal, validateGuidanceSettings } from '../options-daily-guidance/OptionsDailyGuidance';
-import { evaluateOptionsRetailFeasibility } from '../options-retail-feasibility/OptionsRetailFeasibilityEngine';
+import { evaluateOptionsPlanningFeasibility as evaluateOptionsRetailFeasibility } from '../options-retail-feasibility/OptionsTradeBudget';
 import { readinessClock } from '../options-readiness/OptionsReadinessEngine';
 import { paperFingerprint } from '../options-paper/OptionsPaperTradingEngine';
 

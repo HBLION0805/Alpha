@@ -1,5 +1,15 @@
 # Alpha Architecture
 
+## Owner-declared allocation range
+
+`OptionsTradeBudget` composes retail v2 without changing the original calculator.
+Only an explicit versioned declaration replaces its allocation comparison;
+loss/cash/friction/probability checks are retained. Inputs without the declaration
+return identical legacy outputs. New guidance/check reports identify their
+versions and frozen records retain their own settings. Planner and event research
+dispatch through the same adapter; old event fingerprints still verify. See
+[specification](specifications/OPTIONS_TRADE_BUDGET_V1.md).
+
 ## Candidate checks projection
 
 `OptionsCandidateChecks` calls the unchanged daily guidance engine and retains

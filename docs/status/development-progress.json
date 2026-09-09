@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-09T01:14:16.700Z",
+  "recordedAt": "2026-09-09T01:35:48.897Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "0d600fa",
+  "comparedWithCommit": "e1d2955",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -21,8 +21,8 @@
       "name": "Single-trade risk and planning",
       "previousStatus": "LOCAL_VALIDATED",
       "status": "LOCAL_VALIDATED",
-      "detail": "Declared whole-contract, cost and risk diagnostics; real input qualification is separate.",
-      "evidence": "docs/OPTIONS_COVERAGE_INTERPRETATION.md"
+      "detail": "Declared $100–$500 allocation range with independent 0.5% planned-loss and $25 full-premium caps; exact whole-contract/cost diagnostics remain separate from source qualification.",
+      "evidence": "docs/OPTIONS_TRADE_BUDGET_DELIVERY.md"
     },
     {
       "id": "02",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "08",
-  "currentUnit": "Candidate quote, cost and risk checks before the Robinhood paper adapter",
-  "currentUnitAcceptance": "15 grouped local checks with preserved original decisions, desktop/mobile filtering, protected snapshots and independent recovery; zero real-price gates advanced.",
+  "currentWorkstream": "01",
+  "currentUnit": "Activate owner-declared $100–$500 per-trade allocation at $1,000 equity",
+  "currentUnitAcceptance": "Allocation declaration saved and synchronized across guidance, candidate checks, overview and planner. Independent loss limits and frozen records remain; no real-price gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -138,11 +138,11 @@
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4057,
+    "passed": 4086,
     "failed": 0,
-    "componentCount": 160
+    "componentCount": 161
   },
-  "latestOperationalEvidence": "docs/status/candidate-checks.json",
+  "latestOperationalEvidence": "docs/status/trade-budget.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": false,

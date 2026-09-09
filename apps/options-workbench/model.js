@@ -50,6 +50,7 @@ export function collectLessons(state){
 export function safeLink(value){try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password?url.href:null;}catch{return null;}}
 export function explainError(code){
   const explanations={
+    GUIDANCE_TRADE_BUDGET:'Enter positive budget amounts in whole cents. The maximum must be at least the minimum and no more than $1,000,000. Independent loss limits still apply.',
     EVENT_RESEARCH_WINDOW_ORDER:'All observation windows must be future when registered. PRE ends before the event; POST starts at least 30 minutes after release.',
     EVENT_RESEARCH_REGULAR_SESSION_WINDOW_REQUIRED:'Use weekday windows starting between 09:30 and 15:40 New York. Holidays and early closes still require separate verification.',
     EVENT_RESEARCH_TIMED_FUTURE_EVENT_REQUIRED:'Select a future official event with a known release time within 14 days.',

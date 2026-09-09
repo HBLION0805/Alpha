@@ -1,7 +1,7 @@
 import {request} from './api.js';
 import {routes,contractDetail,tradeDetail,plannerResult,detail,notice,table,empty} from './views.js';
 import {esc,words,dollars,timestamp,exactUsd,decimalText,decimalInteger,filterChain} from './model.js';
-import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand} from './forms.js';
+import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand,plannerBudgetDraft,tradeBudgetFromFields} from './forms.js';
 import {eventRequest} from './event-research.js';
 import {candidateCheckDetail} from './candidate-checks.js';
 
@@ -122,13 +122,13 @@ document.addEventListener('submit',event=>{
   }
   if(event.target.id==='guidance-settings-form'){
     event.preventDefault();const button=event.submitter;button.disabled=true;
-    void(async()=>{try{const d=Object.fromEntries(new FormData(event.target));const value={currentEquityCents:decimalInteger(d.currentEquityCents),settledCashCents:decimalInteger(d.settledCashCents),roundTripFeesCents:decimalInteger(d.roundTripFeesCents,2,true),slippageReserveCents:decimalInteger(d.slippageReserveCents,2,true),stopLossBps:Number(d.stopLossBps),rewardMultipleMilliR:Number(d.rewardMultipleMilliR)};await request('/api/guidance-settings',value);ui.guidanceSettingsDraft=null;dirty.delete('guidance');await reload();toast('Declared assumptions saved. Existing issued recommendations retain their original inputs.');}catch(e){fail(e,'#guidance-settings-error');}finally{if(button.isConnected)button.disabled=false;}})();return;
+    void(async()=>{try{const d=Object.fromEntries(new FormData(event.target));const value={currentEquityCents:decimalInteger(d.currentEquityCents),settledCashCents:decimalInteger(d.settledCashCents),roundTripFeesCents:decimalInteger(d.roundTripFeesCents,2,true),slippageReserveCents:decimalInteger(d.slippageReserveCents,2,true),stopLossBps:Number(d.stopLossBps),rewardMultipleMilliR:Number(d.rewardMultipleMilliR),...tradeBudgetFromFields(d)};await request('/api/guidance-settings',value);ui.guidanceSettingsDraft=null;dirty.delete('guidance');await reload();toast('Declared assumptions saved. Existing issued recommendations retain their original inputs.');}catch(e){fail(e,'#guidance-settings-error');}finally{if(button.isConnected)button.disabled=false;}})();return;
   }
   if(!['planner-form','journal-form'].includes(event.target.id))return;event.preventDefault();
   if(event.target.id==='journal-form'){void previewRecord();return;}
   if(calculating)return;calculating=true;const button=event.submitter;button.disabled=true;
   const draft=JSON.stringify(ui.plannerDraft);
-  void(async()=>{try{const result=await request('/api/evaluate',buildScenario(ui.plannerDraft));if(draft!==JSON.stringify(ui.plannerDraft))throw Error('Inputs changed during calculation. Calculate again.');ui.plannerResult=result;dirty.delete('planner');render();}catch(e){fail(e,'#planner-error');}finally{calculating=false;if(button.isConnected)button.disabled=false;}})();
+  void(async()=>{try{const result=await request('/api/evaluate',buildScenario(plannerBudgetDraft(ui.plannerDraft,state.guidance?.data?.current.settings)));if(draft!==JSON.stringify(ui.plannerDraft))throw Error('Inputs changed during calculation. Calculate again.');ui.plannerResult=result;dirty.delete('planner');render();}catch(e){fail(e,'#planner-error');}finally{calculating=false;if(button.isConnected)button.disabled=false;}})();
 });
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
@@ -147,7 +147,7 @@ document.addEventListener('click',event=>{void(async()=>{
     const c=state.guidance.data.current.assets.flatMap(a=>a.candidates).find(c=>c.contract.id===el.dataset.guidancePlan);if(!c)return;
     if(dirty.has('planner'))throw Error('Your planner draft is preserved. Clear or finish it before inspecting a candidate.');
     const q=c.contract,v=c.scenario,toUsd=n=>n===null||n<0?'':exactUsd(n);
-    ui.plannerDraft={symbol:q.symbol,strategy:v.strategy,equity:toUsd(v.currentEquityCents),cash:toUsd(v.settledCashCents),quantity:'1',tick:toUsd(q.tickCents),bid:toUsd(q.bidCents),ask:toUsd(q.askCents),fees:toUsd(v.roundTripFeesCents),slippage:toUsd(v.slippageReserveCents),stop:String(v.stopLossBps/100),reward:String(v.rewardMultipleMilliR/1000)};
+    ui.plannerDraft={symbol:q.symbol,strategy:v.strategy,equity:toUsd(v.currentEquityCents),cash:toUsd(v.settledCashCents),quantity:'1',tick:toUsd(q.tickCents),bid:toUsd(q.bidCents),ask:toUsd(q.askCents),fees:toUsd(v.roundTripFeesCents),slippage:toUsd(v.slippageReserveCents),stop:String(v.stopLossBps/100),reward:String(v.rewardMultipleMilliR/1000),budgetMin:v.tradeBudget?exactUsd(v.tradeBudget.minCents):'',budgetMax:v.tradeBudget?exactUsd(v.tradeBudget.maxCents):''};
     ui.planningSource={...q,bid:toUsd(q.bidCents),ask:toUsd(q.askCents),quoteUpdatedAt:q.updatedAt};ui.plannerResult=null;dirty.add('planner');navigate('planner');return;
   }
   if(el.id==='reset-guidance-assumptions'){ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}
