@@ -1,17 +1,19 @@
 import {request} from './api.js';
 import {routes,contractDetail,tradeDetail,plannerResult,detail,notice,table,empty} from './views.js';
 import {esc,words,dollars,timestamp,exactUsd,decimalText,decimalInteger,filterChain} from './model.js';
-import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand,plannerBudgetDraft,tradeBudgetFromFields} from './forms.js';
+import {plannerDefaults,registerDefaults,fillDefaults,buildScenario,buildCommand,plannerBudgetDraft} from './forms.js';
 import {eventRequest} from './event-research.js';
 import {candidateCheckDetail} from './candidate-checks.js';
 import {costDeskResult,costRequestMatches} from './cost-desk.js';
 import {deniedNewsSources} from './focused-news.js';
+import {capitalPolicyPanel,capitalPolicyMatches,policySettingsFromFields} from './capital-policy.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
 const drafts={register:registerDefaults(),fill:fillDefaults(),correct:fillDefaults()};
 const ui={chain:defaultFilters(),plannerDraft:plannerDefaults(),plannerResult:null,planningSource:null,costFeeBasis:'DECLARED_FEES',costDeskResult:null,journalMode:'register',journalDraft:drafts.register,reviewScope:'trades',lessonOrigin:'',reviewSearch:'',newsSource:'',newsSearch:'',newsAsset:''};
-let comparingCosts=false;
+let comparingCosts=false,previewingPolicy=false;
+function clearPolicyPreview(){ui.capitalPolicyPreview=null;const p=$('#capital-policy-preview');if(p)p.innerHTML=capitalPolicyPanel(null,{preview:true});}
 function costRequest(){return {scenario:buildScenario(plannerBudgetDraft(ui.plannerDraft,state.guidance?.data?.current.settings)),feeBasis:ui.costFeeBasis};}
 function clearCosts(){ui.costDeskResult=null;const panel=$('#cost-desk-result');if(panel)panel.innerHTML=costDeskResult(null);}
 let state=null,pending=null,pendingKey=null,requestId=null,loading=false,saving=false,calculating=false,previewing=false,toastTimer;
@@ -40,6 +42,7 @@ async function reload(board=state?.selectedBoardId??null){
   try{
     state=await request('/api/state'+(board?'?board='+encodeURIComponent(board):''));
     if(ui.costDeskResult&&!costRequestMatches({scenario:ui.costDeskResult.original.scenario,feeBasis:ui.costDeskResult.feeBasis},costRequest())){clearCosts();ui.plannerResult=null;}
+    if(ui.capitalPolicyPreview&&!dirty.has('guidance')&&!capitalPolicyMatches(ui.capitalPolicyPreview.settings,state.guidance?.data?.current.settings))clearPolicyPreview();
     const unavailable=Object.values(state).filter(v=>v&&typeof v==='object'&&['MISSING','BLOCKED'].includes(v.state)).length;
     const newsDenied=deniedNewsSources(state.focusedNews?.data?.sources).length;
     $('#connection').innerHTML=notice(`${state.manual.data?.origin==='SYNTHETIC_FIXTURE'?'<strong>ISOLATED SYNTHETIC LEDGER.</strong> ':''}<strong>Saved local evidence</strong> · ${newsDenied?'Public news collection recorded local network permission failures. See News & calendar for source clocks.':state.backgroundContextRefreshEnabled?'Public context is scheduled hourly while Alpha runs. Check News & calendar for successful reads. Option quotes follow their scheduled reads.':'Market prices are not refreshed here.'}${unavailable?` ${unavailable} component(s) unavailable; see the affected page.`:''}`,unavailable||newsDenied?'error':'');
@@ -57,7 +60,7 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
-  if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));dirty.add('guidance');const snapshot=$('#save-candidate-checks');if(snapshot)snapshot.disabled=true;return;}
+  if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));clearPolicyPreview();dirty.add('guidance');const snapshot=$('#save-candidate-checks');if(snapshot)snapshot.disabled=true;return;}
   if(form.id==='event-research-form'){Object.assign(ui.eventDraft,Object.fromEntries(new FormData(form)));dirty.add('event-research');return;}
   const key=form.id==='planner-form'?'planner':ui.journalMode,d=key==='planner'?ui.plannerDraft:drafts[key];
   d[el.name]=el.type==='checkbox'?el.checked:el.value;dirty.add(key);
@@ -130,7 +133,7 @@ document.addEventListener('submit',event=>{
   }
   if(event.target.id==='guidance-settings-form'){
     event.preventDefault();const button=event.submitter;button.disabled=true;
-    void(async()=>{try{const d=Object.fromEntries(new FormData(event.target));const value={currentEquityCents:decimalInteger(d.currentEquityCents),settledCashCents:decimalInteger(d.settledCashCents),roundTripFeesCents:decimalInteger(d.roundTripFeesCents,2,true),slippageReserveCents:decimalInteger(d.slippageReserveCents,2,true),stopLossBps:Number(d.stopLossBps),rewardMultipleMilliR:Number(d.rewardMultipleMilliR),...tradeBudgetFromFields(d)};await request('/api/guidance-settings',value);ui.guidanceSettingsDraft=null;dirty.delete('guidance');await reload();toast('Declared assumptions saved. Existing issued recommendations retain their original inputs.');}catch(e){fail(e,'#guidance-settings-error');}finally{if(button.isConnected)button.disabled=false;}})();return;
+    void(async()=>{try{const d=Object.fromEntries(new FormData(event.target));const value=policySettingsFromFields(d);await request('/api/guidance-settings',value);clearPolicyPreview();ui.guidanceSettingsDraft=null;dirty.delete('guidance');await reload();toast('Declared assumptions saved. Existing issued recommendations retain their original inputs.');}catch(e){fail(e,'#guidance-settings-error');}finally{if(button.isConnected)button.disabled=false;}})();return;
   }
   if(!['planner-form','journal-form'].includes(event.target.id))return;event.preventDefault();
   if(event.target.id==='journal-form'){void previewRecord();return;}
@@ -142,6 +145,13 @@ document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
   if(el.dataset.close){if(saving&&el.dataset.close==='preview-dialog')return;$('#'+el.dataset.close).close();return;}
   if(el.id==='reload'){await reload();return;}
+  if(el.id==='preview-capital-policy'){
+    if(previewingPolicy)return;previewingPolicy=true;el.disabled=true;$('#guidance-settings-error').textContent='';clearPolicyPreview();
+    try{const input=policySettingsFromFields(Object.fromEntries(new FormData($('#guidance-settings-form')))),r=await request('/api/capital-policy',input);
+      const form=$('#guidance-settings-form');if(!form||!capitalPolicyMatches(input,policySettingsFromFields(Object.fromEntries(new FormData(form)))))throw Error('Inputs changed during preview. Preview again.');
+      ui.capitalPolicyPreview=r;$('#capital-policy-preview').innerHTML=capitalPolicyPanel(r,{preview:true});
+    }catch(e){fail(e,'#guidance-settings-error');}finally{previewingPolicy=false;if(el.isConnected)el.disabled=false;}return;
+  }
   if(el.id==='compare-costs'){
     if(comparingCosts)return;comparingCosts=true;el.disabled=true;$('#cost-desk-error').textContent='';
     try{const input=costRequest(),r=await request('/api/cost-desk',input);if(!costRequestMatches(input,costRequest()))throw Error('Inputs changed during comparison. Compare again.');ui.costDeskResult=r;ui.plannerResult=r.original;render();}
@@ -163,7 +173,7 @@ document.addEventListener('click',event=>{void(async()=>{
     ui.plannerDraft={symbol:q.symbol,strategy:v.strategy,equity:toUsd(v.currentEquityCents),cash:toUsd(v.settledCashCents),quantity:'1',tick:toUsd(q.tickCents),bid:toUsd(q.bidCents),ask:toUsd(q.askCents),fees:toUsd(v.roundTripFeesCents),slippage:toUsd(v.slippageReserveCents),stop:String(v.stopLossBps/100),reward:String(v.rewardMultipleMilliR/1000),budgetMin:v.tradeBudget?exactUsd(v.tradeBudget.minCents):'',budgetMax:v.tradeBudget?exactUsd(v.tradeBudget.maxCents):''};
     ui.planningSource={...q,bid:toUsd(q.bidCents),ask:toUsd(q.askCents),quoteUpdatedAt:q.updatedAt};ui.plannerResult=null;clearCosts();dirty.add('planner');navigate('planner');return;
   }
-  if(el.id==='reset-guidance-assumptions'){ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}
+  if(el.id==='reset-guidance-assumptions'){clearPolicyPreview();ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}
   if(el.dataset.candidateCheck){const r=state.candidateChecks?.data?.current,row=r?.rows.find(x=>x.contract.id===el.dataset.candidateCheck);if(row)showDetail('Candidate checks',candidateCheckDetail(row,r));return;}
   if(el.id==='save-candidate-checks'){if(saving)return;if(dirty.has('guidance'))throw Error('Save or discard the planning-assumption draft first.');saving=true;el.disabled=true;try{const r=await request('/api/candidate-checks',{});await reload();toast('Check snapshot saved and verified at '+timestamp(r.assessedAt)+'. No trade was created.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reset-event-research'){ui.eventDraft=null;ui.eventChoices=null;dirty.delete('event-research');render();return;}

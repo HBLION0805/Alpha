@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-09-08 - Diagnose capital conflicts before a policy change
+
+The current allocation minimum exceeds retained independent loss limits.
+Present this conflict without waiting for or manufacturing a qualifying quote.
+An independent capital preflight shares the original engine's fixed limits and
+does not mutate its outputs. Form previews are calculation-only; resolving the
+conflict requires a separate Owner dollar-loss decision. See
+[specification](specifications/OPTIONS_CAPITAL_POLICY_V1.md).
+
 ## 2026-09-08 - Version owner allocation without rewriting risk history
 
 The Owner confirmed $100–$500 per trade at $1,000 equity. A new declaration

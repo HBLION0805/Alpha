@@ -1,0 +1,120 @@
+{
+  "version": "OPTIONS_CAPITAL_POLICY_CHECKPOINT_V1",
+  "recordedAt": "2026-09-09T03:29:03.725Z",
+  "status": "LOCAL_PREFLIGHT_VALIDATED",
+  "activeCapitalStatus": "CONFLICTING_CONSTRAINTS",
+  "evidence": {
+    "path": "data/runtime/options-workbench-development/capital-policy-after-20260909.json",
+    "recordedAt": "2026-09-09T03:25:53.575Z",
+    "sha256": "bb61444a39e6a71cae1d29c159515d052480c3c58b266677b4de69e29151b4a0"
+  },
+  "settings": {
+    "currentEquityCents": 100000,
+    "settledCashCents": 100000,
+    "roundTripFeesCents": null,
+    "slippageReserveCents": null,
+    "stopLossBps": 2000,
+    "rewardMultipleMilliR": 2000,
+    "tradeBudget": {
+      "version": "OWNER_TRADE_BUDGET_V1",
+      "minCents": 10000,
+      "maxCents": 50000
+    }
+  },
+  "limits": {
+    "plannedRiskBudgetBps": 50,
+    "plannedRiskBudgetCents": 500,
+    "fullPremiumStressCapCents": 2500
+  },
+  "illustrativeRows": [
+    {
+      "capitalCents": 10000,
+      "premiumCents": null,
+      "plannedLossCents": null,
+      "plannedLossLowerBoundCents": 2000,
+      "fullPremiumStressCents": 10000,
+      "plannedLossExceedsCap": true,
+      "stressExceedsCap": true,
+      "cashExceeded": false,
+      "standardContractPossibleByCents": null,
+      "inputIssue": null
+    },
+    {
+      "capitalCents": 30000,
+      "premiumCents": null,
+      "plannedLossCents": null,
+      "plannedLossLowerBoundCents": 6000,
+      "fullPremiumStressCents": 30000,
+      "plannedLossExceedsCap": true,
+      "stressExceedsCap": true,
+      "cashExceeded": false,
+      "standardContractPossibleByCents": null,
+      "inputIssue": null
+    },
+    {
+      "capitalCents": 50000,
+      "premiumCents": null,
+      "plannedLossCents": null,
+      "plannedLossLowerBoundCents": 10000,
+      "fullPremiumStressCents": 50000,
+      "plannedLossExceedsCap": true,
+      "stressExceedsCap": true,
+      "cashExceeded": false,
+      "standardContractPossibleByCents": null,
+      "inputIssue": null
+    }
+  ],
+  "validation": {
+    "focusedPassed": 32,
+    "aggregatePassed": 4148,
+    "aggregateFailed": 0,
+    "aggregateComponents": 163,
+    "typecheck": "PASSED",
+    "logPath": "data/runtime/options-workbench-development/capital-policy-final-validation.log",
+    "originalRetailComparisons": {
+      "baseCommit": "1bd5202",
+      "cases": 1084,
+      "allEqual": true
+    },
+    "browser": {
+      "previewRequestSucceeded": true,
+      "knownCostPreviewFirstRowRiskCents": 2280,
+      "editingClearsPreview": true,
+      "discardRestoresBlanks": true,
+      "savedSettingsUnchanged": true,
+      "desktopWidth": 1265,
+      "desktopScrollWidth": 1265,
+      "mobileViewport": "390x844",
+      "mobileWidth": 375,
+      "mobileScrollWidth": 375,
+      "tableClientWidth": 307,
+      "tableScrollWidth": 533,
+      "errors": 0,
+      "viewportReset": true
+    }
+  },
+  "preservation": {
+    "originalFilesVerified": 20,
+    "ownerLedgerEvents": 0,
+    "ownerLedgerHeadSha256": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c",
+    "settingsUnchanged": true
+  },
+  "publicRefreshEnabled": true,
+  "policyChanged": false,
+  "ownerDollarLossClarification": "PENDING",
+  "workstreamCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "firstPaperFlowGates": {
+    "available": 3,
+    "open": 3
+  },
+  "sourceQualified": false,
+  "accountAccessed": false,
+  "executionAllowed": false,
+  "scheduleChanges": false,
+  "winProbability": null,
+  "next": "Obtain separate Owner dollar-loss limits before changing policy; retain source, contract, session and cost qualification requirements for a real-price paper adapter."
+}

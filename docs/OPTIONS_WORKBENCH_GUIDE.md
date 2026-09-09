@@ -1,5 +1,12 @@
 # Alpha options workbench
 
+Daily guidance and Trade planner show **Capital policy preflight** using saved
+guidance assumptions. A conflict here can block every contract even with fresh
+quotes. Use **Preview capital limits** in the assumptions form to inspect an
+unsaved draft; editing or discarding clears its prior result. Preview does not
+save settings or change risk caps. Unknown costs stay unknown; lower bounds are
+separately labeled. See [delivery](OPTIONS_CAPITAL_POLICY_DELIVERY.md).
+
 Event research also contains **Option candle evidence**. Gray candles have an
 omitted interpolation flag; colored candles have an explicit noninterpolated
 source declaration. Missing/interpolated slots stay gaps. Expand a contract's

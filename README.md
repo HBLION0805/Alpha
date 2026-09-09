@@ -1,5 +1,9 @@
 # Alpha
 
+Latest planning check: [capital policy preflight](docs/OPTIONS_CAPITAL_POLICY_DELIVERY.md).
+Daily guidance and Trade planner show the conflict between the current allocation
+range and independent loss caps. Preview form values without changing settings.
+
 Collector startup: [network access and actual source receipts](docs/OPTIONS_COLLECTOR_STARTUP_CORRECTION.md).
 Local interface availability does not prove a successful public-data refresh;
 News & calendar displays actual source health and receipt clocks.

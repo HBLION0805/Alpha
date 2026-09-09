@@ -13,6 +13,13 @@ const REQUIRED_FIELDS = [
 ] as const;
 const OPTIONAL_FIELDS = ["claimedWinProbabilityBps"] as const;
 const MAX_SAFE = BigInt(Number.MAX_SAFE_INTEGER);
+/** Shared fixed limits; neither allocation settings nor caller probability change them. */
+export function optionsRetailRiskLimits(currentEquityCents: number) {
+  if (!Number.isSafeInteger(currentEquityCents) || currentEquityCents < 1) throw Error("RETAIL_RISK_EQUITY");
+  return Object.freeze({plannedRiskBudgetBps:50 as const,
+    plannedRiskBudgetCents:Number(BigInt(currentEquityCents)*50n/10000n),
+    fullPremiumStressCapCents:2500 as const});
+}
 const UNVERIFIED_REQUIREMENTS = Object.freeze([
   "Broker account type, options permission level and settled-cash provenance",
   "Real-time option-chain provenance, contract identity, executable sizes and trading session",
@@ -142,7 +149,8 @@ export function evaluateOptionsRetailFeasibility(input: unknown): OptionsRetailF
     const premium = BigInt(scenario.askPerShareCents) * quantityMultiplier;
     const tickLoss = BigInt(scenario.minimumPriceTickCents) * quantityMultiplier;
     const grossStop = premium * BigInt(scenario.stopLossBps) / 10000n;
-    const riskBudget = equity * 50n / 10000n;
+    const limits = optionsRetailRiskLimits(scenario.currentEquityCents);
+    const riskBudget = BigInt(limits.plannedRiskBudgetCents);
     const normalBudget = equity * 500n / 10000n;
     const requestedBudget = equity * (scenario.mode === "CONDITIONAL" ? 1000n : 500n) / 10000n;
     const fees = scenario.roundTripFeesCents === null ? null : BigInt(scenario.roundTripFeesCents);
@@ -171,7 +179,7 @@ export function evaluateOptionsRetailFeasibility(input: unknown): OptionsRetailF
       plannedStopBps: scenario.stopLossBps,
       grossStopLossCents: money(grossStop),
       plannedStopCents: nullableMoney(stop),
-      plannedRiskBudgetBps: 50,
+      plannedRiskBudgetBps: limits.plannedRiskBudgetBps,
       plannedRiskBudgetCents: money(riskBudget),
       oneTickLossCents: money(tickLoss),
       rewardMultipleMilliR: scenario.rewardMultipleMilliR,
@@ -184,7 +192,7 @@ export function evaluateOptionsRetailFeasibility(input: unknown): OptionsRetailF
       immediateLiquidationFrictionCents: nullableMoney(friction),
       remainingStopCapacityCents: nullableMoney(remainingStop),
       stressLossCents: nullableMoney(capital),
-      legacyNormalMaxLossCents: 2500,
+      legacyNormalMaxLossCents: limits.fullPremiumStressCapCents,
       legacyEventMaxLossCents: 1250,
     };
     if (scenario.mode === "CONDITIONAL") {
@@ -201,7 +209,7 @@ export function evaluateOptionsRetailFeasibility(input: unknown): OptionsRetailF
     if (roundedGrossTarget !== null && roundedGrossTarget * 10000n > premium * 8000n) {
       block("PROFIT_TARGET_CAP_EXCEEDED", "The indicative exit rounded to the declared quote tick requires more than the configured 80% premium-gain ceiling.");
     }
-    if ((capital ?? premium) > 2500n) block("LEGACY_MAX_LOSS_LIMIT_EXCEEDED", "Full premium plus the fee reserve exceeds the separately recorded $25 normal stress-loss cap; the planned stop does not replace this cap.");
+    if ((capital ?? premium) > BigInt(limits.fullPremiumStressCapCents)) block("LEGACY_MAX_LOSS_LIMIT_EXCEEDED", "Full premium plus the fee reserve exceeds the separately recorded $25 normal stress-loss cap; the planned stop does not replace this cap.");
     return result(scenario, economics, blockers);
   } catch (error) {
     if (!(error instanceof Error) || error.message !== "NUMERIC_OVERFLOW") throw error;

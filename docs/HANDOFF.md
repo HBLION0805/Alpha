@@ -8,6 +8,12 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+[Capital policy preflight](OPTIONS_CAPITAL_POLICY_DELIVERY.md) now shows the
+current allocation/risk conflict in Daily guidance and Trade planner and previews
+unsaved assumptions through a protected calculation-only endpoint. Shared retail
+limits preserve original outputs. The Owner's separate dollar-loss clarification
+is pending; no limits or old records changed. See [checkpoint](status/capital-policy.json).
+
 Public collector startup was corrected after a restricted launch produced nine
 local access-denied feed results and a failed BTC read. The existing service was
 restarted through the supported per-command network approval path; its loopback

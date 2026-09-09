@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Capital policy preflight — September 8, 2026 late evening
+
+Daily guidance and Trade planner now show a read-only capital preflight; the
+assumptions form can preview without saving. The range's $100 minimum conflicts
+with the original $5 planned-risk / $25 full-premium limits. All remain unchanged.
+Shared fixed limits retain original retail outputs, and unknown fees remain
+unknown beside separately labeled lower bounds. No capital interval or preview
+qualifies a contract or authorizes increased risk. The Owner has been asked to
+clarify acceptable dollar-loss limits before a separate policy change. See
+docs/OPTIONS_CAPITAL_POLICY_DELIVERY.md and docs/status/capital-policy.json.
+
 ## Public collector startup correction — September 8, 2026 late evening
 
 When launching the existing workbench from Codex, use the supported per-command

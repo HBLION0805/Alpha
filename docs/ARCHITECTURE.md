@@ -1,5 +1,14 @@
 # Alpha Architecture
 
+## Capital policy preflight
+
+`OptionsCapitalPolicy` validates copied guidance settings and derives necessary
+capital inequalities using the retail engine's shared, unchanged fixed limits.
+It is a separate workbench projection and calculation-only protected POST. It
+does not alter original guidance, feasibility, paper journals or source clocks.
+UI preview and saved-setting panels stay separate. See
+[specification](specifications/OPTIONS_CAPITAL_POLICY_V1.md).
+
 ## Owner-declared allocation range
 
 `OptionsTradeBudget` composes retail v2 without changing the original calculator.

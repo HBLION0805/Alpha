@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## 2026-09-08 - Expose allocation and risk-policy conflicts
+
+- Added a separate saved-settings capital preflight and unsaved form preview.
+- Shared unchanged retail limits; preserved original calculations and records.
+- Kept unknown costs distinct from necessary loss bounds. No risk cap changed.
+  See [delivery](OPTIONS_CAPITAL_POLICY_DELIVERY.md).
+
 ## 2026-09-08 - Activate owner-declared per-trade allocation
 
 - Saved the confirmed $100–$500 range with $1,000 equity and synchronized
