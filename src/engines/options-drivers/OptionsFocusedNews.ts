@@ -8,6 +8,12 @@ export const FOCUSED_NEWS_SOURCES = Object.freeze([
 ]);
 
 const macroRules = [
+  { id: "treasury_fiscal", label: "Treasury supply & fiscal funding", pattern: /\b(?:treasury (?:buybacks?|refunding|auctions?|issuance|cash|settlement)|quarterly refunding|when-issued|TGA|debt (?:ceiling|limit)|fiscal deficit)\b/i,
+    mechanism: "Auction and fiscal cash surprises can affect yields and funding. Treasury buybacks support cash management or market liquidity; they are not Fed QE and do not guarantee falling yields." },
+  { id: "macro_detail", label: "Growth & release detail", pattern: /\b(?:jobless claims|JOLTS|ADP (?:employment|payroll)|ISM (?:manufacturing|services)|retail sales|nonfarm|non-farm|wage growth)\b/i,
+    mechanism: "Compare the first release, prior revisions and timestamped expectations. ADP and official payrolls measure different things; missing consensus stays unknown." },
+  { id: "collateral", label: "Collateral & forced selling", pattern: /\b(?:margin (?:requirements?|calls?)|collateral (?:stress|calls?)|repo (?:stress|rates?)|forced liquidation|funding stress|credit spreads?)\b/i,
+    mechanism: "Cash demand or collateral changes may force sales even during haven demand. A margin change alone does not identify position direction or prove liquidation." },
   { id: "rates", label: "Rates & policy", pattern: /\b(?:interest rates?|real yields?|bond yields?|treasury yields?|monetary policy|rate (?:hikes?|cuts?)|FOMC|economic outlook|policy communication)\b/i,
     mechanism: "Rates can alter gold's opportunity cost and Bitcoin's funding conditions; the surprise relative to expectations still needs verification." },
   { id: "inflation_jobs", label: "Inflation & growth", pattern: /\b(?:inflation|CPI|PPI|PCE|payrolls?|employment situation|job openings|unemployment|gross domestic|GDP|economic indicators|consumer price|producer price)\b/i,

@@ -8,6 +8,15 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+September 9 gold screenshot cross-check is implemented in News & calendar,
+context export and Host brief: 14 mapped areas, seven extra checks, five declared
+review profiles and explicit numeric/news gaps. The original 16/94 catalog is
+unchanged. See [delivery](OPTIONS_GOLD_FRAMEWORK_DELIVERY.md). The Owner's preceding
+instruction cancelled the original capital plan and retained the $100 minimum;
+that separate policy implementation remains pending. Do not describe the older
+request for dollar-loss clarification below as renewed Owner intent or claim
+that new loss limits have been activated by this gold-context work.
+
 [Capital policy preflight](OPTIONS_CAPITAL_POLICY_DELIVERY.md) now shows the
 current allocation/risk conflict in Daily guidance and Trade planner and previews
 unsaved assumptions through a protected calculation-only endpoint. Shared retail

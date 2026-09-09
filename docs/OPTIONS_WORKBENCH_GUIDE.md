@@ -1,5 +1,12 @@
 # Alpha options workbench
 
+Open **News & calendar → Gold driver cross-check** to inspect all 14 supplied
+factor areas and seven added checks. Expand a horizon profile for its declared
+review order, then expand a factor for existing families, new checks, source
+dates, missing numbers and unverified news leads. A recent feed read is not a
+current rate, confirmed cause or entry signal. Context export includes the same
+framework. See [delivery](OPTIONS_GOLD_FRAMEWORK_DELIVERY.md).
+
 Daily guidance and Trade planner show **Capital policy preflight** using saved
 guidance assumptions. A conflict here can block every contract even with fresh
 quotes. Use **Preview capital limits** in the assumptions form to inspect an

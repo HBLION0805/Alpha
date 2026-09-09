@@ -1,5 +1,9 @@
 # Alpha
 
+Gold research: [factor cross-check and horizon priorities](docs/OPTIONS_GOLD_FRAMEWORK_DELIVERY.md).
+News & calendar maps all 14 Owner framework areas and seven added checks to
+existing coverage. Saved daily values, news leads and missing feeds stay distinct.
+
 Latest planning check: [capital policy preflight](docs/OPTIONS_CAPITAL_POLICY_DELIVERY.md).
 Daily guidance and Trade planner show the conflict between the current allocation
 range and independent loss caps. Preview form values without changing settings.

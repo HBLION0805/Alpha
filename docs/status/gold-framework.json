@@ -1,0 +1,50 @@
+{
+  "version": "OPTIONS_GOLD_FRAMEWORK_CHECKPOINT_V1",
+  "recordedAt": "2026-09-09T23:07:21.976Z",
+  "status": "LOCAL_FRAMEWORK_VALIDATED_NUMERICAL_COVERAGE_PARTIAL",
+  "originalCatalog": {
+    "families": 16,
+    "indicators": 94
+  },
+  "screenshotAreas": 14,
+  "addedChecks": 7,
+  "reviewProfiles": 5,
+  "partialNumericalAreas": 1,
+  "currentRegime": "UNDETERMINED",
+  "calibratedProbability": null,
+  "evidence": {
+    "path": "data/runtime/options-workbench-development/gold-framework-evidence-20260909.json",
+    "sha256": "8b057ea8483ec9f7cd734d0f849873ef8dde5b09a609e711ad3ce5fce72a0e1f",
+    "assessedAt": "2026-09-09T23:04:39.971Z",
+    "preservedArtifacts": 20,
+    "ownerLedgerEvents": 0
+  },
+  "validation": {
+    "newTests": 33,
+    "focusedNewsTests": 45,
+    "aggregateTests": 4181,
+    "failed": 0,
+    "typecheck": "PASSED",
+    "desktopWidth": 1265,
+    "desktopScrollWidth": 1265,
+    "mobileViewport": [
+      390,
+      844
+    ],
+    "mobileContentWidth": 375,
+    "mobileScrollWidth": 375,
+    "browserErrors": 0
+  },
+  "progressCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "firstPaperFlow": {
+    "available": 3,
+    "open": 3
+  },
+  "pendingCapitalPolicyInstruction": true,
+  "sourceScheduleChanged": false,
+  "executionAllowed": false
+}

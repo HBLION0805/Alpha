@@ -20,6 +20,7 @@ import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTr
 import { parseChainSurveyJson } from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import { guidanceView, saveGuidanceSettings } from './options-guidance-io.mjs';
 import { focusedNewsView } from './options-focused-news-io.mjs';
+import { goldFrameworkView } from './options-gold-framework.mjs';
 import { readEventResearch, registerEventResearch, saveEventResearchReport } from './options-event-research-io.mjs';
 import { readBarQualityDesk } from './options-bar-quality-io.mjs';
 import { candidateChecksView, saveCandidateChecks } from './options-candidate-checks-io.mjs';
@@ -103,6 +104,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.focusedNews=await component(()=>focusedNewsView(root,headlines.data,at),at);
     result.eventResearch=await component(()=>readEventResearch(root,at),at);
     result.barQuality=await component(()=>readBarQualityDesk(root,at),at);
+    result.goldFramework=await component(()=>goldFrameworkView(result,at),at);
     return result;
   }
   function preview(command){

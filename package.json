@@ -201,7 +201,8 @@
     "test:options-candidate-checks": "tsx scripts/options-candidate-checks.test.mjs",
     "test:options-trade-budget": "tsx scripts/options-trade-budget.test.mjs",
     "test:options-cost-desk": "tsx scripts/options-cost-desk.test.mjs",
-    "test:options-capital-policy": "tsx scripts/options-capital-policy.test.mjs"
+    "test:options-capital-policy": "tsx scripts/options-capital-policy.test.mjs",
+    "test:options-gold-framework": "tsx scripts/options-gold-framework.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

@@ -1,5 +1,15 @@
 # Alpha Architecture Decisions
 
+## 2026-09-09 - Separate gold review priorities from fitted trading signals
+
+Cross-reference the Owner's 14 gold areas and add seven review overlays while
+preserving the old 16/94 catalog and saved reports. Horizon-specific check orders
+express research priorities, not causal weights. A macro surprise and its rate/FX
+responses must not multiply independent support. News, daily numeric observations
+and missing series remain separate in the interface and Host brief. No factor
+count grants a probability or relaxes option/capital gates. See
+[specification](specifications/OPTIONS_GOLD_FRAMEWORK_V1.md).
+
 ## 2026-09-08 - Diagnose capital conflicts before a policy change
 
 The current allocation minimum exceeds retained independent loss limits.

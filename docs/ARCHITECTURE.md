@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## Gold driver review framework
+
+`OptionsGoldFramework` adds an immutable crosswalk over the unchanged 16-family
+catalog. `goldFrameworkView` reads existing workbench components, retaining
+daily Treasury source/receipt clocks and missing numerical coverage. The frontend,
+context export and Host brief consume this separate projection. Review profiles
+are declared check orders; no fitted weight, signal or current regime is inferred.
+Focused title relevance includes additional fiscal, macro and collateral terms.
+No issued guidance input, journal, risk setting or network cadence is changed.
+See [specification](specifications/OPTIONS_GOLD_FRAMEWORK_V1.md).
+
 ## Capital policy preflight
 
 `OptionsCapitalPolicy` validates copied guidance settings and derives necessary

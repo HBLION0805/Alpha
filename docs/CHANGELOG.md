@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-09 - Cross-check gold drivers and show actual monitoring gaps
+
+- Added 14 screenshot mappings, seven explicit review checks and five horizon /
+  stress checklists to News & calendar, context export and the Host brief.
+- Retained actual Treasury source dates, reader failures, unknown numerical
+  coverage and unverified news leads. Original catalog/reports stay unchanged.
+- Expanded relevant titles for Treasury buybacks/refunding, macro release detail
+  and collateral stress. No new feed, risk setting or order route.
+
 ## 2026-09-08 - Expose allocation and risk-policy conflicts
 
 - Added a separate saved-settings capital preflight and unsaved form preview.

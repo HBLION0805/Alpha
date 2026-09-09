@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Gold driver cross-check — September 9, 2026
+
+The latest screenshot request is implemented as 14 mapped areas plus seven
+checks over the unchanged 16-family / 94-indicator catalog. News & calendar,
+context export and Host brief expose five declared review orders, actual saved
+dates and numerical gaps. No regime, fitted weights, direction or probability is
+inferred. See docs/OPTIONS_GOLD_FRAMEWORK_DELIVERY.md. Original reports remain
+immutable. The preceding Owner cancellation of the old capital plan / retained
+$100 minimum is a separate pending policy implementation; older clarification
+paragraphs are historical, not permission to disregard the newer instruction.
+
 ## Capital policy preflight — September 8, 2026 late evening
 
 Daily guidance and Trade planner now show a read-only capital preflight; the

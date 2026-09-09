@@ -56,6 +56,15 @@ never be promoted to current verified facts.
 
 ## Daily focused news review
 
+The Host brief now includes `goldFramework`: all 14 Owner screenshot areas and
+seven added checks, with declared horizon/regime review orders and actual saved
+coverage. Use it to select relevant evidence and name missing inputs. Do not
+count a macro release, Fed repricing, rates and USD as independent causal votes,
+infer a current regime from the checklist, or treat daily TIPS as intraday yields.
+Technical confirmation requires qualified underlying OHLCV; option histories
+do not supply GLD VWAP. The framework adds no source calls or schedule change.
+See [cross-check and corrections](OPTIONS_GOLD_FRAMEWORK_DELIVERY.md).
+
 At the first daily 09:00-or-later context wake, use the existing Host web tool for
 a bounded focused review: at most three targeted searches and four article opens.
 Inspect today's saved analyst note first to avoid duplicating a completed review.
