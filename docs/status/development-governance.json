@@ -1,0 +1,70 @@
+{
+  "version": "OPTIONS_DEVELOPMENT_GOVERNANCE_SETUP_V1",
+  "recordedAt": "2026-09-10T03:33:00Z",
+  "localDate": "2026-09-09",
+  "timeZone": "America/New_York",
+  "status": "PENDING_EXPLICIT_STANDALONE_TASK_AUTHORIZATION",
+  "protocol": "docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md",
+  "alignmentBaseline": "docs/status/development-alignment-baseline-20260909.json",
+  "setupRecord": "docs/development-daily/2026-09-09/setup-baseline.md",
+  "requestedReviews": [
+    {
+      "phase": "MORNING_PLAN",
+      "name": "Alpha 早间开发目标",
+      "requestedLocalTime": "08:00",
+      "cadence": "DAILY_INCLUDING_WEEKENDS",
+      "proposedPrompt": "在当前 Alpha 对话和工作区 C:\\Users\\liuha\\.codex\\worktrees\\8f09\\Alpha 执行。先阅读 docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md、最新 Owner 指示、AGENTS.md、docs/HANDOFF.md、docs/status/development-progress.json、固定核查基线和最近的 docs/development-daily 记录。所有日期按 America/New_York 解释，使用实际执行时间，遵守协议的迟到、缺失基线和重复执行规则。\n\n每天纽约时间 08:00 制定当天完整开发目标。检查上次晚间核查、实际代码变更和已有运行证据，为上午、下午及验收安排三到五个有稳定编号的具体目标，逐项写明对应流程环节、当前缺口、必要的后端与前端工作、验收标准、依赖及数据不可用时的替代工作。优先修复现有数据链路、完成真实报价纸面交易闭环及每日建议能力。列出全部八个流程环节、十条工程工作线和六个纸面验证关卡的实际基线，保持各自分母，不用模块或测试数量代替产品进度。计划不代表工作已完成或正在全天自动开发。\n\n把英文记录追加保存到 docs/development-daily/YYYY-MM-DD/，附实际时间、当前提交及可核对的证据；在本对话用中文报告。仅维护审查记录和有证据支持的进度摘要，保留其他正在进行的修改；保存、提交和推送审查文件沿用 Owner 已有授权。开发实施仍在当前对话继续，此次定时运行不启动自动开发循环、不修改 gld-ibit 行情任务、不调用新的行情采集或账户/下单工具，也不进行付费或登录操作。",
+      "requestedTargetThreadId": "01a077f7-0355-7b70-89b2-1ff2e0d89261",
+      "automationId": null,
+      "active": false
+    },
+    {
+      "phase": "EVENING_AUDIT",
+      "name": "Alpha 晚间进度核查",
+      "requestedLocalTime": "21:00",
+      "cadence": "DAILY_INCLUDING_WEEKENDS",
+      "proposedPrompt": "在当前 Alpha 对话和工作区 C:\\Users\\liuha\\.codex\\worktrees\\8f09\\Alpha 执行。先阅读 docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md、最新 Owner 指示、AGENTS.md、docs/HANDOFF.md、docs/status/development-progress.json、固定核查基线和最近的 docs/development-daily 记录。所有日期按 America/New_York 解释，使用实际执行时间，遵守协议的迟到、缺失基线和重复执行规则。\n\n每天纽约时间 21:00 内查当天实际开发进度与方向。读取同日真实晨间计划，以代码、验证记录、数据时间、纸面交易、真实手工成交记录和错题本证据逐项目标比较，标明完成、部分完成、受阻、未开始或回退。对全部八个流程环节逐项列出早晚状态、实际新增能力、证据、剩余工作与偏差，同时核对十条工作线及六个关卡。检查新闻与行情、六维判断、具体期权计划、纸面验证、Owner 手动执行、持仓跟踪、复盘及后续独立验证的完整闭环。明确记录零进展、缺失采集和流程断点；晨间计划缺失时使用最近可验证基线并说明，不能补造。判断是否偏离目标，并给出次日优先纠正事项。\n\n把英文记录追加保存到 docs/development-daily/YYYY-MM-DD/，附实际时间、当前提交及可核对的证据；在本对话用中文报告。仅维护审查记录和有证据支持的进度摘要，保留其他正在进行的修改；保存、提交和推送审查文件沿用 Owner 已有授权。开发实施仍在当前对话继续，此次定时运行不启动自动开发循环、不修改 gld-ibit 行情任务、不调用新的行情采集或账户/下单工具，也不进行付费或登录操作。",
+      "requestedTargetThreadId": "01a077f7-0355-7b70-89b2-1ff2e0d89261",
+      "automationId": null,
+      "active": false
+    }
+  ],
+  "creationAttempt": {
+    "tool": "mcp__codex_app__automation_update",
+    "kind": "heartbeat",
+    "phase": "MORNING_PLAN",
+    "isError": true,
+    "message": "This thread already has an active heartbeat automation. Only one automation can be attached to this thread. Either update the existing automation, or confirm with the user what they would like you to do. Don't make a workaround cron automation unless the user explicitly asked for that.",
+    "eveningAttempted": false
+  },
+  "marketTask": {
+    "id": "gld-ibit",
+    "status": "ACTIVE",
+    "observedRule": "RRULE:FREQ=MINUTELY;INTERVAL=30",
+    "sha256Before": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
+    "sha256After": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
+    "unchanged": true
+  },
+  "actualInventoryIds": [
+    "gld-ibit"
+  ],
+  "scheduledReviewsCreated": 0,
+  "scheduledReviewRunsObserved": 0,
+  "automaticDevelopment": false,
+  "executionAllowed": false,
+  "validation": {
+    "jsonFilesParsed": 3,
+    "protocolLocalLinksVerified": 6,
+    "workflowStagesVerified": 8,
+    "workstreamRowsVerified": 10,
+    "paperGatesVerified": 6,
+    "baselineEvidenceSha256Matches": true,
+    "workbenchHttpStatus": 200,
+    "workbenchProgressState": "AVAILABLE",
+    "workbenchReportsPendingActivation": true,
+    "gitDiffCheckPassed": true,
+    "productionCodeChanged": false,
+    "fullTestSuiteRunThisSetup": false
+  },
+  "nextAction": "Ask for explicit authorization to create two standalone daily scheduled reviews; do not modify the existing market heartbeat or claim activation."
+}

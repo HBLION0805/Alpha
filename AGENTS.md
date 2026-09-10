@@ -1,5 +1,25 @@
 # Alpha Development Standard v1.0
 
+## Daily planning and alignment audit — September 9, 2026
+
+The Owner now explicitly requests two daily reviews in this current task:
+08:00 America/New_York development-day goals and 21:00 actual progress/deviation
+audit, including weekends, separate from gld-ibit. Activation is pending: the
+automation tool rejected an additional heartbeat because one task can have only
+one. Do not alter the market task or create workaround cron jobs; standalone
+review tasks require explicit Owner authorization. See docs/status/development-governance.json. Follow
+[the objective, full F01–F08 workflow and report protocol](docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md)
+and [the dated baseline](docs/status/development-alignment-baseline-20260909.json).
+Save append-only daily plans/reviews under docs/development-daily/YYYY-MM-DD and
+give concise Chinese comparisons against morning acceptance, all eight workflow
+stages, ten workstreams and six gates. Report zero progress, regressions, missed
+sources and missing baselines honestly. Do not replace product acceptance with
+test/module counts. Prioritize data/processing gaps and the daily recommendation
+chain; infrastructure is support, not the product objective. Scheduled planning
+and review do not authorize automatic implementation, new market calls, changes
+to gld-ibit, or account/orders. This supersedes old no-periodic-report text only
+for these two explicit reviews; quarter-hour development loops remain cancelled.
+
 ## Prospective paper observations — September 9 evening, 2026
 
 Explicit future V2 enrollments now join the existing guidance Host tracking bound;

@@ -1,0 +1,378 @@
+{
+  "version": "OPTIONS_DEVELOPMENT_ALIGNMENT_BASELINE_V1",
+  "recordedAt": "2026-09-10T03:28:18.071Z",
+  "evidenceAssessedAt": "2026-09-10T03:28:14.430Z",
+  "localDate": "2026-09-09",
+  "timeZone": "America/New_York",
+  "baseCommit": "be8f1b385a424b95804670891e88e9b6e8daf76f",
+  "scope": "GLD_IBIT_DAILY_DECISION_SUPPORT_MANUAL_ORDERS",
+  "workflow": [
+    {
+      "id": "F01",
+      "name": "Context",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "F02",
+      "name": "Market evidence",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "F03",
+      "name": "Interpretation",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "F04",
+      "name": "Actionable plan",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "F05",
+      "name": "Prospective paper validation",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "F06",
+      "name": "Owner execution and tracking",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "F07",
+      "name": "Review and candidate lessons",
+      "status": "LOCAL_VALIDATED"
+    },
+    {
+      "id": "F08",
+      "name": "Evaluate and feed back",
+      "status": "NOT_VALIDATED"
+    }
+  ],
+  "workstreamCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 4,
+    "NOT_VALIDATED": 2
+  },
+  "workstreamDenominator": 10,
+  "countsAreCompletionPercentage": false,
+  "firstPaperGates": {
+    "totalGates": 6,
+    "localComponentsAvailable": 3,
+    "openGates": 3,
+    "realPriceRun": "NOT_RUN",
+    "gateAdvancedThisUnit": false,
+    "gates": [
+      {
+        "name": "Local risk and planning",
+        "status": "LOCAL_VALIDATED"
+      },
+      {
+        "name": "Qualified option quotes",
+        "status": "AWAITING_ELIGIBLE_DATA"
+      },
+      {
+        "name": "Source-specific Robinhood paper adapter",
+        "status": "LOCAL_IMPLEMENTED_UNQUALIFIED"
+      },
+      {
+        "name": "Local modeled lifecycle",
+        "status": "LOCAL_VALIDATED"
+      },
+      {
+        "name": "Outcome review and candidate notebook",
+        "status": "LOCAL_VALIDATED"
+      },
+      {
+        "name": "Qualified real-price end-to-end run",
+        "status": "NOT_RUN"
+      }
+    ]
+  },
+  "initialAlignment": "DRIFT_RISK",
+  "priorityOrder": [
+    "Repair existing source and processing gaps",
+    "Complete an actual-quote prospective paper lifecycle",
+    "Develop six-dimensional trend/event-to-contract recommendations and frontend together",
+    "Improve Owner-reported position tracking",
+    "Independently evaluate outcomes and candidate lessons"
+  ],
+  "findings": {
+    "assessedAt": "2026-09-10T03:28:14.430Z",
+    "commit": "be8f1b385a424b95804670891e88e9b6e8daf76f",
+    "news": [
+      {
+        "id": "fed",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.071Z",
+        "partial": false
+      },
+      {
+        "id": "bls",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.057Z",
+        "partial": false
+      },
+      {
+        "id": "bea",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.173Z",
+        "partial": true
+      },
+      {
+        "id": "ecb",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.312Z",
+        "partial": false
+      },
+      {
+        "id": "ofac",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.160Z",
+        "partial": false
+      },
+      {
+        "id": "sec",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.121Z",
+        "partial": false
+      },
+      {
+        "id": "fed_speeches",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.906Z",
+        "partial": false
+      },
+      {
+        "id": "eia_energy",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.929Z",
+        "partial": false
+      },
+      {
+        "id": "coindesk",
+        "status": "OK",
+        "receivedAt": "2026-09-10T03:00:38.985Z",
+        "partial": false
+      }
+    ],
+    "calendar": {
+      "bls": {
+        "lastReceivedAt": "2026-09-08T13:00:51.320Z",
+        "refreshOverdue": true
+      },
+      "fomc": {
+        "lastReceivedAt": "2026-09-08T13:00:51.677Z",
+        "refreshOverdue": true
+      }
+    },
+    "market": {
+      "capturedAt": "2026-09-10T00:44:10.432Z",
+      "requested": 36,
+      "returned": 34,
+      "missing": 2,
+      "usableAtReceipt": 0
+    },
+    "assets": [
+      {
+        "symbol": "GLD",
+        "status": "WATCH",
+        "trend": "INSUFFICIENT_HISTORY",
+        "closeHistoryLength": 1,
+        "blockers": [
+          "MARKET_CAPTURE_PARTIAL",
+          "CALENDAR_COVERAGE_UNAVAILABLE",
+          "OUTSIDE_REGULAR_SESSION",
+          "MAJOR_EVENT_WAIT",
+          "DIRECTION_NOT_CONFIRMED",
+          "NEWS_AND_TREND_NOT_ALIGNED",
+          "UNDERLYING_PRICE_NOT_FRESH"
+        ]
+      },
+      {
+        "symbol": "IBIT",
+        "status": "WATCH",
+        "trend": "INSUFFICIENT_HISTORY",
+        "closeHistoryLength": 1,
+        "blockers": [
+          "MARKET_CAPTURE_PARTIAL",
+          "CALENDAR_COVERAGE_UNAVAILABLE",
+          "OUTSIDE_REGULAR_SESSION",
+          "MAJOR_EVENT_WAIT",
+          "DIRECTION_NOT_CONFIRMED",
+          "NEWS_AND_TREND_NOT_ALIGNED",
+          "UNDERLYING_PRICE_NOT_FRESH"
+        ]
+      }
+    ],
+    "gold": {
+      "screenshotAreas": 14,
+      "additionalChecks": 7,
+      "partialNumericalAreas": 3
+    },
+    "activity": {
+      "assessedAt": "2026-09-08T20:23:33.402Z",
+      "counts": {
+        "baselineContracts": 2100,
+        "candidates": 224,
+        "matched": 167,
+        "unmatched": 57,
+        "observedSessions": 1,
+        "scheduledSessions": 7,
+        "primaryEvaluableCandidates": 0
+      },
+      "validatedEdge": false
+    },
+    "eventResearch": [
+      {
+        "id": "event-e7ef7723-4f95-46b6-984a-eb736cd8b06a",
+        "phases": [
+          {
+            "phase": "PRE",
+            "status": "MISSED"
+          },
+          {
+            "phase": "POST",
+            "status": "WAITING"
+          }
+        ],
+        "reactionBaseline": "MISSED"
+      },
+      {
+        "id": "ppi-20260910-ibit-call-reaction",
+        "phases": [
+          {
+            "phase": "PRE",
+            "status": "MISSED"
+          },
+          {
+            "phase": "POST",
+            "status": "WAITING"
+          }
+        ],
+        "reactionBaseline": "MISSED"
+      }
+    ],
+    "bars": [
+      {
+        "symbol": "GLD",
+        "counts": {
+          "declaredNoninterpolated": 0,
+          "interpolated": 0,
+          "unknown": 60,
+          "missing": 0
+        },
+        "underlyingCandlesAvailable": false,
+        "signalAllowed": false
+      },
+      {
+        "symbol": "GLD",
+        "counts": {
+          "declaredNoninterpolated": 0,
+          "interpolated": 0,
+          "unknown": 60,
+          "missing": 0
+        },
+        "underlyingCandlesAvailable": false,
+        "signalAllowed": false
+      },
+      {
+        "symbol": "IBIT",
+        "counts": {
+          "declaredNoninterpolated": 0,
+          "interpolated": 0,
+          "unknown": 60,
+          "missing": 0
+        },
+        "underlyingCandlesAvailable": false,
+        "signalAllowed": false
+      },
+      {
+        "symbol": "IBIT",
+        "counts": {
+          "declaredNoninterpolated": 0,
+          "interpolated": 0,
+          "unknown": 60,
+          "missing": 0
+        },
+        "underlyingCandlesAvailable": false,
+        "signalAllowed": false
+      }
+    ],
+    "paper": {
+      "completedRealPriceLifecycle": false,
+      "cases": [
+        {
+          "id": "pipeline-check-ibit-20260910",
+          "status": "NO_ENTRY",
+          "paperStage": "AWAITING_WINDOW",
+          "fills": 0
+        },
+        {
+          "id": "source-audit-gld-20260909",
+          "status": "NO_ENTRY",
+          "paperStage": null,
+          "fills": 0
+        },
+        {
+          "id": "source-audit-ibit-20260909",
+          "status": "NO_ENTRY",
+          "paperStage": null,
+          "fills": 0
+        }
+      ],
+      "observations": [
+        {
+          "planId": "pipeline-check-ibit-20260910",
+          "enrolledAt": "2026-09-10T02:40:51.930Z",
+          "monitorUntilAt": "2026-09-10T20:20:00.000Z",
+          "purpose": "PIPELINE_REHEARSAL_NOT_SIGNAL",
+          "origin": "HOST_MARKET_TOOL_RESPONSES",
+          "state": "AWAITING_WINDOW",
+          "contract": {
+            "id": "d84f0997-0025-4edb-bb75-62969bc06b83",
+            "symbol": "IBIT",
+            "expiry": "2026-10-09",
+            "type": "call",
+            "strike": "44.5000",
+            "multiplier": 100
+          },
+          "currentPaperStage": "AWAITING_WINDOW",
+          "automaticReports": 0,
+          "lastAutomaticReport": null,
+          "tracking": "SHARED_EXISTING_ID"
+        }
+      ]
+    },
+    "manual": {
+      "eventCount": 0,
+      "headSha256": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c"
+    },
+    "settings": {
+      "currentEquityCents": 100000,
+      "settledCashCents": 100000,
+      "roundTripFeesCents": null,
+      "slippageReserveCents": null,
+      "stopLossBps": 2000,
+      "rewardMultipleMilliR": 2000,
+      "tradeBudget": {
+        "version": "OWNER_ALLOCATION_ONLY_V2",
+        "minCents": 10000,
+        "maxCents": 50000
+      }
+    },
+    "sourceSchedulesChangedByThisSetup": false
+  },
+  "evidence": {
+    "path": "data/runtime/options-workbench-development/development-governance-baseline-evidence.json",
+    "sha256": "bda487642b4bbf0d9edb146d6948cfbdfbc0d4ab83d2fb1f94b7ac985e1ef737"
+  },
+  "marketAutomationObserved": {
+    "id": "gld-ibit",
+    "recurrence": "RRULE:FREQ=MINUTELY;INTERVAL=30",
+    "evidenceSha256": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
+    "previousCorrectionPersisted": false,
+    "cause": "UNESTABLISHED",
+    "modifiedByThisSetup": false
+  },
+  "executionAllowed": false
+}

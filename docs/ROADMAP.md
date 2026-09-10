@@ -1,5 +1,15 @@
 # Alpha Roadmap
 
+Current priority order is governed by [the product workflow and daily review](OPTIONS_DAILY_DEVELOPMENT_REVIEW.md):
+repair existing data/processing failures, demonstrate an actual-quote paper
+lifecycle, complete trend/event-to-contract recommendations with matching frontend,
+then improve position tracking and independently evaluate outcomes. Read the
+[dated alignment baseline](status/development-alignment-baseline-20260909.json).
+The current engineering count is 4 LOCAL_VALIDATED / 4 PARTIAL / 2 NOT_VALIDATED;
+older counts and next-step descriptions below are dated history, not current
+acceptance. Requested daily 08:00/21:00 planning/review does not restart automatic
+coding; activation is pending the task-slot restriction recorded in the protocol.
+
 The [snapshot paper adapter](OPTIONS_SNAPSHOT_PAPER_DELIVERY.md) is now locally
 implemented with frozen plans, copied-source recovery and candidate reviews.
 Workstream 08 advances to PARTIAL; qualified quote and complete real-price evidence

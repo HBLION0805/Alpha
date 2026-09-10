@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-10T02:47:19.889Z",
+  "recordedAt": "2026-09-10T03:33:00Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
@@ -29,7 +29,7 @@
       "name": "News macro and BTC context",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Six headline feeds and Treasury/BTC/BLS/FOMC sources work; numerical driver coverage remains incomplete.",
+      "detail": "Nine focused headline feeds and Treasury/BTC/calendar/macro readers exist. Current source freshness and incomplete numerical/decision coverage require daily evidence checks.",
       "evidence": "docs/OPTIONS_NEWS_ACCESS_RECOVERY.md"
     },
     {
@@ -69,7 +69,7 @@
       "name": "Portfolio and account qualification",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Declared account/risk diagnostics and a six-page local workbench with reviewed manual ledger forms are available; live account qualification and enforcement remain incomplete.",
+      "detail": "Declared diagnostics, an eight-page local workbench and manual ledger forms exist; actual position tracking, account qualification and enforcement remain incomplete.",
       "evidence": "docs/OPTIONS_WORKBENCH_DELIVERY.md"
     },
     {
@@ -151,5 +151,14 @@
     "locallyAccepted": 8,
     "notOverallCompletionPercentage": true
   },
-  "practicalPaperCheckpoint": "docs/status/paper-observation.json"
+  "practicalPaperCheckpoint": "docs/status/paper-observation.json",
+  "dailyReviewProtocol": "docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md",
+  "alignmentBaseline": "docs/status/development-alignment-baseline-20260909.json",
+  "dailyReviewTimesNewYork": [
+    "08:00",
+    "21:00"
+  ],
+  "periodicDevelopmentReportsRequested": true,
+  "dailyReviewActivation": "PENDING_EXPLICIT_STANDALONE_TASK_AUTHORIZATION",
+  "dailyReviewActivationEvidence": "docs/status/development-governance.json"
 }

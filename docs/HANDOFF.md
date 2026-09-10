@@ -1,5 +1,21 @@
 # Alpha Handoff
 
+Latest Owner direction: [08:00 daily goals and 21:00 alignment review](OPTIONS_DAILY_DEVELOPMENT_REVIEW.md),
+both New York time and separate from the market heartbeat. The same reference
+records the exact product workflow, known capability gaps and evidence required
+for real progress. Read [the alignment baseline](status/development-alignment-baseline-20260909.json)
+before continuing work; daily records are under docs/development-daily. This is
+scheduled planning/review, not a resumed autonomous implementation loop.
+Activation is pending: this task's single heartbeat slot is occupied by gld-ibit.
+The first review create request was rejected; neither review is scheduled. A
+standalone-task alternative awaits explicit Owner authorization. See
+[setup evidence](status/development-governance.json).
+
+The September 9 23:28 New York audit again observed a 30-minute gld-ibit recurrence,
+after the earlier verified correction described below. Its cause is unestablished;
+this review setup preserves the market task unchanged. A prior activation receipt
+must not be presented as the current configuration.
+
 Latest continuation: [prospective paper observation](OPTIONS_PAPER_OBSERVATION_DELIVERY.md).
 V2 plans can explicitly enroll before their decision time; the existing Host
 tracks them within unchanged source-call bounds and saves copied-source outcomes

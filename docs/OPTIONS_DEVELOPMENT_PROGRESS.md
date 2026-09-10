@@ -1,8 +1,13 @@
 # Development progress against the complete scope
 
-The Owner requests development reports against total scope. After restoring
-market collection on September 7, automatic quarter-hour reports are disabled;
-development reporting stays in the current conversation. This fixed ten-workstream view is an engineering reporting
+The Owner requests development reports against total scope. The latest direction
+adds daily 08:00 New York goals and 21:00 actual progress/alignment review in this
+task, separately from market collection. Follow the
+[full workflow and review protocol](OPTIONS_DAILY_DEVELOPMENT_REVIEW.md).
+The review schedules are not active: creation encountered the one-heartbeat-per-task
+limit. Standalone review tasks await explicit Owner authorization; market collection
+remains unchanged. See [setup evidence](status/development-governance.json).
+Automatic quarter-hour development reports remain disabled. This fixed ten-workstream view is an engineering reporting
 baseline, not an estimate of effort, profitability or production readiness.
 Use [the current checkpoint](status/development-progress.json) for dated counts,
 before/after status, evidence and the current unit. Do not turn module counts
@@ -12,12 +17,12 @@ into a completion percentage: these workstreams differ in cost and uncertainty.
 | --- | --- | --- | --- |
 | 01 | Single-trade risk and planning | Deterministic declared GLD/IBIT whole-contract, cost and risk diagnostics | Actual input/cost and account qualification remain separate |
 | 02 | News, macro and BTC context | Attributable retrieval, source clocks, correction and failure histories | Numerical factor coverage and predictive impact remain incomplete |
-| 03 | GLD/IBIT option collection | Source access, full-chain capture/review, preserved collectors and daily close schedule through September 16 | Opening pilot cancelled; first scheduled close and qualified option evidence remain missing |
+| 03 | GLD/IBIT option collection | Source access, full-chain capture/review, preserved collectors and daily close schedule through September 16 | September 8 close exists; later scheduled receipts and qualified option evidence require actual checks |
 | 04 | Protocol and observation evidence | Exact protocol/context binding, actual save receipts, independent note recovery | Does not prove full features or historical knowledge |
 | 05 | Local single-leg paper lifecycle | Modeled entry, fill, exit and cash accounting with frozen assumptions | Qualified Robinhood source adapter is separate |
 | 06 | Reviews and candidate mistake notebook | Preserve all local outcomes, review closed cases and retain candidate lessons | Candidate lessons are not approved rules or a measured win rate |
 | 07 | Portfolio and account qualification | Declared diagnostics, original paper-account projection, candidate guards, fee reconciliation and local operator board | Live account evidence and enforcement remain incomplete |
-| 08 | Robinhood real-price paper adapter | Qualified contract/session/quote semantics, explicit costs and fill assumptions | Not implemented; must follow actual evidence review |
+| 08 | Robinhood real-price paper adapter | Qualified contract/session/quote semantics, explicit costs and fill assumptions | V2 local snapshot model and observation workflow implemented; strict execution qualification and actual intraday completion remain open |
 | 09 | First qualified real-price paper flow | One complete actual-data paper run, durable outcome, review and restart verification | Not run; no real transaction is requested |
 | 10 | Signal evaluation and calibration | Complete chronological samples, independent outcomes, out-of-sample evidence | No complete partition input, sealed evaluation or calibrated probability |
 
