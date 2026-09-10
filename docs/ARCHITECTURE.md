@@ -1,5 +1,14 @@
 # Alpha Architecture
 
+## Versioned owner allocation policy
+
+The planning adapter dispatches OWNER_ALLOCATION_ONLY_V2 separately from original
+retail/no-budget and V1 inputs. Current consumers share null legacy thresholds
+and explicit exposure/cash checks; frozen versions retain original calculations.
+Frontend forms, protected settings, Host brief and event-study declarations
+preserve the selected policy. Settings cannot silently downgrade after activation.
+See [specification](specifications/OPTIONS_OWNER_ALLOCATION_ONLY_V2.md).
+
 ## Public macro numerical context
 
 OptionsMacroContext validates fixed Treasury nominal, Fed H.10 and Cleveland

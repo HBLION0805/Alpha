@@ -203,6 +203,7 @@
     "test:options-cost-desk": "tsx scripts/options-cost-desk.test.mjs",
     "test:options-capital-policy": "tsx scripts/options-capital-policy.test.mjs",
     "test:options-gold-framework": "tsx scripts/options-gold-framework.test.mjs",
+    "test:options-owner-allocation": "tsx scripts/options-owner-allocation.test.mjs",
     "test:options-macro-context": "tsx scripts/options-macro-context.test.mjs",
     "options:macro-context": "tsx scripts/options-macro-context.mjs"
   },

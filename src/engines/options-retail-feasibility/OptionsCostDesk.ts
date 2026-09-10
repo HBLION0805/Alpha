@@ -1,4 +1,4 @@
-import { evaluateOptionsPlanningFeasibility as evaluate } from "./OptionsTradeBudget";
+import { legacyRiskCapsRemoved, evaluateOptionsPlanningFeasibility as evaluate } from "./OptionsTradeBudget";
 
 export type CostFeeBasis = "DECLARED_FEES" | "REVIEWED_SCHEDULE_ASSUMPTION";
 const PROFILE = Object.freeze({
@@ -38,7 +38,7 @@ export function assessOptionsCostDesk(input:unknown) {
   if(!["DECLARED_FEES","REVIEWED_SCHEDULE_ASSUMPTION"].includes(feeBasis))throw Error("WORKBENCH_COST_INPUT");
   const original=evaluate(raw);
   if(!original.scenario||!original.economics)throw Error("WORKBENCH_COST_SCENARIO");
-  const s=original.scenario,e=original.economics;
+  const s=original.scenario,e=original.economics,removed=legacyRiskCapsRemoved("tradeBudget" in s?s.tradeBudget:undefined);
   if(s.quantity>100||e.premiumCents>100000000||s.slippageReserveCents!==null&&s.slippageReserveCents>100000000||s.roundTripFeesCents!==null&&s.roundTripFeesCents>100000000)throw Error("WORKBENCH_COST_BOUNDS");
   const rows=[0,1,2,5].map(ticks=>{
     const allowance=cents(BigInt(e.oneTickLossCents)*BigInt(ticks));
@@ -55,12 +55,12 @@ export function assessOptionsCostDesk(input:unknown) {
       if(next!==fees){fees=next;continue;}
       const loss=result.economics.plannedStopCents;
       return {ticks,exitAllowanceCents:allowance,roundTripFeeReserveCents:fees,
-        plannedRiskHeadroomCents:loss===null?null:result.economics.plannedRiskBudgetCents-loss,
+        plannedRiskHeadroomCents:loss===null||result.economics.plannedRiskBudgetCents===null?null:result.economics.plannedRiskBudgetCents-loss,
         feeEvidence:entry?{entry,exit,exitGrossPremiumBasisCents:exitGross,iterations:iteration}:null,result};
     }
     throw Error("WORKBENCH_COST_CONVERGENCE");
   });
-  return freeze({version:"OPTIONS_COST_DESK_V1",feeBasis,profile:feeBasis==="REVIEWED_SCHEDULE_ASSUMPTION"?PROFILE:null,
+  return freeze({version:removed?"OPTIONS_COST_DESK_V2":"OPTIONS_COST_DESK_V1",feeBasis,profile:feeBasis==="REVIEWED_SCHEDULE_ASSUMPTION"?PROFILE:null,
     original,rows,executionAllowed:false,brokerFeesConfirmed:false,sourceQualified:false,
     winProbability:null,settingsChanged:false,limitations:[
       "Each row replaces the original exit allowance with a declared number of quote ticks. Zero is an assumption, not an expected fill.",
@@ -68,6 +68,6 @@ export function assessOptionsCostDesk(input:unknown) {
       "The schedule choice assumes nonprofessional status and one execution per side. Actual charges, fragmented fills and trade-date applicability are unverified; recheck the source before use.",
       "The fee reserve includes entry and target-exit fees once. Lower stop proceeds have no larger fee under this snapshot; losses beyond the allowance remain possible.",
       "Premium stops are continuous loss scenarios, not tick-rounded triggers, native stop orders or guaranteed execution prices. Targets use the declared quote tick, not verified order increments.",
-      "All independent allocation, cash, loss, stress and target limits remain. No result qualifies a quote, trade or win rate.",
+      removed?"Legacy loss caps are not enforced. Allocation, declared cash/equity and target checks remain; full-premium exposure is still shown. No result qualifies a quote, trade or win rate.":"All independent allocation, cash, loss, stress and target limits remain. No result qualifies a quote, trade or win rate.",
     ]});
 }

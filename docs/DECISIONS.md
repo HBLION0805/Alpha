@@ -1,5 +1,13 @@
 # Alpha Architecture Decisions
 
+## 2026-09-09 - Apply explicit Owner cancellation without rewriting history
+
+Remove old loss-cap enforcement from newly declared OWNER_ALLOCATION_ONLY_V2
+inputs. Keep $100–$500 allocation, declared $1,000 equity, exact exposure and
+independent evidence checks. Null thresholds mean not enforced; old snapshots
+retain original calculators. This resolves the prior pending policy instruction,
+not quote qualification or trading authority. See [delivery](OPTIONS_OWNER_ALLOCATION_DELIVERY.md).
+
 ## 2026-09-09 - Preserve source lag and prospective inflation model benchmarks
 
 Use bounded free official nominal yields, broad USD/FX and inflation nowcasts

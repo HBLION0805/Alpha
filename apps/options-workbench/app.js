@@ -181,7 +181,7 @@ document.addEventListener('click',event=>{void(async()=>{
     const c=state.guidance.data.current.assets.flatMap(a=>a.candidates).find(c=>c.contract.id===el.dataset.guidancePlan);if(!c)return;
     if(dirty.has('planner'))throw Error('Your planner draft is preserved. Clear or finish it before inspecting a candidate.');
     const q=c.contract,v=c.scenario,toUsd=n=>n===null||n<0?'':exactUsd(n);
-    ui.plannerDraft={symbol:q.symbol,strategy:v.strategy,equity:toUsd(v.currentEquityCents),cash:toUsd(v.settledCashCents),quantity:'1',tick:toUsd(q.tickCents),bid:toUsd(q.bidCents),ask:toUsd(q.askCents),fees:toUsd(v.roundTripFeesCents),slippage:toUsd(v.slippageReserveCents),stop:String(v.stopLossBps/100),reward:String(v.rewardMultipleMilliR/1000),budgetMin:v.tradeBudget?exactUsd(v.tradeBudget.minCents):'',budgetMax:v.tradeBudget?exactUsd(v.tradeBudget.maxCents):''};
+    ui.plannerDraft={symbol:q.symbol,strategy:v.strategy,equity:toUsd(v.currentEquityCents),cash:toUsd(v.settledCashCents),quantity:'1',tick:toUsd(q.tickCents),bid:toUsd(q.bidCents),ask:toUsd(q.askCents),fees:toUsd(v.roundTripFeesCents),slippage:toUsd(v.slippageReserveCents),stop:String(v.stopLossBps/100),reward:String(v.rewardMultipleMilliR/1000),...(v.tradeBudget?.version==='OWNER_ALLOCATION_ONLY_V2'?{budgetVersion:v.tradeBudget.version}:{}),budgetMin:v.tradeBudget?exactUsd(v.tradeBudget.minCents):'',budgetMax:v.tradeBudget?exactUsd(v.tradeBudget.maxCents):''};
     ui.planningSource={...q,bid:toUsd(q.bidCents),ask:toUsd(q.askCents),quoteUpdatedAt:q.updatedAt};ui.plannerResult=null;clearCosts();dirty.add('planner');navigate('planner');return;
   }
   if(el.id==='reset-guidance-assumptions'){clearPolicyPreview();ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}

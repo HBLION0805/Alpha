@@ -8,6 +8,18 @@ deliveries below retain their original evidence and historical context.
 
 ## Latest Owner direction
 
+The latest explicit cancellation of old risk caps is now implemented and active:
+OWNER_ALLOCATION_ONLY_V2 retains $100–$500 per trade / $1,000 declared equity,
+with no legacy planned-loss, full-premium or shared-event thresholds for new
+inputs. Original frozen records retain their policies. Current forms, Host brief
+and restart use V2; stale settings cannot restore the legacy policy. See
+[delivery](OPTIONS_OWNER_ALLOCATION_DELIVERY.md) and
+[checkpoint](status/owner-allocation.json). Earlier pending-policy and loss-limit
+clarification paragraphs below are dated history, now superseded. No order or
+source schedule was changed; both assets remain WATCH on saved evidence.
+
+### Earlier September 9 context deliveries
+
 Public macro context is now active: three daily official sources, raw-source
 recovery and prospective model-error comparisons with frontend parity. Latest
 actual receipts and limitations are in [delivery](OPTIONS_MACRO_CONTEXT_DELIVERY.md)

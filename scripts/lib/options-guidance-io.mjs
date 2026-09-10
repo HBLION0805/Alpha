@@ -120,7 +120,7 @@ export function readGuidanceResearchFrames(root) {
     if(paperFingerprint(v)!==r.reportFingerprint)fail("CAPTURE_RECOMPUTE");
     return {path,recordedAt:r.recordedAt,capturedAt:v.capturedAt,origin:v.origin,quotes:v.quotes,equities:v.equities};});
 }
-export function saveGuidanceSettings(root,value){return save(root,"settings",validateGuidanceSettings(value)).path;}
+export function saveGuidanceSettings(root,value){const next=validateGuidanceSettings(value);if(guidanceSettings(root).tradeBudget?.version==="OWNER_ALLOCATION_ONLY_V2"&&next.tradeBudget?.version!=="OWNER_ALLOCATION_ONLY_V2")throw Error("GUIDANCE_POLICY_DOWNGRADE");return save(root,"settings",next).path;}
 export function guidanceSettings(root){const latest=paths(root,"settings",1)[0];return latest?validateGuidanceSettings(verified(root,latest,"settings").input):defaultGuidanceSettings();}
 export function guidanceView(root,state) {
   root=realpathSync(root);

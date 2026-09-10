@@ -1,3 +1,4 @@
+import { legacyRiskCapsRemoved } from "../options-retail-feasibility/OptionsTradeBudget";
 import type { EventResearchPlan, EventResearchFrame } from '../../contracts/OptionsEventResearch';
 import type { GuidanceQuote, GuidanceEquity } from '../../contracts/OptionsDailyGuidance';
 import { guidanceLocal, validateGuidanceSettings } from '../options-daily-guidance/OptionsDailyGuidance';
@@ -109,30 +110,31 @@ export function assessEventResearch(plan:EventResearchPlan,frames:EventResearchF
   const extra=baseline.frame&&reaction.frame&&!chosen?['NO_REACTION_SIGNAL']:!baseline.frame?['REACTION_BASELINE_'+baseline.status]:[];
   const post=phase(p,'POST',entry,exit,chosen,extra);
   const selectionDiagnostics=[p.preContract,p.postCall,p.postPut].map(q=>({contract:q,assessedAt:p.createdAt,...(positive(q.bidCents)&&positive(q.askCents)&&positive(q.tickCents)?economics(p,q,p.createdAt):{blockers:['SELECTION_QUOTE_UNUSABLE'],economics:null})}));
-  const budget=Math.floor(p.settings.currentEquityCents*50/10000),stressBudget=Math.floor(p.settings.currentEquityCents*250/10000);
+  const removed=legacyRiskCapsRemoved(p.settings.tradeBudget),budget=removed?null:Math.floor(p.settings.currentEquityCents*50/10000),stressBudget=removed?null:Math.floor(p.settings.currentEquityCents*250/10000);
+  const cashBudget=removed?Math.min(p.settings.currentEquityCents,p.settings.settledCashCents):p.settings.settledCashCents;
   const comparisons=(['PRE_ONLY','POST_ONLY','COMBINED'] as const).map(mode=>{
     let losses=0,spent=0,total=0,complete=true;
     const steps=(mode==='PRE_ONLY'?[pre]:mode==='POST_ONLY'?[post]:[pre,post]).map(ph=>{
       const blockers=[...ph.blockers];
       if(!complete)blockers.push('PRIOR_PHASE_UNRESOLVED');
       const e=ph.economics;
-      if(e?.plannedStopCents!==null&&e?.plannedStopCents!==undefined&&losses+e.plannedStopCents>budget)blockers.push('EVENT_LOSS_BUDGET_EXCEEDED');
-      if(e?.stressLossCents!==null&&e?.stressLossCents!==undefined&&losses+e.stressLossCents>stressBudget)blockers.push('EVENT_STRESS_BUDGET_EXCEEDED');
-      if(e?.capitalRequiredCents!==null&&e?.capitalRequiredCents!==undefined&&spent+e.capitalRequiredCents>p.settings.settledCashCents)blockers.push('UNSETTLED_PROCEEDS_NOT_REUSED');
+      if(budget!==null&&e?.plannedStopCents!==null&&e?.plannedStopCents!==undefined&&losses+e.plannedStopCents>budget)blockers.push('EVENT_LOSS_BUDGET_EXCEEDED');
+      if(stressBudget!==null&&e?.stressLossCents!==null&&e?.stressLossCents!==undefined&&losses+e.stressLossCents>stressBudget)blockers.push('EVENT_STRESS_BUDGET_EXCEEDED');
+      if(e?.capitalRequiredCents!==null&&e?.capitalRequiredCents!==undefined&&spent+e.capitalRequiredCents>cashBudget)blockers.push('UNSETTLED_PROCEEDS_NOT_REUSED');
       const noSignal=ph.status==='NO_SIGNAL';
       const waiting=!noSignal&&(!ph.entry.quote||ph.status==='OPEN_REFERENCE'||ph.status==='COSTS_UNKNOWN');
       const accepted=!noSignal&&!waiting&&blockers.length===0&&ph.netReferencePnlCents!==null;
       if(waiting)complete=false;
       if(accepted){total+=ph.netReferencePnlCents!;losses+=Math.max(0,-ph.netReferencePnlCents!);spent+=e!.capitalRequiredCents!;}
-      return {phase:ph.name,status:accepted?'ACCEPTED_REFERENCE':noSignal?'NO_SIGNAL':waiting?'INCOMPLETE':'BLOCKED',blockers,referencePnlCents:accepted?ph.netReferencePnlCents:null,remainingEventLossCents:Math.max(0,budget-losses),conservativeRemainingCashCents:Math.max(0,p.settings.settledCashCents-spent)};
+      return {phase:ph.name,status:accepted?'ACCEPTED_REFERENCE':noSignal?'NO_SIGNAL':waiting?'INCOMPLETE':'BLOCKED',blockers,referencePnlCents:accepted?ph.netReferencePnlCents:null,remainingEventLossCents:budget===null?null:Math.max(0,budget-losses),conservativeRemainingCashCents:Math.max(0,cashBudget-spent)};
     });
     const acceptedReferences=steps.filter(s=>s.status==='ACCEPTED_REFERENCE').length;
-    return {mode,status:!complete?'INCOMPLETE':acceptedReferences?'REFERENCE_ASSESSED':steps.every(s=>s.status==='NO_SIGNAL')?'NO_SIGNAL':'NO_ACCEPTED_REFERENCES',acceptedReferences,netReferencePnlCents:complete&&acceptedReferences?total:null,lossConsumedCents:losses,remainingEventLossCents:Math.max(0,budget-losses),steps};
+    return {mode,status:!complete?'INCOMPLETE':acceptedReferences?'REFERENCE_ASSESSED':steps.every(s=>s.status==='NO_SIGNAL')?'NO_SIGNAL':'NO_ACCEPTED_REFERENCES',acceptedReferences,netReferencePnlCents:complete&&acceptedReferences?total:null,lossConsumedCents:losses,remainingEventLossCents:budget===null?null:Math.max(0,budget-losses),steps};
   });
   const lessons=[{code:'SPARSE_QUOTES_NOT_STOP_EXECUTION',text:'Reference endpoints cannot establish a stop/target crossing, executable fill, candle trend or market cause.'}];
   if([pre,post].some(x=>x.entry.status==='MISSED'||x.exit.status==='MISSED'))lessons.push({code:'OBSERVATION_WINDOW_MISSED',text:'A frozen observation window has no usable timely evidence; retain the gap rather than choosing a later favorable quote.'});
   if(comparisons.some(c=>c.steps.some(s=>s.blockers.some(b=>b.startsWith('EVENT_')))))lessons.push({code:'SHARED_EVENT_BUDGET_CONSUMED',text:'An earlier reference loss consumes the same event budget. Changing phase or ETF does not reset it.'});
   if([pre,post].some(x=>x.grossReferencePnlCents!==null&&x.netReferencePnlCents===null))lessons.push({code:'COSTS_REQUIRED_FOR_NET_COMPARISON',text:'Observed price movement is available, but unknown costs prevent a net-return comparison.'});
-  return {version:'OPTIONS_EVENT_RESEARCH_REPORT_V1',assessedAt:at,plan:p,selectionDiagnostics,phases:[pre,post],reaction:{baseline,observation:reaction,moveBps:move,selectedSide:side,rule:'First usable POST snapshot versus the same ETF at PRE exit; not a candle-confirmed trend.'},eventRisk:{plannedLossBudgetCents:budget,fullLossStressBudgetCents:stressBudget,saleProceedsRecycled:false,accountEnforcement:false},comparisons,
+  return {version:removed?'OPTIONS_EVENT_RESEARCH_REPORT_V2':'OPTIONS_EVENT_RESEARCH_REPORT_V1',assessedAt:at,plan:p,selectionDiagnostics,phases:[pre,post],reaction:{baseline,observation:reaction,moveBps:move,selectedSide:side,rule:'First usable POST snapshot versus the same ETF at PRE exit; not a candle-confirmed trend.'},eventRisk:{...(removed?{legacyLossCapsEnforced:false,declaredCashBudgetCents:cashBudget}:{}),plannedLossBudgetCents:budget,fullLossStressBudgetCents:stressBudget,saleProceedsRecycled:false,accountEnforcement:false},comparisons,
     candidateLessons:lessons.map(l=>({...l,status:'CANDIDATE',marketCause:'UNKNOWN'})),actualTrades:0,winProbability:null,executionAllowed:false,calibrated:false};
 }

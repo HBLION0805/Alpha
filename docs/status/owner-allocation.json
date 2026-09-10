@@ -1,0 +1,91 @@
+{
+  "version": "OPTIONS_OWNER_ALLOCATION_DELIVERY_V1",
+  "recordedAt": "2026-09-10T00:12:07.490Z",
+  "policy": {
+    "version": "OWNER_ALLOCATION_ONLY_V2",
+    "minCents": 10000,
+    "maxCents": 50000
+  },
+  "equityCents": 100000,
+  "legacyLossCapsEnforced": false,
+  "settingsPath": "data/runtime/options-daily-guidance/settings/2026-09-10/2026-09-10T00-07-30-024Z-4966a7a0-0228-45c4-817b-f759c1d27750.json",
+  "issuedPath": "data/runtime/options-daily-guidance/reports/2026-09-10/2026-09-10T00-07-33-178Z-2f05d331-2f1b-4c11-b3cf-b0148429e1e4.json",
+  "candidateSnapshotPath": "data/runtime/options-candidate-checks/2026-09-10T00-07-36-092Z-40052401-1273-4cf5-a760-d98e9ae6976d.json",
+  "proofPath": "data/runtime/options-workbench-development/owner-allocation-evidence-20260909.json",
+  "proofSha256": "c969b3193c745445b081b2e9152a57a08f8465595c053326dcd749e5bfd85bd4",
+  "preservedFiles": 108,
+  "recomputedPriorRecords": 85,
+  "capitalStatus": "NO_PROVEN_CAPITAL_CONFLICT",
+  "candidateCounts": {
+    "sampled": 36,
+    "premiumWithinBudget": 17,
+    "premiumOverBudget": 18,
+    "premiumBelowBudget": 1,
+    "premiumUnknown": 0,
+    "conditionalResearch": 0,
+    "blocked": 36
+  },
+  "ownerLedger": {
+    "counts": {
+      "trades": 0,
+      "activeFills": 0,
+      "voidedFills": 0,
+      "closedTrades": 0,
+      "openTrades": 0,
+      "possibleDuplicateFills": 0,
+      "candidateLessons": 0
+    },
+    "origin": "OWNER_REPORTED_UNVERIFIED",
+    "head": null
+  },
+  "frontend": {
+    "desktop": {
+      "width": 1257,
+      "scrollWidth": 1257
+    },
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "width": 375,
+      "scrollWidth": 375
+    },
+    "consoleErrors": 0,
+    "draftsDiscarded": true,
+    "viewportReset": true
+  },
+  "focusedTests": {
+    "passed": 34,
+    "failed": 0
+  },
+  "integratedValidation": {
+    "status": "PASSED",
+    "componentCount": 166,
+    "testsExecuted": 4272,
+    "passed": 4272,
+    "failed": 0,
+    "durationMs": 94851,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'src/contracts/OptionsTradeBudget.ts', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'src/engines/options-retail-feasibility/OptionsTradeBudget.ts', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "log": "data/runtime/options-workbench-development/owner-allocation-final-validation.log"
+  },
+  "workstreamCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 3,
+    "NOT_VALIDATED": 3
+  },
+  "firstPaperFlow": {
+    "availableLocalComponents": 3,
+    "openGates": 3,
+    "realPriceRun": "NOT_RUN",
+    "gateAdvanced": false
+  },
+  "executionAllowed": false,
+  "winProbability": null,
+  "sourceCallsAdded": 0,
+  "hostFieldsChanged": false
+}

@@ -1,5 +1,20 @@
 # Alpha Development Standard v1.0
 
+## Owner allocation-only policy — September 9, 2026
+
+The Owner explicitly directed removal of the old risk rules. This is now active
+as OWNER_ALLOCATION_ONLY_V2: $100–$500 per trade / $1,000 declared equity. Current
+planning/guidance/candidate/cost and new event studies no longer enforce the old
+0.5% planned-loss, $25 full-premium or shared event caps. Removed thresholds are
+null, not zero or unknown. Keep actual loss/exposure, cash/equity, cost and source
+checks. Saved 20% stop / net-2R assumptions and unknown costs remain. Historical
+versions still reconstruct exactly. Do not re-ask the obsolete loss-limit
+clarification or restore legacy caps from old notes. See
+[delivery](docs/OPTIONS_OWNER_ALLOCATION_DELIVERY.md) and
+[checkpoint](docs/status/owner-allocation.json). All pending-capital paragraphs
+below are superseded by this explicit implementation; no brokerage or source
+schedule authority changed.
+
 ## Public macro context — September 9, 2026
 
 Three new fixed anonymous sources are active through the local context service:

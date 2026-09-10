@@ -15,6 +15,16 @@ brief exposes saved macroContext: retain its source lag and distinguish model
 estimates from consensus and reported actuals. No second refresh is required
 when today's macro claim already exists. See [delivery](OPTIONS_MACRO_CONTEXT_DELIVERY.md).
 
+## Current capital policy
+
+The Owner explicitly removed the old risk caps on September 9. The new saved
+OWNER_ALLOCATION_ONLY_V2 settings retain $100–$500 per trade / $1,000 declared
+equity. Read the current Host brief's capitalPolicy; do not reinstate the old
+$5 planned-loss, $25 full-premium or shared event caps from dated analyst notes.
+Stops, net-R targets and full-premium exposure remain scenario calculations;
+unknown costs and source/evidence blockers remain. Historical frozen studies
+retain their own settings. See [delivery](OPTIONS_OWNER_ALLOCATION_DELIVERY.md).
+
 ## Route and claim
 
 Run `node node_modules/tsx/dist/cli.mjs scripts/options-daily-guidance.mjs --route`

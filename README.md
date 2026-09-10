@@ -9,9 +9,9 @@ Gold research: [factor cross-check and horizon priorities](docs/OPTIONS_GOLD_FRA
 News & calendar maps all 14 Owner framework areas and seven added checks to
 existing coverage. Saved daily values, news leads and missing feeds stay distinct.
 
-Latest planning check: [capital policy preflight](docs/OPTIONS_CAPITAL_POLICY_DELIVERY.md).
-Daily guidance and Trade planner show the conflict between the current allocation
-range and independent loss caps. Preview form values without changing settings.
+Current planning policy: [owner cancellation of legacy loss caps](docs/OPTIONS_OWNER_ALLOCATION_DELIVERY.md).
+Daily guidance and Trade planner use $100–$500 per trade / $1,000 declared equity.
+Legacy loss caps are removed; costs, stops and full-premium exposure remain visible.
 
 Collector startup: [network access and actual source receipts](docs/OPTIONS_COLLECTOR_STARTUP_CORRECTION.md).
 Local interface availability does not prove a successful public-data refresh;

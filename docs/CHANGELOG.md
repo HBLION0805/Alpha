@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-09 — Owner allocation policy
+
+- Activated $100–$500 per trade with legacy loss and shared-event caps removed.
+- Synchronized planning, candidate checks, cost comparisons, Host brief and UI.
+- Preserved historical policy reconstruction and blocked stale settings rollback.
+- See [delivery](OPTIONS_OWNER_ALLOCATION_DELIVERY.md) for validation and limits.
+
+
 ## 2026-09-09 - Connect official macro context and prospective model comparisons
 
 - Added three bounded sources for nominal yields, broad USD/FX and CPI/PCE models.

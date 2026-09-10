@@ -1,3 +1,4 @@
+import { legacyRiskCapsRemoved } from "../options-retail-feasibility/OptionsTradeBudget";
 import type { GuidanceInput } from "../../contracts/OptionsDailyGuidance";
 import { assessDailyGuidance } from "./OptionsDailyGuidance";
 import { paperFingerprint } from "../options-paper/OptionsPaperTradingEngine";
@@ -7,7 +8,7 @@ export interface CandidateChecksInput {
   guidance: GuidanceInput;
   sourcePaths: string[];
 }
-type Status = "PASS" | "BLOCKED" | "UNKNOWN";
+type Status = "PASS" | "BLOCKED" | "UNKNOWN" | "NOT_ENFORCED";
 interface Check { id: string; label: string; status: Status; reasons: string[]; explanation: string; nextAction: string }
 const usd = (n: number | null | undefined) => n === null || n === undefined ? "Unknown" : "$" + (n / 100).toFixed(2);
 const fail = (code: string): never => { throw Error("CANDIDATE_CHECKS_" + code); };
@@ -15,7 +16,7 @@ const fail = (code: string): never => { throw Error("CANDIDATE_CHECKS_" + code);
 /** Presentation and audit projection only. Original decisions and economics are unchanged. */
 export function assessCandidateChecks(input: CandidateChecksInput) {
   if (!input || Object.keys(input).sort().join() !== "guidance,sourcePaths,version" || input.version !== "OPTIONS_CANDIDATE_CHECKS_INPUT_V1" || !Array.isArray(input.sourcePaths) || input.sourcePaths.length > 60 || new Set(input.sourcePaths).size !== input.sourcePaths.length || input.sourcePaths.some(p => typeof p !== "string" || !/^data\/runtime\/options-daily-guidance\/captures\/\d{4}-\d\d-\d\d\/\d{4}-\d\d-\d\dT\d\d-\d\d-\d\d-\d{3}Z-[a-f0-9-]{36}\.json$/.test(p))) fail("INPUT");
-  const original = assessDailyGuidance(input.guidance), settings = original.settings;
+  const original = assessDailyGuidance(input.guidance), settings = original.settings, removed = legacyRiskCapsRemoved(settings.tradeBudget);
   const rows = original.assets.flatMap(asset => asset.candidates.map(candidate => {
     const q = candidate.contract, e = candidate.feasibility.economics, reasons = candidate.blockers;
     const checks: Check[] = [];
@@ -39,18 +40,26 @@ export function assessCandidateChecks(input: CandidateChecksInput) {
     add("stress", "Full-premium stress", ["LEGACY_MAX_LOSS_LIMIT_EXCEEDED"], `Stress loss ${usd(e?.stressLossCents)}; normal full-premium cap ${usd(e?.legacyNormalMaxLossCents)}. This cap is independent of the allocation ceiling.`, "A budget-affordable contract must also fit the unchanged full-premium risk cap.", !e || costsUnknown && !reasons.includes("LEGACY_MAX_LOSS_LIMIT_EXCEEDED"));
     add("reward", "Net reward target", ["PROFIT_TARGET_CAP_EXCEEDED"], `Indicative exit target ${usd(candidate.plan.targetExitCents)} per share for ${settings.rewardMultipleMilliR / 1000}R; net target ${usd(candidate.plan.netTargetCents)}.`, "Retain unknown targets until costs are declared; a calculated target does not establish a fill.", !e || costsUnknown);
     add("cash", "Declared settled cash", ["SETTLED_CASH_INSUFFICIENT"], `Declared cash ${usd(settings.settledCashCents)}. Alpha has not read or verified brokerage buying power.`, "Check the declared cash scenario separately from actual broker account eligibility.", !e || costsUnknown && !reasons.includes("SETTLED_CASH_INSUFFICIENT"));
+    if(removed) {
+      const loss=checks.find(c=>c.id==="loss")!,stress=checks.find(c=>c.id==="stress")!,cash=checks.find(c=>c.id==="cash")!;
+      loss.explanation=`Planned all-in loss ${usd(e?.plannedStopCents)}; no legacy planned-loss cap. Immediate liquidation friction ${usd(e?.immediateLiquidationFrictionCents)}. A stop is not a guaranteed fill.`;
+      loss.nextAction="Check that the declared stop can absorb costs and a whole price tick; review the full premium at risk.";
+      Object.assign(stress,{status:"NOT_ENFORCED",reasons:[],explanation:`Full-premium exposure ${usd(e?.stressLossCents)}${costsUnknown?`; premium ${usd(e?.premiumCents)} plus unknown costs`:""}. The owner removed the legacy stress cap; this is exposure disclosure, not a passed loss limit.`,nextAction:""});
+      if(reasons.includes("ACCOUNT_EQUITY_EXCEEDED")){cash.reasons.push("ACCOUNT_EQUITY_EXCEEDED");cash.status="BLOCKED";}
+      cash.explanation+=` Declared total equity ${usd(settings.currentEquityCents)} also bounds capital.`;
+    }
     const mapped = new Set(checks.flatMap(c => c.reasons)), other = reasons.filter(b => !mapped.has(b));
     if (other.length) checks.push({id:"other", label:"Other original blockers", status:"BLOCKED", reasons:other, explanation:"Unmapped original blockers are retained, never silently dropped.", nextAction:"Review the original decision evidence."});
     const premiumWithinBudget = e ? e.premiumCents <= e.applicableAllocationBudgetCents && (!settings.tradeBudget || e.premiumCents>=settings.tradeBudget.minCents) : null;
     const budgetPosition=e&&settings.tradeBudget?(e.premiumCents>settings.tradeBudget.maxCents?"OVER":e.premiumCents<settings.tradeBudget.minCents?"BELOW":"WITHIN"):"UNKNOWN";
     return {contract:q, dte:candidate.dte, disposition:candidate.disposition, originalBlockers:reasons, premiumWithinBudget, ...(settings.tradeBudget?{budgetPosition}:{}), checks, economics:e, plan:candidate.plan,
-      nextActions:[...new Set(checks.filter(c => c.status !== "PASS").map(c => c.nextAction))], paperAdapterQualified:false, executionAllowed:false};
+      nextActions:[...new Set(checks.filter(c => c.status !== "PASS" && c.status !== "NOT_ENFORCED").map(c => c.nextAction))], paperAdapterQualified:false, executionAllowed:false};
   }));
-  return {version:settings.tradeBudget?"OPTIONS_CANDIDATE_CHECKS_V2":"OPTIONS_CANDIDATE_CHECKS_V1", assessedAt:original.assessedAt, capturedAt:original.marketCapturedAt,
+  return {version:removed?"OPTIONS_CANDIDATE_CHECKS_V3":settings.tradeBudget?"OPTIONS_CANDIDATE_CHECKS_V2":"OPTIONS_CANDIDATE_CHECKS_V1", assessedAt:original.assessedAt, capturedAt:original.marketCapturedAt,
     settings, sourcePaths:input.sourcePaths, originalGuidanceFingerprint:paperFingerprint(original), rows,
     counts:{sampled:rows.length, premiumWithinBudget:rows.filter(r => r.premiumWithinBudget === true).length, premiumOverBudget:rows.filter(r => settings.tradeBudget?r.budgetPosition==="OVER":r.premiumWithinBudget === false).length, ...(settings.tradeBudget?{premiumBelowBudget:rows.filter(r=>r.budgetPosition==="BELOW").length}:{}), premiumUnknown:rows.filter(r => r.premiumWithinBudget === null).length, conditionalResearch:rows.filter(r => r.disposition === "CONDITIONAL_RESEARCH").length, blocked:rows.filter(r => r.disposition === "NO_TRADE").length},
     qualification:{status:"NOT_ESTABLISHED", requirements:["Independent option-side and size timing remains unverified.", "Full contract/deliverable and exchange-session evidence requires separate qualification.", "Source-use evidence and a reviewed source-specific paper execution model remain open.", "Account and cost inputs are local declarations; no brokerage account was inspected."], paperAdapterQualified:false},
-    scope:settings.tradeBudget?"Latest bounded guidance sample only. Owner-declared allocation range applies; 14–45 DTE policy and independent risk limits remain. Historical close-chain activity remains separate.":"Latest bounded guidance sample only. Existing 14–45 DTE policy, budgets and risk limits are unchanged. Historical close-chain activity remains separate.",
+    scope:removed?"Latest bounded guidance sample only. Owner allocation policy V2 removes legacy loss caps; budget, declared cash/equity, friction and market-evidence checks remain. Historical research retains its original policy.":settings.tradeBudget?"Latest bounded guidance sample only. Owner-declared allocation range applies; 14–45 DTE policy and independent risk limits remain. Historical close-chain activity remains separate.":"Latest bounded guidance sample only. Existing 14–45 DTE policy, budgets and risk limits are unchanged. Historical close-chain activity remains separate.",
     interpretation:"PASS applies only to the named local check. Conditional research is not an executable recommendation, a qualified fill path or a calibrated edge.",
     executionAllowed:false, winProbability:null, sourceRefresh:false};
 }
