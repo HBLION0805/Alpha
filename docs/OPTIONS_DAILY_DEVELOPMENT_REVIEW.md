@@ -6,13 +6,19 @@ observed gaps, and two daily reviews. Older bans on all scheduled progress repor
 are superseded only for these 08:00 and 21:00 reviews. Automatic implementation
 and quarter-hour development loops remain disabled; development stays in this task.
 
-Activation is pending. On September 9 New York, the automation tool rejected the
-first proposed review heartbeat because this task already has the active gld-ibit
-heartbeat and only one heartbeat can be attached to a task. No review schedule was
-created. The Owner must explicitly authorize standalone scheduled review tasks
-before that alternative is used. Do not merge these reviews into market collection
-or bypass the restriction with an unapproved cron job. See the
-[setup checkpoint](status/development-governance.json).
+The Owner explicitly approved two standalone scheduled reviews on September 10.
+Both are active: alpha (08:00) and alpha-2 (21:00), New York, including weekends.
+The earlier one-heartbeat-per-task rejection remains recorded; the authorized
+standalone jobs resolve it without changing gld-ibit. Actual configuration was
+read back, but no future scheduled run is claimed. See the
+[activation checkpoint](status/development-governance.json).
+
+The saved Alpha project is C:/projects/Alpha. Each standalone prompt explicitly
+reads and writes the active development workspace
+C:/Users/liuha/.codex/worktrees/8f09/Alpha, using absolute working directories.
+Never replace its actual runtime evidence with an automatic checkout or another
+project path. Read recent Owner steering from the original task when available;
+otherwise disclose the missing conversation access and follow saved directions.
 
 ## Product objective and scope
 
@@ -150,10 +156,11 @@ is labeled late; after 21:00 do not manufacture an 08:00 baseline. If the mornin
 plan is missing, compare with the last verified baseline, explicitly mark it missing,
 and do not invent planned achievements. Unknown current state stays unknown.
 
-Return a concise Chinese morning plan and evening comparison in the current task.
+Return a concise Chinese morning plan and evening comparison in each standalone run.
+The original development task reads the shared saved records when continuing.
 The Owner explicitly requested these two routine daily reports, including no-progress
 days. Handle task notifications in automation configuration, not in its prompt.
-The proposed two review schedules must remain separate from `gld-ibit`; do not mutate that task,
+The two review schedules remain separate from `gld-ibit`; do not mutate that task,
 restart sources, fetch paid data, log in, call accounts/orders or run development
 loops during a planning/review wake. Product changes continue under the Owner's
 ordinary development authorization in the current task.
@@ -164,7 +171,8 @@ commit a report. Existing Owner save/commit/push authorization remains valid for
 review artifacts after inspecting exactly what will be published.
 
 The requested schedules are daily, including weekends, at 08:00 and 21:00 New York.
-They are not active until supported activation and actual configuration are verified.
+Both schedules were enabled and verified on September 10; inspect actual execution
+receipts before claiming a scheduled review ran.
 Local files require the computer and desktop app to be running; scheduled execution
 still depends on available access and allowance. Record missed runs honestly.
 [Official scheduled-task reference](https://learn.chatgpt.com/docs/automations?surface=app).

@@ -6,10 +6,11 @@ records the exact product workflow, known capability gaps and evidence required
 for real progress. Read [the alignment baseline](status/development-alignment-baseline-20260909.json)
 before continuing work; daily records are under docs/development-daily. This is
 scheduled planning/review, not a resumed autonomous implementation loop.
-Activation is pending: this task's single heartbeat slot is occupied by gld-ibit.
-The first review create request was rejected; neither review is scheduled. A
-standalone-task alternative awaits explicit Owner authorization. See
-[setup evidence](status/development-governance.json).
+The Owner approved standalone reviews on September 10. alpha (08:00) and alpha-2
+(21:00) are active and verified, with the actual development workspace explicitly
+named despite the saved project's different path. No scheduled run is claimed yet.
+Their reports appear in independent runs and shared daily records. See
+[activation evidence](status/development-governance.json).
 
 The September 9 23:28 New York audit again observed a 30-minute gld-ibit recurrence,
 after the earlier verified correction described below. Its cause is unestablished;

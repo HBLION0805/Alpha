@@ -4,9 +4,9 @@ The Owner requests development reports against total scope. The latest direction
 adds daily 08:00 New York goals and 21:00 actual progress/alignment review in this
 task, separately from market collection. Follow the
 [full workflow and review protocol](OPTIONS_DAILY_DEVELOPMENT_REVIEW.md).
-The review schedules are not active: creation encountered the one-heartbeat-per-task
-limit. Standalone review tasks await explicit Owner authorization; market collection
-remains unchanged. See [setup evidence](status/development-governance.json).
+The Owner approved standalone review tasks on September 10. Both are active and
+read back; actual scheduled runs remain unobserved. Market collection is unchanged.
+See [activation evidence](status/development-governance.json).
 Automatic quarter-hour development reports remain disabled. This fixed ten-workstream view is an engineering reporting
 baseline, not an estimate of effort, profitability or production readiness.
 Use [the current checkpoint](status/development-progress.json) for dated counts,

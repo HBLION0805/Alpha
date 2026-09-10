@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-10T03:33:00Z",
+  "recordedAt": "2026-09-10T04:27:47.504Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
@@ -145,7 +145,7 @@
   "latestOperationalEvidence": "docs/status/paper-observation.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
-  "periodicDevelopmentReports": false,
+  "periodicDevelopmentReports": true,
   "frontendAcceptance": {
     "pages": 8,
     "locallyAccepted": 8,
@@ -159,6 +159,11 @@
     "21:00"
   ],
   "periodicDevelopmentReportsRequested": true,
-  "dailyReviewActivation": "PENDING_EXPLICIT_STANDALONE_TASK_AUTHORIZATION",
-  "dailyReviewActivationEvidence": "docs/status/development-governance.json"
+  "dailyReviewActivation": "ACTIVE_CONFIGURATION_VERIFIED",
+  "dailyReviewActivationEvidence": "docs/status/development-governance.json",
+  "dailyReviewAutomationIds": [
+    "alpha",
+    "alpha-2"
+  ],
+  "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS"
 }

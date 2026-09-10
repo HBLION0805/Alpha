@@ -1,9 +1,9 @@
 # Alpha
 
 Development direction: [full product workflow and daily planning/review](docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md).
-Requested daily 08:00 goals and 21:00 progress/deviation reviews use New York time
-and remain separate from market collection; activation is pending the task-slot
-restriction described in the linked protocol. Progress means a verified improvement in the
+Daily 08:00 goals and 21:00 progress/deviation reviews use New York time and are
+enabled as Owner-approved standalone tasks, separate from market collection.
+Progress means a verified improvement in the
 decision workflow; engineering test counts do not establish trading performance.
 
 Paper observation: [prospective capture-to-review workflow](docs/OPTIONS_PAPER_OBSERVATION_DELIVERY.md).

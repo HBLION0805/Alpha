@@ -1,13 +1,107 @@
 {
   "version": "OPTIONS_DEVELOPMENT_GOVERNANCE_SETUP_V1",
-  "recordedAt": "2026-09-10T03:33:00Z",
-  "localDate": "2026-09-09",
+  "recordedAt": "2026-09-10T04:27:47.504Z",
+  "localDate": "2026-09-10",
   "timeZone": "America/New_York",
-  "status": "PENDING_EXPLICIT_STANDALONE_TASK_AUTHORIZATION",
+  "status": "ACTIVE_CONFIGURATION_VERIFIED",
   "protocol": "docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md",
   "alignmentBaseline": "docs/status/development-alignment-baseline-20260909.json",
   "setupRecord": "docs/development-daily/2026-09-09/setup-baseline.md",
   "requestedReviews": [
+    {
+      "phase": "MORNING_PLAN",
+      "name": "Alpha 早间开发目标",
+      "requestedLocalTime": "08:00",
+      "cadence": "DAILY_INCLUDING_WEEKENDS",
+      "automationId": "alpha",
+      "active": true,
+      "kind": "cron",
+      "actualFields": {
+        "kind": "cron",
+        "name": "Alpha 早间开发目标",
+        "prompt": "This is an Owner-authorized standalone Alpha development review. The saved Alpha project may open at C:/projects/Alpha, but the sole review target and record destination is C:/Users/liuha/.codex/worktrees/8f09/Alpha. Use explicit working directories; never assess an empty automatic checkout as the active product. Read that target's AGENTS.md, docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md, docs/HANDOFF.md, docs/status/development-progress.json, fixed alignment baseline and latest docs/development-daily records. Read recent Owner steering from task 01a077f7-0355-7b70-89b2-1ff2e0d89261 when available; if unavailable, disclose that and use the saved latest directions. All intended dates/times are America/New_York, including weekends. Use actual clocks and the protocol's late/missing/duplicate rules. At 08:00 plan the full development day using the previous evening audit and actual current evidence. Set three to five stable goal IDs across morning, afternoon and validation blocks, with priority, workflow stage, current gap, backend/frontend deliverable, acceptance evidence, dependency and fallback work. Prioritize broken data/processing paths, the first actual-quote paper lifecycle, and daily event-to-contract recommendations. Record a baseline for every F01–F08 workflow stage, all ten engineering workstreams and six paper gates. Plans are future work, not completed capabilities or a claim of automatic all-day development. Inspect compact existing readers, Git diffs and dated evidence without acquiring market data or running the full test suite just for a report. Save an append-only English record in the target workspace's docs/development-daily/YYYY-MM-DD/ with actual UTC time, commit and evidence references; return a concise Chinese report from this standalone run. Preserve unrelated active edits. Owner authorization covers saving, committing and pushing only reviewed review artifacts; never include another ongoing change. Do not modify gld-ibit or source schedules, start coding loops, call account/order tools, buy anything, log in or enroll paper plans. Implementation continues in the original Alpha task. If the target is unavailable, report the gap and do not substitute a different checkout.",
+        "status": "ACTIVE",
+        "rrule": "RRULE:FREQ=DAILY;BYHOUR=8;BYMINUTE=0;BYSECOND=0",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "execution_environment": "local",
+        "created_at": 1789014281660
+      },
+      "configurationSha256": "c3ad66c095c9dbe2a7aaa5fcc910ca5495c53593d27bfe499f8686a27a6d4490",
+      "projectId": "local-3c7b98b7c2a3d89a89cc813b37ca72d3",
+      "savedProjectPath": "C:/projects/Alpha",
+      "explicitReviewTarget": "C:/Users/liuha/.codex/worktrees/8f09/Alpha",
+      "notificationPolicy": null
+    },
+    {
+      "phase": "EVENING_AUDIT",
+      "name": "Alpha 晚间进度核查",
+      "requestedLocalTime": "21:00",
+      "cadence": "DAILY_INCLUDING_WEEKENDS",
+      "automationId": "alpha-2",
+      "active": true,
+      "kind": "cron",
+      "actualFields": {
+        "kind": "cron",
+        "name": "Alpha 晚间进度核查",
+        "prompt": "This is an Owner-authorized standalone Alpha development review. The saved Alpha project may open at C:/projects/Alpha, but the sole review target and record destination is C:/Users/liuha/.codex/worktrees/8f09/Alpha. Use explicit working directories; never assess an empty automatic checkout as the active product. Read that target's AGENTS.md, docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md, docs/HANDOFF.md, docs/status/development-progress.json, fixed alignment baseline and latest docs/development-daily records. Read recent Owner steering from task 01a077f7-0355-7b70-89b2-1ff2e0d89261 when available; if unavailable, disclose that and use the saved latest directions. All intended dates/times are America/New_York, including weekends. Use actual clocks and the protocol's late/missing/duplicate rules. At 21:00 compare today's actual morning plan against current evidence. Mark each goal completed, partial, blocked, not started or regressed. For every F01–F08 stage show morning/evening state, real added capability, evidence, remaining work and deviation; also compare all ten workstreams and six gates without changing their denominators. Check the complete news/quotes → six-dimensional view → option plan → paper validation/Owner execution → position tracking → all-outcome review → independently validated feedback path. Show zero progress, missed captures and regressions plainly. If morning evidence is missing, compare the last verified baseline and say so. Classify alignment and prioritize next-day corrections; test/module counts alone cannot establish product progress. Inspect compact existing readers, Git diffs and dated evidence without acquiring market data or running the full test suite just for a report. Save an append-only English record in the target workspace's docs/development-daily/YYYY-MM-DD/ with actual UTC time, commit and evidence references; return a concise Chinese report from this standalone run. Preserve unrelated active edits. Owner authorization covers saving, committing and pushing only reviewed review artifacts; never include another ongoing change. Do not modify gld-ibit or source schedules, start coding loops, call account/order tools, buy anything, log in or enroll paper plans. Implementation continues in the original Alpha task. If the target is unavailable, report the gap and do not substitute a different checkout.",
+        "status": "ACTIVE",
+        "rrule": "RRULE:FREQ=DAILY;BYHOUR=21;BYMINUTE=0;BYSECOND=0",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high",
+        "execution_environment": "local",
+        "created_at": 1789014288586
+      },
+      "configurationSha256": "49f3d46d83950722c315e0c7228fb4f5bbabf634ac411610b9d33e7a894f5669",
+      "projectId": "local-3c7b98b7c2a3d89a89cc813b37ca72d3",
+      "savedProjectPath": "C:/projects/Alpha",
+      "explicitReviewTarget": "C:/Users/liuha/.codex/worktrees/8f09/Alpha",
+      "notificationPolicy": null
+    }
+  ],
+  "creationAttempt": {
+    "tool": "mcp__codex_app__automation_update",
+    "kind": "heartbeat",
+    "phase": "MORNING_PLAN",
+    "isError": true,
+    "message": "This thread already has an active heartbeat automation. Only one automation can be attached to this thread. Either update the existing automation, or confirm with the user what they would like you to do. Don't make a workaround cron automation unless the user explicitly asked for that.",
+    "eveningAttempted": false
+  },
+  "marketTask": {
+    "id": "gld-ibit",
+    "status": "ACTIVE",
+    "observedRule": "RRULE:FREQ=MINUTELY;INTERVAL=30",
+    "sha256Before": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
+    "sha256After": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
+    "unchanged": true
+  },
+  "actualInventoryIds": [
+    "gld-ibit",
+    "alpha",
+    "alpha-2"
+  ],
+  "scheduledReviewsCreated": 2,
+  "scheduledReviewRunsObserved": 0,
+  "automaticDevelopment": false,
+  "executionAllowed": false,
+  "validation": {
+    "jsonFilesParsed": 3,
+    "protocolLocalLinksVerified": 6,
+    "workflowStagesVerified": 8,
+    "workstreamRowsVerified": 10,
+    "paperGatesVerified": 6,
+    "baselineEvidenceSha256Matches": true,
+    "workbenchHttpStatus": 200,
+    "workbenchProgressState": "AVAILABLE",
+    "workbenchReportsPendingActivation": false,
+    "gitDiffCheckPassed": true,
+    "productionCodeChanged": false,
+    "fullTestSuiteRunThisSetup": false,
+    "actualScheduleFieldsVerified": true,
+    "targetWorkspaceExplicitInBothPrompts": true
+  },
+  "nextAction": "Continue product development in the original Alpha task; verify actual first review receipts after their scheduled times.",
+  "priorHeartbeatRequests": [
     {
       "phase": "MORNING_PLAN",
       "name": "Alpha 早间开发目标",
@@ -29,42 +123,6 @@
       "active": false
     }
   ],
-  "creationAttempt": {
-    "tool": "mcp__codex_app__automation_update",
-    "kind": "heartbeat",
-    "phase": "MORNING_PLAN",
-    "isError": true,
-    "message": "This thread already has an active heartbeat automation. Only one automation can be attached to this thread. Either update the existing automation, or confirm with the user what they would like you to do. Don't make a workaround cron automation unless the user explicitly asked for that.",
-    "eveningAttempted": false
-  },
-  "marketTask": {
-    "id": "gld-ibit",
-    "status": "ACTIVE",
-    "observedRule": "RRULE:FREQ=MINUTELY;INTERVAL=30",
-    "sha256Before": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
-    "sha256After": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
-    "unchanged": true
-  },
-  "actualInventoryIds": [
-    "gld-ibit"
-  ],
-  "scheduledReviewsCreated": 0,
-  "scheduledReviewRunsObserved": 0,
-  "automaticDevelopment": false,
-  "executionAllowed": false,
-  "validation": {
-    "jsonFilesParsed": 3,
-    "protocolLocalLinksVerified": 6,
-    "workflowStagesVerified": 8,
-    "workstreamRowsVerified": 10,
-    "paperGatesVerified": 6,
-    "baselineEvidenceSha256Matches": true,
-    "workbenchHttpStatus": 200,
-    "workbenchProgressState": "AVAILABLE",
-    "workbenchReportsPendingActivation": true,
-    "gitDiffCheckPassed": true,
-    "productionCodeChanged": false,
-    "fullTestSuiteRunThisSetup": false
-  },
-  "nextAction": "Ask for explicit authorization to create two standalone daily scheduled reviews; do not modify the existing market heartbeat or claim activation."
+  "ownerStandaloneApproval": "Explicit Owner approval in the original Alpha task on September 10, 2026",
+  "windowsTimeZone": "Eastern Standard Time"
 }

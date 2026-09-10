@@ -4,10 +4,12 @@
 
 The Owner now explicitly requests two daily reviews in this current task:
 08:00 America/New_York development-day goals and 21:00 actual progress/deviation
-audit, including weekends, separate from gld-ibit. Activation is pending: the
-automation tool rejected an additional heartbeat because one task can have only
-one. Do not alter the market task or create workaround cron jobs; standalone
-review tasks require explicit Owner authorization. See docs/status/development-governance.json. Follow
+audit, including weekends, separate from gld-ibit. On September 10 the Owner
+explicitly authorized standalone reviews; alpha (08:00) and alpha-2 (21:00) are
+active and read back. Their saved project is C:/projects/Alpha but their prompts
+explicitly target C:/Users/liuha/.codex/worktrees/8f09/Alpha and shared daily records.
+Do not substitute another checkout or change the market task. Scheduled execution
+is not yet observed. See docs/status/development-governance.json. Follow
 [the objective, full F01–F08 workflow and report protocol](docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md)
 and [the dated baseline](docs/status/development-alignment-baseline-20260909.json).
 Save append-only daily plans/reviews under docs/development-daily/YYYY-MM-DD and
