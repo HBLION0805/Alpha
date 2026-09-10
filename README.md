@@ -1,5 +1,9 @@
 # Alpha
 
+Daily guidance: [contract reasoning and six-dimension evidence checks](docs/OPTIONS_GUIDANCE_RATIONALE_DELIVERY.md).
+Expiry payoff references, event exposure and missing forecast/path assumptions
+now accompany the original decisions. Real-price paper gates remain open.
+
 Context recovery: [late-start daily reads and visible calendar freshness](docs/OPTIONS_CONTEXT_LATE_START_CORRECTION.md).
 Current official calendar receipts are restored; missed historical reads stay gaps.
 

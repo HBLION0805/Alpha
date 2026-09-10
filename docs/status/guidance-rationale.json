@@ -1,0 +1,133 @@
+{
+  "version": "OPTIONS_GUIDANCE_RATIONALE_DELIVERY_V1",
+  "recordedAt": "2026-09-10T05:39:14.274Z",
+  "workflowStages": [
+    "F03",
+    "F04"
+  ],
+  "scope": "GLD_IBIT_EXISTING_GUIDANCE_EXPLANATION_AND_FRONTEND",
+  "currentInputFingerprint": "sha256:7a375e213427f934982ee77d3ca4de8c39170aacc99aeec471eda7d31396cea1",
+  "originalReportFingerprint": "sha256:b1401a570745ce81ff00919a62db81d4657c02cc59b42a63d84769a9304f8f44",
+  "historicalReportsVerified": 24,
+  "originalReportBytesUnchanged": true,
+  "assets": [
+    {
+      "symbol": "GLD",
+      "disposition": "WATCH",
+      "eligibleCloses": 2,
+      "dimensions": [
+        {
+          "id": "DIRECTION",
+          "status": "UNCONFIRMED"
+        },
+        {
+          "id": "MAGNITUDE",
+          "status": "FORECAST_MISSING"
+        },
+        {
+          "id": "TIME",
+          "status": "TRADE_HORIZON_UNDECLARED"
+        },
+        {
+          "id": "VOLATILITY",
+          "status": "UNASSESSED"
+        },
+        {
+          "id": "PATH",
+          "status": "UNCONFIRMED"
+        },
+        {
+          "id": "RISK",
+          "status": "COSTS_UNKNOWN"
+        }
+      ],
+      "analystReview": {
+        "assessedAt": "2026-09-10T00:24:11.678Z",
+        "newerMarketEvidence": true,
+        "status": "NEWER_MARKET_EVIDENCE_NEEDS_REVIEW"
+      },
+      "contracts": 18,
+      "quoteStates": [
+        "STALE"
+      ]
+    },
+    {
+      "symbol": "IBIT",
+      "disposition": "WATCH",
+      "eligibleCloses": 2,
+      "dimensions": [
+        {
+          "id": "DIRECTION",
+          "status": "UNCONFIRMED"
+        },
+        {
+          "id": "MAGNITUDE",
+          "status": "FORECAST_MISSING"
+        },
+        {
+          "id": "TIME",
+          "status": "TRADE_HORIZON_UNDECLARED"
+        },
+        {
+          "id": "VOLATILITY",
+          "status": "UNASSESSED"
+        },
+        {
+          "id": "PATH",
+          "status": "UNCONFIRMED"
+        },
+        {
+          "id": "RISK",
+          "status": "COSTS_UNKNOWN"
+        }
+      ],
+      "analystReview": {
+        "assessedAt": "2026-09-10T00:24:11.678Z",
+        "newerMarketEvidence": true,
+        "status": "NEWER_MARKET_EVIDENCE_NEEDS_REVIEW"
+      },
+      "contracts": 18,
+      "quoteStates": [
+        "STALE",
+        "UNKNOWN"
+      ]
+    }
+  ],
+  "validation": {
+    "focusedRationalePassed": 27,
+    "originalGuidancePassed": 65,
+    "typecheck": "PASS",
+    "aggregate": "PASSED",
+    "componentCount": 168,
+    "testsExecuted": 4378,
+    "passed": 4378,
+    "failed": 0,
+    "logPath": "data/runtime/options-workbench-development/guidance-rationale-complete-validation.log",
+    "documentLinkCheck": "PASS",
+    "missingAskComparisonGuardFocusedRetest": "27_PASSED"
+  },
+  "frontend": {
+    "desktop": "VISUALLY_CHECKED",
+    "mobile390": "VISUALLY_CHECKED",
+    "samePageReload": "OPEN_AND_CLOSED_DISCLOSURES_PRESERVED",
+    "viewportReset": true,
+    "backendActivated": true
+  },
+  "manualLedgerEventCount": 0,
+  "actualTrades": 0,
+  "paperObservationStates": [
+    {
+      "planId": "pipeline-check-ibit-20260910",
+      "state": "AWAITING_WINDOW"
+    }
+  ],
+  "sourceCalls": 0,
+  "newSourceSchedule": false,
+  "marketScheduleEvidence": "docs/status/market-schedule-recovery-20260910.json",
+  "originalRankingChanged": false,
+  "originalDispositionsChanged": false,
+  "realPriceGateAdvanced": false,
+  "expectedPriceForecast": null,
+  "winProbability": null,
+  "executionAllowed": false
+}

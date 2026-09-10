@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-10T04:35:11.330Z",
+  "recordedAt": "2026-09-10T05:39:14.274Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "374feba",
+  "comparedWithCommit": "7c6d0f4",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "02",
-  "currentUnit": "Daily context late-start recovery and visible calendar coverage",
-  "currentUnitAcceptance": "253 focused checks and typecheck passed. Actual fixed-source reads cleared the calendar coverage blocker; historical bytes and the missed September 9 slot remain intact. First natural daily execution after restart is unobserved.",
+  "currentWorkstream": "01",
+  "currentUnit": "Contract rationale and six-dimension decision evidence with synchronized frontend",
+  "currentUnitAcceptance": "Exact expiry payoff references and known event exposure are visible; 24 frozen reports retain their original bytes. Both assets remain WATCH, two prior closes each; forecasts, time exits, IV/path and real-price lifecycle remain incomplete.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Verify the next natural daily read and actual scheduled paper window; complete event-conditioned recommendations and qualified underlying trend evidence. Existing recorded market-schedule drift remains unresolved.",
+  "nextAction": "Qualify current guidance session and analyst-reassessment behavior, then continue event-conditioned planning and observe the original real-price paper window when host, source and quota are available.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4342,
+    "passed": 4378,
     "failed": 0,
-    "componentCount": 167
+    "componentCount": 168
   },
-  "latestOperationalEvidence": "docs/status/context-late-start.json",
+  "latestOperationalEvidence": "docs/status/guidance-rationale.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -167,9 +167,14 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 253,
+    "passed": 92,
     "failed": 0,
     "typecheck": "PASS",
-    "fullSuiteRun": false
-  }
+    "fullSuiteRun": true
+  },
+  "currentUnitWorkflowStages": [
+    "F03",
+    "F04"
+  ],
+  "marketScheduleRecovery": "docs/status/market-schedule-recovery-20260910.json"
 }

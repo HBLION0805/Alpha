@@ -190,6 +190,7 @@
     "options:guidance": "tsx scripts/options-daily-guidance.mjs",
     "options:context-service": "tsx scripts/options-context-service.mjs",
     "test:options-guidance": "tsx scripts/options-daily-guidance.test.mjs",
+    "test:options-guidance-rationale": "tsx scripts/options-guidance-rationale.test.mjs",
     "test:options-context-service": "tsx scripts/options-context-service.test.mjs",
     "options:focused-news": "tsx scripts/options-focused-news.mjs",
     "test:options-focused-news": "tsx scripts/options-focused-news.test.mjs",

@@ -6,6 +6,7 @@ import { parseChainSurveyJson } from "../../src/engines/options-robinhood-data/R
 import { paperFingerprint } from "../../src/engines/options-paper/OptionsPaperTradingEngine.ts";
 import { readinessClock } from "../../src/engines/options-readiness/OptionsReadinessEngine.ts";
 import { assessDailyGuidance, defaultGuidanceSettings, validateGuidanceSettings } from "../../src/engines/options-daily-guidance/OptionsDailyGuidance.ts";
+import { explainDailyGuidance } from "../../src/engines/options-daily-guidance/OptionsGuidanceRationale.ts";
 
 const BASE="data/runtime/options-daily-guidance", MAX=8*1024*1024;
 const fail=code=>{throw Error("GUIDANCE_"+code);};
@@ -142,7 +143,15 @@ export function guidanceView(root,state) {
     settings:guidanceSettings(root),analyst:latestAnalystNote(root)};
   const current=assessDailyGuidance(input);
   const history=paths(root,"reports",24).map(path=>{const r=verified(root,path,"reports");return {path,issuedAt:r.recordedAt,assessedAt:r.input.at,assets:r.report.assets.map(a=>({symbol:a.symbol,disposition:a.disposition,trend:a.trend.direction})),inputFingerprint:r.inputFingerprint};});
-  return {input,current,history,sourcePaths:records.map(r=>r.path),interpretation:latestAnalystNote(root)};
+  return {input,current,rationale:explainDailyGuidance(input),history,sourcePaths:records.map(r=>r.path),interpretation:latestAnalystNote(root)};
+}
+export function explainIssuedGuidance(root,path) {
+  if(path.split('/')[3]!=="reports")fail("REPORT_PATH");
+  const record=verified(root,path,"reports");
+  return {version:"OPTIONS_ISSUED_GUIDANCE_EXPLANATION_V1",derivedAt:new Date().toISOString(),sourcePath:path,
+    originallyIssuedAt:record.recordedAt,inputFingerprint:record.inputFingerprint,
+    authority:"LATER_EXPLANATION_OF_FROZEN_INPUTS_NOT_ORIGINAL_ISSUED_TEXT",
+    rationale:explainDailyGuidance(record.input),executionAllowed:false};
 }
 export function publishGuidance(root,state){const view=guidanceView(root,state);return save(root,"reports",view.input,view.current).path;}
 export function claimGuidanceSlot(root,slot) {

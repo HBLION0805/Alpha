@@ -119,6 +119,7 @@ const textExtensions = new Set([
 const aggregateTestFiles = [
   "scripts/options-workbench.test.mjs",
   "scripts/options-daily-guidance.test.mjs",
+  "scripts/options-guidance-rationale.test.mjs",
   "scripts/options-context-service.test.mjs",
   "scripts/options-focused-news.test.mjs",
   "scripts/options-event-research.test.mjs",

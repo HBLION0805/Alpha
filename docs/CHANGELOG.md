@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## 2026-09-10 — Contract rationale and readable evidence gaps
+
+- Added six-dimension checks, exact terminal references and event exposure to
+  Daily guidance and the Host brief, with historical frozen-input explanation.
+- Preserved named disclosure state/focus across local refresh after browser QA.
+- Restored and read back the original market recurrence through the app, keeping
+  independent review jobs and final-close restoration unchanged.
+- See [delivery and remaining gates](OPTIONS_GUIDANCE_RATIONALE_DELIVERY.md).
+
 ## 2026-09-10 — Recover daily context after late startup
 
 - Keep an unattempted daily Treasury/BLS/FOMC read eligible after 18:00 through

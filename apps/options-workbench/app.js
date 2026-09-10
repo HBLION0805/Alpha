@@ -19,6 +19,7 @@ function clearPolicyPreview(){ui.capitalPolicyPreview=null;const p=$('#capital-p
 function costRequest(){return {scenario:buildScenario(plannerBudgetDraft(ui.plannerDraft,state.guidance?.data?.current.settings)),feeBasis:ui.costFeeBasis};}
 function clearCosts(){ui.costDeskResult=null;const panel=$('#cost-desk-result');if(panel)panel.innerHTML=costDeskResult(null);}
 let state=null,pending=null,pendingKey=null,requestId=null,loading=false,saving=false,calculating=false,previewing=false,toastTimer;
+let renderedRoute=null;
 const dirty=new Set();
 function syncNavigation(){
   const hidden=matchMedia('(max-width: 650px)').matches&&!document.body.classList.contains('menu-open');
@@ -31,11 +32,19 @@ function render(focus=false){
   if(!state)return;
   const active=document.activeElement,id=active?.id,name=active?.name,position=active?.selectionStart;
   const key=route();ui.journalDraft=drafts[ui.journalMode];
+  const disclosures=new Map(!focus&&renderedRoute===key?[...$('#main').querySelectorAll('details[data-disclosure-key]')].map(el=>[el.dataset.disclosureKey,el.open]):[]);
+  const focusedDisclosure=active?.tagName==='SUMMARY'?active.parentElement?.dataset.disclosureKey:null;
   $('#main').innerHTML=routes[key](state,ui);$('#breadcrumb').textContent=labels[key];
+  let nextSummary=null;
+  for(const el of $('#main').querySelectorAll('details[data-disclosure-key]')){
+    if(disclosures.has(el.dataset.disclosureKey))el.open=disclosures.get(el.dataset.disclosureKey);
+    if(disclosures.has(el.dataset.disclosureKey)&&el.dataset.disclosureKey===focusedDisclosure)nextSummary=el.querySelector('summary');
+  }
+  renderedRoute=key;
   document.title=`${labels[key]} · Alpha`;
   for(const link of document.querySelectorAll('[data-route]')){const selected=link.dataset.route===key;link.classList.toggle('active',selected);if(selected)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');}
   if(focus)$('#main').focus({preventScroll:true});
-  else {const next=id?document.getElementById(id):name?document.querySelector(`[name="${name}"]`):null;if(next){next.focus({preventScroll:true});if(typeof position==='number'&&['text','search','tel','url','password'].includes(next.type))next.setSelectionRange(position,position);}}
+  else {const next=id?document.getElementById(id):name?document.querySelector(`[name="${name}"]`):nextSummary;if(next){next.focus({preventScroll:true});if(typeof position==='number'&&['text','search','tel','url','password'].includes(next.type))next.setSelectionRange(position,position);}}
 }
 function navigate(key){if(route()===key)render(true);else location.hash=key;}
 function fail(error,target){const el=target&&$(target);if(el)el.textContent=error.message??'Local operation failed.';else toast(error.message??'Local operation failed.');}

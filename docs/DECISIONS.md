@@ -1,5 +1,12 @@
 # Alpha Architecture Decisions
 
+## 2026-09-10 — Explain contract fit without inventing pre-expiry forecasts
+
+Show exact terminal payoff references, calendar exposure and all six evidence
+dimensions, preserving the original gates and historical fingerprints. Mark a
+newer capture than the analyst note for reassessment. Historical explanations are
+later projections of frozen inputs. See [delivery](OPTIONS_GUIDANCE_RATIONALE_DELIVERY.md).
+
 ## 2026-09-10 — Retain the current day's unattempted public context read
 
 The documented daily-after-09:00 public refresh should remain available after

@@ -1,5 +1,13 @@
 # Alpha Architecture
 
+## Explanations from frozen guidance inputs
+
+OptionsGuidanceRationale consumes the unchanged daily engine for exact terminal
+references and six-dimensional gaps. UI and Host brief share that projection;
+the original engine still owns decisions, ranking and report identity. Historical
+explanations verify/recompute an issued report before using its frozen inputs,
+without current sources or journal appends. See [specification](specifications/OPTIONS_GUIDANCE_RATIONALE_V1.md).
+
 ## Versioned owner allocation policy
 
 The planning adapter dispatches OWNER_ALLOCATION_ONLY_V2 separately from original

@@ -1,5 +1,17 @@
 # Alpha Handoff
 
+Latest increment: [daily guidance contract rationale](OPTIONS_GUIDANCE_RATIONALE_DELIVERY.md).
+Frontend and Host brief explain expiry, strike, terminal payoff references and
+six-dimensional evidence gaps. --explain-report uses verified frozen inputs;
+old fingerprints remain unchanged. Same-page refresh retains named disclosures.
+Both assets remain WATCH with two eligible prior closes; F03/F04 and the real-price
+lifecycle stay incomplete. See [validation](status/guidance-rationale.json).
+
+The app restored the intended market recurrence at September 10 05:12 UTC and
+later readbacks matched. Both standalone review files stayed unchanged. The
+previous overwrite cause and future market execution remain unestablished. See
+[schedule evidence](status/market-schedule-recovery-20260910.json).
+
 Latest implementation: [daily context after a late startup](OPTIONS_CONTEXT_LATE_START_CORRECTION.md).
 The original daily public group now stays eligible after 18:00 through local
 midnight without duplicate UTC-date claims. BLS/FOMC and Treasury were read once

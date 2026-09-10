@@ -1,5 +1,10 @@
 # Daily news and GLD/IBIT guidance Host
 
+The Host brief now includes bounded contract rationales and six-dimensional
+evidence gaps. Treat terminal breakevens as expiry payoff references, never a
+pre-expiry forecast or target. A note preceding newer market evidence requires
+reassessment. Original gates/ranking are unchanged; see [delivery](OPTIONS_GUIDANCE_RATIONALE_DELIVERY.md).
+
 Owner authorization: September 8, 2026. Use only existing gld-ibit in the Alpha
 workspace C:/Users/liuha/.codex/worktrees/8f09/Alpha. Development stays in the
 current conversation. No development continuation, progress reports, orders,

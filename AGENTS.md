@@ -1,5 +1,20 @@
 # Alpha Development Standard v1.0
 
+## Contract rationale and schedule readback — September 10, 2026
+
+Daily guidance now exposes six-dimensional evidence gaps, contract expiry/strike,
+gross terminal breakeven, a separate cost-reserve threshold and calendar exposure.
+These are deterministic references, not pre-expiry forecasts or new trading gates.
+UI and Host brief share the engine; --explain-report uses only verified frozen
+inputs. Old fingerprints remain unchanged. Named disclosures survive local refresh.
+See docs/OPTIONS_GUIDANCE_RATIONALE_DELIVERY.md and docs/status/guidance-rationale.json.
+Both assets remain WATCH with two eligible prior closes and no real-price lifecycle.
+The original market recurrence was restored through the app and later readbacks
+matched, but the earlier overwrite cause remains unknown. Keep review jobs separate
+and preserve final-close restoration. See docs/status/market-schedule-recovery-20260910.json.
+Future Host execution requires an available host/task and Codex allowance; no
+quota reset, replacement market cron or cancelled development job is authorized.
+
 ## Daily context after a late startup — September 10, 2026
 
 The unattempted daily Treasury/BLS/FOMC group is eligible from 09:00 until New York

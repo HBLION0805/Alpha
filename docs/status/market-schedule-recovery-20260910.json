@@ -1,0 +1,36 @@
+{
+  "version": "OPTIONS_MARKET_SCHEDULE_RECOVERY_V1",
+  "recordedAt": "2026-09-10T05:34:12.097Z",
+  "automationId": "gld-ibit",
+  "previousFileSha256": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
+  "observedDefect": "ACTUAL_30_MINUTE_INTERVAL_MISSES_INTENDED_CAPTURE_SLOTS",
+  "priorOverwriteCause": "UNESTABLISHED",
+  "action": "SUPPORTED_APP_UPDATE_WITH_EXISTING_TRANSITIONAL_FIELDS",
+  "updatedAt": "2026-09-10T05:12:15.565Z",
+  "readbackTimes": [
+    "2026-09-10T05:12:26.644Z",
+    "2026-09-10T05:21:26.709Z",
+    "2026-09-10T05:34:12.097Z"
+  ],
+  "currentFileSha256": "f0d660c01adaa936e22d0c039454fc607c2a7960095318c4a94546062fd8f3bd",
+  "intendedManifest": "docs/OPTIONS_DAILY_GUIDANCE_HOST_V1.json",
+  "allExpectedFieldsMatch": true,
+  "wakesPerLocalDay": 28,
+  "otherContentChanged": false,
+  "reviewJobs": [
+    {
+      "id": "alpha",
+      "sha256": "c3ad66c095c9dbe2a7aaa5fcc910ca5495c53593d27bfe499f8686a27a6d4490"
+    },
+    {
+      "id": "alpha-2",
+      "sha256": "49f3d46d83950722c315e0c7228fb4f5bbabf634ac411610b9d33e7a894f5669"
+    }
+  ],
+  "restoration": "IMMUTABLE_V6_FIRST_ONGOING_GUIDANCE_SECOND_AFTER_FINAL_CLOSE",
+  "scheduledRunObserved": false,
+  "sourceCallsThisDevelopmentStep": 0,
+  "paperEntryWindowChanged": false,
+  "requiresAvailableCodexAllowance": true,
+  "executionAllowed": false
+}
