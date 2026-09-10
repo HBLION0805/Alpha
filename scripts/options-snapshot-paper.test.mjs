@@ -3,13 +3,15 @@ import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,realpathSync,cpS
 import {tmpdir} from 'node:os';
 import {resolve,relative,isAbsolute,dirname} from 'node:path';
 import {createHash} from 'node:crypto';
-import {snapshotNs,snapshotCents,assessSnapshotQuote,replaySnapshotPaper,validateSnapshotPlan} from '../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {snapshotNs,snapshotCents,assessSnapshotQuote,replaySnapshotPaper,validateSnapshotPlan,snapshotEntryEconomics} from '../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {paperSession} from '../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {paperFingerprint} from '../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import {defaultGuidanceSettings} from '../src/engines/options-daily-guidance/OptionsDailyGuidance.ts';
 import {collectGuidanceMarket} from './lib/options-guidance-host.mjs';
 import {normalizeGuidanceCapture,saveGuidanceSettings} from './lib/options-guidance-io.mjs';
 import {mapSnapshotSource,snapshotSources,previewSnapshotPaper,registerSnapshotPaper,saveSnapshotPaperReport,verifySnapshotPaper,snapshotPaperView} from './lib/options-snapshot-paper-io.mjs';
 import {snapshotRequest,snapshotResult,snapshotPaperPanel} from '../apps/options-workbench/snapshot-paper.js';
+import {request as browserRequest} from '../apps/options-workbench/api.js';
 import {startOptionsWorkbench} from './options-workbench.mjs';
 
 const at=n=>new Date(Date.parse('2026-09-08T14:00:00.000Z')+n*1000).toISOString();
@@ -73,7 +75,7 @@ await test('source nanoseconds survive while unsupported receipt precision is ex
 async function rawCapture(n,bid='1.99',ask='2.00'){
   let seq=10;const instruments=new Map();const raw=await collectGuidanceMarket({clock:async()=>at(n),call:async(tool,request)=>{
     if(tool==='get_equity_quotes')return {data:{results:['GLD','IBIT'].map(symbol=>({quote:{symbol,last_trade_price:'400.00',venue_last_trade_time:at(n),last_non_reg_trade_price:null,venue_last_non_reg_trade_time:null}}))}};
-    if(tool==='get_option_chains')return {data:{chains:[{id:uid(request.underlying_symbol==='GLD'?1:2),symbol:request.underlying_symbol,expiration_dates:['2026-09-25']}]}};
+    if(tool==='get_option_chains')return {data:{chains:[{id:uid(request.underlying_symbol==='GLD'?1:2),symbol:request.underlying_symbol,late_close_state:'enabled',expiration_dates:['2026-09-25']}]}};
     if(tool==='get_option_instruments'){const symbol=request.chain_id===uid(1)?'GLD':'IBIT',list=['call','put'].map(type=>({id:uid(seq++),chain_id:request.chain_id,chain_symbol:symbol,expiration_date:'2026-09-25',type,strike_price:'400',state:'active',tradability:'tradable',underlying_type:'equity',trade_value_multiplier:'100',min_ticks:{above_tick:'0.05',below_tick:'0.01',cutoff_price:'3.00'}}));list.forEach(i=>instruments.set(i.id,i));return {data:{instruments:list,next:null}};}
     if(tool==='get_option_quotes')return {data:{results:request.instrument_ids.map(id=>({quote:{instrument_id:id,bid_price:bid,ask_price:ask,bid_size:20,ask_size:20,delta:instruments.get(id).type==='call'?'0.5':'-0.5',updated_at:at(n)}}))}};
     throw Error('UNEXPECTED_TOOL');
@@ -104,5 +106,96 @@ await test('frontend keeps unknown costs, labels open gates and escapes source t
   const d={id:'test-plan',contractId:uid(10),selectionPath:frame(0).path,decisionAt:at(2).slice(0,19),entryDeadlineAt:at(20).slice(0,19),timeExitAt:at(90).slice(0,19),quantity:'1',entryLimit:'2',entryFee:'',exitFee:'',slippage:'',maxSpread:'.1'};
   d.maxSpread='0.10';assert.equal(snapshotRequest(d).entryFeeCents,null);assert(snapshotResult(run([])).includes('Assumption-only model'));
   const html=snapshotPaperPanel({state:'AVAILABLE',data:{sourceGaps:['<unsafe>'],latest:null,cases:[]}});assert(html.includes('Qualified quotes: Open'));assert(html.includes('&lt;unsafe&gt;'));assert(!html.includes('<unsafe>'));
+});
+
+// V2 acceptance: V1 above remains an independent compatibility suite.
+const chain=(time=at(0),state='enabled')=>({chainId:uid(1),lateCloseState:state,receivedAt:time});
+const frame2=(n,bid=199,ask=200)=>{const f=frame(n,bid,ask);f.quotes[0].chainSession=chain(at(n));return f;};
+const plan2=()=>({...plan(),version:'OPTIONS_SNAPSHOT_PAPER_PLAN_V2',contract:frame2(0).quotes[0],feeBasis:'ROBINHOOD_REVIEWED_20260910',entryFeeCents:null,exitFeeCents:null});
+const run2=(frames,p=plan2(),end=100)=>replaySnapshotPaper(p,[frame2(0),...frames],at(end));
+const request2=()=>({...request(),modelVersion:'V2',feeBasis:'ROBINHOOD_REVIEWED_20260910',entryFeeCents:null,exitFeeCents:null});
+await test('V2 paper waiting states do not report a future window as a failed entry',()=>{
+  const waiting=run2([],plan2(),1);assert.equal(waiting.paperStage,'AWAITING_WINDOW');assert(!waiting.candidateLessons.some(l=>l.code==='NO_ENTRY'));
+  assert.equal(run2([],plan2(),10).paperStage,'AWAITING_ELIGIBLE_QUOTE');assert.equal(run2([]).paperStage,'ENTRY_WINDOW_ENDED');
+  const p=plan2();p.exitSlippageCents=null;assert.equal(run2([],p,1).paperStage,'WAITING_FOR_COST_ASSUMPTIONS');
+});
+await test('V2 reviewed fees and complete win reconcile actual modeled sale fees once',()=>{
+  const r=run2([frame2(10),frame2(30,285,286)]);assert.equal(r.paperStage,'CLOSED_MODELED');assert.equal(r.fills[0].feeCents,4);assert.equal(r.fills[1].feeCents,5);assert.equal(r.account.netPnlCents,8391);assert.equal(r.review.outcome,'WIN');assert.equal(r.account.plannedRiskCents,4109);assert.equal(r.executionQualification,'NOT_ESTABLISHED');assert.equal(r.actualTrades,0);
+  assert.equal(r.account.cashLedgerCents,100000-r.fills[0].premiumCents-4+r.fills[1].premiumCents-5);
+});
+await test('V2 sale fees vary with proceeds and losses beyond R enter the notebook',()=>{
+  const r=run2([frame2(10),frame2(80,100,101)]);assert.equal(r.account.netPnlCents,-10109);assert(r.review.candidateLessons.some(l=>l.code==='LOSS_EXCEEDED_PLANNED_R'));
+  const p=plan2();p.quantity=10;p.entryLimitCents=49;p.contract=frame2(0).quotes[0];
+  const e=snapshotEntryEconomics(p,{...p.contract,bidCents:48,askCents:49});assert.equal(e.entryFeeCents,40);assert(e.exitFeeReserveCents>=44);
+});
+await test('V2 exit SEC rounding follows sale proceeds rather than entry fees',()=>{
+  const p=plan2();p.quantity=3;p.entryLimitCents=160;const r=run2([frame2(10,159,160),frame2(30,230,231)],p);
+  assert.equal(r.status,'CLOSED_MODELED');assert.equal(r.fills[0].feeCents,12);assert.equal(r.fills[1].feeCents,14);assert.equal(r.account.netPnlCents,20674);
+});
+await test('V2 manual fee input stays unknown, and mixed fee bases are rejected',()=>{
+  const p=plan2();p.feeBasis='DECLARED_FEES';assert.equal(run2([frame2(10)],p).fills.length,0);p.entryFeeCents=0;p.exitFeeCents=0;assert.equal(run2([frame2(10)],p).fills.length,1);
+  p.feeBasis='ROBINHOOD_REVIEWED_20260910';assert.throws(()=>validateSnapshotPlan(p),/FEE_BASIS/);p.entryFeeCents=p.exitFeeCents=null;p.feeBasis='NEW_RATE';assert.throws(()=>validateSnapshotPlan(p),/FEE_BASIS/);
+});
+await test('V2 stop remains latched across an invalid post-time-exit snapshot and rebound',()=>{
+  const stop=frame2(30,150,151);stop.quotes[0].bidSize=0;const invalid=frame2(91);invalid.quotes[0].askSize=null;
+  const r=run2([frame2(10),stop,invalid,frame2(95)]);assert.equal(r.fills[1].reason,'STOP');assert(r.quoteGapObserved);
+});
+for(const symbol of ['GLD','IBIT'])await test('V2 '+symbol+' late close admits source-linked 16:14 quotes and excludes 16:15',()=>{
+  const quote=frame2(10).quotes[0];quote.symbol=symbol;quote.receivedAt=quote.updatedAt=quote.underlyingAt='2026-09-08T20:14:59.000Z';
+  assert(assessSnapshotQuote(quote,'2026-09-08T20:14:59.000Z',true).usableSnapshot);
+  assert(!assessSnapshotQuote(quote,'2026-09-08T20:14:59.000Z').usableSnapshot);
+  quote.receivedAt=quote.updatedAt=quote.underlyingAt='2026-09-08T20:15:00.000Z';assert(!assessSnapshotQuote(quote,quote.receivedAt,true).usableSnapshot);
+});
+await test('V2 late-close complete modeled lifecycle uses unaltered source timestamps',()=>{
+  const shift=s=>new Date(Date.parse(s)+(6*60+10)*60000).toISOString();const f=n=>{const x=frame2(n);x.recordedAt=shift(x.recordedAt);x.capturedAt=shift(x.capturedAt);const q=x.quotes[0];q.receivedAt=shift(q.receivedAt);q.updatedAt=shift(q.updatedAt);q.underlyingAt=shift(q.underlyingAt);q.chainSession.receivedAt=shift(q.chainSession.receivedAt);return x;};
+  const p=plan2();p.contract=f(0).quotes[0];for(const k of ['createdAt','decisionAt','entryDeadlineAt','timeExitAt'])p[k]=shift(p[k]);
+  const r=replaySnapshotPaper(p,[f(0),f(10),f(90)],shift(at(100)));assert.equal(r.status,'CLOSED_MODELED');assert.equal(r.fills[1].reason,'TIME_EXIT');assert.equal(r.marketSession.closeLocal,'16:15');assert.equal(r.fills[0].sourceAt,'2026-09-08T20:10:10.000Z');
+});
+await test('V2 missing late-close flag stays conservative and has no inferred eligibility',()=>{
+  const quote=frame2(10).quotes[0];quote.chainSession={chainId:null,lateCloseState:'unknown',receivedAt:null};quote.receivedAt=quote.updatedAt=quote.underlyingAt='2026-09-08T20:10:00.000Z';
+  assert(!assessSnapshotQuote(quote,quote.receivedAt,true).usableSnapshot);assert.equal(paperSession(quote.receivedAt,quote.chainSession).closeLocal,'16:00');
+  quote.chainSession.lateCloseState='enabled';assert.throws(()=>assessSnapshotQuote(quote,quote.receivedAt,true),/CHAIN_SESSION/);
+});
+await test('V2 early close and DST boundaries follow the reviewed calendar',()=>{
+  assert(paperSession('2026-11-27T18:14:59.000Z',chain()).isOpen);assert(!paperSession('2026-11-27T18:15:00.000Z',chain()).isOpen);
+  assert(!paperSession('2026-11-27T18:00:00.000Z',chain(at(0),'disabled')).isOpen);
+  assert.equal(paperSession('2026-12-24T17:00:00.000Z',chain()).closeLocal,'13:15');
+  assert(paperSession('2026-07-02T19:00:00.000Z',chain()).isOpen);
+  assert(paperSession('2026-11-02T14:30:00.000Z',chain()).isOpen);assert(!paperSession('2026-11-02T13:30:00.000Z',chain()).isOpen);
+});
+await test('V2 holidays, weekends, unknown years and expiration days cannot become plans',()=>{
+  for(const date of ['2026-07-03','2026-09-07','2026-09-12','2027-09-08']){const p=plan2();p.contract.expiry='2027-09-25';for(const k of ['decisionAt','entryDeadlineAt','timeExitAt'])p[k]=p[k].replace('2026-09-08',date);assert.throws(()=>validateSnapshotPlan(p),/SESSION_WINDOW/);}
+  const p=plan2();p.contract.expiry='2026-09-08';assert.throws(()=>validateSnapshotPlan(p),/SESSION_WINDOW/);
+});
+await test('V2 premarket source or underlying cannot pass just because receipt is after open',()=>{
+  const quote=frame2(10).quotes[0];quote.receivedAt='2026-09-08T13:30:10.000Z';quote.chainSession.receivedAt=quote.receivedAt;quote.updatedAt=quote.underlyingAt='2026-09-08T13:29:59.000Z';
+  const r=assessSnapshotQuote(quote,quote.receivedAt,true);assert(r.blockers.includes('SOURCE_OUTSIDE_MODEL_SESSION'));assert(r.blockers.includes('UNDERLYING_OUTSIDE_MODEL_SESSION'));
+});
+await test('V2 quote and underlying freshness cannot be waived by session eligibility',()=>{
+  const quote=frame2(10).quotes[0];quote.receivedAt='2026-09-08T20:14:00.000Z';const r=assessSnapshotQuote(quote,quote.receivedAt,true);assert(r.blockers.includes('STALE_AT_RECEIPT'));assert(r.blockers.includes('UNDERLYING_UNALIGNED'));
+});
+await test('V2 raw chain flags are linked by exact chain and retained in copied-source recovery',()=>temp(async root=>{
+  await seed(root);const src=snapshotSources(root)[0],v1=mapSnapshotSource(src),v2=mapSnapshotSource(src,true);assert(!('chainSession' in v1.quotes[0]));assert.equal(v2.quotes[0].chainSession.lateCloseState,'enabled');assert.equal(v2.quotes[0].chainSession.chainId,uid(1));
+  const reg=registerSnapshotPaper(root,request2(),at(1));assert(registerSnapshotPaper(root,request2(),at(2)).alreadyRecorded);await saveCapture(root,10);await saveCapture(root,30,'2.85','2.86');const saved=saveSnapshotPaperReport(root,'synthetic-case',at(100));assert.equal(saved.status,'CLOSED_MODELED');
+  const r=JSON.parse(readFileSync(resolve(root,saved.path),'utf8'));assert.equal(r.report.version,'OPTIONS_SNAPSHOT_PAPER_REPORT_V2');assert.equal(r.report.account.netPnlCents,8391);
+  assert.equal(verifySnapshotPaper(root,reg.path).status,'VERIFIED');await temp(other=>{const dest=resolve(other,saved.path);mkdirSync(dirname(dest),{recursive:true});cpSync(resolve(root,saved.path),dest);assert.equal(verifySnapshotPaper(other,saved.path).status,'VERIFIED');});
+  assert.equal(snapshotPaperView(root,at(100)).cases[0].current.paperStage,'CLOSED_MODELED');
+}));
+await test('V2 local API preview and freeze preserve explicit model and fee choice',()=>temp(async root=>{
+  await seed(root);const app=await startOptionsWorkbench({workspaceRoot:root,port:0,now:()=>at(1)});try{const state=await(await fetch(app.url+'/api/state')).json();const send=body=>fetch(app.url+'/api/snapshot-paper',{method:'POST',headers:{Origin:app.url,'Content-Type':'application/json','X-Alpha-Session':state.session},body:JSON.stringify(body)});
+  const preview=await send({action:'PREVIEW',request:request2()});assert.equal(preview.status,200);assert.equal((await preview.json()).paperStage,'AWAITING_WINDOW');assert.equal((await send({action:'REGISTER',request:request2()})).status,200);
+  assert.equal((await send({action:'PREVIEW',request:{...request2(),feeBasis:'UNKNOWN'}})).status,409);
+  }finally{await app.close();}
+}));
+await test('browser API retains its server token across two paper previews',()=>temp(async root=>{
+  await seed(root);const app=await startOptionsWorkbench({workspaceRoot:root,port:0,now:()=>at(1)}),oldFetch=globalThis.fetch,oldLocation=globalThis.location;
+  globalThis.location=new URL(app.url);globalThis.fetch=(path,options={})=>oldFetch(new URL(path,app.url),{...options,headers:{...options.headers,Origin:app.url}});
+  try{await browserRequest('/api/state');const first=await browserRequest('/api/snapshot-paper',{action:'PREVIEW',request:request2()});assert.equal(first.marketSession.closeLocal,'16:15');assert(snapshotResult(first).includes('16:15 New York'));const second=await browserRequest('/api/snapshot-paper',{action:'PREVIEW',request:request2()});assert.equal(second.paperStage,'AWAITING_WINDOW');}
+  finally{globalThis.fetch=oldFetch;if(oldLocation===undefined)delete globalThis.location;else globalThis.location=oldLocation;await app.close();}
+}));
+await test('V2 form binds fee choice without converting blank slippage to zero',()=>{
+  const d={modelVersion:'V2',feeBasis:'ROBINHOOD_REVIEWED_20260910',id:'test-plan',contractId:uid(10),selectionPath:frame(0).path,decisionAt:at(2).slice(0,19),entryDeadlineAt:at(20).slice(0,19),timeExitAt:at(90).slice(0,19),quantity:'1',entryLimit:'2',entryFee:'',exitFee:'',slippage:'',maxSpread:'0.10'};
+  assert.equal(snapshotRequest(d).exitSlippageCents,null);assert.equal(snapshotRequest(d).feeBasis,d.feeBasis);d.entryFee='0';assert.throws(()=>snapshotRequest(d),/manual fees/);
+  const html=snapshotPaperPanel({state:'AVAILABLE',data:{sourceGaps:[],latest:null,cases:[]}});assert(html.includes('PRACTICAL PAPER WORKFLOW'));assert(html.includes('Strict execution qualification (separate)'));assert(html.includes('does not run continuous quote polling'));assert(snapshotResult(run2([],plan2(),1)).includes('Awaiting Window'));
 });
 console.log(`Options snapshot paper tests passed: ${passed}/${passed}.`);

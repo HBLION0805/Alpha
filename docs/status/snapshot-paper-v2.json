@@ -1,0 +1,81 @@
+{
+  "version": "OPTIONS_SNAPSHOT_PAPER_V2_DELIVERY_V1",
+  "recordedAt": "2026-09-10T02:18:49.406Z",
+  "baseCommit": "83d6cfac311d9f0f85788450f336c1852ab152f9",
+  "paperModel": "LOCAL_VALIDATED_UNDER_EXPLICIT_ASSUMPTIONS",
+  "strictExecutionQualification": "NOT_ESTABLISHED",
+  "completedRealPriceLifecycle": false,
+  "actualTrades": 0,
+  "source": {
+    "path": "data/runtime/options-daily-guidance/captures/2026-09-10/2026-09-10T00-44-50-412Z-46fae72f-3985-47af-93c1-4e7404d957d3.json",
+    "requested": 36,
+    "returned": 34,
+    "missing": 2,
+    "usableAtReceipt": 0,
+    "sessions": [
+      "GLD:16:15",
+      "IBIT:16:15"
+    ]
+  },
+  "legacyReports": [
+    {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-snapshot-paper/reports/source-audit-gld-20260909/2026-09-10T01-05-56-396Z-20dbda68-a1c0-4206-b551-c43f195bf384.json",
+      "fingerprint": "sha256:c4dbf1a2dfd34ed7acfce783bf2dc305a37332d9094a1dabdf7a8007d0df8cbf",
+      "executionAllowed": false
+    },
+    {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-snapshot-paper/reports/source-audit-ibit-20260909/2026-09-10T01-05-57-180Z-cf3972d4-be95-424b-bfc9-46f25364402d.json",
+      "fingerprint": "sha256:e5a2d0f028d07fe9231bbaff8db678a3f310fbf851976af05ef1f29cf832951c",
+      "executionAllowed": false
+    }
+  ],
+  "originalFilesPreserved": 108,
+  "preview": {
+    "path": "data/runtime/options-workbench-development/snapshot-paper-v2-preview-final.json",
+    "sha256": "f240c027c0e7c26b5c16ae1b456cad5b9be57d3fad26879ed3c34b7ae831f805",
+    "stage": "AWAITING_WINDOW",
+    "modeledFills": 0,
+    "registered": false,
+    "directionalRecommendation": false
+  },
+  "preservation": {
+    "path": "data/runtime/options-workbench-development/snapshot-paper-v2-preservation.json",
+    "sha256": "40ebcbe0f8d6589796f3b4352fd2671c1184b3e70db3b95c3f96c3c15cf98f4b"
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 167,
+    "testsExecuted": 4327,
+    "passed": 4327,
+    "failed": 0,
+    "durationMs": 90197,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'apps/options-workbench/snapshot-paper.js', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-snapshot-paper-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-snapshot-paper.test.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "logPath": "data/runtime/options-workbench-development/snapshot-paper-v2-validation-final.log",
+    "logSha256": "a91b24a6a33c980b1e2234d3bb21e73152112edcab1e60bb8c3d759c5fc49e22",
+    "snapshotTests": 55
+  },
+  "desktopUi": {
+    "width": 1280,
+    "documentWidth": 1265,
+    "twoPreviewsPassed": true,
+    "stage": "AWAITING_WINDOW",
+    "marketSessionClose": "16:15",
+    "draftDiscarded": true,
+    "consoleErrors": 0,
+    "ownerSaves": 0,
+    "mobileRecheckedThisVersion": false
+  },
+  "globalFeesChanged": false,
+  "sourceSchedulesChanged": false,
+  "hostTrackingChanged": false,
+  "continuousQuotePollingAdded": false,
+  "executionAllowed": false
+}

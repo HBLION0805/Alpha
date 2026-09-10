@@ -1,5 +1,11 @@
 # Alpha Handoff
 
+Latest continuation: [practical paper workflow V2](OPTIONS_SNAPSHOT_PAPER_V2_DELIVERY.md)
+separates assumption-based paper testing from strict execution qualification.
+New plans use source-linked late close, reviewed 2026 holidays and explicit fee
+models. No valid real-price entry/exit sequence exists yet. Source schedules and
+original V1 reports are unchanged; see [checkpoint](status/snapshot-paper-v2.json).
+
 Latest paper step: [snapshot adapter and qualification evidence](OPTIONS_SNAPSHOT_PAPER_DELIVERY.md).
 The local adapter, save/recompute path and frontend are implemented under the
 active allocation-only policy. Two actual-capture audits are NO_ENTRY; no qualified

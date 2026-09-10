@@ -1,5 +1,18 @@
 # Alpha Development Standard v1.0
 
+## Practical paper workflow V2 — September 9 evening, 2026
+
+New paper plans separate practical snapshot testing from strict execution
+qualification. V2 uses copied chain late-close evidence, a reviewed 2026 options
+calendar, explicit manual or dated nonprofessional fee assumptions, and practical
+waiting/open/closed states. Preserve all V1 fingerprints and global unknown fees.
+The current real capture is still stale; no real-price lifecycle has completed.
+No new polling, Host tracking, schedule or account/order authority is included.
+See [delivery](docs/OPTIONS_SNAPSHOT_PAPER_V2_DELIVERY.md),
+[spec](docs/specifications/OPTIONS_SNAPSHOT_PAPER_V2.md) and
+[checkpoint](docs/status/snapshot-paper-v2.json). Never reuse the browser API's
+top-level `session` field for market-session metadata; use `marketSession`.
+
 ## Snapshot paper adapter — September 9, 2026
 
 The Owner requested the three remaining gates. A new source-linked snapshot

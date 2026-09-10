@@ -1,14 +1,14 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-10T01:14:49.306Z",
+  "recordedAt": "2026-09-10T02:18:49.406Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "c5f4e0f",
+  "comparedWithCommit": "83d6cfa",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
-    "PARTIAL": 3,
-    "NOT_VALIDATED": 3
+    "PARTIAL": 4,
+    "NOT_VALIDATED": 2
   },
   "currentCounts": {
     "LOCAL_VALIDATED": 4,
@@ -21,7 +21,7 @@
       "name": "Single-trade risk and planning",
       "previousStatus": "LOCAL_VALIDATED",
       "status": "LOCAL_VALIDATED",
-      "detail": "Owner allocation-only V2: $100\u2013$500 per trade / $1,000 declared equity; legacy loss caps removed. Exact exposure/cost and evidence checks remain, with historical policies preserved.",
+      "detail": "Owner allocation-only V2: $100–$500 per trade / $1,000 declared equity; legacy loss caps removed. Exact exposure/cost and evidence checks remain, with historical policies preserved.",
       "evidence": "docs/OPTIONS_OWNER_ALLOCATION_DELIVERY.md"
     },
     {
@@ -75,10 +75,10 @@
     {
       "id": "08",
       "name": "Robinhood real-price paper adapter",
-      "previousStatus": "NOT_VALIDATED",
+      "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Source-linked snapshot adapter, frozen plans, modeled bid/ask fills and isolated recovery implemented under explicit assumptions. Source qualification remains open.",
-      "evidence": "docs/OPTIONS_SNAPSHOT_PAPER_DELIVERY.md"
+      "detail": "V2 practical snapshot paper model with source-linked late/early sessions, explicit reviewed/manual fees, copied-source recovery, reviews and frontend validated. Strict execution qualification remains separate; real intraday lifecycle still unobserved.",
+      "evidence": "docs/OPTIONS_SNAPSHOT_PAPER_V2_DELIVERY.md"
     },
     {
       "id": "09",
@@ -150,5 +150,6 @@
     "pages": 8,
     "locallyAccepted": 8,
     "notOverallCompletionPercentage": true
-  }
+  },
+  "practicalPaperCheckpoint": "docs/status/snapshot-paper-v2.json"
 }
