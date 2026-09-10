@@ -1,0 +1,169 @@
+{
+  "version": "OPTIONS_PAPER_OBSERVATION_DELIVERY_V1",
+  "recordedAt": "2026-09-10T02:47:19.889Z",
+  "baseCommit": "374feba34d83dffcf56588c426786b44b8a741c5",
+  "observationImplemented": true,
+  "strictExecutionQualification": "NOT_ESTABLISHED",
+  "completedRealPriceLifecycle": false,
+  "actualTrades": 0,
+  "plan": {
+    "id": "pipeline-check-ibit-20260910",
+    "createdAt": "2026-09-10T02:40:51.510Z",
+    "decisionAt": "2026-09-10T13:40:00.000Z",
+    "entryDeadlineAt": "2026-09-10T14:00:00.000Z",
+    "timeExitAt": "2026-09-10T19:45:00.000Z",
+    "quantity": 1,
+    "entryLimitCents": 200,
+    "maxSpreadCents": 10,
+    "feeBasis": "ROBINHOOD_REVIEWED_20260910",
+    "exitSlippageCents": 1,
+    "stopLossBps": 2000,
+    "rewardMultipleMilliR": 2000,
+    "registration": {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-snapshot-paper/plans/pipeline-check-ibit-20260910.json",
+      "fingerprint": "sha256:e2dbe889cb31aa57ebb313628c90eb9658726c8e1cada16633f5301742992ece",
+      "executionAllowed": false
+    },
+    "enrollment": {
+      "path": "data/runtime/options-snapshot-paper/observations/enrolled/pipeline-check-ibit-20260910.json",
+      "alreadyRecorded": false,
+      "executionAllowed": false
+    },
+    "initialReport": {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260910/2026-09-10T02-40-52-175Z-46857dbf-2f56-4ba6-9c1e-b8377f9e7009.json",
+      "fingerprint": "sha256:90e08fbb6a0c0529d00fc8172cd0de10f3abbfdd0bd760d4a310822ce87d1dcd",
+      "executionAllowed": false
+    },
+    "planId": "pipeline-check-ibit-20260910",
+    "enrolledAt": "2026-09-10T02:40:51.930Z",
+    "monitorUntilAt": "2026-09-10T20:20:00.000Z",
+    "purpose": "PIPELINE_REHEARSAL_NOT_SIGNAL",
+    "origin": "HOST_MARKET_TOOL_RESPONSES",
+    "state": "AWAITING_WINDOW",
+    "contract": {
+      "id": "d84f0997-0025-4edb-bb75-62969bc06b83",
+      "symbol": "IBIT",
+      "expiry": "2026-10-09",
+      "type": "call",
+      "strike": "44.5000",
+      "multiplier": 100
+    },
+    "currentPaperStage": "AWAITING_WINDOW",
+    "automaticReports": 0,
+    "lastAutomaticReport": null,
+    "tracking": "SHARED_EXISTING_ID",
+    "directionalRecommendation": false
+  },
+  "host": {
+    "recordedAt": "2026-09-10T02:41:56.445390+00:00",
+    "id": "gld-ibit",
+    "changedKeys": [
+      "rrule",
+      "updated_at"
+    ],
+    "recurrenceMatchesAuthorizedSnapshot": true,
+    "otherFieldsPreserved": true,
+    "notificationPolicy": "failed_runs_only",
+    "status": "ACTIVE",
+    "beforeSha256": "25283199209122b69ef10eb9870e43911925e69be66317f20937ecdcf2dde9b6",
+    "afterSha256": "f02f9bfb18869c06c3a10442ee337bdf1a54a5bda13aded2c5436d8982bc1fd8",
+    "futureRunsVerified": false,
+    "totalTrackedContracts": 4,
+    "distinctContractsAdded": 0,
+    "authorizedDailyWakes": 28,
+    "continuousQuotePolling": false,
+    "newTasks": 0
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 167,
+    "testsExecuted": 4342,
+    "passed": 4342,
+    "failed": 0,
+    "durationMs": 96623,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'apps/options-workbench/app.js', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'apps/options-workbench/snapshot-paper.js', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'docs/OPTIONS_DAILY_GUIDANCE_RUNBOOK.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-guidance-host.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-snapshot-paper-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-workbench-data.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-daily-guidance.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-snapshot-paper.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "log": {
+      "path": "data/runtime/options-workbench-development/paper-observation-validation.log",
+      "sha256": "5c60cebaa22772fa424d173aa1a55e0af70a35bb9ad13ae01141a9baab9373fa"
+    },
+    "finalFocused": {
+      "passed": 70,
+      "failed": 0,
+      "log": {
+        "path": "data/runtime/options-workbench-development/paper-observation-targeted-final.log",
+        "sha256": "20c37a9b0cc9f234028dd8f0aecbfb65caa791d7accc673b78df309c77e7b308"
+      }
+    },
+    "afterFullRun": "Only frozen-term display and assertions changed; targeted paper suite rerun."
+  },
+  "preservation": {
+    "originalFiles": 108,
+    "changed": [],
+    "legacyReports": [
+      {
+        "status": "VERIFIED",
+        "path": "data/runtime/options-snapshot-paper/reports/source-audit-gld-20260909/2026-09-10T01-05-56-396Z-20dbda68-a1c0-4206-b551-c43f195bf384.json",
+        "fingerprint": "sha256:c4dbf1a2dfd34ed7acfce783bf2dc305a37332d9094a1dabdf7a8007d0df8cbf",
+        "executionAllowed": false
+      },
+      {
+        "status": "VERIFIED",
+        "path": "data/runtime/options-snapshot-paper/reports/source-audit-ibit-20260909/2026-09-10T01-05-57-180Z-cf3972d4-be95-424b-bfc9-46f25364402d.json",
+        "fingerprint": "sha256:e5a2d0f028d07fe9231bbaff8db678a3f310fbf851976af05ef1f29cf832951c",
+        "executionAllowed": false
+      }
+    ],
+    "manualLedgerHead": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c",
+    "manualLedgerEvents": 0
+  },
+  "desktopUi": {
+    "width": 1280,
+    "documentWidth": 1265,
+    "enrollmentAndWaitingStateVisible": true,
+    "cancelControlVisible": true,
+    "consoleErrors": 0,
+    "browserMutations": 0,
+    "mobileRechecked": false,
+    "finalFrozenTermsValidatedByTargetedTest": true
+  },
+  "evidence": {
+    "activation": {
+      "path": "data/runtime/options-workbench-development/paper-observation-activation.json",
+      "sha256": "36b4ba0fec469768e927a97d6962c6fb8194b89f4545d1881da4ff03e51d5b05"
+    },
+    "preview": {
+      "path": "data/runtime/options-workbench-development/paper-observation-preview.json",
+      "sha256": "dd6798d576ff7d31bce6cad2e2faa0a222b1ef799e28664888860ebf0db681e9"
+    },
+    "host-verification": {
+      "path": "data/runtime/options-workbench-development/paper-observation-host-verification.json",
+      "sha256": "fa67e05ea780a2e62361cdc204cbe1ccb0efd10df1c1a8df37e9276351208b02"
+    },
+    "preservation": {
+      "path": "data/runtime/options-workbench-development/paper-observation-preservation.json",
+      "sha256": "d8cb69e777a3c2c3e91aa4d831f75e79851c977535afc0799350009a301f7e8e"
+    },
+    "validation.log": {
+      "path": "data/runtime/options-workbench-development/paper-observation-validation.log",
+      "sha256": "5c60cebaa22772fa424d173aa1a55e0af70a35bb9ad13ae01141a9baab9373fa"
+    },
+    "targeted-final.log": {
+      "path": "data/runtime/options-workbench-development/paper-observation-targeted-final.log",
+      "sha256": "20c37a9b0cc9f234028dd8f0aecbfb65caa791d7accc673b78df309c77e7b308"
+    }
+  },
+  "globalSettingsChanged": false,
+  "executionAllowed": false
+}

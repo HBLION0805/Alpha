@@ -1,5 +1,25 @@
 # Alpha Development Standard v1.0
 
+## Prospective paper observations — September 9 evening, 2026
+
+Explicit future V2 enrollments now join the existing guidance Host tracking bound;
+event identities retain priority within six IDs / 36 quotes / 24 calls. Capture
+recording saves automatic copied-source results and candidate reviews, with stable
+capture identities and no later-source hindsight. Each Host publication also runs
+`options:guidance -- --observe-paper` to finalize expired windows. Use the updated
+daily-guidance runbook; paper errors must preserve the primary capture. Do not
+enroll new plans from a scheduled wake. The actual gld-ibit 30-minute recurrence
+was corrected through the app to the already authorized 28 daily wake times; all
+other fields and v6-first/ongoing-second restoration remain unchanged.
+`pipeline-check-ibit-20260910` is explicitly an engineering paper rehearsal, not
+a bullish recommendation. It shares the existing IBIT October 9 $44.50 call ID,
+awaits the September 10 09:40–10:00 New York entry window, and has zero fills.
+Keep its frozen assumptions, old V1 reports and global unknown costs. See
+[delivery](docs/OPTIONS_PAPER_OBSERVATION_DELIVERY.md),
+[spec](docs/specifications/OPTIONS_PAPER_OBSERVATION_V1.md) and
+[checkpoint](docs/status/paper-observation.json). First real-price completion is
+still pending; no order/account authority or cancelled development job was added.
+
 ## Practical paper workflow V2 — September 9 evening, 2026
 
 New paper plans separate practical snapshot testing from strict execution

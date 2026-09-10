@@ -6,6 +6,8 @@ import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/Rob
 import {paperFingerprint} from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import {readGuidanceResearchFrames,normalizeGuidanceCapture,guidanceSettings} from './options-guidance-io.mjs';
 import {snapshotCents,snapshotNs,assessSnapshotQuote,validateSnapshotPlan,replaySnapshotPaper,PAPER_V2_GAPS,PAPER_FEE_PROFILE} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
+import {guidanceLocal} from '../../src/engines/options-daily-guidance/OptionsDailyGuidance.ts';
 
 const BASE='data/runtime/options-snapshot-paper',MAX=64*1024*1024;
 const fail=c=>{throw Error('SNAPSHOT_PAPER_'+c);};
@@ -67,6 +69,11 @@ function validateRegistration(r){
   if(paperFingerprint({...rest,...(version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2'?{modelVersion:'V2'}:{}),contractId:contract.id,settingsFingerprint:paperFingerprint(settings)})!==paperFingerprint(r.request)||r.selection.path!==p.selectionPath)fail('REGISTRATION_LINKAGE');
   replaySnapshotPaper(p,[mapSnapshotSource(r.selection,p.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2')],p.createdAt);return r;
 }
+export function snapshotPaperRegistrations(root){return files(root,BASE+'/plans').map(path=>({path,registration:validateRegistration(read(root,path))}));}
+export function snapshotObservationEnd(plan){
+  const p=validateSnapshotPlan(plan),local=guidanceLocal(p.timeExitAt),session=paperSession(p.timeExitAt,p.contract.chainSession);
+  return new Date(Math.floor(Date.parse(p.timeExitAt)/60000)*60000+(session.closeMinute-local.minute+5)*60000).toISOString();
+}
 export function previewSnapshotPaper(root,request,at=new Date().toISOString()){return prepare(root,request,at).report;}
 export function registerSnapshotPaper(root,request,at=new Date().toISOString()){
   root=realpathSync(root);const path=BASE+'/plans/'+id(request?.id)+'.json';
@@ -85,14 +92,43 @@ export function saveSnapshotPaperReport(root,planId,at=new Date().toISOString())
   write(root,path,{version:'OPTIONS_SNAPSHOT_PAPER_SNAPSHOT_V1',recordedAt:at,registration,sources,report});verifySnapshotPaper(root,path);
   return {path,status:report.status,executionAllowed:false};
 }
+/** Stable automatic report identity. Source knowledge stops at the triggering capture/window. */
+export function saveSnapshotObservation(root,planId,trigger,at=new Date().toISOString()){
+  const registration=validateRegistration(read(root,BASE+'/plans/'+id(planId)+'.json'));
+  if(registration.plan.version!=='OPTIONS_SNAPSHOT_PAPER_PLAN_V2')fail('OBSERVATION_PLAN_VERSION');
+  const copies=snapshotSources(root),capture=trigger===null?null:copies.find(c=>c.path===trigger);
+  if(trigger!==null&&!capture)fail('OBSERVATION_CAPTURE_MISSING');
+  const cutoffAt=capture?mapSnapshotSource(capture).recordedAt:snapshotObservationEnd(registration.plan);
+  if(snapshotNs(cutoffAt)>snapshotNs(at)||snapshotNs(cutoffAt)<snapshotNs(registration.plan.createdAt))fail('OBSERVATION_CUTOFF');
+  const observation=capture?{kind:'CAPTURE',path:capture.path,sha256:capture.sha256,cutoffAt}:{kind:'WINDOW_END',cutoffAt};
+  const dir=BASE+'/reports/'+id(planId),path=dir+'/auto-'+(capture?capture.sha256:'final')+'.json';
+  if(existsSync(resolve(root,path))){verifySnapshotPaper(root,path);const r=read(root,path);if(paperFingerprint(r.observation)!==paperFingerprint(observation))fail('OBSERVATION_CONFLICT');return {path,status:r.report.status,paperStage:r.report.paperStage,alreadyRecorded:true,executionAllowed:false};}
+  const origin=mapSnapshotSource(registration.selection).origin;
+  if(capture&&mapSnapshotSource(capture).origin!==origin)fail('OBSERVATION_ORIGIN');
+  const sources=copies.filter(c=>{const f=mapSnapshotSource(c);return f.origin===origin&&snapshotNs(f.recordedAt)<=snapshotNs(cutoffAt)&&(f.quotes.some(q=>q.id===registration.plan.contract.id)||c.path===capture?.path);});
+  if(!sources.some(c=>c.sha256===registration.selection.sha256&&c.path===registration.selection.path))fail('SELECTION_CHANGED');
+  const report=replaySnapshotPaper(registration.plan,sources.map(c=>mapSnapshotSource(c,true)),at);
+  if(files(root,dir).length>=100)fail('CATALOG');
+  write(root,path,{version:'OPTIONS_SNAPSHOT_PAPER_OBSERVATION_V1',recordedAt:at,registration,observation,sources,report});verifySnapshotPaper(root,path);
+  return {path,status:report.status,paperStage:report.paperStage,alreadyRecorded:false,executionAllowed:false};
+}
 export function verifySnapshotPaper(root,path){
   if(typeof path!=='string'||!path.startsWith(BASE+'/')||path.includes('..')||path.includes('\\')||!path.endsWith('.json'))fail('RECORD_PATH');
   const r=read(root,path);
   if(r.version==='OPTIONS_SNAPSHOT_PAPER_REGISTRATION_V1'){
     validateRegistration(r);if(path!==BASE+'/plans/'+r.plan.id+'.json')fail('REGISTRATION_PATH');
-  }else if(r.version==='OPTIONS_SNAPSHOT_PAPER_SNAPSHOT_V1'){
+  }else if(['OPTIONS_SNAPSHOT_PAPER_SNAPSHOT_V1','OPTIONS_SNAPSHOT_PAPER_OBSERVATION_V1'].includes(r.version)){
     validateRegistration(r.registration);
     if(!Array.isArray(r.sources)||r.sources.length>1000||!r.sources.some(s=>paperFingerprint(s)===paperFingerprint(r.registration.selection)))fail('SOURCE_LINKAGE');
+    if(r.version==='OPTIONS_SNAPSHOT_PAPER_OBSERVATION_V1'){
+      const o=r.observation,p=r.registration.plan;if(p.version!=='OPTIONS_SNAPSHOT_PAPER_PLAN_V2'||!o||!['CAPTURE','WINDOW_END'].includes(o.kind))fail('OBSERVATION_TRIGGER');
+      if(snapshotNs(o.cutoffAt)>snapshotNs(r.recordedAt)||snapshotNs(o.cutoffAt)<snapshotNs(p.createdAt))fail('OBSERVATION_CUTOFF');
+      if(o.kind==='CAPTURE'){
+        const source=r.sources.find(c=>c.path===o.path&&c.sha256===o.sha256);
+        if(Object.keys(o).sort().join()!=='cutoffAt,kind,path,sha256'||!source||mapSnapshotSource(source).recordedAt!==o.cutoffAt||path!==BASE+'/reports/'+p.id+'/auto-'+o.sha256+'.json')fail('OBSERVATION_TRIGGER');
+      }else if(Object.keys(o).sort().join()!=='cutoffAt,kind'||o.cutoffAt!==snapshotObservationEnd(p)||path!==BASE+'/reports/'+p.id+'/auto-final.json')fail('OBSERVATION_TRIGGER');
+      if(r.sources.some(c=>snapshotNs(mapSnapshotSource(c).recordedAt)>snapshotNs(o.cutoffAt)))fail('OBSERVATION_FUTURE_SOURCE');
+    }
     const report=replaySnapshotPaper(r.registration.plan,r.sources.map(c=>mapSnapshotSource(c,r.registration.plan.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2')),r.recordedAt);
     if(paperFingerprint(report)!==paperFingerprint(r.report))fail('RECOMPUTE');
   }else fail('VERSION');
@@ -100,6 +136,6 @@ export function verifySnapshotPaper(root,path){
 }
 export function snapshotPaperView(root,at=new Date().toISOString()){
   const sources=snapshotSources(root),frames=sources.map(c=>mapSnapshotSource(c,true)).filter(f=>snapshotNs(f.recordedAt)<=snapshotNs(at)).sort((a,b)=>a.recordedAt.localeCompare(b.recordedAt)),latest=frames.at(-1);
-  const cases=files(root,BASE+'/plans').map(path=>{const r=validateRegistration(read(root,path)),reports=files(root,BASE+'/reports/'+r.plan.id).map(path=>{verifySnapshotPaper(root,path);const v=read(root,path);return {path,recordedAt:v.recordedAt,report:v.report};});return {path,plan:r.plan,current:replaySnapshotPaper(r.plan,(r.plan.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2'?frames:sources.map(c=>mapSnapshotSource(c))).filter(f=>f.origin===mapSnapshotSource(r.selection).origin&&f.quotes.some(q=>q.id===r.plan.contract.id)),at),snapshots:reports};});
+  const cases=files(root,BASE+'/plans').map(path=>{const r=validateRegistration(read(root,path)),reports=files(root,BASE+'/reports/'+r.plan.id).map(path=>{verifySnapshotPaper(root,path);const v=read(root,path);return {path,recordedAt:v.recordedAt,report:v.report,...(v.observation?{observation:v.observation}:{})};}).sort((a,b)=>a.recordedAt.localeCompare(b.recordedAt)||a.path.localeCompare(b.path));return {path,plan:r.plan,current:replaySnapshotPaper(r.plan,(r.plan.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2'?frames:sources.map(c=>mapSnapshotSource(c))).filter(f=>f.origin===mapSnapshotSource(r.selection).origin&&f.quotes.some(q=>q.id===r.plan.contract.id)),at),snapshots:reports};});
   return {version:'OPTIONS_SNAPSHOT_PAPER_DESK_V2',paperModelImplemented:true,feeProfile:PAPER_FEE_PROFILE,assessedAt:at,settingsFingerprint:paperFingerprint(guidanceSettings(root)),gates:{quotes:'OPEN',adapter:'LOCAL_IMPLEMENTED_UNQUALIFIED',completeRealPriceLifecycle:'OPEN'},sourceGaps:[...PAPER_V2_GAPS],latest:latest?{path:latest.path,sha256:latest.sha256,recordedAt:latest.recordedAt,capturedAt:latest.capturedAt,origin:latest.origin,requestedQuoteCount:latest.requestedQuoteCount,missingQuoteIds:latest.missingQuoteIds,quotes:latest.quotes.map(q=>({contract:q,...assessSnapshotQuote(q,at,true)}))}:null,cases,actualTrades:0,executionAllowed:false};
 }

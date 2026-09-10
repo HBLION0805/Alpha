@@ -1,5 +1,16 @@
 # Alpha Handoff
 
+Latest continuation: [prospective paper observation](OPTIONS_PAPER_OBSERVATION_DELIVERY.md).
+V2 plans can explicitly enroll before their decision time; the existing Host
+tracks them within unchanged source-call bounds and saves copied-source outcomes
+and candidate reviews. Publication finalizes ended windows. One engineering IBIT
+plan awaits September 10 09:40–10:00 New York; no real-price fill exists yet.
+The actual 30-minute recurrence was restored to the previously authorized 28 daily
+wakes; all other fields and final-close restoration are preserved. See
+[actual activation and tests](status/paper-observation.json). This schedule evidence
+supersedes older unchanged-schedule descriptions; cancelled development/opening
+jobs remain cancelled.
+
 Latest continuation: [practical paper workflow V2](OPTIONS_SNAPSHOT_PAPER_V2_DELIVERY.md)
 separates assumption-based paper testing from strict execution qualification.
 New plans use source-linked late close, reviewed 2026 holidays and explicit fee

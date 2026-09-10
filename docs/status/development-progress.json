@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-10T02:18:49.406Z",
+  "recordedAt": "2026-09-10T02:47:19.889Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "83d6cfa",
+  "comparedWithCommit": "374feba",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -77,8 +77,8 @@
       "name": "Robinhood real-price paper adapter",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "V2 practical snapshot paper model with source-linked late/early sessions, explicit reviewed/manual fees, copied-source recovery, reviews and frontend validated. Strict execution qualification remains separate; real intraday lifecycle still unobserved.",
-      "evidence": "docs/OPTIONS_SNAPSHOT_PAPER_V2_DELIVERY.md"
+      "detail": "V2 paper plans explicitly enroll before decision time, share bounded Host identities, and save automatic source-cutoff outcomes and candidate reviews. One real-source engineering plan is waiting; strict qualification remains open.",
+      "evidence": "docs/OPTIONS_PAPER_OBSERVATION_DELIVERY.md"
     },
     {
       "id": "09",
@@ -98,8 +98,8 @@
     }
   ],
   "currentWorkstream": "08",
-  "currentUnit": "Robinhood snapshot paper adapter and durable three-gate evidence",
-  "currentUnitAcceptance": "Local adapter and frontend verified; two actual-source NO_ENTRY audits independently recovered. Three qualified real-price gates remain open.",
+  "currentUnit": "Prospective paper observation and automatic review",
+  "currentUnitAcceptance": "Enrollment, bounded Host tracking, immutable capture-driven reports, finalization and frontend validated. One engineering plan awaits September 10 intraday quotes; real-price lifecycle unobserved.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Resolve source-side/session/usage qualification and explicit cost assumptions; obtain eligible later snapshots for a frozen identity/window, then run and recover the first qualified paper lifecycle.",
+  "nextAction": "Observe eligible September 10 quotes for pipeline-check-ibit-20260910; save entry/exit or explicit gaps and final review. Validate actual data separately from engineering tests.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4309,
+    "passed": 4342,
     "failed": 0,
     "componentCount": 167
   },
-  "latestOperationalEvidence": "docs/status/snapshot-paper.json",
+  "latestOperationalEvidence": "docs/status/paper-observation.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": false,
@@ -151,5 +151,5 @@
     "locallyAccepted": 8,
     "notOverallCompletionPercentage": true
   },
-  "practicalPaperCheckpoint": "docs/status/snapshot-paper-v2.json"
+  "practicalPaperCheckpoint": "docs/status/paper-observation.json"
 }

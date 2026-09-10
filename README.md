@@ -1,5 +1,10 @@
 # Alpha
 
+Paper observation: [prospective capture-to-review workflow](docs/OPTIONS_PAPER_OBSERVATION_DELIVERY.md).
+Explicit V2 enrollments follow existing bounded Host captures, preserve automatic
+results and expose tracking/cancellation in Event research. One engineering plan
+is awaiting its future window; no real-price lifecycle has completed.
+
 Paper workflow: [Robinhood snapshot adapter and three-gate evidence](docs/OPTIONS_SNAPSHOT_PAPER_DELIVERY.md).
 Event research now supports frozen assumption-only paper plans, modeled exits,
 source-linked recovery and candidate reviews. Qualified real-price gates remain open.

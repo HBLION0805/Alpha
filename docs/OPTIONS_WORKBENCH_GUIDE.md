@@ -118,6 +118,16 @@ authenticate quotes, account eligibility, an execution or a stop trigger.
 
 ## Drafts, reloads and recovery
 
+In **Event research → Paper validation**, freeze a V2 plan and choose **Enroll
+paper observation** before its decision time to follow it through existing Host
+captures. Review its frozen window, cost/stop/target assumptions, tracking capacity,
+purpose and cutoff. Freezing alone does not enroll it. Automatic reports save after
+new captures and at the first publication after the observation window ends;
+missing entries or exits remain visible. **Cancel paper observation** stops further
+observation without changing the plan, closing exposure or deleting reports.
+Engineering rehearsals are labeled explicitly and are not directional advice.
+See [delivery and limitations](OPTIONS_PAPER_OBSERVATION_DELIVERY.md).
+
 - Navigation within the tab retains each form draft. Drafts are kept in memory,
   not persisted to the browser. Closing a tab with unsaved edits triggers the
   browser's normal unsaved-change prompt; clearing a draft is explicit.

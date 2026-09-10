@@ -50,7 +50,7 @@ export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
   }
   const ids=[...new Set(selected)].slice(0,36);
   for(let n=0;n<ids.length;n+=20)await read("get_option_quotes",{instrument_ids:ids.slice(n,n+20)});
-  return {version:"OPTIONS_GUIDANCE_MARKET_CAPTURE_V1",origin:"HOST_MARKET_TOOL_RESPONSES",startedAt,capturedAt:iso(await clock()),calls,receipts,failures,selectedIds:ids,selection:trackedContracts.length?'Verified active event-study IDs first, then nearest strikes; at most 18 contracts per ETF and 36 total.':'Nearest three strikes per side at up to three 14–45-day expirations; bounded research sample.',accountAccessed:false,executionAllowed:false};
+  return {version:"OPTIONS_GUIDANCE_MARKET_CAPTURE_V1",origin:"HOST_MARKET_TOOL_RESPONSES",startedAt,capturedAt:iso(await clock()),calls,receipts,failures,selectedIds:ids,selection:trackedContracts.length?'Verified tracked research IDs first, then nearest strikes; at most 18 contracts per ETF and 36 total.':'Nearest three strikes per side at up to three 14–45-day expirations; bounded research sample.',accountAccessed:false,executionAllowed:false};
 }
 export function routeDailyGuidance(at,{ongoing=false}={}) {
   const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date(at)).map(v=>[v.type,v.value]));

@@ -9,7 +9,10 @@ import {paperFingerprint} from '../src/engines/options-paper/OptionsPaperTrading
 import {defaultGuidanceSettings} from '../src/engines/options-daily-guidance/OptionsDailyGuidance.ts';
 import {collectGuidanceMarket} from './lib/options-guidance-host.mjs';
 import {normalizeGuidanceCapture,saveGuidanceSettings} from './lib/options-guidance-io.mjs';
-import {mapSnapshotSource,snapshotSources,previewSnapshotPaper,registerSnapshotPaper,saveSnapshotPaperReport,verifySnapshotPaper,snapshotPaperView} from './lib/options-snapshot-paper-io.mjs';
+import {mapSnapshotSource,snapshotSources,previewSnapshotPaper,registerSnapshotPaper,saveSnapshotPaperReport,verifySnapshotPaper,snapshotPaperView,saveSnapshotObservation,snapshotObservationEnd} from './lib/options-snapshot-paper-io.mjs';
+import {enrollPaperObservation,cancelPaperObservation,paperObservationView,observePaperPlans,combinePaperTracking} from './lib/options-paper-observation-io.mjs';
+import {runGuidanceCommand} from './options-daily-guidance.mjs';
+import {verifyGuidanceRecord} from './lib/options-guidance-io.mjs';
 import {snapshotRequest,snapshotResult,snapshotPaperPanel} from '../apps/options-workbench/snapshot-paper.js';
 import {request as browserRequest} from '../apps/options-workbench/api.js';
 import {startOptionsWorkbench} from './options-workbench.mjs';
@@ -198,4 +201,83 @@ await test('V2 form binds fee choice without converting blank slippage to zero',
   assert.equal(snapshotRequest(d).exitSlippageCents,null);assert.equal(snapshotRequest(d).feeBasis,d.feeBasis);d.entryFee='0';assert.throws(()=>snapshotRequest(d),/manual fees/);
   const html=snapshotPaperPanel({state:'AVAILABLE',data:{sourceGaps:[],latest:null,cases:[]}});assert(html.includes('PRACTICAL PAPER WORKFLOW'));assert(html.includes('Strict execution qualification (separate)'));assert(html.includes('does not run continuous quote polling'));assert(snapshotResult(run2([],plan2(),1)).includes('Awaiting Window'));
 });
+
+async function enrolled(root){await seed(root);registerSnapshotPaper(root,request2(),at(1));return enrollPaperObservation(root,'synthetic-case','PIPELINE_REHEARSAL_NOT_SIGNAL',at(1));}
+function rewriteCapture(root,path,change){const r=JSON.parse(readFileSync(resolve(root,path),'utf8'));change(r.input);r.report=normalizeGuidanceCapture(r.input);r.inputFingerprint=paperFingerprint(r.input);r.reportFingerprint=paperFingerprint(r.report);writeFileSync(resolve(root,path),JSON.stringify(r));}
+await test('observation enrollment is prospective, immutable, idempotent and synthetic stays local',()=>temp(async root=>{
+  const e=await enrolled(root),bytes=readFileSync(resolve(root,e.path));assert(enrollPaperObservation(root,'synthetic-case','PIPELINE_REHEARSAL_NOT_SIGNAL',at(3)).alreadyRecorded);
+  assert.throws(()=>enrollPaperObservation(root,'synthetic-case','OWNER_PAPER_RESEARCH',at(1)),/CONFLICT/);
+  assert.deepEqual(readFileSync(resolve(root,e.path)),bytes);const v=paperObservationView(root,null,at(1));assert.equal(v.rows[0].state,'AWAITING_WINDOW');assert.equal(v.rows[0].tracking,'SYNTHETIC_NOT_HOST_TRACKED');assert.equal(v.trackedContracts.length,0);
+  assert.equal((await runGuidanceCommand(['--host-source'],{workspaceRoot:root,now:()=>at(1)})).trackedContracts,0);
+}));
+await test('late enrollment, old V1 and unknown plans cannot silently become monitored',()=>temp(async root=>{
+  await seed(root);registerSnapshotPaper(root,request2(),at(1));assert.throws(()=>enrollPaperObservation(root,'synthetic-case',undefined,at(2)),/PROSPECTIVE_ONLY/);assert.throws(()=>enrollPaperObservation(root,'missing-case',undefined,at(1)),/PLAN_MISSING/);
+  registerSnapshotPaper(root,{...request(),id:'legacy-case'},at(1));assert.throws(()=>enrollPaperObservation(root,'legacy-case',undefined,at(1)),/PROSPECTIVE_ONLY/);
+}));
+await test('cancellation stops observations without mutating the plan or hiding modeled exposure',()=>temp(async root=>{
+  await enrolled(root);const file='data/runtime/options-snapshot-paper/plans/synthetic-case.json',before=readFileSync(resolve(root,file));await saveCapture(root,10);observePaperPlans(root,frame(10).path,at(11));
+  const cancel=cancelPaperObservation(root,'synthetic-case',at(12));assert(cancelPaperObservation(root,'synthetic-case',at(13)).alreadyRecorded);assert.equal(verifySnapshotPaper(root,file).status,'VERIFIED');assert.deepEqual(readFileSync(resolve(root,file)),before);
+  await saveCapture(root,30,'2.85','2.86');assert.equal(observePaperPlans(root,frame(30).path,at(31)).results.length,0);const v=paperObservationView(root,null,at(31));assert.equal(v.rows[0].state,'CANCELLED');assert.equal(v.rows[0].automaticReports,1);assert(cancel.path.endsWith('/cancelled/synthetic-case.json'));
+}));
+await test('six-ID priority deduplicates event identities and reports capacity or identity conflicts',()=>{
+  const ids=Array.from({length:6},(_,n)=>({...q(0),id:uid(n+1)})),identity=c=>Object.fromEntries(['id','symbol','expiry','type','strike','multiplier'].map(k=>[k,c[k]]));
+  const v=combinePaperTracking(ids.map(identity),[{planId:'shared',contract:ids[0]},{planId:'full',contract:q(0)},{planId:'conflict',contract:{...ids[1],strike:'401'}}]);
+  assert.equal(v.trackedContracts.length,6);assert.deepEqual(v.rows.map(r=>r.status),['SHARED_EXISTING_ID','CAPACITY_WAIT','IDENTITY_CONFLICT']);assert.deepEqual(v.trackedContracts,ids.map(identity));assert.throws(()=>combinePaperTracking([ids[0],ids[0]],[]),/LIMIT/);
+});
+await test('overlapping enrollment is bounded without silently dropping the seventh plan',()=>temp(async root=>{
+  await seed(root);for(let n=0;n<7;n++){const id='enrolled-'+n;registerSnapshotPaper(root,{...request2(),id},at(1));if(n<6)enrollPaperObservation(root,id,undefined,at(1));else assert.throws(()=>enrollPaperObservation(root,id,undefined,at(1)),/LIMIT/);}
+  cancelPaperObservation(root,'enrolled-0',at(1));enrollPaperObservation(root,'enrolled-6',undefined,at(1));assert.equal(paperObservationView(root,null,at(1)).rows.length,7);
+}));
+await test('capture-driven entry, target and candidate review survive retry and isolated recovery',()=>temp(async root=>{
+  await enrolled(root);await saveCapture(root,10);const first=observePaperPlans(root,frame(10).path,at(11)).results[0];assert.equal(first.status,'OPEN_UNRESOLVED');
+  assert(observePaperPlans(root,frame(10).path,at(12)).results[0].alreadyRecorded);await saveCapture(root,30,'2.85','2.86');const closed=observePaperPlans(root,frame(30).path,at(31)).results[0];assert.equal(closed.status,'CLOSED_MODELED');assert.equal(observePaperPlans(root,frame(30).path,at(32)).results.length,0);
+  const d=snapshotPaperView(root,at(32)),r=d.cases[0].snapshots.at(-1);assert.equal(r.report.review.outcome,'WIN');assert.equal(r.report.account.netPnlCents,8391);assert.equal(paperObservationView(root,d).rows[0].state,'CLOSED_MODELED');assert.equal(r.observation.kind,'CAPTURE');
+  await temp(other=>{const dest=resolve(other,closed.path);mkdirSync(dirname(dest),{recursive:true});cpSync(resolve(root,closed.path),dest);assert.equal(verifySnapshotPaper(other,closed.path).status,'VERIFIED');});
+}));
+await test('late local retries cannot add a later winning quote to an earlier report',()=>temp(async root=>{
+  await enrolled(root);await saveCapture(root,10);await saveCapture(root,30,'2.85','2.86');const r=saveSnapshotObservation(root,'synthetic-case',frame(10).path,at(100));assert.equal(r.status,'OPEN_UNRESOLVED');
+  const saved=JSON.parse(readFileSync(resolve(root,r.path),'utf8'));assert.equal(saved.sources.length,2);assert.equal(saved.observation.cutoffAt,at(10));assert.equal(saved.recordedAt,at(100));assert(saveSnapshotObservation(root,'synthetic-case',frame(10).path,at(101)).alreadyRecorded);
+  assert.throws(()=>saveSnapshotObservation(root,'synthetic-case',frame(30).path,at(20)),/CUTOFF/);
+}));
+await test('missing requested contract is copied as evidence and never receives a fill',()=>temp(async root=>{
+  await enrolled(root);const path=await saveCapture(root,10);rewriteCapture(root,path,raw=>{for(const r of raw.receipts)if(r.tool==='get_option_quotes')r.response.data.results=r.response.data.results.filter(x=>x.quote.instrument_id!==uid(10));});
+  const v=observePaperPlans(root,path,at(11));assert.equal(v.results[0].status,'NO_ENTRY');const saved=JSON.parse(readFileSync(resolve(root,v.results[0].path),'utf8'));assert(saved.sources.some(s=>s.path===path));assert(mapSnapshotSource(saved.sources.find(s=>s.path===path)).missingQuoteIds.includes(uid(10)));assert.equal(saved.report.fills.length,0);
+}));
+await test('window finalization records no-entry once and does not invent an exit for open exposure',()=>temp(async root=>{
+  await enrolled(root);const end=snapshotObservationEnd(plan2());assert.equal(end,'2026-09-08T20:20:00.000Z');const after='2026-09-08T20:21:00.000Z';
+  assert.equal(observePaperPlans(root,null,at(100)).results.length,0);const no=observePaperPlans(root,null,after).results[0];assert.equal(no.paperStage,'ENTRY_WINDOW_ENDED');assert.equal(observePaperPlans(root,null,after).results.length,0);assert.equal(paperObservationView(root,null,after).rows[0].state,'FINALIZED');
+  await temp(async other=>{await enrolled(other);await saveCapture(other,10);const r=observePaperPlans(other,null,after).results[0];assert.equal(r.status,'OPEN_UNRESOLVED');const saved=JSON.parse(readFileSync(resolve(other,r.path),'utf8'));assert.equal(saved.report.fills.length,1);assert.equal(saved.report.account.netPnlCents,null);assert.equal(saved.observation.kind,'WINDOW_END');assert.equal(verifySnapshotPaper(other,r.path).status,'VERIFIED');});
+}));
+await test('automatic report trigger and cutoff tampering fails even with a new outer fingerprint',()=>temp(async root=>{
+  await enrolled(root);await saveCapture(root,10);const r=saveSnapshotObservation(root,'synthetic-case',frame(10).path,at(11)),path=resolve(root,r.path),original=readFileSync(path,'utf8');
+  for(const change of [r=>r.observation.cutoffAt=at(9),r=>r.observation.path=frame(0).path,r=>r.recordedAt=at(9)]){const {fingerprint,...p}=JSON.parse(original);change(p);writeFileSync(path,JSON.stringify({...p,fingerprint:paperFingerprint(p)}));assert.throws(()=>verifySnapshotPaper(root,r.path),/OBSERVATION/);}writeFileSync(path,original);
+}));
+await test('paper recovery failure preserves primary capture and existing Host source availability',()=>temp(async root=>{
+  await enrolled(root);const folder=resolve(root,'data/runtime/options-snapshot-paper/observations/enrolled');writeFileSync(resolve(folder,'broken.json'),'{}');
+  const input='raw-input.json';writeFileSync(resolve(root,input),JSON.stringify(await rawCapture(10)));
+  const r=await runGuidanceCommand(['--record',input],{workspaceRoot:root});assert(r.paperObservations.error);assert.equal(verifyGuidanceRecord(root,r.path).status,'VERIFIED');
+  const source=await runGuidanceCommand(['--host-source'],{workspaceRoot:root});assert(source.paperTracking.error);assert.equal(typeof new Function('return ('+source.source+')')(),'function');
+}));
+await test('local API enrollment and cancellation preserve scope and expose English controls',()=>temp(async root=>{
+  await seed(root);registerSnapshotPaper(root,request2(),at(1));const app=await startOptionsWorkbench({workspaceRoot:root,port:0,now:()=>at(1)});try{
+    const state=await(await fetch(app.url+'/api/state')).json(),send=body=>fetch(app.url+'/api/snapshot-paper',{method:'POST',headers:{Origin:app.url,'Content-Type':'application/json','X-Alpha-Session':state.session},body:JSON.stringify(body)});
+    assert(snapshotPaperPanel(state.snapshotPaper).includes('Enroll paper observation'));assert.equal((await send({action:'ENROLL',id:'synthetic-case',extra:true})).status,409);assert.equal((await send({action:'ENROLL',id:'synthetic-case'})).status,200);
+    const next=await(await fetch(app.url+'/api/state')).json(),html=snapshotPaperPanel(next.snapshotPaper);assert(html.includes('Frozen entry window'));assert(html.includes('net target: 2 R'));assert(html.includes('Cancel paper observation'));assert(html.includes('No automatic report yet'));assert(!html.includes('data-paper-enroll='));
+    assert.equal((await send({action:'CANCEL',id:'synthetic-case'})).status,200);assert.equal(paperObservationView(root,null,at(1)).rows[0].state,'CANCELLED');
+  }finally{await app.close();}
+}));
+await test('a Host-origin fixture enrolls in bounded tracking and drops after its window',()=>temp(async root=>{
+  await seed(root);rewriteCapture(root,frame(0).path,raw=>raw.origin='HOST_MARKET_TOOL_RESPONSES');registerSnapshotPaper(root,request2(),at(1));enrollPaperObservation(root,'synthetic-case',undefined,at(1));
+  const v=await runGuidanceCommand(['--host-source'],{workspaceRoot:root,now:()=>at(1)});assert.equal(v.trackedContracts,1);assert.equal(v.paperTracking[0].tracking,'INCLUDED');assert(v.source.includes(uid(10)));
+  const ended=await runGuidanceCommand(['--host-source'],{workspaceRoot:root,now:()=> '2026-09-08T20:21:00.000Z'});assert.equal(ended.trackedContracts,0);assert.equal(ended.paperTracking[0].state,'FINALIZATION_PENDING');
+}));
+await test('finalization ignores late-recorded backfill and future triggers are rejected',()=>temp(async root=>{
+  await enrolled(root);const path=await saveCapture(root,10),r=JSON.parse(readFileSync(resolve(root,path),'utf8'));r.recordedAt='2026-09-08T20:21:00.000Z';writeFileSync(resolve(root,path),JSON.stringify(r));
+  assert.throws(()=>observePaperPlans(root,path,at(100)),/FUTURE_CAPTURE/);const pass=await runGuidanceCommand(['--observe-paper'],{workspaceRoot:root,now:()=> '2026-09-08T20:22:00.000Z'});assert.equal(pass.results[0].status,'NO_ENTRY');const saved=JSON.parse(readFileSync(resolve(root,pass.results[0].path),'utf8'));assert.equal(saved.sources.length,1);
+}));
+await test('one exhausted report catalog cannot prevent another paper plan from saving',()=>temp(async root=>{
+  await enrolled(root);registerSnapshotPaper(root,{...request2(),id:'second-case'},at(1));enrollPaperObservation(root,'second-case',undefined,at(1));
+  const first=saveSnapshotPaperReport(root,'synthetic-case',at(1)),dir=dirname(resolve(root,first.path));for(let n=1;n<100;n++)cpSync(resolve(root,first.path),resolve(dir,'copy-'+n+'.json'));
+  await saveCapture(root,10);const pass=observePaperPlans(root,frame(10).path,at(11));assert.equal(pass.results.find(r=>r.planId==='synthetic-case').error,'SNAPSHOT_PAPER_CATALOG');assert.equal(pass.results.find(r=>r.planId==='second-case').status,'OPEN_UNRESOLVED');
+}));
 console.log(`Options snapshot paper tests passed: ${passed}/${passed}.`);

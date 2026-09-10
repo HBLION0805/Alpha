@@ -170,7 +170,10 @@ selection to 36 existing IDs, in batches <=20, with a three-minute request-start
 deadline. A pending call may complete later. Preserve null/missing replies.
 
 The returned source also embeds at most six contracts from verified active event
-research plans. It rechecks their metadata in current instrument replies and
+research plans and explicitly enrolled prospective V2 paper plans. Event research
+keeps priority; identical paper identities share the same slot. Paper capacity
+waits, identity conflicts and recovery failures are returned in `paperTracking`.
+Synthetic enrollments cannot enter Host tracking. It rechecks metadata in current instrument replies and
 gives them priority inside the same 18-per-ETF / 36-total limit. Missing tracked
 contracts and pagination/deadline exhaustion remain failures. Extra expiry dates
 share the existing call/page limits. After a study's final observation window,
@@ -183,6 +186,26 @@ data/runtime/options-daily-guidance-inputs. Never interpolate provider JSON into
 shell commands. Then run `--record <workspace-relative-input-path>` and verify the
 returned record with `--verify <path>`. The local parser cannot authenticate a
 caller-provided export. No historical candles, trades or wins may be invented.
+
+`--record` first preserves the original capture, then independently saves paper
+observations for eligible enrolled plans. Inspect its `paperObservations`, including
+per-plan errors. A paper save failure does not invalidate the primary capture and
+must not trigger a second source acquisition. To retry local processing only, call
+`observePaperPlans(workspaceRoot, savedCapturePath)` from
+`scripts/lib/options-paper-observation-io.mjs`; use its actual default clock.
+Automatic report identity binds the capture hash; retries reuse the same immutable
+report and cannot add evidence recorded after that capture. This is an assumed
+snapshot lifecycle, not execution or a calibrated signal.
+
+Before each issued publication, including wakes with no market capture, run
+`node node_modules/tsx/dist/cli.mjs scripts/options-daily-guidance.mjs --observe-paper`.
+It finalizes expired paper windows using only sources recorded by five minutes
+after the plan's modeled session close. It makes no source calls. A missing entry
+stays NO_ENTRY; a missing exit stays OPEN_UNRESOLVED. Reports retain reviews and
+candidate lessons in the existing notebook. The original final-close v6/ongoing
+restoration must still occur first. Do not create, enroll or cancel a paper plan
+from a scheduled wake; enrollment is an explicit local development/Owner action.
+See [paper observation specification](specifications/OPTIONS_PAPER_OBSERVATION_V1.md).
 
 ## Attributed analysis and issued view
 

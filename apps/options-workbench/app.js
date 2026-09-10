@@ -169,6 +169,7 @@ document.addEventListener('click',event=>{void(async()=>{
       else if(JSON.stringify(input)===JSON.stringify(snapshotRequest(Object.fromEntries(new FormData(form))))){ui.snapshotPreview=r;ui.snapshotPreviewRequest=input;$('#snapshot-paper-preview').innerHTML=snapshotResult(r);$('#freeze-snapshot-paper').disabled=false;}
     }finally{saving=false;if(el.isConnected)el.disabled=false;}return;
   }
+  if(el.dataset.paperEnroll||el.dataset.paperCancel){if(saving)return;saving=true;el.disabled=true;try{await request('/api/snapshot-paper',{action:el.dataset.paperEnroll?'ENROLL':'CANCEL',id:el.dataset.paperEnroll||el.dataset.paperCancel});await reload();toast(el.dataset.paperEnroll?'Paper observation enrolled for existing bounded captures.':'Paper observation cancelled. Saved plans and modeled exposure remain.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.dataset.snapshotSave){if(saving)return;saving=true;el.disabled=true;try{await request('/api/snapshot-paper',{action:'SAVE_REPORT',id:el.dataset.snapshotSave});await reload();toast('Observed paper result and candidate review saved and recomputed.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reload'){await reload();return;}
   if(el.id==='preview-capital-policy'){

@@ -30,6 +30,7 @@ import { assessOptionsCostDesk } from '../../src/engines/options-retail-feasibil
 import { assessOptionsCapitalPolicy } from '../../src/engines/options-retail-feasibility/OptionsCapitalPolicy.ts';
 
 import {snapshotPaperView,previewSnapshotPaper,registerSnapshotPaper,saveSnapshotPaperReport} from './options-snapshot-paper-io.mjs';
+import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -109,7 +110,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.barQuality=await component(()=>readBarQualityDesk(root,at),at);
     result.macroContext=await component(()=>macroContextView(root,at,treasury.data),at);
     result.goldFramework=await component(()=>goldFrameworkView(result,at),at);
-    result.snapshotPaper=await component(()=>snapshotPaperView(root,at),at);
+    result.snapshotPaper=await component(()=>{const desk=snapshotPaperView(root,at);return {...desk,observations:paperObservationView(root,desk,at)};},at);
     return result;
   }
   function preview(command){
@@ -144,8 +145,13 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     return body.action==='PREVIEW'?previewMacroComparison(root,body.request,now()):saveMacroComparison(root,body.request,now());
   }
   function snapshotPaper(body){
-    if(!body||!['PREVIEW','REGISTER','SAVE_REPORT'].includes(body.action))fail('SNAPSHOT_ACTION');
-    if(body.action==='SAVE_REPORT'){if(Object.keys(body).sort().join()!=='action,id')fail('SNAPSHOT_FIELDS');return saveSnapshotPaperReport(root,body.id,now());}
+    if(!body||!['PREVIEW','REGISTER','SAVE_REPORT','ENROLL','CANCEL'].includes(body.action))fail('SNAPSHOT_ACTION');
+    if(['SAVE_REPORT','ENROLL','CANCEL'].includes(body.action)){
+      if(Object.keys(body).sort().join()!=='action,id')fail('SNAPSHOT_FIELDS');
+      if(body.action==='ENROLL')return enrollPaperObservation(root,body.id,'OWNER_PAPER_RESEARCH',now());
+      if(body.action==='CANCEL')return cancelPaperObservation(root,body.id,now());
+      return saveSnapshotPaperReport(root,body.id,now());
+    }
     if(Object.keys(body).sort().join()!=='action,request')fail('SNAPSHOT_FIELDS');
     return body.action==='PREVIEW'?previewSnapshotPaper(root,body.request,now()):registerSnapshotPaper(root,body.request,now());
   }
