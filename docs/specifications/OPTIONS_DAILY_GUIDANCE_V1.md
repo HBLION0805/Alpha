@@ -77,6 +77,13 @@ At final close restore v6 first as previously required, then install the new
 ongoing guidance fields; preserve original restore snapshots and study artifacts.
 Notification preferences belong in the automation fields, not its prompt.
 
+September 10 late-start correction: the original daily Treasury/BLS/FOMC group
+remains eligible from 09:00 until local midnight if no same-date claim exists.
+Daily claim directories use New York dates across UTC midnight. This removes an
+undocumented 18:00 cutoff, not the close collector's separate 18:00 window.
+Existing failed/unfinished claims still suppress repeats; no previous date is
+backfilled. See [correction](../OPTIONS_CONTEXT_LATE_START_CORRECTION.md).
+
 ## Acceptance
 
 Pure engine: direction/insufficient history, stale and mismatched quotes, unknown

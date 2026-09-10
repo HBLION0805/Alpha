@@ -1,0 +1,131 @@
+{
+  "version": "OPTIONS_CONTEXT_LATE_START_CORRECTION_V1",
+  "recordedAt": "2026-09-10T04:40:37.501Z",
+  "scope": "F01_PUBLIC_CONTEXT_RECOVERY_AND_VISIBLE_CALENDAR_HEALTH",
+  "delivery": "docs/OPTIONS_CONTEXT_LATE_START_CORRECTION.md",
+  "defect": "No September 9 daily claim exists. Hourly receipts resume at 18:00 New York; the old upper bound then excluded daily sources.",
+  "hostAbsenceCause": "UNESTABLISHED",
+  "sourceAttemptMode": "EXPLICIT_CURRENT_TIME_FIXED_PUBLIC_CLI_ONCE_EACH",
+  "calendarSources": [
+    {
+      "id": "bls",
+      "state": "AVAILABLE",
+      "latestAttempt": "OBSERVED_SCHEDULE",
+      "latestReceivedAt": "2026-09-10T04:34:02.315Z",
+      "lastKnownReceivedAt": "2026-09-10T04:34:02.315Z",
+      "refreshOverdue": false,
+      "sourceErrorCode": null
+    },
+    {
+      "id": "fomc",
+      "state": "AVAILABLE",
+      "latestAttempt": "OBSERVED_DATE_SCHEDULE",
+      "latestReceivedAt": "2026-09-10T04:34:02.695Z",
+      "lastKnownReceivedAt": "2026-09-10T04:34:02.695Z",
+      "refreshOverdue": false,
+      "sourceErrorCode": null
+    }
+  ],
+  "treasury": {
+    "status": "OK",
+    "receivedAt": "2026-09-10T04:34:02.002Z",
+    "currentSourceDate": "2026-09-09"
+  },
+  "journalPreservation": [
+    {
+      "path": "data/runtime/options-release-calendar/retrievals.ndjson",
+      "originalSha256": "0ee4a8ff875ef35fa4300203c6b0c0aeee78aa001f72199e40a14b0cf01c8f00",
+      "originalPrefixPreserved": true,
+      "rowsBefore": 3,
+      "rowsAfter": 4
+    },
+    {
+      "path": "data/runtime/options-fomc-calendar/retrievals.ndjson",
+      "originalSha256": "eefe9d449cd59aa7e8543725c5a23a9b198da5318de920be7daf830baf7f6d3d",
+      "originalPrefixPreserved": true,
+      "rowsBefore": 3,
+      "rowsAfter": 4
+    },
+    {
+      "path": "data/runtime/options-treasury-rates/retrievals.ndjson",
+      "originalSha256": "c170d3ebae4c63282066694b5d71e959ebe344f8f34063609480aa0db2ba2366",
+      "originalPrefixPreserved": true,
+      "rowsBefore": 4,
+      "rowsAfter": 5
+    }
+  ],
+  "missedSeptember9DailyClaimPreserved": true,
+  "guidance": [
+    {
+      "symbol": "GLD",
+      "disposition": "WATCH",
+      "blockers": [
+        "MARKET_CAPTURE_PARTIAL",
+        "OUTSIDE_REGULAR_SESSION",
+        "MAJOR_EVENT_WAIT",
+        "DIRECTION_NOT_CONFIRMED",
+        "NEWS_AND_TREND_NOT_ALIGNED",
+        "UNDERLYING_PRICE_NOT_FRESH"
+      ]
+    },
+    {
+      "symbol": "IBIT",
+      "disposition": "WATCH",
+      "blockers": [
+        "MARKET_CAPTURE_PARTIAL",
+        "OUTSIDE_REGULAR_SESSION",
+        "MAJOR_EVENT_WAIT",
+        "DIRECTION_NOT_CONFIRMED",
+        "NEWS_AND_TREND_NOT_ALIGNED",
+        "UNDERLYING_PRICE_NOT_FRESH"
+      ]
+    }
+  ],
+  "manualEventCount": 0,
+  "manualHeadSha256": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c",
+  "backgroundContextRefreshEnabled": true,
+  "recordedEvidence": {
+    "path": "data/runtime/options-workbench-development/context-late-start-after.json",
+    "sha256": "ced77d10b8c7b52adc6ab784f37c7e0a07fe88d09becf3e395f0bb6bacb22dd8"
+  },
+  "validation": {
+    "contextService": 14,
+    "focusedNews": 48,
+    "macroContext": 57,
+    "workbench": 57,
+    "guidance": 65,
+    "calendarBrief": 12,
+    "totalPassed": 253,
+    "failed": 0,
+    "typecheck": "PASS",
+    "fullSuiteRun": false,
+    "browserCalendarClocksVerified": true,
+    "browserLayoutVerified": true
+  },
+  "deployment": {
+    "matchedPriorProcessId": 31952,
+    "listener": "127.0.0.1:4173",
+    "restartedThroughApprovedLauncher": true,
+    "nextNaturalDailyAttemptObserved": false
+  },
+  "automationHashes": {
+    "gld-ibit": "82f6eb29821ad5dd481414aba1563a5414e24073a243cd4bc8045ccf5e413c2a",
+    "alpha": "c3ad66c095c9dbe2a7aaa5fcc910ca5495c53593d27bfe499f8686a27a6d4490",
+    "alpha-2": "49f3d46d83950722c315e0c7228fb4f5bbabf634ac411610b9d33e7a894f5669"
+  },
+  "appAutomationsUnchanged": true,
+  "progress": {
+    "workflowStage": "F01",
+    "before": "PARTIAL",
+    "after": "PARTIAL",
+    "workstreams": {
+      "LOCAL_VALIDATED": 4,
+      "PARTIAL": 4,
+      "NOT_VALIDATED": 2
+    },
+    "paperGatesOpen": 3,
+    "realPriceLifecycleCompleted": false
+  },
+  "executionAllowed": false,
+  "evidenceAssessedAt": "2026-09-10T04:35:11.330Z"
+}

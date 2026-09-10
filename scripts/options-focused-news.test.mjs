@@ -5,7 +5,7 @@ import {join,relative,isAbsolute} from 'node:path';
 import {classifyFocusedHeadline,buildFocusedNews,FOCUSED_NEWS_SOURCES} from '../src/engines/options-drivers/OptionsFocusedNews.ts';
 import {parseDriverFeed,parseFocusedFeed,readPublicDriverFeed,readPublicFocusedFeed,FOCUSED_SOURCE_URLS} from './lib/options-driver-io.mjs';
 import {refreshFocusedNews,readFocusedSupplement,verifyFocusedNews,focusedNewsView} from './lib/options-focused-news-io.mjs';
-import {focusedContext,filterFocusedNews,deniedNewsSources,newsAccessNotice} from '../apps/options-workbench/focused-news.js';
+import {focusedContext,filterFocusedNews,deniedNewsSources,newsAccessNotice,calendarCoveragePanel} from '../apps/options-workbench/focused-news.js';
 import {contextRefreshSlots,runPublicContextOnce} from './options-context-service.mjs';
 import {startOptionsWorkbench} from './options-workbench.mjs';
 
@@ -93,5 +93,20 @@ await test('missing and nonpermission failures do not invent local restrictions'
 await test('focused page displays transport gaps and retains source observation clocks',()=>{
   const sources=[{id:'fed',label:'Federal Reserve',kind:'PRIMARY_PUBLISHER',status:'FAILED',observedAt:at,diagnostic:'FEED_NETWORK_ACCESS_DENIED',partial:true}],f=buildFocusedNews([item('Gold demand')],sources,at),html=focusedContext({focusedNews:{data:f}});
   assert(html.includes('Public news collection needs network access.'));assert(html.includes('Gold demand'));assert(html.includes('FEED_NETWORK_ACCESS_DENIED'));assert(html.includes('Last feed read'));
+});
+await test('an available but overdue calendar is visibly stale beside saved events',()=>{
+  const source={state:'AVAILABLE',latestAttempt:'OBSERVED_SCHEDULE',refreshOverdue:true,lastKnownReceivedAt:at,latestReceivedAt:at,sourceErrorCode:null};
+  const html=focusedContext({calendar:{data:{sources:{bls:source},groups:[{dateOnlyEntries:[],scheduledTimeEntries:[{title:'Saved PPI event',scheduledAt:at}]}]}}});
+  assert(html.includes('Refresh overdue'));assert(html.includes('Saved PPI event'));assert(html.includes('Last successful read'));assert(!html.includes('Source read current'));
+});
+await test('a failed latest calendar read preserves the earlier successful clock without claiming current coverage',()=>{
+  const source={state:'AVAILABLE',latestAttempt:'FAILED',refreshOverdue:false,lastKnownReceivedAt:at,latestReceivedAt:'2026-09-08T14:00:00.000Z',sourceErrorCode:'HTTP_503'},before=JSON.stringify(source);
+  const html=calendarCoveragePanel({bls:source});assert(html.includes('Latest read failed'));assert(html.includes('HTTP_503'));assert(!html.includes('Source read current'));assert.equal(JSON.stringify(source),before);
+});
+await test('only an explicit fresh observed calendar is current; missing state stays unknown',()=>{
+  const fresh={state:'AVAILABLE',latestAttempt:'OBSERVED_SCHEDULE',refreshOverdue:false,lastKnownReceivedAt:at,latestReceivedAt:at,sourceErrorCode:null};
+  assert(calendarCoveragePanel({bls:fresh}).includes('Source read current'));
+  assert(!calendarCoveragePanel({bls:{...fresh,refreshOverdue:undefined}}).includes('Source read current'));
+  const absent=calendarCoveragePanel();assert(absent.includes('Calendar unavailable'));assert(!absent.includes('Source read current'));
 });
 console.log(passed+'/'+passed+' tests passed.');

@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-10 — Recover daily context after late startup
+
+- Keep an unattempted daily Treasury/BLS/FOMC read eligible after 18:00 through
+  local midnight, using a stable New York date claim.
+- Expose calendar freshness and actual attempt/success clocks beside saved events.
+- Preserve failed claims, old journals, all app schedules and the missing prior day.
+- See [correction and validation](OPTIONS_CONTEXT_LATE_START_CORRECTION.md).
+
 ## 2026-09-09 — Owner allocation policy
 
 - Activated $100–$500 per trade with legacy loss and shared-event caps removed.

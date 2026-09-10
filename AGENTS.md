@@ -1,5 +1,17 @@
 # Alpha Development Standard v1.0
 
+## Daily context after a late startup — September 10, 2026
+
+The unattempted daily Treasury/BLS/FOMC group is eligible from 09:00 until New York
+midnight; its claim directory now uses the same local date. The original daytime
+paths and failed/unfinished claims remain intact. The separate close collector's
+18:00 cutoff is unchanged. Current fixed-source reads succeeded at 00:34 New York;
+September 9 still has no daily claim and remains a gap. News & calendar displays
+attempt/success clocks and explicit freshness. All three app automation files were
+preserved. See docs/OPTIONS_CONTEXT_LATE_START_CORRECTION.md and
+docs/status/context-late-start.json. First natural daily execution after the
+approved service restart is unobserved; no real-price paper gate advanced.
+
 ## Daily planning and alignment audit — September 9, 2026
 
 The Owner now explicitly requests two daily reviews in this current task:

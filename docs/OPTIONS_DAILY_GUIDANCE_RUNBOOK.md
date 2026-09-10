@@ -54,6 +54,13 @@ with independent sanitized source receipts and no brokerage access. An existing
 same-hour/day claim prevents duplicate reads. A failed source remains failed;
 do not retry to manufacture success or relabel old headlines as new.
 
+After a late startup, an unattempted current-day daily group remains eligible
+from 09:00 until New York midnight. Its claim is stored under that local date,
+including after UTC midnight. Existing failed or unfinished daily claims remain
+unchanged and suppress another attempt. The separate 18:00 close-capture boundary
+is unchanged. Do not manufacture an earlier day's receipt. See
+[late-start correction](OPTIONS_CONTEXT_LATE_START_CORRECTION.md).
+
 When starting the persistent workbench from Codex, use the supported approved
 per-command network path for `node scripts/start-options-workbench.mjs --no-open`.
 A child started in the restricted command environment can inherit its network

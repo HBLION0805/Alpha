@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-10T04:27:47.504Z",
+  "recordedAt": "2026-09-10T04:35:11.330Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
@@ -29,7 +29,7 @@
       "name": "News macro and BTC context",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Nine focused headline feeds and Treasury/BTC/calendar/macro readers exist. Current source freshness and incomplete numerical/decision coverage require daily evidence checks.",
+      "detail": "Late-start daily context fixed and BLS/FOMC/Treasury current receipts saved; calendar freshness is visible. Numerical coverage, daily operation and event interpretation remain partial.",
       "evidence": "docs/OPTIONS_NEWS_ACCESS_RECOVERY.md"
     },
     {
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "08",
-  "currentUnit": "Prospective paper observation and automatic review",
-  "currentUnitAcceptance": "Enrollment, bounded Host tracking, immutable capture-driven reports, finalization and frontend validated. One engineering plan awaits September 10 intraday quotes; real-price lifecycle unobserved.",
+  "currentWorkstream": "02",
+  "currentUnit": "Daily context late-start recovery and visible calendar coverage",
+  "currentUnitAcceptance": "253 focused checks and typecheck passed. Actual fixed-source reads cleared the calendar coverage blocker; historical bytes and the missed September 9 slot remain intact. First natural daily execution after restart is unobserved.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,7 +134,7 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Observe eligible September 10 quotes for pipeline-check-ibit-20260910; save entry/exit or explicit gaps and final review. Validate actual data separately from engineering tests.",
+  "nextAction": "Verify the next natural daily read and actual scheduled paper window; complete event-conditioned recommendations and qualified underlying trend evidence. Existing recorded market-schedule drift remains unresolved.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
@@ -142,7 +142,7 @@
     "failed": 0,
     "componentCount": 167
   },
-  "latestOperationalEvidence": "docs/status/paper-observation.json",
+  "latestOperationalEvidence": "docs/status/context-late-start.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -165,5 +165,11 @@
     "alpha",
     "alpha-2"
   ],
-  "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS"
+  "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
+  "latestTargetedValidation": {
+    "passed": 253,
+    "failed": 0,
+    "typecheck": "PASS",
+    "fullSuiteRun": false
+  }
 }

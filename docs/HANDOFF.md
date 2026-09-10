@@ -1,5 +1,14 @@
 # Alpha Handoff
 
+Latest implementation: [daily context after a late startup](OPTIONS_CONTEXT_LATE_START_CORRECTION.md).
+The original daily public group now stays eligible after 18:00 through local
+midnight without duplicate UTC-date claims. BLS/FOMC and Treasury were read once
+at the actual September 10 00:34 New York time; calendar coverage is current and
+visibly labeled in the frontend. Prior journal bytes and the missing September 9
+claim remain unchanged. 253 focused checks and typecheck passed; the matched
+workbench was restarted. Natural daily execution and a real-price lifecycle are
+still unobserved. See [checkpoint](status/context-late-start.json).
+
 Latest Owner direction: [08:00 daily goals and 21:00 alignment review](OPTIONS_DAILY_DEVELOPMENT_REVIEW.md),
 both New York time and separate from the market heartbeat. The same reference
 records the exact product workflow, known capability gaps and evidence required

@@ -1,5 +1,8 @@
 # Alpha
 
+Context recovery: [late-start daily reads and visible calendar freshness](docs/OPTIONS_CONTEXT_LATE_START_CORRECTION.md).
+Current official calendar receipts are restored; missed historical reads stay gaps.
+
 Development direction: [full product workflow and daily planning/review](docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md).
 Daily 08:00 goals and 21:00 progress/deviation reviews use New York time and are
 enabled as Owner-approved standalone tasks, separate from market collection.

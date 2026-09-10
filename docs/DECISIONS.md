@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## 2026-09-10 — Retain the current day's unattempted public context read
+
+The documented daily-after-09:00 public refresh should remain available after
+a late startup. Remove its undocumented 18:00 exclusion and bind daily claims
+to New York dates across UTC midnight. Preserve prior attempts, including failures
+and unfinished claims; do not backfill a previous local date or change the separate
+close-collection schedule. Calendar availability, freshness and event values remain
+distinct. See [correction](OPTIONS_CONTEXT_LATE_START_CORRECTION.md).
+
 ## 2026-09-09 - Apply explicit Owner cancellation without rewriting history
 
 Remove old loss-cap enforcement from newly declared OWNER_ALLOCATION_ONLY_V2
