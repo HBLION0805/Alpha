@@ -1,5 +1,17 @@
 # Alpha Development Standard v1.0
 
+## Snapshot paper adapter — September 9, 2026
+
+The Owner requested the three remaining gates. A new source-linked snapshot
+paper adapter, immutable plan/report recovery, candidate notebook and frontend
+are implemented. RH_SNAPSHOT_ASSUMPTIONS_V1 is explicitly unqualified: 36 requested
+contracts returned 34 stale quotes and two missing; two retrospective actual-source
+audits saved NO_ENTRY. No real-price gate passed. Read
+[delivery](docs/OPTIONS_SNAPSHOT_PAPER_DELIVERY.md) and
+[checkpoint](docs/status/snapshot-paper.json). New plans use allocation-only V2;
+unknown costs remain unknown. Preserve original journals and the two saved audits.
+No Host tracking, source schedule, account/order tool or brokerage authority changed.
+
 ## Owner allocation-only policy — September 9, 2026
 
 The Owner explicitly directed removal of the old risk rules. This is now active

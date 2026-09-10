@@ -8,7 +8,7 @@ import { parseChainSurveyJson } from '../src/engines/options-robinhood-data/Robi
 import { startPublicContextService } from './options-context-service.mjs';
 
 const assetRoot=resolve(import.meta.dirname,'../apps/options-workbench');
-const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','candidate-checks.js','cost-desk.js','capital-policy.js','gold-framework.js','macro-context.js','focused-news.js','event-research.js','bar-quality.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
+const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','candidate-checks.js','cost-desk.js','capital-policy.js','gold-framework.js','macro-context.js','focused-news.js','event-research.js','bar-quality.js','snapshot-paper.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
 const MAX_BODY=65536;
 export async function startOptionsWorkbench({port=4173,refreshContext=false,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
@@ -33,7 +33,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
         if([...url.searchParams.keys()].some(k=>k!=='board')||url.searchParams.getAll('board').length>1)return reject(400,'QUERY_INVALID');
         return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,session});
       }
-      if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
+      if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/snapshot-paper'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
       const provided=req.headers['x-alpha-session'];
       if(req.headers.origin!==origin||typeof provided!=='string'||provided.length!==session.length||!timingSafeEqual(Buffer.from(provided),Buffer.from(session)))return reject(403,'SESSION_REQUIRED');
       if(req.headers['content-type']!=='application/json')return reject(415,'JSON_REQUIRED');
@@ -42,6 +42,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
       const chunks=[];let length=0;
       for await(const chunk of req){length+=chunk.length;if(length>MAX_BODY){reject(413,'BODY_TOO_LARGE');return;}chunks.push(chunk);}
       let body;try{body=parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(Buffer.concat(chunks)));}catch{return reject(400,'JSON_INVALID');}
+      if(url.pathname==='/api/snapshot-paper')return send(200,service.snapshotPaper(body));
       if(url.pathname==='/api/evaluate')return send(200,service.evaluate(body));
       if(url.pathname==='/api/cost-desk')return send(200,service.costDesk(body));
       if(url.pathname==='/api/macro-comparison')return send(200,service.macroComparison(body));

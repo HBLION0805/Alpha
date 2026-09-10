@@ -45,6 +45,7 @@ export function collectLessons(state){
   for(const id of ['paper','historical'])for(const l of state.outcomes.data?.components[id]?.audit?.candidateNotebook.entries??[])result.push({...l,origin:id==='paper'?'Paper simulation':'Historical research',support:(l.supportingTradeIds??l.supportingRunIds??[]).join(', '),title:words(l.code),nextCheck:l.nextCheck??l.observation});
   for(const l of state.activity.data?.candidateLessons??[])result.push({...l,origin:'Activity research',support:l.candidateId??l.contractId??'',title:words(l.code),nextCheck:l.nextCheck??l.observation??'Inspect the saved comparison and its evidence limits.'});
   for(const s of state.eventResearch?.data?.studies??[])for(const l of s.candidateLessons)result.push({...l,origin:'Event phase research',support:s.plan.id,title:words(l.code),nextCheck:l.text});
+  for(const c of state.snapshotPaper?.data?.cases??[]){const r=c.snapshots.at(-1)?.report;if(!r)continue;for(const l of [...r.candidateLessons,...(r.review?.candidateLessons??[])])result.push({...l,origin:r.origin==='SYNTHETIC_FIXTURE'?'Synthetic snapshot model':'Robinhood snapshot model',support:c.plan.id,title:words(l.code),nextCheck:l.text??l.nextCheck??l.observation});}
   return result;
 }
 export function safeLink(value){try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password?url.href:null;}catch{return null;}}

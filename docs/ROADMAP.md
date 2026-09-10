@@ -1,5 +1,11 @@
 # Alpha Roadmap
 
+The [snapshot paper adapter](OPTIONS_SNAPSHOT_PAPER_DELIVERY.md) is now locally
+implemented with frozen plans, copied-source recovery and candidate reviews.
+Workstream 08 advances to PARTIAL; qualified quote and complete real-price evidence
+remain missing. The three real-price gates stay open. Earlier adapter-unimplemented
+and old independent-loss-cap descriptions below are historical.
+
 [Candidate checks](OPTIONS_CANDIDATE_CHECKS_DELIVERY.md) now make the quote,
 cost, allocation and independent loss requirements inspectable and saveable.
 This prepares review before the source-specific paper adapter. It does not

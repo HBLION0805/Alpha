@@ -1,9 +1,13 @@
 # GLD/IBIT operations: evidence and next test
 
+Latest paper step: [snapshot adapter and three-gate evidence](OPTIONS_SNAPSHOT_PAPER_DELIVERY.md),
+with [checkpoint](status/snapshot-paper.json). Local modeling and durable review
+now work; actual-source audits saved NO_ENTRY and qualified real-price gates remain open.
+
 Latest planning addition: [fees and exit allowances](OPTIONS_COST_DESK_DELIVERY.md),
 with [checkpoint](status/cost-desk.json). The explicit dated fee assumption is
-comparison-only. Current $100–$500 allocation remains independent of $5 planned
-loss/$25 full-premium stress; the saved sample does not qualify a paper trade.
+comparison-only. Current $100–$500 allocation uses OWNER_ALLOCATION_ONLY_V2; legacy planned-loss
+and full-premium caps are removed. Costs and source qualification remain independent.
 
 Latest data qualification: [option candle evidence](OPTIONS_BAR_QUALITY_DELIVERY.md)
 and [dated checkpoint](status/bar-quality.json). The original saved capture path

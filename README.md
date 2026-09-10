@@ -1,5 +1,9 @@
 # Alpha
 
+Paper workflow: [Robinhood snapshot adapter and three-gate evidence](docs/OPTIONS_SNAPSHOT_PAPER_DELIVERY.md).
+Event research now supports frozen assumption-only paper plans, modeled exits,
+source-linked recovery and candidate reviews. Qualified real-price gates remain open.
+
 Latest macro context: [official rates, dollar and inflation benchmarks](docs/OPTIONS_MACRO_CONTEXT_DELIVERY.md).
 News & calendar now shows dated Treasury nominal yields, Fed broad USD/FX and
 Cleveland Fed model estimates. Daily collection is after 17:00 New York while

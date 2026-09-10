@@ -1,5 +1,10 @@
 # Alpha Handoff
 
+Latest paper step: [snapshot adapter and qualification evidence](OPTIONS_SNAPSHOT_PAPER_DELIVERY.md).
+The local adapter, save/recompute path and frontend are implemented under the
+active allocation-only policy. Two actual-capture audits are NO_ENTRY; no qualified
+real-price flow has completed. See [checkpoint](status/snapshot-paper.json).
+
 Date: 2026-09-08. Current scope: GLD/IBIT options on Robinhood.
 
 Start with the [operations index](OPTIONS_CURRENT_OPERATIONS.md), recorded at

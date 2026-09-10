@@ -1,0 +1,150 @@
+{
+  "version": "OPTIONS_SNAPSHOT_PAPER_DELIVERY_V1",
+  "recordedAt": "2026-09-10T01:14:49.306Z",
+  "sourceQualification": "NOT_QUALIFIED",
+  "adapter": "LOCAL_IMPLEMENTED_UNQUALIFIED",
+  "qualifiedRealPriceRun": "NOT_RUN",
+  "qualifiedGatesPassed": 0,
+  "actualTrades": 0,
+  "source": {
+    "capturePath": "data/runtime/options-daily-guidance/captures/2026-09-10/2026-09-10T00-44-50-412Z-46fae72f-3985-47af-93c1-4e7404d957d3.json",
+    "requested": 36,
+    "returned": 34,
+    "missing": 2,
+    "receiptNumericallyUsable": 0
+  },
+  "realAttemptProofPath": "data/runtime/options-workbench-development/snapshot-paper-real-attempt-20260909.json",
+  "realAttemptProofSha256": "371d56c2643d869c9f7aa4d09ce196c7c6792e0e9d3e84e07bc703cc88061d5d",
+  "sourceSchemaProof": {
+    "path": "data/runtime/options-workbench-development/snapshot-paper-source-schema-20260909.json",
+    "sha256": "d0803449fd282bd317181f4cd7a516894af35138e7518b33939db09b0ba50ef5"
+  },
+  "cases": [
+    {
+      "id": "source-audit-gld-20260909",
+      "status": "NO_ENTRY",
+      "timing": "RETROSPECTIVE_DECLARATION",
+      "fillCount": 0,
+      "blockers": [
+        "STALE_AT_RECEIPT",
+        "UNDERLYING_UNALIGNED",
+        "OUTSIDE_MODEL_SESSION",
+        "COSTS_UNKNOWN"
+      ],
+      "candidateLessons": [
+        {
+          "code": "SOURCE_UNQUALIFIED",
+          "text": "Keep this snapshot model separate from qualified execution evidence.",
+          "approvedKnowledge": false,
+          "causalStatus": "NOT_ESTABLISHED"
+        },
+        {
+          "code": "COSTS_UNKNOWN",
+          "text": "Declare entry fees, exit fees and slippage before a modeled entry; zero is an explicit assumption.",
+          "approvedKnowledge": false,
+          "causalStatus": "NOT_ESTABLISHED"
+        },
+        {
+          "code": "NO_ENTRY",
+          "text": "No admissible later entry snapshot was observed. Do not manufacture a trade.",
+          "approvedKnowledge": false,
+          "causalStatus": "NOT_ESTABLISHED"
+        }
+      ]
+    },
+    {
+      "id": "source-audit-ibit-20260909",
+      "status": "NO_ENTRY",
+      "timing": "RETROSPECTIVE_DECLARATION",
+      "fillCount": 0,
+      "blockers": [
+        "STALE_AT_RECEIPT",
+        "OUTSIDE_MODEL_SESSION",
+        "COSTS_UNKNOWN"
+      ],
+      "candidateLessons": [
+        {
+          "code": "SOURCE_UNQUALIFIED",
+          "text": "Keep this snapshot model separate from qualified execution evidence.",
+          "approvedKnowledge": false,
+          "causalStatus": "NOT_ESTABLISHED"
+        },
+        {
+          "code": "COSTS_UNKNOWN",
+          "text": "Declare entry fees, exit fees and slippage before a modeled entry; zero is an explicit assumption.",
+          "approvedKnowledge": false,
+          "causalStatus": "NOT_ESTABLISHED"
+        },
+        {
+          "code": "NO_ENTRY",
+          "text": "No admissible later entry snapshot was observed. Do not manufacture a trade.",
+          "approvedKnowledge": false,
+          "causalStatus": "NOT_ESTABLISHED"
+        }
+      ]
+    }
+  ],
+  "isolatedRecovery": [
+    {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-snapshot-paper/reports/source-audit-gld-20260909/2026-09-10T01-05-56-396Z-20dbda68-a1c0-4206-b551-c43f195bf384.json",
+      "fingerprint": "sha256:c4dbf1a2dfd34ed7acfce783bf2dc305a37332d9094a1dabdf7a8007d0df8cbf",
+      "executionAllowed": false
+    },
+    {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-snapshot-paper/reports/source-audit-ibit-20260909/2026-09-10T01-05-57-180Z-cf3972d4-be95-424b-bfc9-46f25364402d.json",
+      "fingerprint": "sha256:e5a2d0f028d07fe9231bbaff8db678a3f310fbf851976af05ef1f29cf832951c",
+      "executionAllowed": false
+    }
+  ],
+  "originalFilesPreserved": 108,
+  "ownerLedger": {
+    "events": 0,
+    "trades": 0,
+    "headSha256": "a9d04c6517e2143e9d74dac740a1a2fd92511b1324392f4ec0a2816e52784e1c"
+  },
+  "frontend": {
+    "desktop": {
+      "width": 1280,
+      "scrollWidth": 1265
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 375
+    },
+    "preview": "NO_ENTRY_WITH_UNKNOWN_COSTS",
+    "previewSaved": false,
+    "draftDiscarded": true,
+    "consoleErrors": 0,
+    "readOnlyRealRecordVerified": true,
+    "candidateNotebookFilteredNotes": 6
+  },
+  "validation": {
+    "targetedPassed": 37,
+    "typecheck": "PASSED",
+    "aggregate": {
+      "status": "PASSED",
+      "componentCount": 167,
+      "testsExecuted": 4309,
+      "passed": 4309,
+      "failed": 0,
+      "durationMs": 92305,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/status/development-progress.json', LF will be replaced by CRLF the next time Git touches it"
+      ]
+    },
+    "log": "data/runtime/options-workbench-development/snapshot-paper-acceptance.log",
+    "finalTargetedRegression": {
+      "passed": 37,
+      "failed": 0,
+      "log": "data/runtime/options-workbench-development/snapshot-paper-targeted-final.log",
+      "checks": "Includes rejection of ambiguous same-receipt books; typecheck and both immutable actual reports reverified."
+    }
+  },
+  "executionAllowed": false,
+  "schedulesChanged": false
+}

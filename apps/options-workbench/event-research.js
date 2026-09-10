@@ -1,3 +1,4 @@
+import {snapshotPaperPanel} from './snapshot-paper.js';
 import {esc,words,cents,timestamp} from './model.js';
 import {barQualityPanel} from './bar-quality.js';
 const money=v=>v===null||v===undefined?'Pending / unknown':cents(v);
@@ -56,12 +57,13 @@ function studyCard(r){
 }
 export function eventResearchPage(s,ui={}) {
   const head='<div class="page-heading"><div><p class="eyebrow">ONE EVENT, TWO DECISIONS</p><h1>Event research</h1><p class="subtitle">Compare anticipation and reaction with one shared risk allowance.</p></div></div>';
+  const paper=snapshotPaperPanel(s.snapshotPaper,ui);
   const g=s.guidance?.data,desk=s.eventResearch;
-  if(!g)return head+'<div class="empty"><h2>Guidance evidence unavailable</h2><p>Save a verified market capture and restore calendar coverage before registering an experiment.</p></div>';
+  if(!g)return head+paper+'<div class="empty"><h2>Guidance evidence unavailable</h2><p>Save a verified market capture and restore calendar coverage before registering an experiment.</p></div>';
   if(!ui.eventDraft){ui.eventDraft=eventDraft(s);ui.eventChoices={capturedAt:g.current.marketCapturedAt,quotes:structuredClone(g.input.quotes),events:structuredClone(g.input.events.filter(e=>e.scheduledAt&&e.scheduledAt>s.loadedAt))};}
   const d=ui.eventDraft,choice=ui.eventChoices;
   const select=(name,label,entries)=>`<label class="form-field">${label}<select name="${name}" required><option value="">Choose…</option>${entries.map(([v,t])=>`<option value="${esc(v)}"${d[name]===v?' selected':''}>${esc(t)}</option>`).join('')}</select></label>`;
-  return head+'<div class="notice"><div><strong>Prospective quote-reference research.</strong> Freeze the rules before collecting outcomes. Scheduled snapshots do not establish candle trends, stop fills or executable returns.</div></div>'+barQualityPanel(s.barQuality,s.loadedAt)+
+  return head+paper+'<div class="notice"><div><strong>Prospective quote-reference research.</strong> Freeze the rules before collecting outcomes. Scheduled snapshots do not establish candle trends, stop fills or executable returns.</div></div>'+barQualityPanel(s.barQuality,s.loadedAt)+
     `<details class="card section-space" ${desk?.data?.studies?.length?'':'open'}><summary>Register a future event experiment</summary><form id="event-research-form"><div class="form-grid">`+
     `<label class="form-field full">Experiment name<input name="title" value="${esc(d.title)}" maxlength="160" required></label>`+
     select('eventKey','Saved official event',choice.events.map(e=>[key(e),e.title+' · '+timestamp(e.scheduledAt)]))+

@@ -17,3 +17,5 @@
 /* Dated macro tables keep horizontal scrolling inside their source card. */
 #macro-context .macro-source-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}#macro-context .macro-source-grid>.source:last-child{grid-column:1/-1}#macro-context .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:950px){#macro-context .macro-source-grid,#macro-context .form-grid{grid-template-columns:minmax(0,1fr)}}
+
+#paper-validation{min-width:0}#paper-validation details{margin-top:16px}#paper-validation .table-scroll{max-height:400px}#paper-validation code{overflow-wrap:anywhere;white-space:normal}#paper-validation .form-actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px}#paper-validation .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:18px}@media(max-width:650px){#paper-validation .form-grid{grid-template-columns:minmax(0,1fr)}#paper-validation .button{white-space:normal}}

@@ -29,6 +29,8 @@ import { evaluateOptionsPlanningFeasibility } from '../../src/engines/options-re
 import { assessOptionsCostDesk } from '../../src/engines/options-retail-feasibility/OptionsCostDesk.ts';
 import { assessOptionsCapitalPolicy } from '../../src/engines/options-retail-feasibility/OptionsCapitalPolicy.ts';
 
+import {snapshotPaperView,previewSnapshotPaper,registerSnapshotPaper,saveSnapshotPaperReport} from './options-snapshot-paper-io.mjs';
+
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
 const read=(root,path,max=MAX)=>io.readBytes(root,path,max);
@@ -37,7 +39,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -107,6 +109,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.barQuality=await component(()=>readBarQualityDesk(root,at),at);
     result.macroContext=await component(()=>macroContextView(root,at,treasury.data),at);
     result.goldFramework=await component(()=>goldFrameworkView(result,at),at);
+    result.snapshotPaper=await component(()=>snapshotPaperView(root,at),at);
     return result;
   }
   function preview(command){
@@ -140,5 +143,11 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_ACTION');
     return body.action==='PREVIEW'?previewMacroComparison(root,body.request,now()):saveMacroComparison(root,body.request,now());
   }
-  return {scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  function snapshotPaper(body){
+    if(!body||!['PREVIEW','REGISTER','SAVE_REPORT'].includes(body.action))fail('SNAPSHOT_ACTION');
+    if(body.action==='SAVE_REPORT'){if(Object.keys(body).sort().join()!=='action,id')fail('SNAPSHOT_FIELDS');return saveSnapshotPaperReport(root,body.id,now());}
+    if(Object.keys(body).sort().join()!=='action,request')fail('SNAPSHOT_FIELDS');
+    return body.action==='PREVIEW'?previewSnapshotPaper(root,body.request,now()):registerSnapshotPaper(root,body.request,now());
+  }
+  return {snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

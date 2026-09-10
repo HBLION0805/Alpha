@@ -1,3 +1,4 @@
+import {snapshotRequest,snapshotResult} from './snapshot-paper.js';
 import {request} from './api.js';
 import {routes,contractDetail,tradeDetail,plannerResult,detail,notice,table,empty} from './views.js';
 import {esc,words,dollars,timestamp,exactUsd,decimalText,decimalInteger,filterChain} from './model.js';
@@ -61,6 +62,7 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.id==='snapshot-paper-form'){ui.snapshotDraft=Object.fromEntries(new FormData(form));ui.snapshotPreview=null;dirty.add('snapshot-paper');const p=$('#snapshot-paper-preview');if(p)p.innerHTML=snapshotResult(null);const b=$('#freeze-snapshot-paper');if(b)b.disabled=true;return;}
   if(form.id==='macro-comparison-form'){ui.macroDraft=Object.fromEntries(new FormData(form));ui.macroPreview=null;dirty.add('macro');const p=$('#macro-comparison-preview');if(p)p.innerHTML=macroComparisonResult(null);const b=$('#save-macro-comparison');if(b)b.disabled=true;return;}
   if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));clearPolicyPreview();dirty.add('guidance');const snapshot=$('#save-candidate-checks');if(snapshot)snapshot.disabled=true;return;}
   if(form.id==='event-research-form'){Object.assign(ui.eventDraft,Object.fromEntries(new FormData(form)));dirty.add('event-research');return;}
@@ -129,6 +131,7 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='snapshot-paper-form'){event.preventDefault();return;}
   if(event.target.id==='macro-comparison-form'){
     event.preventDefault();if(saving||previewing)return;const action=event.submitter.value,button=event.submitter;
     if(action==='SAVE'&&!macroPreviewMatches(ui.macroPreview,ui.macroDraft)){fail(Error('Preview the current values before saving.'),'#macro-comparison-error');return;}
@@ -155,6 +158,18 @@ document.addEventListener('submit',event=>{
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
   if(el.dataset.close){if(saving&&el.dataset.close==='preview-dialog')return;$('#'+el.dataset.close).close();return;}
+  if(el.id==='discard-snapshot-paper'){ui.snapshotDraft=null;ui.snapshotPreview=null;dirty.delete('snapshot-paper');render();return;}
+  if(['preview-snapshot-paper','freeze-snapshot-paper'].includes(el.id)){
+    if(saving)return;const form=$('#snapshot-paper-form');if(!form.reportValidity())return;
+    const input=snapshotRequest(Object.fromEntries(new FormData(form))),freeze=el.id==='freeze-snapshot-paper';
+    if(freeze&&JSON.stringify(input)!==JSON.stringify(ui.snapshotPreviewRequest))throw Error('Preview the current paper plan first.');
+    saving=true;el.disabled=true;
+    try{const r=await request('/api/snapshot-paper',{action:freeze?'REGISTER':'PREVIEW',request:input});
+      if(freeze){ui.snapshotPreview=null;ui.snapshotDraft=null;dirty.delete('snapshot-paper');await reload();toast('Local paper plan frozen. No order was created.');}
+      else if(JSON.stringify(input)===JSON.stringify(snapshotRequest(Object.fromEntries(new FormData(form))))){ui.snapshotPreview=r;ui.snapshotPreviewRequest=input;$('#snapshot-paper-preview').innerHTML=snapshotResult(r);$('#freeze-snapshot-paper').disabled=false;}
+    }finally{saving=false;if(el.isConnected)el.disabled=false;}return;
+  }
+  if(el.dataset.snapshotSave){if(saving)return;saving=true;el.disabled=true;try{await request('/api/snapshot-paper',{action:'SAVE_REPORT',id:el.dataset.snapshotSave});await reload();toast('Observed paper result and candidate review saved and recomputed.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reload'){await reload();return;}
   if(el.id==='preview-capital-policy'){
     if(previewingPolicy)return;previewingPolicy=true;el.disabled=true;$('#guidance-settings-error').textContent='';clearPolicyPreview();

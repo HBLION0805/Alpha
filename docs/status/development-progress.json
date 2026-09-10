@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-10T00:12:07.490Z",
+  "recordedAt": "2026-09-10T01:14:49.306Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "8ea8652",
+  "comparedWithCommit": "c5f4e0f",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 3,
@@ -12,8 +12,8 @@
   },
   "currentCounts": {
     "LOCAL_VALIDATED": 4,
-    "PARTIAL": 3,
-    "NOT_VALIDATED": 3
+    "PARTIAL": 4,
+    "NOT_VALIDATED": 2
   },
   "workstreams": [
     {
@@ -76,17 +76,17 @@
       "id": "08",
       "name": "Robinhood real-price paper adapter",
       "previousStatus": "NOT_VALIDATED",
-      "status": "NOT_VALIDATED",
-      "detail": "Source-specific adapter remains unimplemented. Independent candidate checks expose current quote/cost/risk blockers and preserve original guidance; source qualification remains open.",
-      "evidence": "docs/OPTIONS_CANDIDATE_CHECKS_DELIVERY.md"
+      "status": "PARTIAL",
+      "detail": "Source-linked snapshot adapter, frozen plans, modeled bid/ask fills and isolated recovery implemented under explicit assumptions. Source qualification remains open.",
+      "evidence": "docs/OPTIONS_SNAPSHOT_PAPER_DELIVERY.md"
     },
     {
       "id": "09",
       "name": "First qualified real-price paper flow",
       "previousStatus": "NOT_VALIDATED",
       "status": "NOT_VALIDATED",
-      "detail": "Not run; requires qualified quotes and adapter followed by durable review/restart checks.",
-      "evidence": "docs/OPTIONS_CURRENT_OPERATIONS.md"
+      "detail": "Two actual-capture retrospective audits saved NO_ENTRY: 34 returned option quotes were stale, two requested quotes were missing, and costs/source qualification remain unknown. No qualified complete run.",
+      "evidence": "docs/OPTIONS_SNAPSHOT_PAPER_DELIVERY.md"
     },
     {
       "id": "10",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "01",
-  "currentUnit": "Remove legacy loss caps under explicit Owner instruction",
-  "currentUnitAcceptance": "Current policy saved, issued and restart-verified across frontend and modules. Historical evidence retained; no real-price gate advanced.",
+  "currentWorkstream": "08",
+  "currentUnit": "Robinhood snapshot paper adapter and durable three-gate evidence",
+  "currentUnitAcceptance": "Local adapter and frontend verified; two actual-source NO_ENTRY audits independently recovered. Three qualified real-price gates remain open.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -117,7 +117,7 @@
       },
       {
         "name": "Source-specific Robinhood paper adapter",
-        "status": "NOT_IMPLEMENTED"
+        "status": "LOCAL_IMPLEMENTED_UNQUALIFIED"
       },
       {
         "name": "Local modeled lifecycle",
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Resolve quote-side/size clocks, contract/session and source/cost qualification before the paper adapter; assess frozen event windows as eligible evidence arrives.",
+  "nextAction": "Resolve source-side/session/usage qualification and explicit cost assumptions; obtain eligible later snapshots for a frozen identity/window, then run and recover the first qualified paper lifecycle.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4272,
+    "passed": 4309,
     "failed": 0,
-    "componentCount": 166
+    "componentCount": 167
   },
-  "latestOperationalEvidence": "docs/status/owner-allocation.json",
+  "latestOperationalEvidence": "docs/status/snapshot-paper.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": false,
