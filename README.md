@@ -1,5 +1,9 @@
 # Alpha
 
+[Position exit checks](docs/OPTIONS_POSITION_WATCH_DELIVERY.md) connects recorded
+open GLD/IBIT positions with saved option bids and original exit conditions.
+Unknown costs, stale quotes and unconfirmed exits remain explicit.
+
 [Event-linked paper planning](docs/OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md) preserves
 the original event hypothesis, entry conditions and time exit alongside simulated
 results. Qualitative conditions remain explicitly untested by the quote-only model.

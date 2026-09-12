@@ -14,6 +14,7 @@ import { buildOptionsDriverReport } from '../../src/engines/options-drivers/Opti
 import { reportTreasuryHistory } from '../../src/engines/options-treasury/TreasuryRealYieldEngine.ts';
 import { reportBtcContext } from '../../src/engines/options-btc-context/BtcSpotContextEngine.ts';
 import { reconcileManualLedger, validateManualLedgerCommand } from '../../src/engines/options-manual-ledger/OptionsManualLedger.ts';
+import { assessPositionWatch } from '../../src/engines/options-manual-ledger/OptionsPositionWatch.ts';
 import { exportId } from '../../src/engines/options-evidence-export/OptionsEvidenceExportEngine.ts';
 import { readinessClock } from '../../src/engines/options-readiness/OptionsReadinessEngine.ts';
 import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
@@ -40,7 +41,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|MANUAL_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(WORKBENCH_|MANUAL_|POSITION_WATCH_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -87,7 +88,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     // An unreadable catalog entry cannot silently masquerade as a complete latest view.
     const entries=catalogs.data??[],selected=boardId??entries.find(e=>e.state==='SAVED')?.id??null;
     const chain=await component(()=>{if(boardId===null&&entries.some(e=>e.state==='UNREADABLE'))fail('CATALOG_REQUIRES_SELECTION');if(!selected)fail('CHAIN_MISSING');return loadChain(selected);},at);
-    const manual=await component(()=>{const r=ledger();return {headSha256:r.headSha256,...r.report,events:r.input.events};},at);
+    const manual=await component(()=>{const r=readManualLedger(root,ledgerId,()=>at);return {headSha256:r.headSha256,...r.report,events:r.input.events};},at);
     const study=await component(activity,at);
     const headlines=await component(()=>journal(root,'data/runtime/options-driver-monitor/refreshes.ndjson',()=>withDriverJournal(root,s=>{
       const report=buildOptionsDriverReport(s.observations,s.health,at),latest=new Map();
@@ -112,7 +113,19 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.macroContext=await component(()=>macroContextView(root,at,treasury.data),at);
     result.goldFramework=await component(()=>goldFrameworkView(result,at),at);
     result.snapshotPaper=await component(()=>{const desk=snapshotPaperView(root,at);return {...desk,observations:paperObservationView(root,desk,at)};},at);
+    result.positionWatch=await component(()=>watchFromDesk(manual.data,result.snapshotPaper.data,at),at);
     return result;
+  }
+  function watchFromDesk(report,desk,at,costs={}){
+    if(!report)fail('POSITION_LEDGER_UNAVAILABLE');
+    const latest=desk?.latest;
+    return {...assessPositionWatch(report,latest?{...latest,quotes:latest.quotes.map(q=>q.contract)}:null,at,costs),sourceRecovery:desk?'AVAILABLE':'UNAVAILABLE'};
+  }
+  function positionWatch(body){
+    if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).sort().join()!=='exitCostUsd,tradeId')fail('POSITION_FIELDS');
+    exportId(body.tradeId);const at=now(),report=readManualLedger(root,ledgerId,()=>at).report;
+    let desk=null;try{desk=snapshotPaperView(root,at);}catch{}
+    return watchFromDesk(report,desk,at,{[body.tradeId]:body.exitCostUsd});
   }
   function preview(command){
     const r=ledger(),at=now(),c=validateManualLedgerCommand(command,at);
@@ -156,5 +169,5 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(Object.keys(body).sort().join()!=='action,request')fail('SNAPSHOT_FIELDS');
     return body.action==='PREVIEW'?previewSnapshotPaper(root,body.request,now()):registerSnapshotPaper(root,body.request,now());
   }
-  return {snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  return {positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

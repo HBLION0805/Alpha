@@ -1,4 +1,5 @@
 import {snapshotRequest,snapshotResult} from './snapshot-paper.js';
+import {positionWatchRequest,positionWatchResult,positionWatchPreviewMatches} from './position-watch.js';
 import {request} from './api.js';
 import {routes,contractDetail,tradeDetail,plannerResult,detail,notice,table,empty} from './views.js';
 import {esc,words,dollars,timestamp,exactUsd,decimalText,decimalInteger,filterChain} from './model.js';
@@ -52,6 +53,7 @@ async function reload(board=state?.selectedBoardId??null){
   if(loading)return;loading=true;$('#reload').disabled=true;$('#connection').textContent='Checking saved evidence…';
   try{
     state=await request('/api/state'+(board?'?board='+encodeURIComponent(board):''));
+    ui.positionCostPreviews={};
     if(ui.costDeskResult&&!costRequestMatches({scenario:ui.costDeskResult.original.scenario,feeBasis:ui.costDeskResult.feeBasis},costRequest())){clearCosts();ui.plannerResult=null;}
     if(ui.capitalPolicyPreview&&!dirty.has('guidance')&&!capitalPolicyMatches(ui.capitalPolicyPreview.settings,state.guidance?.data?.current.settings))clearPolicyPreview();
     const unavailable=Object.values(state).filter(v=>v&&typeof v==='object'&&['MISSING','BLOCKED'].includes(v.state)).length;
@@ -71,6 +73,10 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.dataset?.positionCost){
+    const id=form.dataset.positionCost;ui.positionCostDrafts??={};ui.positionCostPreviews??={};ui.positionCostDrafts[id]=el.value;delete ui.positionCostPreviews[id];
+    const row=state.positionWatch?.data?.rows.find(r=>r.tradeId===id),panel=document.querySelector(`[data-position-result="${id}"]`);if(row&&panel)panel.innerHTML=positionWatchResult(row,state.positionWatch.data.assessedAt);return;
+  }
   if(form.getAttribute('id')==='snapshot-paper-form'){ui.snapshotDraft=Object.fromEntries(new FormData(form));ui.snapshotPreview=null;dirty.add('snapshot-paper');const p=$('#snapshot-paper-preview');if(p)p.innerHTML=snapshotResult(null);const b=$('#freeze-snapshot-paper');if(b)b.disabled=true;return;}
   if(form.id==='macro-comparison-form'){ui.macroDraft=Object.fromEntries(new FormData(form));ui.macroPreview=null;dirty.add('macro');const p=$('#macro-comparison-preview');if(p)p.innerHTML=macroComparisonResult(null);const b=$('#save-macro-comparison');if(b)b.disabled=true;return;}
   if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));clearPolicyPreview();dirty.add('guidance');const snapshot=$('#save-candidate-checks');if(snapshot)snapshot.disabled=true;return;}
@@ -140,6 +146,20 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.dataset.positionCost){
+    event.preventDefault();if(previewing)return;
+    const form=event.target,id=form.dataset.positionCost,button=event.submitter,error=document.querySelector(`[data-position-error="${id}"]`),baseAt=state.loadedAt;
+    const raw=String(new FormData(form).get('exitCostUsd')??'');error.textContent='';
+    let input;try{input=positionWatchRequest(id,raw);}catch(e){error.textContent=e.message;return;}
+    previewing=true;button.disabled=true;
+    void(async()=>{try{
+      const r=await request('/api/position-watch',input);
+      if(!form.isConnected||baseAt!==state.loadedAt||raw!==String(new FormData(form).get('exitCostUsd')??''))throw Error('Inputs or saved data changed. Preview the current exit checks again.');
+      if(!positionWatchPreviewMatches(state.positionWatch?.data,r,id))throw Error('Reported positions changed. Reload saved data before previewing their exit costs.');
+      ui.positionCostPreviews??={};ui.positionCostPreviews[id]=r;
+      document.querySelector(`[data-position-result="${id}"]`).innerHTML=positionWatchResult(r.rows.find(row=>row.tradeId===id),r.assessedAt);
+    }catch(e){if(error.isConnected)error.textContent=e.message;}finally{previewing=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.getAttribute('id')==='snapshot-paper-form'){event.preventDefault();return;}
   if(event.target.id==='macro-comparison-form'){
     event.preventDefault();if(saving||previewing)return;const action=event.submitter.value,button=event.submitter;

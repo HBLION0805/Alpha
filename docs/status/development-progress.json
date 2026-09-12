@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-12T22:41:34.000Z",
+  "recordedAt": "2026-09-12T23:08:04.763Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "8a2f569",
+  "comparedWithCommit": "e15e14e",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -69,8 +69,8 @@
       "name": "Portfolio and account qualification",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Declared diagnostics, an eight-page local workbench and manual ledger forms exist; actual position tracking, account qualification and enforcement remain incomplete.",
-      "evidence": "docs/OPTIONS_WORKBENCH_DELIVERY.md"
+      "detail": "Trade journal now compares reported open positions with saved option bids, original exit terms and explicit cost assumptions. Partial accounting and time/expiry checks survive quote gaps. Owner ledger has zero trades; timely live position monitoring, account qualification and enforcement remain incomplete.",
+      "evidence": "docs/OPTIONS_POSITION_WATCH_DELIVERY.md"
     },
     {
       "id": "08",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "08",
-  "currentUnit": "Event-linked contract plans and paper reviews",
-  "currentUnitAcceptance": "The existing paper frontend validates prospective event timing and copied original guidance, preserves entry/invalidation declarations through modeled outcomes and recovery, and marks every hypothesis NOT_TESTED. Real-source preview has zero fills and unknown costs. Form edits now invalidate previews even with a named ID control. No real-price gate advanced.",
+  "currentWorkstream": "07",
+  "currentUnit": "Saved-quote position exit checks",
+  "currentUnitAcceptance": "Reported positions, original exits and saved quote checks share exact partial-close accounting and optional cost previews in Trade journal. Quote failures do not hide due time exits. Synthetic tests and UI verify calculations; the actual ledger is empty. No real-price gate or live monitoring acceptance advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -138,11 +138,11 @@
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4425,
+    "passed": 4452,
     "failed": 0,
-    "componentCount": 168
+    "componentCount": 169
   },
-  "latestOperationalEvidence": "docs/status/paper-event-plan.json",
+  "latestOperationalEvidence": "docs/status/position-watch.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -167,16 +167,13 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 90,
+    "passed": 27,
     "failed": 0,
     "typecheck": "PASS",
     "fullSuiteRun": true
   },
   "currentUnitWorkflowStages": [
-    "F03",
-    "F04",
-    "F05",
-    "F07"
+    "F06"
   ],
   "marketScheduleRecovery": "docs/status/market-schedule-recovery-20260910.json"
 }

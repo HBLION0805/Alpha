@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Position exit checks — September 12, 2026
+
+Trade journal now compares reported open positions with the latest saved snapshot
+and original stop/target/time exit. Unknown fees or unusable quotes cannot produce
+net target evidence; partial fills reconcile once. Time/expiry checks survive
+quote recovery failures. Cost previews are local assumptions, never fills or new
+global fees. The Owner ledger remains empty and real-price paper gates remain
+open. See docs/OPTIONS_POSITION_WATCH_DELIVERY.md and docs/status/position-watch.json.
+No new source read, timer, Host tracking, enrollment, account/order or stored-lesson
+authority was added. Preserve the original ledger, paper results and schedules.
+
 ## Event-linked paper planning — September 12, 2026
 
 Optional paper registration V2 copies issued guidance and records an event phase,

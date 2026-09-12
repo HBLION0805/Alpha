@@ -1,5 +1,11 @@
 # Alpha Roadmap
 
+[Position exit checks](OPTIONS_POSITION_WATCH_DELIVERY.md) now provide a local
+F06 comparison over recorded open positions, saved bids and original exit terms.
+Actual holdings remain unverified and no continuous source or proactive exit
+alert was added. Next qualify fresh market observations and a complete prospective
+paper lifecycle; the ten-workstream total remains 4 local / 4 partial / 2 unvalidated.
+
 Current priority order is governed by [the product workflow and daily review](OPTIONS_DAILY_DEVELOPMENT_REVIEW.md):
 repair existing data/processing failures, demonstrate an actual-quote paper
 lifecycle, complete trend/event-to-contract recommendations with matching frontend,

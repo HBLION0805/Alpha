@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## September 12, 2026 — Compare open positions without assuming exits
+
+Use saved option bids and exact recorded net cash flow to assess remaining
+position value and original exit conditions. Preserve unknown fees; subtract an
+explicit remaining exit-cost assumption once. Time and expiry flags survive quote
+failure and never settle or close a position. Keep source clocks, identities and
+changed-ledger checks visible. No new collection or notification schedule. See
+[design](specifications/OPTIONS_POSITION_WATCH_V1.md).
+
 ## September 12, 2026 — Preserve the event hypothesis with paper evidence
 
 Use an opt-in registration V2 envelope, preserving the original paper engine.

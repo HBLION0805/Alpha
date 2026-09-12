@@ -1,0 +1,46 @@
+{
+  "version": "OPTIONS_POSITION_WATCH_DELIVERY_V1",
+  "recordedAt": "2026-09-12T23:08:04.763Z",
+  "workflowStage": "F06",
+  "validation": {"focusedPassed": 27, "focusedFailed": 0, "typecheck": "PASS", "fullSuite": "PASS", "passed": 4452, "failed": 0, "components": 169, "log": "data/runtime/options-workbench-development/position-watch-validation-release.log"},
+  "frontend": {
+    "syntheticPositionDisplayed": true,
+    "unknownExitCostBlocksNetTarget": true,
+    "explicitOneDollarPreviewNetPnlUsd": "118.950000",
+    "editingCostClearsPreview": true,
+    "invalidCostRejected": true,
+    "reloadClearsPreviewAndRetainsCostText": true,
+    "sourceIdentityDisplayedWithResult": true,
+    "noHorizontalOverflowAt1265Pixels": true,
+    "ownerEmptyStateVerified": true
+  },
+  "actualReadback": {
+    "evidence": "data/runtime/options-workbench-development/position-watch-actual.json",
+    "ownerTrades": 0,
+    "ownerOpenPositions": 0,
+    "watchState": "AVAILABLE",
+    "latestMarketCapture": "2026-09-10T00:44:10.432Z",
+    "paperPlans": 3,
+    "paperStatuses": ["NO_ENTRY", "NO_ENTRY", "NO_ENTRY"],
+    "paperFills": 0
+  },
+  "preservation": {
+    "evidence": "data/runtime/options-workbench-development/position-watch-preservation.json",
+    "historicalBaselineUnchanged": 171,
+    "currentBaselineUnchanged": 16,
+    "baselineSetsOverlap": true,
+    "automationHashesUnchanged": ["gld-ibit", "alpha", "alpha-2"]
+  },
+  "scope": {
+    "savedQuoteChecksOnly": true,
+    "liveHeldPositionValidated": false,
+    "newMarketCalls": 0,
+    "newTimer": false,
+    "backgroundExitNotifications": false,
+    "productionRegistrationOrEnrollment": false,
+    "ledgerOrPaperRecordsMutated": false,
+    "accountAccessed": false,
+    "executionAllowed": false,
+    "realPriceGateAdvanced": false
+  }
+}

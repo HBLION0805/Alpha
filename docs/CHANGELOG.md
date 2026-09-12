@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## September 12, 2026 — Position exit checks
+
+- Trade journal now compares reported open GLD/IBIT positions against saved bids,
+  original stop/target/time exit, source quality and expiry status.
+- Added exact partial-close PnL, optional remaining exit-cost previews and
+  independent time/expiry warnings when quote recovery is unavailable.
+- Original fills, fees, paper records, source schedules and order boundaries are
+  unchanged. The actual Owner ledger is empty. See [delivery](OPTIONS_POSITION_WATCH_DELIVERY.md).
+
 ## September 12, 2026 — Event-linked paper planning
 
 - Optional copied guidance, event phase, hypothesis, entry confirmation and

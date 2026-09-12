@@ -1,6 +1,13 @@
 # Alpha Handoff
 
-Latest increment: [event-linked paper planning](OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md).
+Latest increment: [position exit checks](OPTIONS_POSITION_WATCH_DELIVERY.md).
+Trade journal compares open reported positions with saved quotes and original
+exit conditions, with explicit unknown costs and no automatic fills. Time and
+expiry flags survive failed quote recovery. The actual Owner ledger still has
+zero trades; synthetic UI results do not establish live monitoring. Real-price
+paper gates remain open. See [checkpoint](status/position-watch.json).
+
+Previous increment: [event-linked paper planning](OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md).
 The existing paper form can freeze copied issued guidance, event phase and
 qualitative conditions with coherent future entry/exit windows. New registration
 V2 preserves old paper engines and original reports. Results and candidate notes

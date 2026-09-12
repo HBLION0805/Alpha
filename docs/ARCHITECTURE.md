@@ -1,5 +1,15 @@
 # Alpha Architecture
 
+## Read-only position exit checks
+
+OptionsPositionWatch consumes the reconciled manual ledger and latest snapshot
+capture; it never mutates either. Trade journal and the protected local preview
+route share exact whole-trade cash-flow calculations and independent exit checks.
+The state read supplies one assessment clock to ledger and watch. Missing quote
+recovery preserves ledger-based time/expiry diagnostics. Cost assumptions are
+ephemeral; ledger event identity prevents a stale position preview. See
+[design](specifications/OPTIONS_POSITION_WATCH_V1.md).
+
 ## Optional event context on paper registrations
 
 An opt-in registration V2 envelope copies and recomputes issued guidance and
