@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-10T05:39:14.274Z",
+  "recordedAt": "2026-09-12T21:35:05.062Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "7c6d0f4",
+  "comparedWithCommit": "62d22c0",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -98,8 +98,8 @@
     }
   ],
   "currentWorkstream": "01",
-  "currentUnit": "Contract rationale and six-dimension decision evidence with synchronized frontend",
-  "currentUnitAcceptance": "Exact expiry payoff references and known event exposure are visible; 24 frozen reports retain their original bytes. Both assets remain WATCH, two prior closes each; forecasts, time exits, IV/path and real-price lifecycle remain incomplete.",
+  "currentUnit": "Reviewed guidance sessions and analysis ordering",
+  "currentUnitAcceptance": "V2 inputs/V4 reports apply reviewed 2026 regular sessions and require analysis at or after the capture. 24 old reports remain unchanged; runtime/frontend verified September 12. No real-price gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Qualify current guidance session and analyst-reassessment behavior, then continue event-conditioned planning and observe the original real-price paper window when host, source and quota are available.",
+  "nextAction": "Recover the expired September 10 paper observation from actual saved evidence and close the local finalization/review gap without acquiring retrospective fills.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4378,
+    "passed": 4387,
     "failed": 0,
     "componentCount": 168
   },
-  "latestOperationalEvidence": "docs/status/guidance-rationale.json",
+  "latestOperationalEvidence": "docs/status/guidance-applicability.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -167,7 +167,7 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 92,
+    "passed": 206,
     "failed": 0,
     "typecheck": "PASS",
     "fullSuiteRun": true

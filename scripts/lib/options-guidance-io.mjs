@@ -133,7 +133,7 @@ export function guidanceView(root,state) {
   records.sort((a,b)=>b.capturedAt.localeCompare(a.capturedAt));const latest=records[0];
   const news=state.headlines?.data,calendar=state.calendar?.data;
   const sources=(news?.sources??[]).map(s=>({id:s.id,status:s.health?.status??"UNKNOWN",receivedAt:s.health?.observedAt??null}));
-  const input={version:"OPTIONS_DAILY_GUIDANCE_INPUT_V1",at:state.loadedAt,captureAt:latest?.capturedAt??null,captureOrigin:latest?.origin??null,captureComplete:latest?.complete??false,quotes:[...(latest?.quotes??[]),...(latest?.missingQuotes??[])],equities:latest?.equities??[],
+  const input={version:"OPTIONS_DAILY_GUIDANCE_INPUT_V2",at:state.loadedAt,captureAt:latest?.capturedAt??null,captureOrigin:latest?.origin??null,captureComplete:latest?.complete??false,quotes:[...(latest?.quotes??[]),...(latest?.missingQuotes??[])],equities:latest?.equities??[],
     closeHistory:records.flatMap(r=>r.equities.filter(e=>e.close).map(e=>({symbol:e.symbol,...e.close}))),
     events:(calendar?.groups??[]).flatMap(g=>[...g.dateOnlyEntries,...g.scheduledTimeEntries]).slice(0,100).map(e=>({title:e.title,source:e.source,startDate:e.startDate,endDate:e.endDate,scheduledAt:e.scheduledAt??null})),
     calendarAvailable:["bls","fomc"].every(k=>calendar?.sources?.[k]?.state==="AVAILABLE"&&!calendar.sources[k].refreshOverdue),

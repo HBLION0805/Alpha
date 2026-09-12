@@ -1,5 +1,15 @@
 # Alpha Development Standard v1.0
 
+## New guidance applicability — September 10, 2026
+
+Current V2 guidance inputs produce V4 reports with reviewed 2026 regular-session
+holidays/early closes, unknown-year blocking and holiday-close filtering. They
+require attributed analysis at or after the latest capture. V1 inputs/reports and
+paper session outputs retain old behavior exactly. Owner allocation and source
+schedules are unchanged. Frontend/Host/candidate checks share the new policy.
+See docs/OPTIONS_GUIDANCE_APPLICABILITY_DELIVERY.md and docs/status/guidance-applicability.json.
+This does not qualify live execution, halts, account data or a real-price paper run.
+
 ## Contract rationale and schedule readback — September 10, 2026
 
 Daily guidance now exposes six-dimensional evidence gaps, contract expiry/strike,

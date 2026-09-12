@@ -21,7 +21,7 @@ export interface GuidanceSettings {
   tradeBudget?: OptionsTradeBudget;
 }
 export interface GuidanceInput {
-  version: "OPTIONS_DAILY_GUIDANCE_INPUT_V1"; at: string;
+  version: "OPTIONS_DAILY_GUIDANCE_INPUT_V1" | "OPTIONS_DAILY_GUIDANCE_INPUT_V2"; at: string;
   captureAt: string | null; captureOrigin: string | null; captureComplete: boolean;
   quotes: GuidanceQuote[]; equities: GuidanceEquity[];
   closeHistory: { symbol: GuidanceSymbol; date: string; price: string }[];

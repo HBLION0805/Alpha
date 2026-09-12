@@ -1,5 +1,12 @@
 # Alpha Architecture
 
+## Guidance applicability versions
+
+New guidance input V2 composes the existing reviewed paper calendar using only
+regular-session hours and emits report V4. V1 dispatch remains unchanged for
+historical recovery. Both consumers import the unchanged extracted clock helper,
+avoiding a guidance/calendar dependency cycle. See [specification](specifications/OPTIONS_GUIDANCE_APPLICABILITY_V2.md).
+
 ## Explanations from frozen guidance inputs
 
 OptionsGuidanceRationale consumes the unchanged daily engine for exact terminal

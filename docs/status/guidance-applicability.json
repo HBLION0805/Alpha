@@ -1,0 +1,79 @@
+{
+  "version": "OPTIONS_GUIDANCE_APPLICABILITY_DELIVERY_V1",
+  "recordedAt": "2026-09-10T05:45:59.847Z",
+  "inputVersion": "OPTIONS_DAILY_GUIDANCE_INPUT_V2",
+  "reportVersion": "OPTIONS_DAILY_GUIDANCE_V4",
+  "marketSession": {
+    "calendarId": "NYSE_OPTIONS_SESSION_2026_REVIEWED_20260910",
+    "date": "2026-09-10",
+    "knownYear": true,
+    "holiday": false,
+    "closeMinute": 960,
+    "closeLocal": "16:00",
+    "earlyClose": false,
+    "lateCloseApplied": false,
+    "chainState": "unknown",
+    "chainEvidence": null,
+    "isOpen": false,
+    "limitation": "Scheduled session model; halts and contract-specific restrictions are not verified."
+  },
+  "analysisSequencing": "REVIEW_AT_OR_AFTER_LATEST_CAPTURE",
+  "assets": [
+    {
+      "symbol": "GLD",
+      "disposition": "WATCH",
+      "blockers": [
+        "MARKET_CAPTURE_PARTIAL",
+        "OUTSIDE_REGULAR_SESSION",
+        "MAJOR_EVENT_WAIT",
+        "DIRECTION_NOT_CONFIRMED",
+        "MARKET_EVIDENCE_NEWER_THAN_ANALYSIS",
+        "NEWS_AND_TREND_NOT_ALIGNED",
+        "UNDERLYING_PRICE_NOT_FRESH"
+      ],
+      "eligibleCloses": 2
+    },
+    {
+      "symbol": "IBIT",
+      "disposition": "WATCH",
+      "blockers": [
+        "MARKET_CAPTURE_PARTIAL",
+        "OUTSIDE_REGULAR_SESSION",
+        "MAJOR_EVENT_WAIT",
+        "DIRECTION_NOT_CONFIRMED",
+        "MARKET_EVIDENCE_NEWER_THAN_ANALYSIS",
+        "NEWS_AND_TREND_NOT_ALIGNED",
+        "UNDERLYING_PRICE_NOT_FRESH"
+      ],
+      "eligibleCloses": 2
+    }
+  ],
+  "oldReportsVerified": 24,
+  "oldReportBytesUnchanged": true,
+  "focusedValidation": {
+    "guidance": 74,
+    "rationale": 27,
+    "paper": 70,
+    "candidateChecks": 35,
+    "totalPassed": 206,
+    "failed": 0,
+    "typecheck": "PASS"
+  },
+  "aggregateValidation": {
+    "passed": 4387,
+    "failed": 0,
+    "componentCount": 168,
+    "log": "data/runtime/options-workbench-development/guidance-applicability-validation.log"
+  },
+  "frontendActivation": {
+    "status": "VERIFIED",
+    "verifiedAt": "2026-09-12T21:35:05.061Z",
+    "details": "Matched workbench restarted; browser shows V4 September 12 closed-day banner and WATCH. Source capture remains September 10 00:44 UTC; no market acquisition."
+  },
+  "marketCalls": 0,
+  "automationChanges": false,
+  "ownerTradeCount": 0,
+  "actualTrades": 0,
+  "realPriceGateAdvanced": false,
+  "executionAllowed": false
+}

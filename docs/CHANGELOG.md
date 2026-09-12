@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## 2026-09-10 — Respect session calendar and analysis ordering
+
+- Added input V2/report V4 with reviewed holidays/early closes and unknown-year
+  blocking; holiday observations cannot enter new trend history.
+- Require attributed analysis at/after the latest capture in new guidance.
+- Preserve V1 report and paper-session recovery; synchronize UI/Host/checks.
+- See [delivery](OPTIONS_GUIDANCE_APPLICABILITY_DELIVERY.md).
+
 ## 2026-09-10 — Contract rationale and readable evidence gaps
 
 - Added six-dimension checks, exact terminal references and event exposure to

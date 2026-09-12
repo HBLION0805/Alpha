@@ -1,5 +1,8 @@
 # Alpha
 
+Current guidance also checks [reviewed sessions and analysis sequencing](docs/OPTIONS_GUIDANCE_APPLICABILITY_DELIVERY.md).
+Holiday/early-close handling and old-versus-current report behavior are explicit.
+
 Daily guidance: [contract reasoning and six-dimension evidence checks](docs/OPTIONS_GUIDANCE_RATIONALE_DELIVERY.md).
 Expiry payoff references, event exposure and missing forecast/path assumptions
 now accompany the original decisions. Real-price paper gates remain open.

@@ -1,5 +1,12 @@
 # Alpha Architecture Decisions
 
+## 2026-09-10 — Version guidance applicability without rewriting past decisions
+
+New inputs use the reviewed regular-session calendar and require analysis after
+the latest capture. Old inputs retain their original rules. This closes eligibility
+gaps without changing allocations, paper outcomes or trading authority. See
+[delivery](OPTIONS_GUIDANCE_APPLICABILITY_DELIVERY.md).
+
 ## 2026-09-10 — Explain contract fit without inventing pre-expiry forecasts
 
 Show exact terminal payoff references, calendar exposure and all six evidence

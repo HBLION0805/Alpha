@@ -1,5 +1,11 @@
 # Alpha Handoff
 
+Latest correction: [guidance applicability](OPTIONS_GUIDANCE_APPLICABILITY_DELIVERY.md).
+New input V2/report V4 respects reviewed 2026 holidays and early closes, blocks
+unreviewed years, filters holiday closes and requires analysis at/after the latest
+capture. Historical V1 inputs and paper sessions still recover unchanged. Actual
+evidence remains WATCH; see [checkpoint](status/guidance-applicability.json).
+
 Latest increment: [daily guidance contract rationale](OPTIONS_GUIDANCE_RATIONALE_DELIVERY.md).
 Frontend and Host brief explain expiry, strike, terminal payoff references and
 six-dimensional evidence gaps. --explain-report uses verified frozen inputs;

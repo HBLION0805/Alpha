@@ -1,4 +1,4 @@
-import { guidanceLocal } from '../options-daily-guidance/OptionsDailyGuidance';
+import { guidanceLocal } from '../options-daily-guidance/OptionsGuidanceClock';
 
 export interface PaperChainSession {
   chainId:string|null;
