@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-12T21:48:09.059Z",
+  "recordedAt": "2026-09-12T22:11:52.749Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "6398a82",
+  "comparedWithCommit": "db21e0f",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -37,8 +37,8 @@
       "name": "GLD/IBIT option collection",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "September 8 close saved 2,100 contracts/quotes with September 8 refresh dates; scheduled later closes and independent source-side/session qualification remain separate.",
-      "evidence": "docs/OPTIONS_CHAIN_REVIEW_DELIVERY.md"
+      "detail": "Read-only delivery health confirms nine missing of twelve fixed windows; latest bounded sample is Sep9 evening New York with 34 stale and two missing quotes. Sep10 Host quota failures are verified; full-chain records and future delivery qualification remain separate.",
+      "evidence": "docs/OPTIONS_GUIDANCE_DELIVERY_HEALTH_DELIVERY.md"
     },
     {
       "id": "04",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "08",
-  "currentUnit": "Local expiration finalization and saved paper process review",
-  "currentUnitAcceptance": "Existing service tick saves expired enrolled outcomes without a Host wake. Actual September 10 rehearsal finalized NO_ENTRY with zero window quotes/fills; original cutoff and 171 files preserved. Frontend and candidate notebook recover the result. No real-price gate advanced.",
+  "currentWorkstream": "03",
+  "currentUnit": "Verified market delivery and recommendation input health",
+  "currentUnitAcceptance": "Frontend, Host brief and offline CLI distinguish fixed-window captures, fresh source clocks, ordered analysis and exact issued market inputs. Actual 12 ended windows have three recorded and nine missing; Sep10 Host quota failures confirmed. No real-price gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Investigate missed Host capture receipts and the transient public-reader failures; obtain eligible future GLD/IBIT observations, then strengthen event-conditioned contract planning. Do not backfill the expired September 10 entry or call it a completed real-price trade.",
+  "nextAction": "Use the next authorized future Host window to verify actual fresh captures and save attributed analysis after them; strengthen event-conditioned contract planning. No backfill of Sep10 paper entry and no implication that unchanged schedules ensure future delivery.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4395,
+    "passed": 4411,
     "failed": 0,
     "componentCount": 168
   },
-  "latestOperationalEvidence": "docs/status/local-paper-finalization.json",
+  "latestOperationalEvidence": "docs/status/guidance-delivery-health.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -167,14 +167,15 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 149,
+    "passed": 90,
     "failed": 0,
     "typecheck": "PASS",
     "fullSuiteRun": true
   },
   "currentUnitWorkflowStages": [
-    "F05",
-    "F07"
+    "F02",
+    "F03",
+    "F04"
   ],
   "marketScheduleRecovery": "docs/status/market-schedule-recovery-20260910.json"
 }

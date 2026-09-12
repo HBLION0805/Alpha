@@ -1,5 +1,13 @@
 # Alpha Handoff
 
+Latest increment: [guidance delivery health](OPTIONS_GUIDANCE_DELIVERY_HEALTH_DELIVERY.md).
+Twelve ended fixed windows have three associated captures and nine missing.
+Three September 10 Host failures explicitly report Codex allowance exhaustion;
+the current market automation hash remains unchanged. Frontend, Host brief and
+offline CLI distinguish real market receipts from public refresh and WATCH
+reissuance. Both assets still have no fresh quotes or eligible paper lifecycle.
+See [checkpoint](status/guidance-delivery-health.json); no real-price gate advanced.
+
 Latest correction: [local paper finalization](OPTIONS_LOCAL_PAPER_FINALIZATION_DELIVERY.md).
 The September 10 engineering plan missed its entry observations. The running
 local service now finalizes expired enrollments without requiring a Host wake,

@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Guidance delivery evidence — September 12, 2026
+
+Daily guidance, Host brief and --delivery-health now separate fixed-window receipt
+coverage, quote freshness, analysis order and exact published market inputs.
+Three September 10 Host executions failed before work because of Codex allowance;
+the current market schedule is unchanged. Do not infer a broker failure or repair
+from configuration alone. See docs/OPTIONS_GUIDANCE_DELIVERY_HEALTH_DELIVERY.md
+and docs/status/guidance-delivery-health.json. No extra source calls, retry jobs,
+paper enrollment, account/orders or real-price gate advancement is authorized.
+Missed past paper entry windows cannot be backfilled.
+
 ## Local paper finalization — September 12, 2026
 
 The existing public service tick now runs offline expired-enrollment finalization

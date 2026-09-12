@@ -7,6 +7,7 @@ import { paperFingerprint } from "../../src/engines/options-paper/OptionsPaperTr
 import { readinessClock } from "../../src/engines/options-readiness/OptionsReadinessEngine.ts";
 import { assessDailyGuidance, defaultGuidanceSettings, validateGuidanceSettings } from "../../src/engines/options-daily-guidance/OptionsDailyGuidance.ts";
 import { explainDailyGuidance } from "../../src/engines/options-daily-guidance/OptionsGuidanceRationale.ts";
+import { assessGuidanceDelivery, guidanceMarketFingerprint } from "../../src/engines/options-daily-guidance/OptionsGuidanceDelivery.ts";
 
 const BASE="data/runtime/options-daily-guidance", MAX=8*1024*1024;
 const fail=code=>{throw Error("GUIDANCE_"+code);};
@@ -29,8 +30,8 @@ function children(root,path) {
   for(const part of path.split("/")) {current=resolve(current,part);if(!existsSync(current))return [];const stat=lstatSync(current);if(!stat.isDirectory()||stat.isSymbolicLink())fail("UNSAFE_DIRECTORY");}
   const result=readdirSync(current,{withFileTypes:true});if(result.length>4000)fail("CATALOG_LIMIT");return result;
 }
-function paths(root,kind,limit=60) {
-  const base=BASE+"/"+kind,days=children(root,base).filter(v=>/^\d{4}-\d\d-\d\d$/.test(v.name));
+function paths(root,kind,limit=60,since=null) {
+  const base=BASE+"/"+kind,days=children(root,base).filter(v=>/^\d{4}-\d\d-\d\d$/.test(v.name)&&(since===null||v.name>=since));
   if(days.some(v=>!v.isDirectory()||v.isSymbolicLink()))fail("UNSAFE_DIRECTORY");
   return days.sort((a,b)=>b.name.localeCompare(a.name)).slice(0,60).flatMap(day=>{
     const entries=children(root,base+"/"+day.name);if(entries.length>200)fail("DAILY_LIMIT");
@@ -152,6 +153,17 @@ export function explainIssuedGuidance(root,path) {
     originallyIssuedAt:record.recordedAt,inputFingerprint:record.inputFingerprint,
     authority:"LATER_EXPLANATION_OF_FROZEN_INPUTS_NOT_ORIGINAL_ISSUED_TEXT",
     rationale:explainDailyGuidance(record.input),executionAllowed:false};
+}
+export function guidanceDeliveryView(root,view){
+  if(!view?.input)fail('DELIVERY_GUIDANCE_UNAVAILABLE');
+  const since=new Date(Date.parse(view.input.at)-7*86400000).toISOString().slice(0,10);
+  const capturePaths=[...new Set([...(view.sourcePaths?.length?[view.sourcePaths[0]]:[]),...paths(root,'captures',1001,since)])],claimPaths=paths(root,'slots',1001,since);
+  if(capturePaths.length>1000||claimPaths.length>1000)fail('DELIVERY_CATALOG_LIMIT');
+  const captures=capturePaths.map(path=>{const r=verified(root,path,'captures'),normal=normalizeGuidanceCapture(r.input);if(paperFingerprint(normal)!==r.reportFingerprint)fail('CAPTURE_RECOMPUTE');return {path,startedAt:r.input.startedAt,capturedAt:normal.capturedAt,recordedAt:r.recordedAt,origin:normal.origin,complete:normal.complete,requested:r.input.selectedIds.length,returned:normal.quotes.length};});
+  const claims=claimPaths.map(path=>{const c=read(root,path);exact(c,['slot','startedAt','status']);iso(c.startedAt);if(c.status!=='ATTEMPT_STARTED_NO_COMPLETION_CLAIM'||path!==BASE+'/slots/'+c.slot.slice(0,10)+'/'+c.slot+'.json')fail('DELIVERY_CLAIM');return {...c,path};});
+  const path=paths(root,'reports',1)[0],r=path?verified(root,path,'reports'):null;
+  const publication=r?{path,issuedAt:r.recordedAt,assessedAt:r.input.at,marketFingerprint:guidanceMarketFingerprint(r.input)}:null;
+  return assessGuidanceDelivery(view.input,captures,claims,publication);
 }
 export function publishGuidance(root,state){const view=guidanceView(root,state);return save(root,"reports",view.input,view.current).path;}
 export function claimGuidanceSlot(root,slot) {

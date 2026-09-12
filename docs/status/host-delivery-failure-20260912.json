@@ -1,0 +1,32 @@
+{
+  "version": "OPTIONS_HOST_DELIVERY_FAILURE_AUDIT_V1",
+  "assessedAt": "2026-09-12 21:55:02 UTC",
+  "evidenceSource": "Codex read_thread recent failed turn summaries; sanitized operational metadata only",
+  "scope": "September 10 fixed guidance windows",
+  "turns": [
+    {
+      "turnId": "01a08b96-7888-7b41-a3a4-08e6e89ee7ad",
+      "startedAt": "2026-09-10T13:51:29.000Z",
+      "status": "failed",
+      "errorCode": "CODEX_USAGE_LIMIT",
+      "executionStarted": false
+    },
+    {
+      "turnId": "01a08c3a-cf3e-7392-8ea3-c431c1400e83",
+      "startedAt": "2026-09-10T16:50:59.000Z",
+      "status": "failed",
+      "errorCode": "CODEX_USAGE_LIMIT",
+      "executionStarted": false
+    },
+    {
+      "turnId": "01a08ce0-1a95-72b3-b613-a99220c262d1",
+      "startedAt": "2026-09-10T19:51:32.000Z",
+      "status": "failed",
+      "errorCode": "CODEX_USAGE_LIMIT",
+      "executionStarted": false
+    }
+  ],
+  "limitation": "These turn errors explain corresponding missed Host executions. They do not establish broker/authentication failure, every other missing slot's cause, or future delivery.",
+  "scheduleSha256": "f0d660c01adaa936e22d0c039454fc607c2a7960095318c4a94546062fd8f3bd",
+  "executionAllowed": false
+}

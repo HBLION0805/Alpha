@@ -23,5 +23,6 @@
 
 .guidance-rationale { margin: 16px 0; overflow-wrap: anywhere; }
 .rationale-dimensions, .rationale-values { display: grid; gap: 12px; margin: 14px 0; }
+.guidance-delivery-clocks { grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); }
 .rationale-dimensions dt, .rationale-values dt { font-weight: 600; margin-bottom: 4px; }
 .rationale-dimensions dd, .rationale-values dd { margin: 0; line-height: 1.6; }

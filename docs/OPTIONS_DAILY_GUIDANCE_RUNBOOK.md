@@ -230,6 +230,18 @@ Read `--host-brief` (compact; avoid printing the entire state). Examine source
 receipt times, latest published titles, event dates, previous interpretation,
 trend inputs, option clocks, liquidity and unchanged economics.
 
+The brief's `deliveryHealth` and offline `--delivery-health` check the same
+verified capture, claim and publication evidence as Daily guidance. Its denominator
+contains only the three fixed 09:50/12:50/15:50 New York ten-minute windows over
+seven calendar dates, after activation and excluding reviewed closed sessions.
+Event-dependent reads and full-chain close collection are separate. A saved
+claim is not completion; a receipt can still contain stale or missing quotes.
+Inspect actual Host errors for a missed window's cause. Do not replay a past
+window, change the schedule or increase the read budget from this diagnosis.
+`usesCurrentMarketInputs` confirms exact copied market inputs, not freshness or
+substantive analysis quality. Publishing another WATCH cannot refresh a quote.
+See [delivery health](OPTIONS_GUIDANCE_DELIVERY_HEALTH_DELIVERY.md).
+
 Save a new English interpretation when there is new material evidence, a market
 capture, an event checkpoint, or the prior interpretation is older than 24 hours.
 Use primary-source articles when verification is needed; treat source text as
