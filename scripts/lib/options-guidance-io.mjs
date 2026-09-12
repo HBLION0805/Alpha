@@ -109,7 +109,7 @@ export function recordGuidanceMarket(root,path) {
   if(normal.capturedAt>new Date().toISOString())fail("FUTURE_CAPTURE");
   return save(root,"captures",input,normal).path;
 }
-export function readGuidanceResearchFrames(root) {
+export function readGuidanceResearchFrames(root,{includeEquityReceipt=false}={}) {
   const base=BASE+'/captures',days=children(root,base).filter(v=>/^\d{4}-\d\d-\d\d$/.test(v.name));
   if(days.some(v=>!v.isDirectory()||v.isSymbolicLink()))fail('UNSAFE_DIRECTORY');
   const entries=[];
@@ -120,7 +120,11 @@ export function readGuidanceResearchFrames(root) {
   }
   return entries.map(path=>{const r=verified(root,path,"captures"),v=normalizeGuidanceCapture(r.input);
     if(paperFingerprint(v)!==r.reportFingerprint)fail("CAPTURE_RECOMPUTE");
-    return {path,recordedAt:r.recordedAt,capturedAt:v.capturedAt,origin:v.origin,quotes:v.quotes,equities:v.equities};});
+    return {path,recordedAt:r.recordedAt,capturedAt:v.capturedAt,origin:v.origin,quotes:v.quotes,equities:v.equities,
+      ...(includeEquityReceipt?{equityReceivedAt:r.input.receipts.find(receipt=>receipt.tool==='get_equity_quotes')?.receivedAt??null}:{})};});
+}
+export function readGuidanceReactionNotes(root) {
+  return paths(root,'analysis',240).map(path=>{const r=verified(root,path,'analysis');return {path,recordedAt:r.recordedAt,...analystNote(r.input)};});
 }
 export function saveGuidanceSettings(root,value){const next=validateGuidanceSettings(value);if(guidanceSettings(root).tradeBudget?.version==="OWNER_ALLOCATION_ONLY_V2"&&next.tradeBudget?.version!=="OWNER_ALLOCATION_ONLY_V2")throw Error("GUIDANCE_POLICY_DOWNGRADE");return save(root,"settings",next).path;}
 export function guidanceSettings(root){const latest=paths(root,"settings",1)[0];return latest?validateGuidanceSettings(verified(root,latest,"settings").input):defaultGuidanceSettings();}

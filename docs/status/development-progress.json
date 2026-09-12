@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-12T23:08:04.763Z",
+  "recordedAt": "2026-09-12T23:28:13.633Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "e15e14e",
+  "comparedWithCommit": "756da36",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -29,8 +29,8 @@
       "name": "News macro and BTC context",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Late-start daily context fixed and BLS/FOMC/Treasury current receipts saved; calendar freshness is visible. Numerical coverage, daily operation and event interpretation remain partial.",
-      "evidence": "docs/OPTIONS_NEWS_ACCESS_RECOVERY.md"
+      "detail": "Public sources currently recover; Daily guidance now joins recent saved BLS/FOMC schedules, prior analyst views and fixed-window ETF observations. Current actual event comparisons remain incomplete; source numerical coverage and event interpretation are still partial.",
+      "evidence": "docs/OPTIONS_EVENT_REACTION_DELIVERY.md"
     },
     {
       "id": "03",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "07",
-  "currentUnit": "Saved-quote position exit checks",
-  "currentUnitAcceptance": "Reported positions, original exits and saved quote checks share exact partial-close accounting and optional cost previews in Trade journal. Quote failures do not hide due time exits. Synthetic tests and UI verify calculations; the actual ledger is empty. No real-price gate or live monitoring acceptance advanced.",
+  "currentWorkstream": "02",
+  "currentUnit": "Event expectations and observed ETF prices",
+  "currentUnitAcceptance": "Daily guidance, Host and CLI compare saved ETF observations around scheduled times with prior analyst views. Clock, gap, conflict and date-only checks are tested; actual saved PPI/CPI data has no complete comparison. No original guidance, paper output or real-price gate changed.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -138,11 +138,11 @@
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4452,
+    "passed": 4481,
     "failed": 0,
-    "componentCount": 169
+    "componentCount": 170
   },
-  "latestOperationalEvidence": "docs/status/position-watch.json",
+  "latestOperationalEvidence": "docs/status/event-reaction.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -167,13 +167,13 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 27,
+    "passed": 29,
     "failed": 0,
     "typecheck": "PASS",
     "fullSuiteRun": true
   },
   "currentUnitWorkflowStages": [
-    "F06"
+    "F03"
   ],
   "marketScheduleRecovery": "docs/status/market-schedule-recovery-20260910.json"
 }

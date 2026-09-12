@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## September 12, 2026 — Separate event expectations from observed ETF changes
+
+Compare fixed-window saved last-trade observations with general views actually
+saved before the event. Use exact receipt clocks and show sparse/overnight gaps;
+do not infer continuous paths, release surprises, event causation or option PnL.
+Preserve date-only uncertainty, original recommendations and frozen paper cutoffs.
+No matched direction qualifies a hypothesis or grants trading authority. See
+[design](specifications/OPTIONS_EVENT_REACTION_V1.md).
+
 ## September 12, 2026 — Compare open positions without assuming exits
 
 Use saved option bids and exact recorded net cash flow to assess remaining

@@ -1,5 +1,13 @@
 # Daily news and GLD/IBIT guidance Host
 
+The Host brief includes `eventReactions`, a read-only comparison of saved ETF
+last-trade observations and prior analyst views around current scheduled events.
+Use its actual sample offsets, calendar receipts and missing reasons. Date-only
+FOMC coverage cannot supply an intraday reaction; a same-direction change does
+not validate a hypothesis or identify its cause. This projection does not request
+quotes or alter routing, claims, publication or frozen paper cutoffs. See
+[delivery](OPTIONS_EVENT_REACTION_DELIVERY.md).
+
 The Host brief now includes bounded contract rationales and six-dimensional
 evidence gaps. Treat terminal breakevens as expiry payoff references, never a
 pre-expiry forecast or target. A note preceding newer market evidence requires

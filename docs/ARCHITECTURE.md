@@ -1,5 +1,14 @@
 # Alpha Architecture
 
+## Saved ETF observations around scheduled events
+
+OptionsEventReaction consumes verified guidance captures with optional exact equity
+receipt metadata, saved prior analyst notes and the current BLS/FOMC calendars.
+Its separate read-only projection is shared by Daily guidance, Host brief and CLI.
+Default research-frame shape and original guidance inputs/reports are unchanged.
+Calendar recovery errors are isolated and cannot promote stale or absent evidence.
+See [design](specifications/OPTIONS_EVENT_REACTION_V1.md).
+
 ## Read-only position exit checks
 
 OptionsPositionWatch consumes the reconciled manual ledger and latest snapshot

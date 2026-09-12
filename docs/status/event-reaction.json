@@ -1,0 +1,279 @@
+{
+  "version": "OPTIONS_EVENT_REACTION_CHECKPOINT_V1",
+  "recordedAt": "2026-09-12T23:28:13.633Z",
+  "comparedWithCommit": "756da36",
+  "actual": {
+    "framesRead": 7,
+    "notesRead": 11,
+    "observations": {
+      "eligibleUnique": 13,
+      "duplicates": 0,
+      "conflictingInstants": 0
+    },
+    "exclusions": {
+      "STALE_AT_EQUITY_RECEIPT": 1
+    },
+    "sources": {
+      "BLS": {
+        "state": "AVAILABLE",
+        "receivedAt": "2026-09-12T21:34:05.928Z",
+        "status": "OBSERVED_SCHEDULE",
+        "refreshOverdue": false,
+        "error": null
+      },
+      "FOMC": {
+        "state": "AVAILABLE",
+        "receivedAt": "2026-09-12T21:34:06.343Z",
+        "status": "OBSERVED_DATE_SCHEDULE",
+        "refreshOverdue": false,
+        "error": null
+      }
+    },
+    "events": [
+      {
+        "title": "Producer Price Index",
+        "scheduledAt": "2026-09-10T12:30:00.000Z",
+        "startDate": "2026-09-10",
+        "endDate": "2026-09-10",
+        "timingState": "SCHEDULED_TIME_ONLY",
+        "calendarTiming": "RETROSPECTIVE_CALENDAR_CONTEXT",
+        "assets": [
+          {
+            "symbol": "GLD",
+            "hasBaseline": false,
+            "baselineSourceAt": null,
+            "baselineGapSeconds": null,
+            "baselineCoverage": "MISSING",
+            "priorViewAt": "2026-09-10T00:24:11.678Z",
+            "windows": [
+              {
+                "minutes": 30,
+                "state": "WINDOW_ENDED",
+                "missingReason": "PRE_EVENT_OBSERVATION_MISSING",
+                "comparisonAvailable": false
+              },
+              {
+                "minutes": 120,
+                "state": "WINDOW_ENDED",
+                "missingReason": "PRE_EVENT_OBSERVATION_MISSING",
+                "comparisonAvailable": false
+              }
+            ]
+          },
+          {
+            "symbol": "IBIT",
+            "hasBaseline": true,
+            "baselineSourceAt": "2026-09-10T00:43:46.246972491Z",
+            "baselineGapSeconds": 42373.753027509,
+            "baselineCoverage": "WIDE_OR_OVERNIGHT_BASELINE",
+            "priorViewAt": "2026-09-10T00:24:11.678Z",
+            "windows": [
+              {
+                "minutes": 30,
+                "state": "WINDOW_ENDED",
+                "missingReason": "POST_EVENT_OBSERVATION_MISSING",
+                "comparisonAvailable": false
+              },
+              {
+                "minutes": 120,
+                "state": "WINDOW_ENDED",
+                "missingReason": "POST_EVENT_OBSERVATION_MISSING",
+                "comparisonAvailable": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Consumer Price Index",
+        "scheduledAt": "2026-09-11T12:30:00.000Z",
+        "startDate": "2026-09-11",
+        "endDate": "2026-09-11",
+        "timingState": "SCHEDULED_TIME_ONLY",
+        "calendarTiming": "RETROSPECTIVE_CALENDAR_CONTEXT",
+        "assets": [
+          {
+            "symbol": "GLD",
+            "hasBaseline": false,
+            "baselineSourceAt": null,
+            "baselineGapSeconds": null,
+            "baselineCoverage": "MISSING",
+            "priorViewAt": null,
+            "windows": [
+              {
+                "minutes": 30,
+                "state": "WINDOW_ENDED",
+                "missingReason": "PRE_EVENT_OBSERVATION_MISSING",
+                "comparisonAvailable": false
+              },
+              {
+                "minutes": 120,
+                "state": "WINDOW_ENDED",
+                "missingReason": "PRE_EVENT_OBSERVATION_MISSING",
+                "comparisonAvailable": false
+              }
+            ]
+          },
+          {
+            "symbol": "IBIT",
+            "hasBaseline": false,
+            "baselineSourceAt": null,
+            "baselineGapSeconds": null,
+            "baselineCoverage": "MISSING",
+            "priorViewAt": null,
+            "windows": [
+              {
+                "minutes": 30,
+                "state": "WINDOW_ENDED",
+                "missingReason": "PRE_EVENT_OBSERVATION_MISSING",
+                "comparisonAvailable": false
+              },
+              {
+                "minutes": 120,
+                "state": "WINDOW_ENDED",
+                "missingReason": "PRE_EVENT_OBSERVATION_MISSING",
+                "comparisonAvailable": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "FOMC meeting dates",
+        "scheduledAt": null,
+        "startDate": "2026-09-15",
+        "endDate": "2026-09-16",
+        "timingState": "DATE_ONLY",
+        "calendarTiming": "DATE_ONLY",
+        "assets": [
+          {
+            "symbol": "GLD",
+            "hasBaseline": false,
+            "baselineSourceAt": null,
+            "baselineGapSeconds": null,
+            "baselineCoverage": "MISSING",
+            "priorViewAt": null,
+            "windows": [
+              {
+                "minutes": 30,
+                "state": "TIMING_UNAVAILABLE",
+                "missingReason": "DATE_ONLY",
+                "comparisonAvailable": false
+              },
+              {
+                "minutes": 120,
+                "state": "TIMING_UNAVAILABLE",
+                "missingReason": "DATE_ONLY",
+                "comparisonAvailable": false
+              }
+            ]
+          },
+          {
+            "symbol": "IBIT",
+            "hasBaseline": false,
+            "baselineSourceAt": null,
+            "baselineGapSeconds": null,
+            "baselineCoverage": "MISSING",
+            "priorViewAt": null,
+            "windows": [
+              {
+                "minutes": 30,
+                "state": "TIMING_UNAVAILABLE",
+                "missingReason": "DATE_ONLY",
+                "comparisonAvailable": false
+              },
+              {
+                "minutes": 120,
+                "state": "TIMING_UNAVAILABLE",
+                "missingReason": "DATE_ONLY",
+                "comparisonAvailable": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "totalAssetWindows": 12,
+    "completeComparisons": 0,
+    "publicReaderStates": {
+      "headlines": "AVAILABLE",
+      "treasury": "AVAILABLE",
+      "btc": "AVAILABLE",
+      "calendar": "AVAILABLE",
+      "macroContext": "AVAILABLE"
+    },
+    "latestCaptureAt": "2026-09-10T00:44:10.432Z",
+    "dispositions": [
+      {
+        "symbol": "GLD",
+        "disposition": "WATCH"
+      },
+      {
+        "symbol": "IBIT",
+        "disposition": "WATCH"
+      }
+    ],
+    "ownerLedger": {
+      "trades": 0,
+      "activeFills": 0,
+      "voidedFills": 0,
+      "closedTrades": 0,
+      "openTrades": 0,
+      "possibleDuplicateFills": 0,
+      "candidateLessons": 0
+    },
+    "paperCases": 3
+  },
+  "validation": {
+    "focusedPassed": 29,
+    "fullSuite": "PASS",
+    "browser": "ACTUAL_DESKTOP_ROWS_VERIFIED",
+    "desktopViewportWidth": 1265,
+    "documentHorizontalOverflow": false,
+    "fullSuitePassed": 4481,
+    "fullSuiteFailed": 0,
+    "componentCount": 170,
+    "typecheck": "PASS",
+    "log": "data/runtime/options-workbench-development/event-reaction-validation-final.log"
+  },
+  "preservation": {
+    "historicalFiles": 171,
+    "currentFiles": 16,
+    "baselinesOverlap": true,
+    "unchanged": true,
+    "automationFilesUnchanged": [
+      "gld-ibit",
+      "alpha",
+      "alpha-2"
+    ]
+  },
+  "workflowStages": [
+    "F03"
+  ],
+  "workstreams": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 4,
+    "NOT_VALIDATED": 2
+  },
+  "realPriceGatesAdvanced": false,
+  "sourceRefresh": false,
+  "executionAllowed": false,
+  "limitations": [
+    "No complete actual event comparison",
+    "No qualified OHLCV or intrawindow path",
+    "No official actuals or consensus",
+    "No event causation or option PnL",
+    "No validated hypothesis or win probability",
+    "No real-price paper lifecycle"
+  ],
+  "deployment": {
+    "verifiedAt": "2026-09-12T23:31:35.731Z",
+    "eventReactionState": "AVAILABLE",
+    "backgroundContextRefreshEnabled": true,
+    "ownerTrades": 0,
+    "latestMarketCaptureAt": "2026-09-10T00:44:10.432Z",
+    "completeEventComparisons": 0,
+    "frontend": "ACTUAL_LOCAL_SERVER_HEADING_AND_ROWS_VERIFIED",
+    "sourceReadsPerformedByThisFeature": 0
+  }
+}

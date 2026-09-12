@@ -1,5 +1,13 @@
 # Alpha Handoff
 
+Latest increment: [event expectations and observed ETF prices](OPTIONS_EVENT_REACTION_DELIVERY.md).
+Daily guidance/Host/CLI show verified saved price changes or exact gaps around
+scheduled events, with prior attributed views and untested hypotheses. Actual
+PPI has an IBIT prior-evening reference but no post observation; GLD/CPI lack
+baselines and FOMC timing is date-only. No numerical comparison or real-price
+gate passed. Public source readers currently recover; earlier recorded recovery
+failures have no established cause. See [checkpoint](status/event-reaction.json).
+
 Latest increment: [position exit checks](OPTIONS_POSITION_WATCH_DELIVERY.md).
 Trade journal compares open reported positions with saved quotes and original
 exit conditions, with explicit unknown costs and no automatic fills. Time and

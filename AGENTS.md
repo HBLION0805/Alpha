@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Event expectations and observed ETF prices — September 12, 2026
+
+Daily guidance, Host brief and --event-reactions now compare prior saved analyst
+views with exact-clock GLD/IBIT observations around scheduled events. Retain sparse
+and overnight gaps, date-only FOMC timing and NOT_TESTED hypotheses. No complete
+actual comparison or real-price gate passed. See docs/OPTIONS_EVENT_REACTION_DELIVERY.md
+and docs/status/event-reaction.json. Default research frames, issued reports,
+paper cutoffs, source schedules, accounts/orders and stored lessons are unchanged.
+The present public readers recover; earlier recovery failures have no established
+cause and must not be described as fixed by this feature.
+
 ## Position exit checks — September 12, 2026
 
 Trade journal now compares reported open positions with the latest saved snapshot

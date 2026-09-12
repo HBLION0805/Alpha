@@ -15,6 +15,7 @@ import { reportTreasuryHistory } from '../../src/engines/options-treasury/Treasu
 import { reportBtcContext } from '../../src/engines/options-btc-context/BtcSpotContextEngine.ts';
 import { reconcileManualLedger, validateManualLedgerCommand } from '../../src/engines/options-manual-ledger/OptionsManualLedger.ts';
 import { assessPositionWatch } from '../../src/engines/options-manual-ledger/OptionsPositionWatch.ts';
+import { eventReactionView } from './options-event-reaction-io.mjs';
 import { exportId } from '../../src/engines/options-evidence-export/OptionsEvidenceExportEngine.ts';
 import { readinessClock } from '../../src/engines/options-readiness/OptionsReadinessEngine.ts';
 import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
@@ -41,7 +42,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|MANUAL_|POSITION_WATCH_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(WORKBENCH_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -105,6 +106,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
       access:'LOCAL_SAVED_DATA',sourceRefresh:false,accountAccessed:false,executionAllowed:false};
     result.guidance=await component(()=>guidanceView(root,result),at);
     result.guidanceDelivery=await component(()=>guidanceDeliveryView(root,result.guidance.data),at);
+    result.eventReactions=await component(()=>eventReactionView(root,at),at);
     result.capitalPolicy=await component(()=>assessOptionsCapitalPolicy(result.guidance.data?.current.settings),at);
     result.candidateChecks=await component(()=>candidateChecksView(root,result.guidance.data,at),at);
     result.focusedNews=await component(()=>focusedNewsView(root,headlines.data,at),at);

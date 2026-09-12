@@ -1,5 +1,11 @@
 # Alpha Roadmap
 
+[Event expectation/observation comparison](OPTIONS_EVENT_REACTION_DELIVERY.md)
+now adds F03 context using saved clocks and fixed windows. Current PPI/CPI evidence
+is incomplete and FOMC has date-only timing. Next obtain usable observations under
+the existing source schedule, reassess attributed context, and complete a prospective
+paper lifecycle. No source schedule or ten-workstream/gate status changed.
+
 [Position exit checks](OPTIONS_POSITION_WATCH_DELIVERY.md) now provide a local
 F06 comparison over recorded open positions, saved bids and original exit terms.
 Actual holdings remain unverified and no continuous source or proactive exit

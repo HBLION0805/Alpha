@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## September 12, 2026 — Event expectation and observed-price comparison
+
+- Daily guidance and Host brief now show recent scheduled events, eligible prior
+  analyst views, GLD/IBIT observations within 30/120 minutes, exact changes and gaps.
+- Added independent calendar recovery, source-clock checks, duplicate/conflict
+  handling and an offline `--event-reactions` read. No original guidance or paper
+  output changed; the actual saved dataset yields no complete comparison.
+- See [delivery](OPTIONS_EVENT_REACTION_DELIVERY.md).
+
 ## September 12, 2026 — Position exit checks
 
 - Trade journal now compares reported open GLD/IBIT positions against saved bids,

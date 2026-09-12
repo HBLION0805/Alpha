@@ -1,5 +1,9 @@
 # Alpha
 
+[Event expectations and observed ETF prices](docs/OPTIONS_EVENT_REACTION_DELIVERY.md)
+now compares prior saved views with GLD/IBIT observations around scheduled events.
+Sparse samples and missing prices remain explicit; agreement is not a validated signal.
+
 [Position exit checks](docs/OPTIONS_POSITION_WATCH_DELIVERY.md) connects recorded
 open GLD/IBIT positions with saved option bids and original exit conditions.
 Unknown costs, stale quotes and unconfirmed exits remain explicit.
