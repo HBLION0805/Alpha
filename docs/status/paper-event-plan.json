@@ -1,0 +1,32 @@
+{
+  "version": "OPTIONS_PAPER_EVENT_PLAN_DELIVERY_V1",
+  "recordedAt": "2026-09-12T22:41:34.000Z",
+  "validation": {"focusedPassed": 90, "focusedFailed": 0, "typecheck": "PASS", "fullSuite": "PASS", "passed": 4425, "failed": 0, "components": 168},
+  "syntheticLifecycle": "CLOSED_MODELED_RECOVERED_EVENT_HYPOTHESIS_NOT_TESTED",
+  "realReferencePreview": {"status": "NO_ENTRY", "paperStage": "WAITING_FOR_COST_ASSUMPTIONS", "modeledFills": 0, "originalGuidance": "NO_TRADE", "hypothesisValidation": "NOT_TESTED", "registrationPerformed": false, "enrollmentPerformed": false},
+  "source": "data/runtime/options-workbench-development/event-plan-real-reference-preview.json",
+  "frontend": {
+    "status": "PASS",
+    "originalGuidanceAndDateOnlyEventDisplayed": true,
+    "notTestedAndUnknownCostsDisplayed": true,
+    "zeroModeledFillsDisplayed": true,
+    "fieldEditClearsPreviewAndDisablesFreeze": true,
+    "savedDataReloadPreservesDraft": true,
+    "discardClearsDraft": true,
+    "noHorizontalPageOverflowAt1265Pixels": true,
+    "productionFreezeClicked": false,
+    "productionEnrollClicked": false,
+    "correction": "Read the form ID attribute; the named plan-ID input shadows the native form.id property."
+  },
+  "preservation": {
+    "evidence": "data/runtime/options-workbench-development/event-plan-preservation.json",
+    "historicalBaselineFilesUnchanged": 171,
+    "currentBaselineFilesUnchanged": 16,
+    "baselineSetsOverlap": true,
+    "automationFilesUnchanged": ["gld-ibit", "alpha", "alpha-2"],
+    "productionPlanCount": 3
+  },
+  "executionAllowed": false,
+  "marketCalls": 0,
+  "realPriceGateAdvanced": false
+}

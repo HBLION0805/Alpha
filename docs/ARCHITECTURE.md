@@ -1,5 +1,15 @@
 # Alpha Architecture
 
+## Optional event context on paper registrations
+
+An opt-in registration V2 envelope copies and recomputes issued guidance and
+binds it to the selected paper contract/capture/settings. The underlying snapshot
+plan and fill engine are unchanged. The storage adapter adds a verified event
+assessment and candidate limitation note to new linked reports; old registration
+V1 reports keep exact fingerprints. Qualitative entry and invalidation conditions
+are recorded, not interpreted as executable triggers. See
+[design](specifications/OPTIONS_PAPER_EVENT_PLAN_V1.md).
+
 ## Offline paper finalization in the existing service
 
 The non-overlapping public context tick runs the existing null-capture observation

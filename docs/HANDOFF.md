@@ -1,6 +1,14 @@
 # Alpha Handoff
 
-Latest increment: [guidance delivery health](OPTIONS_GUIDANCE_DELIVERY_HEALTH_DELIVERY.md).
+Latest increment: [event-linked paper planning](OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md).
+The existing paper form can freeze copied issued guidance, event phase and
+qualitative conditions with coherent future entry/exit windows. New registration
+V2 preserves old paper engines and original reports. Results and candidate notes
+state that event hypotheses are NOT_TESTED. Only a synthetic lifecycle and a
+read-only actual-source preview ran; no production plan was registered/enrolled.
+Both assets remain WATCH; see [checkpoint](status/paper-event-plan.json).
+
+Previous increment: [guidance delivery health](OPTIONS_GUIDANCE_DELIVERY_HEALTH_DELIVERY.md).
 Twelve ended fixed windows have three associated captures and nine missing.
 Three September 10 Host failures explicitly report Codex allowance exhaustion;
 the current market automation hash remains unchanged. Frontend, Host brief and

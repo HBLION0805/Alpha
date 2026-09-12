@@ -1,5 +1,9 @@
 # Alpha
 
+[Event-linked paper planning](docs/OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md) preserves
+the original event hypothesis, entry conditions and time exit alongside simulated
+results. Qualitative conditions remain explicitly untested by the quote-only model.
+
 The [local paper recovery workflow](docs/OPTIONS_LOCAL_PAPER_FINALIZATION_DELIVERY.md)
 finalizes expired enrolled plans in the running workbench and displays saved
 process reviews without requesting quotes or placing orders.

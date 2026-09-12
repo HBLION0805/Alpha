@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-12T22:11:52.749Z",
+  "recordedAt": "2026-09-12T22:41:34.000Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "db21e0f",
+  "comparedWithCommit": "8a2f569",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -77,8 +77,8 @@
       "name": "Robinhood real-price paper adapter",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "V2 paper plans share bounded Host identities and can finalize offline through the existing public service. September 10 engineering plan finalized NO_ENTRY after no saved entry-window quotes; no qualified lifecycle.",
-      "evidence": "docs/OPTIONS_LOCAL_PAPER_FINALIZATION_DELIVERY.md"
+      "detail": "Optional event-linked registrations copy original guidance, hypothesis, conditions and PRE/POST windows into paper outcomes and candidate reviews. A synthetic lifecycle recovered; the actual-source read-only preview has zero fills and unknown costs. September 10 remains finalized NO_ENTRY. No new enrollment or qualified lifecycle.",
+      "evidence": "docs/OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md"
     },
     {
       "id": "09",
@@ -97,9 +97,9 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "03",
-  "currentUnit": "Verified market delivery and recommendation input health",
-  "currentUnitAcceptance": "Frontend, Host brief and offline CLI distinguish fixed-window captures, fresh source clocks, ordered analysis and exact issued market inputs. Actual 12 ended windows have three recorded and nine missing; Sep10 Host quota failures confirmed. No real-price gate advanced.",
+  "currentWorkstream": "08",
+  "currentUnit": "Event-linked contract plans and paper reviews",
+  "currentUnitAcceptance": "The existing paper frontend validates prospective event timing and copied original guidance, preserves entry/invalidation declarations through modeled outcomes and recovery, and marks every hypothesis NOT_TESTED. Real-source preview has zero fills and unknown costs. Form edits now invalidate previews even with a named ID control. No real-price gate advanced.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -134,15 +134,15 @@
     ]
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Use the next authorized future Host window to verify actual fresh captures and save attributed analysis after them; strengthen event-conditioned contract planning. No backfill of Sep10 paper entry and no implication that unchanged schedules ensure future delivery.",
+  "nextAction": "Verify fresh evidence at the next already-authorized Host window and record attributed analysis after its capture. Choose a prospective paper plan with explicit costs only when usable inputs exist. Event declarations still need independent observed confirmation before signal testing; no backfill of Sep10 entry or assumption that a schedule guarantees delivery.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4411,
+    "passed": 4425,
     "failed": 0,
     "componentCount": 168
   },
-  "latestOperationalEvidence": "docs/status/guidance-delivery-health.json",
+  "latestOperationalEvidence": "docs/status/paper-event-plan.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -173,9 +173,10 @@
     "fullSuiteRun": true
   },
   "currentUnitWorkflowStages": [
-    "F02",
     "F03",
-    "F04"
+    "F04",
+    "F05",
+    "F07"
   ],
   "marketScheduleRecovery": "docs/status/market-schedule-recovery-20260910.json"
 }

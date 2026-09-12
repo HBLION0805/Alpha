@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## September 12, 2026 — Event-linked paper planning
+
+- Optional copied guidance, event phase, hypothesis, entry confirmation and
+  invalidation now accompany existing paper entry/exit windows and saved reviews.
+- Added prospective PRE/POST timing checks, conservative date-only handling,
+  original evidence binding and explicit untested-hypothesis notebook notes.
+- Frontend preview/freeze and isolated recovery share the same assessment.
+  Original fills and non-attached reports are unchanged. See
+  [delivery](OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md).
+- Corrected paper form identification so a named ID input cannot prevent draft
+  updates, preview invalidation or submit prevention.
+
 ## September 12, 2026 — Local paper finalization
 
 - Existing service ticks finalize expired enrolled plans before public reads,

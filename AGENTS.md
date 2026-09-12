@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Event-linked paper planning — September 12, 2026
+
+Optional paper registration V2 copies issued guidance and records an event phase,
+hypothesis, entry confirmation and invalidation with existing paper windows.
+Timing/linkage checks do not evaluate prose or qualify a trade; every linked
+outcome and candidate note retains NOT_TESTED. Old registrations and fill-engine
+reports remain unchanged without attachment. See docs/OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md
+and docs/status/paper-event-plan.json. This delivery only ran an isolated synthetic
+lifecycle and a read-only existing-source preview, with no production registration,
+enrollment, schedule or market-call change. Do not backfill expired paper entries.
+
 ## Guidance delivery evidence — September 12, 2026
 
 Daily guidance, Host brief and --delivery-health now separate fixed-window receipt

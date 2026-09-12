@@ -154,6 +154,7 @@ export function explainIssuedGuidance(root,path) {
     authority:"LATER_EXPLANATION_OF_FROZEN_INPUTS_NOT_ORIGINAL_ISSUED_TEXT",
     rationale:explainDailyGuidance(record.input),executionAllowed:false};
 }
+export function latestIssuedGuidancePath(root){return paths(root,'reports',1)[0]??null;}
 export function guidanceDeliveryView(root,view){
   if(!view?.input)fail('DELIVERY_GUIDANCE_UNAVAILABLE');
   const since=new Date(Date.parse(view.input.at)-7*86400000).toISOString().slice(0,10);

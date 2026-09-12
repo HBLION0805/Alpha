@@ -71,7 +71,7 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
-  if(form.id==='snapshot-paper-form'){ui.snapshotDraft=Object.fromEntries(new FormData(form));ui.snapshotPreview=null;dirty.add('snapshot-paper');const p=$('#snapshot-paper-preview');if(p)p.innerHTML=snapshotResult(null);const b=$('#freeze-snapshot-paper');if(b)b.disabled=true;return;}
+  if(form.getAttribute('id')==='snapshot-paper-form'){ui.snapshotDraft=Object.fromEntries(new FormData(form));ui.snapshotPreview=null;dirty.add('snapshot-paper');const p=$('#snapshot-paper-preview');if(p)p.innerHTML=snapshotResult(null);const b=$('#freeze-snapshot-paper');if(b)b.disabled=true;return;}
   if(form.id==='macro-comparison-form'){ui.macroDraft=Object.fromEntries(new FormData(form));ui.macroPreview=null;dirty.add('macro');const p=$('#macro-comparison-preview');if(p)p.innerHTML=macroComparisonResult(null);const b=$('#save-macro-comparison');if(b)b.disabled=true;return;}
   if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));clearPolicyPreview();dirty.add('guidance');const snapshot=$('#save-candidate-checks');if(snapshot)snapshot.disabled=true;return;}
   if(form.id==='event-research-form'){Object.assign(ui.eventDraft,Object.fromEntries(new FormData(form)));dirty.add('event-research');return;}
@@ -140,7 +140,7 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
-  if(event.target.id==='snapshot-paper-form'){event.preventDefault();return;}
+  if(event.target.getAttribute('id')==='snapshot-paper-form'){event.preventDefault();return;}
   if(event.target.id==='macro-comparison-form'){
     event.preventDefault();if(saving||previewing)return;const action=event.submitter.value,button=event.submitter;
     if(action==='SAVE'&&!macroPreviewMatches(ui.macroPreview,ui.macroDraft)){fail(Error('Preview the current values before saving.'),'#macro-comparison-error');return;}

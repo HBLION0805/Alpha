@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## September 12, 2026 — Preserve the event hypothesis with paper evidence
+
+Use an opt-in registration V2 envelope, preserving the original paper engine.
+Require prospective event/holding-window coherence and copied issued guidance.
+Keep qualitative entry conditions untested even when quote-only PnL is positive;
+retain that distinction in saved results and candidate lessons. No new market
+calls, enrollment or trading authority. See
+[design](specifications/OPTIONS_PAPER_EVENT_PLAN_V1.md).
+
 ## September 12, 2026 — Finish expired paper observations locally
 
 Reuse the public service's existing tick for the existing offline observation
