@@ -1,5 +1,12 @@
 # Alpha Handoff
 
+Latest correction: [local paper finalization](OPTIONS_LOCAL_PAPER_FINALIZATION_DELIVERY.md).
+The September 10 engineering plan missed its entry observations. The running
+local service now finalizes expired enrollments without requiring a Host wake,
+while preserving source cutoffs, unknown outcomes and original records. Event
+research shows actual service health and saved process reviews. See the
+[current checkpoint](status/local-paper-finalization.json); real-price gates remain open.
+
 Latest correction: [guidance applicability](OPTIONS_GUIDANCE_APPLICABILITY_DELIVERY.md).
 New input V2/report V4 respects reviewed 2026 holidays and early closes, blocks
 unreviewed years, filters holiday closes and requires analysis at/after the latest

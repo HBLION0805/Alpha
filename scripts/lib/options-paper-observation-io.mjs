@@ -54,12 +54,20 @@ export function combinePaperTracking(events,candidates){
   }
   return {trackedContracts:[...tracked.values()],rows};
 }
+export function savedPaperProcessReview(plan,report){
+  const inWindow=report.diagnostics.filter(d=>snapshotNs(d.receivedAt)>snapshotNs(plan.decisionAt)&&snapshotNs(d.receivedAt)<=snapshotNs(plan.entryDeadlineAt));
+  const counts=new Map();for(const d of inWindow)for(const code of new Set(d.codes))counts.set(code,(counts.get(code)??0)+1);
+  const noEntry=report.status==='NO_ENTRY',unresolved=report.status==='OPEN_UNRESOLVED',waiting=noEntry&&snapshotNs(report.assessedAt)<=snapshotNs(plan.entryDeadlineAt);
+  return {status:report.status,modeledFills:report.fills.length,netPnlCents:report.account.netPnlCents,openPremiumExposureCents:report.account.openPremiumExposureCents,inWindowQuoteCount:inWindow.length,blockerCounts:[...counts].sort(([a],[b])=>a.localeCompare(b)).map(([code,count])=>({code,count})),
+    explanation:waiting?'The frozen entry window has not ended. This saved snapshot has no modeled entry yet.':noEntry?(inWindow.length?'Saved entry-window quotes did not satisfy the frozen plan. This is not a losing trade.':'No requested-contract quote was saved within the frozen entry window and source cutoff. This is not a losing trade.'):unresolved?'A modeled position remains open without an admissible saved exit; its exposure is retained.':'Later saved quotes modeled an entry and exit. These are assumption-only fills, not verified brokerage executions.',
+    nextCheck:waiting?'Continue observing within the original entry window; keep its frozen conditions.':noEntry?'Inspect collection receipts and entry-window blockers before enrolling a new future plan; do not backfill a missed entry.':unresolved?'Inspect missing exit evidence and retain unresolved exposure; do not manufacture a stop fill.':'Compare the saved plan, costs and path gaps with independent later cases before adopting a lesson.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'};
+}
 export function paperObservationView(root,desk=null,at=desk?.assessedAt??new Date().toISOString()){
   snapshotNs(at);desk??=snapshotPaperView(root,at);const all=enrollments(root).filter(e=>snapshotNs(e.enrollment.enrolledAt)<=snapshotNs(at));
   const rows=all.map(e=>{
     const c=desk.cases.find(c=>c.plan.id===e.plan.id),saved=(c?.snapshots??[]).filter(s=>s.observation&&snapshotNs(s.recordedAt)<=snapshotNs(at)),last=saved.at(-1),cancelled=e.cancellation&&snapshotNs(e.cancellation.cancelledAt)<=snapshotNs(at);
     const state=cancelled?'CANCELLED':last?.observation?.kind==='WINDOW_END'?'FINALIZED':last?.report.status==='CLOSED_MODELED'?'CLOSED_MODELED':snapshotNs(at)>=snapshotNs(e.enrollment.monitorUntilAt)?'FINALIZATION_PENDING':snapshotNs(at)<snapshotNs(e.plan.decisionAt)?'AWAITING_WINDOW':'OBSERVING';
-    return {planId:e.plan.id,enrolledAt:e.enrollment.enrolledAt,monitorUntilAt:e.enrollment.monitorUntilAt,purpose:e.enrollment.purpose,origin:e.origin,state,contract:identity(e.plan.contract),currentPaperStage:c?.current.paperStage??null,automaticReports:saved.length,lastAutomaticReport:last?{path:last.path,recordedAt:last.recordedAt,status:last.report.status,trigger:last.observation}:null};
+    return {planId:e.plan.id,enrolledAt:e.enrollment.enrolledAt,monitorUntilAt:e.enrollment.monitorUntilAt,purpose:e.enrollment.purpose,origin:e.origin,state,contract:identity(e.plan.contract),currentPaperStage:c?.current.paperStage??null,automaticReports:saved.length,lastAutomaticReport:last?{path:last.path,recordedAt:last.recordedAt,status:last.report.status,trigger:last.observation,processReview:savedPaperProcessReview(e.plan,last.report)}:null};
   });
   const eligible=rows.filter(e=>['AWAITING_WINDOW','OBSERVING'].includes(e.state)&&e.origin==='HOST_MARKET_TOOL_RESPONSES'&&desk.cases.find(c=>c.plan.id===e.planId)?.current.status!=='CLOSED_MODELED').sort((a,b)=>a.enrolledAt.localeCompare(b.enrolledAt)||a.planId.localeCompare(b.planId));
   const tracking=combinePaperTracking(activeEventResearchContracts(root,at),eligible);

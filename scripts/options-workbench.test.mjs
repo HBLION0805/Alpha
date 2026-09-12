@@ -69,7 +69,7 @@ await temp(async root=>{
     const initial=await (await fetch(base+'/api/state')).json(),session=initial.session;
     const headers={'Content-Type':'application/json',Origin:base,'X-Alpha-Session':session};
     const post=(path,body,change={})=>fetch(base+path,{method:'POST',headers:{...headers,...change},body:typeof body==='string'?body:JSON.stringify(body)});
-    await test('service binds IPv4 loopback and reads with a process-specific session',()=>{assert.equal(app.server.address().address,'127.0.0.1');assert.match(session,/^[0-9a-f]{64}$/);assert.equal(initial.manual.data.eventCount,0);});
+    await test('service binds IPv4 loopback and reads with a process-specific session',()=>{assert.equal(app.server.address().address,'127.0.0.1');assert.match(session,/^[0-9a-f]{64}$/);assert.equal(initial.manual.data.eventCount,0);assert.equal(initial.localPaperFinalization.enabled,false);assert.equal(initial.localPaperFinalization.status,'DISABLED');assert.equal(initial.localPaperFinalization.checkedAt,null);});
     for(const path of ['/','/app.js','/forms.js','/styles.css','/icon.svg'])await test('fixed asset served with CSP and no-store: '+path,async()=>{const r=await fetch(base+path);assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');assert(r.headers.get('content-security-policy').includes("frame-ancestors 'none'"));assert((await r.text()).length>20);});
     await test('external Origin cannot read local state',async()=>assert.equal((await fetch(base+'/api/state',{headers:{Origin:'https://example.com'}})).status,403));
     await test('cross-site fetch metadata cannot read local state',async()=>assert.equal((await fetch(base+'/api/state',{headers:{'Sec-Fetch-Site':'cross-site'}})).status,403));

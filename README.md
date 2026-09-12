@@ -1,5 +1,9 @@
 # Alpha
 
+The [local paper recovery workflow](docs/OPTIONS_LOCAL_PAPER_FINALIZATION_DELIVERY.md)
+finalizes expired enrolled plans in the running workbench and displays saved
+process reviews without requesting quotes or placing orders.
+
 Current guidance also checks [reviewed sessions and analysis sequencing](docs/OPTIONS_GUIDANCE_APPLICABILITY_DELIVERY.md).
 Holiday/early-close handling and old-versus-current report behavior are explicit.
 

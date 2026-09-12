@@ -6,6 +6,7 @@ import {optionsEvidenceExportStorage as io} from "./options-evidence-export.mjs"
 import {guidanceLocal} from "../src/engines/options-daily-guidance/OptionsDailyGuidance.ts";
 import {createWorkbenchData} from "./lib/options-workbench-data.mjs";
 import {publishGuidance} from "./lib/options-guidance-io.mjs";
+import {observePaperPlans} from "./lib/options-paper-observation-io.mjs";
 const BASE="data/runtime/options-context-service";
 const COMMANDS={headlines:"scripts/options-drivers.mjs",btc:"scripts/options-btc-context.mjs",treasury:"scripts/options-treasury.mjs",bls:"scripts/options-release-calendar.mjs",fomc:"scripts/options-fomc-calendar.mjs",focused_news:"scripts/options-focused-news.mjs",macro_context:"scripts/options-macro-context.mjs"};
 export function contextRefreshSlots(at) {
@@ -47,11 +48,24 @@ export async function runPublicContextOnce({workspaceRoot=process.cwd(),now=()=>
   if(issue&&results.some(r=>r.sources)) {const state=await createWorkbenchData({workspaceRoot:root,now}).state();if(state.guidance.state==="AVAILABLE")reportPath=publishGuidance(root,state);}
   return {checkedAt:at,results,reportPath,accountAccessed:false,executionAllowed:false};
 }
+export function runLocalPaperFinalization({workspaceRoot=process.cwd(),now=()=>new Date().toISOString()}={}) {
+  const checkedAt=now();
+  try {
+    const pass=observePaperPlans(workspaceRoot,null,checkedAt);
+    return {checkedAt,status:pass.results.some(r=>r.error)?'PARTIAL':'OK',results:pass.results,remainingBeyondPassLimit:pass.remainingBeyondPassLimit,error:null,sourceReads:0,executionAllowed:false};
+  } catch {
+    return {checkedAt,status:'FAILED',results:[],remainingBeyondPassLimit:null,error:'LOCAL_PAPER_RECOVERY_FAILED',sourceReads:0,executionAllowed:false};
+  }
+}
 export function startPublicContextService(options={}) {
-  let active=false,stopped=false;
-  const tick=async()=>{if(active||stopped)return;active=true;try{await runPublicContextOnce(options);}catch{ /* Journals retain source failures. Next hour is a new bounded attempt. */ }finally{active=false;}};
+  let active=false,stopped=false,paperFinalization={checkedAt:null,status:'NOT_CHECKED',results:[],error:null,sourceReads:0,executionAllowed:false};
+  const tick=async()=>{if(active||stopped)return;active=true;try{
+    // Offline finalization must survive Host inactivity and public-source failure.
+    paperFinalization=runLocalPaperFinalization(options);
+    await runPublicContextOnce(options);
+  }catch{ /* Journals retain source failures. Next hour is a new bounded attempt. */ }finally{active=false;}};
   const timer=setInterval(()=>void tick(),60000);void tick();
-  return {stop(){stopped=true;clearInterval(timer);},tick};
+  return {stop(){stopped=true;clearInterval(timer);},tick,paperStatus:()=>structuredClone({enabled:!stopped,...paperFinalization})};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   const args=process.argv.slice(2);

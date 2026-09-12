@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {mkdtempSync,rmSync,realpathSync,readFileSync,existsSync,mkdirSync,writeFileSync} from "node:fs";
 import {join,relative,isAbsolute} from "node:path";
 import {tmpdir} from "node:os";
-import {contextRefreshSlots,runPublicContextOnce,startPublicContextService} from "./options-context-service.mjs";
+import {contextRefreshSlots,runPublicContextOnce,startPublicContextService,runLocalPaperFinalization} from "./options-context-service.mjs";
 let passed=0;async function test(name,fn){await fn();passed++;console.log("PASS "+name);}
 async function temp(fn){const root=mkdtempSync(join(tmpdir(),"alpha-context-service-test-"));try{await fn(root);}finally{const full=realpathSync(root),rel=relative(realpathSync(tmpdir()),full);if(isAbsolute(rel)||rel.startsWith("..")||!rel.startsWith("alpha-context-service-test-"))throw Error("UNSAFE_TEST_CLEANUP");rmSync(full,{recursive:true,force:true});}}
 await test("hourly public context runs overnight and on weekends",()=>{assert.deepEqual(contextRefreshSlots("2026-09-12T04:20:00.000Z")[0].sources,["headlines","btc"]);});
@@ -50,5 +50,15 @@ await test("concurrent late workers still perform only one daily source group",(
   const calls=[],o={workspaceRoot:root,now:()=>"2026-09-10T02:00:00.000Z",issue:false,execute:async name=>{calls.push(name);await new Promise(r=>setTimeout(r,2));return {status:"OK"};}};
   await Promise.all([runPublicContextOnce(o),runPublicContextOnce(o)]);
   for(const name of ["treasury","bls","fomc"])assert.equal(calls.filter(n=>n===name).length,1);
+}));
+await test('local paper errors are sanitized before public source work and remain visible',()=>temp(async root=>{
+  const dir=join(root,'data/runtime/options-snapshot-paper/observations/enrolled');mkdirSync(dir,{recursive:true});writeFileSync(join(dir,'broken.json'),'SECRET_BROKEN_SOURCE');
+  let finish;const wait=new Promise(r=>finish=r),calls=[],service=startPublicContextService({workspaceRoot:root,issue:false,now:()=>"2026-09-08T05:20:00.000Z",execute:async name=>{calls.push(name);await wait;return {status:'OK'};}});
+  try{const s=service.paperStatus();assert.equal(s.status,'FAILED');assert.equal(s.error,'LOCAL_PAPER_RECOVERY_FAILED');assert.equal(s.sourceReads,0);assert.deepEqual(calls,['headlines']);assert(!JSON.stringify(s).includes('SECRET'));s.status='MUTATED';assert.equal(service.paperStatus().status,'FAILED');}
+  finally{service.stop();finish();await new Promise(r=>setTimeout(r,20));}
+  assert.deepEqual(calls,['headlines','btc','focused_news']);assert.equal(service.paperStatus().enabled,false);
+}));
+await test('local paper recovery can run without public calls and returns explicit empty success',()=>temp(root=>{
+  const r=runLocalPaperFinalization({workspaceRoot:root,now:()=>"2026-09-08T05:20:00.000Z"});assert.equal(r.status,'OK');assert.deepEqual(r.results,[]);assert.equal(r.sourceReads,0);assert.equal(r.executionAllowed,false);
 }));
 console.log(passed+"/"+passed+" tests passed.");

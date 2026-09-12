@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Local paper finalization — September 12, 2026
+
+The existing public service tick now runs offline expired-enrollment finalization
+before network work, preserving frozen source cutoffs and automatic report IDs.
+Event research shows local check health and saved process reviews. No entry is not
+a loss; unresolved exposure remains open. No new timer, market call, enrollment,
+account/order permission or schedule was added. See
+docs/OPTIONS_LOCAL_PAPER_FINALIZATION_DELIVERY.md and docs/status/local-paper-finalization.json.
+The September 10 plan's missing entry observations cannot be backfilled. Old
+waiting-state checkpoints remain dated history; follow the latest saved result.
+
 ## New guidance applicability — September 10, 2026
 
 Current V2 guidance inputs produce V4 reports with reviewed 2026 regular-session

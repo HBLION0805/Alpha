@@ -31,7 +31,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
       if(req.method==='GET'&&url.pathname==='/api/health')return send(200,{application:'ALPHA_OPTIONS_WORKBENCH_V1',...service.scope,contextRefreshEnabled:refreshContext,executionAllowed:false});
       if(req.method==='GET'&&url.pathname==='/api/state'){
         if([...url.searchParams.keys()].some(k=>k!=='board')||url.searchParams.getAll('board').length>1)return reject(400,'QUERY_INVALID');
-        return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,session});
+        return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,localPaperFinalization:contextService?.paperStatus()??{enabled:false,status:'DISABLED',checkedAt:null,sourceReads:0,executionAllowed:false},session});
       }
       if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/snapshot-paper'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
       const provided=req.headers['x-alpha-session'];

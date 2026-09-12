@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## September 12, 2026 — Local paper finalization
+
+- Existing service ticks finalize expired enrolled plans before public reads,
+  with independent failure status and unchanged frozen source cutoffs.
+- Event research exposes saved process reviews, distinguishes no entry from
+  loss and retains unresolved exposure. See [delivery](OPTIONS_LOCAL_PAPER_FINALIZATION_DELIVERY.md).
+
 ## 2026-09-10 — Respect session calendar and analysis ordering
 
 - Added input V2/report V4 with reviewed holidays/early closes and unknown-year

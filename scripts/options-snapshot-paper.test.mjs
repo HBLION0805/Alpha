@@ -10,10 +10,11 @@ import {defaultGuidanceSettings} from '../src/engines/options-daily-guidance/Opt
 import {collectGuidanceMarket} from './lib/options-guidance-host.mjs';
 import {normalizeGuidanceCapture,saveGuidanceSettings} from './lib/options-guidance-io.mjs';
 import {mapSnapshotSource,snapshotSources,previewSnapshotPaper,registerSnapshotPaper,saveSnapshotPaperReport,verifySnapshotPaper,snapshotPaperView,saveSnapshotObservation,snapshotObservationEnd} from './lib/options-snapshot-paper-io.mjs';
-import {enrollPaperObservation,cancelPaperObservation,paperObservationView,observePaperPlans,combinePaperTracking} from './lib/options-paper-observation-io.mjs';
+import {enrollPaperObservation,cancelPaperObservation,paperObservationView,observePaperPlans,combinePaperTracking,savedPaperProcessReview} from './lib/options-paper-observation-io.mjs';
+import {runLocalPaperFinalization,startPublicContextService} from './options-context-service.mjs';
 import {runGuidanceCommand} from './options-daily-guidance.mjs';
 import {verifyGuidanceRecord} from './lib/options-guidance-io.mjs';
-import {snapshotRequest,snapshotResult,snapshotPaperPanel} from '../apps/options-workbench/snapshot-paper.js';
+import {snapshotRequest,snapshotResult,snapshotPaperPanel,localPaperServicePanel,savedProcessReview} from '../apps/options-workbench/snapshot-paper.js';
 import {request as browserRequest} from '../apps/options-workbench/api.js';
 import {startOptionsWorkbench} from './options-workbench.mjs';
 
@@ -280,4 +281,34 @@ await test('one exhausted report catalog cannot prevent another paper plan from 
   const first=saveSnapshotPaperReport(root,'synthetic-case',at(1)),dir=dirname(resolve(root,first.path));for(let n=1;n<100;n++)cpSync(resolve(root,first.path),resolve(dir,'copy-'+n+'.json'));
   await saveCapture(root,10);const pass=observePaperPlans(root,frame(10).path,at(11));assert.equal(pass.results.find(r=>r.planId==='synthetic-case').error,'SNAPSHOT_PAPER_CATALOG');assert.equal(pass.results.find(r=>r.planId==='second-case').status,'OPEN_UNRESOLVED');
 }));
+await test('local service finalizes an expired no-entry before a failed public refresh',()=>temp(async root=>{
+  const e=await enrolled(root),before=readFileSync(resolve(root,e.path)),atEnd='2026-09-08T20:21:00.000Z';let finish;const wait=new Promise(r=>finish=r);
+  const service=startPublicContextService({workspaceRoot:root,issue:false,now:()=>atEnd,execute:async()=>{await wait;throw Error('PUBLIC_FAILURE');}});
+  try{
+    const s=service.paperStatus();assert.equal(s.status,'OK');assert.equal(s.results[0].status,'NO_ENTRY');const path=s.results[0].path,bytes=readFileSync(resolve(root,path));assert.equal(verifySnapshotPaper(root,path).status,'VERIFIED');
+    const again=runLocalPaperFinalization({workspaceRoot:root,now:()=>atEnd});assert.deepEqual(again.results,[]);assert(readFileSync(resolve(root,path)).equals(bytes));assert(readFileSync(resolve(root,e.path)).equals(before));
+    const d=snapshotPaperView(root,atEnd),view=paperObservationView(root,d),review=view.rows[0].lastAutomaticReport.processReview;
+    assert.equal(view.rows[0].state,'FINALIZED');assert.equal(review.inWindowQuoteCount,0);assert.equal(review.netPnlCents,null);assert(review.explanation.includes('not a losing trade'));assert.equal(review.approvedKnowledge,false);
+    const html=snapshotPaperPanel({state:'AVAILABLE',data:{...d,observations:view}},{},s);assert(html.includes('Saved observation review'));assert(html.includes('data-disclosure-key="paper-plan-synthetic-case"'));assert(html.includes('Local paper finalization'));assert(html.includes('No requested-contract quote'));
+  }finally{service.stop();finish();await new Promise(r=>setTimeout(r,20));}
+}));
+await test('local finalization preserves unknown exit and open premium exposure',()=>temp(async root=>{
+  await enrolled(root);await saveCapture(root,10);const atEnd='2026-09-08T20:21:00.000Z',pass=runLocalPaperFinalization({workspaceRoot:root,now:()=>atEnd});assert.equal(pass.results[0].status,'OPEN_UNRESOLVED');
+  const review=paperObservationView(root,null,atEnd).rows[0].lastAutomaticReport.processReview;assert.equal(review.modeledFills,1);assert.equal(review.netPnlCents,null);assert.equal(review.openPremiumExposureCents,20000);assert.equal(review.inWindowQuoteCount,1);assert(review.explanation.includes('exposure is retained'));
+}));
+await test('local recovery skips unexpired and cancelled plans',()=>temp(async root=>{
+  await enrolled(root);assert.deepEqual(runLocalPaperFinalization({workspaceRoot:root,now:()=>at(5)}).results,[]);cancelPaperObservation(root,'synthetic-case',at(6));assert.deepEqual(runLocalPaperFinalization({workspaceRoot:root,now:()=> '2026-09-08T20:21:00.000Z'}).results,[]);
+}));
+await test('saved process review counts blockers within the original entry window only',()=>{
+  const p=plan2(),r=run2([frame2(10,190,250),frame2(40,190,250)],p,100),before=paperFingerprint(r),review=savedPaperProcessReview(p,r);
+  assert.equal(review.inWindowQuoteCount,1);assert.equal(review.blockerCounts.find(b=>b.code==='ENTRY_LIMIT_NOT_MET').count,1);assert(!review.blockerCounts.some(b=>b.code==='ENTRY_WINDOW_MISSED'));assert.equal(paperFingerprint(r),before);
+  assert(savedPaperProcessReview(p,run2([],p,5)).explanation.includes('has not ended'));
+});
+await test('completed saved process projections retain model origin and exact net PnL',()=>{
+  const p=plan2(),r=run2([frame2(10),frame2(30,285,286)],p,100),review=savedPaperProcessReview(p,r);assert.equal(review.modeledFills,2);assert.equal(review.netPnlCents,r.account.netPnlCents);assert.equal(review.openPremiumExposureCents,0);assert(review.explanation.includes('not verified brokerage'));assert.equal(review.causalStatus,'NOT_ESTABLISHED');
+});
+await test('service and saved review panels escape failures and show missing checks honestly',()=>{
+  const html=localPaperServicePanel({enabled:true,status:'FAILED',checkedAt:null,error:'<script>bad</script>',results:[]});assert(html.includes('Unknown'));assert(!html.includes('<script>'));assert(html.includes('recovery needs attention'));assert(localPaperServicePanel({enabled:false,status:'OK',checkedAt:null}).includes('Disabled'));
+  const review=savedPaperProcessReview(plan2(),run2([],plan2(),100));review.nextCheck='<script>bad</script>';assert(!savedProcessReview({processReview:review,trigger:{cutoffAt:at(100)},recordedAt:at(100)}).includes('<script>'));
+});
 console.log(`Options snapshot paper tests passed: ${passed}/${passed}.`);

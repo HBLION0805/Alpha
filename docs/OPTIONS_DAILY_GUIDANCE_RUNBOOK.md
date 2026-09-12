@@ -211,6 +211,11 @@ snapshot lifecycle, not execution or a calibrated signal.
 
 Before each issued publication, including wakes with no market capture, run
 `node node_modules/tsx/dist/cli.mjs scripts/options-daily-guidance.mjs --observe-paper`.
+The running local public service also performs this offline null-capture pass
+before network work on its existing minute tick. Check Event research for the
+actual local status. This is idempotent recovery, not a replacement quote reader;
+keep the Host step and final-close restoration order. See
+[local recovery](OPTIONS_LOCAL_PAPER_FINALIZATION_DELIVERY.md).
 It finalizes expired paper windows using only sources recorded by five minutes
 after the plan's modeled session close. It makes no source calls. A missing entry
 stays NO_ENTRY; a missing exit stays OPEN_UNRESOLVED. Reports retain reviews and

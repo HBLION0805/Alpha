@@ -1,5 +1,12 @@
 # Alpha Architecture
 
+## Offline paper finalization in the existing service
+
+The non-overlapping public context tick runs the existing null-capture observation
+pass before network work. Its sanitized in-memory status is a read-only workbench
+projection; immutable saved reports remain authoritative across restarts. No GET
+mutation or extra timer is introduced. See [design](specifications/OPTIONS_LOCAL_PAPER_FINALIZATION_V1.md).
+
 ## Guidance applicability versions
 
 New guidance input V2 composes the existing reviewed paper calendar using only

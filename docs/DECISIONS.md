@@ -1,5 +1,12 @@
 # Alpha Architecture Decisions
 
+## September 12, 2026 — Finish expired paper observations locally
+
+Reuse the public service's existing tick for the existing offline observation
+pass. Preserve immutable report identity, source cutoff, Host acquisition and
+Owner execution boundaries. Service health is separate from saved outcome truth.
+See [design](specifications/OPTIONS_LOCAL_PAPER_FINALIZATION_V1.md).
+
 ## 2026-09-10 — Version guidance applicability without rewriting past decisions
 
 New inputs use the reviewed regular-session calendar and require analysis after
