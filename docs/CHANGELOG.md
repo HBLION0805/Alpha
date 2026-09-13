@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## September 12, 2026 — Per-contract quote delivery coverage
+
+- Added expiry-level and individual-contract coverage to Daily guidance and the
+  existing Host/CLI delivery check, separating source omissions from request
+  failures, unstarted requests and unrequested IDs.
+- Future Host captures explicitly record missing quote IDs with no additional
+  calls or retries. Original captures, decisions, paper gates and V2 schedules
+  remain. See [delivery](OPTIONS_QUOTE_COVERAGE_DELIVERY.md).
+
 ## September 12, 2026 — Routine market sampling reduced to 15:50
 
 - Updated the existing Host task to remove 09:50 and 12:50 wakes while retaining

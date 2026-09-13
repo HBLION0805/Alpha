@@ -6,6 +6,12 @@ const money=v=>v===null||v===undefined?"Unknown":cents(v);
 const notice=s=>'<div class="notice"><div>'+s+'</div></div>';
 const detail=(label,data)=>'<details><summary>'+esc(label)+'</summary><pre>'+esc(JSON.stringify(data,null,2))+'</pre></details>';
 const sourceLinks=sources=>(sources??[]).map(s=>{const url=safeLink(s.url);return url?'<li><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.title)+'</a> · '+esc(timestamp(s.publishedAt??s.retrievedAt))+'</li>':"";}).join("");
+export function quoteCoveragePanel(coverage) {
+  if(!coverage)return '';
+  return '<details data-disclosure-key="guidance-quote-coverage"><summary>Quote coverage by expiry · '+coverage.returned+' / '+coverage.selected+' returned</summary><p>Capture '+esc(timestamp(coverage.capturedAt))+' · '+esc(words(coverage.origin))+'</p><p>'+esc(coverage.limitation)+'</p>'+
+    '<div class="table-scroll"><table><thead><tr><th>ETF / expiry</th><th>Selected / requested / returned</th><th>Source missing</th><th>Request failed / not started / not requested</th></tr></thead><tbody>'+coverage.groups.map(g=>'<tr><td>'+esc(g.symbol??'Unknown')+' '+esc(g.expiry??'Unknown')+'</td><td>'+g.selected+' / '+g.requested+' / '+g.returned+'</td><td>'+g.sourceMissing+'</td><td>'+g.requestFailed+' / '+g.notStarted+' / '+g.notRequested+'</td></tr>').join('')+'</tbody></table></div>'+
+    '<div class="table-scroll"><table><thead><tr><th>Contract</th><th>Quote delivery</th><th>Instrument state</th><th>Response received / quote updated</th></tr></thead><tbody>'+coverage.rows.map(r=>'<tr><td>'+esc([r.symbol??'Unknown',r.expiry??'Unknown',r.strike??'Unknown',r.type??'Unknown'].join(' '))+'<small>'+esc(r.id)+'</small></td><td>'+esc(words(r.status))+'</td><td>'+esc(words(r.instrumentState??'UNKNOWN'))+' / '+esc(words(r.tradability??'UNKNOWN'))+'</td><td>'+esc(timestamp(r.receivedAt))+'<small>'+esc(timestamp(r.sourceAt))+'</small></td></tr>').join('')+'</tbody></table></div></details>';
+}
 export function guidanceDeliveryPanel(component) {
   const d=component?.data;
   if(!d)return notice('Market delivery check unavailable: '+esc(component?.error??'No check loaded')+'. Do not infer a successful capture.');
@@ -16,6 +22,7 @@ export function guidanceDeliveryPanel(component) {
     notice(p?(p.usesCurrentMarketInputs?'The latest issued report contains the same market inputs as this view. Reissuing a report does not refresh its quotes.':'The latest issued report uses different market inputs. Its saved evidence must be reviewed separately.'):'No issued guidance record is available.')+
     '<div class="table-scroll"><table><thead><tr><th>ETF</th><th>Fresh option clocks</th><th>Stale / unknown / future clocks</th><th>ETF source clock</th></tr></thead><tbody>'+d.quoteClocks.map(q=>'<tr><td>'+esc(q.symbol)+'</td><td>'+q.fresh+' / '+q.requested+'</td><td>'+q.stale+' / '+q.unknown+' / '+q.future+'</td><td>'+esc(timestamp(q.underlyingAt))+'<small>'+esc(words(q.underlyingFreshness))+'</small></td></tr>').join('')+'</tbody></table></div>'+
     '<p class="hint">Freshness limit: '+d.freshnessLimitSeconds+' seconds. Unknown clocks include absent quotes. A saved receipt is not execution qualification. Next fixed window: '+esc(timestamp(d.nextExpectedSlot?.startAt))+'.</p>'+
+    quoteCoveragePanel(d.contractCoverage)+
     '<details data-disclosure-key="guidance-delivery-slots"><summary>Inspect collection windows and missing evidence</summary><p>'+esc(d.missingCause)+'</p><p>Calendar-unreviewed windows: '+d.counts.calendarUnknown+'.</p><div class="table-scroll"><table><thead><tr><th>New York window</th><th>Saved state</th><th>Returned / requested</th></tr></thead><tbody>'+d.slots.map(s=>'<tr><td>'+esc(s.slot)+'</td><td>'+esc(words(s.status))+'</td><td>'+(s.capture?s.capture.returned+' / '+s.capture.requested:'No saved receipt')+'</td></tr>').join('')+'</tbody></table></div></details></section>';
 }
 export function guidanceSessionPanel(r) {

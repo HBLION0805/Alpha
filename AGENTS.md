@@ -1,5 +1,17 @@
 # Alpha Development Standard v1.0
 
+## Per-contract quote coverage — September 12, 2026
+
+Delivery health/UI/Host now distinguish source-missing quotes, request failures,
+request-start bounds and unrequested IDs, grouped by ETF/expiry. New Host captures
+record OPTION_QUOTE_IDENTITIES_MISSING without extra calls or retries. Original
+normalization, reports, paper sources and gates are unchanged. An Owner-requested
+two-call diagnostic found twelve September 28 contracts active/tradable but no
+quotes, while both October 9 controls returned. Upstream cause is unknown; this
+does not prove repair, a new listing, or institutional activity. Preserve V2
+schedules and all old records; no new enrollment or approved lesson was added.
+See docs/OPTIONS_QUOTE_COVERAGE_DELIVERY.md and docs/status/quote-coverage.json.
+
 ## Reduced routine quote schedule — September 12, 2026
 
 The Owner removed routine 09:50 and 12:50 GLD/IBIT samples; retain weekday 15:50.

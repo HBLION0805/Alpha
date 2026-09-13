@@ -1,5 +1,13 @@
 # Daily news and GLD/IBIT guidance Host
 
+`deliveryHealth.contractCoverage` now shows all selected contract identities and
+expiry-level counts from the verified original capture. `SOURCE_QUOTE_MISSING`
+means a successful response lacked that ID's quote; it does not establish why.
+New captures explicitly record `OPTION_QUOTE_IDENTITIES_MISSING`. Preserve the
+partial receipt and source clocks; do not retry, swap contracts or backfill a
+paper window to make the missing count disappear. See
+[quote coverage](OPTIONS_QUOTE_COVERAGE_DELIVERY.md).
+
 Owner schedule change, September 12: use
 [Host V2](OPTIONS_DAILY_GUIDANCE_HOST_V2.json) for current updates and final-close
 ongoing fields. Routine samples are now 15:50 only; 09:50 and 12:50 are cancelled.

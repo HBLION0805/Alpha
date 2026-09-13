@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## September 12, 2026 — Record quote omissions without retrying
+
+A successful market-tool call can omit requested identities. Keep transport
+failure and per-contract coverage separate, expose exact source/receipt clocks,
+and retain every selected ID. Add an explicit diagnostic to future Host captures
+without changing old normalization, call bounds, source schedules or trading
+gates. Later diagnostic reads remain separate from original event/paper evidence.
+See [design](specifications/OPTIONS_QUOTE_COVERAGE_V1.md).
+
 ## September 12, 2026 — Owner reduces routine quote sampling
 
 Remove 09:50 and 12:50 routine samples and retain 15:50. Version the Host fields

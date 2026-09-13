@@ -109,6 +109,38 @@ export function recordGuidanceMarket(root,path) {
   if(normal.capturedAt>new Date().toISOString())fail("FUTURE_CAPTURE");
   return save(root,"captures",input,normal).path;
 }
+/** Evidence projection only; keep the normalized capture and decision inputs unchanged. */
+export function guidanceQuoteCoverage(value) {
+  const normal=normalizeGuidanceCapture(value);
+  const metadata=new Map(value.receipts.filter(r=>r.tool==='get_option_instruments').flatMap(r=>r.response.data.instruments).map(i=>[i.id,i]));
+  const quotes=new Map(normal.quotes.map(q=>[q.id,q]));
+  const rows=value.selectedIds.map(id=>{
+    const instrument=metadata.get(id),quote=quotes.get(id);
+    const receipt=value.receipts.find(r=>r.tool==='get_option_quotes'&&r.request.instrument_ids.includes(id));
+    const failure=value.failures.find(f=>f.tool==='get_option_quotes'&&Array.isArray(f.request?.instrument_ids)&&f.request.instrument_ids.includes(id)&&['MARKET_SOURCE_FAILED','COLLECTION_BOUND_REACHED'].includes(f.code));
+    const status=quote?'QUOTE_RETURNED':receipt?'SOURCE_QUOTE_MISSING':failure?.code==='MARKET_SOURCE_FAILED'?'QUOTE_REQUEST_FAILED':failure?.code==='COLLECTION_BOUND_REACHED'?'QUOTE_REQUEST_NOT_STARTED':'QUOTE_NOT_REQUESTED';
+    return {id,symbol:instrument?.chain_symbol??null,expiry:instrument?.expiration_date??null,strike:instrument?.strike_price??null,type:instrument?.type??null,
+      instrumentState:instrument?.state??null,tradability:instrument?.tradability??null,status,
+      quoteRequested:!!receipt||failure?.code==='MARKET_SOURCE_FAILED',requestedAt:receipt?.requestedAt??failure?.requestedAt??null,receivedAt:receipt?.receivedAt??null,sourceAt:quote?.updatedAt??null,
+      bidCents:quote?.bidCents??null,askCents:quote?.askCents??null};
+  });
+  const groups=new Map();
+  for(const row of rows){
+    const key=JSON.stringify([row.symbol,row.expiry]);
+    if(!groups.has(key))groups.set(key,{symbol:row.symbol,expiry:row.expiry,selected:0,requested:0,returned:0,missing:0,sourceMissing:0,requestFailed:0,notStarted:0,notRequested:0});
+    const g=groups.get(key);g.selected++;if(row.quoteRequested)g.requested++;
+    if(row.status==='QUOTE_RETURNED')g.returned++;else g.missing++;
+    if(row.status==='SOURCE_QUOTE_MISSING')g.sourceMissing++;
+    if(row.status==='QUOTE_REQUEST_FAILED')g.requestFailed++;
+    if(row.status==='QUOTE_REQUEST_NOT_STARTED')g.notStarted++;
+    if(row.status==='QUOTE_NOT_REQUESTED')g.notRequested++;
+  }
+  return {version:'OPTIONS_GUIDANCE_QUOTE_COVERAGE_V1',capturedAt:normal.capturedAt,origin:normal.origin,selected:rows.length,requested:rows.filter(r=>r.quoteRequested).length,
+    returned:normal.quotes.length,missing:rows.length-normal.quotes.length,
+    groups:[...groups.values()].sort((a,b)=>(a.symbol??'').localeCompare(b.symbol??'')||(a.expiry??'').localeCompare(b.expiry??'')),rows,
+    limitation:'Quote returned means an identified reply, not freshness or execution quality. Source quote missing includes omitted or null quotes; the upstream cause is unknown. This view does not retry, replace contracts or alter the partial-capture gate.',
+    sourceReads:0,executionAllowed:false};
+}
 export function readGuidanceResearchFrames(root,{includeEquityReceipt=false}={}) {
   const base=BASE+'/captures',days=children(root,base).filter(v=>/^\d{4}-\d\d-\d\d$/.test(v.name));
   if(days.some(v=>!v.isDirectory()||v.isSymbolicLink()))fail('UNSAFE_DIRECTORY');
@@ -164,11 +196,15 @@ export function guidanceDeliveryView(root,view){
   const since=new Date(Date.parse(view.input.at)-7*86400000).toISOString().slice(0,10);
   const capturePaths=[...new Set([...(view.sourcePaths?.length?[view.sourcePaths[0]]:[]),...paths(root,'captures',1001,since)])],claimPaths=paths(root,'slots',1001,since);
   if(capturePaths.length>1000||claimPaths.length>1000)fail('DELIVERY_CATALOG_LIMIT');
-  const captures=capturePaths.map(path=>{const r=verified(root,path,'captures'),normal=normalizeGuidanceCapture(r.input);if(paperFingerprint(normal)!==r.reportFingerprint)fail('CAPTURE_RECOMPUTE');return {path,startedAt:r.input.startedAt,capturedAt:normal.capturedAt,recordedAt:r.recordedAt,origin:normal.origin,complete:normal.complete,requested:r.input.selectedIds.length,returned:normal.quotes.length};});
+  let latestSource=null;
+  const captures=capturePaths.map(path=>{const r=verified(root,path,'captures'),normal=normalizeGuidanceCapture(r.input);if(paperFingerprint(normal)!==r.reportFingerprint)fail('CAPTURE_RECOMPUTE');
+    if(!latestSource&&normal.capturedAt===view.input.captureAt&&normal.origin===view.input.captureOrigin&&r.recordedAt<=view.input.at)latestSource={path,input:r.input,inputFingerprint:r.inputFingerprint};
+    return {path,startedAt:r.input.startedAt,capturedAt:normal.capturedAt,recordedAt:r.recordedAt,origin:normal.origin,complete:normal.complete,requested:r.input.selectedIds.length,returned:normal.quotes.length};});
   const claims=claimPaths.map(path=>{const c=read(root,path);exact(c,['slot','startedAt','status']);iso(c.startedAt);if(c.status!=='ATTEMPT_STARTED_NO_COMPLETION_CLAIM'||path!==BASE+'/slots/'+c.slot.slice(0,10)+'/'+c.slot+'.json')fail('DELIVERY_CLAIM');return {...c,path};});
   const path=paths(root,'reports',1)[0],r=path?verified(root,path,'reports'):null;
   const publication=r?{path,issuedAt:r.recordedAt,assessedAt:r.input.at,marketFingerprint:guidanceMarketFingerprint(r.input)}:null;
-  return assessGuidanceDelivery(view.input,captures,claims,publication);
+  const delivery=assessGuidanceDelivery(view.input,captures,claims,publication);
+  return {...delivery,contractCoverage:latestSource&&delivery.latestCapture?.path===latestSource.path?{...guidanceQuoteCoverage(latestSource.input),capturePath:latestSource.path,inputFingerprint:latestSource.inputFingerprint}:null};
 }
 export function publishGuidance(root,state){const view=guidanceView(root,state);return save(root,"reports",view.input,view.current).path;}
 export function claimGuidanceSlot(root,slot) {

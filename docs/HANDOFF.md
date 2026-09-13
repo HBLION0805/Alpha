@@ -1,5 +1,12 @@
 # Alpha Handoff
 
+Latest increment: [per-contract quote coverage](OPTIONS_QUOTE_COVERAGE_DELIVERY.md).
+UI/Host/CLI expose exact expiry and identity gaps without changing decisions or
+source calls. The twelve missing September 28 quotes were absent in the original
+reply and a later two-call control check; metadata still says active/tradable.
+The upstream cause remains unknown. Preserve V2 schedules, original source
+records and all paper gates. See [checkpoint](status/quote-coverage.json).
+
 Latest Owner schedule: [routine sampling reduced to 15:50](OPTIONS_GUIDANCE_SCHEDULE_V2_DELIVERY.md).
 The existing task is updated to 26 daily wakes; 09:50 and 12:50 routine reads are
 cancelled. Use Host V2 for both current updates and the post-final-close ongoing

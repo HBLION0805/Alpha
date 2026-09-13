@@ -4,8 +4,8 @@ import {tmpdir} from "node:os";
 import {join,relative,isAbsolute} from "node:path";
 import {assessDailyGuidance,defaultGuidanceSettings} from "../src/engines/options-daily-guidance/OptionsDailyGuidance.ts";
 import {collectGuidanceMarket,routeDailyGuidance} from "./lib/options-guidance-host.mjs";
-import {normalizeGuidanceCapture,recordGuidanceMarket,saveGuidanceSettings,guidanceView,publishGuidance,verifyGuidanceRecord,claimGuidanceSlot,recordAnalystNote} from "./lib/options-guidance-io.mjs";
-import {guidancePage,guidanceDeliveryPanel} from "../apps/options-workbench/guidance.js";
+import {normalizeGuidanceCapture,recordGuidanceMarket,saveGuidanceSettings,guidanceView,publishGuidance,verifyGuidanceRecord,claimGuidanceSlot,recordAnalystNote,guidanceQuoteCoverage} from "./lib/options-guidance-io.mjs";
+import {guidancePage,guidanceDeliveryPanel,quoteCoveragePanel} from "../apps/options-workbench/guidance.js";
 import {assessGuidanceDelivery,guidanceMarketFingerprint} from '../src/engines/options-daily-guidance/OptionsGuidanceDelivery.ts';
 import {guidanceDeliveryView} from './lib/options-guidance-io.mjs';
 import {runGuidanceCommand} from './options-daily-guidance.mjs';
@@ -152,5 +152,39 @@ await test('routine cancellation cannot change final-close restoration or ongoin
   const end=routeDailyGuidance('2026-09-16T20:20:00Z');assert(end.closeCapture);assert(end.restoreAfterClose);assert(routeDailyGuidance('2026-09-16T22:00:00Z').pastCloseWindow);
   for(const clock of ['2026-09-17T13:50:00Z','2026-09-17T16:50:00Z'])assert.equal(routeDailyGuidance(clock,{ongoing:true}).marketCapture,false);
   const after=routeDailyGuidance('2026-09-17T19:50:00Z',{ongoing:true});assert(after.marketCapture);assert.equal(after.pastCloseWindow,false);assert.equal(after.closeCapture,false);
+});
+await test('successful partial quote replies create explicit missing-ID diagnostics without retrying',async()=>{
+  const m=mock(),call=async(tool,request)=>{const r=await m.call(tool,request);if(tool==='get_option_quotes')r.data.results.shift();return r;};
+  const r=await collectGuidanceMarket({call,clock:async()=>at});assert.equal(r.calls,6);assert.equal(m.calls.filter(c=>c.tool==='get_option_quotes').length,1);
+  assert.deepEqual(r.failures,[{tool:'get_option_quotes',code:'OPTION_QUOTE_IDENTITIES_MISSING',missingIds:[r.selectedIds[0]]}]);assert.equal(normalizeGuidanceCapture(r).complete,false);
+});
+await test('expiry-level coverage retains every selected contract and the original normalized output',async()=>{
+  const r=await fixture(),instruments=r.receipts.filter(x=>x.tool==='get_option_instruments').flatMap(x=>x.response.data.instruments),missing=new Set(instruments.filter(i=>i.expiration_date==='2026-09-25').map(i=>i.id));
+  r.receipts.at(-1).response.data.results=r.receipts.at(-1).response.data.results.filter(x=>!missing.has(x.quote.instrument_id)).reverse();
+  const before=JSON.stringify(r),normal=normalizeGuidanceCapture(r),d=guidanceQuoteCoverage(r);assert.equal(d.selected,12);assert.equal(d.requested,12);assert.equal(d.returned,8);assert.equal(d.missing,4);
+  assert.deepEqual(d.rows.map(x=>x.id),r.selectedIds);assert.equal(d.rows.filter(x=>x.status==='SOURCE_QUOTE_MISSING').length,4);
+  assert.deepEqual(d.groups.filter(g=>g.expiry==='2026-09-25').map(g=>[g.selected,g.returned,g.sourceMissing]),[[2,0,2],[2,0,2]]);
+  assert.equal(JSON.stringify(r),before);assert.deepEqual(normalizeGuidanceCapture(r),normal);assert.equal(d.sourceReads,0);assert.equal(d.executionAllowed,false);
+});
+await test('anonymous null quotes retain missing identities without inventing a cause or zero price',async()=>{
+  const r=await fixture();r.receipts.at(-1).response.data.results[0]={quote:null,close:{instrument_id:uuid(999)}};
+  const d=guidanceQuoteCoverage(r),row=d.rows[0];assert.equal(row.status,'SOURCE_QUOTE_MISSING');assert.equal(row.bidCents,null);assert.equal(row.askCents,null);assert.equal(row.sourceAt,null);assert.equal(d.missing,1);assert.equal(row.receivedAt,at);
+});
+await test('failed, bounded and never-started quote requests are distinct from source omissions',async()=>{
+  for(const [code,status,requested]of [['MARKET_SOURCE_FAILED','QUOTE_REQUEST_FAILED',12],['COLLECTION_BOUND_REACHED','QUOTE_REQUEST_NOT_STARTED',0],[null,'QUOTE_NOT_REQUESTED',0]]){
+    const r=await fixture(),receipt=r.receipts.pop();r.calls=r.receipts.length+(code==='MARKET_SOURCE_FAILED'?1:0);r.failures=code?[{tool:'get_option_quotes',request:receipt.request,requestedAt:at,code}]:[];
+    const d=guidanceQuoteCoverage(r);assert.equal(d.requested,requested);assert.equal(d.returned,0);assert.equal(d.missing,12);assert(d.rows.every(row=>row.status===status&&row.receivedAt===null&&row.sourceAt===null));assert(d.groups.every(g=>g.sourceMissing===0));
+  }
+});
+await test('zero-price or unknown-clock quote replies are returned evidence, not missing or qualified quotes',async()=>{
+  const r=await fixture(),q=r.receipts.at(-1).response.data.results[0].quote;q.bid_price='0.00';q.ask_price='0.00';q.updated_at='unknown';
+  const row=guidanceQuoteCoverage(r).rows[0];assert.equal(row.status,'QUOTE_RETURNED');assert.equal(row.bidCents,0);assert.equal(row.askCents,0);assert.equal(row.sourceAt,null);
+});
+await test('selected but unrequested metadata gaps stay visible',async()=>{
+  const r=await fixture();r.selectedIds.push(uuid(999));const d=guidanceQuoteCoverage(r),row=d.rows.at(-1);assert.equal(d.selected,13);assert.equal(d.missing,1);assert.equal(row.status,'QUOTE_NOT_REQUESTED');assert.equal(row.symbol,null);assert.equal(row.expiry,null);
+});
+await test('coverage frontend lists missing contracts, exact dates and escaped instrument metadata',async()=>{
+  const r=await fixture();r.receipts.at(-1).response.data.results.shift();r.receipts.find(x=>x.tool==='get_option_instruments').response.data.instruments[0].state='<img src=x>';
+  const d=guidanceQuoteCoverage(r),html=quoteCoveragePanel(d);assert(html.includes('11 / 12 returned'));assert(html.includes('2026-09-25'));assert(html.includes(r.selectedIds[0]));assert(html.includes('Source Quote Missing'));assert(!/<img/i.test(html));assert(html.toLowerCase().includes('&lt;img'));assert(!html.includes('data-order'));assert.equal(quoteCoveragePanel(null),'');
 });
 console.log(passed+"/"+passed+" tests passed.");

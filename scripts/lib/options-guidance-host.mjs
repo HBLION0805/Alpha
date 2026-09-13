@@ -51,7 +51,13 @@ export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
     selected.push(...[...new Set(symbolSelected)].slice(0,18));
   }
   const ids=[...new Set(selected)].slice(0,36);
-  for(let n=0;n<ids.length;n+=20)await read("get_option_quotes",{instrument_ids:ids.slice(n,n+20)});
+  for(let n=0;n<ids.length;n+=20){
+    const requested=ids.slice(n,n+20),data=await read("get_option_quotes",{instrument_ids:requested});
+    if(data&&Array.isArray(data.results)){
+      const returned=new Set(data.results.map(r=>r?.quote?.instrument_id)),missingIds=requested.filter(id=>!returned.has(id));
+      if(missingIds.length)failures.push({tool:'get_option_quotes',code:'OPTION_QUOTE_IDENTITIES_MISSING',missingIds});
+    }
+  }
   return {version:"OPTIONS_GUIDANCE_MARKET_CAPTURE_V1",origin:"HOST_MARKET_TOOL_RESPONSES",startedAt,capturedAt:iso(await clock()),calls,receipts,failures,selectedIds:ids,selection:trackedContracts.length?'Verified tracked research IDs first, then nearest strikes; at most 18 contracts per ETF and 36 total.':'Nearest three strikes per side at up to three 14–45-day expirations; bounded research sample.',accountAccessed:false,executionAllowed:false};
 }
 export function routeDailyGuidance(at,{ongoing=false}={}) {

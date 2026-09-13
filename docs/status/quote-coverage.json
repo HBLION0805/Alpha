@@ -1,0 +1,163 @@
+{
+  "version": "OPTIONS_QUOTE_COVERAGE_CHECKPOINT_V1",
+  "recordedAt": "2026-09-13T00:54:22.000Z",
+  "ownerRequestedLocalDate": "2026-09-12",
+  "finding": "Twelve September 28 contracts are absent from successful source quote replies; the upstream cause is unknown.",
+  "originalCapture": {
+    "state": "AVAILABLE",
+    "capturedAt": "2026-09-12T23:54:43Z",
+    "capturePath": "data/runtime/options-daily-guidance/captures/2026-09-12/2026-09-12T23-55-26-264Z-cdb7a8b4-5ce1-4a1d-b87c-69dbcf31ffe4.json",
+    "selected": 36,
+    "requested": 36,
+    "returned": 24,
+    "missing": 12,
+    "groups": [
+      {
+        "symbol": "GLD",
+        "expiry": "2026-09-28",
+        "selected": 6,
+        "requested": 6,
+        "returned": 0,
+        "missing": 6,
+        "sourceMissing": 6,
+        "requestFailed": 0,
+        "notStarted": 0,
+        "notRequested": 0
+      },
+      {
+        "symbol": "GLD",
+        "expiry": "2026-10-09",
+        "selected": 6,
+        "requested": 6,
+        "returned": 6,
+        "missing": 0,
+        "sourceMissing": 0,
+        "requestFailed": 0,
+        "notStarted": 0,
+        "notRequested": 0
+      },
+      {
+        "symbol": "GLD",
+        "expiry": "2026-10-23",
+        "selected": 6,
+        "requested": 6,
+        "returned": 6,
+        "missing": 0,
+        "sourceMissing": 0,
+        "requestFailed": 0,
+        "notStarted": 0,
+        "notRequested": 0
+      },
+      {
+        "symbol": "IBIT",
+        "expiry": "2026-09-28",
+        "selected": 6,
+        "requested": 6,
+        "returned": 0,
+        "missing": 6,
+        "sourceMissing": 6,
+        "requestFailed": 0,
+        "notStarted": 0,
+        "notRequested": 0
+      },
+      {
+        "symbol": "IBIT",
+        "expiry": "2026-10-09",
+        "selected": 6,
+        "requested": 6,
+        "returned": 6,
+        "missing": 0,
+        "sourceMissing": 0,
+        "requestFailed": 0,
+        "notStarted": 0,
+        "notRequested": 0
+      },
+      {
+        "symbol": "IBIT",
+        "expiry": "2026-10-23",
+        "selected": 6,
+        "requested": 6,
+        "returned": 6,
+        "missing": 0,
+        "sourceMissing": 0,
+        "requestFailed": 0,
+        "notStarted": 0,
+        "notRequested": 0
+      }
+    ],
+    "sourceMissing": 12,
+    "nextExpectedSlot": {
+      "startAt": "2026-09-14T19:50:00Z",
+      "endAt": "2026-09-14T20:00:00Z"
+    },
+    "rawInput": "data/runtime/options-daily-guidance-inputs/manual-refresh-2026-09-12T23-54-43-000Z.json",
+    "rawSha256": "e4149acf8b3369c3fa9f9832c42fcd58d8ebeb0fcb63bbb3520b5c6162a0c3a4",
+    "inputFingerprint": "sha256:d1affd63b44076d2d70f140386f3a18e1f7f8a6ad8c9ffb2bd7b349cacc495a8"
+  },
+  "diagnostic": {
+    "path": "data/runtime/options-daily-guidance-inputs/quote-gap-diagnostic-2026-09-13T00-38-47-000Z.json",
+    "requestedAt": "2026-09-13T00:37:28.000Z",
+    "receivedAt": "2026-09-13T00:37:28.000Z",
+    "marketCalls": 2,
+    "instrumentsRequested": 14,
+    "instrumentsActiveTradable": 14,
+    "quotesRequested": 14,
+    "quotesReturned": 2,
+    "returnedQuotes": "October 9 controls only, with September 11 source clocks",
+    "missingQuotes": 12,
+    "upstreamCause": "UNKNOWN",
+    "importedIntoGuidance": false,
+    "backfilled": false
+  },
+  "validation": {
+    "focused": "101/101 PASS",
+    "typecheck": "PASS",
+    "aggregate": "4492/4492 PASS; validation bundle PASS",
+    "log": "data/runtime/options-workbench-development/quote-coverage-validation-complete.log",
+    "captureRecompute": "VERIFIED",
+    "publishedReportRecompute": "VERIFIED",
+    "publishedReportFingerprint": "sha256:c1aeb9ea8c17d0a01e838dc87cd82ddd4cf89ad7e82cf094557b651d3ccb1f90"
+  },
+  "workbenchReadback": {
+    "loadedAt": "2026-09-13T00:53:46.745Z",
+    "deliveryState": "AVAILABLE",
+    "coverage": {
+      "capturedAt": "2026-09-12T23:54:43Z",
+      "selected": 36,
+      "requested": 36,
+      "returned": 24,
+      "missing": 12
+    },
+    "nextExpectedSlot": {
+      "startAt": "2026-09-14T19:50:00Z",
+      "endAt": "2026-09-14T20:00:00Z"
+    },
+    "ownerTradeCount": 0,
+    "executionAllowed": false,
+    "ui": {
+      "state": "VERIFIED",
+      "expandedCoverage": "24 / 36 returned",
+      "expiryGroups": 6,
+      "contractRows": 36,
+      "sourceMissingRows": 12,
+      "sourceClocksRetained": true,
+      "visualLayout": "Desktop verified in local browser",
+      "mutations": 0
+    }
+  },
+  "preserved": {
+    "marketScheduleSha256": "0582eba1ce755cd3dbbaa25cd945f8d2875d550b172b6b587bd1426c03cd0816",
+    "morningReviewSha256": "c3ad66c095c9dbe2a7aaa5fcc910ca5495c53593d27bfe499f8686a27a6d4490",
+    "eveningReviewSha256": "49f3d46d83950722c315e0c7228fb4f5bbabf634ac411610b9d33e7a894f5669",
+    "originalCapturesAndReports": true,
+    "quoteSelectionAndReadBounds": true
+  },
+  "newSchedules": 0,
+  "newEnrollments": 0,
+  "newOwnerTrades": 0,
+  "newApprovedLessons": 0,
+  "realPriceGateAdvanced": false,
+  "sourceRecoveryVerified": false,
+  "unattendedReliabilityVerified": false,
+  "executionAllowed": false
+}
