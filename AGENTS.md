@@ -1,5 +1,17 @@
 # Alpha Development Standard v1.0
 
+## Saved option sensitivities — September 12, 2026
+
+Daily guidance and its bounded Host brief now read IV/gamma/theta/vega from the
+same verified saved capture, with signed contract-dollar unit illustrations and
+an English comparison/drilldown. All selected IDs and nanosecond source clocks
+remain visible; independent Greek timestamps, IV history and win probability
+remain unknown. The current 24/36 model-value rows are historical, not fresh.
+No future premium, fill or net P&L is inferred. Canonical inputs/rationale/reports,
+rankings, fee assumptions, schedules and the frozen September 15 rehearsal stay
+unchanged. See docs/OPTIONS_GUIDANCE_SENSITIVITIES_DELIVERY.md and
+docs/status/guidance-sensitivities.json. No real-price gate advanced.
+
 ## Paper collection planning — September 12, 2026
 
 Preview/UI now compare frozen paper windows with dated routine wakes and current

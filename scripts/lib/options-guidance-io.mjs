@@ -7,6 +7,7 @@ import { paperFingerprint } from "../../src/engines/options-paper/OptionsPaperTr
 import { readinessClock } from "../../src/engines/options-readiness/OptionsReadinessEngine.ts";
 import { assessDailyGuidance, defaultGuidanceSettings, validateGuidanceSettings } from "../../src/engines/options-daily-guidance/OptionsDailyGuidance.ts";
 import { explainDailyGuidance } from "../../src/engines/options-daily-guidance/OptionsGuidanceRationale.ts";
+import { assessGuidanceSensitivities } from "../../src/engines/options-daily-guidance/OptionsGuidanceSensitivities.ts";
 import { assessGuidanceDelivery, guidanceMarketFingerprint } from "../../src/engines/options-daily-guidance/OptionsGuidanceDelivery.ts";
 
 const BASE="data/runtime/options-daily-guidance", MAX=8*1024*1024;
@@ -205,6 +206,26 @@ export function guidanceDeliveryView(root,view){
   const publication=r?{path,issuedAt:r.recordedAt,assessedAt:r.input.at,marketFingerprint:guidanceMarketFingerprint(r.input)}:null;
   const delivery=assessGuidanceDelivery(view.input,captures,claims,publication);
   return {...delivery,contractCoverage:latestSource&&delivery.latestCapture?.path===latestSource.path?{...guidanceQuoteCoverage(latestSource.input),capturePath:latestSource.path,inputFingerprint:latestSource.inputFingerprint}:null};
+}
+export function guidanceSensitivityView(root,view) {
+  if(!view?.input)fail('SENSITIVITY_GUIDANCE_UNAVAILABLE');
+  const path=view.sourcePaths?.[0];
+  if(!path)return {...assessGuidanceSensitivities(view.input.at,[]),capturePath:null,capturedAt:null,captureOrigin:null,inputFingerprint:null};
+  if(path.split('/')[3]!=='captures')fail('SENSITIVITY_CAPTURE_PATH');
+  const record=verified(root,path,'captures'),normal=normalizeGuidanceCapture(record.input);
+  if(paperFingerprint(normal)!==record.reportFingerprint)fail('CAPTURE_RECOMPUTE');
+  if(normal.capturedAt!==view.input.captureAt||normal.origin!==view.input.captureOrigin||record.recordedAt>view.input.at||
+    normal.quotes.some(q=>paperFingerprint(q)!==paperFingerprint(view.input.quotes.find(x=>x.id===q.id)??null)))fail('SENSITIVITY_CAPTURE_MISMATCH');
+  const instruments=new Map(record.input.receipts.filter(r=>r.tool==='get_option_instruments').flatMap(r=>r.response.data.instruments).map(i=>[i.id,i]));
+  const quotes=new Map(normal.quotes.map(q=>[q.id,q]));
+  const raw=new Map(record.input.receipts.filter(r=>r.tool==='get_option_quotes').flatMap(r=>r.response.data.results).filter(r=>r.quote).map(r=>[r.quote.instrument_id,r.quote]));
+  const rows=record.input.selectedIds.map(id=>{
+    const q=quotes.get(id),i=instruments.get(id),greeks=raw.get(id)??{};
+    return {id,symbol:i?.chain_symbol??null,expiry:i?.expiration_date??null,strike:i?.strike_price??null,type:i?.type??null,
+      multiplier:q?.multiplier??(i?Number(i.trade_value_multiplier):null),quoteReturned:!!q,sourceAt:q?.updatedAt??null,receivedAt:q?.receivedAt??null,
+      greeks:Object.fromEntries(['delta','gamma','theta','vega','implied_volatility'].map(k=>[k,greeks[k]]))};
+  });
+  return {...assessGuidanceSensitivities(view.input.at,rows),capturePath:path,capturedAt:normal.capturedAt,captureOrigin:normal.origin,inputFingerprint:record.inputFingerprint};
 }
 export function publishGuidance(root,state){const view=guidanceView(root,state);return save(root,"reports",view.input,view.current).path;}
 export function claimGuidanceSlot(root,slot) {

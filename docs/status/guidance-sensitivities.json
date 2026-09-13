@@ -1,0 +1,123 @@
+{
+  "version": "OPTIONS_GUIDANCE_SENSITIVITIES_CHECKPOINT_V1",
+  "recordedAt": "2026-09-13T01:39:50.392Z",
+  "baseCommit": "6d49c29bb2072bf0bb33921ddedacd22962d7d48",
+  "status": "LOCAL_VALIDATED",
+  "source": {
+    "capturePath": "data/runtime/options-daily-guidance/captures/2026-09-12/2026-09-12T23-55-26-264Z-cdb7a8b4-5ce1-4a1d-b87c-69dbcf31ffe4.json",
+    "inputFingerprint": "sha256:d1affd63b44076d2d70f140386f3a18e1f7f8a6ad8c9ffb2bd7b349cacc495a8",
+    "capturedAt": "2026-09-12T23:54:43.000Z",
+    "origin": "HOST_MARKET_TOOL_RESPONSES",
+    "coverage": {
+      "selected": 36,
+      "returned": 24,
+      "allMetricsReported": 24,
+      "withinQuoteTimeWindow": 0
+    },
+    "sourceDate": "2026-09-11",
+    "independentGreekTimestamps": null,
+    "latestValuesFresh": false
+  },
+  "validation": {
+    "fullSuite": {
+      "command": "node scripts/alpha-validate.mjs",
+      "executed": 4539,
+      "passed": 4539,
+      "failed": 0,
+      "log": "data/runtime/options-workbench-development/sensitivity-validation.log"
+    },
+    "finalUiFollowup": {
+      "command": "node --import tsx scripts/options-guidance-sensitivities.test.mjs",
+      "executed": 35,
+      "passed": 35,
+      "failed": 0
+    },
+    "typecheck": "PASSED",
+    "ui": {
+      "at": "2026-09-13T01:37:50.582Z",
+      "desktop": "PASS",
+      "mobile": {
+        "width": 390,
+        "documentWidth": 390
+      },
+      "detail": {
+        "width": 390,
+        "documentWidth": 390
+      },
+      "scriptErrors": [],
+      "selectedRows": 36,
+      "actions": "Read-only local page and disclosure interactions",
+      "sourceCalls": 0
+    }
+  },
+  "preservation": {
+    "at": "2026-09-13T01:39:03.071Z",
+    "originalFiles": 166,
+    "changed": [],
+    "automations": {
+      "gld-ibit": "0582eba1ce755cd3dbbaa25cd945f8d2875d550b172b6b587bd1426c03cd0816",
+      "alpha": "c3ad66c095c9dbe2a7aaa5fcc910ca5495c53593d27bfe499f8686a27a6d4490",
+      "alpha-2": "49f3d46d83950722c315e0c7228fb4f5bbabf634ac411610b9d33e7a894f5669"
+    },
+    "automationsUnchanged": true,
+    "verifiedGuidance": 102,
+    "verifiedPaper": 9
+  },
+  "workbench": {
+    "at": "2026-09-13T01:39:03.526Z",
+    "sensitivityState": "AVAILABLE",
+    "coverage": {
+      "selected": 36,
+      "returned": 24,
+      "allMetricsReported": 24,
+      "withinQuoteTimeWindow": 0
+    },
+    "manualEvents": 0,
+    "paperObservationRows": [
+      {
+        "planId": "pipeline-check-ibit-20260910",
+        "state": "FINALIZED",
+        "tracking": "NOT_ACTIVE"
+      },
+      {
+        "planId": "pipeline-check-ibit-20260915",
+        "state": "AWAITING_WINDOW",
+        "tracking": "INCLUDED"
+      }
+    ],
+    "backgroundContextRefreshEnabled": true,
+    "executionAllowed": false
+  },
+  "references": {
+    "specification": "docs/specifications/OPTIONS_GUIDANCE_SENSITIVITIES_V1.md",
+    "delivery": "docs/OPTIONS_GUIDANCE_SENSITIVITIES_DELIVERY.md",
+    "rawReadback": "data/runtime/options-workbench-development/sensitivity-readback.json",
+    "units": "https://robinhood.com/us/en/support/articles/options-chain-metrics/"
+  },
+  "productProgress": {
+    "improvedStages": [
+      "F03",
+      "F04"
+    ],
+    "workflowStatusesUnchanged": true,
+    "workstreams": {
+      "LOCAL_VALIDATED": 4,
+      "PARTIAL": 4,
+      "NOT_VALIDATED": 2
+    },
+    "gates": {
+      "localAvailable": 3,
+      "open": 3
+    }
+  },
+  "newMarketSourceCalls": 0,
+  "newEnrollments": 0,
+  "sourceScheduleChanged": false,
+  "originalReportsChanged": false,
+  "feeAssumptionsChanged": false,
+  "rankingChanged": false,
+  "winProbability": null,
+  "realPriceGateAdvanced": false,
+  "accountAccessed": false,
+  "executionAllowed": false
+}

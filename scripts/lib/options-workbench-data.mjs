@@ -20,7 +20,7 @@ import { exportId } from '../../src/engines/options-evidence-export/OptionsEvide
 import { readinessClock } from '../../src/engines/options-readiness/OptionsReadinessEngine.ts';
 import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import { parseChainSurveyJson } from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
-import { guidanceView, saveGuidanceSettings, guidanceDeliveryView } from './options-guidance-io.mjs';
+import { guidanceView, saveGuidanceSettings, guidanceDeliveryView, guidanceSensitivityView } from './options-guidance-io.mjs';
 import { focusedNewsView } from './options-focused-news-io.mjs';
 import { goldFrameworkView } from './options-gold-framework.mjs';
 import { macroContextView,previewMacroComparison,saveMacroComparison } from './options-macro-context-io.mjs';
@@ -106,6 +106,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
       access:'LOCAL_SAVED_DATA',sourceRefresh:false,accountAccessed:false,executionAllowed:false};
     result.guidance=await component(()=>guidanceView(root,result),at);
     result.guidanceDelivery=await component(()=>guidanceDeliveryView(root,result.guidance.data),at);
+    result.guidanceSensitivities=await component(()=>guidanceSensitivityView(root,result.guidance.data),at);
     result.eventReactions=await component(()=>eventReactionView(root,at),at);
     result.capitalPolicy=await component(()=>assessOptionsCapitalPolicy(result.guidance.data?.current.settings),at);
     result.candidateChecks=await component(()=>candidateChecksView(root,result.guidance.data,at),at);
