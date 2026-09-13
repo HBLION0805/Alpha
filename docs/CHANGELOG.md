@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## September 12, 2026 — Routine market sampling reduced to 15:50
+
+- Updated the existing Host task to remove 09:50 and 12:50 wakes while retaining
+  15:50, hourly news, conditional event reads and the bounded close collection.
+- Routing, delivery diagnostics and the frontend share the dated schedule;
+  old missed windows remain. V2 ongoing fields preserve the reduction after
+  final-close v6 restoration. See [delivery](OPTIONS_GUIDANCE_SCHEDULE_V2_DELIVERY.md).
+
 ## September 12, 2026 — Event expectation and observed-price comparison
 
 - Daily guidance and Host brief now show recent scheduled events, eligible prior

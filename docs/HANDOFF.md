@@ -1,5 +1,12 @@
 # Alpha Handoff
 
+Latest Owner schedule: [routine sampling reduced to 15:50](OPTIONS_GUIDANCE_SCHEDULE_V2_DELIVERY.md).
+The existing task is updated to 26 daily wakes; 09:50 and 12:50 routine reads are
+cancelled. Use Host V2 for both current updates and the post-final-close ongoing
+fields, after the original v6-first restoration. Historical misses, event-hour
+reads, 16:20 closes and separate development reviews remain. Readback verifies
+configuration, not future collection reliability or real-price gate acceptance.
+
 Latest increment: [event expectations and observed ETF prices](OPTIONS_EVENT_REACTION_DELIVERY.md).
 Daily guidance/Host/CLI show verified saved price changes or exact gaps around
 scheduled events, with prior attributed views and untested hypotheses. Actual

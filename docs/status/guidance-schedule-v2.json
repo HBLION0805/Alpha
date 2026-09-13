@@ -1,0 +1,82 @@
+{
+  "version": "OPTIONS_GUIDANCE_SCHEDULE_V2_CHECKPOINT",
+  "recordedAt": "2026-09-13T00:19:33.000Z",
+  "ownerRequestedLocalDate": "2026-09-12",
+  "effectiveLocalDate": "2026-09-13",
+  "firstAffectedWeekday": "2026-09-14",
+  "automationId": "gld-ibit",
+  "status": "ACTIVE",
+  "hostFields": "docs/OPTIONS_DAILY_GUIDANCE_HOST_V2.json",
+  "persistedFieldsMatched": 8,
+  "timezone": "America/New_York",
+  "dailyWakeCount": 26,
+  "routineMarketTimes": [
+    "15:50"
+  ],
+  "cancelledRoutineTimes": [
+    "09:50",
+    "12:50"
+  ],
+  "conditionalEventTimes": [
+    "10:20",
+    "11:20",
+    "12:20",
+    "13:20",
+    "14:20",
+    "15:20"
+  ],
+  "news": "Hourly :20; daily 09:00 context",
+  "closeCapture": {
+    "time": "16:20",
+    "dates": [
+      "2026-09-08",
+      "2026-09-09",
+      "2026-09-10",
+      "2026-09-11",
+      "2026-09-14",
+      "2026-09-15",
+      "2026-09-16"
+    ]
+  },
+  "restorationOrder": [
+    "OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json restoreFields",
+    "OPTIONS_DAILY_GUIDANCE_HOST_V2.json ongoingFields"
+  ],
+  "actualReadbackUpdatedAt": "2026-09-13T00:14:56.891Z",
+  "automationSha256": "0582eba1ce755cd3dbbaa25cd945f8d2875d550b172b6b587bd1426c03cd0816",
+  "preserved": {
+    "hostV1Sha256": "bb290b4cb3a2e273b2ea9bd104602b851e6f730ae194c53f7dea74bff28a23d3",
+    "restoreV6Sha256": "e91032e033c40163defa0abac3f6444dab6a6faac90e75972de1e2068d0668a9",
+    "morningReviewSha256": "c3ad66c095c9dbe2a7aaa5fcc910ca5495c53593d27bfe499f8686a27a6d4490",
+    "eveningReviewSha256": "49f3d46d83950722c315e0c7228fb4f5bbabf634ac411610b9d33e7a894f5669"
+  },
+  "validation": {
+    "focused": "94/94 PASS",
+    "typecheck": "PASS",
+    "aggregate": "4485/4485 PASS",
+    "log": "data/runtime/options-workbench-development/schedule-v2-validation.log"
+  },
+  "workbenchReadback": {
+    "loadedAt": "2026-09-13T00:18:52.514Z",
+    "deliveryState": "AVAILABLE",
+    "nextFixedWindow": {
+      "startAt": "2026-09-14T19:50:00Z",
+      "endAt": "2026-09-14T20:00:00Z"
+    },
+    "historicalCounts": {
+      "expectedCompleted": 12,
+      "recorded": 3,
+      "missing": 9,
+      "partial": 0,
+      "calendarUnknown": 0
+    },
+    "ownerTradeCount": 0,
+    "executionAllowed": false
+  },
+  "marketCallsMadeForScheduleChange": 0,
+  "newEnrollments": 0,
+  "realPriceGateAdvanced": false,
+  "unattendedExecutionVerified": false,
+  "limitation": "Schedule and local routing readback only; allowance and other execution failures remain unresolved.",
+  "executionAllowed": false
+}

@@ -1,5 +1,18 @@
 # Alpha Development Standard v1.0
 
+## Reduced routine quote schedule — September 12, 2026
+
+The Owner removed routine 09:50 and 12:50 GLD/IBIT samples; retain weekday 15:50.
+Use docs/OPTIONS_DAILY_GUIDANCE_HOST_V2.json for the current and ongoing Host
+fields (26 daily wakes). Hourly :20 news, 09:00 context, conditional event-hour
+samples and the seven 16:20 closes through September 16 remain. After the final
+close restore immutable v6 FIRST, then V2 ongoing fields SECOND. Never restore
+the cancelled routine slots from Host V1. Dated diagnostics retain old missing
+windows; first affected weekday is September 14. This supersedes older 28-wake /
+three-routine-window instructions below. No paper gate or source reliability
+claim advanced. See docs/OPTIONS_GUIDANCE_SCHEDULE_V2_DELIVERY.md and
+docs/status/guidance-schedule-v2.json.
+
 ## Event expectations and observed ETF prices — September 12, 2026
 
 Daily guidance, Host brief and --event-reactions now compare prior saved analyst

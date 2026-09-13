@@ -1,5 +1,13 @@
 # Alpha Architecture Decisions
 
+## September 12, 2026 — Owner reduces routine quote sampling
+
+Remove 09:50 and 12:50 routine samples and retain 15:50. Version the Host fields
+and share a dated schedule between routing and delivery diagnostics, preserving
+historical missing windows. Keep hourly news, conditional event reads, bounded
+16:20 closes and v6-first restoration; apply V2 ongoing fields afterward.
+See [design](specifications/OPTIONS_GUIDANCE_SCHEDULE_V2.md).
+
 ## September 12, 2026 — Separate event expectations from observed ETF changes
 
 Compare fixed-window saved last-trade observations with general views actually

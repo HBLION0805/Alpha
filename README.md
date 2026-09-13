@@ -1,5 +1,9 @@
 # Alpha
 
+[Current collection schedule](docs/OPTIONS_GUIDANCE_SCHEDULE_V2_DELIVERY.md):
+routine GLD/IBIT sampling is 15:50 New York on weekdays. Event-hour sampling,
+hourly news and the bounded 16:20 close study are retained.
+
 [Event expectations and observed ETF prices](docs/OPTIONS_EVENT_REACTION_DELIVERY.md)
 now compares prior saved views with GLD/IBIT observations around scheduled events.
 Sparse samples and missing prices remain explicit; agreement is not a validated signal.

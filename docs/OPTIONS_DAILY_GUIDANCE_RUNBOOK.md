@@ -1,5 +1,12 @@
 # Daily news and GLD/IBIT guidance Host
 
+Owner schedule change, September 12: use
+[Host V2](OPTIONS_DAILY_GUIDANCE_HOST_V2.json) for current updates and final-close
+ongoing fields. Routine samples are now 15:50 only; 09:50 and 12:50 are cancelled.
+Hourly news, 09:00 context, conditional event-hour reads and bounded 16:20 closes
+are retained. The first affected weekday is September 14. Historical missing
+windows and the immutable Host V1/v6 snapshots remain unchanged.
+
 The Host brief includes `eventReactions`, a read-only comparison of saved ETF
 last-trade observations and prior analyst views around current scheduled events.
 Use its actual sample offsets, calendar receipts and missing reasons. Date-only
@@ -43,14 +50,14 @@ retain their own settings. See [delivery](OPTIONS_OWNER_ALLOCATION_DELIVERY.md).
 Run `node node_modules/tsx/dist/cli.mjs scripts/options-daily-guidance.mjs --route`
 in the transitional phase, or `--route-ongoing` in the ongoing phase.
 Use its actual clock; never inject a past clock. The configured New York wakes
-are hourly at :20, plus 09:00, 09:50, 12:50 and 15:50. Public refresh also runs
+are hourly at :20, plus 09:00 and 15:50 (26 daily wakes). Public refresh also runs
 locally while Alpha is open; it does not depend on a model wake. Source refresh
 claims are shared by the local service and this Host.
 
 During the transitional schedule, if route.pastCloseWindow is true (after 18:00
 New York on September 16, or any later date),
 first restore the exact immutable v6 restoreFields through automation_update,
-then install ongoingFields from OPTIONS_DAILY_GUIDANCE_HOST_V1.json. Do this
+then install ongoingFields from OPTIONS_DAILY_GUIDANCE_HOST_V2.json. Do this
 before other evidence work. An ongoing-phase wake never restores v6 again.
 
 If route.publish is false, stop. Otherwise run `--begin-slot <route.slot>`.
@@ -139,7 +146,7 @@ seven session dates, 16:20 window, all prior journals and original field snapsho
 Do not run the cancelled opening collection.
 
 On September 16 use a finally block: restore exact v6 fields FIRST, then install
-ongoingFields from OPTIONS_DAILY_GUIDANCE_HOST_V1.json SECOND, before comparisons,
+ongoingFields from OPTIONS_DAILY_GUIDANCE_HOST_V2.json SECOND, before comparisons,
 activity updates or final evidence reads. This preserves the original restoration
 ordering while fulfilling the Owner's newer request for ongoing daily guidance.
 Do not delete the shared task. Any final-close failure must still run both field
@@ -147,9 +154,11 @@ steps. A later transitional wake performs the same restoration/install ordering.
 
 ## Bounded guidance market capture
 
-At route.marketCapture (09:50, 12:50, 15:50 weekdays), collect once. Additionally,
+At route.marketCapture (15:50 weekdays), collect once. Do not restore the cancelled
+09:50 or 12:50 routine reads. Additionally,
 an hourly :20 weekday wake between 09:30 and 16:00 may collect once when the
-current host brief lists a major event whose dates include today. This supplies
+current host brief lists a major event whose dates include today (10:20, 11:20,
+12:20, 13:20, 14:20 and 15:20). This supplies
 event-day checks without claiming exact event-time fills. On market holidays,
 stale source clocks must produce WATCH; do not declare the session open merely
 because it is a weekday.
@@ -240,7 +249,7 @@ trend inputs, option clocks, liquidity and unchanged economics.
 
 The brief's `deliveryHealth` and offline `--delivery-health` check the same
 verified capture, claim and publication evidence as Daily guidance. Its denominator
-contains only the three fixed 09:50/12:50/15:50 New York ten-minute windows over
+contains dated fixed New York ten-minute windows over
 seven calendar dates, after activation and excluding reviewed closed sessions.
 Event-dependent reads and full-chain close collection are separate. A saved
 claim is not completion; a receipt can still contain stale or missing quotes.

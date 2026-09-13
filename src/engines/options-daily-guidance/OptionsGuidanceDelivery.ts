@@ -1,5 +1,6 @@
 import type { GuidanceInput } from '../../contracts/OptionsDailyGuidance';
 import { guidanceLocal } from './OptionsGuidanceClock';
+import { guidanceFixedMinutes, guidanceDeliveryScope } from './OptionsGuidanceSchedule';
 import { paperSession } from '../options-robinhood-data/RobinhoodPaperSession';
 import { paperFingerprint } from '../options-paper/OptionsPaperTradingEngine';
 
@@ -9,7 +10,7 @@ export interface DeliveryCapture {
 }
 export interface DeliveryClaim {slot:string; startedAt:string; path:string}
 export interface DeliveryPublication {path:string; issuedAt:string; assessedAt:string; marketFingerprint:string}
-const MINUTES=[590,770,950], ACTIVATED='2026-09-08';
+const ACTIVATED='2026-09-08';
 const fail=()=>{throw Error('GUIDANCE_DELIVERY_INPUT');};
 function instant(date:string,minute:number){
   const noon=date+'T12:00:00.000Z',local=guidanceLocal(noon);
@@ -31,7 +32,7 @@ export function assessGuidanceDelivery(input:GuidanceInput,captures:DeliveryCapt
   for(let back=6;back>=0;back--){
     const date=shift(local.date,-back);if(date<ACTIVATED)continue;
     const session=paperSession(instant(date,600),undefined);
-    for(const minute of MINUTES){
+    for(const minute of guidanceFixedMinutes(date)){
       const startAt=instant(date,minute),endAt=instant(date,minute+10),slot=date+'-'+String(Math.floor(minute/60)).padStart(2,'0')+String(minute%60).padStart(2,'0');
       if(session.knownYear&&(session.holiday||minute>=session.closeMinute))continue;
       const found=eligible.filter(c=>c.startedAt>=startAt&&c.startedAt<endAt).sort((a,b)=>a.recordedAt.localeCompare(b.recordedAt)||a.path.localeCompare(b.path)),capture=found.at(-1)??null;
@@ -43,7 +44,7 @@ export function assessGuidanceDelivery(input:GuidanceInput,captures:DeliveryCapt
   let nextExpectedSlot:{startAt:string;endAt:string}|null=null;
   for(let forward=0;forward<8&&!nextExpectedSlot;forward++){
     const date=shift(local.date,forward),s=paperSession(instant(date,600),undefined);if(date<ACTIVATED||!s.knownYear||s.holiday)continue;
-    for(const m of MINUTES){const startAt=instant(date,m);if(m<s.closeMinute&&startAt>input.at){nextExpectedSlot={startAt,endAt:instant(date,m+10)};break;}}
+    for(const m of guidanceFixedMinutes(date)){const startAt=instant(date,m);if(m<s.closeMinute&&startAt>input.at){nextExpectedSlot={startAt,endAt:instant(date,m+10)};break;}}
   }
   const assets=input.equities.map(e=>({symbol:e.symbol,sourceAt:e.sourceAt}));
   const clocks=(t:string|null)=>t===null||!Number.isFinite(Date.parse(t))?'UNKNOWN':now-Date.parse(t)<0?'FUTURE':now-Date.parse(t)>120000?'STALE':'FRESH';
@@ -51,8 +52,8 @@ export function assessGuidanceDelivery(input:GuidanceInput,captures:DeliveryCapt
   const analysis=input.analyst,age=analysis?now-Date.parse(analysis.assessedAt):Infinity;
   const reviewStatus=!analysis||!['GLD','IBIT'].every(s=>analysis.assets.some(a=>a.symbol===s&&a.sources.length))?'MISSING':age<0?'FUTURE':input.captureAt&&analysis.assessedAt<input.captureAt?'PRECEDES_CAPTURE':age>86400000?'STALE':'CURRENT';
   return {version:'OPTIONS_GUIDANCE_DELIVERY_V1',assessedAt:input.at,
-    scope:'Three fixed guidance windows only; event-dependent extra reads and full-chain close captures are separate. Captures are associated by time, not proof of scheduled execution.',
-    slotMinutesNewYork:MINUTES,lookbackCalendarDays:7,slots,counts:{expectedCompleted:slots.filter(s=>s.endAt<=input.at&&s.status!=='CALENDAR_UNKNOWN').length,recorded:slots.filter(s=>s.endAt<=input.at&&s.status!=='CALENDAR_UNKNOWN'&&s.capture).length,missing:slots.filter(s=>['NO_CAPTURE_SAVED','CLAIM_WITHOUT_CAPTURE'].includes(s.status)).length,partial:slots.filter(s=>s.endAt<=input.at&&s.status==='PARTIAL_CAPTURE_RECORDED').length,calendarUnknown:slots.filter(s=>s.status==='CALENDAR_UNKNOWN').length},nextExpectedSlot,
+    scope:guidanceDeliveryScope(local.date),
+    slotMinutesNewYork:guidanceFixedMinutes(local.date),lookbackCalendarDays:7,slots,counts:{expectedCompleted:slots.filter(s=>s.endAt<=input.at&&s.status!=='CALENDAR_UNKNOWN').length,recorded:slots.filter(s=>s.endAt<=input.at&&s.status!=='CALENDAR_UNKNOWN'&&s.capture).length,missing:slots.filter(s=>['NO_CAPTURE_SAVED','CLAIM_WITHOUT_CAPTURE'].includes(s.status)).length,partial:slots.filter(s=>s.endAt<=input.at&&s.status==='PARTIAL_CAPTURE_RECORDED').length,calendarUnknown:slots.filter(s=>s.status==='CALENDAR_UNKNOWN').length},nextExpectedSlot,
     latestCapture:captures.find(c=>c.capturedAt===input.captureAt&&c.origin===input.captureOrigin&&c.recordedAt<=input.at)??null,
     quoteClocks,analysis:{assessedAt:analysis?.assessedAt??null,status:reviewStatus,limitation:'Clock ordering and attribution do not establish substantive analysis quality.'},
     publication:publication?{...publication,usesCurrentMarketInputs:publication.marketFingerprint===guidanceMarketFingerprint(input)}:null,

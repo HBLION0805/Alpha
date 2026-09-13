@@ -1,3 +1,5 @@
+import {guidanceFixedMinutes} from '../../src/engines/options-daily-guidance/OptionsGuidanceSchedule.ts';
+
 /** Runs only in the authorized Host with injected market tools; no credentials here. */
 export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
   if(!Array.isArray(trackedContracts)||trackedContracts.length>6||new Set(trackedContracts.map(c=>c.id)).size!==trackedContracts.length||trackedContracts.some(c=>!c||!['GLD','IBIT'].includes(c.symbol)||!['call','put'].includes(c.type)||!/^\d{4}-\d\d-\d\d$/.test(c.expiry)||!/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(c.id)||c.multiplier!==100||!Number.isFinite(Number(c.strike))||Number(c.strike)<=0))throw Error('GUIDANCE_TRACKED_CONTRACTS');
@@ -58,6 +60,6 @@ export function routeDailyGuidance(at,{ongoing=false}={}) {
   const closes=["2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-14","2026-09-15","2026-09-16"];
   const close=!ongoing&&closes.includes(date)&&hour*60+minute>=980&&hour*60+minute<1080;
   const daily=hour===9&&minute<20,news=minute>=20&&minute<50;
-  const market=weekday&&[9,12,15].includes(hour)&&minute>=50;
+  const market=weekday&&guidanceFixedMinutes(date).includes(hour*60+50)&&minute>=50;
   return {version:"OPTIONS_GUIDANCE_ROUTE_V1",at,date,hour,slot:date+"-"+String(hour).padStart(2,"0")+(daily?"00":minute>=50?"50":"20"),dailyContext:daily,refreshNews:news||daily,marketCapture:market,closeCapture:close,publish:news||daily||market,restoreAfterClose:close&&date==="2026-09-16",pastCloseWindow:!ongoing&&(date>"2026-09-16"||date==="2026-09-16"&&hour*60+minute>=1080),developmentEnabled:false,executionAllowed:false};
 }
