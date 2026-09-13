@@ -1,5 +1,20 @@
 # Alpha Development Standard v1.0
 
+## Paper collection planning — September 12, 2026
+
+Preview/UI now compare frozen paper windows with dated routine wakes and current
+saved event dates. A lone 15:50 wake cannot provide entry and independent exit;
+16:20 chain studies are not adapter sources. Missing/overdue calendars retain
+conditional gaps. Original reports, enrollment rules, pricing and schedules stay
+unchanged. The Owner continuation registered and enrolled engineering rehearsal
+pipeline-check-ibit-20260915: IBIT Oct 9 $43 call, September 15 14:10–14:40 entry,
+15:40 time exit, 16:20 cutoff New York; nominal 14:20 conditional entry / 15:50
+routine exit. One contract, $2.50 limit, $0.10 spread, $0.01 exit allowance, existing
+dated estimated fees and 20%/net-2R assumptions; zero initial fills. This is not a
+bullish recommendation. Preserve September 10 NO_ENTRY and all older evidence.
+No new timer, brokerage call, order, approved lesson or real-price gate change.
+See docs/OPTIONS_PAPER_COLLECTION_PLAN_DELIVERY.md and docs/status/paper-collection-plan.json.
+
 ## Per-contract quote coverage — September 12, 2026
 
 Delivery health/UI/Host now distinguish source-missing quotes, request failures,

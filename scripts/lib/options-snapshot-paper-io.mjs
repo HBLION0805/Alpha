@@ -9,6 +9,8 @@ import {assessPaperEventContext,eventPlanningChoices,readEventGuidance} from '..
 import {snapshotCents,snapshotNs,assessSnapshotQuote,validateSnapshotPlan,replaySnapshotPaper,PAPER_V2_GAPS,PAPER_FEE_PROFILE} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {guidanceLocal} from '../../src/engines/options-daily-guidance/OptionsDailyGuidance.ts';
+import {assessPaperCollectionPlan} from '../../src/engines/options-robinhood-data/OptionsPaperCollectionPlan.ts';
+import {runOptionsCalendarBriefCommand} from '../options-calendar-brief.mjs';
 
 const BASE='data/runtime/options-snapshot-paper',MAX=64*1024*1024;
 const fail=c=>{throw Error('SNAPSHOT_PAPER_'+c);};
@@ -92,6 +94,20 @@ export function snapshotObservationEnd(plan){
   return new Date(Math.floor(Date.parse(p.timeExitAt)/60000)*60000+(session.closeMinute-local.minute+5)*60000).toISOString();
 }
 export function previewSnapshotPaper(root,request,at=new Date().toISOString()){return prepare(root,request,at).report;}
+export function paperCollectionCalendar(brief){
+  const sources=['bls','fomc'].map(id=>{const s=brief?.sources?.[id];return {id,state:s?.state??'MISSING',receivedAt:s?.lastKnownReceivedAt??null,refreshOverdue:s?.refreshOverdue??null};});
+  return {state:sources.some(s=>s.state!=='AVAILABLE')?'UNAVAILABLE':sources.some(s=>s.refreshOverdue!==false)?'STALE':'AVAILABLE',sources,
+    events:(brief?.groups??[]).flatMap(g=>[...g.dateOnlyEntries,...g.scheduledTimeEntries]).slice(0,100).map(e=>({title:e.title,source:e.source,startDate:e.startDate,endDate:e.endDate,scheduledAt:e.scheduledAt??null}))};
+}
+export function paperCollectionDesk(desk,brief){
+  const calendar=paperCollectionCalendar(brief);
+  return {...desk,collectionCalendar:calendar,cases:desk.cases.map(c=>({...c,collectionPlan:assessPaperCollectionPlan(c.plan,desk.assessedAt,calendar)}))};
+}
+export async function previewSnapshotPaperCollection(root,request,at=new Date().toISOString()){
+  const report=previewSnapshotPaper(root,request,at);
+  const brief=await runOptionsCalendarBriefCommand(['--report','--json'],{workspaceRoot:root,now:()=>at});
+  return {...report,collectionPlan:assessPaperCollectionPlan(report.plan,at,paperCollectionCalendar(brief))};
+}
 export function registerSnapshotPaper(root,request,at=new Date().toISOString()){
   root=realpathSync(root);const path=BASE+'/plans/'+id(request?.id)+'.json';
   if(existsSync(resolve(root,path))){const r=validateRegistration(read(root,path));if(paperFingerprint(r.request)!==paperFingerprint(request))fail('REQUEST_CONFLICT');return {path,alreadyRecorded:true,executionAllowed:false};}

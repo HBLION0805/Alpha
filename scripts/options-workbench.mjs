@@ -42,7 +42,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
       const chunks=[];let length=0;
       for await(const chunk of req){length+=chunk.length;if(length>MAX_BODY){reject(413,'BODY_TOO_LARGE');return;}chunks.push(chunk);}
       let body;try{body=parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(Buffer.concat(chunks)));}catch{return reject(400,'JSON_INVALID');}
-      if(url.pathname==='/api/snapshot-paper')return send(200,service.snapshotPaper(body));
+      if(url.pathname==='/api/snapshot-paper')return send(200,await service.snapshotPaper(body));
       if(url.pathname==='/api/position-watch')return send(200,service.positionWatch(body));
       if(url.pathname==='/api/evaluate')return send(200,service.evaluate(body));
       if(url.pathname==='/api/cost-desk')return send(200,service.costDesk(body));

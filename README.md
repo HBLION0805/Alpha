@@ -1,5 +1,9 @@
 # Alpha
 
+[Paper collection planning](docs/OPTIONS_PAPER_COLLECTION_PLAN_DELIVERY.md) checks
+entry and exit windows against routine and conditional event reads. A September
+15 engineering rehearsal is enrolled; it has no observed fills yet.
+
 [Quote delivery coverage](docs/OPTIONS_QUOTE_COVERAGE_DELIVERY.md) lists missing
 contracts by expiry and separates source omissions from failed requests.
 

@@ -1,5 +1,12 @@
 # Alpha Handoff
 
+Latest step: [paper collection planning](OPTIONS_PAPER_COLLECTION_PLAN_DELIVERY.md).
+The form/previews now identify missing or conditional entry/exit capture pairs.
+Engineering plan pipeline-check-ibit-20260915 is frozen and enrolled, with nominal
+14:20 conditional entry / 15:50 routine exit on September 15 New York. Initial
+fills are zero; future quotes and all original checks remain necessary. Preserve
+old NO_ENTRY results and V2 schedules. See [checkpoint](status/paper-collection-plan.json).
+
 Latest increment: [per-contract quote coverage](OPTIONS_QUOTE_COVERAGE_DELIVERY.md).
 UI/Host/CLI expose exact expiry and identity gaps without changing decisions or
 source calls. The twelve missing September 28 quotes were absent in the original

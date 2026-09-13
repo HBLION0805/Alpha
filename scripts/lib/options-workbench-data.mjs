@@ -31,7 +31,7 @@ import { evaluateOptionsPlanningFeasibility } from '../../src/engines/options-re
 import { assessOptionsCostDesk } from '../../src/engines/options-retail-feasibility/OptionsCostDesk.ts';
 import { assessOptionsCapitalPolicy } from '../../src/engines/options-retail-feasibility/OptionsCapitalPolicy.ts';
 
-import {snapshotPaperView,previewSnapshotPaper,registerSnapshotPaper,saveSnapshotPaperReport} from './options-snapshot-paper-io.mjs';
+import {snapshotPaperView,previewSnapshotPaperCollection,paperCollectionDesk,registerSnapshotPaper,saveSnapshotPaperReport} from './options-snapshot-paper-io.mjs';
 import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
@@ -114,7 +114,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.barQuality=await component(()=>readBarQualityDesk(root,at),at);
     result.macroContext=await component(()=>macroContextView(root,at,treasury.data),at);
     result.goldFramework=await component(()=>goldFrameworkView(result,at),at);
-    result.snapshotPaper=await component(()=>{const desk=snapshotPaperView(root,at);return {...desk,observations:paperObservationView(root,desk,at)};},at);
+    result.snapshotPaper=await component(()=>{const desk=snapshotPaperView(root,at);return {...paperCollectionDesk(desk,calendar.data),observations:paperObservationView(root,desk,at)};},at);
     result.positionWatch=await component(()=>watchFromDesk(manual.data,result.snapshotPaper.data,at),at);
     return result;
   }
@@ -169,7 +169,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
       return saveSnapshotPaperReport(root,body.id,now());
     }
     if(Object.keys(body).sort().join()!=='action,request')fail('SNAPSHOT_FIELDS');
-    return body.action==='PREVIEW'?previewSnapshotPaper(root,body.request,now()):registerSnapshotPaper(root,body.request,now());
+    return body.action==='PREVIEW'?previewSnapshotPaperCollection(root,body.request,now()):registerSnapshotPaper(root,body.request,now());
   }
   return {positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

@@ -1,5 +1,15 @@
 # Alpha Architecture
 
+## Paper collection timing preflight
+
+OptionsPaperCollectionPlan composes the unchanged snapshot-plan validator and
+paper session with shared dated guidance minutes and major-event classification.
+The existing calendar reader supplies dates and receipt freshness. Frontend
+preview/plan views and an opt-in CLI expose the separate planning projection;
+canonical saved paper reports, enrollment and fill semantics remain unchanged.
+No scheduler or source transport is introduced. See
+[design](specifications/OPTIONS_PAPER_COLLECTION_PLAN_V1.md).
+
 ## Saved ETF observations around scheduled events
 
 OptionsEventReaction consumes verified guidance captures with optional exact equity

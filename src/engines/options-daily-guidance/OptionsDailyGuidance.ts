@@ -4,6 +4,7 @@ import { readinessClock } from "../options-readiness/OptionsReadinessEngine";
 import { exchangeLocalDate } from "../market-calendar/MarketCalendarValidation";
 import { guidanceLocal } from "./OptionsGuidanceClock";
 import { paperSession, PAPER_SESSION_CALENDAR } from "../options-robinhood-data/RobinhoodPaperSession";
+import { isGuidanceMajorEvent } from "./OptionsGuidanceSchedule";
 export { guidanceLocal } from "./OptionsGuidanceClock";
 
 const DAY = 86400000;
@@ -54,7 +55,7 @@ export function assessDailyGuidance(input: GuidanceInput) {
   const upcoming=input.events.map(e=>{
     if(!date(e.startDate)||!date(e.endDate)||e.endDate<e.startDate) fail("EVENT");
     if(e.scheduledAt!==null)readinessClock(e.scheduledAt);
-    const major=e.source==="FOMC" || /Consumer Price Index|Producer Price Index|Employment Situation|Job Openings|Personal Income|Gross Domestic/i.test(e.title);
+    const major=isGuidanceMajorEvent(e);
     const dt=e.scheduledAt===null?null:Date.parse(e.scheduledAt)-Date.parse(input.at);
     const priorDay=new Date(Date.parse(e.startDate)-DAY).toISOString().slice(0,10);
     const gated=major && (dt===null ? local.date>=priorDay && local.date<=e.endDate : dt<=DAY && dt>=-30*60000);

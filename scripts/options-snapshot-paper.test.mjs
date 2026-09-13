@@ -11,12 +11,13 @@ import {defaultGuidanceSettings,assessDailyGuidance} from '../src/engines/option
 import {paperEventKey} from '../src/engines/options-robinhood-data/OptionsPaperEventPlan.ts';
 import {collectGuidanceMarket} from './lib/options-guidance-host.mjs';
 import {normalizeGuidanceCapture,saveGuidanceSettings,guidanceView} from './lib/options-guidance-io.mjs';
-import {mapSnapshotSource,snapshotSources,previewSnapshotPaper,registerSnapshotPaper,saveSnapshotPaperReport,verifySnapshotPaper,snapshotPaperView,saveSnapshotObservation,snapshotObservationEnd} from './lib/options-snapshot-paper-io.mjs';
+import {mapSnapshotSource,snapshotSources,previewSnapshotPaper,previewSnapshotPaperCollection,paperCollectionCalendar,paperCollectionDesk,registerSnapshotPaper,saveSnapshotPaperReport,verifySnapshotPaper,snapshotPaperView,saveSnapshotObservation,snapshotObservationEnd} from './lib/options-snapshot-paper-io.mjs';
+import {assessPaperCollectionPlan} from '../src/engines/options-robinhood-data/OptionsPaperCollectionPlan.ts';
 import {enrollPaperObservation,cancelPaperObservation,paperObservationView,observePaperPlans,combinePaperTracking,savedPaperProcessReview} from './lib/options-paper-observation-io.mjs';
 import {runLocalPaperFinalization,startPublicContextService} from './options-context-service.mjs';
 import {runGuidanceCommand} from './options-daily-guidance.mjs';
 import {verifyGuidanceRecord} from './lib/options-guidance-io.mjs';
-import {snapshotRequest,snapshotResult,snapshotPaperPanel,localPaperServicePanel,savedProcessReview,paperEventPanel} from '../apps/options-workbench/snapshot-paper.js';
+import {snapshotRequest,snapshotResult,snapshotPaperPanel,localPaperServicePanel,savedProcessReview,paperEventPanel,paperCollectionPanel} from '../apps/options-workbench/snapshot-paper.js';
 import {request as browserRequest} from '../apps/options-workbench/api.js';
 import {startOptionsWorkbench} from './options-workbench.mjs';
 
@@ -103,7 +104,7 @@ await test('local API requires session and exposes paper workflow without source
     const state=await(await fetch(app.url+'/api/state')).json();assert.equal(state.snapshotPaper.state,'AVAILABLE');
     const send=(body,session=state.session)=>fetch(app.url+'/api/snapshot-paper',{method:'POST',headers:{Origin:app.url,'Content-Type':'application/json','X-Alpha-Session':session},body:JSON.stringify(body)});
     assert.equal((await send({action:'PREVIEW',request:request()},'bad')).status,403);
-    const preview=await send({action:'PREVIEW',request:request()});assert.equal(preview.status,200);assert.equal((await preview.json()).status,'NO_ENTRY');
+    const preview=await send({action:'PREVIEW',request:request()});assert.equal(preview.status,200);const body=await preview.json();assert.equal(body.status,'NO_ENTRY');assert.equal(body.collectionPlan.calendar.state,'UNAVAILABLE');assert.equal(body.collectionPlan.executionAllowed,false);
     assert.equal((await send({action:'REGISTER',request:request()})).status,200);assert.equal((await send({action:'SAVE_REPORT',id:'synthetic-case'})).status,200);assert.equal((await send({action:'ORDER',request:request()})).status,409);
     assert.equal((await fetch(app.url+'/snapshot-paper.js')).status,200);
   }finally{await app.close();}
@@ -349,5 +350,64 @@ await test('paper draft edits clear a preview even when the named ID control sha
     runInNewContext(code+'\nupdateDraft(el);',{el:{name,value:values[name],closest:()=>form},ui,dirty,drafts,FormData:class{constructor(f){assert.equal(f,form);return Object.entries(values);}},$:selector=>selector==='#snapshot-paper-preview'?panel:selector==='#freeze-snapshot-paper'?button:null,snapshotResult});
     assert.equal(ui.snapshotDraft.id,'preserved-plan');assert.equal(ui.snapshotDraft[name],values[name]);assert.equal(ui.snapshotPreview,null);assert.equal(button.disabled,true);assert.equal(panel.innerHTML,snapshotResult(null));assert(dirty.has('snapshot-paper'));assert.deepEqual(drafts.register,{});
   }
+});
+const collectionAt='2026-09-12T21:00:00.000Z';
+const collectionPlan=(date='2026-09-15',decision='18:10',deadline='18:40',exit='19:40')=>({...plan2(),contract:{...plan2().contract,expiry:'2026-12-31'},decisionAt:date+'T'+decision+':00.000Z',entryDeadlineAt:date+'T'+deadline+':00.000Z',timeExitAt:date+'T'+exit+':00.000Z'});
+const collectionCalendar=(events=[{source:'FOMC',title:'FOMC meeting dates',startDate:'2026-09-15',endDate:'2026-09-16',scheduledAt:null}])=>({state:'AVAILABLE',sources:[],events});
+await test('one routine wake cannot cover both paper entry and time exit after schedule reduction',()=>{
+  const r=assessPaperCollectionPlan(collectionPlan('2026-09-14','19:40','19:55','20:00'),collectionAt,collectionCalendar());
+  assert.equal(r.status,'SCHEDULE_GAP');assert.equal(r.pair,null);assert(r.gaps.includes('NO_NOMINAL_TIME_EXIT_WAKE'));
+  assert.deepEqual(r.wakes.filter(w=>w.basis==='ROUTINE').map(w=>w.localTime),['15:50']);assert(!r.wakes.some(w=>['09:50','12:50','16:20'].includes(w.localTime)));
+});
+await test('event-day entry and later routine exit form a conditional distinct pair',()=>{
+  const p=collectionPlan(),before=paperFingerprint(p),r=assessPaperCollectionPlan(p,collectionAt,collectionCalendar());
+  assert.equal(r.status,'CONDITIONAL_PAIR');assert.equal(r.pair.entry.localTime,'14:20');assert.equal(r.pair.exit.localTime,'15:50');assert.equal(r.pair.conditional,true);
+  assert.equal(r.calendar.events[0].scheduledAt,null);assert.equal(paperFingerprint(p),before);assert.equal(r.sourceReads,0);assert.equal(r.scheduleChanged,false);assert.equal(r.executionAllowed,false);
+});
+await test('event collection requires the listed date rather than the prior-day guidance wait',()=>{
+  const r=assessPaperCollectionPlan(collectionPlan('2026-09-14'),collectionAt,collectionCalendar());assert.equal(r.eventState,'NO_LISTED_MAJOR_EVENT');assert.equal(r.pair,null);
+  const minor=collectionCalendar([{source:'BLS',title:'Employee Tenure',startDate:'2026-09-15',endDate:'2026-09-15',scheduledAt:'2026-09-15T14:00:00Z'}]);assert.equal(assessPaperCollectionPlan(collectionPlan(),collectionAt,minor).pair,null);
+});
+await test('missing and stale calendars keep event wakes unconfirmed without suppressing routine reads',()=>{
+  for(const state of ['STALE','UNAVAILABLE']){const r=assessPaperCollectionPlan(collectionPlan(),collectionAt,{...collectionCalendar(),state});assert.equal(r.eventState,'UNCONFIRMED');assert.equal(r.pair,null);assert(r.wakes.some(w=>w.basis==='EVENT_UNCONFIRMED'));assert(r.wakes.some(w=>w.basis==='ROUTINE'));}
+  const c=paperCollectionCalendar(null);assert.equal(c.state,'UNAVAILABLE');assert.deepEqual(c.events,[]);
+  assert.equal(paperCollectionCalendar({sources:{bls:{state:'AVAILABLE',refreshOverdue:false},fomc:{state:'AVAILABLE',refreshOverdue:true}},groups:[]}).state,'STALE');
+});
+await test('pre-change paper dates retain their old three routine wakes',()=>{
+  const r=assessPaperCollectionPlan(collectionPlan('2026-09-11','13:40','14:00','16:40'),'2026-09-10T21:00:00Z',collectionCalendar([]));
+  assert.equal(r.status,'ROUTINE_PAIR');assert.equal(r.pair.entry.localTime,'09:50');assert.equal(r.pair.exit.localTime,'12:50');
+});
+await test('decision and deadline boundaries are explicit nominal references',()=>{
+  const c=collectionCalendar([]),r=assessPaperCollectionPlan(collectionPlan('2026-09-14','19:50','20:00','20:05'),collectionAt,c);
+  assert.equal(r.pair,null);assert(r.gaps.includes('DECISION_AT_WAKE_BOUNDARY'));assert.equal(r.wakes.find(w=>w.localTime==='15:50').entryWake,false);
+  const deadline=assessPaperCollectionPlan(collectionPlan('2026-09-14','19:40','19:50','20:00'),collectionAt,c);assert.equal(deadline.wakes.find(w=>w.localTime==='15:50').entryWake,true);
+});
+await test('paper collection respects the reviewed DST clock and early close',()=>{
+  const winter=assessPaperCollectionPlan(collectionPlan('2026-11-02','20:40','20:55','21:00'),collectionAt,collectionCalendar([]));assert.equal(winter.wakes.find(w=>w.localTime==='15:50').wakeAt,'2026-11-02T20:50:00.000Z');
+  const early=assessPaperCollectionPlan(collectionPlan('2026-11-27','17:10','17:30','17:55'),collectionAt,collectionCalendar([]));assert.equal(early.sessionCloseLocal,'13:15');assert(early.wakes.every(w=>w.localTime<'13:15'));assert.equal(early.pair,null);
+});
+await test('holidays and unreviewed years cannot gain collection qualification',()=>{
+  for(const date of ['2026-11-26','2026-09-12','2027-09-15']){const p=collectionPlan(date);p.contract.expiry='2027-12-31';assert.throws(()=>assessPaperCollectionPlan(p,collectionAt,collectionCalendar()),/SESSION_WINDOW/);}
+});
+await test('a past plan is never presented as open for future enrollment',()=>{
+  const r=assessPaperCollectionPlan(collectionPlan(),'2026-09-16T00:00:00Z',collectionCalendar());assert.equal(r.status,'ENROLLMENT_WINDOW_PASSED');assert.equal(r.enrollmentWindowOpen,false);assert(r.wakes.every(w=>w.alreadyPassed));
+});
+await test('collection preview and desk leave canonical paper reports and source copies unchanged',()=>temp(async root=>{
+  await seed(root);const req=request2(),original=previewSnapshotPaper(root,req,at(1)),copies=snapshotSources(root),preview=await previewSnapshotPaperCollection(root,req,at(1));
+  const {collectionPlan:check,...same}=preview;assert.deepEqual(same,original);assert.equal(check.calendar.state,'UNAVAILABLE');assert.deepEqual(snapshotSources(root),copies);assert.equal(snapshotPaperView(root,at(1)).cases.length,0);
+  const saved=registerSnapshotPaper(root,req,at(1)),bytes=readFileSync(resolve(root,saved.path)),desk=snapshotPaperView(root,at(1)),decorated=paperCollectionDesk(desk,null);
+  assert.equal(decorated.cases[0].collectionPlan.planId,req.id);assert(!Object.hasOwn(desk.cases[0],'collectionPlan'));assert.deepEqual(decorated.cases[0].current,desk.cases[0].current);assert.deepEqual(readFileSync(resolve(root,saved.path)),bytes);assert.equal(verifySnapshotPaper(root,saved.path).status,'VERIFIED');
+}));
+await test('a planned event wake pair feeds the unchanged synthetic lifecycle and review',()=>{
+  const p={...plan2(),decisionAt:'2026-09-15T18:10:00.000Z',entryDeadlineAt:'2026-09-15T18:40:00.000Z',timeExitAt:'2026-09-15T19:40:00.000Z'};
+  const check=assessPaperCollectionPlan(p,collectionAt,collectionCalendar()),seconds=s=>(Date.parse(s)-Date.parse(at(0)))/1000;
+  const entry=frame2(seconds(check.pair.entry.wakeAt)),exit=frame2(seconds(check.pair.exit.wakeAt),219,220);
+  const r=replaySnapshotPaper(p,[frame2(0),entry,exit],'2026-09-15T20:00:00.000Z');
+  assert.equal(r.status,'CLOSED_MODELED');assert.equal(r.fills.length,2);assert.equal(r.fills[1].reason,'TIME_EXIT');assert(r.quoteGapObserved);assert.equal(r.review.outcome,'WIN');assert.equal(r.actualTrades,0);assert.equal(r.gates.completeRealPriceLifecycle,'OPEN');
+});
+await test('collection UI explains conditional coverage and removes cancelled form instructions',()=>{
+  const c=collectionCalendar();c.events[0].title='<img src=x>';const r=assessPaperCollectionPlan(collectionPlan(),collectionAt,c),html=paperCollectionPanel(r);
+  assert(html.includes('14:20 entry'));assert(html.includes('15:50 exit'));assert(html.includes('Depends on an event-day read'));assert(html.includes('Intraday time unknown'));assert(!html.includes('<img'));assert(html.includes('&lt;img'));assert(!html.includes('data-order'));assert.equal(paperCollectionPanel(null),'');
+  const page=snapshotPaperPanel({state:'AVAILABLE',data:{sourceGaps:[],latest:null,cases:[]}});assert(!page.includes('Existing fixed capture windows start at 09:50'));assert(page.includes('09:50 and 12:50 slots are cancelled'));
 });
 console.log(`Options snapshot paper tests passed: ${passed}/${passed}.`);

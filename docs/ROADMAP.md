@@ -1,5 +1,11 @@
 # Alpha Roadmap
 
+[Paper collection planning](OPTIONS_PAPER_COLLECTION_PLAN_DELIVERY.md) now makes
+the entry/exit timing gap visible before a new plan. The September 15 engineering
+rehearsal is enrolled for existing conditional/routine captures, awaiting real
+observations. The eight-stage, ten-workstream and six-gate statuses are unchanged;
+no prospective actual-quote lifecycle has completed.
+
 [Event expectation/observation comparison](OPTIONS_EVENT_REACTION_DELIVERY.md)
 now adds F03 context using saved clocks and fixed windows. Current PPI/CPI evidence
 is incomplete and FOMC has date-only timing. Next obtain usable observations under

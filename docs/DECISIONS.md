@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## September 12, 2026 — Match paper windows to distinct scheduled observations
+
+Show routine versus event-conditional entry/exit wake pairs before a new paper
+registration. The paper adapter cannot consume the separate 16:20 full-chain
+study, and one capture cannot count as both entry and exit. Keep this planning
+comparison outside immutable fill reports and existing enrollment rules. The new
+September 15 engineering rehearsal uses the current schedule without new timers.
+See [design](specifications/OPTIONS_PAPER_COLLECTION_PLAN_V1.md).
+
 ## September 12, 2026 — Record quote omissions without retrying
 
 A successful market-tool call can omit requested identities. Keep transport

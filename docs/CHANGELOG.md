@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## September 12, 2026 — Paper collection timing and future rehearsal
+
+- Added dated entry/exit collection checks to preview, CLI and frozen-plan UI;
+  removed obsolete form instructions for cancelled routine reads.
+- Registered the September 15 engineering paper rehearsal within existing Host
+  tracking; zero initial fills. Original schedules, reports and real-price gates
+  remain. See [delivery](OPTIONS_PAPER_COLLECTION_PLAN_DELIVERY.md).
+
 ## September 12, 2026 — Per-contract quote delivery coverage
 
 - Added expiry-level and individual-contract coverage to Daily guidance and the

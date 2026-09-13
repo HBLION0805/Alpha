@@ -1,0 +1,294 @@
+{
+  "version": "OPTIONS_PAPER_COLLECTION_PLAN_CHECKPOINT_V1",
+  "recordedAt": "2026-09-13T01:13:24.385Z",
+  "baseCommit": "a0f30bbe4e4b0cbd10800bd0e578aec59115c3bb",
+  "planningComparisonImplemented": true,
+  "activation": {
+    "recordedAt": "2026-09-13T01:08:26.926Z",
+    "registration": {
+      "path": "data/runtime/options-snapshot-paper/plans/pipeline-check-ibit-20260915.json",
+      "alreadyRecorded": false,
+      "executionAllowed": false
+    },
+    "registrationVerification": {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-snapshot-paper/plans/pipeline-check-ibit-20260915.json",
+      "fingerprint": "sha256:f0c80f801f958bc19a551a48d1dbdb96fbea5b50e22e7de289c4355b5fd062e5",
+      "executionAllowed": false
+    },
+    "enrollment": {
+      "path": "data/runtime/options-snapshot-paper/observations/enrolled/pipeline-check-ibit-20260915.json",
+      "alreadyRecorded": false,
+      "executionAllowed": false
+    },
+    "initialReport": {
+      "path": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260915/2026-09-13T01-08-24-581Z-a84df244-b28a-46ce-b21e-1844f9d0ad97.json",
+      "status": "NO_ENTRY",
+      "executionAllowed": false
+    },
+    "initialReportVerification": {
+      "status": "VERIFIED",
+      "path": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260915/2026-09-13T01-08-24-581Z-a84df244-b28a-46ce-b21e-1844f9d0ad97.json",
+      "fingerprint": "sha256:7c8f0768d0fd64e4c043ec33289fa28e865211b27f5021b6f06be7e470b033c8",
+      "executionAllowed": false
+    },
+    "observation": {
+      "planId": "pipeline-check-ibit-20260915",
+      "enrolledAt": "2026-09-13T01:08:24.271Z",
+      "monitorUntilAt": "2026-09-15T20:20:00.000Z",
+      "purpose": "PIPELINE_REHEARSAL_NOT_SIGNAL",
+      "origin": "HOST_MARKET_TOOL_RESPONSES",
+      "state": "AWAITING_WINDOW",
+      "contract": {
+        "id": "243228c1-a534-4f10-a483-caefebca4c4e",
+        "symbol": "IBIT",
+        "expiry": "2026-10-09",
+        "type": "call",
+        "strike": "43.0000",
+        "multiplier": 100
+      },
+      "currentPaperStage": "AWAITING_WINDOW",
+      "automaticReports": 0,
+      "lastAutomaticReport": null,
+      "tracking": "INCLUDED"
+    },
+    "trackedContracts": 1,
+    "collectionPlan": {
+      "version": "OPTIONS_PAPER_COLLECTION_PLAN_V1",
+      "assessedAt": "2026-09-13T01:08:23.399Z",
+      "planId": "pipeline-check-ibit-20260915",
+      "planDate": "2026-09-15",
+      "status": "CONDITIONAL_PAIR",
+      "comparisonBasis": "CURRENT_SAVED_CALENDAR_AND_DATED_SCHEDULE",
+      "enrollmentWindowOpen": true,
+      "sessionCloseAt": "2026-09-15T20:15:00.000Z",
+      "sessionCloseLocal": "16:15",
+      "decisionAt": "2026-09-15T18:10:00.000Z",
+      "entryDeadlineAt": "2026-09-15T18:40:00.000Z",
+      "timeExitAt": "2026-09-15T19:40:00.000Z",
+      "calendar": {
+        "state": "AVAILABLE",
+        "sources": [
+          {
+            "id": "bls",
+            "state": "AVAILABLE",
+            "receivedAt": "2026-09-12T21:34:05.928Z",
+            "refreshOverdue": false
+          },
+          {
+            "id": "fomc",
+            "state": "AVAILABLE",
+            "receivedAt": "2026-09-12T21:34:06.343Z",
+            "refreshOverdue": false
+          }
+        ],
+        "events": [
+          {
+            "title": "FOMC meeting dates",
+            "source": "FOMC",
+            "startDate": "2026-09-15",
+            "endDate": "2026-09-16",
+            "scheduledAt": null
+          }
+        ]
+      },
+      "eventState": "LISTED_EVENT_DAY",
+      "wakes": [
+        {
+          "wakeAt": "2026-09-15T14:20:00.000Z",
+          "localTime": "10:20",
+          "basis": "EVENT_CONDITIONAL",
+          "entryWake": false,
+          "timeExitWake": false,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        },
+        {
+          "wakeAt": "2026-09-15T15:20:00.000Z",
+          "localTime": "11:20",
+          "basis": "EVENT_CONDITIONAL",
+          "entryWake": false,
+          "timeExitWake": false,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        },
+        {
+          "wakeAt": "2026-09-15T16:20:00.000Z",
+          "localTime": "12:20",
+          "basis": "EVENT_CONDITIONAL",
+          "entryWake": false,
+          "timeExitWake": false,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        },
+        {
+          "wakeAt": "2026-09-15T17:20:00.000Z",
+          "localTime": "13:20",
+          "basis": "EVENT_CONDITIONAL",
+          "entryWake": false,
+          "timeExitWake": false,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        },
+        {
+          "wakeAt": "2026-09-15T18:20:00.000Z",
+          "localTime": "14:20",
+          "basis": "EVENT_CONDITIONAL",
+          "entryWake": true,
+          "timeExitWake": false,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        },
+        {
+          "wakeAt": "2026-09-15T19:20:00.000Z",
+          "localTime": "15:20",
+          "basis": "EVENT_CONDITIONAL",
+          "entryWake": false,
+          "timeExitWake": false,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        },
+        {
+          "wakeAt": "2026-09-15T19:50:00.000Z",
+          "localTime": "15:50",
+          "basis": "ROUTINE",
+          "entryWake": false,
+          "timeExitWake": true,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        }
+      ],
+      "pair": {
+        "entry": {
+          "wakeAt": "2026-09-15T18:20:00.000Z",
+          "localTime": "14:20",
+          "basis": "EVENT_CONDITIONAL",
+          "entryWake": true,
+          "timeExitWake": false,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        },
+        "exit": {
+          "wakeAt": "2026-09-15T19:50:00.000Z",
+          "localTime": "15:50",
+          "basis": "ROUTINE",
+          "entryWake": false,
+          "timeExitWake": true,
+          "atDecisionBoundary": false,
+          "alreadyPassed": false
+        },
+        "conditional": true
+      },
+      "gaps": [],
+      "limitation": "Nominal Host wakes are planning references, not promised receipts. Event reads require the same-day condition at execution. Contract tracking, current quotes and declared costs remain separate. Sparse observations can miss stops or targets. The 16:20 full-chain study is not a paper-adapter source. A later calendar cannot prove why a past window was missed.",
+      "sourceReads": 0,
+      "scheduleChanged": false,
+      "executionAllowed": false
+    },
+    "newBrokerageCalls": 0,
+    "newSchedules": 0,
+    "actualTrades": 0,
+    "modeledFills": 0,
+    "executionAllowed": false
+  },
+  "validation": {
+    "focusedPaper": "102/102 PASS",
+    "focusedGuidance": "101/101 PASS",
+    "typecheck": "PASS",
+    "syntheticLifecycle": "CLOSED_MODELED with entry, time exit, cash reconciliation and candidate review; path gap retained",
+    "aggregate": "4504/4504 PASS; validation bundle PASS",
+    "log": "data/runtime/options-workbench-development/paper-collection-validation.log",
+    "originalGuidanceReportsVerified": 102,
+    "originalPaperRecordsVerified": 7
+  },
+  "preservation": {
+    "originalFilesChecked": 163,
+    "changedFiles": [],
+    "automationFieldsUnchanged": true,
+    "marketScheduleSha256": "0582eba1ce755cd3dbbaa25cd945f8d2875d550b172b6b587bd1426c03cd0816",
+    "morningReviewSha256": "c3ad66c095c9dbe2a7aaa5fcc910ca5495c53593d27bfe499f8686a27a6d4490",
+    "eveningReviewSha256": "49f3d46d83950722c315e0c7228fb4f5bbabf634ac411610b9d33e7a894f5669"
+  },
+  "workbenchReadback": {
+    "loadedAt": "2026-09-13T01:11:39.311Z",
+    "paperState": "AVAILABLE",
+    "caseId": "pipeline-check-ibit-20260915",
+    "collectionStatus": "CONDITIONAL_PAIR",
+    "pair": {
+      "entry": {
+        "wakeAt": "2026-09-15T18:20:00.000Z",
+        "localTime": "14:20",
+        "basis": "EVENT_CONDITIONAL",
+        "entryWake": true,
+        "timeExitWake": false,
+        "atDecisionBoundary": false,
+        "alreadyPassed": false
+      },
+      "exit": {
+        "wakeAt": "2026-09-15T19:50:00.000Z",
+        "localTime": "15:50",
+        "basis": "ROUTINE",
+        "entryWake": false,
+        "timeExitWake": true,
+        "atDecisionBoundary": false,
+        "alreadyPassed": false
+      },
+      "conditional": true
+    },
+    "modeledFills": 0,
+    "observation": {
+      "planId": "pipeline-check-ibit-20260915",
+      "enrolledAt": "2026-09-13T01:08:24.271Z",
+      "monitorUntilAt": "2026-09-15T20:20:00.000Z",
+      "purpose": "PIPELINE_REHEARSAL_NOT_SIGNAL",
+      "origin": "HOST_MARKET_TOOL_RESPONSES",
+      "state": "AWAITING_WINDOW",
+      "contract": {
+        "id": "243228c1-a534-4f10-a483-caefebca4c4e",
+        "symbol": "IBIT",
+        "expiry": "2026-10-09",
+        "type": "call",
+        "strike": "43.0000",
+        "multiplier": 100
+      },
+      "currentPaperStage": "AWAITING_WINDOW",
+      "automaticReports": 0,
+      "lastAutomaticReport": null,
+      "tracking": "INCLUDED"
+    },
+    "ownerTradeCount": 0,
+    "executionAllowed": false
+  },
+  "stageChange": "F05 planning and prospective enrollment only; no product stage or gate completed",
+  "engineeringCounts": {
+    "localValidated": 4,
+    "partial": 4,
+    "notValidated": 2
+  },
+  "realPriceGateAdvanced": false,
+  "completedActualQuoteLifecycle": false,
+  "newSourceCalls": 0,
+  "newSchedules": 0,
+  "newOwnerTrades": 0,
+  "approvedLessonsAdded": 0,
+  "executionAllowed": false,
+  "hostSourceReadback": {
+    "totalTrackedContracts": 1,
+    "row": {
+      "planId": "pipeline-check-ibit-20260915",
+      "state": "AWAITING_WINDOW",
+      "tracking": "INCLUDED"
+    },
+    "sourceEmbedsContract": true,
+    "sourceInvoked": false
+  },
+  "frontend": {
+    "checkedAt": "2026-09-13T01:13:24.386Z",
+    "newFrozenPlanVisible": true,
+    "nominalPairVisible": true,
+    "conditionalCalendarAndUnknownEventTimeVisible": true,
+    "zeroFillsAndEngineeringPurposeVisible": true,
+    "desktopLayout": "VERIFIED",
+    "browserMutations": 0
+  }
+}
