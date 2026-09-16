@@ -377,6 +377,12 @@ await test('pre-change paper dates retain their old three routine wakes',()=>{
   const r=assessPaperCollectionPlan(collectionPlan('2026-09-11','13:40','14:00','16:40'),'2026-09-10T21:00:00Z',collectionCalendar([]));
   assert.equal(r.status,'ROUTINE_PAIR');assert.equal(r.pair.entry.localTime,'09:50');assert.equal(r.pair.exit.localTime,'12:50');
 });
+await test('September 17 rehearsal has a distinct pair without requiring a major event',()=>{
+  const r=assessPaperCollectionPlan(collectionPlan('2026-09-17','14:15','14:40','15:10'),collectionAt,collectionCalendar([]));
+  assert.equal(r.status,'PAPER_REHEARSAL_PAIR');assert.equal(r.pair.entry.localTime,'10:20');assert.equal(r.pair.exit.localTime,'11:20');assert.equal(r.pair.conditional,false);
+  assert(paperCollectionPanel(r).includes('dated engineering rehearsal'));
+  const next=assessPaperCollectionPlan(collectionPlan('2026-09-18','14:15','14:40','15:10'),collectionAt,collectionCalendar([]));assert.equal(next.pair,null);
+});
 await test('decision and deadline boundaries are explicit nominal references',()=>{
   const c=collectionCalendar([]),r=assessPaperCollectionPlan(collectionPlan('2026-09-14','19:50','20:00','20:05'),collectionAt,c);
   assert.equal(r.pair,null);assert(r.gaps.includes('DECISION_AT_WAKE_BOUNDARY'));assert.equal(r.wakes.find(w=>w.localTime==='15:50').entryWake,false);

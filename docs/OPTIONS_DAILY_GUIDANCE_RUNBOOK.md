@@ -1,5 +1,31 @@
 # Daily news and GLD/IBIT guidance Host
 
+## September 16 restart — current operating instruction
+
+The Owner approved the narrowed daily-decision milestone. The app reported the
+old gld-ibit task absent; both ordered restore/update attempts failed because it
+did not exist. A new gld-ibit heartbeat was created in ONGOING mode using
+OPTIONS_DAILY_GUIDANCE_HOST_V3.json. The expired seven-close study must not run
+or restore again. Older TRANSITIONAL instructions below are historical.
+
+On September 17 only, the existing 10:20 and 11:20 hourly wakes also authorize
+one bounded market capture for enrolled pipeline-check-ibit-20260917, even if
+the event-day condition is false. Claim the actual ongoing slot once; a combined
+event/rehearsal wake still performs only one capture. Use the existing host-source
+collector with active paper identities. Never change the frozen plan, collect
+outside the actual window to backfill it, or treat NO_ENTRY as a round trip.
+Inspect paperObservations after recording and run --observe-paper before each
+publication. Subsequent regular observation/finalization remains unchanged.
+
+After publication, --decision-cards reads the same current decision projection
+used by the frontend. A dated-fee example does not fill missing global fees or
+promote WATCH. Fresh news receipt and fresh option quote clocks remain separate.
+The active goal requires a genuine later-snapshot modeled entry and exit plus
+recoverable review, in addition to the recovered sources and daily cards.
+Routine wakes remain quiet; do not run automatic development or periodic progress
+reports. Source or host failure requiring Owner action must still be disclosed.
+
+
 `deliveryHealth.contractCoverage` now shows all selected contract identities and
 expiry-level counts from the verified original capture. `SOURCE_QUOTE_MISSING`
 means a successful response lacked that ID's quote; it does not establish why.

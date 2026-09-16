@@ -1,0 +1,70 @@
+{
+  "version": "OPTIONS_DAILY_DECISION_MILESTONE_V1",
+  "recordedAt": "2026-09-16T23:05:25.010Z",
+  "status": "IN_PROGRESS",
+  "ownerDirection": "Recover sources, deliver daily GLD/IBIT decision cards, then complete one prospective actual-quote paper round trip and recover its review. Report the stage after completion.",
+  "ownerReportedInterruption": "Codex was not running on Monday and was restarted September 16. Weekend option closure is expected; public collection requires a running service.",
+  "separateObservedIssue": "The app rejected both ordered updates because gld-ibit did not exist. Deletion cause is unknown. Recreated the same ID in ongoing mode and read back ACTIVE fields.",
+  "acceptances": [
+    {
+      "id": "A1",
+      "status": "BOUNDED_RECOVERY_OBSERVED",
+      "evidence": "Nine public feeds succeeded on startup at 22:45 UTC and at the natural 23:00 UTC hourly refresh; BEA remains partial. Treasury, BLS/FOMC and macro readers recovered. Robinhood returned 36/36 requested quotes in a new bounded 16-call capture; GLD instrument enumeration was partial, and option clocks are regular-session close observations, not fresh after-hours executions. Future market-scheduled delivery is still unobserved.",
+      "capturePath": "data/runtime/options-daily-guidance/captures/2026-09-16/2026-09-16T22-46-46-777Z-d30a6108-9209-416f-882f-5d09a6d4d92b.json",
+      "naturalRefreshReceipt": "data/runtime/options-context-service/2026-09-16/hourly-2026-09-16T23.receipt.json"
+    },
+    {
+      "id": "A2",
+      "status": "LOCAL_UI_AND_PROJECTION_VERIFIED",
+      "evidence": "Two daily cards display the same WATCH decisions, new attributed bearish context, source clocks and gaps. At most two budget-compatible reference contracts, unchanged global unknown fees and separately labeled dated-fee examples. Desktop and 390px mobile checked; contract inspection opens the original planner with the correct saved prices and no save. No executable recommendation or probability claimed."
+    },
+    {
+      "id": "A3",
+      "status": "AWAITING_PROSPECTIVE_QUOTES",
+      "planId": "pipeline-check-ibit-20260917",
+      "purpose": "PIPELINE_REHEARSAL_NOT_SIGNAL",
+      "entryWindowNewYork": "2026-09-17 10:15–10:40",
+      "capturePairNewYork": [
+        "2026-09-17 10:20",
+        "2026-09-17 11:20"
+      ],
+      "timeExitNewYork": "2026-09-17 11:10",
+      "modeledFills": 0,
+      "netPnlCents": null,
+      "independentRoundTripRecovered": false,
+      "evidence": "Registered and enrolled before the future window. Unconditional one-day reads use existing hourly wakes and original call limits. Old September 10 and September 15 plans remain finalized NO_ENTRY; no entry is not a loss or a completed round trip."
+    }
+  ],
+  "scheduleSnapshot": "docs/OPTIONS_DAILY_GUIDANCE_HOST_V3.json",
+  "validation": {
+    "decisionCardTests": 9,
+    "snapshotPaperTests": 103,
+    "guidanceTests": 101,
+    "typecheck": "PASS",
+    "fullValidation": {
+      "status": "PASSED",
+      "componentCount": 172,
+      "reportedTestsExecuted": 4540,
+      "reportedPassed": 4540,
+      "failed": 0,
+      "log": "data/runtime/options-workbench-development/milestone-validation-final.log"
+    },
+    "ui": {
+      "desktop": "PASS",
+      "mobile390": "PASS",
+      "contractPlannerNavigation": "PASS",
+      "finalLabelsOnNewTab": "PASS",
+      "browserConsoleErrors": 0
+    },
+    "recovery": {
+      "issuedGuidance": "VERIFIED",
+      "september17Registration": "VERIFIED",
+      "september15NoEntry": "VERIFIED"
+    }
+  },
+  "sourceExecutionQualified": false,
+  "strategyValidated": false,
+  "executionAllowed": false,
+  "winProbability": null,
+  "nextAction": "Await September 17 10:20/11:20 ongoing Host captures; require actual modeled entry and independent exit, then independently recover the copied-source result and candidate review. Keep the goal open on NO_ENTRY or unresolved exposure. Engineering changes verified; no additional modules required to attempt the rehearsal."
+}

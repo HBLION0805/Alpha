@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## September 16, 2026 — Daily decision milestone in progress
+
+- Restored public collection after startup; preserved September 15 NO_ENTRY.
+- Added two compact daily cards with attribution, source clocks, budget references
+  and separately labeled cost examples over unchanged decision/financial engines.
+- Recreated the missing gld-ibit task in ongoing mode; enrolled a new September 17
+  engineering paper plan with a dated 10:20/11:20 capture exception.
+- Actual paper completion remains pending; no order, probability or real execution
+  qualification is claimed. See [milestone](specifications/OPTIONS_DAILY_DECISION_MILESTONE_V1.md).
+
+
 ## September 12, 2026 — Paper collection timing and future rehearsal
 
 - Added dated entry/exit collection checks to preview, CLI and frozen-plan UI;

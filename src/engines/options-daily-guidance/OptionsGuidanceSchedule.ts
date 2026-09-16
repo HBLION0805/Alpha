@@ -2,6 +2,11 @@
 export const GUIDANCE_SINGLE_WINDOW_FROM = '2026-09-13';
 export const GUIDANCE_EVENT_MINUTES = Object.freeze([620, 680, 740, 800, 860, 920]);
 
+/** Owner-authorized one-day paper rehearsal; does not restore cancelled routines. */
+export function guidancePaperMinutes(date: string): number[] {
+  return date === '2026-09-17' ? [620, 680] : [];
+}
+
 export function isGuidanceMajorEvent(event: {source:string;title:string}): boolean {
   return event.source === 'FOMC' || /Consumer Price Index|Producer Price Index|Employment Situation|Job Openings|Personal Income|Gross Domestic/i.test(event.title);
 }

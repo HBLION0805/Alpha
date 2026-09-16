@@ -1,5 +1,23 @@
 # Alpha Development Standard v1.0
 
+## Active daily decision milestone — September 16, 2026
+
+The Owner approved narrowing work to recovered sources, one-page GLD/IBIT daily
+cards and one completed prospective actual-quote paper round trip. Follow
+docs/specifications/OPTIONS_DAILY_DECISION_MILESTONE_V1.md and the current status
+docs/status/daily-decision-milestone.json. Keep the active goal open until actual
+entry/independent exit, net costs and recovered review exist; NO_ENTRY is not
+completion. The Owner reports Codex was off Monday and restarted today. The app
+also explicitly reported the old gld-ibit automation absent; deletion cause is
+unknown. Recreated gld-ibit now follows Host V3 ONGOING fields. Do not restore
+expired close-study fields. September 17-only 10:20/11:20 reads use existing hourly
+wakes independent of an event, for pipeline-check-ibit-20260917 (IBIT Oct 16 $43
+put, engineering only). All old evidence and allocation settings remain. Source
+recovery and card development do not establish a completed paper flow or edge.
+The Owner requests the stage report after completion; routine interim results
+remain quiet. Development continues in this task, not scheduled source wakes.
+
+
 ## Saved option sensitivities — September 12, 2026
 
 Daily guidance and its bounded Host brief now read IV/gamma/theta/vega from the

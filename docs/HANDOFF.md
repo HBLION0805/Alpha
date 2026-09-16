@@ -1,5 +1,20 @@
 # Alpha Handoff
 
+## September 16 — active daily-decision milestone
+
+Continue [the narrowed goal](specifications/OPTIONS_DAILY_DECISION_MILESTONE_V1.md),
+with actual acceptance in [its checkpoint](status/daily-decision-milestone.json).
+Public collection has resumed and new decision cards use original engines. The
+missing gld-ibit automation was recreated in ongoing mode: Host V3 supersedes V2
+for current operation; the expired close-study restoration must not run again.
+September 15 finalized NO_ENTRY after restart. September 17 engineering plan
+pipeline-check-ibit-20260917 is enrolled before its 10:15–10:40 entry window;
+10:20/11:20 existing wakes are now explicit market captures for this one day.
+Time exit 11:10 New York. Independent future quotes, actual modeled round trip
+and recovered review are still required. Do not edit/backfill frozen plans,
+claim phase completion, or expand auxiliary modules while waiting.
+
+
 ## Saved option sensitivities — September 12, 2026
 
 Daily guidance and its bounded Host brief now read IV/gamma/theta/vega from the

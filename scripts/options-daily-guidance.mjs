@@ -28,8 +28,9 @@ export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=(
   if(mode==="--analysis"&&args.length===2)return {path:recordAnalystNote(root,arg),executionAllowed:false};
   if(mode==="--verify"&&args.length===2)return verifyGuidanceRecord(root,arg);
   if(mode==="--explain-report"&&args.length===2)return explainIssuedGuidance(root,arg);
-  if(["--report","--publish","--host-brief","--delivery-health","--event-reactions","--sensitivities"].includes(mode)&&args.length===1) {
+  if(["--report","--publish","--host-brief","--decision-cards","--delivery-health","--event-reactions","--sensitivities"].includes(mode)&&args.length===1) {
     const state=await createWorkbenchData({workspaceRoot:root,now}).state();
+    if(mode==="--decision-cards")return state.decisionCards;
     if(mode==="--delivery-health")return state.guidanceDelivery;
     if(mode==="--event-reactions")return state.eventReactions;
     if(mode==="--sensitivities")return state.guidanceSensitivities;

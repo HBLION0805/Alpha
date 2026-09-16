@@ -1,5 +1,15 @@
 # Alpha Architecture
 
+## Compact daily decision cards — September 16, 2026
+
+The workbench composes a read-only projection of existing guidance, attribution,
+source health and cost-desk calculations. It never changes canonical reports,
+global costs, ranking or trading gates. New cards retain stale/review-order gaps;
+dated fee examples cannot promote WATCH. A September 17-only paper capture pair
+uses existing hourly wakes, with the same bounded Host and snapshot engine.
+See [milestone specification](specifications/OPTIONS_DAILY_DECISION_MILESTONE_V1.md).
+
+
 ## Paper collection timing preflight
 
 OptionsPaperCollectionPlan composes the unchanged snapshot-plan validator and

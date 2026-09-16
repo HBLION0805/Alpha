@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## September 16, 2026 — Narrow the next milestone to daily use and one paper round trip
+
+The Owner approved source recovery, one-page GLD/IBIT decision cards and a complete
+prospective actual-quote snapshot rehearsal. Pause factor-catalog and auxiliary
+dashboard expansion. Keep the existing decision engine and unknown global fees;
+clearly separate dated-fee illustrations. The app confirmed the previous market
+automation absent; recreate its ongoing cadence, with September 17 10:20/11:20
+rehearsal reads on existing hourly wakes. Do not restore the expired close study.
+See [specification](specifications/OPTIONS_DAILY_DECISION_MILESTONE_V1.md).
+
+
 ## September 12, 2026 — Match paper windows to distinct scheduled observations
 
 Show routine versus event-conditional entry/exit wake pairs before a new paper

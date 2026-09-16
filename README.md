@@ -1,5 +1,11 @@
 # Alpha
 
+Current goal: [daily GLD/IBIT decision cards and one real-quote paper round trip](docs/specifications/OPTIONS_DAILY_DECISION_MILESTONE_V1.md).
+The compact cards are on Daily guidance. Public collection was restarted September
+16; the September 17 paper test is prospective and has not completed. Follow the
+[current checkpoint](docs/status/daily-decision-milestone.json), not old waiting dates.
+
+
 [Paper collection planning](docs/OPTIONS_PAPER_COLLECTION_PLAN_DELIVERY.md) checks
 entry and exit windows against routine and conditional event reads. A September
 15 engineering rehearsal is enrolled; it has no observed fills yet.

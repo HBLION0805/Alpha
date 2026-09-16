@@ -5,6 +5,7 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "test:options-decision-card": "tsx scripts/options-decision-card.test.mjs",
     "options:workbench": "tsx scripts/options-workbench.mjs",
     "test:options-workbench": "tsx scripts/options-workbench.test.mjs",
     "test:options-guidance-sensitivities": "tsx scripts/options-guidance-sensitivities.test.mjs",
