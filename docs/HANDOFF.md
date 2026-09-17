@@ -1,5 +1,24 @@
 # Alpha Handoff
 
+## September 17 — Exact-price correction and actual-quote paper round trip
+
+Read [the delivery](OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md) and current
+[milestone checkpoint](status/daily-decision-milestone.json) before older waiting
+instructions below. The original V2 September 17 plan closed at the 14:05 actual
+quote, retaining its frozen terms and the delayed exit/path gaps. Its modeled net
+loss is $9.09 under estimated fees; copied-only recovery verified the result and
+review. Actual trades remain zero.
+
+The 11:27 and 13:49 rejections were caused by fractional-cent ETF prices becoming
+null, not a six-second clock mismatch. V3 preserves exact ETF USD, keeps option
+money cent-exact, and separates clock and price diagnostics. Preserve all V1/V2
+records and do not retrofit corrected exits. The separately registered
+`pipeline-precision-ibit-20260917` uses 14:05–14:10 entry and 14:14 time exit; read
+[its checkpoint](status/snapshot-precision-v3.json) for actual final evidence.
+No recurrence, capital settings or real-order authority changed. The next product
+gap is qualified ETF OHLCV/setup evidence and view-to-contract interpretation,
+not another paper-storage wrapper. Daily cards may remain WATCH.
+
 ## September 17 — Owner-supplied debit-spread review
 
 The Owner supplied opening screenshots and a retrospective explanation for actual

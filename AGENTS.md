@@ -1,5 +1,20 @@
 # Alpha Development Standard v1.0
 
+## Exact ETF price correction — September 17, 2026
+
+New snapshot plans use V3 exact ETF USD with integer micro-USD validation; option
+premiums/fees stay cent-exact. Frozen V1/V2 mappings and report hashes remain
+unchanged. The 11:27 and 13:49 September 17 failures were fractional-cent prices
+mapped to null, not a six-second timing failure. Never repeat that old diagnosis.
+The original V2 rehearsal closed on the independent 14:05 quote, with a $9.09
+estimated net modeled loss and retained path gaps; copied-only recovery passed.
+Read docs/OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md and
+docs/status/snapshot-precision-v3.json for the separate prospective V3 verification.
+The current milestone status supersedes old waiting instructions below. Engineering
+paper completion does not qualify actual execution or strategy benefit. Preserve
+all old evidence, allocations and source schedules; no automatic orders. Prioritize
+qualified traded-ETF OHLCV and prospective setup/contract interpretation next.
+
 ## Owner-supplied spread review — September 17, 2026
 
 Actual debit-spread opening screenshots are saved privately under

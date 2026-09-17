@@ -1,5 +1,14 @@
 # Alpha Roadmap
 
+September 17 update: [actual-quote paper and precision correction](OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md)
+now records the first completed prospective engineering snapshot round trip,
+estimated net costs and copied-source review recovery. Earlier NO_ENTRY/open
+records remain history. This advances the bounded daily-decision milestone;
+the ten workstream definitions and strict six-gate qualification criteria retain
+their meanings. Next qualify ETF OHLCV/setup evidence and connect directional
+views to contract selection, then evaluate independent outcomes. Read the
+[current milestone](status/daily-decision-milestone.json), not dated waiting text below.
+
 [Paper collection planning](OPTIONS_PAPER_COLLECTION_PLAN_DELIVERY.md) now makes
 the entry/exit timing gap visible before a new plan. The September 15 engineering
 rehearsal is enrolled for existing conditional/routine captures, awaiting real

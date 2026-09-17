@@ -1,7 +1,7 @@
 {
   "version": "OPTIONS_DAILY_DECISION_MILESTONE_V1",
-  "recordedAt": "2026-09-17T15:48:23.000Z",
-  "status": "IN_PROGRESS",
+  "recordedAt": "2026-09-17T18:15:37.759Z",
+  "status": "COMPLETED_BOUNDED_ENGINEERING_MILESTONE",
   "ownerDirection": "Recover sources, deliver daily GLD/IBIT decision cards, then complete one prospective actual-quote paper round trip and recover its review. Report the stage after completion.",
   "ownerReportedInterruption": "Codex was not running on Monday and was restarted September 16. Weekend option closure is expected; public collection requires a running service.",
   "separateObservedIssue": "The app rejected both ordered updates because gld-ibit did not exist. Deletion cause is unknown. Recreated the same ID in ongoing mode and read back ACTIVE fields.",
@@ -12,21 +12,21 @@
       "evidence": "Initial September 16 recovery: nine feeds succeeded on startup and at the natural 23:00 UTC refresh; BEA remained partial. The original after-hours capture retained close-time option clocks and partial GLD enumeration. On September 17 the natural 14:00 UTC public refresh succeeded for all nine feeds, still with partial BEA. This active goal turn claimed the actual 10:20 New York ongoing slot and saved 36/36 current quotes in 16 calls without request failures. This proves an actual in-slot source read, not an independently observed scheduler trigger or future reliability.",
       "capturePath": "data/runtime/options-daily-guidance/captures/2026-09-16/2026-09-16T22-46-46-777Z-d30a6108-9209-416f-882f-5d09a6d4d92b.json",
       "naturalRefreshReceipt": "data/runtime/options-context-service/2026-09-16/hourly-2026-09-16T23.receipt.json",
-      "latestCapturePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T15-27-44-303Z-9e593078-ca62-4cd0-a611-59ae5b79812a.json",
-      "latestNaturalRefreshReceipt": "data/runtime/options-context-service/2026-09-17/hourly-2026-09-17T15.receipt.json",
+      "latestCapturePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T18-14-36-417Z-e425fe12-99eb-48a8-b35e-5902eee7372f.json",
+      "latestNaturalRefreshReceipt": "data/runtime/options-context-service/2026-09-17/hourly-2026-09-17T18.receipt.json",
       "latestSlotClaim": "data/runtime/options-daily-guidance/slots/2026-09-17/2026-09-17-1120.json",
-      "latestReadObservation": "The existing 11:20 New York slot was claimed during the scheduled wake and captured 36/36 quotes in 16 calls. The natural 15:00 UTC public receipt succeeded; an explicit check found its existing claim and did not duplicate reads. The tracked paper quote failed the unchanged underlying alignment check, so source receipt did not qualify an exit."
+      "latestReadObservation": "User-triggered bounded captures at 13:49, 14:05 and after 14:14 New York were saved in the current conversation. They are not scheduled-slot claims. The natural 14:00 public refresh preserved BEA/SEC network failures, four other original feed successes and three focused-feed successes. Ongoing schedule and earlier receipts remain unchanged."
     },
     {
       "id": "A2",
       "status": "LOCAL_UI_AND_PROJECTION_VERIFIED",
       "evidence": "Two daily cards retain WATCH, explicit entry/exit conditions, source clocks and at most two budget-compatible references. September 16 desktop/390px checks and planner navigation remain valid. September 17's 10:20 capture now has a later attributed MIXED review: both ETFs rose versus their official prior closes, without qualified trend evidence. At 14:23:04 UTC the same projection correctly marks the underlying snapshots no longer fresh while the review remains current. Global unknown costs remain separate from dated-fee illustrations and engineering paper assumptions.",
-      "latestIssuedReport": "data/runtime/options-daily-guidance/reports/2026-09-17/2026-09-17T15-29-57-815Z-c1f6b3c6-1e67-4a07-95b7-d82a4150b245.json",
-      "latestReviewObservation": "The 11:20 capture received a later attributed MIXED review. Both cards remain WATCH. The 15:34 UTC projection readback retained exact clocks and current analysis without qualifying fresh execution or a trend signal."
+      "latestIssuedReport": "data/runtime/options-daily-guidance/reports/2026-09-17/2026-09-17T18-15-14-954Z-46913c70-0f28-4ff2-8629-e1c3ae88cdb2.json",
+      "latestReviewObservation": "A new attributed review follows the latest capture, corrects the legacy precision diagnosis and retains WATCH with insufficient trend history. Desktop and 390px frontend checks showed model versions, original failures, saved costs and reviewed results."
     },
     {
       "id": "A3",
-      "status": "ENTRY_RECORDED_EXIT_SAMPLE_REJECTED",
+      "status": "PROSPECTIVE_ACTUAL_QUOTE_ROUND_TRIP_RECOVERED",
       "planId": "pipeline-check-ibit-20260917",
       "purpose": "PIPELINE_REHEARSAL_NOT_SIGNAL",
       "entryWindowNewYork": "2026-09-17 10:15–10:40",
@@ -35,17 +35,17 @@
         "2026-09-17 11:20"
       ],
       "timeExitNewYork": "2026-09-17 11:10",
-      "modeledFills": 1,
-      "netPnlCents": null,
-      "independentRoundTripRecovered": false,
-      "evidence": "The unchanged pre-registered plan accepted one later actual-quote entry at 10:20:33.739756979 New York. Entry is modeled at the observed $1.46 ask, one contract, $146 premium and $0.04 dated assumed entry fees. The saved open report independently recomputes from copied sources; no exit, net outcome or completed round-trip review exists. The 09:40 check was outside entry and was not used as an entry. Old September 10/15 NO_ENTRY evidence remains unchanged.",
-      "paperStatus": "OPEN_UNRESOLVED",
+      "modeledFills": 2,
+      "netPnlCents": -909,
+      "independentRoundTripRecovered": true,
+      "evidence": "The original frozen V2 plan accepted a 10:20 actual-quote modeled entry and a later independent 14:05 exit after the previous two observations failed legacy ETF price precision. Entry $146.00; exit $137.00 after the declared $1.00 position-level exit allowance; estimated fees $0.09; net modeled loss $9.09. The closed report and candidate review independently recovered from source copies only. Actual trades remain zero; the intervening price path is unknown.",
+      "paperStatus": "CLOSED_MODELED",
       "entrySourceAt": "2026-09-17T14:20:33.739756979Z",
       "entryPremiumCents": 14600,
       "assumedEntryFeeCents": 4,
-      "openPremiumExposureCents": 14600,
+      "openPremiumExposureCents": 0,
       "plannedRiskCents": 3029,
-      "latestPaperReport": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260917/auto-639dfe4a72af0b6e5a129ffb3ace381ef3ed1ba01908b61c5747e90809362fd2.json",
+      "latestPaperReport": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260917/auto-08c45f34d1716ca6a630bc4cf0c0e328d63d8a5911ca0ae918f983fb194ae392.json",
       "entryReportRecovery": "VERIFIED_FROM_COPIED_SOURCES",
       "exitAttempt": {
         "slot": "2026-09-17-1120",
@@ -54,7 +54,69 @@
         "optionAt": "2026-09-17T15:27:28.345730147Z",
         "receivedAt": "2026-09-17T15:27:29.000Z",
         "modeledExitFills": 0,
-        "observation": "The captured clocks differ by about 6.18 seconds. The unchanged alignment gate rejected this prospective exit observation. Exposure stays open, net outcome stays unknown and no retry or retrospective fill was substituted."
+        "observation": "Corrected diagnosis: source and receipt clocks passed the sixty-second limit. The $43.195000 ETF print became null under legacy whole-cent conversion, causing UNDERLYING_UNALIGNED. Preserve the original rejected observation; no retrospective fill was substituted.",
+        "diagnosisCorrectedAt": "2026-09-17T18:15:37.759Z",
+        "underlyingPriceUsd": "43.195000",
+        "confirmedCause": "LEGACY_FRACTIONAL_CENT_CONVERSION"
+      },
+      "exit": {
+        "kind": "EXIT",
+        "sourcePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T18-05-35-731Z-c7be1306-15f9-4abb-adc7-9b5edc399b65.json",
+        "sourceSha256": "08c45f34d1716ca6a630bc4cf0c0e328d63d8a5911ca0ae918f983fb194ae392",
+        "sourceAt": "2026-09-17T18:05:28.33366453Z",
+        "receivedAt": "2026-09-17T18:05:29.000Z",
+        "priceCents": 137,
+        "quantity": 1,
+        "premiumCents": 13700,
+        "feeCents": 5,
+        "cashAfterCents": 99091,
+        "reason": "TIME_EXIT"
+      },
+      "reviewId": "review:68d1206ad564ea3e2f4b9542731d718cb82904898f422a085abf265187926f70",
+      "quoteGapObserved": true,
+      "additionalPrecisionRehearsal": {
+        "id": "pipeline-precision-ibit-20260917",
+        "model": "OPTIONS_SNAPSHOT_PAPER_PLAN_V3",
+        "registeredAt": "2026-09-17T18:01:25.560Z",
+        "decisionAt": "2026-09-17T18:05:00.000Z",
+        "entryDeadlineAt": "2026-09-17T18:10:00.000Z",
+        "timeExitAt": "2026-09-17T18:14:00.000Z",
+        "status": "CLOSED_MODELED",
+        "fills": [
+          {
+            "kind": "ENTRY",
+            "sourcePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T18-05-35-731Z-c7be1306-15f9-4abb-adc7-9b5edc399b65.json",
+            "sourceSha256": "08c45f34d1716ca6a630bc4cf0c0e328d63d8a5911ca0ae918f983fb194ae392",
+            "sourceAt": "2026-09-17T18:05:28.33366453Z",
+            "receivedAt": "2026-09-17T18:05:29.000Z",
+            "priceCents": 140,
+            "quantity": 1,
+            "premiumCents": 14000,
+            "feeCents": 4,
+            "cashAfterCents": 85996,
+            "reason": "LATER_ASK_ASSUMED"
+          },
+          {
+            "kind": "EXIT",
+            "sourcePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T18-14-36-417Z-e425fe12-99eb-48a8-b35e-5902eee7372f.json",
+            "sourceSha256": "f21eea83fd460bfa8df00593b9fe05f9e87d8063f2332ea099a9ea434e776ef5",
+            "sourceAt": "2026-09-17T18:14:28.565111058Z",
+            "receivedAt": "2026-09-17T18:14:30.000Z",
+            "priceCents": 136,
+            "quantity": 1,
+            "premiumCents": 13600,
+            "feeCents": 5,
+            "cashAfterCents": 99591,
+            "reason": "TIME_EXIT"
+          }
+        ],
+        "netPnlCents": -409,
+        "reviewId": "review:b1cb41d39fb4450b7d15d180e917ffb69698ca14c0ff64e2e2d6fd28986d7045",
+        "reviewOutcome": "LOSS",
+        "quoteGapObserved": true,
+        "sourcePath": "data/runtime/options-snapshot-paper/reports/pipeline-precision-ibit-20260917/auto-f21eea83fd460bfa8df00593b9fe05f9e87d8063f2332ea099a9ea434e776ef5.json",
+        "recovery": "VERIFIED",
+        "actualTrades": 0
       }
     }
   ],
@@ -66,16 +128,28 @@
   },
   "validation": {
     "decisionCardTests": 9,
-    "snapshotPaperTests": 103,
+    "snapshotPaperTests": 109,
     "guidanceTests": 101,
     "typecheck": "PASS",
     "fullValidation": {
       "status": "PASSED",
-      "componentCount": 172,
-      "reportedTestsExecuted": 4540,
-      "reportedPassed": 4540,
+      "componentCount": 173,
+      "testsExecuted": 4546,
+      "passed": 4546,
       "failed": 0,
-      "log": "data/runtime/options-workbench-development/milestone-validation-final.log"
+      "durationMs": 92922,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of 'apps/options-workbench/snapshot-paper.js', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/lib/options-paper-observation-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/lib/options-snapshot-paper-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/options-snapshot-paper.test.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts', LF will be replaced by CRLF the next time Git touches it"
+      ],
+      "log": "data/runtime/options-workbench-development/precision-v3-final-validation.log"
     },
     "ui": {
       "desktop": "PASS",
@@ -87,12 +161,15 @@
     "recovery": {
       "issuedGuidance": "VERIFIED",
       "september17Registration": "VERIFIED",
-      "september15NoEntry": "VERIFIED"
+      "september15NoEntry": "VERIFIED",
+      "september17RoundTrip": "VERIFIED_FROM_COPIED_SOURCES",
+      "precisionV3RoundTrip": "VERIFIED_FROM_COPIED_SOURCES"
     }
   },
   "sourceExecutionQualified": false,
   "strategyValidated": false,
   "executionAllowed": false,
   "winProbability": null,
-  "nextAction": "Wait for the next original authorized market capture, including the routine 15:50 New York slot, and retain the frozen plan and source cutoff. Do not retry the completed 11:20 slot or relax its alignment gate. Preserve the unobserved interval; require an admissible independent modeled exit, net costs, saved review and independent recovery before marking A3 or the goal complete. The separately recorded Owner screenshot round trips do not satisfy this prospective engineering acceptance."
+  "nextAction": "Qualify traded-ETF OHLCV and prospective setup parameters, then validate view-to-contract recommendations and outcomes. Preserve source failures and the engineering-versus-signal distinction.",
+  "completionBoundary": "The narrowed daily-card and prospective actual-quote paper milestone is complete. Source/execution qualification, timely continuous exit monitoring, trend-based recommendations and strategy validation are not complete. No historical real-price qualification gate is relabeled."
 }

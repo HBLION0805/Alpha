@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 import {optionsEvidenceExportStorage as io} from '../options-evidence-export.mjs';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {paperFingerprint} from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
-import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {snapshotNs,modernSnapshotPlan} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 import {snapshotPaperRegistrations,snapshotPaperView,snapshotObservationEnd,saveSnapshotObservation,snapshotSources,mapSnapshotSource} from './options-snapshot-paper-io.mjs';
 import {activeEventResearchContracts} from './options-event-research-io.mjs';
 
@@ -19,7 +19,7 @@ function enrollments(root){
   return files(root,BASE+'/enrolled').map(path=>{
     const e=read(root,path);exact(e,'version,planId,planPath,registrationFingerprint,enrolledAt,monitorUntilAt,purpose');
     const found=plans.find(p=>p.path===e.planPath&&p.registration.plan.id===e.planId),r=found?.registration,p=r?.plan;
-    if(e.version!=='OPTIONS_PAPER_ENROLLMENT_V1'||path!==BASE+'/enrolled/'+id(e.planId)+'.json'||!p||p.version!=='OPTIONS_SNAPSHOT_PAPER_PLAN_V2'||paperFingerprint(r)!==e.registrationFingerprint||!['PIPELINE_REHEARSAL_NOT_SIGNAL','OWNER_PAPER_RESEARCH'].includes(e.purpose)||snapshotNs(p.createdAt)>snapshotNs(e.enrolledAt)||snapshotNs(e.enrolledAt)>=snapshotNs(p.decisionAt)||e.monitorUntilAt!==snapshotObservationEnd(p))fail('ENROLLMENT');
+    if(e.version!=='OPTIONS_PAPER_ENROLLMENT_V1'||path!==BASE+'/enrolled/'+id(e.planId)+'.json'||!p||!modernSnapshotPlan(p.version)||paperFingerprint(r)!==e.registrationFingerprint||!['PIPELINE_REHEARSAL_NOT_SIGNAL','OWNER_PAPER_RESEARCH'].includes(e.purpose)||snapshotNs(p.createdAt)>snapshotNs(e.enrolledAt)||snapshotNs(e.enrolledAt)>=snapshotNs(p.decisionAt)||e.monitorUntilAt!==snapshotObservationEnd(p))fail('ENROLLMENT');
     const cancelPath=BASE+'/cancelled/'+e.planId+'.json';let cancellation=null;
     if(existsSync(resolve(root,cancelPath))){cancellation=read(root,cancelPath);exact(cancellation,'version,planId,enrollmentFingerprint,cancelledAt');if(cancellation.version!=='OPTIONS_PAPER_CANCELLATION_V1'||cancellation.planId!==e.planId||cancellation.enrollmentFingerprint!==paperFingerprint(e)||snapshotNs(cancellation.cancelledAt)<snapshotNs(e.enrolledAt))fail('CANCELLATION');}
     return {path,enrollment:e,plan:p,origin:mapSnapshotSource(r.selection).origin,cancellation};
@@ -30,7 +30,7 @@ export function enrollPaperObservation(root,planId,purpose='OWNER_PAPER_RESEARCH
   const all=enrollments(root),old=all.find(e=>e.plan.id===planId);
   if(old){if(old.enrollment.purpose!==purpose)fail('CONFLICT');return {path:old.path,alreadyRecorded:true,cancelled:!!old.cancellation,executionAllowed:false};}
   const r=snapshotPaperRegistrations(root).find(p=>p.registration.plan.id===planId);if(!r)fail('PLAN_MISSING');const p=r.registration.plan;
-  if(p.version!=='OPTIONS_SNAPSHOT_PAPER_PLAN_V2'||snapshotNs(p.createdAt)>snapshotNs(at)||snapshotNs(at)>=snapshotNs(p.decisionAt))fail('PROSPECTIVE_ONLY');
+  if(!modernSnapshotPlan(p.version)||snapshotNs(p.createdAt)>snapshotNs(at)||snapshotNs(at)>=snapshotNs(p.decisionAt))fail('PROSPECTIVE_ONLY');
   const end=snapshotObservationEnd(p);
   if(all.filter(e=>!e.cancellation&&snapshotNs(e.enrollment.enrolledAt)<snapshotNs(end)&&snapshotNs(e.enrollment.monitorUntilAt)>snapshotNs(at)).length>=6||all.length>=100)fail('LIMIT');
   const payload={version:'OPTIONS_PAPER_ENROLLMENT_V1',planId,planPath:r.path,registrationFingerprint:paperFingerprint(r.registration),enrolledAt:at,monitorUntilAt:end,purpose};

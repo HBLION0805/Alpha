@@ -1,5 +1,11 @@
 # Alpha
 
+Current milestone: [actual-quote paper verification and ETF price precision](docs/OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md).
+The original September 17 prospective rehearsal has completed a modeled entry,
+independent exit, costs and recoverable review. This is an engineering result;
+strict execution qualification and trend-based trade recommendations remain open.
+New paper plans preserve fractional-cent ETF prices; frozen old results are retained.
+
 Daily cards now include [long-option entry research boundaries](docs/specifications/OPTIONS_BUYER_ENTRY_BOUNDARIES_V1.md):
 breakout, trend pullback and key-level resolution. They remain not assessable
 without qualified ETF candles and predeclared parameters; no win rate is inferred.

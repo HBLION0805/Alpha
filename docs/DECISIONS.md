@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## September 17, 2026 — Version the fractional-cent ETF correction
+
+Two actual IBIT exit observations were rejected because the legacy adapter mapped
+fractional-cent ETF prints to null. The earlier explanation blaming a six-second
+clock difference was incorrect; the existing receipt-age limit is sixty seconds.
+Preserve frozen V1/V2 evidence and introduce V3 for exact ETF prices, with explicit
+price-versus-clock diagnostics. A separate prospective V3 engineering rehearsal
+tests the fix; corrected retrospective calculations cannot replace old results.
+Fees, ticks, freshness, allocation and exit terms are unchanged. See
+[scope](specifications/OPTIONS_SNAPSHOT_PRECISION_V3.md).
+
 ## September 16, 2026 — Treat buyer setups as research definitions
 
 The Owner proposed trend breakouts, pullback continuations and key-level pattern

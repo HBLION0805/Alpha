@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## September 17, 2026 — Exact underlying prices in paper V3
+
+- Preserve fractional-cent ETF observations in new V3 plans without rounding or
+  relaxing option-money, source-time, cost or entry/exit checks.
+- Keep V1/V2 plans and outcomes reproducible. Explain legacy price-conversion
+  rejections separately from missing/future/stale source clocks in the workbench.
+- Add exact-price, timestamp-boundary, prospective observation, copied recovery
+  and UI tests. See [scope](specifications/OPTIONS_SNAPSHOT_PRECISION_V3.md).
+
 ## September 16, 2026 — Buyer entry research checklist
 
 - Added three candidate setups with confirmation/invalidation definitions and

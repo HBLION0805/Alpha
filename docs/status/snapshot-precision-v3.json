@@ -1,0 +1,152 @@
+{
+  "version": "OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY_V1",
+  "recordedAt": "2026-09-17T18:15:37.759Z",
+  "status": "LOCAL_AND_PROSPECTIVE_ACTUAL_QUOTE_VERIFIED",
+  "cause": "Legacy whole-cent ETF conversion produced null for fractional-cent trades. The generic alignment diagnostic did not identify the specific failure. The previous six-second timing explanation was incorrect.",
+  "unchangedReceiptLimitSeconds": 60,
+  "realSourceAudit": "data/runtime/options-workbench-development/precision-real-audit.json",
+  "copiedOnlyRecovery": "data/runtime/options-workbench-development/precision-roundtrip-recovery.json",
+  "cases": [
+    {
+      "id": "pipeline-check-ibit-20260917",
+      "model": "OPTIONS_SNAPSHOT_PAPER_PLAN_V2",
+      "registeredAt": "2026-09-16T22:48:46.906Z",
+      "decisionAt": "2026-09-17T14:15:00.000Z",
+      "entryDeadlineAt": "2026-09-17T14:40:00.000Z",
+      "timeExitAt": "2026-09-17T15:10:00.000Z",
+      "status": "CLOSED_MODELED",
+      "fills": [
+        {
+          "kind": "ENTRY",
+          "sourcePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T14-20-47-747Z-17ae85eb-3c60-4f61-ba13-37d051682791.json",
+          "sourceSha256": "7d0f4f79414eed36cb5edff534cfaaee4c30d18afc83b9e41e6d33ab259f47ff",
+          "sourceAt": "2026-09-17T14:20:33.739756979Z",
+          "receivedAt": "2026-09-17T14:20:36.000Z",
+          "priceCents": 146,
+          "quantity": 1,
+          "premiumCents": 14600,
+          "feeCents": 4,
+          "cashAfterCents": 85396,
+          "reason": "LATER_ASK_ASSUMED"
+        },
+        {
+          "kind": "EXIT",
+          "sourcePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T18-05-35-731Z-c7be1306-15f9-4abb-adc7-9b5edc399b65.json",
+          "sourceSha256": "08c45f34d1716ca6a630bc4cf0c0e328d63d8a5911ca0ae918f983fb194ae392",
+          "sourceAt": "2026-09-17T18:05:28.33366453Z",
+          "receivedAt": "2026-09-17T18:05:29.000Z",
+          "priceCents": 137,
+          "quantity": 1,
+          "premiumCents": 13700,
+          "feeCents": 5,
+          "cashAfterCents": 99091,
+          "reason": "TIME_EXIT"
+        }
+      ],
+      "netPnlCents": -909,
+      "reviewId": "review:68d1206ad564ea3e2f4b9542731d718cb82904898f422a085abf265187926f70",
+      "reviewOutcome": "LOSS",
+      "quoteGapObserved": true,
+      "sourcePath": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260917/auto-08c45f34d1716ca6a630bc4cf0c0e328d63d8a5911ca0ae918f983fb194ae392.json",
+      "recovery": "VERIFIED",
+      "actualTrades": 0
+    },
+    {
+      "id": "pipeline-precision-ibit-20260917",
+      "model": "OPTIONS_SNAPSHOT_PAPER_PLAN_V3",
+      "registeredAt": "2026-09-17T18:01:25.560Z",
+      "decisionAt": "2026-09-17T18:05:00.000Z",
+      "entryDeadlineAt": "2026-09-17T18:10:00.000Z",
+      "timeExitAt": "2026-09-17T18:14:00.000Z",
+      "status": "CLOSED_MODELED",
+      "fills": [
+        {
+          "kind": "ENTRY",
+          "sourcePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T18-05-35-731Z-c7be1306-15f9-4abb-adc7-9b5edc399b65.json",
+          "sourceSha256": "08c45f34d1716ca6a630bc4cf0c0e328d63d8a5911ca0ae918f983fb194ae392",
+          "sourceAt": "2026-09-17T18:05:28.33366453Z",
+          "receivedAt": "2026-09-17T18:05:29.000Z",
+          "priceCents": 140,
+          "quantity": 1,
+          "premiumCents": 14000,
+          "feeCents": 4,
+          "cashAfterCents": 85996,
+          "reason": "LATER_ASK_ASSUMED"
+        },
+        {
+          "kind": "EXIT",
+          "sourcePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T18-14-36-417Z-e425fe12-99eb-48a8-b35e-5902eee7372f.json",
+          "sourceSha256": "f21eea83fd460bfa8df00593b9fe05f9e87d8063f2332ea099a9ea434e776ef5",
+          "sourceAt": "2026-09-17T18:14:28.565111058Z",
+          "receivedAt": "2026-09-17T18:14:30.000Z",
+          "priceCents": 136,
+          "quantity": 1,
+          "premiumCents": 13600,
+          "feeCents": 5,
+          "cashAfterCents": 99591,
+          "reason": "TIME_EXIT"
+        }
+      ],
+      "netPnlCents": -409,
+      "reviewId": "review:b1cb41d39fb4450b7d15d180e917ffb69698ca14c0ff64e2e2d6fd28986d7045",
+      "reviewOutcome": "LOSS",
+      "quoteGapObserved": true,
+      "sourcePath": "data/runtime/options-snapshot-paper/reports/pipeline-precision-ibit-20260917/auto-f21eea83fd460bfa8df00593b9fe05f9e87d8063f2332ea099a9ea434e776ef5.json",
+      "recovery": "VERIFIED",
+      "actualTrades": 0
+    }
+  ],
+  "latestGuidance": {
+    "path": "data/runtime/options-daily-guidance/reports/2026-09-17/2026-09-17T18-15-14-954Z-46913c70-0f28-4ff2-8629-e1c3ae88cdb2.json",
+    "dispositions": [
+      {
+        "symbol": "GLD",
+        "disposition": "WATCH",
+        "trend": "INSUFFICIENT_HISTORY"
+      },
+      {
+        "symbol": "IBIT",
+        "disposition": "WATCH",
+        "trend": "INSUFFICIENT_HISTORY"
+      }
+    ],
+    "executionAllowed": false
+  },
+  "latestCapture": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T18-14-36-417Z-e425fe12-99eb-48a8-b35e-5902eee7372f.json",
+  "validation": {
+    "snapshotPaperTests": 109,
+    "full": {
+      "status": "PASSED",
+      "componentCount": 173,
+      "testsExecuted": 4546,
+      "passed": 4546,
+      "failed": 0,
+      "durationMs": 92922,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of 'apps/options-workbench/snapshot-paper.js', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/lib/options-paper-observation-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/lib/options-snapshot-paper-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/options-snapshot-paper.test.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts', LF will be replaced by CRLF the next time Git touches it"
+      ]
+    },
+    "log": "data/runtime/options-workbench-development/precision-v3-final-validation.log",
+    "desktop": "PASS",
+    "mobile390": "PASS",
+    "storedRecordsVerifiedBeforeNewCaptures": 15,
+    "legacyCopiedRecordsVerifiedBeforeNewCaptures": 4
+  },
+  "scope": {
+    "schedulesChanged": false,
+    "accountAccessed": false,
+    "actualOrders": 0,
+    "executionQualified": false,
+    "strategyValidated": false,
+    "winProbability": null
+  },
+  "nextAction": "Qualify traded-ETF OHLCV and prospective setup parameters, then validate view-to-contract recommendations and outcomes. Preserve source failures and the engineering-versus-signal distinction."
+}

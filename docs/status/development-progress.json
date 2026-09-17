@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-12T23:28:13.633Z",
+  "recordedAt": "2026-09-17T18:15:37.759Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "756da36",
+  "comparedWithCommit": "666357f",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -29,16 +29,16 @@
       "name": "News macro and BTC context",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Public sources currently recover; Daily guidance now joins recent saved BLS/FOMC schedules, prior analyst views and fixed-window ETF observations. Current actual event comparisons remain incomplete; source numerical coverage and event interpretation are still partial.",
-      "evidence": "docs/OPTIONS_EVENT_REACTION_DELIVERY.md"
+      "detail": "Existing news and macro readers have demonstrated natural refreshes, with per-source failures and partial coverage preserved. At 14:00 September 17 BEA/SEC failed independently; other sources succeeded. This is bounded recovery, not continuous reliability.",
+      "evidence": "docs/OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md"
     },
     {
       "id": "03",
       "name": "GLD/IBIT option collection",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Read-only delivery health confirms nine missing of twelve fixed windows; latest bounded sample is Sep9 evening New York with 34 stale and two missing quotes. Sep10 Host quota failures are verified; full-chain records and future delivery qualification remain separate.",
-      "evidence": "docs/OPTIONS_GUIDANCE_DELIVERY_HEALTH_DELIVERY.md"
+      "detail": "September 17 user-triggered bounded market captures returned all 36 sampled quotes, retaining independent source clocks. Option snapshots now support prospective engineering paper entry/exit. Qualified ETF OHLCV and strict execution/source qualification remain incomplete.",
+      "evidence": "docs/OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md"
     },
     {
       "id": "04",
@@ -77,16 +77,16 @@
       "name": "Robinhood real-price paper adapter",
       "previousStatus": "PARTIAL",
       "status": "PARTIAL",
-      "detail": "Optional event-linked registrations copy original guidance, hypothesis, conditions and PRE/POST windows into paper outcomes and candidate reviews. A synthetic lifecycle recovered; the actual-source read-only preview has zero fills and unknown costs. September 10 remains finalized NO_ENTRY. No new enrollment or qualified lifecycle.",
-      "evidence": "docs/OPTIONS_PAPER_EVENT_PLAN_DELIVERY.md"
+      "detail": "New V3 preserves exact fractional-cent ETF prices. Both the unchanged V2 September 17 rehearsal and a separate prospective V3 rehearsal closed using independent later actual quotes; costs/reviews recovered from source copies. Assumption-only adapter qualification remains partial.",
+      "evidence": "docs/OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md"
     },
     {
       "id": "09",
       "name": "First qualified real-price paper flow",
       "previousStatus": "NOT_VALIDATED",
       "status": "NOT_VALIDATED",
-      "detail": "Two actual-capture retrospective audits saved NO_ENTRY: 34 returned option quotes were stale, two requested quotes were missing, and costs/source qualification remain unknown. No qualified complete run.",
-      "evidence": "docs/OPTIONS_SNAPSHOT_PAPER_DELIVERY.md"
+      "detail": "The bounded prospective actual-quote engineering milestone is complete, including saved costs and recovered reviews. Strict execution-qualified end-to-end acceptance remains NOT_VALIDATED; sparse observations do not prove timely stops or brokerage fills.",
+      "evidence": "docs/OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md"
     },
     {
       "id": "10",
@@ -97,14 +97,14 @@
       "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "02",
-  "currentUnit": "Event expectations and observed ETF prices",
-  "currentUnitAcceptance": "Daily guidance, Host and CLI compare saved ETF observations around scheduled times with prior analyst views. Clock, gap, conflict and date-only checks are tested; actual saved PPI/CPI data has no complete comparison. No original guidance, paper output or real-price gate changed.",
+  "currentWorkstream": "08",
+  "currentUnit": "Exact ETF price correction and prospective actual-quote paper round trips",
+  "currentUnitAcceptance": "The narrowed daily-card and prospective actual-quote paper milestone is complete. Source/execution qualification, timely continuous exit monitoring, trend-based recommendations and strategy validation are not complete. No historical real-price qualification gate is relabeled.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
     "openGates": 3,
-    "realPriceRun": "NOT_RUN",
+    "realPriceRun": "ASSUMPTION_ONLY_COMPLETED_STRICT_QUALIFICATION_OPEN",
     "gateAdvancedThisUnit": false,
     "gates": [
       {
@@ -131,18 +131,20 @@
         "name": "Qualified real-price end-to-end run",
         "status": "NOT_RUN"
       }
-    ]
+    ],
+    "practicalActualQuoteRun": "COMPLETED_WITH_EXPLICIT_ASSUMPTIONS_AND_PATH_GAPS",
+    "practicalEvidence": "docs/status/daily-decision-milestone.json"
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Verify fresh evidence at the next already-authorized Host window and record attributed analysis after its capture. Choose a prospective paper plan with explicit costs only when usable inputs exist. Event declarations still need independent observed confirmation before signal testing; no backfill of Sep10 entry or assumption that a schedule guarantees delivery.",
+  "nextAction": "Qualify traded-ETF OHLCV and prospective setup parameters, then validate view-to-contract recommendations and outcomes. Preserve source failures and the engineering-versus-signal distinction.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4481,
+    "passed": 4546,
     "failed": 0,
-    "componentCount": 170
+    "componentCount": 173
   },
-  "latestOperationalEvidence": "docs/status/event-reaction.json",
+  "latestOperationalEvidence": "docs/status/snapshot-precision-v3.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -151,7 +153,7 @@
     "locallyAccepted": 8,
     "notOverallCompletionPercentage": true
   },
-  "practicalPaperCheckpoint": "docs/status/local-paper-finalization.json",
+  "practicalPaperCheckpoint": "docs/status/daily-decision-milestone.json",
   "dailyReviewProtocol": "docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md",
   "alignmentBaseline": "docs/status/development-alignment-baseline-20260909.json",
   "dailyReviewTimesNewYork": [
@@ -167,13 +169,15 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 29,
+    "passed": 109,
     "failed": 0,
     "typecheck": "PASS",
     "fullSuiteRun": true
   },
   "currentUnitWorkflowStages": [
-    "F03"
+    "F02",
+    "F05",
+    "F07"
   ],
   "marketScheduleRecovery": "docs/status/market-schedule-recovery-20260910.json"
 }

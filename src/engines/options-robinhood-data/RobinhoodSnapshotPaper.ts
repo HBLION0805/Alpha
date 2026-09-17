@@ -35,8 +35,17 @@ export function snapshotCents(value:unknown):number|null {
   const [a,b='']=value.split('.');if(/[1-9]/.test(b.slice(2)))return null;
   return Number(a)*100+Number(b.slice(0,2).padEnd(2,'0'));
 }
+/** ETF prints may include fractions of a cent; never round them into option money. */
+export function snapshotUnderlyingMicros(value:unknown):bigint|null {
+  if(typeof value!=='string'||!/^\d{1,8}(?:\.\d{1,6})?$/.test(value))return null;
+  const [whole,fraction='']=value.split('.');
+  const micros=BigInt(whole!)*1000000n+BigInt(fraction.padEnd(6,'0'));
+  return micros>0n&&micros<=1000000000000n?micros:null;
+}
+export const modernSnapshotPlan=(version:unknown)=>version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2'||version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V3';
 export interface SnapshotQuote extends GuidanceQuote {
   underlyingPriceCents:number|null; underlyingAt:string|null;
+  underlyingPriceUsd?:string|null;
   aboveTickCents:number|null; belowTickCents:number|null; cutoffCents:number|null;
   chainSession?:PaperChainSession;
 }
@@ -45,7 +54,7 @@ export interface SnapshotFrame {
   origin:'HOST_MARKET_TOOL_RESPONSES'|'SYNTHETIC_FIXTURE'; quotes:SnapshotQuote[];
 }
 export interface SnapshotPlan {
-  version:'OPTIONS_SNAPSHOT_PAPER_PLAN_V1'|'OPTIONS_SNAPSHOT_PAPER_PLAN_V2'; id:string; createdAt:string;
+  version:'OPTIONS_SNAPSHOT_PAPER_PLAN_V1'|'OPTIONS_SNAPSHOT_PAPER_PLAN_V2'|'OPTIONS_SNAPSHOT_PAPER_PLAN_V3'; id:string; createdAt:string;
   contract:SnapshotQuote; selectionPath:string; decisionAt:string; entryDeadlineAt:string; timeExitAt:string;
   quantity:number; entryLimitCents:number; entryFeeCents:number|null; exitFeeCents:number|null;
   exitSlippageCents:number|null; maxSpreadCents:number; settings:GuidanceSettings;
@@ -53,10 +62,10 @@ export interface SnapshotPlan {
 }
 const FIELDS=['version','id','createdAt','contract','selectionPath','decisionAt','entryDeadlineAt','timeExitAt','quantity','entryLimitCents','entryFeeCents','exitFeeCents','exitSlippageCents','maxSpreadCents','settings'];
 export function validateSnapshotPlan(value:unknown):SnapshotPlan {
-  const v2=!!value&&typeof value==='object'&&'version' in value&&value.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2';
+  const v2=!!value&&typeof value==='object'&&'version' in value&&modernSnapshotPlan(value.version);
   if(!value||typeof value!=='object'||Object.keys(value).sort().join()!==[...FIELDS,...(v2?['feeBasis']:[])].sort().join())fail('PLAN_FIELDS');
   const p=value as SnapshotPlan;
-  if(!['OPTIONS_SNAPSHOT_PAPER_PLAN_V1','OPTIONS_SNAPSHOT_PAPER_PLAN_V2'].includes(p.version)||! /^[a-z0-9][a-z0-9-]{2,79}$/.test(p.id)||!p.contract||!['GLD','IBIT'].includes(p.contract.symbol)||!['call','put'].includes(p.contract.type)||typeof p.contract.id!=='string'||!p.selectionPath)fail('PLAN');
+  if(!['OPTIONS_SNAPSHOT_PAPER_PLAN_V1','OPTIONS_SNAPSHOT_PAPER_PLAN_V2','OPTIONS_SNAPSHOT_PAPER_PLAN_V3'].includes(p.version)||! /^[a-z0-9][a-z0-9-]{2,79}$/.test(p.id)||!p.contract||!['GLD','IBIT'].includes(p.contract.symbol)||!['call','put'].includes(p.contract.type)||typeof p.contract.id!=='string'||!p.selectionPath)fail('PLAN');
   if(v2){
     validateChainSession(p.contract);
     if(!['DECLARED_FEES','ROBINHOOD_REVIEWED_20260910'].includes(p.feeBasis!)||p.feeBasis!=='DECLARED_FEES'&&(p.entryFeeCents!==null||p.exitFeeCents!==null))fail('FEE_BASIS');
@@ -83,13 +92,18 @@ function validateChainSession(q:SnapshotQuote) {
   if(!s||Object.keys(s).sort().join()!=='chainId,lateCloseState,receivedAt'||!['enabled','disabled','unknown'].includes(s.lateCloseState)||s.chainId!==null&&(typeof s.chainId!=='string'||!s.chainId))return fail('CHAIN_SESSION');
   if(s.receivedAt!==null&&snapshotNs(s.receivedAt)>snapshotNs(q.receivedAt)||s.lateCloseState!=='unknown'&&(s.chainId===null||s.receivedAt===null))fail('CHAIN_SESSION');
 }
-export function assessSnapshotQuote(q:SnapshotQuote,asOf:string,v2=false) {
+export function assessSnapshotQuote(q:SnapshotQuote,asOf:string,v2=false,exactUnderlying=false) {
   const receipt=snapshotNs(q.receivedAt),source=clockOrNull(q.updatedAt),underlying=clockOrNull(q.underlyingAt),now=snapshotNs(asOf),blockers:string[]=[];
   if(source===null)blockers.push('SOURCE_CLOCK_MISSING');
   else if(source>receipt)blockers.push('SOURCE_AFTER_RECEIPT');
   else if(receipt-source>60000000000n)blockers.push('STALE_AT_RECEIPT');
   if(receipt>now)blockers.push('FUTURE_RECEIPT');
-  if(underlying===null||!integer(q.underlyingPriceCents,1)||underlying>receipt||receipt-underlying>60000000000n)blockers.push('UNDERLYING_UNALIGNED');
+  if(exactUnderlying){
+    if(snapshotUnderlyingMicros(q.underlyingPriceUsd)===null)blockers.push('UNDERLYING_PRICE_INVALID');
+    if(underlying===null)blockers.push('UNDERLYING_CLOCK_MISSING');
+    else if(underlying>receipt)blockers.push('UNDERLYING_AFTER_RECEIPT');
+    else if(receipt-underlying>60000000000n)blockers.push('UNDERLYING_STALE_AT_RECEIPT');
+  }else if(underlying===null||!integer(q.underlyingPriceCents,1)||underlying>receipt||receipt-underlying>60000000000n)blockers.push('UNDERLYING_UNALIGNED');
   if(!integer(q.bidCents)||!integer(q.askCents,1)||q.bidCents>q.askCents||!aligned(q,q.bidCents)||!aligned(q,q.askCents))blockers.push('PRICE_OR_TICK_INVALID');
   if(!integer(q.bidSize)||!integer(q.askSize))blockers.push('SIZE_UNKNOWN');
   if(q.multiplier!==100)blockers.push('CONTRACT_UNSUPPORTED');
@@ -106,7 +120,7 @@ export function assessSnapshotQuote(q:SnapshotQuote,asOf:string,v2=false) {
 
 /** Target fee reserve converges with net R. Actual exit fees use actual modeled proceeds. */
 export function snapshotEntryEconomics(p:SnapshotPlan,q:SnapshotQuote,cash=p.settings.settledCashCents) {
-  const reviewed=p.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2'&&p.feeBasis==='ROBINHOOD_REVIEWED_20260910';
+  const reviewed=modernSnapshotPlan(p.version)&&p.feeBasis==='ROBINHOOD_REVIEWED_20260910';
   const gross=q.askCents!*p.quantity*100;
   const entryFee=reviewed?reviewedCostComponents(p.quantity,gross,'BUY').totalCents:p.entryFeeCents;
   let exitFee=reviewed?reviewedCostComponents(p.quantity,gross,'SELL').totalCents:p.exitFeeCents;
@@ -124,7 +138,7 @@ export function snapshotEntryEconomics(p:SnapshotPlan,q:SnapshotQuote,cash=p.set
 type Fill={kind:'ENTRY'|'EXIT';sourcePath:string;sourceSha256:string;sourceAt:string;receivedAt:string;priceCents:number;quantity:number;premiumCents:number;feeCents:number;cashAfterCents:number;reason:string};
 export function replaySnapshotPaper(plan:SnapshotPlan,frames:SnapshotFrame[],asOf:string) {
   const p=validateSnapshotPlan(plan),now=snapshotNs(asOf),decision=snapshotNs(p.decisionAt),deadline=snapshotNs(p.entryDeadlineAt),exitTime=snapshotNs(p.timeExitAt);
-  const v2=p.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V2',reviewed=v2&&p.feeBasis==='ROBINHOOD_REVIEWED_20260910';
+  const v2=modernSnapshotPlan(p.version),v3=p.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V3',reviewed=v2&&p.feeBasis==='ROBINHOOD_REVIEWED_20260910';
   if(snapshotNs(p.createdAt)>now||!Array.isArray(frames)||frames.length>1000)fail('ASSESSMENT');
   const selection=frames.find(f=>f.path===p.selectionPath);
   if(!selection||snapshotNs(selection.recordedAt)>snapshotNs(p.createdAt)||!selection.quotes.some(q=>paperFingerprint(q)===paperFingerprint(p.contract)))fail('SELECTION_LINKAGE');
@@ -152,7 +166,7 @@ export function replaySnapshotPaper(plan:SnapshotPlan,frames:SnapshotFrame[],asO
     const received=snapshotNs(q.receivedAt),source=clockOrNull(q.updatedAt);
     if(received<=decision)continue;
     if(fills.length===2)break;
-    const codes=[...assessSnapshotQuote(q,asOf,v2).blockers];
+    const codes=[...assessSnapshotQuote(q,asOf,v2,v3).blockers];
     if(receiptBooks.get(q.receivedAt)!.size>1)codes.push('AMBIGUOUS_RECEIPT');
     if(identity(q)!==identity(p.contract))codes.push('CONTRACT_IDENTITY_CHANGED');
     const payload=paperFingerprint({bid:q.bidCents,ask:q.askCents,bidSize:q.bidSize,askSize:q.askSize});
@@ -201,10 +215,10 @@ export function replaySnapshotPaper(plan:SnapshotPlan,frames:SnapshotFrame[],asO
   if(fills.length===1&&lastSeen!==null&&now-lastSeen>60000000000n)gap=true;
   const status=fills.length===2?'CLOSED_MODELED':fills.length===1?'OPEN_UNRESOLVED':'NO_ENTRY';
   const netPnl=fills.length===2?cash-p.settings.settledCashCents:null;
-  const review=fills.length===2?reviewClosedOptionTrade({tradeId:p.id,symbol:p.contract.symbol,strategyVersion:v2?'RH_SNAPSHOT_ASSUMPTIONS_V2':SNAPSHOT_PROFILE,setupKey:'snapshot-assumption-only',origin:origin==='SYNTHETIC_FIXTURE'?origin:'UNVERIFIED_IMPORT',planFingerprint:paperFingerprint(p),entryAt:new Date(fills[0]!.receivedAt).toISOString(),exitAt:new Date(fills[1]!.receivedAt).toISOString(),exitReason:fills[1]!.reason,entryPremiumCents:fills[0]!.premiumCents,exitProceedsCents:fills[1]!.premiumCents,feesCents:fills[0]!.feeCents+fills[1]!.feeCents,netPnlCents:netPnl,plannedRiskCents:plannedRisk,entrySpreadCents:entrySpread,exitLiquidityDelayed:exitDelayed,quoteGapObserved:gap,planViolations:[]}):null;
+  const review=fills.length===2?reviewClosedOptionTrade({tradeId:p.id,symbol:p.contract.symbol,strategyVersion:v3?'RH_SNAPSHOT_ASSUMPTIONS_V3':v2?'RH_SNAPSHOT_ASSUMPTIONS_V2':SNAPSHOT_PROFILE,setupKey:'snapshot-assumption-only',origin:origin==='SYNTHETIC_FIXTURE'?origin:'UNVERIFIED_IMPORT',planFingerprint:paperFingerprint(p),entryAt:new Date(fills[0]!.receivedAt).toISOString(),exitAt:new Date(fills[1]!.receivedAt).toISOString(),exitReason:fills[1]!.reason,entryPremiumCents:fills[0]!.premiumCents,exitProceedsCents:fills[1]!.premiumCents,feesCents:fills[0]!.feeCents+fills[1]!.feeCents,netPnlCents:netPnl,plannedRiskCents:plannedRisk,entrySpreadCents:entrySpread,exitLiquidityDelayed:exitDelayed,quoteGapObserved:gap,planViolations:[]}):null;
   const paperStage=status!=='NO_ENTRY'?status:!costKnown?'WAITING_FOR_COST_ASSUMPTIONS':now<=decision?'AWAITING_WINDOW':now<=deadline?'AWAITING_ELIGIBLE_QUOTE':'ENTRY_WINDOW_ENDED';
   const candidateLessons=[{code:'SOURCE_UNQUALIFIED',text:'Keep this snapshot model separate from qualified execution evidence.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'},...(!costKnown?[{code:'COSTS_UNKNOWN',text:'Declare entry fees, exit fees and slippage before a modeled entry; zero is an explicit assumption.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'}]:[]),...(status!=='CLOSED_MODELED'&&(!v2||status!=='NO_ENTRY'||paperStage==='ENTRY_WINDOW_ENDED')?[{code:status,text:status==='NO_ENTRY'?'No admissible later entry snapshot was observed. Do not manufacture a trade.':'The position remains unresolved. Do not substitute a last price or an assumed stop fill.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'}]:[]),...(gap?[{code:'QUOTE_GAP_OBSERVED',text:'The missing path may contain an earlier stop, target or worse exit. Review it before interpreting this result.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'}]:[])];
-  return {version:v2?'OPTIONS_SNAPSHOT_PAPER_REPORT_V2':'OPTIONS_SNAPSHOT_PAPER_REPORT_V1',profile:v2?'RH_SNAPSHOT_ASSUMPTIONS_V2':SNAPSHOT_PROFILE,assessedAt:asOf,plan:p,origin,timing:snapshotNs(p.decisionAt)<snapshotNs(p.createdAt)?'RETROSPECTIVE_DECLARATION':'PROSPECTIVE_DECLARATION',status,
+  return {version:v3?'OPTIONS_SNAPSHOT_PAPER_REPORT_V3':v2?'OPTIONS_SNAPSHOT_PAPER_REPORT_V2':'OPTIONS_SNAPSHOT_PAPER_REPORT_V1',profile:v3?'RH_SNAPSHOT_ASSUMPTIONS_V3':v2?'RH_SNAPSHOT_ASSUMPTIONS_V2':SNAPSHOT_PROFILE,assessedAt:asOf,plan:p,origin,timing:snapshotNs(p.decisionAt)<snapshotNs(p.createdAt)?'RETROSPECTIVE_DECLARATION':'PROSPECTIVE_DECLARATION',status,
     sourceQualification:'NOT_QUALIFIED',sourceGaps:[...(v2?PAPER_V2_GAPS:SOURCE_GAPS)],gates:{quotes:'OPEN',adapter:'LOCAL_IMPLEMENTED_UNQUALIFIED',completeRealPriceLifecycle:'OPEN'},
     ...(v2?{paperStage,paperModelImplemented:true,executionQualification:'NOT_ESTABLISHED',marketSession:paperSession(p.decisionAt,p.contract.chainSession),calendar:PAPER_SESSION_CALENDAR,feeAssumption:reviewed?PAPER_FEE_PROFILE:{id:'DECLARED_FEES',actualFeesConfirmed:false},exitSlippageCents:p.exitSlippageCents}:{}),
     fills,diagnostics,account:{declaredInitialCashCents:p.settings.settledCashCents,cashLedgerCents:cash,saleProceedsUnsettledCents:fills[1]?fills[1].premiumCents-fills[1].feeCents:0,netPnlCents:netPnl,openPremiumExposureCents:fills.length===1?fills[0]!.premiumCents:0,plannedRiskCents:plannedRisk},review,candidateLessons,quoteGapObserved:gap,executionAllowed:false,actualTrades:0};

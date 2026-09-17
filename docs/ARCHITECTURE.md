@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## Exact ETF prices in snapshot paper V3 — September 17, 2026
+
+New snapshot plans preserve the source ETF USD string and validate it with integer
+micro-USD arithmetic. Option money remains cent-exact. Mapping, enrollment,
+observation and copied-source recovery dispatch by frozen plan version; V1/V2
+outputs retain their original conversion and hashes. A read-only source diagnosis
+explains legacy fractional-cent rejections separately from source-clock failures.
+The existing frontend displays model versions and both clocks. No source transport,
+trading signal or recurrence is added. See
+[scope](specifications/OPTIONS_SNAPSHOT_PRECISION_V3.md).
+
 ## Reported spread opening reviews — September 17, 2026
 
 The workbench now reads a separate immutable, locally source-linked debit-spread

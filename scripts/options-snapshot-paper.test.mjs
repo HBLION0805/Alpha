@@ -4,20 +4,20 @@ import {tmpdir} from 'node:os';
 import {resolve,relative,isAbsolute,dirname} from 'node:path';
 import {createHash} from 'node:crypto';
 import {runInNewContext} from 'node:vm';
-import {snapshotNs,snapshotCents,assessSnapshotQuote,replaySnapshotPaper,validateSnapshotPlan,snapshotEntryEconomics} from '../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {snapshotNs,snapshotCents,snapshotUnderlyingMicros,assessSnapshotQuote,replaySnapshotPaper,validateSnapshotPlan,snapshotEntryEconomics} from '../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 import {paperSession} from '../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {paperFingerprint} from '../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import {defaultGuidanceSettings,assessDailyGuidance} from '../src/engines/options-daily-guidance/OptionsDailyGuidance.ts';
 import {paperEventKey} from '../src/engines/options-robinhood-data/OptionsPaperEventPlan.ts';
 import {collectGuidanceMarket} from './lib/options-guidance-host.mjs';
 import {normalizeGuidanceCapture,saveGuidanceSettings,guidanceView} from './lib/options-guidance-io.mjs';
-import {mapSnapshotSource,snapshotSources,previewSnapshotPaper,previewSnapshotPaperCollection,paperCollectionCalendar,paperCollectionDesk,registerSnapshotPaper,saveSnapshotPaperReport,verifySnapshotPaper,snapshotPaperView,saveSnapshotObservation,snapshotObservationEnd} from './lib/options-snapshot-paper-io.mjs';
+import {mapSnapshotSource,snapshotSources,previewSnapshotPaper,previewSnapshotPaperCollection,paperCollectionCalendar,paperCollectionDesk,registerSnapshotPaper,saveSnapshotPaperReport,verifySnapshotPaper,snapshotPaperView,saveSnapshotObservation,snapshotObservationEnd,snapshotUnderlyingEvidence} from './lib/options-snapshot-paper-io.mjs';
 import {assessPaperCollectionPlan} from '../src/engines/options-robinhood-data/OptionsPaperCollectionPlan.ts';
 import {enrollPaperObservation,cancelPaperObservation,paperObservationView,observePaperPlans,combinePaperTracking,savedPaperProcessReview} from './lib/options-paper-observation-io.mjs';
 import {runLocalPaperFinalization,startPublicContextService} from './options-context-service.mjs';
 import {runGuidanceCommand} from './options-daily-guidance.mjs';
 import {verifyGuidanceRecord} from './lib/options-guidance-io.mjs';
-import {snapshotRequest,snapshotResult,snapshotPaperPanel,localPaperServicePanel,savedProcessReview,paperEventPanel,paperCollectionPanel} from '../apps/options-workbench/snapshot-paper.js';
+import {snapshotRequest,snapshotResult,snapshotPaperPanel,localPaperServicePanel,savedProcessReview,paperEventPanel,paperCollectionPanel,underlyingEvidencePanel} from '../apps/options-workbench/snapshot-paper.js';
 import {request as browserRequest} from '../apps/options-workbench/api.js';
 import {startOptionsWorkbench} from './options-workbench.mjs';
 
@@ -415,5 +415,41 @@ await test('collection UI explains conditional coverage and removes cancelled fo
   const c=collectionCalendar();c.events[0].title='<img src=x>';const r=assessPaperCollectionPlan(collectionPlan(),collectionAt,c),html=paperCollectionPanel(r);
   assert(html.includes('14:20 entry'));assert(html.includes('15:50 exit'));assert(html.includes('Depends on an event-day read'));assert(html.includes('Intraday time unknown'));assert(!html.includes('<img'));assert(html.includes('&lt;img'));assert(!html.includes('data-order'));assert.equal(paperCollectionPanel(null),'');
   const page=snapshotPaperPanel({state:'AVAILABLE',data:{sourceGaps:[],latest:null,cases:[]}});assert(!page.includes('Existing fixed capture windows start at 09:50'));assert(page.includes('09:50 and 12:50 slots are cancelled'));
+});
+const frame3=(n,bid=199,ask=200,underlying='400.005000')=>{const f=frame2(n,bid,ask);Object.assign(f.quotes[0],{underlyingPriceCents:snapshotCents(underlying),underlyingPriceUsd:underlying});return f;};
+const plan3=()=>({...plan2(),version:'OPTIONS_SNAPSHOT_PAPER_PLAN_V3',contract:frame3(0).quotes[0]});
+await test('V3 preserves exact fractional ETF prices without admitting fractional option premiums',()=>{
+  assert.equal(snapshotUnderlyingMicros('43.335000'),43335000n);assert.equal(snapshotUnderlyingMicros('0.000001'),1n);assert.equal(snapshotUnderlyingMicros('1000000'),1000000000000n);
+  for(const v of [null,0,'0','-1','1e2','43.3350001','1000000.000001',' 43.335'])assert.equal(snapshotUnderlyingMicros(v),null);
+  assert.equal(snapshotCents('43.335000'),null);assert.equal(snapshotCents('1.405'),null);
+  const r=replaySnapshotPaper(plan3(),[frame3(0),frame3(10),frame3(95)],at(100));assert.equal(r.status,'CLOSED_MODELED');assert.equal(r.profile,'RH_SNAPSHOT_ASSUMPTIONS_V3');assert.equal(r.version,'OPTIONS_SNAPSHOT_PAPER_REPORT_V3');assert.equal(r.plan.contract.underlyingPriceUsd,'400.005000');assert.equal(r.fills[1].reason,'TIME_EXIT');assert.equal(r.account.netPnlCents,-209);assert.equal(r.executionAllowed,false);
+});
+await test('V3 separates price precision from clock quality and retains exact age boundary',()=>{
+  const q=frame3(10).quotes[0];assert(assessSnapshotQuote(q,at(100),true).blockers.includes('UNDERLYING_UNALIGNED'));assert(assessSnapshotQuote(q,at(100),true,true).usableSnapshot);
+  for(const [change,code] of [[q=>q.underlyingPriceUsd=null,'UNDERLYING_PRICE_INVALID'],[q=>q.underlyingAt=null,'UNDERLYING_CLOCK_MISSING'],[q=>q.underlyingAt=at(11),'UNDERLYING_AFTER_RECEIPT'],[q=>q.underlyingAt=at(-51),'UNDERLYING_STALE_AT_RECEIPT'],[q=>q.askCents=200.5,'PRICE_OR_TICK_INVALID']]){const x=structuredClone(q);change(x);assert(assessSnapshotQuote(x,at(100),true,true).blockers.includes(code));}
+  q.underlyingAt=at(-50);assert(assessSnapshotQuote(q,at(100),true,true).usableSnapshot);q.underlyingAt='2026-09-08T13:59:09.999999999Z';assert(assessSnapshotQuote(q,at(100),true,true).blockers.includes('UNDERLYING_STALE_AT_RECEIPT'));
+});
+await test('V3 conversion never changes legacy mapped frames or legacy report fingerprints',()=>temp(async root=>{
+  await seed(root);const original=snapshotSources(root)[0],before=paperFingerprint(mapSnapshotSource(original,true));const v3=mapSnapshotSource(original,'V3');assert.equal(v3.quotes[0].underlyingPriceUsd,'400.00');assert.equal(paperFingerprint(mapSnapshotSource(original,true)),before);assert(!Object.hasOwn(mapSnapshotSource(original,true).quotes[0],'underlyingPriceUsd'));
+  const legacy=run2([frame2(10),frame2(95)]),copy=structuredClone(legacy);replaySnapshotPaper(plan3(),[frame3(0),frame3(10),frame3(95)],at(100));assert.equal(paperFingerprint(run2([frame2(10),frame2(95)])),paperFingerprint(copy));
+}));
+async function fractionalCapture(root,n,bid,ask){const path=await saveCapture(root,n,bid,ask),r=JSON.parse(readFileSync(resolve(root,path),'utf8'));for(const x of r.input.receipts.find(x=>x.tool==='get_equity_quotes').response.data.results)x.quote.last_trade_price='400.005000';r.report=normalizeGuidanceCapture(r.input);r.inputFingerprint=paperFingerprint(r.input);r.reportFingerprint=paperFingerprint(r.report);writeFileSync(resolve(root,path),JSON.stringify(r,null,2)+'\n');return path;}
+await test('prospective V3 enrollment completes exact-source observation and copied-only recovery',()=>temp(async root=>{
+  saveGuidanceSettings(root,settings());await fractionalCapture(root,0);const req={...request2(),id:'precision-future',modelVersion:'V3'};const reg=registerSnapshotPaper(root,req,at(1));enrollPaperObservation(root,req.id,'PIPELINE_REHEARSAL_NOT_SIGNAL',at(1));assert.equal(verifySnapshotPaper(root,reg.path).status,'VERIFIED');
+  const entry=await fractionalCapture(root,10);const first=observePaperPlans(root,entry,at(11));assert.equal(first.results[0].status,'OPEN_UNRESOLVED');const exit=await fractionalCapture(root,95);const last=observePaperPlans(root,exit,at(100));assert.equal(last.results[0].status,'CLOSED_MODELED');assert.equal(verifySnapshotPaper(root,last.results[0].path).status,'VERIFIED');
+  const saved=JSON.parse(readFileSync(resolve(root,last.results[0].path),'utf8'));assert.equal(saved.report.fills.length,2);assert.equal(saved.report.account.netPnlCents,-209);assert(saved.report.review);assert.equal(saved.report.plan.contract.underlyingPriceCents,null);
+  await temp(copy=>{const dest=resolve(copy,last.results[0].path);mkdirSync(dirname(dest),{recursive:true});cpSync(resolve(root,last.results[0].path),dest);assert.equal(verifySnapshotPaper(copy,last.results[0].path).status,'VERIFIED');});
+  const desk=snapshotPaperView(root,at(100)),view=paperObservationView(root,desk,at(100));assert.equal(view.rows[0].state,'CLOSED_MODELED');assert.equal(desk.cases[0].current.profile,'RH_SNAPSHOT_ASSUMPTIONS_V3');assert.equal(desk.latest.quotes[0].contract.underlyingPriceUsd,'400.005000');
+}));
+await test('V3 frontend preserves precision while existing draft versions remain explicit',()=>{
+  const d={modelVersion:'V3',feeBasis:'ROBINHOOD_REVIEWED_20260910',id:'precision-form',contractId:uid(10),selectionPath:frame(0).path,decisionAt:at(2).slice(0,19),entryDeadlineAt:at(20).slice(0,19),timeExitAt:at(90).slice(0,19),quantity:'1',entryLimit:'2',entryFee:'',exitFee:'',slippage:'0.01',maxSpread:'0.10'};
+  assert.equal(snapshotRequest(d).modelVersion,'V3');assert.equal(snapshotRequest({...d,modelVersion:'V2'}).modelVersion,'V2');assert.throws(()=>snapshotRequest({...d,entryFee:'0'}),/Leave manual fees blank/);
+  const ui={},html=snapshotPaperPanel({state:'AVAILABLE',data:{sourceGaps:[],latest:null,cases:[]}},ui);assert.equal(ui.snapshotDraft.modelVersion,'V3');assert(html.includes('fractions of a cent'));assert(html.includes('value="V3"'));
+});
+await test('source diagnosis separates fractional-cent rejection from actual clock failure and escapes source text',()=>{
+  const f=frame3(10),before=paperFingerprint(f),rows=snapshotUnderlyingEvidence([f],f.quotes[0].id,at(100));
+  assert.equal(rows[0].exactPriceValid,true);assert.equal(rows[0].legacyPriceSupported,false);assert.deepEqual(rows[0].clockBlockers,[]);assert(rows[0].explanation.includes('not proof of a timestamp failure'));assert.equal(paperFingerprint(f),before);
+  const old=structuredClone(f);old.quotes[0].underlyingAt=at(-51);assert.deepEqual(snapshotUnderlyingEvidence([old],f.quotes[0].id,at(100))[0].clockBlockers,['UNDERLYING_STALE_AT_RECEIPT']);
+  rows[0].underlyingPriceUsd='<img src=x>';const html=underlyingEvidencePanel(rows);assert(!html.includes('<img'));assert(html.includes('&lt;img'));assert(html.includes('60-second receipt limit'));assert.equal(underlyingEvidencePanel([]),'');
 });
 console.log(`Options snapshot paper tests passed: ${passed}/${passed}.`);
