@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_DAILY_DECISION_MILESTONE_V1",
-  "recordedAt": "2026-09-16T23:05:25.010Z",
+  "recordedAt": "2026-09-17T14:23:21.000Z",
   "status": "IN_PROGRESS",
   "ownerDirection": "Recover sources, deliver daily GLD/IBIT decision cards, then complete one prospective actual-quote paper round trip and recover its review. Report the stage after completion.",
   "ownerReportedInterruption": "Codex was not running on Monday and was restarted September 16. Weekend option closure is expected; public collection requires a running service.",
@@ -9,18 +9,22 @@
     {
       "id": "A1",
       "status": "BOUNDED_RECOVERY_OBSERVED",
-      "evidence": "Nine public feeds succeeded on startup at 22:45 UTC and at the natural 23:00 UTC hourly refresh; BEA remains partial. Treasury, BLS/FOMC and macro readers recovered. Robinhood returned 36/36 requested quotes in a new bounded 16-call capture; GLD instrument enumeration was partial, and option clocks are regular-session close observations, not fresh after-hours executions. Future market-scheduled delivery is still unobserved.",
+      "evidence": "Initial September 16 recovery: nine feeds succeeded on startup and at the natural 23:00 UTC refresh; BEA remained partial. The original after-hours capture retained close-time option clocks and partial GLD enumeration. On September 17 the natural 14:00 UTC public refresh succeeded for all nine feeds, still with partial BEA. This active goal turn claimed the actual 10:20 New York ongoing slot and saved 36/36 current quotes in 16 calls without request failures. This proves an actual in-slot source read, not an independently observed scheduler trigger or future reliability.",
       "capturePath": "data/runtime/options-daily-guidance/captures/2026-09-16/2026-09-16T22-46-46-777Z-d30a6108-9209-416f-882f-5d09a6d4d92b.json",
-      "naturalRefreshReceipt": "data/runtime/options-context-service/2026-09-16/hourly-2026-09-16T23.receipt.json"
+      "naturalRefreshReceipt": "data/runtime/options-context-service/2026-09-16/hourly-2026-09-16T23.receipt.json",
+      "latestCapturePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T14-20-47-747Z-17ae85eb-3c60-4f61-ba13-37d051682791.json",
+      "latestNaturalRefreshReceipt": "data/runtime/options-context-service/2026-09-17/hourly-2026-09-17T14.receipt.json",
+      "latestSlotClaim": "data/runtime/options-daily-guidance/slots/2026-09-17/2026-09-17-1020.json"
     },
     {
       "id": "A2",
       "status": "LOCAL_UI_AND_PROJECTION_VERIFIED",
-      "evidence": "Two daily cards display the same WATCH decisions, new attributed bearish context, source clocks and gaps. At most two budget-compatible reference contracts, unchanged global unknown fees and separately labeled dated-fee examples. Desktop and 390px mobile checked; contract inspection opens the original planner with the correct saved prices and no save. No executable recommendation or probability claimed."
+      "evidence": "Two daily cards retain WATCH, explicit entry/exit conditions, source clocks and at most two budget-compatible references. September 16 desktop/390px checks and planner navigation remain valid. September 17's 10:20 capture now has a later attributed MIXED review: both ETFs rose versus their official prior closes, without qualified trend evidence. At 14:23:04 UTC the same projection correctly marks the underlying snapshots no longer fresh while the review remains current. Global unknown costs remain separate from dated-fee illustrations and engineering paper assumptions.",
+      "latestIssuedReport": "data/runtime/options-daily-guidance/reports/2026-09-17/2026-09-17T14-22-42-074Z-ffacd313-e5e2-4d39-9e28-95599c0103ab.json"
     },
     {
       "id": "A3",
-      "status": "AWAITING_PROSPECTIVE_QUOTES",
+      "status": "ENTRY_RECORDED_AWAITING_INDEPENDENT_EXIT",
       "planId": "pipeline-check-ibit-20260917",
       "purpose": "PIPELINE_REHEARSAL_NOT_SIGNAL",
       "entryWindowNewYork": "2026-09-17 10:15–10:40",
@@ -29,13 +33,26 @@
         "2026-09-17 11:20"
       ],
       "timeExitNewYork": "2026-09-17 11:10",
-      "modeledFills": 0,
+      "modeledFills": 1,
       "netPnlCents": null,
       "independentRoundTripRecovered": false,
-      "evidence": "Registered and enrolled before the future window. Unconditional one-day reads use existing hourly wakes and original call limits. Old September 10 and September 15 plans remain finalized NO_ENTRY; no entry is not a loss or a completed round trip."
+      "evidence": "The unchanged pre-registered plan accepted one later actual-quote entry at 10:20:33.739756979 New York. Entry is modeled at the observed $1.46 ask, one contract, $146 premium and $0.04 dated assumed entry fees. The saved open report independently recomputes from copied sources; no exit, net outcome or completed round-trip review exists. The 09:40 check was outside entry and was not used as an entry. Old September 10/15 NO_ENTRY evidence remains unchanged.",
+      "paperStatus": "OPEN_UNRESOLVED",
+      "entrySourceAt": "2026-09-17T14:20:33.739756979Z",
+      "entryPremiumCents": 14600,
+      "assumedEntryFeeCents": 4,
+      "openPremiumExposureCents": 14600,
+      "plannedRiskCents": 3029,
+      "latestPaperReport": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260917/auto-7d0f4f79414eed36cb5edff534cfaaee4c30d18afc83b9e41e6d33ab259f47ff.json",
+      "entryReportRecovery": "VERIFIED_FROM_COPIED_SOURCES"
     }
   ],
   "scheduleSnapshot": "docs/OPTIONS_DAILY_GUIDANCE_HOST_V3.json",
+  "september17AutomationReadback": {
+    "status": "ACTIVE",
+    "observation": "The opening check found PAUSED and restored the already authorized V3 fields. Pause cause is unknown. ID, name, recurrence and prompt all matched V3 after restoration; ACTIVE was rechecked after the 10:20 entry.",
+    "newRecurrenceAdded": false
+  },
   "validation": {
     "decisionCardTests": 9,
     "snapshotPaperTests": 103,
@@ -66,5 +83,5 @@
   "strategyValidated": false,
   "executionAllowed": false,
   "winProbability": null,
-  "nextAction": "Await September 17 10:20/11:20 ongoing Host captures; require actual modeled entry and independent exit, then independently recover the copied-source result and candidate review. Keep the goal open on NO_ENTRY or unresolved exposure. Engineering changes verified; no additional modules required to attempt the rehearsal."
+  "nextAction": "Collect the authorized independent September 17 11:20 New York sample in its actual slot, after the unchanged 11:10 time-exit threshold. Preserve the unobserved interval and never fabricate an exact 11:10 or stop fill. Require an admissible modeled exit, net costs, saved candidate review and independent recovery before marking A3 or the goal complete."
 }
