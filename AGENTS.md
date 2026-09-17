@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Buyer entry research boundaries — September 16, 2026
+
+The Owner requested breakout, trend pullback and key-level resolution checks.
+Daily cards and Host brief now expose these as NOT_ASSESSABLE research definitions,
+with sampled DTE categories and missing ETF OHLCV/parameters/IV scenario evidence.
+No automatic pattern detector or high-win-rate/doubling claim is implemented.
+Do not substitute futures/spot or option bars for the traded ETF, alter canonical
+guidance, or change the frozen September 17 rehearsal to accommodate these ideas.
+See docs/specifications/OPTIONS_BUYER_ENTRY_BOUNDARIES_V1.md. The active milestone
+and original source schedules are unchanged.
+
 ## Active daily decision milestone — September 16, 2026
 
 The Owner approved narrowing work to recovered sources, one-page GLD/IBIT daily

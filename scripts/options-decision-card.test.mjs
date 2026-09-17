@@ -23,4 +23,31 @@ await test('dated paper wakes operate in ongoing mode and expire without restori
   for(const time of ['13:50','16:50','14:19','14:50','16:20'])assert.equal(routeDailyGuidance('2026-09-17T'+time+':00Z',{ongoing:true}).marketCapture,false);
   assert.equal(routeDailyGuidance('2026-09-17T14:20:00Z',{ongoing:true}).closeCapture,false);
 });
+await test('expiry boundaries distinguish 0DTE, short dates, current scope and missing DTE',()=>{
+  const s=fixture(),a=s.guidance.data.current.assets[1];
+  a.candidates=[-1,0,1,13,14,45,46,null,undefined,NaN,1.5].map(dte=>({...candidate(),dte}));
+  const b=dailyDecisionCards(s).cards[1].buyerEntryBoundary;
+  assert.deepEqual(b.expiryCounts,{EXPIRED:1,ZERO_DTE:1,SHORT_DATED_OUTSIDE_SCOPE:2,RESEARCH_14_TO_45:2,LONG_DATED_OUTSIDE_SCOPE:1,UNKNOWN:4});
+  assert.equal(b.sampledContractCount,11);assert.equal(b.canConfirmSetup,false);
+});
+await test('trend, headline assertions, option candles and futures bars cannot confirm an ETF setup',()=>{
+  const s=fixture();s.guidance.data.current.assets[1].trend={direction:'UP'};
+  s.guidance.data.interpretation.assets[0].summary='Confirmed breakout; 90% chance to double';
+  s.barQuality={state:'AVAILABLE',data:{signal:'BREAKOUT',bars:Array(100).fill({instrument:'IBIT option'})}};
+  s.futuresBars={symbol:'BTC',status:'QUALIFIED',breakout:true};
+  const before=JSON.stringify(s),d=dailyDecisionCards(s),b=d.cards[1].buyerEntryBoundary;
+  assert.equal(b.status,'NOT_ASSESSABLE');assert.equal(b.setups.length,3);
+  assert.ok(b.setups.every(x=>x.status==='NOT_ASSESSABLE'&&x.winProbability===null&&x.expectedReturn===null));
+  assert.equal(b.winProbability,null);assert.equal(b.changesGuidance,false);assert.equal(d.cards[1].action,'WATCH');
+  assert.equal(JSON.stringify(s),before);assert.match(b.proxyBoundary,/IBIT bars/);
+  assert.match(d.cards[0].buyerEntryBoundary.proxyBoundary,/GLD bars/);
+});
+await test('empty samples stay unknown about market availability and rendered rules expose gaps',()=>{
+  const d=dailyDecisionCards(fixture()),b=d.cards[0].buyerEntryBoundary;
+  assert.equal(b.sampledContractCount,0);assert.match(b.expiryCoverage,/not every listed/);
+  const html=decisionCardsPanel({data:d});
+  for(const phrase of ['Buyer entry rules','Trend breakout','Trend pullback continuation','Key-level pattern resolution','Missing evidence','No win rate or doubling probability'])assert.ok(html.includes(phrase));
+  b.setups[0].confirmation='<img src=x onerror=alert(1)>';
+  const escaped=decisionCardsPanel({data:d});assert.ok(!escaped.includes('<img'));assert.ok(escaped.includes('&lt;img'));
+});
 console.log('Options decision-card tests passed: '+passed);

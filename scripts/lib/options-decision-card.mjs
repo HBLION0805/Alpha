@@ -1,5 +1,43 @@
 import {assessOptionsCostDesk} from '../../src/engines/options-retail-feasibility/OptionsCostDesk.ts';
 
+// Research definitions only. No qualified ETF bar reader or setup detector is connected here.
+function buyerEntryBoundary(asset) {
+  const expiryCounts={EXPIRED:0,ZERO_DTE:0,SHORT_DATED_OUTSIDE_SCOPE:0,RESEARCH_14_TO_45:0,LONG_DATED_OUTSIDE_SCOPE:0,UNKNOWN:0};
+  for(const c of asset.candidates) {
+    const d=c.dte;
+    const bucket=!Number.isSafeInteger(d)?'UNKNOWN':d<0?'EXPIRED':d===0?'ZERO_DTE':d<14?'SHORT_DATED_OUTSIDE_SCOPE':d<=45?'RESEARCH_14_TO_45':'LONG_DATED_OUTSIDE_SCOPE';
+    expiryCounts[bucket]++;
+  }
+  const setups=[
+    {id:'TREND_BREAKOUT',label:'Trend breakout',
+      confirmation:'Declare a prior range; require a completed ETF bar beyond it with a predeclared buffer and volume confirmation.',
+      invalidation:'Price returns inside the range, or the entry exceeds the predeclared chase limit.'},
+    {id:'TREND_PULLBACK',label:'Trend pullback continuation',
+      confirmation:'Establish the ETF trend, declare a retracement zone, then require that zone to hold and a completed-bar resumption trigger.',
+      invalidation:'The retracement breaks the declared trend structure. Touching support or resistance alone is not confirmation.'},
+    {id:'KEY_LEVEL_RESOLUTION',label:'Key-level pattern resolution',
+      confirmation:'Declare the key level and consolidation boundaries before the move; require a completed ETF close beyond the boundary and its confirmation.',
+      invalidation:'A failed break returns inside the pattern or crosses the declared invalidation level.'}
+  ].map(s=>({...s,status:'NOT_ASSESSABLE',winProbability:null,expectedReturn:null}));
+  return {version:'OPTIONS_BUYER_ENTRY_BOUNDARIES_V1',status:'NOT_ASSESSABLE',
+    scope:'Untested research checklist. Current guidance screens 14–45 DTE; 0DTE requires a separate method. Non-0DTE alone is not sufficient.',
+    sampledContractCount:asset.candidates.length,expiryCounts,
+    expiryCoverage:'Latest bounded sample only; not every listed contract.',
+    requiredUnderlying:asset.symbol,observedTrend:asset.trend?.direction??'INSUFFICIENT_HISTORY',
+    proxyBoundary:asset.symbol==='GLD'?
+      'Gold spot / GC futures are context. Confirm entries on GLD bars; do not copy futures levels, volume, roll or session assumptions into GLD.':
+      'Bitcoin spot / futures are context. Confirm entries on IBIT bars; do not copy 24/7 prices, futures basis or volume into ETF triggers.',
+    missingEvidence:[
+      'Qualified, completed ETF OHLCV with source/session clocks, gap checks and a comparable volume baseline is not connected. ETF price snapshots, daily closes and option candles cannot confirm these setups.',
+      'Bar interval, lookback, levels, buffers, volume threshold, chase limit, invalidation price and exact time exit have not been frozen for a setup.',
+      'A move / holding-time / IV scenario and historical IV context are unavailable; a favorable ETF direction alone does not establish an option profit.'
+    ],setups,
+    optionChecks:'Retain fresh bid/ask and size, spread, budget and declared net costs. Review delta, time decay, IV and event exposure; freeze the stop, target and time exit before entry. Stops are not guaranteed fills.',
+    eventBoundary:'Scheduled and unexpected events may create research opportunities. Wait for observable price confirmation; an IV decline after the event can offset a favorable underlying move.',
+    validation:'Freeze rules prospectively, retain false breakouts and losses, and compare independent outcomes after spread and costs. These overlapping setups are not independent votes; a pipeline paper trade does not validate them.',
+    canConfirmSetup:false,winProbability:null,expectedReturn:null,changesGuidance:false};
+}
+
 // A compact projection of existing decisions. It never qualifies a quote or trade.
 export function dailyDecisionCards(state) {
   const view=state.guidance?.data,r=view?.current;
@@ -37,7 +75,8 @@ export function dailyDecisionCards(state) {
         supporting:reviewCurrent?analysis?.supporting.slice(0,3)??[]:[],opposing:reviewCurrent?analysis?.opposing.slice(0,3)??[]:[],
         sources:reviewCurrent?analysis?.sources??[]:[],blockers:asset.blockers,trend:asset.trend,
         eventPlan:reviewCurrent?analysis?.eventPlan??'Event interpretation unavailable.':'Current event interpretation unavailable.',
-        entryCondition:'Wait for an open regular session, current ETF and option quotes, attributed analysis agreeing with the observed trend, acceptable spread/size, and declared costs. All original blockers must clear.',
+        entryCondition:'Wait for an open regular session, current ETF and option quotes, attributed analysis agreeing with the observed trend, acceptable spread/size, and declared costs. All original blockers must clear. The buyer setup checklist below is not yet assessable and does not confirm an entry.',
+        buyerEntryBoundary:buyerEntryBoundary(asset),
         invalidation:reviewCurrent?analysis?.invalidation??'Reassess when the evidence changes.':'Do not act on the previous analysis; obtain a current review.',
         timeExit:'Before any manual entry, declare an exact exit time in Trade journal. The general watchlist does not open a position or register a time exit.',
         references,noContractReason:references.length?null:'No sampled 14–45 DTE contract fits the premium budget and quote-side checks. This bounded sample does not cover every listed strike.'};

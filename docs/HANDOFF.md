@@ -1,5 +1,14 @@
 # Alpha Handoff
 
+## September 16 — Owner-requested buyer setup checklist
+
+Daily cards and Host brief now share [three buyer entry research definitions](specifications/OPTIONS_BUYER_ENTRY_BOUNDARIES_V1.md).
+This is a checklist, not a working pattern detector: current ETF snapshots,
+sparse daily closes and option bars cannot confirm a setup. Preserve
+NOT_ASSESSABLE and unknown win/return estimates until a separately verified
+ETF OHLCV/parameter path exists. No paper, source, capital or canonical guidance
+behavior changed; the current milestone still awaits the September 17 rehearsal.
+
 ## September 16 — active daily-decision milestone
 
 Continue [the narrowed goal](specifications/OPTIONS_DAILY_DECISION_MILESTONE_V1.md),

@@ -1,5 +1,17 @@
 # Alpha Architecture Decisions
 
+## September 16, 2026 — Treat buyer setups as research definitions
+
+The Owner proposed trend breakouts, pullback continuations and key-level pattern
+resolution as option-buying boundaries. Retain their conditional price logic but
+reject unmeasured high-win-rate/doubling claims. Add the definitions and missing
+evidence to current cards/Host; do not activate a signal from ETF snapshots,
+option bars or futures proxies. Keep the existing 14–45 DTE scope; non-0DTE is
+not blanket eligibility. Prospectively declared parameters and qualified ETF
+OHLCV are prerequisites to a later detector. This small requested addition does
+not change the current milestone, allocation or September 17 paper rehearsal.
+See [specification](specifications/OPTIONS_BUYER_ENTRY_BOUNDARIES_V1.md).
+
 ## September 16, 2026 — Narrow the next milestone to daily use and one paper round trip
 
 The Owner approved source recovery, one-page GLD/IBIT decision cards and a complete

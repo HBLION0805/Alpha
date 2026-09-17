@@ -1,0 +1,33 @@
+{
+  "version": "OPTIONS_BUYER_ENTRY_BOUNDARIES_V1",
+  "checkedAt": "2026-09-17T03:06:40.000Z",
+  "status": "RESEARCH_CHECKLIST_IMPLEMENTED",
+  "setups": ["TREND_BREAKOUT", "TREND_PULLBACK", "KEY_LEVEL_RESOLUTION"],
+  "setupAssessment": "NOT_ASSESSABLE",
+  "automaticPatternDetectorImplemented": false,
+  "qualifiedEtfOhlcvConnected": false,
+  "canConfirmEntry": false,
+  "winProbability": null,
+  "expectedReturn": null,
+  "surfaces": ["DAILY_DECISION_CARDS", "HOST_BRIEF"],
+  "validation": {
+    "decisionCardTests": "12 passed",
+    "guidanceTests": "passed",
+    "workbenchTests": "57 passed",
+    "typecheck": "passed",
+    "aggregate": "passed",
+    "log": "data/runtime/options-workbench-development/buyer-entry-boundaries-validation.log",
+    "desktopExpandedRules": "verified for GLD and IBIT",
+    "browserConsoleErrors": 0,
+    "hostCardParity": "passed",
+    "frozenSettingsPlansAndEnrollmentsUnchanged": 10,
+    "originalIssuedReportRecovery": "verified"
+  },
+  "currentPaperPlan": "pipeline-check-ibit-20260917",
+  "currentPaperState": "AWAITING_WINDOW",
+  "milestoneAdvanced": false,
+  "sourceScheduleChanged": false,
+  "canonicalGuidanceChanged": false,
+  "executionAllowed": false,
+  "remaining": "Qualify ETF OHLCV, freeze numerical setup and move/time/IV parameters prospectively, then implement and independently evaluate a detector. The current paper rehearsal tests plumbing, not these setups."
+}

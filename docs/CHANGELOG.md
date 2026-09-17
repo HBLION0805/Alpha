@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## September 16, 2026 — Buyer entry research checklist
+
+- Added three candidate setups with confirmation/invalidation definitions and
+  explicit missing ETF candle, parameter and option-pricing evidence.
+- Shared the English checklist and sampled DTE boundaries between daily cards
+  and Host brief. Setups remain NOT_ASSESSABLE; no automated detector, probability,
+  canonical trading-gate change or source call was added.
+- Preserved the current milestone and frozen paper plan. See
+  [scope](specifications/OPTIONS_BUYER_ENTRY_BOUNDARIES_V1.md).
+
 ## September 16, 2026 — Daily decision milestone in progress
 
 - Restored public collection after startup; preserved September 15 NO_ENTRY.

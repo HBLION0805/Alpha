@@ -1,5 +1,9 @@
 # Alpha
 
+Daily cards now include [long-option entry research boundaries](docs/specifications/OPTIONS_BUYER_ENTRY_BOUNDARIES_V1.md):
+breakout, trend pullback and key-level resolution. They remain not assessable
+without qualified ETF candles and predeclared parameters; no win rate is inferred.
+
 Current goal: [daily GLD/IBIT decision cards and one real-quote paper round trip](docs/specifications/OPTIONS_DAILY_DECISION_MILESTONE_V1.md).
 The compact cards are on Daily guidance. Public collection was restarted September
 16; the September 17 paper test is prospective and has not completed. Follow the

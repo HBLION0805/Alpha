@@ -1,5 +1,13 @@
 # Alpha Architecture
 
+## Buyer entry research boundaries — September 16, 2026
+
+The existing decision-card projection now includes three untested setup definitions,
+sampled DTE buckets and explicit ETF/proxy/evidence limits. The frontend and Host
+brief share this projection. There is no connected ETF OHLCV setup detector;
+all setup states remain NOT_ASSESSABLE. Canonical decisions, journals, schedules
+and frozen paper inputs are unchanged. See [scope](specifications/OPTIONS_BUYER_ENTRY_BOUNDARIES_V1.md).
+
 ## Compact daily decision cards — September 16, 2026
 
 The workbench composes a read-only projection of existing guidance, attribution,
