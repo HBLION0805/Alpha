@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## ETF setup research desk — September 17, 2026
+
+A separate deterministic projection validates declared GLD/IBIT five-minute bars,
+freezes future setup parameters and explains option-sample fit to side, holding
+horizon and delta. Append-only copied-input snapshots independently recompute.
+The protected workbench API and English frontend share this projection. Imported
+provenance is unverified; canonical guidance, QQQ fixture authorization and frozen
+paper engines remain unchanged. The read-only Robinhood ETF historical tool was
+added to client configuration; actual schema/data integration awaits reload.
+See [scope](specifications/OPTIONS_ETF_SETUP_DESK_V1.md).
+
 ## Exact ETF prices in snapshot paper V3 — September 17, 2026
 
 New snapshot plans preserve the source ETF USD string and validate it with integer

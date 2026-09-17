@@ -1,5 +1,14 @@
 # Alpha options workbench
 
+Daily guidance now includes **ETF trend → contract research**. Declare future
+activation/exit times and ETF levels before observation. Form times use your
+device timezone; the engine checks New York sessions. Imported normalized
+five-minute evidence remains unverified. View trend, first match, failed break,
+invalidation, time expiry and contract-specific reasons; **Save current assessment**
+copies evidence for recovery without creating a trade or enrolling paper. See
+[delivery and CLI](OPTIONS_ETF_SETUP_DESK_DELIVERY.md). Real Robinhood ETF source
+mapping still requires the newly configured historical tool to load.
+
 Open **News & calendar → Rates, dollar & inflation benchmarks** for Treasury
 nominal yields, Fed broad USD/FX and Cleveland CPI/PCE models. Tables show source
 periods separately from actual read times. Collection is once daily after 17:00

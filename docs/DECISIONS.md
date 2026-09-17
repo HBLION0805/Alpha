@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## September 17, 2026 — Separate setup research from source qualification
+
+Owner approved the ETF trend-to-contract stage. Build an explicit prospective
+setup desk and reuse original option feasibility blockers without rewriting
+canonical daily decisions. Raw normalized imports permit reproducible research,
+not authenticated trade signals. Do not repurpose the QQQ-only fixture qualifier.
+Robinhood documents ETF OHLCV, so add only its read-only historical tool to the
+existing connection; wait for an actual schema before writing a source adapter.
+Keep all schedules, account/order restrictions and completed paper evidence.
+See [scope](specifications/OPTIONS_ETF_SETUP_DESK_V1.md).
+
 ## September 17, 2026 — Version the fractional-cent ETF correction
 
 Two actual IBIT exit observations were rejected because the legacy adapter mapped

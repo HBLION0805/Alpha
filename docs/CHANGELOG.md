@@ -1,5 +1,15 @@
 # Alpha Changelog
 
+## September 17, 2026 — ETF setup and contract research
+
+- Add future rule registration, exact five-minute ETF bar validation and explicit
+  breakout/pullback/key-level research states, including later invalidation.
+- Explain expiry/strike comparisons using declared holding time and delta while
+  retaining original costs, quotes and allocation blockers. No canonical promotion.
+- Add protected local forms, immutable imported evidence and copied assessment
+  recovery. Actual ETF source integration still awaits MCP reload/schema review.
+- See [delivery](OPTIONS_ETF_SETUP_DESK_DELIVERY.md); no real-price or strategy gate advances.
+
 ## September 17, 2026 — Exact underlying prices in paper V3
 
 - Preserve fractional-cent ETF observations in new V3 plans without rounding or

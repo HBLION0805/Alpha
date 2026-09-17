@@ -1,5 +1,19 @@
 # Alpha Development Standard v1.0
 
+## ETF setup research desk — September 17, 2026
+
+Owner approved the trend-to-contract stage. Local prospective rule registration,
+normalized five-minute ETF bar checks, contract-fit explanations and frontend are
+implemented. Imported source claims remain unverified and never promote canonical
+guidance. No production rules/bars were manufactured. Read
+docs/OPTIONS_ETF_SETUP_DESK_DELIVERY.md and docs/status/etf-setup-desk.json.
+The existing Codex connection now includes the sixth read-only tool
+get_equity_historicals, documented by Robinhood. Current-session schema/actual data
+are not yet available: reload, inspect the actual schema, then implement and test
+normalization. Do not guess that schema, use unofficial endpoints, repurpose QQQ
+fixture authorization, add timers or touch account/order tools. Keep the completed
+September 17 engineering milestone and all old reports/schedules unchanged.
+
 ## Exact ETF price correction — September 17, 2026
 
 New snapshot plans use V3 exact ETF USD with integer micro-USD validation; option

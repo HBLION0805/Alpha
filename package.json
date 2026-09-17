@@ -5,6 +5,8 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "options:etf-setup": "tsx scripts/options-etf-setup.mjs",
+    "test:options-etf-setup": "tsx scripts/options-etf-setup.test.mjs",
     "test:options-spread-review": "tsx scripts/options-spread-review.test.mjs",
     "test:options-decision-card": "tsx scripts/options-decision-card.test.mjs",
     "options:workbench": "tsx scripts/options-workbench.mjs",

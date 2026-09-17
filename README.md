@@ -1,5 +1,11 @@
 # Alpha
 
+Latest work: [ETF trend to contract research](docs/OPTIONS_ETF_SETUP_DESK_DELIVERY.md).
+The local desk freezes prospective rules, checks imported ETF candles and explains
+contract fit. Live ETF OHLCV integration awaits the newly configured read-only
+Robinhood historical tool becoming available after MCP reload. No trading signal
+or strategy edge is validated by this local increment.
+
 Current milestone: [actual-quote paper verification and ETF price precision](docs/OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md).
 The original September 17 prospective rehearsal has completed a modeled entry,
 independent exit, costs and recoverable review. This is an engineering result;

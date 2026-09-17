@@ -1,0 +1,39 @@
+{
+  "version": "OPTIONS_ETF_SETUP_DESK_DELIVERY_V1",
+  "date": "2026-09-17",
+  "status": "LOCAL_RESEARCH_IMPLEMENTED_LIVE_ETF_SOURCE_PENDING",
+  "source": {
+    "documentedTool": "get_equity_historicals",
+    "configured": true,
+    "currentCatalogExposesTool": false,
+    "actualSourceResponse": false,
+    "ohlcvQualified": false,
+    "requiredNextStep": "Reload the MCP connection, inspect the actual tool schema, then capture and normalize GLD/IBIT ETF bars."
+  },
+  "localAcceptance": {
+    "focusedTests": 36,
+    "decisionCardTests": 12,
+    "guidanceTests": 101,
+    "workbenchTests": 57,
+    "copiedOnlyRecovery": "PASS",
+    "typecheck": "PASS",
+    "fullValidation": "PASS",
+    "aggregateTestsPassed": 4582,
+    "aggregateTestsFailed": 0,
+    "aggregateComponents": 174,
+    "desktop": "PASS_EMPTY_STATE_AND_RULE_FORM",
+    "mobile390": "PASS_EMPTY_STATE_AND_RULE_FORM_NO_HORIZONTAL_OVERFLOW",
+    "browserConsoleErrors": 0,
+    "uiWrites": "NONE_IN_OWNER_WORKSPACE_HTTP_MUTATIONS_TESTED_IN_ISOLATED_WORKSPACE"
+  },
+  "productionRulesRegistered": 0,
+  "productionBarImports": 0,
+  "canonicalGuidanceChanged": false,
+  "sourceSchedulesChanged": false,
+  "historicalPaperResultsChanged": false,
+  "priorEngineeringMilestone": "COMPLETE",
+  "trendRecommendationStage": "IN_PROGRESS",
+  "strategyValidated": false,
+  "winProbability": null,
+  "executionAllowed": false
+}

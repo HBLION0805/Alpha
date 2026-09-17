@@ -1,5 +1,12 @@
 # Alpha Roadmap
 
+September 17 next-stage increment: [ETF setup research](OPTIONS_ETF_SETUP_DESK_DELIVERY.md)
+now connects prospective parameters, normalized bar checks and option-sample
+interpretation locally, with matching frontend and recoverable evidence. The
+actual Robinhood ETF OHLCV adapter remains pending tool reload/schema inspection.
+This does not advance strict source or strategy gates; 4 local / 4 partial / 2
+unvalidated workstreams retain their original definitions.
+
 September 17 update: [actual-quote paper and precision correction](OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md)
 now records the first completed prospective engineering snapshot round trip,
 estimated net costs and copied-source review recovery. Earlier NO_ENTRY/open

@@ -21,6 +21,7 @@ import { readinessClock } from '../../src/engines/options-readiness/OptionsReadi
 import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import { parseChainSurveyJson } from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import { guidanceView, saveGuidanceSettings, guidanceDeliveryView, guidanceSensitivityView } from './options-guidance-io.mjs';
+import {etfSetupView,registerEtfSetup,importEtfBars,saveEtfSetupAssessment,verifyEtfSetup} from './options-etf-setup-io.mjs';
 import { focusedNewsView } from './options-focused-news-io.mjs';
 import { goldFrameworkView } from './options-gold-framework.mjs';
 import { macroContextView,previewMacroComparison,saveMacroComparison } from './options-macro-context-io.mjs';
@@ -44,7 +45,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(WORKBENCH_|ETF_SETUP_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -121,6 +122,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.positionWatch=await component(()=>watchFromDesk(manual.data,result.snapshotPaper.data,at),at);
     result.reportedSpreads=await component(()=>reportedSpreadView(root,at),at);
     result.decisionCards=await component(()=>dailyDecisionCards(result),at);
+    result.etfSetup=await component(()=>etfSetupView(root,result.guidance.data?.input,at),at);
     return result;
   }
   function watchFromDesk(report,desk,at,costs={}){
@@ -165,6 +167,16 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_ACTION');
     return body.action==='PREVIEW'?previewMacroComparison(root,body.request,now()):saveMacroComparison(root,body.request,now());
   }
+  async function etfSetup(body){
+    if(!body||Object.keys(body).sort().join()!=='action,request')fail('ETF_SETUP_FIELDS');
+    const at=now();let saved;
+    if(body.action==='REGISTER')saved=registerEtfSetup(root,body.request,at);
+    else if(body.action==='IMPORT')saved=importEtfBars(root,body.request,at);
+    else if(body.action==='SNAPSHOT'){
+      const s=await state();saved=saveEtfSetupAssessment(root,s.guidance.data.input,body.request,now());
+    }else fail('ETF_SETUP_ACTION');
+    verifyEtfSetup(root,saved.path);return {path:saved.path,executionAllowed:false};
+  }
   function snapshotPaper(body){
     if(!body||!['PREVIEW','REGISTER','SAVE_REPORT','ENROLL','CANCEL'].includes(body.action))fail('SNAPSHOT_ACTION');
     if(['SAVE_REPORT','ENROLL','CANCEL'].includes(body.action)){
@@ -176,5 +188,5 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(Object.keys(body).sort().join()!=='action,request')fail('SNAPSHOT_FIELDS');
     return body.action==='PREVIEW'?previewSnapshotPaperCollection(root,body.request,now()):registerSnapshotPaper(root,body.request,now());
   }
-  return {positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  return {etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

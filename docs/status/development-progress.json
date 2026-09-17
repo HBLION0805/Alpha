@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-17T18:15:37.759Z",
+  "recordedAt": "2026-09-17T23:08:07.000Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
@@ -93,13 +93,13 @@
       "name": "Signal evaluation and calibration",
       "previousStatus": "NOT_VALIDATED",
       "status": "NOT_VALIDATED",
-      "detail": "Prospective descriptive activity study and matched-control outcomes implemented and frozen. No actual future outcome, independent evaluation, complete partition input, sealed holdout or calibrated probability.",
-      "evidence": "docs/OPTIONS_ACTIVITY_STUDY_DELIVERY.md"
+      "detail": "The local prospective ETF setup research desk now validates declared bars, evaluates breakout/pullback/key-level rules and explains contract fit. Actual GLD/IBIT ETF OHLCV source normalization is pending a reloaded historical-data tool. No independent setup outcomes or calibrated probability. Original activity study evidence is preserved.",
+      "evidence": "docs/OPTIONS_ETF_SETUP_DESK_DELIVERY.md"
     }
   ],
-  "currentWorkstream": "08",
-  "currentUnit": "Exact ETF price correction and prospective actual-quote paper round trips",
-  "currentUnitAcceptance": "The narrowed daily-card and prospective actual-quote paper milestone is complete. Source/execution qualification, timely continuous exit monitoring, trend-based recommendations and strategy validation are not complete. No historical real-price qualification gate is relabeled.",
+  "currentWorkstream": "10",
+  "currentUnit": "Prospective ETF setup confirmation to contract research",
+  "currentUnitAcceptance": "Local engine, persistence and frontend implemented and tested with isolated synthetic inputs. Actual ETF OHLCV adapter and independent setup outcomes remain pending. The previous actual-quote engineering milestone remains complete; no historical real-price qualification gate is relabeled.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -136,15 +136,16 @@
     "practicalEvidence": "docs/status/daily-decision-milestone.json"
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Qualify traded-ETF OHLCV and prospective setup parameters, then validate view-to-contract recommendations and outcomes. Preserve source failures and the engineering-versus-signal distinction.",
+  "nextAction": "Reload the existing Robinhood MCP connection to expose the newly enabled get_equity_historicals tool; inspect its real schema, capture GLD/IBIT ETF bars, verify semantics and implement normalization. Then register prospective rules and compare observed setup/contract outcomes without hindsight.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4546,
+    "passed": 4582,
     "failed": 0,
-    "componentCount": 173
+    "componentCount": 174
   },
   "latestOperationalEvidence": "docs/status/snapshot-precision-v3.json",
+  "latestEtfSetupCheckpoint": "docs/status/etf-setup-desk.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -169,15 +170,15 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 109,
+    "passed": 206,
     "failed": 0,
     "typecheck": "PASS",
     "fullSuiteRun": true
   },
   "currentUnitWorkflowStages": [
     "F02",
-    "F05",
-    "F07"
+    "F03",
+    "F04"
   ],
   "marketScheduleRecovery": "docs/status/market-schedule-recovery-20260910.json"
 }

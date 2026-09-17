@@ -1,4 +1,5 @@
 import {snapshotRequest,snapshotResult} from './snapshot-paper.js';
+import {etfSetupRequest} from './etf-setup.js';
 import {positionWatchRequest,positionWatchResult,positionWatchPreviewMatches} from './position-watch.js';
 import {spreadCapitalNotice} from './spread-review.js';
 import {request} from './api.js';
@@ -81,6 +82,8 @@ function updateDraft(el){
   if(form.getAttribute('id')==='snapshot-paper-form'){ui.snapshotDraft=Object.fromEntries(new FormData(form));ui.snapshotPreview=null;dirty.add('snapshot-paper');const p=$('#snapshot-paper-preview');if(p)p.innerHTML=snapshotResult(null);const b=$('#freeze-snapshot-paper');if(b)b.disabled=true;return;}
   if(form.id==='macro-comparison-form'){ui.macroDraft=Object.fromEntries(new FormData(form));ui.macroPreview=null;dirty.add('macro');const p=$('#macro-comparison-preview');if(p)p.innerHTML=macroComparisonResult(null);const b=$('#save-macro-comparison');if(b)b.disabled=true;return;}
   if(form.id==='guidance-settings-form'){ui.guidanceSettingsDraft=Object.fromEntries(new FormData(form));clearPolicyPreview();dirty.add('guidance');const snapshot=$('#save-candidate-checks');if(snapshot)snapshot.disabled=true;return;}
+  if(form.id==='etf-setup-form'){ui.etfSetupDraft=Object.fromEntries(new FormData(form));dirty.add('etf-setup');return;}
+  if(form.id==='etf-bars-form'){dirty.add('etf-bars');return;}
   if(form.id==='event-research-form'){Object.assign(ui.eventDraft,Object.fromEntries(new FormData(form)));dirty.add('event-research');return;}
   const key=form.id==='planner-form'?'planner':ui.journalMode,d=key==='planner'?ui.plannerDraft:drafts[key];
   d[el.name]=el.type==='checkbox'?el.checked:el.value;dirty.add(key);
@@ -147,6 +150,17 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(['etf-setup-form','etf-bars-form'].includes(event.target.id)){
+    event.preventDefault();if(saving)return;const form=event.target,button=event.submitter,mode=form.id==='etf-setup-form'?'REGISTER':'IMPORT';saving=true;button.disabled=true;
+    void(async()=>{try{
+      let value;
+      if(mode==='REGISTER')value=etfSetupRequest(Object.fromEntries(new FormData(form)));
+      else {const file=form.elements.bars.files[0];if(!file||file.size>60000)throw Error('Choose a normalized evidence JSON file under 60 KB.');value=JSON.parse(await file.text());}
+      await request('/api/etf-setup',{action:mode,request:value});
+      dirty.delete(mode==='REGISTER'?'etf-setup':'etf-bars');if(mode==='REGISTER')ui.etfSetupDraft=null;
+      await reload();toast('Local research evidence saved and verified. No trade or paper enrollment created.');
+    }catch(e){fail(e,'#etf-setup-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.dataset.positionCost){
     event.preventDefault();if(previewing)return;
     const form=event.target,id=form.dataset.positionCost,button=event.submitter,error=document.querySelector(`[data-position-error="${id}"]`),baseAt=state.loadedAt;
@@ -187,6 +201,7 @@ document.addEventListener('submit',event=>{
 });
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
+  if(el.dataset.etfSnapshot){if(saving)return;saving=true;el.disabled=true;try{await request('/api/etf-setup',{action:'SNAPSHOT',request:el.dataset.etfSnapshot});await reload();toast('Copied research assessment saved and recovered.');}catch(e){fail(e,'#etf-setup-error');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.dataset.close){if(saving&&el.dataset.close==='preview-dialog')return;$('#'+el.dataset.close).close();return;}
   if(el.id==='discard-snapshot-paper'){ui.snapshotDraft=null;ui.snapshotPreview=null;dirty.delete('snapshot-paper');render();return;}
   if(['preview-snapshot-paper','freeze-snapshot-paper'].includes(el.id)){

@@ -1,5 +1,16 @@
 # Alpha Handoff
 
+## September 17 — ETF setup research increment
+
+The Owner approved the next trend-to-contract stage. The local desk and matching
+frontend are implemented; read [delivery](OPTIONS_ETF_SETUP_DESK_DELIVERY.md) and
+[checkpoint](status/etf-setup-desk.json). No production bars/rules were invented.
+The official Robinhood ETF historical tool has been added to the existing client
+allowlist, but this session's tool catalog has not reloaded. Next inspect the real
+schema and capture GLD/IBIT bars, implement the source mapping, and qualify it.
+No schedule change or new paper enrollment. Imported research data never promotes
+canonical WATCH. Prior September 17 engineering milestone remains complete.
+
 ## September 17 — Exact-price correction and actual-quote paper round trip
 
 Read [the delivery](OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md) and current
