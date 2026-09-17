@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_DAILY_DECISION_MILESTONE_V1",
-  "recordedAt": "2026-09-17T14:23:21.000Z",
+  "recordedAt": "2026-09-17T15:48:23.000Z",
   "status": "IN_PROGRESS",
   "ownerDirection": "Recover sources, deliver daily GLD/IBIT decision cards, then complete one prospective actual-quote paper round trip and recover its review. Report the stage after completion.",
   "ownerReportedInterruption": "Codex was not running on Monday and was restarted September 16. Weekend option closure is expected; public collection requires a running service.",
@@ -12,19 +12,21 @@
       "evidence": "Initial September 16 recovery: nine feeds succeeded on startup and at the natural 23:00 UTC refresh; BEA remained partial. The original after-hours capture retained close-time option clocks and partial GLD enumeration. On September 17 the natural 14:00 UTC public refresh succeeded for all nine feeds, still with partial BEA. This active goal turn claimed the actual 10:20 New York ongoing slot and saved 36/36 current quotes in 16 calls without request failures. This proves an actual in-slot source read, not an independently observed scheduler trigger or future reliability.",
       "capturePath": "data/runtime/options-daily-guidance/captures/2026-09-16/2026-09-16T22-46-46-777Z-d30a6108-9209-416f-882f-5d09a6d4d92b.json",
       "naturalRefreshReceipt": "data/runtime/options-context-service/2026-09-16/hourly-2026-09-16T23.receipt.json",
-      "latestCapturePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T14-20-47-747Z-17ae85eb-3c60-4f61-ba13-37d051682791.json",
-      "latestNaturalRefreshReceipt": "data/runtime/options-context-service/2026-09-17/hourly-2026-09-17T14.receipt.json",
-      "latestSlotClaim": "data/runtime/options-daily-guidance/slots/2026-09-17/2026-09-17-1020.json"
+      "latestCapturePath": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T15-27-44-303Z-9e593078-ca62-4cd0-a611-59ae5b79812a.json",
+      "latestNaturalRefreshReceipt": "data/runtime/options-context-service/2026-09-17/hourly-2026-09-17T15.receipt.json",
+      "latestSlotClaim": "data/runtime/options-daily-guidance/slots/2026-09-17/2026-09-17-1120.json",
+      "latestReadObservation": "The existing 11:20 New York slot was claimed during the scheduled wake and captured 36/36 quotes in 16 calls. The natural 15:00 UTC public receipt succeeded; an explicit check found its existing claim and did not duplicate reads. The tracked paper quote failed the unchanged underlying alignment check, so source receipt did not qualify an exit."
     },
     {
       "id": "A2",
       "status": "LOCAL_UI_AND_PROJECTION_VERIFIED",
       "evidence": "Two daily cards retain WATCH, explicit entry/exit conditions, source clocks and at most two budget-compatible references. September 16 desktop/390px checks and planner navigation remain valid. September 17's 10:20 capture now has a later attributed MIXED review: both ETFs rose versus their official prior closes, without qualified trend evidence. At 14:23:04 UTC the same projection correctly marks the underlying snapshots no longer fresh while the review remains current. Global unknown costs remain separate from dated-fee illustrations and engineering paper assumptions.",
-      "latestIssuedReport": "data/runtime/options-daily-guidance/reports/2026-09-17/2026-09-17T14-22-42-074Z-ffacd313-e5e2-4d39-9e28-95599c0103ab.json"
+      "latestIssuedReport": "data/runtime/options-daily-guidance/reports/2026-09-17/2026-09-17T15-29-57-815Z-c1f6b3c6-1e67-4a07-95b7-d82a4150b245.json",
+      "latestReviewObservation": "The 11:20 capture received a later attributed MIXED review. Both cards remain WATCH. The 15:34 UTC projection readback retained exact clocks and current analysis without qualifying fresh execution or a trend signal."
     },
     {
       "id": "A3",
-      "status": "ENTRY_RECORDED_AWAITING_INDEPENDENT_EXIT",
+      "status": "ENTRY_RECORDED_EXIT_SAMPLE_REJECTED",
       "planId": "pipeline-check-ibit-20260917",
       "purpose": "PIPELINE_REHEARSAL_NOT_SIGNAL",
       "entryWindowNewYork": "2026-09-17 10:15–10:40",
@@ -43,8 +45,17 @@
       "assumedEntryFeeCents": 4,
       "openPremiumExposureCents": 14600,
       "plannedRiskCents": 3029,
-      "latestPaperReport": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260917/auto-7d0f4f79414eed36cb5edff534cfaaee4c30d18afc83b9e41e6d33ab259f47ff.json",
-      "entryReportRecovery": "VERIFIED_FROM_COPIED_SOURCES"
+      "latestPaperReport": "data/runtime/options-snapshot-paper/reports/pipeline-check-ibit-20260917/auto-639dfe4a72af0b6e5a129ffb3ace381ef3ed1ba01908b61c5747e90809362fd2.json",
+      "entryReportRecovery": "VERIFIED_FROM_COPIED_SOURCES",
+      "exitAttempt": {
+        "slot": "2026-09-17-1120",
+        "status": "UNDERLYING_UNALIGNED",
+        "underlyingAt": "2026-09-17T15:27:22.162211024Z",
+        "optionAt": "2026-09-17T15:27:28.345730147Z",
+        "receivedAt": "2026-09-17T15:27:29.000Z",
+        "modeledExitFills": 0,
+        "observation": "The captured clocks differ by about 6.18 seconds. The unchanged alignment gate rejected this prospective exit observation. Exposure stays open, net outcome stays unknown and no retry or retrospective fill was substituted."
+      }
     }
   ],
   "scheduleSnapshot": "docs/OPTIONS_DAILY_GUIDANCE_HOST_V3.json",
@@ -83,5 +94,5 @@
   "strategyValidated": false,
   "executionAllowed": false,
   "winProbability": null,
-  "nextAction": "Collect the authorized independent September 17 11:20 New York sample in its actual slot, after the unchanged 11:10 time-exit threshold. Preserve the unobserved interval and never fabricate an exact 11:10 or stop fill. Require an admissible modeled exit, net costs, saved candidate review and independent recovery before marking A3 or the goal complete."
+  "nextAction": "Wait for the next original authorized market capture, including the routine 15:50 New York slot, and retain the frozen plan and source cutoff. Do not retry the completed 11:20 slot or relax its alignment gate. Preserve the unobserved interval; require an admissible independent modeled exit, net costs, saved review and independent recovery before marking A3 or the goal complete. The separately recorded Owner screenshot round trips do not satisfy this prospective engineering acceptance."
 }
