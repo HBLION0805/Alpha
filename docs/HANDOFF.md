@@ -7,7 +7,11 @@ GLD/IBIT verticals. Recover the private store with `reportedSpreadView`; show it
 separately from the unchanged long-only ledger and paper evidence. The Owner
 clarified that the newly reported amount is buying power, not verified total
 equity. Do not calculate account drawdown from that figure or overwrite settled
-cash. Closing executions, actual fees and exit mechanism remain missing. The
+cash. Subsequent screenshots now match full spread-level closes and an additional
+round trip. V2 retains the original opening case and displays the newer case once;
+actual fees and account reconciliation remain missing. The later V3 Owner
+clarification reports manual sales after observing losses; preserve that source
+qualification and do not label these orders brokerage liquidation. The
 review notebook contains candidates, not approved causal conclusions or new risk
 caps. See [scope](specifications/OPTIONS_REPORTED_SPREAD_REVIEW_V1.md). No market
 schedule, frozen September 17 rehearsal or real-price gate changed.

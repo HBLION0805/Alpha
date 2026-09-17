@@ -5,8 +5,12 @@
 Actual debit-spread opening screenshots are saved privately under
 data/runtime/options-reported-spreads and projected separately in Trade journal,
 Reviews and the candidate notebook. Never force their short legs into the original
-long-only ledger. The Owner reports closure, but closing fills and mechanism are
-unverified. The revised money statement is buying power, not verified equity or
+long-only ledger. V2 now matches supplied full spread-level closing screenshots
+and an additional round trip, preserving the original opening-only case without
+duplicate totals. A later V3 statement records the Owner's confirmation that exits
+were manual after observing losses, not a reported brokerage liquidation. Actual
+fees and original exit rules remain unknown. The revised
+money statement is buying power, not verified equity or
 settled cash; no account drawdown can be inferred. Preserve unknown net PnL and
 estimated-fee labels. Candidate checks do not establish causes or approved rules.
 Read docs/specifications/OPTIONS_REPORTED_SPREAD_REVIEW_V1.md. All frozen paper
