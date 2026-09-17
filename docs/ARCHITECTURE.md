@@ -1,5 +1,14 @@
 # Alpha Architecture
 
+## Reported spread opening reviews — September 17, 2026
+
+The workbench now reads a separate immutable, locally source-linked debit-spread
+review. Exact two-leg opening arithmetic feeds the journal, review page and
+candidate notebook; it never inserts short legs into the original long-only
+ledger. Owner-reported buying power, estimated fees and retrospective explanations
+remain distinct from equity, actual charges and verified closing fills. Private
+inputs/screenshots stay outside Git. See [scope](specifications/OPTIONS_REPORTED_SPREAD_REVIEW_V1.md).
+
 ## Buyer entry research boundaries — September 16, 2026
 
 The existing decision-card projection now includes three untested setup definitions,

@@ -41,6 +41,7 @@ export const LESSONS={
 export const lesson=code=>LESSONS[code]??[words(code),'Review the supporting evidence. This candidate does not establish a cause or change a strategy.'];
 export function collectLessons(state){
   const result=[];
+  for(const r of state.reportedSpreads?.data?.cases??[])for(const l of r.candidateLessons)result.push(l);
   for(const t of state.manual.data?.trades??[])for(const l of t.candidateLessons)result.push({...l,origin:state.manual.data.origin==='SYNTHETIC_FIXTURE'?'Synthetic ledger':'Owner reported',support:t.tradeId,title:lesson(l.code)[0],nextCheck:lesson(l.code)[1]});
   for(const id of ['paper','historical'])for(const l of state.outcomes.data?.components[id]?.audit?.candidateNotebook.entries??[])result.push({...l,origin:id==='paper'?'Paper simulation':'Historical research',support:(l.supportingTradeIds??l.supportingRunIds??[]).join(', '),title:words(l.code),nextCheck:l.nextCheck??l.observation});
   for(const l of state.activity.data?.candidateLessons??[])result.push({...l,origin:'Activity research',support:l.candidateId??l.contractId??'',title:words(l.code),nextCheck:l.nextCheck??l.observation??'Inspect the saved comparison and its evidence limits.'});

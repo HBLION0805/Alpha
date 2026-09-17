@@ -1,5 +1,17 @@
 # Alpha Development Standard v1.0
 
+## Owner-supplied spread review — September 17, 2026
+
+Actual debit-spread opening screenshots are saved privately under
+data/runtime/options-reported-spreads and projected separately in Trade journal,
+Reviews and the candidate notebook. Never force their short legs into the original
+long-only ledger. The Owner reports closure, but closing fills and mechanism are
+unverified. The revised money statement is buying power, not verified equity or
+settled cash; no account drawdown can be inferred. Preserve unknown net PnL and
+estimated-fee labels. Candidate checks do not establish causes or approved rules.
+Read docs/specifications/OPTIONS_REPORTED_SPREAD_REVIEW_V1.md. All frozen paper
+plans, source schedules and capital settings remain unchanged.
+
 ## Buyer entry research boundaries — September 16, 2026
 
 The Owner requested breakout, trend pullback and key-level resolution checks.

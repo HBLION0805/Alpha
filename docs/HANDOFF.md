@@ -1,5 +1,17 @@
 # Alpha Handoff
 
+## September 17 — Owner-supplied debit-spread review
+
+The Owner supplied opening screenshots and a retrospective explanation for actual
+GLD/IBIT verticals. Recover the private store with `reportedSpreadView`; show it
+separately from the unchanged long-only ledger and paper evidence. The Owner
+clarified that the newly reported amount is buying power, not verified total
+equity. Do not calculate account drawdown from that figure or overwrite settled
+cash. Closing executions, actual fees and exit mechanism remain missing. The
+review notebook contains candidates, not approved causal conclusions or new risk
+caps. See [scope](specifications/OPTIONS_REPORTED_SPREAD_REVIEW_V1.md). No market
+schedule, frozen September 17 rehearsal or real-price gate changed.
+
 ## September 16 — Owner-requested buyer setup checklist
 
 Daily cards and Host brief now share [three buyer entry research definitions](specifications/OPTIONS_BUYER_ENTRY_BOUNDARIES_V1.md).

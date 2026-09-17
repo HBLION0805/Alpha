@@ -1,5 +1,6 @@
 import {snapshotRequest,snapshotResult} from './snapshot-paper.js';
 import {positionWatchRequest,positionWatchResult,positionWatchPreviewMatches} from './position-watch.js';
+import {spreadCapitalNotice} from './spread-review.js';
 import {request} from './api.js';
 import {routes,contractDetail,tradeDetail,plannerResult,detail,notice,table,empty} from './views.js';
 import {esc,words,dollars,timestamp,exactUsd,decimalText,decimalInteger,filterChain} from './model.js';
@@ -35,7 +36,7 @@ function render(focus=false){
   const key=route();ui.journalDraft=drafts[ui.journalMode];
   const disclosures=new Map(!focus&&renderedRoute===key?[...$('#main').querySelectorAll('details[data-disclosure-key]')].map(el=>[el.dataset.disclosureKey,el.open]):[]);
   const focusedDisclosure=active?.tagName==='SUMMARY'?active.parentElement?.dataset.disclosureKey:null;
-  $('#main').innerHTML=routes[key](state,ui);$('#breadcrumb').textContent=labels[key];
+  $('#main').innerHTML=(['overview','guidance','planner'].includes(key)?spreadCapitalNotice(state.reportedSpreads):'')+routes[key](state,ui);$('#breadcrumb').textContent=labels[key];
   let nextSummary=null;
   for(const el of $('#main').querySelectorAll('details[data-disclosure-key]')){
     if(disclosures.has(el.dataset.disclosureKey))el.open=disclosures.get(el.dataset.disclosureKey);
@@ -125,7 +126,7 @@ async function saveRecord(){
   finally{saving=false;$('#confirm-save').disabled=false;}
 }
 function download(kind){
-  const components={chain:{chain:state.chain,activity:state.activity},manual:{ledgerId:state.ledgerId,manual:state.manual},reviews:{manual:state.manual,outcomes:state.outcomes,activity:state.activity},context:{macroContext:state.macroContext,goldFramework:state.goldFramework,headlines:state.headlines,focusedNews:state.focusedNews,treasury:state.treasury,btc:state.btc,calendar:state.calendar}};
+  const components={chain:{chain:state.chain,activity:state.activity},manual:{ledgerId:state.ledgerId,manual:state.manual,reportedSpreads:state.reportedSpreads},reviews:{manual:state.manual,outcomes:state.outcomes,activity:state.activity,reportedSpreads:state.reportedSpreads},context:{macroContext:state.macroContext,goldFramework:state.goldFramework,headlines:state.headlines,focusedNews:state.focusedNews,treasury:state.treasury,btc:state.btc,calendar:state.calendar}};
   if(!Object.hasOwn(components,kind))return;
   const data={version:'OPTIONS_WORKBENCH_DOWNLOAD_V1',exportedAt:new Date().toISOString(),loadedAt:state.loadedAt,...components[kind],executionAllowed:false,accountAccessed:false};
   const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`alpha-${kind}-${state.loadedAt.slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Evidence download requested. The original local stores remain unchanged.');

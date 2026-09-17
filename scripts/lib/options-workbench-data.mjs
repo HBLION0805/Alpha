@@ -33,6 +33,7 @@ import { assessOptionsCapitalPolicy } from '../../src/engines/options-retail-fea
 
 import {snapshotPaperView,previewSnapshotPaperCollection,paperCollectionDesk,registerSnapshotPaper,saveSnapshotPaperReport} from './options-snapshot-paper-io.mjs';
 import {dailyDecisionCards} from './options-decision-card.mjs';
+import {reportedSpreadView} from './options-spread-review.mjs';
 import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
@@ -118,6 +119,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.goldFramework=await component(()=>goldFrameworkView(result,at),at);
     result.snapshotPaper=await component(()=>{const desk=snapshotPaperView(root,at);return {...paperCollectionDesk(desk,calendar.data),observations:paperObservationView(root,desk,at)};},at);
     result.positionWatch=await component(()=>watchFromDesk(manual.data,result.snapshotPaper.data,at),at);
+    result.reportedSpreads=await component(()=>reportedSpreadView(root,at),at);
     result.decisionCards=await component(()=>dailyDecisionCards(result),at);
     return result;
   }
