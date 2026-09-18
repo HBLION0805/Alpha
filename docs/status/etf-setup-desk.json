@@ -1,14 +1,16 @@
 {
   "version": "OPTIONS_ETF_SETUP_DESK_DELIVERY_V1",
   "date": "2026-09-17",
-  "status": "LOCAL_RESEARCH_IMPLEMENTED_LIVE_ETF_SOURCE_PENDING",
+  "status": "LOCAL_RESEARCH_IMPLEMENTED_REAL_ETF_BARS_QUALITY_PENDING",
   "source": {
     "documentedTool": "get_equity_historicals",
     "configured": true,
-    "currentCatalogExposesTool": false,
-    "actualSourceResponse": false,
+    "currentCatalogExposesTool": true,
+    "actualSourceResponse": true,
+    "adapterImplemented": true,
+    "actualSourceCheckpoint": "docs/status/robinhood-etf-bars.json",
     "ohlcvQualified": false,
-    "requiredNextStep": "Reload the MCP connection, inspect the actual tool schema, then capture and normalize GLD/IBIT ETF bars."
+    "requiredNextStep": "Resolve omitted interpolation semantics using verifiable source evidence before qualified setup use. The connection reload and first 78-bar-per-ETF capture are complete."
   },
   "localAcceptance": {
     "focusedTests": 36,

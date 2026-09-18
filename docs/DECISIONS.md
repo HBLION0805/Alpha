@@ -1,5 +1,13 @@
 # Alpha Architecture Decisions
 
+## September 17, 2026 — Source receipt is separate from setup qualification
+
+The actual Robinhood ETF history omits every optional interpolation flag. Preserve
+null rather than inferring false from positive volume. A separate saved-source
+projection exposes observed OHLCV and bar-quality gaps without registering rules,
+populating strict setup inputs or retrofitting prior paper outcomes. Existing
+source schedules are unchanged. See [specification](specifications/OPTIONS_ROBINHOOD_ETF_BARS_V1.md).
+
 ## September 17, 2026 — Separate setup research from source qualification
 
 Owner approved the ETF trend-to-contract stage. Build an explicit prospective

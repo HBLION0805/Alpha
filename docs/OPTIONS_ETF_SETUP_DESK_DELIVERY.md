@@ -2,6 +2,11 @@
 
 September 17, 2026. [Scope and acceptance](specifications/OPTIONS_ETF_SETUP_DESK_V1.md).
 
+Later September 17 update: the Owner restarted the connection and the actual
+historical adapter now saves 78 bars per ETF. All interpolation flags are omitted,
+so setup qualification remains open. See [source delivery](OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md).
+The original source prerequisite and acceptance below describe this desk's earlier delivery.
+
 Daily guidance now has **ETF trend → contract research**. It accepts a future,
 immutable breakout, pullback or key-level rule, validates normalized GLD/IBIT
 five-minute OHLCV, records observed confirmation/failure and compares the saved

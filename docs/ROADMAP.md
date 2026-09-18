@@ -3,7 +3,8 @@
 September 17 next-stage increment: [ETF setup research](OPTIONS_ETF_SETUP_DESK_DELIVERY.md)
 now connects prospective parameters, normalized bar checks and option-sample
 interpretation locally, with matching frontend and recoverable evidence. The
-actual Robinhood ETF OHLCV adapter remains pending tool reload/schema inspection.
+actual Robinhood ETF OHLCV adapter now maps a saved 156-bar response. Missing
+interpolation flags still block strict setup use; prospective outcomes remain open.
 This does not advance strict source or strategy gates; 4 local / 4 partial / 2
 unvalidated workstreams retain their original definitions.
 

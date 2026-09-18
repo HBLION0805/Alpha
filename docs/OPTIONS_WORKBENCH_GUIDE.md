@@ -7,7 +7,9 @@ five-minute evidence remains unverified. View trend, first match, failed break,
 invalidation, time expiry and contract-specific reasons; **Save current assessment**
 copies evidence for recovery without creating a trade or enrolling paper. See
 [delivery and CLI](OPTIONS_ETF_SETUP_DESK_DELIVERY.md). Real Robinhood ETF source
-mapping still requires the newly configured historical tool to load.
+mapping now displays saved bars under **Robinhood ETF price observations**.
+Expand **Inspect received bars and quality** for OHLC, volume and explicit unknown
+interpolation flags. These records do not automatically populate setup inputs.
 
 Open **News & calendar → Rates, dollar & inflation benchmarks** for Treasury
 nominal yields, Fed broad USD/FX and Cleveland CPI/PCE models. Tables show source

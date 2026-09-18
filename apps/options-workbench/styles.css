@@ -29,3 +29,4 @@
 .decision-health{font-size:12px;line-height:1.7;color:var(--muted);overflow-wrap:anywhere}
 .decision-desk p,.decision-desk li{line-height:1.65;overflow-wrap:anywhere}
 .decision-reference{border-top:1px solid var(--line);padding:16px 0;margin-top:16px}
+#etf-setup-desk .decision-reference{min-width:0;overflow-wrap:anywhere}

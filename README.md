@@ -2,9 +2,10 @@
 
 Latest work: [ETF trend to contract research](docs/OPTIONS_ETF_SETUP_DESK_DELIVERY.md).
 The local desk freezes prospective rules, checks imported ETF candles and explains
-contract fit. Live ETF OHLCV integration awaits the newly configured read-only
-Robinhood historical tool becoming available after MCP reload. No trading signal
-or strategy edge is validated by this local increment.
+contract fit. [Real Robinhood ETF history](docs/OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md)
+now returns and displays 78 September 17 bars per ETF. Missing interpolation flags
+remain unknown and block strict setup use. No trading signal or strategy edge is
+validated by this source integration.
 
 Current milestone: [actual-quote paper verification and ETF price precision](docs/OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md).
 The original September 17 prospective rehearsal has completed a modeled entry,

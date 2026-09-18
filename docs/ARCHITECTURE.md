@@ -8,7 +8,10 @@ horizon and delta. Append-only copied-input snapshots independently recompute.
 The protected workbench API and English frontend share this projection. Imported
 provenance is unverified; canonical guidance, QQQ fixture authorization and frozen
 paper engines remain unchanged. The read-only Robinhood ETF historical tool was
-added to client configuration; actual schema/data integration awaits reload.
+added to client configuration. Its actual response adapter now preserves source
+clocks, exact OHLCV and quality gaps in a separate sources record and UI panel.
+Omitted interpolation flags remain null and never enter strict setup evaluation.
+See [source delivery](OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md).
 See [scope](specifications/OPTIONS_ETF_SETUP_DESK_V1.md).
 
 ## Exact ETF prices in snapshot paper V3 — September 17, 2026

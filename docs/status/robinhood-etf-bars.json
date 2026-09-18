@@ -1,0 +1,56 @@
+{
+  "version": "OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY_V1",
+  "date": "2026-09-17",
+  "status": "REAL_SOURCE_CAPTURED_QUALITY_FLAGS_UNKNOWN",
+  "toolAvailable": true,
+  "schemaInspected": true,
+  "sourceCalls": 1,
+  "requestedAt": "2026-09-17T23:49:18.000Z",
+  "receivedAt": "2026-09-17T23:49:18.000Z",
+  "windowStart": "2026-09-17T13:30:00.000Z",
+  "windowEnd": "2026-09-17T20:00:00.000Z",
+  "intervalMinutes": 5,
+  "adjustmentRequested": "none",
+  "bounds": "regular",
+  "assets": [
+    {
+      "symbol": "GLD",
+      "bars": 78,
+      "unknownInterpolation": 78,
+      "status": "QUALITY_BLOCKED"
+    },
+    {
+      "symbol": "IBIT",
+      "bars": 78,
+      "unknownInterpolation": 78,
+      "status": "QUALITY_BLOCKED"
+    }
+  ],
+  "record": "data/runtime/options-etf-setup/sources/2026-09-17T23-55-10-454Z-f536f391-9abb-4c20-b9ec-2810636dec87.json",
+  "reportFingerprint": "sha256:facecccc7d8dbe3e961eb55d2a85617d09c6a65e9cda19483e51a39e159679b0",
+  "verification": "PASS",
+  "validation": {
+    "focusedTests": 38,
+    "existingSetupTests": 36,
+    "typecheck": "PASS",
+    "aggregate": "PASS",
+    "testsPassed": 4620,
+    "testsFailed": 0,
+    "components": 175,
+    "desktop": "PASS",
+    "mobile390": "PASS_SOURCE_TABLE_EXPANDED_NO_PAGE_OVERFLOW",
+    "browserConsoleErrors": 0,
+    "actualCopiedRecord": "PASS",
+    "afterUiChanges": "38 adapter and 36 setup checks passed; mobile table overflow corrected and visually verified"
+  },
+  "strictBarImports": 0,
+  "newRules": 0,
+  "sourceQualified": false,
+  "strategyValidated": false,
+  "canonicalGuidanceChanged": false,
+  "paperResultsChanged": false,
+  "schedulesChanged": false,
+  "accountAccessed": false,
+  "actualOrders": 0,
+  "nextAction": "Resolve omitted interpolation semantics using verifiable source evidence, then evaluate predeclared future setup and contract outcomes. Do not request another reload or backfill this completed session."
+}

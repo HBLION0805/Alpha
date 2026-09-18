@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## September 17, 2026 — Actual Robinhood ETF historical bars
+
+- Capture and map 78 actual five-minute bars per ETF using the reloaded tool schema.
+- Preserve omitted interpolation as unknown; expose received prices and quality
+  separately from strict setup inputs, canonical guidance and paper outcomes.
+- Add copied-response recovery, 38 adapter checks and private-store ignore rules.
+  See [delivery](OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md).
+
 ## September 17, 2026 — ETF setup and contract research
 
 - Add future rule registration, exact five-minute ETF bar validation and explicit

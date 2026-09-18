@@ -1,9 +1,13 @@
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createWorkbenchData} from './lib/options-workbench-data.mjs';
-import {readEtfSetupJson,verifyEtfSetup,registerEtfSetup,importEtfBars,saveEtfSetupAssessment} from './lib/options-etf-setup-io.mjs';
+import {readEtfSetupJson,verifyEtfSetup,registerEtfSetup,importEtfBars,saveEtfSetupAssessment,recordRobinhoodEtfBars} from './lib/options-etf-setup-io.mjs';
 export async function runEtfSetup(args,{workspaceRoot=process.cwd(),now=()=>new Date().toISOString()}={}){
   const [mode,arg]=args,root=resolve(workspaceRoot),at=now();
+  if(args.length===2&&mode==='--record-source'){
+    const r=recordRobinhoodEtfBars(root,readEtfSetupJson(root,arg),at);verifyEtfSetup(root,r.path);
+    return {path:r.path,assets:r.record.report.assets.map(a=>({symbol:a.symbol,status:a.status,bars:a.returnedBars,unknownInterpolation:a.unknownInterpolation,blockers:a.blockers,observations:a.observations})),executionAllowed:false};
+  }
   if(args.length===2&&mode==='--verify'){const r=verifyEtfSetup(root,arg);return {status:'VERIFIED',path:arg,fingerprint:r.reportFingerprint,executionAllowed:false};}
   if(args.length===2&&['--register','--import'].includes(mode)){
     const value=readEtfSetupJson(root,arg),r=mode==='--register'?registerEtfSetup(root,value,at):importEtfBars(root,value,at);

@@ -9,8 +9,12 @@ guidance. No production rules/bars were manufactured. Read
 docs/OPTIONS_ETF_SETUP_DESK_DELIVERY.md and docs/status/etf-setup-desk.json.
 The existing Codex connection now includes the sixth read-only tool
 get_equity_historicals, documented by Robinhood. Current-session schema/actual data
-are not yet available: reload, inspect the actual schema, then implement and test
-normalization. Do not guess that schema, use unofficial endpoints, repurpose QQQ
+were initially unavailable. After the Owner restart, the actual schema and a
+September 17 response were captured: 78 bars per ETF, all 156 interpolation flags
+omitted. The source adapter/UI preserve these as unknown; no strict setup inputs
+are promoted. Read docs/OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md and
+docs/status/robinhood-etf-bars.json. No further reload is required. Do not guess
+omitted-flag semantics, use unofficial endpoints, repurpose QQQ
 fixture authorization, add timers or touch account/order tools. Keep the completed
 September 17 engineering milestone and all old reports/schedules unchanged.
 

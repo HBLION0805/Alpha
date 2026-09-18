@@ -6,8 +6,10 @@ The Owner approved the next trend-to-contract stage. The local desk and matching
 frontend are implemented; read [delivery](OPTIONS_ETF_SETUP_DESK_DELIVERY.md) and
 [checkpoint](status/etf-setup-desk.json). No production bars/rules were invented.
 The official Robinhood ETF historical tool has been added to the existing client
-allowlist, but this session's tool catalog has not reloaded. Next inspect the real
-schema and capture GLD/IBIT bars, implement the source mapping, and qualify it.
+allowlist and the Owner restart exposed its real schema. The new adapter saved
+78 actual September 17 bars per ETF, with all 156 interpolation flags unknown.
+Read [source delivery](OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md): no further reload
+is needed. Next resolve omitted-flag semantics and observe prospective setups.
 No schedule change or new paper enrollment. Imported research data never promotes
 canonical WATCH. Prior September 17 engineering milestone remains complete.
 
