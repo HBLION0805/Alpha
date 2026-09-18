@@ -1,5 +1,14 @@
 # Alpha Architecture Decisions
 
+## September 17, 2026 — Do not resolve source conflicts by assumption
+
+The official schema leaves omitted flags undefined; same-provider one-minute and
+five-minute responses also disagree in four intervals. A separate exact audit
+records both versions. Agreement does not grant independent corroboration and
+differences do not establish their cause. Preserve old reports and require source
+clarification before prospective setup qualification; no relaxed policy or new
+source recurrence. See [specification](specifications/OPTIONS_ETF_SOURCE_AUDIT_V1.md).
+
 ## September 17, 2026 — Source receipt is separate from setup qualification
 
 The actual Robinhood ETF history omits every optional interpolation flag. Preserve

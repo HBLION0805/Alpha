@@ -1,5 +1,18 @@
 # Alpha Development Standard v1.0
 
+## ETF source consistency investigation — September 17, 2026
+
+The Owner-authorized next investigation made one official one-minute diagnostic
+read, returning 390 bars per ETF with all flags omitted. Exact aggregation against
+the unchanged five-minute capture matched 76 of 78 intervals per ETF; two per ETF
+differ (13 fields total). Cause is unknown, with different receipt times and the
+same provider. Read docs/OPTIONS_ETF_SOURCE_AUDIT_DELIVERY.md and
+docs/status/etf-source-audit.json. The copied-input audit and frontend preserve all
+conflicts. Do not pick a winning interval, infer omitted=false, repeat reads to
+erase discrepancies or backfill setups. Provider questions are drafted, not sent.
+Source qualification and actual trend-to-contract validation remain open; old
+engineering results, source schedules, canonical guidance and allocation stay intact.
+
 ## ETF setup research desk — September 17, 2026
 
 Owner approved the trend-to-contract stage. Local prospective rule registration,

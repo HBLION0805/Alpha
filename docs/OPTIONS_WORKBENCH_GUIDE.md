@@ -10,6 +10,9 @@ copies evidence for recovery without creating a trade or enrolling paper. See
 mapping now displays saved bars under **Robinhood ETF price observations**.
 Expand **Inspect received bars and quality** for OHLC, volume and explicit unknown
 interpolation flags. These records do not automatically populate setup inputs.
+**ETF source consistency audit** compares saved one-minute aggregates with the
+five-minute response. Expand the field differences and unsent provider questions.
+Matching prices do not resolve unknown quality flags or create a trade signal.
 
 Open **News & calendar → Rates, dollar & inflation benchmarks** for Treasury
 nominal yields, Fed broad USD/FX and Cleveland CPI/PCE models. Tables show source

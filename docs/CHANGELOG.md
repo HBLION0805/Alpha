@@ -1,5 +1,13 @@
 # Alpha Changelog
 
+## September 17, 2026 — ETF source consistency audit
+
+- Compare exact one-minute aggregation with saved five-minute OHLCV; preserve
+  unknown flags, missing data and field-level discrepancies.
+- Save copied-input audits and display source clocks, differences and unsent
+  provider questions. Actual pair: 152 matching / 4 differing intervals.
+  Source qualification remains open. See [delivery](OPTIONS_ETF_SOURCE_AUDIT_DELIVERY.md).
+
 ## September 17, 2026 — Actual Robinhood ETF historical bars
 
 - Capture and map 78 actual five-minute bars per ETF using the reloaded tool schema.

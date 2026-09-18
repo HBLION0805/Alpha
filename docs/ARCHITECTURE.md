@@ -13,6 +13,10 @@ clocks, exact OHLCV and quality gaps in a separate sources record and UI panel.
 Omitted interpolation flags remain null and never enter strict setup evaluation.
 See [source delivery](OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md).
 See [scope](specifications/OPTIONS_ETF_SETUP_DESK_V1.md).
+The independent [source audit](specifications/OPTIONS_ETF_SOURCE_AUDIT_V1.md)
+copies both interval responses and compares exact aggregate values without changing
+the original normalizer or importing bars. The UI displays conflicts and unknowns;
+audit agreement never authenticates a source or qualifies a setup.
 
 ## Exact ETF prices in snapshot paper V3 — September 17, 2026
 

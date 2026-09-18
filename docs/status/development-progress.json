@@ -1,10 +1,10 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-18T00:06:23.000Z",
+  "recordedAt": "2026-09-18T00:36:07.000Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
-  "comparedWithCommit": "9559520",
+  "comparedWithCommit": "4977da4",
   "previousCounts": {
     "LOCAL_VALIDATED": 4,
     "PARTIAL": 4,
@@ -93,13 +93,13 @@
       "name": "Signal evaluation and calibration",
       "previousStatus": "NOT_VALIDATED",
       "status": "NOT_VALIDATED",
-      "detail": "The local setup desk evaluates declared breakout/pullback/key-level rules and explains contract fit. The restarted official historical tool returned 78 bars per ETF; the adapter preserves exact OHLCV and all 156 omitted interpolation flags as unknown. Source observations are visible, but strict setup inputs, independent outcomes and calibrated probability remain unqualified. Original activity evidence is preserved.",
-      "evidence": "docs/OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md"
+      "detail": "The local setup desk evaluates declared rules and contract fit. A one-minute source diagnostic now compares all 156 saved five-minute intervals: 152 match, four differ across 13 fields; all flags remain unknown. Exact copied-input audits and the frontend preserve both versions. Source clarification, actual prospective setup outcomes and calibrated probability remain open.",
+      "evidence": "docs/OPTIONS_ETF_SOURCE_AUDIT_DELIVERY.md"
     }
   ],
   "currentWorkstream": "10",
   "currentUnit": "Prospective ETF setup confirmation to contract research",
-  "currentUnitAcceptance": "Local setup engine and actual ETF response adapter are implemented with copied-record recovery and frontend observations. Real source receipt is demonstrated; omitted interpolation semantics and prospective setup outcomes remain open. The prior engineering milestone remains complete and no strict real-price gate advances.",
+  "currentUnitAcceptance": "Source consistency investigation implemented and actual pair independently recovered from copied inputs. Four cross-interval discrepancies and omitted flags remain unresolved; actual trend-to-contract validation has not completed. Prior engineering completion and strict qualification gates retain their meanings.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -136,17 +136,18 @@
     "practicalEvidence": "docs/status/daily-decision-milestone.json"
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Resolve omitted interpolation semantics using verifiable source evidence or another qualified traded-ETF source. Then register future rules and compare prospective setup/contract outcomes; do not backfill the completed September 17 session. Another MCP reload is not required.",
+  "nextAction": "Obtain documented omitted-flag and interval-construction/revision semantics or another qualified ETF source. Then register future rules and observe setup/contract outcomes. Do not repeat diagnostic reads to erase conflicts, backfill September 17 or request another MCP restart.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4620,
+    "passed": 4665,
     "failed": 0,
-    "componentCount": 175
+    "componentCount": 176
   },
   "latestOperationalEvidence": "docs/status/snapshot-precision-v3.json",
   "latestEtfSetupCheckpoint": "docs/status/etf-setup-desk.json",
   "latestEtfSourceCheckpoint": "docs/status/robinhood-etf-bars.json",
+  "latestEtfSourceAuditCheckpoint": "docs/status/etf-source-audit.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -171,7 +172,7 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 74,
+    "passed": 119,
     "failed": 0,
     "typecheck": "PASS",
     "fullSuiteRun": true

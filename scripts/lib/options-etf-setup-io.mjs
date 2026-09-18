@@ -6,6 +6,7 @@ import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/Rob
 import {paperFingerprint} from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import {assessEtfSetup,validateEtfBars,validateEtfSetupPlan} from '../../src/engines/options-daily-guidance/OptionsEtfSetup.ts';
 import {assessRobinhoodEtfBars} from '../../src/engines/options-robinhood-data/RobinhoodEtfBars.ts';
+import {compareRobinhoodEtfBars} from '../../src/engines/options-robinhood-data/RobinhoodEtfBarAudit.ts';
 
 const BASE='data/runtime/options-etf-setup',MAX=1024*1024;
 const fail=code=>{throw Error('ETF_SETUP_'+code);};
@@ -26,12 +27,13 @@ function append(root,kind,input,at,report=null){
   io.directory(root,BASE+'/'+kind);io.writeExclusive(root,path,bytes);return {path,record};
 }
 export function verifyEtfSetup(root,path){
-  if(!new RegExp('^'+BASE+'/(plans|bars|reports|sources)/[a-zA-Z0-9.-]+\\.json$').test(path))fail('RECORD_PATH');
+  if(!new RegExp('^'+BASE+'/(plans|bars|reports|sources|audits)/[a-zA-Z0-9.-]+\\.json$').test(path))fail('RECORD_PATH');
   const r=readEtfSetupJson(root,path);exact(r,'version,kind,recordedAt,input,report,inputFingerprint,reportFingerprint');time(r.recordedAt);
   if(r.version!=='OPTIONS_ETF_SETUP_RECORD_V1'||r.kind!==path.split('/')[3]||r.inputFingerprint!==paperFingerprint(r.input)||r.reportFingerprint!==paperFingerprint(r.report))fail('INTEGRITY');
   if(r.kind==='plans'){if(r.report!==null)fail('PLAN_REPORT');validateEtfSetupPlan(r.input,r.recordedAt);}
   if(r.kind==='bars'){if(r.report!==null)fail('BAR_REPORT');validateEtfBars(r.input,r.recordedAt);}
   if(r.kind==='sources'&&paperFingerprint(assessRobinhoodEtfBars(r.input,r.recordedAt))!==r.reportFingerprint)fail('SOURCE_RECOMPUTE');
+  if(r.kind==='audits'&&paperFingerprint(compareRobinhoodEtfBars(r.input,r.recordedAt))!==r.reportFingerprint)fail('AUDIT_RECOMPUTE');
   if(r.kind==='reports'){
     if(r.input.at!==r.recordedAt||paperFingerprint(assessEtfSetup(r.input))!==r.reportFingerprint)fail('RECOMPUTE');
   }
@@ -51,6 +53,9 @@ export function importEtfBars(root,bars,at=new Date().toISOString()){
 export function recordRobinhoodEtfBars(root,capture,at=new Date().toISOString()){
   const report=assessRobinhoodEtfBars(capture,time(at));return append(root,'sources',capture,at,report);
 }
+export function recordEtfSourceAudit(root,input,at=new Date().toISOString()){
+  const report=compareRobinhoodEtfBars(input,time(at));return append(root,'audits',input,at,report);
+}
 function buildInput(root,guidance,symbol,at,planId=null){
   const plans=records(root,'plans',at), allBars=records(root,'bars',at);
   const plan=plans.find(r=>planId?r.input.id===planId:r.input.symbol===symbol);
@@ -61,11 +66,12 @@ function buildInput(root,guidance,symbol,at,planId=null){
 }
 export function etfSetupView(root,guidance,at){
   if(!guidance)fail('GUIDANCE_UNAVAILABLE');time(at);
-  const plans=records(root,'plans',at),bars=records(root,'bars',at),reports=records(root,'reports',at),sources=records(root,'sources',at);
+  const plans=records(root,'plans',at),bars=records(root,'bars',at),reports=records(root,'reports',at),sources=records(root,'sources',at),audits=records(root,'audits',at);
   const sourceAssets=['GLD','IBIT'].flatMap(symbol=>{const r=sources.find(s=>s.report.assets.some(a=>a.symbol===symbol));return r?[{...r.report.assets.find(a=>a.symbol===symbol),path:r.path,recordedAt:r.recordedAt}]:[];});
   return {version:'OPTIONS_ETF_SETUP_DESK_V1',assessedAt:at,
     sourceCapability:sourceAssets.length?'Robinhood ETF history is saved below with source clocks and quality checks. Received bars do not automatically become qualified setup inputs or change Today’s decision.':'The Robinhood historical-response adapter is available. No source response has been recorded here; file imports remain unverified research evidence.',
     sourceAssets,
+    sourceAudit:audits[0]?{...audits[0].report,path:audits[0].path}:null,
     assets:['GLD','IBIT'].map(symbol=>({...assessEtfSetup(buildInput(root,guidance,symbol,at)),symbol})),
     plans:plans.slice(0,20).map(r=>({path:r.path,registeredAt:r.recordedAt,...r.input})),
     barImports:bars.slice(0,10).map(r=>({path:r.path,symbol:r.input.symbol,receivedAt:r.input.receivedAt,windowStart:r.input.windowStart,windowEnd:r.input.windowEnd,count:r.input.bars.length,qualification:'IMPORTED_UNVERIFIED'})),

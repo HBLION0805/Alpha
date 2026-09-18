@@ -7,6 +7,8 @@ actual Robinhood ETF OHLCV adapter now maps a saved 156-bar response. Missing
 interpolation flags still block strict setup use; prospective outcomes remain open.
 This does not advance strict source or strategy gates; 4 local / 4 partial / 2
 unvalidated workstreams retain their original definitions.
+The [source audit](OPTIONS_ETF_SOURCE_AUDIT_DELIVERY.md) now localizes four
+cross-interval discrepancies; it does not advance trend or qualification gates.
 
 September 17 update: [actual-quote paper and precision correction](OPTIONS_SNAPSHOT_PRECISION_V3_DELIVERY.md)
 now records the first completed prospective engineering snapshot round trip,

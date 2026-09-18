@@ -10,6 +10,11 @@ allowlist and the Owner restart exposed its real schema. The new adapter saved
 78 actual September 17 bars per ETF, with all 156 interpolation flags unknown.
 Read [source delivery](OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md): no further reload
 is needed. Next resolve omitted-flag semantics and observe prospective setups.
+The subsequent one-minute diagnostic found two differing five-minute intervals
+per ETF and still no explicit flags. Read [audit delivery](OPTIONS_ETF_SOURCE_AUDIT_DELIVERY.md).
+The source question is unresolved; obtain documented semantics for flags and
+interval construction/revisions or another qualified source. No more diagnostic
+retries or retrospective rule installation are implied.
 No schedule change or new paper enrollment. Imported research data never promotes
 canonical WATCH. Prior September 17 engineering milestone remains complete.
 

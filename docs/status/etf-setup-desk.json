@@ -9,8 +9,9 @@
     "actualSourceResponse": true,
     "adapterImplemented": true,
     "actualSourceCheckpoint": "docs/status/robinhood-etf-bars.json",
+    "consistencyAuditCheckpoint": "docs/status/etf-source-audit.json",
     "ohlcvQualified": false,
-    "requiredNextStep": "Resolve omitted interpolation semantics using verifiable source evidence before qualified setup use. The connection reload and first 78-bar-per-ETF capture are complete."
+    "requiredNextStep": "Resolve omitted interpolation semantics and four cross-interval discrepancies using verifiable source evidence before qualified setup use. Connection and source capture already work."
   },
   "localAcceptance": {
     "focusedTests": 36,
