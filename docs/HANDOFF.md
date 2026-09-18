@@ -1,5 +1,15 @@
 # Alpha Handoff
 
+## September 17 — alternate ETF source preflight
+
+The [documented next route](OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT.md) is Alpaca
+historical SIP, pending installation/connection, actual schema and entitlement.
+The plugin suggestion does not establish access. No new market calls or adapter
+were added. First inspect feed/raw/window/pagination controls, then perform the
+bounded historical checks. Delayed history cannot authorize a real-time trigger.
+Read [checkpoint](status/etf-alternate-source.json); source and strategy gates
+remain unchanged. Do not ask for another Robinhood restart.
+
 ## September 17 — ETF setup research increment
 
 The Owner approved the next trend-to-contract stage. The local desk and matching

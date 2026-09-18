@@ -1,0 +1,33 @@
+{
+  "version": "OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT_V1",
+  "reviewedAt": "2026-09-18T00:46:33.000Z",
+  "status": "AWAITING_CONNECTION_AND_ACTUAL_SCHEMA",
+  "candidate": "Alpaca",
+  "purpose": "GLD_IBIT_HISTORICAL_OHLCV_QUALIFICATION",
+  "preferredFeed": "SIP",
+  "documentedNonRealtimeEndAgeMinutes": 15,
+  "pluginSuggestionIssued": true,
+  "pluginInstalledObserved": false,
+  "connectionVerified": false,
+  "entitlementVerified": false,
+  "pluginFeedControlVerified": false,
+  "actualSourceCalls": 0,
+  "additionalRobinhoodSourceCalls": 0,
+  "sourceQualified": false,
+  "adapterImplemented": false,
+  "actualTrendValidationComplete": false,
+  "robinhoodDiscrepanciesResolved": false,
+  "supportMessageSent": false,
+  "subscriptionsPurchased": 0,
+  "schedulesChanged": false,
+  "canonicalGuidanceChanged": false,
+  "executionAllowed": false,
+  "evidence": "docs/OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT.md",
+  "officialReferences": [
+    "https://robinhood.com/us/en/support/articles/trading-with-your-agent/",
+    "https://docs.alpaca.markets/us/docs/market-data-faq",
+    "https://docs.alpaca.markets/us/reference/stockbars",
+    "https://alpaca.markets/blog/openai-integrates-alpacas-market-data-functionality-as-part-of-chatgpt-for-financial-services/"
+  ],
+  "nextAction": "Owner installs/connects Alpaca, then inspect the actual read-only schema and entitlement before the bounded historical acquisition. Preserve any missing metadata; no automatic fallback to IEX, paid tier or live trading."
+}

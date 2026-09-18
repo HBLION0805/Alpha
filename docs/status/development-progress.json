@@ -136,7 +136,7 @@
     "practicalEvidence": "docs/status/daily-decision-milestone.json"
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Obtain documented omitted-flag and interval-construction/revision semantics or another qualified ETF source. Then register future rules and observe setup/contract outcomes. Do not repeat diagnostic reads to erase conflicts, backfill September 17 or request another MCP restart.",
+  "nextAction": "Alpaca historical SIP preflight is documented in docs/OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT.md. Await installation/connection, inspect actual schema and entitlement, then acquire bounded historical evidence. Delayed data cannot supply current-bar triggers. Preserve Robinhood conflicts; no repeat reads, backfill or restart.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
@@ -148,6 +148,7 @@
   "latestEtfSetupCheckpoint": "docs/status/etf-setup-desk.json",
   "latestEtfSourceCheckpoint": "docs/status/robinhood-etf-bars.json",
   "latestEtfSourceAuditCheckpoint": "docs/status/etf-source-audit.json",
+  "latestEtfSourcePreflightCheckpoint": "docs/status/etf-alternate-source.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,

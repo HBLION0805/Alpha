@@ -1,5 +1,16 @@
 # Alpha Development Standard v1.0
 
+## Alternate ETF data preflight — September 17, 2026
+
+The next source investigation selected Alpaca historical SIP as a candidate and
+issued an installation/connection suggestion. It is not yet installed/connected
+or qualified. Read docs/OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT.md and
+docs/status/etf-alternate-source.json before continuing. Inspect the actual tool
+schema after connection; do not assume REST feed controls are exposed. Delayed
+SIP history may support retrospective checks, not current-bar entries. No new
+market calls, adapter, subscription, account/order access or schedules were added.
+Preserve the Robinhood conflicts and prospective-only setup boundary below.
+
 ## ETF source consistency investigation — September 17, 2026
 
 The Owner-authorized next investigation made one official one-minute diagnostic
