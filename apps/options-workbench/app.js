@@ -12,6 +12,7 @@ import {costDeskResult,costRequestMatches} from './cost-desk.js';
 import {deniedNewsSources} from './focused-news.js';
 import {capitalPolicyPanel,capitalPolicyMatches,policySettingsFromFields} from './capital-policy.js';
 import {macroComparisonRequest,macroPreviewMatches,macroComparisonResult} from './macro-context.js';
+import {macroNoteDefaults,macroNoteRequest,macroCoverage} from './macro-playbook.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -28,7 +29,7 @@ function syncNavigation(){
   const hidden=matchMedia('(max-width: 650px)').matches&&!document.body.classList.contains('menu-open');
   $('#sidebar').inert=hidden;if(hidden)$('#sidebar').setAttribute('aria-hidden','true');else $('#sidebar').removeAttribute('aria-hidden');
 }
-const labels={overview:'Overview',chain:'Options & activity',planner:'Trade planner',journal:'Trade journal',reviews:'Reviews & lessons',context:'News & calendar',guidance:'Daily guidance','event-research':'Event research'};
+const labels={overview:'Overview',chain:'Options & activity',planner:'Trade planner',journal:'Trade journal',reviews:'Reviews & lessons',context:'News & calendar',guidance:'Daily guidance','event-research':'Event research','macro-playbook':'Macro playbook'};
 function route(){const key=location.hash.slice(1);return Object.hasOwn(routes,key)?key:'guidance';}
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),5500);}
 function render(focus=false){
@@ -38,6 +39,7 @@ function render(focus=false){
   const disclosures=new Map(!focus&&renderedRoute===key?[...$('#main').querySelectorAll('details[data-disclosure-key]')].map(el=>[el.dataset.disclosureKey,el.open]):[]);
   const focusedDisclosure=active?.tagName==='SUMMARY'?active.parentElement?.dataset.disclosureKey:null;
   $('#main').innerHTML=(['overview','guidance','planner'].includes(key)?spreadCapitalNotice(state.reportedSpreads):'')+routes[key](state,ui);$('#breadcrumb').textContent=labels[key];
+  if(['guidance','planner','reviews'].includes(key))$('#main').insertAdjacentHTML('afterbegin','<p class="hint"><a href="#macro-playbook">Macro playbook & decision worksheet →</a> · source-attributed education and local notes</p>');
   let nextSummary=null;
   for(const el of $('#main').querySelectorAll('details[data-disclosure-key]')){
     if(disclosures.has(el.dataset.disclosureKey))el.open=disclosures.get(el.dataset.disclosureKey);
@@ -75,6 +77,12 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.id==='macro-note-form'){
+    ui.macroNoteDraft={...macroNoteDefaults(state.macroPlaybook.data.catalog),...Object.fromEntries(new FormData(form))};
+    if(ui.macroNoteDraft.phase==='PRE_TRADE_NOTE'){ui.macroNoteDraft.process='UNKNOWN';ui.macroNoteDraft.outcome='UNKNOWN';}
+    ui.macroNoteRequestId=null;ui.macroNotePreview=null;ui.macroNoteSaved=null;dirty.add('macro-note');
+    const p=$('#macro-note-preview');if(p)p.innerHTML='';return;
+  }
   if(form.dataset?.positionCost){
     const id=form.dataset.positionCost;ui.positionCostDrafts??={};ui.positionCostPreviews??={};ui.positionCostDrafts[id]=el.value;delete ui.positionCostPreviews[id];
     const row=state.positionWatch?.data?.rows.find(r=>r.tradeId===id),panel=document.querySelector(`[data-position-result="${id}"]`);if(row&&panel)panel.innerHTML=positionWatchResult(row,state.positionWatch.data.assessedAt);return;
@@ -137,12 +145,12 @@ function download(kind){
 
 document.addEventListener('input',event=>{
   const el=event.target;if(el.matches('input,textarea,select'))updateDraft(el);
-  const filters={'chain-search':['chain','search'],'review-search':[null,'reviewSearch'],'news-search':[null,'newsSearch']};
+  const filters={'chain-search':['chain','search'],'review-search':[null,'reviewSearch'],'news-search':[null,'newsSearch'],'macro-knowledge-search':[null,'macroKnowledgeSearch']};
   if(filters[el.id]){const [group,key]=filters[el.id];(group?ui[group]:ui)[key]=el.value;if(group)ui.chain.page=1;render();}
 });
 document.addEventListener('change',event=>{void(async()=>{
   const el=event.target;
-  if(el.closest('form')){updateDraft(el);if(el.type==='checkbox'||['action','tradeId','fillId'].includes(el.name))render();return;}
+  if(el.closest('form')){updateDraft(el);if(el.type==='checkbox'||['action','tradeId','fillId'].includes(el.name)||(el.closest('form').id==='macro-note-form'&&el.name==='phase'))render();return;}
   if(el.id==='board-select'){ui.chain.page=1;await reload(el.value);return;}
   if(el.id==='cost-fee-basis'){ui.costFeeBasis=el.value;clearCosts();return;}
   if(['candidate-check-asset','candidate-check-budget'].includes(el.id)){ui.candidateCheckFilter={...ui.candidateCheckFilter,[el.id==='candidate-check-asset'?'asset':'budget']:el.value};render();return;}
@@ -150,6 +158,20 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='macro-note-form'){
+    event.preventDefault();if(saving)return;const form=event.target,button=event.submitter,action=button.value;saving=true;button.disabled=true;
+    const fields={...macroNoteDefaults(state.macroPlaybook.data.catalog),...Object.fromEntries(new FormData(form))};ui.macroNoteDraft=fields;
+    ui.macroNoteRequestId??=crypto.randomUUID();const value=macroNoteRequest(fields,state.macroPlaybook.data.catalog,ui.macroNoteRequestId);
+    void(async()=>{try{
+      $('#macro-note-error').textContent='';const result=await request('/api/macro-playbook',{action,request:value});
+      if(action==='PREVIEW'){
+        if(ui.macroNoteRequestId===value.requestId){ui.macroNotePreview=result;const panel=$('#macro-note-preview');if(panel)panel.innerHTML=macroCoverage(result);}
+      } else {
+        if(ui.macroNoteRequestId===value.requestId){ui.macroNoteSaved=result;dirty.delete('macro-note');}
+        await reload();toast('Submitted decision note saved locally. Any newer draft is retained.');
+      }
+    }catch(e){fail(e,'#macro-note-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(['etf-setup-form','etf-bars-form'].includes(event.target.id)){
     event.preventDefault();if(saving)return;const form=event.target,button=event.submitter,mode=form.id==='etf-setup-form'?'REGISTER':'IMPORT';saving=true;button.disabled=true;
     void(async()=>{try{
@@ -247,6 +269,7 @@ document.addEventListener('click',event=>{void(async()=>{
     ui.planningSource={...q,bid:toUsd(q.bidCents),ask:toUsd(q.askCents),quoteUpdatedAt:q.updatedAt};ui.plannerResult=null;clearCosts();dirty.add('planner');navigate('planner');return;
   }
   if(el.id==='reset-guidance-assumptions'){clearPolicyPreview();ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}
+  if(el.id==='clear-macro-note'){ui.macroNoteDraft=null;ui.macroNoteRequestId=null;ui.macroNotePreview=null;ui.macroNoteSaved=null;dirty.delete('macro-note');render();return;}
   if(el.dataset.candidateCheck){const r=state.candidateChecks?.data?.current,row=r?.rows.find(x=>x.contract.id===el.dataset.candidateCheck);if(row)showDetail('Candidate checks',candidateCheckDetail(row,r));return;}
   if(el.id==='save-candidate-checks'){if(saving)return;if(dirty.has('guidance'))throw Error('Save or discard the planning-assumption draft first.');saving=true;el.disabled=true;try{const r=await request('/api/candidate-checks',{});await reload();toast('Check snapshot saved and verified at '+timestamp(r.assessedAt)+'. No trade was created.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reset-event-research'){ui.eventDraft=null;ui.eventChoices=null;dirty.delete('event-research');render();return;}

@@ -1,5 +1,14 @@
 # Alpha Architecture
 
+## Macro education and reflection — September 17, 2026
+
+`MacroKnowledgeCatalog` supplies versioned references; `OptionsMacroPlaybook`
+validates owner note schemas and checks text coverage without interpreting claims.
+`options-macro-playbook-io.mjs` copies the catalog/input/assessment into exclusive
+private records and verifies recovery. A protected local workbench action and the
+`macro-playbook` page provide preview/save/search. There is no import into strategy
+engines, source collectors, approved knowledge or the frozen trend cohort.
+
 ## Frozen prospective trend study — September 17, 2026
 
 `OptionsTrendStudy` replays ordered observation decisions against an immutable

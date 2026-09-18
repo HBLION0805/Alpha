@@ -1,0 +1,48 @@
+{
+  "version": "OPTIONS_MACRO_PLAYBOOK_DELIVERY_V1",
+  "recordedAt": "2026-09-18T03:14:55.943Z",
+  "status": "LOCAL_EDUCATION_AND_REFLECTION_IMPLEMENTED",
+  "catalogEntries": 30,
+  "worksheetFields": 12,
+  "activeRulesFromCatalog": 0,
+  "sources": {
+    "ownerImages": 13,
+    "uniqueImageHashes": 11,
+    "courseReviewed": [
+      "syllabus",
+      "chapter-11",
+      "chapter-16"
+    ],
+    "remainingChapterBodies": "NOT_FULLY_REVIEWED",
+    "historicalAnecdotes": "NOT_VERIFIED"
+  },
+  "validation": {
+    "typecheck": "PASS",
+    "focused": {
+      "passed": 33,
+      "failed": 0
+    },
+    "aggregate": {
+      "passed": 4761,
+      "failed": 0,
+      "components": 179
+    },
+    "browser": "DESKTOP_AND_390PX_MOBILE_PREVIEW_SEARCH_CLEAR_DRAFT",
+    "copiedRecovery": "PASS",
+    "serverPid": 7160
+  },
+  "productionNotesCreated": 0,
+  "strategyValidated": false,
+  "scheduleChanged": false,
+  "capitalSettingsChanged": false,
+  "canonicalGuidanceChanged": false,
+  "frozenCohortChanged": false,
+  "accountOrOrderCalls": 0,
+  "executionAllowed": false,
+  "remaining": [
+    "Prospective source quality and cadence gaps remain",
+    "Fresh signals and independent outcomes still required",
+    "Knowledge completeness does not qualify trading",
+    "Later psychology material not yet incorporated"
+  ]
+}

@@ -36,6 +36,8 @@ import { assessOptionsCapitalPolicy } from '../../src/engines/options-retail-fea
 import {snapshotPaperView,previewSnapshotPaperCollection,paperCollectionDesk,registerSnapshotPaper,saveSnapshotPaperReport} from './options-snapshot-paper-io.mjs';
 import {dailyDecisionCards} from './options-decision-card.mjs';
 import {reportedSpreadView} from './options-spread-review.mjs';
+import {macroPlaybookView,saveMacroNote} from './options-macro-playbook-io.mjs';
+import {assessMacroNote} from '../../src/engines/options-knowledge/OptionsMacroPlaybook.ts';
 import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
@@ -125,6 +127,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.decisionCards=await component(()=>dailyDecisionCards(result),at);
     result.etfSetup=await component(()=>etfSetupView(root,result.guidance.data?.input,at),at);
     result.trendStudy=await component(()=>trendStudyView(root,at),at);
+    result.macroPlaybook=await component(()=>macroPlaybookView(root),at);
     return result;
   }
   function watchFromDesk(report,desk,at,costs={}){
@@ -194,5 +197,9 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(Object.keys(body).sort().join()!=='action,request')fail('SNAPSHOT_FIELDS');
     return body.action==='PREVIEW'?previewSnapshotPaperCollection(root,body.request,now()):registerSnapshotPaper(root,body.request,now());
   }
-  return {etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  function macroPlaybook(body){
+    if(!body||Object.keys(body).sort().join()!=='action,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_PLAYBOOK_ACTION');
+    return body.action==='PREVIEW'?assessMacroNote(body.request):saveMacroNote(root,body.request,now());
+  }
+  return {macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

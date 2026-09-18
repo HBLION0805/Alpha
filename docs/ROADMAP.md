@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+September 17 education addition: [Macro playbook](OPTIONS_MACRO_PLAYBOOK_DELIVERY.md)
+now supports a source-attributed decision worksheet and independent process/outcome
+reflection. It does not advance strategy gates or replace the prospective trend
+study. The next Owner psychology batch can extend this same bounded surface.
+
 September 17 current: [frozen prospective trend study](OPTIONS_TREND_STUDY_DELIVERY.md)
 registers September 18–October 15 and links future first signals to deterministic
 contract screening and independent estimated outcomes. Local checks and frontend

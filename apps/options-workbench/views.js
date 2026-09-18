@@ -7,6 +7,7 @@ import {costDeskControls,costDeskResult} from './cost-desk.js';
 import {capitalPolicyPanel} from './capital-policy.js';
 import {positionWatchPanel} from './position-watch.js';
 import {spreadReviewPanel} from './spread-review.js';
+import {macroPlaybookPage} from './macro-playbook.js';
 export const tag=(text,tone='gray')=>`<span class="tag ${tone}">${esc(text)}</span>`;
 export const detail=(label,data)=>`<details><summary>${esc(label)}</summary><pre>${esc(JSON.stringify(data,null,2))}</pre></details>`;
 export const notice=(text,tone='')=>`<div class="notice ${tone}"><span aria-hidden="true">ⓘ</span><div>${text}</div></div>`;
@@ -77,4 +78,4 @@ export function reviews(s,ui){
   return heading('LEARN FROM THE RECORD','Reviews & lessons','Separate what happened, what is known and what still needs evidence.',`<button class="button secondary" data-export="reviews">↓ Export review evidence</button>`)+`<div class="tabs">${[['trades','Trade reviews'],['lessons','Mistake notebook'],['activity','Activity study']].map(([k,l])=>`<button data-review-scope="${k}" class="${scope===k?'active':''}" aria-pressed="${scope===k}">${l}</button>`).join('')}</div>`+(scope==='trades'?spreadReviewPanel(s.reportedSpreads):'')+body;
 }
 export function context(s,ui){return focusedContext(s,ui);}
-export const routes={overview,chain:chainView,planner,journal,reviews,context,guidance:guidancePage,'event-research':eventResearchPage};
+export const routes={overview,chain:chainView,planner,journal,reviews,context,guidance:guidancePage,'event-research':eventResearchPage,'macro-playbook':macroPlaybookPage};

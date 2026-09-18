@@ -11,6 +11,7 @@ const assetRoot=resolve(import.meta.dirname,'../apps/options-workbench');
 const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','decision-cards.js','etf-setup.js','sensitivities.js','candidate-checks.js','cost-desk.js','capital-policy.js','gold-framework.js','macro-context.js','focused-news.js','event-research.js','bar-quality.js','snapshot-paper.js','position-watch.js','event-reactions.js','spread-review.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
 const MAX_BODY=65536;
 assets.set('/trend-study.js',['trend-study.js','text/javascript']);
+assets.set('/macro-playbook.js',['macro-playbook.js','text/javascript']);
 export async function startOptionsWorkbench({port=4173,refreshContext=false,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
   const service=createWorkbenchData(options),session=randomBytes(32).toString('hex');
@@ -34,7 +35,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
         if([...url.searchParams.keys()].some(k=>k!=='board')||url.searchParams.getAll('board').length>1)return reject(400,'QUERY_INVALID');
         return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,localTrendStudy:contextService?.trendStatus()??{enabled:false,status:'DISABLED'},localPaperFinalization:contextService?.paperStatus()??{enabled:false,status:'DISABLED',checkedAt:null,sourceReads:0,executionAllowed:false},session});
       }
-      if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/snapshot-paper','/api/position-watch','/api/etf-setup'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
+      if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/snapshot-paper','/api/position-watch','/api/etf-setup','/api/macro-playbook'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
       const provided=req.headers['x-alpha-session'];
       if(req.headers.origin!==origin||typeof provided!=='string'||provided.length!==session.length||!timingSafeEqual(Buffer.from(provided),Buffer.from(session)))return reject(403,'SESSION_REQUIRED');
       if(req.headers['content-type']!=='application/json')return reject(415,'JSON_REQUIRED');
@@ -45,6 +46,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
       let body;try{body=parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(Buffer.concat(chunks)));}catch{return reject(400,'JSON_INVALID');}
       if(url.pathname==='/api/snapshot-paper')return send(200,await service.snapshotPaper(body));
       if(url.pathname==='/api/etf-setup')return send(200,await service.etfSetup(body));
+      if(url.pathname==='/api/macro-playbook')return send(200,service.macroPlaybook(body));
       if(url.pathname==='/api/position-watch')return send(200,service.positionWatch(body));
       if(url.pathname==='/api/evaluate')return send(200,service.evaluate(body));
       if(url.pathname==='/api/cost-desk')return send(200,service.costDesk(body));

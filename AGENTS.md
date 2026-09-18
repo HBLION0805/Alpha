@@ -1,5 +1,19 @@
 # Alpha Development Standard v1.0
 
+## Owner-supplied macro education — September 17, 2026
+
+The Owner's education batch is integrated as a 30-entry Macro playbook and a local
+twelve-question worksheet. Read docs/OPTIONS_MACRO_PLAYBOOK_DELIVERY.md and
+docs/status/macro-playbook.json. Process guidance, checked mechanics, untested
+thresholds and illustrations remain distinct. The linked course's syllabus and
+chapters 11/16 were reviewed; other bodies and historical anecdotes are unverified.
+Private image copies and owner notes stay under ignored runtime storage. Notes
+retain copied catalogs and receipt clocks; pre-trade labels do not prove pre-entry
+timing. Process/outcome self-reports do not establish skill, luck or approved
+lessons. No new rule or strategy detector, no change to frozen study, canonical
+guidance, source cadence or allocation. A later psychology upload may extend this
+educational/reflection surface without silently promoting experience to rules.
+
 ## Frozen forward trend study — September 17, 2026
 
 The Owner approved prospective trend/contract rules and independent results.

@@ -7,6 +7,7 @@
   "scripts": {
     "options:trend-study": "tsx scripts/options-trend-study.mjs",
     "test:options-trend-study": "tsx scripts/options-trend-study.test.mjs",
+    "test:options-macro-playbook": "tsx scripts/options-macro-playbook.test.mjs",
     "options:etf-setup": "tsx scripts/options-etf-setup.mjs",
     "test:options-etf-setup": "tsx scripts/options-etf-setup.test.mjs",
     "test:options-robinhood-etf-bars": "tsx scripts/options-robinhood-etf-bars.test.mjs",

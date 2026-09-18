@@ -1,5 +1,13 @@
 # Alpha Handoff
 
+## September 17 — macro education incorporated
+
+[Macro playbook delivery](OPTIONS_MACRO_PLAYBOOK_DELIVERY.md) adds source-attributed
+education, corrections and private dated decision notes. Read the
+[checkpoint](status/macro-playbook.json) before the next psychology upload.
+Personal numeric heuristics remain inactive; knowledge coverage is not strategy
+validation. Existing prospective source-quality/cadence gaps are unchanged.
+
 ## September 17 — frozen prospective trend study registered
 
 The [trend-study delivery](OPTIONS_TREND_STUDY_DELIVERY.md) now connects fixed

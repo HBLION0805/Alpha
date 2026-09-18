@@ -1,5 +1,10 @@
 # Alpha
 
+Education addition: [Macro playbook](docs/OPTIONS_MACRO_PLAYBOOK_DELIVERY.md)
+provides 30 source-attributed references and a private decision/review worksheet.
+Open **Macro playbook** in the workbench. Personal thresholds remain inactive;
+the existing prospective study and its data gaps are unchanged.
+
 Latest increment: [frozen prospective trend study](docs/OPTIONS_TREND_STUDY_DELIVERY.md).
 One registered 20-session GLD/IBIT cohort links fixed trend/contract rules to
 independent paper outcomes, exit-quality checks and candidate lessons. Currently
