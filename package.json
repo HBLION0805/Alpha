@@ -9,6 +9,7 @@
     "test:options-etf-setup": "tsx scripts/options-etf-setup.test.mjs",
     "test:options-robinhood-etf-bars": "tsx scripts/options-robinhood-etf-bars.test.mjs",
     "test:options-etf-source-audit": "tsx scripts/options-etf-source-audit.test.mjs",
+    "test:options-etf-observation": "tsx scripts/options-etf-observation.test.mjs",
     "test:options-spread-review": "tsx scripts/options-spread-review.test.mjs",
     "test:options-decision-card": "tsx scripts/options-decision-card.test.mjs",
     "options:workbench": "tsx scripts/options-workbench.mjs",

@@ -1,8 +1,23 @@
 # Alpha Development Standard v1.0
 
+## Robinhood descriptive observation route — September 17, 2026
+
+The Owner explicitly requested direct Robinhood chart use and continuation.
+Daily guidance now combines saved API candles, untested 15/60-minute close
+comparisons, 30-minute watch references and same-side historical option samples.
+Unknown flags and four audit conflicts remain; no source/rule qualification or
+canonical guidance changed. Alpaca is optional, not a prerequisite for descriptive
+observations. Public website line charts include Overnight labels and distinct
+snapshot values; they do not confirm individual API candles. Read
+docs/OPTIONS_ETF_OBSERVATION_DELIVERY.md and docs/status/etf-observation.json.
+The copied-only observation snapshot recovers independently. No new rule, strict
+bar import, timer, brokerage tool call, account/order use or allocation change.
+Next obtain fresh prospective observations and independent outcomes without
+backfilling this historical discussion or reopening completed paper engineering.
+
 ## Alternate ETF data preflight — September 17, 2026
 
-The next source investigation selected Alpaca historical SIP as a candidate and
+The earlier optional investigation selected Alpaca historical SIP as a candidate and
 issued an installation/connection suggestion. It is not yet installed/connected
 or qualified. Read docs/OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT.md and
 docs/status/etf-alternate-source.json before continuing. Inspect the actual tool

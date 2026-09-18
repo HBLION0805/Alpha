@@ -1,6 +1,12 @@
 # Alpha
 
-Latest work: [ETF trend to contract research](docs/OPTIONS_ETF_SETUP_DESK_DELIVERY.md).
+Latest increment: [Robinhood observations → conditional contract comparison](docs/OPTIONS_ETF_OBSERVATION_DELIVERY.md).
+Daily guidance shows saved candles, separate late-window momentum, future watch
+conditions and explained option references. Alpaca is optional. Historical
+observations retain unknown flags and source conflicts; they are not live entry
+prices or validated signals. Canonical WATCH decisions remain unchanged.
+
+Foundation: [ETF trend to contract research](docs/OPTIONS_ETF_SETUP_DESK_DELIVERY.md).
 The local desk freezes prospective rules, checks imported ETF candles and explains
 contract fit. [Real Robinhood ETF history](docs/OPTIONS_ROBINHOOD_ETF_BARS_DELIVERY.md)
 now returns and displays 78 September 17 bars per ETF. Missing interpolation flags

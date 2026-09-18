@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## September 17, 2026 — Separate descriptive observation from strict qualification
+
+The Owner asked why existing Robinhood charts could not be used directly. Use
+saved, structurally valid prices for explicitly unqualified descriptive research
+and conditional option comparisons now; keep unknown flags and audit conflicts.
+Do not require Alpaca for this observation path or weaken strict setup validation.
+Website visuals are a distinct evidence surface with unverified value clocks and
+scope, not confirmation of every API candle. Fixed mean/range/delta assumptions
+are untested; no trade or win probability is inferred. See
+[specification](specifications/OPTIONS_ETF_OBSERVATION_V1.md).
+
 ## September 17, 2026 — Do not resolve source conflicts by assumption
 
 The official schema leaves omitted flags undefined; same-provider one-minute and

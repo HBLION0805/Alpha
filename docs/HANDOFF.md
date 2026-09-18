@@ -1,8 +1,21 @@
 # Alpha Handoff
 
+## September 17 — Robinhood observation route now implemented
+
+The Owner requested direct Robinhood chart use. The [new observation panel](OPTIONS_ETF_OBSERVATION_DELIVERY.md)
+uses unchanged saved five-minute bars and matching audit inputs for descriptive
+momentum, future watch conditions and same-side historical contract comparisons.
+Alpaca is optional; the earlier alternate-source preflight below is not a required
+next step for observations. Read [checkpoint](status/etf-observation.json).
+Actual saved GLD late-window comparison is FALLING; IBIT is MIXED. Both remain
+WATCH. Website line-chart observations stay separate from MCP candles; exact
+website market clocks are unknown. No new prospective rule, strict bar import or
+qualified strategy outcome. Fresh sources, prospective parameters/costs and later
+independent outcomes remain necessary. Schedules and frozen records are unchanged.
+
 ## September 17 — alternate ETF source preflight
 
-The [documented next route](OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT.md) is Alpaca
+The [earlier optional route](OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT.md) is Alpaca
 historical SIP, pending installation/connection, actual schema and entitlement.
 The plugin suggestion does not establish access. No new market calls or adapter
 were added. First inspect feed/raw/window/pagination controls, then perform the

@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## Descriptive ETF observation projection — September 17, 2026
+
+`OptionsEtfObservation` composes unchanged source normalization, optional matching
+source audit and canonical guidance. It permits descriptive calculations on
+structurally usable prices with unknown flags while retaining strict qualification
+as false. It never rewrites the source, registers triggers or promotes guidance.
+Existing setup IO adds copied-input observation records and CLI snapshot/verify;
+the read-only workbench projection renders candles and conditional comparisons.
+No GET writes, dependency, timer, HTTP mutation or source tool was added.
+See [specification](specifications/OPTIONS_ETF_OBSERVATION_V1.md).
+
 ## ETF setup research desk — September 17, 2026
 
 A separate deterministic projection validates declared GLD/IBIT five-minute bars,

@@ -1,5 +1,12 @@
 # Alpha Roadmap
 
+September 17 latest: [descriptive observations and conditional comparisons](OPTIONS_ETF_OBSERVATION_DELIVERY.md)
+now connect saved Robinhood candles to explained same-side option references in
+the frontend. Another provider is optional for observation. Strict qualification,
+future setup outcomes and costs/account reconciliation remain open. This is
+interpretation progress within the existing 4 local / 4 partial / 2 unvalidated
+workstreams, not evidence of profitable execution.
+
 September 17 next-stage increment: [ETF setup research](OPTIONS_ETF_SETUP_DESK_DELIVERY.md)
 now connects prospective parameters, normalized bar checks and option-sample
 interpretation locally, with matching frontend and recoverable evidence. The

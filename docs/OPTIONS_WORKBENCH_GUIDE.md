@@ -1,5 +1,14 @@
 # Alpha options workbench
 
+In **Daily guidance → Observed price path → conditional contract comparison**,
+inspect saved Robinhood candles, late-window momentum and future watch conditions.
+Expand **Compare historical contract references** for why each date/strike appears,
+saved bid/ask clocks, original blockers and stop/target assumptions. Orange dots
+mark retained interval conflicts; the table below retains exact values. The chart
+is a local rendering of historical API data, not the website or a live feed.
+Alpaca is optional for observation. These conditions are untested and never change
+Today’s decision. See [delivery and snapshot CLI](OPTIONS_ETF_OBSERVATION_DELIVERY.md).
+
 Daily guidance now includes **ETF trend → contract research**. Declare future
 activation/exit times and ETF levels before observation. Form times use your
 device timezone; the engine checks New York sessions. Imported normalized

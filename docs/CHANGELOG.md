@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## September 17, 2026 — Robinhood observation and contract comparison
+
+- Add saved five-minute candle charts, descriptive late-window momentum and
+  future watch conditions beside explained same-side option references.
+- Retain unknown flags, interval conflicts, original blockers and stale quote
+  clocks. Add copied-input observation recovery; canonical guidance is unchanged.
+- Make alternate providers optional for observation. See
+  [delivery](OPTIONS_ETF_OBSERVATION_DELIVERY.md).
+
 ## September 17, 2026 — ETF source consistency audit
 
 - Compare exact one-minute aggregation with saved five-minute OHLCV; preserve
