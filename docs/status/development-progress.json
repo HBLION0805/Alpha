@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_DEVELOPMENT_PROGRESS_BASELINE_V1",
-  "recordedAt": "2026-09-18T00:36:07.000Z",
+  "recordedAt": "2026-09-18T02:00:00.000Z",
   "scope": "GLD_IBIT_ROBINHOOD_DECISION_SUPPORT_AND_QUALIFIED_PAPER_FLOW_NO_AUTOMATIC_ORDERS",
   "denominator": 10,
   "countMeaning": "Named workstreams at bounded local acceptance; not effort-weighted or a completion percentage.",
@@ -93,13 +93,13 @@
       "name": "Signal evaluation and calibration",
       "previousStatus": "NOT_VALIDATED",
       "status": "NOT_VALIDATED",
-      "detail": "The local setup desk evaluates declared rules and contract fit. A one-minute source diagnostic now compares all 156 saved five-minute intervals: 152 match, four differ across 13 fields; all flags remain unknown. Exact copied-input audits and the frontend preserve both versions. Source clarification, actual prospective setup outcomes and calibrated probability remain open.",
-      "evidence": "docs/OPTIONS_ETF_SOURCE_AUDIT_DELIVERY.md"
+      "detail": "A frozen first-hour/two-close trend and contract rule is registered for September 18–October 15, with copied-input future observations, independent V3 paper outcomes and exit-gap checks. Zero actual signals or fills so far. Existing unknown flags, four source conflicts and insufficient collection cadence remain; elapsed sessions do not establish strategy benefit or calibrated probability.",
+      "evidence": "docs/OPTIONS_TREND_STUDY_DELIVERY.md"
     }
   ],
   "currentWorkstream": "10",
-  "currentUnit": "Prospective ETF setup confirmation to contract research",
-  "currentUnitAcceptance": "Source consistency investigation implemented and actual pair independently recovered from copied inputs. Four cross-interval discrepancies and omitted flags remain unresolved; actual trend-to-contract validation has not completed. Prior engineering completion and strict qualification gates retain their meanings.",
+  "currentUnit": "Frozen prospective trend-to-contract cohort and independent outcome records",
+  "currentUnitAcceptance": "Local future-cohort registration, immutable first decisions, V3 independent quote outcomes, candidate lessons and exit-quality monitoring are implemented with frontend. The real 20-session cohort has zero observations/fills at registration. Source/cadence limitations still prevent a reliably populated trial; previous engineering completion and strict qualification gates retain their meanings.",
   "firstPaperFlow": {
     "totalGates": 6,
     "localComponentsAvailable": 3,
@@ -136,19 +136,20 @@
     "practicalEvidence": "docs/status/daily-decision-milestone.json"
   },
   "criticalDependency": "Qualified GLD/IBIT option quotes with contract/session/source/cost/account evidence. ETF opening-price screenshots alone are insufficient; the opening quote pilot is cancelled.",
-  "nextAction": "Alpaca historical SIP preflight is documented in docs/OPTIONS_ETF_ALTERNATE_SOURCE_PREFLIGHT.md. Await installation/connection, inspect actual schema and entitlement, then acquire bounded historical evidence. Delayed data cannot supply current-bar triggers. Preserve Robinhood conflicts; no repeat reads, backfill or restart.",
+  "nextAction": "Obtain suitably timed prospective ETF observations and independent option outcomes for the frozen cohort, preserving missing windows and rejected first signals. Resolve source semantics/conflicts and collection coverage before claiming a populated trial. Alpaca remains optional, not a prerequisite for descriptive observation. Do not backfill, alter frozen parameters or silently change schedules.",
   "winProbability": null,
   "executionAllowed": false,
   "finalIntegratedValidation": {
-    "passed": 4665,
+    "passed": 4728,
     "failed": 0,
-    "componentCount": 176
+    "componentCount": 178
   },
   "latestOperationalEvidence": "docs/status/snapshot-precision-v3.json",
   "latestEtfSetupCheckpoint": "docs/status/etf-setup-desk.json",
   "latestEtfSourceCheckpoint": "docs/status/robinhood-etf-bars.json",
   "latestEtfSourceAuditCheckpoint": "docs/status/etf-source-audit.json",
   "latestEtfSourcePreflightCheckpoint": "docs/status/etf-alternate-source.json",
+  "latestTrendStudyCheckpoint": "docs/status/trend-study.json",
   "developmentDisposition": "CONVERSATION_ONLY_DEVELOPMENT",
   "automaticDevelopment": false,
   "periodicDevelopmentReports": true,
@@ -173,7 +174,7 @@
   ],
   "dailyReviewDelivery": "STANDALONE_RUNS_AND_SHARED_DAILY_RECORDS",
   "latestTargetedValidation": {
-    "passed": 119,
+    "passed": 40,
     "failed": 0,
     "typecheck": "PASS",
     "fullSuiteRun": true

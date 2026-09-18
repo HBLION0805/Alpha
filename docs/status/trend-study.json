@@ -1,0 +1,32 @@
+{
+  "version": "OPTIONS_TREND_STUDY_DELIVERY_V1",
+  "recordedAt": "2026-09-18T02:03:11.672Z",
+  "status": "LOCAL_IMPLEMENTED_FUTURE_COHORT_REGISTERED",
+  "studyId": "gld-ibit-trend-v1-20260918",
+  "registeredAt": "2026-09-18T01:51:18.674Z",
+  "firstDate": "2026-09-18",
+  "lastDate": "2026-10-15",
+  "plannedSessions": 20,
+  "recordedSessions": 0,
+  "signals": 0,
+  "modeledEntries": 0,
+  "closedOutcomes": 0,
+  "ruleId": "ETF_TWO_CLOSE_BREAKOUT_V1",
+  "registrationPath": "data/runtime/options-trend-study/gld-ibit-trend-v1-20260918/registration.json",
+  "registrationVerification": "PASS",
+  "localService": {"pid": 5708, "status": "OK", "checkedAt": "2026-09-18T02:02:55.913Z", "sourceReads": 0},
+  "remaining": [
+    "Fresh prospective ETF observations and independent option outcomes",
+    "Existing unknown interpolation semantics and cross-interval disagreements",
+    "Current collection cadence cannot cover the fixed entry and exit protocol",
+    "Actual fees and account equity/settled cash reconciliation",
+    "Strategy benefit and strict execution qualification"
+  ],
+  "validation": {"focused": {"passed": 40, "failed": 0}, "typecheck": "PASS", "aggregate": {"passed": 4728, "failed": 0, "components": 178}, "browser": "DESKTOP_AND_MOBILE_NO_PAGE_OVERFLOW", "copiedRecovery": "PASS", "restart": "REGISTRATION_AND_ZERO_COUNTS_RECOVERED"},
+  "scheduleChanged": false,
+  "capitalSettingsChanged": false,
+  "sourceQualified": false,
+  "strategyValidated": false,
+  "winProbability": null,
+  "executionAllowed": false
+}

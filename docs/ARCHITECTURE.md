@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## Frozen prospective trend study — September 17, 2026
+
+`OptionsTrendStudy` replays ordered observation decisions against an immutable
+cohort and rule version, composing existing ETF normalization/audit and snapshot
+paper V3 economics. IO copies original evidence into exclusive daily snapshots
+and verifies full recomputation. The existing service tick and guidance publish
+run a saved-input observer; they add no source reads or timers. Workbench state
+and a protected local action serve the same results. Strict data blockers,
+historical canonical guidance and capital settings remain separate. See
+[specification](specifications/OPTIONS_TREND_STUDY_V1.md).
+
 ## Descriptive ETF observation projection — September 17, 2026
 
 `OptionsEtfObservation` composes unchanged source normalization, optional matching

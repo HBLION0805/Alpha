@@ -84,5 +84,6 @@ data/runtime/options-macro-comparisons/
 data/runtime/options-snapshot-paper/
 data/runtime/options-reported-spreads/
 data/runtime/options-etf-setup/
+data/runtime/options-trend-study/
 data/runtime/options-etf-source-inputs/
 data/runtime/options-etf-observation-recovery-*/

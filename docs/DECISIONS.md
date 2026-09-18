@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## September 17, 2026 — Freeze research before observing outcomes
+
+Use one explicit untested trend/contract rule for a future 20-session cohort.
+Keep the first baseline and first matching signal, including rejected matches,
+instead of choosing later winners. Selection quotes cannot fill their own plans.
+Later independent quotes use the existing V3 paper engine and estimated costs.
+Treat unknown source fields, missed windows and unresolved exits as evidence gaps.
+Offline recording on existing ticks does not claim sufficient market collection.
+No canonical promotion or win-rate target follows from elapsed days. See
+[specification](specifications/OPTIONS_TREND_STUDY_V1.md).
+
 ## September 17, 2026 — Separate descriptive observation from strict qualification
 
 The Owner asked why existing Robinhood charts could not be used directly. Use

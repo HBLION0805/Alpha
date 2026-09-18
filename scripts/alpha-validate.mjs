@@ -117,6 +117,7 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "scripts/options-trend-study.test.mjs",
   "scripts/options-etf-setup.test.mjs",
   "scripts/options-robinhood-etf-bars.test.mjs",
   "scripts/options-etf-source-audit.test.mjs",

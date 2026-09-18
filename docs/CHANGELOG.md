@@ -1,5 +1,16 @@
 # Alpha Changelog
 
+## September 17, 2026 — Prospective trend and contract cohort
+
+- Freeze a first-hour/two-close breakout and deterministic contract research rule
+  before 20 future sessions; retain the first rejected match and all quality gaps.
+- Compose existing V3 paper costs/replay with independent entry/exit quotes and
+  explicit stale/unusable/overdue monitoring; no backfilled fills or causal claims.
+- Add copied-input recovery, offline recording on existing ticks, English frontend
+  and protected local recording. Preserve source schedules and canonical guidance.
+- Register a real future cohort with zero signals/fills. Current source quality
+  and cadence remain insufficient for reliable forward results.
+
 ## September 17, 2026 — Robinhood observation and contract comparison
 
 - Add saved five-minute candle charts, descriptive late-window momentum and

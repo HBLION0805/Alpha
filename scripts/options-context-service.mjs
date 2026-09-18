@@ -7,6 +7,7 @@ import {guidanceLocal} from "../src/engines/options-daily-guidance/OptionsDailyG
 import {createWorkbenchData} from "./lib/options-workbench-data.mjs";
 import {publishGuidance} from "./lib/options-guidance-io.mjs";
 import {observePaperPlans} from "./lib/options-paper-observation-io.mjs";
+import {observeTrendStudiesSafely} from './lib/options-trend-study-io.mjs';
 const BASE="data/runtime/options-context-service";
 const COMMANDS={headlines:"scripts/options-drivers.mjs",btc:"scripts/options-btc-context.mjs",treasury:"scripts/options-treasury.mjs",bls:"scripts/options-release-calendar.mjs",fomc:"scripts/options-fomc-calendar.mjs",focused_news:"scripts/options-focused-news.mjs",macro_context:"scripts/options-macro-context.mjs"};
 export function contextRefreshSlots(at) {
@@ -59,13 +60,17 @@ export function runLocalPaperFinalization({workspaceRoot=process.cwd(),now=()=>n
 }
 export function startPublicContextService(options={}) {
   let active=false,stopped=false,paperFinalization={checkedAt:null,status:'NOT_CHECKED',results:[],error:null,sourceReads:0,executionAllowed:false};
+  let trendStatus={checkedAt:null,status:'NOT_CHECKED',error:null,sourceReads:0,executionAllowed:false};
   const tick=async()=>{if(active||stopped)return;active=true;try{
     // Offline finalization must survive Host inactivity and public-source failure.
     paperFinalization=runLocalPaperFinalization(options);
+    // Offline prospective research uses the existing tick, never new source calls.
+    const checkedAt=options.now?.()??new Date().toISOString();
+    trendStatus=observeTrendStudiesSafely(options.workspaceRoot??process.cwd(),checkedAt);
     await runPublicContextOnce(options);
   }catch{ /* Journals retain source failures. Next hour is a new bounded attempt. */ }finally{active=false;}};
   const timer=setInterval(()=>void tick(),60000);void tick();
-  return {stop(){stopped=true;clearInterval(timer);},tick,paperStatus:()=>structuredClone({enabled:!stopped,...paperFinalization})};
+  return {stop(){stopped=true;clearInterval(timer);},tick,trendStatus:()=>structuredClone({enabled:!stopped,...trendStatus}),paperStatus:()=>structuredClone({enabled:!stopped,...paperFinalization})};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   const args=process.argv.slice(2);

@@ -201,6 +201,7 @@ document.addEventListener('submit',event=>{
 });
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
+  if(el.id==='observe-trend-study'){if(saving)return;saving=true;el.disabled=true;try{const r=await request('/api/etf-setup',{action:'OBSERVE_TREND',request:null});if(r.results.some(x=>x.error))throw Error('Some study records could not be recovered. Inspect saved evidence before continuing.');await reload();toast('Available evidence checked; no source request or order.');}catch(e){fail(e,'#trend-study-error');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.dataset.etfSnapshot){if(saving)return;saving=true;el.disabled=true;try{await request('/api/etf-setup',{action:'SNAPSHOT',request:el.dataset.etfSnapshot});await reload();toast('Copied research assessment saved and recovered.');}catch(e){fail(e,'#etf-setup-error');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.dataset.close){if(saving&&el.dataset.close==='preview-dialog')return;$('#'+el.dataset.close).close();return;}
   if(el.id==='discard-snapshot-paper'){ui.snapshotDraft=null;ui.snapshotPreview=null;dirty.delete('snapshot-paper');render();return;}

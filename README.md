@@ -1,6 +1,12 @@
 # Alpha
 
-Latest increment: [Robinhood observations → conditional contract comparison](docs/OPTIONS_ETF_OBSERVATION_DELIVERY.md).
+Latest increment: [frozen prospective trend study](docs/OPTIONS_TREND_STUDY_DELIVERY.md).
+One registered 20-session GLD/IBIT cohort links fixed trend/contract rules to
+independent paper outcomes, exit-quality checks and candidate lessons. Currently
+zero future signals or fills; unchanged source cadence and quality still prevent
+a reliably populated trial. Research rules do not qualify trading recommendations.
+
+Previous increment: [Robinhood observations → conditional contract comparison](docs/OPTIONS_ETF_OBSERVATION_DELIVERY.md).
 Daily guidance shows saved candles, separate late-window momentum, future watch
 conditions and explained option references. Alpaca is optional. Historical
 observations retain unknown flags and source conflicts; they are not live entry

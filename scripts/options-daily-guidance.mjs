@@ -7,6 +7,7 @@ import { recordGuidanceMarket, publishGuidance, recordAnalystNote, claimGuidance
 import { collectGuidanceMarket, routeDailyGuidance } from "./lib/options-guidance-host.mjs";
 import { activeEventResearchContracts } from "./lib/options-event-research-io.mjs";
 import { paperObservationView, observePaperPlans } from "./lib/options-paper-observation-io.mjs";
+import {observeTrendStudiesSafely} from './lib/options-trend-study-io.mjs';
 export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=()=>new Date().toISOString()}={}) {
   const root=realpathSync(workspaceRoot),[mode,arg]=args;
   if(args.length>2)throw Error("GUIDANCE_ARGUMENTS");
@@ -29,6 +30,7 @@ export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=(
   if(mode==="--verify"&&args.length===2)return verifyGuidanceRecord(root,arg);
   if(mode==="--explain-report"&&args.length===2)return explainIssuedGuidance(root,arg);
   if(["--report","--publish","--host-brief","--decision-cards","--delivery-health","--event-reactions","--sensitivities"].includes(mode)&&args.length===1) {
+    const trendObservations=mode==='--publish'?observeTrendStudiesSafely(root,now()):null;
     const state=await createWorkbenchData({workspaceRoot:root,now}).state();
     if(mode==="--decision-cards")return state.decisionCards;
     if(mode==="--delivery-health")return state.guidanceDelivery;
@@ -37,7 +39,7 @@ export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=(
     if(state.guidance.state!=="AVAILABLE")throw Error(state.guidance.error);
     if(mode==="--report")return state.guidance.data;
     if(mode==="--host-brief") {const v=state.guidance.data,r=v.current;return {buyerEntryBoundaries:{...state.decisionCards,data:state.decisionCards.data?.cards.map(c=>({symbol:c.symbol,...c.buyerEntryBoundary}))??null},optionSensitivities:state.guidanceSensitivities.state==="AVAILABLE"?{...state.guidanceSensitivities,data:briefGuidanceSensitivities(state.guidanceSensitivities.data,r.assets.flatMap(a=>a.candidates.slice(0,3).map(c=>c.contract.id)))}:state.guidanceSensitivities,eventReactions:state.eventReactions,deliveryHealth:state.guidanceDelivery.state==="AVAILABLE"?{...state.guidanceDelivery.data,slots:state.guidanceDelivery.data.slots.map(({slot,startAt,endAt,status})=>({slot,startAt,endAt,status}))}:state.guidanceDelivery,...(r.marketSession?{marketSession:r.marketSession,sessionPolicy:r.sessionPolicy,analysisSequencing:r.analysisSequencing}:{}),rationale:{...v.rationale,assets:v.rationale.assets.map(a=>({...a,contracts:a.contracts.slice(0,3)}))},assessedAt:r.assessedAt,marketCapturedAt:r.marketCapturedAt,...(r.settings.tradeBudget?.version==="OWNER_ALLOCATION_ONLY_V2"?{capitalPolicy:{version:r.settings.tradeBudget.version,settings:r.settings,policy:r.policy,legacyLossCapsEnforced:false}}:{}),assets:r.assets.map(a=>({symbol:a.symbol,equity:a.equity,trend:a.trend,disposition:a.disposition,blockers:a.blockers,sampled:a.candidates.length,priced:a.candidates.filter(c=>c.contract.askCents!==null).length,candidates:a.candidates.slice(0,3).map(c=>({contract:c.contract,disposition:c.disposition,blockers:c.blockers,plan:c.plan,economics:c.feasibility.economics}))})),events:r.events,sourceHealth:r.sourceHealth,headlines:r.headlines,context:r.context,focusedNews:state.focusedNews.state==='AVAILABLE'?{...state.focusedNews.data,items:state.focusedNews.data.items.slice(0,40).map(({mechanisms,...item})=>item)}:{state:state.focusedNews.state,error:state.focusedNews.error},macroContext:state.macroContext.state==='AVAILABLE'?{...state.macroContext.data,forecasts:state.macroContext.data.forecasts.slice(0,2)}:{state:state.macroContext.state,error:state.macroContext.error},goldFramework:state.goldFramework.state==='AVAILABLE'?state.goldFramework.data:{state:state.goldFramework.state,error:state.goldFramework.error},previousAnalysis:v.interpretation,lastIssued:v.history[0]??null};}
-    return {path:publishGuidance(root,state),dispositions:state.guidance.data.current.assets.map(a=>({symbol:a.symbol,disposition:a.disposition,trend:a.trend.direction})),executionAllowed:false};
+    return {path:publishGuidance(root,state),dispositions:state.guidance.data.current.assets.map(a=>({symbol:a.symbol,disposition:a.disposition,trend:a.trend.direction})),trendObservations,executionAllowed:false};
   }
   throw Error("GUIDANCE_ARGUMENTS");
 }

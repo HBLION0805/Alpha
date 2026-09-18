@@ -42,6 +42,7 @@ export function verifyEtfSetup(root,path){
   return {path,...r};
 }
 function records(root,kind,at){return catalog(root,kind).map(path=>verifyEtfSetup(root,path)).filter(r=>r.recordedAt<=at);}
+export function etfStudySources(root,at){return {sources:records(root,'sources',at),audits:records(root,'audits',at)};}
 export function registerEtfSetup(root,plan,at=new Date().toISOString()){
   validateEtfSetupPlan(plan,time(at));
   if(records(root,'plans',at).some(r=>r.input.id===plan.id))fail('PLAN_ID_EXISTS');

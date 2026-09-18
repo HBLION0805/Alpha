@@ -1,6 +1,12 @@
 # Alpha Roadmap
 
-September 17 latest: [descriptive observations and conditional comparisons](OPTIONS_ETF_OBSERVATION_DELIVERY.md)
+September 17 current: [frozen prospective trend study](OPTIONS_TREND_STUDY_DELIVERY.md)
+registers September 18–October 15 and links future first signals to deterministic
+contract screening and independent estimated outcomes. Local checks and frontend
+are implemented; current source cadence/quality cannot yet populate a reliable
+trial. Twenty days is not a pass threshold. Keep 4 local / 4 partial / 2 unvalidated.
+
+September 17 prior: [descriptive observations and conditional comparisons](OPTIONS_ETF_OBSERVATION_DELIVERY.md)
 now connect saved Robinhood candles to explained same-side option references in
 the frontend. Another provider is optional for observation. Strict qualification,
 future setup outcomes and costs/account reconciliation remain open. This is

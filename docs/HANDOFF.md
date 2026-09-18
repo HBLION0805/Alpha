@@ -1,5 +1,17 @@
 # Alpha Handoff
 
+## September 17 — frozen prospective trend study registered
+
+The [trend-study delivery](OPTIONS_TREND_STUDY_DELIVERY.md) now connects fixed
+two-close breakout screening, deterministic contract ranking and independent
+V3 paper outcomes. Read [checkpoint](status/trend-study.json). One future cohort
+is already registered; do not duplicate or backfill it. Existing local ticks and
+publication inspect saved inputs only. Source unknowns and inadequate collection
+remain explicit; this is not a reliably populated trial or live trading approval.
+Next obtain fresh prospective observations and independent outcomes while keeping
+missing sessions, first rejected signals and unresolved exits. New source cadence
+or source qualification requires its own concrete work, not silent assumptions.
+
 ## September 17 — Robinhood observation route now implemented
 
 The Owner requested direct Robinhood chart use. The [new observation panel](OPTIONS_ETF_OBSERVATION_DELIVERY.md)

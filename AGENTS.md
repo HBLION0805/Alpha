@@ -1,5 +1,19 @@
 # Alpha Development Standard v1.0
 
+## Frozen forward trend study — September 17, 2026
+
+The Owner approved prospective trend/contract rules and independent results.
+Read docs/OPTIONS_TREND_STUDY_DELIVERY.md and docs/status/trend-study.json.
+The immutable cohort gld-ibit-trend-v1-20260918 covers September 18–October 15
+(20 sessions), initially zero signals/fills. Existing offline service ticks read
+saved evidence; no new collection or timer was added. The first baseline and
+first match cannot be replaced by hindsight. Unknown flags/conflicts/late receipts
+block enrollment; selection is not a fill. Later independent quotes alone model
+entry/exit using existing V3 economics. Candidate lessons remain unapproved.
+Current source cadence is inadequate for this protocol; do not claim a populated
+trial, reliable monitoring, strategy validation or a 20-day automatic pass.
+Keep schedules, canonical guidance, capital settings and old engineering evidence.
+
 ## Robinhood descriptive observation route — September 17, 2026
 
 The Owner explicitly requested direct Robinhood chart use and continuation.
