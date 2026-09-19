@@ -1,5 +1,17 @@
 # Alpha Development Standard v1.0
 
+## Owner psychology extension — September 19, 2026
+
+The second education batch extends Macro playbook to 50 entries, 17 bias questions
+and nine optional phase prompts. Read docs/OPTIONS_MACRO_PSYCHOLOGY_DELIVERY.md and
+docs/status/macro-psychology.json. Prompts append to a local draft only; they do not
+diagnose, score confidence, resize exposure or save automatically. Old V1 notes
+retain their original catalogs; new copies carry an explicit content revision.
+Both conflicting 30/30 variants and 72 hours remain inactive. Do not promote
+universal returns, personality judgments or military metaphors into rules. Source
+excerpts do not authorize social signups, feeds, subscriptions or broker changes.
+Frozen studies, capital settings, canonical guidance and source cadence stay intact.
+
 ## Owner-supplied macro education — September 17, 2026
 
 The Owner's education batch is integrated as a 30-entry Macro playbook and a local

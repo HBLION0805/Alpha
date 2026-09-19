@@ -1,5 +1,10 @@
 # Alpha Roadmap
 
+September 19 education extension: [psychology questions and claim review](OPTIONS_MACRO_PSYCHOLOGY_DELIVERY.md)
+are available in the same Macro playbook. This completes the supplied second batch
+within education/reflection; no strategy gate, prospective trial count or source
+cadence advances. Behavioral prompts remain voluntary and non-diagnostic.
+
 September 17 education addition: [Macro playbook](OPTIONS_MACRO_PLAYBOOK_DELIVERY.md)
 now supports a source-attributed decision worksheet and independent process/outcome
 reflection. It does not advance strategy gates or replace the prospective trend

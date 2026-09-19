@@ -9,6 +9,12 @@ private records and verifies recovery. A protected local workbench action and th
 `macro-playbook` page provide preview/save/search. There is no import into strategy
 engines, source collectors, approved knowledge or the frozen trend cohort.
 
+The September 19 [psychology extension](specifications/OPTIONS_MACRO_PSYCHOLOGY_V1.md)
+composes `MacroPsychologyCatalog` into that same copied catalog. Optional question
+buttons only append to the existing personal reflection draft; the note contract,
+assessment, protected API and copied-record recovery remain unchanged. Older
+catalogs do not acquire the new material during recovery.
+
 ## Frozen prospective trend study — September 17, 2026
 
 `OptionsTrendStudy` replays ordered observation decisions against an immutable

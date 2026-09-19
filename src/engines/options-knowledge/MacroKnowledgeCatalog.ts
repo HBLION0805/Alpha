@@ -1,3 +1,4 @@
+import {psychologyKnowledge,psychologyReview,psychologySources,psychologyRevision} from './MacroPsychologyCatalog';
 // Educational references only. Nothing here is an executable trading rule.
 export const MACRO_PLAYBOOK_VERSION = 'OPTIONS_MACRO_PLAYBOOK_V1';
 export type KnowledgeStatus = 'PROCESS_GUIDE' | 'MECHANICS_REFERENCE' | 'CANDIDATE_UNTESTED' | 'ILLUSTRATION_ONLY';
@@ -156,7 +157,7 @@ export const macroWorksheetFields = [
   {id:'counterevidence',label:'Counterevidence and no-trade condition',prompt:'What would change your mind? What missing evidence is enough to wait rather than enter?'},
 ];
 export function macroCatalog() {
-  return structuredClone({version:MACRO_PLAYBOOK_VERSION,reviewedDateNewYork:'2026-09-17',sources:macroSources,items:macroKnowledge,fields:macroWorksheetFields,
+  return structuredClone({version:MACRO_PLAYBOOK_VERSION,contentRevision:psychologyRevision,reviewedDateNewYork:'2026-09-17',sources:[...macroSources,...psychologySources],items:[...macroKnowledge,...psychologyKnowledge],fields:macroWorksheetFields,psychology:psychologyReview,
     strategyStatus:'UNVALIDATED',activeRuleCount:0,executionAllowed:false,
     boundary:'Educational references and owner-authored notes. No new trading rule, source collection or study enrollment.'});
 }

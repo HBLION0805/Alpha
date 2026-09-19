@@ -1,7 +1,9 @@
 # Alpha
 
-Education addition: [Macro playbook](docs/OPTIONS_MACRO_PLAYBOOK_DELIVERY.md)
-provides 30 source-attributed references and a private decision/review worksheet.
+Education addition: [Macro playbook](docs/OPTIONS_MACRO_PLAYBOOK_DELIVERY.md) with
+the [psychology extension](docs/OPTIONS_MACRO_PSYCHOLOGY_DELIVERY.md) provides 50
+source-attributed entries, 17 bias questions, nine phase prompts and a private
+decision/review worksheet.
 Open **Macro playbook** in the workbench. Personal thresholds remain inactive;
 the existing prospective study and its data gaps are unchanged.
 

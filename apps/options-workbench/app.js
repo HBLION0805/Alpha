@@ -12,7 +12,7 @@ import {costDeskResult,costRequestMatches} from './cost-desk.js';
 import {deniedNewsSources} from './focused-news.js';
 import {capitalPolicyPanel,capitalPolicyMatches,policySettingsFromFields} from './capital-policy.js';
 import {macroComparisonRequest,macroPreviewMatches,macroComparisonResult} from './macro-context.js';
-import {macroNoteDefaults,macroNoteRequest,macroCoverage} from './macro-playbook.js';
+import {macroNoteDefaults,macroNoteRequest,macroCoverage,appendMacroReflection} from './macro-playbook.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -270,6 +270,11 @@ document.addEventListener('click',event=>{void(async()=>{
   }
   if(el.id==='reset-guidance-assumptions'){clearPolicyPreview();ui.guidanceSettingsDraft=null;dirty.delete('guidance');render();return;}
   if(el.id==='clear-macro-note'){ui.macroNoteDraft=null;ui.macroNoteRequestId=null;ui.macroNotePreview=null;ui.macroNoteSaved=null;dirty.delete('macro-note');render();return;}
+  if(el.dataset.macroPrompt){
+    ui.macroNoteDraft=appendMacroReflection(ui.macroNoteDraft,state.macroPlaybook.data.catalog,el.dataset.macroPrompt);
+    ui.macroNoteRequestId=null;ui.macroNotePreview=null;ui.macroNoteSaved=null;dirty.add('macro-note');render();
+    const form=$('#macro-note-form');form.closest('details').open=true;form.elements.personalNote.focus();return;
+  }
   if(el.dataset.candidateCheck){const r=state.candidateChecks?.data?.current,row=r?.rows.find(x=>x.contract.id===el.dataset.candidateCheck);if(row)showDetail('Candidate checks',candidateCheckDetail(row,r));return;}
   if(el.id==='save-candidate-checks'){if(saving)return;if(dirty.has('guidance'))throw Error('Save or discard the planning-assumption draft first.');saving=true;el.disabled=true;try{const r=await request('/api/candidate-checks',{});await reload();toast('Check snapshot saved and verified at '+timestamp(r.assessedAt)+'. No trade was created.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reset-event-research'){ui.eventDraft=null;ui.eventChoices=null;dirty.delete('event-research');render();return;}

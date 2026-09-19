@@ -1,5 +1,15 @@
 # Alpha Handoff
 
+## September 19 — psychology batch incorporated
+
+[Psychology delivery](OPTIONS_MACRO_PSYCHOLOGY_DELIVERY.md) and its
+[checkpoint](status/macro-psychology.json) complete the interrupted education work.
+The catalog has 50 entries, 17 bias questions and nine optional draft prompts.
+Keep the two 30/30 versions distinct, no automatic rule promotion or confidence
+sizing, and no account/feed authority from quoted advice. Old notes recover from
+their copied catalogs. No production reflection was created. The existing server
+was relaunched after it was found stopped; this does not establish source recovery.
+
 ## September 17 — macro education incorporated
 
 [Macro playbook delivery](OPTIONS_MACRO_PLAYBOOK_DELIVERY.md) adds source-attributed

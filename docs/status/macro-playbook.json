@@ -39,10 +39,16 @@
   "frozenCohortChanged": false,
   "accountOrOrderCalls": 0,
   "executionAllowed": false,
+  "currentExtension": {
+    "checkpoint": "docs/status/macro-psychology.json",
+    "totalCatalogEntries": 50,
+    "biasQuestions": 17,
+    "phasePrompts": 9,
+    "note": "The fields above preserve the initial September 17 delivery evidence."
+  },
   "remaining": [
     "Prospective source quality and cadence gaps remain",
     "Fresh signals and independent outcomes still required",
-    "Knowledge completeness does not qualify trading",
-    "Later psychology material not yet incorporated"
+    "Knowledge completeness does not qualify trading"
   ]
 }

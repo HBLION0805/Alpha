@@ -1,0 +1,45 @@
+{
+  "version": "OPTIONS_MACRO_PSYCHOLOGY_DELIVERY_V1",
+  "recordedAt": "2026-09-19T21:39:19.000Z",
+  "status": "LOCAL_EDUCATION_AND_REFLECTION_IMPLEMENTED",
+  "contentRevision": "OWNER_PSYCHOLOGY_20260917_V1",
+  "originalEntriesPreserved": 30,
+  "newEntries": 20,
+  "totalEntries": 50,
+  "biasQuestions": 17,
+  "phasePrompts": 9,
+  "worksheetEvidenceFieldsUnchanged": 12,
+  "activeRulesFromCatalog": 0,
+  "confidenceScore": null,
+  "psychologicalDiagnosis": false,
+  "images": {"newPrivateCopies": 2, "hashVerification": "PASS"},
+  "sourceReview": {
+    "behavioralResearch": "SEC_HOSTED_LOC_SUMMARY_ONLY",
+    "books": "PUBLISHER_METADATA_AND_DESCRIPTIONS_NOT_FULL_BOOKS",
+    "truthSocial": "NO_READABLE_POST_BODY_NO_POST_VERIFIED",
+    "toolPricingAndExecutionComparisons": "NOT_VERIFIED",
+    "thirtyThirty": "CONFLICTING_VARIANTS_RETAINED_INACTIVE"
+  },
+  "validation": {
+    "typecheck": "PASS",
+    "focused": {"passed": 42, "failed": 0},
+    "aggregate": {"passed": 4770, "failed": 0, "components": 179},
+    "legacyCatalogRecoveryAndRetry": "PASS",
+    "browser": "DESKTOP_AND_390PX_APPEND_PREVIEW_OVERFLOW_CLEAR_SEARCH",
+    "productionNotesCreated": 0,
+    "serverPidAtVerification": 36728
+  },
+  "noteContract": "OPTIONS_MACRO_PLAYBOOK_V1_UNCHANGED",
+  "strategyValidated": false,
+  "canonicalGuidanceChanged": false,
+  "frozenCohortChanged": false,
+  "capitalSettingsChanged": false,
+  "sourceCadenceChanged": false,
+  "accountOrOrderCalls": 0,
+  "subscriptionsOrSocialAccountsCreated": 0,
+  "executionAllowed": false,
+  "remaining": [
+    "Prospective source quality, cadence and independent outcomes still required",
+    "No personal heuristic is validated by reading or completing a worksheet"
+  ]
+}
