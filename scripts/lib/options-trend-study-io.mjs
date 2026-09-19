@@ -3,13 +3,15 @@ import {resolve} from 'node:path';
 import {optionsEvidenceExportStorage as io} from '../options-evidence-export.mjs';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {paperFingerprint} from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
-import {TREND_RULES_V1,futureTrendDates,validateTrendStudy,assessTrendDay,trendNyClock} from '../../src/engines/options-daily-guidance/OptionsTrendStudy.ts';
+import {TREND_RULES_V1,futureTrendDates,validateTrendStudy,assessTrendDay,trendNyClock,trendObservationDiagnostics,trendObservationWindow} from '../../src/engines/options-daily-guidance/OptionsTrendStudy.ts';
 import {guidanceLocal} from '../../src/engines/options-daily-guidance/OptionsGuidanceClock.ts';
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {assessRobinhoodEtfBars} from '../../src/engines/options-robinhood-data/RobinhoodEtfBars.ts';
 import {compareRobinhoodEtfBars} from '../../src/engines/options-robinhood-data/RobinhoodEtfBarAudit.ts';
 import {etfStudySources} from './options-etf-setup-io.mjs';
-import {mapSnapshotSource,snapshotSources} from './options-snapshot-paper-io.mjs';
+import {mapSnapshotSource,snapshotSources,paperCollectionCalendar} from './options-snapshot-paper-io.mjs';
+import {combinePaperTracking,paperObservationView} from './options-paper-observation-io.mjs';
+import {paperCollectionSchedule,assessPaperCollectionPlan} from '../../src/engines/options-robinhood-data/OptionsPaperCollectionPlan.ts';
 import {guidanceSettings} from './options-guidance-io.mjs';
 
 const BASE='data/runtime/options-trend-study',MAX=16*1024*1024;
@@ -73,11 +75,13 @@ export function observeTrendStudies(root,at=new Date().toISOString()){
         marketStore??=snapshotSources(root);
         const source=sourceAtDate(sourceStore.sources,date,at);
         const audit=source?sourceStore.audits.find(a=>paperFingerprint(a.input.fiveMinuteCapture)===source.inputFingerprint)??null:null;
-        const market=marketStore.map(copy=>({copy,frame:mapSnapshotSource(copy,'V3')})).filter(v=>v.frame.recordedAt<=at&&guidanceLocal(v.frame.capturedAt).date===date).sort((a,b)=>b.frame.recordedAt.localeCompare(a.frame.recordedAt))[0]?.copy??null;
+        const open=prior?.report.assets.some(a=>a.status==='OPEN_UNRESOLVED');
+        // Only an already open position can consume a later-session receipt.
+        // The paper engine retains its actual clock, path gap and frozen exit plan.
+        const market=marketStore.map(copy=>({copy,frame:mapSnapshotSource(copy,'V3')})).filter(v=>v.frame.recordedAt<=at&&(guidanceLocal(v.frame.capturedAt).date===date||open&&guidanceLocal(v.frame.capturedAt).date>date)).sort((a,b)=>b.frame.recordedAt.localeCompare(a.frame.recordedAt))[0]?.copy??null;
         const observation={at,source,audit,market};
         const last=prior?.observations.at(-1);
         const same=last&&paperFingerprint([source,audit,market])===paperFingerprint([last.source,last.audit,last.market]);
-        const open=prior?.report.assets.some(a=>a.status==='OPEN_UNRESOLVED');
         const staleAlready=prior?.report.assets.filter(a=>a.status==='OPEN_UNRESOLVED').every(a=>a.monitor.staleWhileOpen);
         if(same&&phase(date,at)===phase(date,prior.at)&&(!open||staleAlready||Date.parse(at)-Date.parse(prior.at)<60000))continue;
         if(prior&&at<=prior.at)fail('CLOCK_REGRESSION');
@@ -91,11 +95,46 @@ export function observeTrendStudies(root,at=new Date().toISOString()){
   }
   return {checkedAt:at,results,sourceReads:0,executionAllowed:false};
 }
-export function trendStudyView(root,at=new Date().toISOString()){
-  clock(at);return {version:'OPTIONS_TREND_STUDY_DESK_V1',assessedAt:at,studies:studyIds(root).map(name=>{
-    const study=readStudy(root,name),days=study.dates.map(date=>{const h=latestDay(root,name,date);return {date,path:h.path,report:h.payload?.report??null,status:h.payload?'RECORDED':date>guidanceLocal(at).date?'AWAITING_SESSION':'NOT_YET_RECORDED'};});
+/** Existing event and enrolled paper identities retain priority and the six-ID cap. */
+export function trendStudyTracking(root,at,existing){
+  clock(at);const candidates=[],inactive=[];
+  for(const name of studyIds(root)){
+    const study=readStudy(root,name);if(study.registeredAt>at)continue;
+    for(const date of study.dates.filter(d=>d<=guidanceLocal(at).date)){
+      const head=latestDay(root,name,date).payload;if(!head||head.at>at)continue;
+      for(const a of head.report.assets){
+        const p=a.decision?.plan;if(!p)continue;
+        const row={planId:p.id,contract:p.contract};
+        const state=a.paper?.origin!=='HOST_MARKET_TOOL_RESPONSES'?'SYNTHETIC_NOT_HOST_TRACKED':a.status==='CLOSED_MODELED'?'CLOSED_MODELED':p.contract.expiry<=guidanceLocal(at).date?'EXPIRY_NOT_TRACKED':a.paper?.fills.length===0&&at>p.entryDeadlineAt?'ENTRY_WINDOW_ENDED':null;
+        if(state)inactive.push({planId:p.id,contractId:p.contract.id,status:state});else candidates.push(row);
+      }
+    }
+  }
+  const combined=combinePaperTracking(existing,candidates);
+  return {...combined,rows:[...combined.rows,...inactive],sourceReads:0,continuousPolling:false};
+}
+export function trendStudyView(root,at=new Date().toISOString(),calendarBrief=null,existingTracking=null){
+  clock(at);const calendar=paperCollectionCalendar(calendarBrief);let tracking;
+  try{tracking=trendStudyTracking(root,at,existingTracking??paperObservationView(root,undefined,at).trackedContracts);}
+  catch{tracking={rows:[],error:'TRACKING_UNAVAILABLE'};}
+  return {version:'OPTIONS_TREND_STUDY_DESK_V1',assessedAt:at,tracking,studies:studyIds(root).map(name=>{
+    const study=readStudy(root,name),days=study.dates.map(date=>{
+      const h=latestDay(root,name,date),input=h.payload?engineInput(h.payload):{study,date,at,events:[]};
+      const observation=trendObservationDiagnostics(input,at);
+      return {date,path:h.path,report:h.payload?.report??null,observation,
+        collectionPlans:(h.payload?.report.assets??[]).flatMap(a=>a.decision?.plan?[assessPaperCollectionPlan(a.decision.plan,at,calendar)]:[]),
+        status:h.payload?'RECORDED':date>guidanceLocal(at).date?'AWAITING_SESSION':'NOT_YET_RECORDED'};
+    });
     const counts={sessions:days.filter(d=>d.report).length,signals:0,entries:0,closed:0};for(const d of days)if(d.report)for(const k of ['signals','entries','closed'])counts[k]+=d.report.counts[k];
-    return {study,days,counts};
+    const observationCounts={};for(const d of days)for(const a of d.observation.assets)observationCounts[a.classification]=(observationCounts[a.classification]??0)+1;
+    const nextDate=study.dates.find(d=>d>=guidanceLocal(at).date&&paperCollectionSchedule(d,at,calendar).wakes.some(w=>!w.alreadyPassed&&['ROUTINE','EVENT_CONDITIONAL','PAPER_REHEARSAL'].includes(w.basis)));
+    const schedule=nextDate?paperCollectionSchedule(nextDate,at,calendar):null;
+    const nextNominalQuote=schedule?.wakes.find(w=>!w.alreadyPassed&&['ROUTINE','EVENT_CONDITIONAL','PAPER_REHEARSAL'].includes(w.basis))??null;
+    // A requirements preview, deliberately not consumed by any collector or timer.
+    const proposalDate=study.dates.find(d=>d>=guidanceLocal(at).date)??study.dates.at(-1);
+    const proposal={enabled:false,date:proposalDate,...trendObservationWindow(study,proposalDate),symbols:['GLD','IBIT'],
+      selectedContractsOnly:true,requires:'Provider qualification, supported throughput and explicit frequency authorization; no past windows can be recovered.'};
+    return {study,days,counts,observationCounts,nextNominalQuote,calendarState:calendar.state,collectionProposal:proposal};
   }),collectionGap:'Routine 15:50 quotes and conditional event-hour samples do not cover this 10:40–14:30 entry window or continuous exits. Local checks use saved evidence only; no extra market collection is enabled.',sourceQualified:false,strategyValidated:false,executionAllowed:false};
 }
 // Research-store failures must not suppress the existing source/publication path.

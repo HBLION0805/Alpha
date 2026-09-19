@@ -1,0 +1,59 @@
+{
+  "version": "OPTIONS_ROUTINE_1550_STATUS_V1",
+  "updatedAt": "2026-09-19T23:54:12.550Z",
+  "status": "PENDING_NATURAL_RUN",
+  "automationId": "gld-ibit",
+  "hostConfig": "docs/OPTIONS_DAILY_GUIDANCE_HOST_V4.json",
+  "timezone": "America/New_York",
+  "before": "Daily 09:00 only",
+  "after": "Daily 09:00 context and weekday 15:50 routine GLD/IBIT market reads",
+  "firstEligibleMarketWindow": {
+    "local": "2026-09-21 15:50 America/New_York",
+    "utc": "2026-09-21T19:50:00.000Z",
+    "routeEndsAt": "2026-09-21T20:00:00.000Z"
+  },
+  "nextDailyContext": "2026-09-20T13:00:00.000Z",
+  "nextTimeEvidence": "Calculated from installed recurrence and verified host timezone; automation view returned no scheduler queue timestamp",
+  "acceptance": {
+    "installedConfiguration": "READ_BACK_MATCHED",
+    "naturalTaskStart": "NOT_OBSERVED",
+    "naturalSourceCapture": "NOT_OBSERVED",
+    "sourceFreshness": "NOT_OBSERVED",
+    "rawPersistence": "NOT_OBSERVED",
+    "guidanceApiConsumption": "NOT_OBSERVED",
+    "browserPageConsumption": "NOT_OBSERVED"
+  },
+  "naturalRunReceipts": [],
+  "preflight": "data/runtime/options-workbench-development/routine-1550-preflight.json",
+  "marketCallsThisRepair": 0,
+  "normalCaptureFitsCurrentCapacity": true,
+  "maximumMarketCallsPerCapture": 24,
+  "maximumSelectedOptionQuotesPerCapture": 36,
+  "dollarCost": "UNKNOWN",
+  "strictTrendV1Qualified": false,
+  "newExperiments": 0,
+  "executionAllowed": false,
+  "configurationReadback": "data\\runtime\\options-workbench-development\\routine-1550-configuration-readback.json",
+  "validation": {
+    "status": "PASSED",
+    "passed": 4786,
+    "failed": 0,
+    "componentCount": 179,
+    "typecheck": "PASSED",
+    "completedAt": "2026-09-19T23:31:59.352Z",
+    "log": "data/runtime/options-workbench-development/routine-1550-full-validation.log"
+  },
+  "historicalPageBaseline": "data/runtime/options-workbench-development/routine-1550-page-baseline.json",
+  "repairStatus": "COMPLETE",
+  "hostConfigKind": "SANITIZED_REFERENCE_NOT_INSTALLED_CONFIG_BACKUP",
+  "stageSave": {
+    "scope": "Three related repairs only",
+    "validationReused": true,
+    "newFullValidationRun": false,
+    "marketCalls": 0,
+    "productionCaptureWrites": 0,
+    "automationChanged": false,
+    "resultCommit": "NOT_CREATED_FUTURE_WINDOW",
+    "gitAllowedInAutomation": false
+  }
+}

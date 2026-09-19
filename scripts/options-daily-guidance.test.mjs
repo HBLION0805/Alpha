@@ -187,4 +187,27 @@ await test('coverage frontend lists missing contracts, exact dates and escaped i
   const r=await fixture();r.receipts.at(-1).response.data.results.shift();r.receipts.find(x=>x.tool==='get_option_instruments').response.data.instruments[0].state='<img src=x>';
   const d=guidanceQuoteCoverage(r),html=quoteCoveragePanel(d);assert(html.includes('11 / 12 returned'));assert(html.includes('2026-09-25'));assert(html.includes(r.selectedIds[0]));assert(html.includes('Source Quote Missing'));assert(!/<img/i.test(html));assert(html.toLowerCase().includes('&lt;img'));assert(!html.includes('data-order'));assert.equal(quoteCoveragePanel(null),'');
 });
+await test('ongoing routine respects New York regular sessions in daylight and standard time',()=>{
+  for(const at of ['2026-09-21T19:50:00.000Z','2026-12-01T20:50:00.000Z']){
+    const r=routeDailyGuidance(at,{ongoing:true});assert(r.marketCaptureRequested);assert(r.marketCapture);assert(r.marketSession.isOpen);assert.equal(r.marketCaptureSkipReason,null);assert(r.slot.endsWith('-1550'));
+  }
+});
+await test('ongoing routine skips reviewed holidays and early closes without moving the window',()=>{
+  for(const [at,reason] of [['2026-11-26T20:50:00.000Z','SESSION_HOLIDAY'],['2026-11-27T20:50:00.000Z','SESSION_EARLY_CLOSE'],['2026-12-24T20:50:00.000Z','SESSION_EARLY_CLOSE']]){
+    const r=routeDailyGuidance(at,{ongoing:true});assert(r.marketCaptureRequested);assert.equal(r.marketCapture,false);assert.equal(r.marketCaptureSkipReason,reason);assert.equal(r.publish,false);
+  }
+  assert.equal(routeDailyGuidance('2026-11-27T17:50:00.000Z',{ongoing:true}).marketCapture,false);
+});
+await test('ongoing routine fails closed for an unreviewed calendar year',()=>{
+  const r=routeDailyGuidance('2027-01-04T20:50:00.000Z',{ongoing:true});assert(r.marketCaptureRequested);assert.equal(r.marketCapture,false);assert.equal(r.marketCaptureSkipReason,'SESSION_CALENDAR_UNKNOWN');assert.equal(r.marketSession.knownYear,false);
+});
+await test('ongoing daily context survives weekends and holidays without market reads',()=>{
+  for(const at of ['2026-09-20T13:00:00.000Z','2026-11-26T14:00:00.000Z']){
+    const r=routeDailyGuidance(at,{ongoing:true});assert(r.dailyContext);assert(r.refreshNews);assert(r.publish);assert.equal(r.marketCapture,false);
+  }
+});
+await test('ongoing routine cannot backfill outside the original 15:50 hour',()=>{
+  for(const at of ['2026-09-21T19:49:59.000Z','2026-09-21T20:00:00.000Z','2026-09-19T19:50:00.000Z'])assert.equal(routeDailyGuidance(at,{ongoing:true}).marketCapture,false);
+  assert(routeDailyGuidance('2026-09-21T19:59:59.000Z',{ongoing:true}).marketCapture);
+});
 console.log(passed+"/"+passed+" tests passed.");

@@ -2,8 +2,10 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,copyFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {resolve,relative,isAbsolute,dirname} from 'node:path';
-import {TREND_RULES_V1,futureTrendDates,validateTrendStudy,trendNyClock,assessTrendDay} from '../src/engines/options-daily-guidance/OptionsTrendStudy.ts';
-import {registerTrendStudy,observeTrendStudies,observeTrendStudiesSafely,trendStudyView,verifyTrendRecord} from './lib/options-trend-study-io.mjs';
+import {TREND_RULES_V1,futureTrendDates,validateTrendStudy,trendNyClock,assessTrendDay,trendObservationDiagnostics,trendObservationWindow} from '../src/engines/options-daily-guidance/OptionsTrendStudy.ts';
+import {registerTrendStudy,observeTrendStudies,observeTrendStudiesSafely,trendStudyView,verifyTrendRecord,trendStudyTracking} from './lib/options-trend-study-io.mjs';
+import {paperCollectionSchedule} from '../src/engines/options-robinhood-data/OptionsPaperCollectionPlan.ts';
+import {runGuidanceCommand} from './options-daily-guidance.mjs';
 import {recordRobinhoodEtfBars} from './lib/options-etf-setup-io.mjs';
 import {saveGuidanceSettings,normalizeGuidanceCapture} from './lib/options-guidance-io.mjs';
 import {collectGuidanceMarket} from './lib/options-guidance-host.mjs';
@@ -74,14 +76,14 @@ await test('repeated source update cannot serve as an independent outcome',()=>{
 await test('future event and same-path altered quote are rejected',()=>{const i=input();i.events[0].at=at(3);assert.throws(()=>ibit(i),/EVENT_ORDER/);const j=input(),e=structuredClone(j.events[0]);e.at=at(4);e.frame.quotes[0].bidCents=140;j.events.push(e);j.at=at(4);assert.throws(()=>ibit(j),/FRAME_CONFLICT/);});
 await test('missing whole session stays missing, not a loss or a tested no-trigger',()=>{const i=input();i.at=date+'T21:00:00.000Z';i.events=[{at:i.at,source:null,audit:null,frame:null}];const r=assessTrendDay(i);assert.equal(r.assets[0].status,'DATA_MISSING');assert.equal(r.counts.entries,0);assert.equal(r.winProbability,null);});
 
-async function saveMarket(root,n,bid='1.45',ask='1.50'){
+async function saveMarket(root,n,bid='1.45',ask='1.50',origin='SYNTHETIC_FIXTURE'){
  let seq=10;const instruments=new Map();const input=await collectGuidanceMarket({clock:async()=>at(n),call:async(tool,request)=>{
   if(tool==='get_equity_quotes')return {data:{results:['GLD','IBIT'].map(symbol=>({quote:{symbol,last_trade_price:'43.195000',venue_last_trade_time:at(n),last_non_reg_trade_price:null,venue_last_non_reg_trade_time:null}}))}};
   if(tool==='get_option_chains')return {data:{chains:[{id:uid(request.underlying_symbol==='GLD'?1:2),symbol:request.underlying_symbol,late_close_state:'enabled',expiration_dates:['2026-10-09']}]}};
   if(tool==='get_option_instruments'){const symbol=request.chain_id===uid(1)?'GLD':'IBIT',list=['call','put'].map(type=>({id:uid(seq++),chain_id:request.chain_id,chain_symbol:symbol,expiration_date:'2026-10-09',type,strike_price:'43',state:'active',tradability:'tradable',underlying_type:'equity',trade_value_multiplier:'100',min_ticks:{above_tick:'0.05',below_tick:'0.01',cutoff_price:'3.00'}}));list.forEach(i=>instruments.set(i.id,i));return {data:{instruments:list,next:null}};}
   if(tool==='get_option_quotes')return {data:{results:request.instrument_ids.map(id=>({quote:{instrument_id:id,bid_price:bid,ask_price:ask,bid_size:20,ask_size:20,delta:instruments.get(id).type==='call'?'0.5':'-0.5',updated_at:at(n)}}))}};
   throw Error('UNEXPECTED_TOOL');
- }});input.origin='SYNTHETIC_FIXTURE';const report=normalizeGuidanceCapture(input),record={version:'OPTIONS_GUIDANCE_RECORD_V1',kind:'captures',recordedAt:at(n),input,report,inputFingerprint:paperFingerprint(input),reportFingerprint:paperFingerprint(report)},path=frame(n).path;mkdirSync(dirname(resolve(root,path)),{recursive:true});writeFileSync(resolve(root,path),JSON.stringify(record));
+ }});input.origin=origin;const report=normalizeGuidanceCapture(input),record={version:'OPTIONS_GUIDANCE_RECORD_V1',kind:'captures',recordedAt:at(n),input,report,inputFingerprint:paperFingerprint(input),reportFingerprint:paperFingerprint(report)},path=frame(n).path;mkdirSync(dirname(resolve(root,path)),{recursive:true});writeFileSync(resolve(root,path),JSON.stringify(record));
 }
 await test('registration, idempotent recording, actual adapter lifecycle and copied-only recovery',()=>temp(async root=>temp(async copy=>{
  saveGuidanceSettings(root,settings());const r=registerTrendStudy(root,'forward-test',registered);verifyTrendRecord(root,r.path);assert.throws(()=>registerTrendStudy(root,'duplicate-test',registered),/COHORT_ALREADY_ACTIVE/);
@@ -110,5 +112,83 @@ await test('browser request helper can record saved evidence through the protect
 await test('corrupt research store reports failure without blocking canonical publication caller',()=>temp(async root=>{
  const dir=resolve(root,'data/runtime/options-trend-study/broken-study');mkdirSync(dir,{recursive:true});writeFileSync(resolve(dir,'registration.json'),'{');
  const result=observeTrendStudiesSafely(root,registered);assert.equal(result.status,'FAILED');assert.equal(result.error,'TREND_STUDY_LOCAL_FAILURE');assert.equal(result.sourceReads,0);assert.deepEqual(result.results,[]);
+}));
+const observation=i=>trendObservationDiagnostics(i).assets[1];
+await test('opening baseline alone is insufficient observation without rewriting the frozen no-entry report',()=>{
+ const s=source({count:12});s.requestedAt=s.receivedAt=date+'T14:30:01.000Z';
+ const i={study:study(),date,at:date+'T21:00:00.000Z',events:[{at:date+'T14:30:02.000Z',source:s,audit:null,frame:null}]};
+ const before=paperFingerprint(assessTrendDay(i)),o=observation(i);assert.equal(ibit(i).status,'NO_ENTRY');
+ assert.equal(o.classification,'INSUFFICIENT_OBSERVATION');assert.equal(o.coverage.required,47);assert.equal(o.coverage.timely,0);assert.equal(o.coverage.missing.length,47);assert.equal(paperFingerprint(assessTrendDay(i)),before);
+});
+function noSignalDay(flags=false){
+ const i={study:study(),date,at:date+'T21:00:00.000Z',events:[]};
+ for(let count=14;count<=60;count++){
+  const s=source({count,flags});for(const b of bars(s).slice(12)){b.open_price=b.close_price='43.12';b.high_price='43.125';b.low_price='43.115';b.volume=100;}
+  const end=Date.parse(s.request.end_time);s.requestedAt=s.receivedAt=new Date(end+1000).toISOString();
+  i.events.push({at:new Date(end+2000).toISOString(),source:s,audit:null,frame:null});
+ }
+ return i;
+}
+await test('full timely no-signal coverage differs from late downloads, unknown flags and a missed close',()=>{
+ const i=noSignalDay(),complete=observation(i);assert.equal(complete.classification,'FULLY_OBSERVED_NO_SIGNAL');assert.equal(complete.coverage.timely,47);
+ const missed=structuredClone(i);missed.events.splice(20,1);assert.equal(observation(missed).classification,'INSUFFICIENT_OBSERVATION');assert.equal(observation(missed).coverage.missing.length,1);
+ const late=structuredClone(i);late.events=[late.events.at(-1)];assert.equal(observation(late).coverage.timely,1);assert.equal(observation(late).classification,'INSUFFICIENT_OBSERVATION');
+ assert.equal(observation(noSignalDay(null)).coverage.timely,0);assert.equal(observation(noSignalDay(null)).classification,'INSUFFICIENT_OBSERVATION');
+ const revise=structuredClone(i);bars(revise.events[1].source)[0].volume++;assert.equal(observation(revise).classification,'INSUFFICIENT_OBSERVATION');assert.ok(observation(revise).coverage.qualityCodes.includes('SOURCE_REVISIONS_OR_AUDIT_CONFLICT'));
+});
+await test('blocked first signals and expired entry windows have separate denominators',()=>{
+ const i=input();i.events[0].source=source({flags:null});assert.equal(observation(i).classification,'SIGNAL_BLOCKED');
+ const j=input();j.at=at(400);assert.equal(observation(j).classification,'ENTRY_NOT_OBSERVED');assert.equal(observation(j).exit.netPnlCents,null);
+});
+await test('entry and repeated source clocks cannot be labelled independent exit observations',()=>{
+ const i=input();i.events.push(event(4,source(),frame(3)));i.at=at(4);let o=observation(i);
+ assert.equal(o.exit.latestSelectedQuoteAt,at(3));assert.equal(o.exit.independentQuoteAt,null);assert.equal(o.classification,'OPEN_UNRESOLVED');assert.equal(o.exit.monitoringInterrupted,false);
+ const f=frame(20,{bid:220,ask:225});f.quotes[0].updatedAt=at(3);i.events.push(event(21,source(),f));i.at=at(21);o=observation(i);
+ assert.equal(o.exit.independentQuoteAt,null);assert.ok(o.exit.latestRejectionCodes.includes('CONFLICTING_SOURCE_UPDATE'));assert.equal(o.exit.modeledExitAt,null);
+});
+await test('current read-only clock exposes stale monitoring and overdue exit without mutating saved input',()=>{
+ const i=input();i.events.push(event(4,source(),frame(3)),event(24,source(),frame(23)));i.at=at(24);const before=JSON.stringify(i);
+ let o=observation(i);assert.equal(o.exit.independentQuoteAt,at(23));assert.equal(o.exit.monitoringInterrupted,false);
+ o=trendObservationDiagnostics(i,date+'T19:41:00.000Z').assets[1];assert.equal(o.exit.monitoringInterrupted,true);assert.equal(o.exit.overdueUnresolved,true);assert.equal(o.exit.netPnlCents,null);assert.equal(JSON.stringify(i),before);
+});
+await test('later time-exit evidence uses its real receipt and retains the unobserved price path',()=>{
+ const i=input(),n=(Date.parse(date+'T19:50:00.000Z')-Date.parse(at(0)))/1000;
+ i.events.push(event(4,source(),frame(3)),event(n+1,source(),frame(n)));i.at=at(n+1);const o=observation(i);
+ assert.equal(o.classification,'CLOSED_MODELED');assert.equal(o.exit.reason,'TIME_EXIT');assert.equal(o.exit.modeledExitAt,date+'T19:50:00.000Z');assert.equal(o.exit.plannedAt,date+'T19:40:00.000Z');assert.equal(o.exit.lateExitSeconds,600);assert.equal(o.exit.pathUnknown,true);assert.equal(o.exit.actualFeesKnown,false);
+});
+await test('contract explanation preserves ranking and distinguishes filtering from selection and scenarios',()=>{
+ const i=input(),q=i.events[0].frame.quotes[0];i.events[0].frame.quotes.push({...q,id:uid(11),delta:0.4,bidCents:110,askCents:115});
+ const o=observation(i);assert.equal(o.candidates[0].selected,true);assert.equal(o.candidates[1].selected,false);assert.equal(o.candidates[1].screening,'PASSED_FILTERS');assert.equal(o.candidates[0].premiumAtAskCents,15000);assert.equal(o.candidates[0].preExpiryScenario,'NOT_ASSESSED');assert.equal(o.candidates[0].strategyBenefit,'NOT_ESTABLISHED');
+});
+await test('dated nominal schedules preserve disabled cadence, event uncertainty, holidays and early closes',()=>{
+ const c={state:'AVAILABLE',sources:[],events:[]};
+ assert.deepEqual(paperCollectionSchedule(date,registered,c).wakes.filter(w=>w.basis==='ROUTINE').map(w=>w.localTime),['15:50']);
+ assert.equal(paperCollectionSchedule('2026-09-19',registered,c).wakes.length,0);
+ assert.equal(paperCollectionSchedule('2026-11-27',registered,c).wakes.some(w=>w.basis==='ROUTINE'),false);
+ assert.ok(paperCollectionSchedule(date,registered,{...c,state:'STALE'}).wakes.some(w=>w.basis==='EVENT_UNCONFIRMED'));
+ const early=trendObservationWindow(study(),'2026-11-27');assert.equal(early.endAt,'2026-11-27T16:50:00.000Z');assert.equal(early.timeExitAt,'2026-11-27T17:40:00.000Z');
+});
+await test('existing Host source includes active trend identities within the shared limit and drops closed plans',()=>temp(async root=>{
+ saveGuidanceSettings(root,settings());registerTrendStudy(root,'forward-test',registered);recordRobinhoodEtfBars(root,source(),at(1));
+ await saveMarket(root,1,'1.45','1.50','HOST_MARKET_TOOL_RESPONSES');observeTrendStudies(root,at(2));
+ const t=trendStudyTracking(root,at(2),[]),q=t.trackedContracts[0];assert.equal(t.rows[0].status,'INCLUDED');assert.equal(t.trackedContracts.length,1);
+ const full=Array.from({length:6},(_,j)=>({...q,id:uid(100+j)}));assert.equal(trendStudyTracking(root,at(2),full).rows[0].status,'CAPACITY_WAIT');assert.deepEqual(trendStudyTracking(root,at(2),full).trackedContracts,full);
+ assert.equal(trendStudyTracking(root,at(2),[q]).rows[0].status,'SHARED_EXISTING_ID');assert.equal(trendStudyTracking(root,at(2),[{...q,strike:'99'}]).rows[0].status,'IDENTITY_CONFLICT');
+ const host=await runGuidanceCommand(['--host-source'],{workspaceRoot:root,now:()=>at(2)});assert.equal(host.trackedContracts,1);assert.ok(host.source.includes(q.id));assert.equal(host.trendTracking[0].status,'INCLUDED');
+ assert.equal(trendStudyTracking(root,at(400),[]).rows[0].status,'ENTRY_WINDOW_ENDED');
+ await saveMarket(root,3,'1.45','1.50','HOST_MARKET_TOOL_RESPONSES');observeTrendStudies(root,at(4));assert.equal(trendStudyTracking(root,at(400),[]).trackedContracts.length,1);
+ await saveMarket(root,23,'2.20','2.25','HOST_MARKET_TOOL_RESPONSES');observeTrendStudies(root,at(24));assert.equal(trendStudyTracking(root,at(24),[]).trackedContracts.length,0);
+}));
+await test('synthetic plans never become Host tracking; read-only view preserves record bytes and renders new diagnostics',()=>temp(async root=>{
+ saveGuidanceSettings(root,settings());registerTrendStudy(root,'forward-test',registered);recordRobinhoodEtfBars(root,source(),at(1));await saveMarket(root,1);observeTrendStudies(root,at(2));await saveMarket(root,3);const pass=observeTrendStudies(root,at(4));
+ const path=resolve(root,pass.results[0].path),before=readFileSync(path,'utf8'),v=trendStudyView(root,date+'T19:41:00.000Z');assert.equal(v.tracking.rows[0].status,'SYNTHETIC_NOT_HOST_TRACKED');assert.equal(v.studies[0].days[0].observation.assets[1].exit.overdueUnresolved,true);assert.equal(v.studies[0].collectionProposal.enabled,false);assert.equal(readFileSync(path,'utf8'),before);
+ const html=trendStudyPanel({data:v});assert.ok(html.includes('accepted independent quote after entry'));assert.ok(html.includes('NOT ASSESSED'));assert.ok(html.includes('Time exit is overdue'));assert.ok(html.includes('frequency proposal disabled'));assert.ok(!html.includes('<p>Independent quote '));
+}));
+await test('an unresolved prior-session entry can consume a fresh later-session exit without backdating or reopening closures',()=>temp(async root=>{
+ saveGuidanceSettings(root,settings());registerTrendStudy(root,'forward-test',registered);recordRobinhoodEtfBars(root,source(),at(1));await saveMarket(root,1);observeTrendStudies(root,at(2));await saveMarket(root,3);observeTrendStudies(root,at(4));
+ const closedClock=date+'T21:00:00.000Z';observeTrendStudies(root,closedClock);const before=trendStudyView(root,closedClock).studies[0].days[0];assert.equal(before.report.assets[1].status,'OPEN_UNRESOLVED');const bytes=readFileSync(resolve(root,before.path),'utf8');
+ const n=3*86400+23;await saveMarket(root,n);const pass=observeTrendStudies(root,at(n+1));assert.ok(pass.results.every(r=>r.error===null));
+ const after=trendStudyView(root,at(n+1)).studies[0].days[0];assert.equal(after.report.assets[1].status,'CLOSED_MODELED');assert.equal(after.report.assets[1].paper.fills[1].receivedAt,at(n));assert.equal(after.report.assets[1].paper.fills[1].reason,'TIME_EXIT');assert.equal(after.observation.assets[1].exit.pathUnknown,true);assert.equal(readFileSync(resolve(root,before.path),'utf8'),bytes);
+ await saveMarket(root,n+20,'2.20','2.25');observeTrendStudies(root,at(n+21));assert.equal(trendStudyView(root,at(n+21)).studies[0].days[0].path,after.path);
 }));
 console.log(`Prospective trend study: ${passed}/${passed} tests passed.`);

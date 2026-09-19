@@ -126,7 +126,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.reportedSpreads=await component(()=>reportedSpreadView(root,at),at);
     result.decisionCards=await component(()=>dailyDecisionCards(result),at);
     result.etfSetup=await component(()=>etfSetupView(root,result.guidance.data?.input,at),at);
-    result.trendStudy=await component(()=>trendStudyView(root,at),at);
+    result.trendStudy=await component(()=>trendStudyView(root,at,calendar.data,result.snapshotPaper.data?.observations?.trackedContracts),at);
     result.macroPlaybook=await component(()=>macroPlaybookView(root),at);
     return result;
   }

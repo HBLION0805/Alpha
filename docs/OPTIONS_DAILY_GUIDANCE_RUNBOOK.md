@@ -1,5 +1,107 @@
 # Daily news and GLD/IBIT guidance Host
 
+## September 19 15:50 routine repair — current operating instruction
+
+Owner approved repairing **only** the existing gld-ibit daily 09:00 context work
+and weekday 15:50 GLD/IBIT collection. Use `OPTIONS_DAILY_GUIDANCE_HOST_V4.json`
+and `status/routine-1550.json`. This supersedes older hourly/event/26-wake
+instructions below. The disabled 28-call feasibility diagnostic is rejected.
+Do not enable it, restore expired closes, create another job or change V1.
+
+The Git Host V4 file is a sanitized reference only. Actual local binding and full
+before/after configurations remain private; committing this file neither backs up
+nor restores the app scheduler. Do not apply the reference as an update payload.
+Git operations belong only to equipped development sessions, never scheduled
+market work. First natural acceptance remains PENDING_NATURAL_RUN until the
+window arrives. A later development session must check the saved receipts and
+existing browser page without repeating market requests. Record an uninspectable
+page as NOT_OBSERVED, not as a successful display. Use existing routine freshness
+rules; frozen minute-level V1's 60-second rule is not this acceptance criterion.
+
+The existing heartbeat uses the host's local timezone, currently verified as
+America/New_York (Windows Eastern Standard Time, including DST). Its weekly
+recurrence selects 12 wakes: seven 09:00 and five weekday 15:50. Confirm this
+timezone before collection; a timezone mismatch blocks market reads and needs
+Owner attention. App/host availability and allowance are still required.
+
+1. Record actual task-start time, then run `--route-ongoing` with the actual clock.
+   At 09:00 retain the fixed context refresh, attributed review, paper observation
+   and guidance publication. No market collection is authorized in this branch.
+2. At 15:50 require `marketCapture=true`, then `--begin-slot <route.slot>` once.
+   The route now uses the existing reviewed 2026 calendar: holiday, already-closed
+   early-close day and unknown year skip collection. A 13:00 close is **not**
+   moved to 12:50. An existing claim forbids another acquisition even after failure.
+   The actual routine route expires at 16:00; missed windows remain missing.
+   A skip records its actual reason; it is not a successful capture.
+3. Before sources, check current capture count/bytes against existing limits:
+   200 capture records per UTC storage date, 1,000 total research captures,
+   8 MiB per capture and 64 MiB aggregate copied snapshot sources. September 19
+   preflight fits one normal capture; this is not unlimited future capacity.
+   Preserve old files and limits. If there is no room, stop acquisition and report
+   the actual capacity block. Do not prune history to make a read pass.
+4. Run the existing `--host-source` collector first, ahead of slower public work.
+   Keep its six tracked identities, 24-call and 36-option-quote limits. Use only
+   the four named market read tools below. Check actual New York time before each
+   tool invocation; do not start a request at or after 16:00. An already pending
+   response may finish later: preserve that late clock and mark its limitation.
+   Count actual tool invocations separately from returned rows and local writes;
+   a local guard rejection is not a provider invocation. Never retry acquisition
+   to hide partial responses, absent IDs, source lag or a future source clock.
+5. Save exact raw input under `data/runtime/options-daily-guidance-inputs`, use
+   `--record`, then `--verify`. Inspect automatic paper observation output and
+   run `--observe-paper` before publishing. Completed rehearsals stay closed;
+   no registration, invented fill or strict trend qualification is authorized.
+6. Refresh the existing attributed analysis against this saved capture, publish
+   and verify; read `--decision-cards` and `--delivery-health`. Use the existing
+   Daily guidance page's Reload saved data button. Match the displayed capture
+   clock and IDs/coverage with the saved capture and `/api/state` guidance input.
+   API availability and a rendered page are different acceptance stages.
+
+For the first natural window, save an append-only receipt under
+`data/runtime/options-workbench-development/routine-1550-runs/` and point
+`docs/status/routine-1550.json` to it. This is an operational receipt, not a new
+framework. Include scheduled NY/UTC window; actual task start and exclusive claim;
+actual request/response clocks and tool-call counts; selected/returned/missing
+quote IDs; unchanged source timestamps and age at receipt; future/second-precision
+clock issues; raw and verified record paths/hashes; automatic paper result/errors;
+published report and market fingerprint; API capture clock/IDs; browser observation
+time, displayed capture clock/coverage, and actual page check result. Record each
+stage as PASSED, FAILED, SKIPPED or NOT_OBSERVED with its own evidence. Use the
+existing freshness rules; do not call returned quotes fresh merely because saved.
+If the task never started, preserve the missing window on the next natural wake;
+do not invent a claim or request in the past. A stale/partial sample may still be
+displayed with its existing warnings. Until these natural receipts exist, report
+**repair complete, awaiting first natural run**. Local copied-data tests do not
+fulfil that acceptance. No dollar source fee has been verified.
+
+## September 19 installed schedule and feasibility finding
+
+Installed gld-ibit was read at 22:47:35.426 UTC: ACTIVE, 09:00 daily only. Its
+prompt still names hourly/15:50/event coverage; that is not installed recurrence.
+Cause is unknown. The actual 09:00 ongoing route does not collect market quotes.
+Do not infer execution from Host V3 or the next nominal wake; do not silently
+change the automation. See [feasibility](OPTIONS_SOURCE_FEASIBILITY_DELIVERY.md)
+for evidence, the C conclusion, capacity counts and one disabled prospective
+proposal. No source frequency is authorized here. Existing actual-time routing
+and exclusive claims still govern any actual wake.
+
+## September 19 focused observation repair
+
+`--host-source` now also reports `trendTracking`. Existing event research and
+explicitly enrolled paper identities retain priority; actual-source frozen trend
+selections share unused capacity within the same six tracked IDs, 24 calls and
+36 quotes. Capacity waits, identity conflicts, expired entry windows and synthetic
+exclusion are explicit. A tracked identity is a request preference, not a returned
+quote or a fill. Closed studies are not restarted. Use the generated collector
+unchanged and retain its failed/missing identities.
+
+The trend desk now distinguishes missing prospective observations from a fully
+observed no-signal window, and entry quotes from accepted later exit observations.
+These are current read-only diagnostics; saved V1 reports remain unchanged.
+The cadence requirements preview is disabled, not a new schedule or authorization.
+Continue the existing actual-time route, exclusive claim, record/verify and
+observe-paper workflow. No additional source call or timer is requested here.
+
 ## September 16 restart — current operating instruction
 
 The Owner approved the narrowed daily-decision milestone. The app reported the

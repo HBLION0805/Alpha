@@ -2,7 +2,7 @@ import type { GuidanceEvent } from '../../contracts/OptionsDailyGuidance';
 import { guidanceLocal } from '../options-daily-guidance/OptionsGuidanceClock';
 import { guidanceFixedMinutes, guidancePaperMinutes, GUIDANCE_EVENT_MINUTES, isGuidanceMajorEvent } from '../options-daily-guidance/OptionsGuidanceSchedule';
 import { snapshotNs, validateSnapshotPlan, type SnapshotPlan } from './RobinhoodSnapshotPaper';
-import { paperSession } from './RobinhoodPaperSession';
+import { paperSession, type PaperChainSession } from './RobinhoodPaperSession';
 
 export interface PaperCollectionCalendar {
   state:'AVAILABLE'|'STALE'|'UNAVAILABLE';
@@ -15,11 +15,11 @@ const instant=(date:string,minute:number)=>{
 };
 const localTime=(minute:number)=>String(Math.floor(minute/60)).padStart(2,'0')+':'+String(minute%60).padStart(2,'0');
 
-/** Nominal capture planning only; no source calls, enrollment or fill inference. */
-export function assessPaperCollectionPlan(plan:SnapshotPlan,at:string,calendar:PaperCollectionCalendar) {
-  const p=validateSnapshotPlan(plan),now=snapshotNs(at),start=snapshotNs(p.decisionAt),deadline=snapshotNs(p.entryDeadlineAt),exit=snapshotNs(p.timeExitAt);
+/** Shared dated schedule preview; configuration never proves a source receipt. */
+export function paperCollectionSchedule(date:string,at:string,calendar:PaperCollectionCalendar,chain?:PaperChainSession) {
+  const now=snapshotNs(at);
   if(!calendar||!['AVAILABLE','STALE','UNAVAILABLE'].includes(calendar.state)||!Array.isArray(calendar.events)||calendar.events.length>100)throw Error('SNAPSHOT_PAPER_COLLECTION_CALENDAR');
-  const session=paperSession(p.decisionAt,p.contract.chainSession),date=session.date;
+  const session=paperSession(instant(date,570),chain);
   const events=calendar.events.filter(e=>{
     snapshotNs(e.startDate+'T00:00:00Z');snapshotNs(e.endDate+'T00:00:00Z');
     if(e.endDate<e.startDate)throw Error('SNAPSHOT_PAPER_COLLECTION_CALENDAR');
@@ -30,9 +30,17 @@ export function assessPaperCollectionPlan(plan:SnapshotPlan,at:string,calendar:P
   const wakes=minutes.filter(m=>session.knownYear&&!session.holiday&&m<session.closeMinute&&m>=570).map(minute=>{
     const wakeAt=instant(date,minute),clock=snapshotNs(wakeAt),routine=fixed.includes(minute);
     const basis=routine?'ROUTINE':paper.includes(minute)?'PAPER_REHEARSAL':eventState==='LISTED_EVENT_DAY'?'EVENT_CONDITIONAL':eventState==='UNCONFIRMED'?'EVENT_UNCONFIRMED':'EVENT_NOT_LISTED';
-    return {wakeAt,localTime:localTime(minute),basis,entryWake:clock>start&&clock<=deadline,timeExitWake:clock>=exit,
-      atDecisionBoundary:clock===start,alreadyPassed:clock<=now};
+    return {wakeAt,localTime:localTime(minute),basis,alreadyPassed:clock<=now};
   });
+  return {session,events,eventState,wakes};
+}
+
+/** Nominal capture planning only; no source calls, enrollment or fill inference. */
+export function assessPaperCollectionPlan(plan:SnapshotPlan,at:string,calendar:PaperCollectionCalendar) {
+  const p=validateSnapshotPlan(plan),now=snapshotNs(at),start=snapshotNs(p.decisionAt),deadline=snapshotNs(p.entryDeadlineAt),exit=snapshotNs(p.timeExitAt);
+  const date=guidanceLocal(p.decisionAt).date;
+  const {session,events,eventState,wakes:scheduled}=paperCollectionSchedule(date,at,calendar,p.contract.chainSession);
+  const wakes=scheduled.map(w=>{const clock=snapshotNs(w.wakeAt);return {...w,entryWake:clock>start&&clock<=deadline,timeExitWake:clock>=exit,atDecisionBoundary:clock===start};});
   const usable=wakes.filter(w=>['ROUTINE','PAPER_REHEARSAL','EVENT_CONDITIONAL'].includes(w.basis));
   const entry=usable.filter(w=>w.entryWake),exits=usable.filter(w=>w.timeExitWake);
   // Two independent observations are required; a single wake cannot count twice.

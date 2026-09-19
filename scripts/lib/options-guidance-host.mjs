@@ -1,4 +1,5 @@
 import {guidanceFixedMinutes,guidancePaperMinutes} from '../../src/engines/options-daily-guidance/OptionsGuidanceSchedule.ts';
+import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 
 /** Runs only in the authorized Host with injected market tools; no credentials here. */
 export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
@@ -67,6 +68,11 @@ export function routeDailyGuidance(at,{ongoing=false}={}) {
   const close=!ongoing&&closes.includes(date)&&hour*60+minute>=980&&hour*60+minute<1080;
   const daily=hour===9&&minute<20,news=minute>=20&&minute<50;
   const paper=ongoing&&weekday&&guidancePaperMinutes(date).includes(hour*60+20)&&minute>=20&&minute<50;
-  const market=paper||weekday&&guidanceFixedMinutes(date).includes(hour*60+50)&&minute>=50;
-  return {version:"OPTIONS_GUIDANCE_ROUTE_V1",at,date,hour,slot:date+"-"+String(hour).padStart(2,"0")+(daily?"00":minute>=50?"50":"20"),dailyContext:daily,refreshNews:news||daily,marketCapture:market,closeCapture:close,publish:news||daily||market,restoreAfterClose:close&&date==="2026-09-16",pastCloseWindow:!ongoing&&(date>"2026-09-16"||date==="2026-09-16"&&hour*60+minute>=1080),developmentEnabled:false,executionAllowed:false};
+  const requested=paper||weekday&&guidanceFixedMinutes(date).includes(hour*60+50)&&minute>=50;
+  // Only current ongoing collection uses this calendar gate. Historical routes
+  // keep their original behavior; an early close is skipped, never rescheduled.
+  const session=ongoing?paperSession(new Date(at).toISOString(),undefined):null;
+  const market=requested&&(!session||session.isOpen);
+  const skipReason=requested&&session&&!session.isOpen?(!session.knownYear?'SESSION_CALENDAR_UNKNOWN':session.holiday?'SESSION_HOLIDAY':session.earlyClose?'SESSION_EARLY_CLOSE':'OUTSIDE_REGULAR_SESSION'):null;
+  return {version:"OPTIONS_GUIDANCE_ROUTE_V1",at,date,hour,slot:date+"-"+String(hour).padStart(2,"0")+(daily?"00":minute>=50?"50":"20"),dailyContext:daily,refreshNews:news||daily,marketCapture:market,...(ongoing?{marketCaptureRequested:requested,marketCaptureSkipReason:skipReason,marketSession:session}:{}),closeCapture:close,publish:news||daily||market,restoreAfterClose:close&&date==="2026-09-16",pastCloseWindow:!ongoing&&(date>"2026-09-16"||date==="2026-09-16"&&hour*60+minute>=1080),developmentEnabled:false,executionAllowed:false};
 }

@@ -1,0 +1,52 @@
+{
+  "version": "OPTIONS_DAILY_GUIDANCE_HOST_V4",
+  "publication": "SANITIZED_REFERENCE_ONLY_NOT_APPLYABLE_CONFIGURATION",
+  "automationId": "gld-ibit",
+  "timezone": "America/New_York",
+  "schedule": {
+    "dailyContext": "09:00 every day",
+    "routineMarket": "15:50 Monday through Friday, subject to the existing reviewed session calendar",
+    "weeklyWakes": 12,
+    "routineWindowEndsLocal": "16:00"
+  },
+  "scope": {
+    "symbols": [
+      "GLD",
+      "IBIT"
+    ],
+    "maximumToolCallsPerCapture": 24,
+    "maximumSelectedOptionQuotesPerCapture": 36,
+    "maximumSharedTrackedIds": 6,
+    "marketTools": [
+      "get_equity_quotes",
+      "get_option_chains",
+      "get_option_instruments",
+      "get_option_quotes"
+    ],
+    "unknownCalendarDates": "SKIP",
+    "holidays": "SKIP",
+    "alreadyClosedEarlyCloseDays": "SKIP_WITHOUT_RESCHEDULING"
+  },
+  "operationalRequirements": [
+    "Actual-time --route-ongoing and an exclusive existing slot claim",
+    "Preserve daily 09:00 context work",
+    "Use the existing --host-source collector and existing storage limits",
+    "Save and verify original receipts with actual source/request/receipt clocks",
+    "Observe existing paper plans before attributed analysis and publication; do not enroll or restart",
+    "Separate configuration, start, calls/rows/writes, freshness, persistence, API and browser acceptance",
+    "No Git operations in the daily automation; browser acceptance and result commit/push require an equipped development session",
+    "No frequency expansion, rejected diagnostic, account/order access or changes to frozen V1/capital/risk"
+  ],
+  "privateBinding": "Installed prompt, exact recurrence, local workspace path, task identity, notification settings and full before/after readbacks remain only in ignored private storage. No private binding is embedded in this reference.",
+  "recovery": {
+    "method": "In an Owner-authorized development session, inspect the current actual automation and the private before/after snapshots. Use the app automation_update tool, preserving identity, task binding and notification settings. To remove this repair, restore only daily 09:00 and explicitly disable routine market reads in the prompt. Read back the installed result.",
+    "privateSnapshots": [
+      "data/runtime/options-workbench-development/routine-1550-automation-before.toml",
+      "data/runtime/options-workbench-development/routine-1550-automation-after.toml",
+      "data/runtime/options-workbench-development/routine-1550-host-v4-private-prepublication.json"
+    ],
+    "doesGitRestoreInstalledAutomation": false,
+    "applyThisFileDirectly": false
+  },
+  "executionAllowed": false
+}

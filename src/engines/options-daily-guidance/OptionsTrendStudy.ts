@@ -63,6 +63,17 @@ const price = (n: bigint) => `${n/1000000n}.${(n%1000000n).toString().padStart(6
 const sum = (a: bigint[]) => a.reduce((x,y)=>x+y,0n);
 const numericBar = (b: EtfResearchBar) => [b.start,b.end,b.open,b.high,b.low,b.close,b.volume].join('|');
 
+/** Shared V1 clock boundaries; the 70-minute early-close reserve is frozen V1 behavior. */
+export function trendObservationWindow(study: TrendStudy, date: string) {
+  const rules=study.rules, session=paperSession(trendNyClock(date,570),undefined);
+  return {openingAt:trendNyClock(date,570), baselineEndAt:trendNyClock(date,630),
+    startAt:trendNyClock(date,rules.entryStartMinute),
+    endAt:trendNyClock(date,Math.min(rules.entryEndMinute,session.closeMinute-70)),
+    timeExitAt:trendNyClock(date,session.closeMinute-rules.exitBeforeCloseMinutes),
+    intervalSeconds:300, maximumLatencySeconds:rules.maximumLatencySeconds,
+    entryWindowSeconds:rules.entryWindowSeconds};
+}
+
 function signalFrom(bars: EtfResearchBar[], date: string, baseline: EtfResearchBar[]) {
   const closes = baseline.map(b=>etfMicroUsd(b.close)), slow=sum(closes), fast=sum(closes.slice(-3));
   const direction=fast*12n>slow*3n&&closes[11]!*3n>fast?'BULLISH':fast*12n<slow*3n&&closes[11]!*3n<fast?'BEARISH':null;
@@ -131,7 +142,7 @@ export function assessTrendDay(input: TrendDayInput) {
   const audits=input.events.map(e=>e.audit?compareRobinhoodEtfBars(e.audit,e.at):null);
   const frames:SnapshotFrame[]=[];
   for(const e of input.events)if(e.frame){const prior=frames.find(f=>f.path===e.frame!.path);if(prior&&paperFingerprint(prior)!==paperFingerprint(e.frame))fail('FRAME_CONFLICT');if(!prior)frames.push(e.frame);}
-  const session=paperSession(trendNyClock(input.date,570),undefined),end=trendNyClock(input.date,Math.min(870,session.closeMinute-70)),exitAt=trendNyClock(input.date,session.closeMinute-20);
+  const window=trendObservationWindow(s,input.date),end=window.endAt,exitAt=window.timeExitAt;
   const assets=(['GLD','IBIT'] as const).map(symbol=>{
     let baseline:EtfResearchBar[]|null=null,baselineAt:string|null=null,summary:ReturnType<typeof signalFrom>['summary']|null=null;
     let decision:{at:string;signal:NonNullable<ReturnType<typeof signalFrom>['signal']>;blockers:string[];candidates:ReturnType<typeof contractRows>;plan:SnapshotPlan|null}|null=null;
@@ -186,4 +197,54 @@ export function assessTrendDay(input: TrendDayInput) {
     outcomeMeaning:'Independent one-contract paper scenarios with estimated fees; not a funded portfolio, qualified execution or causal proof.',
     collectionGap:'Current saved-source schedule does not guarantee five-minute ETF observations or minute-by-minute option exits. Missing windows stay missing.',
     sourceQualified:false,strategyValidated:false,winProbability:null,executionAllowed:false};
+}
+
+/** Read-only current diagnostics. Never serialized into, or substituted for, frozen V1 reports. */
+export function trendObservationDiagnostics(input: TrendDayInput, at=input.at) {
+  if(clock(at)<clock(input.at))fail('CLOCK_REGRESSION');
+  const report=assessTrendDay({...input,at}),window=trendObservationWindow(input.study,input.date);
+  const slots:string[]=[];
+  for(let t=clock(window.startAt);t<=clock(window.endAt);t+=window.intervalSeconds*1000)slots.push(new Date(t).toISOString());
+  const due=slots.filter(t=>t<=at), elapsed=at>window.endAt;
+  const sources=input.events.map(e=>e.source?assessRobinhoodEtfBars(e.source,e.at):null);
+  const assets=report.assets.map(a=>{
+    const timely=new Set<string>();
+    for(const [i,e] of input.events.entries()){
+      const source=sources[i]?.assets.find(v=>v.symbol===a.symbol),check=a.checks[i];
+      // A later full-day download cannot fill earlier receipt windows. Unknowns and
+      // accumulated revisions stay disqualifying even when later snapshots look clean.
+      if(source&&check&&!check.codes.length&&slots.includes(source.windowEnd)&&
+          clock(e.at)>=clock(source.windowEnd)&&clock(e.at)-clock(source.windowEnd)<=window.maximumLatencySeconds*1000)
+        timely.add(source.windowEnd);
+    }
+    const missing=due.filter(t=>!timely.has(t));
+    const complete=elapsed&&missing.length===0&&due.length===slots.length;
+    const plan=a.decision?.plan,entry=a.paper?.fills.find(f=>f.kind==='ENTRY'),exit=a.paper?.fills.find(f=>f.kind==='EXIT');
+    const accepted=(a.paper?.diagnostics??[]).filter(d=>entry&&d.codes.length===0&&d.sourceAt&&
+      snapshotNs(d.receivedAt)>snapshotNs(entry.receivedAt)&&snapshotNs(d.sourceAt)>snapshotNs(entry.sourceAt));
+    const independent=accepted.at(-1)??null,latestDiagnostic=a.paper?.diagnostics.at(-1);
+    const quoteStale=!!entry&&!exit&&snapshotNs(at)-snapshotNs(independent?.sourceAt??entry.sourceAt)>BigInt(window.maximumLatencySeconds)*1000000000n;
+    const quoteRejected=!!entry&&!exit&&!!latestDiagnostic&&latestDiagnostic.receivedAt>entry.receivedAt&&latestDiagnostic.codes.length>0;
+    const classification=exit?'CLOSED_MODELED':entry?'OPEN_UNRESOLVED':plan?(at<=plan.entryDeadlineAt?'AWAITING_LATER_ENTRY_QUOTE':'ENTRY_NOT_OBSERVED'):a.decision?'SIGNAL_BLOCKED':at<window.startAt?'AWAITING_OBSERVATION_WINDOW':!elapsed?'OBSERVING':complete?'FULLY_OBSERVED_NO_SIGNAL':'INSUFFICIENT_OBSERVATION';
+    const dueExit=!!entry&&at>=window.timeExitAt;
+    const lateExitSeconds=exit?Math.max(0,(clock(exit.receivedAt)-clock(window.timeExitAt))/1000):null;
+    return {symbol:a.symbol,classification,coverage:{required:slots.length,due:due.length,timely:due.length-missing.length,missing,complete,
+        lastSourceReceiptAt:a.latestSource,lastBarEndAt:a.latestBar,qualityCodes:[...new Set(a.checks.flatMap(c=>c.codes))]},
+      exit:{entryAt:entry?.receivedAt??null,plannedAt:window.timeExitAt,latestSelectedQuoteAt:a.monitor.lastQuoteAt,
+        independentQuoteAt:independent?.sourceAt??null,independentReceiptAt:independent?.receivedAt??null,
+        latestRejectionCodes:latestDiagnostic?.codes??[],monitoringInterrupted:quoteStale||quoteRejected||a.monitor.unusableWhileOpen,
+        timeExitDue:dueExit,overdueUnresolved:dueExit&&!exit,modeledExitAt:exit?.receivedAt??null,modeledExitSourceAt:exit?.sourceAt??null,
+        reason:exit?.reason??null,lateExitSeconds,pathUnknown:a.monitor.pathGap,
+        netPnlCents:a.paper?.account.netPnlCents??null,actualFeesKnown:false},
+      entryDeadlineAt:plan?.entryDeadlineAt??null,
+      candidates:(a.decision?.candidates??[]).map((c,index)=>{
+        const economics=c.blockers.length?null:snapshotEntryEconomics(c.plan,c.contract);
+        return {id:c.contract.id,rank:index+1,screening:c.blockers.length?'REJECTED':'PASSED_FILTERS',selected:plan?.contract.id===c.contract.id,
+          quoteAgeSeconds:c.contract.updatedAt?(clock(a.decision!.at)-Date.parse(c.contract.updatedAt))/1000:null,
+          premiumAtAskCents:c.contract.askCents===null?null:c.contract.askCents*input.study.rules.quantity*c.contract.multiplier,
+          entryFeeEstimateCents:economics?.entryFeeCents??null,exitFeeReserveEstimateCents:economics?.exitFeeReserveCents??null,
+          exitAllowancePerShareCents:c.plan.exitSlippageCents,preExpiryScenario:'NOT_ASSESSED',strategyBenefit:'NOT_ESTABLISHED'};
+      })};
+  });
+  return {assessedAt:at,recordedAt:input.at,window,assets,sourceReads:0,executionAllowed:false};
 }

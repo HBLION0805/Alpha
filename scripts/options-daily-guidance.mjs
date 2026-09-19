@@ -7,7 +7,7 @@ import { recordGuidanceMarket, publishGuidance, recordAnalystNote, claimGuidance
 import { collectGuidanceMarket, routeDailyGuidance } from "./lib/options-guidance-host.mjs";
 import { activeEventResearchContracts } from "./lib/options-event-research-io.mjs";
 import { paperObservationView, observePaperPlans } from "./lib/options-paper-observation-io.mjs";
-import {observeTrendStudiesSafely} from './lib/options-trend-study-io.mjs';
+import {observeTrendStudiesSafely,trendStudyTracking} from './lib/options-trend-study-io.mjs';
 export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=()=>new Date().toISOString()}={}) {
   const root=realpathSync(workspaceRoot),[mode,arg]=args;
   if(args.length>2)throw Error("GUIDANCE_ARGUMENTS");
@@ -17,7 +17,10 @@ export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=(
     const at=now();let tracked=activeEventResearchContracts(root,at),paperTracking;
     try{const v=paperObservationView(root,undefined,at);tracked=v.trackedContracts;paperTracking=v.rows.map(({planId,state,tracking})=>({planId,state,tracking}));}
     catch(error){paperTracking={error:workbenchError(error)};}
-    return {source:tracked.length?`async function(params){return (${collectGuidanceMarket.toString()})({...params,trackedContracts:${JSON.stringify(tracked)}});}`:collectGuidanceMarket.toString(),trackedContracts:tracked.length,paperTracking};
+    let trendTracking;
+    try{const v=trendStudyTracking(root,at,tracked);tracked=v.trackedContracts;trendTracking=v.rows;}
+    catch(error){trendTracking={error:workbenchError(error)};}
+    return {source:tracked.length?`async function(params){return (${collectGuidanceMarket.toString()})({...params,trackedContracts:${JSON.stringify(tracked)}});}`:collectGuidanceMarket.toString(),trackedContracts:tracked.length,paperTracking,trendTracking};
   }
   if(mode==="--begin-slot"&&args.length===2)return claimGuidanceSlot(root,arg);
   if(mode==="--record"&&args.length===2){

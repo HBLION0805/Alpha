@@ -1,5 +1,59 @@
 # Alpha Development Standard v1.0
 
+## Authorized stage save and natural acceptance — September 19, 2026
+
+Owner authorized commit/push of the three focused repair deliveries on the current
+development branch, and a separate sanitized result commit after actual natural
+15:50 evidence exists. Git work is confined to equipped development sessions,
+never daily automation; no main merge, PR, force push, rebase/reset or unrelated
+publication. Host V4 in Git is a sanitized reference, not a backup or restore of
+the actual local automation. Preserve the installed schedule. Current status is
+PENDING_NATURAL_RUN; do not create a result commit for future or test data. Use
+existing routine freshness rules, retain UNKNOWN thresholds and distinguish all
+acceptance stages. Later page verification also requires an equipped development
+session. Earlier no-commit statements below describe historical task boundaries.
+
+## Routine 15:50 repair — September 19, 2026
+
+Owner accepts the earlier C finding and rejects its 28-call diagnostic. Only the
+existing gld-ibit daily 09:00 plus weekday 15:50 routine is authorized this turn.
+Read docs/OPTIONS_ROUTINE_1550_DELIVERY.md, docs/status/routine-1550.json and the
+top September 19 runbook section. Host V4 replaces the installed 09:00-only rule;
+do not restore all 26 wakes or hourly/event source calls from older instructions.
+The ongoing routine route now uses the existing reviewed session calendar and
+skips holidays, already-closed early-close days and unknown years. All original
+collector/storage limits and existing 09:00 work remain. No new natural capture
+has yet been observed: configuration, task start, acquisition, freshness,
+persistence and page consumption require separate evidence. No old paper restart,
+new experiment, V1 qualification, capital change, account/order access or paid
+service is authorized. Preserve the earlier feasibility audit and source conflicts.
+
+## Source and sampling feasibility — September 19, 2026
+
+Read docs/OPTIONS_SOURCE_FEASIBILITY_DELIVERY.md. Final-code validation was rerun
+after monitoring grace: 4,781 passed, zero failed. Current capability is C: source,
+cadence and storage cannot support frozen V1. Installed gld-ibit was found at 09:00
+daily only, inconsistent with intended Host V3; cause unknown. Do not treat nominal
+wakes as installed configuration or silently restore/change it. Four source
+conflicts and omitted flags remain. One weekend equity diagnostic verified only
+connectivity; no prospective window or cohort event was added. The one-off
+10:40–10:46 proposal is disabled and needs separate Owner authorization. Do not
+activate collection, refactor limits, replace V1 or register a cohort from this
+finding. Preserve historical evidence and completed engineering rehearsals.
+
+## Focused observation repair — September 19, 2026
+
+The Owner authorized the focused improvement file with no commit or push. Read
+docs/OPTIONS_FOCUSED_IMPROVEMENT_DELIVERY.md. Current trend coverage/exit diagnostics
+are read-only projections outside immutable V1 reports. A baseline-only NO_ENTRY
+is not a fully observed no-signal day. Selected actual-source trend contracts now
+share the existing Host six-ID bound after event and enrolled paper identities;
+capacity/conflicts remain explicit, synthetic plans never enter Host tracking.
+The 24-call/36-quote limits and all source schedules are unchanged. The frequency
+requirements preview is disabled and is not a collector. Do not activate it from
+a scheduled wake, backfill missed windows, or infer live validation from local
+tests. Original paper results, frozen rules, capital and canonical guidance remain.
+
 ## Owner psychology extension — September 19, 2026
 
 The second education batch extends Macro playbook to 50 entries, 17 bias questions
