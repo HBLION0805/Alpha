@@ -79,6 +79,15 @@ await test('theme/type/evidence filters compose and unknown queries do not guess
  assert.equal(readWorldModel({keyword:'nonexistent topic'}).items.length,0);
  for(const query of [{theme:'INVALID'},{knowledgeType:'CURRENT_STATE'},{evidenceStatus:'FACT'},{keyword:'a'.repeat(161)},{signal:'BUY'}])assert.throws(()=>readWorldModel(query),/QUERY_INVALID/);
 });
+await test('saved-news phrases retrieve approved mechanism details and equivalent BOJ name',()=>{
+ const spreads=readWorldModel({keyword:'crack spreads'});assert.deepEqual(spreads.items.map(i=>i.reviewLabel),['ME01']);
+ assert.equal(spreads.items[0].evidenceStatus,'CONDITIONAL_HYPOTHESIS');assert(spreads.items[0].details.counterforces.length);
+ assert.deepEqual(readWorldModel({keyword:'Bank of Japan'}),readWorldModel({keyword:'BOJ'}));
+ assert.deepEqual(readWorldModel({keyword:'BANK   OF JAPAN',knowledgeType:'HISTORICAL_FACT'}).items.map(i=>i.reviewLabel),['H02']);
+ assert.deepEqual(readWorldModel({keyword:'Bitcoin Core'}).items,[]);assert.deepEqual(readWorldModel({keyword:'fee changes'}).items,[]);
+ const c=structuredClone(runtime);c.guardrails[0].interpretation='uniqueguardrailphrase';c.sourceMap[0].savedCitation='uniquesourcephrase';
+ for(const keyword of ['uniqueguardrailphrase','uniquesourcephrase'])assert.deepEqual(lookupWorldModel(c,{keyword}).items,[]);
+});
 await test('guardrail interpretations are readable audit exclusions, never affirmative matches or inverse facts',()=>{
  assert.deepEqual(runtime.guardrails.filter(g=>g.disposition==='REJECT_FROM_RUNTIME').map(g=>g.reviewLabel),['R01','R02','R03','R04','R05','R06','R07','R08']);
  for(const g of runtime.guardrails){assert.equal(g.assertion,false);assert.equal(g.notInverseFact,true);assert(g.reason&&g.dossierRefs.length);}

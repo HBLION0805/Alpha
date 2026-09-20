@@ -1,4 +1,8 @@
 // Shared, bounded lookup only. No scoring, source reads, inference or state writes.
+// Search already-approved, displayed details; never source documents or guardrails.
+const detailText=value=>typeof value==='string'?[value]:Array.isArray(value)?value.flatMap(detailText):value&&typeof value==='object'?Object.values(value).flatMap(detailText):[];
+// One equivalent actor name, not news classification or an economic inference.
+const normalize=text=>text.toLowerCase().replace(/\bbank\s+of\s+japan\b/gu,'boj');
 export function lookupWorldModel(catalog,filters={}){
   if(!filters||typeof filters!=='object'||Array.isArray(filters))throw Error('WORLD_MODEL_QUERY_INVALID');
   const keys=['theme','keyword','knowledgeType','evidenceStatus'];
@@ -7,11 +11,11 @@ export function lookupWorldModel(catalog,filters={}){
   if(theme&&!catalog.themes.some(t=>t.themeId===theme))throw Error('WORLD_MODEL_QUERY_INVALID');
   if(knowledgeType&&!catalog.items.some(i=>i.knowledgeType===knowledgeType))throw Error('WORLD_MODEL_QUERY_INVALID');
   if(evidenceStatus&&![...catalog.items,...catalog.edges].some(i=>i.evidenceStatus===evidenceStatus))throw Error('WORLD_MODEL_QUERY_INVALID');
-  const terms=keyword.trim().toLowerCase().split(/\s+/u).filter(Boolean);
+  const terms=normalize(keyword).trim().split(/\s+/u).filter(Boolean);
   const match=(item,isEdge=false)=>{
     const themes=isEdge?[item.fromTheme,item.toTheme]:[item.themeId,...item.themeLinks];
     if(theme&&!themes.includes(theme)||knowledgeType&&(isEdge||item.knowledgeType!==knowledgeType)||evidenceStatus&&item.evidenceStatus!==evidenceStatus)return false;
-    const text=[item.title,item.statement,...(item.aliases??[]),catalog.themes.find(t=>t.themeId===(isEdge?item.fromTheme:item.themeId))?.title].join(' ').toLowerCase();
+    const text=normalize([item.title,item.statement,...(item.aliases??[]),...detailText(item.details),catalog.themes.find(t=>t.themeId===(isEdge?item.fromTheme:item.themeId))?.title].join(' '));
     return terms.every(term=>text.includes(term));
   };
   // Guardrails are separately labelled audit data, never affirmative search hits.
