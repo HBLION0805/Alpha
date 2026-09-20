@@ -8,6 +8,7 @@ import { readinessClock } from '../../src/engines/options-readiness/OptionsReadi
 import { assessCandidateChecks } from '../../src/engines/options-daily-guidance/OptionsCandidateChecks.ts';
 import {assessEventEntry} from '../../src/engines/options-daily-guidance/OptionsEventEntry.ts';
 import {sourcePlanOptions} from './options-source-comparison.mjs';
+import {expectationForPlan} from './options-market-expectation-io.mjs';
 
 export function eventEntryContexts(state){
   const calendar=(state.calendar?.data?.groups??[]).flatMap(g=>[...g.dateOnlyEntries,...g.scheduledTimeEntries]).map(e=>({key:e.source+':'+e.sourceKey,title:e.title,source:e.source,scheduledAt:e.scheduledAt??null,receivedAt:state.calendar.data.sources?.[e.source==='BLS'?'bls':'fomc']?.lastKnownReceivedAt??null}));
@@ -17,6 +18,11 @@ export function eventEntryContexts(state){
     if(p.kind==='FROZEN')return {...p,symbol:p.contract.symbol,calendar};
     const record=state.manual.data.planRecords.find(e=>'draft:'+e.command.requestId===p.key),f=record.command.draft.fields;
     return {...p,symbol:f.symbol,calendar,plan:{...p.plan,declaredAt:f.declaredAt,maxContracts:f.maxContracts?Number(f.maxContracts):null,maxEntryDebitUsd:f.maxEntryDebitUsd,plannedRiskUsd:f.plannedRiskUsd,targetNetProfitUsd:f.targetNetProfitUsd,stopPremiumUsd:f.stopPremiumUsd||null,entryDeadlineAt:f.entryDeadlineAt||null,timeExitAt:f.timeExitAt||null}};
+  }).map(p=>{
+    // Only newly prepared drafts or explicitly linked plans acquire this requirement.
+    // Old frozen plans and their copied reports retain their original semantics.
+    if(p.kind==='DRAFT'||p.plan.invalidation?.expectationSnapshot)return {...p,expectation:expectationForPlan(p.plan,state.marketExpectations?.data?.records??[],state.loadedAt,p.kind==='FROZEN'?p.registeredAt:null,p.openedAt)};
+    return p;
   });
 }
 export function eventEntryPlanViews(state){return eventEntryContexts(state).map(ctx=>({...assessEventEntry(ctx,state.loadedAt,state.guidance?.data?.input?.calendarAvailable===true),tradeId:ctx.tradeId,symbol:ctx.symbol}));}

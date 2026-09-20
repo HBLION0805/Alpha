@@ -17,22 +17,23 @@ const time=v=>{try{return snapshotNs(v);}catch{fail('CLOCK');}};
 const arr=(v,max=12)=>{if(!Array.isArray(v)||v.length>max)fail('BOUND');return v;};
 const uniq=v=>[...new Set(v)];
 const pathFor=(kind,key)=>BASE+'/source-'+kind+'-'+id(key)+'.json';
-function files(root){
+export function sourceRecordFiles(root){
   let dir=root;for(const bit of BASE.split('/')){dir=resolve(dir,bit);if(!existsSync(dir))return [];const s=lstatSync(dir);if(!s.isDirectory()||s.isSymbolicLink())fail('DIRECTORY');}
   const list=readdirSync(dir,{withFileTypes:true});if(list.length>500||list.some(f=>!f.isFile()||f.isSymbolicLink()))fail('CATALOG');return list.map(f=>f.name);
 }
 export function readSourceRecord(root,path){
-  if(typeof path!=='string'||!/^data\/runtime\/options-macro-comparisons\/source-(?:package|draft|saved)-[a-z0-9][a-z0-9-]{2,79}\.json$/.test(path))fail('PATH');
+  if(typeof path!=='string'||!/^data\/runtime\/options-macro-comparisons\/source-(?:package|draft|saved|expectation)-[a-z0-9][a-z0-9-]{2,79}\.json$/.test(path))fail('PATH');
   const r=parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true}).decode(io.readBytes(root,path,MAX))),{fingerprint,...p}=r;
   if(p.version!=='OPTIONS_SOURCE_COMPARISON_V1'||fp(p)!==fingerprint||pathFor(p.kind,p.id)!==path)fail('INTEGRITY');time(p.savedAt);return {path,...r};
 }
-function save(root,kind,key,payload,at){
+export function saveSourceRecord(root,kind,key,payload,at){
   time(at);if(time(at)>time(new Date().toISOString()))fail('FUTURE_SAVE');const path=pathFor(kind,key);
   const retry=()=>{const r=readSourceRecord(root,path);if(fp(r.payload)!==fp(payload))fail('RETRY_CHANGED');return {...r,alreadyRecorded:true};};
-  if(existsSync(resolve(root,path)))return retry();if(files(root).length>=500)fail('CATALOG_LIMIT');
+  if(existsSync(resolve(root,path)))return retry();if(sourceRecordFiles(root).length>=500)fail('CATALOG_LIMIT');
   const p={version:'OPTIONS_SOURCE_COMPARISON_V1',kind,id:key,savedAt:at,payload},bytes=Buffer.from(JSON.stringify({...p,fingerprint:fp(p)})+'\n');if(bytes.length>MAX)fail('RECORD_LIMIT');
   io.directory(root,BASE);try{io.writeExclusive(root,path,bytes);}catch(e){if(e.code==='EEXIST')return retry();throw e;}return readSourceRecord(root,path);
 }
+const save=saveSourceRecord;
 export function sourcePlanOptions(report){
   const frozen=(report?.trades??[]).filter(t=>t.plan?.invalidation).map(t=>({key:'frozen:'+t.tradeId,tradeId:t.tradeId,kind:'FROZEN',version:fp(t.plan),decisionId:t.plan.invalidation.decisionId,plan:t.plan,contract:t.contract,registeredAt:t.registeredAt,openedAt:t.openedAt}));
   const drafts=(report?.planRecords??[]).filter(e=>e.command.type==='SAVE_PLAN_DRAFT').map(e=>({key:'draft:'+e.command.requestId,tradeId:e.command.tradeId,kind:'DRAFT',version:fp(e.command.draft),decisionId:e.command.draft.thesis.decisionId,plan:{thesis:e.command.draft.fields.thesis??'',invalidation:e.command.draft.thesis},contract:null,registeredAt:e.savedAt,openedAt:null}));
@@ -125,7 +126,7 @@ export function saveSourceComparison(root,ledgerId,request,previewFingerprint,at
 }
 export function sourceComparisonRecords(root,ledgerId,at){
   const records=[],errors=[];
-  for(const name of files(root).filter(f=>/^source-(package|draft|saved)-/.test(f))){try{const r=readSourceRecord(root,BASE+'/'+name);if(time(r.savedAt)>time(at))continue;let p,d;
+  for(const name of sourceRecordFiles(root).filter(f=>/^source-(package|draft|saved)-/.test(f))){try{const r=readSourceRecord(root,BASE+'/'+name);if(time(r.savedAt)>time(at))continue;let p,d;
     if(r.kind==='package')p=r;else if(r.kind==='draft')p=readSourceRecord(root,r.payload.packagePath);else{p=readSourceRecord(root,r.payload.packagePath);d=readSourceRecord(root,r.payload.request.draftPath);if(p.fingerprint!==r.payload.packageFingerprint||d.fingerprint!==r.payload.draftFingerprint)fail('REFERENCE_CHANGED');}
     if(p.payload.ledgerId===ledgerId)records.push({...r,event:p.payload.event,package:p, draft:d??(r.kind==='draft'?r:null),availability:'COPIED_SELECTION_AVAILABLE'});
   }catch{errors.push({path:BASE+'/'+name,status:'UNAVAILABLE_REFERENCE_OR_RECORD'});}}

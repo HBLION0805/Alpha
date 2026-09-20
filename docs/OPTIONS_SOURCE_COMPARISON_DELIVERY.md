@@ -385,3 +385,90 @@ one protected-API command file, excluding development receipts. Dollar cost is
 **UNKNOWN**. No new timer, monitoring frequency, source permission, risk setting
 or frozen experiment changed. Routine 15:50 acceptance remains
 `PENDING_NATURAL_RUN`; first real targeted quoting remains `NOT_VERIFIED`.
+
+## Market expectation snapshots — September 20, 2026
+
+This extension builds on `d8f18fb8901f05140a7989e62495ec6f7c2084f5` and preserves
+the earlier event-approach implementation. It reuses the source-comparison store,
+protected API, exact saved plan versions and existing Candidate checks. It adds
+no source subscription, model endpoint, market request, schedule or database.
+
+### Operation and Host handoff
+
+In **Trade planner**, resume the saved plan and open **Market expectation
+snapshots**. Prepare a research snapshot, select its saved source comparison and
+paste the structured rows prepared by the existing equipped Host. Preview, save,
+then **Link to this plan draft** and save an appended plan version. **Prepare
+appended revision** retains the original record and its references. Viewing or
+previewing never fetches sources or records a trade.
+
+The Host uses the existing protected `/api/source-comparison` entry with actions
+`PREVIEW_EXPECTATION` and `SAVE_EXPECTATION`, the request and the returned
+`previewFingerprint`. Existing same-origin/session protections apply. The exact
+request and row contracts are in
+[OptionsMarketExpectation.ts](../src/contracts/OptionsMarketExpectation.ts);
+the same local receive/save helpers are in
+[options-market-expectation-io.mjs](../scripts/lib/options-market-expectation-io.mjs).
+The existing Source comparison package and cited Host draft remain the source
+handoff; there is no autonomous research/model call behind these actions.
+
+Each row declares event, metric, period, unit, adjustment, release version and
+value semantics. Its individually attributed forecasts retain source URL,
+reference/locator, publication time (nullable), actual receipt, methodology and
+coverage. `CONSENSUS`, `SINGLE_FORECAST`, `MODEL_ESTIMATE`, `MARKET_IMPLIED`,
+`OWNER_EXPECTATION` and `UNKNOWN` remain distinct. Only an explicitly selected
+source-survey consensus can enter the deterministic Alpha-minus-consensus
+comparison. Multiple sources are not averaged. All seven identity fields must
+match and be known; incompatible or unknown evidence remains visible without a
+numeric difference. Qualitative Alpha/Owner judgments retain their attribution.
+
+Records append under the existing shared 500-record / 16 KiB bounds; revisions,
+fingerprints and actual server save clocks are immutable. Preview clocks are
+explicitly unsaved. A missing/corrupt reference is unavailable, without fallback.
+New PRE_EVENT registrations require an explicitly Owner-confirmed
+`FINAL_PRE_ENTRY` reference strictly before formal freeze, reported entry and
+release. Changes to the thesis or event time invalidate that reference. Numeric
+event conditions also match their metric/period/unit/vintage. Research remains
+saveable when incomplete. Old frozen records without the new optional reference,
+POST_EVENT behavior, canonical guidance and independent exit checks retain their
+previous behavior. A snapshot never establishes a price direction or approval.
+
+### Actual research use and limits
+
+One actual **RESEARCH** snapshot was saved at `2026-09-20T15:06:52.062Z` and linked
+through an appended version of the existing employment draft. Original draft-v2
+and source versions were preserved. The bounded public review found four
+attributed model forecasts, no verified selected survey consensus and no
+independent Alpha expectation. The revisions slot also retains unresolved
+period/basis. There is no calculable expectation difference, final confirmation,
+new actual, surprise, contract, fill or position. Private research and source
+excerpts are excluded from Git; locatable IDs/fingerprints and receipt references
+are in the additive `marketExpectation` section of the existing status file.
+
+The planner, Event approach and plan-specific Candidate checks displayed the
+same saved clock/reference and missing conditions after reopening and a backend
+restart. Research preview worked; unconfirmed final preview was rejected without
+a write. Browser testing found a form input named `id` shadowing native form
+identity; the input now uses `snapshotId`, with a regression. Earlier fixture
+timing and strict-type issues were fixed without weakening production rules.
+
+Validation totals and log/code fingerprints are recorded in
+[source-comparison status](status/source-comparison.json). The existing full
+validation includes TypeScript and focused expectation, event, candidate, source,
+ledger and exit suites. Browser checks used the same saved production research
+through a temporary local workbench with public refresh disabled. The existing
+4173 process remains an older backend: its restart was previously rejected by
+automatic approval review (`blocked by policy`), and was not retried or bypassed.
+Code/API/browser acceptance does not imply that old process has hot-reloaded.
+
+Usage: two public web invocations comprising two queries and four page opens;
+one attributed Host draft saved; zero brokerage market calls, quote rows or
+application model API calls. Five source-comparison-store records and one ledger
+event were added (eight durable product files including ledger and protected-API
+command files). Preview/reopen tests added no production records. Dollar cost
+remains **UNKNOWN**. Routine 15:50 remains **PENDING_NATURAL_RUN** and first real
+targeted quoting remains **NOT_VERIFIED**, independently of this delivery.
+
+Next: when the Owner prepares the actual pre-entry decision, recheck available
+survey evidence and append a separately confirmed final version before plan
+freeze/entry/release; missing independent entry/exit parameters remain required.

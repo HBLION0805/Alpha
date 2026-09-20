@@ -14,6 +14,7 @@ assets.set('/trend-study.js',['trend-study.js','text/javascript']);
 assets.set('/macro-playbook.js',['macro-playbook.js','text/javascript']);
 assets.set('/trade-thesis.js',['trade-thesis.js','text/javascript']);
 assets.set('/source-comparison.js',['source-comparison.js','text/javascript']);
+assets.set('/market-expectations.js',['market-expectations.js','text/javascript']);
 export async function startOptionsWorkbench({port=4173,refreshContext=false,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
   const service=createWorkbenchData(options),session=randomBytes(32).toString('hex');

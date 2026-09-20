@@ -40,6 +40,7 @@ export function assessEventEntry(ctx: EventEntryContext, at:string, calendarAvai
   const phase=e?.phase||'',researchApproach=phase||(researchPre?'PRE_EVENT':'');
   const issues:string[]=[],need=(ok:unknown,code:string)=>{if(!ok)issues.push(code);};
   if(researchApproach==='PRE_EVENT'){
+    if(ctx.expectation)issues.push(...ctx.expectation.blockers);
     need(phase==='PRE_EVENT','PRE_EVENT_MODE_NOT_CONFIRMED');need(ctx.kind==='FROZEN','PRE_EVENT_PLAN_INCOMPLETE');
     need(ctx.contract,'CONTRACT_NOT_SELECTED');
     need(Number.isInteger(ctx.plan.maxContracts)&&ctx.plan.maxContracts>0,'QUANTITY_NOT_DEFINED');
@@ -66,6 +67,7 @@ export function assessEventEntry(ctx: EventEntryContext, at:string, calendarAvai
   const blockers=[...new Set(issues)],eligible=phase==='PRE_EVENT'&&blockers.length===0;
   const event=ctx.calendar.find(x=>x.key===c?.eventKey)??null;
   return {phase,researchApproach,eligible,blockers,planKey:ctx.key,planVersion:ctx.version,kind:ctx.kind,event,
+    ...(ctx.expectation?{expectation:ctx.expectation,originalThesis:ctx.plan.thesis}:{}),
     explanation:phase==='POST_EVENT'?'MAJOR_EVENT_WAIT — this plan is configured for post-event confirmation.':researchApproach==='PRE_EVENT'?(eligible?'Frozen pre-event plan may continue candidate checks; event risk remains.':'Pre-event research may continue; required saved confirmations and plan completeness do not yet permit formal comparison.'):'MAJOR_EVENT_WAIT — default post-event waiting applies; no explicit pre-event authorization.',
     risks:eligible?EVENT_ENTRY_RISK:['Overnight and release-to-option-trading gaps remain exposed. A stop is not a guaranteed fill.'],
     nextCheckAt:t?.nextCheckAt??null,assessedAt:at,executionAllowed:false};

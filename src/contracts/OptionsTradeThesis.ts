@@ -1,5 +1,6 @@
 import type { ManualTradePlan, ManualOptionIdentity } from './OptionsManualLedger';
 import type { EtfResearchBars } from './OptionsEtfSetup';
+import type {ExpectationSnapshotReference,ExpectationDifference} from './OptionsMarketExpectation';
 
 export interface ThesisCondition {
   id: string;
@@ -19,6 +20,7 @@ export interface TradeThesis {
   manualFallback: string; conditions: ThesisCondition[];
   /** Optional entry-only confirmation. Absent on historical plans; never inferred as permission. */
   eventEntry?: EventEntryConfirmation;
+  expectationSnapshot?: ExpectationSnapshotReference;
 }
 export interface EventEntryConfirmation {
   phase: '' | 'PRE_EVENT' | 'POST_EVENT'; conditionId: string;
@@ -32,6 +34,7 @@ export interface EventEntryContext {
   key: string; version: string; kind: 'DRAFT' | 'FROZEN'; symbol: string;
   plan: ThesisPlan; contract: ManualOptionIdentity | null; registeredAt: string; openedAt: string | null;
   calendar: {key: string; title: string; source: string; scheduledAt: string | null; receivedAt: string | null}[];
+  expectation?: {status:string;rows:ExpectationDifference[];blockers:string[];[key:string]:unknown};
 }
 export interface ThesisOwnerEvidence {
   conditionId: string; source: string; sourceAt: string; receivedAt: string;

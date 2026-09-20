@@ -15,6 +15,7 @@ import {macroComparisonRequest,macroPreviewMatches,macroComparisonResult} from '
 import {macroNoteDefaults,macroNoteRequest,macroCoverage,appendMacroReflection} from './macro-playbook.js';
 import {thesisDefaults,updateThesisDraft,thesisPlanCommand,thesisReviewRequest} from './trade-thesis.js';
 import {sourceRequest,sourcePreviewMatches,sourceCard} from './source-comparison.js';
+import {prepareExpectationDraft,expectationSummary} from './market-expectations.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -79,6 +80,15 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.id==='expectation-form'){
+    const d=ui.expectationDraft;if(!d)return;
+    if(el.name==='rows')ui.expectationRows=el.value;
+    else if(el.name==='snapshotId')d.id=el.value;
+    else if(el.name==='comparisonPath'){d.comparisonPath=el.value;d.comparisonFingerprint=state.sourceComparisons.data.records.find(r=>r.path===el.value)?.fingerprint??'';}
+    else d[el.name]=el.type==='checkbox'?el.checked:el.value;
+    if(el.name!=='ownerConfirmed'){d.ownerConfirmed=false;form.elements.ownerConfirmed.checked=false;}
+    ui.expectationPreview=null;dirty.add('expectation');const save=form.querySelector('[value="SAVE_EXPECTATION"]');if(save)save.disabled=true;return;
+  }
   if(form.id==='source-package-form'){ui.sourceMaterialIds=new FormData(form).getAll('materialId');ui.sourcePackageId=null;return;}
   if(form.id==='source-import-form'){ui.sourceImport=el.value;ui.sourcePreview=null;return;}
   if(form.id==='source-comparison-form'){
@@ -188,6 +198,21 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='expectation-form'){
+    event.preventDefault();if(saving||previewing)return;
+    const form=event.target,button=event.submitter;saving=true;button.disabled=true;
+    void(async()=>{try{
+      $('#expectation-error').textContent='';
+      const input={...structuredClone(ui.expectationDraft),rows:JSON.parse(ui.expectationRows??JSON.stringify(ui.expectationDraft.rows))};
+      const key=JSON.stringify([ui.expectationDraft,ui.expectationRows]);
+      if(button.value==='SAVE_EXPECTATION'&&JSON.stringify(ui.expectationPreview?.request)!==JSON.stringify(input))throw Error('Preview the unchanged snapshot before saving.');
+      const r=await request('/api/source-comparison',{action:button.value,request:input,previewFingerprint:ui.expectationPreview?.previewFingerprint??null});
+      if(button.value==='SAVE_EXPECTATION'){
+        if(key===JSON.stringify([ui.expectationDraft,ui.expectationRows])){ui.expectationDraft=null;ui.expectationRows=null;ui.expectationPreview=null;dirty.delete('expectation');}
+        await reload();toast('Expectation snapshot saved. Link it to an appended plan draft; no plan freeze or trade occurred.');
+      }else if(key===JSON.stringify([ui.expectationDraft,ui.expectationRows])){ui.expectationPreview=r;render();}
+    }catch(e){fail(e,'#expectation-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(['source-package-form','source-import-form','source-comparison-form'].includes(event.target.id)){
     event.preventDefault();if(saving||previewing)return;const form=event.target,button=event.submitter;saving=true;button.disabled=true;
     void(async()=>{try{
@@ -318,6 +343,24 @@ document.addEventListener('submit',event=>{
 });
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
+  if(el.dataset.expectationPrepare){
+    const p=state.sourceComparisons.data.plans.find(p=>p.key===el.dataset.expectationPrepare);
+    const eventKey=p?.plan.invalidation.conditions.find(c=>c.kind!=='PRICE'&&c.eventKey)?.eventKey;
+    const comparison=state.sourceComparisons.data.records.filter(r=>r.kind==='saved'&&r.payload.eventKey===eventKey).sort((a,b)=>a.savedAt.localeCompare(b.savedAt)).at(-1);
+    ui.expectationDraft=prepareExpectationDraft(p,comparison,'expectation-'+crypto.randomUUID());ui.expectationRows=null;ui.expectationPreview=null;dirty.add('expectation');render();return;
+  }
+  if(el.dataset.expectationOpen||el.dataset.expectationRevise||el.dataset.expectationUse){
+    const r=state.marketExpectations.data.records.find(r=>r.id===(el.dataset.expectationOpen||el.dataset.expectationRevise||el.dataset.expectationUse));if(!r)return;
+    if(el.dataset.expectationOpen){showDetail('Saved market expectation snapshot',detail('Original version, clocks, sources and revisions',r));return;}
+    if(el.dataset.expectationRevise){
+      ui.expectationDraft={...structuredClone(r.payload.request),id:'expectation-'+crypto.randomUUID(),stage:'RESEARCH',supersedes:r.path,ownerConfirmed:false};
+      const original=state.sourceComparisons.data.plans.find(p=>p.key===r.payload.request.planKey),latest=state.sourceComparisons.data.plans.filter(p=>p.kind==='DRAFT'&&p.tradeId===original?.tradeId).at(-1);
+      if(latest){ui.expectationDraft.planKey=latest.key;ui.expectationDraft.planVersion=latest.version;}
+      ui.expectationRows=null;ui.expectationPreview=null;dirty.add('expectation');render();return;
+    }
+    if(!ui.thesisDraft)throw Error('Resume the original plan draft first.');
+    ui.thesisDraft.expectationSnapshot={path:r.path,fingerprint:r.fingerprint,frozenAt:r.savedAt};ui.thesisPreview=null;ui.thesisRequestId=null;dirty.add('thesis');render();toast('Snapshot linked locally. Save the new plan draft version; original history remains.');return;
+  }
   if(el.id==='add-source-binding'){
     if(!ui.sourceDraft||!ui.sourceBinding)throw Error('Select an original plan condition first.');
     const b={...JSON.parse(ui.sourceBinding),factClaimId:ui.sourceFact??''};

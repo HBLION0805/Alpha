@@ -428,5 +428,186 @@
     "routine1550Acceptance": "PENDING_NATURAL_RUN",
     "firstRealTargetedQuote": "NOT_VERIFIED_NO_OPEN_POSITIONS_WEEKEND",
     "rawResearchPublished": false
+  },
+  "marketExpectation": {
+    "status": "IMPLEMENTED_LOCALLY_VERIFIED_RESEARCH_SAVED",
+    "updatedAt": "2026-09-20T15:20:46.782Z",
+    "baseline": "d8f18fb8901f05140a7989e62495ec6f7c2084f5",
+    "entry": "Trade planner / Market expectation snapshots; Daily guidance / Candidate checks / Check saved plan",
+    "types": [
+      "CONSENSUS",
+      "SINGLE_FORECAST",
+      "MODEL_ESTIMATE",
+      "MARKET_IMPLIED",
+      "OWNER_EXPECTATION",
+      "UNKNOWN"
+    ],
+    "snapshot": {
+      "id": "gld-employment-20261002-research-v1",
+      "path": "data/runtime/options-macro-comparisons/source-expectation-gld-employment-20261002-research-v1.json",
+      "fingerprint": "sha256:8c6ea88550a0d8a8f291439cf1c7a9a831aa3f123f9856f82a038dfc8f107489",
+      "frozenAt": "2026-09-20T15:06:52.062Z",
+      "stage": "RESEARCH"
+    },
+    "planRevision": {
+      "key": "draft:gld-employment-20261002-draft-v3",
+      "version": "sha256:705c7ff8fff804d1bafc86e00170562987a2bf735695cd24314beb5322b2ed55",
+      "savedAt": "2026-09-20T15:06:52.136Z"
+    },
+    "comparison": {
+      "id": "gld-employment-20261002-v4",
+      "path": "data/runtime/options-macro-comparisons/source-saved-gld-employment-20261002-v4.json",
+      "fingerprint": "sha256:187e7b9f5a4979b6fd4a87c7b8e8052994e931be750a64bdb9ab3e83655e3bc3"
+    },
+    "findings": {
+      "metricSlots": 5,
+      "modelReferences": 4,
+      "consensus": "UNKNOWN",
+      "alpha": "UNKNOWN",
+      "numericDifference": null,
+      "ownerConfirmed": false,
+      "finalPreEntry": false,
+      "executablePlan": false
+    },
+    "compatibility": {
+      "priorDraftAndSourcesUnchanged": true,
+      "legacyFrozenReplayUnchanged": true,
+      "postEventUnchanged": true,
+      "canonicalGuidanceUnchanged": true,
+      "independentExitsUnchanged": true
+    },
+    "validation": {
+      "command": "node scripts/alpha-validate.mjs",
+      "status": "PASSED",
+      "componentCount": 183,
+      "testsExecuted": 4879,
+      "passed": 4879,
+      "failed": 0,
+      "typecheck": "PASSED",
+      "focusedExpectation": 23,
+      "candidateChecks": 43,
+      "sourceComparison": 20,
+      "tradeThesis": 22,
+      "log": "data/runtime/options-workbench-development/expectation-alpha-validation-final.log",
+      "sha256": "a0b27b04ab84d55496400ff8d02ef022bd0b061edf11c929235051fe42e8aa15",
+      "codeManifest": [
+        {
+          "path": "apps/options-workbench/app.js",
+          "sha256": "d47867b19d0e523004e337559d54909c98e9ca6af0cf39b7579166652af33b5a"
+        },
+        {
+          "path": "apps/options-workbench/trade-thesis.js",
+          "sha256": "bf45390339452dd1764f0473e1cbe41f2d6831b662de9a41e9fc7bf7facc1e98"
+        },
+        {
+          "path": "apps/options-workbench/market-expectations.js",
+          "sha256": "1271ac9e2fb97cd5dc6921d9baf3c8619b16ef93b54ae22a6621817e446ccc5e"
+        },
+        {
+          "path": "scripts/alpha-validate.mjs",
+          "sha256": "44260b7de8ee64ffa673f000ee8eaf6f47f095165c1175b96f475c3f84f762f5"
+        },
+        {
+          "path": "scripts/lib/options-candidate-checks-io.mjs",
+          "sha256": "fb6b739b13cb640b1fd661d3aca5ce188ad8abd6ead642c74261dcc843acdacd"
+        },
+        {
+          "path": "scripts/lib/options-macro-context-io.mjs",
+          "sha256": "8f1820de07e0c2267a8f0e6695806eabff19738d6d070f654e15091bd6c4e4a6"
+        },
+        {
+          "path": "scripts/lib/options-source-comparison.mjs",
+          "sha256": "f546daf1c6ebbd19ae12f3ecc7ef2e5a0bdfa7e79b7cc42c756dc0550a3f83fb"
+        },
+        {
+          "path": "scripts/lib/options-workbench-data.mjs",
+          "sha256": "641ec8e3ae4e61cc8902cbb912ef32fa47e8a0b60a5b0eea41642aa5a59c76f2"
+        },
+        {
+          "path": "scripts/options-candidate-checks.test.mjs",
+          "sha256": "ff64217b191fe254a50dc29e5cb9c386d0f6ae7f68055d9c8ceed11d8dbeeaa2"
+        },
+        {
+          "path": "scripts/options-manual-ledger.mjs",
+          "sha256": "c29b6264e2822a56ca4f559307b1cf846567efdcbe8a41f04345f65dfaa0c1f2"
+        },
+        {
+          "path": "scripts/options-workbench.mjs",
+          "sha256": "79cb6d4f5347eb305e191c618fad3e311396da7a8c5fa70c2d5e830ef34de536"
+        },
+        {
+          "path": "src/contracts/OptionsTradeThesis.ts",
+          "sha256": "5fc765d0e092ad924f9a82b3acd08ef6bc09fbaedd50832c70e84effcbd02d9e"
+        },
+        {
+          "path": "src/contracts/OptionsMarketExpectation.ts",
+          "sha256": "dd34a7fe90fa15e0620ce5ce4cce0cf4cd8d0ea4b9a1385e7d6341f86c1e70c8"
+        },
+        {
+          "path": "src/engines/options-daily-guidance/OptionsEventEntry.ts",
+          "sha256": "3e817871ab7d81696ff22d80291a9dee31a6ba1620bd4a1cf764bc782277f219"
+        },
+        {
+          "path": "src/engines/options-manual-ledger/OptionsTradeThesis.ts",
+          "sha256": "7081d2b6e64e5d2e098e5839fb1fa1432e980bc19e58bb2f9b52566809fc4a2a"
+        },
+        {
+          "path": "src/engines/options-drivers/OptionsMarketExpectation.ts",
+          "sha256": "502ea2e1ccf026a4dc58568bb1c69ae0c008615e5c5d8da71df8c9480c5f2e8e"
+        },
+        {
+          "path": "scripts/lib/options-market-expectation-fixtures.mjs",
+          "sha256": "8af076484a17466e855bf735c96c568ccc630f909d8e98f9eb3cbb7c2051cceb"
+        },
+        {
+          "path": "scripts/lib/options-market-expectation-io.mjs",
+          "sha256": "46fb8300b52743f76534c4d93f6beaeb4eef8fd677d1e23d5a034d6be9f16bb9"
+        },
+        {
+          "path": "scripts/options-market-expectation.test.mjs",
+          "sha256": "4abfbd4b45c9b483d56cf10579da1663c802697d73cad3029218223130c29b77"
+        }
+      ]
+    },
+    "browser": {
+      "status": "VERIFIED_SAVED_RESEARCH_AND_PLAN_SPECIFIC_CANDIDATE_CHECKS",
+      "scope": "Temporary local workbench, same private saved records, public refresh disabled",
+      "port": 4184,
+      "restarted": true,
+      "plannerSnapshot": "gld-employment-20261002-research-v1",
+      "candidateSnapshot": "gld-employment-20261002-research-v1",
+      "preview": "RESEARCH_WORKED_NO_SAVE",
+      "unconfirmedFinal": "REJECTED_NO_WRITE",
+      "consoleErrors": 0,
+      "consoleWarnings": 0,
+      "horizontalOverflow": false,
+      "oldMainProcess": "4173_OLDER_BACKEND_NOT_RESTARTED",
+      "restartBlock": "Earlier automatic approval review rejected production restart: blocked by policy; no retry or bypass"
+    },
+    "receipt": "data/runtime/options-workbench-development/expectation-final-acceptance.json",
+    "receiptSha256": "713d0584882c29fa124eb0716978b4395ae6f71a43e56094e4909dbc80a82fa8",
+    "resolvedIssues": [
+      "Snapshot ID form control shadowed native form identity; renamed and browser verified",
+      "Unknown comparison identities now remain UNKNOWN rather than falsely asserting mismatch",
+      "Isolated fixture checkpoint corrected to an eligible session; strict decimal type annotation fixed"
+    ],
+    "usage": {
+      "publicWebInvocations": 2,
+      "publicSearchQueries": 2,
+      "pageOpenOperations": 4,
+      "distinctOpenedPages": 4,
+      "hostDraftsSaved": 1,
+      "marketCalls": 0,
+      "quoteRows": 0,
+      "applicationModelApiCalls": 0,
+      "sourceComparisonStoreRecordsAdded": 5,
+      "manualLedgerEventsAdded": 1,
+      "durableProductFilesAdded": 8,
+      "usdCost": "UNKNOWN"
+    },
+    "routine1550Acceptance": "PENDING_NATURAL_RUN",
+    "firstRealTargetedQuote": "NOT_VERIFIED_NO_OPEN_POSITIONS_WEEKEND",
+    "privateResearchPublished": false,
+    "nextStep": "Reload the existing workbench backend through an authorized restart, then prepare a separately Owner-confirmed final pre-entry snapshot when actual pre-entry evidence and original plan parameters are available."
   }
 }

@@ -121,5 +121,5 @@ export function verifyMacroComparison(root,path) {
 }
 function readMacroComparisons(root,at) {
   const files=children(root,COMPARE);if(files.length>500||files.some(f=>!f.isFile()||f.isSymbolicLink()||!f.name.endsWith('.json')))fail('COMPARISON_CATALOG');
-  return files.filter(f=>!/^source-(package|draft|saved)-/.test(f.name)).map(f=>verifyMacroComparison(root,COMPARE+'/'+f.name)).filter(r=>r.assessedAt<=at).sort((a,b)=>b.assessedAt.localeCompare(a.assessedAt));
+  return files.filter(f=>!/^source-(package|draft|saved|expectation)-/.test(f.name)).map(f=>verifyMacroComparison(root,COMPARE+'/'+f.name)).filter(r=>r.assessedAt<=at).sort((a,b)=>b.assessedAt.localeCompare(a.assessedAt));
 }

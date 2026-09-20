@@ -1,3 +1,4 @@
+import {seedExpectation} from './lib/options-market-expectation-fixtures.mjs';
 import assert from 'node:assert/strict';
 import {mkdtempSync,readFileSync,writeFileSync,realpathSync,rmSync,existsSync,mkdirSync,linkSync,symlinkSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -212,7 +213,11 @@ await test('risk acceptance and saved rationale are required at freeze, drafts r
   e.gapRiskAccepted=true;e.differenceBasis='';assert.throws(()=>validateManualLedgerCommand(command,p.registeredAt),/PRE_EVENT_PLAN_INCOMPLETE/);
 });
 await test('new frozen entry confirmations recover immutably and feed the existing saved-plan comparison path',async()=>temp(async root=>{
-  const i=preEventInput(),p=i.guidance.eventPlan,service=createWorkbenchData({workspaceRoot:root,now:()=>p.registeredAt});service.initialize();
+  const i=preEventInput(),p=i.guidance.eventPlan;
+  const seeded=await seedExpectation(root,{ledgerId:'owner-manual-gld-ibit',plan:p.plan,at:'2026-09-08T13:36:00.000Z'});
+  const snapshot=seeded.save({...seeded.request,stage:'FINAL_PRE_ENTRY',ownerConfirmed:true},'2026-09-08T13:37:00.000Z');
+  p.plan.invalidation.expectationSnapshot={path:snapshot.path,fingerprint:snapshot.fingerprint,frozenAt:snapshot.savedAt};p.version=paperFingerprint(p.plan);
+  const service=createWorkbenchData({workspaceRoot:root,now:()=>p.registeredAt});
   const command={type:'REGISTER_TRADE',requestId:'synthetic-freeze',tradeId:'synthetic-event-plan',contract:p.contract,plan:p.plan,activityReference:null};
   const preview=service.preview(command);service.save({command,expectedHeadSha256:preview.headSha256});
   const state=await createWorkbenchData({workspaceRoot:root,now:()=>at}).state(),trade=state.manual.data.trades[0];assert.equal(paperFingerprint(trade.plan),p.version);assert.equal(trade.openContracts,0);

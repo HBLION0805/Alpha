@@ -42,6 +42,7 @@ import {macroPlaybookView,saveMacroNote} from './options-macro-playbook-io.mjs';
 import {assessMacroNote} from '../../src/engines/options-knowledge/OptionsMacroPlaybook.ts';
 import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 import {sourceCatalog,sourceComparisonView,prepareSourcePackage,receiveSourceDraft,previewSourceComparison,saveSourceComparison} from './options-source-comparison.mjs';
+import {expectationRecords,previewExpectation,saveExpectation,verifyNewPlanExpectation} from './options-market-expectation-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -132,6 +133,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.trendStudy=await component(()=>trendStudyView(root,at,calendar.data,result.snapshotPaper.data?.observations?.trackedContracts),at);
     result.macroPlaybook=await component(()=>macroPlaybookView(root),at);
     result.sourceComparisons=await component(()=>sourceComparisonView(root,ledgerId,result,at),at);
+    result.marketExpectations=await component(()=>expectationRecords(root,ledgerId,at),at);
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
     return result;
   }
@@ -171,6 +173,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     const r=ledger(),at=now(),c=validateManualLedgerCommand(command,at);
     const previous=r.input.events.find(e=>e.command.requestId===c.requestId);
     if(previous){if(paperFingerprint(previous.command)!==paperFingerprint(c))fail('REQUEST_CONFLICT');return {alreadyRecorded:true,headSha256:r.headSha256,command:c,report:r.report};}
+    verifyNewPlanExpectation(root,ledgerId,c,at);
     const report=reconcileManualLedger({...r.input,events:[...r.input.events,{sequence:r.input.events.length+1,recordedAt:at,savedAt:at,command:c}]},at);
     return {alreadyRecorded:false,headSha256:r.headSha256,command:c,report};
   }
@@ -234,6 +237,8 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
   async function sourceComparison(body){
     if(!body||Object.keys(body).sort().join()!=='action,previewFingerprint,request')fail('MACRO_SOURCE_ACTION');
     const at=now();
+    if(body.action==='PREVIEW_EXPECTATION')return previewExpectation(root,ledgerId,body.request,at);
+    if(body.action==='SAVE_EXPECTATION')return saveExpectation(root,ledgerId,body.request,body.previewFingerprint,at);
     if(body.action==='PREPARE'){const s=await state();return prepareSourcePackage(root,ledgerId,body.request,sourceCatalog(s),now());}
     if(body.action==='RECEIVE_DRAFT')return receiveSourceDraft(root,body.request,at);
     if(body.action==='PREVIEW')return previewSourceComparison(root,ledgerId,body.request,at);

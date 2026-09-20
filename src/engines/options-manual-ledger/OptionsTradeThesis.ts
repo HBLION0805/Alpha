@@ -16,8 +16,13 @@ function strings(v: Record<string, any>, max = 1500) {
   for (const x of Object.values(v)) if (typeof x !== 'string' || x.length > max || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(x)) fail('TEXT');
 }
 export function validateTradeThesis(t: TradeThesis): TradeThesis {
-  exact(t,'version,template,decisionId,tradeDate,realizationStartAt,realizationEndAt,nextCheckAt,holdThroughEvent,manualFallback,conditions'+(Object.hasOwn(t,'eventEntry')?',eventEntry':''));
-  const {conditions,eventEntry,...rest}=t; strings(rest);
+  exact(t,'version,template,decisionId,tradeDate,realizationStartAt,realizationEndAt,nextCheckAt,holdThroughEvent,manualFallback,conditions'+(Object.hasOwn(t,'eventEntry')?',eventEntry':'')+(Object.hasOwn(t,'expectationSnapshot')?',expectationSnapshot':''));
+  const {conditions,eventEntry,expectationSnapshot,...rest}=t; strings(rest);
+  if(Object.hasOwn(t,'expectationSnapshot')){
+    exact(expectationSnapshot,'path,fingerprint,frozenAt');strings(expectationSnapshot!);
+    if(!/^data\/runtime\/options-macro-comparisons\/source-expectation-[a-z0-9][a-z0-9-]{2,79}\.json$/.test(expectationSnapshot!.path)||!/^sha256:[0-9a-f]{64}$/.test(expectationSnapshot!.fingerprint))fail('EXPECTATION_REFERENCE');
+    stamp(expectationSnapshot!.frozenAt);
+  }
   if(Object.hasOwn(t,'eventEntry')){
     exact(eventEntry,'phase,conditionId,calendarVerifiedAt,calendarSource,expectationStatus,expectationBasis,differenceBasis,supportingScenario,neutralScenario,reverseScenario,counterexample,reviewer,gapRiskAccepted,closedMarketRiskAccepted');
     const {gapRiskAccepted,closedMarketRiskAccepted,...text}=eventEntry!;strings(text);
