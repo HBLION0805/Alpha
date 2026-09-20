@@ -1,5 +1,18 @@
 # Alpha Development Standard v1.0
 
+## Owner-triggered held-position quotes — September 19, 2026
+
+Read docs/OPTIONS_POSITION_QUOTES_DELIVERY.md and docs/status/position-quotes.json.
+The existing manual single-leg ledger can prepare a targeted request for an
+explicit Owner-triggered Host review: at most six verified contracts, one ETF
+batch and one option-ID batch, using existing exclusive Host slots and actual
+regular-session guards. No chains, retries, page-triggered market calls or new
+schedule. Targeted receipts are separate from full guidance/research captures.
+Preserve identity provenance, unknown costs, position-version checks and saved
+exit triggers. First real use remains unverified; no synthetic position may
+obtain a production permit. Host V4 and pending routine acceptance are unchanged.
+This stage authorizes its scoped commit/push on the development branch only.
+
 ## Trade thesis and position review — September 19, 2026
 
 Owner authorized optional new-plan thesis conditions, independent exit checks and

@@ -16,6 +16,7 @@ import { reportBtcContext } from '../../src/engines/options-btc-context/BtcSpotC
 import { reconcileManualLedger, validateManualLedgerCommand } from '../../src/engines/options-manual-ledger/OptionsManualLedger.ts';
 import { assessPositionWatch } from '../../src/engines/options-manual-ledger/OptionsPositionWatch.ts';
 import { extendPositionThesis } from './options-trade-thesis-io.mjs';
+import {preparePositionQuotes,targetedPositionWatch} from './options-position-quotes.mjs';
 import { eventReactionView } from './options-event-reaction-io.mjs';
 import { exportId } from '../../src/engines/options-evidence-export/OptionsEvidenceExportEngine.ts';
 import { readinessClock } from '../../src/engines/options-readiness/OptionsReadinessEngine.ts';
@@ -134,9 +135,14 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
   function watchFromDesk(report,desk,at,costs={}){
     if(!report)fail('POSITION_LEDGER_UNAVAILABLE');
     const latest=desk?.latest;
-    return {...extendPositionThesis(root,report,assessPositionWatch(report,latest?{...latest,quotes:latest.quotes.map(q=>q.contract)}:null,at,costs),at),sourceRecovery:desk?'AVAILABLE':'UNAVAILABLE'};
+    const watch=targetedPositionWatch(root,report,latest?{...latest,quotes:latest.quotes.map(q=>q.contract)}:null,at,costs);
+    return {...watch,sourceRecovery:desk?'AVAILABLE':watch.rows.some(r=>r.targetedReviewId&&r.source)?'TARGETED_ONLY':'UNAVAILABLE'};
   }
   function positionWatch(body){
+    if(body?.action==='PREPARE_QUOTES'){
+      if(Object.keys(body).sort().join()!=='action,reviewId,tradeIds')fail('POSITION_FIELDS');
+      return preparePositionQuotes(root,ledgerId,body.reviewId,body.tradeIds,now());
+    }
     if(body?.action==='SAVE_REVIEW'||body?.action==='PREVIEW_REVIEW'){
       if(Object.keys(body).sort().join()!=='action,correctionOf,evidence,exitCostUsd,note,reportedAction,requestId,tradeId')fail('POSITION_FIELDS');
       const at=now(),r=readManualLedger(root,ledgerId,()=>at);exportId(body.requestId);exportId(body.tradeId);
@@ -144,8 +150,8 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
       const existing=r.input.events.find(e=>e.command.requestId===body.requestId);
       if(existing){if(existing.command.type!=='SAVE_POSITION_REVIEW'||existing.command.tradeId!==body.tradeId||existing.command.review.submissionFingerprint!==submissionFingerprint)fail('REQUEST_CONFLICT');return {alreadyRecorded:true,review:existing.command.review,executionAllowed:false};}
       let desk=null;try{desk=snapshotPaperView(root,at);}catch{}
-      const latest=desk?.latest,base=assessPositionWatch(r.report,latest?{...latest,quotes:latest.quotes.map(q=>q.contract)}:null,at,{[body.tradeId]:body.exitCostUsd});
-      const result=extendPositionThesis(root,r.report,base,at,body),row=result.rows.find(t=>t.tradeId===body.tradeId);
+      const latest=desk?.latest;
+      const result=targetedPositionWatch(root,r.report,latest?{...latest,quotes:latest.quotes.map(q=>q.contract)}:null,at,{[body.tradeId]:body.exitCostUsd},body),row=result.rows.find(t=>t.tradeId===body.tradeId);
       if(!row?.reviewInput)fail('THESIS_PLAN_NOT_CONFIGURED');
       const review={version:'OPTIONS_POSITION_REVIEW_V1',...row.reviewInput,note:body.note,reportedAction:body.reportedAction,correctionOf:body.correctionOf,submissionFingerprint};
       if(body.action==='PREVIEW_REVIEW')return {review,executionAllowed:false};

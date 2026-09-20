@@ -33,16 +33,18 @@ function compactEvidence(all){
   }
   return output;
 }
-export function extendPositionThesis(root,report,watch,at,candidate=null){
+export function extendPositionThesis(root,report,watch,at,candidate=null,overrides={}){
   return {...watch,rows:watch.rows.map(row=>{
     const trade=report.trades.find(t=>t.tradeId===row.tradeId),history=thesisReviews(report,row.tradeId);
-    if(!trade.plan?.invalidation)return {...row,thesis:{thesisStatus:'UNKNOWN',action:row.attentionReasons.length?'EXIT_CONDITION_TRIGGERED':'MANUAL_VERIFICATION_REQUIRED',issues:['NOT_CONFIGURED'],checks:[],triggered:row.attentionReasons,assessedAt:at},reviewHistory:[]};
+    const savedTriggers=Object.hasOwn(overrides.priorByTrade??{},row.tradeId)?overrides.priorByTrade[row.tradeId]:[];
+    if(!trade.plan?.invalidation){const triggered=[...new Set([...row.attentionReasons,...savedTriggers])];return {...row,thesis:{thesisStatus:'UNKNOWN',action:triggered.length?'EXIT_CONDITION_TRIGGERED':'MANUAL_VERIFICATION_REQUIRED',issues:['NOT_CONFIGURED'],checks:[],triggered,assessedAt:at},reviewHistory:[]};}
     const context={plan:trade.plan,contract:trade.contract,registeredAt:trade.registeredAt,openedAt:trade.openedAt};
     const observations=history.flatMap(e=>e.command.review.evidence).filter((e,i,all)=>all.findIndex(x=>paperFingerprint(x)===paperFingerprint(e))===i);
     if(candidate?.tradeId===trade.tradeId&&candidate.evidence)observations.push(ownerEvidence(root,context,candidate.evidence,at));
     const evidence=compactEvidence(observations);
-    const priorTriggers=[...new Set(history.flatMap(e=>e.command.review.result.triggered))];
+    const priorTriggers=[...new Set([...history.flatMap(e=>e.command.review.result.triggered),...savedTriggers])];
     const market=savedThesisMarket(root,trade.contract.symbol,at),base={...row,origin:report.origin};
+    if(overrides.market!==null&&overrides.market!==undefined)market.price=Object.hasOwn(overrides.market,trade.contract.symbol)?overrides.market[trade.contract.symbol]:null;
     const result=assessTradeThesis(context,base,at,evidence,market,priorTriggers);
     return {...row,thesis:result,reviewInput:{context,watch:base,assessedAt:at,evidence,market,priorTriggers,result},reviewHistory:history.map(e=>({requestId:e.command.requestId,recordedAt:e.recordedAt,savedAt:e.savedAt,...e.command.review}))};
   })};

@@ -36,7 +36,7 @@ export function assessPositionWatch(ledger: LedgerReport, capture: SnapshotFrame
     }
     const currentSession = paperSession(at, q?.chainSession);
     if (q) {
-      const check = assessSnapshotQuote(q, at, true);
+      const check = assessSnapshotQuote(q, at, true, Object.hasOwn(q, 'underlyingPriceUsd'));
       const sourceClock = optionalClock(q.updatedAt), underlyingClock = optionalClock(q.underlyingAt);
       blockers.push(...check.blockers);
       if (check.staleNow) blockers.push('OPTION_STALE_NOW');

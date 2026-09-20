@@ -61,6 +61,33 @@ export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
   }
   return {version:"OPTIONS_GUIDANCE_MARKET_CAPTURE_V1",origin:"HOST_MARKET_TOOL_RESPONSES",startedAt,capturedAt:iso(await clock()),calls,receipts,failures,selectedIds:ids,selection:trackedContracts.length?'Verified tracked research IDs first, then nearest strikes; at most 18 contracts per ETF and 36 total.':'Nearest three strikes per side at up to three 14–45-day expirations; bounded research sample.',accountAccessed:false,executionAllowed:false};
 }
+/** Targeted Host-only path. authorize consumes an exclusive local call permit.
+ * No credentials, instrument discovery, retries or scheduled invocation. */
+export async function collectPositionQuotes({request,call,clock,authorize}) {
+  const iso=async()=>{const v=String(await clock()).replace(' UTC','Z').replace(' ','T');if(!Number.isFinite(Date.parse(v)))throw Error('POSITION_WATCH_CLOCK');return new Date(v).toISOString();};
+  const startedAt=await iso(),receipts=[],failures=[];let calls=0;
+  if(!request?.contracts?.length||request.contracts.length>6||new Set(request.contracts.map(c=>c.id)).size!==request.contracts.length)throw Error('POSITION_WATCH_SCOPE');
+  const operations=[['get_equity_quotes',{symbols:[...new Set(request.contracts.map(c=>c.symbol))].sort()}],['get_option_quotes',{instrument_ids:request.contracts.map(c=>c.id)}]];
+  for(let index=0;index<operations.length;index++){
+    const [tool,query]=operations[index];let requestedAt=await iso();
+    try{
+      if(Date.parse(requestedAt)-Date.parse(startedAt)>180000)throw Error('BOUND');
+      const permission=await authorize(index);
+      if(permission?.authorized!==true)throw Error('PERMIT');
+      requestedAt=await iso();
+      if(Date.parse(requestedAt)-Date.parse(startedAt)>180000||Date.parse(requestedAt)>=Date.parse(permission.expiresAt))throw Error('BOUND');
+    }catch{failures.push({tool,requestedAt,code:'CALL_NOT_AUTHORIZED'});break;}
+    calls++;
+    try{
+      const response=await call(tool,query),receivedAt=await iso();
+      // Retain partial/provider failure replies as evidence; stop without retry.
+      receipts.push({tool,request:query,requestedAt,receivedAt,response});
+      if(receivedAt<requestedAt||!response?.data||!Array.isArray(response.data.results))throw Error('SOURCE');
+    }catch{failures.push({tool,requestedAt,code:'MARKET_SOURCE_FAILED'});break;}
+  }
+  return {version:'OPTIONS_POSITION_QUOTES_RAW_V1',reviewId:request.reviewId,requestFingerprint:request.fingerprint,origin:request.origin,startedAt,capturedAt:await iso(),calls,receipts,failures,accountAccessed:false,executionAllowed:false};
+}
+
 export function routeDailyGuidance(at,{ongoing=false}={}) {
   const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date(at)).map(v=>[v.type,v.value]));
   const date=p.year+"-"+p.month+"-"+p.day,hour=Number(p.hour),minute=Number(p.minute),weekday=!["Sat","Sun"].includes(p.weekday);

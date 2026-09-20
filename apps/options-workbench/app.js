@@ -172,6 +172,15 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='position-quotes-form'){
+    event.preventDefault();if(saving)return;const form=event.target,button=event.submitter,tradeIds=new FormData(form).getAll('tradeIds');
+    if(!tradeIds.length){$('#position-quotes-error').textContent='Select at least one reported open position.';return;}
+    saving=true;button.disabled=true;ui.targetedQuoteRequestId??='position-quotes-'+crypto.randomUUID();
+    void(async()=>{try{
+      const r=await request('/api/position-watch',{action:'PREPARE_QUOTES',reviewId:ui.targetedQuoteRequestId,tradeIds});
+      ui.targetedQuoteRequest=r;ui.targetedQuoteRequestId=null;await reload();toast('Request prepared locally. Market quotes have not been refreshed.');
+    }catch(e){$('#position-quotes-error').textContent=e.message;}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='thesis-plan-form'){
     event.preventDefault();if(saving||previewing)return;
     const button=event.submitter,mode=button.value;button.disabled=true;saving=true;

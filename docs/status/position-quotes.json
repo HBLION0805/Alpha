@@ -1,0 +1,48 @@
+{
+  "version": "OPTIONS_POSITION_QUOTES_DELIVERY_V1",
+  "status": "IMPLEMENTED_AND_LOCALLY_VERIFIED",
+  "updatedAt": "2026-09-20T02:23:24.087090+00:00",
+  "firstRealUse": "NOT_VERIFIED_NO_OPEN_POSITIONS_WEEKEND",
+  "entry": "Trade journal / Position exit checks / On-demand position quotes",
+  "maximumCallsPerExplicitRound": 2,
+  "maximumDistinctContracts": 6,
+  "realMarketCallsThisStage": 0,
+  "realQuoteRowsThisStage": 0,
+  "productionReviewRecordsThisStage": 0,
+  "productionLedgerWrites": 0,
+  "dollarCost": "UNKNOWN",
+  "modelCallsAdded": 0,
+  "newSchedule": false,
+  "newSubscription": false,
+  "routine1550Acceptance": "PENDING_NATURAL_RUN",
+  "fullValidation": {
+    "command": "npm run alpha:validate",
+    "status": "PASSED",
+    "componentCount": 181,
+    "testsExecuted": 4826,
+    "passed": 4826,
+    "failed": 0,
+    "typecheck": "PASSED",
+    "log": "data/runtime/options-workbench-development/position-quotes-final-validation.log",
+    "sha256": "14db94583b2f0446974ca9ffcc2b42436d1b8307c17035f6dc5913f100793970",
+    "codeManifest": "data/runtime/options-workbench-development/position-quotes-validated-code.json"
+  },
+  "focusedValidation": {
+    "passed": 20,
+    "failed": 0,
+    "suite": "scripts/options-position-quotes.test.mjs"
+  },
+  "browserAcceptance": {
+    "status": "PASSED_ISOLATED_SYNTHETIC",
+    "receipt": "data/runtime/options-workbench-development/position-quotes-browser-acceptance.json",
+    "sha256": "bf9e808aaee2683459e28873533da32e9ddeeb99a0f59228d02b8e9da248b5b3",
+    "productionEntry": "VERIFIED_EMPTY_SUPPORTED_LEDGER_ZERO_MARKET_CALLS"
+  },
+  "normalRoundStorage": {
+    "localStoreWritesIncludingSharedSlot": 6,
+    "documentedHostRawHandoffWrites": 1,
+    "totalForDocumentedPath": 7,
+    "marketCallsAreNotStoredRowCounts": true
+  },
+  "nextStep": "One explicit regular-session review after a genuine supported open position has a verified saved contract identity. Do not manufacture a holding."
+}

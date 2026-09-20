@@ -5,6 +5,8 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "options:position-quotes": "tsx scripts/options-position-quotes.mjs",
+    "test:options-position-quotes": "tsx scripts/options-position-quotes.test.mjs",
     "options:trend-study": "tsx scripts/options-trend-study.mjs",
     "test:options-trend-study": "tsx scripts/options-trend-study.test.mjs",
     "test:options-macro-playbook": "tsx scripts/options-macro-playbook.test.mjs",
