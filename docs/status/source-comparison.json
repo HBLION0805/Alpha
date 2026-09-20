@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_SOURCE_COMPARISON_DELIVERY_V1",
-  "updatedAt": "2026-09-20T04:38:23.041Z",
+  "updatedAt": "2026-09-20T05:16:02.639Z",
   "baseline": "7c327a82ef2bb869299dac2f09b43e58843ca2e9",
   "status": "IMPLEMENTED_AND_LOCALLY_VERIFIED",
   "historicalComparison": "SAVED_HEADLINE_ONLY_DISPLAY_VERIFIED",
@@ -209,5 +209,113 @@
     "productCodeChanged": false,
     "fullProductValidationRerun": false,
     "validation": "Original-content and record assertions passed; page save/reload and isolated original-plan/back-reference checked; documentation checks recorded separately"
+  },
+  "prospectivePlanningTrial": {
+    "status": "PROSPECTIVE_RESEARCH_SAVED_AND_REOPENED",
+    "baseline": "9e4a2b5b09ab81a35a14a5aadb61a24e173a05be",
+    "checkedAt": "2026-09-20T05:15:01.909Z",
+    "scope": "One real future-event research draft; content and raw evidence remain private",
+    "beforeEvent": true,
+    "approvedExecutionPlan": false,
+    "ownerSemanticConfirmation": false,
+    "independentReview": false,
+    "quantifiedExpectationSurprise": false,
+    "contractComparison": "WAIT_FOR_QUALIFIED_QUOTE_AND_EXPLICIT_PLAN_PARAMETERS",
+    "researchHypothesisOutcome": "PENDING_FUTURE_REVIEW",
+    "planKind": "DRAFT",
+    "binding": "REFERENCE_ONLY",
+    "planVersion": "sha256:c1d396c8724b2c8ecc95684e515ef9f2bbce6f08759db9127bbe43d08de62ce2",
+    "comparisonFingerprint": "sha256:ccfdd9938fa5f39544c1aa64cb1c68e0e21691648cb02d2f9319e5cb78a435c1",
+    "comparisonSavedAt": "2026-09-20T05:09:17.941Z",
+    "sourceClaimChecks": 4,
+    "sourceNumericMismatch": false,
+    "priorRecordsPreserved": true,
+    "page": {
+      "method": "Existing production browser, protected API save and reload; actual DOM inspected",
+      "sourceCard": "PASSED",
+      "originalPlanModal": "PASSED",
+      "plannerResume": "PASSED",
+      "plannerToComparisonBackref": "PASSED",
+      "sourceClocks": "PASSED",
+      "prospectiveSnapshotLabel": "PASSED_AFTER_ONE_LINE_FIX",
+      "independentReview": false,
+      "loadedSourceUrl": "http://127.0.0.1:4173/#context",
+      "plannerUrl": "http://127.0.0.1:4173/#planner"
+    },
+    "records": {
+      "freshProcess": "PASSED",
+      "sourceErrors": 0,
+      "allPriorSourceFingerprintsPreserved": true,
+      "planVersionMatchesBinding": true,
+      "planSavedBeforeRelease": true,
+      "realTrades": 0,
+      "realFills": 0,
+      "positionReviews": 0,
+      "noExecutableCondition": true,
+      "unconfiguredContractAndExitFieldsPreserved": true,
+      "ownerConfirmation": false
+    },
+    "usage": {
+      "webInvocations": 3,
+      "urlReadOperations": 3,
+      "distinctPages": 2,
+      "searchQueries": 1,
+      "searchResults": 0,
+      "marketCalls": 0,
+      "usdCost": "UNKNOWN",
+      "hostAnalysisGenerations": 1,
+      "applicationExternalModelApiCalls": 0,
+      "marketRows": 0,
+      "sourceRecordsAdded": 3,
+      "ledgerEventsAdded": 1,
+      "ledgerEventFilesAdded": 2,
+      "localApiCommandFilesAdded": 1,
+      "durableProductFilesAdded": 6,
+      "targetedReviewRecordsAdded": 0
+    },
+    "productFix": "Neutral source-snapshot label for prospective and historical saved comparisons; no calculation or execution change",
+    "validation": {
+      "focused": {
+        "command": "node --import tsx scripts/options-source-comparison.test.mjs",
+        "passed": 20,
+        "failed": 0
+      },
+      "typecheck": {
+        "command": "npm run typecheck",
+        "exitCode": 0
+      },
+      "full": {
+        "command": "node scripts/alpha-validate.mjs",
+        "status": "PASSED",
+        "componentCount": 182,
+        "testsExecuted": 4846,
+        "passed": 4846,
+        "failed": 0,
+        "durationMs": 125905,
+        "warnings": [
+          "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+          "warning: in the working copy of 'apps/options-workbench/source-comparison.js', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'scripts/options-source-comparison.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+        ],
+        "log": "data/runtime/options-workbench-development/prospective-full-validation.log",
+        "sha256": "48bb21148f60b2bf04084cdb8761a7a746b6e31a4c9ec92831e19dcca194277a"
+      },
+      "productFiles": [
+        {
+          "path": "apps/options-workbench/source-comparison.js",
+          "sha256": "df1844df00df36751c80dfca4d22daae6bbd07f7c8812cabfaf1b960c90660ab"
+        },
+        {
+          "path": "scripts/options-source-comparison.test.mjs",
+          "sha256": "e9547b1cfef92df38192adcf58d6c6ae3921ba30c0d3f8892f7ecd4861acc620"
+        }
+      ]
+    },
+    "receipt": "data/runtime/options-workbench-development/prospective-acceptance.json",
+    "receiptSha256": "fd829bb17f6614d20b121e8cc84f8b31397aff299086718f0a7897e669966195",
+    "nextCheck": "Explicit manual review recorded privately; no automatic task created",
+    "routine1550Acceptance": "PENDING_NATURAL_RUN",
+    "firstRealTargetedQuote": "NOT_VERIFIED",
+    "rawResearchPublished": false
   }
 }

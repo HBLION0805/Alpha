@@ -69,6 +69,17 @@ await test('source material mutation never replaces the immutable copied selecti
 await test('HTML rendering keeps five sections, source limits and separate clocks, with escaping',()=>temp(f=>{
   const {request}=saveDraft(f,d=>{d.interpretations[0].text='<script>bad</script>';});confirm(f,request);const r=sourceComparisonRecords(f.root,ledgerId,at(6)).records.find(r=>r.kind==='saved'),html=sourceCard(r);for(const label of ['1. Source statements','2. Attributed interpretations','3. Agreements and differences','4. Gaps and counterevidence','5. Original-plan relevance','Owner-confirmation'])assert(html.includes(label));assert(!html.includes('<script>'));assert(sourceBackrefs({records:[r]},watchId).includes('Co-display is not real-time'));assert(sourceComparisonPanel({...f.state,sourceComparisons:{data:{...f.catalog,...sourceComparisonRecords(f.root,ledgerId,at(6))}}},{}).includes('Prepare evidence package'));
 }));
+await test('prospective and historical source snapshots retain clocks without a historical-only or live label',()=>temp(f=>{
+  const {request}=saveDraft(f);confirm(f,{...request,reviewedClaims:[],bindings:[]});
+  const record=sourceComparisonRecords(f.root,ledgerId,at(6)).records.find(r=>r.kind==='saved');
+  for(const scheduledAt of [at(-3600),at(86400)]){
+    const r=structuredClone(record);r.package.payload.event.scheduledAt=scheduledAt;
+    const html=sourceCard(r);assert(html.includes('Saved source snapshot, not a live market assessment.'));
+    assert(!html.includes('Historical saved comparison'));assert(html.includes('Analysis generated'));
+    assert(html.includes('comparison saved'));assert(html.includes('SEMANTIC_SUPPORT_UNVERIFIED'));
+    assert(html.includes('Original-plan relevance'));assert(!html.includes('Prefill original Owner-confirmation form'));
+  }
+}));
 await test('saved targeted quote and comparison coexist, while stale quote still permits time exit',()=>temp(async f=>{
   const {request}=saveDraft(f);confirm(f,request);preparePositionQuotes(f.root,ledgerId,'targeted-test',null,at(6));const begin=beginPositionQuotes(f.root,'targeted-test',at(7),{allowSynthetic:true});let calls=0;
   const raw=await collectPositionQuotes({request:begin.request,clock:async()=>at(8),authorize:async i=>authorizePositionQuoteCall(f.root,'targeted-test',i,at(8),{allowSynthetic:true}),call:async(name,r)=>{calls++;if(name==='get_equity_quotes')return {data:{results:r.symbols.map(symbol=>({quote:{symbol,last_trade_price:'400',venue_last_trade_time:at(8),last_non_reg_trade_price:null,venue_last_non_reg_trade_time:null}}))}};assert.equal(name,'get_option_quotes');return {data:{results:r.instrument_ids.map(instrument_id=>({quote:{instrument_id,bid_price:'1.5',ask_price:'1.51',bid_size:10,ask_size:10,updated_at:at(8)}}))}};}});

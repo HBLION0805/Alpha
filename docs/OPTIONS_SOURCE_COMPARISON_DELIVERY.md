@@ -249,3 +249,76 @@ NOT_VERIFIED; routine 15:50 acceptance remains PENDING_NATURAL_RUN.
 For a future real-plan use, the remaining requirement is a genuinely saved
 applicable plan and contemporaneous expectation; this historical review cannot
 create them retrospectively. No new automatic work was scheduled.
+
+## Prospective planning trial — September 20, 2026
+
+Starting from `9e4a2b5b09ab81a35a14a5aadb61a24e173a05be`, the existing workflow
+saved one real **prospective analyst research draft**, not a synthetic fixture,
+approved execution plan or holding. A future event from the existing calendar
+was checked against its official calendar and a primary prior-period release.
+Publication and actual receipt clocks remain distinct; the future actual is
+absent. Research content, source excerpts and operating records remain private.
+
+The saved comparison separates four attributed source claims, conditional
+support/mixed/reverse scenarios, a counterexample, missing consensus and quote
+evidence, and a proposed manual follow-up. Same-Host original-text checks found
+no numeric or quotation mismatch. They do not constitute independent review or
+Owner confirmation. No quantified expectation surprise or executable opportunity
+was established. The conditional thesis and future outcome have not been tested.
+
+Existing Host package/receive functions and protected local preview/save routes
+stored the package, analysis, incomplete plan and exact-version comparison link.
+The plan stays `DRAFT`; the link stays `REFERENCE_ONLY`. No contract identity,
+expiry, strike, size, premium, stop/target or latest position exit was invented.
+A research review deadline is not a position exit or contract expiry. Future
+checks require an explicit active review; recording them creates no automation.
+The original 09:00/15:50 schedule does not establish opening or release-time
+coverage. No trade remains an allowed result.
+
+Actual browser checks reopened the same comparison and original-plan modal,
+resumed the draft in Trade planner, and followed its comparison back-reference.
+Saved IDs, exact plan version, source coverage/clocks, unconfigured fields and
+non-executable status matched. A fresh process verified record fingerprints and
+the ledger; every prior comparison fingerprint remained unchanged. There are
+still zero registered trades, fills, holdings and position evaluations.
+
+This use exposed one presentation defect: every saved comparison was labeled
+historical, including prospective event planning. The card now says **Saved
+source snapshot, not a live market assessment**, and directs readers to the
+recorded clocks. No temporal status engine, source transport, trading rule or
+new page was added. One existing-suite regression covers both past and future
+events while preserving the unverified-semantic and no-live-assessment labels.
+
+Private acceptance receipt:
+`data/runtime/options-workbench-development/prospective-acceptance.json`, SHA-256
+`fd829bb17f6614d20b121e8cc84f8b31397aff299086718f0a7897e669966195`.
+It contains private IDs, versions, read receipts, next checks and browser evidence
+references. Git contains only this operational summary and sanitized status.
+
+Current validation, after the product text fix: source-comparison tests **20/20**,
+`npm run typecheck` passed, and `node scripts/alpha-validate.mjs` passed **4,846
+tests, zero failures across 182 components**. Warnings concerned the intentionally
+dirty working tree and LF/CRLF normalization. A private API-check helper initially
+looked for workspace identity in the state response; it failed before saving and
+was corrected to use the existing health endpoint. No product API defect or data
+loss resulted. An initial private validation-log parser also failed before receipt
+creation and was corrected; the actual product validation had already passed.
+The final documentation-only update uses the existing Markdown check and JSON
+parsing plus both Git whitespace checks; no second full product run is implied.
+
+Usage: **3 public web-tool invocations**, comprising 3 page-read operations over
+2 distinct official pages and 1 consensus search with no results. The first read
+has an observed receipt-end bound but no precise request-start clock; subsequent
+search/read clocks are retained. One attributed Host analysis generation was
+saved; this is not a count of all internal Codex inference. Application external
+model API calls, market calls and new quote rows were **zero**. The product added
+3 comparison-store records and 1 draft ledger event (2 ledger files plus 1 API
+command file): **6 durable product files**, excluding private development receipts.
+No targeted review was added. Dollar cost remains **UNKNOWN**.
+
+Remaining conditions are reliable pre-release expectation evidence, appropriate
+fresh saved quotes and explicit Owner confirmation of an executable plan. Future
+event outcomes remain pending rather than failed. First real targeted quoting
+remains NOT_VERIFIED and routine 15:50 remains PENDING_NATURAL_RUN; this trial
+does not advance either acceptance. No source frequency, frozen experiment,
+historical evidence, capital setting or account/order permission changed.
