@@ -11,6 +11,7 @@ import { parseChainSurveyJson } from "../src/engines/options-robinhood-data/Robi
 import { optionsEvidenceExportStorage as io } from "./options-evidence-export.mjs";
 import { runOptionsActivityStudyCommand } from "./options-activity-study.mjs";
 import {verifyNewPlanExpectation} from './lib/options-market-expectation-io.mjs';
+import {verifyNewPlanScenario} from './lib/options-scenario-research.mjs';
 
 export const MANUAL_LEDGER_BASE = "data/runtime/options-manual-ledger";
 const MAX = 32 * 1024 * 1024;
@@ -86,6 +87,7 @@ function append(root, id, sourceBytes, now) {
     }
     verifyReference(root, command, loaded.input.origin, now);
     verifyNewPlanExpectation(root,id,command,recordedAt);
+    verifyNewPlanScenario(root,id,command,recordedAt,loaded.report);
     const sequence = loaded.input.events.length + 1, event = {sequence,recordedAt,savedAt:recordedAt,command};
     if (recordedAt < loaded.lastSavedAt) fail("APPEND_CLOCK");
     const report = reconcileManualLedger({...loaded.input, events:[...loaded.input.events,event]},recordedAt);

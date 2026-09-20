@@ -22,7 +22,7 @@ export function sourceRecordFiles(root){
   const list=readdirSync(dir,{withFileTypes:true});if(list.length>500||list.some(f=>!f.isFile()||f.isSymbolicLink()))fail('CATALOG');return list.map(f=>f.name);
 }
 export function readSourceRecord(root,path){
-  if(typeof path!=='string'||!/^data\/runtime\/options-macro-comparisons\/source-(?:package|draft|saved|expectation)-[a-z0-9][a-z0-9-]{2,79}\.json$/.test(path))fail('PATH');
+  if(typeof path!=='string'||!/^data\/runtime\/options-macro-comparisons\/source-(?:package|draft|saved|expectation|scenario)-[a-z0-9][a-z0-9-]{2,79}\.json$/.test(path))fail('PATH');
   const r=parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true}).decode(io.readBytes(root,path,MAX))),{fingerprint,...p}=r;
   if(p.version!=='OPTIONS_SOURCE_COMPARISON_V1'||fp(p)!==fingerprint||pathFor(p.kind,p.id)!==path)fail('INTEGRITY');time(p.savedAt);return {path,...r};
 }

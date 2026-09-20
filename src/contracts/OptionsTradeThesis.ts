@@ -21,6 +21,8 @@ export interface TradeThesis {
   /** Optional entry-only confirmation. Absent on historical plans; never inferred as permission. */
   eventEntry?: EventEntryConfirmation;
   expectationSnapshot?: ExpectationSnapshotReference;
+  /** Optional immutable research assumptions. Never an execution permission. */
+  scenarioSet?: {path:string;fingerprint:string;savedAt:string};
 }
 export interface EventEntryConfirmation {
   phase: '' | 'PRE_EVENT' | 'POST_EVENT'; conditionId: string;

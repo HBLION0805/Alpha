@@ -53,3 +53,5 @@
 #macro-storyline select,#macro-storyline textarea{max-width:100%;width:100%;box-sizing:border-box}
 #macro-storyline .check-row span{min-width:0;overflow-wrap:anywhere}
 #macro-storyline .check-row small{display:block}
+
+#scenario-research{min-width:0;overflow-wrap:anywhere}#scenario-research label{display:grid;gap:8px;margin:12px 0;min-width:0}#scenario-research select,#scenario-research input{width:100%;min-width:0;max-width:100%}#scenario-research fieldset{border:1px solid var(--line);border-radius:8px;margin:16px 0;padding:16px;min-width:0}#scenario-research td{white-space:normal;overflow-wrap:anywhere;max-width:340px}#scenario-research details{margin:16px 0}#scenario-research .table-scroll{max-height:620px}#scenario-research .table-scroll table{min-width:680px}

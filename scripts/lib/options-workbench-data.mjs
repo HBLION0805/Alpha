@@ -45,6 +45,7 @@ import {assessMacroNote} from '../../src/engines/options-knowledge/OptionsMacroP
 import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 import {sourceCatalog,sourceComparisonView,prepareSourcePackage,receiveSourceDraft,previewSourceComparison,saveSourceComparison} from './options-source-comparison.mjs';
 import {expectationRecords,previewExpectation,saveExpectation,verifyNewPlanExpectation} from './options-market-expectation-io.mjs';
+import {scenarioResearchView,previewScenario,saveScenario,contractFitView,verifyNewPlanScenario} from './options-scenario-research.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -137,6 +138,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.sourceComparisons=await component(()=>sourceComparisonView(root,ledgerId,result,at),at);
     result.marketExpectations=await component(()=>expectationRecords(root,ledgerId,at),at);
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
+    result.scenarioResearch=await component(()=>scenarioResearchView(root,ledgerId,result,at),at);
     // Reference UI only, appended after all existing decision projections.
     result.macroWorldModel=await component(()=>readWorldModel(),at);
     result.storylines=await component(()=>storylineView(root,result,at),at);
@@ -179,6 +181,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     const previous=r.input.events.find(e=>e.command.requestId===c.requestId);
     if(previous){if(paperFingerprint(previous.command)!==paperFingerprint(c))fail('REQUEST_CONFLICT');return {alreadyRecorded:true,headSha256:r.headSha256,command:c,report:r.report};}
     verifyNewPlanExpectation(root,ledgerId,c,at);
+    verifyNewPlanScenario(root,ledgerId,c,at);
     const report=reconcileManualLedger({...r.input,events:[...r.input.events,{sequence:r.input.events.length+1,recordedAt:at,savedAt:at,command:c}]},at);
     return {alreadyRecorded:false,headSha256:r.headSha256,command:c,report};
   }
@@ -239,6 +242,14 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_PLAYBOOK_ACTION');
     return body.action==='PREVIEW'?assessMacroNote(body.request):saveMacroNote(root,body.request,now());
   }
+  async function scenarioResearch(body){
+    if(!body||typeof body!=='object'||Array.isArray(body))fail('INPUT');
+    const s=await state(),at=s.loadedAt;
+    if(body.action==='FIT')return contractFitView(s,body.planKey,body.planVersion,body.contractId,body.quantity);
+    if(body.action==='PREVIEW')return previewScenario(root,ledgerId,body.request,s,at);
+    if(body.action==='SAVE')return saveScenario(root,ledgerId,body.request,body.previewFingerprint,s,at);
+    fail('ACTION');
+  }
   async function sourceComparison(body){
     if(!body||Object.keys(body).sort().join()!=='action,previewFingerprint,request')fail('MACRO_SOURCE_ACTION');
     const at=now();
@@ -254,5 +265,5 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,previewFingerprint,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_STORYLINE_ACTION');
     return body.action==='PREVIEW'?previewStorylineLink(root,body.request,now()):saveStorylineLink(root,body.request,body.previewFingerprint,now());
   }
-  return {storyline,sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  return {scenarioResearch,storyline,sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

@@ -1,4 +1,5 @@
 import {snapshotRequest,snapshotResult} from './snapshot-paper.js';
+import {blankScenario,prepareScenarioRequest,scenarioResult,contractFitResult} from './scenario-research.js';
 import {etfSetupRequest} from './etf-setup.js';
 import {positionWatchRequest,positionWatchResult,positionWatchPreviewMatches} from './position-watch.js';
 import {spreadCapitalNotice} from './spread-review.js';
@@ -85,7 +86,21 @@ function chooseStoryline(key){
 }
 function updateDraft(el){
   if(!el.name)return;
+  if(el.name==='researchPlan'){
+    if(dirty.has('scenario')){el.value=ui.scenarioPlanKey??'';toast('Save your scenario draft before changing plans.');return;}
+    ui.scenarioPlanKey=el.value;ui.scenarioPreview=null;ui.scenarioDraft=null;ui.fitPlanKey=el.value;ui.contractFit=null;render();return;
+  }
   const form=el.closest('form');if(!form)return;
+  if(form.id==='scenario-form'){
+    const d=ui.scenarioDraft;if(!d)return;
+    const path=(el.name==='scenarioSetId'?'id':el.name).split('.');let target=d;for(const k of path.slice(0,-1))target=target[k];
+    target[path.at(-1)]=el.name==='quantity'?(el.value===''?null:Number(el.value)):el.value;
+    ui.scenarioPreview=null;dirty.add('scenario');form.querySelector('[value="SAVE"]').disabled=true;$('#scenario-result').innerHTML=scenarioResult(null);return;
+  }
+  if(form.id==='contract-fit-form'){
+    if(el.name==='planKey')ui.fitPlanKey=el.value;if(el.name==='contractId')ui.fitContractId=el.value;if(el.name==='quantity')ui.fitQuantity=el.value;
+    ui.contractFit=null;$('#contract-fit-result').innerHTML=contractFitResult(null);return;
+  }
   if(form.id==='storyline-form'){
     const d=ui.storyDraft;if(!d)return;
     if(el.name==='theme')d.themes=[...form.querySelectorAll('[name=theme]:checked')].map(x=>x.value);
@@ -233,6 +248,19 @@ document.addEventListener('submit',event=>{
     }catch(e){fail(e,'#story-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
   }
 
+  if(['scenario-form','contract-fit-form'].includes(event.target.id)){
+    event.preventDefault();if(saving||previewing)return;saving=true;const button=event.submitter;button.disabled=true;
+    const isFit=event.target.id==='contract-fit-form',f=new FormData(event.target),input=isFit?null:structuredClone(ui.scenarioDraft);
+    void(async()=>{try{
+      const p=state.scenarioResearch.data.plans.find(p=>p.key===f.get('planKey'));
+      const body=isFit?{action:'FIT',planKey:p?.key,planVersion:p?.version,contractId:f.get('contractId'),quantity:f.get('quantity')===''?null:Number(f.get('quantity'))}:{action:button.value,request:input,previewFingerprint:ui.scenarioPreview?.previewFingerprint};
+      if(!isFit&&button.value==='SAVE'&&JSON.stringify(ui.scenarioPreview?.payload.request)!==JSON.stringify(input))throw Error('Preview the unchanged scenario set before saving.');
+      const r=await request('/api/scenario-research',body);
+      if(isFit){ui.contractFit=r;render();}
+      else if(button.value==='SAVE'){if(JSON.stringify(ui.scenarioDraft)===JSON.stringify(input)){ui.scenarioDraft=null;ui.scenarioPreview=null;dirty.delete('scenario');}await reload();toast('Scenario version saved. No plan freeze, quantity change or trade permission.');}
+      else if(JSON.stringify(ui.scenarioDraft)===JSON.stringify(input)){ui.scenarioPreview=r;render();}
+    }catch(e){fail(e,isFit?'#contract-fit-error':'#scenario-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='expectation-form'){
     event.preventDefault();if(saving||previewing)return;
     const form=event.target,button=event.submitter;saving=true;button.disabled=true;
@@ -378,6 +406,30 @@ document.addEventListener('submit',event=>{
 });
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
+  if(el.id==='prepare-scenarios'){
+    if(dirty.has('scenario'))throw Error('Save the current scenario draft before preparing another.');
+    const p=state.scenarioResearch.data.plans.find(p=>p.key===ui.scenarioPlanKey);if(!p)return;
+    ui.scenarioDraft=prepareScenarioRequest(p,state.marketExpectations?.data?.records??[],'scenario-'+crypto.randomUUID());ui.scenarioPreview=null;dirty.add('scenario');render();return;
+  }
+  if(el.id==='add-scenario'||el.dataset.removeScenario!==undefined){
+    if(el.id==='add-scenario'){if(ui.scenarioDraft.rows.length<12)ui.scenarioDraft.rows.push(blankScenario('s-'+crypto.randomUUID()));}
+    else ui.scenarioDraft.rows.splice(Number(el.dataset.removeScenario),1);
+    ui.scenarioPreview=null;dirty.add('scenario');render();return;
+  }
+  if(el.dataset.scenarioOpen){const r=state.scenarioResearch.data.records.find(r=>r.id===el.dataset.scenarioOpen);if(r)showDetail('Original scenario assumptions',`<p>${r.id} · ${r.savedAt} · ${r.fingerprint}</p>`+scenarioResult(r.payload.assessment));return;}
+  if(el.dataset.scenarioRevise){
+    if(dirty.has('scenario'))throw Error('Save the current scenario draft before preparing a revision.');
+    const r=state.scenarioResearch.data.records.find(r=>r.id===el.dataset.scenarioRevise);if(!r)return;
+    const p=state.scenarioResearch.data.plans.find(p=>p.key===(ui.scenarioPlanKey||r.payload.request.planKey));if(!p||p.tradeId!==r.payload.planId)throw Error('Select a version of the same saved plan.');
+    ui.scenarioPlanKey=p.key;ui.scenarioDraft={...structuredClone(r.payload.request),id:'scenario-'+crypto.randomUUID(),scenarioSetVersion:r.payload.request.scenarioSetVersion+1,supersedes:r.path,planKey:p.key,planVersion:p.version};ui.scenarioPreview=null;dirty.add('scenario');render();return;
+  }
+  if(el.dataset.scenarioLink){
+    const r=state.scenarioResearch.data.records.find(r=>r.id===el.dataset.scenarioLink),tradeId=ui.thesisFields?.tradeId;
+    if(!r||tradeId!==r.payload.planId||state.manual.data.trades.some(t=>t.tradeId===tradeId))throw Error('Resume the matching unfrozen thesis draft first. A frozen plan cannot acquire a replacement reference.');
+    ui.thesisDraft.scenarioSet={path:r.path,fingerprint:r.fingerprint,savedAt:r.savedAt};ui.thesisPreview=null;ui.thesisRequestId=null;dirty.add('thesis');render();toast('Reference linked to unsaved thesis draft. Save an appended draft; final freeze checks unchanged terms and contract identity.');return;
+  }
+  if(el.id==='unlink-scenario-reference'){delete ui.thesisDraft.scenarioSet;ui.thesisPreview=null;ui.thesisRequestId=null;dirty.add('thesis');render();return;}
+  if(el.dataset.fitContract){ui.fitContractId=el.dataset.fitContract;ui.contractFit=null;$('#detail-dialog')?.close();location.hash='#planner';render();const d=$('#contract-fit');if(d){d.open=true;d.scrollIntoView();}return;}
   if(el.dataset.storyNewsId){
     const n=storylineNewsChoices(state.storylines?.data).find(n=>n.newsId===el.dataset.storyNewsId&&n.newsSource===el.dataset.storyNewsSource);
     if(!n){toast('This saved source is unavailable for linking; no replacement selected.');return;}
@@ -488,7 +540,7 @@ document.addEventListener('click',event=>{void(async()=>{
     ui.macroNoteRequestId=null;ui.macroNotePreview=null;ui.macroNoteSaved=null;dirty.add('macro-note');render();
     const form=$('#macro-note-form');form.closest('details').open=true;form.elements.personalNote.focus();return;
   }
-  if(el.dataset.candidateCheck){const r=ui.eventCandidateReport?.current??state.candidateChecks?.data?.current,row=r?.rows.find(x=>x.contract.id===el.dataset.candidateCheck);if(row)showDetail('Candidate checks',candidateCheckDetail(row,r));return;}
+  if(el.dataset.candidateCheck){const r=ui.eventCandidateReport?.current??state.candidateChecks?.data?.current,row=r?.rows.find(x=>x.contract.id===el.dataset.candidateCheck);if(row)showDetail('Candidate checks',candidateCheckDetail(row,r)+`<button class="button secondary" data-fit-contract="${row.contract.id}">Inspect Contract Fit against a saved plan</button>`);return;}
   if(el.dataset.eventPlan){
     if(ui.eventCandidatePending)return;
     const plan=(state.eventEntryPlans?.data??[]).find(p=>p.planKey===el.dataset.eventPlan);

@@ -1,0 +1,49 @@
+{
+  "version": "OPTIONS_SCENARIO_RESEARCH_STATUS_V1",
+  "status": "IMPLEMENTED_AND_VERIFIED",
+  "entry": "Trade planner / Scenario & EV / Candidate comparison — Contract Fit",
+  "evKind": "ASSUMPTION_EV",
+  "validatedEv": "UNKNOWN",
+  "probabilityUnit": "PERCENT",
+  "dimensionCount": 15,
+  "ranking": false,
+  "automaticSizing": false,
+  "executionAllowed": false,
+  "formalWorkbench": {
+    "port": 4173,
+    "sameWorkspace": true,
+    "contextRefreshPreserved": true,
+    "desktopWidth": 1280,
+    "mobileWidth": 390,
+    "horizontalPageOverflow": false,
+    "consoleErrors": 0,
+    "savedVersionRecoveredAfterRestart": true
+  },
+  "actualCompatibility": {
+    "planId": "gld-employment-20261002",
+    "planKey": "draft:gld-employment-20261002-draft-v3",
+    "expectationSnapshotId": "gld-employment-20261002-research-v1",
+    "scenarioSetId": "gld-employment-20261002-scenarios-v1",
+    "scenarioSavedAt": "2026-09-20T22:16:44.813Z",
+    "scenarioFingerprint": "sha256:43021e7c4c73be9a527883ffa4b15f9a1ee37d78a02ff1eca77ce18d547ac66b",
+    "assumptionEv": "NOT_CALCULABLE",
+    "contractFit": "NOT_READY_FOR_CURRENT_COMPARISON",
+    "productionTradesCreated": 0,
+    "originalPlansModified": 0
+  },
+  "validation": {
+    "focusedPassed": 40,
+    "focusedFailed": 0,
+    "fullPassed": 5003,
+    "fullFailed": 0,
+    "fullDurationMs": 127240,
+    "typescript": "PASSED",
+    "log": "data/runtime/options-workbench-development/scenario-ev-validation-final-code.txt",
+    "formalReceipt": "data/runtime/options-workbench-development/scenario-ev-formal-receipt.json"
+  },
+  "stageInitiatedCalls": {"market": 0, "publicReads": 0, "externalModelApi": 0},
+  "usdCost": "UNKNOWN",
+  "routine1550": "PENDING_NATURAL_RUN_UNCHANGED",
+  "targetedQuoteFirstUse": "NOT_VERIFIED_UNCHANGED",
+  "frozenTrendV1": "UNQUALIFIED_UNCHANGED"
+}
