@@ -150,3 +150,102 @@ revert this feature commit normally, without reset/rebase or deleting evidence.
 Older readers will not understand the new additive comparison records; preserve
 them and use this version to read them. Git does not back up runtime evidence,
 installed automation or Host state.
+
+## Original-body content acceptance — September 20, 2026
+
+This follow-up used unchanged product baseline
+`26f5abbb85008da215b4cfea45bfed964138b377`. It checked one existing event,
+`FOMC:2026-09-15/2026-09-16/MEETING_DATE_RANGE`, through the existing Host,
+comparison store, protected page save and reload. No feature was added or fixed.
+The earlier title-only comparison and its limits remain dated history.
+
+The Host read the substantive extracted bodies of the Fed's
+[September 16 statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm)
+and its linked
+[implementation note](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a1.htm).
+The second document adds operational details; both belong to the same primary
+publisher and policy package. No factual disagreement was found, and they are
+not two independent confirmations. The earlier CoinDesk title was not promoted
+to a body analysis. No login, subscription, scraper or background task was added.
+
+The two web-tool invocations made three URL attempts: statement success and
+implementation direct-open failure, followed by success through the statement's
+actual implementation link. The original failure is preserved. Second-precision
+receipt clocks were `2026-09-20T04:25:42Z` and `2026-09-20T04:25:54Z`; requests
+began at `04:25:41Z`. These are tool-observed clocks, not publisher transport
+timestamps. The copied package contains selected **EXCERPT** material, not an
+archival HTML/PDF capture. The statement specifies September 16 at 14:00 EDT;
+the implementation note supplies only a publication date and effective date.
+Its exact publication/effective clock stays unknown.
+
+Four claims were checked against the saved original text and paragraph locators:
+
+| Claim | Content check |
+| --- | --- |
+| Target range | A 0.25 percentage-point increase to 3.75%–4.00%; 25 basis points, not a 25% relative increase. |
+| Reserve-balance interest | 3.90%, effective September 17; a separate administered rate, not the target range. |
+| Desk directive | Same target range, effective September 17; a directive does not establish executed transactions. |
+| Conditional reserve maintenance | Preserve “when appropriate,” “if needed,” remaining maturity of three years or less, and the ample-reserve purpose. |
+
+No numerical mismatch was found. The initial draft's “permits” wording was
+refined to “directs conditional actions” to reflect the directive's force while
+retaining its conditions. It does not prove completed purchases or an ETF move.
+Draft V1 remains immutable; V2 names its predecessor and actual check time.
+This was a **same-Host content check**, not an independent reviewer or Owner
+confirmation. Owner semantic-review boxes remain unchecked and the existing
+`SEMANTIC_SUPPORT_UNVERIFIED` label remains; the attributed Host interpretation
+records what was actually checked. No structured fact was sent to an evaluator.
+
+The existing exported Host package helper received the actually read excerpts
+and source receipts; existing CLI `RECEIVE_DRAFT` stored both analysis versions.
+This avoided mislabeling Host-fetched text as an Owner-supplied Macro note.
+The page's current feed catalog still lacks those bodies and truthfully shows
+`UNAVAILABLE_IN_CURRENT_CATALOG_COPIED_SELECTION_RETAINED`. The copied excerpts,
+original URLs, actual receipt clocks and V2 draft remain recoverable.
+
+Production comparison `comparison-731f50e0-c04b-4d2d-9769-b0dbfeab6ec4` was
+previewed and explicitly saved at `2026-09-20T04:34:07.448Z`, then reloaded in
+**News & calendar → Event details · Source comparison**. Its fingerprint is
+`sha256:b11ed211c4352987811dfcd7aace93c3b9449ff7f73b4c403ef49a4e151d7723`.
+It appends to the original title-only comparison without replacing that record.
+The existing reader verified package, drafts and comparison fingerprints.
+
+No applicable real local plan existed, so production remains standalone with
+zero bindings and zero ledger writes. A separate **SYNTHETIC_FIXTURE** workspace
+copied the comparison and saved one explicitly incomplete draft at the real
+current time. Page preview/save/reload linked its exact version and `owner`
+condition as **REFERENCE_ONLY**, with no executable evidence. The original-plan
+modal showed the matching fingerprint; the planner back-reference opened the
+same saved comparison. There were no registrations, fills, holdings or exit
+evaluations. This demonstrates the link operation, not a real-plan decision.
+
+Unresolved: no archived September 16 release vintage, no precise implementation
+clock, no matched pre-event expectation/plan, and no operation or ETF/option
+outcome evidence. This is a September 20 historical review. It cannot prove an
+original expectation surprise or backfill a historical condition trigger.
+
+Private acceptance receipt:
+`data/runtime/options-workbench-development/source-body-acceptance.json`, SHA-256
+`83f46f3f637495d328e10778f6e77093d058655dd28eb3e9dcaea6fa1ec0524b`.
+It locates the original tool responses, retained failure, claim checks, both
+drafts, saved comparison, isolated draft and page checks. Raw text and local
+runtime evidence are excluded from Git.
+
+This follow-up used **zero market calls**, zero quote rows and zero application
+external-model API calls. Two explicitly recorded Host analysis generations
+(initial and revised) are not a count of all internal Codex inference. Production
+store additions were four records: one package, two drafts and one comparison;
+ledger and targeted-review writes were zero. Dollar cost remains **UNKNOWN**.
+Existing limits and natural context-service settings did not change.
+
+Only this delivery and its existing status file changed. Current checks cover
+original quote matching, record integrity, retained revisions, unchanged ledger,
+isolated reference-only binding, page save/reload/back-navigation, existing
+Markdown validation, JSON parsing and both Git whitespace checks. The earlier
+4,845-test product result above is historical, not a rerun for this content-only
+task. No product defect was found. First real targeted quoting remains
+NOT_VERIFIED; routine 15:50 acceptance remains PENDING_NATURAL_RUN.
+
+For a future real-plan use, the remaining requirement is a genuinely saved
+applicable plan and contemporaneous expectation; this historical review cannot
+create them retrospectively. No new automatic work was scheduled.

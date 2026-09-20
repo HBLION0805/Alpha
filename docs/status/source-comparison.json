@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_SOURCE_COMPARISON_DELIVERY_V1",
-  "updatedAt": "2026-09-20T04:11:41.200Z",
+  "updatedAt": "2026-09-20T04:38:23.041Z",
   "baseline": "7c327a82ef2bb869299dac2f09b43e58843ca2e9",
   "status": "IMPLEMENTED_AND_LOCALLY_VERIFIED",
   "historicalComparison": "SAVED_HEADLINE_ONLY_DISPLAY_VERIFIED",
@@ -84,5 +84,130 @@
     "allocation": true,
     "originalPlans": true
   },
-  "nextStep": "When the Owner explicitly selects a genuine supported reported open position with verified identity, use the existing targeted path during an eligible regular session; retain actual results separately."
+  "nextStep": "When the Owner explicitly selects a genuine supported reported open position with verified identity, use the existing targeted path during an eligible regular session; retain actual results separately.",
+  "contentAcceptance": {
+    "status": "CONTENT_CHECKED_SAVED_AND_RELOADED",
+    "baseline": "26f5abbb85008da215b4cfea45bfed964138b377",
+    "eventKey": "FOMC:2026-09-15/2026-09-16/MEETING_DATE_RANGE",
+    "reviewTiming": "HISTORICAL_REVIEW_PERFORMED_20260920",
+    "sourceCount": 2,
+    "coverage": "EXCERPT",
+    "primaryPublisher": "Federal Reserve",
+    "independentConfirmations": null,
+    "claimChecks": [
+      {
+        "claimId": "target-range",
+        "source": "statement",
+        "locator": "policy paragraph / line 15",
+        "status": "HOST_CHECKED_SUPPORTED",
+        "checks": "1/4 percentage point = 0.25 percentage point = 25 bp; 3-3/4 = 3.75; range upper endpoint 4%; September 16 announcement. Not percent-relative change."
+      },
+      {
+        "claimId": "reserve-rate",
+        "source": "implementation note",
+        "locator": "first bullet / line 11",
+        "status": "HOST_CHECKED_SUPPORTED",
+        "checks": "3.90 percent refers to interest on reserve balances, not the federal funds target; explicit effective DATE September 17, not September 16."
+      },
+      {
+        "claimId": "desk-directive",
+        "source": "implementation note",
+        "locator": "directive heading and first sub-bullet / lines 13–15",
+        "status": "HOST_CHECKED_SUPPORTED",
+        "checks": "September 17 effective DATE and 3.75–4 percent target range; instruction is not evidence of completed transactions."
+      },
+      {
+        "claimId": "conditional-purchases",
+        "source": "implementation note",
+        "locator": "fourth sub-bullet / line 18",
+        "status": "HOST_CHECKED_WORDING_REFINED",
+        "checks": "Retain when appropriate, if needed, remaining maturity <=3 years and ample-reserve purpose. Replace permits with directs conditional actions; policy directive is not a mere authorization or a completed-purchase report."
+      }
+    ],
+    "executor": "Codex existing Host; same-Host semantic check, not Owner or independent review",
+    "ownerConfirmation": false,
+    "numericMismatchFound": false,
+    "wordingCorrection": "V1 permits refined to V2 conditional directive; original retained",
+    "productionComparison": {
+      "id": "comparison-731f50e0-c04b-4d2d-9769-b0dbfeab6ec4",
+      "path": "data/runtime/options-macro-comparisons/source-saved-comparison-731f50e0-c04b-4d2d-9769-b0dbfeab6ec4.json",
+      "fingerprint": "sha256:b11ed211c4352987811dfcd7aace93c3b9449ff7f73b4c403ef49a4e151d7723",
+      "savedAt": "2026-09-20T04:34:07.448Z",
+      "supersedes": "data/runtime/options-macro-comparisons/source-saved-fomc-20260916-historical-comparison.json",
+      "ownerSemanticReview": false,
+      "planBindings": 0
+    },
+    "package": {
+      "path": "data/runtime/options-macro-comparisons/source-package-fomc-20260916-body-20260920.json",
+      "fingerprint": "sha256:fd96e340804cb7c4b50c119be65f8f58e3f2b72586b664d5dfc2a3245953f26c",
+      "savedAt": "2026-09-20T04:27:40.703Z"
+    },
+    "drafts": [
+      {
+        "path": "data/runtime/options-macro-comparisons/source-draft-fomc-20260916-body-host-v1.json",
+        "fingerprint": "sha256:da03efe44c233a9e564a73618a4c2931e1e6363dc360906775616b0a977bd50b",
+        "savedAt": "2026-09-20T04:28:43.808Z"
+      },
+      {
+        "path": "data/runtime/options-macro-comparisons/source-draft-fomc-20260916-body-host-v2.json",
+        "fingerprint": "sha256:b1b496334a70d42083829e01ad7363af09dcf659def4d7adbb55e14312d1e120",
+        "savedAt": "2026-09-20T04:29:36.800Z",
+        "revises": "data/runtime/options-macro-comparisons/source-draft-fomc-20260916-body-host-v1.json"
+      }
+    ],
+    "planAssociation": {
+      "production": "NO_APPLICABLE_PLAN_STANDALONE",
+      "isolated": "DRAFT_REFERENCE_ONLY_SAVED_RELOADED",
+      "planVersion": "sha256:485614cbf150e6717ecf071f4e99e82a26276d0159b2918c11e6c558f52786e6",
+      "planSavedAt": "2026-09-20T04:35:11.016Z",
+      "comparisonId": "comparison-6af24142-4c4b-4c96-9ac0-b21e8cd61d3f",
+      "comparisonFingerprint": "sha256:58e6c5a70b91e26fe95a4905e3d5d76413e657dfd293370e18dafead97392e9e",
+      "realTradesCreated": 0
+    },
+    "page": {
+      "productionPreviewSaveReload": "PASSED",
+      "sameIdAndV2Draft": true,
+      "originalSourceUrlsAndClocksVisible": true,
+      "ownerSemanticStatus": "UNVERIFIED",
+      "coverageVisible": "EXCERPT",
+      "currentCatalogLabel": "UNAVAILABLE_IN_CURRENT_CATALOG_COPIED_SELECTION_RETAINED",
+      "isolatedLinkSaveReload": "PASSED",
+      "isolatedOriginalDraftModal": "PASSED",
+      "isolatedPlannerBackReference": "PASSED"
+    },
+    "receipt": "data/runtime/options-workbench-development/source-body-acceptance.json",
+    "receiptSha256": "83f46f3f637495d328e10778f6e77093d058655dd28eb3e9dcaea6fa1ec0524b",
+    "rawReceipt": {
+      "path": "data/runtime/options-workbench-development/source-body-web-receipt-20260920.json",
+      "sha256": "4f4b643dbd040f0f12b9a028c347103f3e5df241834b671fd9385624c5635884"
+    },
+    "qaReceipt": {
+      "path": "data/runtime/options-workbench-development/source-body-content-check.json",
+      "sha256": "6e263ea54f350a9584dbc21354741a8588dabac0d40a784c73f44f87dc68155c"
+    },
+    "usage": {
+      "webToolInvocations": 2,
+      "urlAttempts": 3,
+      "successfulDocuments": 2,
+      "failedAttempts": 1,
+      "marketCalls": 0,
+      "etfRows": 0,
+      "optionRows": 0,
+      "hostAnalysisGenerations": 2,
+      "applicationExternalModelApiCalls": 0,
+      "productionComparisonWrites": 4,
+      "productionLedgerWrites": 0,
+      "productionTargetedReviewWrites": 0,
+      "usdCost": "UNKNOWN"
+    },
+    "unresolved": [
+      "No archived release vintage",
+      "Implementation publication/effective time only date precision",
+      "No matched pre-event expectation or real plan",
+      "No actual execution or ETF/option outcome evidence"
+    ],
+    "productCodeChanged": false,
+    "fullProductValidationRerun": false,
+    "validation": "Original-content and record assertions passed; page save/reload and isolated original-plan/back-reference checked; documentation checks recorded separately"
+  }
 }
