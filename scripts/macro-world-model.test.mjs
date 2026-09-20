@@ -93,6 +93,30 @@ await test('guardrail interpretations are readable audit exclusions, never affir
  for(const g of runtime.guardrails){assert.equal(g.assertion,false);assert.equal(g.notInverseFact,true);assert(g.reason&&g.dossierRefs.length);}
  const hits=readWorldModel({keyword:'SWIFT'}).items;assert(hits.some(i=>i.reviewLabel==='F03'));assert(!hits.some(i=>i.statement==='SWIFT removal = total isolation'));
 });
+await test('short news terms do not match fragments inside unrelated financial or trade words',()=>{
+ const ai=readWorldModel({keyword:'AI power'});
+ assert(ai.items.some(i=>i.reviewLabel==='B2-K08'));
+ assert(!ai.items.some(i=>i.reviewLabel==='ME01'||i.reviewLabel==='B2-W01'));
+ assert(readWorldModel({keyword:'AI'}).items.every(i=>i.reviewLabel.startsWith('B2-')));
+ const port=readWorldModel({keyword:'port'});
+ assert(port.items.some(i=>i.reviewLabel==='B2-ME03'));
+ assert(!port.items.some(i=>['F10','ME01','B2-ME01'].includes(i.reviewLabel)));
+ for(const keyword of ['---','...']){const r=readWorldModel({keyword});assert.equal(r.items.length+r.edges.length,0);}
+});
+await test('saved source names in displayed limitations remain discoverable without indexing source documents',()=>{
+ for(const [keyword,label] of [['PJM','B2-K08'],['Vietnam','B2-K07'],['connector countries','B2-K07'],['Hambantota','B2-K17']]){
+  const r=readWorldModel({keyword});assert.deepEqual(r.items.map(i=>i.reviewLabel),[label]);assert.equal(r.edges.length,0);
+ }
+ const c=readWorldModel();c.sourceMap[0].savedSupportAndLimitations='privateunindexedsource';c.guardrails[0].reason='unindexedguardrail';
+ for(const keyword of ['privateunindexedsource','unindexedguardrail']){const r=lookupWorldModel(c,{keyword});assert.equal(r.items.length+r.edges.length,0);}
+});
+await test('limitation hits retain narrow edge meaning and do not turn controls into a macro story',()=>{
+ const r=readWorldModel({keyword:'project debt'}),edge=r.edges.find(e=>e.reviewLabel==='B2-L7');
+ assert(edge);assert(edge.limitations);assert.equal(r.executionAllowed,false);assert.equal(r.tradingInfluence,false);
+ assert.deepEqual(edge,readWorldModel().edges.find(e=>e.id===edge.id));
+ for(const keyword of ['Bitcoin Core','fee changes','Bitcoin']){const no=readWorldModel({keyword});assert.equal(no.items.length+no.edges.length,0);}
+ assert.deepEqual(readWorldModel({keyword:'One-China Principle'}),readWorldModel({keyword:'one china principle'}));
+});
 for(const [label,mutate] of [
  ['unapproved candidate',c=>c.items[0].id='unapproved'],['grade upgrade',c=>c.items.find(i=>i.reviewLabel==='ME01').evidenceStatus='VERIFIED'],
  ['canonical conflict value',c=>c.items.find(i=>i.knowledgeType==='CONFLICT').details.canonicalValue=24.9],

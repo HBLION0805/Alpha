@@ -3,6 +3,9 @@
 const detailText=value=>typeof value==='string'?[value]:Array.isArray(value)?value.flatMap(detailText):value&&typeof value==='object'?Object.values(value).flatMap(detailText):[];
 // One equivalent actor name, not news classification or an economic inference.
 const normalize=text=>text.toLowerCase().replace(/\bbank\s+of\s+japan\b/gu,'boj');
+// Whole words avoid AI in financial/chain and port in support/export. Punctuation
+// separates words; no stemming, inferred synonyms or automatic theme selection.
+const words=text=>normalize(text).match(/[\p{L}\p{N}]+/gu)??[];
 export function lookupWorldModel(catalog,filters={}){
   if(!filters||typeof filters!=='object'||Array.isArray(filters))throw Error('WORLD_MODEL_QUERY_INVALID');
   const keys=['theme','keyword','knowledgeType','evidenceStatus'];
@@ -11,12 +14,12 @@ export function lookupWorldModel(catalog,filters={}){
   if(theme&&!catalog.themes.some(t=>t.themeId===theme))throw Error('WORLD_MODEL_QUERY_INVALID');
   if(knowledgeType&&!catalog.items.some(i=>i.knowledgeType===knowledgeType))throw Error('WORLD_MODEL_QUERY_INVALID');
   if(evidenceStatus&&![...catalog.items,...catalog.edges].some(i=>i.evidenceStatus===evidenceStatus))throw Error('WORLD_MODEL_QUERY_INVALID');
-  const terms=normalize(keyword).trim().split(/\s+/u).filter(Boolean);
+  const terms=words(keyword);
   const match=(item,isEdge=false)=>{
     const themes=isEdge?[item.fromTheme,item.toTheme]:[item.themeId,...item.themeLinks];
     if(theme&&!themes.includes(theme)||knowledgeType&&(isEdge||item.knowledgeType!==knowledgeType)||evidenceStatus&&item.evidenceStatus!==evidenceStatus)return false;
-    const text=normalize([item.title,item.statement,...(item.aliases??[]),...detailText(item.details),catalog.themes.find(t=>t.themeId===(isEdge?item.fromTheme:item.themeId))?.title].join(' '));
-    return terms.every(term=>text.includes(term));
+    const text=new Set(words([item.title,item.statement,...(item.aliases??[]),...detailText(item.details),...detailText(item.limitations),catalog.themes.find(t=>t.themeId===(isEdge?item.fromTheme:item.themeId))?.title].join(' ')));
+    return (!keyword.trim()||terms.length>0)&&terms.every(term=>text.has(term));
   };
   // Guardrails are separately labelled audit data, never affirmative search hits.
   return {version:catalog.version,approvalRef:catalog.approvalRef,approvedAt:catalog.approvedAt,
