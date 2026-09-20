@@ -1,5 +1,17 @@
 # Alpha Handoff
 
+## September 19 — original plan conditions and independent exits
+
+New plans can save drafts and freeze optional thesis/invalidation fields in Trade
+planner. Trade journal / Position watch compares the frozen conditions with saved
+evidence and preserves explicit evaluation snapshots. Follow
+[delivery](OPTIONS_TRADE_THESIS_DELIVERY.md) for actual tests, UI coverage and limits.
+Keep old plans, historical report hashes, current allocation and Host V4 unchanged.
+Owner confirmations are attributed declarations; no real opening monitoring or
+qualified ETF close source has been established. The separate first natural 15:50
+acceptance remains PENDING_NATURAL_RUN until actual receipts exist.
+
+
 ## September 19 — psychology batch incorporated
 
 [Psychology delivery](OPTIONS_MACRO_PSYCHOLOGY_DELIVERY.md) and its

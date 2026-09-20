@@ -1,3 +1,4 @@
+import type { TradeThesis, ThesisDraft } from './OptionsTradeThesis';
 /** Owner-reported records are never authenticated brokerage events. */
 export type ManualLedgerOrigin = "OWNER_REPORTED_UNVERIFIED" | "SYNTHETIC_FIXTURE";
 export interface ManualOptionIdentity {
@@ -17,6 +18,7 @@ export interface ManualTradePlan {
   entryDeadlineAt: string | null;
   timeExitAt: string | null;
   thesis: string;
+  invalidation?: TradeThesis;
 }
 export interface ManualActivityReference {
   studyId: string;
@@ -35,6 +37,8 @@ export interface ManualFillValues {
   exitReason: "NOT_APPLICABLE" | "STOP" | "TARGET" | "TIME" | "MANUAL" | "UNKNOWN";
 }
 export type ManualLedgerCommand =
+  | { type: "SAVE_PLAN_DRAFT"; requestId: string; tradeId: string; draft: ThesisDraft }
+  | { type: "SAVE_POSITION_REVIEW"; requestId: string; tradeId: string; review: any }
   | { type: "REGISTER_TRADE"; requestId: string; tradeId: string; contract: ManualOptionIdentity; plan: ManualTradePlan | null; activityReference: ManualActivityReference | null }
   | { type: "RECORD_FILL"; requestId: string; tradeId: string; fillId: string; fill: ManualFillValues }
   | { type: "CORRECT_FILL"; requestId: string; tradeId: string; fillId: string; expectedRevision: number; reason: string; replacement: ManualFillValues | null };

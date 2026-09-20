@@ -13,6 +13,7 @@ import {deniedNewsSources} from './focused-news.js';
 import {capitalPolicyPanel,capitalPolicyMatches,policySettingsFromFields} from './capital-policy.js';
 import {macroComparisonRequest,macroPreviewMatches,macroComparisonResult} from './macro-context.js';
 import {macroNoteDefaults,macroNoteRequest,macroCoverage,appendMacroReflection} from './macro-playbook.js';
+import {thesisDefaults,updateThesisDraft,thesisPlanCommand,thesisReviewRequest} from './trade-thesis.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -77,6 +78,17 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.id==='thesis-plan-form'){
+    updateThesisDraft(ui,el.name,el.type==='checkbox'?el.checked:el.value);dirty.add('thesis');
+    const b=form.querySelector('[value="CONFIRM"]');if(b)b.disabled=true;
+    const p=$('#thesis-plan-preview');if(p)p.innerHTML='Draft changed. Preview again before freezing.';return;
+  }
+  if(form.dataset?.thesisReview){
+    const id=form.dataset.thesisReview;ui.thesisReviewDrafts??={};if(!Object.hasOwn(ui.thesisReviewDrafts,id))ui.thesisReviewDrafts[id]={};
+    ui.thesisReviewDrafts[id][el.name]=el.type==='checkbox'?el.checked:el.value;
+    ui.thesisReviewIds??={};delete ui.thesisReviewIds[id];dirty.add('thesis-review');
+    const p=document.querySelector(`[data-thesis-review-preview="${id}"]`);if(p)p.innerHTML='';return;
+  }
   if(form.id==='macro-note-form'){
     ui.macroNoteDraft={...macroNoteDefaults(state.macroPlaybook.data.catalog),...Object.fromEntries(new FormData(form))};
     if(ui.macroNoteDraft.phase==='PRE_TRADE_NOTE'){ui.macroNoteDraft.process='UNKNOWN';ui.macroNoteDraft.outcome='UNKNOWN';}
@@ -103,15 +115,17 @@ function prepareContract(row){
   ui.plannerDraft={...ui.plannerDraft,symbol:row.symbol,strategy:row.type==='call'?'LONG_CALL':'LONG_PUT',bid:decimalText(row.bid),ask:decimalText(row.ask)};
   ui.planningSource=row;ui.plannerResult=null;clearCosts();dirty.add('planner');$('#detail-dialog').close();navigate('planner');
 }
-function transferPlan(){
+function transferPlan(destination='journal'){
   const r=ui.plannerResult,s=r?.scenario,e=r?.economics;if(!s||!e)throw Error('Calculate a scenario first.');
   if([e.plannedStopCents,e.netProfitTargetCents,e.roundedNetProfitTargetCents].some(v=>v===null)||s.roundTripFeesCents===null)throw Error('Declare the costs before preparing this plan.');
-  if(dirty.has('register'))throw Error('Your registration draft is preserved. Save or clear it before transferring a new plan.');
+  if(dirty.has('register')||destination==='thesis'&&dirty.has('thesis'))throw Error('Your existing plan draft is preserved. Save or clear it before transferring a new plan.');
   const row=ui.planningSource;
   Object.assign(drafts.register,registerDefaults(),{symbol:s.symbol,optionType:s.strategy==='LONG_CALL'?'CALL':'PUT',expiry:row?.symbol===s.symbol?row.expiry:'',strikeUsd:row?.symbol===s.symbol?decimalText(row.strike):'',includePlan:true,declaredAt:new Date().toISOString(),maxContracts:String(s.quantity),maxEntryDebitUsd:exactUsd(e.premiumCents+s.roundTripFeesCents),plannedRiskUsd:exactUsd(e.plannedStopCents),targetNetProfitUsd:exactUsd(e.roundedNetProfitTargetCents),stopPremiumUsd:(BigInt(s.askPerShareCents)*BigInt(10000-s.stopLossBps)).toString().padStart(7,'0').replace(/(\d{6})$/,'.$1')});
   const candidate=row&&state.activity.data?.cases.find(c=>c.candidate.id===row.id);
   if(candidate&&row.symbol===s.symbol&&(row.type==='call')===(s.strategy==='LONG_CALL'))Object.assign(drafts.register,{includeActivity:true,studyId:state.activity.data.studyId,studyFingerprint:state.activity.data.studyFingerprint,candidateId:row.id});
-  dirty.add('register');ui.journalMode='register';navigate('journal');toast('Scenario copied to a draft. Check the contract, entry-cost allowance, times and thesis before saving.');
+  if(destination==='thesis'){ui.thesisFields=structuredClone(drafts.register);drafts.register=registerDefaults();ui.thesisDraft??=thesisDefaults();ui.thesisPreview=null;dirty.add('thesis');render();}
+  else {dirty.add('register');ui.journalMode='register';navigate('journal');}
+  toast('Scenario copied to a draft. Check the contract, entry-cost allowance, times and thesis before saving.');
 }
 async function previewRecord(){
   if(previewing||saving)return;previewing=true;
@@ -158,6 +172,40 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='thesis-plan-form'){
+    event.preventDefault();if(saving||previewing)return;
+    const button=event.submitter,mode=button.value;button.disabled=true;saving=true;
+    void(async()=>{try{
+      $('#thesis-plan-error').textContent='';
+      ui.thesisFields??={...registerDefaults(),includePlan:true};ui.thesisDraft??=thesisDefaults();
+      if(!ui.thesisFields.tradeId)ui.thesisFields.tradeId='plan-'+crypto.randomUUID();
+      const key=JSON.stringify([ui.thesisFields,ui.thesisDraft]);
+      if(mode==='CONFIRM'){
+        if(!ui.thesisPreview||ui.thesisPreview.draftKey!==key)throw Error('Preview the unchanged plan before confirmation.');
+        await request('/api/save',{command:ui.thesisPreview.command,expectedHeadSha256:ui.thesisPreview.headSha256});
+        if(key===JSON.stringify([ui.thesisFields,ui.thesisDraft])){ui.thesisFields={...registerDefaults(),includePlan:true};ui.thesisDraft=thesisDefaults();dirty.delete('thesis');}
+        ui.thesisPreview=null;ui.thesisRequestId=null;await reload();toast('Original plan frozen locally. No entry or order created.');
+      }else{
+        ui.thesisRequestId??='request-'+crypto.randomUUID();
+        const command=thesisPlanCommand(ui,mode,ui.thesisRequestId),p=await request('/api/preview',command);
+        if(key!==JSON.stringify([ui.thesisFields,ui.thesisDraft]))throw Error('Draft changed during preview. Try again.');
+        if(mode==='DRAFT'){await request('/api/save',{command,expectedHeadSha256:p.headSha256});ui.thesisRequestId=null;if(key===JSON.stringify([ui.thesisFields,ui.thesisDraft]))dirty.delete('thesis');await reload();toast('Incomplete plan draft saved; no executable plan or position created.');}
+        else {ui.thesisPreview={...p,draftKey:key};render();}
+      }
+    }catch(e){fail(e,'#thesis-plan-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
+  if(event.target.dataset.thesisReview){
+    event.preventDefault();if(saving)return;
+    const form=event.target,id=form.dataset.thesisReview,button=event.submitter;button.disabled=true;saving=true;
+    const d={...Object.fromEntries(new FormData(form)),ownerConfirmed:form.elements.ownerConfirmed?.checked??false};
+    ui.thesisReviewDrafts??={};ui.thesisReviewDrafts[id]=d;ui.thesisReviewIds??={};if(!Object.hasOwn(ui.thesisReviewIds,id))ui.thesisReviewIds[id]='review-'+crypto.randomUUID();
+    void(async()=>{try{
+      const body=thesisReviewRequest(id,d,ui.positionCostDrafts?.[id],button.value,ui.thesisReviewIds[id]);
+      const r=await request('/api/position-watch',body);
+      if(button.value==='SAVE_REVIEW'){delete ui.thesisReviewIds[id];if(JSON.stringify(d)===JSON.stringify(ui.thesisReviewDrafts[id]))dirty.delete('thesis-review');await reload();toast('Evaluation saved. Existing triggers retained; no fill or exit recorded.');}
+      else {const p=document.querySelector(`[data-thesis-review-preview="${id}"]`);if(p)p.innerHTML='<pre>'+esc(JSON.stringify(r.review.result,null,2))+'</pre>';}
+    }catch(e){const p=document.querySelector(`[data-thesis-review-error="${id}"]`);if(p)p.textContent=e.message;}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='macro-note-form'){
     event.preventDefault();if(saving)return;const form=event.target,button=event.submitter,action=button.value;saving=true;button.disabled=true;
     const fields={...macroNoteDefaults(state.macroPlaybook.data.catalog),...Object.fromEntries(new FormData(form))};ui.macroNoteDraft=fields;
@@ -281,6 +329,20 @@ document.addEventListener('click',event=>{void(async()=>{
   if(el.dataset.eventSave){if(saving)return;saving=true;el.disabled=true;try{await request('/api/event-research',{action:'SAVE_REPORT',id:el.dataset.eventSave});toast('Independent research snapshot saved and verified.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reset-planner'){ui.plannerDraft=plannerDefaults();ui.plannerResult=null;ui.planningSource=null;ui.costFeeBasis='DECLARED_FEES';clearCosts();dirty.delete('planner');render();return;}
   if(el.id==='plan-to-journal'){transferPlan();return;}
+  if(el.id==='plan-to-thesis'){transferPlan('thesis');return;}
+  if(el.dataset.thesisComparison){
+    const id=el.dataset.thesisTrade,r=state.macroContext?.data?.comparisons.find(r=>r.request.requestId===el.dataset.thesisComparison),trade=state.manual.data?.trades.find(t=>t.tradeId===id);
+    const c=trade?.plan?.invalidation?.conditions.find(c=>c.kind==='EVENT_NUMERIC'&&c.metric===r?.request.metric&&c.period===r?.request.period);
+    if(!r||!c)throw Error('The saved comparison no longer matches this original condition.');
+    ui.thesisReviewDrafts??={};ui.thesisReviewIds??={};delete ui.thesisReviewIds[id];
+    ui.thesisReviewDrafts[id]={...ui.thesisReviewDrafts[id],conditionId:c.id,eventKey:c.eventKey,metric:r.request.metric,period:r.request.period,source:r.request.sourceUrl,sourceAt:r.request.releaseAt,receivedAt:r.assessedAt,value:r.request.actualValue,unit:'',releaseVersion:'',comparisonRef:'data/runtime/options-macro-comparisons/'+r.request.requestId+'.json',ownerConfirmed:false};
+    dirty.add('thesis-review');render();toast('Saved comparison copied. Confirm its unit, release vintage and original source before using it.');return;
+  }
+  if(el.dataset.thesisDraft){
+    if(dirty.has('thesis'))throw Error('Your current thesis draft is preserved. Save it before loading another.');
+    const r=(state.manual.data?.planRecords??[]).filter(e=>e.command.type==='SAVE_PLAN_DRAFT'&&e.command.tradeId===el.dataset.thesisDraft).at(-1);
+    if(r){ui.thesisFields=structuredClone(r.command.draft.fields);ui.thesisDraft=structuredClone(r.command.draft.thesis);ui.thesisPreview=null;ui.thesisRequestId=null;render();}return;
+  }
   if(el.dataset.journalMode){ui.journalMode=el.dataset.journalMode;render();return;}
   if(el.id==='reset-journal'){drafts[ui.journalMode]=ui.journalMode==='register'?registerDefaults():fillDefaults();dirty.delete(ui.journalMode);render();return;}
   if(el.id==='confirm-save'){await saveRecord();return;}

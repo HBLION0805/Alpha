@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## September 19, 2026 — Original trade thesis and independent exits
+
+- Add optional planner drafts and immutable thesis conditions to new single-leg
+  plans, reusing the existing ledger, original stop/target/time fields and calendar.
+- Compare saved ETF/option boundaries and sourced Owner-confirmed event values;
+  distinguish pending, unsupported evidence and original-plan invalidation.
+- Connect independent exit reasons and explicit saved evaluations to Position
+  watch. Saved triggers and append-only corrections survive refresh and recovery.
+- Preserve legacy reports, allocation, Host cadence and the pending natural 15:50
+  acceptance. No new source calls, orders, alerts or strategy qualification.
+
+
 ## September 17, 2026 — Prospective trend and contract cohort
 
 - Freeze a first-hour/two-close breakout and deterministic contract research rule

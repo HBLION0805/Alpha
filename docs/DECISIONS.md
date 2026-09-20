@@ -1,5 +1,19 @@
 # Alpha Architecture Decisions
 
+## September 19, 2026 — Freeze thesis conditions in the existing trade ledger
+
+Use optional versioned conditions on new registrations, with separate append-only
+draft and review commands in the existing bounded ledger. Do not reinterpret old
+plans or add a second exit budget. Stop, target, time and thesis invalidation are
+independent; missing prices cannot suppress an already established time/fact exit.
+Owner-confirmed releases are explicitly attributed, never authenticated machine
+facts. Closed-bar conditions retain existing source-qualification failures.
+The close-entry/open-review preference supplies no time, threshold or collector.
+Evaluations save only on explicit local action. Their retained triggers, corrected
+evidence and reported actions do not modify fills. See the
+[specification](specifications/OPTIONS_TRADE_THESIS_V1.md).
+
+
 ## September 17, 2026 — Freeze research before observing outcomes
 
 Use one explicit untested trend/contract rule for a future 20-session cohort.

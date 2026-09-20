@@ -1,5 +1,20 @@
 # Alpha Architecture
 
+## Trade thesis within manual plans — September 19, 2026
+
+`OptionsTradeThesis` adds deterministic condition checks alongside the unchanged
+Position watch valuation. Optional `ManualTradePlan.invalidation` freezes with the
+original registration. `SAVE_PLAN_DRAFT` and `SAVE_POSITION_REVIEW` reuse the
+manual ledger's locks, receipts, hashes, bounds and recovery; reports without these
+commands keep their old fingerprints. The existing protected local interfaces
+serve the planner and journal. Review saving selects existing evidence on the
+server; generic record preview cannot submit a manufactured evaluation.
+`options-trade-thesis-io` reads current saved captures and source audits, and
+verifies optional existing macro-comparison references without fetching anything.
+User-triggered snapshots copy relevant evidence and retain earlier exit triggers.
+No background workflow, source qualification or order authority is added.
+
+
 ## Macro education and reflection — September 17, 2026
 
 `MacroKnowledgeCatalog` supplies versioned references; `OptionsMacroPlaybook`

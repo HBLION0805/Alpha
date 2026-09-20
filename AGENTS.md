@@ -1,5 +1,21 @@
 # Alpha Development Standard v1.0
 
+## Trade thesis and position review — September 19, 2026
+
+Owner authorized optional new-plan thesis conditions, independent exit checks and
+explicit saved evaluations within the existing planner and manual ledger. Read
+docs/OPTIONS_TRADE_THESIS_DELIVERY.md and docs/status/trade-thesis.json. Original
+registrations are immutable; new drafts/reviews append through the same bounded
+store. Legacy records without conditions retain Not configured and old behavior.
+Keep source/receipt/vintage gates, Owner-confirmed attribution and all independent
+exit reasons. Saved triggers cannot disappear on rebound or refresh; corrections
+append. No account/order access, new source call, collector, alert, cadence,
+allocation or frozen-study change. The close-entry/open-review template is a
+preference, not an advantage or automatic opening monitor. The original natural
+15:50 acceptance remains a separate pending task. This stage permits its scoped
+code/tests/docs commit and push, not main merge or unrelated publication.
+
+
 ## Authorized stage save and natural acceptance — September 19, 2026
 
 Owner authorized commit/push of the three focused repair deliveries on the current

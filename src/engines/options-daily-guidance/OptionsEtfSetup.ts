@@ -4,6 +4,10 @@ import { guidanceLocal } from './OptionsGuidanceClock';
 import { paperSession } from '../options-robinhood-data/RobinhoodPaperSession';
 
 const fail = (code: string): never => { throw Error('ETF_SETUP_' + code); };
+export const ETF_BAR_INTERVAL_MS = 300000;
+export function etfBarsFresh(bars: EtfResearchBars['bars'], at: string) {
+  return bars.length > 0 && clock(at) - clock(bars.at(-1)!.end) <= ETF_BAR_INTERVAL_MS;
+}
 function exact(v: object, keys: string) {
   if (!v || typeof v !== 'object' || Array.isArray(v) || Object.keys(v).sort().join() !== keys.split(',').sort().join()) fail('FIELDS');
 }
@@ -115,7 +119,7 @@ export function assessEtfSetup(input: EtfSetupAssessmentInput) {
     if(status==='RULE_MATCH_OBSERVED' && (bullish?previousClose*10000n>trigger*BigInt(10000+p.chaseBps):previousClose*10000n<trigger*BigInt(10000-p.chaseBps)))status='CHASE_LIMIT_EXCEEDED';
     if (!invalidatedAt && clock(input.at)>=clock(p.timeExit)) status='TIME_WINDOW_ENDED';
   }
-  const activeBarFresh = bars.length>0 && clock(input.at)-clock(bars.at(-1)!.end)<=300000;
+  const activeBarFresh = etfBarsFresh(bars,input.at);
   const shared = ['IMPORTED_SOURCE_NOT_AUTHENTICATED','STRATEGY_NOT_VALIDATED','IV_PATH_SCENARIO_UNASSESSED'];
   if(status!=='RULE_MATCH_OBSERVED') shared.push('SETUP_NOT_CURRENTLY_CONFIRMED');
   if(!activeBarFresh) shared.push('ETF_BARS_NOT_FRESH');

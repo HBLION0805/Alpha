@@ -15,6 +15,7 @@ import { reportTreasuryHistory } from '../../src/engines/options-treasury/Treasu
 import { reportBtcContext } from '../../src/engines/options-btc-context/BtcSpotContextEngine.ts';
 import { reconcileManualLedger, validateManualLedgerCommand } from '../../src/engines/options-manual-ledger/OptionsManualLedger.ts';
 import { assessPositionWatch } from '../../src/engines/options-manual-ledger/OptionsPositionWatch.ts';
+import { extendPositionThesis } from './options-trade-thesis-io.mjs';
 import { eventReactionView } from './options-event-reaction-io.mjs';
 import { exportId } from '../../src/engines/options-evidence-export/OptionsEvidenceExportEngine.ts';
 import { readinessClock } from '../../src/engines/options-readiness/OptionsReadinessEngine.ts';
@@ -133,24 +134,40 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
   function watchFromDesk(report,desk,at,costs={}){
     if(!report)fail('POSITION_LEDGER_UNAVAILABLE');
     const latest=desk?.latest;
-    return {...assessPositionWatch(report,latest?{...latest,quotes:latest.quotes.map(q=>q.contract)}:null,at,costs),sourceRecovery:desk?'AVAILABLE':'UNAVAILABLE'};
+    return {...extendPositionThesis(root,report,assessPositionWatch(report,latest?{...latest,quotes:latest.quotes.map(q=>q.contract)}:null,at,costs),at),sourceRecovery:desk?'AVAILABLE':'UNAVAILABLE'};
   }
   function positionWatch(body){
+    if(body?.action==='SAVE_REVIEW'||body?.action==='PREVIEW_REVIEW'){
+      if(Object.keys(body).sort().join()!=='action,correctionOf,evidence,exitCostUsd,note,reportedAction,requestId,tradeId')fail('POSITION_FIELDS');
+      const at=now(),r=readManualLedger(root,ledgerId,()=>at);exportId(body.requestId);exportId(body.tradeId);
+      const {action,requestId,...submission}=body,submissionFingerprint=paperFingerprint(submission);
+      const existing=r.input.events.find(e=>e.command.requestId===body.requestId);
+      if(existing){if(existing.command.type!=='SAVE_POSITION_REVIEW'||existing.command.tradeId!==body.tradeId||existing.command.review.submissionFingerprint!==submissionFingerprint)fail('REQUEST_CONFLICT');return {alreadyRecorded:true,review:existing.command.review,executionAllowed:false};}
+      let desk=null;try{desk=snapshotPaperView(root,at);}catch{}
+      const latest=desk?.latest,base=assessPositionWatch(r.report,latest?{...latest,quotes:latest.quotes.map(q=>q.contract)}:null,at,{[body.tradeId]:body.exitCostUsd});
+      const result=extendPositionThesis(root,r.report,base,at,body),row=result.rows.find(t=>t.tradeId===body.tradeId);
+      if(!row?.reviewInput)fail('THESIS_PLAN_NOT_CONFIGURED');
+      const review={version:'OPTIONS_POSITION_REVIEW_V1',...row.reviewInput,note:body.note,reportedAction:body.reportedAction,correctionOf:body.correctionOf,submissionFingerprint};
+      if(body.action==='PREVIEW_REVIEW')return {review,executionAllowed:false};
+      const command={type:'SAVE_POSITION_REVIEW',requestId:body.requestId,tradeId:body.tradeId,review};
+      return {...save({command,expectedHeadSha256:r.headSha256},true),review};
+    }
     if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).sort().join()!=='exitCostUsd,tradeId')fail('POSITION_FIELDS');
     exportId(body.tradeId);const at=now(),report=readManualLedger(root,ledgerId,()=>at).report;
     let desk=null;try{desk=snapshotPaperView(root,at);}catch{}
     return watchFromDesk(report,desk,at,{[body.tradeId]:body.exitCostUsd});
   }
-  function preview(command){
+  function preview(command,internalReview=false){
+    if(command?.type==='SAVE_POSITION_REVIEW'&&!internalReview)fail('POSITION_REVIEW_USE_WATCH');
     const r=ledger(),at=now(),c=validateManualLedgerCommand(command,at);
     const previous=r.input.events.find(e=>e.command.requestId===c.requestId);
     if(previous){if(paperFingerprint(previous.command)!==paperFingerprint(c))fail('REQUEST_CONFLICT');return {alreadyRecorded:true,headSha256:r.headSha256,command:c,report:r.report};}
     const report=reconcileManualLedger({...r.input,events:[...r.input.events,{sequence:r.input.events.length+1,recordedAt:at,savedAt:at,command:c}]},at);
     return {alreadyRecorded:false,headSha256:r.headSha256,command:c,report};
   }
-  function save(body){
+  function save(body,internalReview=false){
     if(!body||Object.keys(body).sort().join()!=='command,expectedHeadSha256'||typeof body.expectedHeadSha256!=='string')fail('SAVE_INPUT');
-    const p=preview(body.command);if(!p.alreadyRecorded&&p.headSha256!==body.expectedHeadSha256)fail('LEDGER_CHANGED_REVIEW_AGAIN');
+    const p=preview(body.command,internalReview);if(!p.alreadyRecorded&&p.headSha256!==body.expectedHeadSha256)fail('LEDGER_CHANGED_REVIEW_AGAIN');
     if(p.alreadyRecorded)return {status:'MANUAL_REQUEST_ALREADY_RECORDED',headSha256:p.headSha256,executionAllowed:false};
     io.directory(root,INPUTS);const path=INPUTS+'/'+randomUUID()+'.json';
     io.writeExclusive(root,path,Buffer.from(JSON.stringify(p.command,null,2)+'\n'));

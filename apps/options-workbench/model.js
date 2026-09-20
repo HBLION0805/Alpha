@@ -55,6 +55,9 @@ export function explainError(code){
   if(code==='WORKBENCH_COST_BOUNDS')return 'Cost comparisons support 1–100 contracts and bounded premium/cost amounts. Reduce the scenario size.';
   if(['WORKBENCH_COST_INPUT','WORKBENCH_COST_OVERFLOW','WORKBENCH_COST_CONVERGENCE'].includes(code))return 'The cost comparison could not be calculated safely. Review the inputs and retry.';
   const explanations={
+    MANUAL_LEDGER_THESIS_PLAN_INCOMPLETE:'This enabled plan is incomplete or its times are outside the reviewed calendar. Supply the original thesis, realization window, entry deadline, latest exit, next check, manual fallback, event exposure and each enabled condition. Save draft to preserve incomplete work.',
+    MANUAL_LEDGER_PLAN_ALREADY_FROZEN:'This plan is already frozen. Its conditions cannot be changed; add a sourced review or use a separate future plan.',
+    MANUAL_THESIS_EVIDENCE_CLOCK_ORDER:'Source time must be no later than receipt, and receipt no later than the actual local save. Evidence cannot be backdated into earlier evaluations.',
     MACRO_BENCHMARK_NOT_PROSPECTIVE_OR_RELEASE_FUTURE:'Use a model snapshot saved strictly before the actual release. The release must already have happened; check its UTC time.',
     MACRO_BENCHMARK_UNAVAILABLE:'This saved source does not contain a usable inflation model. Select another saved benchmark.',
     MACRO_BENCHMARK_CELL_MISSING:'The selected measure or period has no saved model value. Blank cells cannot be compared with an actual.',

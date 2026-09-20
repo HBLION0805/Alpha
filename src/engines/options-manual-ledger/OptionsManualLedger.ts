@@ -4,6 +4,7 @@ import { exportId } from "../options-evidence-export/OptionsEvidenceExportEngine
 import { readinessClock } from "../options-readiness/OptionsReadinessEngine";
 import { btcSourceNanoseconds } from "../options-btc-context/BtcSpotContextEngine";
 import { exchangeLocalDate } from "../market-calendar/MarketCalendarValidation";
+import { validateTradeThesis, thesisPlanIssues, validateThesisDraft, validatePositionReview } from './OptionsTradeThesis';
 
 function fail(code: string): never { throw Error("MANUAL_LEDGER_" + code); }
 function exact(v: unknown, fields: string[]): Record<string, any> {
@@ -39,6 +40,12 @@ export function validateManualLedgerCommand(input: unknown, recordedAt: string):
   readinessClock(recordedAt);
   if (!input || typeof input !== "object") fail("COMMAND");
   const type = Object.getOwnPropertyDescriptor(input, "type")?.value;
+  if (type === 'SAVE_PLAN_DRAFT' || type === 'SAVE_POSITION_REVIEW') {
+    const c=exact(input,['type','requestId','tradeId',type==='SAVE_PLAN_DRAFT'?'draft':'review']);
+    exportId(c.requestId);exportId(c.tradeId);
+    if(type==='SAVE_PLAN_DRAFT')validateThesisDraft(c.draft);else validatePositionReview(c.review,recordedAt);
+    return freezePaper(JSON.parse(JSON.stringify(c)) as ManualLedgerCommand);
+  }
   const fields = type === "REGISTER_TRADE" ? ["type", "requestId", "tradeId", "contract", "plan", "activityReference"]
     : type === "RECORD_FILL" ? ["type", "requestId", "tradeId", "fillId", "fill"]
     : type === "CORRECT_FILL" ? ["type", "requestId", "tradeId", "fillId", "expectedRevision", "reason", "replacement"] : fail("COMMAND_TYPE");
@@ -48,13 +55,14 @@ export function validateManualLedgerCommand(input: unknown, recordedAt: string):
     if (!["GLD", "IBIT"].includes(i.symbol) || !["CALL", "PUT"].includes(i.optionType) || i.multiplier !== 100) fail("CONTRACT_SCOPE");
     date(i.expiry); money(i.strikeUsd, true);
     if (c.plan !== null) {
-      const p = exact(c.plan, ["declaredAt", "maxContracts", "maxEntryDebitUsd", "plannedRiskUsd", "targetNetProfitUsd", "stopPremiumUsd", "entryDeadlineAt", "timeExitAt", "thesis"]);
+      const p = exact(c.plan, ["declaredAt", "maxContracts", "maxEntryDebitUsd", "plannedRiskUsd", "targetNetProfitUsd", "stopPremiumUsd", "entryDeadlineAt", "timeExitAt", "thesis",...(Object.hasOwn(c.plan,'invalidation')?['invalidation']:[])]);
       readinessClock(p.declaredAt); if (p.declaredAt > recordedAt) fail("FUTURE_PLAN"); count(p.maxContracts);
       money(p.maxEntryDebitUsd, true); money(p.plannedRiskUsd, true); money(p.targetNetProfitUsd);
       if (p.stopPremiumUsd !== null) money(p.stopPremiumUsd);
       for (const key of ["entryDeadlineAt", "timeExitAt"]) if (p[key] !== null) { readinessClock(p[key]); if (p[key] <= p.declaredAt) fail("PLAN_CLOCK_ORDER"); }
       if (p.entryDeadlineAt !== null && p.timeExitAt !== null && p.timeExitAt <= p.entryDeadlineAt) fail("PLAN_CLOCK_ORDER");
       label(p.thesis);
+      if(p.invalidation){validateTradeThesis(p.invalidation);if(thesisPlanIssues({plan:p as any,contract:c.contract,registeredAt:recordedAt,openedAt:null},recordedAt).length)fail('THESIS_PLAN_INCOMPLETE');}
     }
     if (c.activityReference !== null) {
       const r = exact(c.activityReference, ["studyId", "studyFingerprint", "candidateId"]); exportId(r.studyId); digest(r.studyFingerprint);
@@ -84,6 +92,13 @@ export function reconcileManualLedger(input: ManualLedgerInput, assessedAt: stri
     if (requestIds.has(c.requestId)) fail("DUPLICATE_REQUEST"); requestIds.add(c.requestId);
     if (c.type === "REGISTER_TRADE") {
       if (trades.has(c.tradeId) || trades.size >= 200) fail("TRADE_ID_OR_BOUND"); trades.set(c.tradeId, { registration: c, registeredAt: raw.savedAt });
+    } else if(c.type==='SAVE_PLAN_DRAFT') {
+      if(trades.has(c.tradeId))fail('PLAN_ALREADY_FROZEN');
+    } else if(c.type==='SAVE_POSITION_REVIEW') {
+      const trade=trades.get(c.tradeId);if(!trade)fail('TRADE_UNKNOWN');
+      if(c.review.watch.tradeId!==c.tradeId||c.review.watch.origin!==input.origin||paperFingerprint(c.review.watch.contract)!==paperFingerprint(trade.registration.contract))fail('REVIEW_IDENTITY');
+      if(paperFingerprint(trade.registration.plan)!==c.review.result.planFingerprint||paperFingerprint(trade.registration.contract)!==paperFingerprint(c.review.context.contract)||trade.registeredAt!==c.review.context.registeredAt)fail('REVIEW_PLAN_MISMATCH');
+      if(c.review.correctionOf&&!checkedEvents.some(e=>e.command.type==='SAVE_POSITION_REVIEW'&&e.command.tradeId===c.tradeId&&e.command.requestId===c.review.correctionOf))fail('REVIEW_CORRECTION_UNKNOWN');
     } else {
       if (!trades.has(c.tradeId)) fail("TRADE_UNKNOWN"); const previous = fills.get(c.fillId);
       if (c.type === "RECORD_FILL") {
@@ -184,5 +199,8 @@ export function reconcileManualLedger(input: ManualLedgerInput, assessedAt: stri
     counts: { trades: results.length, activeFills: active.length, voidedFills: fills.size - active.length, closedTrades: results.filter(t => t.status === "CLOSED").length, openTrades: results.filter(t => t.openContracts > 0).length,
       possibleDuplicateFills: possibleDuplicates.size, candidateLessons: results.reduce((n, t) => n + t.candidateLessons.length, 0) },
     brokerVerified: false, accountBalanceUsd: null, settlementKnown: false, taxBasis: false, executionAllowed: false, winProbability: null, approvedKnowledge: false };
-  return freezePaper({ ...body, reportFingerprint: paperFingerprint(body) });
+  // Additive projection only when new record types exist; old report hashes remain byte-identical.
+  const additions=checkedEvents.filter(e=>e.command.type==='SAVE_PLAN_DRAFT'||e.command.type==='SAVE_POSITION_REVIEW');
+  const result=additions.length?{...body,planRecords:additions}:body;
+  return freezePaper({ ...result, reportFingerprint: paperFingerprint(result) });
 }

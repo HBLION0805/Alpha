@@ -4,6 +4,7 @@ import { paperSession } from '../options-robinhood-data/RobinhoodPaperSession';
 import { paperFingerprint } from '../options-paper/OptionsPaperTradingEngine';
 
 type LedgerReport = ReturnType<typeof reconcileManualLedger>;
+export const POSITION_QUOTE_MAX_AGE_NS = 60000000000n;
 const fail = (code: string): never => { throw Error('POSITION_WATCH_' + code); };
 const signedUsd = (v: string) => v.startsWith('-') ? -manualUsdUnits(v.slice(1)) : manualUsdUnits(v);
 const optionalClock = (v: unknown) => { try { return snapshotNs(v); } catch { return null; } };
@@ -39,7 +40,7 @@ export function assessPositionWatch(ledger: LedgerReport, capture: SnapshotFrame
       const sourceClock = optionalClock(q.updatedAt), underlyingClock = optionalClock(q.underlyingAt);
       blockers.push(...check.blockers);
       if (check.staleNow) blockers.push('OPTION_STALE_NOW');
-      if (underlyingClock === null || now - underlyingClock > 60000000000n) blockers.push('UNDERLYING_STALE_NOW');
+      if (underlyingClock === null || now - underlyingClock > POSITION_QUOTE_MAX_AGE_NS) blockers.push('UNDERLYING_STALE_NOW');
       if (!currentSession.isOpen) blockers.push('CURRENT_SESSION_CLOSED_OR_UNREVIEWED');
       if (sourceClock !== null && t.lastExecutionAt && sourceClock < snapshotNs(t.lastExecutionAt)) blockers.push('QUOTE_PRECEDES_REPORTED_EXECUTION');
       if (q.bidCents === 0) blockers.push('NO_POSITIVE_BID');
