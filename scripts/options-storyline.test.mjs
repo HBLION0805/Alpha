@@ -71,7 +71,7 @@ await test('rejected guardrails, deferred current state, arbitrary status and ca
  assert.throws(()=>previewStorylineLink(f.root,{...f.request,reviewedBy:{kind:'HOST_AI',name:'Codex'}},at),/REVIEWER/);
 }));
 await test('strict limits, source paths, future receipt and invalid user choices fail closed',()=>temp(f=>{
- for(const r of [{...f.request,linkId:'../escape'},{...f.request,themes:['M06']},{...f.request,knowledgeIds:[by('ME01'),by('ME01')]},{...f.request,linkReason:''},{...f.request,storyChangeType:'BULLISH'}])assert.throws(()=>previewStorylineLink(f.root,r,at));
+ for(const r of [{...f.request,linkId:'../escape'},{...f.request,themes:['M11']},{...f.request,knowledgeIds:[by('ME01'),by('ME01')]},{...f.request,linkReason:''},{...f.request,storyChangeType:'BULLISH'}])assert.throws(()=>previewStorylineLink(f.root,r,at));
  assert.throws(()=>resolveStorylineNews(f.root,{...f.n.newsRef,path:'../../private'},at));
  assert.throws(()=>resolveStorylineNews(f.root,f.n.newsRef,'2026-09-18T00:00:00.000Z'));
 }));
@@ -111,5 +111,13 @@ await test('protected API save/reload/restart leaves trading outputs and origina
   for(const [name,h] of before)assert.equal(createHash('sha256').update(readFileSync(resolve(f.root,'data/runtime/options-focused-news/2026-09-19',name))).digest('hex'),h);
   const client=readFileSync(new URL('../apps/options-workbench/api.js',import.meta.url),'utf8');assert(client.includes("ROUTES.add('/api/storyline')"));
  }finally{await app.close();}
+}));
+await test('new approved themes are selectable without saving; explicit isolated links recover',()=>temp(f=>{
+ const old=save(f,{...f.request,knowledgeIds:[by('ME07')],themes:['M05']}),bytes=readFileSync(resolve(f.root,old.path));
+ const request={...f.request,linkId:'batch-two',themes:['M06','M08'],knowledgeIds:['B2-K01','B2-K09','B2-Q03','B2-CF04'].map(by)};
+ const p=previewStorylineLink(f.root,request,later);assert.equal(storylineView(f.root,{},later).records.length,1);assert.equal(p.summary.status,'SUGGESTED_NOT_CONFIRMED');
+ const saved=saveStorylineLink(f.root,request,p.previewFingerprint,later);assert.equal(readStorylineLink(f.root,saved.path).fingerprint,saved.fingerprint);
+ const v=storylineView(f.root,{},later);assert(v.records.every(x=>x.recovery==='AVAILABLE'));assert(bytes.equals(readFileSync(resolve(f.root,old.path))));assert.equal(v.records.find(x=>x.linkId===old.linkId).fingerprint,old.fingerprint);
+ const html=storylinePanel({macroWorldModel:{data:c},storylines:{data:{...v,news:[f.n]}}},{storyNewsKey:f.n.key,storyDraft:request,storyFilters:{keyword:'AI power'}});assert(html.includes('AI, Power and Data Centers'));assert(html.includes('B2-K09'));
 }));
 console.log(`Reviewed storyline links: ${passed}/${passed} tests passed.`);

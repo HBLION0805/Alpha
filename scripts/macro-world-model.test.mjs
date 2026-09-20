@@ -17,7 +17,7 @@ import {buildScenario,plannerDefaults} from '../apps/options-workbench/forms.js'
 const root=resolve(import.meta.dirname,'..'),path='src/engines/macro-world-model/';
 const read=p=>JSON.parse(readFileSync(resolve(root,p),'utf8'));
 const approval=read(path+'BATCH_1_WORLD_MODEL_APPROVAL_V1.json'),catalog=read(path+'BATCH_1_WORLD_MODEL_V1.json');
-const pack=read(approval.sourceReviewPath),runtime=readWorldModel(),by=l=>runtime.items.find(i=>i.reviewLabel===l);
+const pack=read(approval.sourceReviewPath),runtime=lookupWorldModel(validateWorldModel(catalog,approval)),by=l=>runtime.items.find(i=>i.reviewLabel===l);
 const hash=b=>createHash('sha256').update(b).digest('hex');
 let passed=0;async function test(name,fn){await fn();passed++;console.log('PASS '+name);}
 async function temp(fn){const dir=mkdtempSync(resolve(tmpdir(),'alpha-world-model-test-'));try{await fn(dir);}finally{const rel=relative(resolve(tmpdir()),resolve(dir));assert(!isAbsolute(rel)&&!rel.startsWith('..')&&rel.startsWith('alpha-world-model-test-'));rmSync(dir,{recursive:true,force:true});}}
@@ -70,7 +70,7 @@ await test('all runtime lineage resolves through the unchanged review and dossie
  }
 });
 for(const [query,labels] of [['SWIFT',['F03']],['fiscal dominance',['F06','Q03']],['yen carry',['F07','F08','ME05','ME06','W04','Q04']],['gold',['T01']]])await test('deterministic search: '+query,()=>{
- const result=readWorldModel({keyword:query});for(const label of labels)assert(result.items.some(i=>i.reviewLabel===label));assert.deepEqual(result,lookupWorldModel(runtime,{keyword:query}));
+ const result=readWorldModel({keyword:query});for(const label of labels)assert(result.items.some(i=>i.reviewLabel===label));assert.deepEqual(result,lookupWorldModel(readWorldModel(),{keyword:query}));
  assert.equal(result.executionAllowed,false);assert.equal(result.tradingInfluence,false);
  assert(!result.items.some(i=>/^R|^D/.test(i.reviewLabel)));
 });
@@ -102,9 +102,9 @@ for(const [label,mutate] of [
 ])await test('fail closed on '+label,()=>{const c=structuredClone(catalog);mutate(c);assert.throws(()=>validateWorldModel(c,approval),/WORLD_MODEL_/);});
 await test('reader and lookup callers cannot mutate later reads',()=>{const c=readWorldModel();c.items[0].statement='changed';assert.notEqual(readWorldModel().items[0].statement,'changed');});
 await test('compact UI preserves warnings, provenance and HTML escaping',()=>{
- const html=worldModelPanel({data:runtime},{});assert(html.includes('Macro World Model — Batch 1'));assert(!/<details[^>]*\sopen[\s>]/.test(html));
+ const html=worldModelPanel({data:readWorldModel()},{});assert(html.includes('Macro World Model — Batches 1–2'));assert(!/<details[^>]*\sopen[\s>]/.test(html));
  for(const text of ['CONDITIONAL_HYPOTHESIS','ALPHA_INFERENCE','UNKNOWN','CONFLICTED','UNBRIDGED','Hypothesis only','Current state enabled'])if(text!=='Current state enabled')assert(html.includes(text),text);
- assert(html.includes('Not enabled in World Model v1'));assert(html.includes(approval.sourceReviewPath));
+ assert(html.includes('not promoted to Runtime World Model'));assert(html.includes(approval.sourceReviewPath));
  const c=structuredClone(runtime);c.items[0].statement='<script>bad()</script>';assert(worldModelPanel({data:c},{}).includes('&lt;script&gt;'));assert(!worldModelPanel({data:c},{}).includes('<script>'));
  assert(worldModelPanel(null).includes('No research fallback'));
 });
@@ -117,7 +117,7 @@ await test('legacy playbook notes do not absorb the World Model or gain approval
 await test('saved-state read is additive, writes nothing, and leaves existing planning results unchanged',()=>temp(async dir=>{
  const s=createWorkbenchData({workspaceRoot:dir,now:()=> '2026-09-20T17:00:00.000Z'});
  const scenario=buildScenario({...plannerDefaults(),bid:'0.19',ask:'0.20',fees:'0.10',slippage:'0.20'}),before=s.evaluate(scenario);
- const state=await s.state();assert.equal(state.macroWorldModel.state,'AVAILABLE');assert.equal(state.macroWorldModel.data.items.length,38);
+ const state=await s.state();assert.equal(state.macroWorldModel.state,'AVAILABLE');assert.equal(state.macroWorldModel.data.items.length,74);
  readWorldModel({keyword:'gold'});assert.deepEqual(s.evaluate(scenario),before);assert.equal(readdirSync(dir).length,0);assert.equal(state.executionAllowed,false);
 }));
 await test('workbench HTTP lookup shares results, stays read-only and preserves local-origin guards',()=>temp(async dir=>{
@@ -128,7 +128,7 @@ await test('workbench HTTP lookup shares results, stays read-only and preserves 
   assert.equal((await fetch(app.url+'/api/macro-world-model',{method:'POST'})).status,404);
   assert.equal((await fetch(app.url+'/api/macro-world-model',{headers:{Origin:'https://example.com'}})).status,403);
   for(const asset of ['world-model.js','world-model-lookup.js'])assert.equal((await fetch(app.url+'/'+asset)).status,200);
-  const state=await(await fetch(app.url+'/api/state')).json();assert.equal(state.macroWorldModel.data.items.length,38);assert.equal(state.backgroundContextRefreshEnabled,false);assert.equal(readdirSync(dir).length,0);
+  const state=await(await fetch(app.url+'/api/state')).json();assert.equal(state.macroWorldModel.data.items.length,74);assert.equal(state.backgroundContextRefreshEnabled,false);assert.equal(readdirSync(dir).length,0);
  }finally{await app.close();}
 }));
 console.log(`Macro World Model: ${passed}/${passed} tests passed.`);

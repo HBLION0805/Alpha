@@ -11,3 +11,6 @@ docs/OPTIONS_DAILY_GUIDANCE_HOST_V1.json text eol=lf
 docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json text eol=lf
 src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json text eol=lf
 src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json text eol=lf
+docs/research/macro/batch-2/review/BATCH_2_KNOWLEDGE_CANDIDATES.json text eol=lf
+src/engines/macro-world-model/BATCH_2_WORLD_MODEL_APPROVAL_V1.json text eol=lf
+src/engines/macro-world-model/BATCH_2_WORLD_MODEL_V1.json text eol=lf

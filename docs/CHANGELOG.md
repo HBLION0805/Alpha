@@ -1,5 +1,17 @@
 # Alpha Changelog
 
+## September 20, 2026 — Approved Batch 2 macro references
+
+- Add independent approval and compact runtime artifacts for 36 items, four
+  cross-theme links and 13 separate reasoning guardrails across M06–M10.
+- Preserve original types, evidence grades, six UNKNOWN questions, four null
+  canonical conflicts, political attribution and Batch 1 canonical scope.
+- Narrow L7 to real freight demand and transport utilization / route viability.
+  Financing conclusions still require separate project evidence.
+- Reuse deterministic search, compact playbook groups and manual storyline
+  selection. No automatic links, current-state graph, source calls or trading
+  influence. Original review packs and saved Batch 1 links remain unchanged.
+
 ## September 20, 2026 — Approved Batch 1 macro references
 
 - Add an immutable approval record and compact read-only catalog: 38 items,

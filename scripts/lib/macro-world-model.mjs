@@ -2,6 +2,7 @@ import {readFileSync,lstatSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
 import {lookupWorldModel} from '../../apps/options-workbench/world-model-lookup.js';
+import {readBatch2} from './macro-world-model-batch2.mjs';
 
 const root=resolve(import.meta.dirname,'../../src/engines/macro-world-model');
 export const WORLD_MODEL_APPROVAL_FILE='BATCH_1_WORLD_MODEL_APPROVAL_V1.json';
@@ -43,12 +44,18 @@ export function validateWorldModel(c,a){
   return c;
 }
 export function readWorldModel(filters={}){
-  // Two fixed application artifacts only; no research, private records or source reads.
+  // Separately pinned approval/catalog pairs; no dossier or private-record fallback.
   const approvalBytes=bounded(WORLD_MODEL_APPROVAL_FILE,32768);
   if(hash(approvalBytes)!==APPROVAL_SHA256)fail('APPROVAL_INTEGRITY');
   const a=JSON.parse(approvalBytes);
   const bytes=bounded(WORLD_MODEL_CATALOG_FILE,196608);
   if(bytes.length!==a.catalogBytes||hash(bytes)!==a.catalogSha256)fail('CATALOG_INTEGRITY');
   const c=validateWorldModel(JSON.parse(bytes),a);
-  return lookupWorldModel(c,filters);
+  const b=readBatch2(c);
+  // Original Batch 1 objects and approvalRef stay byte-equivalent for saved links.
+  return lookupWorldModel({...c,items:[...c.items,...b.items],edges:[...c.edges,...b.edges],
+    themes:[...c.themes,...b.themes],guardrails:[...c.guardrails,...b.guardrails],
+    sourceMap:[...c.sourceMap,...b.sourceMap],canonicalReferences:b.canonicalReferences,
+    approvalRefs:[c.approvalRef,b.approvalRef],
+    currentStateNotice:'Current-state material remains in dated research; not promoted to Runtime World Model.'},filters);
 }

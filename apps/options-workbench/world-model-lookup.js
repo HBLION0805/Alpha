@@ -23,6 +23,7 @@ export function lookupWorldModel(catalog,filters={}){
     executionAllowed:false,tradingInfluence:false,currentStateEnabled:false,
     currentStateNotice:catalog.currentStateNotice,evidenceNotice:catalog.evidenceNotice,
     themes:catalog.themes,sharedEvidenceTimeRuleId:catalog.sharedEvidenceTimeRuleId,
+    ...(catalog.approvalRefs?{approvalRefs:catalog.approvalRefs,canonicalReferences:catalog.canonicalReferences}:{}),
     items:catalog.items.filter(i=>match(i)),edges:catalog.edges.filter(e=>match(e,true)),
     guardrails:catalog.guardrails,sourceMap:catalog.sourceMap,totalItems:catalog.items.length,
     knowledgeTypes:[...new Set(catalog.items.map(i=>i.knowledgeType))],evidenceStatuses:[...new Set([...catalog.items,...catalog.edges].map(i=>i.evidenceStatus))]};

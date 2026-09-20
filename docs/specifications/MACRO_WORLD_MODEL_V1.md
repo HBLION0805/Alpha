@@ -1,5 +1,29 @@
 # Macro World Model v1
 
+## Batch 2 additive approval — September 20, 2026
+
+The separate [Batch 2 approval](../../src/engines/macro-world-model/BATCH_2_WORLD_MODEL_APPROVAL_V1.json)
+and [compact catalog](../../src/engines/macro-world-model/BATCH_2_WORLD_MODEL_V1.json)
+extend the same read-only surface with M06–M10. Original review/dossier bytes,
+Batch 1 objects, approval identity and saved storyline fingerprints remain intact.
+Each batch has a pinned approval and bounded catalog; neither imports dossiers.
+
+Load K01–K17 with original types, ME01–04 with original grades, five question-only
+watches, six UNKNOWN questions and four unresolved conflicts with null canonical
+values. Thirteen rejected interpretations remain separate guardrails, not facts
+or evidence for inverse claims. L1/L3/L4 are unchanged; revised L7 ends at actual
+transport utilization / route viability, not financing viability. Financing still
+needs ME03/ME04 and cash, cost, debt and contract evidence. Six other edges and
+D01–07 remain excluded. New current-state, actor and flow items are all zero.
+
+Batch 1 F02/F12/F04/F05/A02/F10/ME07/ME03/T01/T02 are references with their original
+scopes, not copied or generalized concepts. Political/legal claims retain source
+attribution. Measurement frameworks have a separate compact group. The unchanged
+deterministic lookup and explicit manual storyline selector expose the new items;
+no production link is created by loading/searching. Trading outputs remain isolated.
+
+The original Batch 1 specification follows and retains its original scope.
+
 Owner scope: Batch 1 approval supplied September 20, 2026. This is a bounded,
 read-only reference within Macro playbook, not a trading knowledge service.
 

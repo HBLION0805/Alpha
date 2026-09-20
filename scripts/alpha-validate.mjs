@@ -118,6 +118,7 @@ const textExtensions = new Set([
 
 const aggregateTestFiles = [
   "scripts/macro-world-model.test.mjs",
+  "scripts/macro-world-model-batch2.test.mjs",
   "scripts/options-storyline.test.mjs",
   "scripts/options-trend-study.test.mjs",
   "scripts/options-macro-playbook.test.mjs",

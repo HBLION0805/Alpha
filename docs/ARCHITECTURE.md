@@ -11,6 +11,15 @@ runtime inputs. Existing trade projections run before this independent state
 component; no decision engine consumes it. Current-state refresh, classification,
 scoring and automatic monitoring are not implemented.
 
+Batch 2 adds a separately pinned approval/catalog pair through
+`macro-world-model-batch2.mjs`, composing 36 approved items, four edges and 13
+separate guardrails after the unchanged Batch 1 validation. Original item objects
+and the legacy approval identity remain stable for copied storyline recovery;
+the combined view also exposes both approval references. New themes use the
+existing renderer, deterministic lookup and explicit manual-link selectors.
+There is no new store, graph, current-state lifecycle, external read or decision
+dependency. See the [Batch 2 delivery](MACRO_WORLD_MODEL_BATCH_2_DELIVERY.md).
+
 ## Trade thesis within manual plans — September 19, 2026
 
 `OptionsTradeThesis` adds deterministic condition checks alongside the unchanged

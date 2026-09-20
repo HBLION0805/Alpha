@@ -1,0 +1,452 @@
+{
+  "id": "BATCH_2_WORLD_MODEL_APPROVAL_V1",
+  "version": 1,
+  "approvedBy": "OWNER",
+  "approvalRecordedAt": "2026-09-20T21:07:36.690Z",
+  "approvalTimestampMeaning": "Actual recording clock of the explicit Owner handoff in this development session, not a guessed message timestamp.",
+  "sourceReviewCommit": "8e3949aa9e2f9cbeb912a4f7a980538ad191eafb",
+  "sourceReviewPath": "docs/research/macro/batch-2/review/BATCH_2_KNOWLEDGE_CANDIDATES.json",
+  "sourceReviewSha256": "364c5af82ef6719b56fa50e3c6e1b42df6ab594b8f22c4513dd0f17b14e8aab0",
+  "scope": "READ_ONLY_REFERENCE_NO_TRADE_INFLUENCE",
+  "approvedItems": [
+    {
+      "candidateId": "macro.conceptual-boundary.prc-principle-us-policy-taiwan-attribution.v1",
+      "reviewLabel": "B2-K01",
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.conceptual-boundary.taiwan-significance-beyond-semiconductors.v1",
+      "reviewLabel": "B2-K02",
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.semiconductor-complementary-value-chain.v1",
+      "reviewLabel": "B2-K03",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "FACTUAL_DEPENDENCY"
+    },
+    {
+      "candidateId": "macro.measurement-framework.semiconductor-qualified-output-and-substitution.v1",
+      "reviewLabel": "B2-K04",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "FACTUAL_DEPENDENCY"
+    },
+    {
+      "candidateId": "macro.measurement-framework.semiconductor-market-share-denominator.v1",
+      "reviewLabel": "B2-K05",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.measurement-framework.globalization-level-growth-route-value-added.v1",
+      "reviewLabel": "B2-K06",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.measurement-framework.production-location-versus-trade-rerouting.v1",
+      "reviewLabel": "B2-K07",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.measurement-framework.data-center-project-stage-and-deduplication.v1",
+      "reviewLabel": "B2-K08",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.measurement-framework.power-energy-and-metering-boundary.v1",
+      "reviewLabel": "B2-K09",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "WELL_ESTABLISHED"
+    },
+    {
+      "candidateId": "macro.measurement-framework.ai-workload-versus-total-data-centers.v1",
+      "reviewLabel": "B2-K10",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.measurement-framework.company-cash-ppe-versus-ai-capex.v1",
+      "reviewLabel": "B2-K11",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.measurement-framework.mineral-rights-production-processing-export.v1",
+      "reviewLabel": "B2-K12",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "FACTUAL_DEPENDENCY"
+    },
+    {
+      "candidateId": "macro.measurement-framework.project-output-versus-local-distribution.v1",
+      "reviewLabel": "B2-K13",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.conceptual-boundary.bri-label-versus-contract-parties.v1",
+      "reviewLabel": "B2-K14",
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.measurement-framework.project-financing-orthogonal-dimensions.v1",
+      "reviewLabel": "B2-K15",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.measurement-framework.project-sovereign-soe-guaranteed-debt.v1",
+      "reviewLabel": "B2-K16",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.conceptual-boundary.infrastructure-use-versus-financial-success.v1",
+      "reviewLabel": "B2-K17",
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.mechanism.export-licensing-access-substitution-relocation.v1",
+      "reviewLabel": "B2-ME01",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.mechanism.compute-deployment-utilization-power-bottlenecks.v1",
+      "reviewLabel": "B2-ME02",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.mechanism.infrastructure-complements-realized-trade.v1",
+      "reviewLabel": "B2-ME03",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.mechanism.project-currency-cashflow-debt-service.v1",
+      "reviewLabel": "B2-ME04",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.watch.chip-permit-to-qualified-delivery.v1",
+      "reviewLabel": "B2-W01",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.watch.trade-contraction-versus-location-reconfiguration.v1",
+      "reviewLabel": "B2-W02",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.watch.data-center-energization-to-metered-ai-use.v1",
+      "reviewLabel": "B2-W03",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.watch.mineral-output-export-cash-local-benefit.v1",
+      "reviewLabel": "B2-W04",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.watch.project-funding-use-operating-cash-reconciliation.v1",
+      "reviewLabel": "B2-W05",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.current-chip-control-matrix-and-actual-exports.v1",
+      "reviewLabel": "B2-Q01",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.trade-fdi-vintage-and-value-added-bridge.v1",
+      "reviewLabel": "B2-Q02",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.energized-ai-load-and-specific-capex.v1",
+      "reviewLabel": "B2-Q03",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.mineral-delivery-disbursements-local-net-benefits.v1",
+      "reviewLabel": "B2-Q04",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.niger-control-compensation-security-causality.v1",
+      "reviewLabel": "B2-Q05",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.bri-project-demand-cost-cash-guarantee-reconciliation.v1",
+      "reviewLabel": "B2-Q06",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.conflict.foundry2-versus-traditional-foundry-definition.v1",
+      "reviewLabel": "B2-CF01",
+      "knowledgeType": "CONFLICT",
+      "evidenceStatus": "INCOMPARABLE"
+    },
+    {
+      "candidateId": "macro.conflict.wto-2025-nominal-trade-vintages.v1",
+      "reviewLabel": "B2-CF02",
+      "knowledgeType": "CONFLICT",
+      "evidenceStatus": "UNBRIDGED"
+    },
+    {
+      "candidateId": "macro.conflict.unctad-2025-fdi-preliminary-report-bridge.v1",
+      "reviewLabel": "B2-CF03",
+      "knowledgeType": "CONFLICT",
+      "evidenceStatus": "UNBRIDGED"
+    },
+    {
+      "candidateId": "macro.conflict.somair-legal-position-versus-compensation-execution.v1",
+      "reviewLabel": "B2-CF04",
+      "knowledgeType": "CONFLICT",
+      "evidenceStatus": "DISPUTED"
+    }
+  ],
+  "approvedCandidateIds": [
+    "macro.conceptual-boundary.prc-principle-us-policy-taiwan-attribution.v1",
+    "macro.conceptual-boundary.taiwan-significance-beyond-semiconductors.v1",
+    "macro.structural-fact.semiconductor-complementary-value-chain.v1",
+    "macro.measurement-framework.semiconductor-qualified-output-and-substitution.v1",
+    "macro.measurement-framework.semiconductor-market-share-denominator.v1",
+    "macro.measurement-framework.globalization-level-growth-route-value-added.v1",
+    "macro.measurement-framework.production-location-versus-trade-rerouting.v1",
+    "macro.measurement-framework.data-center-project-stage-and-deduplication.v1",
+    "macro.measurement-framework.power-energy-and-metering-boundary.v1",
+    "macro.measurement-framework.ai-workload-versus-total-data-centers.v1",
+    "macro.measurement-framework.company-cash-ppe-versus-ai-capex.v1",
+    "macro.measurement-framework.mineral-rights-production-processing-export.v1",
+    "macro.measurement-framework.project-output-versus-local-distribution.v1",
+    "macro.conceptual-boundary.bri-label-versus-contract-parties.v1",
+    "macro.measurement-framework.project-financing-orthogonal-dimensions.v1",
+    "macro.measurement-framework.project-sovereign-soe-guaranteed-debt.v1",
+    "macro.conceptual-boundary.infrastructure-use-versus-financial-success.v1",
+    "macro.mechanism.export-licensing-access-substitution-relocation.v1",
+    "macro.mechanism.compute-deployment-utilization-power-bottlenecks.v1",
+    "macro.mechanism.infrastructure-complements-realized-trade.v1",
+    "macro.mechanism.project-currency-cashflow-debt-service.v1",
+    "macro.watch.chip-permit-to-qualified-delivery.v1",
+    "macro.watch.trade-contraction-versus-location-reconfiguration.v1",
+    "macro.watch.data-center-energization-to-metered-ai-use.v1",
+    "macro.watch.mineral-output-export-cash-local-benefit.v1",
+    "macro.watch.project-funding-use-operating-cash-reconciliation.v1",
+    "macro.open.current-chip-control-matrix-and-actual-exports.v1",
+    "macro.open.trade-fdi-vintage-and-value-added-bridge.v1",
+    "macro.open.energized-ai-load-and-specific-capex.v1",
+    "macro.open.mineral-delivery-disbursements-local-net-benefits.v1",
+    "macro.open.niger-control-compensation-security-causality.v1",
+    "macro.open.bri-project-demand-cost-cash-guarantee-reconciliation.v1",
+    "macro.conflict.foundry2-versus-traditional-foundry-definition.v1",
+    "macro.conflict.wto-2025-nominal-trade-vintages.v1",
+    "macro.conflict.unctad-2025-fdi-preliminary-report-bridge.v1",
+    "macro.conflict.somair-legal-position-versus-compensation-execution.v1"
+  ],
+  "approvedWithRevisionIds": [
+    "macro.edge.batch2-l7.v1"
+  ],
+  "approvedEdges": [
+    {
+      "candidateId": "macro.edge.batch2-l1.v1",
+      "reviewLabel": "B2-L1",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.edge.batch2-l3.v1",
+      "reviewLabel": "B2-L3",
+      "evidenceStatus": "FACTUAL_DEPENDENCY"
+    },
+    {
+      "candidateId": "macro.edge.batch2-l4.v1",
+      "reviewLabel": "B2-L4",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.edge.batch2-l7.v1",
+      "reviewLabel": "B2-L7",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    }
+  ],
+  "revisedEdges": [
+    {
+      "candidateId": "macro.edge.batch2-l7.v1",
+      "originalStatement": "资源货源可支撑运输设施的使用及融资可行性；提款、建设和交付配套须分别核实。",
+      "approvedStatement": "Resource cargo / real freight demand can support transport infrastructure utilization / route viability.",
+      "reason": "Owner narrows the direct result to utilization/route viability. Financing remains a separate mechanism requiring cash/contract evidence."
+    }
+  ],
+  "deferred": [
+    {
+      "id": "macro.edge.batch2-l2.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "原表CONDITIONAL，M06 F4为ALPHA_INFERENCE，S15仅节选；不提升补贴→分散→韧性整链。"
+    },
+    {
+      "id": "macro.edge.batch2-l5.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "无AI特定铜/铀需求份额和采购证据；S02节选不支持非洲供给或价格归因。"
+    },
+    {
+      "id": "macro.edge.batch2-l6.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "缺实际供给损失、库存、替代与项目暴露；不能由矿权新闻推AI工期。"
+    },
+    {
+      "id": "macro.edge.batch2-l8.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "已有ME07足够；只提议引用，不新增同义边，没有实际航线中断。"
+    },
+    {
+      "id": "macro.edge.batch2-l9.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "融资约束已由ME03/F05承接，新增项目币种机制另候选；不把项目压力提升财政主导。"
+    },
+    {
+      "id": "macro.edge.batch2-l10.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "没有新币种微观流量；生产迁移与美元网络可分离仅留研究推断。"
+    },
+    {
+      "id": "macro.exclusion.batch2-current-chip-rules-and-company-capacity.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "易变且后续法规、拨款、良率未完整核实；不创建CURRENT_STATE候选。"
+    },
+    {
+      "id": "macro.exclusion.batch2-trade-fdi-estimates-and-model-magnitudes.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "只保留版本冲突和测量方法；没有同口径桥接，模型不等于实绩。"
+    },
+    {
+      "id": "macro.exclusion.batch2-energy-forecasts-company-cash-and-project-status.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "年份/项目状态会老化；保留数量/用途/时钟边界，不搬运数值。"
+    },
+    {
+      "id": "macro.exclusion.batch2-mine-equity-loans-exports-and-mous.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "具体权益/执行/金额/路线需带版本再核；无足够长期增量值得另建actor/flow节点。"
+    },
+    {
+      "id": "macro.exclusion.batch2-bri-case-history-finance-and-use.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "概念已由K14–K17保留；不复制整个争议案例或旧合同为现行事实。"
+    },
+    {
+      "id": "macro.exclusion.batch2-market-channels-and-long-edges.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "全部ALPHA_INFERENCE；复用Batch1 T01/T02，零新增HYPOTHESIS_ONLY_CONTEXT。"
+    },
+    {
+      "id": "macro.exclusion.batch2-tool-process-and-extra-histories.v1",
+      "decision": "DOSSIER_ONLY",
+      "reason": "过程保留在原文；来源覆盖限制随候选保留，但失败日志不是世界结构知识。"
+    }
+  ],
+  "rejectedIds": [
+    "macro.exclusion.batch2-taiwan-only-chips-or-control-causes-war.v1",
+    "macro.exclusion.batch2-one-china-omnibus-or-corporate-political-stance.v1",
+    "macro.exclusion.batch2-tariffs-prove-end-of-globalization.v1",
+    "macro.exclusion.batch2-rerouting-is-reshoring-or-resilience.v1",
+    "macro.exclusion.batch2-planned-gw-is-actual-ai-energy.v1",
+    "macro.exclusion.batch2-ppe-is-ai-investment.v1",
+    "macro.exclusion.batch2-mineral-equity-is-national-flow-control.v1",
+    "macro.exclusion.batch2-africa-one-actor-and-resource-coups.v1",
+    "macro.exclusion.batch2-mou-or-commitment-is-cash-execution.v1",
+    "macro.exclusion.batch2-bri-always-debt-trap-or-win-win.v1",
+    "macro.exclusion.batch2-physical-use-is-financial-success.v1",
+    "macro.exclusion.batch2-port-lease-is-automatic-debt-seizure.v1",
+    "macro.exclusion.batch2-geopolitics-determines-asset-direction.v1"
+  ],
+  "guardrailIds": [
+    "macro.exclusion.batch2-taiwan-only-chips-or-control-causes-war.v1",
+    "macro.exclusion.batch2-one-china-omnibus-or-corporate-political-stance.v1",
+    "macro.exclusion.batch2-tariffs-prove-end-of-globalization.v1",
+    "macro.exclusion.batch2-rerouting-is-reshoring-or-resilience.v1",
+    "macro.exclusion.batch2-planned-gw-is-actual-ai-energy.v1",
+    "macro.exclusion.batch2-ppe-is-ai-investment.v1",
+    "macro.exclusion.batch2-mineral-equity-is-national-flow-control.v1",
+    "macro.exclusion.batch2-africa-one-actor-and-resource-coups.v1",
+    "macro.exclusion.batch2-mou-or-commitment-is-cash-execution.v1",
+    "macro.exclusion.batch2-bri-always-debt-trap-or-win-win.v1",
+    "macro.exclusion.batch2-physical-use-is-financial-success.v1",
+    "macro.exclusion.batch2-port-lease-is-automatic-debt-seizure.v1",
+    "macro.exclusion.batch2-geopolitics-determines-asset-direction.v1"
+  ],
+  "currentStateCount": 0,
+  "actorRelationCount": 0,
+  "flowRelationCount": 0,
+  "canonicalReferenceIds": [
+    "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+    "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+    "macro.structural-fact.reserve-share-versus-transactions.v1",
+    "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+    "macro.actor-relation.fed-boj-dollar-backstop.v1",
+    "macro.structural-fact.vessel-tonnage-versus-cargo.v1",
+    "macro.mechanism.rerouting-vessel-time-cost.v1",
+    "macro.mechanism.debt-rollover-cost.v1",
+    "macro.transmission-channel-candidate.macro-to-gold-channels.v1",
+    "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1"
+  ],
+  "catalogPath": "src/engines/macro-world-model/BATCH_2_WORLD_MODEL_V1.json",
+  "catalogSha256": "c32b5353cf0b04535a82214748eb939808c8624048b6ff6a925d6a61cd6b1dde",
+  "catalogBytes": 186471,
+  "sourceAccessThisStage": {
+    "publicReads": 0,
+    "marketCalls": 0,
+    "externalModelApiCalls": 0
+  },
+  "sourceBatchFingerprints": [
+    {
+      "dossierId": "M06",
+      "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "sha256": "a1ec19000bc7190aedf075b86860819947501d79ced41f175babe18330c528eb"
+    },
+    {
+      "dossierId": "M07",
+      "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "sha256": "d44b871001bf2858e6b30e965a9a2741c5f120bea766c2fd485608df63bbdd2d"
+    },
+    {
+      "dossierId": "M08",
+      "path": "../M08_AI_POWER_DATA_CENTERS.md",
+      "sha256": "30e64f9f636a7fbc185b1a6293110969e098507731eed934a70d47d608b58bb4"
+    },
+    {
+      "dossierId": "M09",
+      "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "sha256": "b01c23a11f0069849cb50982377337707c46ab69b51682af4d179156840029fb"
+    },
+    {
+      "dossierId": "M10",
+      "path": "../M10_BELT_AND_ROAD.md",
+      "sha256": "7f550d90f1d06cd47b2f8402f4074dd5ab868f19162ad66045163bf7cf9787a9"
+    },
+    {
+      "dossierId": "BATCH",
+      "path": "../BATCH_2_SYNTHESIS.md",
+      "sha256": "1320c864ab0bc7d7ef2390a185046ffc5dfeceb558ef4aab5ce60e628571d316"
+    }
+  ]
+}
