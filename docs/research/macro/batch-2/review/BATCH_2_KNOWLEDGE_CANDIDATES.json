@@ -1,0 +1,4782 @@
+{
+  "version": "batch-2-knowledge-review.v1",
+  "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+  "runtimeUse": "PROHIBITED",
+  "ownerApprovalRequired": true,
+  "reviewStage": "OWNER_REVIEW_READY",
+  "generatedAt": "2026-09-20T20:53:54.892Z",
+  "reviewer": "Codex in current development session; self-review, not independent or Owner approval",
+  "sourceReviewScope": "Saved dossier statements, source maps, qualifiers and provenance only; no new web reads or current-state refresh.",
+  "schemaPurpose": "REVIEW_ARTIFACT_ONLY_NOT_PRODUCTION_SCHEMA",
+  "sourceBatch": {
+    "path": "../",
+    "commit": "b57f983ce48ca6b778cc918a544d3be7573ec783",
+    "status": "RESEARCH_ONLY_NOT_RUNTIME_KNOWLEDGE",
+    "files": [
+      {
+        "dossierId": "M06",
+        "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+        "sha256": "a1ec19000bc7190aedf075b86860819947501d79ced41f175babe18330c528eb"
+      },
+      {
+        "dossierId": "M07",
+        "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+        "sha256": "d44b871001bf2858e6b30e965a9a2741c5f120bea766c2fd485608df63bbdd2d"
+      },
+      {
+        "dossierId": "M08",
+        "path": "../M08_AI_POWER_DATA_CENTERS.md",
+        "sha256": "30e64f9f636a7fbc185b1a6293110969e098507731eed934a70d47d608b58bb4"
+      },
+      {
+        "dossierId": "M09",
+        "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+        "sha256": "b01c23a11f0069849cb50982377337707c46ab69b51682af4d179156840029fb"
+      },
+      {
+        "dossierId": "M10",
+        "path": "../M10_BELT_AND_ROAD.md",
+        "sha256": "7f550d90f1d06cd47b2f8402f4074dd5ab868f19162ad66045163bf7cf9787a9"
+      },
+      {
+        "dossierId": "BATCH",
+        "path": "../BATCH_2_SYNTHESIS.md",
+        "sha256": "1320c864ab0bc7d7ef2390a185046ffc5dfeceb558ef4aab5ce60e628571d316"
+      }
+    ]
+  },
+  "batch1Baseline": {
+    "catalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+    "sha256": "887e71e7205c60aabc9ac1c834f406610418848e5c4b6bfba4a09decf0b13b39",
+    "approvalPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+    "approvalSha256": "bfdd59f16a87f69a1de2d938ee95f71431a033db37a6e38ade6ec13721d40cb1",
+    "currentStateEnabled": false,
+    "mutation": false
+  },
+  "themes": [
+    {
+      "themeId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md"
+    },
+    {
+      "themeId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md"
+    },
+    {
+      "themeId": "M08",
+      "dossierPath": "../M08_AI_POWER_DATA_CENTERS.md"
+    },
+    {
+      "themeId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md"
+    },
+    {
+      "themeId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md"
+    }
+  ],
+  "evidenceLegend": {
+    "VERIFIED": "仅表示原档案范围内有来源的具体事实/定义，不是本轮新的外部认证或Owner批准。",
+    "WELL_ESTABLISHED": "有限的量纲/算术关系，不扩展为需求预测。",
+    "FACTUAL_DEPENDENCY": "结构互补/产品依赖，不证明当前瓶颈。",
+    "SUPPORTED_MECHANISM": "来源支持条件机制，不证明当期效果已发生。",
+    "CONDITIONAL_HYPOTHESIS": "部分必要环节缺实测，保留条件与证伪。",
+    "ALPHA_INFERENCE": "分析组合，不提升为外部验证事实。",
+    "UNKNOWN": "缺证据，不补值。"
+  },
+  "measurementVocabulary": [
+    "STOCK",
+    "FLOW",
+    "CAPACITY",
+    "AUTHORIZATION",
+    "ANNOUNCEMENT",
+    "VALUATION_CHANGE",
+    "PRODUCTION_CAPACITY",
+    "ACTUAL_PRODUCTION",
+    "EXPORT_FLOW",
+    "PROCESSING_CAPACITY",
+    "ELECTRICITY_LOAD",
+    "CAPITAL_COMMITMENT",
+    "CAPITAL_DISBURSEMENT"
+  ],
+  "validityNote": "null是未知或不适用，由说明限定，不是零或无限有效；不造TTL。",
+  "knowledgeLifetime": {
+    "historical": "IMMUTABLE_EXCEPT_CORRECTION",
+    "structural": "VERSIONED",
+    "currentState": "APPEND_SUPERSEDE_NOT_ENABLED",
+    "mechanism": "EVIDENCE_GRADE_VERSIONED",
+    "openQuestion": "RESOLVED_BY_LINK_NOT_DELETION"
+  },
+  "sourceMap": [
+    {
+      "sourceRef": "M06.S01",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "savedCitation": "[国务院台办/国新办白皮书（使馆全文）](https://sc.china-embassy.gov.cn/zxhd/202208/t20220810_10739773.htm)，2022-08-10；历史及当时立场",
+      "savedSupportAndLimitations": "主权/和平统一/武力表述，2026-09-20T19:23:27Z",
+      "urls": [
+        "https://sc.china-embassy.gov.cn/zxhd/202208/t20220810_10739773.htm"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:27Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S02",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "savedCitation": "[CRS IF12503](https://www.congress.gov/crs_external_products/IF/PDF/IF12503/IF12503.6.pdf)，2025-08-18；1895–2025",
+      "savedSupportAndLimitations": "3页中的历史、公报/TRA/保证；19:23:27Z，复核19:31:51Z",
+      "urls": [
+        "https://www.congress.gov/crs_external_products/IF/PDF/IF12503/IF12503.6.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:27Z",
+      "additionalSavedReadClocks": [
+        "2026-09-20T19:31:51Z"
+      ],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S03",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "savedCitation": "[PRC外交部讲话](https://www.mfa.gov.cn/zwbd_673032/wjzs/202605/t20260518_11912191.shtml)，2026-05-15；当日立场",
+      "savedSupportAndLimitations": "三要素及归属，2026-09-20T19:30:08Z",
+      "urls": [
+        "https://www.mfa.gov.cn/zwbd_673032/wjzs/202605/t20260518_11912191.shtml"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:08Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S04",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "savedCitation": "[MAC历史说明](https://www.mac.gov.tw/en/News_Content.aspx?n=14271038DDC4104F&s=B573B5A2CD260CBB&sms=E828F60C4AFBAF90)，2013-06-14",
+      "savedSupportAndLimitations": "仅搜索节选；正文失败。2026-09-20T19:22:59Z",
+      "urls": [
+        "https://www.mac.gov.tw/en/News_Content.aspx?n=14271038DDC4104F&s=B573B5A2CD260CBB&sms=E828F60C4AFBAF90"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:22:59Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S05",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "savedCitation": "[MAC当期表述](https://www.mac.gov.tw/en/News_Content.aspx?n=A921DFB2651FF92F&s=3444354E6DE51C0A&sms=37838322A6DA5E79)，索引显示2026-05-19",
+      "savedSupportAndLimitations": "仅副主委沈有忠相关节选；正文两次失败，2026-09-20T19:22:59Z",
+      "urls": [
+        "https://www.mac.gov.tw/en/News_Content.aspx?n=A921DFB2651FF92F&s=3444354E6DE51C0A&sms=37838322A6DA5E79"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:22:59Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S06",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "savedCitation": "[CRS Taiwan defense](https://www.congress.gov/crs_external_products/IF/PDF/IF12481/IF12481.20.pdf)，2026-02-09；当时安全关系",
+      "savedSupportAndLimitations": "pp1–2，2026-09-20T19:30:08Z；不推断开战日期",
+      "urls": [
+        "https://www.congress.gov/crs_external_products/IF/PDF/IF12481/IF12481.20.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:08Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S07",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "savedCitation": "[TSMC 2025 annual report](https://investor.tsmc.com/sites/ir/annual-report/2025/2025%20Annual%20Report.E.pdf)，2026发布日未核；FY2025",
+      "savedSupportAndLimitations": "PDF pp5/9/11/51，份额/容量/工艺；2026-09-20T19:23:27Z；N2复核19:32:36Z",
+      "urls": [
+        "https://investor.tsmc.com/sites/ir/annual-report/2025/2025%20Annual%20Report.E.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:27Z",
+      "additionalSavedReadClocks": [
+        "2026-09-20T19:32:36Z"
+      ],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S08",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "savedCitation": "[TSMC Q2 2026 transcript](https://investor.tsmc.com/english/encrypt/files/encrypt_file/reports/2026-08/3e494f0c14dd0890f897aa044415e21d93486cc4/TSMC%202Q26%20Transcript.pdf)，2026-07-16；Q2及前瞻",
+      "savedSupportAndLimitations": "pp4–7，2026-09-20T19:24:39Z；计划不是投产",
+      "urls": [
+        "https://investor.tsmc.com/english/encrypt/files/encrypt_file/reports/2026-08/3e494f0c14dd0890f897aa044415e21d93486cc4/TSMC%202Q26%20Transcript.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:24:39Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S09",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S09",
+      "savedCitation": "[Federal Register 91 FR 1684](https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities)，2026-01-15；同日生效",
+      "savedSupportAndLimitations": "DATES/Background/许可条件，2026-09-20T19:31:23Z；EAR744/748网页读取失败，未穷尽后续修法",
+      "urls": [
+        "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:31:23Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S10",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S10",
+      "savedCitation": "[BIS管制公告](https://www.bis.gov/press-release/commerce-strengthens-export-controls-restrict-chinas-capability-produce-advanced-semiconductors-military)，2024-12-02",
+      "savedSupportAndLimitations": "搜索返回的官方正文节选，2026-09-20T19:23:13Z；仅当时范围/安全理由",
+      "urls": [
+        "https://www.bis.gov/press-release/commerce-strengthens-export-controls-restrict-chinas-capability-produce-advanced-semiconductors-military"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:13Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S11",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S11",
+      "savedCitation": "[荷兰设备许可修订](https://www.government.nl/latest/news/2025/01/15/klever-export-controls-on-advanced-semiconductor-manufacturing-equipment-to-be-tightened)，2025-01-15；生效2025-04-01",
+      "savedSupportAndLimitations": "完整短公告，2026-09-20T19:30:08Z",
+      "urls": [
+        "https://www.government.nl/latest/news/2025/01/15/klever-export-controls-on-advanced-semiconductor-manufacturing-equipment-to-be-tightened"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:08Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S12",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S12",
+      "savedCitation": "[OECD semiconductor mapping](https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/06/mapping-the-semiconductor-value-chain_5ba52971/4154cdbf-en.pdf)，2025-06-24；各引用产业数据另有年份",
+      "savedSupportAndLimitations": "PDF pp9–18工艺/企业；2026-09-20T19:24:39Z；非2026实时份额",
+      "urls": [
+        "https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/06/mapping-the-semiconductor-value-chain_5ba52971/4154cdbf-en.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:24:39Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S13",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S13",
+      "savedCitation": "[METI修订公告](https://www.meti.go.jp/english/press/2025/1111_004.html)，2025-11-11；所述生效2026-02-14",
+      "savedSupportAndLimitations": "仅搜索节选、正文失败，2026-09-20T19:23:13Z；不据此重建芯片清单",
+      "urls": [
+        "https://www.meti.go.jp/english/press/2025/1111_004.html"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:13Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S14",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S14",
+      "savedCitation": "[OECD Mexico报告产业链附章](https://www.oecd.org/en/publications/promoting-the-development-of-the-semiconductor-ecosystem-in-mexico_02c81dec-en/full-report/understanding-the-semiconductor-value-chain_58b33686.html)，2026版、确切日未核；主要沿用2025产业图谱",
+      "savedSupportAndLimitations": "设计/制造/材料/封装段，2026-09-20T19:31:06Z；与S12同源继承",
+      "urls": [
+        "https://www.oecd.org/en/publications/promoting-the-development-of-the-semiconductor-ecosystem-in-mexico_02c81dec-en/full-report/understanding-the-semiconductor-value-chain_58b33686.html"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:31:06Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M06.S15",
+      "dossierId": "M06",
+      "dossierPath": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+      "section": "M",
+      "mapEntryId": "S15",
+      "savedCitation": "[METI JASM二厂支持条件](https://www.meti.go.jp/english/speeches/press_conferences/2024/0209001.html)，2024-02-09；当时表态",
+      "savedSupportAndLimitations": "官方搜索节选2026-09-20T19:39:27Z；正文403。另一个补贴PDF也403，未抄补助金额或当作2026现行合同",
+      "urls": [
+        "https://www.meti.go.jp/english/speeches/press_conferences/2024/0209001.html"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:39:27Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M07.S01",
+      "dossierId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "savedCitation": "2026-03；2025估计、2026–27情景；[WTO outlook](https://www.wto.org/english/res_e/booksp_e/gtos0326_e.pdf)",
+      "savedSupportAndLimitations": "摘要/商品量及名义值段，19:23:53Z；不是全44页精读",
+      "urls": [
+        "https://www.wto.org/english/res_e/booksp_e/gtos0326_e.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:53Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M07.S02",
+      "dossierId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "savedCitation": "页面发布/修订日UNKNOWN；2025；[WTO statistics](https://www.wto.org/english/res_e/statis_e/world_trade_statistics_e.htm)",
+      "savedSupportAndLimitations": "可取得的总额/增幅短正文，19:30:08Z",
+      "urls": [
+        "https://www.wto.org/english/res_e/statis_e/world_trade_statistics_e.htm"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:08Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M07.S03",
+      "dossierId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "savedCitation": "页面日UNKNOWN，WDI更新提示2026-07-13；指标1960–2025；[World Bank glossary](https://databank.worldbank.org/metadataglossary/millennium-development-goals/series/NE.TRD.GNFS.ZS)",
+      "savedSupportAndLimitations": "定义与口径，不是序列下载；19:31:23Z",
+      "urls": [
+        "https://databank.worldbank.org/metadataglossary/millennium-development-goals/series/NE.TRD.GNFS.ZS"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:31:23Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M07.S04",
+      "dossierId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "savedCitation": "2024-04-05；俄乌战争后历史样本；[IMF WP24/76](https://www.imf.org/en/publications/wp/issues/2024/04/05/changing-global-linkages-a-new-cold-war-547357)",
+      "savedSupportAndLimitations": "正式摘要及方法范围，19:30:50Z；未抄全文回归表",
+      "urls": [
+        "https://www.imf.org/en/publications/wp/issues/2024/04/05/changing-global-linkages-a-new-cold-war-547357"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:50Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M07.S05",
+      "dossierId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "savedCitation": "2025-06；亚洲六国历史贸易/投资样本；[IMF WP25/129](https://www.imf.org/en/-/media/files/publications/wp/2025/english/wpiea2025129-print-pdf.pdf)",
+      "savedSupportAndLimitations": "摘要/引言、重配与转运及越南结论（PDF pp1–8）；19:30:32Z；eLibrary先403，官方PDF成功",
+      "urls": [
+        "https://www.imf.org/en/-/media/files/publications/wp/2025/english/wpiea2025129-print-pdf.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:32Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M07.S06",
+      "dossierId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "savedCitation": "2025-06-02；历史集中度及本地化模型；[OECD resilience](https://www.oecd.org/en/publications/oecd-supply-chain-resilience-review_94e3a8ea-en.html)",
+      "savedSupportAndLimitations": "发布页关键发现/情景，19:30:32Z；未声称184页通读",
+      "urls": [
+        "https://www.oecd.org/en/publications/oecd-supply-chain-resilience-review_94e3a8ea-en.html"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:32Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M07.S07",
+      "dossierId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "savedCitation": "WIR2026，索引未核精确日；2025；[UNCTAD release](https://unctad.org/press-material/global-investment-rises-6-16-trillion-development-gains-remain-uneven)",
+      "savedSupportAndLimitations": "搜索节选19:30:32Z；该页及news副本正文失败，暂读值",
+      "urls": [
+        "https://unctad.org/press-material/global-investment-rises-6-16-trillion-development-gains-remain-uneven"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:32Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M07.S08",
+      "dossierId": "M07",
+      "dossierPath": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "savedCitation": "2026-01；2025 preliminary；[UNCTAD monitor50](https://unctad.org/publication/global-investment-trends-monitor-no-50)",
+      "savedSupportAndLimitations": "搜索节选19:23:27Z；正文失败，不能验证修订桥接",
+      "urls": [
+        "https://unctad.org/publication/global-investment-trends-monitor-no-50"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:27Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M08.S01",
+      "dossierId": "M08",
+      "dossierPath": "../M08_AI_POWER_DATA_CENTERS.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "savedCitation": "2026-04-16；2025估计、2030中央情景；[IEA Key Questions](https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary)",
+      "savedSupportAndLimitations": "执行摘要：485/950TWh、瓶颈/融资/负荷；19:23:53Z，复核19:31:51Z；[出版日期页](https://www.iea.org/reports/key-questions-on-energy-and-ai)检索19:30:50Z",
+      "urls": [
+        "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary",
+        "https://www.iea.org/reports/key-questions-on-energy-and-ai"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:53Z",
+      "additionalSavedReadClocks": [
+        "2026-09-20T19:31:51Z",
+        "2026-09-20T19:30:50Z"
+      ],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M08.S02",
+      "dossierId": "M08",
+      "dossierPath": "../M08_AI_POWER_DATA_CENTERS.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "savedCitation": "2025-04；2024基期/2030情景；[IEA Energy supply for AI](https://www.iea.org/reports/energy-and-ai/energy-supply-for-ai)",
+      "savedSupportAndLimitations": "搜索返回供电侧节选，19:23:27Z；不宣称完整章节/所有情景已读",
+      "urls": [
+        "https://www.iea.org/reports/energy-and-ai/energy-supply-for-ai"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:27Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M08.S03",
+      "dossierId": "M08",
+      "dossierPath": "../M08_AI_POWER_DATA_CENTERS.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "savedCitation": "2026-01-14；2026–2046预测；[PJM forecast update](https://insidelines.pjm.com/pjms-updated-20-year-forecast-continues-to-see-significant-long-term-load-growth/)",
+      "savedSupportAndLimitations": "运营者完整短说明、近期下修和大负荷核实，19:24:39Z",
+      "urls": [
+        "https://insidelines.pjm.com/pjms-updated-20-year-forecast-continues-to-see-significant-long-term-load-growth/"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:24:39Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M08.S04",
+      "dossierId": "M08",
+      "dossierPath": "../M08_AI_POWER_DATA_CENTERS.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "savedCitation": "2026-07-29；FY截至2026-06-30及FY2025；[Microsoft FY26 Q4 release](https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast)",
+      "savedSupportAndLimitations": "现金流表单位、四列期间及PP&E行，19:31:23Z、19:31:51Z；发布页注明Unaudited。SEC10-K正文另次失败，未冒称本批读完审计报告",
+      "urls": [
+        "https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:31:23Z",
+      "additionalSavedReadClocks": [
+        "2026-09-20T19:31:51Z"
+      ],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M08.S05",
+      "dossierId": "M08",
+      "dossierPath": "../M08_AI_POWER_DATA_CENTERS.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "savedCitation": "2025-06-24；产业分工；[OECD semiconductor mapping](https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/06/mapping-the-semiconductor-value-chain_5ba52971/4154cdbf-en.pdf)",
+      "savedSupportAndLimitations": "与M06 S12同一份，PDF pp9–18，19:24:39Z；不是另一独立证据",
+      "urls": [
+        "https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/06/mapping-the-semiconductor-value-chain_5ba52971/4154cdbf-en.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:24:39Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M08.S06",
+      "dossierId": "M08",
+      "dossierPath": "../M08_AI_POWER_DATA_CENTERS.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "savedCitation": "2026-07-14；Crane重启程序；[NRC advisory](https://www.nrc.gov/about-nrc/news-releases/2026/nrc-advisory-nrc-update-public-crane-clean-energy-center-restart)",
+      "savedSupportAndLimitations": "仅索引通知，19:25:05Z；正文及设施页均403，不据此判断已供电",
+      "urls": [
+        "https://www.nrc.gov/about-nrc/news-releases/2026/nrc-advisory-nrc-update-public-crane-clean-energy-center-restart"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:25:05Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S01",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "savedCitation": "网页更新时间UNKNOWN，明确截至2025；[CMOC DRC profile](https://en.cmoc.com/html/Business/Congo-Cu-Co/)",
+      "savedSupportAndLimitations": "权益、产品、能力/项目段；19:31:06Z",
+      "urls": [
+        "https://en.cmoc.com/html/Business/Congo-Cu-Co/"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:31:06Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S02",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "savedCitation": "2026-04-20网页，引用2026-03-27年报；FY2025；[CMOC results](https://en.cmoc.com/html/2026/News_0420/84.html)",
+      "savedSupportAndLimitations": "铜/钴生产、销售及未来扩产，不采用宣传排名；19:31:06Z",
+      "urls": [
+        "https://en.cmoc.com/html/2026/News_0420/84.html"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:31:06Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S03",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "savedCitation": "页面日期UNKNOWN；[ZCCM Mopani](https://www.zccm-ih.com.zm/investments/mining-assets/mopani-copper-mines-plc/)",
+      "savedSupportAndLimitations": "股权/设施；19:24:06Z；网页含旧计划，不把旧工期当当前状态",
+      "urls": [
+        "https://www.zccm-ih.com.zm/investments/mining-assets/mopani-copper-mines-plc/"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:24:06Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S04",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "savedCitation": "2024-03-22；交易结构；[ZCCM completion](https://www.zccm-ih.com.zm/2024/03/22/zccm-ih-transaction-completion-announcement-mopani-copper-mines/)",
+      "savedSupportAndLimitations": "正文股本/信用证/贷款构成；19:30:08Z；未见全部现金支付凭证",
+      "urls": [
+        "https://www.zccm-ih.com.zm/2024/03/22/zccm-ih-transaction-completion-announcement-mopani-copper-mines/"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:08Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S05",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "savedCitation": "2025项目故事，确切日UNKNOWN；[DFC Lobito](https://www.dfc.gov/investment-story/strengthening-critical-mineral-supply-chains-countering-chinas-dominance)",
+      "savedSupportAndLimitations": "贷款/里程/官方目标短文；19:24:06Z",
+      "urls": [
+        "https://www.dfc.gov/investment-story/strengthening-critical-mineral-supply-chains-countering-chinas-dominance"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:24:06Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S06",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "savedCitation": "2024-08-22；当月运输事件；[Trafigura/LAR shipment](https://www.trafigura.com/news-and-insights/press-releases/2024/lobito-atlantic-railway-begins-exporting-copper-from-the-drc-to-the-united-states/)",
+      "savedSupportAndLimitations": "实货路线、运营与员工段；19:30:50Z；没有海关独立对账",
+      "urls": [
+        "https://www.trafigura.com/news-and-insights/press-releases/2024/lobito-atlantic-railway-begins-exporting-copper-from-the-drc-to-the-united-states/"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:50Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S07",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "savedCitation": "2026-02；2025回顾/配额计划；[USGS MCS2026](https://pubs.usgs.gov/periodicals/mcs2026/mcs2026.pdf)",
+      "savedSupportAndLimitations": "仅官方PDF搜索节选19:23:53Z；完整/单品PDF打开均失败，未作2026实时执行证明",
+      "urls": [
+        "https://pubs.usgs.gov/periodicals/mcs2026/mcs2026.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:23:53Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S08",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "savedCitation": "2025-06-20发布，事件06-19；[ANP国有化声明](https://anp.ne/mines-le-niger-nationalise-la-somair-suite-aux-actes-irresponsables-de-lactionnaire-majoritaire-le-francais-orano/)",
+      "savedSupportAndLimitations": "政府理由、转让及补偿声明；19:30:08Z",
+      "urls": [
+        "https://anp.ne/mines-le-niger-nationalise-la-somair-suite-aux-actes-irresponsables-de-lactionnaire-majoritaire-le-francais-orano/"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:08Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S09",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S09",
+      "savedCitation": "2026版，精确发布日期未核；FY2025；[Orano annual report](https://cdn.orano.group/orano/docs/default-source/orano-doc/finance/publications-financieres-et-reglementees/2025/orano_-annual-activity-report-2025_mel.pdf?sfvrsn=316136e0_24)",
+      "savedSupportAndLimitations": "PDF pp25/85等尼日尔、控制/仲裁/储量处理段；19:24:06Z；没有通读436页",
+      "urls": [
+        "https://cdn.orano.group/orano/docs/default-source/orano-doc/finance/publications-financieres-et-reglementees/2025/orano_-annual-activity-report-2025_mel.pdf?sfvrsn=316136e0_24"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:24:06Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S10",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S10",
+      "savedCitation": "2025-07-29更新，事件07-28；[Niger政府俄尼MOU](https://www.gouv.ne/index.php/90-autres-actualites/805-niamey-la-russie-et-le-niger-signent-un-memorandum-en-matiere-du-nucleaire-civil-et-d-exploitation-de-l-uranium)",
+      "savedSupportAndLimitations": "备忘录/会晤正文；19:30:08Z",
+      "urls": [
+        "https://www.gouv.ne/index.php/90-autres-actualites/805-niamey-la-russie-et-le-niger-signent-un-memorandum-en-matiere-du-nucleaire-civil-et-d-exploitation-de-l-uranium"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:08Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M09.S11",
+      "dossierId": "M09",
+      "dossierPath": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+      "section": "M",
+      "mapEntryId": "S11",
+      "savedCitation": "动态项目页日期UNKNOWN，附2023-10-24MOU；[EU Lobito project](https://international-partnerships.ec.europa.eu/policies/global-gateway/connecting-democratic-republic-congo-zambia-and-angola-global-markets-through-lobito-corridor_en)",
+      "savedSupportAndLimitations": "合作主体、段落/项目状态；19:39:36Z；未下载MOU压缩包",
+      "urls": [
+        "https://international-partnerships.ec.europa.eu/policies/global-gateway/connecting-democratic-republic-congo-zambia-and-angola-global-markets-through-lobito-corridor_en"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:39:36Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S01",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "savedCitation": "2023-10-10；倡议十年；[PRC白皮书发布页](https://english.www.gov.cn/archive/whitepaper/202310/10/content_WS6524b55fc6d0868f4e8e014c.html)",
+      "savedSupportAndLimitations": "仅官方发布介绍；19:25:05Z；全文附件读取失败，不伪称全文已读",
+      "urls": [
+        "https://english.www.gov.cn/archive/whitepaper/202310/10/content_WS6524b55fc6d0868f4e8e014c.html"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:25:05Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S02",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "savedCitation": "2019；历史/条件模型；[World Bank BRI Economics](https://documents1.worldbank.org/curated/en/715511560787699851/pdf/Main-Report.pdf)",
+      "savedSupportAndLimitations": "摘要、Box1.1、贸易/配套改革及债务章节选读（PDF pp34–36/55–57/113–115等）；19:25:05Z",
+      "urls": [
+        "https://documents1.worldbank.org/curated/en/715511560787699851/pdf/Main-Report.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:25:05Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S03",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "savedCitation": "2020；建设安排与2030预测；[World Bank Laos railway](https://documents1.worldbank.org/curated/en/648271591174002567/pdf/Main-Report.pdf)",
+      "savedSupportAndLimitations": "执行摘要、PDF p21融资、需求情景；19:24:39Z及19:30:32Z；未来预测不改成实绩",
+      "urls": [
+        "https://documents1.worldbank.org/curated/en/648271591174002567/pdf/Main-Report.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:24:39Z",
+      "additionalSavedReadClocks": [
+        "2026-09-20T19:30:32Z"
+      ],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S04",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "savedCitation": "2026-03-16；2025及截至2026-03-10；[商务部驻地网页转载云南交通材料](https://kmtb.mofcom.gov.cn/dmnyjm/art/2026/art_7cf32ab7c10a4966b8f8477f45c5f005.html)",
+      "savedSupportAndLimitations": "完整短文，跨境货物口径；19:31:23Z；转载不计第二份独立运输证实",
+      "urls": [
+        "https://kmtb.mofcom.gov.cn/dmnyjm/art/2026/art_7cf32ab7c10a4966b8f8477f45c5f005.html"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:31:23Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S05",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "savedCitation": "2026-06；2026预测；[World Bank Lao monitor findings](https://www.worldbank.org/en/country/lao/publication/lao-economic-monitor-jun-2026-consolidating-reform-momentum-amid-volatility-key-findings)",
+      "savedSupportAndLimitations": "关键发现/债务与风险，19:30:08Z；下载链接只得落地页，不称全文已读",
+      "urls": [
+        "https://www.worldbank.org/en/country/lao/publication/lao-economic-monitor-jun-2026-consolidating-reform-momentum-amid-volatility-key-findings"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:08Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S06",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "savedCitation": "2018发布，具体日未核；2017；[CBSL annual report chapter3](https://www.cbsl.gov.lk/sites/default/files/cbslweb_documents/publications/annual_report/2017/en/7_Chapter_03.pdf)",
+      "savedSupportAndLimitations": "PDF pp14–15港口与合资安排，19:25:05Z；SLPA合并利润不当项目利润",
+      "urls": [
+        "https://www.cbsl.gov.lk/sites/default/files/cbslweb_documents/publications/annual_report/2017/en/7_Chapter_03.pdf"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:25:05Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S07",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "savedCitation": "2020-08；主要至2017；[Chatham House Sri Lanka case](https://www.chathamhouse.org/2020/08/debunking-myth-debt-trap-diplomacy/4-sri-lanka-and-bri)",
+      "savedSupportAndLimitations": "项目/贷款/租赁反证章节，19:25:05Z及19:31:51Z；作者解释不是裁决",
+      "urls": [
+        "https://www.chathamhouse.org/2020/08/debunking-myth-debt-trap-diplomacy/4-sri-lanka-and-bri"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:25:05Z",
+      "additionalSavedReadClocks": [
+        "2026-09-20T19:31:51Z"
+      ],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S08",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "savedCitation": "2026-01-11；2025实绩/2026年底目标；[HIPG cargo report](https://www.hipg.lk/2026/hambantota-international-port-records-175-cargo-growth-in-2025)",
+      "savedSupportAndLimitations": "运营商全文短报，19:30:50Z；本批未取得独立审计吞吐/利润",
+      "urls": [
+        "https://www.hipg.lk/2026/hambantota-international-port-records-175-cargo-growth-in-2025"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:50Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M10.S09",
+      "dossierId": "M10",
+      "dossierPath": "../M10_BELT_AND_ROAD.md",
+      "section": "M",
+      "mapEntryId": "S09",
+      "savedCitation": "2025-06-25；1990–2025合同样本；[AidData HCL2.0](https://www.aiddata.org/publications/how-china-lends-2-0-research-brief)",
+      "savedSupportAndLimitations": "研究发布说明：371合同、20债权人/155借款人/60国，19:30:50Z；未逐份重读合同，不外推所有BRI",
+      "urls": [
+        "https://www.aiddata.org/publications/how-china-lends-2-0-research-brief"
+      ],
+      "batchRetrievedAt": "2026-09-20T19:30:50Z",
+      "additionalSavedReadClocks": [],
+      "reopenedInThisGate": false
+    }
+  ],
+  "candidates": [
+    {
+      "knowledgeId": "macro.conceptual-boundary.prc-principle-us-policy-taiwan-attribution.v1",
+      "reviewLabel": "B2-K01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M06",
+      "themeLinks": [],
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "statement": "PRC One-China Principle、US One-China Policy、台湾特定机关在特定时期的法律/政策表述必须分别归属；公司活动和分析解释不代替任何一方的正式立场。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M06.S01",
+        "M06.S02",
+        "M06.S03",
+        "M06.S04",
+        "M06.S05",
+        "M06.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "只确认术语、主体和归属边界，不裁判主权或把PRC立场当普遍法律事实。",
+        "MAC两项仅有历史/当期索引节选，不能推广为所有台湾政党或当前完整法律解释；各文件日期保留在sourceMap。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "防止同名术语抹掉外交/法律主体差异。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增主体限定的政治术语边界，不新增统一ONE_CHINA_POLICY节点。"
+      },
+      "attributionLayers": [
+        "PRC_OFFICIAL_POSITION",
+        "US_POLICY",
+        "TAIWAN_SPECIFIC_OFFICIAL_OR_LEGAL_STATEMENT",
+        "COMPANY_ACTIVITY",
+        "ANALYST_INTERPRETATION"
+      ]
+    },
+    {
+      "knowledgeId": "macro.conceptual-boundary.taiwan-significance-beyond-semiconductors.v1",
+      "reviewLabel": "B2-K02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M06",
+      "themeLinks": [],
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "statement": "台湾相关问题包含历史、治理、政治和区域安全层面，早于现代先进芯片产业；产业依赖既不能独自解释冲突，也不能保证和平。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M06.S01",
+        "M06.S02",
+        "M06.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "历史先后只反驳单一芯片解释，不证明另一种单一动机；不估算冲突概率、时间或硅盾威慑效果。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "避免把新闻中的产业重要性压成战争因果。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增多层解释边界；不是政治立场或资产方向。"
+      }
+    },
+    {
+      "knowledgeId": "macro.structural-fact.semiconductor-complementary-value-chain.v1",
+      "reviewLabel": "B2-K03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M06",
+      "themeLinks": [
+        "M08"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "半导体体系由设计/IP与EDA、设备、材料、晶圆制造、memory及封装测试等互补环节组成；一个环节领先不证明其他环节供应充足。",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M06.S12",
+        "M06.S14",
+        "M08.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "OECD材料存在同源继承，M06.S12与M08.S05是同一文献，不算独立证实。",
+        "不固定企业排名、国家份额或当前瓶颈；不同产品组合仍需核实。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "为高频芯片/AI新闻提供明确的物理层次。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增产业互补结构；不重复泛化capacity/flow原则。"
+      }
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.semiconductor-qualified-output-and-substitution.v1",
+      "reviewLabel": "B2-K04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M06",
+      "themeLinks": [
+        "M08"
+      ],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "比较晶圆能力必须注明节点、产品、单位与期间，并区分额定/等效能力、合格良品产出、实际shipment及客户可切换的替代能力。",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M06.S07",
+        "M06.S08",
+        "M06.S12"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "公司量产声明不是独立工程验收；跨厂良率和切换周期未知。",
+        "节点名称、12英寸等效量和厂房面积不能直接形成技术或可替代性排名。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "避免把总晶圆数当可立即交付的先进逻辑或HBM。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.structural-fact.oil-policy-capacity-stock-flow.v1"
+        ],
+        "incrementalMeaning": "在F02一般能力/流量区别之外，新增工艺、良率与客户资格维度。"
+      },
+      "measurementTypes": [
+        "PRODUCTION_CAPACITY",
+        "ACTUAL_PRODUCTION",
+        "EXPORT_FLOW"
+      ],
+      "requiredDimensions": [
+        "period",
+        "wafer-equivalent basis",
+        "technology/product scope",
+        "qualification/yield",
+        "shipment stage",
+        "customer substitution evidence"
+      ]
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.semiconductor-market-share-denominator.v1",
+      "reviewLabel": "B2-K05",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M06",
+      "themeLinks": [],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "半导体份额必须匹配分母、年份、技术范围和公司/行业边界；TSMC Foundry 2.0口径包含封装测试、掩模和非存储IDM，不能直接当传统foundry份额。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M06.S07",
+        "M06.S12"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "M",
+          "anchor": "m-source-map"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "只把FY2025报告中的定义作为带版本的例子，不永久冻结市场定义或40%数值。",
+        "未取得同期间同方法的传统foundry数值；不得相减、平均或选更大值。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "长期保留比较口径规则，具体份额留在档案及定义差异记录。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增市场定义/技术范围；不复制储备份额的COFER专属定义。"
+      }
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.globalization-level-growth-route-value-added.v1",
+      "reviewLabel": "B2-K06",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M07",
+      "themeLinks": [],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "总贸易量/名义值、增长率、trade/GDP、双边路线和增加值是不同问题；WDI trade/GDP为货物服务进出口之和/GDP，不是外国净增加值占比。增长放缓和贸易转移均不等于总量下降。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M07.S01",
+        "M07.S02",
+        "M07.S03",
+        "M07.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "贸易/GDP可受价格、GDP和中间品多次跨境影响；长期同口径序列仍未重建。",
+        "不能由一年估计、一个双边分组或关税标题认定全球化长期结束。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "把去全球化争论先转为可区分的测量问题。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增贸易分母、量价和地理维度；不是一般stock/flow复本。"
+      },
+      "requiredDimensions": [
+        "nominal versus real",
+        "level versus growth",
+        "goods versus services",
+        "period",
+        "GDP denominator",
+        "bilateral versus global",
+        "gross versus value added"
+      ]
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.production-location-versus-trade-rerouting.v1",
+      "reviewLabel": "B2-K07",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M07",
+      "themeLinks": [
+        "M06",
+        "M10"
+      ],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "第三地出口增加须区分转运、当地加工/增加值增长与工厂重配；reshoring是生产回到本国，near-shoring是靠近市场，二者不能仅由出口路线证明。FDI流量、存量、估值与新厂公告也不能代替投产证据。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M07.S04",
+        "M07.S05",
+        "M07.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "IMF工作论文是不同样本/方法的作者分析；越南结果不推广所有连接国。",
+        "没有企业级证据不能认定逃税/洗产地；供应商国家数增加不保证最终上游更分散。",
+        "F04仅复用存量/估值/交易识别原则，不把COFER规则套用FDI。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "避免把地理路径变化误认成国内生产、投资现金或韧性已实现。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+          "macro.structural-fact.reserve-share-versus-transactions.v1",
+          "macro.structural-fact.announcement-effect-and-observation-clocks.v1"
+        ],
+        "incrementalMeaning": "新增原产地/生产/增加值识别；FDI估值与公告边界引用Batch1。"
+      }
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.data-center-project-stage-and-deduplication.v1",
+      "reviewLabel": "B2-K08",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M08",
+      "themeLinks": [],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "同一数据中心项目的announced、contracted、interconnected、energized与actual load是不同阶段；应按项目去重并标明阶段，不能把各阶段容量相加。带电或接网也不证明满负荷运行。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "阶段标签来自档案分析框架，不是声称各地运营商拥有统一认证枚举。",
+        "PJM近期下修只是一个有日期的预测修订例子，不证明全部AI需求虚构。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "让计划容量新闻不能冒充已运行电力负荷。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+          "macro.structural-fact.announcement-effect-and-observation-clocks.v1"
+        ],
+        "incrementalMeaning": "新增项目身份去重、接网/带电里程碑；通用公告与执行原则引用F02/F12。"
+      },
+      "measurementTypes": [
+        "ANNOUNCEMENT",
+        "CAPITAL_COMMITMENT",
+        "CAPACITY",
+        "ELECTRICITY_LOAD"
+      ],
+      "stages": [
+        "ANNOUNCED",
+        "CONTRACTED",
+        "INTERCONNECTED",
+        "ENERGIZED",
+        "ACTUAL_LOAD"
+      ]
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.power-energy-and-metering-boundary.v1",
+      "reviewLabel": "B2-K09",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M08",
+      "themeLinks": [],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "GW/MW表示功率或额定能力，MWh/TWh表示期间能量；实际能量需负荷随时间积分。供电侧发电量与机房侧耗电还需说明输配损失及计量边界。",
+      "evidenceStatus": "WELL_ESTABLISHED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "额定功率乘全年小时只是满负荷示意，不是实测电量；应考虑利用率、PUE、边界和期间。",
+        "S02只读取供电侧节选，不据此重建完整模型或损失系数。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "防止量纲混合和不同计量边界被当成修订冲突。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+          "macro.structural-fact.vessel-tonnage-versus-cargo.v1"
+        ],
+        "incrementalMeaning": "新增功率/时间积分和电表边界，不是再写一条capacity不等于flow。"
+      },
+      "measurementTypes": [
+        "CAPACITY",
+        "ELECTRICITY_LOAD",
+        "FLOW"
+      ],
+      "units": [
+        "MW",
+        "GW",
+        "MWh",
+        "TWh"
+      ],
+      "requiredDimensions": [
+        "period",
+        "load curve",
+        "utilization",
+        "metering boundary",
+        "PUE scope"
+      ]
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.ai-workload-versus-total-data-centers.v1",
+      "reviewLabel": "B2-K10",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M08",
+      "themeLinks": [
+        "M06"
+      ],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "全部数据中心耗电、AI专用工作负载、已安装计算设备和实际利用率不是同一统计对象；全机房TWh或GPU装机不能直接替代AI实耗。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "IEA历史估计和未来中央情景分开；本批AI实际energized/用电份额仍未知。",
+        "单任务能效提高不决定总耗电方向，使用量可以变化。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "避免把总量改贴AI标签或把能效指标当需求结果。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增工作负载分母与装机利用率边界。"
+      }
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.company-cash-ppe-versus-ai-capex.v1",
+      "reviewLabel": "B2-K11",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M08",
+      "themeLinks": [],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "公司现金PP&E、融资租赁资产增加、未来投资承诺和AI专属CapEx需分别识别；合并公司支出未经用途分解不能称AI投资，也不能把现金与非现金项目重复相加。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M08.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "Microsoft FY2026为Unaudited发布页，SEC全文未读；不把示例数值当全球AI支出。",
+        "用途分解及租赁调节不足，AI金额未知；不构造统一跨公司会计口径。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "约束高频CapEx标题中的用途和现金/非现金误读。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+          "macro.actor-relation.fed-boj-dollar-backstop.v1"
+        ],
+        "incrementalMeaning": "新增会计与用途口径；资本承诺不等于支付作为F02/A02的应用，不再新建一般规则。"
+      },
+      "measurementTypes": [
+        "CAPITAL_COMMITMENT",
+        "CAPITAL_DISBURSEMENT",
+        "STOCK"
+      ],
+      "requiredDimensions": [
+        "entity scope",
+        "fiscal period",
+        "cash versus non-cash",
+        "asset purpose",
+        "lease treatment"
+      ]
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.mineral-rights-production-processing-export.v1",
+      "reviewLabel": "B2-K12",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M09",
+      "themeLinks": [
+        "M10"
+      ],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "矿山股权、矿产生产、加工/精炼、出口许可及实货、运输路线、融资权利需逐主体/产品分开；矿权不直接证明国家全部资源流或政治控制。",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M09.S01",
+        "M09.S04",
+        "M09.S06",
+        "M09.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "DRC、Zambia、Angola与Niger不是同一案例；Mopani和Lobito没有已核共同货流。",
+        "氢氧化钴不是电池级成品；USGS仅节选，不证明当前配额执行。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "阻止把权益新闻压成可交付供应或整个非洲的政治行为。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+          "macro.structural-fact.announcement-effect-and-observation-clocks.v1"
+        ],
+        "incrementalMeaning": "新增资源形态、加工、权利和物流层次；一般授权/流量区别复用Batch1。"
+      },
+      "measurementTypes": [
+        "STOCK",
+        "ACTUAL_PRODUCTION",
+        "PROCESSING_CAPACITY",
+        "AUTHORIZATION",
+        "EXPORT_FLOW",
+        "CAPITAL_COMMITMENT",
+        "CAPITAL_DISBURSEMENT"
+      ]
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.project-output-versus-local-distribution.v1",
+      "reviewLabel": "B2-K13",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M09",
+      "themeLinks": [
+        "M10"
+      ],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "集团营收、项目产量、税费实际到账、存量/转入岗位、新增净就业与社区收益成本分别计量；公司或国家总量不能替代当地居民的净分配结果。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M09.S02",
+        "M09.S06",
+        "M09.S08",
+        "M09.S09",
+        "M10.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "当前本地税收、补偿、就业净额和社区独立材料不足；不能推定外资必无收益或国有化必全民受益。",
+        "净分配需要明确基准、成本和受益主体，不由宣传目标填值。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "保留产出与谁真正得益之间的证据缺口。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增地域/人群/净效益分配维度。"
+      }
+    },
+    {
+      "knowledgeId": "macro.conceptual-boundary.bri-label-versus-contract-parties.v1",
+      "reviewLabel": "B2-K14",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M10",
+      "themeLinks": [
+        "M09"
+      ],
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "statement": "BRI是倡议框架，不能当统一债权人、合同或项目公司；项目归属、业主、借款人、建设/运营方与债权人必须按具体材料识别。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M10.S01",
+        "M10.S02",
+        "M10.S03",
+        "M10.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "C",
+          "anchor": "c-actors"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "白皮书只有官方发布介绍，不升级为全部正文已核；共同发展是官方目标而非效果证明。",
+        "中国企业承包、SOE投资或跨境铁路身份不自动赋予BRI标签；本批不改写Lobito归属。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "避免用政治标签替代真实合同责任。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增倡议/主体/合同层次，不赋予隐蔽动机。"
+      }
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.project-financing-orthogonal-dimensions.v1",
+      "reviewLabel": "B2-K15",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M10",
+      "themeLinks": [
+        "M09"
+      ],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "Grant、贷款、equity描述工具，优惠/商业描述条款，policy bank/SOE描述主体，PPP/BOT描述合同与风险分配；这些维度可重叠，不能当互斥的融资类别。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M10.S02",
+        "M10.S03",
+        "M10.S06",
+        "M10.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "优惠贷款仍是债务，政策银行贷款未必优惠，SOE投资不自动是援助；grant也可有用途条件。",
+        "AidData是合同样本研究发布说明，不是全部BRI合同普查或本轮逐份合同审核。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "提升可反复用于融资新闻的合同分类。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+          "macro.actor-relation.fed-boj-dollar-backstop.v1"
+        ],
+        "incrementalMeaning": "新增工具/条款/主体/PPP正交维度；承诺和提款区别只引用现有授权/执行框架。"
+      },
+      "dimensions": {
+        "instrument": [
+          "GRANT",
+          "LOAN",
+          "EQUITY"
+        ],
+        "terms": [
+          "CONCESSIONAL",
+          "COMMERCIAL"
+        ],
+        "creditorOrInvestor": [
+          "POLICY_BANK",
+          "COMMERCIAL_BANK",
+          "SOE",
+          "OTHER"
+        ],
+        "contractArrangement": [
+          "PPP",
+          "BOT",
+          "OTHER"
+        ]
+      }
+    },
+    {
+      "knowledgeId": "macro.measurement-framework.project-sovereign-soe-guaranteed-debt.v1",
+      "reviewLabel": "B2-K16",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M10",
+      "themeLinks": [
+        "M09"
+      ],
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "statement": "项目债、SOE债、主权债及担保债按借款人、追索权和担保分层；不能把全部项目债算主权债，也不能因SPV有股本便漏掉政府为注资而借的债。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M10.S03",
+        "M10.S06",
+        "M10.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "具体政府担保、有限责任和后续条款须逐合同核实；不假设所有SOE债都有主权担保。",
+        "老挝2020融资是当时计划结构，不证明当前余额或全部提款。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "防止把融资结构错误转换成财政风险暴露。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.structural-fact.debt-stock-and-financing-definitions.v1"
+        ],
+        "incrementalMeaning": "新增债务责任/或有担保层次；债务存量与融资流量复用F05。"
+      },
+      "requiredDimensions": [
+        "borrower",
+        "recourse",
+        "guarantor",
+        "currency",
+        "maturity",
+        "equity funding source"
+      ]
+    },
+    {
+      "knowledgeId": "macro.conceptual-boundary.infrastructure-use-versus-financial-success.v1",
+      "reviewLabel": "B2-K17",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M10",
+      "themeLinks": [
+        "M09"
+      ],
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "statement": "基础设施实际使用证明发生过服务或运输，不证明收费覆盖维护、资本和偿债，也不证明净社会收益或其分配；项目重组/长期租赁本身不证明预设债务陷阱。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M10.S02",
+        "M10.S03",
+        "M10.S04",
+        "M10.S06",
+        "M10.S07",
+        "M10.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "Chatham House对汉班托塔的解释有归属，不是法律裁决或所有BRI项目免责。",
+        "2017合同和2025货量不能证明2026利润、现行军用安排或永久商业用途。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "区分有使用、财务持续、社会分配与政治因果四种判断。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增项目绩效/因果识别；不同于一般capacity/flow区别。"
+      }
+    },
+    {
+      "knowledgeId": "macro.mechanism.export-licensing-access-substitution-relocation.v1",
+      "reviewLabel": "B2-ME01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M06",
+      "themeLinks": [
+        "M07"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "适用且实际执行的出口限制可能改变特定产品准入、交期与替代成本，继而影响生产和采购/厂址；效果不能由公告独自确定。",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M06.S09",
+        "M06.S11",
+        "M07.S04",
+        "M07.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "M06 J及综合表给出较宽SUPPORTED标签，F2把具体技术影响限定为条件假说；本候选采用较保守等级。",
+        "未核现行完整法律矩阵、规避量或生产损失；本文不是出口合规建议。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "把政策到产业影响之间的可证伪环节保留下来。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.mechanism.financial-access-and-trade-cost.v1",
+          "macro.structural-fact.announcement-effect-and-observation-clocks.v1"
+        ],
+        "incrementalMeaning": "不同于Batch1金融中介限制：这里需技术合格替代与生产/厂址证据。"
+      },
+      "trigger": "适用产品、目的地或最终用户的许可条件实际执行且成为约束",
+      "firstOrderEffect": "获货能力、合规成本或交付时间变化",
+      "secondOrderEffects": [
+        "替代技术/供应商被验证或启用",
+        "采购、生产布局可能调整；不能推出全球贸易收缩"
+      ],
+      "counterforces": [
+        "许可例外或条件获批",
+        "合格替代、库存和工艺改良",
+        "需求下滑使限制不再绑定"
+      ],
+      "observableConfirmation": [
+        "有效条款与实际拒批/装运",
+        "匹配产品的交付/成本及合格替代",
+        "企业实际产量或生产地变化"
+      ],
+      "falsification": [
+        "规则并未适用于相关产品或许可未形成约束",
+        "库存/替代充分，交付与生产未受影响",
+        "只有贸易路线改名而无生产迁移"
+      ],
+      "timeHorizon": "许可/装运按日到月；资格/迁厂可跨季度或年，无固定滞后"
+    },
+    {
+      "knowledgeId": "macro.mechanism.compute-deployment-utilization-power-bottlenecks.v1",
+      "reviewLabel": "B2-ME02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M08",
+      "themeLinks": [
+        "M06"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "实际计算工作负载通过已部署硬件、利用率与能耗形成电力需求；在具体电网节点受限时，接网和供电成为部署约束。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S02",
+        "M08.S03",
+        "M08.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "实际耗能的物理联系较强；净需求规模、新建投资及能源赢家仍是条件性结果。",
+        "S02节选及IEA情景不支持固定系数；不存在本批AI实测负荷总表。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "区分算力意向、真实使用与地方供电的反馈关系。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [],
+        "incrementalMeaning": "新增硬件/工作负载/电网互补；没有新增资产方向。"
+      },
+      "trigger": "实际工作负载增长且设备、机房与供电可投入使用",
+      "firstOrderEffect": "设备利用率和负荷曲线改变用电需求",
+      "secondOrderEffects": [
+        "局部电网约束可能延缓部署或改变选址",
+        "可能引出发电/线路投资，但须另核融资、许可与投产"
+      ],
+      "counterforces": [
+        "任务能效提高",
+        "订单取消、闲置或负载迁移",
+        "供电扩张、储能与需求响应",
+        "使用反弹可能抵消效率收益"
+      ],
+      "observableConfirmation": [
+        "项目去重的接网/带电与表计数据",
+        "设备使用量、PUE和任务能耗",
+        "节点约束、施工与实际付款"
+      ],
+      "falsification": [
+        "宣布容量未转为运行负载",
+        "效率足以抵消工作量，实耗未增",
+        "现有电网容量足够，没有所称瓶颈"
+      ],
+      "timeHorizon": "运行负荷按小时/期间观测；接网与建设按月到年，不能拼成短线信号"
+    },
+    {
+      "knowledgeId": "macro.mechanism.infrastructure-complements-realized-trade.v1",
+      "reviewLabel": "B2-ME03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M10",
+      "themeLinks": [
+        "M07",
+        "M09"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "铁路/港口改善只有与货源、支线、通关、定价和可靠运营配合，才可能降低有效运输成本、增加可行路线与实际使用。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M10.S02",
+        "M10.S03",
+        "M10.S04",
+        "M09.S06",
+        "M09.S11"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "WB条件模型不是项目已实现回报；单批运输证明路径曾使用，不证明全走廊完成或净新增世界贸易。",
+        "相似结构不意味着Lobito属于BRI；投资回报另行核对。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "把基础设施到贸易之间的必要配套显式保留。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.mechanism.rerouting-vessel-time-cost.v1"
+        ],
+        "incrementalMeaning": "新设施互补与可达性区别于Batch1现有航路绕行成本机制。"
+      },
+      "trigger": "可运营运输设施与边境/支线配套投入使用且有货源",
+      "firstOrderEffect": "可选路线、实际时效/费用或可靠性改变",
+      "secondOrderEffects": [
+        "货主可能切换路线或增加运输",
+        "使用量与收费可能支持后续融资，但净收益并非必然"
+      ],
+      "counterforces": [
+        "需求不足或只是从其他线路转移",
+        "通关/末端基础设施仍堵塞",
+        "高费率、停运、债务或维护负担"
+      ],
+      "observableConfirmation": [
+        "同货型实际路线、运量、时效和收费",
+        "设施段落运营验收与通关",
+        "现金收入和维护/偿债账"
+      ],
+      "falsification": [
+        "只有建设/授信公告而无运营",
+        "实际运输时间或成本未改善",
+        "用量增加但只是改道，未证明净新增贸易"
+      ],
+      "timeHorizon": "运输按航次/月度；建设、融资和福利按年；不设统一收益时点"
+    },
+    {
+      "knowledgeId": "macro.mechanism.project-currency-cashflow-debt-service.v1",
+      "reviewLabel": "B2-ME04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M10",
+      "themeLinks": [
+        "M09",
+        "M08"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "项目即使产生使用价值，若收费现金、币种和时间与维护及债务服务不匹配，仍可能承受融资压力；主权影响取决于借款和担保责任。",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M10.S03",
+        "M10.S05",
+        "M10.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "limitations": [
+        "国家其他债务与财政不可全归给单一项目；当前项目净现金、担保及提款未知。",
+        "不同于已知固定利率的再融资算术；不声称某项目已违约或财政主导。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "promotionReason": "保留项目真实现金与债务责任，而非地缘标签。",
+      "dedupReview": {
+        "canonicalKnowledgeRefs": [
+          "macro.mechanism.debt-rollover-cost.v1",
+          "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+          "macro.structural-fact.debt-is-not-fiscal-dominance.v1"
+        ],
+        "incrementalMeaning": "新增运营收入/币种/追索权匹配；一般期限再融资仍引用Batch1。"
+      },
+      "trigger": "实际项目收入低于支付需要，或汇率/币种时点错配造成现金缺口",
+      "firstOrderEffect": "运营维护及偿债可用现金不足",
+      "secondOrderEffects": [
+        "借款人可能需再融资、注资或协商",
+        "有合同担保/主权借款时可能影响政府现金负担"
+      ],
+      "counterforces": [
+        "自然外汇收入或有效对冲",
+        "收入改善、成本下降或缓冲现金",
+        "债务期限调整及其他融资"
+      ],
+      "observableConfirmation": [
+        "匹配期间收费、维护与支付账",
+        "债务币种/到期/追索及担保合同",
+        "实际提款、汇率暴露与偿还记录"
+      ],
+      "falsification": [
+        "收入现金足以覆盖支出并匹配债务币种/时点",
+        "压力来自其他国家债务而非该项目",
+        "所谓主权风险没有相应责任依据"
+      ],
+      "timeHorizon": "按照合同支付与运营周期（月到年）；不预设危机时点"
+    }
+  ],
+  "edges": [
+    {
+      "edgeId": "macro.edge.batch2-l1.v1",
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row1",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "originalThemeNotation": "M06 → M07",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "statement": "实际约束的出口许可可能改变特定产品贸易路径。",
+      "timeHorizon": "日/月到年，取决于实际执行与生产迁移",
+      "counterforces": [
+        "许可例外、库存与合格替代",
+        "生产未迁移或总量被第三国抵消"
+      ],
+      "sourceRefs": [
+        "M06.S09",
+        "M06.S11",
+        "M07.S04",
+        "M07.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "priceEffectStatus": "NOT_ESTABLISHED",
+      "mechanismRef": "macro.mechanism.export-licensing-access-substitution-relocation.v1",
+      "fromTheme": "M06",
+      "toTheme": "M07"
+    },
+    {
+      "edgeId": "macro.edge.batch2-l3.v1",
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row3",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "originalThemeNotation": "M06 ↔ M08",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "statement": "AI部署依赖合格逻辑、memory/封装等硬件并同时需要可用电力。",
+      "timeHorizon": "部署/资格按月到年；不定量需求系数",
+      "counterforces": [
+        "其他硬件/供电瓶颈",
+        "已有库存、替代或需求取消"
+      ],
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S05",
+        "M06.S07",
+        "M06.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "priceEffectStatus": "NOT_ESTABLISHED",
+      "mechanismRef": "macro.mechanism.compute-deployment-utilization-power-bottlenecks.v1",
+      "fromTheme": "M06",
+      "toTheme": "M08"
+    },
+    {
+      "edgeId": "macro.edge.batch2-l4.v1",
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row4",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "originalThemeNotation": "M07 ↔ M10",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "statement": "运营设施与通关/货源配套可改变贸易可达性和实际路径。",
+      "timeHorizon": "月到年",
+      "counterforces": [
+        "货源不足、费率或边境限制",
+        "只是改道而非新增总贸易"
+      ],
+      "sourceRefs": [
+        "M10.S02",
+        "M10.S03",
+        "M10.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "priceEffectStatus": "NOT_ESTABLISHED",
+      "mechanismRef": "macro.mechanism.infrastructure-complements-realized-trade.v1",
+      "fromTheme": "M10",
+      "toTheme": "M07"
+    },
+    {
+      "edgeId": "macro.edge.batch2-l7.v1",
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row7",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "originalThemeNotation": "M09 ↔ M10",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "statement": "资源货源可支撑运输设施的使用及融资可行性；提款、建设和交付配套须分别核实。",
+      "timeHorizon": "项目/合同按月到年",
+      "counterforces": [
+        "提款或建设未兑现",
+        "货量不足、替代路线与通关瓶颈"
+      ],
+      "sourceRefs": [
+        "M09.S04",
+        "M09.S05",
+        "M09.S06",
+        "M09.S11",
+        "M10.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "priceEffectStatus": "NOT_ESTABLISHED",
+      "mechanismRef": "macro.mechanism.infrastructure-complements-realized-trade.v1",
+      "fromTheme": "M09",
+      "toTheme": "M10"
+    }
+  ],
+  "edgeReviews": [
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row1",
+      "originalThemeNotation": "M06 → M07",
+      "decision": "KEEP_CANDIDATE",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "reason": "保留准入→替代/贸易重配，按M06 F2降到条件等级；不推整体收缩。",
+      "sourceRefs": [
+        "M06.S09",
+        "M06.S11",
+        "M07.S04",
+        "M07.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [
+        "macro.mechanism.financial-access-and-trade-cost.v1"
+      ],
+      "candidateEdgeId": "macro.edge.batch2-l1.v1",
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row2",
+      "originalThemeNotation": "M07 → M06",
+      "decision": "DOSSIER_ONLY",
+      "evidenceStatus": "ALPHA_INFERENCE",
+      "reason": "原表CONDITIONAL，M06 F4为ALPHA_INFERENCE，S15仅节选；不提升补贴→分散→韧性整链。",
+      "sourceRefs": [
+        "M06.S15",
+        "M07.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [],
+      "candidateEdgeId": null,
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row3",
+      "originalThemeNotation": "M06 ↔ M08",
+      "decision": "KEEP_CANDIDATE",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "reason": "只留M06硬件互补→M08部署依赖；反向客户订单→扩产留档案，不自动保留双向。",
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S05",
+        "M06.S07",
+        "M06.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [],
+      "candidateEdgeId": "macro.edge.batch2-l3.v1",
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row4",
+      "originalThemeNotation": "M07 ↔ M10",
+      "decision": "KEEP_CANDIDATE",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "reason": "收窄为M10配套设施→M07可行贸易路径；需求倒逼建设不是本候选已证事实。",
+      "sourceRefs": [
+        "M10.S02",
+        "M10.S03",
+        "M10.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [],
+      "candidateEdgeId": "macro.edge.batch2-l4.v1",
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row5",
+      "originalThemeNotation": "M08 → M09",
+      "decision": "DOSSIER_ONLY",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "reason": "无AI特定铜/铀需求份额和采购证据；S02节选不支持非洲供给或价格归因。",
+      "sourceRefs": [
+        "M08.S02",
+        "M09.S01",
+        "M09.S10"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [],
+      "candidateEdgeId": null,
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row6",
+      "originalThemeNotation": "M09 → M08",
+      "decision": "DOSSIER_ONLY",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "reason": "缺实际供给损失、库存、替代与项目暴露；不能由矿权新闻推AI工期。",
+      "sourceRefs": [
+        "M09.S01",
+        "M09.S07",
+        "M08.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [],
+      "candidateEdgeId": null,
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row7",
+      "originalThemeNotation": "M09 ↔ M10",
+      "decision": "KEEP_CANDIDATE",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "reason": "收窄为M09货源→M10运输使用/融资可行性；不合并案例、不赋予BRI归属，反向出口效应留机制研究。",
+      "sourceRefs": [
+        "M09.S04",
+        "M09.S05",
+        "M09.S06",
+        "M09.S11",
+        "M10.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [],
+      "candidateEdgeId": "macro.edge.batch2-l7.v1",
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row8",
+      "originalThemeNotation": "M06/M09/M10 → Batch1 M05",
+      "decision": "DOSSIER_ONLY",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "reason": "已有ME07足够；只提议引用，不新增同义边，没有实际航线中断。",
+      "sourceRefs": [
+        "M09.S06",
+        "M10.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [
+        "macro.mechanism.rerouting-vessel-time-cost.v1",
+        "macro.watch.delivered-volume-or-delay.v1"
+      ],
+      "candidateEdgeId": null,
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row9",
+      "originalThemeNotation": "M08/M10 → Batch1 M03",
+      "decision": "DOSSIER_ONLY",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "reason": "融资约束已由ME03/F05承接，新增项目币种机制另候选；不把项目压力提升财政主导。",
+      "sourceRefs": [
+        "M08.S01",
+        "M10.S03",
+        "M10.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [
+        "macro.mechanism.debt-rollover-cost.v1",
+        "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+        "macro.structural-fact.debt-is-not-fiscal-dominance.v1"
+      ],
+      "candidateEdgeId": null,
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "sourceEdge": "BATCH_2_SYNTHESIS:section4:row10",
+      "originalThemeNotation": "M07/M10 ↔ Batch1 M02",
+      "decision": "DOSSIER_ONLY",
+      "evidenceStatus": "ALPHA_INFERENCE",
+      "reason": "没有新币种微观流量；生产迁移与美元网络可分离仅留研究推断。",
+      "sourceRefs": [
+        "M07.S04",
+        "M10.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "canonicalKnowledgeRefs": [
+        "macro.structural-fact.messaging-and-settlement-layers.v1",
+        "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1"
+      ],
+      "candidateEdgeId": null,
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    }
+  ],
+  "watchQuestions": [
+    {
+      "watchId": "macro.watch.chip-permit-to-qualified-delivery.v1",
+      "reviewLabel": "B2-W01",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M06",
+      "themeLinks": [
+        "M08"
+      ],
+      "question": "具体许可变化是否改变了合格产品实际交付，当前限制在晶圆、HBM、封装还是供电？",
+      "whyItMatters": "避免把规则/总产能代替可交付能力。",
+      "confirmingEvidence": [
+        "适用产品许可及装运",
+        "良率、客户资格和实际交付",
+        "分环节交期/库存"
+      ],
+      "whatItCannotProve": [
+        "不能估计战争概率或全行业禁运",
+        "不能由一个厂的状态概括全部产品"
+      ],
+      "knownLag": "规则与装运可错时；公司披露滞后，现行完整矩阵未知。",
+      "reviewTrigger": [
+        "有效条款更新",
+        "可核装运或资格变化"
+      ],
+      "sourceRefs": [
+        "M06.S09",
+        "M06.S11",
+        "M06.S12"
+      ],
+      "suggestedSources": [
+        "M06.S09",
+        "M06.S11",
+        "M06.S12"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "automaticMonitoring": false
+    },
+    {
+      "watchId": "macro.watch.trade-contraction-versus-location-reconfiguration.v1",
+      "reviewLabel": "B2-W02",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M07",
+      "themeLinks": [
+        "M06",
+        "M10"
+      ],
+      "question": "观察到的是全球总量下降、增长放缓、路线转移，还是当地真实生产增加？",
+      "whyItMatters": "把不同全球化解释变成可区别的问题。",
+      "confirmingEvidence": [
+        "同期实际量/名义值/GDP/增加值",
+        "企业生产地、上游进口和产出",
+        "FDI实际流量/存量调节"
+      ],
+      "whatItCannotProve": [
+        "不能由转口汇总认定逃税",
+        "不能由一年数据证明历史终局"
+      ],
+      "knownLag": "年度/季度与修订不同步；不合并未知版本。",
+      "reviewTrigger": [
+        "同口径新版本出现",
+        "企业级生产证据而非仅出口标题"
+      ],
+      "sourceRefs": [
+        "M07.S01",
+        "M07.S03",
+        "M07.S04",
+        "M07.S05"
+      ],
+      "suggestedSources": [
+        "M07.S01",
+        "M07.S03",
+        "M07.S04",
+        "M07.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "automaticMonitoring": false
+    },
+    {
+      "watchId": "macro.watch.data-center-energization-to-metered-ai-use.v1",
+      "reviewLabel": "B2-W03",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M08",
+      "themeLinks": [],
+      "question": "去重项目走到了接网、带电还是实际AI用电，现金投入与利用率是否对应？",
+      "whyItMatters": "先确认真实物理使用，再讨论能源影响。",
+      "confirmingEvidence": [
+        "项目ID与阶段、表计和PUE",
+        "合同/租赁/现金调节",
+        "利用率及订单取消"
+      ],
+      "whatItCannotProve": [
+        "不能由PPA或GW推MWh",
+        "不能把全部PP&E归AI或推收益"
+      ],
+      "knownLag": "项目时钟、财年与年度模型各异；全球实时AI表计不可得。",
+      "reviewTrigger": [
+        "项目阶段有原始更新",
+        "电网预测/财报或实测数据变化"
+      ],
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S03",
+        "M08.S04"
+      ],
+      "suggestedSources": [
+        "M08.S01",
+        "M08.S03",
+        "M08.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "automaticMonitoring": false
+    },
+    {
+      "watchId": "macro.watch.mineral-output-export-cash-local-benefit.v1",
+      "reviewLabel": "B2-W04",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M09",
+      "themeLinks": [
+        "M10"
+      ],
+      "question": "同一矿产项目的产量、加工、库存、合法出口、提款与地方净收益能否对账？",
+      "whyItMatters": "把权属、实物和分配逐层验证。",
+      "confirmingEvidence": [
+        "产品/期间匹配产销存与配额/装运",
+        "实际提款及用途",
+        "税费、净新增岗位和社区资料"
+      ],
+      "whatItCannotProve": [
+        "不能把股份当国家流量控制",
+        "不能把Mopani与Lobito自动拼为同一货流"
+      ],
+      "knownLag": "年度公司报告、海关/财政与贷款披露错时；部分只有节选。",
+      "reviewTrigger": [
+        "原始执行/付款资料",
+        "同产品同期间运营与当地证据"
+      ],
+      "sourceRefs": [
+        "M09.S01",
+        "M09.S04",
+        "M09.S06",
+        "M09.S07"
+      ],
+      "suggestedSources": [
+        "M09.S01",
+        "M09.S04",
+        "M09.S06",
+        "M09.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "automaticMonitoring": false
+    },
+    {
+      "watchId": "macro.watch.project-funding-use-operating-cash-reconciliation.v1",
+      "reviewLabel": "B2-W05",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M10",
+      "themeLinks": [
+        "M09"
+      ],
+      "question": "授信、提款、施工、使用、收费和偿债分别到哪一步，责任由谁承担？",
+      "whyItMatters": "避免以资金标题或货量代替项目成败。",
+      "confirmingEvidence": [
+        "提款及支付用途",
+        "原预测对同口径实际收入/成本",
+        "借款人/担保人和币种到期"
+      ],
+      "whatItCannotProve": [
+        "不能因重组认定预谋夺产",
+        "不能因运输增长证明财务成功"
+      ],
+      "knownLag": "融资合同、财务年与货运统计期间不同；现期净现金未知。",
+      "reviewTrigger": [
+        "合同/审计/现金账可取得",
+        "有同口径实际结果可对原预测"
+      ],
+      "sourceRefs": [
+        "M10.S02",
+        "M10.S03",
+        "M10.S06",
+        "M10.S08",
+        "M10.S09"
+      ],
+      "suggestedSources": [
+        "M10.S02",
+        "M10.S03",
+        "M10.S06",
+        "M10.S08",
+        "M10.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "automaticMonitoring": false
+    }
+  ],
+  "openQuestions": [
+    {
+      "knowledgeId": "macro.open.current-chip-control-matrix-and-actual-exports.v1",
+      "reviewLabel": "B2-Q01",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M06",
+      "themeLinks": [],
+      "evidenceStatus": "UNKNOWN",
+      "question": "当前完整多国管制矩阵及分产品许可/实际交付量是什么？",
+      "whyUnresolved": "部分规则正文/后续沿革、许可统计与客户资格未齐。",
+      "whatEvidenceWouldResolve": [
+        "带生效和替代关系的完整条款",
+        "适用品类的许可/装运及合格产出"
+      ],
+      "sourceLimitations": [
+        "不能用旧规则或METI索引补全当前清单",
+        "不把未公布数据填零"
+      ],
+      "sourceRefs": [
+        "M06.S09",
+        "M06.S11",
+        "M06.S13",
+        "M06.S15"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "lastReviewed": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.trade-fdi-vintage-and-value-added-bridge.v1",
+      "reviewLabel": "B2-Q02",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M07",
+      "themeLinks": [],
+      "evidenceStatus": "UNKNOWN",
+      "question": "WTO/UNCTAD版本怎样桥接，真实生产迁移与上游依赖变化有多大？",
+      "whyUnresolved": "修订表、长期同口径贸易/GDP与企业投产数据未取得。",
+      "whatEvidenceWouldResolve": [
+        "发布方版本/分项桥接",
+        "价值量/实物量及企业增加值/FDI实现数据"
+      ],
+      "sourceLimitations": [
+        "UNCTAD仅索引，不能仲裁6%/14%/剔除导管5%",
+        "动态WTO页未显修订日期"
+      ],
+      "sourceRefs": [
+        "M07.S01",
+        "M07.S02",
+        "M07.S05",
+        "M07.S07",
+        "M07.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "lastReviewed": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.energized-ai-load-and-specific-capex.v1",
+      "reviewLabel": "B2-Q03",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M08",
+      "themeLinks": [],
+      "evidenceStatus": "UNKNOWN",
+      "question": "去重后已带电且实际用于AI的负荷、电量和专属资本支出有多少？",
+      "whyUnresolved": "没有全球AI表计、项目合同/提款及公司用途拆分。",
+      "whatEvidenceWouldResolve": [
+        "项目身份/阶段和匹配期间负荷",
+        "AI使用份额与现金用途调节",
+        "具体重启项目运行资料"
+      ],
+      "sourceLimitations": [
+        "估计/预测不是实测",
+        "NRC通知只有索引；当前发电状态未知"
+      ],
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S03",
+        "M08.S04",
+        "M08.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "lastReviewed": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.mineral-delivery-disbursements-local-net-benefits.v1",
+      "reviewLabel": "B2-Q04",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M09",
+      "themeLinks": [
+        "M10"
+      ],
+      "evidenceStatus": "UNKNOWN",
+      "question": "DRC实际出口执行、Mopani现金分期、Lobito可用能力及当地净收益分别是什么？",
+      "whyUnresolved": "配额执行文书、提款及独立地方分配材料缺失。",
+      "whatEvidenceWouldResolve": [
+        "最新执行文书与匹配产销存",
+        "贷款提款/用途账和通道段落验收",
+        "财政到账及居民/岗位净效果"
+      ],
+      "sourceLimitations": [
+        "USGS只给旧安排节选",
+        "公司/政府目标不能替代社区证据"
+      ],
+      "sourceRefs": [
+        "M09.S04",
+        "M09.S05",
+        "M09.S06",
+        "M09.S07",
+        "M09.S11"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "lastReviewed": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.niger-control-compensation-security-causality.v1",
+      "reviewLabel": "B2-Q05",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M09",
+      "themeLinks": [],
+      "evidenceStatus": "UNKNOWN",
+      "question": "SOMAIR当前控制、实际补偿/销售、法律终局及资源与安全变化的因果证据是什么？",
+      "whyUnresolved": "国有化声明、公司异议和俄尼MOU不提供同一时点的执行/因果链。",
+      "whatEvidenceWouldResolve": [
+        "裁决/合同及实际付款和运营记录",
+        "可核股权/货运",
+        "有反事实与时间顺序的独立安全研究"
+      ],
+      "sourceLimitations": [
+        "应付补偿与已付并非同一命题",
+        "公司指控不是裁决；MOU不是俄方矿权/货流"
+      ],
+      "sourceRefs": [
+        "M09.S08",
+        "M09.S09",
+        "M09.S10"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "lastReviewed": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.bri-project-demand-cost-cash-guarantee-reconciliation.v1",
+      "reviewLabel": "B2-Q06",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M10",
+      "themeLinks": [],
+      "evidenceStatus": "UNKNOWN",
+      "question": "项目原预测与实际成本/收费/维护、提款/担保怎样对账？",
+      "whyUnresolved": "缺最终审计、同口径初始需求及后续合同/现金记录。",
+      "whatEvidenceWouldResolve": [
+        "原计划与同口径实际现金/成本",
+        "追索及担保和合同修订",
+        "地方利益/成本独立资料"
+      ],
+      "sourceLimitations": [
+        "国家偿债压力不是铁路违约率",
+        "历史租赁研究不能断言当前安排和隐藏意图"
+      ],
+      "sourceRefs": [
+        "M10.S03",
+        "M10.S05",
+        "M10.S06",
+        "M10.S07",
+        "M10.S08",
+        "M10.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "lastReviewed": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    }
+  ],
+  "conflicts": [
+    {
+      "conflictId": "macro.conflict.foundry2-versus-traditional-foundry-definition.v1",
+      "reviewLabel": "B2-CF01",
+      "knowledgeType": "CONFLICT",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M06",
+      "themeLinks": [],
+      "conflictType": "DEFINITION_DIFFERENCE",
+      "conflictStatus": "INCOMPARABLE",
+      "statement": "Foundry 2.0与传统foundry不是同一分母；不是已确认的两个互相矛盾的市场份额。",
+      "claimA": {
+        "sourceRef": "M06.S07",
+        "locator": "FY2025 annual report pp5/9/11/51, dossier H definition",
+        "statement": "公司报告2025 Foundry 2.0为40%，包含封装测试/掩模/非存储IDM。",
+        "value": 40,
+        "unit": "percent of company-defined Foundry 2.0 market",
+        "period": "FY2025"
+      },
+      "claimB": {
+        "sourceRef": "M06.S07",
+        "locator": "dossier H/N comparison boundary; no second market-share source acquired",
+        "statement": "传统晶圆代工口径不同；本批未取得可比数字。",
+        "value": null,
+        "unit": "percent of traditional foundry market",
+        "period": null
+      },
+      "sourceRefs": [
+        "M06.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "canonicalValue": null,
+      "whyUnresolved": "没有统一市场定义/覆盖桥接；不能把40%改贴传统份额，也不能捏造另一份额。",
+      "resolutionEvidenceRequired": "两种完整定义及同期间组成/桥接；不平均或择优。",
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    },
+    {
+      "conflictId": "macro.conflict.wto-2025-nominal-trade-vintages.v1",
+      "reviewLabel": "B2-CF02",
+      "knowledgeType": "CONFLICT",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M07",
+      "themeLinks": [],
+      "conflictType": "UNBRIDGED_SOURCE_VERSIONS",
+      "conflictStatus": "UNBRIDGED",
+      "statement": "WTO对2025名义货物+商业服务总额/增长的两版本未桥接。",
+      "claimA": {
+        "sourceRef": "M07.S01",
+        "locator": "March 2026 outlook summary nominal goods/services",
+        "statement": "34.65万亿美元，增长7%。",
+        "value": 34.65,
+        "growthPercent": 7,
+        "unit": "USD trillion",
+        "period": "2025",
+        "sourceDate": "2026-03"
+      },
+      "claimB": {
+        "sourceRef": "M07.S02",
+        "locator": "dynamic statistics page total/growth",
+        "statement": "34.89万亿美元，增长8%。",
+        "value": 34.89,
+        "growthPercent": 8,
+        "unit": "USD trillion",
+        "period": "2025",
+        "sourceDate": null
+      },
+      "sourceRefs": [
+        "M07.S01",
+        "M07.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "canonicalValue": null,
+      "whyUnresolved": "动态页没有可核修订日期/分项桥接；不是增长加速的新观察。",
+      "resolutionEvidenceRequired": "发布方修订元数据和分项调节；保留原两个版本。",
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    },
+    {
+      "conflictId": "macro.conflict.unctad-2025-fdi-preliminary-report-bridge.v1",
+      "reviewLabel": "B2-CF03",
+      "knowledgeType": "CONFLICT",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M07",
+      "themeLinks": [],
+      "conflictType": "UNBRIDGED_VINTAGES_AND_SCOPE",
+      "conflictStatus": "UNBRIDGED",
+      "statement": "UNCTAD2025 FDI初估和WIR2026索引不同；剔除导管口径也须单列。",
+      "claimA": {
+        "sourceRef": "M07.S08",
+        "locator": "GITM50 January 2026 index excerpt only",
+        "statement": "初估增长14%；剔除导管后5%。",
+        "growthPercent": 14,
+        "exConduitGrowthPercent": 5,
+        "unit": "percent",
+        "period": "2025",
+        "sourceDate": "2026-01"
+      },
+      "claimB": {
+        "sourceRef": "M07.S07",
+        "locator": "WIR2026 release index excerpt only",
+        "statement": "约1.6万亿美元，增长6%。",
+        "value": 1.6,
+        "growthPercent": 6,
+        "unit": "USD trillion / percent",
+        "period": "2025",
+        "sourceDate": null
+      },
+      "sourceRefs": [
+        "M07.S07",
+        "M07.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "canonicalValue": null,
+      "whyUnresolved": "两者正文均未取得；修订、基数、国家与导管处理未知；暂读值不作强结论。",
+      "resolutionEvidenceRequired": "原始两版本表/方法及修订桥接；本轮不刷新数据。",
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    },
+    {
+      "conflictId": "macro.conflict.somair-legal-position-versus-compensation-execution.v1",
+      "reviewLabel": "B2-CF04",
+      "knowledgeType": "CONFLICT",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M09",
+      "themeLinks": [],
+      "conflictType": "ATTRIBUTED_LEGAL_DISPUTE_AND_PAYMENT_SCOPE",
+      "conflictStatus": "DISPUTED",
+      "statement": "尼日尔国有化理由/补偿原则与Orano合法性异议、未获补偿主张分别保留；应付和已付不构成简单数值冲突。",
+      "claimA": {
+        "sourceRef": "M09.S08",
+        "locator": "government announcement, 2025-06-19 event / 2025-06-20 publication",
+        "statement": "政府提出国有化及补偿安排。",
+        "attribution": "Niger government official position"
+      },
+      "claimB": {
+        "sourceRef": "M09.S09",
+        "locator": "FY2025 report pp25/85, publication day unknown",
+        "statement": "Orano对合法性、控制及未获补偿提出异议。",
+        "attribution": "Company claim, not adjudication"
+      },
+      "sourceRefs": [
+        "M09.S08",
+        "M09.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "canonicalValue": null,
+      "whyUnresolved": "政治/法律立场与实际付款分开；当前终局和实物控制未知，不能选择一方当裁判。",
+      "resolutionEvidenceRequired": "独立裁决及可核合同/付款/运营；新增解决记录不得覆盖原陈述。",
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "resolvedBy": null
+    }
+  ],
+  "aliasReferences": [
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+      "canonicalReviewLabel": "F02",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "公告/授权/能力/存量/实际流量分开；用于许可、投资承诺、MOU和项目阶段。",
+      "scopeLimit": "复用测量类别区别；油的具体制度/定义不扩展为所有融资合同规则。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+      "canonicalReviewLabel": "F12",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "声明、正式生效、观察、接收时间分开。",
+      "scopeLimit": "只是提议themeLinks，现有共享时间规则及目录不变。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.reserve-share-versus-transactions.v1",
+      "canonicalReviewLabel": "F04",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M07"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "FDI存量变动要区别交易、估值和汇率。",
+      "scopeLimit": "仅类比通用存量调节逻辑；COFER不含黄金等储备专属口径不用于FDI。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+      "canonicalReviewLabel": "F05",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M10",
+        "M09"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "债务余额、融资/提款与偿还流量不互换。",
+      "scopeLimit": "新候选只新增借款人、担保、工具/条款维度。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.actor-relation.fed-boj-dollar-backstop.v1",
+      "canonicalReviewLabel": "A02",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "已授权金融渠道与实际draw是不同证据；一般commitment/disbursement不再生成一条空泛候选。",
+      "scopeLimit": "A02仍仅Fed–BOJ后备关系，不能当DFC已提款或每份授信条款的事实；与F02一起用作概念参照。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.vessel-tonnage-versus-cargo.v1",
+      "canonicalReviewLabel": "F10",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "容量、运输重量/能量等单位及期间不可混合。",
+      "scopeLimit": "GW→MWh新增物理维度见B2-K09；不把船舶吨位规定当电力定义。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.mechanism.rerouting-vessel-time-cost.v1",
+      "canonicalReviewLabel": "ME07",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M06",
+        "M09",
+        "M10"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "实际路线、交付时间与成本需要分步核实。",
+      "scopeLimit": "没有本批新航运中断证据；不复制另一条generic shipping机制。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.mechanism.debt-rollover-cost.v1",
+      "canonicalReviewLabel": "ME03",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M08",
+        "M10"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "融资成本按合同期限/重定价进入现金负担。",
+      "scopeLimit": "公司/项目不等于Treasury；不能把任何融资困难称财政主导。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.transmission-channel-candidate.macro-to-gold-channels.v1",
+      "canonicalReviewLabel": "T01",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "GLD只保留经实际利率、USD、现金需求等多渠道的待检验联系。",
+      "scopeLimit": "全部新K推断DOSSIER_ONLY；不新增固定方向或新资产机制。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    },
+    {
+      "canonicalKnowledgeId": "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1",
+      "canonicalReviewLabel": "T02",
+      "canonicalCatalogPath": "../../../../../src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+      "proposedThemeLinks": [
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "reviewDecision": "REFERENCE_EXISTING_NOT_NEW_CANDIDATE",
+      "application": "IBIT需要独立融资、风险预算、crypto及ETF证据。",
+      "scopeLimit": "HYPOTHESIS_ONLY_CONTEXT / ALPHA_INFERENCE等级不升级；不新增候选。",
+      "runtimeMutation": false,
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true
+    }
+  ],
+  "exclusions": [
+    {
+      "reviewId": "macro.exclusion.batch2-current-chip-rules-and-company-capacity.v1",
+      "reviewLabel": "B2-D01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M06"
+      ],
+      "statement": "当前出口管制清单、许可范围、份额、N2/A14工艺及海外厂/补贴状态。",
+      "reason": "易变且后续法规、拨款、良率未完整核实；不创建CURRENT_STATE候选。",
+      "sourceRefs": [
+        "M06.S07",
+        "M06.S08",
+        "M06.S09",
+        "M06.S11",
+        "M06.S13",
+        "M06.S15"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": false
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-trade-fdi-estimates-and-model-magnitudes.v1",
+      "reviewLabel": "B2-D02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M07"
+      ],
+      "statement": "WTO/UNCTAD当前数值、模型损失与个别国家历史估计。",
+      "reason": "只保留版本冲突和测量方法；没有同口径桥接，模型不等于实绩。",
+      "sourceRefs": [
+        "M07.S01",
+        "M07.S02",
+        "M07.S04",
+        "M07.S05",
+        "M07.S06",
+        "M07.S07",
+        "M07.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": false
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-energy-forecasts-company-cash-and-project-status.v1",
+      "reviewLabel": "B2-D03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M08"
+      ],
+      "statement": "IEA年度估计/2030预测、PJM2026预测、Microsoft现金额、Crane重启状态。",
+      "reason": "年份/项目状态会老化；保留数量/用途/时钟边界，不搬运数值。",
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S03",
+        "M08.S04",
+        "M08.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": false
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-mine-equity-loans-exports-and-mous.v1",
+      "reviewLabel": "B2-D04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M09"
+      ],
+      "statement": "TFM/KFM、Mopani持股/产量、Lobito贷款/运输、DRC配额及俄尼MOU。",
+      "reason": "具体权益/执行/金额/路线需带版本再核；无足够长期增量值得另建actor/flow节点。",
+      "sourceRefs": [
+        "M09.S01",
+        "M09.S02",
+        "M09.S03",
+        "M09.S04",
+        "M09.S05",
+        "M09.S06",
+        "M09.S07",
+        "M09.S10",
+        "M09.S11"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": false
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-bri-case-history-finance-and-use.v1",
+      "reviewLabel": "B2-D05",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M10"
+      ],
+      "statement": "中老铁路、汉班托塔的年代、计划结构、吞吐和老挝国家偿债估计。",
+      "reason": "概念已由K14–K17保留；不复制整个争议案例或旧合同为现行事实。",
+      "sourceRefs": [
+        "M10.S03",
+        "M10.S04",
+        "M10.S05",
+        "M10.S06",
+        "M10.S07",
+        "M10.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": false
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-market-channels-and-long-edges.v1",
+      "reviewLabel": "B2-D06",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "statement": "各K节及综合§5的GLD/IBIT/USD/rates传导与过长因果链。",
+      "reason": "全部ALPHA_INFERENCE；复用Batch1 T01/T02，零新增HYPOTHESIS_ONLY_CONTEXT。",
+      "sourceRefs": [],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "5",
+          "anchor": "5-common-market-transmission"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": false
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-tool-process-and-extra-histories.v1",
+      "reviewLabel": "B2-D07",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "statement": "工具失败、操作/工程计数及其他历史叙述。",
+      "reason": "过程保留在原文；来源覆盖限制随候选保留，但失败日志不是世界结构知识。",
+      "sourceRefs": [],
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "7",
+          "anchor": "7-adversarial-corrections-and-source-gaps"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "8",
+          "anchor": "8-usage-and-validation-boundary"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": false
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-taiwan-only-chips-or-control-causes-war.v1",
+      "reviewLabel": "B2-R01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M06"
+      ],
+      "statement": "台湾只因芯片重要；芯片管制自动导致战争或产业依赖保证和平。",
+      "reason": "原文限定多层历史/安全解释，没有冲突时间或军事用途识别。",
+      "sourceRefs": [
+        "M06.S01",
+        "M06.S02",
+        "M06.S06",
+        "M06.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-one-china-omnibus-or-corporate-political-stance.v1",
+      "reviewLabel": "B2-R02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M06"
+      ],
+      "statement": "用统一ONE_CHINA_POLICY覆盖不同主体，或把公司投资当政府/社会政治立场。",
+      "reason": "丢失主体、时期和法律措辞；不批准任何主权反命题。",
+      "sourceRefs": [
+        "M06.S01",
+        "M06.S02",
+        "M06.S04",
+        "M06.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-tariffs-prove-end-of-globalization.v1",
+      "reviewLabel": "B2-R03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M07"
+      ],
+      "statement": "关税增加、增速下降或双边缩减证明全球化结束。",
+      "reason": "总量、增速、地理和价值量被偷换；原文保留三种竞争解释。",
+      "sourceRefs": [
+        "M07.S01",
+        "M07.S03",
+        "M07.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-rerouting-is-reshoring-or-resilience.v1",
+      "reviewLabel": "B2-R04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M07"
+      ],
+      "statement": "供应商改道等于本土回流，所有连接国都是转运，回流必然更稳。",
+      "reason": "需企业产地/增加值/上游依赖；OECD模型和IMF国家差异反对绝对化。",
+      "sourceRefs": [
+        "M07.S05",
+        "M07.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-planned-gw-is-actual-ai-energy.v1",
+      "reviewLabel": "B2-R05",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M08"
+      ],
+      "statement": "宣布或签约GW就是实际AI耗电；接网/带电就是满负荷；各阶段可相加。",
+      "reason": "阶段、项目去重、功率/能量和工作负载分母同时被偷换。",
+      "sourceRefs": [
+        "M08.S01",
+        "M08.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-ppe-is-ai-investment.v1",
+      "reviewLabel": "B2-R06",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M08"
+      ],
+      "statement": "合并PP&E等于AI投资或可证明AI收益。",
+      "reason": "用途和现金/非现金边界未分解，未经审计发布也不等于本轮读完10-K。",
+      "sourceRefs": [
+        "M08.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-mineral-equity-is-national-flow-control.v1",
+      "reviewLabel": "B2-R07",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M09"
+      ],
+      "statement": "矿权/国有化自动控制全国产销、终端加工并提高全民收益。",
+      "reason": "权益、产品形态、出口、融资和分配不同；现期补偿与地方净收益未知。",
+      "sourceRefs": [
+        "M09.S01",
+        "M09.S07",
+        "M09.S08",
+        "M09.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-africa-one-actor-and-resource-coups.v1",
+      "reviewLabel": "B2-R08",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M09"
+      ],
+      "statement": "非洲是单一行动者；中国控制非洲；资源竞争可直接解释政变。",
+      "reason": "具体国家/公司/社区分开；原档案没有安全因果或秘密交换证据。",
+      "sourceRefs": [
+        "M09.S08",
+        "M09.S09",
+        "M09.S10"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-mou-or-commitment-is-cash-execution.v1",
+      "reviewLabel": "B2-R09",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "statement": "MOU等于已出资项目、授信/补贴承诺等于已付现金、许可等于实际装运。",
+      "reason": "原档案反复区分授权、承诺、支付、建设与实货；复用Batch1不另建知识。",
+      "sourceRefs": [
+        "M09.S04",
+        "M09.S05",
+        "M09.S10",
+        "M06.S09",
+        "M06.S15"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-bri-always-debt-trap-or-win-win.v1",
+      "reviewLabel": "B2-R10",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M10"
+      ],
+      "statement": "BRI定义上就是债务陷阱，或所有项目必然双赢/援助无条件。",
+      "reason": "需要意图、条款、执行与净收益证据；不是批准相反政治叙事。",
+      "sourceRefs": [
+        "M10.S02",
+        "M10.S07",
+        "M10.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-physical-use-is-financial-success.v1",
+      "reviewLabel": "B2-R11",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M09",
+        "M10"
+      ],
+      "statement": "已通车、货运增长或有岗位证明财务成功及地方净收益。",
+      "reason": "收费/维护/偿债/分配独立；旧岗位转入不等于新增就业。",
+      "sourceRefs": [
+        "M09.S06",
+        "M10.S04",
+        "M10.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-port-lease-is-automatic-debt-seizure.v1",
+      "reviewLabel": "B2-R12",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M10"
+      ],
+      "statement": "港口长期租赁等于自动债转资产/债权人没收；反驳该说法即消除所有债务风险。",
+      "reason": "2017建设贷款与租赁交易不同；S07为有归属的历史解释，不证明现行合同或动机。",
+      "sourceRefs": [
+        "M10.S06",
+        "M10.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    },
+    {
+      "reviewId": "macro.exclusion.batch2-geopolitics-determines-asset-direction.v1",
+      "reviewLabel": "B2-R13",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "statement": "台海紧张→买金、AI缺电→能源必涨、政变→商品必涨、BRI→美元必跌/IBIT方向。",
+      "reason": "中间变量、反力、预期和期限缺失；所有K节是ALPHA_INFERENCE，不是交易许可。",
+      "sourceRefs": [],
+      "dossierRefs": [
+        {
+          "dossierId": "M06",
+          "path": "../M06_CHINA_TAIWAN_SEMICONDUCTORS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M07",
+          "path": "../M07_GLOBALIZATION_RECONFIGURATION.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M08",
+          "path": "../M08_AI_POWER_DATA_CENTERS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M09",
+          "path": "../M09_AFRICA_STRATEGIC_RESOURCES.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M10",
+          "path": "../M10_BELT_AND_ROAD.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_2_SYNTHESIS.md",
+          "section": "5",
+          "anchor": "5-common-market-transmission"
+        }
+      ],
+      "reviewedAt": "2026-09-20T20:53:54.892Z",
+      "notInverseFact": true
+    }
+  ],
+  "currentStateDecision": {
+    "candidateCount": 0,
+    "decision": "DOSSIER_ONLY",
+    "reason": "World Model current-state lifecycle未启用；本批易变政策、公司状态及数值均不提升。原日期/接收时钟保留sourceMap和dossier。",
+    "futureRequirements": [
+      "asOf",
+      "sourceDate",
+      "retrievedAt",
+      "freshnessClass",
+      "reviewTrigger",
+      "limitations"
+    ]
+  },
+  "actorAndFlowDecision": {
+    "actorCandidateCount": 0,
+    "flowCandidateCount": 0,
+    "reason": "高频互补已由K03/K12/K14和机制保留；具体股权、贷方、航次/操作关系带时点且未获当前核验，留D04/D05。不为补类别重复建节点。",
+    "allowedFutureRelations": [
+      "REGULATES",
+      "LICENSES",
+      "OWNS_STAKE_IN",
+      "OPERATES",
+      "LENDS_TO",
+      "GUARANTEES",
+      "BUYS_FROM",
+      "SELLS_TO",
+      "DEPENDS_ON",
+      "PROCESSES",
+      "TRANSPORTS_THROUGH"
+    ]
+  },
+  "semanticSelfReview": {
+    "reviewer": "Codex, same extractor, no independent review",
+    "reviewedAt": "2026-09-20T20:53:54.892Z",
+    "scope": "Every candidate checked against cited saved sections and source coverage; no new original-body authentication",
+    "revisions": [
+      "M06 F2比J/综合表保守，出口影响机制与L1保留CONDITIONAL_HYPOTHESIS。",
+      "L2依M06 F4保留ALPHA_INFERENCE且DOSSIER_ONLY；索引补贴表态不提升韧性。",
+      "L3/L4去掉未经本候选支持的反向箭头；L7只保留互补关系。",
+      "Foundry定义不一致与真实数值冲突分开；没有虚构传统份额。",
+      "Niger应付补偿原则/未付款主张可同时成立；保留法律争议而非假数值矛盾。",
+      "FDI/金融承诺对Batch1的复用明确为测量原则，不挪用COFER或Fed–BOJ具体制度。"
+    ],
+    "checks": [
+      "主体/日期/读取范围",
+      "立场不当事实",
+      "计划/能力/现金/实际使用分开",
+      "国家案例不泛化",
+      "推断等级/反作用/证伪",
+      "Batch1重复与冲突"
+    ],
+    "ownerApprovalRecorded": false
+  },
+  "usage": {
+    "webSearches": 0,
+    "pageReads": 0,
+    "hostGenerationInterfaceCalls": 0,
+    "additionalModelApiCalls": 0,
+    "marketCalls": 0,
+    "businessApiCalls": 0,
+    "codexSessionGeneration": "本次会话完成提取和自审；内部生成/token成本无账单，不声称零模型消耗。",
+    "usdCost": "UNKNOWN",
+    "gitOperations": "远端读取/正常push另计，不是新闻或市场调用。"
+  },
+  "counts": {
+    "coreLongTerm": 17,
+    "mechanisms": 4,
+    "watchQuestions": 5,
+    "openQuestions": 6,
+    "conflicts": 4,
+    "knowledgeRecords": 36,
+    "edges": 4,
+    "currentState": 0,
+    "actorRelations": 0,
+    "flowRelations": 0,
+    "historicalFacts": 0,
+    "hypothesisOnlyContexts": 0,
+    "dossierOnly": 7,
+    "rejected": 13
+  }
+}
