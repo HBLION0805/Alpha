@@ -5,6 +5,7 @@ import { readinessClock } from "../options-readiness/OptionsReadinessEngine";
 import { btcSourceNanoseconds } from "../options-btc-context/BtcSpotContextEngine";
 import { exchangeLocalDate } from "../market-calendar/MarketCalendarValidation";
 import { validateTradeThesis, thesisPlanIssues, validateThesisDraft, validatePositionReview } from './OptionsTradeThesis';
+import { preEventConfigurationIssues } from '../options-daily-guidance/OptionsEventEntry';
 
 function fail(code: string): never { throw Error("MANUAL_LEDGER_" + code); }
 function exact(v: unknown, fields: string[]): Record<string, any> {
@@ -63,6 +64,7 @@ export function validateManualLedgerCommand(input: unknown, recordedAt: string):
       if (p.entryDeadlineAt !== null && p.timeExitAt !== null && p.timeExitAt <= p.entryDeadlineAt) fail("PLAN_CLOCK_ORDER");
       label(p.thesis);
       if(p.invalidation){validateTradeThesis(p.invalidation);if(thesisPlanIssues({plan:p as any,contract:c.contract,registeredAt:recordedAt,openedAt:null},recordedAt).length)fail('THESIS_PLAN_INCOMPLETE');}
+      if(p.invalidation?.eventEntry?.phase==='PRE_EVENT'&&preEventConfigurationIssues({plan:p as any,contract:c.contract,registeredAt:recordedAt,openedAt:null},recordedAt).length)fail('PRE_EVENT_PLAN_INCOMPLETE');
     }
     if (c.activityReference !== null) {
       const r = exact(c.activityReference, ["studyId", "studyFingerprint", "candidateId"]); exportId(r.studyId); digest(r.studyFingerprint);

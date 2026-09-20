@@ -5,6 +5,7 @@ import { exchangeLocalDate } from "../market-calendar/MarketCalendarValidation";
 import { guidanceLocal } from "./OptionsGuidanceClock";
 import { paperSession, PAPER_SESSION_CALENDAR } from "../options-robinhood-data/RobinhoodPaperSession";
 import { isGuidanceMajorEvent } from "./OptionsGuidanceSchedule";
+import { assessEventEntry, eventEntryMatches } from './OptionsEventEntry';
 export { guidanceLocal } from "./OptionsGuidanceClock";
 
 const DAY = 86400000;
@@ -69,10 +70,19 @@ export function assessDailyGuidance(input: GuidanceInput) {
   if(input.captureOrigin!=="HOST_MARKET_TOOL_RESPONSES")sourceBlockers.push("UNVERIFIED_OR_SYNTHETIC_CAPTURE");
   if(!sessionWindow)sourceBlockers.push("OUTSIDE_REGULAR_SESSION");
   if(marketSession&&!marketSession.knownYear)sourceBlockers.push("SESSION_CALENDAR_YEAR_UNREVIEWED");
-  if(upcoming.some(e=>e.gated))sourceBlockers.push("MAJOR_EVENT_WAIT");
+  const eventEntry=input.eventPlan?assessEventEntry(input.eventPlan,input.at,input.calendarAvailable):null;
+  if(!eventEntry&&upcoming.some(e=>e.gated))sourceBlockers.push("MAJOR_EVENT_WAIT");
   const assets=(["GLD","IBIT"] as const).map(symbol=>{
     const direction=trend(input,symbol),equity=input.equities.find(e=>e.symbol===symbol);
     const assetBlockers=[...sourceBlockers];
+    if(eventEntry){
+      const applicable=input.eventPlan!.symbol===symbol;
+      const pre=applicable&&eventEntry.researchApproach==='PRE_EVENT';
+      if(pre)assetBlockers.push(...eventEntry.blockers);
+      // The selected release can have specific incomplete-plan reasons; other events still wait.
+      if(upcoming.some(e=>e.gated&&!(pre&&eventEntryMatches(e,eventEntry))))assetBlockers.push('MAJOR_EVENT_WAIT');
+      if(pre&&!upcoming.some(e=>eventEntryMatches(e,eventEntry)))assetBlockers.push('EVENT_NOT_IN_CURRENT_GUIDANCE_CALENDAR');
+    }
     if(!["UP","DOWN"].includes(direction.direction))assetBlockers.push("DIRECTION_NOT_CONFIRMED");
     if(applicabilityV2||Object.hasOwn(input,"analyst")) {
       const note=input.analyst,a=note?.assets.find(a=>a.symbol===symbol);
@@ -83,6 +93,10 @@ export function assessDailyGuidance(input: GuidanceInput) {
     if(!equity||numeric(equity.price)===null||age(input.at,equity.sourceAt)<0||age(input.at,equity.sourceAt)>120000)assetBlockers.push("UNDERLYING_PRICE_NOT_FRESH");
     const candidates=input.quotes.filter(q=>q.symbol===symbol).map(q=>{
       const blockers=[...assetBlockers],dte=(Date.parse(q.expiry)-Date.parse(local.date))/DAY;
+      if(eventEntry?.researchApproach==='PRE_EVENT'&&input.eventPlan!.symbol===symbol){
+        const contract=input.eventPlan!.contract;
+        if(!contract||contract.symbol!==q.symbol||contract.optionType.toLowerCase()!==q.type||contract.expiry!==q.expiry||Number(contract.strikeUsd)!==Number(q.strike)||contract.multiplier!==q.multiplier)blockers.push('EVENT_PLAN_CONTRACT_MISMATCH');
+      }
       const quoteAge=age(input.at,q.updatedAt);
       if(!Number.isFinite(quoteAge)||quoteAge<0||quoteAge>120000||!q.updatedAt||exchangeLocalDate(q.updatedAt,"America/New_York")!==local.date)blockers.push("OPTION_QUOTE_NOT_FRESH");
       if(q.multiplier!==100||dte<14||dte>45)blockers.push("CONTRACT_OUTSIDE_POLICY");
@@ -98,14 +112,14 @@ export function assessDailyGuidance(input: GuidanceInput) {
       const stopTrigger=ask!==null&&tick!==null&&positive(tick)&&positive(ask)?Math.ceil(ask*(10000-settings.stopLossBps)/(10000*tick))*tick:null;
       return {contract:q,dte,quoteAgeSeconds:Number.isFinite(quoteAge)?Math.round(quoteAge/1000):null,disposition:blockers.length?"NO_TRADE":"CONDITIONAL_RESEARCH",blockers:[...new Set(blockers)],scenario,feasibility,
         plan:{entryLimitCents:ask,stopTriggerCents:stopTrigger,targetExitCents:feasibility.economics?.indicativeExitLimitPerShareCents??null,netRiskCents:feasibility.economics?.plannedStopCents??null,netTargetCents:feasibility.economics?.roundedNetProfitTargetCents??null,
-          invalidation:"Reassess if the observed direction reverses, an event window starts, quotes become stale, or risk/cost assumptions change. Exit planning needs fresh bids; no stop fill is guaranteed.",
+          invalidation:eventEntry?.eligible&&input.eventPlan!.symbol===symbol?"Event exposure accepted only under the original frozen plan. All original independent exits remain in force; fresh tradable quotes are required for price review. No stop fill is guaranteed.":"Reassess if the observed direction reverses, an event window starts, quotes become stale, or risk/cost assumptions change. Exit planning needs fresh bids; no stop fill is guaranteed.",
           timeExit:"Review each session; do not carry this research plan into expiry. A time exit must be declared before any manual trade.",automaticOrder:false}};
     });
     // Feasibility then lower declared cash exposure; this is not a profitability ranking.
     candidates.sort((a,b)=>Number(a.disposition==="NO_TRADE")-Number(b.disposition==="NO_TRADE")||(a.contract.askCents??Infinity)-(b.contract.askCents??Infinity)||a.contract.expiry.localeCompare(b.contract.expiry)||a.contract.id.localeCompare(b.contract.id));
     return {symbol,equity:equity??null,trend:direction,disposition:candidates.some(c=>c.disposition==="CONDITIONAL_RESEARCH")?"CONDITIONAL_RESEARCH":"WATCH",blockers:[...new Set(assetBlockers)],candidates};
   });
-  return {...(marketSession?{marketSession,sessionPolicy:PAPER_SESSION_CALENDAR,analysisSequencing:"REVIEW_AT_OR_AFTER_LATEST_CAPTURE"}:{}),version:applicabilityV2?"OPTIONS_DAILY_GUIDANCE_V4":legacyRiskCapsRemoved(settings.tradeBudget)?"OPTIONS_DAILY_GUIDANCE_V3":settings.tradeBudget?"OPTIONS_DAILY_GUIDANCE_V2":"OPTIONS_DAILY_GUIDANCE_V1",assessedAt:input.at,marketCapturedAt:input.captureAt,assets,events:upcoming,sourceHealth:input.sourceHealth,headlines:input.headlines,context:input.context,settings,
+  return {...(eventEntry?{eventEntry}:{}),...(marketSession?{marketSession,sessionPolicy:PAPER_SESSION_CALENDAR,analysisSequencing:"REVIEW_AT_OR_AFTER_LATEST_CAPTURE"}:{}),version:applicabilityV2?"OPTIONS_DAILY_GUIDANCE_V4":legacyRiskCapsRemoved(settings.tradeBudget)?"OPTIONS_DAILY_GUIDANCE_V3":settings.tradeBudget?"OPTIONS_DAILY_GUIDANCE_V2":"OPTIONS_DAILY_GUIDANCE_V1",assessedAt:input.at,marketCapturedAt:input.captureAt,assets,events:upcoming,sourceHealth:input.sourceHealth,headlines:input.headlines,context:input.context,settings,
     policy:legacyRiskCapsRemoved(settings.tradeBudget)?`Owner allocation policy V2: $${(settings.tradeBudget!.minCents/100).toFixed(2)}–$${(settings.tradeBudget!.maxCents/100).toFixed(2)} per trade including declared fees; total equity $${(settings.currentEquityCents/100).toFixed(2)}. Legacy planned-loss and full-premium caps are not enforced. Planned loss and full-premium exposure remain visible; stops are not guaranteed fills. Dated analyst notes and historical reports retain their original policies.`:settings.tradeBudget?`Owner-declared per-trade capital range $${(settings.tradeBudget.minCents/100).toFixed(2)}–$${(settings.tradeBudget.maxCents/100).toFixed(2)}, including the declared fee reserve. The independent 0.5% planned-loss and $25 full-premium stress caps remain. Cost declarations are scenarios, not verified brokerage fees.`:"Illustrative 20% premium-stop default, existing net 1.5R–2R economics and unchanged $50 allocation/$25 full-premium stress caps at $1,000. Cost declarations are scenarios, not verified brokerage fees.",
     coverage:"Six headline feeds and separate Treasury/BTC/calendar sources are not all 94 catalog indicators. A successful refresh does not mean new headlines. Scheduled snapshots are not continuous quotes.",
     ...(Object.hasOwn(input,"analyst")?{analyst:input.analyst??null}:{}),winProbability:null,executionAllowed:false,accountAccessed:false,rankingIsProfitForecast:false};

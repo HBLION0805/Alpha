@@ -6,6 +6,27 @@ import { parseChainSurveyJson } from '../../src/engines/options-robinhood-data/R
 import { paperFingerprint } from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import { readinessClock } from '../../src/engines/options-readiness/OptionsReadinessEngine.ts';
 import { assessCandidateChecks } from '../../src/engines/options-daily-guidance/OptionsCandidateChecks.ts';
+import {assessEventEntry} from '../../src/engines/options-daily-guidance/OptionsEventEntry.ts';
+import {sourcePlanOptions} from './options-source-comparison.mjs';
+
+export function eventEntryContexts(state){
+  const calendar=(state.calendar?.data?.groups??[]).flatMap(g=>[...g.dateOnlyEntries,...g.scheduledTimeEntries]).map(e=>({key:e.source+':'+e.sourceKey,title:e.title,source:e.source,scheduledAt:e.scheduledAt??null,receivedAt:state.calendar.data.sources?.[e.source==='BLS'?'bls':'fomc']?.lastKnownReceivedAt??null}));
+  const plans=sourcePlanOptions(state.manual?.data),latest=new Map();
+  for(const p of plans)if(!latest.has(p.tradeId)||p.kind==='FROZEN'||latest.get(p.tradeId).kind!=='FROZEN'&&p.registeredAt>=latest.get(p.tradeId).registeredAt)latest.set(p.tradeId,p);
+  return [...latest.values()].map(p=>{
+    if(p.kind==='FROZEN')return {...p,symbol:p.contract.symbol,calendar};
+    const record=state.manual.data.planRecords.find(e=>'draft:'+e.command.requestId===p.key),f=record.command.draft.fields;
+    return {...p,symbol:f.symbol,calendar,plan:{...p.plan,declaredAt:f.declaredAt,maxContracts:f.maxContracts?Number(f.maxContracts):null,maxEntryDebitUsd:f.maxEntryDebitUsd,plannedRiskUsd:f.plannedRiskUsd,targetNetProfitUsd:f.targetNetProfitUsd,stopPremiumUsd:f.stopPremiumUsd||null,entryDeadlineAt:f.entryDeadlineAt||null,timeExitAt:f.timeExitAt||null}};
+  });
+}
+export function eventEntryPlanViews(state){return eventEntryContexts(state).map(ctx=>({...assessEventEntry(ctx,state.loadedAt,state.guidance?.data?.input?.calendarAvailable===true),tradeId:ctx.tradeId,symbol:ctx.symbol}));}
+export function compareSavedEventPlan(state,planKey,planVersion){
+  const context=eventEntryContexts(state).find(p=>p.key===planKey&&p.version===planVersion);
+  if(!context)fail('PLAN_VERSION_UNAVAILABLE');
+  if(!state.guidance?.data?.input)fail('GUIDANCE_UNAVAILABLE');
+  const input={version:'OPTIONS_CANDIDATE_CHECKS_INPUT_V1',sourcePaths:state.guidance.data.sourcePaths,guidance:{...state.guidance.data.input,eventPlan:context}};
+  return {current:assessCandidateChecks(input),history:[],sourceRefresh:false,executionAllowed:false};
+}
 
 const BASE='data/runtime/options-candidate-checks', MAX=4*1024*1024;
 const fail=code=>{throw Error('CANDIDATE_CHECKS_'+code);};

@@ -30,7 +30,7 @@ import { goldFrameworkView } from './options-gold-framework.mjs';
 import { macroContextView,previewMacroComparison,saveMacroComparison } from './options-macro-context-io.mjs';
 import { readEventResearch, registerEventResearch, saveEventResearchReport } from './options-event-research-io.mjs';
 import { readBarQualityDesk } from './options-bar-quality-io.mjs';
-import { candidateChecksView, saveCandidateChecks } from './options-candidate-checks-io.mjs';
+import { candidateChecksView, saveCandidateChecks, eventEntryPlanViews, compareSavedEventPlan } from './options-candidate-checks-io.mjs';
 import { evaluateOptionsPlanningFeasibility } from '../../src/engines/options-retail-feasibility/OptionsTradeBudget.ts';
 import { assessOptionsCostDesk } from '../../src/engines/options-retail-feasibility/OptionsCostDesk.ts';
 import { assessOptionsCapitalPolicy } from '../../src/engines/options-retail-feasibility/OptionsCapitalPolicy.ts';
@@ -132,6 +132,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.trendStudy=await component(()=>trendStudyView(root,at,calendar.data,result.snapshotPaper.data?.observations?.trackedContracts),at);
     result.macroPlaybook=await component(()=>macroPlaybookView(root),at);
     result.sourceComparisons=await component(()=>sourceComparisonView(root,ledgerId,result,at),at);
+    result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
     return result;
   }
   function watchFromDesk(report,desk,at,costs={}){
@@ -188,6 +189,10 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     const current=await state();return registerEventResearch(root,body.request,current.guidance.data,now());
   }
   async function candidateChecks(body){
+    if(body?.action==='PREVIEW_PLAN'){
+      if(Object.keys(body).sort().join()!=='action,planKey,planVersion'||typeof body.planKey!=='string'||typeof body.planVersion!=='string')fail('CANDIDATE_CHECKS_FIELDS');
+      return compareSavedEventPlan(await state(),body.planKey,body.planVersion);
+    }
     if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).length)fail('CANDIDATE_CHECKS_FIELDS');
     const current=await state();
     if(current.candidateChecks.state!=='AVAILABLE')throw Error(current.candidateChecks.error);

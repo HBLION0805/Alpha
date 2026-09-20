@@ -59,5 +59,156 @@
     "changed": 0,
     "historicalFingerprints": "Existing full-suite compatibility checks passed"
   },
-  "nextStep": "Inspect the first existing natural 15:50 collection receipt after its window; no new collection or automatic opening monitoring authorized."
+  "nextStep": "Inspect the first existing natural 15:50 collection receipt after its window; no new collection or automatic opening monitoring authorized.",
+  "eventEntryRevision": {
+    "updatedAt": "2026-09-20T06:26:37.670Z",
+    "status": "IMPLEMENTED_AND_LOCALLY_VERIFIED",
+    "deployment": "ACTIVE_WORKBENCH_RESTART_BLOCKED",
+    "scope": "Optional original-plan entry confirmation and existing candidate comparison; independent exits unchanged",
+    "priorBaseline": "f6e6d22c924559648b6145b6a5d982434bdd18fe",
+    "reused": [
+      "holdThroughEvent",
+      "original event condition and clocks",
+      "PRE_EVENT / POST_EVENT vocabulary; paper phase semantics retained separately",
+      "original stop, target and time exit",
+      "manual fallback",
+      "Confirm & freeze and immutable ledger versions",
+      "candidate blockers and explanations"
+    ],
+    "behavior": {
+      "legacy": "Original conservative wait; no migration",
+      "postEvent": "Original wait window and other gates retained",
+      "preEventDraft": "Research permitted, formal comparison blocked by explicit missing conditions",
+      "preEventFrozen": "Only original verified event and exact contract; retained event/gap disclosures and every other gate",
+      "calendar": "Changed, unknown or unavailable fails closed"
+    },
+    "currentRealDraft": {
+      "status": "DRAFT_NOT_ELIGIBLE",
+      "researchApproach": "PRE_EVENT",
+      "recordsModified": false,
+      "missing": [
+        "Structured formal entry confirmations",
+        "Contract, quantity and entry costs/risk",
+        "Documented expectation availability and independent differing basis",
+        "Independent stop, target, maximum exit and entry deadline",
+        "Explicit risk acceptance and assigned monitoring contingency"
+      ],
+      "privateEvidence": "data/runtime/options-workbench-development/event-entry-acceptance.json",
+      "sha256": "97df7485e24affe5e0d8950f00b887ff48635697ff73bb71201dc147e2e02b4f"
+    },
+    "validation": {
+      "command": "node scripts/alpha-validate.mjs",
+      "status": "PASSED",
+      "componentCount": 182,
+      "testsExecuted": 4856,
+      "passed": 4856,
+      "failed": 0,
+      "durationMs": 117807,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "Git line-ending normalization warning"
+      ],
+      "typecheck": "PASSED",
+      "log": "data/runtime/options-workbench-development/event-entry-final-verified.log",
+      "sha256": "e260f9dad006eafa764078bf07d54f73291f755915e08ee6fdc90b529a89cd0b",
+      "focused": {
+        "candidateChecks": 43,
+        "tradeThesis": 22,
+        "dailyGuidance": 106,
+        "failed": 0
+      },
+      "productFiles": [
+        {
+          "path": "apps/options-workbench/app.js",
+          "sha256": "e70e99ce8ada7d87960a18128b180a43508147a5bcda632d05af9a5f80431818"
+        },
+        {
+          "path": "apps/options-workbench/candidate-checks.js",
+          "sha256": "8f26b035c88b6dc9ff9ba785f1a60b67e936a38b66f6a728f63e34ac41b4aebb"
+        },
+        {
+          "path": "apps/options-workbench/guidance.js",
+          "sha256": "07d0e570fd101b9c78bc74dbcb488d4d8bd1f51e5cc601b681ed3fcb0d7ba5d0"
+        },
+        {
+          "path": "apps/options-workbench/trade-thesis.js",
+          "sha256": "b2875377683152a85d09dcee0031541578821085be11cd7bf10dbde29d99d3dc"
+        },
+        {
+          "path": "scripts/lib/options-candidate-checks-io.mjs",
+          "sha256": "20a90a2eeb27ddc9e7f8c9eb3ef13b397a9f31cb1abed8dc8612f07515e49966"
+        },
+        {
+          "path": "scripts/lib/options-workbench-data.mjs",
+          "sha256": "b53cb9d3f7d277226c093ab95e4f264efa8f853e9038718aed89181ea592e0b5"
+        },
+        {
+          "path": "scripts/options-candidate-checks.test.mjs",
+          "sha256": "e214b7e652ec4d059e4ddf2c84a355caced95c529e3735862be6f2ba8568e247"
+        },
+        {
+          "path": "scripts/options-trade-thesis.test.mjs",
+          "sha256": "a1b1d1a1164741e957e7ff6e1c0b3a0ce997098a357c8aa98fe68c3194a06f66"
+        },
+        {
+          "path": "src/contracts/OptionsDailyGuidance.ts",
+          "sha256": "0295620c67753d47f02e97d7098a4fce0437f2a8425ba64291d1e83df54f2b83"
+        },
+        {
+          "path": "src/contracts/OptionsTradeThesis.ts",
+          "sha256": "014df0fddb6bd9cfe436dc42977acde0d2b274374e505a2da31c6f7241202af2"
+        },
+        {
+          "path": "src/engines/options-daily-guidance/OptionsCandidateChecks.ts",
+          "sha256": "ccbe3022947120f1324c6dd10d4619d5e94f9995d17eb6beb1f77e9fadb0a30f"
+        },
+        {
+          "path": "src/engines/options-daily-guidance/OptionsDailyGuidance.ts",
+          "sha256": "0135fd6ae2ac37accdcab749de1f07241fb69c53457c8baea2a7980fcca18e04"
+        },
+        {
+          "path": "src/engines/options-daily-guidance/OptionsEventEntry.ts",
+          "sha256": "1b2cb1c40484c8879af7954146d1097080c2d30e240357d6263ee6632d5a151b"
+        },
+        {
+          "path": "src/engines/options-manual-ledger/OptionsManualLedger.ts",
+          "sha256": "d81b7cd50667bdea7e455c2527bb99c66dc6c177bbf310fae167495bdf56192b"
+        },
+        {
+          "path": "src/engines/options-manual-ledger/OptionsTradeThesis.ts",
+          "sha256": "f9d41d28fef4d859b4315b1734bc2cb49db34cba007427d929f75aaa080d9cda"
+        }
+      ]
+    },
+    "browserAcceptance": {
+      "status": "PASSED_REAL_SAVED_RECORDS_READ_ONLY",
+      "receipt": "data/runtime/options-workbench-development/event-entry-browser-acceptance.json",
+      "sha256": "041c30e73ada057b5bc1670835f443b9a83d1c17bdbaa186795ddb8c22954801",
+      "temporaryInstanceStopped": true,
+      "activeRestart": "AUTOMATIC_APPROVAL_REJECTED",
+      "reason": "blocked by policy"
+    },
+    "preservation": {
+      "originalLedgerAndSourceVersions": "UNCHANGED",
+      "hostSchedules": "UNCHANGED",
+      "routine1550Acceptance": "PENDING_NATURAL_RUN_UNCHANGED",
+      "targetedQuoteFirstRealUse": "NOT_VERIFIED_NO_OPEN_POSITIONS_WEEKEND_UNCHANGED",
+      "sourceQualificationAndFrozenTrend": "UNCHANGED",
+      "capitalAndRiskSettings": "UNCHANGED"
+    },
+    "usage": {
+      "marketCalls": 0,
+      "publicSourceReads": 0,
+      "modelApiCalls": 0,
+      "productionLedgerWrites": 0,
+      "newSchedule": false,
+      "newService": false,
+      "usdCost": "UNKNOWN"
+    },
+    "resolvedDuringAcceptance": [
+      "Missing entry deadline no longer mislabelled as closed window",
+      "Late comparison response cannot move the user to an older page; repeat checks disabled while pending"
+    ],
+    "nextStep": "Load verified code into the existing workbench after the blocked restart is resolved; no change to collection or trading authorization."
+  }
 }

@@ -9,6 +9,12 @@ import {candidateChecksView,saveCandidateChecks,readCandidateChecks} from './lib
 import {runCandidateChecksCommand} from './options-candidate-checks.mjs';
 import {filterCandidateChecks,candidateChecksPanel,candidateCheckDetail} from '../apps/options-workbench/candidate-checks.js';
 import {startOptionsWorkbench} from './options-workbench.mjs';
+import {assessEventEntry} from '../src/engines/options-daily-guidance/OptionsEventEntry.ts';
+import {conditionDefaults,thesisDefaults,eventEntryDefaults,thesisPlannerPanel,updateThesisDraft} from '../apps/options-workbench/trade-thesis.js';
+import {registerDefaults} from '../apps/options-workbench/forms.js';
+import {validateManualLedgerCommand,reconcileManualLedger} from '../src/engines/options-manual-ledger/OptionsManualLedger.ts';
+import {createWorkbenchData} from './lib/options-workbench-data.mjs';
+import {eventEntryPlanViews,compareSavedEventPlan} from './lib/options-candidate-checks-io.mjs';
 
 const at='2026-09-08T14:00:00.000Z',uuid=n=>'00000000-0000-0000-0000-'+String(n).padStart(12,'0');
 let passed=0;async function test(name,fn){await fn();passed++;console.log('PASS '+name);}
@@ -149,4 +155,88 @@ await test('browser request wrapper permits snapshots and preserves session and 
     await assert.rejects(()=>request('/api/candidate-checks',{}),/check Saved check snapshots before saving again/);
   }finally{globalThis.fetch=priorFetch;if(priorLocation===undefined)delete globalThis.location;else globalThis.location=priorLocation;}
 });
+function preEventInput(){
+  const i=input(),g=i.guidance,release='2026-09-09T12:30:00.000Z',registeredAt='2026-09-08T13:40:00.000Z';
+  const condition={...conditionDefaults('OWNER_CONFIRMED','owner'),basis:'Synthetic pre-entry premise',checkAt:release,missingAction:'Verify original release manually',eventKey:'BLS:synthetic-event',releaseAt:release,source:'https://www.bls.gov/test',invalidation:'Owner verifies the specified prerequisite was rejected'};
+  const t={...thesisDefaults(),tradeDate:'2026-09-08',realizationStartAt:release,realizationEndAt:'2026-09-09T19:30:00.000Z',nextCheckAt:'2026-09-08T19:00:00.000Z',holdThroughEvent:'YES',manualFallback:'Owner checks original release; unavailable bid requires manual broker review, no assumed fill',conditions:[condition],eventEntry:{...eventEntryDefaults(),phase:'PRE_EVENT',conditionId:'owner',calendarVerifiedAt:'2026-09-08T13:35:00.000Z',calendarSource:'https://www.bls.gov/test-calendar',expectationStatus:'UNAVAILABLE',expectationBasis:'Synthetic absence of reliable consensus, not replaced by a prior actual',differenceBasis:'Synthetic independent premise and cited evidence',supportingScenario:'Support',neutralScenario:'Mixed or inline',reverseScenario:'Contrary result',counterexample:'Correct direction but IV repricing consumes the premium',reviewer:'Owner performs source and option checks',gapRiskAccepted:true,closedMarketRiskAccepted:true}};
+  const plan={declaredAt:registeredAt,maxContracts:1,maxEntryDebitUsd:'21',plannedRiskUsd:'5',targetNetProfitUsd:'9',stopPremiumUsd:'0.16',entryDeadlineAt:'2026-09-08T19:50:00.000Z',timeExitAt:'2026-09-09T19:50:00.000Z',thesis:'Synthetic independent thesis',invalidation:t};
+  const event={title:'Employment Situation',source:'BLS',startDate:'2026-09-09',endDate:'2026-09-09',scheduledAt:release};g.events=[event];
+  g.eventPlan={key:'frozen:synthetic-event-plan',version:paperFingerprint(plan),kind:'FROZEN',symbol:'GLD',plan,contract:{symbol:'GLD',expiry:'2026-09-25',optionType:'CALL',strikeUsd:'105',multiplier:100},registeredAt,openedAt:null,calendar:[{key:condition.eventKey,title:event.title,source:'BLS',scheduledAt:release,receivedAt:'2026-09-08T13:00:00.000Z'}]};
+  return i;
+}
+await test('legacy no-mode and explicit post-event keep the original event wait and recovery fingerprint',async()=>temp(root=>{
+  const i=preEventInput();delete i.guidance.eventPlan;const original=assessDailyGuidance(i.guidance);assert(row(i).originalBlockers.includes('MAJOR_EVENT_WAIT'));
+  const r=saveCandidateChecks(root,view(i));assert.equal(readCandidateChecks(root,r.path).report.originalGuidanceFingerprint,paperFingerprint(original));
+  const legacy=preEventInput();delete legacy.guidance.eventPlan.plan.invalidation.eventEntry;legacy.guidance.eventPlan.version=paperFingerprint(legacy.guidance.eventPlan.plan);assert(row(legacy).originalBlockers.includes('MAJOR_EVENT_WAIT'));
+  const post=preEventInput();post.guidance.eventPlan.plan.invalidation.eventEntry.phase='POST_EVENT';assert(row(post).originalBlockers.includes('MAJOR_EVENT_WAIT'));assert.match(check(row(post),'events').explanation,/post-event confirmation/);
+  post.guidance.at='2026-09-09T14:00:00.000Z';assert(!row(post).originalBlockers.includes('MAJOR_EVENT_WAIT'));
+}));
+await test('incomplete pre-event research replaces a universal wait with exact missing confirmations, never eligibility',()=>{
+  const i=preEventInput(),ctx=i.guidance.eventPlan;ctx.kind='DRAFT';ctx.contract=null;ctx.plan.timeExitAt=null;ctx.plan.invalidation.eventEntry.gapRiskAccepted=false;ctx.plan.invalidation.eventEntry.reviewer='';
+  const r=assessCandidateChecks(i);assert.equal(r.eventEntry.eligible,false);assert.equal(r.rows[0].disposition,'NO_TRADE');
+  for(const reason of ['PRE_EVENT_PLAN_INCOMPLETE','EVENT_RISK_NOT_CONFIRMED','MAX_EXIT_NOT_DEFINED','MONITORING_CONTINGENCY_MISSING','CONTRACT_NOT_SELECTED'])assert(r.eventEntry.blockers.includes(reason),reason);
+  assert(!r.rows[0].originalBlockers.includes('MAJOR_EVENT_WAIT'));assert(r.rows[1].originalBlockers.includes('MAJOR_EVENT_WAIT'));
+  delete ctx.plan.invalidation.eventEntry;assert.equal(assessCandidateChecks(i).eventEntry.researchApproach,'PRE_EVENT');assert(assessCandidateChecks(i).eventEntry.blockers.includes('PRE_EVENT_MODE_NOT_CONFIRMED'));
+  ctx.plan.entryDeadlineAt=null;const missingDeadline=assessCandidateChecks(i).eventEntry;assert(missingDeadline.blockers.includes('ENTRY_DEADLINE_NOT_DEFINED'));assert(!missingDeadline.blockers.includes('PRE_EVENT_ENTRY_WINDOW_CLOSED'));
+});
+await test('frozen prospective pre-event plan uses original candidate checks with explicit retained gap exposure',()=>{
+  const i=preEventInput(),p=i.guidance.eventPlan;
+  validateManualLedgerCommand({type:'REGISTER_TRADE',requestId:'synthetic-register',tradeId:'synthetic-event-plan',contract:p.contract,plan:p.plan,activityReference:null},p.registeredAt);
+  const r=assessCandidateChecks(i);assert.equal(r.eventEntry.eligible,true);assert.equal(r.rows[0].disposition,'CONDITIONAL_RESEARCH');assert(r.rows[1].originalBlockers.includes('MAJOR_EVENT_WAIT'));
+  assert.match(check(r.rows[0],'events').explanation,/No stop execution is possible while the option market is closed/);assert.equal(r.executionAllowed,false);
+  const e=structuredClone(i);delete e.guidance.eventPlan;e.guidance.events=[];assert.deepEqual(r.rows[0].economics,row(e).economics);
+});
+await test('calendar changes, missing coverage, future receipts and retrospective declarations fail closed',()=>{
+  for(const [change,code] of [
+    [i=>i.guidance.eventPlan.calendar[0].scheduledAt='2026-09-10T12:30:00.000Z','EVENT_TIME_CHANGED_OR_UNKNOWN'],
+    [i=>i.guidance.calendarAvailable=false,'EVENT_CALENDAR_UNAVAILABLE'],
+    [i=>i.guidance.eventPlan.calendar=[],'EVENT_CALENDAR_UNAVAILABLE'],
+    [i=>i.guidance.eventPlan.calendar[0].receivedAt='2026-09-08T14:01:00.000Z','EVENT_CALENDAR_CLOCK_UNVERIFIED'],
+    [i=>i.guidance.eventPlan.registeredAt='2026-09-09T13:00:00.000Z','PRE_EVENT_RECORDED_AFTER_RELEASE'],
+    [i=>i.guidance.eventPlan.openedAt='2026-09-08T13:30:00.000Z','PRE_EVENT_NOT_SAVED_BEFORE_ENTRY_AND_RELEASE'],
+    [i=>i.guidance.eventPlan.version='sha256:'+'0'.repeat(64),'PLAN_VERSION_MISMATCH']]){
+      const i=preEventInput();change(i);const r=assessCandidateChecks(i);assert.equal(r.eventEntry.eligible,false);assert(r.eventEntry.blockers.includes(code),code);assert.equal(r.rows[0].disposition,'NO_TRADE');
+  }
+});
+await test('an event-specific exception never waives another event, identity, costs or missing quote',()=>{
+  const i=preEventInput();i.guidance.events.push({...i.guidance.events[0],title:'Consumer Price Index'});assert(row(i).originalBlockers.includes('MAJOR_EVENT_WAIT'));
+  const wrong=preEventInput();wrong.guidance.quotes[0].strike='106';assert(row(wrong).originalBlockers.includes('EVENT_PLAN_CONTRACT_MISMATCH'));
+  const missing=preEventInput();missing.guidance.quotes=[];assert.equal(assessCandidateChecks(missing).rows.length,0);
+  for(const change of [i=>i.guidance.quotes[0].updatedAt='2026-09-08T13:00:00.000Z',i=>i.guidance.settings.roundTripFeesCents=null]){const x=preEventInput();change(x);assert.equal(row(x).disposition,'NO_TRADE');}
+});
+await test('risk acceptance and saved rationale are required at freeze, drafts remain saveable',()=>{
+  const i=preEventInput(),p=i.guidance.eventPlan,e=p.plan.invalidation.eventEntry;e.gapRiskAccepted=false;
+  const command={type:'REGISTER_TRADE',requestId:'synthetic-register',tradeId:'synthetic-event-plan',contract:p.contract,plan:p.plan,activityReference:null};
+  assert.throws(()=>validateManualLedgerCommand(command,p.registeredAt),/PRE_EVENT_PLAN_INCOMPLETE/);
+  validateManualLedgerCommand({type:'SAVE_PLAN_DRAFT',requestId:'synthetic-draft',tradeId:'synthetic-event-plan',draft:{fields:registerDefaults(),thesis:p.plan.invalidation}},p.registeredAt);
+  e.gapRiskAccepted=true;e.differenceBasis='';assert.throws(()=>validateManualLedgerCommand(command,p.registeredAt),/PRE_EVENT_PLAN_INCOMPLETE/);
+});
+await test('new frozen entry confirmations recover immutably and feed the existing saved-plan comparison path',async()=>temp(async root=>{
+  const i=preEventInput(),p=i.guidance.eventPlan,service=createWorkbenchData({workspaceRoot:root,now:()=>p.registeredAt});service.initialize();
+  const command={type:'REGISTER_TRADE',requestId:'synthetic-freeze',tradeId:'synthetic-event-plan',contract:p.contract,plan:p.plan,activityReference:null};
+  const preview=service.preview(command);service.save({command,expectedHeadSha256:preview.headSha256});
+  const state=await createWorkbenchData({workspaceRoot:root,now:()=>at}).state(),trade=state.manual.data.trades[0];assert.equal(paperFingerprint(trade.plan),p.version);assert.equal(trade.openContracts,0);
+  assert.equal(state.eventEntryPlans.data[0].eligible,false);assert(state.eventEntryPlans.data[0].blockers.includes('EVENT_CALENDAR_UNAVAILABLE'));
+  state.guidance={data:view(i)};state.calendar={data:{groups:[{dateOnlyEntries:[],scheduledTimeEntries:[{...i.guidance.events[0],sourceKey:'synthetic-event'}]}],sources:{bls:{lastKnownReceivedAt:p.calendar[0].receivedAt}}}};
+  const plans=eventEntryPlanViews(state);assert.equal(plans[0].eligible,true);
+  const result=compareSavedEventPlan(state,plans[0].planKey,plans[0].planVersion);assert.equal(result.current.rows[0].disposition,'CONDITIONAL_RESEARCH');assert.equal(result.current.eventEntry.planVersion,p.version);
+  const changed={...command,requestId:'overwrite-plan',plan:{...command.plan,stopPremiumUsd:'0.01'}};assert.throws(()=>service.preview(changed),/TRADE_ID_OR_BOUND/);
+}));
+await test('saved-plan service, page and API preserve missing reasons and reject caller-made authority',async()=>temp(async root=>{
+  const service=createWorkbenchData({workspaceRoot:root,now:()=>at});service.initialize();
+  const t=preEventInput().guidance.eventPlan.plan.invalidation,draft={type:'SAVE_PLAN_DRAFT',requestId:'synthetic-draft',tradeId:'synthetic-event-plan',draft:{fields:{...registerDefaults(),tradeId:'synthetic-event-plan'},thesis:t}};
+  const preview=service.preview(draft);service.save({command:draft,expectedHeadSha256:preview.headSha256});
+  const app=await startOptionsWorkbench({workspaceRoot:root,port:0,now:()=>at});try{
+    const state=await(await fetch(app.url+'/api/state')).json(),p=state.eventEntryPlans.data[0];assert.equal(p.researchApproach,'PRE_EVENT');
+    const body={action:'PREVIEW_PLAN',planKey:p.planKey,planVersion:p.planVersion},headers={Origin:app.url,'Content-Type':'application/json','X-Alpha-Session':state.session};
+    const response=await fetch(app.url+'/api/candidate-checks',{method:'POST',headers,body:JSON.stringify(body)});assert.equal(response.status,200);const result=await response.json();assert.deepEqual(result.current.eventEntry.blockers,p.blockers);
+    const html=candidateChecksPanel(state.candidateChecks,{eventCandidateReport:result},state.eventEntryPlans);for(const reason of p.blockers)assert(html.includes(reason));assert(html.includes('Pre-event anticipation'));
+    const pending=candidateChecksPanel(state.candidateChecks,{eventCandidatePending:true},state.eventEntryPlans);assert(pending.includes('" disabled>Check saved plan:'));assert(pending.includes('Checking saved plan against local evidence'));
+    assert.equal((await fetch(app.url+'/api/candidate-checks',{method:'POST',headers,body:JSON.stringify({...body,eligible:true})})).status,409);
+    assert.equal((await fetch(app.url+'/api/candidate-checks',{method:'POST',headers,body:JSON.stringify({...body,planVersion:'sha256:'+'0'.repeat(64)})})).status,409);
+    const after=await createWorkbenchData({workspaceRoot:root,now:()=>at}).state();assert.equal(after.manual.data.trades.length,0);assert.equal(after.manual.data.planRecords.length,1);assert.equal(after.eventEntryPlans.data[0].planVersion,p.planVersion);assert(!existsSync(resolve(root,'data/runtime/options-candidate-checks')));
+    const ui={thesisFields:draft.draft.fields,thesisDraft:draft.draft.thesis};const form=thesisPlannerPanel(after,ui);assert(form.includes('Event approach'));assert(form.includes('No automatic opening monitoring'));assert(form.includes('name="entry.gapRiskAccepted" checked'));
+    updateThesisDraft(ui,'entry.gapRiskAccepted',false);assert.equal(ui.thesisDraft.eventEntry.gapRiskAccepted,false);
+  }finally{await app.close();}
+}));
 console.log(passed+'/'+passed+' tests passed.');

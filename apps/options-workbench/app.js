@@ -58,7 +58,7 @@ function fail(error,target){const el=target&&$(target);if(el)el.textContent=erro
 async function reload(board=state?.selectedBoardId??null){
   if(loading)return;loading=true;$('#reload').disabled=true;$('#connection').textContent='Checking saved evidence…';
   try{
-    state=await request('/api/state'+(board?'?board='+encodeURIComponent(board):''));
+    state=await request('/api/state'+(board?'?board='+encodeURIComponent(board):'')); ui.eventCandidateReport=null;
     ui.positionCostPreviews={};
     if(ui.costDeskResult&&!costRequestMatches({scenario:ui.costDeskResult.original.scenario,feeBasis:ui.costDeskResult.feeBasis},costRequest())){clearCosts();ui.plannerResult=null;}
     if(ui.capitalPolicyPreview&&!dirty.has('guidance')&&!capitalPolicyMatches(ui.capitalPolicyPreview.settings,state.guidance?.data?.current.settings))clearPolicyPreview();
@@ -180,7 +180,7 @@ document.addEventListener('change',event=>{void(async()=>{
   const el=event.target;
   if(el.id==='source-event'){ui.sourceEvent=el.value;ui.sourceMaterialIds=[];ui.sourcePackageId=null;ui.sourceDraft=null;ui.sourcePreview=null;ui.sourceBinding='';ui.sourceFact='';dirty.delete('source-comparison');render();return;}
   if(el.closest('form')?.id==='source-comparison-form'){updateDraft(el);if(el.name==='draftPath')render();return;}
-  if(el.closest('form')){updateDraft(el);if(el.type==='checkbox'||['action','tradeId','fillId'].includes(el.name)||(el.closest('form').id==='macro-note-form'&&el.name==='phase'))render();return;}
+  if(el.closest('form')){updateDraft(el);if(el.type==='checkbox'||['action','tradeId','fillId','entry.phase'].includes(el.name)||(el.closest('form').id==='macro-note-form'&&el.name==='phase'))render();return;}
   if(el.id==='board-select'){ui.chain.page=1;await reload(el.value);return;}
   if(el.id==='cost-fee-basis'){ui.costFeeBasis=el.value;clearCosts();return;}
   if(['candidate-check-asset','candidate-check-budget'].includes(el.id)){ui.candidateCheckFilter={...ui.candidateCheckFilter,[el.id==='candidate-check-asset'?'asset':'budget']:el.value};render();return;}
@@ -395,7 +395,16 @@ document.addEventListener('click',event=>{void(async()=>{
     ui.macroNoteRequestId=null;ui.macroNotePreview=null;ui.macroNoteSaved=null;dirty.add('macro-note');render();
     const form=$('#macro-note-form');form.closest('details').open=true;form.elements.personalNote.focus();return;
   }
-  if(el.dataset.candidateCheck){const r=state.candidateChecks?.data?.current,row=r?.rows.find(x=>x.contract.id===el.dataset.candidateCheck);if(row)showDetail('Candidate checks',candidateCheckDetail(row,r));return;}
+  if(el.dataset.candidateCheck){const r=ui.eventCandidateReport?.current??state.candidateChecks?.data?.current,row=r?.rows.find(x=>x.contract.id===el.dataset.candidateCheck);if(row)showDetail('Candidate checks',candidateCheckDetail(row,r));return;}
+  if(el.dataset.eventPlan){
+    if(ui.eventCandidatePending)return;
+    const plan=(state.eventEntryPlans?.data??[]).find(p=>p.planKey===el.dataset.eventPlan);
+    if(!plan)throw Error('Saved plan version unavailable. Reload saved data.');
+    const sourceState=state,sourceRoute=route();ui.eventCandidatePending=true;ui.eventCandidateReport=null;render();
+    try{const result=await request('/api/candidate-checks',{action:'PREVIEW_PLAN',planKey:plan.planKey,planVersion:plan.planVersion});if(state===sourceState&&route()===sourceRoute){ui.eventCandidateReport=result;render();}}finally{ui.eventCandidatePending=false;render();}
+    return;
+  }
+  if(el.id==='clear-event-plan'){ui.eventCandidateReport=null;render();return;}
   if(el.id==='save-candidate-checks'){if(saving)return;if(dirty.has('guidance'))throw Error('Save or discard the planning-assumption draft first.');saving=true;el.disabled=true;try{const r=await request('/api/candidate-checks',{});await reload();toast('Check snapshot saved and verified at '+timestamp(r.assessedAt)+'. No trade was created.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.id==='reset-event-research'){ui.eventDraft=null;ui.eventChoices=null;dirty.delete('event-research');render();return;}
   if(el.dataset.eventSave){if(saving)return;saving=true;el.disabled=true;try{await request('/api/event-research',{action:'SAVE_REPORT',id:el.dataset.eventSave});toast('Independent research snapshot saved and verified.');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}

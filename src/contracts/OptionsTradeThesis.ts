@@ -17,6 +17,21 @@ export interface TradeThesis {
   decisionId: string; tradeDate: string; realizationStartAt: string; realizationEndAt: string;
   nextCheckAt: string; holdThroughEvent: 'YES' | 'NO' | 'NOT_APPLICABLE' | '';
   manualFallback: string; conditions: ThesisCondition[];
+  /** Optional entry-only confirmation. Absent on historical plans; never inferred as permission. */
+  eventEntry?: EventEntryConfirmation;
+}
+export interface EventEntryConfirmation {
+  phase: '' | 'PRE_EVENT' | 'POST_EVENT'; conditionId: string;
+  calendarVerifiedAt: string; calendarSource: string;
+  expectationStatus: '' | 'AVAILABLE' | 'UNAVAILABLE'; expectationBasis: string;
+  differenceBasis: string; supportingScenario: string; neutralScenario: string;
+  reverseScenario: string; counterexample: string; reviewer: string;
+  gapRiskAccepted: boolean; closedMarketRiskAccepted: boolean;
+}
+export interface EventEntryContext {
+  key: string; version: string; kind: 'DRAFT' | 'FROZEN'; symbol: string;
+  plan: ThesisPlan; contract: ManualOptionIdentity | null; registeredAt: string; openedAt: string | null;
+  calendar: {key: string; title: string; source: string; scheduledAt: string | null; receivedAt: string | null}[];
 }
 export interface ThesisOwnerEvidence {
   conditionId: string; source: string; sourceAt: string; receivedAt: string;

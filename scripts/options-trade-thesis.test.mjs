@@ -6,7 +6,7 @@ import {assessTradeThesis,thesisPlanIssues,validatePositionReview} from '../src/
 import {assessPositionWatch} from '../src/engines/options-manual-ledger/OptionsPositionWatch.ts';
 import {reconcileManualLedger,validateManualLedgerCommand} from '../src/engines/options-manual-ledger/OptionsManualLedger.ts';
 import {watchClock as at,watchCommands,watchFrame,watchInput,watchId,seedPositionWatch} from './lib/options-position-watch-fixtures.mjs';
-import {conditionDefaults,thesisDefaults,thesisPlannerPanel,thesisWatchDetails,thesisPlanCommand,updateThesisDraft,thesisReviewRequest} from '../apps/options-workbench/trade-thesis.js';
+import {conditionDefaults,thesisDefaults,eventEntryDefaults,thesisPlannerPanel,thesisWatchDetails,thesisPlanCommand,updateThesisDraft,thesisReviewRequest} from '../apps/options-workbench/trade-thesis.js';
 import {registerDefaults} from '../apps/options-workbench/forms.js';
 import {tradeDetail} from '../apps/options-workbench/views.js';
 import {paperFingerprint} from '../src/engines/options-paper/OptionsPaperTradingEngine.ts';
@@ -49,6 +49,16 @@ await test('wrong option contract prevents option-price invalidation but not tim
 await test('late evidence and revised values never enter an earlier evaluation',()=>{const s=setup([eventCondition()]);assert.equal(evalSetup(s,at(0),[eventEvidence({savedAt:at(1)})]).checks[0].status,'UNKNOWN');assert.equal(evalSetup(s,at(0),[eventEvidence({releaseVersion:'REVISED'})]).checks[0].status,'UNKNOWN');assert.equal(evalSetup(s,at(0),[eventEvidence({unit:'BPS'})]).checks[0].status,'UNKNOWN');});
 await test('manual prose requires sourced explicit confirmation, never machine interpretation',()=>{const c={...conditionDefaults('OWNER_CONFIRMED','owner'),basis:'Policy premise',invalidation:'Official policy rescinded',source:'Official announcement',checkAt:at(0),missingAction:'Owner verify original notice'},s=setup([c]);assert.equal(evalSetup(s).thesisStatus,'UNKNOWN');const e=eventEvidence({conditionId:'owner',value:'',judgment:'WARNING'});assert.equal(evalSetup(s,at(0),[e]).thesisStatus,'WARNING');e.judgment='INVALIDATED';assert.equal(evalSetup(s,at(0),[e]).action,'EXIT_CONDITION_TRIGGERED');});
 await test('saved triggers survive rebound and missing evidence without fabricating a current price',()=>{const s=setup();s.market.price=null;const r=evalSetup(s,at(0),[],['THESIS_INVALIDATED:price']);assert.equal(r.action,'EXIT_CONDITION_TRIGGERED');assert.equal(r.checks[0].status,'UNKNOWN');});
+await test('entry mode metadata never changes original stop target time or factual exit calculations',()=>{
+  const stop=setup();stop.watch.attentionReasons=['STOP_REFERENCE_REACHED'];
+  const target=setup();target.watch.attentionReasons=['TARGET_REFERENCE_REACHED'];
+  const time=setup(undefined,at(3600),null);time.market.price=null;
+  const fact=setup([eventCondition()]);
+  for(const [s,clock,evidence] of [[stop,at(0),[]],[target,at(0),[]],[time,at(3600),[]],[fact,at(0),[eventEvidence()]]]){
+    const original=evalSetup(s,clock,evidence);delete original.planFingerprint;
+    for(const phase of ['PRE_EVENT','POST_EVENT']){const changed=structuredClone(s);changed.context.plan.invalidation.eventEntry={...eventEntryDefaults(),phase};const result=evalSetup(changed,clock,evidence);delete result.planFingerprint;assert.deepEqual(result,original);assert.equal(result.action,'EXIT_CONDITION_TRIGGERED');}
+  }
+});
 await test('retrospective plan cannot claim pre-entry invalidation validation',()=>{const s=setup();s.context.registeredAt=at(-40);s.market.price.price='380';const r=evalSetup(s);assert.equal(r.thesisStatus,'UNKNOWN');assert(!r.triggered.includes('THESIS_INVALIDATED:price'));});
 await test('review preserves copied calculation and rejects tampering',()=>{const s=setup(),result=evalSetup(s),r={version:'OPTIONS_POSITION_REVIEW_V1',context:s.context,watch:s.watch,assessedAt:at(0),evidence:[],market:s.market,priorTriggers:[],result,note:'Synthetic',reportedAction:'NO_ACTION_REPORTED',correctionOf:'',submissionFingerprint:paperFingerprint({})};validatePositionReview(r,at(1));r.result.action='EXIT_CONDITION_TRIGGERED';assert.throws(()=>validatePositionReview(r,at(1)),/RECOMPUTATION/);});
 await test('conflicting release confirmations cannot choose the favorable value',()=>{const s=setup([eventCondition()]);const a=eventEvidence(),b=eventEvidence({value:'0.1',savedAt:at(1)});assert.equal(evalSetup(s,at(1),[a,b]).checks[0].status,'UNKNOWN');});

@@ -1,4 +1,5 @@
 import {esc,words,cents,timestamp} from './model.js';
+import {eventEntrySummary} from './trade-thesis.js';
 const money=n=>n===null||n===undefined?'Unknown':cents(n);
 const tag=status=>'<span class="tag '+(status==='PASS'?'green':status==='NOT_ENFORCED'?'gray':status==='UNKNOWN'?'blue':'amber')+'">'+esc(words(status))+'</span>';
 export function filterCandidateChecks(rows,{asset='',budget='all'}={}){
@@ -13,12 +14,16 @@ export function candidateCheckDetail(row,report){
     '<div class="notice"><div><strong>Paper source qualification is not established.</strong><ul>'+report.qualification.requirements.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div></div>'+
     '<details><summary>Original blockers, economics and source references</summary><pre>'+esc(JSON.stringify({contract:q,assessedAt:report.assessedAt,capturedAt:report.capturedAt,originalBlockers:row.originalBlockers,economics:row.economics,plan:row.plan,sourcePaths:report.sourcePaths,originalGuidanceFingerprint:report.originalGuidanceFingerprint},null,2))+'</pre></details>';
 }
-export function candidateChecksPanel(component,ui={}){
-  const v=component?.data,r=v?.current;
+export function candidateChecksPanel(component,ui={},plans=null){
+  const v=ui.eventCandidateReport??component?.data,r=v?.current;
   if(!r)return '<section class="card section-space"><h2>Candidate checks</h2><p>Unavailable: '+esc(component?.error??'No saved inputs')+'. Other source evidence remains separate.</p></section>';
   const removed=r.settings.tradeBudget?.version==='OWNER_ALLOCATION_ONLY_V2',cap=n=>removed&&n===null?'Not capped':money(n);
   const filter=ui.candidateCheckFilter??{},rows=filterCandidateChecks(r.rows,filter),c=r.counts;
-  return '<section class="card section-space candidate-checks-panel"><div class="card-head"><div><p class="eyebrow">FROM QUOTES TO A REVIEWABLE PLAN</p><h2>Candidate checks</h2><p>Check each sampled contract against separate budget, risk and evidence requirements.</p></div><button class="button secondary" id="save-candidate-checks"'+(ui.guidanceSettingsDraft?' disabled':'')+'>Save current check snapshot</button></div>'+
+  return '<section class="card section-space candidate-checks-panel"><div class="card-head"><div><p class="eyebrow">FROM QUOTES TO A REVIEWABLE PLAN</p><h2>Candidate checks</h2><p>Check each sampled contract against separate budget, risk and evidence requirements.</p></div><button class="button secondary" id="save-candidate-checks"'+(ui.guidanceSettingsDraft||ui.eventCandidateReport?' disabled':'')+'>Save current check snapshot</button></div>'+
+    '<p>Ordinary guidance uses conservative major-event waiting. An explicit saved plan can be checked separately below; selecting it creates no market request or trade.</p>'+
+    (plans?.data??[]).map(p=>'<button type="button" class="button secondary" data-event-plan="'+esc(p.planKey)+'"'+(ui.eventCandidatePending?' disabled':'')+'>Check saved plan: '+esc(p.tradeId)+' · '+esc(p.kind)+'</button>').join('')+
+    (ui.eventCandidatePending?'<p role="status">Checking saved plan against local evidence… No market request.</p>':'')+
+    (r.eventEntry?eventEntrySummary(r.eventEntry)+'<button id="clear-event-plan" class="link-button">Return to ordinary guidance checks</button><p>Read-only selected-plan comparison. Original daily guidance and saved reports remain separate.</p>':'')+
     '<p><strong>'+c.premiumWithinBudget+(r.settings.tradeBudget?' within the premium range':' premium-affordable')+'</strong> · '+c.premiumOverBudget+' over the premium budget'+(r.settings.tradeBudget?' · '+c.premiumBelowBudget+' below the range':'')+' · '+c.premiumUnknown+' unknown · '+c.conditionalResearch+' conditional research / '+c.sampled+' sampled. Affordability excludes costs and does not mean the risk checks passed.</p>'+
     (r.settings.tradeBudget?'<p><strong>Per-trade range: '+money(r.settings.tradeBudget.minCents)+'–'+money(r.settings.tradeBudget.maxCents)+'.</strong> The capital check includes declared fees. '+(removed?'Legacy loss caps are removed; full-premium exposure remains visible.':'Planned loss stays capped at 0.5% of equity and full-premium stress at $25;')+' The minimum is a selection preference, never an instruction to spend more.</p>':'')+
     '<p class="hint">'+esc(r.scope)+' Assessed '+esc(timestamp(r.assessedAt))+'.</p>'+

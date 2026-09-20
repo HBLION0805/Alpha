@@ -16,8 +16,13 @@ function strings(v: Record<string, any>, max = 1500) {
   for (const x of Object.values(v)) if (typeof x !== 'string' || x.length > max || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(x)) fail('TEXT');
 }
 export function validateTradeThesis(t: TradeThesis): TradeThesis {
-  exact(t,'version,template,decisionId,tradeDate,realizationStartAt,realizationEndAt,nextCheckAt,holdThroughEvent,manualFallback,conditions');
-  const {conditions,...rest}=t; strings(rest);
+  exact(t,'version,template,decisionId,tradeDate,realizationStartAt,realizationEndAt,nextCheckAt,holdThroughEvent,manualFallback,conditions'+(Object.hasOwn(t,'eventEntry')?',eventEntry':''));
+  const {conditions,eventEntry,...rest}=t; strings(rest);
+  if(Object.hasOwn(t,'eventEntry')){
+    exact(eventEntry,'phase,conditionId,calendarVerifiedAt,calendarSource,expectationStatus,expectationBasis,differenceBasis,supportingScenario,neutralScenario,reverseScenario,counterexample,reviewer,gapRiskAccepted,closedMarketRiskAccepted');
+    const {gapRiskAccepted,closedMarketRiskAccepted,...text}=eventEntry!;strings(text);
+    if(!['','PRE_EVENT','POST_EVENT'].includes(eventEntry!.phase)||!['','AVAILABLE','UNAVAILABLE'].includes(eventEntry!.expectationStatus)||typeof gapRiskAccepted!=='boolean'||typeof closedMarketRiskAccepted!=='boolean')fail('EVENT_ENTRY');
+  }
   if(t.version!=='OPTIONS_TRADE_THESIS_V1'||!['CUSTOM','CLOSE_ENTRY_OPEN_REVIEW'].includes(t.template)||!['YES','NO','NOT_APPLICABLE',''].includes(t.holdThroughEvent))fail('VERSION');
   if(!Array.isArray(conditions)||conditions.length>8||new Set(conditions.map(c=>c.id)).size!==conditions.length)fail('CONDITIONS');
   for(const c of conditions){

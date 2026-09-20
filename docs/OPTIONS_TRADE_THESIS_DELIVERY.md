@@ -79,3 +79,67 @@ ledger commands, saved-source projection and two existing-page sections. There i
 no new database, scheduler, API/model service or pricing engine. Incremental market
 and model/API collection calls are zero; no paid service was added. Dollar costs
 remain unverified. Actual live opening coverage remains unverified.
+
+## September 20: plan-specific major-event waiting
+
+The original `MAJOR_EVENT_WAIT` blocks candidates from 24 hours before a timed
+major release through the first 30 minutes afterwards. Date-only entries retain
+their existing conservative behavior. It protects against release uncertainty,
+repricing and gaps, but previously had no plan-specific event-exposure exception.
+It did not prevent saving a research draft; it prevented that draft's eventual
+pre-event candidate comparison from proceeding even after explicit preparation.
+
+**Trade planner / Trade thesis & invalidation / Event approach** now offers
+Pre-event anticipation and Post-event confirmation. The implementation reuses
+the existing thesis, event condition, `holdThroughEvent`, realization/check times,
+stop, target, latest exit, manual fallback, ledger freeze and plan fingerprint.
+An optional entry-confirmation attachment records the remaining event-reference,
+expectation-or-explicit-absence, differing-basis, scenario and risk acknowledgments.
+The existing paper `PRE_EVENT` phase exits before release and is not repurposed
+as hold-through permission. There is no second exit engine or new overall state.
+
+No mode and POST_EVENT keep the original wait. Drafts stay saveable, with specific
+missing-condition explanations rather than a claim that all pre-event trading
+is forbidden. A legacy draft's existing hold/date combination can describe its
+research intent on screen; it never grants permission or writes a migration.
+`PRE_EVENT_MODE_NOT_CONFIRMED` means the structured formal entry confirmation is
+absent, not that an already recorded research-path preference was revoked.
+
+Only a complete, explicitly frozen pre-entry and pre-release plan can remove the
+selected event's wait for its exact contract. The current saved calendar must
+still identify that release at the same time with usable receipt clocks; changed,
+unknown or unavailable timing fails closed. Other major events, other contracts,
+quote freshness, costs, source and allocation gates remain independent. Text
+completeness does not authenticate prose, establish an edge or turn Owner evidence
+into machine-verified facts. No thresholds or risk acknowledgments are supplied.
+
+In **Daily guidance / Candidate checks**, choose **Check saved plan**. The existing
+protected local interface resolves the saved key and version itself, reads saved
+evidence and shows a separate, read-only comparison. It neither replaces ordinary
+issued guidance nor creates a trade, quote refresh or saved check snapshot.
+The eligible comparison prominently retains event exposure, accepted gap risk and
+the impossibility of stop execution while the option market is closed. All
+original independent exits remain in force. Publication fact review and tradable
+option-price review remain separate; no opening fill or monitoring is promised.
+
+The existing real research draft was read through this path without modifying it:
+PRE_EVENT research intent, DRAFT, not eligible, missing formal confirmations,
+contract/quantity/cost and complete independent exit parameters. Historical
+versions, source comparisons and the ledger head were verified unchanged. Old
+plan recovery remains compatible. No production freeze, fill or position was made.
+The existing routine and targeted-quote acceptance states remain unchanged.
+
+Verification found and corrected two local issues: a missing entry deadline was
+mislabelled as a closed window; a delayed comparison response could navigate away
+from the user's newer page. Missing deadlines now remain explicit, repeat clicks
+are disabled while checking, and changed page/data state discards late results.
+The final validation, private evidence references and browser results are in the
+`eventEntryRevision` section of [the checkpoint](status/trade-thesis.json).
+
+The active workbench restart was rejected by automatic approval review with only
+`blocked by policy`; no original process or schedule was changed. Browser/API
+acceptance therefore used a temporary instance of the existing workbench with
+public collection disabled. Loading the new backend into the original running
+instance remains a deployment step, not a completed restart. The temporary
+instance is closed after acceptance. No market, public-source or model API calls
+were added or initiated for this change; dollar cost remains UNKNOWN.

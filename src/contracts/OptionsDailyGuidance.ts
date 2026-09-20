@@ -1,4 +1,5 @@
 import type { OptionsPlanningFeasibilityInput, OptionsTradeBudget } from "./OptionsTradeBudget";
+import type { EventEntryContext } from './OptionsTradeThesis';
 export type GuidanceSymbol = "GLD" | "IBIT";
 export interface GuidanceQuote {
   id: string; symbol: GuidanceSymbol; expiry: string; type: "call" | "put";
@@ -30,6 +31,8 @@ export interface GuidanceInput {
   headlines: { title: string; url: string; publishedAt: string | null; receivedAt: string }[];
   context: { treasury: unknown; btc: unknown };
   settings: GuidanceSettings;
+  /** Explicit local plan-scoped comparison only; ordinary issued inputs remain unchanged. */
+  eventPlan?: EventEntryContext;
   /** Optional for the first saved pre-analysis smoke; present in current issued views. */
   analyst?: { assessedAt: string; assets: { symbol: GuidanceSymbol; bias: string; summary: string; sources: { url: string; retrievedAt: string }[] }[] } | null;
 }
