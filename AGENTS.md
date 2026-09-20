@@ -1,5 +1,21 @@
 # Alpha Development Standard v1.0
 
+## Event source comparison and original review — September 20, 2026
+
+Read docs/OPTIONS_SOURCE_COMPARISON_DELIVERY.md and docs/status/source-comparison.json.
+News & calendar can prepare saved selections for the existing equipped Host,
+receive cited drafts, preview/save comparisons and link exact original plan
+versions/conditions. Existing planner/journal back-links and explicit original
+Owner confirmation hand off eligible structured facts to the unchanged evaluator.
+Headlines, summaries, conflicting or unreviewed claims cannot qualify numerical
+facts. Lineage/meaning remain attributed, not machine authentication. Preserve
+clocks, immutable plans, independent exits and additive comparison revisions.
+No new model service, source read, market cadence or position was created. The
+historical title-only comparison, isolated local acceptance, first real targeted
+quote use and routine natural acceptance are distinct. Reuse existing two-call /
+six-contract targeted quotes only with the original explicit Owner scope and
+eligible session. This stage authorizes scoped development-branch commit/push.
+
 ## Owner-triggered held-position quotes — September 19, 2026
 
 Read docs/OPTIONS_POSITION_QUOTES_DELIVERY.md and docs/status/position-quotes.json.

@@ -1,0 +1,88 @@
+{
+  "version": "OPTIONS_SOURCE_COMPARISON_DELIVERY_V1",
+  "updatedAt": "2026-09-20T04:11:41.200Z",
+  "baseline": "7c327a82ef2bb869299dac2f09b43e58843ca2e9",
+  "status": "IMPLEMENTED_AND_LOCALLY_VERIFIED",
+  "historicalComparison": "SAVED_HEADLINE_ONLY_DISPLAY_VERIFIED",
+  "firstRealTargetedQuote": "NOT_VERIFIED",
+  "realUseMissingConditions": [
+    "No existing real targeted receipt",
+    "No supported open position in local reported ledger; brokerage positions not read",
+    "Weekend outside regular session",
+    "No explicit eligible Owner-selected review scope"
+  ],
+  "routine1550Acceptance": "PENDING_NATURAL_RUN",
+  "routineAcceptanceReplaced": false,
+  "entry": "News & calendar / Event details / Source comparison; original planner and Position exit checks back-references",
+  "fullValidation": {
+    "command": "npm run alpha:validate",
+    "status": "PASSED",
+    "componentCount": 182,
+    "testsExecuted": 4845,
+    "passed": 4845,
+    "failed": 0,
+    "typecheck": "PASSED",
+    "log": "data/runtime/options-workbench-development/source-comparison-final-validation-2.log",
+    "sha256": "324b249938f841fc6f6ae115abc649d85a98c96b9f9e936acdd7d72f2923f732",
+    "codeManifest": "data/runtime/options-workbench-development/source-comparison-validated-code.json"
+  },
+  "focusedValidation": {
+    "command": "node --import tsx scripts/options-source-comparison.test.mjs",
+    "passed": 19,
+    "failed": 0
+  },
+  "resolvedFailures": [
+    "Client API route allowlist omission found in browser; route and regression added",
+    "First bundle failed Markdown scanner on bracket-call syntax in prior quote-delivery code example; equivalent example corrected",
+    "Original-plan modal handoff now closes before journal navigation"
+  ],
+  "browserAcceptance": {
+    "status": "PASSED_ISOLATED_SYNTHETIC",
+    "receipt": "data/runtime/options-workbench-development/source-comparison-browser-acceptance.json",
+    "sha256": "e52fbff3e79c3996637f697d0440bf157263cd9c0ab3f0f032ae405947d9c057",
+    "processRestartRecovery": "PASSED",
+    "historicalProductionCard": "DISPLAY_VERIFIED"
+  },
+  "historical": {
+    "eventKey": "FOMC:2026-09-15/2026-09-16/MEETING_DATE_RANGE",
+    "id": "fomc-20260916-historical-comparison",
+    "savedAt": "2026-09-20T04:00:09.893Z",
+    "sourceCount": 2,
+    "coverage": "HEADLINE_ONLY",
+    "semanticSupport": "UNVERIFIED",
+    "planBindings": 0,
+    "fingerprint": "sha256:2b4a83efebd99d63654d5e75976dcaffd87e9c85c98359286f8cf690ba07c93e",
+    "receipt": "data/runtime/options-workbench-development/source-historical-acceptance.json"
+  },
+  "actualUsage": {
+    "marketCalls": 0,
+    "etfQuoteRows": 0,
+    "optionQuoteRows": 0,
+    "productionComparisonWrites": 3,
+    "productionLedgerWrites": 0,
+    "productionTargetedReviewWrites": 0,
+    "historicalHostAnalysisGenerations": 1,
+    "applicationExternalModelApiCalls": 0,
+    "hostModelIdentity": "UNKNOWN_NOT_EXPOSED_IN_RECEIPT",
+    "usdCost": "UNKNOWN"
+  },
+  "injectedBrowserRound": {
+    "marketToolCalls": 2,
+    "etfRows": 1,
+    "optionRows": 1,
+    "existingLocalStoreWrites": 6,
+    "realMarketObservation": false
+  },
+  "unchanged": {
+    "targetedCallLimit": 2,
+    "targetedContractLimit": 6,
+    "comparisonRecordLimit": 500,
+    "comparisonRecordByteLimit": 16384,
+    "hostV4": true,
+    "schedule": true,
+    "frozenRules": true,
+    "allocation": true,
+    "originalPlans": true
+  },
+  "nextStep": "When the Owner explicitly selects a genuine supported reported open position with verified identity, use the existing targeted path during an eligible regular session; retain actual results separately."
+}

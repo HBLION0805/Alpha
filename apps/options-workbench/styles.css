@@ -33,3 +33,7 @@
 #etf-setup-desk .etf-source-audit td{white-space:nowrap;overflow-wrap:normal}
 #etf-setup-desk .etf-observation-chart{margin:18px 0;color:var(--muted)}#etf-setup-desk .etf-observation-chart svg{display:block;width:100%;height:auto;min-width:0}#etf-setup-desk .etf-observation-chart figcaption{font-size:12px;line-height:1.6;margin-top:8px}#etf-setup-desk .etf-observation details{margin-top:12px}
 @media(max-width:650px){#etf-setup-desk .etf-observation-chart svg text{font-size:18px}}
+.source-material-list{max-height:320px;overflow:auto;border:1px solid var(--border);padding:12px;margin-bottom:12px}
+.source-material-list small{display:block;color:var(--muted)}
+#source-comparisons p,#source-comparisons li,#source-comparisons code{overflow-wrap:anywhere}
+#source-comparisons blockquote{margin:8px 0;padding-left:12px;border-left:3px solid var(--border)}

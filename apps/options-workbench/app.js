@@ -14,6 +14,7 @@ import {capitalPolicyPanel,capitalPolicyMatches,policySettingsFromFields} from '
 import {macroComparisonRequest,macroPreviewMatches,macroComparisonResult} from './macro-context.js';
 import {macroNoteDefaults,macroNoteRequest,macroCoverage,appendMacroReflection} from './macro-playbook.js';
 import {thesisDefaults,updateThesisDraft,thesisPlanCommand,thesisReviewRequest} from './trade-thesis.js';
+import {sourceRequest,sourcePreviewMatches,sourceCard} from './source-comparison.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -78,6 +79,18 @@ function chooseFill(){
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.id==='source-package-form'){ui.sourceMaterialIds=new FormData(form).getAll('materialId');ui.sourcePackageId=null;return;}
+  if(form.id==='source-import-form'){ui.sourceImport=el.value;ui.sourcePreview=null;return;}
+  if(form.id==='source-comparison-form'){
+    ui.sourceDraft??={id:'comparison-'+crypto.randomUUID(),draftPath:'',reviewedClaims:[],bindings:[],supersedes:'',note:''};
+    const d=ui.sourceDraft;
+    if(el.name==='binding')ui.sourceBinding=el.value;
+    else if(el.name==='factClaimId')ui.sourceFact=el.value;
+    else if(el.name==='reviewedClaim')d.reviewedClaims=new FormData(form).getAll('reviewedClaim');
+    else if(el.name==='draftPath'){d.draftPath=el.value;d.reviewedClaims=[];d.bindings=[];ui.sourceFact='';}
+    else if(el.name==='note')d.note=el.value;
+    ui.sourcePreview=null;dirty.add('source-comparison');const b=$('#source-save');if(b)b.disabled=true;const p=$('#source-preview');if(p)p.innerHTML='';return;
+  }
   if(form.id==='thesis-plan-form'){
     updateThesisDraft(ui,el.name,el.type==='checkbox'?el.checked:el.value);dirty.add('thesis');
     const b=form.querySelector('[value="CONFIRM"]');if(b)b.disabled=true;
@@ -86,6 +99,7 @@ function updateDraft(el){
   if(form.dataset?.thesisReview){
     const id=form.dataset.thesisReview;ui.thesisReviewDrafts??={};if(!Object.hasOwn(ui.thesisReviewDrafts,id))ui.thesisReviewDrafts[id]={};
     ui.thesisReviewDrafts[id][el.name]=el.type==='checkbox'?el.checked:el.value;
+    if(!['ownerConfirmed','note','reportedAction','correctionOf'].includes(el.name)){ui.thesisReviewDrafts[id].ownerConfirmed=false;const confirm=form.elements.ownerConfirmed;if(confirm)confirm.checked=false;}
     ui.thesisReviewIds??={};delete ui.thesisReviewIds[id];dirty.add('thesis-review');
     const p=document.querySelector(`[data-thesis-review-preview="${id}"]`);if(p)p.innerHTML='';return;
   }
@@ -164,6 +178,8 @@ document.addEventListener('input',event=>{
 });
 document.addEventListener('change',event=>{void(async()=>{
   const el=event.target;
+  if(el.id==='source-event'){ui.sourceEvent=el.value;ui.sourceMaterialIds=[];ui.sourcePackageId=null;ui.sourceDraft=null;ui.sourcePreview=null;ui.sourceBinding='';ui.sourceFact='';dirty.delete('source-comparison');render();return;}
+  if(el.closest('form')?.id==='source-comparison-form'){updateDraft(el);if(el.name==='draftPath')render();return;}
   if(el.closest('form')){updateDraft(el);if(el.type==='checkbox'||['action','tradeId','fillId'].includes(el.name)||(el.closest('form').id==='macro-note-form'&&el.name==='phase'))render();return;}
   if(el.id==='board-select'){ui.chain.page=1;await reload(el.value);return;}
   if(el.id==='cost-fee-basis'){ui.costFeeBasis=el.value;clearCosts();return;}
@@ -172,6 +188,28 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(['source-package-form','source-import-form','source-comparison-form'].includes(event.target.id)){
+    event.preventDefault();if(saving||previewing)return;const form=event.target,button=event.submitter;saving=true;button.disabled=true;
+    void(async()=>{try{
+      let body;
+      if(form.id==='source-package-form'){
+        ui.sourcePackageId??='sources-'+crypto.randomUUID();ui.sourceMaterialIds=new FormData(form).getAll('materialId');
+        body={action:'PREPARE',request:{id:ui.sourcePackageId,eventKey:ui.sourceEvent??state.sourceComparisons.data.events[0]?.key,materialIds:ui.sourceMaterialIds,asOf:state.loadedAt},previewFingerprint:null};
+      }else if(form.id==='source-import-form')body={action:'RECEIVE_DRAFT',request:JSON.parse(new FormData(form).get('hostDraft')),previewFingerprint:null};
+      else{
+        if(button.value==='SAVE'&&!sourcePreviewMatches(ui.sourcePreview,ui.sourceDraft))throw Error('Preview the unchanged comparison before saving.');
+        body={action:button.value,request:sourceRequest(ui.sourceDraft),previewFingerprint:ui.sourcePreview?.previewFingerprint??null};
+      }
+      const result=await request('/api/source-comparison',body);
+      if(body.action==='PREVIEW'){
+        if(JSON.stringify(body.request)===JSON.stringify(sourceRequest(ui.sourceDraft)))ui.sourcePreview=result;render();
+      }else{
+        if(body.action==='RECEIVE_DRAFT'){ui.sourceDraft={id:'comparison-'+crypto.randomUUID(),draftPath:result.path,reviewedClaims:[],bindings:[],supersedes:'',note:''};ui.sourceImport='';ui.sourcePreview=null;}
+        if(body.action==='SAVE'){ui.sourceDraft=null;ui.sourcePreview=null;dirty.delete('source-comparison');}
+        await reload();toast(body.action==='PREPARE'?'Evidence package saved. Host analysis has not run.':body.action==='RECEIVE_DRAFT'?'Host draft received; review before confirmation.':'Comparison saved. Original plan and positions are unchanged.');
+      }
+    }catch(e){fail(e,'#source-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='position-quotes-form'){
     event.preventDefault();if(saving)return;const form=event.target,button=event.submitter,tradeIds=new FormData(form).getAll('tradeIds');
     if(!tradeIds.length){$('#position-quotes-error').textContent='Select at least one reported open position.';return;}
@@ -280,6 +318,31 @@ document.addEventListener('submit',event=>{
 });
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
+  if(el.id==='add-source-binding'){
+    if(!ui.sourceDraft||!ui.sourceBinding)throw Error('Select an original plan condition first.');
+    const b={...JSON.parse(ui.sourceBinding),factClaimId:ui.sourceFact??''};
+    if(!ui.sourceDraft.bindings.some(x=>JSON.stringify(x)===JSON.stringify(b)))ui.sourceDraft.bindings.push(b);
+    ui.sourcePreview=null;dirty.add('source-comparison');render();return;
+  }
+  if(el.dataset.sourceRemove!==undefined){ui.sourceDraft.bindings.splice(Number(el.dataset.sourceRemove),1);ui.sourcePreview=null;dirty.add('source-comparison');render();return;}
+  if(el.dataset.sourceOpen||el.dataset.sourceRevise){
+    const r=state.sourceComparisons.data.records.find(r=>r.id===(el.dataset.sourceOpen??el.dataset.sourceRevise));if(!r)throw Error('Saved comparison unavailable.');ui.sourceEvent=r.event.key;
+    if(el.dataset.sourceRevise){ui.sourceDraft={...structuredClone(r.payload.request),id:'comparison-'+crypto.randomUUID(),supersedes:r.path};ui.sourcePreview=null;dirty.add('source-comparison');navigate('context');}
+    else {navigate('context');showDetail('Saved source comparison',sourceCard(r));}return;
+  }
+  if(el.dataset.sourcePlan){
+    const p=state.sourceComparisons.data.plans.find(p=>p.key===el.dataset.sourcePlan);if(!p)throw Error('Original plan unavailable.');
+    showDetail('Original '+words(p.kind)+' plan',detail('Saved plan version and conditions',p)+'<p><button class="link-button" data-source-journal="true">Open original position checks and latest saved targeted quote →</button></p>');return;
+  }
+  if(el.dataset.sourceJournal){$('#detail-dialog').close();navigate('journal');return;}
+  if(el.dataset.sourceEvidence){
+    const r=state.sourceComparisons.data.records.find(r=>r.id===el.dataset.sourceEvidence),b=r?.payload.assessment.bindings.find(b=>b.tradeId===el.dataset.sourceTrade&&b.conditionId===el.dataset.sourceBinding&&b.evidence);
+    if(!b)throw Error('Eligible saved evidence unavailable.');
+    ui.thesisReviewDrafts??={};ui.thesisReviewIds??={};delete ui.thesisReviewIds[b.tradeId];
+    ui.thesisReviewDrafts[b.tradeId]={...ui.thesisReviewDrafts[b.tradeId],...b.evidence,ownerConfirmed:false};dirty.add('thesis-review');
+    if($('#detail-dialog').open)$('#detail-dialog').close();navigate('journal');
+    toast('Evidence copied, not confirmed. Open Save evaluation / Owner confirmation and verify the source. No quote request or exit has occurred.');return;
+  }
   if(el.id==='observe-trend-study'){if(saving)return;saving=true;el.disabled=true;try{const r=await request('/api/etf-setup',{action:'OBSERVE_TREND',request:null});if(r.results.some(x=>x.error))throw Error('Some study records could not be recovered. Inspect saved evidence before continuing.');await reload();toast('Available evidence checked; no source request or order.');}catch(e){fail(e,'#trend-study-error');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.dataset.etfSnapshot){if(saving)return;saving=true;el.disabled=true;try{await request('/api/etf-setup',{action:'SNAPSHOT',request:el.dataset.etfSnapshot});await reload();toast('Copied research assessment saved and recovered.');}catch(e){fail(e,'#etf-setup-error');}finally{saving=false;if(el.isConnected)el.disabled=false;}return;}
   if(el.dataset.close){if(saving&&el.dataset.close==='preview-dialog')return;$('#'+el.dataset.close).close();return;}

@@ -1,5 +1,6 @@
 import {esc,words,cents,dollars,timestamp} from './model.js';
 import {thesisWatchDetails,thesisReviewForm} from './trade-thesis.js';
+import {sourceBackrefs} from './source-comparison.js';
 const own=(values,key)=>values&&Object.hasOwn(values,key)?values[key]:undefined;
 
 export function positionWatchRequest(tradeId,value){
@@ -22,7 +23,7 @@ export function positionWatchResult(row,at){
     <p class="hint">Whole-trade estimates include the recorded partial exits and known entry/exit fees once. Unknown fees stay unknown. Remaining exit cost includes fees and adverse execution allowance; it is a preview assumption. Bid value is not guaranteed proceeds.</p>
     <details data-disclosure-key="position-source-${esc(row.tradeId)}"><summary>Saved quote identity and source</summary><p>${esc(row.quote?.id??'No unambiguous contract match')}</p><p>${esc(row.source?.path??'No capture')}</p><p>Capture ${esc(timestamp(row.source?.capturedAt))} · SHA-256 ${esc(row.source?.sha256??'Unknown')}</p><p>A price match does not verify deliverables or orders. Historical outcomes and ledger values are unchanged.</p></details>`;
 }
-export function positionWatchPanel(component,ui={},comparisons=[]){
+export function positionWatchPanel(component,ui={},comparisons=[],sourceComparisons=null){
   const d=component?.data;
   if(!d)return '<section class="card section-space"><h2>Position exit checks</h2><p>Checks unavailable. Recorded positions remain open; inspect the saved ledger and quote sources.</p></section>';
   return `<section class="card section-space"><h2>Position exit checks</h2><p>${esc(d.limitation)}</p>${d.sourceRecovery==='UNAVAILABLE'?'<p class="error-text">Quote recovery is unavailable. Time and expiry checks still use the recorded plan; positions remain unresolved.</p>':''}<p>${d.openTrades} reported open trade(s). Review each position below; optional cost previews apply separately. Saved data checked ${esc(timestamp(d.assessedAt))}.</p>`+
@@ -31,7 +32,7 @@ export function positionWatchPanel(component,ui={},comparisons=[]){
       return `<article class="lesson-card"><h3>${esc(row.contract.symbol+' '+row.contract.expiry+' '+row.contract.strikeUsd+' '+row.contract.optionType)} · ${row.openContracts} open</h3><p>${esc(row.tradeId)} · ${esc(words(d.origin))} · ${esc(words(row.planTiming))}</p><p>Remaining premium exposure: ${dollars(row.remainingPremiumUsd)} · Remaining basis: ${dollars(row.remainingCostBasisUsd)} · Recorded realized net: ${dollars(row.realizedNetPnlUsd)}</p>
         <div data-position-result="${esc(row.tradeId)}">${positionWatchResult(r,preview?.assessedAt??d.assessedAt)}</div>
         <form data-position-cost="${esc(row.tradeId)}" class="form-grid"><label>Total cost to sell remaining contracts ($, assumption)<input name="exitCostUsd" inputmode="decimal" value="${esc(own(ui.positionCostDrafts,row.tradeId)??'')}"><small>Fees plus adverse execution allowance. Blank = unknown; zero is explicit. Nothing is saved.</small></label><div class="form-actions"><button type="submit" class="button secondary">Preview exit checks</button></div></form><p data-position-error="${esc(row.tradeId)}" class="error-text" role="alert"></p>
-        ${thesisReviewForm(r,own(ui.thesisReviewDrafts,row.tradeId)??{},comparisons)}</article>`;
+        ${sourceBackrefs(sourceComparisons,row.tradeId)}${thesisReviewForm(r,own(ui.thesisReviewDrafts,row.tradeId)??{},comparisons)}</article>`;
     }).join(''):'<p>No reported open positions. Quotes and paper fills do not create Owner positions. Record actual fills in the journal when they occur.</p>')+'</section>';
 }
 

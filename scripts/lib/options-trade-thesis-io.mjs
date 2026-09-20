@@ -4,6 +4,7 @@ import {verifyMacroComparison} from './options-macro-context-io.mjs';
 import {assessTradeThesis,validateThesisOwnerEvidence} from '../../src/engines/options-manual-ledger/OptionsTradeThesis.ts';
 import {paperFingerprint} from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {verifySourceHandoff} from './options-source-comparison.mjs';
 
 const fail=c=>{throw Error('MANUAL_THESIS_'+c);};
 export function savedThesisMarket(root,symbol,at){
@@ -54,7 +55,8 @@ function ownerEvidence(root,context,input,at){
   const c=context.plan.invalidation.conditions.find(c=>c.id===input.conditionId);
   if(!c||c.kind==='PRICE')fail('OWNER_CONDITION');
   const e={...input,confirmation:'OWNER_CONFIRMED',savedAt:at};
-  if(e.comparisonRef){
+  if(e.comparisonRef.startsWith('data/runtime/options-macro-comparisons/source-saved-'))verifySourceHandoff(root,context,e,at);
+  else if(e.comparisonRef){
     const r=verifyMacroComparison(root,e.comparisonRef);
     if(snapshotNs(r.assessedAt)>snapshotNs(at)||r.request.metric!==e.metric||r.request.period!==e.period||r.request.sourceUrl!==e.source||r.request.actualValue!==e.value||e.sourceAt!==r.request.releaseAt||e.receivedAt!==r.assessedAt)fail('MACRO_COMPARISON_MISMATCH');
   }

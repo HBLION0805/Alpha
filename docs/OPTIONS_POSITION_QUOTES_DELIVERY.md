@@ -80,7 +80,8 @@ const raw = await collect({
   },
   call: async (name, request) => {
     if (!Object.hasOwn(allowed, name)) throw Error('TOOL_NOT_ALLOWED');
-    const r = await allowed[name](request);
+    const invoke = allowed[name];
+    const r = await invoke(request);
     if (r.isError || !r.structuredContent?.data) throw Error('MARKET_SOURCE_FAILED');
     return r.structuredContent;
   }

@@ -3,8 +3,14 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {refreshMacroContext,verifyMacroBatch,macroContextView,previewMacroComparison,saveMacroComparison} from './lib/options-macro-context-io.mjs';
 import {parseChainSurveyJson} from '../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
+import {createWorkbenchData} from './lib/options-workbench-data.mjs';
 export async function runMacroCommand(args,{workspaceRoot=process.cwd(),now=()=>new Date().toISOString(),retrieve}={}) {
   const root=realpathSync(workspaceRoot),[mode,path]=args;
+  if(args.length===3&&mode==='--source-action'){
+    const raw=readFileSync(args[2]);if(raw.length>16384)throw Error('MACRO_INPUT_LIMIT');
+    const body=parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true}).decode(raw));
+    return createWorkbenchData({workspaceRoot:root,ledgerId:path,now}).sourceComparison(body);
+  }
   if(args.length===1&&mode==='--refresh')return refreshMacroContext({workspaceRoot:root,now,retrieve});
   if(args.length===1&&mode==='--report')return macroContextView(root,now());
   if(args.length===2&&mode==='--verify')return verifyMacroBatch(root,path);
