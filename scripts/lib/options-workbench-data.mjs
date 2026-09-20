@@ -40,6 +40,7 @@ import {dailyDecisionCards} from './options-decision-card.mjs';
 import {reportedSpreadView} from './options-spread-review.mjs';
 import {macroPlaybookView,saveMacroNote} from './options-macro-playbook-io.mjs';
 import {readWorldModel} from './macro-world-model.mjs';
+import {storylineView,previewStorylineLink,saveStorylineLink} from './options-storyline.mjs';
 import {assessMacroNote} from '../../src/engines/options-knowledge/OptionsMacroPlaybook.ts';
 import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 import {sourceCatalog,sourceComparisonView,prepareSourcePackage,receiveSourceDraft,previewSourceComparison,saveSourceComparison} from './options-source-comparison.mjs';
@@ -138,6 +139,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
     // Reference UI only, appended after all existing decision projections.
     result.macroWorldModel=await component(()=>readWorldModel(),at);
+    result.storylines=await component(()=>storylineView(root,result,at),at);
     return result;
   }
   function watchFromDesk(report,desk,at,costs={}){
@@ -248,5 +250,9 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(body.action==='SAVE')return saveSourceComparison(root,ledgerId,body.request,body.previewFingerprint,at);
     fail('MACRO_SOURCE_ACTION');
   }
-  return {sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  function storyline(body){
+    if(!body||Object.keys(body).sort().join()!=='action,previewFingerprint,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_STORYLINE_ACTION');
+    return body.action==='PREVIEW'?previewStorylineLink(root,body.request,now()):saveStorylineLink(root,body.request,body.previewFingerprint,now());
+  }
+  return {storyline,sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

@@ -1,0 +1,114 @@
+{
+  "version": "OPTIONS_STORYLINE_LINKS_DELIVERY_V1",
+  "status": "READY_FOR_REVIEWED_STORYLINE_USE",
+  "updatedAt": "2026-09-20T19:16:49.806Z",
+  "entry": "News & calendar / Macro storyline",
+  "schema": "MACRO_STORYLINE_LINK_V1",
+  "recordStatus": "MANUAL_REVIEWED_LINK",
+  "approvalScope": "Owner-approved relevance links only; no coverage/evidence/causality/market-impact/trading upgrade",
+  "realRecords": [
+    {
+      "linkId": "story-6fe21204-1f23-4343-8185-d625d17b8cad",
+      "version": 1,
+      "fingerprint": "sha256:d0c0e2a440ebc3aaf380a0b1a9a7ace9dde2bfd2f71c13fea9c211452e07dcc5",
+      "themes": [],
+      "reviewedAt": "2026-09-20T19:11:13.493Z",
+      "coverageType": "HEADLINE_ONLY",
+      "storyChangeType": "NOT_CLASSIFIED",
+      "outcome": "NO_RELEVANT_APPROVED_STORYLINE",
+      "recovery": "AVAILABLE"
+    },
+    {
+      "linkId": "story-8adc5411-8c56-49fe-a729-86f965cb8c01",
+      "version": 1,
+      "fingerprint": "sha256:eec573da5a7d754466716306c10f90c07f391988aec9eb19ec7a2173a43c8657",
+      "themes": [
+        "M04"
+      ],
+      "reviewedAt": "2026-09-20T19:10:26.913Z",
+      "coverageType": "HEADLINE_ONLY",
+      "storyChangeType": "NOT_CLASSIFIED",
+      "outcome": "LINKED_CONTEXT",
+      "recovery": "AVAILABLE"
+    },
+    {
+      "linkId": "story-b4d90fa8-1be5-4bf9-9c90-cd4e0100f02c",
+      "version": 1,
+      "fingerprint": "sha256:b035a8cf8644c7ab3cceb9aa1398bb04ae8a6b2244f1d334ae1526787298140d",
+      "themes": [
+        "M01"
+      ],
+      "reviewedAt": "2026-09-20T19:09:25.585Z",
+      "coverageType": "HEADLINE_ONLY",
+      "storyChangeType": "NOT_CLASSIFIED",
+      "outcome": "LINKED_CONTEXT",
+      "recovery": "AVAILABLE"
+    },
+    {
+      "linkId": "story-89cb509c-668b-4ac4-bc18-33be3a026298",
+      "version": 1,
+      "fingerprint": "sha256:b5b9a48a92d1d92b04b4dec26675885ae60fe2896c1696ddab549f5870f876cd",
+      "themes": [
+        "M05"
+      ],
+      "reviewedAt": "2026-09-20T19:08:15.802Z",
+      "coverageType": "HEADLINE_ONLY",
+      "storyChangeType": "NOT_CLASSIFIED",
+      "outcome": "LINKED_CONTEXT",
+      "recovery": "AVAILABLE"
+    }
+  ],
+  "writes": 4,
+  "bytes": 14565,
+  "storeBounds": {
+    "maxRecords": 500,
+    "maxRecordBytes": 16384
+  },
+  "validation": {
+    "status": "PASSED",
+    "componentCount": 185,
+    "testsExecuted": 4921,
+    "passed": 4921,
+    "failed": 0,
+    "durationMs": 129833,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'apps/options-workbench/api.js', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'apps/options-workbench/app.js', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'apps/options-workbench/focused-news.js', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'apps/options-workbench/styles.css', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'apps/options-workbench/world-model.js', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-focused-news-io.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-workbench-data.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/options-workbench.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "focusedPassed": 14,
+    "focusedFailed": 0,
+    "typeScript": "PASSED",
+    "log": "data/runtime/options-workbench-development/storyline-links-20260920/final-validation.txt",
+    "logSha256": "fd2c311d7945c735a6656ba501a64ff3e7c803742b8eb2691dd14e3cc0bdf6bd",
+    "earlierFailure": "data/runtime/options-workbench-development/storyline-links-20260920/private-boundary-failure.txt"
+  },
+  "browser": {
+    "formalPort": 4173,
+    "desktop": true,
+    "mobileWidth": 390,
+    "reloaded": true,
+    "viewportReset": true
+  },
+  "privateEvidence": "data/runtime/options-workbench-development/storyline-links-20260920/acceptance.json",
+  "stageInitiatedCalls": {
+    "public": 0,
+    "market": 0,
+    "newExternalModelAPI": 0
+  },
+  "usdCost": "UNKNOWN",
+  "tradingInfluence": false,
+  "currentStateEnabled": false,
+  "automaticClassification": false,
+  "sourceCoverageUpgraded": false,
+  "routine1550": "PENDING_NATURAL_RUN",
+  "firstRealTargetedQuote": "NOT_VERIFIED_NO_OPEN_POSITIONS_WEEKEND"
+}

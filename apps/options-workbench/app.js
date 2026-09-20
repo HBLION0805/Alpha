@@ -15,6 +15,8 @@ import {macroComparisonRequest,macroPreviewMatches,macroComparisonResult} from '
 import {macroNoteDefaults,macroNoteRequest,macroCoverage,appendMacroReflection} from './macro-playbook.js';
 import {thesisDefaults,updateThesisDraft,thesisPlanCommand,thesisReviewRequest} from './trade-thesis.js';
 import {sourceRequest,sourcePreviewMatches,sourceCard} from './source-comparison.js';
+import {newStorylineDraft,storylineNewsChoices} from './storyline.js';
+import {storylinePreviewMatches} from './storyline-model.js';
 import {prepareExpectationDraft,expectationSummary} from './market-expectations.js';
 
 const $=selector=>document.querySelector(selector);
@@ -77,9 +79,25 @@ function chooseFill(){
   const value=fill.value;Object.assign(d,fillDefaults(),{tradeId:trade.tradeId,fillId:fill.fillId,expectedRevision:String(fill.revision)},value??{});
   d.quantity=String(d.quantity);d.executionSequence=String(d.executionSequence);d.feesUsd=value?.feesUsd??'';d.externalExecutionRef=value?.externalExecutionRef??'';d.description=value?.evidence?.description??'';d.documentSha256=value?.evidence?.documentSha256??'';d.voidFill=!value;d.exitReason=value?.exitReason==='NOT_APPLICABLE'?'UNKNOWN':value?.exitReason??'UNKNOWN';
 }
+function chooseStoryline(key){
+  const n=storylineNewsChoices(state.storylines?.data).find(x=>x.key===key);
+  ui.storyNewsKey=key;ui.storyDraft=n?newStorylineDraft(n,'story-'+crypto.randomUUID()):null;ui.storyPreview=null;ui.storyFilters={};ui.storyReasonDraft=false;if(n)dirty.add('storyline');else dirty.delete('storyline');
+}
 function updateDraft(el){
   if(!el.name)return;
   const form=el.closest('form');if(!form)return;
+  if(form.id==='storyline-form'){
+    const d=ui.storyDraft;if(!d)return;
+    if(el.name==='theme')d.themes=[...form.querySelectorAll('[name=theme]:checked')].map(x=>x.value);
+    else if(el.name==='knowledge'){d.knowledgeIds=el.checked?[...new Set([...d.knowledgeIds,el.value])]:d.knowledgeIds.filter(x=>x!==el.value);}
+    else if(el.name==='reviewerName')d.reviewedBy.name=el.value;
+    else if(el.name==='reviewerKind')d.reviewedBy.kind=el.value;
+    else if(el.name==='limitations')d.limitations=el.value.split('\n').filter(x=>x.trim());
+    else if(el.name==='humanConfirmed')d.humanConfirmed=el.checked;
+    else d[el.name]=el.value;
+    if(el.name!=='humanConfirmed'){d.humanConfirmed=false;form.elements.humanConfirmed.checked=false;}
+    ui.storyPreview=null;dirty.add('storyline');const b=$('#story-save');if(b)b.disabled=true;const p=$('#story-preview');if(p)p.innerHTML='';return;
+  }
   if(form.id==='expectation-form'){
     const d=ui.expectationDraft;if(!d)return;
     if(el.name==='rows')ui.expectationRows=el.value;
@@ -183,12 +201,15 @@ function download(kind){
 
 document.addEventListener('input',event=>{
   const el=event.target;if(el.matches('input,textarea,select'))updateDraft(el);
+  if(el.id==='story-query'){ui.storyFilters={...ui.storyFilters,keyword:el.value};render();return;}
   if(el.id==='world-model-keyword'){ui.worldKeyword=el.value;render();return;}
   const filters={'chain-search':['chain','search'],'review-search':[null,'reviewSearch'],'news-search':[null,'newsSearch'],'macro-knowledge-search':[null,'macroKnowledgeSearch']};
   if(filters[el.id]){const [group,key]=filters[el.id];(group?ui[group]:ui)[key]=el.value;if(group)ui.chain.page=1;render();}
 });
 document.addEventListener('change',event=>{void(async()=>{
   const el=event.target;
+  if(el.id==='story-news'){chooseStoryline(el.value);render();return;}
+  if(['story-theme-filter','story-type-filter'].includes(el.id)){ui.storyFilters={...ui.storyFilters,[el.id==='story-theme-filter'?'theme':'knowledgeType']:el.value};render();return;}
   const worldFilters={'world-model-theme':'worldTheme','world-model-type':'worldType','world-model-evidence':'worldEvidence'};
   if(worldFilters[el.id]){ui[worldFilters[el.id]]=el.value;render();return;}
   if(el.id==='source-event'){ui.sourceEvent=el.value;ui.sourceMaterialIds=[];ui.sourcePackageId=null;ui.sourceDraft=null;ui.sourcePreview=null;ui.sourceBinding='';ui.sourceFact='';dirty.delete('source-comparison');render();return;}
@@ -201,6 +222,17 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='storyline-form'){
+    event.preventDefault();if(saving||previewing)return;const button=event.submitter,r=structuredClone(ui.storyDraft),action=button.value;
+    if(action==='SAVE'&&!storylinePreviewMatches(ui.storyPreview,r)){fail(Error('Preview the unchanged selection before saving.'),'#story-error');return;}
+    saving=true;button.disabled=true;
+    void(async()=>{try{
+      const result=await request('/api/storyline',{action,request:r,previewFingerprint:ui.storyPreview?.previewFingerprint??null});
+      if(action==='PREVIEW'){if(JSON.stringify(r)===JSON.stringify(ui.storyDraft)){ui.storyPreview=result;render();}}
+      else {if(JSON.stringify(r)===JSON.stringify(ui.storyDraft)){ui.storyDraft=null;ui.storyPreview=null;dirty.delete('storyline');}await reload();toast('Reviewed context saved. No trading output or source coverage changed.');}
+    }catch(e){fail(e,'#story-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
+
   if(event.target.id==='expectation-form'){
     event.preventDefault();if(saving||previewing)return;
     const form=event.target,button=event.submitter;saving=true;button.disabled=true;
@@ -346,6 +378,21 @@ document.addEventListener('submit',event=>{
 });
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
+  if(el.dataset.storyNewsId){
+    const n=storylineNewsChoices(state.storylines?.data).find(n=>n.newsId===el.dataset.storyNewsId&&n.newsSource===el.dataset.storyNewsSource);
+    if(!n){toast('This saved source is unavailable for linking; no replacement selected.');return;}
+    chooseStoryline(n.key);render();$('#macro-storyline')?.scrollIntoView({block:'start'});return;
+  }
+  if(el.dataset.storyRevise){
+    const r=state.storylines.data.records.find(r=>r.linkId===el.dataset.storyRevise);if(!r?.news)return;
+    ui.storyNewsKey=r.news.key;ui.storyDraft={...structuredClone(r.request),linkId:'story-'+crypto.randomUUID(),supersedes:r.path,humanConfirmed:false};ui.storyPreview=null;ui.storyFilters={};ui.storyReasonDraft=false;dirty.add('storyline');render();$('#macro-storyline')?.scrollIntoView({block:'start'});return;
+  }
+  if(el.dataset.storyRemove){ui.storyDraft.knowledgeIds=ui.storyDraft.knowledgeIds.filter(id=>id!==el.dataset.storyRemove);ui.storyDraft.humanConfirmed=false;ui.storyPreview=null;dirty.add('storyline');render();return;}
+  if(el.id==='story-draft-reason'){
+    const d=ui.storyDraft,c=state.macroWorldModel.data,labels=d.knowledgeIds.map(id=>[...c.items,...c.edges].find(i=>i.id===id)?.reviewLabel).filter(Boolean);
+    d.linkReason=labels.length?'Read this material alongside '+labels.join(', ')+'. Relevance and missing intermediate evidence require reviewer judgment.':'No relevant approved storyline selected for this material; no macro mechanism is inferred.';
+    d.humanConfirmed=false;ui.storyPreview=null;ui.storyReasonDraft=true;dirty.add('storyline');render();return;
+  }
   if(el.dataset.expectationPrepare){
     const p=state.sourceComparisons.data.plans.find(p=>p.key===el.dataset.expectationPrepare);
     const eventKey=p?.plan.invalidation.conditions.find(c=>c.kind!=='PRICE'&&c.eventKey)?.eventKey;

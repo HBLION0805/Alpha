@@ -91,7 +91,7 @@ export async function refreshFocusedNews({workspaceRoot=process.cwd(), fetchFeed
   return {path,status:sources.some(s=>s.status==='FAILED')?'PARTIAL':'SAVED',sources:sources.map(({items,...s})=>({...s,itemsReceived:items.length})),executionAllowed:false};
 }
 
-export function readFocusedSupplement(root, at) {
+export function readFocusedSupplement(root, at, includeReferences=false) {
   readinessClock(at);
   const days = children(root,BASE).filter(e=>/^\d{4}-\d\d-\d\d$/.test(e.name));
   if (days.some(e=>!e.isDirectory() || e.isSymbolicLink())) fail('UNSAFE_DIRECTORY');
@@ -100,21 +100,25 @@ export function readFocusedSupplement(root, at) {
     if (files.length > 100) fail('DAILY_LIMIT');
     return files.filter(f=>f.name.endsWith('.json')).map(f=>BASE+'/'+day.name+'/'+f.name);
   }).sort();
-  const latest = new Map(), items = new Map();
+  const latest = new Map(), items = new Map(), references = new Map();
   let recordsRead = 0;
   for (const path of paths) {
-    const {batch} = verifyFocusedNews(root,path);
+    const {batch,fingerprint} = verifyFocusedNews(root,path);
     if (batch.recordedAt > at) continue;
     recordsRead++;
     for (const s of batch.sources) {
       latest.set(s.id,s);
-      for (const item of s.items) items.set(item.sourceId+':'+item.itemId,item);
+      for (const item of s.items) {
+        const key=item.sourceId+':'+item.itemId;
+        items.set(key,item);
+        if(includeReferences)references.set(key,{item,path,recordFingerprint:fingerprint});
+      }
     }
   }
   return {headlines:[...items.values()],sources:FOCUSED_NEWS_SOURCES.map(source=>{
     const s=latest.get(source.id);
     return {...source,status:s?.status??'NOT_REFRESHED',observedAt:s?.observedAt??null,diagnostic:s?.diagnostic??null,partial:s?.partial??true};
-  }),recordsRead};
+  }),recordsRead,...(includeReferences?{references:[...references.values()]}:{})};
 }
 
 export function focusedNewsView(root, legacy, at) {

@@ -1,6 +1,7 @@
 import {explainError} from './model.js';
 const ROUTES=new Set(['/api/state','/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/snapshot-paper','/api/position-watch','/api/etf-setup','/api/macro-playbook']);
 ROUTES.add('/api/source-comparison');
+ROUTES.add('/api/storyline');
 let session=null;
 export async function request(path,body){
   const url=new URL(path,location.origin);

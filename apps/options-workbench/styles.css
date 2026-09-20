@@ -47,3 +47,9 @@
 #macro-world-model .wm-id{font-size:12px;overflow-wrap:anywhere}
 #macro-world-model .wm-source{border-top:1px solid var(--line);padding:12px 0}
 @media(max-width:650px){#macro-world-model .wm-filters{grid-template-columns:1fr}#macro-world-model details details{margin-left:4px;padding-left:8px}}
+.story-summary,.story-search{min-width:0;overflow-wrap:anywhere}
+#macro-storyline .wm-id{overflow-wrap:anywhere;word-break:break-word}
+#macro-storyline fieldset{border:1px solid var(--line,#dfe3e9);border-radius:8px;margin:12px 0;padding:12px;min-width:0}
+#macro-storyline select,#macro-storyline textarea{max-width:100%;width:100%;box-sizing:border-box}
+#macro-storyline .check-row span{min-width:0;overflow-wrap:anywhere}
+#macro-storyline .check-row small{display:block}
