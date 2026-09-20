@@ -1,0 +1,1796 @@
+{
+  "version": 2,
+  "mode": "benchmark",
+  "model": "typesafe/jev-1.13",
+  "expectedServedModel": "typesafe/jev-1.13-20260917",
+  "datasetHash": "5eff13f1b41d9f376edf3956c634a217ff64ac85d0f31a580612aaa3351102dc",
+  "clientSha256": "c1c0e08eec734834f26dee998d9b91be8a11b418f7f2d283f7b9ab04125abfc7",
+  "runnerSha256": "b585a13fb6c1aecf41fb79c259ad9d98771d5048daf056d55734c88ca50461ab",
+  "startedAt": "2026-09-20T23:16:10.958Z",
+  "shadowOnly": true,
+  "executionAllowed": false,
+  "maxCalls": 30,
+  "maxReportedCostUsd": 0.01,
+  "rows": [
+    {
+      "caseId": "C01",
+      "decisionType": "TRIAGE",
+      "goldLabel": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "TEST_ASSUMPTION",
+        "requestMade": true,
+        "confidence": 0.88,
+        "probabilities": {
+          "DOCUMENTATION_ONLY": 0,
+          "TEST_ASSUMPTION": 0.9,
+          "EXTERNAL_DEPENDENCY": 0,
+          "UNKNOWN": 0.01,
+          "CODE_REGRESSION": 0.07,
+          "ENVIRONMENT": 0,
+          "DATA_STATE": 0.02
+        },
+        "startedAt": "2026-09-20T23:16:10.958Z",
+        "receivedAt": "2026-09-20T23:16:11.299Z",
+        "latencyMs": 339.681,
+        "httpStatus": 200,
+        "inputBytes": 1170,
+        "stateCharacters": 139,
+        "requestSha256": "6f42cc5e6f1355413fc230edcf6acc0fff773fd88c5022e2bc92045c05034567",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946170-O3QEyQWJO12u29XS9rki",
+        "usage": {
+          "inputTokens": 526,
+          "outputTokens": 90,
+          "costUsd": 0.000022092
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C02",
+      "decisionType": "TRIAGE",
+      "goldLabel": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "TEST_ASSUMPTION",
+        "requestMade": true,
+        "confidence": 0.97,
+        "probabilities": {
+          "DATA_STATE": 0,
+          "TEST_ASSUMPTION": 0.99,
+          "ENVIRONMENT": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "CODE_REGRESSION": 0.01,
+          "UNKNOWN": 0
+        },
+        "startedAt": "2026-09-20T23:16:11.299Z",
+        "receivedAt": "2026-09-20T23:16:11.587Z",
+        "latencyMs": 287.504,
+        "httpStatus": 200,
+        "inputBytes": 1199,
+        "stateCharacters": 168,
+        "requestSha256": "17db74facf2f22dea77aecd66c0a6293a0f208c290874ff60f89b6a0ce548097",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946170-U5wZzuTxUsBUq8fB0s3x",
+        "usage": {
+          "inputTokens": 534,
+          "outputTokens": 90,
+          "costUsd": 0.000022428
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C03",
+      "decisionType": "TRIAGE",
+      "goldLabel": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CODE_REGRESSION",
+        "requestMade": true,
+        "confidence": 0.97,
+        "probabilities": {
+          "TEST_ASSUMPTION": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "DATA_STATE": 0,
+          "CODE_REGRESSION": 0.98,
+          "ENVIRONMENT": 0,
+          "UNKNOWN": 0.02
+        },
+        "startedAt": "2026-09-20T23:16:11.587Z",
+        "receivedAt": "2026-09-20T23:16:11.870Z",
+        "latencyMs": 282.578,
+        "httpStatus": 200,
+        "inputBytes": 1174,
+        "stateCharacters": 143,
+        "requestSha256": "0204e64d8b0c94a53edd83593144c85b712bf2aa339c3e92dc47abbad08136a0",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946170-34OXAlQCcOU0yENM9gu7",
+        "usage": {
+          "inputTokens": 527,
+          "outputTokens": 89,
+          "costUsd": 0.000022134
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C04",
+      "decisionType": "TRIAGE",
+      "goldLabel": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CODE_REGRESSION",
+        "requestMade": true,
+        "confidence": 0.78,
+        "probabilities": {
+          "EXTERNAL_DEPENDENCY": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "DATA_STATE": 0,
+          "TEST_ASSUMPTION": 0,
+          "UNKNOWN": 0.02,
+          "ENVIRONMENT": 0.17,
+          "CODE_REGRESSION": 0.81
+        },
+        "startedAt": "2026-09-20T23:16:11.870Z",
+        "receivedAt": "2026-09-20T23:16:12.134Z",
+        "latencyMs": 263.829,
+        "httpStatus": 200,
+        "inputBytes": 1160,
+        "stateCharacters": 129,
+        "requestSha256": "2f27bbff3babdbad87021a5975f0c36a87ebcd8f6694c49958e8508b0e8e387a",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946171-e5zIAWAXGuUoR3HDtRE7",
+        "usage": {
+          "inputTokens": 526,
+          "outputTokens": 89,
+          "costUsd": 0.000022092
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C05",
+      "decisionType": "TRIAGE",
+      "goldLabel": "DATA_STATE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "DATA_STATE",
+        "requestMade": true,
+        "confidence": 0.96,
+        "probabilities": {
+          "ENVIRONMENT": 0.02,
+          "DOCUMENTATION_ONLY": 0.01,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0.96,
+          "TEST_ASSUMPTION": 0.01,
+          "CODE_REGRESSION": 0,
+          "UNKNOWN": 0
+        },
+        "startedAt": "2026-09-20T23:16:12.135Z",
+        "receivedAt": "2026-09-20T23:16:12.459Z",
+        "latencyMs": 324.028,
+        "httpStatus": 200,
+        "inputBytes": 1188,
+        "stateCharacters": 157,
+        "requestSha256": "92fd7d4881ff066cd5aac29227b553836aeff84bb153fa10ce98926f93b28f2c",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946171-wcyyn4Ab2Vhx1fyrOHss",
+        "usage": {
+          "inputTokens": 526,
+          "outputTokens": 87,
+          "costUsd": 0.000022092
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C06",
+      "decisionType": "TRIAGE",
+      "goldLabel": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CODE_REGRESSION",
+        "requestMade": true,
+        "confidence": 0.95,
+        "probabilities": {
+          "DATA_STATE": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "CODE_REGRESSION": 0.96,
+          "DOCUMENTATION_ONLY": 0,
+          "ENVIRONMENT": 0,
+          "UNKNOWN": 0.04,
+          "TEST_ASSUMPTION": 0
+        },
+        "startedAt": "2026-09-20T23:16:12.459Z",
+        "receivedAt": "2026-09-20T23:16:12.875Z",
+        "latencyMs": 415.679,
+        "httpStatus": 200,
+        "inputBytes": 1149,
+        "stateCharacters": 118,
+        "requestSha256": "90ab2831ef07a5f190ca65d53f66bfabb87f9e6957ad6ea7073eec43144ea51e",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946171-z5crxDUklcUhLpEWIIlG",
+        "usage": {
+          "inputTokens": 520,
+          "outputTokens": 89,
+          "costUsd": 0.00002184
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C07",
+      "decisionType": "TRIAGE",
+      "goldLabel": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "DATA_STATE",
+        "requestMade": true,
+        "confidence": 0.85,
+        "probabilities": {
+          "EXTERNAL_DEPENDENCY": 0,
+          "UNKNOWN": 0.01,
+          "DOCUMENTATION_ONLY": 0,
+          "TEST_ASSUMPTION": 0,
+          "DATA_STATE": 0.87,
+          "CODE_REGRESSION": 0.11,
+          "ENVIRONMENT": 0.01
+        },
+        "startedAt": "2026-09-20T23:16:12.875Z",
+        "receivedAt": "2026-09-20T23:16:13.101Z",
+        "latencyMs": 226.004,
+        "httpStatus": 200,
+        "inputBytes": 1202,
+        "stateCharacters": 171,
+        "requestSha256": "130595c339af5cabd26507555989e92ab2c618a7c5fbffa469fbd0336e530646",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946172-cOZoZwcVdjVpXEpEnvd0",
+        "usage": {
+          "inputTokens": 528,
+          "outputTokens": 87,
+          "costUsd": 0.000022176
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C08",
+      "decisionType": "TRIAGE",
+      "goldLabel": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "UNKNOWN",
+        "requestMade": true,
+        "confidence": 0.73,
+        "probabilities": {
+          "TEST_ASSUMPTION": 0.06,
+          "DOCUMENTATION_ONLY": 0.02,
+          "UNKNOWN": 0.76,
+          "EXTERNAL_DEPENDENCY": 0,
+          "CODE_REGRESSION": 0.16,
+          "ENVIRONMENT": 0,
+          "DATA_STATE": 0
+        },
+        "startedAt": "2026-09-20T23:16:13.102Z",
+        "receivedAt": "2026-09-20T23:16:13.331Z",
+        "latencyMs": 229.411,
+        "httpStatus": 200,
+        "inputBytes": 1181,
+        "stateCharacters": 150,
+        "requestSha256": "6e6994e8f498830b4c94a234effce5df1a6cb4130e9ade889bc7778bcf566b78",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946172-S3COGWb5qTI1JvvbgTkI",
+        "usage": {
+          "inputTokens": 530,
+          "outputTokens": 86,
+          "costUsd": 0.00002226
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C09",
+      "decisionType": "TRIAGE",
+      "goldLabel": "DOCUMENTATION_ONLY",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "DOCUMENTATION_ONLY",
+        "requestMade": true,
+        "confidence": 0.92,
+        "probabilities": {
+          "DATA_STATE": 0.02,
+          "TEST_ASSUMPTION": 0.04,
+          "DOCUMENTATION_ONLY": 0.92,
+          "ENVIRONMENT": 0,
+          "CODE_REGRESSION": 0.01,
+          "EXTERNAL_DEPENDENCY": 0,
+          "UNKNOWN": 0.01
+        },
+        "startedAt": "2026-09-20T23:16:13.332Z",
+        "receivedAt": "2026-09-20T23:16:13.633Z",
+        "latencyMs": 301.064,
+        "httpStatus": 200,
+        "inputBytes": 1195,
+        "stateCharacters": 164,
+        "requestSha256": "4aa99a56b954801c01cc42b6144606b238f62674fc63ff8cf5eebb06c05f1c5d",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946172-xow1vEwN8ORhEJIQIWux",
+        "usage": {
+          "inputTokens": 532,
+          "outputTokens": 91,
+          "costUsd": 0.000022344
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C10",
+      "decisionType": "TRIAGE",
+      "goldLabel": "ENVIRONMENT",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "ENVIRONMENT",
+        "requestMade": true,
+        "confidence": 0.88,
+        "probabilities": {
+          "DATA_STATE": 0.06,
+          "CODE_REGRESSION": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "UNKNOWN": 0.03,
+          "ENVIRONMENT": 0.91,
+          "DOCUMENTATION_ONLY": 0,
+          "TEST_ASSUMPTION": 0
+        },
+        "startedAt": "2026-09-20T23:16:13.633Z",
+        "receivedAt": "2026-09-20T23:16:14.059Z",
+        "latencyMs": 425.656,
+        "httpStatus": 200,
+        "inputBytes": 1193,
+        "stateCharacters": 162,
+        "requestSha256": "d604804fb5a75c68aee2896b4fbdea5dc10ab2bec7278b0ef1e28ee84600cf99",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946172-Erkx8rT3xF94BwVffQTv",
+        "usage": {
+          "inputTokens": 529,
+          "outputTokens": 88,
+          "costUsd": 0.000022218
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C11",
+      "decisionType": "TRIAGE",
+      "goldLabel": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "TEST_ASSUMPTION",
+        "requestMade": true,
+        "confidence": 0.99,
+        "probabilities": {
+          "DOCUMENTATION_ONLY": 0,
+          "DATA_STATE": 0,
+          "ENVIRONMENT": 0,
+          "CODE_REGRESSION": 0.01,
+          "UNKNOWN": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "TEST_ASSUMPTION": 0.99
+        },
+        "startedAt": "2026-09-20T23:16:14.060Z",
+        "receivedAt": "2026-09-20T23:16:14.312Z",
+        "latencyMs": 252.36,
+        "httpStatus": 200,
+        "inputBytes": 1170,
+        "stateCharacters": 139,
+        "requestSha256": "e99ce8a6d3d29d82e87858a28a1914cc6abc08b55350bfc420209f8c401de0e7",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946173-1m2GRzMb62wrK5sX24oF",
+        "usage": {
+          "inputTokens": 525,
+          "outputTokens": 90,
+          "costUsd": 0.00002205
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C12",
+      "decisionType": "TRIAGE",
+      "goldLabel": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CODE_REGRESSION",
+        "requestMade": true,
+        "confidence": 0.84,
+        "probabilities": {
+          "ENVIRONMENT": 0,
+          "TEST_ASSUMPTION": 0.03,
+          "DATA_STATE": 0,
+          "UNKNOWN": 0.09,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DOCUMENTATION_ONLY": 0.01,
+          "CODE_REGRESSION": 0.87
+        },
+        "startedAt": "2026-09-20T23:16:14.313Z",
+        "receivedAt": "2026-09-20T23:16:14.572Z",
+        "latencyMs": 259.194,
+        "httpStatus": 200,
+        "inputBytes": 1140,
+        "stateCharacters": 109,
+        "requestSha256": "11accc2dba19754fc2b79d493404c179a54982aeb55588afcb9a01ee2470b156",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946173-HTxiUOZw1OQh2fbx51Ym",
+        "usage": {
+          "inputTokens": 520,
+          "outputTokens": 89,
+          "costUsd": 0.00002184
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C13",
+      "decisionType": "TRIAGE",
+      "goldLabel": "ENVIRONMENT",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "ENVIRONMENT",
+        "requestMade": true,
+        "confidence": 0.98,
+        "probabilities": {
+          "EXTERNAL_DEPENDENCY": 0,
+          "UNKNOWN": 0.01,
+          "DOCUMENTATION_ONLY": 0,
+          "TEST_ASSUMPTION": 0,
+          "DATA_STATE": 0,
+          "CODE_REGRESSION": 0.01,
+          "ENVIRONMENT": 0.98
+        },
+        "startedAt": "2026-09-20T23:16:14.572Z",
+        "receivedAt": "2026-09-20T23:16:14.859Z",
+        "latencyMs": 286.625,
+        "httpStatus": 200,
+        "inputBytes": 1175,
+        "stateCharacters": 144,
+        "requestSha256": "f2e7ea947b1040260f807fc041c28e32f79cfa5e2190474ba1f7b7b9c3502d4f",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946173-ZoxnB5cEaqW0hQv7eyAM",
+        "usage": {
+          "inputTokens": 528,
+          "outputTokens": 88,
+          "costUsd": 0.000022176
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C14",
+      "decisionType": "TRIAGE",
+      "goldLabel": "EXTERNAL_DEPENDENCY",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "ENVIRONMENT",
+        "requestMade": true,
+        "confidence": 0.46,
+        "probabilities": {
+          "UNKNOWN": 0.1,
+          "DATA_STATE": 0.07,
+          "DOCUMENTATION_ONLY": 0.01,
+          "ENVIRONMENT": 0.53,
+          "CODE_REGRESSION": 0.02,
+          "TEST_ASSUMPTION": 0.02,
+          "EXTERNAL_DEPENDENCY": 0.25
+        },
+        "startedAt": "2026-09-20T23:16:14.859Z",
+        "receivedAt": "2026-09-20T23:16:15.545Z",
+        "latencyMs": 685.542,
+        "httpStatus": 200,
+        "inputBytes": 1163,
+        "stateCharacters": 132,
+        "requestSha256": "8613b0d94eb779d7e9692da450b6e4a5daeeb88f7babeb0df4b4155f90db1e7b",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946174-jHRuicue1egq8EREWexI",
+        "usage": {
+          "inputTokens": 521,
+          "outputTokens": 88,
+          "costUsd": 0.000021882
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C15",
+      "decisionType": "TRIAGE",
+      "goldLabel": "UNKNOWN",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "UNKNOWN",
+        "requestMade": true,
+        "confidence": 0.61,
+        "probabilities": {
+          "CODE_REGRESSION": 0.15,
+          "UNKNOWN": 0.66,
+          "DATA_STATE": 0.09,
+          "ENVIRONMENT": 0,
+          "TEST_ASSUMPTION": 0,
+          "DOCUMENTATION_ONLY": 0.09,
+          "EXTERNAL_DEPENDENCY": 0.01
+        },
+        "startedAt": "2026-09-20T23:16:15.545Z",
+        "receivedAt": "2026-09-20T23:16:15.781Z",
+        "latencyMs": 235.82,
+        "httpStatus": 200,
+        "inputBytes": 1224,
+        "stateCharacters": 193,
+        "requestSha256": "7252a56d66993bfedd5e3d53d6e44d320ff711f7ce1ed69cb01dbd6a7ba88fec",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946174-A5NweNXUKIxDVkoIWQsD",
+        "usage": {
+          "inputTokens": 529,
+          "outputTokens": 86,
+          "costUsd": 0.000022218
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C16",
+      "decisionType": "TRIAGE",
+      "goldLabel": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CODE_REGRESSION",
+        "requestMade": true,
+        "confidence": 0.99,
+        "probabilities": {
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "CODE_REGRESSION": 1,
+          "TEST_ASSUMPTION": 0,
+          "UNKNOWN": 0
+        },
+        "startedAt": "2026-09-20T23:16:15.782Z",
+        "receivedAt": "2026-09-20T23:16:16.124Z",
+        "latencyMs": 341.823,
+        "httpStatus": 200,
+        "inputBytes": 1195,
+        "stateCharacters": 164,
+        "requestSha256": "54dfa1b864f0684adc3584a24db5b4190f05d32411215f56ab12f01f8e2ae4cd",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946174-Y2yQ1j9vMZbxBovgY1lD",
+        "usage": {
+          "inputTokens": 528,
+          "outputTokens": 89,
+          "costUsd": 0.000022176
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C17",
+      "decisionType": "ROUTING",
+      "goldLabel": "BUG_FIX",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "BUG_FIX",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "WAITING_EXTERNAL": 0,
+          "RESEARCH": 0,
+          "RUNTIME_VALIDATION": 0,
+          "OTHER": 0,
+          "PRODUCT_FEATURE": 0,
+          "BUG_FIX": 1,
+          "DOCUMENTATION": 0
+        },
+        "startedAt": "2026-09-20T23:16:16.124Z",
+        "receivedAt": "2026-09-20T23:16:16.379Z",
+        "latencyMs": 254.978,
+        "httpStatus": 200,
+        "inputBytes": 1163,
+        "stateCharacters": 158,
+        "requestSha256": "35268d44d2093c0f430bcbe055bd54aab686a797fc94acb0c514d41bf4400339",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946175-9E0AjWvlKLXimxFrFMXg",
+        "usage": {
+          "inputTokens": 519,
+          "outputTokens": 85,
+          "costUsd": 0.000021798
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C18",
+      "decisionType": "ROUTING",
+      "goldLabel": "RESEARCH",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "RESEARCH",
+        "requestMade": true,
+        "confidence": 0.93,
+        "probabilities": {
+          "PRODUCT_FEATURE": 0.01,
+          "RESEARCH": 0.94,
+          "OTHER": 0,
+          "DOCUMENTATION": 0.02,
+          "BUG_FIX": 0,
+          "WAITING_EXTERNAL": 0.01,
+          "RUNTIME_VALIDATION": 0.02
+        },
+        "startedAt": "2026-09-20T23:16:16.380Z",
+        "receivedAt": "2026-09-20T23:16:16.663Z",
+        "latencyMs": 283.381,
+        "httpStatus": 200,
+        "inputBytes": 1184,
+        "stateCharacters": 179,
+        "requestSha256": "972756cbb94f86bb9e126d7e420da53e818b6c24d8e9f16c1070be86a486215e",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946175-OrW6rNR2MmmsW1xHC00a",
+        "usage": {
+          "inputTokens": 520,
+          "outputTokens": 86,
+          "costUsd": 0.00002184
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C19",
+      "decisionType": "ROUTING",
+      "goldLabel": "DOCUMENTATION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "DOCUMENTATION",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "RUNTIME_VALIDATION": 0,
+          "DOCUMENTATION": 1,
+          "WAITING_EXTERNAL": 0,
+          "BUG_FIX": 0,
+          "OTHER": 0,
+          "RESEARCH": 0,
+          "PRODUCT_FEATURE": 0
+        },
+        "startedAt": "2026-09-20T23:16:16.664Z",
+        "receivedAt": "2026-09-20T23:16:16.900Z",
+        "latencyMs": 235.641,
+        "httpStatus": 200,
+        "inputBytes": 1164,
+        "stateCharacters": 159,
+        "requestSha256": "6e5f8284f804aa1873953123544122f46383a33d633c5b299211604a85904bc2",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946175-GT1i4hu7f2dDEshE53Pu",
+        "usage": {
+          "inputTokens": 520,
+          "outputTokens": 88,
+          "costUsd": 0.00002184
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C20",
+      "decisionType": "ROUTING",
+      "goldLabel": "RUNTIME_VALIDATION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "RUNTIME_VALIDATION",
+        "requestMade": true,
+        "confidence": 0.75,
+        "probabilities": {
+          "WAITING_EXTERNAL": 0,
+          "DOCUMENTATION": 0,
+          "RESEARCH": 0,
+          "BUG_FIX": 0.19,
+          "RUNTIME_VALIDATION": 0.79,
+          "OTHER": 0,
+          "PRODUCT_FEATURE": 0.02
+        },
+        "startedAt": "2026-09-20T23:16:16.900Z",
+        "receivedAt": "2026-09-20T23:16:17.150Z",
+        "latencyMs": 249.788,
+        "httpStatus": 200,
+        "inputBytes": 1155,
+        "stateCharacters": 150,
+        "requestSha256": "e4b98e3a2568573e88b2cc1e496d1e05093e31d0573a6d7be0ba2e3d9136f541",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946176-P6wnJ2VeCpL1DeXkm1wN",
+        "usage": {
+          "inputTokens": 519,
+          "outputTokens": 91,
+          "costUsd": 0.000021798
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C21",
+      "decisionType": "ROUTING",
+      "goldLabel": "PRODUCT_FEATURE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "PRODUCT_FEATURE",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "RESEARCH": 0,
+          "OTHER": 0,
+          "BUG_FIX": 0,
+          "RUNTIME_VALIDATION": 0,
+          "DOCUMENTATION": 0,
+          "WAITING_EXTERNAL": 0,
+          "PRODUCT_FEATURE": 1
+        },
+        "startedAt": "2026-09-20T23:16:17.150Z",
+        "receivedAt": "2026-09-20T23:16:17.384Z",
+        "latencyMs": 233.19,
+        "httpStatus": 200,
+        "inputBytes": 1183,
+        "stateCharacters": 178,
+        "requestSha256": "15898a05d5f32f0f1d0174331a3a9a7d3e581ef4a2c1629ceef390273fab445c",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946176-9qT79FWE0QQPmpouZbs7",
+        "usage": {
+          "inputTokens": 527,
+          "outputTokens": 85,
+          "costUsd": 0.000022134
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C22",
+      "decisionType": "ROUTING",
+      "goldLabel": "WAITING_EXTERNAL",
+      "pathA": {
+        "decision": "WAITING_EXTERNAL",
+        "reason": "FUTURE_WINDOW_NO_RECEIPT",
+        "eligible": false
+      },
+      "result": {
+        "decision": "WAITING_EXTERNAL",
+        "reason": "FUTURE_WINDOW_NO_RECEIPT",
+        "eligible": false,
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestMade": false,
+        "path": "DETERMINISTIC"
+      }
+    },
+    {
+      "caseId": "C23",
+      "decisionType": "ROUTING",
+      "goldLabel": "WAITING_EXTERNAL",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "WAITING_EXTERNAL",
+        "requestMade": true,
+        "confidence": 0.84,
+        "probabilities": {
+          "DOCUMENTATION": 0,
+          "WAITING_EXTERNAL": 0.87,
+          "PRODUCT_FEATURE": 0.01,
+          "BUG_FIX": 0,
+          "RESEARCH": 0.03,
+          "OTHER": 0,
+          "RUNTIME_VALIDATION": 0.09
+        },
+        "startedAt": "2026-09-20T23:16:17.384Z",
+        "receivedAt": "2026-09-20T23:16:17.600Z",
+        "latencyMs": 215.129,
+        "httpStatus": 200,
+        "inputBytes": 1183,
+        "stateCharacters": 178,
+        "requestSha256": "94eb7c39555b5f2d5e85158767af16ede75caa50695923981735bc4eb8e22190",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946176-w1Rdv12q1Kxrc72vvCbD",
+        "usage": {
+          "inputTokens": 524,
+          "outputTokens": 87,
+          "costUsd": 0.000022008
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C24",
+      "decisionType": "ROUTING",
+      "goldLabel": "PRODUCT_FEATURE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "PRODUCT_FEATURE",
+        "requestMade": true,
+        "confidence": 0.75,
+        "probabilities": {
+          "DOCUMENTATION": 0.03,
+          "WAITING_EXTERNAL": 0.03,
+          "PRODUCT_FEATURE": 0.79,
+          "BUG_FIX": 0,
+          "RESEARCH": 0,
+          "RUNTIME_VALIDATION": 0.14,
+          "OTHER": 0.01
+        },
+        "startedAt": "2026-09-20T23:16:17.600Z",
+        "receivedAt": "2026-09-20T23:16:17.925Z",
+        "latencyMs": 325.25,
+        "httpStatus": 200,
+        "inputBytes": 1171,
+        "stateCharacters": 166,
+        "requestSha256": "6f3a764ad230ae05d5119f3485e27b80174b2e456fd79ac205a2fe032f8f74f6",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946176-N94bpEBG407cBfMCXkGN",
+        "usage": {
+          "inputTokens": 519,
+          "outputTokens": 85,
+          "costUsd": 0.000021798
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C25",
+      "decisionType": "ROUTING",
+      "goldLabel": "RESEARCH",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "RESEARCH",
+        "requestMade": true,
+        "confidence": 0.95,
+        "probabilities": {
+          "BUG_FIX": 0,
+          "DOCUMENTATION": 0,
+          "PRODUCT_FEATURE": 0.01,
+          "RESEARCH": 0.95,
+          "OTHER": 0,
+          "WAITING_EXTERNAL": 0.01,
+          "RUNTIME_VALIDATION": 0.03
+        },
+        "startedAt": "2026-09-20T23:16:17.926Z",
+        "receivedAt": "2026-09-20T23:16:18.205Z",
+        "latencyMs": 279.048,
+        "httpStatus": 200,
+        "inputBytes": 1158,
+        "stateCharacters": 153,
+        "requestSha256": "0081458bf9a00b8f974ade6eaddb81fbd6e6f5373b35ecd31efaf488187cff63",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946177-r72aydpOCxzAiq1JMHZa",
+        "usage": {
+          "inputTokens": 519,
+          "outputTokens": 86,
+          "costUsd": 0.000021798
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C26",
+      "decisionType": "ROUTING",
+      "goldLabel": "RUNTIME_VALIDATION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "RUNTIME_VALIDATION",
+        "requestMade": true,
+        "confidence": 0.52,
+        "probabilities": {
+          "RESEARCH": 0,
+          "BUG_FIX": 0.01,
+          "WAITING_EXTERNAL": 0.03,
+          "PRODUCT_FEATURE": 0.34,
+          "RUNTIME_VALIDATION": 0.6,
+          "DOCUMENTATION": 0.02,
+          "OTHER": 0
+        },
+        "startedAt": "2026-09-20T23:16:18.206Z",
+        "receivedAt": "2026-09-20T23:16:18.465Z",
+        "latencyMs": 259.065,
+        "httpStatus": 200,
+        "inputBytes": 1171,
+        "stateCharacters": 166,
+        "requestSha256": "9420680552bcd079def209b101c93cb02e991f15290164a774d29faeb4c0d7c9",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946177-AlXi9P5CAIUIQ8bR4fEx",
+        "usage": {
+          "inputTokens": 520,
+          "outputTokens": 91,
+          "costUsd": 0.00002184
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C27",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CONTINUE",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "ASK_OWNER": 0,
+          "CONTINUE": 1
+        },
+        "startedAt": "2026-09-20T23:16:18.465Z",
+        "receivedAt": "2026-09-20T23:16:18.767Z",
+        "latencyMs": 301.784,
+        "httpStatus": 200,
+        "inputBytes": 1061,
+        "stateCharacters": 193,
+        "requestSha256": "6c9792df118f6b4903990ab8f9b378037a18d0b156420190d81a5e9c35b1f3ab",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946177-2krCPrMVeIGX41Fc7T5Y",
+        "usage": {
+          "inputTokens": 448,
+          "outputTokens": 34,
+          "costUsd": 0.000018816
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C28",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CONTINUE",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "CONTINUE": 1,
+          "ASK_OWNER": 0
+        },
+        "startedAt": "2026-09-20T23:16:18.767Z",
+        "receivedAt": "2026-09-20T23:16:19.039Z",
+        "latencyMs": 272.023,
+        "httpStatus": 200,
+        "inputBytes": 1035,
+        "stateCharacters": 167,
+        "requestSha256": "44ad59b1e55888d3b6cff92605328c9d6980be0b79c556d5dca5be422a959c5f",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946177-I6IWZdR2cMWPnFKvBvoa",
+        "usage": {
+          "inputTokens": 438,
+          "outputTokens": 34,
+          "costUsd": 0.000018396
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C29",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "ASK_OWNER",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "ASK_OWNER",
+        "requestMade": true,
+        "confidence": 0.99,
+        "probabilities": {
+          "ASK_OWNER": 1,
+          "CONTINUE": 0
+        },
+        "startedAt": "2026-09-20T23:16:19.040Z",
+        "receivedAt": "2026-09-20T23:16:19.313Z",
+        "latencyMs": 273.183,
+        "httpStatus": 200,
+        "inputBytes": 1064,
+        "stateCharacters": 196,
+        "requestSha256": "d348c3d71e993c9febf07b80b6bd29b5fd5f4c196693e293367fbf0dc6dac327",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946178-5HLT7urloUlaMNZKKSoL",
+        "usage": {
+          "inputTokens": 447,
+          "outputTokens": 34,
+          "costUsd": 0.000018774
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C30",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CONTINUE",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "CONTINUE": 1,
+          "ASK_OWNER": 0
+        },
+        "startedAt": "2026-09-20T23:16:19.314Z",
+        "receivedAt": "2026-09-20T23:16:19.525Z",
+        "latencyMs": 211.371,
+        "httpStatus": 200,
+        "inputBytes": 1045,
+        "stateCharacters": 177,
+        "requestSha256": "9a05e809e3ea2a2e8324e684de2588b696e066873ac11ac9a4fd1dd21110cf38",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946178-2YXrMgOivIIvRepSToOK",
+        "usage": {
+          "inputTokens": 439,
+          "outputTokens": 34,
+          "costUsd": 0.000018438
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C31",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "ASK_OWNER",
+      "pathA": {
+        "decision": "ASK_OWNER",
+        "reason": "NEW_EXTERNAL_PERMISSION",
+        "eligible": false
+      },
+      "result": {
+        "decision": "ASK_OWNER",
+        "reason": "NEW_EXTERNAL_PERMISSION",
+        "eligible": false,
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestMade": false,
+        "path": "DETERMINISTIC"
+      }
+    },
+    {
+      "caseId": "C32",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "ASK_OWNER",
+      "pathA": {
+        "decision": "ASK_OWNER",
+        "reason": "NEW_EXTERNAL_PERMISSION",
+        "eligible": false
+      },
+      "result": {
+        "decision": "ASK_OWNER",
+        "reason": "NEW_EXTERNAL_PERMISSION",
+        "eligible": false,
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestMade": false,
+        "path": "DETERMINISTIC"
+      }
+    },
+    {
+      "caseId": "C33",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CONTINUE",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "CONTINUE": 1,
+          "ASK_OWNER": 0
+        },
+        "startedAt": "2026-09-20T23:16:19.527Z",
+        "receivedAt": "2026-09-20T23:16:19.832Z",
+        "latencyMs": 305.631,
+        "httpStatus": 200,
+        "inputBytes": 1043,
+        "stateCharacters": 175,
+        "requestSha256": "fbae3e668f3cc989a89890cc2ee6318824569016c922d06ff0580d37bd5e00ae",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946178-aXARlCHB4NGTMBiACXH8",
+        "usage": {
+          "inputTokens": 444,
+          "outputTokens": 34,
+          "costUsd": 0.000018648
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "C34",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "ASK_OWNER",
+      "pathA": {
+        "decision": "ASK_OWNER",
+        "reason": "TRADING_BOUNDARY_CHANGE",
+        "eligible": false
+      },
+      "result": {
+        "decision": "ASK_OWNER",
+        "reason": "TRADING_BOUNDARY_CHANGE",
+        "eligible": false,
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestMade": false,
+        "path": "DETERMINISTIC"
+      }
+    },
+    {
+      "caseId": "C35",
+      "decisionType": "VALIDATION",
+      "goldLabel": "DOCUMENT_CHECKS",
+      "pathA": {
+        "decision": "DOCUMENT_CHECKS",
+        "reason": "DOCUMENT_ONLY_VERIFIED",
+        "eligible": false
+      },
+      "result": {
+        "decision": "DOCUMENT_CHECKS",
+        "reason": "DOCUMENT_ONLY_VERIFIED",
+        "eligible": false,
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestMade": false,
+        "path": "DETERMINISTIC"
+      }
+    },
+    {
+      "caseId": "C36",
+      "decisionType": "VALIDATION",
+      "goldLabel": "DOCUMENT_CHECKS",
+      "pathA": {
+        "decision": "DOCUMENT_CHECKS",
+        "reason": "DOCUMENT_ONLY_VERIFIED",
+        "eligible": false
+      },
+      "result": {
+        "decision": "DOCUMENT_CHECKS",
+        "reason": "DOCUMENT_ONLY_VERIFIED",
+        "eligible": false,
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestMade": false,
+        "path": "DETERMINISTIC"
+      }
+    },
+    {
+      "caseId": "C37",
+      "decisionType": "VALIDATION",
+      "goldLabel": "FULL_VALIDATION",
+      "pathA": {
+        "decision": "FULL_VALIDATION",
+        "reason": "PRODUCT_CODE_CHANGED",
+        "eligible": false
+      },
+      "result": {
+        "decision": "FULL_VALIDATION",
+        "reason": "PRODUCT_CODE_CHANGED",
+        "eligible": false,
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestMade": false,
+        "path": "DETERMINISTIC"
+      }
+    },
+    {
+      "caseId": "C38",
+      "decisionType": "VALIDATION",
+      "goldLabel": "FULL_VALIDATION",
+      "pathA": {
+        "decision": "FULL_VALIDATION",
+        "reason": "PRODUCT_CODE_CHANGED",
+        "eligible": false
+      },
+      "result": {
+        "decision": "FULL_VALIDATION",
+        "reason": "PRODUCT_CODE_CHANGED",
+        "eligible": false,
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestMade": false,
+        "path": "DETERMINISTIC"
+      }
+    }
+  ],
+  "completedAt": "2026-09-20T23:16:19.835Z",
+  "status": "COMPLETED",
+  "summary": {
+    "totalCases": 38,
+    "deterministicResolved": 8,
+    "jevEvaluated": 30,
+    "totalCalls": 30,
+    "pathA": {
+      "resolved": 8,
+      "unknown": 30,
+      "correct": 8
+    },
+    "pathB": {
+      "total": 38,
+      "correct": 35,
+      "incorrect": 2,
+      "unknown": 2
+    },
+    "jevOnly": {
+      "total": 30,
+      "correct": 27,
+      "incorrect": 2,
+      "unknown": 2
+    },
+    "pathC": "Historical documented outcome, not a new model call",
+    "falseContinue": 0,
+    "falseContinueDenominator": 1,
+    "falseContinueRate": 0,
+    "falseAskOwner": 0,
+    "falseAskOwnerDenominator": 4,
+    "falseOwnerInterruptRate": 0,
+    "ownerInterruptionDecisions": 4,
+    "continueDecisions": 4,
+    "medianLatencyMs": 276.1155,
+    "p95LatencyMs": 425.656,
+    "inputTokens": 15332,
+    "outputTokens": 2370,
+    "reportedCostUsd": 0.0006439439999999999,
+    "byDecisionType": {
+      "TRIAGE": {
+        "total": 16,
+        "correct": 13,
+        "incorrect": 2,
+        "unknown": 2
+      },
+      "ROUTING": {
+        "total": 10,
+        "correct": 10,
+        "incorrect": 0,
+        "unknown": 0
+      },
+      "OWNER_GATE": {
+        "total": 8,
+        "correct": 8,
+        "incorrect": 0,
+        "unknown": 0
+      },
+      "VALIDATION": {
+        "total": 4,
+        "correct": 4,
+        "incorrect": 0,
+        "unknown": 0
+      }
+    },
+    "triageConfusion": [
+      {
+        "caseId": "C01",
+        "gold": "TEST_ASSUMPTION",
+        "decision": "TEST_ASSUMPTION"
+      },
+      {
+        "caseId": "C02",
+        "gold": "TEST_ASSUMPTION",
+        "decision": "TEST_ASSUMPTION"
+      },
+      {
+        "caseId": "C03",
+        "gold": "CODE_REGRESSION",
+        "decision": "CODE_REGRESSION"
+      },
+      {
+        "caseId": "C04",
+        "gold": "CODE_REGRESSION",
+        "decision": "CODE_REGRESSION"
+      },
+      {
+        "caseId": "C05",
+        "gold": "DATA_STATE",
+        "decision": "DATA_STATE"
+      },
+      {
+        "caseId": "C06",
+        "gold": "CODE_REGRESSION",
+        "decision": "CODE_REGRESSION"
+      },
+      {
+        "caseId": "C07",
+        "gold": "CODE_REGRESSION",
+        "decision": "DATA_STATE"
+      },
+      {
+        "caseId": "C08",
+        "gold": "TEST_ASSUMPTION",
+        "decision": "UNKNOWN"
+      },
+      {
+        "caseId": "C09",
+        "gold": "DOCUMENTATION_ONLY",
+        "decision": "DOCUMENTATION_ONLY"
+      },
+      {
+        "caseId": "C10",
+        "gold": "ENVIRONMENT",
+        "decision": "ENVIRONMENT"
+      },
+      {
+        "caseId": "C11",
+        "gold": "TEST_ASSUMPTION",
+        "decision": "TEST_ASSUMPTION"
+      },
+      {
+        "caseId": "C12",
+        "gold": "CODE_REGRESSION",
+        "decision": "CODE_REGRESSION"
+      },
+      {
+        "caseId": "C13",
+        "gold": "ENVIRONMENT",
+        "decision": "ENVIRONMENT"
+      },
+      {
+        "caseId": "C14",
+        "gold": "EXTERNAL_DEPENDENCY",
+        "decision": "ENVIRONMENT"
+      },
+      {
+        "caseId": "C15",
+        "gold": "UNKNOWN",
+        "decision": "UNKNOWN"
+      },
+      {
+        "caseId": "C16",
+        "gold": "CODE_REGRESSION",
+        "decision": "CODE_REGRESSION"
+      }
+    ],
+    "actualWorkflowActions": 0,
+    "codexTokenSavings": "UNKNOWN",
+    "codexTimeSavings": "UNKNOWN",
+    "historicalUnnecessaryInterruptions": "UNKNOWN",
+    "totalPlannedCases": 38,
+    "jevAttempted": 30,
+    "jevFailed": 0,
+    "correctExactMatch": 27,
+    "incorrectNonUnknown": 2,
+    "unknownOutputs": 2,
+    "unknownCorrect": 1,
+    "accuracyExactMatch": 0.9,
+    "deterministicCoverage": 0.21052631578947367,
+    "jevIncrementalResolved": 28,
+    "jevIncrementalCoverage": 0.7368421052631579,
+    "jevIncrementalCorrectCoverage": 0.6842105263157895,
+    "medianSuccessfulInferenceLatencyMs": 276.1155,
+    "p95SuccessfulInferenceLatencyMs": 425.656,
+    "averageReportedCostPerAttemptUsd": 0.000021464799999999998,
+    "ownerSemanticCases": [
+      {
+        "caseId": "C27",
+        "gold": "CONTINUE",
+        "decision": "CONTINUE"
+      },
+      {
+        "caseId": "C28",
+        "gold": "CONTINUE",
+        "decision": "CONTINUE"
+      },
+      {
+        "caseId": "C29",
+        "gold": "ASK_OWNER",
+        "decision": "ASK_OWNER"
+      },
+      {
+        "caseId": "C30",
+        "gold": "CONTINUE",
+        "decision": "CONTINUE"
+      },
+      {
+        "caseId": "C33",
+        "gold": "CONTINUE",
+        "decision": "CONTINUE"
+      }
+    ],
+    "ownerHardGateCases": [
+      {
+        "caseId": "C31",
+        "decision": "ASK_OWNER",
+        "reason": "NEW_EXTERNAL_PERMISSION"
+      },
+      {
+        "caseId": "C32",
+        "decision": "ASK_OWNER",
+        "reason": "NEW_EXTERNAL_PERMISSION"
+      },
+      {
+        "caseId": "C34",
+        "decision": "ASK_OWNER",
+        "reason": "TRADING_BOUNDARY_CHANGE"
+      }
+    ],
+    "triageByGold": {
+      "CODE_REGRESSION": {
+        "total": 6,
+        "correct": 5,
+        "predictions": {
+          "CODE_REGRESSION": 5,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 1,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "TEST_ASSUMPTION": {
+        "total": 4,
+        "correct": 3,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 3,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 1
+        }
+      },
+      "ENVIRONMENT": {
+        "total": 2,
+        "correct": 2,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 2,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "EXTERNAL_DEPENDENCY": {
+        "total": 1,
+        "correct": 0,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 1,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "DATA_STATE": {
+        "total": 1,
+        "correct": 1,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 1,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "DOCUMENTATION_ONLY": {
+        "total": 1,
+        "correct": 1,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 1,
+          "UNKNOWN": 0
+        }
+      },
+      "UNKNOWN": {
+        "total": 1,
+        "correct": 1,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 1
+        }
+      }
+    }
+  }
+}

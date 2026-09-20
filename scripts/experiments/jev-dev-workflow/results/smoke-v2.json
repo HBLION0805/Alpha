@@ -1,0 +1,324 @@
+{
+  "version": 2,
+  "mode": "smoke",
+  "model": "typesafe/jev-1.13",
+  "expectedServedModel": "typesafe/jev-1.13-20260917",
+  "datasetHash": null,
+  "clientSha256": "c1c0e08eec734834f26dee998d9b91be8a11b418f7f2d283f7b9ab04125abfc7",
+  "runnerSha256": "b585a13fb6c1aecf41fb79c259ad9d98771d5048daf056d55734c88ca50461ab",
+  "startedAt": "2026-09-20T23:16:00.764Z",
+  "shadowOnly": true,
+  "executionAllowed": false,
+  "maxCalls": 3,
+  "maxReportedCostUsd": 0.01,
+  "rows": [
+    {
+      "caseId": "smoke-a",
+      "decisionType": "SMOKE_TASK",
+      "goldLabel": "BUG_FIX",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "BUG_FIX",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "OTHER": 0,
+          "PRODUCT_FEATURE": 0,
+          "RESEARCH": 0,
+          "BUG_FIX": 1,
+          "DOCUMENTATION": 0,
+          "RUNTIME_VALIDATION": 0
+        },
+        "startedAt": "2026-09-20T23:16:00.765Z",
+        "receivedAt": "2026-09-20T23:16:01.226Z",
+        "latencyMs": 459.977,
+        "httpStatus": 200,
+        "inputBytes": 597,
+        "stateCharacters": 69,
+        "requestSha256": "dc5bb2464d2c1ce23a440d3957a01fd20c2703e608035164473a30bef0b87fad",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946160-PbUnPgt07fGjbBgC1eYt",
+        "usage": {
+          "inputTokens": 418,
+          "outputTokens": 75,
+          "costUsd": 0.000017556
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "smoke-b",
+      "decisionType": "OWNER_GATE",
+      "goldLabel": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "CONTINUE",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "CONTINUE": 1,
+          "ASK_OWNER": 0
+        },
+        "startedAt": "2026-09-20T23:16:01.226Z",
+        "receivedAt": "2026-09-20T23:16:01.488Z",
+        "latencyMs": 261.596,
+        "httpStatus": 200,
+        "inputBytes": 991,
+        "stateCharacters": 123,
+        "requestSha256": "e12a65dc03091721c8b0f6627763adbe1c204b310ea394ad035e08051743c7f4",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946160-GTGV5Y9qsKx5J5vsaX9N",
+        "usage": {
+          "inputTokens": 435,
+          "outputTokens": 34,
+          "costUsd": 0.00001827
+        },
+        "path": "JEV"
+      }
+    },
+    {
+      "caseId": "smoke-c",
+      "decisionType": "SMOKE_FAILURE",
+      "goldLabel": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "TEST_ASSUMPTION",
+        "requestMade": true,
+        "confidence": 1,
+        "probabilities": {
+          "TEST_ASSUMPTION": 1,
+          "DATA_STATE": 0,
+          "UNKNOWN": 0,
+          "ENVIRONMENT": 0,
+          "CODE_REGRESSION": 0,
+          "EXTERNAL_DEPENDENCY": 0
+        },
+        "startedAt": "2026-09-20T23:16:01.488Z",
+        "receivedAt": "2026-09-20T23:16:01.739Z",
+        "latencyMs": 250.833,
+        "httpStatus": 200,
+        "inputBytes": 672,
+        "stateCharacters": 129,
+        "requestSha256": "84ba5add8cca6741eaedcc6292cffd67d3848ab1647609c9947459bf69809c88",
+        "servedModel": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "requestId": "gen-dec-1789946160-uZCZaqOWCyYvpmvrFl4w",
+        "usage": {
+          "inputTokens": 426,
+          "outputTokens": 78,
+          "costUsd": 0.000017892
+        },
+        "path": "JEV"
+      }
+    }
+  ],
+  "completedAt": "2026-09-20T23:16:01.740Z",
+  "status": "COMPLETED",
+  "summary": {
+    "totalCases": 3,
+    "deterministicResolved": 0,
+    "jevEvaluated": 3,
+    "totalCalls": 3,
+    "pathA": {
+      "resolved": 0,
+      "unknown": 3,
+      "correct": 0
+    },
+    "pathB": {
+      "total": 3,
+      "correct": 3,
+      "incorrect": 0,
+      "unknown": 0
+    },
+    "jevOnly": {
+      "total": 3,
+      "correct": 3,
+      "incorrect": 0,
+      "unknown": 0
+    },
+    "pathC": "Historical documented outcome, not a new model call",
+    "falseContinue": 0,
+    "falseContinueDenominator": 0,
+    "falseContinueRate": null,
+    "falseAskOwner": 0,
+    "falseAskOwnerDenominator": 1,
+    "falseOwnerInterruptRate": 0,
+    "ownerInterruptionDecisions": 0,
+    "continueDecisions": 1,
+    "medianLatencyMs": 261.596,
+    "p95LatencyMs": null,
+    "inputTokens": 1279,
+    "outputTokens": 187,
+    "reportedCostUsd": 0.000053718,
+    "byDecisionType": {
+      "SMOKE_TASK": {
+        "total": 1,
+        "correct": 1,
+        "incorrect": 0,
+        "unknown": 0
+      },
+      "OWNER_GATE": {
+        "total": 1,
+        "correct": 1,
+        "incorrect": 0,
+        "unknown": 0
+      },
+      "SMOKE_FAILURE": {
+        "total": 1,
+        "correct": 1,
+        "incorrect": 0,
+        "unknown": 0
+      }
+    },
+    "triageConfusion": [],
+    "actualWorkflowActions": 0,
+    "codexTokenSavings": "UNKNOWN",
+    "codexTimeSavings": "UNKNOWN",
+    "historicalUnnecessaryInterruptions": "UNKNOWN",
+    "totalPlannedCases": 3,
+    "jevAttempted": 3,
+    "jevFailed": 0,
+    "correctExactMatch": 3,
+    "incorrectNonUnknown": 0,
+    "unknownOutputs": 0,
+    "unknownCorrect": 0,
+    "accuracyExactMatch": 1,
+    "deterministicCoverage": 0,
+    "jevIncrementalResolved": 3,
+    "jevIncrementalCoverage": 1,
+    "jevIncrementalCorrectCoverage": 1,
+    "medianSuccessfulInferenceLatencyMs": 261.596,
+    "p95SuccessfulInferenceLatencyMs": null,
+    "averageReportedCostPerAttemptUsd": 0.000017906,
+    "ownerSemanticCases": [
+      {
+        "caseId": "smoke-b",
+        "gold": "CONTINUE",
+        "decision": "CONTINUE"
+      }
+    ],
+    "ownerHardGateCases": [],
+    "triageByGold": {
+      "CODE_REGRESSION": {
+        "total": 0,
+        "correct": 0,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "TEST_ASSUMPTION": {
+        "total": 0,
+        "correct": 0,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "ENVIRONMENT": {
+        "total": 0,
+        "correct": 0,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "EXTERNAL_DEPENDENCY": {
+        "total": 0,
+        "correct": 0,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "DATA_STATE": {
+        "total": 0,
+        "correct": 0,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "DOCUMENTATION_ONLY": {
+        "total": 0,
+        "correct": 0,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      },
+      "UNKNOWN": {
+        "total": 0,
+        "correct": 0,
+        "predictions": {
+          "CODE_REGRESSION": 0,
+          "TEST_ASSUMPTION": 0,
+          "ENVIRONMENT": 0,
+          "EXTERNAL_DEPENDENCY": 0,
+          "DATA_STATE": 0,
+          "DOCUMENTATION_ONLY": 0,
+          "UNKNOWN": 0
+        }
+      }
+    }
+  }
+}
