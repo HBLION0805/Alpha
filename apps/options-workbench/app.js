@@ -183,11 +183,14 @@ function download(kind){
 
 document.addEventListener('input',event=>{
   const el=event.target;if(el.matches('input,textarea,select'))updateDraft(el);
+  if(el.id==='world-model-keyword'){ui.worldKeyword=el.value;render();return;}
   const filters={'chain-search':['chain','search'],'review-search':[null,'reviewSearch'],'news-search':[null,'newsSearch'],'macro-knowledge-search':[null,'macroKnowledgeSearch']};
   if(filters[el.id]){const [group,key]=filters[el.id];(group?ui[group]:ui)[key]=el.value;if(group)ui.chain.page=1;render();}
 });
 document.addEventListener('change',event=>{void(async()=>{
   const el=event.target;
+  const worldFilters={'world-model-theme':'worldTheme','world-model-type':'worldType','world-model-evidence':'worldEvidence'};
+  if(worldFilters[el.id]){ui[worldFilters[el.id]]=el.value;render();return;}
   if(el.id==='source-event'){ui.sourceEvent=el.value;ui.sourceMaterialIds=[];ui.sourcePackageId=null;ui.sourceDraft=null;ui.sourcePreview=null;ui.sourceBinding='';ui.sourceFact='';dirty.delete('source-comparison');render();return;}
   if(el.closest('form')?.id==='source-comparison-form'){updateDraft(el);if(el.name==='draftPath')render();return;}
   if(el.closest('form')){updateDraft(el);if(el.type==='checkbox'||['action','tradeId','fillId','entry.phase'].includes(el.name)||(el.closest('form').id==='macro-note-form'&&el.name==='phase'))render();return;}

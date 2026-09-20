@@ -1,0 +1,433 @@
+{
+  "id": "BATCH_1_WORLD_MODEL_APPROVAL_V1",
+  "version": 1,
+  "approvedBy": "OWNER",
+  "approvalRecordedAt": "2026-09-20T17:19:06.085Z",
+  "approvalTimestampMeaning": "Actual recording time of explicit Owner instructions; original message timestamp unavailable.",
+  "sourceReviewCommit": "9d85a3b2160e74a64c0074b2a0e666d8c81db26e",
+  "sourceReviewPath": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+  "sourceReviewSha256": "baea1da93a3754b3070974d8cbb19980f81c683b2ba3eb833b56dc1cca6560d1",
+  "scope": "READ_ONLY_REFERENCE_NO_TRADE_INFLUENCE",
+  "approvedItems": [
+    {
+      "candidateId": "macro.structural-fact.opec-vs-opecplus.v1",
+      "reviewLabel": "F01",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+      "reviewLabel": "F02",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.messaging-and-settlement-layers.v1",
+      "reviewLabel": "F03",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.reserve-share-versus-transactions.v1",
+      "reviewLabel": "F04",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+      "reviewLabel": "F05",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.debt-is-not-fiscal-dominance.v1",
+      "reviewLabel": "F06",
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.structural-fact.unhedged-carry-versus-hedged-assets.v1",
+      "reviewLabel": "F07",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.carry-proxy-coverage.v1",
+      "reviewLabel": "F08",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.shipping-routes-and-double-counting.v1",
+      "reviewLabel": "F09",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.vessel-tonnage-versus-cargo.v1",
+      "reviewLabel": "F10",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.structural-fact.yield-components-are-not-one-signal.v1",
+      "reviewLabel": "F11",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+      "reviewLabel": "F12",
+      "knowledgeType": "EVIDENCE_TIME_RULE",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.historical-fact.treasury-fed-accord-1951.v1",
+      "reviewLabel": "H01",
+      "knowledgeType": "HISTORICAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.historical-fact.boj-framework-exit-2024.v1",
+      "reviewLabel": "H02",
+      "knowledgeType": "HISTORICAL_FACT",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.mechanism.deliverable-oil-and-price-transmission.v1",
+      "reviewLabel": "ME01",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.mechanism.financial-access-and-trade-cost.v1",
+      "reviewLabel": "ME02",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.mechanism.debt-rollover-cost.v1",
+      "reviewLabel": "ME03",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "WELL_ESTABLISHED"
+    },
+    {
+      "candidateId": "macro.mechanism.treasury-duration-and-dollar-demand.v1",
+      "reviewLabel": "ME04",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+      "reviewLabel": "ME05",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.mechanism.yen-loss-margin-unwind.v1",
+      "reviewLabel": "ME06",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.mechanism.rerouting-vessel-time-cost.v1",
+      "reviewLabel": "ME07",
+      "knowledgeType": "MECHANISM",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "candidateId": "macro.actor-relation.eu-regulates-swift.v1",
+      "reviewLabel": "A01",
+      "knowledgeType": "ACTOR_RELATION",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.actor-relation.fed-boj-dollar-backstop.v1",
+      "reviewLabel": "A02",
+      "knowledgeType": "ACTOR_RELATION",
+      "evidenceStatus": "VERIFIED"
+    },
+    {
+      "candidateId": "macro.flow-relation.primary-net-treasury-financing.v1",
+      "reviewLabel": "FL01",
+      "knowledgeType": "STRUCTURAL_FLOW_RELATION",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.transmission-channel-candidate.macro-to-gold-channels.v1",
+      "reviewLabel": "T01",
+      "knowledgeType": "HYPOTHESIS_ONLY_CONTEXT",
+      "evidenceStatus": "ALPHA_INFERENCE"
+    },
+    {
+      "candidateId": "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1",
+      "reviewLabel": "T02",
+      "knowledgeType": "HYPOTHESIS_ONLY_CONTEXT",
+      "evidenceStatus": "ALPHA_INFERENCE"
+    },
+    {
+      "candidateId": "macro.watch.physical-oil-versus-headlines.v1",
+      "reviewLabel": "W01",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "QUESTION_NOT_ASSERTION"
+    },
+    {
+      "candidateId": "macro.watch.reserve-reallocation-or-valuation.v1",
+      "reviewLabel": "W02",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "QUESTION_NOT_ASSERTION"
+    },
+    {
+      "candidateId": "macro.watch.treasury-financing-composition.v1",
+      "reviewLabel": "W03",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "QUESTION_NOT_ASSERTION"
+    },
+    {
+      "candidateId": "macro.watch.yen-unwind-versus-comovement.v1",
+      "reviewLabel": "W04",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "QUESTION_NOT_ASSERTION"
+    },
+    {
+      "candidateId": "macro.watch.delivered-volume-or-delay.v1",
+      "reviewLabel": "W05",
+      "knowledgeType": "WATCH_QUESTION",
+      "evidenceStatus": "QUESTION_NOT_ASSERTION"
+    },
+    {
+      "candidateId": "macro.open.exportable-spare-capacity.v1",
+      "reviewLabel": "Q01",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.sanctions-actual-reallocation.v1",
+      "reviewLabel": "Q02",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.current-fiscal-dominance-identification.v1",
+      "reviewLabel": "Q03",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.global-yen-net-leverage.v1",
+      "reviewLabel": "Q04",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.open.route-specific-insurance-and-cost.v1",
+      "reviewLabel": "Q05",
+      "knowledgeType": "OPEN_QUESTION",
+      "evidenceStatus": "UNKNOWN"
+    },
+    {
+      "candidateId": "macro.conflict.malacca-2025q4-total.v1",
+      "reviewLabel": "MALACCA_CONFLICT",
+      "knowledgeType": "CONFLICT",
+      "evidenceStatus": "CONFLICTED"
+    },
+    {
+      "candidateId": "macro.conflict.eia-capacity-definition-bridge.v1",
+      "reviewLabel": "EIA_DEFINITION_BRIDGE",
+      "knowledgeType": "CONFLICT",
+      "evidenceStatus": "UNKNOWN"
+    }
+  ],
+  "approvedCandidateIds": [
+    "macro.structural-fact.opec-vs-opecplus.v1",
+    "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+    "macro.structural-fact.messaging-and-settlement-layers.v1",
+    "macro.structural-fact.reserve-share-versus-transactions.v1",
+    "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+    "macro.structural-fact.debt-is-not-fiscal-dominance.v1",
+    "macro.structural-fact.unhedged-carry-versus-hedged-assets.v1",
+    "macro.structural-fact.carry-proxy-coverage.v1",
+    "macro.structural-fact.shipping-routes-and-double-counting.v1",
+    "macro.structural-fact.vessel-tonnage-versus-cargo.v1",
+    "macro.structural-fact.yield-components-are-not-one-signal.v1",
+    "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+    "macro.historical-fact.treasury-fed-accord-1951.v1",
+    "macro.historical-fact.boj-framework-exit-2024.v1",
+    "macro.mechanism.deliverable-oil-and-price-transmission.v1",
+    "macro.mechanism.financial-access-and-trade-cost.v1",
+    "macro.mechanism.debt-rollover-cost.v1",
+    "macro.mechanism.treasury-duration-and-dollar-demand.v1",
+    "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+    "macro.mechanism.yen-loss-margin-unwind.v1",
+    "macro.mechanism.rerouting-vessel-time-cost.v1",
+    "macro.actor-relation.eu-regulates-swift.v1",
+    "macro.actor-relation.fed-boj-dollar-backstop.v1",
+    "macro.flow-relation.primary-net-treasury-financing.v1",
+    "macro.transmission-channel-candidate.macro-to-gold-channels.v1",
+    "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1",
+    "macro.watch.physical-oil-versus-headlines.v1",
+    "macro.watch.reserve-reallocation-or-valuation.v1",
+    "macro.watch.treasury-financing-composition.v1",
+    "macro.watch.yen-unwind-versus-comovement.v1",
+    "macro.watch.delivered-volume-or-delay.v1",
+    "macro.open.exportable-spare-capacity.v1",
+    "macro.open.sanctions-actual-reallocation.v1",
+    "macro.open.current-fiscal-dominance-identification.v1",
+    "macro.open.global-yen-net-leverage.v1",
+    "macro.open.route-specific-insurance-and-cost.v1",
+    "macro.conflict.malacca-2025q4-total.v1",
+    "macro.conflict.eia-capacity-definition-bridge.v1"
+  ],
+  "approvedEdges": [
+    {
+      "candidateId": "macro.edge.batch1-l1.v1",
+      "reviewLabel": "L1",
+      "evidenceStatus": "FACTUAL_DEPENDENCY"
+    },
+    {
+      "candidateId": "macro.edge.batch1-l2.v1",
+      "reviewLabel": "L2",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.edge.batch1-l3.v1",
+      "reviewLabel": "L3",
+      "evidenceStatus": "FACTUAL_DEPENDENCY"
+    },
+    {
+      "candidateId": "macro.edge.batch1-l4.v1",
+      "reviewLabel": "L4",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    },
+    {
+      "candidateId": "macro.edge.batch1-l5.v1",
+      "reviewLabel": "L5",
+      "evidenceStatus": "SUPPORTED_MECHANISM"
+    }
+  ],
+  "retyped": [
+    {
+      "candidateId": "macro.structural-fact.debt-is-not-fiscal-dominance.v1",
+      "knowledgeType": "CONCEPTUAL_BOUNDARY"
+    },
+    {
+      "candidateId": "macro.structural-fact.yield-components-are-not-one-signal.v1",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK"
+    },
+    {
+      "candidateId": "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+      "knowledgeType": "EVIDENCE_TIME_RULE"
+    },
+    {
+      "candidateId": "macro.flow-relation.primary-net-treasury-financing.v1",
+      "knowledgeType": "STRUCTURAL_FLOW_RELATION"
+    },
+    {
+      "candidateId": "macro.transmission-channel-candidate.macro-to-gold-channels.v1",
+      "knowledgeType": "HYPOTHESIS_ONLY_CONTEXT"
+    },
+    {
+      "candidateId": "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1",
+      "knowledgeType": "HYPOTHESIS_ONLY_CONTEXT"
+    }
+  ],
+  "semanticRevisions": [
+    {
+      "candidateId": "macro.actor-relation.fed-boj-dollar-backstop.v1",
+      "fromRelation": "FUNDS",
+      "toRelation": "CENTRAL_BANK_SWAP_BACKSTOP",
+      "measurementType": "AUTHORIZATION",
+      "observedCurrentDraw": null
+    }
+  ],
+  "deferred": [
+    {
+      "id": "macro.current-state.eia-capacity-definition-20251219.v1",
+      "reviewLabel": "C01",
+      "decision": "DOSSIER_ONLY_FOR_V1",
+      "reason": "Current-state lifecycle is not enabled in v1."
+    },
+    {
+      "id": "macro.current-state.cofer-2026q1-vintage-20260701.v1",
+      "reviewLabel": "C02",
+      "decision": "DOSSIER_ONLY_FOR_V1",
+      "reason": "Current-state lifecycle is not enabled in v1."
+    },
+    {
+      "id": "macro.current-state.treasury-q3-financing-estimate-20260803.v1",
+      "reviewLabel": "C03",
+      "decision": "DOSSIER_ONLY_FOR_V1",
+      "reason": "Current-state lifecycle is not enabled in v1."
+    },
+    {
+      "id": "macro.current-state.boj-announcement-20260918.v1",
+      "reviewLabel": "C04",
+      "decision": "DOSSIER_ONLY_FOR_V1",
+      "reason": "Current-state lifecycle is not enabled in v1."
+    },
+    {
+      "id": "macro.flow-relation.energy-route-delivery.v1",
+      "reviewLabel": "FL02",
+      "decision": "DOSSIER_ONLY_FOR_V1",
+      "reason": "Explicit Owner deferral."
+    },
+    {
+      "id": "macro.edge.batch1-l6.v1",
+      "reviewLabel": "L6",
+      "decision": "DOSSIER_ONLY_FOR_V1",
+      "reason": "Explicit Owner deferral; no runtime edge."
+    },
+    {
+      "id": "BATCH_1_SYNTHESIS:L7",
+      "reviewLabel": "L7",
+      "decision": "DOSSIER_ONLY",
+      "reason": "Explicit Owner deferral; no runtime edge."
+    },
+    {
+      "id": "BATCH_1_SYNTHESIS:L8",
+      "reviewLabel": "L8",
+      "decision": "DOSSIER_ONLY",
+      "reason": "Explicit Owner deferral; no runtime edge."
+    }
+  ],
+  "rejectedIds": [
+    "macro.exclusion.r01.v1",
+    "macro.exclusion.r02.v1",
+    "macro.exclusion.r03.v1",
+    "macro.exclusion.r04.v1",
+    "macro.exclusion.r05.v1",
+    "macro.exclusion.r06.v1",
+    "macro.exclusion.r07.v1",
+    "macro.exclusion.r08.v1"
+  ],
+  "dossierOnlyIds": [
+    "macro.exclusion.d01.v1",
+    "macro.exclusion.d02.v1",
+    "macro.exclusion.d03.v1",
+    "macro.exclusion.d04.v1",
+    "macro.exclusion.d05.v1",
+    "macro.exclusion.d06.v1",
+    "macro.exclusion.d07.v1"
+  ],
+  "guardrailIds": [
+    "macro.exclusion.d01.v1",
+    "macro.exclusion.d02.v1",
+    "macro.exclusion.d03.v1",
+    "macro.exclusion.d04.v1",
+    "macro.exclusion.d05.v1",
+    "macro.exclusion.d06.v1",
+    "macro.exclusion.d07.v1",
+    "macro.exclusion.r01.v1",
+    "macro.exclusion.r02.v1",
+    "macro.exclusion.r03.v1",
+    "macro.exclusion.r04.v1",
+    "macro.exclusion.r05.v1",
+    "macro.exclusion.r06.v1",
+    "macro.exclusion.r07.v1",
+    "macro.exclusion.r08.v1"
+  ],
+  "catalogPath": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json",
+  "catalogSha256": "887e71e7205c60aabc9ac1c834f406610418848e5c4b6bfba4a09decf0b13b39",
+  "catalogBytes": 146588,
+  "sourceAccessThisStage": "NONE_SAVED_REVIEW_ONLY"
+}

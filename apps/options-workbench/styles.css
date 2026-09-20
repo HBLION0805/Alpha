@@ -37,3 +37,13 @@
 .source-material-list small{display:block;color:var(--muted)}
 #source-comparisons p,#source-comparisons li,#source-comparisons code{overflow-wrap:anywhere}
 #source-comparisons blockquote{margin:8px 0;padding-left:12px;border-left:3px solid var(--border)}
+#macro-world-model{overflow-wrap:anywhere;min-width:0}
+#macro-world-model details{margin:10px 0}
+#macro-world-model details details{margin-left:10px;border-left:2px solid var(--line);padding-left:12px}
+#macro-world-model dt{font-weight:600;margin-top:12px}
+#macro-world-model dd{margin:4px 0 12px;line-height:1.6}
+#macro-world-model summary{line-height:1.7}
+#macro-world-model .wm-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#macro-world-model .wm-id{font-size:12px;overflow-wrap:anywhere}
+#macro-world-model .wm-source{border-top:1px solid var(--line);padding:12px 0}
+@media(max-width:650px){#macro-world-model .wm-filters{grid-template-columns:1fr}#macro-world-model details details{margin-left:4px;padding-left:8px}}

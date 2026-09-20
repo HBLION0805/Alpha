@@ -1,4 +1,5 @@
 import {esc,words,timestamp,safeLink} from './model.js';
+import {worldModelPanel} from './world-model.js';
 
 const tag=t=>`<span class="tag amber">${esc(words(t))}</span>`;
 const link=(url,title)=>safeLink(url)?`<a href="${esc(safeLink(url))}" target="_blank" rel="noopener noreferrer">${esc(title)}</a>`:esc(title);
@@ -45,6 +46,7 @@ export function macroPlaybookPage(s,ui){
   return `<div class="page-heading"><div><p class="eyebrow">REASONING BEFORE ACTION</p><h1>Macro playbook</h1><p class="subtitle">Turn reading into explicit questions, dated decisions and honest reviews.</p></div></div>
     <div class="notice"><div><strong>Knowledge references · strategy remains unvalidated.</strong><p>${esc(c.boundary)}</p><p>Personal thresholds and illustrated curves are inactive research ideas. The current frozen trend study and capital policy remain the decision records for that study.</p></div></div>
     <div class="grid-two"><section class="card"><h2>Use the full decision chain</h2><p>Context → expectations → ETF confirmation → contract and costs → exposure and exit plan → independent outcome → review.</p><p>Separate macro horizon, entry timeframe, holding period and option expiry. A macro view alone does not select a contract.</p><a class="button secondary" href="#guidance">Daily guidance</a> <a class="button secondary" href="#planner">Trade planner</a></section><section class="card"><h2>Evaluate two different things</h2><p>Process adherence and financial outcome are separate owner reports. Neither proves skill, luck or a profitable strategy.</p><p>${desk.notes.length} saved notes · ${desk.errors.length} record errors · ${c.items.length} reviewed entries · 0 active rules from this catalog.</p><a class="button secondary" href="#journal">Execution journal</a></section></div>
+    ${worldModelPanel(s.macroWorldModel,ui)}
     ${psychologyPanel(c)}
     <section class="card section-space">${form}</section>
     <section class="card section-space"><h2>Knowledge and corrections</h2><label class="form-field">Search knowledge<input id="macro-knowledge-search" value="${esc(ui.macroKnowledgeSearch??'')}" placeholder="Try 30/30, 72-hour, confidence or news"></label><p class="hint">${items.length} / ${c.items.length} entries. Mechanics reference means the cited mechanism was checked; it does not validate a strategy.</p>

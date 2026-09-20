@@ -1,0 +1,3733 @@
+{
+  "version": "MACRO_WORLD_MODEL_V1",
+  "status": "APPROVED_REFERENCE_ONLY",
+  "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+  "approvedAt": "2026-09-20T17:19:06.085Z",
+  "executionAllowed": false,
+  "tradingInfluence": false,
+  "currentStateEnabled": false,
+  "currentStateNotice": "Not enabled in World Model v1. See research dossier for dated research.",
+  "evidenceNotice": "Evidence grades are retained from the saved review. Owner approval is not independent source authentication or a fresh source check.",
+  "themes": [
+    {
+      "themeId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "title": "Oil"
+    },
+    {
+      "themeId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "title": "Dollar & sanctions"
+    },
+    {
+      "themeId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "title": "Debt / fiscal dominance"
+    },
+    {
+      "themeId": "M04",
+      "dossierPath": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+      "title": "Yen carry"
+    },
+    {
+      "themeId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "title": "Shipping chokepoints"
+    }
+  ],
+  "sharedEvidenceTimeRuleId": "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+  "items": [
+    {
+      "id": "macro.structural-fact.opec-vs-opecplus.v1",
+      "candidateId": "macro.structural-fact.opec-vs-opecplus.v1",
+      "reviewLabel": "F01",
+      "version": 1,
+      "themeId": "M01",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "OPEC and OPEC+",
+      "statement": "OPEC membership differs from OPEC+ cooperation. Russian participation in the latter does not make Russia an OPEC member.",
+      "limitations": [
+        "Participants and signatories can change. Membership alone does not establish production, compliance or price control."
+      ],
+      "details": {},
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S01",
+        "M01.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "OPEC / OPEC+ distinction"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+      "candidateId": "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+      "reviewLabel": "F02",
+      "version": 1,
+      "themeId": "M01",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "Policy, capacity, inventory and delivered flow",
+      "statement": "Quotas are policy arrangements; spare capacity is conditional capability; SPR inventory is a stock. Production, releases and deliveries are flows over a period. They are not interchangeable.",
+      "limitations": [
+        "Capacity definitions require a provider and version. Announcement is not implementation; inventory does not ensure immediate withdrawal."
+      ],
+      "details": {
+        "measurementTypes": [
+          "ANNOUNCEMENT",
+          "AUTHORIZATION",
+          "CAPACITY",
+          "STOCK",
+          "FLOW"
+        ]
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S02",
+        "M01.S03",
+        "M01.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M05",
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "quota is not production",
+        "spare capacity is not delivered flow",
+        "SPR stock is not release"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.messaging-and-settlement-layers.v1",
+      "candidateId": "macro.structural-fact.messaging-and-settlement-layers.v1",
+      "reviewLabel": "F03",
+      "version": 1,
+      "themeId": "M02",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "SWIFT, settlement and correspondent accounts",
+      "statement": "SWIFT supplies financial messaging, CHIPS supplies large-value dollar clearing and settlement, and correspondent accounts are ledger relationships. Messaging access is neither currency itself nor final settlement.",
+      "limitations": [
+        "Disconnection can create severe friction without proving total financial isolation. Alternative messaging does not remove other legal restrictions."
+      ],
+      "details": {},
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S03",
+        "M02.S04",
+        "M02.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "SWIFT is not USD",
+        "SWIFT is not settlement"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.reserve-share-versus-transactions.v1",
+      "candidateId": "macro.structural-fact.reserve-share-versus-transactions.v1",
+      "reviewLabel": "F04",
+      "version": 1,
+      "themeId": "M02",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "Reserve shares are not capital flows",
+      "statement": "A reserve currency share is a stock ratio within a defined scope. Changes may reflect transactions, exchange rates, valuation or methodology. COFER foreign-exchange reserves exclude gold.",
+      "limitations": [
+        "Consistent quantities and valuation adjustments are needed to identify net allocation. Aggregate shares cannot establish a country’s motive or represent all official reserves."
+      ],
+      "details": {
+        "measurementTypes": [
+          "STOCK",
+          "VALUATION_CHANGE",
+          "FLOW"
+        ]
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S01",
+        "M02.S02",
+        "M02.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "themeLinks": [
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "reserve share is not capital flow",
+        "gold valuation is not gold purchase"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+      "candidateId": "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+      "reviewLabel": "F05",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "Debt stocks and financing flows",
+      "statement": "Deficits measure a period’s fiscal balance; debt is a stock. Gross debt, debt held by the public and marketable debt have different scopes. Public holdings include the Fed. Gross auctions, private net borrowing and deficits differ.",
+      "limitations": [
+        "Match periods, cash balances, maturities and intragovernmental holdings before comparing definitions."
+      ],
+      "details": {
+        "measurementTypes": [
+          "STOCK",
+          "FLOW"
+        ]
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S01",
+        "M03.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "gross versus public debt",
+        "auction gross versus net financing"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.debt-is-not-fiscal-dominance.v1",
+      "candidateId": "macro.structural-fact.debt-is-not-fiscal-dominance.v1",
+      "reviewLabel": "F06",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "CONCEPTUAL_BOUNDARY",
+      "title": "Fiscal dominance: an identification boundary",
+      "statement": "Fiscal dominance requires evidence that fiscal financing constrains monetary policy or price-stability choices. High debt, one rate cut or QE alone is insufficient. Financial repression is a separate mechanism to identify.",
+      "limitations": [
+        "This is a conceptual boundary, not a diagnosis of the current US regime. Academic definitions vary and their versions matter."
+      ],
+      "details": {},
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S04",
+        "M03.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "high debt is not fiscal dominance",
+        "QE is not sufficient regime evidence"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.unhedged-carry-versus-hedged-assets.v1",
+      "candidateId": "macro.structural-fact.unhedged-carry-versus-hedged-assets.v1",
+      "reviewLabel": "F07",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "Unhedged yen carry versus hedged investment",
+      "statement": "Unhedged yen carry bears yen funding and foreign-asset risk. Fully hedged overseas investment and dollar-funded yen basis trades cannot automatically be classified as the same directional speculative carry.",
+      "limitations": [
+        "Match funding rates, forwards, basis, maturity and fees. Institutional domicile does not identify funding currency or net exposure."
+      ],
+      "details": {},
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "Japanese overseas investment is not all carry"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.carry-proxy-coverage.v1",
+      "candidateId": "macro.structural-fact.carry-proxy-coverage.v1",
+      "reviewLabel": "F08",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "Limits of yen carry proxies",
+      "statement": "Derivative notionals, net yen futures positions and Japanese residents’ overseas securities transactions each cover only part of the market. None alone measures global net yen carry leverage or liquidation.",
+      "limitations": [
+        "Useful statistics remain incomplete: hedges, bilateral relationships, classifications and non-bank coverage gaps matter."
+      ],
+      "details": {},
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03",
+        "M04.S05",
+        "M04.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "notional is not net exposure",
+        "MOF flow is not global unwind"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.shipping-routes-and-double-counting.v1",
+      "candidateId": "macro.structural-fact.shipping-routes-and-double-counting.v1",
+      "reviewLabel": "F09",
+      "version": 1,
+      "themeId": "M05",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "Serial shipping routes and double counting",
+      "statement": "The same cargo may cross several serial chokepoints, so their totals are not additive. Combined Suez and SUMED oil volume is not all canal shipping and cannot be extended to LNG or containers.",
+      "limitations": [
+        "Match cargo, route, period, direction and scope. Do not choose a preferred value from the unresolved Malacca quarter."
+      ],
+      "details": {},
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M05.S01",
+        "M05.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M01"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "chokepoint totals are not additive",
+        "Suez plus SUMED scope"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.vessel-tonnage-versus-cargo.v1",
+      "candidateId": "macro.structural-fact.vessel-tonnage-versus-cargo.v1",
+      "reviewLabel": "F10",
+      "version": 1,
+      "themeId": "M05",
+      "knowledgeType": "STRUCTURAL_FACT",
+      "title": "Vessel tonnage is not cargo volume",
+      "statement": "PC/UMS and other vessel-volume-related tonnage, cargo weight, value, transits and ton-miles measure different things. Locks, draft and reservation capacity do not measure cargo already shipped.",
+      "limitations": [
+        "Some saved sources had unknown publication dates or index excerpts only. This approves measurement distinctions, not a current operating status."
+      ],
+      "details": {
+        "measurementTypes": [
+          "CAPACITY",
+          "ANNOUNCEMENT",
+          "FLOW"
+        ]
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M05.S05",
+        "M05.S06",
+        "M05.S11"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M01"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "PC/UMS is not cargo mass",
+        "capacity is not transported cargo"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.yield-components-are-not-one-signal.v1",
+      "candidateId": "macro.structural-fact.yield-components-are-not-one-signal.v1",
+      "reviewLabel": "F11",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "MEASUREMENT_FRAMEWORK",
+      "title": "Long-yield measurement framework",
+      "statement": "Nominal long yields can be decomposed into expected short rates and a term premium. Components are model estimates; a higher nominal yield alone does not identify higher expected policy rates.",
+      "limitations": [
+        "Models, tenor and sample affect estimates. No current estimate or directional rule is supplied. Detailed TIPS-spread decomposition was not promoted."
+      ],
+      "details": {},
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M04"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "nominal versus real rates",
+        "term premium model boundary"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+      "candidateId": "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+      "reviewLabel": "F12",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "EVIDENCE_TIME_RULE",
+      "title": "Shared evidence-time rule",
+      "statement": "Keep policy announcement, legal effectiveness, actual transaction or observation, and evidence receipt clocks separate. Announcement does not prove application to every transaction; retrieval time is not source observation time.",
+      "limitations": [
+        "Specific legal effect still requires the underlying document. Unknown clocks remain unknown; this reference does not change existing evaluators."
+      ],
+      "details": {
+        "scope": "ALPHA_SHARED_REFERENCE",
+        "clockKinds": [
+          "ANNOUNCED_AT",
+          "EFFECTIVE_AT",
+          "OBSERVED_AT",
+          "RECEIVED_AT"
+        ]
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S01",
+        "M03.S02",
+        "M05.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [
+        "announced is not effective",
+        "retrieval time is not observation time"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "macro.historical-fact.treasury-fed-accord-1951.v1",
+      "candidateId": "macro.historical-fact.treasury-fed-accord-1951.v1",
+      "reviewLabel": "H01",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "HISTORICAL_FACT",
+      "title": "Treasury–Fed Accord, 1951",
+      "statement": "The 1951 Treasury–Fed Accord changed the fiscal–monetary relationship inherited from wartime Treasury rate arrangements.",
+      "limitations": [
+        "A historical institutional arrangement is not the current US regime."
+      ],
+      "details": {
+        "eventPeriod": "1951-03",
+        "whatChanged": "Institutional separation of government debt management and monetary policy.",
+        "whyStructurallyRelevant": "A dated example for distinguishing financing constraints from policy autonomy."
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.historical-fact.boj-framework-exit-2024.v1",
+      "candidateId": "macro.historical-fact.boj-framework-exit-2024.v1",
+      "reviewLabel": "H02",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "HISTORICAL_FACT",
+      "title": "BOJ framework change, 2024",
+      "statement": "In March 2024 the BOJ exited its negative-rate and yield-curve-control framework. The prior framework does not describe every later period.",
+      "limitations": [
+        "This does not provide current financing rates. Saved support includes readable dates and labels in a policy-history chart."
+      ],
+      "details": {
+        "eventPeriod": "2024-03",
+        "whatChanged": "A change in the monetary operating framework.",
+        "whyStructurallyRelevant": "An institutional boundary when interpreting historical yen carry samples."
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.mechanism.deliverable-oil-and-price-transmission.v1",
+      "candidateId": "macro.mechanism.deliverable-oil-and-price-transmission.v1",
+      "reviewLabel": "ME01",
+      "version": 1,
+      "themeId": "M01",
+      "knowledgeType": "MECHANISM",
+      "title": "Deliverable oil and macro transmission",
+      "statement": "Deliverable supply loss may transmit through inventories, product costs and real incomes into inflation, activity and policy; intermediate steps cannot be skipped.",
+      "limitations": [
+        "Not a fixed direction, probability or trade trigger. Current occurrence requires independent observations."
+      ],
+      "details": {
+        "trigger": "Persistent loss of physical supply or delivery",
+        "firstOrderEffect": "Inventories or substitute supply face pressure; spot and product costs may rise",
+        "secondOrderEffects": [
+          "Household purchasing power and company margins change",
+          "Cost diffusion and expectations may affect policy; a rate hike is not inevitable"
+        ],
+        "counterforces": [
+          "Weaker demand",
+          "Alternative supply, inventory release or route restoration",
+          "Subsidies, margin absorption and anchored expectations"
+        ],
+        "observableConfirmation": [
+          "Shipments, arrivals and inventories",
+          "Crack spreads and energy components",
+          "Non-energy prices, wages, expectations and central-bank explanations"
+        ],
+        "falsification": [
+          "Deliveries recover and inventories rebuild without cost diffusion",
+          "Demand weakness explains more than the supply hypothesis"
+        ],
+        "timeHorizon": "Physical: days to months; downstream and policy: weeks to quarters, with no fixed lag",
+        "scopeNote": "Cost constraints have stronger support than the entire conditional macro chain."
+      },
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S05",
+        "M01.S06",
+        "M05.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M03",
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.mechanism.financial-access-and-trade-cost.v1",
+      "candidateId": "macro.mechanism.financial-access-and-trade-cost.v1",
+      "reviewLabel": "ME02",
+      "version": 1,
+      "themeId": "M02",
+      "knowledgeType": "MECHANISM",
+      "title": "Financial access and trade costs",
+      "statement": "Legal restrictions can change which transactions intermediaries serve. Financing costs and actual business volumes depend on enforcement, permissions and substitution.",
+      "limitations": [
+        "Not a fixed direction, probability or trade trigger. Current occurrence requires independent observations."
+      ],
+      "details": {
+        "trigger": "Applicable account or transaction restrictions change",
+        "firstOrderEffect": "Intermediaries cannot or will not process particular transactions",
+        "secondOrderEffects": [
+          "Capital or trade access costs may rise",
+          "Payment routes, net receipts or deliveries may adjust"
+        ],
+        "counterforces": [
+          "Legal permissions",
+          "Alternative intermediaries or markets",
+          "Customer and commodity rerouting"
+        ],
+        "observableConfirmation": [
+          "Applicable law and enforcement events",
+          "Payment refusals, credit costs and matched trade quantities"
+        ],
+        "falsification": [
+          "Business volumes and costs remain unchanged",
+          "An export discount exists without evidence of a global shortage"
+        ],
+        "timeHorizon": "Days to quarters; legal effect and economic impact are separate"
+      },
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S06",
+        "M02.S07",
+        "M01.S10"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.mechanism.debt-rollover-cost.v1",
+      "candidateId": "macro.mechanism.debt-rollover-cost.v1",
+      "reviewLabel": "ME03",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "MECHANISM",
+      "title": "Fixed-rate debt rollover costs",
+      "statement": "Contractual interest costs on existing fixed-rate debt do not all reset immediately with market yields. Higher funding costs enter interest payments through new borrowing and refinancing.",
+      "limitations": [
+        "Not a fixed direction, probability or trade trigger. Current occurrence requires independent observations."
+      ],
+      "details": {
+        "trigger": "New or rollover funding rates exceed replaced costs",
+        "firstOrderEffect": "Costs change on maturing or newly borrowed amounts",
+        "secondOrderEffects": [
+          "Effective interest cost changes gradually",
+          "Cash and future financing needs may change"
+        ],
+        "counterforces": [
+          "Long maturities lock earlier rates",
+          "Revenue or growth improves",
+          "Primary fiscal adjustment"
+        ],
+        "observableConfirmation": [
+          "Maturity profile, refinancing and effective rates",
+          "Actual net interest and cash flows"
+        ],
+        "falsification": [
+          "Multiplying today’s ten-year yield by all debt is not valid",
+          "Maturity structure or revenues offset pressure"
+        ],
+        "timeHorizon": "Quarters to years, according to the maturity profile",
+        "scopeNote": "Only fixed-rate contractual interest and refinancing arithmetic is well established. Bond market prices can revalue immediately. Floating and indexed terms require separate treatment; crisis, inflation and FX consequences are not facts."
+      },
+      "evidenceStatus": "WELL_ESTABLISHED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S01",
+        "M03.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.mechanism.treasury-duration-and-dollar-demand.v1",
+      "candidateId": "macro.mechanism.treasury-duration-and-dollar-demand.v1",
+      "reviewLabel": "ME04",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "MECHANISM",
+      "title": "Treasury duration and dollar-asset demand",
+      "statement": "Net issuance composition and safe-asset demand jointly affect private duration absorption. Yield reactions are not a one-variable function of total debt.",
+      "limitations": [
+        "Not a fixed direction, probability or trade trigger. Current occurrence requires independent observations."
+      ],
+      "details": {
+        "trigger": "Treasury net issuance, tenor composition or investor demand changes",
+        "firstOrderEffect": "Private duration absorption or demand for dollar safe assets changes",
+        "secondOrderEffects": [
+          "Term premiums and financing conditions may change",
+          "Reserve, collateral and allocation uses interact"
+        ],
+        "counterforces": [
+          "Domestic savings and official demand",
+          "Shorter issuance maturity",
+          "Central-bank holdings and safe-haven demand"
+        ],
+        "observableConfirmation": [
+          "Net duration supply, tenor and holder composition",
+          "Multiple premium estimates and funding-market evidence"
+        ],
+        "falsification": [
+          "Demand expands with supply and absorption remains orderly",
+          "One weak auction is mistaken for a lasting fiscal crisis"
+        ],
+        "timeHorizon": "Days to quarters; network structure over years",
+        "scopeNote": "The asset role is structural; marginal yield and currency effects remain conditional."
+      },
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S02",
+        "M03.S03",
+        "M03.S07",
+        "M02.S01"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M04"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+      "candidateId": "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+      "reviewLabel": "ME05",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "MECHANISM",
+      "title": "FX hedging and institutional allocation",
+      "statement": "Cross-currency funding and overseas allocation depend on matched-tenor funding, forwards, basis and liabilities. Policy-rate differentials do not equal hedged returns.",
+      "limitations": [
+        "Not a fixed direction, probability or trade trigger. Current occurrence requires independent observations."
+      ],
+      "details": {
+        "trigger": "Matched-tenor funding spreads, FX forwards, basis or target returns change",
+        "firstOrderEffect": "Hedge costs and portfolio net returns change",
+        "secondOrderEffects": [
+          "Institutions may change hedges or allocation",
+          "Currency funding and bond demand may change"
+        ],
+        "counterforces": [
+          "Liability matching and regulation",
+          "Changes already expected",
+          "Natural currency income and central-bank backstops"
+        ],
+        "observableConfirmation": [
+          "Matched funding and forward or basis data",
+          "Institution-specific transactions and hedges"
+        ],
+        "falsification": [
+          "Policy rates or resident net sales alone are used to infer carry",
+          "Hedged returns and allocations do not change"
+        ],
+        "timeHorizon": "Funding: hours to days; allocation: days to quarters"
+      },
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S03",
+        "M04.S05",
+        "M04.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.mechanism.yen-loss-margin-unwind.v1",
+      "candidateId": "macro.mechanism.yen-loss-margin-unwind.v1",
+      "reviewLabel": "ME06",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "MECHANISM",
+      "title": "Yen losses, margin and possible unwind",
+      "statement": "Yen appreciation can hurt unhedged short-yen portfolios. Tight funding, margin or risk constraints may amplify losses into cross-asset deleveraging; voluntary reductions are also possible.",
+      "limitations": [
+        "Not a fixed direction, probability or trade trigger. Current occurrence requires independent observations."
+      ],
+      "details": {
+        "trigger": "Unhedged yen-funded portfolios suffer currency, asset or volatility shocks",
+        "firstOrderEffect": "Net asset value, collateral or risk-limit headroom declines",
+        "secondOrderEffects": [
+          "Margin is posted or risk and positions are reduced",
+          "Selling target assets and buying back funding currency may amplify liquidity pressure"
+        ],
+        "counterforces": [
+          "Adequate capital and collateral",
+          "Currency hedges",
+          "Funding rollover, backstop liquidity and other buyers"
+        ],
+        "observableConfirmation": [
+          "Observable reductions in short-yen exposure",
+          "Funding or margin stress",
+          "Linked actual cross-asset position reductions"
+        ],
+        "falsification": [
+          "Portfolios are hedged or funding constraints do not bind",
+          "Only price co-movement, with no position or funding evidence",
+          "An alternative such as US macro news explains more"
+        ],
+        "timeHorizon": "Hours to weeks; no guaranteed liquidation time",
+        "scopeNote": "Loss arithmetic is distinct from forced liquidation. Historical BIS examples are not evidence of a current unwind."
+      },
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.mechanism.rerouting-vessel-time-cost.v1",
+      "candidateId": "macro.mechanism.rerouting-vessel-time-cost.v1",
+      "reviewLabel": "ME07",
+      "version": 1,
+      "themeId": "M05",
+      "knowledgeType": "MECHANISM",
+      "title": "Rerouting, vessel time and costs",
+      "statement": "Rerouting can increase voyage time and fuel, absorb effective fleet capacity and affect freight and delivery. Effects require route, vessel and demand evidence.",
+      "limitations": [
+        "Not a fixed direction, probability or trade trigger. Current occurrence requires independent observations."
+      ],
+      "details": {
+        "trigger": "An original route is constrained and vessels actually use a longer route",
+        "firstOrderEffect": "Voyage time, fuel and fleet occupancy increase",
+        "secondOrderEffects": [
+          "Delivery frequency and inventory needs change",
+          "Freight and downstream costs may change"
+        ],
+        "counterforces": [
+          "Idle vessels and new ships",
+          "Speed adjustment",
+          "Weaker demand, inventories and margin absorption"
+        ],
+        "observableConfirmation": [
+          "Actual rerouting, ton-miles and arrivals",
+          "Matched-route freight and destination inventories"
+        ],
+        "falsification": [
+          "Only headlines, without route or delivery changes",
+          "Port congestion or demand better explains costs"
+        ],
+        "timeHorizon": "Voyages: days to weeks; downstream: weeks to quarters",
+        "scopeNote": "Some UNCTAD support was limited to saved index excerpts. No cost coefficient, uniform delay or inflation elasticity was recalculated."
+      },
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M05.S02",
+        "M05.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.actor-relation.eu-regulates-swift.v1",
+      "candidateId": "macro.actor-relation.eu-regulates-swift.v1",
+      "reviewLabel": "A01",
+      "version": 1,
+      "themeId": "M02",
+      "knowledgeType": "ACTOR_RELATION",
+      "title": "EU legal authority and SWIFT",
+      "statement": "SWIFT is subject to applicable EU and Belgian law. Its restrictions on designated entities must be distinguished from the role of lawmakers.",
+      "limitations": [
+        "Not every sanction has the same scope; this does not say all banks are excluded or treat company action as an arbitrary instruction from any country."
+      ],
+      "details": {
+        "actorA": "European Union legal authorities",
+        "relationType": "REGULATES",
+        "actorB": "SWIFT",
+        "evidenceType": "OFFICIAL_STATEMENT",
+        "asOf": "2026-09-20",
+        "sourceDate": null,
+        "asOfMeaning": "Original research retrieval date, not a new law’s effective date. Page update time unknown."
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": [],
+      "canonicalRefs": [
+        "macro.structural-fact.messaging-and-settlement-layers.v1"
+      ]
+    },
+    {
+      "id": "macro.actor-relation.fed-boj-dollar-backstop.v1",
+      "candidateId": "macro.actor-relation.fed-boj-dollar-backstop.v1",
+      "reviewLabel": "A02",
+      "version": 1,
+      "themeId": "M02",
+      "knowledgeType": "ACTOR_RELATION",
+      "title": "Central-bank dollar swap backstop",
+      "statement": "The Fed–BOJ central-bank swap relationship provides a dollar backstop. BOJ lending to local institutions is distinct from the Fed’s relationship with the central bank.",
+      "limitations": [
+        "Facility authorization or existence is not an observed current draw, universal access, or direct financing of non-banks to buy equities."
+      ],
+      "details": {
+        "actorA": "Federal Reserve",
+        "relationType": "CENTRAL_BANK_SWAP_BACKSTOP",
+        "actorB": "Bank of Japan",
+        "relationQualifier": "BACKSTOP_AUTHORIZATION_NOT_OBSERVED_DISBURSEMENT",
+        "measurementType": "AUTHORIZATION",
+        "evidenceType": "OFFICIAL_STATEMENT",
+        "asOf": "2026-09-20",
+        "sourceDate": null,
+        "asOfMeaning": "Original FAQ retrieval date; update time unknown. Not a dated policy change.",
+        "observedCurrentDraw": null
+      },
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S08",
+        "M04.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M04"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.flow-relation.primary-net-treasury-financing.v1",
+      "candidateId": "macro.flow-relation.primary-net-treasury-financing.v1",
+      "reviewLabel": "FL01",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "STRUCTURAL_FLOW_RELATION",
+      "title": "Primary Treasury financing relation",
+      "statement": "Treasury receives cash from issuance and repays maturing securities. Net financing differs from gross auctions, secondary turnover and changes in cash balances.",
+      "limitations": [
+        "A structural relationship, not a current flow observation. Secondary purchases do not directly provide new Treasury cash."
+      ],
+      "details": {
+        "from": "Primary-market investors",
+        "to": "US Treasury",
+        "object": "USD financing against marketable securities",
+        "flowType": "DEBT_FUNDING",
+        "measurementType": "FLOW",
+        "period": null,
+        "unit": "USD per specified financing period",
+        "magnitude": null,
+        "flowStatus": "STRUCTURAL_RELATION_NOT_CURRENT_OBSERVATION"
+      },
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S02",
+        "M03.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": [],
+      "canonicalRefs": [
+        "macro.structural-fact.debt-stock-and-financing-definitions.v1"
+      ]
+    },
+    {
+      "id": "macro.transmission-channel-candidate.macro-to-gold-channels.v1",
+      "candidateId": "macro.transmission-channel-candidate.macro-to-gold-channels.v1",
+      "reviewLabel": "T01",
+      "version": 1,
+      "themeId": "M01",
+      "knowledgeType": "HYPOTHESIS_ONLY_CONTEXT",
+      "title": "Hypothesis: macro channels to gold",
+      "statement": "Energy, fiscal and funding shocks may affect gold through real yields, the dollar, safe-haven preferences or cash needs. This supplies no fixed GLD direction.",
+      "limitations": [
+        "External sources support intermediate channels, not a verified GLD coefficient. Central-bank physical gold purchases are not GLD creations or redemptions."
+      ],
+      "details": {
+        "intermediateVariables": [
+          "Real yields and their measurement",
+          "USD funding demand",
+          "Safe-haven preferences and cash shortfalls"
+        ],
+        "targetAssetClass": "Gold / GLD",
+        "mechanism": "Channels may oppose each other; match evidence available at the time instead of inferring prices from a headline.",
+        "counterforces": [
+          "A stronger dollar",
+          "Selling to obtain cash",
+          "Gold and ETF-specific supply and demand"
+        ],
+        "requiredObservations": [
+          "Matched real-rate and liquidity evidence",
+          "Physical gold quantities and GLD flows separately",
+          "Contemporaneous macro and funding evidence"
+        ],
+        "falsification": [
+          "Intermediate variables do not change or gold-specific factors explain the result"
+        ],
+        "sourceTheme": [
+          "M01",
+          "M02",
+          "M03",
+          "M04",
+          "M05"
+        ]
+      },
+      "evidenceStatus": "ALPHA_INFERENCE",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S05",
+        "M03.S07",
+        "M02.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1",
+      "candidateId": "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1",
+      "reviewLabel": "T02",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "HYPOTHESIS_ONLY_CONTEXT",
+      "title": "Hypothesis: funding channels to risk assets",
+      "statement": "Funding, margin and risk-budget changes may transmit to risk assets including BTC and IBIT. Direct yen-funded exposure remains unknown.",
+      "limitations": [
+        "Neither carry nor shipping narratives establish BTC/IBIT funding sources. ETF and underlying-asset data remain separate."
+      ],
+      "details": {
+        "intermediateVariables": [
+          "Funding costs and basis",
+          "Collateral and margin",
+          "Risk budgets and actual position reductions"
+        ],
+        "targetAssetClass": "Broad risk assets including BTC / IBIT",
+        "mechanism": "Liquidity and leverage may transmit indirectly; no direction, probability or trade permission follows.",
+        "counterforces": [
+          "Backstop liquidity and other buyers",
+          "Crypto-specific regulation, supply and demand",
+          "Unlevered buyers"
+        ],
+        "requiredObservations": [
+          "Actual funding and leverage relationships",
+          "Position-reduction evidence",
+          "Separate BTC and IBIT flows"
+        ],
+        "falsification": [
+          "Funding and positions stay unchanged while assets reprice independently"
+        ],
+        "sourceTheme": [
+          "M02",
+          "M03",
+          "M04",
+          "M05"
+        ]
+      },
+      "evidenceStatus": "ALPHA_INFERENCE",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03",
+        "M02.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.watch.physical-oil-versus-headlines.v1",
+      "candidateId": "macro.watch.physical-oil-versus-headlines.v1",
+      "reviewLabel": "W01",
+      "version": 1,
+      "themeId": "M01",
+      "knowledgeType": "WATCH_QUESTION",
+      "title": "Actual oil delivery",
+      "statement": "Is deliverable physical oil falling, or are only quotas, headlines or demand changing?",
+      "limitations": [
+        "One price does not identify a war’s effect",
+        "Inventory is not immediate release capacity"
+      ],
+      "details": {
+        "whyItMatters": "Establish the physical link before extending an inflation story.",
+        "confirmingEvidence": [
+          "Matched production, quota, shipment and inventory periods",
+          "Regional and product spreads plus demand"
+        ],
+        "whatItCannotProve": [
+          "One price does not identify a war’s effect",
+          "Inventory is not immediate release capacity"
+        ],
+        "knownLag": "Monthly and quarterly transport estimates and weekly inventories are asynchronous and revisable.",
+        "reviewTrigger": [
+          "New production decisions",
+          "New shipment/inventory evidence or material contradictions"
+        ],
+        "automaticMonitoring": false
+      },
+      "evidenceStatus": "QUESTION_NOT_ASSERTION",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M01.S02",
+        "M01.S06",
+        "M01.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.watch.reserve-reallocation-or-valuation.v1",
+      "candidateId": "macro.watch.reserve-reallocation-or-valuation.v1",
+      "reviewLabel": "W02",
+      "version": 1,
+      "themeId": "M02",
+      "knowledgeType": "WATCH_QUESTION",
+      "title": "Reserve allocation versus valuation",
+      "statement": "Are reserve changes caused by allocation, valuation or denominator changes?",
+      "limitations": [
+        "Cannot quantify the entire dollar funding network",
+        "Cannot infer each central bank’s political intent"
+      ],
+      "details": {
+        "whyItMatters": "Separate portfolio transactions from reporting effects.",
+        "confirmingEvidence": [
+          "Consistent quantities, currency values and valuation adjustments",
+          "Method revisions and attributed reserve-manager statements"
+        ],
+        "whatItCannotProve": [
+          "Cannot quantify the entire dollar funding network",
+          "Cannot infer each central bank’s political intent"
+        ],
+        "knownLag": "Quarterly releases typically lag by about a quarter; currency and gold denominators differ.",
+        "reviewTrigger": [
+          "New reserve vintages",
+          "Method or valuation revisions"
+        ],
+        "automaticMonitoring": false
+      },
+      "evidenceStatus": "QUESTION_NOT_ASSERTION",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M02.S02",
+        "M02.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "themeLinks": [
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.watch.treasury-financing-composition.v1",
+      "candidateId": "macro.watch.treasury-financing-composition.v1",
+      "reviewLabel": "W03",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "WATCH_QUESTION",
+      "title": "Treasury financing composition",
+      "statement": "Has Treasury net financing composition or the rollover burden materially changed?",
+      "limitations": [
+        "A single auction cannot establish a fiscal crisis",
+        "Cannot automatically identify fiscal dominance"
+      ],
+      "details": {
+        "whyItMatters": "Gross auction totals alone do not identify new financing pressure.",
+        "confirmingEvidence": [
+          "Quarterly plans against actual financing",
+          "Maturities, effective interest rates and net interest",
+          "Multiple term-premium estimates"
+        ],
+        "whatItCannotProve": [
+          "A single auction cannot establish a fiscal crisis",
+          "Cannot automatically identify fiscal dominance"
+        ],
+        "knownLag": "Quarterly plans, monthly actuals and models have different lags. Forecasts are not advance actuals.",
+        "reviewTrigger": [
+          "New refunding or financing statements",
+          "Actual outcomes or cash-assumption revisions"
+        ],
+        "automaticMonitoring": false
+      },
+      "evidenceStatus": "QUESTION_NOT_ASSERTION",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M03.S01",
+        "M03.S02",
+        "M03.S03",
+        "M03.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M04"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.watch.yen-unwind-versus-comovement.v1",
+      "candidateId": "macro.watch.yen-unwind-versus-comovement.v1",
+      "reviewLabel": "W04",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "WATCH_QUESTION",
+      "title": "Yen carry evidence",
+      "statement": "Is yen-funded leverage actually unwinding, or are asset prices merely moving together?",
+      "limitations": [
+        "Proxies do not cover all OTC net exposure",
+        "Resident sales may reflect rebalancing or liability matching"
+      ],
+      "details": {
+        "whyItMatters": "Identify funding and positions before attributing cross-asset losses.",
+        "confirmingEvidence": [
+          "Observable changes in short-yen positions",
+          "Basis, funding and margin stress",
+          "Linked cross-asset selling"
+        ],
+        "whatItCannotProve": [
+          "Proxies do not cover all OTC net exposure",
+          "Resident sales may reflect rebalancing or liability matching"
+        ],
+        "knownLag": "COT usually reports Tuesday positions on Friday, subject to holidays; MOF is weekly/monthly and BIS slower.",
+        "reviewTrigger": [
+          "Verifiable positions after policy or FX shocks",
+          "Funding or margin-condition changes"
+        ],
+        "automaticMonitoring": false
+      },
+      "evidenceStatus": "QUESTION_NOT_ASSERTION",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03",
+        "M04.S05",
+        "M04.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.watch.delivered-volume-or-delay.v1",
+      "candidateId": "macro.watch.delivered-volume-or-delay.v1",
+      "reviewLabel": "W05",
+      "version": 1,
+      "themeId": "M05",
+      "knowledgeType": "WATCH_QUESTION",
+      "title": "Shipping delivery versus delay",
+      "statement": "Is disruption changing delivered volume, or mainly delivery time and cost?",
+      "limitations": [
+        "Partial returns do not establish full-route safety",
+        "Premiums do not establish net profits",
+        "Different chokepoint totals cannot be added"
+      ],
+      "details": {
+        "whyItMatters": "Distinguish lost cargo flow from fleet occupancy and delay.",
+        "confirmingEvidence": [
+          "Routes by cargo type, transits or cargo quantities and arrivals",
+          "Freight, insurance and official draft restrictions",
+          "Destination inventories"
+        ],
+        "whatItCannotProve": [
+          "Partial returns do not establish full-route safety",
+          "Premiums do not establish net profits",
+          "Different chokepoint totals cannot be added"
+        ],
+        "knownLag": "Announcement and incident verification lags differ from monthly/quarterly flows; no real-time coverage is established.",
+        "reviewTrigger": [
+          "New safety or restoration evidence",
+          "Actual flows, draft or hydrology updates"
+        ],
+        "automaticMonitoring": false
+      },
+      "evidenceStatus": "QUESTION_NOT_ASSERTION",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M05.S01",
+        "M05.S02",
+        "M05.S03",
+        "M05.S04",
+        "M05.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.open.exportable-spare-capacity.v1",
+      "candidateId": "macro.open.exportable-spare-capacity.v1",
+      "reviewLabel": "Q01",
+      "version": 1,
+      "themeId": "M01",
+      "knowledgeType": "OPEN_QUESTION",
+      "title": "Exportable spare capacity",
+      "statement": "How much spare oil can currently be exported quickly and delivered to buyers?",
+      "limitations": [
+        "Lagged quarterly estimates",
+        "No independent engineering measurements",
+        "Extraction does not refresh the underlying observation date"
+      ],
+      "details": {
+        "whyUnresolved": "Nominal capability, facility condition and transport constraints do not form a real-time delivery measure.",
+        "whatEvidenceWouldResolve": [
+          "Same-vintage engineering availability, ports/pipelines and actual shipments",
+          "A bridge between old and new capacity definitions"
+        ],
+        "sourceLimitations": [
+          "Lagged quarterly estimates",
+          "No independent engineering measurements",
+          "Extraction does not refresh the underlying observation date"
+        ],
+        "resolvedBy": null
+      },
+      "evidenceStatus": "UNKNOWN",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M01.S03",
+        "M01.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "themeLinks": [
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.open.sanctions-actual-reallocation.v1",
+      "candidateId": "macro.open.sanctions-actual-reallocation.v1",
+      "reviewLabel": "Q02",
+      "version": 1,
+      "themeId": "M02",
+      "knowledgeType": "OPEN_QUESTION",
+      "title": "Actual sanctions impact",
+      "statement": "What are sanctions’ actual effects on trade quantities, costs and reallocation?",
+      "limitations": [
+        "Legal applicability still needs expert review",
+        "Messaging volumes or reserve shares cannot substitute for actual effects"
+      ],
+      "details": {
+        "whyUnresolved": "Execution, permissions, rerouting and incomplete records prevent attribution from legal text alone.",
+        "whatEvidenceWouldResolve": [
+          "Legal permissions/enforcement and matched transaction data",
+          "Research distinguishing valuation, gross/net quantities and duplicated paths"
+        ],
+        "sourceLimitations": [
+          "Legal applicability still needs expert review",
+          "Messaging volumes or reserve shares cannot substitute for actual effects"
+        ],
+        "resolvedBy": null
+      },
+      "evidenceStatus": "UNKNOWN",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M02.S06",
+        "M02.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.open.current-fiscal-dominance-identification.v1",
+      "candidateId": "macro.open.current-fiscal-dominance-identification.v1",
+      "reviewLabel": "Q03",
+      "version": 1,
+      "themeId": "M03",
+      "knowledgeType": "OPEN_QUESTION",
+      "title": "Current fiscal dominance",
+      "statement": "Does the current regime meet a defined fiscal dominance identification test?",
+      "limitations": [
+        "Insufficient current identification evidence",
+        "Institutional working papers are not official policy determinations"
+      ],
+      "details": {
+        "whyUnresolved": "Debt size and policy co-movement do not establish monetary subordination.",
+        "whatEvidenceWouldResolve": [
+          "Policy/legal constraints and decision evidence",
+          "Fiscal adjustment and inflation expectations",
+          "Multiple models and comparisons of constrained versus unconstrained investors"
+        ],
+        "sourceLimitations": [
+          "Insufficient current identification evidence",
+          "Institutional working papers are not official policy determinations"
+        ],
+        "resolvedBy": null
+      },
+      "evidenceStatus": "UNKNOWN",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M03.S04",
+        "M03.S05",
+        "M03.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.open.global-yen-net-leverage.v1",
+      "candidateId": "macro.open.global-yen-net-leverage.v1",
+      "reviewLabel": "Q04",
+      "version": 1,
+      "themeId": "M04",
+      "knowledgeType": "OPEN_QUESTION",
+      "title": "Global net yen carry exposure",
+      "statement": "What is current global net yen carry leverage and its final asset exposure?",
+      "limitations": [
+        "Historical BIS estimates are not current totals",
+        "CFTC/MOF are partial proxies; direct BTC/IBIT shares remain unknown"
+      ],
+      "details": {
+        "whyUnresolved": "Bilateral OTC hedges, netting, final uses and non-bank balance sheets are not fully observable.",
+        "whatEvidenceWouldResolve": [
+          "Positions and margin matched to funding currencies and hedges",
+          "Estimates with explicit coverage and double-counting limits"
+        ],
+        "sourceLimitations": [
+          "Historical BIS estimates are not current totals",
+          "CFTC/MOF are partial proxies; direct BTC/IBIT shares remain unknown"
+        ],
+        "resolvedBy": null
+      },
+      "evidenceStatus": "UNKNOWN",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03",
+        "M04.S05",
+        "M04.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.open.route-specific-insurance-and-cost.v1",
+      "candidateId": "macro.open.route-specific-insurance-and-cost.v1",
+      "reviewLabel": "Q05",
+      "version": 1,
+      "themeId": "M05",
+      "knowledgeType": "OPEN_QUESTION",
+      "title": "Route-specific insurance and net costs",
+      "statement": "What are actual insurance, waiting, rerouting costs and net results on a specified shipping route?",
+      "limitations": [
+        "Safety and operating announcements do not supply complete accounts",
+        "No current net profit or universal cost elasticity"
+      ],
+      "details": {
+        "whyUnresolved": "Individual policies, refusal terms, company exposures and matched voyages are missing.",
+        "whatEvidenceWouldResolve": [
+          "Dated actual policies, fees and voyages by route and vessel type",
+          "Coverage exclusions, claims and company capital usage"
+        ],
+        "sourceLimitations": [
+          "Safety and operating announcements do not supply complete accounts",
+          "No current net profit or universal cost elasticity"
+        ],
+        "resolvedBy": null
+      },
+      "evidenceStatus": "UNKNOWN",
+      "evidenceBasis": "SAVED_DOSSIER_QUESTION_NOT_NEW_VERIFICATION",
+      "sourceRefs": [
+        "M05.S03",
+        "M05.S04",
+        "M05.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "aliases": [],
+      "supersedes": []
+    },
+    {
+      "id": "macro.conflict.malacca-2025q4-total.v1",
+      "candidateId": "macro.conflict.malacca-2025q4-total.v1",
+      "reviewLabel": "MALACCA_CONFLICT",
+      "version": 1,
+      "themeId": "M05",
+      "themeLinks": [
+        "M01"
+      ],
+      "knowledgeType": "CONFLICT",
+      "title": "Malacca: unresolved source totals",
+      "statement": "The saved source gives different Malacca totals for the same quarter. Neither is canonical.",
+      "evidenceStatus": "CONFLICTED",
+      "status": "CONFLICTED",
+      "limitations": [
+        "Arithmetic consistency does not substitute for a publisher correction."
+      ],
+      "details": {
+        "conflictType": "WITHIN_SOURCE_VALUE_CONFLICT",
+        "canonicalValue": null,
+        "claimA": {
+          "statement": "Table 2 total: 24.9.",
+          "value": 24.9,
+          "sourceRef": "M05.S01",
+          "locator": "Table2 / Malacca / 2025Q4"
+        },
+        "claimB": {
+          "statement": "Table 3 total: 24.0; components 18.0 + 6.9 equal 24.9.",
+          "value": 24,
+          "sourceRef": "M05.S01",
+          "locator": "Table3 / 2025Q4"
+        },
+        "whyUnresolved": "Two totals in one source and period; no publisher correction or method explanation resolves them.",
+        "resolutionEvidenceRequired": "Publisher correction or explicit method explanation.",
+        "period": "2025-Q4",
+        "unit": "million barrels/day",
+        "measurementType": "FLOW"
+      },
+      "sourceRefs": [
+        "M05.S01"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "id": "macro.conflict.eia-capacity-definition-bridge.v1",
+      "candidateId": "macro.conflict.eia-capacity-definition-bridge.v1",
+      "reviewLabel": "EIA_DEFINITION_BRIDGE",
+      "version": 1,
+      "themeId": "M01",
+      "themeLinks": [
+        "M05"
+      ],
+      "knowledgeType": "CONFLICT",
+      "title": "EIA: unbridged capacity definitions",
+      "statement": "Old and new capacity definitions have not been bridged into a comparable series.",
+      "evidenceStatus": "UNKNOWN",
+      "status": "UNBRIDGED",
+      "limitations": [
+        "Different definition vintages are not simultaneous current facts. The dated C01 candidate remains excluded."
+      ],
+      "details": {
+        "conflictType": "DEFINITION_VERSION_CHANGE_NOT_SIMULTANEOUS_FACT_DISPUTE",
+        "canonicalValue": null,
+        "claimA": {
+          "statement": "Old 30/90 shorthand; complete old constraints were not reconstructed.",
+          "sourceRef": "M01.S03",
+          "locator": "M01 H/N: old-definition caveat; not a new full-text verification"
+        },
+        "claimB": {
+          "statement": "The December 19, 2025 EIA definition changes response periods; see the deferred C01 research candidate.",
+          "sourceRef": "M01.S03",
+          "locator": "M01 H and source map M/S03"
+        },
+        "whyUnresolved": "Full old/new methodology and comparable series are missing. Do not silently rewrite historical definitions.",
+        "resolutionEvidenceRequired": "Complete old/new methods and comparable series."
+      },
+      "sourceRefs": [
+        "M01.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    }
+  ],
+  "edges": [
+    {
+      "id": "macro.edge.batch1-l1.v1",
+      "candidateId": "macro.edge.batch1-l1.v1",
+      "reviewLabel": "L1",
+      "version": 1,
+      "fromTheme": "M05",
+      "toTheme": "M01",
+      "mechanismRef": "macro.mechanism.deliverable-oil-and-price-transmission.v1",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "statement": "Routes and limited bypasses constrain deliverable energy; this is a logistics dependency, not a fixed price direction.",
+      "timeHorizon": "Hours to months; new facilities take longer",
+      "counterforces": [
+        "Inventories and alternative routes or origins",
+        "The constraint may not affect the cargo in question"
+      ],
+      "limitations": [
+        "A bounded cross-theme relationship, not a current event or trading direction."
+      ],
+      "sourceRefs": [
+        "M05.S02",
+        "M01.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "priceEffectStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "id": "macro.edge.batch1-l2.v1",
+      "candidateId": "macro.edge.batch1-l2.v1",
+      "reviewLabel": "L2",
+      "version": 1,
+      "fromTheme": "M02",
+      "toTheme": "M01",
+      "mechanismRef": "macro.mechanism.financial-access-and-trade-cost.v1",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "statement": "Legal and intermediary access can change energy trading and payment costs; total embargo or inevitable lost supply does not follow.",
+      "timeHorizon": "Days to quarters",
+      "counterforces": [
+        "Permissions and alternative intermediaries",
+        "Trade rerouting preserves quantity"
+      ],
+      "limitations": [
+        "A bounded cross-theme relationship, not a current event or trading direction."
+      ],
+      "sourceRefs": [
+        "M02.S06",
+        "M02.S07",
+        "M01.S10"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.edge.batch1-l3.v1",
+      "candidateId": "macro.edge.batch1-l3.v1",
+      "reviewLabel": "L3",
+      "version": 1,
+      "fromTheme": "M03",
+      "toTheme": "M02",
+      "mechanismRef": "macro.mechanism.treasury-duration-and-dollar-demand.v1",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "statement": "Treasury securities have roles in dollar reserves and collateral. Marginal price responses remain conditional.",
+      "timeHorizon": "Days to years",
+      "counterforces": [
+        "Other assets and domestic absorption",
+        "Institutional risk and demand changes"
+      ],
+      "limitations": [
+        "A bounded cross-theme relationship, not a current event or trading direction."
+      ],
+      "sourceRefs": [
+        "M02.S01",
+        "M03.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json",
+      "priceEffectStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "id": "macro.edge.batch1-l4.v1",
+      "candidateId": "macro.edge.batch1-l4.v1",
+      "reviewLabel": "L4",
+      "version": 1,
+      "fromTheme": "M02",
+      "toTheme": "M04",
+      "mechanismRef": "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "statement": "FX swaps and central-bank dollar backstops connect cross-currency financing. Hedging needs and speculative carry must be distinguished.",
+      "timeHorizon": "Hours to quarters",
+      "counterforces": [
+        "Hedges and basis",
+        "Backstop liquidity and natural hedges"
+      ],
+      "limitations": [
+        "A bounded cross-theme relationship, not a current event or trading direction."
+      ],
+      "sourceRefs": [
+        "M04.S03",
+        "M04.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.edge.batch1-l5.v1",
+      "candidateId": "macro.edge.batch1-l5.v1",
+      "reviewLabel": "L5",
+      "version": 1,
+      "fromTheme": "M03",
+      "toTheme": "M04",
+      "mechanismRef": "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "statement": "Treasury yields and matched-tenor hedge costs may change Japanese institutions’ allocations; there is no single policy-rate-differential formula.",
+      "timeHorizon": "Days to quarters",
+      "counterforces": [
+        "Liability matching and regulation",
+        "Priced expectations and currency hedges"
+      ],
+      "limitations": [
+        "A bounded cross-theme relationship, not a current event or trading direction."
+      ],
+      "sourceRefs": [
+        "M04.S03",
+        "M04.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "approvedBy": "OWNER",
+      "approvedAt": "2026-09-20T17:19:06.085Z",
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    }
+  ],
+  "guardrails": [
+    {
+      "id": "macro.exclusion.d01.v1",
+      "reviewLabel": "D01",
+      "disposition": "DOSSIER_ONLY",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "interpretation": "Research tool failures and engineering logs",
+      "reason": "Process evidence stays in the dossier; source coverage limitations remain attached to affected items.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "docs/research/macro/batch-1/BATCH_1_SYNTHESIS.md",
+          "section": "8",
+          "anchor": "8-source-coverage-and-remaining-gaps"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "docs/research/macro/batch-1/BATCH_1_SYNTHESIS.md",
+          "section": "9",
+          "anchor": "9-usage-storage-and-validation-boundary"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.d02.v1",
+      "reviewLabel": "D02",
+      "disposition": "DOSSIER_ONLY",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "interpretation": "Background timelines and one-off quantities",
+      "reason": "Only the selected institutional history is promoted; incidental samples are not lasting parameters.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.d03.v1",
+      "reviewLabel": "D03",
+      "disposition": "DOSSIER_ONLY",
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "interpretation": "Superseded definitions and old forecasts",
+      "reason": "Dated history is not a current definition. Preserve the capacity-definition bridge gap.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "M",
+          "anchor": "m-source-map"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "M",
+          "anchor": "m-source-map"
+        }
+      ],
+      "sourceRefs": [
+        "M01.S03",
+        "M01.S07",
+        "M05.S08",
+        "M05.S09"
+      ],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.d04.v1",
+      "reviewLabel": "D04",
+      "disposition": "DOSSIER_ONLY",
+      "themeLinks": [
+        "M05"
+      ],
+      "interpretation": "Undated operational notices as current state",
+      "reason": "Unknown publication and supersession prevent a current-state claim; measurement distinctions may still be supported.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "M",
+          "anchor": "m-source-map"
+        }
+      ],
+      "sourceRefs": [
+        "M05.S05",
+        "M05.S06"
+      ],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.d05.v1",
+      "reviewLabel": "D05",
+      "disposition": "DOSSIER_ONLY",
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "interpretation": "Transient production announcements, incident counts and single voyages",
+      "reason": "Dated examples are not automatically long-lived knowledge.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "sourceRefs": [
+        "M01.S02",
+        "M05.S03",
+        "M05.S04"
+      ],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.d06.v1",
+      "reviewLabel": "D06",
+      "disposition": "DOSSIER_ONLY",
+      "themeLinks": [
+        "M02",
+        "M03",
+        "M05"
+      ],
+      "interpretation": "Specific model estimates without full methodology review",
+      "reason": "Institutional analysis is not official policy or a universal elasticity.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "sourceRefs": [
+        "M02.S09",
+        "M03.S06",
+        "M05.S08"
+      ],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.d07.v1",
+      "reviewLabel": "D07",
+      "disposition": "DOSSIER_ONLY",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "interpretation": "Large asset-direction grids and long L7/L8 chains",
+      "reason": "Only T01/T02 remain as attributed hypotheses; weak links are not multiplied.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "docs/research/macro/batch-1/BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.r01.v1",
+      "reviewLabel": "R01",
+      "disposition": "REJECT_FROM_RUNTIME",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "interpretation": "Hidden national motives and political value rankings",
+      "reason": "Do not infer a unified government or investor personality from insufficient evidence.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.r02.v1",
+      "reviewLabel": "R02",
+      "disposition": "REJECT_FROM_RUNTIME",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "interpretation": "Oil up = Fed hike; conflict = gold up; high debt = currency decline",
+      "reason": "These shortcuts omit demand, policy, horizon, funding and asset-specific counterforces.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "docs/research/macro/batch-1/BATCH_1_SYNTHESIS.md",
+          "section": "5",
+          "anchor": "5-common-market-transmission"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.r03.v1",
+      "reviewLabel": "R03",
+      "disposition": "REJECT_FROM_RUNTIME",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M05"
+      ],
+      "interpretation": "Quota/capacity/inventory/authorization = actual flow",
+      "reason": "Preserve measurement kinds and periods. Reserve-share changes are not net capital flows; quarterly values are not permanent structures.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.r04.v1",
+      "reviewLabel": "R04",
+      "disposition": "REJECT_FROM_RUNTIME",
+      "themeLinks": [
+        "M04"
+      ],
+      "interpretation": "Yen up + stocks down = carry unwind or smart money selling",
+      "reason": "Price co-movement does not identify funding sources, net positions or liquidation paths.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M04",
+          "path": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.r05.v1",
+      "reviewLabel": "R05",
+      "disposition": "REJECT_FROM_RUNTIME",
+      "themeLinks": [
+        "M02"
+      ],
+      "interpretation": "SWIFT removal = total isolation; alternative messages = immunity; reserve-share change = dollar collapse",
+      "reason": "Messaging, legal enforcement, denominators and flows are distinct.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M02",
+          "path": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.r06.v1",
+      "reviewLabel": "R06",
+      "disposition": "REJECT_FROM_RUNTIME",
+      "themeLinks": [
+        "M03"
+      ],
+      "interpretation": "High debt = fiscal dominance; any QE = fiscal submission",
+      "reason": "Institutional identification and counterfactual evidence are missing. Q03 remains UNKNOWN.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M03",
+          "path": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.r07.v1",
+      "reviewLabel": "R07",
+      "disposition": "REJECT_FROM_RUNTIME",
+      "themeLinks": [
+        "M05"
+      ],
+      "interpretation": "Chokepoint totals are additive; tonnage = cargo weight; insurance premium = profit",
+      "reason": "Avoid duplicate cargo counts, unit confusion and unsupported net-profit conclusions.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    },
+    {
+      "id": "macro.exclusion.r08.v1",
+      "reviewLabel": "R08",
+      "disposition": "REJECT_FROM_RUNTIME",
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "interpretation": "Choose the convenient conflict value or rewrite old capacity definitions",
+      "reason": "Arithmetic plausibility is not a source correction. Retain both claims and version gaps.",
+      "assertion": false,
+      "notInverseFact": true,
+      "reviewRef": "docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json",
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M01",
+          "path": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "sourceRefs": [],
+      "approvalRef": "src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json"
+    }
+  ],
+  "sourceMap": [
+    {
+      "sourceRef": "M01.S01",
+      "dossierId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "primary, institutional history",
+      "savedCitation": "[OPEC Brief history](https://www.opec.org/brief-history.html)，页面更新日 UNKNOWN；1960s/1970s/2010s",
+      "savedSupportAndLimitations": "成立和合作历史及自述目标；非独立评价",
+      "urls": [
+        "https://www.opec.org/brief-history.html"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S02",
+      "dossierId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "primary",
+      "savedCitation": "[OPEC 6 September 2026](https://www.opec.org/pr-detail/613-6-september-2026.html)，2026-09-06，正文决定段",
+      "savedSupportAndLimitations": "七国及十月安排；配额图表数字未读，不评履约",
+      "urls": [
+        "https://www.opec.org/pr-detail/613-6-september-2026.html"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S03",
+      "dossierId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "primary statistics methodology",
+      "savedCitation": "[EIA capacity definitions](https://www.eia.gov/todayinenergy/detail.php?id=66904)，2025-12-19，三个定义小节",
+      "savedSupportAndLimitations": "新口径；估计不等于工程可用性测试",
+      "urls": [
+        "https://www.eia.gov/todayinenergy/detail.php?id=66904"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S04",
+      "dossierId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "primary",
+      "savedCitation": "[DOE SPR facts](https://www.energy.gov/hgeo/opr/spr-quick-facts)，库存截至2026-08-20，页面完整短表；[Origins](https://www.energy.gov/hgeo/opr/spr-origins)，检索节选，更新 UNKNOWN",
+      "savedSupportAndLimitations": "库存、站点、建立背景；Origins 仅检索节选，未声称完整阅读",
+      "urls": [
+        "https://www.energy.gov/hgeo/opr/spr-quick-facts",
+        "https://www.energy.gov/hgeo/opr/spr-origins"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S05",
+      "dossierId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "primary official assessment",
+      "savedCitation": "[Fed July MPR](https://www.federalreserve.gov/monetarypolicy/2026-07-mpr-part1.htm)，2026-07-10，能源/消费/海外价格段",
+      "savedSupportAndLimitations": "对通胀和活动的官方分析；不是九月数据；转引 BEA/Haver 非独立副本",
+      "urls": [
+        "https://www.federalreserve.gov/monetarypolicy/2026-07-mpr-part1.htm"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S06",
+      "dossierId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "primary forecast",
+      "savedCitation": "[EIA September STEO](https://www.eia.gov/outlooks/steo/)，2026-09-09，cutoff 09-03，overview/table",
+      "savedSupportAndLimitations": "观测与预测须分开；网页有 distillate crack spread 更正，不使用被更正旧数",
+      "urls": [
+        "https://www.eia.gov/outlooks/steo/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S09",
+      "dossierId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S09",
+      "category": "primary compiled estimates",
+      "savedCitation": "[EIA Energy Security](https://www.eia.gov/outlooks/steo/report/energysecurity/article.php)，2026-08-12，Table 2",
+      "savedSupportAndLimitations": "航运量转引 Vortexa 等；季度与统计口径、Malacca源内冲突见 M05",
+      "urls": [
+        "https://www.eia.gov/outlooks/steo/report/energysecurity/article.php"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S10",
+      "dossierId": "M01",
+      "dossierPath": "docs/research/macro/batch-1/M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S10",
+      "category": "primary legal explanation",
+      "savedCitation": "[OFAC FAQ 1150](https://ofac.treasury.gov/faqs/1150)，2023-12-22 determination；读取现行页",
+      "savedSupportAndLimitations": "对外国金融机构的制裁风险，非所有石油禁运证明；M02详述",
+      "urls": [
+        "https://ofac.treasury.gov/faqs/1150"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S01",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "institutional research",
+      "savedCitation": "[Fed dollar role 2025](https://www.federalreserve.gov/econres/notes/feds-notes/the-international-role-of-the-u-s-dollar-2025-edition-20250718.html)，2025-07-18，储备/计价/银行/历史段",
+      "savedSupportAndLimitations": "网络层次；大多2024及更早数据，不判断2026即时份额",
+      "urls": [
+        "https://www.federalreserve.gov/econres/notes/feds-notes/the-international-role-of-the-u-s-dollar-2025-edition-20250718.html"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S02",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "primary statistics",
+      "savedCitation": "[IMF COFER brief](https://data.imf.org/en/news/imf%20data%20brief%20july%201)，2026-07-01，2026Q1；[COFER metadata](https://data.imf.org/Datasets/COFER)，方法/更新入口，更新日 UNKNOWN",
+      "savedSupportAndLimitations": "当期存量份额及统计范围；不是净购买；具体方法变更未重建历史序列",
+      "urls": [
+        "https://data.imf.org/en/news/imf%20data%20brief%20july%201",
+        "https://data.imf.org/Datasets/COFER"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S03",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "primary operator/legal explanation",
+      "savedCitation": "[SWIFT and sanctions](https://www.swift.com/es/node/11306)，更新 UNKNOWN，2012/2022/2025说明段",
+      "savedSupportAndLimitations": "断开及适用法规；经营者说明不是完整法律意见",
+      "urls": [
+        "https://www.swift.com/es/node/11306"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S04",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "primary operator",
+      "savedCitation": "[SWIFT Who we are](https://www.swift.com/about-us/who-we-are)，更新 UNKNOWN，Does Swift move money FAQ",
+      "savedSupportAndLimitations": "报文与资金区别",
+      "urls": [
+        "https://www.swift.com/about-us/who-we-are"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S05",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "primary operator/industry",
+      "savedCitation": "[CHIPS](https://www.theclearinghouse.org/payment-systems/chips)，更新 UNKNOWN，产品职能/最终性段",
+      "savedSupportAndLimitations": "清算、流动性节约；营销性能指标不当独立实测",
+      "urls": [
+        "https://www.theclearinghouse.org/payment-systems/chips"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S06",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "primary legal",
+      "savedCitation": "[OFAC FAQ 998](https://ofac.treasury.gov/faqs/998)，2022-03-02、更新2023-05-19；[2026-06-11更新](https://ofac.treasury.gov/faqs/updated/2026-06-11)，CAPTA段",
+      "savedSupportAndLimitations": "交易限制/不可用资产/拒付区别；许可和名单需另查，冻结非没收",
+      "urls": [
+        "https://ofac.treasury.gov/faqs/998",
+        "https://ofac.treasury.gov/faqs/updated/2026-06-11"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S07",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "primary legal",
+      "savedCitation": "[OFAC FAQ 1150](https://ofac.treasury.gov/faqs/1150)，2023-12-22 determination；[FAQ1151](https://ofac.treasury.gov/faqs/1151)，2024-06-12更新",
+      "savedSupportAndLimitations": "外国机构风险及术语；不量化执行效果",
+      "urls": [
+        "https://ofac.treasury.gov/faqs/1150",
+        "https://ofac.treasury.gov/faqs/1151"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S08",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "category": "primary facility documentation",
+      "savedCitation": "[Fed swap FAQ](https://www.federalreserve.gov/monetarypolicy/bst_swapfaqs.htm)，更新 UNKNOWN，常设/历史分节",
+      "savedSupportAndLimitations": "2013常设及风险分担；旧临时额度不视为当前额度",
+      "urls": [
+        "https://www.federalreserve.gov/monetarypolicy/bst_swapfaqs.htm"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S09",
+      "dossierId": "M02",
+      "dossierPath": "docs/research/macro/batch-1/M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S09",
+      "category": "institutional research",
+      "savedCitation": "[Weiss gold reserves abstract](https://www.federalreserve.gov/econres/ifdp/exploring-central-bank-gold-purchases-and-the-dollars-role-in-international-reserves.htm)，2025-09，仅摘要",
+      "savedSupportAndLimitations": "多样化与去美元区别；未复现估计，不冒充全文回归审计",
+      "urls": [
+        "https://www.federalreserve.gov/econres/ifdp/exploring-central-bank-gold-purchases-and-the-dollars-role-in-international-reserves.htm"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S01",
+      "dossierId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "primary fiscal projection",
+      "savedCitation": "[CBO 2026–2036](https://www.cbo.gov/publication/62105)，2026-02；债务定义、table1-3说明、净利息、基线变更段；[summary](https://www.cbo.gov/publication/61882)，检索摘要",
+      "savedSupportAndLimitations": "概念与条件预测；不是实时收支",
+      "urls": [
+        "https://www.cbo.gov/publication/62105",
+        "https://www.cbo.gov/publication/61882"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S02",
+      "dossierId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "primary financing release",
+      "savedCitation": "[Treasury borrowing estimates](https://home.treasury.gov/news/press-releases/sb0584)，2026-08-03，Q2实际、Q3/Q4预测及SOMA脚注",
+      "savedSupportAndLimitations": "借款口径与现金假设；非总债务",
+      "urls": [
+        "https://home.treasury.gov/news/press-releases/sb0584"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S03",
+      "dossierId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "primary debt-office plan",
+      "savedCitation": "[Treasury refunding](https://home.treasury.gov/news/press-releases/sb0590)，2026-08-05，期限表、bills/TIPS段",
+      "savedSupportAndLimitations": "已宣布安排；并非所有未来拍卖已经执行",
+      "urls": [
+        "https://home.treasury.gov/news/press-releases/sb0590"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S04",
+      "dossierId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "institutional history",
+      "savedCitation": "[Treasury–Fed Accord](https://www.federalreservehistory.org/essays/treasury-fed-accord)，written as of 2013-11-22，1942/1951正文",
+      "savedSupportAndLimitations": "制度历史，不能用来断言2026相同",
+      "urls": [
+        "https://www.federalreservehistory.org/essays/treasury-fed-accord"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S05",
+      "dossierId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "institutional research",
+      "savedCitation": "[BIS Paper65](https://www.bis.org/publications/paper-65-threat-fiscal-dominance)，2012-05-31，编辑导言已读，未通读312页",
+      "savedSupportAndLimitations": "多种机制/不确定性，而非统一结论",
+      "urls": [
+        "https://www.bis.org/publications/paper-65-threat-fiscal-dominance"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S06",
+      "dossierId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "academic/institutional",
+      "savedCitation": "[IMF WP26/160](https://www.elibrary.imf.org/view/journals/001/2026/160/001.2026.issue-160-en.xml)，2026-07-31，搜索返回摘要/部分正文，直读403",
+      "savedSupportAndLimitations": "模型、17个发达经济体历史量化思路；未复现、未核全表；不作当前美国regime证据",
+      "urls": [
+        "https://www.elibrary.imf.org/view/journals/001/2026/160/001.2026.issue-160-en.xml"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S07",
+      "dossierId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "institutional methodology",
+      "savedCitation": "[NYFed term premia](https://libertystreeteconomics.newyorkfed.org/2014/05/treasury-term-premia-1961-present/)，2014-05-12，方法与跨模型差异正文",
+      "savedSupportAndLimitations": "分解及模型风险；文中当时更新频率不冒充2026服务保证",
+      "urls": [
+        "https://libertystreeteconomics.newyorkfed.org/2014/05/treasury-term-premia-1961-present/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S08",
+      "dossierId": "M03",
+      "dossierPath": "docs/research/macro/batch-1/M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "category": "institutional research",
+      "savedCitation": "[Fed dollar role](https://www.federalreserve.gov/econres/notes/feds-notes/the-international-role-of-the-u-s-dollar-2025-edition-20250718.html)，2025-07-18，美债持有/制度段",
+      "savedSupportAndLimitations": "储备需求结构，统计有滞后",
+      "urls": [
+        "https://www.federalreserve.gov/econres/notes/feds-notes/the-international-role-of-the-u-s-dollar-2025-edition-20250718.html"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S01",
+      "dossierId": "M04",
+      "dossierPath": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "primary policy",
+      "savedCitation": "[BOJ 2026-09-18 decision](https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf)，第1–3页及脚注；[reference](https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918b.pdf)，同日",
+      "savedSupportAndLimitations": "新目标、生效日、异议和官方展望；不是当前市场资金成本或全球清算记录",
+      "urls": [
+        "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf",
+        "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918b.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S02",
+      "dossierId": "M04",
+      "dossierPath": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "institutional event research",
+      "savedCitation": "[BIS Bulletin90](https://www.bis.org/publications/bulletin-90-market-turbulence-and-carry-trade-unwind-august-2024)，2024-08-27；[8页PDF](https://www.bis.org/publications/bulletin-90-market-turbulence-and-carry-trade-unwind-august-2024.pdf)，key takeaways/触发与规模段",
+      "savedSupportAndLimitations": "2024事件、杠杆放大、估算局限；非2026持仓数据",
+      "urls": [
+        "https://www.bis.org/publications/bulletin-90-market-turbulence-and-carry-trade-unwind-august-2024",
+        "https://www.bis.org/publications/bulletin-90-market-turbulence-and-carry-trade-unwind-august-2024.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S03",
+      "dossierId": "M04",
+      "dossierPath": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "institutional methodology",
+      "savedCitation": "[BIS derivatives statistics](https://www.bis.org/publications/qr-202512/international-finance-through-lens-bis-statistics-derivatives-markets)，2025-12，FX工具、统计与cross-currency/carry小节",
+      "savedSupportAndLimitations": "hedging、basis、carry差异及测量限制；名义额不代表净风险",
+      "urls": [
+        "https://www.bis.org/publications/qr-202512/international-finance-through-lens-bis-statistics-derivatives-markets"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S04",
+      "dossierId": "M04",
+      "dossierPath": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "primary institutional history",
+      "savedCitation": "[BOJ 2025-02-19 charts](https://www.boj.or.jp/en/about/press/koen_2025/data/ko250219a2.pdf)，Chart16/17，第9个PDF页；日期/标签文本",
+      "savedSupportAndLimitations": "1999/2001/2013/2016/2024政策史；不采用无关股票回报图",
+      "urls": [
+        "https://www.boj.or.jp/en/about/press/koen_2025/data/ko250219a2.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S05",
+      "dossierId": "M04",
+      "dossierPath": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "primary statistics",
+      "savedCitation": "[MOF securities index](https://www.mof.go.jp/english/policy/international_policy/reference/itn_transactions_in_securities/index.htm)，09-17更新；[weekly PDF](https://www.mof.go.jp/english/policy/international_policy/reference/itn_transactions_in_securities/week.pdf)，2026-09-17，日期/分类/修订脚注",
+      "savedSupportAndLimitations": "指定机构、居住地分类与观察期；动态URL会更新；未可靠对齐数表，不抄净额",
+      "urls": [
+        "https://www.mof.go.jp/english/policy/international_policy/reference/itn_transactions_in_securities/index.htm",
+        "https://www.mof.go.jp/english/policy/international_policy/reference/itn_transactions_in_securities/week.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S06",
+      "dossierId": "M04",
+      "dossierPath": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "primary facility",
+      "savedCitation": "[Fed swaps FAQ](https://www.federalreserve.gov/monetarypolicy/bst_swapfaqs.htm)，更新时间 UNKNOWN，常设与转贷风险段",
+      "savedSupportAndLimitations": "央行美元后备机制，非当前提款额",
+      "urls": [
+        "https://www.federalreserve.gov/monetarypolicy/bst_swapfaqs.htm"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S07",
+      "dossierId": "M04",
+      "dossierPath": "docs/research/macro/batch-1/M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "primary statistical methodology",
+      "savedCitation": "[CFTC COT guide](https://publicreporting.cftc.gov/stories/s/COT-Help/p2fg-u73y/)，更新日 UNKNOWN；[release FAQ](https://www.cftc.gov/es/node/128971)，官方索引充分节选，频率/假日段",
+      "savedSupportAndLimitations": "观察日与发布日不同；没有读取当前日元净头寸，不把净持仓变化全归因交易，分类也可能变化",
+      "urls": [
+        "https://publicreporting.cftc.gov/stories/s/COT-Help/p2fg-u73y/",
+        "https://www.cftc.gov/es/node/128971"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S01",
+      "dossierId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "primary energy statistics",
+      "savedCitation": "[EIA Energy security](https://www.eia.gov/outlooks/steo/report/energysecurity/article.php)，2026-08-12，Tables2–4及方法脚注",
+      "savedSupportAndLimitations": "2026Q2分通道油量；Table2/3的2025Q4 Malacca总量冲突保留",
+      "urls": [
+        "https://www.eia.gov/outlooks/steo/report/energysecurity/article.php"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S02",
+      "dossierId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "primary energy geography",
+      "savedCitation": "[EIA World oil transit chokepoints](https://www.eia.gov/international/content/analysis/special_topics/World_Oil_Transit_Chokepoints/)，2026-03-03；五处通道、替代路径、过去容量与数据口径",
+      "savedSupportAndLimitations": "地理/替代/油气区别；历史量与可用管道能力不移作9月即时数据",
+      "urls": [
+        "https://www.eia.gov/international/content/analysis/special_topics/World_Oil_Transit_Chokepoints/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S03",
+      "dossierId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "primary safety",
+      "savedCitation": "[IMO stop attacks](https://www.imo.org/en/mediacentre/pressbriefings/pages/stop-attacking-ships-and-seafarers-imo-secretary-general.aspx)，2026-09-16，事件核验与秘书长声明",
+      "savedSupportAndLimitations": "核验次数、伤亡及安全立场；不证明封锁程度或每起归责",
+      "urls": [
+        "https://www.imo.org/en/mediacentre/pressbriefings/pages/stop-attacking-ships-and-seafarers-imo-secretary-general.aspx"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S04",
+      "dossierId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "primary operator",
+      "savedCitation": "[SCA OOCL Portugal](https://www.suezcanal.gov.eg/french/MediaCenter/News/Pages/Sca_16-9-2026_2.aspx)，2026-09-16；法文正文、累计集装箱船净吨位",
+      "savedSupportAndLimitations": "一次通行和2026年1—8月经营数据；恢复评价归属SCA，不代表独立安全验证",
+      "urls": [
+        "https://www.suezcanal.gov.eg/french/MediaCenter/News/Pages/Sca_16-9-2026_2.aspx"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S05",
+      "dossierId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "primary operator",
+      "savedCitation": "[ACP higher transits](https://pancanal.com/en/panama-canal-reports-higher-transits-and-tonnage-while-preparing-to-meet-demand-amid-expected-el-nino-conditions/)，精确发布日 UNKNOWN；正文2025-10—2026-06",
+      "savedSupportAndLimitations": "累计船次与PC/UMS；未采用口径不明的“日均35”或把项目当当前能力",
+      "urls": [
+        "https://pancanal.com/en/panama-canal-reports-higher-transits-and-tonnage-while-preparing-to-meet-demand-amid-expected-el-nino-conditions/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S06",
+      "dossierId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "primary operator notice",
+      "savedCitation": "[ACP reduced precipitation measures](https://pancanal.com/en/panama-canal-adopts-additional-measures-to-address-reduced-precipitation-in-the-canal-watershed/)，精确发布日 UNKNOWN；正文列2026-09-03/09-15实施安排",
+      "savedSupportAndLimitations": "预约与吃水政策；未证明每个自然日实际执行/后续是否调整",
+      "urls": [
+        "https://pancanal.com/en/panama-canal-adopts-additional-measures-to-address-reduced-precipitation-in-the-canal-watershed/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S07",
+      "dossierId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "institutional research",
+      "savedCitation": "[UNCTAD 2025 review](https://unctad.org/publication/review-maritime-transport-2025)，2025-09-24；[overview](https://unctad.org/news/maritime-trade-under-pressure-growth-set-stall-2025)",
+      "savedSupportAndLimitations": "官方索引/节选支持距离、运力及贸易区分；正文403、PDF读取失败，不声称通读或采用2025预测作实绩",
+      "urls": [
+        "https://unctad.org/publication/review-maritime-transport-2025",
+        "https://unctad.org/news/maritime-trade-under-pressure-growth-set-stall-2025"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S11",
+      "dossierId": "M05",
+      "dossierPath": "docs/research/macro/batch-1/M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S11",
+      "category": "primary unit definition",
+      "savedCitation": "[ACP tolls assessment](https://www.pancanal.com/wp-content/uploads/2023/06/Tolls-Assessment_May-2023.pdf)，2023-05；可读索引中吨位定义",
+      "savedSupportAndLimitations": "PC/UMS容积计量，不是货重；不使用2023费率作为2026成本",
+      "urls": [
+        "https://www.pancanal.com/wp-content/uploads/2023/06/Tolls-Assessment_May-2023.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    }
+  ]
+}

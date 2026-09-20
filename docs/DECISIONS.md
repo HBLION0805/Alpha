@@ -1,5 +1,16 @@
 # Alpha Architecture Decisions
 
+## September 20, 2026 — Explicit approval before macro reference loading
+
+Load only the Owner-selected Batch 1 subset through a versioned approval record;
+preserve the original candidate pack unchanged. F06/F11/F12 retain their approved
+conceptual/measurement/time-rule types; swap backstops are authorizations, and
+FL01 describes a structural financing relation. Conditional and Alpha-inference
+grades, UNKNOWN questions and unresolved conflicts survive retrieval. Excluded
+interpretations are separately labelled reasoning guardrails, not inverse facts.
+No current-state item, deferred flow/edge or trading consumer is enabled. See
+[Macro World Model v1](specifications/MACRO_WORLD_MODEL_V1.md).
+
 ## September 19, 2026 — Freeze thesis conditions in the existing trade ledger
 
 Use optional versioned conditions on new registrations, with separate append-only

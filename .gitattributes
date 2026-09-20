@@ -7,3 +7,7 @@ docs/OPTIONS_ROBINHOOD_HEARTBEAT_PROMPT.txt text eol=lf
 docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V5.json text eol=lf
 docs/OPTIONS_MARKET_CONTEXT_HEARTBEAT_RESTORE_V6.json text eol=lf
 docs/OPTIONS_DAILY_GUIDANCE_HOST_V1.json text eol=lf
+# Preserve the immutable review hash and approved catalog bytes across checkouts.
+docs/research/macro/batch-1/review/BATCH_1_KNOWLEDGE_CANDIDATES.json text eol=lf
+src/engines/macro-world-model/BATCH_1_WORLD_MODEL_APPROVAL_V1.json text eol=lf
+src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json text eol=lf

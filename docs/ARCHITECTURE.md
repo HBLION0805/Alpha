@@ -1,5 +1,16 @@
 # Alpha Architecture
 
+## Approved Macro World Model reference — September 20, 2026
+
+The [v1 specification](specifications/MACRO_WORLD_MODEL_V1.md) defines a bounded
+read-only catalog and a separate Owner approval artifact. `macro-world-model.mjs`
+checks pinned approval/catalog bytes and exact IDs before returning references.
+The shared deterministic lookup serves a loopback GET and Macro playbook only.
+Research dossiers and the immutable candidate pack are deep references, never
+runtime inputs. Existing trade projections run before this independent state
+component; no decision engine consumes it. Current-state refresh, classification,
+scoring and automatic monitoring are not implemented.
+
 ## Trade thesis within manual plans — September 19, 2026
 
 `OptionsTradeThesis` adds deterministic condition checks alongside the unchanged

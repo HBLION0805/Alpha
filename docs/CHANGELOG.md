@@ -1,5 +1,14 @@
 # Alpha Changelog
 
+## September 20, 2026 — Approved Batch 1 macro references
+
+- Add an immutable approval record and compact read-only catalog: 38 items,
+  five cross-theme links and 15 separate exclusion guardrails.
+- Add deterministic theme/keyword/type/evidence lookup and collapsed Macro
+  playbook sections with original source and review lineage.
+- Retain current-state deferrals, unresolved conflicts and hypothesis labels.
+  No news classification, market calls, scheduling or trading decisions change.
+
 ## September 19, 2026 — Original trade thesis and independent exits
 
 - Add optional planner drafts and immutable thesis conditions to new single-leg

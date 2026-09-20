@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 import { createWorkbenchData, workbenchError } from './lib/options-workbench-data.mjs';
 import { parseChainSurveyJson } from '../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import { startPublicContextService } from './options-context-service.mjs';
+import { readWorldModel } from './lib/macro-world-model.mjs';
 
 const assetRoot=resolve(import.meta.dirname,'../apps/options-workbench');
 const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','decision-cards.js','etf-setup.js','sensitivities.js','candidate-checks.js','cost-desk.js','capital-policy.js','gold-framework.js','macro-context.js','focused-news.js','event-research.js','bar-quality.js','snapshot-paper.js','position-watch.js','event-reactions.js','spread-review.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
@@ -15,6 +16,8 @@ assets.set('/macro-playbook.js',['macro-playbook.js','text/javascript']);
 assets.set('/trade-thesis.js',['trade-thesis.js','text/javascript']);
 assets.set('/source-comparison.js',['source-comparison.js','text/javascript']);
 assets.set('/market-expectations.js',['market-expectations.js','text/javascript']);
+assets.set('/world-model.js',['world-model.js','text/javascript']);
+assets.set('/world-model-lookup.js',['world-model-lookup.js','text/javascript']);
 export async function startOptionsWorkbench({port=4173,refreshContext=false,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
   const service=createWorkbenchData(options),session=randomBytes(32).toString('hex');
@@ -34,6 +37,12 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
         const [file,type]=assets.get(url.pathname);res.writeHead(200,{'Content-Type':type+'; charset=utf-8'});res.end(readFileSync(resolve(assetRoot,file)));return;
       }
       if(req.method==='GET'&&url.pathname==='/api/health')return send(200,{application:'ALPHA_OPTIONS_WORKBENCH_V1',...service.scope,contextRefreshEnabled:refreshContext,executionAllowed:false});
+      if(req.method==='GET'&&url.pathname==='/api/macro-world-model'){
+        const entries=[...url.searchParams];
+        if(new Set(entries.map(([k])=>k)).size!==entries.length)return reject(400,'WORLD_MODEL_QUERY_INVALID');
+        try{return send(200,readWorldModel(Object.fromEntries(entries)));}
+        catch(e){return reject(e.message==='WORLD_MODEL_QUERY_INVALID'?400:409,e.message?.startsWith('WORLD_MODEL_')?e.message:'WORLD_MODEL_UNAVAILABLE');}
+      }
       if(req.method==='GET'&&url.pathname==='/api/state'){
         if([...url.searchParams.keys()].some(k=>k!=='board')||url.searchParams.getAll('board').length>1)return reject(400,'QUERY_INVALID');
         return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,localTrendStudy:contextService?.trendStatus()??{enabled:false,status:'DISABLED'},localPaperFinalization:contextService?.paperStatus()??{enabled:false,status:'DISABLED',checkedAt:null,sourceReads:0,executionAllowed:false},session});

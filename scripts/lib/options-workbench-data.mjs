@@ -39,6 +39,7 @@ import {snapshotPaperView,previewSnapshotPaperCollection,paperCollectionDesk,reg
 import {dailyDecisionCards} from './options-decision-card.mjs';
 import {reportedSpreadView} from './options-spread-review.mjs';
 import {macroPlaybookView,saveMacroNote} from './options-macro-playbook-io.mjs';
+import {readWorldModel} from './macro-world-model.mjs';
 import {assessMacroNote} from '../../src/engines/options-knowledge/OptionsMacroPlaybook.ts';
 import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 import {sourceCatalog,sourceComparisonView,prepareSourcePackage,receiveSourceDraft,previewSourceComparison,saveSourceComparison} from './options-source-comparison.mjs';
@@ -135,6 +136,8 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.sourceComparisons=await component(()=>sourceComparisonView(root,ledgerId,result,at),at);
     result.marketExpectations=await component(()=>expectationRecords(root,ledgerId,at),at);
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
+    // Reference UI only, appended after all existing decision projections.
+    result.macroWorldModel=await component(()=>readWorldModel(),at);
     return result;
   }
   function watchFromDesk(report,desk,at,costs={}){
