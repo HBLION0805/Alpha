@@ -317,5 +317,116 @@
     "routine1550Acceptance": "PENDING_NATURAL_RUN",
     "firstRealTargetedQuote": "NOT_VERIFIED",
     "rawResearchPublished": false
+  },
+  "preReleasePathRevision": {
+    "status": "PRE_RELEASE_RESEARCH_PATH_REVISED_AND_REOPENED",
+    "baseline": "d3547168eee83a0a9e789ea52963c309a9a8c7d6",
+    "checkedAt": "2026-09-20T05:50:49.662Z",
+    "scope": "Existing prospective research revised through append-only plan and source comparison mechanisms; content remains private",
+    "ownerConfirmation": "RESEARCH_PATH_ONLY",
+    "executionApproved": false,
+    "semanticReviewApproved": false,
+    "independentReview": false,
+    "planKind": "DRAFT",
+    "binding": "REFERENCE_ONLY",
+    "planVersion": "sha256:416724cc00e3f86b1ff027c04507d141788d55a5abcdabe60c0d2b8e023abb68",
+    "comparisonFingerprint": "sha256:5df49809cd2337a34b7681dcbcdc5cf13f46c60676bb3b13a8f3c03ae8c22c62",
+    "comparisonSavedAt": "2026-09-20T05:43:07.376Z",
+    "priorRecordsPreserved": true,
+    "futureActuals": "PENDING_UNTIL_RELEASE_NOT_PRE_ENTRY_REQUIREMENTS",
+    "direction": "NOT_SELECTED",
+    "positionLatestExit": "NOT_CONFIGURED",
+    "oldResearchDeadlineInherited": false,
+    "policyConflict": {
+      "code": "MAJOR_EVENT_WAIT",
+      "confirmedBy": "OFFLINE_PROJECTION_USING_EXISTING_GUIDANCE_NO_MARKET_INPUTS",
+      "preReleaseIntervalHours": 24,
+      "gated": true,
+      "waived": false,
+      "requiredResolution": "Separate explicit policy decision before qualified entry; research revision itself grants no exception"
+    },
+    "manualReviewResponsibility": "TO_BE_CONFIRMED_BEFORE_FREEZE",
+    "automaticReviewCreated": false,
+    "records": {
+      "freshProcess": "PASSED",
+      "sourceErrors": 0,
+      "oldPlanAndSourceFingerprintsPreserved": true,
+      "exactVersionBinding": true,
+      "sourceStatementsAndClocksReusedUnchanged": true,
+      "priorToEvent": true,
+      "priorToEntry": "NOT_APPLICABLE_NO_ENTRY",
+      "realTrades": 0,
+      "realFills": 0,
+      "positionReviews": 0,
+      "ownerConfirmation": "RESEARCH_PATH_ONLY",
+      "executionApproved": false,
+      "semanticReviewApproved": false
+    },
+    "page": {
+      "plannerResume": "PASSED",
+      "optionType": "NOT_SELECTED_AFTER_FIX",
+      "sourceV2AndBinding": "PASSED",
+      "sourceV1AndOriginalPlan": "PASSED",
+      "oldVersionRetained": true
+    },
+    "productFix": "Preserve unselected option type in draft forms; defaults and registration validation unchanged",
+    "validation": {
+      "focused": {
+        "tradeThesis": {
+          "passed": 21,
+          "failed": 0
+        },
+        "workbench": {
+          "passed": 57,
+          "failed": 0
+        }
+      },
+      "typecheck": {
+        "command": "npm run typecheck",
+        "exitCode": 0
+      },
+      "full": {
+        "command": "node scripts/alpha-validate.mjs",
+        "status": "PASSED",
+        "componentCount": 182,
+        "testsExecuted": 4847,
+        "passed": 4847,
+        "failed": 0,
+        "durationMs": 118006,
+        "warnings": [
+          "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+          "warning: in the working copy of 'apps/options-workbench/forms.js', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'scripts/options-trade-thesis.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+        ],
+        "log": "data/runtime/options-workbench-development/pre-event-full-validation.log",
+        "sha256": "016d4a2d6d9769eacdc05e8aaab87643e098be8bf832fcd18752d3f910e758f3"
+      },
+      "productFiles": [
+        {
+          "path": "apps/options-workbench/forms.js",
+          "sha256": "f25fc125fdda5bdf802c366234cace7a1317f50b30e60008395028f661cc6167"
+        },
+        {
+          "path": "scripts/options-trade-thesis.test.mjs",
+          "sha256": "adde18f58dcaeeeaac32b39723e4056418bd36ef33eb36a37500ca19d531c477"
+        }
+      ]
+    },
+    "usage": {
+      "publicReads": 0,
+      "marketCalls": 0,
+      "marketRows": 0,
+      "hostAnalysisGenerations": 1,
+      "applicationModelApiCalls": 0,
+      "sourceRecordsAdded": 2,
+      "ledgerEventsAdded": 1,
+      "durableProductFilesAdded": 5,
+      "usdCost": "UNKNOWN"
+    },
+    "receipt": "data/runtime/options-workbench-development/pre-event-acceptance.json",
+    "receiptSha256": "3519e70561c6197d7f8f22ffa8aa5d6d13c0db1e7e6fdb1d2471a11613530c04",
+    "routine1550Acceptance": "PENDING_NATURAL_RUN",
+    "firstRealTargetedQuote": "NOT_VERIFIED_NO_OPEN_POSITIONS_WEEKEND",
+    "rawResearchPublished": false
   }
 }

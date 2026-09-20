@@ -322,3 +322,66 @@ event outcomes remain pending rather than failed. First real targeted quoting
 remains NOT_VERIFIED and routine 15:50 remains PENDING_NATURAL_RUN; this trial
 does not advance either acceptance. No source frequency, frozen experiment,
 historical evidence, capital setting or account/order permission changed.
+
+## Pre-release research-path revision — September 20, 2026
+
+From `d3547168eee83a0a9e789ea52963c309a9a8c7d6`, the Owner selected pre-release
+entry evaluation, possible holding across publication and separate fact/position
+reviews. This is a **research-path choice only**, not an approved trade, option
+direction, forecast advantage or exception to existing entry policy.
+
+The existing Host receive and protected plan/comparison routes appended a draft
+version and a comparison revision. Original plan, source package, source claims,
+receipt clocks and earlier comparison fingerprints remain unchanged. No fresh
+source retrieval or new semantic confirmation is implied. The exact-version link
+remains `REFERENCE_ONLY`, with no registered trade, fill or position review.
+Research content and specific operating arrangements remain in private storage.
+
+The revised draft separates information available before entry from future
+release results. It records conditional support, inline/mixed and reverse cases,
+missing consensus and independent directional evidence, option-economics
+counterexamples and overnight/release-to-option-opening exposure. Future actuals
+remain pending until publication. The old research deadline was not inherited as
+a latest position exit or weekend-holding permission. Direction, contract,
+quantity, costs, independent exits, factual rejection criteria and manual review
+responsibilities remain unconfirmed; no missing parameter was invented.
+
+An offline projection through existing canonical guidance confirms a real policy
+conflict: the proposed pre-release closing evaluation falls inside the existing
+24-hour `MAJOR_EVENT_WAIT` interval. That gate remains unchanged. Saving this
+research does not qualify an entry or waive the restriction. A later separately
+explicit resolution is required before promotion. Recording release/opening
+checkpoints creates no automatic monitoring; no entry does not authorize a later
+chase under a different path.
+
+Actual browser use exposed one local display defect: a saved blank option type
+appeared as Call because its select contained only Call/Put. The shared form now
+offers **Not selected**, preserving empty draft values on recovery. Existing
+Call/Put selections and new-form defaults remain unchanged; formal registration
+still rejects an empty contract type. A regression checks blank draft recovery,
+both existing selections and rejection at registration. No engine or gate changed.
+
+Browser checks reopened the new draft and source comparison, followed the exact
+plan binding, and read the old version separately. A fresh process verified the
+record catalog, append-only ledger, unchanged source clocks and boundary hashes.
+The private receipt is
+`data/runtime/options-workbench-development/pre-event-acceptance.json`, SHA-256
+`3519e70561c6197d7f8f22ffa8aa5d6d13c0db1e7e6fdb1d2471a11613530c04`.
+
+This revision's product validation: trade-thesis **21/21**, workbench **57/57**,
+TypeScript passed, full `node scripts/alpha-validate.mjs` **4,847 passed, zero
+failed across 182 components**. Warnings concerned the expected dirty worktree
+and LF/CRLF normalization. Browser locator timeouts were resolved by inspecting
+the current page; no duplicate save resulted. A read-only Git ancestry query was
+retried with correct PowerShell quoting. These were verification-tool issues,
+not product test failures. Final record/JSON/Markdown and both whitespace checks
+are recorded separately; the full suite was not repeated for documentation.
+
+Usage: **zero public-source reads, brokerage market calls, quote rows or
+application model API calls**. One attributed Host draft was saved; this does not
+count all internal Codex inference. Two comparison-store records and one ledger
+event were added: five durable product files including its two ledger files and
+one protected-API command file, excluding development receipts. Dollar cost is
+**UNKNOWN**. No new timer, monitoring frequency, source permission, risk setting
+or frozen experiment changed. Routine 15:50 acceptance remains
+`PENDING_NATURAL_RUN`; first real targeted quoting remains `NOT_VERIFIED`.

@@ -56,6 +56,19 @@ await test('partial first bar is excluded from the declared close confirmation w
 await test('calendar rejects holidays, early close and unreviewed years without silently moving exit',()=>{for(const clock of ['2026-11-26T19:00:00.000Z','2026-11-27T19:00:00.000Z','2027-01-05T19:00:00.000Z']){const s=setup();s.context.plan=structuredClone(s.context.plan);s.context.plan.timeExitAt=clock;assert(thesisPlanIssues(s.context,at(-100)).includes('ACTION_TIME_CLOSED_OR_UNREVIEWED'));}});
 await test('draft UI reuses original fields, escapes source text and adds no threshold defaults',()=>{const ui={thesisFields:{...registerDefaults(),includePlan:true},thesisDraft:thesisDefaults()};updateThesisDraft(ui,'enable.price',true);assert.equal(ui.thesisDraft.conditions[0].threshold,'');ui.thesisDraft.manualFallback='<script>bad</script>';const h=thesisPlannerPanel({manual:{data:{trades:[]}}},ui);assert(h.includes('name="tradeId"'));assert(!h.includes('<script>'));assert(h.includes('Confirm &amp;')||h.includes('Confirm & freeze'));const c=thesisPlanCommand({...ui,thesisFields:{...ui.thesisFields,tradeId:'test-draft'}},'DRAFT','request-one');validateManualLedgerCommand(c,at(0));assert.throws(()=>thesisReviewRequest('trade',{conditionId:'event'},null,'SAVE_REVIEW','review-one'),/Confirm/);});
 
+await test('unselected research direction survives form recovery and draft save without qualifying a contract',()=>{
+  const ui={thesisFields:{...registerDefaults(),tradeId:'direction-unset',optionType:'',includePlan:true},thesisDraft:thesisDefaults()};
+  const command=thesisPlanCommand(ui,'DRAFT','direction-unset-request');validateManualLedgerCommand(command,at(0));
+  assert.equal(command.draft.fields.optionType,'');
+  const recovered={thesisFields:command.draft.fields,thesisDraft:command.draft.thesis};
+  const render=fields=>thesisPlannerPanel({manual:{data:{trades:[]}}},{...recovered,thesisFields:fields});
+  assert.match(render(recovered.thesisFields),/<select name="optionType"><option value="" selected>Not selected<\/option>/);
+  for(const optionType of ['CALL','PUT'])assert(render({...recovered.thesisFields,optionType}).includes(`<option value="${optionType}" selected>`));
+  assert.equal(registerDefaults().optionType,'CALL');
+  const registration=setup().commands[0];registration.contract.optionType='';
+  assert.throws(()=>validateManualLedgerCommand(registration,at(-100)),/CONTRACT_SCOPE/);
+});
+
 await test('protected API draft → freeze → reported entry → saved review → restart; no sources or fills created by checks',async()=>{
   const root=mkdtempSync(join(tmpdir(),'alpha-position-watch-thesis-'));let app;
   try{
