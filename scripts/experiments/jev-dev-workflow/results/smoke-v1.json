@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "mode": "smoke",
+  "model": "typesafe/jev-1.13",
+  "servedModel": "typesafe/jev-1.13-20260917",
+  "datasetHash": null,
+  "clientSha256": "c1c0e08eec734834f26dee998d9b91be8a11b418f7f2d283f7b9ab04125abfc7",
+  "runnerSha256": "0c9a6f80acf01c528adb8d6c20c8480a79c9bf3c2db89d8573f1b43a43f3e945",
+  "startedAt": "2026-09-20T22:39:35.878Z",
+  "shadowOnly": true,
+  "executionAllowed": false,
+  "maxCalls": 3,
+  "maxReportedCostUsd": 0.01,
+  "rows": [
+    {
+      "caseId": "smoke-a",
+      "decisionType": "SMOKE_TASK",
+      "goldLabel": "BUG_FIX",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      },
+      "result": {
+        "shadowOnly": true,
+        "executionAllowed": false,
+        "requestedModel": "typesafe/jev-1.13",
+        "requestType": "CHOICE",
+        "endpoint": "https://openrouter.ai/api/alpha/decisions",
+        "decision": "UNKNOWN",
+        "requestMade": true,
+        "error": "HTTP_401",
+        "startedAt": "2026-09-20T22:39:35.879Z",
+        "receivedAt": "2026-09-20T22:39:36.036Z",
+        "latencyMs": 156.853,
+        "httpStatus": 401,
+        "inputBytes": 597,
+        "stateCharacters": 69,
+        "requestSha256": "dc5bb2464d2c1ce23a440d3957a01fd20c2703e608035164473a30bef0b87fad",
+        "servedModel": null,
+        "provider": null,
+        "requestId": null,
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "costUsd": null
+        },
+        "path": "JEV"
+      }
+    }
+  ],
+  "stoppedReason": "HTTP_401",
+  "completedAt": "2026-09-20T22:39:36.036Z",
+  "status": "STOPPED",
+  "summary": {
+    "totalCases": 1,
+    "deterministicResolved": 0,
+    "jevEvaluated": 1,
+    "totalCalls": 1,
+    "pathA": {
+      "resolved": 0,
+      "unknown": 1,
+      "correct": 0
+    },
+    "pathB": {
+      "total": 1,
+      "correct": 0,
+      "incorrect": 0,
+      "unknown": 1
+    },
+    "jevOnly": {
+      "total": 1,
+      "correct": 0,
+      "incorrect": 0,
+      "unknown": 1
+    },
+    "pathC": "Historical documented outcome, not a new model call",
+    "falseContinue": 0,
+    "falseContinueDenominator": 0,
+    "falseContinueRate": null,
+    "falseAskOwner": 0,
+    "falseAskOwnerDenominator": 0,
+    "falseOwnerInterruptRate": null,
+    "ownerInterruptionDecisions": 0,
+    "continueDecisions": 0,
+    "medianLatencyMs": 156.853,
+    "p95LatencyMs": null,
+    "inputTokens": null,
+    "outputTokens": null,
+    "reportedCostUsd": null,
+    "byDecisionType": {
+      "SMOKE_TASK": {
+        "total": 1,
+        "correct": 0,
+        "incorrect": 0,
+        "unknown": 1
+      }
+    },
+    "triageConfusion": [],
+    "actualWorkflowActions": 0,
+    "codexTokenSavings": "UNKNOWN",
+    "codexTimeSavings": "UNKNOWN",
+    "historicalUnnecessaryInterruptions": "UNKNOWN"
+  }
+}

@@ -1,0 +1,402 @@
+{
+  "version": 1,
+  "checkedAt": "2026-09-20T22:44:09.732Z",
+  "datasetSha256": "5eff13f1b41d9f376edf3956c634a217ff64ac85d0f31a580612aaa3351102dc",
+  "clientSha256": "c1c0e08eec734834f26dee998d9b91be8a11b418f7f2d283f7b9ab04125abfc7",
+  "runnerSha256": "d04927a87868b6e18cfc81b2f82104d6156a1e1b36d9daa2274636d358b46f98",
+  "totalCases": 38,
+  "episodeCount": 27,
+  "deterministicResolved": 8,
+  "deterministicCorrect": 8,
+  "deterministicCoverage": 0.21052631578947367,
+  "jevEligible": 30,
+  "jevEvaluated": 0,
+  "pathB": "NOT_RUN_SMOKE_AUTH_FAILURE",
+  "accuracy": null,
+  "falseContinue": null,
+  "falseOwnerInterrupt": null,
+  "incrementalJevCoverage": null,
+  "marketCalls": 0,
+  "rows": [
+    {
+      "caseId": "C01",
+      "episodeId": "catalog-expansion",
+      "gold": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C02",
+      "episodeId": "catalog-expansion",
+      "gold": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C03",
+      "episodeId": "nested-lock",
+      "gold": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C04",
+      "episodeId": "scenario-route",
+      "gold": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C05",
+      "episodeId": "validation-log-placement",
+      "gold": "DATA_STATE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C06",
+      "episodeId": "lookup-tokenization",
+      "gold": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C07",
+      "episodeId": "lookup-index-coverage",
+      "gold": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C08",
+      "episodeId": "lookup-test-id",
+      "gold": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C09",
+      "episodeId": "analysis-grade",
+      "gold": "DOCUMENTATION_ONLY",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C10",
+      "episodeId": "browser-session",
+      "gold": "ENVIRONMENT",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C11",
+      "episodeId": "selector-test",
+      "gold": "TEST_ASSUMPTION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C12",
+      "episodeId": "test-summary",
+      "gold": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C13",
+      "episodeId": "host-proxy",
+      "gold": "ENVIRONMENT",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C14",
+      "episodeId": "host-allowance",
+      "gold": "EXTERNAL_DEPENDENCY",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C15",
+      "episodeId": "source-interval-discrepancy",
+      "gold": "UNKNOWN",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C16",
+      "episodeId": "decimal-parser",
+      "gold": "CODE_REGRESSION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C17",
+      "episodeId": "decimal-parser",
+      "gold": "BUG_FIX",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C18",
+      "episodeId": "source-interval-discrepancy",
+      "gold": "RESEARCH",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C19",
+      "episodeId": "host-timeout",
+      "gold": "DOCUMENTATION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C20",
+      "episodeId": "scenario-ui-recovery",
+      "gold": "RUNTIME_VALIDATION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C21",
+      "episodeId": "targeted-review-feature",
+      "gold": "PRODUCT_FEATURE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C22",
+      "episodeId": "routine-future-window",
+      "gold": "WAITING_EXTERNAL",
+      "pathA": {
+        "decision": "WAITING_EXTERNAL",
+        "reason": "FUTURE_WINDOW_NO_RECEIPT",
+        "eligible": false
+      }
+    },
+    {
+      "caseId": "C23",
+      "episodeId": "optional-provider-preflight",
+      "gold": "WAITING_EXTERNAL",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C24",
+      "episodeId": "catalog-expansion",
+      "gold": "PRODUCT_FEATURE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C25",
+      "episodeId": "host-proxy",
+      "gold": "RESEARCH",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C26",
+      "episodeId": "owner-storyline-save",
+      "gold": "RUNTIME_VALIDATION",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C27",
+      "episodeId": "nested-lock",
+      "gold": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C28",
+      "episodeId": "catalog-expansion",
+      "gold": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C29",
+      "episodeId": "owner-storyline-save",
+      "gold": "ASK_OWNER",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C30",
+      "episodeId": "owner-storyline-save",
+      "gold": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C31",
+      "episodeId": "connection-consent",
+      "gold": "ASK_OWNER",
+      "pathA": {
+        "decision": "ASK_OWNER",
+        "reason": "NEW_EXTERNAL_PERMISSION",
+        "eligible": false
+      }
+    },
+    {
+      "caseId": "C32",
+      "episodeId": "disabled-diagnostic",
+      "gold": "ASK_OWNER",
+      "pathA": {
+        "decision": "ASK_OWNER",
+        "reason": "NEW_EXTERNAL_PERMISSION",
+        "eligible": false
+      }
+    },
+    {
+      "caseId": "C33",
+      "episodeId": "storyline-responsive",
+      "gold": "CONTINUE",
+      "pathA": {
+        "decision": "UNKNOWN",
+        "reason": "SEMANTIC_JUDGMENT",
+        "eligible": true
+      }
+    },
+    {
+      "caseId": "C34",
+      "episodeId": "future-study-boundary",
+      "gold": "ASK_OWNER",
+      "pathA": {
+        "decision": "ASK_OWNER",
+        "reason": "TRADING_BOUNDARY_CHANGE",
+        "eligible": false
+      }
+    },
+    {
+      "caseId": "C35",
+      "episodeId": "host-timeout",
+      "gold": "DOCUMENT_CHECKS",
+      "pathA": {
+        "decision": "DOCUMENT_CHECKS",
+        "reason": "DOCUMENT_ONLY_VERIFIED",
+        "eligible": false
+      }
+    },
+    {
+      "caseId": "C36",
+      "episodeId": "host-proxy",
+      "gold": "DOCUMENT_CHECKS",
+      "pathA": {
+        "decision": "DOCUMENT_CHECKS",
+        "reason": "DOCUMENT_ONLY_VERIFIED",
+        "eligible": false
+      }
+    },
+    {
+      "caseId": "C37",
+      "episodeId": "scenario-final-validation",
+      "gold": "FULL_VALIDATION",
+      "pathA": {
+        "decision": "FULL_VALIDATION",
+        "reason": "PRODUCT_CODE_CHANGED",
+        "eligible": false
+      }
+    },
+    {
+      "caseId": "C38",
+      "episodeId": "lookup-final-validation",
+      "gold": "FULL_VALIDATION",
+      "pathA": {
+        "decision": "FULL_VALIDATION",
+        "reason": "PRODUCT_CODE_CHANGED",
+        "eligible": false
+      }
+    }
+  ]
+}
