@@ -554,7 +554,7 @@ Before major implementation work, agents must inspect:
 - Never use AI when deterministic software can solve the task more accurately, faster, and cheaper.
 - AI provides recommendations; deterministic software performs calculations and enforcement.
 - Preserve existing working code.
-- Prefer small, reversible changes.
+- Prefer small, reversible changes; this limits change size, not progress through an approved stage.
 - Never modify unrelated files.
 - Do not perform large refactors without explaining the problem, expected benefit, and cost.
 - Keep user-facing product text in English.
@@ -563,6 +563,26 @@ Before major implementation work, agents must inspect:
 - Explain every code change clearly.
 - Keep changes focused on the assigned task.
 - Define and review a specification before implementing a major new subsystem.
+
+For an Owner-approved stage, break down and continuously complete its checks,
+implementation, review, tests, fixes and acceptance without requesting the same
+authorization for each substep. Brief progress updates are not final answers and
+do not require the Owner to reply "continue". Fix ordinary in-scope test failures;
+when one part is blocked, continue other authorized, independent work.
+
+Request an Owner decision only for new costs or permissions, changed business
+scope or frozen rules, a risk of destroying data or overwriting others' work,
+or an external blocker that reasonable investigation cannot resolve. All trading,
+capital, risk, privacy and historical-evidence boundaries remain in force. Dated
+task restrictions retain their original scope; do not turn a one-off restriction
+into a permanent business rule, or remove an uncertain business requirement.
+Keep uncertain requirements unchanged and explain the uncertainty.
+
+Before the final answer, check the approved stage's acceptance list and complete
+any authorized work that can still run now; do not present it as an optional next
+step. If only a future market event or a genuine external blocker remains, end
+the current run with an explicit pending/unverified or blocked status. Do not
+idle-poll, invent future evidence, or add features to prolong the stage.
 
 ## Testing and Validation
 
@@ -574,10 +594,10 @@ Before major implementation work, agents must inspect:
 
 ## Git Safety
 
-- Do not commit automatically.
-- Do not push automatically.
+- Commit and push only within explicit Owner authorization. When the stage already authorizes them, complete them without asking again.
 - Do not create or merge pull requests without owner approval.
-- Show the diff before asking for approval.
+- Without explicit authorization for the specific action, do not publish, merge into main or force-push.
+- Review the diff before committing; show or summarize it before requesting any approval that is still missing.
 - Keep changes small and reviewable.
 
 ## Development Workflow
@@ -594,7 +614,7 @@ v
 Testing
 |
 v
-Owner Approval
+Owner Approval (only if not already granted for this stage)
 |
 v
 Commit

@@ -222,8 +222,7 @@ Commit/push tasks must use an explicit owner approval or task instruction author
 
 ## 18. Git Commit and Push Rules
 
-- Do not commit automatically.
-- Do not push automatically.
+- Commit and push only within explicit owner authorization; complete already-authorized stage actions without requesting the same approval again.
 - Do not create or merge pull requests without owner approval.
 - Show or summarize the diff before approval when the task has not already granted commit authority.
 - Keep commits focused and use the exact requested message when provided.
@@ -388,7 +387,7 @@ Do not commit or push.
 
 Fail closed when a requirement, authority boundary, or validation result is unclear.
 
-- Stop and report exact state if required baseline verification fails.
+- Investigate ordinary baseline or test failures. Block only work that depends on an unresolved requirement; continue authorized independent work and report the exact remaining blocker.
 - Fix in-scope failures before reporting success.
 - Ask for owner direction when a fix requires new authority or materially different scope.
 - Do not hide skipped validation, warnings, or dirty-tree conflicts.

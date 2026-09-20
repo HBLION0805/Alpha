@@ -27,7 +27,7 @@ v
 Review
 |
 v
-Owner Approval
+Owner Approval (only if not already granted for this stage)
 |
 v
 Git Commit
@@ -41,7 +41,7 @@ Roles:
 - ChatGPT (Architect): Translates goals into architecture, task design, acceptance criteria, and implementation guidance.
 - Codex (Engineer): Implements approved tasks, validates changes, and reports results.
 - Review: Confirms that changes match requirements, architecture, and quality standards.
-- Owner Approval: Required before committing, pushing, merging, or changing project direction.
+- Owner Approval: Required for commits, pushes, merges or direction changes; an explicit stage authorization satisfies the corresponding requirement without repeated approval.
 - Git Commit: Records a small, focused, approved change.
 - Git Push: Publishes approved committed work to the remote repository.
 
@@ -66,8 +66,7 @@ For repeated Codex execution rules, task templates, owner-review criteria, conte
 
 ## 4. Git Safety
 
-- Never auto commit.
-- Never auto push.
+- Commit and push only within explicit Owner authorization; carry out already-authorized stage actions without asking again.
 - Owner approval is required before commits, pushes, merges, or pull requests.
 - Always review diffs before requesting approval.
 - Keep commits small and focused.
