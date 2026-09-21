@@ -1,10 +1,10 @@
 import { resolve } from "node:path";
+import {contextWorkspaceArgs} from './lib/options-runtime-roots.mjs';
 import { reportTreasuryHistory } from "../src/engines/options-treasury/TreasuryRealYieldEngine.ts";
 import { retrieveTreasury, withTreasuryJournal } from "./lib/options-treasury-io.mjs";
 
-const root = resolve(import.meta.dirname, "..");
 try {
-  const args = process.argv.slice(2);
+  const {args,workspaceRoot:root}=contextWorkspaceArgs(process.argv.slice(2),{defaultRoot:resolve(import.meta.dirname,'..'),errorCode:'TREASURY_ARGUMENTS'});
   if (args.length > 1 || args.length === 1 && !["--refresh", "--report", "--help"].includes(args[0])) throw Error("TREASURY_ARGUMENTS");
   const mode = args[0] ?? "--report";
   if (mode === "--help") {

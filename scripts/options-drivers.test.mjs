@@ -24,7 +24,7 @@ async function temporary(run) {
   }
 }
 function isolatedCli(directory) {
-  for (const file of ["scripts/options-drivers.mjs", "scripts/lib/options-driver-io.mjs", "src/engines/options-drivers/OptionsDriverMonitorEngine.ts", "src/engines/options-drivers/OptionsDriverCatalog.ts", "src/contracts/OptionsDriverMonitor.ts"]) {
+  for (const file of ["scripts/options-drivers.mjs", "scripts/lib/options-driver-io.mjs", "scripts/lib/options-runtime-roots.mjs", "src/engines/options-drivers/OptionsDriverMonitorEngine.ts", "src/engines/options-drivers/OptionsDriverCatalog.ts", "src/contracts/OptionsDriverMonitor.ts"]) {
     mkdirSync(dirname(join(directory, file)), { recursive: true }); copyFileSync(join(root, file), join(directory, file));
   }
   writeFileSync(join(directory, "package.json"), '{"type":"module"}');

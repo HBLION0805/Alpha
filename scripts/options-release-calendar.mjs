@@ -1,10 +1,10 @@
 import { resolve } from "node:path";
+import {contextWorkspaceArgs} from './lib/options-runtime-roots.mjs';
 import { reportReleaseCalendar } from "../src/engines/options-release-calendar/BlsReleaseCalendarEngine.ts";
 import { retrieveReleaseCalendar, withReleaseCalendarJournal } from "./lib/options-release-calendar-io.mjs";
 
-const root = resolve(import.meta.dirname, "..");
 try {
-  const args = process.argv.slice(2);
+  const {args,workspaceRoot:root}=contextWorkspaceArgs(process.argv.slice(2),{defaultRoot:resolve(import.meta.dirname,'..'),errorCode:'RELEASE_CALENDAR_ARGUMENTS'});
   if (args.length > 1 || args.length === 1 && !["--refresh", "--report", "--help"].includes(args[0])) throw Error("RELEASE_CALENDAR_ARGUMENTS");
   const mode = args[0] ?? "--report";
   if (mode === "--help") {

@@ -1,10 +1,10 @@
 import { resolve } from "node:path";
+import {contextWorkspaceArgs} from './lib/options-runtime-roots.mjs';
 import { reportFomcCalendar } from "../src/engines/options-fomc-calendar/FomcCalendarEngine.ts";
 import { retrieveFomcCalendar, withFomcCalendarJournal } from "./lib/options-fomc-calendar-io.mjs";
 
-const root = resolve(import.meta.dirname, "..");
 try {
-  const args = process.argv.slice(2);
+  const {args,workspaceRoot:root}=contextWorkspaceArgs(process.argv.slice(2),{defaultRoot:resolve(import.meta.dirname,'..'),errorCode:'FOMC_CALENDAR_ARGUMENTS'});
   if (args.length > 1 || args.length === 1 && !["--refresh", "--report", "--help"].includes(args[0])) throw Error("FOMC_CALENDAR_ARGUMENTS");
   const mode = args[0] ?? "--report";
   if (mode === "--help") {

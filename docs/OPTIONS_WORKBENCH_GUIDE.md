@@ -1,5 +1,25 @@
 # Alpha options workbench
 
+When code and private data are in different folders, run from the current code
+checkout:
+
+```text
+npm run options:workbench -- --port 4173 --workspace "<existing-private-data-folder>"
+```
+
+Program modules and collector executables come from that code checkout. Private
+journals, source receipts and plans stay in the existing data folder; it needs no
+application scripts or node_modules. Do not copy scripts/dependencies into the
+data folder or move evidence to make startup work. The double-click launcher
+retains its same-folder behavior; use the command above for separated roots.
+
+In **News & calendar → Public context refresh diagnostics**, distinguish missing
+executables, HTTP/parse/network errors, storage errors, unfinished claims,
+already-attempted slots and sources not yet eligible. Existing source panels
+retain actual receipt clocks and missing coverage. A consumed slot is never
+retried just by restarting or reloading. `/api/health` reports whether public
+refresh is enabled; that flag alone does not prove source success.
+
 In **Daily guidance → Observed price path → conditional contract comparison**,
 inspect saved Robinhood candles, late-window momentum and future watch conditions.
 Expand **Compare historical contract references** for why each date/strike appears,

@@ -1,11 +1,11 @@
 import { resolve } from "node:path";
+import {contextWorkspaceArgs} from './lib/options-runtime-roots.mjs';
 import { OPTIONS_DRIVER_FACTORS } from "../src/engines/options-drivers/OptionsDriverCatalog.ts";
 import { buildOptionsDriverReport, createDriverObservation, OPTIONS_DRIVER_SOURCES, selectNewDriverObservations, validateDriverSourceHealth, validateStoredDriverObservation } from "../src/engines/options-drivers/OptionsDriverMonitorEngine.ts";
 import { parseDriverFeed, readPublicDriverFeed, withDriverJournal } from "./lib/options-driver-io.mjs";
 
-const root = resolve(import.meta.dirname, "..");
 try {
-  const args = process.argv.slice(2);
+  const {args,workspaceRoot:root}=contextWorkspaceArgs(process.argv.slice(2),{defaultRoot:resolve(import.meta.dirname,'..'),errorCode:'DRIVER_ARGUMENTS'});
   if (args.length > 1 || (args.length === 1 && !["--catalog", "--refresh", "--report", "--demo", "--help"].includes(args[0]))) throw new Error("DRIVER_ARGUMENTS");
   const mode = args[0] ?? "--report";
   const asOf = new Date().toISOString();

@@ -7,6 +7,7 @@ import { createWorkbenchData, workbenchError } from './lib/options-workbench-dat
 import { parseChainSurveyJson } from '../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import { startPublicContextService } from './options-context-service.mjs';
 import { readWorldModel } from './lib/macro-world-model.mjs';
+import {optionsCodeRoot} from './lib/options-runtime-roots.mjs';
 
 const assetRoot=resolve(import.meta.dirname,'../apps/options-workbench');
 const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','decision-cards.js','etf-setup.js','sensitivities.js','candidate-checks.js','cost-desk.js','capital-policy.js','gold-framework.js','macro-context.js','focused-news.js','event-research.js','bar-quality.js','snapshot-paper.js','position-watch.js','event-reactions.js','spread-review.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
@@ -23,7 +24,7 @@ assets.set('/world-model.js',['world-model.js','text/javascript']);
 assets.set('/world-model-lookup.js',['world-model-lookup.js','text/javascript']);
 assets.set('/storyline.js',['storyline.js','text/javascript']);
 assets.set('/storyline-model.js',['storyline-model.js','text/javascript']);
-export async function startOptionsWorkbench({port=4173,refreshContext=false,...options}={}){
+export async function startOptionsWorkbench({port=4173,refreshContext=false,codeRoot=optionsCodeRoot,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
   const service=createWorkbenchData(options),session=randomBytes(32).toString('hex');
   let origin,host;
@@ -50,7 +51,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
       }
       if(req.method==='GET'&&url.pathname==='/api/state'){
         if([...url.searchParams.keys()].some(k=>k!=='board')||url.searchParams.getAll('board').length>1)return reject(400,'QUERY_INVALID');
-        return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,localTrendStudy:contextService?.trendStatus()??{enabled:false,status:'DISABLED'},localPaperFinalization:contextService?.paperStatus()??{enabled:false,status:'DISABLED',checkedAt:null,sourceReads:0,executionAllowed:false},session});
+        return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,publicContextRefresh:contextService?.status()??{enabled:false,status:'DISABLED'},localTrendStudy:contextService?.trendStatus()??{enabled:false,status:'DISABLED'},localPaperFinalization:contextService?.paperStatus()??{enabled:false,status:'DISABLED',checkedAt:null,sourceReads:0,executionAllowed:false},session});
       }
       if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/source-comparison','/api/scenario-research','/api/evidence-loop','/api/case-export','/api/storyline','/api/snapshot-paper','/api/position-watch','/api/etf-setup','/api/macro-playbook'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
       const provided=req.headers['x-alpha-session'];
@@ -86,7 +87,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,...o
   server.requestTimeout=15000;server.headersTimeout=10000;server.keepAliveTimeout=3000;server.maxHeadersCount=30;
   await new Promise((yes,no)=>{server.once('error',no);server.listen(port,'127.0.0.1',yes);});
   host='127.0.0.1:'+server.address().port;origin='http://'+host;
-  const contextService=refreshContext?startPublicContextService({workspaceRoot:options.workspaceRoot??process.cwd()}):null;
+  const contextService=refreshContext?startPublicContextService({codeRoot,workspaceRoot:options.workspaceRoot??process.cwd(),now:options.now}):null;
   return {server,url:origin,close:()=>new Promise((yes,no)=>{contextService?.stop();server.close(e=>e?no(e):yes());server.closeIdleConnections();})};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){

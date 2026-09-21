@@ -1,10 +1,10 @@
 import { resolve } from "node:path";
+import {contextWorkspaceArgs} from './lib/options-runtime-roots.mjs';
 import { reportBtcContext } from "../src/engines/options-btc-context/BtcSpotContextEngine.ts";
 import { retrieveBtcContext, withBtcContextJournal } from "./lib/options-btc-context-io.mjs";
 
-const root = resolve(import.meta.dirname, "..");
 try {
-  const args = process.argv.slice(2);
+  const {args,workspaceRoot:root}=contextWorkspaceArgs(process.argv.slice(2),{defaultRoot:resolve(import.meta.dirname,'..'),errorCode:'BTC_CONTEXT_ARGUMENTS'});
   if (args.length > 1 || args.length === 1 && !["--refresh", "--report", "--help"].includes(args[0])) throw Error("BTC_CONTEXT_ARGUMENTS");
   const mode = args[0] ?? "--report";
   if (mode === "--help") {

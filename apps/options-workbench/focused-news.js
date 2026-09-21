@@ -38,6 +38,19 @@ export function filterFocusedNews(items,ui={}) {
     && n.headline.toLowerCase().includes((ui.newsSearch??'').toLowerCase()));
 }
 
+export function contextRefreshDiagnostics(value){
+  if(!value)return '';
+  const rows=(value.results??[]).flatMap(r=>{
+    const receipt=r.previous??r;
+    if(r.status==='ALREADY_ATTEMPTED'&&!r.previous)return (r.expectedSources??[r.slot]).map(source=>({source,status:'RECEIPT_UNAVAILABLE',slotStatus:'ALREADY_ATTEMPTED'}));
+    return (receipt.sources??[]).map(s=>({source:s.source,status:s.code??s.status,slotStatus:r.status??'ATTEMPTED',attemptedAt:s.attemptedAt??receipt.startedAt,finishedAt:s.finishedAt,details:s.details??[],evidencePath:s.evidencePath??null}));
+  });
+  rows.push(...(value.notYetEligible??[]));
+  return '<details class="card section-space"><summary>Public context refresh diagnostics · '+esc(words(value.status))+'</summary><p>Current slot checks run while Alpha is open. An attempted slot is not retried; missing future eligibility is not a failed source read.</p>'+
+    (value.error?'<p class="error-text">'+esc(value.error)+'</p>':'')+
+    rows.map(r=>'<div class="source"><strong>'+esc(words(r.source))+' · '+esc(r.status)+'</strong><small>'+esc(r.slotStatus??'')+' · Attempt '+esc(timestamp(r.attemptedAt))+' · Finished '+esc(timestamp(r.finishedAt))+'</small>'+(r.evidencePath?'<small>'+esc(r.evidencePath)+'</small>':'')+(r.details??[]).map(d=>'<small>'+esc(d.source)+' · '+esc(d.code??d.status)+(d.diagnostic?' · '+esc(d.diagnostic):'')+'</small>').join('')+'</div>').join('')+'</details>';
+}
+
 export function focusedContext(s,ui={}) {
   const f=s.focusedNews?.data,items=filterFocusedNews(f?.items??[],ui),note=s.guidance?.data?.interpretation;
   const groups=s.calendar?.data?.groups??[];
@@ -45,7 +58,7 @@ export function focusedContext(s,ui={}) {
   return '<div class="page-heading"><div><p class="eyebrow">GOLD AND BITCOIN IN CONTEXT</p><h1>News & calendar</h1><p class="subtitle">Direct GLD / IBIT news, relevant macro developments, and the evidence still needed.</p></div><button class="button secondary" data-export="context">↓ Export context</button></div>'+
     '<div class="notice"><div>Monitoring focuses on gold and Bitcoin. Rates, the dollar, inflation, oil and geopolitical risk remain relevant context. Unrelated company and token stories are filtered from this view. Headline relevance does not establish direction or an entry.</div></div>'+
     (!f?'<p class="error-text">Focused news unavailable: '+esc(s.focusedNews?.error??'No saved evidence')+'</p>':'')+
-    newsAccessNotice(f?.sources)+
+    newsAccessNotice(f?.sources)+contextRefreshDiagnostics(s.publicContextRefresh)+
     '<div class="metrics">'+[['Relevant headlines',f?.counts.relevant??0,'Direct and indirect context'],['Direct asset news',f?.counts.direct??0,'Gold / GLD and Bitcoin / IBIT'],['Recent relevant titles',f?.counts.recent??0,'Published within 72 hours'],['Outside focused view',f?.counts.excluded??0,'Original source records are retained']].map(([label,value,hint])=>'<div class="metric"><div class="metric-label">'+label+'</div><strong>'+value+'</strong><small>'+hint+'</small></div>').join('')+'</div>'+
     '<section class="card"><div class="card-head"><div><h2>Source coverage</h2><p>Hourly RSS refresh while Alpha runs. A successful read does not mean new stories or complete coverage.</p></div></div><div class="source-grid">'+(f?.sources??[]).map(source=>'<div class="source"><strong>'+esc(source.label)+'</strong><small>'+badge(source.kind)+' '+badge(source.status)+'</small><small>Last feed read '+esc(timestamp(source.observedAt))+(source.refreshOverdue?' · Refresh overdue':'')+(source.partial?' · Partial or incomplete':'')+'</small>'+(source.diagnostic?'<small>'+esc(source.diagnostic)+'</small>':'')+'</div>').join('')+'</div></section>'+
     '<div class="grid-two section-space"><section class="card"><div class="card-head"><div><h2>Focused headlines</h2><p>Possible transmission mechanisms are conditional explanations, not measured effects.</p></div></div><div class="toolbar"><label>Asset / context<select id="news-asset">'+[['','GLD + IBIT and macro'],['GLD','GLD / Gold'],['IBIT','IBIT / Bitcoin'],['MACRO','Indirect macro only']].map(([v,l])=>'<option value="'+v+'"'+((ui.newsAsset??'')===v?' selected':'')+'>'+l+'</option>').join('')+'</select></label><label>Source<select id="news-source"><option value="">All sources</option>'+(f?.sources??[]).map(source=>'<option value="'+esc(source.id)+'"'+(ui.newsSource===source.id?' selected':'')+'>'+esc(source.label)+'</option>').join('')+'</select></label><label class="grow">Search headlines<input id="news-search" value="'+esc(ui.newsSearch??'')+'" placeholder="Gold, bitcoin, inflation, oil…"></label></div><p class="hint">'+items.length+' matching saved headlines</p>'+

@@ -298,6 +298,16 @@ calls market tools. The older workbench paragraph below describes its original
 six-page delivery. See [specification](specifications/OPTIONS_DAILY_GUIDANCE_V1.md)
 and [delivery](OPTIONS_DAILY_GUIDANCE_DELIVERY.md).
 
+The workbench's running module determines the code root. The independent
+`workspaceRoot` (CLI `--workspace`) selects private evidence, not executable code.
+Public-context children use absolute code-root loader/script paths, code-root
+working directories and an explicit `--workspace` argument. All seven collector
+CLIs share this argument parser; their existing no-argument defaults remain
+compatible. Claims, receipts and journals stay in the selected data root. The
+existing News & calendar diagnostics expose bounded operational results, never
+raw stderr or credentials. Slot eligibility, exclusive claims and no retries are
+unchanged; an unfinished claim is not a successful refresh.
+
 ## Local options workbench
 
 Modular browser ES modules in `apps/options-workbench` compose six English pages

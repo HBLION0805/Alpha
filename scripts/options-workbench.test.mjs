@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,readFileSync,readdirSync,writeFileSync,rmSync,realpathSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,readFileSync,readdirSync,writeFileSync,rmSync,realpathSync,existsSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,relative,isAbsolute} from 'node:path';
 import {request as rawRequest} from 'node:http';
@@ -92,4 +92,15 @@ await test('browser client strips session tokens and uses only same-origin fixed
   globalThis.location={origin:'http://127.0.0.1:4173'};globalThis.fetch=async(path,options)=>{seen={path,options};return {ok:true,json:async()=>({session:'test-process-token',value:1})};};
   try{const api=await import('../apps/options-workbench/api.js');const state=await api.request('/api/state');assert(!Object.hasOwn(state,'session'));await api.request('/api/preview',{});assert.equal(seen.options.headers['X-Alpha-Session'],'test-process-token');assert.equal(seen.options.credentials,'omit');assert.equal(seen.options.redirect,'error');await assert.rejects(()=>api.request('https://example.com/api/state'),/Unsupported/);await assert.rejects(()=>api.request('/api/orders'),/Unsupported/);}finally{globalThis.fetch=previousFetch;if(previousLocation===undefined)delete globalThis.location;else globalThis.location=previousLocation;}
 });
+await test('health and API expose context execution failures and eligibility with separate roots',()=>temp(async root=>{
+  seed(root);const codeRoot=join(root,'empty-program-root');mkdirSync(codeRoot);
+  const app=await startOptionsWorkbench({...options(root),port:0,codeRoot,refreshContext:true,now:()=>"2026-09-08T05:20:00.000Z"});
+  try{
+    const health=await(await fetch(app.url+'/api/health')).json();assert.equal(health.contextRefreshEnabled,true);
+    const state=await(await fetch(app.url+'/api/state')).json();assert.equal(state.publicContextRefresh.status,'PARTIAL');
+    assert(state.publicContextRefresh.results.flatMap(r=>r.sources).every(s=>s.code==='EXECUTABLE_MISSING'));
+    assert.deepEqual(state.publicContextRefresh.notYetEligible.map(r=>r.source),['treasury','bls','fomc','macro_context']);
+    assert.equal(state.manual.data.eventCount,0);assert(!existsSync(join(codeRoot,'data')));
+  }finally{await app.close();}
+}));
 console.log(`${passed}/${passed} tests passed.`);
