@@ -1,0 +1,749 @@
+{
+  "version": "ALPHA_EVENING_REVIEW_EVIDENCE_V1",
+  "createdAt": "2026-09-21T01:07:40.378Z",
+  "reviewStartedAt": "2026-09-21T01:01:25.008Z",
+  "loadedAt": "2026-09-21T01:02:31.171Z",
+  "localDate": "2026-09-20",
+  "timezone": "America/New_York",
+  "target": "C:\\Users\\liuha\\.codex\\worktrees\\8f09\\Alpha",
+  "commit": "bbc2427b06768c01079277365d0cdda33e83f57d",
+  "branch": "codex/gld-ibit-options-foundation",
+  "morning": "docs/development-daily/2026-09-20/morning-2026-09-20T12-07-06-388Z.md",
+  "ownerThread": {
+    "id": "01a077f7-0355-7b70-89b2-1ff2e0d89261",
+    "reachable": true,
+    "latestThreeTurnBodiesAvailable": false,
+    "olderExperimentRequestReadable": true,
+    "latestSavedDirectionsUsed": true
+  },
+  "components": {
+    "catalog": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "chain": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "manual": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "activity": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "headlines": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "treasury": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "btc": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "calendar": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "outcomes": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "progress": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "guidance": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "guidanceDelivery": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "guidanceSensitivities": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "eventReactions": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "capitalPolicy": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "candidateChecks": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "focusedNews": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "eventResearch": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "barQuality": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "macroContext": {
+      "state": "BLOCKED",
+      "error": "MACRO_FIELDS"
+    },
+    "goldFramework": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "snapshotPaper": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "positionWatch": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "reportedSpreads": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "decisionCards": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "etfSetup": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "trendStudy": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "macroPlaybook": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "sourceComparisons": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "marketExpectations": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "eventEntryPlans": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "scenarioResearch": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "evidenceLoop": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "macroWorldModel": {
+      "state": "AVAILABLE",
+      "error": null
+    },
+    "storylines": {
+      "state": "AVAILABLE",
+      "error": null
+    }
+  },
+  "news": [
+    {
+      "id": "fed",
+      "label": "Federal Reserve releases",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:18.227Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": true
+    },
+    {
+      "id": "bls",
+      "label": "BLS economic indicators",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:18.276Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": true
+    },
+    {
+      "id": "bea",
+      "label": "BEA economic releases",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:18.367Z",
+      "diagnostic": "1 invalid headline items rejected",
+      "partial": true,
+      "refreshOverdue": true
+    },
+    {
+      "id": "ecb",
+      "label": "European Central Bank releases",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:18.490Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": true
+    },
+    {
+      "id": "ofac",
+      "label": "US Treasury OFAC actions",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:18.823Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": true
+    },
+    {
+      "id": "sec",
+      "label": "SEC press releases",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:18.533Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": true
+    },
+    {
+      "id": "fed_speeches",
+      "label": "Federal Reserve speeches & testimony",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:19.379Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": true
+    },
+    {
+      "id": "eia_energy",
+      "label": "EIA Today in Energy",
+      "kind": "PRIMARY_PUBLISHER",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:19.509Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": true
+    },
+    {
+      "id": "coindesk",
+      "label": "CoinDesk reporting",
+      "kind": "NEWS_REPORTING",
+      "status": "OK",
+      "observedAt": "2026-09-20T22:00:19.437Z",
+      "diagnostic": null,
+      "partial": false,
+      "refreshOverdue": true
+    }
+  ],
+  "calendar": {
+    "bls": {
+      "state": "AVAILABLE",
+      "latestReceivedAt": "2026-09-20T13:00:59.053Z",
+      "refreshOverdue": false
+    },
+    "fomc": {
+      "state": "AVAILABLE",
+      "latestReceivedAt": "2026-09-20T13:00:59.502Z",
+      "refreshOverdue": false
+    }
+  },
+  "market": {
+    "latest": {
+      "path": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T19-52-02-877Z-0acffc10-2a45-4a5c-9f6f-29a280fdb23c.json",
+      "startedAt": "2026-09-17T19:51:48.000Z",
+      "capturedAt": "2026-09-17T19:51:53.000Z",
+      "recordedAt": "2026-09-17T19:52:02.877Z",
+      "origin": "HOST_MARKET_TOOL_RESPONSES",
+      "complete": true,
+      "requested": 36,
+      "returned": 36
+    },
+    "quoteClocks": [
+      {
+        "symbol": "GLD",
+        "requested": 18,
+        "withSourceClock": 18,
+        "fresh": 0,
+        "stale": 18,
+        "unknown": 0,
+        "future": 0,
+        "underlyingAt": "2026-09-17T19:51:45.663487166Z",
+        "underlyingFreshness": "STALE"
+      },
+      {
+        "symbol": "IBIT",
+        "requested": 18,
+        "withSourceClock": 18,
+        "fresh": 0,
+        "stale": 18,
+        "unknown": 0,
+        "future": 0,
+        "underlyingAt": "2026-09-17T19:51:47.327511164Z",
+        "underlyingFreshness": "STALE"
+      }
+    ],
+    "slots": [
+      {
+        "slot": "2026-09-14-1550",
+        "status": "NO_CAPTURE_SAVED",
+        "captureCount": 0
+      },
+      {
+        "slot": "2026-09-15-1550",
+        "status": "NO_CAPTURE_SAVED",
+        "captureCount": 0
+      },
+      {
+        "slot": "2026-09-16-1550",
+        "status": "NO_CAPTURE_SAVED",
+        "captureCount": 0
+      },
+      {
+        "slot": "2026-09-17-1550",
+        "status": "CAPTURE_RECORDED",
+        "captureCount": 1
+      },
+      {
+        "slot": "2026-09-18-1550",
+        "status": "NO_CAPTURE_SAVED",
+        "captureCount": 0
+      }
+    ],
+    "counts": {
+      "expectedCompleted": 5,
+      "recorded": 1,
+      "missing": 4,
+      "partial": 0,
+      "calendarUnknown": 0
+    },
+    "nextExpectedSlot": {
+      "startAt": "2026-09-21T19:50:00.000Z",
+      "endAt": "2026-09-21T20:00:00.000Z"
+    }
+  },
+  "guidance": {
+    "analysis": {
+      "assessedAt": "2026-09-20T13:03:30.000Z",
+      "status": "CURRENT",
+      "limitation": "Clock ordering and attribution do not establish substantive analysis quality."
+    },
+    "publication": {
+      "path": "data/runtime/options-daily-guidance/reports/2026-09-20/2026-09-20T22-00-29-664Z-5fa2beb7-49b8-47be-8e5d-ce721294313f.json",
+      "issuedAt": "2026-09-20T22:00:29.664Z",
+      "assessedAt": "2026-09-20T22:00:19.535Z",
+      "marketFingerprint": "sha256:912503294cf9506161a1a3c4f03ab9f8f63a9e75435274d8443d2cb1f07b3088",
+      "usesCurrentMarketInputs": true
+    },
+    "hostSourceCount": 6,
+    "cardSourceCount": 9,
+    "assets": [
+      {
+        "symbol": "GLD",
+        "disposition": "WATCH",
+        "dimensions": [
+          {
+            "id": "DIRECTION",
+            "status": "UNCONFIRMED"
+          },
+          {
+            "id": "MAGNITUDE",
+            "status": "FORECAST_MISSING"
+          },
+          {
+            "id": "TIME",
+            "status": "TRADE_HORIZON_UNDECLARED"
+          },
+          {
+            "id": "VOLATILITY",
+            "status": "UNASSESSED"
+          },
+          {
+            "id": "PATH",
+            "status": "UNCONFIRMED"
+          },
+          {
+            "id": "RISK",
+            "status": "COSTS_UNKNOWN"
+          }
+        ]
+      },
+      {
+        "symbol": "IBIT",
+        "disposition": "WATCH",
+        "dimensions": [
+          {
+            "id": "DIRECTION",
+            "status": "UNCONFIRMED"
+          },
+          {
+            "id": "MAGNITUDE",
+            "status": "FORECAST_MISSING"
+          },
+          {
+            "id": "TIME",
+            "status": "TRADE_HORIZON_UNDECLARED"
+          },
+          {
+            "id": "VOLATILITY",
+            "status": "UNASSESSED"
+          },
+          {
+            "id": "PATH",
+            "status": "UNCONFIRMED"
+          },
+          {
+            "id": "RISK",
+            "status": "COSTS_UNKNOWN"
+          }
+        ]
+      }
+    ]
+  },
+  "paper": [
+    {
+      "id": "pipeline-check-ibit-20260910",
+      "path": "data/runtime/options-snapshot-paper/plans/pipeline-check-ibit-20260910.json",
+      "status": "NO_ENTRY",
+      "stage": "ENTRY_WINDOW_ENDED",
+      "fills": 0,
+      "reviewPresent": false
+    },
+    {
+      "id": "pipeline-check-ibit-20260915",
+      "path": "data/runtime/options-snapshot-paper/plans/pipeline-check-ibit-20260915.json",
+      "status": "NO_ENTRY",
+      "stage": "ENTRY_WINDOW_ENDED",
+      "fills": 0,
+      "reviewPresent": false
+    },
+    {
+      "id": "pipeline-check-ibit-20260917",
+      "path": "data/runtime/options-snapshot-paper/plans/pipeline-check-ibit-20260917.json",
+      "status": "CLOSED_MODELED",
+      "stage": "CLOSED_MODELED",
+      "fills": 2,
+      "reviewPresent": true
+    },
+    {
+      "id": "pipeline-precision-ibit-20260917",
+      "path": "data/runtime/options-snapshot-paper/plans/pipeline-precision-ibit-20260917.json",
+      "status": "CLOSED_MODELED",
+      "stage": "CLOSED_MODELED",
+      "fills": 2,
+      "reviewPresent": true
+    },
+    {
+      "id": "source-audit-gld-20260909",
+      "path": "data/runtime/options-snapshot-paper/plans/source-audit-gld-20260909.json",
+      "status": "NO_ENTRY",
+      "fills": 0,
+      "reviewPresent": false
+    },
+    {
+      "id": "source-audit-ibit-20260909",
+      "path": "data/runtime/options-snapshot-paper/plans/source-audit-ibit-20260909.json",
+      "status": "NO_ENTRY",
+      "fills": 0,
+      "reviewPresent": false
+    }
+  ],
+  "manual": {
+    "eventCount": 3,
+    "planRecords": 3,
+    "counts": {
+      "trades": 0,
+      "activeFills": 0,
+      "voidedFills": 0,
+      "closedTrades": 0,
+      "openTrades": 0,
+      "possibleDuplicateFills": 0,
+      "candidateLessons": 0
+    },
+    "headSha256": "7dce13fe2423a06f6646606e1c78cd57aff37c68670a112d720aa63a7cc35b8a"
+  },
+  "reportedSpreads": [
+    {
+      "id": "owner-spreads-20260915-manual-exit-review",
+      "matchedCloseCount": 5,
+      "candidateCount": 18
+    }
+  ],
+  "trend": [
+    {
+      "counts": {
+        "sessions": 1,
+        "signals": 0,
+        "entries": 0,
+        "closed": 0
+      },
+      "observationCounts": {
+        "INSUFFICIENT_OBSERVATION": 2,
+        "AWAITING_OBSERVATION_WINDOW": 38
+      },
+      "elapsedDays": [
+        {
+          "date": "2026-09-18",
+          "path": "data/runtime/options-trend-study/gld-ibit-trend-v1-20260918/days/2026-09-18/000001.json",
+          "assets": [
+            {
+              "symbol": "GLD",
+              "classification": "INSUFFICIENT_OBSERVATION",
+              "due": 47,
+              "timely": 0
+            },
+            {
+              "symbol": "IBIT",
+              "classification": "INSUFFICIENT_OBSERVATION",
+              "due": 47,
+              "timely": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "eventEntry": [
+    {
+      "planKey": "draft:gld-employment-20261002-draft-v3",
+      "planVersion": "sha256:705c7ff8fff804d1bafc86e00170562987a2bf735695cd24314beb5322b2ed55",
+      "eligible": false,
+      "blockers": [
+        "CONSENSUS_EXPECTATION_UNKNOWN",
+        "EXPECTATION_PERIOD_UNKNOWN",
+        "EXPECTATION_ADJUSTMENT_UNKNOWN",
+        "ALPHA_EXPECTATION_UNKNOWN",
+        "FINAL_EXPECTATION_SNAPSHOT_MISSING",
+        "OWNER_EXPECTATION_NOT_CONFIRMED",
+        "PRE_EVENT_MODE_NOT_CONFIRMED",
+        "PRE_EVENT_PLAN_INCOMPLETE",
+        "CONTRACT_NOT_SELECTED",
+        "QUANTITY_NOT_DEFINED",
+        "ENTRY_COST_RISK_NOT_DEFINED",
+        "EXPECTATION_BASIS_MISSING",
+        "DIFFERENTIATED_BASIS_UNKNOWN",
+        "EVENT_RISK_NOT_CONFIRMED",
+        "INDEPENDENT_STOP_NOT_DEFINED",
+        "INDEPENDENT_TARGET_NOT_DEFINED",
+        "MAX_EXIT_NOT_DEFINED",
+        "MONITORING_CONTINGENCY_MISSING",
+        "ENTRY_DEADLINE_NOT_DEFINED"
+      ]
+    }
+  ],
+  "scenario": [
+    {
+      "id": "gld-employment-20261002-scenarios-v1",
+      "path": "data/runtime/options-macro-comparisons/source-scenario-gld-employment-20261002-scenarios-v1.json",
+      "savedAt": "2026-09-20T22:16:44.813Z",
+      "fingerprint": "sha256:43021e7c4c73be9a527883ffa4b15f9a1ee37d78a02ff1eca77ce18d547ac66b",
+      "status": "NOT_CALCULABLE"
+    }
+  ],
+  "expectations": [
+    {
+      "id": "gld-employment-20261002-research-v1",
+      "path": "data/runtime/options-macro-comparisons/source-expectation-gld-employment-20261002-research-v1.json",
+      "savedAt": "2026-09-20T15:06:52.062Z",
+      "fingerprint": "sha256:8c6ea88550a0d8a8f291439cf1c7a9a831aa3f123f9856f82a038dfc8f107489"
+    }
+  ],
+  "storylines": {
+    "recordCount": 4,
+    "errors": []
+  },
+  "sourceComparisons": {
+    "recordCount": 16,
+    "errors": []
+  },
+  "evidenceLoop": {
+    "acceptedDelivery": false,
+    "rowCount": 0,
+    "draftPredictionStatuses": [
+      "NOT_CREATED"
+    ]
+  },
+  "regression": {
+    "component": "macroContext",
+    "morning": "AVAILABLE",
+    "evening": "BLOCKED",
+    "error": "MACRO_FIELDS",
+    "reproducedAt": "2026-09-21T01:04:23.510Z",
+    "cause": "Committed readMacroComparisons excludes package/draft/saved/expectation but not scenario; it sends the saved source-scenario envelope to the legacy result/fingerprint validator.",
+    "reproduction": "Read-only macroContextView and verifyMacroComparison on existing scenario both throw MACRO_FIELDS; no source call or mutation."
+  },
+  "workstreamCounts": {
+    "LOCAL_VALIDATED": 4,
+    "PARTIAL": 4,
+    "NOT_VALIDATED": 2
+  },
+  "gateStates": [
+    {
+      "name": "Local risk and planning",
+      "status": "LOCAL_VALIDATED"
+    },
+    {
+      "name": "Qualified option quotes",
+      "status": "AWAITING_ELIGIBLE_DATA"
+    },
+    {
+      "name": "Source-specific Robinhood paper adapter",
+      "status": "LOCAL_IMPLEMENTED_UNQUALIFIED"
+    },
+    {
+      "name": "Local modeled lifecycle",
+      "status": "LOCAL_VALIDATED"
+    },
+    {
+      "name": "Outcome review and candidate notebook",
+      "status": "LOCAL_VALIDATED"
+    },
+    {
+      "name": "Qualified real-price end-to-end run",
+      "status": "NOT_RUN"
+    }
+  ],
+  "installedSchedule": {
+    "path": "C:/Users/liuha/.codex/automations/gld-ibit/automation.toml",
+    "sha256": "63447dc7aa9e4b5d163e8ab303a07abcb9eee8c3a153acb1daa479a967633c33",
+    "sameAsMorning": true,
+    "modified": false
+  },
+  "evidence": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "12aff27de9d93303f1f9d287ef7b10e576166c628b32f37b49c259c30887fda3"
+    },
+    {
+      "path": "docs/HANDOFF.md",
+      "sha256": "bafaea69a728cf02854e00225a84f3cf1833760426260a3dc7400f04af5cbace"
+    },
+    {
+      "path": "docs/OPTIONS_DAILY_DEVELOPMENT_REVIEW.md",
+      "sha256": "c6085f41c9c325313a0b5423855dd6dc09ba78c619f90711bb25af4851c5e2b3"
+    },
+    {
+      "path": "docs/development-daily/2026-09-20/morning-2026-09-20T12-07-06-388Z.md",
+      "sha256": "92f380facf47adf4fb28897b66380af2108d7ceb005d907c54a286d6a9ede386"
+    },
+    {
+      "path": "docs/development-daily/2026-09-19/evening-2026-09-20T01-07-18-277Z.md",
+      "sha256": "abed335caa79e7eae1fee5a3f6e555eb911fc5b34a0be1feffe3cc210855cbf7"
+    },
+    {
+      "path": "docs/status/development-progress.json",
+      "sha256": "51053ef4a8c836cdee1a8668676a1b25538506ce3d3f507b1ea58e74c54ad6da"
+    },
+    {
+      "path": "docs/status/development-alignment-baseline-20260909.json",
+      "sha256": "bfcc101c96978eed70f7072e63ca06b93fe81d03dc2dfd7d081223b64aa2b954"
+    },
+    {
+      "path": "docs/status/routine-1550.json",
+      "sha256": "9956104aa1f5a657109ab4b750e6e8367f47d7fbd4c39e2c437033d50ac92ee8"
+    },
+    {
+      "path": "docs/status/scenario-research.json",
+      "sha256": "9c5b6b35cb7f0a4a444c7dc9853c0513b21d1b3e7358cd522ff558435de52d64"
+    },
+    {
+      "path": "docs/status/storyline-links.json",
+      "sha256": "960f2c867781068289829081907eb040ddf687a58bcd24f1ed110c3aa302358e"
+    },
+    {
+      "path": "docs/OPTIONS_SCENARIO_RESEARCH_DELIVERY.md",
+      "sha256": "b4ef6761a4d78e26d4c13650ed4824893532f4f42dbccb412caf669166111676"
+    },
+    {
+      "path": "docs/OPTIONS_STORYLINE_LINKS_DELIVERY.md",
+      "sha256": "33a9805bc2da9c5546834991f641348ebb314e8e81f2562ac9d8256165ea62b0"
+    },
+    {
+      "path": "data/runtime/options-workbench-development/expectation-final-acceptance.json",
+      "sha256": "713d0584882c29fa124eb0716978b4395ae6f71a43e56094e4909dbc80a82fa8"
+    },
+    {
+      "path": "data/runtime/options-workbench-development/expectation-formal-runtime-acceptance.json",
+      "sha256": "2cf5c21082d6698036f84cdbb0446c555c8cefdaa941a00a116ab387c44ebb14"
+    },
+    {
+      "path": "data/runtime/options-workbench-development/scenario-ev-formal-receipt.json",
+      "sha256": "7fbb654bff34c29d6ccf73aef6e1aeeb8b6c56425e6a307aaa9a5ee544b77faa"
+    },
+    {
+      "path": "data/runtime/options-workbench-development/scenario-ev-validation-final-code.txt",
+      "sha256": "a021fda35dfac5d4aacab0176cf4280ed7d60cbe65ee791846670f51aecbe986"
+    },
+    {
+      "path": "scripts/lib/options-macro-context-io.mjs",
+      "sha256": "8f1820de07e0c2267a8f0e6695806eabff19738d6d070f654e15091bd6c4e4a6"
+    },
+    {
+      "path": "data/runtime/options-macro-comparisons/source-scenario-gld-employment-20261002-scenarios-v1.json",
+      "sha256": "1f326342a87e6cc23a6f8129135f6680404e01705cd65fd1f6883532048b6cfd"
+    },
+    {
+      "path": "data/runtime/options-daily-guidance/reports/2026-09-20/2026-09-20T22-00-29-664Z-5fa2beb7-49b8-47be-8e5d-ce721294313f.json",
+      "sha256": "df076540f571128a515f22d36167c4961d0e5dbfadd9f494bbfcea863f03de9f"
+    },
+    {
+      "path": "data/runtime/options-daily-guidance/captures/2026-09-17/2026-09-17T19-52-02-877Z-0acffc10-2a45-4a5c-9f6f-29a280fdb23c.json",
+      "sha256": "415eb76ed943e29038510890cd241e3989b0780687d91278092eb2c2f4c24a7d"
+    },
+    {
+      "path": "data/runtime/options-daily-guidance/analysis/2026-09-20/2026-09-20T13-03-31-064Z-a65eaa99-ff0c-4392-ba88-554b166a695b.json",
+      "sha256": "5036b950bc6a9296696ffc91bc45486c8a13c9efc0d564b35a7244e639986acf"
+    }
+  ],
+  "validation": {
+    "newFullSuiteRun": false,
+    "marketCalls": 0,
+    "accountOrderCalls": 0,
+    "sourceScheduleChanges": 0,
+    "productionWrites": 0
+  },
+  "concurrentStatus": [
+    "M apps/options-workbench/api.js",
+    " M apps/options-workbench/app.js",
+    " M apps/options-workbench/styles.css",
+    " M apps/options-workbench/trade-thesis.js",
+    " M apps/options-workbench/views.js",
+    " M package.json",
+    " M scripts/alpha-validate.mjs",
+    " M scripts/lib/options-scenario-research.mjs",
+    " M scripts/lib/options-source-comparison.mjs",
+    " M scripts/lib/options-workbench-data.mjs",
+    " M scripts/options-focus-scope.test.mjs",
+    " M scripts/options-manual-ledger.mjs",
+    " M scripts/options-workbench.mjs",
+    " M src/contracts/OptionsManualLedger.ts",
+    " M src/contracts/PredictionRecord.ts",
+    " M src/contracts/PredictionValidation.ts",
+    " M src/engines/options-manual-ledger/OptionsManualLedger.ts",
+    " M src/engines/options-manual-ledger/OptionsTradeThesis.ts",
+    " M src/engines/prediction-log/PredictionExports.ts",
+    " M src/engines/prediction-log/PredictionLog.test.ts",
+    " M src/engines/prediction-log/PredictionLog.ts",
+    " M src/engines/prediction-log/PredictionTranslations.ts",
+    " M src/repositories/PredictionRepository.ts",
+    "?? apps/options-workbench/evidence-loop.js",
+    "?? docs/development-daily/2026-09-16/evening-2026-09-17T01-08-40-562Z.md",
+    "?? scripts/lib/options-evidence-loop-fixtures.mjs",
+    "?? scripts/lib/options-evidence-loop.mjs",
+    "?? scripts/options-evidence-loop.test.mjs"
+  ]
+}
