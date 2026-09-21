@@ -116,3 +116,56 @@ Prefer normal daily claims during operation. UI reload only reads local data.
 The CLI also accepts `--preview-comparison <input.json>` and `--save-comparison
 <input.json>` with the exact fields from the specification; use actual official
 values only after release. See [specification](specifications/OPTIONS_MACRO_CONTEXT_V1.md).
+
+## September 21 — shared comparison catalog repair
+
+The Owner data root reproduced `MACRO_FIELDS` with the original reader. The
+trigger was `source-scenario-gld-employment-20261002-scenarios-v1.json`: a valid
+`OPTIONS_SOURCE_COMPARISON_V1` envelope with `kind: scenario`, not a macro result.
+The old negative filename filter excluded only package, draft, saved and
+expectation records, then passed the scenario to the `{result, fingerprint}`
+comparison verifier. Its own source/scenario readers verified the original file.
+
+The reader now positively classifies `result.version: OPTIONS_MACRO_COMPARISON_V1`
+before invoking the unchanged comparison verifier. Source records are separated
+by their existing envelope version, exact envelope fields, kind/ID filename
+binding and fingerprint. There is no source-kind exclusion list; a future kind
+using that envelope stays outside macro results. Unknown schemas, damaged
+envelopes and mismatched identities fail with `MACRO_COMPARISON_CATALOG_RECORD`.
+Payload semantics and references remain with each source reader. Existing macro
+comparison IDs starting with `source-` are still verified, not silently hidden.
+
+The existing September 21 macro-daily receipt ran at 17:00:09–17:00:11 EDT and
+reports `macro_context: OK`; nominal yields, broad dollar and nowcast each report
+`OK`. Collection succeeded; projection failed because of this catalog collision.
+No refresh or market call was made to repair it.
+
+At 19:32 EDT, the patched `macroContextView` and complete workbench state reader
+read the **actual Owner data root** successfully: `AVAILABLE`, one saved macro
+batch, three `OK` sources and zero ordinary macro comparisons. All 156 original
+runtime files were byte-identical, with zero new files. The employment case has
+one logical saved draft (three retained historical draft versions), one expectation,
+four saved comparisons and one verified scenario: `DRAFT`, `NOT_CREATED`, `NO_TRADE`.
+The separate already-running workbench process still uses its previous code and
+returned `MACRO_FIELDS`; it was not replaced or restarted by this reader-only
+task. This acceptance proves the patched reader against real data, not deployment
+of the fix to that process.
+
+Private evidence remains in `data/runtime/options-workbench-development/`:
+`macro-catalog-before.json`, `macro-catalog-after.json`,
+`macro-catalog-case-integrity.json` and the `macro-catalog-*.log` files.
+The new mixed-catalog regression failed with the old reader, then passed after
+the fix. Focused macro tests: 67/67; source comparison: 20/20; expectation: 23/23;
+scenario: 40/40; context service: 22/22; workbench: 58/58. TypeScript passed.
+The final Alpha aggregate validation passed 5,042 tests with zero failures,
+including strict TypeScript; details are in `status/macro-context.json`.
+
+One prospective Jev TRIAGE sample was captured before confirming the cause:
+HTTP 200, fixed served version `typesafe/jev-1.13-20260917`, `UNKNOWN`, 436.542 ms,
+615 input / 86 output tokens, provider-reported cost $0.00002583. Codex independently
+diagnosed the read-path code regression, then appended evidence-backed gold.
+This is one abstention, not evidence of interruption savings or adoption. No
+other model call, new source request, runtime integration or schedule change.
+Original research semantics, source gaps, funds/risk and independent collection
+acceptances are unchanged. Reverting only this reader/test change restores the
+old behavior; no data migration or evidence rollback is necessary.

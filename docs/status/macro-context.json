@@ -82,5 +82,82 @@
   "consensus": "NOT_CONNECTED",
   "automatedActuals": "NOT_CONNECTED",
   "ppiModel": "NOT_PROVIDED",
-  "executionAllowed": false
+  "executionAllowed": false,
+  "catalogRepair": {
+    "checkedAt": "2026-09-21T23:34:57.929Z",
+    "status": "PATCHED_READER_VERIFIED_OWNER_DATA_UNCHANGED",
+    "priorReadError": "MACRO_FIELDS",
+    "triggerNamespace": "source-scenario",
+    "triggerEnvelope": "OPTIONS_SOURCE_COMPARISON_V1",
+    "comparisonVersion": "OPTIONS_MACRO_COMPARISON_V1",
+    "classification": "POSITIVE_ENVELOPE_AND_IDENTITY_WITH_FINGERPRINT",
+    "unknownCatalogRecord": "FAIL_CLOSED",
+    "macroDailyReceipt": {
+      "date": "2026-09-21",
+      "collector": "OK",
+      "sources": {
+        "nominal": "OK",
+        "dollar": "OK",
+        "nowcast": "OK"
+      }
+    },
+    "patchedOwnerRead": "AVAILABLE",
+    "installedWorkbench": "OLD_PROCESS_STILL_BLOCKED_NOT_RESTARTED",
+    "originalRuntimeFilesUnchanged": 156,
+    "newOwnerRuntimeFiles": 0,
+    "employment": {
+      "logicalSavedDrafts": 1,
+      "historicalDraftVersions": 3,
+      "expectationSnapshots": 1,
+      "savedSourceComparisons": 4,
+      "scenarios": 1,
+      "plan": "DRAFT",
+      "prediction": "NOT_CREATED",
+      "trade": "NO_TRADE"
+    },
+    "validation": {
+      "oldReaderReproduction": "MACRO_FIELDS",
+      "macro": 67,
+      "sourceComparison": 20,
+      "marketExpectation": 23,
+      "scenario": 40,
+      "contextService": 22,
+      "workbench": 58,
+      "typecheck": "PASSED",
+      "full": {
+        "status": "PASSED",
+        "componentCount": 189,
+        "testsExecuted": 5042,
+        "passed": 5042,
+        "failed": 0,
+        "durationMs": 157179
+      },
+      "logSha256": "47b12013bc2bf720f028ce05787a55015ae641b11aa50e75a4af5a01f97a0791",
+      "productCodeHashes": {
+        "scripts/lib/options-macro-context-io.mjs": "b9f11cb87478b637b912b1f7e4247e5e5cb0d5e98dcd549e626f5e917b7e3642",
+        "scripts/options-macro-context.test.mjs": "b57ca38efddb44150e939305ff9b924f5dbcd24f0627f8928643fbc477bdf061"
+      }
+    },
+    "jev": {
+      "samples": 1,
+      "type": "TRIAGE",
+      "decision": "UNKNOWN",
+      "gold": "CODE_REGRESSION",
+      "goldAttribution": "CODEX_OUTCOME_REVIEW_NOT_INDEPENDENT_OWNER_LABEL",
+      "apiCalls": 1,
+      "latencyMs": 436.542,
+      "inputTokens": 615,
+      "outputTokens": 86,
+      "reportedCostUsd": 0.00002583,
+      "shadowOnly": true
+    },
+    "newMarketCalls": 0,
+    "newPublicSourceCalls": 0,
+    "evidence": [
+      "data/runtime/options-workbench-development/macro-catalog-before.json",
+      "data/runtime/options-workbench-development/macro-catalog-after.json",
+      "data/runtime/options-workbench-development/macro-catalog-case-integrity.json",
+      "data/runtime/options-workbench-development/macro-catalog-full-validation.log"
+    ]
+  }
 }

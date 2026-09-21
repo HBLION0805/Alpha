@@ -121,5 +121,19 @@ export function verifyMacroComparison(root,path) {
 }
 function readMacroComparisons(root,at) {
   const files=children(root,COMPARE);if(files.length>500||files.some(f=>!f.isFile()||f.isSymbolicLink()||!f.name.endsWith('.json')))fail('COMPARISON_CATALOG');
-  return files.filter(f=>!/^source-(package|draft|saved|expectation)-/.test(f.name)).map(f=>verifyMacroComparison(root,COMPARE+'/'+f.name)).filter(r=>r.assessedAt<=at).sort((a,b)=>b.assessedAt.localeCompare(a.assessedAt));
+  return files.filter(f=>{
+    const r=json(io.readBytes(root,COMPARE+'/'+f.name,16384));
+    // Classify the envelope, not an expanding exclusion list of source kinds.
+    // Legacy comparison IDs may themselves begin with "source-".
+    if(r?.result?.version==='OPTIONS_MACRO_COMPARISON_V1')return true;
+    if(r?.version==='OPTIONS_SOURCE_COMPARISON_V1'){
+      const {fingerprint,...source}=r;
+      if(Object.keys(source).sort().join()==='id,kind,payload,savedAt,version'&&
+        typeof source.kind==='string'&&/^[a-z][a-z0-9-]{0,39}$/.test(source.kind)&&
+        typeof source.id==='string'&&/^[a-z0-9][a-z0-9-]{2,79}$/.test(source.id)&&
+        f.name==='source-'+source.kind+'-'+source.id+'.json'&&paperFingerprint(source)===fingerprint)return false;
+      // Payload meaning and references remain the source reader's responsibility.
+    }
+    fail('COMPARISON_CATALOG_RECORD');
+  }).map(f=>verifyMacroComparison(root,COMPARE+'/'+f.name)).filter(r=>r.assessedAt<=at).sort((a,b)=>b.assessedAt.localeCompare(a.assessedAt));
 }

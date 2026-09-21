@@ -10,6 +10,9 @@ import {contextRefreshSlots,runPublicContextOnce} from './options-context-servic
 import {startOptionsWorkbench} from './options-workbench.mjs';
 import {runGuidanceCommand} from './options-daily-guidance.mjs';
 import {request as browserRequest} from '../apps/options-workbench/api.js';
+import {saveSourceRecord,readSourceRecord} from './lib/options-source-comparison.mjs';
+import {createWorkbenchData} from './lib/options-workbench-data.mjs';
+import {paperFingerprint} from '../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 
 let passed=0;async function test(n,f){await f();passed++;console.log('PASS '+n);}
 async function temp(fn){const root=mkdtempSync(join(tmpdir(),'alpha-macro-test-'));try{await fn(root);}finally{const full=realpathSync(root),r=relative(realpathSync(tmpdir()),full);if(isAbsolute(r)||r.startsWith('..')||!r.startsWith('alpha-macro-test-'))throw Error('UNSAFE_TEST_CLEANUP');rmSync(full,{recursive:true,force:true});}}
@@ -51,6 +54,43 @@ await test('unsafe paths and unexpected files do not disappear from recovery',()
 await test('event comparison uses exact model error with explicit unverified actual',()=>temp(root=>{const s=saveMacroBatch(root,inputs(),at),r=previewMacroComparison(root,request(s.path),after);assert.equal(r.actualMinusModelHundredthsPp,10);assert.equal(r.comparisonKind,'MODEL_FORECAST_ERROR_NOT_CONSENSUS_SURPRISE');assert.equal(r.actualEvidence,'OWNER_REPORTED_UNVERIFIED');assert.equal(r.executionAllowed,false);}));
 for(const [name,extra] of [['future release',{releaseAt:'2026-09-10T12:30:00.000Z'}],['same-clock forecast',{releaseAt:at}],['past release',{releaseAt:'2026-09-08T12:30:00.000Z'}],['mismatched period',{period:'2026-07'}],['PPI not provided',{metric:'PPI_MOM'}],['missing model cell',{metric:'PCE_MOM'}],['wrong adjustment',{seasonalAdjustment:'NSA'}],['wrong agency',{sourceUrl:'https://www.bea.gov/'}],['untrusted host',{sourceUrl:'https://bls.gov.example.com/'}],['URL credentials',{sourceUrl:'https://secret@www.bls.gov/'}],['invalid actual',{actualValue:'NaN'}],['unsafe ID',{requestId:'../outside'}]])await test('comparison blocks '+name,()=>temp(root=>{const s=saveMacroBatch(root,inputs(),at);assert.throws(()=>previewMacroComparison(root,request(s.path,extra),after));}));
 await test('save is idempotent, conflicts cannot overwrite and history recomputes',()=>temp(root=>{const s=saveMacroBatch(root,inputs(),at),q=request(s.path),one=saveMacroComparison(root,q,after),bytes=readFileSync(join(root,one.path));assert.equal(saveMacroComparison(root,q,after).alreadyRecorded,true);assert.throws(()=>saveMacroComparison(root,{...q,actualValue:'0.50'},after),/CONFLICT/);assert(readFileSync(join(root,one.path)).equals(bytes));assert.equal(verifyMacroComparison(root,one.path).actualMinusModelHundredthsPp,10);assert.equal(macroContextView(root,at).comparisons.length,0);assert.equal(macroContextView(root,after).comparisons.length,1);}));
+await test('mixed comparison catalog preserves all source namespaces and workbench recovery',()=>temp(async root=>{
+  const batch=saveMacroBatch(root,inputs(),at),comparison=saveMacroComparison(root,request(batch.path),after);
+  const sources=['package','draft','saved','expectation','scenario'].map(kind=>saveSourceRecord(root,kind,'catalog-fixture',{scope:'ISOLATED_ENVELOPE_COMPATIBILITY'},after));
+  const original=new Map([comparison,...sources].map(r=>[r.path,readFileSync(join(root,r.path))]));
+  const view=macroContextView(root,after);
+  assert.deepEqual(view.comparisons,[comparison.result]);
+  const state=await createWorkbenchData({workspaceRoot:root,now:()=>after}).state();
+  assert.equal(state.macroContext.state,'AVAILABLE');
+  assert.deepEqual(state.macroContext.data.comparisons,view.comparisons);
+  for(const r of sources)assert.equal(readSourceRecord(root,r.path).fingerprint,r.fingerprint);
+  for(const [path,bytes] of original)assert(readFileSync(join(root,path)).equals(bytes));
+}));
+await test('future source kind is classified by its intact source envelope without a kind list',()=>temp(root=>{
+  const batch=saveMacroBatch(root,inputs(),at);saveMacroComparison(root,request(batch.path),after);
+  const otherSources=['prediction','outcome','review','journal'].map(kind=>saveSourceRecord(root,kind,'catalog-fixture',{scope:'ISOLATED_ENVELOPE_COMPATIBILITY'},after));
+  const value={version:'OPTIONS_SOURCE_COMPARISON_V1',kind:'foo',id:'future-record',savedAt:after,payload:{scope:'ISOLATED_FUTURE_KIND'}};
+  const path=join(root,'data/runtime/options-macro-comparisons/source-foo-future-record.json');
+  writeFileSync(path,JSON.stringify({...value,fingerprint:paperFingerprint(value)}));const original=readFileSync(path);
+  assert.equal(macroContextView(root,after).comparisons.length,1);assert(readFileSync(path).equals(original));
+  for(const r of otherSources)assert.equal(readSourceRecord(root,r.path).fingerprint,r.fingerprint);
+}));
+await test('legacy comparison IDs resembling source names still undergo comparison verification',()=>temp(root=>{
+  const batch=saveMacroBatch(root,inputs(),at),saved=saveMacroComparison(root,request(batch.path,{requestId:'source-package-legacy-comparison'}),after);
+  assert.deepEqual(macroContextView(root,after).comparisons,[saved.result]);
+  const path=join(root,saved.path),record=JSON.parse(readFileSync(path));record.result.actualMinusModelHundredthsPp=99;writeFileSync(path,JSON.stringify(record));
+  assert.throws(()=>macroContextView(root,after),/COMPARISON_INTEGRITY/);
+}));
+for(const [name,record] of [['unknown JSON',{other:'record'}],['source prefix without source schema',{payload:{}}],['unknown version',{version:'OPTIONS_SOURCE_COMPARISON_V99',kind:'scenario'}]])await test('unclassified catalog record fails closed: '+name,()=>temp(root=>{
+  const batch=saveMacroBatch(root,inputs(),at);saveMacroComparison(root,request(batch.path),after);
+  writeFileSync(join(root,'data/runtime/options-macro-comparisons/source-scenario-unclassified.json'),JSON.stringify(record));
+  assert.throws(()=>macroContextView(root,after),/MACRO_COMPARISON_CATALOG_RECORD/);
+}));
+for(const change of ['fingerprint','kind','id','extra'])await test('foreign source envelope cannot hide a damaged '+change,()=>temp(root=>{
+  const saved=saveSourceRecord(root,'scenario','catalog-fixture',{scope:'ISOLATED_ENVELOPE_COMPATIBILITY'},after),path=join(root,saved.path),record=JSON.parse(readFileSync(path));
+  record[change]='changed';writeFileSync(path,JSON.stringify(record));
+  assert.throws(()=>macroContextView(root,after),/MACRO_COMPARISON_CATALOG_RECORD/);
+}));
 await test('macro scheduling preserves original slots and adds one separate after-17 claim',()=>{assert.equal(contextRefreshSlots('2026-09-08T20:59:00.000Z').some(s=>s.key.startsWith('macro-')),false);const s=contextRefreshSlots(at);assert.deepEqual(s[0].sources,['headlines','btc']);assert.deepEqual(s[1].sources,['treasury','bls','fomc']);assert.deepEqual(s.at(-1),{key:'macro-daily-2026-09-08',sources:['macro_context']});assert.equal(contextRefreshSlots('2026-11-09T21:59:00.000Z').some(s=>s.key.startsWith('macro-')),false);assert(contextRefreshSlots('2026-11-09T22:00:00.000Z').some(s=>s.key.startsWith('macro-')));});
 await test('two workers and repeated same-day runs cannot duplicate the new source slot',()=>temp(async root=>{let count=0;const o={workspaceRoot:root,now:()=>at,issue:false,execute:async name=>{if(name==='macro_context')count++;return {status:'OK'};}};await Promise.all([runPublicContextOnce(o),runPublicContextOnce(o)]);await runPublicContextOnce({...o,now:()=>"2026-09-09T01:00:00.000Z"});assert.equal(count,1);await runPublicContextOnce({...o,now:()=>after.replace('14:00','22:00')});assert.equal(count,2);}));
 await test('UI draft changes invalidate a preview and source markup is escaped',()=>temp(root=>{saveMacroBatch(root,inputs(),at);const v=macroContextView(root,at),f=v.forecasts[0],d={requestId:'cpi-test-01',forecastKey:[f.path,'2026-08','CPI_MOM'].join('|'),actualValue:'0.40',seasonalAdjustment:'SA',releaseAt:'2026-09-09T12:30:00.000Z',sourceUrl:'https://www.bls.gov/'};const p=previewMacroComparison(root,macroComparisonRequest(d),after);assert(macroPreviewMatches(p,d));assert(!macroPreviewMatches(p,{...d,actualValue:'0.50'}));const html=macroContextPanel({state:'AVAILABLE',data:v},{macroDraft:{...d,actualValue:'<img src=x>'}});assert(!html.includes('<img'));assert(html.includes('&lt;img'));assert(html.includes('Broad USD is not DXY'));assert(html.includes('Save comparison'));}));
