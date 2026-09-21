@@ -1,5 +1,21 @@
 # Alpha Development Standard v1.0
 
+## Jev prospective developer shadow — September 20, 2026
+
+This is an optional side experiment, never ACTIVE PRODUCT DEVELOPMENT. During
+otherwise authorized real Alpha work, only naturally occurring unresolved
+CONTINUE/ASK_OWNER and FAILURE_TRIAGE decisions may use the explicit local CLI
+in scripts/experiments/jev-dev-workflow/PHASE_2.md. Read that protocol before a
+sample. Do not create episodes, replay history, sample experiment setup/tests,
+or launch backlog work to fill the 30–50 target. Hard gates and deterministically
+resolved facts skip Jev. Freeze sanitized pre-decision state before the request;
+record actual Codex action separately and only later append evidence-backed gold.
+Jev never controls work or Owner questions. Preserve UNKNOWN, the fixed model,
+no-retry policy and existing $0.01 local phase stop; failures or unknown costs
+stop this experiment, not Alpha. No MCP, runtime/router integration, timer or
+background service. Do not infer adoption or interruption savings from an empty
+or insufficient sample; the historical v2 result remains NEEDS_MORE_EVIDENCE.
+
 ## Event source comparison and original review — September 20, 2026
 
 Read docs/OPTIONS_SOURCE_COMPARISON_DELIVERY.md and docs/status/source-comparison.json.

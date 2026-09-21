@@ -90,3 +90,5 @@ data/runtime/options-etf-observation-recovery-*/
 # Private educational attachments and owner-authored decision notes
 /data/runtime/options-macro-playbook/
 /data/runtime/options-storyline-links/
+# Private prospective developer states, actions and later gold evidence
+/data/runtime/jev-dev-workflow/
