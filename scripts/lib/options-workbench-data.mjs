@@ -1,4 +1,5 @@
 import {preparePredictionEvidence,verifyPredictionIntent,evidenceAction,evidenceLoopView,finishFrozenPrediction} from './options-evidence-loop.mjs';
+import {previewCaseExport,createCaseExport} from './options-case-export.mjs';
 import { existsSync, lstatSync, readdirSync, realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomUUID, createHash } from 'node:crypto';
@@ -56,7 +57,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(WORKBENCH_|TREND_STUDY_|ETF_SETUP_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(CASE_EXPORT_|WORKBENCH_|TREND_STUDY_|ETF_SETUP_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -272,5 +273,10 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,previewFingerprint,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_STORYLINE_ACTION');
     return body.action==='PREVIEW'?previewStorylineLink(root,body.request,now()):saveStorylineLink(root,body.request,body.previewFingerprint,now());
   }
-  return {evidenceLoop,scenarioResearch,storyline,sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  function caseExport(body){
+    if(body?.action==='PREVIEW'&&Object.keys(body).sort().join()==='action,caseId')return previewCaseExport(root,ledgerId,body.caseId,now());
+    if(body?.action==='CREATE'&&Object.keys(body).sort().join()==='action,asOf,caseId,previewFingerprint')return createCaseExport(root,{ledgerId,caseId:body.caseId,asOf:body.asOf,previewFingerprint:body.previewFingerprint},now);
+    fail('CASE_EXPORT_REQUEST');
+  }
+  return {caseExport,evidenceLoop,scenarioResearch,storyline,sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

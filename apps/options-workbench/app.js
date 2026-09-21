@@ -603,6 +603,13 @@ syncNavigation();void reload();
 setInterval(()=>{if(document.visibilityState==='visible'&&!dirty.size&&!saving&&!previewing&&!calculating&&!loading&&!document.querySelector('dialog[open]'))void reload(state?.selectedBoardId??'');},60000);
 
 document.addEventListener('click',event=>{
+  const exportButton=event.target.closest('[data-case-export]');
+  if(exportButton&&!saving){saving=true;exportButton.disabled=true;const caseId=exportButton.dataset.caseId;ui.caseExports??={};ui.caseExports[caseId]??={};
+    void(async()=>{try{const entry=ui.caseExports[caseId];entry.error=null;
+      if(exportButton.dataset.caseExport==='PREVIEW'){entry.preview=await request('/api/case-export',{action:'PREVIEW',caseId});delete entry.result;}
+      else if(entry.preview&&!entry.result){entry.result=await request('/api/case-export',{action:'CREATE',caseId,asOf:entry.preview.asOf,previewFingerprint:entry.preview.previewFingerprint});}
+    }catch(e){ui.caseExports[caseId].error=e.message;}finally{saving=false;render();}})();
+  }
   const show=event.target.closest('[data-evidence-detail]');
   if(show){const row=state?.evidenceLoop?.data?.rows.find(r=>r.tradeId===show.dataset.evidenceTrade);if(row)showDetail('Evidence record', '<pre>'+esc(JSON.stringify(evidenceDetail(state,row,show.dataset.evidenceDetail),null,2))+'</pre>');}
   const resume=event.target.closest('[data-evidence-resume]');

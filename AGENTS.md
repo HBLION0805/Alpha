@@ -1,5 +1,17 @@
 # Alpha Development Standard v1.0
 
+## Private case export and isolated recovery — September 20, 2026
+
+Read docs/OPTIONS_CASE_EXPORT_DELIVERY.md and docs/status/case-export.json.
+Trade journal / Evidence loop previews and explicitly creates bounded private
+case bundles using existing authorities. Preserve exact versions, original
+envelopes, unknowns and unresolved provenance; never synthesize missing records.
+Recovery accepts only a newly created temporary validation workspace, not a
+production destination. Scoped ordering wrappers are not the original shared
+ledger chain. Real bundles and recovery receipts stay ignored and local; this is
+not off-device backup, lifecycle freeze or trading permission. Keep the employment
+draft, source cadence, risk settings and independent natural/targeted acceptances.
+
 ## Options prediction / outcome evidence loop — September 20, 2026
 
 Read docs/OPTIONS_EVIDENCE_LOOP_DELIVERY.md and docs/status/evidence-loop.json.
