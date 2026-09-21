@@ -23,7 +23,7 @@ export function scenarioPlanContexts(report){
     return {...p,plan,contract,fields};
   });
 }
-function basis(p){const plan=structuredClone(p.plan);delete plan.invalidation?.scenarioSet;return fp({plan,contract:p.contract});}
+function basis(p){const plan=structuredClone(p.plan);delete plan.invalidation?.scenarioSet;delete plan.predictionEvidence;return fp({plan,contract:p.contract});}
 function validateRequest(r){
   plain(r,'id,scenarioSetVersion,supersedes,planKey,planVersion,expectationSnapshotId,contractId,quantity,rows,note');
   for(const k of ['id','supersedes','planKey','planVersion','expectationSnapshotId','contractId','note'])if(typeof r[k]!=='string'||r[k].length>1500)fail('TEXT');

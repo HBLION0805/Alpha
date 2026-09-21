@@ -15,3 +15,5 @@ export async function request(path,body){
     if(data.session){session=data.session;delete data.session;}return data;
   }catch(e){if(e.name==='AbortError')throw Error(url.pathname==='/api/candidate-checks'?'The snapshot request timed out. Reload saved data and check Saved check snapshots before saving again.':'The local request timed out. A save may have completed; retry the same preview to check it.');if(e instanceof TypeError)throw Error('Cannot reach Alpha. Start the local workbench, then retry. Your current draft is retained.');throw e;}finally{clearTimeout(timer);}
 }
+
+ROUTES.add('/api/evidence-loop');

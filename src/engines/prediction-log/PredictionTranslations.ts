@@ -17,7 +17,7 @@ export function summarizePrediction(prediction: Prediction): PredictionSummary {
     market: prediction.market,
     statement: prediction.statement,
     expectedDirection: prediction.expectedDirection,
-    confidence: prediction.confidence.value,
+    confidence: prediction.confidence?.value ?? null,
     status: prediction.status,
     outcomeKnown,
     reviewed: [PredictionStatus.Reviewed, PredictionStatus.Archived].includes(prediction.status),

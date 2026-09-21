@@ -55,8 +55,17 @@ test("all surviving local imports and exports resolve without deleted modules", 
     visit(ast);
   }
 });
-test("every surviving test file is covered by the validation bundle", () => {
-  for (const file of sourceFiles.filter((path) => /\.test\.(ts|mjs)$/u.test(path))) assert.ok(validation.includes(`"${file}"`), file);
+test("every surviving product test file is covered by the validation bundle", () => {
+  // Owner-approved developer experiments stay independently validated, outside the product bundle.
+  // Keep exact paths: new product tests must never silently escape this guard.
+  const independentExperimentTests = new Set([
+    "scripts/experiments/jev-dev-workflow/experiment.test.mjs",
+    "scripts/experiments/jev-dev-workflow/prospective.test.mjs",
+  ]);
+  for (const file of independentExperimentTests) assert.ok(sourceFiles.includes(file), file);
+  for (const file of sourceFiles.filter((path) => /\.test\.(ts|mjs)$/u.test(path))) {
+    if (!independentExperimentTests.has(file)) assert.ok(validation.includes(`"${file}"`), file);
+  }
 });
 test("canonical data, calendar, options and historical capabilities remain", () => {
   for (const path of [

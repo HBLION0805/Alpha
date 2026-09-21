@@ -72,7 +72,7 @@ export function matchesPredictionFilter(
     (filter.markets === undefined || filter.markets.includes(prediction.market)) &&
     (filter.ticker === undefined || prediction.ticker === filter.ticker) &&
     (filter.owner === undefined || prediction.owner === filter.owner) &&
-    (filter.strategyId === undefined || prediction.strategy.strategyId === filter.strategyId) &&
+    (filter.strategyId === undefined || prediction.strategy?.strategyId === filter.strategyId) &&
     (filter.researchId === undefined || prediction.evidence.researchReferences.some((reference) => reference.researchId === filter.researchId)) &&
     (filter.createdFrom === undefined || Date.parse(prediction.createdAt) >= Date.parse(filter.createdFrom)) &&
     (filter.createdTo === undefined || Date.parse(prediction.createdAt) <= Date.parse(filter.createdTo)) &&

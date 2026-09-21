@@ -51,6 +51,7 @@ function fnv1a64(value: string): string {
 
 export function createPredictionId(snapshot: PredictionSnapshot): string {
   const identitySnapshot: PredictionSnapshot = {
+    ...(snapshot.manualOrigin === undefined ? {} : { manualOrigin: snapshot.manualOrigin }),
     createdAt: snapshot.createdAt,
     predictionType: snapshot.predictionType,
     market: snapshot.market,
@@ -145,10 +146,10 @@ export function validatePredictionSnapshot(
     ["expectedTimeHorizon", snapshot.expectedTimeHorizon],
     ["expectedCatalyst", snapshot.expectedCatalyst],
     ["owner", snapshot.owner],
-    ["aiVersion", snapshot.aiVersion],
+
     ["version.predictionVersion", snapshot.version.predictionVersion],
-    ["strategy.strategyId", snapshot.strategy.strategyId],
-    ["strategy.strategyVersion", snapshot.strategy.strategyVersion],
+
+
   ] as const) nonEmpty(errors, field, value);
   if (snapshot.ticker !== undefined) nonEmpty(errors, "ticker", snapshot.ticker);
   if (snapshot.asset !== undefined) nonEmpty(errors, "asset", snapshot.asset);
@@ -161,6 +162,18 @@ export function validatePredictionSnapshot(
   if (!Object.values(PredictionDirection).includes(snapshot.expectedDirection)) {
     error(errors, PredictionErrorCode.InvalidPrediction, "expectedDirection is invalid.", "expectedDirection");
   }
+  const manual = snapshot.manualOrigin !== undefined;
+  if (manual) {
+    if (snapshot.manualOrigin?.kind !== "OWNER_CONFIRMED_OPTIONS_PLAN" || snapshot.aiVersion !== null || snapshot.decisionSnapshot !== null) error(errors, PredictionErrorCode.InvalidPrediction, "Manual provenance cannot claim model execution.");
+    identifier(errors, "manualOrigin.planId", snapshot.manualOrigin!.planId);
+    identifier(errors, "manualOrigin.planFingerprint", snapshot.manualOrigin!.planFingerprint);
+    nonEmpty(errors, "manualOrigin.intentReference", snapshot.manualOrigin!.intentReference);
+  } else {
+    nonEmpty(errors, "aiVersion", snapshot.aiVersion as string);
+    if (!snapshot.strategy || !snapshot.confidence || !snapshot.decisionSnapshot) error(errors, PredictionErrorCode.InvalidPrediction, "Legacy model evidence is required.");
+  }
+  if (snapshot.strategy) { identifier(errors, "strategy.strategyId", snapshot.strategy.strategyId); identifier(errors, "strategy.strategyVersion", snapshot.strategy.strategyVersion); }
+  if (snapshot.confidence) {
   if (!Number.isFinite(snapshot.confidence.value) || snapshot.confidence.value < 0 || snapshot.confidence.value > 100) {
     error(errors, PredictionErrorCode.InvalidPrediction, "confidence.value must be between 0 and 100.", "confidence.value");
   }
@@ -168,13 +181,14 @@ export function validatePredictionSnapshot(
     error(errors, PredictionErrorCode.InvalidPrediction, "confidence.level is invalid.", "confidence.level");
   }
   nonEmpty(errors, "confidence.rationale", snapshot.confidence.rationale);
+  }
   if (snapshot.version.schemaVersion !== "1.0") {
     error(errors, PredictionErrorCode.InvalidPrediction, "version.schemaVersion must be 1.0.", "version.schemaVersion");
   }
-  uniqueIds(errors, "evidence.researchReferences", snapshot.evidence.researchReferences.map((value) => value.researchId), true);
+  uniqueIds(errors, "evidence.researchReferences", snapshot.evidence.researchReferences.map((value) => value.researchId), !manual);
   uniqueIds(errors, "evidence.auditReferences", snapshot.evidence.auditReferences.map((value) => value.auditId), true);
   uniqueIds(errors, "evidence.journalReferences", snapshot.evidence.journalReferences.map((value) => value.journalId));
-  uniqueIds(errors, "evidence.strategyReferences", snapshot.evidence.strategyReferences.map((value) => `${value.strategyId}:${value.strategyVersion}`), true);
+  uniqueIds(errors, "evidence.strategyReferences", snapshot.evidence.strategyReferences.map((value) => `${value.strategyId}:${value.strategyVersion}`), !manual);
   uniqueIds(errors, "evidence.tradeReferences", snapshot.evidence.tradeReferences.map((value) => value.tradeId));
   uniqueIds(errors, "evidence.reviewReferences", snapshot.evidence.reviewReferences.map((value) => value.reviewId));
   if (!Array.isArray(snapshot.evidence.supportingEvidence) || snapshot.evidence.supportingEvidence.length === 0) {
@@ -183,6 +197,7 @@ export function validatePredictionSnapshot(
     for (const evidence of snapshot.evidence.supportingEvidence) nonEmpty(errors, "evidence.supportingEvidence", evidence);
   }
   const decision = snapshot.decisionSnapshot;
+  if (decision) {
   identifier(errors, "decisionSnapshot.opportunityScore.opportunityId", decision.opportunityScore.opportunityId);
   if (!Number.isFinite(decision.opportunityScore.score) || decision.opportunityScore.score < 0 || decision.opportunityScore.score > 100) {
     error(errors, PredictionErrorCode.InvalidPrediction, "opportunity score must be between 0 and 100.", "decisionSnapshot.opportunityScore.score");
@@ -206,6 +221,7 @@ export function validatePredictionSnapshot(
   }
   if (Date.parse(decision.marketTimestamp) > Date.parse(decision.predictionTimestamp)) {
     error(errors, PredictionErrorCode.FutureTimestamp, "market timestamp cannot be after prediction timestamp.", "decisionSnapshot.marketTimestamp");
+  }
   }
   return { valid: errors.length === 0, errors };
 }
@@ -272,7 +288,7 @@ export function validatePredictionOutcome(outcome: PredictionOutcome, prediction
   timestamp(errors, "knownAt", outcome.knownAt, now);
   timestamp(errors, "marketTimestamp", outcome.marketTimestamp, now);
   if (Date.parse(outcome.marketTimestamp) < Date.parse(prediction.lockedAt ?? prediction.createdAt)) error(errors, PredictionErrorCode.InvalidPrediction, "outcome market timestamp cannot precede the lock.", "marketTimestamp");
-  if (!Object.values(PredictionDirection).includes(outcome.actualDirection)) error(errors, PredictionErrorCode.InvalidPrediction, "actualDirection is invalid.", "actualDirection");
+  if (!(prediction.manualOrigin && outcome.actualDirection === "UNKNOWN") && !Object.values(PredictionDirection).includes(outcome.actualDirection as PredictionDirection)) error(errors, PredictionErrorCode.InvalidPrediction, "actualDirection is invalid.", "actualDirection");
   nonEmpty(errors, "actualResult", outcome.actualResult);
   uniqueIds(errors, "evidenceReferences", outcome.evidenceReferences.map((value) => value.auditId), true);
   return { valid: errors.length === 0, errors };
@@ -302,7 +318,8 @@ export function validatePredictionReview(review: PredictionReview, start: Predic
   if (!Object.values(PredictionAccuracy).includes(review.accuracy)) error(errors, PredictionErrorCode.InvalidPrediction, "accuracy is invalid.", "accuracy");
   if (!Object.values(PredictionProfitability).includes(review.profitability)) error(errors, PredictionErrorCode.InvalidPrediction, "profitability is invalid.", "profitability");
   if (!Object.values(PredictionReviewResult).includes(review.result)) error(errors, PredictionErrorCode.InvalidPrediction, "review result is invalid.", "result");
-  for (const [field, value] of Object.entries(review.score)) {
+  if (review.score === null && !prediction.manualOrigin) error(errors, PredictionErrorCode.InvalidPrediction, "Legacy review requires scores.", "score");
+  for (const [field, value] of Object.entries(review.score ?? {})) {
     if (!Number.isFinite(value) || value < 0 || value > 100) error(errors, PredictionErrorCode.InvalidPrediction, `${field} must be between 0 and 100.`, `score.${field}`);
   }
   nonEmpty(errors, "accuracyRationale", review.accuracyRationale);

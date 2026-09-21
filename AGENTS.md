@@ -1,5 +1,18 @@
 # Alpha Development Standard v1.0
 
+## Options prediction / outcome evidence loop — September 20, 2026
+
+Read docs/OPTIONS_EVIDENCE_LOOP_DELIVERY.md and docs/status/evidence-loop.json.
+Optional new-plan forecasts reuse Confirm & Freeze, Prediction Log and Alpha
+Journal. Drafts do not create predictions; pending cross-store writes resume the
+same identity only before entry/result. Preserve original plans, expectation/EV/
+fit references and all legacy IDs. The manual ledger alone owns reported fills
+and P&L. Prediction accuracy is separately Owner-reviewed; no trade means no P&L.
+Journal requires explicit preview/confirmation, retains uncertain attribution,
+and never approves lessons or changes strategies. No backfill, source calls,
+schedule/risk changes or execution authority. The real employment draft remains
+unfrozen; isolated complete-loop acceptance is not a real market outcome.
+
 ## Jev prospective developer shadow — September 20, 2026
 
 This is an optional side experiment, never ACTIVE PRODUCT DEVELOPMENT. During

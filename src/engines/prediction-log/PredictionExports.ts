@@ -5,8 +5,8 @@ import {
 } from "../../contracts";
 import { summarizePrediction } from "./PredictionTranslations";
 
-function csvCell(value: string | number | boolean): string {
-  const text = String(value);
+function csvCell(value: string | number | boolean | null): string {
+  const text = String(value ?? 'UNKNOWN');
   return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 

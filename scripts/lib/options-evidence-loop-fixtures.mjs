@@ -1,0 +1,36 @@
+import {basename,join} from 'node:path';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {seedExpectation,expectationPlan,expectationLater as at} from './options-market-expectation-fixtures.mjs';
+import {previewScenario,saveScenario,scenarioPlanContexts} from './options-scenario-research.mjs';
+import {preparePredictionEvidence} from './options-evidence-loop.mjs';
+import {registerDefaults} from '../../apps/options-workbench/forms.js';
+import {blankScenario} from '../../apps/options-workbench/scenario-research.js';
+import {manualFill} from '../../src/engines/options-manual-ledger/OptionsManualLedgerFixtures.ts';
+export {at};
+export const after='2026-09-09T19:01:00.000Z';
+export async function seedEvidenceLoop(root){
+  if(!basename(root).startsWith('alpha-expectation-test-'))throw Error('ISOLATED_FIXTURE_REQUIRED');
+  const f=await seedExpectation(root);
+  const expectation=f.save({...f.request,id:'final-reference',stage:'FINAL_PRE_ENTRY',ownerConfirmed:true},at(10)),plan=expectationPlan();
+  plan.invalidation.expectationSnapshot={path:expectation.path,fingerprint:expectation.fingerprint,frozenAt:expectation.savedAt};
+  const fields={...registerDefaults(),tradeId:'synthetic-event-plan',symbol:'GLD',optionType:'CALL',expiry:'2026-09-25',strikeUsd:'400',includePlan:true};
+  for(const [k,v]of Object.entries(plan))if(k!=='invalidation')fields[k]=v===null?'':String(v);
+  const draft={type:'SAVE_PLAN_DRAFT',requestId:'loop-complete-draft',tradeId:fields.tradeId,draft:{fields,thesis:plan.invalidation}};
+  const save=c=>f.service.save({command:c,expectedHeadSha256:f.service.preview(c).headSha256});
+  f.setClock(at(20));save(draft);f.setClock(at(50));const state=await f.service.state(),p=scenarioPlanContexts(state.manual.data).find(p=>p.key==='draft:loop-complete-draft');
+  const quote={id:'00000000-0000-0000-0000-000000000001',symbol:'GLD',expiry:'2026-09-25',type:'call',strike:'400',multiplier:100,bidCents:98,askCents:100,tickCents:1,bidSize:20,askSize:20,delta:0.5,updatedAt:at(40),receivedAt:at(40)};
+  state.guidance={data:{input:{quotes:[quote]},sourcePaths:[]}};
+  const rows=['50','30','20'].map((probability,i)=>({...blankScenario('outcome-'+i),label:['Up','Flat','Down'][i],eventOutcome:'Isolated scenario',marketInterpretation:'Synthetic conditional response',probability,probabilitySource:'OWNER_ASSUMPTION',probabilityAsOf:at(1),probabilityEvidenceRef:'Isolated declaration',payoff:String([200,100,0][i]),payoffSource:'OWNER_SUPPLIED_PAYOFF',payoffAt:plan.timeExitAt,payoffBasis:'PLANNED_EXIT',payoffEvidenceRef:'Isolated exit assumption',costs:{premiumUsd:'100',feesUsd:'2',slippageUsd:'3',evidenceRef:'Explicit isolated costs'},limitations:'Not a price model'}));
+  const request={id:'loop-scenarios',scenarioSetVersion:1,supersedes:'',planKey:p.key,planVersion:p.version,expectationSnapshotId:expectation.id,contractId:quote.id,quantity:1,rows,note:'Isolated complete loop'};
+  const preview=previewScenario(root,f.ledgerId,request,state,at(50)),scenario=saveScenario(root,f.ledgerId,request,preview.previewFingerprint,state,at(50));
+  plan.invalidation.scenarioSet={path:scenario.path,fingerprint:scenario.fingerprint,savedAt:scenario.savedAt};
+  const command={type:'REGISTER_TRADE',requestId:'loop-freeze',tradeId:p.tradeId,contract:p.contract,plan,activityReference:null},forecast={direction:'UP',catalyst:'Synthetic future employment release',assumptions:'Lower rates could support GLD; not a guaranteed relation.',owner:'Fixture-Owner'};
+  f.setClock(at(80));
+  const prepared=preparePredictionEvidence(root,f.ledgerId,command,forecast,state,at(80));
+  const fills=(price='0.80',fees='0.01')=>[1,2].map(n=>({type:'RECORD_FILL',requestId:'loop-fill-'+n,tradeId:p.tradeId,fillId:'loop-fill-'+n,fill:manualFill(n,{quantity:1,pricePerShareUsd:n===1?'1.00':price,feesUsd:fees,executedAt:n===1?'2026-09-08T19:40:00.000Z':'2026-09-09T18:59:00.000Z'})}));
+  const outcome={id:'loop-outcome',tradeId:p.tradeId,kind:'OWNER_QUALITATIVE',symbol:'GLD',source:'https://example.com/isolated-outcome',sourceAt:'2026-09-09T19:00:00.000Z',receivedAt:after,actualDirection:'UP',result:'Isolated ETF rose within the original horizon; contract P&L evaluated separately.',eventEvidence:null};
+  const review=accuracy=>({id:'loop-review',tradeId:p.tradeId,accuracy,rationale:'Owner fixture confirms direction and horizon using independent ETF evidence, not option P&L.'});
+  const journal={id:'loop-journal',tradeId:p.tradeId,interpretation:'Results differ; no causal attribution established.',assumptions:'The ETF direction held; option payoff assumptions need review.',uncertainty:'No complete execution path or calibrated probabilities.',rationale:'Original conditional event plan.',planAdherence:'Timing locally precedes reported entry; stop path unobserved.',followUp:'Review contract choice and execution evidence; no strategy change.',attribution:'UNKNOWN'};
+  const action=(kind,r,saveIt=true)=>{const b={action:'PREVIEW_'+kind,request:r,previewFingerprint:null,ownerConfirmed:false};return f.service.evidenceLoop(b).then(v=>saveIt?f.service.evidenceLoop({...b,action:'SAVE_'+kind,previewFingerprint:v.previewFingerprint,ownerConfirmed:true}):v);};
+  return {...f,root,save,prepared,command,forecast,state,expectation,scenario,fills,outcome,review,journal,action};
+}

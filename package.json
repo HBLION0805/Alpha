@@ -18,6 +18,7 @@
     "test:options-spread-review": "tsx scripts/options-spread-review.test.mjs",
     "test:options-decision-card": "tsx scripts/options-decision-card.test.mjs",
     "options:workbench": "tsx scripts/options-workbench.mjs",
+    "test:options-evidence-loop": "tsx scripts/options-evidence-loop.test.mjs",
     "test:options-workbench": "tsx scripts/options-workbench.test.mjs",
     "test:options-guidance-sensitivities": "tsx scripts/options-guidance-sensitivities.test.mjs",
     "test:options-position-watch": "tsx scripts/options-position-watch.test.mjs",

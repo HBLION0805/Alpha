@@ -56,13 +56,14 @@ export function validateManualLedgerCommand(input: unknown, recordedAt: string):
     if (!["GLD", "IBIT"].includes(i.symbol) || !["CALL", "PUT"].includes(i.optionType) || i.multiplier !== 100) fail("CONTRACT_SCOPE");
     date(i.expiry); money(i.strikeUsd, true);
     if (c.plan !== null) {
-      const p = exact(c.plan, ["declaredAt", "maxContracts", "maxEntryDebitUsd", "plannedRiskUsd", "targetNetProfitUsd", "stopPremiumUsd", "entryDeadlineAt", "timeExitAt", "thesis",...(Object.hasOwn(c.plan,'invalidation')?['invalidation']:[])]);
+      const p = exact(c.plan, ["declaredAt", "maxContracts", "maxEntryDebitUsd", "plannedRiskUsd", "targetNetProfitUsd", "stopPremiumUsd", "entryDeadlineAt", "timeExitAt", "thesis",...(Object.hasOwn(c.plan,'invalidation')?['invalidation']:[]),...(Object.hasOwn(c.plan,'predictionEvidence')?['predictionEvidence']:[])]);
       readinessClock(p.declaredAt); if (p.declaredAt > recordedAt) fail("FUTURE_PLAN"); count(p.maxContracts);
       money(p.maxEntryDebitUsd, true); money(p.plannedRiskUsd, true); money(p.targetNetProfitUsd);
       if (p.stopPremiumUsd !== null) money(p.stopPremiumUsd);
       for (const key of ["entryDeadlineAt", "timeExitAt"]) if (p[key] !== null) { readinessClock(p[key]); if (p[key] <= p.declaredAt) fail("PLAN_CLOCK_ORDER"); }
       if (p.entryDeadlineAt !== null && p.timeExitAt !== null && p.timeExitAt <= p.entryDeadlineAt) fail("PLAN_CLOCK_ORDER");
       label(p.thesis);
+      if(p.predictionEvidence){const r=exact(p.predictionEvidence,['path','fingerprint']);if(!/^data\/runtime\/options-macro-comparisons\/source-prediction-[a-z0-9-]+\.json$/.test(r.path)||!/^sha256:[a-f0-9]{64}$/.test(r.fingerprint))fail('PREDICTION_REFERENCE');}
       if(p.invalidation){validateTradeThesis(p.invalidation);if(thesisPlanIssues({plan:p as any,contract:c.contract,registeredAt:recordedAt,openedAt:null},recordedAt).length)fail('THESIS_PLAN_INCOMPLETE');}
       if(p.invalidation?.eventEntry?.phase==='PRE_EVENT'&&preEventConfigurationIssues({plan:p as any,contract:c.contract,registeredAt:recordedAt,openedAt:null},recordedAt).length)fail('PRE_EVENT_PLAN_INCOMPLETE');
     }

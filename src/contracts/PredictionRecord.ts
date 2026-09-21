@@ -175,6 +175,8 @@ export interface PredictionDecisionSnapshot {
 }
 
 export interface PredictionSnapshot {
+  /** Manual forecasts have no invented model, score, strategy or calibrated confidence. */
+  readonly manualOrigin?: { readonly kind: "OWNER_CONFIRMED_OPTIONS_PLAN"; readonly planId: string; readonly planFingerprint: string; readonly intentReference: string };
   readonly createdAt: string;
   readonly predictionType: PredictionSubjectType;
   readonly market: string;
@@ -183,15 +185,15 @@ export interface PredictionSnapshot {
   readonly category: PredictionCategory;
   readonly statement: string;
   readonly expectedDirection: PredictionDirection;
-  readonly confidence: PredictionConfidence;
+  readonly confidence: PredictionConfidence | null;
   readonly expectedTimeHorizon: string;
   readonly expectedCatalyst: string;
   readonly evidence: PredictionEvidence;
   readonly version: PredictionVersionReference;
-  readonly strategy: PredictionStrategyReference;
-  readonly decisionSnapshot: PredictionDecisionSnapshot;
+  readonly strategy: PredictionStrategyReference | null;
+  readonly decisionSnapshot: PredictionDecisionSnapshot | null;
   readonly owner: string;
-  readonly aiVersion: string;
+  readonly aiVersion: string | null;
   readonly reviewRequired: boolean;
 }
 
@@ -221,7 +223,7 @@ export interface PredictionOutcome {
   readonly predictionId: string;
   readonly knownAt: string;
   readonly marketTimestamp: string;
-  readonly actualDirection: PredictionDirection;
+  readonly actualDirection: PredictionDirection | "UNKNOWN";
   readonly actualResult: string;
   readonly benchmarkResult?: string;
   readonly evidenceReferences: ReadonlyArray<PredictionAuditReference>;
@@ -255,7 +257,7 @@ export interface PredictionReview {
   readonly accuracy: PredictionAccuracy;
   readonly profitability: PredictionProfitability;
   readonly result: PredictionReviewResult;
-  readonly score: PredictionScore;
+  readonly score: PredictionScore | null;
   readonly accuracyRationale: string;
   readonly profitabilityRationale: string;
   readonly lessonReferences: ReadonlyArray<string>;
@@ -319,7 +321,7 @@ export interface PredictionSummary {
   readonly ticker?: string;
   readonly statement: string;
   readonly expectedDirection: PredictionDirection;
-  readonly confidence: number;
+  readonly confidence: number | null;
   readonly status: PredictionStatus;
   readonly outcomeKnown: boolean;
   readonly reviewed: boolean;

@@ -1,3 +1,4 @@
+import {evidenceRequest,updateEvidenceDraft,evidenceDetail} from './evidence-loop.js';
 import {snapshotRequest,snapshotResult} from './snapshot-paper.js';
 import {blankScenario,prepareScenarioRequest,scenarioResult,contractFitResult} from './scenario-research.js';
 import {etfSetupRequest} from './etf-setup.js';
@@ -91,6 +92,11 @@ function updateDraft(el){
     ui.scenarioPlanKey=el.value;ui.scenarioPreview=null;ui.scenarioDraft=null;ui.fitPlanKey=el.value;ui.contractFit=null;render();return;
   }
   const form=el.closest('form');if(!form)return;
+  if(form.dataset?.evidenceForm){
+    const key=form.dataset.evidenceTrade+':'+form.dataset.evidenceForm;updateEvidenceDraft(ui,key,el.name,el.type==='checkbox'?el.checked:el.value);dirty.add('evidence-loop');
+    if(el.name!=='ownerConfirmed'){const b=form.querySelector('[value="SAVE"]');if(b)b.disabled=true;const confirm=form.elements.ownerConfirmed;if(confirm)confirm.checked=false;}
+    return;
+  }
   if(form.id==='scenario-form'){
     const d=ui.scenarioDraft;if(!d)return;
     const path=(el.name==='scenarioSetId'?'id':el.name).split('.');let target=d;for(const k of path.slice(0,-1))target=target[k];
@@ -307,6 +313,16 @@ document.addEventListener('submit',event=>{
       ui.targetedQuoteRequest=r;ui.targetedQuoteRequestId=null;await reload();toast('Request prepared locally. Market quotes have not been refreshed.');
     }catch(e){$('#position-quotes-error').textContent=e.message;}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
   }
+  if(event.target.dataset.evidenceForm){
+    event.preventDefault();if(saving)return;const form=event.target,kind=form.dataset.evidenceForm,tradeId=form.dataset.evidenceTrade,k=tradeId+':'+kind,button=event.submitter;
+    ui.evidenceDrafts??={};ui.evidencePreviews??={};ui.evidenceIds??={};const data=Object.fromEntries(new FormData(form));ui.evidenceDrafts[k]=data;ui.evidenceIds[k]??='evidence-'+crypto.randomUUID();
+    saving=true;button.disabled=true;void(async()=>{try{
+      const r=evidenceRequest(kind,tradeId,data,ui.evidenceIds[k]),old=ui.evidencePreviews[k];
+      if(button.value==='SAVE'&&(!old||JSON.stringify(old.draft.request)!==JSON.stringify(r)))throw Error('Preview the unchanged assessment before confirmation.');
+      const result=await request('/api/evidence-loop',{action:(button.value==='SAVE'?'SAVE_':'PREVIEW_')+kind,request:r,previewFingerprint:old?.previewFingerprint??null,ownerConfirmed:data.ownerConfirmed==='on'});
+      if(button.value==='PREVIEW'){ui.evidencePreviews[k]=result;render();}else{delete ui.evidencePreviews[k];delete ui.evidenceIds[k];delete ui.evidenceDrafts[k];dirty.delete('evidence-loop');await reload();toast('Evidence saved. Original prediction, fills and strategy are unchanged.');}
+    }catch(e){const box=[...document.querySelectorAll('[data-evidence-error]')].find(x=>x.dataset.evidenceError===k);if(box)box.textContent=e.message;}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='thesis-plan-form'){
     event.preventDefault();if(saving||previewing)return;
     const button=event.submitter,mode=button.value;button.disabled=true;saving=true;
@@ -322,10 +338,12 @@ document.addEventListener('submit',event=>{
         ui.thesisPreview=null;ui.thesisRequestId=null;await reload();toast('Original plan frozen locally. No entry or order created.');
       }else{
         ui.thesisRequestId??='request-'+crypto.randomUUID();
-        const command=thesisPlanCommand(ui,mode,ui.thesisRequestId),p=await request('/api/preview',command);
+        let command=thesisPlanCommand(ui,mode,ui.thesisRequestId),predictionPreview=null;
+        if(mode==='PREVIEW'&&ui.thesisFields.predictionDirection){const f=ui.thesisFields,enriched=await request('/api/evidence-loop',{action:'PREVIEW_FREEZE',command,forecast:{direction:f.predictionDirection,catalyst:f.predictionCatalyst??'',assumptions:f.predictionAssumptions??'',owner:f.predictionOwner??''}});command=enriched.command;predictionPreview=enriched.predictionPreview;}
+        const p=await request('/api/preview',command);
         if(key!==JSON.stringify([ui.thesisFields,ui.thesisDraft]))throw Error('Draft changed during preview. Try again.');
         if(mode==='DRAFT'){await request('/api/save',{command,expectedHeadSha256:p.headSha256});ui.thesisRequestId=null;if(key===JSON.stringify([ui.thesisFields,ui.thesisDraft]))dirty.delete('thesis');await reload();toast('Incomplete plan draft saved; no executable plan or position created.');}
-        else {ui.thesisPreview={...p,draftKey:key};render();}
+        else {ui.thesisPreview={...p,predictionPreview,draftKey:key};render();}
       }
     }catch(e){fail(e,'#thesis-plan-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
   }
@@ -583,3 +601,10 @@ window.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.body
 window.addEventListener('beforeunload',event=>{if(dirty.size||saving){event.preventDefault();event.returnValue='';}});
 syncNavigation();void reload();
 setInterval(()=>{if(document.visibilityState==='visible'&&!dirty.size&&!saving&&!previewing&&!calculating&&!loading&&!document.querySelector('dialog[open]'))void reload(state?.selectedBoardId??'');},60000);
+
+document.addEventListener('click',event=>{
+  const show=event.target.closest('[data-evidence-detail]');
+  if(show){const row=state?.evidenceLoop?.data?.rows.find(r=>r.tradeId===show.dataset.evidenceTrade);if(row)showDetail('Evidence record', '<pre>'+esc(JSON.stringify(evidenceDetail(state,row,show.dataset.evidenceDetail),null,2))+'</pre>');}
+  const resume=event.target.closest('[data-evidence-resume]');
+  if(resume&&!saving){saving=true;resume.disabled=true;void(async()=>{try{await request('/api/evidence-loop',{action:'RESUME',request:{tradeId:resume.dataset.evidenceResume},previewFingerprint:null,ownerConfirmed:false});await reload();toast('Prediction write resumed from the same immutable plan.');}catch(e){toast(e.message);}finally{saving=false;if(resume.isConnected)resume.disabled=false;}})();}
+});

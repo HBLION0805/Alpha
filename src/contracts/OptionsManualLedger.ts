@@ -19,6 +19,7 @@ export interface ManualTradePlan {
   timeExitAt: string | null;
   thesis: string;
   invalidation?: TradeThesis;
+  predictionEvidence?: { path: string; fingerprint: string };
 }
 export interface ManualActivityReference {
   studyId: string;

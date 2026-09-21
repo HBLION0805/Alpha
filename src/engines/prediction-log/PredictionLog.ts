@@ -151,8 +151,8 @@ export class PredictionLog {
     const optionalMetrics = {
       ...(accuracyDenominator === 0 ? {} : { accuracyRate: Number(((accurate + partiallyAccurate * 0.5) / accuracyDenominator).toFixed(4)) }),
       ...(profitabilityDenominator === 0 ? {} : { profitabilityRate: Number((profitable / profitabilityDenominator).toFixed(4)) }),
-      ...(average(predictions.map((prediction) => prediction.confidence.value)) === undefined ? {} : { averageConfidence: average(predictions.map((prediction) => prediction.confidence.value)) as number }),
-      ...(average(reviews.map((review) => review.score.overallScore)) === undefined ? {} : { averageScore: average(reviews.map((review) => review.score.overallScore)) as number }),
+      ...(average(predictions.flatMap((prediction) => prediction.confidence ? [prediction.confidence.value] : [])) === undefined ? {} : { averageConfidence: average(predictions.flatMap((prediction) => prediction.confidence ? [prediction.confidence.value] : [])) as number }),
+      ...(average(reviews.flatMap((review) => review.score ? [review.score.overallScore] : [])) === undefined ? {} : { averageScore: average(reviews.flatMap((review) => review.score ? [review.score.overallScore] : [])) as number }),
     };
     const metrics: PredictionMetrics = {
       total: predictions.length,

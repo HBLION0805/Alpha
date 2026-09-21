@@ -43,7 +43,7 @@ export function validateTradeThesis(t: TradeThesis): TradeThesis {
 }
 export function validateThesisDraft(d: ThesisDraft) {
   exact(d,'fields,thesis');validateTradeThesis(d.thesis);
-  const allowed='tradeId,symbol,optionType,expiry,strikeUsd,includePlan,declaredAt,maxContracts,maxEntryDebitUsd,plannedRiskUsd,targetNetProfitUsd,stopPremiumUsd,entryDeadlineAt,timeExitAt,thesis,includeActivity,studyId,studyFingerprint,candidateId'.split(',');
+  const allowed='tradeId,symbol,optionType,expiry,strikeUsd,includePlan,declaredAt,maxContracts,maxEntryDebitUsd,plannedRiskUsd,targetNetProfitUsd,stopPremiumUsd,entryDeadlineAt,timeExitAt,thesis,includeActivity,studyId,studyFingerprint,candidateId,predictionDirection,predictionCatalyst,predictionAssumptions,predictionOwner'.split(',');
   if(!d.fields||typeof d.fields!=='object'||Array.isArray(d.fields)||Object.keys(d.fields).some(k=>!allowed.includes(k)))fail('DRAFT');
   for(const [k,v]of Object.entries(d.fields))if(k==='includePlan'||k==='includeActivity'?typeof v!=='boolean':typeof v!=='string'||v.length>1500)fail('DRAFT');
 }

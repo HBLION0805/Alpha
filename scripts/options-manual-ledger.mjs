@@ -1,3 +1,4 @@
+import {verifyPredictionIntent,finishFrozenPrediction} from './lib/options-evidence-loop.mjs';
 import { createHash, randomUUID } from "node:crypto";
 import { closeSync, existsSync, fsyncSync, lstatSync, mkdirSync, openSync, readdirSync, realpathSync, unlinkSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -88,6 +89,7 @@ function append(root, id, sourceBytes, now) {
     verifyReference(root, command, loaded.input.origin, now);
     verifyNewPlanExpectation(root,id,command,recordedAt);
     verifyNewPlanScenario(root,id,command,recordedAt,loaded.report);
+    verifyPredictionIntent(root,id,command,recordedAt);
     const sequence = loaded.input.events.length + 1, event = {sequence,recordedAt,savedAt:recordedAt,command};
     if (recordedAt < loaded.lastSavedAt) fail("APPEND_CLOCK");
     const report = reconcileManualLedger({...loaded.input, events:[...loaded.input.events,event]},recordedAt);
@@ -109,7 +111,7 @@ export function runOptionsManualLedgerCommand(args, {workspaceRoot=process.cwd()
   if (args.length === 1 && args[0] === "--help") return {usage:["options:manual-ledger -- --create <new-owner-ledger-id>","options:manual-ledger -- --append <ledger-id> <workspace-command-json>","options:manual-ledger -- --verify <ledger-id>","options:manual-ledger -- --inspect <ledger-id>","options:manual-ledger -- --demo <new-synthetic-ledger-id>"],executionAllowed:false};
   const root = realpathSync(workspaceRoot);
   if (args.length === 2 && args[0] === "--create") return create(root,args[1],"OWNER_REPORTED_UNVERIFIED",now);
-  if (args.length === 3 && args[0] === "--append") return append(root,args[1],read(root,args[2]),now);
+  if (args.length === 3 && args[0] === "--append") {const bytes=read(root,args[2]),command=parseChainSurveyJson(new TextDecoder().decode(bytes)),result=append(root,args[1],bytes,now);const prediction=finishFrozenPrediction(root,args[1],command,clock(now));return prediction?{...result,prediction}:result;}
   if (args.length === 2 && ["--verify","--inspect"].includes(args[0])) {
     const r = readManualLedger(root,args[1],now);
     return args[0] === "--inspect" ? r.report : {status:"MANUAL_LEDGER_RECOMPUTED",ledgerId:args[1],origin:r.input.origin,eventCount:r.input.events.length,headSha256:r.headSha256,counts:r.report.counts,brokerVerified:false,executionAllowed:false};

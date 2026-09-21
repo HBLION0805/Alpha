@@ -1,3 +1,4 @@
+import {preparePredictionEvidence,verifyPredictionIntent,evidenceAction,evidenceLoopView,finishFrozenPrediction} from './options-evidence-loop.mjs';
 import { existsSync, lstatSync, readdirSync, realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomUUID, createHash } from 'node:crypto';
@@ -139,6 +140,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.marketExpectations=await component(()=>expectationRecords(root,ledgerId,at),at);
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
     result.scenarioResearch=await component(()=>scenarioResearchView(root,ledgerId,result,at),at);
+    result.evidenceLoop=await component(()=>evidenceLoopView(root,ledgerId,manual.data,at),at);
     // Reference UI only, appended after all existing decision projections.
     result.macroWorldModel=await component(()=>readWorldModel(),at);
     result.storylines=await component(()=>storylineView(root,result,at),at);
@@ -182,13 +184,14 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(previous){if(paperFingerprint(previous.command)!==paperFingerprint(c))fail('REQUEST_CONFLICT');return {alreadyRecorded:true,headSha256:r.headSha256,command:c,report:r.report};}
     verifyNewPlanExpectation(root,ledgerId,c,at);
     verifyNewPlanScenario(root,ledgerId,c,at);
+    verifyPredictionIntent(root,ledgerId,c,at);
     const report=reconcileManualLedger({...r.input,events:[...r.input.events,{sequence:r.input.events.length+1,recordedAt:at,savedAt:at,command:c}]},at);
     return {alreadyRecorded:false,headSha256:r.headSha256,command:c,report};
   }
   function save(body,internalReview=false){
     if(!body||Object.keys(body).sort().join()!=='command,expectedHeadSha256'||typeof body.expectedHeadSha256!=='string')fail('SAVE_INPUT');
     const p=preview(body.command,internalReview);if(!p.alreadyRecorded&&p.headSha256!==body.expectedHeadSha256)fail('LEDGER_CHANGED_REVIEW_AGAIN');
-    if(p.alreadyRecorded)return {status:'MANUAL_REQUEST_ALREADY_RECORDED',headSha256:p.headSha256,executionAllowed:false};
+    if(p.alreadyRecorded)return {status:'MANUAL_REQUEST_ALREADY_RECORDED',headSha256:p.headSha256,executionAllowed:false,prediction:finishFrozenPrediction(root,ledgerId,p.command,now())};
     io.directory(root,INPUTS);const path=INPUTS+'/'+randomUUID()+'.json';
     io.writeExclusive(root,path,Buffer.from(JSON.stringify(p.command,null,2)+'\n'));
     return runOptionsManualLedgerCommand(['--append',ledgerId,path],options());
@@ -242,6 +245,10 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_PLAYBOOK_ACTION');
     return body.action==='PREVIEW'?assessMacroNote(body.request):saveMacroNote(root,body.request,now());
   }
+  async function evidenceLoop(body){
+    if(body?.action==='PREVIEW_FREEZE'){if(Object.keys(body).sort().join()!=='action,command,forecast')fail('EVIDENCE_FIELDS');return preparePredictionEvidence(root,ledgerId,body.command,body.forecast,await state(),now());}
+    return evidenceAction(root,ledgerId,body,now());
+  }
   async function scenarioResearch(body){
     if(!body||typeof body!=='object'||Array.isArray(body))fail('INPUT');
     const s=await state(),at=s.loadedAt;
@@ -265,5 +272,5 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,previewFingerprint,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_STORYLINE_ACTION');
     return body.action==='PREVIEW'?previewStorylineLink(root,body.request,now()):saveStorylineLink(root,body.request,body.previewFingerprint,now());
   }
-  return {scenarioResearch,storyline,sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  return {evidenceLoop,scenarioResearch,storyline,sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

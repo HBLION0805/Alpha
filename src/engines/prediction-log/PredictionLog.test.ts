@@ -209,7 +209,7 @@ const tests: ReadonlyArray<TestCase> = [
   {
     name: "future prediction timestamps are rejected",
     run: () => {
-      const future = snapshot({ createdAt: "2026-07-19T00:00:00.000Z", decisionSnapshot: { ...snapshot().decisionSnapshot, predictionTimestamp: "2026-07-19T00:00:00.000Z" } });
+      const future = snapshot({ createdAt: "2026-07-19T00:00:00.000Z", decisionSnapshot: { ...snapshot().decisionSnapshot!, predictionTimestamp: "2026-07-19T00:00:00.000Z" } });
       assertTrue(!validatePredictionSnapshot(future, "2026-07-18T20:00:00.000Z").valid, "future timestamp must fail");
     },
   },
@@ -401,7 +401,7 @@ const tests: ReadonlyArray<TestCase> = [
       const repository = new InMemoryPredictionLogRepository();
       const log = new PredictionLog(repository, new FixedClock());
       const first = log.createDraft(snapshot());
-      log.createDraft(snapshot({ createdAt: "2026-07-18T14:01:00.000Z", statement: "Second forecast.", ticker: "BETA", decisionSnapshot: { ...snapshot().decisionSnapshot, predictionTimestamp: "2026-07-18T14:01:00.000Z" }, evidence: { ...snapshot().evidence, researchReferences: [{ researchId: "research-2" }] } }));
+      log.createDraft(snapshot({ createdAt: "2026-07-18T14:01:00.000Z", statement: "Second forecast.", ticker: "BETA", decisionSnapshot: { ...snapshot().decisionSnapshot!, predictionTimestamp: "2026-07-18T14:01:00.000Z" }, evidence: { ...snapshot().evidence, researchReferences: [{ researchId: "research-2" }] } }));
       log.submit(first.predictionId, "2026-07-18T15:00:00.000Z", "Submitted.");
       assertEqual(log.search({ filter: { statuses: [PredictionStatus.Submitted], ticker: "ALPHA", researchId: "research-1" } }).length, 1, "filtered count");
     },
@@ -412,7 +412,7 @@ const tests: ReadonlyArray<TestCase> = [
       const repository = new InMemoryPredictionLogRepository();
       const log = new PredictionLog(repository, new FixedClock());
       log.createDraft(snapshot());
-      const second = log.createDraft(snapshot({ createdAt: "2026-07-18T14:01:00.000Z", statement: "Second forecast.", decisionSnapshot: { ...snapshot().decisionSnapshot, predictionTimestamp: "2026-07-18T14:01:00.000Z" } }));
+      const second = log.createDraft(snapshot({ createdAt: "2026-07-18T14:01:00.000Z", statement: "Second forecast.", decisionSnapshot: { ...snapshot().decisionSnapshot!, predictionTimestamp: "2026-07-18T14:01:00.000Z" } }));
       assertEqual(log.search({ offset: 1, limit: 1 })[0]?.predictionId, second.predictionId, "paged identity");
     },
   },
