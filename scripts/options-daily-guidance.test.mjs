@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
-import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,realpathSync,readdirSync} from "node:fs";
+import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,realpathSync,readdirSync,cpSync,existsSync,symlinkSync,unlinkSync} from "node:fs";
 import {tmpdir} from "node:os";
-import {join,relative,isAbsolute} from "node:path";
+import {join,relative,isAbsolute,resolve} from "node:path";
+import {spawnSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
+import {contextWorkspaceArgs} from './lib/options-runtime-roots.mjs';
 import {assessDailyGuidance,defaultGuidanceSettings} from "../src/engines/options-daily-guidance/OptionsDailyGuidance.ts";
 import {collectGuidanceMarket,routeDailyGuidance} from "./lib/options-guidance-host.mjs";
 import {normalizeGuidanceCapture,recordGuidanceMarket,saveGuidanceSettings,guidanceView,publishGuidance,verifyGuidanceRecord,claimGuidanceSlot,recordAnalystNote,guidanceQuoteCoverage} from "./lib/options-guidance-io.mjs";
@@ -210,4 +213,49 @@ await test('ongoing routine cannot backfill outside the original 15:50 hour',()=
   for(const at of ['2026-09-21T19:49:59.000Z','2026-09-21T20:00:00.000Z','2026-09-19T19:50:00.000Z'])assert.equal(routeDailyGuidance(at,{ongoing:true}).marketCapture,false);
   assert(routeDailyGuidance('2026-09-21T19:59:59.000Z',{ongoing:true}).marketCapture);
 });
+await test('guidance workspace parsing retains defaults, supports either order and rejects ambiguous roots',()=>temp(root=>{
+  const options={defaultRoot:root,errorCode:'GUIDANCE_ARGUMENTS'},expected={args:['--verify','data/runtime/saved.json'],workspaceRoot:realpathSync(root)};
+  assert.deepEqual(contextWorkspaceArgs(['--verify','data/runtime/saved.json'],options),expected);
+  for(const args of [['--workspace',root,'--verify','data/runtime/saved.json'],['--verify','data/runtime/saved.json','--workspace',root]])assert.deepEqual(contextWorkspaceArgs(args,options),expected);
+  for(const args of [['--workspace'],['--workspace','--report'],['--workspace',root,'--workspace',root]])assert.throws(()=>contextWorkspaceArgs(args,options),/GUIDANCE_ARGUMENTS/);
+}));
+await test('real guidance CLI uses separate code and runtime-only roots throughout claim, capture and publication',()=>temp(async root=>{
+  const sourceRoot=resolve(import.meta.dirname,'..'),codeRoot=join(root,'code'),dataRoot=join(root,'private-data');
+  mkdirSync(codeRoot);mkdirSync(dataRoot);
+  // Copy actual product modules, not a replacement CLI. Only dependencies are linked.
+  for(const name of ['scripts','src','apps','config'])if(existsSync(join(sourceRoot,name)))cpSync(join(sourceRoot,name),join(codeRoot,name),{recursive:true});
+  for(const name of ['package.json','tsconfig.json'])cpSync(join(sourceRoot,name),join(codeRoot,name));
+  const dependencies=join(codeRoot,'node_modules');symlinkSync(join(sourceRoot,'node_modules'),dependencies,'junction');
+  try{
+    const preload=join(root,'offline-write-guard.mjs');
+    writeFileSync(preload,`import fs from 'node:fs';import {syncBuiltinESMExports} from 'node:module';import {resolve,relative,isAbsolute} from 'node:path';const root=${JSON.stringify(dataRoot)};const guard=p=>{const r=relative(root,resolve(String(p)));if(isAbsolute(r)||r.startsWith('..'))throw Error('TEST_WRITE_OUTSIDE_DATA_ROOT');};for(const key of ['mkdirSync','writeFileSync','appendFileSync','unlinkSync']){const original=fs[key];fs[key]=function(p,...a){if(typeof p!=='number')guard(p);return original(p,...a);};}const open=fs.openSync;fs.openSync=function(p,flags,...a){if(flags!=='r')guard(p);return open(p,flags,...a);};syncBuiltinESMExports();globalThis.fetch=()=>{throw Error('TEST_NETWORK_FORBIDDEN');};`);
+    const run=(args,{cwd=codeRoot,status=0}={})=>{
+      const result=spawnSync(process.execPath,['--import',pathToFileURL(join(codeRoot,'node_modules/tsx/dist/loader.mjs')).href,'--import',pathToFileURL(preload).href,join(codeRoot,'scripts/options-daily-guidance.mjs'),...args],{cwd,env:{...process.env,TSX_DISABLE_CACHE:'1'},encoding:'utf8',timeout:30000,windowsHide:true});
+      assert.equal(result.status,status,`${args[0]}: ${result.stderr}`);
+      return JSON.parse(status===0?result.stdout:result.stderr);
+    };
+    const command=(...args)=>run([...args,'--workspace',dataRoot]);
+    assert.equal(run(['--route-ongoing','--workspace'],{status:2}).error,'GUIDANCE_ARGUMENTS');
+    assert.equal(run(['--route-ongoing','--workspace',dataRoot,'--workspace',dataRoot],{status:2}).error,'GUIDANCE_ARGUMENTS');
+    const route=command('--route-ongoing');assert.equal(typeof route.marketCapture,'boolean');
+    // Default root compatibility and explicit roots are independent of the launch cwd.
+    assert.equal(typeof run(['--route-ongoing'],{cwd:dataRoot}).marketCapture,'boolean');
+    assert.equal(command('--begin-slot','2026-09-08-1550').claimed,true);
+    assert.equal(command('--begin-slot','2026-09-08-1550').claimed,false);
+    const host=command('--host-source');assert.equal(host.trackedContracts,0);assert.equal(host.source,collectGuidanceMarket.toString());
+    const raw='data/runtime/options-daily-guidance-inputs/isolated-fixture.json';mkdirSync(join(dataRoot,'data/runtime/options-daily-guidance-inputs'),{recursive:true});
+    writeFileSync(join(dataRoot,raw),JSON.stringify(await fixture()));
+    const capture=command('--record',raw);assert(existsSync(join(dataRoot,capture.path)));assert.equal(capture.executionAllowed,false);
+    assert.equal(command('--verify',capture.path).status,'VERIFIED');assert.deepEqual(command('--observe-paper').results,[]);
+    const analysis='data/runtime/options-daily-guidance-inputs/isolated-analysis.json',assessedAt=new Date().toISOString();
+    writeFileSync(join(dataRoot,analysis),JSON.stringify({assessedAt,assets:['GLD','IBIT'].map(symbol=>({symbol,bias:'INSUFFICIENT_EVIDENCE',summary:'Isolated split-root fixture',supporting:[],opposing:[],invalidation:'Unverified fixture',eventPlan:'No trading',sources:[]}))}));
+    assert.equal(command('--verify',command('--analysis',analysis).path).status,'VERIFIED');
+    const publication=command('--publish');assert.equal(command('--verify',publication.path).status,'VERIFIED');
+    const brief=command('--host-brief');assert.equal(brief.marketCapturedAt,at);assert.equal(brief.assets.length,2);
+    const report=command('--report');assert.equal(report.input.captureAt,at);assert.equal(report.history[0].path,publication.path);
+    assert.equal(command('--decision-cards').state,'AVAILABLE');assert.equal(command('--delivery-health').state,'AVAILABLE');
+    assert(!existsSync(join(codeRoot,'data/runtime')));assert.deepEqual(readdirSync(dataRoot),['data']);
+    for(const name of ['scripts','src','node_modules'])assert(!existsSync(join(dataRoot,name)));
+  }finally{unlinkSync(dependencies);}
+}));
 console.log(passed+"/"+passed+" tests passed.");

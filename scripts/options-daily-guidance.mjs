@@ -8,6 +8,7 @@ import { collectGuidanceMarket, routeDailyGuidance } from "./lib/options-guidanc
 import { activeEventResearchContracts } from "./lib/options-event-research-io.mjs";
 import { paperObservationView, observePaperPlans } from "./lib/options-paper-observation-io.mjs";
 import {observeTrendStudiesSafely,trendStudyTracking} from './lib/options-trend-study-io.mjs';
+import {contextWorkspaceArgs} from './lib/options-runtime-roots.mjs';
 export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=()=>new Date().toISOString()}={}) {
   const root=realpathSync(workspaceRoot),[mode,arg]=args;
   if(args.length>2)throw Error("GUIDANCE_ARGUMENTS");
@@ -47,6 +48,6 @@ export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=(
   throw Error("GUIDANCE_ARGUMENTS");
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
-  try {console.log(JSON.stringify(await runGuidanceCommand(process.argv.slice(2)),null,2));}
+  try {const {args,workspaceRoot}=contextWorkspaceArgs(process.argv.slice(2),{errorCode:'GUIDANCE_ARGUMENTS'});console.log(JSON.stringify(await runGuidanceCommand(args,{workspaceRoot}),null,2));}
   catch(e){console.error(JSON.stringify({error:workbenchError(e),executionAllowed:false}));process.exitCode=2;}
 }

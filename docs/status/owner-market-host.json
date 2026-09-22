@@ -1,0 +1,70 @@
+{
+  "version": "OPTIONS_OWNER_MARKET_HOST_DEPLOYMENT_V1",
+  "checkedAt": "2026-09-22T01:36:19.742Z",
+  "status": "HOST_SCHEDULER_UNAVAILABLE",
+  "productRepair": "COMPLETE",
+  "cliRootSelection": "EXPLICIT_WORKSPACE_REUSING_EXISTING_CONTEXT_PARSER",
+  "programmaticApiChanged": false,
+  "collectorChanged": false,
+  "scheduler": {
+    "id": "gld-ibit",
+    "initiallyReadable": true,
+    "currentState": "ABSENT_UPDATE_REJECTED",
+    "removalCause": "UNKNOWN",
+    "updateError": "Automation does not exist in the app and could not be updated.",
+    "timezone": "America/New_York",
+    "documentedCadence": "09:00 daily and 15:50 weekdays; reviewed session calendar required",
+    "installedCadenceNow": "UNAVAILABLE",
+    "replacementCreated": false,
+    "bindingApplied": false
+  },
+  "provider": {
+    "configuredEnabled": true,
+    "savedAuthenticationStatus": "o_auth",
+    "authenticationLiveValidity": "NOT_TESTED",
+    "callableRobinhoodToolsInSession": 0,
+    "pluginSearchMatches": 0,
+    "loginPerformed": false
+  },
+  "nextCalendarEligible": "2026-09-22T19:50:00.000Z",
+  "nextWindowLocal": "2026-09-22 15:50–16:00 America/New_York",
+  "queuedExecutionVerified": false,
+  "marketCalls": 0,
+  "productionCaptureWrites": 0,
+  "modelCalls": 0,
+  "jevSamples": 0,
+  "dollarCost": "UNKNOWN",
+  "storagePreflight": {
+    "currentCaptureCount": 0,
+    "currentCaptureBytes": 0,
+    "oneMaximumCaptureFitsExistingLimits": true,
+    "limitsChanged": false
+  },
+  "employment": {
+    "savedDrafts": 1,
+    "expectationSnapshots": 1,
+    "sourceComparisons": 4,
+    "scenarios": 1,
+    "plan": "DRAFT",
+    "prediction": "NOT_CREATED",
+    "trade": "NO_TRADE"
+  },
+  "priorNaturalRun": "2026-09-21 FAILED; original worktree receipt retained",
+  "ownerRuntimeNaturalAcceptance": "NOT_VERIFIED",
+  "targetedQuoteFirstRealUse": "NOT_VERIFIED_UNCHANGED",
+  "validation": {
+    "focusedGuidancePassed": 108,
+    "fullPassed": 5044,
+    "fullFailed": 0,
+    "components": 189,
+    "durationMs": 158734,
+    "typecheck": "PASSED",
+    "initialTestFailure": "Incorrect test assertion expected an array instead of the existing paper observation envelope; corrected assertion only",
+    "splitRoot": "PASSED_WITH_ISOLATED_DATA_AND_NO_HTTP",
+    "ownerCodeDeploymentReceipt": "data/runtime/options-workbench-development/owner-market-host-deployment.json"
+  },
+  "privateHandoff": "data/runtime/options-workbench-development/owner-market-host-private-handoff.json",
+  "privatePreflight": "data/runtime/options-workbench-development/owner-market-host-preflight.json",
+  "privateValidation": "data/runtime/options-workbench-development/owner-market-host-validation-report.json",
+  "executionAllowed": false
+}

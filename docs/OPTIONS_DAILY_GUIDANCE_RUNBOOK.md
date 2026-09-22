@@ -74,6 +74,33 @@ displayed with its existing warnings. Until these natural receipts exist, report
 **repair complete, awaiting first natural run**. Local copied-data tests do not
 fulfil that acceptance. No dollar source fee has been verified.
 
+## September 21 Owner runtime binding addendum
+
+Executable code and private evidence may now live in separate directories.
+Run the current code checkout's loader and script, supplying the existing private
+data directory explicitly. Do not copy code or dependencies into the data root.
+For example, with private local variables (never checked-in machine paths):
+
+```powershell
+& node "$codeRoot/node_modules/tsx/dist/cli.mjs" "$codeRoot/scripts/options-daily-guidance.mjs" --route-ongoing --workspace "$dataRoot"
+```
+
+The same `--workspace` argument applies to `--host-source`, `--begin-slot`,
+`--record`, `--verify`, `--observe-paper`, `--host-brief`, `--analysis`,
+`--publish`, `--decision-cards` and `--delivery-health`. Input/record arguments
+remain bounded paths relative to that data root. The programmatic API, defaults,
+collector, session rules and limits are unchanged. The context service already
+supports this root separation; retain its current deployment.
+
+This CLI correction does not supply MCP tools or install a scheduler. Inspect
+the actual app automation before applying a private binding, retaining its task
+identity, notification policy and the existing twelve weekly wakes. A missing
+automation is a deployment blocker, not permission to create a replacement.
+The September 21 attempt remains failed in its original private evidence root.
+Any later Owner-runtime attempt requires a separate natural receipt; no copying
+of old captures or backfilling the missed window is authorized. See
+[Owner Host deployment](OPTIONS_OWNER_MARKET_HOST_DELIVERY.md) for this checkpoint.
+
 ## September 19 installed schedule and feasibility finding
 
 Installed gld-ibit was read at 22:47:35.426 UTC: ACTIVE, 09:00 daily only. Its
