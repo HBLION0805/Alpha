@@ -77,6 +77,60 @@ function mock() {
 }
 const fixture=async()=>{const m=mock();return collectGuidanceMarket({call:m.call.bind(m),clock:async()=>at});};
 await test("Host selects existing IDs and batches bounded market-only calls",async()=>{const m=mock(),r=await collectGuidanceMarket({call:m.call.bind(m),clock:async()=>at});assert.equal(r.selectedIds.length,12);assert.equal(r.calls,6);assert.equal(r.failures.length,0);assert.equal(normalizeGuidanceCapture(r).complete,true);assert(m.calls.every(c=>["get_option_chains","get_equity_quotes","get_option_instruments","get_option_quotes"].includes(c.tool)));});
+function paginationMarket(nextFor){
+  const calls=[],pages={GLD:0,IBIT:0},instruments=new Map();
+  return {calls,pages,async call(tool,request){
+    calls.push({tool,request});
+    if(tool==="get_equity_quotes")return {data:{results:["GLD","IBIT"].map(symbol=>({quote:{symbol,last_trade_price:"105",venue_last_trade_time:at,last_non_reg_trade_price:null,venue_last_non_reg_trade_time:null},close:{symbol,date:"2026-09-04",price:"108",interpolated:false,source:"sip-list-exchange-close"}}))}};
+    if(tool==="get_option_chains")return {data:{chains:[{id:uuid(request.underlying_symbol==="GLD"?1:2),symbol:request.underlying_symbol,expiration_dates:["2026-09-25"]}]}};
+    if(tool==="get_option_instruments"){
+      const symbol=request.chain_id===uuid(1)?"GLD":"IBIT",page=++pages[symbol];
+      const list=Array.from({length:page===1?100:1},(_,n)=>({id:uuid((symbol==="GLD"?10000:20000)+page*1000+n),chain_id:request.chain_id,chain_symbol:symbol,expiration_date:"2026-09-25",type:"call",strike_price:String(page===1?200+n:105-page+2),state:"active",tradability:"tradable",underlying_type:"equity",trade_value_multiplier:"100",min_ticks:{above_tick:"0.05",below_tick:"0.01",cutoff_price:"3.00"}}));
+      list.forEach(i=>instruments.set(i.id,i));
+      return {data:{instruments:list,next:nextFor({symbol,page,request})}};
+    }
+    if(tool==="get_option_quotes")return {data:{results:request.instrument_ids.map(id=>({quote:{instrument_id:id,bid_price:"0.19",ask_price:"0.20",bid_size:20,ask_size:20,delta:instruments.get(id).type==="call"?"0.5":"-0.5",updated_at:at}}))}};
+    throw Error("UNEXPECTED_MARKET_TOOL");
+  }};
+}
+const paginationUrl=(request,cursor)=>"http://edge-internal.brokeback-shard-router.region.rh/options/instruments/?"+["chain_id","cursor","expiration_dates","state"].map(key=>key+"="+encodeURIComponent(key==="cursor"?cursor:request[key])).join("&");
+await test("real-shape opaque cursors consume both ETF terminal pages and later-page contracts",async()=>{
+  // Sanitized values retain the raw Base64 shape of the September 24 receipts.
+  const tokens={GLD:"cD0xMDAuMDAwMA==",IBIT:"cD01MC4wMDAw"};
+  const m=paginationMarket(({symbol,page})=>page===1?tokens[symbol]:null),r=await collectGuidanceMarket({call:m.call,clock:async()=>at});
+  assert.deepEqual(m.pages,{GLD:2,IBIT:2});
+  for(const symbol of ["GLD","IBIT"]){const chain=uuid(symbol==="GLD"?1:2);assert.equal(m.calls.find(c=>c.tool==="get_option_instruments"&&c.request.chain_id===chain&&c.request.cursor)?.request.cursor,tokens[symbol]);assert(r.selectedIds.includes(uuid((symbol==="GLD"?10000:20000)+2000)));}
+  assert.equal(r.origin,"HOST_MARKET_TOOL_RESPONSES");assert.equal(r.failures.length,0);assert.equal(normalizeGuidanceCapture(r).complete,true);
+  assert(r.calls<=24&&r.selectedIds.length<=36);
+  for(const symbol of ["GLD","IBIT"]){const ids=new Set(r.receipts.filter(x=>x.tool==="get_option_instruments").flatMap(x=>x.response.data.instruments).filter(i=>i.chain_symbol===symbol).map(i=>i.id));assert(r.selectedIds.filter(id=>ids.has(id)).length<=18);}
+  assert(m.calls.every(c=>["get_equity_quotes","get_option_chains","get_option_instruments","get_option_quotes"].includes(c.tool)));
+});
+await test("null or absent next is terminal, while empty next is invalid",async()=>{
+  for(const next of [null,undefined]){const r=await collectGuidanceMarket({call:paginationMarket(()=>next).call,clock:async()=>at});assert.equal(normalizeGuidanceCapture(r).complete,true);assert.equal(r.failures.length,0);}
+  const r=await collectGuidanceMarket({call:paginationMarket(()=>"").call,clock:async()=>at});assert.equal(normalizeGuidanceCapture(r).complete,false);assert.equal(r.failures.filter(f=>f.code==="CURSOR_INVALID").length,2);
+});
+await test("observed URL form extracts its cursor once and rejects other hosts, schemes and scope",async()=>{
+  const token="a+b/",m=paginationMarket(({page,request})=>page===1?paginationUrl(request,token):null),r=await collectGuidanceMarket({call:m.call,clock:async()=>at});
+  assert.equal(normalizeGuidanceCapture(r).complete,true);assert(m.calls.filter(c=>c.tool==="get_option_instruments"&&c.request.cursor).every(c=>c.request.cursor===token));
+  const invalid=[
+    request=>paginationUrl(request,token).replace("edge-internal.brokeback-shard-router.region.rh","example.invalid"),
+    request=>paginationUrl(request,token).replace("http:","https:"),
+    request=>paginationUrl(request,token)+"&cursor="+token,
+    request=>paginationUrl(request,token).replace(request.chain_id,uuid(999)),
+    request=>paginationUrl(request,token).replace("a%2Bb%2F","a%252Bb%2F"),
+    ()=>"?cursor=cD0xMDAuMDAwMA==",
+    ()=>"not-a-base64-cursor",
+    ()=>({cursor:"cD0xMDAuMDAwMA=="})
+  ];
+  for(const value of invalid){const m=paginationMarket(({symbol,page,request})=>symbol==="GLD"&&page===1?value(request):null),r=await collectGuidanceMarket({call:m.call,clock:async()=>at});assert.equal(normalizeGuidanceCapture(r).complete,false);assert(r.failures.some(f=>f.symbol==="GLD"&&f.code==="CURSOR_INVALID"));assert(r.failures.some(f=>f.symbol==="GLD"&&f.code==="INSTRUMENT_LIST_PARTIAL"));assert.equal(m.pages.GLD,1);}
+});
+await test("duplicate cursor and eight-page bound fail closed without enlarging limits",async()=>{
+  const repeated=paginationMarket(({page})=>page<=2?"cD0xMDAuMDAwMA==":null),r=await collectGuidanceMarket({call:repeated.call,clock:async()=>at});
+  assert.equal(repeated.pages.GLD,2);assert.equal(repeated.pages.IBIT,2);assert.equal(r.failures.filter(f=>f.code==="CURSOR_INVALID").length,2);assert.equal(normalizeGuidanceCapture(r).complete,false);
+  const capped=paginationMarket(({page})=>Buffer.from("p="+page).toString("base64")),limit=await collectGuidanceMarket({call:capped.call,clock:async()=>at});
+  assert.deepEqual(capped.pages,{GLD:8,IBIT:8});assert.equal(limit.failures.filter(f=>f.code==="INSTRUMENT_LIST_PARTIAL").length,2);assert.equal(normalizeGuidanceCapture(limit).complete,false);assert(limit.calls<=24&&limit.selectedIds.length<=36);
+  for(const symbol of ["GLD","IBIT"]){const ids=new Set(limit.receipts.filter(x=>x.tool==="get_option_instruments").flatMap(x=>x.response.data.instruments).filter(i=>i.chain_symbol===symbol).map(i=>i.id));assert(limit.selectedIds.filter(id=>ids.has(id)).length<=18);}
+});
 await test("Host failures are sanitized and cannot claim complete coverage",async()=>{const r=await collectGuidanceMarket({call:async()=>{throw Error("PRIVATE_DETAIL_MUST_NOT_ESCAPE");},clock:async()=>at});assert(!JSON.stringify(r).includes("PRIVATE_DETAIL"));assert.equal(normalizeGuidanceCapture(r).complete,false);});
 await test("Host deadline prevents later source calls",async()=>{const m=mock();let n=0;const r=await collectGuidanceMarket({call:m.call.bind(m),clock:async()=>n++? "2026-09-08T14:04:00.000Z":at});assert.equal(r.calls,0);assert(r.failures.some(f=>f.code==="COLLECTION_BOUND_REACHED"));});
 await test("capture rejects an unrelated source tool",async()=>{const r=await fixture();r.receipts[0].tool="get_account";assert.throws(()=>normalizeGuidanceCapture(r),/TOOL_NOT_ALLOWED/);});

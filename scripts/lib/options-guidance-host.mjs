@@ -4,6 +4,27 @@ import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPa
 /** Runs only in the authorized Host with injected market tools; no credentials here. */
 export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
   if(!Array.isArray(trackedContracts)||trackedContracts.length>6||new Set(trackedContracts.map(c=>c.id)).size!==trackedContracts.length||trackedContracts.some(c=>!c||!['GLD','IBIT'].includes(c.symbol)||!['call','put'].includes(c.type)||!/^\d{4}-\d\d-\d\d$/.test(c.expiry)||!/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(c.id)||c.multiplier!==100||!Number.isFinite(Number(c.strike))||Number(c.strike)<=0))throw Error('GUIDANCE_TRACKED_CONTRACTS');
+  // The Host serializes this collector alone, so keep the pure parser inside it.
+  function parseOptionInstrumentCursor(next,request) {
+    if(typeof next!=="string"||!next||next.length>2048)throw Error("CURSOR");
+    let cursor=next;
+    if(next.includes("://")){
+      // Older receipts contain this exact Robinhood tool URL; the current tool
+      // also returns the opaque cursor directly. Never follow the URL itself.
+      const prefix="http://edge-internal.brokeback-shard-router.region.rh/options/instruments/?";
+      if(!next.startsWith(prefix)||next.includes("#"))throw Error("CURSOR");
+      const fields=new Map();
+      for(const pair of next.slice(prefix.length).split("&")){
+        const equals=pair.indexOf("="),key=pair.slice(0,equals);
+        if(equals<=0||!["chain_id","cursor","expiration_dates","state"].includes(key)||fields.has(key))throw Error("CURSOR");
+        fields.set(key,decodeURIComponent(pair.slice(equals+1).replace(/\+/g," ")));
+      }
+      if(fields.size!==4||fields.get("chain_id")!==request.chain_id||fields.get("expiration_dates")!==request.expiration_dates||fields.get("state")!==request.state)throw Error("CURSOR");
+      cursor=fields.get("cursor");
+    }
+    if(typeof cursor!=="string"||cursor.length<4||cursor.length>512||cursor.length%4!==0||!/^[A-Za-z0-9+/]+={0,2}$/.test(cursor))throw Error("CURSOR");
+    return cursor;
+  }
   const iso=value=>{const s=value.replace(" UTC","Z").replace(" ","T");if(!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(s)||!Number.isFinite(Date.parse(s)))throw Error("GUIDANCE_HOST_CLOCK");return new Date(s).toISOString();};
   const startedAt=iso(await clock()),receipts=[],failures=[];let calls=0;
   const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(startedAt));
@@ -37,8 +58,8 @@ export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
       const d=await read("get_option_instruments",request);if(!d)break;
       if(!Array.isArray(d.instruments)||d.instruments.length>100){failures.push({tool:"SELECTION",symbol,code:"INSTRUMENT_SHAPE"});break;}
       all.push(...d.instruments);
-      if(!d.next){complete=true;break;}
-      try {const match=String(d.next).match(/[?&]cursor=([^&]+)/);cursor=match?decodeURIComponent(match[1]):null;if(!cursor||seenCursors.has(cursor))throw Error("CURSOR");seenCursors.add(cursor);}
+      if(d.next===null||d.next===undefined){complete=true;break;}
+      try {cursor=parseOptionInstrumentCursor(d.next,request);if(seenCursors.has(cursor))throw Error("CURSOR");seenCursors.add(cursor);}
       catch{failures.push({tool:"SELECTION",symbol,code:"CURSOR_INVALID"});break;}
     }
     if(!complete)failures.push({tool:"SELECTION",symbol,code:"INSTRUMENT_LIST_PARTIAL"});
