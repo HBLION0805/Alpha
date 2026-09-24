@@ -47,17 +47,34 @@ await test('path escape and invalid clocks fail without writes',()=>temp(root=>{
 await test('browser mapping normalizes pre-trade review fields to unknown',()=>{const n=macroNoteRequest({...macroNoteDefaults(macroCatalog()),title:'Test',process:'FOLLOWED',outcome:'PROFIT'},macroCatalog(),randomUUID());assert.equal(n.process,'UNKNOWN');assert.equal(n.outcome,'UNKNOWN');validateMacroNote(n);});
 await test('HTML escapes owner notes and source text; source links remain usable',()=>temp(root=>{const n=note();n.title='<img src=x onerror=alert(1)>';n.answers.sources='<script>bad</script>';saveMacroNote(root,n,at);const v=macroPlaybookView(root);const html=macroPlaybookPage({macroPlaybook:{data:v}},{});assert.ok(!html.includes('<script>bad'));assert.ok(!html.includes('<img src=x'));assert.ok(html.includes('&lt;img'));assert.ok(html.includes('href="https://macro-trading.pages.dev/"'));assert.ok(html.includes('Undocumented'));assert.ok(html.includes('0 active rules'));assert.ok(macroPlaybookPage({},{}).includes('unavailable'));}));
 await test('search exposes runner caveats and no unrelated rule activation',()=>temp(root=>{const html=macroPlaybookPage({macroPlaybook:{data:macroPlaybookView(root)}},{macroKnowledgeSearch:'90% exit'});assert.ok(html.includes('One contract cannot be split'));assert.ok(!html.includes('knowledge-horizons'));}));
-await test('V2 psychology catalog has 52 unique entries and attributed reflection questions',()=>{
- const c=macroCatalog();assert.equal(c.contentRevision,'OWNER_PSYCHOLOGY_20260923_V2');assert.equal(c.psychology.revision,c.contentRevision);assert.equal(c.reviewedDateNewYork,'2026-09-23');
- assert.equal(c.items.length,52);assert.equal(new Set(c.items.map(i=>i.id)).size,52);
- assert.equal(c.items.filter(i=>i.group==='Psychology and evidence').length,22);
- assert.equal(c.psychology.biases.length,17);assert.equal(c.psychology.prompts.length,12);
- assert.equal(new Set(c.psychology.biases.map(b=>b.id)).size,17);assert.equal(new Set(c.psychology.prompts.map(p=>p.id)).size,12);
+await test('V3 psychology catalog has 53 unique entries and attributed reflection questions',()=>{
+ const c=macroCatalog();assert.equal(c.contentRevision,'OWNER_PSYCHOLOGY_20260924_V3');assert.equal(c.psychology.revision,c.contentRevision);assert.equal(c.reviewedDateNewYork,'2026-09-24');
+ assert.equal(c.items.length,53);assert.equal(new Set(c.items.map(i=>i.id)).size,53);
+ assert.equal(c.items.filter(i=>i.group==='Psychology and evidence').length,23);
+ assert.equal(c.psychology.biases.length,17);assert.equal(c.psychology.prompts.length,14);
+ assert.equal(new Set(c.psychology.biases.map(b=>b.id)).size,17);assert.equal(new Set(c.psychology.prompts.map(p=>p.id)).size,14);
  for(const b of c.psychology.biases){assert.equal(b.status,'REFLECTION_ONLY_NOT_DIAGNOSIS');assert.ok(c.sources.some(s=>s.id===b.source));}
  for(const id of ['psych-72-hours','psych-30-30','psych-breakout-clock'])assert.equal(c.items.find(i=>i.id===id).status,'CANDIDATE_UNTESTED');
  assert.match(c.items.find(i=>i.id==='psych-30-30').limits,/not equivalent/);
  assert.equal(c.items.find(i=>i.id==='psych-tunnel-vision').status,'PROCESS_GUIDE');
  assert.equal(c.items.find(i=>i.id==='psych-short-weakness').status,'CANDIDATE_UNTESTED');
+ assert.equal(c.activeRuleCount,0);assert.equal(c.executionAllowed,false);
+});
+await test('political and market-mechanics additions remain evidence questions rather than scores or facts',()=>{
+ const c=macroCatalog(),item=id=>c.items.find(i=>i.id===id),political=item('psych-political-entity-separation');
+ assert.equal(c.items.filter(i=>i.id==='psych-political-entity-separation').length,1);assert.equal(political.status,'PROCESS_GUIDE');
+ for(const topic of ['Country','Government','Party','People','Policy','Narrative','Macro evidence','Economic conflict','Transmission'])assert(political.topics.includes(topic),topic);
+ assert.match(political.application,/who spoke.*authority.*rhetoric.*proposal.*implementation.*economic variable.*causal channel.*market had already priced.*counterevidence/i);
+ assert.match(political.limits,/No political score, ideology classifier, voting advice or execution rule/);
+ assert.match(item('psych-news').title,/Cross-check claims, not political averages/);
+ assert.match(item('psych-news').application,/same evidence standard.*United States.*China.*observed, inferred or unknown.*trace the cost/i);
+ assert.match(item('psych-second-order').application,/both sides|financing.*inflation.*FX.*rates.*margins.*capital flows/i);
+ assert.match(item('psych-second-order').limits,/neither zero cost nor equal suffering/);
+ assert.match(item('psych-short-weakness').application,/sell-side volume.*downward price impact.*hypotheses/i);
+ assert.match(item('psych-short-weakness').limits,/does not reveal counterparties.*neither bearish nor bullish.*no short rule/i);
+ assert.equal(item('psych-short-weakness').status,'CANDIDATE_UNTESTED');
+ assert.match(c.sources.find(s=>s.id==='owner-psychology-20260924').coverage,/current U.S.\/China claims.*require verification/i);
+ for(const key of ['countryScore','partyScore','leaderScore','politicalRecommendation'])assert.equal(Object.hasOwn(c,key),false);
  assert.equal(c.activeRuleCount,0);assert.equal(c.executionAllowed,false);
 });
 await test('new experience items remain educational and do not extend the trading universe',()=>{
@@ -94,6 +111,18 @@ await test('three V2 prompts append to a draft without changing assessment or sa
  }
  assert.equal(c.activeRuleCount,0);assert.equal(c.executionAllowed,false);
 }));
+await test('two V3 prompts remain optional and do not change assessment or save',()=>temp(root=>{
+ const c=macroCatalog();
+ for(const [id,stage] of [['entry-evidence-or-allegiance','Before entry'],['holding-pressure-or-weakness','While holding']]){
+   const prompt=c.psychology.prompts.find(p=>p.id===id);assert.equal(prompt?.stage,stage);assert.equal(prompt.status,'REFLECTION_ONLY_NOT_DIAGNOSIS');
+   const draft={...macroNoteDefaults(c),title:'Existing draft',personalNote:'Existing reflection'},before=structuredClone(draft);
+   const assessment=assessMacroNote(macroNoteRequest(draft,c,randomUUID())),after=appendMacroReflection(draft,c,id);
+   assert.deepEqual(draft,before);assert.equal(after.title,before.title);assert(after.personalNote.includes(prompt.text));
+   assert.deepEqual(assessMacroNote(macroNoteRequest(after,c,randomUUID())),assessment);
+   assert.equal(macroPlaybookView(root).notes.length,0);
+ }
+ assert.equal(c.activeRuleCount,0);assert.equal(c.executionAllowed,false);
+}));
 await test('unknown prompt and overflow reject without truncating or changing input',()=>{
  const c=macroCatalog(),d={...macroNoteDefaults(c),personalNote:'x'.repeat(1400)},before=JSON.stringify(d);
  assert.throws(()=>appendMacroReflection(d,c,'entry-urge'),/exceed 1,400/);assert.equal(JSON.stringify(d),before);
@@ -122,8 +151,8 @@ await test('legacy note recovers and retries using its original catalog without 
 await test('pre-V2 psychology note keeps its copied V1-shaped catalog and original bytes',()=>temp(root=>{
  const n=note(),catalog=macroCatalog();
  catalog.contentRevision='OWNER_PSYCHOLOGY_20260917_V1';catalog.psychology.revision=catalog.contentRevision;catalog.reviewedDateNewYork='2026-09-17';
- catalog.items=catalog.items.filter(i=>!['psych-tunnel-vision','psych-short-weakness'].includes(i.id));
- catalog.psychology.prompts=catalog.psychology.prompts.filter(p=>!['holding-thesis-change','holding-fresh-cash','entry-size-confidence'].includes(p.id));
+ catalog.items=catalog.items.filter(i=>!['psych-tunnel-vision','psych-short-weakness','psych-political-entity-separation'].includes(i.id));
+ catalog.psychology.prompts=catalog.psychology.prompts.filter(p=>!['holding-thesis-change','holding-fresh-cash','entry-size-confidence','entry-evidence-or-allegiance','holding-pressure-or-weakness'].includes(p.id));
  catalog.items[0].principle='Copied earlier wording retained exactly.';
  assert.equal(catalog.items.length,50);assert.equal(catalog.psychology.prompts.length,9);
  const payload={version:MACRO_PLAYBOOK_VERSION,recordedAt:at,input:n,catalog,assessment:assessMacroNote(n,catalog)};
@@ -131,17 +160,32 @@ await test('pre-V2 psychology note keeps its copied V1-shaped catalog and origin
  mkdirSync(resolve(root,'data/runtime/options-macro-playbook/notes'),{recursive:true});writeFileSync(resolve(root,path),bytes);
  const recovered=readMacroNote(root,path);assert.deepEqual(recovered.catalog,catalog);
  assert.equal(recovered.catalog.contentRevision,'OWNER_PSYCHOLOGY_20260917_V1');
- assert.equal(macroPlaybookView(root).catalog.contentRevision,'OWNER_PSYCHOLOGY_20260923_V2');
+ assert.equal(macroPlaybookView(root).catalog.contentRevision,'OWNER_PSYCHOLOGY_20260924_V3');
  assert.equal(macroPlaybookView(root).notes[0].catalog.contentRevision,'OWNER_PSYCHOLOGY_20260917_V1');
  assert.equal(saveMacroNote(root,n,'2026-09-24T03:00:00.000Z').alreadyRecorded,true);
  assert.equal(readFileSync(resolve(root,path),'utf8'),bytes);
 }));
-await test('new record copies the complete V2 catalog independently of callers',()=>temp(root=>{
+await test('pre-V3 psychology note recovers its copied V2 catalog and exact bytes',()=>temp(root=>{
+ const n=note(),catalog=macroCatalog();
+ catalog.contentRevision='OWNER_PSYCHOLOGY_20260923_V2';catalog.psychology.revision=catalog.contentRevision;catalog.reviewedDateNewYork='2026-09-23';
+ catalog.sources=catalog.sources.filter(s=>s.id!=='owner-psychology-20260924');
+ catalog.items=catalog.items.filter(i=>i.id!=='psych-political-entity-separation');
+ catalog.items.forEach(i=>i.sources=i.sources.filter(s=>s!=='owner-psychology-20260924'));
+ catalog.psychology.prompts=catalog.psychology.prompts.filter(p=>!['entry-evidence-or-allegiance','holding-pressure-or-weakness'].includes(p.id));
+ catalog.items.find(i=>i.id==='psych-news').application='Copied V2 language retained exactly.';
+ assert.equal(catalog.items.length,52);assert.equal(catalog.psychology.prompts.length,12);
+ const payload={version:MACRO_PLAYBOOK_VERSION,recordedAt:at,input:n,catalog,assessment:assessMacroNote(n,catalog)};
+ const path='data/runtime/options-macro-playbook/notes/'+n.requestId+'.json',bytes=JSON.stringify({...payload,fingerprint:paperFingerprint(payload)});
+ mkdirSync(resolve(root,'data/runtime/options-macro-playbook/notes'),{recursive:true});writeFileSync(resolve(root,path),bytes);
+ assert.deepEqual(readMacroNote(root,path).catalog,catalog);assert.equal(macroPlaybookView(root).notes[0].catalog.contentRevision,'OWNER_PSYCHOLOGY_20260923_V2');
+ assert.equal(saveMacroNote(root,n,'2026-09-25T03:00:00.000Z').alreadyRecorded,true);assert.equal(readFileSync(resolve(root,path),'utf8'),bytes);
+}));
+await test('new record copies the complete V3 catalog independently of callers',()=>temp(root=>{
  const current=macroCatalog(),saved=saveMacroNote(root,note(),at),c=macroCatalog();
- c.psychology.prompts[0].text='changed';c.psychology.biases[0].prompt='changed';c.items[0].title='changed';
+ c.psychology.prompts[0].text='changed';c.psychology.biases[0].prompt='changed';c.items[0].title='changed';c.sources.at(-1).coverage='changed';
  const r=readMacroNote(root,saved.path);assert.deepEqual(r.catalog,current);
- assert.equal(r.catalog.contentRevision,'OWNER_PSYCHOLOGY_20260923_V2');
- assert.equal(r.catalog.items.length,52);assert.equal(r.catalog.psychology.prompts.length,12);
+ assert.equal(r.catalog.contentRevision,'OWNER_PSYCHOLOGY_20260924_V3');
+ assert.equal(r.catalog.items.length,53);assert.equal(r.catalog.psychology.prompts.length,14);
  assert.notEqual(r.catalog.psychology.prompts[0].text,'changed');
 }));
 await test('expanded catalog still permits a maximum-size valid note',()=>temp(root=>{
