@@ -20,6 +20,7 @@ import {sourceRequest,sourcePreviewMatches,sourceCard} from './source-comparison
 import {newStorylineDraft,storylineNewsChoices} from './storyline.js';
 import {storylinePreviewMatches} from './storyline-model.js';
 import {prepareExpectationDraft,expectationSummary} from './market-expectations.js';
+import {localizeWorkbench,localizeError,localizeText} from './i18n.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -36,9 +37,9 @@ function syncNavigation(){
   const hidden=matchMedia('(max-width: 650px)').matches&&!document.body.classList.contains('menu-open');
   $('#sidebar').inert=hidden;if(hidden)$('#sidebar').setAttribute('aria-hidden','true');else $('#sidebar').removeAttribute('aria-hidden');
 }
-const labels={overview:'Overview',chain:'Options & activity',planner:'Trade planner',journal:'Trade journal',reviews:'Reviews & lessons',context:'News & calendar',guidance:'Daily guidance','event-research':'Event research','macro-playbook':'Macro playbook'};
+const labels={overview:'总览',chain:'期权与活动',planner:'交易计划',journal:'交易日志',reviews:'复盘与经验',context:'新闻与日历',guidance:'每日决策','event-research':'事件研究','macro-playbook':'宏观手册'};
 function route(){const key=location.hash.slice(1);return Object.hasOwn(routes,key)?key:'guidance';}
-function toast(message){$('#toast').textContent=message;$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),5500);}
+function toast(message){$('#toast').textContent=localizeText(message);$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),5500);}
 function render(focus=false){
   if(!state)return;
   const active=document.activeElement,id=active?.id,name=active?.name,position=active?.selectionStart;
@@ -54,12 +55,13 @@ function render(focus=false){
   }
   renderedRoute=key;
   document.title=`${labels[key]} · Alpha`;
+  localizeWorkbench($('#main'));
   for(const link of document.querySelectorAll('[data-route]')){const selected=link.dataset.route===key;link.classList.toggle('active',selected);if(selected)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');}
   if(focus)$('#main').focus({preventScroll:true});
   else {const next=id?document.getElementById(id):name?document.querySelector(`[name="${name}"]`):nextSummary;if(next){next.focus({preventScroll:true});if(typeof position==='number'&&['text','search','tel','url','password'].includes(next.type))next.setSelectionRange(position,position);}}
 }
 function navigate(key){if(route()===key)render(true);else location.hash=key;}
-function fail(error,target){const el=target&&$(target);if(el)el.textContent=error.message??'Local operation failed.';else toast(error.message??'Local operation failed.');}
+function fail(error,target){const el=target&&$(target),message=localizeError(error.message);if(el)el.textContent=message;else toast(message);}
 async function reload(board=state?.selectedBoardId??null){
   if(loading)return;loading=true;$('#reload').disabled=true;$('#connection').textContent='Checking saved evidence…';
   try{
@@ -71,7 +73,7 @@ async function reload(board=state?.selectedBoardId??null){
     const newsDenied=deniedNewsSources(state.focusedNews?.data?.sources).length;
     $('#connection').innerHTML=notice(`${state.manual.data?.origin==='SYNTHETIC_FIXTURE'?'<strong>ISOLATED SYNTHETIC LEDGER.</strong> ':''}<strong>Saved local evidence</strong> · ${newsDenied?'Public news collection recorded local network permission failures. See News & calendar for source clocks.':state.backgroundContextRefreshEnabled?'Public context is scheduled hourly while Alpha runs. Check News & calendar for successful reads. Option quotes follow their scheduled reads.':'Market prices are not refreshed here.'}${unavailable?` ${unavailable} component(s) unavailable; see the affected page.`:''}`,unavailable||newsDenied?'error':'');
     $('#loaded-at').textContent='Local files checked '+timestamp(state.loadedAt);render();
-  }catch(e){$('#connection').innerHTML=notice(esc(e.message),'error');if(!state)$('#main').innerHTML=empty('Workspace unavailable','Start the local Alpha server, then use Reload saved data.');}
+  }catch(e){$('#connection').innerHTML=notice(esc(localizeError(e.message)),'error');if(!state)$('#main').innerHTML=empty('Workspace unavailable','Start the local Alpha server, then use Reload saved data.');}
   finally{loading=false;$('#reload').disabled=false;}
 }
 function showDetail(title,html){$('#detail-title').textContent=title;$('#detail-body').innerHTML=html;$('#detail-dialog').showModal();}
@@ -599,6 +601,9 @@ window.addEventListener('hashchange',()=>{document.body.classList.remove('menu-o
 window.addEventListener('resize',syncNavigation);
 window.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.body.classList.contains('menu-open')){document.body.classList.remove('menu-open');$('#menu-toggle').setAttribute('aria-expanded','false');syncNavigation();$('#menu-toggle').focus();}});
 window.addEventListener('beforeunload',event=>{if(dirty.size||saving){event.preventDefault();event.returnValue='';}});
+localizeWorkbench(document.body);
+const localeObserver=new MutationObserver(records=>{for(const record of records){if(record.type==='characterData')localizeWorkbench(record.target);else for(const node of record.addedNodes)localizeWorkbench(node);}});
+localeObserver.observe(document.body,{childList:true,characterData:true,subtree:true});
 syncNavigation();void reload();
 setInterval(()=>{if(document.visibilityState==='visible'&&!dirty.size&&!saving&&!previewing&&!calculating&&!loading&&!document.querySelector('dialog[open]'))void reload(state?.selectedBoardId??'');},60000);
 

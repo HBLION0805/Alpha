@@ -140,6 +140,7 @@ const aggregateTestFiles = [
   "scripts/options-trade-thesis.test.mjs",
   "scripts/options-event-reactions.test.mjs",
   "scripts/options-workbench.test.mjs",
+  "scripts/options-workbench-i18n.test.mjs",
   "scripts/options-daily-guidance.test.mjs",
   "scripts/options-guidance-rationale.test.mjs",
   "scripts/options-context-service.test.mjs",

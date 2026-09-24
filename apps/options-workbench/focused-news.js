@@ -8,7 +8,7 @@ const badge = value => '<span class="tag">'+esc(words(value))+'</span>';
 const list = values => '<ul>'+values.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul>';
 const details = (label,value) => '<details><summary>'+esc(label)+'</summary><pre>'+esc(JSON.stringify(value,null,2))+'</pre></details>';
 const empty = message => '<p class="hint">'+esc(message)+'</p>';
-const link = (url,title) => {const target=safeLink(url);return target?'<a href="'+esc(target)+'" target="_blank" rel="noopener noreferrer">'+esc(title)+' ↗</a>':esc(title);};
+const link = (url,title) => {const target=safeLink(url);return target?'<a translate="no" href="'+esc(target)+'" target="_blank" rel="noopener noreferrer">'+esc(title)+' ↗</a>':esc(title);};
 
 export function deniedNewsSources(sources=[]) {
   return sources.filter(s=>s.status==='FAILED'&&s.diagnostic==='FEED_NETWORK_ACCESS_DENIED');
@@ -19,7 +19,7 @@ export function newsAccessNotice(sources=[]) {
 }
 
 export function calendarCoveragePanel(sources={}) {
-  return '<div class="source-grid calendar-source-grid">'+[['bls','BLS release calendar'],['fomc','Federal Reserve meeting calendar']].map(([id,label])=>{
+  return '<div class="source-grid calendar-source-grid">'+[['bls','BLS 公布日历'],['fomc','美联储会议日历']].map(([id,label])=>{
     const source=sources?.[id],observed=['OBSERVED_SCHEDULE','OBSERVED_DATE_SCHEDULE'].includes(source?.latestAttempt);
     const failed=Boolean(source?.sourceErrorCode)||source?.latestAttempt==='FAILED';
     const current=source?.state==='AVAILABLE'&&observed&&!failed&&source.refreshOverdue===false&&Boolean(source.lastKnownReceivedAt);

@@ -20,6 +20,7 @@
     "options:workbench": "tsx scripts/options-workbench.mjs",
     "test:options-evidence-loop": "tsx scripts/options-evidence-loop.test.mjs",
     "test:options-workbench": "tsx scripts/options-workbench.test.mjs",
+    "test:options-workbench-i18n": "node scripts/options-workbench-i18n.test.mjs",
     "test:options-guidance-sensitivities": "tsx scripts/options-guidance-sensitivities.test.mjs",
     "test:options-position-watch": "tsx scripts/options-position-watch.test.mjs",
     "test:options-event-reactions": "tsx scripts/options-event-reactions.test.mjs",

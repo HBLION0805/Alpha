@@ -11,6 +11,7 @@ import {optionsCodeRoot} from './lib/options-runtime-roots.mjs';
 
 const assetRoot=resolve(import.meta.dirname,'../apps/options-workbench');
 const assets=new Map([['/',['index.html','text/html']],['/index.html',['index.html','text/html']],...['app.js','api.js','model.js','views.js','forms.js','guidance.js','decision-cards.js','etf-setup.js','sensitivities.js','candidate-checks.js','cost-desk.js','capital-policy.js','gold-framework.js','macro-context.js','focused-news.js','event-research.js','bar-quality.js','snapshot-paper.js','position-watch.js','event-reactions.js','spread-review.js'].map(f=>['/'+f,[f,'text/javascript']]),['/styles.css',['styles.css','text/css']],['/icon.svg',['icon.svg','image/svg+xml']]]);
+assets.set('/i18n.js',['i18n.js','text/javascript']);
 const MAX_BODY=65536;
 assets.set('/trend-study.js',['trend-study.js','text/javascript']);
 assets.set('/macro-playbook.js',['macro-playbook.js','text/javascript']);
