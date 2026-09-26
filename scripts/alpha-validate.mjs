@@ -142,6 +142,7 @@ const aggregateTestFiles = [
   "scripts/options-workbench.test.mjs",
   "scripts/options-workbench-i18n.test.mjs",
   "scripts/options-daily-guidance.test.mjs",
+  "scripts/options-guidance-shared-pagination.test.mjs",
   "scripts/options-guidance-rationale.test.mjs",
   "scripts/options-context-service.test.mjs",
   "scripts/options-focused-news.test.mjs",

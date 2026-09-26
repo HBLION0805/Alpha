@@ -36,8 +36,13 @@ export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
       receipts.push({tool,request,requestedAt,receivedAt,response});return response.data;
     }catch{failures.push({tool,request,requestedAt,code:"MARKET_SOURCE_FAILED"});return null;}
   }
-  const equity=await read("get_equity_quotes",{symbols:["GLD","IBIT"]}),selected=[];
-  for(const symbol of ["GLD","IBIT"]) {
+  const symbols=["GLD","IBIT"],quoteBatchSize=20,maxSelected=36;
+  // Reserve all mandatory calls before paging: 1 equity + 2 chains + 2 quotes.
+  // Keep these constants local: the Host serializes this function without imports.
+  const quoteCallReserve=Math.ceil(maxSelected/quoteBatchSize);
+  const instrumentPageBudget=24-1-symbols.length-quoteCallReserve;
+  const equity=await read("get_equity_quotes",{symbols}),selected=[],discoveries=[];
+  for(const symbol of symbols) {
     const q=equity?.results?.find(r=>r.quote?.symbol===symbol)?.quote;
     const prices=q?[[q.last_trade_price,q.venue_last_trade_time],[q.last_non_reg_trade_price,q.venue_last_non_reg_trade_time]].filter(([p,t])=>Number(p)>0&&Number.isFinite(Date.parse(t))).sort((a,b)=>Date.parse(b[1])-Date.parse(a[1])):[];
     const spot=Number(prices[0]?.[0]);
@@ -52,16 +57,24 @@ export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
     for(const c of tracked)if(chain.expiration_dates.includes(c.expiry)&&c.expiry>=today&&!expirations.includes(c.expiry))expirations.push(c.expiry);
     expirations.sort();
     if(!expirations.length){failures.push({tool:"SELECTION",symbol,code:"NO_EXPIRATIONS_IN_RANGE"});continue;}
-    let cursor=null,complete=false;const all=[],seenCursors=new Set();
-    for(let page=0;page<8;page++) {
-      const request={chain_id:chain.id,expiration_dates:expirations.join(","),state:"active",...(cursor?{cursor}:{})};
-      const d=await read("get_option_instruments",request);if(!d)break;
-      if(!Array.isArray(d.instruments)||d.instruments.length>100){failures.push({tool:"SELECTION",symbol,code:"INSTRUMENT_SHAPE"});break;}
-      all.push(...d.instruments);
-      if(d.next===null||d.next===undefined){complete=true;break;}
-      try {cursor=parseOptionInstrumentCursor(d.next,request);if(seenCursors.has(cursor))throw Error("CURSOR");seenCursors.add(cursor);}
-      catch{failures.push({tool:"SELECTION",symbol,code:"CURSOR_INVALID"});break;}
+    discoveries.push({symbol,spot,chain,expirations,tracked,cursor:null,complete:false,active:true,all:[],seenCursors:new Set()});
+  }
+  let instrumentPages=0;
+  while(instrumentPages<instrumentPageBudget&&discoveries.some(d=>d.active)) {
+    for(const d of discoveries) {
+      if(!d.active||instrumentPages>=instrumentPageBudget)continue;
+      const request={chain_id:d.chain.id,expiration_dates:d.expirations.join(","),state:"active",...(d.cursor?{cursor:d.cursor}:{})};
+      instrumentPages++;
+      const page=await read("get_option_instruments",request);
+      if(!page){d.active=false;continue;}
+      if(!Array.isArray(page.instruments)||page.instruments.length>100){failures.push({tool:"SELECTION",symbol:d.symbol,code:"INSTRUMENT_SHAPE"});d.active=false;continue;}
+      d.all.push(...page.instruments);
+      if(page.next===null||page.next===undefined){d.complete=true;d.active=false;continue;}
+      try {d.cursor=parseOptionInstrumentCursor(page.next,request);if(d.seenCursors.has(d.cursor))throw Error("CURSOR");d.seenCursors.add(d.cursor);}
+      catch{failures.push({tool:"SELECTION",symbol:d.symbol,code:"CURSOR_INVALID"});d.active=false;}
     }
+  }
+  for(const {symbol,spot,chain,expirations,tracked,all,complete} of discoveries) {
     if(!complete)failures.push({tool:"SELECTION",symbol,code:"INSTRUMENT_LIST_PARTIAL"});
     const symbolSelected=[];
     for(const c of tracked){const i=all.find(i=>i.id===c.id&&i.chain_id===chain.id&&i.chain_symbol===c.symbol&&i.expiration_date===c.expiry&&i.type===c.type&&i.strike_price===c.strike&&i.state==='active'&&i.tradability==='tradable'&&i.underlying_type==='equity'&&Number(i.trade_value_multiplier)===100);if(i)symbolSelected.push(i.id);else failures.push({tool:'SELECTION',symbol,code:'TRACKED_CONTRACT_UNAVAILABLE'});}
@@ -72,9 +85,9 @@ export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
     }
     selected.push(...[...new Set(symbolSelected)].slice(0,18));
   }
-  const ids=[...new Set(selected)].slice(0,36);
-  for(let n=0;n<ids.length;n+=20){
-    const requested=ids.slice(n,n+20),data=await read("get_option_quotes",{instrument_ids:requested});
+  const ids=[...new Set(selected)].slice(0,maxSelected);
+  for(let n=0;n<ids.length;n+=quoteBatchSize){
+    const requested=ids.slice(n,n+quoteBatchSize),data=await read("get_option_quotes",{instrument_ids:requested});
     if(data&&Array.isArray(data.results)){
       const returned=new Set(data.results.map(r=>r?.quote?.instrument_id)),missingIds=requested.filter(id=>!returned.has(id));
       if(missingIds.length)failures.push({tool:'get_option_quotes',code:'OPTION_QUOTE_IDENTITIES_MISSING',missingIds});

@@ -124,11 +124,12 @@ await test("observed URL form extracts its cursor once and rejects other hosts, 
   ];
   for(const value of invalid){const m=paginationMarket(({symbol,page,request})=>symbol==="GLD"&&page===1?value(request):null),r=await collectGuidanceMarket({call:m.call,clock:async()=>at});assert.equal(normalizeGuidanceCapture(r).complete,false);assert(r.failures.some(f=>f.symbol==="GLD"&&f.code==="CURSOR_INVALID"));assert(r.failures.some(f=>f.symbol==="GLD"&&f.code==="INSTRUMENT_LIST_PARTIAL"));assert.equal(m.pages.GLD,1);}
 });
-await test("duplicate cursor and eight-page bound fail closed without enlarging limits",async()=>{
+await test("duplicate cursor and shared nineteen-page bound fail closed within the call limit",async()=>{
   const repeated=paginationMarket(({page})=>page<=2?"cD0xMDAuMDAwMA==":null),r=await collectGuidanceMarket({call:repeated.call,clock:async()=>at});
   assert.equal(repeated.pages.GLD,2);assert.equal(repeated.pages.IBIT,2);assert.equal(r.failures.filter(f=>f.code==="CURSOR_INVALID").length,2);assert.equal(normalizeGuidanceCapture(r).complete,false);
   const capped=paginationMarket(({page})=>Buffer.from("p="+page).toString("base64")),limit=await collectGuidanceMarket({call:capped.call,clock:async()=>at});
-  assert.deepEqual(capped.pages,{GLD:8,IBIT:8});assert.equal(limit.failures.filter(f=>f.code==="INSTRUMENT_LIST_PARTIAL").length,2);assert.equal(normalizeGuidanceCapture(limit).complete,false);assert(limit.calls<=24&&limit.selectedIds.length<=36);
+  assert.deepEqual(capped.pages,{GLD:10,IBIT:9});assert.equal(limit.failures.filter(f=>f.code==="INSTRUMENT_LIST_PARTIAL").length,2);assert.equal(normalizeGuidanceCapture(limit).complete,false);assert(limit.calls<=24&&limit.selectedIds.length<=36);
+  assert.equal(capped.calls.filter(c=>c.tool==="get_option_instruments").length,19);assert.equal(capped.calls.filter(c=>c.tool==="get_option_quotes").length,1);
   for(const symbol of ["GLD","IBIT"]){const ids=new Set(limit.receipts.filter(x=>x.tool==="get_option_instruments").flatMap(x=>x.response.data.instruments).filter(i=>i.chain_symbol===symbol).map(i=>i.id));assert(limit.selectedIds.filter(id=>ids.has(id)).length<=18);}
 });
 await test("Host failures are sanitized and cannot claim complete coverage",async()=>{const r=await collectGuidanceMarket({call:async()=>{throw Error("PRIVATE_DETAIL_MUST_NOT_ESCAPE");},clock:async()=>at});assert(!JSON.stringify(r).includes("PRIVATE_DETAIL"));assert.equal(normalizeGuidanceCapture(r).complete,false);});
