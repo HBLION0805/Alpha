@@ -1,25 +1,40 @@
 {
-  "version": "OPTIONS_MACRO_PSYCHOLOGY_DELIVERY_V3",
-  "recordedAt": "2026-09-24T22:48:27.000Z",
-  "status": "V3_KNOWLEDGE_AND_REFLECTION_IMPLEMENTED",
-  "contentRevision": "OWNER_PSYCHOLOGY_20260924_V3",
-  "reviewedDateNewYork": "2026-09-24",
+  "version": "OPTIONS_MACRO_PSYCHOLOGY_DELIVERY_V4",
+  "recordedAt": "2026-09-26T15:54:26.797Z",
+  "status": "V4_KNOWLEDGE_AND_REFLECTION_IMPLEMENTED",
+  "contentRevision": "OWNER_PSYCHOLOGY_20260926_V4",
+  "reviewedDateNewYork": "2026-09-26",
   "sourceCharacter": "OWNER_SUPPLIED_EXPERIENCE_NOT_EXTERNALLY_VALIDATED",
   "originalEntriesPreserved": 30,
-  "newEntries": 23,
-  "v2NewPsychologyEntries": ["psych-tunnel-vision", "psych-short-weakness"],
-  "v3NewPsychologyEntries": ["psych-political-entity-separation"],
-  "totalEntries": 53,
+  "newEntries": 30,
+  "v2NewPsychologyEntries": [
+    "psych-tunnel-vision",
+    "psych-short-weakness"
+  ],
+  "v3NewPsychologyEntries": [
+    "psych-political-entity-separation"
+  ],
+  "totalEntries": 60,
   "biasQuestions": 17,
-  "phasePrompts": 14,
-  "v2NewPromptIds": ["entry-size-confidence", "holding-thesis-change", "holding-fresh-cash"],
-  "v3NewPromptIds": ["entry-evidence-or-allegiance", "holding-pressure-or-weakness"],
+  "phasePrompts": 20,
+  "v2NewPromptIds": [
+    "entry-size-confidence",
+    "holding-thesis-change",
+    "holding-fresh-cash"
+  ],
+  "v3NewPromptIds": [
+    "entry-evidence-or-allegiance",
+    "holding-pressure-or-weakness"
+  ],
   "worksheetEvidenceFieldsUnchanged": 12,
   "activeRuleCount": 0,
   "activeRulesFromCatalog": 0,
   "confidenceScore": null,
   "psychologicalDiagnosis": false,
-  "images": {"historicalPrivateCopies": 2, "newCopies": 0},
+  "images": {
+    "historicalPrivateCopies": 2,
+    "newCopies": 0
+  },
   "sourceReview": {
     "v2OwnerExperience": "SUPPLIED_EXPERIENCE_NOT_EXTERNAL_VALIDATION",
     "behavioralResearch": "PRIOR_SEC_HOSTED_LOC_SUMMARY_ONLY",
@@ -27,18 +42,23 @@
     "truthSocial": "NO_READABLE_POST_BODY_NO_POST_VERIFIED",
     "toolPricingAndExecutionComparisons": "NOT_VERIFIED",
     "thirtyThirty": "CONFLICTING_VARIANTS_RETAINED_INACTIVE",
-    "oneLosingAddition": "CANDIDATE_UNTESTED"
+    "oneLosingAddition": "CANDIDATE_UNTESTED",
+    "v4OwnerExperience": "SUPPLIED_EXPERIENCE_NOT_EXTERNAL_VALIDATION"
   },
   "v3CurrentClaims": "OWNER_SUPPLIED_CURRENT_CLAIM_VERIFICATION_REQUIRED_NOT_CATALOG_FACT",
   "politicalScoring": false,
   "politicalRecommendation": false,
   "validation": {
     "status": "PASSED",
-    "focused": "48/48 passed",
+    "focused": "53/53 passed",
     "typecheck": "PASSED",
-    "aggregate": "PASSED; zero failed",
-    "environmentNote": "Eleven unchanged Windows checkout research/calendar fixtures were temporarily materialized from their exact tracked Git bytes for full validation, then all original checkout bytes were restored. Final validation passed.",
-    "productionNotesCreated": 0
+    "aggregate": "PASSED; 5067 reported checks passed; zero failed",
+    "aggregateTestsReported": 5067,
+    "failed": 0,
+    "productionNotesCreated": 0,
+    "stagedAndUnstagedDiffCheck": "PASSED",
+    "historicalCatalogRecovery": "EXACT_V1_V2_V3_COPIED_CATALOGS_AND_RETRY_BYTES_VERIFIED",
+    "realWorkbenchReload": "NOT_PERFORMED_NOT_CLAIMED"
   },
   "noteContract": "OPTIONS_MACRO_PLAYBOOK_V1_UNCHANGED",
   "historicalV1NotesRecoverFromCopiedCatalog": true,
@@ -59,5 +79,80 @@
   "remaining": [
     "Prospective source quality, cadence and independent outcomes still required",
     "No personal heuristic is validated by reading or completing a worksheet"
+  ],
+  "historicalV3": {
+    "newEntries": 23,
+    "recordedAt": "2026-09-24T22:48:27.000Z",
+    "totalEntries": 53,
+    "reviewedDateNewYork": "2026-09-24",
+    "validation": {
+      "status": "PASSED",
+      "focused": "48/48 passed",
+      "typecheck": "PASSED",
+      "aggregate": "PASSED; zero failed",
+      "environmentNote": "Eleven unchanged Windows checkout research/calendar fixtures were temporarily materialized from their exact tracked Git bytes for full validation, then all original checkout bytes were restored. Final validation passed.",
+      "productionNotesCreated": 0
+    },
+    "contentRevision": "OWNER_PSYCHOLOGY_20260924_V3",
+    "phasePrompts": 14,
+    "version": "OPTIONS_MACRO_PSYCHOLOGY_DELIVERY_V3",
+    "status": "V3_KNOWLEDGE_AND_REFLECTION_IMPLEMENTED"
+  },
+  "sourceId": "owner-psychology-20260926",
+  "macroEntries": 30,
+  "psychologyEntries": 30,
+  "v4NewPsychologyEntries": [
+    "psych-loss-attribution",
+    "psych-0dte-one-and-done",
+    "psych-extreme-point-precision",
+    "psych-daily-loss-limit",
+    "psych-two-hesitations",
+    "psych-rescue-complexity",
+    "psych-thesis-position-separation"
+  ],
+  "v4ProcessGuideIds": [
+    "psych-loss-attribution",
+    "psych-extreme-point-precision",
+    "psych-rescue-complexity",
+    "psych-thesis-position-separation"
+  ],
+  "v4CandidateUntestedIds": [
+    "psych-0dte-one-and-done",
+    "psych-daily-loss-limit",
+    "psych-two-hesitations"
+  ],
+  "v4NewPromptIds": [
+    "review-loss-attribution",
+    "entry-total-exposure",
+    "entry-euphoria-gate",
+    "holding-stop-drift",
+    "holding-rescue-complexity",
+    "holding-thesis-position"
+  ],
+  "dailyLossLimit": "UNKNOWN",
+  "dailyLossLimitActive": false,
+  "sourceNumbering": "Owner-reported 01-17; duplicate 17; then 19 and 20; no invented 18 or renumbering",
+  "originalRawProseArchived": false,
+  "historicalV3NotesRecoverFromCopiedCatalog": true,
+  "runtimeNotesMigrated": false,
+  "marketCalls": 0,
+  "worksheetFieldIdentityUnchanged": true,
+  "worksheetPromptWordingEnriched": true,
+  "v4EnrichedKnowledgeIds": [
+    "journal",
+    "patience",
+    "balance",
+    "size",
+    "thesis-stop",
+    "time-stop",
+    "hedge",
+    "adding",
+    "psych-entry-comfort",
+    "psych-revenge",
+    "psych-confidence",
+    "psych-tactical",
+    "psych-responsibility",
+    "psych-wellbeing",
+    "psych-tunnel-vision"
   ]
 }
