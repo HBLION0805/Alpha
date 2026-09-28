@@ -21,6 +21,7 @@ import {newStorylineDraft,storylineNewsChoices} from './storyline.js';
 import {storylinePreviewMatches} from './storyline-model.js';
 import {prepareExpectationDraft,expectationSummary} from './market-expectations.js';
 import {localizeWorkbench,localizeError,localizeText} from './i18n.js';
+import {weeklyDraftFromState,weeklyPlanFromForm,weeklyEventFromForm} from './weekly-plan.js';
 
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
@@ -28,6 +29,7 @@ const drafts={register:registerDefaults(),fill:fillDefaults(),correct:fillDefaul
 const ui={chain:defaultFilters(),plannerDraft:plannerDefaults(),plannerResult:null,planningSource:null,costFeeBasis:'DECLARED_FEES',costDeskResult:null,journalMode:'register',journalDraft:drafts.register,reviewScope:'trades',lessonOrigin:'',reviewSearch:'',newsSource:'',newsSearch:'',newsAsset:''};
 let comparingCosts=false,previewingPolicy=false;
 function clearPolicyPreview(){ui.capitalPolicyPreview=null;const p=$('#capital-policy-preview');if(p)p.innerHTML=capitalPolicyPanel(null,{preview:true});}
+function syncWeeklyForm(){const form=$('#weekly-plan-form');if(form)ui.weeklyDraft=weeklyPlanFromForm(form,ui.weeklyDraft??weeklyDraftFromState(state?.weeklyPlan?.data));return ui.weeklyDraft??weeklyDraftFromState(state?.weeklyPlan?.data);}
 function costRequest(){return {scenario:buildScenario(plannerBudgetDraft(ui.plannerDraft,state.guidance?.data?.current.settings)),feeBasis:ui.costFeeBasis};}
 function clearCosts(){ui.costDeskResult=null;const panel=$('#cost-desk-result');if(panel)panel.innerHTML=costDeskResult(null);}
 let state=null,pending=null,pendingKey=null,requestId=null,loading=false,saving=false,calculating=false,previewing=false,toastTimer;
@@ -37,7 +39,7 @@ function syncNavigation(){
   const hidden=matchMedia('(max-width: 650px)').matches&&!document.body.classList.contains('menu-open');
   $('#sidebar').inert=hidden;if(hidden)$('#sidebar').setAttribute('aria-hidden','true');else $('#sidebar').removeAttribute('aria-hidden');
 }
-const labels={overview:'总览',chain:'期权与活动',planner:'交易计划',journal:'交易日志',reviews:'复盘与经验',context:'新闻与日历',guidance:'每日决策','event-research':'事件研究','macro-playbook':'宏观手册'};
+const labels={overview:'总览',chain:'期权与活动',planner:'交易计划',journal:'交易日志',reviews:'复盘与经验',context:'新闻与日历',guidance:'每日决策','weekly-plan':'每周交易计划','event-research':'事件研究','macro-playbook':'宏观手册'};
 function route(){const key=location.hash.slice(1);return Object.hasOwn(routes,key)?key:'guidance';}
 function toast(message){$('#toast').textContent=localizeText(message);$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),5500);}
 function render(focus=false){
@@ -94,6 +96,16 @@ function updateDraft(el){
     ui.scenarioPlanKey=el.value;ui.scenarioPreview=null;ui.scenarioDraft=null;ui.fitPlanKey=el.value;ui.contractFit=null;render();return;
   }
   const form=el.closest('form');if(!form)return;
+  if(form.id==='weekly-plan-form'){
+    ui.weeklyDraft=weeklyPlanFromForm(form,ui.weeklyDraft??weeklyDraftFromState(state.weeklyPlan?.data));ui.weeklyPreview=null;ui.weeklyPreviewRequest=null;dirty.add('weekly-plan');
+    const save=form.querySelector('[value="REVIEW"],[value="AMEND"]');if(save)save.disabled=true;
+    const panel=$('#weekly-plan-preview');if(panel)panel.innerHTML='<p class="hint">草稿已修改，请重新预览。</p>';return;
+  }
+  if(form.id==='weekly-event-form'){
+    ui.weeklyEventDraft=Object.fromEntries(new FormData(form));ui.weeklyPreview=null;ui.weeklyPreviewRequest=null;dirty.add('weekly-plan');
+    const save=$('#weekly-plan-form [value="REVIEW"],#weekly-plan-form [value="AMEND"]');if(save)save.disabled=true;
+    const panel=$('#weekly-plan-preview');if(panel)panel.innerHTML='<p class="hint">人工事件正在编辑；请先加入草稿并重新预览。</p>';return;
+  }
   if(form.dataset?.evidenceForm){
     const key=form.dataset.evidenceTrade+':'+form.dataset.evidenceForm;updateEvidenceDraft(ui,key,el.name,el.type==='checkbox'?el.checked:el.value);dirty.add('evidence-loop');
     if(el.name!=='ownerConfirmed'){const b=form.querySelector('[value="SAVE"]');if(b)b.disabled=true;const confirm=form.elements.ownerConfirmed;if(confirm)confirm.checked=false;}
@@ -245,6 +257,31 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='weekly-event-form'){
+    event.preventDefault();const form=event.target;
+    try{const current=syncWeeklyForm(),index=ui.weeklyEventIndex;
+      const item=weeklyEventFromForm(form,Number.isInteger(index)?current.manualEvents[index]?.eventId:null);
+      if(Number.isInteger(index))current.manualEvents[index]=item;else current.manualEvents.push(item);
+      ui.weeklyDraft=current;ui.weeklyEventIndex=null;ui.weeklyEventDraft=null;ui.weeklyPreview=null;ui.weeklyPreviewRequest=null;dirty.add('weekly-plan');render();
+    }catch(e){fail(e,'#weekly-event-error');}return;
+  }
+  if(event.target.id==='weekly-plan-form'){
+    event.preventDefault();if(saving||previewing)return;
+    const form=event.target,button=event.submitter,action=button.value;
+    const plan=weeklyPlanFromForm(form,ui.weeklyDraft??weeklyDraftFromState(state.weeklyPlan?.data));
+    if(action==='PREVIEW')ui.weeklyDraft=plan;
+    const base=state.weeklyPlan?.data?.latest?.fingerprint??null;
+    const body={action,weekStartDate:state.weeklyPlan.data.weekStartDate,expectedFingerprint:base,plan,previewFingerprint:action==='PREVIEW'?null:ui.weeklyPreview?.fingerprint??null};
+    if(action!=='PREVIEW'&&(!ui.weeklyPreview||JSON.stringify(plan)!==JSON.stringify(ui.weeklyPreviewRequest))){fail(Error('请先预览当前草稿，然后再明确保存。'),'#weekly-plan-error');return;}
+    if(action==='PREVIEW')previewing=true;else saving=true;button.disabled=true;
+    void(async()=>{try{
+      const result=await request('/api/weekly-plan',body);
+      if(action==='PREVIEW'){
+        if(JSON.stringify(plan)!==JSON.stringify(ui.weeklyDraft))return;
+        ui.weeklyPreview=result.preview??result;ui.weeklyPreviewRequest=plan;dirty.add('weekly-plan');render();
+      }else{ui.weeklyDraft=null;ui.weeklyPreview=null;ui.weeklyPreviewRequest=null;ui.weeklyEventDraft=null;ui.weeklyEventIndex=null;dirty.delete('weekly-plan');await reload();toast('每周计划已在本地保存；交易判断和执行权限没有改变。');}
+    }catch(e){fail(e,'#weekly-plan-error');}finally{previewing=false;saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='storyline-form'){
     event.preventDefault();if(saving||previewing)return;const button=event.submitter,r=structuredClone(ui.storyDraft),action=button.value;
     if(action==='SAVE'&&!storylinePreviewMatches(ui.storyPreview,r)){fail(Error('Preview the unchanged selection before saving.'),'#story-error');return;}
@@ -426,6 +463,15 @@ document.addEventListener('submit',event=>{
 });
 document.addEventListener('click',event=>{void(async()=>{
   const el=event.target.closest('button,[data-asset]');if(!el)return;
+  if(el.dataset.weeklyEventEdit!==undefined){
+    const index=Number(el.dataset.weeklyEventEdit),draft=syncWeeklyForm(),item=draft.manualEvents[index];if(!item)return;
+    ui.weeklyDraft=draft;ui.weeklyEventIndex=index;ui.weeklyEventDraft=structuredClone(item);render();$('#weekly-event-form')?.scrollIntoView({block:'nearest'});return;
+  }
+  if(el.dataset.weeklyEventRemove!==undefined){
+    const index=Number(el.dataset.weeklyEventRemove),draft=syncWeeklyForm();
+    if(index<0||index>=draft.manualEvents.length)return;draft.manualEvents.splice(index,1);ui.weeklyDraft=draft;ui.weeklyPreview=null;ui.weeklyPreviewRequest=null;ui.weeklyEventDraft=null;ui.weeklyEventIndex=null;dirty.add('weekly-plan');render();return;
+  }
+  if(el.id==='weekly-event-cancel'){syncWeeklyForm();ui.weeklyEventDraft=null;ui.weeklyEventIndex=null;render();return;}
   if(el.id==='prepare-scenarios'){
     if(dirty.has('scenario'))throw Error('Save the current scenario draft before preparing another.');
     const p=state.scenarioResearch.data.plans.find(p=>p.key===ui.scenarioPlanKey);if(!p)return;

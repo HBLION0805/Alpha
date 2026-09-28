@@ -48,6 +48,7 @@ import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from
 import {sourceCatalog,sourceComparisonView,prepareSourcePackage,receiveSourceDraft,previewSourceComparison,saveSourceComparison} from './options-source-comparison.mjs';
 import {expectationRecords,previewExpectation,saveExpectation,verifyNewPlanExpectation} from './options-market-expectation-io.mjs';
 import {scenarioResearchView,previewScenario,saveScenario,contractFitView,verifyNewPlanScenario} from './options-scenario-research.mjs';
+import {weeklyPlanView,previewWeeklyPlan,saveWeeklyPlan} from './options-weekly-plan-io.mjs';
 
 const MAX=32*1024*1024, INPUTS='data/runtime/options-workbench-inputs';
 const parse=bytes=>parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes));
@@ -57,7 +58,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(CASE_EXPORT_|WORKBENCH_|TREND_STUDY_|ETF_SETUP_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(CASE_EXPORT_|WORKBENCH_|WEEKLY_PLAN_|TREND_STUDY_|ETF_SETUP_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -145,6 +146,8 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     // Reference UI only, appended after all existing decision projections.
     result.macroWorldModel=await component(()=>readWorldModel(),at);
     result.storylines=await component(()=>storylineView(root,result,at),at);
+    // Weekly preparation reads saved sources only and never feeds guidance gates.
+    result.weeklyPlan=await component(()=>weeklyPlanView(root,at,ledgerId),at);
     return result;
   }
   function watchFromDesk(report,desk,at,costs={}){
@@ -278,5 +281,9 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(body?.action==='CREATE'&&Object.keys(body).sort().join()==='action,asOf,caseId,previewFingerprint')return createCaseExport(root,{ledgerId,caseId:body.caseId,asOf:body.asOf,previewFingerprint:body.previewFingerprint},now);
     fail('CASE_EXPORT_REQUEST');
   }
-  return {caseExport,evidenceLoop,scenarioResearch,storyline,sourceComparison,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  function weeklyPlan(body){
+    if(!body||typeof body!=='object'||Array.isArray(body)||!['PREVIEW','REVIEW','AMEND'].includes(body.action))fail('WEEKLY_PLAN_ACTION');
+    return body.action==='PREVIEW'?previewWeeklyPlan(root,body,now(),ledgerId):saveWeeklyPlan(root,body,now(),ledgerId);
+  }
+  return {caseExport,evidenceLoop,scenarioResearch,storyline,sourceComparison,weeklyPlan,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

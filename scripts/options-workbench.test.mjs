@@ -87,6 +87,45 @@ await temp(async root=>{
   }finally{await app.close();}
 });
 
+await test('weekly desk previews, reviews and amends in an isolated workspace without source refresh or trading access',()=>temp(async root=>{
+  const now='2026-09-27T16:00:00.000Z',app=await startOptionsWorkbench({port:0,workspaceRoot:root,ledgerId,now:()=>now,refreshContext:false});
+  try{
+    const base=app.url,first=await(await fetch(base+'/api/state')).json(),session=first.session;
+    const headers={'Content-Type':'application/json',Origin:base,'X-Alpha-Session':session};
+    const post=(body,change={})=>fetch(base+'/api/weekly-plan',{method:'POST',headers:{...headers,...change},body:JSON.stringify(body)});
+    const weeklyDir=join(root,'data/runtime/options-weekly-plan');
+    const plan={manualEvents:[],newsWatch:[],notes:'Initial owner review',noTradeConditions:[],eventResearchRefs:[]};
+    const request=(action,workingPlan,expectedFingerprint=null,previewFingerprint=null)=>({action,weekStartDate:'2026-09-28',expectedFingerprint,plan:workingPlan,previewFingerprint});
+    assert.equal(first.weeklyPlan.state,'AVAILABLE');assert.equal(first.weeklyPlan.data.latest,null);
+    assert.equal(first.weeklyPlan.data.weekStartDate,'2026-09-28');assert.equal(first.weeklyPlan.data.executionAllowed,false);
+    assert.equal(first.sourceRefresh,false);assert.equal(first.accountAccessed,false);
+    assert.equal(existsSync(weeklyDir),false);
+    const previewResponse=await post(request('PREVIEW',plan));assert.equal(previewResponse.status,200);
+    const preview=await previewResponse.json();assert.equal(preview.state,'DRAFT');assert.match(preview.fingerprint,/^[0-9a-f]{64}$/);
+    assert.equal(existsSync(weeklyDir),false);
+    for(const token of ['', '0'.repeat(64)])assert.equal((await post(request('REVIEW',plan,null,preview.fingerprint),{'X-Alpha-Session':token})).status,403);
+    assert.equal((await post(request('REVIEW',plan,null,preview.fingerprint),{Origin:'https://example.com'})).status,403);
+    const reviewedResponse=await post(request('REVIEW',plan,null,preview.fingerprint));assert.equal(reviewedResponse.status,200);
+    const reviewed=await reviewedResponse.json();assert.equal(reviewed.revision,1);assert.equal(reviewed.state,'REVIEWED');assert.equal(reviewed.executionAllowed,false);
+    const afterReview=await(await fetch(base+'/api/state')).json();assert.equal(afterReview.weeklyPlan.data.latest.fingerprint,reviewed.fingerprint);
+    assert.equal(afterReview.weeklyPlan.data.revisions.length,1);
+    const amendment={...plan,notes:'Owner added a later weekly note'};
+    const amendmentPreviewResponse=await post(request('PREVIEW',amendment,reviewed.fingerprint));assert.equal(amendmentPreviewResponse.status,200);
+    const amendmentPreview=await amendmentPreviewResponse.json();assert.equal(amendmentPreview.state,'DRAFT');
+    const amendedResponse=await post(request('AMEND',amendment,reviewed.fingerprint,amendmentPreview.fingerprint));assert.equal(amendedResponse.status,200);
+    const amended=await amendedResponse.json();assert.equal(amended.revision,2);assert.equal(amended.state,'AMENDMENT');
+    const recovered=await(await fetch(base+'/api/state')).json();assert.equal(recovered.weeklyPlan.data.latest.plan.notes,amendment.notes);
+    assert.equal(recovered.weeklyPlan.data.latest.previousFingerprint,reviewed.fingerprint);assert.equal(recovered.weeklyPlan.data.revisions.length,2);
+    assert.deepEqual(recovered.guidance,first.guidance);assert.equal(recovered.sourceRefresh,false);assert.equal(recovered.accountAccessed,false);
+    assert.equal(existsSync(join(root,'data/runtime/options-release-calendar')),false);
+    assert.equal(existsSync(join(root,'data/runtime/options-fomc-calendar')),false);
+    for(const path of ['/api/account','/api/orders']){assert.equal((await fetch(base+path)).status,404);assert.equal((await fetch(base+path,{method:'POST',headers,body:'{}'})).status,404);}
+  }finally{await app.close();}
+  const restarted=await startOptionsWorkbench({port:0,workspaceRoot:root,ledgerId,now:()=>now,refreshContext:false});
+  try{const recovered=await(await fetch(restarted.url+'/api/state')).json();assert.equal(recovered.weeklyPlan.data.revisions.length,2);assert.equal(recovered.weeklyPlan.data.latest.revision,2);assert.equal(recovered.weeklyPlan.data.latest.plan.notes,'Owner added a later weekly note');}
+  finally{await restarted.close();}
+}));
+
 await test('browser client strips session tokens and uses only same-origin fixed routes',async()=>{
   const previousFetch=globalThis.fetch,previousLocation=globalThis.location;let seen;
   globalThis.location={origin:'http://127.0.0.1:4173'};globalThis.fetch=async(path,options)=>{seen={path,options};return {ok:true,json:async()=>({session:'test-process-token',value:1})};};

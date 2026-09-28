@@ -1,0 +1,47 @@
+{
+  "version": "OPTIONS_WEEKLY_TRADING_PLAN_STATUS_V1",
+  "asOf": "2026-09-28T02:34:03.727Z",
+  "targetWeek": {
+    "weekStartDate": "2026-09-28",
+    "weekEndDate": "2026-10-02",
+    "state": "DRAFT_PREVIEW_ONLY",
+    "weeklyPlanStatus": "NOT_ESTABLISHED",
+    "savedRevisions": 0,
+    "executionAllowed": false
+  },
+  "localPreview": {
+    "fingerprint": "cb41ef17bae26563d1cdeeeffd77d1aecdd43dac848bbe3ee337d49c66e8f181",
+    "scheduledBlsEvents": 3,
+    "fomcMeetingsInWeek": 0,
+    "blsReceiptAt": "2026-09-25T13:00:57.475Z",
+    "fomcReceiptAt": "2026-09-25T13:00:57.862Z",
+    "calendarCoverage": "UNKNOWN_STALE_SAVED_RECEIPTS",
+    "earningsCoverage": "MISSING_SOURCE",
+    "conferenceCoverage": "MISSING_SOURCE",
+    "newsRiskCoverage": "UNKNOWN",
+    "nonExcludedShoppingListEntries": 48,
+    "existingCaseReference": {
+      "id": "gld-employment-20261002",
+      "kind": "MANUAL_PLAN_DRAFT",
+      "originalSavedAt": "2026-09-20T15:06:52.136Z",
+      "mutated": false
+    }
+  },
+  "sourceCalls": 0,
+  "marketCalls": 0,
+  "accountCalls": 0,
+  "orderCalls": 0,
+  "dailyGuidanceLogicChanged": false,
+  "schedulerChanged": false,
+  "capitalOrRiskPolicyChanged": false,
+  "validation": {
+    "focusedWeekly": "5_PASSED_0_FAILED",
+    "workbench": "60_PASSED_0_FAILED",
+    "ownerChineseUi": "PASSED",
+    "strictTypecheck": "PASSED",
+    "fullAlphaValidation": "PASSED",
+    "browserDesktopRoute": "VERIFIED",
+    "browserMobile390NoHorizontalOverflow": true,
+    "browserReadOnlyPreview": "VERIFIED_NO_SAVE"
+  }
+}
