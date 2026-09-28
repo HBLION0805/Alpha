@@ -1,12 +1,13 @@
 import type {KnowledgeItem} from './MacroKnowledgeCatalog';
 
 // Reviewed paraphrases of supplied experience. These are never execution inputs.
-export const psychologyRevision = 'OWNER_PSYCHOLOGY_20260926_V4';
+export const psychologyRevision = 'OWNER_PSYCHOLOGY_20260927_V5';
 export const psychologySources = [
   {id:'owner-psychology',title:'Owner-supplied psychology batch and two reference images',url:null,coverage:'Prose, cognitive-bias chart and Thirty-Six Stratagems image reviewed as supplied experience. Author performance, statistics, historical allegations and clinical claims are unverified.'},
   {id:'owner-psychology-20260923',title:'Owner-supplied options and macro psychology experience — September 23, 2026',url:null,coverage:'Reviewed as supplied experience. Heuristics, performance claims and strategy effects are not externally validated; educational reflection only.'},
   {id:'owner-psychology-20260924',title:'Owner-supplied macro political and narrative discipline — September 24, 2026',url:null,coverage:'Political and national narratives, entity separation, symmetric evidence, two-sided conflict costs and sell-volume versus price-response examples. Current U.S./China claims are Owner-supplied and require verification; no present economic assertion or trading effect is independently established.'},
   {id:'owner-psychology-20260926',title:'Owner-supplied trading discipline and behavioral-risk batch — September 26, 2026',url:null,coverage:'Educational Owner experience, not externally validated universal trading laws or evidence of Owner behavior. Loss attribution, survival, exposure, voluntary reflection and inactive discipline candidates do not diagnose, resize or change strategy. Owner reports prose numbering 01–17, a duplicate 17, then 19 and 20; no Discipline 18 is supplied or invented. Knowledge IDs are semantic; no original numbered prose was reconstructed.'},
+  {id:'owner-psychology-20260927',title:'Owner-supplied realized-profit redeployment concept — September 27, 2026',url:null,coverage:'Concept and illustrative numbers supplied in the Owner prompt. The referenced image was not available in this session: rawImageArchived=false; no image bytes, filename, receipt time or SHA-256 is claimed. Educational proposal only, without an active sizing, reinvestment or trading rule.'},
   {id:'behavior-summary',title:'SEC-hosted Library of Congress behavioral research summary',url:'https://www.sec.gov/investor/tools/behaviorialpatterns.htm',coverage:'Summary reviewed: active trading, disposition effect, familiarity and costs. It is not validation of every bias in the supplied chart or of this Owner; the findings are those of the report author.'},
   {id:'ownership-book',title:'Macmillan — Extreme Ownership',url:'https://us.macmillan.com/books/9781250183866/extremeownership/',coverage:'Publisher page confirms Jocko Willink and Leif Babin and the leadership subject. Full book not reviewed; the supplied trading analogy is not a tested strategy.'},
   {id:'darwin-book',title:'Columbia University Press — What I Learned About Investing from Darwin',url:'https://cup.columbia.edu/book/what-i-learned-about-investing-from-darwin/9780231203487/',coverage:'Publisher search description confirms Pulak Prasad and patient long-term investing. Full book not reviewed; detailed chapter interpretations remain Owner-supplied.'},
@@ -137,6 +138,10 @@ export const psychologyKnowledge:KnowledgeItem[] = [
     'A broad directional view can remain plausible while a specific position fails because of timing, price, strike, expiry, size, instrument or structure.',
     'Review Prediction/thesis, Instrument, Entry, Position, Execution and Outcome separately. Closing an unsuitable position does not necessarily reject the entire macro thesis; any new expression requires a fresh plan.',
     'Belief in the thesis does not justify protecting a bad position. Prediction accuracy is not trading profitability. No prediction mutation, automatic reopening or replacement trade.','journal',['owner-psychology-20260926']),
+  entry('psych-realized-profit-redeployment','Realized profit may fund a new trade, but it is still capital','CANDIDATE_UNTESTED',['Realized profit','Sequential independent trades','House money','Fresh setup','Bounded exposure','Illustrative 1.00 / 0.50 / 0.30 / 0.20 units'],
+    'A later trade begins only after the prior trade is fully closed. Each new trade is a separate decision and may deliberately use less capital as price extends or uncertainty increases.',
+    'Require a fresh, independently qualified opportunity and review its thesis, entry, current price, risk/reward, position size, total account exposure, stop, target, invalidation, time horizon, instrument/contract fit and current capital policy. The prior trade carries neither its thesis nor permission into the next trade. This describes sequential redeployment after realized exits, not averaging into the same losing or open position.',
+    'Prior profit is not free risk capital: realized gains become Owner capital and every later trade can lose real capital. A profitable exit does not authorize another entry, reopening or extension from regret, excitement or FOMO. The Owner prompt describes the unavailable image as showing illustrative prices 100 / 104 / 107 / 110 and units 1.00 / 0.50 / 0.30 / 0.20 only; they define no formula, fixed reduction, pyramiding, reinvestment, position-sizing rule or automatic trade. Existing capital policy remains authoritative.','planner',['owner-psychology-20260927']),
 ];
 
 export const psychologyBiases = [
@@ -188,7 +193,7 @@ export const psychologyReview = {
   biases:psychologyBiases,prompts:psychologyPrompts,
   adoption:[
     {status:'USE_AS_REFLECTION',title:'Use as questions',text:'Counterevidence, independent judgment, original-plan comparison, recovery pressure, ticker attachment, costs, monitoring and separate process/outcome review.'},
-    {status:'CANDIDATE_UNTESTED',title:'Keep as inactive proposals',text:'72 hours, both conflicting 30/30 versions, one loser addition, adding winners, breakout/retest timing, final-30-second claims, 0DTE one-and-done, an unspecified daily loss limit and two hesitations. None is an active rule. EUPHORIA_GATE is reflection only.'},
+    {status:'CANDIDATE_UNTESTED',title:'Keep as inactive proposals',text:'72 hours, both conflicting 30/30 versions, one loser addition, adding winners, breakout/retest timing, final-30-second claims, 0DTE one-and-done, an unspecified daily loss limit, two hesitations and realized-profit redeployment. None is an active rule. EUPHORIA_GATE is reflection only.'},
     {status:'NOT_ADOPTED_AS_FACT',title:'Do not adopt as facts or targets',text:'Universal weekly returns, unsupported win rates, guaranteed options protection, personality or cultural judgments, and unverified manipulation accusations.'},
   ],
 };
