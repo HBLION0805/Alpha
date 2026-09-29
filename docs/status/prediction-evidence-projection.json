@@ -1,0 +1,16 @@
+{
+  "version": "OPTIONS_PREDICTION_EVIDENCE_PROJECTION_STATUS_V1",
+  "status": "IMPLEMENTED_AND_LOCALLY_VERIFIED",
+  "projectionVersion": "OPTIONS_PREDICTION_EVIDENCE_PROJECTION_V1",
+  "canonicalPredictionLogRecordCreated": false,
+  "prospectiveRealMarketPredictionFor2026-09-29": false,
+  "executionAllowed": false,
+  "naturalRunAcceptance": "UNOBSERVED",
+  "validation": {
+    "focusedCandidateTests": "3/3 PASSED",
+    "fastHostTests": "11/11 PASSED",
+    "affectedEventFactsGuidanceWorkbenchEvidenceLoopTests": "204/204 PASSED",
+    "typecheck": "PASSED",
+    "alphaValidate": "5097/5097 PASSED"
+  }
+}

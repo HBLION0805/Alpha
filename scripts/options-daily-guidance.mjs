@@ -33,6 +33,11 @@ export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=(
   if(mode==="--analysis"&&args.length===2)return {path:recordAnalystNote(root,arg),executionAllowed:false};
   if(mode==="--verify"&&args.length===2)return verifyGuidanceRecord(root,arg);
   if(mode==="--explain-report"&&args.length===2)return explainIssuedGuidance(root,arg);
+  if(mode==='--prediction-evidence'&&args.length===1){
+    const state=await createWorkbenchData({workspaceRoot:root,now}).state();
+    if(state.predictionEvidence.state!=='AVAILABLE')throw Error(state.predictionEvidence.error);
+    return state.predictionEvidence.data;
+  }
   if(["--report","--publish","--host-brief","--decision-cards","--delivery-health","--event-reactions","--sensitivities"].includes(mode)&&args.length===1) {
     const trendObservations=mode==='--publish'?observeTrendStudiesSafely(root,now()):null;
     const state=await createWorkbenchData({workspaceRoot:root,now}).state();

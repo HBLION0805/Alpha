@@ -4,6 +4,8 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {analystNote,normalizeGuidanceCapture,verifyGuidanceRecord} from './lib/options-guidance-io.mjs';
 import {runGuidanceCommand} from './options-daily-guidance.mjs';
+import {createWorkbenchData} from './lib/options-workbench-data.mjs';
+import {materializePredictionEvidence} from './lib/options-prediction-evidence.mjs';
 import {assessGuidanceDelivery} from '../src/engines/options-daily-guidance/OptionsGuidanceDelivery.ts';
 
 const VERSION='OPTIONS_FAST_HOST_V1';
@@ -154,6 +156,10 @@ export async function finishFastHost(root,identity,bytes){
     const publishAt=clock();
     const report=await runGuidanceCommand(['--report'],{workspaceRoot:root});
     if(report.history?.[0]?.path!==published.path||report.sourcePaths?.[0]!==receipt.capturePath||report.interpretation?.path!==analysis.path)fail('PUBLISH_BINDING');
+    const evidenceState=await createWorkbenchData({workspaceRoot:root}).state();
+    const predictionEvidence=materializePredictionEvidence(root,evidenceState);
+    if(predictionEvidence.provenance.report.path!==published.path||predictionEvidence.provenance.capture.path!==receipt.capturePath||
+      predictionEvidence.provenance.analysis.path!==analysis.path)fail('PREDICTION_EVIDENCE_BINDING');
     const quoteFreshnessAtPublish=assessGuidanceDelivery(report.input,[],[],null).quoteClocks;
     const cards=await runGuidanceCommand(['--decision-cards'],{workspaceRoot:root});
     const health=await runGuidanceCommand(['--delivery-health'],{workspaceRoot:root});
@@ -164,6 +170,7 @@ export async function finishFastHost(root,identity,bytes){
     const freshAtPublish=quoteFreshnessAtPublish.length===2&&quoteFreshnessAtPublish.every(q=>q.requested===18&&q.fresh===18&&q.stale===0&&q.unknown===0&&q.future===0&&q.underlyingFreshness==='FRESH');
     const operationalPass=identityMatch&&publicationCurrent&&freshAtPublish&&freshCoverage&&cards.state==='AVAILABLE'&&health.state==='AVAILABLE'&&ms(receipt.capturedAt,publishAt)<120000&&ms(receipt.capturedAt,healthAt)<120000;
     const result={version:VERSION,status:operationalPass?'PASS':'FAIL',identity,analysisPath:analysis.path,reportPath:published.path,dispositions:published.dispositions,
+      predictionEvidence:{status:predictionEvidence.status,identity:predictionEvidence.identity,path:predictionEvidence.path,candidateCount:predictionEvidence.candidates.length,executionAllowed:false},
       quoteFreshnessAtPublish,quoteFreshnessAtHealth:data?.quoteClocks??null,latencyMs:{captureToRecord:ms(receipt.capturedAt,receipt.recordAt),captureToPublish:ms(receipt.capturedAt,publishAt),captureToHealth:ms(receipt.capturedAt,healthAt)},
       identityMatch,publicationCurrent,freshAtPublish,freshCoverage,cardsState:cards.state,healthState:health.state,executionAllowed:false};
     if(Buffer.byteLength(JSON.stringify(result))>16384)fail('OUTPUT_SIZE');
