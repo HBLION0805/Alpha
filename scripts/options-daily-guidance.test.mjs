@@ -24,6 +24,7 @@ const input=()=>({version:"OPTIONS_DAILY_GUIDANCE_INPUT_V1",at,captureAt:at,capt
   analyst:{assessedAt:at,assets:["GLD","IBIT"].map(symbol=>({symbol,bias:"BULLISH",summary:"Fixture only",sources:[{url:"https://www.bls.gov/",retrievedAt:at}]}))}});
 const first=i=>assessDailyGuidance(i).assets[0].candidates[0];
 await test("fresh qualified scenario retains original exact economics and no execution",()=>{const r=assessDailyGuidance(input()),c=r.assets[0].candidates[0];assert.equal(c.disposition,"CONDITIONAL_RESEARCH");assert.equal(c.plan.netRiskCents,430);assert.equal(c.plan.netTargetCents,870);assert.equal(c.plan.stopTriggerCents,16);assert.equal(c.plan.targetExitCents,29);assert.equal(r.winProbability,null);assert.equal(r.executionAllowed,false);});
+await test("nanosecond quote obeys unchanged 120-second freshness boundary",()=>{for(const [updatedAt,fresh] of [["2026-09-08T13:59:59.588180888Z",true],["2026-09-08T13:58:00.000180888Z",true],["2026-09-08T13:57:59.999180888Z",false],["2026-09-08T14:00:00.001180888Z",false]]){const i=input();i.quotes[0].updatedAt=updatedAt;assert.equal(first(i).blockers.includes("OPTION_QUOTE_NOT_FRESH"),!fresh,updatedAt);}});
 for(const [name,change,blocker] of [
  ["unknown fees",i=>i.settings.roundTripFeesCents=null,"COSTS_UNKNOWN"],
  ["unknown slippage",i=>i.settings.slippageReserveCents=null,"COSTS_UNKNOWN"],

@@ -46,6 +46,11 @@ test("spring and autumn daylight-saving session offsets remain explicit", () => 
 });
 test("exchange-local dates honor timezone and reject invalid clocks", () => {
   assert(exchangeLocalDate("2026-03-09T01:00:00.000Z", "America/New_York") === "2026-03-08");
+  assert(exchangeLocalDate("2026-09-29T15:32:40.588180888Z", "America/New_York") === "2026-09-29");
+  assert(exchangeLocalDate("2026-09-29T15:32:40.588Z", "America/New_York") === "2026-09-29");
+  for (const invalid of ["2026-02-30T15:32:40.588180888Z", "2026-09-29T25:32:40.588180888Z", "2026-09-29T15:32:40.5881808888Z", "2026-09-29T15:32:40.588180888+00:00", "2026-09-29T15:32:40.58Z", "2026-09-29T15:32:40Z", "2026-09-29T15:32:40.588180888z", "2026-09-29 15:32:40.588180888Z"]) {
+    assert(exchangeLocalDate(invalid, "America/New_York") === "");
+  }
   assert(exchangeLocalDate(asOf, "not-a-timezone") === "");
   assert(exchangeLocalDate("invalid", "America/New_York") === "");
 });

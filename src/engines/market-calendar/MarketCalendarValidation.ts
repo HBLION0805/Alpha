@@ -204,11 +204,14 @@ function validateSessionCalendarEvidence(
 }
 
 function timestamp(value: unknown): value is string {
-  return (
-    typeof value === "string" &&
-    Number.isFinite(Date.parse(value)) &&
-    new Date(Date.parse(value)).toISOString() === value
-  );
+  if (typeof value !== "string") return false;
+  const match = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3})(\d{0,6})Z$/u.exec(value);
+  if (!match) return false;
+  const milliseconds = `${match[1]}Z`;
+  const instant = Date.parse(value);
+  return Number.isFinite(instant) &&
+    instant === Date.parse(milliseconds) &&
+    new Date(instant).toISOString() === milliseconds;
 }
 
 function record(value: unknown): value is Record<string, any> {
