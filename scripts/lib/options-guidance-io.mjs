@@ -227,7 +227,11 @@ export function guidanceSensitivityView(root,view) {
   });
   return {...assessGuidanceSensitivities(view.input.at,rows),capturePath:path,capturedAt:normal.capturedAt,captureOrigin:normal.origin,inputFingerprint:record.inputFingerprint};
 }
-export function publishGuidance(root,state){const view=guidanceView(root,state);return save(root,"reports",view.input,view.current).path;}
+export function publishGuidance(root,state,{expectedCapturePath=null,expectedCaptureFingerprint=null}={}){const view=guidanceView(root,state);
+  if(expectedCapturePath!==null){
+    if(view.sourcePaths[0]!==expectedCapturePath||verifyGuidanceRecord(root,expectedCapturePath).inputFingerprint!==expectedCaptureFingerprint||paths(root,"captures",1)[0]!==expectedCapturePath)fail("FAST_CAPTURE_MISMATCH");
+  }
+  return save(root,"reports",view.input,view.current).path;}
 export function claimGuidanceSlot(root,slot) {
   if(!/^\d{4}-\d\d-\d\d-\d{4}$/.test(slot))fail("SLOT");
   const dir=BASE+"/slots/"+slot.slice(0,10),path=dir+"/"+slot+".json";
@@ -235,7 +239,7 @@ export function claimGuidanceSlot(root,slot) {
   if(existsSync(resolve(root,path))) {read(root,path);return {claimed:false,path};}
   io.writeExclusive(root,path,Buffer.from(JSON.stringify({slot,startedAt:new Date().toISOString(),status:"ATTEMPT_STARTED_NO_COMPLETION_CLAIM"})+"\n"));return {claimed:true,path};
 }
-function analystNote(value) {
+export function analystNote(value) {
   const v=object(value);exact(v,["assessedAt","assets"]);iso(v.assessedAt);
   if(v.assessedAt>new Date().toISOString())fail("FUTURE_NOTE");
   const assets=array(v.assets,2);if(assets.length!==2||new Set(assets.map(a=>a.symbol)).size!==2)fail("NOTE_SCOPE");

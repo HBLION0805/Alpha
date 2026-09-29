@@ -4,6 +4,12 @@
   "status": "PENDING_NATURAL_RUN",
   "automationId": "gld-ibit",
   "hostConfig": "docs/OPTIONS_DAILY_GUIDANCE_HOST_V4.json",
+  "fastHostOrchestration": {
+    "codeIntegration": "COMPLETE",
+    "status": "DEPLOYMENT_PENDING_HOST_PROMPT_UPDATE",
+    "installedAutomationUpdated": false,
+    "delivery": "docs/OPTIONS_FAST_HOST_DELIVERY.md"
+  },
   "timezone": "America/New_York",
   "before": "Daily 09:00 only",
   "after": "Daily 09:00 context and weekday 15:50 routine GLD/IBIT market reads",

@@ -37,6 +37,15 @@
     "No Git operations in the daily automation; browser acceptance and result commit/push require an equipped development session",
     "No frequency expansion, rejected diagnostic, account/order access or changes to frozen V1/capital/risk"
   ],
+  "fastHostOrchestration": {
+    "status": "TRACKED_CODE_COMPLETE_DEPLOYMENT_PENDING_HOST_PROMPT_UPDATE",
+    "marketAuthority": "Existing --host-source collector only; no new market calls or retries",
+    "ingest": "JSON.stringify(capture) as one compact newline-terminated JSON line to node --import tsx scripts/options-guidance-fast-host.mjs --ingest --workspace <private-root>",
+    "ingestResult": "Use the compact response for short, independently attributed analysis; do not copy experimental reference analysis text",
+    "finish": "JSON.stringify(existing analyst-note contract) as one compact newline-terminated JSON line to node --import tsx scripts/options-guidance-fast-host.mjs --finish --workspace <private-root> --identity <ingest.identity>",
+    "boundaries": "15:50 calendar/slot and 09:00 public-context work unchanged; no Git, account, position or order work in automation",
+    "installedAutomationUpdated": false
+  },
   "privateBinding": "Installed prompt, exact recurrence, local workspace path, task identity, notification settings and full before/after readbacks remain only in ignored private storage. No private binding is embedded in this reference.",
   "recovery": {
     "method": "In an Owner-authorized development session, inspect the current actual automation and the private before/after snapshots. Use the app automation_update tool, preserving identity, task binding and notification settings. To remove this repair, restore only daily 09:00 and explicitly disable routine market reads in the prompt. Read back the installed result.",

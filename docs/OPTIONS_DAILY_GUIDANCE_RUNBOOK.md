@@ -1,5 +1,36 @@
 # Daily news and GLD/IBIT guidance Host
 
+## September 29 fast Host orchestration — deployment pending
+
+The installed gld-ibit automation has **not** been updated. In an equipped
+development session, inspect its private binding and update only the 15:50
+prompt. Preserve its recurrence, 09:00 branch, actual-time `--route-ongoing`
+calendar gate and exclusive `--begin-slot <route.slot>` claim. Stop if the route
+is ineligible or the claim already exists. Keep the existing `--host-source`
+collector and pass it only the four allowed market tools. After its one capture:
+
+1. Send `JSON.stringify(capture) + "\n"` in **one stdin write** to
+   `node --import tsx scripts/options-guidance-fast-host.mjs --ingest --workspace <private-root>`
+   from the current code checkout. Require exit 0 and parse the single bounded
+   JSON result with `status=INGESTED`; retain its exact `identity`.
+2. Write a short independent, attributed GLD/IBIT note from that summary using
+   the existing analyst-note fields. Preserve source URLs, actual retrieval
+   clocks and unknowns; do not invent released values or reuse example prose.
+3. Send `JSON.stringify(note) + "\n"` in **one stdin write** to
+   `node --import tsx scripts/options-guidance-fast-host.mjs --finish --workspace <private-root> --identity <ingest.identity>`.
+   Require exit 0; inspect its PASS/FAIL diagnostics and saved report identity.
+
+Use the Host process stdin facility for each CLI invocation; never interpolate
+the market JSON or analyst text into a shell command. The CLI performs the local
+record, verify, paper observation, brief, analysis, publication, cards and
+delivery-health steps in that order. Do not separately repeat those steps.
+The ingest response is evidence for the Host's review, not a generated analysis.
+Preserve the Host's source citations and explicit uncertainty. The finish identity
+must be the one returned by that ingest; a newer capture or failed validation
+requires stopping rather than retrying source calls. Read back the installed
+prompt after updating it. No Git work belongs in the automation. See
+`OPTIONS_FAST_HOST_DELIVERY.md` for checks and limitations.
+
 ## September 19 15:50 routine repair — current operating instruction
 
 Owner approved repairing **only** the existing gld-ibit daily 09:00 context work
@@ -47,13 +78,11 @@ Owner attention. App/host availability and allowance are still required.
    Count actual tool invocations separately from returned rows and local writes;
    a local guard rejection is not a provider invocation. Never retry acquisition
    to hide partial responses, absent IDs, source lag or a future source clock.
-5. Save exact raw input under `data/runtime/options-daily-guidance-inputs`, use
-   `--record`, then `--verify`. Inspect automatic paper observation output and
-   run `--observe-paper` before publishing. Completed rehearsals stay closed;
-   no registration, invented fill or strict trend qualification is authorized.
-6. Refresh the existing attributed analysis against this saved capture, publish
-   and verify; read `--decision-cards` and `--delivery-health`. Use the existing
-   Daily guidance page's Reload saved data button. Match the displayed capture
+5. Follow the fast Host stdin sequence above. Inspect its exact raw-input and
+   verified-capture paths, paper observation result, analysis/report binding and
+   publish/health freshness. Completed rehearsals stay closed; no registration,
+   invented fill or strict trend qualification is authorized.
+6. Use the existing Daily guidance page's Reload saved data button. Match the displayed capture
    clock and IDs/coverage with the saved capture and `/api/state` guidance input.
    API availability and a rendered page are different acceptance stages.
 
