@@ -5,7 +5,7 @@ import {mkdtempSync,readFileSync,readdirSync,rmSync,writeFileSync} from 'node:fs
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PassThrough,Readable} from 'node:stream';
-import {ingestFastHost,finishFastHost,readCompactLine} from './options-guidance-fast-host.mjs';
+import {ingestFastHost,finishFastHost,readCompactLine,compactContext} from './options-guidance-fast-host.mjs';
 import {runGuidanceCommand} from './options-daily-guidance.mjs';
 
 const id=n=>'00000000-0000-0000-0000-'+String(n).padStart(12,'0');
@@ -33,6 +33,12 @@ await test('single compact line enforces size and frame without requiring EOF',a
   for(const bytes of ['{}\n{}\n','{}','{}\r\n'])await assert.rejects(()=>readCompactLine(Readable.from([Buffer.from(bytes)]),10),/FRAME/);
   await assert.rejects(()=>readCompactLine(Readable.from([Buffer.alloc(11,65),Buffer.from('\n')]),10),/SIZE/);
 });
+await test('compact context carries bounded event facts and stays below 32 KiB',()=>{
+  const metric={metric:'PAYROLLS',period:'2026-09',unit:'THOUSAND_JOBS',releaseVersion:'INITIAL',consensus:{value:'100',source:'Survey',reference:'table',receivedAt:now()},actual:{value:'101',source:'https://www.bls.gov/release',sourceAt:now(),receivedAt:now()},numericDifference:'1',qualitativeSurprise:'HIGHER_THAN_CONSENSUS',issues:[]};
+  const context=compactContext({eventFacts:{events:Array.from({length:20},(_,n)=>({eventKey:'event-'+n,title:'Event',source:'BLS',scheduledAt:now(),metrics:Array.from({length:8},()=>metric)}))}});
+  assert(context.eventFacts.length>0&&context.eventFacts.length<=12);assert.equal(context.eventFacts[0].metrics.length,6);
+  assert.equal(context.eventFacts[0].metrics[0].numericDifference,'1');assert(Buffer.byteLength(JSON.stringify(context))<32768);
+});
 await test('CLI exits after one newline even when stdin remains open',()=>temporary(async root=>{
   const child=spawn(process.execPath,['--import','tsx','scripts/options-guidance-fast-host.mjs','--ingest','--workspace',root],{cwd:process.cwd(),stdio:['pipe','pipe','pipe']});
   let stderr='';child.stderr.on('data',chunk=>{stderr+=chunk;});child.stdin.write('{}\n');
@@ -44,6 +50,7 @@ await test('nanosecond capture ingests, verifies, observes, stays compact and do
   const result=await ingestFastHost(root,line(raw));
   assert.equal(result.status,'INGESTED');assert.equal(result.coverage.selected,36);assert.equal(result.coverage.returned,36);
   assert.equal(result.assets.length,2);assert(result.identity.length===64);assert(Buffer.byteLength(JSON.stringify(result))<32768);
+  assert(Array.isArray(result.context.eventFacts));
   assert.equal(JSON.parse(readFileSync(join(root,result.rawInputPath))).receipts.at(-1).response.data.results[0].quote.updated_at,raw.receipts.at(-1).response.data.results[0].quote.updated_at);
   const base=join(root,'data/runtime/options-daily-guidance');assert(!readdirSync(base).includes('reports'));assert(!readdirSync(base).includes('analysis'));
   await assert.rejects(()=>ingestFastHost(root,line(raw)),/COLLISION/);

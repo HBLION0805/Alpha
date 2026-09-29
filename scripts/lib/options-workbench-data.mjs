@@ -47,6 +47,7 @@ import {assessMacroNote} from '../../src/engines/options-knowledge/OptionsMacroP
 import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from './options-paper-observation-io.mjs';
 import {sourceCatalog,sourceComparisonView,prepareSourcePackage,receiveSourceDraft,previewSourceComparison,saveSourceComparison} from './options-source-comparison.mjs';
 import {expectationRecords,previewExpectation,saveExpectation,verifyNewPlanExpectation} from './options-market-expectation-io.mjs';
+import {projectEventFacts} from './options-event-facts.mjs';
 import {scenarioResearchView,previewScenario,saveScenario,contractFitView,verifyNewPlanScenario} from './options-scenario-research.mjs';
 import {weeklyPlanView,previewWeeklyPlan,saveWeeklyPlan} from './options-weekly-plan-io.mjs';
 
@@ -140,6 +141,8 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.macroPlaybook=await component(()=>macroPlaybookView(root),at);
     result.sourceComparisons=await component(()=>sourceComparisonView(root,ledgerId,result,at),at);
     result.marketExpectations=await component(()=>expectationRecords(root,ledgerId,at),at);
+    result.eventFacts=await component(()=>projectEventFacts({events:result.sourceComparisons.data?.events??[],
+      expectations:result.marketExpectations.data?.records??[],comparisons:result.sourceComparisons.data?.records??[],at}),at);
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
     result.scenarioResearch=await component(()=>scenarioResearchView(root,ledgerId,result,at),at);
     result.evidenceLoop=await component(()=>evidenceLoopView(root,ledgerId,manual.data,at),at);

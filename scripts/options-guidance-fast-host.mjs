@@ -76,11 +76,17 @@ function checkLatest(root,receipt){
   if(verified.inputFingerprint!==receipt.captureFingerprint)fail('CAPTURE_MISMATCH');
   return verified;
 }
-function compactContext(brief){
+export function compactContext(brief){
   const headlines=(brief.headlines??[]).slice(0,8).map(h=>({title:trim(h.title,180),url:trim(h.url,400),publishedAt:h.publishedAt,receivedAt:h.receivedAt}));
   const events=(brief.events??[]).slice(0,8).map(e=>({title:trim(e.title,180),source:trim(e.source,100),scheduledAt:e.scheduledAt,startDate:e.startDate,endDate:e.endDate}));
   const sources=(brief.sourceHealth??[]).slice(0,8).map(s=>({id:s.id,status:s.status,receivedAt:s.receivedAt}));
-  return {headlines,events,sources,treasury:brief.context?.treasury??null,btc:brief.context?.btc??null,
+  const eventFacts=(brief.eventFacts?.events??[]).slice(0,12).map(e=>({eventKey:trim(e.eventKey,180),title:trim(e.title,180),source:trim(e.source,100),scheduledAt:e.scheduledAt,issues:e.issues,
+    metrics:(e.metrics??[]).slice(0,6).map(m=>({metric:trim(m.metric,100),period:trim(m.period,100),unit:trim(m.unit,100),releaseVersion:trim(m.releaseVersion,100),
+      consensus:m.consensus?{value:m.consensus.value,source:trim(m.consensus.source,120),reference:trim(m.consensus.reference,160),receivedAt:m.consensus.receivedAt,selectedConsensusId:m.consensus.selectedConsensusId,snapshotPath:trim(m.consensus.snapshotPath,200)}:null,
+      actual:m.actual?{value:m.actual.value,source:trim(m.actual.source,300),sourceAt:m.actual.sourceAt,receivedAt:m.actual.receivedAt,comparisonPath:trim(m.actual.comparisonPath,200),claimId:m.actual.claimId}:null,
+      numericDifference:m.numericDifference,qualitativeSurprise:m.qualitativeSurprise,issues:m.issues}))}));
+  while(eventFacts.length&&Buffer.byteLength(JSON.stringify(eventFacts))>12000)eventFacts.pop();
+  return {headlines,events,eventFacts,sources,treasury:brief.context?.treasury??null,btc:brief.context?.btc??null,
     focusedNews:(brief.focusedNews?.items??[]).slice(0,4).map(x=>({title:trim(x.title??x.headline,180),url:trim(x.url??x.link,400),publishedAt:x.publishedAt})),
     previousAnalysis:brief.previousAnalysis?{assessedAt:brief.previousAnalysis.assessedAt,assets:brief.previousAnalysis.assets?.map(a=>({symbol:a.symbol,bias:a.bias,summary:trim(a.summary,300)}))}:null};
 }
