@@ -49,6 +49,7 @@ import {sourceCatalog,sourceComparisonView,prepareSourcePackage,receiveSourceDra
 import {expectationRecords,previewExpectation,saveExpectation,verifyNewPlanExpectation} from './options-market-expectation-io.mjs';
 import {projectEventFacts} from './options-event-facts.mjs';
 import {predictionEvidenceView} from './options-prediction-evidence.mjs';
+import {decisionEvidenceView} from './options-decision-evidence.mjs';
 import {scenarioResearchView,previewScenario,saveScenario,contractFitView,verifyNewPlanScenario} from './options-scenario-research.mjs';
 import {weeklyPlanView,previewWeeklyPlan,saveWeeklyPlan} from './options-weekly-plan-io.mjs';
 
@@ -60,7 +61,7 @@ const fail=code=>{throw Error('WORKBENCH_'+code);};
 export function workbenchError(e) {
   if(e?.code==='ENOENT')return 'STORE_MISSING';
   if(e?.code==='EEXIST')return 'STORE_BUSY_OR_EXISTS';
-  return /^(PREDICTION_EVIDENCE_|CASE_EXPORT_|WORKBENCH_|WEEKLY_PLAN_|TREND_STUDY_|ETF_SETUP_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
+  return /^(DECISION_EVIDENCE_|PREDICTION_EVIDENCE_|CASE_EXPORT_|WORKBENCH_|WEEKLY_PLAN_|TREND_STUDY_|ETF_SETUP_|MANUAL_|POSITION_WATCH_|EVENT_REACTION_|CHAIN_|ACTIVITY_|GUIDANCE_|CANDIDATE_CHECKS_|MACRO_|FOCUSED_NEWS_|EVENT_RESEARCH_|BAR_QUALITY_|SNAPSHOT_PAPER_|OPTIONS_EXPORT_|OPTIONS_READINESS_)[A-Z_]+$/.test(e?.message)?e.message:'LOCAL_RECOVERY_FAILED';
 }
 function directories(root,path){
   let current=root;
@@ -145,6 +146,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.eventFacts=await component(()=>projectEventFacts({events:result.sourceComparisons.data?.events??[],
       expectations:result.marketExpectations.data?.records??[],comparisons:result.sourceComparisons.data?.records??[],at}),at);
     result.predictionEvidence=await component(()=>predictionEvidenceView(root,result),at);
+    result.decisionEvidence=await component(()=>decisionEvidenceView(root,result),at);
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
     result.scenarioResearch=await component(()=>scenarioResearchView(root,ledgerId,result,at),at);
     result.evidenceLoop=await component(()=>evidenceLoopView(root,ledgerId,manual.data,at),at);

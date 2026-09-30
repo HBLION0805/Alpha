@@ -38,6 +38,11 @@ export async function runGuidanceCommand(args,{workspaceRoot=process.cwd(),now=(
     if(state.predictionEvidence.state!=='AVAILABLE')throw Error(state.predictionEvidence.error);
     return state.predictionEvidence.data;
   }
+  if(mode==='--decision-evidence'&&args.length===1){
+    const state=await createWorkbenchData({workspaceRoot:root,now}).state();
+    if(state.decisionEvidence.state!=='AVAILABLE')throw Error(state.decisionEvidence.error);
+    return state.decisionEvidence.data;
+  }
   if(["--report","--publish","--host-brief","--decision-cards","--delivery-health","--event-reactions","--sensitivities"].includes(mode)&&args.length===1) {
     const trendObservations=mode==='--publish'?observeTrendStudiesSafely(root,now()):null;
     const state=await createWorkbenchData({workspaceRoot:root,now}).state();

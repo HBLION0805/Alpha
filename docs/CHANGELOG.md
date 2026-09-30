@@ -1,5 +1,12 @@
 # Alpha Changelog
 
+## September 29, 2026 — Decision Evidence V1 candidate
+
+- Add an immutable GLD/IBIT decision projection from the exact issued report and bound Prediction Evidence after successful Fast Host FINISH.
+- Expose read-only state and CLI views, deterministic verification, explicit `NO_TRADE` blockers, and `SKIPPED` on operational failure.
+- Preserve unknown confidence, horizon, exact exits, risk approval and fills. Natural September 30 acceptance is unobserved; this milestone is stage-committed only for pinned local scheduler deployment.
+- Harden Decision Evidence against recomputed-identity authority forgery and missing broker costs, and treat a newer capture as a new not-yet-materialized decision cycle rather than reusing or hard-blocking on the old Decision. Current full Alpha validation passes 5,107/5,107 counted tests across 197 components.
+
 ## September 20, 2026 — Approved Batch 2 macro references
 
 - Add independent approval and compact runtime artifacts for 36 items, four

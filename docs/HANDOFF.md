@@ -1,5 +1,9 @@
 # Alpha Handoff
 
+## September 29 — Decision Evidence V1 for Architect review
+
+The [delivery](OPTIONS_DECISION_EVIDENCE_PROJECTION_DELIVERY.md) connects successful Fast Host FINISH to a pinned GLD/IBIT `NO_TRADE` evidence artifact after Prediction Evidence. The CLI and state component read without creating records. Focused Decision validation is 10/10 and the current full Alpha bundle is green at 5,107/5,107 counted tests across 197 components. A newer capture now returns current Decision evidence as not materialized instead of reusing or hard-blocking on the old Decision. Natural September 30 15:50 capture and 16:05 acceptance remain UNOBSERVED, so no prospective market decision has been established. The scoped work is approved for a stage commit and pinned local scheduler deployment; natural acceptance remains separate.
+
 ## September 19 — original plan conditions and independent exits
 
 New plans can save drafts and freeze optional thesis/invalidation fields in Trade

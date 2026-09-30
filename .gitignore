@@ -73,6 +73,8 @@ data/runtime/options-workbench-inputs/
 data/runtime/options-workbench-development/
 data/runtime/options-daily-guidance/
 data/runtime/options-daily-guidance-inputs/
+data/runtime/options-prediction-evidence/
+data/runtime/options-decision-evidence/
 data/runtime/options-candidate-checks/
 data/runtime/options-context-service/
 data/runtime/options-focused-news/

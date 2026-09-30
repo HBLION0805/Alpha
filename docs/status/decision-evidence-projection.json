@@ -1,0 +1,25 @@
+{
+  "version": "OPTIONS_DECISION_EVIDENCE_PROJECTION_STATUS_V1",
+  "status": "IMPLEMENTED_FULL_VALIDATION_PASSED_PENDING_NATURAL_ACCEPTANCE",
+  "projectionVersion": "OPTIONS_DECISION_EVIDENCE_PROJECTION_V1",
+  "scope": ["GLD", "IBIT"],
+  "canonicalDecisionEligible": false,
+  "canonicalPredictionEligible": false,
+  "executionAllowed": false,
+  "natural20260930At1550Capture": "UNOBSERVED",
+  "natural20260930At1605Acceptance": "UNOBSERVED",
+  "realProspectiveDecisionRecordCreated": false,
+  "historicalBackfillCreated": false,
+  "validation": {
+    "decisionEvidence": "10/10 PASSED",
+    "predictionEvidence": "3/3 PASSED",
+    "fastHost": "11/11 PASSED",
+    "decisionCards": "12/12 PASSED",
+    "dailyGuidance": "113/113 PASSED",
+    "workbench": "60/60 PASSED",
+    "evidenceLoop": "22/22 PASSED",
+    "typecheck": "PASSED",
+    "alphaValidate": "PASSED: 5107/5107 counted tests across 197 components; 0 failures"
+  },
+  "committed": true
+}

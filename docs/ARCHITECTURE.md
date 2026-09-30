@@ -1,5 +1,9 @@
 # Alpha Architecture
 
+## Decision evidence after issued Prediction Evidence — September 29, 2026
+
+The [Decision Evidence V1 specification](specifications/OPTIONS_DECISION_EVIDENCE_PROJECTION_V1.md) places an immutable read-only artifact after operationally successful Fast Host publication and Prediction Evidence. It projects the original verified report input through the existing daily decision cards and capital policy; the current workbench clock, later settings, and manual plans do not own the artifact. The local artifact and pure validator preserve exact lineage, conditional direction and `NO_TRADE` blockers without creating a canonical decision, plan, prediction, fill, or trading authority. Natural market acceptance remains separate.
+
 ## Approved Macro World Model reference — September 20, 2026
 
 The [v1 specification](specifications/MACRO_WORLD_MODEL_V1.md) defines a bounded

@@ -6,6 +6,7 @@ import {analystNote,normalizeGuidanceCapture,verifyGuidanceRecord} from './lib/o
 import {runGuidanceCommand} from './options-daily-guidance.mjs';
 import {createWorkbenchData} from './lib/options-workbench-data.mjs';
 import {materializePredictionEvidence} from './lib/options-prediction-evidence.mjs';
+import {materializeDecisionEvidence} from './lib/options-decision-evidence.mjs';
 import {assessGuidanceDelivery} from '../src/engines/options-daily-guidance/OptionsGuidanceDelivery.ts';
 
 const VERSION='OPTIONS_FAST_HOST_V1';
@@ -169,8 +170,17 @@ export async function finishFastHost(root,identity,bytes){
     const freshCoverage=data?.quoteClocks?.length===2&&data.quoteClocks.every(q=>q.requested===18&&q.fresh===18&&q.stale===0&&q.unknown===0&&q.future===0&&q.underlyingFreshness==='FRESH');
     const freshAtPublish=quoteFreshnessAtPublish.length===2&&quoteFreshnessAtPublish.every(q=>q.requested===18&&q.fresh===18&&q.stale===0&&q.unknown===0&&q.future===0&&q.underlyingFreshness==='FRESH');
     const operationalPass=identityMatch&&publicationCurrent&&freshAtPublish&&freshCoverage&&cards.state==='AVAILABLE'&&health.state==='AVAILABLE'&&ms(receipt.capturedAt,publishAt)<120000&&ms(receipt.capturedAt,healthAt)<120000;
+    const failedOperationalChecks=[...(!identityMatch?['CAPTURE_IDENTITY']:[]),...(!publicationCurrent?['PUBLICATION_MARKET_INPUTS']:[]),
+      ...(!freshAtPublish?['PUBLISH_QUOTE_FRESHNESS']:[]),...(!freshCoverage?['HEALTH_QUOTE_FRESHNESS']:[]),
+      ...(cards.state!=='AVAILABLE'?['DECISION_CARDS']:[]),...(health.state!=='AVAILABLE'?['DELIVERY_HEALTH']:[]),
+      ...(ms(receipt.capturedAt,publishAt)>=120000?['PUBLISH_LATENCY']:[]),...(ms(receipt.capturedAt,healthAt)>=120000?['HEALTH_LATENCY']:[])];
+    const decisionEvidence=operationalPass?materializeDecisionEvidence(root,predictionEvidence):null;
+    if(decisionEvidence&&(decisionEvidence.provenance.predictionEvidence.identity!==predictionEvidence.identity||
+      decisionEvidence.provenance.report.path!==published.path||decisionEvidence.provenance.capture.path!==receipt.capturePath||
+      decisionEvidence.provenance.analysis.path!==analysis.path))fail('DECISION_EVIDENCE_BINDING');
     const result={version:VERSION,status:operationalPass?'PASS':'FAIL',identity,analysisPath:analysis.path,reportPath:published.path,dispositions:published.dispositions,
       predictionEvidence:{status:predictionEvidence.status,identity:predictionEvidence.identity,path:predictionEvidence.path,candidateCount:predictionEvidence.candidates.length,executionAllowed:false},
+      decisionEvidence:decisionEvidence?{status:decisionEvidence.status,identity:decisionEvidence.identity,path:decisionEvidence.path,candidateCount:decisionEvidence.candidates.length,executionAllowed:false}:{status:'SKIPPED',reason:'OPERATIONAL_CHECK_FAILED',failedChecks:failedOperationalChecks,executionAllowed:false},
       quoteFreshnessAtPublish,quoteFreshnessAtHealth:data?.quoteClocks??null,latencyMs:{captureToRecord:ms(receipt.capturedAt,receipt.recordAt),captureToPublish:ms(receipt.capturedAt,publishAt),captureToHealth:ms(receipt.capturedAt,healthAt)},
       identityMatch,publicationCurrent,freshAtPublish,freshCoverage,cardsState:cards.state,healthState:health.state,executionAllowed:false};
     if(Buffer.byteLength(JSON.stringify(result))>16384)fail('OUTPUT_SIZE');
