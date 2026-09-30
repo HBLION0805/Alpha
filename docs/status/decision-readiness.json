@@ -1,0 +1,20 @@
+{
+  "version": "OPTIONS_DECISION_READINESS_STATUS_V1",
+  "status": "IMPLEMENTED_LOCAL_RUNTIME_VERIFIED",
+  "projectionVersion": "OPTIONS_DECISION_READINESS_V1",
+  "scope": ["GLD", "IBIT"],
+  "costBasis": "REVIEWED_SCHEDULE_ASSUMPTION",
+  "ownerCapitalRangeCents": {"min": 10000, "max": 50000},
+  "runtimeCheck": {
+    "workspace": "C:/projects/Alpha",
+    "candidateCount": 2,
+    "withinCapitalRange": 2,
+    "modeledEvidenceClear": 0,
+    "gldReferenceCount": 0,
+    "ibitReferenceCount": 2
+  },
+  "brokerFeesConfirmed": false,
+  "canonicalDecisionEligible": false,
+  "ownerAuthorityRequired": true,
+  "executionAllowed": false
+}

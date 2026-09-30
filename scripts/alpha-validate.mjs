@@ -121,6 +121,7 @@ const aggregateTestFiles = [
   "scripts/options-evidence-loop.test.mjs",
   "scripts/options-prediction-evidence.test.mjs",
   "scripts/options-decision-evidence.test.mjs",
+  "scripts/options-decision-readiness.test.mjs",
   "scripts/options-case-export.test.mjs",
   "scripts/macro-world-model.test.mjs",
   "scripts/macro-world-model-batch2.test.mjs",

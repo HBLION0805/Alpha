@@ -1,5 +1,11 @@
 # Alpha Changelog
 
+## September 29, 2026 — Decision Readiness V1
+
+- Add a read-only GLD/IBIT readiness projection over existing Decision Cards using the already reviewed fee-schedule assumption and one-tick cost sensitivity.
+- Preserve every original evidence blocker while allowing only modeled `COSTS_UNKNOWN` to be separated from the current evidence gate; report all-in capital against the Owner $100-$500 allocation range.
+- Current local runtime check finds two bounded IBIT references inside the allocation range, zero GLD budget references, and zero evidence-clear candidates. Brokerage fees remain unconfirmed and execution stays disabled.
+
 ## September 29, 2026 — Decision Evidence V1 candidate
 
 - Add an immutable GLD/IBIT decision projection from the exact issued report and bound Prediction Evidence after successful Fast Host FINISH.
