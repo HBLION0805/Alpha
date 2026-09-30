@@ -232,7 +232,8 @@
     "test:options-snapshot-paper": "tsx scripts/options-snapshot-paper.test.mjs",
     "test:options-owner-allocation": "tsx scripts/options-owner-allocation.test.mjs",
     "test:options-macro-context": "tsx scripts/options-macro-context.test.mjs",
-    "options:macro-context": "tsx scripts/options-macro-context.mjs"
+    "options:macro-context": "tsx scripts/options-macro-context.mjs",
+    "test:options-snapshot-paper-capture": "tsx scripts/options-snapshot-paper-capture.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

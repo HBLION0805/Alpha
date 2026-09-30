@@ -163,6 +163,7 @@ const aggregateTestFiles = [
   "scripts/options-macro-context.test.mjs",
   "scripts/options-owner-allocation.test.mjs",
   "scripts/options-snapshot-paper.test.mjs",
+  "scripts/options-snapshot-paper-capture.test.mjs",
   "src/engines/options-manual-ledger/OptionsManualLedger.test.ts",
   "scripts/options-manual-ledger.test.mjs",
   "scripts/options-review-desk.test.mjs",

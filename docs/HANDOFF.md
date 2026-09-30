@@ -1,5 +1,12 @@
 # Alpha Handoff
 
+## September 30 - Bounded engineering paper capture
+
+The [capture specification](specifications/OPTIONS_SNAPSHOT_PAPER_CAPTURE_V1.md)
+adds a serializable single-contract source helper for the existing V3 paper flow.
+It preserves original receipts, six-call/three-page bounds and partial coverage.
+Operator registration, job receipts and actual entry/exit remain separate.
+
 ## September 30 UTC - September 29 ETF source recheck
 
 The [source recheck](OPTIONS_ETF_SOURCE_RECHECK_20260929.md) made one authorized
