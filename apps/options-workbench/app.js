@@ -1,4 +1,5 @@
 import {evidenceRequest,updateEvidenceDraft,evidenceDetail} from './evidence-loop.js';
+import {prepareOwnerPlanDraft} from './owner-plan.js';
 import {snapshotRequest,snapshotResult} from './snapshot-paper.js';
 import {blankScenario,prepareScenarioRequest,scenarioResult,contractFitResult} from './scenario-research.js';
 import {etfSetupRequest} from './etf-setup.js';
@@ -592,6 +593,14 @@ document.addEventListener('click',event=>{void(async()=>{
   if(el.id==='clear-filters'){ui.chain=defaultFilters();render();return;}
   if(el.dataset.contract){const row=state.chain.data?.chain.rows.find(r=>r.id===el.dataset.contract);if(row)showDetail('Contract & activity evidence',contractDetail(row,state));return;}
   if(el.dataset.planContract){const row=state.chain.data?.chain.rows.find(r=>r.id===el.dataset.planContract);if(row)prepareContract(row);return;}
+  if(el.dataset.ownerPlan){
+    if(dirty.has('thesis')||ui.thesisFields?.tradeId)throw Error('Your current thesis draft is preserved. Save or finish it before preparing another.');
+    const row=state.ownerPlanPreparation?.data?.rows.find(r=>r.contract.id===el.dataset.ownerPlan);
+    if(!row)throw Error('Current candidate is unavailable. Reload before preparing a plan.');
+    Object.assign(ui,prepareOwnerPlanDraft(row,'plan-'+crypto.randomUUID()));
+    ui.thesisPreview=null;ui.thesisRequestId=null;dirty.add('thesis');location.hash='#planner';render();
+    toast('Incomplete Owner draft prepared. Review evidence and exact terms through the existing preview and freeze actions.');return;
+  }
   if(el.dataset.guidancePlan){
     const c=state.guidance.data.current.assets.flatMap(a=>a.candidates).find(c=>c.contract.id===el.dataset.guidancePlan);if(!c)return;
     if(dirty.has('planner'))throw Error('Your planner draft is preserved. Clear or finish it before inspecting a candidate.');

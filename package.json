@@ -23,6 +23,7 @@
     "test:options-prediction-evidence": "tsx scripts/options-prediction-evidence.test.mjs",
     "test:options-decision-evidence": "tsx scripts/options-decision-evidence.test.mjs",
     "test:options-decision-readiness": "node scripts/options-decision-readiness.test.mjs",
+    "test:options-owner-plan": "tsx scripts/options-owner-plan-preparation.test.mjs",
     "test:options-workbench": "tsx scripts/options-workbench.test.mjs",
     "test:options-workbench-i18n": "node scripts/options-workbench-i18n.test.mjs",
     "test:options-guidance-sensitivities": "tsx scripts/options-guidance-sensitivities.test.mjs",

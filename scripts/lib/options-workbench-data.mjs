@@ -51,6 +51,7 @@ import {projectEventFacts} from './options-event-facts.mjs';
 import {predictionEvidenceView} from './options-prediction-evidence.mjs';
 import {decisionEvidenceView} from './options-decision-evidence.mjs';
 import {decisionReadinessProjection} from './options-decision-readiness.mjs';
+import {ownerPlanPreparation} from './options-owner-plan-preparation.mjs';
 import {scenarioResearchView,previewScenario,saveScenario,contractFitView,verifyNewPlanScenario} from './options-scenario-research.mjs';
 import {weeklyPlanView,previewWeeklyPlan,saveWeeklyPlan} from './options-weekly-plan-io.mjs';
 
@@ -150,6 +151,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.decisionEvidence=await component(()=>decisionEvidenceView(root,result),at);
     result.decisionReadiness=await component(()=>decisionReadinessProjection(result),at);
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
+    result.ownerPlanPreparation=await component(()=>ownerPlanPreparation(result),at);
     result.scenarioResearch=await component(()=>scenarioResearchView(root,ledgerId,result,at),at);
     result.evidenceLoop=await component(()=>evidenceLoopView(root,ledgerId,manual.data,at),at);
     // Reference UI only, appended after all existing decision projections.

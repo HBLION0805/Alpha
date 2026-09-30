@@ -16,6 +16,7 @@ const MAX_BODY=65536;
 assets.set('/trend-study.js',['trend-study.js','text/javascript']);
 assets.set('/macro-playbook.js',['macro-playbook.js','text/javascript']);
 assets.set('/trade-thesis.js',['trade-thesis.js','text/javascript']);
+assets.set('/owner-plan.js',['owner-plan.js','text/javascript']);
 assets.set('/source-comparison.js',['source-comparison.js','text/javascript']);
 assets.set('/evidence-loop.js',['evidence-loop.js','text/javascript']);
 assets.set('/case-export.js',['case-export.js','text/javascript']);
