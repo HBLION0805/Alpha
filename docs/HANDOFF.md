@@ -1,5 +1,12 @@
 # Alpha Handoff
 
+## September 30 UTC - September 29 ETF source recheck
+
+The [source recheck](OPTIONS_ETF_SOURCE_RECHECK_20260929.md) made one authorized
+batch historical read: 78 regular five-minute bars per ETF, all interpolation
+flags omitted. Original events/clocks and isolated adapter recovery are verified.
+Source qualification remains blocked; no production inputs or rules were added.
+
 ## September 29 ? Evidence to Owner plan preparation
 
 The [delivery](OPTIONS_OWNER_PLAN_PREPARATION_DELIVERY.md) connects current
