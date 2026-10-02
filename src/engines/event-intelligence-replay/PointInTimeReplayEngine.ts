@@ -38,6 +38,40 @@ function validateCase(value: EventIntelligenceCase): void {
     if (item.sourcePublishedAt !== null) clock(item.sourcePublishedAt);
     if (item.vendorReceivedAt !== null) clock(item.vendorReceivedAt);
     if (item.parsedAt !== null && clock(item.parsedAt) < clock(item.receivedAt)) throw new Error("EVENT_INTELLIGENCE_PARSE_CLOCK");
+    if (item.kind === "EXPECTATION_SNAPSHOT") {
+      const snapshot = item.expectationSnapshot;
+      if (!snapshot || !["RESEARCH","FINAL_PRE_ENTRY"].includes(snapshot.stage) || typeof snapshot.ownerConfirmed !== "boolean" ||
+          !Array.isArray(snapshot.rows) || snapshot.rows.length === 0 || snapshot.rows.length > 24) {
+        throw new Error("EVENT_INTELLIGENCE_EXPECTATION_SNAPSHOT");
+      }
+      const ids = new Set<string>();
+      const selectedBySubject = new Set<string>();
+      for (const row of snapshot.rows) {
+        if (ids.has(row.id)) throw new Error("EVENT_INTELLIGENCE_EXPECTATION_ROW_ID");
+        ids.add(row.id);
+        for (const field of [row.id,row.metric,row.period,row.unit,row.adjustment,row.releaseVersion,row.valueMeaning,row.source,row.methodology]) {
+          assertText(field,"EVENT_INTELLIGENCE_EXPECTATION_TEXT");
+        }
+        if (!["CONSENSUS","SINGLE_FORECAST","MODEL_ESTIMATE","MARKET_IMPLIED","OWNER_EXPECTATION","UNKNOWN"].includes(row.expectationType)) {
+          throw new Error("EVENT_INTELLIGENCE_EXPECTATION_TYPE");
+        }
+        if (row.value !== null && !/^-?(0|[1-9]\d{0,11})(\.\d{1,6})?$/.test(row.value)) throw new Error("EVENT_INTELLIGENCE_EXPECTATION_VALUE");
+        if (row.expectationType === "UNKNOWN" && row.value !== null) throw new Error("EVENT_INTELLIGENCE_EXPECTATION_UNKNOWN_VALUE");
+        if (typeof row.selected !== "boolean" || (row.selected && row.expectationType !== "CONSENSUS")) throw new Error("EVENT_INTELLIGENCE_EXPECTATION_SELECTED");
+        const sourceReceived = clock(row.sourceReceivedAt);
+        if (sourceReceived > clock(item.receivedAt) || (row.sourcePublishedAt !== null && clock(row.sourcePublishedAt) > sourceReceived)) {
+          throw new Error("EVENT_INTELLIGENCE_EXPECTATION_CLOCK");
+        }
+        if (row.sampleInfo !== null && typeof row.sampleInfo !== "string") throw new Error("EVENT_INTELLIGENCE_EXPECTATION_SAMPLE");
+        if (row.selected) {
+          const subject=[row.metric,row.period,row.unit,row.adjustment,row.releaseVersion,row.valueMeaning].join("|");
+          if (selectedBySubject.has(subject)) throw new Error("EVENT_INTELLIGENCE_EXPECTATION_SELECTED_DUPLICATE");
+          selectedBySubject.add(subject);
+        }
+      }
+    } else if (item.expectationSnapshot !== null) {
+      throw new Error("EVENT_INTELLIGENCE_NON_EXPECTATION_METADATA");
+    }
     if (item.kind === "MARKET_OBSERVATION") {
       const market = item.marketObservation;
       if (!market || !market.instrument.trim() || !market.comparabilityReason.trim()) throw new Error("EVENT_INTELLIGENCE_MARKET_METADATA");

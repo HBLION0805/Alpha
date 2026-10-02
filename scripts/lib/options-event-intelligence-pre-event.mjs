@@ -1,5 +1,5 @@
 import {createHash, randomUUID} from 'node:crypto';
-import {existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync} from 'node:fs';
+import {existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, readdirSync, writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 
 const VERSION='OPTIONS_PRE_EVENT_STATE_V1';
@@ -89,4 +89,23 @@ export function verifyPreEventState(root,file){
   validateSnapshot(value.snapshot);
   if(value.fingerprint!==hash(value.snapshot))fail('INTEGRITY');
   return value;
+}
+
+export function listPreEventStates(root,asOf){
+  const cutoff=clock(asOf),rootReal=realpathSync(root),base=resolve(rootReal,BASE);
+  if(!existsSync(base))return [];
+  const baseStat=lstatSync(base);if(!baseStat.isDirectory()||baseStat.isSymbolicLink())fail('DIRECTORY');
+  const days=readdirSync(base,{withFileTypes:true}).filter(x=>x.isDirectory()&&!x.isSymbolicLink()).sort((a,b)=>a.name.localeCompare(b.name));
+  const records=[];
+  for(const day of days){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(day.name))continue;
+    const directory=resolve(base,day.name),files=readdirSync(directory,{withFileTypes:true});
+    if(files.length>2000)fail('LIMIT');
+    for(const entry of files){
+      if(!entry.isFile()||!entry.name.endsWith('.json'))continue;
+      const value=verifyPreEventState(root,resolve(directory,entry.name));
+      if(clock(value.snapshot.recordedAt)<=cutoff)records.push(value);
+    }
+  }
+  return records.sort((a,b)=>clock(a.snapshot.recordedAt)-clock(b.snapshot.recordedAt));
 }

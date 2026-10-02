@@ -10,6 +10,8 @@ V1 has exactly three product deliverables:
 
 A narrow pre-event state recorder is supporting infrastructure for the unscheduled case, not a fourth product surface. Option-structure expansion is paused during this milestone.
 
+Event evidence is stored in an independent immutable Event Observation Store. An accepted observation cannot be overwritten, and prospective saves cannot backfill an earlier Alpha `receivedAt`. Replay case JSON is a deterministic materialized view over those immutable observations plus pre-event snapshots; the view may be rebuilt without changing the underlying evidence.
+
 ## Core principle
 
 Analysis order and collection order are different. Professional news, official sources, market data, calendars and pre-event state are collected in parallel. The analysis layer may then compare observations with frozen expectations, verify or correct facts, inspect market reaction and update a thesis.
@@ -96,6 +98,8 @@ A real prospective scheduled event must have a pre-event expectation snapshot fr
 - thesis changes point to pre-declared conditions and evidence
 
 Synthetic data may test software but cannot satisfy market acceptance.
+
+The first live scheduled candidate is the October 2, 2026 Employment Situation at 08:30 ET. V1 retains Reuters survey consensus observed by Alpha before release (nonfarm payrolls +90K, private payrolls +85K, unemployment 4.1%) as RESEARCH evidence only; Owner final confirmation remains absent. The event window collector runs at 08:20, 08:29, 08:30, 08:31, 08:32, 08:35 and 08:40 ET. Current automated market reaction coverage is Coinbase BTC-USD only; GLD and IBIT realtime reactions remain explicitly missing until a qualified provider is available.
 ### Unscheduled case
 
 A real prospective unscheduled event requires a pre-existing state record captured before the event. A snapshot reconstructed after the event is not accepted as pre-event evidence. V1 stores these observations independently under `data/runtime/options-event-intelligence/pre-event-state/`; recording time is the actual save clock and never refreshes older source clocks.

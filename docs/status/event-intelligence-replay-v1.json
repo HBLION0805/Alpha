@@ -1,41 +1,75 @@
 {
-  "milestone": "Alpha Event Intelligence & Point-in-Time Replay V1",
-  "status": "FOUNDATION_IMPLEMENTED_REAL_ACCEPTANCE_PENDING",
-  "baseline": "alpha-live-acceptance-rc1-20261001",
-  "branch": "codex/event-intelligence-replay-v1",
-  "scope": {
-    "scheduledCases": 1,
-    "unscheduledCases": 1,
-    "replayConsole": 1,
-    "optionStructureExpansionPaused": true
-  },
-  "scheduledCandidate": {
-    "eventId": "BLS:4438aaee-63df-49b2-982c-b687e048bdd9",
-    "title": "Employment Situation",
-    "releaseAt": "2026-10-02T12:30:00.000Z",
-    "calendarSource": "BLS_PUBLIC_RELEASE_CALENDAR",
-    "existingExpectationId": "gld-employment-20261002-research-v1",
-    "expectationStage": "RESEARCH",
-    "reliableConsensusAvailable": false,
-    "finalPreEntrySnapshot": "PENDING",
-    "realAcceptance": "PENDING_RELEASE"
-  },
-  "unscheduledPreparation": {
-    "recorder": "OPTIONS_PRE_EVENT_STATE_V1",
-    "taskName": "AlphaEventPreStateV1",
-    "cadence": "PT15M",
-    "firstProspectiveRecordedAt": "2026-10-02T01:40:52.705Z",
-    "executionAllowed": false,
-    "realShockAcceptance": "PENDING_FUTURE_UNSCHEDULED_EVENT"
-  },
-  "pointInTimeRules": {
-    "evidenceVisibility": "receivedAt <= replayTime",
-    "historicalDecisionVisibility": "generatedAt <= replayTime",
-    "recomputedDecisionVisibility": "recomputedAt <= replayTime",
-    "recomputedNeverReplacesHistorical": true,
-    "lateNumericObservationsExcluded": true,
-    "invalidationCadenceFailClosed": true,
-    "arrivalOrderIsNotCausality": true
-  },
-  "executionAllowed": false
+    "milestone":  "Alpha Event Intelligence \u0026 Point-in-Time Replay V1",
+    "status":  "FOUNDATION_IMPLEMENTED_REAL_ACCEPTANCE_PENDING",
+    "baseline":  "alpha-live-acceptance-rc1-20261001",
+    "branch":  "codex/event-intelligence-replay-v1",
+    "scope":  {
+                  "scheduledCases":  1,
+                  "unscheduledCases":  1,
+                  "replayConsole":  1,
+                  "optionStructureExpansionPaused":  true
+              },
+    "scheduledCandidate":  {
+                               "eventId":  "BLS:4438aaee-63df-49b2-982c-b687e048bdd9",
+                               "title":  "Employment Situation",
+                               "releaseAt":  "2026-10-02T12:30:00.000Z",
+                               "calendarSource":  "BLS_PUBLIC_RELEASE_CALENDAR",
+                               "existingExpectationId":  "gld-employment-20261002-research-v1",
+                               "expectationStage":  "RESEARCH",
+                               "reliableConsensusAvailable":  true,
+                               "finalPreEntrySnapshot":  "PENDING",
+                               "realAcceptance":  "PENDING_RELEASE",
+                               "eventObservationId":  "employment-situation-20261002",
+                               "reutersConsensus":  {
+                                                        "observedAt":  "2026-10-02T01:57:17.986Z",
+                                                        "nonfarmPayrollThousands":  90,
+                                                        "privatePayrollThousands":  85,
+                                                        "unemploymentPercent":  4.1,
+                                                        "sourcePublishedAt":  "2026-09-30T12:29:00.000Z",
+                                                        "sampleSize":  "UNKNOWN"
+                                                    },
+                               "ownerConfirmed":  false,
+                               "collectorTask":  "AlphaEmploymentEventWindowV1",
+                               "collectorTriggersEt":  [
+                                                           "08:20",
+                                                           "08:29",
+                                                           "08:30",
+                                                           "08:31",
+                                                           "08:32",
+                                                           "08:35",
+                                                           "08:40"
+                                                       ],
+                               "caseMaterialized":  true,
+                               "currentReplayState":  "PARTIAL_NO_HISTORICAL_DECISION"
+                           },
+    "unscheduledPreparation":  {
+                                   "recorder":  "OPTIONS_PRE_EVENT_STATE_V1",
+                                   "taskName":  "AlphaEventPreStateV1",
+                                   "cadence":  "PT15M",
+                                   "firstProspectiveRecordedAt":  "2026-10-02T01:40:52.705Z",
+                                   "executionAllowed":  false,
+                                   "realShockAcceptance":  "PENDING_FUTURE_UNSCHEDULED_EVENT"
+                               },
+    "pointInTimeRules":  {
+                             "evidenceVisibility":  "receivedAt \u003c= replayTime",
+                             "historicalDecisionVisibility":  "generatedAt \u003c= replayTime",
+                             "recomputedDecisionVisibility":  "recomputedAt \u003c= replayTime",
+                             "recomputedNeverReplacesHistorical":  true,
+                             "lateNumericObservationsExcluded":  true,
+                             "invalidationCadenceFailClosed":  true,
+                             "arrivalOrderIsNotCausality":  true
+                         },
+    "executionAllowed":  false,
+    "eventObservationStore":  {
+                                  "version":  "OPTIONS_EVENT_OBSERVATION_V1",
+                                  "overwriteAllowed":  false,
+                                  "backfillAllowed":  false,
+                                  "integrity":  "SHA256_CONTENT_BOUND"
+                              },
+    "marketReactionCoverage":  {
+                                   "btc":  "COINBASE_PUBLIC_LEVEL1",
+                                   "gld":  "MISSING_REALTIME_PROVIDER",
+                                   "ibit":  "MISSING_REALTIME_PROVIDER",
+                                   "executionAllowed":  false
+                               }
 }

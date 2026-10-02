@@ -44,6 +44,13 @@ const evidence = (
   availability,
   summary: evidenceId,
   supersedesEvidenceId,
+  expectationSnapshot: kind === "EXPECTATION_SNAPSHOT" ? {
+    stage: "RESEARCH", ownerConfirmed: false, rows: [{
+      id: "consensus-test", metric: "TEST_METRIC", period: "2026-09", unit: "COUNT", adjustment: "SA",
+      releaseVersion: "INITIAL", valueMeaning: "LEVEL", expectationType: "CONSENSUS", value: "1", selected: true,
+      source: "test", sourcePublishedAt: null, sourceReceivedAt: receivedAt, methodology: "test", sampleInfo: null,
+    }],
+  } : null,
   marketObservation: kind === "MARKET_OBSERVATION" ? {
     instrument: "GLD",
     quoteObservedAt: receivedAt,

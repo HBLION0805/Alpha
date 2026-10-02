@@ -5,12 +5,13 @@ const empty=(title,text)=>`<div class="empty"><div class="empty-icon" aria-hidde
 
 const evidenceCard=item=>{
   const link=item.sourceUrl?.startsWith('https://')?`<a href="${esc(item.sourceUrl)}" target="_blank" rel="noreferrer">原文</a>`:'';
+  const expectation=item.expectationSnapshot?`<p class="hint">Expectation stage: <strong>${esc(words(item.expectationSnapshot.stage))}</strong> · Owner confirmed: <strong>${item.expectationSnapshot.ownerConfirmed?'YES':'NO'}</strong></p><ul class="rule-list">${item.expectationSnapshot.rows.map(r=>`<li>${r.selected?'★ ':''}${esc(r.metric)} · ${esc(words(r.expectationType))} · ${esc(r.value??'UNKNOWN')} ${esc(r.unit)} · ${esc(r.source)} · source received ${esc(timestamp(r.sourceReceivedAt))}${r.sampleInfo?` · ${esc(r.sampleInfo)}`:''}</li>`).join('')}</ul>`:'';
   const market=item.marketObservation?`<p class="hint">Market: ${esc(item.marketObservation.instrument)} · ${esc(words(item.marketObservation.session))} · Quote ${esc(timestamp(item.marketObservation.quoteObservedAt))} · Declared delay ${item.marketObservation.declaredDelayMs===null?'Unknown':esc(String(item.marketObservation.declaredDelayMs))+' ms'} · ${esc(words(item.marketObservation.comparability))}</p><p class="hint">${esc(item.marketObservation.comparabilityReason)}</p>`:'';
   return `<article class="headline"><div class="status-line">${badge(item.kind)}${badge(item.availability,item.availability==='CURRENT'?'green':'amber')}</div>
     <h3>${esc(item.summary)}</h3>
     <div class="meta"><span>Alpha 收到 ${esc(timestamp(item.receivedAt))}</span><span>来源 ${esc(item.sourceId)}</span></div>
     <small>Source published: ${esc(item.sourcePublishedAt?timestamp(item.sourcePublishedAt):'Unknown')} · Vendor received: ${esc(item.vendorReceivedAt?timestamp(item.vendorReceivedAt):'Unknown')}</small>
-    ${market}${item.supersedesEvidenceId?`<p class="hint">更正 / supersedes: ${esc(item.supersedesEvidenceId)}</p>`:''}${link}</article>`;
+    ${expectation}${market}${item.supersedesEvidenceId?`<p class="hint">更正 / supersedes: ${esc(item.supersedesEvidenceId)}</p>`:''}${link}</article>`;
 };
 
 const decisionCard=(item,title)=>item?`<section class="card"><h2>${esc(title)}</h2><div class="status-line">${badge(item.thesisState,item.thesisState==='INVALIDATE'?'red':item.thesisState==='DEGRADE'?'amber':'green')}${badge(item.evidenceCompleteness)}</div>

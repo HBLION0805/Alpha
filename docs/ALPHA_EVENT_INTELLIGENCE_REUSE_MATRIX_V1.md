@@ -18,6 +18,8 @@ This milestone reuses existing Alpha components where their semantics match. It 
 | Prediction Evidence | HIGH | Immutable decision-input pattern | Current projection is not the Replay Console historical decision artifact |
 | Decision Evidence | HIGH | Immutable decision pattern | Bind historical generatedAt/cutoff/version rather than recomputing current UI state |
 | Context Cutoff | HIGH | Point-in-time filtering pattern | Extend from context cutoff to evidence + decision visibility |
+| Event Observation Store V1 | NEW NARROW INFRA | Immutable prospective event evidence | No overwrite; no backfill of Alpha receivedAt; materialized replay case is derived |
+| Pre-event State Recorder V1 | NEW NARROW INFRA | Prospective unscheduled-event baseline | Reads existing Alpha state only; missing/stale source clocks remain explicit |
 | MarketExpectation fixtures | TEST ONLY | Scheduled program tests | Synthetic data cannot satisfy real-case acceptance |
 | Existing option strategy engines | FROZEN | Downstream consumer after V1 | No strategy expansion during this milestone |
 ## Do not reuse without semantic correction

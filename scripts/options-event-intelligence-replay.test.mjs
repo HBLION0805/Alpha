@@ -14,6 +14,11 @@ const ev=(id,kind,receivedAt)=>({
   evidenceId:id,eventId:'scheduled-demo',kind,sourceId:'fixture',sourceUrl:null,
   occurredAt:null,sourcePublishedAt:null,vendorReceivedAt:null,receivedAt,parsedAt:receivedAt,
   availability:'CURRENT',summary:id,supersedesEvidenceId:null,
+  expectationSnapshot:kind==='EXPECTATION_SNAPSHOT'?{stage:'RESEARCH',ownerConfirmed:false,rows:[{
+    id:'consensus-test',metric:'TEST_METRIC',period:'2026-09',unit:'COUNT',adjustment:'SA',
+    releaseVersion:'INITIAL',valueMeaning:'LEVEL',expectationType:'CONSENSUS',value:'1',selected:true,
+    source:'test',sourcePublishedAt:null,sourceReceivedAt:receivedAt,methodology:'test',sampleInfo:null
+  }]}:null,
   marketObservation:kind==='MARKET_OBSERVATION'?{
     instrument:'GLD',quoteObservedAt:receivedAt,declaredDelayMs:null,session:'REGULAR',
     comparability:'LIMITED',comparabilityReason:'Test observation keeps provider delay unknown.'

@@ -5,7 +5,7 @@ const no=(v,m)=>{if(v)throw Error(m);};
 const ev=(id,kind,receivedAt)=>({
   evidenceId:id,eventId:'shock-demo',kind,sourceId:kind==='MARKET_OBSERVATION'?'market':'news',
   sourceUrl:null,occurredAt:null,sourcePublishedAt:null,vendorReceivedAt:null,receivedAt,parsedAt:receivedAt,
-  availability:'CURRENT',summary:id,supersedesEvidenceId:null,
+  availability:'CURRENT',summary:id,supersedesEvidenceId:null,expectationSnapshot:null,
   marketObservation:kind==='MARKET_OBSERVATION'?{
     instrument:'GLD',quoteObservedAt:receivedAt,declaredDelayMs:null,session:'REGULAR',
     comparability:'LIMITED',comparabilityReason:'Test observation keeps provider delay unknown.'

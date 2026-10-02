@@ -16,6 +16,8 @@ export type EvidenceCompleteness = "COMPLETE" | "PARTIAL" | "INSUFFICIENT";
 export type MarketSession = "REGULAR" | "PREMARKET" | "AFTER_HOURS" | "TWENTY_FOUR_SEVEN" | "UNKNOWN";
 export type MarketComparability = "COMPARABLE" | "LIMITED" | "NOT_COMPARABLE";
 export type EventArrivalOrder = "PRICE_LEADS_NEWS" | "NEWS_LEADS_PRICE" | "SIMULTANEOUS_WITHIN_CLOCK_RESOLUTION" | "ORDER_UNKNOWN";
+export type EventExpectationType = "CONSENSUS" | "SINGLE_FORECAST" | "MODEL_ESTIMATE" | "MARKET_IMPLIED" | "OWNER_EXPECTATION" | "UNKNOWN";
+export type EventExpectationStage = "RESEARCH" | "FINAL_PRE_ENTRY";
 
 export interface MarketObservationMetadata {
   readonly instrument: string;
@@ -24,6 +26,30 @@ export interface MarketObservationMetadata {
   readonly session: MarketSession;
   readonly comparability: MarketComparability;
   readonly comparabilityReason: string;
+}
+
+export interface EventExpectationRow {
+  readonly id: string;
+  readonly metric: string;
+  readonly period: string;
+  readonly unit: string;
+  readonly adjustment: string;
+  readonly releaseVersion: string;
+  readonly valueMeaning: string;
+  readonly expectationType: EventExpectationType;
+  readonly value: string | null;
+  readonly selected: boolean;
+  readonly source: string;
+  readonly sourcePublishedAt: string | null;
+  readonly sourceReceivedAt: string;
+  readonly methodology: string;
+  readonly sampleInfo: string | null;
+}
+
+export interface EventExpectationSnapshot {
+  readonly stage: EventExpectationStage;
+  readonly ownerConfirmed: boolean;
+  readonly rows: readonly EventExpectationRow[];
 }
 
 export interface EventIntelligenceEvidence {
@@ -40,6 +66,7 @@ export interface EventIntelligenceEvidence {
   readonly availability: EvidenceAvailability;
   readonly summary: string;
   readonly supersedesEvidenceId: string | null;
+  readonly expectationSnapshot: EventExpectationSnapshot | null;
   readonly marketObservation: MarketObservationMetadata | null;
 }
 export interface HistoricalDecisionArtifact {
