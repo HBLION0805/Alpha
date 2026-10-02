@@ -17,7 +17,7 @@ function preStateEvidence(record){
     evidenceId:'employment-pre-state-'+s.recordedAt.replace(/[:.]/g,'-').toLowerCase(),
     eventId:EVENT_ID,kind:'PRE_EVENT_STATE',sourceId:'alpha-pre-event-state',sourceUrl:null,
     occurredAt:s.recordedAt,sourcePublishedAt:null,vendorReceivedAt:null,receivedAt:s.recordedAt,parsedAt:s.recordedAt,
-    availability:s.missingEvidence.length?'UNKNOWN':'CURRENT',
+    availability:s.missingEvidence.length||s.assets.some(a=>a.attributedBias==='INSUFFICIENT_EVIDENCE'||a.blockers.some(b=>/MISSING|NOT_FRESH|OLD/.test(b)))?'UNKNOWN':'CURRENT',
     summary:'Prospective pre-event state. '+assets+'; missing: '+(s.missingEvidence.join(', ')||'none'),
     supersedesEvidenceId:null,expectationSnapshot:null,marketObservation:null
   };
@@ -39,14 +39,14 @@ function casePath(root){
 }
 export function materializeEmploymentCase(root,asOf){
   clock(asOf);
-  const pre=listPreEventStates(root,new Date(clock(EVENT_TIME)-1).toISOString()).at(-1)??null;
+  const pre=listPreEventStates(root,new Date(Math.min(clock(asOf),clock(EVENT_TIME)-1)).toISOString());
   const observations=listEventObservations(root,EVENT_ID,asOf).map(x=>structuredClone(x.evidence));
-  const evidence=[...(pre?[preStateEvidence(pre)]:[]),...observations];
+  const evidence=[...pre.map(preStateEvidence),...observations];
   const expectation=[...evidence].filter(x=>x.kind==='EXPECTATION_SNAPSHOT'&&clock(x.receivedAt)<clock(EVENT_TIME)).sort((a,b)=>clock(a.receivedAt)-clock(b.receivedAt)).at(-1)??null;
   const release=evidence.filter(x=>x.kind==='SOURCE_OBSERVATION'&&x.sourceId==='bls'&&clock(x.receivedAt)>=clock(EVENT_TIME)).sort((a,b)=>clock(a.receivedAt)-clock(b.receivedAt))[0]??null;
   if(!release)evidence.push(pendingRelease(asOf));
   const market=evidence.filter(x=>x.kind==='MARKET_OBSERVATION').sort((a,b)=>clock(a.receivedAt)-clock(b.receivedAt)).at(-1)??null;
-  const preEvidence=evidence.find(x=>x.kind==='PRE_EVENT_STATE')??null;
+  const preEvidence=evidence.filter(x=>x.kind==='PRE_EVENT_STATE').at(-1)??null;
   const required=[preEvidence?.evidenceId,expectation?.evidenceId,(release??evidence.find(x=>x.evidenceId==='employment-release-observation-pending'))?.evidenceId,market?.evidenceId].filter(Boolean);
   const value={
     eventId:EVENT_ID,caseType:'SCHEDULED',title:'Employment Situation — September 2026',

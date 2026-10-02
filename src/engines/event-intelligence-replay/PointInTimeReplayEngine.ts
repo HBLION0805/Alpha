@@ -76,6 +76,11 @@ function validateCase(value: EventIntelligenceCase): void {
       const market = item.marketObservation;
       if (!market || !market.instrument.trim() || !market.comparabilityReason.trim()) throw new Error("EVENT_INTELLIGENCE_MARKET_METADATA");
       clock(market.quoteObservedAt);
+      if (market.detectedMovement) {
+        assertText(market.detectedMovement.ruleVersion,"EVENT_INTELLIGENCE_MOVEMENT_RULE");
+        const detectedAt=clock(market.detectedMovement.detectedAt);
+        if (detectedAt < clock(market.quoteObservedAt) || detectedAt > clock(item.parsedAt ?? item.receivedAt)) throw new Error("EVENT_INTELLIGENCE_MOVEMENT_CLOCK");
+      }
       if (market.declaredDelayMs !== null && (!Number.isSafeInteger(market.declaredDelayMs) || market.declaredDelayMs < 0)) {
         throw new Error("EVENT_INTELLIGENCE_MARKET_DELAY");
       }
@@ -103,7 +108,7 @@ function validateCase(value: EventIntelligenceCase): void {
     for (const evidenceId of decision.inputEvidenceIds) {
       const item = evidence.get(evidenceId);
       if (!item) throw new Error("EVENT_INTELLIGENCE_DECISION_EVIDENCE_MISSING");
-      if (clock(item.receivedAt) > clock(decision.evidenceCutoffAt)) throw new Error("EVENT_INTELLIGENCE_DECISION_FUTURE_EVIDENCE");
+      if (clock(item.receivedAt) > clock(decision.evidenceCutoffAt) || (item.parsedAt !== null && clock(item.parsedAt) > clock(decision.evidenceCutoffAt))) throw new Error("EVENT_INTELLIGENCE_DECISION_FUTURE_EVIDENCE");
     }
   }
 
@@ -147,10 +152,10 @@ function completeness(
 }
 
 function arrivalOrder(visible: readonly EventIntelligenceEvidence[]): EventArrivalOrder {
-  const market = visible.find((item) => item.kind === "MARKET_OBSERVATION");
+  const market = visible.find((item) => item.kind === "MARKET_OBSERVATION" && item.marketObservation?.detectedMovement);
   const news = visible.find((item) => item.kind === "SOURCE_OBSERVATION");
   if (!market || !news) return "ORDER_UNKNOWN";
-  const marketAt = clock(market.receivedAt);
+  const marketAt = clock(market.marketObservation!.detectedMovement!.detectedAt);
   const newsAt = clock(news.receivedAt);
   if (marketAt < newsAt) return "PRICE_LEADS_NEWS";
   if (newsAt < marketAt) return "NEWS_LEADS_PRICE";
@@ -161,7 +166,7 @@ export class PointInTimeReplayEngine {
   replay(value: EventIntelligenceCase, asOf: string): PointInTimeReplayView {
     validateCase(value);
     const cutoff = clock(asOf);
-    const visibleEvidence = value.evidence.filter((item) => clock(item.receivedAt) <= cutoff).sort(compareEvidence);
+    const visibleEvidence = value.evidence.filter((item) => clock(item.receivedAt) <= cutoff && (item.parsedAt === null || clock(item.parsedAt) <= cutoff)).sort(compareEvidence);
     const visibleHistoricalDecisions = value.historicalDecisions
       .filter((item) => clock(item.generatedAt) <= cutoff)
       .sort(compareDecision);

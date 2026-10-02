@@ -20,6 +20,7 @@ export type EventExpectationType = "CONSENSUS" | "SINGLE_FORECAST" | "MODEL_ESTI
 export type EventExpectationStage = "RESEARCH" | "FINAL_PRE_ENTRY";
 
 export interface MarketObservationMetadata {
+  readonly detectedMovement?: { readonly detectedAt: string; readonly ruleVersion: string } | null;
   readonly instrument: string;
   readonly quoteObservedAt: string;
   readonly declaredDelayMs: number | null;

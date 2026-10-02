@@ -52,6 +52,7 @@ const evidence = (
     }],
   } : null,
   marketObservation: kind === "MARKET_OBSERVATION" ? {
+    detectedMovement: { detectedAt: receivedAt, ruleVersion: "SYNTHETIC_TEST_DETECTOR_NOT_LIVE" },
     instrument: "GLD",
     quoteObservedAt: receivedAt,
     declaredDelayMs: null,
