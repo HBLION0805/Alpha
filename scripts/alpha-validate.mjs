@@ -150,6 +150,8 @@ const aggregateTestFiles = [
     "scripts/options-prospective-decision-readiness.test.mjs",
     "scripts/options-prospective-decision-issuer.test.mjs",
     "scripts/options-prospective-decision.test.mjs",
+    "scripts/options-event-intelligence-cpi-preflight.test.mjs",
+    "scripts/options-cpi-market-evidence.test.mjs",
     "scripts/options-event-intelligence-employment-window.test.mjs",
     "scripts/options-event-intelligence-employment-case.test.mjs",
     "scripts/options-event-intelligence-workbench.test.mjs",

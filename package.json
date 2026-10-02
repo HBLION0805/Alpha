@@ -245,6 +245,11 @@
     "test:prospective-readiness": "tsx scripts/options-prospective-decision-readiness.test.mjs",
     "test:prospective-issuer": "tsx scripts/options-prospective-decision-issuer.test.mjs",
     "test:prospective-cli": "tsx scripts/options-prospective-decision.test.mjs",
+    "test:cpi-preflight": "tsx scripts/options-event-intelligence-cpi-preflight.test.mjs",
+    "test:cpi-market-evidence": "tsx scripts/options-cpi-market-evidence.test.mjs",
+    "cpi:market-host-source": "tsx scripts/options-cpi-market-host-source.mjs --source",
+    "cpi:market-accept": "tsx scripts/options-cpi-market-evidence.mjs",
+    "cpi:preflight": "tsx scripts/options-event-intelligence-cpi-preflight.mjs",
     "prospective:decision": "tsx scripts/options-prospective-decision.mjs",
     "prospective:rehearsal": "tsx scripts/options-prospective-decision-rehearsal.mjs",
     "options:event-assessment": "tsx scripts/options-event-intelligence-assess.mjs"

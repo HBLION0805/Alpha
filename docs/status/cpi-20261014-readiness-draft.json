@@ -1,0 +1,134 @@
+{
+  "milestone": "Alpha Prospective Decision Acceptance V1",
+  "candidateEvent": {
+    "eventId": "cpi-20261014",
+    "title": "Consumer Price Index — September 2026",
+    "eventTime": "2026-10-14T12:30:00.000Z",
+    "eventTimeEt": "2026-10-14 08:30:00 ET",
+    "officialCalendar": "BLS",
+    "status": "CANDIDATE_SELECTED_NOT_REGISTERED",
+    "freezeDeadline": "2026-10-14T12:15:00.000Z",
+    "firstReadinessCheck": "2026-10-14T12:20:00.000Z",
+    "rationale": "Chosen as the first formal scheduled acceptance candidate because it is a major GLD/IBIT macro event, has primary BLS release data, and leaves time to qualify live market inputs before the event."
+  },
+  "contracts": [
+    {
+      "asset": "GLD",
+      "contractId": "gld-cpi-20261014",
+      "status": "DRAFT_NOT_REGISTERED",
+      "requiredEvidence": [
+        {
+          "id": "cpi-expectation",
+          "kind": "EXPECTATION",
+          "sourceId": "PENDING_FINAL_SURVEY_SOURCE",
+          "freshness": "freeze before 08:15 ET",
+          "status": "MISSING"
+        },
+        {
+          "id": "bls-cpi-health",
+          "kind": "SOURCE_HEALTH",
+          "sourceId": "bls-cpi-rss",
+          "freshness": "event-window current",
+          "status": "PREFLIGHT_PASS_SOURCE_ACCESS_CONFIRMED"
+        },
+        {
+          "id": "gld-live",
+          "kind": "MARKET",
+          "sourceId": "robinhood-equity-quote",
+          "instrument": "GLD",
+          "freshness": "<=15s at decision eligibility",
+          "status": "ADAPTER_READY_LIVE_SMOKE_PENDING"
+        }
+      ],
+      "rules": {
+        "status": "UNFROZEN",
+        "requiredBeforeRegistration": [
+          "CPI surprise metric and threshold relative to frozen consensus",
+          "GLD confirmation/invalidation metric and persistence",
+          "any USD/rate confirmation only if an exact qualified source is selected"
+        ],
+        "realYieldRequired": false,
+        "nominalYieldMaySubstituteForRealYield": false
+      }
+    },
+    {
+      "asset": "IBIT",
+      "contractId": "ibit-cpi-20261014",
+      "status": "DRAFT_NOT_REGISTERED",
+      "requiredEvidence": [
+        {
+          "id": "cpi-expectation",
+          "kind": "EXPECTATION",
+          "sourceId": "PENDING_FINAL_SURVEY_SOURCE",
+          "freshness": "freeze before 08:15 ET",
+          "status": "MISSING"
+        },
+        {
+          "id": "bls-cpi-health",
+          "kind": "SOURCE_HEALTH",
+          "sourceId": "bls-cpi-rss",
+          "freshness": "event-window current",
+          "status": "PREFLIGHT_PASS_SOURCE_ACCESS_CONFIRMED"
+        },
+        {
+          "id": "ibit-live",
+          "kind": "MARKET",
+          "sourceId": "robinhood-equity-quote",
+          "instrument": "IBIT",
+          "freshness": "<=15s at decision eligibility",
+          "status": "ADAPTER_READY_LIVE_SMOKE_PENDING"
+        },
+        {
+          "id": "btc-live",
+          "kind": "MARKET",
+          "sourceId": "coinbase-btc-context",
+          "instrument": "BTC-USD",
+          "freshness": "<=5s at decision eligibility",
+          "status": "AVAILABLE_PROVIDER_NOT_EVENT_FROZEN"
+        }
+      ],
+      "rules": {
+        "status": "UNFROZEN",
+        "requiredBeforeRegistration": [
+          "CPI surprise metric and threshold relative to frozen consensus",
+          "IBIT confirmation/invalidation metric and persistence",
+          "BTC confirmation/invalidation rule if retained"
+        ],
+        "realYieldRequired": false,
+        "nominalYieldMaySubstituteForRealYield": false
+      }
+    }
+  ],
+  "sourcePreparation": {
+    "blsCpiRss": {
+      "url": "https://www.bls.gov/feed/cpi.rss",
+      "status": "LIVE_PREFLIGHT_PASS",
+      "lastPreflightAt": "2026-10-02T16:04:38.476Z"
+    },
+    "robinhoodEquity": {
+      "sourceId": "robinhood-equity-quote",
+      "symbols": [
+        "GLD",
+        "IBIT"
+      ],
+      "adapterStatus": "READY",
+      "hostSourceStatus": "READY",
+      "liveSmokeStatus": "PENDING_CODEX_ROBINHOOD_ACCESS"
+    }
+  },
+  "latencyPolicy": {
+    "status": "UNFROZEN",
+    "note": "Synthetic latency-v1 rehearsal is engineering evidence only. Live CPI SLA must be frozen after source/collector timing is measured and before 08:15 ET."
+  },
+  "acceptance": {
+    "mayRegisterNow": false,
+    "blockers": [
+      "FINAL_SURVEY_CONSENSUS_MISSING",
+      "GLD_ROBINHOOD_LIVE_SMOKE_PENDING",
+      "IBIT_ROBINHOOD_LIVE_SMOKE_PENDING",
+      "LIVE_DIRECTION_RULE_THRESHOLDS_UNFROZEN",
+      "LIVE_LATENCY_POLICY_UNFROZEN"
+    ]
+  },
+  "executionAllowed": false
+}

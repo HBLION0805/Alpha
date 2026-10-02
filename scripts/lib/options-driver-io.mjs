@@ -85,9 +85,14 @@ function networkFailureCode(error) {
 // Dedicated Employment Situation feed listed at https://www.bls.gov/feed/ .
 // Separate from the unchanged six-source generic driver registry.
 export const EMPLOYMENT_SOURCE_URL = "https://www.bls.gov/feed/empsit.rss";
+export const CPI_SOURCE_URL = "https://www.bls.gov/feed/cpi.rss";
 export async function readPublicEmploymentFeed(sourceId, fetchImplementation = globalThis.fetch, { deadlineMs = 12000 } = {}) {
   if (sourceId !== "bls") throw new Error("UNREGISTERED_DRIVER_SOURCE");
   return readFixedFeed(EMPLOYMENT_SOURCE_URL, fetchImplementation, deadlineMs);
+}
+export async function readPublicCpiFeed(sourceId, fetchImplementation = globalThis.fetch, { deadlineMs = 12000 } = {}) {
+  if (sourceId !== "bls") throw new Error("UNREGISTERED_DRIVER_SOURCE");
+  return readFixedFeed(CPI_SOURCE_URL, fetchImplementation, deadlineMs);
 }
 
 export async function readPublicDriverFeed(sourceId, fetchImplementation = globalThis.fetch, { deadlineMs = 12000 } = {}) {
