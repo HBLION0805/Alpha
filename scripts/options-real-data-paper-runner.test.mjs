@@ -17,6 +17,17 @@ for(const tool of ['get_option_chains','get_option_instruments','get_equity_quot
 for(const forbidden of ['get_account(','place_order(','submit_order(','get_positions('])assert(!ps.includes(forbidden));
 assert(ps.includes("strategyValidationEligible=$false"));
 assert(ps.includes("liveOrderAuthority=$false"));
+assert(ps.includes("monitoringMode='DISCRETE_SNAPSHOT_ONLY'"));
+assert(ps.includes("firstTouchExecutionClaim=$false"));
+assert(ps.includes("timeExitFillRequiresFreshInSessionQuote=$true"));
+assert(ps.includes("lastPriceFallbackAllowed=$false"));
+assert(ps.includes("BOUNDED_WAIT_FOR_SAME_DAY_COMPLETED_1550_RECEIPT"));
+assert(ps.includes("SOURCE_RUN_NOT_COMPLETED"));
+assert(ps.includes("CAPTURE_DATE_MISMATCH"));
+assert(ps.includes("FAST_HOST_IDENTITY_MISMATCH"));
+assert(ps.includes("QUOTE_FRESHNESS_BINDING_FAILED"));
+assert(ps.includes("$attemptId"));
+assert(ps.includes("recoveryMode='IMMUTABLE_PLAN_AND_SAVED_QUOTES'"));
 assert(ps.includes("'NO_TRADE_VALID'"));
 assert(ps.includes("'BLOCKED_DATA_INTEGRITY'"));
 assert(ps.includes("'SYSTEM_FAILURE'"));

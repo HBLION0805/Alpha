@@ -13,7 +13,7 @@ assert.equal(selectEngineeringReference(decision(),at).selected.contract.type,'p
 const stale=decision();stale.provenance.capture.capturedAt='2026-10-08T13:55:00.000Z';assert.deepEqual(selectEngineeringReference(stale,at).blockers,['DECISION_EVIDENCE_STALE']);
 const range=decision();range.candidates[1].trendObservation.direction='RANGE';assert.equal(selectEngineeringReference(range,at).status,'NO_TRADE_VALID');
 
-const preview=buildEngineeringPaperPreview({decisionEvidence:decision(),frames:[frame()],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2'}},at});
+const preview=buildEngineeringPaperPreview({decisionEvidence:decision(),frames:[frame()],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2',maxCents:50000}},at});
 assert.equal(preview.status,'READY_TO_ARM');
 assert.equal(preview.strategyValidationEligible,false);
 assert.equal(preview.policyVersion,ENGINEERING_POLICY_VERSION);
@@ -28,10 +28,12 @@ assert.equal(preview.request.decisionAt,'2026-10-08T14:00:30.000Z');
 assert.equal(preview.request.entryDeadlineAt,'2026-10-08T14:02:30.000Z');
 assert.equal(preview.request.timeExitAt,'2026-10-08T14:07:30.000Z');
 assert.equal(preview.fillPolicy.entry,'LATER_ASK_AT_OR_BELOW_FROZEN_LIMIT');
+assert.equal(preview.riskPolicy.fullPremiumCents,11800);assert.equal(preview.riskPolicy.tradeBudgetMaxCents,50000);
 
-const mismatch=frame();mismatch.quotes[0].askCents=119;assert.deepEqual(buildEngineeringPaperPreview({decisionEvidence:decision(),frames:[mismatch],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2'}},at}).blockers,['DECISION_QUOTE_SOURCE_MISMATCH']);
-const synthetic=frame();synthetic.origin='SYNTHETIC_FIXTURE';assert.deepEqual(buildEngineeringPaperPreview({decisionEvidence:decision(),frames:[synthetic],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2'}},at}).blockers,['REAL_HOST_SELECTION_FRAME_MISSING']);
+const over=decision();over.candidates[1].referenceContracts[0].contract.bidCents=499;over.candidates[1].referenceContracts[0].contract.askCents=501;over.candidates[1].referenceContracts[0].contract.updatedAt='2026-10-08T13:59:40.000Z';over.candidates[1].referenceContracts[0].contract.receivedAt='2026-10-08T13:59:41.000Z';const fOver=frame();fOver.quotes[0].bidCents=499;fOver.quotes[0].askCents=501;assert.deepEqual(buildEngineeringPaperPreview({decisionEvidence:over,frames:[fOver],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2',maxCents:50000}},at}).blockers,['FROZEN_DOLLAR_CAP_EXCEEDED']);
+const mismatch=frame();mismatch.quotes[0].askCents=119;assert.deepEqual(buildEngineeringPaperPreview({decisionEvidence:decision(),frames:[mismatch],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2',maxCents:50000}},at}).blockers,['DECISION_QUOTE_SOURCE_MISMATCH']);
+const synthetic=frame();synthetic.origin='SYNTHETIC_FIXTURE';assert.deepEqual(buildEngineeringPaperPreview({decisionEvidence:decision(),frames:[synthetic],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2',maxCents:50000}},at}).blockers,['REAL_HOST_SELECTION_FRAME_MISSING']);
 const late='2026-10-08T20:10:00.000Z';const d2=decision();d2.issuedAt='2026-10-08T20:09:50.000Z';d2.provenance.capture.capturedAt='2026-10-08T20:09:40.000Z';for(const r of d2.candidates[1].referenceContracts){r.contract.updatedAt='2026-10-08T20:09:45.000Z';r.contract.receivedAt='2026-10-08T20:09:46.000Z';}
-const f2=frame();f2.path=d2.provenance.capture.path;f2.quotes[0].updatedAt='2026-10-08T20:09:45.000Z';f2.quotes[0].receivedAt='2026-10-08T20:09:46.000Z';assert.equal(buildEngineeringPaperPreview({decisionEvidence:d2,frames:[f2],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2'}},at:late}).status,'NO_TRADE_VALID');
+const f2=frame();f2.path=d2.provenance.capture.path;f2.quotes[0].updatedAt='2026-10-08T20:09:45.000Z';f2.quotes[0].receivedAt='2026-10-08T20:09:46.000Z';assert.equal(buildEngineeringPaperPreview({decisionEvidence:d2,frames:[f2],settings:{tradeBudget:{version:'OWNER_ALLOCATION_ONLY_V2',maxCents:50000}},at:late}).status,'NO_TRADE_VALID');
 
 console.log('Real-data paper bridge tests passed');

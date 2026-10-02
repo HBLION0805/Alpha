@@ -10,9 +10,11 @@ $base=Join-Path $alpha 'data\runtime\options-real-data-experiments\runs'
 New-Item -ItemType Directory -Force -Path $base | Out-Null
 $started=Get-Date
 $date=$started.ToString('yyyy-MM-dd')
-$receiptPath=Join-Path $base ($date+'-run.json')
-$result=[ordered]@{version='ALPHA_REAL_DATA_PAPER_RUN_V1';date=$date;startedAt=$started.ToString('o');status='STARTED';phase='PRECHECK';engineeringAcceptance='PENDING';strategyValidationEligible=$false;liveOrderAuthority=$false;executionAllowed=$false;captures=@()}
-function Save-Result {$result.updatedAt=(Get-Date).ToString('o');$result|ConvertTo-Json -Depth 16|Set-Content -LiteralPath $receiptPath -Encoding UTF8}
+$attemptId=$started.ToString('HHmmssfff')
+$receiptPath=Join-Path $base ($date+'-'+$attemptId+'-run.json')
+$latestPath=Join-Path $base ($date+'-latest.json')
+$result=[ordered]@{version='ALPHA_REAL_DATA_PAPER_RUN_V1';date=$date;attemptId=$attemptId;startedAt=$started.ToString('o');status='STARTED';phase='PRECHECK';engineeringAcceptance='PENDING';strategyValidationEligible=$false;liveOrderAuthority=$false;executionAllowed=$false;monitoringMode='DISCRETE_SNAPSHOT_ONLY';firstTouchExecutionClaim=$false;timeExitFillRequiresFreshInSessionQuote=$true;lastPriceFallbackAllowed=$false;recoveryMode='IMMUTABLE_PLAN_AND_SAVED_QUOTES';captures=@()}
+function Save-Result {$result.updatedAt=(Get-Date).ToString('o');$json=$result|ConvertTo-Json -Depth 16;$json|Set-Content -LiteralPath $receiptPath -Encoding UTF8;$json|Set-Content -LiteralPath $latestPath -Encoding UTF8}
 function Stop-Run([string]$status,[string]$phase,[string]$reason,[int]$code=2){$result.status=$status;$result.phase=$phase;$result.reason=$reason;if($status -in @('SYSTEM_FAILURE','BLOCKED_DATA_INTEGRITY','INCOMPLETE_EXPERIMENT')){$result.engineeringAcceptance='FAILED'};Save-Result;exit $code}
 Save-Result
 foreach($p in @($repo,$alpha,$tsx,$bridge,$mcp,$guidance)){if(-not(Test-Path -LiteralPath $p)){Stop-Run 'SYSTEM_FAILURE' 'PRECHECK' 'DEPENDENCY_MISSING'}}
@@ -27,6 +29,8 @@ if($DryRun){
 if($date -ne '2026-10-08'){Stop-Run 'SYSTEM_FAILURE' 'DATE_GUARD' 'WRONG_EXPERIMENT_DATE'}
 $sourceRun=Join-Path $alpha ('data\runtime\options-workbench-development\local-1550\runs\'+$date+'-1550-run.json')
 $deadline=$started.Date.AddHours(15).AddMinutes(52).AddSeconds(45)
+$result.upstreamWaitDeadline=$deadline.ToString('o')
+$result.upstreamWaitPolicy='BOUNDED_WAIT_FOR_SAME_DAY_COMPLETED_1550_RECEIPT'
 $result.phase='WAIT_1550_CAPTURE';Save-Result
 while((Get-Date) -lt $deadline){
   if(Test-Path -LiteralPath $sourceRun){
@@ -36,8 +40,47 @@ while((Get-Date) -lt $deadline){
   Start-Sleep -Milliseconds 500
 }
 if(-not $source){Stop-Run 'SYSTEM_FAILURE' 'WAIT_1550_CAPTURE' '1550_RECEIPT_UNAVAILABLE'}
-$result.source1550=[ordered]@{path=$sourceRun;status=$source.status;updatedAt=$source.updatedAt;captureLocal=$source.captureLocal}
+$result.source1550=[ordered]@{path=$sourceRun;status=$source.status;phase=$source.phase;updatedAt=$source.updatedAt;captureLocal=$source.captureLocal;identity=$source.fastHostLatest.identity}
 if($source.status -ne 'PASS'){Stop-Run 'SYSTEM_FAILURE' 'WAIT_1550_CAPTURE' ('1550_'+$source.status)}
+$sourceIssues=@()
+if($source.version -ne 'ALPHA_LOCAL_1550_RUN_V2'){$sourceIssues+='SOURCE_RUN_VERSION_MISMATCH'}
+if($source.date -ne $date){$sourceIssues+='SOURCE_RUN_DATE_MISMATCH'}
+if($source.phase -ne 'COMPLETED'){$sourceIssues+='SOURCE_RUN_NOT_COMPLETED'}
+if($source.fastHostLatest.status -ne 'FINISHED'){$sourceIssues+='FAST_HOST_NOT_FINISHED'}
+if($source.finishResult.status -ne 'PASS'){$sourceIssues+='FINISH_RESULT_NOT_PASS'}
+if($source.fastHostLatest.identity -ne $source.finishResult.identity){$sourceIssues+='FAST_HOST_IDENTITY_MISMATCH'}
+if($source.finishResult.identityMatch -ne $true){$sourceIssues+='FINISH_IDENTITY_NOT_VERIFIED'}
+if($source.finishResult.publicationCurrent -ne $true){$sourceIssues+='PUBLICATION_NOT_CURRENT'}
+if($source.finishResult.freshAtPublish -ne $true -or $source.finishResult.freshCoverage -ne $true){$sourceIssues+='PUBLISH_FRESHNESS_NOT_PASS'}
+try{
+  $captureUtc=[datetimeoffset]::Parse([string]$source.fastHostLatest.capturedAt)
+  $captureLocal=$captureUtc.ToLocalTime()
+  $declaredLocal=[datetimeoffset]::Parse([string]$source.captureLocal)
+  if($captureLocal.Date.ToString('yyyy-MM-dd') -ne $date){$sourceIssues+='CAPTURE_DATE_MISMATCH'}
+  $captureClock=$captureLocal.DateTime
+  if($captureClock -lt $started.Date.AddHours(15).AddMinutes(50) -or $captureClock -ge $started.Date.AddHours(16)){$sourceIssues+='CAPTURE_OUTSIDE_1550_WINDOW'}
+  if([math]::Abs(($captureLocal-$declaredLocal).TotalMilliseconds) -gt 1){$sourceIssues+='CAPTURE_CLOCK_BINDING_MISMATCH'}
+}catch{$sourceIssues+='CAPTURE_CLOCK_INVALID'}
+$rawRel=[string]$source.fastHostLatest.rawInputPath
+try{
+  $alphaFull=[IO.Path]::GetFullPath($alpha)+[IO.Path]::DirectorySeparatorChar
+  $rawFull=[IO.Path]::GetFullPath((Join-Path $alpha ($rawRel -replace '/','\')))
+  if(-not $rawFull.StartsWith($alphaFull,[StringComparison]::OrdinalIgnoreCase)){throw 'path'}
+  if(-not(Test-Path -LiteralPath $rawFull)){throw 'missing'}
+  $raw=Get-Content -LiteralPath $rawFull -Raw|ConvertFrom-Json
+  if($raw.origin -ne 'HOST_MARKET_TOOL_RESPONSES' -or $raw.accountAccessed -ne $false -or $raw.executionAllowed -ne $false){$sourceIssues+='RAW_AUTHORITY_MISMATCH'}
+  if([string]$raw.capturedAt -ne [string]$source.fastHostLatest.capturedAt){$sourceIssues+='RAW_CAPTURE_CLOCK_MISMATCH'}
+  if(@($raw.failures).Count -ne 0){$sourceIssues+='RAW_SOURCE_FAILURES_PRESENT'}
+  if(@($raw.selectedIds).Count -le 0){$sourceIssues+='RAW_SELECTION_EMPTY'}
+  $allowed=@('get_equity_quotes','get_option_chains','get_option_instruments','get_option_quotes')
+  if(@($raw.receipts|Where-Object{$allowed -notcontains $_.tool}).Count -gt 0){$sourceIssues+='RAW_TOOL_SCOPE_VIOLATION'}
+}catch{$sourceIssues+='RAW_CAPTURE_UNAVAILABLE'}
+$publishRows=@($source.finishResult.quoteFreshnessAtPublish)
+if($publishRows.Count -ne 2 -or @($publishRows|Where-Object{$_.requested -ne $_.fresh -or $_.stale -ne 0 -or $_.unknown -ne 0 -or $_.future -ne 0}).Count -gt 0){$sourceIssues+='QUOTE_FRESHNESS_BINDING_FAILED'}
+$result.source1550.verificationIssues=@($sourceIssues)
+$result.source1550.evidenceBound=($sourceIssues.Count -eq 0)
+Save-Result
+if($sourceIssues.Count -gt 0){Stop-Run 'BLOCKED_DATA_INTEGRITY' 'WAIT_1550_CAPTURE' ('1550_BINDING_'+($sourceIssues -join ','))}
 Set-Location $repo
 $result.phase='ARM';Save-Result
 $armRaw=& 'C:\Program Files\nodejs\node.exe' $tsx $bridge --arm --workspace $alpha
@@ -54,10 +97,10 @@ $result.targets=@($targets|ForEach-Object{$_.ToString('o')})
 $result.phase='OBSERVING';Save-Result
 function Invoke-ExactCapture([datetime]$target,[int]$index){
   while((Get-Date) -lt $target){Start-Sleep -Milliseconds 200}
-  $log=Join-Path $base ($date+'-capture-'+('{0:D2}' -f $index)+'.jsonl')
+  $log=Join-Path $base ($date+'-'+$attemptId+'-capture-'+('{0:D2}' -f $index)+'.jsonl')
   $prompt=@"
 ALPHA REAL-DATA ENGINEERING PAPER CAPTURE. NO REPO EXPLORATION. NO WEB. NO CODE EDITS.
-This is paper simulation only. Never access account, balance, portfolio, positions, orders, executions, transactions, or any write/trading tool.
+This is paper simulation only. Monitoring is DISCRETE SNAPSHOT ONLY: never claim a stop/target first touched between captures. If a time-exit observation is outside the eligible session or its quote is invalid/stale, preserve the position as unresolved; never substitute a last-known price. Never access account, balance, portfolio, positions, orders, executions, transactions, or any write/trading tool.
 1. Call alpha_paper_host prepare_capture exactly once. Require status=READY.
 2. Evaluate its returned source function exactly ONCE with clock async()=>new Date().toISOString().
 3. Its call(tool,args) may invoke ONLY robinhood_alpha_market_data: get_option_chains, get_option_instruments, get_equity_quotes, get_option_quotes. Do not call any other Robinhood tool.

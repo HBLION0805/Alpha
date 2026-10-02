@@ -1,6 +1,6 @@
 {
   "standard": "ALPHA_REAL_DATA_EXPERIMENT_STANDARD_V1",
-  "status": "ACTIVE_REAL_DATA_PAPER_LOOP_WIRED_LIVE_SMOKE_PENDING",
+  "status": "ACTIVE_REAL_DATA_PAPER_LOOP_WIRED_BOUNDARY_AUDITED_LIVE_SMOKE_PENDING",
   "effectiveAt": "2026-10-02",
   "supersedesSequence": "BROAD_SYSTEM_COMPLETION_BEFORE_REAL_DATA_PAPER",
   "scopeExpansionAllowed": false,
@@ -60,6 +60,63 @@
     "currentRealWorkspacePreview": "BLOCKED_DATA_INTEGRITY_CURRENT_DECISION_EVIDENCE_UNAVAILABLE",
     "liveRobinhoodSmoke": "PENDING_CODEX_QUOTA_RESET_2026-10-07_15_02_ET"
   },
+  "boundaryAudit": {
+    "discreteMonitoring": {
+      "status": "VERIFIED",
+      "mode": "DISCRETE_SNAPSHOT_ONLY",
+      "firstTouchExecutionClaim": false,
+      "quoteGapDisclosure": true,
+      "note": "Stop/target can only trigger on saved admissible observations. Missing intervals cannot be reconstructed as first-touch executions."
+    },
+    "timeExit": {
+      "status": "VERIFIED",
+      "requiresFreshInSessionQuote": true,
+      "lastPriceFallbackAllowed": false,
+      "invalidOrOutOfSessionResult": "OPEN_UNRESOLVED"
+    },
+    "upstream1550Dependency": {
+      "status": "HARDENED",
+      "boundedWaitDeadlineLocal": "15:52:45_ET",
+      "requiresSameDayCompletedReceipt": true,
+      "verifies": [
+        "run_version",
+        "run_date",
+        "completed_phase",
+        "fast_host_finished",
+        "finish_pass",
+        "identity_binding",
+        "capture_window",
+        "raw_capture_binding",
+        "market_tool_allowlist",
+        "publish_freshness"
+      ],
+      "staleOrMismatchedResult": "BLOCKED_DATA_INTEGRITY"
+    },
+    "dollarRisk": {
+      "status": "VERIFIED_AND_FRONT_GATED",
+      "frozenTradeBudgetMaxCents": 50000,
+      "quantityCap": 1,
+      "fullPremiumAboveCap": "NO_TRADE_VALID",
+      "fillTimeFeasibilityRecheck": true
+    },
+    "restartRecovery": {
+      "status": "HARDENED",
+      "immutablePlanAndEnrollment": true,
+      "taskRestartCount": 2,
+      "taskRestartInterval": "PT1M",
+      "runnerReceipts": "UNIQUE_PER_ATTEMPT_PLUS_LATEST_POINTER",
+      "duplicateArmPrevented": true,
+      "savedOpenPositionRecovery": true
+    },
+    "historicalTaskFailure": {
+      "date": "2026-10-01",
+      "lastTaskResultHex": "C000013A",
+      "conclusion": "ROOT_CAUSE_UNPROVEN",
+      "note": "The code indicates process/control termination, not a unique cause. Task Scheduler Operational logging was disabled at the time. Enabling it now requires elevated Windows permission and was denied.",
+      "windowsAppsPathMayHaveBeenABlocker": true,
+      "windowsAppsPathProvenAsUniqueRootCause": false
+    }
+  },
   "october8Experiment": {
     "taskName": "AlphaRealDataPaper20261008",
     "scheduledLocal": "2026-10-08T15:51:00-04:00",
@@ -74,6 +131,7 @@
       "decisionAt+180s",
       "timeExitAt+20s"
     ],
+    "capturePolicyMeaning": "DISCRETE_OBSERVATION_ATTEMPTS_NOT_CONTINUOUS_STOP_MONITORING",
     "exactContractOnly": true,
     "liveOrderAuthority": false
   },
@@ -86,7 +144,8 @@
     "Decision_to_Paper_Plan_bridge",
     "frozen_paper_fill_and_slippage_model_reuse",
     "real_data_position_watch_and_exit_wiring",
-    "scheduled_real_data_runner_deployment"
+    "scheduled_real_data_runner_deployment",
+    "pre_10_8_boundary_audit_and_hardening"
   ],
   "forbiddenP0Expansion": [
     "new_news_sources_without_observed_blocker",
