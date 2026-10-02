@@ -2,16 +2,17 @@
   "milestone": "Alpha Prospective Decision Acceptance V1",
   "asOf": "2026-10-02",
   "branch": "codex/event-intelligence-replay-v1",
-  "status": "FOUNDATION_IMPLEMENTED_NO_LIVE_EVENT_CONTRACT",
+  "governingDevelopmentStandard": "ALPHA_REAL_DATA_EXPERIMENT_STANDARD_V1",
+  "status": "FOUNDATION_IMPLEMENTED_CPI_CANDIDATE_NOT_REGISTERED",
   "deliveries": {
     "eventReadinessAndRuleRegistry": "IMPLEMENTED",
-    "qualifiedRequiredEvidenceIntake": "CONTRACT_LAYER_IMPLEMENTED_LIVE_PROVIDER_GAPS_REMAIN",
+    "qualifiedRequiredEvidenceIntake": "CONTRACT_LAYER_IMPLEMENTED_LIVE_PROVIDER_SMOKE_PENDING",
     "prospectiveDecisionIssuer": "IMPLEMENTED"
   },
   "gate1": {
-    "liveEvent": "NOT_SELECTED_OR_FROZEN",
+    "liveEvent": "CPI_20261014_CANDIDATE_NOT_REGISTERED",
     "status": "NOT_READY",
-    "reason": "No future real event contract has been registered. October 2 Employment Situation cannot be backfilled.",
+    "reason": "CPI is selected as the first scheduled acceptance candidate, but final consensus, live rule thresholds, live latency policy and qualified Robinhood GLD/IBIT smoke are not frozen yet.",
     "eventSpecificEvidence": true,
     "nominalYieldMaySubstituteForRealYield": false
   },
@@ -34,15 +35,20 @@
     }
   },
   "liveEvidence": {
-    "officialNewsAndBls": "AVAILABLE",
+    "cpiOfficialSource": "BLS_CPI_RSS_PREFLIGHT_PASS",
     "coinbaseBtc": "AVAILABLE",
     "treasuryDailyNominalAndRealYields": "AVAILABLE_BUT_NOT_INTRADAY",
-    "gldIbitQualifiedLiveQuotes": "UNRESOLVED",
+    "gldIbitQualifiedLiveQuotes": "ADAPTER_READY_LIVE_SMOKE_PENDING",
     "robinhoodManualImmediateRead": "BLOCKED_BY_CODEX_USAGE_LIMIT"
   },
   "october2Employment": {
     "prospectiveAcceptance": "NOT_ACCEPTED",
     "mayBeReclassifiedToPass": false
+  },
+  "realDataPaperRelation": {
+    "october8RealDataExperimentStart": true,
+    "prospectiveGateCompletionRequiredForEngineeringExperiment": false,
+    "prospectiveGateCompletionRequiredForStrategyValidationSample": true
   },
   "executionAllowed": false
 }

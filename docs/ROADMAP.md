@@ -1,5 +1,8 @@
 # Alpha Roadmap
 
+October 2 current development and acceptance standard: [Alpha Real-Data Experiment Standard V1](specifications/ALPHA_REAL_DATA_EXPERIMENT_STANDARD_V1.md). This supersedes the prior sequencing assumption that Alpha should be broadly completed before real-data paper experiments begin. October 8 is the real-data experiment start date; October 30 is the diagnostic review date. P0 work is restricted to concrete blockers in Decision -> Contract Selection -> Real Quote -> Paper Fill -> Position Watch -> Exit -> Forensic Review. Engineering experiment results and strategy results remain separate; NO_TRADE_VALID does not pass full position/exit acceptance, SYSTEM_FAILURE remains an engineering failure, and one LOSS does not establish lack of edge.
+
+
 September 19 education extension: [psychology questions and claim review](OPTIONS_MACRO_PSYCHOLOGY_DELIVERY.md)
 are available in the same Macro playbook. This completes the supplied second batch
 within education/reflection; no strategy gate, prospective trial count or source

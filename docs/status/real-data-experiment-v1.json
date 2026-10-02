@@ -1,0 +1,75 @@
+{
+  "standard": "ALPHA_REAL_DATA_EXPERIMENT_STANDARD_V1",
+  "status": "ACTIVE_CURRENT_DEVELOPMENT_AND_ACCEPTANCE_STANDARD",
+  "effectiveAt": "2026-10-02",
+  "supersedesSequence": "BROAD_SYSTEM_COMPLETION_BEFORE_REAL_DATA_PAPER",
+  "scopeExpansionAllowed": false,
+  "dates": {
+    "realDataExperimentStart": "2026-10-08",
+    "diagnosticReview": "2026-10-30"
+  },
+  "tracks": {
+    "engineeringExperiment": "ACTIVE",
+    "strategyValidation": "PARALLEL_SEPARATE"
+  },
+  "labels": {
+    "PAPER_FILLED": {
+      "engineeringMeaning": "POSITION_LIFECYCLE_STARTED",
+      "fullPositionExitAcceptance": "PENDING_EXIT"
+    },
+    "NO_TRADE_VALID": {
+      "engineeringMeaning": "NON_TRADE_PATH_MAY_PASS",
+      "fullPositionExitAcceptance": false
+    },
+    "BLOCKED_DATA_INTEGRITY": {
+      "engineeringMeaning": "HONEST_INTEGRITY_STOP",
+      "fullPositionExitAcceptance": false
+    },
+    "SYSTEM_FAILURE": {
+      "experimentRecordValid": true,
+      "engineeringAcceptance": "FAILED"
+    },
+    "INCOMPLETE_EXPERIMENT": {
+      "engineeringAcceptance": "FAILED_OR_INCOMPLETE"
+    },
+    "LOSS": {
+      "tradeOutcome": "NEGATIVE_MODELED_NET_PNL",
+      "strategyEdgeConclusion": "NOT_ESTABLISHED"
+    }
+  },
+  "attribution": {
+    "spreadAndSlippage": "QUOTE_AND_FROZEN_FILL_MODEL_BASED",
+    "thetaAndIv": "MODEL_ESTIMATE_ONLY",
+    "thetaAndIvRequirements": [
+      "method",
+      "input_clocks",
+      "counterfactual",
+      "residual_or_error_limit"
+    ],
+    "exactThetaIvAttributionClaimAllowed": false
+  },
+  "p0AdmissionQuestion": "Which concrete blocker in Decision -> Contract Selection -> Real Quote -> Paper Fill -> Position Watch -> Exit -> Forensic Review does this task remove?",
+  "currentP0Scope": [
+    "Decision_to_Paper_Plan_bridge",
+    "qualified_real_GLDIT_quote_smoke",
+    "frozen_paper_fill_and_slippage_model",
+    "real_data_position_watch_and_exit",
+    "forensic_root_cause_record"
+  ],
+  "forbiddenP0Expansion": [
+    "new_news_sources_without_observed_blocker",
+    "replay_decoration",
+    "strategy_catalog_expansion",
+    "commercial_ui"
+  ],
+  "minimumIntegrity": [
+    "exact_contract_identity",
+    "source_and_receipt_clocks",
+    "no_future_information",
+    "declared_fill_assumptions",
+    "immutable_decision_and_rule_versions",
+    "exit_trigger_and_exit_evidence",
+    "reconstructable_lineage"
+  ],
+  "liveOrderAuthority": false
+}

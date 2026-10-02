@@ -55,3 +55,12 @@ The October 2, 2026 Employment Situation remains a failed live acceptance sample
 No production/future event readiness contract has been registered yet. The current engineering rehearsal proves issuer mechanics only. Qualified GLD/IBIT live market evidence remains an open dependency for any event whose contract requires it.
 
 Execution authority remains false.
+## Relationship to the current real-data experiment standard
+
+Prospective Decision Acceptance remains the event-decision integrity standard, but it no longer delays real-data paper experimentation until every prospective gate is complete.
+
+The current governing development order is defined by `ALPHA_REAL_DATA_EXPERIMENT_STANDARD_V1.md`: real-data engineering experiments start on October 8, 2026, while strategy validation continues separately with frozen prospective rules.
+
+A NO_TRADE_VALID outcome may pass its non-trade engineering path but cannot pass full held-position exit acceptance. SYSTEM_FAILURE remains an engineering failure even when preserved correctly. A single LOSS is a trade outcome, not an edge conclusion.
+
+Prospective event gates remain mandatory for samples that claim prospective strategy validation.
