@@ -19,3 +19,4 @@ export async function request(path,body){
 ROUTES.add('/api/evidence-loop');
 ROUTES.add('/api/case-export');
 ROUTES.add('/api/weekly-plan');
+ROUTES.add('/api/event-intelligence');

@@ -27,20 +27,21 @@ import {weeklyDraftFromState,weeklyPlanFromForm,weeklyEventFromForm} from './wee
 const $=selector=>document.querySelector(selector);
 const defaultFilters=()=>({symbol:'',expiry:'',type:'',flagged:false,search:'',sort:'volume',direction:'desc',page:1});
 const drafts={register:registerDefaults(),fill:fillDefaults(),correct:fillDefaults()};
-const ui={chain:defaultFilters(),plannerDraft:plannerDefaults(),plannerResult:null,planningSource:null,costFeeBasis:'DECLARED_FEES',costDeskResult:null,journalMode:'register',journalDraft:drafts.register,reviewScope:'trades',lessonOrigin:'',reviewSearch:'',newsSource:'',newsSearch:'',newsAsset:''};
+const ui={chain:defaultFilters(),plannerDraft:plannerDefaults(),plannerResult:null,planningSource:null,costFeeBasis:'DECLARED_FEES',costDeskResult:null,journalMode:'register',journalDraft:drafts.register,reviewScope:'trades',lessonOrigin:'',reviewSearch:'',newsSource:'',newsSearch:'',newsAsset:'',eventReplayCase:'',eventReplayAsOf:null};
 let comparingCosts=false,previewingPolicy=false;
 function clearPolicyPreview(){ui.capitalPolicyPreview=null;const p=$('#capital-policy-preview');if(p)p.innerHTML=capitalPolicyPanel(null,{preview:true});}
 function syncWeeklyForm(){const form=$('#weekly-plan-form');if(form)ui.weeklyDraft=weeklyPlanFromForm(form,ui.weeklyDraft??weeklyDraftFromState(state?.weeklyPlan?.data));return ui.weeklyDraft??weeklyDraftFromState(state?.weeklyPlan?.data);}
 function costRequest(){return {scenario:buildScenario(plannerBudgetDraft(ui.plannerDraft,state.guidance?.data?.current.settings)),feeBasis:ui.costFeeBasis};}
 function clearCosts(){ui.costDeskResult=null;const panel=$('#cost-desk-result');if(panel)panel.innerHTML=costDeskResult(null);}
 let state=null,pending=null,pendingKey=null,requestId=null,loading=false,saving=false,calculating=false,previewing=false,toastTimer;
+let eventReplayTimer=null,eventReplayRequestSequence=0;
 let renderedRoute=null;
 const dirty=new Set();
 function syncNavigation(){
   const hidden=matchMedia('(max-width: 650px)').matches&&!document.body.classList.contains('menu-open');
   $('#sidebar').inert=hidden;if(hidden)$('#sidebar').setAttribute('aria-hidden','true');else $('#sidebar').removeAttribute('aria-hidden');
 }
-const labels={overview:'总览',chain:'期权与活动',planner:'交易计划',journal:'交易日志',reviews:'复盘与经验',context:'新闻与日历',guidance:'每日决策','weekly-plan':'每周交易计划','event-research':'事件研究','macro-playbook':'宏观手册'};
+const labels={overview:'总览',chain:'期权与活动',planner:'交易计划',journal:'交易日志',reviews:'复盘与经验',context:'新闻与日历',guidance:'每日决策','weekly-plan':'每周交易计划','event-research':'事件研究','event-replay':'事件回放','macro-playbook':'宏观手册'};
 function route(){const key=location.hash.slice(1);return Object.hasOwn(routes,key)?key:'guidance';}
 function toast(message){$('#toast').textContent=localizeText(message);$('#toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),5500);}
 function render(focus=false){
@@ -64,6 +65,16 @@ function render(focus=false){
   else {const next=id?document.getElementById(id):name?document.querySelector(`[name="${name}"]`):nextSummary;if(next){next.focus({preventScroll:true});if(typeof position==='number'&&['text','search','tel','url','password'].includes(next.type))next.setSelectionRange(position,position);}}
 }
 function navigate(key){if(route()===key)render(true);else location.hash=key;}
+function queueEventReplay(){
+  const cases=state?.eventIntelligence?.data?.cases??[],selected=cases.find(x=>x.eventId===ui.eventReplayCase)??cases[0];
+  if(!selected||!ui.eventReplayAsOf)return;
+  ui.eventReplayCase=selected.eventId;ui.eventReplayView=null;
+  const sequence=++eventReplayRequestSequence;clearTimeout(eventReplayTimer);render();
+  eventReplayTimer=setTimeout(()=>{void(async()=>{try{
+    const view=await request('/api/event-intelligence',{eventId:selected.eventId,asOf:ui.eventReplayAsOf});
+    if(sequence!==eventReplayRequestSequence)return;ui.eventReplayView=view;render();
+  }catch(e){if(sequence===eventReplayRequestSequence)fail(e);}})();},90);
+}
 function fail(error,target){const el=target&&$(target),message=localizeError(error.message);if(el)el.textContent=message;else toast(message);}
 async function reload(board=state?.selectedBoardId??null){
   if(loading)return;loading=true;$('#reload').disabled=true;$('#connection').textContent='Checking saved evidence…';
@@ -236,7 +247,9 @@ function download(kind){
 }
 
 document.addEventListener('input',event=>{
-  const el=event.target;if(el.matches('input,textarea,select'))updateDraft(el);
+  const el=event.target;
+  if(el.id==='event-replay-slider'){ui.eventReplayAsOf=new Date(Number(el.value)).toISOString();queueEventReplay();return;}
+  if(el.matches('input,textarea,select'))updateDraft(el);
   if(el.id==='story-query'){ui.storyFilters={...ui.storyFilters,keyword:el.value};render();return;}
   if(el.id==='world-model-keyword'){ui.worldKeyword=el.value;render();return;}
   const filters={'chain-search':['chain','search'],'review-search':[null,'reviewSearch'],'news-search':[null,'newsSearch'],'macro-knowledge-search':[null,'macroKnowledgeSearch']};
@@ -244,6 +257,7 @@ document.addEventListener('input',event=>{
 });
 document.addEventListener('change',event=>{void(async()=>{
   const el=event.target;
+  if(el.id==='event-replay-case'){ui.eventReplayCase=el.value;ui.eventReplayAsOf=null;ui.eventReplayView=null;eventReplayRequestSequence++;clearTimeout(eventReplayTimer);render();return;}
   if(el.id==='story-news'){chooseStoryline(el.value);render();return;}
   if(['story-theme-filter','story-type-filter'].includes(el.id)){ui.storyFilters={...ui.storyFilters,[el.id==='story-theme-filter'?'theme':'knowledgeType']:el.value};render();return;}
   const worldFilters={'world-model-theme':'worldTheme','world-model-type':'worldType','world-model-evidence':'worldEvidence'};

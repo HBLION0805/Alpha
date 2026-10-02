@@ -35,6 +35,7 @@ export * from "./HistoricalAnalogy";
 export * from "./HistoricalAnalogyValidation";
 export * from "./EventReplay";
 export * from "./EventReplayValidation";
+export * from "./EventIntelligenceReplay";
 export * from "./CrossSystemEvidenceLink";
 export * from "./EvidenceEngine";
 export * from "./StrategyReview";

@@ -48,6 +48,7 @@ import {paperObservationView,enrollPaperObservation,cancelPaperObservation} from
 import {sourceCatalog,sourceComparisonView,prepareSourcePackage,receiveSourceDraft,previewSourceComparison,saveSourceComparison} from './options-source-comparison.mjs';
 import {expectationRecords,previewExpectation,saveExpectation,verifyNewPlanExpectation} from './options-market-expectation-io.mjs';
 import {projectEventFacts} from './options-event-facts.mjs';
+import {eventIntelligenceCatalog,eventIntelligenceReplay} from './options-event-intelligence-replay.mjs';
 import {predictionEvidenceView} from './options-prediction-evidence.mjs';
 import {decisionEvidenceView} from './options-decision-evidence.mjs';
 import {decisionReadinessProjection} from './options-decision-readiness.mjs';
@@ -147,6 +148,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.marketExpectations=await component(()=>expectationRecords(root,ledgerId,at),at);
     result.eventFacts=await component(()=>projectEventFacts({events:result.sourceComparisons.data?.events??[],
       expectations:result.marketExpectations.data?.records??[],comparisons:result.sourceComparisons.data?.records??[],at}),at);
+    result.eventIntelligence=await component(()=>eventIntelligenceCatalog(root,at),at);
     result.predictionEvidence=await component(()=>predictionEvidenceView(root,result),at);
     result.decisionEvidence=await component(()=>decisionEvidenceView(root,result),at);
     result.decisionReadiness=await component(()=>decisionReadinessProjection(result),at);
@@ -287,6 +289,10 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,previewFingerprint,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_STORYLINE_ACTION');
     return body.action==='PREVIEW'?previewStorylineLink(root,body.request,now()):saveStorylineLink(root,body.request,body.previewFingerprint,now());
   }
+  function eventIntelligence(body){
+    if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).sort().join()!=='asOf,eventId')fail('EVENT_INTELLIGENCE_REQUEST');
+    return eventIntelligenceReplay(root,body.eventId,body.asOf);
+  }
   function caseExport(body){
     if(body?.action==='PREVIEW'&&Object.keys(body).sort().join()==='action,caseId')return previewCaseExport(root,ledgerId,body.caseId,now());
     if(body?.action==='CREATE'&&Object.keys(body).sort().join()==='action,asOf,caseId,previewFingerprint')return createCaseExport(root,{ledgerId,caseId:body.caseId,asOf:body.asOf,previewFingerprint:body.previewFingerprint},now);
@@ -296,5 +302,5 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||typeof body!=='object'||Array.isArray(body)||!['PREVIEW','REVIEW','AMEND'].includes(body.action))fail('WEEKLY_PLAN_ACTION');
     return body.action==='PREVIEW'?previewWeeklyPlan(root,body,now(),ledgerId):saveWeeklyPlan(root,body,now(),ledgerId);
   }
-  return {caseExport,evidenceLoop,scenarioResearch,storyline,sourceComparison,weeklyPlan,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  return {eventIntelligence,caseExport,evidenceLoop,scenarioResearch,storyline,sourceComparison,weeklyPlan,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }

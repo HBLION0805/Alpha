@@ -1,0 +1,41 @@
+{
+  "milestone": "Alpha Event Intelligence & Point-in-Time Replay V1",
+  "status": "FOUNDATION_IMPLEMENTED_REAL_ACCEPTANCE_PENDING",
+  "baseline": "alpha-live-acceptance-rc1-20261001",
+  "branch": "codex/event-intelligence-replay-v1",
+  "scope": {
+    "scheduledCases": 1,
+    "unscheduledCases": 1,
+    "replayConsole": 1,
+    "optionStructureExpansionPaused": true
+  },
+  "scheduledCandidate": {
+    "eventId": "BLS:4438aaee-63df-49b2-982c-b687e048bdd9",
+    "title": "Employment Situation",
+    "releaseAt": "2026-10-02T12:30:00.000Z",
+    "calendarSource": "BLS_PUBLIC_RELEASE_CALENDAR",
+    "existingExpectationId": "gld-employment-20261002-research-v1",
+    "expectationStage": "RESEARCH",
+    "reliableConsensusAvailable": false,
+    "finalPreEntrySnapshot": "PENDING",
+    "realAcceptance": "PENDING_RELEASE"
+  },
+  "unscheduledPreparation": {
+    "recorder": "OPTIONS_PRE_EVENT_STATE_V1",
+    "taskName": "AlphaEventPreStateV1",
+    "cadence": "PT15M",
+    "firstProspectiveRecordedAt": "2026-10-02T01:40:52.705Z",
+    "executionAllowed": false,
+    "realShockAcceptance": "PENDING_FUTURE_UNSCHEDULED_EVENT"
+  },
+  "pointInTimeRules": {
+    "evidenceVisibility": "receivedAt <= replayTime",
+    "historicalDecisionVisibility": "generatedAt <= replayTime",
+    "recomputedDecisionVisibility": "recomputedAt <= replayTime",
+    "recomputedNeverReplacesHistorical": true,
+    "lateNumericObservationsExcluded": true,
+    "invalidationCadenceFailClosed": true,
+    "arrivalOrderIsNotCausality": true
+  },
+  "executionAllowed": false
+}
