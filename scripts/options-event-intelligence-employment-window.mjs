@@ -6,6 +6,8 @@ import {optionsEvidenceExportStorage as io} from './options-evidence-export.mjs'
 import {retrieveBtcContext,withBtcContextJournal} from './lib/options-btc-context-io.mjs';
 import {listEventObservations,saveEventObservation} from './lib/options-event-intelligence-observation.mjs';
 import {saveEmploymentCase} from './lib/options-event-intelligence-employment-case.mjs';
+import {captureEmploymentRelease} from './lib/options-event-intelligence-assessment.mjs';
+import {recordEmploymentAssessment} from './options-event-intelligence-assess.mjs';
 
 const EVENT_ID='employment-situation-20261002';
 const EVENT_TIME='2026-10-02T12:30:00.000Z';
@@ -50,13 +52,16 @@ export async function captureEmploymentWindow({
   now=()=>new Date().toISOString(),
   fetchFeed=readPublicEmploymentFeed,
   retrieveBtc=retrieveBtcContext,
-  appendBtc=defaultAppendBtc
+  appendBtc=defaultAppendBtc,
+  retrieveRelease=captureEmploymentRelease,
+  issueAssessment=recordEmploymentAssessment
 }={}){
   const startedAt=now();
   // Independent inputs start together. A failed source cannot erase the other source.
-  const [newsOutcome,btcOutcome]=await Promise.allSettled([
+  const [newsOutcome,btcOutcome,releaseOutcome]=await Promise.allSettled([
     readEmploymentNews({workspaceRoot,now,fetchFeed}),
-    (async()=>{const value=await retrieveBtc({clock:now});await appendBtc(workspaceRoot,value);return value;})()
+    (async()=>{const value=await retrieveBtc({clock:now});await appendBtc(workspaceRoot,value);return value;})(),
+    startedAt>=EVENT_TIME?retrieveRelease(workspaceRoot,{now}):Promise.resolve(null)
   ]);
   const capturedAt=now();
   const supplement=newsOutcome.status==='fulfilled'?newsOutcome.value:{status:'FAILED',path:null,parsedAt:capturedAt,sources:[],headlines:[]};
@@ -102,12 +107,19 @@ export async function captureEmploymentWindow({
   });}else{
     persist({evidenceId:'employment-btc-unavailable-'+safeStamp(capturedAt),eventId:EVENT_ID,kind:'SOURCE_STATUS',sourceId:'coinbase-btc-context',sourceUrl:null,occurredAt:null,sourcePublishedAt:null,vendorReceivedAt:null,receivedAt:capturedAt,parsedAt:capturedAt,availability:'UNKNOWN',summary:'BTC source clock or capture unavailable. No market observation or replacement clock was fabricated.',supersedesEvidenceId:null,expectationSnapshot:null,marketObservation:null});
   }
-  const materialized=saveEmploymentCase(workspaceRoot,capturedAt);
+  let materialized=saveEmploymentCase(workspaceRoot,capturedAt);
+  let issuedAssessment=null,assessmentError=null;
+  if(startedAt>=EVENT_TIME){
+    if(releaseOutcome.status==='fulfilled'&&releaseOutcome.value?.path){
+      try{issuedAssessment=await issueAssessment({workspaceRoot,rawPath:releaseOutcome.value.path,now});materialized=issuedAssessment.materialized;}catch{assessmentError='ASSESSMENT_WRITE_OR_READ_FAILED';}
+    }else if(releaseOutcome.status==='rejected'){assessmentError='RELEASE_ARCHIVE_CAPTURE_FAILED';}
+  }
   const releaseObserved=listEventObservations(workspaceRoot,EVENT_ID,capturedAt).some(r=>r.evidence.kind==='SOURCE_OBSERVATION'&&r.evidence.sourceId==='bls');
   const blockers=[...(!bls||bls.status!=='OK'||bls.partial?['BLS_SOURCE_UNAVAILABLE_OR_PARTIAL']:[]),...(!releaseObserved?['BLS_RELEASE_NOT_OBSERVED']:[]),...(!sourceTime||!assessment?.usableAtReceipt?['BTC_UNAVAILABLE']:[])];
   return {version:'EMPLOYMENT_EVENT_WINDOW_CAPTURE_V2',eventId:EVENT_ID,eventTime:EVENT_TIME,startedAt,capturedAt,
     captureKind:startedAt>='2026-10-02T12:41:00.000Z'?'POST_WINDOW_REPAIR':'EVENT_WINDOW',
     status:blockers.length?'PARTIAL':'CAPTURED',acceptanceStatus:'NOT_EVALUATED',blockers,
+    assessment:issuedAssessment?{decisionPath:issuedAssessment.decisionPath,generatedAt:issuedAssessment.decision.generatedAt,thesisState:issuedAssessment.decision.thesisState,sourceError:issuedAssessment.sourceError}:null,assessmentError,
     newsRefreshStatus:supplement.status,rawBlsPath:supplement.path,btcStatus:assessment?.status??'UNKNOWN',saved,materialized,executionAllowed:false};
 }
 function parse(argv){

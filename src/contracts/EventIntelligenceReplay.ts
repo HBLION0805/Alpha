@@ -53,6 +53,31 @@ export interface EventExpectationSnapshot {
   readonly rows: readonly EventExpectationRow[];
 }
 
+export interface EventReleaseFact {
+  readonly metric: string; readonly period: string; readonly unit: string;
+  readonly adjustment: string; readonly releaseVersion: string; readonly valueMeaning: string;
+  readonly value: string;
+  readonly locator: {readonly section: string; readonly start: number; readonly end: number; readonly quote: string};
+}
+export interface EventReleaseRevision {
+  readonly metric: string; readonly period: string; readonly unit: string; readonly adjustment: string;
+  readonly previouslyReportedInThisRelease: string; readonly revisedValue: string; readonly change: string;
+  readonly locator: {readonly section: string; readonly start: number; readonly end: number; readonly quote: string};
+}
+export interface EventReleaseFacts {
+  readonly parserVersion: string; readonly eventId: string; readonly scheduledAt: string; readonly period: string;
+  readonly sourceUrl: string; readonly rawPath: string; readonly rawSha256: string;
+  readonly sourceReceivedAt: string; readonly normalizedBodySha256: string;
+  readonly facts: readonly EventReleaseFact[]; readonly revisions: readonly EventReleaseRevision[];
+  readonly missingMetrics: readonly string[]; readonly verification: string;
+}
+export interface EventAssessmentDetails {
+  readonly assessmentTiming: string; readonly policyRegisteredAt: string | null; readonly eventTime: string;
+  readonly requirements: readonly {readonly id:string; readonly available:boolean; readonly evidenceIds:readonly string[]; readonly reason:string}[];
+  readonly surprises: readonly {readonly metric:string; readonly period:string; readonly unit:string; readonly actual:string; readonly expected:string|null; readonly difference:string|null; readonly expectationEvidenceId:string|null; readonly factEvidenceId:string; readonly source:string|null; readonly meaning:string}[];
+  readonly ruleChecks: readonly {readonly ruleId:string; readonly ruleVersion:string; readonly definedAt:string; readonly effect:string; readonly condition:string; readonly evidenceIds:readonly string[]; readonly status:string}[];
+  readonly prospectivePolicy: boolean; readonly evaluatorVersion: string;
+}
 export interface EventIntelligenceEvidence {
   readonly evidenceId: string;
   readonly eventId: string;
@@ -69,8 +94,10 @@ export interface EventIntelligenceEvidence {
   readonly supersedesEvidenceId: string | null;
   readonly expectationSnapshot: EventExpectationSnapshot | null;
   readonly marketObservation: MarketObservationMetadata | null;
+  readonly releaseFacts?: EventReleaseFacts;
 }
 export interface HistoricalDecisionArtifact {
+  readonly assessmentDetails?: EventAssessmentDetails;
   readonly decisionId: string;
   readonly eventId: string;
   readonly generatedAt: string;
@@ -126,6 +153,7 @@ export interface PointInTimeReplayView {
   readonly visibleHistoricalDecisions: readonly HistoricalDecisionArtifact[];
   readonly hiddenFutureDecisionCount: number;
   readonly latestHistoricalDecision: HistoricalDecisionArtifact | null;
+  readonly lastEvaluableDecision?: HistoricalDecisionArtifact | null;
   readonly recomputedDecisions: readonly RecomputedDecisionArtifact[];
   readonly hiddenFutureRecomputedDecisionCount: number;
   readonly evidenceCompleteness: EvidenceCompleteness;

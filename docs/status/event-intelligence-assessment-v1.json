@@ -1,0 +1,32 @@
+{
+  "milestone": "Alpha Event Intelligence & Point-in-Time Replay V1",
+  "increment": "OFFICIAL_BODY_TO_ISSUED_ASSESSMENT",
+  "codeStatus": "IMPLEMENTED_AND_LOCALLY_VALIDATED",
+  "originalLiveAcceptance": "NOT_ACCEPTED",
+  "firstActualAssessmentAt": "2026-10-02T13:10:36.163Z",
+  "assessmentTiming": "POST_EVENT_ASSESSMENT_NO_PREDECLARED_THESIS",
+  "thesisState": "UNEVALUABLE",
+  "evidenceCompleteness": "PARTIAL",
+  "liveDirectionalRulesRegistered": 0,
+  "syntheticTestValuesAreNotMarketEvidence": true,
+  "executionAllowed": false,
+  "integratedCollectorAssessmentAt": "2026-10-02T13:18:55.645Z",
+  "actualAssessmentCount": 2,
+  "originalDecisionBytesUnchanged": true,
+  "previewPort": 4174,
+  "previewSourceRefresh": false,
+  "stable4173Unchanged": true,
+  "assessmentTestsPassed": 25,
+  "collectorTestsPassed": 14,
+  "fullValidation": "PASS",
+  "fullValidationExitCode": 0,
+  "typeScriptStrict": "PASS",
+  "workbenchTestsPassed": 61,
+  "renderedPageInspected": true,
+  "remaining": [
+    "QUALIFIED_LIVE_GLD_IBIT_REACTIONS",
+    "PRE_EVENT_LIVE_THESIS_AND_RULES",
+    "RULE_DEFINED_PRICE_MOVE_DETECTION",
+    "REAL_PROSPECTIVE_UNSCHEDULED_CASE"
+  ]
+}

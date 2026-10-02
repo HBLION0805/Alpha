@@ -146,6 +146,7 @@ const aggregateTestFiles = [
     "scripts/options-event-intelligence-replay.test.mjs",
     "scripts/options-event-intelligence-pre-event.test.mjs",
     "scripts/options-event-intelligence-observation.test.mjs",
+    "scripts/options-event-intelligence-assessment.test.mjs",
     "scripts/options-event-intelligence-employment-window.test.mjs",
     "scripts/options-event-intelligence-employment-case.test.mjs",
     "scripts/options-event-intelligence-workbench.test.mjs",

@@ -3,6 +3,7 @@ import {resolve} from 'node:path';
 import {PointInTimeReplayEngine} from '../../src/engines/event-intelligence-replay/PointInTimeReplayEngine.ts';
 import {listEventObservations} from './options-event-intelligence-observation.mjs';
 import {listPreEventStates} from './options-event-intelligence-pre-event.mjs';
+import {readReleaseFactEvidence,readIssuedAssessments,readIssuedAssessmentInputs} from './options-event-intelligence-assessment.mjs';
 
 const EVENT_ID='employment-situation-20261002';
 const EVENT_TIME='2026-10-02T12:30:00.000Z';
@@ -41,7 +42,12 @@ export function materializeEmploymentCase(root,asOf){
   clock(asOf);
   const pre=listPreEventStates(root,new Date(Math.min(clock(asOf),clock(EVENT_TIME)-1)).toISOString());
   const observations=listEventObservations(root,EVENT_ID,asOf).map(x=>structuredClone(x.evidence));
-  const evidence=[...pre.map(preStateEvidence),...observations];
+  const evidence=[...pre.map(preStateEvidence),...observations,...readReleaseFactEvidence(root,asOf)];
+  for(const frozen of readIssuedAssessmentInputs(root,asOf)){
+    const existing=evidence.find(e=>e.evidenceId===frozen.evidenceId);
+    if(existing&&JSON.stringify(existing)!==JSON.stringify(frozen))fail('FROZEN_INPUT_CONFLICT');
+    if(!existing)evidence.push(frozen);
+  }
   const expectation=[...evidence].filter(x=>x.kind==='EXPECTATION_SNAPSHOT'&&clock(x.receivedAt)<clock(EVENT_TIME)).sort((a,b)=>clock(a.receivedAt)-clock(b.receivedAt)).at(-1)??null;
   const release=evidence.filter(x=>x.kind==='SOURCE_OBSERVATION'&&x.sourceId==='bls'&&clock(x.receivedAt)>=clock(EVENT_TIME)).sort((a,b)=>clock(a.receivedAt)-clock(b.receivedAt))[0]??null;
   if(!release)evidence.push(pendingRelease(asOf));
@@ -51,7 +57,7 @@ export function materializeEmploymentCase(root,asOf){
   const value={
     eventId:EVENT_ID,caseType:'SCHEDULED',title:'Employment Situation — September 2026',
     eventTime:EVENT_TIME,createdAt:asOf,evidence,
-    historicalDecisions:[],recomputedDecisions:[],invalidationRules:[],requiredEvidenceIds:[...new Set(required)]
+    historicalDecisions:readIssuedAssessments(root,asOf),recomputedDecisions:[],invalidationRules:[],requiredEvidenceIds:[...new Set(required)]
   };
   new PointInTimeReplayEngine().replay(value,asOf);
   return value;

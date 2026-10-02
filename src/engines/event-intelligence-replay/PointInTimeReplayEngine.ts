@@ -184,6 +184,7 @@ export class PointInTimeReplayEngine {
       visibleHistoricalDecisions,
       hiddenFutureDecisionCount: value.historicalDecisions.length - visibleHistoricalDecisions.length,
       latestHistoricalDecision,
+      lastEvaluableDecision: visibleHistoricalDecisions.filter(d=>d.thesisState!=="UNEVALUABLE").at(-1) ?? null,
       recomputedDecisions: visibleRecomputedDecisions.map((item) => structuredClone(item)),
       hiddenFutureRecomputedDecisionCount: value.recomputedDecisions.length - visibleRecomputedDecisions.length,
       evidenceCompleteness: coverage.status,

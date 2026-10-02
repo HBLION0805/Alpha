@@ -12,7 +12,7 @@ const at='2026-10-02T12:30:05.000Z';
 const news=(headline='Employment Situation - September 2026',published='Fri, 02 Oct 2026 08:30:00 -0400')=>`<?xml version="1.0"?><rss version="2.0"><channel><title>BLS</title><link>https://www.bls.gov/</link><description>BLS releases</description><item><guid>employment-release</guid><title>${headline}</title><link>https://www.bls.gov/news.release/empsit.nr0.htm</link><pubDate>${published}</pubDate></item></channel></rss>`;
 const btc=()=>({input:{receivedAt:at},assessment:{status:'OBSERVED_CONTEXT',receivedAt:at,usableAtReceipt:true,midpointUsd:'85000.005',book:{sourceTime:'2026-10-02T12:30:04.000Z'}}});
 const rows=root=>listEventObservations(root,'employment-situation-20261002','2026-10-02T14:00:00.000Z').map(x=>x.evidence);
-const base=root=>({workspaceRoot:root,now:()=>at,fetchFeed:async id=>{equal(id,'bls');return news();},retrieveBtc:async()=>btc(),appendBtc:async()=>({status:'SAVED'})});
+const base=root=>({workspaceRoot:root,retrieveRelease:async()=>null,now:()=>at,fetchFeed:async id=>{equal(id,'bls');return news();},retrieveBtc:async()=>btc(),appendBtc:async()=>({status:'SAVED'})});
 let passed=0;
 async function test(name,fn){const root=mkdtempSync(join(tmpdir(),'alpha-employment-window-'));try{await fn(root);passed++;console.log('PASS '+name);}finally{rmSync(root,{recursive:true,force:true});}}
 await test('production transport requests the dedicated Employment Situation feed',async root=>{
