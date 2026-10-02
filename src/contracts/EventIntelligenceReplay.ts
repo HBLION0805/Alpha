@@ -78,6 +78,13 @@ export interface EventAssessmentDetails {
   readonly ruleChecks: readonly {readonly ruleId:string; readonly ruleVersion:string; readonly definedAt:string; readonly effect:string; readonly condition:string; readonly evidenceIds:readonly string[]; readonly status:string}[];
   readonly prospectivePolicy: boolean; readonly evaluatorVersion: string;
 }
+export interface EventNumericObservation {
+  readonly metric: string;
+  readonly value: number;
+  readonly observedAt: string;
+  readonly sourceId: string;
+  readonly session: MarketSession | "ANY";
+}
 export interface EventIntelligenceEvidence {
   readonly evidenceId: string;
   readonly eventId: string;
@@ -94,6 +101,7 @@ export interface EventIntelligenceEvidence {
   readonly supersedesEvidenceId: string | null;
   readonly expectationSnapshot: EventExpectationSnapshot | null;
   readonly marketObservation: MarketObservationMetadata | null;
+  readonly numericObservation?: EventNumericObservation | null;
   readonly releaseFacts?: EventReleaseFacts;
 }
 export interface HistoricalDecisionArtifact {
@@ -105,7 +113,14 @@ export interface HistoricalDecisionArtifact {
   readonly inputEvidenceIds: readonly string[];
   readonly decisionVersion: string;
   readonly ruleVersion: string;
-  readonly modelVersion: string;
+  readonly generatorType?: "RULE_ENGINE" | "MODEL_ASSISTED" | "LEGACY";
+  readonly modelVersion: string | null;
+  readonly triggerEvidenceIds?: readonly string[];
+  readonly triggerEligibleAt?: string;
+  readonly processingStartedAt?: string;
+  readonly processingCompletedAt?: string;
+  readonly decisionLatencyMs?: number;
+  readonly latencyPolicyVersion?: string;
   readonly thesisVersion: string;
   readonly thesisState: ThesisState;
   readonly evidenceCompleteness: EvidenceCompleteness;

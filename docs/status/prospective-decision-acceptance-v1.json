@@ -1,0 +1,48 @@
+{
+  "milestone": "Alpha Prospective Decision Acceptance V1",
+  "asOf": "2026-10-02",
+  "branch": "codex/event-intelligence-replay-v1",
+  "status": "FOUNDATION_IMPLEMENTED_NO_LIVE_EVENT_CONTRACT",
+  "deliveries": {
+    "eventReadinessAndRuleRegistry": "IMPLEMENTED",
+    "qualifiedRequiredEvidenceIntake": "CONTRACT_LAYER_IMPLEMENTED_LIVE_PROVIDER_GAPS_REMAIN",
+    "prospectiveDecisionIssuer": "IMPLEMENTED"
+  },
+  "gate1": {
+    "liveEvent": "NOT_SELECTED_OR_FROZEN",
+    "status": "NOT_READY",
+    "reason": "No future real event contract has been registered. October 2 Employment Situation cannot be backfilled.",
+    "eventSpecificEvidence": true,
+    "nominalYieldMaySubstituteForRealYield": false
+  },
+  "decisionIssuer": {
+    "generatorType": "RULE_ENGINE",
+    "generatorVersion": "prospective-rule-engine-v1",
+    "modelVersion": null,
+    "latencyPolicyVersion": "latency-v1",
+    "faultRehearsal": {
+      "status": "PASS",
+      "completedAt": "2026-10-02T15:45:47.828Z",
+      "scenarios": [
+        "duplicate",
+        "restart",
+        "correction",
+        "failure",
+        "timeout"
+      ],
+      "path": "data/runtime/options-event-intelligence/decision-issuer-rehearsals/prospective-rule-engine-v1--latency-v1.json"
+    }
+  },
+  "liveEvidence": {
+    "officialNewsAndBls": "AVAILABLE",
+    "coinbaseBtc": "AVAILABLE",
+    "treasuryDailyNominalAndRealYields": "AVAILABLE_BUT_NOT_INTRADAY",
+    "gldIbitQualifiedLiveQuotes": "UNRESOLVED",
+    "robinhoodManualImmediateRead": "BLOCKED_BY_CODEX_USAGE_LIMIT"
+  },
+  "october2Employment": {
+    "prospectiveAcceptance": "NOT_ACCEPTED",
+    "mayBeReclassifiedToPass": false
+  },
+  "executionAllowed": false
+}

@@ -72,6 +72,12 @@ function validateCase(value: EventIntelligenceCase): void {
     } else if (item.expectationSnapshot !== null) {
       throw new Error("EVENT_INTELLIGENCE_NON_EXPECTATION_METADATA");
     }
+    if (item.numericObservation !== undefined && item.numericObservation !== null) {
+      const numeric = item.numericObservation;
+      if (!numeric.metric.trim() || !numeric.sourceId.trim() || numeric.sourceId !== item.sourceId || !Number.isFinite(numeric.value) || !["ANY","REGULAR","PREMARKET","AFTER_HOURS","TWENTY_FOUR_SEVEN","UNKNOWN"].includes(numeric.session)) throw new Error("EVENT_INTELLIGENCE_NUMERIC_METADATA");
+      clock(numeric.observedAt);
+      if (clock(numeric.observedAt) > clock(item.receivedAt)) throw new Error("EVENT_INTELLIGENCE_NUMERIC_FUTURE");
+    }
     if (item.kind === "MARKET_OBSERVATION") {
       const market = item.marketObservation;
       if (!market || !market.instrument.trim() || !market.comparabilityReason.trim()) throw new Error("EVENT_INTELLIGENCE_MARKET_METADATA");
@@ -102,9 +108,16 @@ function validateCase(value: EventIntelligenceCase): void {
     if (decision.eventId !== value.eventId || decisions.has(decision.decisionId)) throw new Error("EVENT_INTELLIGENCE_DECISION_ID");
     decisions.add(decision.decisionId);
     if (clock(decision.evidenceCutoffAt) > clock(decision.generatedAt)) throw new Error("EVENT_INTELLIGENCE_DECISION_CLOCK");
-    for (const [field, code] of [[decision.decisionVersion, "DECISION_VERSION"], [decision.ruleVersion, "RULE_VERSION"], [decision.modelVersion, "MODEL_VERSION"], [decision.thesisVersion, "THESIS_VERSION"]] as const) {
+    for (const [field, code] of [[decision.decisionVersion, "DECISION_VERSION"], [decision.ruleVersion, "RULE_VERSION"], [decision.thesisVersion, "THESIS_VERSION"]] as const) {
       assertText(field, `EVENT_INTELLIGENCE_${code}`);
     }
+    if (decision.modelVersion !== null) assertText(decision.modelVersion, "EVENT_INTELLIGENCE_MODEL_VERSION");
+    if (decision.generatorType === "RULE_ENGINE" && decision.modelVersion !== null) throw new Error("EVENT_INTELLIGENCE_FAKE_MODEL_VERSION");
+    if (decision.triggerEligibleAt !== undefined) clock(decision.triggerEligibleAt);
+    if (decision.processingStartedAt !== undefined) clock(decision.processingStartedAt);
+    if (decision.processingCompletedAt !== undefined) clock(decision.processingCompletedAt);
+    if (decision.decisionLatencyMs !== undefined && (!Number.isSafeInteger(decision.decisionLatencyMs) || decision.decisionLatencyMs < 0)) throw new Error("EVENT_INTELLIGENCE_DECISION_LATENCY");
+    if (decision.triggerEvidenceIds !== undefined && !Array.isArray(decision.triggerEvidenceIds)) throw new Error("EVENT_INTELLIGENCE_TRIGGER_EVIDENCE");
     for (const evidenceId of decision.inputEvidenceIds) {
       const item = evidence.get(evidenceId);
       if (!item) throw new Error("EVENT_INTELLIGENCE_DECISION_EVIDENCE_MISSING");

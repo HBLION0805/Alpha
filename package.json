@@ -242,6 +242,11 @@
     "options:macro-context": "tsx scripts/options-macro-context.mjs",
     "test:options-snapshot-paper-capture": "tsx scripts/options-snapshot-paper-capture.test.mjs",
     "test:event-intelligence-assessment": "tsx scripts/options-event-intelligence-assessment.test.mjs",
+    "test:prospective-readiness": "tsx scripts/options-prospective-decision-readiness.test.mjs",
+    "test:prospective-issuer": "tsx scripts/options-prospective-decision-issuer.test.mjs",
+    "test:prospective-cli": "tsx scripts/options-prospective-decision.test.mjs",
+    "prospective:decision": "tsx scripts/options-prospective-decision.mjs",
+    "prospective:rehearsal": "tsx scripts/options-prospective-decision-rehearsal.mjs",
     "options:event-assessment": "tsx scripts/options-event-intelligence-assess.mjs"
   },
   "devDependencies": {

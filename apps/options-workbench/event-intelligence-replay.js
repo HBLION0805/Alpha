@@ -23,10 +23,10 @@ const evidenceCard=item=>{
     ${releaseDetails(item.releaseFacts)}${expectation}${expectationHistory}${market}${item.supersedesEvidenceId?`<p class="hint">更正 / supersedes: ${esc(item.supersedesEvidenceId)}</p>`:''}${link}</article>`;
 };
 
-const decisionCard=(item,title)=>item?`<section class="card"><h2>${esc(title)}</h2><div class="status-line">${badge(item.thesisState,item.thesisState==='INVALIDATE'?'red':['DEGRADE','UNEVALUABLE'].includes(item.thesisState)?'amber':'green')}${badge(item.evidenceCompleteness)}</div>
+const decisionCard=(item,title)=>item?`<section class="card"><h2>${esc(title)}</h2><div class="status-line">${badge(item.thesisState,item.thesisState==='INVALIDATE'?'red':['DEGRADE','UNEVALUABLE'].includes(item.thesisState)?'amber':'green')}${badge(item.evidenceCompleteness)}${item.generatorType?badge(item.generatorType):''}</div>
   <p>${esc(item.reason)}</p>${assessmentDetails(item)}<dl class="result-grid"><div><dt>生成时间</dt><dd>${esc(timestamp(item.generatedAt))}</dd></div><div><dt>证据截止</dt><dd>${esc(timestamp(item.evidenceCutoffAt))}</dd></div>
-  <div><dt>Decision / Thesis</dt><dd>${esc(item.decisionVersion)} / ${esc(item.thesisVersion)}</dd></div><div><dt>规则 / 模型</dt><dd>${esc(item.ruleVersion)} / ${esc(item.modelVersion)}</dd></div></dl>
-  <p class="hint">输入证据: ${esc(item.inputEvidenceIds.join(', ')||'None')}</p>${item.blockers.length?`<p class="error-text">${esc(item.blockers.join(' · '))}</p>`:''}</section>`:empty(title,'该时间点还没有生成历史判断。');
+  <div><dt>Decision / Thesis</dt><dd>${esc(item.decisionVersion)} / ${esc(item.thesisVersion)}</dd></div><div><dt>规则 / 生成器</dt><dd>${esc(item.ruleVersion)} / ${esc(item.generatorType??'LEGACY')}</dd></div><div><dt>模型</dt><dd>${item.modelVersion===null?'未使用模型':esc(item.modelVersion??'Legacy')}</dd></div><div><dt>Decision latency</dt><dd>${Number.isSafeInteger(item.decisionLatencyMs)?esc(String(item.decisionLatencyMs))+' ms':'未记录'}${item.latencyPolicyVersion?` · ${esc(item.latencyPolicyVersion)}`:''}</dd></div></dl>
+  <p class="hint">触发证据: ${esc(item.triggerEvidenceIds?.join(', ')||'未记录')} · 输入证据: ${esc(item.inputEvidenceIds.join(', ')||'None')}</p>${item.blockers.length?`<p class="error-text">${esc(item.blockers.join(' · '))}</p>`:''}</section>`:empty(title,'该时间点还没有生成历史判断。');
 export function eventIntelligencePage(state,ui){
   const component=state.eventIntelligence;
   const head=`<div class="page-heading"><div><p class="eyebrow">POINT-IN-TIME</p><h1>事件回放</h1><p class="subtitle">事件发生前我们知道什么 → 最早收到什么 → 哪些被证实或更正 → 市场如何反应 → 判断如何变化。</p></div></div>`;
