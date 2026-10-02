@@ -1,6 +1,6 @@
 {
   "standard": "ALPHA_REAL_DATA_EXPERIMENT_STANDARD_V1",
-  "status": "ACTIVE_CURRENT_DEVELOPMENT_AND_ACCEPTANCE_STANDARD",
+  "status": "ACTIVE_REAL_DATA_PAPER_LOOP_WIRED_LIVE_SMOKE_PENDING",
   "effectiveAt": "2026-10-02",
   "supersedesSequence": "BROAD_SYSTEM_COMPLETION_BEFORE_REAL_DATA_PAPER",
   "scopeExpansionAllowed": false,
@@ -15,7 +15,7 @@
   "labels": {
     "PAPER_FILLED": {
       "engineeringMeaning": "POSITION_LIFECYCLE_STARTED",
-      "fullPositionExitAcceptance": "PENDING_EXIT"
+      "fullPositionExitAcceptance": "PENDING_EXIT_OR_COMPLETED_PER_REPORT"
     },
     "NO_TRADE_VALID": {
       "engineeringMeaning": "NON_TRADE_PATH_MAY_PASS",
@@ -49,12 +49,44 @@
     "exactThetaIvAttributionClaimAllowed": false
   },
   "p0AdmissionQuestion": "Which concrete blocker in Decision -> Contract Selection -> Real Quote -> Paper Fill -> Position Watch -> Exit -> Forensic Review does this task remove?",
+  "p0Progress": {
+    "decisionToPaperPlanBridge": "IMPLEMENTED_AND_INTEGRATION_TESTED",
+    "exactContractHostCollector": "IMPLEMENTED_REUSES_EXISTING_SNAPSHOT_COLLECTOR",
+    "paperFillModel": "EXISTING_ASK_ENTRY_BID_MINUS_SLIPPAGE_EXIT_REUSED_UNCHANGED",
+    "observationAndExitLoop": "WIRED_TO_EXISTING_OBSERVE_PAPER",
+    "runner": "DEPLOYED_FOR_2026-10-08_15_51_ET",
+    "fullChainDependency": "ALPHA_1550_FAST_HOST_WEEKDAY_TASK_PRESENT",
+    "fullChainCodexExecutablePath": "RUNTIME_DYNAMIC_DISCOVERY_FIXED",
+    "currentRealWorkspacePreview": "BLOCKED_DATA_INTEGRITY_CURRENT_DECISION_EVIDENCE_UNAVAILABLE",
+    "liveRobinhoodSmoke": "PENDING_CODEX_QUOTA_RESET_2026-10-07_15_02_ET"
+  },
+  "october8Experiment": {
+    "taskName": "AlphaRealDataPaper20261008",
+    "scheduledLocal": "2026-10-08T15:51:00-04:00",
+    "dependencyTask": "Alpha1550FastHost",
+    "dependencyScheduledLocal": "WEEKDAYS_15:50_ET",
+    "engineeringOnly": true,
+    "strategyValidationEligible": false,
+    "forceFill": false,
+    "capturePolicy": [
+      "decisionAt+15s",
+      "decisionAt+75s",
+      "decisionAt+180s",
+      "timeExitAt+20s"
+    ],
+    "exactContractOnly": true,
+    "liveOrderAuthority": false
+  },
   "currentP0Scope": [
+    "qualified_real_GLDIT_and_exact_option_quote_smoke_after_quota_reset",
+    "execute_2026-10-08_real_data_experiment",
+    "forensic_root_cause_record_after_first_completed_or_failed_experiment"
+  ],
+  "completedP0": [
     "Decision_to_Paper_Plan_bridge",
-    "qualified_real_GLDIT_quote_smoke",
-    "frozen_paper_fill_and_slippage_model",
-    "real_data_position_watch_and_exit",
-    "forensic_root_cause_record"
+    "frozen_paper_fill_and_slippage_model_reuse",
+    "real_data_position_watch_and_exit_wiring",
+    "scheduled_real_data_runner_deployment"
   ],
   "forbiddenP0Expansion": [
     "new_news_sources_without_observed_blocker",
