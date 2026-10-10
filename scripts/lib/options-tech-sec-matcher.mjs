@@ -22,6 +22,17 @@ function periodLabel(text){
  return {quarter:n,fiscalYear:y?.[1]&&y[2].length===4?+y[2]:null,yearLabel:y?.[2]??null,yearBasis:y?.[1]?'FISCAL':y?'UNSPECIFIED':'UNKNOWN',index:q.index};
 }
 function periodLabels(text){return [...text.matchAll(/\b(?:Q[1-4]|(?:first|second|third|fourth)\s+(?:fiscal\s+)?quarter)\b/gi)].map(m=>({...periodLabel(text.slice(m.index)),index:m.index}));}
+const escapeRx=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const endedDates=text=>[...text.matchAll(new RegExp('\\b(?:ended|ending)\\s+('+datePattern+')','gi'))].map(m=>({text:m[1],value:dateOnly(m[1]),index:m.index}));
+const annual=text=>/\b(?:annual|full[ -]year)\b/i.test(text)||(!periodLabels(text).length&&/\bfiscal year\s+(?:20\d{2}|\d{2})\s+results\b/i.test(text));
+const comparisonRx=/\b(?:compared (?:with|to)|versus|vs\.?|relative to|prior[ -](?:year|quarter|period)|year[ -]ago|previous (?:quarter|year|period))\b/i;
+function supportedAnnouncement(text,issuer,symbol){
+ // Deliberately closed grammar, not a dependency parser or co-occurrence test.
+ const prefix='(?:[A-Z][A-Z .,\\-]{0,70} -- '+datePattern+' -- )?';
+ const subject=escapeRx(issuer.name).replace(/\s+/g,'\\s+')+' \\((?:NYSE|NASDAQ): '+escapeRx(symbol)+'\\)';
+ const tail=' (?:today )?(?:announced|reported) (?:financial )?results for (?:its|the) (?:first|second|third|fourth) quarter(?: fiscal(?: year)? 20\\d{2}| 20\\d{2})? ended '+datePattern+'\\.?';
+ return !/\b(?:said|according|quote|customer|partner|joint|together|behalf)\b/i.test(text)&&new RegExp('^'+prefix+subject+tail+'$').test(text);
+}
 function identity(source,body,issuer,symbol,{main=false}={}){
  const claims=[],issues=[],nameCore=norm(issuer.name).replace(/\s+(?:inc|incorporated|corp|corporation|co|company)$/,'');
  const intro=body.blocks.slice(0,30),named=intro.find(b=>(' '+norm(b.text)+' ').includes(' '+nameCore+' '));
@@ -35,34 +46,53 @@ function identity(source,body,issuer,symbol,{main=false}={}){
   if(m[1]==='EntityCentralIndexKey'){if(cik(value)!==cik(issuer.cik))issues.push('ISSUER_CIK_CONFLICT');else mainCik=true;}
   else if(norm(value)!==norm(issuer.name))issues.push('ISSUER_REGISTRANT_CONFLICT');
  }}
- const issuerAnnouncement=intro.some(b=>{const t=norm(b.text),nameIndex=(' '+t+' ').indexOf(' '+nameCore+' '),verb=t.search(/\b(?:announced|reported)\b/);return nameIndex>=0&&verb>nameIndex&&/\b(?:announced|reported)\b[^.]{0,100}\bresults\b/i.test(b.text)&&new RegExp('\\b(?:NYSE|NASDAQ)\\s*:\\s*'+symbol+'\\b','i').test(b.text);});
- const complete=!!named&&(main?mainCik:issuerAnnouncement);
- return {status:issues.length?'CONFLICT':complete?'MATCH':'UNKNOWN',reasons:issues.length?uniq(issues):complete?[]:['ISSUER_BODY_BINDING_INCOMPLETE'],claims};
-}
-function resultPeriod(source,body){
- const claims=[],disclosures=[],guidanceMentions=[],reasons=[];let multiPeriod=false;
- for(const block of body.blocks.slice(0,80)){
-  const raw=source.bytes.toString('utf8').slice(block.sourceStart,block.sourceEnd);if(/<(?:td|th)\b/i.test(raw))continue;
-  for(const sentence of block.text.split(/(?<=[.!?;])\s+(?=[A-Z])/)){
-   const labels=periodLabels(sentence);if(!labels.length)continue;
-   const cite=citation(source,block);
-   if(/guidance|outlook|expect|forecast/i.test(sentence)){for(const p of labels)guidanceMentions.push({text:sentence,...p,citation:cite});continue;}
-   if(!/\bresults\b/i.test(sentence))continue;
-   if(/\b(?:full[ -]year|annual)\b/i.test(sentence))multiPeriod=true;
-   for(let i=0;i<labels.length;i++){const p=labels[i],end=sentence.slice(p.index,labels[i+1]?.index).match(new RegExp('\\b(?:ended|ending)\\s+('+datePattern+')','i'));
-   const periodEnd=end?dateOnly(end[1]):null;if(end&&!periodEnd)reasons.push('INVALID_PERIOD_END');
-   claims.push({quarter:p.quarter,fiscalYear:p.fiscalYear,yearLabel:p.yearLabel,yearBasis:p.yearBasis,periodEnd,citation:cite});
-   }
-   // Only an explicit dateline before the announcement verb; never a report/end date.
-   const verb=sentence.search(/\b(?:announced|reported)\b/i);
-   if(verb>=0)for(const d of sentence.slice(0,verb).matchAll(new RegExp(datePattern,'gi'))){const value=dateOnly(d[0]);if(value)disclosures.push({value,precision:'DATE_ONLY_NOT_FIRST_DISSEMINATION',citation:cite});else reasons.push('INVALID_DISCLOSURE_DATE');}
+ let issuerAnnouncement=false;
+ if(!main){const raw=source.bytes.toString('utf8').toLowerCase();
+  for(const b of body.blocks){if(/<(?:td|th)\b/.test(raw.slice(b.sourceStart,b.sourceEnd))||b.text.search(comparisonRx)===0||!/\b(?:announced|reported)\b/i.test(b.text)||!/\bresults\b/i.test(b.text))continue;
+   const quoted=raw.lastIndexOf('<blockquote',b.sourceStart)>raw.lastIndexOf('</blockquote',b.sourceStart)||/["“”‘’]/.test(b.text);
+   if(!quoted&&supportedAnnouncement(b.text,issuer,symbol)){issuerAnnouncement=true;claims.push({kind:'RESTRICTED_ISSUER_SUBJECT_CLAUSE',value:b.text,citation:citation(source,b)});}
+   else issues.push('UNSUPPORTED_OR_THIRD_PARTY_ANNOUNCEMENT');
   }
  }
- const values=key=>uniq(claims.map(c=>c[key]).filter(v=>v!==null)),quarter=values('quarter'),fiscalYear=values('fiscalYear'),periodEnd=values('periodEnd'),yearLabel=values('yearLabel'),dates=uniq(disclosures.map(c=>c.value));
+ const complete=!!named&&(main?mainCik:issuerAnnouncement);
+ return {status:issues.some(r=>/^ISSUER_.*CONFLICT$/.test(r))?'CONFLICT':issues.length?'UNKNOWN':complete?'MATCH':'UNKNOWN',reasons:issues.length?uniq(issues):complete?[]:['ISSUER_BODY_BINDING_INCOMPLETE'],claims};
+}
+function resultPeriod(source,body,{at}={}){
+ const claims=[],disclosures=[],guidanceMentions=[],mentions=[],endClaims=[],reasons=[],raw=source.bytes.toString('utf8');let multiPeriod=false,section='UNSCOPED';
+ for(const block of body.blocks){
+  const table=/<(?:td|th)\b/i.test(raw.slice(block.sourceStart,block.sourceEnd));
+  if(!table&&block.text.length<100){if(/^(?:financial )?(?:guidance|outlook)$/i.test(block.text))section='GUIDANCE';else if(/results|highlights|statements/i.test(block.text))section='UNSCOPED';}
+  for(const sentence of block.text.split(/(?<=[.!?;])\s+(?=[A-Z])/)){
+   const cite=citation(source,block);
+   const comparisonAt=sentence.search(comparisonRx),parts=comparisonAt<0?[{text:sentence,comparison:false}]:[{text:sentence.slice(0,comparisonAt),comparison:false},{text:sentence.slice(comparisonAt),comparison:true}];
+   for(const part of parts){const text=part.text,labels=periodLabels(text),ends=endedDates(text),isAnnual=annual(text),guide=/guidance|outlook|expect|forecast/i.test(text)||section==='GUIDANCE',results=/\bresults\b/i.test(text);
+    const role=part.comparison?'COMPARISON':table?'TABLE_NOT_TARGET':guide?'GUIDANCE':isAnnual?'ANNUAL':results?'RESULTS':'UNSCOPED';
+    if(labels.length||ends.length||isAnnual||guide||results)mentions.push({text,role,labels,endedDates:ends,annual:isAnnual,citation:cite});
+    if(role==='COMPARISON'||role==='TABLE_NOT_TARGET')continue;
+    if(role==='GUIDANCE'){guidanceMentions.push({text,labels,endedDates:ends,citation:cite});if(results&&(labels.length||ends.length))reasons.push('MIXED_RESULTS_GUIDANCE_REQUIRES_REVIEW');continue;}
+    if(role==='ANNUAL'){multiPeriod=true;continue;}
+    if(role==='UNSCOPED'){if(labels.length||ends.length)reasons.push('UNSCOPED_PERIOD_REQUIRES_REVIEW');continue;}
+    for(const end of ends){endClaims.push({...end,citation:cite});if(!end.value)reasons.push('INVALID_PERIOD_END');}
+    for(const p of labels)claims.push({quarter:p.quarter,fiscalYear:p.fiscalYear,yearLabel:p.yearLabel,yearBasis:p.yearBasis,periodEnd:ends.length===1?ends[0].value:null,citation:cite});
+   }
+   if(table||comparisonAt===0)continue;
+   const verb=sentence.search(/\b(?:announced|reported)\b/i),prefix=verb>=0?sentence.slice(0,verb):/^(?:disclosure date|release date|published|press release dated)\s*:/i.test(sentence)?sentence:'';
+   for(const d of prefix.matchAll(new RegExp(datePattern,'gi'))){const value=dateOnly(d[0]);if(value)disclosures.push({value,precision:'DATE_ONLY_NOT_FIRST_DISSEMINATION',citation:cite});else reasons.push('INVALID_DISCLOSURE_DATE');}
+  }
+ }
+ const values=key=>uniq(claims.map(c=>c[key]).filter(v=>v!==null)),quarter=values('quarter'),fiscalYear=values('fiscalYear'),periodEnd=uniq(endClaims.map(c=>c.value).filter(Boolean)),yearLabel=values('yearLabel'),dates=uniq(disclosures.map(c=>c.value));
  if([quarter,fiscalYear,periodEnd,yearLabel,dates].some(v=>v.length>1))reasons.push('MULTIPLE_RESULT_PERIOD_OR_DISCLOSURE_CLAIMS');
  if(multiPeriod)reasons.push('MULTI_PERIOD_RELEASE_REQUIRES_REVIEW');
  if(periodEnd.length===1&&dates.length===1&&periodEnd[0]>dates[0])reasons.push('RESULT_PERIOD_AFTER_DISCLOSURE');
- return {quarter:quarter.length===1?quarter[0]:null,fiscalYear:fiscalYear.length===1?fiscalYear[0]:null,yearLabel:yearLabel.length===1?yearLabel[0]:null,yearBasis:fiscalYear.length===1?'FISCAL':yearLabel.length===1?'UNSPECIFIED':'UNKNOWN',periodEnd:periodEnd.length===1?periodEnd[0]:null,disclosureDate:dates.length===1?dates[0]:null,claims,disclosures,guidanceMentions,reasons:uniq(reasons)};
+ const disclosureOrder=[];
+ for(const date of dates)for(const [bound,clock]of [['RECEIPT',source.receivedAt],['AS_OF',at]])if(stamp(clock)){
+  // Calendar-date bounds over UTC-12..UTC+14, not an asserted midnight publication.
+  const day=Date.parse(date+'T00:00:00Z'),t=Date.parse(clock),earliest=day-14*3600000,latestExclusive=day+36*3600000;
+  const status=t<earliest?'DEFINITELY_FUTURE':t<latestExclusive?'ORDER_UNKNOWN_TIMEZONE_PRECISION':'DATE_ENTIRELY_BEFORE_BOUND';
+  disclosureOrder.push({date,bound,clock,status,precision:'DATE_ONLY',timezone:'UNKNOWN'});
+  if(status==='DEFINITELY_FUTURE')reasons.push('DISCLOSURE_DEFINITELY_AFTER_'+bound);else if(status==='ORDER_UNKNOWN_TIMEZONE_PRECISION')reasons.push('DISCLOSURE_ORDER_UNKNOWN_'+bound);
+ }
+ return {quarter:quarter.length===1?quarter[0]:null,fiscalYear:fiscalYear.length===1?fiscalYear[0]:null,yearLabel:yearLabel.length===1?yearLabel[0]:null,yearBasis:fiscalYear.length===1?'FISCAL':yearLabel.length===1?'UNSPECIFIED':'UNKNOWN',periodEnd:periodEnd.length===1?periodEnd[0]:null,disclosureDate:dates.length===1?dates[0]:null,claims,disclosures,disclosureOrder,mentions,endClaims,guidanceMentions,reasons:uniq(reasons)};
 }
 function usable(s){return s.status==='SUCCESS'&&s.httpStatus>=200&&s.httpStatus<300&&s.bytes;}
 function envelope(s){return {url:s.url,sha256:s.sha256,rawPath:s.rawPath,startedAt:s.startedAt??null,receivedAt:s.receivedAt??null,publishedAt:s.publishedAt??null,httpStatus:s.httpStatus??null,status:s.status};}
@@ -77,16 +107,16 @@ export function buildTechSecMatch({files,lineage,request,extraSources=[],at,cont
  for(let i=0;i<extraSources.length;i++){const bytes=extraSources[i];if(!Buffer.isBuffer(bytes)||bytes.length>2*1024*1024||sha(bytes)!==request.savedReceipts[i].sha256)fail('RAW_HASH');sources.push({...request.savedReceipts[i],bytes});}
  for(const s of sources){if(s.bytes&&sha(s.bytes)!==s.sha256)fail('RAW_HASH');for(const t of [s.startedAt,s.receivedAt,s.publishedAt])if(t!=null&&(!stamp(t)||Date.parse(t)>Date.parse(at)))fail('CLOCK');if(s.receivedAt&&s.startedAt&&Date.parse(s.receivedAt)<Date.parse(s.startedAt))fail('CLOCK');if(s.publishedAt&&s.receivedAt&&Date.parse(s.publishedAt)>Date.parse(s.receivedAt))fail('CLOCK');}
  for(const t of [lineage.originalCutoff,event.receivedAt])if(t&&(!stamp(t)||Date.parse(t)>Date.parse(at)))fail('CLOCK');
- const title=typeof event.title==='string'?event.title:null,queryLabels=title?periodLabels(title):[],query=queryLabels[0]??null;
+ const title=typeof event.title==='string'?event.title:null,queryLabels=title?periodLabels(title):[];
  const ambiguousQuery=uniq(queryLabels.map(p=>JSON.stringify([p.quarter,p.fiscalYear,p.yearLabel,p.yearBasis]))).length>1;
- const queryEnd=title?.match(new RegExp('\\b(?:ended|ending)\\s+('+datePattern+')','i')),queryPeriodEnd=queryEnd?dateOnly(queryEnd[1]):null;
+ const query=ambiguousQuery?null:queryLabels[0]??null,queryEnds=endedDates(title??''),queryEndValues=uniq(queryEnds.map(e=>e.value).filter(Boolean)),queryPeriodEnd=queryEndValues.length===1?queryEndValues[0]:null;
  const titleTickers=[...(title??'').matchAll(/\b(?:NYSE|NASDAQ)\s*:\s*([A-Z][A-Z0-9.]{0,8})\b/g)].map(m=>m[1]);
  for(const m of (title??'').matchAll(/(?:^([A-Z]{1,5})\b|\(([A-Z]{1,5})\))/g)){const symbol=m[1]??m[2];if(lineage.pool.includes(symbol))titleTickers.push(symbol);}
  const issuerConflicts=uniq(titleTickers.filter(s=>s!==request.symbol));
- const out={version:'TECH36_SEC_MATERIAL_MATCH_V1',scanId:lineage.scanId,eventId:event.eventId,symbol:request.symbol,accession:request.accession,generatedAt:at,
+ const out={version:'TECH36_SEC_MATERIAL_MATCH_V1',parsePolicy:'RESTRICTED_ISSUER_PERIOD_DATE_V2',scanId:lineage.scanId,eventId:event.eventId,symbol:request.symbol,accession:request.accession,generatedAt:at,
   sourcePolicySha256:lineage.scanPolicySha256,sourceCutoff:lineage.originalCutoff,
   authority:'SAVED_MATERIAL_CANDIDATES_NOT_FACT_VERIFICATION',sourceReads:0,marketCalls:0,automaticAppend:false,pendingCleared:false,executionAllowed:false,
-  query:{title,authority:'UNVERIFIED_DISCOVERY_QUERY_NOT_BODY_EVIDENCE',discoveryPublishedAt:event.publishedAt??null,discoveryReceivedAt:event.receivedAt??null,period:query,periodLabels:queryLabels,periodEnd:queryPeriodEnd,issuerConflicts,ambiguous:ambiguousQuery,topic:/guidance|outlook/i.test(title??'')?'GUIDANCE':'RESULTS_OR_UNSPECIFIED'},
+  query:{title,authority:'UNVERIFIED_DISCOVERY_QUERY_NOT_BODY_EVIDENCE',discoveryPublishedAt:event.publishedAt??null,discoveryReceivedAt:event.receivedAt??null,period:query,periodLabels:queryLabels,endedDates:queryEnds,annual:annual(title??''),periodEnd:queryPeriodEnd,issuerConflicts,ambiguous:ambiguousQuery||queryEndValues.length>1,topic:/guidance|outlook/i.test(title??'')?'GUIDANCE':'RESULTS_OR_UNSPECIFIED'},
   status:'UNKNOWN',reasons:[],issuer:null,filing:null,mainDocuments:[],candidates:[],rejectedLinks:[],uniqueCandidate:null,
   guidanceRevision:{status:'UNKNOWN',delta:null,reason:'NO_REVIEWED_PREVIOUS_CURRENT_PAIR_WITH_SAME_TARGET_PERIOD_METRIC_BASIS_CURRENCY_UNIT_SCOPE'},
   consensusSurprise:{status:'UNKNOWN',delta:null,reason:'NO_INDEPENDENT_COMPARABLE_PRE_ANNOUNCEMENT_CONSENSUS'},
@@ -110,7 +140,9 @@ export function buildTechSecMatch({files,lineage,request,extraSources=[],at,cont
  for(const main of mains){const mk=main.url+'|'+main.sha256;if(seenMain.has(mk))continue;seenMain.add(mk);
   if(!usable(main)){out.mainDocuments.push({source:envelope(main),status:'MISSING',reasons:['PRIMARY_SOURCE_NOT_SUCCESSFUL']});continue;}
   let body,links;try{body=extractTechOriginal(main.bytes);links=extractTechOriginalLinks(main.bytes);}catch{out.mainDocuments.push({source:envelope(main),status:'UNKNOWN',reasons:['PRIMARY_BODY_UNSUPPORTED']});continue;}
-  const id=identity(main,body,issuer,request.symbol,{main:true});out.mainDocuments.push({source:envelope(main),sourceReceipts:sources.filter(s=>s.url===main.url&&s.sha256===main.sha256).map(envelope),status:id.status,identity:id});
+  const id=identity(main,body,issuer,request.symbol,{main:true}),mainPeriod=resultPeriod(main,body,{at});
+  const periodConflict=p=>p.reasons.some(r=>/MULTIPLE_RESULT|AFTER_DISCLOSURE|DISCLOSURE_DEFINITELY_AFTER/.test(r));
+  out.mainDocuments.push({source:envelope(main),sourceReceipts:sources.filter(s=>s.url===main.url&&s.sha256===main.sha256).map(envelope),status:id.status==='CONFLICT'||periodConflict(mainPeriod)?'CONFLICT':mainPeriod.reasons.length?'UNKNOWN':id.status,identity:id,period:mainPeriod});
   if(links.length>200){limited=true;links=links.slice(0,200);}
   const grouped=new Map();
   for(const link of links){let url;try{url=new URL(link.href,main.url).href;}catch{out.rejectedLinks.push({href:link.href,reason:'INVALID_URL',citation:citation(main,link)});continue;}
@@ -124,14 +156,17 @@ export function buildTechSecMatch({files,lineage,request,extraSources=[],at,cont
     const candidate={id:'SEC-MATERIAL-'+sha(Buffer.from(key)).slice(0,24),source:envelope(source),sourceReceipts:found.filter(s=>s.sha256===source.sha256).map(envelope),mainSource:envelope(main),linkCitations,status:'UNKNOWN',reasons:[],issuer:null,period:null,reviewCitations:[]};out.candidates.push(candidate);
     if(!usable(source)){candidate.status='MISSING';candidate.reasons.push(source.httpStatus===403?'SAVED_ACCESS_DENIED_NO_RETRY':'LINKED_BODY_NOT_AVAILABLE');continue;}
     let extracted;try{extracted=extractTechOriginal(source.bytes);}catch{candidate.reasons.push('UNSUPPORTED_BODY_ENCODING');continue;}
-    candidate.issuer=identity(source,extracted,issuer,request.symbol);candidate.period=resultPeriod(source,extracted);
-    const p=candidate.period;candidate.reasons.push(...id.reasons,...candidate.issuer.reasons,...p.reasons);
+    candidate.issuer=identity(source,extracted,issuer,request.symbol);candidate.period=resultPeriod(source,extracted,{at});
+    const p=candidate.period;candidate.reasons.push(...id.reasons,...candidate.issuer.reasons,...p.reasons,...mainPeriod.reasons.map(r=>'PRIMARY_'+r));
     candidate.reviewCitations=uniq([...candidate.issuer.claims,...p.claims,...p.disclosures].map(c=>c.citation.blockIndex).filter(n=>Number.isInteger(n))).map(blockIndex=>({sha256:source.sha256,blockIndex}));
-    if(id.status==='CONFLICT'||candidate.issuer.status==='CONFLICT'||p.reasons.some(r=>/MULTIPLE_RESULT|AFTER_DISCLOSURE/.test(r))){candidate.status='CONFLICT';continue;}
+    if(id.status==='CONFLICT'||candidate.issuer.status==='CONFLICT'||periodConflict(p)||periodConflict(mainPeriod)){candidate.status='CONFLICT';continue;}
+    if(['quarter','fiscalYear','periodEnd'].some(k=>mainPeriod[k]!=null&&p[k]!=null&&mainPeriod[k]!==p[k])){candidate.status='CONFLICT';candidate.reasons.push('PRIMARY_ATTACHMENT_PERIOD_CONFLICT');continue;}
     if(issuerConflicts.length){candidate.status='CONFLICT';candidate.reasons.push('QUERY_ISSUER_CONFLICT');continue;}
     if(out.query.topic==='GUIDANCE'){candidate.reasons.push('RESULT_PERIOD_IS_NOT_GUIDANCE_TARGET_COMPARABLE_PAIR_REQUIRED');continue;}
+    if(out.query.annual){candidate.reasons.push('QUERY_ANNUAL_OR_MULTI_PERIOD_REQUIRES_REVIEW');continue;}
     if(ambiguousQuery){candidate.reasons.push('QUERY_MULTIPLE_PERIOD_LABELS');continue;}
-    if(queryEnd&&!queryPeriodEnd){candidate.reasons.push('QUERY_INVALID_PERIOD_END');continue;}
+    if(queryEndValues.length>1){candidate.reasons.push('QUERY_MULTIPLE_PERIOD_ENDS');continue;}
+    if(queryEnds.some(e=>!e.value)){candidate.reasons.push('QUERY_INVALID_PERIOD_END');continue;}
     if(query&&((query.quarter&&p.quarter&&query.quarter!==p.quarter)||(query.fiscalYear&&p.fiscalYear&&query.fiscalYear!==p.fiscalYear)||(queryPeriodEnd&&p.periodEnd&&queryPeriodEnd!==p.periodEnd))){candidate.status='CONFLICT';candidate.reasons.push('QUERY_RESULT_PERIOD_CONFLICT');continue;}
     if(!query?.quarter||!query?.fiscalYear){candidate.reasons.push('QUERY_FISCAL_PERIOD_INCOMPLETE');continue;}
     if(!p.quarter||!p.fiscalYear||!p.periodEnd||!p.disclosureDate){candidate.reasons.push('BODY_EXPLICIT_FISCAL_PERIOD_OR_DISCLOSURE_INCOMPLETE');continue;}
