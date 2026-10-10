@@ -13,14 +13,14 @@ const clock=v=>{try{snapshotNs(v);return v;}catch{return null;}};
 const symbols=['AAPL','TSM','QQQ','TSLA'];
 const researchStates=['UNKNOWN','BLOCKED','RETAINED_UNVALIDATED','CONTINUE_EVENT_RESEARCH'];
 const quoteStates=['UNKNOWN','BLOCKED','NOT_ASSESSED','NOT_ADMISSIBLE','SNAPSHOT_ONLY','MISSING','NOT_EXECUTABLE','COHERENT_BATCH_EVIDENCE_ONLY'];
-const accountStates=['UNKNOWN','BLOCKED','EXPLICIT_MOCK_ASSUMPTION','TEST_FIXTURE','ATTRIBUTED_NOT_AUTHENTICATED','ATTRIBUTED_REVIEW_PASSED','UNQUALIFIED_EVIDENCE','DOCUMENT_EVIDENCE_PASSED'];
+const accountStates=['UNKNOWN','BLOCKED','EXPLICIT_MOCK_ASSUMPTION','TEST_FIXTURE','ATTRIBUTED_NOT_AUTHENTICATED','ATTRIBUTED_REVIEW_PASSED','UNQUALIFIED_EVIDENCE','DOCUMENT_EVIDENCE_PASSED','SIMULATED_ACCOUNT_ASSUMPTION'];
 const paperStates=['UNKNOWN','NO_ENTRY','OPEN_UNRESOLVED','CLOSED_MODELED','BLOCKED_UNSUPPORTED_RESIDUAL'];
 const accounts=['DATA_ENTITLEMENT','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS'];
 const codes=values=>[...new Set(values.filter(v=>typeof v==='string').map(v=>techStatusCodes.has(v)?v:'UNRECOGNIZED_REASON_REVIEW_LOCAL_RECEIPT'))].slice(0,100);
 const stamp=s=>[s.dev,s.ino,s.size,s.mtimeMs,s.ctimeMs,s.nlink].join('|');
 const check=(v,code)=>{if(!v)throw Error(code);};
 const checkedCodes=r=>[...(r.checks??[]).filter(c=>c.status!=='PASS').flatMap(c=>[c.code,...(c.detail?.blockers??[])]),...(r.blockers??[])];
-const context=r=>r.evidenceContext==='TEST_FIXTURE'||r.testFixtureOnly===true?'TEST_FIXTURE':r.mode==='MOCK'||r.mode==='MOCK_CONTROL'?'MOCK':r.evidenceContext==='ATTRIBUTED_REAL_EVIDENCE'?'ATTRIBUTED_REAL_EVIDENCE':r.mode==='REAL_SAVED_SOURCE_REPLAY'?'REAL_SAVED_SOURCE_REPLAY':'UNKNOWN';
+const context=r=>['SIMULATED_ACCOUNT_REAL_MARKET_DATA','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(r.evidenceContext)?r.evidenceContext:r.evidenceContext==='TEST_FIXTURE'||r.testFixtureOnly===true?'TEST_FIXTURE':r.mode==='MOCK'||r.mode==='MOCK_CONTROL'?'MOCK':r.evidenceContext==='ATTRIBUTED_REAL_EVIDENCE'?'ATTRIBUTED_REAL_EVIDENCE':r.mode==='REAL_SAVED_SOURCE_REPLAY'?'REAL_SAVED_SOURCE_REPLAY':'UNKNOWN';
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const canonical=v=>Array.isArray(v)?'['+v.map(canonical).join(',')+']':object(v)?'{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonical(v[k])).join(',')+'}':JSON.stringify(v);
 const candidateVersion='TECH36_CANDIDATE_ASSESSMENT_V1';
@@ -112,7 +112,8 @@ export function readTechStatus({root=process.cwd(),at=new Date().toISOString()}=
       const report=replayMockSpread(verified.manifest.input,verified.events,at),row=projectTechReceipt(report,m.digest,at);
       row.authority='VERIFIED_JOURNAL_REPLAY_NOT_SOURCE_AUTHENTICATION';row.recordedAt=clock(m.data.recordedAt);row.recordClockBasis='JOURNAL_START_RECORDED_AT';check(row.recordedAt&&snapshotNs(row.recordedAt)<=snapshotNs(at),'FUTURE_RECEIPT');
       row.temporalStatus='SAVED_JOURNAL_REPLAY';row.planStatus=report.mode==='MOCK'?'MOCK_PLAN_READY':'REAL_QUOTE_PAPER_PLAN_READY';row.research=projectTechReceipt({...report,research:m.data.input.research},m.digest,at).research;
-      row.accountEvidence=Object.fromEntries(accounts.map(k=>[k,report.mode==='MOCK'?'EXPLICIT_MOCK_ASSUMPTION':report.evidenceContext==='TEST_FIXTURE'?'TEST_FIXTURE':'ATTRIBUTED_NOT_AUTHENTICATED']));
+      const simulated=['SIMULATED_ACCOUNT_REAL_MARKET_DATA','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(report.evidenceContext);if(simulated)check(dir.name===m.data.input.account.id,'SIMULATED_ACCOUNT_RUN_SCOPE');
+      row.accountEvidence=Object.fromEntries(accounts.map(k=>[k,simulated&&k!=='DATA_ENTITLEMENT'?'SIMULATED_ACCOUNT_ASSUMPTION':report.mode==='MOCK'?'EXPLICIT_MOCK_ASSUMPTION':['TEST_FIXTURE','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(report.evidenceContext)?'TEST_FIXTURE':'ATTRIBUTED_NOT_AUTHENTICATED']));
       row.containerRef=hash(dir.name);row.locationRef=hash(dir.name+'/start.json');out.records.push(row);
      }
     }

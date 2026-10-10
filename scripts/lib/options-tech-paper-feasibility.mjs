@@ -16,12 +16,12 @@ const identity=q=>[q.id,q.symbol,q.expiry,q.type,q.strike,q.multiplier].join('|'
 const includes=(v,s)=>Array.isArray(v)&&v.length<=10&&v.includes(s);
 
 /** Reuse original attributed record integrity/clocks; this does not authenticate an account. */
-export function readTechEvidenceRecords({inputs,now,decision,validThrough,kinds=KINDS}) {
+export function readTechEvidenceRecords({inputs,now,decision,validThrough,kinds=KINDS,simulatedAccount=false}) {
  if(!Array.isArray(inputs)||inputs.length!==kinds.length||kinds.some(k=>!SUPPORTED_RECORD_KINDS.includes(k)))throw Error('EVIDENCE_SCHEMA');
  const records=new Map(),payloads=new Map(),blockers=[];let synthetic=false;
     for(const r of inputs){
       if(!r||!kinds.includes(r.kind)||records.has(r.kind)||!text(r.source)||!text(r.reviewedBy)||
-        !['OWNER_DOCUMENT','PROVIDER_DOCUMENT','SYNTHETIC_FIXTURE'].includes(r.origin)||
+        !(['OWNER_DOCUMENT','PROVIDER_DOCUMENT','SYNTHETIC_FIXTURE'].includes(r.origin)||(simulatedAccount&&['COST_MODEL','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS'].includes(r.kind)&&r.origin==='SIMULATED_ACCOUNT_ASSUMPTION'))||
         typeof r.rawJson!=='string'||r.rawJson.length>65536||!/^[a-f0-9]{64}$/.test(r.sha256)||
         sha(r.rawJson)!==r.sha256)throw Error('EVIDENCE_INTEGRITY');
       const observed=snapshotNs(r.observedAt),received=snapshotNs(r.receivedAt),reviewed=snapshotNs(r.reviewedAt),through=snapshotNs(r.validThrough);

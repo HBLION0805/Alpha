@@ -1,6 +1,6 @@
 import {esc} from './model.js';
 
-const labels={MOCK:'MOCK · 合成演练',TEST_FIXTURE:'TEST_FIXTURE · 测试夹具',ATTRIBUTED_REAL_EVIDENCE:'真实资料归属声明 · 未认证',REAL_SAVED_SOURCE_REPLAY:'历史真实来源回放',UNKNOWN:'UNKNOWN · 来源未明确'};
+const labels={MOCK:'MOCK · 合成演练',TEST_FIXTURE:'TEST_FIXTURE · 测试夹具',ATTRIBUTED_REAL_EVIDENCE:'真实资料归属声明 · 未认证',SIMULATED_ACCOUNT_REAL_MARKET_DATA:'独立模拟账户＋真实市场资料 · 非券商资格',TEST_FIXTURE_SIMULATED_ACCOUNT:'模拟账户测试 · 行情仍为测试夹具',REAL_SAVED_SOURCE_REPLAY:'历史真实来源回放',UNKNOWN:'UNKNOWN · 来源未明确'};
 const clock=v=>v?`${esc(v)} · ${esc(new Intl.DateTimeFormat('zh-CN',{timeZone:'America/New_York',dateStyle:'short',timeStyle:'medium'}).format(new Date(v)))} ET`:'时钟未知';
 const reasons=values=>values?.length?`<ul>${values.map(v=>`<li><code>${esc(v)}</code></li>`).join('')}</ul>`:'<p class="hint">此层未记录阻断原因；不表示通过。</p>';
 const status=v=>`<span class="tag amber">${esc(v??'UNKNOWN')}</span>`;

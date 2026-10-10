@@ -41,7 +41,7 @@ function validateStart(p){
  check(session.isOpen&&paperSession(p.timeExitAt,chain).isOpen&&session.date===paperSession(p.timeExitAt,chain).date&&p.legs[0].contract.expiry>session.date,'PRE_EXPIRY_SAME_DAY_ONLY');
  check(integer(p.entryDebitLimitCents,1,100000)&&integer(p.maxLegSpreadCents,1,10000),'LIMITS');
  const a=p.account;keys(a,'mode id currency provider permission products dataEntitlement settledCashCents reservedCashCents maximumLossCents tradeBudgetMaxCents reviewedAt validThrough'+(bound?' unsettledCashCents':''));
- check((paper?a.mode==='PAPER'&&/^paper-[a-z0-9-]{1,60}$/.test(a.id)&&a.provider===(policy.fixture?'TEST_FIXTURE':'ATTRIBUTED_DOCUMENTS')&&a.permission==='DOCUMENT_EVIDENCE_PASSED'&&a.dataEntitlement==='DOCUMENT_EVIDENCE_PASSED':a.mode==='MOCK'&&a.id==='MOCK'&&a.provider==='SYNTHETIC_TEST_ONLY'&&['PASS','UNKNOWN','DENIED'].includes(a.permission)&&['PASS','UNKNOWN','DENIED'].includes(a.dataEntitlement))&&a.currency==='USD'&&Array.isArray(a.products)&&a.products.every(x=>['PDS','CDS'].includes(x)),'ACCOUNT_EVIDENCE');
+ check((paper?a.mode===(policy.simulatedAccount?'SIMULATED_ACCOUNT':'PAPER')&&/^paper-[a-z0-9-]{1,60}$/.test(a.id)&&a.provider===(policy.simulatedAccount?'LOCAL_SIMULATION_ASSUMPTIONS':policy.fixture?'TEST_FIXTURE':'ATTRIBUTED_DOCUMENTS')&&a.permission===(policy.simulatedAccount?'SIMULATED_PRODUCTS_ONLY':'DOCUMENT_EVIDENCE_PASSED')&&a.dataEntitlement==='DOCUMENT_EVIDENCE_PASSED':a.mode==='MOCK'&&a.id==='MOCK'&&a.provider==='SYNTHETIC_TEST_ONLY'&&['PASS','UNKNOWN','DENIED'].includes(a.permission)&&['PASS','UNKNOWN','DENIED'].includes(a.dataEntitlement))&&a.currency==='USD'&&Array.isArray(a.products)&&a.products.every(x=>['PDS','CDS'].includes(x)),'ACCOUNT_EVIDENCE');
  for(const k of ['settledCashCents','reservedCashCents','maximumLossCents','tradeBudgetMaxCents'])check(a[k]===null||integer(a[k]),'ACCOUNT_MONEY');
  if(bound){check(integer(a.unsettledCashCents),'UNSETTLED_MONEY');validateMockSpreadPlanBinding(p);}
  check(clock(a.reviewedAt)<=clock(paper?p.decisionAt:p.research.asOf)&&clock(a.validThrough)>=end,'ACCOUNT_CLOCK');
@@ -81,7 +81,7 @@ export function replayMockSpread(p,events,asOf){
  const costsKnown=p.legs.every(l=>['entryFeeCents','exitFeeCents','exitSlippageCents'].every(k=>integer(l[k])));
  const entryFees=costsKnown?p.legs.reduce((n,l)=>n+l.entryFeeCents,0):null,exitFees=costsKnown?p.legs.reduce((n,l)=>n+l.exitFeeCents,0):null;
  const slippage=costsKnown?p.legs.reduce((n,l)=>n+l.exitSlippageCents*100*p.quantity,0):null;
- const frozenBlockers=[];if(a.permission!==(paper?'DOCUMENT_EVIDENCE_PASSED':'PASS')||!a.products.includes(p.structure))frozenBlockers.push('MOCK_SPREAD_PERMISSION_NOT_PASSED');
+ const frozenBlockers=[];if(a.permission!==(paper?(spreadPaperEvidencePolicy(p.evidenceContext).simulatedAccount?'SIMULATED_PRODUCTS_ONLY':'DOCUMENT_EVIDENCE_PASSED'):'PASS')||!a.products.includes(p.structure))frozenBlockers.push('MOCK_SPREAD_PERMISSION_NOT_PASSED');
  if(a.dataEntitlement!==(paper?'DOCUMENT_EVIDENCE_PASSED':'PASS'))frozenBlockers.push('MOCK_ENTITLEMENT_NOT_PASSED');
  if(available===null||available<0)frozenBlockers.push('MOCK_FUNDS_UNKNOWN_OR_INVALID');
  if(!integer(a.maximumLossCents,1)||!integer(a.tradeBudgetMaxCents,1))frozenBlockers.push('MOCK_RISK_LIMITS_UNKNOWN');
@@ -148,5 +148,5 @@ export function replayMockSpread(p,events,asOf){
   frozenBlockers,diagnostics,quoteGapObserved:gap,actualTrades:0,executionAllowed:false,productionPaperAdmissionAllowed:false,realAcceptance:'NOT_TESTED',
   unsupported:['PARTIAL_OR_SEPARATE_LEG_EXECUTION','NAKED_SHORT','CALENDAR_SPREAD','OVERNIGHT','EXERCISE_ASSIGNMENT','STOP_TARGET_STRATEGY','SCALING','CASH_SETTLEMENT','PRODUCTION_ARMING']};
 }
-const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1',eventAvailableAt:spreadEventAvailableAt,runIdPattern:/^(mock|paper)-[a-z0-9-]{1,60}$/,validateRunScope:(input,runId)=>check(runId.startsWith(input.mode==='REAL_QUOTE_PAPER'?'paper-':'mock-'),'RUN_MODE_SCOPE')});
+const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1',eventAvailableAt:spreadEventAvailableAt,runIdPattern:/^(mock|paper)-[a-z0-9-]{1,60}$/,validateRunScope:(input,runId)=>{check(runId.startsWith(input.mode==='REAL_QUOTE_PAPER'?'paper-':'mock-'),'RUN_MODE_SCOPE');if(input.mode==='REAL_QUOTE_PAPER'&&spreadPaperEvidencePolicy(input.evidenceContext).simulatedAccount)check(runId===input.account.id,'SIMULATED_ACCOUNT_RUN_SCOPE');}});
 export const startMockSpread=journal.start,appendMockSpread=journal.append,recoverMockSpread=journal.recover;

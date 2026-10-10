@@ -38,3 +38,16 @@ export async function paperSpreadPlanFixture(structure='BULL_CALL_DEBIT'){
  raw.captureSha256=spreadPlanHash(raw.capture);f.exitOriginal.rawJson=JSON.stringify(raw);f.exitOriginal.sha256=spreadPlanHash(f.exitOriginal.rawJson);
  return f;
 }
+
+/** Simulated account plus explicitly fictional market fixtures, never relabeled real. */
+export async function simulatedAccountSpreadFixture(structure='BULL_CALL_DEBIT'){
+ const f=await paperSpreadPlanFixture(structure),accountId='paper-sim-fixture-account';f.input.evidenceContext='TEST_FIXTURE_SIMULATED_ACCOUNT';
+ const edit=(kind,fn)=>{const r=f.input.records.find(r=>r.kind===kind),p=JSON.parse(r.rawJson);fn(p);r.rawJson=JSON.stringify(p);r.sha256=spreadPlanHash(r.rawJson);};
+ for(const kind of ['COST_MODEL','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS']){const r=f.input.records.find(r=>r.kind===kind);r.origin='SIMULATED_ACCOUNT_ASSUMPTION';r.source='EXPLICIT_LOCAL_SIMULATION_NOT_BROKER_EVIDENCE';}
+ edit('ACCOUNT_FUNDS',p=>Object.assign(p,{accountId,basis:'ISOLATED_SIMULATED_CAPITAL_V1',initialCapitalCents:100000,settledCashCents:100000,reservedCashCents:0,unsettledCashCents:0,additionalDepositsCents:0,borrowingCents:0,initialPositions:[]}));
+ edit('PRODUCT_PERMISSION',p=>Object.assign(p,{accountId,basis:'SIMULATED_PRODUCTS_ONLY',brokerQualification:'UNKNOWN'}));
+ edit('RISK_LIMITS',p=>Object.assign(p,{accountId,basis:'THIS_ENGINEERING_RUN_ONLY',tradeBudgetMaxCents:100000,maximumLossCents:100000}));
+ edit('COST_MODEL',p=>{p.basis='EXPLICIT_SIMULATION_COST_ASSUMPTION';p.actualBrokerFees='UNKNOWN';for(const l of p.legs)Object.assign(l,{entryFeeCents:65,exitFeeCents:65,exitSlippageCents:5});});
+ edit('STRATEGY_REQUEST',p=>{p.accountId=accountId;p.budgetCents=100000;p.maximumLossCents=100000;const hash=k=>f.input.records.find(r=>r.kind===k).sha256;p.costModelSha256=hash('COST_MODEL');for(const k of Object.keys(p.accountEvidenceHashes))p.accountEvidenceHashes[k]=hash(k);});
+ return f;
+}

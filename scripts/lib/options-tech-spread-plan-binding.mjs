@@ -8,18 +8,32 @@ export const spreadPlanHash=v=>createHash('sha256').update(typeof v==='string'?v
 export const boundSpreadPlanHash=p=>{const {planSha256,...provenance}=p.provenance;return spreadPlanHash({...p,provenance});};
 const check=(v,c)=>{if(!v)throw Error('SPREAD_PLAN_'+c);};
 export function spreadPaperEvidencePolicy(context){
- check(['TEST_FIXTURE','ATTRIBUTED_REAL_EVIDENCE'].includes(context),'PAPER_EVIDENCE_CONTEXT');
- const fixture=context==='TEST_FIXTURE';return {fixture,origin:fixture?'SYNTHETIC_FIXTURE':'HOST_MARKET_TOOL_RESPONSES',preflightMode:fixture?'MOCK_CONTROL':'REAL_SAVED_SOURCE_REPLAY',quoteSource:fixture?'TEST_FIXTURE':'ROBINHOOD_OFFICIAL_MCP'};
+ check(['TEST_FIXTURE','ATTRIBUTED_REAL_EVIDENCE','SIMULATED_ACCOUNT_REAL_MARKET_DATA','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(context),'PAPER_EVIDENCE_CONTEXT');
+ const fixture=['TEST_FIXTURE','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(context),simulatedAccount=['SIMULATED_ACCOUNT_REAL_MARKET_DATA','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(context);
+ return {fixture,simulatedAccount,origin:fixture?'SYNTHETIC_FIXTURE':'HOST_MARKET_TOOL_RESPONSES',preflightMode:fixture?'MOCK_CONTROL':'REAL_SAVED_SOURCE_REPLAY',quoteSource:fixture?'TEST_FIXTURE':'ROBINHOOD_OFFICIAL_MCP'};
+}
+export const SIMULATED_SPREAD_RECORD_KINDS=['COST_MODEL','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS'];
+export const spreadRecordOriginAllowed=(policy,r)=>policy.simulatedAccount&&SIMULATED_SPREAD_RECORD_KINDS.includes(r?.kind)?r.origin==='SIMULATED_ACCOUNT_ASSUMPTION':policy.fixture?r?.origin==='SYNTHETIC_FIXTURE':['OWNER_DOCUMENT','PROVIDER_DOCUMENT'].includes(r?.origin);
+/** This engineering account scope is bounded at $1,000; it is not an Owner-wide risk rule. */
+export function validateSimulatedSpreadAccount(v,request){
+ const funds=v.get('ACCOUNT_FUNDS'),risk=v.get('RISK_LIMITS'),permission=v.get('PRODUCT_PERMISSION'),cost=v.get('COST_MODEL');
+ const money=n=>Number.isSafeInteger(n)&&n>0&&n<=100000;
+ check(/^paper-sim-[a-z0-9-]{1,50}$/.test(request.accountId)&&[funds,risk,permission].every(p=>p?.accountId===request.accountId),'SIMULATED_ACCOUNT_ID');
+ check(funds.basis==='ISOLATED_SIMULATED_CAPITAL_V1'&&money(funds.initialCapitalCents)&&funds.settledCashCents===funds.initialCapitalCents&&funds.reservedCashCents===0&&funds.unsettledCashCents===0&&funds.additionalDepositsCents===0&&funds.borrowingCents===0&&Array.isArray(funds.initialPositions)&&funds.initialPositions.length===0,'SIMULATED_INITIAL_CAPITAL');
+ check(permission.basis==='SIMULATED_PRODUCTS_ONLY'&&permission.brokerQualification==='UNKNOWN'&&permission.enabled===true&&Array.isArray(permission.products)&&permission.products.length>0&&permission.products.every(p=>['BULL_CALL_DEBIT','BEAR_PUT_DEBIT'].includes(p)),'SIMULATED_PRODUCT_SCOPE');
+ check(risk.basis==='THIS_ENGINEERING_RUN_ONLY'&&[risk.tradeBudgetMaxCents,risk.maximumLossCents,request.budgetCents,request.maximumLossCents].every(n=>money(n)&&n<=funds.initialCapitalCents),'SIMULATED_BUDGET_CAP');
+ check(cost.basis==='EXPLICIT_SIMULATION_COST_ASSUMPTION'&&cost.actualBrokerFees==='UNKNOWN','SIMULATED_COST_BASIS');
 }
 export function validateMockSpreadPlanBinding(p){
  const b=p.provenance,paper=p.version==='TECH_QUOTE_PAPER_DEBIT_SPREAD_V1',policy=paper?spreadPaperEvidencePolicy(p.evidenceContext):{fixture:true,origin:'SYNTHETIC_FIXTURE',preflightMode:'MOCK_CONTROL'},accountId=paper?p.account.id:'MOCK';
  check(b?.version==='TECH_SPREAD_PLAN_BINDING_V1'&&b.origin===policy.origin&&b.planSha256===boundSpreadPlanHash(p)&&(!paper||b.evidenceContext===p.evidenceContext),'BODY_BINDING');
  check(b.requestId===p.candidate.id&&b.researchId===p.research.researchPlan.id,'RESEARCH_BINDING');
- check(Array.isArray(b.records)&&b.records.length===8&&b.records.every(r=>(policy.fixture?r.origin==='SYNTHETIC_FIXTURE':['OWNER_DOCUMENT','PROVIDER_DOCUMENT'].includes(r.origin))&&spreadPlanHash(r.rawJson)===r.sha256),'EVIDENCE_BINDING');
+ check(Array.isArray(b.records)&&b.records.length===8&&b.records.every(r=>spreadRecordOriginAllowed(policy,r)&&spreadPlanHash(r.rawJson)===r.sha256),'EVIDENCE_BINDING');
  check(b.original?.sha256===spreadPlanHash(b.original?.rawJson)&&Array.isArray(b.parentIds)&&b.parentIds.includes(b.requestId)&&b.parentIds.includes(b.researchId)&&b.parentIds.includes(b.batchId),'PARENT_BINDING');
  check(b.conditions?.evaluation==='MANUAL_CONDITIONS_AND_EXISTING_TIME_EXIT_ONLY'&&['entry','exit','invalidation'].every(k=>typeof b.conditions[k]==='string'&&b.conditions[k].trim()),'CONDITIONS');
- const validated=readTechEvidenceRecords({inputs:b.records,kinds:SPREAD_PLAN_RECORD_KINDS,now:snapshotNs(b.preflightAt),decision:snapshotNs(p.decisionAt),validThrough:snapshotNs(p.timeExitAt)});check(!validated.blockers.length,'EVIDENCE_CLOCKS');
+ const validated=readTechEvidenceRecords({inputs:b.records,kinds:SPREAD_PLAN_RECORD_KINDS,now:snapshotNs(b.preflightAt),decision:snapshotNs(p.decisionAt),validThrough:snapshotNs(p.timeExitAt),simulatedAccount:policy.simulatedAccount});check(!validated.blockers.length,'EVIDENCE_CLOCKS');
  const v=validated.payloads,request=v.get('STRATEGY_REQUEST'),research=v.get('RESEARCH'),cost=v.get('COST_MODEL'),contracts=v.get('CONTRACT'),permission=v.get('PRODUCT_PERMISSION'),funds=v.get('ACCOUNT_FUNDS'),risk=v.get('RISK_LIMITS'),entitlement=v.get('DATA_ENTITLEMENT');
+ if(policy.simulatedAccount)validateSimulatedSpreadAccount(v,request);
  check(JSON.stringify(research)===JSON.stringify(p.research)&&b.researchSha256===validated.records.get('RESEARCH').sha256&&request.researchSha256===b.researchSha256&&request.researchId===b.researchId,'RESEARCH_CONTENT');
  check(request.id===b.requestId&&request.accountId===accountId&&request.executionModel===p.executionModel&&request.quantity===p.quantity&&request.structure===(p.structure==='CDS'?'BULL_CALL_DEBIT':'BEAR_PUT_DEBIT')&&['decisionAt','entryDeadlineAt','timeExitAt','entryDebitLimitCents','maxLegSpreadCents',...(paper?['maxSourceSkewMs']:[])].every(k=>request[k]===p[k]),'REQUEST_CONTENT');
  check(JSON.stringify(b.conditions)===JSON.stringify({...request.conditions,evaluation:'MANUAL_CONDITIONS_AND_EXISTING_TIME_EXIT_ONLY'}),'CONDITION_BINDING');

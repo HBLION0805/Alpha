@@ -3,7 +3,7 @@ import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnap
 import {assessTechSpreadPreflight} from './options-tech-spread-preflight.mjs';
 import {readTechEvidenceRecords} from './options-tech-paper-feasibility.mjs';
 import {replayMockSpread,startMockSpread} from './options-tech-mock-spread.mjs';
-import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,boundSpreadPlanHash,mockSpreadEventFromOriginal,spreadPaperEvidencePolicy} from './options-tech-spread-plan-binding.mjs';
+import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,boundSpreadPlanHash,mockSpreadEventFromOriginal,spreadPaperEvidencePolicy,spreadRecordOriginAllowed,validateSimulatedSpreadAccount,SIMULATED_SPREAD_RECORD_KINDS} from './options-tech-spread-plan-binding.mjs';
 const int=(v,min=0)=>Number.isSafeInteger(v)&&v>=min&&v<=100000000;
 const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=2000;
 const code=e=>/^[A-Z_]+$/.test(e?.message)?e.message:'INPUT_INVALID';
@@ -20,7 +20,7 @@ export function previewTechSpreadPlan(input){
   const paper=input?.mode==='REAL_QUOTE_PAPER';
   check(paper?input.version==='TECH_SPREAD_PLAN_INPUT_V2':input?.version==='TECH_SPREAD_PLAN_INPUT_V1'&&['MOCK_CONTROL','REAL_SAVED_SOURCE_REPLAY'].includes(input.mode),'INPUT_SCOPE');
   const policy=paper?spreadPaperEvidencePolicy(input.evidenceContext):{fixture:input.mode==='MOCK_CONTROL',preflightMode:input.mode,origin:'SYNTHETIC_FIXTURE'};
-  if(paper){out.evidenceContext=input.evidenceContext;out.testFixtureOnly=policy.fixture;out.accountEvidenceAuthentication='NOT_ESTABLISHED_BY_DOCUMENT_HASH';}
+  if(paper){out.evidenceContext=input.evidenceContext;out.testFixtureOnly=policy.fixture;out.accountEvidenceAuthentication='NOT_ESTABLISHED_BY_DOCUMENT_HASH';if(policy.simulatedAccount)out.accountBasis='SIMULATED_ACCOUNT_NOT_BROKER_QUALIFICATION';}
   const now=snapshotNs(input.at);check(Array.isArray(input.records)&&input.records.length<=8,'RECORD_BOUND');
   const byKind=new Map();for(const r of input.records){check(SPREAD_PLAN_RECORD_KINDS.includes(r.kind)&&!byKind.has(r.kind),'RECORD_KIND_OR_DUPLICATE');byKind.set(r.kind,r);}
   const requestRecord=byKind.get('STRATEGY_REQUEST');check(requestRecord,'STRATEGY_REQUEST_MISSING');
@@ -29,8 +29,8 @@ export function previewTechSpreadPlan(input){
   const payloads=new Map();
   for(const kind of SPREAD_PLAN_RECORD_KINDS){
    const r=byKind.get(kind);if(!r){gate(kind+'_MISSING',false);continue;}
-   try{const v=readTechEvidenceRecords({inputs:[r],kinds:[kind],now,decision,validThrough:end});const correctOrigin=policy.fixture?r.origin==='SYNTHETIC_FIXTURE':['OWNER_DOCUMENT','PROVIDER_DOCUMENT'].includes(r.origin);
-    const okay=!v.blockers.length&&correctOrigin;gate(kind+'_RECORD',okay,v.blockers);out.evidenceState[kind]=okay?(policy.fixture?(paper?'TEST_FIXTURE':'EXPLICIT_MOCK_ASSUMPTION'):'ATTRIBUTED_NOT_AUTHENTICATED'):'BLOCKED';if(okay)payloads.set(kind,v.payloads.get(kind));
+   try{const v=readTechEvidenceRecords({inputs:[r],kinds:[kind],now,decision,validThrough:end,simulatedAccount:policy.simulatedAccount});const correctOrigin=spreadRecordOriginAllowed(policy,r);
+    const okay=!v.blockers.length&&correctOrigin;gate(kind+'_RECORD',okay,v.blockers);out.evidenceState[kind]=okay?(policy.simulatedAccount&&SIMULATED_SPREAD_RECORD_KINDS.includes(kind)?'SIMULATED_ACCOUNT_ASSUMPTION':policy.fixture?(paper?'TEST_FIXTURE':'EXPLICIT_MOCK_ASSUMPTION'):'ATTRIBUTED_NOT_AUTHENTICATED'):'BLOCKED';if(okay)payloads.set(kind,v.payloads.get(kind));
    }catch(e){gate(kind+'_RECORD',false,code(e));out.evidenceState[kind]='BLOCKED';}
   }
   gate(paper?'ISOLATED_PAPER_SCOPE':'REAL_INPUT_HAS_NO_LIFECYCLE_AUTHORITY',paper||input.mode==='MOCK_CONTROL');
@@ -44,6 +44,7 @@ export function previewTechSpreadPlan(input){
   gate('PRIOR_REQUEST_BOUND_TO_SELECTION',request.selectionSha256===spreadPlanHash(selection)&&request.structure===selection.structure&&decision<snapshotNs(raw.capture.startedAt)&&(!paper||decision<snapshotNs(raw.intent.requestedAt)));
   if(out.checks.some(c=>c.status==='BLOCKED'))return out;
   const research=payloads.get('RESEARCH'),cost=payloads.get('COST_MODEL'),contracts=payloads.get('CONTRACT'),permission=payloads.get('PRODUCT_PERMISSION'),funds=payloads.get('ACCOUNT_FUNDS'),risk=payloads.get('RISK_LIMITS'),entitlement=payloads.get('DATA_ENTITLEMENT');
+  if(policy.simulatedAccount)validateSimulatedSpreadAccount(payloads,request);
   gate('RESEARCH_REQUEST_ID_AND_HASH',request.researchId===research.researchPlan?.id&&request.researchSha256===byKind.get('RESEARCH').sha256&&research.symbol===selection.symbol);
   gate('SUPPORTED_PLAN_REQUEST',(paper?/^paper-[a-z0-9-]{1,60}$/:/^mock-[a-z0-9-]{1,60}$/).test(request.id)&&(paper?/^paper-[a-z0-9-]{1,60}$/.test(accountId):request.accountId==='MOCK')&&request.quantity===1&&request.executionModel===(paper?'TWO_LEG_BID_ASK_PAPER_ASSUMPTION':'ATOMIC_TWO_LEG_ASSUMPTION')&&Array.isArray(request.parentIds)&&request.parentIds.length<=12&&request.parentIds.every(text));
   gate('EXPLICIT_CONDITIONS',request.conditions&&['entry','exit','invalidation'].every(k=>text(request.conditions[k])));
@@ -60,7 +61,7 @@ export function previewTechSpreadPlan(input){
    decisionAt:request.decisionAt,entryDeadlineAt:request.entryDeadlineAt,timeExitAt:request.timeExitAt,quantity:request.quantity,
    legs:sourceLegs.map(l=>{const c=cost.legs.find(c=>c.id===l.contract.id);return {role:l.direction,quantity:request.quantity,contract:contracts.contracts.find(c=>c.id===l.contract.id),entryFeeCents:c.entryFeeCents,exitFeeCents:c.exitFeeCents,exitSlippageCents:c.exitSlippageCents};}),
    entryDebitLimitCents:request.entryDebitLimitCents,maxLegSpreadCents:request.maxLegSpreadCents,
-   account:{mode:paper?'PAPER':'MOCK',id:accountId,currency:'USD',provider:paper?(policy.fixture?'TEST_FIXTURE':'ATTRIBUTED_DOCUMENTS'):'SYNTHETIC_TEST_ONLY',permission:paper?'DOCUMENT_EVIDENCE_PASSED':'PASS',products:[structure],dataEntitlement:paper?'DOCUMENT_EVIDENCE_PASSED':'PASS',settledCashCents:funds.settledCashCents,reservedCashCents:funds.reservedCashCents,unsettledCashCents:funds.unsettledCashCents,maximumLossCents:request.maximumLossCents,tradeBudgetMaxCents:request.budgetCents,reviewedAt:extrema(accountRecords,'reviewedAt',true),validThrough:extrema(accountRecords,'validThrough',false)}};
+   account:{mode:policy.simulatedAccount?'SIMULATED_ACCOUNT':paper?'PAPER':'MOCK',id:accountId,currency:'USD',provider:policy.simulatedAccount?'LOCAL_SIMULATION_ASSUMPTIONS':paper?(policy.fixture?'TEST_FIXTURE':'ATTRIBUTED_DOCUMENTS'):'SYNTHETIC_TEST_ONLY',permission:policy.simulatedAccount?'SIMULATED_PRODUCTS_ONLY':paper?'DOCUMENT_EVIDENCE_PASSED':'PASS',products:[structure],dataEntitlement:paper?'DOCUMENT_EVIDENCE_PASSED':'PASS',settledCashCents:funds.settledCashCents,reservedCashCents:funds.reservedCashCents,unsettledCashCents:funds.unsettledCashCents,maximumLossCents:request.maximumLossCents,tradeBudgetMaxCents:request.budgetCents,reviewedAt:extrema(accountRecords,'reviewedAt',true),validThrough:extrema(accountRecords,'validThrough',false)}};
   plan.provenance={version:'TECH_SPREAD_PLAN_BINDING_V1',origin:policy.origin,...(paper?{evidenceContext:input.evidenceContext}:{}),planSha256:spreadPlanHash(plan),requestId:request.id,researchId:request.researchId,researchSha256:byKind.get('RESEARCH').sha256,batchId:selection.batchId,preflightAt:input.at,
    parentIds:[...new Set([...request.parentIds,request.id,request.researchId,selection.batchId,cost.id,accountId])],original:{rawJson:original.rawJson,sha256:original.sha256},records:input.records,
    costModel:{id:cost.id,version:cost.version,source:byKind.get('COST_MODEL').source,sha256:byKind.get('COST_MODEL').sha256},

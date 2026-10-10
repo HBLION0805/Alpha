@@ -1,5 +1,5 @@
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
-import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,spreadPaperEvidencePolicy} from './options-tech-spread-plan-binding.mjs';
+import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,spreadPaperEvidencePolicy,spreadRecordOriginAllowed,SIMULATED_SPREAD_RECORD_KINDS} from './options-tech-spread-plan-binding.mjs';
 import {previewTechSpreadPlan} from './options-tech-spread-plan.mjs';
 import {techStatusCodes} from './options-tech-status-codes.mjs';
 
@@ -35,18 +35,21 @@ const draftValue=(field,value)=>!present(value)?null:field==='parentIds'?(Array.
 
 export function prepareTechSpreadInput(input){
  const inputDigest=spreadPlanHash(input??null),rows=Array.isArray(input?.records)&&input.records.length<=8?input.records:[],payloads=new Map(),records=new Map(),diagnostics=[];
- let fixture=null;try{fixture=input?.mode==='MOCK_CONTROL'?true:input?.mode==='REAL_QUOTE_PAPER'?spreadPaperEvidencePolicy(input.evidenceContext).fixture:null;}catch{}
+ let policy=null;try{policy=input?.mode==='MOCK_CONTROL'?{fixture:true}:input?.mode==='REAL_QUOTE_PAPER'?spreadPaperEvidencePolicy(input.evidenceContext):null;}catch{}
+ const fixture=policy?.fixture??null;
  for(const kind of SPREAD_PLAN_RECORD_KINDS){
   const matches=rows.filter(r=>r?.kind===kind),r=matches.length===1?matches[0]:null;let body=null,integrity='UNKNOWN';
   if(r){
    try{if(typeof r.rawJson!=='string'||r.rawJson.length>65536||spreadPlanHash(r.rawJson)!==r.sha256)throw Error();body=parseChainSurveyJson(r.rawJson);if(!object(body))throw Error();integrity='LOCAL_BYTES_MATCH_NOT_AUTHENTICATION';}catch{integrity='INVALID_BYTES_OR_JSON';}
   }
-  const originApplicable=fixture===true?r?.origin==='SYNTHETIC_FIXTURE':fixture===false?['OWNER_DOCUMENT','PROVIDER_DOCUMENT'].includes(r?.origin):false;
-  const paths=fields[kind].filter(f=>f!=='maxSourceSkewMs'||input?.mode==='REAL_QUOTE_PAPER');
-  const missing=[...envelopeFields.filter(f=>!present(r?.[f])).map(f=>'envelope.'+f),...paths.filter(f=>!present(get(body,f))).map(f=>'payload.'+f)];
-  diagnostics.push({kind,sourceGuidance:sources[kind],state:matches.length>1?'DUPLICATE_KIND':!r?'MISSING':missing.length?'PARTIAL_UNKNOWN':'FIELDS_SUPPLIED_UNVALIDATED',
+  const originApplicable=policy?spreadRecordOriginAllowed(policy,r):false;
+  const extra=policy?.simulatedAccount?({ACCOUNT_FUNDS:['basis','initialCapitalCents','additionalDepositsCents','borrowingCents','initialPositions'],PRODUCT_PERMISSION:['basis','brokerQualification'],RISK_LIMITS:['basis'],COST_MODEL:['basis','actualBrokerFees']}[kind]??[]):[];
+  const paths=[...fields[kind].filter(f=>f!=='maxSourceSkewMs'||input?.mode==='REAL_QUOTE_PAPER'),...extra];
+  const supplied=f=>['initialPositions','brokerQualification','actualBrokerFees'].includes(f)&&policy?.simulatedAccount?(f==='initialPositions'?Array.isArray(get(body,f)):typeof get(body,f)==='string'&&get(body,f).length>0):present(get(body,f));
+  const missing=[...envelopeFields.filter(f=>!present(r?.[f])).map(f=>'envelope.'+f),...paths.filter(f=>!supplied(f)).map(f=>'payload.'+f)];
+  diagnostics.push({kind,sourceGuidance:policy?.simulatedAccount&&SIMULATED_SPREAD_RECORD_KINDS.includes(kind)?'本轮独立模拟账户的事前模型假设；不需要真实账户截图，不证明券商资格。费用标为假设，资金及预算不超过本轮虚拟本金。':sources[kind],state:matches.length>1?'DUPLICATE_KIND':!r?'MISSING':missing.length?'PARTIAL_UNKNOWN':'FIELDS_SUPPLIED_UNVALIDATED',
    missingFields:missing,localIntegrity:integrity,originContext:originApplicable?'DECLARED_CONTEXT_ONLY':'UNKNOWN_OR_INAPPLICABLE',
-   providedFields:paths.filter(f=>present(get(body,f))),qualification:'NOT_GRANTED_BY_FIELD_PRESENCE'});
+   providedFields:paths.filter(supplied),qualification:'NOT_GRANTED_BY_FIELD_PRESENCE'});
   // Draft bindings use only unique, byte-matching records with an explicit applicable source.
   if(body&&integrity==='LOCAL_BYTES_MATCH_NOT_AUTHENTICATION'&&originApplicable&&typeof r.source==='string'&&r.source.trim()){payloads.set(kind,body);records.set(kind,r);}
  }
@@ -68,7 +71,7 @@ export function prepareTechSpreadInput(input){
  const preview=previewTechSpreadPlan(input);
  return {view:'EXISTING_SPREAD_INPUT_PREPARATION',status:draftWarnings.length||bindingProposals.some(p=>p.status==='CONFLICT_RETAINED')||diagnostics.some(d=>d.state!=='FIELDS_SUPPLIED_UNVALIDATED'||d.localIntegrity!=='LOCAL_BYTES_MATCH_NOT_AUTHENTICATION'||d.originContext!=='DECLARED_CONTEXT_ONLY')?'PARTIAL_UNKNOWN':'FIELDS_SUPPLIED_UNVALIDATED',
   inputDigest,mode:['MOCK_CONTROL','REAL_SAVED_SOURCE_REPLAY','REAL_QUOTE_PAPER'].includes(input?.mode)?input.mode:'UNKNOWN',
-  evidenceContext:fixture===true?(input?.mode==='REAL_QUOTE_PAPER'?'TEST_FIXTURE':'MOCK'):fixture===false?'ATTRIBUTED_REAL_EVIDENCE':'UNKNOWN',diagnostics,
+  evidenceContext:policy?.simulatedAccount?input.evidenceContext:fixture===true?(input?.mode==='REAL_QUOTE_PAPER'?'TEST_FIXTURE':'MOCK'):fixture===false?'ATTRIBUTED_REAL_EVIDENCE':'UNKNOWN',diagnostics,
   requestDraft,draftWarnings,bindingProposals,draftAuthority:'UNFROZEN_BODY_ONLY_NOT_AN_EVIDENCE_ENVELOPE',
   inventoryScope:'Field presence only, not exhaustive semantic validation. Original research/source/technical, clock, binding and account gates remain in the original engine.',
   selectionGuidance:'selectionSha256 必须来自决策前明确保存的合约选择；不从后来行情倒造。需要决策后的完整两腿报价原件才能继续原计划预览。',
