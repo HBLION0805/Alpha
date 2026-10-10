@@ -3,7 +3,7 @@ import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPa
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 
 export function validateTechQuoteSelection(s){
- if(!s||Object.keys(s).sort().join()!=='expiry,strike,symbol'||!['AAPL','TSM','QQQ'].includes(s.symbol)||
+ if(!s||Object.keys(s).sort().join()!=='expiry,strike,symbol'||!['AAPL','TSM','QQQ','TSLA'].includes(s.symbol)||
  !/^\d{4}-\d\d-\d\d$/.test(s.expiry)||new Date(s.expiry+'T00:00:00Z').toISOString().slice(0,10)!==s.expiry||
  snapshotCents(s.strike)===null||snapshotCents(s.strike)<=0)throw Error('TECH_QUOTES_SELECTION');
  return s;
@@ -11,7 +11,7 @@ export function validateTechQuoteSelection(s){
 /** Serializable bounded collector, executed only in an equipped authorized Host. */
 export async function collectTechOptionQuotes({selection,call,clock,origin='HOST_MARKET_TOOL_RESPONSES'}){
  const fail=c=>{throw Error(c)},uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(v);
- if(!selection||Object.keys(selection).sort().join()!=='expiry,strike,symbol'||!['AAPL','TSM','QQQ'].includes(selection.symbol)||
+ if(!selection||Object.keys(selection).sort().join()!=='expiry,strike,symbol'||!['AAPL','TSM','QQQ','TSLA'].includes(selection.symbol)||
  !/^\d{4}-\d\d-\d\d$/.test(selection.expiry)||!/^\d{1,8}(?:\.\d{1,4})?$/.test(selection.strike)||Number(selection.strike)<=0||
  !['HOST_MARKET_TOOL_RESPONSES','SYNTHETIC_FIXTURE'].includes(origin))fail('TECH_QUOTES_SELECTION');
  const receipts=[],failures=[],selectedIds=[];let previous=null,calls=0;

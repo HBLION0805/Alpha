@@ -1,0 +1,13 @@
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {prepareTechCandidate,assessTechCandidate} from './lib/options-tech-candidate.mjs';
+export function techCandidateCli(args,{root=process.cwd(),now=()=>new Date().toISOString()}={}){
+ if(args.length===1&&args[0]==='--help')return {usage:'--prepare --source-root DIRECTORY --research FILE --run-id ID | --assess --run-id ID [--quote FILE] [--evidence FILE]',authority:'RESEARCH_LINK_AND_ADMISSION_REJECTION_ONLY_NO_ARM'};
+ const mode=args[0],p={};if(!['--prepare','--assess'].includes(mode))throw Error('TECH_CANDIDATE_ARGUMENTS');
+ for(let i=1;i<args.length;i+=2){if(!['--source-root','--research','--run-id','--quote','--evidence'].includes(args[i])||p[args[i]]||!args[i+1]||args[i+1].startsWith('--'))throw Error('TECH_CANDIDATE_ARGUMENTS');p[args[i]]=args[i+1];}
+ if(!p['--run-id'])throw Error('TECH_CANDIDATE_ARGUMENTS');
+ if(mode==='--prepare'){if(!p['--source-root']||!p['--research']||p['--quote']||p['--evidence'])throw Error('TECH_CANDIDATE_ARGUMENTS');return prepareTechCandidate({root,sourceRoot:p['--source-root'],researchPath:p['--research'],runId:p['--run-id'],now});}
+ if(p['--source-root']||p['--research'])throw Error('TECH_CANDIDATE_ARGUMENTS');
+ return assessTechCandidate({root,runId:p['--run-id'],quotePath:p['--quote'],evidencePath:p['--evidence'],now});
+}
+if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){try{console.log(JSON.stringify(techCandidateCli(process.argv.slice(2)),null,2));}catch(e){console.error(/^TECH_CANDIDATE_[A-Z_]+$/.test(e?.message)?e.message:'TECH_CANDIDATE_FAILED');process.exitCode=1;}}

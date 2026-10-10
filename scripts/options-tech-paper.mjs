@@ -11,7 +11,7 @@ function input(path){
   return {path:file,sha256:createHash('sha256').update(raw).digest('hex'),utf8:text,data:parseChainSurveyJson(text)};
 }
 export function techPaperCli(args,{root=process.cwd(),now=()=>new Date().toISOString()}={}){
-  if(args.length===1&&args[0]==='--help')return {usage:'--research FILE [--evidence FILE] [--out NEW_IGNORED_FILE]',scope:['AAPL','TSM','QQQ'],mode:'FEASIBILITY_ONLY_NO_ARM'};
+  if(args.length===1&&args[0]==='--help')return {usage:'--research FILE [--evidence FILE] [--out NEW_IGNORED_FILE]',scope:['AAPL','TSM','QQQ','TSLA'],mode:'FEASIBILITY_ONLY_NO_ARM'};
   const p={};
   for(let i=0;i<args.length;i++){
     const key=args[i];if(!['--research','--evidence','--out'].includes(key)||p[key]||!args[i+1]||args[i+1].startsWith('--'))throw Error('TECH_PAPER_ARGUMENTS');

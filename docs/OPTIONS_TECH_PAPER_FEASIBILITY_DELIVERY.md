@@ -1,6 +1,6 @@
 # Technology Paper feasibility
 
-options:tech-paper reads saved AAPL/TSM/QQQ research and explicit hash-checked
+options:tech-paper reads saved AAPL/TSM/QQQ/TSLA research and explicit hash-checked
 contract, data/product permission, funds, risk and later quote evidence.
 Research trial and technical confirmation are distinct; unknown or conflicting
 nontechnical evidence remains a blocker. No fixed allocation split is imposed.

@@ -1,7 +1,7 @@
 # Technology option quotes and isolated feasibility
 
 The explicit options:tech-quotes command reuses an existing authorized local Codex
-OAuth MCP connection. It automatically reads one AAPL/TSM/QQQ selection through
+OAuth MCP connection. It automatically reads one AAPL/TSM/QQQ/TSLA selection through
 at most four market calls and two exact option identities, without pagination or
 retries. The Host validates in read-only mode; the parent CLI exclusively saves
 original responses and clocks under ignored runtime storage. No manual file

@@ -1,6 +1,6 @@
 import type { ThreeFacetInput } from './OptionsThreeFacet';
 import type { SnapshotQuote } from '../engines/options-robinhood-data/RobinhoodSnapshotPaper';
-export type TechSymbol = 'AAPL' | 'TSM' | 'QQQ';
+export type TechSymbol = 'AAPL' | 'TSM' | 'QQQ' | 'TSLA';
 export type TechSnapshotQuote = Omit<SnapshotQuote, 'symbol'> & {symbol: TechSymbol};
 export type TechEvidenceKind = 'CONTRACT' | 'DATA_ENTITLEMENT' | 'PRODUCT_PERMISSION' | 'ACCOUNT_FUNDS' | 'RISK_LIMITS' | 'QUOTE';
 export interface TechEvidenceRecord {

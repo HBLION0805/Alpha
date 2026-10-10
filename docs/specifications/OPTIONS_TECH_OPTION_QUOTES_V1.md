@@ -8,7 +8,7 @@ It does not read browser sessions, cookies, tokens or credential files.
 ## Entry and scope
 `npm run options:tech-quotes -- --capture --symbol AAPL --expiry YYYY-MM-DD --strike DECIMAL --run-id UNIQUE_ID`
 
-The Owner supplies one AAPL/TSM/QQQ symbol, expiry and strike for a source-feasibility
+The Owner supplies one AAPL/TSM/QQQ/TSLA symbol, expiry and strike for a source-feasibility
 sample. This is not contract ranking, a trade recommendation, a plan or a fill.
 The bounded collector makes at most four serial market calls: chain, exact
 instruments, underlying equity quote, and one batch of at most two call/put quotes.

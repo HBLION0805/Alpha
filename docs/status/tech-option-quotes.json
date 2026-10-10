@@ -4,7 +4,8 @@
   "symbols": [
     "AAPL",
     "TSM",
-    "QQQ"
+    "QQQ",
+    "TSLA"
   ],
   "maximumMarketCalls": 4,
   "maximumContracts": 2,
@@ -17,13 +18,14 @@
   "executionAllowed": false,
   "publicationValidation": {
     "status": "PASSED",
-    "baseCommit": "9c2b110aecf07cb01dada672c1ad7539691663f7",
-    "componentCount": 219,
-    "testsExecuted": 5253,
-    "passed": 5253,
+    "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
+    "baseCommit": "2f3208fcafc3829fe607e9718831ebdb2e669a6d",
+    "componentCount": 220,
+    "testsExecuted": 5271,
+    "passed": 5271,
     "failed": 0,
-    "scope": "ISOLATED_EXACT_RELEASE_CANDIDATE",
-    "engineeringTestsAreNotPaperAcceptance": true
+    "mockCases": 18,
+    "notPaperLifecycleAcceptance": true
   },
   "productionScheduleChanged": false,
   "deployed": false

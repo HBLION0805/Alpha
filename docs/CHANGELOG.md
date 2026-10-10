@@ -1,3 +1,11 @@
+## Fixed-pool technology candidate handoff
+
+The [candidate handoff](OPTIONS_TECH_CANDIDATE_HANDOFF_DELIVERY.md) replays the
+existing fixed 36-company scan and retrospective ranking into saved research,
+bounded TSLA quote review and individual UNKNOWN account checks. Historical
+source clocks and engineering spread limitations remain explicit. The local
+closed-session run ends NOT_ADMITTED with zero fills; no schedule or ledger changes.
+
 ## Focused-news publication and receipt clocks
 
 Publication after the original receipt remains an anomaly as assessment time

@@ -3,7 +3,7 @@
 Owner authorization: October 9, 2026, local development only.
 
 ## Boundary
-Add a read-only feasibility consumer for AAPL, TSM and QQQ saved research.
+Add a read-only feasibility consumer for AAPL, TSM, QQQ and TSLA saved research.
 Keep research direction and exploratory/confirmation conditions visible even when
 research eligibility, product access, account funds, quotes or Paper fail.
 This is not an alternative entry strategy and does not relax the three-facet gate.

@@ -91,7 +91,7 @@ export async function captureTechQuotes({root,selection,runId,codexPath=findCode
  writeFileSync(join(run,'host-run.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});return result;
 }
 export async function techQuotesCli(args,{root=process.cwd()}={}){
- if(args.length===1&&args[0]==='--help')return {usage:'--capture --symbol AAPL|TSM|QQQ --expiry YYYY-MM-DD --strike DECIMAL --run-id UNIQUE_ID | --normalize CAPTURE_FILE',scope:'Manual one-shot capture via existing local Codex OAuth MCP. No deployment, timers or fills.'};
+ if(args.length===1&&args[0]==='--help')return {usage:'--capture --symbol AAPL|TSM|QQQ|TSLA --expiry YYYY-MM-DD --strike DECIMAL --run-id UNIQUE_ID | --normalize CAPTURE_FILE',scope:'Manual one-shot capture via existing local Codex OAuth MCP. No deployment, timers or fills.'};
  if(args.length===2&&args[0]==='--normalize'){const v=readTechQuoteInput(resolve(root,args[1])).data;return normalizeTechOptionCapture(v.capture??v,new Date().toISOString());}
  if(args[0]!=='--capture'||args.length!==9)throw Error('TECH_QUOTES_ARGUMENTS');const p={};
  for(let n=1;n<args.length;n+=2){if(!['--symbol','--expiry','--strike','--run-id'].includes(args[n])||p[args[n]])throw Error('TECH_QUOTES_ARGUMENTS');p[args[n]]=args[n+1];}

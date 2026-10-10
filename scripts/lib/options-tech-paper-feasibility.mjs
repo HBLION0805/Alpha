@@ -6,7 +6,7 @@ import {paperFingerprint} from '../../src/engines/options-paper/OptionsPaperTrad
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {engineeringObservationPolicy} from './options-real-data-paper-timing.mjs';
 
-export const TECH_PAPER_SCOPE=Object.freeze(['AAPL','TSM','QQQ']);
+export const TECH_PAPER_SCOPE=Object.freeze(['AAPL','TSM','QQQ','TSLA']);
 const KINDS=['CONTRACT','DATA_ENTITLEMENT','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS','QUOTE'];
 const int=(v,min=0,max=100000000)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
 const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=2000;
