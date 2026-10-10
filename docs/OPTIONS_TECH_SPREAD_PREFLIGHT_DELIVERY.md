@@ -1,7 +1,7 @@
 # Saved two-leg quote preflight
 
 This offline preflight reads explicitly selected existing `TECH_QUOTES_RECEIPT_V1`
-originals. It never captures data, registers a plan, arms Paper, models a fill or
+originals, with V2 support added by the [two-strike batch extension](OPTIONS_TECH_SPREAD_BATCH_DELIVERY.md). It never captures data, registers a plan, arms Paper, models a fill or
 calls an account/order tool. `assessTechSpreadPreflight` is pure;
 `readTechSpreadOriginal` and the CLI only read supplied files. Launch-tool caches
 and logs are outside this core guarantee; npm is a convenience runner, not the
@@ -33,12 +33,14 @@ directions; and equal whole quantities. Only bull-call and bear-put debit vertic
 are accepted as static shapes. A same-strike call plus put is not CDS/PDS. Static
 validity is independent from source coherence and executable admission.
 
-The current original producer selects **one strike per capture**, optionally one
-call and one put. Consequently it cannot supply a same-capture debit vertical.
+The original V1 producer selects **one strike per capture**, optionally one
+call and one put. Consequently V1 cannot supply a same-capture debit vertical.
 Different captures can establish a static structure but are never stitched into
 an executable quote, even when their refresh clocks happen to match. Combined
-economics remain null. This is an explicit producer capability gap, not evidence
-that a new two-strike collector or account entitlement exists.
+economics remain null. The later V2 extension supports two explicit strikes with
+MOCK-tested same-batch coherence; real source acceptance and account entitlement
+are still unverified. V2 source-skew limits are explicit request engineering
+assumptions. Its passing result is evidence coherence only, never atomic execution.
 
 Every gate reports its source and scope. The inherited 60-second freshness,
 mechanical bid/ask spread cap and exact-clock comparison are engineering references,
@@ -77,7 +79,7 @@ remain included. See [checkpoint](status/tech-spread-preflight.json).
 
 Real Paper acceptance remains NOT_TESTED: a suitable coherent two-strike source,
 contract details, reviewed spread policy, costs, account evidence and a qualified
-real lifecycle are still absent. A bounded next increment is a design and MOCK
-validation of a same-batch two-strike receipt contract, with no new collection or
-permissions implied. CPI, schedules, production and the challenge ledger remain
+real lifecycle are still absent. The proposed same-batch two-strike receipt
+extension is now implemented and MOCK-tested in the linked V2 delivery; it has
+not acquired a real pair or new permissions. CPI, schedules, production and the challenge ledger remain
 unchanged.

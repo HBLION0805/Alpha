@@ -43,20 +43,24 @@ export function assessTechSpreadPreflight(input){
   for(const o of input.originals){
    check(text(o.id)&&!sources.has(o.id)&&typeof o.rawJson==='string'&&Buffer.byteLength(o.rawJson)<=2e6&&sha(o.rawJson)===o.sha256,'ORIGINAL_INTEGRITY');
    const r=parseChainSurveyJson(o.rawJson),c=r?.capture;
-   check(r?.version==='TECH_QUOTES_RECEIPT_V1'&&r.executionAllowed===false&&c&&r.captureSha256===sha(JSON.stringify(c)),'RECEIPT_INTEGRITY');
-   check(r.intent?.version==='TECH_QUOTES_REQUEST_V1'&&JSON.stringify(r.intent.selection)===JSON.stringify(c.selection)&&r.intent.accountAccessed===false&&r.intent.executionAllowed===false,'INTENT_BINDING');
+   const batch=c?.version==='TECH_OPTION_CAPTURE_V2';
+   check(r?.version===(batch?'TECH_QUOTES_RECEIPT_V2':'TECH_QUOTES_RECEIPT_V1')&&r.executionAllowed===false&&c&&r.captureSha256===sha(JSON.stringify(c)),'RECEIPT_INTEGRITY');
+   check(r.intent?.version===(batch?'TECH_QUOTES_REQUEST_V2':'TECH_QUOTES_REQUEST_V1')&&JSON.stringify(r.intent.selection)===JSON.stringify(c.selection)&&r.intent.accountAccessed===false&&r.intent.executionAllowed===false,'INTENT_BINDING');
+   if(batch)check(r.intent.origin===c.origin&&c.batchId===r.intent.selection.batchId,'BATCH_INTENT_BINDING');
    check(snapshotNs(r.intent.requestedAt)<=snapshotNs(c.startedAt)&&snapshotNs(c.capturedAt)<=snapshotNs(r.recordedAt)&&snapshotNs(r.recordedAt)<=now,'ORIGINAL_RECEIPT_CLOCK');
    check(c.origin===(input.mode==='MOCK_CONTROL'?'SYNTHETIC_FIXTURE':'HOST_MARKET_TOOL_RESPONSES'),'MIXED_OR_UNDECLARED_ORIGIN');
    const normalized=normalizeTechOptionCapture(c,input.at);sources.set(o.id,{o,r,c,normalized});
+   if(batch)report.producerCapability='TWO_EXPLICIT_STRIKES_ONE_QUOTE_BATCH_NO_ATOMIC_SNAPSHOT';
    report.originals.push({id:o.id,sha256:o.sha256,captureSha256:r.captureSha256,origin:c.origin,
     requestedAt:r.intent.requestedAt,startedAt:c.startedAt,capturedAt:c.capturedAt,recordedAt:r.recordedAt,
-    selection:c.selection,normalizationStatus:normalized.status,originalAuthentication:'NOT_ESTABLISHED_BY_HASH'});
+    selection:c.selection,...(batch?{batchId:c.batchId,atomicSnapshot:false}:{}),normalizationStatus:normalized.status,originalAuthentication:'NOT_ESTABLISHED_BY_HASH'});
   }
   const selected=input.legs.map(l=>{
    check(['LONG','SHORT'].includes(l.direction)&&int(l.quantity,1),'LEG_DIRECTION_OR_QUANTITY');
    const s=sources.get(l.originalId);check(s,'LEG_ORIGINAL_MISSING');
    const q=s.normalized.quotes.find(q=>q.id===l.contract?.id);check(q?.snapshot,'LEG_QUOTE_MISSING');
    check(identity(q.snapshot)===identity(l.contract),'EXACT_CONTRACT_MISMATCH');
+   if(s.c.version==='TECH_OPTION_CAPTURE_V2')check(s.c.selection.legs.some(x=>x.id===q.id&&x.direction===l.direction),'BATCH_SELECTED_LEG_BINDING');
    return {l,s,q};
   });
   const [a,b]=selected,qa=a.q.snapshot,qb=b.q.snapshot;
@@ -71,7 +75,7 @@ export function assessTechSpreadPreflight(input){
   for(const {l,s,q} of selected){
    const snap=q.snapshot,clock=ns(snap.updatedAt);
    report.legs.push({originalId:l.originalId,direction:l.direction,quantity:l.quantity,snapshot:snap,
-    sourceAgeNs:clock===null?null:(now-clock).toString(),contractEvidence:q.contractEvidence,status:q.status,blockers:q.blockers});
+    sourceAgeNs:clock===null?null:(now-clock).toString(),...(q.batchId?{batchId:q.batchId,acquisition:q.acquisition}:{}),contractEvidence:q.contractEvidence,status:q.status,blockers:q.blockers});
    gate('INHERITED_QUOTE_ASSESSMENT',q.status==='QUALIFIED_SNAPSHOT_ONLY','normalizeTechOptionCapture / assessSnapshotQuote','ENGINEERING_REFERENCE_NOT_OWNER_SPREAD_POLICY',{id:snap.id,blockers:q.blockers,maxAgeSeconds:60,mechanicalSpreadLimitCents:q.mechanicalSpreadLimitCents,session:'EXISTING_REVIEWED_2026_REGULAR_SESSION'});
    gate('QUOTE_AFTER_DECISION',clock!==null&&clock>decision&&snapshotNs(snap.receivedAt)>decision,'Prospective decision-before-quote requirement','EVIDENCE_ORDER',{id:snap.id,decisionAt:input.decisionAt,sourceAt:snap.updatedAt,receivedAt:snap.receivedAt});
    gate('DISPLAYED_BOTH_SIDE_QUANTITY',snap.bidSize>=l.quantity&&snap.askSize>=l.quantity,'Existing two-leg entry and exit size checks','DISPLAYED_SIZE_NOT_FILL',{id:snap.id});
@@ -80,9 +84,17 @@ export function assessTechSpreadPreflight(input){
   const ca=ns(qa.updatedAt),cb=ns(qb.updatedAt),diff=ca===null||cb===null?null:ca-cb;
   // Byte-identical capture references are the same capture; separate captures are never stitched.
   const sameCapture=a.s.r.captureSha256===b.s.r.captureSha256;
-  report.quotePair={status:'NOT_EXECUTABLE',sameCapture,sourceClockDifferenceNs:diff===null?null:(diff<0n?-diff:diff).toString(),economics:null};
-  gate('SAME_CAPTURE',sameCapture,'TECH_OPTION_CAPTURE_V1 original receipt lineage','SOURCE_COHERENCE_NOT_EXECUTION_PROOF');
-  gate('SYNCHRONOUS_SOURCE_CLOCK_REFERENCE',diff===0n,'OptionsStructureComparisonEngine LEG_OBSERVATION_CLOCKS_DIFFER','INHERITED_ENGINEERING_REFERENCE_NOT_APPROVED_SPREAD_TIME_TOLERANCE');
+  const batch=a.s.c.version==='TECH_OPTION_CAPTURE_V2'&&b.s.c.version==='TECH_OPTION_CAPTURE_V2',pair=batch?a.s.normalized.pair:null;
+  const sameBatch=batch&&sameCapture&&a.s.c.batchId===b.s.c.batchId;
+  const prospective=selected.every(({q})=>ns(q.snapshot.updatedAt)!==null&&ns(q.snapshot.updatedAt)>decision&&snapshotNs(q.snapshot.receivedAt)>decision);
+  const coherent=sameBatch&&debit&&prospective&&pair?.status==='COHERENT_BATCH_EVIDENCE_ONLY';
+  report.quotePair={status:coherent?'COHERENT_BATCH_EVIDENCE_ONLY':'NOT_EXECUTABLE',sameCapture,sourceClockDifferenceNs:diff===null?null:(diff<0n?-diff:diff).toString(),economics:null,...(batch?{batchId:sameBatch?a.s.c.batchId:null,atomicSnapshot:false,maxSourceSkewMs:pair?.maxSourceSkewMs??null}: {})};
+  gate('SAME_CAPTURE',sameCapture,'TECH_OPTION_CAPTURE original receipt lineage','SOURCE_COHERENCE_NOT_EXECUTION_PROOF');
+  if(batch){
+   report.producerCapability='TWO_EXPLICIT_STRIKES_ONE_QUOTE_BATCH_NO_ATOMIC_SNAPSHOT';
+   gate('SAME_EXPLICIT_BATCH',sameBatch,'TECH_OPTION_CAPTURE_V2 batch and original hash','NO_CROSS_BATCH_STITCHING');
+   gate('EXPLICIT_BATCH_TIMING',sameBatch&&pair?.status==='COHERENT_BATCH_EVIDENCE_ONLY','Frozen selection maxSourceSkewMs + existing individual quote checks','REQUEST_ENGINEERING_ASSUMPTION_NOT_OWNER_STRATEGY',pair);
+  }else gate('SYNCHRONOUS_SOURCE_CLOCK_REFERENCE',diff===0n,'OptionsStructureComparisonEngine LEG_OBSERVATION_CLOCKS_DIFFER','INHERITED_ENGINEERING_REFERENCE_NOT_APPROVED_SPREAD_TIME_TOLERANCE');
   if(!sameCapture)gate('SEPARATE_CAPTURES_NOT_A_COMBINED_QUOTE',false,'Original receipt identities','NO_EXECUTABLE_QUOTE_STITCHING');
   const costs=input.costs;
   if(costs){

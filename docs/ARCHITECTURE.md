@@ -1,3 +1,10 @@
+## Explicit two-strike quote batches
+
+The [V2 batch extension](OPTIONS_TECH_SPREAD_BATCH_DELIVERY.md) reuses the existing
+Host and adapter for two predeclared same-expiry/type contracts, one quote batch,
+independent clocks and explicit skew assumptions. MOCK transport and preflight
+checks reject missing, mismatched or cross-batch legs; real acceptance is untested.
+
 ## Saved two-leg quote preflight
 
 The [read-only preflight](OPTIONS_TECH_SPREAD_PREFLIGHT_DELIVERY.md) verifies saved

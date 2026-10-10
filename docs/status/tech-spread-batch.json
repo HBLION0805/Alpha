@@ -1,0 +1,30 @@
+{
+  "version": "TECH_SPREAD_BATCH_DELIVERY_V1",
+  "date": "2026-10-10",
+  "status": "IMPLEMENTED_MOCK_TRANSPORT_ONLY",
+  "selectionVersion": "TECH_DEBIT_SPREAD_SELECTION_V1",
+  "captureVersion": "TECH_OPTION_CAPTURE_V2",
+  "receiptVersion": "TECH_QUOTES_RECEIPT_V2",
+  "maximumCalls": 5,
+  "maximumQuotedContracts": 2,
+  "automaticRetries": 0,
+  "atomicSnapshot": false,
+  "maxSourceSkewMs": "EXPLICIT_REQUEST_REQUIRED_NO_DEFAULT",
+  "coherentBatchMeansAdmission": false,
+  "realSourceCalls": 0,
+  "realQuoteAcceptance": "NOT_TESTED",
+  "realPaperAcceptance": "NOT_TESTED",
+  "executionAllowed": false,
+  "paperAdmissionAllowed": false,
+  "validation": {
+    "status": "PASSED",
+    "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
+    "baseCommit": "f51fc059b9ce9a986b0cb2b26a7bfca13af9339c",
+    "componentCount": 225,
+    "testsExecuted": 5525,
+    "passed": 5525,
+    "failed": 0,
+    "focusedBatchTests": 57,
+    "realPriceAcceptance": "NOT_TESTED"
+  }
+}
