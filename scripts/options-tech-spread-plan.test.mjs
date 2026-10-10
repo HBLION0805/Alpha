@@ -9,6 +9,9 @@ import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,mockSpreadEventFromOriginal,vali
 import {replayMockSpread,startMockSpread,appendMockSpread,recoverMockSpread} from './lib/options-tech-mock-spread.mjs';
 import {techSpreadPlanCli} from './options-tech-spread-plan.mjs';
 import {collectMockTechSpreadFixture} from './lib/options-tech-spread-quote-fixtures.mjs';
+import {paperSpreadPlanFixture} from './lib/options-tech-spread-plan-fixtures.mjs';
+import {prepareTechSpreadInput} from './lib/options-tech-spread-preparation.mjs';
+import {spawnSync} from 'node:child_process';
 let total=0,passed=0;
 const test=(name,fn)=>{total++;nodeTest(name,async()=>{const root=fs.mkdtempSync(join(tmpdir(),'alpha-spread-plan-'));try{await fn(root);passed++;}finally{assert(resolve(root).startsWith(resolve(tmpdir())+sep));fs.rmSync(root,{recursive:true});}});};
 after(()=>console.log('Technology spread plans: '+passed+'/'+total+' tests passed.'));
@@ -111,3 +114,89 @@ test('an explicit old evaluation time still rejects a future original in valid h
 test('corrupt journal hash cannot bypass verification through a duplicate',async root=>{const s=await threeEvents(root),p=join(root,'data/runtime/options-workbench-development',runId,'event-0002.json'),r=JSON.parse(fs.readFileSync(p));r.event.quote.legs[0].bidCents++;fs.writeFileSync(p,JSON.stringify(r));const before=snapshotDir(root);assert.throws(()=>appendMockSpread({root,runId,event:s.events[0]}),/EVENT_HASH_OR_ID/);assert.deepEqual(snapshotDir(root),before);});
 test('rehashed but invalid original in later history cannot bypass semantic validation through an old duplicate',async root=>{const s=await threeEvents(root),p=join(root,'data/runtime/options-workbench-development',runId,'event-0003.json'),r=JSON.parse(fs.readFileSync(p));const o=changedOriginal(r.event.provenance.original,x=>x.intent.version='TECH_QUOTES_REQUEST_V1');r.event.provenance.original=o;r.sha256=spreadPlanHash(JSON.stringify(r.event,null,2)+'\n');fs.writeFileSync(p,JSON.stringify(r));const before=snapshotDir(root);assert.throws(()=>appendMockSpread({root,runId,event:s.events[0]}),/EVENT_SOURCE_PAIR/);assert.deepEqual(snapshotDir(root),before);});
 test('duplicate latest event does not bypass corrupt start manifest',async root=>{const s=await threeEvents(root),p=join(root,'data/runtime/options-workbench-development',runId,'start.json'),r=JSON.parse(fs.readFileSync(p));r.input.account.settledCashCents++;fs.writeFileSync(p,JSON.stringify(r));assert.throws(()=>appendMockSpread({root,runId,event:s.events[2]}),/START_HASH/);});
+
+function preparationBoundary(r){
+ assert.equal(r.fileSystemWrites,0);assert.equal(r.sourceCalls,0);assert.equal(r.planSaved,false);assert.equal(r.requestEnvelopeCreated,false);assert.equal(r.actualTrades,0);
+ assert.equal(r.executionAllowed,false);assert.equal(r.productionPaperAdmissionAllowed,false);assert.equal(r.realAcceptance,'NOT_TESTED');assert.equal(r.requestDraft.kind,undefined);
+ assert.deepEqual(r.enginePreview.realAccountConfirmation,{permission:'UNKNOWN',funds:'UNKNOWN',entitlement:'UNKNOWN'});
+ assert.equal(r.accountAuthentication,'NOT_ESTABLISHED_BY_DOCUMENT_HASH');assert.equal(r.enginePreview.plan,undefined);assert.equal(r.enginePreview.entryEvent,undefined);
+}
+test('preparation shows all eight missing records before any quote or strategy request',()=>{
+ const input={version:'TECH_SPREAD_PLAN_INPUT_V2',mode:'REAL_QUOTE_PAPER',evidenceContext:'ATTRIBUTED_REAL_EVIDENCE',at:'2026-10-10T19:00:00.000Z',records:[]},before=JSON.stringify(input),r=prepareTechSpreadInput(input);
+ assert.equal(r.status,'PARTIAL_UNKNOWN');assert.equal(r.diagnostics.length,8);assert(r.diagnostics.every(d=>d.state==='MISSING'&&d.sourceGuidance&&d.missingFields.length));
+ for(const k of ['id','accountId','structure','selectionSha256','decisionAt','budgetCents','quantity','maxSourceSkewMs'])assert.equal(r.requestDraft[k],null);
+ assert(r.enginePreview.checks.some(c=>c.code==='STRATEGY_REQUEST_MISSING'));assert.equal(JSON.stringify(input),before);preparationBoundary(r);
+});
+for(const structure of ['BULL_CALL_DEBIT','BEAR_PUT_DEBIT'])test('preparation preserves complete '+structure+' fixture and calls original engine',async()=>{
+ const {input}=await paperSpreadPlanFixture(structure),before=JSON.stringify(input),r=prepareTechSpreadInput(input),original=previewTechSpreadPlan(input);
+ assert.equal(r.status,'FIELDS_SUPPLIED_UNVALIDATED');assert.equal(r.enginePreview.status,original.status);assert.equal(original.status,'REAL_QUOTE_PAPER_PLAN_READY');assert.equal(r.evidenceContext,'TEST_FIXTURE');
+ assert.equal(r.requestDraft.structure,structure);assert.equal(JSON.stringify(input),before);assert(r.bindingProposals.every(p=>p.status==='EXISTING_BINDING_MATCHES'));preparationBoundary(r);
+});
+test('preparation copies only explicit bindings into an unfrozen request with no policy defaults',async()=>{
+ const {input}=await paperSpreadPlanFixture();input.records=input.records.filter(r=>r.kind!=='STRATEGY_REQUEST');input.originals=[];const r=prepareTechSpreadInput(input);
+ assert.equal(r.requestDraft.researchId,'paper-fixture-research');assert.equal(r.requestDraft.researchSha256,input.records.find(r=>r.kind==='RESEARCH').sha256);
+ assert.equal(r.requestDraft.selectionSha256,null);assert.equal(r.requestDraft.accountId,null);assert.equal(r.requestDraft.id,null);assert.equal(r.requestDraft.decisionAt,null);assert.equal(r.requestDraft.budgetCents,null);assert.equal(r.requestDraft.structure,null);assert.equal(r.requestDraft.executionModel,null);
+ assert.deepEqual(r.requestDraft.conditions,{entry:null,exit:null,invalidation:null});assert.equal(r.enginePreview.status,'BLOCKED');preparationBoundary(r);
+});
+test('preparation keeps original conflicting research binding and does not repin the original',async()=>{
+ const {input}=await paperSpreadPlanFixture();edit(input,'STRATEGY_REQUEST',p=>{p.researchSha256='a'.repeat(64);p.researchId='prior-research';});const before=JSON.stringify(input),r=prepareTechSpreadInput(input);
+ assert.equal(r.status,'PARTIAL_UNKNOWN');assert.equal(r.requestDraft.researchId,'prior-research');assert.equal(r.requestDraft.researchSha256,'a'.repeat(64));assert(r.bindingProposals.some(p=>p.field==='researchSha256'&&p.status==='CONFLICT_RETAINED'));assert.equal(r.enginePreview.status,'BLOCKED');assert.equal(JSON.stringify(input),before);
+});
+for(const kind of SPREAD_PLAN_RECORD_KINDS)test('preparation names the missing '+kind+' contract without weakening admission',async()=>{
+ const {input}=await paperSpreadPlanFixture();input.records=input.records.filter(r=>r.kind!==kind);const r=prepareTechSpreadInput(input),d=r.diagnostics.find(d=>d.kind===kind);
+ assert.equal(d.state,'MISSING');assert(d.missingFields.includes('envelope.reviewedAt'));assert.equal(r.enginePreview.status,'BLOCKED');preparationBoundary(r);
+});
+for(const [name,change] of [
+ ['duplicate',i=>{i.records=i.records.filter(r=>r.kind!=='RISK_LIMITS');i.records.push(structuredClone(i.records.find(r=>r.kind==='RESEARCH')));}],
+ ['hash mismatch',i=>{i.records.find(r=>r.kind==='RESEARCH').sha256='0'.repeat(64);}],
+ ['invalid JSON',i=>{const r=i.records.find(r=>r.kind==='RESEARCH');r.rawJson='{';r.sha256=spreadPlanHash(r.rawJson);}],
+ ['unknown source',i=>{i.records.find(r=>r.kind==='RESEARCH').source='';}],
+ ['unknown origin',i=>{i.records.find(r=>r.kind==='RESEARCH').origin='UNKNOWN';}],
+ ['fixture relabeled real',i=>{i.evidenceContext='ATTRIBUTED_REAL_EVIDENCE';}],
+])test('preparation will not derive a new research binding from '+name,async()=>{
+ const {input}=await paperSpreadPlanFixture();change(input);input.records=input.records.filter(r=>r.kind!=='STRATEGY_REQUEST');const r=prepareTechSpreadInput(input);
+ assert.equal(r.requestDraft.researchSha256,null);assert.equal(r.requestDraft.researchId,null);assert.equal(r.status,'PARTIAL_UNKNOWN');assert.equal(r.enginePreview.status,'BLOCKED');preparationBoundary(r);
+});
+for(const [kind,field,value]of [['COST_MODEL','legs.0.entryFeeCents',null],['ACCOUNT_FUNDS','settledCashCents','UNKNOWN'],['RISK_LIMITS','maximumLossCents',null],['RESEARCH','fundamental.direction','UNKNOWN']])test('preparation explicitly lists unknown '+kind+'.'+field,async()=>{
+ const {input}=await paperSpreadPlanFixture();edit(input,kind,p=>{const keys=field.split('.');let v=p;for(const k of keys.slice(0,-1))v=v[k];v[keys.at(-1)]=value;});const r=prepareTechSpreadInput(input);
+ assert(r.diagnostics.find(d=>d.kind===kind).missingFields.includes('payload.'+field));assert.equal(r.status,'PARTIAL_UNKNOWN');assert.equal(r.enginePreview.status,'BLOCKED');
+});
+test('preparation projects only known request values and does not echo raw documents or account balances',async()=>{
+ const {input}=await paperSpreadPlanFixture();const canary='PRIVATE_EXTRA_CANARY';edit(input,'ACCOUNT_FUNDS',p=>p.privateRaw=canary);edit(input,'STRATEGY_REQUEST',p=>{p.accountId=canary;p.id={private:canary};p.parentIds=[{private:canary}];p.conditions.entry={private:canary};p.extra=canary;});
+ const r=prepareTechSpreadInput(input),serialized=JSON.stringify(r);assert(!serialized.includes(canary));assert.equal(r.requestDraft.accountId,null);assert.equal(r.requestDraft.id,null);assert.equal(r.requestDraft.parentIds,null);assert.equal(r.requestDraft.conditions.entry,null);assert.equal(r.enginePreview.economics,undefined);preparationBoundary(r);
+});
+test('preparation does not fill malformed conflicting bindings',async()=>{
+ const {input}=await paperSpreadPlanFixture();edit(input,'STRATEGY_REQUEST',p=>p.researchId={private:'MALFORMED_CANARY'});const r=prepareTechSpreadInput(input);assert.equal(r.requestDraft.researchId,null);assert(r.bindingProposals.some(p=>p.field==='researchId'&&p.status==='CONFLICT_RETAINED'));assert(!JSON.stringify(r).includes('MALFORMED_CANARY'));
+});
+test('preparation preserves explicit zero and false as supplied, not permission or solvency',async()=>{
+ const {input}=await paperSpreadPlanFixture();edit(input,'ACCOUNT_FUNDS',p=>p.settledCashCents=0);edit(input,'PRODUCT_PERMISSION',p=>p.enabled=false);const r=prepareTechSpreadInput(input);
+ assert(r.diagnostics.find(d=>d.kind==='ACCOUNT_FUNDS').providedFields.includes('settledCashCents'));assert(r.diagnostics.find(d=>d.kind==='PRODUCT_PERMISSION').providedFields.includes('enabled'));assert.equal(r.enginePreview.status,'BLOCKED');preparationBoundary(r);
+});
+function persistPreparation(root,input){
+ const copied=structuredClone(input);copied.originals=copied.originals?.map((o,n)=>{const path=join(root,'original '+n+'.json');fs.writeFileSync(path,o.rawJson);return {id:o.id,path,sha256:o.sha256};});const file=join(root,'partial input.json');fs.writeFileSync(file,JSON.stringify(copied));return file;
+}
+function preparationTree(root){
+ const entries=[];const walk=dir=>{for(const n of fs.readdirSync(dir).sort()){const p=join(dir,n),s=fs.lstatSync(p);entries.push({path:p.slice(root.length),directory:s.isDirectory(),mtimeMs:s.mtimeMs,nlink:s.nlink,sha256:s.isFile()?spreadPlanHash(fs.readFileSync(p).toString('base64')):null});if(s.isDirectory())walk(p);}};walk(root);return entries;
+}
+function strictPreparation(root,args){
+ const home=join(root,'tool-home');fs.mkdirSync(home);const cache=join(home,'npm-cache'),logs=join(cache,'_logs');fs.mkdirSync(logs,{recursive:true});
+ for(let i=0;i<15;i++)fs.writeFileSync(join(logs,'old-'+i+'.log'),'must remain');
+ const env={...process.env,HOME:home,USERPROFILE:home,APPDATA:home,LOCALAPPDATA:home,TEMP:home,TMP:home,npm_config_cache:cache,npm_config_logs_max:'1',NODE_COMPILE_CACHE:join(home,'node-cache'),NODE_V8_COVERAGE:join(home,'coverage'),NODE_OPTIONS:'--require "'+join(home,'absent.cjs')+'"',NODE_REPL_HISTORY:join(home,'history'),TSX_DISABLE_CACHE:'0'};
+ const launcher=resolve('scripts/options-tech-mock-residual-readonly.cmd'),command='""'+launcher+'" '+args.map(a=>'"'+a+'"').join(' ')+'"',before=preparationTree(root);
+ const result=spawnSync('cmd.exe',['/d','/s','/c',command],{cwd:root,encoding:'utf8',env,windowsVerbatimArguments:true});assert.deepEqual(preparationTree(root),before);return result;
+}
+for(const kind of ['partial','complete','preview','malformed','missing','tampered-original'])test('strict supported plan launcher is actually read-only for '+kind,async root=>{
+ const {input}=await paperSpreadPlanFixture();if(kind==='partial'){input.records=[];delete input.originals;}
+ const file=persistPreparation(root,input);if(kind==='malformed')fs.writeFileSync(file,'{');if(kind==='tampered-original')fs.appendFileSync(join(root,'original 0.json'),' ');
+ const r=strictPreparation(root,[kind==='preview'?'--plan-preview':'--prepare-plan',kind==='missing'?join(root,'PRIVATE_MISSING_PATH.json'):file]);
+ if(['malformed','missing','tampered-original'].includes(kind)){assert.equal(r.status,1);assert(!r.stderr.includes('PRIVATE_MISSING_PATH'));assert(!r.stderr.includes(root));assert.match(r.stderr,/^[A-Z][A-Z0-9_]+\s*$/);return;}
+ assert.equal(r.status,0,r.stderr);const out=JSON.parse(r.stdout);assert.equal(out.launchReceipt.filesystemWritePermission,false);assert.equal(out.launchReceipt.childProcessPermission,false);assert.equal(out.launchReceipt.npmInvoked,false);assert.equal(out.launchReceipt.tsxInvoked,false);
+ if(kind!=='preview')preparationBoundary(out);assert.equal(kind==='partial'?out.status:kind==='preview'?out.status:out.enginePreview.status,kind==='partial'?'PARTIAL_UNKNOWN':'REAL_QUOTE_PAPER_PLAN_READY');
+});
+for(const args of [['--prepare-plan','input','--save'],['--plan-preview','input','--start'],['--start','input','--run-id','paper-test'],['--append-original','input','--run-id','paper-test','--at','2026-10-09T15:00:00Z'],['--recover','--run-id','paper-test','--at','2026-10-09T15:00:00Z'],['--arm']])test('strict launcher refuses mutating dispatch '+args[0]+' '+args.at(-1),root=>{
+ const r=strictPreparation(root,args);assert.equal(r.status,1);assert.match(r.stderr,/ARGUMENTS/);
+});
+test('prepare CLI allows no original but ordinary preview still requires one',root=>{
+ const input={version:'TECH_SPREAD_PLAN_INPUT_V2',mode:'REAL_QUOTE_PAPER',evidenceContext:'ATTRIBUTED_REAL_EVIDENCE',at:'2026-10-10T19:00:00Z',records:[]},file=persistPreparation(root,input),before=preparationTree(root);
+ assert.equal(techSpreadPlanCli(['--prepare',file],{root}).status,'PARTIAL_UNKNOWN');assert.throws(()=>techSpreadPlanCli(['--preview',file],{root}),/ORIGINAL_COUNT/);assert.deepEqual(preparationTree(root),before);
+});

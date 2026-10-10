@@ -33,12 +33,20 @@ registerHooks({
   },
 });
 try {
-  const {mockResidualCli} = await import('./options-tech-mock-residual.mjs');
-  const result = mockResidualCli(process.argv.slice(2));
+  const args=process.argv.slice(2);let result;
+  if(['--prepare-plan','--plan-preview'].includes(args[0])){
+    if(args.length!==2)throw Error('STRICT_READ_ONLY_ARGUMENTS');
+    const {techSpreadPlanCli}=await import('./options-tech-spread-plan.mjs');
+    result=techSpreadPlanCli([args[0]==='--prepare-plan'?'--prepare':'--preview',args[1]]);
+  }else{
+    const {mockResidualCli} = await import('./options-tech-mock-residual.mjs');
+    result = mockResidualCli(args);
+    if(args.length===1&&args[0]==='--help')result={...result,planHelp:'--prepare-plan INPUT | --plan-preview INPUT. stdout only; no draft saving, plan start, append, recovery or arming.'};
+  }
   console.log(JSON.stringify({...result, launchReceipt: {
     entry: 'STRICT_NODE_READ_ONLY_V1', filesystemWritePermission: false,
     childProcessPermission: false, workerPermission: false, nativeAddonPermission: false,
     npmInvoked: false, tsxInvoked: false, compileCacheEnabled: false,
     transform: 'INSTALLED_TYPESCRIPT_IN_MEMORY', output: 'STDOUT_STDERR_ONLY',
   }}, null, 2));
-} catch (error) { console.error(error.message); process.exitCode = 1; }
+} catch (error) { console.error(/^[A-Z][A-Z0-9_]{1,100}$/.test(error.message)?error.message:'STRICT_READ_ONLY_INPUT_FAILED'); process.exitCode = 1; }
