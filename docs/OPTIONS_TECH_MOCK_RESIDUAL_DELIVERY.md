@@ -9,12 +9,36 @@ fields now stay UNKNOWN/null. The original outputs are retained under
 The complete-spread terminal loss is not a residual loss bound. Non-residual V1
 outputs keep their existing shape; residual projections identify themselves as V2.
 
-The new entrypoint is `npm run options:tech-mock-residual -- --preview --run-id
-mock-ID --at UTC [--evidence FILE]`. It has no save, append, arm or repair command.
-The supported command disables the tsx transform cache. The preview uses only
-stat/list/read operations and a pure shared hash/order verifier.
-It never calls the existing mutating recovery function, creates missing folders,
-removes staging links, writes logs or changes journal state. Missing paths,
+The strict Windows entrypoint (Node 24+) is:
+
+```bat
+cmd.exe /d /c scripts\options-tech-mock-residual-readonly.cmd --preview --run-id mock-ID --at UTC
+```
+
+Add `--evidence "FILE"` for an explicit saved MOCK evidence file. Run from the
+workspace containing the journal; use the absolute launcher path when elsewhere.
+This entrypoint bypasses npm and tsx. CMD `/d` disables AutoRun; `setlocal` clears
+Node options, compile-cache, coverage and REPL-history settings only for the child,
+then disables compile caching. Node's permission model denies filesystem writes,
+child processes, workers and native addons. The installed TypeScript compiler
+transforms existing sources in memory; no transform cache or emitted file is used.
+The launcher fails closed on unsupported Node versions or launch settings. It does
+not change global npm configuration, execution policy or other security settings.
+Output goes only to inherited stdout/stderr. The supported whole launch has no
+application filesystem mutation; caller output redirection, OS access timestamps
+and external auditing are outside that guarantee. Trusted installed Node and
+TypeScript are prerequisites, not a sandbox for malicious external software.
+
+`npm run options:tech-mock-residual -- --preview --run-id mock-ID --at UTC` remains
+a convenience command only. Its preview is read-only and disables the tsx cache,
+but npm itself may create logs/directories or clean old logs. It does **not** have
+the strict whole-process guarantee. The original npm-launch acceptance was
+incomplete; the separate strict-launch repair requires independent re-review.
+
+Neither entrypoint offers save, append, arm or repair. The preview uses only
+stat/list/read operations and a pure shared hash/order verifier. Its core never
+calls mutating recovery, creates missing folders, removes staging links, writes
+logs or changes journal state. Missing paths,
 corruption, broken ordering and external links return a blocked preview. Matching
 same-directory staging hard links are verified and retained, not cleaned up.
 Reads are bounded to 2 MB per file and 32 MiB for a journal snapshot. Read receipts
@@ -57,7 +81,11 @@ events and fields, duplicate evidence, exact contracts/quantities, time order,
 corrupt journals, missing paths, pre/post-publication staging, denied filesystem
 mutation primitives, frozen pure inputs and fresh-process reads. Before/after
 inventories compare file content hashes, names, sizes, modification times,
-inodes, link counts and directories. Earlier atomic and single-leg tests remain
+inodes, link counts and directories. Strict-launch tests exercise the actual CMD
+entrypoint with inherited cache/coverage/preload settings, existing old npm logs,
+and absent cache directories; they verify no creation, cleanup or changed bytes.
+The Node permission check also denies transient writes that a final inventory
+alone would miss. Earlier atomic and single-leg tests remain
 in the exact publication validation. See [checkpoint](status/tech-mock-residual.json).
 
 All fixtures and runtime receipts remain isolated and ignored. Original journals,

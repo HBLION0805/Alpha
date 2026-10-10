@@ -1,7 +1,7 @@
 {
   "version": "TECH_MOCK_RESIDUAL_DELIVERY_V1",
   "date": "2026-10-10",
-  "status": "READ_ONLY_MOCK_PREVIEW_IMPLEMENTED",
+  "status": "READ_ONLY_MOCK_PREVIEW_STRICT_LAUNCH_REPAIRED_PENDING_REVIEW",
   "modelLedgerBasis": "ORIGINAL_ATOMIC_MOCK_MODEL_ONLY_NOT_RECONCILED",
   "previewResult": "MOCK_EVIDENCE_ARITHMETIC_ONLY",
   "operationalFunds": "UNKNOWN",
@@ -17,12 +17,25 @@
   "validation": {
     "status": "PASSED",
     "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
-    "baseCommit": "8fc506a1251a224032f1b46c9863d5af6f4b5527",
+    "baseCommit": "c6d478cb70846fc0f98047d6db9685ed33908e12",
     "componentCount": 223,
-    "testsExecuted": 5416,
-    "passed": 5416,
+    "testsExecuted": 5423,
+    "passed": 5423,
     "failed": 0,
-    "focusedMockTests": 48,
+    "focusedMockTests": 55,
     "realPriceAcceptance": "NOT_TESTED"
+  },
+  "strictLaunch": {
+    "version": "STRICT_NODE_READ_ONLY_V1",
+    "entry": "scripts/options-tech-mock-residual-readonly.cmd",
+    "nodeMajorMinimum": 24,
+    "npmConvenienceWholeProcessReadOnly": false,
+    "filesystemWritePermission": false,
+    "childProcessPermission": false,
+    "workerPermission": false,
+    "nativeAddonPermission": false,
+    "transform": "INSTALLED_TYPESCRIPT_IN_MEMORY",
+    "globalConfigurationChanged": false,
+    "independentReview": "PENDING"
   }
 }

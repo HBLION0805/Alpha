@@ -66,3 +66,32 @@ for(const kind of ['tamper','missing','invalid-json'])test('corrupt '+kind+' jou
 test('CLI evidence read emits stdout only and preserves the complete input tree',root=>{const f=fixture();persist(root,f);const file=join(root,'mock-evidence.json');fs.writeFileSync(file,JSON.stringify(f.evidence));const r=unchanged(root,()=>mockResidualCli(['--preview','--run-id',runId,'--at',asOf,'--evidence',file],{root}));assert.equal(r.status,'MOCK_EVIDENCE_ARITHMETIC_ONLY');for(const option of ['--save','--recover','--append','--arm'])assert.throws(()=>mockResidualCli([option],{root}),/ARGUMENTS/);});
 test('fresh-process read-only preview cannot perform hidden writes',root=>{const f=fixture();persist(root,f);const url=new URL('./lib/options-tech-mock-residual-readonly.mjs',import.meta.url).href,code='import {readMockResidualPreview} from '+JSON.stringify(url)+';console.log(JSON.stringify(readMockResidualPreview('+JSON.stringify({root,runId,asOf,evidence:f.evidence})+')));';const result=unchanged(root,()=>spawnSync(process.execPath,['--import','tsx','--input-type=module','-e',code],{cwd:process.cwd(),encoding:'utf8',env:{...process.env,TSX_DISABLE_CACHE:'1',NODE_DISABLE_COMPILE_CACHE:'1'}}));assert.equal(result.status,0,result.stderr);assert.equal(JSON.parse(result.stdout).status,'MOCK_EVIDENCE_ARITHMETIC_ONLY');});
 test('even zero reported quantities release no funds and cannot verify flatness',root=>{const f=fixture();const second=f.event('mock-second-partial','14:18:00');second.quote.executionState='SINGLE_LEG_FILL';second.quote.legs.shift();f.events.push(second);f.evidence.fills.push(fill(f,second,1,'BUY_TO_CLOSE','mock-short-close',95));persist(root,f);const r=unchanged(root,()=>readMockResidualPreview({root,runId,asOf,evidence:f.evidence}));assert.equal(r.status,'MOCK_EVIDENCE_ARITHMETIC_ONLY',JSON.stringify(r));assert.deepEqual(r.evidenceCalculation.reportedNetQuantities.map(x=>x.signedQuantity),[0,0]);assert.equal(r.evidenceCalculation.actualClosed,'UNKNOWN');assert.equal(r.actualOrdersCreated,0);locked(r);assert.equal(recoverMockSpread({root,runId,asOf}).report.status,'BLOCKED_UNSUPPORTED_RESIDUAL');});
+
+// Exercise the supported outer launcher, not a direct import that bypasses npm.
+const strictLauncher=resolve('scripts/options-tech-mock-residual-readonly.cmd');
+function strictProcess(root,args){
+ const home=join(root,'tool-home');fs.mkdirSync(home);const cache=join(home,'npm-cache'),logs=join(cache,'_logs');fs.mkdirSync(logs,{recursive:true});
+ for(let i=0;i<15;i++)fs.writeFileSync(join(logs,'old-'+i+'-debug.log'),'retain old npm log '+i);
+ const env={...process.env,HOME:home,USERPROFILE:home,APPDATA:home,LOCALAPPDATA:home,TEMP:home,TMP:home,
+  npm_config_cache:cache,npm_config_logs_max:'1',NODE_COMPILE_CACHE:join(home,'node-cache'),NODE_V8_COVERAGE:join(home,'coverage'),
+  NODE_OPTIONS:'--require "'+join(home,'must-not-be-loaded.cjs')+'"',NODE_REPL_HISTORY:join(home,'history'),TSX_DISABLE_CACHE:'0'};
+ const command='""'+strictLauncher+'" '+args.map(a=>'"'+a+'"').join(' ')+'"';
+ return unchanged(root,()=>spawnSync('cmd.exe',['/d','/s','/c',command],{cwd:root,encoding:'utf8',env,windowsVerbatimArguments:true}));
+}
+for(const kind of ['help','missing','partial','corrupt'])test('strict outer launcher preserves logs and cache trees: '+kind,root=>{
+ const f=fixture();if(kind==='partial'||kind==='corrupt')persist(root,f);
+ if(kind==='corrupt')fs.writeFileSync(join(root,'data/runtime/options-workbench-development',runId,'event-0001.json'),'{');
+ const file=join(root,'evidence.json');fs.writeFileSync(file,JSON.stringify(f.evidence));
+ const args=kind==='help'?['--help']:['--preview','--run-id',runId,'--at',asOf,'--evidence',file];
+ const r=strictProcess(root,args);assert.equal(r.status,0,r.stderr);const result=JSON.parse(r.stdout);
+ assert.equal(result.launchReceipt.entry,'STRICT_NODE_READ_ONLY_V1');assert.equal(result.launchReceipt.filesystemWritePermission,false);
+ assert.equal(result.launchReceipt.npmInvoked,false);assert.equal(result.launchReceipt.tsxInvoked,false);
+ if(kind==='partial')assert.equal(result.status,'MOCK_EVIDENCE_ARITHMETIC_ONLY');
+ if(kind==='missing'||kind==='corrupt')assert.equal(result.status,'BLOCKED');
+});
+for(const args of [['--save'],['--preview','--run-id','mock-absent','--at','invalid']])test('strict outer launcher failure leaves tools and journals unchanged: '+args.at(-1),root=>{
+ const r=strictProcess(root,args);if(args[0]==='--save'){assert.equal(r.status,1);assert.match(r.stderr,/ARGUMENTS/);}else{assert.equal(r.status,0);assert.equal(JSON.parse(r.stdout).status,'BLOCKED');}
+});
+test('strict module refuses direct unguarded invocation',root=>{
+ const r=unchanged(root,()=>spawnSync(process.execPath,[resolve('scripts/options-tech-mock-residual-readonly.mjs'),'--help'],{cwd:root,encoding:'utf8',env:{...process.env,NODE_OPTIONS:'',NODE_COMPILE_CACHE:'',NODE_V8_COVERAGE:'',NODE_DISABLE_COMPILE_CACHE:'1'}}));assert.equal(r.status,1);assert.match(r.stderr,/STRICT_READ_ONLY_LAUNCH_REQUIRED/);
+});
