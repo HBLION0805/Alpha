@@ -1,3 +1,10 @@
+## Read-only MOCK residual preview
+
+The [residual preview](OPTIONS_TECH_MOCK_RESIDUAL_DELIVERY.md) separates the original
+atomic model ledger from unknown operational cash, closure and residual risk.
+A pure calculation and read-only journal reader inspect explicit MOCK execution
+evidence without staging cleanup, ledger writes, funds release or state unlock.
+
 ## Isolated atomic debit-spread MOCK lifecycle
 
 The [CDS/PDS MOCK lifecycle](OPTIONS_TECH_MOCK_SPREAD_DELIVERY.md) reuses the

@@ -1,0 +1,28 @@
+{
+  "version": "TECH_MOCK_RESIDUAL_DELIVERY_V1",
+  "date": "2026-10-10",
+  "status": "READ_ONLY_MOCK_PREVIEW_IMPLEMENTED",
+  "modelLedgerBasis": "ORIGINAL_ATOMIC_MOCK_MODEL_ONLY_NOT_RECONCILED",
+  "previewResult": "MOCK_EVIDENCE_ARITHMETIC_ONLY",
+  "operationalFunds": "UNKNOWN",
+  "actualClosed": "UNKNOWN",
+  "residualMaximumLoss": "UNKNOWN",
+  "completeSpreadMaximumLossApplies": false,
+  "fileSystemMutationPerformed": false,
+  "stateUnlockAllowed": false,
+  "fundsReleasedCents": 0,
+  "executionAllowed": false,
+  "productionAdmissionAllowed": false,
+  "realPriceAcceptance": "NOT_TESTED",
+  "validation": {
+    "status": "PASSED",
+    "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
+    "baseCommit": "8fc506a1251a224032f1b46c9863d5af6f4b5527",
+    "componentCount": 223,
+    "testsExecuted": 5416,
+    "passed": 5416,
+    "failed": 0,
+    "focusedMockTests": 48,
+    "realPriceAcceptance": "NOT_TESTED"
+  }
+}

@@ -68,7 +68,7 @@ function pair(p,e,high){
  if(new Set(quotes.map(x=>x.updatedAt)).size!==1||new Set(quotes.map(x=>x.underlyingAt)).size!==1||new Set(quotes.map(x=>x.underlyingPriceUsd)).size!==1)errors.push('UNSYNCHRONIZED_LEG_QUOTES');
  return {errors:[...new Set(errors)],quotes};
 }
-function calculate(p,events,asOf){
+export function replayMockSpread(p,events,asOf){
  validateStart(p);check(clock(asOf)>=clock(p.research.asOf),'AS_OF');
  const a=p.account,available=a.settledCashCents===null||a.reservedCashCents===null?null:a.settledCashCents-a.reservedCashCents;
  const costsKnown=p.legs.every(l=>['entryFeeCents','exitFeeCents','exitSlippageCents'].every(k=>integer(l[k])));
@@ -129,13 +129,16 @@ function calculate(p,events,asOf){
  check(settled===null||settled>=0,'CASH_INVARIANT');
  if(entry&&!exit&&last&&clock(asOf)-clock(last)>60000000000n)gap=true;
  if(entry&&!exit&&clock(asOf)>=clock(p.timeExitAt))pendingExit??='TIME_EXIT';
- return {version:'TECH_MOCK_DEBIT_SPREAD_REPORT_V1',mode:'MOCK',executionModel:p.executionModel,atomicFillsAreBrokerGuarantee:false,candidate:p.candidate,structure:p.structure,assessedAt:asOf,
+ const modelAccount={mode:'MOCK',initialAvailableCashCents:available,otherReservedCashCents:a.reservedCashCents,settledCashCents:settled,unsettledProceedsCents:unsettled,totalCashCents:total,netPnlCents:pnl};
+ const modelPosition={modeledLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:entry&&!exit?(l.role==='LONG'?1:-1)*p.quantity:0})),unmodeledResidual:residual?'UNKNOWN_NOT_CLEARED':null,pendingExit:entry&&!exit?pendingExit:null};
+ return {version:residual?'TECH_MOCK_DEBIT_SPREAD_RESIDUAL_REPORT_V2':'TECH_MOCK_DEBIT_SPREAD_REPORT_V1',mode:'MOCK',executionModel:p.executionModel,atomicFillsAreBrokerGuarantee:false,candidate:p.candidate,structure:p.structure,assessedAt:asOf,
   status:residual?'BLOCKED_UNSUPPORTED_RESIDUAL':exit?'CLOSED_MODELED':entry?'OPEN_UNRESOLVED':'NO_ENTRY',orders,
-  position:{modeledLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:entry&&!exit?(l.role==='LONG'?1:-1)*p.quantity:0})),unmodeledResidual:residual?'UNKNOWN_NOT_CLEARED':null,pendingExit:entry&&!exit?pendingExit:null},
-  account:{mode:'MOCK',initialAvailableCashCents:available,otherReservedCashCents:a.reservedCashCents,settledCashCents:settled,unsettledProceedsCents:unsettled,totalCashCents:total,netPnlCents:pnl},terminalRisk:terminal,
-  maximumLossIsTerminalModelOnly:true,earlyCloseLossExceededTerminalModel:pnl!==null&&terminal!==null&&-pnl>terminal.maximumLossCents,
+  position:residual?{status:'UNKNOWN_UNRECONCILED_RESIDUAL',unmodeledResidual:'UNKNOWN_NOT_CLEARED',actualClosed:'UNKNOWN',actualLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:null})),pendingExit:null}:modelPosition,
+  account:residual?{mode:'MOCK',status:'UNKNOWN_UNRECONCILED_RESIDUAL',availableFundsCents:null,settledCashCents:null,unsettledProceedsCents:null,totalCashCents:null,netPnlCents:null}:modelAccount,terminalRisk:residual?null:terminal,
+  ...(residual?{modelLedger:{basis:'ORIGINAL_ATOMIC_MOCK_MODEL_ONLY_NOT_RECONCILED',status:exit?'CLOSED_MODELED':entry?'OPEN_UNRESOLVED':'NO_ENTRY',account:modelAccount,position:modelPosition,orders,terminalRisk:terminal},residualRisk:{status:'UNKNOWN',maximumLossCents:null,completeSpreadMaximumLossApplies:false},fundsReleasedCents:0,stateUnlockAllowed:false}:{}),
+  maximumLossIsTerminalModelOnly:true,earlyCloseLossExceededTerminalModel:residual?null:pnl!==null&&terminal!==null&&-pnl>terminal.maximumLossCents,
   frozenBlockers,diagnostics,quoteGapObserved:gap,actualTrades:0,executionAllowed:false,productionPaperAdmissionAllowed:false,realAcceptance:'NOT_TESTED',
   unsupported:['PARTIAL_OR_SEPARATE_LEG_EXECUTION','NAKED_SHORT','CALENDAR_SPREAD','OVERNIGHT','EXERCISE_ASSIGNMENT','STOP_TARGET_STRATEGY','SCALING','CASH_SETTLEMENT','PRODUCTION_ARMING']};
 }
-const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate,startVersion:'TECH_MOCK_SPREAD_START_V1'});
+const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1'});
 export const startMockSpread=journal.start,appendMockSpread=journal.append,recoverMockSpread=journal.recover;

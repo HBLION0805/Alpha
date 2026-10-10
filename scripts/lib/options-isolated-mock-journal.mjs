@@ -37,18 +37,28 @@ function publish(path,value,interrupt){
  if(interrupt==='AFTER_PUBLICATION')throw Error('MOCK_SIMULATED_INTERRUPTION');
 }
 
+
+/** Pure integrity/ordering verification shared by mutating recovery and read-only preview. */
+export function verifyMockJournalRecords(manifest,rows,startVersion){
+ check(manifest?.version===startVersion&&manifest.sha256===sha(encode(manifest.input)),'START_HASH');
+ check(Array.isArray(rows)&&rows.length<=1000,'EVENT_BOUND');
+ const events=[];let prior=manifest.sha256,last=manifest.input.research.asOf;const ids=new Set();
+ for(const [i,{name,value:row}] of rows.entries()){
+  check(name==='event-'+String(i+1).padStart(4,'0')+'.json','EVENT_SEQUENCE');
+  check(row.previous===prior&&row.sha256===sha(encode(row.event))&&!ids.has(row.event.id),'EVENT_HASH_OR_ID');
+  check(clock(row.event.quote.receivedAt)>clock(last),'RECEIPT_ORDER');last=row.event.quote.receivedAt;prior=sha(encode(row));ids.add(row.event.id);events.push(row.event);
+ }
+ return {manifest,events,tip:prior};
+}
+
 export function createIsolatedMockJournal({validateStart,calculate,validateEvent,startVersion}) {
 function recover({root,runId,asOf}){
  const out=directory(root,runId),manifest=read(out+'/start.json');check(manifest.version===startVersion&&manifest.sha256===sha(encode(manifest.input)),'START_HASH');
  const names=fs.readdirSync(out).filter(n=>/^event-/.test(n)).sort();check(names.length<=1000,'EVENT_BOUND');
- const events=[];let prior=manifest.sha256,last=manifest.input.research.asOf;const ids=new Set();
- for(const [i,name] of names.entries()){
-  check(name==='event-'+String(i+1).padStart(4,'0')+'.json','EVENT_SEQUENCE');const row=read(out+'/'+name);
-  check(row.previous===prior&&row.sha256===sha(encode(row.event))&&!ids.has(row.event.id),'EVENT_HASH_OR_ID');
-  check(clock(row.event.quote.receivedAt)>clock(last),'RECEIPT_ORDER');last=row.event.quote.receivedAt;prior=sha(encode(row));ids.add(row.event.id);events.push(row.event);
- }
- return {out,manifest,events,tip:prior,report:calculate(manifest.input,events,asOf)};
+ const state=verifyMockJournalRecords(manifest,names.map(name=>({name,value:read(out+'/'+name)})),startVersion);
+ return {out,...state,report:calculate(manifest.input,state.events,asOf)};
 }
+
 function start({root,runId,input,recordedAt=new Date().toISOString(),interrupt}){
  validateStart(input);const report=calculate(input,[],input.research.asOf),out=directory(root,runId,true);
  const path=out+'/start.json';let manifest={version:startVersion,recordedAt,input,sha256:sha(encode(input))};
