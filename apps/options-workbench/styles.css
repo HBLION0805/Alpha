@@ -63,3 +63,6 @@
 #macro-storyline .check-row small{display:block}
 
 #scenario-research{min-width:0;overflow-wrap:anywhere}#scenario-research label{display:grid;gap:8px;margin:12px 0;min-width:0}#scenario-research select,#scenario-research input{width:100%;min-width:0;max-width:100%}#scenario-research fieldset{border:1px solid var(--line);border-radius:8px;margin:16px 0;padding:16px;min-width:0}#scenario-research td{white-space:normal;overflow-wrap:anywhere;max-width:340px}#scenario-research details{margin:16px 0}#scenario-research .table-scroll{max-height:620px}#scenario-research .table-scroll table{min-width:680px}
+
+#tech-research-status code, #tech-research-status .hint { overflow-wrap: anywhere; }
+#tech-research-status summary small { display: block; margin-top: .5rem; }

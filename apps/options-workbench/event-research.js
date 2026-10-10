@@ -1,3 +1,4 @@
+import {techStatusPanel} from './tech-status.js';
 import {snapshotPaperPanel} from './snapshot-paper.js';
 import {esc,words,cents,timestamp} from './model.js';
 import {barQualityPanel} from './bar-quality.js';
@@ -57,7 +58,7 @@ function studyCard(r){
 }
 export function eventResearchPage(s,ui={}) {
   const head='<div class="page-heading"><div><p class="eyebrow">ONE EVENT, TWO DECISIONS</p><h1>Event research</h1><p class="subtitle">Compare anticipation and reaction with one shared risk allowance.</p></div></div>';
-  const paper=snapshotPaperPanel(s.snapshotPaper,ui,s.localPaperFinalization);
+  const paper=techStatusPanel(s.techResearch)+snapshotPaperPanel(s.snapshotPaper,ui,s.localPaperFinalization);
   const g=s.guidance?.data,desk=s.eventResearch;
   if(!g)return head+paper+'<div class="empty"><h2>Guidance evidence unavailable</h2><p>Save a verified market capture and restore calendar coverage before registering an experiment.</p></div>';
   if(!ui.eventDraft){ui.eventDraft=eventDraft(s);ui.eventChoices={capturedAt:g.current.marketCapturedAt,quotes:structuredClone(g.input.quotes),events:structuredClone(g.input.events.filter(e=>e.scheduledAt&&e.scheduledAt>s.loadedAt))};}

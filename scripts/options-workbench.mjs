@@ -1,3 +1,4 @@
+import {readTechStatus} from './lib/options-tech-status.mjs';
 import { createServer } from 'node:http';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -27,6 +28,7 @@ assets.set('/world-model-lookup.js',['world-model-lookup.js','text/javascript'])
 assets.set('/storyline.js',['storyline.js','text/javascript']);
 assets.set('/storyline-model.js',['storyline-model.js','text/javascript']);
 assets.set('/weekly-plan.js',['weekly-plan.js','text/javascript']);
+assets.set('/tech-status.js',['tech-status.js','text/javascript']);
 assets.set('/event-intelligence-replay.js',['event-intelligence-replay.js','text/javascript']);
 export async function startOptionsWorkbench({port=4173,refreshContext=false,codeRoot=optionsCodeRoot,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
@@ -53,9 +55,13 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,code
         try{return send(200,readWorldModel(Object.fromEntries(entries)));}
         catch(e){return reject(e.message==='WORLD_MODEL_QUERY_INVALID'?400:409,e.message?.startsWith('WORLD_MODEL_')?e.message:'WORLD_MODEL_UNAVAILABLE');}
       }
+      if(req.method==='GET'&&url.pathname==='/api/tech-status'){
+        if(url.search)return reject(400,'QUERY_INVALID');
+        return send(200,readTechStatus({root:options.workspaceRoot??process.cwd(),at:options.now?.()??new Date().toISOString()}));
+      }
       if(req.method==='GET'&&url.pathname==='/api/state'){
         if([...url.searchParams.keys()].some(k=>k!=='board')||url.searchParams.getAll('board').length>1)return reject(400,'QUERY_INVALID');
-        return send(200,{...await service.state(url.searchParams.get('board')),backgroundContextRefreshEnabled:refreshContext,publicContextRefresh:contextService?.status()??{enabled:false,status:'DISABLED'},localTrendStudy:contextService?.trendStatus()??{enabled:false,status:'DISABLED'},localPaperFinalization:contextService?.paperStatus()??{enabled:false,status:'DISABLED',checkedAt:null,sourceReads:0,executionAllowed:false},session});
+        return send(200,{...await service.state(url.searchParams.get('board')),techResearch:readTechStatus({root:options.workspaceRoot??process.cwd(),at:options.now?.()??new Date().toISOString()}),backgroundContextRefreshEnabled:refreshContext,publicContextRefresh:contextService?.status()??{enabled:false,status:'DISABLED'},localTrendStudy:contextService?.trendStatus()??{enabled:false,status:'DISABLED'},localPaperFinalization:contextService?.paperStatus()??{enabled:false,status:'DISABLED',checkedAt:null,sourceReads:0,executionAllowed:false},session});
       }
       if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/source-comparison','/api/scenario-research','/api/evidence-loop','/api/case-export','/api/storyline','/api/snapshot-paper','/api/position-watch','/api/etf-setup','/api/macro-playbook','/api/weekly-plan','/api/event-intelligence'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
       const provided=req.headers['x-alpha-session'];
