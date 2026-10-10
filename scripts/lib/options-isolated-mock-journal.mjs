@@ -52,11 +52,15 @@ export function verifyMockJournalRecords(manifest,rows,startVersion){
 }
 
 export function createIsolatedMockJournal({validateStart,calculate,validateEvent,startVersion,eventAvailableAt=e=>e.quote.receivedAt}) {
-function recover({root,runId,asOf}){
+function load({root,runId}){
  const out=directory(root,runId),manifest=read(out+'/start.json');check(manifest.version===startVersion&&manifest.sha256===sha(encode(manifest.input)),'START_HASH');
  const names=fs.readdirSync(out).filter(n=>/^event-/.test(n)).sort();check(names.length<=1000,'EVENT_BOUND');
  const state=verifyMockJournalRecords(manifest,names.map(name=>({name,value:read(out+'/'+name)})),startVersion);
- return {out,...state,report:calculate(manifest.input,state.events,asOf)};
+ return {out,...state};
+}
+
+function recover({root,runId,asOf}){
+ const state=load({root,runId});return {...state,report:calculate(state.manifest.input,state.events,asOf)};
 }
 
 function start({root,runId,input,recordedAt=new Date().toISOString(),interrupt}){
@@ -66,10 +70,15 @@ function start({root,runId,input,recordedAt=new Date().toISOString(),interrupt})
  publish(path,manifest,interrupt);return {runId,report};
 }
 function append({root,runId,event,recordedAt=new Date().toISOString(),interrupt}){
- validateEvent(event);
- const availableAt=eventAvailableAt(event);
- const state=recover({root,runId,asOf:availableAt}),old=state.events.find(x=>x.id===event.id);
- if(old){check(same(old,event),'IDEMPOTENCY_CONFLICT');return state.report;}
+ // Verify the complete hash chain before deduplication. Retry time is not an
+ // instruction to evaluate later valid history at an earlier event time.
+ const state=load({root,runId}),old=state.events.find(x=>x.id===event?.id);
+ if(old){
+  check(same(old,event),'IDEMPOTENCY_CONFLICT');
+  const at=state.events.map(eventAvailableAt).reduce((a,b)=>clock(a)>clock(b)?a:b,state.manifest.input.research.asOf);
+  return calculate(state.manifest.input,state.events,at);
+ }
+ const availableAt=eventAvailableAt(event);validateEvent(event,state.manifest.input,availableAt);
  check(state.events.length<1000&&clock(event.quote.receivedAt)>clock(state.events.at(-1)?.quote.receivedAt??state.manifest.input.research.asOf),'RECEIPT_ORDER');
  const report=calculate(state.manifest.input,[...state.events,event],availableAt);
  const row={previous:state.tip,recordedAt,event,sha256:sha(encode(event))};

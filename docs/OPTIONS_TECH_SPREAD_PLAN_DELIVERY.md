@@ -73,3 +73,31 @@ The shared journal retains quote-time behavior for all existing unbound events.
 The regression suite includes creation/replay consistency for future publication,
 malformed intent and permissions, with retained open exposure and unknown P&L.
 Independent audit remains pending; this correction adds no real source authority.
+
+## Time roles and retry correction
+
+Bound event validation now always receives the actual frozen plan. A provider
+source time may be after the decision and before the collection request; request
+time is never substituted for decision time. Freshness, acquisition ordering and
+complete-original publication checks remain independent.
+
+| Time | Role |
+| --- | --- |
+| Research / decision | Prior frozen plan and quote-after-decision boundary |
+| Collection request | Acquisition ordering only, not a quote lower bound |
+| Provider source | Individual freshness and independent later observation |
+| Quote received | Original quote clock and strict journal observation ordering |
+| Original recorded | Earliest visibility of the complete saved original |
+| Journal recorded | Persistence audit metadata, not simulated quote time |
+| Explicit evaluation | Visibility upper bound; earlier recovery still rejects later originals |
+| Duplicate retry | No new event; verify the full chain and return its latest evaluated state |
+
+Append loads and verifies the complete hash chain before duplicate handling. An
+identical historical event returns a fresh calculation over the full verified
+history at its latest original-availability time. Conflicting content fails;
+duplicate requests cannot bypass semantic validation of later records. New events
+still require increasing quote receipts and valid originals. No source clocks are
+rewritten. The matrix covers early/middle/latest retries, hash conflicts, corrupt
+start/chain records, rehashed invalid later originals, out-of-order new events and
+explicit early recovery. This is bounded engineering evidence, pending independent
+audit. REAL_QUOTE_PAPER development is paused and excluded from this repair.

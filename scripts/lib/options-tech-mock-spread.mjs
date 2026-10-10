@@ -47,10 +47,10 @@ function validateStart(p){
  check(clock(a.reviewedAt)<=clock(p.research.asOf)&&clock(a.validThrough)>=end,'ACCOUNT_CLOCK');
  return p;
 }
-function validateEvent(e){
+function validateEvent(e,plan=null,asOf=null){
  const bound=e?.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1';
  keys(e,'id origin quote'+(bound?' version provenance':''));check(/^mock-[a-z0-9-]{1,60}$/.test(e.id)&&e.origin==='SYNTHETIC_FIXTURE','EVENT_ORIGIN');
- if(bound)validateMockSpreadEventBinding(e);
+ if(bound)validateMockSpreadEventBinding(e,plan,asOf);
  keys(e.quote,'receivedAt source executionState action legs');const q=e.quote;
  clock(q.receivedAt);check(new Date(q.receivedAt).toISOString()===q.receivedAt,'RECEIPT_PRECISION');
  check(q.source==='SYNTHETIC_TEST_ONLY'&&['ATOMIC_QUOTE_PAIR','PARTIAL_FILL','SINGLE_LEG_FILL'].includes(q.executionState)&&['OBSERVE','CLOSE'].includes(q.action)&&Array.isArray(q.legs)&&q.legs.length<=2,'EVENT');
@@ -86,7 +86,7 @@ export function replayMockSpread(p,events,asOf){
  if(!costsKnown)frozenBlockers.push('COSTS_UNKNOWN');
  const high=new Map(),orders=[],diagnostics=[];let pendingExit=null,residual=false,entry=null,exit=null,terminal=null,last=null,gap=false;
  for(const e of events){
-  validateEvent(e);if(e.version)validateMockSpreadEventBinding(e,p,asOf);check(p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?e.provenance?.parentPlanSha256===p.provenance.planSha256:!e.version,'BOUND_EVENT_PLAN');const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
+  validateEvent(e,p,asOf);check(p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?e.provenance?.parentPlanSha256===p.provenance.planSha256:!e.version,'BOUND_EVENT_PLAN');const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
   if(q.executionState!=='ATOMIC_QUOTE_PAIR'){residual=true;diagnostics.push({eventId:e.id,codes:['PARTIAL_OR_RESIDUAL_EXECUTION_UNSUPPORTED'],actualResidualExposure:'UNMODELED_NOT_CLEARED'});continue;}
   if(paperSession(q.receivedAt).date!==paperSession(p.decisionAt).date){diagnostics.push({eventId:e.id,codes:['OVERNIGHT_UNSUPPORTED']});continue;}
   if(last&&entry&&!exit&&clock(q.receivedAt)-clock(last)>60000000000n)gap=true;last=q.receivedAt;

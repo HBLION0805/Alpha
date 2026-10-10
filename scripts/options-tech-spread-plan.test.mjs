@@ -5,7 +5,7 @@ import {join,resolve,sep} from 'node:path';
 import {tmpdir} from 'node:os';
 import {mockSpreadPlanFixture} from './lib/options-tech-spread-plan-fixtures.mjs';
 import {previewTechSpreadPlan,startTechSpreadPlan} from './lib/options-tech-spread-plan.mjs';
-import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,mockSpreadEventFromOriginal} from './lib/options-tech-spread-plan-binding.mjs';
+import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,mockSpreadEventFromOriginal,validateMockSpreadEventBinding} from './lib/options-tech-spread-plan-binding.mjs';
 import {replayMockSpread,startMockSpread,appendMockSpread,recoverMockSpread} from './lib/options-tech-mock-spread.mjs';
 import {techSpreadPlanCli} from './options-tech-spread-plan.mjs';
 import {collectMockTechSpreadFixture} from './lib/options-tech-spread-quote-fixtures.mjs';
@@ -87,3 +87,27 @@ for(const [name,change]of [
  const recovered=recoverMockSpread({root,runId,asOf:f.exitAt});assert.equal(recovered.events.length,1);assert.equal(recovered.report.status,'OPEN_UNRESOLVED');assert.equal(recovered.report.orders.length,1);assert.equal(recovered.report.account.netPnlCents,null);assert.equal(recovered.report.account.settledCashCents,open.account.settledCashCents);assert.equal(recovered.report.account.unsettledProceedsCents,700);
 });
 test('bound append uses original publication time without rewriting quote receipt',async root=>{const f=await mockSpreadPlanFixture(),p=startTechSpreadPlan({root,runId,input:f.input});const open=appendMockSpread({root,runId,event:p.entryEvent});assert.equal(open.assessedAt,'2026-10-09T15:30:12.000Z');assert.equal(open.orders[0].legs[0].receivedAt,'2026-10-09T15:30:10.000Z');assert.throws(()=>replayMockSpread(p.plan,[p.entryEvent],'2026-10-09T15:30:11.000Z'),/NOT_YET_VISIBLE/);});
+function changedOriginal(original,fn){const r=JSON.parse(original.rawJson);fn(r);r.captureSha256=spreadPlanHash(r.capture);const rawJson=JSON.stringify(r);return {...original,rawJson,sha256:spreadPlanHash(rawJson)};}
+const snapshotDir=root=>{const dir=join(root,'data/runtime/options-workbench-development',runId);return Object.fromEntries(fs.readdirSync(dir).sort().map(n=>[n,spreadPlanHash(fs.readFileSync(join(dir,n),'utf8'))]));};
+async function threeEvents(root){
+ const f=await mockSpreadPlanFixture(),p=startTechSpreadPlan({root,runId,input:f.input});
+ const mid=changedOriginal({...f.exitOriginal,rawJson:f.exitOriginal.rawJson.replaceAll('T15:37:','T15:31:')},r=>{r.capture.batchId='mock-middle-batch';r.capture.selection.batchId='mock-middle-batch';r.intent.selection.batchId='mock-middle-batch';});
+ const events=[p.entryEvent,mockSpreadEventFromOriginal({plan:p.plan,original:mid,id:'mock-middle-event',at:'2026-10-09T15:31:12.000Z'}),mockSpreadEventFromOriginal({plan:p.plan,original:f.exitOriginal,id:'mock-exit-event',at:f.exitAt})];
+ let report;for(const event of events)report=appendMockSpread({root,runId,event});return {f,p,events,report};
+}
+for(const structure of ['BULL_CALL_DEBIT','BEAR_PUT_DEBIT'])test(structure+' source between true decision and collection request remains valid through all routes',async root=>{
+ const f=await mockSpreadPlanFixture(structure);f.input.originals[0]=changedOriginal(f.input.originals[0],r=>r.capture.receipts[4].response.structuredContent.data.results.forEach(q=>q.quote.updated_at='2026-10-09T15:29:59.500000001Z'));
+ const p=startTechSpreadPlan({root,runId,input:f.input});assert.equal(p.status,'MOCK_PLAN_READY',JSON.stringify(p.checks));validateMockSpreadEventBinding(p.entryEvent,p.plan,f.input.at);const report=appendMockSpread({root,runId,event:p.entryEvent});assert.equal(report.status,'OPEN_UNRESOLVED');assert.equal(report.orders[0].legs[0].sourceAt,'2026-10-09T15:29:59.500000001Z');assert.deepEqual(recoverMockSpread({root,runId,asOf:f.input.at}).report,report);assert.deepEqual(replayMockSpread(p.plan,[p.entryEvent],f.input.at),report);
+});
+test('bound event validation requires its actual plan, never guessed request time',async()=>{const f=await mockSpreadPlanFixture(),p=previewTechSpreadPlan(f.input);assert.throws(()=>validateMockSpreadEventBinding(p.entryEvent),/EVENT_PLAN_CONTEXT_REQUIRED/);});
+for(const index of [0,1,2])test('retry historical event '+index+' after exit verifies complete history and returns current state',async root=>{
+ const s=await threeEvents(root),before=snapshotDir(root);const retry=appendMockSpread({root,runId,event:s.events[index],recordedAt:'2026-10-10T18:00:00.000Z'});assert.deepEqual(retry,s.report);assert.equal(retry.orders.length,2);assert.equal(retry.account.netPnlCents,-920);assert.deepEqual(snapshotDir(root),before);
+});
+for(const index of [0,1,2])test('conflicting historical event '+index+' cannot reuse an id',async root=>{
+ const s=await threeEvents(root),before=snapshotDir(root),e=structuredClone(s.events[index]);e.quote.legs[0].bidCents++;e.provenance.quoteSha256=spreadPlanHash(e.quote);assert.throws(()=>appendMockSpread({root,runId,event:e}),/IDEMPOTENCY_CONFLICT/);assert.deepEqual(snapshotDir(root),before);assert.deepEqual(recoverMockSpread({root,runId,asOf:s.f.exitAt}).report,s.report);
+});
+test('new out-of-order event is not treated as an idempotent retry',async root=>{const s=await threeEvents(root),before=snapshotDir(root),e=structuredClone(s.events[0]);e.id='mock-new-old-clock';assert.throws(()=>appendMockSpread({root,runId,event:e}),/RECEIPT_ORDER/);assert.deepEqual(snapshotDir(root),before);});
+test('an explicit old evaluation time still rejects a future original in valid history',async root=>{const s=await threeEvents(root);assert.throws(()=>recoverMockSpread({root,runId,asOf:s.f.input.at}),/EVENT_ORIGINAL_NOT_YET_VISIBLE/);assert.deepEqual(appendMockSpread({root,runId,event:s.events[0]}),s.report);});
+test('corrupt journal hash cannot bypass verification through a duplicate',async root=>{const s=await threeEvents(root),p=join(root,'data/runtime/options-workbench-development',runId,'event-0002.json'),r=JSON.parse(fs.readFileSync(p));r.event.quote.legs[0].bidCents++;fs.writeFileSync(p,JSON.stringify(r));const before=snapshotDir(root);assert.throws(()=>appendMockSpread({root,runId,event:s.events[0]}),/EVENT_HASH_OR_ID/);assert.deepEqual(snapshotDir(root),before);});
+test('rehashed but invalid original in later history cannot bypass semantic validation through an old duplicate',async root=>{const s=await threeEvents(root),p=join(root,'data/runtime/options-workbench-development',runId,'event-0003.json'),r=JSON.parse(fs.readFileSync(p));const o=changedOriginal(r.event.provenance.original,x=>x.intent.version='TECH_QUOTES_REQUEST_V1');r.event.provenance.original=o;r.sha256=spreadPlanHash(JSON.stringify(r.event,null,2)+'\n');fs.writeFileSync(p,JSON.stringify(r));const before=snapshotDir(root);assert.throws(()=>appendMockSpread({root,runId,event:s.events[0]}),/EVENT_SOURCE_PAIR/);assert.deepEqual(snapshotDir(root),before);});
+test('duplicate latest event does not bypass corrupt start manifest',async root=>{const s=await threeEvents(root),p=join(root,'data/runtime/options-workbench-development',runId,'start.json'),r=JSON.parse(fs.readFileSync(p));r.input.account.settledCashCents++;fs.writeFileSync(p,JSON.stringify(r));assert.throws(()=>appendMockSpread({root,runId,event:s.events[2]}),/START_HASH/);});

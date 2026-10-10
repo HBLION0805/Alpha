@@ -27,12 +27,12 @@
   "validation": {
     "status": "PASSED",
     "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
-    "baseCommit": "9fbb6224629ebaee11a18dbc6ecbf83294d93f62",
+    "baseCommit": "8b7d3e2b676cd51c67880b2284b36f96d055a1a6",
     "componentCount": 226,
-    "testsExecuted": 5598,
-    "passed": 5598,
+    "testsExecuted": 5612,
+    "passed": 5612,
     "failed": 0,
-    "focusedPlanTests": 61,
+    "focusedPlanTests": 75,
     "realPriceAcceptance": "NOT_TESTED"
   },
   "replayAuditRepair": {
@@ -41,5 +41,14 @@
     "completeOriginalPreflight": true,
     "futurePublicationRejected": true,
     "sourceClocksRewritten": false
+  },
+  "timeAndRetryRepair": {
+    "runId": "tech-spread-time-idempotency-fix-20261010",
+    "status": "FIXED_PENDING_INDEPENDENT_REVIEW",
+    "actualPlanDecisionRequired": true,
+    "requestTimeIsNotSourceLowerBound": true,
+    "completeHistoryValidatedBeforeRetryResult": true,
+    "explicitEvaluationVisibilityPreserved": true,
+    "realQuotePaperDevelopment": "PAUSED_UNCOMMITTED"
   }
 }

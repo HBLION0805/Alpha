@@ -48,6 +48,8 @@ export function mockSpreadEventFromOriginal({plan,original,id,at,action='OBSERVE
 }
 export function spreadEventAvailableAt(e){return e?.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1'?parseChainSurveyJson(e.provenance.original.rawJson).recordedAt:e.quote.receivedAt;}
 export function validateMockSpreadEventBinding(e,plan=null,asOf=null){
+ check(plan?.provenance&&Array.isArray(plan.legs),'EVENT_PLAN_CONTEXT_REQUIRED');
+ check(e.provenance?.parentPlanSha256===plan.provenance.planSha256,'EVENT_PARENT_PLAN');
  const b=e.provenance;check(e.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1'&&e.origin==='SYNTHETIC_FIXTURE'&&b?.version==='TECH_SPREAD_EVENT_BINDING_V1'&&/^[a-f0-9]{64}$/.test(b.parentPlanSha256)&&b.quoteSha256===spreadPlanHash(e.quote),'EVENT_BINDING');
  check(typeof b.original?.rawJson==='string'&&Buffer.byteLength(b.original.rawJson)<1e6&&b.original.sha256===spreadPlanHash(b.original.rawJson),'EVENT_ORIGINAL_HASH');
  const r=parseChainSurveyJson(b.original.rawJson);
@@ -55,9 +57,9 @@ export function validateMockSpreadEventBinding(e,plan=null,asOf=null){
  // must never observe an original before recordedAt, even after hash recomputation.
  check(!asOf||snapshotNs(r.recordedAt)<=snapshotNs(asOf),'EVENT_ORIGINAL_NOT_YET_VISIBLE');
  const selection=r.intent?.selection;
- const legs=plan?.legs??selection?.legs?.map(l=>({role:l.direction,quantity:1,contract:e.quote.legs.find(x=>x.id===l.id)}));
+ const legs=plan.legs;
  check(Array.isArray(legs)&&legs.length===2,'EVENT_LEGS');
- const n=assessTechSpreadPreflight({version:'TECH_SPREAD_PREFLIGHT_INPUT_V1',mode:'MOCK_CONTROL',at:r.recordedAt,decisionAt:plan?.decisionAt??r.intent?.requestedAt,
+ const n=assessTechSpreadPreflight({version:'TECH_SPREAD_PREFLIGHT_INPUT_V1',mode:'MOCK_CONTROL',at:r.recordedAt,decisionAt:plan.decisionAt,
   originals:[{...b.original,id:'event-original'}],legs:legs.map(l=>({originalId:'event-original',direction:l.role,quantity:l.quantity,contract:l.contract}))});
  check(n.quotePair.status==='COHERENT_BATCH_EVIDENCE_ONLY'&&n.quotePair.batchId===b.batchId&&n.quotePair.sourceClockDifferenceNs==='0','EVENT_SOURCE_PAIR');
  check(e.quote.legs.length===2&&new Set(e.quote.legs.map(l=>l.id)).size===2,'EVENT_LEGS');
