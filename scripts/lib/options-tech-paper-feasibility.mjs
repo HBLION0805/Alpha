@@ -8,6 +8,7 @@ import {engineeringObservationPolicy} from './options-real-data-paper-timing.mjs
 
 export const TECH_PAPER_SCOPE=Object.freeze(['AAPL','TSM','QQQ','TSLA']);
 const KINDS=['CONTRACT','DATA_ENTITLEMENT','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS','QUOTE'];
+const SUPPORTED_RECORD_KINDS=[...KINDS,'STRATEGY_REQUEST','RESEARCH','COST_MODEL'];
 const int=(v,min=0,max=100000000)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
 const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=2000;
 const sha=v=>createHash('sha256').update(v,'utf8').digest('hex');
@@ -16,7 +17,7 @@ const includes=(v,s)=>Array.isArray(v)&&v.length<=10&&v.includes(s);
 
 /** Reuse original attributed record integrity/clocks; this does not authenticate an account. */
 export function readTechEvidenceRecords({inputs,now,decision,validThrough,kinds=KINDS}) {
- if(!Array.isArray(inputs)||inputs.length!==kinds.length||kinds.some(k=>!KINDS.includes(k)))throw Error('EVIDENCE_SCHEMA');
+ if(!Array.isArray(inputs)||inputs.length!==kinds.length||kinds.some(k=>!SUPPORTED_RECORD_KINDS.includes(k)))throw Error('EVIDENCE_SCHEMA');
  const records=new Map(),payloads=new Map(),blockers=[];let synthetic=false;
     for(const r of inputs){
       if(!r||!kinds.includes(r.kind)||records.has(r.kind)||!text(r.source)||!text(r.reviewedBy)||

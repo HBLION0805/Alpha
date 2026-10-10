@@ -4,6 +4,7 @@ import {assessSnapshotQuote,snapshotNs,snapshotCents} from '../../src/engines/op
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {inferOptionsStructure,structureQuotedEconomics,structureTerminalPayoff} from '../../src/engines/options-structure-comparison/OptionsStructureComparisonEngine.ts';
 import {engineeringObservationPolicy} from './options-real-data-paper-timing.mjs';
+import {validateMockSpreadPlanBinding,validateMockSpreadEventBinding} from './options-tech-spread-plan-binding.mjs';
 
 const check=(ok,code)=>{if(!ok)throw Error('SPREAD_MOCK_'+code);};
 const keys=(o,k)=>check(o&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).sort().join()===k.split(' ').sort().join(),'FIELDS');
@@ -14,8 +15,9 @@ const mapLeg=l=>({side:l.role==='LONG'?'BUY':'SELL',contract:{contractId:l.contr
 const product=s=>s==='CDS'?'BULL_CALL_DEBIT':'BEAR_PUT_DEBIT';
 
 function validateStart(p){
- keys(p,'version mode executionModel candidate research structure decisionAt entryDeadlineAt timeExitAt quantity legs entryDebitLimitCents maxLegSpreadCents account');
- check(p.version==='TECH_MOCK_DEBIT_SPREAD_V1'&&p.mode==='MOCK'&&p.executionModel==='ATOMIC_TWO_LEG_ASSUMPTION','MODE');
+ const bound=p?.version==='TECH_MOCK_DEBIT_SPREAD_V2';
+ keys(p,'version mode executionModel candidate research structure decisionAt entryDeadlineAt timeExitAt quantity legs entryDebitLimitCents maxLegSpreadCents account'+(bound?' provenance':''));
+ check(['TECH_MOCK_DEBIT_SPREAD_V1','TECH_MOCK_DEBIT_SPREAD_V2'].includes(p.version)&&p.mode==='MOCK'&&p.executionModel==='ATOMIC_TWO_LEG_ASSUMPTION','MODE');
  keys(p.candidate,'id symbol origin');
  check(p.candidate.origin==='SYNTHETIC_FIXTURE'&&/^mock-[a-z0-9-]{1,60}$/.test(p.candidate.id)&&TECH_PAPER_SCOPE.includes(p.candidate.symbol)&&p.research.symbol===p.candidate.symbol,'CANDIDATE');
  check(['PDS','CDS'].includes(p.structure)&&p.quantity===1&&Array.isArray(p.legs)&&p.legs.length===2,'SUPPORTED_STRUCTURE');
@@ -38,14 +40,17 @@ function validateStart(p){
  const session=paperSession(p.decisionAt,chain);
  check(session.isOpen&&paperSession(p.timeExitAt,chain).isOpen&&session.date===paperSession(p.timeExitAt,chain).date&&p.legs[0].contract.expiry>session.date,'PRE_EXPIRY_SAME_DAY_ONLY');
  check(integer(p.entryDebitLimitCents,1,100000)&&integer(p.maxLegSpreadCents,1,10000),'LIMITS');
- const a=p.account;keys(a,'mode id currency provider permission products dataEntitlement settledCashCents reservedCashCents maximumLossCents tradeBudgetMaxCents reviewedAt validThrough');
+ const a=p.account;keys(a,'mode id currency provider permission products dataEntitlement settledCashCents reservedCashCents maximumLossCents tradeBudgetMaxCents reviewedAt validThrough'+(bound?' unsettledCashCents':''));
  check(a.mode==='MOCK'&&a.id==='MOCK'&&a.currency==='USD'&&a.provider==='SYNTHETIC_TEST_ONLY'&&['PASS','UNKNOWN','DENIED'].includes(a.permission)&&['PASS','UNKNOWN','DENIED'].includes(a.dataEntitlement)&&Array.isArray(a.products)&&a.products.every(x=>['PDS','CDS'].includes(x)),'MOCK_ACCOUNT');
  for(const k of ['settledCashCents','reservedCashCents','maximumLossCents','tradeBudgetMaxCents'])check(a[k]===null||integer(a[k]),'ACCOUNT_MONEY');
+ if(bound){check(integer(a.unsettledCashCents),'UNSETTLED_MONEY');validateMockSpreadPlanBinding(p);}
  check(clock(a.reviewedAt)<=clock(p.research.asOf)&&clock(a.validThrough)>=end,'ACCOUNT_CLOCK');
  return p;
 }
 function validateEvent(e){
- keys(e,'id origin quote');check(/^mock-[a-z0-9-]{1,60}$/.test(e.id)&&e.origin==='SYNTHETIC_FIXTURE','EVENT_ORIGIN');
+ const bound=e?.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1';
+ keys(e,'id origin quote'+(bound?' version provenance':''));check(/^mock-[a-z0-9-]{1,60}$/.test(e.id)&&e.origin==='SYNTHETIC_FIXTURE','EVENT_ORIGIN');
+ if(bound)validateMockSpreadEventBinding(e);
  keys(e.quote,'receivedAt source executionState action legs');const q=e.quote;
  clock(q.receivedAt);check(new Date(q.receivedAt).toISOString()===q.receivedAt,'RECEIPT_PRECISION');
  check(q.source==='SYNTHETIC_TEST_ONLY'&&['ATOMIC_QUOTE_PAIR','PARTIAL_FILL','SINGLE_LEG_FILL'].includes(q.executionState)&&['OBSERVE','CLOSE'].includes(q.action)&&Array.isArray(q.legs)&&q.legs.length<=2,'EVENT');
@@ -81,7 +86,7 @@ export function replayMockSpread(p,events,asOf){
  if(!costsKnown)frozenBlockers.push('COSTS_UNKNOWN');
  const high=new Map(),orders=[],diagnostics=[];let pendingExit=null,residual=false,entry=null,exit=null,terminal=null,last=null,gap=false;
  for(const e of events){
-  validateEvent(e);const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
+  validateEvent(e);check(p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?e.provenance?.parentPlanSha256===p.provenance.planSha256:!e.version,'BOUND_EVENT_PLAN');const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
   if(q.executionState!=='ATOMIC_QUOTE_PAIR'){residual=true;diagnostics.push({eventId:e.id,codes:['PARTIAL_OR_RESIDUAL_EXECUTION_UNSUPPORTED'],actualResidualExposure:'UNMODELED_NOT_CLEARED'});continue;}
   if(paperSession(q.receivedAt).date!==paperSession(p.decisionAt).date){diagnostics.push({eventId:e.id,codes:['OVERNIGHT_UNSUPPORTED']});continue;}
   if(last&&entry&&!exit&&clock(q.receivedAt)-clock(last)>60000000000n)gap=true;last=q.receivedAt;
@@ -124,14 +129,15 @@ export function replayMockSpread(p,events,asOf){
   }
   diagnostics.push({eventId:e.id,codes:[...new Set(codes)]});
  }
- const settled=available===null?null:available-(entry?entry.debitCents+entry.feesCents:0)+(exit?Math.min(0,exit.cashflowCents):0),unsettled=exit?Math.max(0,exit.cashflowCents):0;
- const total=settled===null?null:settled+unsettled,pnl=exit?total-available:null;
+ const initialUnsettled=p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?a.unsettledCashCents:0;
+ const settled=available===null?null:available-(entry?entry.debitCents+entry.feesCents:0)+(exit?Math.min(0,exit.cashflowCents):0),unsettled=initialUnsettled+(exit?Math.max(0,exit.cashflowCents):0);
+ const total=settled===null?null:settled+unsettled,pnl=exit?total-available-initialUnsettled:null;
  check(settled===null||settled>=0,'CASH_INVARIANT');
  if(entry&&!exit&&last&&clock(asOf)-clock(last)>60000000000n)gap=true;
  if(entry&&!exit&&clock(asOf)>=clock(p.timeExitAt))pendingExit??='TIME_EXIT';
- const modelAccount={mode:'MOCK',initialAvailableCashCents:available,otherReservedCashCents:a.reservedCashCents,settledCashCents:settled,unsettledProceedsCents:unsettled,totalCashCents:total,netPnlCents:pnl};
+ const modelAccount={mode:'MOCK',...(p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?{initialUnsettledCashCents:initialUnsettled,unsettledAvailableForEntry:false}:{}),initialAvailableCashCents:available,otherReservedCashCents:a.reservedCashCents,settledCashCents:settled,unsettledProceedsCents:unsettled,totalCashCents:total,netPnlCents:pnl};
  const modelPosition={modeledLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:entry&&!exit?(l.role==='LONG'?1:-1)*p.quantity:0})),unmodeledResidual:residual?'UNKNOWN_NOT_CLEARED':null,pendingExit:entry&&!exit?pendingExit:null};
- return {version:residual?'TECH_MOCK_DEBIT_SPREAD_RESIDUAL_REPORT_V2':'TECH_MOCK_DEBIT_SPREAD_REPORT_V1',mode:'MOCK',executionModel:p.executionModel,atomicFillsAreBrokerGuarantee:false,candidate:p.candidate,structure:p.structure,assessedAt:asOf,
+ return {version:residual?'TECH_MOCK_DEBIT_SPREAD_RESIDUAL_REPORT_V2':p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?'TECH_MOCK_DEBIT_SPREAD_REPORT_V2':'TECH_MOCK_DEBIT_SPREAD_REPORT_V1',mode:'MOCK',...(p.provenance?{planBinding:{planSha256:p.provenance.planSha256,parentIds:p.provenance.parentIds,costModel:p.provenance.costModel,conditions:p.provenance.conditions}}:{}),executionModel:p.executionModel,atomicFillsAreBrokerGuarantee:false,candidate:p.candidate,structure:p.structure,assessedAt:asOf,
   status:residual?'BLOCKED_UNSUPPORTED_RESIDUAL':exit?'CLOSED_MODELED':entry?'OPEN_UNRESOLVED':'NO_ENTRY',orders,
   position:residual?{status:'UNKNOWN_UNRECONCILED_RESIDUAL',unmodeledResidual:'UNKNOWN_NOT_CLEARED',actualClosed:'UNKNOWN',actualLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:null})),pendingExit:null}:modelPosition,
   account:residual?{mode:'MOCK',status:'UNKNOWN_UNRECONCILED_RESIDUAL',availableFundsCents:null,settledCashCents:null,unsettledProceedsCents:null,totalCashCents:null,netPnlCents:null}:modelAccount,terminalRisk:residual?null:terminal,

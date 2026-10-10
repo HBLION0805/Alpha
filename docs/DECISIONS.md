@@ -1,3 +1,10 @@
+## Evidence-bound isolated spread plans
+
+The [spread plan bridge](OPTIONS_TECH_SPREAD_PLAN_DELIVERY.md) connects saved V2
+batches and explicit synthetic research/account/contract/cost evidence to the
+existing MOCK journal. Plan creation does not append entry; independent later
+source events model exits. Real account authorities remain UNKNOWN.
+
 ## Explicit two-strike quote batches
 
 The [V2 batch extension](OPTIONS_TECH_SPREAD_BATCH_DELIVERY.md) reuses the existing

@@ -1,0 +1,72 @@
+import nodeTest,{after} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {join,resolve,sep} from 'node:path';
+import {tmpdir} from 'node:os';
+import {mockSpreadPlanFixture} from './lib/options-tech-spread-plan-fixtures.mjs';
+import {previewTechSpreadPlan,startTechSpreadPlan} from './lib/options-tech-spread-plan.mjs';
+import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,mockSpreadEventFromOriginal} from './lib/options-tech-spread-plan-binding.mjs';
+import {replayMockSpread,startMockSpread,appendMockSpread,recoverMockSpread} from './lib/options-tech-mock-spread.mjs';
+import {techSpreadPlanCli} from './options-tech-spread-plan.mjs';
+import {collectMockTechSpreadFixture} from './lib/options-tech-spread-quote-fixtures.mjs';
+let total=0,passed=0;
+const test=(name,fn)=>{total++;nodeTest(name,async()=>{const root=fs.mkdtempSync(join(tmpdir(),'alpha-spread-plan-'));try{await fn(root);passed++;}finally{assert(resolve(root).startsWith(resolve(tmpdir())+sep));fs.rmSync(root,{recursive:true});}});};
+after(()=>console.log('Technology spread plans: '+passed+'/'+total+' tests passed.'));
+const runId='mock-bound-test';
+function edit(input,kind,fn){const r=input.records.find(r=>r.kind===kind),p=JSON.parse(r.rawJson);fn(p);r.rawJson=JSON.stringify(p);r.sha256=spreadPlanHash(r.rawJson);return r;}
+function repin(input){const records=Object.fromEntries(input.records.map(r=>[r.kind,r]));edit(input,'STRATEGY_REQUEST',p=>{p.researchSha256=records.RESEARCH.sha256;p.costModelSha256=records.COST_MODEL.sha256;p.contractEvidenceSha256=records.CONTRACT.sha256;for(const k of Object.keys(p.accountEvidenceHashes))p.accountEvidenceHashes[k]=records[k].sha256;});}
+function blocked(input,code){const r=previewTechSpreadPlan(input);assert.equal(r.status,'BLOCKED');assert.equal(r.plan,null);assert.equal(r.entryEvent,null);assert.equal(r.actualTrades,0);if(code)assert(r.checks.some(c=>c.code===code&&c.status==='BLOCKED'),JSON.stringify(r.checks));return r;}
+for(const structure of ['BULL_CALL_DEBIT','BEAR_PUT_DEBIT'])test(structure+' existing durable lifecycle and recovered cash',async root=>{
+ const f=await mockSpreadPlanFixture(structure),p=startTechSpreadPlan({root,runId,input:f.input});assert.equal(p.status,'MOCK_PLAN_READY');assert.equal(p.entryAutomaticallyAppended,false);
+ const initial=recoverMockSpread({root,runId,asOf:f.input.at});assert.equal(initial.events.length,0);assert.equal(initial.report.orders.length,0);
+ const opened=appendMockSpread({root,runId,event:p.entryEvent});assert.equal(opened.status,'OPEN_UNRESOLVED');assert.equal(opened.account.settledCashCents,8790);
+ const event=mockSpreadEventFromOriginal({plan:p.plan,original:f.exitOriginal,id:'mock-independent-exit',at:f.exitAt});const closed=appendMockSpread({root,runId,event});
+ assert.equal(closed.status,'CLOSED_MODELED');assert.equal(closed.account.netPnlCents,-920);assert.equal(closed.account.unsettledProceedsCents,9990);assert.equal(closed.account.initialUnsettledCashCents,700);assert.equal(closed.actualTrades,0);
+ assert.deepEqual(closed.orders.flatMap(o=>o.legs.map(l=>l.side)),['BUY_TO_OPEN','SELL_TO_OPEN','SELL_TO_CLOSE','BUY_TO_CLOSE']);assert.deepEqual(recoverMockSpread({root,runId,asOf:closed.assessedAt}).report,closed);
+ assert(closed.planBinding.parentIds.includes('mock-bound-plan'));assert.notEqual(event.provenance.batchId,p.entryEvent.provenance.batchId);
+});
+test('preview is side effect free with UNKNOWN real authorities',async root=>{const f=await mockSpreadPlanFixture(),p=previewTechSpreadPlan(f.input);assert.equal(p.status,'MOCK_PLAN_READY');assert.deepEqual(fs.readdirSync(root),[]);assert.deepEqual(p.realAccountConfirmation,{permission:'UNKNOWN',funds:'UNKNOWN',entitlement:'UNKNOWN'});assert.equal(p.productionPaperAdmissionAllowed,false);assert.equal(p.economics.terminalRisk.maximumLossCents,10420);});
+for(const kind of SPREAD_PLAN_RECORD_KINDS)test('missing '+kind+' cannot save plan',async root=>{const f=await mockSpreadPlanFixture();f.input.records=f.input.records.filter(r=>r.kind!==kind);blocked(f.input,kind+'_MISSING');assert.equal(startTechSpreadPlan({root,runId,input:f.input}).status,'BLOCKED');assert.deepEqual(fs.readdirSync(root),[]);});
+for(const [label,kind,fn,code] of [
+ ['unknown multiplier','CONTRACT',p=>delete p.contracts[0].multiplier,'CONTRACT_EVIDENCE'],
+ ['unknown deliverable','CONTRACT',p=>delete p.contracts[0].deliverable,'CONTRACT_EVIDENCE'],
+ ['unknown exercise style','CONTRACT',p=>delete p.contracts[0].exerciseStyle,'CONTRACT_EVIDENCE'],
+ ['wrong contract','CONTRACT',p=>p.contracts[0].strike='330.00','CONTRACT_EVIDENCE'],
+ ['unknown fee','COST_MODEL',p=>delete p.legs[0].entryFeeCents,'VERSIONED_COST_MODEL'],
+ ['missing cost version','COST_MODEL',p=>delete p.version,'VERSIONED_COST_MODEL'],
+ ['unknown permission','PRODUCT_PERMISSION',p=>p.enabled=null,'MOCK_SPREAD_PERMISSION'],
+ ['single leg permission','PRODUCT_PERMISSION',p=>p.products=['LONG_CALL'],'MOCK_SPREAD_PERMISSION'],
+ ['entitlement missing','DATA_ENTITLEMENT',p=>p.realtimeOptions=null,'MOCK_DATA_ENTITLEMENT'],
+ ['unknown settled','ACCOUNT_FUNDS',p=>p.settledCashCents=null,'SETTLED_RESERVED_AND_UNSETTLED_FUNDS'],
+ ['unknown unsettled','ACCOUNT_FUNDS',p=>delete p.unsettledCashCents,'SETTLED_RESERVED_AND_UNSETTLED_FUNDS'],
+ ['unknown reserve','ACCOUNT_FUNDS',p=>p.reservedCashCents=null,'SETTLED_RESERVED_AND_UNSETTLED_FUNDS'],
+ ['excess reserve','ACCOUNT_FUNDS',p=>p.reservedCashCents=30000,'SETTLED_RESERVED_AND_UNSETTLED_FUNDS'],
+ ['insufficient settled despite unsettled','ACCOUNT_FUNDS',p=>{p.settledCashCents=10000;p.unsettledCashCents=999999;},'EXISTING_MOCK_ENTRY_MODEL'],
+ ['recorded risk limit','RISK_LIMITS',p=>p.maximumLossCents=10000,'REQUEST_BUDGET_WITHIN_DOCUMENTED_LIMITS'],
+ ['absent conditions','STRATEGY_REQUEST',p=>delete p.conditions,'EXPLICIT_CONDITIONS'],
+ ['real account','STRATEGY_REQUEST',p=>p.accountId='REAL','SUPPORTED_PLAN_REQUEST'],
+ ['absent research id','STRATEGY_REQUEST',p=>p.researchId='other','RESEARCH_REQUEST_ID_AND_HASH'],
+ ['decision after quote','STRATEGY_REQUEST',p=>p.decisionAt='2026-10-09T15:30:11.000Z','PRIOR_REQUEST_BOUND_TO_SELECTION'],
+ ['overnight','STRATEGY_REQUEST',p=>p.timeExitAt='2026-10-12T15:36:59.000Z',null],
+])test(label+' rejected',async()=>{const f=await mockSpreadPlanFixture();edit(f.input,kind,fn);repin(f.input);blocked(f.input,code);});
+for(const [label,fn]of [
+ ['hash mismatch',r=>r.sha256='0'.repeat(64)],['late costs',r=>r.reviewedAt='2026-10-09T15:30:00.000Z'],
+ ['missing cost source',r=>r.source=''],['unknown verdict',r=>r.verdict='UNKNOWN'],['real evidence in mock',r=>r.origin='HOST_MARKET_TOOL_RESPONSES'],
+])test(label+' rejected at envelope',async()=>{const f=await mockSpreadPlanFixture();fn(f.input.records.find(r=>r.kind==='COST_MODEL'));blocked(f.input,'COST_MODEL_RECORD');});
+test('changed cost hash cannot silently replace predecision request',async()=>{const f=await mockSpreadPlanFixture();edit(f.input,'COST_MODEL',p=>p.legs[0].entryFeeCents=6);blocked(f.input,'REQUEST_EVIDENCE_HASHES');});
+test('same economics with different lineage produces a distinct plan identity',async()=>{const f=await mockSpreadPlanFixture(),first=previewTechSpreadPlan(f.input);edit(f.input,'STRATEGY_REQUEST',p=>p.parentIds.push('mock-second-parent'));const second=previewTechSpreadPlan(f.input);assert.equal(second.status,'MOCK_PLAN_READY');assert.notEqual(first.plan.provenance.planSha256,second.plan.provenance.planSha256);assert.throws(()=>replayMockSpread(second.plan,[first.entryEvent],f.input.at));});
+test('coherent nonzero skew cannot be retimed for atomic MOCK',async()=>{const f=await mockSpreadPlanFixture(),batch=await collectMockTechSpreadFixture();f.input.originals=[batch.original];const r=blocked(f.input,'EXISTING_MOCK_EXACT_SYNCHRONY');assert.equal(r.preflight.quotePair.status,'COHERENT_BATCH_EVIDENCE_ONLY');assert.equal(r.preflight.quotePair.sourceClockDifferenceNs,'100000000');});
+test('REAL mode cannot borrow synthetic permission or create lifecycle',async root=>{const f=await mockSpreadPlanFixture();f.input.mode='REAL_SAVED_SOURCE_REPLAY';blocked(f.input,'REAL_INPUT_HAS_NO_LIFECYCLE_AUTHORITY');assert.equal(startTechSpreadPlan({root,runId,input:f.input}).status,'BLOCKED');assert.deepEqual(fs.readdirSync(root),[]);});
+for(const [label,fn]of [
+ ['body cash',p=>p.account.settledCashCents++],['open action',p=>p.provenance.actions[0].open='SELL_TO_OPEN'],
+ ['parent',p=>p.provenance.parentIds.push('unexpected')],['original hash',p=>p.provenance.original.sha256='0'.repeat(64)],
+ ['cost provenance',p=>p.provenance.costModel.source='NEW_SOURCE'],['loss basis',p=>p.provenance.maximumLossBasis='GUARANTEED'],
+ ['condition',p=>p.provenance.conditions.entry='Changed after decision'],
+])test(label+' binding tamper fails',async root=>{const f=await mockSpreadPlanFixture(),p=previewTechSpreadPlan(f.input).plan;fn(p);assert.throws(()=>startMockSpread({root,runId,input:p}));});
+for(const [label,fn]of [
+ ['price',e=>e.quote.legs[0].bidCents++],['source clock',e=>e.quote.legs[0].updatedAt='2026-10-09T15:30:09.600Z'],
+ ['source hash',e=>e.provenance.original.sha256='0'.repeat(64)],['parent plan',e=>e.provenance.parentPlanSha256='0'.repeat(64)],
+])test(label+' event tamper fails',async()=>{const f=await mockSpreadPlanFixture(),p=previewTechSpreadPlan(f.input);fn(p.entryEvent);assert.throws(()=>replayMockSpread(p.plan,[p.entryEvent],f.input.at));});
+test('rehashed price still cannot alter source evidence',async()=>{const f=await mockSpreadPlanFixture(),p=previewTechSpreadPlan(f.input);p.entryEvent.quote.legs[0].bidCents++;p.entryEvent.provenance.quoteSha256=spreadPlanHash(p.entryEvent.quote);assert.throws(()=>replayMockSpread(p.plan,[p.entryEvent],f.input.at),/SOURCE_FIELDS_CHANGED/);});
+test('entry source cannot be reused as an independent exit',async()=>{const f=await mockSpreadPlanFixture(),p=previewTechSpreadPlan(f.input),e=structuredClone(p.entryEvent);e.id='mock-repeat';const r=replayMockSpread(p.plan,[p.entryEvent,e],f.exitAt);assert.equal(r.orders.length,1);assert.equal(r.account.netPnlCents,null);});
+test('CLI exact original reader and plan-only start',async root=>{const f=await mockSpreadPlanFixture();fs.writeFileSync(join(root,'original.json'),f.input.originals[0].rawJson);f.input.originals=[{id:'mock-original',path:'original.json',sha256:f.input.originals[0].sha256}];fs.writeFileSync(join(root,'input.json'),JSON.stringify(f.input));const p=techSpreadPlanCli(['--start','input.json','--run-id',runId],{root});assert.equal(p.status,'MOCK_PLAN_READY');assert.equal(recoverMockSpread({root,runId,asOf:f.input.at}).events.length,0);assert.throws(()=>techSpreadPlanCli(['--arm'],{root}),/ARGUMENTS/);});

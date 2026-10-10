@@ -1,0 +1,38 @@
+{
+  "version": "TECH_SPREAD_PLAN_DELIVERY_V1",
+  "status": "IMPLEMENTED_PENDING_INDEPENDENT_REVIEW",
+  "runId": "tech-spread-plan-20261010",
+  "planVersion": "TECH_MOCK_DEBIT_SPREAD_V2",
+  "syntheticResults": {
+    "CDS": "CLOSED_MODELED",
+    "PDS": "CLOSED_MODELED",
+    "netPnlCentsEach": -920,
+    "initialUnsettledCashCents": 700,
+    "initialUnsettledUsableForEntry": false,
+    "startCreatesEntry": false
+  },
+  "realAccount": {
+    "funds": "UNKNOWN",
+    "permission": "UNKNOWN",
+    "entitlement": "UNKNOWN"
+  },
+  "realAcceptance": "NOT_TESTED",
+  "actualTrades": 0,
+  "sourceCalls": 0,
+  "productionPaperAdmissionAllowed": false,
+  "oldRealOriginals": "UNCHANGED_REJECTED_NO_FILL",
+  "overnightAssignment": "NOT_TESTED",
+  "residualDisposal": "NOT_IMPLEMENTED",
+  "hostHardCallBudgetEnforced": false,
+  "validation": {
+    "status": "PASSED",
+    "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
+    "baseCommit": "c0eb6efc4a4f5dfc7066c23ee958e37f3423d287",
+    "componentCount": 226,
+    "testsExecuted": 5591,
+    "passed": 5591,
+    "failed": 0,
+    "focusedPlanTests": 54,
+    "realPriceAcceptance": "NOT_TESTED"
+  }
+}
