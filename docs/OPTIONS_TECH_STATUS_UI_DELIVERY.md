@@ -98,3 +98,25 @@ before edits. It covers all tracked/nonignored working files and private develop
 originals, with dependency, Git metadata, cloned review and browser-profile directory
 exclusions explicitly enumerated. This is evidence for this increment only; it does
 not retroactively establish a complete hash baseline for the earlier UI delivery.
+
+## Independent wrapper-clock validation correction
+
+Every clock that drives the displayed historical label is now checked separately
+using the existing nanosecond clock parser. A valid outer saved time cannot hide a
+future, malformed or missing inner assessment time. Versioned candidate receipts
+require both assessment and saved clocks; the published CLI result requires its
+inner assessment clock and does not claim a saved clock. Neither representation
+uses filesystem time or substitutes one required clock for another.
+
+An assessment may be saved at the same instant or later, provided both are visible
+at the local check time. Saving before assessment is rejected; no arbitrary maximum
+save delay is introduced. Displayed research registration and preflight clocks must
+also respect their known assessment/save order. All supplied displayed quote clocks
+are independently checked for validity and future values. Unknown optional clocks
+remain unknown. The UI displays assessment, saved and preflight clocks separately.
+
+The regression matrix compares identical candidate content in both supported
+wrappers, including future inner/outer clocks, reversed order, missing/invalid
+clocks, equal instants, legitimate delay and nanosecond boundaries. The four saved
+normal candidate receipts remain readable. This correction is committed separately
+from any subsequent input-preparation work.
