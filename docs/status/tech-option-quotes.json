@@ -1,0 +1,30 @@
+{
+  "version": "TECH_OPTION_QUOTES_DELIVERY_V1",
+  "status": "BOUNDED_SOURCE_ADAPTER_NO_PAPER_ADMISSION",
+  "symbols": [
+    "AAPL",
+    "TSM",
+    "QQQ"
+  ],
+  "maximumMarketCalls": 4,
+  "maximumContracts": 2,
+  "manualFileTransferRequired": false,
+  "liveAcceptance": "LOCAL_CAPTURE_MAPPING_PERSISTENCE_PASSED_SPREAD_POLICY_BLOCKED",
+  "privateEvidencePublished": false,
+  "spreadPolicyOrigin": "GLD_IBIT_ENGINEERING_NOT_ACCOUNT_RULE",
+  "technologySpreadApplicability": "PENDING_PROSPECTIVE_DECISION",
+  "paperAdmissionAllowed": false,
+  "executionAllowed": false,
+  "publicationValidation": {
+    "status": "PASSED",
+    "baseCommit": "9c2b110aecf07cb01dada672c1ad7539691663f7",
+    "componentCount": 219,
+    "testsExecuted": 5253,
+    "passed": 5253,
+    "failed": 0,
+    "scope": "ISOLATED_EXACT_RELEASE_CANDIDATE",
+    "engineeringTestsAreNotPaperAcceptance": true
+  },
+  "productionScheduleChanged": false,
+  "deployed": false
+}

@@ -1,3 +1,12 @@
+## Technology quote acquisition and isolated feasibility
+
+Manual options:tech-quotes reuses the existing authorized OAuth Host for bounded
+source reads and exclusive local persistence. Offline options:tech-paper keeps
+research, quote and documentary feasibility separate without arming Paper. Four
+required contract/engine/fixture/timing dependencies are included; unrelated
+three-facet UI and Paper runtime changes are excluded. Existing GLD/IBIT and
+schedules remain unchanged. See [delivery](OPTIONS_TECH_OPTION_QUOTES_DELIVERY.md).
+
 # Alpha Handoff
 
 ## September 30 - Bounded engineering paper capture

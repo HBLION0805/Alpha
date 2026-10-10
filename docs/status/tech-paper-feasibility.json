@@ -1,0 +1,20 @@
+{
+  "version": "TECH_PAPER_FEASIBILITY_DELIVERY_V1",
+  "status": "ATTRIBUTED_FEASIBILITY_ONLY",
+  "trialBeforeTechnicalConfirmation": "RESEARCH_CANDIDATE_WITH_NONTECHNICAL_AND_RISK_REVIEW",
+  "unknownBlockersRetained": true,
+  "paperLifecycle": "NOT_INTEGRATED",
+  "paperAdmissionAllowed": false,
+  "executionAllowed": false,
+  "actualFills": 0,
+  "publicationValidation": {
+    "status": "PASSED",
+    "baseCommit": "9c2b110aecf07cb01dada672c1ad7539691663f7",
+    "componentCount": 219,
+    "testsExecuted": 5253,
+    "passed": 5253,
+    "failed": 0,
+    "scope": "ISOLATED_EXACT_RELEASE_CANDIDATE",
+    "engineeringTestsAreNotPaperAcceptance": true
+  }
+}

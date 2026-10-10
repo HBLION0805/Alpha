@@ -117,6 +117,8 @@ const textExtensions = new Set([
 ]);
 
 const aggregateTestFiles = [
+  "scripts/options-tech-quotes.test.mjs",
+  "scripts/options-tech-paper.test.mjs",
   "scripts/options-scenario-research.test.mjs",
   "scripts/options-evidence-loop.test.mjs",
   "scripts/options-prediction-evidence.test.mjs",
