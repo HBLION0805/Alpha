@@ -66,3 +66,4 @@
 
 #tech-research-status code, #tech-research-status .hint { overflow-wrap: anywhere; }
 #tech-research-status summary small { display: block; margin-top: .5rem; }
+#tech-research-status .tech-status-issues { display: block; }

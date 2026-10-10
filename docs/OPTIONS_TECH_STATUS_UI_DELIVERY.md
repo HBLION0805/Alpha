@@ -61,3 +61,40 @@ Screenshots and validation receipts remain ignored and local.
 
 No CPI workspace, challenge ledger, collection schedule, risk threshold or
 execution authority is changed by this delivery.
+
+## Saved-format compatibility and source relationships
+
+The published candidate CLI returns `{receiptPath, assessment}`, while its saved
+receipt has version `TECH36_CANDIDATE_RECEIPT_V1`. The reader now accepts that exact
+CLI outer shape with a validated `TECH36_CANDIDATE_ASSESSMENT_V1` inner assessment.
+It never dereferences or displays `receiptPath`. The UI explicitly labels the
+unversioned outer return value, the actual inner version and historical assessment
+clock. It does not invent a version or claim source authentication.
+
+An unversioned demo/audit wrapper around `TECH_MOCK_RESIDUAL_PREVIEW_V1` remains
+rejected with a specific explanation. Residual arithmetic is not Paper completion,
+account reconstruction, released funds or evidence of a flat position. Arbitrary
+unknown/private formats do not become readable merely by nesting a known object.
+Malformed JSON, invalid CLI contracts, unknown formats, unsafe files and conflicts
+have separate bounded error codes and plain-language explanations.
+
+Source-byte, storage-location and container fingerprints remain separate. The
+container fingerprint identifies only the saved directory, not a verified run.
+Candidate claim identity uses the declared scan, candidate, event and assessment
+clock. Equal canonical assessment content is labeled a duplicate; different content
+under the same claim identity is a conflict and leaves the inventory PARTIAL.
+Every source remains visible independently, with counterpart location fingerprints.
+No winner is selected, no duplicate is silently discarded and no cross-run stages
+are assembled into a successful pipeline. Different assessment clocks remain
+independent historical records.
+
+Research, quote, account, plan and Paper states have separate allowlists. A generic
+PASS or a preflight result cannot populate a different layer. Only a plan preview
+or verified journal replay can describe a plan; a saved candidate assessment retains
+its published NOT_ADMITTED contract. Missing layers remain unknown/not assessed.
+
+For this compatibility increment, a new pre-change hash manifest was recorded
+before edits. It covers all tracked/nonignored working files and private development
+originals, with dependency, Git metadata, cloned review and browser-profile directory
+exclusions explicitly enumerated. This is evidence for this increment only; it does
+not retroactively establish a complete hash baseline for the earlier UI delivery.
