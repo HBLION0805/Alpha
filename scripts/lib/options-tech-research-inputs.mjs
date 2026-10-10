@@ -40,6 +40,18 @@ export function extractTechOriginal(bytes){
  return {status:blocks.length?'BODY_TEXT_EXTRACTED':'EMPTY_BODY',coordinateSystem:'UTF8_DECODED_SOURCE_CHARACTER_OFFSETS',blocks};
 }
 
+/** Saved visible anchors only; this projection never follows a URL. */
+export function extractTechOriginalLinks(bytes){
+ const source=new TextDecoder('utf-8',{fatal:true}).decode(bytes),body=extractTechOriginal(bytes);
+ const masked=maskHidden(source.replace(/<!--[^]*?-->|<(script|style|head|ix:header|ix:hidden)\b[^>]*>[^]*?<\/\1\s*>/gi,m=>' '.repeat(m.length))),links=[];
+ for(const m of masked.matchAll(/<a\b[^>]*>[^]*?<\/a\s*>/gi)){
+  const tag=m[0].slice(0,m[0].indexOf('>')+1),href=tag.match(/\shref\s*=\s*(["'])(.*?)\1/i),block=body.blocks.find(b=>b.sourceStart<=m.index&&b.sourceEnd>=m.index);
+  if(!href||!block)continue;
+  links.push({href:decode(href[2]),text:decode(m[0].replace(/<[^>]*>/g,' ')).replace(/\s+/g,' ').trim(),sourceStart:m.index,sourceEnd:m.index+m[0].length,blockIndex:block.index});
+ }
+ return links;
+}
+
 /** Bridge the already verified fixed-pool replay into cited inputs for further research.
  * Saved human/Host reviews remain attributed interpretations; parsing does not authenticate them. */
 export function techResearchContext({files,lineage}){

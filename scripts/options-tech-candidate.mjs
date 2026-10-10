@@ -1,10 +1,14 @@
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {prepareTechCandidate,assessTechCandidate,prepareTechResearchInputs,appendTechEventReview,readTechEventReviews} from './lib/options-tech-candidate.mjs';
+import {prepareTechCandidate,assessTechCandidate,prepareTechResearchInputs,appendTechEventReview,readTechEventReviews,matchTechSecMaterials} from './lib/options-tech-candidate.mjs';
 export function techCandidateCli(args,{root=process.cwd(),now=()=>new Date().toISOString()}={}){
- if(args.length===1&&args[0]==='--help')return {usage:'--research-inputs --source-root DIRECTORY --run-id ID | --append-event-review --run-id ID --request FILE | --event-reviews --run-id ID | --prepare --source-root DIRECTORY --research FILE --run-id ID | --assess --run-id ID [--quote FILE] [--evidence FILE]',authority:'CITED_RESEARCH_INPUTS_AND_ADMISSION_REJECTION_ONLY_NO_ARM'};
- const mode=args[0],p={};if(!['--research-inputs','--append-event-review','--event-reviews','--prepare','--assess'].includes(mode))throw Error('TECH_CANDIDATE_ARGUMENTS');
+ if(args.length===1&&args[0]==='--help')return {usage:'--match-sec --source-root DIRECTORY --request FILE | --research-inputs --source-root DIRECTORY --run-id ID | --append-event-review --run-id ID --request FILE | --event-reviews --run-id ID | --prepare --source-root DIRECTORY --research FILE --run-id ID | --assess --run-id ID [--quote FILE] [--evidence FILE]',authority:'CITED_RESEARCH_INPUTS_AND_ADMISSION_REJECTION_ONLY_NO_ARM'};
+ const mode=args[0],p={};if(!['--match-sec','--research-inputs','--append-event-review','--event-reviews','--prepare','--assess'].includes(mode))throw Error('TECH_CANDIDATE_ARGUMENTS');
  for(let i=1;i<args.length;i+=2){if(!['--source-root','--research','--run-id','--quote','--evidence','--request'].includes(args[i])||p[args[i]]||!args[i+1]||args[i+1].startsWith('--'))throw Error('TECH_CANDIDATE_ARGUMENTS');p[args[i]]=args[i+1];}
+ if(mode==='--match-sec'){
+  if(!p['--source-root']||!p['--request']||Object.keys(p).length!==2)throw Error('TECH_CANDIDATE_ARGUMENTS');
+  return matchTechSecMaterials({sourceRoot:p['--source-root'],requestPath:p['--request'],now});
+ }
  if(!p['--run-id'])throw Error('TECH_CANDIDATE_ARGUMENTS');
  if(mode==='--append-event-review'||mode==='--event-reviews'){
   if(p['--source-root']||p['--research']||p['--quote']||p['--evidence']||(mode==='--append-event-review'?!p['--request']:p['--request']))throw Error('TECH_CANDIDATE_ARGUMENTS');

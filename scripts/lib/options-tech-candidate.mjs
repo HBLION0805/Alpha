@@ -8,6 +8,7 @@ import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/Rob
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 import {buildTechResearchInputs,extractTechOriginal,techResearchContext} from './options-tech-research-inputs.mjs';
+import {buildTechSecMatch,validateTechSecMatchRequest} from './options-tech-sec-matcher.mjs';
 
 export const TECH36_POOL=Object.freeze('AAPL MSFT GOOGL AMZN META NVDA TSLA AVGO AMD TSM ASML AMAT LRCX KLAC MU ARM QCOM ORCL CRM NOW PANW CRWD ADBE PLTR SNOW SNPS CDNS ANET CSCO VRT DELL HPE STX WDC APH ETN'.split(' '));
 const sha=b=>createHash('sha256').update(b).digest('hex');
@@ -21,6 +22,14 @@ function reader(root){
  const base=fs.realpathSync(root),files=new Map();
  const read=p=>{const full=safePath(base,p),s=fs.lstatSync(full);check(s.isFile()&&!s.isSymbolicLink()&&s.nlink===1&&s.size<=12*1024*1024,'FILE');check(fs.realpathSync(full)===full,'PATH');const bytes=fs.readFileSync(full);files.set(p.replaceAll('\\','/'),bytes);check(files.size<=200,'FILE_COUNT');return bytes;};
  return {base,files,read,load:p=>json(read(p))};
+}
+
+export function matchTechSecMaterials({sourceRoot,requestPath,now=()=>new Date().toISOString()}){
+ const loaded=loadTechResearchSource(sourceRoot),r=reader(dirname(resolve(requestPath))),bytes=r.read(relative(r.base,resolve(requestPath))),request=json(bytes);
+ validateTechSecMatchRequest(request);
+ const result=buildTechSecMatch({...loaded,request,extraSources:request.savedReceipts.map(s=>r.read(s.rawPath)),at:now()});
+ result.requestSha256=sha(bytes);
+ result.implementation=Object.fromEntries(['options-tech-candidate.mjs','options-tech-research-inputs.mjs','options-tech-sec-matcher.mjs'].map(p=>[p,sha(fs.readFileSync(new URL(p,import.meta.url)))]));return result;
 }
 
 /** Read-only replay of the existing fixed-pool discovery and retrospective ranking. */

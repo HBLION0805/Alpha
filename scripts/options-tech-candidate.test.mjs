@@ -13,6 +13,7 @@ import {prepareTechResearchInputs} from './lib/options-tech-candidate.mjs';
 import {extractTechOriginal,buildTechResearchInputs} from './lib/options-tech-research-inputs.mjs';
 import {loadTechResearchSource,appendTechEventReview,readTechEventReviews} from './lib/options-tech-candidate.mjs';
 import {spawn} from 'node:child_process';
+import {extractTechOriginalLinks} from './lib/options-tech-research-inputs.mjs';
 let total=0,passed=0;const test=(n,f)=>{total++;nodeTest('MOCK '+n,async()=>{await f();passed++;});};after(()=>console.log('Tech candidate handoff: '+passed+'/'+total+' tests passed.'));
 const hash=b=>createHash('sha256').update(b).digest('hex'),at='2026-10-10T14:00:00.000Z',scanId='alpha-tech36-MOCK',scan='runs/'+scanId+'/';
 const roots=[];after(()=>{for(const root of roots){const r=relative(tmpdir(),root);assert(!isAbsolute(r)&&r.startsWith('alpha-tech36-mock-')&&!r.startsWith('..'));fs.rmSync(root,{recursive:true,force:true});}});
@@ -211,3 +212,75 @@ test('P2 an unresolved cycle cannot create coverage without any qualified canoni
 test('P2 historical repeated review rows use the last explicit row for coverage and outgoing links',()=>{
  const f=researchFixture(),loaded=loadTechResearchSource(f.root),key='review-input-v1.2.json',input=JSON.parse(loaded.files.get(key));input.reviews.push({...input.reviews.find(r=>r.symbol==='SNPS'),materialConflict:true});loaded.files.set(key,Buffer.from(JSON.stringify(input)));const v=buildTechResearchInputs({...loaded,at}),c=v.companies.find(c=>c.symbol==='SNPS');assert.equal(c.qualifiedAssociationIds.length,0);assert(c.unresolvedEventIds.includes('MOCK-SNPS'));assert(c.unresolvedEventIds.includes('MOCK-NEWS'));
 });
+
+function secMatchFixture(){
+ const f=eventFixture();f.accession='0000001234-26-000001';f.archive='https://www.sec.gov/Archives/edgar/data/1234/000000123426000001/';
+ f.release=(quarter='second',year='2027',issuer='Tesla, Inc.',symbol='TSLA',extra='')=>`<html><body><h1>${issuer} Reports ${quarter} Quarter Fiscal ${year} Results</h1><p>MOCK CITY -- August 26, 2026 -- ${issuer} (NASDAQ: ${symbol}) today announced results for its ${quarter} quarter fiscal ${year} ended July 31, 2026.</p>${extra}</body></html>`;
+ f.main=(links='<a href="ex99.htm">99.1 Press release</a>',issuer='Tesla, Inc.',cik='0000001234')=>`<html><body><p><ix:nonNumeric name="dei:EntityRegistrantName">${issuer}</ix:nonNumeric></p><p><ix:nonNumeric name="dei:EntityCentralIndexKey">${cik}</ix:nonNumeric></p><p>${links}</p></body></html>`;
+ f.registry={cik:'0000001234',name:'Tesla, Inc.',tickers:['TSLA'],filings:{recent:{accessionNumber:[f.accession],primaryDocument:['primary.htm'],acceptanceDateTime:['2026-08-27T00:00:00Z'],reportDate:['2026-08-26'],form:['8-K']}}};
+ f.saveRegistry=()=>{const row=f.load(scan+'coverage.json').find(r=>r.symbol==='TSLA'&&r.sourceId==='SEC_SUBMISSIONS');row.sha256=f.put(scan+row.rawPath,f.registry);row.httpStatus=200;f.change(scan+'coverage.json',rows=>Object.assign(rows.find(r=>r.rawPath===row.rawPath),row));f.change(scan+'http-receipts.json',rows=>Object.assign(rows.find(r=>r.rawPath===row.rawPath),row));f.change(scan+'originals.json',rows=>Object.assign(rows.find(r=>r.symbol==='TSLA'),row));};f.saveRegistry();
+ f.title=t=>f.change(scan+'events.json',rows=>rows.find(r=>r.eventId==='MOCK-TSLA').title=t);f.title('MOCK Tesla Q2 fiscal 2027 results');
+ f.matchRequest={version:'TECH36_SEC_MATCH_REQUEST_V1',symbol:'TSLA',eventId:'MOCK-TSLA',accession:f.accession,savedReceipts:[]};
+ f.add=(file,body,url=f.archive+file,status='SUCCESS',httpStatus=200)=>{const r={rawPath:file,sha256:f.put(file,body),url,startedAt:'2026-10-09T08:00:00Z',receivedAt:'2026-10-09T08:00:01Z',publishedAt:null,status,httpStatus};f.matchRequest.savedReceipts.push(r);return r;};
+ f.replace=(index,body)=>{const r=f.matchRequest.savedReceipts[index];r.sha256=f.put(r.rawPath,body);};
+ f.add('primary.htm',f.main());f.add('ex99.htm',f.release());
+ f.match=()=>{f.put('match.json',f.matchRequest);return techCandidateCli(['--match-sec','--source-root',join(f.root,scan),'--request',join(f.root,'match.json')],{root:f.root,now:()=>at});};return f;
+}
+
+test('SEC matcher aligns explicit fiscal period with exact saved link, body coordinates and independent clocks',()=>{
+ const f=secMatchFixture(),before=fs.readdirSync(join(f.root,'data/runtime/options-workbench-development')),r=f.match(),c=r.candidates[0];assert.equal(r.status,'MATCH');assert.equal(c.period.fiscalYear,2027);assert.equal(c.period.periodEnd,'2026-07-31');assert.equal(c.period.disclosureDate,'2026-08-26');assert.equal(r.filing.acceptedAt,'2026-08-27T00:00:00Z');assert.equal(c.source.receivedAt,'2026-10-09T08:00:01Z');assert.equal(c.linkCitations.length,1);for(const claim of c.period.claims){const raw=fs.readFileSync(join(f.root,'ex99.htm'),'utf8').slice(claim.citation.sourceStart,claim.citation.sourceEnd);assert(raw.length>0);assert.equal(claim.citation.sha256,c.source.sha256);}assert.equal(r.pendingCleared,false);assert.equal(r.automaticAppend,false);assert.deepEqual(fs.readdirSync(join(f.root,'data/runtime/options-workbench-development')),before);assert.equal(r.marketCalls,0);
+});
+test('SEC matcher refuses quarter/year conflicts and never assigns fiscal year from calendar or publication year',()=>{
+ for(const title of ['MOCK Q3 fiscal 2027 results','MOCK Q2 fiscal 2026 results']){const f=secMatchFixture();f.title(title);assert.equal(f.match().status,'CONFLICT');assert.equal(f.match().uniqueCandidate,null);}
+ for(const title of ['MOCK Q2 2026 results','MOCK Q2 FY27 results','MOCK earnings announced August 2026']){const f=secMatchFixture();f.title(title);assert.equal(f.match().status,'UNKNOWN');}
+ const f=secMatchFixture();f.replace(1,f.release().replaceAll('Fiscal 2027','2026').replaceAll('fiscal 2027','2026'));const r=f.match();assert.equal(r.status,'UNKNOWN');assert.equal(r.candidates[0].period.fiscalYear,null);assert.equal(r.candidates[0].period.yearBasis,'UNSPECIFIED');
+});
+test('SEC matcher will not turn annual/multi-period tables or guidance into current-quarter facts',()=>{
+ for(const body of ['<html><body><p>Tesla, Inc. (NASDAQ: TSLA) Annual Results</p><table><tr><td>Second quarter fiscal 2027 results ended July 31, 2026.</td></tr></table></body></html>', '<html><body><p>Tesla, Inc. (NASDAQ: TSLA) Second quarter and full-year fiscal 2027 results.</p></body></html>']){const f=secMatchFixture();f.replace(1,body);assert.notEqual(f.match().status,'MATCH');}
+ const f=secMatchFixture();f.title('MOCK Q3 fiscal 2027 guidance raised');f.replace(1,f.release('second','2027','Tesla, Inc.','TSLA','<p>Third quarter fiscal 2027 guidance revenue 100 versus 90.</p>'));const r=f.match();assert.equal(r.status,'UNKNOWN');assert.equal(r.candidates[0].period.quarter,2);assert(r.candidates[0].period.guidanceMentions.length>0);assert.equal(r.guidanceRevision.delta,null);assert.equal(r.consensusSurprise.delta,null);
+});
+test('SEC matcher preserves inconsistent result periods and later period ends as conflicts',()=>{
+ const f=secMatchFixture();f.replace(1,f.release('second','2027','Tesla, Inc.','TSLA','<p>Third quarter fiscal 2027 results ended October 31, 2026.</p>'));assert.equal(f.match().status,'CONFLICT');
+ const g=secMatchFixture();g.replace(1,g.release().replaceAll('July 31','September 30'));assert.equal(g.match().status,'CONFLICT');
+});
+test('SEC matcher rejects explicit issuer conflicts and leaves absent issuer binding unknown',()=>{
+ for(const change of [f=>f.replace(0,f.main(undefined,'Other, Inc.')),f=>f.replace(0,f.main(undefined,undefined,'999')),f=>f.replace(1,f.release('second','2027','Other, Inc.','OTHER'))]){const f=secMatchFixture();change(f);assert.equal(f.match().status,'CONFLICT');assert.equal(f.match().uniqueCandidate,null);}
+ const f=secMatchFixture();f.replace(1,f.release().replaceAll('Tesla, Inc.','Unnamed issuer').replaceAll('(NASDAQ: TSLA)',''));assert.equal(f.match().status,'UNKNOWN');
+});
+test('SEC matcher requires saved accession membership and an actual primary receipt, never a guessed URL',()=>{
+ const f=secMatchFixture();f.matchRequest.accession='0000001234-26-000999';let r=f.match();assert.equal(r.status,'UNKNOWN');assert.equal(r.mainDocuments.length,0);
+ const g=secMatchFixture();g.matchRequest.savedReceipts.shift();r=g.match();assert.equal(r.status,'MISSING');assert.equal(r.candidates.length,0);assert(r.reasons.some(s=>s.includes('NO_URL_GUESSED')));
+ const h=secMatchFixture();h.registry.filings.recent.accessionNumber[0]='0000009999-26-000001';h.saveRegistry();h.matchRequest.accession=h.registry.filings.recent.accessionNumber[0];for(const s of h.matchRequest.savedReceipts)s.url=s.url.replace('000000123426000001','000000999926000001');assert.equal(h.match().status,'MATCH');
+});
+test('SEC matcher uses only visible saved anchors and rejects cross-issuer/accession/external links',()=>{
+ const f=secMatchFixture();f.replace(0,f.main('<script><a href="ex99.htm">fake</a></script><!-- <a href="ex99.htm">fake</a> --><div hidden><a href="ex99.htm">fake</a></div><a href="https://example.invalid/ex99.htm">outside</a><a href="../000000123426999999/ex99.htm">other accession</a><a href="javascript:alert(1)">script</a>'));const r=f.match();assert.equal(r.candidates.length,0);assert.equal(r.rejectedLinks.length,3);
+ const g=secMatchFixture();g.replace(0,g.main('<a href="'+g.archive+'ex99.htm#release">absolute</a><a href="./ex99.htm">relative duplicate</a>'));const result=g.match();assert.equal(result.status,'MATCH');assert.equal(result.candidates.length,1);assert.equal(result.candidates[0].linkCitations.length,2);assert.equal(extractTechOriginalLinks(Buffer.from('<html><head><a href="bad">x</a></head><body><p>body</p></body></html>')).length,0);
+});
+test('SEC matcher preserves multiple candidates and refuses a unique match when one issuer/period conflicts',()=>{
+ const f=secMatchFixture();f.replace(0,f.main('<a href="ex99.htm">one</a><a href="other.htm">two</a>'));f.add('other.htm',f.release());assert.equal(f.match().status,'UNKNOWN');assert.equal(f.match().candidates.length,2);assert.equal(f.match().uniqueCandidate,null);f.replace(2,f.release('third'));assert.equal(f.match().status,'CONFLICT');assert.equal(f.match().uniqueCandidate,null);
+});
+test('SEC matcher retains changed bodies and retransmitted receipt clocks without multiplying identical candidates',()=>{
+ const f=secMatchFixture(),old=f.matchRequest.savedReceipts[1];f.matchRequest.savedReceipts.push({...old,receivedAt:'2026-10-09T08:01:00Z'});let r=f.match();assert.equal(r.status,'MATCH');assert.equal(r.candidates.length,1);assert.equal(r.candidates[0].sourceReceipts.length,2);f.add('changed.htm',f.release('third'),f.archive+'ex99.htm');r=f.match();assert.equal(r.candidates.length,2);assert.equal(r.status,'CONFLICT');
+});
+test('SEC matcher preserves saved 403 and missing-body outcomes without retries',()=>{
+ const f=secMatchFixture();f.matchRequest.savedReceipts[1].status='BLOCKED';f.matchRequest.savedReceipts[1].httpStatus=403;const r=f.match();assert.equal(r.status,'MISSING');assert(r.candidates[0].reasons.includes('SAVED_ACCESS_DENIED_NO_RETRY'));assert.equal(r.sourceReads,0);
+ const g=secMatchFixture();g.matchRequest.savedReceipts.pop();assert.equal(g.match().candidates[0].status,'MISSING');
+});
+test('SEC matcher bounds candidate expansion and rejects changed bytes, future clocks and path escapes',()=>{
+ const f=secMatchFixture();f.replace(0,f.main(Array.from({length:22},(_,i)=>'<a href="'+(i?'other'+i+'.htm':'ex99.htm')+'">attachment</a>').join('')));const r=f.match();assert.equal(r.candidates.length,20);assert.equal(r.status,'UNKNOWN');assert.equal(r.uniqueCandidate,null);assert(r.reasons.includes('BOUNDED_CANDIDATE_LIMIT_NO_UNIQUE_MATCH'));
+ for(const [mutate,code]of [[f=>f.matchRequest.savedReceipts[1].sha256='0'.repeat(64),'RAW_HASH'],[f=>f.matchRequest.savedReceipts[1].receivedAt='2027-01-01T00:00:00Z','CLOCK'],[f=>f.matchRequest.savedReceipts[1].rawPath='../escape.htm','PATH']]){const g=secMatchFixture();mutate(g);assert.throws(()=>g.match(),new RegExp(code));}
+});
+test('SEC matcher CLI rejects trading/run arguments and MATCH requires a separate explicit append review',()=>{
+ const f=secMatchFixture();for(const flag of ['--run-id','--quote','--evidence','--research'])assert.throws(()=>techCandidateCli(['--match-sec','--source-root',f.root,'--request','x',flag,'x']),/ARGUMENTS/);f.start();const r=f.match();assert.equal(r.status,'MATCH');assert.equal(f.view().revisionCount,0);const q=f.request('explicit-sec-review');const s=f.matchRequest.savedReceipts[1];q.evidence=[{rawPath:s.rawPath,sha256:s.sha256,url:s.url,startedAt:s.startedAt,receivedAt:s.receivedAt,publishedAt:s.publishedAt,provenance:'SYNTHETIC_FIXTURE'}];q.review.citations=r.candidates[0].reviewCitations;q.review.companyEventVerified=false;f.append(q);assert.equal(f.view().revisionCount,1);assert(f.view().inputs.companies.find(c=>c.symbol==='TSLA').unresolvedEventIds.includes('MOCK-TSLA'));
+});
+
+test('SEC matcher cannot silently select the first period in a multi-period headline or sentence',()=>{
+ const f=secMatchFixture();f.title('MOCK Q2 fiscal 2027 versus Q3 fiscal 2027 results');assert.equal(f.match().status,'UNKNOWN');assert.equal(f.match().uniqueCandidate,null);
+ const g=secMatchFixture();g.replace(1,g.release('second','2027','Tesla, Inc.','TSLA','<p>Second quarter fiscal 2027 and third quarter fiscal 2027 results ended July 31, 2026.</p>'));assert.equal(g.match().status,'CONFLICT');
+});
+test('SEC matcher does not bind an issuer from detached customer mentions or its ticker alone',()=>{
+ const f=secMatchFixture();f.replace(1,'<html><body><p>Other Inc. announced second quarter fiscal 2027 results ended July 31, 2026.</p><p>Tesla, Inc. (NASDAQ: TSLA) is a customer.</p></body></html>');const r=f.match();assert.equal(r.status,'UNKNOWN');assert.equal(r.candidates[0].issuer.status,'UNKNOWN');
+});
+test('SEC matcher rejects a saved acceptance clock later than its metadata receipt',()=>{const f=secMatchFixture();f.registry.filings.recent.acceptanceDateTime[0]='2026-10-09T20:00:00Z';f.saveRegistry();assert.throws(()=>f.match(),/SEC_CLOCK/);});
+test('SEC matcher also blocks explicit query issuer and period-end contradictions',()=>{for(const title of ['MSFT Q2 fiscal 2027 results','MOCK Tesla (NASDAQ: MSFT) Q2 fiscal 2027 results','MOCK Tesla Q2 fiscal 2027 ended June 30, 2026 results']){const f=secMatchFixture();f.title(title);assert.equal(f.match().status,'CONFLICT');assert.equal(f.match().uniqueCandidate,null);}});
+test('SEC matcher treats malformed saved metadata membership shapes as unknown',()=>{for(const mutate of [f=>f.registry.tickers='NOT_TSLA_MEMBERSHIP',f=>f.registry.filings.recent.accessionNumber=f.accession,f=>{f.registry.filings.recent.primaryDocument='primary.htm';f.matchRequest.savedReceipts[0].url=f.archive+'p';},f=>f.registry.filings.recent.accessionNumber.push(f.accession)]){const f=secMatchFixture();mutate(f);f.saveRegistry();assert.equal(f.match().status,'UNKNOWN');}});
