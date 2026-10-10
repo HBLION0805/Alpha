@@ -101,3 +101,11 @@ rewritten. The matrix covers early/middle/latest retries, hash conflicts, corrup
 start/chain records, rehashed invalid later originals, out-of-order new events and
 explicit early recovery. This is bounded engineering evidence, pending independent
 audit. REAL_QUOTE_PAPER development is paused and excluded from this repair.
+
+## Separately scoped real-quote Paper extension
+
+The clock/retry repair subsequently passed independent review. The separate
+[real-quote Paper delivery](OPTIONS_TECH_REAL_QUOTE_PAPER_DELIVERY.md) adds an
+explicit isolated Paper mode and frozen independent-clock tolerance through the
+same journal. TEST_FIXTURE evidence remains synthetic; actual market acceptance
+is still NOT_TESTED. The original MOCK versions retain their behavior.

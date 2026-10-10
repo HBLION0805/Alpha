@@ -1,3 +1,10 @@
+## Isolated real-quote Paper mode
+
+The [existing spread bridge now supports REAL_QUOTE_PAPER](OPTIONS_TECH_REAL_QUOTE_PAPER_DELIVERY.md)
+with explicit evidence context, predeclared leg-clock tolerance and the existing
+fill/journal engine. TEST_FIXTURE demonstrations are synthetic. Real evidence
+gaps and real market acceptance remain open; there are no source or order calls.
+
 ## Evidence-bound isolated spread plans
 
 The [spread plan bridge](OPTIONS_TECH_SPREAD_PLAN_DELIVERY.md) connects saved V2

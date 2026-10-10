@@ -221,6 +221,7 @@
     "options:tech-quotes": "tsx scripts/options-tech-quotes.mjs",
     "test:options-tech-quotes": "tsx scripts/options-tech-quotes.test.mjs",
     "test:options-tech-spread-quotes": "tsx scripts/options-tech-spread-quotes.test.mjs",
+    "test:options-tech-real-quote-paper": "tsx scripts/options-tech-real-quote-paper.test.mjs",
     "options:tech-spread-plan": "tsx scripts/options-tech-spread-plan.mjs",
     "test:options-tech-spread-plan": "tsx scripts/options-tech-spread-plan.test.mjs",
     "options:tech-spread-preflight": "tsx --no-cache scripts/options-tech-spread-preflight.mjs",

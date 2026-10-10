@@ -15,8 +15,8 @@ const read=p=>{
  if(s.nlink!==1){const pending=fs.readdirSync(dirname(p)).filter(n=>/^\.pending-[a-f0-9-]{36}$/.test(n)).map(n=>resolve(dirname(p),n)).filter(n=>{const t=fs.lstatSync(n);return t.isFile()&&!t.isSymbolicLink()&&t.ino===s.ino&&t.dev===s.dev;});check(s.nlink===pending.length+1,'FILE_LINKS');for(const n of pending)fs.unlinkSync(n);}
  return parseChainSurveyJson(fs.readFileSync(p,'utf8'));
 };
-function directory(root,runId,create=false){
- check(/^mock-[a-z0-9-]{1,60}$/.test(runId),'RUN_ID');
+function directory(root,runId,create=false,pattern=/^mock-[a-z0-9-]{1,60}$/){
+ check(pattern.test(runId),'RUN_ID');
  const base=resolve(fs.realpathSync(root),'data/runtime/options-workbench-development');
  fs.mkdirSync(base,{recursive:true});check(fs.realpathSync(base)===base,'OUTPUT_SCOPE');
  const out=resolve(base,runId);if(create)fs.mkdirSync(out,{recursive:true});
@@ -51,9 +51,9 @@ export function verifyMockJournalRecords(manifest,rows,startVersion){
  return {manifest,events,tip:prior};
 }
 
-export function createIsolatedMockJournal({validateStart,calculate,validateEvent,startVersion,eventAvailableAt=e=>e.quote.receivedAt}) {
+export function createIsolatedMockJournal({validateStart,calculate,validateEvent,startVersion,eventAvailableAt=e=>e.quote.receivedAt,runIdPattern=/^mock-[a-z0-9-]{1,60}$/,validateRunScope=()=>{}}) {
 function load({root,runId}){
- const out=directory(root,runId),manifest=read(out+'/start.json');check(manifest.version===startVersion&&manifest.sha256===sha(encode(manifest.input)),'START_HASH');
+ const out=directory(root,runId,false,runIdPattern),manifest=read(out+'/start.json');check(manifest.version===startVersion&&manifest.sha256===sha(encode(manifest.input)),'START_HASH');validateRunScope(manifest.input,runId);
  const names=fs.readdirSync(out).filter(n=>/^event-/.test(n)).sort();check(names.length<=1000,'EVENT_BOUND');
  const state=verifyMockJournalRecords(manifest,names.map(name=>({name,value:read(out+'/'+name)})),startVersion);
  return {out,...state};
@@ -64,7 +64,7 @@ function recover({root,runId,asOf}){
 }
 
 function start({root,runId,input,recordedAt=new Date().toISOString(),interrupt}){
- validateStart(input);const report=calculate(input,[],input.research.asOf),out=directory(root,runId,true);
+ validateStart(input);check(runIdPattern.test(runId),'RUN_ID');validateRunScope(input,runId);const report=calculate(input,[],input.research.asOf),out=directory(root,runId,true,runIdPattern);
  const path=out+'/start.json';let manifest={version:startVersion,recordedAt,input,sha256:sha(encode(input))};
  if(fs.existsSync(path)){manifest=read(path);check(manifest.sha256===sha(encode(input)),'START_CONFLICT');}
  publish(path,manifest,interrupt);return {runId,report};

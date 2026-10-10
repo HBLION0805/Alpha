@@ -21,3 +21,20 @@ export async function mockSpreadPlanFixture(structure='BULL_CALL_DEBIT'){
  const exit=await collectMockTechSpreadFixture(exitFixture);const raw=JSON.stringify(exit.record).replaceAll('T15:30:','T15:37:');const parsed=JSON.parse(raw);parsed.captureSha256=spreadPlanHash(parsed.capture);const rawJson=JSON.stringify(parsed);
  return {input,batch,exitOriginal:{id:'mock-later-original',rawJson,sha256:spreadPlanHash(rawJson)},exitAt:'2026-10-09T15:37:12.000Z'};
 }
+
+/** Explicit TEST_FIXTURE transport; synthetic origins are never relabeled as real. */
+export async function paperSpreadPlanFixture(structure='BULL_CALL_DEBIT'){
+ const f=await mockSpreadPlanFixture(structure),batch=await collectMockTechSpreadFixture(mockTechSpreadQuoteFixture(structure));
+ f.input.version='TECH_SPREAD_PLAN_INPUT_V2';f.input.mode='REAL_QUOTE_PAPER';f.input.evidenceContext='TEST_FIXTURE';f.input.originals=[batch.original];f.batch=batch;
+ const edit=(kind,fn)=>{const r=f.input.records.find(r=>r.kind===kind),p=JSON.parse(r.rawJson);fn(p);r.rawJson=JSON.stringify(p);r.sha256=spreadPlanHash(r.rawJson);};
+ for(const r of f.input.records)r.source='TEST_FIXTURE_NOT_REAL_EVIDENCE';
+ edit('RESEARCH',p=>p.researchPlan.id='paper-fixture-research');
+ edit('COST_MODEL',p=>{p.id='paper-fixture-costs';p.version='PAPER_FIXED_PER_LEG_COST_V1';});
+ for(const kind of ['ACCOUNT_FUNDS','PRODUCT_PERMISSION','RISK_LIMITS'])edit(kind,p=>p.accountId='paper-fixture-account');
+ edit('STRATEGY_REQUEST',p=>{p.id='paper-fixture-plan';p.accountId='paper-fixture-account';p.researchId='paper-fixture-research';p.executionModel='TWO_LEG_BID_ASK_PAPER_ASSUMPTION';p.maxSourceSkewMs=1000;p.selectionSha256=spreadPlanHash(batch.intent.selection);p.parentIds=['paper-fixture-owner-request'];
+  const hash=k=>f.input.records.find(r=>r.kind===k).sha256;p.researchSha256=hash('RESEARCH');p.costModelSha256=hash('COST_MODEL');p.contractEvidenceSha256=hash('CONTRACT');for(const k of Object.keys(p.accountEvidenceHashes))p.accountEvidenceHashes[k]=hash(k);
+ });
+ const raw=JSON.parse(f.exitOriginal.rawJson);raw.capture.receipts[4].response.structuredContent.data.results[1].quote.updated_at='2026-10-09T15:37:09.600000001Z';
+ raw.captureSha256=spreadPlanHash(raw.capture);f.exitOriginal.rawJson=JSON.stringify(raw);f.exitOriginal.sha256=spreadPlanHash(f.exitOriginal.rawJson);
+ return f;
+}

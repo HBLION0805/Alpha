@@ -4,7 +4,7 @@ import {assessSnapshotQuote,snapshotNs,snapshotCents} from '../../src/engines/op
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {inferOptionsStructure,structureQuotedEconomics,structureTerminalPayoff} from '../../src/engines/options-structure-comparison/OptionsStructureComparisonEngine.ts';
 import {engineeringObservationPolicy} from './options-real-data-paper-timing.mjs';
-import {validateMockSpreadPlanBinding,validateMockSpreadEventBinding,spreadEventAvailableAt} from './options-tech-spread-plan-binding.mjs';
+import {validateMockSpreadPlanBinding,validateMockSpreadEventBinding,spreadEventAvailableAt,spreadPaperEvidencePolicy} from './options-tech-spread-plan-binding.mjs';
 
 const check=(ok,code)=>{if(!ok)throw Error('SPREAD_MOCK_'+code);};
 const keys=(o,k)=>check(o&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).sort().join()===k.split(' ').sort().join(),'FIELDS');
@@ -15,11 +15,11 @@ const mapLeg=l=>({side:l.role==='LONG'?'BUY':'SELL',contract:{contractId:l.contr
 const product=s=>s==='CDS'?'BULL_CALL_DEBIT':'BEAR_PUT_DEBIT';
 
 function validateStart(p){
- const bound=p?.version==='TECH_MOCK_DEBIT_SPREAD_V2';
- keys(p,'version mode executionModel candidate research structure decisionAt entryDeadlineAt timeExitAt quantity legs entryDebitLimitCents maxLegSpreadCents account'+(bound?' provenance':''));
- check(['TECH_MOCK_DEBIT_SPREAD_V1','TECH_MOCK_DEBIT_SPREAD_V2'].includes(p.version)&&p.mode==='MOCK'&&p.executionModel==='ATOMIC_TWO_LEG_ASSUMPTION','MODE');
+ const paper=p?.version==='TECH_QUOTE_PAPER_DEBIT_SPREAD_V1',bound=paper||p?.version==='TECH_MOCK_DEBIT_SPREAD_V2',policy=paper?spreadPaperEvidencePolicy(p.evidenceContext):null;
+ keys(p,'version mode executionModel candidate research structure decisionAt entryDeadlineAt timeExitAt quantity legs entryDebitLimitCents maxLegSpreadCents account'+(bound?' provenance':'')+(paper?' evidenceContext maxSourceSkewMs':''));
+ check(paper?p.mode==='REAL_QUOTE_PAPER'&&p.executionModel==='TWO_LEG_BID_ASK_PAPER_ASSUMPTION'&&integer(p.maxSourceSkewMs,0,60000):['TECH_MOCK_DEBIT_SPREAD_V1','TECH_MOCK_DEBIT_SPREAD_V2'].includes(p.version)&&p.mode==='MOCK'&&p.executionModel==='ATOMIC_TWO_LEG_ASSUMPTION','MODE');
  keys(p.candidate,'id symbol origin');
- check(p.candidate.origin==='SYNTHETIC_FIXTURE'&&/^mock-[a-z0-9-]{1,60}$/.test(p.candidate.id)&&TECH_PAPER_SCOPE.includes(p.candidate.symbol)&&p.research.symbol===p.candidate.symbol,'CANDIDATE');
+ check(p.candidate.origin===(paper?policy.origin:'SYNTHETIC_FIXTURE')&&(paper?/^paper-[a-z0-9-]{1,60}$/:/^mock-[a-z0-9-]{1,60}$/).test(p.candidate.id)&&TECH_PAPER_SCOPE.includes(p.candidate.symbol)&&p.research.symbol===p.candidate.symbol,'CANDIDATE');
  check(['PDS','CDS'].includes(p.structure)&&p.quantity===1&&Array.isArray(p.legs)&&p.legs.length===2,'SUPPORTED_STRUCTURE');
  const roles=new Set(),ids=new Set();
  for(const l of p.legs){
@@ -35,25 +35,25 @@ function validateStart(p){
  const decision=clock(p.decisionAt),end=clock(p.timeExitAt);clock(p.entryDeadlineAt);
  check(clock(p.research.asOf)<decision&&clock(p.research.researchPlan.registeredAt)<=clock(p.research.asOf),'FROZEN_BEFORE_DECISION');
  const chain={lateCloseState:'disabled',chainId:'mock',receivedAt:p.research.asOf};
- const policy=engineeringObservationPolicy(new Date(Number((decision-30000000000n)/1000000n)).toISOString(),chain);
- check(policy.sufficient&&clock(p.entryDeadlineAt)===decision+120000000000n&&end===decision+420000000000n,'EXISTING_INTRADAY_WINDOW');
+ const windowPolicy=engineeringObservationPolicy(new Date(Number((decision-30000000000n)/1000000n)).toISOString(),chain);
+ check(windowPolicy.sufficient&&clock(p.entryDeadlineAt)===decision+120000000000n&&end===decision+420000000000n,'EXISTING_INTRADAY_WINDOW');
  const session=paperSession(p.decisionAt,chain);
  check(session.isOpen&&paperSession(p.timeExitAt,chain).isOpen&&session.date===paperSession(p.timeExitAt,chain).date&&p.legs[0].contract.expiry>session.date,'PRE_EXPIRY_SAME_DAY_ONLY');
  check(integer(p.entryDebitLimitCents,1,100000)&&integer(p.maxLegSpreadCents,1,10000),'LIMITS');
  const a=p.account;keys(a,'mode id currency provider permission products dataEntitlement settledCashCents reservedCashCents maximumLossCents tradeBudgetMaxCents reviewedAt validThrough'+(bound?' unsettledCashCents':''));
- check(a.mode==='MOCK'&&a.id==='MOCK'&&a.currency==='USD'&&a.provider==='SYNTHETIC_TEST_ONLY'&&['PASS','UNKNOWN','DENIED'].includes(a.permission)&&['PASS','UNKNOWN','DENIED'].includes(a.dataEntitlement)&&Array.isArray(a.products)&&a.products.every(x=>['PDS','CDS'].includes(x)),'MOCK_ACCOUNT');
+ check((paper?a.mode==='PAPER'&&/^paper-[a-z0-9-]{1,60}$/.test(a.id)&&a.provider===(policy.fixture?'TEST_FIXTURE':'ATTRIBUTED_DOCUMENTS')&&a.permission==='DOCUMENT_EVIDENCE_PASSED'&&a.dataEntitlement==='DOCUMENT_EVIDENCE_PASSED':a.mode==='MOCK'&&a.id==='MOCK'&&a.provider==='SYNTHETIC_TEST_ONLY'&&['PASS','UNKNOWN','DENIED'].includes(a.permission)&&['PASS','UNKNOWN','DENIED'].includes(a.dataEntitlement))&&a.currency==='USD'&&Array.isArray(a.products)&&a.products.every(x=>['PDS','CDS'].includes(x)),'ACCOUNT_EVIDENCE');
  for(const k of ['settledCashCents','reservedCashCents','maximumLossCents','tradeBudgetMaxCents'])check(a[k]===null||integer(a[k]),'ACCOUNT_MONEY');
  if(bound){check(integer(a.unsettledCashCents),'UNSETTLED_MONEY');validateMockSpreadPlanBinding(p);}
- check(clock(a.reviewedAt)<=clock(p.research.asOf)&&clock(a.validThrough)>=end,'ACCOUNT_CLOCK');
+ check(clock(a.reviewedAt)<=clock(paper?p.decisionAt:p.research.asOf)&&clock(a.validThrough)>=end,'ACCOUNT_CLOCK');
  return p;
 }
 function validateEvent(e,plan=null,asOf=null){
- const bound=e?.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1';
- keys(e,'id origin quote'+(bound?' version provenance':''));check(/^mock-[a-z0-9-]{1,60}$/.test(e.id)&&e.origin==='SYNTHETIC_FIXTURE','EVENT_ORIGIN');
+ const paper=e?.version==='TECH_QUOTE_PAPER_SPREAD_BATCH_EVENT_V1',bound=paper||e?.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1',policy=paper?spreadPaperEvidencePolicy(e.provenance?.evidenceContext):null;
+ keys(e,'id origin quote'+(bound?' version provenance':''));check((paper?/^paper-[a-z0-9-]{1,60}$/:/^mock-[a-z0-9-]{1,60}$/).test(e.id)&&e.origin===(paper?policy.origin:'SYNTHETIC_FIXTURE'),'EVENT_ORIGIN');
  if(bound)validateMockSpreadEventBinding(e,plan,asOf);
  keys(e.quote,'receivedAt source executionState action legs');const q=e.quote;
  clock(q.receivedAt);check(new Date(q.receivedAt).toISOString()===q.receivedAt,'RECEIPT_PRECISION');
- check(q.source==='SYNTHETIC_TEST_ONLY'&&['ATOMIC_QUOTE_PAIR','PARTIAL_FILL','SINGLE_LEG_FILL'].includes(q.executionState)&&['OBSERVE','CLOSE'].includes(q.action)&&Array.isArray(q.legs)&&q.legs.length<=2,'EVENT');
+ check(q.source===(paper?policy.quoteSource:'SYNTHETIC_TEST_ONLY')&&(paper?q.executionState==='COHERENT_BATCH_PAPER_ASSUMPTION':['ATOMIC_QUOTE_PAIR','PARTIAL_FILL','SINGLE_LEG_FILL'].includes(q.executionState))&&['OBSERVE','CLOSE'].includes(q.action)&&Array.isArray(q.legs)&&q.legs.length<=2,'EVENT');
 }
 function pair(p,e,high){
  const errors=[],q=e.quote,quotes=p.legs.map(l=>q.legs.find(x=>x?.id===l.contract.id));
@@ -70,24 +70,26 @@ function pair(p,e,high){
    if(!integer(x.tickCents,1,100)||l.exitSlippageCents!==null&&l.exitSlippageCents<x.tickCents)errors.push('TICK_OR_SLIPPAGE_RESERVE');
   }catch{errors.push('LEG_QUOTE_INVALID');}
  }
- if(new Set(quotes.map(x=>x.updatedAt)).size!==1||new Set(quotes.map(x=>x.underlyingAt)).size!==1||new Set(quotes.map(x=>x.underlyingPriceUsd)).size!==1)errors.push('UNSYNCHRONIZED_LEG_QUOTES');
+ let skewExceeded=new Set(quotes.map(x=>x.updatedAt)).size!==1;
+ if(p.mode==='REAL_QUOTE_PAPER')try{const skew=clock(quotes[0].updatedAt)-clock(quotes[1].updatedAt);skewExceeded=(skew<0n?-skew:skew)>BigInt(p.maxSourceSkewMs)*1000000n;}catch{errors.push('LEG_QUOTE_INVALID');}
+ if(skewExceeded||new Set(quotes.map(x=>x.underlyingAt)).size!==1||new Set(quotes.map(x=>x.underlyingPriceUsd)).size!==1)errors.push('UNSYNCHRONIZED_LEG_QUOTES');
  return {errors:[...new Set(errors)],quotes};
 }
 export function replayMockSpread(p,events,asOf){
- validateStart(p);check(clock(asOf)>=clock(p.research.asOf),'AS_OF');
+ validateStart(p);check(clock(asOf)>=clock(p.research.asOf),'AS_OF');const paper=p.mode==='REAL_QUOTE_PAPER',bound=paper||p.version==='TECH_MOCK_DEBIT_SPREAD_V2';
  const a=p.account,available=a.settledCashCents===null||a.reservedCashCents===null?null:a.settledCashCents-a.reservedCashCents;
  const costsKnown=p.legs.every(l=>['entryFeeCents','exitFeeCents','exitSlippageCents'].every(k=>integer(l[k])));
  const entryFees=costsKnown?p.legs.reduce((n,l)=>n+l.entryFeeCents,0):null,exitFees=costsKnown?p.legs.reduce((n,l)=>n+l.exitFeeCents,0):null;
  const slippage=costsKnown?p.legs.reduce((n,l)=>n+l.exitSlippageCents*100*p.quantity,0):null;
- const frozenBlockers=[];if(a.permission!=='PASS'||!a.products.includes(p.structure))frozenBlockers.push('MOCK_SPREAD_PERMISSION_NOT_PASSED');
- if(a.dataEntitlement!=='PASS')frozenBlockers.push('MOCK_ENTITLEMENT_NOT_PASSED');
+ const frozenBlockers=[];if(a.permission!==(paper?'DOCUMENT_EVIDENCE_PASSED':'PASS')||!a.products.includes(p.structure))frozenBlockers.push('MOCK_SPREAD_PERMISSION_NOT_PASSED');
+ if(a.dataEntitlement!==(paper?'DOCUMENT_EVIDENCE_PASSED':'PASS'))frozenBlockers.push('MOCK_ENTITLEMENT_NOT_PASSED');
  if(available===null||available<0)frozenBlockers.push('MOCK_FUNDS_UNKNOWN_OR_INVALID');
  if(!integer(a.maximumLossCents,1)||!integer(a.tradeBudgetMaxCents,1))frozenBlockers.push('MOCK_RISK_LIMITS_UNKNOWN');
  if(!costsKnown)frozenBlockers.push('COSTS_UNKNOWN');
  const high=new Map(),orders=[],diagnostics=[];let pendingExit=null,residual=false,entry=null,exit=null,terminal=null,last=null,gap=false;
  for(const e of events){
-  validateEvent(e,p,asOf);check(p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?e.provenance?.parentPlanSha256===p.provenance.planSha256:!e.version,'BOUND_EVENT_PLAN');const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
-  if(q.executionState!=='ATOMIC_QUOTE_PAIR'){residual=true;diagnostics.push({eventId:e.id,codes:['PARTIAL_OR_RESIDUAL_EXECUTION_UNSUPPORTED'],actualResidualExposure:'UNMODELED_NOT_CLEARED'});continue;}
+  validateEvent(e,p,asOf);check(bound?e.provenance?.parentPlanSha256===p.provenance.planSha256:!e.version,'BOUND_EVENT_PLAN');const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
+  if(q.executionState!==(paper?'COHERENT_BATCH_PAPER_ASSUMPTION':'ATOMIC_QUOTE_PAIR')){residual=true;diagnostics.push({eventId:e.id,codes:['PARTIAL_OR_RESIDUAL_EXECUTION_UNSUPPORTED'],actualResidualExposure:'UNMODELED_NOT_CLEARED'});continue;}
   if(paperSession(q.receivedAt).date!==paperSession(p.decisionAt).date){diagnostics.push({eventId:e.id,codes:['OVERNIGHT_UNSUPPORTED']});continue;}
   if(last&&entry&&!exit&&clock(q.receivedAt)-clock(last)>60000000000n)gap=true;last=q.receivedAt;
   if(residual){diagnostics.push({eventId:e.id,codes:['UNSUPPORTED_RESIDUAL_LATCHED']});continue;}
@@ -115,7 +117,7 @@ export function replayMockSpread(p,events,asOf){
    if(debit<=0||debit>=width||debit>p.entryDebitLimitCents*100*p.quantity)codes.push('DEBIT_OR_WIDTH_OR_LIMIT');
    if(curve.maximumLossCents>available||curve.maximumLossCents>a.maximumLossCents||curve.maximumLossCents>a.tradeBudgetMaxCents)codes.push('CASH_OR_MAXIMUM_LOSS_OR_BUDGET');
    if(!codes.length){terminal=curve;entry={eventId:e.id,at:q.receivedAt,debitCents:debit,feesCents:entryFees};
-    orders.push({orderId:p.candidate.id+'-ENTRY',mode:'MOCK',executionModel:p.executionModel,kind:'ENTRY',reason:'LATER_TWO_LEG_BID_ASK_ASSUMPTION',netCashFlowCents:-debit-entryFees,legs:p.legs.map((l,i)=>({contract:l.contract,quantity:p.quantity,side:l.role==='LONG'?'BUY_TO_OPEN':'SELL_TO_OPEN',priceCents:l.role==='LONG'?quotes[i].askCents:quotes[i].bidCents,feeCents:l.entryFeeCents,sourceAt:quotes[i].updatedAt,receivedAt:quotes[i].receivedAt}))});
+    orders.push({orderId:p.candidate.id+'-ENTRY',mode:p.mode,executionModel:p.executionModel,kind:'ENTRY',reason:'LATER_TWO_LEG_BID_ASK_ASSUMPTION',netCashFlowCents:-debit-entryFees,legs:p.legs.map((l,i)=>({contract:l.contract,quantity:p.quantity,side:l.role==='LONG'?'BUY_TO_OPEN':'SELL_TO_OPEN',priceCents:l.role==='LONG'?quotes[i].askCents:quotes[i].bidCents,feeCents:l.entryFeeCents,sourceAt:quotes[i].updatedAt,receivedAt:quotes[i].receivedAt}))});
    }
   }else if(!codes.length&&entry&&pendingExit){
    const legs=p.legs.map((l,i)=>{const x=quotes[i],sell=l.role==='LONG',raw=sell?x.bidCents-l.exitSlippageCents:x.askCents+l.exitSlippageCents;
@@ -125,26 +127,26 @@ export function replayMockSpread(p,events,asOf){
     return {contract:l.contract,quantity:p.quantity,side:sell?'SELL_TO_CLOSE':'BUY_TO_CLOSE',priceCents:price,feeCents:l.exitFeeCents,adverseSlippagePerShareCents:sell?x.bidCents-price:price-x.askCents,sourceAt:x.updatedAt,receivedAt:x.receivedAt};});
    const cashflow=legs.reduce((n,l)=>n+(l.side==='SELL_TO_CLOSE'?1:-1)*l.priceCents*100*p.quantity-l.feeCents,0);
    if(available-entry.debitCents-entry.feesCents+Math.min(0,cashflow)<0)codes.push('EXIT_CASH_INSUFFICIENT');
-   if(!codes.length){exit={eventId:e.id,at:q.receivedAt,cashflowCents:cashflow,feesCents:exitFees};orders.push({orderId:p.candidate.id+'-EXIT',mode:'MOCK',executionModel:p.executionModel,kind:'EXIT',reason:pendingExit,netCashFlowCents:cashflow,legs});}
+   if(!codes.length){exit={eventId:e.id,at:q.receivedAt,cashflowCents:cashflow,feesCents:exitFees};orders.push({orderId:p.candidate.id+'-EXIT',mode:p.mode,executionModel:p.executionModel,kind:'EXIT',reason:pendingExit,netCashFlowCents:cashflow,legs});}
   }
   diagnostics.push({eventId:e.id,codes:[...new Set(codes)]});
  }
- const initialUnsettled=p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?a.unsettledCashCents:0;
+ const initialUnsettled=bound?a.unsettledCashCents:0;
  const settled=available===null?null:available-(entry?entry.debitCents+entry.feesCents:0)+(exit?Math.min(0,exit.cashflowCents):0),unsettled=initialUnsettled+(exit?Math.max(0,exit.cashflowCents):0);
  const total=settled===null?null:settled+unsettled,pnl=exit?total-available-initialUnsettled:null;
  check(settled===null||settled>=0,'CASH_INVARIANT');
  if(entry&&!exit&&last&&clock(asOf)-clock(last)>60000000000n)gap=true;
  if(entry&&!exit&&clock(asOf)>=clock(p.timeExitAt))pendingExit??='TIME_EXIT';
- const modelAccount={mode:'MOCK',...(p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?{initialUnsettledCashCents:initialUnsettled,unsettledAvailableForEntry:false}:{}),initialAvailableCashCents:available,otherReservedCashCents:a.reservedCashCents,settledCashCents:settled,unsettledProceedsCents:unsettled,totalCashCents:total,netPnlCents:pnl};
+ const modelAccount={mode:p.account.mode,...(bound?{initialUnsettledCashCents:initialUnsettled,unsettledAvailableForEntry:false}:{}),initialAvailableCashCents:available,otherReservedCashCents:a.reservedCashCents,settledCashCents:settled,unsettledProceedsCents:unsettled,totalCashCents:total,netPnlCents:pnl};
  const modelPosition={modeledLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:entry&&!exit?(l.role==='LONG'?1:-1)*p.quantity:0})),unmodeledResidual:residual?'UNKNOWN_NOT_CLEARED':null,pendingExit:entry&&!exit?pendingExit:null};
- return {version:residual?'TECH_MOCK_DEBIT_SPREAD_RESIDUAL_REPORT_V2':p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?'TECH_MOCK_DEBIT_SPREAD_REPORT_V2':'TECH_MOCK_DEBIT_SPREAD_REPORT_V1',mode:'MOCK',...(p.provenance?{planBinding:{planSha256:p.provenance.planSha256,parentIds:p.provenance.parentIds,costModel:p.provenance.costModel,conditions:p.provenance.conditions}}:{}),executionModel:p.executionModel,atomicFillsAreBrokerGuarantee:false,candidate:p.candidate,structure:p.structure,assessedAt:asOf,
+ return {version:paper?'TECH_QUOTE_PAPER_DEBIT_SPREAD_REPORT_V1':residual?'TECH_MOCK_DEBIT_SPREAD_RESIDUAL_REPORT_V2':p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?'TECH_MOCK_DEBIT_SPREAD_REPORT_V2':'TECH_MOCK_DEBIT_SPREAD_REPORT_V1',mode:p.mode,...(paper?{evidenceContext:p.evidenceContext,sourceClockPolicy:{maxSourceSkewMs:p.maxSourceSkewMs,atomicSnapshot:false},brokerAccountAuthenticated:false}:{}),...(p.provenance?{planBinding:{planSha256:p.provenance.planSha256,parentIds:p.provenance.parentIds,costModel:p.provenance.costModel,conditions:p.provenance.conditions}}:{}),executionModel:p.executionModel,atomicFillsAreBrokerGuarantee:false,candidate:p.candidate,structure:p.structure,assessedAt:asOf,
   status:residual?'BLOCKED_UNSUPPORTED_RESIDUAL':exit?'CLOSED_MODELED':entry?'OPEN_UNRESOLVED':'NO_ENTRY',orders,
   position:residual?{status:'UNKNOWN_UNRECONCILED_RESIDUAL',unmodeledResidual:'UNKNOWN_NOT_CLEARED',actualClosed:'UNKNOWN',actualLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:null})),pendingExit:null}:modelPosition,
-  account:residual?{mode:'MOCK',status:'UNKNOWN_UNRECONCILED_RESIDUAL',availableFundsCents:null,settledCashCents:null,unsettledProceedsCents:null,totalCashCents:null,netPnlCents:null}:modelAccount,terminalRisk:residual?null:terminal,
+  account:residual?{mode:p.account.mode,status:'UNKNOWN_UNRECONCILED_RESIDUAL',availableFundsCents:null,settledCashCents:null,unsettledProceedsCents:null,totalCashCents:null,netPnlCents:null}:modelAccount,terminalRisk:residual?null:terminal,
   ...(residual?{modelLedger:{basis:'ORIGINAL_ATOMIC_MOCK_MODEL_ONLY_NOT_RECONCILED',status:exit?'CLOSED_MODELED':entry?'OPEN_UNRESOLVED':'NO_ENTRY',account:modelAccount,position:modelPosition,orders,terminalRisk:terminal},residualRisk:{status:'UNKNOWN',maximumLossCents:null,completeSpreadMaximumLossApplies:false},fundsReleasedCents:0,stateUnlockAllowed:false}:{}),
   maximumLossIsTerminalModelOnly:true,earlyCloseLossExceededTerminalModel:residual?null:pnl!==null&&terminal!==null&&-pnl>terminal.maximumLossCents,
   frozenBlockers,diagnostics,quoteGapObserved:gap,actualTrades:0,executionAllowed:false,productionPaperAdmissionAllowed:false,realAcceptance:'NOT_TESTED',
   unsupported:['PARTIAL_OR_SEPARATE_LEG_EXECUTION','NAKED_SHORT','CALENDAR_SPREAD','OVERNIGHT','EXERCISE_ASSIGNMENT','STOP_TARGET_STRATEGY','SCALING','CASH_SETTLEMENT','PRODUCTION_ARMING']};
 }
-const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1',eventAvailableAt:spreadEventAvailableAt});
+const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1',eventAvailableAt:spreadEventAvailableAt,runIdPattern:/^(mock|paper)-[a-z0-9-]{1,60}$/,validateRunScope:(input,runId)=>check(runId.startsWith(input.mode==='REAL_QUOTE_PAPER'?'paper-':'mock-'),'RUN_MODE_SCOPE')});
 export const startMockSpread=journal.start,appendMockSpread=journal.append,recoverMockSpread=journal.recover;

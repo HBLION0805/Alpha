@@ -44,11 +44,16 @@
   },
   "timeAndRetryRepair": {
     "runId": "tech-spread-time-idempotency-fix-20261010",
-    "status": "FIXED_PENDING_INDEPENDENT_REVIEW",
+    "status": "INDEPENDENT_REVIEW_PASSED",
     "actualPlanDecisionRequired": true,
     "requestTimeIsNotSourceLowerBound": true,
     "completeHistoryValidatedBeforeRetryResult": true,
     "explicitEvaluationVisibilityPreserved": true,
-    "realQuotePaperDevelopment": "PAUSED_UNCOMMITTED"
+    "realQuotePaperDevelopment": "SEPARATE_DELIVERY_PENDING_INDEPENDENT_REVIEW",
+    "independentReview": {
+      "source": "OWNER_RELAYED_INDEPENDENT_AUDIT",
+      "checks": 74,
+      "status": "PASSED"
+    }
   }
 }
