@@ -42,15 +42,20 @@ export function extractTechOriginal(bytes){
 
 /** Bridge the already verified fixed-pool replay into cited inputs for further research.
  * Saved human/Host reviews remain attributed interpretations; parsing does not authenticate them. */
-export function buildTechResearchInputs({files,lineage,at}){
- const load=p=>JSON.parse(files.get(p).toString('utf8').replace(/^\uFEFF/,''));
- const scan='runs/'+lineage.scanId+'/',events=load(scan+'events.json'),input=load('review-input-v1.2.json');
- const followups=load('verification-batch2-errata-v1/company-coverage-and-candidates.json');
- const receipts=load(scan+'http-receipts.json'),supplements=load(scan+'verification/receipts.json'),originals=load(scan+'originals.json');
- if(!Number.isFinite(Date.parse(at))||Date.parse(at)<Date.parse(input.createdAt)||Date.parse(at)<Date.parse(load('derived-review-v1.2/summary.json').processedAt)||
-    [lineage.followupBatch.completedAt,lineage.followupBatch.errataAt,...receipts.map(r=>r.receivedAt),...supplements.map(r=>r.receivedAt)].some(t=>t&&(!Number.isFinite(Date.parse(t))||Date.parse(t)>Date.parse(at))))throw Error('TECH_CANDIDATE_RESEARCH_CLOCK');
+export function techResearchContext({files,lineage}){
+ const load=(p,fallback)=>files.has(p)?JSON.parse(files.get(p).toString('utf8').replace(/^\uFEFF/,'')):fallback,scan='runs/'+lineage.scanId+'/';
+ return {scan,events:load(scan+'events.json',[]),input:load('review-input-v1.2.json',{createdAt:null,reviews:[],clusters:[]}),
+  followups:load('verification-batch2-errata-v1/company-coverage-and-candidates.json',[]),receipts:load(scan+'http-receipts.json',[]),
+  supplements:load(scan+'verification/receipts.json',[]),originals:load(scan+'originals.json',[]),processedAt:load('derived-review-v1.2/summary.json',{}).processedAt};
+}
+export function buildTechResearchInputs({files,lineage,at,context=techResearchContext({files,lineage})}){
+ const {scan,events,input,followups,receipts,supplements,originals,processedAt}=context;
+ if(!Number.isFinite(Date.parse(at))||
+    [input.createdAt,processedAt,lineage.originalCutoff,lineage.followupBatch?.completedAt,lineage.followupBatch?.errataAt,...events.map(e=>e.receivedAt),...receipts.map(r=>r.receivedAt),...supplements.map(r=>r.receivedAt)].some(t=>t&&(!Number.isFinite(Date.parse(t))||Date.parse(t)>Date.parse(at))))throw Error('TECH_CANDIDATE_RESEARCH_CLOCK');
  const documents=[],eventInputs=[];
- for(const review of input.reviews){
+ const materialReviews=[...input.reviews];
+ for(const event of events.filter(e=>[...originals,...supplements].some(o=>o.eventId===e.eventId)))for(const symbol of event.symbols)if(!materialReviews.some(r=>r.eventId===event.eventId&&r.symbol===symbol))materialReviews.push({symbol,eventId:event.eventId,unreviewed:true});
+ for(const review of materialReviews){
   const event=events.find(e=>e.eventId===review.eventId&&e.symbols.includes(review.symbol)),issues=[],documentIds=[];
   for(const original of [...originals,...supplements].filter(o=>o.eventId===event.eventId)){
    const path=scan+original.rawPath,bytes=files.get(path),receipt=[...receipts,...supplements].find(r=>r.rawPath===original.rawPath&&r.sha256===original.sha256&&r.status==='SUCCESS');
@@ -59,13 +64,14 @@ export function buildTechResearchInputs({files,lineage,at}){
    if(!documents.some(d=>d.id===id)){
     let body;try{body=extractTechOriginal(bytes);}catch{body={status:'UNSUPPORTED_ENCODING',blocks:[]};}
     documents.push({id,eventId:event.eventId,symbols:event.symbols,sourcePath:path,sha256:original.sha256,url:original.url??receipt.url??null,
-     sourceKind:'SAVED_EVENT_ORIGINAL',publishedAt:null,publicationClockStatus:'UNKNOWN_DOCUMENT_PUBLICATION_TIME',
+     sourceKind:original.provenance??'SAVED_EVENT_ORIGINAL',publishedAt:original.publishedAt??null,publicationClockStatus:original.publishedAt?'ATTRIBUTED_SOURCE_PUBLICATION_TIME':'UNKNOWN_DOCUMENT_PUBLICATION_TIME',
      filingAcceptedAt:event.kind==='OFFICIAL_FILING_METADATA'?event.publishedAt??null:null,receivedAt:receipt.receivedAt,...body});
-   }
+   }else documents.find(d=>d.id===id).retransmittedReceipts=(documents.find(d=>d.id===id).retransmittedReceipts??[]).concat({sourcePath:path,url:original.url??receipt.url??null,receivedAt:receipt.receivedAt,publishedAt:original.publishedAt??null,provenance:original.provenance??'SAVED_EVENT_ORIGINAL',sha256:original.sha256});
    documentIds.push(id);
   }
   const related=[];
-  for(const cluster of input.clusters??[]){
+  const scoped=(input.clusters??[]).filter(c=>c.canonicalEventId===event.eventId&&c.symbol===review.symbol);
+  for(const cluster of scoped.length?scoped:(input.clusters??[]).filter(c=>!c.symbol)){
    if(cluster.canonicalEventId!==event.eventId)continue;
    for(const link of cluster.linkedDiscoveryRecords??[]){
     const linked=events.find(e=>e.eventId===link.id&&e.symbols.includes(review.symbol));
@@ -77,10 +83,10 @@ export function buildTechResearchInputs({files,lineage,at}){
   const docs=documents.filter(d=>documentIds.includes(d.id));
   if(!docs.some(d=>d.status==='BODY_TEXT_EXTRACTED'))issues.push('ORIGINAL_BODY_UNKNOWN');
   if(review.materialConflict)issues.push('SAVED_MATERIAL_CONFLICT_UNRESOLVED');
-  eventInputs.push({eventId:event.eventId,symbol:review.symbol,discoveredAt:event.receivedAt??null,
+  eventInputs.push({eventId:event.eventId,symbol:review.symbol,reviewStatus:review.unreviewed?'NOT_REVIEWED':'ATTRIBUTED_SAVED_REVIEW',discoveredAt:event.receivedAt??null,
    filingAcceptedAt:event.kind==='OFFICIAL_FILING_METADATA'?event.publishedAt??null:null,
    documentIds:unique(documentIds),relatedDiscoveryRecords:related,
-   savedReview:{authority:'ATTRIBUTED_SAVED_REVIEW_NOT_AUTOMATIC_FACT_VERIFICATION',reviewedAt:input.createdAt,
+   savedReview:{authority:'ATTRIBUTED_SAVED_REVIEW_NOT_AUTOMATIC_FACT_VERIFICATION',reviewedAt:review.unreviewed?null:review.reviewedAt??input.createdAt,
     fact:review.fact??null,interpretation:review.analysis??null,nextEvidence:review.nextEvidence??null,eventWindow:review.eventWindow??null,
     originalVerified:review.originalVerified,companyEventVerified:review.companyEventVerified,materialityReviewed:review.materialityReviewed,materialConflict:review.materialConflict},
    researchInput:{status:docs.some(d=>d.status==='BODY_TEXT_EXTRACTED')?'CITED_MATERIAL_READY_FOR_REVIEW':'PARTIAL_INPUT_ORIGINAL_BODY_UNKNOWN',
@@ -94,11 +100,13 @@ export function buildTechResearchInputs({files,lineage,at}){
  }
  const companies=lineage.pool.map(symbol=>{
   const discovered=events.filter(e=>e.symbols.includes(symbol)),rank=lineage.ranking.find(r=>r.symbol===symbol),followup=followups.find(r=>r.symbol===symbol),reviewed=eventInputs.filter(r=>r.symbol===symbol);
-  const covered=new Set(reviewed.flatMap(r=>[r.eventId,...r.relatedDiscoveryRecords.filter(l=>l.notIndependentOpportunity).map(l=>l.eventId)]));
+  const covered=new Set(reviewed.filter(r=>r.reviewStatus!=='NOT_REVIEWED').flatMap(r=>[r.eventId,...r.relatedDiscoveryRecords.filter(l=>l.notIndependentOpportunity).map(l=>l.eventId)]));
   const unresolved=discovered.filter(e=>!covered.has(e.eventId)).map(e=>e.eventId);
   return {symbol,candidateId:lineage.scanId+'-'+symbol,sourceCoverage:lineage.coverage.filter(c=>c.symbol===symbol),
-   discoveryEventIds:discovered.map(e=>e.eventId),reviewedEventIds:reviewed.map(r=>r.eventId),unresolvedEventIds:unresolved,
-   inheritedRanking:rank,limitedFollowup:{classification:followup.classification,scope:followup.scope??'SAVED_LIMITED_FOLLOWUP',reason:followup.reason??null,nextEvidence:followup.nextEvidence??null},
+   discoveryEventIds:discovered.map(e=>e.eventId),reviewedEventIds:reviewed.filter(r=>r.reviewStatus!=='NOT_REVIEWED').map(r=>r.eventId),unresolvedEventIds:unresolved,
+   sourceGaps:['SEC_SUBMISSIONS','GOOGLE_NEWS_RSS'].filter(id=>!lineage.coverage.some(c=>c.symbol===symbol&&c.sourceId===id&&c.status==='SUCCESS')),
+   discoveryConclusion:discovered.length?'DISCOVERED_RECORDS_REQUIRE_REVIEW':'UNKNOWN_NO_SAVED_EVENT_IS_NOT_NO_OPPORTUNITY',
+   inheritedRanking:rank,limitedFollowup:{classification:followup?.classification??'NOT_REVIEWED',scope:followup?.scope??'NO_SAVED_FOLLOWUP',reason:followup?.reason??null,nextEvidence:followup?.nextEvidence??null},
    researchStatus:reviewed.some(r=>r.researchInput.status==='CITED_MATERIAL_READY_FOR_REVIEW')?'CITED_INPUT_AVAILABLE':'LOCAL_ORIGINAL_OR_REVIEW_GAP',
    completeCompanyOpportunityScreen:false,excludedEventDoesNotExcludeCompany:true};
  });
@@ -107,9 +115,9 @@ export function buildTechResearchInputs({files,lineage,at}){
   authority:'CITED_RESEARCH_MATERIALS_NOT_DIRECTIONAL_PLAN_OR_FORECAST',documents,eventInputs,companies,
   screeningTrace:{poolCompanies:companies.length,discoveryRecords:events.length,companyEventAssociations:companies.reduce((n,c)=>n+c.discoveryEventIds.length,0),
    companyHeadlineAssociations:events.filter(e=>e.kind==='UNVERIFIED_HEADLINE').reduce((n,e)=>n+e.symbols.length,0),
-   limitedFollowupSelectedAssociations:lineage.followupBatch.selectedCompanyHeadlineAssociations??null,
-   limitedFollowupUnattemptedAssociations:lineage.followupBatch.unattemptedCompanyHeadlineAssociations??null,
-   reviewedCanonicalEvents:eventInputs.length,attributedRelatedRecords:eventInputs.reduce((n,e)=>n+e.relatedDiscoveryRecords.length,0),
+   limitedFollowupSelectedAssociations:lineage.followupBatch?.selectedCompanyHeadlineAssociations??null,
+   limitedFollowupUnattemptedAssociations:lineage.followupBatch?.unattemptedCompanyHeadlineAssociations??null,
+   reviewedCanonicalEvents:input.reviews.length,materialEventInputs:eventInputs.length,attributedRelatedRecords:eventInputs.reduce((n,e)=>n+e.relatedDiscoveryRecords.length,0),
    extractedDocuments:documents.filter(d=>d.status==='BODY_TEXT_EXTRACTED').length,
    companiesWithCitedInputs:companies.filter(c=>c.researchStatus==='CITED_INPUT_AVAILABLE').length,
    inheritedRankingCategories:Object.fromEntries(unique(companies.map(c=>c.inheritedRanking.category)).map(k=>[k,companies.filter(c=>c.inheritedRanking.category===k).length])),

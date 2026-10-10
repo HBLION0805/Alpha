@@ -1,0 +1,57 @@
+{
+  "version": "TECH36_EVENT_REVIEW_DELIVERY_V1",
+  "date": "2026-10-10",
+  "status": "DELIVERED_SAVED_SOURCE_AND_SEPARATE_SYNTHETIC_ACCEPTANCE",
+  "scope": "UNSELECTED_SAVED_SCAN_AND_APPEND_ONLY_EVENT_REVIEW",
+  "rawScanRequiresSelectedCandidate": false,
+  "rawScanRequiresHistoricalFollowup": false,
+  "rankingEngine": "EXISTING_CLASSIFY_AND_RANK",
+  "realReplay": {
+    "runId": "tech36-unselected-replay-20261010",
+    "newCollection": false,
+    "companies": 36,
+    "discoveryEvents": 2679,
+    "companyEventAssociations": 2835,
+    "extractedDocuments": 7,
+    "initialReviewedEvents": 0,
+    "initialSelectedCandidates": 0,
+    "appendedSavedReviews": 1,
+    "relatedHeadlineAssociations": 2,
+    "operationAt": "2026-10-10T20:20:33.185Z",
+    "fullPoolScreenComplete": false
+  },
+  "separateSyntheticDemo": {
+    "runId": "tech36-event-append-simulated-20261010",
+    "revisions": 3,
+    "mode": "SYNTHETIC_FIXTURE",
+    "scope": "ADDITIONAL_BODY_RETRANSMISSION_AND_DECLARED_CONFLICT"
+  },
+  "sourceReads": 0,
+  "marketCalls": 0,
+  "paperFills": 0,
+  "continuousScannerInstalled": false,
+  "productionScheduleChanged": false,
+  "executionAllowed": false,
+  "remaining": [
+    "Continuous scanner operation and scheduling",
+    "Unresolved original retrieval and company-event associations",
+    "Substantive company research and reviewer judgment"
+  ],
+  "validation": {
+    "exactScopedCheckout": true,
+    "components": 228,
+    "tests": 5831,
+    "passed": 5831,
+    "failed": 0,
+    "candidateGroupTests": 51,
+    "priorValidationInterruptedForSourceManifestRegression": true,
+    "finalCodeReplay": "PASS"
+  },
+  "preservation": {
+    "originalDirtyPaths": 23,
+    "unrelatedFilesChecked": 2597,
+    "privateOriginalFilesChecked": 1169,
+    "changes": 0,
+    "privacyCheck": "PASS"
+  }
+}
