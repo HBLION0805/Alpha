@@ -1,3 +1,9 @@
+## Focused-news publication and receipt clocks
+
+Publication after the original receipt remains an anomaly as assessment time
+advances. Only a later actual receipt can qualify a later view; the 72-hour
+window and source registry stay unchanged. See [delivery](OPTIONS_CONTEXT_FRESHNESS_CHECK_DELIVERY.md).
+
 ## Technology quote acquisition and isolated feasibility
 
 Manual options:tech-quotes reuses the existing authorized OAuth Host for bounded

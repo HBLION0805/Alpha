@@ -64,7 +64,7 @@ export function buildFocusedNews(headlines: readonly FocusedHeadline[], health: 
   const rows = [...versions.values()].map(item => {
     const relevance = classifyFocusedHeadline(item.headline);
     const elapsed = item.publishedAt === null ? null : Date.parse(at) - Date.parse(item.publishedAt);
-    const freshness = item.origin !== "PUBLIC_FEED" ? "SCENARIO" : elapsed === null ? "PUBLICATION_TIME_UNKNOWN" : elapsed < 0 ? "FUTURE_PUBLICATION" : elapsed <= 72 * 3600000 ? "RECENT" : "STALE";
+    const freshness = item.origin !== "PUBLIC_FEED" ? "SCENARIO" : elapsed === null ? "PUBLICATION_TIME_UNKNOWN" : elapsed < 0 || item.publishedAt !== null && Date.parse(item.publishedAt) > Date.parse(item.observedAt) ? "FUTURE_PUBLICATION" : elapsed <= 72 * 3600000 ? "RECENT" : "STALE";
     return { ...item, ...relevance, freshness, evidenceClass: item.sourceId === "coindesk" ? "NEWS_REPORTING" : "PRIMARY_PUBLISHER" };
   }).sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? "") || a.sourceId.localeCompare(b.sourceId) || a.itemId.localeCompare(b.itemId));
   const relevant = rows.filter(item => item.scope !== "OUT_OF_SCOPE");

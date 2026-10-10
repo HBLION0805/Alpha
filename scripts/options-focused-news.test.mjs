@@ -109,4 +109,20 @@ await test('only an explicit fresh observed calendar is current; missing state s
   assert(!calendarCoveragePanel({bls:{...fresh,refreshOverdue:undefined}}).includes('Source read current'));
   const absent=calendarCoveragePanel();assert(absent.includes('Calendar unavailable'));assert(!absent.includes('Source read current'));
 });
+
+await test('publication after its original receipt stays future-dated when the assessment clock advances',()=>{
+ const old=item('Bitcoin flows',{observedAt:'2026-09-07T13:00:00.000Z',publishedAt:'2026-09-07T13:30:00.000Z'});
+ const before=JSON.stringify(old),r=buildFocusedNews([old],[],at);
+ assert.equal(r.items[0].freshness,'FUTURE_PUBLICATION');assert.equal(r.counts.recent,0);assert.equal(JSON.stringify(old),before);
+});
+await test('later actual receipt may qualify a previously future-dated publication without rewriting its first receipt',()=>{
+ const old=item('Bitcoin flows',{observedAt:'2026-09-07T13:00:00.000Z',publishedAt:'2026-09-07T13:30:00.000Z'}),later={...old,observedAt:at};
+ assert.equal(buildFocusedNews([old,later],[],at).items[0].freshness,'RECENT');assert.equal(old.observedAt,'2026-09-07T13:00:00.000Z');
+});
+await test('the existing 72-hour article age uses publication, not a fresh retrieval clock',()=>{
+ const exact=item('Bitcoin flows',{publishedAt:'2026-09-04T14:00:00.000Z'});
+ assert.equal(buildFocusedNews([exact],[],at).items[0].freshness,'RECENT');
+ assert.equal(buildFocusedNews([{...exact,publishedAt:'2026-09-04T13:59:59.999Z'}],[],at).items[0].freshness,'STALE');
+});
+
 console.log(passed+'/'+passed+' tests passed.');
