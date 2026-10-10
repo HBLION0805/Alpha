@@ -67,3 +67,9 @@
 #tech-research-status code, #tech-research-status .hint { overflow-wrap: anywhere; }
 #tech-research-status summary small { display: block; margin-top: .5rem; }
 #tech-research-status .tech-status-issues { display: block; }
+#tech-research-status .tech-facet-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
+#tech-research-status .tech-facet-record { border-top:1px solid var(--border,#394353); padding:1rem 0; overflow-wrap:anywhere; }
+#tech-research-status .tech-condition-list { display:grid; grid-template-columns:minmax(6rem,1fr) minmax(0,4fr); gap:.5rem 1rem; }
+#tech-research-status .tech-condition-list dd { margin:0; }
+#tech-research-status .tech-research-sources li { margin-bottom:.75rem; }
+@media(max-width:700px) { #tech-research-status .tech-facet-grid, #tech-research-status .tech-condition-list { grid-template-columns:1fr; } }

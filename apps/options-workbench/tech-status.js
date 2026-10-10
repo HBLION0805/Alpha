@@ -23,7 +23,31 @@ export function techStatusPanel(data){
  <p>已有开发能力：候选研究、保存报价预检，以及同日一组等量双腿 CDS / PDS 隔离模拟。真实数据 Paper 验收：<strong>NOT_TESTED</strong>。</p>
  <p class="hint">仅检查本地开发目录的直接回执和双腿模拟日志，不包含嵌套测试目录。使用顶部“重新加载”读取保存资料；本页不请求市场数据。账户证据缺失不否定公司研究方向。</p>
  <p>${status(s.state)} · 本地检查：${clock(s.checkedAt)} · ${s.records.length} 份记录</p>
+ ${researchDetails(s.researchDetails)}
  ${s.issues.length?`<div class="notice error tech-status-issues" role="alert"><strong>部分资料无法读取或存在冲突，不能判定通过。</strong>${s.issues.map(issue).join('')}</div>`:''}
  ${!s.records.length?'<div class="empty"><h3>没有可展示的已保存记录</h3><p>研究、报价、账户证据和模拟均未由本页验证。缺失数据不是零风险，也不是验收通过。</p></div>':s.records.map(record).join('')}
  </section>`;
+}
+
+const directionLabel=v=>({UP:'偏多研究',DOWN:'偏空研究',NEUTRAL:'中性',UNKNOWN:'UNKNOWN · 方向未建立'}[v]??'UNKNOWN');
+const text=v=>v?esc(v):'UNKNOWN · 尚未记录';
+function researchDetails(data){
+ const records=data?.records??[],groups=new Map();for(const r of records){if(!groups.has(r.sourceRef))groups.set(r.sourceRef,[]);groups.get(r.sourceRef).push(r);}
+ const contextLabel=v=>({HISTORICAL_ATTRIBUTED_SAMPLE:'历史样本 · 来源归属未认证',TEST_FIXTURE:'TEST_FIXTURE · 合成测试',SAVED_RESEARCH:'已保存研究 · 不是当前行情'}[v]??'UNKNOWN');
+ return `<div class="tech-research-details"><h3>三面研究依据与条件</h3><p>基本面研究方向，技术面检查结构，消息面研究时机。方向研究和试探条件可以保留；资料不足不等于交易准入，三面一致也不保证收益或支持重仓。</p>
+ <p class="hint">仅展示保存记录的必要摘要和允许公开的来源链接。资料时点、原研究评估时间和研究窗口分别列出；打开页面不会刷新来源或重设研究窗口。本轮不绘制或补造 Fib。</p>
+ ${data?.issues?.length?`<p class="notice error" role="alert">${data.issues.length} 组研究资料读取不完整；未将缺失视为通过。${data.issues.map(i=>`<code>${esc(i.code)}</code>`).join(' · ')}</p>`:''}
+ ${!records.length?'<p class="empty">暂无可展示的三面研究记录；技术结构、方向与失效条件保持 UNKNOWN。</p>':''}
+ ${[...groups].map(([ref,rows],n)=>`<details class="card section-space tech-research-group" data-disclosure-key="research-${esc(ref)}" ${n===0?'open':''}><summary><strong>${esc(contextLabel(rows[0].context))}</strong> · ${rows.length} 份研究 · ${clock(rows[0].recordedAt)}</summary><p class="hint">保存版本指纹 ${esc(ref)}。各版本独立保留，不拼接为已完成流程。</p>${rows.map(researchRow).join('')}</details>`).join('')}</div>`;
+}
+function researchRow(r){
+ return `<details class="tech-facet-record" data-disclosure-key="facet-${esc(r.id)}"><summary><strong>${esc(r.symbol)}</strong> · ${esc(r.researchStatus)} · ${esc(r.conditionalPlanStatus)}</summary>
+ <p class="hint">原研究评估：${clock(r.assessedAt)}<br>来源截止：${clock(r.sourceCutoff)}<br>研究窗口：${r.window?`${clock(r.window.from)} → ${clock(r.window.through)}`:'UNKNOWN · 未登记'}</p>
+ <div class="tech-facet-grid"><section><h4>基本面 · 方向</h4><p>${esc(directionLabel(r.fundamental.direction))}</p><p class="hint">经营趋势：${esc(directionLabel(r.fundamental.operatingTrend))}；不等同于持有窗口内的价格方向。</p><p>${text(r.fundamental.summary)}</p></section>
+ <section><h4>技术面 · 结构</h4><p>${esc(r.technical.status)}</p><p>${text(r.technical.summary)}</p><p class="hint">测量方向 ${esc(r.technical.measurementDirection)} · 当前观察结构 ${esc(r.technical.currentStructure)}。历史测量方向不等于当前趋势；未提供可用技术资料时不生成价位。</p></section>
+ <section><h4>消息面 · 时机</h4><p>${esc(directionLabel(r.news.direction))}</p><p>${text(r.news.summary)}</p></section></div>
+ <dl class="tech-condition-list"><dt>研究假设</dt><dd>${text(r.hypothesis)}</dd><dt>试探条件</dt><dd>${text(r.trial)}</dd><dt>确认条件</dt><dd>${text(r.confirmation)}</dd><dt>失效 / 反证条件</dt><dd>${text(r.invalidation)}</dd><dt>独立退出条件</dt><dd>${text(r.exit)}</dd><dt>下一项证据</dt><dd>${text(r.nextEvidence)}</dd></dl>
+ <h4>原文来源与独立时钟</h4>${r.sources.items.length?`<ul class="tech-research-sources">${r.sources.items.map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(new URL(s.url).hostname)} · 查看公开来源</a><br><small>发表 ${clock(s.publishedAt)}<br>收到 ${clock(s.receivedAt)} · 审阅 ${clock(s.reviewedAt)}${s.filingAcceptedAt?`<br>SEC 接收 ${clock(s.filingAcceptedAt)}（不等于首次发表）`:''}</small></li>`).join('')}</ul>`:'<p>UNKNOWN · 没有可展示的公开来源链接</p>'}
+ <p class="hint">最多展示 ${r.sources.limit} 个来源；${r.sources.omitted} 个非公开或不支持链接未展示。未知发表时间不以收到时间替代。</p>
+ <h4>证据缺口</h4>${reasons(r.gaps)}<p class="hint">本页当前报价准入：NOT_EVALUATED；未生成成交、仓位或概率。上述研究状态只适用于其原保存记录。</p></details>`;
 }
