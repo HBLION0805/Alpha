@@ -152,3 +152,62 @@ test('verified low-materiality event clears coverage but a later conflict reopen
  const next=f.request('conflicted','SNPS');next.links=q.links;next.review.materialConflict=true;f.append(next);v=f.view();c=v.inputs.companies.find(c=>c.symbol==='SNPS');assert(c.unresolvedEventIds.includes('MOCK-SNPS'));assert(c.unresolvedEventIds.includes('MOCK-NEWS'));assert.equal(c.qualifiedAssociationIds.length,0);assert.equal(v.inputs.screeningTrace.qualifiedCompanyEventAssociations+v.inputs.screeningTrace.unresolvedCompanyEventAssociations,v.inputs.screeningTrace.companyEventAssociations);assert(fs.readFileSync(join(base.runPath,'research-inputs.json')).equals(baseBytes));
 });
 test('verified flags alone cannot clear coverage when the saved original body is unavailable',()=>{const f=fixture(),loaded=loadTechResearchSource(f.root),v=buildTechResearchInputs({...loaded,at});assert(v.companies.find(c=>c.symbol==='TSLA').unresolvedEventIds.includes('MOCK-TSLA'));assert.equal(v.screeningTrace.qualifiedCompanyEventAssociations,0);});
+
+const mockLink=eventId=>({eventId,relationship:'SAME_EVENT',verifiedScope:'MOCK association only, not publisher verification'});
+test('P2 direct unresolved target takes precedence over a qualified link in either review order',()=>{
+ for(const reason of ['materialConflict','originalVerified','companyEventVerified','materialityReviewed','missing-body','excluded-company-event'])for(const targetFirst of [true,false]){
+  const f=eventFixture();f.start();const source=()=>{const q=f.request('source','SNPS');q.links=[mockLink('MOCK-NEWS')];f.append(q);};
+  const target=()=>{const q=f.request('target','SNPS','MOCK-NEWS');if(reason==='missing-body'){q.review.originalVerified=q.review.companyEventVerified=q.review.materialityReviewed=false;}else{f.evidence(q);if(reason==='excluded-company-event'){q.review.companyEventVerified=false;q.review.dimensions.impact=0;}else q.review[reason]=reason==='materialConflict';}f.append(q);};
+  if(targetFirst){target();source();}else{source();target();}const v=f.view(),c=v.inputs.companies.find(c=>c.symbol==='SNPS');assert(c.qualifiedAssociationIds.includes('MOCK-SNPS'));assert(c.unresolvedEventIds.includes('MOCK-NEWS'),reason+' targetFirst='+targetFirst);assert(!c.qualifiedAssociationIds.includes('MOCK-NEWS'));assert.equal(v.inputs.eventInputs.find(e=>e.eventId==='MOCK-NEWS').coverageStatus,'UNRESOLVED');
+ }
+});
+
+test('P2 latest evidenced resolution reopens and clears target without rewriting old conflict records',()=>{
+ const f=eventFixture(),b=f.start(),a=f.request('a','SNPS');a.links=[mockLink('MOCK-NEWS')];f.append(a);
+ const bad=f.request('b-bad','SNPS','MOCK-NEWS');f.evidence(bad);bad.review.materialConflict=true;f.append(bad);const old=fs.readFileSync(join(b.runPath,'event-reviews/000002/record.json'));
+ let c=f.view().inputs.companies.find(c=>c.symbol==='SNPS');assert.deepEqual(c.blockedRelatedAssociations,[{canonicalEventId:'MOCK-SNPS',eventId:'MOCK-NEWS',reason:'DIRECT_REVIEW_UNRESOLVED'}]);
+ const resolved=f.request('b-resolved','SNPS','MOCK-NEWS');f.evidence(resolved,'<html><body><p>MOCK resolution evidence, not a market fact.</p></body></html>');resolved.review.dimensions={impact:0,catalyst:0,evidence:3,valuation:null};f.append(resolved);c=f.view().inputs.companies.find(c=>c.symbol==='SNPS');assert(c.qualifiedAssociationIds.includes('MOCK-NEWS'));assert.equal(c.blockedRelatedAssociations.length,0);assert.equal(f.view().inputs.eventInputs.find(e=>e.eventId==='MOCK-NEWS').coverageStatus,'ATTRIBUTED_VERIFIED_SCOPE');
+ const missing=f.request('b-incomplete-again','SNPS','MOCK-NEWS');missing.review.companyEventVerified=false;f.append(missing);c=f.view().inputs.companies.find(c=>c.symbol==='SNPS');assert(c.unresolvedEventIds.includes('MOCK-NEWS'));assert(fs.readFileSync(join(b.runPath,'event-reviews/000002/record.json')).equals(old));
+});
+
+test('P2 A to B to C and cycles cannot carry inherited scope through an unresolved target',()=>{
+ for(const cycle of [false,true]){const f=eventFixture();f.change(scan+'events.json',rows=>rows.push({eventId:'MOCK-C',symbols:['SNPS'],kind:'UNVERIFIED_HEADLINE'}));f.start();const a=f.request('a','SNPS');a.links=[mockLink('MOCK-NEWS')];f.append(a);
+  const b=f.request('b','SNPS','MOCK-NEWS');f.evidence(b);b.links=[mockLink('MOCK-C'),...(cycle?[mockLink('MOCK-SNPS')]:[])];b.review.companyEventVerified=false;f.append(b);let c=f.view().inputs.companies.find(c=>c.symbol==='SNPS');assert.deepEqual(c.qualifiedAssociationIds,['MOCK-SNPS']);assert(c.unresolvedEventIds.includes('MOCK-NEWS'));assert(c.unresolvedEventIds.includes('MOCK-C'));
+  const good=f.request('b-good','SNPS','MOCK-NEWS');good.links=b.links;f.append(good);c=f.view().inputs.companies.find(c=>c.symbol==='SNPS');assert.equal(c.qualifiedAssociationIds.length,3);assert.equal(new Set(c.qualifiedAssociationIds).size,3);const v=f.view();assert.equal(v.inputs.eventInputs.find(e=>e.eventId==='MOCK-NEWS').relatedDiscoveryRecords.find(l=>l.eventId==='MOCK-C').publisherBodyVerified,false);
+ }
+});
+
+test('P2 inherited unreviewed target does not activate its historical outgoing links',()=>{
+ const f=researchFixture(),loaded=loadTechResearchSource(f.root),key='review-input-v1.2.json',input=JSON.parse(loaded.files.get(key));
+ const ek=scan+'events.json',events=JSON.parse(loaded.files.get(ek));events.push({eventId:'MOCK-C',symbols:['SNPS'],kind:'UNVERIFIED_HEADLINE'});loaded.files.set(ek,Buffer.from(JSON.stringify(events)));
+ // A bound body makes B visible as NOT_REVIEWED, not a qualified canonical review.
+ const ok=scan+'originals.json',originals=JSON.parse(loaded.files.get(ok)),sk=scan+'verification/receipts.json',supplements=JSON.parse(loaded.files.get(sk));originals.push({...supplements.find(r=>r.symbol==='SNPS'),eventId:'MOCK-NEWS'});loaded.files.set(ok,Buffer.from(JSON.stringify(originals)));
+ input.clusters.push({canonicalEventId:'MOCK-NEWS',symbol:'SNPS',linkedDiscoveryRecords:[{id:'MOCK-C',notIndependentOpportunity:true},{id:'MOCK-SNPS',notIndependentOpportunity:true}]});loaded.files.set(key,Buffer.from(JSON.stringify(input)));
+ const v=buildTechResearchInputs({...loaded,at}),c=v.companies.find(c=>c.symbol==='SNPS');assert(c.qualifiedAssociationIds.includes('MOCK-NEWS'));assert(c.unresolvedEventIds.includes('MOCK-C'));assert.equal(v.eventInputs.find(e=>e.eventId==='MOCK-NEWS').reviewStatus,'NOT_REVIEWED');assert.equal(v.eventInputs.find(e=>e.eventId==='MOCK-NEWS').coverageStatus,'UNRESOLVED');assert.equal(v.eventInputs.find(e=>e.eventId==='MOCK-SNPS').relatedDiscoveryRecords[0].publisherBodyVerified,false);
+});
+
+test('P2 same event ID is resolved independently for each company',()=>{
+ const f=eventFixture();f.change(scan+'events.json',rows=>rows.find(r=>r.eventId==='MOCK-NEWS').symbols.push('TSLA'));f.start();
+ const bad=f.request('snps-b','SNPS','MOCK-NEWS');f.evidence(bad);bad.review.materialConflict=true;f.append(bad);
+ for(const symbol of ['SNPS','TSLA']){const q=f.request('source-'+symbol.toLowerCase(),symbol);q.links=[mockLink('MOCK-NEWS')];f.append(q);}
+ let v=f.view();assert(v.inputs.companies.find(c=>c.symbol==='SNPS').unresolvedEventIds.includes('MOCK-NEWS'));assert(v.inputs.companies.find(c=>c.symbol==='TSLA').qualifiedAssociationIds.includes('MOCK-NEWS'));
+ const good=f.request('tsla-b','TSLA','MOCK-NEWS');f.append(good);v=f.view();assert(v.inputs.companies.find(c=>c.symbol==='SNPS').unresolvedEventIds.includes('MOCK-NEWS'));assert(v.inputs.companies.find(c=>c.symbol==='TSLA').qualifiedAssociationIds.includes('MOCK-NEWS'));
+});
+
+test('P2 duplicate link requests reject and multiple qualified sources cannot override target review',()=>{
+ const f=eventFixture();f.change(scan+'events.json',rows=>rows.push({eventId:'MOCK-C',symbols:['SNPS'],kind:'UNVERIFIED_HEADLINE'}));f.start();const a=f.request('a','SNPS');a.links=[mockLink('MOCK-NEWS'),mockLink('MOCK-NEWS')];assert.throws(()=>f.append(a),/REVIEW_LINKS/);assert.equal(f.view().revisionCount,0);a.links.pop();f.append(a);
+ const c=f.request('c','SNPS','MOCK-C');f.evidence(c);c.links=[mockLink('MOCK-NEWS')];f.append(c);let view=f.view().inputs.companies.find(c=>c.symbol==='SNPS');assert.equal(view.qualifiedAssociationIds.filter(e=>e==='MOCK-NEWS').length,1);
+ const b=f.request('b','SNPS','MOCK-NEWS');b.review.originalVerified=b.review.companyEventVerified=b.review.materialityReviewed=false;f.append(b);view=f.view().inputs.companies.find(c=>c.symbol==='SNPS');assert(view.unresolvedEventIds.includes('MOCK-NEWS'));assert.equal(view.blockedRelatedAssociations.length,2);
+});
+
+test('P2 unsupported legacy association is not coverage or publisher verification',()=>{
+ const f=researchFixture(),loaded=loadTechResearchSource(f.root),key='review-input-v1.2.json',input=JSON.parse(loaded.files.get(key));input.clusters[0].linkedDiscoveryRecords[0].notIndependentOpportunity=false;loaded.files.set(key,Buffer.from(JSON.stringify(input)));const v=buildTechResearchInputs({...loaded,at});assert(v.companies.find(c=>c.symbol==='SNPS').unresolvedEventIds.includes('MOCK-NEWS'));assert.equal(v.eventInputs.find(e=>e.symbol==='SNPS').relatedDiscoveryRecords[0].publisherBodyVerified,false);
+});
+
+test('P2 an unresolved cycle cannot create coverage without any qualified canonical source',()=>{
+ const f=eventFixture();f.start();const a=f.request('a','SNPS');a.links=[mockLink('MOCK-NEWS')];a.review.companyEventVerified=false;f.append(a);const b=f.request('b','SNPS','MOCK-NEWS');f.evidence(b);b.links=[mockLink('MOCK-SNPS')];b.review.companyEventVerified=false;f.append(b);const c=f.view().inputs.companies.find(c=>c.symbol==='SNPS');assert.equal(c.qualifiedAssociationIds.length,0);assert.deepEqual(new Set(c.unresolvedEventIds),new Set(['MOCK-SNPS','MOCK-NEWS']));
+});
+
+test('P2 historical repeated review rows use the last explicit row for coverage and outgoing links',()=>{
+ const f=researchFixture(),loaded=loadTechResearchSource(f.root),key='review-input-v1.2.json',input=JSON.parse(loaded.files.get(key));input.reviews.push({...input.reviews.find(r=>r.symbol==='SNPS'),materialConflict:true});loaded.files.set(key,Buffer.from(JSON.stringify(input)));const v=buildTechResearchInputs({...loaded,at}),c=v.companies.find(c=>c.symbol==='SNPS');assert.equal(c.qualifiedAssociationIds.length,0);assert(c.unresolvedEventIds.includes('MOCK-SNPS'));assert(c.unresolvedEventIds.includes('MOCK-NEWS'));
+});

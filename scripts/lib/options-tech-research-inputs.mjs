@@ -102,10 +102,18 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
  }
  const companies=lineage.pool.map(symbol=>{
   const discovered=events.filter(e=>e.symbols.includes(symbol)),rank=lineage.ranking.find(r=>r.symbol===symbol),followup=followups.find(r=>r.symbol===symbol),reviewed=eventInputs.filter(r=>r.symbol===symbol);
-  const covered=new Set(reviewed.filter(r=>r.coverageStatus==='ATTRIBUTED_VERIFIED_SCOPE').flatMap(r=>[r.eventId,...r.relatedDiscoveryRecords.filter(l=>l.notIndependentOpportunity).map(l=>l.eventId)]));
+  const direct=new Map(reviewed.filter(r=>r.reviewStatus!=='NOT_REVIEWED').map(r=>[r.eventId,r]));
+  const qualified=[...direct.values()].filter(r=>r.coverageStatus==='ATTRIBUTED_VERIFIED_SCOPE'),covered=new Set(qualified.map(r=>r.eventId)),blockedRelatedAssociations=[];
+  // Only independently qualified canonical reviews contribute one-hop links. A target's
+  // own latest review wins regardless of link age; inherited scope never propagates.
+  for(const source of qualified)for(const link of source.relatedDiscoveryRecords.filter(l=>l.notIndependentOpportunity)){
+   const target=direct.get(link.eventId);
+   if(target&&target.coverageStatus!=='ATTRIBUTED_VERIFIED_SCOPE')blockedRelatedAssociations.push({canonicalEventId:source.eventId,eventId:link.eventId,reason:'DIRECT_REVIEW_UNRESOLVED'});
+   else covered.add(link.eventId);
+  }
   const unresolved=discovered.filter(e=>!covered.has(e.eventId)).map(e=>e.eventId);
   return {symbol,candidateId:lineage.scanId+'-'+symbol,sourceCoverage:lineage.coverage.filter(c=>c.symbol===symbol),
-   discoveryEventIds:discovered.map(e=>e.eventId),reviewedEventIds:reviewed.filter(r=>r.reviewStatus!=='NOT_REVIEWED').map(r=>r.eventId),qualifiedAssociationIds:[...covered],unresolvedEventIds:unresolved,
+   discoveryEventIds:discovered.map(e=>e.eventId),reviewedEventIds:reviewed.filter(r=>r.reviewStatus!=='NOT_REVIEWED').map(r=>r.eventId),qualifiedAssociationIds:[...covered],unresolvedEventIds:unresolved,blockedRelatedAssociations,
    sourceGaps:['SEC_SUBMISSIONS','GOOGLE_NEWS_RSS'].filter(id=>!lineage.coverage.some(c=>c.symbol===symbol&&c.sourceId===id&&c.status==='SUCCESS')),
    discoveryConclusion:discovered.length?'DISCOVERED_RECORDS_REQUIRE_REVIEW':'UNKNOWN_NO_SAVED_EVENT_IS_NOT_NO_OPPORTUNITY',
    inheritedRanking:rank,limitedFollowup:{classification:followup?.classification??'NOT_REVIEWED',scope:followup?.scope??'NO_SAVED_FOLLOWUP',reason:followup?.reason??null,nextEvidence:followup?.nextEvidence??null},
@@ -120,7 +128,7 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
    limitedFollowupSelectedAssociations:lineage.followupBatch?.selectedCompanyHeadlineAssociations??null,
    limitedFollowupUnattemptedAssociations:lineage.followupBatch?.unattemptedCompanyHeadlineAssociations??null,
    reviewedCanonicalEvents:input.reviews.length,materialEventInputs:eventInputs.length,attributedRelatedRecords:eventInputs.reduce((n,e)=>n+e.relatedDiscoveryRecords.length,0),
-   coveragePolicy:'ATTRIBUTED_VERIFIED_SCOPE_V1',qualifiedCompanyEventAssociations:companies.reduce((n,c)=>n+c.qualifiedAssociationIds.length,0),
+   coveragePolicy:'ATTRIBUTED_VERIFIED_SCOPE_V2_DIRECT_REVIEW_PRIORITY',qualifiedCompanyEventAssociations:companies.reduce((n,c)=>n+c.qualifiedAssociationIds.length,0),
    unresolvedCompanyEventAssociations:companies.reduce((n,c)=>n+c.unresolvedEventIds.length,0),
    extractedDocuments:documents.filter(d=>d.status==='BODY_TEXT_EXTRACTED').length,
    companiesWithCitedInputs:companies.filter(c=>c.researchStatus==='CITED_INPUT_AVAILABLE').length,
