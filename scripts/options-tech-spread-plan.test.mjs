@@ -70,3 +70,20 @@ for(const [label,fn]of [
 test('rehashed price still cannot alter source evidence',async()=>{const f=await mockSpreadPlanFixture(),p=previewTechSpreadPlan(f.input);p.entryEvent.quote.legs[0].bidCents++;p.entryEvent.provenance.quoteSha256=spreadPlanHash(p.entryEvent.quote);assert.throws(()=>replayMockSpread(p.plan,[p.entryEvent],f.input.at),/SOURCE_FIELDS_CHANGED/);});
 test('entry source cannot be reused as an independent exit',async()=>{const f=await mockSpreadPlanFixture(),p=previewTechSpreadPlan(f.input),e=structuredClone(p.entryEvent);e.id='mock-repeat';const r=replayMockSpread(p.plan,[p.entryEvent,e],f.exitAt);assert.equal(r.orders.length,1);assert.equal(r.account.netPnlCents,null);});
 test('CLI exact original reader and plan-only start',async root=>{const f=await mockSpreadPlanFixture();fs.writeFileSync(join(root,'original.json'),f.input.originals[0].rawJson);f.input.originals=[{id:'mock-original',path:'original.json',sha256:f.input.originals[0].sha256}];fs.writeFileSync(join(root,'input.json'),JSON.stringify(f.input));const p=techSpreadPlanCli(['--start','input.json','--run-id',runId],{root});assert.equal(p.status,'MOCK_PLAN_READY');assert.equal(recoverMockSpread({root,runId,asOf:f.input.at}).events.length,0);assert.throws(()=>techSpreadPlanCli(['--arm'],{root}),/ARGUMENTS/);});
+for(const [name,change]of [
+ ['future original publication',r=>r.recordedAt='2026-10-09T15:37:40.000Z'],
+ ['request after acquisition',r=>r.intent.requestedAt='2026-10-09T15:37:30.000Z'],
+ ['wrong intent version',r=>r.intent.version='TECH_QUOTES_REQUEST_V1'],
+ ['execution permission',r=>r.executionAllowed=true],
+ ['account access',r=>r.intent.accountAccessed=true],
+ ['original before capture',r=>r.recordedAt='2026-10-09T15:37:00.000Z'],
+])test(name+' rehashed original fails both creation and early replay without releasing funds',async root=>{
+ const f=await mockSpreadPlanFixture(),p=startTechSpreadPlan({root,runId,input:f.input});const open=appendMockSpread({root,runId,event:p.entryEvent});
+ const e=mockSpreadEventFromOriginal({plan:p.plan,original:f.exitOriginal,id:'mock-audit-exit',at:f.exitAt}),r=JSON.parse(f.exitOriginal.rawJson);change(r);r.captureSha256=spreadPlanHash(r.capture);const rawJson=JSON.stringify(r),original={id:'mock-audit-original',rawJson,sha256:spreadPlanHash(rawJson)};
+ e.provenance.original={rawJson,sha256:original.sha256};e.provenance.quoteSha256=spreadPlanHash(e.quote);
+ assert.throws(()=>mockSpreadEventFromOriginal({plan:p.plan,original,id:e.id,at:f.exitAt}));
+ assert.throws(()=>replayMockSpread(p.plan,[p.entryEvent,e],f.exitAt));
+ if(name!=='future original publication')assert.throws(()=>appendMockSpread({root,runId,event:e}));
+ const recovered=recoverMockSpread({root,runId,asOf:f.exitAt});assert.equal(recovered.events.length,1);assert.equal(recovered.report.status,'OPEN_UNRESOLVED');assert.equal(recovered.report.orders.length,1);assert.equal(recovered.report.account.netPnlCents,null);assert.equal(recovered.report.account.settledCashCents,open.account.settledCashCents);assert.equal(recovered.report.account.unsettledProceedsCents,700);
+});
+test('bound append uses original publication time without rewriting quote receipt',async root=>{const f=await mockSpreadPlanFixture(),p=startTechSpreadPlan({root,runId,input:f.input});const open=appendMockSpread({root,runId,event:p.entryEvent});assert.equal(open.assessedAt,'2026-10-09T15:30:12.000Z');assert.equal(open.orders[0].legs[0].receivedAt,'2026-10-09T15:30:10.000Z');assert.throws(()=>replayMockSpread(p.plan,[p.entryEvent],'2026-10-09T15:30:11.000Z'),/NOT_YET_VISIBLE/);});

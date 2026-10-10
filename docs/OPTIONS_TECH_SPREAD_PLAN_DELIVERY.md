@@ -61,3 +61,15 @@ specify an authorized real evidence route; genuine account/funds/permission and
 fresh two-strike evidence remain prerequisites for any separately authorized
 real Paper work. No strategy, risk, schedule, CPI workspace or challenge ledger
 changes are included. See [status](status/tech-spread-plan.json).
+
+## Event replay integrity correction
+
+Creation and replay now reuse complete saved-original preflight, including intent
+version, request/acquisition ordering and publication visibility. Recomputed hashes
+do not bypass these checks. A bound journal evaluates at original recordedAt,
+without rewriting the earlier quote receipt. Replay before publication fails;
+invalid exits do not publish an event, calculate a close or release modeled funds.
+The shared journal retains quote-time behavior for all existing unbound events.
+The regression suite includes creation/replay consistency for future publication,
+malformed intent and permissions, with retained open exposure and unknown P&L.
+Independent audit remains pending; this correction adds no real source authority.

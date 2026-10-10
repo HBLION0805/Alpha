@@ -1,7 +1,6 @@
 import {createHash} from 'node:crypto';
 import {assessTechSpreadPreflight} from './options-tech-spread-preflight.mjs';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
-import {normalizeTechOptionCapture} from './options-tech-quote-adapter.mjs';
 import {readTechEvidenceRecords} from './options-tech-paper-feasibility.mjs';
 import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 export const SPREAD_PLAN_RECORD_KINDS=['STRATEGY_REQUEST','RESEARCH','COST_MODEL','CONTRACT','DATA_ENTITLEMENT','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS'];
@@ -45,13 +44,22 @@ export function mockSpreadEventFromOriginal({plan,original,id,at,action='OBSERVE
  const quote={receivedAt:legs[0].receivedAt,source:'SYNTHETIC_TEST_ONLY',executionState:'ATOMIC_QUOTE_PAIR',action,legs};
  const event={version:'TECH_MOCK_SPREAD_BATCH_EVENT_V1',id,origin:'SYNTHETIC_FIXTURE',quote,
   provenance:{version:'TECH_SPREAD_EVENT_BINDING_V1',parentPlanSha256:plan.provenance.planSha256,batchId:preflight.quotePair.batchId,original:{rawJson:original.rawJson,sha256:original.sha256},quoteSha256:spreadPlanHash(quote)}};
- validateMockSpreadEventBinding(event);return event;
+ validateMockSpreadEventBinding(event,plan,at);return event;
 }
-export function validateMockSpreadEventBinding(e){
+export function spreadEventAvailableAt(e){return e?.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1'?parseChainSurveyJson(e.provenance.original.rawJson).recordedAt:e.quote.receivedAt;}
+export function validateMockSpreadEventBinding(e,plan=null,asOf=null){
  const b=e.provenance;check(e.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1'&&e.origin==='SYNTHETIC_FIXTURE'&&b?.version==='TECH_SPREAD_EVENT_BINDING_V1'&&/^[a-f0-9]{64}$/.test(b.parentPlanSha256)&&b.quoteSha256===spreadPlanHash(e.quote),'EVENT_BINDING');
  check(typeof b.original?.rawJson==='string'&&Buffer.byteLength(b.original.rawJson)<1e6&&b.original.sha256===spreadPlanHash(b.original.rawJson),'EVENT_ORIGINAL_HASH');
- const r=parseChainSurveyJson(b.original.rawJson);check(r.version==='TECH_QUOTES_RECEIPT_V2'&&r.capture?.origin==='SYNTHETIC_FIXTURE'&&r.intent?.origin==='SYNTHETIC_FIXTURE'&&r.captureSha256===spreadPlanHash(r.capture)&&JSON.stringify(r.capture.selection)===JSON.stringify(r.intent.selection),'EVENT_ORIGINAL_SCOPE');
- const n=normalizeTechOptionCapture(r.capture,r.recordedAt);check(n.pair?.status==='COHERENT_BATCH_EVIDENCE_ONLY'&&n.pair.batchId===b.batchId&&n.pair.sourceClockDifferenceNs==='0','EVENT_SOURCE_PAIR');
+ const r=parseChainSurveyJson(b.original.rawJson);
+ // A quote receipt is earlier than publication of its complete original. Replay
+ // must never observe an original before recordedAt, even after hash recomputation.
+ check(!asOf||snapshotNs(r.recordedAt)<=snapshotNs(asOf),'EVENT_ORIGINAL_NOT_YET_VISIBLE');
+ const selection=r.intent?.selection;
+ const legs=plan?.legs??selection?.legs?.map(l=>({role:l.direction,quantity:1,contract:e.quote.legs.find(x=>x.id===l.id)}));
+ check(Array.isArray(legs)&&legs.length===2,'EVENT_LEGS');
+ const n=assessTechSpreadPreflight({version:'TECH_SPREAD_PREFLIGHT_INPUT_V1',mode:'MOCK_CONTROL',at:r.recordedAt,decisionAt:plan?.decisionAt??r.intent?.requestedAt,
+  originals:[{...b.original,id:'event-original'}],legs:legs.map(l=>({originalId:'event-original',direction:l.role,quantity:l.quantity,contract:l.contract}))});
+ check(n.quotePair.status==='COHERENT_BATCH_EVIDENCE_ONLY'&&n.quotePair.batchId===b.batchId&&n.quotePair.sourceClockDifferenceNs==='0','EVENT_SOURCE_PAIR');
  check(e.quote.legs.length===2&&new Set(e.quote.legs.map(l=>l.id)).size===2,'EVENT_LEGS');
- for(const x of n.quotes){const l=e.quote.legs.find(l=>l.id===x.id);check(l&&Object.entries(x.snapshot).every(([k,v])=>JSON.stringify(l[k])===JSON.stringify(v))&&e.quote.receivedAt===x.snapshot.receivedAt,'SOURCE_FIELDS_CHANGED');}
+ for(const x of n.legs){const l=e.quote.legs.find(l=>l.id===x.snapshot.id);check(l&&Object.entries(x.snapshot).every(([k,v])=>JSON.stringify(l[k])===JSON.stringify(v))&&e.quote.receivedAt===x.snapshot.receivedAt,'SOURCE_FIELDS_CHANGED');}
 }

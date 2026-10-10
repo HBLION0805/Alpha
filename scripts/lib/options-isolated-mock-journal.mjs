@@ -51,7 +51,7 @@ export function verifyMockJournalRecords(manifest,rows,startVersion){
  return {manifest,events,tip:prior};
 }
 
-export function createIsolatedMockJournal({validateStart,calculate,validateEvent,startVersion}) {
+export function createIsolatedMockJournal({validateStart,calculate,validateEvent,startVersion,eventAvailableAt=e=>e.quote.receivedAt}) {
 function recover({root,runId,asOf}){
  const out=directory(root,runId),manifest=read(out+'/start.json');check(manifest.version===startVersion&&manifest.sha256===sha(encode(manifest.input)),'START_HASH');
  const names=fs.readdirSync(out).filter(n=>/^event-/.test(n)).sort();check(names.length<=1000,'EVENT_BOUND');
@@ -67,10 +67,11 @@ function start({root,runId,input,recordedAt=new Date().toISOString(),interrupt})
 }
 function append({root,runId,event,recordedAt=new Date().toISOString(),interrupt}){
  validateEvent(event);
- const state=recover({root,runId,asOf:event.quote.receivedAt}),old=state.events.find(x=>x.id===event.id);
+ const availableAt=eventAvailableAt(event);
+ const state=recover({root,runId,asOf:availableAt}),old=state.events.find(x=>x.id===event.id);
  if(old){check(same(old,event),'IDEMPOTENCY_CONFLICT');return state.report;}
  check(state.events.length<1000&&clock(event.quote.receivedAt)>clock(state.events.at(-1)?.quote.receivedAt??state.manifest.input.research.asOf),'RECEIPT_ORDER');
- const report=calculate(state.manifest.input,[...state.events,event],event.quote.receivedAt);
+ const report=calculate(state.manifest.input,[...state.events,event],availableAt);
  const row={previous:state.tip,recordedAt,event,sha256:sha(encode(event))};
  publish(state.out+'/event-'+String(state.events.length+1).padStart(4,'0')+'.json',row,interrupt);return report;
 }

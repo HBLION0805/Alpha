@@ -27,12 +27,19 @@
   "validation": {
     "status": "PASSED",
     "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
-    "baseCommit": "c0eb6efc4a4f5dfc7066c23ee958e37f3423d287",
+    "baseCommit": "9fbb6224629ebaee11a18dbc6ecbf83294d93f62",
     "componentCount": 226,
-    "testsExecuted": 5591,
-    "passed": 5591,
+    "testsExecuted": 5598,
+    "passed": 5598,
     "failed": 0,
-    "focusedPlanTests": 54,
+    "focusedPlanTests": 61,
     "realPriceAcceptance": "NOT_TESTED"
+  },
+  "replayAuditRepair": {
+    "runId": "tech-spread-plan-replay-fix-20261010",
+    "status": "FIXED_PENDING_INDEPENDENT_REVIEW",
+    "completeOriginalPreflight": true,
+    "futurePublicationRejected": true,
+    "sourceClocksRewritten": false
   }
 }

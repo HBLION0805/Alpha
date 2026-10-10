@@ -4,7 +4,7 @@ import {assessSnapshotQuote,snapshotNs,snapshotCents} from '../../src/engines/op
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {inferOptionsStructure,structureQuotedEconomics,structureTerminalPayoff} from '../../src/engines/options-structure-comparison/OptionsStructureComparisonEngine.ts';
 import {engineeringObservationPolicy} from './options-real-data-paper-timing.mjs';
-import {validateMockSpreadPlanBinding,validateMockSpreadEventBinding} from './options-tech-spread-plan-binding.mjs';
+import {validateMockSpreadPlanBinding,validateMockSpreadEventBinding,spreadEventAvailableAt} from './options-tech-spread-plan-binding.mjs';
 
 const check=(ok,code)=>{if(!ok)throw Error('SPREAD_MOCK_'+code);};
 const keys=(o,k)=>check(o&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).sort().join()===k.split(' ').sort().join(),'FIELDS');
@@ -86,7 +86,7 @@ export function replayMockSpread(p,events,asOf){
  if(!costsKnown)frozenBlockers.push('COSTS_UNKNOWN');
  const high=new Map(),orders=[],diagnostics=[];let pendingExit=null,residual=false,entry=null,exit=null,terminal=null,last=null,gap=false;
  for(const e of events){
-  validateEvent(e);check(p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?e.provenance?.parentPlanSha256===p.provenance.planSha256:!e.version,'BOUND_EVENT_PLAN');const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
+  validateEvent(e);if(e.version)validateMockSpreadEventBinding(e,p,asOf);check(p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?e.provenance?.parentPlanSha256===p.provenance.planSha256:!e.version,'BOUND_EVENT_PLAN');const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
   if(q.executionState!=='ATOMIC_QUOTE_PAIR'){residual=true;diagnostics.push({eventId:e.id,codes:['PARTIAL_OR_RESIDUAL_EXECUTION_UNSUPPORTED'],actualResidualExposure:'UNMODELED_NOT_CLEARED'});continue;}
   if(paperSession(q.receivedAt).date!==paperSession(p.decisionAt).date){diagnostics.push({eventId:e.id,codes:['OVERNIGHT_UNSUPPORTED']});continue;}
   if(last&&entry&&!exit&&clock(q.receivedAt)-clock(last)>60000000000n)gap=true;last=q.receivedAt;
@@ -146,5 +146,5 @@ export function replayMockSpread(p,events,asOf){
   frozenBlockers,diagnostics,quoteGapObserved:gap,actualTrades:0,executionAllowed:false,productionPaperAdmissionAllowed:false,realAcceptance:'NOT_TESTED',
   unsupported:['PARTIAL_OR_SEPARATE_LEG_EXECUTION','NAKED_SHORT','CALENDAR_SPREAD','OVERNIGHT','EXERCISE_ASSIGNMENT','STOP_TARGET_STRATEGY','SCALING','CASH_SETTLEMENT','PRODUCTION_ARMING']};
 }
-const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1'});
+const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1',eventAvailableAt:spreadEventAvailableAt});
 export const startMockSpread=journal.start,appendMockSpread=journal.append,recoverMockSpread=journal.recover;
