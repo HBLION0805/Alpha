@@ -1,3 +1,10 @@
+## Saved two-leg quote preflight
+
+The [read-only preflight](OPTIONS_TECH_SPREAD_PREFLIGHT_DELIVERY.md) verifies saved
+original hashes and clocks, separates static debit-vertical identity from quote
+coherence, and retains unknown account/contract evidence. The current one-strike
+producer supplies no suitable same-batch CDS/PDS; no source or execution is added.
+
 ## Read-only MOCK residual preview
 
 The [residual preview](OPTIONS_TECH_MOCK_RESIDUAL_DELIVERY.md) separates the original

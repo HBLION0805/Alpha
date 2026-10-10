@@ -1,0 +1,27 @@
+{
+  "version": "TECH_SPREAD_PREFLIGHT_DELIVERY_V1",
+  "date": "2026-10-10",
+  "status": "READ_ONLY_SAVED_ORIGINAL_PREFLIGHT_IMPLEMENTED",
+  "realOriginalsReviewed": 2,
+  "suitableRealDebitVerticalPairs": 0,
+  "producerCapability": "ONE_STRIKE_PER_CAPTURE",
+  "staticStructureSeparateFromAdmission": true,
+  "crossCaptureExecutableStitchingAllowed": false,
+  "accountAuthenticated": false,
+  "paperAdmissionAllowed": false,
+  "executionAllowed": false,
+  "sourceCalls": 0,
+  "fills": 0,
+  "realPaperAcceptance": "NOT_TESTED",
+  "validation": {
+    "status": "PASSED",
+    "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
+    "baseCommit": "1ec878baf2a8b2083cc246768eeb8410253641c4",
+    "componentCount": 224,
+    "testsExecuted": 5468,
+    "passed": 5468,
+    "failed": 0,
+    "focusedPreflightTests": 45,
+    "realPriceAcceptance": "NOT_TESTED"
+  }
+}

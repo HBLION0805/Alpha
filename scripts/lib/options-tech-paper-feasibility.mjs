@@ -13,6 +13,28 @@ const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=2000;
 const sha=v=>createHash('sha256').update(v,'utf8').digest('hex');
 const identity=q=>[q.id,q.symbol,q.expiry,q.type,q.strike,q.multiplier].join('|');
 const includes=(v,s)=>Array.isArray(v)&&v.length<=10&&v.includes(s);
+
+/** Reuse original attributed record integrity/clocks; this does not authenticate an account. */
+export function readTechEvidenceRecords({inputs,now,decision,validThrough,kinds=KINDS}) {
+ if(!Array.isArray(inputs)||inputs.length!==kinds.length||kinds.some(k=>!KINDS.includes(k)))throw Error('EVIDENCE_SCHEMA');
+ const records=new Map(),payloads=new Map(),blockers=[];let synthetic=false;
+    for(const r of inputs){
+      if(!r||!kinds.includes(r.kind)||records.has(r.kind)||!text(r.source)||!text(r.reviewedBy)||
+        !['OWNER_DOCUMENT','PROVIDER_DOCUMENT','SYNTHETIC_FIXTURE'].includes(r.origin)||
+        typeof r.rawJson!=='string'||r.rawJson.length>65536||!/^[a-f0-9]{64}$/.test(r.sha256)||
+        sha(r.rawJson)!==r.sha256)throw Error('EVIDENCE_INTEGRITY');
+      const observed=snapshotNs(r.observedAt),received=snapshotNs(r.receivedAt),reviewed=snapshotNs(r.reviewedAt),through=snapshotNs(r.validThrough);
+      if(observed>received||received>reviewed||reviewed>now||through<now||through<validThrough||
+        (r.kind!=='QUOTE'&&reviewed>decision))blockers.push(r.kind+'_CLOCK_OR_VALIDITY');
+      if(r.verdict!=='PASS')blockers.push(r.kind+'_NOT_REVIEWED');
+      if(r.origin==='SYNTHETIC_FIXTURE')synthetic=true;
+      const p=parseChainSurveyJson(r.rawJson);
+      if(!p||typeof p!=='object'||Array.isArray(p))throw Error('EVIDENCE_PAYLOAD');
+      records.set(r.kind,r);payloads.set(r.kind,p);
+    }
+ return {records,payloads,blockers,synthetic};
+}
+
 /** Offline attributed feasibility only. No registration, source call or fill authority. */
 export function assessTechPaperFeasibility({research,evidence=null,at}) {
   const researchReview=assessThreeFacet(research);
@@ -55,21 +77,8 @@ export function assessTechPaperFeasibility({research,evidence=null,at}) {
     if(snapshotNs(e.costsFrozenAt)>decision)blockers.push('COSTS_NOT_FROZEN_BEFORE_DECISION');
     if(!int(e.entryFeeCents)||!int(e.exitFeeCents)||!int(e.exitSlippageCents,0,10000))blockers.push('COSTS_UNKNOWN');
     if(!int(e.entryLimitCents,1,100000)||!int(e.maxSpreadCents,1,10000))blockers.push('LIMIT_OR_SPREAD_INVALID');
-    const records=new Map(),payloads=new Map();
-    for(const r of e.records){
-      if(!r||!KINDS.includes(r.kind)||records.has(r.kind)||!text(r.source)||!text(r.reviewedBy)||
-        !['OWNER_DOCUMENT','PROVIDER_DOCUMENT','SYNTHETIC_FIXTURE'].includes(r.origin)||
-        typeof r.rawJson!=='string'||r.rawJson.length>65536||!/^[a-f0-9]{64}$/.test(r.sha256)||
-        sha(r.rawJson)!==r.sha256)throw Error('EVIDENCE_INTEGRITY');
-      const observed=snapshotNs(r.observedAt),received=snapshotNs(r.receivedAt),reviewed=snapshotNs(r.reviewedAt),through=snapshotNs(r.validThrough);
-      if(observed>received||received>reviewed||reviewed>now||through<now||through<exit||
-        (r.kind!=='QUOTE'&&reviewed>decision))blockers.push(r.kind+'_CLOCK_OR_VALIDITY');
-      if(r.verdict!=='PASS')blockers.push(r.kind+'_NOT_REVIEWED');
-      if(r.origin==='SYNTHETIC_FIXTURE')synthetic=true;
-      const p=parseChainSurveyJson(r.rawJson);
-      if(!p||typeof p!=='object'||Array.isArray(p))throw Error('EVIDENCE_PAYLOAD');
-      records.set(r.kind,r);payloads.set(r.kind,p);
-    }
+    const validated=readTechEvidenceRecords({inputs:e.records,now,decision,validThrough:exit});
+    const {records,payloads}=validated;blockers.push(...validated.blockers);synthetic=validated.synthetic;
     const c=payloads.get('CONTRACT'),permission=payloads.get('PRODUCT_PERMISSION'),entitlement=payloads.get('DATA_ENTITLEMENT');
     const funds=payloads.get('ACCOUNT_FUNDS'),risk=payloads.get('RISK_LIMITS');
     const q=payloads.get('QUOTE'),qr=records.get('QUOTE'),cr=records.get('CONTRACT');
