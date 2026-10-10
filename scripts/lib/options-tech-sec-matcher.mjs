@@ -33,6 +33,32 @@ function supportedAnnouncement(text,issuer,symbol){
  const tail=' (?:today )?(?:announced|reported) (?:financial )?results for (?:its|the) (?:first|second|third|fourth) quarter(?: fiscal(?: year)? 20\\d{2}| 20\\d{2})? ended '+datePattern+'\\.?';
  return !/\b(?:said|according|quote|customer|partner|joint|together|behalf)\b/i.test(text)&&new RegExp('^'+prefix+subject+tail+'$').test(text);
 }
+function quotationScope(raw){
+ // Strict saved-markup subset, not HTML error recovery. Keep source offsets used by
+ // extractTechOriginal; quoted tag attributes and raw-text bodies are not tags.
+ const stack=[],ranges=[],voids=new Set('area base br col embed hr img input link meta param source track wbr'.split(' '));
+ const invalid=reason=>({status:'UNKNOWN',reason,ranges});
+ let cursor=0;
+ while(cursor<raw.length){const start=raw.indexOf('<',cursor);if(start<0)break;
+  if(raw.startsWith('<!--',start)){const end=raw.indexOf('-->',start+4);if(end<0)return invalid('UNCLOSED_COMMENT');cursor=end+3;continue;}
+  const declaration=raw.slice(start).match(/^<!doctype\s+html\s*>/i);if(declaration){cursor=start+declaration[0].length;continue;}
+  let end=start+1,quote=null;for(;end<raw.length;end++){const c=raw[end];if(quote){if(c===quote)quote=null;}else if(c==='"'||c==="'")quote=c;else if(c==='>')break;else if(c==='<')return invalid('UNSUPPORTED_TAG_SYNTAX');}
+  if(end===raw.length||quote)return invalid('UNCLOSED_TAG_OR_ATTRIBUTE');
+  const token=raw.slice(start,end+1),m=token.match(/^<(\/?)([a-z][\w:-]*)([^]*)>$/i);if(!m)return invalid('UNSUPPORTED_TAG_SYNTAX');
+  const tag=m[2].toLowerCase(),closing=!!m[1],tail=m[3];cursor=end+1;
+  if(closing){if(!/^\s*$/.test(tail)||voids.has(tag)||stack.at(-1)?.tag!==tag)return invalid('MISMATCHED_CLOSING_TAG');const entry=stack.pop();if(tag==='q'||tag==='blockquote')ranges.push({tag,sourceStart:entry.start,sourceEnd:cursor});continue;}
+  if(!/^(?:\s+[^\s"'<>\/=]+(?:\s*=\s*(?:"[^"<>]*"|'[^'<>]*'|[^\s"'=<>`]+))?)*\s*\/?$/.test(tail))return invalid('UNSUPPORTED_ATTRIBUTE_SYNTAX');
+  if(['svg','math','template','noscript','plaintext'].includes(tag))return invalid('UNSUPPORTED_CONTENT_MODEL');
+  if(voids.has(tag))continue;
+  if(/\/\s*$/.test(tail))return invalid('NONVOID_SELF_CLOSING_TAG');
+  if(['script','style','textarea','title','xmp','iframe','noembed','noframes'].includes(tag)){
+   const close=new RegExp('</'+tag+'\\s*>','ig');close.lastIndex=cursor;const found=close.exec(raw);if(!found)return invalid('UNCLOSED_RAW_TEXT');cursor=found.index+found[0].length;ranges.push({tag,sourceStart:start,sourceEnd:cursor});continue;
+  }
+  stack.push({tag,start});
+ }
+ if(stack.length)return invalid('UNCLOSED_ELEMENT');
+ return {status:'PARSED_RESTRICTED_MARKUP',reason:null,ranges};
+}
 function identity(source,body,issuer,symbol,{main=false}={}){
  const claims=[],issues=[],nameCore=norm(issuer.name).replace(/\s+(?:inc|incorporated|corp|corporation|co|company)$/,'');
  const intro=body.blocks.slice(0,30),named=intro.find(b=>(' '+norm(b.text)+' ').includes(' '+nameCore+' '));
@@ -46,16 +72,16 @@ function identity(source,body,issuer,symbol,{main=false}={}){
   if(m[1]==='EntityCentralIndexKey'){if(cik(value)!==cik(issuer.cik))issues.push('ISSUER_CIK_CONFLICT');else mainCik=true;}
   else if(norm(value)!==norm(issuer.name))issues.push('ISSUER_REGISTRANT_CONFLICT');
  }}
- let issuerAnnouncement=false;
- if(!main){const raw=source.bytes.toString('utf8').toLowerCase();
-  for(const b of body.blocks){if(/<(?:td|th)\b/.test(raw.slice(b.sourceStart,b.sourceEnd))||b.text.search(comparisonRx)===0||!/\b(?:announced|reported)\b/i.test(b.text)||!/\bresults\b/i.test(b.text))continue;
-   const quoted=raw.lastIndexOf('<blockquote',b.sourceStart)>raw.lastIndexOf('</blockquote',b.sourceStart)||/["“”‘’]/.test(b.text);
+ let issuerAnnouncement=false,quotes=null;
+ if(!main){const raw=source.bytes.toString('utf8');quotes=quotationScope(raw);if(quotes.status==='UNKNOWN')issues.push('QUOTATION_SCOPE_UNKNOWN_'+quotes.reason);
+  for(const b of body.blocks){if(/<(?:td|th)\b/i.test(raw.slice(b.sourceStart,b.sourceEnd))||b.text.search(comparisonRx)===0||!/\b(?:announced|reported)\b/i.test(b.text)||!/\bresults\b/i.test(b.text))continue;
+   const quoted=quotes.status==='UNKNOWN'||quotes.ranges.some(r=>r.sourceStart<b.sourceEnd&&r.sourceEnd>b.sourceStart)||/["“”‘’]/.test(b.text);
    if(!quoted&&supportedAnnouncement(b.text,issuer,symbol)){issuerAnnouncement=true;claims.push({kind:'RESTRICTED_ISSUER_SUBJECT_CLAUSE',value:b.text,citation:citation(source,b)});}
    else issues.push('UNSUPPORTED_OR_THIRD_PARTY_ANNOUNCEMENT');
   }
  }
  const complete=!!named&&(main?mainCik:issuerAnnouncement);
- return {status:issues.some(r=>/^ISSUER_.*CONFLICT$/.test(r))?'CONFLICT':issues.length?'UNKNOWN':complete?'MATCH':'UNKNOWN',reasons:issues.length?uniq(issues):complete?[]:['ISSUER_BODY_BINDING_INCOMPLETE'],claims};
+ return {status:issues.some(r=>/^ISSUER_.*CONFLICT$/.test(r))?'CONFLICT':issues.length?'UNKNOWN':complete?'MATCH':'UNKNOWN',reasons:issues.length?uniq(issues):complete?[]:['ISSUER_BODY_BINDING_INCOMPLETE'],claims,...(!main?{quotationScope:quotes}:{})};
 }
 function resultPeriod(source,body,{at}={}){
  const claims=[],disclosures=[],guidanceMentions=[],mentions=[],endClaims=[],reasons=[],raw=source.bytes.toString('utf8');let multiPeriod=false,section='UNSCOPED';
@@ -113,7 +139,7 @@ export function buildTechSecMatch({files,lineage,request,extraSources=[],at,cont
  const titleTickers=[...(title??'').matchAll(/\b(?:NYSE|NASDAQ)\s*:\s*([A-Z][A-Z0-9.]{0,8})\b/g)].map(m=>m[1]);
  for(const m of (title??'').matchAll(/(?:^([A-Z]{1,5})\b|\(([A-Z]{1,5})\))/g)){const symbol=m[1]??m[2];if(lineage.pool.includes(symbol))titleTickers.push(symbol);}
  const issuerConflicts=uniq(titleTickers.filter(s=>s!==request.symbol));
- const out={version:'TECH36_SEC_MATERIAL_MATCH_V1',parsePolicy:'RESTRICTED_ISSUER_PERIOD_DATE_V2',scanId:lineage.scanId,eventId:event.eventId,symbol:request.symbol,accession:request.accession,generatedAt:at,
+ const out={version:'TECH36_SEC_MATERIAL_MATCH_V1',parsePolicy:'RESTRICTED_ISSUER_PERIOD_DATE_QUOTATION_V3',scanId:lineage.scanId,eventId:event.eventId,symbol:request.symbol,accession:request.accession,generatedAt:at,
   sourcePolicySha256:lineage.scanPolicySha256,sourceCutoff:lineage.originalCutoff,
   authority:'SAVED_MATERIAL_CANDIDATES_NOT_FACT_VERIFICATION',sourceReads:0,marketCalls:0,automaticAppend:false,pendingCleared:false,executionAllowed:false,
   query:{title,authority:'UNVERIFIED_DISCOVERY_QUERY_NOT_BODY_EVIDENCE',discoveryPublishedAt:event.publishedAt??null,discoveryReceivedAt:event.receivedAt??null,period:query,periodLabels:queryLabels,endedDates:queryEnds,annual:annual(title??''),periodEnd:queryPeriodEnd,issuerConflicts,ambiguous:ambiguousQuery||queryEndValues.length>1,topic:/guidance|outlook/i.test(title??'')?'GUIDANCE':'RESULTS_OR_UNSPECIFIED'},
