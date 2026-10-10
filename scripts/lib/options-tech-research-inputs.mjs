@@ -83,7 +83,9 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
   const docs=documents.filter(d=>documentIds.includes(d.id));
   if(!docs.some(d=>d.status==='BODY_TEXT_EXTRACTED'))issues.push('ORIGINAL_BODY_UNKNOWN');
   if(review.materialConflict)issues.push('SAVED_MATERIAL_CONFLICT_UNRESOLVED');
+  const coverageQualified=!review.unreviewed&&review.originalVerified===true&&review.companyEventVerified===true&&review.materialityReviewed===true&&review.materialConflict===false&&docs.some(d=>d.status==='BODY_TEXT_EXTRACTED');
   eventInputs.push({eventId:event.eventId,symbol:review.symbol,reviewStatus:review.unreviewed?'NOT_REVIEWED':'ATTRIBUTED_SAVED_REVIEW',discoveredAt:event.receivedAt??null,
+   coverageStatus:coverageQualified?'ATTRIBUTED_VERIFIED_SCOPE':'UNRESOLVED',
    filingAcceptedAt:event.kind==='OFFICIAL_FILING_METADATA'?event.publishedAt??null:null,
    documentIds:unique(documentIds),relatedDiscoveryRecords:related,
    savedReview:{authority:'ATTRIBUTED_SAVED_REVIEW_NOT_AUTOMATIC_FACT_VERIFICATION',reviewedAt:review.unreviewed?null:review.reviewedAt??input.createdAt,
@@ -100,10 +102,10 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
  }
  const companies=lineage.pool.map(symbol=>{
   const discovered=events.filter(e=>e.symbols.includes(symbol)),rank=lineage.ranking.find(r=>r.symbol===symbol),followup=followups.find(r=>r.symbol===symbol),reviewed=eventInputs.filter(r=>r.symbol===symbol);
-  const covered=new Set(reviewed.filter(r=>r.reviewStatus!=='NOT_REVIEWED').flatMap(r=>[r.eventId,...r.relatedDiscoveryRecords.filter(l=>l.notIndependentOpportunity).map(l=>l.eventId)]));
+  const covered=new Set(reviewed.filter(r=>r.coverageStatus==='ATTRIBUTED_VERIFIED_SCOPE').flatMap(r=>[r.eventId,...r.relatedDiscoveryRecords.filter(l=>l.notIndependentOpportunity).map(l=>l.eventId)]));
   const unresolved=discovered.filter(e=>!covered.has(e.eventId)).map(e=>e.eventId);
   return {symbol,candidateId:lineage.scanId+'-'+symbol,sourceCoverage:lineage.coverage.filter(c=>c.symbol===symbol),
-   discoveryEventIds:discovered.map(e=>e.eventId),reviewedEventIds:reviewed.filter(r=>r.reviewStatus!=='NOT_REVIEWED').map(r=>r.eventId),unresolvedEventIds:unresolved,
+   discoveryEventIds:discovered.map(e=>e.eventId),reviewedEventIds:reviewed.filter(r=>r.reviewStatus!=='NOT_REVIEWED').map(r=>r.eventId),qualifiedAssociationIds:[...covered],unresolvedEventIds:unresolved,
    sourceGaps:['SEC_SUBMISSIONS','GOOGLE_NEWS_RSS'].filter(id=>!lineage.coverage.some(c=>c.symbol===symbol&&c.sourceId===id&&c.status==='SUCCESS')),
    discoveryConclusion:discovered.length?'DISCOVERED_RECORDS_REQUIRE_REVIEW':'UNKNOWN_NO_SAVED_EVENT_IS_NOT_NO_OPPORTUNITY',
    inheritedRanking:rank,limitedFollowup:{classification:followup?.classification??'NOT_REVIEWED',scope:followup?.scope??'NO_SAVED_FOLLOWUP',reason:followup?.reason??null,nextEvidence:followup?.nextEvidence??null},
@@ -118,6 +120,8 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
    limitedFollowupSelectedAssociations:lineage.followupBatch?.selectedCompanyHeadlineAssociations??null,
    limitedFollowupUnattemptedAssociations:lineage.followupBatch?.unattemptedCompanyHeadlineAssociations??null,
    reviewedCanonicalEvents:input.reviews.length,materialEventInputs:eventInputs.length,attributedRelatedRecords:eventInputs.reduce((n,e)=>n+e.relatedDiscoveryRecords.length,0),
+   coveragePolicy:'ATTRIBUTED_VERIFIED_SCOPE_V1',qualifiedCompanyEventAssociations:companies.reduce((n,c)=>n+c.qualifiedAssociationIds.length,0),
+   unresolvedCompanyEventAssociations:companies.reduce((n,c)=>n+c.unresolvedEventIds.length,0),
    extractedDocuments:documents.filter(d=>d.status==='BODY_TEXT_EXTRACTED').length,
    companiesWithCitedInputs:companies.filter(c=>c.researchStatus==='CITED_INPUT_AVAILABLE').length,
    inheritedRankingCategories:Object.fromEntries(unique(companies.map(c=>c.inheritedRanking.category)).map(k=>[k,companies.filter(c=>c.inheritedRanking.category===k).length])),
