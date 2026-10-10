@@ -19,7 +19,7 @@ function money(value: bigint) { const result = Number(value); if (!Number.isSafe
 const sign = (leg: OptionsStructureLeg) => leg.side === "BUY" ? 1n : -1n;
 const sum = (values: readonly number[]) => money(values.reduce((a, b) => a + BigInt(b), 0n));
 
-function infer(legs: readonly OptionsStructureLeg[]): OptionsStructure {
+export function inferOptionsStructure(legs: readonly OptionsStructureLeg[]): OptionsStructure {
   const first = legs[0]!;
   if (legs.length === 1 && first.side === "BUY") return first.contract.optionType === "CALL" ? "LONG_CALL" : "LONG_PUT";
   if (legs.length !== 2 || first.contract.contractId === legs[1]!.contract.contractId) fail("UNSUPPORTED_LEGS");
@@ -59,7 +59,7 @@ function validate(value: unknown): OptionsStructureComparison {
       const hash = readinessFingerprint({ contract, quote: l.quote });
       if (contracts.has(contract.contractId) && contracts.get(contract.contractId) !== hash) fail("INCONSISTENT_CONTRACT_SNAPSHOT"); contracts.set(contract.contractId, hash);
     }
-    if (infer(c.legs) !== c.structure) fail("STRUCTURE_LABEL_MISMATCH");
+    if (inferOptionsStructure(c.legs) !== c.structure) fail("STRUCTURE_LABEL_MISMATCH");
     exact(c.costs, ["entryFeesCents", "exitFeesCents", "exitSlippageReserveCents", "reference"]);
     for (const v of [c.costs.entryFeesCents, c.costs.exitFeesCents, c.costs.exitSlippageReserveCents]) if (v !== null) integer(v, 0, 1_000_000);
     if (c.costs.reference !== null) text(c.costs.reference);
@@ -67,7 +67,7 @@ function validate(value: unknown): OptionsStructureComparison {
   return freezePaper(structuredClone(s));
 }
 
-function terminal(c: OptionsStructureCandidate, debit: number, reserve: number, prices: readonly number[]) {
+export function structureTerminalPayoff(c: OptionsStructureCandidate, debit: number, reserve: number, prices: readonly number[]) {
   const scale = BigInt(c.quantity) * 100n, cost = BigInt(debit) + BigInt(reserve);
   const pnl = (price: number) => money(c.legs.reduce((total, leg) => {
     const intrinsic = leg.contract.optionType === "CALL" ? Math.max(0, price - leg.contract.strikePriceCents) : Math.max(0, leg.contract.strikePriceCents - price);
@@ -104,6 +104,17 @@ function terminal(c: OptionsStructureCandidate, debit: number, reserve: number, 
     strikeKnots: knots.map(underlyingPriceCents => ({ underlyingPriceCents, netPnlCents: pnl(underlyingPriceCents) })), rightTailSlopeCentsPerUnderlyingCent: tailSlope,
     scenarios: prices.map(underlyingPriceCents => ({ underlyingPriceCents, netPnlCents: pnl(underlyingPriceCents) })) };
 }
+
+/** Arithmetic only: callers must validate contract scope, executable sides and clocks first. */
+export function structureQuotedEconomics(c: OptionsStructureCandidate) {
+  const scale = BigInt(c.quantity) * 100n;
+  return {
+    grossLongPremiumCents: money(c.legs.filter(l => l.side === "BUY").reduce((a, l) => a + BigInt(l.quote!.askPerShareCents) * scale, 0n)),
+    grossShortCreditCents: money(c.legs.filter(l => l.side === "SELL").reduce((a, l) => a + BigInt(l.quote!.bidPerShareCents) * scale, 0n)),
+    quotedClosingValueCents: money(c.legs.reduce((a, l) => a + sign(l) * BigInt(l.side === "BUY" ? l.quote!.bidPerShareCents : l.quote!.askPerShareCents) * scale, 0n)),
+  };
+}
+
 function candidate(s: OptionsStructureComparison, c: OptionsStructureCandidate) {
   const inputBlockers: { code: string; subject: string }[] = [], block = (code: string, subject = c.candidateId) => inputBlockers.push({ code, subject });
   const dte = (Date.parse(s.expiryDate + "T00:00:00.000Z") - Date.parse(exchangeLocalDate(s.asOf, "America/New_York") + "T00:00:00.000Z")) / 86400000;
@@ -123,14 +134,10 @@ function candidate(s: OptionsStructureComparison, c: OptionsStructureCandidate) 
   if ([entryFee, exitFee, slippage].some(v => v === null)) block("COSTS_UNKNOWN");
   if (reference === null) block("COST_REFERENCE_MISSING");
   const scale = BigInt(c.quantity) * 100n;
-  const quoteValues = inputBlockers.some(b => !["COSTS_UNKNOWN", "COST_REFERENCE_MISSING"].includes(b.code)) ? null : {
-    grossLongPremiumCents: money(c.legs.filter(l => l.side === "BUY").reduce((a, l) => a + BigInt(l.quote!.askPerShareCents) * scale, 0n)),
-    grossShortCreditCents: money(c.legs.filter(l => l.side === "SELL").reduce((a, l) => a + BigInt(l.quote!.bidPerShareCents) * scale, 0n)),
-    quotedClosingValueCents: money(c.legs.reduce((a, l) => a + sign(l) * BigInt(l.side === "BUY" ? l.quote!.bidPerShareCents : l.quote!.askPerShareCents) * scale, 0n)),
-  };
+  const quoteValues = inputBlockers.some(b => !["COSTS_UNKNOWN", "COST_REFERENCE_MISSING"].includes(b.code)) ? null : structureQuotedEconomics(c);
   const debit = quoteValues ? sum([quoteValues.grossLongPremiumCents, -quoteValues.grossShortCreditCents]) : null;
   const reserve = inputBlockers.length ? null : sum([entryFee!, exitFee!, slippage!]);
-  const curve = debit === null || reserve === null ? null : terminal(c, debit, reserve, s.terminalPricesCents);
+  const curve = debit === null || reserve === null ? null : structureTerminalPayoff(c, debit, reserve, s.terminalPricesCents);
   const diagnostics: string[] = [];
   const vertical = c.structure.includes("DEBIT") || c.structure.includes("CREDIT"), credit = c.structure.includes("CREDIT");
   if (debit !== null) {

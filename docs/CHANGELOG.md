@@ -1,3 +1,10 @@
+## Isolated atomic debit-spread MOCK lifecycle
+
+The [CDS/PDS MOCK lifecycle](OPTIONS_TECH_MOCK_SPREAD_DELIVERY.md) reuses the
+structure comparator and isolated journal for balanced two-leg entry, same-day
+close and recovery. Atomic execution is only a synthetic assumption; residual
+reports latch an unsupported state. Real admission and all production lanes stay unchanged.
+
 ## Isolated technology MOCK lifecycle
 
 The [MOCK lifecycle](OPTIONS_TECH_MOCK_LIFECYCLE_DELIVERY.md) connects fictional
