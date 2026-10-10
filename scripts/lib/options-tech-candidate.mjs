@@ -7,6 +7,7 @@ import {normalizeTechOptionCapture,validateTechQuoteSelection} from './options-t
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {buildTechResearchInputs} from './options-tech-research-inputs.mjs';
 
 export const TECH36_POOL=Object.freeze('AAPL MSFT GOOGL AMZN META NVDA TSLA AVGO AMD TSM ASML AMAT LRCX KLAC MU ARM QCOM ORCL CRM NOW PANW CRWD ADBE PLTR SNOW SNPS CDNS ANET CSCO VRT DELL HPE STX WDC APH ETN'.split(' '));
 const sha=b=>createHash('sha256').update(b).digest('hex');
@@ -62,6 +63,17 @@ function runDirectory(root,id,create=false){
  const out=resolve(base,id);if(create)fs.mkdirSync(out);check(fs.realpathSync(out)===out&&!fs.lstatSync(out).isSymbolicLink(),'OUTPUT_SCOPE');return out;
 }
 const write=(p,data)=>fs.writeFileSync(p,JSON.stringify(data,null,2)+'\n',{flag:'wx',mode:0o600});
+/** Explicit offline derivation: all 36 rows, inherited ranking, cited original text; no plan freeze. */
+export function prepareTechResearchInputs({root,sourceRoot,runId,now=()=>new Date().toISOString()}){
+ const {files,lineage}=loadTechCandidate(sourceRoot),at=now(),inputs=buildTechResearchInputs({files,lineage,at});
+ const out=runDirectory(root,runId,true),manifest=[];
+ for(const [p,b] of files){const target=resolve(out,'source',p);fs.mkdirSync(dirname(target),{recursive:true});fs.writeFileSync(target,b,{flag:'wx',mode:0o600});manifest.push({path:'source/'+p,sha256:sha(b)});}
+ write(out+'/research-inputs.json',inputs);manifest.push({path:'research-inputs.json',sha256:sha(fs.readFileSync(out+'/research-inputs.json'))});
+ const receipt={version:'TECH36_RESEARCH_INPUTS_RECEIPT_V1',runId,recordedAt:at,scanId:lineage.scanId,
+  implementation:Object.fromEntries(['options-tech-candidate.mjs','options-tech-research-inputs.mjs','options-tech-review-ranking.mjs'].map(p=>[p,sha(fs.readFileSync(new URL(p,import.meta.url)))])),
+  manifest,screeningTrace:inputs.screeningTrace,sourceReads:0,marketCalls:0,executionAllowed:false,paperAdmissionAllowed:false};
+ write(out+'/receipt.json',receipt);return {runPath:out,receiptPath:out+'/receipt.json',...receipt};
+}
 export function prepareTechCandidate({root,sourceRoot,researchPath,runId,now=()=>new Date().toISOString()}){
  const {files,lineage}=loadTechCandidate(sourceRoot),r=reader(dirname(resolve(researchPath))),bytes=r.read(relative(r.base,resolve(researchPath))),research=json(bytes),at=now();
  check(research.parentRunId===lineage.scanId&&research.candidateId===lineage.candidate.candidateId&&research.eventId===lineage.candidate.eventId&&research.threeFacet?.symbol===lineage.candidate.symbol,'RESEARCH_LINK');
