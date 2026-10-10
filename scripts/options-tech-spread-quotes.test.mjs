@@ -55,25 +55,31 @@ test('CLI exposes actual bounded entry while invalid arguments cannot launch a H
 test('expired contracts with otherwise current quote clocks are blocked',async()=>{const f=fixture();f.selection.expiry='2026-10-08';f.data[0].data.chains[0].expiration_dates=[f.selection.expiry];for(const n of [1,2])f.data[n].data.instruments[0].expiration_date=f.selection.expiry;const r=await collect(f);assert(normalize(r.capture,stamp('12')).quotes.every(q=>q.blockers.includes('OUTSIDE_MODEL_SESSION')));notCoherent(assess(r.preflight));});
 test('missing terminal acquisition clock is preserved as null, never manufactured',async()=>{let n=0;const r=await collect(fixture(),{clock:async()=>{const t=n++;return t===11?'invalid':stamp(String(t).padStart(2,'0'));}});assert.equal(r.capture.capturedAt,null);assert.equal(r.capture.status,'BLOCKED');assert.equal(r.capture.receipts.length,5);notCoherent(assess(r.preflight));});
 test('decimal-cent strikes are not rejected by binary floating multiplication',()=>{const f=fixture();f.selection.legs[0].strike='335.29';assert.equal(validateTechQuoteSelection(f.selection),f.selection);});
-function mockHost(capture,{wrongResponse=false}={}){
+function mockHost(capture,{wrongResponse=false,extraCall=false}={}){
  let starts=0;const start=()=>{starts++;const child=new EventEmitter();child.stdout=new EventEmitter();child.stderr=new EventEmitter();child.kill=()=>{};
  child.stdin={end:prompt=>{assert.match(prompt,/No retry/);queueMicrotask(()=>{
  const items=capture.receipts.map(r=>({type:'item.completed',item:{type:'mcp_tool_call',server:'robinhood_alpha_market_data',tool:r.tool,status:'completed',arguments:structuredClone(r.request),result:structuredClone(r.response)}}));
  if(wrongResponse)items.at(-1).item.result.structuredContent.data.results[0].quote.ask_price='9.99';
+ if(extraCall)items.push(structuredClone(items[3]));
  items.push({type:'item.completed',item:{type:'mcp_tool_call',server:'alpha_tech_quotes',tool:'review_capture',status:'completed',arguments:{capture},result:{}}});
  child.stdout.emit('data',Buffer.from(items.map(x=>JSON.stringify(x)).join('\n')+'\n'));child.emit('close',0);
  });}};return child;};return {start,get starts(){return starts;}};
 }
-for(const kind of ['complete','missing-leg','wrong-host-response'])test('actual parent capture path with explicit MOCK Host transport: '+kind,async()=>{
+for(const kind of ['complete','missing-leg','wrong-host-response','sixth-host-call'])test('actual parent capture path with explicit MOCK Host transport: '+kind,async()=>{
  const root=fs.mkdtempSync(join(tmpdir(),'alpha-spread-host-'));try{
-  fs.mkdirSync(join(root,'data/runtime/options-workbench-development'),{recursive:true});const f=fixture();if(kind==='missing-leg')f.data[4].data.results.pop();const r=await collect(f),host=mockHost(r.capture,{wrongResponse:kind==='wrong-host-response'});let n=0;
+  fs.mkdirSync(join(root,'data/runtime/options-workbench-development'),{recursive:true});const f=fixture();if(kind==='missing-leg')f.data[4].data.results.pop();const r=await collect(f),host=mockHost(r.capture,{wrongResponse:kind==='wrong-host-response',extraCall:kind==='sixth-host-call'});let n=0;
   const options={root,selection:f.selection,runId:f.selection.batchId,codexPath:'MOCK_NOT_EXECUTED',origin:'SYNTHETIC_FIXTURE',spawnHost:host.start,clock:()=>stamp(n++<2?'00':'12')};
   const result=await captureTechQuotes(options);assert.equal(host.starts,1);assert.equal(result.origin,'SYNTHETIC_FIXTURE');assert.equal(result.executionAllowed,false);
   assert.equal(result.status,kind==='complete'?'COHERENT_BATCH_EVIDENCE_ONLY':kind==='missing-leg'?'BLOCKED_PAIR':'BLOCKED_HOST_NO_RECEIPT');
   const run=join(root,'data/runtime/options-workbench-development',f.selection.batchId);assert(fs.existsSync(join(run,'host.jsonl')));
-  if(kind==='wrong-host-response'){assert.equal(result.persistenceError,'TECH_QUOTES_HOST_RESPONSE_BINDING');assert.equal(fs.existsSync(join(run,'capture.json')),false);}
+  const intent=JSON.parse(fs.readFileSync(join(run,'request.json')));assert.equal(intent.hostHardCallBudgetEnforced,false);assert.equal(intent.marketCallLimitScope,'COLLECTOR_ONLY_HOST_EXCESS_DETECTED_POST_HOC');
+  assert.equal(result.hostHardCallBudgetEnforced,false);assert.equal(result.observedCompletedMarketCalls,kind==='sixth-host-call'?6:5);
+  if(kind==='sixth-host-call'){assert.equal(result.persistenceError,'TECH_QUOTES_HOST_CALL_BINDING');assert.equal(fs.existsSync(join(run,'capture.json')),false);const events=fs.readFileSync(join(run,'host.jsonl'),'utf8').trim().split('\n').map(JSON.parse);assert.equal(events.filter(e=>e.item.server==='robinhood_alpha_market_data').length,6);}
+  else if(kind==='wrong-host-response'){assert.equal(result.persistenceError,'TECH_QUOTES_HOST_RESPONSE_BINDING');assert.equal(fs.existsSync(join(run,'capture.json')),false);}
   else {const saved=JSON.parse(fs.readFileSync(join(run,'capture.json')));assert.equal(saved.capture.origin,'SYNTHETIC_FIXTURE');assert.deepEqual(saved.capture.receipts,r.capture.receipts);}
   const names=fs.readdirSync(run).sort(),before=names.map(p=>sha(fs.readFileSync(join(run,p))));await assert.rejects(captureTechQuotes(options),/EEXIST/);assert.equal(host.starts,1);assert.deepEqual(fs.readdirSync(run).sort(),names);assert.deepEqual(names.map(p=>sha(fs.readFileSync(join(run,p)))),before);
  }finally{assert(resolve(root).startsWith(resolve(tmpdir())+sep));fs.rmSync(root,{recursive:true});}
 });
 test('MOCK capture cannot silently invoke the real Host transport',async()=>{const f=fixture();await assert.rejects(captureTechQuotes({root:process.cwd(),selection:f.selection,runId:f.selection.batchId,codexPath:'UNUSED',origin:'SYNTHETIC_FIXTURE'}),/MOCK_TRANSPORT_REQUIRED/);});
+for(const zeroLegs of [[0],[1],[0,1]])test('zero bid/ask spread retains V2 metadata on legs '+zeroLegs,async()=>{const f=fixture();for(const i of zeroLegs)f.data[4].data.results[i].quote.bid_price=f.data[4].data.results[i].quote.ask_price;const r=await collect(f),n=normalize(r.capture,stamp('12')),p=assess(r.preflight);assert.equal(p.quotePair.status,'COHERENT_BATCH_EVIDENCE_ONLY');for(const [i,q]of n.quotes.entries()){assert.equal(q.batchId,f.selection.batchId);assert.equal(q.acquisition.instrumentRequestedAt,r.capture.receipts[i+1].requestedAt);assert.equal(q.acquisition.instrumentReceivedAt,r.capture.receipts[i+1].receivedAt);assert.equal(q.acquisition.quoteRequestedAt,r.capture.receipts[4].requestedAt);assert.equal(q.acquisition.quoteReceivedAt,r.capture.receipts[4].receivedAt);assert.equal(p.legs[i].batchId,q.batchId);assert.deepEqual(p.legs[i].acquisition,q.acquisition);}for(const i of zeroLegs)assert.equal(n.quotes[i].spreadCents,0);});
+for(const [index,field]of [[1,'requestedAt'],[1,'receivedAt'],[2,'requestedAt'],[2,'receivedAt'],[4,'requestedAt'],[4,'receivedAt']])test('missing required batch clock '+index+'/'+field+' cannot qualify',async()=>{const r=await collect();rewrite(r,r=>delete r.capture.receipts[index][field]);notCoherent(assess(r.preflight));});

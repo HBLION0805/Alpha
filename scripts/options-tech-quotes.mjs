@@ -61,7 +61,7 @@ export async function captureTechQuotes({root,selection,runId,codexPath,timeoutM
  if(realpathSync(base)!==base)throw Error('TECH_QUOTES_OUTPUT_SCOPE');
  const run=join(base,runId);mkdirSync(run);const requestedAt=clock();
  const collector=techQuoteCollectorSource(selection);
- const intent={version:spread?'TECH_QUOTES_REQUEST_V2':'TECH_QUOTES_REQUEST_V1',...(spread?{origin}:{}),collectorSha256:sha(collector),adapterSha256:sha(readFileSync(new URL('./lib/options-tech-quote-adapter.mjs',import.meta.url))),requestedAt,selection,purpose:'SOURCE_FEASIBILITY_NOT_TRADE_DECISION',maximumMarketCalls:spread?5:4,maximumContracts:2,accountAccessed:false,executionAllowed:false};
+ const intent={version:spread?'TECH_QUOTES_REQUEST_V2':'TECH_QUOTES_REQUEST_V1',...(spread?{origin,marketCallLimitScope:'COLLECTOR_ONLY_HOST_EXCESS_DETECTED_POST_HOC',hostHardCallBudgetEnforced:false}:{}),collectorSha256:sha(collector),adapterSha256:sha(readFileSync(new URL('./lib/options-tech-quote-adapter.mjs',import.meta.url))),requestedAt,selection,purpose:'SOURCE_FEASIBILITY_NOT_TRADE_DECISION',maximumMarketCalls:spread?5:4,maximumContracts:2,accountAccessed:false,executionAllowed:false};
  writeFileSync(join(run,'request.json'),JSON.stringify(intent,null,2)+'\n',{flag:'wx'});
  writeFileSync(join(run,'collector.js'),collector,{flag:'wx'});
  const prompt=buildTechQuoteHostPrompt(selection);writeFileSync(join(run,'host-prompt.txt'),prompt+'\n',{flag:'wx'});
@@ -81,19 +81,20 @@ export async function captureTechQuotes({root,selection,runId,codexPath,timeoutM
  child.stdout.on('data',b=>{chunks.push(b);appendFileSync(join(run,'host.jsonl'),b);});child.stderr.on('data',b=>appendFileSync(join(run,'host-stderr.txt'),b));
  child.on('error',e=>{clearTimeout(timer);reject(e)});child.on('close',code=>{clearTimeout(timer);done(code)});child.stdin.end(prompt);
  }).catch(()=>null);
- let persistenceError=null;
+ let persistenceError=null,observedCompletedMarketCalls=null;
  try{const events=Buffer.concat(chunks).toString('utf8').split(/\r?\n/).filter(Boolean).map(x=>parseChainSurveyJson(x));
  const completed=events.filter(e=>e.type==='item.completed'&&e.item?.type==='mcp_tool_call').map(e=>e.item);
  const reviews=completed.filter(i=>i.server==='alpha_tech_quotes'&&i.tool==='review_capture'&&i.status==='completed');
  if(reviews.length!==1)throw Error('TECH_QUOTES_HOST_REVIEW_MISSING');
  const capture=reviews[0].arguments?.capture,market=completed.filter(i=>i.server==='robinhood_alpha_market_data');
+ observedCompletedMarketCalls=market.length;
  if(!capture||market.length!==capture.receipts.length||market.length!==capture.calls)throw Error('TECH_QUOTES_HOST_CALL_BINDING');
  const data=r=>r?.structured_content??r?.structuredContent??(r?.data?r:parseChainSurveyJson(r.content.filter(c=>c.type==='text')[0].text));
  for(const [n,r] of capture.receipts.entries()){const m=market[n];if(m.tool!==r.tool||JSON.stringify(m.arguments)!==JSON.stringify(r.request)||JSON.stringify(data(m.result))!==JSON.stringify(data(r.response)))throw Error('TECH_QUOTES_HOST_RESPONSE_BINDING');}
  saveTechQuoteCapture(root,run,capture,clock);
  }catch(e){persistenceError=/^TECH_QUOTES_[A-Z_]+$/.test(e.message)?e.message:'TECH_QUOTES_HOST_PERSISTENCE_FAILED';}
  let receipt=null;try{receipt=readTechQuoteInput(join(run,'capture.json')).data}catch{}
- const result={version:'TECH_QUOTES_HOST_RUN_V1',...(spread?{batchId:selection.batchId,origin,atomicSnapshot:false}:{}),startedAt,finishedAt:clock(),exitCode,timedOut,status:receipt?(receipt.error?'BLOCKED_INTEGRITY':receipt.normalized?.status):'BLOCKED_HOST_NO_RECEIPT',receiptPath:receipt?join(run,'capture.json'):null,persistenceError,runPath:run,executionAllowed:false,paperAdmissionAllowed:false};
+ const result={version:'TECH_QUOTES_HOST_RUN_V1',...(spread?{batchId:selection.batchId,origin,atomicSnapshot:false,collectorMaximumMarketCalls:5,hostHardCallBudgetEnforced:false,observedCompletedMarketCalls}:{}),startedAt,finishedAt:clock(),exitCode,timedOut,status:receipt?(receipt.error?'BLOCKED_INTEGRITY':receipt.normalized?.status):'BLOCKED_HOST_NO_RECEIPT',receiptPath:receipt?join(run,'capture.json'):null,persistenceError,runPath:run,executionAllowed:false,paperAdmissionAllowed:false};
  writeFileSync(join(run,'host-run.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});return result;
 }
 export async function techQuotesCli(args,{root=process.cwd()}={}){

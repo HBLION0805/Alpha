@@ -60,7 +60,10 @@ export function assessTechSpreadPreflight(input){
    const s=sources.get(l.originalId);check(s,'LEG_ORIGINAL_MISSING');
    const q=s.normalized.quotes.find(q=>q.id===l.contract?.id);check(q?.snapshot,'LEG_QUOTE_MISSING');
    check(identity(q.snapshot)===identity(l.contract),'EXACT_CONTRACT_MISMATCH');
-   if(s.c.version==='TECH_OPTION_CAPTURE_V2')check(s.c.selection.legs.some(x=>x.id===q.id&&x.direction===l.direction),'BATCH_SELECTED_LEG_BINDING');
+   if(s.c.version==='TECH_OPTION_CAPTURE_V2'){
+    check(s.c.selection.legs.some(x=>x.id===q.id&&x.direction===l.direction),'BATCH_SELECTED_LEG_BINDING');
+    check(q.batchId===s.c.batchId&&q.acquisition&&['instrumentRequestedAt','instrumentReceivedAt','quoteRequestedAt','quoteReceivedAt'].every(k=>ns(q.acquisition[k])!==null)&&q.acquisition.quoteReceivedAt===q.snapshot.receivedAt,'BATCH_ACQUISITION_METADATA_REQUIRED');
+   }
    return {l,s,q};
   });
   const [a,b]=selected,qa=a.q.snapshot,qb=b.q.snapshot;

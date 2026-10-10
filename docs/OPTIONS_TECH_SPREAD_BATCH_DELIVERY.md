@@ -5,13 +5,19 @@ preflight now support an explicit CDS/PDS request. This is implemented code with
 MOCK transport validation, not a design-only proposal. No real source call was
 made for this delivery. Real quote and Paper acceptance remain NOT_TESTED.
 
-The existing single-strike V1 request still has at most four calls. V2 has at
-most five calls in the same existing 120-second acquisition bound: one chain
+The collector function retains a four-call V1 limit and a five-call V2 limit
+within the existing 120-second acquisition bound: one chain
 lookup, two instrument lookups, one underlying quote call, and one option quote
 call containing exactly the two requested IDs. No pagination, automatic retry,
 substitution, option chain expansion or new connection is introduced. The same
 four authorized read-only market tool names are used; account/order tools are
-not available through the Host scope.
+not available through the Host scope. This is a **collector limit, not a Host
+hard call budget**. The Host tool-name allowlist does not impose a per-run count.
+A Host that makes a sixth market call is detected only by the later receipt-count
+comparison; that rejection cannot undo the call or establish that it never
+happened. The run receipt reports observed completed market-call records and
+`hostHardCallBudgetEnforced: false`. No formal Host hard-budget capability was
+established or installed, and no persistent permissions or credentials changed.
 
 The manual entrypoint is:
 
@@ -20,7 +26,8 @@ npm run options:tech-quotes -- --capture-spread --request FILE --run-id UNIQUE_B
 ```
 
 This command performs real bounded market reads when explicitly invoked in an
-equipped session. It was not invoked against a real Host in this delivery.
+equipped session following the collector. The Host itself has no established
+hard call-count bound. It was not invoked against a real Host in this delivery.
 `--normalize CAPTURE_FILE` remains offline. The saved-original preflight accepts
 the resulting V2 receipt through its existing `--input` entrypoint. These capture
 commands intentionally save local originals; they are not the strict filesystem
@@ -83,6 +90,12 @@ also exercises the actual parent capture/persistence path for complete, missing-
 and altered-response cases. Synthetic origin cannot use the real spawn transport.
 All originals and demonstration receipts remain ignored locally. No synthetic
 record is labeled real. See [checkpoint](status/tech-spread-batch.json).
+
+The audit repair separates the V2 schema flag from numeric bid/ask spread. Zero
+spread no longer removes per-leg batch/acquisition metadata, and V1 output no
+longer acquires V2-only fields. Regression tests cover zero spread on either or
+both legs, missing acquisition clocks, legacy V1 output shape, and a MOCK sixth
+Host call that is retained as an observed excess and rejected after occurrence.
 
 Real Paper still lacks a fresh prospective real batch, verified contract
 deliverable/exercise details, approved spread admission/exit policy and cost basis,

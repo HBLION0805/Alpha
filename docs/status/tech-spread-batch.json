@@ -5,7 +5,6 @@
   "selectionVersion": "TECH_DEBIT_SPREAD_SELECTION_V1",
   "captureVersion": "TECH_OPTION_CAPTURE_V2",
   "receiptVersion": "TECH_QUOTES_RECEIPT_V2",
-  "maximumCalls": 5,
   "maximumQuotedContracts": 2,
   "automaticRetries": 0,
   "atomicSnapshot": false,
@@ -19,12 +18,22 @@
   "validation": {
     "status": "PASSED",
     "scope": "EXACT_ISOLATED_PUBLISHING_COMBINATION",
-    "baseCommit": "f51fc059b9ce9a986b0cb2b26a7bfca13af9339c",
+    "baseCommit": "529552c31c131c2bff75d99abcbf2bbd7e83c84c",
     "componentCount": 225,
-    "testsExecuted": 5525,
-    "passed": 5525,
+    "testsExecuted": 5537,
+    "passed": 5537,
     "failed": 0,
-    "focusedBatchTests": 57,
+    "focusedBatchTests": 67,
+    "legacyQuoteTests": 27,
     "realPriceAcceptance": "NOT_TESTED"
+  },
+  "collectorMaximumCalls": 5,
+  "hostHardCallBudgetEnforced": false,
+  "excessHostCalls": "POST_HOC_DETECTION_DOES_NOT_PREVENT_CALLS",
+  "auditRepair": {
+    "status": "IMPLEMENTED_PENDING_INDEPENDENT_REVIEW",
+    "v2ZeroSpreadMetadataRequired": true,
+    "v1GoldenRegression": true,
+    "missingBatchClocksBlockCoherence": true
   }
 }

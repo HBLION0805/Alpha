@@ -91,28 +91,28 @@ const count=v=>Number.isSafeInteger(v)&&v>=0?v:null;
 const positiveCents=v=>{const c=snapshotCents(v);return c!==null&&c>0?c:null};
 export function normalizeTechOptionCapture(capture,asOf){
  const v=capture;validateTechQuoteSelection(v?.selection);
- const spread=v.version==='TECH_OPTION_CAPTURE_V2',maximumCalls=spread?5:4;
- check((spread||v.version==='TECH_OPTION_CAPTURE_V1')&&spread===(v.selection.version==='TECH_DEBIT_SPREAD_SELECTION_V1')&&['HOST_MARKET_TOOL_RESPONSES','SYNTHETIC_FIXTURE'].includes(v.origin)&&v.accountAccessed===false&&v.executionAllowed===false,'SCOPE');
- if(spread)check(v.batchId===v.selection.batchId&&v.atomicSnapshot===false,'BATCH_BINDING');
+ const isSpreadBatch=v.version==='TECH_OPTION_CAPTURE_V2',maximumCalls=isSpreadBatch?5:4;
+ check((isSpreadBatch||v.version==='TECH_OPTION_CAPTURE_V1')&&isSpreadBatch===(v.selection.version==='TECH_DEBIT_SPREAD_SELECTION_V1')&&['HOST_MARKET_TOOL_RESPONSES','SYNTHETIC_FIXTURE'].includes(v.origin)&&v.accountAccessed===false&&v.executionAllowed===false,'SCOPE');
+ if(isSpreadBatch)check(v.batchId===v.selection.batchId&&v.atomicSnapshot===false,'BATCH_BINDING');
  const now=snapshotNs(asOf),started=snapshotNs(v.startedAt),finished=snapshotNs(v.capturedAt);
  check(started<=finished&&finished<=now&&finished-started<120000000000n,'CAPTURE_CLOCK');
  check(Array.isArray(v.receipts)&&v.receipts.length<=maximumCalls&&Number.isSafeInteger(v.calls)&&v.calls>=v.receipts.length&&v.calls<=maximumCalls&&Array.isArray(v.failures),'COUNTS');
  if(v.status!=='CAPTURED'||v.failures.length)return {version:'TECH_OPTION_NORMALIZED_V1',status:'BLOCKED_SOURCE',failures:v.failures,quotes:[],executionAllowed:false};
  check(v.receipts.length===maximumCalls&&v.calls===maximumCalls,'INCOMPLETE_CAPTURE');
- const expected=spread?['get_option_chains','get_option_instruments','get_option_instruments','get_equity_quotes','get_option_quotes']:['get_option_chains','get_option_instruments','get_equity_quotes','get_option_quotes'];
+ const expected=isSpreadBatch?['get_option_chains','get_option_instruments','get_option_instruments','get_equity_quotes','get_option_quotes']:['get_option_chains','get_option_instruments','get_equity_quotes','get_option_quotes'];
  let last=started;
  for(const [n,r] of v.receipts.entries()){check(r.tool===expected[n],'TOOL_ORDER');const begin=snapshotNs(r.requestedAt),end=snapshotNs(r.receivedAt);check(last<=begin&&begin<=end&&end<=finished,'RECEIPT_CLOCK');last=end;}
- const cr=v.receipts[0],irs=v.receipts.slice(1,spread?3:2),er=v.receipts.at(-2),qr=v.receipts.at(-1);
+ const cr=v.receipts[0],irs=v.receipts.slice(1,isSpreadBatch?3:2),er=v.receipts.at(-2),qr=v.receipts.at(-1);
  const chains=body(cr.response),equities=body(er.response),options=body(qr.response),instruments={instruments:[]},instrumentReceipts=new Map();
  check(Array.isArray(chains.chains)&&chains.chains.length===1,'CHAIN_COUNT');const ch=chains.chains[0],s=v.selection;
  check(typeof ch.id==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(ch.id)&&cr.request.underlying_symbol===s.symbol&&Object.keys(cr.request).length===1&&ch.symbol===s.symbol&&ch.expiration_dates?.includes(s.expiry)&&Number(ch.trade_value_multiplier)===100,'CHAIN_IDENTITY');
  const ids=[];
  for(const [n,ir] of irs.entries()){
-  const target=spread?s.legs[n]:{strike:s.strike},data=body(ir.response),types=new Set();
+  const target=isSpreadBatch?s.legs[n]:{strike:s.strike},data=body(ir.response),types=new Set();
   check(JSON.stringify(ir.request)===JSON.stringify({chain_id:ch.id,expiration_dates:s.expiry,strike_price:target.strike,state:'active'}),'INSTRUMENT_REQUEST');
   check(!data.next&&Array.isArray(data.instruments)&&data.instruments.length>0&&data.instruments.length<=2,'INSTRUMENT_COUNT');
-  const selected=spread?data.instruments.filter(i=>i.id===target.id):data.instruments;
-  if(spread)check(selected.length===1&&selected[0].type===s.type,'EXPLICIT_CONTRACT_MISSING');
+  const selected=isSpreadBatch?data.instruments.filter(i=>i.id===target.id):data.instruments;
+  if(isSpreadBatch)check(selected.length===1&&selected[0].type===s.type,'EXPLICIT_CONTRACT_MISSING');
   for(const i of selected){
    check(typeof i.id==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(i.id)&&!ids.includes(i.id)&&!types.has(i.type)&&['call','put'].includes(i.type)&&i.chain_id===ch.id&&i.chain_symbol===s.symbol&&i.expiration_date===s.expiry&&snapshotCents(i.strike_price)===snapshotCents(target.strike)&&i.state==='active'&&i.tradability==='tradable'&&i.underlying_type==='equity'&&Number(i.trade_value_multiplier)===100,'INSTRUMENT_IDENTITY');
    ids.push(i.id);types.add(i.type);instruments.instruments.push(i);instrumentReceipts.set(i.id,ir);
@@ -137,17 +137,17 @@ export function normalizeTechOptionCapture(capture,asOf){
   if(equity.state!=='active'||equity.has_traded!==true)blockers.push('UNDERLYING_ACTIVITY_UNKNOWN');
   if(underlyingAt&&snapshotNs(underlyingAt)>snapshotNs(er.receivedAt))blockers.push('UNDERLYING_AFTER_OWN_RECEIPT');
   if(snapshot.bidSize===0||snapshot.askSize===0)blockers.push('DISPLAYED_SIZE_INSUFFICIENT');
-  const spread=snapshot.askCents===null||snapshot.bidCents===null?null:snapshot.askCents-snapshot.bidCents;
+  const bidAskSpreadCents=snapshot.askCents===null||snapshot.bidCents===null?null:snapshot.askCents-snapshot.bidCents;
   const mechanical=snapshot.tickCents&&snapshot.askCents?Math.max(snapshot.tickCents,Math.min(10,Math.floor(snapshot.askCents/10/snapshot.tickCents)*snapshot.tickCents||snapshot.tickCents)):null;
-  if(spread!==null&&mechanical!==null&&spread>mechanical)blockers.push('EXISTING_MECHANICAL_SPREAD_LIMIT');
-  return {id:i.id,symbol:s.symbol,...(spread?{batchId:v.batchId,acquisition:{instrumentRequestedAt:instrumentReceipts.get(i.id).requestedAt,instrumentReceivedAt:instrumentReceipts.get(i.id).receivedAt,quoteRequestedAt:qr.requestedAt,quoteReceivedAt:qr.receivedAt}}:{}),status:blockers.length?'BLOCKED_QUOTE':'QUALIFIED_SNAPSHOT_ONLY',blockers:[...new Set(blockers)],snapshot,atReceipt,current,spreadCents:spread,mechanicalSpreadLimitCents:mechanical,contractEvidence:{deliverable:null,exerciseStyle:null,tradability:i.tradability,selloutDatetime:i.sellout_datetime??null},sourceClockMeaning:'Provider quote refresh; independent bid/ask exchange timestamps are not exposed by this option response.'};
+  if(bidAskSpreadCents!==null&&mechanical!==null&&bidAskSpreadCents>mechanical)blockers.push('EXISTING_MECHANICAL_SPREAD_LIMIT');
+  return {id:i.id,symbol:s.symbol,...(isSpreadBatch?{batchId:v.batchId,acquisition:{instrumentRequestedAt:instrumentReceipts.get(i.id).requestedAt,instrumentReceivedAt:instrumentReceipts.get(i.id).receivedAt,quoteRequestedAt:qr.requestedAt,quoteReceivedAt:qr.receivedAt}}:{}),status:blockers.length?'BLOCKED_QUOTE':'QUALIFIED_SNAPSHOT_ONLY',blockers:[...new Set(blockers)],snapshot,atReceipt,current,spreadCents:bidAskSpreadCents,mechanicalSpreadLimitCents:mechanical,contractEvidence:{deliverable:null,exerciseStyle:null,tradability:i.tradability,selloutDatetime:i.sellout_datetime??null},sourceClockMeaning:'Provider quote refresh; independent bid/ask exchange timestamps are not exposed by this option response.'};
  });
  let pair=null;
- if(spread){
+ if(isSpreadBatch){
   const clocks=quotes.map(q=>q.snapshot?.updatedAt??null),skew=clocks.every(Boolean)?snapshotNs(clocks[0])-snapshotNs(clocks[1]):null,absolute=skew===null?null:skew<0n?-skew:skew;
   const blockers=[];if(quotes.length!==2||quotes.some(q=>q.status!=='QUALIFIED_SNAPSHOT_ONLY'))blockers.push('PAIR_LEG_NOT_QUALIFIED');
   if(absolute===null)blockers.push('PAIR_SOURCE_CLOCK_UNKNOWN');else if(absolute>BigInt(s.maxSourceSkewMs)*1000000n)blockers.push('PAIR_SOURCE_SKEW_EXCEEDED');
   pair={batchId:v.batchId,atomicSnapshot:false,sourceClockDifferenceNs:absolute?.toString()??null,maxSourceSkewMs:s.maxSourceSkewMs,timingAuthority:'EXPLICIT_REQUEST_ENGINEERING_ASSUMPTION_NOT_OWNER_STRATEGY',status:blockers.length?'BLOCKED_PAIR':'COHERENT_BATCH_EVIDENCE_ONLY',blockers};
  }
- return {version:'TECH_OPTION_NORMALIZED_V1',...(spread?{pair}:{}),status:spread?pair.status:quotes.some(q=>q.status==='QUALIFIED_SNAPSHOT_ONLY')?'SNAPSHOT_AVAILABLE':'NO_QUALIFIED_SNAPSHOT',assessedAt:asOf,origin:v.origin,selection:s,underlying,quotes,source:'ROBINHOOD_OFFICIAL_MCP',transport:'EXISTING_LOCAL_CODEX_OAUTH_HOST',synthetic:v.origin==='SYNTHETIC_FIXTURE',accountPermission:null,dataEntitlement:null,funds:null,costs:null,executionAllowed:false,paperAdmissionAllowed:false,limitation:'Source mapping only; no plan, admission, fill or account authority. Missing deliverable/permissions/funds/costs remain unknown.'};
+ return {version:'TECH_OPTION_NORMALIZED_V1',...(isSpreadBatch?{pair}:{}),status:isSpreadBatch?pair.status:quotes.some(q=>q.status==='QUALIFIED_SNAPSHOT_ONLY')?'SNAPSHOT_AVAILABLE':'NO_QUALIFIED_SNAPSHOT',assessedAt:asOf,origin:v.origin,selection:s,underlying,quotes,source:'ROBINHOOD_OFFICIAL_MCP',transport:'EXISTING_LOCAL_CODEX_OAUTH_HOST',synthetic:v.origin==='SYNTHETIC_FIXTURE',accountPermission:null,dataEntitlement:null,funds:null,costs:null,executionAllowed:false,paperAdmissionAllowed:false,limitation:'Source mapping only; no plan, admission, fill or account authority. Missing deliverable/permissions/funds/costs remain unknown.'};
 }
