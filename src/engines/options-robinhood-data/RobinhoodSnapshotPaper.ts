@@ -1,6 +1,6 @@
 import type { GuidanceQuote, GuidanceSettings } from '../../contracts/OptionsDailyGuidance';
 import { validateGuidanceSettings, guidanceLocal } from '../options-daily-guidance/OptionsDailyGuidance';
-import { evaluateOptionsPlanningFeasibility } from '../options-retail-feasibility/OptionsTradeBudget';
+import { evaluateOptionsPlanningFeasibility, evaluateMockTechnologyPlanning } from '../options-retail-feasibility/OptionsTradeBudget';
 import { paperFingerprint } from '../options-paper/OptionsPaperTradingEngine';
 import { reviewClosedOptionTrade } from '../options-trade-review/OptionsTradeReviewEngine';
 import { reviewedCostComponents } from '../options-retail-feasibility/OptionsCostDesk';
@@ -61,11 +61,12 @@ export interface SnapshotPlan {
   feeBasis?:'DECLARED_FEES'|'ROBINHOOD_REVIEWED_20260910';
 }
 const FIELDS=['version','id','createdAt','contract','selectionPath','decisionAt','entryDeadlineAt','timeExitAt','quantity','entryLimitCents','entryFeeCents','exitFeeCents','exitSlippageCents','maxSpreadCents','settings'];
-export function validateSnapshotPlan(value:unknown):SnapshotPlan {
+export function validateSnapshotPlan(value:unknown):SnapshotPlan {return validatePlanCore(value);}
+function validatePlanCore(value:unknown,mockTechnology=false):SnapshotPlan {
   const v2=!!value&&typeof value==='object'&&'version' in value&&modernSnapshotPlan(value.version);
   if(!value||typeof value!=='object'||Object.keys(value).sort().join()!==[...FIELDS,...(v2?['feeBasis']:[])].sort().join())fail('PLAN_FIELDS');
   const p=value as SnapshotPlan;
-  if(!['OPTIONS_SNAPSHOT_PAPER_PLAN_V1','OPTIONS_SNAPSHOT_PAPER_PLAN_V2','OPTIONS_SNAPSHOT_PAPER_PLAN_V3'].includes(p.version)||! /^[a-z0-9][a-z0-9-]{2,79}$/.test(p.id)||!p.contract||!['GLD','IBIT'].includes(p.contract.symbol)||!['call','put'].includes(p.contract.type)||typeof p.contract.id!=='string'||!p.selectionPath)fail('PLAN');
+  if(!['OPTIONS_SNAPSHOT_PAPER_PLAN_V1','OPTIONS_SNAPSHOT_PAPER_PLAN_V2','OPTIONS_SNAPSHOT_PAPER_PLAN_V3'].includes(p.version)||! /^[a-z0-9][a-z0-9-]{2,79}$/.test(p.id)||!p.contract||!(mockTechnology?['AAPL','TSM','QQQ','TSLA']:['GLD','IBIT']).includes(p.contract.symbol)||!['call','put'].includes(p.contract.type)||typeof p.contract.id!=='string'||!p.selectionPath)fail('PLAN');
   if(v2){
     validateChainSession(p.contract);
     if(!['DECLARED_FEES','ROBINHOOD_REVIEWED_20260910'].includes(p.feeBasis!)||p.feeBasis!=='DECLARED_FEES'&&(p.entryFeeCents!==null||p.exitFeeCents!==null))fail('FEE_BASIS');
@@ -119,13 +120,14 @@ export function assessSnapshotQuote(q:SnapshotQuote,asOf:string,v2=false,exactUn
 }
 
 /** Target fee reserve converges with net R. Actual exit fees use actual modeled proceeds. */
-export function snapshotEntryEconomics(p:SnapshotPlan,q:SnapshotQuote,cash=p.settings.settledCashCents) {
+export function snapshotEntryEconomics(p:SnapshotPlan,q:SnapshotQuote,cash=p.settings.settledCashCents) {return entryEconomicsCore(p,q,cash);}
+function entryEconomicsCore(p:SnapshotPlan,q:SnapshotQuote,cash:number,mockTechnology=false) {
   const reviewed=modernSnapshotPlan(p.version)&&p.feeBasis==='ROBINHOOD_REVIEWED_20260910';
   const gross=q.askCents!*p.quantity*100;
   const entryFee=reviewed?reviewedCostComponents(p.quantity,gross,'BUY').totalCents:p.entryFeeCents;
   let exitFee=reviewed?reviewedCostComponents(p.quantity,gross,'SELL').totalCents:p.exitFeeCents;
   for(let i=0;i<32;i++){
-    const result=evaluateOptionsPlanningFeasibility({symbol:q.symbol,strategy:q.type==='call'?'LONG_CALL':'LONG_PUT',currentEquityCents:p.settings.currentEquityCents,settledCashCents:cash,quantity:p.quantity,contractMultiplier:100,bidPerShareCents:q.bidCents,askPerShareCents:q.askCents,minimumPriceTickCents:priceTick(q,q.askCents!),roundTripFeesCents:entryFee===null||exitFee===null?null:entryFee+exitFee,slippageReserveCents:p.exitSlippageCents===null?null:p.exitSlippageCents*p.quantity*100,mode:'NORMAL',stopLossBps:p.settings.stopLossBps,rewardMultipleMilliR:p.settings.rewardMultipleMilliR,tradeBudget:p.settings.tradeBudget});
+    const result=(mockTechnology?evaluateMockTechnologyPlanning:evaluateOptionsPlanningFeasibility)({symbol:q.symbol,strategy:q.type==='call'?'LONG_CALL':'LONG_PUT',currentEquityCents:p.settings.currentEquityCents,settledCashCents:cash,quantity:p.quantity,contractMultiplier:100,bidPerShareCents:q.bidCents,askPerShareCents:q.askCents,minimumPriceTickCents:priceTick(q,q.askCents!),roundTripFeesCents:entryFee===null||exitFee===null?null:entryFee+exitFee,slippageReserveCents:p.exitSlippageCents===null?null:p.exitSlippageCents*p.quantity*100,mode:'NORMAL',stopLossBps:p.settings.stopLossBps,rewardMultipleMilliR:p.settings.rewardMultipleMilliR,tradeBudget:p.settings.tradeBudget});
     const target=result.economics?.indicativeExitLimitPerShareCents;
     const tick=target==null?null:priceTick(q,target);
     const exitGross=target!=null&&tick!==null&&tick>0?Math.ceil(target/tick)*tick*p.quantity*100:gross;
@@ -136,8 +138,14 @@ export function snapshotEntryEconomics(p:SnapshotPlan,q:SnapshotQuote,cash=p.set
   return fail('COST_CONVERGENCE');
 }
 type Fill={kind:'ENTRY'|'EXIT';sourcePath:string;sourceSha256:string;sourceAt:string;receivedAt:string;priceCents:number;quantity:number;premiumCents:number;feeCents:number;cashAfterCents:number;reason:string};
-export function replaySnapshotPaper(plan:SnapshotPlan,frames:SnapshotFrame[],asOf:string) {
-  const p=validateSnapshotPlan(plan),now=snapshotNs(asOf),decision=snapshotNs(p.decisionAt),deadline=snapshotNs(p.entryDeadlineAt),exitTime=snapshotNs(p.timeExitAt);
+export function replaySnapshotPaper(plan:SnapshotPlan,frames:SnapshotFrame[],asOf:string) {return replayCore(plan,frames,asOf);}
+/** Explicit synthetic-only entrypoint. Symbols retain their identity; no production scope expansion. */
+export function replayTechnologyMockSnapshot(plan:unknown,frames:SnapshotFrame[],asOf:string) {
+  if(!frames.length||frames.some(f=>f.origin!=='SYNTHETIC_FIXTURE'))fail('MOCK_ORIGIN_REQUIRED');
+  return replayCore(plan as SnapshotPlan,frames,asOf,true);
+}
+function replayCore(plan:SnapshotPlan,frames:SnapshotFrame[],asOf:string,mockTechnology=false) {
+  const p=validatePlanCore(plan,mockTechnology),now=snapshotNs(asOf),decision=snapshotNs(p.decisionAt),deadline=snapshotNs(p.entryDeadlineAt),exitTime=snapshotNs(p.timeExitAt);
   const v2=modernSnapshotPlan(p.version),v3=p.version==='OPTIONS_SNAPSHOT_PAPER_PLAN_V3',reviewed=v2&&p.feeBasis==='ROBINHOOD_REVIEWED_20260910';
   if(snapshotNs(p.createdAt)>now||!Array.isArray(frames)||frames.length>1000)fail('ASSESSMENT');
   const selection=frames.find(f=>f.path===p.selectionPath);
@@ -188,7 +196,7 @@ export function replaySnapshotPaper(plan:SnapshotPlan,frames:SnapshotFrame[],asO
       if(q.askSize!<p.quantity||q.bidSize!<p.quantity)codes.push('ENTRY_SIZE_INSUFFICIENT');
       if(bid===0)codes.push('ENTRY_EXIT_BID_UNAVAILABLE');
       if(!aligned(q,p.entryLimitCents))codes.push('ENTRY_LIMIT_TICK_INVALID');
-      const {result,entryFeeCents}=snapshotEntryEconomics(p,q,cash);
+      const {result,entryFeeCents}=entryEconomicsCore(p,q,cash,mockTechnology);
       codes.push(...result.blockers.map(b=>b.code));
       const indicative=result.economics?.indicativeExitLimitPerShareCents;
       if(indicative!=null){const tick=priceTick(q,indicative);if(tick===null||tick<=0)codes.push('TARGET_TICK_UNKNOWN');else if(Math.ceil(indicative/tick)*tick*100>ask*180)codes.push('TARGET_PREMIUM_CEILING');}
@@ -215,7 +223,7 @@ export function replaySnapshotPaper(plan:SnapshotPlan,frames:SnapshotFrame[],asO
   if(fills.length===1&&lastSeen!==null&&now-lastSeen>60000000000n)gap=true;
   const status=fills.length===2?'CLOSED_MODELED':fills.length===1?'OPEN_UNRESOLVED':'NO_ENTRY';
   const netPnl=fills.length===2?cash-p.settings.settledCashCents:null;
-  const review=fills.length===2?reviewClosedOptionTrade({tradeId:p.id,symbol:p.contract.symbol,strategyVersion:v3?'RH_SNAPSHOT_ASSUMPTIONS_V3':v2?'RH_SNAPSHOT_ASSUMPTIONS_V2':SNAPSHOT_PROFILE,setupKey:'snapshot-assumption-only',origin:origin==='SYNTHETIC_FIXTURE'?origin:'UNVERIFIED_IMPORT',planFingerprint:paperFingerprint(p),entryAt:new Date(fills[0]!.receivedAt).toISOString(),exitAt:new Date(fills[1]!.receivedAt).toISOString(),exitReason:fills[1]!.reason,entryPremiumCents:fills[0]!.premiumCents,exitProceedsCents:fills[1]!.premiumCents,feesCents:fills[0]!.feeCents+fills[1]!.feeCents,netPnlCents:netPnl,plannedRiskCents:plannedRisk,entrySpreadCents:entrySpread,exitLiquidityDelayed:exitDelayed,quoteGapObserved:gap,planViolations:[]}):null;
+  const review=fills.length===2&&!mockTechnology?reviewClosedOptionTrade({tradeId:p.id,symbol:p.contract.symbol,strategyVersion:v3?'RH_SNAPSHOT_ASSUMPTIONS_V3':v2?'RH_SNAPSHOT_ASSUMPTIONS_V2':SNAPSHOT_PROFILE,setupKey:'snapshot-assumption-only',origin:origin==='SYNTHETIC_FIXTURE'?origin:'UNVERIFIED_IMPORT',planFingerprint:paperFingerprint(p),entryAt:new Date(fills[0]!.receivedAt).toISOString(),exitAt:new Date(fills[1]!.receivedAt).toISOString(),exitReason:fills[1]!.reason,entryPremiumCents:fills[0]!.premiumCents,exitProceedsCents:fills[1]!.premiumCents,feesCents:fills[0]!.feeCents+fills[1]!.feeCents,netPnlCents:netPnl,plannedRiskCents:plannedRisk,entrySpreadCents:entrySpread,exitLiquidityDelayed:exitDelayed,quoteGapObserved:gap,planViolations:[]}):null;
   const paperStage=status!=='NO_ENTRY'?status:!costKnown?'WAITING_FOR_COST_ASSUMPTIONS':now<=decision?'AWAITING_WINDOW':now<=deadline?'AWAITING_ELIGIBLE_QUOTE':'ENTRY_WINDOW_ENDED';
   const candidateLessons=[{code:'SOURCE_UNQUALIFIED',text:'Keep this snapshot model separate from qualified execution evidence.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'},...(!costKnown?[{code:'COSTS_UNKNOWN',text:'Declare entry fees, exit fees and slippage before a modeled entry; zero is an explicit assumption.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'}]:[]),...(status!=='CLOSED_MODELED'&&(!v2||status!=='NO_ENTRY'||paperStage==='ENTRY_WINDOW_ENDED')?[{code:status,text:status==='NO_ENTRY'?'No admissible later entry snapshot was observed. Do not manufacture a trade.':'The position remains unresolved. Do not substitute a last price or an assumed stop fill.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'}]:[]),...(gap?[{code:'QUOTE_GAP_OBSERVED',text:'The missing path may contain an earlier stop, target or worse exit. Review it before interpreting this result.',approvedKnowledge:false,causalStatus:'NOT_ESTABLISHED'}]:[])];
   return {version:v3?'OPTIONS_SNAPSHOT_PAPER_REPORT_V3':v2?'OPTIONS_SNAPSHOT_PAPER_REPORT_V2':'OPTIONS_SNAPSHOT_PAPER_REPORT_V1',profile:v3?'RH_SNAPSHOT_ASSUMPTIONS_V3':v2?'RH_SNAPSHOT_ASSUMPTIONS_V2':SNAPSHOT_PROFILE,assessedAt:asOf,plan:p,origin,timing:snapshotNs(p.decisionAt)<snapshotNs(p.createdAt)?'RETROSPECTIVE_DECLARATION':'PROSPECTIVE_DECLARATION',status,

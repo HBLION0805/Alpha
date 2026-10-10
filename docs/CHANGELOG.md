@@ -1,3 +1,10 @@
+## Isolated technology MOCK lifecycle
+
+The [MOCK lifecycle](OPTIONS_TECH_MOCK_LIFECYCLE_DELIVERY.md) connects fictional
+technology candidates to existing entry, exit and cash engines with isolated
+ordered receipts and restart recovery. Production admission remains blocked;
+no real account, market source, schedule or challenge ledger changes.
+
 ## Fixed-pool technology candidate handoff
 
 The [candidate handoff](OPTIONS_TECH_CANDIDATE_HANDOFF_DELIVERY.md) replays the

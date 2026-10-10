@@ -67,7 +67,7 @@ function result(
   });
 }
 
-function validate(input: unknown): { scenario: OptionsRetailFeasibilityInput | null; issues: string[] } {
+function validate(input: unknown, mockTechnology = false): { scenario: OptionsRetailFeasibilityInput | null; issues: string[] } {
   if (input === null || typeof input !== "object" || Array.isArray(input)) {
     return { scenario: null, issues: ["Input must be a plain JSON object."] };
   }
@@ -100,7 +100,7 @@ function validate(input: unknown): { scenario: OptionsRetailFeasibilityInput | n
   for (const key of ["roundTripFeesCents", "slippageReserveCents"]) {
     if (values[key] !== null) integer(key, 0);
   }
-  if (values.symbol !== "GLD" && values.symbol !== "IBIT") issues.push("Only GLD and IBIT are supported.");
+  if (values.symbol !== "GLD" && values.symbol !== "IBIT" && !(mockTechnology && ["AAPL","TSM","QQQ","TSLA"].includes(String(values.symbol)))) issues.push("Only GLD and IBIT are supported.");
   if (values.strategy !== "LONG_CALL" && values.strategy !== "LONG_PUT") issues.push("Only standard long calls and long puts are supported.");
   if (values.contractMultiplier !== 100) issues.push("contractMultiplier must equal 100; adjusted contracts are unsupported.");
   if (values.mode !== "NORMAL" && values.mode !== "CONDITIONAL") issues.push("mode must be NORMAL or CONDITIONAL.");
@@ -136,7 +136,14 @@ function money(value: bigint): number {
 
 /** Pure diagnostic. Neither a favorable result nor a caller probability grants execution. */
 export function evaluateOptionsRetailFeasibility(input: unknown): OptionsRetailFeasibilityResult {
-  const validated = validate(input);
+  return evaluateCore(input);
+}
+/** Isolated synthetic diagnostics only; never called by the production entrypoint. */
+export function evaluateMockTechnologyEconomics(input: unknown): OptionsRetailFeasibilityResult {
+  return evaluateCore(input, true);
+}
+function evaluateCore(input: unknown, mockTechnology = false): OptionsRetailFeasibilityResult {
+  const validated = validate(input, mockTechnology);
   if (validated.scenario === null) {
     return result(null, null, validated.issues.map((message) => ({ code: "INVALID_INPUT", message })));
   }

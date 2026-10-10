@@ -1,5 +1,5 @@
 import type { OptionsTradeBudget } from "../../contracts/OptionsTradeBudget";
-import { evaluateOptionsRetailFeasibility } from "./OptionsRetailFeasibilityEngine";
+import { evaluateOptionsRetailFeasibility, evaluateMockTechnologyEconomics } from "./OptionsRetailFeasibilityEngine";
 
 export function validateTradeBudget(value: unknown): OptionsTradeBudget {
   if (!value || typeof value !== "object" || Array.isArray(value) || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) throw Error("GUIDANCE_TRADE_BUDGET");
@@ -19,11 +19,18 @@ function freeze<T>(value:T):T {
 
 /** Versioned owner policy. Legacy inputs reconstruct the original independent caps. */
 export function evaluateOptionsPlanningFeasibility(input: unknown) {
-  if(!input || typeof input !== "object" || !Object.hasOwn(input,"tradeBudget")) return evaluateOptionsRetailFeasibility(input);
+  return evaluatePlanningCore(input, evaluateOptionsRetailFeasibility);
+}
+/** No production caller uses the synthetic technology diagnostic. */
+export function evaluateMockTechnologyPlanning(input: unknown) {
+  return evaluatePlanningCore(input, evaluateMockTechnologyEconomics);
+}
+function evaluatePlanningCore(input: unknown, evaluate: typeof evaluateOptionsRetailFeasibility) {
+  if(!input || typeof input !== "object" || !Object.hasOwn(input,"tradeBudget")) return evaluate(input);
   const descriptors=Object.getOwnPropertyDescriptors(input);
-  if(![Object.prototype,null].includes(Object.getPrototypeOf(input)) || Reflect.ownKeys(input).some(k=>typeof k!=="string"||!descriptors[k]?.enumerable||!("value" in descriptors[k]!))) return evaluateOptionsRetailFeasibility(input);
+  if(![Object.prototype,null].includes(Object.getPrototypeOf(input)) || Reflect.ownKeys(input).some(k=>typeof k!=="string"||!descriptors[k]?.enumerable||!("value" in descriptors[k]!))) return evaluate(input);
   const {tradeBudget:raw,...baseInput}=input as Record<string,unknown>;
-  const budget=validateTradeBudget(raw),base=evaluateOptionsRetailFeasibility(baseInput);
+  const budget=validateTradeBudget(raw),base=evaluate(baseInput);
   if(!base.scenario || !base.economics) return base;
   const economics={...base.economics,normalAllocationBudgetCents:budget.maxCents,requestedAllocationBudgetCents:budget.maxCents,applicableAllocationBudgetCents:budget.maxCents,
     legacyAllocationBudgetCents:base.economics.applicableAllocationBudgetCents,minimumAllocationBudgetCents:budget.minCents};
