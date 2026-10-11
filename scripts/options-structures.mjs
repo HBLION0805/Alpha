@@ -1,3 +1,4 @@
+import {assessCourseFramework} from '../apps/options-workbench/course-framework.mjs';
 import { createHash } from "node:crypto";
 import { realpathSync } from "node:fs";
 import { resolve } from "node:path";
@@ -68,7 +69,13 @@ function verify(root, id, now) {
     uncalculatedCandidates: recomputed.cases.reduce((s, c) => s + c.result.uncalculatedCount, 0), brief: recomputed.brief, existingJournalAppends: 0, executionAllowed: false };
 }
 export function runOptionsStructuresCommand(args, { workspaceRoot = process.cwd(), now = () => new Date().toISOString() } = {}) {
-  if (args.length === 1 && args[0] === "--help") return { usage: ["options:structures -- --demo [--save <new-id>]", "options:structures -- --input <workspace-json> [--save <new-id>]", "options:structures -- --verify <saved-id>"],
+  if(args[0]==='--course-preview'){
+    if(args.includes('--save')||args.includes('--verify'))fail('COURSE_PREVIEW_READ_ONLY');
+    const original=runOptionsStructuresCommand(args.slice(1),{workspaceRoot,now});
+    if(!Array.isArray(original.cases))fail('COURSE_PREVIEW_INPUT');
+    return {version:'OPTIONS_STRUCTURE_COURSE_PREVIEW_V1',original,courseAssessments:original.cases.map(c=>({comparisonId:c.input.comparisonId,candidates:c.input.candidates.map(candidate=>({candidateId:candidate.candidateId,assessment:assessCourseFramework({structure:candidate.structure,expiryRef:c.input.expiryDate})}))})),originalArtifactModified:false,sourceCalls:0,fileSystemWrites:0,admissionEffect:'NONE'};
+  }
+  if (args.length === 1 && args[0] === "--help") return { usage: ["options:structures -- --course-preview --demo | --input <workspace-json>", "options:structures -- --demo [--save <new-id>]", "options:structures -- --input <workspace-json> [--save <new-id>]", "options:structures -- --verify <saved-id>"],
     meaning: "Offline structure/cost/terminal-risk comparisons. No ranking, source refresh, account or order action. Missing inputs are retained as diagnostics.", executionAllowed: false };
   if (args.length === 2 && args[0] === "--verify") return verify(realpathSync(workspaceRoot), args[1], now);
   const demo = args[0] === "--demo", count = demo ? 1 : 2;

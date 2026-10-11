@@ -1,0 +1,74 @@
+{
+  "version": "OPTIONS_COURSE_FRAMEWORK_DELIVERY_V1",
+  "status": "IMPLEMENTED_INDEPENDENT_REVIEW_PASS_FULL_VALIDATION_PENDING",
+  "catalog": {
+    "chapters": 16,
+    "appendices": 5,
+    "strategies": 19
+  },
+  "mathematicalStructures": 8,
+  "techPaperWorkflows": [
+    "BULL_CALL_DEBIT",
+    "BEAR_PUT_DEBIT"
+  ],
+  "focusedTests": {
+    "passed": 16,
+    "failed": 0
+  },
+  "independentReview": "NO_REMAINING_P1_P2",
+  "savedResearch": {
+    "runId": "tech36-fresh-research-20261010-203633",
+    "checkedAt": "2026-10-11T15:38:06.360Z",
+    "symbol": "TSM",
+    "status": "INSUFFICIENT_EVIDENCE",
+    "originalResearchAndAdmissionUnchanged": true,
+    "paper": "NOT_RUN",
+    "fills": 0,
+    "pnl": null
+  },
+  "preview4178": "UNCHANGED_549fb29_PENDING_FINAL_VALIDATION",
+  "marketSourceCalls": 0,
+  "executionAllowed": false,
+  "runnerReadback": {
+    "at": "2026-10-11T15:41:01.077Z",
+    "public": {
+      "state": "TERMINAL_RECORDED",
+      "reason": "CLOCK_REGRESSION",
+      "at": "2026-10-11T15:36:07.184Z",
+      "requests": 10,
+      "max": 20
+    },
+    "company": {
+      "state": "TERMINAL_RECORDED",
+      "reason": "CLOCK_REGRESSION",
+      "at": "2026-10-11T15:35:58.038Z",
+      "requests": 10,
+      "max": 20
+    },
+    "cause": "UNKNOWN",
+    "restarted": false,
+    "unresolvedAttempts": 0
+  },
+  "browserInteraction": {
+    "desktop": 1440,
+    "mobile": 390,
+    "status": "PASS",
+    "temporaryIsolatedData": true
+  },
+  "validation": {
+    "framework": {
+      "passed": 16,
+      "failed": 0
+    },
+    "spread": {
+      "passed": 114,
+      "failed": 0
+    },
+    "focusScope": {
+      "passed": 6,
+      "failed": 0
+    },
+    "fullRegression": "FINAL_RERUN_IN_PROGRESS",
+    "initialRegression": "Two integration components failed; explicit ESM module extensions and aggregate test registration repaired."
+  }
+}

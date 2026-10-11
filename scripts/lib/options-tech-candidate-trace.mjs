@@ -1,3 +1,4 @@
+import {assessCourseFramework,courseDirectionFromFacets} from '../../apps/options-workbench/course-framework.mjs';
 import {createHash} from 'node:crypto';
 import {TECH36_POOL} from './options-tech-candidate.mjs';
 import {prepareTechSpreadInput} from './options-tech-spread-preparation.mjs';
@@ -38,6 +39,7 @@ export function projectTechCandidateTrace(view,{at,summarize=()=>null}){
    research:{recordId:createHash('sha256').update(view.headSha256+'|'+i.eventInputs.indexOf(e)).digest('hex'),reviewedAt:clock(e.savedReview?.reviewedAt)&&Date.parse(e.savedReview.reviewedAt)<=Date.parse(view.recordedAt)?e.savedReview.reviewedAt:null,interpretation:summarize(e.savedReview?.interpretation),nextEvidence:summarize(e.savedReview?.nextEvidence),eventWindow:summarize(e.savedReview?.eventWindow),status:p.status,sourceRef:view.headSha256,eventRef,fundamentalDirection:p.fundamental.direction,newsDirection:p.news.direction,technicalStatus:p.technical.status,
     consensusStatus:p.consensusSurprise.status,holdingWindow:p.holdingWindow,optionExpiry:p.optionExpiry,trialCondition:p.trialCondition,confirmationCondition:p.confirmationCondition,invalidationCondition:p.invalidationCondition,
     authority:'ATTRIBUTED_ORIGINAL_RESEARCH_NOT_NEW_PREDICTION'},
+   courseAssessment:assessCourseFramework({direction:courseDirectionFromFacets(p.fundamental?.direction,p.news?.direction),thesisRef:summarize(e.savedReview?.interpretation),entry:summarize(p.confirmationCondition),invalidation:summarize(p.invalidationCondition)}),
    preparation:{status:'BLOCKED_MISSING_BOUND_PLAN_INPUTS',scope:'THIS_EVENT_REVIEW_SNAPSHOT_ONLY',supportedStructure:'EXISTING_TWO_LEG_CDS_PDS_ENGINE_ONLY',structureSelected:null,accountBasis:'UNSELECTED',
     requestDraft:preparation.requestDraft,diagnostics:preparation.diagnostics.map(d=>({kind:d.kind,state:d.state,missingFields:d.missingFields})),enginePreview:preparation.enginePreview},
    admission:{status:'NOT_ADMITTED',blockers:gaps,quoteStatus:'NOT_BOUND_TO_THIS_TRACE',paperStatus:'NOT_RUN',fills:0,pnl:null},

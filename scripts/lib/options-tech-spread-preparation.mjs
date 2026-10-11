@@ -1,3 +1,4 @@
+import {assessCourseFramework,courseDirectionFromFacets} from '../../apps/options-workbench/course-framework.mjs';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,spreadPaperEvidencePolicy,spreadRecordOriginAllowed,SIMULATED_SPREAD_RECORD_KINDS} from './options-tech-spread-plan-binding.mjs';
 import {previewTechSpreadPlan} from './options-tech-spread-plan.mjs';
@@ -69,8 +70,12 @@ export function prepareTechSpreadInput(input){
  // No selection, direction, account alias, dates, approval, conditions or risk defaults are inferred.
  // The original input, not the draft, is evaluated by the existing authoritative engine.
  const preview=previewTechSpreadPlan(input);
+ const research=payloads.get('RESEARCH'),request=payloads.get('STRATEGY_REQUEST');
+ const courseAssessment=assessCourseFramework({structure:request?.structure,direction:courseDirectionFromFacets(research?.fundamental?.direction,research?.news?.direction),
+ thesisRef:research?.researchPlan?.hypothesis,realizationFrom:research?.holdingFrom,realizationThrough:research?.holdingThrough,
+ timeExitAt:request?.timeExitAt,entry:request?.conditions?.entry,invalidation:request?.conditions?.invalidation,priceExit:request?.conditions?.exit});
  return {view:'EXISTING_SPREAD_INPUT_PREPARATION',status:draftWarnings.length||bindingProposals.some(p=>p.status==='CONFLICT_RETAINED')||diagnostics.some(d=>d.state!=='FIELDS_SUPPLIED_UNVALIDATED'||d.localIntegrity!=='LOCAL_BYTES_MATCH_NOT_AUTHENTICATION'||d.originContext!=='DECLARED_CONTEXT_ONLY')?'PARTIAL_UNKNOWN':'FIELDS_SUPPLIED_UNVALIDATED',
-  inputDigest,mode:['MOCK_CONTROL','REAL_SAVED_SOURCE_REPLAY','REAL_QUOTE_PAPER'].includes(input?.mode)?input.mode:'UNKNOWN',
+  courseAssessment, inputDigest,mode:['MOCK_CONTROL','REAL_SAVED_SOURCE_REPLAY','REAL_QUOTE_PAPER'].includes(input?.mode)?input.mode:'UNKNOWN',
   evidenceContext:policy?.simulatedAccount?input.evidenceContext:fixture===true?(input?.mode==='REAL_QUOTE_PAPER'?'TEST_FIXTURE':'MOCK'):fixture===false?'ATTRIBUTED_REAL_EVIDENCE':'UNKNOWN',diagnostics,
   requestDraft,draftWarnings,bindingProposals,draftAuthority:'UNFROZEN_BODY_ONLY_NOT_AN_EVIDENCE_ENVELOPE',
   inventoryScope:'Field presence only, not exhaustive semantic validation. Original research/source/technical, clock, binding and account gates remain in the original engine.',

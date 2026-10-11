@@ -1,3 +1,5 @@
+import {assessCourseFramework,courseInputFromPlan} from './course-framework.mjs';
+import {courseAssessmentPanel} from './course-panel.js';
 import {evidenceRequest,updateEvidenceDraft,evidenceDetail} from './evidence-loop.js';
 import {prepareOwnerPlanDraft} from './owner-plan.js';
 import {snapshotRequest,snapshotResult} from './snapshot-paper.js';
@@ -108,6 +110,7 @@ function updateDraft(el){
     ui.scenarioPlanKey=el.value;ui.scenarioPreview=null;ui.scenarioDraft=null;ui.fitPlanKey=el.value;ui.contractFit=null;render();return;
   }
   const form=el.closest('form');if(!form)return;
+  if(form.id==='course-framework-form'){ui.courseDraft=Object.fromEntries(new FormData(form));$('#course-framework-result').innerHTML='<p>研究声明已修改，请重新预览；未保存。</p>';return;}
   if(form.id==='weekly-plan-form'){
     ui.weeklyDraft=weeklyPlanFromForm(form,ui.weeklyDraft??weeklyDraftFromState(state.weeklyPlan?.data));ui.weeklyPreview=null;ui.weeklyPreviewRequest=null;dirty.add('weekly-plan');
     const save=form.querySelector('[value="REVIEW"],[value="AMEND"]');if(save)save.disabled=true;
@@ -272,6 +275,8 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='course-framework-form'){event.preventDefault();ui.courseDraft=Object.fromEntries(new FormData(event.target));$('#course-framework-result').innerHTML=courseAssessmentPanel(assessCourseFramework(courseInputFromPlan(ui.thesisFields,ui.thesisDraft,ui.courseDraft)));return;}
+
   if(event.target.id==='weekly-event-form'){
     event.preventDefault();const form=event.target;
     try{const current=syncWeeklyForm(),index=ui.weeklyEventIndex;

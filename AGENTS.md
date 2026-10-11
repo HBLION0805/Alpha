@@ -1,3 +1,7 @@
+## Course framework research checks — October 11, 2026
+
+Read [delivery](docs/OPTIONS_COURSE_FRAMEWORK_DELIVERY.md) and [status](docs/status/course-framework.json). Owner authorized this educational framework integration and a development-preview switch after independent review. Sixteen chapters, five appendices and nineteen catalog entries do not create nineteen execution paths. Pure research checks are separate from original gates and immutable reports. Textbook examples, Owner-approved policy and single-plan assumptions remain distinct. Actual TSM replay retains missing evidence, NOT_RUN and zero fills. Preserve October 12 frozen 2dabc114, CPI, 15:50, both finite runners and the challenge ledger. No formal deployment or new market calls.
+
 ## Read-only recovery inspection and terminal preservation — October 11, 2026
 
 Read [inspection delivery](docs/OPTIONS_WEEKLY_RECOVERY_INSPECTION_DELIVERY.md) and [terminal repair](docs/OPTIONS_WEEKLY_TERMINAL_RECOVERY_DELIVERY.md). The inspector verifies saved evidence only; source-clock offsets compare as instants, incomplete attribution stays UNKNOWN, and no inspect result authorizes resume/takeover/unlock/retry. Explicit recovery now preserves a valid existing terminal and only releases its owner after the unchanged absent-PID/token checks. Tests are isolated; no actual recovery or source acquisition occurred. The existing public/company processes and reviewed 4178 archive remain untouched. This is not budget-preserving resume or system startup.
