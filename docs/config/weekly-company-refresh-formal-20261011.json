@@ -1,0 +1,47 @@
+{
+  "version": "WEEKLY_COMPANY_REFRESH_CONFIG_V1",
+  "enabledSourceIds": [
+    "msft_ir",
+    "amd_ir",
+    "avgo_ir",
+    "amat_ir_events",
+    "adbe_ir_events",
+    "aapl_sec",
+    "tsm_sec",
+    "msft_sec",
+    "nvda_sec",
+    "asml_sec"
+  ],
+  "intervalMinutes": 360,
+  "maxAttempts": 20,
+  "batches": {
+    "formal-10": [
+      "msft_ir",
+      "amd_ir",
+      "avgo_ir",
+      "amat_ir_events",
+      "adbe_ir_events",
+      "aapl_sec",
+      "tsm_sec",
+      "msft_sec",
+      "nvda_sec",
+      "asml_sec"
+    ]
+  },
+  "pdfMetadata": {
+    "enabled": false,
+    "minimumIntervalDays": 7,
+    "method": "HEAD",
+    "automaticBodyDownload": false
+  },
+  "preparedWindow": {
+    "firstAt": "2026-10-11T13:40:00.000Z",
+    "until": "2026-10-11T20:00:00.000Z",
+    "executionState": "PREPARED_NOT_STARTED_REQUIRES_INDEPENDENT_REVIEW",
+    "expectedMaximumRounds": 2,
+    "configuredUniverse": 47,
+    "selectedUniqueSources": 10,
+    "notSelected": 37
+  },
+  "notes": "Only formal-10 is selected. Twenty total attempts cannot refresh all 47. Execute the explicit reviewed command with these first-at/until values; they are preparation metadata, not automatically applied CLI timing. No launch occurs from reading this file."
+}
