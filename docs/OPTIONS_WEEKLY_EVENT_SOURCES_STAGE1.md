@@ -126,3 +126,7 @@ npm run options:weekly-sources -- --status --workspace C:/projects/Alpha-weekly-
 Do not start a second process or change this run's implementation to accelerate
 its first eligibility. Stop/verify explicitly before any replacement. The old
 two-calendar acceptance run remains expired and its original receipts unchanged.
+
+## Independent review correction
+
+Both target-week endpoints must lie within the captured Fed month. September 28–October 2 against an October receipt now remains PARTIAL_PERIOD, as does October 30–November 3. The same-month no-match case remains distinct. Twelve event-source tests pass after this projection-only correction. Actual target-week Fed rows are one Speech and three Discussions. The existing finite runner retains its loaded 8c3e089 implementation and manifest; no restart, configuration, request parser or acquisition behavior changed. Eight headline sources first become eligible around 09:38 UTC and two event sources around 11:27 UTC. BLS/FOMC calendars are excluded from that ten-ID batch. The 20-request budget can end the run before its 17:46:05.993 UTC deadline.

@@ -41,3 +41,13 @@ check('cross-month coverage is partial and unparsed response is failure, never c
 check('existing bounded runner handles new event source within one-attempt budget and original ownership',async()=>temp(async root=>{
  let t=Date.parse(at),calls=0;const r=await runWeeklyRunner({root,sourceIds:['treasury_auctions'],now:()=>new Date(t).toISOString(),until:new Date(t+10000).toISOString(),maxAttempts:1,evidenceContext:'TEST_FIXTURE',wait:async ms=>{t+=ms;},fetchImplementation:async()=>{calls++;return response([row]);}});assert.equal(r.state,'BUDGET_EXHAUSTED');assert.equal(calls,1);assert.equal(readWeeklyEventRefreshes(root,new Date(t).toISOString()).records.length,1);assert(!fs.existsSync(join(root,'data/runtime/options-weekly-sources/runner/active.json')));assert(r.configuration.implementation['options-weekly-event-sources.mjs']);
 }));
+check('Fed receipt month must cover both target-week endpoints, including previous-month starts',async()=>temp(async root=>{
+ await refreshWeeklyEventSources({root,sourceIds:['fed_events'],now:()=>at,fetchImplementation:async()=>new Response(fed(),{headers:{'content-type':'text/html'}})});
+ const saved=readWeeklyEventRefreshes(root,at);
+ for(const [weekStartDate,weekEndDate]of [['2026-09-28','2026-10-02'],['2026-10-30','2026-11-03']]){
+  const view=extendWeeklyEventCoverage({coverage:{},events:[]},saved,at,{weekStartDate,weekEndDate});
+  assert.equal(view.coverage.conferenceCoverage.state,'PARTIAL_PERIOD');assert.equal(view.coverage.conferenceCoverage.reason,'TARGET_WEEK_NOT_FULLY_WITHIN_CAPTURED_MONTH');
+ }
+ const same=extendWeeklyEventCoverage({coverage:{},events:[]},saved,at,{weekStartDate:'2026-10-19',weekEndDate:'2026-10-23'});
+ assert.equal(same.coverage.conferenceCoverage.state,'CHECKED_NO_MATCH');
+}));
