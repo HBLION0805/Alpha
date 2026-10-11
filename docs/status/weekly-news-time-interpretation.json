@@ -1,7 +1,7 @@
 {
   "version": "WEEKLY_NEWS_TIME_INTERPRETATION_DELIVERY_V1",
-  "asOf": "2026-10-11T09:52:11.967Z",
-  "status": "IMPLEMENTED_VALIDATED_REVIEW_PENDING",
+  "asOf": "2026-10-11T10:04:43.3010440Z",
+  "status": "INDEPENDENTLY_REVIEWED_4178_SWITCH_PASS",
   "interpretationVersion": "WEEKLY_NEWS_TIME_INTERPRETATION_V1",
   "legacyParserChanged": false,
   "legacyRefreshReplayChanged": false,
@@ -64,13 +64,25 @@
   "offlineReceipt": "data/runtime/options-weekly-sources/news-time-offline-20261011/receipt.json",
   "offlineReceiptSha256": "7126f728a54c9c8a73ee51b4cb231334a36c5d3257c1d3d9a01950c714f88b4d",
   "preview4178": {
-    "commit": "15f9125248d744713c365eeb60e2cee1773884f9",
-    "changed": false
+    "commit": "d395281b7d1a65947ad695cb93c719c39f1aa398",
+    "changed": true,
+    "url": "http://127.0.0.1:4178/#weekly-plan",
+    "pid": 11476,
+    "startedAt": "2026-10-11T10:02:00.36Z",
+    "pinnedFiles": 1509,
+    "actualPortDesktopMobile": "PASS",
+    "navigationPages": 11,
+    "protectedFilesUnchanged": 25907,
+    "sourceAndRunnerFilesUnchanged": 165,
+    "temporary4180Stopped": true,
+    "rollbackCommit": "15f9125248d744713c365eeb60e2cee1773884f9",
+    "receiptPath": "data/runtime/options-workbench-development/readonly-preview-news-time-d395281-20261011/switch-acceptance.json",
+    "receiptSha256": "4dc1637db2e7b6822a9974efd2195b2a9cc4e0071c986c6d35c742dec1b1ea88"
   },
   "executionAllowed": false,
   "finalHostReadback": {
-    "at": "2026-10-11T09:55:20.8810975Z",
-    "path": "data/runtime/options-weekly-sources/news-time-offline-20261011/host-readback.json",
+    "at": "2026-10-11T10:04:43.3010440Z",
+    "path": "data/runtime/options-workbench-development/readonly-preview-news-time-d395281-20261011/switch-final-readback.json",
     "processes": [
       {
         "pid": 23512,
@@ -79,16 +91,12 @@
       {
         "pid": 7956,
         "startUtc": "2026-10-11T07:56:03.5064642Z"
-      },
-      {
-        "pid": 32464,
-        "startUtc": "2026-10-11T08:29:23.4127876Z"
       }
     ],
     "publicRequests": 8,
     "publicNext": "2026-10-11T11:27:42.885Z",
     "companyRequests": 0,
     "companyNext": "2026-10-11T13:40:00Z",
-    "newInterpretationLive": false
+    "newInterpretationLive": true
   }
 }

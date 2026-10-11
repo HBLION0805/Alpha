@@ -78,3 +78,26 @@ with eight requests, next eligibility 11:27:42.885 UTC; company remains WAITING
 with zero requests, first eligibility 13:40 UTC. The live page does not expose the
 new interpretation yet. These are separate operational facts, not date-parser
 validation or a reason to restart either process.
+
+## Independently cleared 4178 switch
+
+Independent review cleared exact **d395281b7d1a65947ad695cb93c719c39f1aa398**
+with no P2. The approved **http://127.0.0.1:4178/#weekly-plan** now serves its
+1,509-file hash-pinned archive, PID **11476**, started **2026-10-11T10:02:00.36Z**.
+All eleven original navigation routes, desktop/mobile dates and health panels,
+read-only client/server guards and protected hashes passed actual-port acceptance.
+No console, page, HTTP, network or external-origin errors were observed. Outbound
+attempts remained zero. **25,907** protected files and **165** source/runner files
+retained hashes. The archived legacy reader replayed all **20** public receipts;
+old parser, refresh/replay and both runner modules match the preceding archive.
+Frozen workspace remains clean at **2dabc114**. Temporary 4180 is closed and exact
+15f9125 rollback remains available. Earlier pending-switch statements are history.
+
+At **2026-10-11T10:04:43.3010440Z**, both runner start times were unchanged. Public remained WAITING
+with eight requests and 11:27:42.885 UTC next eligibility; company remained WAITING
+with zero requests and 13:40 UTC first eligibility. No source was requested or
+runner restarted by this switch. Further natural rounds and terminal acceptance
+remain parent-task observation; this delivery adds no feature or monitoring job.
+
+Local switch receipt: `data/runtime/options-workbench-development/readonly-preview-news-time-d395281-20261011/switch-acceptance.json`.
+SHA256: `4dc1637db2e7b6822a9974efd2195b2a9cc4e0071c986c6d35c742dec1b1ea88`.

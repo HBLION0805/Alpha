@@ -1,3 +1,7 @@
+## Reviewed news-date 4178 rollout — October 11, 2026
+
+Independent review cleared exact d395281 without P2. 4178 now runs its pinned archive; all eleven navigation routes, desktop/mobile date/health panels and read-only checks passed. Temporary 4180 is closed; preserve 15f9125 rollback. Legacy parser/replay and runner module hashes are unchanged; 20 old public receipts replay successfully. Both runners retained original process start times; at 2026-10-11T10:04:43.3010440Z public WAITING 8 requests / next 11:27 UTC, company WAITING 0 / first 13:40 UTC. Await natural rounds and terminal evidence in the parent task; do not add features, restart runners or resample. See [delivery](OPTIONS_WEEKLY_NEWS_TIME_INTERPRETATION_DELIVERY.md). This supersedes earlier pending-switch instructions.
+
 ## Additive saved-news date interpretation — October 11, 2026
 
 Read [delivery](OPTIONS_WEEKLY_NEWS_TIME_INTERPRETATION_DELIVERY.md). V1 explains strict full-date EDT/EST alongside original parsed values; old parser/REFRESH_REPLAY, receipts and coverage are unchanged. BEA 47 and EIA 14 become explicit historical dates; EIA's missing year stays UNKNOWN. OFAC pubDate is creation time, content update time remains UNKNOWN; do not infer all body content is old or replace pubDate with body dates. No acquisition or runner change. 4178 stays reviewed 15f9125 until independent clearance of this addition.
