@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_COURSE_FRAMEWORK_DELIVERY_V1",
-  "status": "IMPLEMENTED_INDEPENDENT_REVIEW_PASS_FULL_VALIDATION_PENDING",
+  "status": "IMPLEMENTED_FULL_VALIDATION_PASS_PREVIEW_CSP_REPAIR",
   "catalog": {
     "chapters": 16,
     "appendices": 5,
@@ -26,7 +26,7 @@
     "fills": 0,
     "pnl": null
   },
-  "preview4178": "UNCHANGED_549fb29_PENDING_FINAL_VALIDATION",
+  "preview4178": "UNCHANGED_549fb29_TEMP_4180_CSP_REPAIR_PENDING",
   "marketSourceCalls": 0,
   "executionAllowed": false,
   "runnerReadback": {
@@ -68,7 +68,13 @@
       "passed": 6,
       "failed": 0
     },
-    "fullRegression": "FINAL_RERUN_IN_PROGRESS",
+    "fullRegression": {
+      "components": 243,
+      "passed": 6115,
+      "failed": 0,
+      "code": "32827ba1f9cb27e00305bae7a4cc681572948da2",
+      "logSha256": "075fc653d0f0331c305a28dba0430102f7f2f0a73c71ba6d445c995e1d04817a"
+    },
     "initialRegression": "Two integration components failed; explicit ESM module extensions and aggregate test registration repaired."
   }
 }
