@@ -14,3 +14,15 @@ src/engines/macro-world-model/BATCH_1_WORLD_MODEL_V1.json text eol=lf
 docs/research/macro/batch-2/review/BATCH_2_KNOWLEDGE_CANDIDATES.json text eol=lf
 src/engines/macro-world-model/BATCH_2_WORLD_MODEL_APPROVAL_V1.json text eol=lf
 src/engines/macro-world-model/BATCH_2_WORLD_MODEL_V1.json text eol=lf
+
+# Preserve byte-bound archived sources and the exact synthetic calendar fixture.
+docs/OPTIONS_ROBINHOOD_HEARTBEAT_PHASES.json text eol=lf
+docs/OPTIONS_ROBINHOOD_AUTOCOLLECTION_RUNBOOK.md text eol=lf
+docs/OPTIONS_WORK_CONTINUATION_HOST_V1.json text eol=lf
+docs/research/macro/batch-2/M06_CHINA_TAIWAN_SEMICONDUCTORS.md text eol=lf
+docs/research/macro/batch-2/M07_GLOBALIZATION_RECONFIGURATION.md text eol=lf
+docs/research/macro/batch-2/M08_AI_POWER_DATA_CENTERS.md text eol=lf
+docs/research/macro/batch-2/M09_AFRICA_STRATEGIC_RESOURCES.md text eol=lf
+docs/research/macro/batch-2/M10_BELT_AND_ROAD.md text eol=lf
+docs/research/macro/batch-2/BATCH_2_SYNTHESIS.md text eol=lf
+fixtures/options-release-calendar/calendar.synthetic.ics text eol=lf
