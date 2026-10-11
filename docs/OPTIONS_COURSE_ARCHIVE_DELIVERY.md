@@ -51,3 +51,5 @@ read-only preview is separately verified and reviewed. Local raw receipts and
 browser artifacts remain ignored.
 
 Final regression: 247 components, 6,152 passed, zero failed. Expanded archive details also passed desktop/mobile layout checks at 16:33:27.557Z–16:33:29.309Z. The private browser harness now explicitly waits for reload completion.
+
+Temporary read-only preview 4180 is ready on pinned 9727668d60fb0bd34f011f0adc869f6c6c993837. Acceptance starting 2026-10-11T16:35:38.900Z passed all 11 desktop routes and two mobile views, with no page/console/CSP/network errors or external requests. All 25,907 protected files and 252 original source/runner files matched their baselines. The 1,544-file archive pin and read-only wrapper independently passed review. Port 4178 remains on 549fb29 pending the separate final review and switch.
