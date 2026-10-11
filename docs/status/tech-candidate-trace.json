@@ -20,5 +20,8 @@
   "newForecast": false,
   "sourceCalls": 0,
   "paper": "NOT_RUN",
-  "executionAllowed": false
+  "executionAllowed": false,
+  "httpAssetServing": "PASS_AFTER_EXPLICIT_ASSET_REGISTRATION",
+  "httpFocusedTests": 51,
+  "assetIndependentReview": "PASS"
 }

@@ -62,3 +62,12 @@ entry/exit. The real TSM case still needs source-supported research and an expli
 future plan before its later market data can be assessed. Paid data, new login,
 credentials, security settings and public production deployment remain separate
 specific decisions if needed; this module does not require them.
+## Served-asset correction
+
+A final HTTP integration check found that the new browser import was absent from
+the workbench static-asset allowlist. Static rendering alone had not exercised
+that route. The missing JavaScript mapping was added, and the existing HTTP test
+now checks status 200 and the expected export while retaining the original origin,
+query, mutation and filesystem checks. The full status group passed 51/51 and an
+independent reviewer reran the target HTTP case successfully. No 4178 switch was
+performed. Earlier static QA is not presented as complete served-page acceptance.

@@ -29,6 +29,7 @@ assets.set('/storyline.js',['storyline.js','text/javascript']);
 assets.set('/storyline-model.js',['storyline-model.js','text/javascript']);
 assets.set('/weekly-plan.js',['weekly-plan.js','text/javascript']);
 assets.set('/tech-status.js',['tech-status.js','text/javascript']);
+assets.set('/tech-candidate-trace.js',['tech-candidate-trace.js','text/javascript']);
 assets.set('/event-intelligence-replay.js',['event-intelligence-replay.js','text/javascript']);
 export async function startOptionsWorkbench({port=4173,refreshContext=false,codeRoot=optionsCodeRoot,...options}={}){
   if(!Number.isInteger(port)||port<0||port>65535)throw Error('WORKBENCH_PORT');
