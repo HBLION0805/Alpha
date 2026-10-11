@@ -53,3 +53,13 @@ browser artifacts remain ignored.
 Final regression: 247 components, 6,152 passed, zero failed. Expanded archive details also passed desktop/mobile layout checks at 16:33:27.557Z–16:33:29.309Z. The private browser harness now explicitly waits for reload completion.
 
 Temporary read-only preview 4180 is ready on pinned 9727668d60fb0bd34f011f0adc869f6c6c993837. Acceptance starting 2026-10-11T16:35:38.900Z passed all 11 desktop routes and two mobile views, with no page/console/CSP/network errors or external requests. All 25,907 protected files and 252 original source/runner files matched their baselines. The 1,544-file archive pin and read-only wrapper independently passed review. Port 4178 remains on 549fb29 pending the separate final review and switch.
+
+## Reviewed original-port switch
+
+The Owner's final independent review cleared 9727668 implementation and 3b5928e acceptance records. The original local port 4178 now serves the same pinned 1,544-file archive and unchanged read-only wrapper, started 2026-10-11T16:44:49.467Z. Actual-port browser acceptance 2026-10-11T16:48:20.113Z–2026-10-11T16:49:57.866Z passed all eleven desktop routes and two mobile views, with zero console/page/CSP/network errors and zero external requests. Course/evidence-loop/save/weekly-plan POSTs returned 405 and their GET write routes returned 404. Protected 25,907 files and 252 original source/runner files matched their baselines. The 1,513-file 549fb29 rollback archive remains pinned and retained.
+
+The real Owner course archive has zero records and zero saved plans. The original manual ledger is MISSING / uninitialized, so Trade journal preserves that state and its initialize control is disabled. No fixture record was copied and no ledger was initialized. The first two private acceptance attempts incorrectly expected the initialized-fixture Journal back-reference; their failed receipts remain local. The corrected final checks verify the real missing-ledger state. Application code and data were not changed to satisfy that test.
+
+Both continuation processes retained their original command lines and start times. Their readback was WAITING with public 8/10 and company 0/10 remaining-run requests. No request was triggered by the preview switch; future natural acquisition and terminal acceptance are pending. This is a local read-only development preview, not production deployment, Paper acceptance, a trading signal or a new source connection. October 12 frozen work, CPI/15:50, risk settings and the challenge ledger remain unchanged.
+
+Temporary 4180 was closed after successful actual-port acceptance. Final process readback confirmed 4178 and both original continuation process start times.

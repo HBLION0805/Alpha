@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_COURSE_FRAMEWORK_DELIVERY_V1",
-  "status": "ARCHIVE_REVIEWED_FULL_VALIDATION_AND_TEMP_PREVIEW_PASS",
+  "status": "REVIEWED_4178_READ_ONLY_PREVIEW_ACCEPTED",
   "catalog": {
     "chapters": 16,
     "appendices": 5,
@@ -26,7 +26,7 @@
     "fills": 0,
     "pnl": null
   },
-  "preview4178": "UNCHANGED_549fb29",
+  "preview4178": "9727668d60fb0bd34f011f0adc869f6c6c993837",
   "marketSourceCalls": 0,
   "executionAllowed": false,
   "runnerReadback": {
@@ -108,7 +108,8 @@
     "receiptSha256": "d60f62b3a2e00a5aa03d582c2682a0fdbae10c06e3c753f55d06a898f2ec5503",
     "archiveFiles": 1544,
     "independentWrapperReview": "NO_P1_P2",
-    "port": 4180
+    "port": 4180,
+    "closedAfter4178Acceptance": true
   },
   "archiveLinkage": {
     "state": "IMPLEMENTED_AND_INDEPENDENTLY_REVIEWED",
@@ -136,5 +137,54 @@
       "ledgerHeadUnchanged": true,
       "expandedDetailsNoOverflow": true
     }
+  },
+  "reviewed4178": {
+    "commit": "9727668d60fb0bd34f011f0adc869f6c6c993837",
+    "startedAt": "2026-10-11T16:44:49.467Z",
+    "acceptanceStartedAt": "2026-10-11T16:48:20.113Z",
+    "acceptanceFinishedAt": "2026-10-11T16:49:57.866Z",
+    "status": "PASS",
+    "desktopRoutes": 11,
+    "mobileViews": 2,
+    "errors": {
+      "consoleErrors": 0,
+      "pageErrors": 0,
+      "logErrors": 0,
+      "networkFailures": 0,
+      "httpErrors": 0,
+      "externalRequests": 0
+    },
+    "ownerCourseArchive": {
+      "state": "AVAILABLE",
+      "records": 0,
+      "errors": 0,
+      "savedPlans": 0
+    },
+    "manualLedgerState": "MISSING",
+    "writeEndpoints": "HTTP_405_POST_AND_404_GET",
+    "networkAttemptsBlocked": 0,
+    "protectedFiles": 25907,
+    "originalSourceRunnerFiles": 252,
+    "receiptSha256": "dd805e63a45eff5cb5d0022a94ac8f62ac2d2232a6568c97aedc9202c6d7a592",
+    "rollback": "549fb295b4c29a5730111c5814adf3590c98fc1d",
+    "rollbackPinnedFiles": 1513
+  },
+  "actualContinuationReadback": {
+    "at": "2026-10-11T16:48:22.018Z",
+    "public": {
+      "state": "WAITING",
+      "requests": 8,
+      "maxAttempts": 10,
+      "nextCheckAt": "2026-10-11T17:27:42.934Z",
+      "until": "2026-10-11T17:46:05.993Z"
+    },
+    "company": {
+      "state": "WAITING",
+      "requests": 0,
+      "maxAttempts": 10,
+      "nextCheckAt": "2026-10-11T19:40:01.359Z",
+      "until": "2026-10-11T20:00:00.000Z"
+    },
+    "additionalRequestsTriggeredBySwitch": 0
   }
 }
