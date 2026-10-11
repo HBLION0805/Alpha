@@ -6,9 +6,9 @@ A fresh clone of published commit c02e27a019e8b3b3e151de9a6c03379407679e24 was i
 
 ## Concrete checkout repairs
 
-The initial full validation failed. Windows core.autocrlf changed ten byte-sensitive files: three archived workflow sources, six approved macro research sources and one synthetic calendar. Their canonical Git blobs already contained the correct bytes. Narrow .gitattributes entries now preserve those bytes; no archived content, schedule or preserved hash changed.
+The initial full validation failed. Windows core.autocrlf changed eleven byte-sensitive files: four archived workflow sources, six approved macro research sources and one synthetic calendar. Their canonical Git blobs already contained the correct bytes. Narrow .gitattributes entries now preserve those bytes; no archived content, schedule or preserved hash changed.
 
-Two technology-status tests also inspected newly written journal receipts at a fixed earlier clock, causing correct FUTURE_RECEIPT rejection. Journal-read tests now inspect after the write using the current clock (bounded below by the fixed fixture clock). Fixed-clock future/order rejection tests and all production validation remain unchanged. Integrity and alias-rejection tests use the same post-write inspection helper so they cannot pass merely because the receipt appears to be in the future.
+Two technology-status tests also inspected newly written journal receipts at a fixed earlier clock, causing correct FUTURE_RECEIPT rejection. Journal-read tests now inspect after the write using the current clock (bounded below by the fixed fixture clock). A second clean-checkout check exposed one further archived V2 manifest behind the first hash assertion; it receives the same exact-byte rule. Fixed-clock future/order rejection tests and all production validation remain unchanged. Integrity and alias-rejection tests use the same post-write inspection helper so they cannot pass merely because the receipt appears to be in the future.
 
 ## Local saved-data startup
 
