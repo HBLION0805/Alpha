@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 import {optionsEvidenceExportStorage as io} from '../options-evidence-export.mjs';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {weekForAt,weekForStart,buildWeeklyPlanPreview,weeklyFingerprint} from '../../src/engines/options-weekly-plan/OptionsWeeklyPlan.ts';
-import {weeklySourceRoots,readWeeklyCalendar,calendarHistory,weeklySourcesView} from './options-weekly-sources.mjs';
+import {weeklyCurrentInputs,calendarHistory,weeklySourcesView} from './options-weekly-sources.mjs';
 import {readFocusedSupplement} from './options-focused-news-io.mjs';
 import {classifyFocusedHeadline} from '../../src/engines/options-drivers/OptionsFocusedNews.ts';
 import {readEventResearch} from './options-event-research-io.mjs';
@@ -92,9 +92,9 @@ function researchRefs(root,ledgerId,at,weekStartDate,weekEndDate,requested){
 }
 async function compose(root,request,at,ledgerId){
   const week=weekForStart(request.weekStartDate);
-  const {roots}=weeklySourceRoots(root);
-  const bls=calendarHistory(readWeeklyCalendar(roots.calendars,'bls',at));
-  const fomc=calendarHistory(readWeeklyCalendar(roots.calendars,'fomc',at));
+  const {roots,calendars}=weeklyCurrentInputs(root,at);
+  const bls=calendarHistory(calendars.bls);
+  const fomc=calendarHistory(calendars.fomc);
   const ownerUniverse=ownerCapitalShoppingList();
   const refs=researchRefs(root,ledgerId,at,week.weekStartDate,week.weekEndDate,request.plan.eventResearchRefs);
   const focused=news(roots.news,at);

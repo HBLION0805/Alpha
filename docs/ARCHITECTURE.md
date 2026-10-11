@@ -1,6 +1,6 @@
 ## Weekly source coverage boundary — October 11, 2026
 
-The [weekly sources specification](specifications/OPTIONS_WEEKLY_SOURCES_V1.md) adds explicit local source roots and a pure current-source projection. Historical weekly V1 revisions remain immutable. Calendar reads no longer acquire writer locks; technology/SEC references and all existing news scopes retain original clocks and incomplete coverage. This stage does not fetch or deploy. See [delivery](OPTIONS_WEEKLY_SOURCES_DELIVERY.md).
+The [weekly sources specification](specifications/OPTIONS_WEEKLY_SOURCES_V1.md) adds explicit local source roots and a pure current-source projection. Historical weekly V1 revisions remain immutable. Calendar reads no longer acquire writer locks; technology/SEC references and all existing news scopes retain original clocks and incomplete coverage. The independent explicit CLI now saves bounded official public-source responses for current coverage; no timer or deployment is added. See [delivery](OPTIONS_WEEKLY_SOURCES_DELIVERY.md).
 
 ## Isolated real-quote Paper mode
 
