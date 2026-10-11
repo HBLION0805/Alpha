@@ -25,3 +25,13 @@ local; metadata is not a future earnings calendar or filing-body acquisition.
 
 The PDF and PANW supplemental work is a separate commit. This repair does not
 change the 36-company denominator, 4178, the finite runner or any execution gate.
+
+## Unclosed-comment follow-up
+
+Review of 355b3a4 found the same boundary issue for an HTML comment without a
+closing delimiter. Both the company calendar and PANW supplement now remove
+closed comments and comments extending through EOF before looking for sections.
+Each parser has a future-event negative case and a visible-before-comment
+control. The two suites passed 23/23 (company 14, supplement 9). All 82 real
+issuer replays and the original PANW interpretation remained exact. No request
+was made for this repair; the ongoing bounded page follow-up is separate.

@@ -31,7 +31,7 @@ export function parsePanwFeaturedEnvelope(originalBytes){
  const r=JSON.parse(originalBytes);check(r.version==='OFFICIAL_SOURCE_DISCOVERY_V1'&&r.id==='panw_ir'&&r.url==='https://investors.paloaltonetworks.com/','SUPPLEMENT_IDENTITY');
  const raw=Buffer.from(r.rawBase64,'base64');check(raw.length<=524288&&raw.toString('base64')===r.rawBase64&&sourceHash(raw)===r.rawSha256,'SUPPLEMENT_RAW');
  check(r.httpStatus===200&&r.error===null&&/^text\/html/i.test(r.headers?.['content-type']??''),'SUPPLEMENT_INCOMPLETE_SOURCE');check(sourceClock(r.requestedAt)&&sourceClock(r.receivedAt)&&Date.parse(r.receivedAt)>=Date.parse(r.requestedAt),'SUPPLEMENT_CLOCK');
- const safe=new TextDecoder('utf8',{fatal:true}).decode(raw).replace(/<script\b[\s\S]*?<\/script>/gi,'').replace(/<style\b[\s\S]*?<\/style>/gi,'').replace(/<!--[\s\S]*?-->/g,'');
+ const safe=new TextDecoder('utf8',{fatal:true}).decode(raw).replace(/<!--[\s\S]*?(?:-->|$)/g,'').replace(/<script\b[\s\S]*?<\/script>/gi,'').replace(/<style\b[\s\S]*?<\/style>/gi,'');
  const sections=[...safe.matchAll(/<section\b[^>]*>([\s\S]*?)<\/section>/g)].filter(m=>/<h2\b[^>]*>\s*FEATURED EVENTS\s*<\/h2>/.test(m[1]));check(sections.length===1,'SUPPLEMENT_FEATURED_SECTION');
  const cards=sections[0][1].split('<div class="card rounded">').slice(1);check(cards.length>0&&cards.length<=20,'SUPPLEMENT_ROWS');const keys=new Set(),events=cards.map((card,index)=>{
   const h=/<h3 class="font-weight-bold h6">([\s\S]*?)<\/h3>/.exec(card),p=/<p class="text-d-gray">([\s\S]*?)<\/p>/.exec(card);check(h&&p,'SUPPLEMENT_ROW');const title=clean(h[1]),printedDateTime=clean(p[1]),d=/^([A-Z][a-z]{2}) (\d{1,2}), (20\d\d)\b/.exec(printedDateTime);check(d&&title.length>0&&title.length<=600,'SUPPLEMENT_DATE');
