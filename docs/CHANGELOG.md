@@ -1,3 +1,7 @@
+## Official weekly event sources, stage 1 — October 11, 2026
+
+The [new event-source stage](OPTIONS_WEEKLY_EVENT_SOURCES_STAGE1.md) adds bounded TreasuryDirect upcoming auctions and Fed Board monthly speech appearances to a separate immutable response store. It preserves date/announcement distinctions, unknown timezones, partial scope and same-snapshot provenance. Fixed-company IR/SEC and options/exchange calendars remain next stages. The planned local continuation uses an explicit 12-hour maximum, six-hour intervals and 20-request budget, not a cloud/system schedule. Existing 4178 stays pinned until independent review.
+
 ## Explicit finite weekly-source process — October 11, 2026
 
 The [bounded process mode](OPTIONS_WEEKLY_RUNNER_DELIVERY.md) reuses the existing refresh CLI with explicit expiry, hourly-or-slower eligibility, request budgets, exclusive ownership, stop/status/recovery and receipt-derived backoff. It creates no cloud/system schedule and no page-triggered network work. [Current acceptance](status/weekly-runner.json) separates implemented/tested lifecycle behavior from the still-pending real due-acquisition/expiry check.

@@ -1,6 +1,6 @@
 import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {refreshWeeklySources} from './lib/options-weekly-refresh.mjs';
+import {refreshWeeklySourcesIncludingEvents as refreshWeeklySources} from './lib/options-weekly-event-sources.mjs';
 import {weeklyPlanView} from './lib/options-weekly-plan-io.mjs';
 import {runWeeklyRunner,weeklyRunnerStatus,stopWeeklyRunner,recoverWeeklyRunner} from './lib/options-weekly-runner.mjs';
 export async function runWeeklySources(args){

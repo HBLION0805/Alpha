@@ -1,3 +1,7 @@
+## Official weekly event-source continuation — October 11, 2026
+
+Read docs/OPTIONS_WEEKLY_EVENT_SOURCES_STAGE1.md. TreasuryDirect upcoming auctions and Fed Board monthly Speeches use separate immutable event-refreshes; no inferred times, complete-category claims or event conversion from SEC agency headlines. Preserve copied discovery envelopes and new direct receipts separately. The bounded CLI/runner retains ten-ID batches, request limits and explicit expiry. Company/IR and options-market sources remain unfinished. Keep 4178 reviewed until coordinated update; no cloud/system schedule or frozen experiment change.
+
 ## Explicit bounded weekly source process — October 11, 2026
 
 Read docs/OPTIONS_WEEKLY_RUNNER_DELIVERY.md and docs/status/weekly-runner.json. The optional --run mode requires an explicit end time within 24 hours, at least hourly source intervals, bounded requests and existing official source IDs. It is not a cloud task, OS service or workbench startup action. GET/reload never fetches. Stop and expiry preserve receipts; incomplete source claims remain review blockers. Separate simulated failure recovery from actual due execution and expiry. Preserve the 2dabc114 experiment, original schedules and challenge ledger; 4178 switching still needs independent review clearance.

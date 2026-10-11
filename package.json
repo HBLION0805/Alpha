@@ -11,6 +11,7 @@
     "test:options-trend-study": "tsx scripts/options-trend-study.test.mjs",
     "test:options-macro-playbook": "tsx scripts/options-macro-playbook.test.mjs",
     "test:options-weekly-runner": "tsx scripts/options-weekly-runner.test.mjs",
+    "test:options-weekly-events": "tsx scripts/options-weekly-event-sources.test.mjs",
     "options:weekly-sources": "tsx scripts/options-weekly-sources.mjs",
     "test:options-weekly-sources": "tsx scripts/options-weekly-sources.test.mjs",
     "test:options-weekly-plan": "tsx scripts/options-weekly-plan.test.mjs",

@@ -1,0 +1,19 @@
+{
+  "version": "WEEKLY_EVENT_SOURCES_STAGE1_V1",
+  "status": "IMPLEMENTED_REAL_ORIGINAL_REPLAY_AND_TEMP_UI_PASS_PENDING_INDEPENDENT_REVIEW",
+  "sources": {"treasury_auctions": {"rows": 11, "targetWeekEvents": 6, "announcementFieldsPresent": 3, "publishedNotAnnounced": 3}, "fed_events": {"rows": 10, "targetWeekEvents": 4, "timezone": "UNKNOWN"}},
+  "targetWeek": ["2026-10-12", "2026-10-16"],
+  "discoveryHttpRequests": 3,
+  "copiedOriginalResponses": 2,
+  "futureDatesInferred": false,
+  "validation": {"components": 231, "countedTests": 5913, "focusedTests": 50, "newEventSourceTests": 11, "failed": 0},
+  "sourceToTemporaryUi": "PASS",
+  "acceptanceReceipt": "data/runtime/options-weekly-sources/event-stage1-acceptance.json",
+  "acceptanceSha256": "7ac87cf2345f2eaec3bf141d2a45b690d38b54c9772a87c0d29bb32b3bb4badd",
+  "companyIrSecConnectors": "NOT_YET_IMPLEMENTED_FIXED_DENOMINATOR_36",
+  "optionsExchangeCalendarConnectors": "NOT_YET_IMPLEMENTED",
+  "continuousBatch": {"status": "READY_TO_START_EXPLICITLY", "maximumHours": 12, "intervalMinutes": 360, "requestBudget": 20, "sourceCount": 10},
+  "preview4178": "UNCHANGED_9dd4779_PENDING_REVIEWED_SWITCH",
+  "cloudOrSystemScheduleCreated": false,
+  "executionAllowed": false
+}

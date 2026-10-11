@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {resolve} from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {WEEKLY_REFRESH_URLS,readWeeklyRefreshes,refreshWeeklySources} from './options-weekly-refresh.mjs';
+import {ALL_WEEKLY_REFRESH_IDS,readWeeklyAcquisitionHistory as readWeeklyRefreshes,refreshWeeklySourcesIncludingEvents as refreshWeeklySources} from './options-weekly-event-sources.mjs';
 import {readSourceBytes,sourceHash,WEEKLY_SOURCE_BASE} from './options-weekly-source-storage.mjs';
 
 const BASE=WEEKLY_SOURCE_BASE+'/runner',HOUR=3600000;
@@ -59,13 +59,13 @@ export async function runWeeklyRunner({root,sourceIds=['bls_calendar','fomc_cale
  root=fs.realpathSync(root);const startedAt=now(),start=clock(startedAt),end=clock(until);firstAt??=startedAt;
  check(end>start&&end-start<=24*HOUR&&clock(firstAt)>=start&&clock(firstAt)<end,'RUNNER_WINDOW');
  check(Number.isInteger(intervalMinutes)&&intervalMinutes>=60&&intervalMinutes<=1440,'RUNNER_INTERVAL');check(Number.isInteger(maxAttempts)&&maxAttempts>=1&&maxAttempts<=100,'RUNNER_BUDGET');
- check(['REAL_PUBLIC_SOURCE','TEST_FIXTURE'].includes(evidenceContext)&&Array.isArray(sourceIds)&&sourceIds.length>0&&sourceIds.length<=10&&new Set(sourceIds).size===sourceIds.length&&sourceIds.every(id=>Object.hasOwn(WEEKLY_REFRESH_URLS,id)),'RUNNER_SCOPE');
+ check(['REAL_PUBLIC_SOURCE','TEST_FIXTURE'].includes(evidenceContext)&&Array.isArray(sourceIds)&&sourceIds.length>0&&sourceIds.length<=10&&new Set(sourceIds).size===sourceIds.length&&sourceIds.every(id=>ALL_WEEKLY_REFRESH_IDS.includes(id)),'RUNNER_SCOPE');
  directory(root,BASE);const runId=randomUUID(),token=randomUUID(),owner={version:'WEEKLY_RUNNER_OWNER_V1',runId,token,pid:process.pid};
  write(root,BASE+'/active.json',owner);let initialized=false,terminalWritten=false,controlTimer,stopping=null,requestController,previousNow=start;
  const requestStop=reason=>{stopping??=reason;requestController?.abort();};
  const externalStop=()=>requestStop('STOPPED_BY_SIGNAL');
  try{
-  const implementation=Object.fromEntries(['options-weekly-runner.mjs','options-weekly-refresh.mjs','options-weekly-source-storage.mjs'].map(name=>[name,sourceHash(fs.readFileSync(new URL(name,import.meta.url)))]));
+  const implementation=Object.fromEntries(['options-weekly-runner.mjs','options-weekly-refresh.mjs','options-weekly-source-storage.mjs','options-weekly-event-sources.mjs'].map(name=>[name,sourceHash(fs.readFileSync(new URL(name,import.meta.url)))]));
   directory(root,runPath(runId));const body={version:'WEEKLY_RUNNER_MANIFEST_V1',runId,startedAt,until,firstAt,sourceIds,intervalMinutes,maxAttempts,evidenceContext,pid:process.pid,implementation,executionAllowed:false};
   write(root,runPath(runId)+'/manifest.json',{...body,fingerprint:sourceHash(JSON.stringify(body))});initialized=true;
   append(root,runId,'STARTED',{state:'WAITING',firstAt},now());
