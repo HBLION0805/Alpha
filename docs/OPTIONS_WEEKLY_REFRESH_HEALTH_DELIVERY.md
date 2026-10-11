@@ -111,3 +111,27 @@ Temporary **4180** runs PID 7692 from 1,505 hash-pinned archived files. The exis
 4178 archive and rollback remain preserved for a coordinated switch after review.
 Raw evidence and preview receipts remain ignored/local. First six-hour company
 acquisition and terminal acceptance remain pending; they are not UI acceptance.
+
+## Independently cleared actual-port rollout
+
+Independent review cleared exact **15f9125248d744713c365eeb60e2cee1773884f9**
+with no P2. The approved switch replaced only the verified old 4178 preview.
+**http://127.0.0.1:4178/#weekly-plan** now serves that exact hash-pinned archive
+(1505 files), PID **32464**, started **2026-10-11T08:29:24.355Z**.
+All eleven original navigation routes and mobile Weekly plan passed actual-port
+checks with no console/page/HTTP/network errors or horizontal overflow. Desktop
+and mobile health cards passed visual inspection. All 25,907 protected files and
+140 source/runner files retained their hashes; read-only guards remained active
+and outbound attempts remained zero. The temporary 4180 process was verified and
+closed only after actual-port acceptance. The ae8a88c archive remains available
+for rollback. Earlier pending-switch statements above are historical.
+
+Final readback **2026-10-11T08:31:38.0941138Z** confirmed public PID 23512 and company PID 7956
+retained their original start times; neither was stopped or restarted. Both runs
+remain WAITING with zero confirmed requests. Public next eligibility remains
+09:38:44.499 UTC, company 13:40 UTC. Actual six-hour acquisition and terminal
+acceptance remain pending. Continued observation belongs to the parent task;
+no new monitoring process, schedule or feature was introduced.
+
+Local switch receipt: `data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/switch-acceptance.json`.
+SHA-256: `6dc91a76876b577da2a583e69b2c790d02b4ade3a4e10f16f372b07d8a4b2481`.

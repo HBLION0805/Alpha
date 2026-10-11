@@ -1,7 +1,7 @@
 {
   "version": "WEEKLY_REFRESH_HEALTH_DELIVERY_V1",
-  "asOf": "2026-10-11T08:05:50.098Z",
-  "status": "IMPLEMENTED_UI_VERIFIED_INDEPENDENT_REVIEW_PENDING",
+  "asOf": "2026-10-11T08:31:38.0941138Z",
+  "status": "REVIEWED_4178_PASS_RUNNER_ACQUISITION_PENDING",
   "validation": {
     "components": 237,
     "passed": 5997,
@@ -52,10 +52,24 @@
     "receiptSha256": "f44eb02c9c860e16dd6121b882dd61746ec627cef7425fc5f7aaa67baf5e9023"
   },
   "preview4178": {
-    "commit": "ae8a88c87f727c4831e8ee8a75caa1d1af50dcae",
-    "changed": false
+    "url": "http://127.0.0.1:4178/#weekly-plan",
+    "commit": "15f9125248d744713c365eeb60e2cee1773884f9",
+    "changed": true,
+    "pid": 32464,
+    "startedAt": "2026-10-11T08:29:24.355Z",
+    "codeFiles": 1505,
+    "readOnly": true,
+    "outboundAttempts": 0,
+    "navigationPages": 11,
+    "desktopMobile": "PASS",
+    "protectedFilesUnchanged": 25907,
+    "sourceAndRunnerFilesUnchanged": 140,
+    "temporary4180Stopped": true,
+    "rollbackCommit": "ae8a88c87f727c4831e8ee8a75caa1d1af50dcae",
+    "receiptPath": "data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/switch-acceptance.json",
+    "receiptSha256": "6dc91a76876b577da2a583e69b2c790d02b4ade3a4e10f16f372b07d8a4b2481"
   },
-  "uiReview": "LOCAL_DESKTOP_MOBILE_PASS_INDEPENDENT_REVIEW_PENDING",
+  "uiReview": "INDEPENDENT_REVIEW_CLEARED_ACTUAL_4178_DESKTOP_MOBILE_PASS",
   "executionAllowed": false,
   "temporaryPreview4180": {
     "codeCommit": "15f9125248d744713c365eeb60e2cee1773884f9",
@@ -76,13 +90,14 @@
     "screenshots": [
       "data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/acceptance-final-4180/health-weekly-plan.png",
       "data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/acceptance-final-4180/health-mobile.png"
-    ]
+    ],
+    "stoppedAfterActualPortAcceptance": true
   },
   "finalHostReadback": {
-    "at": "2026-10-11T08:20:15.6507483Z",
-    "path": "data/runtime/options-weekly-sources/refresh-health-final-host-readback.json",
+    "at": "2026-10-11T08:31:38.0941138Z",
+    "path": "data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/switch-final-readback.json",
     "publicPid": 23512,
     "companyPid": 7956,
-    "unchangedPreview4178Pid": 37080
+    "runnerProcessStartTimesUnchanged": true
   }
 }

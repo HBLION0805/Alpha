@@ -1,3 +1,7 @@
+## Reviewed refresh-health 4178 rollout — October 11, 2026
+
+Independent review cleared exact 15f9125 without P2. The full read-only 4178 preview now serves its hash-pinned archive; all eleven navigation routes and desktop/mobile health checks passed. Temporary 4180 is closed. Both public/company runner PIDs and start times were preserved; both remain WAITING with zero requests at 2026-10-11T08:31:38.0941138Z. First six-hour acquisition and terminal acceptance remain pending and are observed by the parent task. Do not add features or restart/stop runners. See [delivery](OPTIONS_WEEKLY_REFRESH_HEALTH_DELIVERY.md) and retain the ae8a88c rollback archive. This supersedes prior pending-switch statements.
+
 ## Read-only refresh health and reviewed waiting process — October 11, 2026
 
 Read [the health delivery](OPTIONS_WEEKLY_REFRESH_HEALTH_DELIVERY.md). After independent clearance of 4b9d63e/e0ed70f, company run daf66c62-fcaf-4052-8a0d-8697af10c01a started from exact archived e0ed70f and waits until October 11 13:40 UTC, with ten fixed sources, six-hour spacing, twenty total requests and 20:00 UTC cutoff. Startup and later readback show zero requests; six-hour acquisition/terminal acceptance remain pending. The other 37 are not queued. New health UI reads bounded saved state only, omits sensitive process/config/path fields, keeps one-time evidence separate and cannot control collection. Health code requires its own review before switching 4178 from ae8a88c. Do not mutate either existing process, the frozen experiment or original schedules.
