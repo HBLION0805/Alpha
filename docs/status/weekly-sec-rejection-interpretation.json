@@ -1,7 +1,7 @@
 {
   "version": "WEEKLY_SEC_REJECTION_INTERPRETATION_DELIVERY_V1",
-  "asOf": "2026-10-11T14:42:22.351Z",
-  "status": "IMPLEMENTED_VALIDATED_REVIEW_PENDING",
+  "asOf": "2026-10-11T14:52:48.0490857Z",
+  "status": "INDEPENDENTLY_REVIEWED_4178_SWITCH_PASS",
   "interpretationVersion": "WEEKLY_SEC_REJECTION_INTERPRETATION_V1",
   "legacyParserChanged": false,
   "originalRejectionsAndCountsChanged": false,
@@ -52,13 +52,25 @@
     "staticVisual": "DESKTOP_MOBILE_PASS"
   },
   "preview4178": {
-    "commit": "d395281b7d1a65947ad695cb93c719c39f1aa398",
-    "changed": false
+    "commit": "549fb295b4c29a5730111c5814adf3590c98fc1d",
+    "changed": true,
+    "url": "http://127.0.0.1:4178/#weekly-plan",
+    "pid": 29168,
+    "startedAt": "2026-10-11T14:50:19.832Z",
+    "pinnedFiles": 1513,
+    "actualPortDesktopMobile": "PASS",
+    "navigationPages": 11,
+    "protectedFilesUnchanged": 25907,
+    "sourceAndRunnerFilesUnchanged": 203,
+    "temporary4180Stopped": true,
+    "rollbackCommit": "d395281b7d1a65947ad695cb93c719c39f1aa398",
+    "receiptPath": "data/runtime/options-workbench-development/readonly-preview-sec-rejections-549fb29-20261011/switch-acceptance.json",
+    "receiptSha256": "a4428b7dd8a8db875f57d3456d9f9443c7643c3201b28cddb7b8850d6d25c447"
   },
   "executionAllowed": false,
   "finalHostReadback": {
-    "at": "2026-10-11T14:44:13.4260588Z",
-    "path": "data/runtime/options-weekly-sources/sec-rejection-offline-20261011/host-readback.json",
+    "at": "2026-10-11T14:52:48.0490857Z",
+    "path": "data/runtime/options-workbench-development/readonly-preview-sec-rejections-549fb29-20261011/switch-final-readback.json",
     "processes": [
       {
         "pid": 23512,
@@ -67,16 +79,12 @@
       {
         "pid": 7956,
         "startUtc": "2026-10-11T07:56:03.5064642Z"
-      },
-      {
-        "pid": 11476,
-        "startUtc": "2026-10-11T10:01:59.4155450Z"
       }
     ],
     "publicRequests": 10,
     "publicNext": "2026-10-11T15:38:44.546Z",
     "companyRequests": 10,
     "companyNext": "2026-10-11T19:40:01.359Z",
-    "newSecInterpretationLive": false
+    "newSecInterpretationLive": true
   }
 }

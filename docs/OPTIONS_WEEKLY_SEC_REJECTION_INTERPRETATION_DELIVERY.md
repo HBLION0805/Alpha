@@ -84,3 +84,27 @@ checks. At **2026-10-11T14:44:13.4260588Z**, live 4178 still served d395281 with
 public PID 23512 and company PID 7956 retained their original start times. Both
 were WAITING with ten requests each; next eligibility remained 15:38:44.546 UTC
 and 19:40:01.359 UTC respectively. No data-source call or process change occurred.
+
+## Independently cleared actual-port rollout
+
+Independent review cleared exact **549fb295b4c29a5730111c5814adf3590c98fc1d**.
+The approved **http://127.0.0.1:4178/#weekly-plan** now serves its 1,513-file
+hash-pinned archive, PID **29168**, started **2026-10-11T14:50:19.832Z**.
+Actual-port checks passed for all eleven original navigation routes, desktop/mobile
+ASML explanation/source fields and health cards, client/server read-only guards,
+and protected hashes. There were no console, page, HTTP, network or external
+request errors, and no outbound attempts. All **25,907** protected files and
+**203** source/runner files retained hashes. The archived legacy issuer reader
+replayed all **95** receipts; old company parser, issuer reader and both runner
+modules are byte-identical to the preceding archived version. Frozen experiment
+remains clean at **2dabc114**. Temporary 4180 is closed; preserve **d395281** rollback.
+Earlier pending-switch statements above are historical.
+
+At **2026-10-11T14:52:48.0490857Z**, both runner process start times were unchanged. Public and company
+runs remained WAITING with ten requests each, next eligibility **15:38:44.546 UTC**
+and **19:40:01.359 UTC** respectively. No source was requested and neither runner
+was restarted or stopped by this switch. Subsequent natural rounds and terminal
+acceptance stay with parent-task monitoring; no additional feature or job.
+
+Local receipt: `data/runtime/options-workbench-development/readonly-preview-sec-rejections-549fb29-20261011/switch-acceptance.json`.
+SHA256: `a4428b7dd8a8db875f57d3456d9f9443c7643c3201b28cddb7b8850d6d25c447`.

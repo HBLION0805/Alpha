@@ -1,3 +1,7 @@
+## Reviewed ASML explanation 4178 rollout — October 11, 2026
+
+Independent review cleared exact 549fb29. 4178 now runs its pinned archive with all eleven navigation routes, desktop/mobile explanation/source/health checks and read-only acceptance passing. Temporary 4180 is closed; preserve d395281 rollback. Old parser/reader/runner archive hashes and all protected data are unchanged; 95 issuer receipts replay. Both runners kept original process starts and remain WAITING 10/20 at 2026-10-11T14:52:48.0490857Z, next public 15:38 UTC and company 19:40 UTC. Only monitor existing natural rounds and terminal evidence; no feature expansion, resampling or runner restart. See [delivery](docs/OPTIONS_WEEKLY_SEC_REJECTION_INTERPRETATION_DELIVERY.md); this supersedes older pending-switch instructions.
+
 ## ASML historical rejection explanation — October 11, 2026
 
 Read [delivery](docs/OPTIONS_WEEKLY_SEC_REJECTION_INTERPRETATION_DELIVERY.md). Additive V1 explains six original ASML SEC rejections without changing old parsed rows, partial, recent counts or receipt replay. All six are outside the original 30-day window; five valid 1995/1999 dates encounter the old 2000–2099 gate, and all six lack primaryDocument/reportDate. Keep documentUrl null, body unread and reportDate UNKNOWN; descriptions cannot supply filenames. They are not six missing recent news items. 4178 remains d395281 pending review. Do not resample, restart runners, alter their natural rounds or frozen work.
