@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
 import {runCompanyRunner,companyRunnerStatus,stopCompanyRunner,recoverCompanyRunner} from './lib/options-weekly-company-runner.mjs';
-import {COMPANY_REFRESH_IDS,VERIFIED_IR_IDS,VERIFIED_SEC_IDS,companySourceDue,readCompanyRefreshConfig,companyRefreshPlan} from './lib/options-weekly-company-refresh-policy.mjs';
+import {COMPANY_REFRESH_IDS,VERIFIED_IR_IDS,VERIFIED_SEC_IDS,companySourceDue,readCompanyRefreshConfig,companyRefreshPlan,refreshCompanySources} from './lib/options-weekly-company-refresh-policy.mjs';
 import {refreshWeeklyIssuerSources,readWeeklyIssuerRefreshes} from './lib/options-weekly-issuer-sources.mjs';
 import {readPdfMetadata,checkPdfMetadata,PDF_INTERVAL_MS,PDF_METADATA_ID} from './lib/options-weekly-pdf-metadata.mjs';
 import {CBOE_PDF_URL} from './lib/options-weekly-source-supplement.mjs';
@@ -73,7 +73,7 @@ check('SEC reuses serial spacing, identification and immutable submissions parse
 function pdfSeed(root,t=start-PDF_INTERVAL_MS){const raw=Buffer.from('%PDF-1.6\nTEST_FIXTURE\n%%EOF'),r={version:'CBOE_PDF_ACQUISITION_V1',url:CBOE_PDF_URL,requestedAt:iso(t),receivedAt:iso(t),bodyComplete:true,error:null,rawBase64:raw.toString('base64'),rawSha256:sourceHash(raw),headers:{etag:'"fixture-v1"'}};const bytes=JSON.stringify(r),path='pdf-baseline.json';fs.writeFileSync(join(root,path),bytes);return {path,sha256:sourceHash(bytes)};}
 check('PDF metadata is at least weekly and does not download a body even when changed',async()=>temp(async root=>{
  const baseline=pdfSeed(root);let calls=0;const r=await checkPdfMetadata({root,baseline,now:()=>iso(start),fetchImplementation:async(url,o)=>{calls++;assert.equal(o.method,'HEAD');assert.equal(o.headers['If-None-Match'],'"fixture-v1"');return new Response(null,{headers:{etag:'"fixture-v2"'}});}});
- assert.equal(r.state,'CHANGED_REQUIRES_REVIEW');const saved=readPdfMetadata(root,iso(start),baseline);assert.deepEqual(saved.issues,[]);assert.equal(saved.records.at(-1).downloadedBodyBytes,0);assert.equal(companySourceDue(saved.records,PDF_METADATA_ID,HOUR,iso(start)).blockedReason,'CHANGED_REQUIRES_REVIEW');
+ assert.equal(r.state,'CHANGED_REQUIRES_REVIEW');const saved=readPdfMetadata(root,iso(start),baseline);assert.deepEqual(saved.issues,[]);assert.equal(saved.records.at(-1).downloadedBodyBytes,0);assert.equal(companySourceDue(saved.records,PDF_METADATA_ID,HOUR,iso(start),{pdfMetadataEnabled:true}).blockedReason,'CHANGED_REQUIRES_REVIEW');
  const second=await checkPdfMetadata({root,baseline,now:()=>iso(start+HOUR),fetchImplementation:()=>assert.fail()});assert.equal(second.status,'COOLDOWN');assert.equal(calls,1);
 }));
 check('PDF missing baseline, early check and redirected/error response never trigger GET fallback',async()=>temp(async root=>{
@@ -97,4 +97,20 @@ check('actual interrupted child is reported and recovery never removes issuer cl
  try{for(let i=0;i<80;i++){try{const r=companyRunnerStatus(root);if(r.activeRunId&&r.lastEvent){state=r;break;}}catch{}await new Promise(r=>setTimeout(r,100));}assert(state);child.kill('SIGKILL');await exit;assert.equal(companyRunnerStatus(root,state.runId).state,'INTERRUPTED_REQUIRES_RECOVERY');
   const claim=join(root,'data/runtime/options-weekly-sources/issuer-refreshes/msft_ir.lock');fs.writeFileSync(claim,'unfinished');recoverCompanyRunner(root,state.runId);assert.equal(fs.readFileSync(claim,'utf8'),'unfinished');assert.equal(companyRunnerStatus(root).state,'NOT_RUNNING');
  }finally{if(child.exitCode===null&&child.signalCode===null){child.kill('SIGKILL');await exit;}}
+}));
+check('disabled or missing PDF flag rejects retained PDF IDs and batches during config validation',async()=>temp(async root=>{
+ const c={version:'WEEKLY_COMPANY_REFRESH_CONFIG_V1',enabledSourceIds:[PDF_METADATA_ID],intervalMinutes:360,maxAttempts:1,batches:{pdf:[PDF_METADATA_ID]}};
+ for(const value of [false,undefined,'true',1]){fs.writeFileSync(join(root,'config.json'),JSON.stringify({...c,pdfMetadata:{enabled:value}}));assert.throws(()=>readCompanyRefreshConfig(root,'config.json'),/PDF_METADATA_DISABLED/);}
+ fs.writeFileSync(join(root,'config.json'),JSON.stringify({...c,pdfMetadata:{enabled:true}}));assert.equal(readCompanyRefreshConfig(root,'config.json').pdfMetadata.enabled,true);
+}));
+check('runner independently rejects PDF selection when disabled, even bypassing CLI config parsing',async()=>temp(async root=>{
+ const baseline=pdfSeed(root),records=readPdfMetadata(root,iso(start),baseline).records;
+ for(const enabled of [false,undefined,'true'])await assert.rejects(runCompanyRunner(opts(root,{sourceIds:[PDF_METADATA_ID],configEvidence:{configuration:{pdfMetadata:{enabled}}},fetchImplementation:()=>assert.fail()})),/PDF_METADATA_DISABLED/);
+ assert.equal(companyRunnerStatus(root).state,'NOT_RUNNING');assert.equal(companySourceDue(records,PDF_METADATA_ID,HOUR,iso(start)).blockedReason,'PDF_METADATA_DISABLED');assert.equal(companySourceDue(records,PDF_METADATA_ID,HOUR,iso(start),{pdfMetadataEnabled:true}).blockedReason,null);
+ const plan=companyRefreshPlan(root,{enabledSourceIds:[PDF_METADATA_ID],intervalMinutes:360,pdfMetadata:{enabled:false}},iso(start));assert.equal(plan.rows.find(r=>r.sourceId===PDF_METADATA_ID).configured,false);
+}));
+check('PDF dispatch denies disabled state and permits explicitly enabled due HEAD only',async()=>temp(async root=>{
+ const baseline=pdfSeed(root),args={root,sourceIds:[PDF_METADATA_ID],baseline,now:()=>iso(start),fetchImplementation:()=>assert.fail()};
+ await assert.rejects(refreshCompanySources(args),/PDF_METADATA_DISABLED/);await assert.rejects(refreshCompanySources({...args,pdfMetadataEnabled:false}),/PDF_METADATA_DISABLED/);
+ let calls=0;const r=await refreshCompanySources({...args,pdfMetadataEnabled:true,fetchImplementation:async(url,o)=>{calls++;assert.equal(o.method,'HEAD');return new Response(null,{status:304});}});assert.equal(calls,1);assert.equal(r.results[0].state,'NOT_MODIFIED_BY_SERVER');
 }));

@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import {resolve} from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {COMPANY_REFRESH_IDS as ALL_WEEKLY_REFRESH_IDS,readCompanyRefreshHistory as readWeeklyRefreshes,refreshCompanySources as refreshWeeklySources,companySourceDue} from './options-weekly-company-refresh-policy.mjs';
+import {COMPANY_REFRESH_IDS as ALL_WEEKLY_REFRESH_IDS,readCompanyRefreshHistory as readWeeklyRefreshes,refreshCompanySources as refreshWeeklySources,companySourceDue,assertCompanyPdfSelection} from './options-weekly-company-refresh-policy.mjs';
 import {readSourceBytes,sourceHash,WEEKLY_SOURCE_BASE} from './options-weekly-source-storage.mjs';
 
 const BASE=WEEKLY_SOURCE_BASE+'/company-runner',HOUR=3600000;
@@ -55,6 +55,8 @@ export async function runCompanyRunner({root,sourceIds=[],until,firstAt,interval
  check(end>start&&end-start<=24*HOUR&&clock(firstAt)>=start&&clock(firstAt)<end,'RUNNER_WINDOW');
  check(Number.isInteger(intervalMinutes)&&intervalMinutes>=60&&intervalMinutes<=1440,'RUNNER_INTERVAL');check(Number.isInteger(maxAttempts)&&maxAttempts>=1&&maxAttempts<=20,'RUNNER_BUDGET');
  check(['REAL_PUBLIC_SOURCE','TEST_FIXTURE'].includes(evidenceContext)&&Array.isArray(sourceIds)&&sourceIds.length>0&&sourceIds.length<=10&&new Set(sourceIds).size===sourceIds.length&&sourceIds.every(id=>ALL_WEEKLY_REFRESH_IDS.includes(id)),'RUNNER_SCOPE');
+ assertCompanyPdfSelection(sourceIds,configEvidence?.configuration);
+ const pdfMetadataEnabled=configEvidence?.configuration?.pdfMetadata?.enabled===true;
  directory(root,BASE);const runId=randomUUID(),token=randomUUID(),owner={version:'WEEKLY_COMPANY_RUNNER_OWNER_V1',runId,token,pid:process.pid};
  write(root,BASE+'/active.json',owner);let initialized=false,terminalWritten=false,controlTimer,stopping=null,requestController,previousNow=start;
  const requestStop=reason=>{stopping??=reason;requestController?.abort();};
@@ -76,7 +78,7 @@ export async function runCompanyRunner({root,sourceIds=[],until,firstAt,interval
    if(attempts>=maxAttempts){stopping='BUDGET_EXHAUSTED';break;}
    if(nextWait&&clock(now())<clock(nextWait)){await wait(Math.min(1000,end-clock(now()),clock(nextWait)-clock(now())));continue;}
    const at=now(),saved=readWeeklyRefreshes(root,at);check(!saved.issues.length,'RUNNER_SOURCE_STORE_REQUIRES_REVIEW');
-   const eligibility=sourceIds.map(id=>companySourceDue(saved.records,id,intervalMinutes*60000,firstAt));
+   const eligibility=sourceIds.map(id=>companySourceDue(saved.records,id,intervalMinutes*60000,firstAt,{pdfMetadataEnabled}));
    const due=eligibility.filter(r=>!r.blockedReason).sort((a,b)=>a.nextEligibleAt.localeCompare(b.nextEligibleAt)||a.sourceId.localeCompare(b.sourceId));
    if(!due.length){append(root,runId,'SOURCES_DISABLED',{sources:eligibility},at);stopping='NO_ELIGIBLE_SOURCES_REQUIRES_REVIEW';break;}
    if(clock(due[0].nextEligibleAt)>clock(at)){
@@ -87,7 +89,7 @@ export async function runCompanyRunner({root,sourceIds=[],until,firstAt,interval
    const remaining=end-clock(now());if(remaining<=0){stopping='EXPIRED';break;}
    append(root,runId,'ATTEMPT_STARTED',{sourceId:selected.sourceId,consecutiveFailures:selected.consecutiveFailures,eligibility:selected},now());requestController=new AbortController();
    let result;
-   try{result=await refreshWeeklySources({root,sourceIds:[selected.sourceId],now,fetchImplementation,deadlineMs:Math.max(1,Math.min(12000,remaining)),signal:requestController.signal});}
+   try{result=await refreshWeeklySources({root,sourceIds:[selected.sourceId],now,fetchImplementation,pdfMetadataEnabled,deadlineMs:Math.max(1,Math.min(12000,remaining)),signal:requestController.signal});}
    catch(e){if(stopping){append(root,runId,'ATTEMPT_CANCELLED_BEFORE_REQUEST',{sourceId:selected.sourceId,reason:stopping},now());break;}throw e;}
    requestController=null;
    const attempted=result.results.filter(r=>r.status!=='COOLDOWN').length;attempts+=attempted;

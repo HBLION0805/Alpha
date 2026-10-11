@@ -1,0 +1,39 @@
+{
+  "version": "COMPANY_PDF_DISABLE_REPAIR_V1",
+  "asOf": "2026-10-11T07:49:46.333Z",
+  "status": "FIX_IMPLEMENTED_REVIEW_PENDING",
+  "reviewFinding": "pdfMetadata.enabled=false did not block retained PDF IDs/batches",
+  "layers": [
+    "config selection",
+    "runner pre-ownership selection",
+    "due projection",
+    "request dispatch"
+  ],
+  "explicitBooleanTrueRequired": true,
+  "defaultNoPdfConfigAffected": false,
+  "focusedTestsPassed": 21,
+  "fullValidation": {
+    "components": 236,
+    "passed": 5983,
+    "failed": 0,
+    "logSha256": "476c9f37ca24cb52a4b03d403c82fe19e8ca906a72954c637c16550b52f6dfba"
+  },
+  "newSourceRequests": 0,
+  "newCompanyRunStarted": false,
+  "oldIssuerReceiptsUnchanged": 85,
+  "protectedFilesUnchanged": 25907,
+  "localCheck": {
+    "path": "data/runtime/options-weekly-sources/company-pdf-disabled-local-check.json",
+    "sha256": "17385194072697b2a7780969d4f13fa8b087c0a8062ffcd93f772bbf51bf55f5"
+  },
+  "priorHourlyRun": {
+    "runId": "e54bb517-3e64-442b-8f7e-a8e44d0078ee",
+    "implementationCommit": "dfd92420ba974813b63a6e9f3201b8b58aec234d",
+    "intervalMinutes": 60,
+    "acceptanceSha256": "4d00ebefcea2cccec9cff4291cb37975ea2e7efee00ff47a138c250ba4f67761",
+    "sixHourDefaultAcceptance": false
+  },
+  "previewCommit": "ae8a88c87f727c4831e8ee8a75caa1d1af50dcae",
+  "tenSourceRunnerChanged": false,
+  "executionAllowed": false
+}
