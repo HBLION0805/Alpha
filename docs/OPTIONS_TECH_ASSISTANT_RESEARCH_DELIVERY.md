@@ -53,7 +53,10 @@ thesis is inferred from an operating result.
 `originalPreparation` remains the unchanged preparation engine's response to
 inapplicable ASSISTANT envelopes. Its field inventory can describe supplied
 fields, but its `requestDraft` remains null and the request is not accepted.
-The current isolated call is BLOCKED / INPUT_SCOPE. This corrects the earlier
+The corrected isolated call is BLOCKED / EVIDENCE_INTEGRITY. The earlier
+44991ca call omitted the required `TECH_SPREAD_PLAN_INPUT_V1` version and stopped
+at INPUT_SCOPE before evidence validation. That was an adapter defect, not proof
+that the original engine had checked assistant origin. This also corrects the earlier
 private experiment report: its 17 research blockers came from a separate research
 assessment; field presence did not demonstrate original handoff acceptance.
 The earlier SYNTHETIC_FIXTURE rejection was correct and has not been bypassed.
@@ -84,18 +87,49 @@ COST_MODEL, DATA_ENTITLEMENT, PRODUCT_PERMISSION, ACCOUNT_FUNDS and RISK_LIMITS.
 the entire preparation response exactly. Quote: NOT_RUN. Paper: NOT_ADMITTED.
 Source calls and fills: zero. P&L: null. No two-week performance claim.
 
+## Required-version repair and appended acceptance
+
+Final independent review of 44991ca found a P2: the original preparation call
+omitted its required version. The repair supplies `TECH_SPREAD_PLAN_INPUT_V1`
+without changing mode, records, evidence readers, origin whitelist or permissions.
+A regression requires EVIDENCE_INTEGRITY and explicitly rejects INPUT_SCOPE as
+the observed outcome. The original evidence reader now rejects ASSISTANT_RESEARCH
+before validity/PASS checks; no deeper gate is claimed to pass.
+
+New ignored receipt run `tsm-assistant-version-repair-2026-10-11t22-21-53-428z`
+assesses the same saved request at October 11 22:21:53.611 UTC / 18:21:53.611 EDT.
+No registration/request clock changed and no new source was acquired. The prior
+207-file manifest remains intact; each new isolated/recovered copy preserves all
+99 saved files, including the original registration and later revision/request.
+Both copied roots produce the same corrected preparation. The new actual engine
+blocker is EVIDENCE_INTEGRITY; the request draft remains all-null. The 17 separate
+research blockers, six missing evidence kinds and zero fills are unchanged.
+
+This repair supersedes the previous no-remaining-P1/P2 statement. Final independent
+review of the repair is pending the root task. The approval for exact 44991ca is
+on hold; no old or repaired version may be pushed until the root confirms scope
+and clearance. Old acceptance files are retained as historical evidence of the
+defective call, not silently rewritten as the repaired outcome.
+
 ## Validation and boundaries
 
-Final full validation: 248 components, 6,243 tests passed, zero failed; the candidate/research module passed 153/153. Independent assistant subset passed 18/18. See `docs/status/tech-assistant-research.json` for evidence hashes and review. The first full run reached its final file scan but stopped after a temporary log was relocated; the complete final rerun passed.
+The original 44991ca validation passed 248 components / 6,243 tests; those tests
+did not detect the missing version. Its 18-test independent subset did not cover
+the deeper rejection code. The repair adds that regression and passes 248 components / 6,244 tests, zero failed; candidate/research tests pass 154/154 and the assistant subset passes 19/19. Final independent review of the repair remains pending; see
+`docs/status/tech-assistant-research.json` for the repair's final validation and
+separate pending independent review. The original first full run's file-scan
+failure and complete successful rerun remain preserved in local logs.
 Tests cover immutable originals, valid forward revision/request clocks, spoofed
 authority, changed parents, backdating, rehashed record/request tampering,
 missing parents, append retries, copied recovery and UNKNOWN preservation.
-Independent review found and verified the repair of an initial parent-fingerprint
-format mismatch; the existing store's complete `sha256:` format is preserved.
+Earlier independent review found and verified an initial parent-fingerprint
+format repair, but missed the separately identified preparation-version defect.
+The existing store's complete `sha256:` format remains preserved.
 
 4178 remains pinned to 3e0809d; October 12 remains frozen at 2dabc114. No browser
 write channel, preview switch, deployment, source acquisition, runner restart,
 schedule/risk/account/Owner-root/challenge-ledger mutation or public push.
 This stage is a local development commit only. Any subsequent public publication
-requires approval for this concrete change scope; the earlier approval covered
-43d81d8 only. Private originals and recovery outputs remain ignored and local.
+requires root confirmation of the revised scope after independent clearance;
+the later exact-44991ca approval is currently on hold. Private originals and
+recovery outputs remain ignored and local.

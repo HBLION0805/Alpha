@@ -1,6 +1,6 @@
 {
   "version": "TECH_ASSISTANT_RESEARCH_DELIVERY_V1",
-  "status": "LOCAL_DIAGNOSTIC_ADAPTER_DELIVERED",
+  "status": "LOCAL_VERSION_REPAIR_PENDING_FINAL_INDEPENDENT_REVIEW",
   "capability": "DIAGNOSTIC_PREPARATION_ONLY",
   "executionOriginWhitelistChanged": false,
   "realSample": {
@@ -30,34 +30,40 @@
     "copiedRecovery": "EXACT_PREPARATION_EQUALITY_PASS",
     "manifestFiles": 207,
     "manifestSha256": "21a203e2a6b72cc5aafa17742713459ab6000f35769a4513c068d0e6dbc00c50",
-    "resultSha256": "496af82fce706aba107774eb44bc77198959762e56095b8885b318051bc9d6ca"
+    "resultSha256": "496af82fce706aba107774eb44bc77198959762e56095b8885b318051bc9d6ca",
+    "acceptanceLimitation": "Historical defective call: missing required version caused INPUT_SCOPE before evidence-origin validation. Preserved unchanged, superseded by versionRepair receipt."
   },
   "independentReview": {
-    "code": "NO_REMAINING_P1_P2",
+    "code": "PRELIMINARY_CLEARANCE_SUPERSEDED_BY_FINAL_REVIEW_P2",
     "assistantSubsetPassed": 18,
     "assistantSubsetFailed": 0,
     "repairedFinding": "Preserve existing sha256-prefixed parent fingerprint format",
     "realSample": "207_FILE_MANIFEST_AND_97_ORIGINALS_AND_TWO_ROOT_REPLAY_PASS",
-    "moduleSha256": "8f05c2e1ca285cf2635379dffc80d04e3a9a9330a3acdf04dbef54532a6ca463"
+    "moduleSha256": "8f05c2e1ca285cf2635379dffc80d04e3a9a9330a3acdf04dbef54532a6ca463",
+    "finalFinding": "Missing original preparation version; INPUT_SCOPE did not validate assistant evidence origin"
   },
   "fullValidation": {
     "status": "PASS",
     "report": {
       "status": "PASSED",
       "componentCount": 248,
-      "testsExecuted": 6243,
-      "passed": 6243,
+      "testsExecuted": 6244,
+      "passed": 6244,
       "failed": 0,
-      "durationMs": 251029,
+      "durationMs": 262755,
       "warnings": [
-        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit."
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/OPTIONS_TECH_ASSISTANT_RESEARCH_DELIVERY.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/status/tech-assistant-research.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/lib/options-tech-assistant-research.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/options-tech-candidate.test.mjs', LF will be replaced by CRLF the next time Git touches it"
       ]
     },
-    "logSha256": "8dfc028a2cab440f0eab938ea9e844f5ea7718e3c8aa65a5228896a8dc19ce87",
-    "firstAttempt": "All test components ran; final cached-file scan aborted after a temporary log was moved. Final complete rerun passed."
+    "logSha256": "e993e16e9db5a7873726662c2e297dcbe2ccfefeee75350d8a8885109c93f5c7"
   },
   "preservation": {
-    "at": "2026-10-11T22:16:13.788Z",
+    "at": "2026-10-11T22:23:21.896Z",
     "status": "PASS",
     "protectedFiles": 25907,
     "sourceRunnerFiles": 252,
@@ -78,5 +84,44 @@
   "sourceCalls": 0,
   "fills": 0,
   "pnl": null,
-  "publication": "LOCAL_COMMIT_ONLY_NEW_PUBLIC_PUSH_REQUIRES_SCOPE_APPROVAL"
+  "publication": "HOLD_EXACT_44991CA_APPROVAL_PENDING_ROOT_REVISED_SCOPE_AND_FINAL_REVIEW",
+  "originalFullValidation": {
+    "status": "PASS",
+    "report": {
+      "status": "PASSED",
+      "componentCount": 248,
+      "testsExecuted": 6243,
+      "passed": 6243,
+      "failed": 0,
+      "durationMs": 251029,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit."
+      ]
+    },
+    "logSha256": "8dfc028a2cab440f0eab938ea9e844f5ea7718e3c8aa65a5228896a8dc19ce87",
+    "firstAttempt": "All test components ran; final cached-file scan aborted after a temporary log was moved. Final complete rerun passed."
+  },
+  "versionRepair": {
+    "status": "IMPLEMENTED_PENDING_INDEPENDENT_REVIEW",
+    "changedField": "originalPreparation input.version = TECH_SPREAD_PLAN_INPUT_V1",
+    "codeBaseCommit": "44991ca648c8d88b261fcffc5de4e49e06b2639d",
+    "moduleSha256": "c0f1720bd53add0b5b5452be553956641693adffb781a15b55bf1f70a908114d",
+    "runId": "tsm-assistant-version-repair-2026-10-11t22-21-53-428z",
+    "assessedAt": "2026-10-11T22:21:53.611Z",
+    "originalPreparationCode": "EVIDENCE_INTEGRITY",
+    "originalRequestAccepted": false,
+    "requestDraftAllLeavesNull": true,
+    "newRegistrationOrRequest": false,
+    "priorManifestFilesUnchanged": 207,
+    "copiedFilesUnchanged": 99,
+    "copiedRecovery": "EXACT_PREPARATION_EQUALITY_PASS",
+    "manifestFiles": 201,
+    "manifestSha256": "311b79fd6d48c39ec5373f93ad5ee202c1cebbb11f2283a26976fa6055a08e46",
+    "resultSha256": "00c7d22e896c944fde444fa32f8ed009345a9c6146312e767204ca3d4ce7d5e7",
+    "assistantTestsPassed": 19,
+    "assistantTestsFailed": 0,
+    "independentReview": "PENDING_ROOT_REVIEW_AFTER_LOCAL_COMMIT",
+    "candidateTestsPassed": 154,
+    "candidateTestsFailed": 0
+  }
 }

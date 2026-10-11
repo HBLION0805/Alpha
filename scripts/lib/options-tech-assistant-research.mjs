@@ -88,6 +88,6 @@ export function prepareAssistantResearch({root,id:recordId,now=()=>new Date().to
  const records=[envelope('RESEARCH',research,revision.savedAt),envelope('STRATEGY_REQUEST',request,r.savedAt)];
  return {version:'TECH36_ASSISTANT_PREPARATION_V1',status:'ACCEPTED_FOR_DIAGNOSTICS_ONLY',evidenceContext:q.evidenceContext,assessedAt:at,revision:ref(revision),requestRecord:ref(r),research,diagnosticRequest:request,
   independentResearchAssessment:assessTechPaperFeasibility({research,at}),
-  originalPreparation:prepareTechSpreadInput({mode:'REAL_SAVED_SOURCE_REPLAY',at,records}),
+  originalPreparation:prepareTechSpreadInput({version:'TECH_SPREAD_PLAN_INPUT_V1',mode:'REAL_SAVED_SOURCE_REPLAY',at,records}),
   executionOriginAccepted:false,originalRequestAccepted:false,validity:'UNKNOWN_ZERO_DURATION_PLACEHOLDERS_NOT_HOLDING_WINDOW_COVERAGE',...authority,fileSystemWrites:0};
 }
