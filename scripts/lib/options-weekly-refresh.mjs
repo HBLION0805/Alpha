@@ -39,10 +39,11 @@ export function readWeeklyRefreshes(root,at){
  }catch(e){issues.push({source:'weekly-refresh',state:['ERR_ACCESS_DENIED','EACCES','EPERM'].includes(e.code)?'READ_ONLY_RESTRICTED':'INVALID_EVIDENCE'});}
  return {records:records.sort((a,b)=>a.receivedAt.localeCompare(b.receivedAt)),issues};
 }
-export async function refreshWeeklySources({root,sourceIds=['bls_calendar','fomc_calendar'],fetchImplementation=globalThis.fetch,now=()=>new Date().toISOString(),deadlineMs=12000}={}){
+export async function refreshWeeklySources({root,sourceIds=['bls_calendar','fomc_calendar'],fetchImplementation=globalThis.fetch,now=()=>new Date().toISOString(),deadlineMs=12000,signal}={}){
  check(Array.isArray(sourceIds)&&sourceIds.length>0&&sourceIds.length<=10&&new Set(sourceIds).size===sourceIds.length&&sourceIds.every(id=>Object.hasOwn(WEEKLY_REFRESH_URLS,id)),'REFRESH_SCOPE');check(Number.isInteger(deadlineMs)&&deadlineMs>0&&deadlineMs<=12000,'REFRESH_DEADLINE');
  const dir=safeDirectory(root,true),results=[];
  for(const sourceId of sourceIds){
+  check(!signal?.aborted,'REFRESH_CANCELLED_BEFORE_REQUEST');
   const started=now();check(sourceClock(started),'REFRESH_CLOCK');const saved=readWeeklyRefreshes(root,started);check(!saved.issues.length,'REFRESH_STORE_REQUIRES_REVIEW');check(saved.records.length<500,'REFRESH_STORE_LIMIT');
   const latest=saved.records.findLast(r=>r.sourceId===sourceId);if(latest&&Date.parse(started)-Date.parse(latest.requestedAt)<3600000){results.push({sourceId,status:'COOLDOWN',nextEligibleAt:new Date(Date.parse(latest.requestedAt)+3600000).toISOString()});continue;}
   const lock=resolve(dir,sourceId+'.lock'),fd=fs.openSync(lock,'wx');let persisted=false;
@@ -54,16 +55,19 @@ export async function refreshWeeklySources({root,sourceIds=['bls_calendar','fomc
    const concurrent=locked.records.findLast(r=>r.sourceId===sourceId);
    if(concurrent&&Date.parse(started)-Date.parse(concurrent.requestedAt)<3600000){persisted=true;results.push({sourceId,status:'COOLDOWN',nextEligibleAt:new Date(Date.parse(concurrent.requestedAt)+3600000).toISOString()});continue;}
    fs.writeFileSync(fd,JSON.stringify({sourceId,requestedAt:started}));fs.fsyncSync(fd);
-   const controller=new AbortController();let timer,reader,transportError=null,httpStatus=null,responseHeaders={},chunks=[],total=0;
+   const controller=new AbortController();let timer,reader,cancel,transportError=null,httpStatus=null,responseHeaders={},chunks=[],total=0;
    const deadline=new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('DEADLINE_EXCEEDED'));},deadlineMs);});
-   const bounded=p=>Promise.race([p,deadline]);
+   const cancelled=new Promise((_,reject)=>{cancel=()=>{controller.abort();reject(Error('CANCELLED'));};});
+   // Attach a handler before a pre-aborted signal can reject the cancellation.
+   cancelled.catch(()=>{});signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
+   const bounded=p=>Promise.race([p,deadline,cancelled]);
    try{
     const response=await bounded(fetchImplementation(WEEKLY_REFRESH_URLS[sourceId],{redirect:'manual',credentials:'omit',signal:controller.signal,headers:{'User-Agent':'Alpha-Options-Research/0.2 (public source review)',Accept:calendarKind(sourceId)?sourceId==='bls_calendar'?'text/calendar':'text/html':'application/rss+xml, application/atom+xml, application/xml, text/xml'}}));
     httpStatus=response.status;responseHeaders=Object.fromEntries(['content-type','date','last-modified','etag','content-length','location'].map(k=>[k,response.headers.get(k)]).filter(([,v])=>v!==null));
     check(!response.redirected,'REDIRECT_REJECTED');check(response.body,'BODY_MISSING');reader=response.body.getReader();
     while(true){const part=await bounded(reader.read());if(part.done)break;const remaining=MAX_BYTES-total;chunks.push(part.value.subarray(0,remaining));total+=part.value.byteLength;if(total>MAX_BYTES)throw Error('BODY_TOO_LARGE');}
-   }catch(e){transportError=['DEADLINE_EXCEEDED','REDIRECT_REJECTED','BODY_MISSING','BODY_TOO_LARGE'].includes(e.message)?e.message:'NETWORK_FAILED';}
-   finally{clearTimeout(timer);controller.abort();if(reader)void reader.cancel().catch(()=>{});}
+   }catch(e){transportError=['CANCELLED','DEADLINE_EXCEEDED','REDIRECT_REJECTED','BODY_MISSING','BODY_TOO_LARGE'].includes(e.message)?e.message:'NETWORK_FAILED';}
+   finally{clearTimeout(timer);signal?.removeEventListener('abort',cancel);controller.abort();if(reader)void reader.cancel().catch(()=>{});}
    const receivedAt=now();check(sourceClock(receivedAt)&&Date.parse(receivedAt)>=Date.parse(started),'REFRESH_CLOCK');const bytes=Buffer.concat(chunks);
    const base={version:'WEEKLY_PUBLIC_SOURCE_RECEIPT_V1',sourceId,url:WEEKLY_REFRESH_URLS[sourceId],requestedAt:started,receivedAt,httpStatus,responseHeaders,transportError,bodyComplete:transportError===null,rawBase64:bytes.toString('base64'),rawSha256:sourceHash(bytes),executionAllowed:false};
    const body={...base,parsed:parseWeeklyResponse(base)},fingerprint=sourceHash(JSON.stringify(body)),path=BASE+'/'+sourceId+'-'+randomUUID()+'.json',target=fs.openSync(resolve(root,path),'wx',0o600);

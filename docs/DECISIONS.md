@@ -1,3 +1,7 @@
+## Explicit finite weekly-source process — October 11, 2026
+
+The [bounded process mode](OPTIONS_WEEKLY_RUNNER_DELIVERY.md) reuses the existing refresh CLI with explicit expiry, hourly-or-slower eligibility, request budgets, exclusive ownership, stop/status/recovery and receipt-derived backoff. It creates no cloud/system schedule and no page-triggered network work. [Current acceptance](status/weekly-runner.json) separates implemented/tested lifecycle behavior from the still-pending real due-acquisition/expiry check.
+
 ## Weekly source review corrections — October 11, 2026
 
 [Four P2 corrections](OPTIONS_WEEKLY_SOURCE_REVIEW_FIXES.md) bind fallback events to the selected source receipt, separate sanctions from fiscal coverage and ETF background from the fixed company universe, and distinguish publication age from receipt freshness. Existing source originals, schedules and trading rules remain unchanged.

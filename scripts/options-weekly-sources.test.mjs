@@ -32,7 +32,7 @@ test('explicit calendar root is pure read and retains journal fingerprints; stal
  assert.equal(fs.readFileSync(join(source,'data/runtime/options-release-calendar/writer.lock'),'utf8'),'independent writer lock');
  const failed={...calendar,inputs:[...calendar.inputs,{...input,receivedAt:at,sourceText:null,errorCode:'HTTP_STATUS'}]};
  assert.equal(project({calendars:{bls:failed,fomc:missing}}).coverage.macroDataCoverage.state,'ACQUISITION_FAILED');
-}))); 
+})));
 test('corrupt journal is invalid evidence, never absence',async()=>temp(async root=>{
  fs.mkdirSync(join(root,'data/runtime/options-release-calendar'),{recursive:true});fs.writeFileSync(join(root,'data/runtime/options-release-calendar/retrievals.ndjson'),'{}\n');
  assert.equal(readWeeklyCalendar(root,'bls',at).errorCode,'INVALID_EVIDENCE');
@@ -109,7 +109,7 @@ test('review P2: interleaved legacy update owns fallback event identity after re
  const failure=await refreshWeeklySources({root,sourceIds:['bls_calendar'],now:()=> '2026-10-11T03:00:00.000Z',fetchImplementation:async()=>new Response('Unavailable',{status:503})});
  const v=(await weeklyPlanView(root,at)).sourceCoverage,original=readWeeklyCalendar(legacy,'bls',at),e=v.events[0];
  assert.equal(e.startAt,'2026-10-14T12:30:00.000Z');assert.equal(e.retrievedAt,input.receivedAt);assert.equal(e.path,original.path);assert.equal(e.recordFingerprint,original.recordFingerprint);assert.equal(e.sourceRoot,'calendars');assert.equal(v.coverage.macroDataCoverage.path,failure.results[0].path);
-}))); 
+})));
 test('review P2: OFAC sanctions are policy evidence and never auction/fiscal coverage',()=>{
  const r={sourceId:'ofac',status:'OBTAINED_PENDING_REVIEW',title:'ICC and Afghanistan sanctions'},h={id:'ofac',status:'OK',observedAt:at};
  const v=project({news:{records:[r],health:[h],issues:[]}});assert.equal(v.coverage.treasuryFiscalCoverage.state,'NOT_INTEGRATED');assert.equal(v.coverage.treasuryFiscalCoverage.matchedRecords,0);assert.equal(v.coverage.policyGeopoliticalCoverage.matchedRecords,1);

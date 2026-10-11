@@ -1,3 +1,5 @@
+Current follow-ups: [independent-review corrections](OPTIONS_WEEKLY_SOURCE_REVIEW_FIXES.md) supersede the original scope/freshness counts below; [finite process mode](OPTIONS_WEEKLY_RUNNER_DELIVERY.md) is a separate optional extension.
+
 # Weekly source integration
 
 ## Stage 1 — October 11, 2026

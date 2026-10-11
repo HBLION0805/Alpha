@@ -1,0 +1,19 @@
+{
+  "version": "WEEKLY_RUNNER_DELIVERY_V1",
+  "status": "IMPLEMENTED_LIVE_EXPIRY_ACCEPTANCE_PENDING",
+  "baseCommit": "f92814b4253132b6cdea037548a643d1cbec7b8b",
+  "mode": "EXPLICIT_FINITE_PROCESS_ONLY",
+  "minimumIntervalMinutes": 60,
+  "maximumLifetimeHours": 24,
+  "defaultRequestBudget": 20,
+  "maximumRequestBudget": 100,
+  "maximumRequestDeadlineMs": 12000,
+  "validation": {"components": 230, "countedTests": 5902, "failed": 0, "runnerTests": 12, "focusedWeeklySourceTests": 25},
+  "actualLifecycle": {"duplicateRejected": true, "stopConfirmed": true, "cleanRestartConfirmed": true, "dueAcquisition": "PENDING", "automaticExpiry": "PENDING"},
+  "failureRecovery": "PASSED_INJECTED_TRANSPORT_AND_SIMULATED_CLOCK_ONLY",
+  "liveAcceptanceWindowUtc": ["2026-10-11T04:38:50.000Z", "2026-10-11T04:39:25.000Z"],
+  "deployedTo4178": false,
+  "cloudOrSystemScheduleCreated": false,
+  "executionAllowed": false,
+  "paperAcceptance": "NOT_RUN"
+}

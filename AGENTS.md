@@ -1,3 +1,7 @@
+## Explicit bounded weekly source process — October 11, 2026
+
+Read docs/OPTIONS_WEEKLY_RUNNER_DELIVERY.md and docs/status/weekly-runner.json. The optional --run mode requires an explicit end time within 24 hours, at least hourly source intervals, bounded requests and existing official source IDs. It is not a cloud task, OS service or workbench startup action. GET/reload never fetches. Stop and expiry preserve receipts; incomplete source claims remain review blockers. Separate simulated failure recovery from actual due execution and expiry. Preserve the 2dabc114 experiment, original schedules and challenge ledger; 4178 switching still needs independent review clearance.
+
 # Alpha Development Standard v1.0
 
 ## Private case export and isolated recovery — September 20, 2026

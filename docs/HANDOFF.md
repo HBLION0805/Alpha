@@ -1,3 +1,7 @@
+## Explicit finite weekly-source process — October 11, 2026
+
+The [bounded process mode](OPTIONS_WEEKLY_RUNNER_DELIVERY.md) reuses the existing refresh CLI with explicit expiry, hourly-or-slower eligibility, request budgets, exclusive ownership, stop/status/recovery and receipt-derived backoff. It creates no cloud/system schedule and no page-triggered network work. [Current acceptance](status/weekly-runner.json) separates implemented/tested lifecycle behavior from the still-pending real due-acquisition/expiry check.
+
 ## Weekly source integration, stage 1 — October 11, 2026
 
 The [weekly sources specification](specifications/OPTIONS_WEEKLY_SOURCES_V1.md) adds explicit local source roots and a pure current-source projection. Historical weekly V1 revisions remain immutable. Calendar reads no longer acquire writer locks; technology/SEC references and all existing news scopes retain original clocks and incomplete coverage. The independent explicit CLI now saves bounded official public-source responses for current coverage; no timer or deployment is added. See [delivery](OPTIONS_WEEKLY_SOURCES_DELIVERY.md).
