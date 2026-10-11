@@ -1,3 +1,4 @@
+import {courseArchiveRequest} from './course-archive.js';
 import {assessCourseFramework,courseInputFromPlan} from './course-framework.mjs';
 import {courseAssessmentPanel} from './course-panel.js';
 import {evidenceRequest,updateEvidenceDraft,evidenceDetail} from './evidence-loop.js';
@@ -110,7 +111,8 @@ function updateDraft(el){
     ui.scenarioPlanKey=el.value;ui.scenarioPreview=null;ui.scenarioDraft=null;ui.fitPlanKey=el.value;ui.contractFit=null;render();return;
   }
   const form=el.closest('form');if(!form)return;
-  if(form.id==='course-framework-form'){ui.courseDraft=Object.fromEntries(new FormData(form));$('#course-framework-result').innerHTML='<p>研究声明已修改，请重新预览；未保存。</p>';return;}
+  if(form.id==='course-archive-form'){if(el.name==='coursePlan'){ui.courseArchivePlanKey=el.value;ui.courseArchivePreview=null;ui.courseArchiveRequestId=null;render();}return;}
+  if(form.id==='course-framework-form'){ui.courseDraft=Object.fromEntries(new FormData(form));ui.courseArchivePreview=null;ui.courseArchiveRequestId=null;const save=$('#course-archive-form [value="SAVE"]');if(save)save.disabled=true;const archivePreview=$('#course-archive-preview');if(archivePreview)archivePreview.innerHTML='<p>声明已修改，请重新预览存档。</p>';$('#course-framework-result').innerHTML='<p>研究声明已修改，请重新预览；未保存。</p>';return;}
   if(form.id==='weekly-plan-form'){
     ui.weeklyDraft=weeklyPlanFromForm(form,ui.weeklyDraft??weeklyDraftFromState(state.weeklyPlan?.data));ui.weeklyPreview=null;ui.weeklyPreviewRequest=null;dirty.add('weekly-plan');
     const save=form.querySelector('[value="REVIEW"],[value="AMEND"]');if(save)save.disabled=true;
@@ -276,6 +278,16 @@ document.addEventListener('change',event=>{void(async()=>{
   const map={'lesson-origin':'lessonOrigin','news-source':'newsSource','news-asset':'newsAsset'};if(map[el.id]){ui[map[el.id]]=el.value;render();}
 })().catch(e=>fail(e));});
 document.addEventListener('submit',event=>{
+  if(event.target.id==='course-archive-form'){
+    event.preventDefault();if(saving)return;const form=event.target,button=event.submitter;button.disabled=true;saving=true;
+    void(async()=>{try{
+      ui.courseArchiveRequestId??='course-'+crypto.randomUUID();const r=courseArchiveRequest(state,ui,ui.courseArchiveRequestId),key=JSON.stringify(r);
+      if(button.value==='SAVE'&&(!ui.courseArchivePreview||ui.courseArchivePreview.draftKey!==key))throw Error('Preview the unchanged course declarations before saving.');
+      const result=await request('/api/course-research',{action:button.value,request:r,previewFingerprint:ui.courseArchivePreview?.previewFingerprint??null,ownerConfirmed:form.elements.ownerConfirmed.checked});
+      if(button.value==='PREVIEW'){if(JSON.stringify(courseArchiveRequest(state,ui,r.id))!==key)throw Error('Course draft changed during preview.');ui.courseArchivePreview={...result,draftKey:key};render();}
+      else{ui.courseArchivePreview=null;ui.courseArchiveRequestId=null;await reload();toast('Course declarations archived with the exact saved plan version. No fill or prediction created.');}
+    }catch(e){fail(e,'#course-archive-error');}finally{saving=false;if(button.isConnected)button.disabled=false;}})();return;
+  }
   if(event.target.id==='course-framework-form'){event.preventDefault();ui.courseDraft=Object.fromEntries(new FormData(event.target));$('#course-framework-result').innerHTML=courseAssessmentPanel(assessCourseFramework(courseInputFromPlan(ui.thesisFields,ui.thesisDraft,ui.courseDraft)));return;}
 
   if(event.target.id==='weekly-event-form'){
@@ -538,6 +550,7 @@ document.addEventListener('click',event=>{void(async()=>{
     const comparison=state.sourceComparisons.data.records.filter(r=>r.kind==='saved'&&r.payload.eventKey===eventKey).sort((a,b)=>a.savedAt.localeCompare(b.savedAt)).at(-1);
     ui.expectationDraft=prepareExpectationDraft(p,comparison,'expectation-'+crypto.randomUUID());ui.expectationRows=null;ui.expectationPreview=null;dirty.add('expectation');render();return;
   }
+  if(el.dataset.courseRestore){const r=state.courseResearch?.data?.records.find(r=>r.id===el.dataset.courseRestore);if(!r)return;ui.courseDraft=structuredClone(r.payload.request.declarations);ui.courseArchivePlanKey=r.payload.planReference.key;ui.courseArchivePreview=null;ui.courseArchiveRequestId=null;render();toast('Saved course declarations loaded locally; the saved plan is unchanged.');return;}
   if(el.dataset.expectationOpen||el.dataset.expectationRevise||el.dataset.expectationUse){
     const r=state.marketExpectations.data.records.find(r=>r.id===(el.dataset.expectationOpen||el.dataset.expectationRevise||el.dataset.expectationUse));if(!r)return;
     if(el.dataset.expectationOpen){showDetail('Saved market expectation snapshot',detail('Original version, clocks, sources and revisions',r));return;}

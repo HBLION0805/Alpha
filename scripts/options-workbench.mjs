@@ -19,6 +19,7 @@ assets.set('/macro-playbook.js',['macro-playbook.js','text/javascript']);
 assets.set('/trade-thesis.js',['trade-thesis.js','text/javascript']);
 assets.set('/owner-plan.js',['owner-plan.js','text/javascript']);
 assets.set('/source-comparison.js',['source-comparison.js','text/javascript']);
+assets.set('/course-archive.js',['course-archive.js','text/javascript']);
 assets.set('/evidence-loop.js',['evidence-loop.js','text/javascript']);
 assets.set('/case-export.js',['case-export.js','text/javascript']);
 assets.set('/scenario-research.js',['scenario-research.js','text/javascript']);
@@ -65,7 +66,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,code
         if([...url.searchParams.keys()].some(k=>k!=='board')||url.searchParams.getAll('board').length>1)return reject(400,'QUERY_INVALID');
         return send(200,{...await service.state(url.searchParams.get('board')),techResearch:readTechStatus({root:options.workspaceRoot??process.cwd(),at:options.now?.()??new Date().toISOString()}),backgroundContextRefreshEnabled:refreshContext,publicContextRefresh:contextService?.status()??{enabled:false,status:'DISABLED'},localTrendStudy:contextService?.trendStatus()??{enabled:false,status:'DISABLED'},localPaperFinalization:contextService?.paperStatus()??{enabled:false,status:'DISABLED',checkedAt:null,sourceReads:0,executionAllowed:false},session});
       }
-      if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/source-comparison','/api/scenario-research','/api/evidence-loop','/api/case-export','/api/storyline','/api/snapshot-paper','/api/position-watch','/api/etf-setup','/api/macro-playbook','/api/weekly-plan','/api/event-intelligence'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
+      if(req.method!=='POST'||!['/api/preview','/api/save','/api/evaluate','/api/initialize','/api/guidance-settings','/api/event-research','/api/candidate-checks','/api/cost-desk','/api/capital-policy','/api/macro-comparison','/api/source-comparison','/api/scenario-research','/api/evidence-loop','/api/course-research','/api/case-export','/api/storyline','/api/snapshot-paper','/api/position-watch','/api/etf-setup','/api/macro-playbook','/api/weekly-plan','/api/event-intelligence'].includes(url.pathname)||url.search)return reject(404,'ROUTE_NOT_FOUND');
       const provided=req.headers['x-alpha-session'];
       if(req.headers.origin!==origin||typeof provided!=='string'||provided.length!==session.length||!timingSafeEqual(Buffer.from(provided),Buffer.from(session)))return reject(403,'SESSION_REQUIRED');
       if(req.headers['content-type']!=='application/json')return reject(415,'JSON_REQUIRED');
@@ -82,6 +83,7 @@ export async function startOptionsWorkbench({port=4173,refreshContext=false,code
       if(url.pathname==='/api/evaluate')return send(200,service.evaluate(body));
       if(url.pathname==='/api/cost-desk')return send(200,service.costDesk(body));
       if(url.pathname==='/api/macro-comparison')return send(200,service.macroComparison(body));
+      if(url.pathname==='/api/course-research')return send(200,service.courseResearch(body));
       if(url.pathname==='/api/evidence-loop')return send(200,await service.evidenceLoop(body));
       if(url.pathname==='/api/case-export')return send(200,service.caseExport(body));
       if(url.pathname==='/api/scenario-research')return send(200,await service.scenarioResearch(body));

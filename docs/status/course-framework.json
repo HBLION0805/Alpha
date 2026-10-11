@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_COURSE_FRAMEWORK_DELIVERY_V1",
-  "status": "P2_REPAIRS_REVIEWED_ARCHIVE_LINKAGE_IN_PROGRESS",
+  "status": "ARCHIVE_REVIEWED_FULL_VALIDATION_PASS_TEMP_PREVIEW_PENDING",
   "catalog": {
     "chapters": 16,
     "appendices": 5,
@@ -75,7 +75,14 @@
       "code": "32827ba1f9cb27e00305bae7a4cc681572948da2",
       "logSha256": "075fc653d0f0331c305a28dba0430102f7f2f0a73c71ba6d445c995e1d04817a"
     },
-    "initialRegression": "Two integration components failed; explicit ESM module extensions and aggregate test registration repaired."
+    "initialRegression": "Two integration components failed; explicit ESM module extensions and aggregate test registration repaired.",
+    "finalAfterArchive": {
+      "status": "PASSED",
+      "components": 247,
+      "passed": 6152,
+      "failed": 0,
+      "logSha256": "6aa05e20c1fad443da65a9cccd5e10d338cb65b426af18bcd2acdb3532007b6b"
+    }
   },
   "reviewCorrections": {
     "structuresResearchInput": "EXACT_VERSION_BINDING",
@@ -91,5 +98,31 @@
     "protectedFiles": 25907,
     "originalSourceRunnerFiles": 252
   },
-  "archiveLinkage": "IN_PROGRESS_NOT_DELIVERED"
+  "archiveLinkage": {
+    "state": "IMPLEMENTED_AND_INDEPENDENTLY_REVIEWED",
+    "scope": "EXACT_SAVED_MANUAL_THESIS_VERSION",
+    "alphaJournalEntryCreated": false,
+    "predictionCreated": false,
+    "realOwnerArchiveCreated": false,
+    "tests": {
+      "passed": 11,
+      "failed": 0
+    },
+    "asyncUiChecks": {
+      "passed": 5,
+      "failed": 0
+    },
+    "browser": {
+      "startedAt": "2026-10-11T16:33:27.557Z",
+      "finishedAt": "2026-10-11T16:33:29.309Z",
+      "status": "PASS",
+      "fixtureOnly": true,
+      "desktop": 1440,
+      "mobile": 390,
+      "externalRequests": 0,
+      "errors": 0,
+      "ledgerHeadUnchanged": true,
+      "expandedDetailsNoOverflow": true
+    }
+  }
 }

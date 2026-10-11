@@ -1,3 +1,4 @@
+import {previewCourseResearch,saveCourseResearch,courseResearchView} from './options-course-research.mjs';
 import {preparePredictionEvidence,verifyPredictionIntent,evidenceAction,evidenceLoopView,finishFrozenPrediction} from './options-evidence-loop.mjs';
 import {previewCaseExport,createCaseExport} from './options-case-export.mjs';
 import { existsSync, lstatSync, readdirSync, realpathSync } from 'node:fs';
@@ -155,6 +156,7 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     result.eventEntryPlans=await component(()=>eventEntryPlanViews(result),at);
     result.ownerPlanPreparation=await component(()=>ownerPlanPreparation(result),at);
     result.scenarioResearch=await component(()=>scenarioResearchView(root,ledgerId,result,at),at);
+    result.courseResearch=await component(()=>courseResearchView(root,ledgerId,manual.data,at),at);
     result.evidenceLoop=await component(()=>evidenceLoopView(root,ledgerId,manual.data,at),at);
     // Reference UI only, appended after all existing decision projections.
     result.macroWorldModel=await component(()=>readWorldModel(),at);
@@ -262,6 +264,10 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||Object.keys(body).sort().join()!=='action,request'||!['PREVIEW','SAVE'].includes(body.action))fail('MACRO_PLAYBOOK_ACTION');
     return body.action==='PREVIEW'?assessMacroNote(body.request):saveMacroNote(root,body.request,now());
   }
+  function courseResearch(body){
+    if(!body||Object.keys(body).sort().join()!=='action,ownerConfirmed,previewFingerprint,request'||!['PREVIEW','SAVE'].includes(body.action))fail('COURSE_FIELDS');
+    const at=now();return body.action==='PREVIEW'?previewCourseResearch(root,ledgerId,body.request,at):saveCourseResearch(root,ledgerId,body.request,body.previewFingerprint,body.ownerConfirmed,at);
+  }
   async function evidenceLoop(body){
     if(body?.action==='PREVIEW_FREEZE'){if(Object.keys(body).sort().join()!=='action,command,forecast')fail('EVIDENCE_FIELDS');return preparePredictionEvidence(root,ledgerId,body.command,body.forecast,await state(),now());}
     return evidenceAction(root,ledgerId,body,now());
@@ -302,5 +308,5 @@ export function createWorkbenchData({workspaceRoot=process.cwd(),ledgerId='owner
     if(!body||typeof body!=='object'||Array.isArray(body)||!['PREVIEW','REVIEW','AMEND'].includes(body.action))fail('WEEKLY_PLAN_ACTION');
     return body.action==='PREVIEW'?previewWeeklyPlan(root,body,now(),ledgerId):saveWeeklyPlan(root,body,now(),ledgerId);
   }
-  return {eventIntelligence,caseExport,evidenceLoop,scenarioResearch,storyline,sourceComparison,weeklyPlan,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
+  return {courseResearch,eventIntelligence,caseExport,evidenceLoop,scenarioResearch,storyline,sourceComparison,weeklyPlan,macroPlaybook,etfSetup,positionWatch,snapshotPaper,scope:{ledgerId,workspaceFingerprint:createHash('sha256').update(root).digest('hex')},state,preview,save,eventResearch,candidateChecks,macroComparison,costDesk:assessOptionsCostDesk,capitalPolicy:assessOptionsCapitalPolicy,evaluate:evaluateOptionsPlanningFeasibility,saveGuidanceSettings:value=>({path:saveGuidanceSettings(root,value),executionAllowed:false}),initialize:()=>runOptionsManualLedgerCommand(['--create',ledgerId],options())};
 }
