@@ -1,8 +1,8 @@
 {
   "version": "TECH36_HANDOFF_WEB_DELIVERY_V1",
-  "status": "ISOLATED_PREVIEW_PASS_AWAITING_INDEPENDENT_SWITCH_APPROVAL",
+  "status": "REVIEWED_4178_SWITCHED_ACTUAL_PORT_ACCEPTANCE_PASS",
   "priorHandoffCommit": "bf2aba72e71ed08b924590364d968b904de79d0f",
-  "existingPreview4178": "9727668d60fb0bd34f011f0adc869f6c6c993837",
+  "existingPreview4178": "3e0809d8078724072facbc5a5853bde69e014169",
   "webInputScope": "THIS_REVIEW_ONLY_NO_BOUND_PLAN_INPUT_CHANNEL",
   "handoffTests": {
     "passed": 39,
@@ -61,7 +61,7 @@
   "requestCreated": false,
   "riskRulesChanged": false,
   "originalEnginesChanged": false,
-  "preview4178Changed": false,
+  "preview4178Changed": true,
   "productionDeployed": false,
   "implementationCommit": "3e0809d8078724072facbc5a5853bde69e014169",
   "priorBrowserAttempts": {
@@ -75,5 +75,38 @@
   "frozenWorktree": {
     "head": "2dabc11486f0217fe001a6102ead13a8fa539f51",
     "clean": true
+  },
+  "rollbackPreview4178": "9727668d60fb0bd34f011f0adc869f6c6c993837",
+  "actualPortSwitch": {
+    "port": 4178,
+    "implementationCommit": "3e0809d8078724072facbc5a5853bde69e014169",
+    "startedAt": "2026-10-11T20:03:54.732Z",
+    "independentApproval": "EXPLICIT_PARENT_FINAL_REVIEW_CLEARED",
+    "at": "2026-10-11T20:04:08.456Z",
+    "finishedAt": "2026-10-11T20:05:41.384Z",
+    "status": "PASS",
+    "desktopRoutes": 11,
+    "mobileViews": 2,
+    "protectedFiles": 25907,
+    "originalSourceRunnerFiles": 252,
+    "receiptSha256": "60a5a2c14ffa79eca740131300a1be86d2a8214f3071e6986ea958e5e707783c",
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "externalRequests": 0,
+    "outboundAttempts": 0,
+    "filesystemWritePermission": false,
+    "childProcessPermission": false,
+    "dataRootsChanged": false,
+    "rollbackFiles": 1544,
+    "rollbackRetained": true,
+    "temporary4180ClosedAt": "2026-10-11T20:06:46.6316463Z",
+    "finalReadbackAt": "2026-10-11T20:07:01.240Z",
+    "newOwnerRecords": 0
+  },
+  "nextProposal": {
+    "status": "NOT_STARTED",
+    "scope": "EXPLICIT_CANDIDATE_BOUND_RESEARCH_DRAFT_PREVIEW_AND_CONFIRMED_REGISTRATION",
+    "existingDevelopmentPermission": "CODE_AND_ISOLATED_TESTS_ONLY",
+    "realOwnerRecordsAnd4178Writes": "SEPARATE_AUTHORIZATION_REQUIRED"
   }
 }

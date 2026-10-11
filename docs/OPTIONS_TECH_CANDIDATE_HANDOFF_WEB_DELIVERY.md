@@ -79,3 +79,44 @@ original data was changed to satisfy these assertions.
 4178 retains 9727668 and its original `2026-10-11T16:44:49.467Z` startup clock.
 4180 is available for independent review; no switch or production deployment
 has occurred.
+
+## Next bounded proposal — not started
+
+The actual blocking item is the missing explicitly registered, candidate-bound
+RESEARCH record, not another display or ranking layer. The smallest next task is
+a separate research-draft preview and explicit confirmation/registration path
+that keeps the exact reviewed candidate version, source references, direction,
+holding window, trial/confirmation conditions and invalidation, with actual
+registration clocks and unknowns retained. It must not manufacture a strategy
+request, infer Owner choices or overwrite the October 10 review. The existing
+GLD/IBIT manual planner is not an automatic technology-research registration path.
+
+Implementation and isolated tests fit the established development boundaries;
+real Owner content/confirmation and enabling writes on the currently read-only
+4178 surface require separate authorization. No such record, write route or
+additional development was created during this switch.
+
+## Reviewed original-port switch
+
+The parent task explicitly approved the final independent review of exact
+`3e0809d8078724072facbc5a5853bde69e014169`. Original local port 4178 now serves
+that same pinned 1,552-file archive, started `2026-10-11T20:03:54.732Z`.
+The previous 9727668 archive remains retained with all 1,544 file hashes verified.
+The full navigation, strict read-only wrapper and original technology/weekly data
+roots were preserved; no implementation code changed during the switch.
+
+Actual-port browser acceptance `2026-10-11T20:04:08.456Z`–
+`2026-10-11T20:05:41.384Z` passed eleven desktop routes and two mobile views.
+The TSM exact-version diagnosis, missing-research refusal, downstream NOT_RUN,
+zero fills and unknown P&L remain. All write requests are rejected, browser error
+and external-request counts are zero, and server outbound attempts remain zero.
+All 25,907 protected files and 252 original source/runner files match their hashes.
+The original manual ledger remains MISSING_NOT_INITIALIZED and Owner course
+records remain empty. October 12 frozen 2dabc114 remains unchanged and clean.
+
+Temporary 4180 was closed at `2026-10-11T20:06:46.6316463Z` after matching its
+PID, UTC startup clock and command. Final readback at `2026-10-11T20:07:01.240Z`
+confirmed 4178 on the same approved version and 4180 refusing connections.
+This supersedes the earlier pending-switch statements. No source request, Owner
+record, frozen-code change or production deployment was added. The next-task
+proposal above remains unimplemented.
