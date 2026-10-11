@@ -1,3 +1,7 @@
+## Weekly source review corrections — October 11, 2026
+
+[Four P2 corrections](OPTIONS_WEEKLY_SOURCE_REVIEW_FIXES.md) bind fallback events to the selected source receipt, separate sanctions from fiscal coverage and ETF background from the fixed company universe, and distinguish publication age from receipt freshness. Existing source originals, schedules and trading rules remain unchanged.
+
 ## Weekly current-source coverage — October 11, 2026
 
 The [weekly sources specification](specifications/OPTIONS_WEEKLY_SOURCES_V1.md) adds explicit local source roots and a pure current-source projection. Historical weekly V1 revisions remain immutable. Calendar reads no longer acquire writer locks; technology/SEC references and all existing news scopes retain original clocks and incomplete coverage. The independent explicit CLI now saves bounded official public-source responses for current coverage; no timer or deployment is added. See [delivery](OPTIONS_WEEKLY_SOURCES_DELIVERY.md).

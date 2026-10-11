@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {weeklySourceRoots,readWeeklyCalendar,weeklySourcesView,projectWeeklySources} from './lib/options-weekly-sources.mjs';
+import {weeklySourceRoots,readWeeklyCalendar,weeklySourcesView,projectWeeklySources,weeklyHeadlineFreshness} from './lib/options-weekly-sources.mjs';
 import {weeklyPlanView} from './lib/options-weekly-plan-io.mjs';
 import {withReleaseCalendarJournal} from './lib/options-release-calendar-io.mjs';
 import {RELEASE_CALENDAR_URL} from '../src/engines/options-release-calendar/BlsReleaseCalendarEngine.ts';
@@ -100,3 +100,33 @@ test('weekly opt-in retains relative original references without changing defaul
  const weekly=projectTechResearchView(view,{digest:'b'.repeat(64),at,includeEvidenceLocations:true});assert.equal(weekly[0].sources.items[0].sourcePath,doc.sourcePath);assert.equal(weekly[0].sources.items[0].sha256,doc.sha256);
  doc.sourcePath='C:/private/file';assert.equal(projectTechResearchView(view,{digest:'b'.repeat(64),at,includeEvidenceLocations:true})[0].sources.items[0].sourcePath,null);
 });
+test('review P2: interleaved legacy update owns fallback event identity after refresh failure',async()=>temp(async root=>temp(async legacy=>{
+ const body=fs.readFileSync('fixtures/options-release-calendar/calendar.synthetic.ics','utf8');
+ await refreshWeeklySources({root,sourceIds:['bls_calendar'],now:()=> '2026-10-11T01:00:00.000Z',fetchImplementation:async()=>new Response(body.replaceAll('20260910T083000','20261013T083000'),{headers:{'content-type':'text/calendar'}})});
+ const input={requestedAt:'2026-10-11T02:00:00.000Z',receivedAt:'2026-10-11T02:00:01.000Z',url:RELEASE_CALENDAR_URL,sourceText:body.replaceAll('20260910T083000','20261014T083000'),errorCode:null};
+ await withReleaseCalendarJournal(legacy,s=>s.append(input,input.receivedAt),input.receivedAt);
+ fs.writeFileSync(join(root,'data/runtime/options-weekly-sources/config.json'),JSON.stringify({version:'WEEKLY_SOURCE_ROOTS_V1',roots:{calendars:legacy,news:root,research:root}}));
+ const failure=await refreshWeeklySources({root,sourceIds:['bls_calendar'],now:()=> '2026-10-11T03:00:00.000Z',fetchImplementation:async()=>new Response('Unavailable',{status:503})});
+ const v=(await weeklyPlanView(root,at)).sourceCoverage,original=readWeeklyCalendar(legacy,'bls',at),e=v.events[0];
+ assert.equal(e.startAt,'2026-10-14T12:30:00.000Z');assert.equal(e.retrievedAt,input.receivedAt);assert.equal(e.path,original.path);assert.equal(e.recordFingerprint,original.recordFingerprint);assert.equal(e.sourceRoot,'calendars');assert.equal(v.coverage.macroDataCoverage.path,failure.results[0].path);
+}))); 
+test('review P2: OFAC sanctions are policy evidence and never auction/fiscal coverage',()=>{
+ const r={sourceId:'ofac',status:'OBTAINED_PENDING_REVIEW',title:'ICC and Afghanistan sanctions'},h={id:'ofac',status:'OK',observedAt:at};
+ const v=project({news:{records:[r],health:[h],issues:[]}});assert.equal(v.coverage.treasuryFiscalCoverage.state,'NOT_INTEGRATED');assert.equal(v.coverage.treasuryFiscalCoverage.matchedRecords,0);assert.equal(v.coverage.policyGeopoliticalCoverage.matchedRecords,1);
+});
+test('review P2: fixed company denominator excludes QQQ/SPY but retains their market background',()=>{
+ const records=['AAPL','QQQ','SPY'].map(symbol=>({symbol,context:'SAVED_RESEARCH'}));const v=project({research:{records,issues:[]}});
+ assert.equal(v.coverage.earningsCoverage.universeSize,36);assert.deepEqual(v.coverage.earningsCoverage.objectsWithReferences,['AAPL']);assert.equal(v.coverage.earningsCoverage.historicalReferences,1);assert.equal(v.coverage.earningsCoverage.missingObjects.length,35);assert.equal(v.research.backgroundReferences.length,2);assert.equal(v.research.companyReferences.length,1);
+});
+test('review P2: fresh receipt never rejuvenates old or unknown publication; exact 72-hour policy retained',()=>{
+ const old=weeklyHeadlineFreshness('fed','2020-01-01T00:00:00.000Z',at,at);assert.equal(old.receiptFreshness,'FRESH');assert.equal(old.contentFreshness,'HISTORICAL');assert.equal(old.status,'HISTORICAL_BACKGROUND');
+ assert.equal(weeklyHeadlineFreshness('fed',null,at,at).status,'CONTENT_TIME_UNKNOWN');
+ const boundary=new Date(Date.parse(at)-72*3600000).toISOString();assert.equal(weeklyHeadlineFreshness('fed',boundary,at,at).status,'OBTAINED_PENDING_REVIEW');assert.equal(weeklyHeadlineFreshness('fed',new Date(Date.parse(boundary)-1).toISOString(),at,at).status,'HISTORICAL_BACKGROUND');
+ const v=project({news:{records:[{sourceId:'fed',...old}],health:[{id:'fed',status:'OK',observedAt:at}],issues:[]}});assert.equal(v.coverage.newsRiskCoverage.matchedRecords,0);assert.equal(v.coverage.newsRiskCoverage.state,'HISTORICAL_BACKGROUND');
+});
+test('review partial: HTTP 200 retains rejected-item counts in health and receipt projection',async()=>temp(async root=>{
+ const body='<rss><channel><item><title>Valid</title><link>https://apps.bea.gov/news/test</link></item><item><title>Invalid missing link</title></item></channel></rss>';
+ await refreshWeeklySources({root,sourceIds:['bea'],now:()=>at,fetchImplementation:async()=>new Response(body,{headers:{'content-type':'application/rss+xml'}})});
+ const v=(await weeklyPlanView(root,at)).sourceCoverage;assert.equal(v.refreshReceipts[0].partial,true);assert.equal(v.refreshReceipts[0].rejectedItems,1);assert.equal(v.refreshReceipts[0].itemsParsed,1);assert.equal(v.news.health.find(h=>h.id==='bea').partial,true);
+ assert(weeklySourcePanel(v).includes('部分解析'));
+}));

@@ -4,6 +4,7 @@ import {assessReleaseCalendar,reportReleaseCalendar,releaseCalendarFingerprint} 
 import {assessFomcCalendar,reportFomcCalendar,fomcCalendarFingerprint} from '../../src/engines/options-fomc-calendar/FomcCalendarEngine.ts';
 import {validateStoredDriverObservation,validateDriverSourceHealth} from '../../src/engines/options-drivers/OptionsDriverMonitorEngine.ts';
 import {readFocusedSupplement} from './options-focused-news-io.mjs';
+import {TECH36_POOL} from './options-tech-candidate.mjs';
 import {readTechResearchView} from './options-tech-research-view.mjs';
 
 import {WEEKLY_SOURCE_BASE,sourceHash,sourceClock,readSourceBytes} from './options-weekly-source-storage.mjs';
@@ -25,13 +26,14 @@ export function readWeeklyCalendar(root,kind,at){
   const bytes=readSourceBytes(root,path),text=new TextDecoder('utf8',{fatal:true}).decode(bytes);
   check(!text||text.endsWith('\n'),'SOURCE_TRUNCATED');const lines=text?text.slice(0,-1).split('\n'):[];check(lines.length<=366,'SOURCE_LIMIT');
   const assess=bls?assessReleaseCalendar:assessFomcCalendar,fp=bls?releaseCalendarFingerprint:fomcCalendarFingerprint;
-  const inputs=[];let previous=null;
+  const inputs=[],inputEvidence=[];let previous=null;
   for(const line of lines){const {fingerprint,...body}=JSON.parse(line);
    check(Object.keys(body).sort().join()==='assessment,input,previousFingerprint,version'&&body.version==='1.0'&&body.previousFingerprint===previous&&fp(body)===fingerprint,'SOURCE_INTEGRITY');
-   check(fp(assess(body.input))===fp(body.assessment),'SOURCE_ASSESSMENT');inputs.push(body.input);previous=fingerprint;
+   check(fp(assess(body.input))===fp(body.assessment),'SOURCE_ASSESSMENT');inputs.push(body.input);inputEvidence.push({input:body.input,path,recordFingerprint:fingerprint,sourceRoot:'calendars'});previous=fingerprint;
   }
   (bls?reportReleaseCalendar:reportFomcCalendar)(inputs,at);
-  return {state:'AVAILABLE',inputs,errorCode:null,path,recordFingerprint:previous,fileSha256:sourceHash(bytes)};
+  const good=inputEvidence.findLast(e=>e.input.sourceText!==null);
+  return {state:'AVAILABLE',inputs,inputEvidence,successfulPath:good?.path??null,successfulFingerprint:good?.recordFingerprint??null,successfulSourceRoot:good?.sourceRoot??null,errorCode:null,path,recordFingerprint:previous,fileSha256:sourceHash(bytes)};
  }catch(e){return {state:'BLOCKED',inputs:null,errorCode:errorState(e),path,recordFingerprint:null,fileSha256:null};}
 }
 export const calendarHistory=source=>source.errorCode==='STORE_ABSENT'?{state:'MISSING',inputs:null,errorCode:'STORE_MISSING'}:{state:source.state,inputs:source.inputs,errorCode:source.errorCode};
@@ -43,18 +45,28 @@ function driverEvidence(root){
   health.push(...body.health.map(validateDriverSourceHealth));previous=fingerprint;
  }return {references,health};
 }
+// The existing 72-hour headline-context window is retained for each registered
+// source. Receipt freshness never resets the age of published content.
+export const WEEKLY_HEADLINE_WINDOWS=Object.freeze(Object.fromEntries(['fed','bls','bea','ecb','ofac','sec','fed_speeches','eia_energy','coindesk'].map(id=>[id,72])));
+export function weeklyHeadlineFreshness(sourceId,publishedAt,retrievedAt,at){
+ const hours=WEEKLY_HEADLINE_WINDOWS[sourceId];
+ const valid=hours!==undefined&&sourceClock(retrievedAt)&&Date.parse(retrievedAt)<=Date.parse(at)&&(publishedAt===null||sourceClock(publishedAt)&&Date.parse(publishedAt)<=Date.parse(retrievedAt));
+ const receiptFreshness=valid?(stale(at,retrievedAt,hours)?'STALE':'FRESH'):'INVALID';
+ const contentFreshness=!valid?'INVALID':publishedAt===null?'UNKNOWN':stale(at,publishedAt,hours)?'HISTORICAL':'CURRENT';
+ return {receiptFreshness,contentFreshness,contentWindowHours:hours??null,contentUse:'CURRENT_HEADLINE_CONTEXT_ONLY',status:!valid?'INVALID_EVIDENCE':contentFreshness==='HISTORICAL'?'HISTORICAL_BACKGROUND':contentFreshness==='UNKNOWN'?'CONTENT_TIME_UNKNOWN':receiptFreshness==='STALE'?'STALE':'OBTAINED_PENDING_REVIEW',reason:!valid?'PUBLICATION_OR_RECEIPT_CLOCK_ANOMALY':contentFreshness==='HISTORICAL'?'PUBLISHED_CONTENT_OUTSIDE_72H_CONTEXT_WINDOW':contentFreshness==='UNKNOWN'?'PUBLICATION_CLOCK_UNKNOWN_NOT_CURRENT_COVERAGE':'HEADLINE_CONTEXT_NOT_SCHEDULED_EVENT'};
+}
 export function readWeeklyNews(root,at){
  const references=[],health=[],issues=[];
  try{const d=driverEvidence(root);references.push(...d.references);health.push(...d.health.map(h=>({...h,id:h.sourceId})));}catch(e){issues.push({source:'official-feeds',state:errorState(e)});}
  try{const f=readFocusedSupplement(root,at,true);references.push(...f.references);health.push(...f.sources);if(!f.recordsRead)issues.push({source:'focused-feeds',state:'STORE_ABSENT'});}catch(e){issues.push({source:'focused-feeds',state:errorState(e)});}
  const records=references.map(r=>{
-  const i=r.item,valid=sourceClock(i.observedAt)&&Date.parse(i.observedAt)<=Date.parse(at)&&(i.publishedAt===null||sourceClock(i.publishedAt)&&Date.parse(i.publishedAt)<=Date.parse(i.observedAt));
-  return {id:sourceHash(r.recordFingerprint+'|'+i.sourceId+'|'+i.itemId),sourceId:i.sourceId,title:i.headline,sourceRef:i.link,publishedAt:i.publishedAt,retrievedAt:i.observedAt,eventAt:null,timePrecision:'UNKNOWN',sourceRoot:'news',path:r.path,recordFingerprint:r.recordFingerprint,status:valid?(stale(at,i.observedAt,72)?'STALE':'OBTAINED_PENDING_REVIEW'):'INVALID_EVIDENCE',reason:valid?'HEADLINE_CONTEXT_NOT_SCHEDULED_EVENT':'PUBLICATION_OR_RECEIPT_CLOCK_ANOMALY',origin:i.origin};
+  const i=r.item;
+  return {id:sourceHash(r.recordFingerprint+'|'+i.sourceId+'|'+i.itemId),sourceId:i.sourceId,title:i.headline,sourceRef:i.link,publishedAt:i.publishedAt,retrievedAt:i.observedAt,eventAt:null,timePrecision:'UNKNOWN',sourceRoot:'news',path:r.path,recordFingerprint:r.recordFingerprint,...weeklyHeadlineFreshness(i.sourceId,i.publishedAt,i.observedAt,at),origin:i.origin};
  }).filter(r=>r.origin==='PUBLIC_FEED');
  const latest=new Map();for(const h of health){if(!sourceClock(h.observedAt)||Date.parse(h.observedAt)>Date.parse(at))continue;if(!latest.has(h.id)||Date.parse(latest.get(h.id).observedAt)<=Date.parse(h.observedAt))latest.set(h.id,h);}
  return {records:records.sort((a,b)=>b.retrievedAt.localeCompare(a.retrievedAt)).slice(0,300),health:[...latest.values()],issues,omitted:Math.max(0,records.length-300)};
 }
-const scopes={macroDataCoverage:'BLS release calendar only; other economic publishers excluded',centralBankCoverage:'FOMC meeting dates only; speeches and other central banks excluded',earningsCoverage:'Existing attributed technology research; no 36-company earnings calendar',companyEventCoverage:'Existing attributed technology/SEC research; no complete company-event calendar',conferenceCoverage:'No integrated conference calendar',treasuryFiscalCoverage:'Official-feed headline context only; no auction/fiscal calendar',policyGeopoliticalCoverage:'Official-feed headline context only; no comprehensive policy/geopolitical service',optionsMarketCoverage:'No integrated options-event calendar',newsRiskCoverage:'Six official feeds plus three existing focused feeds; no comprehensive news service'};
+const scopes={macroDataCoverage:'BLS release calendar only; other economic publishers excluded',centralBankCoverage:'FOMC meeting dates only; speeches and other central banks excluded',earningsCoverage:'Existing attributed technology research; no 36-company earnings calendar',companyEventCoverage:'Existing attributed technology/SEC research; no complete company-event calendar',conferenceCoverage:'No integrated conference calendar',treasuryFiscalCoverage:'No integrated auction/fiscal calendar; OFAC sanctions are policy context only',policyGeopoliticalCoverage:'Official-feed headline context only; no comprehensive policy/geopolitical service',optionsMarketCoverage:'No integrated options-event calendar',newsRiskCoverage:'Six official feeds plus three existing focused feeds; no comprehensive news service'};
 export function projectWeeklySources({at,week,calendars,news,research,configRef=null}){
  check(sourceClock(at),'SOURCE_CLOCK');const coverage=Object.fromEntries(Object.entries(scopes).map(([key,scope])=>[key,{state:'NOT_INTEGRATED',scope,scopeComplete:false,matchedRecords:0,reason:'NO_APPLICABLE_CONNECTOR',sourceIds:[]}])) ,events=[],references=[];
  for(const kind of ['bls','fomc']){
@@ -66,33 +78,33 @@ export function projectWeeklySources({at,week,calendars,news,research,configRef=
  }
  for(const r of research.records??[]){
   if(r.context==='TEST_FIXTURE')continue;
-  references.push({...r,sourceRoot:'research',weeklyEventTime:null,weeklyApplicability:'UNKNOWN',coverageAuthority:'ATTRIBUTED_BACKGROUND_ONLY'});
+  references.push({...r,sourceRoot:'research',weeklyEventTime:null,weeklyApplicability:'UNKNOWN',coverageAuthority:TECH36_POOL.includes(r.symbol)?'ATTRIBUTED_COMPANY_BACKGROUND_ONLY':'MARKET_BACKGROUND_OUTSIDE_TECH36'});
  }
- for(const key of ['earningsCoverage','companyEventCoverage'])coverage[key]={...coverage[key],state:research.issues?.length?'INVALID_EVIDENCE':references.length?'OBTAINED_PENDING_REVIEW':'STORE_ABSENT',reason:'HISTORICAL_REFERENCES_NOT_CURRENT_WEEK_EVENT_VERIFICATION',matchedRecords:0,historicalReferences:references.length,objectsWithReferences:[...new Set(references.map(r=>r.symbol))].sort(),expectedUniverse:'Existing fixed 36-company research universe; individual records are not 36 complete calendars',sourceIds:['saved-technology-research']};
- for(const [key,ids]of [['newsRiskCoverage',null],['treasuryFiscalCoverage',['ofac']],['policyGeopoliticalCoverage',['ofac','fed','ecb']]]){
+ const companyReferences=references.filter(r=>TECH36_POOL.includes(r.symbol)),backgroundReferences=references.filter(r=>!TECH36_POOL.includes(r.symbol));
+ for(const key of ['earningsCoverage','companyEventCoverage'])coverage[key]={...coverage[key],state:research.issues?.length?'INVALID_EVIDENCE':companyReferences.length?'OBTAINED_PENDING_REVIEW':'STORE_ABSENT',reason:'HISTORICAL_REFERENCES_NOT_CURRENT_WEEK_EVENT_VERIFICATION',matchedRecords:0,historicalReferences:companyReferences.length,objectsWithReferences:[...new Set(companyReferences.map(r=>r.symbol))].sort(),universeSize:TECH36_POOL.length,universe:TECH36_POOL,missingObjects:TECH36_POOL.filter(symbol=>!companyReferences.some(r=>r.symbol===symbol)),expectedUniverse:'Existing fixed 36-company research universe; individual records are not 36 complete calendars',sourceIds:['saved-technology-research']};
+ for(const [key,ids]of [['newsRiskCoverage',null],['policyGeopoliticalCoverage',['ofac','fed','ecb']]]){
   const records=news.records.filter(r=>!ids||ids.includes(r.sourceId)),health=news.health.filter(h=>!ids||ids.includes(h.id));
   const valid=records.filter(r=>r.status==='OBTAINED_PENDING_REVIEW');
-  const state=news.issues.some(i=>i.state==='INVALID_EVIDENCE')?'INVALID_EVIDENCE':health.some(h=>h.status==='FAILED')?'ACQUISITION_FAILED':records.some(r=>r.status==='INVALID_EVIDENCE')?'INVALID_EVIDENCE':valid.length||health.some(h=>['OK','EMPTY'].includes(h.status)&&!stale(at,h.observedAt,72))?'OBTAINED_PENDING_REVIEW':records.length||health.length?'STALE':news.issues.some(i=>i.state==='READ_ONLY_RESTRICTED')?'READ_ONLY_RESTRICTED':'STORE_ABSENT';
+  const state=news.issues.some(i=>i.state==='INVALID_EVIDENCE')?'INVALID_EVIDENCE':health.some(h=>h.status==='FAILED')?'ACQUISITION_FAILED':records.some(r=>r.status==='INVALID_EVIDENCE')?'INVALID_EVIDENCE':valid.length?'OBTAINED_PENDING_REVIEW':records.some(r=>r.status==='HISTORICAL_BACKGROUND')?'HISTORICAL_BACKGROUND':records.some(r=>r.status==='CONTENT_TIME_UNKNOWN')?'CONTENT_TIME_UNKNOWN':records.length||health.length?'STALE':news.issues.some(i=>i.state==='READ_ONLY_RESTRICTED')?'READ_ONLY_RESTRICTED':'STORE_ABSENT';
   coverage[key]={...coverage[key],state,matchedRecords:valid.length,retainedRecords:records.length,sourceIds:health.map(h=>h.id),reason:'HEADLINES_ONLY_EVENT_TIMING_AND_COMPLETE_SCOPE_UNKNOWN'};
  }
- return {version:'WEEKLY_SOURCE_COVERAGE_V1',assessedAt:at,weekStartDate:week.weekStartDate,weekEndDate:week.weekEndDate,configRef,coverage,events,news,research:{references,issues:research.issues??[]},sourceCalls:0,fileSystemWrites:0,executionAllowed:false,authority:'CURRENT_UNSAVED_SOURCE_PROJECTION_NOT_OWNER_PLAN_REVIEW'};
+ return {version:'WEEKLY_SOURCE_COVERAGE_V1',assessedAt:at,weekStartDate:week.weekStartDate,weekEndDate:week.weekEndDate,configRef,coverage,events,news,research:{references,companyReferences,backgroundReferences,issues:research.issues??[]},sourceCalls:0,fileSystemWrites:0,executionAllowed:false,authority:'CURRENT_UNSAVED_SOURCE_PROJECTION_NOT_OWNER_PLAN_REVIEW'};
 }
 export function weeklyCurrentInputs(root,at){
  const {roots,configRef}=weeklySourceRoots(root),refresh=readWeeklyRefreshes(root,at),calendars={};
  for(const kind of ['bls','fomc']){
-  const original=readWeeklyCalendar(roots.calendars,kind,at),records=refresh.issues.some(i=>i.state==='INVALID_EVIDENCE')?[]:refresh.records.filter(r=>r.sourceId===kind+'_calendar'),latest=records.at(-1);
-  calendars[kind]=refresh.issues.some(i=>i.state==='INVALID_EVIDENCE')?{...original,state:'BLOCKED',inputs:null,errorCode:'INVALID_EVIDENCE'}:original;
-  if(latest&&(!original.inputs?.length||Date.parse(latest.receivedAt)>=Date.parse(original.inputs.at(-1).receivedAt))){
-   const inputs=[...(original.inputs??[]),...records.map(r=>r.parsed.calendarInput??{requestedAt:r.requestedAt,receivedAt:r.receivedAt,url:r.url,sourceText:null,errorCode:'NETWORK_FAILED'})].sort((a,b)=>a.receivedAt.localeCompare(b.receivedAt));
-   // Repeated historical journal envelopes are not rewritten; this is an independent projection.
-   const good=records.findLast(r=>r.parsed.calendarInput);
-   calendars[kind]={successfulPath:good?.path??original.path,successfulFingerprint:good?.recordFingerprint??original.recordFingerprint,successfulSourceRoot:good?'weekly-refresh':'calendars',state:'AVAILABLE',inputs:inputs.slice(-366),errorCode:null,path:latest.path,recordFingerprint:latest.recordFingerprint,sourceRoot:'weekly-refresh',legacyState:original.errorCode};
-  }
+  const original=readWeeklyCalendar(roots.calendars,kind,at);
+  if(refresh.issues.some(i=>i.state==='INVALID_EVIDENCE')){calendars[kind]={...original,state:'BLOCKED',inputs:null,errorCode:'INVALID_EVIDENCE'};continue;}
+  const records=refresh.records.filter(r=>r.sourceId===kind+'_calendar');
+  if(!records.length){calendars[kind]=original;continue;}
+  const evidence=[...(original.inputEvidence??[]),...records.map(r=>({input:r.parsed.calendarInput??{requestedAt:r.requestedAt,receivedAt:r.receivedAt,url:r.url,sourceText:null,errorCode:'NETWORK_FAILED'},path:r.path,recordFingerprint:r.recordFingerprint,sourceRoot:'weekly-refresh'}))].sort((a,b)=>a.input.receivedAt.localeCompare(b.input.receivedAt)).slice(-366);
+  const latest=evidence.at(-1),good=evidence.findLast(e=>e.input.sourceText!==null);
+  calendars[kind]={state:'AVAILABLE',inputs:evidence.map(e=>e.input),errorCode:null,path:latest.path,recordFingerprint:latest.recordFingerprint,sourceRoot:latest.sourceRoot,successfulPath:good?.path??null,successfulFingerprint:good?.recordFingerprint??null,successfulSourceRoot:good?.sourceRoot??null,legacyState:original.errorCode};
  }
  const news=readWeeklyNews(roots.news,at),health=new Map(news.health.map(h=>[h.id,h]));
  for(const r of refresh.records.filter(r=>!r.sourceId.endsWith('_calendar'))){
-  const existing=health.get(r.sourceId);if(!existing||Date.parse(existing.observedAt)<=Date.parse(r.receivedAt))health.set(r.sourceId,{id:r.sourceId,status:r.parsed.status==='ACQUISITION_FAILED'?'FAILED':r.parsed.items.length?'OK':'EMPTY',observedAt:r.receivedAt,partial:r.parsed.partial,diagnostic:r.parsed.errorCode,path:r.path,recordFingerprint:r.recordFingerprint,httpStatus:r.httpStatus});
-  for(const i of r.parsed.items){const valid=i.publishedAt===null||Date.parse(i.publishedAt)<=Date.parse(r.receivedAt);news.records.push({id:sourceHash(r.recordFingerprint+'|'+i.itemId),sourceId:i.sourceId,title:i.headline,sourceRef:i.link,publishedAt:i.publishedAt,retrievedAt:r.receivedAt,eventAt:null,timePrecision:'UNKNOWN',sourceRoot:'weekly-refresh',path:r.path,recordFingerprint:r.recordFingerprint,rawSha256:r.rawSha256,status:valid?(stale(at,r.receivedAt,72)?'STALE':'OBTAINED_PENDING_REVIEW'):'INVALID_EVIDENCE',reason:valid?'HEADLINE_CONTEXT_NOT_SCHEDULED_EVENT':'PUBLICATION_OR_RECEIPT_CLOCK_ANOMALY',origin:'PUBLIC_FEED'});}
+  const existing=health.get(r.sourceId);if(!existing||Date.parse(existing.observedAt)<=Date.parse(r.receivedAt))health.set(r.sourceId,{id:r.sourceId,status:r.parsed.status==='ACQUISITION_FAILED'?'FAILED':r.parsed.items.length?'OK':'EMPTY',observedAt:r.receivedAt,partial:r.parsed.partial,rejectedItems:r.parsed.rejectedItems??0,itemsParsed:r.parsed.items.length,sourceItemCount:r.parsed.sourceItemCount??null,diagnostic:r.parsed.errorCode,path:r.path,recordFingerprint:r.recordFingerprint,httpStatus:r.httpStatus});
+  for(const i of r.parsed.items){news.records.push({id:sourceHash(r.recordFingerprint+'|'+i.itemId),sourceId:i.sourceId,title:i.headline,sourceRef:i.link,publishedAt:i.publishedAt,retrievedAt:r.receivedAt,eventAt:null,timePrecision:'UNKNOWN',sourceRoot:'weekly-refresh',path:r.path,recordFingerprint:r.recordFingerprint,rawSha256:r.rawSha256,...weeklyHeadlineFreshness(i.sourceId,i.publishedAt,r.receivedAt,at),origin:'PUBLIC_FEED'});}
  }
  news.health=[...health.values()].map(h=>({...h,coverageState:h.status==='FAILED'?'ACQUISITION_FAILED':stale(at,h.observedAt,72)?'STALE':'OBTAINED_PENDING_REVIEW'}));news.issues.push(...refresh.issues);
  // Exact display dedup keeps every receipt link; changed headlines/publications stay separate.
@@ -101,6 +113,6 @@ export function weeklyCurrentInputs(root,at){
  return {roots,configRef,calendars,news,refresh};
 }
 export function weeklySourcesView(root,at,week){
- try{const {roots,configRef,calendars,news,refresh}=weeklyCurrentInputs(root,at),research=readTechResearchView({root:roots.research,at,includeEvidenceLocations:true});const result=projectWeeklySources({at,week,calendars,news,research,configRef});result.refreshReceipts=refresh.records.map(({sourceId,path,recordFingerprint,requestedAt,receivedAt,httpStatus,rawSha256,parsed})=>({sourceId,path,recordFingerprint,requestedAt,receivedAt,httpStatus,rawSha256,status:parsed.status,errorCode:parsed.errorCode}));return result;}
+ try{const {roots,configRef,calendars,news,refresh}=weeklyCurrentInputs(root,at),research=readTechResearchView({root:roots.research,at,includeEvidenceLocations:true});const result=projectWeeklySources({at,week,calendars,news,research,configRef});result.refreshReceipts=refresh.records.map(({sourceId,path,recordFingerprint,requestedAt,receivedAt,httpStatus,rawSha256,parsed})=>({sourceId,path,recordFingerprint,requestedAt,receivedAt,httpStatus,rawSha256,status:parsed.status,errorCode:parsed.errorCode,partial:parsed.partial,rejectedItems:parsed.rejectedItems??0,itemsParsed:parsed.items.length,sourceItemCount:parsed.sourceItemCount??null}));return result;}
  catch(e){return {version:'WEEKLY_SOURCE_COVERAGE_V1',assessedAt:at,errorCode:errorState(e),executionAllowed:false,sourceCalls:0,fileSystemWrites:0};}
 }
