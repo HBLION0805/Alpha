@@ -1,0 +1,22 @@
+{
+  "version": "WEEKLY_RECOVERY_INSPECTION_DELIVERY_V1",
+  "status": "REVIEWED_READ_ONLY_INSPECTION",
+  "tests": 45,
+  "independentReview": "PASS_AFTER_OFFSET_CORRECTION",
+  "realReadbackAt": "2026-10-11T15:20:42.355Z",
+  "realConfirmedRequests": {
+    "public": 10,
+    "company": 10
+  },
+  "originalBudgets": {
+    "public": 20,
+    "company": 20
+  },
+  "ownerBytesChanged": false,
+  "processProbe": "NOT_RUN",
+  "actualRecovery": "NOT_RUN",
+  "sourceCalls": 0,
+  "resumeAllowed": false,
+  "takeoverAllowed": false,
+  "unlockAllowed": false
+}

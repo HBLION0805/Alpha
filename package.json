@@ -225,6 +225,8 @@
     "options:tech-quotes": "tsx scripts/options-tech-quotes.mjs",
     "test:options-tech-quotes": "tsx scripts/options-tech-quotes.test.mjs",
     "test:options-tech-spread-quotes": "tsx scripts/options-tech-spread-quotes.test.mjs",
+    "options:weekly-recovery-inspect": "tsx scripts/options-weekly-recovery-inspection.mjs",
+    "test:options-weekly-recovery-inspection": "tsx scripts/options-weekly-recovery-inspection.test.mjs",
     "test:options-tech-candidate-trace": "tsx scripts/options-tech-candidate-trace.test.mjs",
     "test:options-tech-status": "tsx scripts/options-tech-status.test.mjs",
     "test:options-tech-real-quote-paper": "tsx scripts/options-tech-real-quote-paper.test.mjs",
