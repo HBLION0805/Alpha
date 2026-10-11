@@ -178,7 +178,8 @@ function applyEventReview(state,request,evidence,recordedAt){
 }
 
 /** Ordered, hash-linked local event reviews; base source and prior records never change. */
-function readEventReviewState(root,runId){
+function readEventReviewState(root,runId,requestedHead=null){
+ if(requestedHead!==null)check(typeof requestedHead==='string'&&/^[a-f0-9]{64}$/.test(requestedHead),'REVIEW_VERSION');
  const out=runDirectory(root,runId),r=reader(out),baseBytes=r.read('receipt.json'),base=json(baseBytes),baseSha=sha(baseBytes);
  check(base.version==='TECH36_RESEARCH_INPUTS_RECEIPT_V1'&&base.runId===runId,'REVIEW_BASE');
  for(const m of base.manifest)check(sha(r.read(m.path))===m.sha256,'PREPARED_HASH');
@@ -186,6 +187,7 @@ function readEventReviewState(root,runId){
  const sourceManifest=new Map(base.manifest.filter(m=>m.path.startsWith('source/')).map(m=>[m.path.slice(7),m.sha256]));
  check(sourceManifest.size===loaded.files.size&&[...loaded.files].every(([p,b])=>sourceManifest.get(p)===sha(b)),'REVIEW_BASE_SOURCE_SET');
  let state={...loaded,out,base,baseSha,head:baseSha,context:techResearchContext(loaded),recordedAt:base.recordedAt,mode:'SAVED_SOURCE_REVIEW',records:[],baseRanking:loaded.lineage.ranking};
+ let requestedState=requestedHead===state.head?state:null;
  const dir=resolve(out,'event-reviews');
  if(fs.existsSync(dir)){
   check(!fs.lstatSync(dir).isSymbolicLink()&&fs.realpathSync(dir)===dir,'PATH');
@@ -196,12 +198,23 @@ function readEventReviewState(root,runId){
    const request=json(Buffer.from(record.requestUtf8));check(!state.records.some(r=>r.requestId===request.requestId)&&record.requestId===request.requestId,'REVIEW_REQUEST');
    const next=applyEventReview(state,request,record.evidence,record.recordedAt);check(same(next.ranking,record.ranking)&&same(next.rankingChanges,record.rankingChanges)&&same(next.evidenceChanges,record.evidenceChanges),'RANK_REPLAY');
    state={...state,...next,head:fingerprint,records:state.records.concat(record)};
+   if(requestedHead===state.head)requestedState=state;
   }
  }
+ if(requestedHead!==null){check(requestedState,'REVIEW_VERSION_UNAVAILABLE');return requestedState;}
  return state;
 }
 export function readTechEventReviews({root,runId,now=()=>new Date().toISOString()}){
- const state=readEventReviewState(root,runId),at=now();check(time(at)>=time(state.recordedAt),'REVIEW_CLOCK');
+ return eventReviewView(readEventReviewState(root,runId),runId,now());
+}
+/** Recover an exact historical version only after replaying the existing full
+ * source/review chain. Never substitutes latest or restores a prior ranking. */
+export function readTechEventReviewVersion({root,runId,headSha256,now=()=>new Date().toISOString()}){
+ check(typeof headSha256==='string'&&/^[a-f0-9]{64}$/.test(headSha256),'REVIEW_VERSION');
+ return eventReviewView(readEventReviewState(root,runId,headSha256),runId,now());
+}
+function eventReviewView(state,runId,at){
+ check(time(at)>=time(state.recordedAt),'REVIEW_CLOCK');
  const inputs=buildTechResearchInputs({...state,at});inputs.version='TECH36_RESEARCH_INPUTS_V2';inputs.mode=state.mode==='SYNTHETIC_FIXTURE'?'SYNTHETIC_APPEND_DEMO_ON_SAVED_BATCH':'SAVED_ORIGINAL_AND_APPEND_REPLAY';
  inputs.screeningTrace.rankingChanged=!same(state.baseRanking,state.lineage.ranking);
  return {version:'TECH36_EVENT_REVIEW_VIEW_V1',runId,scanId:state.lineage.scanId,baseReceiptSha256:state.baseSha,headSha256:state.head,recordedAt:state.recordedAt,

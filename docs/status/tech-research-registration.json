@@ -1,0 +1,79 @@
+{
+  "version": "TECH36_EXPLICIT_RESEARCH_DELIVERY_V1",
+  "status": "DELIVERED_INDEPENDENTLY_REVIEWED_FULL_REGRESSION_PASS",
+  "entrypoint": "scripts/options-tech-research-registration.mjs",
+  "commands": [
+    "--preview INPUT",
+    "--register INPUT --preview-fingerprint FINGERPRINT",
+    "--recover ID"
+  ],
+  "storage": "EXISTING_OPTIONS_SOURCE_COMPARISON_V1_KIND_TECHRESEARCH",
+  "storageLimits": {
+    "recordBytes": 16384,
+    "sharedRecords": 500,
+    "requestBytes": 8000
+  },
+  "authorship": "DECLARED_AUTHOR_NOT_IDENTITY_AUTHENTICATION",
+  "humanReview": "NOT_RECORDED",
+  "ownerConfirmation": "NOT_RECORDED",
+  "recovery": "EXACT_HISTORICAL_REVIEW_FULL_CHAIN_AND_PAYLOAD_REPLAY",
+  "atomicityLimit": "NO_CROSS_STORE_ATOMIC_LATEST_REVIEW_LOCK",
+  "independentReview": {
+    "status": "NO_REMAINING_P1_P2",
+    "candidateTestsPassed": 136,
+    "candidateTestsFailed": 0
+  },
+  "fullRegression": {
+    "status": "PASS",
+    "components": 248,
+    "passed": 6226,
+    "failed": 0,
+    "logSha256": "cbf08378f00d2d4ade59ad764d1834aa7ecbcf07309ab1fa347d50a6ac18bd6b"
+  },
+  "preservedReadback": {
+    "at": "2026-10-11T21:07:48.410Z",
+    "protectedFiles": 25907,
+    "sourceRunnerFiles": 252,
+    "newRealRegistrationRecords": 0,
+    "preview4178Commit": "3e0809d8078724072facbc5a5853bde69e014169",
+    "preview4178StartedAt": "2026-10-11T20:03:54.732Z",
+    "filesystemWritePermission": false,
+    "outboundRequestsBlocked": true,
+    "receiptSha256": "02aa2239581a830c28c71f6b3170bb12c28741236b167437ffdbcb3f59d4f45e"
+  },
+  "oct12ReadOnlyPreflight": {
+    "at": "2026-10-11T21:05:46.992Z",
+    "status": "PINNED_OFFLINE_CHECK_PASS",
+    "frozenCommit": "2dabc11486f0217fe001a6102ead13a8fa539f51",
+    "frozenTrackedWorktreeClean": true,
+    "manifestSha256": "bdf856115086ee037c702fe60dbbf86dd638921accaf800a994a700463c53d76",
+    "dataUseFileHashesVerified": 9,
+    "writerClaimExists": false,
+    "journalExistsAtEitherOriginalOrPublishedRoot": false,
+    "hostStarted": false,
+    "liveEvidenceAndPaper": "NOT_TESTED",
+    "automationScheduleReadback": "HISTORICAL_PARENT_ATTRIBUTION_ONLY_NO_CURRENT_CLOUD_READBACK",
+    "receiptSha256": "83ec121ac3256ba2c67b011bb0cbde094c2c3ec0ed03660f0fad60b5f8cf6b11"
+  },
+  "sourceCalls": 0,
+  "realOwnerRecordsCreated": 0,
+  "evidenceEnvelopeCreated": false,
+  "strategyRequestCreated": false,
+  "planSaved": false,
+  "paperAdmissionAllowed": false,
+  "fills": 0,
+  "pnl": null,
+  "previewSwitched": false,
+  "riskRulesChanged": false,
+  "frozenTrialChanged": false,
+  "remaining": [
+    "Real attributable research and separate human/Owner review are absent",
+    "Unchanged evidence-envelope and Paper gates still apply",
+    "October 12 actual Host permission, connection, allowance, exact contracts, entitlement and later quotes require actual-session evidence"
+  ],
+  "reviewedCodeSha256": {
+    "scripts/lib/options-tech-research-registration.mjs": "5c8fa5914e76ee3f5ebfec61232c7863cc9c9590c836bd3740ad7aeb740a0ab9",
+    "scripts/options-tech-research-registration.mjs": "2737c5c942badcd4944b5242e47d3c05ed48441f3db916617feeaa4a02a6bc56",
+    "scripts/lib/options-tech-candidate.mjs": "6fe5a06687fbb6c9071d7a257f79ced428289604793eef11d27995327f4cbd1a"
+  }
+}
