@@ -96,7 +96,7 @@ export function projectWeeklySources({at,week,calendars,news,research,configRef=
   const state=news.issues.some(i=>i.state==='INVALID_EVIDENCE')?'INVALID_EVIDENCE':health.some(h=>h.status==='FAILED')?'ACQUISITION_FAILED':records.some(r=>r.status==='INVALID_EVIDENCE')?'INVALID_EVIDENCE':valid.length?'OBTAINED_PENDING_REVIEW':records.some(r=>r.status==='HISTORICAL_BACKGROUND')?'HISTORICAL_BACKGROUND':records.some(r=>r.status==='CONTENT_TIME_UNKNOWN')?'CONTENT_TIME_UNKNOWN':records.length||health.length?'STALE':news.issues.some(i=>i.state==='READ_ONLY_RESTRICTED')?'READ_ONLY_RESTRICTED':'STORE_ABSENT';
   coverage[key]={...coverage[key],state,matchedRecords:valid.length,retainedRecords:records.length,sourceIds:health.map(h=>h.id),reason:'HEADLINES_ONLY_EVENT_TIMING_AND_COMPLETE_SCOPE_UNKNOWN'};
  }
- return {version:'WEEKLY_SOURCE_COVERAGE_V1',assessedAt:at,weekStartDate:week.weekStartDate,weekEndDate:week.weekEndDate,configRef,coverage,events,news,research:{references,companyReferences,backgroundReferences,issues:research.issues??[]},sourceCalls:0,fileSystemWrites:0,executionAllowed:false,authority:'CURRENT_UNSAVED_SOURCE_PROJECTION_NOT_OWNER_PLAN_REVIEW'};
+ return {version:'WEEKLY_SOURCE_COVERAGE_V1',assessedAt:at,weekStartDate:week.weekStartDate,weekEndDate:week.weekEndDate,configRef,coverage,events,news,research:{references,companyReferences,backgroundReferences,traceScans:research.traceScans??[],traceIssues:research.traceIssues??[],issues:research.issues??[]},sourceCalls:0,fileSystemWrites:0,executionAllowed:false,authority:'CURRENT_UNSAVED_SOURCE_PROJECTION_NOT_OWNER_PLAN_REVIEW'};
 }
 export function weeklyCurrentInputs(root,at){
  const {roots,configRef}=weeklySourceRoots(root),refresh=readWeeklyRefreshes(root,at),calendars={};

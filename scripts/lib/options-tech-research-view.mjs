@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import {resolve,relative} from 'node:path';
 import {createHash} from 'node:crypto';
 import {readTechEventReviews} from './options-tech-candidate.mjs';
+import {projectTechCandidateTrace} from './options-tech-candidate-trace.mjs';
 import {assessThreeFacet} from '../../src/engines/options-three-facet/OptionsThreeFacet.ts';
 
 const hash=b=>createHash('sha256').update(b).digest('hex');
@@ -56,7 +57,7 @@ export function projectTechResearchView(view,{digest,at,includeEvidenceLocations
 
 /** Finite local inventory, read-only. No caller-supplied path, recursive search or fetch. */
 export function readTechResearchView({root,at,includeEvidenceLocations=false}){
- const out={version:'TECH_RESEARCH_VIEW_V1',records:[],issues:[],sourceCalls:0,fileSystemWrites:0};let budget=0,runs=0;
+ const out={version:'TECH_RESEARCH_VIEW_V1',records:[],traceScans:[],traceIssues:[],issues:[],sourceCalls:0,fileSystemWrites:0};let budget=0,runs=0;
  const stat=p=>{const s=fs.lstatSync(p);check(!s.isSymbolicLink()&&s.nlink===1&&s.isFile()&&s.size<=12*1024*1024,'UNSAFE_RESEARCH_FILE');return [s.size,s.mtimeMs,s.ctimeMs].join('|');};
  const read=p=>{const before=stat(p),b=fs.readFileSync(p);budget+=b.length;check(budget<=128*1024*1024,'RESEARCH_READ_BOUND');check(stat(p)===before,'RESEARCH_CHANGED');return {data:JSON.parse(new TextDecoder('utf8',{fatal:true}).decode(b)),digest:hash(b)};};
  const problem=(path,code)=>out.issues.push({locationRef:hash(path),code:['RESEARCH_CLOCK','RESEARCH_READ_BOUND','RESEARCH_CHANGED','UNSAFE_RESEARCH_FILE','RESEARCH_RUN_BOUND'].includes(code)?code:'INVALID_RESEARCH_INPUT'});
@@ -74,7 +75,7 @@ export function readTechResearchView({root,at,includeEvidenceLocations=false}){
      const stamps=new Map();let count=0;
      const walk=(q,depth=0)=>{check(depth<=8,'RESEARCH_READ_BOUND');for(const e of fs.readdirSync(q,{withFileTypes:true})){const path=resolve(q,e.name);check(!e.isSymbolicLink()&&fs.realpathSync(path)===path,'UNSAFE_RESEARCH_FILE');if(e.isDirectory())walk(path,depth+1);else{check(++count<=800,'RESEARCH_READ_BOUND');stamps.set(path,stat(path));budget+=fs.statSync(path).size;check(budget<=128*1024*1024,'RESEARCH_READ_BOUND');}}};walk(p);
      const v=readTechEventReviews({root,runId:dir.name,now:()=>at});for(const[path,s]of stamps)check(stat(path)===s,'RESEARCH_CHANGED');
-     const projected=projectTechResearchView(v,{digest:v.headSha256,at,includeEvidenceLocations});out.records.push(...projected.map(r=>includeEvidenceLocations?{...r,path:relative(root,p).replaceAll('\\','/')+(v.revisionCount?'/event-reviews/'+String(v.revisionCount).padStart(6,'0')+'/record.json':'/receipt.json')}:r));
+     const projected=projectTechResearchView(v,{digest:v.headSha256,at,includeEvidenceLocations});try{out.traceScans.push(projectTechCandidateTrace(v,{at,summarize:researchSummary}));}catch{out.traceIssues.push({locationRef:hash(dir.name),sourceRef:v.headSha256,code:'TRACE_BINDING_UNRESOLVED'});}out.records.push(...projected.map(r=>includeEvidenceLocations?{...r,path:relative(root,p).replaceAll('\\','/')+(v.revisionCount?'/event-reviews/'+String(v.revisionCount).padStart(6,'0')+'/record.json':'/receipt.json')}:r));
     }
    }
    if(/^three-facet-[0-9]{8}$/.test(dir.name))for(const child of fs.readdirSync(p,{withFileTypes:true}).filter(e=>/^five-real-/.test(e.name))){

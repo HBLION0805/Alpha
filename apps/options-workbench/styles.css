@@ -76,3 +76,6 @@
 
 #weekly-refresh-health{overflow-wrap:anywhere}#weekly-refresh-health .card{padding:16px;min-width:0}#weekly-refresh-health h4{margin:0 0 10px}#weekly-refresh-health details article{padding:10px 0;border-bottom:1px solid var(--line)}
 #weekly-refresh-health .weekly-coverage{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:760px){#weekly-refresh-health .weekly-coverage{grid-template-columns:minmax(0,1fr)}}
+/* Long trace/source fingerprints and engine codes remain readable on narrow screens. */
+.tech-candidate-traces { min-width: 0; overflow-wrap: anywhere; }
+.tech-candidate-traces code { overflow-wrap: anywhere; }

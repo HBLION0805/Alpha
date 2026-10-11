@@ -205,7 +205,7 @@ export function readTechEventReviews({root,runId,now=()=>new Date().toISOString(
  const inputs=buildTechResearchInputs({...state,at});inputs.version='TECH36_RESEARCH_INPUTS_V2';inputs.mode=state.mode==='SYNTHETIC_FIXTURE'?'SYNTHETIC_APPEND_DEMO_ON_SAVED_BATCH':'SAVED_ORIGINAL_AND_APPEND_REPLAY';
  inputs.screeningTrace.rankingChanged=!same(state.baseRanking,state.lineage.ranking);
  return {version:'TECH36_EVENT_REVIEW_VIEW_V1',runId,scanId:state.lineage.scanId,baseReceiptSha256:state.baseSha,headSha256:state.head,recordedAt:state.recordedAt,
-  revisionCount:state.records.length,mode:state.mode,baseRanking:state.baseRanking,rankingChanges:state.records.map(r=>({revisionSha256:r.fingerprint,recordedAt:r.recordedAt,requestId:r.requestId,changes:r.rankingChanges})),inputs};
+  revisionCount:state.records.length,mode:state.mode,ranking:state.lineage.ranking,baseRanking:state.baseRanking,rankingChanges:state.records.map(r=>({revisionSha256:r.fingerprint,recordedAt:r.recordedAt,requestId:r.requestId,changes:r.rankingChanges})),inputs};
 }
 export function appendTechEventReview({root,runId,requestPath,now=()=>new Date().toISOString()}){
  const source=reader(dirname(resolve(requestPath))),requestBytes=source.read(relative(source.base,resolve(requestPath))),request=json(requestBytes),requestSha256=sha(requestBytes),state=readEventReviewState(root,runId);
