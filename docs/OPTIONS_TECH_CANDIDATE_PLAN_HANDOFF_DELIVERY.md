@@ -71,8 +71,36 @@ engine. Final test, copied-only replay and protected-file results are recorded i
 
 4178 remains pinned to reviewed course version 9727668. October 12 frozen
 2dabc114, CPI/15:50, the challenge ledger, risk settings and all other worktrees
-remain unchanged. The isolated company continuation remains on f88f4da with its
-original process, budget and 20:00 UTC deadline; engineering does not trigger or
-restart its 19:40 UTC natural check. No main merge or production deployment.
+remain unchanged. Both isolated continuations retained f88f4da, their original
+budgets and deadlines through natural termination, as recorded below. Engineering
+did not trigger or restart either continuation. No main merge or production deployment.
 
 Final regression passed 248 components / 6,181 tests / zero failures, including all 29 new handoff tests. The original spread/strict-launch regression passed 114/114; independent review found no remaining P1/P2. Final-code strict and copied-only replay at 19:31:26.304Z / 19:31:27.548Z retained the same refusal and exact references. All 288 copy comparisons, 25,907 protected files and 252 old source/runner originals matched. The first full reports did not count the native Node test summary; the new test adopted the existing counted-summary format and the final bundle includes all 29. The application code did not change for this reporting correction.
+
+## Independently verified bounded-run terminal supplement
+
+The parent task supplied the following independently verified terminal evidence
+on October 11. This delivery records that attributed verification; it does not
+copy private originals, perform another acquisition or claim a new local audit.
+The earlier 19:39 status readback remains a dated historical snapshot.
+
+- Public child `65585f6f-d412-4412-8151-f46ecdb5d5fa` ended at
+  `2026-10-11T17:27:43.380Z` with `BUDGET_EXHAUSTED`. Parent ten plus child ten
+  requests total twenty. Last Treasury/Fed requests were respectively
+  `2026-10-11T17:27:42.996Z` and `2026-10-11T17:27:43.225Z`; the six-hour minimum
+  passed and no new content was found. Original deadline remained
+  `2026-10-11T17:46:05.993Z`.
+- Company child `7afd3987-4e09-456e-ae43-5ba34d9bc3a9` ended at
+  `2026-10-11T19:40:15.579Z` with `BUDGET_EXHAUSTED`. Parent ten plus child ten
+  requests total twenty. Its ten actual requests from
+  `2026-10-11T19:40:02.745Z` through `2026-10-11T19:40:15.068Z` returned HTTP 200,
+  each exceeding its previous-source six-hour floor by 1.386–2.247 seconds.
+  Original deadline remained `2026-10-11T20:00:00Z`. Eight response originals
+  were unchanged; AMAT/MSFT changes were limited to scripts/tracking and similar
+  content, while all parsed results were unchanged.
+
+For both groups, parent and child PIDs had exited, chains and claims passed
+verification, and no runner lifecycle issue remained unresolved. These terminal
+checks do not complete source-content review: `OBTAINED_PENDING_REVIEW`, original
+partial coverage and all existing gaps remain. HTTP 200 and unchanged parsed
+results do not establish that all materials have been verified, or admit Paper.
