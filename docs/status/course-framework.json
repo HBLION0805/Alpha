@@ -1,6 +1,6 @@
 {
   "version": "OPTIONS_COURSE_FRAMEWORK_DELIVERY_V1",
-  "status": "IMPLEMENTED_FULL_VALIDATION_PASS_PREVIEW_CSP_REPAIR",
+  "status": "P2_REPAIRS_REVIEWED_ARCHIVE_LINKAGE_IN_PROGRESS",
   "catalog": {
     "chapters": 16,
     "appendices": 5,
@@ -26,7 +26,7 @@
     "fills": 0,
     "pnl": null
   },
-  "preview4178": "UNCHANGED_549fb29_TEMP_4180_CSP_REPAIR_PENDING",
+  "preview4178": "UNCHANGED_549fb29",
   "marketSourceCalls": 0,
   "executionAllowed": false,
   "runnerReadback": {
@@ -76,5 +76,20 @@
       "logSha256": "075fc653d0f0331c305a28dba0430102f7f2f0a73c71ba6d445c995e1d04817a"
     },
     "initialRegression": "Two integration components failed; explicit ESM module extensions and aggregate test registration repaired."
-  }
+  },
+  "reviewCorrections": {
+    "structuresResearchInput": "EXACT_VERSION_BINDING",
+    "thesisEdit": "IMMEDIATE_LOCAL_RECOMPUTE",
+    "cliTests": 6,
+    "uiTests": 8,
+    "independentReview": "NO_REMAINING_P1_P2_FOR_THESE_TWO_FIXES"
+  },
+  "temporaryPreview": {
+    "commit": "483c6d7e938b655d3eb1c30b40068c86d164fa3c",
+    "at": "2026-10-11T16:08:50.277Z",
+    "status": "PASS",
+    "protectedFiles": 25907,
+    "originalSourceRunnerFiles": 252
+  },
+  "archiveLinkage": "IN_PROGRESS_NOT_DELIVERED"
 }

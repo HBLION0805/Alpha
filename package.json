@@ -300,6 +300,8 @@
     "test:options-weekly-refresh-health": "tsx scripts/options-weekly-refresh-health.test.mjs",
     "test:options-weekly-news-time": "tsx scripts/options-weekly-news-time-interpretation.test.mjs",
     "test:options-weekly-sec-rejections": "tsx scripts/options-weekly-sec-rejection-interpretation.test.mjs",
+    "test:options-course-panel-invalidation": "tsx scripts/options-course-panel-invalidation.test.mjs",
+    "test:options-structures-course": "tsx scripts/options-structures-course.test.mjs",
     "test:options-course-framework": "tsx scripts/options-course-framework.test.mjs"
   },
   "devDependencies": {

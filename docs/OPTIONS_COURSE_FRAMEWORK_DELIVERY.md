@@ -86,3 +86,21 @@ public CLOCK_REGRESSION terminal at 15:36:07.184 UTC and company terminal at
 The cause of clock regression is UNKNOWN. No recovery/restart/resampling was
 performed. Their future rounds are no longer waiting; preserve these original
 terminals. This observation is separate from framework engineering acceptance.
+
+## Independent review corrections — October 11
+
+The structure CLI now accepts an independent `--course-research` file with explicit
+record ID/version/time and exact comparison/candidate/input-fingerprint bindings.
+All eight mathematical structures retain their original input schema, results and
+artifact hashes; research declarations cannot override structure or execution.
+Editing the planner thesis now immediately recomputes course checks from current
+fields, including deleted evidence and contradictory windows. Independent reviews
+cleared both changes: CLI 6/6, UI handler 8/8, existing framework 16/16 passed.
+
+Temporary 4180 UI verification at 16:08:50Z, exact 483c6d7, passed all eleven routes
+and desktop/mobile checks with zero CSP/console/page/network errors after waiting
+for service readiness. 25,907 protected files and 252 original source/runner files
+were unchanged. This verifies that earlier version only: archive/review linkage
+remains unfinished and the course first version is not yet complete. 4178 remains
+549fb29. Fixed-36 trace is a saved review/ranking association, not automatic
+judgment or a completed concrete trade-plan acceptance.

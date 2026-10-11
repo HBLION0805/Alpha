@@ -68,14 +68,50 @@ function verify(root, id, now) {
     comparisonCount: recomputed.cases.length, calculatedCandidates: recomputed.cases.reduce((s, c) => s + c.result.calculatedCount, 0),
     uncalculatedCandidates: recomputed.cases.reduce((s, c) => s + c.result.uncalculatedCount, 0), brief: recomputed.brief, existingJournalAppends: 0, executionAllowed: false };
 }
+const COURSE_FIELDS = new Set(['direction', 'magnitude', 'thesisRef', 'realizationFrom', 'realizationThrough', 'timeExitAt',
+  'ivHistoryRef', 'realizedVolRef', 'ivHypothesis', 'ivComparisonReview', 'rationale', 'alternative', 'counterexample',
+  'entry', 'invalidation', 'priceExit', 'nextCheckAt', 'fallback', 'eventDecision', 'ownerPolicyRef', 'planAssumptionsRef', 'positionsRef', 'greeksRef']);
+const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+const declaredText = value => typeof value === 'string' && value.trim().length > 0 && value.length <= 4096;
+function courseResearch(root, path, original) {
+  const bytes = io.readBytes(root, path, MAX_INPUT), input = parse(bytes);
+  if (!object(input) || Object.keys(input).sort().join() !== 'records,version' || input.version !== 'OPTIONS_STRUCTURE_COURSE_RESEARCH_V1' ||
+      !Array.isArray(input.records) || input.records.length < 1 || input.records.length > original.cases.reduce((n,c)=>n+c.input.candidates.length,0)) fail('COURSE_RESEARCH_SCHEMA');
+  const records = new Map(), identities = new Set();
+  for (const record of input.records) {
+    if (!object(record) || Object.keys(record).sort().join() !== 'candidateId,comparisonId,comparisonInputFingerprint,fields,recordId,recordVersion,recordedAt' ||
+        !['recordId', 'recordVersion', 'comparisonId', 'candidateId', 'comparisonInputFingerprint'].every(k => declaredText(record[k])) ||
+        !object(record.fields) || Object.entries(record.fields).some(([key, value]) => !COURSE_FIELDS.has(key) || !declaredText(value))) fail('COURSE_RESEARCH_SCHEMA');
+    readinessClock(record.recordedAt);
+    if (record.recordedAt > original.recordedAt) fail('COURSE_RESEARCH_FUTURE_RECORD');
+    const comparison = original.cases.find(c => c.input.comparisonId === record.comparisonId);
+    if (!comparison || !comparison.input.candidates.some(c => c.candidateId === record.candidateId) ||
+        readinessFingerprint(comparison.input) !== record.comparisonInputFingerprint) fail('COURSE_RESEARCH_BINDING');
+    const key = JSON.stringify([record.comparisonId, record.candidateId]), identity = JSON.stringify([record.recordId, record.recordVersion]);
+    if (records.has(key) || identities.has(identity)) fail('COURSE_RESEARCH_DUPLICATE');
+    records.set(key, record); identities.add(identity);
+  }
+  return {records, source: {kind: 'LOCAL_FILE', version: input.version, sha256: createHash('sha256').update(bytes).digest('hex'), verification: 'DECLARED_RESEARCH_NOT_AUTHENTICATED'}};
+}
 export function runOptionsStructuresCommand(args, { workspaceRoot = process.cwd(), now = () => new Date().toISOString() } = {}) {
   if(args[0]==='--course-preview'){
     if(args.includes('--save')||args.includes('--verify'))fail('COURSE_PREVIEW_READ_ONLY');
-    const original=runOptionsStructuresCommand(args.slice(1),{workspaceRoot,now});
+    const originalArgs=args.slice(1), researchIndex=originalArgs.indexOf('--course-research');let researchPath=null;
+    if(researchIndex!==-1){
+      if(originalArgs.lastIndexOf('--course-research')!==researchIndex||!originalArgs[researchIndex+1]||originalArgs[researchIndex+1].startsWith('--'))fail('COURSE_RESEARCH_ARGUMENTS');
+      researchPath=originalArgs[researchIndex+1];originalArgs.splice(researchIndex,2);
+    }
+    const original=runOptionsStructuresCommand(originalArgs,{workspaceRoot,now});
     if(!Array.isArray(original.cases))fail('COURSE_PREVIEW_INPUT');
-    return {version:'OPTIONS_STRUCTURE_COURSE_PREVIEW_V1',original,courseAssessments:original.cases.map(c=>({comparisonId:c.input.comparisonId,candidates:c.input.candidates.map(candidate=>({candidateId:candidate.candidateId,assessment:assessCourseFramework({structure:candidate.structure,expiryRef:c.input.expiryDate})}))})),originalArtifactModified:false,sourceCalls:0,fileSystemWrites:0,admissionEffect:'NONE'};
+    const research=researchPath===null?null:courseResearch(realpathSync(workspaceRoot),researchPath,original);
+    return {version:'OPTIONS_STRUCTURE_COURSE_PREVIEW_V1',original,...(research?{researchSource:research.source}:{}),courseAssessments:original.cases.map(c=>({comparisonId:c.input.comparisonId,candidates:c.input.candidates.map(candidate=>{
+      const record=research?.records.get(JSON.stringify([c.input.comparisonId,candidate.candidateId]));
+      const researchInput={...(record?.fields??{}),structure:candidate.structure,expiryRef:c.input.expiryDate};
+      return {candidateId:candidate.candidateId,...(research?{researchBinding:record?{recordId:record.recordId,recordVersion:record.recordVersion,recordedAt:record.recordedAt,comparisonInputFingerprint:record.comparisonInputFingerprint,verification:'DECLARED_RESEARCH_NOT_AUTHENTICATED'}:null,researchInput}:{}),assessment:assessCourseFramework(researchInput)};
+    })})),originalArtifactModified:false,sourceCalls:0,fileSystemWrites:0,admissionEffect:'NONE'};
   }
-  if (args.length === 1 && args[0] === "--help") return { usage: ["options:structures -- --course-preview --demo | --input <workspace-json>", "options:structures -- --demo [--save <new-id>]", "options:structures -- --input <workspace-json> [--save <new-id>]", "options:structures -- --verify <saved-id>"],
+  if (args.length === 1 && args[0] === "--help") return { usage: ["options:structures -- --course-preview (--demo | --input <workspace-json>) [--course-research <workspace-json>]", "options:structures -- --demo [--save <new-id>]", "options:structures -- --input <workspace-json> [--save <new-id>]", "options:structures -- --verify <saved-id>"],
+    courseResearch: {version:'OPTIONS_STRUCTURE_COURSE_RESEARCH_V1',records:[{recordId:'Declared research record ID',recordVersion:'Exact declared record revision',recordedAt:'Original record clock as YYYY-MM-DDTHH:mm:ss.sssZ',comparisonId:'original.cases[].input.comparisonId',candidateId:'original.cases[].input.candidates[].candidateId',comparisonInputFingerprint:'original.cases[].result.inputSha256',fields:'Optional declared fields listed below; structure and expiry come from the original mathematical input.'}],fields:[...COURSE_FIELDS],verification:'Declared references and field presence are not authenticated research or admission.'},
     meaning: "Offline structure/cost/terminal-risk comparisons. No ranking, source refresh, account or order action. Missing inputs are retained as diagnostics.", executionAllowed: false };
   if (args.length === 2 && args[0] === "--verify") return verify(realpathSync(workspaceRoot), args[1], now);
   const demo = args[0] === "--demo", count = demo ? 1 : 2;

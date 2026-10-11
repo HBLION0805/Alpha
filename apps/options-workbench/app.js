@@ -171,6 +171,7 @@ function updateDraft(el){
   }
   if(form.id==='thesis-plan-form'){
     updateThesisDraft(ui,el.name,el.type==='checkbox'?el.checked:el.value);dirty.add('thesis');
+    const course=$('#course-framework-result');if(course)course.innerHTML=courseAssessmentPanel(assessCourseFramework(courseInputFromPlan(ui.thesisFields,ui.thesisDraft,ui.courseDraft)));
     const b=form.querySelector('[value="CONFIRM"]');if(b)b.disabled=true;
     const p=$('#thesis-plan-preview');if(p)p.innerHTML='Draft changed. Preview again before freezing.';return;
   }
