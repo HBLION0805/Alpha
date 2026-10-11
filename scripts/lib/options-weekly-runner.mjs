@@ -45,7 +45,14 @@ export function stopWeeklyRunner(root,runId,now=()=>new Date().toISOString()){
 }
 export function recoverWeeklyRunner(root,runId,now=()=>new Date().toISOString()){
  const owner=active(root);check(owner?.runId===runId,'RUNNER_NOT_ACTIVE');check(presence(owner.pid)==='ABSENT','RUNNER_PROCESS_NOT_PROVEN_ABSENT');
- history(root,runId);append(root,runId,'FINISHED',{reason:'INTERRUPTED_RECOVERED_NO_SOURCE_CLAIMS_REMOVED'},now());
+ const h=history(root,runId),last=h.events.at(-1),terminals=h.events.filter(e=>e.type==='FINISHED');
+ check(terminals.length<=1&&(!terminals.length||terminals[0]===last),'RUNNER_TERMINAL_CHAIN_INVALID');
+ if(last?.type==='FINISHED'){
+  check(['BUDGET_EXHAUSTED','EXPIRED','STOPPED_BY_SIGNAL','STOPPED_BY_REQUEST','CLOCK_REGRESSION','CONTROL_STATE_UNRESOLVED','FAILED_REQUIRES_REVIEW','INTERRUPTED_RECOVERED_NO_SOURCE_CLAIMS_REMOVED'].includes(last.details?.reason),'RUNNER_TERMINAL_INVALID');
+  check(active(root)?.token===owner.token,'RUNNER_OWNER_CHANGED');fs.unlinkSync(resolve(root,BASE+'/active.json'));
+  return {state:'TERMINAL_PRESERVED_OWNER_RELEASED',runId,originalTerminal:last,executionAllowed:false};
+ }
+ append(root,runId,'FINISHED',{reason:'INTERRUPTED_RECOVERED_NO_SOURCE_CLAIMS_REMOVED'},now());
  check(active(root)?.token===owner.token,'RUNNER_OWNER_CHANGED');fs.unlinkSync(resolve(root,BASE+'/active.json'));
  return {state:'INTERRUPTED_RECOVERED_NO_SOURCE_CLAIMS_REMOVED',runId,executionAllowed:false};
 }

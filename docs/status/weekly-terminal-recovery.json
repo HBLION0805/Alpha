@@ -1,0 +1,15 @@
+{
+  "version": "WEEKLY_TERMINAL_RECOVERY_DELIVERY_V1",
+  "status": "INDEPENDENTLY_REVIEWED_ISOLATED_TESTS_PASS",
+  "tests": 12,
+  "independentReview": "PASS",
+  "existingTerminal": "PRESERVED_BYTE_FOR_BYTE",
+  "sourceClaims": "UNCHANGED",
+  "nonterminalBehavior": "UNCHANGED",
+  "realRecoveryExecuted": false,
+  "activeRunnersChanged": false,
+  "resumeAdded": false,
+  "budgetChanged": false,
+  "deadlineChanged": false,
+  "preview4178": "UNCHANGED_549fb29"
+}
