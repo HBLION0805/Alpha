@@ -1,6 +1,6 @@
 {
   "version": "WEEKLY_RUNNER_DELIVERY_V1",
-  "status": "BOUNDED_REAL_LIFECYCLE_ACCEPTED_NOT_DEPLOYED",
+  "status": "BOUNDED_REAL_LIFECYCLE_ACCEPTED_LOCAL_PREVIEW_AVAILABLE",
   "baseCommit": "f92814b4253132b6cdea037548a643d1cbec7b8b",
   "implementationCommit": "f9504fa2cd5822b61bbde5101fee746b7b1b9755",
   "mode": "EXPLICIT_FINITE_PROCESS_ONLY",
@@ -21,7 +21,11 @@
   "preservation": {"originalAcceptanceFiles": 18, "protectedBaselineFiles": 25907, "allHashesUnchanged": true},
   "failureRecovery": "PASSED_INJECTED_TRANSPORT_AND_SIMULATED_CLOCK_ONLY",
   "liveAcceptanceWindowUtc": ["2026-10-11T04:38:50.000Z", "2026-10-11T04:39:25.000Z"],
-  "deployedTo4178": false,
+  "deployedTo4178": true,
+  "previewScope": "LOCAL_FULL_UI_READ_ONLY_RUNNER_REMAINS_EXPIRED",
+  "previewCodeCommit": "9dd4779372e772a1e432d68c2f91293885f33c37",
+  "previewAcceptanceReceipt": "data/runtime/options-workbench-development/readonly-preview-weekly-20261011/switch-acceptance.json",
+  "previewAcceptanceSha256": "c49c904465bc42f7b535e40fae54ec128f66faa498ddda76d2b7dc28f7a810ed",
   "cloudOrSystemScheduleCreated": false,
   "executionAllowed": false,
   "paperAcceptance": "NOT_RUN"

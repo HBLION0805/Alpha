@@ -88,8 +88,9 @@ retain their hashes. Raw receipts, logs and the acceptance remain ignored/local.
 This validates one finite official-source process lifecycle. It does not establish
 unattended operation across sleep/offline periods, source interpretation, trading
 research quality, market quotes or Paper execution. The existing 4178 preview
-still pins `2dabc11486f0217fe001a6102ead13a8fa539f51`, denies filesystem writes and
-outbound requests, and had zero blocked network attempts. The new full-UI wrapper
-is prepared but not started or deployed; independent review remains a separate
-gate before replacing that preview. Original schedules and challenge records are
-unchanged.
+pinned `2dabc11486f0217fe001a6102ead13a8fa539f51` at runner acceptance, denied
+filesystem writes and outbound requests, and had zero blocked network attempts.
+After independent review closed the concurrent-provenance follow-up, the approved
+local full-UI preview switched to `9dd4779`; see
+[the separate preview acceptance](OPTIONS_WEEKLY_PREVIEW_DELIVERY.md). This did
+not restart the runner. Original schedules and challenge records are unchanged.
