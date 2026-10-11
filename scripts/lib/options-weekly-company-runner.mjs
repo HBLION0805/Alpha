@@ -1,3 +1,4 @@
+import {continuationDueFloor,writeRunnerClockDiagnostic} from './options-weekly-runner-clock.mjs';
 // Separate company ownership and lifecycle; the active headline runner is unchanged.
 import fs from 'node:fs';
 import {resolve} from 'node:path';
@@ -24,7 +25,7 @@ function manifest(root,id){const m=read(root,runPath(id)+'/manifest.json'),{fing
 function presence(pid){try{process.kill(pid,0);return 'PID_PRESENT_IDENTITY_NOT_INDEPENDENTLY_VERIFIED';}catch(e){return e.code==='ESRCH'?'ABSENT':'UNKNOWN';}}
 function history(root,id){
  const base=runPath(id),m=manifest(root,id),dir=resolve(root,base),entries=fs.readdirSync(dir,{withFileTypes:true});check(entries.length<=305,'RUNNER_JOURNAL_LIMIT');
- const names=entries.filter(e=>/^\d{6}\.json$/.test(e.name)).map(e=>e.name).sort();let previous=m.fingerprint,previousAt=m.startedAt;const events=[];
+ const names=entries.filter(e=>/^\d{6}\.json$/.test(e.name)).map(e=>e.name).sort();let previous=m.fingerprint,previousAt=m.continuation?.claimedAt??m.startedAt;const events=[];
  for(const [index,name]of names.entries()){
   const r=read(root,base+'/'+name),{fingerprint,...body}=r;
   check(name===String(index+1).padStart(6,'0')+'.json'&&body.version==='WEEKLY_COMPANY_RUNNER_EVENT_V1'&&body.runId===id&&body.sequence===index+1&&body.previousFingerprint===previous&&sourceHash(JSON.stringify(body))===fingerprint,'RUNNER_JOURNAL_INTEGRITY');
@@ -32,7 +33,7 @@ function history(root,id){
  }
  return {manifest:m,events,previous};
 }
-function append(root,id,type,details,at){const h=history(root,id);check(h.events.length<300,'RUNNER_JOURNAL_LIMIT');const body={version:'WEEKLY_COMPANY_RUNNER_EVENT_V1',runId:id,sequence:h.events.length+1,previousFingerprint:h.previous,at,type,details};clock(at);check(clock(at)>=clock(h.events.at(-1)?.at??h.manifest.startedAt),'RUNNER_CLOCK_REGRESSION');const r={...body,fingerprint:sourceHash(JSON.stringify(body))};write(root,runPath(id)+'/'+String(r.sequence).padStart(6,'0')+'.json',r);return r;}
+function append(root,id,type,details,at){const h=history(root,id);check(h.events.length<300,'RUNNER_JOURNAL_LIMIT');const body={version:'WEEKLY_COMPANY_RUNNER_EVENT_V1',runId:id,sequence:h.events.length+1,previousFingerprint:h.previous,at,type,details};clock(at);check(clock(at)>=clock(h.events.at(-1)?.at??h.manifest.continuation?.claimedAt??h.manifest.startedAt),'RUNNER_CLOCK_REGRESSION');const r={...body,fingerprint:sourceHash(JSON.stringify(body))};write(root,runPath(id)+'/'+String(r.sequence).padStart(6,'0')+'.json',r);return r;}
 export function companyRunnerStatus(root,runId=null,now=()=>new Date().toISOString()){
  const owner=active(root),id=runId??owner?.runId;if(!id)return {version:'WEEKLY_COMPANY_RUNNER_STATUS_V1',state:'NOT_RUNNING',activeRunId:null,executionAllowed:false};
  const h=history(root,id),last=h.events.at(-1),owns=owner?.runId===id,processPresence=owns?presence(owner.pid):'NOT_OWNER';
@@ -57,24 +58,35 @@ export function recoverCompanyRunner(root,runId,now=()=>new Date().toISOString()
  check(active(root)?.token===owner.token,'RUNNER_OWNER_CHANGED');fs.unlinkSync(resolve(root,BASE+'/active.json'));
  return {state:'INTERRUPTED_RECOVERED_NO_SOURCE_CLAIMS_REMOVED',runId,executionAllowed:false};
 }
-export async function runCompanyRunner({root,sourceIds=[],until,firstAt,intervalMinutes=360,maxAttempts=20,configEvidence=null,now=()=>new Date().toISOString(),fetchImplementation=globalThis.fetch,signal,wait=ms=>new Promise(r=>setTimeout(r,ms)),evidenceContext='REAL_PUBLIC_SOURCE'}={}){
- root=fs.realpathSync(root);const startedAt=now(),start=clock(startedAt),end=clock(until);firstAt??=startedAt;
+export async function runCompanyRunner({root,sourceIds=[],until,firstAt,intervalMinutes=360,maxAttempts=20,configEvidence=null,now=()=>new Date().toISOString(),fetchImplementation=globalThis.fetch,signal,wait=ms=>new Promise(r=>setTimeout(r,ms)),evidenceContext='REAL_PUBLIC_SOURCE',continuationFrom=null,monotonicNow=()=>performance.now()}={}){
+ root=fs.realpathSync(root);const startedAt=now(),start=clock(startedAt);
+ const continuationApi=continuationFrom?await import('./options-weekly-continuation.mjs'):null;
+ const continuationPlan=continuationFrom?continuationApi.prepareWeeklyContinuation({root,family:'company',fromRunId:continuationFrom,at:startedAt}):null;
+ if(continuationPlan){sourceIds=continuationPlan.sourceIds;until=continuationPlan.until;intervalMinutes=continuationPlan.intervalMinutes;maxAttempts=continuationPlan.remainingAttempts;evidenceContext=continuationPlan.evidenceContext;firstAt=startedAt;configEvidence=continuationPlan.configEvidence;}
+ const end=clock(until);firstAt??=startedAt;
  check(end>start&&end-start<=24*HOUR&&clock(firstAt)>=start&&clock(firstAt)<end,'RUNNER_WINDOW');
  check(Number.isInteger(intervalMinutes)&&intervalMinutes>=60&&intervalMinutes<=1440,'RUNNER_INTERVAL');check(Number.isInteger(maxAttempts)&&maxAttempts>=1&&maxAttempts<=20,'RUNNER_BUDGET');
  check(['REAL_PUBLIC_SOURCE','TEST_FIXTURE'].includes(evidenceContext)&&Array.isArray(sourceIds)&&sourceIds.length>0&&sourceIds.length<=10&&new Set(sourceIds).size===sourceIds.length&&sourceIds.every(id=>ALL_WEEKLY_REFRESH_IDS.includes(id)),'RUNNER_SCOPE');
  assertCompanyPdfSelection(sourceIds,configEvidence?.configuration);
  const pdfMetadataEnabled=configEvidence?.configuration?.pdfMetadata?.enabled===true;
  directory(root,BASE);const runId=randomUUID(),token=randomUUID(),owner={version:'WEEKLY_COMPANY_RUNNER_OWNER_V1',runId,token,pid:process.pid};
- write(root,BASE+'/active.json',owner);let initialized=false,terminalWritten=false,controlTimer,stopping=null,requestController,previousNow=start;
+ write(root,BASE+'/active.json',owner);let initialized=false,terminalWritten=false,controlTimer,stopping=null,requestController,previousNow=start,previousMonotonic=monotonicNow(),clockDiagnostic=null;
  const requestStop=reason=>{stopping??=reason;requestController?.abort();};
  const externalStop=()=>requestStop('STOPPED_BY_SIGNAL');
+ const observeClock=()=>{const at=now(),t=clock(at),mono=monotonicNow();if(t<previousNow){
+  if(!clockDiagnostic){const diagnostic={previousNow:new Date(previousNow).toISOString(),currentNow:at,deltaMs:t-previousNow,previousMonotonicMs:previousMonotonic,currentMonotonicMs:mono,monotonicDeltaMs:mono-previousMonotonic};try{clockDiagnostic={...diagnostic,saved:writeRunnerClockDiagnostic({root,family:'company',runId,diagnostic})};}catch{clockDiagnostic={...diagnostic,saved:null,writeStatus:'FAILED_REQUIRES_REVIEW'};}}
+  requestStop('CLOCK_REGRESSION');
+ }else{previousNow=t;previousMonotonic=mono;}return {at,t};};
  try{
-  const implementation=Object.fromEntries(['options-weekly-company-runner.mjs','options-weekly-company-refresh-policy.mjs','options-weekly-issuer-sources.mjs','options-weekly-issuer-parsers.mjs','options-weekly-company-parsers.mjs','options-weekly-company-catalog.mjs','options-weekly-source-storage.mjs','options-weekly-pdf-metadata.mjs','options-weekly-source-supplement.mjs'].map(name=>[name,sourceHash(fs.readFileSync(new URL(name,import.meta.url)))]));
-  directory(root,runPath(runId));const body={version:'WEEKLY_COMPANY_RUNNER_MANIFEST_V1',runId,startedAt,until,firstAt,sourceIds,intervalMinutes,maxAttempts,configEvidence,evidenceContext,pid:process.pid,implementation,executionAllowed:false};
+  const claimClock=continuationPlan?observeClock():null;check(!stopping,'RUNNER_CLOCK_REGRESSION');
+  const continuation=continuationPlan?continuationApi.reserveWeeklyContinuation({root,plan:continuationPlan,runId,token,at:claimClock.at}):null;
+  const implementation=Object.fromEntries(['options-weekly-runner-clock.mjs','options-weekly-continuation.mjs','options-weekly-recovery-inspection.mjs','options-weekly-company-runner.mjs','options-weekly-company-refresh-policy.mjs','options-weekly-issuer-sources.mjs','options-weekly-issuer-parsers.mjs','options-weekly-company-parsers.mjs','options-weekly-company-catalog.mjs','options-weekly-source-storage.mjs','options-weekly-pdf-metadata.mjs','options-weekly-source-supplement.mjs'].map(name=>[name,sourceHash(fs.readFileSync(new URL(name,import.meta.url)))]));
+  directory(root,runPath(runId));const body={version:'WEEKLY_COMPANY_RUNNER_MANIFEST_V1',runId,startedAt,until,firstAt,sourceIds,intervalMinutes,maxAttempts,configEvidence,evidenceContext,pid:process.pid,implementation,...(continuation?{continuation}:{}),executionAllowed:false};
   write(root,runPath(runId)+'/manifest.json',{...body,fingerprint:sourceHash(JSON.stringify(body))});initialized=true;
-  append(root,runId,'STARTED',{state:'WAITING',firstAt},now());
+  const startClock=observeClock();check(!stopping,'RUNNER_CLOCK_REGRESSION');
+  append(root,runId,'STARTED',{state:'WAITING',firstAt},startClock.at);
   const control=()=>{try{
-   const at=now(),t=clock(at);if(t<previousNow)return requestStop('CLOCK_REGRESSION');previousNow=t;
+   const {at,t}=observeClock();if(stopping)return;
    if(t>=end)return requestStop('EXPIRED');
    const stop=optional(root,runPath(runId)+'/stop.json');if(stop){check(stop.version==='WEEKLY_COMPANY_RUNNER_STOP_V1'&&stop.runId===runId&&stop.manifestFingerprint===manifest(root,runId).fingerprint,'RUNNER_STOP_INVALID');requestStop('STOPPED_BY_REQUEST');}
   }catch{requestStop('CONTROL_STATE_UNRESOLVED');}};
@@ -85,7 +97,7 @@ export async function runCompanyRunner({root,sourceIds=[],until,firstAt,interval
    if(attempts>=maxAttempts){stopping='BUDGET_EXHAUSTED';break;}
    if(nextWait&&clock(now())<clock(nextWait)){await wait(Math.min(1000,end-clock(now()),clock(nextWait)-clock(now())));continue;}
    const at=now(),saved=readWeeklyRefreshes(root,at);check(!saved.issues.length,'RUNNER_SOURCE_STORE_REQUIRES_REVIEW');
-   const eligibility=sourceIds.map(id=>companySourceDue(saved.records,id,intervalMinutes*60000,firstAt,{pdfMetadataEnabled}));
+   const eligibility=sourceIds.map(id=>continuationDueFloor(companySourceDue(saved.records,id,intervalMinutes*60000,firstAt,{pdfMetadataEnabled}),continuation));
    const due=eligibility.filter(r=>!r.blockedReason).sort((a,b)=>a.nextEligibleAt.localeCompare(b.nextEligibleAt)||a.sourceId.localeCompare(b.sourceId));
    if(!due.length){append(root,runId,'SOURCES_DISABLED',{sources:eligibility},at);stopping='NO_ELIGIBLE_SOURCES_REQUIRES_REVIEW';break;}
    if(clock(due[0].nextEligibleAt)>clock(at)){
@@ -103,10 +115,13 @@ export async function runCompanyRunner({root,sourceIds=[],until,firstAt,interval
    append(root,runId,'ATTEMPT_FINISHED',{attempts,result:result.results},now());
    if(result.results.some(r=>[403,429].includes(r.httpStatus)))stopping='HTTP_DENIAL_REQUIRES_REVIEW';
   }
-  append(root,runId,'FINISHED',{reason:stopping??'EXPIRED',attempts},now());terminalWritten=true;
+  append(root,runId,'FINISHED',{reason:stopping??'EXPIRED',attempts,...(clockDiagnostic?{clockDiagnostic}: {})},now());terminalWritten=true;
   return companyRunnerStatus(root,runId,now);
  }catch(e){
   if(initialized){try{append(root,runId,'FINISHED',{reason:'FAILED_REQUIRES_REVIEW',errorCode:/^(?:RUNNER|REFRESH)_[A-Z_]+$/.test(e.message)?e.message:'LOCAL_FAILURE'},now());terminalWritten=true;}catch{}}
+  // If claiming failed before any durable claim or manifest, release only this
+  // invocation's owner. A written/partial claim stays occupied for manual review.
+  if(!initialized&&continuationPlan&&!fs.existsSync(resolve(root,continuationPlan.claimPath))&&active(root)?.token===token)fs.unlinkSync(resolve(root,BASE+'/active.json'));
   throw e;
  }finally{
   clearInterval(controlTimer);signal?.removeEventListener('abort',externalStop);

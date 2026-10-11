@@ -1,0 +1,59 @@
+{
+  "version": "WEEKLY_BOUNDED_CONTINUATION_DELIVERY_V1",
+  "date": "2026-10-11",
+  "state": "VALIDATED_REVIEWED_PENDING_EXACT_COMMIT_REVIEW_AND_START",
+  "actualContinuationStarted": false,
+  "originals": {
+    "public": {
+      "reason": "CLOCK_REGRESSION",
+      "confirmedConsumed": 10,
+      "originalBudget": 20,
+      "remaining": 10,
+      "sourceCount": 10,
+      "intervalMinutes": 360,
+      "until": "2026-10-11T17:46:05.993Z"
+    },
+    "company": {
+      "reason": "CLOCK_REGRESSION",
+      "confirmedConsumed": 10,
+      "originalBudget": 20,
+      "remaining": 10,
+      "sourceCount": 10,
+      "intervalMinutes": 360,
+      "until": "2026-10-11T20:00:00.000Z"
+    }
+  },
+  "limits": {
+    "oneGeneration": true,
+    "permanentExclusiveClaim": true,
+    "automaticStart": false,
+    "deadlineExtension": false,
+    "budgetReset": false,
+    "negativeClockStop": true,
+    "sourceReplayBeforeClaim": true
+  },
+  "validation": {
+    "continuation": {
+      "passed": 18,
+      "failed": 0
+    },
+    "independentBeforeNativeCliRepair": {
+      "passed": 75,
+      "failed": 0
+    },
+    "final": {
+      "componentCount": 244,
+      "testsExecuted": 6133,
+      "passed": 6133,
+      "failed": 0,
+      "logSha256": "81320386f4691cfc5ddec1027c8d58ed20697c0928f413c61c6ce64cf38d8c35"
+    },
+    "independentFinalFocused": {
+      "passed": 51,
+      "failed": 0
+    }
+  },
+  "preview4178": "549fb295b4c29a5730111c5814adf3590c98fc1d",
+  "executionAllowed": false,
+  "independentReview": "NO_REMAINING_P1_P2"
+}
