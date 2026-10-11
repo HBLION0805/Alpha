@@ -1,0 +1,47 @@
+{
+  "version": "WEEKLY_ISSUER_SOURCE_STAGE2_V1",
+  "status": "REAL_ORIGINAL_REPLAY_AND_TEMP_UI_PASS_PENDING_INDEPENDENT_REVIEW",
+  "targetWeek": [
+    "2026-10-12",
+    "2026-10-16"
+  ],
+  "companyCounts": {
+    "universe": 36,
+    "attempted": 4,
+    "parseable": 1,
+    "withWeekEvent": 0,
+    "checkedNoMatch": 1,
+    "failed": 3,
+    "notAttempted": 32
+  },
+  "issuerSecFilings": {
+    "attempted": 0,
+    "universe": 36
+  },
+  "cboe": {
+    "scope": "2026_OPTIONS_HOLIDAYS_ONLY",
+    "rows": 12,
+    "targetWeekMatches": 0
+  },
+  "actualDiscoveryRequests": 7,
+  "copiedOriginalEnvelopes": 7,
+  "originalDirectory": "data/runtime/options-weekly-sources/issuer-stage2",
+  "automaticCompanyRefresh": false,
+  "existingRunnerChanged": false,
+  "preview4178": "UNCHANGED_9dd4779",
+  "executionAllowed": false,
+  "validation": {
+    "components": 232,
+    "countedTests": 5929,
+    "failed": 0,
+    "finalFocusedTests": 66,
+    "newIssuerTests": 15,
+    "firstSandboxRun": "FAILED_EPERM_LINK_PERMISSIONS",
+    "equippedAggregate": "PASS",
+    "finalInvalidStoreGuard": "PASS_66_FOCUSED_AFTER_AGGREGATE_STARTED"
+  },
+  "acceptanceReceipt": "data/runtime/options-weekly-sources/issuer-stage2/acceptance.json",
+  "acceptanceSha256": "0780df9f9aee483dbb7498630ec6ed0d7e29d50dc762aec340d17d1912cab9ea",
+  "protectedFilesUnchanged": 25907,
+  "fedCrossMonthFixCommit": "4a667a3"
+}

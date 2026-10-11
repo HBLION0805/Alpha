@@ -1,3 +1,5 @@
+import {readWeeklyIssuerRefreshes} from './options-weekly-issuer-sources.mjs';
+import {extendWeeklyIssuerCoverage} from './options-weekly-issuer-coverage.mjs';
 import {readWeeklyRefreshes} from './options-weekly-refresh.mjs';
 import {readWeeklyEventRefreshes,extendWeeklyEventCoverage} from './options-weekly-event-sources.mjs';
 import {isAbsolute} from 'node:path';
@@ -114,9 +116,9 @@ export function weeklyCurrentInputs(root,at){
  const all=[...groups.values()].sort((a,b)=>b.retrievedAt.localeCompare(a.retrievedAt));news.records=all.slice(0,300);news.omitted+=Math.max(0,all.length-300);
  // Facts and receipt identities must survive a writer updating the source store
  // between preview composition and coverage projection in the same request.
- return freezeSnapshot({roots,configRef,calendars,news,refresh,eventRefresh:readWeeklyEventRefreshes(root,at)});
+ return freezeSnapshot({roots,configRef,calendars,news,refresh,eventRefresh:readWeeklyEventRefreshes(root,at),issuerRefresh:readWeeklyIssuerRefreshes(root,at)});
 }
 export function weeklySourcesView(root,at,week,inputs){
- try{const {roots,configRef,calendars,news,refresh,eventRefresh}=inputs??weeklyCurrentInputs(root,at),research=readTechResearchView({root:roots.research,at,includeEvidenceLocations:true});const result=projectWeeklySources({at,week,calendars,news,research,configRef});result.refreshReceipts=refresh.records.map(({sourceId,path,recordFingerprint,requestedAt,receivedAt,httpStatus,rawSha256,parsed})=>({sourceId,path,recordFingerprint,requestedAt,receivedAt,httpStatus,rawSha256,status:parsed.status,errorCode:parsed.errorCode,partial:parsed.partial,rejectedItems:parsed.rejectedItems??0,itemsParsed:parsed.items.length,sourceItemCount:parsed.sourceItemCount??null}));extendWeeklyEventCoverage(result,eventRefresh,at,week);result.refreshReceipts.push(...result.eventSourceReceipts);return result;}
+ try{const {roots,configRef,calendars,news,refresh,eventRefresh,issuerRefresh}=inputs??weeklyCurrentInputs(root,at),research=readTechResearchView({root:roots.research,at,includeEvidenceLocations:true});const result=projectWeeklySources({at,week,calendars,news,research,configRef});result.refreshReceipts=refresh.records.map(({sourceId,path,recordFingerprint,requestedAt,receivedAt,httpStatus,rawSha256,parsed})=>({sourceId,path,recordFingerprint,requestedAt,receivedAt,httpStatus,rawSha256,status:parsed.status,errorCode:parsed.errorCode,partial:parsed.partial,rejectedItems:parsed.rejectedItems??0,itemsParsed:parsed.items.length,sourceItemCount:parsed.sourceItemCount??null}));extendWeeklyEventCoverage(result,eventRefresh,at,week);result.refreshReceipts.push(...result.eventSourceReceipts);extendWeeklyIssuerCoverage(result,issuerRefresh??{records:[],issues:[]},at,week);return result;}
  catch(e){return {version:'WEEKLY_SOURCE_COVERAGE_V1',assessedAt:at,errorCode:errorState(e),executionAllowed:false,sourceCalls:0,fileSystemWrites:0};}
 }

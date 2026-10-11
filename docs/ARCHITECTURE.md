@@ -1,3 +1,7 @@
+## Issuer and options source batch 1 — October 11, 2026
+
+Read [the staged delivery](OPTIONS_WEEKLY_ISSUER_SOURCES_STAGE2.md). Four of the fixed 36 companies were attempted: MSFT parsed one next-release date; AAPL/TSM/TSLA remain failed or unparsed. Cboe contributes only its named-year options holiday table. Separate immutable issuer-refreshes and per-company denominators join the same request snapshot. Issuer SEC acquisition and 32 companies remain unattempted. No additional finite-runner sources or 4178 switch.
+
 ## Official weekly event sources, stage 1 — October 11, 2026
 
 The [new event-source stage](OPTIONS_WEEKLY_EVENT_SOURCES_STAGE1.md) adds bounded TreasuryDirect upcoming auctions and Fed Board monthly speech appearances to a separate immutable response store. It preserves date/announcement distinctions, unknown timezones, partial scope and same-snapshot provenance. Fixed-company IR/SEC and options/exchange calendars remain next stages. The planned local continuation uses an explicit 12-hour maximum, six-hour intervals and 20-request budget, not a cloud/system schedule. Existing 4178 stays pinned until independent review.
