@@ -1,0 +1,82 @@
+{
+  "version": "TECH_ASSISTANT_RESEARCH_DELIVERY_V1",
+  "status": "LOCAL_DIAGNOSTIC_ADAPTER_DELIVERED",
+  "capability": "DIAGNOSTIC_PREPARATION_ONLY",
+  "executionOriginWhitelistChanged": false,
+  "realSample": {
+    "runId": "tsm-assistant-adapter-2026-10-11t22-06-54-803z",
+    "context": "SAVED_SOURCE_RESEARCH",
+    "originalRegisteredAt": "2026-10-11T21:41:54.376Z",
+    "contentAsOf": "2026-10-11T22:06:56.171Z",
+    "registeredAt": "2026-10-11T22:06:58.598Z",
+    "requestedAt": "2026-10-11T22:07:08.772Z",
+    "assessedAt": "2026-10-11T22:07:16.514Z",
+    "diagnosticStatus": "ACCEPTED_FOR_DIAGNOSTICS_ONLY",
+    "independentResearchBlockers": 17,
+    "originalPreparationStatus": "BLOCKED",
+    "originalPreparationCode": "INPUT_SCOPE",
+    "originalRequestAccepted": false,
+    "missingKinds": [
+      "CONTRACT",
+      "COST_MODEL",
+      "DATA_ENTITLEMENT",
+      "PRODUCT_PERMISSION",
+      "ACCOUNT_FUNDS",
+      "RISK_LIMITS"
+    ],
+    "sourcePublishedAt": null,
+    "sourceReceivedAt": "2026-10-10T20:36:51.004Z",
+    "originalFilesUnchanged": 97,
+    "copiedRecovery": "EXACT_PREPARATION_EQUALITY_PASS",
+    "manifestFiles": 207,
+    "manifestSha256": "21a203e2a6b72cc5aafa17742713459ab6000f35769a4513c068d0e6dbc00c50",
+    "resultSha256": "496af82fce706aba107774eb44bc77198959762e56095b8885b318051bc9d6ca"
+  },
+  "independentReview": {
+    "code": "NO_REMAINING_P1_P2",
+    "assistantSubsetPassed": 18,
+    "assistantSubsetFailed": 0,
+    "repairedFinding": "Preserve existing sha256-prefixed parent fingerprint format",
+    "realSample": "207_FILE_MANIFEST_AND_97_ORIGINALS_AND_TWO_ROOT_REPLAY_PASS",
+    "moduleSha256": "8f05c2e1ca285cf2635379dffc80d04e3a9a9330a3acdf04dbef54532a6ca463"
+  },
+  "fullValidation": {
+    "status": "PASS",
+    "report": {
+      "status": "PASSED",
+      "componentCount": 248,
+      "testsExecuted": 6243,
+      "passed": 6243,
+      "failed": 0,
+      "durationMs": 251029,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit."
+      ]
+    },
+    "logSha256": "8dfc028a2cab440f0eab938ea9e844f5ea7718e3c8aa65a5228896a8dc19ce87",
+    "firstAttempt": "All test components ran; final cached-file scan aborted after a temporary log was moved. Final complete rerun passed."
+  },
+  "preservation": {
+    "at": "2026-10-11T22:16:13.788Z",
+    "status": "PASS",
+    "protectedFiles": 25907,
+    "sourceRunnerFiles": 252,
+    "frozenDataUseFiles": 9,
+    "preview4178Commit": "3e0809d8078724072facbc5a5853bde69e014169",
+    "preview4178StartedAt": "2026-10-11T20:03:54.732Z",
+    "preview4178WritesAllowed": false,
+    "frozenOctober12Commit": "2dabc11486f0217fe001a6102ead13a8fa539f51",
+    "ownerRootRegistrationsCreated": 0,
+    "runnerRestarted": false,
+    "scheduleChanged": false
+  },
+  "ownerConfirmation": "NOT_RECORDED",
+  "researchPass": false,
+  "quotes": "NOT_RUN",
+  "paper": "NOT_ADMITTED",
+  "executionAllowed": false,
+  "sourceCalls": 0,
+  "fills": 0,
+  "pnl": null,
+  "publication": "LOCAL_COMMIT_ONLY_NEW_PUBLIC_PUSH_REQUIRES_SCOPE_APPROVAL"
+}

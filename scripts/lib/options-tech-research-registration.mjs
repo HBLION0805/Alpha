@@ -30,7 +30,7 @@ function validateRequest(r){
  check(Buffer.byteLength(JSON.stringify(r))<=8000,'REQUEST_BOUND');
 }
 
-function basis(root,r,at,historical=false){
+export function techResearchBasis(root,r,at,historical=false){
  validateRequest(r);ns(at);
  const v=historical?readTechEventReviewVersion({root,runId:r.candidateBinding.runId,headSha256:r.candidateBinding.reviewHeadSha256,now:()=>at}):readTechEventReviews({root,runId:r.candidateBinding.runId,now:()=>at});
  const t=projectTechCandidateTrace(v,{at}).traces.find(t=>t.traceId===r.candidateBinding.traceId);check(t,'CANDIDATE_NOT_SELECTED_OR_STALE');
@@ -57,7 +57,7 @@ function payload(b,at){
 
 /** Read-only preview. No registration clock is accepted from request data. */
 export function previewTechResearchRegistration({root,request,now=()=>new Date().toISOString()}){
- const at=now(),b=basis(root,request,at);return {version:'TECH36_RESEARCH_REGISTRATION_PREVIEW_V1',assessedAt:at,previewFingerprint:fp(b),basis:b,fileSystemWrites:0,...structuredClone(closed)};
+ const at=now(),b=techResearchBasis(root,request,at);return {version:'TECH36_RESEARCH_REGISTRATION_PREVIEW_V1',assessedAt:at,previewFingerprint:fp(b),basis:b,fileSystemWrites:0,...structuredClone(closed)};
 }
 
 /** Recovery uses the exact historical review and retained originals; latest
@@ -65,7 +65,7 @@ export function previewTechResearchRegistration({root,request,now=()=>new Date()
 export function recoverTechResearchRegistration({root,id:recordId,now=()=>new Date().toISOString()}){
  const r=readSourceRecord(root,pathFor(recordId)),at=now();
  check(r.kind==='techresearch'&&r.id===recordId&&r.payload.version===VERSION&&r.payload.request.id===recordId&&ns(r.savedAt)<=ns(at),'RECORD_INTEGRITY');
- const b=basis(root,r.payload.request,r.savedAt,true);
+ const b=techResearchBasis(root,r.payload.request,r.savedAt,true);
  check(fp(r.payload)===fp(payload(b,r.savedAt)),'RECORD_REPLAY');
  return {...r,previewFingerprint:fp(b),recovery:'EXACT_HISTORICAL_REVIEW_AND_RECORD_REPLAY',fileSystemWrites:0};
 }
