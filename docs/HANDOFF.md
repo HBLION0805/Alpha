@@ -1,3 +1,7 @@
+## Reviewed 4178 preview and final refresh scope — October 11, 2026
+
+Read [the final scope and rollout](OPTIONS_WEEKLY_REFRESH_SCOPE_FINAL.md) and [status](status/weekly-preview-reviewed-final.json). Independent review cleared exact ae8a88c; 4178 now runs its separate hash-pinned archive, with verified old-version rollback. Actual-port desktop/mobile acceptance passed and 25,907 protected files remained unchanged. The ten-source finite runner is unchanged, first acquisition/terminal acceptance still pending. Issuer IR/SEC, Cboe PDF and saved interpretations are one-time evidence, not automatic feeds. HPE's incomplete archive is a local size-bound gap; PLTR is a complete client-rendered shell. Stop expanding requests or caps. This rollout supersedes the earlier pending-switch statements below; it does not qualify Paper, change the frozen experiment or original schedules.
+
 ## Reviewed supplement projection — October 11, 2026
 
 Read [the projection delivery](OPTIONS_WEEKLY_SUPPLEMENT_PROJECTION_STAGE5.md). Existing read-only weekly sources now show seven reviewed Cboe product/date rows, one exact ASML release, and separate PANW/HPE/ETN history. Hash-bound originals and review clocks join the frozen request snapshot; no page acquisition or owner-plan mutation. Original IR counters remain explicit. Six official follow-up requests are complete; no 403 retry, runner change or 4178 switch. The unclosed-comment fix is separate at 9d75ade.
