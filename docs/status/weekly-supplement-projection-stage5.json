@@ -1,0 +1,43 @@
+{
+  "version": "WEEKLY_SUPPLEMENT_PROJECTION_STAGE5_V1",
+  "status": "VALIDATED_MAPPING_PENDING_INDEPENDENT_REVIEW",
+  "p2FixCommit": "9d75ade",
+  "networkRequests": 6,
+  "prior403Retries": 0,
+  "sourceEvents": 23,
+  "supplementEvents": 8,
+  "cboeCategoryDateRows": 7,
+  "asmlReleaseDate": "2026-10-14",
+  "historyRows": 9,
+  "originalIssuerCountsUnchanged": true,
+  "panwIncreasesIrCount": false,
+  "prior18DeniedUnchanged": true,
+  "nowNewTargetHttpStatus": 403,
+  "hpeHomeCompleteBytes": 862611,
+  "hpeEventsCapBytes": 2097152,
+  "sourceReadsOnPage": 0,
+  "writesOnPage": 0,
+  "runnerChanged": false,
+  "preview4178Changed": false,
+  "executionAllowed": false,
+  "validatedAt": "2026-10-11T07:06:39.908Z",
+  "validation": {
+    "components": 235,
+    "passed": 5962,
+    "failed": 0,
+    "focusedPassed": 55,
+    "projectionTests": 10
+  },
+  "ui": {
+    "desktop": "PASS",
+    "mobile": "PASS",
+    "detailScreenshots": "PASS",
+    "protectedFilesUnchanged": 25907,
+    "temporary4180Stopped": true
+  },
+  "acceptance": {
+    "path": "data/runtime/options-weekly-sources/source-projection-stage5/acceptance.json",
+    "sha256": "fabc029ff1c066aefbffc264ecbdece81d4d936058cc8694833aa6d99a0484c4"
+  },
+  "finalPreviewCandidate": "NOT_FINALIZED_PENDING_REVIEW"
+}

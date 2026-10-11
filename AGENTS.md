@@ -1,3 +1,7 @@
+## Reviewed supplement projection — October 11, 2026
+
+Read [the projection delivery](docs/OPTIONS_WEEKLY_SUPPLEMENT_PROJECTION_STAGE5.md). Existing read-only weekly sources now show seven reviewed Cboe product/date rows, one exact ASML release, and separate PANW/HPE/ETN history. Hash-bound originals and review clocks join the frozen request snapshot; no page acquisition or owner-plan mutation. Original IR counters remain explicit. Six official follow-up requests are complete; no 403 retry, runner change or 4178 switch. The unclosed-comment fix is separate at 9d75ade.
+
 ## Bounded source-gap supplement — October 11, 2026
 
 Read [the narrow repair](docs/OPTIONS_WEEKLY_SOURCE_GAP_REPAIR_STAGE4.md) and [the independent HTML-comment P2 fix](docs/OPTIONS_WEEKLY_ISSUER_HTML_COMMENT_REPAIR.md). A separate fixed-URL 2 MiB PDF reader acquired one complete Cboe calendar; page-image review preserves product/date categories without contract qualification. PANW featured-history interpretation is offline and separate from immutable issuer receipts. Generic 512 KiB limits, runner, original denominators and 4178 stay unchanged. Do not rerun the acquisition as a scheduled wake or conflate remaining local integration gaps with provider refusal.
