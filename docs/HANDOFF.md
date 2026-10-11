@@ -1,3 +1,7 @@
+## Additive saved-news date interpretation — October 11, 2026
+
+Read [delivery](OPTIONS_WEEKLY_NEWS_TIME_INTERPRETATION_DELIVERY.md). V1 explains strict full-date EDT/EST alongside original parsed values; old parser/REFRESH_REPLAY, receipts and coverage are unchanged. BEA 47 and EIA 14 become explicit historical dates; EIA's missing year stays UNKNOWN. OFAC pubDate is creation time, content update time remains UNKNOWN; do not infer all body content is old or replace pubDate with body dates. No acquisition or runner change. 4178 stays reviewed 15f9125 until independent clearance of this addition.
+
 ## Reviewed refresh-health 4178 rollout — October 11, 2026
 
 Independent review cleared exact 15f9125 without P2. The full read-only 4178 preview now serves its hash-pinned archive; all eleven navigation routes and desktop/mobile health checks passed. Temporary 4180 is closed. Both public/company runner PIDs and start times were preserved; both remain WAITING with zero requests at 2026-10-11T08:31:38.0941138Z. First six-hour acquisition and terminal acceptance remain pending and are observed by the parent task. Do not add features or restart/stop runners. See [delivery](OPTIONS_WEEKLY_REFRESH_HEALTH_DELIVERY.md) and retain the ae8a88c rollback archive. This supersedes prior pending-switch statements.

@@ -1,0 +1,94 @@
+{
+  "version": "WEEKLY_NEWS_TIME_INTERPRETATION_DELIVERY_V1",
+  "asOf": "2026-10-11T09:52:11.967Z",
+  "status": "IMPLEMENTED_VALIDATED_REVIEW_PENDING",
+  "interpretationVersion": "WEEKLY_NEWS_TIME_INTERPRETATION_V1",
+  "legacyParserChanged": false,
+  "legacyRefreshReplayChanged": false,
+  "sourceCalls": 0,
+  "runnerChanges": false,
+  "originalCoverageAndOwnerPreviewUnchanged": true,
+  "legacyReceiptsVerified": 20,
+  "receiptFilesUnchanged": 105,
+  "protectedFilesUnchanged": 25907,
+  "sources": [
+    {
+      "sourceId": "bea",
+      "counts": {
+        "interpreted": 47,
+        "unknown": 0,
+        "historical": 47,
+        "current": 0,
+        "contentUpdateUnknown": 0
+      },
+      "originalPartial": true,
+      "originalRejectedItems": 1
+    },
+    {
+      "sourceId": "ofac",
+      "counts": {
+        "interpreted": 10,
+        "unknown": 0,
+        "historical": 0,
+        "current": 0,
+        "contentUpdateUnknown": 10
+      },
+      "originalPartial": false,
+      "originalRejectedItems": 0
+    },
+    {
+      "sourceId": "eia_energy",
+      "counts": {
+        "interpreted": 14,
+        "unknown": 1,
+        "historical": 14,
+        "current": 0,
+        "contentUpdateUnknown": 0
+      },
+      "originalPartial": false,
+      "originalRejectedItems": 0
+    }
+  ],
+  "validation": {
+    "focused": 16,
+    "weeklySources": 22,
+    "refreshHealth": 14,
+    "full": "PASS",
+    "components": 238,
+    "passed": 6013,
+    "failed": 0,
+    "logPath": "data/runtime/options-weekly-sources/news-time-full-validation.txt",
+    "logSha256": "4543532347d687795c9c41eb893b6b6a91570b729f451999c8c71655f0126833",
+    "staticDesktopMobile": "PASS"
+  },
+  "offlineReceipt": "data/runtime/options-weekly-sources/news-time-offline-20261011/receipt.json",
+  "offlineReceiptSha256": "7126f728a54c9c8a73ee51b4cb231334a36c5d3257c1d3d9a01950c714f88b4d",
+  "preview4178": {
+    "commit": "15f9125248d744713c365eeb60e2cee1773884f9",
+    "changed": false
+  },
+  "executionAllowed": false,
+  "finalHostReadback": {
+    "at": "2026-10-11T09:55:20.8810975Z",
+    "path": "data/runtime/options-weekly-sources/news-time-offline-20261011/host-readback.json",
+    "processes": [
+      {
+        "pid": 23512,
+        "startUtc": "2026-10-11T05:46:06.0606170Z"
+      },
+      {
+        "pid": 7956,
+        "startUtc": "2026-10-11T07:56:03.5064642Z"
+      },
+      {
+        "pid": 32464,
+        "startUtc": "2026-10-11T08:29:23.4127876Z"
+      }
+    ],
+    "publicRequests": 8,
+    "publicNext": "2026-10-11T11:27:42.885Z",
+    "companyRequests": 0,
+    "companyNext": "2026-10-11T13:40:00Z",
+    "newInterpretationLive": false
+  }
+}
