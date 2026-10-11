@@ -303,7 +303,8 @@
     "test:options-course-panel-invalidation": "tsx scripts/options-course-panel-invalidation.test.mjs",
     "test:options-structures-course": "tsx scripts/options-structures-course.test.mjs",
     "test:options-course-archive": "tsx scripts/options-course-archive.test.mjs",
-    "test:options-course-framework": "tsx scripts/options-course-framework.test.mjs"
+    "test:options-course-framework": "tsx scripts/options-course-framework.test.mjs",
+    "test:options-tech-candidate-plan-handoff": "tsx scripts/options-tech-candidate-plan-handoff.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

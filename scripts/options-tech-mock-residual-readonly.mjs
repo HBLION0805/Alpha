@@ -34,14 +34,18 @@ registerHooks({
 });
 try {
   const args=process.argv.slice(2);let result;
-  if(['--prepare-plan','--plan-preview'].includes(args[0])){
+  if(args[0]==='--prepare-from-candidate'){
+    if(args.length!==4||args[2]!=='--run-id')throw Error('STRICT_READ_ONLY_ARGUMENTS');
+    const {techSpreadPlanCli}=await import('./options-tech-spread-plan.mjs');
+    result=techSpreadPlanCli(args);
+  }else if(['--prepare-plan','--plan-preview'].includes(args[0])){
     if(args.length!==2)throw Error('STRICT_READ_ONLY_ARGUMENTS');
     const {techSpreadPlanCli}=await import('./options-tech-spread-plan.mjs');
     result=techSpreadPlanCli([args[0]==='--prepare-plan'?'--prepare':'--preview',args[1]]);
   }else{
     const {mockResidualCli} = await import('./options-tech-mock-residual.mjs');
     result = mockResidualCli(args);
-    if(args.length===1&&args[0]==='--help')result={...result,planHelp:'--prepare-plan INPUT | --plan-preview INPUT. stdout only; no draft saving, plan start, append, recovery or arming.'};
+    if(args.length===1&&args[0]==='--help')result={...result,planHelp:'--prepare-from-candidate INPUT --run-id EXISTING_RESEARCH_RUN | --prepare-plan INPUT | --plan-preview INPUT. stdout only; no draft saving, plan start, append, recovery or arming.'};
   }
   console.log(JSON.stringify({...result, launchReceipt: {
     entry: 'STRICT_NODE_READ_ONLY_V1', filesystemWritePermission: false,
