@@ -94,3 +94,6 @@ data/runtime/options-etf-observation-recovery-*/
 /data/runtime/options-storyline-links/
 # Private prospective developer states, actions and later gold evidence
 /data/runtime/jev-dev-workflow/
+
+# Private weekly source roots, raw public responses and local acceptance
+/data/runtime/options-weekly-sources/

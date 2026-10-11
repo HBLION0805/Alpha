@@ -3,8 +3,7 @@ import {resolve} from 'node:path';
 import {optionsEvidenceExportStorage as io} from '../options-evidence-export.mjs';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {weekForAt,weekForStart,buildWeeklyPlanPreview,weeklyFingerprint} from '../../src/engines/options-weekly-plan/OptionsWeeklyPlan.ts';
-import {withReleaseCalendarJournal} from './options-release-calendar-io.mjs';
-import {withFomcCalendarJournal} from './options-fomc-calendar-io.mjs';
+import {weeklySourceRoots,readWeeklyCalendar,calendarHistory,weeklySourcesView} from './options-weekly-sources.mjs';
 import {readFocusedSupplement} from './options-focused-news-io.mjs';
 import {classifyFocusedHeadline} from '../../src/engines/options-drivers/OptionsFocusedNews.ts';
 import {readEventResearch} from './options-event-research-io.mjs';
@@ -54,14 +53,9 @@ function validateRequest(request,at){
   validateRequestPlan(request.plan);
   return request;
 }
-async function calendar(root,path,reader,at){
-  if(!existsSync(resolve(root,path)))return {state:'MISSING',inputs:null,errorCode:'STORE_MISSING'};
-  try{return {state:'AVAILABLE',inputs:await reader(root,s=>s.inputs,at),errorCode:null};}
-  catch{return {state:'BLOCKED',inputs:null,errorCode:'RECOVERY_FAILED'};}
-}
 function news(root,at){
   const supplement=readFocusedSupplement(root,at,true);
-  return {evidenceAvailable:supplement.recordsRead>0,context:supplement.references.filter(r=>classifyFocusedHeadline(r.item.headline).scope!=='OUT_OF_SCOPE')
+  return {evidenceAvailable:supplement.recordsRead>0,context:supplement.references.filter(r=>classifyFocusedHeadline(r.item.headline).scope!=='OUT_OF_SCOPE'&&r.item.observedAt<=at&&(r.item.publishedAt===null||r.item.publishedAt<=r.item.observedAt))
       .sort((a,b)=>b.item.observedAt.localeCompare(a.item.observedAt)||a.item.sourceId.localeCompare(b.item.sourceId)||a.item.itemId.localeCompare(b.item.itemId))
       .slice(0,30).map(r=>({title:r.item.headline,sourceId:r.item.sourceId,sourceRef:r.item.link,publishedAt:r.item.publishedAt,retrievedAt:r.item.observedAt}))};
 }
@@ -98,11 +92,12 @@ function researchRefs(root,ledgerId,at,weekStartDate,weekEndDate,requested){
 }
 async function compose(root,request,at,ledgerId){
   const week=weekForStart(request.weekStartDate);
-  const bls=await calendar(root,'data/runtime/options-release-calendar/retrievals.ndjson',withReleaseCalendarJournal,at);
-  const fomc=await calendar(root,'data/runtime/options-fomc-calendar/retrievals.ndjson',withFomcCalendarJournal,at);
+  const {roots}=weeklySourceRoots(root);
+  const bls=calendarHistory(readWeeklyCalendar(roots.calendars,'bls',at));
+  const fomc=calendarHistory(readWeeklyCalendar(roots.calendars,'fomc',at));
   const ownerUniverse=ownerCapitalShoppingList();
   const refs=researchRefs(root,ledgerId,at,week.weekStartDate,week.weekEndDate,request.plan.eventResearchRefs);
-  const focused=news(root,at);
+  const focused=news(roots.news,at);
   return buildWeeklyPlanPreview({assessedAt:at,weekStartDate:week.weekStartDate,bls,fomc,
     manualEvents:request.plan.manualEvents,newsWatch:request.plan.newsWatch,newsContext:focused.context,newsEvidenceAvailable:focused.evidenceAvailable,notes:request.plan.notes,
     noTradeConditions:request.plan.noTradeConditions,eventResearchRefs:refs.ids,referenceEvidence:refs.evidence,
@@ -121,7 +116,7 @@ export async function weeklyPlanView(root,at=new Date().toISOString(),ledgerId='
   const request={action:'PREVIEW',weekStartDate:week.weekStartDate,expectedFingerprint:latest?.fingerprint??null,plan:latest?.requestPlan??defaultPlan(),previewFingerprint:null};
   const preview=await compose(root,request,at,ledgerId);
   const incomplete=Object.values(latest?.plan.coverage??preview.coverage).some(v=>v!=='REVIEWED');
-  return {version:'OPTIONS_WEEKLY_PLAN_DESK_V1',...week,assessedAt:at,preview,latest,revisions,
+  return {version:'OPTIONS_WEEKLY_PLAN_DESK_V1',...week,assessedAt:at,preview,latest,revisions,sourceCoverage:weeklySourcesView(root,at,preview),
     status:latest?incomplete?'INCOMPLETE_COVERAGE':'REVIEWED':'NOT_ESTABLISHED',executionAllowed:false};
 }
 export async function saveWeeklyPlan(root,request,at=new Date().toISOString(),ledgerId='owner-manual-gld-ibit'){
