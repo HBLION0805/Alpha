@@ -90,9 +90,9 @@ function researchRefs(root,ledgerId,at,weekStartDate,weekEndDate,requested){
   const ids=[...new Set([...auto,...requested])].sort();
   return {ids,evidence:ids.map(id=>candidates.get(id))};
 }
-async function compose(root,request,at,ledgerId){
+async function compose(root,request,at,ledgerId,inputs=weeklyCurrentInputs(root,at)){
   const week=weekForStart(request.weekStartDate);
-  const {roots,calendars}=weeklyCurrentInputs(root,at);
+  const {roots,calendars}=inputs;
   const bls=calendarHistory(calendars.bls);
   const fomc=calendarHistory(calendars.fomc);
   const ownerUniverse=ownerCapitalShoppingList();
@@ -114,9 +114,10 @@ export async function previewWeeklyPlan(root,request,at=new Date().toISOString()
 export async function weeklyPlanView(root,at=new Date().toISOString(),ledgerId='owner-manual-gld-ibit'){
   root=realpathSync(root);const week=weekForAt(at),revisions=recover(root,week.weekStartDate),latest=revisions.at(-1)??null;
   const request={action:'PREVIEW',weekStartDate:week.weekStartDate,expectedFingerprint:latest?.fingerprint??null,plan:latest?.requestPlan??defaultPlan(),previewFingerprint:null};
-  const preview=await compose(root,request,at,ledgerId);
+  const inputs=weeklyCurrentInputs(root,at);
+  const preview=await compose(root,request,at,ledgerId,inputs);
   const incomplete=Object.values(latest?.plan.coverage??preview.coverage).some(v=>v!=='REVIEWED');
-  return {version:'OPTIONS_WEEKLY_PLAN_DESK_V1',...week,assessedAt:at,preview,latest,revisions,sourceCoverage:weeklySourcesView(root,at,preview),
+  return {version:'OPTIONS_WEEKLY_PLAN_DESK_V1',...week,assessedAt:at,preview,latest,revisions,sourceCoverage:weeklySourcesView(root,at,preview,inputs),
     status:latest?incomplete?'INCOMPLETE_COVERAGE':'REVIEWED':'NOT_ESTABLISHED',executionAllowed:false};
 }
 export async function saveWeeklyPlan(root,request,at=new Date().toISOString(),ledgerId='owner-manual-gld-ibit'){

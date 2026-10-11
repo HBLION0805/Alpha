@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {weeklySourceRoots,readWeeklyCalendar,weeklySourcesView,projectWeeklySources,weeklyHeadlineFreshness} from './lib/options-weekly-sources.mjs';
+import {weeklySourceRoots,readWeeklyCalendar,weeklySourcesView,projectWeeklySources,weeklyHeadlineFreshness,weeklyCurrentInputs} from './lib/options-weekly-sources.mjs';
 import {weeklyPlanView} from './lib/options-weekly-plan-io.mjs';
 import {withReleaseCalendarJournal} from './lib/options-release-calendar-io.mjs';
 import {RELEASE_CALENDAR_URL} from '../src/engines/options-release-calendar/BlsReleaseCalendarEngine.ts';
@@ -114,6 +114,35 @@ test('review P2: OFAC sanctions are policy evidence and never auction/fiscal cov
  const r={sourceId:'ofac',status:'OBTAINED_PENDING_REVIEW',title:'ICC and Afghanistan sanctions'},h={id:'ofac',status:'OK',observedAt:at};
  const v=project({news:{records:[r],health:[h],issues:[]}});assert.equal(v.coverage.treasuryFiscalCoverage.state,'NOT_INTEGRATED');assert.equal(v.coverage.treasuryFiscalCoverage.matchedRecords,0);assert.equal(v.coverage.policyGeopoliticalCoverage.matchedRecords,1);
 });
+test('concurrent journal update between preview and coverage keeps the fact-owned original',async()=>temp(async root=>temp(async writer=>{
+ const body=fs.readFileSync('fixtures/options-release-calendar/calendar.synthetic.ics','utf8');
+ const input=(hour,day)=>({requestedAt:`2026-10-11T0${hour}:00:00.000Z`,receivedAt:`2026-10-11T0${hour}:00:01.000Z`,url:RELEASE_CALENDAR_URL,sourceText:body.replaceAll('20260910T083000',`202610${day}T083000`),errorCode:null});
+ await withReleaseCalendarJournal(writer,s=>s.append(input(1,13),at),at);
+ const path='data/runtime/options-release-calendar/retrievals.ndjson',oldBytes=fs.readFileSync(join(writer,path));
+ await withReleaseCalendarJournal(writer,s=>s.append(input(2,14),at),at);
+ const newBytes=fs.readFileSync(join(writer,path));fs.mkdirSync(join(root,'data/runtime/options-release-calendar'),{recursive:true});fs.writeFileSync(join(root,path),oldBytes);
+ const original=readWeeklyCalendar(root,'bls',at),pending=weeklyPlanView(root,at);
+ // compose has consumed the old source; its awaited return is the actual race
+ // boundary. Publish a valid appended journal before coverage resumes.
+ fs.writeFileSync(join(root,path),newBytes);
+ const v=await pending,e=v.sourceCoverage.events[0];
+ assert.equal(v.preview.events[0].startAt,'2026-10-13T12:30:00.000Z');assert.equal(e.startAt,v.preview.events[0].startAt);
+ assert.equal(e.retrievedAt,input(1,13).receivedAt);assert.equal(e.path,original.path);assert.equal(e.recordFingerprint,original.recordFingerprint);
+ assert.equal(v.sourceCoverage.coverage.macroDataCoverage.recordFingerprint,original.recordFingerprint);
+ const next=await weeklyPlanView(root,at),updated=readWeeklyCalendar(root,'bls',at);
+ assert.equal(next.sourceCoverage.events[0].startAt,'2026-10-14T12:30:00.000Z');assert.equal(next.sourceCoverage.events[0].recordFingerprint,updated.recordFingerprint);assert.notEqual(updated.recordFingerprint,original.recordFingerprint);
+})));
+test('concurrent immutable receipt arrival is deferred together with its facts and coverage',async()=>temp(async root=>temp(async writer=>{
+ const body=fs.readFileSync('fixtures/options-release-calendar/calendar.synthetic.ics','utf8');
+ const save=(dir,hour,day)=>refreshWeeklySources({root:dir,sourceIds:['bls_calendar'],now:()=>`2026-10-11T0${hour}:00:00.000Z`,fetchImplementation:async()=>new Response(body.replaceAll('20260910T083000',`202610${day}T083000`),{headers:{'content-type':'text/calendar'}})});
+ const old=await save(root,1,13),fresh=await save(writer,2,14),snapshot=weeklyCurrentInputs(root,at);
+ assert(Object.isFrozen(snapshot.calendars.bls.inputs[0]));assert(Object.isFrozen(snapshot.refresh.records[0].parsed.calendarInput));
+ assert.throws(()=>{snapshot.calendars.bls.inputs[0].sourceText='changed';},TypeError);
+ const pending=weeklyPlanView(root,at);fs.copyFileSync(join(writer,fresh.results[0].path),join(root,fresh.results[0].path));
+ const v=await pending;assert.equal(v.sourceCoverage.events[0].startAt,'2026-10-13T12:30:00.000Z');assert.equal(v.sourceCoverage.events[0].path,old.results[0].path);assert.equal(v.sourceCoverage.events[0].recordFingerprint,old.results[0].recordFingerprint);
+ assert.equal(v.sourceCoverage.refreshReceipts.length,1);assert.equal(v.sourceCoverage.coverage.macroDataCoverage.path,old.results[0].path);
+ const next=await weeklyPlanView(root,at);assert.equal(next.sourceCoverage.events[0].startAt,'2026-10-14T12:30:00.000Z');assert.equal(next.sourceCoverage.events[0].path,fresh.results[0].path);assert.equal(next.sourceCoverage.events[0].recordFingerprint,fresh.results[0].recordFingerprint);assert.equal(next.sourceCoverage.refreshReceipts.length,2);
+})));
 test('review P2: fixed company denominator excludes QQQ/SPY but retains their market background',()=>{
  const records=['AAPL','QQQ','SPY'].map(symbol=>({symbol,context:'SAVED_RESEARCH'}));const v=project({research:{records,issues:[]}});
  assert.equal(v.coverage.earningsCoverage.universeSize,36);assert.deepEqual(v.coverage.earningsCoverage.objectsWithReferences,['AAPL']);assert.equal(v.coverage.earningsCoverage.historicalReferences,1);assert.equal(v.coverage.earningsCoverage.missingObjects.length,35);assert.equal(v.research.backgroundReferences.length,2);assert.equal(v.research.companyReferences.length,1);

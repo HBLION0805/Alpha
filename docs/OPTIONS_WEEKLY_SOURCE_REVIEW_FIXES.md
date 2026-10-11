@@ -41,3 +41,45 @@ stage-2 evidence; no original acceptance artifact is overwritten. No 4178 change
 
 The optional process-runner extension is separate work and a subsequent commit;
 its lifecycle validation must not be inferred from these source corrections.
+
+## Concurrent update follow-up
+
+Independent review after the real runner acceptance found another P2: the page
+composed event facts from one read, awaited the preview, then read sources again
+for coverage and receipt identity. A writer could append a newer calendar in that
+gap, causing an October 13 event from the 01:00 input to point to the October 14
+input received at 02:00.
+
+The page now captures one recursively frozen source snapshot and passes it to
+both composition and coverage projection. Calendar facts, latest health, original
+identity and refresh-receipt lists therefore remain from that same capture. A
+subsequent page request sees the new data together. This does not claim a global
+transaction across independent stores or change saved plan fingerprints.
+
+Two deterministic tests reproduce the actual awaited boundary without sleeps,
+network access or production writes. One appends a valid legacy journal; the
+other publishes a separately prepared immutable refresh receipt after preview
+reads but before coverage resumes. Both assert the old fact retains its original
+path/fingerprint and the next request adopts the new fact and original together.
+The tests also check nested snapshot immutability. Reproduce from this checkout:
+
+```powershell
+node --import tsx --test --test-name-pattern concurrent scripts/options-weekly-sources.test.mjs
+```
+
+The combined weekly/source suite passes 27/27. The full validation bundle passes
+230 components and 5,902 counted tests with zero failures; the node:test-only
+weekly suite is reported separately. A local negative-control loader
+that restores only the second source read makes both concurrent tests fail on
+the wrong fingerprint/path, demonstrating that the cases detect the reviewed
+defect. The loader and output remain ignored under
+`data/runtime/options-weekly-sources/concurrency-reproduce-old-read.mjs` and
+`concurrency-negative-control.txt`.
+
+Offline replay of the existing real receipts at 04:43:52.164 UTC reproduced all
+four displayed BLS events from their exact referenced raw inputs, with matching
+times, titles and receipt fingerprints. Its ignored result is
+`data/runtime/options-weekly-sources/concurrency-saved-source-replay.json`.
+No new source request occurred. Original stage-2 files, runner journals, source
+receipts and the final runner acceptance hash remain unchanged. The 4178 preview
+is still the frozen version and awaits independent review of this follow-up.
