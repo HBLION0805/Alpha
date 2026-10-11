@@ -1,0 +1,82 @@
+{
+  "version": "WEEKLY_SEC_REJECTION_INTERPRETATION_DELIVERY_V1",
+  "asOf": "2026-10-11T14:42:22.351Z",
+  "status": "IMPLEMENTED_VALIDATED_REVIEW_PENDING",
+  "interpretationVersion": "WEEKLY_SEC_REJECTION_INTERPRETATION_V1",
+  "legacyParserChanged": false,
+  "originalRejectionsAndCountsChanged": false,
+  "receiptReplayChanged": false,
+  "sourceCalls": 0,
+  "runnerChanges": false,
+  "inventory": {
+    "savedSecReceipts": 43,
+    "latestSourceCount": 36,
+    "countsReliable": true,
+    "latestRawRows": 34687,
+    "latestRejectedRows": 6,
+    "ambiguousLatestSources": []
+  },
+  "explanation": {
+    "explained": 6,
+    "historical": 6,
+    "withinWindow": 0,
+    "unknownWindow": 0,
+    "legacyYearLimited": 5,
+    "missingDocument": 6,
+    "missingReportDate": 6
+  },
+  "original": {
+    "rows": 591,
+    "validated": 585,
+    "rejected": 6,
+    "partial": true,
+    "omittedOlder": 585,
+    "recentFilings": 0
+  },
+  "documentUrl": null,
+  "documentBodyObtained": false,
+  "reportDates": "UNKNOWN",
+  "offlineReceipt": "data/runtime/options-weekly-sources/sec-rejection-offline-20261011/receipt.json",
+  "offlineReceiptSha256": "759a904cf4e6c72f34a428036b6c66c150bbcec0481ddddf52503ede123150a6",
+  "legacyIssuerReceiptsVerified": 95,
+  "sourceReceiptsUnchanged": 119,
+  "protectedFilesUnchanged": 25907,
+  "validation": {
+    "focused": 16,
+    "full": "PASS",
+    "components": 239,
+    "passed": 6029,
+    "failed": 0,
+    "logPath": "data/runtime/options-weekly-sources/sec-rejection-full-validation.txt",
+    "logSha256": "19c1a62a1e4d7adf65da221c315fd383c5911a0299f1a35a5fd0829ca0536e98",
+    "staticVisual": "DESKTOP_MOBILE_PASS"
+  },
+  "preview4178": {
+    "commit": "d395281b7d1a65947ad695cb93c719c39f1aa398",
+    "changed": false
+  },
+  "executionAllowed": false,
+  "finalHostReadback": {
+    "at": "2026-10-11T14:44:13.4260588Z",
+    "path": "data/runtime/options-weekly-sources/sec-rejection-offline-20261011/host-readback.json",
+    "processes": [
+      {
+        "pid": 23512,
+        "startUtc": "2026-10-11T05:46:06.0606170Z"
+      },
+      {
+        "pid": 7956,
+        "startUtc": "2026-10-11T07:56:03.5064642Z"
+      },
+      {
+        "pid": 11476,
+        "startUtc": "2026-10-11T10:01:59.4155450Z"
+      }
+    ],
+    "publicRequests": 10,
+    "publicNext": "2026-10-11T15:38:44.546Z",
+    "companyRequests": 10,
+    "companyNext": "2026-10-11T19:40:01.359Z",
+    "newSecInterpretationLive": false
+  }
+}

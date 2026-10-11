@@ -151,6 +151,7 @@ const aggregateTestFiles = [
   "scripts/options-weekly-company-runner.test.mjs",
   "scripts/options-weekly-refresh-health.test.mjs",
   "scripts/options-weekly-news-time-interpretation.test.mjs",
+  "scripts/options-weekly-sec-rejection-interpretation.test.mjs",
   "scripts/owner-capital-shopping-list.test.mjs",
   "scripts/options-etf-setup.test.mjs",
   "scripts/options-robinhood-etf-bars.test.mjs",

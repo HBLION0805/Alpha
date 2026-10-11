@@ -292,7 +292,8 @@
     "options:weekly-company-runner": "tsx scripts/options-weekly-company-runner.mjs",
     "test:options-weekly-company-runner": "tsx scripts/options-weekly-company-runner.test.mjs",
     "test:options-weekly-refresh-health": "tsx scripts/options-weekly-refresh-health.test.mjs",
-    "test:options-weekly-news-time": "tsx scripts/options-weekly-news-time-interpretation.test.mjs"
+    "test:options-weekly-news-time": "tsx scripts/options-weekly-news-time-interpretation.test.mjs",
+    "test:options-weekly-sec-rejections": "tsx scripts/options-weekly-sec-rejection-interpretation.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",
