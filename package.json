@@ -285,7 +285,9 @@
     "options:event-assessment": "tsx scripts/options-event-intelligence-assess.mjs",
     "options:weekly-issuers": "tsx scripts/options-weekly-issuer-sources.mjs",
     "test:options-weekly-issuers": "tsx scripts/options-weekly-issuer-sources.test.mjs",
-    "test:options-weekly-companies": "tsx scripts/options-weekly-company-sources.test.mjs"
+    "test:options-weekly-companies": "tsx scripts/options-weekly-company-sources.test.mjs",
+    "options:weekly-supplement": "tsx scripts/options-weekly-source-supplement.mjs",
+    "test:options-weekly-supplement": "tsx scripts/options-weekly-source-supplement.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

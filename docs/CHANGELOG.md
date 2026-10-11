@@ -1,3 +1,7 @@
+## Bounded source-gap supplement — October 11, 2026
+
+Read [the narrow repair](OPTIONS_WEEKLY_SOURCE_GAP_REPAIR_STAGE4.md) and [the independent HTML-comment P2 fix](OPTIONS_WEEKLY_ISSUER_HTML_COMMENT_REPAIR.md). A separate fixed-URL 2 MiB PDF reader acquired one complete Cboe calendar; page-image review preserves product/date categories without contract qualification. PANW featured-history interpretation is offline and separate from immutable issuer receipts. Generic 512 KiB limits, runner, original denominators and 4178 stay unchanged. Do not rerun the acquisition as a scheduled wake or conflate remaining local integration gaps with provider refusal.
+
 ## Fixed-company IR and public SEC attempt matrix — October 11, 2026
 
 Read [the stage report](OPTIONS_WEEKLY_COMPANY_SOURCES_STAGE3.md). All 36 companies have separate IR and SEC attempts; 11 IR scopes parse and 25 remain failed/unparsed. SEC parses submitted metadata for all 36, with explicit partial/omission counts; it never predicts earnings dates or substitutes for IR success. One AMAT company event matches the target week. Cboe PDF size and dynamic-notice gaps remain. The existing runner and 4178 are unchanged pending this stage review.

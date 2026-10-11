@@ -1,0 +1,61 @@
+{
+  "version": "WEEKLY_SOURCE_GAP_REPAIR_STAGE4_V1",
+  "status": "VALIDATED_PENDING_INDEPENDENT_REVIEW",
+  "priorStageCommit": "3253c493d70ec40b75937095b7660a3870e40754",
+  "htmlCommentFixCommit": "56c3b93a5ddc1f0b5487a53f9b31240bb28dc264",
+  "networkRequests": 1,
+  "irNetworkRequests": 0,
+  "forbidden403Retries": 0,
+  "genericIssuerMaxBytes": 524288,
+  "dedicatedPdfMaxBytes": 2097152,
+  "pdf": {
+    "runId": "8b89ea74-b46e-4284-9cbf-15fd3ad40c26",
+    "receivedAt": "2026-10-11T06:38:22.288Z",
+    "bytes": 1009510,
+    "sha256": "421a0699055b99ebc2dea6da53666939bc0918882d1f615da5664582a52b3c9e",
+    "pageCount": 1,
+    "visualReview": "CODEX_PAGE_IMAGE_REVIEW_NOT_OWNER_APPROVAL",
+    "targetWeekProductDateRows": 7,
+    "contractSpecific": false,
+    "allAnnualDatesReviewed": false
+  },
+  "panw": {
+    "runId": "e93e82c0-5559-47e4-8b6d-50bdfdb283b8",
+    "mode": "OFFLINE_ORIGINAL_INTERPRETATION",
+    "featuredHistoricalDates": 3,
+    "upcomingCalendarVerified": false,
+    "originalReceiptChanged": false
+  },
+  "sec": {
+    "rawRows": 34687,
+    "rejected": 6,
+    "omittedOlder": 34138,
+    "displayed": 533,
+    "omittedRecent": 10,
+    "historicalFilesNotFetched": 43
+  },
+  "pipelineCompanyCountsUnchanged": true,
+  "automaticEventAdmission": false,
+  "preview4178Changed": false,
+  "runnerChanged": false,
+  "executionAllowed": false,
+  "validatedAt": "2026-10-11T06:50:21.242Z",
+  "validation": {
+    "componentCount": 234,
+    "passed": 5950,
+    "failed": 0,
+    "focusedPassed": 36,
+    "p2CompanyTests": 13,
+    "newSupplementTests": 8
+  },
+  "originals": {
+    "priorStage3HashesUnchanged": true,
+    "realReceiptsReplayed": 82,
+    "realParsedIRSourcesUnchanged": 11,
+    "oldPdfPrefixExact": true
+  },
+  "acceptance": {
+    "path": "data/runtime/options-weekly-sources/gap-repair-stage4/acceptance.json",
+    "sha256": "3e5310f19d696ccac668ff645f8ed89c63ea7807762b92bb2033511eed5950e4"
+  }
+}
