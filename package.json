@@ -290,7 +290,8 @@
     "test:options-weekly-supplement": "tsx scripts/options-weekly-source-supplement.test.mjs",
     "test:options-weekly-supplement-projection": "tsx scripts/options-weekly-supplement-projection.test.mjs",
     "options:weekly-company-runner": "tsx scripts/options-weekly-company-runner.mjs",
-    "test:options-weekly-company-runner": "tsx scripts/options-weekly-company-runner.test.mjs"
+    "test:options-weekly-company-runner": "tsx scripts/options-weekly-company-runner.test.mjs",
+    "test:options-weekly-refresh-health": "tsx scripts/options-weekly-refresh-health.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

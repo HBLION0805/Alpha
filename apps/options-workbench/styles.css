@@ -73,3 +73,5 @@
 #tech-research-status .tech-condition-list dd { margin:0; }
 #tech-research-status .tech-research-sources li { margin-bottom:.75rem; }
 @media(max-width:700px) { #tech-research-status .tech-facet-grid, #tech-research-status .tech-condition-list { grid-template-columns:1fr; } }
+
+#weekly-refresh-health{overflow-wrap:anywhere}#weekly-refresh-health .card{padding:16px;min-width:0}#weekly-refresh-health h4{margin:0 0 10px}#weekly-refresh-health details article{padding:10px 0;border-bottom:1px solid var(--line)}

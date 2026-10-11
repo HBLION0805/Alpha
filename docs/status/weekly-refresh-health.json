@@ -1,0 +1,57 @@
+{
+  "version": "WEEKLY_REFRESH_HEALTH_DELIVERY_V1",
+  "asOf": "2026-10-11T08:05:50.098Z",
+  "status": "IMPLEMENTED_TESTED_PREVIEW_REVIEW_PENDING",
+  "validation": {
+    "components": 237,
+    "passed": 5997,
+    "failed": 0,
+    "focusedNewTests": 14,
+    "weeklySourceRegression": 22,
+    "logSha256": "0fafcdfde7fb61f644392f8431fc104562ced5a5b151c78522dd20280b076e24"
+  },
+  "readBoundary": {
+    "sourceCalls": 0,
+    "fileSystemWrites": 0,
+    "launchStopRecovery": false,
+    "sensitiveProcessAndConfigPathsExposed": false,
+    "pidPresenceIsIdentityVerification": false
+  },
+  "observed": {
+    "publicState": "WAITING",
+    "publicSourceCount": 10,
+    "publicRequests": 0,
+    "publicNext": "2026-10-11T09:38:44.499Z",
+    "publicUntil": "2026-10-11T17:46:05.993Z",
+    "companyState": "WAITING",
+    "companySourceCount": 10,
+    "companyRequests": 0,
+    "companyNext": "2026-10-11T13:40:00.000Z",
+    "companyUntil": "2026-10-11T20:00:00.000Z",
+    "companyConfigured": 47,
+    "companyUnqueued": 37,
+    "oneTimeSupplements": 8
+  },
+  "companyStartup": {
+    "runId": "daf66c62-fcaf-4052-8a0d-8697af10c01a",
+    "pid": 7956,
+    "manifestStartedAt": "2026-10-11T07:56:03.560Z",
+    "loadedCommit": "e0ed70f7b47161b487e80920a0c244d785c63720",
+    "configSha256": "678af497812ca9bf29dc2f31f76ffd561210463b6735b480b40b4af9bf595161",
+    "firstAt": "2026-10-11T13:40:00.000Z",
+    "until": "2026-10-11T20:00:00.000Z",
+    "intervalMinutes": 360,
+    "maxAttempts": 20,
+    "actualRequestsAtReadback": 0,
+    "firstSixHourAcquisition": "PENDING",
+    "terminalAcceptance": "PENDING",
+    "receiptPath": "data/runtime/options-weekly-sources/company-formal-run-reviewed-e0/startup-readback.json",
+    "receiptSha256": "f44eb02c9c860e16dd6121b882dd61746ec627cef7425fc5f7aaa67baf5e9023"
+  },
+  "preview4178": {
+    "commit": "ae8a88c87f727c4831e8ee8a75caa1d1af50dcae",
+    "changed": false
+  },
+  "uiReview": "PENDING",
+  "executionAllowed": false
+}
