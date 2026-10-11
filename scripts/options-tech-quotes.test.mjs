@@ -5,6 +5,7 @@ import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
 import {join,resolve,sep} from 'node:path';import {tmpdir} from 'node:os';
 import {collectTechOptionQuotes,normalizeTechOptionCapture as normalize,validateTechQuoteSelection} from './lib/options-tech-quote-adapter.mjs';
 import {saveTechQuoteCapture,buildTechQuoteHostPrompt,techQuotesCli} from './options-tech-quotes.mjs';
+import {resolveTechQuoteHost,summarizeTechHostStatus,TECH_QUOTE_MARKET_TOOLS} from './lib/options-tech-quote-host.mjs';
 let total=0,passed=0;const test=(n,fn)=>{total++;nodeTest(n,async()=>{await fn();passed++;});};after(()=>console.log('Tech quote adapter: '+passed+'/'+total+' tests passed.'));
 const stamp=s=>'2026-10-09T15:30:'+s+'.000Z',chainId='11111111-1111-4111-8111-111111111111',id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const selection={symbol:'AAPL',expiry:'2026-10-16',strike:'335.0000'};
@@ -94,3 +95,28 @@ test('read-only Host review validates without creating a capture file',async()=>
 });
 test('V1 normalized output matches the complete pre-batch-extension golden result',async()=>{const {result}=await capture(),n=normalize(result,stamp('10'));assert.equal(createHash('sha256').update(JSON.stringify(n)).digest('hex'),'5f844c18732a68cbdd5bff3f2abadbdd6130010ea0d8e55c742f9b8f6dbc52d6');assert.equal(Object.hasOwn(n.quotes[0],'batchId'),false);assert.equal(Object.hasOwn(n.quotes[0],'acquisition'),false);});
 test('V1 zero spread also retains its original schema',async()=>{const {result}=await capture(s=>s.get_option_quotes.data.results[0].quote.ask_price='4.20'),n=normalize(result,stamp('10'));assert.equal(n.quotes[0].spreadCents,0);assert.equal(Object.hasOwn(n.quotes[0],'batchId'),false);assert.equal(Object.hasOwn(n.quotes[0],'acquisition'),false);assert.equal(Object.hasOwn(n,'pair'),false);});
+
+test('explicit reviewed Host pin survives redirected LOCALAPPDATA without executing test bytes',()=>{
+ const root=mkdtempSync(join(tmpdir(),'alpha-tech-host-pin-')),exe=join(root,'codex.exe'),config=join(root,'host.json');
+ const old=process.env.LOCALAPPDATA;
+ try{process.env.LOCALAPPDATA=join(root,'sandbox-missing');writeFileSync(exe,'TEST_BYTES_NEVER_EXECUTED');
+ const pin={version:'TECH_QUOTE_HOST_CONFIG_V1',executable:exe,sha256:createHash('sha256').update(readFileSync(exe)).digest('hex')};
+ writeFileSync(config,JSON.stringify(pin));assert.equal(resolveTechQuoteHost(config).executable,exe);
+ writeFileSync(exe,'CHANGED');assert.throws(()=>resolveTechQuoteHost(config),/HASH_MISMATCH/);
+ for(const value of [{...pin,executable:'codex.exe'},{...pin,sha256:null},{...pin,version:'UNKNOWN'}]){writeFileSync(config,JSON.stringify(value));assert.throws(()=>resolveTechQuoteHost(config),/CONFIG_INVALID/);}
+ writeFileSync(config,JSON.stringify({...pin,executable:join(root,'missing','codex.exe')}));assert.throws(()=>resolveTechQuoteHost(config),/NOT_ACCESSIBLE/);
+ assert.throws(()=>resolveTechQuoteHost(''),/CONFIG_REQUIRED/);
+ }finally{if(old===undefined)delete process.env.LOCALAPPDATA;else process.env.LOCALAPPDATA=old;if(!resolve(root).startsWith(resolve(tmpdir())+sep))throw Error('Cleanup scope');rmSync(root,{recursive:true});}
+});
+test('Host readiness requires actual exact scoped catalog, correct origin and no auth denial',()=>{
+ const source={data:[{name:'robinhood_alpha_market_data',httpOrigin:'https://agent.robinhood.com',authStatus:'oAuth',toolsError:null,tools:Object.fromEntries(TECH_QUOTE_MARKET_TOOLS.map(n=>[n,{}]))}],nextCursor:null};
+ assert.equal(summarizeTechHostStatus(source).status,'HOST_STARTED_MARKET_CATALOG_READY');
+ assert.equal(summarizeTechHostStatus(source).connectionEstablished,'UNKNOWN_CATALOG_MAY_BE_CACHED');
+ for(const mutate of [r=>r.data=[],r=>r.nextCursor='more',r=>r.data[0].toolsError='failed',r=>r.data[0].authStatus='notLoggedIn',r=>r.data[0].authStatus='unknown',r=>r.data[0].runtimeStatus='failed',r=>r.data[0].httpOrigin='https://example.com',r=>delete r.data[0].tools.get_option_quotes,r=>r.data[0].tools.get_accounts={}]){const r=structuredClone(source);mutate(r);assert.equal(summarizeTechHostStatus(r).status,'BLOCKED_HOST_CONNECTION');}
+});
+test('actual CLI capture rejects missing explicit config before writing a run',async()=>{
+ const {captureTechQuotes}=await import('./options-tech-quotes.mjs');
+ await assert.rejects(captureTechQuotes({root:process.cwd(),selection,runId:'host-missing-config-test',hostConfig:'',codexPath:'UNVERIFIED'}),/CONFIG_REQUIRED/);
+ await assert.rejects(techQuotesCli(['--check-host','--host-config']),/ARGUMENTS/);
+ await assert.rejects(techQuotesCli(['--check-host','--host-config','missing.json']),/CONFIG_INVALID/);
+});

@@ -18,7 +18,7 @@ read that same manifest. Do not substitute a checkout or update code during the 
 | Contract and data evidence | Official generic reference routes saved | Exact series adjustment/deliverable/exercise/tradability and applicable data rights must be evidenced |
 | One writer, same run, storage and recovery | Paths/claims/receipt naming fixed below | Main claims once; review never silently takes over or starts another account |
 | Lifecycle and failure behavior | Isolated TEST_FIXTURE rehearsal | Genuine later source clocks, bid/ask/size/ticks and independent exit |
-| Host transport | Prior read-only connectivity receipt retained | Connection/allowance/actual schema and regular session still checked that morning |
+| Host transport | Explicit private executable/SHA-256 pin; real Host startup/catalog probe | OS permission, connection, allowance, actual quote schema and regular session remain separate |
 | Review/report | Same manifest and fixed journal alias | Actual result, uncertainty and any open exposure |
 
 Only one equal-quantity CDS or PDS (one contract per leg), same underlying and
@@ -65,7 +65,17 @@ new journal in review. If no main run exists, report NOT_RUN, not a zero-profit 
 ## Preparation at 09:45 America/New_York (13:45 UTC)
 
 1. Verify pinned HEAD and entrypoint hashes, clean tracked files, Node/npm and
-   available Host. Do not install, pull, reconnect, change permissions or reset
+   available Host using the manifest's private Host configuration. Run the local
+   `check-readiness-v2.mjs` check (its hash is pinned in the manifest) and then
+   `--check-host --host-config <manifest hostConfig.path>`
+   on the same published `scripts/options-tech-quotes.mjs` entrypoint. A PASS means
+   a real Codex process initialized and returned exactly the four allowed market
+   tools with existing OAuth status. A null runtime status means connection remains
+   UNKNOWN because a catalog can be cached; it is not a live connection guarantee.
+   No model turn or market/account/order
+   tool is called. Codex may write its ordinary runtime logs or refresh existing
+   OAuth internally. This is not a fresh quote, model allowance or Paper test.
+   Do not install, pull, reconnect, change permissions or reset
    allowance automatically. A disconnected/auth prompt is a concrete blocker.
 2. Save actual UTC/ET, manifest/account hashes and unique main-writer claim. Inspect
    prior receipts before collecting. No new timer or repeated quote loop is used.
@@ -99,6 +109,18 @@ historical series certification):
 
 ## Prospective request and quote sequence
 
+Every real capture below must append `--host-config <manifest hostConfig.path>`.
+The same resolver and four-tool restriction are used by capture and startup check.
+`ALPHA_TECH_QUOTE_HOST_CONFIG` is an optional process-local alternative; do not
+change global environment variables. The private JSON has version
+`TECH_QUOTE_HOST_CONFIG_V1`, an absolute `executable` path and its reviewed
+`sha256`. Verify the installed OpenAI publisher before pinning it. Missing or
+changed binaries stop with a named error before creating a capture. No PATH,
+mtime search, sandbox-folder fallback or automatic re-pin is performed. Legacy
+callers must supply the explicit config too; fixture-only injected transport stays
+separate. This pin verifies file identity, not OS permission: a denied launch must
+use the normal approval process, never a sandbox bypass or new credentials.
+
 Before any entry batch, save the chosen selection with its future batch ID
 `oct12-20261012-entry-01`, actual contracts and explicit `maxSourceSkewMs`. Persist
 the actual decision T0, request/envelopes and hashes **before** launching capture.
@@ -124,7 +146,7 @@ ISO clock). Use `node --import tsx` directly to avoid package-script ambiguity:
 
 ```text
 node --import tsx scripts/options-tech-spread-plan.mjs --prepare INPUT
-node --import tsx scripts/options-tech-quotes.mjs --capture-spread --request SELECTION --run-id oct12-20261012-entry-01
+node --import tsx scripts/options-tech-quotes.mjs --capture-spread --request SELECTION --run-id oct12-20261012-entry-01 --host-config HOST_CONFIG
 node --import tsx scripts/options-tech-spread-plan.mjs --preview INPUT
 node --import tsx scripts/options-tech-spread-plan.mjs --start INPUT --run-id paper-sim-tech-1000-20261010
 node --import tsx scripts/options-tech-spread-plan.mjs --append-original REF --run-id paper-sim-tech-1000-20261010 --at UTC
