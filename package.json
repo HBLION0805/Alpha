@@ -284,7 +284,8 @@
     "prospective:rehearsal": "tsx scripts/options-prospective-decision-rehearsal.mjs",
     "options:event-assessment": "tsx scripts/options-event-intelligence-assess.mjs",
     "options:weekly-issuers": "tsx scripts/options-weekly-issuer-sources.mjs",
-    "test:options-weekly-issuers": "tsx scripts/options-weekly-issuer-sources.test.mjs"
+    "test:options-weekly-issuers": "tsx scripts/options-weekly-issuer-sources.test.mjs",
+    "test:options-weekly-companies": "tsx scripts/options-weekly-company-sources.test.mjs"
   },
   "devDependencies": {
     "tsx": "^4.23.1",

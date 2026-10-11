@@ -1,3 +1,5 @@
+import {COMPANY_BATCH_SOURCES} from './options-weekly-company-catalog.mjs';
+import {parseCompanyCalendar,parseCompanySubmissions} from './options-weekly-company-parsers.mjs';
 import {sourceHash} from './options-weekly-source-storage.mjs';
 const check=(v,c)=>{if(!v)throw Error(c);};
 const monthNames='January February March April May June July August September October November December'.split(' ');
@@ -5,6 +7,7 @@ const clean=s=>String(s).replace(/<script\b[\s\S]*?<\/script>/gi,'').replace(/<s
 function day(month,n,year){const m=monthNames.indexOf(month)+1;check(m>0&&/^20\d\d$/.test(year),'ISSUER_DATE');const d=`${year}-${String(m).padStart(2,'0')}-${n.padStart(2,'0')}`;check(new Date(d+'T12:00:00Z').toISOString().slice(0,10)===d,'ISSUER_DATE');return d;}
 const entry=(url,symbol,parser)=>Object.freeze({url:()=>url,symbol,parser,discoveryId:null});
 export const WEEKLY_ISSUER_SOURCES=Object.freeze({
+ ...COMPANY_BATCH_SOURCES,
  aapl_ir:entry('https://investor.apple.com/investor-relations/default.aspx','AAPL','UNVERIFIED_LAYOUT'),
  aapl_call:entry('https://www.apple.com/investor/earnings-call/','AAPL','UNVERIFIED_LAYOUT'),
  tsm_ir:entry('https://investor.tsmc.com/english/financial-calendar','TSM','UNVERIFIED_LAYOUT'),
@@ -14,8 +17,10 @@ export const WEEKLY_ISSUER_SOURCES=Object.freeze({
  cboe_canonical:entry('https://www.cboe.com/about/hours/us-options/',null,'CBOE_HOLIDAYS')
 });
 function event(sourceId,title,startAt,fields){const spec=WEEKLY_ISSUER_SOURCES[sourceId];return {eventId:sourceId+':'+sourceHash(JSON.stringify([title,startAt,fields])),category:spec.symbol?'EARNINGS':'OPTIONS_MARKET',title,startAt,endAt:null,timezone:'UNKNOWN',timePrecision:'DATE_ONLY',sourceId,sourceRef:null,publishedAt:null,affectedSymbols:spec.symbol?[spec.symbol]:[],affectedThemes:[],status:'SCHEDULED_UNVERIFIED',sourceCharacter:'OFFICIAL_SAVED',scheduleBasis:'OFFICIAL_PUBLISHED_TEXT',dateInferred:false,sourceFields:fields,notes:spec.symbol?'Next earnings release date only; fiscal period, release time and call time UNKNOWN. Not a full company calendar.':'Cboe named-year options holiday context only. Printed regular/global hours retained separately; not contract hours, expiration/settlement qualification or trading permission.'};}
-export function parseWeeklyIssuerBody(sourceId,body){
+export function parseWeeklyIssuerBody(sourceId,body,receivedAt){
  const spec=WEEKLY_ISSUER_SOURCES[sourceId];check(spec,'ISSUER_SCOPE');
+ if(spec.family==='SEC_SUBMISSIONS')return parseCompanySubmissions(spec,body,receivedAt);
+ if(!['UNVERIFIED_LAYOUT','MSFT_NEXT_RELEASE','CBOE_HOLIDAYS'].includes(spec.parser))return parseCompanyCalendar(sourceId,spec,body);
  const safe=body.replace(/<script\b[\s\S]*?<\/script>/gi,'').replace(/<style\b[\s\S]*?<\/style>/gi,'').replace(/<!--[^]*?-->/g,'');
  if(spec.parser==='MSFT_NEXT_RELEASE'){
   check(safe.includes('<link rel="canonical" href="https://www.microsoft.com/en-us/investor/default"/>'),'ISSUER_IDENTITY');

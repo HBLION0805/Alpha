@@ -1,3 +1,7 @@
+## Fixed-company IR and public SEC attempt matrix — October 11, 2026
+
+Read [the stage report](docs/OPTIONS_WEEKLY_COMPANY_SOURCES_STAGE3.md). All 36 companies have separate IR and SEC attempts; 11 IR scopes parse and 25 remain failed/unparsed. SEC parses submitted metadata for all 36, with explicit partial/omission counts; it never predicts earnings dates or substitutes for IR success. One AMAT company event matches the target week. Cboe PDF size and dynamic-notice gaps remain. The existing runner and 4178 are unchanged pending this stage review.
+
 ## Issuer and options source batch 1 — October 11, 2026
 
 Read [the staged delivery](docs/OPTIONS_WEEKLY_ISSUER_SOURCES_STAGE2.md). Four of the fixed 36 companies were attempted: MSFT parsed one next-release date; AAPL/TSM/TSLA remain failed or unparsed. Cboe contributes only its named-year options holiday table. Separate immutable issuer-refreshes and per-company denominators join the same request snapshot. Issuer SEC acquisition and 32 companies remain unattempted. No additional finite-runner sources or 4178 switch.

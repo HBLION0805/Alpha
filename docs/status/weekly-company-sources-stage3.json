@@ -1,0 +1,44 @@
+{
+  "version": "WEEKLY_COMPANY_STAGE3_V1",
+  "status": "VALIDATED_PENDING_INDEPENDENT_REVIEW",
+  "companyCounts": {
+    "universe": 36,
+    "attempted": 36,
+    "parseable": 11,
+    "withWeekEvent": 1,
+    "checkedNoMatch": 10,
+    "failed": 25,
+    "notAttempted": 0
+  },
+  "sec": {
+    "attempted": 36,
+    "parseable": 36,
+    "partial": 1,
+    "displayedFilings": 533,
+    "omittedRecent": 10
+  },
+  "requests": 75,
+  "batchLimit": 10,
+  "existingRunnerChanged": false,
+  "preview4178": "UNCHANGED_9dd4779",
+  "executionAllowed": false,
+  "validatedAt": "2026-10-11T06:33:16.810Z",
+  "validation": {
+    "componentCount": 233,
+    "passed": 5941,
+    "failed": 0,
+    "focusedPassed": 78,
+    "newCompanyTests": 12
+  },
+  "ui": {
+    "status": "PASS",
+    "desktop": true,
+    "mobile": true,
+    "protectedFilesUnchanged": 25907,
+    "temporary4180Stopped": true
+  },
+  "acceptance": {
+    "path": "data/runtime/options-weekly-sources/company-stage3/acceptance.json",
+    "sha256": "ca7784a27ee9df56535a58b38e641bb95db592f415560ed5bb19256d5a9bd637"
+  }
+}
