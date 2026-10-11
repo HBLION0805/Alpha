@@ -66,5 +66,30 @@ injected HTTP responses, explicitly marked TEST_FIXTURE. Requests occurred at
 logical hours 05:00, 06:00 and 08:00 after two 503 results, then one success;
 the process stopped at its three-request budget. These are not live-source results.
 
-Actual bounded-process acceptance is recorded separately in ignored runtime.
-The live run must be checked after its expiry before claiming completion.
+Actual bounded-process acceptance completed on October 11 using implementation
+`f9504fa2cd5822b61bbde5101fee746b7b1b9755`. Run
+`2df44345-611b-42c0-bab2-b94ba1a370cc` issued exactly two requests: BLS at
+04:38:50.044 UTC and FOMC at 04:38:50.255 UTC (00:38:50 America/New_York).
+Both returned HTTP 200 and immutable `OBTAINED_PENDING_REVIEW` receipts. No retry
+occurred. The process recorded `EXPIRED` at 04:39:25.003 UTC (00:39:25 EDT), after
+the original scheduled end, and subsequently disappeared. Runner ownership and
+both source claims were released. The earlier real duplicate rejection, explicit
+stop and clean restart are retained as separate evidence; they were not repeated
+to manufacture extra acquisitions.
+
+The local acceptance receipt is
+`data/runtime/options-weekly-sources/stage3-acceptance/real-lifecycle-acceptance.json`,
+SHA-256 `fade04f6e7ecb0a9a663c3ea0dac7e484dccb32cd6376f3c565e3f701a3b4b34`.
+It verifies implementation hashes, linked lifecycle events, source fingerprints,
+hourly spacing, process absence, released ownership and no incomplete source
+claims. All 18 original acceptance files and 25,907 protected baseline files
+retain their hashes. Raw receipts, logs and the acceptance remain ignored/local.
+
+This validates one finite official-source process lifecycle. It does not establish
+unattended operation across sleep/offline periods, source interpretation, trading
+research quality, market quotes or Paper execution. The existing 4178 preview
+still pins `2dabc11486f0217fe001a6102ead13a8fa539f51`, denies filesystem writes and
+outbound requests, and had zero blocked network attempts. The new full-UI wrapper
+is prepared but not started or deployed; independent review remains a separate
+gate before replacing that preview. Original schedules and challenge records are
+unchanged.
