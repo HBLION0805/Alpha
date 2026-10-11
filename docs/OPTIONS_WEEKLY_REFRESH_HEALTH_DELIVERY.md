@@ -84,10 +84,30 @@ corrupt and future records, source failures, exhausted budgets, exact prepared
 config matching, sensitive-field omission, escaping and immutable-plan isolation.
 The existing 22-test weekly-source suite also passes. Full equipped regression
 passes **237 components, 5,997 tests, zero failures**. See the
-[sanitized status](status/weekly-refresh-health.json). Strict desktop/mobile
-preview verification is recorded separately before review.
+[sanitized status](status/weekly-refresh-health.json). Full regression used core code
+**904b0f4**; the final code **15f9125248d744713c365eeb60e2cee1773884f9**
+adds only the verified two-column desktop / one-column mobile CSS adjustment.
 
-The production-like local 4178 preview remains **ae8a88c** pending independent
-review of this new UI code. A temporary exact-code preview will be verified first;
-the reviewed archive and existing rollback are preserved for a later coordinated
-switch. All raw evidence and preview receipts remain ignored/local.
+The exact-code temporary preview at **http://127.0.0.1:4180/#weekly-plan**
+passed desktop/mobile verification at **2026-10-11T08:17:03.345Z** and subsequent
+visual inspection. There were no console, page, HTTP, network or external-origin
+errors, no horizontal overflow, and no page-triggered outbound attempts. All
+**25,907 protected files** retained their hashes. The health section has no control
+buttons/forms and exposes no sensitive process or configuration paths. Writes
+remain rejected; process creation and filesystem writes remain denied.
+
+Final local receipt:
+`data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/acceptance-final-4180/verification-full-receipt.json`
+SHA-256: `353c9979402397981d45dbe7826487ba7cd560736620b0cf7cb79a2e8b15f0d5`.
+Desktop/mobile screenshots are retained beside it. A prior temporary-port attempt
+failed its exact-code check while the older temporary process was still running;
+that receipt remains preserved separately. After exact process identity/start-time
+verification, only that temporary process was replaced and final acceptance passed.
+
+The local **4178** preview remains **ae8a88c** pending independent review of final
+health code. Host readback at **08:20:15.650 UTC** confirmed its unchanged process
+and code, along with the original public process and waiting company process.
+Temporary **4180** runs PID 7692 from 1,505 hash-pinned archived files. The existing
+4178 archive and rollback remain preserved for a coordinated switch after review.
+Raw evidence and preview receipts remain ignored/local. First six-hour company
+acquisition and terminal acceptance remain pending; they are not UI acceptance.

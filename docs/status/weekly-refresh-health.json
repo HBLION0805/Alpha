@@ -1,14 +1,17 @@
 {
   "version": "WEEKLY_REFRESH_HEALTH_DELIVERY_V1",
   "asOf": "2026-10-11T08:05:50.098Z",
-  "status": "IMPLEMENTED_TESTED_PREVIEW_REVIEW_PENDING",
+  "status": "IMPLEMENTED_UI_VERIFIED_INDEPENDENT_REVIEW_PENDING",
   "validation": {
     "components": 237,
     "passed": 5997,
     "failed": 0,
     "focusedNewTests": 14,
     "weeklySourceRegression": 22,
-    "logSha256": "0fafcdfde7fb61f644392f8431fc104562ced5a5b151c78522dd20280b076e24"
+    "logSha256": "0fafcdfde7fb61f644392f8431fc104562ced5a5b151c78522dd20280b076e24",
+    "fullRegressionCodeCommit": "904b0f4cb538ec6966cdefad4b9638660d1418ce",
+    "finalCodeCommit": "15f9125248d744713c365eeb60e2cee1773884f9",
+    "laterChange": "CSS-only two desktop columns and one mobile column, verified in actual temporary preview"
   },
   "readBoundary": {
     "sourceCalls": 0,
@@ -52,6 +55,34 @@
     "commit": "ae8a88c87f727c4831e8ee8a75caa1d1af50dcae",
     "changed": false
   },
-  "uiReview": "PENDING",
-  "executionAllowed": false
+  "uiReview": "LOCAL_DESKTOP_MOBILE_PASS_INDEPENDENT_REVIEW_PENDING",
+  "executionAllowed": false,
+  "temporaryPreview4180": {
+    "codeCommit": "15f9125248d744713c365eeb60e2cee1773884f9",
+    "status": "PASS",
+    "verifiedAt": "2026-10-11T08:17:03.345Z",
+    "pid": 7692,
+    "receiptPath": "data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/acceptance-final-4180/verification-full-receipt.json",
+    "receiptSha256": "353c9979402397981d45dbe7826487ba7cd560736620b0cf7cb79a2e8b15f0d5",
+    "protectedFiles": 25907,
+    "desktopColumns": 2,
+    "mobileColumns": 1,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "networkFailures": 0,
+    "externalRequests": 0,
+    "networkAttempts": 0,
+    "visualInspection": "PASS",
+    "screenshots": [
+      "data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/acceptance-final-4180/health-weekly-plan.png",
+      "data/runtime/options-workbench-development/readonly-preview-health-15f9125-20261011/acceptance-final-4180/health-mobile.png"
+    ]
+  },
+  "finalHostReadback": {
+    "at": "2026-10-11T08:20:15.6507483Z",
+    "path": "data/runtime/options-weekly-sources/refresh-health-final-host-readback.json",
+    "publicPid": 23512,
+    "companyPid": 7956,
+    "unchangedPreview4178Pid": 37080
+  }
 }
