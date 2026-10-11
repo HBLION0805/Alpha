@@ -1,8 +1,8 @@
 {
   "version": "WEEKLY_BOUNDED_CONTINUATION_DELIVERY_V1",
   "date": "2026-10-11",
-  "state": "VALIDATED_REVIEWED_PENDING_EXACT_COMMIT_REVIEW_AND_START",
-  "actualContinuationStarted": false,
+  "state": "STARTED_BOUNDED_WAITING_FOR_REMAINING_NATURAL_REQUESTS",
+  "actualContinuationStarted": true,
   "originals": {
     "public": {
       "reason": "CLOCK_REGRESSION",
@@ -55,5 +55,34 @@
   },
   "preview4178": "549fb295b4c29a5730111c5814adf3590c98fc1d",
   "executionAllowed": false,
-  "independentReview": "NO_REMAINING_P1_P2"
+  "independentReview": "NO_REMAINING_P1_P2",
+  "startedCodeCommit": "f88f4da4915c00b8092da3f3372e169f2f5fb7a8",
+  "actualReadback": {
+    "at": "2026-10-11T16:15:12.624Z",
+    "public": {
+      "startedAt": "2026-10-11T16:14:45.264Z",
+      "state": "WAITING",
+      "requests": 8,
+      "remaining": 2,
+      "firstRequestedAt": "2026-10-11T16:14:45.469Z",
+      "lastRequestedAt": "2026-10-11T16:14:47.606Z",
+      "http200": 8,
+      "parseState": "OBTAINED_PENDING_REVIEW",
+      "until": "2026-10-11T17:46:05.993Z"
+    },
+    "company": {
+      "startedAt": "2026-10-11T16:15:00.036Z",
+      "state": "WAITING",
+      "requests": 0,
+      "remaining": 10,
+      "until": "2026-10-11T20:00:00.000Z"
+    },
+    "originalFilesUnchanged": 252,
+    "protectedFilesUnchanged": 25907,
+    "manifestAndJournalVerified": true,
+    "accountingComplete": true,
+    "unresolvedAttempts": 0,
+    "privateReceiptSha256": "217dfbd06f4dc6da36a44e2b8b6ad4a089896483ccc8a7e879ad47b5f411a7b7",
+    "terminalAcceptance": "PENDING"
+  }
 }

@@ -54,3 +54,13 @@ Final equipped validation: **244 components, 6,133 tests passed, zero failed**.
 Independent final focused review: **51/51 passed**, with no remaining P1/P2.
 The initial sandbox run could not perform existing hard-link fixtures and was
 replaced by the equipped isolated run; no production gate was relaxed.
+
+Actual start/readback: exact archived f88f4da began public at 16:14:45.264Z and
+company at 16:15:00.036Z. At 16:15:12.624Z, public had eight actual HTTP 200
+requests (16:14:45.469–16:14:47.606Z), all OBTAINED_PENDING_REVIEW, with two
+remaining; company had zero requests and ten remaining. Both were WAITING, with
+verified manifests/journals, complete accounting and zero unresolved attempts.
+New run IDs, old-parent links, claims and exact OS process identities are retained
+privately. 252 original source/runner files and 25,907 protected files matched
+their previous hashes. The remaining natural requests and terminal results are
+not yet observed. No second-generation restart or deadline extension is allowed.
