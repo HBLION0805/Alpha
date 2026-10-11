@@ -103,3 +103,26 @@ Acceptance: `data/runtime/options-weekly-sources/event-stage1-acceptance.json`,
 SHA-256 `7ac87cf2345f2eaec3bf141d2a45b690d38b54c9772a87c0d29bb32b3bb4badd`.
 The receipt links exact originals, copied envelopes, source view, browser result
 and validation logs. No new scheduled source attempt is implied by this acceptance.
+
+## First finite continuation started
+
+Implementation `8c3e089e1e80248e5b2b9a8be6ddab409fbeef69` started run
+`f1aa4896-0b42-4ecc-9b89-786e86955dbc` at 05:46:06.353 UTC. Its deadline is
+17:46:05.993 UTC (13:46:05.993 EDT); the ten-source, six-hour, 20-request bounds
+above are recorded in the manifest. The first eligibility is 09:38:44.499 UTC
+(05:38:44.499 EDT), derived from existing receipt clocks. Startup readback at
+05:47:01 UTC found PID 23512 present, WAITING, zero attempts and empty stderr.
+This confirms startup/waiting only. Actual scheduled acquisition and eventual
+terminal acceptance remain pending; they must not be inferred from PID presence.
+
+Local plan, launch and equipped-process readbacks are retained under
+`data/runtime/options-weekly-sources/continuation-20261011`. Stop explicitly:
+
+```powershell
+npm run options:weekly-sources -- --stop --workspace C:/projects/Alpha-weekly-source-integration-20261011 --run-id f1aa4896-0b42-4ecc-9b89-786e86955dbc
+npm run options:weekly-sources -- --status --workspace C:/projects/Alpha-weekly-source-integration-20261011 --run-id f1aa4896-0b42-4ecc-9b89-786e86955dbc
+```
+
+Do not start a second process or change this run's implementation to accelerate
+its first eligibility. Stop/verify explicitly before any replacement. The old
+two-calendar acceptance run remains expired and its original receipts unchanged.

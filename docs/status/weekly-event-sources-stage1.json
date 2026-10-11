@@ -12,7 +12,7 @@
   "acceptanceSha256": "7ac87cf2345f2eaec3bf141d2a45b690d38b54c9772a87c0d29bb32b3bb4badd",
   "companyIrSecConnectors": "NOT_YET_IMPLEMENTED_FIXED_DENOMINATOR_36",
   "optionsExchangeCalendarConnectors": "NOT_YET_IMPLEMENTED",
-  "continuousBatch": {"status": "READY_TO_START_EXPLICITLY", "maximumHours": 12, "intervalMinutes": 360, "requestBudget": 20, "sourceCount": 10},
+  "continuousBatch": {"status": "STARTED_WAITING_NO_REQUEST_YET", "maximumHours": 12, "intervalMinutes": 360, "requestBudget": 20, "sourceCount": 10, "runId": "f1aa4896-0b42-4ecc-9b89-786e86955dbc", "implementationCommit": "8c3e089e1e80248e5b2b9a8be6ddab409fbeef69", "startedAt": "2026-10-11T05:46:06.353Z", "until": "2026-10-11T17:46:05.993Z", "nextEligibleAtAtStartup": "2026-10-11T09:38:44.499Z", "requestsAtStartupReadback": 0, "firstScheduledAcquisition": "PENDING", "terminalAcceptance": "PENDING"},
   "preview4178": "UNCHANGED_9dd4779_PENDING_REVIEWED_SWITCH",
   "cloudOrSystemScheduleCreated": false,
   "executionAllowed": false
