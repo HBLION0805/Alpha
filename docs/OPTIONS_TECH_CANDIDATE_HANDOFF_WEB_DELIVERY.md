@@ -37,8 +37,9 @@ CDS/PDS fixtures, missing research, stale versions, fixture/real separation,
 privacy, escaping and single rendering. Existing trace tests pass 12/12 and
 technology-status/HTTP regression 51/51. Independent review caught a duplicated
 panel; it was corrected and covered by an assertion. No P1/P2 remains in that
-code review. Full regression and isolated browser evidence are recorded in the
-status file once completed; private screenshots and originals remain ignored.
+code review. Full regression passed 248 components / 6,191 tests / zero failures.
+Isolated browser evidence is recorded separately in the status file; private
+screenshots and originals remain ignored.
 
 ## Preview boundary
 
@@ -53,3 +54,28 @@ Still unsupported: webpage submission of bound-plan inputs, automatic generation
 of Owner research or strategy requests, products beyond the original two-leg
 CDS/PDS preparation, and real-source Paper admission. The existing exact CLI
 input remains a separate explicit workflow.
+
+## Pinned isolated preview acceptance
+
+Implementation `3e0809d8078724072facbc5a5853bde69e014169` is served on
+local port 4180 from a verified 1,552-file archive. Independent archive review
+found no hash mismatch or permission expansion; the existing read-only wrapper
+only adds the new static asset to its allowlist.
+
+Actual Chrome acceptance from `2026-10-11T19:56:30.794Z` through
+`2026-10-11T19:58:01.048Z` passed all eleven desktop routes and two mobile views.
+The exact TSM scan displays its refusal, original research references and clocks;
+expanded fingerprints remain readable without horizontal overflow. Browser error
+and external-request counts are zero. Server outbound attempts remain zero;
+write APIs reject requests. All 25,907 protected files and 252 existing source/runner
+files match their baselines. October 12 frozen checkout remains clean at 2dabc114.
+
+Two prior failed browser receipts are retained privately: one assertion selected
+an older first scan with no selected candidate, and another expected a course
+archive in the original uninitialized Journal. The final harness targets the
+exact TSM scan and verifies MISSING_NOT_INITIALIZED. Neither application code nor
+original data was changed to satisfy these assertions.
+
+4178 retains 9727668 and its original `2026-10-11T16:44:49.467Z` startup clock.
+4180 is available for independent review; no switch or production deployment
+has occurred.
