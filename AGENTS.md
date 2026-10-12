@@ -1,3 +1,16 @@
+## Single-ID option quote probe — October 12, 2026
+
+Read [delivery](docs/OPTIONS_OPTION_SOURCE_PROBE_DELIVERY.md) and
+[status](docs/status/option-source-probe.json). The explicit diagnostic is fixed
+to the Owner-named existing AAPL October 16 $335 put ID, one get_option_quotes
+call and zero retries. It does not select a trade, look up or substitute legs,
+create plan/journal/fills, access accounts/orders, or change the frozen trial.
+Keep exact original bytes and separate request/return/source/persistence clocks.
+An updated_at quote refresh is not an exchange bid/ask clock, and successful
+access does not establish current tradability, account permission or Paper
+qualification. No new authentication gate, schedule, 4178 deployment or main
+merge. This stage allows a local commit; new public scope requires approval.
+
 ## Independent equity quote probe — October 12, 2026
 
 Read [delivery](docs/OPTIONS_EQUITY_SOURCE_PROBE_DELIVERY.md) and
