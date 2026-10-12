@@ -1,3 +1,20 @@
+## Saved engineering acceptance and bounded option follow-on — October 12, 2026
+
+Read [web delivery](docs/OPTIONS_ENGINEERING_ACCEPTANCE_WEB_DELIVERY.md) and
+[status](docs/status/engineering-acceptance-web.json). The Owner authorized a
+one-pair option engineering preflight and a local read-only 4178 result update.
+Exact-series deliverable/share quantity, exercise style and adjustment status
+remain missing after the bounded metadata checks; no quote, option entry or
+account continuation was created. Do not infer shares from the price multiplier.
+The original stock start and two events, settled/unsettled balances and historical
+NO_TRADE remain immutable. Any later continuation must bind the same account head
+with one writer and cannot use unsettled proceeds or reset capital. The website
+reads verified saved results only, separates stock PASS from option NOT_STARTED,
+and fails closed on a changed head. Preserve the old 4178 archive; switch only
+after independent/browser acceptance. No public deployment or new code push is
+included without exact-scope approval. The previous stock commit was separately
+approved and pushed; its pre-execution documentation remains dated history.
+
 ## One-share SPY engineering lifecycle — October 12, 2026
 
 Read [delivery](docs/OPTIONS_SPY_ENGINEERING_DELIVERY.md) and

@@ -8,6 +8,7 @@
     "options:research-assembly": "tsx scripts/options-research-assembly.mjs",
     "options:spy-engineering": "tsx scripts/options-spy-engineering.mjs",
     "test:spy-engineering": "tsx scripts/options-spy-engineering.test.mjs",
+    "test:engineering-status": "tsx scripts/options-engineering-status.test.mjs",
     "test:assistant-facts": "tsx scripts/options-tech-assistant-facts.test.mjs",
     "test:research-assembly": "tsx scripts/options-research-assembly.test.mjs",
     "options:option-source-probe": "tsx scripts/options-option-source-probe.mjs",

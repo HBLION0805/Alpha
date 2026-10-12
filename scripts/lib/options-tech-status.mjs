@@ -7,6 +7,7 @@ import {verifyMockJournalRecords} from './options-isolated-mock-journal.mjs';
 import {replayMockSpread} from './options-tech-mock-spread.mjs';
 import {techStatusCodes} from './options-tech-status-codes.mjs';
 import {readTechResearchView} from './options-tech-research-view.mjs';
+import {readEngineeringStatus} from './options-engineering-status.mjs';
 
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const one=(v,values)=>values.includes(v)?v:'UNKNOWN';
@@ -88,10 +89,10 @@ export function projectTechReceipt(r,digest,at){
 }
 
 /** Bounded immediate-directory inventory. No recover(): it can mkdir/unlink pending journal files. */
-export function readTechStatus({root=process.cwd(),at=new Date().toISOString()}={}){
+export function readTechStatus({root=process.cwd(),engineeringRoot=root,at=new Date().toISOString()}={}){
  const out={version:'TECH_WORKBENCH_STATUS_V1',checkedAt:clock(at),state:'MISSING',records:[],issues:[],
   scope:'DIRECT_LOCAL_DEVELOPMENT_RECEIPTS_AND_SPREAD_JOURNALS',capability:'ISOLATED_ONE_CONTRACT_SAME_DAY_CDS_PDS',
-  realAcceptance:'NOT_TESTED',executionAllowed:false,sourceCalls:0,fileSystemWrites:0,researchDetails:readTechResearchView({root,at})};
+  realAcceptance:'NOT_TESTED',executionAllowed:false,sourceCalls:0,fileSystemWrites:0,researchDetails:readTechResearchView({root,at}),engineering:readEngineeringStatus({root:engineeringRoot,at})};
  let bytesRead=0;
  const read=p=>{const before=fs.lstatSync(p);check(before.isFile()&&!before.isSymbolicLink()&&before.nlink===1&&before.size<2e6,'UNSAFE_OR_OVERSIZE_FILE');bytesRead+=before.size;check(bytesRead<=32*1024*1024,'READ_BOUND');const bytes=fs.readFileSync(p);check(stamp(before)===stamp(fs.lstatSync(p)),'CHANGED_DURING_READ');let data;try{data=parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw Error('MALFORMED_JSON');}return {data,digest:hash(bytes)};};
  const issue=(ref,code,digest=null)=>out.issues.push({locationRef:hash(ref),sourceRef:digest,code:['READ_BOUND','DIRECTORY_BOUND','FILE_BOUND','UNSAFE_PATH','UNSAFE_OR_OVERSIZE_FILE','CHANGED_DURING_READ','FUTURE_RECEIPT','RECEIPT_CLOCK_MISSING','INVALID_RECEIPT_CLOCK','RECEIPT_CLOCK_ORDER','UNSUPPORTED_RECEIPT','UNVERSIONED_RESIDUAL_AUDIT_WRAPPER','INVALID_CANDIDATE_SCHEMA','INVALID_CANDIDATE_CLI_ENVELOPE','MALFORMED_JSON','CONFLICTING_ASSESSMENTS'].includes(code)?code:'INVALID_SAVED_EVIDENCE'});

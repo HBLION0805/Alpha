@@ -21,13 +21,26 @@ function record(r){return `<details class="card section-space" data-disclosure-k
 export function techStatusPanel(data){
  const s=data??{state:'MISSING',records:[],issues:[]};
  return `<section class="section-space" id="tech-research-status" aria-labelledby="tech-status-title"><h2 id="tech-status-title">科技研究与 Paper · 只读</h2>
- <p>已有开发能力：候选研究、保存报价预检，以及同日一组等量双腿 CDS / PDS 隔离模拟。真实数据 Paper 验收：<strong>NOT_TESTED</strong>。</p>
+ <p>已有开发能力：候选研究、保存报价预检，以及同日一组等量双腿 CDS / PDS 隔离模拟。期权全流程真实数据验收：<strong>NOT_TESTED</strong>；股票工程结果单独列示。</p>
  <p class="hint">仅检查本地开发目录的直接回执和双腿模拟日志，不包含嵌套测试目录。使用顶部“重新加载”读取保存资料；本页不请求市场数据。账户证据缺失不否定公司研究方向。</p>
  <p>${status(s.state)} · 本地检查：${clock(s.checkedAt)} · ${s.records.length} 份记录</p>
- ${techCandidateTracePanel(s.researchDetails?.traceScans,s.researchDetails?.traceIssues)}${researchDetails(s.researchDetails)}
+ ${engineeringStatusPanel(s.engineering)}${techCandidateTracePanel(s.researchDetails?.traceScans,s.researchDetails?.traceIssues)}${researchDetails(s.researchDetails)}
  ${s.issues.length?`<div class="notice error tech-status-issues" role="alert"><strong>部分资料无法读取或存在冲突，不能判定通过。</strong>${s.issues.map(issue).join('')}</div>`:''}
  ${!s.records.length?'<div class="empty"><h3>没有可展示的已保存记录</h3><p>研究、报价、账户证据和模拟均未由本页验证。缺失数据不是零风险，也不是验收通过。</p></div>':s.records.map(record).join('')}
  </section>`;
+}
+
+export function engineeringStatusPanel(s){
+ if(!s||s.state==='MISSING')return '';
+ if(s.state!=='AVAILABLE')return `<section class="notice error" id="engineering-acceptance"><h3>工程模拟结果暂不可核验</h3><p>原件、账本末端或绑定检查未通过，本页不沿用旧余额或旧通过状态。</p>${reasons(s.issues)}</section>`;
+ const a=s.account,stock=s.stock,o=s.options,money=v=>Number.isSafeInteger(v)?'$'+(v/1000000).toFixed(2):'UNKNOWN';
+ const fieldLabels={DELIVERABLE_COMPONENTS_AND_SHARE_QUANTITY:'精确交割内容与股份数量',EXERCISE_STYLE:'精确系列行权方式',ADJUSTMENT_STATUS:'精确系列调整状态'};
+ return `<section class="card section-space" id="engineering-acceptance"><h3>真实报价工程模拟 · 已保存验收</h3>
+ <p>用于检查取价、模拟成交、资金记账和恢复流程。研究与策略：NOT_APPLICABLE_ENGINEERING_ONLY。真实券商订单为 0；本页重新加载只重读原件。</p>
+ <div class="grid-two"><section><h4>股票 · SPY 1 股</h4><p><strong>PASS · ${esc(stock.status)}</strong></p><p>入场 ${clock(stock.entry.at)}<br>退出 ${clock(stock.exit.at)}</p><p>模拟买入 ${money(stock.entry.priceMicros)} · 卖出 ${money(stock.exit.priceMicros)}<br>模型净损益 <strong>${money(stock.netPnlMicros)}</strong> · 持仓 ${esc(stock.positionShares)}</p><p class="hint">模型价格含每侧 $0.01 不利滑点，另计每侧 $0.01 摩擦；佣金假设为零，非券商实际费用。独立报价共 ${esc(stock.sourceCalls)} 次，新进程恢复与独立审核通过。</p></section>
+ <section><h4>期权 · ${esc(o.symbol)} ${esc(o.expiry)} ${esc(o.longStrike)} / ${esc(o.shortStrike)} CDS</h4><p><strong>BLOCKED · 未入场</strong></p><p>${esc(o.status)}</p><ul>${o.missingExactSeriesFields.map(k=>`<li>${esc(fieldLabels[k]??k)}</li>`).join('')}</ul><p>元数据调用 ${esc(o.metadataCalls)} 次 · 报价 ${esc(o.quoteCalls)} 次 · 模拟成交 ${esc(o.simulatedFills)}</p><p class="hint">乘数 100 不等于已证明交割 100 股；active/tradable 不等于账户权限。期权全流程尚未验收。</p></section></div>
+ <h4>同一模拟账户资金</h4><div class="grid-two"><p>已结算、可用于预算：<strong>${money(a.settledCashMicros)}</strong><br>未结算、不可用于新入场：<strong>${money(a.unsettledProceedsMicros)}</strong></p><p>总现金 ${money(a.totalCashMicros)}<br>新增资金 ${money(a.newDepositsMicros)} · 未重置账户</p></div>
+ <details data-disclosure-key="engineering-run-binding"><summary>运行、版本与原始时钟</summary><p class="hint">股票 ${esc(stock.runId)}<br>代码 ${esc(stock.commit)}<br>T0 ${clock(stock.decisionAt)}<br>最早退出 ${clock(stock.entry.exitDueAt)}<br>${(stock.quoteClocks??[]).map(c=>`${esc(c.action)} 请求 ${clock(c.requestedAt)} · 收到 ${clock(c.receivedAt)}<br>源 bid ${esc(c.sourceBidAt)} · ask ${esc(c.sourceAskAt)}`).join('<br>')}<br>报告指纹 ${esc(stock.reportSha256)}</p><p class="hint">期权 ${esc(o.runId)}<br>代码 ${esc(o.commit)}<br>预检保存 ${clock(o.savedAt)}<br>元数据请求 / 收到：${o.metadataClocks.map(c=>`${clock(c.requestedAt)} → ${clock(c.receivedAt)}`).join('<br>')}<br>报告指纹 ${esc(o.reportSha256)}</p><p class="hint">账户 ${esc(a.id)}<br>账本末端 ${esc(a.headSha256)}<br>本页读取 ${clock(s.checkedAt)}。页面时钟不更新原行情；原研究 NO_TRADE 保持不变。本次不验证两周胜率。</p></details></section>`;
 }
 
 const directionLabel=v=>({UP:'偏多研究',DOWN:'偏空研究',NEUTRAL:'中性',UNKNOWN:'UNKNOWN · 方向未建立'}[v]??'UNKNOWN');
