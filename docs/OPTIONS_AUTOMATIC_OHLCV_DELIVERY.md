@@ -38,8 +38,12 @@ Forming and explicit interpolated bars are excluded. Identical duplicates are
 counted and removed; conflicting duplicates, out-of-order data, invalid OHLCV,
 unexpected identities, session errors and completed-grid gaps block aggregation.
 The reviewed 2026 session calendar handles DST, holidays and early closes; unknown
-years block acquisition. V1 intentionally supports one regular session and only
-five-minute bars. It does not join sources or fill gaps.
+years block acquisition. The current-session acquisition command supports
+five-minute bars. A bounded daily transport and saved-daily consumer also support
+up to seven UTC dates; neither joins sources nor fills gaps. Daily labels retain
+their UTC source dates with explicit local session interpretation. Completed
+means the reviewed session elapsed at request start, not provider finality.
+See the [source identity supplement](OPTIONS_AUTOMATIC_OHLCV_SOURCE_IDENTITY.md).
 
 Descriptive metrics include first-open to last-close return, observed direction,
 range, total provider share volume, five-bar SMA, and the last bar's volume versus
@@ -88,19 +92,28 @@ Final integrated CLI acceptance and validation details are recorded in
 configuration are excluded from Git. The public change contains only code,
 synthetic tests and sanitized delivery metadata.
 
-Thirty-eight focused tests cover the above quality boundaries, timestamp/session
-rules, Host action restrictions, split UTF-8 stream handling, request binding,
-failure persistence, stale-source recovery and tampered Host/capture/research
-replay even after recomputed file hashes. Independent review cleared the repaired
-Host boundaries and independently recovered both real and copied bundles.
-The approved-environment aggregate run passed 6,280 tests in 249 components,
-zero failures, including TypeScript and repository checks. The two additional
-recovery-negative cases passed afterward in the final 38-test focused suite;
-production code did not change after aggregate validation started. The initial
-sandbox aggregate hit existing hardlink EPERM failures and is retained separately.
+The initial delivery's aggregate passed 6,280 tests in 249 components before two
+additional recovery-negative tests were added. That historical result is not the
+final daily-consumer validation. The final focused suite now covers 58 cases,
+including daily attribution, completion at request time, DST/holidays/early close,
+missing sessions, unknowns and copied replay. Final aggregate and independent
+review results are recorded in the status file. The initial sandbox aggregate's
+existing hardlink EPERM failures remain separately recorded.
+
+Final code and all final tests passed together: 249 components, 6,302 tests,
+zero failures, including all 58 automatic-bar cases, TypeScript and repository
+checks. Independent code/document review and four saved-bundle replays passed.
+Only this factual validation metadata was updated after the final run.
+
+The saved daily probe returned 20 bars, five per symbol for October 5–9. Separate
+run `ohlcv-20261012-daily-research-01` consumed them at 14:39:22.421 UTC with zero
+new source calls. All four descriptive observations are ready; all twenty
+interpolation flags remain unknown and all original recommendation gates WAIT.
+The original probe, its timestamps and its earlier not-yet-consumed review remain
+unchanged. Daily copied replay and old five-minute replay both pass.
 
 Frozen October 12 version, 09:54 terminal/claim, port 4178, CPI/15:50 schedules,
 the challenge ledger, risk settings and production deployment remain unchanged.
-Remaining automatic paths include daily/multi-session bars, qualified latency
+Remaining automatic paths include wider multi-session windows, qualified latency
 and source semantics, prospective strict technical-plan binding, and any later
 explicitly authorized scheduling. This delivery does not claim those completed.

@@ -7,6 +7,11 @@ SPY/QQQ/AAPL/TSM research command. Preserve original Host responses, unknown
 interpolation/latency/cache/adjustment confirmation/volume coverage, excluded
 forming bars and continuity diagnostics. ThreeFacet consumes descriptive evidence
 without replacing strict technical plans, source qualification or original gates.
+The saved-daily consumer supports seven UTC dates: retain midnight date labels,
+map explicitly to the reviewed session, distinguish elapsed session from provider
+finality, and block missing completed sessions. Read the
+[source identity supplement](docs/OPTIONS_AUTOMATIC_OHLCV_SOURCE_IDENTITY.md).
+The October 5–9 daily original was consumed separately without another source call.
 No timer, account/order access, new credential, frozen-trial rerun, 4178 switch,
 production deployment, CPI/15:50 or challenge-ledger change. Keep real captures
 ignored and local. This stage prepares a local commit; obtain exact public-push

@@ -24,7 +24,8 @@ export function buildAutomaticBarResearch(capture,at){
  const research=report.assets.map(a=>{
   const input={version:'THREE_FACET_INPUT_V1',symbol:a.symbol,instrumentType:['SPY','QQQ'].includes(a.symbol)?'ETF':'EQUITY',asOf:at,holdingFrom:at,holdingThrough:new Date(Date.parse(at)+30*60000).toISOString(),automaticBars:{capture},technical:null};
   const assessment=assessThreeFacet(input);
-  return {symbol:a.symbol,input,assessment,interpretation:{status:a.metrics?'OBSERVED_WINDOW_ONLY':'INSUFFICIENT_BAR_EVIDENCE',observedDirection:a.metrics?.observedDirection??'UNKNOWN',holdingWindowPriceThesis:'UNKNOWN',referenceRange:a.metrics?{low:a.metrics.low,high:a.metrics.high}:null,volumeRatio:a.metrics?.lastVolumeRatio??null,meaning:'Historical completed-window structure and provider share volume only. Range is an observation, not a registered trigger. Fundamental/news review, prospective conditions and original risk gates remain required.'}};
+  const dailyMeaning=report.version==='AUTOMATIC_DAILY_BAR_RESEARCH_V1'?{dateMeaning:'Source UTC date labels mapped locally to reviewed sessions; modeled session completion is not provider finality.',holdingWindowMeaning:'The 30-minute evaluator window is an unqualified context placeholder, not a daily-data forecast or a registered holding plan.'}:{};
+  return {symbol:a.symbol,input,assessment,interpretation:{status:a.metrics?'OBSERVED_WINDOW_ONLY':'INSUFFICIENT_BAR_EVIDENCE',observedDirection:a.metrics?.observedDirection??'UNKNOWN',holdingWindowPriceThesis:'UNKNOWN',referenceRange:a.metrics?{low:a.metrics.low,high:a.metrics.high}:null,volumeRatio:a.metrics?.lastVolumeRatio??null,meaning:'Historical completed-window structure and provider share volume only. Range is an observation, not a registered trigger. Fundamental/news review, prospective conditions and original risk gates remain required.',...dailyMeaning}};
  });
  return {report,research};
 }

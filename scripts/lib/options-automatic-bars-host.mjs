@@ -17,10 +17,11 @@ export function allowedBarHostEvent(event,request){
 }
 export function validateBarRequest(r){
  if(!r||Object.keys(r).sort().join()!=='adjustment_type,bounds,end_time,interval,start_time,symbols'||!Array.isArray(r.symbols)||r.symbols.length<1||r.symbols.length>4||new Set(r.symbols).size!==r.symbols.length||r.symbols.some(s=>!['SPY','QQQ','AAPL','TSM'].includes(s)))throw Error('AUTO_BARS_REQUEST');
- if(r.interval!=='5minute'||r.bounds!=='regular'||r.adjustment_type!=='none')throw Error('AUTO_BARS_SCOPE');
+ if(!['5minute','day'].includes(r.interval)||r.bounds!=='regular'||r.adjustment_type!=='none')throw Error('AUTO_BARS_SCOPE');
  for(const t of [r.start_time,r.end_time])if(typeof t!=='string'||!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(t)||!Number.isFinite(Date.parse(t))||new Date(t).toISOString().slice(0,19)!==t.slice(0,19))throw Error('AUTO_BARS_CLOCK');
  const from=Date.parse(r.start_time),to=Date.parse(r.end_time);
- if(from%300000||to%300000||to<=from||to-from>86400000)throw Error('AUTO_BARS_WINDOW');
+ const grid=r.interval==='day'?86400000:300000,maxWindow=r.interval==='day'?7*86400000:86400000;
+ if(from%grid||to%grid||to<=from||to-from>maxWindow)throw Error('AUTO_BARS_WINDOW');
  return r;
 }
 export function extractBarCapture(events,request){
