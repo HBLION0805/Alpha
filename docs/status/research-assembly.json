@@ -67,5 +67,42 @@
   "frozenTrialChanged": false,
   "publicPush": "EXACT_NEW_SCOPE_APPROVAL_REQUIRED",
   "historicalAssessments": "BOTH_RECOMPUTED_JSON_EXACTLY_MATCH_FROZEN_REPORTS",
-  "copiedRecovery": "BOTH_PASS"
+  "copiedRecovery": "BOTH_PASS",
+  "strictClockCorrection": {
+    "status": "PASSED",
+    "baseCommit": "2f0338b65b2d0f010726fd0c0a13c1926a0c48ce",
+    "scope": "ASSEMBLER_ONLY_STRICT_UTC_CALENDAR_AND_NANOSECOND_COMPARISON",
+    "focusedTests": 54,
+    "independentReview": "PASS",
+    "historicalActualReplays": [
+      {
+        "run": "AAPL",
+        "checkedAt": "2026-10-12T16:23:08.039Z",
+        "status": "COPIED_RESEARCH_ASSEMBLY_REPLAY_PASS"
+      },
+      {
+        "run": "TSM",
+        "checkedAt": "2026-10-12T16:23:08.069Z",
+        "status": "COPIED_RESEARCH_ASSEMBLY_REPLAY_PASS"
+      }
+    ],
+    "legacyEngineChanges": false,
+    "marketCalls": 0,
+    "paperStarted": false,
+    "aggregateValidation": {
+      "status": "PASSED",
+      "componentCount": 252,
+      "testsExecuted": 6427,
+      "passed": 6427,
+      "failed": 0,
+      "durationMs": 293105,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of 'scripts/options-research-assembly.mjs', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/options-research-assembly.test.mjs', LF will be replaced by CRLF the next time Git touches it"
+      ],
+      "logSha256": "0dedd86ef4f69b9c10a297b1b4adcac97940f86b31350bb6a71de89bf192f687"
+    },
+    "restrictedAttempt": "Stopped after sandbox EPERM hard-link failure; final authorized unsandboxed suite passed."
+  }
 }

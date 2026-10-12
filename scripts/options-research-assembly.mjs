@@ -8,16 +8,24 @@ import {spreadPlanHash} from './lib/options-tech-spread-plan-binding.mjs';
 
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const check=(ok,code)=>{if(!ok)throw Error('RESEARCH_ASSEMBLY_'+code);};
-const time=v=>typeof v==='string'&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,9})?Z$/.test(v)&&Number.isFinite(Date.parse(v))?Date.parse(v):null;
+// UTC only; reject calendar normalization and retain all supplied nanoseconds.
+const time=v=>{
+ if(typeof v!=='string')return null;
+ const m=/^(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d{1,9}))?Z$/.exec(v);
+ if(!m)return null;
+ const ms=Date.parse(m[1]+'Z');
+ if(!Number.isFinite(ms)||new Date(ms).toISOString().slice(0,19)!==m[1])return null;
+ return BigInt(ms)*1000000n+BigInt((m[2]??'').padEnd(9,'0'));
+};
 const exact=(v,keys)=>v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).sort().join()===keys.split(',').sort().join();
 const closed={sourceCalls:0,accountCalls:0,planCreated:false,journalWritten:false,executionAllowed:false,paperAdmissionAllowed:false,fills:0};
 
 export function validityDiagnostic(from,through,at){
  if(from===undefined||through===undefined)return 'MISSING';
  if(from===null||through===null)return 'UNKNOWN';
- const f=time(from),t=time(through);if(f===null||t===null||f>t)return 'INVALID';
+ const f=time(from),t=time(through),a=time(at);if(f===null||t===null||a===null||f>t)return 'INVALID';
  if(f===t)return 'UNKNOWN_ZERO_DURATION_PLACEHOLDER';
- return t<time(at)?'EXPIRED':f>time(at)?'NOT_YET_VALID':'DECLARED_WINDOW_CURRENT';
+ return t<a?'EXPIRED':f>a?'NOT_YET_VALID':'DECLARED_WINDOW_CURRENT';
 }
 
 // This is fact inventory and an explicit diagnostic binding, never a risk PASS.
@@ -73,7 +81,7 @@ export function assembleResearchEvidence({research,sourceIndex,sourceBindings,so
  }
  // This processing window exists only to inspect saved bars with current time.
  // It is not a renewed validity claim or a prospective research registration.
- input.asOf=at;input.holdingFrom=at;input.holdingThrough=new Date(time(at)+30*60000).toISOString();input.researchPlan=null;
+ input.asOf=at;input.holdingFrom=at;input.holdingThrough=new Date(Number(time(at)/1000000n)+30*60000).toISOString();input.researchPlan=null;
  if(bars)input.automaticBars={capture:structuredClone(bars)};
  const assessment=assessThreeFacet(input);
  return {version:'RESEARCH_EVIDENCE_ASSEMBLY_V1',processedAt:at,context:'CURRENT_DIAGNOSTIC_OF_SAVED_ORIGINALS_NOT_PROSPECTIVE_DECISION',

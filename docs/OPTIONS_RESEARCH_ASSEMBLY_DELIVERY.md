@@ -93,3 +93,20 @@ Final validation: 252 components, 6412 tests, 0 failures. Independent review and
 morning feasibility reports recompute to exactly the same JSON; all 19 frozen
 original files remain unchanged. The final validation log SHA256 is
 `1bf29b4e2ca246f5edefacc5ea9a0053b92e07eb640eb05f702be70b63ee419a`. These checks do not constitute live Paper acceptance.
+
+## October 12 strict clock correction
+
+Independent review found that the new assembler's `Date.parse` accepted an
+impossible February date by normalization and collapsed a one-nanosecond interval
+to a zero-duration placeholder. The assembler now checks the UTC calendar string
+against its parsed whole second and compares BigInt nanoseconds. Non-UTC offsets,
+missing zones, invalid dates, leap seconds and excess fractional precision reject.
+An invalid assessment clock also returns INVALID. Existing engine semantics and
+saved reports are unchanged; both prior actual assemblies still replay exactly.
+
+The focused suite now has 54 tests, including leap-day and nanosecond boundary
+cases. Independent review passed. Final aggregate evidence is appended under
+`strictClockCorrection` in the status file; the earlier validation remains dated
+history. This correction neither starts the separately prepared research proposal
+nor grants market/Paper admission. Private research and source originals remain
+ignored and are not included in the code commit.
