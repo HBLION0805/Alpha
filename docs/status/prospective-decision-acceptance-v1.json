@@ -3,16 +3,16 @@
   "asOf": "2026-10-02",
   "branch": "codex/event-intelligence-replay-v1",
   "governingDevelopmentStandard": "ALPHA_REAL_DATA_EXPERIMENT_STANDARD_V1",
-  "status": "FOUNDATION_IMPLEMENTED_CPI_CANDIDATE_NOT_REGISTERED",
+  "status": "FOUNDATION_RETAINED_CPI_PRERELEASE_CANDIDATE_CANCELLED",
   "deliveries": {
     "eventReadinessAndRuleRegistry": "IMPLEMENTED",
     "qualifiedRequiredEvidenceIntake": "CONTRACT_LAYER_IMPLEMENTED_LIVE_PROVIDER_SMOKE_PENDING",
     "prospectiveDecisionIssuer": "IMPLEMENTED"
   },
   "gate1": {
-    "liveEvent": "CPI_20261014_CANDIDATE_NOT_REGISTERED",
-    "status": "NOT_READY",
-    "reason": "CPI is selected as the first scheduled acceptance candidate, but final consensus, live rule thresholds, live latency policy and qualified Robinhood GLD/IBIT smoke are not frozen yet.",
+    "liveEvent": "NONE_CPI_PRERELEASE_CANCELLED_BY_OWNER",
+    "status": "NOT_APPLICABLE_CANCELLED",
+    "reason": "CPI forecast/probability/freeze acceptance is cancelled; retain shared engineering and post-release actual-data analysis. No replacement prospective trial registered.",
     "eventSpecificEvidence": true,
     "nominalYieldMaySubstituteForRealYield": false
   },
@@ -50,5 +50,10 @@
     "prospectiveGateCompletionRequiredForEngineeringExperiment": false,
     "prospectiveGateCompletionRequiredForStrategyValidationSample": true
   },
-  "executionAllowed": false
+  "executionAllowed": false,
+  "cpiCancellation": {
+    "at": "2026-10-12T23:38:50.737Z",
+    "withdrawalIndex": "C:\\projects\\Alpha-weekly-source-integration-20261011\\data\\runtime\\options-workbench-development\\cpi-prerelease-deactivated-20261012-01/withdrawal-index.json",
+    "postReleaseAnalysis": "RETAINED"
+  }
 }

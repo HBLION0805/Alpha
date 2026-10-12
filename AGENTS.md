@@ -1,3 +1,12 @@
+## CPI pre-release workflow cancelled — October 12, 2026
+
+The Owner cancelled CPI pre-release forecasts, probabilities, freezing and forecast
+scoring. Do not resume these tasks from historical instructions or drafts. Preserve
+BLS actual releases and general macro/stock trend analysis after publication. The
+former CPI research CLI is deactivated; its exports remain for historical offline
+replay only, not authorization to create new CPI forecasts. Originals are recoverably
+archived; the withdrawal index is at C:/projects/Alpha-weekly-source-integration-20261011/data/runtime/options-workbench-development/cpi-prerelease-deactivated-20261012-01/withdrawal-index.json. No account, Paper, 15:50 cadence, website deployment or push is authorized by this cancellation.
+
 ## Saved weekly receipts to pending research — October 12, 2026
 
 Read [delivery](docs/OPTIONS_WEEKLY_RESEARCH_INPUTS_DELIVERY.md) and
