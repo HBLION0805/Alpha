@@ -14,6 +14,12 @@ and fails closed on a changed head. Preserve the old 4178 archive; switch only
 after independent/browser acceptance. No public deployment or new code push is
 included without exact-scope approval. The previous stock commit was separately
 approved and pushed; its pre-execution documentation remains dated history.
+The final local 4178 view now serves pinned `dd45d527` and passed actual-port
+browser and independent acceptance; temporary 4180 is closed. Later official SPY
+references support rule-mapped American exercise and the standard physical
+deliverable convention, but selected-series adjustment applicability remains
+unknown. Preserve that append-only review and the original stopped preflight;
+neither is an option fill or a completed option lifecycle.
 
 ## One-share SPY engineering lifecycle — October 12, 2026
 

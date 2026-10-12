@@ -53,3 +53,32 @@ Validation and actual-port acceptance are recorded separately in
 [the status file](status/engineering-acceptance-web.json). The original stock
 delivery checkpoint remains its historical pre-execution checkpoint; actual
 outcomes are read from private originals rather than rewritten into that record.
+
+## Actual local acceptance — October 12
+
+The final executable commit `dd45d5272a8ab4a15403c88e2b7ca6d3618218b6`
+passed the complete validation bundle: 255 components and 6,477 tests counted by
+the legacy summary parser, with zero failures. The native stock engineering and
+saved-status suites separately passed 33 and 10 tests; those counts are not
+included in that parser total.
+
+Independent review verified the 1,594-file archive against its pin and commit.
+The isolated 4180 preview and actual 4178 service both passed eleven navigation
+routes, a 390-by-844 mobile viewport, result bindings and HTTP/browser write guards.
+Both retained all 25,910 protected-file hashes, with no browser errors or external
+requests. The actual-port acceptance finished at 2026-10-12T19:08:01.183Z. A later
+independent hash check also found no changes. The temporary 4180 process is closed;
+the previous 4178 archive remains available for rollback. Initial browser checks
+expected English PASS while the existing localization displayed Chinese; their
+failed receipts are retained and only the private harness was corrected.
+
+A subsequent append-only official-reference review supports American exercise
+as a rule-mapped SPY product fact, rather than a returned broker field. The
+[Cboe SPY discussion](https://www.cboe.com/tradable_products/sp_500/mini_spx_options/european_style/)
+and [SPY physical-delivery illustration](https://optionsfacts.cboe.com/) also
+support the standard product convention. Exact applicability of the standard
+100-share deliverable remains conditional: the saved broker chain symbol has no
+verified mapping to an unadjusted OCC series root. No OSI identity or negative
+adjustment evidence was manufactured, and no per-series certificate is demanded.
+This additional review does not rewrite the original stopped preflight displayed
+by the site, create an account continuation, or qualify an option lifecycle.
