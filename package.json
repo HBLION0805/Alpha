@@ -5,6 +5,8 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "options:equity-source-probe": "tsx scripts/options-equity-source-probe.mjs",
+    "test:equity-source-probe": "tsx scripts/options-equity-source-probe.test.mjs",
     "options:automatic-bars": "tsx scripts/options-automatic-bars.mjs",
     "test:automatic-bars": "tsx scripts/options-automatic-bars.test.mjs",
     "options:position-quotes": "tsx scripts/options-position-quotes.mjs",

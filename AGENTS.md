@@ -1,3 +1,15 @@
+## Independent equity quote probe — October 12, 2026
+
+Read [delivery](docs/OPTIONS_EQUITY_SOURCE_PROBE_DELIVERY.md) and
+[status](docs/status/equity-source-probe.json). A separate explicit SPY-only
+diagnostic invokes existing get_equity_quotes once without requiring research
+qualification or selecting option legs. Preserve raw responses and separate
+call success, quote clocks/data, research and execution status. An equity quote
+does not prove option quote access or real-time entitlement. Keep failures and
+unknowns; no retries, schedule, account, plan, journal, fill or new authentication
+requirement. Frozen trial/result/runbook and 4178 remain unchanged. This stage
+allows its local commit only; any new public push needs exact scope approval.
+
 ## Automatic OHLCV research source — October 12, 2026
 
 Read [delivery](docs/OPTIONS_AUTOMATIC_OHLCV_DELIVERY.md) and
