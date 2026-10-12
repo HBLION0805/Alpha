@@ -5,6 +5,8 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "options:automatic-bars": "tsx scripts/options-automatic-bars.mjs",
+    "test:automatic-bars": "tsx scripts/options-automatic-bars.test.mjs",
     "options:position-quotes": "tsx scripts/options-position-quotes.mjs",
     "test:options-position-quotes": "tsx scripts/options-position-quotes.test.mjs",
     "options:trend-study": "tsx scripts/options-trend-study.mjs",

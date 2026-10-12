@@ -1,3 +1,17 @@
+## Automatic OHLCV research source — October 12, 2026
+
+Read [delivery](docs/OPTIONS_AUTOMATIC_OHLCV_DELIVERY.md) and
+[status](docs/status/automatic-ohlcv.json). The existing authorized Robinhood
+historical-data tool now feeds a separate one-shot automatic five-minute
+SPY/QQQ/AAPL/TSM research command. Preserve original Host responses, unknown
+interpolation/latency/cache/adjustment confirmation/volume coverage, excluded
+forming bars and continuity diagnostics. ThreeFacet consumes descriptive evidence
+without replacing strict technical plans, source qualification or original gates.
+No timer, account/order access, new credential, frozen-trial rerun, 4178 switch,
+production deployment, CPI/15:50 or challenge-ledger change. Keep real captures
+ignored and local. This stage prepares a local commit; obtain exact public-push
+scope clearance before publishing this new change.
+
 ## Assistant preparation version repair — October 11, 2026
 
 Final review found that 44991ca omitted TECH_SPREAD_PLAN_INPUT_V1 in its original preparation call: INPUT_SCOPE was a format rejection, not assistant-origin validation. The local repair supplies the required version, preserves the original whitelist, and now reaches BLOCKED / EVIDENCE_INTEGRITY. Read the corrected [delivery](docs/OPTIONS_TECH_ASSISTANT_RESEARCH_DELIVERY.md) and [status](docs/status/tech-assistant-research.json). Old receipts remain immutable; new isolated receipts retain the same request/registration clocks and no new sources or permissions. Independent review of the repaired commit is pending. Exact-44991ca public-push approval is on hold; wait for root scope confirmation and final clearance before any push. Keep 4178, frozen October 12 and Owner roots unchanged.

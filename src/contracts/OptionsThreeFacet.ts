@@ -67,6 +67,9 @@ export interface ThreeFacetInput {
     trigger: string; triggerState?: 'OBSERVED' | 'PENDING' | 'UNKNOWN'; eventAt?: string;
   }) | null;
   observedTechnical?: ObservedRetracementInput | null;
+  // Original automatic source capture, consumed as descriptive evidence only.
+  // Does not replace technical/frozen-plan, source quality or entry requirements.
+  automaticBars?: { capture: unknown } | null;
   researchPlan?: {
     id: string; registeredAt: string; hypothesis: string; sourceIds: string[];
     triggerCondition: string; invalidationCondition: string; exitCondition: string;

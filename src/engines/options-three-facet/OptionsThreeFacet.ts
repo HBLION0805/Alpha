@@ -1,5 +1,6 @@
 import type { Candle, CandleSeries, Evidence, Facet, FibPlan, FrozenFibPlan, ObservedRetracementInput, ThreeFacetInput } from '../../contracts/OptionsThreeFacet';
 import { paperFingerprint } from '../options-paper/OptionsPaperTradingEngine';
+import { assessAutomaticEquityBars } from '../options-robinhood-data/AutomaticEquityBars';
 
 export const FIB_RATIOS = [0, .382, .618, .786, 1, 1.272, 1.618] as const;
 export const SOURCE_CAPABILITIES = Object.freeze({
@@ -276,6 +277,8 @@ export function assessThreeFacet(i:ThreeFacetInput) {
     let technical:ReturnType<typeof technicalReview>|null=null;
     if(i.observedTechnical)check(i.observedTechnical.symbol===i.symbol&&clock(i.observedTechnical.asOf)===at,'OBSERVED_CASE_IDENTITY_OR_CLOCK');
     const observedTechnical=i.observedTechnical?reviewObservedRetracement(i.observedTechnical):null;
+    const automaticTechnicalObservation=i.automaticBars?assessAutomaticEquityBars(i.automaticBars.capture,i.asOf).assets.find(a=>a.symbol===i.symbol):null;
+    if(i.automaticBars)check(automaticTechnicalObservation,'AUTOMATIC_SYMBOL_MISMATCH');
     if(!i.technical)facets.push(observedTechnical?.status==='PARTIAL_STRUCTURE_REVIEWED'?'TECHNICAL_TRIGGER_EVIDENCE_UNKNOWN':'TECHNICAL_EVIDENCE_UNKNOWN');
     else {try {technical=technicalReview(i,at);facets.push(...technical.issues);} catch(e) {
       facets.push(e instanceof Error?e.message:'THREE_FACET_TECHNICAL_INVALID');
@@ -323,6 +326,7 @@ export function assessThreeFacet(i:ThreeFacetInput) {
     const conditionalPlanStatus=allowed?'READY_FOR_QUOTE_REVIEW':!research.retained?'NOT_REGISTERED':
       reassess?'REASSESS_REQUIRED':blockers.some(b=>!pendingTriggers.has(b))?'AWAITING_EVIDENCE':'AWAITING_TRIGGER';
     return {...base,symbol:i.symbol,asOf:i.asOf,holdingWindow:{from:i.holdingFrom,through:i.holdingThrough},
+      ...(i.automaticBars?{automaticTechnicalObservation}:{}),
       confluence:confluence?'ALIGNED':'NOT_ESTABLISHED',eligibleForTradeEvaluation:confluence,
       recommendationGate:allowed?'ELIGIBLE_FOR_QUOTE_REVIEW':'WAIT',candidateCount:allowed?1:0,blockers,technical:technical??observedTechnical,observedTechnical,
       researchStatus:research.status,researchCandidateCount:research.retained?1:0,research,
