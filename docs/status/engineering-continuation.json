@@ -1,0 +1,53 @@
+{
+  "version": "ENGINEERING_CONTINUATION_DELIVERY_V1",
+  "status": "FIXTURE_IMPLEMENTATION_ACCEPTED_REAL_OPTION_NOT_TESTED",
+  "scope": "ONE_OPTION_SEGMENT_FROM_CLOSED_STOCK_ACCOUNT",
+  "contextTested": "TEST_FIXTURE_ONLY",
+  "sameAccount": true,
+  "parentReplayedFromOriginals": true,
+  "commonExclusiveWriter": true,
+  "permanentSingleParentClaim": true,
+  "unsettledAvailableForEntry": false,
+  "capitalReset": false,
+  "realAccountClaimCreated": false,
+  "realOptionSegmentCreated": false,
+  "realOptionLifecycle": "BLOCKED_EXTERNAL_SERIES_APPLICABILITY_NOT_TESTED",
+  "newMarketCalls": 0,
+  "realOrders": 0,
+  "existing4178Changed": false,
+  "liveCollectorScopeChanged": false,
+  "publicPush": "NOT_AUTHORIZED_FOR_THIS_CHANGE",
+  "validation": {
+    "dedicatedTests": {
+      "passed": 36,
+      "failed": 0,
+      "skipped": 0,
+      "context": "TEST_FIXTURE_ONLY"
+    },
+    "independentReview": {
+      "status": "PASS",
+      "remainingP1P2": 0,
+      "coreSha256": "0ada08cf54375e28c37da1c477892039b5100896893c91299ebdaf0c2b17dd1d",
+      "receiptSha256": "42602116f983bdcbbb50f8a0b0f227e22ef998a07608508c3be0344004d4a32c"
+    },
+    "protectedOriginals": {
+      "checked": 25910,
+      "changed": 0,
+      "receiptSha256": "c63ffcb7d7d39fdeb4bdeefcc177289d3af2d97059a876b5e90e1fe98161cc36"
+    },
+    "realAccountFiles": 3,
+    "finalFullRegression": {
+      "status": "PASSED",
+      "componentCount": 256,
+      "parserCountedTests": 6477,
+      "passed": 6477,
+      "failed": 0,
+      "logSha256": "af9b03384364009d9fb8385cd0bb86437a5017f61df9e5a3c1ae5db4274274f5",
+      "codePinSha256": "262d5b20bf7b8528623258e747d9eafb5cd6d60df4654d7b05b68cb923dbea5b",
+      "note": "Native node:test suite counts are reported separately; dedicated continuation suite is 36/36."
+    },
+    "fixtureLogSha256": "fe49c1de8dbb825570af72fb225e70d3cda0aeefde73b228780d00029fee9b24",
+    "fixtureOriginalIndexSha256": "4969604d4d875bb713eec7c016b83694344412473de788d41b0bf2837eb9fb1e"
+  },
+  "completedAt": "2026-10-12T19:37:33.224Z"
+}

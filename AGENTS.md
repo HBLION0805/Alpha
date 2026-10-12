@@ -1,3 +1,16 @@
+## Same-account engineering continuation — October 12, 2026
+
+Read [delivery](docs/OPTIONS_ENGINEERING_CONTINUATION_DELIVERY.md) and
+[status](docs/status/engineering-continuation.json). The Owner authorized the
+bounded same-account option continuation implementation and TEST_FIXTURE_ONLY
+validation despite the separate real-contract evidence block. Reuse the closed
+stock originals, exact parent tip, inherited settled/unsettled funds, permanent
+single-segment claim and parent writer lock. Research alone is N/A; contract,
+permission, entitlement, costs, risk and later quotes remain mandatory. Preserve
+unknown adjustment/deliverable applicability. No real claim/segment, quote,
+replacement series, live 4178 change or public push is included in this stage.
+The earlier real preflight and real account originals remain unchanged.
+
 ## Saved engineering acceptance and bounded option follow-on — October 12, 2026
 
 Read [web delivery](docs/OPTIONS_ENGINEERING_ACCEPTANCE_WEB_DELIVERY.md) and

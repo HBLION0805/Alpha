@@ -10,11 +10,11 @@ export function validateTechQuoteSelection(s){
  return s;
 }
 /** Serializable request schema. Timing is an explicit engineering assumption, not a trading rule. */
-export function validateTechSpreadSelection(s){
+export function validateTechSpreadSelection(s,engineeringSPY=false){
  const fail=()=>{throw Error('TECH_QUOTES_SPREAD_SELECTION');},uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(v);
  const cents=v=>{if(typeof v!=='string'||!/^\d{1,8}(?:\.\d{1,4})?$/.test(v))return null;const [w,f='']=v.split('.');return /[1-9]/.test(f.slice(2))?null:Number(w)*100+Number((f+'00').slice(0,2));};
  if(!s||Object.keys(s).sort().join()!=='batchId,expiry,legs,maxSourceSkewMs,structure,symbol,type,version'||s.version!=='TECH_DEBIT_SPREAD_SELECTION_V1'||
-  !/^[a-z0-9][a-z0-9-]{0,79}$/.test(s.batchId)||!['AAPL','TSM','QQQ','TSLA'].includes(s.symbol)||
+  !/^[a-z0-9][a-z0-9-]{0,79}$/.test(s.batchId)||!(engineeringSPY?s.symbol==='SPY':['AAPL','TSM','QQQ','TSLA'].includes(s.symbol))||
   !/^\d{4}-\d\d-\d\d$/.test(s.expiry)||new Date(s.expiry+'T00:00:00Z').toISOString().slice(0,10)!==s.expiry||
   !['BULL_CALL_DEBIT','BEAR_PUT_DEBIT'].includes(s.structure)||s.type!==(s.structure==='BULL_CALL_DEBIT'?'call':'put')||
   !Number.isSafeInteger(s.maxSourceSkewMs)||s.maxSourceSkewMs<0||s.maxSourceSkewMs>60000||!Array.isArray(s.legs)||s.legs.length!==2)fail();
@@ -89,8 +89,11 @@ function body(result){
 const sourceClock=v=>{try{snapshotNs(v);return v}catch{return null}};
 const count=v=>Number.isSafeInteger(v)&&v>=0?v:null;
 const positiveCents=v=>{const c=snapshotCents(v);return c!==null&&c>0?c:null};
-export function normalizeTechOptionCapture(capture,asOf){
- const v=capture;validateTechQuoteSelection(v?.selection);
+export function normalizeTechOptionCapture(capture,asOf){return normalizeCapture(capture,asOf,false);}
+/** Saved engineering inputs only; the collector's allowed symbols are unchanged. */
+export function normalizeEngineeringOptionCapture(capture,asOf){return normalizeCapture(capture,asOf,true);}
+function normalizeCapture(capture,asOf,engineeringSPY){
+ const v=capture;if(engineeringSPY)validateTechSpreadSelection(v?.selection,true);else validateTechQuoteSelection(v?.selection);
  const isSpreadBatch=v.version==='TECH_OPTION_CAPTURE_V2',maximumCalls=isSpreadBatch?5:4;
  check((isSpreadBatch||v.version==='TECH_OPTION_CAPTURE_V1')&&isSpreadBatch===(v.selection.version==='TECH_DEBIT_SPREAD_SELECTION_V1')&&['HOST_MARKET_TOOL_RESPONSES','SYNTHETIC_FIXTURE'].includes(v.origin)&&v.accountAccessed===false&&v.executionAllowed===false,'SCOPE');
  if(isSpreadBatch)check(v.batchId===v.selection.batchId&&v.atomicSnapshot===false,'BATCH_BINDING');
@@ -129,7 +132,7 @@ export function normalizeTechOptionCapture(capture,asOf){
  const quotes=instruments.instruments.map(i=>{
   const raw=byId.get(i.id);
   if(!raw)return {id:i.id,symbol:s.symbol,status:'MISSING_QUOTE',blockers:['EXACT_OPTION_QUOTE_MISSING'],snapshot:null};
-  const ask=positiveCents(raw.ask_price),below=positiveCents(i.min_ticks?.below_tick),above=positiveCents(i.min_ticks?.above_tick),cutoff=positiveCents(i.min_ticks?.cutoff_price);
+  const ask=positiveCents(raw.ask_price),below=positiveCents(i.min_ticks?.below_tick),above=positiveCents(i.min_ticks?.above_tick),cutoff=engineeringSPY?snapshotCents(i.min_ticks?.cutoff_price):positiveCents(i.min_ticks?.cutoff_price);
   const snapshot={id:i.id,symbol:s.symbol,expiry:i.expiration_date,type:i.type,strike:i.strike_price,multiplier:Number(i.trade_value_multiplier),bidCents:positiveCents(raw.bid_price),askCents:ask,bidSize:count(raw.bid_size),askSize:count(raw.ask_size),tickCents:ask===null||cutoff===null?null:ask>=cutoff?above:below,aboveTickCents:above,belowTickCents:below,cutoffCents:cutoff,delta:typeof raw.delta==='string'&&Number.isFinite(Number(raw.delta))?Number(raw.delta):null,updatedAt:sourceClock(raw.updated_at),receivedAt:qr.receivedAt,underlyingPriceUsd,underlyingPriceCents:null,underlyingAt,chainSession:{chainId:ch.id,lateCloseState:['enabled','disabled'].includes(ch.late_close_state)?ch.late_close_state:'unknown',receivedAt:cr.receivedAt}};
   const atReceipt=assessSnapshotQuote(snapshot,qr.receivedAt,true,true),current=assessSnapshotQuote(snapshot,asOf,true,true),blockers=[...current.blockers];
   if(current.staleNow)blockers.push('QUOTE_STALE_NOW');

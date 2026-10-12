@@ -95,6 +95,7 @@ function exclusive(root,runId,fn){
  check(/^paper-[a-z0-9-]{1,60}$/.test(runId),'RUN_ID');const dir=join(base,runId);fs.mkdirSync(dir,{recursive:true});check(fs.realpathSync(dir)===dir,'DIRECTORY');
  const lock=join(dir,'.spy-engineering-writer.lock'),fd=fs.openSync(lock,'wx',0o600);try{return fn();}finally{fs.closeSync(fd);fs.unlinkSync(lock);}
 }
+export {exclusive as withSpyEngineeringWriter};
 export function startSpyEngineering({root,input,recordedAt=new Date().toISOString()}){
  validateSpyEngineeringPlan(input);if(real(input)){recordedAt=new Date().toISOString();check(ns(recordedAt)>=ns(input.decisionAt)&&ns(recordedAt)-ns(input.decisionAt)<=5000000000n,'FRESH_T0');}
  return exclusive(root,input.account.id,()=>journal.start({root,runId:input.account.id,input,recordedAt}));

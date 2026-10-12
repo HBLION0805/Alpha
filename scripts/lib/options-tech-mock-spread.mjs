@@ -15,11 +15,11 @@ const mapLeg=l=>({side:l.role==='LONG'?'BUY':'SELL',contract:{contractId:l.contr
 const product=s=>s==='CDS'?'BULL_CALL_DEBIT':'BEAR_PUT_DEBIT';
 
 function validateStart(p){
- const paper=p?.version==='TECH_QUOTE_PAPER_DEBIT_SPREAD_V1',bound=paper||p?.version==='TECH_MOCK_DEBIT_SPREAD_V2',policy=paper?spreadPaperEvidencePolicy(p.evidenceContext):null;
- keys(p,'version mode executionModel candidate research structure decisionAt entryDeadlineAt timeExitAt quantity legs entryDebitLimitCents maxLegSpreadCents account'+(bound?' provenance':'')+(paper?' evidenceContext maxSourceSkewMs':''));
- check(paper?p.mode==='REAL_QUOTE_PAPER'&&p.executionModel==='TWO_LEG_BID_ASK_PAPER_ASSUMPTION'&&integer(p.maxSourceSkewMs,0,60000):['TECH_MOCK_DEBIT_SPREAD_V1','TECH_MOCK_DEBIT_SPREAD_V2'].includes(p.version)&&p.mode==='MOCK'&&p.executionModel==='ATOMIC_TWO_LEG_ASSUMPTION','MODE');
+ const engineering=p?.version==='ENGINEERING_DEBIT_SPREAD_V1',paper=p?.version==='TECH_QUOTE_PAPER_DEBIT_SPREAD_V1',bound=paper||p?.version==='TECH_MOCK_DEBIT_SPREAD_V2',policy=paper?spreadPaperEvidencePolicy(p.evidenceContext):null;
+ keys(p,'version mode executionModel candidate research structure decisionAt entryDeadlineAt timeExitAt quantity legs entryDebitLimitCents maxLegSpreadCents account'+(bound?' provenance':'')+(paper||engineering?' evidenceContext maxSourceSkewMs':''));
+ check(engineering?p.mode==='ENGINEERING_ONLY'&&p.executionModel==='TWO_LEG_BID_ASK_PAPER_ASSUMPTION'&&['TEST_FIXTURE_ONLY','REAL_MARKET_DATA_SIMULATION'].includes(p.evidenceContext)&&integer(p.maxSourceSkewMs,0,60000):paper?p.mode==='REAL_QUOTE_PAPER'&&p.executionModel==='TWO_LEG_BID_ASK_PAPER_ASSUMPTION'&&integer(p.maxSourceSkewMs,0,60000):['TECH_MOCK_DEBIT_SPREAD_V1','TECH_MOCK_DEBIT_SPREAD_V2'].includes(p.version)&&p.mode==='MOCK'&&p.executionModel==='ATOMIC_TWO_LEG_ASSUMPTION','MODE');
  keys(p.candidate,'id symbol origin');
- check(p.candidate.origin===(paper?policy.origin:'SYNTHETIC_FIXTURE')&&(paper?/^paper-[a-z0-9-]{1,60}$/:/^mock-[a-z0-9-]{1,60}$/).test(p.candidate.id)&&TECH_PAPER_SCOPE.includes(p.candidate.symbol)&&p.research.symbol===p.candidate.symbol,'CANDIDATE');
+ check(p.candidate.origin===(engineering?(p.evidenceContext==='TEST_FIXTURE_ONLY'?'SYNTHETIC_FIXTURE':'HOST_MARKET_TOOL_RESPONSES'):paper?policy.origin:'SYNTHETIC_FIXTURE')&&(paper||engineering?/^paper-[a-z0-9-]{1,60}$/:/^mock-[a-z0-9-]{1,60}$/).test(p.candidate.id)&&(engineering?p.candidate.symbol==='SPY':TECH_PAPER_SCOPE.includes(p.candidate.symbol))&&p.research.symbol===p.candidate.symbol,'CANDIDATE');
  check(['PDS','CDS'].includes(p.structure)&&p.quantity===1&&Array.isArray(p.legs)&&p.legs.length===2,'SUPPORTED_STRUCTURE');
  const roles=new Set(),ids=new Set();
  for(const l of p.legs){
@@ -33,21 +33,29 @@ function validateStart(p){
  check(p.legs[0].contract.expiry===p.legs[1].contract.expiry&&p.legs[0].contract.type===p.legs[1].contract.type&&snapshotCents(p.legs[0].contract.strike)!==snapshotCents(p.legs[1].contract.strike),'COMMON_EXPIRY_AND_TYPE');
  check(inferOptionsStructure(p.legs.map(mapLeg))===product(p.structure),'STRIKE_ORIENTATION');
  const decision=clock(p.decisionAt),end=clock(p.timeExitAt);clock(p.entryDeadlineAt);
- check(clock(p.research.asOf)<decision&&clock(p.research.researchPlan.registeredAt)<=clock(p.research.asOf),'FROZEN_BEFORE_DECISION');
+ if(engineering){keys(p.research,'asOf symbol qualification');check(p.research.asOf===p.decisionAt&&p.research.qualification==='NOT_APPLICABLE_ENGINEERING_ONLY','ENGINEERING_RESEARCH_SCOPE');}
+ else check(clock(p.research.asOf)<decision&&clock(p.research.researchPlan.registeredAt)<=clock(p.research.asOf),'FROZEN_BEFORE_DECISION');
  const chain={lateCloseState:'disabled',chainId:'mock',receivedAt:p.research.asOf};
  const windowPolicy=engineeringObservationPolicy(new Date(Number((decision-30000000000n)/1000000n)).toISOString(),chain);
  check(windowPolicy.sufficient&&clock(p.entryDeadlineAt)===decision+120000000000n&&end===decision+420000000000n,'EXISTING_INTRADAY_WINDOW');
  const session=paperSession(p.decisionAt,chain);
  check(session.isOpen&&paperSession(p.timeExitAt,chain).isOpen&&session.date===paperSession(p.timeExitAt,chain).date&&p.legs[0].contract.expiry>session.date,'PRE_EXPIRY_SAME_DAY_ONLY');
  check(integer(p.entryDebitLimitCents,1,100000)&&integer(p.maxLegSpreadCents,1,10000),'LIMITS');
- const a=p.account;keys(a,'mode id currency provider permission products dataEntitlement settledCashCents reservedCashCents maximumLossCents tradeBudgetMaxCents reviewedAt validThrough'+(bound?' unsettledCashCents':''));
- check((paper?a.mode===(policy.simulatedAccount?'SIMULATED_ACCOUNT':'PAPER')&&/^paper-[a-z0-9-]{1,60}$/.test(a.id)&&a.provider===(policy.simulatedAccount?'LOCAL_SIMULATION_ASSUMPTIONS':policy.fixture?'TEST_FIXTURE':'ATTRIBUTED_DOCUMENTS')&&a.permission===(policy.simulatedAccount?'SIMULATED_PRODUCTS_ONLY':'DOCUMENT_EVIDENCE_PASSED')&&a.dataEntitlement==='DOCUMENT_EVIDENCE_PASSED':a.mode==='MOCK'&&a.id==='MOCK'&&a.provider==='SYNTHETIC_TEST_ONLY'&&['PASS','UNKNOWN','DENIED'].includes(a.permission)&&['PASS','UNKNOWN','DENIED'].includes(a.dataEntitlement))&&a.currency==='USD'&&Array.isArray(a.products)&&a.products.every(x=>['PDS','CDS'].includes(x)),'ACCOUNT_EVIDENCE');
+ const a=p.account;keys(a,'mode id currency provider permission products dataEntitlement settledCashCents reservedCashCents maximumLossCents tradeBudgetMaxCents reviewedAt validThrough'+(bound||engineering?' unsettledCashCents':''));
+ check((engineering?a.mode==='SIMULATED_ACCOUNT'&&/^paper-[a-z0-9-]{1,60}$/.test(a.id)&&a.provider==='LOCAL_SIMULATION_ASSUMPTIONS'&&a.permission==='SIMULATED_PRODUCTS_ONLY'&&a.dataEntitlement==='DOCUMENT_EVIDENCE_PASSED':paper?a.mode===(policy.simulatedAccount?'SIMULATED_ACCOUNT':'PAPER')&&/^paper-[a-z0-9-]{1,60}$/.test(a.id)&&a.provider===(policy.simulatedAccount?'LOCAL_SIMULATION_ASSUMPTIONS':policy.fixture?'TEST_FIXTURE':'ATTRIBUTED_DOCUMENTS')&&a.permission===(policy.simulatedAccount?'SIMULATED_PRODUCTS_ONLY':'DOCUMENT_EVIDENCE_PASSED')&&a.dataEntitlement==='DOCUMENT_EVIDENCE_PASSED':a.mode==='MOCK'&&a.id==='MOCK'&&a.provider==='SYNTHETIC_TEST_ONLY'&&['PASS','UNKNOWN','DENIED'].includes(a.permission)&&['PASS','UNKNOWN','DENIED'].includes(a.dataEntitlement))&&a.currency==='USD'&&Array.isArray(a.products)&&a.products.every(x=>['PDS','CDS'].includes(x)),'ACCOUNT_EVIDENCE');
  for(const k of ['settledCashCents','reservedCashCents','maximumLossCents','tradeBudgetMaxCents'])check(a[k]===null||integer(a[k]),'ACCOUNT_MONEY');
  if(bound){check(integer(a.unsettledCashCents),'UNSETTLED_MONEY');validateMockSpreadPlanBinding(p);}
+ if(engineering)check(integer(a.unsettledCashCents)&&a.reservedCashCents===0,'ENGINEERING_FUNDS');
  check(clock(a.reviewedAt)<=clock(paper?p.decisionAt:p.research.asOf)&&clock(a.validThrough)>=end,'ACCOUNT_CLOCK');
  return p;
 }
 function validateEvent(e,plan=null,asOf=null){
+ if(plan?.version==='ENGINEERING_DEBIT_SPREAD_V1'){
+  keys(e,'id origin quote');keys(e.quote,'receivedAt source executionState action legs');
+  check(/^paper-[a-z0-9-]{1,60}$/.test(e.id)&&e.origin===plan.candidate.origin&&e.quote.source===(plan.evidenceContext==='TEST_FIXTURE_ONLY'?'TEST_FIXTURE':'ROBINHOOD_OFFICIAL_MCP'),'ENGINEERING_EVENT');
+  check(['COHERENT_BATCH_PAPER_ASSUMPTION','PARTIAL_FILL','SINGLE_LEG_FILL'].includes(e.quote.executionState)&&['OBSERVE','CLOSE'].includes(e.quote.action)&&Array.isArray(e.quote.legs)&&e.quote.legs.length<=2,'ENGINEERING_EVENT');
+  check(new Date(e.quote.receivedAt).toISOString()===e.quote.receivedAt,'RECEIPT_PRECISION');return;
+ }
  const paper=e?.version==='TECH_QUOTE_PAPER_SPREAD_BATCH_EVENT_V1',bound=paper||e?.version==='TECH_MOCK_SPREAD_BATCH_EVENT_V1',policy=paper?spreadPaperEvidencePolicy(e.provenance?.evidenceContext):null;
  keys(e,'id origin quote'+(bound?' version provenance':''));check((paper?/^paper-[a-z0-9-]{1,60}$/:/^mock-[a-z0-9-]{1,60}$/).test(e.id)&&e.origin===(paper?policy.origin:'SYNTHETIC_FIXTURE'),'EVENT_ORIGIN');
  if(bound)validateMockSpreadEventBinding(e,plan,asOf);
@@ -71,25 +79,25 @@ function pair(p,e,high){
   }catch{errors.push('LEG_QUOTE_INVALID');}
  }
  let skewExceeded=new Set(quotes.map(x=>x.updatedAt)).size!==1;
- if(p.mode==='REAL_QUOTE_PAPER')try{const skew=clock(quotes[0].updatedAt)-clock(quotes[1].updatedAt);skewExceeded=(skew<0n?-skew:skew)>BigInt(p.maxSourceSkewMs)*1000000n;}catch{errors.push('LEG_QUOTE_INVALID');}
+ if(['REAL_QUOTE_PAPER','ENGINEERING_ONLY'].includes(p.mode))try{const skew=clock(quotes[0].updatedAt)-clock(quotes[1].updatedAt);skewExceeded=(skew<0n?-skew:skew)>BigInt(p.maxSourceSkewMs)*1000000n;}catch{errors.push('LEG_QUOTE_INVALID');}
  if(skewExceeded||new Set(quotes.map(x=>x.underlyingAt)).size!==1||new Set(quotes.map(x=>x.underlyingPriceUsd)).size!==1)errors.push('UNSYNCHRONIZED_LEG_QUOTES');
  return {errors:[...new Set(errors)],quotes};
 }
 export function replayMockSpread(p,events,asOf){
- validateStart(p);check(clock(asOf)>=clock(p.research.asOf),'AS_OF');const paper=p.mode==='REAL_QUOTE_PAPER',bound=paper||p.version==='TECH_MOCK_DEBIT_SPREAD_V2';
+ validateStart(p);check(clock(asOf)>=clock(p.research.asOf),'AS_OF');const engineering=p.version==='ENGINEERING_DEBIT_SPREAD_V1',paper=p.mode==='REAL_QUOTE_PAPER',bound=paper||p.version==='TECH_MOCK_DEBIT_SPREAD_V2';
  const a=p.account,available=a.settledCashCents===null||a.reservedCashCents===null?null:a.settledCashCents-a.reservedCashCents;
  const costsKnown=p.legs.every(l=>['entryFeeCents','exitFeeCents','exitSlippageCents'].every(k=>integer(l[k])));
  const entryFees=costsKnown?p.legs.reduce((n,l)=>n+l.entryFeeCents,0):null,exitFees=costsKnown?p.legs.reduce((n,l)=>n+l.exitFeeCents,0):null;
  const slippage=costsKnown?p.legs.reduce((n,l)=>n+l.exitSlippageCents*100*p.quantity,0):null;
- const frozenBlockers=[];if(a.permission!==(paper?(spreadPaperEvidencePolicy(p.evidenceContext).simulatedAccount?'SIMULATED_PRODUCTS_ONLY':'DOCUMENT_EVIDENCE_PASSED'):'PASS')||!a.products.includes(p.structure))frozenBlockers.push('MOCK_SPREAD_PERMISSION_NOT_PASSED');
- if(a.dataEntitlement!==(paper?'DOCUMENT_EVIDENCE_PASSED':'PASS'))frozenBlockers.push('MOCK_ENTITLEMENT_NOT_PASSED');
+ const frozenBlockers=[];if(a.permission!==(engineering?'SIMULATED_PRODUCTS_ONLY':paper?(spreadPaperEvidencePolicy(p.evidenceContext).simulatedAccount?'SIMULATED_PRODUCTS_ONLY':'DOCUMENT_EVIDENCE_PASSED'):'PASS')||!a.products.includes(p.structure))frozenBlockers.push('MOCK_SPREAD_PERMISSION_NOT_PASSED');
+ if(a.dataEntitlement!==((paper||engineering)?'DOCUMENT_EVIDENCE_PASSED':'PASS'))frozenBlockers.push('MOCK_ENTITLEMENT_NOT_PASSED');
  if(available===null||available<0)frozenBlockers.push('MOCK_FUNDS_UNKNOWN_OR_INVALID');
  if(!integer(a.maximumLossCents,1)||!integer(a.tradeBudgetMaxCents,1))frozenBlockers.push('MOCK_RISK_LIMITS_UNKNOWN');
  if(!costsKnown)frozenBlockers.push('COSTS_UNKNOWN');
  const high=new Map(),orders=[],diagnostics=[];let pendingExit=null,residual=false,entry=null,exit=null,terminal=null,last=null,gap=false;
  for(const e of events){
   validateEvent(e,p,asOf);check(bound?e.provenance?.parentPlanSha256===p.provenance.planSha256:!e.version,'BOUND_EVENT_PLAN');const q=e.quote;if(clock(q.receivedAt)>clock(asOf))continue;
-  if(q.executionState!==(paper?'COHERENT_BATCH_PAPER_ASSUMPTION':'ATOMIC_QUOTE_PAIR')){residual=true;diagnostics.push({eventId:e.id,codes:['PARTIAL_OR_RESIDUAL_EXECUTION_UNSUPPORTED'],actualResidualExposure:'UNMODELED_NOT_CLEARED'});continue;}
+  if(q.executionState!==((paper||engineering)?'COHERENT_BATCH_PAPER_ASSUMPTION':'ATOMIC_QUOTE_PAIR')){residual=true;diagnostics.push({eventId:e.id,codes:['PARTIAL_OR_RESIDUAL_EXECUTION_UNSUPPORTED'],actualResidualExposure:'UNMODELED_NOT_CLEARED'});continue;}
   if(paperSession(q.receivedAt).date!==paperSession(p.decisionAt).date){diagnostics.push({eventId:e.id,codes:['OVERNIGHT_UNSUPPORTED']});continue;}
   if(last&&entry&&!exit&&clock(q.receivedAt)-clock(last)>60000000000n)gap=true;last=q.receivedAt;
   if(residual){diagnostics.push({eventId:e.id,codes:['UNSUPPORTED_RESIDUAL_LATCHED']});continue;}
@@ -99,8 +107,8 @@ export function replayMockSpread(p,events,asOf){
   if(!entry){
    codes.push(...frozenBlockers);if(q.action==='CLOSE')codes.push('CLOSE_WITHOUT_POSITION');
    if(clock(q.receivedAt)<=clock(p.decisionAt)||clock(q.receivedAt)>clock(p.entryDeadlineAt))codes.push('ENTRY_WINDOW');
-   const research=assessTechPaperFeasibility({research:p.research,at:q.receivedAt}).research;
-   if(research.trial.status!=='PRE_CONFIRMATION_RESEARCH_CANDIDATE'||research.direction!==(p.structure==='CDS'?'UP':'DOWN'))codes.push('TRIAL_RESEARCH_OR_DIRECTION');
+   if(!engineering){const research=assessTechPaperFeasibility({research:p.research,at:q.receivedAt}).research;
+   if(research.trial.status!=='PRE_CONFIRMATION_RESEARCH_CANDIDATE'||research.direction!==(p.structure==='CDS'?'UP':'DOWN'))codes.push('TRIAL_RESEARCH_OR_DIRECTION');}
   }
   if(!errors.length){
    for(const x of quotes){
@@ -131,15 +139,15 @@ export function replayMockSpread(p,events,asOf){
   }
   diagnostics.push({eventId:e.id,codes:[...new Set(codes)]});
  }
- const initialUnsettled=bound?a.unsettledCashCents:0;
+ const initialUnsettled=bound||engineering?a.unsettledCashCents:0;
  const settled=available===null?null:available-(entry?entry.debitCents+entry.feesCents:0)+(exit?Math.min(0,exit.cashflowCents):0),unsettled=initialUnsettled+(exit?Math.max(0,exit.cashflowCents):0);
  const total=settled===null?null:settled+unsettled,pnl=exit?total-available-initialUnsettled:null;
  check(settled===null||settled>=0,'CASH_INVARIANT');
  if(entry&&!exit&&last&&clock(asOf)-clock(last)>60000000000n)gap=true;
  if(entry&&!exit&&clock(asOf)>=clock(p.timeExitAt))pendingExit??='TIME_EXIT';
- const modelAccount={mode:p.account.mode,...(bound?{initialUnsettledCashCents:initialUnsettled,unsettledAvailableForEntry:false}:{}),initialAvailableCashCents:available,otherReservedCashCents:a.reservedCashCents,settledCashCents:settled,unsettledProceedsCents:unsettled,totalCashCents:total,netPnlCents:pnl};
+ const modelAccount={mode:p.account.mode,...(bound||engineering?{initialUnsettledCashCents:initialUnsettled,unsettledAvailableForEntry:false}:{}),initialAvailableCashCents:available,otherReservedCashCents:a.reservedCashCents,settledCashCents:settled,unsettledProceedsCents:unsettled,totalCashCents:total,netPnlCents:pnl};
  const modelPosition={modeledLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:entry&&!exit?(l.role==='LONG'?1:-1)*p.quantity:0})),unmodeledResidual:residual?'UNKNOWN_NOT_CLEARED':null,pendingExit:entry&&!exit?pendingExit:null};
- return {version:paper?'TECH_QUOTE_PAPER_DEBIT_SPREAD_REPORT_V1':residual?'TECH_MOCK_DEBIT_SPREAD_RESIDUAL_REPORT_V2':p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?'TECH_MOCK_DEBIT_SPREAD_REPORT_V2':'TECH_MOCK_DEBIT_SPREAD_REPORT_V1',mode:p.mode,...(paper?{evidenceContext:p.evidenceContext,sourceClockPolicy:{maxSourceSkewMs:p.maxSourceSkewMs,atomicSnapshot:false},brokerAccountAuthenticated:false}:{}),...(p.provenance?{planBinding:{planSha256:p.provenance.planSha256,parentIds:p.provenance.parentIds,costModel:p.provenance.costModel,conditions:p.provenance.conditions}}:{}),executionModel:p.executionModel,atomicFillsAreBrokerGuarantee:false,candidate:p.candidate,structure:p.structure,assessedAt:asOf,
+ return {version:engineering?'ENGINEERING_DEBIT_SPREAD_REPORT_V1':paper?'TECH_QUOTE_PAPER_DEBIT_SPREAD_REPORT_V1':residual?'TECH_MOCK_DEBIT_SPREAD_RESIDUAL_REPORT_V2':p.version==='TECH_MOCK_DEBIT_SPREAD_V2'?'TECH_MOCK_DEBIT_SPREAD_REPORT_V2':'TECH_MOCK_DEBIT_SPREAD_REPORT_V1',mode:p.mode,...(engineering?{researchQualification:'NOT_APPLICABLE_ENGINEERING_ONLY',strategyQualification:'NOT_APPLICABLE_ENGINEERING_ONLY'}:{}),...(paper||engineering?{evidenceContext:p.evidenceContext,sourceClockPolicy:{maxSourceSkewMs:p.maxSourceSkewMs,atomicSnapshot:false},brokerAccountAuthenticated:false}:{}),...(p.provenance?{planBinding:{planSha256:p.provenance.planSha256,parentIds:p.provenance.parentIds,costModel:p.provenance.costModel,conditions:p.provenance.conditions}}:{}),executionModel:p.executionModel,atomicFillsAreBrokerGuarantee:false,candidate:p.candidate,structure:p.structure,assessedAt:asOf,
   status:residual?'BLOCKED_UNSUPPORTED_RESIDUAL':exit?'CLOSED_MODELED':entry?'OPEN_UNRESOLVED':'NO_ENTRY',orders,
   position:residual?{status:'UNKNOWN_UNRECONCILED_RESIDUAL',unmodeledResidual:'UNKNOWN_NOT_CLEARED',actualClosed:'UNKNOWN',actualLegs:p.legs.map(l=>({contract:l.contract,signedQuantity:null})),pendingExit:null}:modelPosition,
   account:residual?{mode:p.account.mode,status:'UNKNOWN_UNRECONCILED_RESIDUAL',availableFundsCents:null,settledCashCents:null,unsettledProceedsCents:null,totalCashCents:null,netPnlCents:null}:modelAccount,terminalRisk:residual?null:terminal,
@@ -148,5 +156,5 @@ export function replayMockSpread(p,events,asOf){
   frozenBlockers,diagnostics,quoteGapObserved:gap,actualTrades:0,executionAllowed:false,productionPaperAdmissionAllowed:false,realAcceptance:'NOT_TESTED',
   unsupported:['PARTIAL_OR_SEPARATE_LEG_EXECUTION','NAKED_SHORT','CALENDAR_SPREAD','OVERNIGHT','EXERCISE_ASSIGNMENT','STOP_TARGET_STRATEGY','SCALING','CASH_SETTLEMENT','PRODUCTION_ARMING']};
 }
-const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1',eventAvailableAt:spreadEventAvailableAt,runIdPattern:/^(mock|paper)-[a-z0-9-]{1,60}$/,validateRunScope:(input,runId)=>{check(runId.startsWith(input.mode==='REAL_QUOTE_PAPER'?'paper-':'mock-'),'RUN_MODE_SCOPE');if(input.mode==='REAL_QUOTE_PAPER'&&spreadPaperEvidencePolicy(input.evidenceContext).simulatedAccount)check(runId===input.account.id,'SIMULATED_ACCOUNT_RUN_SCOPE');}});
+const journal=createIsolatedMockJournal({validateStart,validateEvent,calculate:replayMockSpread,startVersion:'TECH_MOCK_SPREAD_START_V1',eventAvailableAt:spreadEventAvailableAt,runIdPattern:/^(mock|paper)-[a-z0-9-]{1,60}$/,validateRunScope:(input,runId)=>{check(input.version!=='ENGINEERING_DEBIT_SPREAD_V1','CONTINUATION_WRITER_REQUIRED');check(runId.startsWith(input.mode==='REAL_QUOTE_PAPER'?'paper-':'mock-'),'RUN_MODE_SCOPE');if(input.mode==='REAL_QUOTE_PAPER'&&spreadPaperEvidencePolicy(input.evidenceContext).simulatedAccount)check(runId===input.account.id,'SIMULATED_ACCOUNT_RUN_SCOPE');}});
 export const startMockSpread=journal.start,appendMockSpread=journal.append,recoverMockSpread=journal.recover;

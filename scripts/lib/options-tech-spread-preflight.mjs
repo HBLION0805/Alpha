@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {snapshotNs,snapshotCents} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 import {inferOptionsStructure} from '../../src/engines/options-structure-comparison/OptionsStructureComparisonEngine.ts';
-import {normalizeTechOptionCapture} from './options-tech-quote-adapter.mjs';
+import {normalizeTechOptionCapture,normalizeEngineeringOptionCapture} from './options-tech-quote-adapter.mjs';
 import {readTechEvidenceRecords} from './options-tech-paper-feasibility.mjs';
 
 const sha=b=>createHash('sha256').update(b).digest('hex');
@@ -25,7 +25,9 @@ export function readTechSpreadOriginal(path,expectedSha256){
 }
 
 /** Saved-source replay only. No source calls, fill model, registration or admission. */
-export function assessTechSpreadPreflight(input){
+export function assessTechSpreadPreflight(input){return assessSpreadPreflight(input,false);}
+export function assessEngineeringSpreadPreflight(input){return assessSpreadPreflight(input,true);}
+function assessSpreadPreflight(input,engineeringSPY){
  const report={version:'TECH_SPREAD_PREFLIGHT_V1',assessedAt:input?.at??null,
   mode:'UNKNOWN',status:'BLOCKED',originals:[],legs:[],staticStructure:{status:'NOT_ASSESSED',structure:null},
   quotePair:{status:'NOT_ASSESSED',sourceClockDifferenceNs:null,sameCapture:false,economics:null},
@@ -49,7 +51,7 @@ export function assessTechSpreadPreflight(input){
    if(batch)check(r.intent.origin===c.origin&&c.batchId===r.intent.selection.batchId,'BATCH_INTENT_BINDING');
    check(snapshotNs(r.intent.requestedAt)<=snapshotNs(c.startedAt)&&snapshotNs(c.capturedAt)<=snapshotNs(r.recordedAt)&&snapshotNs(r.recordedAt)<=now,'ORIGINAL_RECEIPT_CLOCK');
    check(c.origin===(input.mode==='MOCK_CONTROL'?'SYNTHETIC_FIXTURE':'HOST_MARKET_TOOL_RESPONSES'),'MIXED_OR_UNDECLARED_ORIGIN');
-   const normalized=normalizeTechOptionCapture(c,input.at);sources.set(o.id,{o,r,c,normalized});
+   const normalized=(engineeringSPY?normalizeEngineeringOptionCapture:normalizeTechOptionCapture)(c,input.at);sources.set(o.id,{o,r,c,normalized});
    if(batch)report.producerCapability='TWO_EXPLICIT_STRIKES_ONE_QUOTE_BATCH_NO_ATOMIC_SNAPSHOT';
    report.originals.push({id:o.id,sha256:o.sha256,captureSha256:r.captureSha256,origin:c.origin,
     requestedAt:r.intent.requestedAt,startedAt:c.startedAt,capturedAt:c.capturedAt,recordedAt:r.recordedAt,

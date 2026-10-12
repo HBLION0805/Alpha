@@ -37,6 +37,9 @@ function publish(path,value,interrupt){
  if(interrupt==='AFTER_PUBLICATION')throw Error('MOCK_SIMULATED_INTERRUPTION');
 }
 
+// Shared durable primitives; callers retain their own scope and writer checks.
+export {publish as publishMockJournalRecord,read as readMockJournalRecord};
+
 
 /** Pure integrity/ordering verification shared by mutating recovery and read-only preview. */
 export function verifyMockJournalRecords(manifest,rows,startVersion){
