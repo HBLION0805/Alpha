@@ -1,3 +1,17 @@
+## Saved weekly receipts to pending research — October 12, 2026
+
+Read [delivery](docs/OPTIONS_WEEKLY_RESEARCH_INPUTS_DELIVERY.md) and
+[status](docs/status/weekly-research-inputs.json). The existing TECH36 CLI can
+convert saved weekly receipts into a new isolated workspace using the existing
+research and append-review store. Preserve exact originals, issuer/accession,
+event versions, all source clocks and UNKNOWN publication/review times. SEC
+metadata is not a filing body; failed IR is not covered or verified. Cross-source
+same-event association requires evidence, never a ticker/date/title shortcut.
+The actual offline acceptance has 545 pending events, 533 missing filing bodies,
+zero reviewed/selected events and no new quotes or Paper. This local development
+commit does not switch website research roots, deploy, push, schedule conversion,
+change CPI or write any account/ledger. Explicit cited review remains next.
+
 ## Offline external contract evidence intake — October 12, 2026
 
 Read [delivery](docs/OPTIONS_CONTRACT_EVIDENCE_INTAKE_DELIVERY.md) and

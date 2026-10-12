@@ -9,6 +9,7 @@ import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPa
 import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 import {buildTechResearchInputs,extractTechOriginal,techResearchContext} from './options-tech-research-inputs.mjs';
 import {buildTechSecMatch,validateTechSecMatchRequest} from './options-tech-sec-matcher.mjs';
+import {WEEKLY_RESEARCH_DESCRIPTOR,WEEKLY_RESEARCH_BATCH,captureWeeklyResearch,loadWeeklyResearchSource,writeWeeklyResearchBatch} from './options-weekly-research-inputs.mjs';
 
 export const TECH36_POOL=Object.freeze('AAPL MSFT GOOGL AMZN META NVDA TSLA AVGO AMD TSM ASML AMAT LRCX KLAC MU ARM QCOM ORCL CRM NOW PANW CRWD ADBE PLTR SNOW SNPS CDNS ANET CSCO VRT DELL HPE STX WDC APH ETN'.split(' '));
 const sha=b=>createHash('sha256').update(b).digest('hex');
@@ -71,6 +72,7 @@ export function loadTechCandidate(sourceRoot,{researchOnly=false}={}){
 
 /** Original scanner files are sufficient; review/ranking/followup artifacts are optional. */
 export function loadTechResearchSource(sourceRoot){
+ if(fs.existsSync(resolve(sourceRoot,WEEKLY_RESEARCH_DESCRIPTOR)))return loadWeeklyResearchSource(sourceRoot,TECH36_POOL);
  if(fs.existsSync(resolve(sourceRoot,'derived-review-v1.2/summary.json')))return loadTechCandidate(sourceRoot,{researchOnly:true});
  const r=reader(sourceRoot);let prefix='';
  if(!fs.existsSync(resolve(sourceRoot,'policy.json'))){
@@ -115,6 +117,31 @@ export function prepareTechResearchInputs({root,sourceRoot,runId,now=()=>new Dat
   implementation:Object.fromEntries(['options-tech-candidate.mjs','options-tech-research-inputs.mjs','options-tech-review-ranking.mjs'].map(p=>[p,sha(fs.readFileSync(new URL(p,import.meta.url)))])),
   manifest,screeningTrace:inputs.screeningTrace,sourceReads:0,marketCalls:0,executionAllowed:false,paperAdmissionAllowed:false};
  write(out+'/receipt.json',receipt);return {runPath:out,receiptPath:out+'/receipt.json',...receipt};
+}
+
+/** Explicit offline intake into the SAME research/review store, in a new workspace.
+ * The original source workspace and the live website's research root are untouched. */
+export function prepareTechWeeklyResearchInputs({root,sourceRoot,runId,now=()=>new Date().toISOString()}){
+ const at=now(),snapshot=captureWeeklyResearch(sourceRoot,at,TECH36_POOL);
+ check(snapshot.projection.events.length>0&&snapshot.projection.events.length<=8*WEEKLY_RESEARCH_BATCH,'WEEKLY_EVENT_CATALOG_BOUND');
+ const out=runDirectory(root,runId,true),workspace=resolve(out,'workspace');
+ fs.mkdirSync(resolve(workspace,'data/runtime/options-workbench-development'),{recursive:true});
+ const sourceOriginals=[];
+ for(const [p,bytes]of snapshot.files){const target=resolve(out,'originals',p);fs.mkdirSync(dirname(target),{recursive:true});fs.writeFileSync(target,bytes,{flag:'wx',mode:0o600});sourceOriginals.push({path:'originals/'+p,sha256:sha(bytes)});}
+ const batches=[];
+ for(let n=0;n<snapshot.projection.events.length;n+=WEEKLY_RESEARCH_BATCH){
+  const id='weekly-batch-'+String(batches.length+1).padStart(3,'0'),dir=resolve(out,id+'-source');
+  writeWeeklyResearchBatch(dir,snapshot,snapshot.projection.events.slice(n,n+WEEKLY_RESEARCH_BATCH),at,{includeEmptyAndFailed:n===0});
+  const prepared=prepareTechResearchInputs({root:workspace,sourceRoot:dir,runId:id,now:()=>at});
+  const replay=readTechEventReviews({root:workspace,runId:id,now:()=>at});
+  check(replay.revisionCount===0&&replay.inputs.eventInputs.every(e=>e.reviewStatus==='NOT_REVIEWED'&&e.coverageStatus==='UNRESOLVED')&&replay.ranking.every(r=>r.category==='MISSING_DATA'),'WEEKLY_AUTHORITY');
+  batches.push({runId:id,scanId:replay.scanId,receiptPath:prepared.receiptPath,receiptSha256:sha(fs.readFileSync(prepared.receiptPath)),headSha256:replay.headSha256,eventCount:replay.inputs.eventInputs.length,sourceCutoff:replay.inputs.sourceCutoff,reviewRevisionCount:0,status:'EXISTING_RESEARCH_REPLAY_PASS'});
+ }
+ const result={version:'TECH36_WEEKLY_RESEARCH_INTAKE_V1',runId,processedAt:at,workspace,counts:snapshot.projection.counts,sourceOriginals,batches,
+  lineage:snapshot.projection.events,sourceHealth:snapshot.projection.health,ignored:snapshot.projection.ignored,
+  nextStep:'Review cited originals and explicitly append event review using the existing TECH36 entrypoint; missing filing bodies remain missing.',
+  sourceCalls:0,marketCalls:0,reviewCreated:false,planSaved:false,paperAdmissionAllowed:false,executionAllowed:false};
+ write(out+'/receipt.json',result);return {...result,receiptPath:out+'/receipt.json'};
 }
 
 const rankShape=rows=>rows.map(x=>({symbol:x.symbol,category:x.category,coreScore:x.coreScore,valuation:x.dimensions.valuation,eventId:x.eventId??null}));

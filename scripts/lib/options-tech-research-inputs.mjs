@@ -66,18 +66,18 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
     [input.createdAt,processedAt,lineage.originalCutoff,lineage.followupBatch?.completedAt,lineage.followupBatch?.errataAt,...events.map(e=>e.receivedAt),...receipts.map(r=>r.receivedAt),...supplements.map(r=>r.receivedAt)].some(t=>t&&(!Number.isFinite(Date.parse(t))||Date.parse(t)>Date.parse(at))))throw Error('TECH_CANDIDATE_RESEARCH_CLOCK');
  const documents=[],eventInputs=[];
  const materialReviews=[...input.reviews];
- for(const event of events.filter(e=>[...originals,...supplements].some(o=>o.eventId===e.eventId)))for(const symbol of event.symbols)if(!materialReviews.some(r=>r.eventId===event.eventId&&r.symbol===symbol))materialReviews.push({symbol,eventId:event.eventId,unreviewed:true});
+ for(const event of events.filter(e=>[...originals,...supplements].some(o=>o.eventId===e.eventId)))for(const symbol of event.symbols)if(!materialReviews.some(r=>r.eventId===event.eventId&&r.symbol===symbol))materialReviews.push({symbol,eventId:event.eventId,unreviewed:true,...(event.weeklyEvidence?{originalVerified:false,companyEventVerified:false,materialityReviewed:false,materialConflict:false}:{})});
  for(const review of materialReviews){
   const event=events.find(e=>e.eventId===review.eventId&&e.symbols.includes(review.symbol)),issues=[],documentIds=[];
   for(const original of [...originals,...supplements].filter(o=>o.eventId===event.eventId)){
-   const path=scan+original.rawPath,bytes=files.get(path),receipt=[...receipts,...supplements].find(r=>r.rawPath===original.rawPath&&r.sha256===original.sha256&&r.status==='SUCCESS');
+   const path=scan+original.rawPath,bytes=files.get(path),receipt=[...receipts,...supplements].find(r=>r.rawPath===original.rawPath&&r.sha256===original.sha256&&r.status==='SUCCESS'&&(!original.weeklyReceipt||r.weeklyReceipt?.recordFingerprint===original.weeklyReceipt.recordFingerprint));
    if(!receipt||!bytes||hash(bytes)!==original.sha256){issues.push('ORIGINAL_UNAVAILABLE_OR_UNBOUND');continue;}
    const id=event.eventId+':'+original.sha256;
    if(!documents.some(d=>d.id===id)){
     let body;try{body=extractTechOriginal(bytes);}catch{body={status:'UNSUPPORTED_ENCODING',blocks:[]};}
     documents.push({id,eventId:event.eventId,symbols:event.symbols,sourcePath:path,sha256:original.sha256,url:original.url??receipt.url??null,
      sourceKind:original.provenance??'SAVED_EVENT_ORIGINAL',publishedAt:original.publishedAt??null,publicationClockStatus:original.publishedAt?'ATTRIBUTED_SOURCE_PUBLICATION_TIME':'UNKNOWN_DOCUMENT_PUBLICATION_TIME',
-     filingAcceptedAt:event.kind==='OFFICIAL_FILING_METADATA'?event.publishedAt??null:null,receivedAt:receipt.receivedAt,...body});
+     filingAcceptedAt:event.kind==='OFFICIAL_FILING_METADATA'?event.filingAcceptedAt??event.publishedAt??null:null,receivedAt:receipt.receivedAt,...body,...(original.weeklyReceipt?{weeklyReceipt:original.weeklyReceipt,bodyScope:event.kind==='OFFICIAL_FILING_METADATA'?'SUBMISSIONS_METADATA_NOT_FILING_BODY':'IR_CALENDAR_NOT_VERIFIED_EVENT'}:{})});
    }else documents.find(d=>d.id===id).retransmittedReceipts=(documents.find(d=>d.id===id).retransmittedReceipts??[]).concat({sourcePath:path,url:original.url??receipt.url??null,receivedAt:receipt.receivedAt,publishedAt:original.publishedAt??null,provenance:original.provenance??'SAVED_EVENT_ORIGINAL',sha256:original.sha256});
    documentIds.push(id);
   }
@@ -98,7 +98,8 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
   const coverageQualified=!review.unreviewed&&review.originalVerified===true&&review.companyEventVerified===true&&review.materialityReviewed===true&&review.materialConflict===false&&docs.some(d=>d.status==='BODY_TEXT_EXTRACTED');
   eventInputs.push({eventId:event.eventId,symbol:review.symbol,reviewStatus:review.unreviewed?'NOT_REVIEWED':'ATTRIBUTED_SAVED_REVIEW',discoveredAt:event.receivedAt??null,
    coverageStatus:coverageQualified?'ATTRIBUTED_VERIFIED_SCOPE':'UNRESOLVED',
-   filingAcceptedAt:event.kind==='OFFICIAL_FILING_METADATA'?event.publishedAt??null:null,
+   filingAcceptedAt:event.kind==='OFFICIAL_FILING_METADATA'?event.filingAcceptedAt??event.publishedAt??null:null,
+   ...(event.weeklyEvidence?{weeklyEvidence:event.weeklyEvidence}:{}),
    documentIds:unique(documentIds),relatedDiscoveryRecords:related,
    savedReview:{authority:'ATTRIBUTED_SAVED_REVIEW_NOT_AUTOMATIC_FACT_VERIFICATION',reviewedAt:review.unreviewed?null:review.reviewedAt??input.createdAt,
     fact:review.fact??null,interpretation:review.analysis??null,nextEvidence:review.nextEvidence??null,eventWindow:review.eventWindow??null,

@@ -5,6 +5,7 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "test:weekly-research-inputs": "tsx scripts/options-weekly-research-inputs.test.mjs",
     "options:research-assembly": "tsx scripts/options-research-assembly.mjs",
     "options:spy-engineering": "tsx scripts/options-spy-engineering.mjs",
     "test:spy-engineering": "tsx scripts/options-spy-engineering.test.mjs",
