@@ -1,3 +1,19 @@
+## One-share SPY engineering lifecycle — October 12, 2026
+
+Read [delivery](docs/OPTIONS_SPY_ENGINEERING_DELIVERY.md) and
+[status](docs/status/spy-engineering.json). The Owner requested one real-quote
+simulated trade to test the process, with research/strategy explicitly
+NOT_APPLICABLE_ENGINEERING_ONLY. Only the new one-share SPY path is in scope;
+do not develop the abandoned engineering option proposal in parallel. Reuse the
+same original $1,000 simulated funds, full envelope validity and exact account
+journal. Confirm all protected roots and one writer before actual T0. Keep real
+data and fixture origins separate, full probe originals, fixed stock costs,
+entry within two minutes and independent exit after seven minutes from entry.
+Missing exit remains open; sale proceeds remain unsettled. Do not invent source
+depth, broker fees, settlement credit or a real fill. Earlier NO_TRADE and real
+strategy gates remain unchanged. Local commit only; real run needs parent review
+of its saved protocol, and this new code has no public-push authorization yet.
+
 ## Bounded assistant ordinary facts — October 12, 2026
 
 Read [delivery](docs/OPTIONS_ASSISTANT_FACT_ADAPTER_DELIVERY.md) and

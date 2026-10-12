@@ -111,22 +111,29 @@ export async function runEquityProbe({root,runId,symbol,hostConfig,clock=()=>new
  write(dir,'manifest.json',{version:'EQUITY_SOURCE_PROBE_MANIFEST_V1',createdAt:clock(),files:files.map(name=>({name,sha256:hash(readBytes(join(dir,name)))}))});
  return {dir,run,assessment};
 }
-export function recoverEquityProbe(root,path,checkedAt=new Date().toISOString()){
- const dir=privatePath(root,path),m=read(join(dir,'manifest.json')),names=m.files?.map(f=>f.name),prefix=['intent.json','host-prompt.txt','host.jsonl','host-stderr.txt','events.json'];
+export function verifyEquityProbeOriginals(originals,checkedAt){
+ const bytes=name=>{if(typeof originals?.[name]!=='string')fail('ORIGINAL_MISSING');return Buffer.from(originals[name],'utf8');};
+ const read=name=>JSON.parse(new TextDecoder('utf8',{fatal:true}).decode(bytes(name)));
+ const m=read('manifest.json'),names=m.files?.map(f=>f.name),prefix=['intent.json','host-prompt.txt','host.jsonl','host-stderr.txt','events.json'];
  if(m.version!=='EQUITY_SOURCE_PROBE_MANIFEST_V1'||!Array.isArray(names)||![JSON.stringify([...prefix,'capture.json','assessment.json','run.json']),JSON.stringify([...prefix,'assessment.json','run.json'])].includes(JSON.stringify(names)))fail('MANIFEST');
- for(const f of m.files)if(hash(readBytes(join(dir,f.name)))!==f.sha256)fail('HASH');
- const events=read(join(dir,'events.json')),run=read(join(dir,'run.json')),intent=read(join(dir,'intent.json')),report=read(join(dir,'assessment.json'));
- const raw=readBytes(join(dir,'host.jsonl')).toString('utf8');let decoded;
+ for(const f of m.files)if(hash(bytes(f.name))!==f.sha256)fail('HASH');
+ const events=read('events.json'),run=read('run.json'),intent=read('intent.json'),report=read('assessment.json');
+ const raw=bytes('host.jsonl').toString('utf8');let decoded;
  try{decoded=raw.split(/\r?\n/).filter(Boolean).map(JSON.parse);}catch{if(!run.error)fail('HOST_BYTES');}
  if(decoded&&JSON.stringify(decoded)!==JSON.stringify(events.map(e=>e.event)))fail('HOST_BYTES');
  if(!requestOK(intent.request)||intent.tool!==TOOL||intent.origin!==run.origin||intent.runId!==run.runId)fail('INTENT');
  let capture=null;
- if(names.includes('capture.json')){capture=read(join(dir,'capture.json'));if(run.error||run.exitCode!==0||!run.processClosed||run.startedCalls!==1||JSON.stringify(extractEquityProbe(events,intent.origin))!==JSON.stringify(capture))fail('HOST_BINDING');}
+ if(names.includes('capture.json')){capture=read('capture.json');if(run.error||run.exitCode!==0||!run.processClosed||run.startedCalls!==1||JSON.stringify(extractEquityProbe(events,intent.origin))!==JSON.stringify(capture))fail('HOST_BINDING');}
  else if(!run.error)fail('FAILURE_RECORD');
  if(JSON.stringify(savedAssessment(capture,report.assessedAt))!==JSON.stringify(report))fail('REPLAY');
  const timestamps=[intent.createdAt,run.processStartedAt,...(capture?[capture.requestedAt,capture.receivedAt]:[]),run.processFinishedAt,run.eventsPersistedAt,...(capture?[run.capturePersistedAt]:[]),report.assessedAt,run.assessmentPersistedAt,m.createdAt,checkedAt];
  if(timestamps.some(t=>!clockOK(t))||timestamps.some((t,i)=>i>0&&snapshotNs(t)<snapshotNs(timestamps[i-1])))fail('PERSISTENCE_CLOCK');
- return {status:'SAVED_DIAGNOSTIC_REPLAY_PASS',checkedAt,originalAssessmentAt:report.assessedAt,sourceReceiptAt:capture?.receivedAt??null,sourceReceiptAgeSeconds:capture?Number(snapshotNs(checkedAt)-snapshotNs(capture.receivedAt))/1e9:null,callStatus:report.callStatus,quoteStatus:report.quoteStatus,newSourceCalls:0,executionAllowed:false,paperAdmissionAllowed:false};
+ return {capture,intent,run,review:{status:'SAVED_DIAGNOSTIC_REPLAY_PASS',checkedAt,originalAssessmentAt:report.assessedAt,sourceReceiptAt:capture?.receivedAt??null,sourceReceiptAgeSeconds:capture?Number(snapshotNs(checkedAt)-snapshotNs(capture.receivedAt))/1e9:null,callStatus:report.callStatus,quoteStatus:report.quoteStatus,newSourceCalls:0,executionAllowed:false,paperAdmissionAllowed:false}};
+}
+export function recoverEquityProbe(root,path,checkedAt=new Date().toISOString()){
+ const dir=privatePath(root,path),originals={};
+ for(const name of ['manifest.json','intent.json','host-prompt.txt','host.jsonl','host-stderr.txt','events.json','capture.json','assessment.json','run.json']){const p=join(dir,name);try{originals[name]=readBytes(p).toString('utf8');}catch(e){if(name!=='capture.json'||e.code!=='ENOENT')throw e;}}
+ return verifyEquityProbeOriginals(originals,checkedAt).review;
 }
 export async function equityProbeCli(args,{root=process.cwd()}={}){
  if(args.length===1&&args[0]==='--help')return {usage:'--probe --symbol SPY --run-id ID --host-config FILE | --recover DIRECTORY',scope:'One explicit equity quote call only. No research prerequisite, option selection, account, plan, journal or fill.'};
