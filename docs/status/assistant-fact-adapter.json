@@ -1,0 +1,71 @@
+{
+  "version": "ASSISTANT_FACT_ADAPTER_DELIVERY_V1",
+  "date": "2026-10-12",
+  "status": "ENGINEERING_VERIFIED_REAL_R2_NO_TRADE",
+  "policy": "SIMULATED_ASSISTANT_FACTS_V1",
+  "inputVersion": "TECH_SPREAD_PLAN_INPUT_V3",
+  "researchVersion": "THREE_FACET_INPUT_V2",
+  "bindingVersion": "TECH_SPREAD_PLAN_BINDING_V2",
+  "scope": "EXISTING_SIMULATED_ACCOUNT_AAPL_TSM_ONE_CDS_OR_PDS",
+  "ordinaryFactRepresentation": "PASS_OFFLINE_REAL_R2_REPLAY",
+  "exactTimedEvents": "NOT_ADMITTED_BY_NEW_ADAPTER",
+  "sourceAuthentication": "NOT_ESTABLISHED_BY_HASH_OR_EXCERPT",
+  "realRun": "prospective-plan-20261012-midday-01",
+  "offlineDemo": "adapter-demo-01",
+  "offlineDemoSavedAt": "2026-10-12T16:57:55.241Z",
+  "originalResearchAsOf": "2026-10-12T16:26:41.305Z",
+  "realResearchStatus": "RETAINED_UNVALIDATED",
+  "realPreparationStatus": "BLOCKED",
+  "realTerminal": "NO_TRADE",
+  "originalQuoteFailures": [
+    "LEG_SPREADS_30_25_CENTS_EXCEED_10",
+    "QQQ_747_0994_BELOW_747_27"
+  ],
+  "unknownsRetained": [
+    "CONTRACT_DELIVERABLE_ADJUSTMENT",
+    "DATA_ENTITLEMENT_ENVELOPE",
+    "MAXIMUMLOSS_REVIEW",
+    "LIQUIDITY_REVIEW",
+    "GAP_REVIEW",
+    "TECHNICAL_QUALIFICATION"
+  ],
+  "T0": null,
+  "paperStarted": false,
+  "fills": 0,
+  "followup30Minutes": "NOT_OCCURRED_NOT_BACKFILLED",
+  "newSourceCalls": 0,
+  "dedicatedTests": {
+    "passed": 50,
+    "failed": 0
+  },
+  "fullValidation": {
+    "status": "PASSED",
+    "componentCount": 253,
+    "testsExecuted": 6477,
+    "passed": 6477,
+    "failed": 0,
+    "durationMs": 276888,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/lib/options-tech-spread-preparation.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "logSha256": "8706575a20fcb8cfd5e0b00ceac501950da803ffbfb46980a1955b542c8440b4"
+  },
+  "independentReview": {
+    "status": "PASS",
+    "fixedFinding": "UNPROVEN_EXACT_TIME_NOW_BLOCKED",
+    "r2ByteAndAssessmentReplay": "PASS",
+    "legacyAaplTsmRecovery": "PASS",
+    "sandboxHardLinkLimitation": "RESOLVED_BY_AUTHORIZED_FULL_VALIDATION",
+    "remainingCodeBlockers": []
+  },
+  "publication": "LOCAL_COMMIT_ONLY_PUBLIC_PUSH_NOT_AUTHORIZED",
+  "deploymentChanged": false,
+  "schedulesChanged": false,
+  "challengeLedgerChanged": false,
+  "protectedOriginalFilesVerified": 19,
+  "protectedAccountJournalsPresent": 0
+}

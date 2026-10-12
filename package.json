@@ -6,6 +6,7 @@
   },
   "scripts": {
     "options:research-assembly": "tsx scripts/options-research-assembly.mjs",
+    "test:assistant-facts": "tsx scripts/options-tech-assistant-facts.test.mjs",
     "test:research-assembly": "tsx scripts/options-research-assembly.test.mjs",
     "options:option-source-probe": "tsx scripts/options-option-source-probe.mjs",
     "test:option-source-probe": "tsx scripts/options-option-source-probe.test.mjs",

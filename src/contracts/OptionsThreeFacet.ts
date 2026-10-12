@@ -3,6 +3,19 @@ export type ReviewState = 'PASS' | 'FAIL' | 'UNKNOWN';
 export interface Evidence {
   id: string; kind: 'FUNDAMENTAL' | 'NEWS' | 'TECHNICAL' | 'RISK' | 'STRUCTURE';
   source: string; publishedAt: string | null; receivedAt: string | null; reviewedAt: string;
+  // V2 ordinary facts only; never substitutes for an exact publication instant.
+  factId?: string;
+}
+export interface ResearchFactSources {
+  version: 'SIMULATED_ASSISTANT_FACTS_V1';
+  context: 'SIMULATED_ACCOUNT_REAL_MARKET_DATA' | 'TEST_FIXTURE_SIMULATED_ACCOUNT';
+  accountId: string;
+  originals: {id: string; origin: 'PROVIDER_DOCUMENT' | 'SYNTHETIC_FIXTURE'; rawJson: string; sha256: string}[];
+  facts: {id: string; originalId: string; source: string; quotedText: string;
+    extractedBy: 'ASSISTANT'; attribution: 'PUBLISHER_CLAIM';
+    purpose: 'ORDINARY_FACT' | 'EXACT_EVENT'; availableNoLaterThan: string | null;
+    publication: {precision: 'UNKNOWN' | 'CALENDAR_DATE' | 'UTC_MINUTE' | 'EXACT' | 'INTERVAL';
+      value?: string; from?: string; through?: string}}[];
 }
 export interface Facet {
   direction: Direction; status: 'SUPPORTED' | 'CONFLICT' | 'UNKNOWN';
@@ -62,7 +75,8 @@ export interface ObservedRetracementInput {
   latestDay?: { date: string; close: number; volumeDisplay: string; completed: boolean | null };
 }
 export interface ThreeFacetInput {
-  version: 'THREE_FACET_INPUT_V1'; symbol: string; instrumentType: 'EQUITY' | 'ETF' | 'OPTION';
+  version: 'THREE_FACET_INPUT_V1' | 'THREE_FACET_INPUT_V2'; symbol: string; instrumentType: 'EQUITY' | 'ETF' | 'OPTION';
+  factSources?: ResearchFactSources;
   asOf: string; holdingFrom: string; holdingThrough: string;
   fundamental?: (Facet & { basis: 'COMPANY' | 'ETF_COMPONENTS_VALUATION_MACRO';
     directionBasis: 'HOLDING_WINDOW_PRICE_THESIS' | 'OPERATING_TREND_ONLY' | 'UNKNOWN';

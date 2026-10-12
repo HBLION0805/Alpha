@@ -1,3 +1,18 @@
+## Bounded assistant ordinary facts — October 12, 2026
+
+Read [delivery](docs/OPTIONS_ASSISTANT_FACT_ADAPTER_DELIVERY.md) and
+[status](docs/status/assistant-fact-adapter.json). Explicit V3 spread input uses
+ASSISTANT_RESEARCH and SYSTEM_PAPER_REQUEST only for the existing bounded simulated
+account. Retain exact source strings, excerpts, receipt clocks and publication
+precision; attribution is not authentication. Only ordinary facts use the
+conservative receipt boundary. Exact-event and exact-publication claims remain
+blocked on this new path. All eight records, original risk/contract/account and
+later-quote gates remain required. Saved R2 stays NO_TRADE: 30/25-cent leg spreads
+exceed 10 cents and QQQ 747.0994 is below 747.27. Offline replay is not a new T0,
+fresh research, fill or 30-minute observation. Keep private originals ignored,
+morning records, schedules, deployment and challenge ledger unchanged. This stage
+allows its local commit only; no new public-push scope is approved.
+
 ## Saved research input assembly — October 12, 2026
 
 Read [delivery](docs/OPTIONS_RESEARCH_ASSEMBLY_DELIVERY.md) and

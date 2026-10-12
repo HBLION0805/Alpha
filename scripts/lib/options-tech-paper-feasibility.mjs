@@ -5,6 +5,7 @@ import {assessSnapshotQuote,snapshotNs,snapshotCents} from '../../src/engines/op
 import {paperFingerprint} from '../../src/engines/options-paper/OptionsPaperTradingEngine.ts';
 import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPaperSession.ts';
 import {engineeringObservationPolicy} from './options-real-data-paper-timing.mjs';
+import {assistantOrigin,validateAssistantPayload} from './options-tech-assistant-fact-policy.mjs';
 
 export const TECH_PAPER_SCOPE=Object.freeze(['AAPL','TSM','QQQ','TSLA']);
 const KINDS=['CONTRACT','DATA_ENTITLEMENT','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS','QUOTE'];
@@ -16,13 +17,14 @@ const identity=q=>[q.id,q.symbol,q.expiry,q.type,q.strike,q.multiplier].join('|'
 const includes=(v,s)=>Array.isArray(v)&&v.length<=10&&v.includes(s);
 
 /** Reuse original attributed record integrity/clocks; this does not authenticate an account. */
-export function readTechEvidenceRecords({inputs,now,decision,validThrough,kinds=KINDS,simulatedAccount=false}) {
+export function readTechEvidenceRecords({inputs,now,decision,validThrough,kinds=KINDS,simulatedAccount=false,assistantContext=null}) {
+ if(assistantContext!==null&&(!simulatedAccount||!['SIMULATED_ACCOUNT_REAL_MARKET_DATA','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(assistantContext)))throw Error('EVIDENCE_ASSISTANT_SCOPE');
  if(!Array.isArray(inputs)||inputs.length!==kinds.length||kinds.some(k=>!SUPPORTED_RECORD_KINDS.includes(k)))throw Error('EVIDENCE_SCHEMA');
  const records=new Map(),payloads=new Map(),blockers=[];let synthetic=false;
     for(const r of inputs){
       if(!r||!kinds.includes(r.kind)||records.has(r.kind)||!text(r.source)||!text(r.reviewedBy)||
-        !(['OWNER_DOCUMENT','PROVIDER_DOCUMENT','SYNTHETIC_FIXTURE'].includes(r.origin)||(simulatedAccount&&['COST_MODEL','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS'].includes(r.kind)&&r.origin==='SIMULATED_ACCOUNT_ASSUMPTION'))||
-        typeof r.rawJson!=='string'||r.rawJson.length>65536||!/^[a-f0-9]{64}$/.test(r.sha256)||
+        !(['OWNER_DOCUMENT','PROVIDER_DOCUMENT','SYNTHETIC_FIXTURE'].includes(r.origin)||(simulatedAccount&&['COST_MODEL','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS'].includes(r.kind)&&r.origin==='SIMULATED_ACCOUNT_ASSUMPTION')||(assistantContext&&assistantOrigin(r)))||
+        typeof r.rawJson!=='string'||r.rawJson.length>(assistantContext&&r.kind==='RESEARCH'&&assistantOrigin(r)?262144:65536)||!/^[a-f0-9]{64}$/.test(r.sha256)||
         sha(r.rawJson)!==r.sha256)throw Error('EVIDENCE_INTEGRITY');
       const observed=snapshotNs(r.observedAt),received=snapshotNs(r.receivedAt),reviewed=snapshotNs(r.reviewedAt),through=snapshotNs(r.validThrough);
       if(observed>received||received>reviewed||reviewed>now||through<now||through<validThrough||
@@ -31,6 +33,9 @@ export function readTechEvidenceRecords({inputs,now,decision,validThrough,kinds=
       if(r.origin==='SYNTHETIC_FIXTURE')synthetic=true;
       const p=parseChainSurveyJson(r.rawJson);
       if(!p||typeof p!=='object'||Array.isArray(p))throw Error('EVIDENCE_PAYLOAD');
+      if(assistantContext&&['RESEARCH','STRATEGY_REQUEST'].includes(r.kind)){
+       if(!assistantOrigin(r))throw Error('EVIDENCE_ASSISTANT_ORIGIN');validateAssistantPayload(r.kind,p,assistantContext);
+      }else if(r.kind==='RESEARCH'&&p.version==='THREE_FACET_INPUT_V2')throw Error('EVIDENCE_ASSISTANT_SCOPE');
       records.set(r.kind,r);payloads.set(r.kind,p);
     }
  return {records,payloads,blockers,synthetic};

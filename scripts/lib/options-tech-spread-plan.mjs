@@ -4,6 +4,7 @@ import {assessTechSpreadPreflight} from './options-tech-spread-preflight.mjs';
 import {readTechEvidenceRecords} from './options-tech-paper-feasibility.mjs';
 import {replayMockSpread,startMockSpread} from './options-tech-mock-spread.mjs';
 import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,boundSpreadPlanHash,mockSpreadEventFromOriginal,spreadPaperEvidencePolicy,spreadRecordOriginAllowed,validateSimulatedSpreadAccount,SIMULATED_SPREAD_RECORD_KINDS} from './options-tech-spread-plan-binding.mjs';
+import {ASSISTANT_FACT_POLICY,assistantInputPolicy,validateAssistantRecordSet} from './options-tech-assistant-fact-policy.mjs';
 const int=(v,min=0)=>Number.isSafeInteger(v)&&v>=min&&v<=100000000;
 const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=2000;
 const code=e=>/^[A-Z_]+$/.test(e?.message)?e.message:'INPUT_INVALID';
@@ -18,19 +19,21 @@ export function previewTechSpreadPlan(input){
  const gate=(c,ok,detail=null)=>out.checks.push({code:c,status:ok?'PASS':'BLOCKED',detail});
  try{
   const paper=input?.mode==='REAL_QUOTE_PAPER';
-  check(paper?input.version==='TECH_SPREAD_PLAN_INPUT_V2':input?.version==='TECH_SPREAD_PLAN_INPUT_V1'&&['MOCK_CONTROL','REAL_SAVED_SOURCE_REPLAY'].includes(input.mode),'INPUT_SCOPE');
+  const assistant=assistantInputPolicy(input);
+  check(paper?(assistant||input.version==='TECH_SPREAD_PLAN_INPUT_V2'):input?.version==='TECH_SPREAD_PLAN_INPUT_V1'&&['MOCK_CONTROL','REAL_SAVED_SOURCE_REPLAY'].includes(input.mode),'INPUT_SCOPE');
   const policy=paper?spreadPaperEvidencePolicy(input.evidenceContext):{fixture:input.mode==='MOCK_CONTROL',preflightMode:input.mode,origin:'SYNTHETIC_FIXTURE'};
+  if(assistant){policy.assistantResearch=true;out.researchPolicy=ASSISTANT_FACT_POLICY;}
   if(paper){out.evidenceContext=input.evidenceContext;out.testFixtureOnly=policy.fixture;out.accountEvidenceAuthentication='NOT_ESTABLISHED_BY_DOCUMENT_HASH';if(policy.simulatedAccount)out.accountBasis='SIMULATED_ACCOUNT_NOT_BROKER_QUALIFICATION';}
   const now=snapshotNs(input.at);check(Array.isArray(input.records)&&input.records.length<=8,'RECORD_BOUND');
   const byKind=new Map();for(const r of input.records){check(SPREAD_PLAN_RECORD_KINDS.includes(r.kind)&&!byKind.has(r.kind),'RECORD_KIND_OR_DUPLICATE');byKind.set(r.kind,r);}
   const requestRecord=byKind.get('STRATEGY_REQUEST');check(requestRecord,'STRATEGY_REQUEST_MISSING');
-  const first=readTechEvidenceRecords({inputs:[requestRecord],kinds:['STRATEGY_REQUEST'],now,decision:now,validThrough:now});check(!first.blockers.length,'STRATEGY_REQUEST_CLOCK');
+  const first=readTechEvidenceRecords({inputs:[requestRecord],kinds:['STRATEGY_REQUEST'],now,decision:now,validThrough:now,simulatedAccount:assistant,assistantContext:assistant?input.evidenceContext:null});check(!first.blockers.length,'STRATEGY_REQUEST_CLOCK');
   const request=first.payloads.get('STRATEGY_REQUEST'),decision=snapshotNs(request.decisionAt),end=snapshotNs(request.timeExitAt),accountId=paper?request.accountId:'MOCK';
   const payloads=new Map();
   for(const kind of SPREAD_PLAN_RECORD_KINDS){
    const r=byKind.get(kind);if(!r){gate(kind+'_MISSING',false);continue;}
-   try{const v=readTechEvidenceRecords({inputs:[r],kinds:[kind],now,decision,validThrough:end,simulatedAccount:policy.simulatedAccount});const correctOrigin=spreadRecordOriginAllowed(policy,r);
-    const okay=!v.blockers.length&&correctOrigin;gate(kind+'_RECORD',okay,v.blockers);out.evidenceState[kind]=okay?(policy.simulatedAccount&&SIMULATED_SPREAD_RECORD_KINDS.includes(kind)?'SIMULATED_ACCOUNT_ASSUMPTION':policy.fixture?(paper?'TEST_FIXTURE':'EXPLICIT_MOCK_ASSUMPTION'):'ATTRIBUTED_NOT_AUTHENTICATED'):'BLOCKED';if(okay)payloads.set(kind,v.payloads.get(kind));
+   try{const v=readTechEvidenceRecords({inputs:[r],kinds:[kind],now,decision,validThrough:end,simulatedAccount:policy.simulatedAccount,assistantContext:assistant?input.evidenceContext:null});const correctOrigin=spreadRecordOriginAllowed(policy,r);
+    const okay=!v.blockers.length&&correctOrigin;gate(kind+'_RECORD',okay,v.blockers);out.evidenceState[kind]=okay?(assistant&&['RESEARCH','STRATEGY_REQUEST'].includes(kind)?r.origin:policy.simulatedAccount&&SIMULATED_SPREAD_RECORD_KINDS.includes(kind)?'SIMULATED_ACCOUNT_ASSUMPTION':policy.fixture?(paper?'TEST_FIXTURE':'EXPLICIT_MOCK_ASSUMPTION'):'ATTRIBUTED_NOT_AUTHENTICATED'):'BLOCKED';if(okay)payloads.set(kind,v.payloads.get(kind));
    }catch(e){gate(kind+'_RECORD',false,code(e));out.evidenceState[kind]='BLOCKED';}
   }
   gate(paper?'ISOLATED_PAPER_SCOPE':'REAL_INPUT_HAS_NO_LIFECYCLE_AUTHORITY',paper||input.mode==='MOCK_CONTROL');
@@ -43,6 +46,7 @@ export function previewTechSpreadPlan(input){
   gate(paper?'PREDECLARED_SOURCE_SKEW':'EXISTING_MOCK_EXACT_SYNCHRONY',paper?Number.isSafeInteger(request.maxSourceSkewMs)&&request.maxSourceSkewMs>=0&&request.maxSourceSkewMs<=60000&&request.maxSourceSkewMs===selection.maxSourceSkewMs:out.preflight.quotePair.sourceClockDifferenceNs==='0');
   gate('PRIOR_REQUEST_BOUND_TO_SELECTION',request.selectionSha256===spreadPlanHash(selection)&&request.structure===selection.structure&&decision<snapshotNs(raw.capture.startedAt)&&(!paper||decision<snapshotNs(raw.intent.requestedAt)));
   if(out.checks.some(c=>c.status==='BLOCKED'))return out;
+  if(assistant)validateAssistantRecordSet(input.records,input.evidenceContext);
   const research=payloads.get('RESEARCH'),cost=payloads.get('COST_MODEL'),contracts=payloads.get('CONTRACT'),permission=payloads.get('PRODUCT_PERMISSION'),funds=payloads.get('ACCOUNT_FUNDS'),risk=payloads.get('RISK_LIMITS'),entitlement=payloads.get('DATA_ENTITLEMENT');
   if(policy.simulatedAccount)validateSimulatedSpreadAccount(payloads,request);
   gate('RESEARCH_REQUEST_ID_AND_HASH',request.researchId===research.researchPlan?.id&&request.researchSha256===byKind.get('RESEARCH').sha256&&research.symbol===selection.symbol);
@@ -62,7 +66,7 @@ export function previewTechSpreadPlan(input){
    legs:sourceLegs.map(l=>{const c=cost.legs.find(c=>c.id===l.contract.id);return {role:l.direction,quantity:request.quantity,contract:contracts.contracts.find(c=>c.id===l.contract.id),entryFeeCents:c.entryFeeCents,exitFeeCents:c.exitFeeCents,exitSlippageCents:c.exitSlippageCents};}),
    entryDebitLimitCents:request.entryDebitLimitCents,maxLegSpreadCents:request.maxLegSpreadCents,
    account:{mode:policy.simulatedAccount?'SIMULATED_ACCOUNT':paper?'PAPER':'MOCK',id:accountId,currency:'USD',provider:policy.simulatedAccount?'LOCAL_SIMULATION_ASSUMPTIONS':paper?(policy.fixture?'TEST_FIXTURE':'ATTRIBUTED_DOCUMENTS'):'SYNTHETIC_TEST_ONLY',permission:policy.simulatedAccount?'SIMULATED_PRODUCTS_ONLY':paper?'DOCUMENT_EVIDENCE_PASSED':'PASS',products:[structure],dataEntitlement:paper?'DOCUMENT_EVIDENCE_PASSED':'PASS',settledCashCents:funds.settledCashCents,reservedCashCents:funds.reservedCashCents,unsettledCashCents:funds.unsettledCashCents,maximumLossCents:request.maximumLossCents,tradeBudgetMaxCents:request.budgetCents,reviewedAt:extrema(accountRecords,'reviewedAt',true),validThrough:extrema(accountRecords,'validThrough',false)}};
-  plan.provenance={version:'TECH_SPREAD_PLAN_BINDING_V1',origin:policy.origin,...(paper?{evidenceContext:input.evidenceContext}:{}),planSha256:spreadPlanHash(plan),requestId:request.id,researchId:request.researchId,researchSha256:byKind.get('RESEARCH').sha256,batchId:selection.batchId,preflightAt:input.at,
+  plan.provenance={version:assistant?'TECH_SPREAD_PLAN_BINDING_V2':'TECH_SPREAD_PLAN_BINDING_V1',...(assistant?{researchPolicy:ASSISTANT_FACT_POLICY}:{}),origin:policy.origin,...(paper?{evidenceContext:input.evidenceContext}:{}),planSha256:spreadPlanHash(plan),requestId:request.id,researchId:request.researchId,researchSha256:byKind.get('RESEARCH').sha256,batchId:selection.batchId,preflightAt:input.at,
    parentIds:[...new Set([...request.parentIds,request.id,request.researchId,selection.batchId,cost.id,accountId])],original:{rawJson:original.rawJson,sha256:original.sha256},records:input.records,
    costModel:{id:cost.id,version:cost.version,source:byKind.get('COST_MODEL').source,sha256:byKind.get('COST_MODEL').sha256},
    maximumLossBasis:'TERMINAL_VERTICAL_PAYOFF_PLUS_FIXED_COST_RESERVE_NOT_EARLY_CLOSE_OR_ASSIGNMENT_BOUND',conditions:{...request.conditions,evaluation:'MANUAL_CONDITIONS_AND_EXISTING_TIME_EXIT_ONLY'},

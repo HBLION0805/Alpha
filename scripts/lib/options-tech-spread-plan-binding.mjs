@@ -3,6 +3,7 @@ import {assessTechSpreadPreflight} from './options-tech-spread-preflight.mjs';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {readTechEvidenceRecords} from './options-tech-paper-feasibility.mjs';
 import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {ASSISTANT_FACT_POLICY,assistantOrigin,validateAssistantRecordSet} from './options-tech-assistant-fact-policy.mjs';
 export const SPREAD_PLAN_RECORD_KINDS=['STRATEGY_REQUEST','RESEARCH','COST_MODEL','CONTRACT','DATA_ENTITLEMENT','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS'];
 export const spreadPlanHash=v=>createHash('sha256').update(typeof v==='string'?v:JSON.stringify(v)).digest('hex');
 export const boundSpreadPlanHash=p=>{const {planSha256,...provenance}=p.provenance;return spreadPlanHash({...p,provenance});};
@@ -13,7 +14,7 @@ export function spreadPaperEvidencePolicy(context){
  return {fixture,simulatedAccount,origin:fixture?'SYNTHETIC_FIXTURE':'HOST_MARKET_TOOL_RESPONSES',preflightMode:fixture?'MOCK_CONTROL':'REAL_SAVED_SOURCE_REPLAY',quoteSource:fixture?'TEST_FIXTURE':'ROBINHOOD_OFFICIAL_MCP'};
 }
 export const SIMULATED_SPREAD_RECORD_KINDS=['COST_MODEL','PRODUCT_PERMISSION','ACCOUNT_FUNDS','RISK_LIMITS'];
-export const spreadRecordOriginAllowed=(policy,r)=>policy.simulatedAccount&&SIMULATED_SPREAD_RECORD_KINDS.includes(r?.kind)?r.origin==='SIMULATED_ACCOUNT_ASSUMPTION':policy.fixture?r?.origin==='SYNTHETIC_FIXTURE':['OWNER_DOCUMENT','PROVIDER_DOCUMENT'].includes(r?.origin);
+export const spreadRecordOriginAllowed=(policy,r)=>policy.assistantResearch&&['RESEARCH','STRATEGY_REQUEST'].includes(r?.kind)?assistantOrigin(r):policy.simulatedAccount&&SIMULATED_SPREAD_RECORD_KINDS.includes(r?.kind)?r.origin==='SIMULATED_ACCOUNT_ASSUMPTION':policy.fixture?r?.origin==='SYNTHETIC_FIXTURE':['OWNER_DOCUMENT','PROVIDER_DOCUMENT'].includes(r?.origin);
 /** This engineering account scope is bounded at $1,000; it is not an Owner-wide risk rule. */
 export function validateSimulatedSpreadAccount(v,request){
  const funds=v.get('ACCOUNT_FUNDS'),risk=v.get('RISK_LIMITS'),permission=v.get('PRODUCT_PERMISSION'),cost=v.get('COST_MODEL');
@@ -26,12 +27,15 @@ export function validateSimulatedSpreadAccount(v,request){
 }
 export function validateMockSpreadPlanBinding(p){
  const b=p.provenance,paper=p.version==='TECH_QUOTE_PAPER_DEBIT_SPREAD_V1',policy=paper?spreadPaperEvidencePolicy(p.evidenceContext):{fixture:true,origin:'SYNTHETIC_FIXTURE',preflightMode:'MOCK_CONTROL'},accountId=paper?p.account.id:'MOCK';
- check(b?.version==='TECH_SPREAD_PLAN_BINDING_V1'&&b.origin===policy.origin&&b.planSha256===boundSpreadPlanHash(p)&&(!paper||b.evidenceContext===p.evidenceContext),'BODY_BINDING');
+ const assistant=b?.version==='TECH_SPREAD_PLAN_BINDING_V2';
+ if(assistant){check(paper&&policy.simulatedAccount&&b.researchPolicy===ASSISTANT_FACT_POLICY,'ASSISTANT_SCOPE');policy.assistantResearch=true;}
+ check((assistant||b?.version==='TECH_SPREAD_PLAN_BINDING_V1')&&b.origin===policy.origin&&b.planSha256===boundSpreadPlanHash(p)&&(!paper||b.evidenceContext===p.evidenceContext),'BODY_BINDING');
  check(b.requestId===p.candidate.id&&b.researchId===p.research.researchPlan.id,'RESEARCH_BINDING');
  check(Array.isArray(b.records)&&b.records.length===8&&b.records.every(r=>spreadRecordOriginAllowed(policy,r)&&spreadPlanHash(r.rawJson)===r.sha256),'EVIDENCE_BINDING');
  check(b.original?.sha256===spreadPlanHash(b.original?.rawJson)&&Array.isArray(b.parentIds)&&b.parentIds.includes(b.requestId)&&b.parentIds.includes(b.researchId)&&b.parentIds.includes(b.batchId),'PARENT_BINDING');
  check(b.conditions?.evaluation==='MANUAL_CONDITIONS_AND_EXISTING_TIME_EXIT_ONLY'&&['entry','exit','invalidation'].every(k=>typeof b.conditions[k]==='string'&&b.conditions[k].trim()),'CONDITIONS');
- const validated=readTechEvidenceRecords({inputs:b.records,kinds:SPREAD_PLAN_RECORD_KINDS,now:snapshotNs(b.preflightAt),decision:snapshotNs(p.decisionAt),validThrough:snapshotNs(p.timeExitAt),simulatedAccount:policy.simulatedAccount});check(!validated.blockers.length,'EVIDENCE_CLOCKS');
+ const validated=readTechEvidenceRecords({inputs:b.records,kinds:SPREAD_PLAN_RECORD_KINDS,now:snapshotNs(b.preflightAt),decision:snapshotNs(p.decisionAt),validThrough:snapshotNs(p.timeExitAt),simulatedAccount:policy.simulatedAccount,assistantContext:assistant?p.evidenceContext:null});check(!validated.blockers.length,'EVIDENCE_CLOCKS');
+ if(assistant)validateAssistantRecordSet(b.records,p.evidenceContext);
  const v=validated.payloads,request=v.get('STRATEGY_REQUEST'),research=v.get('RESEARCH'),cost=v.get('COST_MODEL'),contracts=v.get('CONTRACT'),permission=v.get('PRODUCT_PERMISSION'),funds=v.get('ACCOUNT_FUNDS'),risk=v.get('RISK_LIMITS'),entitlement=v.get('DATA_ENTITLEMENT');
  if(policy.simulatedAccount)validateSimulatedSpreadAccount(v,request);
  check(JSON.stringify(research)===JSON.stringify(p.research)&&b.researchSha256===validated.records.get('RESEARCH').sha256&&request.researchSha256===b.researchSha256&&request.researchId===b.researchId,'RESEARCH_CONTENT');

@@ -1,6 +1,7 @@
 import type { Candle, CandleSeries, Evidence, Facet, FibPlan, FrozenFibPlan, ObservedRetracementInput, ThreeFacetInput } from '../../contracts/OptionsThreeFacet';
 import { paperFingerprint } from '../options-paper/OptionsPaperTradingEngine';
 import { assessAutomaticEquityBars } from '../options-robinhood-data/AutomaticEquityBars';
+import {validateResearchFactSources,researchFactTimeEligible} from './OptionsResearchFacts';
 
 export const FIB_RATIOS = [0, .382, .618, .786, 1, 1.272, 1.618] as const;
 export const SOURCE_CAPABILITIES = Object.freeze({
@@ -15,10 +16,11 @@ const clock = (v: unknown): number => {
   check(typeof v === 'string' && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,9})?Z$/.test(v) && Number.isFinite(Date.parse(v)), 'CLOCK');
   return Date.parse(v as string);
 };
-function evidenceOK(rows: Evidence[] | undefined, kind: Evidence['kind'], at: number): boolean {
+function evidenceOK(rows: Evidence[] | undefined, kind: Evidence['kind'], at: number, input?:ThreeFacetInput): boolean {
   return Array.isArray(rows) && rows.length > 0 && rows.length <= 50 && new Set(rows.map(e => e.id)).size === rows.length &&
-    rows.every(e => e && text(e.id) && e.kind === kind && text(e.source) && e.publishedAt !== null && e.receivedAt !== null &&
-      clock(e.publishedAt) <= clock(e.receivedAt) && clock(e.receivedAt) <= clock(e.reviewedAt) && clock(e.reviewedAt) <= at);
+    rows.every(e => e && text(e.id) && e.kind === kind && text(e.source) &&
+      (input?.version==='THREE_FACET_INPUT_V2'&&['FUNDAMENTAL','NEWS'].includes(kind)?researchFactTimeEligible(e,input):
+       e.publishedAt !== null && e.receivedAt !== null && clock(e.publishedAt) <= clock(e.receivedAt) && clock(e.receivedAt) <= clock(e.reviewedAt) && clock(e.reviewedAt) <= at));
 }
 function series(s: CandleSeries, at: number): void {
   check(s && text(s.symbol) && text(s.exchange) && text(s.sourceRef) && text(s.timezone), 'SOURCE_METADATA_MISSING');
@@ -227,7 +229,7 @@ function facetIssues(f: Facet|null|undefined,kind: Evidence['kind'],i:ThreeFacet
   if(!f)return [kind+'_EVIDENCE_UNKNOWN'];
   const issues:string[]=[];
   if(f.status!=='SUPPORTED'||!['UP','DOWN'].includes(f.direction))issues.push(kind+'_UNKNOWN_OR_CONFLICT');
-  if(!evidenceOK(requiredEvidence(f),kind,at))issues.push(kind+'_EVIDENCE_UNKNOWN');
+  if(!evidenceOK(requiredEvidence(f),kind,at,i))issues.push(kind+'_EVIDENCE_UNKNOWN');
   if(f.validFrom===null||f.validThrough===null)
     issues.push(kind+'_VALIDITY_UNKNOWN');
   else if(clock(f.validFrom)>clock(i.holdingFrom)||clock(f.validThrough)<clock(i.holdingThrough))issues.push(kind+'_HOLDING_WINDOW_MISMATCH');
@@ -266,10 +268,11 @@ function technicalReview(i:ThreeFacetInput,at:number) {
     frozenPlanId:p.id,frozenFingerprint:t.frozen.fingerprint,source:t.lower.provider};
 }
 export function assessThreeFacet(i:ThreeFacetInput) {
-  const base={version:'THREE_FACET_REVIEW_V1',authority:'ATTRIBUTED_RESEARCH_REVIEW_NOT_TRADE_APPROVAL',
+  const base={version:i?.version==='THREE_FACET_INPUT_V2'?'THREE_FACET_REVIEW_V2':'THREE_FACET_REVIEW_V1',authority:'ATTRIBUTED_RESEARCH_REVIEW_NOT_TRADE_APPROVAL',
     eventDiscoveryAllowed:true,executionAllowed:false,positionSizingAllowed:false,winProbability:null,sourceCapabilities:SOURCE_CAPABILITIES};
   try {
-    check(i&&i.version==='THREE_FACET_INPUT_V1'&&text(i.symbol)&&['EQUITY','ETF','OPTION'].includes(i.instrumentType),'INPUT');
+    check(i&&['THREE_FACET_INPUT_V1','THREE_FACET_INPUT_V2'].includes(i.version)&&text(i.symbol)&&['EQUITY','ETF','OPTION'].includes(i.instrumentType),'INPUT');
+    if(i.version==='THREE_FACET_INPUT_V2')validateResearchFactSources(i);
     const at=clock(i.asOf);check(clock(i.holdingFrom)>=at&&clock(i.holdingThrough)>clock(i.holdingFrom),'HOLDING_WINDOW');
     const facets=[...facetIssues(i.fundamental,'FUNDAMENTAL',i,at),...facetIssues(i.news,'NEWS',i,at)];
     if(i.fundamental?.directionBasis!=='HOLDING_WINDOW_PRICE_THESIS'||!text(i.fundamental?.directionRationale))

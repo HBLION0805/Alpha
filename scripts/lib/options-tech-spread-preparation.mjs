@@ -3,6 +3,7 @@ import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/Rob
 import {SPREAD_PLAN_RECORD_KINDS,spreadPlanHash,spreadPaperEvidencePolicy,spreadRecordOriginAllowed,SIMULATED_SPREAD_RECORD_KINDS} from './options-tech-spread-plan-binding.mjs';
 import {previewTechSpreadPlan} from './options-tech-spread-plan.mjs';
 import {techStatusCodes} from './options-tech-status-codes.mjs';
+import {assistantInputPolicy} from './options-tech-assistant-fact-policy.mjs';
 
 // Field inventory / drafting guidance only. Admission remains owned by the existing plan engine.
 const sources={
@@ -37,11 +38,12 @@ const draftValue=(field,value)=>!present(value)?null:field==='parentIds'?(Array.
 export function prepareTechSpreadInput(input){
  const inputDigest=spreadPlanHash(input??null),rows=Array.isArray(input?.records)&&input.records.length<=8?input.records:[],payloads=new Map(),records=new Map(),diagnostics=[];
  let policy=null;try{policy=input?.mode==='MOCK_CONTROL'?{fixture:true}:input?.mode==='REAL_QUOTE_PAPER'?spreadPaperEvidencePolicy(input.evidenceContext):null;}catch{}
+ try{if(assistantInputPolicy(input)){policy??={};policy.assistantResearch=true;}}catch{policy=null;}
  const fixture=policy?.fixture??null;
  for(const kind of SPREAD_PLAN_RECORD_KINDS){
   const matches=rows.filter(r=>r?.kind===kind),r=matches.length===1?matches[0]:null;let body=null,integrity='UNKNOWN';
   if(r){
-   try{if(typeof r.rawJson!=='string'||r.rawJson.length>65536||spreadPlanHash(r.rawJson)!==r.sha256)throw Error();body=parseChainSurveyJson(r.rawJson);if(!object(body))throw Error();integrity='LOCAL_BYTES_MATCH_NOT_AUTHENTICATION';}catch{integrity='INVALID_BYTES_OR_JSON';}
+   try{if(typeof r.rawJson!=='string'||r.rawJson.length>(policy?.assistantResearch&&kind==='RESEARCH'?262144:65536)||spreadPlanHash(r.rawJson)!==r.sha256)throw Error();body=parseChainSurveyJson(r.rawJson);if(!object(body))throw Error();integrity='LOCAL_BYTES_MATCH_NOT_AUTHENTICATION';}catch{integrity='INVALID_BYTES_OR_JSON';}
   }
   const originApplicable=policy?spreadRecordOriginAllowed(policy,r):false;
   const extra=policy?.simulatedAccount?({ACCOUNT_FUNDS:['basis','initialCapitalCents','additionalDepositsCents','borrowingCents','initialPositions'],PRODUCT_PERMISSION:['basis','brokerQualification'],RISK_LIMITS:['basis'],COST_MODEL:['basis','actualBrokerFees']}[kind]??[]):[];
