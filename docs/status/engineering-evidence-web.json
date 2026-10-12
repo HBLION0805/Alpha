@@ -1,0 +1,17 @@
+{
+  "version": "ENGINEERING_EVIDENCE_WEB_DELIVERY_V1",
+  "status": "IMPLEMENTED_PENDING_REVIEW_AND_PREVIEW",
+  "baselineCommit": "da08a18046642e31b67738cba9ca4344f908a0b8",
+  "scope": "SAVED_READ_ONLY_PROJECTION",
+  "stock": "PASS_ENGINEERING_ONLY",
+  "continuation": "PASS_FIXTURE_ONLY",
+  "realOption": "BLOCKED_CURRENT_EXACT_DELIVERABLE_APPLICABILITY",
+  "exerciseStyle": "RULE_MAPPED_AMERICAN",
+  "standardDeliverable": "CONDITIONAL_100_SPY_SHARES_PHYSICAL",
+  "adjustmentApplicability": "UNKNOWN",
+  "realAccountContinuationCreated": false,
+  "newMarketCalls": 0,
+  "realOrders": 0,
+  "publicPush": "NOT_AUTHORIZED_FOR_THIS_CHANGE",
+  "existing4178Changed": false
+}

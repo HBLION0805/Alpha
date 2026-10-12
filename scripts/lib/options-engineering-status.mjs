@@ -1,3 +1,4 @@
+import {readEngineeringEvidenceView} from './options-engineering-evidence-view.mjs';
 import fs from 'node:fs';
 import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
@@ -21,7 +22,7 @@ export function readEngineeringStatus({root=process.cwd(),at=new Date().toISOStr
   const now=snapshotNs(at);let total=0,base=fs.realpathSync(root);
   for(const name of ['data','runtime','options-workbench-development']){base=resolve(base,name);const s=fs.lstatSync(base);check(s.isDirectory()&&!s.isSymbolicLink()&&fs.realpathSync(base)===base,'UNSAFE_PATH');}
   const read=(parts,expected)=>{
-   let p=base;for(const [i,n]of parts.entries()){check(/^[a-zA-Z0-9][a-zA-Z0-9.-]{0,99}$/.test(n),'UNSAFE_PATH');p=resolve(p,n);const s=fs.lstatSync(p);check(!s.isSymbolicLink()&&fs.realpathSync(p)===p,'UNSAFE_PATH');if(i<parts.length-1)check(s.isDirectory(),'UNSAFE_PATH');}
+   let p=base;for(const [i,n]of parts.entries()){check(n==='.option-engineering-claim.json'||/^[a-zA-Z0-9][a-zA-Z0-9.-]{0,99}$/.test(n),'UNSAFE_PATH');p=resolve(p,n);const s=fs.lstatSync(p);check(!s.isSymbolicLink()&&fs.realpathSync(p)===p,'UNSAFE_PATH');if(i<parts.length-1)check(s.isDirectory(),'UNSAFE_PATH');}
    const s=fs.lstatSync(p);check(s.isFile()&&s.nlink===1&&s.size<2e6,'UNSAFE_FILE');total+=s.size;check(total<8e6,'READ_BOUND');const raw=fs.readFileSync(p);check(stamp(s)===stamp(fs.lstatSync(p)),'CHANGED_DURING_READ');const hash=sha(raw);if(parts.length>1)check(digest(expected)&&expected===hash,'HASH_MISMATCH');const text=new TextDecoder('utf8',{fatal:true}).decode(raw);return {raw,data:p.endsWith('.json')?JSON.parse(text):null,hash};
   };
   const registry=read(['engineering-acceptance.json']).data;
@@ -81,7 +82,8 @@ export function readEngineeringStatus({root=process.cwd(),at=new Date().toISOStr
   out.stock={runId:s.runId,commit:s.commit,status:replay.status,acceptance:'PASS_ENGINEERING_ONLY',decisionAt:verified.manifest.input.decisionAt,entry:replay.entry,exit:replay.exit,quantity:1,symbol:'SPY',positionShares:0,netPnlMicros:replay.account.netPnlMicros,recovery:'EXACT_REPORT_MATCH',independentReview:'PASS',reportSha256:s.reportSha256,sourceCalls:2,quoteClocks};
   out.account={id:a,settledCashMicros:replay.account.settledCashMicros,unsettledProceedsMicros:replay.account.unsettledProceedsMicros,totalCashMicros:replay.account.totalCashMicros,unsettledUsableForEntry:false,newDepositsMicros:0,headSha256:verified.tip};
   out.options={runId:o.runId,commit:o.commit,status:result.status,paperStatus:'NOT_STARTED',savedAt:result.savedAt,symbol:'SPY',expiry:result.candidate.expiry,structure:'CDS',longStrike:result.candidate.long.strike_price,shortStrike:result.candidate.short.strike_price,missingExactSeriesFields:fields,metadataCalls:3,quoteCalls:0,simulatedFills:0,metadataClocks:receipts.map(r=>({requestedAt:r.requestedAt,receivedAt:r.receivedAt})),reportSha256:o.reportSha256};
+  out.evidence=readEngineeringEvidenceView({read,registry,result,at});
   check(same(fs.readdirSync(accountPath).sort(),stockNames)&&stockNames.every(n=>read([a,n],registry.accountFiles[n]).hash===registry.accountFiles[n]),'ACCOUNT_HEAD_CHANGED');
- }catch(e){if(e.code==='ENOENT'&&!fs.existsSync(resolve(root,'data/runtime/options-workbench-development/engineering-acceptance.json')))return out;out.state='BLOCKED';out.stock=null;out.options=null;out.account=null;out.issues=[/^[A-Z][A-Z0-9_]+$/.test(e.message)?e.message:'INVALID_SAVED_ENGINEERING_EVIDENCE'];}
+ }catch(e){if(e.code==='ENOENT'&&!fs.existsSync(resolve(root,'data/runtime/options-workbench-development/engineering-acceptance.json')))return out;out.state='BLOCKED';out.stock=null;out.options=null;out.account=null;out.evidence=null;out.issues=[/^[A-Z][A-Z0-9_]+$/.test(e.message)?e.message:'INVALID_SAVED_ENGINEERING_EVIDENCE'];}
  return out;
 }

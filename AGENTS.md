@@ -1,3 +1,18 @@
+## Saved continuation and contract evidence projection — October 12, 2026
+
+Read [delivery](docs/OPTIONS_ENGINEERING_EVIDENCE_WEB_DELIVERY.md) and
+[status](docs/status/engineering-evidence-web.json). The authorized next stage
+projects the saved stock acceptance, TEST_FIXTURE_ONLY option continuation and
+append-only SPY rule review separately. Preserve the original stopped preflight,
+actual account head and unsettled proceeds. American exercise is rule-mapped;
+standard 100-share physical delivery is conditional on current exact-series
+applicability. A documented current series/class mapping may suffice; neither a
+bespoke certificate nor proof of never having been adjusted is required. Unknowns
+and conflicts cannot become PASS or self-attested Boolean qualification. Only
+saved originals are read, with no new quotes, orders, source reads or real segment.
+Complete independent and local preview acceptance before any website switch.
+No new public push, main merge, security or persistent-access change is authorized.
+
 ## Same-account engineering continuation — October 12, 2026
 
 Read [delivery](docs/OPTIONS_ENGINEERING_CONTINUATION_DELIVERY.md) and
