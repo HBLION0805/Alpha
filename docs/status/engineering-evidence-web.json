@@ -1,6 +1,6 @@
 {
   "version": "ENGINEERING_EVIDENCE_WEB_DELIVERY_V1",
-  "status": "IMPLEMENTED_PENDING_REVIEW_AND_PREVIEW",
+  "status": "LOCAL_PREVIEW_ACCEPTED_REAL_OPTION_BLOCKED",
   "baselineCommit": "da08a18046642e31b67738cba9ca4344f908a0b8",
   "scope": "SAVED_READ_ONLY_PROJECTION",
   "stock": "PASS_ENGINEERING_ONLY",
@@ -13,5 +13,46 @@
   "newMarketCalls": 0,
   "realOrders": 0,
   "publicPush": "NOT_AUTHORIZED_FOR_THIS_CHANGE",
-  "existing4178Changed": false
+  "existing4178Changed": false,
+  "completedAt": "2026-10-12T20:58:04.600Z",
+  "executableCommit": "38d532e25ca82a8275b0eb687d316f6ec7a796ca",
+  "validation": {
+    "full": {
+      "status": "PASSED",
+      "componentCount": 257,
+      "parserCountedTests": 6477,
+      "failed": 0,
+      "logSha256": "5f60a463a48190ff280c953f243fa281d9f5c17d6ba0a5f4339741b030259844",
+      "codePinSha256": "b39e8d3770fe5cdfc6b218dd71316fccb4c732c101e0714492463976dc9c5b06"
+    },
+    "dedicated": {
+      "newEvidenceTests": 29,
+      "existingStatusTests": 10,
+      "passed": 39,
+      "failed": 0,
+      "logSha256": "1352a51fe0c9ce3552defe66b115a0e53df87e7b92bedd4db7273a81e463b929"
+    },
+    "independentReview": "PASS_NO_REMAINING_P1_P2",
+    "independentReviewSha256": "48996101daf0cc3b59ecba65a9aa5ecefbb3994310a45c5c87c4a40cd35dfbc2",
+    "preview": {
+      "port": 4180,
+      "checks": 14,
+      "navigationRoutes": 11,
+      "mobileViewport": "390x844",
+      "errors": 0,
+      "externalRequests": 0,
+      "receiptSha256": "f862fd6376099817460c70285e34acdc09d46b637257c61b22a5066f4bb34ecd"
+    },
+    "protected": {
+      "files": 25910,
+      "changed": 0,
+      "receiptSha256": "786f3337fc11c026f357d1f9615c784ccd9285faa4af238fb898ea100fd97277"
+    }
+  },
+  "existing4178": {
+    "commit": "dd45d5272a8ab4a15403c88e2b7ca6d3618218b6",
+    "startedAt": "2026-10-12T19:07:03.341Z",
+    "changed": false
+  },
+  "nextDevelopment": "BOUNDED_OFFLINE_CURRENT_DELIVERABLE_SOURCE_INTAKE_AND_EXACT_IDENTITY_MAPPING"
 }

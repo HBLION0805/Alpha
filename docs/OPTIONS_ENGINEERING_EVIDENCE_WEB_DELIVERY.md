@@ -64,3 +64,24 @@ missing exit, bound-file changes and escaped failure rendering. See
 [status](status/engineering-evidence-web.json) for final full regression,
 independent review and actual local preview evidence. The existing 4178 service
 requires separate acceptance before a switch; public push is not included.
+
+## Local preview acceptance
+
+Executable commit `38d532e25ca82a8275b0eb687d316f6ec7a796ca` is pinned in
+a 1,605-file archive for the isolated 4180 preview. Independent review passed
+the code and actual HTTP projection. Browser acceptance passed all eleven routes,
+a 390-by-844 viewport and read-only guards, with no console, page, network or
+external-request errors. All 25,910 protected original hashes remain unchanged.
+The prior 4178 service remains pinned to `dd45d527`; it was not switched.
+
+The first browser attempt expected the literal UNKNOWN although the existing
+localization displays its Chinese equivalent. That failed receipt is preserved;
+only the private harness assertion changed before the successful rerun. A fixture
+parent persistence-clock omission found by independent review was corrected and
+covered by four new negative cases. Final code passes 29 new evidence tests plus
+10 existing projection tests. Final full regression and hashes are in status.
+
+The next development step is a bounded offline intake for a supplied current
+deliverable or documented series-class source, preserving original attribution
+and exact identity mapping for review. It must not self-approve a Boolean claim,
+obtain live quotes, create a real segment or bypass the existing admission gates.
