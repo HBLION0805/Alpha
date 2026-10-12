@@ -2,11 +2,11 @@ export type Direction = 'UP' | 'DOWN' | 'UNKNOWN';
 export type ReviewState = 'PASS' | 'FAIL' | 'UNKNOWN';
 export interface Evidence {
   id: string; kind: 'FUNDAMENTAL' | 'NEWS' | 'TECHNICAL' | 'RISK' | 'STRUCTURE';
-  source: string; publishedAt: string | null; receivedAt: string; reviewedAt: string;
+  source: string; publishedAt: string | null; receivedAt: string | null; reviewedAt: string;
 }
 export interface Facet {
   direction: Direction; status: 'SUPPORTED' | 'CONFLICT' | 'UNKNOWN';
-  validFrom: string; validThrough: string; evidence: Evidence[];
+  validFrom: string | null; validThrough: string | null; evidence: Evidence[];
   // Omitted preserves legacy all-required behavior. Unselected evidence remains background.
   requiredEvidenceIds?: string[];
 }
@@ -38,7 +38,13 @@ export interface FrozenFibPlan {
   version: 'FROZEN_FIB_PLAN_V1'; plan: FibPlan; anchorSeries: CandleSeries;
   fingerprint: string;
 }
-export interface ControlReview { state: ReviewState; evidence: Evidence[]; }
+export interface ControlReview {
+  state: ReviewState; evidence: Evidence[];
+  // Supplied facts do not constitute a risk verdict or current account balance.
+  sourceFacts?: { origin: 'SIMULATED_ACCOUNT_ASSUMPTION'; accountId: string;
+    recordSha256: string; observedAt: string; receivedAt: string; reviewedAt: string;
+    validThrough: string; payload: Record<string, unknown> }[];
+}
 export interface ObservedRetracementInput {
   symbol: string; asOf: string; receivedAt: string;
   evidenceCapturedAt: string | null; evidenceCapturePrecision: 'MINUTE' | 'SECOND' | 'UNKNOWN';

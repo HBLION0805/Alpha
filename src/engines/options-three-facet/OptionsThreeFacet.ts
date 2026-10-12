@@ -17,7 +17,7 @@ const clock = (v: unknown): number => {
 };
 function evidenceOK(rows: Evidence[] | undefined, kind: Evidence['kind'], at: number): boolean {
   return Array.isArray(rows) && rows.length > 0 && rows.length <= 50 && new Set(rows.map(e => e.id)).size === rows.length &&
-    rows.every(e => e && text(e.id) && e.kind === kind && text(e.source) && e.publishedAt !== null &&
+    rows.every(e => e && text(e.id) && e.kind === kind && text(e.source) && e.publishedAt !== null && e.receivedAt !== null &&
       clock(e.publishedAt) <= clock(e.receivedAt) && clock(e.receivedAt) <= clock(e.reviewedAt) && clock(e.reviewedAt) <= at);
 }
 function series(s: CandleSeries, at: number): void {
@@ -219,7 +219,7 @@ function researchRegistration(i:ThreeFacetInput,at:number) {
     const registered=clock(p.registeredAt);check(registered<=at,'RESEARCH_PLAN_CLOCK');
     const rows=[...(i.fundamental?.evidence??[]),...(i.news?.evidence??[]),...(i.technical?.facet.evidence??[])];
     check(Array.isArray(p.sourceIds)&&p.sourceIds.length>0&&new Set(p.sourceIds).size===p.sourceIds.length&&
-      p.sourceIds.every(id=>rows.some(e=>e.id===id&&text(e.source)&&clock(e.receivedAt)<=registered)),'RESEARCH_PLAN_SOURCES');
+      p.sourceIds.every(id=>rows.some(e=>e.id===id&&text(e.source)&&e.receivedAt!==null&&clock(e.receivedAt)<=registered)),'RESEARCH_PLAN_SOURCES');
     return {status:'RETAINED_UNVALIDATED',retained:true,plan:structuredClone(p)};
   } catch {return {status:'INVALID_REGISTRATION',retained:false};}
 }
@@ -228,7 +228,9 @@ function facetIssues(f: Facet|null|undefined,kind: Evidence['kind'],i:ThreeFacet
   const issues:string[]=[];
   if(f.status!=='SUPPORTED'||!['UP','DOWN'].includes(f.direction))issues.push(kind+'_UNKNOWN_OR_CONFLICT');
   if(!evidenceOK(requiredEvidence(f),kind,at))issues.push(kind+'_EVIDENCE_UNKNOWN');
-  if(clock(f.validFrom)>clock(i.holdingFrom)||clock(f.validThrough)<clock(i.holdingThrough))issues.push(kind+'_HOLDING_WINDOW_MISMATCH');
+  if(f.validFrom===null||f.validThrough===null)
+    issues.push(kind+'_VALIDITY_UNKNOWN');
+  else if(clock(f.validFrom)>clock(i.holdingFrom)||clock(f.validThrough)<clock(i.holdingThrough))issues.push(kind+'_HOLDING_WINDOW_MISMATCH');
   return issues;
 }
 const sourceKey=(s:CandleSeries)=>[s.symbol,s.exchange,s.provider,s.transport,s.sourceRef,s.timezone,s.session,s.adjustment].join('|');
@@ -302,7 +304,7 @@ export function assessThreeFacet(i:ThreeFacetInput) {
       if(i.news.assumptionImpact==='NONE'&&i.news.materialChanges.length)facets.push('NEWS_IMPACT_CONFLICT');
       for(const change of i.news.materialChanges) {
         const e=requiredEvidence(i.news).find(e=>e.id===change.evidenceId),f=i.fundamental;
-        if(!text(change.id)||!['EARNINGS','ORDERS','POLICY'].includes(change.kind)||!e||!f?.reassessedNewsIds?.includes(change.id)||
+        if(!text(change.id)||!['EARNINGS','ORDERS','POLICY'].includes(change.kind)||!e||e.receivedAt===null||!f?.reassessedNewsIds?.includes(change.id)||
           !requiredEvidence(f).some(x=>clock(x.reviewedAt)>=clock(e.receivedAt)))facets.push('FUNDAMENTAL_REASSESSMENT_REQUIRED');
       }
     }

@@ -1,3 +1,18 @@
+## Saved research input assembly — October 12, 2026
+
+Read [delivery](docs/OPTIONS_RESEARCH_ASSEMBLY_DELIVERY.md) and
+[status](docs/status/research-assembly.json). The offline assembly copies supplied
+originals into a new private diagnostic run. Preserve unknown source receipts,
+original review clocks, zero-duration validity placeholders and genuinely expired
+holding windows separately. Existing simulated funds can bind as capital facts,
+never automatic risk PASS, account reconciliation or new money. Existing ThreeFacet
+and spread preparation remain the evaluators. Current processing and OHLCV
+consumption do not renew morning research or create a prospective decision. Keep
+the 19 frozen originals, terminal/claim, schedules and challenge ledger unchanged.
+A new real Paper attempt requires parent-coordinated ownership and reviewed new
+evidence/plan before bounded quotes; do not independently start or force a fill.
+This repair allows a local commit only; public scope requires new approval.
+
 ## Single-ID option quote probe — October 12, 2026
 
 Read [delivery](docs/OPTIONS_OPTION_SOURCE_PROBE_DELIVERY.md) and

@@ -1,0 +1,71 @@
+{
+  "version": "RESEARCH_ASSEMBLY_DELIVERY_V1",
+  "status": "COPIED_ACTUAL_INPUT_SEMANTICS_VERIFIED_WAIT",
+  "baseCommit": "b9c5d287419e6fdbf21ac9e3a78be95c985c9dbe",
+  "focusedTests": 39,
+  "aggregateValidation": {
+    "status": "PASSED",
+    "componentCount": 252,
+    "testsExecuted": 6412,
+    "passed": 6412,
+    "failed": 0,
+    "durationMs": 314369,
+    "warnings": [
+      "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+      "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+      "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+    ],
+    "logSha256": "1bf29b4e2ca246f5edefacc5ea9a0053b92e07eb640eb05f702be70b63ee419a"
+  },
+  "independentReview": {
+    "status": "PASS",
+    "focusedTests": 39,
+    "typecheck": "PASS",
+    "originalReplayAt": [
+      "2026-10-12T16:02:20.591Z",
+      "2026-10-12T16:02:20.621Z"
+    ],
+    "verifiedOriginalAndCopiedFiles": 22,
+    "remainingCodeBlockers": []
+  },
+  "protectedOriginalFiles": 19,
+  "copiedAt": "2026-10-12T15:59:51.092Z",
+  "actualRuns": [
+    {
+      "runId": "research-assembly-20261012-aapl-01",
+      "processedAt": "2026-10-12T15:59:51.470Z",
+      "bars": "FIVE_MINUTE",
+      "status": "DESCRIPTIVE_RESEARCH_READY",
+      "recommendationGate": "WAIT"
+    },
+    {
+      "runId": "research-assembly-20261012-tsm-01",
+      "processedAt": "2026-10-12T15:59:51.764Z",
+      "bars": "DAILY",
+      "status": "DESCRIPTIVE_RESEARCH_READY",
+      "recommendationGate": "WAIT"
+    }
+  ],
+  "receiptClock": "UNKNOWN_ORIGINAL_REVIEW_CLOCK_RETAINED",
+  "facetValidity": "UNKNOWN_ZERO_DURATION_PLACEHOLDER",
+  "originalHoldingWindow": "EXPIRED_NOT_RENEWED",
+  "simulatedAccount": "paper-sim-tech-1000-20261010",
+  "suppliedSettledCashCents": 100000,
+  "fundsBinding": "BOUND_FOR_DIAGNOSTIC_REVIEW",
+  "fundsCurrentBalance": "NOT_RECONCILED_BY_ASSEMBLER",
+  "fundsSufficiency": "NOT_EVALUATED",
+  "journalObserved": "ABSENT_IN_THREE_CHECKED_ROOTS_AT_COPY_TIME",
+  "riskVerdicts": "UNCHANGED_UNKNOWN",
+  "sourceCalls": 0,
+  "accountCalls": 0,
+  "planCreated": false,
+  "journalWritten": false,
+  "executionAllowed": false,
+  "paperAdmissionAllowed": false,
+  "fills": 0,
+  "frozenTrialChanged": false,
+  "publicPush": "EXACT_NEW_SCOPE_APPROVAL_REQUIRED",
+  "historicalAssessments": "BOTH_RECOMPUTED_JSON_EXACTLY_MATCH_FROZEN_REPORTS",
+  "copiedRecovery": "BOTH_PASS"
+}

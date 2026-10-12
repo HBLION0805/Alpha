@@ -5,6 +5,8 @@
     "node": ">=24.12.0"
   },
   "scripts": {
+    "options:research-assembly": "tsx scripts/options-research-assembly.mjs",
+    "test:research-assembly": "tsx scripts/options-research-assembly.test.mjs",
     "options:option-source-probe": "tsx scripts/options-option-source-probe.mjs",
     "test:option-source-probe": "tsx scripts/options-option-source-probe.test.mjs",
     "options:equity-source-probe": "tsx scripts/options-equity-source-probe.mjs",
