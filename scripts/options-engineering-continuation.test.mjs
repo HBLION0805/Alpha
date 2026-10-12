@@ -6,7 +6,7 @@ import {join,resolve,sep} from 'node:path';
 import {spawnSync,spawn} from 'node:child_process';
 import {stockFixture,stockEvent} from './lib/options-engineering-continuation-fixtures.mjs';
 import {engineeringHash as sha,startSpyEngineering,appendSpyEngineering} from './lib/options-spy-engineering.mjs';
-import {readEngineeringParent,startEngineeringContinuation,appendEngineeringContinuation,recoverEngineeringContinuation,validateEngineeringContinuation,replayEngineeringContinuation} from './lib/options-engineering-continuation.mjs';
+import {readEngineeringParent,startEngineeringContinuation,appendEngineeringContinuation,recoverEngineeringContinuation,validateEngineeringContinuation,replayEngineeringContinuation,verifyEngineeringBatchOriginals} from './lib/options-engineering-continuation.mjs';
 import {mockTechSpreadQuoteFixture} from './lib/options-tech-spread-quote-fixtures.mjs';
 import {startMockSpread} from './lib/options-tech-mock-spread.mjs';
 import {validateTechSpreadSelection} from './lib/options-tech-quote-adapter.mjs';
@@ -71,8 +71,9 @@ test('real-context parent cannot admit a fixture capture relabeled without origi
  const p=structuredClone(f.input),parent=structuredClone(f.parent),id='paper-sim-tech-1000-20261010';p.context=p.spread.evidenceContext='REAL_MARKET_DATA_SIMULATION';p.accountId=p.spread.account.id=parent.report.account.id=id;parent.context='REAL_MARKET_DATA_SIMULATION';p.spread.candidate.origin='HOST_MARKET_TOOL_RESPONSES';
  for(const record of p.evidence){record.origin=['CONTRACT','DATA_ENTITLEMENT'].includes(record.kind)?'PROVIDER_DOCUMENT':'SIMULATED_ACCOUNT_ASSUMPTION';const v=JSON.parse(record.rawJson);if(v.accountId)v.accountId=id;record.rawJson=JSON.stringify(v);record.sha256=sha(record.rawJson);}
  const e=event(),r=JSON.parse(e.original.rawJson);e.origin=r.intent.origin=r.capture.origin='HOST_MARKET_TOOL_RESPONSES';r.captureSha256=sha(JSON.stringify(r.capture));e.original.rawJson=JSON.stringify(r);e.original.sha256=sha(e.original.rawJson);
- assert.throws(()=>replayEngineeringContinuation(p,parent,[e],e.appliedAt),/HOST_CAPTURE_BYTES/);
- delete e.source;assert.throws(()=>replayEngineeringContinuation(p,parent,[e],e.appliedAt),/FIELDS/);
+ assert.throws(()=>replayEngineeringContinuation(p,parent,[e],e.appliedAt),/BINDING_REQUIRED/);
+   assert.throws(()=>verifyEngineeringBatchOriginals(e.source,r,e.original.rawJson,e.origin,e.appliedAt),/HOST_CAPTURE_BYTES/);
+ delete e.source;assert.throws(()=>replayEngineeringContinuation(f.input,f.parent,[e],e.appliedAt),/FIELDS/);
  }finally{cleanup(f.root);}});
 for(const [name,mutate,code]of [
  ['extra shell',b=>{b['host.jsonl']+=JSON.stringify({type:'item.completed',item:{type:'command_execution',command:'bad'}})+'\n';},'HOST_UNEXPECTED_ACTION'],

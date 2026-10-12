@@ -1,0 +1,44 @@
+{
+  "version": "CONTRACT_EVIDENCE_INTAKE_DELIVERY_V1",
+  "status": "PASS_OFFLINE_IMPLEMENTATION_REAL_OPTION_STILL_BLOCKED",
+  "baselineCommit": "1e86a3b8b50289e711d101f585633d3aa22daf04",
+  "framework": "EXISTING_CONTRACT_ENVELOPE_WITH_SOURCE_BINDING",
+  "defaultPreviewWrites": 0,
+  "realConsumerBindingRequired": true,
+  "unknownProducesRecord": false,
+  "fixtureRealAdmission": false,
+  "realEvidenceAcquired": false,
+  "realOption": "BLOCKED_CURRENT_DELIVERABLE_APPLICABILITY",
+  "newMarketCalls": 0,
+  "realAccountWrites": 0,
+  "existing4178Changed": false,
+  "existing4180Changed": false,
+  "publicPush": "NOT_AUTHORIZED_FOR_THIS_CHANGE",
+  "validation": {
+    "full": {
+      "status": "PASSED",
+      "components": 258,
+      "parserCountedTests": 6477,
+      "failed": 0,
+      "newNativeTests": 40,
+      "note": "Aggregate parser does not count native node:test summaries; native intake output independently confirms 40/40."
+    },
+    "focused": {
+      "passed": 115,
+      "failed": 0
+    },
+    "independent": {
+      "passed": 76,
+      "remainingP1P2": 0
+    },
+    "fixtureRecovery": "EXACT_OFFLINE_REPLAY_CURRENT_EXPIRED_UNKNOWN",
+    "protectedOriginals": {
+      "files": 25910,
+      "changed": 0
+    },
+    "codePinSha256": "3136be5cb7839a81b4154b005f2f7f347209de72947c82f50f2f6f43f5f2221b",
+    "fullLogSha256": "800a4e557b833d038ed9f3b8586594282eb2c06b915eb61c8003d011b5b31153"
+  },
+  "serviceScope": "INTAKE_NOT_DEPLOYED_SEPARATE_PRIOR_RELEASE_38d532e_ON_4178_AND_4180",
+  "localCommit": "THIS_DELIVERY_COMMIT"
+}

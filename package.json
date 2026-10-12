@@ -12,6 +12,8 @@
     "options:engineering-continuation": "tsx scripts/options-engineering-continuation.mjs",
     "test:engineering-continuation": "tsx scripts/options-engineering-continuation.test.mjs",
     "test:engineering-evidence": "tsx scripts/options-engineering-evidence.test.mjs",
+    "options:contract-evidence": "tsx scripts/options-contract-evidence.mjs",
+    "test:contract-evidence": "tsx scripts/options-contract-evidence.test.mjs",
     "test:assistant-facts": "tsx scripts/options-tech-assistant-facts.test.mjs",
     "test:research-assembly": "tsx scripts/options-research-assembly.test.mjs",
     "options:option-source-probe": "tsx scripts/options-option-source-probe.mjs",

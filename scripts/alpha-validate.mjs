@@ -123,6 +123,7 @@ const aggregateTestFiles = [
   "scripts/options-engineering-status.test.mjs",
   "scripts/options-engineering-continuation.test.mjs",
   "scripts/options-engineering-evidence.test.mjs",
+  "scripts/options-contract-evidence.test.mjs",
   "scripts/options-option-source-probe.test.mjs",
   "scripts/options-equity-source-probe.test.mjs",
   "scripts/options-automatic-bars.test.mjs",

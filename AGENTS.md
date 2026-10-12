@@ -1,3 +1,17 @@
+## Offline external contract evidence intake — October 12, 2026
+
+Read [delivery](docs/OPTIONS_CONTRACT_EVIDENCE_INTAKE_DELIVERY.md) and
+[status](docs/status/contract-evidence-intake.json). Reuse CONTRACT envelopes and
+validate original source binding again at the real continuation consumer. A
+Boolean/reference alone cannot qualify. Preserve original text/hash, provenance,
+source applicability and observation/receipt/review/import clocks. Exact UUID or
+a genuinely returned series identifier must bind the same full contract tuple;
+no generated OSI, cross-row facts, synthetic-to-real relabel or expired evidence.
+UNKNOWN creates no usable CONTRACT. Explicit receive creates a new private
+archive only; recovery verifies copied originals without renewing validity.
+No source calls, account writes, settlement, real segment, login or order.
+This intake stays local and is not deployed or pushed. The separately authorized prior-stage release runs the accepted 38d532e archive on 4178; 4180 retains the same archive.
+
 ## Saved continuation and contract evidence projection — October 12, 2026
 
 Read [delivery](docs/OPTIONS_ENGINEERING_EVIDENCE_WEB_DELIVERY.md) and

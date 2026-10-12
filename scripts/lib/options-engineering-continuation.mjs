@@ -7,6 +7,7 @@ import {assessEngineeringSpreadPreflight} from './options-tech-spread-preflight.
 import {readTechEvidenceRecords} from './options-tech-paper-feasibility.mjs';
 import {snapshotNs as ns} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 import {parseChainSurveyJson as parse} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
+import {verifyBoundContinuationContract} from './options-contract-source-binding.mjs';
 
 const check=(v,c)=>{if(!v)throw Error('OPTION_CONTINUATION_'+c);};
 const encode=v=>JSON.stringify(v,null,2)+'\n',same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -47,6 +48,7 @@ export function validateEngineeringContinuation(p,parent){
  const v=readTechEvidenceRecords({inputs:p.evidence,kinds,now:t,decision:t,validThrough:end,simulatedAccount:true});check(!v.blockers.length,'EVIDENCE_CLOCK_OR_VERDICT');
  check(p.evidence.every(r=>fixture(p)?r.origin==='SYNTHETIC_FIXTURE':['COST_MODEL','PRODUCT_PERMISSION','RISK_LIMITS'].includes(r.kind)?r.origin==='SIMULATED_ACCOUNT_ASSUMPTION':['PROVIDER_DOCUMENT','OWNER_DOCUMENT'].includes(r.origin)),'EVIDENCE_ORIGIN');
  const c=v.payloads.get('CONTRACT'),d=v.payloads.get('DATA_ENTITLEMENT'),permission=v.payloads.get('PRODUCT_PERMISSION'),cost=v.payloads.get('COST_MODEL'),risk=v.payloads.get('RISK_LIMITS');
+ if(!fixture(p)||c.sourceBinding)verifyBoundContinuationContract(c,{context:p.context,contracts:s.legs.map(l=>l.contract),decisionAt:s.decisionAt,validThrough:s.timeExitAt,record:v.records.get('CONTRACT')});
  check(Array.isArray(c.contracts)&&c.contracts.length===2&&c.contracts.every(x=>x.adjustmentStatus==='UNADJUSTED'&&x.standardSeriesEstablished===true&&['DIRECT_SERIES_EVIDENCE','RULE_MAPPED_EXACT_STANDARD_SERIES'].includes(x.basis)&&typeof x.seriesEvidenceReference==='string'&&x.seriesEvidenceReference.trim()&&same(x.contract,s.legs.find(l=>l.contract.id===x.contract.id)?.contract))&&new Set(c.contracts.map(x=>x.contract.id)).size===2,'CONTRACT_EVIDENCE_UNKNOWN');
  check(permission.accountId===p.accountId&&permission.basis==='SIMULATED_PRODUCTS_ONLY'&&permission.brokerQualification==='UNKNOWN'&&permission.enabled===true&&permission.symbols?.includes('SPY')&&permission.products?.includes(s.structure),'PRODUCT_PERMISSION');
  check(d.provider==='ROBINHOOD_OFFICIAL_MCP'&&d.realtimeOptions===true&&d.localRetention===true&&d.symbols?.includes('SPY'),'DATA_ENTITLEMENT');
