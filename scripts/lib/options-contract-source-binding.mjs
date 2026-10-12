@@ -22,11 +22,24 @@ function sourceRow(ref,documents,used){
  // Every mapped value is a direct property of this one source record. Field
  // paths cannot reach another row, parent object, array index, or generated OSI.
  const keys=Object.values(ref.fields);check(new Set(keys).size===keys.length,'FIELD_REUSE');
- const semanticKeys={classCode:['classCode','class_code','contract_class','series_class','standard_series_class'],seriesId:['seriesId','series_id','option_series_id','contract_series_id']};
+ const semanticKeys={classCode:['classCode','class_code','contract_class','series_class','standard_series_class'],seriesId:['seriesId','series_id','option_series_id','contract_series_id','occ_symbol']};
  const out={};for(const [name,key]of Object.entries(ref.fields)){check(!semanticKeys[name]||semanticKeys[name].includes(key),'FIELD_SEMANTICS');check(['id','seriesId','symbol','expiry','type','strike','multiplier','tradability','components','settlement','currency','exerciseStyle','classCode'].includes(name)&&typeof key==='string'&&/^[a-zA-Z_][a-zA-Z0-9_]{0,79}$/.test(key)&&!['__proto__','prototype','constructor'].includes(key)&&Object.hasOwn(row,key),'FIELD_LOCATION');out[name]=row[key];}
  return out;
 }
-function identity(row,s){
+/** Decode only an actually returned fixed-width OCC identity; root is not a deliverable rule. */
+export function matchReturnedContractOccIdentity(row,selection){
+ check(row&&row.instrument_id===selection.id&&row.symbol===selection.symbol,'OCC_UUID_OR_UNDERLYING');
+ const raw=row.occ_symbol;check(typeof raw==='string'&&raw.length===21,'OCC_FORMAT');
+ const root=raw.slice(0,6).trimEnd();check(/^[A-Z][A-Z0-9]{0,5}$/.test(root)&&root.padEnd(6,' ')===raw.slice(0,6)&&/^\d{6}[CP]\d{8}$/.test(raw.slice(6)),'OCC_FORMAT');
+ check(selection.symbol==='SPY'&&(root==='SPY'||/^SPY[0-9]{1,3}$/.test(root)),'OCC_ROOT_SCOPE');
+ const date=raw.slice(6,12),expiry='20'+date.slice(0,2)+'-'+date.slice(2,4)+'-'+date.slice(4,6);clock(expiry+'T00:00:00Z');
+ const type=raw[12]==='C'?'call':'put',strikeMillis=BigInt(raw.slice(13)),cents=snapshotCents(selection.strike);
+ check(expiry===selection.expiry&&type===selection.type&&cents!==null&&strikeMillis===BigInt(cents)*10n,'OCC_EXACT_SERIES');
+ return {instrumentId:row.instrument_id,occSymbol:raw,root,expiry,type,strikeMillis:String(strikeMillis),identityMatched:true,deliverableEstablished:false,adjustmentStatus:'UNKNOWN',historicalPricesUsableForEntry:false};
+}
+function identity(row,s,occ=false){
+ if(occ){matchReturnedContractOccIdentity({instrument_id:row.id,occ_symbol:row.seriesId,symbol:row.symbol},s);for(const k of ['expiry','type','strike'])if(row[k]!==undefined)check(k==='strike'?snapshotCents(row[k])===snapshotCents(s[k]):row[k]===s[k],'OCC_FIELD_CONFLICT');return;}
+
  check(row.symbol===s.symbol&&row.expiry===s.expiry&&row.type===s.type&&typeof row.strike==='string'&&snapshotCents(row.strike)!==null&&snapshotCents(row.strike)===snapshotCents(s.strike),'EXACT_SERIES');
 }
 function standardBasket(row){
@@ -70,8 +83,8 @@ export function inspectContractSourceBinding(input,at){
   for(const s of input.selection){
    exact(s,'id symbol expiry type strike multiplier tradability');check(uuid(s.id)&&!ids.has(s.id)&&s.symbol==='SPY'&&['call','put'].includes(s.type)&&typeof s.strike==='string'&&snapshotCents(s.strike)>0&&s.multiplier===100&&s.tradability==='tradable','SELECTION');ids.add(s.id);check(through<clock(s.expiry+'T00:00:00Z'),'PRE_EXPIRY_WINDOW');
    const bindings=input.legs.filter(l=>l.id===s.id);check(bindings.length===1,'LEG_BINDING');const l=bindings[0];exact(l,'id route identity current classRule');
-   const original=sourceRow(l.identity,documents,used);identity(original,s);check(original.id===s.id&&Number(original.multiplier)===s.multiplier&&(typeof original.multiplier==='number'||typeof original.multiplier==='string'&&/^100(?:\.0+)?$/.test(original.multiplier))&&original.tradability===s.tradability,'PROVIDER_IDENTITY');
-   const current=sourceRow(l.current,documents,used);identity(current,s);
+   const original=sourceRow(l.identity,documents,used);identity(original,s,l.identity.fields.seriesId==='occ_symbol');check(original.id===s.id&&Number(original.multiplier)===s.multiplier&&(typeof original.multiplier==='number'||typeof original.multiplier==='string'&&/^100(?:\.0+)?$/.test(original.multiplier))&&original.tradability===s.tradability,'PROVIDER_IDENTITY');
+   const current=sourceRow(l.current,documents,used);identity(current,s,l.current.fields.seriesId==='occ_symbol');
    if(current.seriesId!==undefined&&original.seriesId!==undefined)check(current.seriesId===original.seriesId,'CONFLICTING_SERIES_ID');
    if(current.id!==undefined)check(current.id===s.id,'EXACT_UUID');
    else check(text(original.seriesId)&&text(current.seriesId)&&current.seriesId===original.seriesId,'RETURNED_SERIES_ID_REQUIRED');

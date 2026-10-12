@@ -92,3 +92,13 @@ authorized. See [status](status/contract-evidence-intake.json) for final validat
 ## Validation
 
 Final full validation passed: 258 components, 6,477 parser-counted tests, zero failures. The native intake runner separately reports 40/40; the existing aggregate parser does not count its native summary. Combined focused regression passed 115/115, and independent intake/continuation review passed 76/76 with no remaining P1/P2. The ticker-to-class mapping finding was fixed by rejecting property reuse and restricting class/series identifier field names. All 25,910 protected originals and the three-file actual account remained unchanged. A clearly labeled fixture archive recovered exact bytes; its current expired status stayed UNKNOWN. These checks are implementation evidence, not real option or strategy acceptance.
+
+## Returned OCC identity supplement — October 12, 2026
+
+The installed official get_option_historicals schema exposes instrument_id and occ_symbol. A separately authorized single two-ID historical request returned both selected SPY October 16 call identities, matching the original UUIDs and 778/779 strikes. This closes the identity bridge only. Prices and omitted interpolation flags are retained in private originals, never used for fills or fresh-quote claims.
+
+The existing intake now accepts occ_symbol as a source-returned series field. It strictly checks fixed-width padding, date, call/put, thousandth-dollar strike and exact UUID/underlying against the original selection. Only SPY and SPY numeric-suffix roots are supported by this bounded adapter; neither numeric nor ordinary roots imply adjustment or deliverable status. Any separately mapped tuple fields must agree. The full returned symbol is preserved, never generated from a ticker.
+
+The selected source rows still lack current deliverables/class applicability. A current original deliverable or applicable documented class rule remains required by the unchanged basket, clock and consumer checks. No usable real CONTRACT, quote, claim, continuation or fill was created. The supplement is local-only pending review/publication of the complete new scope. CPI source copies and the 11,164-byte input candidate are private preparation only: unchanged 10/9 attributed research, no source refresh, freeze or schedule change.
+
+Supplement final verification: native intake 53/53, combined continuation regression 89/89, independent review without new P1/P2. Full validation passed 258 components and 6,477 parser-counted tests, zero failed; native summaries remain separately counted. All 25,910 protected originals and the actual three-file account were unchanged.

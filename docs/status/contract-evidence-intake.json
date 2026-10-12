@@ -40,5 +40,29 @@
     "fullLogSha256": "800a4e557b833d038ed9f3b8586594282eb2c06b915eb61c8003d011b5b31153"
   },
   "serviceScope": "INTAKE_NOT_DEPLOYED_SEPARATE_PRIOR_RELEASE_38d532e_ON_4178_AND_4180",
-  "localCommit": "THIS_DELIVERY_COMMIT"
+  "localCommit": "THIS_DELIVERY_COMMIT",
+  "returnedOccSupplement": {
+    "status": "PASS_IDENTITY_ONLY_DELIVERABLE_UNKNOWN",
+    "baseline": "30aca8a758a45084638473009fcda82ed9be61ae",
+    "officialHistoryCalls": 1,
+    "quoteCalls": 0,
+    "retries": 0,
+    "accountWrites": 0,
+    "identityMatched": 2,
+    "deliverableEstablished": false,
+    "adjustmentStatus": "UNKNOWN",
+    "rootAloneQualifies": false,
+    "realContractCreated": false,
+    "historicalPricesUsed": false,
+    "validation": {
+      "components": 258,
+      "parserCountedTests": 6477,
+      "failed": 0,
+      "nativeIntakePassed": 53,
+      "focusedWithContinuationPassed": 89,
+      "independent": "PASS_NO_NEW_P1_P2",
+      "protectedFilesUnchanged": 25910,
+      "logSha256": "36c34776e9414a875720a8b874d1b63aa73058304f1048e748ef3f9a1cedec4a"
+    }
+  }
 }
