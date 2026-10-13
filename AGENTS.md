@@ -1,3 +1,16 @@
+## Weekly pending research web preview — October 13, 2026
+
+Read [delivery](docs/OPTIONS_WEEKLY_RESEARCH_WEB_DELIVERY.md) and
+[status](docs/status/weekly-research-web.json). The isolated 4181 archive projects
+545 saved weekly events and one exact Microsoft calendar review through existing
+research/review validators. Pending events are not opportunities; 533 SEC filing
+bodies remain missing, latest IR failures remain visible, and the Microsoft
+review retains REJECTED with UNKNOWN directions. Preserve stable event versions,
+all original clocks and historical TECH36 scans. Binding/review failures cannot
+reuse successful status. This stage is locally committed only: 4178/4180, market
+sources, quote/Paper gates, account ledgers and 15:50 are unchanged. No push,
+deployment, CPI pre-release restart or new review/source call is authorized.
+
 ## CPI pre-release workflow cancelled — October 12, 2026
 
 The Owner cancelled CPI pre-release forecasts, probabilities, freezing and forecast
