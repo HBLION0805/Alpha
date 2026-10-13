@@ -28,13 +28,35 @@ export async function collectGuidanceMarket({call,clock,trackedContracts=[]}) {
   const iso=value=>{const s=value.replace(" UTC","Z").replace(" ","T");if(!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{3})?Z$/.test(s)||!Number.isFinite(Date.parse(s)))throw Error("GUIDANCE_HOST_CLOCK");return new Date(s).toISOString();};
   const startedAt=iso(await clock()),receipts=[],failures=[];let calls=0;
   const today=new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(startedAt));
+  // Keep inside the serialized collector. Normalize transport only; retain the
+  // exact supplied envelope and reject conflicting representations of its data.
+  function marketBody(raw) {
+    const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+    const reject=code=>{throw Error('GUIDANCE_SOURCE_'+code);};
+    if(!object(raw))reject('ENVELOPE_SHAPE');
+    if(raw.isError===true||raw.error!=null)reject('TOOL_ERROR');
+    const bodies=[];
+    if(Object.hasOwn(raw,'data'))bodies.push(raw);
+    for(const key of ['structuredContent','structured_content'])if(Object.hasOwn(raw,key))bodies.push(raw[key]);
+    if(Object.hasOwn(raw,'content')){
+      if(!Array.isArray(raw.content))reject('ENVELOPE_SHAPE');
+      const text=raw.content.filter(x=>x?.type==='text');
+      if(text.length!==1||typeof text[0].text!=='string')reject('ENVELOPE_TEXT');
+      try{bodies.push(JSON.parse(text[0].text));}catch{reject('ENVELOPE_TEXT');}
+    }
+    if(!bodies.length||bodies.some(b=>!object(b)||!object(b.data)))reject('ENVELOPE_SHAPE');
+    if(bodies.some(b=>b.isError===true||b.error!=null))reject('TOOL_ERROR');
+    const canonical=v=>JSON.stringify(v,(_k,x)=>object(x)?Object.fromEntries(Object.keys(x).sort().map(k=>[k,x[k]])):x);
+    if(bodies.some(b=>canonical(b.data)!==canonical(bodies[0].data)))reject('ENVELOPE_CONFLICT');
+    return Object.hasOwn(raw,'data')?raw:{data:bodies[0].data,originalToolResponse:raw};
+  }
   async function read(tool,request) {
     const requestedAt=iso(await clock());
     if(calls>=24||Date.parse(requestedAt)-Date.parse(startedAt)>180000){failures.push({tool,request,requestedAt,code:"COLLECTION_BOUND_REACHED"});return null;}
     calls++;
-    try {const response=await call(tool,request),receivedAt=iso(await clock());if(Date.parse(receivedAt)<Date.parse(requestedAt)||!response?.data)throw Error("SOURCE_SHAPE");
+    try {const raw=await call(tool,request),receivedAt=iso(await clock()),response=marketBody(raw);if(Date.parse(receivedAt)<Date.parse(requestedAt))throw Error("SOURCE_SHAPE");
       receipts.push({tool,request,requestedAt,receivedAt,response});return response.data;
-    }catch{failures.push({tool,request,requestedAt,code:"MARKET_SOURCE_FAILED"});return null;}
+    }catch(error){const reason=/^GUIDANCE_SOURCE_(ENVELOPE_SHAPE|ENVELOPE_TEXT|ENVELOPE_CONFLICT|TOOL_ERROR)$/.test(error?.message)?error.message:null;failures.push({tool,request,requestedAt,code:"MARKET_SOURCE_FAILED",...(reason?{reason}:{})});return null;}
   }
   const symbols=["GLD","IBIT"],quoteBatchSize=20,maxSelected=36;
   // Reserve all mandatory calls before paging: 1 equity + 2 chains + 2 quotes.

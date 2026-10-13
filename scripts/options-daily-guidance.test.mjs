@@ -4,6 +4,7 @@ import {tmpdir} from "node:os";
 import {join,relative,isAbsolute,resolve} from "node:path";
 import {spawnSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
+import {runInNewContext} from 'node:vm';
 import {contextWorkspaceArgs} from './lib/options-runtime-roots.mjs';
 import {assessDailyGuidance,defaultGuidanceSettings} from "../src/engines/options-daily-guidance/OptionsDailyGuidance.ts";
 import {collectGuidanceMarket,routeDailyGuidance} from "./lib/options-guidance-host.mjs";
@@ -78,6 +79,30 @@ function mock() {
 }
 const fixture=async()=>{const m=mock();return collectGuidanceMarket({call:m.call.bind(m),clock:async()=>at});};
 await test("Host selects existing IDs and batches bounded market-only calls",async()=>{const m=mock(),r=await collectGuidanceMarket({call:m.call.bind(m),clock:async()=>at});assert.equal(r.selectedIds.length,12);assert.equal(r.calls,6);assert.equal(r.failures.length,0);assert.equal(normalizeGuidanceCapture(r).complete,true);assert(m.calls.every(c=>["get_option_chains","get_equity_quotes","get_option_instruments","get_option_quotes"].includes(c.tool)));});
+for(const kind of ['structuredContent','structured_content','text','dual'])await test('serialized Host consumes '+kind+' MCP envelope and preserves supplied original',async()=>{
+  const m=mock(),originals=[],collector=runInNewContext('('+collectGuidanceMarket.toString()+')',{}, {timeout:1000});
+  const r=await collector({clock:async()=>at,call:async(tool,request)=>{const body=await m.call(tool,request),raw=kind==='text'?{content:[{type:'text',text:JSON.stringify(body)}]}:kind==='dual'?{structuredContent:body,content:[{type:'text',text:JSON.stringify(body)}]}:{[kind]:body};originals.push(copy(raw));return raw;}});
+  assert.equal(r.calls,6);assert.equal(r.failures.length,0);assert.equal(normalizeGuidanceCapture(r).complete,true);
+  assert.deepEqual(JSON.parse(JSON.stringify(r.receipts.map(x=>x.response.originalToolResponse))),originals);
+  const legacy=await fixture();assert.deepEqual(normalizeGuidanceCapture(JSON.parse(JSON.stringify(r))),normalizeGuidanceCapture(legacy));
+});
+for(const [label,wrap,reason] of [
+  ['conflicting content',b=>({structuredContent:b,content:[{type:'text',text:JSON.stringify({data:{wrong:true}})}]}),'ENVELOPE_CONFLICT'],
+  ['conflicting aliases',b=>({structuredContent:b,structured_content:{data:{wrong:true}}}),'ENVELOPE_CONFLICT'],
+  ['conflicting direct data',b=>({...b,structuredContent:{data:{wrong:true}}}),'ENVELOPE_CONFLICT'],
+  ['explicit tool error',b=>({isError:true,structuredContent:b}),'TOOL_ERROR'],
+  ['error object with data',b=>({...b,error:{message:'PRIVATE_ERROR'}}),'TOOL_ERROR'],
+  ['malformed text',b=>({structuredContent:b,content:[{type:'text',text:'PRIVATE_NOT_JSON'}]}),'ENVELOPE_TEXT'],
+  ['multiple text bodies',b=>({content:[{type:'text',text:JSON.stringify(b)},{type:'text',text:JSON.stringify(b)}]}),'ENVELOPE_TEXT'],
+  ['missing payload',()=>({structuredContent:{}}),'ENVELOPE_SHAPE']
+])await test('Host rejects '+label+' without selecting contracts or exposing error text',async()=>{
+  const m=mock(),r=await collectGuidanceMarket({clock:async()=>at,call:async(t,q)=>wrap(await m.call(t,q))});
+  assert.equal(r.calls,3);assert.equal(r.receipts.length,0);assert.equal(r.selectedIds.length,0);assert.equal(r.failures[0].reason,'GUIDANCE_SOURCE_'+reason);assert.equal(normalizeGuidanceCapture(r).complete,false);assert(!JSON.stringify(r.failures).includes('PRIVATE_'));
+});
+await test('Host accepts reordered equivalent data without changing bare response output',async()=>{
+  const m=mock(),r=await collectGuidanceMarket({clock:async()=>at,call:async(t,q)=>{const b=await m.call(t,q);return {...b,structuredContent:{data:JSON.parse(JSON.stringify(b.data,(_k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.entries(v).reverse()):v))}};}});
+  assert.equal(r.failures.length,0);assert.equal(r.calls,6);assert(r.receipts.every(x=>!Object.hasOwn(x.response,'originalToolResponse')));assert.equal(normalizeGuidanceCapture(r).complete,true);
+});
 function paginationMarket(nextFor){
   const calls=[],pages={GLD:0,IBIT:0},instruments=new Map();
   return {calls,pages,async call(tool,request){

@@ -47,6 +47,13 @@ await test('invalid authority, call bound and partial coverage reject before per
   }
   await assert.rejects(()=>ingestFastHost(root,Buffer.alloc(8*1024*1024+1)),/SIZE/);
 }));
+await test('normalized MCP envelopes retain exact originals through isolated ingest and verification',()=>temporary(async root=>{
+  const raw=capture();
+  for(const r of raw.receipts){const original={structuredContent:r.response,content:[{type:'text',text:JSON.stringify(r.response)}]};r.response={data:r.response.data,originalToolResponse:original};}
+  const result=await ingestFastHost(root,line(raw));assert.equal(result.status,'INGESTED');
+  const saved=JSON.parse(readFileSync(join(root,result.rawInputPath),'utf8'));assert.deepEqual(saved.receipts,raw.receipts);
+  const verified=await runGuidanceCommand(['--verify',result.capturePath],{workspaceRoot:root,now});assert.equal(verified.status,'VERIFIED');
+}));
 await test('instrument pages must terminate, including the collector omitted-next form',()=>temporary(async root=>{
   const partial=capture();partial.receipts.find(r=>r.tool==='get_option_instruments').response.data.next='YWJj';
   await assert.rejects(()=>ingestFastHost(root,line(partial)),/PAGINATION/);
