@@ -29,6 +29,7 @@ assets.set('/world-model-lookup.js',['world-model-lookup.js','text/javascript'])
 assets.set('/storyline.js',['storyline.js','text/javascript']);
 assets.set('/storyline-model.js',['storyline-model.js','text/javascript']);
 assets.set('/weekly-plan.js',['weekly-plan.js','text/javascript']);
+assets.set('/weekly-research.js',['weekly-research.js','text/javascript']);
 assets.set('/tech-status.js',['tech-status.js','text/javascript']);
 for(const name of ['course-catalog.mjs','course-framework.mjs','course-panel.js'])assets.set('/'+name,[name,'text/javascript']);
 assets.set('/tech-candidate-trace.js',['tech-candidate-trace.js','text/javascript']);

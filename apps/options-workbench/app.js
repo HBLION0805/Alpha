@@ -263,6 +263,7 @@ document.addEventListener('input',event=>{
 });
 document.addEventListener('change',event=>{void(async()=>{
   const el=event.target;
+  if(el.dataset.weeklyResearchFilter){const key=el.dataset.weeklyResearchFilter;ui.weeklyResearch={...ui.weeklyResearch,[key]:el.value};if(key!=='page')ui.weeklyResearch.page=1;render();return;}
   if(el.id==='event-replay-case'){ui.eventReplayCase=el.value;ui.eventReplayAsOf=null;ui.eventReplayView=null;eventReplayRequestSequence++;clearTimeout(eventReplayTimer);render();return;}
   if(el.id==='story-news'){chooseStoryline(el.value);render();return;}
   if(['story-theme-filter','story-type-filter'].includes(el.id)){ui.storyFilters={...ui.storyFilters,[el.id==='story-theme-filter'?'theme':'knowledgeType']:el.value};render();return;}

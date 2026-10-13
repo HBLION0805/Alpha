@@ -79,3 +79,5 @@
 /* Long trace/source fingerprints and engine codes remain readable on narrow screens. */
 .tech-candidate-traces { min-width: 0; overflow-wrap: anywhere; }
 .tech-candidate-traces code { overflow-wrap: anywhere; }
+
+.weekly-research{overflow-wrap:anywhere}.weekly-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.weekly-metrics strong{display:block;font-size:1.5rem}.weekly-metrics span{font-size:.85rem}.weekly-filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:20px 0}.weekly-filters label{min-width:0}.weekly-filters select{display:block;width:100%;min-width:0}.weekly-event{margin:12px 0}.weekly-event blockquote{margin:12px 0;padding:12px;border-left:3px solid #789}.weekly-event .grid-two>section{min-width:0}@media(max-width:700px){.weekly-metrics,.weekly-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
