@@ -1,4 +1,5 @@
 import {createHash} from 'node:crypto';
+import {validateTechNumericFacts} from './options-tech-numeric-facts.mjs';
 
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const unique=a=>[...new Set(a)];
@@ -60,7 +61,7 @@ export function techResearchContext({files,lineage}){
   followups:load('verification-batch2-errata-v1/company-coverage-and-candidates.json',[]),receipts:load(scan+'http-receipts.json',[]),
   supplements:load(scan+'verification/receipts.json',[]),originals:load(scan+'originals.json',[]),processedAt:load('derived-review-v1.2/summary.json',{}).processedAt};
 }
-export function buildTechResearchInputs({files,lineage,at,context=techResearchContext({files,lineage})}){
+export function buildTechResearchInputs({files,lineage,at,context=techResearchContext({files,lineage}),reviewRecords=[]}){
  const {scan,events,input,followups,receipts,supplements,originals,processedAt}=context;
  if(!Number.isFinite(Date.parse(at))||
     [input.createdAt,processedAt,lineage.originalCutoff,lineage.followupBatch?.completedAt,lineage.followupBatch?.errataAt,...events.map(e=>e.receivedAt),...receipts.map(r=>r.receivedAt),...supplements.map(r=>r.receivedAt)].some(t=>t&&(!Number.isFinite(Date.parse(t))||Date.parse(t)>Date.parse(at))))throw Error('TECH_CANDIDATE_RESEARCH_CLOCK');
@@ -96,6 +97,12 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
   if(!docs.some(d=>d.status==='BODY_TEXT_EXTRACTED'))issues.push('ORIGINAL_BODY_UNKNOWN');
   if(review.materialConflict)issues.push('SAVED_MATERIAL_CONFLICT_UNRESOLVED');
   const coverageQualified=!review.unreviewed&&review.originalVerified===true&&review.companyEventVerified===true&&review.materialityReviewed===true&&review.materialConflict===false&&docs.some(d=>d.status==='BODY_TEXT_EXTRACTED');
+  let numericFacts=[];
+  if(Object.hasOwn(review,'numericFacts')){
+   const record=reviewRecords.findLast(r=>{const q=JSON.parse(r.requestUtf8);return q.eventId===event.eventId&&q.symbol===review.symbol;}),request=record&&JSON.parse(record.requestUtf8);
+   if(!coverageQualified||request?.version!=='TECH36_EVENT_REVIEW_REQUEST_V2'||JSON.stringify(request.review.numericFacts)!==JSON.stringify(review.numericFacts))throw Error('TECH_NUMERIC_REVIEW_BINDING');
+   numericFacts=validateTechNumericFacts(review.numericFacts,{documents:docs,eventId:event.eventId,symbol:review.symbol,sourceReviewSha256:request.parent.revisionSha256,citations:review.citations}).map(f=>({...f,reviewVersion:{requestId:record.requestId,reviewedAt:record.recordedAt,revisionSha256:record.fingerprint,baseReceiptSha256:record.baseReceiptSha256}}));
+  }
   eventInputs.push({eventId:event.eventId,symbol:review.symbol,reviewStatus:review.unreviewed?'NOT_REVIEWED':'ATTRIBUTED_SAVED_REVIEW',discoveredAt:event.receivedAt??null,
    coverageStatus:coverageQualified?'ATTRIBUTED_VERIFIED_SCOPE':'UNRESOLVED',
    filingAcceptedAt:event.kind==='OFFICIAL_FILING_METADATA'?event.filingAcceptedAt??event.publishedAt??null:null,
@@ -105,7 +112,7 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
     fact:review.fact??null,interpretation:review.analysis??null,nextEvidence:review.nextEvidence??null,eventWindow:review.eventWindow??null,
     originalVerified:review.originalVerified,companyEventVerified:review.companyEventVerified,materialityReviewed:review.materialityReviewed,materialConflict:review.materialConflict},
    researchInput:{status:docs.some(d=>d.status==='BODY_TEXT_EXTRACTED')?'CITED_MATERIAL_READY_FOR_REVIEW':'PARTIAL_INPUT_ORIGINAL_BODY_UNKNOWN',
-    fundamental:{direction:'UNKNOWN',valuation:null,numericFacts:[],basis:'REVIEW_BODY_AND_SAVED_INTERPRETATION'},
+    fundamental:{direction:'UNKNOWN',valuation:null,numericFacts,basis:'REVIEW_BODY_AND_SAVED_INTERPRETATION'},
     news:{direction:'UNKNOWN',eventId:event.eventId,documentIds:unique(documentIds)},
     technical:{status:'NOT_ASSESSED',levels:null},
     guidanceRevision:{status:'UNKNOWN',delta:null,reason:'NO_REVIEWED_SAME_TARGET_FISCAL_PERIOD_METRIC_BASIS_CURRENCY_UNIT_SCOPE_PAIR; CROSS_PERIOD_DIFFERENCE_IS_NOT_A_REVISION'},
@@ -149,7 +156,7 @@ export function buildTechResearchInputs({files,lineage,at,context=techResearchCo
    limitedFollowupCategories:Object.fromEntries(unique(companies.map(c=>c.limitedFollowup.classification)).map(k=>[k,companies.filter(c=>c.limitedFollowup.classification===k).length])),
    rankingChanged:false,fullPoolOpportunityScreenComplete:false,continuousScan:false},
   limitations:['Source hashes establish copied-byte integrity, not machine authentication or factual accuracy.',
-   'Body extraction preserves text blocks and source coordinates; tables require review and are not converted to numeric facts. External CSS and visual layout are not evaluated.',
+   eventInputs.some(e=>e.researchInput.fundamental.numericFacts.length)?'Body extraction preserves text blocks and source coordinates; only explicit versioned numeric reviews populate facts after source, unit, period and arithmetic checks. Column meanings remain attributed review. External CSS and visual layout are not evaluated.':'Body extraction preserves text blocks and source coordinates; tables require review and are not converted to numeric facts. External CSS and visual layout are not evaluated.',
    'Saved event associations are attributed and scoped; headline links never establish publisher-body verification.',
    'This adapter consumes the existing versioned candidate replay bundle. It does not run or schedule discovery.']};
 }

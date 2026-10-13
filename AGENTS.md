@@ -1,3 +1,16 @@
+## Explicit reviewed numeric facts — October 13, 2026
+
+Read [delivery](docs/OPTIONS_TECH_NUMERIC_FACTS_DELIVERY.md) and
+[status](docs/status/tech-numeric-facts.json). Existing event-review V2 can append
+bounded source-cited revenue comparisons to fundamental.numericFacts. Preserve
+decimal values, million/thousand units, comparable periods, exact source/block
+hashes, formulas and both review versions. No implicit unit conversion or numeric
+extraction from prose; source-column meaning remains attributed review. V1 and
+historical heads remain unchanged. The actual TSM facts are useful historical
+operating context, not a new catalyst, consensus beat, profit/guidance change or
+price-direction signal. REJECTED, UNKNOWN directions and all independent admission
+gates remain. No new source read, push, deployment, account or CPI restart.
+
 ## Bounded HTTP capture observation — October 13, 2026
 
 Read [delivery](docs/OPTIONS_HTTP_CAPTURE_OBSERVATION_DELIVERY.md) and

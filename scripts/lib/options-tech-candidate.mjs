@@ -9,6 +9,7 @@ import {paperSession} from '../../src/engines/options-robinhood-data/RobinhoodPa
 import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
 import {buildTechResearchInputs,extractTechOriginal,techResearchContext} from './options-tech-research-inputs.mjs';
 import {buildTechSecMatch,validateTechSecMatchRequest} from './options-tech-sec-matcher.mjs';
+import {validateTechNumericFacts} from './options-tech-numeric-facts.mjs';
 import {WEEKLY_RESEARCH_DESCRIPTOR,WEEKLY_RESEARCH_BATCH,captureWeeklyResearch,loadWeeklyResearchSource,writeWeeklyResearchBatch} from './options-weekly-research-inputs.mjs';
 
 export const TECH36_POOL=Object.freeze('AAPL MSFT GOOGL AMZN META NVDA TSLA AVGO AMD TSM ASML AMAT LRCX KLAC MU ARM QCOM ORCL CRM NOW PANW CRWD ADBE PLTR SNOW SNPS CDNS ANET CSCO VRT DELL HPE STX WDC APH ETN'.split(' '));
@@ -158,7 +159,8 @@ const exactKeys=(v,keys)=>check(v&&typeof v==='object'&&!Array.isArray(v)&&Objec
 const boundedText=(s,max=4000)=>check(typeof s==='string'&&s.length>0&&s.length<=max&&!/[\u0000-\u0008]/.test(s),'REVIEW_TEXT');
 function applyEventReview(state,request,evidence,recordedAt){
  exactKeys(request,'version,requestId,parent,symbol,eventId,mode,evidence,review,links');
- check(request.version==='TECH36_EVENT_REVIEW_REQUEST_V1'&&/^[a-z0-9][a-z0-9-]{0,79}$/.test(request.requestId),'REVIEW_REQUEST');
+ const numericVersion=request.version==='TECH36_EVENT_REVIEW_REQUEST_V2';
+ check((numericVersion||request.version==='TECH36_EVENT_REVIEW_REQUEST_V1')&&/^[a-z0-9][a-z0-9-]{0,79}$/.test(request.requestId),'REVIEW_REQUEST');
  exactKeys(request.parent,'scanId,baseReceiptSha256,revisionSha256');
  check(request.parent.scanId===state.lineage.scanId&&request.parent.baseReceiptSha256===state.baseSha,'REVIEW_PARENT');
  check(request.parent.revisionSha256===state.head,'REVIEW_STALE_PARENT');
@@ -181,7 +183,7 @@ function applyEventReview(state,request,evidence,recordedAt){
   changes.push({sha256:m.sha256,url:m.url,kind:priorEvidence.some(e=>e.sha256===m.sha256)?'IDENTICAL_BYTES_RETRANSMITTED':priorEvidence.some(e=>e.url===m.url)?'SAME_URL_DIFFERENT_BYTES_REQUIRES_REVIEW':'ADDITIONAL_ORIGINAL'});
   context.supplements.push(original);priorEvidence.push(original);
  }
- exactKeys(request.review,'originalVerified,companyEventVerified,materialityReviewed,materialConflict,dimensions,fact,analysis,nextEvidence,eventWindow,citations');
+ exactKeys(request.review,'originalVerified,companyEventVerified,materialityReviewed,materialConflict,dimensions,fact,analysis,nextEvidence,eventWindow,citations'+(numericVersion?',numericFacts':''));
  for(const k of ['originalVerified','companyEventVerified','materialityReviewed','materialConflict'])check(typeof request.review[k]==='boolean','REVIEW_FIELDS');
  exactKeys(request.review.dimensions,'impact,valuation,catalyst,evidence');
  for(const [key,max] of Object.entries({impact:3,valuation:2,catalyst:2,evidence:3}))check(request.review.dimensions[key]===null&&key==='valuation'||Number.isInteger(request.review.dimensions[key])&&request.review.dimensions[key]>=0&&request.review.dimensions[key]<=max,'REVIEW_SCORE');
@@ -192,6 +194,12 @@ function applyEventReview(state,request,evidence,recordedAt){
   let body;try{body=extractTechOriginal(bytes);}catch{fail('REVIEW_CITATIONS');}check(Number.isInteger(citation.blockIndex)&&body.blocks.some(b=>b.index===citation.blockIndex),'REVIEW_CITATIONS');
  }
  if(request.review.originalVerified||request.review.companyEventVerified||request.review.materialityReviewed)check(request.review.citations.length>0,'REVIEW_ORIGINAL_REQUIRED');
+ if(numericVersion){
+  const prior=state.context.input.reviews.find(r=>r.eventId===event.eventId&&r.symbol===request.symbol);
+  for(const r of [prior,request.review])check(r&&r.originalVerified&&r.companyEventVerified&&r.materialityReviewed&&!r.materialConflict,'NUMERIC_REVIEW_REQUIRED');
+  const documents=priorEvidence.filter(o=>o.status==='SUCCESS'&&[...state.context.receipts,...state.context.supplements].some(r=>r.status==='SUCCESS'&&r.rawPath===o.rawPath&&r.sha256===o.sha256)).map(o=>{const bytes=state.files.get(state.context.scan+o.rawPath);return {...o,symbols:[request.symbol],...(bytes&&sha(bytes)===o.sha256?extractTechOriginal(bytes):{status:'UNAVAILABLE',blocks:[]})};});
+  validateTechNumericFacts(request.review.numericFacts,{documents,eventId:event.eventId,symbol:request.symbol,sourceReviewSha256:state.head,citations:request.review.citations});
+ }
  const review={...request.review,symbol:request.symbol,eventId:event.eventId,reviewedAt:recordedAt,reviewAuthority:'ATTRIBUTED_EVENT_REVIEW_NOT_MACHINE_AUTHENTICATION'};
  check(Array.isArray(request.links)&&request.links.length<=20&&new Set(request.links.map(l=>l.eventId)).size===request.links.length,'REVIEW_LINKS');
  for(const link of request.links){exactKeys(link,'eventId,relationship,verifiedScope');check(link.eventId!==event.eventId&&context.events.some(e=>e.eventId===link.eventId&&e.symbols.includes(request.symbol)),'REVIEW_LINKS');boundedText(link.relationship,200);boundedText(link.verifiedScope);check(request.review.citations.length>0,'REVIEW_ORIGINAL_REQUIRED');}
@@ -242,7 +250,7 @@ export function readTechEventReviewVersion({root,runId,headSha256,now=()=>new Da
 }
 function eventReviewView(state,runId,at){
  check(time(at)>=time(state.recordedAt),'REVIEW_CLOCK');
- const inputs=buildTechResearchInputs({...state,at});inputs.version='TECH36_RESEARCH_INPUTS_V2';inputs.mode=state.mode==='SYNTHETIC_FIXTURE'?'SYNTHETIC_APPEND_DEMO_ON_SAVED_BATCH':'SAVED_ORIGINAL_AND_APPEND_REPLAY';
+ const inputs=buildTechResearchInputs({...state,reviewRecords:state.records,at});inputs.version='TECH36_RESEARCH_INPUTS_V2';inputs.mode=state.mode==='SYNTHETIC_FIXTURE'?'SYNTHETIC_APPEND_DEMO_ON_SAVED_BATCH':'SAVED_ORIGINAL_AND_APPEND_REPLAY';
  inputs.screeningTrace.rankingChanged=!same(state.baseRanking,state.lineage.ranking);
  return {version:'TECH36_EVENT_REVIEW_VIEW_V1',runId,scanId:state.lineage.scanId,baseReceiptSha256:state.baseSha,headSha256:state.head,recordedAt:state.recordedAt,
   revisionCount:state.records.length,mode:state.mode,ranking:state.lineage.ranking,baseRanking:state.baseRanking,rankingChanges:state.records.map(r=>({revisionSha256:r.fingerprint,recordedAt:r.recordedAt,requestId:r.requestId,changes:r.rankingChanges})),inputs};
@@ -255,7 +263,7 @@ export function appendTechEventReview({root,runId,requestPath,now=()=>new Date()
  check(state.records.length<64,'REVIEW_LIMIT');check(Array.isArray(request.evidence)&&request.evidence.length<=6,'REVIEW_EVIDENCE');
  const evidence=request.evidence.map(metadata=>({metadata,base64:source.read(metadata.rawPath).toString('base64')})),next=applyEventReview(state,request,evidence,recordedAt);
  const payload={version:'TECH36_EVENT_REVIEW_RECORD_V1',sequence:state.records.length+1,baseReceiptSha256:state.baseSha,requestId:request.requestId,requestSha256,requestUtf8:requestBytes.toString('utf8'),recordedAt,evidence,
-  implementation:Object.fromEntries(['options-tech-candidate.mjs','options-tech-research-inputs.mjs','options-tech-review-ranking.mjs'].map(p=>[p,sha(fs.readFileSync(new URL(p,import.meta.url)))])),
+  implementation:Object.fromEntries(['options-tech-candidate.mjs','options-tech-research-inputs.mjs','options-tech-review-ranking.mjs',...(request.version==='TECH36_EVENT_REVIEW_REQUEST_V2'?['options-tech-numeric-facts.mjs']:[])].map(p=>[p,sha(fs.readFileSync(new URL(p,import.meta.url)))])),
   ranking:next.ranking,rankingChanges:next.rankingChanges,evidenceChanges:next.evidenceChanges};
  const record={...payload,fingerprint:sha(JSON.stringify(payload))},bytes=Buffer.from(JSON.stringify(record,null,2)+'\n');check(bytes.length<=12*1024*1024,'REVIEW_LIMIT');
  const dir=resolve(state.out,'event-reviews');fs.mkdirSync(dir,{recursive:true});check(!fs.lstatSync(dir).isSymbolicLink()&&fs.realpathSync(dir)===dir,'PATH');

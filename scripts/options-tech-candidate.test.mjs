@@ -429,3 +429,43 @@ test('assistant preparation reaches evidence validation instead of a missing-ver
  assert.equal(p.originalPreparation.enginePreview.status,'BLOCKED');assert(checks.some(c=>c.code==='EVIDENCE_INTEGRITY'&&c.status==='BLOCKED'));assert(!checks.some(c=>c.code==='INPUT_SCOPE'));
  assert.equal(p.originalRequestAccepted,false);assert.equal(p.executionOriginAccepted,false);assert.equal(p.originalPreparation.requestDraft.researchId,null);assert.equal(p.originalPreparation.diagnostics.filter(r=>r.state==='MISSING').length,6);assert.equal(p.paperAdmissionAllowed,false);assert.equal(p.quoteAdmissionAllowed,false);assert.equal(p.executionAllowed,false);
 });
+
+// Explicit numeric append fixtures: all figures below are synthetic, never market facts.
+function numericFixture(){
+ const f=eventFixture();f.start();const original=f.request('numeric-original');
+ const text='<html><body>'+['MOCK TSLA consolidated net revenue','Unit: NT$ million','September 2026 August 2026 September 2025','Net Revenue 200 250 100','M-o-M (20.0) Y-o-Y 100.0','Unit: NT$ thousands','January to September 2026 January to September 2025','Net Revenue 600,000 400,000','Y-o-Y 50.0'].map(t=>'<p>'+t+'</p>').join('')+'</body></html>';
+ f.evidence(original,text);original.review.dimensions={impact:2,catalyst:0,evidence:3,valuation:null};f.append(original);const prior=f.view(),doc=prior.inputs.documents.find(d=>d.sha256===original.evidence[0].sha256),blocks=doc.blocks;
+ const cite=i=>({sha256:doc.sha256,url:doc.url,blockIndex:i,blockSha256:hash(blocks[i].text)}),token=(i,s)=>({citation:cite(i),start:blocks[i].text.indexOf(s),end:blocks[i].text.indexOf(s)+s.length});
+ const period=(y,m=9,kind='MONTH')=>({kind,from:`${y}-${kind==='YTD'?'01':String(m).padStart(2,'0')}-01`,to:new Date(Date.UTC(y,m,0)).toISOString().slice(0,10)});
+ const amount=(v,y,m=9,kind='MONTH')=>({value:v.replaceAll(',',''),unit:kind==='YTD'?'THOUSANDS':'MILLIONS',period:period(y,m,kind),valueSource:token(kind==='YTD'?7:3,v),unitSource:cite(kind==='YTD'?5:1),periodSources:[cite(kind==='YTD'?6:2)],metricSource:cite(kind==='YTD'?7:3)});
+ const comparison=(kind,baseline,pct,block,shown=pct)=>({kind,baseline,reportedPercent:pct,reportedSource:token(block,shown),calculation:{formula:'(current / baseline - 1) * 100',decimalPlaces:1,result:pct}});
+ const facts=[{id:'mock-month',metric:'NET_REVENUE',currency:'TWD',scope:'CONSOLIDATED',scopeSource:cite(0),sourceReviewSha256:prior.headSha256,current:amount('200',2026),comparisons:[comparison('YOY',amount('100',2025),'100.0',4),comparison('MOM',amount('250',2026,8),'-20.0',4,'(20.0)')],interpretation:'MOCK historical revenue; not price direction.'},{id:'mock-ytd',metric:'NET_REVENUE',currency:'TWD',scope:'CONSOLIDATED',scopeSource:cite(0),sourceReviewSha256:prior.headSha256,current:amount('600,000',2026,9,'YTD'),comparisons:[comparison('YOY',amount('400,000',2025,9,'YTD'),'50.0',8)],interpretation:'MOCK cumulative revenue, not earnings or consensus.'}];
+ const q=f.request('numeric-structured');q.version='TECH36_EVENT_REVIEW_REQUEST_V2';q.review.dimensions=original.review.dimensions;q.review.numericFacts=facts;q.review.citations=blocks.map(b=>({sha256:doc.sha256,blockIndex:b.index}));return {f,q,prior,cite};
+}
+test('V2 numeric facts reach fundamental input with exact review and source versions without selecting an opportunity',()=>{
+ const {f,q,prior}=numericFixture(),append=f.append(q),v=f.view(),e=v.inputs.eventInputs.find(e=>e.eventId===q.eventId),facts=e.researchInput.fundamental.numericFacts;
+ assert.equal(facts.length,2);assert.equal(facts[0].current.unit,'MILLIONS');assert.equal(facts[1].current.unit,'THOUSANDS');assert.equal(facts[0].comparisons[1].calculation.result,'-20.0');assert.equal(facts[0].reviewVersion.revisionSha256,append.revision.fingerprint);assert.equal(facts[0].sourceReviewSha256,prior.headSha256);assert.equal(e.researchInput.fundamental.direction,'UNKNOWN');assert.equal(e.researchInput.guidanceRevision.status,'UNKNOWN');assert.equal(e.researchInput.consensusSurprise.status,'UNKNOWN');assert.equal(v.ranking.find(r=>r.symbol==='TSLA').category,'REJECTED');assert.equal(v.inputs.paperAdmissionAllowed,false);
+ const old=readTechEventReviewVersion({root:f.root,runId:f.runId,headSha256:prior.headSha256,now:()=>at});assert.deepEqual(old,prior);
+ const copy=fs.mkdtempSync(join(tmpdir(),'alpha-tech36-mock-numeric-copy-'));roots.push(copy);fs.cpSync(join(f.root,'data'),join(copy,'data'),{recursive:true});assert.deepEqual(readTechEventReviews({root:copy,runId:f.runId,now:()=>at}),v);
+});
+for(const [label,mutate,error]of [
+ ['mixed units',(q,c)=>{q.review.numericFacts[0].comparisons[0].baseline.unit='THOUSANDS';q.review.numericFacts[0].comparisons[0].baseline.unitSource=c(5);},/MIXED_UNITS/],
+ ['wrong unit label',q=>q.review.numericFacts[0].current.unit='THOUSANDS',/UNIT_SOURCE/],
+ ['currency mismatch',q=>q.review.numericFacts[0].currency='USD',/CURRENCY_SOURCE/],
+ ['cross period YTD versus month',(q,c)=>{const a=q.review.numericFacts[0].comparisons[0].baseline;a.period={kind:'YTD',from:'2025-01-01',to:'2025-09-30'};a.periodSources=[c(6)];},/COMPARISON_PERIOD/],
+ ['nonadjacent month',q=>q.review.numericFacts[0].comparisons[1].baseline.period={kind:'MONTH',from:'2025-09-01',to:'2025-09-30'},/COMPARISON_PERIOD/],
+ ['missing baseline',q=>delete q.review.numericFacts[0].comparisons[0].baseline,/FIELDS/],
+ ['calculation mismatch',q=>q.review.numericFacts[0].comparisons[0].calculation.result='99.0',/CALCULATION/],
+ ['wrong formula',q=>q.review.numericFacts[0].comparisons[0].calculation.formula='current - baseline',/CALCULATION/],
+ ['source hash mismatch',q=>q.review.numericFacts[0].current.valueSource.citation.sha256='f'.repeat(64),/SOURCE/],
+ ['source URL mismatch',q=>q.review.numericFacts[0].current.valueSource.citation.url='https://example.invalid/another',/SOURCE/],
+ ['block hash mismatch',q=>q.review.numericFacts[0].current.valueSource.citation.blockSha256='f'.repeat(64),/BLOCK_HASH/],
+ ['value not in original',q=>q.review.numericFacts[0].current.value='201',/VALUE_SOURCE/],
+ ['token substring',q=>{const a=q.review.numericFacts[0].current;a.value='20';a.valueSource.end--;},/TOKEN_BOUNDARY/],
+ ['wrong review version',q=>q.review.numericFacts[0].sourceReviewSha256='f'.repeat(64),/REVIEW_VERSION/],
+ ['source block not cited',q=>q.review.citations=q.review.citations.filter(c=>c.blockIndex!==3),/UNCITED_BLOCK/],
+ ['unreviewed association',q=>q.review.companyEventVerified=false,/NUMERIC_REVIEW_REQUIRED/],
+ ['reported percentage mismatch',q=>q.review.numericFacts[0].comparisons[0].reportedPercent='90.0',/REPORTED_CALCULATION/],
+ ['future period label missing',q=>q.review.numericFacts[0].current.period={kind:'MONTH',from:'2027-09-01',to:'2027-09-30'},/PERIOD_SOURCE/]
+])test('numeric append rejects '+label+' before saving',()=>{const {f,q,prior,cite}=numericFixture();mutate(q,cite);assert.throws(()=>f.append(q),error);assert.deepEqual(f.view(),prior);});
+test('V1 cannot silently accept numeric fields and later prose-only review clears latest numeric projection without losing prior version',()=>{const {f,q,prior}=numericFixture();q.version='TECH36_EVENT_REVIEW_REQUEST_V1';assert.throws(()=>f.append(q),/REVIEW_FIELDS/);assert.deepEqual(f.view(),prior);q.version='TECH36_EVENT_REVIEW_REQUEST_V2';f.append(q);const v=f.view(),next=f.request('prose-after-numeric');f.append(next);assert.deepEqual(f.view().inputs.eventInputs.find(e=>e.eventId===q.eventId).researchInput.fundamental.numericFacts,[]);assert.deepEqual(readTechEventReviewVersion({root:f.root,runId:f.runId,headSha256:v.headSha256,now:()=>at}),v);});
