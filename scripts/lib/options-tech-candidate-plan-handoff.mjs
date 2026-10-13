@@ -5,6 +5,7 @@ import {readTechEvidenceRecords} from './options-tech-paper-feasibility.mjs';
 import {spreadPlanHash,spreadPaperEvidencePolicy,spreadRecordOriginAllowed} from './options-tech-spread-plan-binding.mjs';
 import {parseChainSurveyJson} from '../../src/engines/options-robinhood-data/RobinhoodChainSurvey.ts';
 import {snapshotNs} from '../../src/engines/options-robinhood-data/RobinhoodSnapshotPaper.ts';
+import {assistantInputPolicy} from './options-tech-assistant-fact-policy.mjs';
 
 const check=(v,c)=>{if(!v)throw Error('CANDIDATE_HANDOFF_'+c);};
 const safeCode=e=>/^(?:CANDIDATE_HANDOFF|TECH_CANDIDATE|TECH_TRACE)_[A-Z_]+$/.test(e?.message)?e.message:'CANDIDATE_HANDOFF_INPUT_INVALID';
@@ -24,9 +25,10 @@ export function projectTechCandidatePlanHandoff(view,input,{at}){
   check(scan.traces.length>0,'NO_SELECTED_CANDIDATE');
   check(input&&snapshotNs(input.at)<=snapshotNs(at),'ASSESSMENT_CLOCK');
   check(Array.isArray(input.records)&&input.records.length<=8,'RECORD_BOUND');
+  const assistant=assistantInputPolicy(input);
   const take=kind=>{
    const rows=input.records.filter(r=>r?.kind===kind);check(rows.length===1,kind+'_MISSING_OR_DUPLICATE');const r=rows[0];
-   check(typeof r.rawJson==='string'&&Buffer.byteLength(r.rawJson)<=65536&&spreadPlanHash(r.rawJson)===r.sha256,kind+'_HASH');
+   check(typeof r.rawJson==='string'&&(assistant&&kind==='RESEARCH'?r.rawJson.length<=262144:Buffer.byteLength(r.rawJson)<=65536)&&spreadPlanHash(r.rawJson)===r.sha256,kind+'_HASH');
    const payload=parseChainSurveyJson(r.rawJson);check(payload&&typeof payload==='object'&&!Array.isArray(payload),kind+'_BODY');return {record:r,payload};
   };
   const research=take('RESEARCH'),request=take('STRATEGY_REQUEST'),b=research.payload.researchPlan?.candidateResearchBinding;
@@ -37,6 +39,8 @@ export function projectTechCandidatePlanHandoff(view,input,{at}){
   check(typeof research.payload.researchPlan?.id==='string'&&research.payload.researchPlan.id.trim().length>0&&research.payload.researchPlan.id.length<=2000&&request.payload.researchId===research.payload.researchPlan.id&&request.payload.researchSha256===research.record.sha256,'REQUEST_RESEARCH_BINDING');
   check(Array.isArray(request.payload.parentIds)&&request.payload.parentIds.includes(t.traceId)&&request.payload.parentIds.includes(t.research.recordId),'REQUEST_PARENT_BINDING');
   const paper=input.mode==='REAL_QUOTE_PAPER',policy=paper?spreadPaperEvidencePolicy(input.evidenceContext):{fixture:input.mode==='MOCK_CONTROL'};
+  // Use the same explicit V3 policy as preparation; never widen legacy origins.
+  if(assistant)policy.assistantResearch=true;
   check(paper||['MOCK_CONTROL','REAL_SAVED_SOURCE_REPLAY'].includes(input.mode),'INPUT_MODE');
   check(policy.fixture===(view.mode==='SYNTHETIC_FIXTURE'),'FIXTURE_CONTEXT');
   check([research.record,request.record].every(r=>spreadRecordOriginAllowed(policy,r)),'RECORD_ORIGIN');
@@ -44,7 +48,7 @@ export function projectTechCandidatePlanHandoff(view,input,{at}){
   const researchAsOf=snapshotNs(research.payload.asOf);
   check(review<=researchAsOf&&researchAsOf<=registered&&review<=registered&&registered<=decision,'RESEARCH_AFTER_REVIEW_BEFORE_DECISION');
   check(registered<=snapshotNs(research.record.observedAt)&&snapshotNs(research.record.reviewedAt)<=snapshotNs(request.record.observedAt),'ENVELOPE_AFTER_PARENT');
-  const validated=readTechEvidenceRecords({inputs:[research.record,request.record],kinds:['RESEARCH','STRATEGY_REQUEST'],now:snapshotNs(input.at),decision,validThrough:snapshotNs(request.payload.timeExitAt)});
+  const validated=readTechEvidenceRecords({inputs:[research.record,request.record],kinds:['RESEARCH','STRATEGY_REQUEST'],now:snapshotNs(input.at),decision,validThrough:snapshotNs(request.payload.timeExitAt),simulatedAccount:policy.simulatedAccount,assistantContext:assistant?input.evidenceContext:null});
   check(!validated.blockers.length,'EVIDENCE_CLOCKS');
   out.selectedCandidate={symbol:t.symbol,binding:b,reviewRecordedAt:view.recordedAt,declaredResearchId:research.payload.researchPlan.id,researchSha256:research.record.sha256,requestSha256:request.record.sha256,decisionAt:request.payload.decisionAt};
   out.checks.push({code:'EXACT_CANDIDATE_RESEARCH_REQUEST_BINDING',status:'PASS'});
