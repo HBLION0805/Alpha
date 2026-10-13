@@ -17,6 +17,15 @@ function directory(root,path){
  check(typeof path==='string'&&path.length<500&&/^[a-zA-Z0-9_./-]+$/.test(path)&&!path.startsWith('/')&&path.split('/').every(x=>x&&x!=='.'&&x!=='..'),'UNSAFE_BINDING');
  let p=fs.realpathSync(root);for(const part of path.split('/')){p=resolve(p,part);const s=fs.lstatSync(p);check(s.isDirectory()&&!s.isSymbolicLink(),'UNSAFE_BINDING');}return p;
 }
+function readBudget(){
+ let bytes=0,files=0;const seen=new Set();
+ return function inspect(path,depth=0){
+  check(depth<=16,'READ_BOUND');if(seen.has(path))return;seen.add(path);
+  const entries=fs.readdirSync(path,{withFileTypes:true});check(entries.length<=800,'READ_BOUND');
+  for(const e of entries){const p=resolve(path,e.name),s=fs.lstatSync(p);check(!s.isSymbolicLink(),'UNSAFE_BINDING');
+   if(s.isDirectory())inspect(p,depth+1);else{check(s.isFile()&&s.nlink===1&&s.size<=4*1024*1024,'READ_BOUND');bytes+=s.size;files++;check(bytes<=192*1024*1024&&files<=2400,'READ_BOUND');}}
+ };
+}
 function publicUrl(url,at){
  try{const u=new URL(url);if(u.protocol!=='https:'||u.username||u.password||u.port||u.search||u.hash)return null;
   return Object.values(WEEKLY_ISSUER_SOURCES).some(s=>s.url(at)===url)||/^https:\/\/www\.sec\.gov\/Archives\/edgar\/data\/\d+\/\d+\/[a-zA-Z0-9_./-]+$/.test(url)?url:null;
@@ -60,13 +69,15 @@ export function readWeeklyResearchView({root,at=new Date().toISOString()}={}){
   check(typeof b.intake.path==='string'&&b.intake.path.endsWith('/receipt.json'),'INVALID_BINDING');const intakeRoot=directory(root,b.intake.path.slice(0,-13));
   const receiptBytes=readSourceBytes(intakeRoot,'receipt.json',4*1024*1024);check(sourceHash(receiptBytes)===b.intake.sha256,'INTAKE_HASH');const r=JSON.parse(receiptBytes);
   check(r.version==='TECH36_WEEKLY_RESEARCH_INTAKE_V1'&&clock(r.processedAt)&&Date.parse(r.processedAt)<=Date.parse(at)&&Array.isArray(r.batches)&&r.batches.length>0&&r.batches.length<=8,'INVALID_INTAKE');
-  const snapshot=captureWeeklyResearch(directory(intakeRoot,'originals'),r.processedAt,TECH36_POOL),p=snapshot.projection;
+  const budget=readBudget(),originals=directory(intakeRoot,'originals');budget(originals);
+  const snapshot=captureWeeklyResearch(originals,r.processedAt,TECH36_POOL),p=snapshot.projection;
   check(same(p.counts,r.counts)&&same(p.events,r.lineage)&&same(p.health,r.sourceHealth),'INTAKE_REPLAY');
   check(r.sourceOriginals.length===snapshot.files.size&&new Set(r.sourceOriginals.map(x=>x.path)).size===snapshot.files.size&&r.sourceOriginals.every(x=>x.path.startsWith('originals/')&&sourceHash(snapshot.files.get(x.path.slice(10))??'')===x.sha256),'ORIGINAL_SET');
   const latest=new Map();for(const h of p.health)latest.set(h.sourceId,h);const health=[...latest.values()];
   out.sourceHealth=health.map(h=>({symbol:h.symbol,sourceId:h.sourceId,status:h.status,errorCode:researchSummary(h.errorCode),requestedAt:clock(h.requestedAt),receivedAt:clock(h.receivedAt),rawSha256:h.rawSha256}));
   out.counts={...p.counts,loadedEvents:0,reviewedEvents:0,selectedEvents:0};out.intakeSha256=b.intake.sha256;out.processedAt=r.processedAt;
   const workspace=directory(intakeRoot,'workspace'),catalog=new Map(p.events.map(e=>[e.eventId,e])),unique=new Map(),batchIds=new Set();
+  budget(workspace);
   for(const batch of r.batches){
    check(run(batch.runId)&&!batchIds.has(batch.runId),'BATCH_IDENTITY');batchIds.add(batch.runId);
    try{
@@ -76,7 +87,7 @@ export function readWeeklyResearchView({root,at=new Date().toISOString()}={}){
     const refs=b.reviews.filter(x=>x.runId===batch.runId);let reviewUnavailable=false;
     if(refs.length)try{
      check(refs.every(x=>same(x,refs[0])),'CONFLICTING_REVIEW_BINDINGS');const ref=refs[0];check(hash(ref.headSha256)&&ref.baseReceiptSha256===v.baseReceiptSha256,'REVIEW_BINDING');
-     const reviewRoot=directory(root,ref.workspace),next=readTechEventReviews({root:reviewRoot,runId:batch.runId,now:()=>at});
+     const reviewRoot=directory(root,ref.workspace);budget(reviewRoot);const next=readTechEventReviews({root:reviewRoot,runId:batch.runId,now:()=>at});
      check(next.headSha256===ref.headSha256&&next.baseReceiptSha256===v.baseReceiptSha256&&next.scanId===v.scanId&&next.inputs.eventInputs.length===v.inputs.eventInputs.length&&next.inputs.eventInputs.every(e=>same(e.weeklyEvidence,v.inputs.eventInputs.find(old=>old.eventId===e.eventId)?.weeklyEvidence)),'REVIEW_BINDING');
      details=reviewDetails(reviewRoot,next);v=next;
     }catch{reviewUnavailable=true;out.issues.push({code:'REVIEW_UNAVAILABLE',batchId:batch.runId});}
