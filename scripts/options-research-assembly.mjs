@@ -5,6 +5,8 @@ import {createHash} from 'node:crypto';
 import {assessThreeFacet} from '../src/engines/options-three-facet/OptionsThreeFacet.ts';
 import {prepareTechSpreadInput} from './lib/options-tech-spread-preparation.mjs';
 import {spreadPlanHash} from './lib/options-tech-spread-plan-binding.mjs';
+import {classifyTechOriginalResponse} from './lib/options-tech-original-queue.mjs';
+import {validateTechNumericFacts} from './lib/options-tech-numeric-facts.mjs';
 
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const check=(ok,code)=>{if(!ok)throw Error('RESEARCH_ASSEMBLY_'+code);};
@@ -19,6 +21,27 @@ const time=v=>{
 };
 const exact=(v,keys)=>v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).sort().join()===keys.split(',').sort().join();
 const closed={sourceCalls:0,accountCalls:0,planCreated:false,journalWritten:false,executionAllowed:false,paperAdmissionAllowed:false,fills:0};
+
+function boundedHttpOriginal(r,source,at){
+ check(r?.version==='TECH_ORIGINAL_ACQUISITION_V1'&&source.url===r.url&&r.url===r.target?.url,'HTTP_BINDING');
+ const {fingerprint,...payload}=r;check(hash(JSON.stringify(payload))===fingerprint,'HTTP_RECEIPT_HASH');
+ check(time(r.requestedAt)!==null&&time(r.receivedAt)!==null&&time(r.requestedAt)<=time(r.receivedAt)&&time(r.receivedAt)<=time(at)&&source.receivedAt===r.receivedAt,'HTTP_CLOCK');
+ const body=classifyTechOriginalResponse(r);check(body.status==='BODY_OBTAINED_PENDING_REVIEW','HTTP_BODY');
+ return {sha256:r.rawSha256,url:r.url,eventId:r.target.eventId,symbols:[r.target.symbol],status:'BODY_TEXT_EXTRACTED',blocks:body.blocks,receivedAt:r.receivedAt,evidenceContext:r.evidenceContext};
+}
+
+function numericBackground(index,originals,input,at){
+ if(!index.numericReview)return null;
+ const ref=index.numericReview;check(exact(ref,'recordSha256,reviewHeadSha256,eventId'),'NUMERIC_REFERENCE');
+ const record=originals.find(o=>o.sha256===ref.recordSha256)?.data;check(record?.version==='TECH36_EVENT_REVIEW_RECORD_V1','NUMERIC_RECORD');
+ const {fingerprint,...payload}=record;check(fingerprint===ref.reviewHeadSha256&&hash(JSON.stringify(payload))===fingerprint&&hash(record.requestUtf8)===record.requestSha256,'NUMERIC_RECORD_HASH');
+ const q=JSON.parse(record.requestUtf8);check(q.version==='TECH36_EVENT_REVIEW_REQUEST_V2'&&q.symbol===input.symbol&&q.eventId===ref.eventId&&q.review.originalVerified&&q.review.companyEventVerified&&q.review.materialityReviewed&&!q.review.materialConflict,'NUMERIC_REVIEW');
+ check(time(record.recordedAt)!==null&&time(record.recordedAt)<=time(at),'NUMERIC_CLOCK');
+ const docs=index.sources.filter(s=>s.receiptClockBasis==='ORIGINAL_BOUNDED_HTTP_RESPONSE').map(s=>boundedHttpOriginal(originals.find(o=>o.sha256===s.sha256)?.data,s,at));
+ check(docs.every(d=>time(d.receivedAt)<=time(record.recordedAt)),'NUMERIC_CLOCK');
+ const facts=validateTechNumericFacts(q.review.numericFacts,{documents:docs,eventId:q.eventId,symbol:q.symbol,sourceReviewSha256:q.parent.revisionSha256,citations:q.review.citations});
+ return {origin:'ATTRIBUTED_NUMERIC_REVIEW',reviewHeadSha256:fingerprint,sourceReviewSha256:q.parent.revisionSha256,eventId:q.eventId,reviewedAt:record.recordedAt,evidenceContexts:[...new Set(docs.map(d=>d.evidenceContext))],facts,authority:'BACKGROUND_ONLY_NOT_PRICE_THESIS_OR_SOURCE_AUTHENTICATION'};
+}
 
 export function validityDiagnostic(from,through,at){
  if(from===undefined||through===undefined)return 'MISSING';
@@ -55,6 +78,9 @@ export function assembleResearchEvidence({research,sourceIndex,sourceBindings,so
  check(new Set(sourceIndex.sources.map(s=>s.id)).size===sourceIndex.sources.length,'DUPLICATE_SOURCE');
  check(new Set(sourceBindings.map(s=>s.evidenceId)).size===sourceBindings.length,'DUPLICATE_BINDING');
  const input=structuredClone(research),sourceDiagnostics=[],validity={};
+ check(!input.fundamental?.sourceFacts,'NUMERIC_OUTPUT_ONLY');
+ const background=numericBackground(sourceIndex,sourceOriginals,input,at);
+ if(background){check(input.fundamental,'NUMERIC_FUNDAMENTAL_REQUIRED');input.fundamental.sourceFacts=[background];}
  for(const key of ['fundamental','news']){
   const f=input[key];validity[key]=validityDiagnostic(f?.validFrom,f?.validThrough,at);if(!f)continue;
   check(Array.isArray(f.evidence)&&f.evidence.length<=50,'EVIDENCE');
@@ -65,13 +91,15 @@ export function assembleResearchEvidence({research,sourceIndex,sourceBindings,so
    // The known faulty source index explicitly says this was a local review.
    // A supported receipt requires explicit original local tool-return attribution.
    const receiptOriginal=sourceOriginals.find(o=>o.sha256===source?.sha256)?.data;
-   const receiptKnown=source?.receiptClockBasis==='ORIGINAL_LOCAL_TOOL_RETURN'&&time(source.receivedAt)!==null&&receiptOriginal?.receivedAt===source.receivedAt;
+   const http=source?.receiptClockBasis==='ORIGINAL_BOUNDED_HTTP_RESPONSE'?boundedHttpOriginal(receiptOriginal,source,at):null;
+   if(http)check(http.symbols.includes(input.symbol)&&e.source===http.url,'HTTP_BINDING');
+   const receiptKnown=!!http||source?.receiptClockBasis==='ORIGINAL_LOCAL_TOOL_RETURN'&&time(source.receivedAt)!==null&&receiptOriginal?.receivedAt===source.receivedAt;
    e.receivedAt=receiptKnown?source.receivedAt:null;
    if(e.receivedAt!==null)check(time(e.receivedAt)<=time(e.reviewedAt)&&time(e.reviewedAt)<=time(at),'SOURCE_CLOCK_ORDER');
    else check(time(e.reviewedAt)!==null&&time(e.reviewedAt)<=time(at),'REVIEW_CLOCK');
    sourceDiagnostics.push({id:e.id,sourceId:source?.id??null,state:!binding?'UNBOUND':!source?'MISSING':receiptKnown?'ORIGINAL_RECEIPT_AVAILABLE':'RECEIPT_UNKNOWN',
     original,originalIndex:source?structuredClone(source):null,receivedAt:e.receivedAt,reviewedAt:e.reviewedAt,
-    receiptMeaning:receiptKnown?'LOCAL_TOOL_RETURN_NOT_PROVIDER_HTTP_CLOCK':'UNKNOWN_NOT_REPLACED_BY_REVIEW_OR_COPY_TIME'});
+    receiptMeaning:http?'ORIGINAL_BOUNDED_HTTP_RECEIPT_NOT_PUBLICATION_TIME':receiptKnown?'LOCAL_TOOL_RETURN_NOT_PROVIDER_HTTP_CLOCK':'UNKNOWN_NOT_REPLACED_BY_REVIEW_OR_COPY_TIME'});
   }
  }
  const capital=simulatedFundsDiagnostic(accountPreparation,accountId,at);

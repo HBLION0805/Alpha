@@ -337,6 +337,7 @@ export function assessThreeFacet(i:ThreeFacetInput) {
       researchStatus:research.status,researchCandidateCount:research.retained?1:0,research,
       conditionalPlanStatus,conditionalPlanCount:research.retained?1:0,quoteReviewEligible:allowed,
       evidenceTreatment:{fundamental:evidenceTreatment(i.fundamental),news:evidenceTreatment(i.news),technical:evidenceTreatment(i.technical?.facet)},
+      ...(i.fundamental?.sourceFacts?{fundamentalSourceFacts:structuredClone(i.fundamental.sourceFacts),fundamentalSourceFactsTreatment:'BACKGROUND_INVENTORY_NOT_USED_TO_GRANT_DIRECTION_OR_ELIGIBILITY'}:{}),
       nextStep:allowed?'Obtain fresh qualified quotes and unchanged Owner/risk/plan review; no automatic position.':'Continue research or remain flat. Missing evidence does not block pool event discovery.',
       riskReview:structuredClone(i.risk??null),optionComparison:structuredClone(i.optionAlternatives??null),
       inputFingerprint:paperFingerprint(i)};

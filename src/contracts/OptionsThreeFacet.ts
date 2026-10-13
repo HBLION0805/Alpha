@@ -80,7 +80,10 @@ export interface ThreeFacetInput {
   asOf: string; holdingFrom: string; holdingThrough: string;
   fundamental?: (Facet & { basis: 'COMPANY' | 'ETF_COMPONENTS_VALUATION_MACRO';
     directionBasis: 'HOLDING_WINDOW_PRICE_THESIS' | 'OPERATING_TREND_ONLY' | 'UNKNOWN';
-    directionRationale: string; operatingTrend?: Direction; reassessedNewsIds: string[] }) | null;
+    directionRationale: string; operatingTrend?: Direction; reassessedNewsIds: string[];
+    // Supplied attributed operating facts; never a direction, validity or risk verdict.
+    sourceFacts?: {origin:'ATTRIBUTED_NUMERIC_REVIEW';reviewHeadSha256:string;sourceReviewSha256:string;
+      eventId:string;reviewedAt:string;evidenceContexts:string[];facts:unknown[];authority:string}[] }) | null;
   news?: (Facet & {
     assumptionImpact: 'NONE' | 'MATERIAL' | 'UNKNOWN';
     materialChanges: { id: string; kind: 'EARNINGS' | 'ORDERS' | 'POLICY'; evidenceId: string }[];
