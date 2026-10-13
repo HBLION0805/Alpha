@@ -1,3 +1,15 @@
+## Bounded HTTP capture observation — October 13, 2026
+
+Read [delivery](docs/OPTIONS_HTTP_CAPTURE_OBSERVATION_DELIVERY.md) and
+[status](docs/status/http-capture-observation.json). Future authorized shared
+issuer/queue reads retain encoding/framing headers, runtime decoding identity,
+byte/chunk counters, EOF, clipping and termination observations. Wire bytes remain
+unmeasured; compressed Content-Length must not be equated to Fetch-decoded bytes.
+Neither hash, length match nor clean stream end proves full-document completeness.
+Legacy receipts and the original TSM UNKNOWN remain unchanged; do not fill absent
+historical headers or reread to erase the gap. This local repair adds no source
+call, retry, schedule, review, quote, Paper, account, website, push or deployment.
+
 ## Exact candidate original-body queue — October 13, 2026
 
 Read [delivery](docs/OPTIONS_TECH_ORIGINAL_QUEUE_DELIVERY.md) and

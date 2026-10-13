@@ -1,0 +1,33 @@
+{
+  "version": "HTTP_CAPTURE_OBSERVATION_DELIVERY_V1",
+  "date": "2026-10-13",
+  "status": "LOCAL_REPAIR_VALIDATED_NO_NEW_SOURCE_READ",
+  "parentCommit": "7767ce69e57b95a7982232071231572a7c23d044",
+  "runId": "http-capture-observation-20261013-01",
+  "observationVersion": "FETCH_CAPTURE_OBSERVATION_V1",
+  "externalSourceCalls": 0,
+  "nativeGzipFixture": "TEMPORARY_LOOPBACK_HTTP_ONLY",
+  "targetedTests": { "passed": 75, "failed": 0, "newObservationTests": 14 },
+  "fullSuite": "NOT_RUN",
+  "preservation": {
+    "priorOriginalFiles": 155,
+    "weeklyInputFiles": 537,
+    "protectedFiles": 25910,
+    "changedFiles": 0,
+    "legacyTsmReadRecords": "EXACT_MATCH",
+    "websiteHealth": "GET_ONLY_EXACT_MATCH_4178_4180_4181"
+  },
+  "wireBytesObserved": null,
+  "documentCompleteness": "NOT_ESTABLISHED_BY_TRANSPORT_OR_HASH",
+  "historicalTsmEncoding": "UNKNOWN_UNCHANGED",
+  "historicalTsmCoverage": "UNRESOLVED_UNCHANGED",
+  "researchStatus": "NO_NEW_REVIEW",
+  "quoteStatus": "NOT_RUN",
+  "paperStatus": "NOT_RUN",
+  "push": false,
+  "deployment": false,
+  "scheduleChanged": false,
+  "limitsChanged": false,
+  "accountOrLedgerChanged": false,
+  "executionAllowed": false
+}
