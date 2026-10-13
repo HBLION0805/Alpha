@@ -1,0 +1,87 @@
+{
+  "version": "TECH_ORIGINAL_QUEUE_DELIVERY_V1",
+  "state": "PASS_ONE_REAL_ACQUISITION_TO_UNVERIFIED_RESEARCH",
+  "baselineCommit": "b491fcbb8e61b13750de646ab80c9f6d2396c77e",
+  "localCommit": "THIS_DELIVERY_COMMIT",
+  "recordedAt": "2026-10-13T00:56:42.065Z",
+  "runId": "original-queue-acceptance-20261013-01",
+  "queueRunId": "original-body-tsm-20261013-01",
+  "candidate": {
+    "symbol": "TSM",
+    "accession": "0001046179-26-000680",
+    "eventId": "weekly-5fabef0b402c29a29dfdba970a292d41df5ec78b03f1d69ececcf2911d098125-20834a0a08666c87a159991543cf6bc5",
+    "url": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000680/tsm-revenue20261008.htm",
+    "parentBatch": "weekly-batch-007",
+    "baseHead": "760cd38f1dd331366a7d6e830f29422ae98a638a0d331ff7d6bb74a1669ee276"
+  },
+  "acquisition": {
+    "sourceCalls": 1,
+    "httpStatus": 200,
+    "requestedAt": "2026-10-13T00:51:40.611Z",
+    "receivedAt": "2026-10-13T00:51:40.882Z",
+    "rawSha256": "7f98bca23c1bd74ab514b243f437cf62958b994bb25a43bc95467eb6705c3a9c",
+    "rawBytes": 89272,
+    "blocks": 112,
+    "status": "BODY_OBTAINED_PENDING_REVIEW",
+    "scope": "PRIMARY_DOCUMENT_CONTAINS_REVENUE_MATERIAL_BEYOND_COVER_FULL_FILING_UNVERIFIED",
+    "transportLength": {
+      "declaredBytes": "5247",
+      "storedDecodedBytes": 89272,
+      "contentEncoding": null,
+      "status": "LENGTH_DIFFERENCE_ENCODING_OR_COMPLETENESS_UNRESOLVED"
+    }
+  },
+  "research": {
+    "reviewedAt": "2026-10-13T00:53:46.838Z",
+    "head": "748b2ba42be03e7bd5398fef602c9b1d03bdfcf14ef0423f7e93f91e409d9f2d",
+    "originalVerified": false,
+    "companyEventVerified": false,
+    "materialityReviewed": false,
+    "coverage": "UNRESOLVED",
+    "status": "CITED_MATERIAL_READY_FOR_REVIEW",
+    "ranking": "MISSING_DATA",
+    "selected": 0,
+    "quote": "NOT_RUN",
+    "paper": "NOT_RUN"
+  },
+  "tests": {
+    "passed": 215,
+    "failed": 0,
+    "newQueueTests": 11,
+    "existingTests": 204,
+    "savedOriginalFixtures": true,
+    "copiedRecovery": "PASS",
+    "fullSuite": "NOT_RUN"
+  },
+  "preservation": {
+    "checkedAt": "2026-10-13T00:54:57.642Z",
+    "protectedFilesUnchanged": 25910,
+    "priorIntakeAndReviewOriginalsUnchanged": 537,
+    "accountFilesUnchanged": 3
+  },
+  "limits": {
+    "maxCandidates": 3,
+    "maxBodyBytes": 524288,
+    "deadlineMs": 12000,
+    "attemptsPerCandidate": 1,
+    "stopAfterFailure": true
+  },
+  "authorities": {
+    "newRealRequests": 1,
+    "extraRequestsAfterAcceptance": 0,
+    "automaticReview": false,
+    "accountWrites": 0,
+    "orders": 0,
+    "websiteChanged": false,
+    "scheduleChanged": false,
+    "cpiPrereleaseRestored": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "remaining": [
+    "Content-Length differs from decoded bytes; original Content-Encoding was not retained, compression/completeness unresolved",
+    "Financial meaning and company-event scope remain unverified",
+    "No whole-catalog body acceptance or directional/quote/Paper qualification"
+  ],
+  "traceSha256": "b5f6261e796685113045462c32988f2782981b044559554378c4bbb4717f8b95"
+}

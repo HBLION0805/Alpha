@@ -1,3 +1,18 @@
+## Exact candidate original-body queue — October 13, 2026
+
+Read [delivery](docs/OPTIONS_TECH_ORIGINAL_QUEUE_DELIVERY.md) and
+[status](docs/status/tech-original-queue.json). Explicit queues bind at most three
+existing weekly SEC candidates to exact saved URLs and one immutable base head.
+Reuse the bounded issuer transport; no collector, redirects, retries or automatic
+review/selection. Preserve failed and incomplete attempts, cover/index versus
+primary-document scope, unknown full-filing coverage and all original clocks.
+The one authorized TSM request returned a revenue-containing 6-K body; original
+Content-Encoding was not captured and declared/decoded lengths differ. Retain
+that unknown, do not synthesize headers or repeat the request. The isolated cited
+material remains UNRESOLVED/MISSING_DATA with verification flags false. Published
+545/533 counts, websites, accounts, CPI cancellation and 15:50 remain unchanged.
+This delivery is local only, with no push/deploy or further source-call authority.
+
 ## Weekly pending research web preview — October 13, 2026
 
 Read [delivery](docs/OPTIONS_WEEKLY_RESEARCH_WEB_DELIVERY.md) and
