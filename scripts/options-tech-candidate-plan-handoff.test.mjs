@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve,sep} from 'node:path';
-import {TECH36_POOL} from './lib/options-tech-candidate.mjs';
+import {TECH36_POOL,prepareTechResearchInputs,appendTechEventReview,readTechEventReviews} from './lib/options-tech-candidate.mjs';
 import {projectTechCandidateTrace} from './lib/options-tech-candidate-trace.mjs';
 import {projectTechCandidatePlanHandoff,prepareTechCandidatePlanHandoff} from './lib/options-tech-candidate-plan-handoff.mjs';
 import {mockSpreadPlanFixture,simulatedAccountSpreadFixture} from './lib/options-tech-spread-plan-fixtures.mjs';
@@ -35,6 +35,57 @@ async function fixture(structure){
  edit(input,'RESEARCH',p=>p.researchPlan.candidateResearchBinding=b);edit(input,'STRATEGY_REQUEST',p=>p.parentIds.push(t.traceId,t.research.recordId));return {v,input,b};
 }
 const preview=f=>projectTechCandidatePlanHandoff(f.v,f.input,{at});
+// A real saved/replayed source chain, containing synthetic data only. No mocked reader.
+async function savedStartFixture(root){
+ const f=await assistantFixture(),source=join(root,'source'),runId='fixture-research';
+ const put=(path,value)=>{const p=join(root,path);fs.mkdirSync(join(p,'..'),{recursive:true});const text=typeof value==='string'?value:JSON.stringify(value);fs.writeFileSync(p,text);return spreadPlanHash(text);};
+ const policy={version:'ALPHA_TECH36_DISCOVERY_V1.1',scanId:'alpha-tech36-fixture',pool:[...TECH36_POOL],frozenAt:'2026-10-09T12:00:00Z',cutoffAt:'2026-10-09T14:00:00Z',lookbackStart:'2026-10-01T12:00:00Z'};
+ put('source/policy.sha256',put('source/policy.json',policy));
+ put('source/events.json',[{eventId:'fixture-event',symbols:['AAPL']}]);
+ const bodySha=put('source/body.html','<html><body><p>Synthetic AAPL reviewed material only.</p></body></html>');
+ const receipt={eventId:'fixture-event',symbol:'AAPL',sourceId:'SEC_SUBMISSIONS',status:'SUCCESS',attempted:true,rawPath:'body.html',sha256:bodySha,url:'https://example.test/fixture',startedAt:'2026-10-09T13:00:00Z',receivedAt:'2026-10-09T13:00:01Z'};
+ put('source/http-receipts.json',[receipt]);put('source/originals.json',[receipt]);
+ fs.mkdirSync(join(root,'data/runtime/options-workbench-development'),{recursive:true});
+ prepareTechResearchInputs({root,sourceRoot:source,runId,now:()=> '2026-10-09T14:13:00Z'});
+ const append=(id,clock)=>{
+  const v=readTechEventReviews({root,runId,now:()=>clock});
+  put('review.json',{version:'TECH36_EVENT_REVIEW_REQUEST_V1',requestId:id,parent:{scanId:v.scanId,baseReceiptSha256:v.baseReceiptSha256,revisionSha256:v.headSha256},symbol:'AAPL',eventId:'fixture-event',mode:'SYNTHETIC_FIXTURE',evidence:[],links:[],review:{originalVerified:true,companyEventVerified:true,materialityReviewed:true,materialConflict:false,dimensions:{impact:3,catalyst:2,evidence:3,valuation:null},fact:'Synthetic fact',analysis:'Synthetic review',nextEvidence:'Independent later evidence',eventWindow:null,citations:[{sha256:bodySha,blockIndex:0}]}});
+  appendTechEventReview({root,runId,requestPath:join(root,'review.json'),now:()=>clock});
+ };
+ append('fixture-review','2026-10-09T14:14:00Z');
+ const v=readTechEventReviews({root,runId,now:()=>at}),t=projectTechCandidateTrace(v,{at}).traces[0];
+ edit(f.input,'RESEARCH',p=>p.researchPlan.candidateResearchBinding={version:'TECH36_PLAN_RESEARCH_BINDING_V1',runId,scanId:v.scanId,baseReceiptSha256:v.baseReceiptSha256,reviewHeadSha256:v.headSha256,traceId:t.traceId,researchRecordId:t.research.recordId,eventRef:t.eventRef});
+ edit(f.input,'STRATEGY_REQUEST',p=>p.parentIds.push(t.traceId,t.research.recordId));
+ const original=f.input.originals[0];put('quote.json',original.rawJson);
+ const save=()=>put('input.json',{...f.input,originals:f.input.originals.map(o=>({id:o.id,path:'quote.json',sha256:o.sha256}))});
+ const start=()=>techSpreadPlanCli(['--start','input.json','--run-id','paper-sim-fixture-account'],{root,now:()=>at});
+ return {...f,save,start,append,put};
+}
+function fileSnapshot(root){return fs.readdirSync(root,{recursive:true,withFileTypes:true}).map(e=>{const p=join(e.parentPath,e.name);return [p,e.isDirectory()?'DIRECTORY':spreadPlanHash(fs.readFileSync(p,'utf8'))];}).sort((a,b)=>a[0].localeCompare(b[0]));}
+async function withSavedStart(fn){const root=fs.mkdtempSync(join(tmpdir(),'alpha-handoff-start-'));try{await fn(root,await savedStartFixture(root));}finally{assert(resolve(root).startsWith(resolve(tmpdir())+sep));fs.rmSync(root,{recursive:true});}}
+test('CLI start verifies the saved V3 candidate then saves a fixture plan without entry',()=>withSavedStart((root,f)=>{
+ f.save();const p=f.start();assert.equal(p.status,'REAL_QUOTE_PAPER_PLAN_READY',JSON.stringify(p.checks));assert.equal(p.testFixtureOnly,true);assert.equal(p.entryAutomaticallyAppended,false);
+ assert.equal(p.candidateHandoff.status,'BOUND_PREVIEW_ONLY');assert.equal(p.candidateHandoff.sourceVerification,'SAVED_ORIGINAL_AND_REVIEW_REPLAY');assert.equal(p.candidateHandoff.selectedCandidate.binding.runId,'fixture-research');
+ const recovered=recoverMockSpread({root,runId:'paper-sim-fixture-account',asOf:f.input.at});assert.equal(recovered.events.length,0);assert.equal(recovered.report.orders.length,0);assert.equal(recovered.report.status,'NO_ENTRY');
+}));
+test('CLI start rejects a superseded saved review head without any write',()=>withSavedStart((root,f)=>{
+ f.save();f.append('fixture-second-review','2026-10-09T14:14:01Z');const before=fileSnapshot(root),r=f.start();assert.equal(r.status,'BLOCKED');assert(r.checks.some(c=>/CANDIDATE_NOT_SELECTED_OR_STALE|EXACT_REVIEW_BINDING/.test(c.code)));assert.deepEqual(fileSnapshot(root),before);
+}));
+for(const [label,change] of [
+ ['missing contract',f=>f.input.records=f.input.records.filter(r=>r.kind!=='CONTRACT')],
+ ['unreviewed research',f=>f.input.records.find(r=>r.kind==='RESEARCH').verdict='UNKNOWN'],
+ ['missing quote',f=>f.input.originals=[]],
+ ['wrong source hash',f=>f.input.records.find(r=>r.kind==='RESEARCH').sha256='0'.repeat(64)],
+ ['missing research run',f=>edit(f.input,'RESEARCH',p=>p.researchPlan.candidateResearchBinding.runId='missing-run')],
+ ['null declared binding',f=>edit(f.input,'RESEARCH',p=>p.researchPlan.candidateResearchBinding=null)],
+ ['unsafe research run',f=>edit(f.input,'RESEARCH',p=>p.researchPlan.candidateResearchBinding.runId='../other')],
+])test('CLI bound start '+label+' leaves all files unchanged',()=>withSavedStart((root,f)=>{
+ change(f);f.save();const before=fileSnapshot(root);let r;try{r=f.start();}catch(e){assert.match(e.message,/SPREAD_PLAN_ORIGINAL_COUNT|CANDIDATE_HANDOFF_RUN_ID/);}if(r){assert(['BLOCKED','BOUND_ENGINE_BLOCKED'].includes(r.status));assert.equal(r.planSaved,false);}assert.deepEqual(fileSnapshot(root),before);
+}));
+test('CLI start retains the unbound V3 plan-only entry and rejects malformed research without writing',()=>withSavedStart((root,f)=>{
+ edit(f.input,'RESEARCH',p=>delete p.researchPlan.candidateResearchBinding);f.save();const r=f.start();assert.equal(r.status,'REAL_QUOTE_PAPER_PLAN_READY');assert.equal(r.candidateHandoff,undefined);assert.equal(r.entryAutomaticallyAppended,false);assert.equal(recoverMockSpread({root,runId:'paper-sim-fixture-account',asOf:f.input.at}).events.length,0);
+ f.input.records.find(r=>r.kind==='RESEARCH').rawJson='{';f.save();const before=fileSnapshot(root);assert.equal(f.start().status,'BLOCKED');assert.deepEqual(fileSnapshot(root),before);
+}));
 async function assistantFixture(structure){
  const f=await simulatedAccountSpreadFixture(structure),v=view(),t=projectTechCandidateTrace(v,{at}).traces[0];
  f.v=v;f.input.version='TECH_SPREAD_PLAN_INPUT_V3';f.input.researchPolicy=ASSISTANT_FACT_POLICY;
