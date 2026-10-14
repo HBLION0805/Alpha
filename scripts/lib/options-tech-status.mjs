@@ -91,18 +91,20 @@ export function projectTechReceipt(r,digest,at){
 
 /** Bounded immediate-directory inventory. No recover(): it can mkdir/unlink pending journal files. */
 export function readTechStatus({root=process.cwd(),engineeringRoot=root,weeklyResearchRoot=engineeringRoot,at=new Date().toISOString()}={}){
+ const savedPlans=[];
  const out={version:'TECH_WORKBENCH_STATUS_V1',checkedAt:clock(at),state:'MISSING',records:[],issues:[],
   scope:'DIRECT_LOCAL_DEVELOPMENT_RECEIPTS_AND_SPREAD_JOURNALS',capability:'ISOLATED_ONE_CONTRACT_SAME_DAY_CDS_PDS',
-  realAcceptance:'NOT_TESTED',executionAllowed:false,sourceCalls:0,fileSystemWrites:0,weeklyResearch:readWeeklyResearchView({root:weeklyResearchRoot,at}),researchDetails:readTechResearchView({root,at}),engineering:readEngineeringStatus({root:engineeringRoot,at})};
+  realAcceptance:'NOT_TESTED',executionAllowed:false,sourceCalls:0,fileSystemWrites:0,weeklyResearch:readWeeklyResearchView({root:weeklyResearchRoot,at}),researchDetails:null,engineering:readEngineeringStatus({root:engineeringRoot,at})};
+ const finish=()=>({...out,researchDetails:readTechResearchView({root,at,savedPlans,planInventoryState:out.state})});
  let bytesRead=0;
  const read=p=>{const before=fs.lstatSync(p);check(before.isFile()&&!before.isSymbolicLink()&&before.nlink===1&&before.size<2e6,'UNSAFE_OR_OVERSIZE_FILE');bytesRead+=before.size;check(bytesRead<=32*1024*1024,'READ_BOUND');const bytes=fs.readFileSync(p);check(stamp(before)===stamp(fs.lstatSync(p)),'CHANGED_DURING_READ');let data;try{data=parseChainSurveyJson(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw Error('MALFORMED_JSON');}return {data,digest:hash(bytes)};};
  const issue=(ref,code,digest=null)=>out.issues.push({locationRef:hash(ref),sourceRef:digest,code:['READ_BOUND','DIRECTORY_BOUND','FILE_BOUND','UNSAFE_PATH','UNSAFE_OR_OVERSIZE_FILE','CHANGED_DURING_READ','FUTURE_RECEIPT','RECEIPT_CLOCK_MISSING','INVALID_RECEIPT_CLOCK','RECEIPT_CLOCK_ORDER','UNSUPPORTED_RECEIPT','UNVERSIONED_RESIDUAL_AUDIT_WRAPPER','INVALID_CANDIDATE_SCHEMA','INVALID_CANDIDATE_CLI_ENVELOPE','MALFORMED_JSON','CONFLICTING_ASSESSMENTS'].includes(code)?code:'INVALID_SAVED_EVIDENCE'});
  try{
   check(out.checkedAt,'INVALID_CLOCK');let base=fs.realpathSync(root);
-  for(const part of ['data','runtime','options-workbench-development']){base=resolve(base,part);let s;try{s=fs.lstatSync(base);}catch(e){if(e.code==='ENOENT')return out;throw e;}check(s.isDirectory()&&!s.isSymbolicLink()&&fs.realpathSync(base)===base,'UNSAFE_PATH');}
+  for(const part of ['data','runtime','options-workbench-development']){base=resolve(base,part);let s;try{s=fs.lstatSync(base);}catch(e){if(e.code==='ENOENT')return finish();throw e;}check(s.isDirectory()&&!s.isSymbolicLink()&&fs.realpathSync(base)===base,'UNSAFE_PATH');}
   const dirs=fs.readdirSync(base,{withFileTypes:true}).filter(d=>d.isDirectory()||d.isSymbolicLink());check(dirs.length<=100,'DIRECTORY_BOUND');
   for(const dir of dirs){
-   const beforeCount=out.records.length;
+   const beforeCount=out.records.length,beforePlans=savedPlans.length;
    try{
     const path=resolve(base,dir.name);check(!dir.isSymbolicLink()&&fs.realpathSync(path)===path,'UNSAFE_PATH');
     const names=fs.readdirSync(path).sort();check(names.length<=2100,'FILE_BOUND');
@@ -118,17 +120,18 @@ export function readTechStatus({root=process.cwd(),engineeringRoot=root,weeklyRe
       const simulated=['SIMULATED_ACCOUNT_REAL_MARKET_DATA','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(report.evidenceContext);if(simulated)check(dir.name===m.data.input.account.id,'SIMULATED_ACCOUNT_RUN_SCOPE');
       row.accountEvidence=Object.fromEntries(accounts.map(k=>[k,simulated&&k!=='DATA_ENTITLEMENT'?'SIMULATED_ACCOUNT_ASSUMPTION':report.mode==='MOCK'?'EXPLICIT_MOCK_ASSUMPTION':['TEST_FIXTURE','TEST_FIXTURE_SIMULATED_ACCOUNT'].includes(report.evidenceContext)?'TEST_FIXTURE':'ATTRIBUTED_NOT_AUTHENTICATED']));
       row.containerRef=hash(dir.name);row.locationRef=hash(dir.name+'/start.json');out.records.push(row);
+      if(m.data.input.provenance){row.planRef=m.data.input.provenance.planSha256;row.journalTipRef=verified.tip;savedPlans.push({plan:m.data.input,receipt:row});}
      }
     }
     const candidates=names.filter(n=>/^(?:assessment-.*|[A-Z]+-tech-feasibility-v1|real-report-\d+|real-rejection-\d+|[a-z0-9-]+-preview)\.json$/.test(n));check(candidates.length<=100,'FILE_BOUND');
     for(const name of candidates){let r;try{r=read(resolve(path,name));out.records.push({...projectTechReceipt(r.data,r.digest,at),containerRef:hash(dir.name),locationRef:hash(dir.name+'/'+name)});}catch(e){issue(dir.name+'/'+name,e.message,r?.digest);}}
     check(JSON.stringify(names)===JSON.stringify(fs.readdirSync(path).sort()),'CHANGED_DURING_READ');
-   }catch(e){out.records.length=beforeCount;issue(dir.name,e.message);}
+   }catch(e){out.records.length=beforeCount;savedPlans.length=beforePlans;issue(dir.name,e.message);}
   }
   out.records.sort((a,b)=>(b.recordedAt??'').localeCompare(a.recordedAt??'')||a.sourceRef.localeCompare(b.sourceRef));
   associateTechSources(out.records);
   for(const row of out.records.filter(r=>r.association.status==='CONFLICTING_ASSESSMENTS'))out.issues.push({locationRef:row.locationRef,sourceRef:row.sourceRef,code:'CONFLICTING_ASSESSMENTS'});
   out.state=out.issues.length?'PARTIAL':out.records.length?'AVAILABLE':'MISSING';
- }catch(e){out.state='BLOCKED';out.records=[];issue('inventory',e.message);}
- return out;
+ }catch(e){out.state='BLOCKED';out.records=[];savedPlans.length=0;issue('inventory',e.message);}
+ return finish();
 }

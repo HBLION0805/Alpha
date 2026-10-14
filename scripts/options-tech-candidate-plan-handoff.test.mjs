@@ -11,12 +11,14 @@ import {ASSISTANT_FACT_POLICY} from './lib/options-tech-assistant-fact-policy.mj
 import {spreadPlanHash} from './lib/options-tech-spread-plan-binding.mjs';
 import {prepareTechSpreadInput} from './lib/options-tech-spread-preparation.mjs';
 import {techSpreadPlanCli} from './options-tech-spread-plan.mjs';
-import {projectTechCandidateHandoffView} from './lib/options-tech-candidate-handoff-view.mjs';
+import {projectTechCandidateHandoffView,projectSavedTechCandidatePlans} from './lib/options-tech-candidate-handoff-view.mjs';
 import {techCandidateHandoffPanel} from '../apps/options-workbench/tech-candidate-handoff.js';
 import {techCandidateTracePanel} from '../apps/options-workbench/tech-candidate-trace.js';
 import {startTechSpreadPlan} from './lib/options-tech-spread-plan.mjs';
 import {mockSpreadEventFromOriginal} from './lib/options-tech-spread-plan-binding.mjs';
-import {appendMockSpread,recoverMockSpread} from './lib/options-tech-mock-spread.mjs';
+import {appendMockSpread,recoverMockSpread,startMockSpread} from './lib/options-tech-mock-spread.mjs';
+import {boundSpreadPlanHash} from './lib/options-tech-spread-plan-binding.mjs';
+import {startOptionsWorkbench} from './options-workbench.mjs';
 import {readTechStatus} from './lib/options-tech-status.mjs';
 
 let total=0,passed=0;const test=(name,fn)=>{total++;nodeTest(name,async()=>{await fn();passed++;});};
@@ -85,6 +87,41 @@ for(const [label,change] of [
 test('CLI start retains the unbound V3 plan-only entry and rejects malformed research without writing',()=>withSavedStart((root,f)=>{
  edit(f.input,'RESEARCH',p=>delete p.researchPlan.candidateResearchBinding);f.save();const r=f.start();assert.equal(r.status,'REAL_QUOTE_PAPER_PLAN_READY');assert.equal(r.candidateHandoff,undefined);assert.equal(r.entryAutomaticallyAppended,false);assert.equal(recoverMockSpread({root,runId:'paper-sim-fixture-account',asOf:f.input.at}).events.length,0);
  f.input.records.find(r=>r.kind==='RESEARCH').rawJson='{';f.save();const before=fileSnapshot(root);assert.equal(f.start().status,'BLOCKED');assert.deepEqual(fileSnapshot(root),before);
+}));
+const webStatus=root=>readTechStatus({root,at:new Date().toISOString()});
+const savedLinks=s=>s.researchDetails.traceScans[0].planHandoff.savedPlans;
+test('web exact saved candidate links the verified plan and same independent Paper lifecycle without writes',()=>withSavedStart((root,f)=>{
+ f.save();const p=f.start(),before=fileSnapshot(root),s=webStatus(root),links=savedLinks(s),link=links.plans[0];
+ assert.equal(links.state,'EXACT_SAVED_PLAN');assert.equal(link.linkStatus,'EXACT_CURRENT_REVIEW');assert.equal(link.context,'TEST_FIXTURE_SIMULATED_ACCOUNT');assert.equal(link.planRef,p.plan.provenance.planSha256);assert.equal(link.planRef,s.records[0].planRef);assert.equal(link.journalRef,s.records[0].sourceRef);assert.equal(link.declaredBinding.traceId,p.candidateHandoff.selectedCandidate.binding.traceId);assert.equal(link.paperStatus,'NO_ENTRY');assert.equal(link.modeledOrderCount,0);assert.deepEqual(fileSnapshot(root),before);
+ appendMockSpread({root,runId:'paper-sim-fixture-account',event:p.entryEvent});assert.equal(savedLinks(webStatus(root)).plans[0].paperStatus,'OPEN_UNRESOLVED');
+ const event=mockSpreadEventFromOriginal({plan:p.plan,original:f.exitOriginal,id:'paper-web-independent-exit',at:f.exitAt});appendMockSpread({root,runId:'paper-sim-fixture-account',event});
+ const closedBefore=fileSnapshot(root),closed=webStatus(root),last=savedLinks(closed).plans[0];assert.equal(last.paperStatus,'CLOSED_MODELED');assert.equal(last.modeledOrderCount,2);assert.equal(last.journalTipRef,closed.records[0].journalTipRef);assert.notEqual(last.journalTipRef,link.journalTipRef);assert.equal(last.currentAdmission,'NOT_EVALUATED');assert.equal(last.realAcceptance,'NOT_TESTED');assert.deepEqual(fileSnapshot(root),closedBefore);
+ const json=JSON.stringify(closed.researchDetails),html=techCandidateHandoffPanel(closed.researchDetails.traceScans[0].planHandoff);assert(!/"(?:rawJson|factSources|accountId|settledCashCents)":/.test(JSON.stringify(savedLinks(closed))));assert(!/paper-sim-fixture-account|Synthetic AAPL reviewed material/.test(json));assert(html.includes('精确关联 · 当前审核版本'));assert(html.includes('CLOSED_MODELED'));assert(html.includes('TEST_FIXTURE_SIMULATED_ACCOUNT'));assert(!/<form|<button|<input/.test(html));
+}));
+test('web old review head retains a historical plan but never associates it to the new candidate',()=>withSavedStart((root,f)=>{
+ f.save();f.start();f.append('fixture-later-head','2026-10-09T14:14:01Z');const before=fileSnapshot(root),s=webStatus(root),links=savedLinks(s);assert.equal(links.state,'NO_CURRENT_MATCH');assert.equal(links.plans[0].linkStatus,'STALE_REVIEW');assert.equal(links.plans[0].matchedResearch,null);assert.equal(links.plans[0].paperStatus,'NO_ENTRY');assert.deepEqual(fileSnapshot(root),before);assert(techCandidateHandoffPanel(s.researchDetails.traceScans[0].planHandoff).includes('旧审核头 · 不关联当前候选'));
+}));
+for(const key of ['scanId','baseReceiptSha256','traceId','researchRecordId','eventRef'])test('web same ticker cannot rescue mismatched '+key,()=>withSavedStart((root,f)=>{
+ edit(f.input,'RESEARCH',p=>p.researchPlan.candidateResearchBinding[key]='a'.repeat(64));const p=startTechSpreadPlan({root,runId:'paper-sim-fixture-account',input:f.input});assert.equal(p.status,'REAL_QUOTE_PAPER_PLAN_READY');const before=fileSnapshot(root),links=savedLinks(webStatus(root));assert.equal(links.state,'NO_CURRENT_MATCH');assert.equal(links.plans[0].linkStatus,'BINDING_REJECTED');assert.equal(links.plans[0].matchedResearch,null);assert.deepEqual(fileSnapshot(root),before);
+}));
+test('web no saved plan and unrelated research run stay explicitly missing without ticker fallback',()=>withSavedStart((root,f)=>{
+ assert.equal(savedLinks(webStatus(root)).state,'NO_EXACT_SAVED_PLAN');edit(f.input,'RESEARCH',p=>p.researchPlan.candidateResearchBinding.runId='other-research-run');startTechSpreadPlan({root,runId:'paper-sim-fixture-account',input:f.input});const s=webStatus(root);assert.equal(s.records.length,1);assert.equal(savedLinks(s).state,'NO_EXACT_SAVED_PLAN');assert.equal(savedLinks(s).plans.length,0);
+}));
+test('web corrupt journal drops prior success and reports unresolved inventory without attributing corrupt bytes',()=>withSavedStart((root,f)=>{
+ f.save();f.start();assert.equal(savedLinks(webStatus(root)).state,'EXACT_SAVED_PLAN');f.put('data/runtime/options-workbench-development/paper-sim-fixture-account/start.json','{"private":"DO_NOT_DISPLAY"');const before=fileSnapshot(root),s=webStatus(root);assert.equal(s.state,'PARTIAL');assert.equal(savedLinks(s).state,'UNRESOLVED_INVENTORY');assert.equal(savedLinks(s).plans.length,0);assert(!JSON.stringify(s).includes('DO_NOT_DISPLAY'));assert.deepEqual(fileSnapshot(root),before);
+}));
+test('web fixture plan cannot borrow a real saved review context',()=>withSavedStart((root,f)=>{
+ f.save();const p=f.start(),s=webStatus(root),v=readTechEventReviews({root,runId:'fixture-research',now:()=>at});v.mode='SAVED_SOURCE_REVIEW';const links=projectSavedTechCandidatePlans(v,{at,savedPlans:[{plan:p.plan,receipt:s.records[0]}],inventoryState:'AVAILABLE'});assert.equal(links.state,'NO_CURRENT_MATCH');assert.equal(links.plans[0].linkStatus,'CONTEXT_MISMATCH');assert.equal(links.plans[0].context,'TEST_FIXTURE_SIMULATED_ACCOUNT');assert.equal(links.plans[0].matchedResearch,null);
+}));
+test('web hash-valid saved WAIT research remains engine-blocked rather than becoming a qualified plan',()=>withSavedStart((root,f)=>{
+ f.save();const p=prepareTechSpreadInput(f.input);assert.equal(p.enginePreview.status,'REAL_QUOTE_PAPER_PLAN_READY');
+ const ready=startTechSpreadPlan({root:fs.mkdtempSync(join(root,'isolated-')),runId:'paper-sim-fixture-account',input:f.input}).plan;
+ const record=ready.provenance.records.find(r=>r.kind==='RESEARCH'),research=JSON.parse(record.rawJson);research.fundamental.direction='UNKNOWN';record.rawJson=JSON.stringify(research);record.sha256=spreadPlanHash(record.rawJson);ready.research=research;ready.provenance.researchSha256=record.sha256;
+ const request=ready.provenance.records.find(r=>r.kind==='STRATEGY_REQUEST'),body=JSON.parse(request.rawJson);body.researchSha256=record.sha256;request.rawJson=JSON.stringify(body);request.sha256=spreadPlanHash(request.rawJson);ready.provenance.planSha256=boundSpreadPlanHash(ready);
+ startMockSpread({root,runId:'paper-sim-fixture-account',input:ready});const before=fileSnapshot(root),s=webStatus(root),link=savedLinks(s).plans[0];assert.equal(link.linkStatus,'EXACT_BINDING_ENGINE_BLOCKED');assert.equal(link.engine.status,'BLOCKED');assert.notEqual(link.trialStatus,'PRE_CONFIRMATION_RESEARCH_CANDIDATE');assert.equal(link.confirmationStatus,'WAIT');assert.equal(link.paperStatus,'NO_ENTRY');assert.deepEqual(fileSnapshot(root),before);
+}));
+test('existing HTTP endpoints publish only the safe exact plan association',()=>withSavedStart(async(root,f)=>{
+ f.save();f.start();const app=await startOptionsWorkbench({workspaceRoot:root,port:0,refreshContext:false});try{const before=fileSnapshot(root),s=await(await fetch(app.url+'/api/tech-status')).json(),state=await(await fetch(app.url+'/api/state')).json();assert.equal(savedLinks(s).state,'EXACT_SAVED_PLAN');assert.equal(savedLinks(state.techResearch).plans[0].planRef,savedLinks(s).plans[0].planRef);assert(!/"(?:rawJson|accountId|factSources)":/.test(JSON.stringify(savedLinks(s))));assert(!JSON.stringify(s.researchDetails).includes("paper-sim-fixture-account"));assert.deepEqual(fileSnapshot(root),before);}finally{await app.close();}
 }));
 async function assistantFixture(structure){
  const f=await simulatedAccountSpreadFixture(structure),v=view(),t=projectTechCandidateTrace(v,{at}).traces[0];
