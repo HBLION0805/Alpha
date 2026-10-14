@@ -6,7 +6,9 @@ import readline from 'node:readline';
 
 const sha=value=>createHash('sha256').update(value).digest('hex');
 export const TECH_QUOTE_MARKET_TOOLS=Object.freeze(['get_option_chains','get_option_instruments','get_equity_quotes','get_option_quotes']);
-export const techQuoteHostOverrides=()=>['-c','mcp_servers.robinhood_alpha_market_data.enabled_tools='+JSON.stringify(TECH_QUOTE_MARKET_TOOLS)];
+// This capture cannot proceed without its market server. Wait for MCP startup
+// before the first model turn; keep the existing per-server timeout and allowlist.
+export const techQuoteHostOverrides=()=>['-c','mcp_servers.robinhood_alpha_market_data.required=true','-c','mcp_servers.robinhood_alpha_market_data.enabled_tools='+JSON.stringify(TECH_QUOTE_MARKET_TOOLS)];
 
 /** Explicit local pin, not PATH/mtime discovery or a substitute for OS execution approval.
  * The operator verifies the installed publisher before creating this private config.

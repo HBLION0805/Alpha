@@ -1,6 +1,7 @@
 import nodeTest,{after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {EventEmitter} from 'node:events';
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
 import {join,resolve,sep} from 'node:path';import {tmpdir} from 'node:os';
 import {collectTechOptionQuotes,normalizeTechOptionCapture as normalize,validateTechQuoteSelection} from './lib/options-tech-quote-adapter.mjs';
@@ -119,4 +120,33 @@ test('actual CLI capture rejects missing explicit config before writing a run',a
  await assert.rejects(captureTechQuotes({root:process.cwd(),selection,runId:'host-missing-config-test',hostConfig:'',codexPath:'UNVERIFIED'}),/CONFIG_REQUIRED/);
  await assert.rejects(techQuotesCli(['--check-host','--host-config']),/ARGUMENTS/);
  await assert.rejects(techQuotesCli(['--check-host','--host-config','missing.json']),/CONFIG_INVALID/);
+});
+
+test('capture requires market startup and retains a failed Host without retry or receipt',async()=>{
+ const {captureTechQuotes}=await import('./options-tech-quotes.mjs');
+ const {existsSync}=await import('node:fs');
+ const root=mkdtempSync(join(tmpdir(),'alpha-tech-host-startup-')),exe=join(root,'codex.exe'),config=join(root,'host.json');
+ let starts=0;
+ try{
+  mkdirSync(join(root,'data/runtime/options-workbench-development'),{recursive:true});
+  writeFileSync(exe,'OFFLINE_TEST_BYTES_NEVER_EXECUTED');
+  writeFileSync(config,JSON.stringify({version:'TECH_QUOTE_HOST_CONFIG_V1',executable:exe,sha256:createHash('sha256').update(readFileSync(exe)).digest('hex')}));
+  const spawnHost=(binary,args,options)=>{
+   starts++;assert.equal(binary,exe);assert.equal(options.windowsHide,true);
+   assert.equal(args[args.indexOf('--sandbox')+1],'read-only');
+   const overrides=args.flatMap((arg,i)=>arg==='-c'?[args[i+1]]:[]);
+   assert.equal(overrides.filter(v=>v==='mcp_servers.robinhood_alpha_market_data.required=true').length,1);
+   assert.deepEqual(JSON.parse(overrides.find(v=>v.startsWith('mcp_servers.robinhood_alpha_market_data.enabled_tools=')).split('=')[1]),['get_option_chains','get_option_instruments','get_equity_quotes','get_option_quotes']);
+   assert.equal(overrides.some(v=>/^mcp_servers\.robinhood_alpha_market_data\.(startup_timeout_sec|tool_timeout_sec)=/.test(v)),false);
+   const child=new EventEmitter();child.stdout=new EventEmitter();child.stderr=new EventEmitter();child.kill=()=>assert.fail('No timeout or retry expected');
+   child.stdin={end:()=>queueMicrotask(()=>{child.stderr.emit('data',Buffer.from('OFFLINE_FIXTURE: required MCP startup failed\n'));child.emit('close',1);})};
+   return child;
+  };
+  const result=await captureTechQuotes({root,selection,runId:'offline-startup-failure',hostConfig:config,spawnHost});
+  assert.equal(starts,1);assert.equal(result.exitCode,1);assert.equal(result.status,'BLOCKED_HOST_NO_RECEIPT');
+  assert.equal(result.persistenceError,'TECH_QUOTES_HOST_REVIEW_MISSING');assert.equal(result.receiptPath,null);
+  assert.equal(result.executionAllowed,false);assert.equal(result.paperAdmissionAllowed,false);
+  assert.equal(existsSync(join(result.runPath,'capture.json')),false);
+  assert.match(readFileSync(join(result.runPath,'host-stderr.txt'),'utf8'),/OFFLINE_FIXTURE: required MCP startup failed/);
+ }finally{if(!resolve(root).startsWith(resolve(tmpdir())+sep))throw Error('Cleanup scope');rmSync(root,{recursive:true});}
 });
