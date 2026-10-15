@@ -1,4 +1,5 @@
 import type { FeedItem, Source } from "../types.ts";
+import { parseXmlFeed, type RawEntry } from "../adapters/rss.ts";
 
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
 
@@ -20,19 +21,13 @@ function text(raw: string | undefined): string {
   return decodeEntities(s).replace(/\s+/g, " ").trim();
 }
 
+/** Only for the Google News sitemap (rss-parser does not read sitemaps). */
 function tag(block: string, names: string[]): string | undefined {
   for (const n of names) {
-    const re = new RegExp(`<${n}(?:\\s[^>]*)?>([\\s\\S]*?)</${n}>`, "i");
-    const m = block.match(re);
+    const m = block.match(new RegExp(`<${n}(?:\\s[^>]*)?>([\\s\\S]*?)</${n}>`, "i"));
     if (m) return m[1];
   }
   return undefined;
-}
-
-function atomLink(block: string): string | undefined {
-  const links = [...block.matchAll(/<link\b([^>]*?)\/?>/gi)].map((m) => m[1] ?? "");
-  const pick = links.find((a) => /rel=["']alternate["']/i.test(a)) ?? links.find((a) => !/rel=/i.test(a)) ?? links[0];
-  return pick?.match(/href=["']([^"']+)["']/i)?.[1];
 }
 
 function toIso(raw: string | undefined, fallback: string): string {
@@ -49,27 +44,22 @@ export function clampFuture(iso: string, now: string): string {
   return Date.parse(iso) > Date.parse(now) + 10 * 60_000 ? now : iso;
 }
 
-/** Parse RSS 2.0 / RSS 1.0 (RDF) / Atom into FeedItems. Never throws on bad items; skips them. */
-export function parseFeed(xml: string, sourceId: string, now = new Date().toISOString()): FeedItem[] {
-  const blocks = [...xml.matchAll(/<(item|entry)\b[^>]*>([\s\S]*?)<\/\1>/gi)].map((m) => m[2] ?? "");
+/** Parse RSS 2.0 / RSS 1.0 (RDF) / Atom via adapters/rss.ts (rss-parser); falls back to the news-sitemap reader. Never throws; skips bad items. */
+export async function parseFeed(xml: string, sourceId: string, now = new Date().toISOString()): Promise<FeedItem[]> {
+  let raw: RawEntry[] = [];
+  if (!/<urlset\b/i.test(xml.slice(0, 2000))) { try { raw = await parseXmlFeed(xml); } catch { raw = []; } }
   const out: FeedItem[] = [];
-  for (const b of blocks) {
-    const title = text(tag(b, ["title"]));
-    let url = text(tag(b, ["link"])) || atomLink(b) || "";
-    const guid = text(tag(b, ["guid", "id"])) || undefined;
+  for (const r of raw) {
+    const title = text(r.title);
+    const guid = text(r.guid) || undefined;
+    let url = (r.link ?? "").trim();
     if (!url && guid && /^https?:/.test(guid)) url = guid;
     if (!title || !url) continue;
-    const item: FeedItem = {
-      sourceId,
-      title,
-      url: decodeEntities(url.trim()),
-      publishedAt: clampFuture(toIso(tag(b, ["pubDate", "published", "updated", "dc:date"]), now), now),
-      summary: text(tag(b, ["description", "summary", "content:encoded", "content"])).slice(0, 500),
-    };
+    const item: FeedItem = { sourceId, title, url: decodeEntities(url), publishedAt: clampFuture(toIso(r.date, now), now), summary: text(r.summary).slice(0, 500) };
     if (guid) item.guid = guid;
     out.push(item);
   }
-  if (!blocks.length) out.push(...parseNewsSitemap(xml, sourceId, now));
+  if (!raw.length) out.push(...parseNewsSitemap(xml, sourceId, now));
   return out;
 }
 
@@ -115,7 +105,7 @@ export async function fetchFeed(src: Source, state: FeedState = {}, timeoutMs = 
     if (res.status === 304) return { ...base, etag: state.etag ?? null, lastModified: state.lastModified ?? null, notModified: true, items: [], ms: Date.now() - t0 };
     if (!res.ok) return { ...base, notModified: false, items: [], error: `HTTP ${res.status}`, ms: Date.now() - t0 };
     const body = await res.text();
-    const items = parseFeed(body, src.id);
+    const items = await parseFeed(body, src.id);
     const r: FetchResult = { ...base, notModified: false, items, ms: Date.now() - t0 };
     if (!items.length) r.error = "no items parsed";
     return r;

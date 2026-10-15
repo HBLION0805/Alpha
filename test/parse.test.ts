@@ -9,8 +9,8 @@ import type { Source } from "../src/types.ts";
 
 const fx = (f: string) => readFileSync(new URL(`./fixtures/${f}`, import.meta.url), "utf8");
 
-test("RSS 2.0: CDATA, entities, 2-digit year, skips empty title", () => {
-  const items = parseFeed(fx("rss2.xml"), "s");
+test("RSS 2.0: CDATA, entities, 2-digit year, skips empty title", async () => {
+  const items = await parseFeed(fx("rss2.xml"), "s");
   assert.equal(items.length, 2);
   assert.equal(items[0]!.title, "Fed holds rates steady, Powell signals patience");
   assert.equal(items[0]!.summary, "The Federal Reserve held & signaled.");
@@ -19,8 +19,8 @@ test("RSS 2.0: CDATA, entities, 2-digit year, skips empty title", () => {
   assert.equal(items[1]!.publishedAt, "2026-10-14T17:00:00.000Z");
 });
 
-test("Atom: link href and updated", () => {
-  const [a] = parseFeed(fx("atom.xml"), "sec");
+test("Atom: link href and updated", async () => {
+  const [a] = await parseFeed(fx("atom.xml"), "sec");
   assert.equal(a!.url, "https://sec.gov/news/1");
   assert.equal(a!.publishedAt, "2026-10-14T15:30:00.000Z");
   assert.equal(a!.guid, "urn:1");

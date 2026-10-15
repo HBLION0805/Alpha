@@ -24,8 +24,8 @@ test("committed static release calendar has every kind and citations", () => {
   for (const k of ["FOMC", "CPI", "NFP", "PPI", "PCE", "GDP"]) assert.ok(j.events.some((e) => e.kind === k && e.source.startsWith("https://")), k);
 });
 
-test("CNN Google-News sitemap parses", () => {
-  const items = parseFeed(fx("cnn-news-sitemap.xml"), "cnn");
+test("CNN Google-News sitemap parses", async () => {
+  const items = await parseFeed(fx("cnn-news-sitemap.xml"), "cnn");
   assert.ok(items.length >= 2);
   assert.match(items[0]!.url, /^https:\/\/www\.cnn\.com\//);
   assert.ok(items[0]!.title.length > 10);
