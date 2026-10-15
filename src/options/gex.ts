@@ -58,16 +58,32 @@ export function computeGex(symbol: string, p: { spot: number; asOfUtc: string; r
   const abs = p.rows.reduce((s, r) => s + Math.abs(gex(r)), 0), abs1 = n1.reduce((s, r) => s + Math.abs(gex(r)), 0);
   return { symbol, ok: true, spot: S, asOfUtc: p.asOfUtc, net, flip, callWall, putWall, nextExpiry, maxPain, nextExpiryShare: abs ? abs1 / abs : 0, expiries: new Set(p.rows.map((r) => r.exp)).size };
 }
-function curl(url: string): Promise<string> {
+export function curl(url: string): Promise<string> {
   return new Promise((res, rej) => execFile("curl", ["-sL", "-A", "Mozilla/5.0", "--max-time", "25", url], { maxBuffer: 64e6 }, (e, out) => (e ? rej(e) : res(out))));
 }
-export async function fetchGex(symbol: string, days = 45): Promise<GexOut> {
+/** raw CBOE delayed-quote JSON (tries SYM then _SYM for indexes); null on failure */
+export async function fetchCboeRaw(symbol: string): Promise<{ json: unknown; error?: string }> {
   let last = "";
   for (const s of [symbol, `_${symbol}`]) {
-    try { return computeGex(symbol, parseCboe(JSON.parse(await curl(`https://cdn.cboe.com/api/global/delayed_quotes/options/${s}.json`)), days)); }
+    try { const j = JSON.parse(await curl(`https://cdn.cboe.com/api/global/delayed_quotes/options/${s}.json`)); if (j?.data?.options?.length) return { json: j }; last = "CBOE: no options in response"; }
     catch (e) { last = (e as Error).message; }
   }
-  return { symbol, ok: false, error: last || "fetch failed" };
+  return { json: null, error: last || "fetch failed" };
+}
+export function gexFromRaw(symbol: string, raw: { json: unknown; error?: string }, days = 45): GexOut {
+  if (!raw.json) return { symbol, ok: false, error: raw.error ?? "fetch failed" };
+  try { return computeGex(symbol, parseCboe(raw.json, days)); } catch (e) { return { symbol, ok: false, error: (e as Error).message }; }
+}
+export async function fetchGex(symbol: string, days = 45): Promise<GexOut> { return gexFromRaw(symbol, await fetchCboeRaw(symbol), days); }
+/** bid/ask/iv per contract from the same CBOE JSON (for plan cards) */
+export function cboeQuotes(json: unknown): Array<{ type: "call" | "put"; strike: number; expiration: string; bid: number; ask: number; iv: number; oi: number }> {
+  const j = json as { data?: { options?: Array<{ option: string; bid: number; ask: number; iv: number; open_interest: number }> } };
+  const out = [];
+  for (const o of j?.data?.options ?? []) {
+    const m = RE.exec(o.option); if (!m) continue;
+    out.push({ type: (m[3] === "C" ? "call" : "put") as "call" | "put", strike: Number(m[4]) / 1000, expiration: `20${m[2]!.slice(0, 2)}-${m[2]!.slice(2, 4)}-${m[2]!.slice(4, 6)}`, bid: o.bid, ask: o.ask, iv: o.iv, oi: o.open_interest });
+  }
+  return out;
 }
 const fmtB = (x: number) => { const a = Math.abs(x); return `${x < 0 ? "−" : "+"}$${a >= 1e9 ? (a / 1e9).toFixed(2) + "B" : (a / 1e6).toFixed(0) + "M"}`; };
 const px = (x: number | null) => (x == null ? "—" : x >= 100 ? x.toFixed(0) : x.toFixed(2));

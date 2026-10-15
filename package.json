@@ -21,7 +21,8 @@
     "brief": "node src/cli/brief.ts",
     "readiness": "node src/cli/readiness.ts",
     "paper": "node src/cli/paper.ts",
-    "review": "node src/cli/review.ts"
+    "review": "node src/cli/review.ts",
+    "card": "node src/cli/card.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",

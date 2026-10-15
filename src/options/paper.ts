@@ -15,7 +15,7 @@ import { buildRiskPlan } from "./riskplan.ts";
 import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
-export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard> }
+export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard> }
 type Leg = NonNullable<JournalEntry["legs"]>[number];
 const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
@@ -64,7 +64,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a: OpenArgs): { entry: J
     thesis: a.thesis, stop: a.stop, invalidation: a.invalidation!, thesisRecordedAt: now, stopRecordedAt: now, motive: a.motive, timeStopAt: a.timeStopAt,
     view: { direction: a.thesis!, volatility: "n/a (paper)" }, ivRank: null, greeks: { delta: 0, gamma: 0, theta: 0, vega: 0 }, expectedMove: null,
     structureRationale: p.strategy, maxLoss: rp.plan!.maxLoss, kind: a.kind ?? "formal", riskPlan: rp.plan!, exitRules: [`stop: ${a.stop}`, `invalidation: ${a.invalidation}`, ...(rp.plan!.stock ? [`mechanical stop ${rp.plan!.stock.stopPrice} (−${rp.plan!.stock.stopPct}%)`] : []), ...(rp.plan!.option ? [`30/30: ${rp.plan!.option.rule3030Date} or value ≤ $${rp.plan!.option.loss30Value}`] : []), rp.plan!.rule, renderTakeProfit(tp.plan!), ...(a.timeStopAt ? [`time stop: ${a.timeStopAt}`] : [])],
-    takeProfit: tp.plan!, tpHits: [], ...(a.planId ? { planId: a.planId } : {}), capitalAtEntry: j.capital, concurrentAtEntry: open.length + 1, legs, underlyingAtEntry: spot, marks: [],
+    takeProfit: tp.plan!, tpHits: [], ...(a.planId ? { planId: a.planId } : {}), ...(a.cardId ? { cardId: a.cardId } : {}), capitalAtEntry: j.capital, concurrentAtEntry: open.length + 1, legs, underlyingAtEntry: spot, marks: [],
     critique: a.critique ? { ...a.critique, acked: a.critique.warns > 0 } : undefined,
   };
   return { entry, checks, refused };

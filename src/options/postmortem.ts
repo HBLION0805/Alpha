@@ -41,7 +41,7 @@ export function mentorCompare(e: JournalEntry): string[] {
 export function pastMistakes(history: JournalEntry[], symbol: string, lastN = 30): { tags: Array<[string, number]>; sameSymbol: string[] } {
   const closed = history.filter((e) => e.closedAt).sort((a, b) => b.closedAt!.localeCompare(a.closedAt!)).slice(0, lastN);
   const n = new Map<string, number>();
-  for (const e of closed) for (const t of new Set([...(e.lossReview?.errorTags ?? []), ...(e.postMortem?.tags ?? [])])) n.set(t, (n.get(t) ?? 0) + 1);
+  for (const e of closed) for (const t of new Set([...(e.lossReview?.errorTags ?? []), ...(e.postMortem && /judgment|execution/.test(e.postMortem.classification) ? e.postMortem.tags : [])])) n.set(t, (n.get(t) ?? 0) + 1);
   const sameSymbol = closed.filter((e) => e.symbol === symbol && (e.postMortem?.lesson || e.lesson)).map((e) => `${e.id}：${e.postMortem?.lesson ?? e.lesson}`).slice(0, 3);
   return { tags: [...n].filter(([, k]) => k >= 1).sort((a, b) => b[1] - a[1]).slice(0, 5), sameSymbol };
 }

@@ -151,3 +151,8 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
   - `npm run review [-- --week]` → data/out/review-<date>.md (summary + per-trade cards).
 - GEX in brief §5.1 (src/options/gex.ts, config/gex.json; CBOE delayed; naive; timing only).
 - Paper close step in scripts/run.sh (weekdays 15:45–16:59 ET): mark → expire (+ VIX settle.json, weekend rule) → review. Marks are one per trade per ET day. The routine refreshes quotes per docs/ROUTINE_PAPER.md (`paper legs`).
+
+## 2026-10-15 — 入场前计划卡 (pre-trade plan card)
+- `npm run card -- --sym NVDA --dir bear [--structure put_spread --legs "+210P,-200P"] --exp 2026-10-23 [--thesis ...] [--save]`
+- 8 sections (plan match, macro, hedge, two stops, staged TP, max loss vs $50/$100, GEX/levels/events, devil's advocate + past mistakes) → ✅ 可做(正式) / 🟡 仅练习 / 🛑 不做.
+- `--save` → data/journal/pending-cards.json; `paper open --card <id>` links. Tests: test/card.test.ts.
