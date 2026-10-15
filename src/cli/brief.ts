@@ -3,6 +3,7 @@
  * ONE Chinese daily brief (macro + premarket + scenarios + levels + calendar + self-check), ONE verdict.
  * Each series is fetched once (fetchDailyOnce). Also writes data/out/macro-latest.json (digest) and scenarios-latest.json (leader state).
  */
+import { withOpex } from "../macro/opex.ts";
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
@@ -46,6 +47,7 @@ for (const [id, ref] of [["ICSA", "ICSA"], ["PAYEMS", "PAYEMS"]] as const) {
 const staticPath = new URL(`../../calendar/releases-${now.getFullYear()}.json`, import.meta.url);
 let calendar: CalendarEvent[] = existsSync(staticPath) ? (parseInput(CalendarFileSchema, JSON.parse(readFileSync(staticPath, "utf8")), "release calendar").events as CalendarEvent[]) : [];
 if (!values.offline) { try { calendar = (await fetchReleaseCalendar(now.getFullYear(), calendar)).events; } catch { /* static fallback */ } }
+calendar = withOpex(calendar, now.getFullYear()); // DK: monthly OpEx
 const earnings = existsSync("data/in/earnings.json") ? parseEarnings(JSON.parse(readFileSync("data/in/earnings.json", "utf8"))) : null;
 const items = store.since(new Date(now.getTime() - 48 * 3600_000).toISOString()).filter((i) => !ALARM_SOURCES.has(i.sourceId));
 const ranked = rank(clusterItems(items), now);

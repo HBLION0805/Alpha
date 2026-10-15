@@ -1,6 +1,6 @@
 import { USER_AGENT } from "./rss.ts";
 
-export type ReleaseKind = "FOMC" | "CPI" | "NFP" | "PPI" | "PCE" | "GDP" | "RETAIL" | "JOLTS" | "CLAIMS";
+export type ReleaseKind = "FOMC" | "CPI" | "NFP" | "PPI" | "PCE" | "GDP" | "RETAIL" | "JOLTS" | "CLAIMS" | "OPEX";
 
 export interface CalendarEvent {
   kind: ReleaseKind;

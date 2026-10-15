@@ -110,3 +110,4 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - The mentor's 市场情景对照 matrix is saved verbatim (knowledge/mentor/macro/market-scenario-matrix.md, source mentor-scenario-matrix). It is deduped; the original image is in the user's chat.
 - New classifier src/macro/matrix.ts covers four dimensions: 10Y, WTI, SMH/QQQ (a proxy for tech earnings), and jobs (ICSA/PAYEMS, otherwise unknown). Its output is in brief §1 as 【大佬情景对照】 and flags disagreement with the leading scenario.
 - Journal: new field `source: real_practice`. The NVDA 202.5/200P (exp 10/16) trade is logged as kind=practice; fixture at examples/journal/. It is excluded from readiness. Lesson: for short-window continuation trades, keep the long strike near ATM.
+- Mentor daily note (gold + OpEx tech rebound) saved verbatim to knowledge/mentor/daily/. Calendar now has monthly OpEx (3rd Friday; DK addition, src/macro/opex.ts).

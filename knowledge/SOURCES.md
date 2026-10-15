@@ -58,3 +58,5 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
   Byte-for-byte, split at the '---' separator into winrate-drop-review.md and defensive-portfolio-2026-10.md (+ defensive-portfolio-2026-10.png). Lessons: concurrent positions <10, no trades to share/entertain, don't exit before the thesis plays out while invalidation hasn't triggered, controlled losses make a low win rate survivable, own every decision. BAC 'add to all positions' is NOT encoded (only consistent with the one-add-after-reconfirmation rule).
 - **大佬 市场情景对照 (image, transcribed verbatim)** (`mentor-scenario-matrix`) — knowledge/mentor/macro/market-scenario-matrix.md
   5 stages (牛市, 轮动, 熊市 stages 1–3) × 4 dimensions (利率, 油价, 科技盈利, 就业). Deduped: no existing item covered it; scenarios.ts is a separate DK engine. The original image is in the user's chat only. Classifier: src/macro/matrix.ts, brief §1 【大佬情景对照】.
+- **大佬 daily note: 黄金加仓 + OpEx 科技反弹 (verbatim)** (`mentor-daily-gold-tech-rebound`) — knowledge/mentor/daily/daily-note-gold-tech-rebound.md
+  Gold futures (MACD turning, falling wedge) vs DXY (rising wedge); tech oversold rebound into monthly OpEx. Deduped.
