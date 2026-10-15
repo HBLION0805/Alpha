@@ -56,3 +56,14 @@ export function renderAlertsMarkdown(alerts: Alert[], now: Date): string {
   }
   return L.join("\n") + "\n";
 }
+
+/** Premarket alarms (src/macro/premarket.ts) are stored as items from source "premarket-alarm". They bypass news clustering and get a fixed score, deduped like any alert. */
+export function premarketAlarmAlerts(items: Array<{ id: number; sourceId: string; title: string; summary: string; url: string; publishedAt: string }>, store: Pick<Store, "priorAlertScore">, threshold: number): Array<{ alert: Alert; itemIds: number[] }> {
+  const out: Array<{ alert: Alert; itemIds: number[] }> = [];
+  for (const i of items.filter((x) => x.sourceId === "premarket-alarm")) {
+    const score = / ALARM /.test(i.title) ? 85 : 70;
+    if (score < threshold || store.priorAlertScore([i.id]) !== null) continue;
+    out.push({ itemIds: [i.id], alert: { score, headline: i.title, topics: ["premarket"], watch: [], sources: ["Alpha premarket"], stances: [], firstSeen: i.publishedAt, lastSeen: i.publishedAt, escalation: false, links: [{ source: "Alpha premarket", title: i.summary, url: i.url }] } });
+  }
+  return out;
+}

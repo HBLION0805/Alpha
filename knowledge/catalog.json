@@ -146,6 +146,12 @@
       "title": "大佬 — 如何成为更好的宏观交易员 (original 10-point essay), verbatim",
       "url": "knowledge/mentor/better-macro-trader.md",
       "coverage": "Canonical verbatim text (8,859 bytes, cmp-verified; author names and timestamps stripped). The original source that the macro course (knowledge/courses/macro/) expands. Cited as 宏观交易员 #N."
+    },
+    {
+      "id": "mentor-premarket",
+      "title": "大佬 Premarket Routine — 3 videos (video transcription, near-verbatim)",
+      "url": "knowledge/mentor/discipline/premarket-routine.md",
+      "coverage": "Video transcription, near-verbatim (not word-for-word), 5,137 bytes, saved unchanged. Video 1: 2Y/10Y/30Y + HYG credit confirmation. Video 2: SPX/NDQ/RUT breadth, ES/NQ/RTY futures as an anxiety gauge, KOSPI/EWY semiconductor thermometer. Video 3: DXY (why + cross-asset confirmation), USDCAD, USDJPY carry unwind. Run daily by src/macro/premarket.ts (【大佬流程】)."
     }
   ],
   "items": [
@@ -179,7 +185,8 @@
         "owner",
         "course",
         "thesis",
-        "mentor-better-macro-trader"
+        "mentor-better-macro-trader",
+        "mentor-premarket"
       ],
       "topics": [
         "Economics",
@@ -188,7 +195,7 @@
         "Scenario analysis"
       ],
       "principle": "Describe a causal chain, competing outcomes and the difference between your view and documented market expectations.",
-      "application": "Separate event expectations, verified actuals, rates/USD transmission and observed GLD/IBIT prices. Label subjective probabilities; leave unsupported probabilities unknown. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5.",
+      "application": "Separate event expectations, verified actuals, rates/USD transmission and observed GLD/IBIT prices. Label subjective probabilities; leave unsupported probabilities unknown. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5. Premarket: 2Y = market's Fed expectations (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
       "limits": "Neither a correct policy forecast nor a made-up scenario probability establishes an option opportunity. Correlations and policy reactions vary by regime.",
       "destination": "context"
     },
@@ -199,7 +206,8 @@
       "status": "PROCESS_GUIDE",
       "sources": [
         "owner",
-        "owner-psychology-20260923"
+        "owner-psychology-20260923",
+        "mentor-premarket"
       ],
       "topics": [
         "Scalper",
@@ -211,7 +219,7 @@
         "Trader research cadence"
       ],
       "principle": "Keep the macro thesis horizon, ETF signal timeframe, intended holding period and option expiration separate. Investors may research a business or macro thesis deeply up front and reassess periodically; traders need more frequent relevant updates, including overnight changes.",
-      "application": "Explain how a five-minute setup fits the intended holding window and why the contract has sufficient time for the thesis. Before acting as a trader, refresh the thesis, risk and position using source-dated evidence; an investor need not react to every intraday move.",
+      "application": "Explain how a five-minute setup fits the intended holding window and why the contract has sufficient time for the thesis. Before acting as a trader, refresh the thesis, risk and position using source-dated evidence; an investor need not react to every intraday move. Premarket: traders need overnight/premarket updates (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
       "limits": "Neither style is inherently superior. Long-term conviction cannot justify holding an expiring option indefinitely, and constant monitoring cannot turn stale or weak sources into certainty. The five trader types are approximate; current collection cadence does not support reliable scalping.",
       "destination": "guidance"
     },
@@ -244,7 +252,8 @@
       "sources": [
         "owner",
         "greeks",
-        "mentor-better-macro-trader"
+        "mentor-better-macro-trader",
+        "mentor-premarket"
       ],
       "topics": [
         "Dealer hedging",
@@ -257,7 +266,7 @@
         "Vega"
       ],
       "principle": "Greeks describe model sensitivities; liquidity and positioning can affect how a macro view is expressed.",
-      "application": "Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9.",
+      "application": "Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9. Premarket: carry unwind via USDJPY; credit (HYG) as confirmation (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
       "limits": "Open interest and volume alone do not identify dealer direction. Delta is not a profit peak or a verified win probability. No dealer-flow detector is introduced.",
       "destination": "guidance"
     },
@@ -384,7 +393,8 @@
         "owner",
         "owner-psychology-20260926",
         "mentor-stop-loss",
-        "mentor-discipline"
+        "mentor-discipline",
+        "mentor-premarket"
       ],
       "topics": [
         "Positional stop",
@@ -394,7 +404,7 @@
         "Emotional sizing"
       ],
       "principle": "A smaller position changes future dollar exposure; it does not fix the original thesis.",
-      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress.",
+      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress. Premarket: correlated risk-off across crypto/equities/EM when USD or yen spike (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
       "limits": "Size changes need a new documented decision. Excitement, anger, revenge, recent wins or a hot-hand belief cannot increase allowed size; confidence is not a sizing multiplier. Correlations are not assumed static; no correlation engine, anecdotal portfolio score or automatic reduction is implemented. A smaller loss or later recovery is not guaranteed.",
       "destination": "planner"
     },
@@ -520,7 +530,8 @@
       "sources": [
         "owner",
         "stops",
-        "mentor-stop-loss"
+        "mentor-stop-loss",
+        "mentor-premarket"
       ],
       "topics": [
         "Overnight stop",
@@ -528,7 +539,7 @@
         "Event risk"
       ],
       "principle": "Consider what can happen while the instrument cannot be traded and how much exposure remains.",
-      "application": "Write a pre-close decision and next-session contingency; BTC trading overnight does not make IBIT options continuously executable. Canonical text: knowledge/mentor/discipline/stop-loss.md §Overnight Stop Loss. Encoded in src/options/stops.ts overnightCheck.",
+      "application": "Write a pre-close decision and next-session contingency; BTC trading overnight does not make IBIT options continuously executable. Canonical text: knowledge/mentor/discipline/stop-loss.md §Overnight Stop Loss. Encoded in src/options/stops.ts overnightCheck. Premarket: premarket futures gap = anxiety gauge; open strategy (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
       "limits": "A stop cannot guarantee protection across a gap. Buying another option introduces costs and may not cover the intended scenario.",
       "destination": "planner"
     },
@@ -1155,13 +1166,14 @@
         "Two-sided conflict costs"
       ],
       "principle": "Map an event through prices, costs, demand and balance sheets for both sides; identify who might benefit, who bears or transfers each cost and which opposing channel could dominate.",
-      "application": "For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5.",
+      "application": "For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5. Premarket: rates up → high-risk assets drained; oil ↔ CAD; Korea ↔ US semis (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
       "limits": "One side can face meaningful cost even when the other also pays; neither zero cost nor equal suffering is assumed. Cost distribution and market impact require dated evidence. These are conditional examples, not trades or fixed correlations; no winner, loser, new ticker coverage or execution rule is inferred.",
       "destination": "context",
       "sources": [
         "owner-psychology",
         "owner-psychology-20260924",
-        "mentor-better-macro-trader"
+        "mentor-better-macro-trader",
+        "mentor-premarket"
       ]
     },
     {

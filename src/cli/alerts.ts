@@ -6,7 +6,7 @@ import { loadSources } from "../sources.ts";
 import { Store } from "../store.ts";
 import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
-import { renderAlertsMarkdown, selectNewAlerts, toAlert } from "../alerts.ts";
+import { renderAlertsMarkdown, selectNewAlerts, toAlert, premarketAlarmAlerts } from "../alerts.ts";
 
 const { values } = parseArgs({
   options: {
@@ -23,11 +23,15 @@ const store = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite");
 const sources = loadSources();
 // cluster over a wider window than we alert on, so late follow-ups attach to earlier items
 const hours = Number(values.hours);
-const ranked = rank(clusterItems(store.since(new Date(now.getTime() - (hours + 24) * 3600_000).toISOString())), now)
+const windowItems = store.since(new Date(now.getTime() - (hours + 24) * 3600_000).toISOString());
+const ranked = rank(clusterItems(windowItems.filter((i) => i.sourceId !== "premarket-alarm")), now)
   .filter((r) => Date.parse(r.cluster.lastSeen) >= now.getTime() - hours * 3600_000);
 const picked = selectNewAlerts(ranked, store, Number(values.threshold));
 const alerts = picked.map(({ r, escalation }) => toAlert(r, escalation, sources));
 if (!values["dry-run"]) picked.forEach(({ r }, i) => store.recordAlert(r.score, r.headline, r.cluster.items.map((x) => x.id), alerts[i], now));
+const pm = premarketAlarmAlerts(windowItems.filter((i) => Date.parse(i.publishedAt) >= now.getTime() - hours * 3600_000), store, Number(values.threshold));
+if (!values["dry-run"]) for (const a of pm) store.recordAlert(a.alert.score, a.alert.headline, a.itemIds, a.alert, now);
+alerts.unshift(...pm.map((a) => a.alert));
 store.close();
 
 const body = values.format === "json" ? JSON.stringify({ generatedAt: now.toISOString(), count: alerts.length, alerts }, null, 2) + "\n" : renderAlertsMarkdown(alerts, now);

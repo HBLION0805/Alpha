@@ -18,7 +18,7 @@ const hours = Number(values.hours);
 const now = new Date();
 const store = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite");
 const items = store.since(new Date(now.getTime() - hours * 3600_000).toISOString());
-const ranked = rank(clusterItems(items), now);
+const ranked = rank(clusterItems(items.filter((i) => i.sourceId !== "premarket-alarm")), now);
 let calendar: CalendarEvent[] = [];
 if (!values["no-calendar"]) {
   const year = now.getFullYear();

@@ -22,11 +22,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `expectations` · **status:** PROCESS_GUIDE · **destination:** context
 - **topics:** Economics; Policy transmission; Consensus; Scenario analysis
-- **sources:** owner, course, thesis, mentor-better-macro-trader
+- **sources:** owner, course, thesis, mentor-better-macro-trader, mentor-premarket
 
 **Principle.** Describe a causal chain, competing outcomes and the difference between your view and documented market expectations.
 
-**Application.** Separate event expectations, verified actuals, rates/USD transmission and observed GLD/IBIT prices. Label subjective probabilities; leave unsupported probabilities unknown. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5.
+**Application.** Separate event expectations, verified actuals, rates/USD transmission and observed GLD/IBIT prices. Label subjective probabilities; leave unsupported probabilities unknown. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5. Premarket: 2Y = market's Fed expectations (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).
 
 **Limits.** Neither a correct policy forecast nor a made-up scenario probability establishes an option opportunity. Correlations and policy reactions vary by regime.
 
@@ -34,11 +34,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `horizons` · **status:** PROCESS_GUIDE · **destination:** guidance
 - **topics:** Scalper; Day trader; Swing trader; Position trader; Long-term investor; Investor research cadence; Trader research cadence
-- **sources:** owner, owner-psychology-20260923
+- **sources:** owner, owner-psychology-20260923, mentor-premarket
 
 **Principle.** Keep the macro thesis horizon, ETF signal timeframe, intended holding period and option expiration separate. Investors may research a business or macro thesis deeply up front and reassess periodically; traders need more frequent relevant updates, including overnight changes.
 
-**Application.** Explain how a five-minute setup fits the intended holding window and why the contract has sufficient time for the thesis. Before acting as a trader, refresh the thesis, risk and position using source-dated evidence; an investor need not react to every intraday move.
+**Application.** Explain how a five-minute setup fits the intended holding window and why the contract has sufficient time for the thesis. Before acting as a trader, refresh the thesis, risk and position using source-dated evidence; an investor need not react to every intraday move. Premarket: traders need overnight/premarket updates (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).
 
 **Limits.** Neither style is inherently superior. Long-term conviction cannot justify holding an expiring option indefinitely, and constant monitoring cannot turn stale or weak sources into certainty. The five trader types are approximate; current collection cadence does not support reliable scalping.
 
@@ -58,11 +58,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `mechanisms` · **status:** MECHANICS_REFERENCE · **destination:** guidance
 - **topics:** Dealer hedging; Liquidity; Positioning; Open interest; Delta; Gamma; Theta; Vega
-- **sources:** owner, greeks, mentor-better-macro-trader
+- **sources:** owner, greeks, mentor-better-macro-trader, mentor-premarket
 
 **Principle.** Greeks describe model sensitivities; liquidity and positioning can affect how a macro view is expressed.
 
-**Application.** Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9.
+**Application.** Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9. Premarket: carry unwind via USDJPY; credit (HYG) as confirmation (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).
 
 **Limits.** Open interest and volume alone do not identify dealer direction. Delta is not a profit peak or a verified win probability. No dealer-flow detector is introduced.
 
@@ -146,11 +146,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `size` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Positional stop; Partial reduction; Shared market factor; Total directional exposure; Emotional sizing
-- **sources:** owner, owner-psychology-20260926, mentor-stop-loss, mentor-discipline
+- **sources:** owner, owner-psychology-20260926, mentor-stop-loss, mentor-discipline, mentor-premarket
 
 **Principle.** A smaller position changes future dollar exposure; it does not fix the original thesis.
 
-**Application.** Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress.
+**Application.** Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress. Premarket: correlated risk-off across crypto/equities/EM when USD or yen spike (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).
 
 **Limits.** Size changes need a new documented decision. Excitement, anger, revenge, recent wins or a hot-hand belief cannot increase allowed size; confidence is not a sizing multiplier. Correlations are not assumed static; no correlation engine, anecdotal portfolio score or automatic reduction is implemented. A smaller loss or later recovery is not guaranteed.
 
@@ -218,11 +218,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `overnight` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Overnight stop; Gap risk; Event risk
-- **sources:** owner, stops, mentor-stop-loss
+- **sources:** owner, stops, mentor-stop-loss, mentor-premarket
 
 **Principle.** Consider what can happen while the instrument cannot be traded and how much exposure remains.
 
-**Application.** Write a pre-close decision and next-session contingency; BTC trading overnight does not make IBIT options continuously executable. Canonical text: knowledge/mentor/discipline/stop-loss.md §Overnight Stop Loss. Encoded in src/options/stops.ts overnightCheck.
+**Application.** Write a pre-close decision and next-session contingency; BTC trading overnight does not make IBIT options continuously executable. Canonical text: knowledge/mentor/discipline/stop-loss.md §Overnight Stop Loss. Encoded in src/options/stops.ts overnightCheck. Premarket: premarket futures gap = anxiety gauge; open strategy (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).
 
 **Limits.** A stop cannot guarantee protection across a gap. Buying another option introduces costs and may not cover the intended scenario.
 
@@ -582,11 +582,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-second-order` · **status:** PROCESS_GUIDE · **destination:** context
 - **topics:** Oil / airlines / JETS; Rates / small caps / IWM; War / insurance; Market ecosystem; Two-sided conflict costs
-- **sources:** owner-psychology, owner-psychology-20260924, mentor-better-macro-trader
+- **sources:** owner-psychology, owner-psychology-20260924, mentor-better-macro-trader, mentor-premarket
 
 **Principle.** Map an event through prices, costs, demand and balance sheets for both sides; identify who might benefit, who bears or transfers each cost and which opposing channel could dominate.
 
-**Application.** For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5.
+**Application.** For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5. Premarket: rates up → high-risk assets drained; oil ↔ CAD; Korea ↔ US semis (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).
 
 **Limits.** One side can face meaningful cost even when the other also pays; neither zero cost nor equal suffering is assumed. Cost distribution and market impact require dated evidence. These are conditional examples, not trades or fixed correlations; no winner, loser, new ticker coverage or execution rule is inferred.
 

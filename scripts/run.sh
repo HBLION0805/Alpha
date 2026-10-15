@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Scheduled entry point: poll feeds → emit new alerts → refresh digest.
 # Usage: scripts/run.sh [--digest-only|--no-digest]
-# Env: ALPHA_NODE_BIN (dir with node 24), ALPHA_DB, ALPHA_ALERT_THRESHOLD, ALPACA_KEY/ALPACA_SECRET (optional)
+# Premarket: 7:30 ET cron entry → data/out/premarket-latest.md (src/cli/premarket.ts)
+# Env: ALPHA_PREMARKET=1 forces it; ALPHA_NODE_BIN (dir with node 24), ALPHA_DB, ALPHA_ALERT_THRESHOLD, ALPACA_KEY/ALPACA_SECRET (optional)
 set -uo pipefail
 cd "$(dirname "$0")/.."
 [ -n "${ALPHA_NODE_BIN:-}" ] && export PATH="$ALPHA_NODE_BIN:$PATH"
@@ -14,6 +15,11 @@ log="data/logs/run-$(date +%Y%m%d).log"
   echo "=== $(date '+%F %T %Z') ==="
   if [ "${1:-}" != "--digest-only" ]; then
     node src/cli/poll.ts | tail -1
+    # 7:30 ET premarket routine (runs on any invocation between 07:00 and 09:29 ET, or with ALPHA_PREMARKET=1); alarms go to the alert step below
+    hm=$(TZ=America/New_York date +%H%M)
+    if [ "${ALPHA_PREMARKET:-}" = "1" ] || { [ "$hm" -ge 0700 ] && [ "$hm" -lt 0930 ]; }; then
+      node src/cli/premarket.ts --out data/out/premarket-latest.md >/dev/null || echo "[run] premarket failed"
+    fi
     node src/cli/alerts.ts --out data/out/alerts-latest.md --jsonl data/out/alerts.jsonl
   fi
   if [ "${1:-}" != "--no-digest" ]; then
