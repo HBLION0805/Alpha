@@ -43,3 +43,12 @@ test("readiness: premature exit = discretionary exit before invalidation and bef
   const r = readiness({ journal: [...good(), t], capital: 50000, shockDates: shock });
   assert.equal(r.stats.premature, 1);
 });
+
+test("real_practice NVDA entry is excluded from readiness, counted under practice", async () => {
+  const { readFileSync } = await import("node:fs");
+  const e = JSON.parse(readFileSync(new URL("../examples/journal/nvda-practice-2026-10-14.json", import.meta.url), "utf8")) as JournalEntry;
+  assert.equal(e.kind, "practice"); assert.equal(e.source, "real_practice");
+  const base = readiness({ journal: good(), capital: 50000, shockDates: shock });
+  const r = readiness({ journal: [...good(), e], capital: 50000, shockDates: shock });
+  assert.deepEqual(r.stats, base.stats); assert.equal(r.ready, base.ready); assert.equal(r.practice.n, base.practice.n + 1);
+});

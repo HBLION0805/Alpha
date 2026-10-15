@@ -105,3 +105,8 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 1. Start logging real paper trades (`npm run paper`), with critiques, daily marks, and a review on every close.
 2. Watch alpha-2's first week: alert noise and timing, and whether brief-latest.md is the right message. Tune only with fixtures.
 3. Separate paper from live in journal stats, and add `paper mark` to the routine once trades exist (cheap, read-only).
+
+## 2026-10-15
+- The mentor's 市场情景对照 matrix is saved verbatim (knowledge/mentor/macro/market-scenario-matrix.md, source mentor-scenario-matrix). It is deduped; the original image is in the user's chat.
+- New classifier src/macro/matrix.ts covers four dimensions: 10Y, WTI, SMH/QQQ (a proxy for tech earnings), and jobs (ICSA/PAYEMS, otherwise unknown). Its output is in brief §1 as 【大佬情景对照】 and flags disagreement with the leading scenario.
+- Journal: new field `source: real_practice`. The NVDA 202.5/200P (exp 10/16) trade is logged as kind=practice; fixture at examples/journal/. It is excluded from readiness. Lesson: for short-window continuation trades, keep the long strike near ATM.
