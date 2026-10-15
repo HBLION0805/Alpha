@@ -71,7 +71,6 @@ export function buildVolumeReport(inp: { now: Date; bars: Record<string, Bar[]>;
 }
 
 export const VOLUME_ALARM_SOURCE = "volume-alarm";
-export const VOLUME_ALARM_SCORE = 60;
 export function volumeAlarmItems(strong: VolumeReport["strong"], now: Date) {
   const day = now.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
   return strong.map((s) => ({ sourceId: VOLUME_ALARM_SOURCE, title: `[成交量 ${day}] ${s.title}`, url: `alpha://volume/${day}/${encodeURIComponent(s.title)}`, publishedAt: now.toISOString(), summary: s.detail }));

@@ -42,12 +42,6 @@ export function parseFomcCalendar(html: string): CalendarEvent[] {
   return out;
 }
 
-export async function fetchFomcCalendar(timeoutMs = 10_000): Promise<CalendarEvent[]> {
-  const res = await fetch(FOMC_URL, { headers: { "user-agent": USER_AGENT }, signal: AbortSignal.timeout(timeoutMs) });
-  if (!res.ok) throw new Error(`FOMC calendar HTTP ${res.status}`);
-  return parseFomcCalendar(await res.text());
-}
-
 /** FRED release-calendar ids. FRED mirrors BLS/BEA/Census schedules and is reachable when bls.gov blocks us. */
 export const FRED_RELEASES: Array<{ kind: ReleaseKind; rid: number; title: string }> = [
   { kind: "CPI", rid: 10, title: "CPI (BLS)" },

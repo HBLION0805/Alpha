@@ -143,4 +143,3 @@ export function alarmItems(alarms: Alarm[], now: Date) {
   const day = now.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
   return alarms.map((a) => ({ sourceId: ALARM_SOURCE, title: `[盘前 ${day}] ${a.level} ${a.kind}: ${a.title}`, url: `alpha://premarket/${day}/${a.kind}`, publishedAt: now.toISOString(), summary: a.detail, guid: `premarket:${day}:${a.kind}` }));
 }
-export const ALARM_SCORE: Record<string, number> = { ALARM: 85, WARNING: 70 };

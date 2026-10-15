@@ -47,7 +47,7 @@
 | | `options/matrix.ts` | 107 | course strategy matrix | **Alpha** |
 | | `options/dashboard.ts` | 78 | SPY options dashboard | **Alpha** |
 | | `options/journal.ts` | 89 | D.3 journal schema + mentor fields, stats | **Alpha** schema |
-| Misc | `reuse/OptionsContractQuote.ts` | 38 | contract identity type | glue |
+| Misc | ~~`reuse/OptionsContractQuote.ts`~~ | 38 | (deleted 2026-10-14: unused) | – |
 | | `cli/*` (9 files) | 398 | thin entry points | glue |
 | | `types.ts` | 36 | shared types | glue |
 
