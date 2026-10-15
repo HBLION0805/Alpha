@@ -65,7 +65,7 @@ if (!values["no-alarms"]) {
 store.close();
 const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); };
 write(values.out, res.md);
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, alarms: pm.alarms, failed }, null, 2) + "\n");
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, alarms: pm.alarms, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");

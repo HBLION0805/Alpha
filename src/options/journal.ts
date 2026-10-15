@@ -50,6 +50,10 @@ export interface JournalEntry {
   /** open positions (including this one) at entry */
   concurrentAtEntry?: number;
   motive?: "thesis" | "share" | "entertain" | "excitement";
+  /** paper.ts: legs at the simulated fill, and every mark-to-market */
+  legs?: Array<{ underlying?: string; type: "call" | "put" | "stock"; strike: number; qty: number; premium: number; expiration?: string; iv?: number }>;
+  underlyingAtEntry?: number;
+  marks?: Array<{ at: string; value: number; pnl: number; spot: number | null; sources: string[] }>;
 }
 
 export function validateEntry(e: Partial<JournalEntry>): string[] {
