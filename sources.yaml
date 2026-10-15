@@ -1,0 +1,41 @@
+# Alpha news source registry. Verified 2026-10-14 ~20:45 ET from the dev box.
+# stance: left | center | right | cn_official | us_official
+# tier: 1 = primary/official or top wire, 2 = major outlet, 3 = secondary/aggregator
+# enabled: true only if the feed returned items when verified. `note` records failures.
+sources:
+  # --- left ---
+  - { id: cnn_money, name: CNN Business, stance: left, tier: 2, url: "http://rss.cnn.com/rss/money_latest.rss", enabled: false, note: "rss.cnn.com connection fails (CNN retired RSS)" }
+  - { id: bbc_business, name: BBC Business, stance: left, tier: 2, url: "https://feeds.bbci.co.uk/news/business/rss.xml", enabled: true }
+  - { id: bbc_world, name: BBC World, stance: left, tier: 2, url: "https://feeds.bbci.co.uk/news/world/rss.xml", enabled: true }
+  - { id: france24_business, name: France 24 Business, stance: left, tier: 2, url: "https://www.france24.com/en/business/rss", enabled: true }
+  - { id: aljazeera, name: Al Jazeera, stance: left, tier: 2, url: "https://www.aljazeera.com/xml/rss/all.xml", enabled: true }
+  - { id: msnbc, name: MSNBC (MS NOW), stance: left, tier: 2, url: "https://www.ms.now/feed", enabled: true, note: "msnbc.com/feeds/latest returns no items; ms.now/feed works" }
+  # --- center / business ---
+  - { id: cnbc_top, name: CNBC Top News, stance: center, tier: 2, url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114", enabled: true }
+  - { id: cnbc_markets, name: CNBC Markets, stance: center, tier: 2, url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258", enabled: true }
+  - { id: foxbusiness, name: Fox Business, stance: center, tier: 2, url: "https://moxie.foxbusiness.com/google-publisher/latest.xml", enabled: true }
+  - { id: foxbusiness_markets, name: Fox Business Markets, stance: center, tier: 2, url: "https://moxie.foxbusiness.com/google-publisher/markets.xml", enabled: true }
+  - { id: bloomberg_markets, name: Bloomberg Markets, stance: center, tier: 1, url: "https://feeds.bloomberg.com/markets/news.rss", enabled: true }
+  - { id: investing_news, name: Investing.com, stance: center, tier: 3, url: "https://www.investing.com/rss/news.rss", enabled: true }
+  - { id: investing_econ, name: Investing.com Economy, stance: center, tier: 3, url: "https://www.investing.com/rss/news_14.rss", enabled: true }
+  - { id: barchart, name: Barchart, stance: center, tier: 3, url: "https://www.barchart.com/news/authors/rss", enabled: true, note: "/news/rss/financial is 404" }
+  - { id: efe, name: EFE, stance: center, tier: 2, url: "https://efe.com/feed/", enabled: false, note: "403 (bot protection) on all efe.com feeds tried" }
+  # --- right ---
+  - { id: wsj_markets, name: WSJ Markets, stance: right, tier: 1, url: "https://feeds.a.dj.com/rss/RSSMarketsMain.xml", enabled: true }
+  - { id: wsj_world, name: WSJ World, stance: right, tier: 1, url: "https://feeds.a.dj.com/rss/RSSWorldNews.xml", enabled: true }
+  - { id: breitbart_econ, name: Breitbart Economy, stance: right, tier: 3, url: "https://www.breitbart.com/economy/feed/", enabled: true }
+  - { id: welt_wirtschaft, name: Die Welt Wirtschaft, stance: right, tier: 2, url: "https://www.welt.de/feeds/section/wirtschaft.rss", enabled: true }
+  - { id: epochtimes, name: Epoch Times, stance: right, tier: 3, url: "https://feed.theepochtimes.com/us/feed", enabled: true, note: "c-business/feed returns no items" }
+  # --- Chinese official ---
+  - { id: xinhua_world, name: Xinhua World, stance: cn_official, tier: 2, url: "https://www.news.cn/english/rss/worldrss.xml", enabled: true }
+  - { id: govcn, name: gov.cn (State Council), stance: cn_official, tier: 1, url: "https://english.www.gov.cn/rss/news.xml", enabled: false, note: "returns HTML page, not RSS" }
+  # --- official US ---
+  - { id: fed_press, name: Federal Reserve press, stance: us_official, tier: 1, url: "https://www.federalreserve.gov/feeds/press_all.xml", enabled: true }
+  - { id: fed_monetary, name: Federal Reserve monetary policy, stance: us_official, tier: 1, url: "https://www.federalreserve.gov/feeds/press_monetary.xml", enabled: true }
+  - { id: bls, name: BLS latest releases, stance: us_official, tier: 1, url: "https://www.bls.gov/feed/bls_latest.rss", enabled: false, note: "403 from box IP (Akamai); retry from a residential IP" }
+  - { id: bea, name: BEA releases, stance: us_official, tier: 1, url: "https://apps.bea.gov/rss/rss.xml", enabled: true }
+  - { id: treasury, name: US Treasury press, stance: us_official, tier: 1, url: "https://home.treasury.gov/news/press-releases/feed", enabled: false, note: "404; Treasury no longer publishes press RSS" }
+  - { id: sec_press, name: SEC press releases, stance: us_official, tier: 1, url: "https://www.sec.gov/news/pressreleases.rss", enabled: true }
+  - { id: sec_8k, name: SEC EDGAR current 8-K, stance: us_official, tier: 2, url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&count=40&output=atom", enabled: false, note: "403 from box even with SEC-format User-Agent" }
+  # --- low-latency wire (non-RSS) ---
+  - { id: alpaca_benzinga, name: Benzinga via Alpaca, stance: center, tier: 2, kind: alpaca, url: "wss://stream.data.alpaca.markets/v1beta1/news", enabled: true, note: "needs ALPACA_KEY/ALPACA_SECRET env; REST backfill in poll, websocket in `npm run stream`" }
