@@ -52,3 +52,10 @@ test("real_practice NVDA entry is excluded from readiness, counted under practic
   const r = readiness({ journal: [...good(), e], capital: 50000, shockDates: shock });
   assert.deepEqual(r.stats, base.stats); assert.equal(r.ready, base.ready); assert.equal(r.practice.n, base.practice.n + 1);
 });
+
+test("mentor_shadow practice entries are excluded from readiness", () => {
+  const e = { ...good()[0]!, id: "shadow", kind: "practice", source: "mentor_shadow", pnl: -160 } as JournalEntry;
+  const base = readiness({ journal: good(), capital: 5000, shockDates: shock });
+  const r = readiness({ journal: [...good(), e], capital: 5000, shockDates: shock });
+  assert.deepEqual(r.stats, base.stats); assert.equal(r.practice.n, base.practice.n + 1);
+});

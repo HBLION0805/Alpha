@@ -59,3 +59,18 @@ test("alerts: one alert per post across Truth + X, verbatim quote, links, assets
   assert.ok(md.includes(`“${text}”`) && md.includes(TRUMP_NOTE) && md.includes("https://x.com/realDonaldTrump/status/2") && /FXI/.test(md));
   assert.equal(trumpAlerts(items, { priorAlertScore: (ids: number[]) => (ids.includes(1) ? 88 : null) }, 60, now - 12 * 3600_000).length, 0, "already alerted (via Truth) → X copy is not re-sent");
 });
+
+test("official Truth Social API parses; same post via mirror dedupes to one alert group", async () => {
+  const { parseTruthStatuses } = await import("../src/ingest/truthApi.ts");
+  const items = parseTruthStatuses(JSON.parse(readFileSync("test/fixtures/truthsocial-api-2026-10-15.json", "utf8")));
+  assert.equal(items.length, 20);
+  assert.ok(items.every((i) => i.sourceId === "trump_truth_official" && i.url.startsWith("https://truthsocial.com/") && i.guid?.startsWith("truth:")));
+  assert.ok(items.some((i) => /GlobalFoundries/.test(i.title)));
+  const text = "Starting November 1st, China will be charged a 100% Tariff on all goods.";
+  const store = { priorAlertScore: () => null };
+  const out = trumpAlerts([
+    { id: 1, sourceId: "trump_truth_official", title: text, summary: text, url: "https://truthsocial.com/@realDonaldTrump/1", publishedAt: "2026-10-15T11:50:00Z" },
+    { id: 2, sourceId: "trump_truth", title: text, summary: text, url: "https://www.trumpstruth.org/statuses/1", publishedAt: "2026-10-15T11:50:30Z" },
+  ] as never, store as never, 70, Date.parse("2026-10-15T11:00:00Z"));
+  assert.equal(out.length, 1); assert.deepEqual(out[0]!.itemIds, [1, 2]);
+});

@@ -7,8 +7,9 @@
  *   close --id P001 --exit-kind invalidation|time_stop|take_profit|max_loss|discretionary [--pnl N] [--commissions N]
  *         [--error-class judgment|execution --error-tags a,b] [--violations chasing,...] [--lesson "…"]
  *   list
- * Common: --journal data/journal/paper.json (default), --capital N (first use; default ALPHA_CAPITAL or 100000).
+ * Common: --journal data/journal/paper.json (default), --capital N (first use; default ALPHA_CAPITAL or 5000 (src/config.ts)).
  */
+import { defaultCapital } from "../config.ts";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, renameSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
@@ -31,7 +32,7 @@ const { values, positionals } = parseArgs({ allowPositionals: true, options: {
 const cmd = positionals[0];
 const now = values.now ? new Date(values.now) : new Date();
 const path = values.journal!;
-const j: PaperJournal = existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : { capital: Number(values.capital ?? process.env.ALPHA_CAPITAL ?? 100000), entries: [] };
+const j: PaperJournal = existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : { capital: Number(values.capital ?? defaultCapital()), entries: [] };
 const save = () => { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path + ".tmp", JSON.stringify(j, null, 2) + "\n"); renameSync(path + ".tmp", path); };
 const list = (s: string | undefined) => (s ? s.split(",").map((x) => x.trim()).filter(Boolean) : undefined);
 const fail = (lines: string[]) => { process.stderr.write(["[paper] 拒绝 refused:", ...lines.map((l) => `  - ${l}`)].join("\n") + "\n"); process.exit(1); };

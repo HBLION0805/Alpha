@@ -13,7 +13,7 @@ export function decodeEntities(s: string): string {
   });
 }
 
-function text(raw: string | undefined): string {
+export function htmlText(raw: string | undefined): string {
   if (!raw) return "";
   let s = raw.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1");
   s = decodeEntities(s); // entity-encoded HTML first, then strip tags
@@ -32,7 +32,7 @@ function tag(block: string, names: string[]): string | undefined {
 
 function toIso(raw: string | undefined, fallback: string): string {
   if (!raw) return fallback;
-  let s = text(raw);
+  let s = htmlText(raw);
   // Barchart-style 2-digit years: "Wed, 14 Oct 26 23:30:02 +0000"
   s = s.replace(/^(\w{3},?\s+\d{1,2}\s+\w{3}\s+)(\d{2})(\s)/, "$120$2$3");
   const t = Date.parse(s);
@@ -50,12 +50,12 @@ export async function parseFeed(xml: string, sourceId: string, now = new Date().
   if (!/<urlset\b/i.test(xml.slice(0, 2000))) { try { raw = await parseXmlFeed(xml); } catch { raw = []; } }
   const out: FeedItem[] = [];
   for (const r of raw) {
-    const title = text(r.title);
-    const guid = text(r.guid) || undefined;
+    const title = htmlText(r.title);
+    const guid = htmlText(r.guid) || undefined;
     let url = (r.link ?? "").trim();
     if (!url && guid && /^https?:/.test(guid)) url = guid;
     if (!title || !url) continue;
-    const item: FeedItem = { sourceId, title, url: decodeEntities(url), publishedAt: clampFuture(toIso(r.date, now), now), summary: text(r.summary).slice(0, sourceId.startsWith("trump_") ? 4000 : 500) };
+    const item: FeedItem = { sourceId, title, url: decodeEntities(url), publishedAt: clampFuture(toIso(r.date, now), now), summary: htmlText(r.summary).slice(0, sourceId.startsWith("trump_") ? 4000 : 500) };
     if (guid) item.guid = guid;
     out.push(item);
   }
@@ -68,10 +68,10 @@ export function parseNewsSitemap(xml: string, sourceId: string, now = new Date()
   const out: FeedItem[] = [];
   for (const m of xml.matchAll(/<url>([\s\S]*?)<\/url>/gi)) {
     const b = m[1] ?? "";
-    const title = text(tag(b, ["news:title"]));
-    const url = text(tag(b, ["loc"]));
+    const title = htmlText(tag(b, ["news:title"]));
+    const url = htmlText(tag(b, ["loc"]));
     if (!title || !url) continue;
-    out.push({ sourceId, title, url, publishedAt: clampFuture(toIso(tag(b, ["news:publication_date", "lastmod"]), now), now), summary: text(tag(b, ["news:keywords"])).slice(0, 300) });
+    out.push({ sourceId, title, url, publishedAt: clampFuture(toIso(tag(b, ["news:publication_date", "lastmod"]), now), now), summary: htmlText(tag(b, ["news:keywords"])).slice(0, 300) });
   }
   return out;
 }

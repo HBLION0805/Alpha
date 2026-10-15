@@ -36,8 +36,8 @@ export interface JournalEntry {
   // --- paper trading + live-readiness (src/options/readiness.ts) ---
   /** formal = counts toward readiness; practice = shown separately, excluded from readiness stats/expectancy */
   kind?: "formal" | "practice";
-  /** real_practice = a small REAL-account trade (e.g. Robinhood) logged here for review only; always kind=practice, never readiness */
-  source?: "paper_sim" | "real_practice";
+  /** mentor_shadow = shadowing a mentor call (thesis verbatim, never readiness); real_practice = a small REAL-account trade (e.g. Robinhood) logged here for review only; always kind=practice, never readiness */
+  source?: "paper_sim" | "real_practice" | "mentor_shadow";
   /** mandatory risk plan at entry (src/options/riskplan.ts) */
   riskPlan?: import("./riskplan.ts").RiskPlan;
   /** "paper" = simulated entry on real data; default "live" */

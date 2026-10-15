@@ -3,6 +3,7 @@
  * ONE Chinese daily brief (macro + premarket + scenarios + levels + calendar + self-check), ONE verdict.
  * Each series is fetched once (fetchDailyOnce). Also writes data/out/macro-latest.json (digest) and scenarios-latest.json (leader state).
  */
+import { defaultCapital } from "../config.ts";
 import { withOpex } from "../macro/opex.ts";
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { dirname } from "node:path";
@@ -72,7 +73,7 @@ if (!values.offline) {
 // 今日交易计划 needs TLT levels too (not a default levels ticker)
 for (const t of ["SPY", "QQQ", "IWM", "TLT"]) if (!planRefs[t]) { try { const r = await loadDailyBars(t); planRefs[t] = referenceLevels(r.bars); const b = r.bars; planB5[t] = b.length > 5 ? ((b.at(-1)!.c - b[b.length - 6]!.c) / b[b.length - 6]!.c) * 100 : null; } catch { /* candidate shows "没有价位数据" */ } }
 const { verdict: v0, reasons: r0 } = briefVerdict({ macro, pm, sc });
-const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: process.env.ALPHA_CAPITAL ? Number(process.env.ALPHA_CAPITAL) : null });
+const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: defaultCapital() });
 const mx = classifyMatrix(data);
 const res = buildBrief({ now, macro, pm, sc, levelsMd, planLines: plan.lines, matrixLines: renderMatrix(mx, sc.leader), calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)

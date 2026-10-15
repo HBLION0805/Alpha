@@ -18,7 +18,7 @@ export function parseSources(text: string): Source[] {
     const tier = Number(s.tier);
     if (![1, 2, 3].includes(tier)) throw new Error(`sources.yaml[${id}]: bad tier`);
     const src: Source = { id, name: String(s.name ?? id), stance, tier: tier as 1 | 2 | 3, url: String(s.url), enabled: s.enabled === true };
-    if (s.kind === "alpaca" || s.kind === "xfile") src.kind = s.kind;
+    if (s.kind === "alpaca" || s.kind === "xfile" || s.kind === "truthapi") src.kind = s.kind;
     if (s.note) src.note = String(s.note);
     return src;
   });

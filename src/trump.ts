@@ -8,7 +8,7 @@
 import type { Store } from "./store.ts";
 import type { Alert } from "./alerts.ts";
 
-export const TRUMP_SOURCES = new Set(["trump_truth", "trump_x"]);
+export const TRUMP_SOURCES = new Set(["trump_truth_official", "trump_truth", "trump_x"]);
 export const TRUMP_NOTE = "宣布≠执行，等市场确认";
 interface T { id: string; label: string; re: RegExp; assets: string[]; action?: RegExp }
 export const TRUMP_TOPICS: T[] = [
@@ -58,7 +58,7 @@ export function scoreTrumpPost(raw: string): TrumpScore | null {
 }
 
 export const postKey = (t: string) => postText(t).toLowerCase().replace(/[^\p{L}\p{N} ]/gu, "").slice(0, 160);
-const PLATFORM: Record<string, string> = { trump_truth: "Truth Social", trump_x: "X" };
+const PLATFORM: Record<string, string> = { trump_truth_official: "Truth Social", trump_truth: "Truth Social", trump_x: "X" };
 type Item = { id: number; sourceId: string; title: string; summary: string; url: string; publishedAt: string };
 
 /** One alert per post (deduped across Truth Social and X by normalized text); store-deduped like every alert. */
