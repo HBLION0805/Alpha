@@ -23,29 +23,7 @@ export interface Level {
   distancePct: number; // from last close
 }
 
-/** Accepts Robinhood get_equity_historicals output ({historicals|data_points|bars: [...]}) or a plain array. */
-export function parseBars(json: unknown): Bar[] {
-  // unwrap MCP envelopes: {data:{results:[{symbol,bars:[...]}]}} / {results:[...]} / {bars|historicals|data_points}
-  let root: unknown = json;
-  for (let i = 0; i < 4 && root && !Array.isArray(root); i++) {
-    const r = root as Record<string, unknown>;
-    root = r.bars ?? r.historicals ?? r.data_points ?? (Array.isArray(r.results) ? (r.results[0] as unknown) : undefined) ?? r.data;
-  }
-  const arr = root;
-  if (!Array.isArray(arr)) throw new Error("bars: expected an array or {bars|historicals|data_points}");
-  const num = (x: unknown) => (typeof x === "number" ? x : Number.parseFloat(String(x)));
-  const bars = (arr as Array<Record<string, unknown>>).map((b) => ({
-    t: String(b.t ?? b.begins_at ?? b.timestamp ?? b.date ?? ""),
-    o: num(b.o ?? b.open ?? b.open_price),
-    h: num(b.h ?? b.high ?? b.high_price),
-    l: num(b.l ?? b.low ?? b.low_price),
-    c: num(b.c ?? b.close ?? b.close_price),
-    v: num(b.v ?? b.volume ?? 0) || 0,
-  }));
-  const ok = bars.filter((b) => [b.o, b.h, b.l, b.c].every(Number.isFinite) && b.h >= b.l);
-  if (!ok.length) throw new Error("bars: no valid OHLC rows");
-  return ok.sort((a, b) => a.t.localeCompare(b.t));
-}
+export { parseBars } from "./adapters/bars.ts";
 
 export { sma } from "./adapters/indicators.ts";
 import { sma } from "./adapters/indicators.ts";
@@ -160,5 +138,56 @@ export function computeLevels(bars: Bar[], opts: LevelOptions = DEFAULT_LEVELS):
 export function renderLevels(symbol: string, r: ReturnType<typeof computeLevels>): string {
   const L = [`# ${symbol} key levels (last ${r.last})`, "", `MA20 ${r.ma.ma20?.toFixed(2) ?? "n/a"} · MA50 ${r.ma.ma50?.toFixed(2) ?? "n/a"} · MA200 ${r.ma.ma200?.toFixed(2) ?? "n/a (need 200 bars)"}`, "", "| price | side | dist % | score | touches | vol share | kinds |", "|---|---|---|---|---|---|---|"];
   for (const l of r.levels) L.push(`| ${l.price} | ${l.side} | ${l.distancePct} | ${l.score} | ${l.touches} | ${(l.volumeShare * 100).toFixed(1)}% | ${l.kinds.join(", ")} |`);
+  return L.join("\n") + "\n";
+}
+
+// ── Reference levels (user request 2026-10-14): timing only, never direction (macro first) ──────────
+export interface RefLevels {
+  last: number; asOf: string;
+  priorDay: { h: number; l: number; c: number; date: string } | null;
+  week: { h: number; l: number; from: string } | null; priorWeek: { h: number; l: number; from: string } | null;
+  sma: { ma20: number | null; ma50: number | null; ma200: number | null };
+  pivots: Array<{ price: number; kind: "swing_high" | "swing_low"; date: string }>;
+  fib: { from: number; to: number; dir: "up" | "down"; levels: Array<{ ratio: number; price: number }> } | null;
+}
+const isoWeekStart = (d: string) => { const t = new Date(d.slice(0, 10) + "T12:00:00Z"); t.setUTCDate(t.getUTCDate() - ((t.getUTCDay() + 6) % 7)); return t.toISOString().slice(0, 10); };
+export const FIB_RATIOS = [0.236, 0.382, 0.5, 0.618, 0.786];
+/** Prior day H/L/C = the last completed bar before the latest one; weekly H/L by ISO week; Fib of the latest swing leg. */
+export function referenceLevels(bars: Bar[], k = 3): RefLevels {
+  const last = bars.at(-1)!, prev = bars.at(-2);
+  const byWeek = new Map<string, Bar[]>();
+  for (const b of bars) { const w = isoWeekStart(b.t); byWeek.set(w, [...(byWeek.get(w) ?? []), b]); }
+  const weeks = [...byWeek].sort(([a], [b]) => a.localeCompare(b));
+  const wk = (e?: [string, Bar[]]) => (e ? { h: Math.max(...e[1].map((b) => b.h)), l: Math.min(...e[1].map((b) => b.l)), from: e[0] } : null);
+  const closes = bars.map((b) => b.c);
+  const sw = swings(bars, k);
+  const pivots = sw.slice(-6).map((s) => ({ price: s.price, kind: s.kind, date: bars[s.i]!.t.slice(0, 10) }));
+  // latest swing leg: last pivot and the most recent opposite pivot before it
+  let fib: RefLevels["fib"] = null;
+  const lp = sw.at(-1);
+  const op = lp ? [...sw].reverse().find((s) => s.kind !== lp.kind) : undefined;
+  if (lp && op) {
+    const dir = lp.kind === "swing_high" ? "up" : "down"; // up-leg: low → high, retracements measured down from the high
+    const hi = Math.max(lp.price, op.price), lo = Math.min(lp.price, op.price);
+    fib = { from: op.price, to: lp.price, dir, levels: FIB_RATIOS.map((r) => ({ ratio: r, price: Number((dir === "up" ? hi - (hi - lo) * r : lo + (hi - lo) * r).toFixed(2)) })) };
+  }
+  return {
+    last: last.c, asOf: last.t.slice(0, 10),
+    priorDay: prev ? { h: prev.h, l: prev.l, c: prev.c, date: prev.t.slice(0, 10) } : null,
+    week: wk(weeks.at(-1)), priorWeek: wk(weeks.at(-2)),
+    sma: { ma20: sma(closes, 20), ma50: sma(closes, 50), ma200: sma(closes, 200) },
+    pivots, fib,
+  };
+}
+
+export function renderReferenceLevels(symbol: string, r: RefLevels, source: string): string {
+  const p = (x: number | null | undefined) => (x == null ? "n/a" : x.toFixed(2));
+  const L = [`## ${symbol} 参考价位（${r.asOf}，收 ${p(r.last)}，数据：${source}）`, "", "_价位只用于择时（入场/止损位置），不决定方向；方向来自宏观与情景（大佬：宏观先行）。_", "",
+    `- 前一日：高 ${p(r.priorDay?.h)} · 低 ${p(r.priorDay?.l)} · 收 ${p(r.priorDay?.c)}${r.priorDay ? `（${r.priorDay.date}）` : ""}`,
+    `- 本周：高 ${p(r.week?.h)} · 低 ${p(r.week?.l)} · 上周：高 ${p(r.priorWeek?.h)} · 低 ${p(r.priorWeek?.l)}`,
+    `- 均线：SMA20 ${p(r.sma.ma20)} · SMA50 ${p(r.sma.ma50)} · SMA200 ${p(r.sma.ma200)}`,
+    `- 摆动点：${r.pivots.map((x) => `${x.kind === "swing_high" ? "高" : "低"} ${p(x.price)}（${x.date}）`).join(" · ") || "n/a"}`,
+    r.fib ? `- 斐波那契回撤（最近一段 ${p(r.fib.from)} → ${p(r.fib.to)}，${r.fib.dir === "up" ? "上涨段" : "下跌段"}）：${r.fib.levels.map((x) => `${x.ratio} = ${p(x.price)}`).join(" · ")}` : "- 斐波那契：n/a（摆动点不足）",
+    "", "_止损别正好放在整数关口或前高/前低上（止损学 Stop Placement）。_"];
   return L.join("\n") + "\n";
 }
