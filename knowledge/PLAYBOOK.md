@@ -158,7 +158,7 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `thesis-stop` · **status:** PROCESS_GUIDE · **destination:** journal
 - **topics:** Thesis stop; Do not rewrite the reason; PRICE_ADVERSE_BUT_THESIS_NOT_INVALIDATED; THESIS_CORE_VARIABLE_CHANGED; Capital survival; LOSS_AVERSION_STOP_DRIFT
-- **sources:** owner, thesis, owner-psychology-20260923, owner-psychology-20260926, mentor-stop-loss, mentor-discipline
+- **sources:** owner, thesis, owner-psychology-20260923, owner-psychology-20260926, mentor-stop-loss, mentor-discipline, mentor-winrate-review
 
 **Principle.** PRICE_ADVERSE_BUT_THESIS_NOT_INVALIDATED names an adverse price move without verified invalidation; loss alone does not prove the macro thesis wrong. THESIS_CORE_VARIABLE_CHANGED names a verified change in an original core variable that requires reassessment.
 
@@ -182,7 +182,7 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `time-stop` · **status:** PROCESS_GUIDE · **destination:** journal
 - **topics:** Time-based stop; Catalyst deadline
-- **sources:** owner, theta, owner-psychology-20260926, mentor-stop-loss
+- **sources:** owner, theta, owner-psychology-20260926, mentor-stop-loss, mentor-winrate-review
 
 **Principle.** Specify when the expected development must occur and a separate option exit deadline.
 
@@ -310,6 +310,18 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 **Limits.** 成交量仅用于确认/排查，不单独下单. Volume never sets direction (macro first) or size. Free Yahoo volume is consolidated but may lag. Chains are whatever the routine saved to data/in/.
 
+### Concurrent open positions ≤10 (大佬复盘)
+
+- **id:** `max-concurrent-positions` · **status:** RESOLVED_FROM_SOURCE · **destination:** planner
+- **topics:** Position count; Attention budget
+- **sources:** mentor-winrate-review
+
+**Principle.** 原文：「原本同时管理不到10个仓位，后来膨胀到接近30个」；「把同时管理的仓位降回10个以下…每一个仓位都必须有值得持有的理由」。
+
+**Application.** RuleCard.maxConcurrentPositions = 10 (default). pretrade.ts BLOCKs a new position when open positions + 1 would exceed it. The user may set it lower; never higher (validated). Readiness scorecard reports the peak concurrent count.
+
+**Limits.** A count cap, not a risk cap; the 1%/3%/2% caps still apply independently.
+
 ## Profit and curves
 
 ### Windfall and rapid profit
@@ -402,7 +414,7 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-entry-comfort` · **status:** PROCESS_GUIDE · **destination:** journal
 - **topics:** $11 / $13 / $12 example; Breakeven fixation; Entry discomfort
-- **sources:** owner-psychology, owner-psychology-20260926
+- **sources:** owner-psychology, owner-psychology-20260926, mentor-winrate-review
 
 **Principle.** Separate the discomfort of an early loss from evidence that an entry has become invalid.
 
@@ -558,7 +570,7 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-responsibility` · **status:** PROCESS_GUIDE · **destination:** reviews
 - **topics:** Extreme Ownership; Self-attribution; Account management; Journal
-- **sources:** owner-psychology, owner-psychology-20260923, owner-psychology-20260926, ownership-book, mentor-better-macro-trader
+- **sources:** owner-psychology, owner-psychology-20260923, owner-psychology-20260926, ownership-book, mentor-better-macro-trader, mentor-winrate-review
 
 **Principle.** Record what you decided, what was observable, what you controlled and what remains unexplained. Discipline aims to preserve the ability to participate in future opportunities through bounded exposure, repeatable execution, controlled drawdown and future optionality.
 
@@ -678,7 +690,7 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-loss-attribution` · **status:** PROCESS_GUIDE · **destination:** reviews
 - **topics:** Loss attribution; Prediction error; Execution error; Entry timing; Sizing and risk; Instrument mismatch; Risk updates; Incomplete hedge; Plan deviation; Normal variance
-- **sources:** owner-psychology-20260926, mentor-better-macro-trader
+- **sources:** owner-psychology-20260926, mentor-better-macro-trader, mentor-winrate-review
 
 **Principle.** A losing outcome may reflect thesis/prediction error, execution error, chasing or entry timing, sizing/risk error, instrument or structure mismatch, missed later risk updates, an incomplete hedge or copied single leg, changing the original plan, or normal variance despite a valid process.
 
@@ -781,4 +793,28 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 **Application.** Before any future exception to a rule explicitly designated adaptable, document: the exact rule; dated evidence that the current regime materially differs from the rule's intended conditions; why the normal rule would be suboptimal; affected scope, instrument and size; maximum additional risk; start and end or expiry; invalidation and abort condition; evidence that would show rationalization rather than justified adaptation; and a post-trade review. Require explicit review before the exception and preserve the original plan and later audit trail.
 
 **Limits.** High certainty is subjective and uncalibrated, never a numerical confidence threshold or automatic bypass. Recent wins, FOMO, urgency, narrative conviction, loss recovery and fear of missing profit are insufficient. No exception may relax authorization, executionAllowed=false, automaticExecution=false, market-data authenticity or freshness, account/order permissions, capital or risk limits, broker or legal constraints, immutable audit/history, or active Daily Guidance gates, stops, risk, freshness, pagination and weekly-plan requirements. No automatic exception, size increase, extended stop, delayed exit, extra trade or order permission. Repeated exceptions call for prospective review of the base rule, not repeated bypass. Following rules does not guarantee profit.
+
+### No trades made to share, entertain or chase excitement (大佬复盘)
+
+- **id:** `psych-no-performance-trades` · **status:** RESOLVED_FROM_SOURCE · **destination:** journal
+- **topics:** Motive; Boredom; Audience
+- **sources:** mentor-winrate-review
+
+**Principle.** 原文：「为了满足一些人想看交易、想找刺激的需求，我做了不必要的单子」；「不会为了有东西跟大家分享而硬做交易」。
+
+**Application.** discipline.ts motive check: motive 'share' | 'entertain' | 'excitement' → BLOCK. The journal records the motive; readiness counts these as discipline violations.
+
+**Limits.** Self-reported; it only works if the motive is answered honestly before entry.
+
+### A low win rate is not failure when losses stay controlled — but not an excuse either (大佬复盘)
+
+- **id:** `psych-winrate-not-failure` · **status:** RESOLVED_FROM_SOURCE · **destination:** reviews
+- **topics:** Win rate; Expectancy; Loss control
+- **sources:** mentor-winrate-review
+
+**Principle.** 原文：「仓位控制让亏损保持在可控范围内，我预计最终仍能盈利。但这不能成为交易做得不够好的借口。」
+
+**Application.** Readiness judges expectancy and loss caps, never win rate alone; it prints win rate as context and still asks for every loss to be reviewed.
+
+**Limits.** Positive expectancy on a small sample can be luck; criterion 2 removes the top 2 winners.
 

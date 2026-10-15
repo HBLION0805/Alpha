@@ -73,6 +73,8 @@
       "low": 79.5,
       "high": 80.5
     },
-    "side": "long"
+    "side": "long",
+    "motive": "thesis",
+    "openPositions": 4
   }
 }

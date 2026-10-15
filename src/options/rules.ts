@@ -30,6 +30,7 @@ export interface RuleCard {
   debitSpreadTakeProfitPct: number;   // 14.7 借记价差 最大盈利的 50–75%
   calendarTakeProfitPct: number; calendarStopPct: number; // 14.7 日历 25–50% / 净支出 50%
   dailyLossLimitPct: number;         // 纪律 #11 每日最大亏损 — user-confirmed 2% (2026-10-14)
+  maxConcurrentPositions: number;     // 大佬复盘 (mentor-winrate-review): 同时管理的仓位降回10个以下 — default 10, user may only lower it
   forbidden: string[];
 }
 export const DEFAULT_RULES: RuleCard = {
@@ -40,6 +41,7 @@ export const DEFAULT_RULES: RuleCard = {
   creditTakeProfitPct: 50, creditManageAtDte: 21, creditStopMultipleOfCredit: 2, buyerTakeProfitPct: 50, buyerTimeStopFraction: 0.5,
   debitSpreadTakeProfitPct: 50, calendarTakeProfitPct: 25, calendarStopPct: 50,
   dailyLossLimitPct: 2,
+  maxConcurrentPositions: 10,
   forbidden: ["naked_call", "naked_put", "short_straddle", "short_strangle"],
 };
 
@@ -84,8 +86,15 @@ export function maxLossOf(p: Position): number | null {
   return debit > 0 ? -debit : null;
 }
 
+/** Caps that a user override may only TIGHTEN (lower). A looser value is ignored and the default kept. */
+export const NEVER_LOOSEN = ["sellerMaxLossPerTradePct", "buyerPremiumPerTradePct", "perUnderlyingMaxLossPct", "commonBetMaxLossPct", "maxAdjustmentsPerPosition", "dailyLossLimitPct", "maxConcurrentPositions"] as const;
+export function effectiveRules(over: Partial<RuleCard> = {}): RuleCard {
+  const R = { ...DEFAULT_RULES, ...over, undefinedRiskSelling: false as const, forbidden: [...new Set([...DEFAULT_RULES.forbidden, ...(over.forbidden ?? [])])] };
+  for (const k of NEVER_LOOSEN) { const v = over[k]; R[k] = typeof v === "number" && Number.isFinite(v) && v >= 0 ? Math.min(v, DEFAULT_RULES[k]) : DEFAULT_RULES[k]; }
+  return R;
+}
 export function checkBook(book: Book): { rules: RuleCard; checks: RuleCheck[] } {
-  const R = { ...DEFAULT_RULES, ...(book.rules ?? {}) };
+  const R = effectiveRules(book.rules);
   const cap = book.capital, pct = (x: number) => ((x / cap) * 100).toFixed(2) + "%";
   const checks: RuleCheck[] = [];
   let total = 0; const byU = new Map<string, number>(); let buyers = 0; let buyerPremium = 0;
@@ -112,6 +121,7 @@ export function checkBook(book: Book): { rules: RuleCard; checks: RuleCheck[] } 
   checks.push({ rule: "stress_gap20_iv+30", ok: sp(st.total.gapDown20) <= R.stressGapIv30MaxPct, detail: `−20% & IV +30: $${st.total.gapDown20} (${-sp(st.total.gapDown20)}%, cap −${R.stressGapIv30MaxPct}%, 13.4)` });
   checks.push({ rule: "stress_iv_x2", ok: sp(st.total.ivX2) <= R.stressIvX2MaxPct, detail: `IV×2: $${st.total.ivX2} (${-sp(st.total.ivX2)}%, cap −${R.stressIvX2MaxPct}%, 13.4)` });
   checks.push({ rule: "stress_combined", ok: sp(st.total.both) <= R.stressCombinedMaxPct, detail: `−20% & IV×2: $${st.total.both} (${-sp(st.total.both)}%, cap −${R.stressCombinedMaxPct}%, 13.4) — 超限当周减仓` });
+  checks.push({ rule: "max_concurrent_positions", ok: book.positions.length <= R.maxConcurrentPositions, detail: `${book.positions.length} open positions (cap ${R.maxConcurrentPositions}; 大佬复盘：同时管理的仓位降回10个以下，每一个仓位都必须有值得持有的理由 — mentor-winrate-review)` });
   for (const p of book.positions) for (const f of R.forbidden) if (p.strategy === f) checks.push({ rule: "forbidden_structure", ok: false, detail: `${p.symbol}: ${f} is forbidden by the rule card` });
   return { rules: R, checks };
 }

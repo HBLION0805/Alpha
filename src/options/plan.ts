@@ -5,6 +5,7 @@
  */
 import type { Proposal } from "./pretrade.ts";
 import { analyze, type Leg } from "./payoff.ts";
+import { OWNERSHIP_PROMPT } from "./discipline.ts";
 import { managementPlan, DEFAULT_RULES, type RuleCard } from "./rules.ts";
 import { kellyReference, type KellyResult } from "./kelly.ts";
 import { takeProfitAdvice } from "./takeprofit.ts";
@@ -39,5 +40,5 @@ export function proposalPlan(p: Proposal & { pAssumed?: number; winPerContract?:
 export function renderPlan(pl: ProposalPlan): string[] {
   return ["", `### 交易计划（${pl.kind === "credit" ? "信用" : "借方"}）`, ...pl.management.map((m) => `- ${m}`), "", "**Kelly（上限参考）：** " + pl.kellyNote,
     ...(pl.kelly ? pl.kelly.sensitivity.map((s) => `- p ${s.dp >= 0 ? "+" : ""}${s.dp} → ${s.p.toFixed(2)}：full Kelly ${s.fullKelly.toFixed(3)}，上限 ${s.contracts} 张`).concat(pl.kelly.warnings.map((w) => `- ${w.severity} ${w.id}: ${w.detail}`)) : []),
-    "", "**止盈计划（止盈学，严格者优先）：**", "| 盈利 | 动作 | 累计卖出 |", "|---|---|---|", ...pl.takeProfit.map((t) => `| ${t.at} | ${t.action} | ${t.sell} |`)];
+    "", "**止盈计划（止盈学，严格者优先）：**", "| 盈利 | 动作 | 累计卖出 |", "|---|---|---|", ...pl.takeProfit.map((t) => `| ${t.at} | ${t.action} | ${t.sell} |`), "", `**提前离场：** 逻辑失效条件未触发、时间止损未到 → 不要为了避免小亏提前离场（大佬复盘 mentor-winrate-review）。`, `**责任：** ${OWNERSHIP_PROMPT}`];
 }

@@ -8,7 +8,7 @@ import { daysTo } from "./bs.ts";
 import { analyze, type Leg } from "./payoff.ts";
 import { DEFAULT_RULES, type RuleCard, type PosLeg } from "./rules.ts";
 import { multiLegChecklist, thesisStop, type MultiLegChecklist, type ThesisRecord } from "./stops.ts";
-import { zeroDteCheck, dailyLossCheck, euphoriaGate, sessionGate, sizeDisciplineCheck, entryRangeCheck, type TradeLog, type SessionState, type MarketState } from "./discipline.ts";
+import { motiveCheck, concurrentCheck, type Motive, zeroDteCheck, dailyLossCheck, euphoriaGate, sessionGate, sizeDisciplineCheck, entryRangeCheck, type TradeLog, type SessionState, type MarketState } from "./discipline.ts";
 import { adjustmentPlaybookChecks, type AdjustmentContext } from "./adjust.ts";
 
 const REVIEW = "复盘 HYG/IWM/TLT/TQQQ (knowledge/mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md)";
@@ -37,6 +37,10 @@ export interface Proposal {
     euphoriaAnswer?: "real_opportunity" | "want_more";
     plannedMaxLoss?: number;
     entryRange?: { low: number; high: number }; side?: "long" | "short";
+    /** 大佬复盘 mentor-winrate-review: why this trade; only "thesis" passes */
+    motive?: Motive;
+    /** positions open right now (cap rules.maxConcurrentPositions, default 10) */
+    openPositions?: number;
   };
 }
 export type Severity = "NO_TRADE" | "BLOCK" | "WARN" | "OK" | "INFO";
@@ -157,6 +161,10 @@ export function disciplineChecks(p: Proposal, proposedMaxLoss: number, R: RuleCa
     if (d.plannedMaxLoss == null) need("size_vs_plan", "BLOCK", "discipline.plannedMaxLoss (the planned $ risk written before emotion gets a vote)");
     else out.push(conv(sizeDisciplineCheck({ plannedMaxLoss: d.plannedMaxLoss, proposedMaxLoss, recent: d.journal })));
   }
+  // 大佬复盘 (mentor-winrate-review): motive + concurrent positions
+  out.push(conv(motiveCheck(d.motive)));
+  if (d.openPositions == null) need("max_concurrent_positions", "BLOCK", `discipline.openPositions (cap ${R.maxConcurrentPositions})`);
+  else out.push(conv(concurrentCheck(d.openPositions, R.maxConcurrentPositions)));
   // #7 entry range on the underlying
   if (!d.entryRange || !d.side) need("entry_range", "BLOCK", "discipline.entryRange {low, high} and discipline.side (纪律 #07 no chasing)");
   else if (!Number.isFinite(spot(p, p.symbol))) need("entry_range", "BLOCK", `underlyingPrice for ${p.symbol} (entry range is checked on the proposal symbol's price)`);

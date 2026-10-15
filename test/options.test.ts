@@ -142,7 +142,7 @@ test("pre-trade: HYG/TLT review lessons are enforced", () => {
   assert.ok(r.checks.every((c) => c.cite.length > 0));
   assert.ok(r.checks.some((c) => /Robinhood/.test(c.detail)));
 });
-const DISC = { journal: [], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" } as const, market: { lowVolume: false, unclearDirection: false, chop: false, poorRR: false }, plannedMaxLoss: 900, entryRange: { low: 760, high: 775 }, side: "long" as const };
+const DISC = { motive: "thesis" as const, openPositions: 3, journal: [], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" } as const, market: { lowVolume: false, unclearDirection: false, chop: false, poorRR: false }, plannedMaxLoss: 900, entryRange: { low: 760, high: 775 }, side: "long" as const };
 test("pre-trade: a far-OTM spread with a plan and enough buying power passes; adjustments need a new decision", () => {
   const ok: Proposal = { ...hyg, symbol: "SPY", strategy: "bull_put_credit_spread", underlyingPrice: 769.6, thesisHorizonDays: 14, buyingPower: 100000,
     legs: [{ type: "put", strike: 730, qty: -1, premium: 4.04, expiration: "2026-11-20", delta: -0.16 }, { type: "put", strike: 720, qty: 1, premium: 2.9, expiration: "2026-11-20", delta: -0.12 }],

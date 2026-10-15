@@ -130,3 +130,20 @@ export function entryRangeCheck(price: number, range: { low: number; high: numbe
 
 // #12 cash is a position (digest note)
 export const CASH_NOTE = "现金也是一种仓位 / Cash is a position: no good setup → let it sit. It keeps buying power and choice (纪律 #12)";
+
+/** 大佬复盘 (knowledge/mentor/reviews/winrate-drop-review.md, mentor-winrate-review). */
+export const WINRATE_REVIEW = "大佬复盘 胜率85%→20% (knowledge/mentor/reviews/winrate-drop-review.md)";
+export type Motive = "thesis" | "share" | "entertain" | "excitement";
+/** 「为了满足一些人想看交易、想找刺激的需求，我做了不必要的单子」 → only a thesis is a reason to trade. */
+export function motiveCheck(m: Motive | undefined): DiscSignal {
+  if (!m) return { id: "motive", severity: "BLOCK", detail: "provide discipline.motive: thesis | share | entertain | excitement (why this trade, honestly)", cite: WINRATE_REVIEW };
+  return m === "thesis" ? { id: "motive", severity: "OK", detail: "motive: thesis", cite: WINRATE_REVIEW }
+    : { id: "motive", severity: "BLOCK", detail: `motive "${m}": no trades made to share, entertain or chase excitement — 不会为了有东西跟大家分享而硬做交易`, cite: WINRATE_REVIEW };
+}
+/** 「把同时管理的仓位降回10个以下」 — cap from the rule card (default 10; can only be lowered). */
+export function concurrentCheck(openPositions: number, cap: number): DiscSignal {
+  return openPositions + 1 > cap ? { id: "max_concurrent_positions", severity: "BLOCK", detail: `${openPositions} open + this one > cap ${cap}: close or skip — 每一个仓位都必须有值得持有的理由`, cite: WINRATE_REVIEW }
+    : { id: "max_concurrent_positions", severity: "OK", detail: `${openPositions} open + 1 ≤ cap ${cap}`, cite: WINRATE_REVIEW };
+}
+/** Ownership prompt printed with every pre-trade check (「这些都是我自己的决定。改正，也是我的责任。」). */
+export const OWNERSHIP_PROMPT = "这是我自己的决定：判断、执行和离场都由我负责，结果不归咎于任何人。";

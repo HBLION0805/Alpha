@@ -158,6 +158,12 @@
       "title": "DK addition: volume-anomaly module (user-approved 2026-10-14)",
       "url": "src/macro/volume.ts",
       "coverage": "DK's own rule set, not mentor or course text. It builds on the 期权课 ch02 options-chain fields (Volume = liquidity indicator; OI > 1000) and ch16 position data."
+    },
+    {
+      "id": "mentor-winrate-review",
+      "title": "大佬周复盘：胜率从85%掉到20% + 防御性组合更新 (verbatim, names/dates removed by the user)",
+      "url": "knowledge/mentor/reviews/winrate-drop-review.md",
+      "coverage": "Byte-for-byte, split at the '---' separator into winrate-drop-review.md and defensive-portfolio-2026-10.md (+ defensive-portfolio-2026-10.png). Lessons: concurrent positions <10, no trades to share/entertain, don't exit before the thesis plays out while invalidation hasn't triggered, controlled losses make a low win rate survivable, own every decision. BAC 'add to all positions' is NOT encoded (only consistent with the one-add-after-reconfirmation rule)."
     }
   ],
   "items": [
@@ -425,7 +431,8 @@
         "owner-psychology-20260923",
         "owner-psychology-20260926",
         "mentor-stop-loss",
-        "mentor-discipline"
+        "mentor-discipline",
+        "mentor-winrate-review"
       ],
       "topics": [
         "Thesis stop",
@@ -473,7 +480,8 @@
         "owner",
         "theta",
         "owner-psychology-20260926",
-        "mentor-stop-loss"
+        "mentor-stop-loss",
+        "mentor-winrate-review"
       ],
       "topics": [
         "Time-based stop",
@@ -835,7 +843,8 @@
       "destination": "journal",
       "sources": [
         "owner-psychology",
-        "owner-psychology-20260926"
+        "owner-psychology-20260926",
+        "mentor-winrate-review"
       ]
     },
     {
@@ -1112,7 +1121,8 @@
         "owner-psychology-20260923",
         "owner-psychology-20260926",
         "ownership-book",
-        "mentor-better-macro-trader"
+        "mentor-better-macro-trader",
+        "mentor-winrate-review"
       ]
     },
     {
@@ -1338,7 +1348,8 @@
       "destination": "reviews",
       "sources": [
         "owner-psychology-20260926",
-        "mentor-better-macro-trader"
+        "mentor-better-macro-trader",
+        "mentor-winrate-review"
       ]
     },
     {
@@ -1551,6 +1562,59 @@
       "application": "Run by src/macro/volume.ts (npm run volume; run.sh at 7:00–9:29 for the prior session, feeding the premarket report, and at 16:15–16:59 ET). Strong anomalies (≥3x with a price break, or option volume/OI ≥5x) go to alerts at score 60. Related existing entries: `mechanisms` (OI/volume don't identify dealer direction), `recovery-curves` (止盈学 §6 bull trap needs volume + hold), `psych-breakout-clock`, `psych-short-weakness`.",
       "limits": "成交量仅用于确认/排查，不单独下单. Volume never sets direction (macro first) or size. Free Yahoo volume is consolidated but may lag. Chains are whatever the routine saved to data/in/.",
       "destination": "planner"
+    },
+    {
+      "id": "max-concurrent-positions",
+      "group": "Exit and exposure",
+      "title": "Concurrent open positions ≤10 (大佬复盘)",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "mentor-winrate-review"
+      ],
+      "topics": [
+        "Position count",
+        "Attention budget"
+      ],
+      "principle": "原文：「原本同时管理不到10个仓位，后来膨胀到接近30个」；「把同时管理的仓位降回10个以下…每一个仓位都必须有值得持有的理由」。",
+      "application": "RuleCard.maxConcurrentPositions = 10 (default). pretrade.ts BLOCKs a new position when open positions + 1 would exceed it. The user may set it lower; never higher (validated). Readiness scorecard reports the peak concurrent count.",
+      "limits": "A count cap, not a risk cap; the 1%/3%/2% caps still apply independently.",
+      "destination": "planner"
+    },
+    {
+      "id": "psych-no-performance-trades",
+      "group": "Psychology and evidence",
+      "title": "No trades made to share, entertain or chase excitement (大佬复盘)",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "mentor-winrate-review"
+      ],
+      "topics": [
+        "Motive",
+        "Boredom",
+        "Audience"
+      ],
+      "principle": "原文：「为了满足一些人想看交易、想找刺激的需求，我做了不必要的单子」；「不会为了有东西跟大家分享而硬做交易」。",
+      "application": "discipline.ts motive check: motive 'share' | 'entertain' | 'excitement' → BLOCK. The journal records the motive; readiness counts these as discipline violations.",
+      "limits": "Self-reported; it only works if the motive is answered honestly before entry.",
+      "destination": "journal"
+    },
+    {
+      "id": "psych-winrate-not-failure",
+      "group": "Psychology and evidence",
+      "title": "A low win rate is not failure when losses stay controlled — but not an excuse either (大佬复盘)",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "mentor-winrate-review"
+      ],
+      "topics": [
+        "Win rate",
+        "Expectancy",
+        "Loss control"
+      ],
+      "principle": "原文：「仓位控制让亏损保持在可控范围内，我预计最终仍能盈利。但这不能成为交易做得不够好的借口。」",
+      "application": "Readiness judges expectancy and loss caps, never win rate alone; it prints win rate as context and still asks for every loss to be reviewed.",
+      "limits": "Positive expectancy on a small sample can be luck; criterion 2 removes the top 2 winners.",
+      "destination": "reviews"
     }
   ],
   "fields": [

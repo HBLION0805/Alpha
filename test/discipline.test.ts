@@ -95,7 +95,7 @@ test("pretrade wires discipline checks; missing inputs → provide X (NO_TRADE/B
   const none = preTradeChecks(base);
   for (const id of ["session_gate", "journal_inputs", "entry_range"]) assert.match(none.checks.find((c) => c.id === id)!.detail, /^provide /, id);
   assert.equal(none.checks.find((c) => c.id === "session_gate")!.severity, "NO_TRADE"); assert.ok(none.blocked);
-  const disc = { journal: [] as D.TradeLog[], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" } as const, market: {}, plannedMaxLoss: 400, entryRange: { low: 595, high: 605 }, side: "long" as const };
+  const disc = { motive: "thesis" as const, openPositions: 3, journal: [] as D.TradeLog[], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" } as const, market: {}, plannedMaxLoss: 400, entryRange: { low: 595, high: 605 }, side: "long" as const };
   const ok = preTradeChecks({ ...base, discipline: disc });
   assert.ok(!ok.checks.some((c) => c.severity === "BLOCK" || c.severity === "NO_TRADE"), JSON.stringify(ok.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")));
   assert.equal(preTradeChecks({ ...base, discipline: { ...disc, plannedMaxLoss: 100 } }).checks.find((c) => c.id === "size_vs_plan")!.severity, "BLOCK");
@@ -106,4 +106,18 @@ test("pretrade wires discipline checks; missing inputs → provide X (NO_TRADE/B
   assert.equal(preTradeChecks(zero).checks.find((c) => c.id === "0dte_one_per_day")!.severity, "BLOCK");
   const wins = [1, 2, 3].map((i) => ({ id: String(i), openedAt: "2026-10-14T09:4" + i, closedAt: "2026-10-14T10:0" + i, pnl: 300, maxLoss: 300 }));
   assert.equal(preTradeChecks({ ...base, discipline: { ...disc, journal: wins } }).checks.find((c) => c.id === "euphoria_gate")!.severity, "BLOCK");
+});
+
+test("mentor-winrate-review: motive must be thesis; concurrent cap 10 can only be lowered", async () => {
+  const R = await import("../src/options/rules.ts");
+  assert.equal(D.motiveCheck("thesis").severity, "OK");
+  for (const m of ["share", "entertain", "excitement"] as const) assert.equal(D.motiveCheck(m).severity, "BLOCK");
+  assert.equal(D.motiveCheck(undefined).severity, "BLOCK");
+  assert.equal(R.DEFAULT_RULES.maxConcurrentPositions, 10);
+  assert.equal(D.concurrentCheck(9, 10).severity, "OK");
+  assert.equal(D.concurrentCheck(10, 10).severity, "BLOCK");
+  assert.equal(R.effectiveRules({ maxConcurrentPositions: 30 }).maxConcurrentPositions, 10, "never loosened");
+  assert.equal(R.effectiveRules({ maxConcurrentPositions: 6 }).maxConcurrentPositions, 6, "user may lower");
+  assert.equal(R.effectiveRules({ sellerMaxLossPerTradePct: 2, dailyLossLimitPct: 5 }).sellerMaxLossPerTradePct, 1);
+  assert.equal(R.effectiveRules({ dailyLossLimitPct: 5 }).dailyLossLimitPct, 2);
 });
