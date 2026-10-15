@@ -20,7 +20,8 @@
     "volume": "node src/cli/volume.ts",
     "brief": "node src/cli/brief.ts",
     "readiness": "node src/cli/readiness.ts",
-    "paper": "node src/cli/paper.ts"
+    "paper": "node src/cli/paper.ts",
+    "review": "node src/cli/review.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",

@@ -3,7 +3,7 @@
   "entries": [
     {
       "id": "nvda-pds-2026-10-14-real",
-      "openedAt": "2026-10-14",
+      "openedAt": "2026-10-14T19:51:08Z",
       "symbol": "NVDA",
       "strategy": "put_debit_spread",
       "kind": "practice",
@@ -24,7 +24,7 @@
       },
       "expectedMove": null,
       "structureRationale": "Defined-risk bearish continuation; real Robinhood account, 1 contract, $2 total debit",
-      "maxLoss": 2,
+      "maxLoss": 4,
       "invalidation": "n/a (not written before entry)",
       "exitRules": [],
       "thesis": "Continuation down from 10/14",
@@ -34,7 +34,7 @@
           "type": "put",
           "strike": 202.5,
           "qty": 1,
-          "premium": 0.02,
+          "premium": 0.15,
           "expiration": "2026-10-16"
         },
         {
@@ -42,7 +42,7 @@
           "type": "put",
           "strike": 200,
           "qty": -1,
-          "premium": 0,
+          "premium": 0.11,
           "expiration": "2026-10-16"
         }
       ],
@@ -72,7 +72,14 @@
           "note": "Robinhood P&L at 11:40. A −$1 P&L does not fit a fully lost $2 debit, so the actual debit is uncertain. It was profitable this morning and was not closed."
         }
       ],
-      "costUncertain": "The user reported $2 total, but the 11:40 P&L of −$1 suggests a different debit or residual value"
+      "entryPrice": 0.04,
+      "entryPriceSource": "robinhood_orders",
+      "costUnknown": false,
+      "closedAt": "2026-10-15T18:48:53Z",
+      "pnl": -3,
+      "exitKind": "discretionary",
+      "exitReason": "user closed in Robinhood @0.01 (0.07/0.06)",
+      "entryNote": "The user recalled $2; Robinhood orders show a $4 debit (0.04). Closed 10/15 14:48 ET for $1 → −$3."
     },
     {
       "id": "mentor-nvda-cds-2026-10-15",
@@ -122,8 +129,35 @@
       "underlyingAtEntry": 215.93,
       "lesson": "Max gain $340/contract",
       "violations": [
-        "exceeds_1pct_cap_at_5000"
-      ]
+        "exceeds_1pct_cap_at_5000",
+        "exceeds_1pct_cap"
+      ],
+      "marks": [
+        {
+          "at": "2026-10-15T21:08:27.926Z",
+          "value": 168,
+          "pnl": 8,
+          "spot": null,
+          "sources": [
+            "NVDA 220c robinhood 3.5",
+            "NVDA 225c robinhood 1.82"
+          ],
+          "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:09:25.909Z",
+          "value": 168,
+          "pnl": 8,
+          "spot": null,
+          "sources": [
+            "NVDA 220c robinhood 3.5",
+            "NVDA 225c robinhood 1.82"
+          ],
+          "estimated": false
+        }
+      ],
+      "entryPrice": 1.6,
+      "entryPriceSource": "user"
     },
     {
       "id": "mentor-intc-cds-2026-10-15",
@@ -173,8 +207,35 @@
       "underlyingAtEntry": 91.97,
       "lesson": "Max gain $360/contract",
       "violations": [
-        "exceeds_1pct_cap_at_5000"
-      ]
+        "exceeds_1pct_cap_at_5000",
+        "exceeds_1pct_cap"
+      ],
+      "marks": [
+        {
+          "at": "2026-10-15T21:08:27.926Z",
+          "value": 188,
+          "pnl": 48,
+          "spot": null,
+          "sources": [
+            "INTC 95c robinhood 3.7",
+            "INTC 100c robinhood 1.82"
+          ],
+          "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:09:25.909Z",
+          "value": 188,
+          "pnl": 48,
+          "spot": null,
+          "sources": [
+            "INTC 95c robinhood 3.7",
+            "INTC 100c robinhood 1.82"
+          ],
+          "estimated": false
+        }
+      ],
+      "entryPrice": 1.4,
+      "entryPriceSource": "user"
     },
     {
       "id": "mentor-gdx-call-2026-10-15",
@@ -215,14 +276,39 @@
       ],
       "underlyingAtEntry": 85.17,
       "violations": [
-        "exceeds_1pct_cap_at_5000"
-      ]
+        "exceeds_1pct_cap_at_5000",
+        "exceeds_1pct_cap"
+      ],
+      "marks": [
+        {
+          "at": "2026-10-15T21:08:27.926Z",
+          "value": 322.5,
+          "pnl": 62.5,
+          "spot": null,
+          "sources": [
+            "GDX 90c robinhood 3.225"
+          ],
+          "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:09:25.909Z",
+          "value": 322.5,
+          "pnl": 62.5,
+          "spot": null,
+          "sources": [
+            "GDX 90c robinhood 3.225"
+          ],
+          "estimated": false
+        }
+      ],
+      "entryPrice": 2.6,
+      "entryPriceSource": "user"
     },
     {
       "kind": "practice",
       "source": "real_practice",
       "mode": "paper",
-      "costUnknown": true,
+      "costUnknown": false,
       "ivRank": null,
       "greeks": {
         "delta": 0,
@@ -233,10 +319,10 @@
       "expectedMove": null,
       "exitRules": [],
       "structureRationale": "Real Robinhood trade logged for review (details from the user’s screenshot at 11:40 ET 10/15); entry cost unknown",
-      "maxLoss": null,
+      "maxLoss": 12,
       "id": "crwv-pds-2026-10-16-real",
-      "openedAt": "2026-10-15",
-      "openedAtUncertain": true,
+      "openedAt": "2026-10-14T19:38:31Z",
+      "openedAtUncertain": false,
       "symbol": "CRWV",
       "strategy": "put_debit_spread",
       "view": {
@@ -251,7 +337,7 @@
           "type": "put",
           "strike": 55,
           "qty": 1,
-          "premium": null,
+          "premium": 0.17,
           "expiration": "2026-10-16"
         },
         {
@@ -259,7 +345,7 @@
           "type": "put",
           "strike": 50,
           "qty": -1,
-          "premium": null,
+          "premium": 0.05,
           "expiration": "2026-10-16"
         }
       ],
@@ -289,13 +375,39 @@
         ],
         "note": "Gain of ~+200% turned into a loss; no take-profit was set at entry."
       },
-      "lesson": "止盈必须开仓时写死。"
+      "lesson": "止盈必须开仓时写死。",
+      "entryPrice": 0.12,
+      "entryPriceSource": "robinhood_orders",
+      "marks": [
+        {
+          "at": "2026-10-15T21:08:27.926Z",
+          "value": 1,
+          "pnl": -11,
+          "spot": null,
+          "sources": [
+            "CRWV 55p robinhood 0.015",
+            "CRWV 50p robinhood 0.005"
+          ],
+          "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:09:25.909Z",
+          "value": 1,
+          "pnl": -11,
+          "spot": null,
+          "sources": [
+            "CRWV 55p robinhood 0.015",
+            "CRWV 50p robinhood 0.005"
+          ],
+          "estimated": false
+        }
+      ]
     },
     {
       "kind": "practice",
       "source": "real_practice",
       "mode": "paper",
-      "costUnknown": true,
+      "costUnknown": false,
       "ivRank": null,
       "greeks": {
         "delta": 0,
@@ -306,10 +418,10 @@
       "expectedMove": null,
       "exitRules": [],
       "structureRationale": "Real Robinhood trade logged for review (details from the user’s screenshot at 11:40 ET 10/15); entry cost unknown",
-      "maxLoss": null,
+      "maxLoss": 21,
       "id": "vix-cds-2026-10-21-real",
-      "openedAt": "2026-10-15",
-      "openedAtUncertain": true,
+      "openedAt": "2026-10-14T19:42:53Z",
+      "openedAtUncertain": false,
       "symbol": "VIX",
       "strategy": "call_debit_spread",
       "view": {
@@ -324,7 +436,7 @@
           "type": "call",
           "strike": 20,
           "qty": 1,
-          "premium": null,
+          "premium": 0.32,
           "expiration": "2026-10-21"
         },
         {
@@ -332,7 +444,7 @@
           "type": "call",
           "strike": 25,
           "qty": -1,
-          "premium": null,
+          "premium": 0.11,
           "expiration": "2026-10-21"
         }
       ],
@@ -352,13 +464,39 @@
         ],
         "note": "Morning gain turned into a loss; no take-profit was set at entry. VIX options are AM-settled: the last trading day is the day before the 10/21 settlement."
       },
-      "lesson": "止盈必须开仓时写死。"
+      "lesson": "止盈必须开仓时写死。",
+      "entryPrice": 0.21,
+      "entryPriceSource": "robinhood_orders",
+      "marks": [
+        {
+          "at": "2026-10-15T21:08:27.926Z",
+          "value": 9,
+          "pnl": -12,
+          "spot": null,
+          "sources": [
+            "VIX 20c robinhood 0.19",
+            "VIX 25c robinhood 0.1"
+          ],
+          "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:09:25.909Z",
+          "value": 9,
+          "pnl": -12,
+          "spot": null,
+          "sources": [
+            "VIX 20c robinhood 0.19",
+            "VIX 25c robinhood 0.1"
+          ],
+          "estimated": false
+        }
+      ]
     },
     {
       "kind": "practice",
       "source": "real_practice",
       "mode": "paper",
-      "costUnknown": true,
+      "costUnknown": false,
       "ivRank": null,
       "greeks": {
         "delta": 0,
@@ -369,10 +507,10 @@
       "expectedMove": null,
       "exitRules": [],
       "structureRationale": "Real Robinhood trade logged for review (details from the user’s screenshot at 11:40 ET 10/15); entry cost unknown",
-      "maxLoss": null,
+      "maxLoss": 225,
       "id": "aapl-pds-2026-10-30-real",
-      "openedAt": "2026-10-15",
-      "openedAtUncertain": true,
+      "openedAt": "2026-10-13T19:21:39Z",
+      "openedAtUncertain": false,
       "symbol": "AAPL",
       "strategy": "put_debit_spread",
       "view": {
@@ -389,7 +527,7 @@
           "type": "put",
           "strike": 335,
           "qty": 1,
-          "premium": null,
+          "premium": 3.84,
           "expiration": "2026-10-30"
         },
         {
@@ -397,7 +535,7 @@
           "type": "put",
           "strike": 325,
           "qty": -1,
-          "premium": null,
+          "premium": 1.59,
           "expiration": "2026-10-30"
         }
       ],
@@ -407,6 +545,16 @@
           "pnl": -44,
           "note": "Robinhood P&L at 11:40"
         }
+      ],
+      "entryPrice": 2.25,
+      "entryPriceSource": "robinhood_orders",
+      "closedAt": "2026-10-15T19:12:43Z",
+      "pnl": -31,
+      "exitKind": "discretionary",
+      "exitReason": "user closed in Robinhood @1.94 (3.35/1.41), credit $194",
+      "violations": [
+        "exceeds_1pct_cap_at_5000",
+        "exceeds_1pct_cap"
       ]
     }
   ]

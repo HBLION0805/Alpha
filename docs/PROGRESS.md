@@ -140,3 +140,12 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
   - Equity/ETF PM-settles at the expiry-day close (Yahoo) from 16:00 ET.
   - VIX AM-settles and requires `--settle VIX=<VRO>`; it is never the close.
   - Mentor weekend rule: a losing mentor_shadow trade at Fri ≥15:45 ET is closed at that day's mark.
+- P1:
+  - Formal paper trades require `--plan-id` from today's brief §2.1 (`YYYY-MM-DD-TICKER-side`, in brief JSON + §2.1). Ticker, side and entry zone must match, otherwise use `--kind practice`.
+  - `paper mark` prints 🚨 超限 for an open loss over $50 or a day (realized + unrealized, simulated only) over $100. Mentor/any entries with max loss over $50 are flagged `exceeds_1pct_cap`.
+  - `paper review` writes a post-mortem for every closed trade, wins included (judgment / execution / luck / good; a loss can't be luck).
+  - `paper mentor` records the mentor's actual result and prints ours vs the mentor's.
+  - Repeated tags and same-symbol lessons → critique WARN past_mistakes / past_lessons.
+- P2:
+  - Readiness: max drawdown ≤6% ($300 at $5k), top-2 winners ≤50% of net P&L, 90-day rolling window, practice breakdown (simulated / real account / mentor shadow).
+  - `npm run review [-- --week]` → data/out/review-<date>.md (summary + per-trade cards).
