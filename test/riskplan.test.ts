@@ -41,5 +41,5 @@ test("practice trades are excluded from readiness and shown separately", () => {
   const t = (id: string, kind: "formal" | "practice", pnl: number) => ({ id, kind, mode: "paper", symbol: "SPY", strategy: "x", openedAt: "2026-10-01T14:00:00Z", closedAt: "2026-10-02T14:00:00Z", pnl, commissions: 0, maxLoss: 300, lossReview: { at: "x", errorClass: "judgment", errorTags: [] } }) as unknown as JournalEntry;
   const r = readiness({ journal: [t("A", "formal", 100), t("B", "practice", -400), t("C", "practice", 50)], capital: 50000, shockDates: [] });
   assert.equal(r.stats.paperClosed, 1); assert.equal(r.stats.ev, 100);
-  assert.deepEqual(r.practice, { n: 2, closed: 2, ev: -175, total: -350 });
+  const { bySource, ...pr } = r.practice; assert.deepEqual(pr, { n: 2, closed: 2, ev: -175, total: -350 }); assert.equal(bySource!.paper_sim!.n, 2);
 });

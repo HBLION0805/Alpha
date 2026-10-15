@@ -76,3 +76,14 @@ test("post-mortem: wins need one too; luck can't excuse a loss; repeated tags fe
   const L = mentorCompare(m).join("\n");
   assert.match(L, /\$40（25%）/); assert.match(L, /大佬实际：win（80%）/); assert.match(L, /方向一致：是/);
 });
+
+test("readiness P2: 6% max drawdown, top-2 outlier share, 90-day window", () => {
+  const C = (j: JournalEntry[], cap = 50000) => Object.fromEntries(readiness({ journal: j, capital: cap, shockDates: shock }).criteria.map((c) => [c.id, c]));
+  // 5k capital: a −$100 losing streak of 4 = $400 drawdown > $300 (6%)
+  const dd = C(good().map((t, i) => (i >= 4 && i < 8 ? { ...t, pnl: -100, maxLoss: 40, lossReview: { at: "x", errorClass: "execution", errorTags: [] } } : { ...t, maxLoss: 40 })) as JournalEntry[], 5000).loss_caps!;
+  assert.ok(dd.missing.some((m) => /最大回撤/.test(m)));
+  const big = good(); big[0] = { ...big[0]!, pnl: 5000 };
+  assert.ok(C(big).expectancy!.missing.some((m) => /离群值/.test(m)));
+  const old = trade(-100, 300, { openedAt: "2026-01-01T00:00:00Z", closedAt: "2026-01-02T00:00:00Z" });
+  assert.match(C([old, ...good()]).sample!.detail[0]!, /全部 33/);
+});

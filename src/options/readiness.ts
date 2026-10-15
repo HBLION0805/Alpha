@@ -8,8 +8,8 @@ import { fullPnl, type JournalEntry } from "./journal.ts";
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
 
 export interface Criterion { id: string; title: string; pass: boolean; detail: string[]; missing: string[] }
-export interface Readiness { ready: boolean; criteria: Criterion[]; stats: Record<string, number | string | null>; practice: { n: number; closed: number; ev: number; total: number }; next: string }
-export interface ReadinessInput { journal: JournalEntry[]; capital: number; shockDates: string[]; rules?: RuleCard; maxViolations?: number }
+export interface Readiness { ready: boolean; criteria: Criterion[]; stats: Record<string, number | string | null>; practice: { n: number; closed: number; ev: number; total: number; bySource?: Record<string, { n: number; closed: number; total: number }> }; next: string }
+export interface ReadinessInput { journal: JournalEntry[]; capital: number; shockDates: string[]; rules?: RuleCard; maxViolations?: number; /** user-approved 2026-10-15: 6% ($300 at $5k) */ maxDrawdownPct?: number; windowDays?: number }
 
 const day = (s: string) => s.slice(0, 10);
 const r2 = (x: number) => Math.round(x * 100) / 100;
@@ -36,7 +36,11 @@ export function readiness(i: ReadinessInput): Readiness {
   const paper = i.journal.filter((e) => e.mode === "paper" && e.kind !== "practice");
   const practice = i.journal.filter((e) => e.mode === "paper" && e.kind === "practice");
   const pc = practice.filter((e) => e.closedAt && e.pnl != null).map(fullPnl);
-  const closed = paper.filter((e) => e.closedAt && e.pnl != null).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
+  const allClosed = paper.filter((e) => e.closedAt && e.pnl != null).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
+  // rolling window (2–3 months): only the most recent windowDays (default 90) count
+  const W = i.windowDays ?? 90, lastAt = allClosed.at(-1)?.closedAt;
+  const closed = lastAt ? allClosed.filter((e) => daysBetween(e.closedAt!, lastAt) <= W) : allClosed;
+  const ddLimitPct = i.maxDrawdownPct ?? 6;
   const C: Criterion[] = [];
 
   // 1) sample: ≥30 trades over ≥60 days incl. a shock period
@@ -45,7 +49,7 @@ export function readiness(i: ReadinessInput): Readiness {
   const shock = new Set(i.shockDates.map(day));
   const shockTrades = closed.filter((e) => { for (let d = new Date(day(e.openedAt)); d.toISOString().slice(0, 10) <= day(e.closedAt!); d.setUTCDate(d.getUTCDate() + 1)) if (shock.has(d.toISOString().slice(0, 10))) return true; return false; });
   C.push({ id: "sample", title: "样本：≥30 笔模拟交易、≥60 天、含至少一个冲击时段", pass: closed.length >= 30 && span >= 60 && shockTrades.length > 0,
-    detail: [`已平仓模拟交易 ${closed.length} 笔，跨度 ${span} 天，冲击时段内持仓 ${shockTrades.length} 笔`],
+    detail: [`最近 ${W} 天窗口内已平仓正式模拟交易 ${closed.length} 笔（全部 ${allClosed.length}），跨度 ${span} 天，冲击时段内持仓 ${shockTrades.length} 笔`],
     missing: [...(closed.length < 30 ? [`还差 ${30 - closed.length} 笔`] : []), ...(span < 60 ? [`还差 ${60 - span} 天`] : []), ...(shockTrades.length ? [] : ["没有一笔经历冲击时段（VIX 期限结构倒挂或高影响数据日）"])] });
 
   // 2) expectancy, robust to the top 2 winners
@@ -53,10 +57,13 @@ export function readiness(i: ReadinessInput): Readiness {
   const ex = expectancy(ps);
   const trimmed = [...ps].sort((a, b) => b - a).slice(Math.min(2, ps.filter((x) => x > 0).length));
   const ex2 = expectancy(trimmed);
-  C.push({ id: "expectancy", title: "期望值为正，去掉最大 2 笔盈利后仍为正", pass: ps.length > 0 && ex.ev > 0 && ex2.ev > 0,
+  const total = ps.reduce((a, b) => a + b, 0), top2 = [...ps].sort((a, b) => b - a).slice(0, 2).filter((x) => x > 0).reduce((a, b) => a + b, 0);
+  const outlier = total > 0 && top2 / total > 0.5;
+  C.push({ id: "expectancy", title: "期望值为正，去掉最大 2 笔盈利后仍为正，且最大 2 笔不超过总盈利的 50%", pass: ps.length > 0 && ex.ev > 0 && ex2.ev > 0 && !outlier,
     detail: [`期望值 = 胜率×平均盈利 − 败率×平均亏损 = ${r2(ex.winRate * 100)}%×$${r2(ex.avgWin)} − ${r2((1 - ex.winRate) * 100)}%×$${r2(ex.avgLoss)} = $${r2(ex.ev)}/笔`, `去掉最大 2 笔盈利：$${r2(ex2.ev)}/笔`,
+      `最大 2 笔盈利 $${r2(top2)} / 总盈亏 $${r2(total)}${total > 0 ? `（${r2((top2 / total) * 100)}%）` : ""}`,
       `胜率只作参考：亏损受控时低胜率不等于失败（大佬复盘 mentor-winrate-review）`],
-    missing: [...(ex.ev > 0 ? [] : ["期望值不为正"]), ...(ex2.ev > 0 ? [] : ["依赖少数大赢家：去掉最大 2 笔后期望值不为正"])] });
+    missing: [...(ex.ev > 0 ? [] : ["期望值不为正"]), ...(ex2.ev > 0 ? [] : ["依赖少数大赢家：去掉最大 2 笔后期望值不为正"]), ...(outlier ? ["最大 2 笔盈利超过总盈亏的 50% → 结果靠离群值"] : [])] });
 
   // 3) loss caps + max drawdown
   const capOf = (e: JournalEntry) => e.capitalAtEntry ?? i.capital;
@@ -64,9 +71,10 @@ export function readiness(i: ReadinessInput): Readiness {
   const byDay = new Map<string, number>(); for (const e of closed) byDay.set(day(e.closedAt!), (byDay.get(day(e.closedAt!)) ?? 0) + fullPnl(e));
   const badDays = [...byDay].filter(([, v]) => -v > i.capital * R.dailyLossLimitPct / 100);
   let eq = 0, peak = 0, mdd = 0; for (const p of ps) { eq += p; peak = Math.max(peak, eq); mdd = Math.max(mdd, peak - eq); }
-  C.push({ id: "loss_caps", title: `单笔亏损 ≤${R.sellerMaxLossPerTradePct}%，单日亏损 ≤${R.dailyLossLimitPct}%`, pass: closed.length > 0 && !bigLoss.length && !badDays.length,
-    detail: [`最大回撤 $${r2(mdd)}（${r2((mdd / i.capital) * 100)}%）`, `最大单笔亏损 $${r2(-Math.min(0, ...ps))}`],
-    missing: [...bigLoss.map((e) => `${e.id} ${e.symbol} 亏 $${r2(-fullPnl(e))} > ${R.sellerMaxLossPerTradePct}%`), ...badDays.map(([d, v]) => `${d} 单日亏 $${r2(-v)} > ${R.dailyLossLimitPct}%`)] });
+  const ddOver = mdd > i.capital * ddLimitPct / 100;
+  C.push({ id: "loss_caps", title: `单笔亏损 ≤${R.sellerMaxLossPerTradePct}%，单日亏损 ≤${R.dailyLossLimitPct}%，最大回撤 ≤${ddLimitPct}%`, pass: closed.length > 0 && !bigLoss.length && !badDays.length && !ddOver,
+    detail: [`最大回撤 $${r2(mdd)}（${r2((mdd / i.capital) * 100)}%，上限 ${ddLimitPct}% = $${r2(i.capital * ddLimitPct / 100)}）`, `最大单笔亏损 $${r2(-Math.min(0, ...ps))}`],
+    missing: [...(ddOver ? [`最大回撤 $${r2(mdd)} > ${ddLimitPct}%`] : []), ...bigLoss.map((e) => `${e.id} ${e.symbol} 亏 $${r2(-fullPnl(e))} > ${R.sellerMaxLossPerTradePct}%`), ...badDays.map(([d, v]) => `${d} 单日亏 $${r2(-v)} > ${R.dailyLossLimitPct}%`)] });
 
   // 4) discipline: violations ≈ 0; thesis + stop recorded before entry; concurrent cap; premature exits
   const viol = paper.flatMap((e) => [...(e.violations ?? []), ...(e.motive && VIOLATION_FROM_MOTIVE.has(e.motive) ? [`motive_${e.motive}`] : []),
@@ -95,7 +103,7 @@ export function readiness(i: ReadinessInput): Readiness {
 
   const ready = C.every((c) => c.pass);
   return { ready, criteria: C, stats: { paperClosed: closed.length, spanDays: span, winRate: r2(ex.winRate), ev: r2(ex.ev), evTrim2: r2(ex2.ev), maxDrawdown: r2(mdd), premature: premature.length, ignoredWarnLosses: ignored.length, peakConcurrent: peakConc, violations: viol.length },
-    practice: { n: practice.length, closed: pc.length, ev: r2(expectancy(pc).ev), total: r2(pc.reduce((a, b) => a + b, 0)) },
+    practice: { n: practice.length, closed: pc.length, ev: r2(expectancy(pc).ev), total: r2(pc.reduce((a, b) => a + b, 0)), bySource: Object.fromEntries((["paper_sim", "real_practice", "mentor_shadow"] as const).map((k) => { const xs = practice.filter((e) => (e.source ?? "paper_sim") === k), c = xs.filter((e) => e.closedAt && e.pnl != null).map(fullPnl); return [k, { n: xs.length, closed: c.length, total: r2(c.reduce((a, b) => a + b, 0)) }]; })) },
     next: ready ? "全部通过 → 真钱从 1/4 仓位开始，约 20 笔后再恢复正常仓位（上限不变：单笔 1%、同标的 3%、日亏 2%）。" : "未通过 → 继续模拟交易，不上真钱。" };
 }
 
@@ -106,7 +114,8 @@ export function renderReadiness(r: Readiness): string {
     if (c.missing.length) L.push(`- **缺什么：**`, ...c.missing.slice(0, 15).map((m) => `  - ${m}`), ...(c.missing.length > 15 ? [`  - …另 ${c.missing.length - 15} 项`] : []));
     L.push("");
   });
-  L.push(`## 练习单（kind: practice，不计入以上任何统计）`, `- ${r.practice.n} 笔（已平仓 ${r.practice.closed}）· 期望值 $${r.practice.ev}/笔 · 合计 $${r.practice.total}`, "");
+  L.push(`## 练习单（kind: practice，不计入以上任何统计）`, `- ${r.practice.n} 笔（已平仓 ${r.practice.closed}）· 期望值 $${r.practice.ev}/笔 · 合计 $${r.practice.total}`,
+    ...Object.entries(r.practice.bySource ?? {}).map(([k, v]) => `  - ${({ paper_sim: "模拟练习", real_practice: "真实账户练习", mentor_shadow: "大佬影子单" } as Record<string, string>)[k]}：${v.n} 笔（已平仓 ${v.closed}）· 合计 $${v.total}`), "");
   L.push("> 这些都是我自己的决定。改正，也是我的责任。（大佬复盘）");
   return L.join("\n") + "\n";
 }
