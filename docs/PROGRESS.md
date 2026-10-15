@@ -8,7 +8,7 @@
 
 Technicals are for timing only. Update this file after every task.
 
-_Last updated 2026-10-15 09:00 ET (【用户要求】原油 block)._
+_Last updated 2026-10-15 09:45 ET (risk plan on paper open, formal/practice, 今日交易计划)._
 
 **Delivery is handled:** the 30-minute weekday routine `alpha-2` (08:00–18:30 ET) runs the alerts and messages the user, starting 2026-10-15. The CPI lag on 10/14 happened only because routines had not started yet.
 
@@ -21,6 +21,7 @@ _Last updated 2026-10-15 09:00 ET (【用户要求】原油 block)._
 | (1) Trump | trump.ts, ingest/xTrump.ts; sources `trump_truth` (trumpstruth.org RSS) + `trump_x` (data/in/x-trump.json from the routine's x MCP call) | yes (poll + alerts) | live 10/15: feed 100 items, 5 market posts in 3 days scored 73–76; X file 10 link-only posts (ignored) | ✅ new; X needs the alpha-2 step below |
 | (1) | ingest/alpacaNewsWs, cli/stream | no | REST backfill only | optional |
 | (2) Brief | macro/brief + cli/brief (`npm run brief`): macro + premarket + scenarios + levels + calendar, ONE verdict, 7 sections | yes, every run (macro-latest.json still feeds the digest) | live 10/14 22:33 ET: NO_TRADE, leader hawkish, 35 series fetched once, 0 failed | ✅ P3 done; old cli/macro, premarket, scenarios deleted |
+| (2) plan | macro/tradeplan.ts: brief §2.1 今日交易计划 (if-then candidates, confirmation ≥3/4, explicit no-trade list; only planned triggers intraday) | yes, every brief | live 10/15 09:40: hawkish leader, SPY/QQQ/IWM short 2/4, TLT short 1/4 → NO_TRADE | ✅ new |
 | (2) oil | macro/oil.ts: 【用户要求】原油, brief §3.1 right after bonds (user's own requirement, not mentor/DK) | yes, every brief | live 10/15 09:00: WTI 94.00, Brent 104.42, spread $10.42 (5d −$2.37), no alarm | ✅ alarms OIL_SPIKE 80 / OIL_CRASH 70 / BRENT_WTI_WIDEN 65 (+5 with shipping news) → alerts |
 | (2) timing | macro/volume, levels, adapters/bars, adapters/indicators | volume in its windows; levels inside the brief | levels live in the brief (SPY/QQQ/IWM) | ok / volume still needs `data/in/` chains |
 | (3) Gates | options/rules, pretrade, discipline, stops, adjust, payoff, bs | via `options --proposal` (manual) | tests + examples | ✅ logic |
@@ -29,6 +30,7 @@ _Last updated 2026-10-15 09:00 ET (【用户要求】原油 block)._
 | (3) | discipline: motive check (share/entertain/excitement → BLOCK), concurrent cap, ownership + premature-exit prompts | pretrade | tests | ✅ new (mentor-winrate-review) |
 | (3) | options/journal (+ paper fields), options/readiness, cli/readiness (`npm run readiness`) | manual | example journal only | ✅ built / ⚠️ no paper trades logged yet |
 | (3) | options/paper + cli/paper (`npm run paper -- open\|close\|list\|mark`) → data/journal/paper.json | manual | live smoke test 10/14 (INTC; refused on PPI 48h BLOCK) | ✅ new; no order path |
+| (3) | options/riskplan: mandatory on `paper open` (hedge method + detail; stock −7% stop + invalidation; option max loss + invalidation + stored 30/30 date / −30% level; ≤1% hard cap; first stop wins, never widen); journal `kind: formal\|practice` (practice excluded from readiness, shown separately) | via paper open | tests | ✅ new |
 | (3) | review/critique (唱反调, deterministic) before every `paper open`; docs/CRITIQUE_PROMPT.md for chat | via paper open | tests + live smoke | ✅ new |
 | (3/2) | options/chain, robinhood, dashboard, matrix, ivhistory, events | only if `data/in/spy-chain.json` exists | never | frozen |
 | (4) KB | knowledge/*, catalog.json (67 items, 27 sources) | cited by brief, pretrade, readiness | yes | ok |
