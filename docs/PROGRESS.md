@@ -8,7 +8,7 @@
 
 Technicals are for timing only. Update this file after every task.
 
-_Last updated 2026-10-14 22:55 ET (brief timing fix, paper CLI, 唱反调 critique, routine output paths)._
+_Last updated 2026-10-15 08:15 ET (Trump posts as a core alert source)._
 
 **Delivery is handled:** the 30-minute weekday routine `alpha-2` (08:00–18:30 ET) runs the alerts and messages the user, starting 2026-10-15. The CPI lag on 10/14 happened only because routines had not started yet.
 
@@ -18,6 +18,7 @@ _Last updated 2026-10-14 22:55 ET (brief timing fix, paper CLI, 唱反调 critiq
 |---|---|---|---|---|
 | (1) Alerts | ingest/rss, adapters/rss, sources, store, normalize, adapters/nlp, cluster, noise, score, alerts, cli/poll, cli/alerts | yes, every run | 2 manual runs; routine alpha-2 from 10/15 | ✅ scheduled + delivered (alpha-2) |
 | (1) recall | score `shipping` topic + stemmed war terms; cluster Gulf/chokepoint event family | yes | Hormuz/Aramco fixture: one 6-outlet cluster, score **90** (was 43) | ✅ P2 done; golden recall 1.0, precision 0.897 (gate 0.88) |
+| (1) Trump | trump.ts, ingest/xTrump.ts; sources `trump_truth` (trumpstruth.org RSS) + `trump_x` (data/in/x-trump.json from the routine's x MCP call) | yes (poll + alerts) | live 10/15: feed 100 items, 5 market posts in 3 days scored 73–76; X file 10 link-only posts (ignored) | ✅ new; X needs the alpha-2 step below |
 | (1) | ingest/alpacaNewsWs, cli/stream | no | REST backfill only | optional |
 | (2) Brief | macro/brief + cli/brief (`npm run brief`): macro + premarket + scenarios + levels + calendar, ONE verdict, 7 sections | yes, every run (macro-latest.json still feeds the digest) | live 10/14 22:33 ET: NO_TRADE, leader hawkish, 35 series fetched once, 0 failed | ✅ P3 done; old cli/macro, premarket, scenarios deleted |
 | (2) timing | macro/volume, levels, adapters/bars, adapters/indicators | volume in its windows; levels inside the brief | levels live in the brief (SPY/QQQ/IWM) | ok / volume still needs `data/in/` chains |
@@ -67,9 +68,23 @@ The premarket and scenarios reports no longer exist. Read:
 - `data/out/alerts-latest.md`, `data/out/alerts.jsonl`: new alerts (also printed on stdout by run.sh).
 - `data/out/digest-latest.md`: digest. `data/out/macro-latest.json` is internal (digest input).
 
+## Trump posts (2026-10-15)
+
+- Truth Social through the public mirror `https://www.trumpstruth.org/feed`: full text, 100 latest posts. The bare host only serves an HTML redirect.
+- X @realDonaldTrump (id 25073877) through the routine: the `x` MCP response is saved to `data/in/x-trump.json` and read with zod. If the file is more than 90 minutes old, poll flags it as stale.
+- Scoring (`src/trump.ts`):
+  - No multi-outlet confirmation.
+  - ≥70 for a direct market topic: tariffs/trade, China/Taiwan, Fed/rates, oil/Iran/Hormuz, sanctions, crypto, companies/tickers, markets.
+  - ≥85 for a tariff, Fed or war action.
+  - Ignored: rallies, media attacks, endorsements, media-only posts, and war words without a market link.
+- Alert: Chinese headline, the post quoted verbatim (links and whitespace stripped), links, likely assets, and 「宣布≠执行，等市场确认」. The same post on both platforms produces one alert.
+- Gaps:
+  - Most X posts are bare t.co links (media or crossposts), so X rarely adds text. Truth Social is the primary source.
+  - The mirror is third-party. If it breaks, poll shows the error, but there is no second mirror yet.
+
 ## Scope check against the core goal
 
-- (1) Alerts: recall fixed, delivery via alpha-2. Core is covered. Next work there is tuning from real alpha-2 output, not new features.
+- (1) Alerts: recall fixed, delivery via alpha-2, and Trump posts added as a direct market-event source (on goal: it shortens time-to-alert for policy shocks). Core is covered. Next work there is tuning from real alpha-2 output, not new features.
 - (2) Brief: one report, timing fixed. Done.
 - (3) Gates: paper CLI + critique + readiness exist so the user practices rule-keeping before real money. This directly serves the goal (discipline gates). It is the last build in (3) for now.
 - Not added: no real order path, no new options features (layer stays frozen), no LLM in the critique.

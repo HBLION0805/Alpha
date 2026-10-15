@@ -35,6 +35,7 @@ npm run validate     # typecheck + 测试
 ## 数据来源
 
 - 新闻：RSS（`src/sources.ts`）；Alpaca 新闻可选（`ALPACA_KEY` / `ALPACA_SECRET`）
+- 川普发帖：Truth Social（trumpstruth.org RSS）+ X（routine 通过 x MCP 写入 `data/in/x-trump.json`）
 - 行情：Yahoo（yahoo-finance2）、FRED（T-1）
 - 官方日历：`calendar/releases-2026.json`，加上官方发布日程
 - 期权链 / 报价：Robinhood MCP 保存的 JSON（`data/in/*chain*.json`），只读
