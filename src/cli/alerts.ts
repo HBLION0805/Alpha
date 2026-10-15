@@ -6,7 +6,7 @@ import { loadSources } from "../sources.ts";
 import { Store } from "../store.ts";
 import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
-import { renderAlertsMarkdown, selectNewAlerts, toAlert, premarketAlarmAlerts } from "../alerts.ts";
+import { renderAlertsMarkdown, selectNewAlerts, toAlert, premarketAlarmAlerts, ALARM_SOURCES } from "../alerts.ts";
 
 const { values } = parseArgs({
   options: {
@@ -24,7 +24,7 @@ const sources = loadSources();
 // cluster over a wider window than we alert on, so late follow-ups attach to earlier items
 const hours = Number(values.hours);
 const windowItems = store.since(new Date(now.getTime() - (hours + 24) * 3600_000).toISOString());
-const ranked = rank(clusterItems(windowItems.filter((i) => i.sourceId !== "premarket-alarm")), now)
+const ranked = rank(clusterItems(windowItems.filter((i) => !ALARM_SOURCES.has(i.sourceId))), now)
   .filter((r) => Date.parse(r.cluster.lastSeen) >= now.getTime() - hours * 3600_000);
 const picked = selectNewAlerts(ranked, store, Number(values.threshold));
 const alerts = picked.map(({ r, escalation }) => toAlert(r, escalation, sources));

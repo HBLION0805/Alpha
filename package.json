@@ -18,7 +18,8 @@
     "typecheck": "tsc -p tsconfig.json",
     "validate": "npm run typecheck && npm test",
     "options": "node src/cli/options.ts",
-    "premarket": "node src/cli/premarket.ts"
+    "premarket": "node src/cli/premarket.ts",
+    "volume": "node src/cli/volume.ts"
   },
   "dependencies": {
     "yaml": "^2.9.1"

@@ -57,13 +57,17 @@ export function renderAlertsMarkdown(alerts: Alert[], now: Date): string {
   return L.join("\n") + "\n";
 }
 
+/** Synthetic alarm sources: premarket (src/macro/premarket.ts: ALARM 85 / WARNING 70) and volume (src/macro/volume.ts: 60). */
+export const ALARM_SOURCES = new Set(["premarket-alarm", "volume-alarm"]);
+const x_score = (i: { sourceId: string; title: string }) => (i.sourceId === "volume-alarm" ? 60 : / ALARM /.test(i.title) ? 85 : 70);
 /** Premarket alarms (src/macro/premarket.ts) are stored as items from source "premarket-alarm". They bypass news clustering and get a fixed score, deduped like any alert. */
 export function premarketAlarmAlerts(items: Array<{ id: number; sourceId: string; title: string; summary: string; url: string; publishedAt: string }>, store: Pick<Store, "priorAlertScore">, threshold: number): Array<{ alert: Alert; itemIds: number[] }> {
   const out: Array<{ alert: Alert; itemIds: number[] }> = [];
-  for (const i of items.filter((x) => x.sourceId === "premarket-alarm")) {
-    const score = / ALARM /.test(i.title) ? 85 : 70;
+  for (const i of items.filter((x) => ALARM_SOURCES.has(x.sourceId))) {
+    const score = x_score(i);
     if (score < threshold || store.priorAlertScore([i.id]) !== null) continue;
     out.push({ itemIds: [i.id], alert: { score, headline: i.title, topics: ["premarket"], watch: [], sources: ["Alpha premarket"], stances: [], firstSeen: i.publishedAt, lastSeen: i.publishedAt, escalation: false, links: [{ source: "Alpha premarket", title: i.summary, url: i.url }] } });
+    if (i.sourceId === "volume-alarm") { out.at(-1)!.alert.sources = ["Alpha volume"]; out.at(-1)!.alert.topics = ["volume"]; }
   }
   return out;
 }

@@ -25,7 +25,7 @@ export const PM_SERIES: SeriesDef[] = [
 const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED", "EFFR", "REAL10Y"]);
 
 export interface Alarm { kind: "CARRY_UNWIND" | "HYG_DIVERGENCE" | "UST10Y_SPIKE" | "VIX_BACKWARDATION"; level: "ALARM" | "WARNING"; title: string; detail: string; by: "mentor" | "dk" }
-export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null }
+export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null; volumeLines?: string[] | null }
 export interface PremarketResult { md: string; alarms: Alarm[]; noTrade: string[]; mentorLines: string[]; dkLines: string[] }
 
 const last = (o?: Obs[]) => (o?.length ? o.at(-1)!.v : null);
@@ -116,6 +116,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   const two = v("UST2Y"), ff = v("EFFR"), spread = two != null && ff != null ? (two - ff) * 100 : null;
   K.push("", "### 利率预期代理（2Y − 联邦基金，类 FedWatch）", `- 2Y ${two?.toFixed(2) ?? "n/a"}% − EFFR ${ff?.toFixed(2) ?? "n/a"}% = ${spread == null ? "n/a" : `${spread.toFixed(0)}bp → ${spread <= -25 ? "市场定价降息" : spread >= 25 ? "市场定价加息" : "大致按兵不动"}`}（粗略代理，非 CME FedWatch）`);
   K.push("", "### 实际利率", `- 10Y TIPS ${v("REAL10Y")?.toFixed(2) ?? "n/a"}% · 5日 ${fmt(c("REAL10Y", 5), "bp")}`);
+  K.push("", "### 前一交易日成交量异常（src/macro/volume.ts · 成交量仅用于确认/排查，不单独下单）", ...(inp.volumeLines == null ? ["- 无最新 volume 报告（npm run volume）"] : inp.volumeLines.length ? inp.volumeLines : ["- 无异常"]));
   K.push("", "### 隔夜新闻（alert store）", ...((inp.headlines ?? []).length ? inp.headlines!.slice(0, 6).map((h) => `- ${h}`) : ["- 无"]));
 
   // synthesis

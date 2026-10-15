@@ -6,7 +6,9 @@ import { Store } from "../store.ts";
 import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
 import { fetchDaily, type Obs } from "../macro/fetch.ts";
-import { PM_SERIES, buildPremarket, alarmItems, ALARM_SOURCE } from "../macro/premarket.ts";
+import { PM_SERIES, buildPremarket, alarmItems } from "../macro/premarket.ts";
+import { ALARM_SOURCES } from "../alerts.ts";
+import { statSync } from "node:fs";
 import { parseEarnings } from "../options/events.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 
@@ -24,9 +26,12 @@ const calendar: CalendarEvent[] = existsSync(calPath) ? (JSON.parse(readFileSync
 const earnings = existsSync("data/in/earnings.json") ? parseEarnings(JSON.parse(readFileSync("data/in/earnings.json", "utf8"))) : null;
 const regimeLabel = existsSync("data/out/macro-latest.json") ? ((JSON.parse(readFileSync("data/out/macro-latest.json", "utf8")) as { regime?: { label?: string } }).regime?.label ?? null) : null;
 const store = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite");
-const items = store.since(new Date(now.getTime() - 12 * 3600_000).toISOString()).filter((i) => i.sourceId !== ALARM_SOURCE);
+const items = store.since(new Date(now.getTime() - 12 * 3600_000).toISOString()).filter((i) => !ALARM_SOURCES.has(i.sourceId));
 const headlines = rank(clusterItems(items), now).slice(0, 6).map((r) => `${r.score} · ${r.headline}`);
-const res = buildPremarket({ now, data, failed, calendar, earnings, headlines, regimeLabel });
+// prior-session volume anomalies (npm run volume, run just before this in run.sh)
+const vPath = "data/out/volume-latest.md";
+const volumeLines = existsSync(vPath) && now.getTime() - statSync(vPath).mtimeMs < 20 * 3600_000 ? readFileSync(vPath, "utf8").split("\n").filter((l) => /^- (🚨|⚠️|•)/.test(l) || /Put\/Call/.test(l)).slice(0, 12) : null;
+const res = buildPremarket({ now, data, failed, calendar, earnings, headlines, regimeLabel, volumeLines });
 if (!values["no-alarms"] && res.alarms.length) store.insert(alarmItems(res.alarms, now), { stance: "center", tier: 1 }, now);
 store.close();
 mkdirSync(dirname(values.out), { recursive: true });

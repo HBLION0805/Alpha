@@ -2,7 +2,8 @@
 # Scheduled entry point: poll feeds → emit new alerts → refresh digest.
 # Usage: scripts/run.sh [--digest-only|--no-digest]
 # Premarket: 7:30 ET cron entry → data/out/premarket-latest.md (src/cli/premarket.ts)
-# Env: ALPHA_PREMARKET=1 forces it; ALPHA_NODE_BIN (dir with node 24), ALPHA_DB, ALPHA_ALERT_THRESHOLD, ALPACA_KEY/ALPACA_SECRET (optional)
+# Volume: 7:00–9:29 (prior session, feeds premarket) and 16:15–16:59 ET → data/out/volume-latest.md (src/cli/volume.ts)
+# Env: ALPHA_VOLUME=1 forces volume; ALPHA_PREMARKET=1 forces it; ALPHA_NODE_BIN (dir with node 24), ALPHA_DB, ALPHA_ALERT_THRESHOLD, ALPACA_KEY/ALPACA_SECRET (optional)
 set -uo pipefail
 cd "$(dirname "$0")/.."
 [ -n "${ALPHA_NODE_BIN:-}" ] && export PATH="$ALPHA_NODE_BIN:$PATH"
@@ -18,7 +19,12 @@ log="data/logs/run-$(date +%Y%m%d).log"
     # 7:30 ET premarket routine (runs on any invocation between 07:00 and 09:29 ET, or with ALPHA_PREMARKET=1); alarms go to the alert step below
     hm=$(TZ=America/New_York date +%H%M)
     if [ "${ALPHA_PREMARKET:-}" = "1" ] || { [ "$hm" -ge 0700 ] && [ "$hm" -lt 0930 ]; }; then
+      node src/cli/volume.ts --out data/out/volume-latest.md >/dev/null || echo "[run] volume failed"
       node src/cli/premarket.ts --out data/out/premarket-latest.md >/dev/null || echo "[run] premarket failed"
+    fi
+    # 16:30 ET post-close run: today's volume anomalies (or ALPHA_VOLUME=1)
+    if [ "${ALPHA_VOLUME:-}" = "1" ] || { [ "$hm" -ge 1615 ] && [ "$hm" -lt 1700 ]; }; then
+      node src/cli/volume.ts --out data/out/volume-latest.md >/dev/null || echo "[run] volume failed"
     fi
     node src/cli/alerts.ts --out data/out/alerts-latest.md --jsonl data/out/alerts.jsonl
   fi

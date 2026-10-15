@@ -1,3 +1,4 @@
+import { ALARM_SOURCES } from "../alerts.ts";
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
@@ -18,7 +19,7 @@ const hours = Number(values.hours);
 const now = new Date();
 const store = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite");
 const items = store.since(new Date(now.getTime() - hours * 3600_000).toISOString());
-const ranked = rank(clusterItems(items.filter((i) => i.sourceId !== "premarket-alarm")), now);
+const ranked = rank(clusterItems(items.filter((i) => !ALARM_SOURCES.has(i.sourceId))), now);
 let calendar: CalendarEvent[] = [];
 if (!values["no-calendar"]) {
   const year = now.getFullYear();

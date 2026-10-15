@@ -152,6 +152,12 @@
       "title": "大佬 Premarket Routine — 3 videos (video transcription, near-verbatim)",
       "url": "knowledge/mentor/discipline/premarket-routine.md",
       "coverage": "Video transcription, near-verbatim (not word-for-word), 5,137 bytes, saved unchanged. Video 1: 2Y/10Y/30Y + HYG credit confirmation. Video 2: SPX/NDQ/RUT breadth, ES/NQ/RTY futures as an anxiety gauge, KOSPI/EWY semiconductor thermometer. Video 3: DXY (why + cross-asset confirmation), USDCAD, USDJPY carry unwind. Run daily by src/macro/premarket.ts (【大佬流程】)."
+    },
+    {
+      "id": "dk-volume",
+      "title": "DK addition: volume-anomaly module (user-approved 2026-10-14)",
+      "url": "src/macro/volume.ts",
+      "coverage": "DK's own rule set, not mentor or course text. It builds on the 期权课 ch02 options-chain fields (Volume = liquidity indicator; OI > 1000) and ch16 position data."
     }
   ],
   "items": [
@@ -266,7 +272,7 @@
         "Vega"
       ],
       "principle": "Greeks describe model sensitivities; liquidity and positioning can affect how a macro view is expressed.",
-      "application": "Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9. Premarket: carry unwind via USDJPY; credit (HYG) as confirmation (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
+      "application": "Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9. Premarket: carry unwind via USDJPY; credit (HYG) as confirmation (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts). Volume data: see `volume-confirmation` (src/macro/volume.ts, DK).",
       "limits": "Open interest and volume alone do not identify dealer direction. Delta is not a profit peak or a verified win probability. No dealer-flow detector is introduced.",
       "destination": "guidance"
     },
@@ -710,7 +716,7 @@
         "Images 3, 5, 6, 10, 12"
       ],
       "principle": "The same early PnL path can precede different outcomes. Confirmations need independently specified ETF evidence.",
-      "application": "Record what was visible at the time, rather than labeling the path with its eventual ending. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §1, 止盈学 §4, 止盈学 §6, 止盈学 §7, 止盈学 §11. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "application": "Record what was visible at the time, rather than labeling the path with its eventual ending. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §1, 止盈学 §4, 止盈学 §6, 止盈学 §7, 止盈学 §11. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice). Volume data: see `volume-confirmation` (src/macro/volume.ts, DK).",
       "limits": "Profit crossing zero is not technical confirmation. Profit crossing zero is not confirmation. 止盈学 §6 bull-trap rule: without volume + hold confirmation, exit flat/small and adding is blocked. takeprofit.ts classifies the path for advice only; it never predicts a rebound or places orders.",
       "destination": "reviews"
     },
@@ -1035,7 +1041,7 @@
         "Open / close hour"
       ],
       "principle": "A support/resistance retest can be formulated as a hypothesis with a timeframe and failure condition.",
-      "application": "Specify qualified ETF bars, close rules, volume/liquidity checks and when the evidence becomes available before comparing outcomes. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §6. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "application": "Specify qualified ETF bars, close rules, volume/liquidity checks and when the evidence becomes available before comparing outcomes. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §6. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice). Volume data: see `volume-confirmation` (src/macro/volume.ts, DK).",
       "limits": "The last 30 seconds or opening/closing hour is not universally decisive. A transient rebound does not establish a durable reversal. No new pattern detector or capture cadence.",
       "destination": "guidance",
       "sources": [
@@ -1301,7 +1307,7 @@
         "Price response"
       ],
       "principle": "An advance of 100–500% by itself says neither that a reversal is due nor that short exposure has favorable economics.",
-      "application": "As an educational proposal, distinguish apparent sell-side volume from effective downward price impact. If price holds or rises despite classified selling, absorption, buyers accepting supply, limited impact and classification error are competing hypotheses, not identified actors. Look for defined failed continuation, lower highs/lows, lost support, weaker relative strength, failed recovery or adverse fundamentals and liquidity; consider squeeze and borrow risks before proposing a separate study.",
+      "application": "As an educational proposal, distinguish apparent sell-side volume from effective downward price impact. If price holds or rises despite classified selling, absorption, buyers accepting supply, limited impact and classification error are competing hypotheses, not identified actors. Look for defined failed continuation, lower highs/lows, lost support, weaker relative strength, failed recovery or adverse fundamentals and liquidity; consider squeeze and borrow risks before proposing a separate study. Volume data: see `volume-confirmation` (src/macro/volume.ts, DK).",
       "limits": "Trade-classified buy/sell volume does not reveal counterparties, intent or inventory; sell volume above buy volume alone proves neither bearish nor bullish direction, institutional accumulation, dealer buying, a squeeze, manipulation or a future rise. This remains untested: no short rule, scanner or position. Current GLD/IBIT scope is unchanged; borrow and option risks still matter.",
       "destination": "reviews",
       "sources": [
@@ -1524,6 +1530,26 @@
       "principle": "See 纪律 #01 (先活下来，再等机会): whatever happens on this trade, you must still be able to keep trading.",
       "application": "Already reflected in the rule card (1%/trade, 3%/underlying), kelly.ts (fractional Kelly as an upper reference only) and NO_TRADE as a valid outcome. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #01.",
       "limits": "Not a licence to size up later: '下重手' when a big opportunity comes still sits inside the rule-card caps.",
+      "destination": "planner"
+    },
+    {
+      "id": "volume-confirmation",
+      "group": "Exit and exposure",
+      "title": "Volume confirms or rules out; it never triggers a trade (DK)",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "dk-volume"
+      ],
+      "topics": [
+        "Relative volume",
+        "20-day breakout",
+        "Option volume > OI",
+        "Put/call ratio",
+        "DK addition"
+      ],
+      "principle": "DK's addition, not the mentor's. Relative volume (today ÷ 20-day average) ≥2x is worth investigating. A 20-day high/low break on high volume is confirmation; on low volume it is suspicious. Option volume above open interest shows new activity, but buyer vs seller cannot be inferred.",
+      "application": "Run by src/macro/volume.ts (npm run volume; run.sh at 7:00–9:29 for the prior session, feeding the premarket report, and at 16:15–16:59 ET). Strong anomalies (≥3x with a price break, or option volume/OI ≥5x) go to alerts at score 60. Related existing entries: `mechanisms` (OI/volume don't identify dealer direction), `recovery-curves` (止盈学 §6 bull trap needs volume + hold), `psych-breakout-clock`, `psych-short-weakness`.",
+      "limits": "成交量仅用于确认/排查，不单独下单. Volume never sets direction (macro first) or size. Free Yahoo volume is consolidated but may lag. Chains are whatever the routine saved to data/in/.",
       "destination": "planner"
     }
   ],

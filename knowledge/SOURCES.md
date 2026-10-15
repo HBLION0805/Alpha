@@ -52,3 +52,5 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
   Canonical verbatim text (8,859 bytes, cmp-verified; author names and timestamps stripped). The original source that the macro course (knowledge/courses/macro/) expands. Cited as 宏观交易员 #N.
 - **大佬 Premarket Routine — 3 videos (video transcription, near-verbatim)** (`mentor-premarket`) — knowledge/mentor/discipline/premarket-routine.md
   Video transcription, near-verbatim (not word-for-word), 5,137 bytes, saved unchanged. Video 1: 2Y/10Y/30Y + HYG credit confirmation. Video 2: SPX/NDQ/RUT breadth, ES/NQ/RTY futures as an anxiety gauge, KOSPI/EWY semiconductor thermometer. Video 3: DXY (why + cross-asset confirmation), USDCAD, USDJPY carry unwind. Run daily by src/macro/premarket.ts (【大佬流程】).
+- **DK addition: volume-anomaly module (user-approved 2026-10-14)** (`dk-volume`) — src/macro/volume.ts
+  DK's own rule set, not mentor or course text. It builds on the 期权课 ch02 options-chain fields (Volume = liquidity indicator; OI > 1000) and ch16 position data.
