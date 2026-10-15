@@ -8,6 +8,7 @@ import { daysTo } from "./bs.ts";
 import { analyze, type Leg } from "./payoff.ts";
 import { DEFAULT_RULES, type RuleCard, type PosLeg } from "./rules.ts";
 import { multiLegChecklist, thesisStop, type MultiLegChecklist, type ThesisRecord } from "./stops.ts";
+import { zeroDteCheck, dailyLossCheck, euphoriaGate, sessionGate, sizeDisciplineCheck, entryRangeCheck, type TradeLog, type SessionState, type MarketState } from "./discipline.ts";
 import { adjustmentPlaybookChecks, type AdjustmentContext } from "./adjust.ts";
 
 const REVIEW = "复盘 HYG/IWM/TLT/TQQQ (knowledge/mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md)";
@@ -27,8 +28,16 @@ export interface Proposal {
   checklist?: MultiLegChecklist;
   /** 止损学 §Thesis Stop Loss: when set (new entries should set it), thesis + invalidation are required */
   thesisRecord?: ThesisRecord;
+  /** 纪律系列 inputs (knowledge/mentor/discipline/discipline-01-20.md). Missing inputs → BLOCK / NO_TRADE with "provide X". */
+  discipline?: {
+    todayEt?: string; journal?: TradeLog[]; openPnlToday?: number;
+    session?: Partial<SessionState>; market?: MarketState;
+    euphoriaAnswer?: "real_opportunity" | "want_more";
+    plannedMaxLoss?: number;
+    entryRange?: { low: number; high: number }; side?: "long" | "short";
+  };
 }
-export type Severity = "BLOCK" | "WARN" | "OK" | "INFO";
+export type Severity = "NO_TRADE" | "BLOCK" | "WARN" | "OK" | "INFO";
 export interface PreCheck { id: string; severity: Severity; detail: string; cite: string }
 
 const isShortOpt = (l: ProposalLeg) => l.type !== "stock" && l.qty < 0;
@@ -115,5 +124,40 @@ export function preTradeChecks(p: Proposal, R: RuleCard = DEFAULT_RULES): { chec
     const spr = l.bid != null && l.ask != null && l.ask > 0 ? ((l.ask - l.bid) / ((l.ask + l.bid) / 2)) * 100 : null;
     if ((l.openInterest != null && l.openInterest < R.minOpenInterest) || (spr != null && spr > R.maxBidAskPct)) out.push({ id: "liquidity", severity: "WARN", detail: `${und(p, l)} ${l.type} ${l.strike}: OI ${l.openInterest ?? "—"}, spread ${spr?.toFixed(1) ?? "—"}%`, cite: "期权课 附录 D.1 第五步 / 13.7" });
   }
-  return { checks: out, blocked: out.some((c) => c.severity === "BLOCK") };
+  out.push(...disciplineChecks(p, worstAll, R));
+  return { checks: out, blocked: out.some((c) => c.severity === "BLOCK" || c.severity === "NO_TRADE") };
+}
+
+/** 纪律系列 checks wired into every entry. Missing inputs never pass silently. */
+export function disciplineChecks(p: Proposal, proposedMaxLoss: number, R: RuleCard = DEFAULT_RULES): PreCheck[] {
+  const d = p.discipline ?? {};
+  const DC = "纪律系列 (knowledge/mentor/discipline/discipline-01-20.md)";
+  const out: PreCheck[] = [];
+  const need = (id: string, sev: "BLOCK" | "NO_TRADE", what: string) => out.push({ id, severity: sev, detail: `provide ${what}`, cite: DC });
+  const conv = (x: { id: string; severity: string; detail: string; cite: string }): PreCheck => ({ ...x, severity: (x.severity === "EXIT" ? "BLOCK" : x.severity) as Severity });
+  // #2 / #20 session state + market worth trading
+  if (!d.session) need("session_gate", "NO_TRADE", "discipline.session {emotion, sleep, health, lifeEvents} (纪律 #02/#20 self-check)");
+  else if (!d.market) need("market_worth_trading", "NO_TRADE", "discipline.market {lowVolume, unclearDirection, chop, poorRR} (纪律 #02)");
+  else out.push(conv(sessionGate(d.session, d.market)));
+  // journal-based checks: #4, #11, #3, #9/#15
+  const today = d.todayEt ?? p.asOf.slice(0, 10);
+  if (!d.journal) need("journal_inputs", "BLOCK", "discipline.journal (today's and recent trades) for the 0DTE, daily-loss, euphoria and size checks");
+  else {
+    const is0dte = p.legs.some((l) => l.type !== "stock" && l.expiration?.slice(0, 10) === p.asOf.slice(0, 10));
+    if (is0dte) out.push(conv(zeroDteCheck(d.journal, today)));
+    if (d.openPnlToday == null) need("daily_loss_limit", "BLOCK", "discipline.openPnlToday (today's unrealized P&L; 0 if flat)");
+    else out.push(conv(dailyLossCheck(d.journal, today, p.capital, d.openPnlToday, R.dailyLossLimitPct)));
+    const closed = d.journal.filter((t) => t.closedAt).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
+    let streak = 0; for (let i = closed.length - 1; i >= 0 && (closed[i]!.pnl ?? 0) > 0; i--) streak++;
+    const todays = closed.filter((t) => t.closedAt!.slice(0, 10) === today);
+    const dayPct = (todays.reduce((s, t) => s + (t.pnl ?? 0), 0) / p.capital) * 100;
+    out.push(conv(euphoriaGate({ todayWins: todays.filter((t) => (t.pnl ?? 0) > 0).length, streak, bigWinPctToday: dayPct, answer: d.euphoriaAnswer })));
+    if (d.plannedMaxLoss == null) need("size_vs_plan", "BLOCK", "discipline.plannedMaxLoss (the planned $ risk written before emotion gets a vote)");
+    else out.push(conv(sizeDisciplineCheck({ plannedMaxLoss: d.plannedMaxLoss, proposedMaxLoss, recent: d.journal })));
+  }
+  // #7 entry range on the underlying
+  if (!d.entryRange || !d.side) need("entry_range", "BLOCK", "discipline.entryRange {low, high} and discipline.side (纪律 #07 no chasing)");
+  else if (!Number.isFinite(spot(p, p.symbol))) need("entry_range", "BLOCK", `underlyingPrice for ${p.symbol} (entry range is checked on the proposal symbol's price)`);
+  else out.push(conv(entryRangeCheck(spot(p, p.symbol), d.entryRange, d.side)));
+  return out;
 }

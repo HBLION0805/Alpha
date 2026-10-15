@@ -29,6 +29,7 @@ export interface RuleCard {
   buyerTimeStopFraction: number;      // 14.7 到期时间过半无进展 → 退出
   debitSpreadTakeProfitPct: number;   // 14.7 借记价差 最大盈利的 50–75%
   calendarTakeProfitPct: number; calendarStopPct: number; // 14.7 日历 25–50% / 净支出 50%
+  dailyLossLimitPct: number;         // 纪律 #11 每日最大亏损 — user-confirmed 2% (2026-10-14)
   forbidden: string[];
 }
 export const DEFAULT_RULES: RuleCard = {
@@ -38,6 +39,7 @@ export const DEFAULT_RULES: RuleCard = {
   minOpenInterest: 1000, maxBidAskPct: 10, maxAdjustmentsPerPosition: 1, winStreakReview: 10,
   creditTakeProfitPct: 50, creditManageAtDte: 21, creditStopMultipleOfCredit: 2, buyerTakeProfitPct: 50, buyerTimeStopFraction: 0.5,
   debitSpreadTakeProfitPct: 50, calendarTakeProfitPct: 25, calendarStopPct: 50,
+  dailyLossLimitPct: 2,
   forbidden: ["naked_call", "naked_put", "short_straddle", "short_strangle"],
 };
 
@@ -124,6 +126,7 @@ export function managementPlan(kind: "credit" | "debit", credit: number, dte: nu
   ];
   return [
     `At +${R.buyerTakeProfitPct}%–100% on premium take half off (期权课 14.7).`,
+    `止盈学 (stricter wins): +30% consider TP; +80% sell ≥90% (runner ≤10%); fast big gain → ≥90%; near expiry → take it; back in profit after a drawdown without volume+hold → exit (src/options/takeprofit.ts).`,
     `Time stop: if the move hasn't come by ${Math.round(dte * R.buyerTimeStopFraction)} days (${Math.round(R.buyerTimeStopFraction * 100)}% of ${Math.round(dte)} DTE), exit — theta accelerates.`,
     `Premium is sized to go to zero; never add to a losing long option.`,
     `Close immediately if the thesis invalidation level trades.`,

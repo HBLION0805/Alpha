@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { DEFAULT_RULES } from "../src/options/rules.ts";
 import * as D from "../src/options/discipline.ts";
 import { adjustmentPlaybookChecks } from "../src/options/adjust.ts";
 import { validateEntry, type JournalEntry } from "../src/options/journal.ts";
@@ -12,10 +13,10 @@ test("#4 one 0DTE per day", () => {
   assert.equal(D.zeroDteCheck([T("a", "2026-10-14T10:00", { is0dte: true })], "2026-10-14").severity, "BLOCK");
   assert.equal(D.zeroDteCheck([T("a", "2026-10-13T10:00", { is0dte: true })], "2026-10-14").severity, "OK");
 });
-test("#11 daily loss limit, provisional 2%", () => {
-  assert.equal(D.DAILY_LOSS_LIMIT_PCT_PROVISIONAL, 2);
+test("#11 daily loss limit, confirmed 2% rule-card value", () => {
+  assert.equal(DEFAULT_RULES.dailyLossLimitPct, 2);
   const log = [T("a", "2026-10-14T10:00", { closedAt: "2026-10-14T11:00", pnl: -150 })];
-  const ok = D.dailyLossCheck(log, "2026-10-14", 10000); assert.equal(ok.severity, "OK"); assert.match(ok.detail, /PROVISIONAL/);
+  const ok = D.dailyLossCheck(log, "2026-10-14", 10000); assert.equal(ok.severity, "OK"); assert.match(ok.detail, /\(2%\)/); assert.doesNotMatch(ok.detail, /PROVISIONAL/);
   assert.equal(D.dailyLossCheck(log, "2026-10-14", 10000, -60).severity, "BLOCK");
   assert.equal(D.dailyLossCheck(log, "2026-10-14", 10000, 0, 1).severity, "BLOCK");
 });
@@ -85,4 +86,24 @@ test("catalog: mentor-discipline cited, candidates resolved, no duplicate ids", 
   assert.equal(new Set(cat.items.map((i) => i.id)).size, cat.items.length);
   assert.equal(cat.psychology.prompts.find((p) => p.id === "entry-euphoria-gate")!.status, "ENFORCED_GATE");
   assert.equal(readFileSync(new URL("../knowledge/mentor/discipline/discipline-01-20.md", import.meta.url)).length, 31110);
+});
+
+test("pretrade wires discipline checks; missing inputs → provide X (NO_TRADE/BLOCK)", async () => {
+  const { preTradeChecks } = await import("../src/options/pretrade.ts");
+  const base = { symbol: "SPY", strategy: "long_call", asOf: "2026-10-14", underlyingPrice: 600, thesisHorizonDays: 10, capital: 50000, buyingPower: 50000,
+    legs: [{ type: "call" as const, strike: 610, qty: 1, premium: 3, expiration: "2026-12-18" }] };
+  const none = preTradeChecks(base);
+  for (const id of ["session_gate", "journal_inputs", "entry_range"]) assert.match(none.checks.find((c) => c.id === id)!.detail, /^provide /, id);
+  assert.equal(none.checks.find((c) => c.id === "session_gate")!.severity, "NO_TRADE"); assert.ok(none.blocked);
+  const disc = { journal: [] as D.TradeLog[], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" } as const, market: {}, plannedMaxLoss: 400, entryRange: { low: 595, high: 605 }, side: "long" as const };
+  const ok = preTradeChecks({ ...base, discipline: disc });
+  assert.ok(!ok.checks.some((c) => c.severity === "BLOCK" || c.severity === "NO_TRADE"), JSON.stringify(ok.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")));
+  assert.equal(preTradeChecks({ ...base, discipline: { ...disc, plannedMaxLoss: 100 } }).checks.find((c) => c.id === "size_vs_plan")!.severity, "BLOCK");
+  assert.equal(preTradeChecks({ ...base, discipline: { ...disc, openPnlToday: -1000 } }).checks.find((c) => c.id === "daily_loss_limit")!.severity, "BLOCK");
+  assert.equal(preTradeChecks({ ...base, discipline: { ...disc, market: { chop: true } } }).checks.find((c) => c.id === "session_gate")!.severity, "NO_TRADE");
+  assert.equal(preTradeChecks({ ...base, discipline: { ...disc, entryRange: { low: 580, high: 590 } } }).checks.find((c) => c.id === "entry_range")!.severity, "BLOCK");
+  const zero = { ...base, legs: [{ ...base.legs[0]!, expiration: "2026-10-14" }], discipline: { ...disc, journal: [{ id: "x", openedAt: "2026-10-14T10:00", is0dte: true }] } };
+  assert.equal(preTradeChecks(zero).checks.find((c) => c.id === "0dte_one_per_day")!.severity, "BLOCK");
+  const wins = [1, 2, 3].map((i) => ({ id: String(i), openedAt: "2026-10-14T09:4" + i, closedAt: "2026-10-14T10:0" + i, pnl: 300, maxLoss: 300 }));
+  assert.equal(preTradeChecks({ ...base, discipline: { ...disc, journal: wins } }).checks.find((c) => c.id === "euphoria_gate")!.severity, "BLOCK");
 });

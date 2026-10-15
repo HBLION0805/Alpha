@@ -87,7 +87,7 @@ if (values.proposal) {
   const prop = read(values.proposal) as Proposal;
   const r = preTradeChecks(prop, { ...DEFAULT_RULES });
   json.preTrade = r;
-  const icon = { BLOCK: "⛔", WARN: "⚠️", OK: "✅", INFO: "ℹ️" } as const;
+  const icon = { NO_TRADE: "🛑", BLOCK: "⛔", WARN: "⚠️", OK: "✅", INFO: "ℹ️" } as const;
   extra.push("", `## 下单前检查 / Pre-trade checks — ${prop.symbol} ${prop.strategy}: ${r.blocked ? "**BLOCKED**" : "pass"}`, "", ...r.checks.map((c) => `- ${icon[c.severity]} **${c.id}** ${c.detail} _(${c.cite})_`));
 }
 const md = renderDashboard(dash, extra);

@@ -170,11 +170,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `technical-stop` · **status:** CANDIDATE_UNTESTED · **destination:** guidance
 - **topics:** Support; MACD; RSI; Bollinger bands; 50 / 200 moving averages; Vortex; Gap fill
-- **sources:** owner, mentor-stop-loss
+- **sources:** owner, mentor-stop-loss, mentor-take-profit
 
 **Principle.** An indicator-based exit requires a timeframe, formula, threshold and observable trigger.
 
-**Application.** Use qualified traded-ETF bars and register a separate prospective rule before measuring it. Canonical text: knowledge/mentor/discipline/stop-loss.md §Technical Stop Loss. Encoded in src/options/stops.ts technicalStop.
+**Application.** Use qualified traded-ETF bars and register a separate prospective rule before measuring it. Canonical text: knowledge/mentor/discipline/stop-loss.md §Technical Stop Loss. Encoded in src/options/stops.ts technicalStop. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §7. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
 **Limits.** Several correlated indicators are not independent confirmations. A gap need not fill. These indicators are not newly implemented trading gates.
 
@@ -302,25 +302,25 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 ### Windfall and rapid profit
 
-- **id:** `windfall` · **status:** CANDIDATE_UNTESTED · **destination:** journal
+- **id:** `windfall` · **status:** RESOLVED_FROM_SOURCE · **destination:** journal
 - **topics:** Lottery profit curve; 90% exit / 10% runner; Images 1
-- **sources:** owner, mentor-discipline
+- **sources:** owner, mentor-discipline, mentor-take-profit
 
-**Principle.** Rapid gains are a reason to revisit a previously written exit plan.
+**Principle.** Resolved by 止盈学 §2: when the market suddenly hands you a large gain, lock it: sell ≥90%, runner ≤10%.
 
-**Application.** Check the executable quote and exact number of whole contracts that a partial exit would require. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #03. Encoded in src/options/discipline.ts euphoriaGate.
+**Application.** Check the executable quote and exact number of whole contracts that a partial exit would require. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #03. Encoded in src/options/discipline.ts euphoriaGate. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §2. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
-**Limits.** 90/10 is an untested split, not an optimum. One contract cannot be split; do not increase size to manufacture a runner. Delta does not identify the peak.
+**Limits.** Whole contracts: the amount sold is rounded up, so a 1-contract position has no runner. Never increase size to manufacture a runner. Delta does not identify the peak.
 
 ### Loss paths do not prove the next move
 
 - **id:** `loss-curves` · **status:** ILLUSTRATION_ONLY · **destination:** reviews
 - **topics:** Catastrophic loss curve; Turbulent loss curve; Images 2, 11
-- **sources:** owner
+- **sources:** owner, mentor-take-profit
 
 **Principle.** These drawings illustrate possible adverse outcomes without numerical market evidence.
 
-**Application.** Evaluate the original invalidation, current tradability and remaining exposure.
+**Application.** Evaluate the original invalidation, current tradability and remaining exposure. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §3, 止盈学 §10. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
 **Limits.** A drawing cannot establish that recovery is unlikely or that holding will recover the loss. Do not wait for near-total loss before checking the original exit.
 
@@ -328,35 +328,35 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `recovery-curves` · **status:** ILLUSTRATION_ONLY · **destination:** reviews
 - **topics:** Standard curve; Bull trap; Technical confirmation; Turbulent gain; Images 3, 5, 6, 10, 12
-- **sources:** owner
+- **sources:** owner, mentor-take-profit
 
 **Principle.** The same early PnL path can precede different outcomes. Confirmations need independently specified ETF evidence.
 
-**Application.** Record what was visible at the time, rather than labeling the path with its eventual ending.
+**Application.** Record what was visible at the time, rather than labeling the path with its eventual ending. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §1, 止盈学 §4, 止盈学 §6, 止盈学 §7, 止盈学 §11. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
-**Limits.** Profit crossing zero is not technical confirmation. No curve classifier, buy/sell trigger or future rebound prediction is implemented.
+**Limits.** Profit crossing zero is not technical confirmation. Profit crossing zero is not confirmation. 止盈学 §6 bull-trap rule: without volume + hold confirmation, exit flat/small and adding is blocked. takeprofit.ts classifies the path for advice only; it never predicts a rebound or places orders.
 
 ### Compare exit alternatives prospectively
 
-- **id:** `giveback` · **status:** CANDIDATE_UNTESTED · **destination:** reviews
+- **id:** `giveback` · **status:** RESOLVED_FROM_SOURCE · **destination:** reviews
 - **topics:** Standard curve variant; 30–50% profit; 80–100% profit; Images 4
-- **sources:** owner
+- **sources:** owner, mentor-take-profit
 
-**Principle.** The proposed profit thresholds can be recorded as research alternatives to a frozen exit plan.
+**Principle.** Resolved by 止盈学 §5: +30–50% → consider TP; +80–100% → exit (≥90% out, runner ≤10%). Reconciled with 期权课 14.7 buyerTakeProfitPct 50 (take ≥ half at +50%); the stricter threshold wins.
 
-**Application.** A future comparison would need separately registered rules, independent quotes, costs and complete adverse outcomes.
+**Application.** A future comparison would need separately registered rules, independent quotes, costs and complete adverse outcomes. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §5. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
-**Limits.** These percentages are not validated optima. A trade giving back profit is not automatically a process failure if its original plan was followed.
+**Limits.** Thresholds are cumulative minimums on the fraction sold. They only ever raise it. A plan followed is not a process failure even if profit is given back.
 
 ### Partial exits require exact quantities
 
-- **id:** `catalyst-runner` · **status:** CANDIDATE_UNTESTED · **destination:** planner
+- **id:** `catalyst-runner` · **status:** RESOLVED_FROM_SOURCE · **destination:** planner
 - **topics:** Narrative / catalyst confirmation; +100% sell 50%; +200% sell 25%; 25% runner; Images 7, 8
-- **sources:** owner
+- **sources:** owner, mentor-take-profit
 
-**Principle.** The proposed ladder must specify original versus remaining quantities and a gross or net profit basis.
+**Principle.** Resolved by 止盈学 §8 (catalyst/narrative confirmed): +100% → ≥50% sold, +200% → ≥75% sold, last ≤25% lottery runner. Read as cumulative minimums; the course half-off at +50% still applies first.
 
-**Application.** At an exact doubling, selling half recovers gross entry premium only when whole-contract quantities and fills permit it; fees still matter.
+**Application.** At an exact doubling, selling half recovers gross entry premium only when whole-contract quantities and fills permit it; fees still matter. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §8. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
 **Limits.** 50/25/25 usually requires at least four original contracts. Do not round or buy more to fit. Remaining contracts have market value and can lose it; they are not free risk.
 
@@ -364,11 +364,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `expiry-curve` · **status:** ILLUSTRATION_ONLY · **destination:** journal
 - **topics:** Near-term general profit curve; Images 9
-- **sources:** owner, theta
+- **sources:** owner, theta, mentor-take-profit
 
 **Principle.** As expiration approaches, reassess time sensitivity, tradability and exercise obligations.
 
-**Application.** Keep an explicit time exit and consider how much time value remains on each leg.
+**Application.** Keep an explicit time exit and consider how much time value remains on each leg. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §9. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
 **Limits.** A drawn plateau cannot identify an optimal sale time. Expiration pressure varies with moneyness and structure; an in-the-money contract need not decay to zero.
 
@@ -376,11 +376,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `emotion-curve` · **status:** ILLUSTRATION_ONLY · **destination:** reviews
 - **topics:** Excitement; Panic; Images 13
-- **sources:** owner
+- **sources:** owner, mentor-take-profit
 
 **Principle.** The image is a prompt to record self-reported reactions and the action taken.
 
-**Application.** Use a voluntary note alongside the original plan and observed execution evidence.
+**Application.** Use a voluntary note alongside the original plan and observed execution evidence. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §12. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
 **Limits.** The drawing does not diagnose the owner. A manual sale after a loss is not proof of panic, nor evidence of a brokerage liquidation.
 
@@ -510,11 +510,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-breakout-clock` · **status:** CANDIDATE_UNTESTED · **destination:** guidance
 - **topics:** Support / resistance flip; True / false breakout; Last 30 seconds; Open / close hour
-- **sources:** owner-psychology
+- **sources:** owner-psychology, mentor-take-profit
 
 **Principle.** A support/resistance retest can be formulated as a hypothesis with a timeframe and failure condition.
 
-**Application.** Specify qualified ETF bars, close rules, volume/liquidity checks and when the evidence becomes available before comparing outcomes.
+**Application.** Specify qualified ETF bars, close rules, volume/liquidity checks and when the evidence becomes available before comparing outcomes. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §6. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
 **Limits.** The last 30 seconds or opening/closing hour is not universally decisive. A transient rebound does not establish a durable reversal. No new pattern detector or capture cadence.
 
@@ -690,11 +690,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-extreme-point-precision` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Top / bottom prediction; Confirmation; Risk-defined participation; Fish head / body / tail
-- **sources:** owner-psychology-20260926, mentor-discipline
+- **sources:** owner-psychology-20260926, mentor-discipline, mentor-take-profit
 
 **Principle.** Participation need not prove the exact extreme. Consider evidence-defined participation with specified risk, sufficient direction/setup confirmation and defined invalidation; accept that parts of the initial and final move may be missed.
 
-**Application.** Use the existing evidence and plan fields to explain participation and its risks rather than claiming an exact top or bottom. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #08.
+**Application.** Use the existing evidence and plan fields to explain participation and its risks rather than claiming an exact top or bottom. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #08. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §12. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).
 
 **Limits.** Confirmation does not always produce better returns. Fish head/body/tail is an illustration only; no detector or fixed 10%/80% middle-of-move rule.
 
@@ -704,11 +704,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 - **topics:** Daily loss limit; UNKNOWN; Revenge sequence; Future risk-policy proposal
 - **sources:** owner-psychology-20260926, mentor-discipline
 
-**Principle.** Resolved by 纪律 #11 (到了这个数字，今天结束). The source gives no number. dailyLossLimitPct = 2 is a PROVISIONAL, configurable default pending the user's own number.
+**Principle.** Resolved by 纪律 #11 (到了这个数字，今天结束). The user confirmed dailyLossLimitPct = 2 (% of account) on 2026-10-14. It is a rule-card value (src/options/rules.ts), still configurable.
 
 **Application.** Future activation needs an explicit Owner amount or formula, scope, covered instruments, reset clock/timezone, realized versus unrealized definition, treatment of open positions and Strategy/Risk versioning approval. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #11. Encoded in src/options/discipline.ts dailyLossCheck.
 
-**Limits.** The provisional 2% is a cautious placeholder, not the mentor's or the user's figure. Hitting it blocks new entries for the rest of the ET day; it never loosens other caps.
+**Limits.** Hitting it blocks new entries for the rest of the ET day. It never loosens other caps and never forces holding an open position.
 
 ### Repeated hesitation is a review signal
 

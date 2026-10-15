@@ -46,3 +46,5 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
   Canonical verbatim text (15,628 bytes, cmp-verified). Sections: Mechanical, Positional, Thesis, Technical, Time-Based, Built-In, Volatility, Overnight, Hedging, Cost Control, Stop Hunting, 30/30 Rule, Re-Entering & Adding. Includes the note: [旧频道迁移内容] 原发于 2026-08-30 12:31 JST.
 - **大佬 纪律系列 01–20, verbatim** (`mentor-discipline`) — knowledge/mentor/discipline/discipline-01-20.md
   Canonical verbatim text (31,110 bytes, cmp-verified; author names/timestamps stripped at the user's request). 20 numbered lessons, cited as 纪律 #NN.
+- **大佬 纪律 channel — 止盈学 (Take Profit), verbatim + 11 curve images** (`mentor-take-profit`) — knowledge/mentor/discipline/take-profit.md
+  Canonical text take-profit.verbatim.md (8,480 bytes, cmp-verified; author names and timestamps stripped at the user's request). take-profit.md is the same text with the images embedded at each section (take-profit-img/01–11.png, byte-identical). Sections §1–§12 cited as 止盈学 §N.

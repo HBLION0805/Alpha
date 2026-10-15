@@ -22,15 +22,13 @@ export function zeroDteCheck(log: TradeLog[], todayEt: string): DiscSignal {
     : { id: "0dte_one_per_day", severity: "OK", detail: "first 0DTE trade today", cite: D(4, "一天只做一笔") };
 }
 
-// #11 daily max loss. Value is PROVISIONAL: the user has not given a number.
-export const DAILY_LOSS_LIMIT_PCT_PROVISIONAL = 2;
-export function dailyLossCheck(log: TradeLog[], todayEt: string, capital: number, openPnlToday = 0, limitPct = DAILY_LOSS_LIMIT_PCT_PROVISIONAL): DiscSignal {
+// #11 daily max loss: rule-card dailyLossLimitPct (user-confirmed 2%, configurable)
+export function dailyLossCheck(log: TradeLog[], todayEt: string, capital: number, openPnlToday = 0, limitPct = DEFAULT_RULES.dailyLossLimitPct): DiscSignal {
   const realized = log.filter((t) => t.closedAt && day(t.closedAt) === todayEt).reduce((s, t) => s + (t.pnl ?? 0), 0);
   const total = realized + openPnlToday; const lim = (capital * limitPct) / 100;
-  const prov = limitPct === DAILY_LOSS_LIMIT_PCT_PROVISIONAL ? " [PROVISIONAL default 2%, set your own number]" : "";
   return -total >= lim
-    ? { id: "daily_loss_limit", severity: "BLOCK", detail: `today's P&L $${total.toFixed(0)} hit the daily limit −$${lim.toFixed(0)} (${limitPct}%)${prov}. Today is over; close the software`, cite: D(11, "到了这个数字，今天结束。不管你觉得下一笔有多好") }
-    : { id: "daily_loss_limit", severity: "OK", detail: `today $${total.toFixed(0)} vs limit −$${lim.toFixed(0)} (${limitPct}%)${prov}`, cite: D(11, "今天最多只能亏到这里") };
+    ? { id: "daily_loss_limit", severity: "BLOCK", detail: `today's P&L $${total.toFixed(0)} hit the daily limit −$${lim.toFixed(0)} (${limitPct}%). Today is over; close the software`, cite: D(11, "到了这个数字，今天结束。不管你觉得下一笔有多好") }
+    : { id: "daily_loss_limit", severity: "OK", detail: `today $${total.toFixed(0)} vs limit −$${lim.toFixed(0)} (${limitPct}%)`, cite: D(11, "今天最多只能亏到这里") };
 }
 
 // #5 aggregate same-direction exposure (book level; per-trade version is kelly.ts correlation_stress)
