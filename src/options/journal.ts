@@ -42,6 +42,8 @@ export interface JournalEntry {
   source?: "paper_sim" | "real_practice" | "mentor_shadow";
   /** real_practice: broker-reported P&L snapshots (entry cost may be unknown → costUnknown, premiums null) */
   pnlSnapshots?: Array<{ at: string; pnl: number; spot?: number; note?: string }>; costUnknown?: boolean;
+  /** per-trade post-mortem (src/options/postmortem.ts) and, for mentor_shadow, the mentor's actual result */
+  postMortem?: import("./postmortem.ts").PostMortem; mentorOutcome?: import("./postmortem.ts").MentorOutcome;
   /** mandatory take-profit plan at entry (src/options/tpplan.ts); tpHits = gainPct targets already alerted (-1 = close-by date) */
   takeProfit?: import("./tpplan.ts").TakeProfitPlan; tpHits?: number[];
   /** mandatory risk plan at entry (src/options/riskplan.ts) */

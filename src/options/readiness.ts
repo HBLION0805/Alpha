@@ -82,15 +82,16 @@ export function readiness(i: ReadinessInput): Readiness {
   // 5) every loss reviewed + classified; repeated tags flagged
   const losses = closed.filter((e) => fullPnl(e) <= 0);
   const unrev = losses.filter((e) => !e.lossReview?.errorClass);
+  const noPm = closed.filter((e) => !e.postMortem && fullPnl(e) > 0); // wins need a post-mortem too (P1 #7)
   const tagN = new Map<string, number>(); for (const e of losses) for (const t of e.lossReview?.errorTags ?? []) tagN.set(t, (tagN.get(t) ?? 0) + 1);
   const repeated = [...tagN].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]);
   const cls = (c: string) => losses.filter((e) => e.lossReview?.errorClass === c).length;
   const ignored = losses.filter((e) => e.critique?.acked && e.critique.warns > 0);
   const ignoredWins = closed.filter((e) => fullPnl(e) > 0 && e.critique?.acked && e.critique.warns > 0).length;
-  C.push({ id: "loss_review", title: "每笔亏损都复盘并归类（判断错误 vs 执行错误）", pass: unrev.length === 0,
+  C.push({ id: "loss_review", title: "每笔亏损都复盘并归类（判断错误 vs 执行错误）", pass: unrev.length === 0 && noPm.length === 0,
     detail: [`亏损 ${losses.length} 笔：判断 ${cls("judgment")} / 执行 ${cls("execution")}`, `唱反调：亏损前被 --ack 忽略的警告 ${ignored.length} 笔（盈利 ${ignoredWins} 笔）${ignored.length ? `：${[...new Set(ignored.flatMap((e) => e.critique!.objections.filter((o) => o.severity === "WARN").map((o) => o.id)))].join("、")}` : ""}`,
       ...(repeated.length ? [`⚠️ 重复错误：${repeated.map(([t, n]) => `${t}×${n}`).join("、")}`] : [])],
-    missing: unrev.map((e) => `${e.id} ${e.symbol} 亏损未复盘`) });
+    missing: [...unrev.map((e) => `${e.id} ${e.symbol} 亏损未复盘`), ...noPm.map((e) => `${e.id} ${e.symbol} 盈利也要复盘（paper review）`)] });
 
   const ready = C.every((c) => c.pass);
   return { ready, criteria: C, stats: { paperClosed: closed.length, spanDays: span, winRate: r2(ex.winRate), ev: r2(ex.ev), evTrim2: r2(ex2.ev), maxDrawdown: r2(mdd), premature: premature.length, ignoredWarnLosses: ignored.length, peakConcurrent: peakConc, violations: viol.length },

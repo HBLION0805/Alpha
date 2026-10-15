@@ -3,6 +3,7 @@
  * Each objection cites a catalog item (knowledge/catalog.json) or mentor source. BLOCK only where an existing hard
  * rule already exists (48h event window, motive, per-underlying 3%); everything else is WARN and needs --ack.
  */
+import { pastMistakes } from "../options/postmortem.ts";
 import type { Proposal } from "../options/pretrade.ts";
 import type { JournalEntry } from "../options/journal.ts";
 import { analyze, pnlAtExpiry } from "../options/payoff.ts";
@@ -18,7 +19,7 @@ export interface Critique { at: string; objections: Objection[]; blocks: number;
 export interface CritiqueInput {
   proposal: Proposal; side: "long" | "short"; thesis: string; invalidation: string; stop: string; motive?: string;
   leader?: ScenarioId | null; verdict?: string | null; verdictReasons?: string[]; futuresGapPct?: number | null;
-  open: JournalEntry[]; bars?: YBar[]; calendar?: CalendarEvent[]; now: Date; capital: number;
+  open: JournalEntry[]; history?: JournalEntry[]; bars?: YBar[]; calendar?: CalendarEvent[]; now: Date; capital: number;
 }
 
 /** underlying → scenario direction column (scenarios.ts dirs); single stocks proxied by SPX. */
@@ -110,6 +111,12 @@ export function critique(i: CritiqueInput): Critique {
     const front = Math.min(...exps);
     if (front < p.thesisHorizonDays + 7) add("horizon_short", "WARN", `最近到期 ${front.toFixed(0)} 天，论点需要 ${p.thesisHorizonDays} 天：早一周都会输给时间`, "catalog: horizons, time-stop; 复盘 HYG 以后我会调整什么 4");
     else if (front > p.thesisHorizonDays * 4 && front > 60) add("horizon_long", "WARN", `到期 ${front.toFixed(0)} 天远长于论点 ${p.thesisHorizonDays} 天：多付了时间价值，或者论点期限没想清楚`, "catalog: horizons, cost");
+  }
+  // past mistakes (postmortem.ts): repeated error tags and lessons on this symbol → WARN
+  if (i.history?.length) {
+    const pm = pastMistakes(i.history, sym);
+    if (pm.tags.length) add("past_mistakes", "WARN", `上次同类错误：${pm.tags.map(([t, n]) => `${t}×${n}`).join("、")} → 这笔怎么避免？`, "postmortem.ts / readiness loss_review");
+    if (pm.sameSymbol.length) add("past_lessons", "WARN", `${sym} 以前的教训：${pm.sameSymbol.join("；")}`, "postmortem.ts");
   }
   return { at: i.now.toISOString(), objections: O, blocks: O.filter((o) => o.severity === "BLOCK").length, warns: O.filter((o) => o.severity === "WARN").length };
 }

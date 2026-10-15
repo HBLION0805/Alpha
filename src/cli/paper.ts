@@ -13,6 +13,7 @@ import { defaultCapital } from "../config.ts";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, renameSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
+import { writePostMortem, mentorCompare } from "../options/postmortem.ts";
 import { capFlags } from "../options/breach.ts";
 import { chainsFromQuotes } from "../options/paper.ts";
 import { settleable, expireEntry, weekendRule, isAm } from "../options/expire.ts";
@@ -31,7 +32,7 @@ import type { JournalEntry } from "../options/journal.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
-  thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true }, "plan-id": { type: "string" },
+  thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true }, "plan-id": { type: "string" }, class: { type: "string" }, tags: { type: "string" }, result: { type: "string" }, "pnl-pct": { type: "string" }, note: { type: "string" }, "followed-stop": { type: "string" }, "followed-tp": { type: "string" }, "followed-size": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
   "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
 const cmd = positionals[0];
@@ -57,7 +58,7 @@ if (cmd === "open") {
   const calendar = existsSync(calF) ? JSON.parse(readFileSync(calF, "utf8")).events ?? [] : [];
   const cr = critique({ proposal: p, side: proposalSide(p), thesis: values.thesis ?? "", invalidation: values.invalidation ?? "", stop: values.stop ?? "", motive: values.motive,
     leader: brief.leader === undefined ? undefined : brief.leader, verdict: brief.verdict ?? null, verdictReasons: brief.reasons ?? [],
-    futuresGapPct: (brief.reasons ?? []).some((x: string) => /期货跳空/.test(x)) ? 1.5 : null, open: openPaper(j), bars, calendar, now, capital: j.capital });
+    futuresGapPct: (brief.reasons ?? []).some((x: string) => /期货跳空/.test(x)) ? 1.5 : null, open: openPaper(j), history: j.entries, bars, calendar, now, capital: j.capital });
   process.stdout.write(renderCritique(cr) + "\n");
   const r = paperOpen(j, p, { kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
@@ -99,6 +100,22 @@ if (cmd === "open") {
     if (w) { j.entries[i] = w; process.stdout.write(`[weekend] ${e.id} ${e.symbol} ${w.exitReason} P&L $${w.pnl}\n`); }
   }
   save();
+} else if (cmd === "review") {
+  // per-trade post-mortem after close/expiry (wins included)
+  const i = j.entries.findIndex((x) => x.id === values.id);
+  if (i < 0) fail([`找不到 --id ${values.id ?? ""}`]);
+  const yn = (k: string) => ((values as Record<string, unknown>)[k] == null ? null : /^(y|yes|1|true)$/i.test(String((values as Record<string, unknown>)[k])));
+  const r = writePostMortem(j.entries[i]!, { classification: values.class, tags: list(values.tags), lesson: values.lesson, followed: { stop: yn("followed-stop"), takeProfit: yn("followed-tp"), size: yn("followed-size") }, now });
+  if (!r.entry) fail(r.refused);
+  j.entries[i] = r.entry!; save(); process.stdout.write(`[review] ${values.id} 复盘已记录：${r.entry!.postMortem!.classification} · ${r.entry!.postMortem!.lesson}\n`);
+} else if (cmd === "mentor") {
+  // record the mentor's actual result for a mentor_shadow trade
+  const e = j.entries.find((x) => x.id === values.id && x.source === "mentor_shadow");
+  if (!e) fail([`找不到大佬影子单 --id ${values.id ?? ""}`]);
+  const res = values.result as "win" | "loss" | "flat" | "unknown";
+  if (!["win", "loss", "flat", "unknown"].includes(res)) fail(["--result win|loss|flat|unknown"]);
+  e!.mentorOutcome = { at: now.toISOString(), result: res, pnlPct: values["pnl-pct"] != null ? Number(values["pnl-pct"]) : null, note: values.note };
+  save(); process.stdout.write(mentorCompare(e!).join("\n") + "\n");
 } else if (cmd === "close") {
   const e = j.entries.find((x) => x.id === values.id && x.mode === "paper");
   if (!e) fail([`找不到模拟交易 --id ${values.id ?? ""}`]);
@@ -111,4 +128,4 @@ if (cmd === "open") {
   const rows = j.entries.filter((e) => e.mode === "paper").map((e) => `| ${e.id}${e.kind === "practice" ? "（练习）" : ""} | ${e.symbol} | ${e.strategy} | ${e.openedAt.slice(0, 10)} | ${e.closedAt?.slice(0, 10) ?? "open"} | ${e.pnl ?? e.marks?.at(-1)?.pnl ?? "—"} | ${e.exitKind ?? ""} |`);
   const r = readiness({ journal: j.entries, capital: j.capital, shockDates: [] });
   process.stdout.write(["| id | 标的 | 结构 | 开仓 | 平仓 | P&L | 离场 |", "|---|---|---|---|---|---|---|", ...rows, "", `持仓 ${openPaper(j).length} · 已平仓 ${r.stats.paperClosed} · 期望值 $${r.stats.ev}/笔 · 详见 npm run readiness`].join("\n") + "\n");
-} else fail(["用法：npm run paper -- open|close|list|mark（只做模拟交易）"]);
+} else fail(["用法：npm run paper -- open|close|list|mark|expire|review|mentor（只做模拟交易）"]);

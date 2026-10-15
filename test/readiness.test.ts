@@ -8,7 +8,7 @@ function trade(i: number, pnl: number, over: Partial<JournalEntry> = {}): Journa
   return { id: `T${i}`, mode: "paper", symbol: "SPY", strategy: "put_debit_spread", openedAt: d(i * 2 + 1), closedAt: d(i * 2 + 2), pnl, commissions: 0,
     thesisRecordedAt: d(i * 2), stopRecordedAt: d(i * 2), view: { direction: "x", volatility: "x" }, ivRank: null, greeks: { delta: 0, gamma: 0, theta: 0, vega: 0 },
     expectedMove: null, structureRationale: "x", maxLoss: 400, invalidation: "x", exitRules: ["x"], exitKind: pnl > 0 ? "take_profit" : "invalidation",
-    concurrentAtEntry: 4, motive: "thesis", ...(pnl <= 0 ? { lossReview: { at: d(i * 2 + 3), errorClass: i % 2 ? "judgment" : "execution", errorTags: [] } } : {}), ...over } as JournalEntry;
+    concurrentAtEntry: 4, motive: "thesis", ...(pnl <= 0 ? { lossReview: { at: d(i * 2 + 3), errorClass: i % 2 ? "judgment" : "execution", errorTags: [] } } : { postMortem: { at: d(i * 2 + 3), outcome: "win", classification: "good", tags: [], lesson: "x", followed: { stop: true, takeProfit: true, size: true } } }), ...over } as JournalEntry;
 }
 const good = () => Array.from({ length: 32 }, (_, i) => trade(i, i % 3 === 0 ? 300 : -100)); // 11 wins, 21 losses, 64 days
 const shock = [d(10).slice(0, 10)];
@@ -58,4 +58,21 @@ test("mentor_shadow practice entries are excluded from readiness", () => {
   const base = readiness({ journal: good(), capital: 5000, shockDates: shock });
   const r = readiness({ journal: [...good(), e], capital: 5000, shockDates: shock });
   assert.deepEqual(r.stats, base.stats); assert.equal(r.practice.n, base.practice.n + 1);
+});
+
+test("post-mortem: wins need one too; luck can't excuse a loss; repeated tags feed the next critique; mentor compare", async () => {
+  const { writePostMortem, pastMistakes, mentorCompare } = await import("../src/options/postmortem.ts");
+  const now = new Date("2026-10-16T21:00:00Z");
+  const win = { ...good()[0]!, postMortem: undefined } as JournalEntry;
+  const r = readiness({ journal: [...good().slice(1), win], capital: 50000, shockDates: shock });
+  assert.ok(r.criteria.find((c) => c.id === "loss_review")!.missing.some((m) => /盈利也要复盘/.test(m)));
+  assert.ok(writePostMortem({ ...win, closedAt: undefined }, { classification: "good", lesson: "x", now }).refused.length, "not closed yet");
+  const loss = trade(99, -20, { lossReview: undefined });
+  assert.ok(writePostMortem(loss, { classification: "luck", lesson: "x", now }).refused.some((x) => /luck/.test(x)));
+  const ok = writePostMortem(loss, { classification: "execution", tags: ["no_pre_set_take_profit"], lesson: "止盈必须开仓时写死。", now }).entry!;
+  assert.equal(ok.lossReview!.errorClass, "execution"); assert.equal(ok.postMortem!.outcome, "loss");
+  assert.deepEqual(pastMistakes([ok], "SPY").tags, [["no_pre_set_take_profit", 1]]);
+  const m = { ...trade(5, 40), source: "mentor_shadow", entryPrice: 1.6, mentorOutcome: { at: "x", result: "win", pnlPct: 80 } } as JournalEntry;
+  const L = mentorCompare(m).join("\n");
+  assert.match(L, /\$40（25%）/); assert.match(L, /大佬实际：win（80%）/); assert.match(L, /方向一致：是/);
 });
