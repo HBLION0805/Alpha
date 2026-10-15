@@ -64,3 +64,5 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
   memory, SNDK, 2X leveraged ETF hedging feedback, hyperscaler capex financing, rates, attention/narrative rotation; ~mid-2027 fade view
 - **机构观点: Morgan Stanley AP 'Tech Bytes: Memory – Cycles vs. Super Cycles' (2026-10-11)** (`ms-memory-cycles-2026-10-11`) — knowledge/institutional/morgan-stanley-memory-cycles-2026-10-11.md
   Institutional, not mentor. Structured summary by DK: super cycle real, easy money past, key numbers, cycle history, CXMT/YMTC, rack content, stock preferences; cross-reference with the mentor view
+- **大佬 daily note: 防御轮动 + 图表 (verbatim)** (`mentor-daily-defensive-rotation`) — knowledge/mentor/daily/daily-note-defensive-rotation-charts.md
+  30Y/2Y, DXY, gold, KOSPI, NQ, RTY (FIB), equal-weight EWF, /CL Dec-26 95C call flow, TLT; defensive rotation, put protection; 10 images in assets/defensive-rotation/
