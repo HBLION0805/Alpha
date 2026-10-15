@@ -122,6 +122,12 @@
       "title": "OIC — covered call",
       "url": "https://www.optionseducation.org/strategies/all-strategies/covered-call-buy-write",
       "coverage": "Downside exposure checked: premium income does not remove substantial stock-loss risk."
+    },
+    {
+      "id": "mentor-stop-loss",
+      "title": "大佬 纪律 channel — 止损学 (Stop Loss), verbatim",
+      "url": "knowledge/mentor/discipline/stop-loss.md",
+      "coverage": "Canonical verbatim text (15,628 bytes, cmp-verified). Sections: Mechanical, Positional, Thesis, Technical, Time-Based, Built-In, Volatility, Overnight, Hedging, Cost Control, Stop Hunting, 30/30 Rule, Re-Entering & Adding. Includes the note: [旧频道迁移内容] 原发于 2026-08-30 12:31 JST."
     }
   ],
   "items": [
@@ -329,14 +335,15 @@
       "status": "CANDIDATE_UNTESTED",
       "sources": [
         "owner",
-        "stops"
+        "stops",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Mechanical stop",
         "Stock -7%"
       ],
       "principle": "The supplied -7% threshold is an author-specific stock example.",
-      "application": "Compare any proposed trigger with ETF volatility, option sensitivities, costs and expected execution.",
+      "application": "Compare any proposed trigger with ETF volatility, option sensitivities, costs and expected execution. Canonical text: knowledge/mentor/discipline/stop-loss.md §Mechanical Stop Loss. Encoded in src/options/stops.ts mechanicalStop (stocks only).",
       "limits": "Do not transfer -7% to options or replace the frozen study stop. A triggered stop does not guarantee its execution price.",
       "destination": "planner"
     },
@@ -347,7 +354,8 @@
       "status": "PROCESS_GUIDE",
       "sources": [
         "owner",
-        "owner-psychology-20260926"
+        "owner-psychology-20260926",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Positional stop",
@@ -357,7 +365,7 @@
         "Emotional sizing"
       ],
       "principle": "A smaller position changes future dollar exposure; it does not fix the original thesis.",
-      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea.",
+      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss.",
       "limits": "Size changes need a new documented decision. Excitement, anger, revenge, recent wins or a hot-hand belief cannot increase allowed size; confidence is not a sizing multiplier. Correlations are not assumed static; no correlation engine, anecdotal portfolio score or automatic reduction is implemented. A smaller loss or later recovery is not guaranteed.",
       "destination": "planner"
     },
@@ -370,7 +378,8 @@
         "owner",
         "thesis",
         "owner-psychology-20260923",
-        "owner-psychology-20260926"
+        "owner-psychology-20260926",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Thesis stop",
@@ -381,7 +390,7 @@
         "LOSS_AVERSION_STOP_DRIFT"
       ],
       "principle": "PRICE_ADVERSE_BUT_THESIS_NOT_INVALIDATED names an adverse price move without verified invalidation; loss alone does not prove the macro thesis wrong. THESIS_CORE_VARIABLE_CHANGED names a verified change in an original core variable that requires reassessment.",
-      "application": "Before entry identify the relevant war, sanctions, energy, central-bank policy, rates, dollar, liquidity or other original macro variable and its evidence source. Document independent exits for wrong/right outcomes and thesis invalidation before entry. Compare new facts with the saved thesis, then apply price, time, capital and contract exits; preserving capital protects future participation.",
+      "application": "Before entry identify the relevant war, sanctions, energy, central-bank policy, rates, dollar, liquidity or other original macro variable and its evidence source. Document independent exits for wrong/right outcomes and thesis invalidation before entry. Compare new facts with the saved thesis, then apply price, time, capital and contract exits; preserving capital protects future participation. Canonical text: knowledge/mentor/discipline/stop-loss.md §Thesis Stop Loss. Encoded in src/options/stops.ts thesisStop + pretrade thesisRecord.",
       "limits": "These terms are educational, not an automatic state machine. A compelling story cannot override an independent exit. Moving a stop farther away solely to avoid realizing a loss is LOSS_AVERSION_STOP_DRIFT; the plan remains frozen after entry except already predefined exceptions supported by new verified information. No new stop percentage. Neither hedge nor averaging repairs a broken thesis or erases a loss; requiring both price and thesis damage is not a universal rule.",
       "destination": "journal"
     },
@@ -391,7 +400,8 @@
       "title": "Technical exits need specified inputs",
       "status": "CANDIDATE_UNTESTED",
       "sources": [
-        "owner"
+        "owner",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Support",
@@ -403,7 +413,7 @@
         "Gap fill"
       ],
       "principle": "An indicator-based exit requires a timeframe, formula, threshold and observable trigger.",
-      "application": "Use qualified traded-ETF bars and register a separate prospective rule before measuring it.",
+      "application": "Use qualified traded-ETF bars and register a separate prospective rule before measuring it. Canonical text: knowledge/mentor/discipline/stop-loss.md §Technical Stop Loss. Encoded in src/options/stops.ts technicalStop.",
       "limits": "Several correlated indicators are not independent confirmations. A gap need not fill. These indicators are not newly implemented trading gates.",
       "destination": "guidance"
     },
@@ -415,14 +425,15 @@
       "sources": [
         "owner",
         "theta",
-        "owner-psychology-20260926"
+        "owner-psychology-20260926",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Time-based stop",
         "Catalyst deadline"
       ],
       "principle": "Specify when the expected development must occur and a separate option exit deadline.",
-      "application": "Before entry record catalyst timing, review time, expiration and the action if the expected response does not appear; retain the original independent stop, profit-taking and thesis-invalidation plan.",
+      "application": "Before entry record catalyst timing, review time, expiration and the action if the expected response does not appear; retain the original independent stop, profit-taking and thesis-invalidation plan. Canonical text: knowledge/mentor/discipline/stop-loss.md §Time-Based Stop Loss. Encoded in src/options/stops.ts timeStop + multiLegChecklist (pretrade BLOCK).",
       "limits": "Waiting consumes option time; a deadline does not guarantee an executable exit. Preserve existing frozen deadlines.",
       "destination": "journal"
     },
@@ -433,7 +444,8 @@
       "status": "MECHANICS_REFERENCE",
       "sources": [
         "owner",
-        "spread"
+        "spread",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Built-in stop",
@@ -443,7 +455,7 @@
         "Iron condor"
       ],
       "principle": "For a standard intact equal-quantity, same-expiry bull call spread, gross terminal loss is the net debit; maximum gross gain is strike width less debit.",
-      "application": "Include the multiplier, all legs and costs. Call terminal breakeven is long strike plus debit; describe exercise and assignment handling separately.",
+      "application": "Include the multiplier, all legs and costs. Call terminal breakeven is long strike plus debit; describe exercise and assignment handling separately. Canonical text: knowledge/mentor/discipline/stop-loss.md §Built-In Stop Loss. Encoded in src/options/stops.ts multiLegChecklist.",
       "limits": "Operational exposure can change through legging, assignment or expiration. Long calls/puts already limit premium loss before exercise. Other structures need their own payoff models; this catalog does not enable them.",
       "destination": "planner"
     },
@@ -455,7 +467,8 @@
       "sources": [
         "owner",
         "vega",
-        "theta"
+        "theta",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Volatility stop",
@@ -463,7 +476,7 @@
         "Near expiration"
       ],
       "principle": "Option values also depend on implied volatility and remaining time. Direction alone is insufficient.",
-      "application": "Review contract-level IV and net sensitivities across every leg; identify what evidence supports a volatility scenario.",
+      "application": "Review contract-level IV and net sensitivities across every leg; identify what evidence supports a volatility scenario. Canonical text: knowledge/mentor/discipline/stop-loss.md §Volatility Stop Loss. Encoded in src/options/stops.ts volStop.",
       "limits": "High IV alone is not an automatic ban or selling signal. Theta depends on moneyness and other inputs; it is not a fixed daily bill. No IV history or exit trigger is invented.",
       "destination": "guidance"
     },
@@ -474,7 +487,8 @@
       "status": "PROCESS_GUIDE",
       "sources": [
         "owner",
-        "stops"
+        "stops",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Overnight stop",
@@ -482,7 +496,7 @@
         "Event risk"
       ],
       "principle": "Consider what can happen while the instrument cannot be traded and how much exposure remains.",
-      "application": "Write a pre-close decision and next-session contingency; BTC trading overnight does not make IBIT options continuously executable.",
+      "application": "Write a pre-close decision and next-session contingency; BTC trading overnight does not make IBIT options continuously executable. Canonical text: knowledge/mentor/discipline/stop-loss.md §Overnight Stop Loss. Encoded in src/options/stops.ts overnightCheck.",
       "limits": "A stop cannot guarantee protection across a gap. Buying another option introduces costs and may not cover the intended scenario.",
       "destination": "planner"
     },
@@ -494,7 +508,8 @@
       "sources": [
         "owner",
         "owner-psychology-20260923",
-        "owner-psychology-20260926"
+        "owner-psychology-20260926",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Hedging stop",
@@ -505,7 +520,7 @@
         "Decision time"
       ],
       "principle": "A hedge may reduce portfolio sensitivity and buy decision time during uncertain macro news, but it cannot repair an invalid original thesis.",
-      "application": "State the hedging instrument, exact risk, horizon, ratio or quantity, cost, basis risk, remaining net exposure and hedge exit condition. Compare combined payoff and net sensitivities under direction, IV and time scenarios; reassess whether the thesis failed, entry was early, the move is temporary or the regime changed.",
+      "application": "State the hedging instrument, exact risk, horizon, ratio or quantity, cost, basis risk, remaining net exposure and hedge exit condition. Compare combined payoff and net sensitivities under direction, IV and time scenarios; reassess whether the thesis failed, entry was early, the move is temporary or the regime changed. Canonical text: knowledge/mentor/discipline/stop-loss.md §Hedging Stop Loss. Encoded in src/options/stops.ts HEDGE_SUGGESTIONS.",
       "limits": "Hedging buys time only conditionally: it costs money, adds basis risk and may also lose. Opposite directions alone do not demonstrate protection; a hedge cannot fix invalidation or waive an independent exit. No automatic hedge, new SPY/QQQ/sector strategy or broader trading universe is enabled.",
       "destination": "planner"
     },
@@ -516,7 +531,8 @@
       "status": "PROCESS_GUIDE",
       "sources": [
         "owner",
-        "stops"
+        "stops",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Cost control",
@@ -525,7 +541,7 @@
         "Position size"
       ],
       "principle": "Compare entry cost, spread, exit costs and full-premium exposure before evaluating a target.",
-      "application": "Use the existing cost desk and whole-contract calculations; distinguish declared assumptions from actual fees.",
+      "application": "Use the existing cost desk and whole-contract calculations; distinguish declared assumptions from actual fees. Canonical text: knowledge/mentor/discipline/stop-loss.md §Cost Control. Encoded in src/options/stops.ts costAndStopChecks.",
       "limits": "A limit order controls the acceptable price but may not fill. A cheap premium does not establish good value, and waiting for a lower entry may change the signal.",
       "destination": "planner"
     },
@@ -536,7 +552,8 @@
       "status": "CANDIDATE_UNTESTED",
       "sources": [
         "owner",
-        "stops"
+        "stops",
+        "mentor-stop-loss"
       ],
       "topics": [
         "Stop hunting",
@@ -544,7 +561,7 @@
         "Wider stops"
       ],
       "principle": "A reversal after a stop is an observed path, not proof someone targeted the order.",
-      "application": "If testing close confirmation or volatility-based exits, predefine the rule and evaluate its added exposure.",
+      "application": "If testing close confirmation or volatility-based exits, predefine the rule and evaluate its added exposure. Canonical text: knowledge/mentor/discipline/stop-loss.md §Fighting Against Stop Hunting. Encoded in src/options/stops.ts costAndStopChecks / stopMoveCheck.",
       "limits": "Wider or delayed stops can increase loss. No recommendation to hide stops, abandon them or wait for a rebound is activated.",
       "destination": "reviews"
     },
@@ -554,15 +571,16 @@
       "title": "30/30 is an untested personal heuristic",
       "status": "CANDIDATE_UNTESTED",
       "sources": [
-        "owner"
+        "owner",
+        "mentor-stop-loss"
       ],
       "topics": [
         "30% remaining time",
         "30% option loss"
       ],
       "principle": "The author proposes a time-or-loss review once the thesis begins to weaken.",
-      "application": "Any future test must freeze the time anchor, original remaining life, loss denominator and priority among exits.",
-      "limits": "Challenged is not invalidated. This heuristic cannot grant extra waiting after a hard exit. No 30% threshold becomes an active rule.",
+      "application": "Any future test must freeze the time anchor, original remaining life, loss denominator and priority among exits. Canonical text: knowledge/mentor/discipline/stop-loss.md §30/30 Rule. Encoded in src/options/stops.ts rule3030.",
+      "limits": "Challenged is not invalidated. This heuristic cannot grant extra waiting after a hard exit. No 30% threshold becomes an active rule. Definition resolved in psych-30-30 (canonical 止损学 §30/30 Rule).",
       "destination": "reviews"
     },
     {
@@ -573,7 +591,8 @@
       "sources": [
         "owner",
         "owner-psychology-20260923",
-        "owner-psychology-20260926"
+        "owner-psychology-20260926",
+        "mentor-stop-loss"
       ],
       "topics": [
         "One loss addition",
@@ -584,7 +603,7 @@
         "Debit spread conversion"
       ],
       "principle": "Repeated emotional additions to a loser are not justified by sunk cost. The Owner preference to consider at most one planned, disciplined loss addition with fresh evidence remains an untested candidate, not an active risk rule.",
-      "application": "Ask: If I had no position and fresh cash today, would I buy this exact exposure? Lower price alone is not a reason to add. Any addition needs a prospective condition/price, quantity, maximum number of additions, total position ceiling, maximum loss and thesis-validity check. Reassess time, strike, expiry, current premium, combined exposure and costs under the authoritative allocation policy.",
+      "application": "Ask: If I had no position and fresh cash today, would I buy this exact exposure? Lower price alone is not a reason to add. Any addition needs a prospective condition/price, quantity, maximum number of additions, total position ceiling, maximum loss and thesis-validity check. Reassess time, strike, expiry, current premium, combined exposure and costs under the authoritative allocation policy. Canonical text: knowledge/mentor/discipline/stop-loss.md §Re-Entering & Adding. Encoded in src/options/adjust.ts losing_add_limit + pretrade 1-adjustment cap.",
       "limits": "Lower average cost is not risk management by itself; second or third rescue additions have no sunk-cost justification. An 80% option loss or later 35% rebound from the depressed premium is not a threshold or recovery proof; theta, IV and expiry can defeat a correct direction. Rolling closes or realizes the old position and opens new exposure without erasing the loss. A debit spread changes the payoff structure and requires separate assessment. No automatic averaging, roll or spread conversion.",
       "destination": "planner"
     },
@@ -929,20 +948,21 @@
     {
       "id": "psych-30-30",
       "group": "Psychology and evidence",
-      "title": "Two 30/30 versions remain unresolved",
-      "status": "CANDIDATE_UNTESTED",
+      "title": "30/30 resolved by the canonical 止损学 text",
+      "status": "RESOLVED_FROM_SOURCE",
       "topics": [
         "30/30 conflict",
         "30% elapsed life",
         "30% value loss",
         "Rolling"
       ],
-      "principle": "Batch one starts a clock when the thesis weakens, using 30% of then-remaining life. Batch two says 30% of option time consumed and separately conditions the loss rule on a broken thesis.",
-      "application": "Keep both statements. Before any separate test, define the time origin, denominator, thesis state, loss basis, exit priority and whether a roll is permitted.",
-      "limits": "These versions are not equivalent and have not been merged. Rolling closes an old position and opens new exposure with costs; it does not erase the old result. Neither variant overrides frozen exits.",
+      "principle": "Resolved by knowledge/mentor/discipline/stop-loss.md §30/30 Rule. The clock starts when the thesis breaks (从交易逻辑开始出现问题算起). Exit at whichever comes first: about 30% of the option's remaining life at that moment is used without the market re-proving the thesis, or the option value is down about 30% (e.g. 30 days left → about 9 days; −30% on day 2 → exit then). Earlier batch wordings are superseded where they differ.",
+      "application": "Encoded as src/options/stops.ts rule3030. Time origin = thesisBrokenAt. Denominator = expiration minus thesisBrokenAt. Loss basis = option value at thesisBrokenAt. Priority: the loss leg fires immediately, otherwise the time deadline applies. The signal is EXIT; the user executes.",
+      "limits": "Only runs after the thesis is flagged broken; it never grants extra waiting after a hard exit (thesis invalidation, max loss, rule-card caps). Rolling closes the old position and opens new exposure; it does not reset the clock or erase the loss. 30% is the mentor's own number, not a magic constant (这条规则的目的不是证明 30% 是一个神奇的数字).",
       "destination": "reviews",
       "sources": [
-        "owner-psychology"
+        "owner-psychology",
+        "mentor-stop-loss"
       ]
     },
     {

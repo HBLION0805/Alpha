@@ -28,6 +28,7 @@
 | [mentor/kelly/](mentor/kelly/) | Kelly 公式补充 article: the PDF as received, plus a pdftotext extraction and a README | 3 |
 | [mentor/tradingview/](mentor/tradingview/) | 大佬's Pine v6 indicator "K线阅读 · Bzzb" (price-action trendlines, S/R, patterns; best on small timeframes): `.pine` byte-for-byte, plus a README | 2 |
 | [mentor/world-lines.md](mentor/world-lines.md) | **世界的20条主线**: https://world-lines.jolly-moose-6445.chatgpt.site/ fetched 2026-10-14 21:38 ET. All 20 lessons, verbatim from the page's embedded data. Raw JSON in [world-lines.data.json](mentor/world-lines.data.json) | 2 |
+| [mentor/discipline/](mentor/discipline/) | **大佬 纪律 series** (byte-for-byte; 纪律学 / 止盈学 / Premarket Routine pending): [stop-loss.md](mentor/discipline/stop-loss.md) 止损学 is the canonical source for the existing catalog stop items (mechanical, size, thesis-stop, technical-stop, time-stop, spread-risk, volatility, overnight, hedge, cost, stop-hunting, thirty-thirty, adding). It resolves `psych-30-30`. Encoded in `src/options/stops.ts` | 2 |
 | [source-code/](source-code/) | Original catalog sources as `.txt` (provenance for the JSON; not built) | 3 |
 
 The markdown views are generated: `node scripts/render-knowledge.ts` (edit `catalog.json`, not the .md).

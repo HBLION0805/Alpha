@@ -19,6 +19,8 @@ export interface AdjustmentContext {
   reason?: string;
   /** nearest support (bearish) / resistance (bullish) and the original target, used to measure the remaining room */
   supportLevel?: number; targetLevel?: number; entryPrice?: number;
+  /** 止损学 §Re-Entering & Adding: is the position currently losing? how many disciplined adds already made while losing? */
+  positionPnl?: number; losingAddsUsed?: number; thesisIntact?: boolean;
 }
 export interface AdjCheck { id: string; severity: "BLOCK" | "WARN" | "OK" | "INFO"; detail: string; cite: string }
 
@@ -43,6 +45,14 @@ export function adjustmentPlaybookChecks(legs: PosLeg[], spot: number, c: Adjust
     if (!conf?.confirmed || !conf.evidence?.trim()) out.push({ id: "add_needs_confirmation", severity: "BLOCK", detail: "adding exposure needs written market confirmation (what the market did that proves the thesis). Without it, wait: 不抢确认", cite: `${INTC_CITE}: 等到下跌方向得到进一步确认，我才开始加大敞口` });
     else out.push({ id: "add_needs_confirmation", severity: "OK", detail: `confirmation: ${conf.evidence}`, cite: INTC_CITE });
     if (c.reason && CHEAP.test(c.reason)) out.push({ id: "no_add_because_cheaper", severity: "BLOCK", detail: `reason "${c.reason}": price getting cheaper is not confirmation. No averaging into a trade the market has not proven`, cite: `${INTC_CITE}: 我也没有因为价格变便宜就急着补仓，因为这时候市场还没有证明我是对的` });
+    // 止损学 §Re-Entering & Adding: 亏损仓位最多一次纪律性加仓; 盈利仓位只在市场确认时加. Combined with the INTC rule, the stricter one wins:
+    // a losing add ALSO needs confirmation (above), a written reason that is more than "cheaper", and the thesis intact. It also counts against the 1-adjustment cap in pretrade.
+    if (c.positionPnl != null && c.positionPnl < 0) {
+      const SLC = "止损学 §Re-Entering & Adding (knowledge/mentor/discipline/stop-loss.md): 对于正在亏损的仓位，我最多允许自己进行 一次高度纪律性的加仓 / 不要用更多的钱证明自己没有错";
+      if ((c.losingAddsUsed ?? 0) >= 1) out.push({ id: "losing_add_limit", severity: "BLOCK", detail: "already used the one disciplined add on this losing position. No more averaging down", cite: SLC });
+      else if (!c.reason?.trim() || c.thesisIntact !== true) out.push({ id: "losing_add_limit", severity: "BLOCK", detail: "the one add to a losing position needs a written reason (key support / thesis still holds) and thesisIntact=true", cite: SLC });
+      else out.push({ id: "losing_add_limit", severity: "WARN", detail: `losing position: this is the ONE disciplined add (reason: ${c.reason}). If it is wrong again, reduce; do not add`, cite: SLC });
+    }
     if (opts.some((l) => l.qty < 0) || legs.some((l) => l.type === "stock")) out.push({ id: "readd_long_only", severity: "BLOCK", detail: "re-adding exposure must be long options only (no short legs, no stock)", cite: `${INTC_CITE}: 我就只补 Long Put，重新放大空头敞口` });
     else if (opts.some((l) => l.type !== wantRight)) out.push({ id: "readd_long_only", severity: "WARN", detail: `adding ${c.direction} exposure with a non-${wantRight} leg`, cite: INTC_CITE });
     else out.push({ id: "readd_long_only", severity: "OK", detail: `long ${wantRight}s only: max loss = premium paid`, cite: INTC_CITE });

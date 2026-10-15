@@ -145,7 +145,8 @@ test("pre-trade: HYG/TLT review lessons are enforced", () => {
 test("pre-trade: a far-OTM spread with a plan and enough buying power passes; adjustments need a new decision", () => {
   const ok: Proposal = { ...hyg, symbol: "SPY", strategy: "bull_put_credit_spread", underlyingPrice: 769.6, thesisHorizonDays: 14, buyingPower: 100000,
     legs: [{ type: "put", strike: 730, qty: -1, premium: 4.04, expiration: "2026-11-20", delta: -0.16 }, { type: "put", strike: 720, qty: 1, premium: 2.9, expiration: "2026-11-20", delta: -0.12 }],
-    assignmentPlan: { ifAssigned: "close shares next open", protectiveLeg: "exercise/sell 720P same day", buyingPowerNeeded: 73000, exit: "close spread at 2x credit or 21 DTE" } };
+    assignmentPlan: { ifAssigned: "close shares next open", protectiveLeg: "exercise/sell 720P same day", buyingPowerNeeded: 73000, exit: "close spread at 2x credit or 21 DTE" },
+    checklist: { maxLoss: 886, maxProfit: 114, breakevens: [728.86], maxLossConditions: "SPY ≤ 720 at 2026-11-20 expiry", beforeExpiryPlan: "close at 21 DTE or 2x credit" } };
   const r = preTradeChecks(ok); assert.equal(r.blocked, false, JSON.stringify(r.checks));
   assert.equal(preTradeChecks({ ...ok, adjustmentOf: "t1" }).blocked, true);
   assert.equal(preTradeChecks({ ...ok, adjustmentOf: "t1", newDecision: { thesis: "x", maxLoss: 500, exit: "y", invalidation: "z" } }).blocked, false);

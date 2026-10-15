@@ -7,6 +7,7 @@
 import { daysTo } from "./bs.ts";
 import { analyze, type Leg } from "./payoff.ts";
 import { DEFAULT_RULES, type RuleCard, type PosLeg } from "./rules.ts";
+import { multiLegChecklist, thesisStop, type MultiLegChecklist, type ThesisRecord } from "./stops.ts";
 import { adjustmentPlaybookChecks, type AdjustmentContext } from "./adjust.ts";
 
 const REVIEW = "复盘 HYG/IWM/TLT/TQQQ (knowledge/mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md)";
@@ -22,6 +23,10 @@ export interface Proposal {
   newDecision?: { thesis: string; maxLoss: number; exit: string; invalidation: string };
   /** INTC playbook context (大佬 2026-10-14): add only after confirmation; convert to spread near support; re-add long options only */
   adjustment?: AdjustmentContext;
+  /** 止损学 §Time-Based Stop Loss checklist: required for every multi-leg trade */
+  checklist?: MultiLegChecklist;
+  /** 止损学 §Thesis Stop Loss: when set (new entries should set it), thesis + invalidation are required */
+  thesisRecord?: ThesisRecord;
 }
 export type Severity = "BLOCK" | "WARN" | "OK" | "INFO";
 export interface PreCheck { id: string; severity: Severity; detail: string; cite: string }
@@ -95,6 +100,11 @@ export function preTradeChecks(p: Proposal, R: RuleCard = DEFAULT_RULES): { chec
     if (p.legs.some((l) => l.type !== "stock" && l.qty < 0) && p.legs.filter(isShortOpt).some((l) => !p.legs.some((x) => x.type === l.type && x.qty > 0 && und(p, x) === und(p, l))) && !p.legs.some((l) => l.type === "stock"))
       out.push({ id: "adjustment_naked", severity: "BLOCK", detail: "adjustment adds an uncovered short option", cite: `${REVIEW}（裸 Call 补救）/ 期权课 13.3` });
   }
+
+  // (8) 止损学: multi-leg checklist + thesis record
+  const ml = multiLegChecklist(p.legs.filter((l) => l.type !== "stock").length, p.checklist);
+  if (ml) out.push({ ...ml, severity: ml.severity === "BLOCK" ? "BLOCK" : "OK" });
+  if (p.thesisRecord) for (const t of thesisStop(p.thesisRecord, { invalidated: false })) out.push({ ...t, severity: t.severity === "BLOCK" ? "BLOCK" : "INFO" });
 
   // (5) INTC adjustment playbook — src/options/adjust.ts
   if (p.adjustment) out.push(...adjustmentPlaybookChecks(p.legs, spot(p, p.symbol), p.adjustment));

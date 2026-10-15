@@ -42,3 +42,5 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
   Public page opened, but no readable post body was returned. No individual post, policy claim or price effect verified; no account created or followed and no collector added.
 - **OIC — covered call** (`covered-call`) — https://www.optionseducation.org/strategies/all-strategies/covered-call-buy-write
   Downside exposure checked: premium income does not remove substantial stock-loss risk.
+- **大佬 纪律 channel — 止损学 (Stop Loss), verbatim** (`mentor-stop-loss`) — knowledge/mentor/discipline/stop-loss.md
+  Canonical verbatim text (15,628 bytes, cmp-verified). Sections: Mechanical, Positional, Thesis, Technical, Time-Based, Built-In, Volatility, Overnight, Hedging, Cost Control, Stop Hunting, 30/30 Rule, Re-Entering & Adding. Includes the note: [旧频道迁移内容] 原发于 2026-08-30 12:31 JST.
