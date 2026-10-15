@@ -55,7 +55,11 @@ export interface JournalEntry {
   /** every loss: judgment (thesis/selection) vs execution (sizing, entry, exit, rules) + tags for repeated-error detection */
   lossReview?: { at: string; errorClass: "judgment" | "execution"; errorTags: string[]; note?: string };
   /** exit kind; "discretionary" before invalidation and before the time stop = premature (大佬复盘 mentor-winrate-review) */
-  exitKind?: "invalidation" | "time_stop" | "take_profit" | "max_loss" | "discretionary";
+  exitKind?: "invalidation" | "time_stop" | "take_profit" | "max_loss" | "discretionary" | "expiry" | "weekend_rule";
+  /** net debit per contract at entry and where it came from */
+  entryPrice?: number | null; entryPriceSource?: "paper_fill" | "robinhood_orders" | "user" | "unknown";
+  /** settlement used by paper expire (equity close or VIX AM VRO) */
+  settlement?: { at: string; prices: Record<string, number>; kind: "PM_close" | "AM_VRO"; value: number };
   timeStopAt?: string;
   /** open positions (including this one) at entry */
   concurrentAtEntry?: number;
@@ -65,7 +69,7 @@ export interface JournalEntry {
   underlyingAtEntry?: number;
   /** 唱反调 critique shown before entry (src/review/critique.ts); acked = WARNs were overridden with --ack */
   critique?: { at: string; objections: Array<{ id: string; severity: "BLOCK" | "WARN"; text: string; cite: string }>; blocks: number; warns: number; acked?: boolean };
-  marks?: Array<{ at: string; value: number; pnl: number; spot: number | null; sources: string[] }>;
+  marks?: Array<{ at: string; value: number; pnl: number; spot: number | null; sources: string[]; estimated?: boolean }>;
 }
 
 export function validateEntry(e: Partial<JournalEntry>): string[] {

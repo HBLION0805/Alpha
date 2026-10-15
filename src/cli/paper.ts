@@ -13,6 +13,8 @@ import { defaultCapital } from "../config.ts";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, renameSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
+import { chainsFromQuotes } from "../options/paper.ts";
+import { settleable, expireEntry, weekendRule, isAm } from "../options/expire.ts";
 import { checkTakeProfit, costBasis } from "../options/tpplan.ts";
 const etDate = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 import { paperOpen, paperMark, paperClose, openPaper, type PaperJournal } from "../options/paper.ts";
@@ -28,7 +30,7 @@ import type { JournalEntry } from "../options/journal.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
-  thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" },
+  thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
   "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
 const cmd = positionals[0];
@@ -65,12 +67,34 @@ if (cmd === "open") {
 } else if (cmd === "mark") {
   const files = values.quotes ?? (existsSync("data/in") ? readdirSync("data/in").filter((f) => /chain.*\.json$/.test(f)).map((f) => join("data/in", f)) : []);
   const chains: Chain[] = files.map((f) => parseChain(unwrapJson(readFileSync(f, "utf8"))));
+  // read-only Robinhood quotes (get_option_quotes joined to strikes) take priority over Black-Scholes
+  if (existsSync("data/in/rh-option-quotes.json")) chains.unshift(...chainsFromQuotes(JSON.parse(readFileSync("data/in/rh-option-quotes.json", "utf8"))));
   const cache = new Map<string, number | null>();
   const spot = async (s: string) => { if (!cache.has(s)) { const ch = chains.find((c) => c.symbol === s); cache.set(s, ch?.underlyingPrice ?? (await yahooDaily(s, 10).catch(() => [])).at(-1)?.c ?? null); } return cache.get(s)!; };
-  for (const e of openPaper(j)) {
-    try { const m = await paperMark(e, { spot, chains }, now); (e.marks ??= []).push(m); process.stdout.write(`${e.id} ${e.symbol}: P&L $${m.pnl} (${((m.pnl / (e.capitalAtEntry ?? j.capital)) * 100).toFixed(2)}%) · ${m.sources.join("; ")}\n`);
+  // simulated positions + open real_practice records (marked for review only; never in caps/readiness)
+  const toMark = [...openPaper(j), ...j.entries.filter((e) => e.source === "real_practice" && !e.closedAt && (e.legs ?? []).every((l) => l.premium != null))];
+  for (const e of toMark) {
+    try { const m = await paperMark(e, { spot, chains }, now); (e.marks ??= []).push(m); process.stdout.write(`${e.id} ${e.symbol}: P&L $${m.pnl}${m.estimated ? "（估算）" : ""} (${((m.pnl / (e.capitalAtEntry ?? j.capital)) * 100).toFixed(2)}%) · ${m.sources.join("; ")}\n`);
       for (const h of checkTakeProfit(e.takeProfit, costBasis(e.legs ?? []), m.pnl, etDate(now), e.tpHits)) { (e.tpHits ??= []).push(h.gainPct); process.stdout.write(`⚠️ ${e.id} ${e.symbol}: ${h.text}\n`); } }
     catch (err) { process.stdout.write(`${e.id} ${e.symbol}: 无法估值 ${(err as Error).message}\n`); }
+  }
+  save();
+} else if (cmd === "expire") {
+  // settle expired entries (PM close from Yahoo; AM-settled VIX needs --settle VIX=<VRO>), then the mentor weekend rule
+  const manual = Object.fromEntries((values.settle ?? []).map((x: string) => { const [k, v] = x.split("="); return [k!.toUpperCase(), Number(v)]; }));
+  for (const [i, e] of j.entries.entries()) {
+    const kind = settleable(e, now);
+    if (kind) {
+      const settle: Record<string, number> = { ...manual };
+      for (const l of e.legs ?? []) { const u = (l.underlying ?? e.symbol).toUpperCase(); const exp = l.expiration!;
+        if (settle[u] == null && !isAm(u)) settle[u] = (await yahooDaily(u, 10).catch(() => [])).find((b) => b.t.slice(0, 10) === exp)?.c ?? NaN; }
+      const r = expireEntry(e, settle, now);
+      if (r.entry) { j.entries[i] = r.entry; process.stdout.write(`[expire] ${e.id} ${e.symbol} 到期结算 ${JSON.stringify(r.entry.settlement!.prices)} → P&L $${r.entry.pnl}${r.entry.pnl! <= 0 ? "（亏损：待复盘）" : ""}\n`); }
+      else process.stdout.write(`[expire] ${e.id}: ${r.error}\n`);
+      continue;
+    }
+    const w = weekendRule(e, now);
+    if (w) { j.entries[i] = w; process.stdout.write(`[weekend] ${e.id} ${e.symbol} ${w.exitReason} P&L $${w.pnl}\n`); }
   }
   save();
 } else if (cmd === "close") {

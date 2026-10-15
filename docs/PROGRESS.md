@@ -126,3 +126,17 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
   - NVDA updated to −$1, so the $2 debit is uncertain.
   - CRWV, NVDA and VIX are execution errors tagged no_pre_set_take_profit. Lesson: 止盈必须开仓时写死。
   - real_practice records are never marked by `paper mark` and don't count toward the position cap.
+
+## 2026-10-15 evening — paper ledger P0
+- Marks: Robinhood read-only option quotes (data/in/rh-option-quotes.json, gitignored) are used first.
+  - Black-Scholes fallback uses a sane per-leg IV: quote → leg → entry-implied (only from a real premium ≥$0.05) → 30% default, clamped 10–200%.
+  - BS marks are flagged `estimated` (估算). This fixes the 3–7% IV bug on mentor short legs.
+- Entry prices backfilled from Robinhood option orders (read-only, `entryPriceSource: robinhood_orders`):
+  - NVDA 202.5/200P: debit 0.04, closed 0.01 → −$3.
+  - AAPL 335/325P: debit 2.25, closed 1.94 → −$31.
+  - CRWV 55/50P: debit 0.12.
+  - VIX 20/25C: debit 0.21.
+- `paper expire`:
+  - Equity/ETF PM-settles at the expiry-day close (Yahoo) from 16:00 ET.
+  - VIX AM-settles and requires `--settle VIX=<VRO>`; it is never the close.
+  - Mentor weekend rule: a losing mentor_shadow trade at Fri ≥15:45 ET is closed at that day's mark.

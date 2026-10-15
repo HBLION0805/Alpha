@@ -71,7 +71,8 @@ export interface PriceSource { spot(sym: string): Promise<number | null>; chains
  *  Yahoo spot with the IV implied by the entry fill. Each leg reports its source. */
 export async function paperMark(e: JournalEntry, src: PriceSource, now: Date): Promise<NonNullable<JournalEntry["marks"]>[number]> {
   const asOf = now.toISOString().slice(0, 10);
-  let value = 0, spot0: number | null = null; const sources: string[] = [];
+  if ((e.legs ?? []).some((l) => l.premium == null)) throw new Error("entry price unknown (backfill from broker orders first)");
+  let value = 0, spot0: number | null = null, estimated = false; const sources: string[] = [];
   for (const l of e.legs ?? []) {
     const u = l.underlying ?? e.symbol;
     const S = await src.spot(u); if (u === e.symbol) spot0 = S;
@@ -81,17 +82,42 @@ export async function paperMark(e: JournalEntry, src: PriceSource, now: Date): P
     if (rh != null) { value += l.qty * rh * MULT; sources.push(`${u} ${l.strike}${l.type[0]} robinhood ${rh}`); continue; }
     if (S == null || !l.expiration) throw new Error(`no price for ${u} ${l.strike}${l.type[0]}`);
     const T = Math.max(yearFrac(asOf, l.expiration), 0);
-    const T0 = Math.max(yearFrac(e.openedAt.slice(0, 10), l.expiration), 1 / 365);
-    const iv = l.iv ?? impliedVol(l.premium, { S: e.underlyingAtEntry ?? S, K: l.strike, T: T0, right: l.type }) ?? 0.25;
-    const px = T > 0 ? bs({ S, K: l.strike, T, sigma: iv, right: l.type }).price : Math.max(0, l.type === "call" ? S - l.strike : l.strike - S);
-    value += l.qty * px * MULT; sources.push(`${u} ${l.strike}${l.type[0]} BS(yahoo spot ${S}, iv ${iv.toFixed(3)}) ${px.toFixed(2)}`);
+    const ivSrc = legIv(e, l, c?.iv ?? null, S);
+    const px = T > 0 ? bs({ S, K: l.strike, T, sigma: ivSrc.iv, right: l.type }).price : Math.max(0, l.type === "call" ? S - l.strike : l.strike - S);
+    estimated = true;
+    value += l.qty * px * MULT; sources.push(`${u} ${l.strike}${l.type[0]} BS估算(yahoo spot ${S}, iv ${ivSrc.iv.toFixed(3)} ${ivSrc.from}) ${px.toFixed(2)}`);
   }
   const cost = (e.legs ?? []).reduce((s, l) => s + l.qty * l.premium * mult(l), 0);
-  return { at: now.toISOString(), value: Math.round(value * 100) / 100, pnl: Math.round((value - cost) * 100) / 100, spot: spot0, sources };
+  return { at: now.toISOString(), value: Math.round(value * 100) / 100, pnl: Math.round((value - cost) * 100) / 100, spot: spot0, sources, estimated };
+}
+
+/** Sane per-leg IV for the Black-Scholes fallback: quote IV → leg IV → IV implied by a real (≥$0.05) entry premium → 30%.
+ *  Always clamped to [10%, 200%]. Never solve IV from a 0/placeholder premium (that produced 3–7% IVs → overstated P&L). */
+export const IV_MIN = 0.10, IV_MAX = 2.0, IV_DEFAULT = 0.30;
+export function legIv(e: JournalEntry, l: Leg, quoteIv: number | null, S: number): { iv: number; from: string } {
+  const clamp = (x: number) => Math.min(IV_MAX, Math.max(IV_MIN, x));
+  if (quoteIv != null && quoteIv > 0) return { iv: clamp(quoteIv), from: "quote" };
+  if (l.iv != null && l.iv > 0) return { iv: clamp(l.iv), from: "leg" };
+  if (l.premium >= 0.05 && l.expiration) {
+    const T0 = Math.max(yearFrac(e.openedAt.slice(0, 10), l.expiration), 1 / 365);
+    const v = impliedVol(l.premium, { S: e.underlyingAtEntry ?? S, K: l.strike, T: T0, right: l.type as "call" | "put" });
+    if (v != null && v >= IV_MIN && v <= IV_MAX) return { iv: v, from: "entry-implied" };
+  }
+  return { iv: IV_DEFAULT, from: "default" };
+}
+/** data/in/rh-option-quotes.json (read-only Robinhood get_option_quotes joined to strikes) → chains for paperMark. */
+export function chainsFromQuotes(f: { fetchedAt: string; quotes: Array<{ underlying: string; type: "call" | "put"; strike: number; expiration: string; mark: number | null; bid: number | null; ask: number | null; iv: number | null }> }): Chain[] {
+  const by = new Map<string, Chain>();
+  for (const q of f.quotes) {
+    const ch = by.get(q.underlying) ?? { symbol: q.underlying, underlyingPrice: NaN, asOf: f.fetchedAt, contracts: [], source: "robinhood quotes" };
+    ch.contracts.push({ expiration: q.expiration, strike: q.strike, type: q.type, bid: q.bid, ask: q.ask, mark: q.mark, iv: q.iv, delta: null, gamma: null, theta: null, vega: null });
+    by.set(q.underlying, ch);
+  }
+  return [...by.values()];
 }
 
 export interface CloseArgs { exitKind?: JournalEntry["exitKind"]; pnl?: number; commissions?: number; errorClass?: "judgment" | "execution"; errorTags?: string[]; violations?: string[]; lesson?: string; now: Date }
-const KINDS = ["invalidation", "time_stop", "take_profit", "max_loss", "discretionary"];
+const KINDS = ["invalidation", "time_stop", "take_profit", "max_loss", "discretionary", "expiry", "weekend_rule"];
 export function paperClose(e: JournalEntry, a: CloseArgs): { entry: JournalEntry | null; refused: string[] } {
   const refused: string[] = [];
   if (e.closedAt) refused.push(`${e.id} 已平仓`);

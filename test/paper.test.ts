@@ -43,7 +43,7 @@ test("paper mark: Robinhood chain mark when present, else BS on Yahoo spot; clos
   const m1 = await paperMark(e, { spot: async () => 31, chains: [chain] }, new Date("2026-10-16T15:00:00Z"));
   assert.equal(m1.pnl, 80); assert.match(m1.sources[0]!, /robinhood/);
   const m2 = await paperMark(e, { spot: async () => 32, chains: [] }, now);
-  assert.match(m2.sources[0]!, /BS\(yahoo/); assert.ok(Math.abs(m2.pnl) < 5, "same spot+day ≈ entry value");
+  assert.match(m2.sources[0]!, /BS估算\(yahoo/); assert.ok(Math.abs(m2.pnl) < 5, "same spot+day ≈ entry value");
   assert.ok(paperClose(e, { now, pnl: -50 }).refused.some((x) => /exit-kind/.test(x)));
   assert.ok(paperClose(e, { now, pnl: -50, exitKind: "discretionary" }).refused.some((x) => /复盘/.test(x)));
   const c = paperClose(e, { now: new Date("2026-10-20T15:00:00Z"), pnl: -50, exitKind: "discretionary", errorClass: "execution", errorTags: ["early_exit"] }).entry!;
