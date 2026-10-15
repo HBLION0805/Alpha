@@ -7,6 +7,10 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 [ -n "${ALPHA_NODE_BIN:-}" ] && export PATH="$ALPHA_NODE_BIN:$PATH"
+for d in /home/box/.local/node24/bin /workspace/node-v24.22.0-linux-x64/bin; do
+  node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 24 ? 0 : 1)' 2>/dev/null && break
+  [ -x "$d/node" ] && export PATH="$d:$PATH"
+done
 node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 24 ? 0 : 1)' || { echo "Node 24+ required (set ALPHA_NODE_BIN)" >&2; exit 2; }
 mkdir -p data/out data/logs
 exec 9>data/.run.lock
