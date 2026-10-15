@@ -51,6 +51,12 @@ const ALIASES: Array<[RegExp, string]> = [
   [/(\d+(?:_\d+)?) percent\b/g, "$1%"],
   [/\bnonfarm payrolls?\b/g, "payrolls"],
   [/\bunited states\b/g, "us"],
+  // same-event anchors for chokepoint stories (world line #17)
+  [/\bstrait of hormuz\b/g, "hormuz"],
+  [/\b(container ship|cargo ship|vessels?|tankers?|ships?)\b/g, "ship"],
+  [/\bsaudi aramco\b/g, "aramco"],
+  [/\b(strikes?|struck|attacks?|attacked|attacking)\b/g, "attack"],
+  [/\bred sea\b/g, "redsea"],
 ];
 
 export function tokens(text: string): Set<string> {

@@ -20,5 +20,6 @@ export function agreement(): { precision: number; recall: number; got: number[][
 // Greenland drilling +Denmark response, and one more Benzinga "how much you would have made" template (already clustered).
 test("golden clusters: no baseline pair lost; extra merges bounded", () => {
   const a = agreement();
-  assert.ok(a.recall >= 0.98 && a.precision >= 0.9, `precision ${a.precision.toFixed(3)} recall ${a.recall.toFixed(3)}`);
+  // 2026-10-14 P2 (alert recall): Gulf/chokepoint family merges Aramco/Iran-strike headlines into the Hormuz cluster (reviewed: same escalation).
+  assert.ok(a.recall >= 0.98 && a.precision >= 0.88, `precision ${a.precision.toFixed(3)} recall ${a.recall.toFixed(3)}`);
 });

@@ -25,8 +25,8 @@ export function idfTable(docs: Set<string>[]): (t: string) => number {
 
 /** Scheduled macro releases: two reports sharing one of these keys on the same day are very likely the same event. */
 // keys go through the same stemmer as tokens
-export const EVENT_KEYS = new Set(["cpi", "inflation", "ppi", "pce", "payrolls", "nonfarm", "gdp", "fed", "jobless", "unemployment", "retail"].map(stem));
-const EVENT_ALIAS: Record<string, string> = { [stem("inflation")]: "cpi", [stem("nonfarm")]: stem("payrolls"), [stem("unemployment")]: stem("payrolls") };
+export const EVENT_KEYS = new Set(["cpi", "inflation", "ppi", "pce", "payrolls", "nonfarm", "gdp", "fed", "jobless", "unemployment", "retail", "hormuz", "aramco", "redsea", "suez"].map(stem));
+const EVENT_ALIAS: Record<string, string> = { [stem("inflation")]: "cpi", [stem("nonfarm")]: stem("payrolls"), [stem("unemployment")]: stem("payrolls"), aramco: "hormuz", redsea: "hormuz", suez: "hormuz" }; // Gulf/chokepoint energy shocks = one event family
 export const EVENT_BONUS = 0.2;
 
 function eventKeys(a: Set<string>): Set<string> {
@@ -48,7 +48,9 @@ export function weightedSim(a: Set<string>, b: Set<string>, idf: (t: string) => 
   if (shared < 2) {
     // allow a single shared token only when both carry the same macro event key plus another shared anchor via aliasing
     const ka = eventKeys(a), kb = eventKeys(b);
-    if (!(shared === 1 && [...ka].some((k) => kb.has(k)) && ka.size + kb.size >= 3)) return 0;
+    const sameKey = [...ka].some((k) => kb.has(k));
+    // chokepoint family (Hormuz/Aramco/Red Sea/Suez): one shared key + one shared word is the same event
+    if (!(shared === 1 && sameKey && (ka.size + kb.size >= 3 || ka.has("hormuz")))) return 0;
   }
   const overlap = inter / Math.min(wa, wb);
   const jac = inter / (wa + wb - inter);
@@ -57,6 +59,10 @@ export function weightedSim(a: Set<string>, b: Set<string>, idf: (t: string) => 
   for (const k of eventKeys(b)) if (ka.has(k)) { sim += EVENT_BONUS; break; }
   return sim;
 }
+
+/** Gulf/chokepoint energy shocks (world lines #11/#17) arrive as many partial headlines; same family → 25% lower bar. */
+export const FAMILY_RELAX = 0.75;
+const family = (a: Set<string>, b: Set<string>) => eventKeys(a).has("hormuz") && eventKeys(b).has("hormuz");
 
 /** Seed tokens plus tokens shared by >=2 members: stops the union from snowballing. */
 function centroid(c: { members: Array<{ tk: Set<string> }> }): Set<string> {
@@ -69,7 +75,10 @@ function centroid(c: { members: Array<{ tk: Set<string> }> }): Set<string> {
 type Work = Cluster & { members: Array<{ src: string; tk: Set<string> }> };
 
 export function clusterTokens(it: Pick<StoredItem, "title">): Set<string> {
-  return tokens(mainClause(it.title));
+  const tk = tokens(mainClause(it.title));
+  // event keys in a dropped clause ("...; Saudi Aramco facilities attacked") still identify the event
+  for (const t of tokens(it.title)) if (EVENT_KEYS.has(t)) tk.add(t);
+  return tk;
 }
 
 /** Greedy time-ordered clustering, then an agglomerative merge pass over cluster token unions. */
@@ -90,7 +99,7 @@ export function clusterItems(items: StoredItem[], opts: ClusterOptions = DEFAULT
       let sim = 0;
       for (const m of c.members) {
         const s = weightedSim(tk, m.tk, idf);
-        const need = m.src === it.sourceId ? opts.sameSourceThreshold : opts.threshold;
+        const need = (m.src === it.sourceId ? opts.sameSourceThreshold : opts.threshold) * (family(tk, m.tk) ? FAMILY_RELAX : 1);
         if (s >= need) sim = Math.max(sim, s);
       }
       if (sim && c.members.length >= 3 && weightedSim(tk, centroid(c), idf) < opts.threshold * 0.6) sim = 0;
@@ -116,11 +125,12 @@ export function clusterItems(items: StoredItem[], opts: ClusterOptions = DEFAULT
         if (Math.abs(Date.parse(a.firstSeen) - Date.parse(b.firstSeen)) > win) continue;
         const srcs = new Set([...a.members, ...b.members].map((m) => m.src));
         if (srcs.size < 2) continue;
-        if (weightedSim(centroid(a), centroid(b), idf) < opts.mergeThreshold) continue;
+        const relax = family(centroid(a), centroid(b)) ? FAMILY_RELAX : 1;
+        if (weightedSim(centroid(a), centroid(b), idf) < opts.mergeThreshold * relax) continue;
         // also require one direct member-to-member link above the join threshold minus slack
         let link = 0;
         for (const x of a.members) for (const y of b.members) if (x.src !== y.src) link = Math.max(link, weightedSim(x.tk, y.tk, idf));
-        if (link < opts.threshold) continue;
+        if (link < opts.threshold * relax) continue;
         a.items.push(...b.items);
         a.members.push(...b.members);
         for (const x of b.tokens) a.tokens.add(x);

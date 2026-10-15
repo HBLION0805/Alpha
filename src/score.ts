@@ -23,7 +23,9 @@ export const TOPICS: Topic[] = [
   { id: "oil", label: "Oil / energy", weight: 10, assets: ["USO", "XLE"], pattern: /\b(oil|crude|opec|brent|wti|natural gas)\b/i },
   { id: "earnings", label: "Earnings / guidance", weight: 10, assets: ["single names"], pattern: /\b(earnings|guidance|quarterly results|revenue|beats?|misses?|profit warning)\b/i },
   { id: "markets", label: "Market move", weight: 8, assets: ["SPY", "QQQ", "VIX"], pattern: /\b(stocks?|s&p|nasdaq|dow|wall street|sell-?off|rall(y|ies)|futures|volatility|vix)\b/i },
-  { id: "geopolitics", label: "Geopolitics / war", weight: 10, assets: ["GLD", "USO", "VIX"], pattern: /\b(war|missile|strikes?|invasion|ceasefire|military|attack)\b/i },
+  { id: "geopolitics", label: "Geopolitics / war", weight: 10, assets: ["GLD", "USO", "VIX"], pattern: /\b(wars?|missiles?|strik(e|es|ing)|struck|invasions?|invad(e|es|ed|ing)|ceasefires?|military|attack(s|ed|ing)?|drones?|warships?|(ships?|vessels?|tankers?|boats?|dhows?)\b[^.;:]*\b(sinks?|sank|sunk|sinking|seized|hit))\b/i },
+  // world line #17 (全球航运咽喉) + #11 (石油就是权力): chokepoints and energy infrastructure
+  { id: "shipping", label: "Shipping / energy chokepoints", weight: 14, assets: ["USO", "XLE", "GLD", "VIX"], pattern: /\b(hormuz|tankers?|shipping (lanes?|routes?)|aramco|refiner(y|ies)|pipelines?|red sea|suez|blockades?|sanctions?|houthis?|strait of)\b/i },
   { id: "regulation", label: "SEC / regulation", weight: 8, assets: ["sector"], pattern: /\b(sec|regulators?|antitrust|lawsuit|charges?|probe)\b/i },
 ];
 
@@ -45,7 +47,7 @@ export function scoreCluster(c: Cluster, now = new Date()): ScoredCluster {
   const stances = [...new Set(c.items.map((i) => i.stance))];
   // Topics: headline evidence counts fully. Summary-only evidence needs >=2 items (or >=half of a small cluster)
   // and counts a quarter; geopolitics and regulation are headline-only (summaries mention "war"/"SEC" loosely).
-  const HEADLINE_ONLY = new Set(["geopolitics", "regulation"]);
+  const HEADLINE_ONLY = new Set(["geopolitics", "regulation", "shipping"]);
   const topicHits = TOPICS.map((t) => {
     const titleHits = c.items.filter((i) => t.pattern.test(i.title)).length;
     const sumHits = HEADLINE_ONLY.has(t.id) ? 0 : c.items.filter((i) => !t.pattern.test(i.title) && t.pattern.test(i.summary)).length;
