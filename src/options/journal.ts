@@ -34,6 +34,10 @@ export interface JournalEntry {
   /** #19 thesis and position judged separately at every review */
   reviews?: Array<{ at: string; thesisValid: boolean; positionValid: boolean; note?: string }>;
   // --- paper trading + live-readiness (src/options/readiness.ts) ---
+  /** formal = counts toward readiness; practice = shown separately, excluded from readiness stats/expectancy */
+  kind?: "formal" | "practice";
+  /** mandatory risk plan at entry (src/options/riskplan.ts) */
+  riskPlan?: import("./riskplan.ts").RiskPlan;
   /** "paper" = simulated entry on real data; default "live" */
   mode?: "paper" | "live";
   /** account size when the trade was opened (for the 1% / 2% checks) */

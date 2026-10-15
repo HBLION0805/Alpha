@@ -9,10 +9,11 @@ import { bs, impliedVol, yearFrac } from "./bs.ts";
 import type { JournalEntry } from "./journal.ts";
 import type { Motive, TradeLog } from "./discipline.ts";
 import type { Chain } from "./chain.ts";
+import { buildRiskPlan } from "./riskplan.ts";
 import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
-export interface OpenArgs { critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; now: Date; rules?: Partial<RuleCard> }
+export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; now: Date; rules?: Partial<RuleCard> }
 type Leg = NonNullable<JournalEntry["legs"]>[number];
 const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
@@ -25,6 +26,11 @@ const fill = (l: Proposal["legs"][number]) => (l.bid != null && l.ask != null ? 
 export function paperOpen(j: PaperJournal, p: Proposal, a: OpenArgs): { entry: JournalEntry | null; checks: PreCheck[]; refused: string[] } {
   const refused: string[] = [];
   for (const k of ["thesis", "invalidation", "stop", "motive"] as const) if (!a[k]?.toString().trim()) refused.push(`缺少 --${k}（开仓前必须写下 thesis / invalidation / stop / motive）`);
+  if (a.kind && a.kind !== "formal" && a.kind !== "practice") refused.push(`--kind ${a.kind} 无效：formal | practice`);
+  // mandatory risk plan (riskplan.ts): hedge, invalidation, stock −7% stop / option max loss + 30/30, ≤1% hard cap
+  const rp = buildRiskPlan(p.legs.map((l) => ({ type: l.type, strike: l.strike, qty: l.qty, premium: fill(l), expiration: l.expiration })),
+    { hedge: a.hedge, hedgeDetail: a.hedgeDetail, invalidation: a.invalidation, stopPct: a.stopPct, capital: j.capital, asOf: a.now.toISOString().slice(0, 10), rules: a.rules });
+  refused.push(...rp.errors);
   // 唱反调: BLOCK refuses; WARNs need an explicit --ack
   if (!a.critique) refused.push("缺少唱反调 critique（src/review/critique.ts）");
   else {
@@ -49,7 +55,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a: OpenArgs): { entry: J
     id: `P${String(j.entries.length + 1).padStart(3, "0")}`, mode: "paper", openedAt: now, symbol: p.symbol, strategy: p.strategy,
     thesis: a.thesis, stop: a.stop, invalidation: a.invalidation!, thesisRecordedAt: now, stopRecordedAt: now, motive: a.motive, timeStopAt: a.timeStopAt,
     view: { direction: a.thesis!, volatility: "n/a (paper)" }, ivRank: null, greeks: { delta: 0, gamma: 0, theta: 0, vega: 0 }, expectedMove: null,
-    structureRationale: p.strategy, maxLoss: an.maxLoss == null ? NaN : Math.abs(an.maxLoss), exitRules: [`stop: ${a.stop}`, `invalidation: ${a.invalidation}`, ...(a.timeStopAt ? [`time stop: ${a.timeStopAt}`] : [])],
+    structureRationale: p.strategy, maxLoss: rp.plan!.maxLoss, kind: a.kind ?? "formal", riskPlan: rp.plan!, exitRules: [`stop: ${a.stop}`, `invalidation: ${a.invalidation}`, ...(rp.plan!.stock ? [`mechanical stop ${rp.plan!.stock.stopPrice} (−${rp.plan!.stock.stopPct}%)`] : []), ...(rp.plan!.option ? [`30/30: ${rp.plan!.option.rule3030Date} or value ≤ $${rp.plan!.option.loss30Value}`] : []), rp.plan!.rule, ...(a.timeStopAt ? [`time stop: ${a.timeStopAt}`] : [])],
     capitalAtEntry: j.capital, concurrentAtEntry: open.length + 1, legs, underlyingAtEntry: spot, marks: [],
     critique: a.critique ? { ...a.critique, acked: a.critique.warns > 0 } : undefined,
   };

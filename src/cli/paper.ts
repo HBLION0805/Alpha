@@ -1,6 +1,7 @@
 /**
  * npm run paper -- open|close|list|mark   (paper trades ONLY — this file never calls a broker; there is no order path)
  *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis [--time-stop YYYY-MM-DD] [--ack]
+ *         --hedge built_in_spread|direct|portfolio --hedge-detail "…" [--stop-pct 7 (stocks)] [--kind formal|practice]
  *         (唱反调 critique printed first; BLOCK refuses, WARNs need --ack; the critique is saved in the entry)
  *   mark  [--quotes data/in/x-chain.json ...]   (Robinhood chain JSON when present, else Yahoo spot + Black-Scholes)
  *   close --id P001 --exit-kind invalidation|time_stop|take_profit|max_loss|discretionary [--pnl N] [--commissions N]
@@ -16,6 +17,7 @@ import { parseChain, type Chain } from "../options/chain.ts";
 import { unwrapJson } from "../options/robinhood.ts";
 import { yahooDaily } from "../adapters/yahoo.ts";
 import { readiness } from "../options/readiness.ts";
+import { renderRiskPlan } from "../options/riskplan.ts";
 import { critique, renderCritique, proposalSide } from "../review/critique.ts";
 import type { Proposal } from "../options/pretrade.ts";
 import type { Motive } from "../options/discipline.ts";
@@ -25,7 +27,7 @@ const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
-  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
+  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
 const cmd = positionals[0];
 const now = values.now ? new Date(values.now) : new Date();
 const path = values.journal!;
@@ -51,10 +53,11 @@ if (cmd === "open") {
     leader: brief.leader === undefined ? undefined : brief.leader, verdict: brief.verdict ?? null, verdictReasons: brief.reasons ?? [],
     futuresGapPct: (brief.reasons ?? []).some((x: string) => /期货跳空/.test(x)) ? 1.5 : null, open: openPaper(j), bars, calendar, now, capital: j.capital });
   process.stdout.write(renderCritique(cr) + "\n");
-  const r = paperOpen(j, p, { critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], now });
+  const r = paperOpen(j, p, { kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
   j.entries.push(r.entry!); save();
+  process.stdout.write(renderRiskPlan(r.entry!.riskPlan!) + "\n");
   process.stdout.write(`[paper] 模拟开仓 ${r.entry!.id} ${r.entry!.symbol} ${r.entry!.strategy} · 最大亏损 $${r.entry!.maxLoss} · 当前持仓 ${r.entry!.concurrentAtEntry} → ${path}（不是真实订单）\n`);
 } else if (cmd === "mark") {
   const files = values.quotes ?? (existsSync("data/in") ? readdirSync("data/in").filter((f) => /chain.*\.json$/.test(f)).map((f) => join("data/in", f)) : []);
@@ -75,7 +78,7 @@ if (cmd === "open") {
   j.entries[j.entries.indexOf(e!)] = r.entry!; save();
   process.stdout.write(`[paper] 模拟平仓 ${e!.id} P&L $${r.entry!.pnl} · ${r.entry!.exitKind}${r.entry!.exitKind === "discretionary" ? "（失效条件未触发、时间止损未到 → 记为提前离场）" : ""}\n`);
 } else if (cmd === "list") {
-  const rows = j.entries.filter((e) => e.mode === "paper").map((e) => `| ${e.id} | ${e.symbol} | ${e.strategy} | ${e.openedAt.slice(0, 10)} | ${e.closedAt?.slice(0, 10) ?? "open"} | ${e.pnl ?? e.marks?.at(-1)?.pnl ?? "—"} | ${e.exitKind ?? ""} |`);
+  const rows = j.entries.filter((e) => e.mode === "paper").map((e) => `| ${e.id}${e.kind === "practice" ? "（练习）" : ""} | ${e.symbol} | ${e.strategy} | ${e.openedAt.slice(0, 10)} | ${e.closedAt?.slice(0, 10) ?? "open"} | ${e.pnl ?? e.marks?.at(-1)?.pnl ?? "—"} | ${e.exitKind ?? ""} |`);
   const r = readiness({ journal: j.entries, capital: j.capital, shockDates: [] });
   process.stdout.write(["| id | 标的 | 结构 | 开仓 | 平仓 | P&L | 离场 |", "|---|---|---|---|---|---|---|", ...rows, "", `持仓 ${openPaper(j).length} · 已平仓 ${r.stats.paperClosed} · 期望值 $${r.stats.ev}/笔 · 详见 npm run readiness`].join("\n") + "\n");
 } else fail(["用法：npm run paper -- open|close|list|mark（只做模拟交易）"]);

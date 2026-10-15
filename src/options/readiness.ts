@@ -8,7 +8,7 @@ import { fullPnl, type JournalEntry } from "./journal.ts";
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
 
 export interface Criterion { id: string; title: string; pass: boolean; detail: string[]; missing: string[] }
-export interface Readiness { ready: boolean; criteria: Criterion[]; stats: Record<string, number | string | null>; next: string }
+export interface Readiness { ready: boolean; criteria: Criterion[]; stats: Record<string, number | string | null>; practice: { n: number; closed: number; ev: number; total: number }; next: string }
 export interface ReadinessInput { journal: JournalEntry[]; capital: number; shockDates: string[]; rules?: RuleCard; maxViolations?: number }
 
 const day = (s: string) => s.slice(0, 10);
@@ -32,7 +32,10 @@ export function isPremature(e: JournalEntry): boolean {
 
 export function readiness(i: ReadinessInput): Readiness {
   const R = i.rules ?? DEFAULT_RULES, maxV = i.maxViolations ?? 1;
-  const paper = i.journal.filter((e) => e.mode === "paper");
+  // practice trades never count toward readiness (shown separately)
+  const paper = i.journal.filter((e) => e.mode === "paper" && e.kind !== "practice");
+  const practice = i.journal.filter((e) => e.mode === "paper" && e.kind === "practice");
+  const pc = practice.filter((e) => e.closedAt && e.pnl != null).map(fullPnl);
   const closed = paper.filter((e) => e.closedAt && e.pnl != null).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
   const C: Criterion[] = [];
 
@@ -91,16 +94,18 @@ export function readiness(i: ReadinessInput): Readiness {
 
   const ready = C.every((c) => c.pass);
   return { ready, criteria: C, stats: { paperClosed: closed.length, spanDays: span, winRate: r2(ex.winRate), ev: r2(ex.ev), evTrim2: r2(ex2.ev), maxDrawdown: r2(mdd), premature: premature.length, ignoredWarnLosses: ignored.length, peakConcurrent: peakConc, violations: viol.length },
+    practice: { n: practice.length, closed: pc.length, ev: r2(expectancy(pc).ev), total: r2(pc.reduce((a, b) => a + b, 0)) },
     next: ready ? "全部通过 → 真钱从 1/4 仓位开始，约 20 笔后再恢复正常仓位（上限不变：单笔 1%、同标的 3%、日亏 2%）。" : "未通过 → 继续模拟交易，不上真钱。" };
 }
 
 export function renderReadiness(r: Readiness): string {
-  const L = ["# 实盘准备度评分卡 Live-readiness", "", `**结论：${r.ready ? "✅ 可以开始 1/4 仓位实盘" : "🛑 还不能上真钱"}** — ${r.next}`, "", "_只根据模拟交易日志（mode: \"paper\"）计算。胜率仅作参考；期望值和亏损上限说了算。_", ""];
+  const L = ["# 实盘准备度评分卡 Live-readiness", "", `**结论：${r.ready ? "✅ 可以开始 1/4 仓位实盘" : "🛑 还不能上真钱"}** — ${r.next}`, "", "_只根据正式模拟交易（mode: \"paper\", kind: formal）计算。胜率仅作参考；期望值和亏损上限说了算。_", ""];
   r.criteria.forEach((c, n) => {
     L.push(`## ${n + 1}. ${c.pass ? "✅" : "❌"} ${c.title}`, ...c.detail.map((d) => `- ${d}`));
     if (c.missing.length) L.push(`- **缺什么：**`, ...c.missing.slice(0, 15).map((m) => `  - ${m}`), ...(c.missing.length > 15 ? [`  - …另 ${c.missing.length - 15} 项`] : []));
     L.push("");
   });
+  L.push(`## 练习单（kind: practice，不计入以上任何统计）`, `- ${r.practice.n} 笔（已平仓 ${r.practice.closed}）· 期望值 $${r.practice.ev}/笔 · 合计 $${r.practice.total}`, "");
   L.push("> 这些都是我自己的决定。改正，也是我的责任。（大佬复盘）");
   return L.join("\n") + "\n";
 }
