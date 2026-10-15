@@ -8,6 +8,10 @@
   "scripts": {
     "poll": "node src/cli/poll.ts",
     "stream": "node src/cli/stream.ts",
+    "alerts": "node src/cli/alerts.ts",
+    "levels": "node src/cli/levels.ts",
+    "run": "bash scripts/run.sh",
+    "calendar:snapshot": "node scripts/snapshot-calendar.ts",
     "digest": "node src/cli/digest.ts",
     "test": "node --test \"test/**/*.test.ts\"",
     "typecheck": "tsc -p tsconfig.json",
