@@ -30,7 +30,7 @@ test("brief: ONE verdict = union of macro/premarket/scenario NO_TRADE reasons", 
 test("brief: sections 1–7 in order, single verdict line, SESSION_QUESTIONS as self-check", () => {
   const r = buildBrief({ now, ...parts(), calendar: [] });
   const heads = [...r.md.matchAll(/^## (\d(\.\d)?)/gm)].map((m) => m[1]);
-  assert.deepEqual(heads, ["1", "2", "3", "3.1", "3.2", "4", "5", "6", "7"]);
+  assert.deepEqual(heads, ["1", "2", "2.1", "3", "3.1", "3.2", "4", "5", "6", "7"]);
   const s3 = r.md.split("## 3.1")[0]!.split("## 3.")[1]!;
   assert.match(s3, /国债/); assert.doesNotMatch(s3, /HYG 信用确认/, "only bonds before the oil block");
   assert.match(r.md, /## 3\.1 【用户要求】原油\n_用户本人的要求.*不是大佬流程，也不是 DK 补充/);

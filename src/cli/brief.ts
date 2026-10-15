@@ -15,7 +15,8 @@ import { fetchDailyOnce, fetchCount, type Obs } from "../macro/fetch.ts";
 import { OIL_IDS } from "../macro/oil.ts";
 import { PM_SERIES, buildPremarket, alarmItems } from "../macro/premarket.ts";
 import { buildScenarios, scenarioAlarmItems, type ScenarioId } from "../macro/scenarios.ts";
-import { buildBrief } from "../macro/brief.ts";
+import { buildBrief, briefVerdict } from "../macro/brief.ts";
+import { buildTradePlan } from "../macro/tradeplan.ts";
 import { parseEarnings } from "../options/events.ts";
 import { referenceLevels, renderReferenceLevels } from "../levels.ts";
 import { loadDailyBars } from "../adapters/bars.ts";
@@ -52,14 +53,19 @@ const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;
 const sc = buildScenarios({ now, data, calendar, headlines: ranked.slice(0, 40).map((r) => r.headline), earningsCount: earnings?.length ?? null, regimeLabel: macro.regime.label, previousLeader });
 let levelsMd: string | null = null;
+const planRefs: Record<string, ReturnType<typeof referenceLevels>> = {}; const planB5: Record<string, number | null> = {};
 if (!values.offline) {
   const parts: string[] = [];
   for (const t of values.tickers.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean)) {
-    try { const r = await loadDailyBars(t); parts.push(renderReferenceLevels(t, referenceLevels(r.bars), r.source === "robinhood" ? "Robinhood" : "Yahoo（无 Robinhood 文件）")); } catch (e) { failed[`levels ${t}`] = (e as Error).message; }
+    try { const r = await loadDailyBars(t); planRefs[t] = referenceLevels(r.bars); const b = r.bars; planB5[t] = b.length > 5 ? ((b.at(-1)!.c - b[b.length - 6]!.c) / b[b.length - 6]!.c) * 100 : null; parts.push(renderReferenceLevels(t, referenceLevels(r.bars), r.source === "robinhood" ? "Robinhood" : "Yahoo（无 Robinhood 文件）")); } catch (e) { failed[`levels ${t}`] = (e as Error).message; }
   }
   levelsMd = parts.join("\n");
 }
-const res = buildBrief({ now, macro, pm, sc, levelsMd, calendar, failed });
+// 今日交易计划 needs TLT levels too (not a default levels ticker)
+for (const t of ["SPY", "QQQ", "IWM", "TLT"]) if (!planRefs[t]) { try { const r = await loadDailyBars(t); planRefs[t] = referenceLevels(r.bars); const b = r.bars; planB5[t] = b.length > 5 ? ((b.at(-1)!.c - b[b.length - 6]!.c) / b[b.length - 6]!.c) * 100 : null; } catch { /* candidate shows "没有价位数据" */ } }
+const { verdict: v0, reasons: r0 } = briefVerdict({ macro, pm, sc });
+const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: process.env.ALPHA_CAPITAL ? Number(process.env.ALPHA_CAPITAL) : null });
+const res = buildBrief({ now, macro, pm, sc, levelsMd, planLines: plan.lines, calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {
   if (pm.alarms.length) store.insert(alarmItems(pm.alarms, now), { stance: "center", tier: 1 }, now);
@@ -68,7 +74,7 @@ if (!values["no-alarms"]) {
 store.close();
 const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); };
 write(values.out, res.md);
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, alarms: pm.alarms, failed }, null, 2) + "\n");
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified, alarms: pm.alarms, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");

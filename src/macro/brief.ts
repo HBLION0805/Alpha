@@ -1,7 +1,7 @@
 /**
  * Unified Chinese daily brief (P3, 2026-10-14): ONE report, ONE NO_TRADE verdict. Replaces the separate macro /
  * premarket / scenarios reports. Pure: takes the already-built parts; the CLI fetches each series once.
- * Order: 1 结论+领先情景 · 2 警报 · 3【大佬流程】①国债 · 3.1【用户要求】原油 · 3.2【大佬流程】续 · 4【DK 补充】 · 5 价位（择时） · 6 日历 · 7 盘前自检 (纪律 #2/#20).
+ * Order: 1 结论+领先情景 · 2 警报 · 2.1 今日交易计划 · 3【大佬流程】①国债 · 3.1【用户要求】原油 · 3.2【大佬流程】续 · 4【DK 补充】 · 5 价位（择时） · 6 日历 · 7 盘前自检 (纪律 #2/#20).
  */
 import type { MacroReport } from "./build.ts";
 import { BY, OIL_HEAD, type PremarketResult } from "./premarket.ts";
@@ -12,7 +12,7 @@ import { MECHANICS_QUESTIONS } from "./render.ts";
 
 const LABEL_ZH: Record<string, string> = { RISK_ON: "风险偏好", RISK_OFF: "避险", HAWKISH_TIGHTENING: "鹰派收紧", STAGFLATION_ISH: "类滞胀", DISINFLATION_EASING: "通胀回落/宽松", MIXED: "信号混杂" };
 export type Verdict = "NO_TRADE" | "CAUTION" | "RESEARCH_OK";
-export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult; sc: ScenarioResult; levelsMd?: string | null; calendar: CalendarEvent[]; failed?: Record<string, string> }
+export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult; sc: ScenarioResult; levelsMd?: string | null; planLines?: string[]; calendar: CalendarEvent[]; failed?: Record<string, string> }
 export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
 
 /** Single verdict: any NO_TRADE reason from macro risk, premarket or scenarios → NO_TRADE; else macro CAUTION → CAUTION. */
@@ -45,6 +45,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     ...(i.sc.leader ? [`- 若做（仍需过 pretrade 闸门）：${lead.s.expressions[0]}`, `- 失效条件：${lead.s.invalidation.join("；")}`] : []),
     "- 情景权重为定性排序，不是概率。详见 4.3。", "",
     "## 2. 警报", "", ...(alarms.length ? alarms.map((a) => `- ${a}`) : ["- 无"]), "",
+    "## 2.1 今日交易计划", "", ...(i.planLines ?? ["- 未生成（缺少价位/数据）→ 今天没有计划内触发，NO_TRADE"]), "",
     "## 3. 【大佬流程】", "_来源：knowledge/mentor/discipline/premarket-routine.md_", "", ...i.pm.mentorLines.slice(0, i.pm.bondLines), "",
     "## 3.1 【用户要求】原油", OIL_HEAD[1]!, "", ...i.pm.oilLines, "",
     "## 3.2 【大佬流程】（续）", "", ...i.pm.mentorLines.slice(i.pm.bondLines), "",
