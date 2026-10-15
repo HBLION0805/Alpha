@@ -61,7 +61,7 @@ export interface JournalEntry {
   /** exit kind; "discretionary" before invalidation and before the time stop = premature (大佬复盘 mentor-winrate-review) */
   exitKind?: "invalidation" | "time_stop" | "take_profit" | "max_loss" | "discretionary" | "expiry" | "weekend_rule";
   /** net debit per contract at entry and where it came from */
-  entryPrice?: number | null; entryPriceSource?: "paper_fill" | "robinhood_orders" | "user" | "unknown";
+  entryPrice?: number | null; entryPriceSource?: "paper_fill" | "robinhood_orders" | "broker" | "user" | "unknown";
   /** settlement used by paper expire (equity close or VIX AM VRO) */
   settlement?: { at: string; prices: Record<string, number>; kind: "PM_close" | "AM_VRO"; value: number };
   timeStopAt?: string;

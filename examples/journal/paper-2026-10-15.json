@@ -79,7 +79,10 @@
       "pnl": -3,
       "exitKind": "discretionary",
       "exitReason": "user closed in Robinhood @0.01 (0.07/0.06)",
-      "entryNote": "The user recalled $2; Robinhood orders show a $4 debit (0.04). Closed 10/15 14:48 ET for $1 → −$3."
+      "entryNote": "The user recalled $2; Robinhood orders show a $4 debit (0.04). Closed 10/15 14:48 ET for $1 → −$3.",
+      "violations": [
+        "no_pre_written_plan"
+      ]
     },
     {
       "id": "mentor-nvda-cds-2026-10-15",
@@ -146,6 +149,17 @@
         },
         {
           "at": "2026-10-15T21:09:25.909Z",
+          "value": 168,
+          "pnl": 8,
+          "spot": null,
+          "sources": [
+            "NVDA 220c robinhood 3.5",
+            "NVDA 225c robinhood 1.82"
+          ],
+          "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:12:31.171Z",
           "value": 168,
           "pnl": 8,
           "spot": null,
@@ -232,6 +246,17 @@
             "INTC 100c robinhood 1.82"
           ],
           "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:12:31.171Z",
+          "value": 188,
+          "pnl": 48,
+          "spot": null,
+          "sources": [
+            "INTC 95c robinhood 3.7",
+            "INTC 100c robinhood 1.82"
+          ],
+          "estimated": false
         }
       ],
       "entryPrice": 1.4,
@@ -292,6 +317,16 @@
         },
         {
           "at": "2026-10-15T21:09:25.909Z",
+          "value": 322.5,
+          "pnl": 62.5,
+          "spot": null,
+          "sources": [
+            "GDX 90c robinhood 3.225"
+          ],
+          "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:12:31.171Z",
           "value": 322.5,
           "pnl": 62.5,
           "spot": null,
@@ -400,7 +435,21 @@
             "CRWV 50p robinhood 0.005"
           ],
           "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:12:31.171Z",
+          "value": 1,
+          "pnl": -11,
+          "spot": null,
+          "sources": [
+            "CRWV 55p robinhood 0.015",
+            "CRWV 50p robinhood 0.005"
+          ],
+          "estimated": false
         }
+      ],
+      "violations": [
+        "no_pre_written_plan"
       ]
     },
     {
@@ -489,7 +538,21 @@
             "VIX 25c robinhood 0.1"
           ],
           "estimated": false
+        },
+        {
+          "at": "2026-10-15T21:12:31.171Z",
+          "value": 9,
+          "pnl": -12,
+          "spot": null,
+          "sources": [
+            "VIX 20c robinhood 0.19",
+            "VIX 25c robinhood 0.1"
+          ],
+          "estimated": false
         }
+      ],
+      "violations": [
+        "no_pre_written_plan"
       ]
     },
     {
@@ -554,8 +617,464 @@
       "exitReason": "user closed in Robinhood @1.94 (3.35/1.41), credit $194",
       "violations": [
         "exceeds_1pct_cap_at_5000",
-        "exceeds_1pct_cap"
+        "exceeds_1pct_cap",
+        "no_pre_written_plan"
       ]
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "entryPriceSource": "broker",
+      "costUnknown": false,
+      "thesis": "not recorded at entry",
+      "stop": "not recorded at entry",
+      "invalidation": "not recorded at entry",
+      "hedge": "not recorded at entry",
+      "takeProfitNote": "not recorded at entry",
+      "exitRules": [],
+      "view": {
+        "direction": "bearish",
+        "volatility": "n/a"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Real Robinhood trade (fills from read-only order history); plan not recorded at entry",
+      "violations": [
+        "no_pre_written_plan"
+      ],
+      "id": "mcd-pds-2026-10-16-real",
+      "symbol": "MCD",
+      "strategy": "put_debit_spread",
+      "dir": "bearish",
+      "openedAt": "2026-10-15T19:30:44Z",
+      "entryPrice": 0.12,
+      "maxLoss": 12,
+      "legs": [
+        {
+          "underlying": "MCD",
+          "type": "put",
+          "strike": 237.5,
+          "qty": 1,
+          "premium": 0.16,
+          "expiration": "2026-10-16"
+        },
+        {
+          "underlying": "MCD",
+          "type": "put",
+          "strike": 235,
+          "qty": -1,
+          "premium": 0.04,
+          "expiration": "2026-10-16"
+        }
+      ],
+      "marks": [
+        {
+          "at": "2026-10-15T21:12:31.171Z",
+          "value": 9.5,
+          "pnl": -2.5,
+          "spot": null,
+          "sources": [
+            "MCD 237.5p robinhood 0.145",
+            "MCD 235p robinhood 0.05"
+          ],
+          "estimated": false
+        }
+      ]
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "entryPriceSource": "broker",
+      "costUnknown": false,
+      "thesis": "not recorded at entry",
+      "stop": "not recorded at entry",
+      "invalidation": "not recorded at entry",
+      "hedge": "not recorded at entry",
+      "takeProfitNote": "not recorded at entry",
+      "exitRules": [],
+      "view": {
+        "direction": "bullish",
+        "volatility": "n/a"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Real Robinhood trade (fills from read-only order history); plan not recorded at entry",
+      "violations": [
+        "no_pre_written_plan"
+      ],
+      "id": "iwm-cds-2026-10-16-real",
+      "symbol": "IWM",
+      "strategy": "call_debit_spread",
+      "dir": "bullish",
+      "openedAt": "2026-10-15T19:27:53Z",
+      "entryPrice": 0.31,
+      "maxLoss": 31,
+      "legs": [
+        {
+          "underlying": "IWM",
+          "type": "call",
+          "strike": 277,
+          "qty": 1,
+          "premium": 0.4,
+          "expiration": "2026-10-16"
+        },
+        {
+          "underlying": "IWM",
+          "type": "call",
+          "strike": 280,
+          "qty": -1,
+          "premium": 0.09,
+          "expiration": "2026-10-16"
+        }
+      ],
+      "marks": [
+        {
+          "at": "2026-10-15T21:12:31.171Z",
+          "value": 33,
+          "pnl": 2,
+          "spot": null,
+          "sources": [
+            "IWM 277c robinhood 0.435",
+            "IWM 280c robinhood 0.105"
+          ],
+          "estimated": false
+        }
+      ]
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "entryPriceSource": "broker",
+      "costUnknown": false,
+      "thesis": "not recorded at entry",
+      "stop": "not recorded at entry",
+      "invalidation": "not recorded at entry",
+      "hedge": "not recorded at entry",
+      "takeProfitNote": "not recorded at entry",
+      "exitRules": [],
+      "view": {
+        "direction": "bullish",
+        "volatility": "n/a"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Real Robinhood trade (fills from read-only order history); plan not recorded at entry",
+      "violations": [
+        "no_pre_written_plan"
+      ],
+      "id": "nvda-cds-2026-10-16-real",
+      "symbol": "NVDA",
+      "strategy": "call_debit_spread",
+      "dir": "bullish",
+      "openedAt": "2026-10-15T19:15:42Z",
+      "entryPrice": 0.19,
+      "maxLoss": 19,
+      "legs": [
+        {
+          "underlying": "NVDA",
+          "type": "call",
+          "strike": 225,
+          "qty": 1,
+          "premium": 0.31,
+          "expiration": "2026-10-16"
+        },
+        {
+          "underlying": "NVDA",
+          "type": "call",
+          "strike": 227.5,
+          "qty": -1,
+          "premium": 0.12,
+          "expiration": "2026-10-16"
+        }
+      ],
+      "marks": [
+        {
+          "at": "2026-10-15T21:12:31.171Z",
+          "value": 12,
+          "pnl": -7,
+          "spot": null,
+          "sources": [
+            "NVDA 225c robinhood 0.24",
+            "NVDA 227.5c robinhood 0.12"
+          ],
+          "estimated": false
+        }
+      ]
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "entryPriceSource": "broker",
+      "costUnknown": false,
+      "thesis": "not recorded at entry",
+      "stop": "not recorded at entry",
+      "invalidation": "not recorded at entry",
+      "hedge": "not recorded at entry",
+      "takeProfitNote": "not recorded at entry",
+      "exitRules": [],
+      "view": {
+        "direction": "bearish",
+        "volatility": "n/a"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Real Robinhood trade (fills from read-only order history); plan not recorded at entry",
+      "violations": [
+        "no_pre_written_plan"
+      ],
+      "id": "aapl-pds-2026-10-16-real",
+      "symbol": "AAPL",
+      "strategy": "put_debit_spread",
+      "dir": "bearish",
+      "openedAt": "2026-10-15T19:14:25Z",
+      "entryPrice": 0.21,
+      "maxLoss": 21,
+      "legs": [
+        {
+          "underlying": "AAPL",
+          "type": "put",
+          "strike": 337.5,
+          "qty": 1,
+          "premium": 0.44,
+          "expiration": "2026-10-16"
+        },
+        {
+          "underlying": "AAPL",
+          "type": "put",
+          "strike": 335,
+          "qty": -1,
+          "premium": 0.23,
+          "expiration": "2026-10-16"
+        }
+      ],
+      "marks": [
+        {
+          "at": "2026-10-15T21:12:31.171Z",
+          "value": 34,
+          "pnl": 13,
+          "spot": null,
+          "sources": [
+            "AAPL 337.5p robinhood 0.82",
+            "AAPL 335p robinhood 0.48"
+          ],
+          "estimated": false
+        }
+      ]
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "entryPriceSource": "broker",
+      "costUnknown": false,
+      "thesis": "not recorded at entry",
+      "stop": "not recorded at entry",
+      "invalidation": "not recorded at entry",
+      "hedge": "not recorded at entry",
+      "takeProfitNote": "not recorded at entry",
+      "exitRules": [],
+      "view": {
+        "direction": "bullish vol",
+        "volatility": "n/a"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Real Robinhood trade (fills from read-only order history); plan not recorded at entry",
+      "violations": [
+        "no_pre_written_plan"
+      ],
+      "id": "vix-cds-2030-2026-10-21-real",
+      "symbol": "VIX",
+      "strategy": "call_debit_spread",
+      "dir": "bullish vol",
+      "openedAt": "2026-10-13T19:35:04Z",
+      "entryPrice": 0.14,
+      "maxLoss": 14,
+      "legs": [
+        {
+          "underlying": "VIX",
+          "type": "call",
+          "strike": 20,
+          "qty": 1,
+          "premium": 0.19,
+          "expiration": "2026-10-21"
+        },
+        {
+          "underlying": "VIX",
+          "type": "call",
+          "strike": 30,
+          "qty": -1,
+          "premium": 0.05,
+          "expiration": "2026-10-21"
+        }
+      ],
+      "closedAt": "2026-10-14T15:17:12Z",
+      "pnl": 1,
+      "exitKind": "discretionary",
+      "exitReason": "closed in Robinhood @0.15 (20C 0.20 / 30C 0.05)",
+      "reviewPending": true
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "entryPriceSource": "broker",
+      "costUnknown": false,
+      "thesis": "not recorded at entry",
+      "stop": "not recorded at entry",
+      "invalidation": "not recorded at entry",
+      "hedge": "not recorded at entry",
+      "takeProfitNote": "not recorded at entry",
+      "exitRules": [],
+      "view": {
+        "direction": "pin ~56",
+        "volatility": "n/a"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Real Robinhood trade (fills from read-only order history); plan not recorded at entry",
+      "violations": [
+        "no_pre_written_plan",
+        "exceeds_1pct_cap"
+      ],
+      "id": "dram-cfly-2026-10-16-real",
+      "symbol": "DRAM",
+      "strategy": "call_butterfly",
+      "dir": "pin ~56",
+      "openedAt": "2026-10-13T19:56:33Z",
+      "entryPrice": 0.29,
+      "maxLoss": 58,
+      "legs": [
+        {
+          "underlying": "DRAM",
+          "type": "call",
+          "strike": 54,
+          "qty": 2,
+          "premium": 0.74,
+          "expiration": "2026-10-16"
+        },
+        {
+          "underlying": "DRAM",
+          "type": "call",
+          "strike": 56,
+          "qty": -4,
+          "premium": 0.26,
+          "expiration": "2026-10-16"
+        },
+        {
+          "underlying": "DRAM",
+          "type": "call",
+          "strike": 58,
+          "qty": 2,
+          "premium": 0.07,
+          "expiration": "2026-10-16"
+        }
+      ],
+      "closedAt": "2026-10-14T17:11:31Z",
+      "pnl": -40,
+      "exitKind": "discretionary",
+      "exitReason": "closed in Robinhood @0.09 ×2 = $18 credit (54C 0.19 / 56C 0.06 / 58C 0.02)",
+      "reviewPending": true
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "entryPriceSource": "broker",
+      "costUnknown": false,
+      "thesis": "not recorded at entry",
+      "stop": "not recorded at entry",
+      "invalidation": "not recorded at entry",
+      "hedge": "not recorded at entry",
+      "takeProfitNote": "not recorded at entry",
+      "exitRules": [],
+      "view": {
+        "direction": "bearish",
+        "volatility": "n/a"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Real Robinhood trade (fills from read-only order history); plan not recorded at entry",
+      "violations": [
+        "no_pre_written_plan"
+      ],
+      "id": "nvda-pds-0dte-2026-10-14-real",
+      "symbol": "NVDA",
+      "strategy": "put_debit_spread",
+      "dir": "bearish",
+      "openedAt": "2026-10-14T17:29:03Z",
+      "entryPrice": 0.32,
+      "maxLoss": 32,
+      "is0dte": true,
+      "legs": [
+        {
+          "underlying": "NVDA",
+          "type": "put",
+          "strike": 220,
+          "qty": 1,
+          "premium": 0.44,
+          "expiration": "2026-10-14"
+        },
+        {
+          "underlying": "NVDA",
+          "type": "put",
+          "strike": 217.5,
+          "qty": -1,
+          "premium": 0.12,
+          "expiration": "2026-10-14"
+        }
+      ],
+      "closedAt": "2026-10-14T18:31:15Z",
+      "pnl": 8,
+      "exitKind": "discretionary",
+      "exitReason": "closed in Robinhood @0.40 (220P 0.49 / 217.5P 0.09)",
+      "reviewPending": true
     }
   ]
 }
