@@ -4,7 +4,8 @@
  * Each check names the section it enforces. These are signals and prompts; the user executes.
  */
 import type { Bar } from "../levels.ts";
-import { swings, sma, roundNumbers } from "../levels.ts";
+import { swings, roundNumbers } from "../levels.ts";
+import { sma, rsi, macdHist, vortexLast } from "../adapters/indicators.ts";
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
 
 export const SL = (s: string) => `止损学 §${s} (knowledge/mentor/discipline/stop-loss.md)`;
@@ -112,14 +113,6 @@ export function overnightCheck(o: OvernightInput, R: RuleCard = DEFAULT_RULES): 
 }
 
 // ── Technical Stop Loss: count deteriorating signals from bars ───────────
-const ema = (xs: number[], n: number) => { const k = 2 / (n + 1); const out: number[] = []; xs.forEach((x, i) => out.push(i ? x * k + out[i - 1]! * (1 - k) : x)); return out; };
-function rsi(c: number[], n = 14): number[] {
-  const out: number[] = []; let g = 0, l = 0;
-  for (let i = 1; i < c.length; i++) { const d = c[i]! - c[i - 1]!; const up = Math.max(d, 0), dn = Math.max(-d, 0);
-    if (i <= n) { g += up / n; l += dn / n; } else { g = (g * (n - 1) + up) / n; l = (l * (n - 1) + dn) / n; }
-    if (i >= n) out.push(l === 0 ? 100 : 100 - 100 / (1 + g / l)); }
-  return out;
-}
 export interface TechSignal { id: string; deteriorating: boolean | null; detail: string }
 export function technicalSignals(bars: Bar[], side: "long" | "short" = "long"): TechSignal[] {
   const s = side === "long" ? 1 : -1;
@@ -129,7 +122,7 @@ export function technicalSignals(bars: Bar[], side: "long" | "short" = "long"): 
   const key = sw.at(-1)?.price;
   out.push({ id: "support_break", deteriorating: key == null ? null : s * (last - key) < 0, detail: key == null ? "no swing level" : `last ${last} vs key ${side === "long" ? "support" : "resistance"} ${key}` });
   if (c.length >= 35) {
-    const m = ema(c, 12).map((x, i) => x - ema(c, 26)[i]!); const sig = ema(m, 9); const h = m.map((x, i) => x - sig[i]!);
+    const h = macdHist(c);
     out.push({ id: "macd", deteriorating: s * h.at(-1)! < 0 && s * (h.at(-1)! - h.at(-2)!) < 0, detail: `hist ${h.at(-1)!.toFixed(3)}` });
   } else out.push({ id: "macd", deteriorating: null, detail: "need ≥35 bars" });
   const r = rsi(c);
@@ -139,9 +132,8 @@ export function technicalSignals(bars: Bar[], side: "long" | "short" = "long"): 
   const m50 = sma(c, 50), m200 = sma(c, 200);
   out.push({ id: "ma50_200", deteriorating: m50 == null ? null : s * (last - m50) < 0 || (m200 != null && s * (last - m200) < 0), detail: `50MA ${m50?.toFixed(2) ?? "—"}, 200MA ${m200?.toFixed(2) ?? "—"}` });
   if (bars.length >= 15) {
-    let vp = 0, vm = 0, tr = 0;
-    for (let i = bars.length - 14; i < bars.length; i++) { const b = bars[i]!, p = bars[i - 1]!; vp += Math.abs(b.h - p.l); vm += Math.abs(b.l - p.h); tr += Math.max(b.h - b.l, Math.abs(b.h - p.c), Math.abs(b.l - p.c)); }
-    out.push({ id: "vortex", deteriorating: s * (vp - vm) < 0, detail: `VI+ ${(vp / tr).toFixed(2)} VI- ${(vm / tr).toFixed(2)}` });
+    const v = vortexLast(bars.map((b) => b.h), bars.map((b) => b.l), c);
+    out.push({ id: "vortex", deteriorating: s * (v.plus - v.minus) < 0, detail: `VI+ ${v.plus.toFixed(2)} VI- ${v.minus.toFixed(2)}` });
   } else out.push({ id: "vortex", deteriorating: null, detail: "need ≥15 bars" });
   let gap: number | null = null;
   for (let i = bars.length - 1; i > 0 && gap == null; i--) {

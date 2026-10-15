@@ -47,12 +47,8 @@ export function parseBars(json: unknown): Bar[] {
   return ok.sort((a, b) => a.t.localeCompare(b.t));
 }
 
-export function sma(values: number[], n: number): number | null {
-  if (values.length < n) return null;
-  let s = 0;
-  for (let i = values.length - n; i < values.length; i++) s += values[i]!;
-  return s / n;
-}
+export { sma } from "./adapters/indicators.ts";
+import { sma } from "./adapters/indicators.ts";
 
 /** Fractal swings: bar high/low is the extreme of `k` bars on each side. */
 export function swings(bars: Bar[], k = 3): Array<{ price: number; kind: "swing_high" | "swing_low"; i: number }> {
