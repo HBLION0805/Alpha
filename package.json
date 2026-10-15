@@ -18,7 +18,8 @@
     "validate": "npm run typecheck && npm test",
     "options": "node src/cli/options.ts",
     "volume": "node src/cli/volume.ts",
-    "brief": "node src/cli/brief.ts"
+    "brief": "node src/cli/brief.ts",
+    "readiness": "node src/cli/readiness.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",

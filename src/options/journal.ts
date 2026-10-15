@@ -33,6 +33,23 @@ export interface JournalEntry {
   hesitations?: Array<{ at: string; about: "stop" | "take_profit"; note?: string }>; // #13 second → EXIT
   /** #19 thesis and position judged separately at every review */
   reviews?: Array<{ at: string; thesisValid: boolean; positionValid: boolean; note?: string }>;
+  // --- paper trading + live-readiness (src/options/readiness.ts) ---
+  /** "paper" = simulated entry on real data; default "live" */
+  mode?: "paper" | "live";
+  /** account size when the trade was opened (for the 1% / 2% checks) */
+  capitalAtEntry?: number;
+  /** timestamps proving thesis and stop were written BEFORE entry (must be ≤ openedAt) */
+  thesisRecordedAt?: string; stopRecordedAt?: string; thesis?: string; stop?: string;
+  /** discipline violations found at review: chasing, unplanned_add, emotional_sizing, motive_share, ... */
+  violations?: string[];
+  /** every loss: judgment (thesis/selection) vs execution (sizing, entry, exit, rules) + tags for repeated-error detection */
+  lossReview?: { at: string; errorClass: "judgment" | "execution"; errorTags: string[]; note?: string };
+  /** exit kind; "discretionary" before invalidation and before the time stop = premature (大佬复盘 mentor-winrate-review) */
+  exitKind?: "invalidation" | "time_stop" | "take_profit" | "max_loss" | "discretionary";
+  timeStopAt?: string;
+  /** open positions (including this one) at entry */
+  concurrentAtEntry?: number;
+  motive?: "thesis" | "share" | "entertain" | "excitement";
 }
 
 export function validateEntry(e: Partial<JournalEntry>): string[] {
