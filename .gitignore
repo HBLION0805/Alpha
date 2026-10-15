@@ -97,3 +97,6 @@ data/runtime/options-etf-observation-recovery-*/
 
 # Private weekly source roots, raw public responses and local acceptance
 /data/runtime/options-weekly-sources/
+
+# news MVP runtime
+/data/
