@@ -1,3 +1,4 @@
+import { ACTORS } from "./macro/risk.ts";
 import type { Source } from "./types.ts";
 import type { ScoredCluster } from "./score.ts";
 import { compareNarratives, STANCE_LABEL } from "./narrative.ts";
@@ -56,6 +57,7 @@ export function renderDigest(d: DigestInput): string {
       L.push(`- **${STANCE_LABEL[v.stance]}** — ${hs.join(" · ")}${v.distinctive.length ? ` _(distinct framing: ${v.distinctive.join(", ")})_` : ""}`);
     }
     if (n.crossStance) L.push(`- _Not covered by: ${n.missing.map((s) => STANCE_LABEL[s]).join(", ") || "—"}_`);
+    if (i < 3) L.push(`- _参与者 / Actors: 谁在制定规则？谁在承担代价？谁拥有选择？各方的激励与恐惧？（${ACTORS.source}）_`);
     L.push("");
   });
 

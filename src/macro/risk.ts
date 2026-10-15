@@ -26,6 +26,7 @@ export interface RiskView {
   assets: AssetView[];
   checklist: string[];
   knowledge: KnowledgeRef[];
+  actors: typeof ACTORS;
 }
 
 export const HIGH_IMPACT = new Set(["FOMC", "CPI", "NFP", "PCE", "PPI"]);
@@ -39,6 +40,23 @@ export const CHECKLIST = [
   "NO_TRADE 是合法结果 / NO_TRADE is a valid outcome",
   "复盘先看亏损 / Review losses first",
 ];
+
+/**
+ * Actors prompt — from the mentor's supplement beyond the two courses
+ * (knowledge/mentor/MENTOR_NOTE_CLASS_AND_UPBRINGING.md). Quote is verbatim.
+ */
+export const ACTORS = {
+  source: "knowledge/mentor/MENTOR_NOTE_CLASS_AND_UPBRINGING.md",
+  quote: "股价、利率、汇率、商品价格，最后都是人做出决定以后留下来的数字结果。",
+  actors: ["政府 / government", "央行 / central bank", "基金经理 / fund managers", "企业家 / business owners", "消费者 / consumers"],
+  questions: [
+    "谁在制定规则？/ Who sets the rules here?",
+    "谁在承担代价？/ Who bears the cost?",
+    "谁拥有选择？/ Who has choices (and who has none)?",
+    "每个参与者的激励与恐惧是什么？/ Each actor's incentives and fears?",
+    "我自己正在参与什么游戏？/ What game am I playing?",
+  ],
+};
 
 /** ET wall-clock → UTC ms for a calendar event (handles EDT/EST by probing the offset). */
 export function eventUtcMs(e: CalendarEvent): number {
@@ -134,5 +152,5 @@ export function riskView(reg: Regime, confirmations: Array<{ headline: string; c
   ];
   const ids = [...new Set([...triggers].flatMap((t) => KNOWLEDGE_LINKS[t] ?? []))];
   const knowledge = ids.map((id) => knowledgeRef(id)).filter((x): x is KnowledgeRef => !!x);
-  return { overall, noTradeReasons: reasons, eventRisk: ev, assets, checklist: CHECKLIST, knowledge };
+  return { overall, noTradeReasons: reasons, eventRisk: ev, assets, checklist: CHECKLIST, knowledge, actors: ACTORS };
 }

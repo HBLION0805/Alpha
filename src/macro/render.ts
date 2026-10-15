@@ -34,6 +34,12 @@ export function renderMacro(r: MacroReport, full = true): string {
     for (const n of a.notes) L.push(`  - ${n}`);
   }
   L.push("", "Checklist:", ...r.risk.checklist.map((c) => `- [ ] ${c}`), "");
+  const ac = r.risk.actors;
+  if (ac) {
+    L.push(`${full ? "### " : "#### "}参与者 / Actors behind the numbers`, "", `> ${ac.quote} — _${ac.source}_`, "", `Actors: ${ac.actors.join(" · ")}`, "");
+    for (const q of ac.questions) L.push(`- [ ] ${q}`);
+    L.push("");
+  }
   if (full) {
     L.push("## 经验提醒 / From the playbook (verbatim, knowledge/catalog.json)", "");
     for (const k of r.risk.knowledge) L.push(`- **${k.title}** (\`${k.id}\`, ${k.kind}) — ${k.text}`);
