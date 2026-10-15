@@ -50,3 +50,13 @@ test("weekend rule: losing mentor_shadow at Fri ≥15:45 ET closes at today's ma
   assert.equal(weekendRule(E({ source: "mentor_shadow", marks: mk(-20) }), new Date("2026-10-16T19:30:00Z")), null, "before 15:45");
   assert.equal(weekendRule(E({ source: "mentor_shadow", marks: mk(-20, "2026-10-15T19:46:00Z") }), fri), null, "stale mark");
 });
+
+test("upsertMark keeps one mark per trade per ET day", async () => {
+  const { upsertMark } = await import("../src/options/paper.ts");
+  const e = E({ marks: [] });
+  const m = (at: string, pnl: number) => ({ at, value: 0, pnl, spot: null, sources: [] });
+  upsertMark(e, m("2026-10-15T20:00:00Z", 1)); upsertMark(e, m("2026-10-15T21:30:00Z", 2)); upsertMark(e, m("2026-10-16T03:00:00Z", 3)); // 23:00 ET 10/15
+  assert.deepEqual(e.marks!.map((x) => x.pnl), [3]);
+  upsertMark(e, m("2026-10-16T20:00:00Z", 4));
+  assert.deepEqual(e.marks!.map((x) => x.pnl), [3, 4]);
+});

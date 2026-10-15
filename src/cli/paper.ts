@@ -15,7 +15,7 @@ import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 import { writePostMortem, mentorCompare } from "../options/postmortem.ts";
 import { capFlags } from "../options/breach.ts";
-import { chainsFromQuotes } from "../options/paper.ts";
+import { chainsFromQuotes, upsertMark } from "../options/paper.ts";
 import { settleable, expireEntry, weekendRule, isAm } from "../options/expire.ts";
 import { checkTakeProfit, costBasis } from "../options/tpplan.ts";
 const etDate = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
@@ -70,21 +70,39 @@ if (cmd === "open") {
   const files = values.quotes ?? (existsSync("data/in") ? readdirSync("data/in").filter((f) => /chain.*\.json$/.test(f)).map((f) => join("data/in", f)) : []);
   const chains: Chain[] = files.map((f) => parseChain(unwrapJson(readFileSync(f, "utf8"))));
   // read-only Robinhood quotes (get_option_quotes joined to strikes) take priority over Black-Scholes
-  if (existsSync("data/in/rh-option-quotes.json")) chains.unshift(...chainsFromQuotes(JSON.parse(readFileSync("data/in/rh-option-quotes.json", "utf8"))));
+  if (existsSync("data/in/rh-option-quotes.json")) {
+    const qf = JSON.parse(readFileSync("data/in/rh-option-quotes.json", "utf8"));
+    const age = Math.round((now.getTime() - Date.parse(qf.fetchedAt)) / 60000);
+    if (!(age <= 60)) process.stdout.write(`⚠️ data/in/rh-option-quotes.json 已 ${age} 分钟未更新（例行任务应先刷新 Robinhood 报价，见 docs/ROUTINE_PAPER.md）\n`);
+    chains.unshift(...chainsFromQuotes(qf));
+  } else process.stdout.write("⚠️ 没有 data/in/rh-option-quotes.json → 用 Black-Scholes 估算（见 docs/ROUTINE_PAPER.md）\n");
   const cache = new Map<string, number | null>();
   const spot = async (s: string) => { if (!cache.has(s)) { const ch = chains.find((c) => c.symbol === s); cache.set(s, ch?.underlyingPrice ?? (await yahooDaily(s, 10).catch(() => [])).at(-1)?.c ?? null); } return cache.get(s)!; };
   // simulated positions + open real_practice records (marked for review only; never in caps/readiness)
   const toMark = [...openPaper(j), ...j.entries.filter((e) => e.source === "real_practice" && !e.closedAt && (e.legs ?? []).every((l) => l.premium != null))];
   for (const e of toMark) {
-    try { const m = await paperMark(e, { spot, chains }, now); (e.marks ??= []).push(m); process.stdout.write(`${e.id} ${e.symbol}: P&L $${m.pnl}${m.estimated ? "（估算）" : ""} (${((m.pnl / (e.capitalAtEntry ?? j.capital)) * 100).toFixed(2)}%) · ${m.sources.join("; ")}\n`);
+    try { const m = await paperMark(e, { spot, chains }, now); upsertMark(e, m); process.stdout.write(`${e.id} ${e.symbol}: P&L $${m.pnl}${m.estimated ? "（估算）" : ""} (${((m.pnl / (e.capitalAtEntry ?? j.capital)) * 100).toFixed(2)}%) · ${m.sources.join("; ")}\n`);
       for (const h of checkTakeProfit(e.takeProfit, costBasis(e.legs ?? []), m.pnl, etDate(now), e.tpHits)) { (e.tpHits ??= []).push(h.gainPct); process.stdout.write(`⚠️ ${e.id} ${e.symbol}: ${h.text}\n`); } }
     catch (err) { process.stdout.write(`${e.id} ${e.symbol}: 无法估值 ${(err as Error).message}\n`); }
   }
   for (const f of capFlags(j.entries, j.capital, now)) process.stdout.write(f + "\n");
   save();
+} else if (cmd === "legs") {
+  // open option legs that need a Robinhood quote (routine: get_option_instruments → get_option_quotes → data/in/rh-option-quotes.json)
+  const today = etDate(now), seen = new Set<string>(), out: object[] = [];
+  for (const e of j.entries.filter((x) => !x.closedAt && x.mode === "paper")) for (const l of e.legs ?? []) {
+    if (l.type === "stock" || !l.expiration || l.expiration < today) continue;
+    const u = (l.underlying ?? e.symbol).toUpperCase(), k = `${u}|${l.type}|${l.strike}|${l.expiration}`;
+    if (!seen.has(k)) { seen.add(k); out.push({ underlying: u, type: l.type, strike: l.strike, expiration: l.expiration }); }
+  }
+  writeFileSync("data/in/paper-open-legs.json", JSON.stringify({ generatedAt: now.toISOString(), legs: out }, null, 1) + "\n");
+  process.stdout.write(JSON.stringify(out) + "\n");
 } else if (cmd === "expire") {
   // settle expired entries (PM close from Yahoo; AM-settled VIX needs --settle VIX=<VRO>), then the mentor weekend rule
-  const manual = Object.fromEntries((values.settle ?? []).map((x: string) => { const [k, v] = x.split("="); return [k!.toUpperCase(), Number(v)]; }));
+  // settlement values: --settle SYM=price, or data/in/settle.json {"date":"YYYY-MM-DD","VIX":<VRO>} written by the routine (only used on that date)
+  const sf = existsSync("data/in/settle.json") ? JSON.parse(readFileSync("data/in/settle.json", "utf8")) : null;
+  const fromFile = sf && sf.date === etDate(now) ? Object.fromEntries(Object.entries(sf).filter(([k, v]) => k !== "date" && typeof v === "number").map(([k, v]) => [k.toUpperCase(), v as number])) : {};
+  const manual = { ...fromFile, ...Object.fromEntries((values.settle ?? []).map((x: string) => { const [k, v] = x.split("="); return [k!.toUpperCase(), Number(v)]; })) };
   for (const [i, e] of j.entries.entries()) {
     const kind = settleable(e, now);
     if (kind) {
@@ -93,7 +111,7 @@ if (cmd === "open") {
         if (settle[u] == null && !isAm(u)) settle[u] = (await yahooDaily(u, 10).catch(() => [])).find((b) => b.t.slice(0, 10) === exp)?.c ?? NaN; }
       const r = expireEntry(e, settle, now);
       if (r.entry) { j.entries[i] = r.entry; process.stdout.write(`[expire] ${e.id} ${e.symbol} 到期结算 ${JSON.stringify(r.entry.settlement!.prices)} → P&L $${r.entry.pnl}${r.entry.pnl! <= 0 ? "（亏损：待复盘）" : ""}\n`); }
-      else process.stdout.write(`[expire] ${e.id}: ${r.error}\n`);
+      else { j.entries[i] = { ...e, settlePending: `${now.toISOString()} ${r.error}` } ; process.stdout.write(`[expire] ${e.id}: 待结算 · ${r.error}\n`); }
       continue;
     }
     const w = weekendRule(e, now);

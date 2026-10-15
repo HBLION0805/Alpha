@@ -137,28 +137,6 @@
       ],
       "marks": [
         {
-          "at": "2026-10-15T21:08:27.926Z",
-          "value": 168,
-          "pnl": 8,
-          "spot": null,
-          "sources": [
-            "NVDA 220c robinhood 3.5",
-            "NVDA 225c robinhood 1.82"
-          ],
-          "estimated": false
-        },
-        {
-          "at": "2026-10-15T21:09:25.909Z",
-          "value": 168,
-          "pnl": 8,
-          "spot": null,
-          "sources": [
-            "NVDA 220c robinhood 3.5",
-            "NVDA 225c robinhood 1.82"
-          ],
-          "estimated": false
-        },
-        {
           "at": "2026-10-15T21:12:31.171Z",
           "value": 168,
           "pnl": 8,
@@ -226,28 +204,6 @@
       ],
       "marks": [
         {
-          "at": "2026-10-15T21:08:27.926Z",
-          "value": 188,
-          "pnl": 48,
-          "spot": null,
-          "sources": [
-            "INTC 95c robinhood 3.7",
-            "INTC 100c robinhood 1.82"
-          ],
-          "estimated": false
-        },
-        {
-          "at": "2026-10-15T21:09:25.909Z",
-          "value": 188,
-          "pnl": 48,
-          "spot": null,
-          "sources": [
-            "INTC 95c robinhood 3.7",
-            "INTC 100c robinhood 1.82"
-          ],
-          "estimated": false
-        },
-        {
           "at": "2026-10-15T21:12:31.171Z",
           "value": 188,
           "pnl": 48,
@@ -305,26 +261,6 @@
         "exceeds_1pct_cap"
       ],
       "marks": [
-        {
-          "at": "2026-10-15T21:08:27.926Z",
-          "value": 322.5,
-          "pnl": 62.5,
-          "spot": null,
-          "sources": [
-            "GDX 90c robinhood 3.225"
-          ],
-          "estimated": false
-        },
-        {
-          "at": "2026-10-15T21:09:25.909Z",
-          "value": 322.5,
-          "pnl": 62.5,
-          "spot": null,
-          "sources": [
-            "GDX 90c robinhood 3.225"
-          ],
-          "estimated": false
-        },
         {
           "at": "2026-10-15T21:12:31.171Z",
           "value": 322.5,
@@ -415,28 +351,6 @@
       "entryPriceSource": "robinhood_orders",
       "marks": [
         {
-          "at": "2026-10-15T21:08:27.926Z",
-          "value": 1,
-          "pnl": -11,
-          "spot": null,
-          "sources": [
-            "CRWV 55p robinhood 0.015",
-            "CRWV 50p robinhood 0.005"
-          ],
-          "estimated": false
-        },
-        {
-          "at": "2026-10-15T21:09:25.909Z",
-          "value": 1,
-          "pnl": -11,
-          "spot": null,
-          "sources": [
-            "CRWV 55p robinhood 0.015",
-            "CRWV 50p robinhood 0.005"
-          ],
-          "estimated": false
-        },
-        {
           "at": "2026-10-15T21:12:31.171Z",
           "value": 1,
           "pnl": -11,
@@ -517,28 +431,6 @@
       "entryPrice": 0.21,
       "entryPriceSource": "robinhood_orders",
       "marks": [
-        {
-          "at": "2026-10-15T21:08:27.926Z",
-          "value": 9,
-          "pnl": -12,
-          "spot": null,
-          "sources": [
-            "VIX 20c robinhood 0.19",
-            "VIX 25c robinhood 0.1"
-          ],
-          "estimated": false
-        },
-        {
-          "at": "2026-10-15T21:09:25.909Z",
-          "value": 9,
-          "pnl": -12,
-          "spot": null,
-          "sources": [
-            "VIX 20c robinhood 0.19",
-            "VIX 25c robinhood 0.1"
-          ],
-          "estimated": false
-        },
         {
           "at": "2026-10-15T21:12:31.171Z",
           "value": 9,

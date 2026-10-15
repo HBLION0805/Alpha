@@ -120,6 +120,15 @@ export function chainsFromQuotes(f: { fetchedAt: string; quotes: Array<{ underly
   return [...by.values()];
 }
 
+/** one mark per trade per ET day: a later run the same day replaces that day's mark */
+export function upsertMark(e: JournalEntry, m: NonNullable<JournalEntry["marks"]>[number]): void {
+  const d = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  e.marks ??= [];
+  const i = e.marks.findIndex((x) => d(x.at) === d(m.at));
+  if (i >= 0) e.marks.splice(i, 1);
+  e.marks.push(m); e.marks.sort((a, b) => a.at.localeCompare(b.at));
+}
+
 export interface CloseArgs { exitKind?: JournalEntry["exitKind"]; pnl?: number; commissions?: number; errorClass?: "judgment" | "execution"; errorTags?: string[]; violations?: string[]; lesson?: string; now: Date }
 const KINDS = ["invalidation", "time_stop", "take_profit", "max_loss", "discretionary", "expiry", "weekend_rule"];
 export function paperClose(e: JournalEntry, a: CloseArgs): { entry: JournalEntry | null; refused: string[] } {

@@ -149,3 +149,5 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - P2:
   - Readiness: max drawdown ≤6% ($300 at $5k), top-2 winners ≤50% of net P&L, 90-day rolling window, practice breakdown (simulated / real account / mentor shadow).
   - `npm run review [-- --week]` → data/out/review-<date>.md (summary + per-trade cards).
+- GEX in brief §5.1 (src/options/gex.ts, config/gex.json; CBOE delayed; naive; timing only).
+- Paper close step in scripts/run.sh (weekdays 15:45–16:59 ET): mark → expire (+ VIX settle.json, weekend rule) → review. Marks are one per trade per ET day. The routine refreshes quotes per docs/ROUTINE_PAPER.md (`paper legs`).

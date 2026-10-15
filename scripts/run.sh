@@ -29,6 +29,15 @@ log="data/logs/run-$(date +%Y%m%d).log"
     # leading-scenario changes go into the store, so the alert step below picks them up.
     node src/cli/brief.ts --out data/out/brief-latest.md >/dev/null || echo "[run] brief failed"
     node src/cli/alerts.ts --out data/out/alerts-latest.md --jsonl data/out/alerts.jsonl
+    # paper ledger close step (Mon–Fri 15:45–16:59 ET): mark with the routine's fresh Robinhood quotes
+    # (data/in/rh-option-quotes.json, see docs/ROUTINE_PAPER.md), then expire (settles after 16:00; VIX needs
+    # data/in/settle.json, else stays pending) and the Friday 15:45 mentor weekend rule; then the review report.
+    dow=$(TZ=America/New_York date +%u)
+    if [ "$dow" -le 5 ] && [ "$hm" -ge 1545 ] && [ "$hm" -lt 1700 ] && [ -s data/journal/paper.json ]; then
+      node src/cli/paper.ts mark || echo "[run] paper mark failed"
+      node src/cli/paper.ts expire || echo "[run] paper expire failed"
+      node src/cli/review.ts >/dev/null || echo "[run] review failed"
+    fi
   fi
   if [ "${1:-}" != "--no-digest" ]; then
     [ "${1:-}" = "--digest-only" ] && { node src/cli/brief.ts --no-alarms --out data/out/brief-latest.md >/dev/null || echo "[run] brief failed"; }

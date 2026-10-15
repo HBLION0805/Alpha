@@ -63,6 +63,8 @@ export interface JournalEntry {
   /** net debit per contract at entry and where it came from */
   entryPrice?: number | null; entryPriceSource?: "paper_fill" | "robinhood_orders" | "broker" | "user" | "unknown";
   /** settlement used by paper expire (equity close or VIX AM VRO) */
+  /** paper expire could not settle yet (e.g. VIX AM settlement value missing) */
+  settlePending?: string;
   settlement?: { at: string; prices: Record<string, number>; kind: "PM_close" | "AM_VRO"; value: number };
   timeStopAt?: string;
   /** open positions (including this one) at entry */
