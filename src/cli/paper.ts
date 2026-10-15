@@ -1,6 +1,7 @@
 /**
  * npm run paper -- open|close|list|mark   (paper trades ONLY — this file never calls a broker; there is no order path)
- *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis [--time-stop YYYY-MM-DD]
+ *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis [--time-stop YYYY-MM-DD] [--ack]
+ *         (唱反调 critique printed first; BLOCK refuses, WARNs need --ack; the critique is saved in the entry)
  *   mark  [--quotes data/in/x-chain.json ...]   (Robinhood chain JSON when present, else Yahoo spot + Black-Scholes)
  *   close --id P001 --exit-kind invalidation|time_stop|take_profit|max_loss|discretionary [--pnl N] [--commissions N]
  *         [--error-class judgment|execution --error-tags a,b] [--violations chasing,...] [--lesson "…"]
@@ -15,6 +16,7 @@ import { parseChain, type Chain } from "../options/chain.ts";
 import { unwrapJson } from "../options/robinhood.ts";
 import { yahooDaily } from "../adapters/yahoo.ts";
 import { readiness } from "../options/readiness.ts";
+import { critique, renderCritique, proposalSide } from "../review/critique.ts";
 import type { Proposal } from "../options/pretrade.ts";
 import type { Motive } from "../options/discipline.ts";
 import type { JournalEntry } from "../options/journal.ts";
@@ -23,7 +25,7 @@ const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
-  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, now: { type: "string" } } });
+  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
 const cmd = positionals[0];
 const now = values.now ? new Date(values.now) : new Date();
 const path = values.journal!;
@@ -36,11 +38,20 @@ if (cmd === "open") {
   if (!values.proposal) fail(["缺少 --proposal file.json"]);
   const p = JSON.parse(readFileSync(values.proposal!, "utf8")) as Proposal;
   // real data: the proposal's underlying price must match the live Yahoo price (stale proposal → refuse)
-  const live = (await yahooDaily(p.symbol, 10).catch(() => [])).at(-1)?.c ?? null;
+  const bars = await yahooDaily(p.symbol, 45).catch(() => []);
+  const live = bars.at(-1)?.c ?? null;
   const ps = typeof p.underlyingPrice === "number" ? p.underlyingPrice : p.underlyingPrice[p.symbol];
   if (live == null) fail([`无法取得 ${p.symbol} 实时价格（Yahoo），不能确认是真实数据`]);
   if (ps == null || Math.abs(ps / live! - 1) > 0.03) fail([`proposal underlyingPrice ${ps} 与 Yahoo ${live!.toFixed(2)} 相差 >3% → 方案已过期，请用当前链/报价重做`]);
-  const r = paperOpen(j, p, { thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], now });
+  const bf = existsSync("data/out/brief-latest.json") ? JSON.parse(readFileSync("data/out/brief-latest.json", "utf8")) : null;
+  const brief = bf && now.getTime() - Date.parse(bf.generatedAt) < 12 * 3600_000 ? bf : {};
+  const year = now.getFullYear(), calF = new URL(`../../calendar/releases-${year}.json`, import.meta.url);
+  const calendar = existsSync(calF) ? JSON.parse(readFileSync(calF, "utf8")).events ?? [] : [];
+  const cr = critique({ proposal: p, side: proposalSide(p), thesis: values.thesis ?? "", invalidation: values.invalidation ?? "", stop: values.stop ?? "", motive: values.motive,
+    leader: brief.leader === undefined ? undefined : brief.leader, verdict: brief.verdict ?? null, verdictReasons: brief.reasons ?? [],
+    futuresGapPct: (brief.reasons ?? []).some((x: string) => /期货跳空/.test(x)) ? 1.5 : null, open: openPaper(j), bars, calendar, now, capital: j.capital });
+  process.stdout.write(renderCritique(cr) + "\n");
+  const r = paperOpen(j, p, { critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
   j.entries.push(r.entry!); save();

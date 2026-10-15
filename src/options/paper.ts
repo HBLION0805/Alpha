@@ -9,9 +9,10 @@ import { bs, impliedVol, yearFrac } from "./bs.ts";
 import type { JournalEntry } from "./journal.ts";
 import type { Motive, TradeLog } from "./discipline.ts";
 import type { Chain } from "./chain.ts";
+import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
-export interface OpenArgs { thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; now: Date; rules?: Partial<RuleCard> }
+export interface OpenArgs { critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; now: Date; rules?: Partial<RuleCard> }
 type Leg = NonNullable<JournalEntry["legs"]>[number];
 const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
@@ -24,6 +25,12 @@ const fill = (l: Proposal["legs"][number]) => (l.bid != null && l.ask != null ? 
 export function paperOpen(j: PaperJournal, p: Proposal, a: OpenArgs): { entry: JournalEntry | null; checks: PreCheck[]; refused: string[] } {
   const refused: string[] = [];
   for (const k of ["thesis", "invalidation", "stop", "motive"] as const) if (!a[k]?.toString().trim()) refused.push(`缺少 --${k}（开仓前必须写下 thesis / invalidation / stop / motive）`);
+  // 唱反调: BLOCK refuses; WARNs need an explicit --ack
+  if (!a.critique) refused.push("缺少唱反调 critique（src/review/critique.ts）");
+  else {
+    for (const o of a.critique.objections.filter((o) => o.severity === "BLOCK")) refused.push(`唱反调 BLOCK ${o.id}: ${o.text}`);
+    if (a.critique.warns && !a.ack) refused.push(`唱反调有 ${a.critique.warns} 条 WARN → 逐条想过后加 --ack 继续`);
+  }
   const R = effectiveRules(a.rules);
   const open = openPaper(j);
   const asOf = a.now.toISOString().slice(0, 10);
@@ -44,6 +51,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a: OpenArgs): { entry: J
     view: { direction: a.thesis!, volatility: "n/a (paper)" }, ivRank: null, greeks: { delta: 0, gamma: 0, theta: 0, vega: 0 }, expectedMove: null,
     structureRationale: p.strategy, maxLoss: an.maxLoss == null ? NaN : Math.abs(an.maxLoss), exitRules: [`stop: ${a.stop}`, `invalidation: ${a.invalidation}`, ...(a.timeStopAt ? [`time stop: ${a.timeStopAt}`] : [])],
     capitalAtEntry: j.capital, concurrentAtEntry: open.length + 1, legs, underlyingAtEntry: spot, marks: [],
+    critique: a.critique ? { ...a.critique, acked: a.critique.warns > 0 } : undefined,
   };
   return { entry, checks, refused };
 }

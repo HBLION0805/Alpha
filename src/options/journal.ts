@@ -53,6 +53,8 @@ export interface JournalEntry {
   /** paper.ts: legs at the simulated fill, and every mark-to-market */
   legs?: Array<{ underlying?: string; type: "call" | "put" | "stock"; strike: number; qty: number; premium: number; expiration?: string; iv?: number }>;
   underlyingAtEntry?: number;
+  /** 唱反调 critique shown before entry (src/review/critique.ts); acked = WARNs were overridden with --ack */
+  critique?: { at: string; objections: Array<{ id: string; severity: "BLOCK" | "WARN"; text: string; cite: string }>; blocks: number; warns: number; acked?: boolean };
   marks?: Array<{ at: string; value: number; pnl: number; spot: number | null; sources: string[] }>;
 }
 
