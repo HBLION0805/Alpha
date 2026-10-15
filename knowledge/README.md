@@ -24,6 +24,10 @@
 | [options/COURSE_OUTLINE.md](options/COURSE_OUTLINE.md) | Options course outline page (verbatim, same as courses/options/00-index.md) | 1 |
 | [mentor/](mentor/) | **大佬补充（两门课之外）/ Mentor's supplement beyond the two courses** — [MENTOR_NOTE_CLASS_AND_UPBRINGING.md](mentor/MENTOR_NOTE_CLASS_AND_UPBRINGING.md) 家教与阶级 (byte-for-byte). Drives the "actors" prompt in the macro risk view and digest (谁在制定规则 / 谁在承担代价 / 谁拥有选择 / 激励与恐惧) | 1 |
 | [mentor/reviews/](mentor/reviews/) | **大佬复盘 / Mentor trade reviews** (byte-for-byte; more will be added here): [REVIEW_HYG_IWM_TLT_TQQQ.md](mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md) — lessons enforced in `src/options/pretrade.ts` (assignment plan, per-leg risk, buying power for full short notional on Robinhood, time buffer, adjustments = new trades, full accounting) and `matrix.ts` (credit spreads de-prioritised) | 1 |
+| [mentor/MENTOR_KELLY_INTC_2026-10-14.md](mentor/MENTOR_KELLY_INTC_2026-10-14.md) | **大佬 2026-10-14: Kelly 批判 + INTC 调仓案例** (byte-for-byte). The critique of Kelly (correlations go to 1, p is an assumption, liquidity/cash/margin) is enforced by `src/options/kelly.ts`. INTC: 错的时候控制风险，对的时候增加敞口；不抢确认，不死守结构. Enforced by `src/options/adjust.ts` and the pretrade adjustment checks | 1 |
+| [mentor/kelly/](mentor/kelly/) | Kelly 公式补充 article: the PDF as received, plus a pdftotext extraction and a README | 3 |
+| [mentor/tradingview/](mentor/tradingview/) | 大佬's Pine v6 indicator "K线阅读 · Bzzb" (price-action trendlines, S/R, patterns; best on small timeframes): `.pine` byte-for-byte, plus a README | 2 |
+| [mentor/world-lines.md](mentor/world-lines.md) | **世界的20条主线**: https://world-lines.jolly-moose-6445.chatgpt.site/ fetched 2026-10-14 21:38 ET. All 20 lessons, verbatim from the page's embedded data. Raw JSON in [world-lines.data.json](mentor/world-lines.data.json) | 2 |
 | [source-code/](source-code/) | Original catalog sources as `.txt` (provenance for the JSON; not built) | 3 |
 
 The markdown views are generated: `node scripts/render-knowledge.ts` (edit `catalog.json`, not the .md).

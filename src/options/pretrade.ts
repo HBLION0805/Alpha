@@ -7,6 +7,7 @@
 import { daysTo } from "./bs.ts";
 import { analyze, type Leg } from "./payoff.ts";
 import { DEFAULT_RULES, type RuleCard, type PosLeg } from "./rules.ts";
+import { adjustmentPlaybookChecks, type AdjustmentContext } from "./adjust.ts";
 
 const REVIEW = "复盘 HYG/IWM/TLT/TQQQ (knowledge/mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md)";
 
@@ -19,6 +20,8 @@ export interface Proposal {
   /** set when this is an adjustment (holding assigned shares, adding/rolling legs) */
   adjustmentOf?: string; adjustmentCount?: number;
   newDecision?: { thesis: string; maxLoss: number; exit: string; invalidation: string };
+  /** INTC playbook context (大佬 2026-10-14): add only after confirmation; convert to spread near support; re-add long options only */
+  adjustment?: AdjustmentContext;
 }
 export type Severity = "BLOCK" | "WARN" | "OK" | "INFO";
 export interface PreCheck { id: string; severity: Severity; detail: string; cite: string }
@@ -92,6 +95,10 @@ export function preTradeChecks(p: Proposal, R: RuleCard = DEFAULT_RULES): { chec
     if (p.legs.some((l) => l.type !== "stock" && l.qty < 0) && p.legs.filter(isShortOpt).some((l) => !p.legs.some((x) => x.type === l.type && x.qty > 0 && und(p, x) === und(p, l))) && !p.legs.some((l) => l.type === "stock"))
       out.push({ id: "adjustment_naked", severity: "BLOCK", detail: "adjustment adds an uncovered short option", cite: `${REVIEW}（裸 Call 补救）/ 期权课 13.3` });
   }
+
+  // (5) INTC adjustment playbook — src/options/adjust.ts
+  if (p.adjustment) out.push(...adjustmentPlaybookChecks(p.legs, spot(p, p.symbol), p.adjustment));
+  else if (p.adjustmentOf) out.push({ id: "adjustment_context", severity: "WARN", detail: "adjustment without playbook context (add / convert_to_spread / readd_long + confirmation)", cite: "大佬 INTC 案例 2026-10-14" });
 
   // liquidity (D.1 第五步)
   for (const l of p.legs.filter((x) => x.type !== "stock")) {
