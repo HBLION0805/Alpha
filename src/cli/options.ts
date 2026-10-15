@@ -20,6 +20,7 @@ import { checkBook, stressTest, type Book } from "../options/rules.ts";
 import { strategyStats, validateEntry, journalHealth, type JournalEntry } from "../options/journal.ts";
 import { preTradeChecks, type Proposal } from "../options/pretrade.ts";
 import { DEFAULT_RULES } from "../options/rules.ts";
+import { proposalPlan, renderPlan } from "../options/plan.ts";
 import { parseBars } from "../levels.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import type { Direction } from "../options/matrix.ts";
@@ -90,6 +91,9 @@ if (values.proposal) {
   json.preTrade = r;
   const icon = { NO_TRADE: "🛑", BLOCK: "⛔", WARN: "⚠️", OK: "✅", INFO: "ℹ️" } as const;
   extra.push("", `## 下单前检查 / Pre-trade checks — ${prop.symbol} ${prop.strategy}: ${r.blocked ? "**BLOCKED**" : "pass"}`, "", ...r.checks.map((c) => `- ${icon[c.severity]} **${c.id}** ${c.detail} _(${c.cite})_`));
+  const plan = proposalPlan(prop);
+  json.plan = plan;
+  extra.push(...renderPlan(plan));
 }
 const md = renderDashboard(dash, extra);
 mkdirSync(dirname(values.out!), { recursive: true });

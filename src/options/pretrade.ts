@@ -17,6 +17,8 @@ export interface ProposalLeg extends PosLeg { underlying?: string; delta?: numbe
 export interface AssignmentPlan { ifAssigned: string; protectiveLeg: string; buyingPowerNeeded: number | null; exit: string }
 export interface Proposal {
   symbol: string; strategy: string; asOf: string; underlyingPrice: number | Record<string, number>;
+  /** assumed win probability, an ASSUMPTION used only for the Kelly upper reference (plan.ts) */
+  pAssumed?: number; winPerContract?: number;
   thesisHorizonDays: number; legs: ProposalLeg[]; capital: number; buyingPower: number; broker?: string;
   assignmentPlan?: AssignmentPlan;
   /** set when this is an adjustment (holding assigned shares, adding/rolling legs) */

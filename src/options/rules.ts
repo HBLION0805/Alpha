@@ -116,6 +116,8 @@ export function checkBook(book: Book): { rules: RuleCard; checks: RuleCheck[] } 
   return { rules: R, checks };
 }
 
+/** User's add rule (止损学 Adding + 纪律 #10 + INTC playbook; cap = maxAdjustmentsPerPosition = 1). */
+export const ADD_RULE = "加仓：最多 1 次，且必须在论点被市场重新确认之后（不是因为价格更便宜）；绝不在猜测的底部/顶部加仓；加仓是新交易，有自己的最大亏损 (adjust.ts)。";
 /** Pre-written management triggers for a new position (copied into the journal at entry). */
 export function managementPlan(kind: "credit" | "debit", credit: number, dte: number, R: RuleCard = DEFAULT_RULES): string[] {
   if (kind === "credit") return [
@@ -123,12 +125,14 @@ export function managementPlan(kind: "credit" | "debit", credit: number, dte: nu
     `At ${R.creditManageAtDte} DTE: close or roll — gamma risk rises; a roll is a NEW trade and must pass entry rules.`,
     `Stop when loss reaches ${R.creditStopMultipleOfCredit}× credit = $${(credit * R.creditStopMultipleOfCredit).toFixed(0)} (spread worth $${(credit * (1 + R.creditStopMultipleOfCredit)).toFixed(0)}).`,
     `Close immediately if the thesis invalidation level trades.`,
+    ADD_RULE,
   ];
   return [
     `At +${R.buyerTakeProfitPct}%–100% on premium take half off (期权课 14.7).`,
     `止盈学 (stricter wins): +30% consider TP; +80% sell ≥90% (runner ≤10%); fast big gain → ≥90%; near expiry → take it; back in profit after a drawdown without volume+hold → exit (src/options/takeprofit.ts).`,
     `Time stop: if the move hasn't come by ${Math.round(dte * R.buyerTimeStopFraction)} days (${Math.round(R.buyerTimeStopFraction * 100)}% of ${Math.round(dte)} DTE), exit — theta accelerates.`,
-    `Premium is sized to go to zero; never add to a losing long option.`,
+    `Premium is sized to go to zero.`,
+    ADD_RULE,
     `Close immediately if the thesis invalidation level trades.`,
   ];
 }
