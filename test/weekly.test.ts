@@ -31,3 +31,15 @@ test("weekly: exactly ≤3 data-derived focus items, top tag first", () => {
   const f = run().focus;
   assert.ok(f.length >= 1 && f.length <= 3); assert.match(f[0]!, /^no_pre_written_plan（本周 2 次）/);
 });
+import { calibration } from "../src/options/weekly.ts";
+test("weekly includes 门槛校准 section", () => assert.match(run().md, /门槛校准/));
+test("calibration: insufficient span, then promote/drop/insufficient by sample", () => {
+  assert.equal(calibration([T({ id: "a", openedAt: "2026-10-14T14:00:00Z" })], "2026-10-15").ok, false);
+  const mk = (k: number, tag: string | null, pnl: number) => T({ id: `${tag}${k}`, source: "paper_sim", openedAt: `2026-10-${String(2 + (k % 13)).padStart(2, "0")}T14:00:00Z`, closedAt: "2026-10-15T19:00:00Z", pnl, warnTags: tag ? [tag] : [] });
+  const xs = [...Array.from({ length: 10 }, (_, k) => mk(k, "warn_over_cap", -30)), ...Array.from({ length: 10 }, (_, k) => mk(k, "warn_far_otm", 15)),
+    ...Array.from({ length: 5 }, (_, k) => mk(k, "warn_off_plan", -5)), ...Array.from({ length: 6 }, (_, k) => mk(k, null, 10)), T({ id: "old", openedAt: "2026-09-20T14:00:00Z" })];
+  const c = calibration(xs, "2026-10-15");
+  const rec = Object.fromEntries(c.rows.map((r) => [r.tag, r.rec]));
+  assert.equal(rec.warn_over_cap, "promote"); assert.equal(rec.warn_far_otm, "drop"); assert.equal(rec.warn_off_plan, "insufficient");
+  assert.match(c.lines.join("\n"), /样本说明/);
+});

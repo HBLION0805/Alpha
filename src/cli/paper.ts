@@ -60,9 +60,12 @@ if (cmd === "open") {
     leader: brief.leader === undefined ? undefined : brief.leader, verdict: brief.verdict ?? null, verdictReasons: brief.reasons ?? [],
     futuresGapPct: (brief.reasons ?? []).some((x: string) => /期货跳空/.test(x)) ? 1.5 : null, open: openPaper(j), history: j.entries, bars, calendar, now, capital: j.capital });
   process.stdout.write(renderCritique(cr) + "\n");
-  const r = paperOpen(j, p, { kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
+  const pcF = "data/journal/pending-cards.json", card = values.card && existsSync(pcF) ? (JSON.parse(readFileSync(pcF, "utf8")).cards ?? []).find((c: { id: string }) => c.id === values.card) ?? null : null;
+  if (values.card && !card) process.stdout.write(`⚠️ 找不到计划卡 ${values.card}（${pcF}）\n`);
+  const r = paperOpen(j, p, { card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
+  if (r.entry!.warnTags?.length) process.stdout.write(`🟢 练习单已记录提示（不阻止）：${r.entry!.warnTags.join("、")}\n${(r.entry!.warnDetails ?? []).map((d) => `  - ${d}`).join("\n")}\n`);
   j.entries.push(r.entry!); save();
   process.stdout.write(renderRiskPlan(r.entry!.riskPlan!) + "\n");
   process.stdout.write(`[paper] 模拟开仓 ${r.entry!.id} ${r.entry!.symbol} ${r.entry!.strategy} · 最大亏损 $${r.entry!.maxLoss} · 当前持仓 ${r.entry!.concurrentAtEntry} → ${path}（不是真实订单）\n`);

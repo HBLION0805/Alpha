@@ -170,3 +170,8 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 ## 2026-10-15 — mentor reading (Milgram) + weekly review
 - knowledge/mentor/reading/milgram-experiment.md: mentor assignment verbatim + separate "DK 整理" summary/trading takeaway; catalog source `mentor-reading-milgram`, item `authority-bias`.
 - `npm run review -- --week [--print]` → data/out/review-week-<date>.md: 4 categories, readiness progress, tags week-over-week, lessons, mentor vs actual, 3 data-derived focus items (src/options/weekly.ts). Shock dates shared via src/options/shockdates.ts. Routine: docs/ROUTINE_WEEKLY.md.
+
+## 2026-10-15 — practice = learn from mistakes (docs/DECISIONS.md)
+- paper open --kind practice: hard = saved plan card (direction, thesis, stop, TP) + defined risk; all other refusals → `warnTags` (+ `violations` for cap breaches). Formal unchanged.
+- Card: new verdict 🟢 可练习（有提示） with warn tags; 🛑 for practice only when plan fields are missing.
+- Weekly review: 门槛校准 (14-day window, per warn tag: n, win rate, avg P&L, avg loss vs no-warning trades; promote/keep/drop, min 10 closed).

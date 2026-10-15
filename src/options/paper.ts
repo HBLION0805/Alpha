@@ -15,7 +15,7 @@ import { buildRiskPlan } from "./riskplan.ts";
 import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
-export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard> }
+export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; card?: PlanCardRef | null; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard> }
 type Leg = NonNullable<JournalEntry["legs"]>[number];
 const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
@@ -26,12 +26,48 @@ const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, 
 /** Simulated fill: mid if bid/ask given, else the proposal premium. */
 const fill = (l: Proposal["legs"][number]) => (l.bid != null && l.ask != null ? (l.bid + l.ask) / 2 : l.premium);
 
-export function paperOpen(j: PaperJournal, p: Proposal, a: OpenArgs): { entry: JournalEntry | null; checks: PreCheck[]; refused: string[] } {
+/** the saved pre-trade plan card (data/journal/pending-cards.json) a practice trade must point to */
+export interface PlanCardRef { id: string; sym: string; dir: "bull" | "bear"; thesis?: string | null; invalidation?: string | null; trade?: { mechanical?: string | null; invalidationLevel?: number | null; tpKind?: string | null } }
+/** HARD requirements for a practice trade: direction, thesis, a stop (mechanical or invalidation) and a take-profit plan. */
+export function cardMissing(c: PlanCardRef | null | undefined): string[] {
+  if (!c) return ["练习单必须先保存计划卡：npm run card -- … --thesis \"…\" --save，再 paper open --card <id>"];
+  const m: string[] = [];
+  if (c.dir !== "bull" && c.dir !== "bear") m.push("计划卡缺方向");
+  if (!c.thesis?.trim()) m.push("计划卡缺论点（--thesis \"因为…所以…\"）");
+  if (!c.trade?.mechanical && c.trade?.invalidationLevel == null && !c.invalidation?.trim()) m.push("计划卡缺止损（机械止损或论点失效价）");
+  if (!c.trade?.tpKind) m.push("计划卡缺止盈计划");
+  return m.map((x) => `${x}（${c.id}）`);
+}
+/** Map a strict-mode refusal to a practice warn tag. */
+export function warnTag(msg: string): string {
+  const id = /^(?:唱反调 (?:BLOCK )?|BLOCK |NO_TRADE )(\w+)/.exec(msg)?.[1]?.toLowerCase();
+  if (id) return /otm|far|strike/.test(id) ? "warn_far_otm" : /trend|confirm/.test(id) ? "warn_trend_unconfirmed" : /concurrent|positions/.test(id) ? "warn_position_cap" : /daily/.test(id) ? "warn_daily_cap"
+    : /cap|size|loss/.test(id) ? "warn_over_cap" : /plan/.test(id) ? "warn_off_plan" : /hedge/.test(id) ? "warn_no_hedge" : `warn_${id}`;
+  if (/计划|plan|进场区间|方向 .* ≠|标的 .* ≠/i.test(msg)) return "warn_off_plan";
+  if (/hedge|对冲/i.test(msg)) return "warn_no_hedge";
+  if (/硬上限|cap|上限|1%|exceeds/i.test(msg) && !/持仓|concurrent|positions/i.test(msg)) return "warn_over_cap";
+  if (/concurrent|持仓数|positions|同时持仓/i.test(msg)) return "warn_position_cap";
+  if (/日亏|daily/i.test(msg)) return "warn_daily_cap";
+  if (/OTM|价外|far/i.test(msg)) return "warn_far_otm";
+  if (/趋势|trend|确认|confirm/i.test(msg)) return "warn_trend_unconfirmed";
+  const m = /唱反调 (?:BLOCK )?(\w+)|^(?:BLOCK|NO_TRADE) (\w+)/.exec(msg);
+  if (m) return `warn_${(m[1] ?? m[2])!.toLowerCase()}`;
+  if (/唱反调有 \d+ 条 WARN/.test(msg)) return "warn_critique";
+  return "warn_other";
+}
+
+export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: JournalEntry | null; checks: PreCheck[]; refused: string[] } {
   const refused: string[] = [];
+  let a = a0;
+  if (a.kind === "practice" && a.card) { // practice: the plan card supplies anything not given on the command line
+    const c = a.card, lvl = c.trade?.invalidationLevel;
+    a = { ...a, cardId: a.cardId ?? c.id, thesis: a.thesis || c.thesis || undefined, invalidation: a.invalidation || c.invalidation || (lvl != null ? `收盘${c.dir === "bear" ? "站上" : "跌破"} ${lvl}` : undefined),
+      stop: a.stop || c.trade?.mechanical || (lvl != null ? `论点失效 ${lvl}` : undefined), motive: a.motive ?? "thesis", tp: a.tp ?? c.trade?.tpKind ?? undefined, side: a.side ?? (c.dir === "bear" ? "short" : "long") };
+  }
   for (const k of ["thesis", "invalidation", "stop", "motive"] as const) if (!a[k]?.toString().trim()) refused.push(`缺少 --${k}（开仓前必须写下 thesis / invalidation / stop / motive）`);
   if (a.kind && a.kind !== "formal" && a.kind !== "practice") refused.push(`--kind ${a.kind} 无效：formal | practice`);
   // mandatory risk plan (riskplan.ts): hedge, invalidation, stock −7% stop / option max loss + 30/30, ≤1% hard cap
-  const rp = buildRiskPlan(p.legs.map((l) => ({ type: l.type, strike: l.strike, qty: l.qty, premium: fill(l), expiration: l.expiration })),
+  let rp = buildRiskPlan(p.legs.map((l) => ({ type: l.type, strike: l.strike, qty: l.qty, premium: fill(l), expiration: l.expiration })),
     { hedge: a.hedge, hedgeDetail: a.hedgeDetail, invalidation: a.invalidation, stopPct: a.stopPct, capital: j.capital, asOf: a.now.toISOString().slice(0, 10), rules: a.rules });
   refused.push(...rp.errors);
   const tp = buildTakeProfit(a.tp, p.legs.map((l) => l.expiration), a.now.toISOString().slice(0, 10));
@@ -54,7 +90,19 @@ export function paperOpen(j: PaperJournal, p: Proposal, a: OpenArgs): { entry: J
       openPnlToday: p.discipline?.openPnlToday ?? open.reduce((s, e) => s + (e.marks?.at(-1)?.pnl ?? 0), 0) } };
   const { checks, blocked } = preTradeChecks(prop, R);
   for (const c of checks) if (c.severity === "BLOCK" || c.severity === "NO_TRADE") refused.push(`${c.severity} ${c.id}: ${c.detail}`);
-  if (refused.length || blocked) return { entry: null, checks, refused };
+  // practice: only the saved plan card is HARD; everything else becomes a recorded warn tag
+  let warnTags: string[] = [], warnDetails: string[] = [];
+  if (a.kind === "practice") {
+    const hard = [...cardMissing(a.card), ...(a.card && a.card.sym.toUpperCase() !== p.symbol.toUpperCase() ? [`计划卡标的 ${a.card.sym} ≠ ${p.symbol}`] : []),
+      ...refused.filter((x) => /最大亏损未定义|maxLoss|--kind .* 无效/.test(x))];
+    if (hard.length) return { entry: null, checks, refused: hard };
+    warnDetails = refused.filter((x) => !/^缺少 --(thesis|invalidation|stop|motive|tp)|缺少止盈|--tp/.test(x));
+    warnTags = [...new Set(warnDetails.map(warnTag))];
+    if (!rp.plan) { const r2 = buildRiskPlan(p.legs.map((l) => ({ type: l.type, strike: l.strike, qty: l.qty, premium: fill(l), expiration: l.expiration })),
+      { hedge: p.legs.some((l) => l.type !== "stock" && l.qty < 0) ? "built_in_spread" : "direct", hedgeDetail: a.hedgeDetail || "练习单：未写对冲", invalidation: a.invalidation, stopPct: a.stopPct ?? 7, capital: j.capital, asOf: a.now.toISOString().slice(0, 10), rules: a.rules }); rp = { ...r2, plan: r2.draft ?? null }; }
+    if (!rp.plan || !tp.plan) return { entry: null, checks, refused: [...(rp.plan ? [] : ["无法建立风险计划（最大亏损未定义？）"]), ...(tp.plan ? [] : tp.errors)] };
+    refused.length = 0;
+  } else if (refused.length || blocked) return { entry: null, checks, refused };
   const legs: Leg[] = p.legs.map((l) => ({ underlying: l.underlying ?? p.symbol, type: l.type, strike: l.strike, qty: l.qty, premium: Number(fill(l).toFixed(4)), expiration: l.expiration, iv: l.iv }));
   const an = analyze(legs as never);
   const now = a.now.toISOString();
@@ -66,6 +114,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a: OpenArgs): { entry: J
     structureRationale: p.strategy, maxLoss: rp.plan!.maxLoss, kind: a.kind ?? "formal", riskPlan: rp.plan!, exitRules: [`stop: ${a.stop}`, `invalidation: ${a.invalidation}`, ...(rp.plan!.stock ? [`mechanical stop ${rp.plan!.stock.stopPrice} (−${rp.plan!.stock.stopPct}%)`] : []), ...(rp.plan!.option ? [`30/30: ${rp.plan!.option.rule3030Date} or value ≤ $${rp.plan!.option.loss30Value}`] : []), rp.plan!.rule, renderTakeProfit(tp.plan!), ...(a.timeStopAt ? [`time stop: ${a.timeStopAt}`] : [])],
     takeProfit: tp.plan!, tpHits: [], ...(a.planId ? { planId: a.planId } : {}), ...(a.cardId ? { cardId: a.cardId } : {}), capitalAtEntry: j.capital, concurrentAtEntry: open.length + 1, legs, underlyingAtEntry: spot, marks: [],
     critique: a.critique ? { ...a.critique, acked: a.critique.warns > 0 } : undefined,
+    ...(warnTags.length ? { warnTags, warnDetails, violations: warnTags.includes("warn_over_cap") ? ["exceeds_1pct_cap"] : [] } : {}),
   };
   return { entry, checks, refused };
 }

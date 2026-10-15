@@ -26,7 +26,7 @@ export interface RiskPlan {
 type L = { type: "call" | "put" | "stock"; strike: number; qty: number; premium: number; expiration?: string };
 export interface RiskArgs { hedge?: string; hedgeDetail?: string; invalidation?: string; stopPct?: number; capital: number; asOf: string; rules?: Partial<RuleCard> }
 
-export function buildRiskPlan(legs: L[], a: RiskArgs): { plan: RiskPlan | null; errors: string[] } {
+export function buildRiskPlan(legs: L[], a: RiskArgs): { plan: RiskPlan | null; errors: string[]; draft?: RiskPlan | null } {
   const E: string[] = [];
   const R = effectiveRules(a.rules), capPct = R.sellerMaxLossPerTradePct;
   const isStock = legs.every((l) => l.type === "stock");
@@ -60,7 +60,7 @@ export function buildRiskPlan(legs: L[], a: RiskArgs): { plan: RiskPlan | null; 
     }
   }
   if (plan && plan.maxLoss > a.capital * capPct / 100) E.push(`单笔最大亏损 $${plan.maxLoss}（${plan.maxLossPct}%）> 硬上限 ${capPct}%（$${Math.round(a.capital * capPct / 100)}）→ 减少数量`);
-  return { plan: E.length ? null : plan, errors: E };
+  return { plan: E.length ? null : plan, errors: E, draft: plan };
 }
 
 /** A stop update may only tighten: long stock stop can only rise, short only fall; max loss can only shrink. */

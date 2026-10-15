@@ -75,5 +75,31 @@ test("formal paper trades must come from today's brief §2.1 plan; practice is e
   assert.deepEqual(checkPlanLink({ ...base, kind: "practice" }), []);
   const j = { capital: 50000, entries: [] };
   assert.ok(paperOpen(j, prop(), { ...A, planId: undefined }).refused.some((x) => /--plan-id/.test(x)));
-  assert.ok(paperOpen(j, prop(), { ...A, planId: undefined, kind: "practice" }).entry);
+  assert.equal(paperOpen(j, prop(), { ...A, planId: undefined, kind: "practice" }).entry, null, "practice needs a saved card");
+  const e = paperOpen(j, prop(), { ...A, planId: undefined, kind: "practice", card: CARD }).entry!;
+  assert.ok(e); assert.ok(!e.warnTags?.includes("warn_off_plan")); // practice is exempt from plan link entirely
+});
+
+const CARD = { id: "card-1", sym: "INTC", dir: "bear" as const, thesis: "capex slowdown", trade: { mechanical: "30/30", invalidationLevel: 35, tpKind: "narrative" } };
+test("practice: only the plan card is hard; caps/hedge/critique become warn tags; formal stays strict", () => {
+  const j: PaperJournal = { capital: 5000, entries: [] }; // 2×$80 = $160 > $50 cap
+  const BLK = { at: "x", objections: [{ id: "trend_unconfirmed", severity: "BLOCK" as const, text: "t", cite: "c" }], blocks: 1, warns: 0 };
+  const strict = paperOpen(j, prop(), { ...A, hedge: undefined, critique: BLK });
+  assert.equal(strict.entry, null); assert.ok(strict.refused.some((x) => /硬上限/.test(x)));
+  const pr = paperOpen(j, prop(), { now, kind: "practice", card: CARD, critique: BLK });
+  assert.ok(pr.entry, pr.refused.join("|"));
+  for (const t of ["warn_over_cap", "warn_no_hedge", "warn_trend_unconfirmed"]) assert.ok(pr.entry!.warnTags!.includes(t), `${t} in ${pr.entry!.warnTags}`);
+  assert.ok(pr.entry!.violations!.includes("exceeds_1pct_cap")); // cap breach still recorded for reviews
+  assert.equal(pr.entry!.thesis, "capex slowdown"); assert.equal(pr.entry!.cardId, "card-1");
+  const bad = paperOpen(j, prop(), { now, kind: "practice", card: { ...CARD, thesis: "", trade: { mechanical: null, invalidationLevel: null, tpKind: null } }, critique: CLEAN });
+  assert.equal(bad.entry, null); assert.ok(bad.refused.some((x) => /论点/.test(x)) && bad.refused.some((x) => /止损/.test(x)) && bad.refused.some((x) => /止盈/.test(x)));
+  assert.equal(paperOpen(j, prop(), { now, kind: "practice", card: { ...CARD, sym: "NVDA" }, critique: CLEAN }).entry, null);
+});
+test("warnTag mapping", async () => {
+  const { warnTag } = await import("../src/options/paper.ts");
+  assert.equal(warnTag("唱反调 BLOCK strikes_far_otm: 计划外"), "warn_far_otm");
+  assert.equal(warnTag("BLOCK max_concurrent_positions: 10"), "warn_position_cap");
+  assert.equal(warnTag("缺少 --hedge（…）"), "warn_no_hedge");
+  assert.equal(warnTag("单笔最大亏损 $160（3.2%）> 硬上限 1%（$50）→ 减少数量"), "warn_over_cap");
+  assert.equal(warnTag("现价 35 不在计划进场区间 31–33（纪律 #07 不追）"), "warn_off_plan");
 });

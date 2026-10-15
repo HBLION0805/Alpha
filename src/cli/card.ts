@@ -49,7 +49,7 @@ const out = values.out ?? `data/out/card-${sym}.md`;
 mkdirSync("data/out", { recursive: true }); writeFileSync(out, md + "\n"); writeFileSync(out.replace(/\.md$/, ".json"), JSON.stringify(card, null, 2) + "\n");
 if (values.save) {
   const p = "data/journal/pending-cards.json", pc = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { cards: [] };
-  pc.cards.push({ id: card.id, createdAt: card.createdAt, sym, dir, verdict: card.verdict, trade: card.trade, thesis: values.thesis ?? null });
+  pc.cards.push({ id: card.id, createdAt: card.createdAt, sym, dir, verdict: card.verdict, trade: card.trade, thesis: values.thesis ?? null, invalidation: values.invalidation ?? null, warnTags: card.warnTags ?? [] });
   mkdirSync("data/journal", { recursive: true }); writeFileSync(p, JSON.stringify(pc, null, 2) + "\n");
 }
 process.stdout.write(md + `\n\n[card] ${card.verdictText} → ${out}${values.save ? "（已保存待开仓：paper open --card " + card.id + "）" : ""}\n`);

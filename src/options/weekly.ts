@@ -85,6 +85,9 @@ export function weeklyReport(i: WeeklyInput): Weekly {
   const unrev = E.filter((e) => e.closedAt && !e.postMortem && !e.lossReview);
   L.push("## 八、本周教训", ...(les.length ? les : ["- 本周平仓的单子没有写教训"]), ...(unrev.length ? [`- ⚠️ 还没复盘：${unrev.map((e) => e.id).join("、")}`] : []), "");
 
+  // 5b) 门槛校准 (biweekly): did trades opened despite a warning do worse?
+  L.push("## 八之二、门槛校准（双周，练习单的提示标签）", ...calibration(E, to).lines, "");
+
   // 6) focus (data-derived, priority order, max 3)
   const F: string[] = [];
   for (const [t, n] of tw) if (F.length < 2 && FIX[t] && n >= 1) F.push(`${t}（本周 ${n} 次）→ ${FIX[t]}`);
@@ -97,4 +100,33 @@ export function weeklyReport(i: WeeklyInput): Weekly {
   const focus = F.slice(0, 3);
   L.push("## 九、下周 3 个重点（由本周数据推出）", ...(focus.length ? focus.map((f, k) => `${k + 1}. ${f}`) : ["- 数据不足以推出重点"]), "");
   return { md: L.join("\n"), focus, tagsThis: tw, tagsPrev: tp };
+}
+
+/** legacy violations → warn tags, so pre-2026-10-15 trades also count */
+export const warnTagsOf = (e: JournalEntry) => [...new Set([...(e.warnTags ?? []), ...(e.violations ?? []).flatMap((v) => /cap/.test(v) ? ["warn_over_cap"] : v === "no_pre_written_plan" ? ["warn_no_plan"] : [])])];
+export interface CalRow { tag: string; n: number; closed: number; winRate: number | null; avgPnl: number | null; avgLoss: number | null; rec: "promote" | "keep" | "drop" | "insufficient" }
+export function calibration(E: JournalEntry[], to: string, opts: { days?: number; minN?: number } = {}): { ok: boolean; rows: CalRow[]; lines: string[] } {
+  const days = opts.days ?? 14, minN = opts.minN ?? 10;
+  const own = E.filter((e) => e.source !== "mentor_shadow");
+  const first = own.map((e) => etDay(e.openedAt)).sort()[0];
+  const span = first ? Math.round((Date.parse(to) - Date.parse(first)) / 864e5) : 0;
+  if (span < days) return { ok: false, rows: [], lines: [`- 数据不足：日志只覆盖 ${span} 天（需要 ≥${days} 天）→ 下次双周复盘再算。现在只记录提示标签，不改规则。`] };
+  const from = new Date(Date.parse(to) - (days - 1) * 864e5).toISOString().slice(0, 10);
+  const win = own.filter((e) => etDay(e.openedAt) >= from && etDay(e.openedAt) <= to);
+  const stat = (xs: JournalEntry[]) => { const c = xs.filter((e) => e.closedAt && e.pnl != null).map(fullPnl); const l = c.filter((x) => x <= 0);
+    return { closed: c.length, winRate: c.length ? c.filter((x) => x > 0).length / c.length : null, avgPnl: c.length ? r2(c.reduce((a, b) => a + b, 0) / c.length) : null, avgLoss: l.length ? r2(l.reduce((a, b) => a + b, 0) / l.length) : null }; };
+  const tags = [...new Set(win.flatMap(warnTagsOf))].sort();
+  const rows: CalRow[] = tags.map((tag) => {
+    const w = win.filter((e) => warnTagsOf(e).includes(tag)), wo = win.filter((e) => !warnTagsOf(e).includes(tag)), a = stat(w), b = stat(wo);
+    let rec: CalRow["rec"] = "insufficient";
+    if (a.closed >= minN && a.avgPnl != null) rec = b.avgPnl != null && b.closed >= 3 && a.avgPnl < b.avgPnl && (a.winRate ?? 0) <= (b.winRate ?? 0) - 0.1 ? "promote" : b.avgPnl != null && a.avgPnl >= b.avgPnl ? "drop" : "keep";
+    return { tag, n: w.length, ...a, rec };
+  });
+  const REC = { promote: "⬆️ 升级为硬规则（带提示的单明显更差）", keep: "保持提示", drop: "⬇️ 可考虑取消（带提示的单不比其他差）", insufficient: `样本不足（已平仓 <${minN}）→ 保持提示` };
+  const pct = (x: number | null) => (x == null ? "—" : `${Math.round(x * 100)}%`), $ = (x: number | null) => (x == null ? "—" : money(x));
+  const base = stat(win.filter((e) => !warnTagsOf(e).length));
+  return { ok: true, rows, lines: [`- 窗口 ${from} → ${to}（${win.length} 笔，自己的单；不含大佬影子单）· 无提示的单：已平 ${base.closed} 笔，胜率 ${pct(base.winRate)}，平均 ${$(base.avgPnl)}`,
+    ...(rows.length ? ["", "| 提示标签 | 带着它开仓 | 已平仓 | 胜率 | 平均盈亏 | 平均亏损 | 建议 |", "|---|---|---|---|---|---|---|",
+      ...rows.map((r) => `| ${r.tag} | ${r.n} | ${r.closed} | ${pct(r.winRate)} | ${$(r.avgPnl)} | ${$(r.avgLoss)} | ${REC[r.rec]} |`)] : ["- 窗口内没有带提示标签的单"]),
+    `- _样本说明：每个标签至少 ${minN} 笔已平仓才给升级/取消建议；小样本里的胜率差异多半是运气。任何升级都要你确认后才改规则。_`] };
 }

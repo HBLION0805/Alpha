@@ -26,9 +26,13 @@ test("naked short → hedge fail → 不做", () => {
   const c = buildCard(base({ legs: [{ qty: -1, type: "put", strike: 95 }] }));
   assert.equal(c.verdict, "no"); assert.equal(c.sections.find((s) => s.n === 3)!.status, "fail");
 });
-test("over budget spread → 不做", () => {
+test("over budget spread → 🟢 可练习(有提示) with warn_over_cap (not formal)", () => {
   const c = buildCard(base({ legs: [{ qty: 1, type: "put", strike: 100 }, { qty: -1, type: "put", strike: 95 }] }));
-  assert.equal(c.verdict, "no"); assert.ok(c.failing.some((f) => f.includes("最大亏损")));
+  assert.equal(c.verdict, "practice_warn"); assert.ok(c.failing.some((f) => f.includes("最大亏损"))); assert.ok(c.warnTags!.includes("warn_over_cap"));
+});
+test("practice 🛑 only when plan fields missing (no thesis)", () => {
+  const c = buildCard(base({ thesis: undefined, legs: [{ qty: 1, type: "put", strike: 100 }, { qty: -1, type: "put", strike: 99 }] }));
+  assert.equal(c.verdict, "no"); assert.ok(c.planMissing!.includes("论点"));
 });
 test("not in plan → at best 仅练习", () => {
   const c = buildCard(base({ legs: [{ qty: 1, type: "put", strike: 100 }, { qty: -1, type: "put", strike: 99 }] }));

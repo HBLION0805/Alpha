@@ -32,7 +32,7 @@ export interface CardInput {
 }
 export type Status = "ok" | "warn" | "fail" | "missing";
 export interface Section { n: number; title: string; status: Status; lines: string[] }
-export interface Card { id: string; createdAt: string; sym: string; dir: Dir; verdict: "formal" | "practice" | "no"; verdictText: string; failing: string[]; sections: Section[];
+export interface Card { id: string; createdAt: string; sym: string; dir: Dir; verdict: "formal" | "practice" | "practice_warn" | "no"; verdictText: string; failing: string[]; warnTags?: string[]; planMissing?: string[]; sections: Section[];
   trade: { legs: CardLeg[]; exp: string | null; contracts: number; perContractMaxLoss: number | null; maxLoss: number | null; planId: string | null; tpKind: string | null; invalidationLevel: number | null; mechanical: string | null } }
 
 const ICON: Record<Status, string> = { ok: "✅", warn: "🟡", fail: "🛑", missing: "❔" };
@@ -209,16 +209,22 @@ export function buildCard(i: CardInput): Card {
   S.push({ n: 8, title: "反方意见 + 过去的错误", status: cr?.blocks ? "fail" : (cr?.warns || !i.thesis || riskItems.length) ? "warn" : cr ? "ok" : "missing", lines: s8 });
   if (cr?.blocks) failing.push(...cr.objections.filter((o) => o.severity === "BLOCK").map((o) => `唱反调 ${o.id}`));
 
-  const no = failing.length > 0;
-  const formal = !no && !!match && !!inZone && hedge === "ok" && S.every((s) => s.status !== "missing");
-  const verdict = no ? "no" : formal ? "formal" : "practice";
-  const verdictText = verdict === "no" ? "🛑 不做" : verdict === "formal" ? "✅ 可做（正式）" : "🟡 仅练习";
-  return { id, createdAt: i.now.toISOString(), sym: i.sym, dir: i.dir, verdict, verdictText, failing, sections: S,
+  // practice philosophy (2026-10-15): only the written plan is hard; everything else is a recorded warning
+  const planMissing = [...(!i.thesis?.trim() ? ["论点"] : []), ...(mech == null && invLevel == null && !i.invalidation?.trim() ? ["止损（机械或论点失效）"] : []), ...(!tp?.plan ? ["止盈计划"] : []), ...(naked ? ["定义风险（裸卖）"] : [])];
+  const otmWarn = S.find((s) => s.n === 6)?.lines.some((l) => /价外/.test(l));
+  const warnTags = [...new Set([...failing.map((f) => /最大亏损 \$|超限/.test(f) ? "warn_over_cap" : /无可行结构|缺报价/.test(f) ? "warn_no_fit" : /对冲/.test(f) ? "warn_no_hedge" : /^唱反调 (\w+)/.test(f) ? `warn_${/^唱反调 (\w+)/.exec(f)![1]!.toLowerCase()}` : "warn_other"),
+    ...(!match ? ["warn_off_plan"] : []), ...(match && !inZone ? ["warn_out_of_zone"] : []), ...(otmWarn ? ["warn_far_otm"] : [])])];
+  const formal = failing.length === 0 && !!match && !!inZone && hedge === "ok" && S.every((s) => s.status !== "missing");
+  const verdict: Card["verdict"] = planMissing.length ? "no" : formal ? "formal" : failing.length || otmWarn ? "practice_warn" : "practice";
+  const verdictText = verdict === "no" ? "🛑 不做（练习也不行：计划没写全）" : verdict === "formal" ? "✅ 可做（正式）" : verdict === "practice_warn" ? "🟢 可练习（有提示）" : "🟡 仅练习";
+  if (verdict === "no") failing.unshift(...planMissing.map((m) => `计划缺：${m}`));
+  return { id, createdAt: i.now.toISOString(), sym: i.sym, dir: i.dir, verdict, verdictText, failing, warnTags: verdict === "formal" ? [] : warnTags, planMissing, sections: S,
     trade: { legs, exp, contracts, perContractMaxLoss: per, maxLoss: per != null ? r2(per * contracts) : null, planId: match?.id ?? null, tpKind: tp?.plan?.kind ?? null, invalidationLevel: invLevel != null ? r2(invLevel) : null, mechanical: mech } };
 }
 export function renderCard(c: Card, spot: number | null, exp: string | null): string {
   return [`# 入场前计划卡：${c.sym} ${c.dir === "bear" ? "看空" : "看多"}${exp ? ` · 到期 ${exp}` : ""}`, "",
-    `**结论：${c.verdictText}**${c.failing.length ? ` — 不通过：${c.failing.join("；")}` : ""}`, "",
+    `**结论：${c.verdictText}**${c.failing.length ? ` — ${c.verdict === "no" ? "不通过" : "正式单不通过 / 练习提示"}：${c.failing.join("；")}` : ""}`,
+    ...(c.verdict !== "formal" && c.warnTags?.length ? [`- 练习提示标签（开仓后记录在交易上，用于门槛校准）：${c.warnTags.join("、")}`] : []), "",
     `- 卡片 id：\`${c.id}\` · 现价 ${spot ?? "未知"} · ${new Date(c.createdAt).toLocaleString("zh-CN", { timeZone: "America/New_York", hour12: false })} ET`, "",
     ...c.sections.flatMap((s) => [`## ${s.n}. ${ICON[s.status]} ${s.title}`, ...s.lines, ""]),
     "_只做定义风险；NO_TRADE 是合法结果。数据缺失处已标注，未做任何填补。_"].join("\n");

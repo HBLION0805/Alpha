@@ -58,6 +58,8 @@ export interface JournalEntry {
   thesisRecordedAt?: string; stopRecordedAt?: string; thesis?: string; stop?: string;
   /** discipline violations found at review: chasing, unplanned_add, emotional_sizing, motive_share, ... */
   violations?: string[];
+  /** practice trades: rules that would have blocked a formal trade, recorded instead of blocking (warn_over_cap, warn_no_hedge, …) */
+  warnTags?: string[]; warnDetails?: string[];
   /** every loss: judgment (thesis/selection) vs execution (sizing, entry, exit, rules) + tags for repeated-error detection */
   lossReview?: { at: string; errorClass: "judgment" | "execution"; errorTags: string[]; note?: string };
   /** exit kind; "discretionary" before invalidation and before the time stop = premature (大佬复盘 mentor-winrate-review) */
