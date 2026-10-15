@@ -10,19 +10,6 @@ export const TAG = "成交量仅用于确认/排查，不单独下单";
 export const DEFAULT_WATCHLIST = ["SPY", "QQQ", "IWM", "DIA", "SMH", "HYG", "TLT", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "AVGO", "TSLA"];
 export interface Bar { t: string; c: number; h: number; l: number; v: number }
 
-export function parseYahooOhlcv(json: unknown): Bar[] {
-  const r = (json as { chart?: { result?: Array<{ timestamp?: number[]; indicators?: { quote?: Array<{ close?: (number | null)[]; high?: (number | null)[]; low?: (number | null)[]; volume?: (number | null)[] }> }; meta?: { exchangeTimezoneName?: string } }> } }).chart?.result?.[0];
-  const q = r?.indicators?.quote?.[0]; const tz = r?.meta?.exchangeTimezoneName ?? "America/New_York";
-  const out = new Map<string, Bar>();
-  (r?.timestamp ?? []).forEach((s, i) => {
-    const c = q?.close?.[i], h = q?.high?.[i], l = q?.low?.[i], v = q?.volume?.[i];
-    if (c == null || h == null || l == null || v == null || !(v > 0)) return;
-    const t = new Date(s * 1000).toLocaleDateString("en-CA", { timeZone: tz });
-    out.set(t, { t, c, h, l, v });
-  });
-  return [...out.values()];
-}
-
 export interface StockVol { symbol: string; date: string; rvol: number; volume: number; avg20: number; chgPct: number; breakout: "high" | "low" | null; verdict: string; strong: boolean }
 /** Relative volume of the last completed bar vs the prior 20 bars; price break of the prior 20-day high/low. */
 export function stockVolume(symbol: string, bars: Bar[], minRvol = 2): StockVol | null {

@@ -19,7 +19,7 @@ export const PM_SERIES: SeriesDef[] = [
   y("DXY", "DX-Y.NYB", "美元指数 DXY"), y("USDCAD", "CAD=X", "USDCAD"), y("USDJPY", "JPY=X", "USDJPY"),
   // DK 补充
   y("VIX", "^VIX", "VIX"), y("VIX3M", "^VIX3M", "VIX3M"), y("WTI", "CL=F", "WTI 原油"), y("GOLD", "GC=F", "黄金"),
-  { id: "BTC", provider: "coinbase", ref: "BTC-USD", label: "比特币", unit: "price", frequency: "daily" },
+  { id: "BTC", provider: "yahoo", ref: "BTC-USD", label: "比特币", unit: "price", frequency: "daily" },
   f("EFFR", "DFF", "有效联邦基金利率"), f("REAL10Y", "DFII10", "10Y 实际利率 (TIPS)"),
 ];
 const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED", "EFFR", "REAL10Y"]);
@@ -127,7 +127,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   const failed = Object.entries(inp.failed ?? {});
   const md = [
     `# 盘前流程 Premarket — ${day}（${inp.now.toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", hour12: false })} ET）`, "",
-    "_数据：Yahoo chart / FRED / Coinbase（免费，可能有延迟；FRED 为 T-1）。不是交易建议。_", "",
+    "_数据：Yahoo (yahoo-finance2) / FRED（免费，可能有延迟；FRED 为 T-1）。不是交易建议。_", "",
     "## 【大佬流程】", "_来源：knowledge/mentor/discipline/premarket-routine.md（视频转写，近似原文）_", "", ...M, "",
     "---", "", "## 【DK 补充】", "_以下为 DK 的补充，不是大佬原流程。_", "", ...K, "",
     "## 综合判断", "", syn, "",

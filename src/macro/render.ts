@@ -63,7 +63,7 @@ export function renderMacro(r: MacroReport, full = true): string {
       const u = s.unit === "pct" || s.id === "NFCI" ? "bp" : "%";
       L.push(`| ${s.label} | ${s.provider}:${s.ref} | ${st?.last != null ? Number(st.last.toPrecision(6)) : "n/a"} | ${st?.lastDate ?? ""} | ${st?.chg1 ?? ""}${u} | ${st?.chg5 ?? ""}${u} | ${st?.chg20 ?? ""}${u} | ${st?.z20 ?? ""} | ${f ? (f.ok ? "ok" : `FAIL ${f.error}`) : "cached"}${r.overrides[s.id] !== undefined ? " (Robinhood override)" : ""} |`);
     }
-    L.push("", "_FRED daily series lag ~1 business day; market series (Yahoo/Coinbase) are current._");
+    L.push("", "_FRED daily series lag ~1 business day; market series (Yahoo) are current._");
   }
   return L.join("\n") + "\n";
 }

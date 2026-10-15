@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { stockVolume, optionAnomalies, buildVolumeReport, volumeAlarmItems, parseYahooOhlcv, TAG, type Bar } from "../src/macro/volume.ts";
+import { stockVolume, optionAnomalies, buildVolumeReport, volumeAlarmItems, TAG, type Bar } from "../src/macro/volume.ts";
 import { premarketAlarmAlerts } from "../src/alerts.ts";
 import { buildPremarket } from "../src/macro/premarket.ts";
 import { parseChain, type Chain } from "../src/options/chain.ts";
@@ -33,9 +33,7 @@ test("report: every flagged line carries the tag; strong anomalies → alerts at
   assert.equal(a[0]!.alert.score, 60); assert.deepEqual(a[0]!.alert.topics, ["volume"]);
   assert.equal(premarketAlarmAlerts(items, { priorAlertScore: () => null }, 61).length, 0);
 });
-test("yahoo OHLCV parser + premarket shows prior-session volume lines", () => {
-  const b = parseYahooOhlcv({ chart: { result: [{ timestamp: [1760000000, 1760086400], indicators: { quote: [{ close: [1, 2], high: [1, 2], low: [1, 2], volume: [10, null] }] } }] } });
-  assert.equal(b.length, 1);
+test("premarket shows prior-session volume lines", () => {
   const pm = buildPremarket({ now: new Date(), data: {}, volumeLines: ["- 🚨 **SMH** RVOL 3.5x _（成交量仅用于确认/排查，不单独下单）_"] });
   assert.match(pm.md, /前一交易日成交量异常[\s\S]*SMH RVOL|前一交易日成交量异常[\s\S]*\*\*SMH\*\*/);
 });

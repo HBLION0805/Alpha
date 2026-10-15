@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { parseFredCsv, parseYahooChart, parseCoinbaseCandles, parseRobinhoodQuotes, type Obs } from "../src/macro/fetch.ts";
+import { parseFredCsv, parseRobinhoodQuotes, type Obs } from "../src/macro/fetch.ts";
+import { toBars, fillCryptoGaps } from "../src/adapters/yahoo.ts";
 import { computeStats, type SeriesStats } from "../src/macro/stats.ts";
 import { classifyAxes, classifyRegime } from "../src/macro/regime.ts";
 import { confirmReaction, headlineDirection } from "../src/macro/confirm.ts";
@@ -9,13 +10,17 @@ import { riskView, upcomingHighImpact, knowledgeRef, eventUtcMs } from "../src/m
 
 const fx = (f: string) => readFileSync(new URL(`./fixtures/${f}`, import.meta.url), "utf8");
 
-test("parsers: FRED csv (skips blanks), Yahoo chart, Coinbase candles, Robinhood quotes", () => {
+test("parsers: FRED csv (skips blanks), yahoo-finance2 adapter (incl. BTC UTC days), Robinhood quotes", () => {
   const f = parseFredCsv(fx("fred-dgs2.csv"));
   assert.ok(f.length >= 5 && f.every((o) => Number.isFinite(o.v)));
   assert.deepEqual(parseFredCsv("observation_date,X\n2026-10-12,\n2026-10-13,4.79\n"), [{ t: "2026-10-13", v: 4.79 }]);
-  const y = parseYahooChart(JSON.parse(fx("yahoo-spy.json")), true);
-  assert.ok(y.length >= 4 && /^\d{4}-\d\d-\d\d$/.test(y[0]!.t));
-  assert.deepEqual(parseCoinbaseCandles([[1792022400, 1, 2, 1.5, 1.8, 10], [1791936000, 1, 2, 1.5, 1.7, 10]], true).map((o) => o.v), [1.7, 1.8]);
+  // live bar appended on the same NY date replaces the earlier one; null closes dropped
+  const y = toBars([{ date: new Date("2026-10-13T13:30:00Z"), close: 1 }, { date: new Date("2026-10-14T13:30:00Z"), close: null }, { date: new Date("2026-10-14T13:30:00Z"), close: 2, volume: 5 }, { date: new Date("2026-10-14T19:59:00Z"), close: 3, volume: 9 }], true);
+  assert.deepEqual(y.map((b) => [b.t, b.c, b.v]), [["2026-10-13", 1, 0], ["2026-10-14", 3, 9]]);
+  // crypto: exchange tz UTC → UTC calendar day (same convention Coinbase used)
+  assert.equal(toBars([{ date: new Date("2026-10-15T00:00:00Z"), close: 81543 }], true, "UTC")[0]!.t, "2026-10-15");
+  const fg = fillCryptoGaps([{ t: "2026-10-13", o: 1, h: 1, l: 1, c: 1, v: 1 }, { t: "2026-10-15", o: 3, h: 3, l: 3, c: 3, v: 1 }], [{ t: "2026-10-14T22:00:00.000Z", o: 2, h: 2, l: 2, c: 2.4, v: 1 }, { t: "2026-10-14T23:00:00.000Z", o: 2, h: 2, l: 2, c: 2.5, v: 1 }]);
+  assert.deepEqual(fg.map((b) => [b.t, b.c]), [["2026-10-13", 1], ["2026-10-14", 2.5], ["2026-10-15", 3]]);
   assert.deepEqual(parseRobinhoodQuotes({ data: { results: [{ symbol: "SPY", last_trade_price: "769.60" }, { symbol: "GLD", mark_price: 376 }] } }), { SPY: 769.6, GLD: 376 });
 });
 

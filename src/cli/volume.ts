@@ -2,9 +2,10 @@
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
+import { yahooDaily } from "../adapters/yahoo.ts";
 import { Store } from "../store.ts";
 import { parseChain, type Chain } from "../options/chain.ts";
-import { DEFAULT_WATCHLIST, parseYahooOhlcv, buildVolumeReport, volumeAlarmItems, type Bar } from "../macro/volume.ts";
+import { DEFAULT_WATCHLIST, buildVolumeReport, volumeAlarmItems, type Bar } from "../macro/volume.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/volume-latest.md" }, "no-alarms": { type: "boolean" }, in: { type: "string", default: "data/in" } } });
 const now = new Date();
@@ -13,9 +14,7 @@ const symbols = [...new Set([...DEFAULT_WATCHLIST, ...extra.map((s) => s.toUpper
 const bars: Record<string, Bar[]> = {}; const failed: Record<string, string> = {};
 await Promise.all(symbols.map(async (s) => {
   try {
-    const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?range=3mo&interval=1d`, { headers: { "user-agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(12_000) });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    let b = parseYahooOhlcv(await r.json());
+    let b: Bar[] = (await yahooDaily(s, 95)).filter((x) => x.v > 0);
     // only completed sessions: drop today's bar while the US market is open/pre-open
     const today = now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), hm = Number(now.toLocaleTimeString("en-GB", { timeZone: "America/New_York", hour12: false }).slice(0, 5).replace(":", ""));
     if (b.at(-1)?.t === today && hm < 1615) b = b.slice(0, -1);

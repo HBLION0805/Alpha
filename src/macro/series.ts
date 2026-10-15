@@ -1,5 +1,5 @@
-/** Free macro & market series. FRED keyless CSV (fredgraph.csv) + Yahoo chart JSON + Coinbase candles. */
-export type Provider = "fred" | "yahoo" | "coinbase";
+/** Free macro & market series. FRED keyless CSV (fredgraph.csv) + Yahoo via adapters/yahoo.ts (yahoo-finance2), incl. BTC-USD. */
+export type Provider = "fred" | "yahoo";
 
 export interface SeriesDef {
   id: string; // our id
@@ -29,7 +29,7 @@ export const SERIES: SeriesDef[] = [
   { id: "DXY", provider: "yahoo", ref: "DX-Y.NYB", label: "DXY", unit: "index", frequency: "daily" },
   { id: "UST10Y_MKT", provider: "yahoo", ref: "^TNX", label: "10Y yield (CBOE TNX)", unit: "pct", frequency: "daily" },
   { id: "ZT", provider: "yahoo", ref: "ZT=F", label: "2Y T-note futures (price, inverse of yield)", unit: "price", frequency: "daily" },
-  { id: "BTC", provider: "coinbase", ref: "BTC-USD", label: "Bitcoin (Coinbase)", unit: "price", frequency: "daily" },
+  { id: "BTC", provider: "yahoo", ref: "BTC-USD", label: "Bitcoin (Yahoo BTC-USD, UTC days)", unit: "price", frequency: "daily" },
 ];
 
 /** Intraday series used for news-reaction confirmation. */
