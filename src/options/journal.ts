@@ -36,6 +36,8 @@ export interface JournalEntry {
   // --- paper trading + live-readiness (src/options/readiness.ts) ---
   /** formal = counts toward readiness; practice = shown separately, excluded from readiness stats/expectancy */
   kind?: "formal" | "practice";
+  /** formal only: id of the brief §2.1 plan item this trade executes (src/options/planlink.ts) */
+  planId?: string;
   /** mentor_shadow = shadowing a mentor call (thesis verbatim, never readiness); real_practice = a small REAL-account trade (e.g. Robinhood) logged here for review only; always kind=practice, never readiness */
   source?: "paper_sim" | "real_practice" | "mentor_shadow";
   /** real_practice: broker-reported P&L snapshots (entry cost may be unknown → costUnknown, premiums null) */

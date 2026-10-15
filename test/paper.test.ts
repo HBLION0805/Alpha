@@ -9,7 +9,7 @@ const prop = () => ({ symbol: "INTC", strategy: "long_put", asOf: "2026-10-15", 
   legs: [{ type: "put", strike: 30, qty: 2, premium: 0.8, expiration: "2026-12-18", openInterest: 5000, bid: 0.78, ask: 0.82 }],
   discipline: { journal: [], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" }, market: { lowVolume: false, unclearDirection: false, chop: false, poorRR: false }, plannedMaxLoss: 200, entryRange: { low: 31, high: 33 }, side: "short" } }) as never;
 const CLEAN = { at: "x", objections: [], blocks: 0, warns: 0 };
-const A = { hedge: "portfolio", hedgeDetail: "SPY 30d 5% OTM put spread already held", critique: CLEAN, thesis: "capex slowdown", invalidation: "INTC > 35", stop: "INTC > 35", motive: "thesis" as const, timeStopAt: "2026-11-06", tp: "narrative", now };
+const A = { hedge: "portfolio", hedgeDetail: "SPY 30d 5% OTM put spread already held", critique: CLEAN, thesis: "capex slowdown", invalidation: "INTC > 35", stop: "INTC > 35", motive: "thesis" as const, timeStopAt: "2026-11-06", tp: "narrative", planId: "2026-10-15-INTC-short", plan: [{ id: "2026-10-15-INTC-short", ticker: "INTC", side: "short", entryZone: [31, 33] }] as never, now };
 
 test("paper open: requires thesis/invalidation/stop/motive and refuses on BLOCK", () => {
   const j: PaperJournal = { capital: 50000, entries: [] };
@@ -60,4 +60,20 @@ test("readiness counts losses that followed --ack'ed critique warnings", () => {
   const r = readiness({ journal: [c], capital: 50000, shockDates: [] });
   assert.equal(r.stats.ignoredWarnLosses, 1);
   assert.match(r.criteria.find((x) => x.id === "loss_review")!.detail.join(), /fomo_gap/);
+});
+
+test("formal paper trades must come from today's brief §2.1 plan; practice is exempt", async () => {
+  const { checkPlanLink } = await import("../src/options/planlink.ts");
+  const plan = [{ id: "2026-10-15-INTC-short", ticker: "INTC", side: "short", entryZone: [31, 33] }] as never;
+  const base = { kind: "formal" as const, plan, symbol: "INTC", side: "short" as const, spot: 32, todayEt: "2026-10-15" };
+  assert.deepEqual(checkPlanLink({ ...base, planId: "2026-10-15-INTC-short" }), []);
+  assert.match(checkPlanLink(base)[0]!, /--plan-id/);
+  assert.match(checkPlanLink({ ...base, planId: "2026-10-14-INTC-short" })[0]!, /不是今天/);
+  assert.match(checkPlanLink({ ...base, planId: "2026-10-15-SPY-long" })[0]!, /没有/);
+  assert.match(checkPlanLink({ ...base, planId: "2026-10-15-INTC-short", spot: 35 })[0]!, /进场区间/);
+  assert.match(checkPlanLink({ ...base, planId: "2026-10-15-INTC-short", side: "long" })[0]!, /方向/);
+  assert.deepEqual(checkPlanLink({ ...base, kind: "practice" }), []);
+  const j = { capital: 50000, entries: [] };
+  assert.ok(paperOpen(j, prop(), { ...A, planId: undefined }).refused.some((x) => /--plan-id/.test(x)));
+  assert.ok(paperOpen(j, prop(), { ...A, planId: undefined, kind: "practice" }).entry);
 });
