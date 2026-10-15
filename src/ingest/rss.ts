@@ -44,6 +44,11 @@ function toIso(raw: string | undefined, fallback: string): string {
   return Number.isFinite(t) ? new Date(t).toISOString() : fallback;
 }
 
+/** Some feeds (Investing.com) emit local time without a zone, landing hours in the future: clamp to fetch time. */
+export function clampFuture(iso: string, now: string): string {
+  return Date.parse(iso) > Date.parse(now) + 10 * 60_000 ? now : iso;
+}
+
 /** Parse RSS 2.0 / RSS 1.0 (RDF) / Atom into FeedItems. Never throws on bad items; skips them. */
 export function parseFeed(xml: string, sourceId: string, now = new Date().toISOString()): FeedItem[] {
   const blocks = [...xml.matchAll(/<(item|entry)\b[^>]*>([\s\S]*?)<\/\1>/gi)].map((m) => m[2] ?? "");
@@ -58,11 +63,25 @@ export function parseFeed(xml: string, sourceId: string, now = new Date().toISOS
       sourceId,
       title,
       url: decodeEntities(url.trim()),
-      publishedAt: toIso(tag(b, ["pubDate", "published", "updated", "dc:date"]), now),
+      publishedAt: clampFuture(toIso(tag(b, ["pubDate", "published", "updated", "dc:date"]), now), now),
       summary: text(tag(b, ["description", "summary", "content:encoded", "content"])).slice(0, 500),
     };
     if (guid) item.guid = guid;
     out.push(item);
+  }
+  if (!blocks.length) out.push(...parseNewsSitemap(xml, sourceId, now));
+  return out;
+}
+
+/** Google News sitemap (<urlset><url><loc/><news:news><news:title/>...) — used for CNN, which retired RSS. */
+export function parseNewsSitemap(xml: string, sourceId: string, now = new Date().toISOString()): FeedItem[] {
+  const out: FeedItem[] = [];
+  for (const m of xml.matchAll(/<url>([\s\S]*?)<\/url>/gi)) {
+    const b = m[1] ?? "";
+    const title = text(tag(b, ["news:title"]));
+    const url = text(tag(b, ["loc"]));
+    if (!title || !url) continue;
+    out.push({ sourceId, title, url, publishedAt: clampFuture(toIso(tag(b, ["news:publication_date", "lastmod"]), now), now), summary: text(tag(b, ["news:keywords"])).slice(0, 300) });
   }
   return out;
 }
