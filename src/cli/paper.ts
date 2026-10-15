@@ -1,6 +1,6 @@
 /**
  * npm run paper -- open|close|list|mark   (paper trades ONLY — this file never calls a broker; there is no order path)
- *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis [--time-stop YYYY-MM-DD] [--ack]
+ *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis --tp short_dated|narrative|windfall [--time-stop YYYY-MM-DD] [--ack]
  *         --hedge built_in_spread|direct|portfolio --hedge-detail "…" [--stop-pct 7 (stocks)] [--kind formal|practice]
  *         (唱反调 critique printed first; BLOCK refuses, WARNs need --ack; the critique is saved in the entry)
  *   mark  [--quotes data/in/x-chain.json ...]   (Robinhood chain JSON when present, else Yahoo spot + Black-Scholes)
@@ -13,6 +13,8 @@ import { defaultCapital } from "../config.ts";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, renameSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
+import { checkTakeProfit, costBasis } from "../options/tpplan.ts";
+const etDate = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 import { paperOpen, paperMark, paperClose, openPaper, type PaperJournal } from "../options/paper.ts";
 import { parseChain, type Chain } from "../options/chain.ts";
 import { unwrapJson } from "../options/robinhood.ts";
@@ -26,7 +28,7 @@ import type { JournalEntry } from "../options/journal.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
-  thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" },
+  thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
   "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
 const cmd = positionals[0];
@@ -54,7 +56,7 @@ if (cmd === "open") {
     leader: brief.leader === undefined ? undefined : brief.leader, verdict: brief.verdict ?? null, verdictReasons: brief.reasons ?? [],
     futuresGapPct: (brief.reasons ?? []).some((x: string) => /期货跳空/.test(x)) ? 1.5 : null, open: openPaper(j), bars, calendar, now, capital: j.capital });
   process.stdout.write(renderCritique(cr) + "\n");
-  const r = paperOpen(j, p, { kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], now });
+  const r = paperOpen(j, p, { kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
   j.entries.push(r.entry!); save();
@@ -66,7 +68,8 @@ if (cmd === "open") {
   const cache = new Map<string, number | null>();
   const spot = async (s: string) => { if (!cache.has(s)) { const ch = chains.find((c) => c.symbol === s); cache.set(s, ch?.underlyingPrice ?? (await yahooDaily(s, 10).catch(() => [])).at(-1)?.c ?? null); } return cache.get(s)!; };
   for (const e of openPaper(j)) {
-    try { const m = await paperMark(e, { spot, chains }, now); (e.marks ??= []).push(m); process.stdout.write(`${e.id} ${e.symbol}: P&L $${m.pnl} (${((m.pnl / (e.capitalAtEntry ?? j.capital)) * 100).toFixed(2)}%) · ${m.sources.join("; ")}\n`); }
+    try { const m = await paperMark(e, { spot, chains }, now); (e.marks ??= []).push(m); process.stdout.write(`${e.id} ${e.symbol}: P&L $${m.pnl} (${((m.pnl / (e.capitalAtEntry ?? j.capital)) * 100).toFixed(2)}%) · ${m.sources.join("; ")}\n`);
+      for (const h of checkTakeProfit(e.takeProfit, costBasis(e.legs ?? []), m.pnl, etDate(now), e.tpHits)) { (e.tpHits ??= []).push(h.gainPct); process.stdout.write(`⚠️ ${e.id} ${e.symbol}: ${h.text}\n`); } }
     catch (err) { process.stdout.write(`${e.id} ${e.symbol}: 无法估值 ${(err as Error).message}\n`); }
   }
   save();

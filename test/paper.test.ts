@@ -9,7 +9,7 @@ const prop = () => ({ symbol: "INTC", strategy: "long_put", asOf: "2026-10-15", 
   legs: [{ type: "put", strike: 30, qty: 2, premium: 0.8, expiration: "2026-12-18", openInterest: 5000, bid: 0.78, ask: 0.82 }],
   discipline: { journal: [], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" }, market: { lowVolume: false, unclearDirection: false, chop: false, poorRR: false }, plannedMaxLoss: 200, entryRange: { low: 31, high: 33 }, side: "short" } }) as never;
 const CLEAN = { at: "x", objections: [], blocks: 0, warns: 0 };
-const A = { hedge: "portfolio", hedgeDetail: "SPY 30d 5% OTM put spread already held", critique: CLEAN, thesis: "capex slowdown", invalidation: "INTC > 35", stop: "INTC > 35", motive: "thesis" as const, timeStopAt: "2026-11-06", now };
+const A = { hedge: "portfolio", hedgeDetail: "SPY 30d 5% OTM put spread already held", critique: CLEAN, thesis: "capex slowdown", invalidation: "INTC > 35", stop: "INTC > 35", motive: "thesis" as const, timeStopAt: "2026-11-06", tp: "narrative", now };
 
 test("paper open: requires thesis/invalidation/stop/motive and refuses on BLOCK", () => {
   const j: PaperJournal = { capital: 50000, entries: [] };

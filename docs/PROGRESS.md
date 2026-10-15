@@ -114,3 +114,15 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - Simulation capital defaults to **$5,000** (src/config.ts; ALPHA_CAPITAL overrides). That gives 1%/trade = $50 and 2%/day = $100. Used by the brief plan, paper open and readiness; data/journal/paper.json capital = 5000. Live money later scales the same caps proportionally.
 - Trump: the primary source is now `trump_truth_official`, the official Truth Social public API (no login). From the box, curl gets 200 but Node fetch gets a Cloudflare 403, so it is fetched with curl. The account RSS returns an HTML shell, so it is unusable. The trumpstruth.org mirror stays as the fallback, and the same text is deduped into one alert (trump.ts postKey).
 - Journal `source: mentor_shadow` (practice, excluded from readiness). Three 10/15 10:35 ET shadows of mentor calls, thesis verbatim: NVDA 220/225C 10/23 ($1.60, spot 215.93), INTC 95/100C 10/23 ($1.40, spot 91.97), GDX 90C 11/20 ($2.60, spot 85.17). Each max loss ($160/$140/$260) exceeds the $50 1% cap at $5k and is tagged exceeds_1pct_cap_at_5000.
+- `paper open` now requires `--tp short_dated|narrative|windfall` (src/options/tpplan.ts, citing take-profit.md):
+  - short_dated: +30% sell ≥50%, +50% sell the rest, close by the day before expiry.
+  - narrative: +100% sell 50%, +200% sell 25%, 25% runner.
+  - windfall: +80% take ≥90% off.
+  - ≤14 DTE forces short_dated. `paper mark` prints 「止盈触发：按计划执行」 once per target hit and on the close-by date.
+- Real-account practice records (source real_practice, P&L from the 11:40 ET 10/15 Robinhood screenshot; entry costs unknown, kept null with costUnknown):
+  - CRWV 55/50P 10/16 −$4 (was ~+$20 earlier).
+  - VIX 20/25C 10/21 AM −$6.
+  - AAPL 335/325P 10/30 −$44, invalidation: close above 335. DK: AAPL counts as tech, so the rotation thesis is questionable.
+  - NVDA updated to −$1, so the $2 debit is uncertain.
+  - CRWV, NVDA and VIX are execution errors tagged no_pre_set_take_profit. Lesson: 止盈必须开仓时写死。
+  - real_practice records are never marked by `paper mark` and don't count toward the position cap.

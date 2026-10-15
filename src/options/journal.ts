@@ -38,6 +38,10 @@ export interface JournalEntry {
   kind?: "formal" | "practice";
   /** mentor_shadow = shadowing a mentor call (thesis verbatim, never readiness); real_practice = a small REAL-account trade (e.g. Robinhood) logged here for review only; always kind=practice, never readiness */
   source?: "paper_sim" | "real_practice" | "mentor_shadow";
+  /** real_practice: broker-reported P&L snapshots (entry cost may be unknown → costUnknown, premiums null) */
+  pnlSnapshots?: Array<{ at: string; pnl: number; spot?: number; note?: string }>; costUnknown?: boolean;
+  /** mandatory take-profit plan at entry (src/options/tpplan.ts); tpHits = gainPct targets already alerted (-1 = close-by date) */
+  takeProfit?: import("./tpplan.ts").TakeProfitPlan; tpHits?: number[];
   /** mandatory risk plan at entry (src/options/riskplan.ts) */
   riskPlan?: import("./riskplan.ts").RiskPlan;
   /** "paper" = simulated entry on real data; default "live" */

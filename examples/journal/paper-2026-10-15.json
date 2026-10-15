@@ -1,0 +1,413 @@
+{
+  "capital": 5000,
+  "entries": [
+    {
+      "id": "nvda-pds-2026-10-14-real",
+      "openedAt": "2026-10-14",
+      "symbol": "NVDA",
+      "strategy": "put_debit_spread",
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "view": {
+        "direction": "bearish",
+        "magnitudeTime": "continuation down from 10/14 within 2 sessions",
+        "volatility": "n/a",
+        "time": "exp 2026-10-16"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Defined-risk bearish continuation; real Robinhood account, 1 contract, $2 total debit",
+      "maxLoss": 2,
+      "invalidation": "n/a (not written before entry)",
+      "exitRules": [],
+      "thesis": "Continuation down from 10/14",
+      "legs": [
+        {
+          "underlying": "NVDA",
+          "type": "put",
+          "strike": 202.5,
+          "qty": 1,
+          "premium": 0.02,
+          "expiration": "2026-10-16"
+        },
+        {
+          "underlying": "NVDA",
+          "type": "put",
+          "strike": 200,
+          "qty": -1,
+          "premium": 0,
+          "expiration": "2026-10-16"
+        }
+      ],
+      "underlyingAtEntry": 221,
+      "lossReview": {
+        "at": "2026-10-15",
+        "errorClass": "execution",
+        "errorTags": [
+          "strikes_too_far_otm",
+          "no_pre_set_take_profit"
+        ],
+        "note": "Direction was right (221→216). The user does not judge the expiry as wrong. The strikes needed about −9% in 2 days. Also: profitable this morning but not closed (gain → loss)."
+      },
+      "lesson": "For short-window continuation trades, put the long strike near ATM (e.g. 217.5/212.5 from 221), not far OTM. 止盈必须开仓时写死。",
+      "reviews": [
+        {
+          "at": "2026-10-15T10:23:00-04:00",
+          "thesisValid": true,
+          "positionValid": false,
+          "note": "NVDA 216.08 at 10:23 ET; result pending, likely expires worthless"
+        }
+      ],
+      "pnlSnapshots": [
+        {
+          "at": "2026-10-15T11:40:00-04:00",
+          "pnl": -1,
+          "note": "Robinhood P&L at 11:40. A −$1 P&L does not fit a fully lost $2 debit, so the actual debit is uncertain. It was profitable this morning and was not closed."
+        }
+      ],
+      "costUncertain": "The user reported $2 total, but the 11:40 P&L of −$1 suggests a different debit or residual value"
+    },
+    {
+      "id": "mentor-nvda-cds-2026-10-15",
+      "openedAt": "2026-10-15T10:35:00-04:00",
+      "symbol": "NVDA",
+      "strategy": "call_debit_spread",
+      "kind": "practice",
+      "source": "mentor_shadow",
+      "mode": "paper",
+      "view": {
+        "direction": "bullish",
+        "volatility": "n/a",
+        "time": "exp 2026-10-23"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Shadowing the mentor call (大佬), 1 contract",
+      "thesis": "技术反弹。不会拿到截止日。技术性交易。",
+      "thesisRecordedAt": "2026-10-15T10:35:00-04:00",
+      "maxLoss": 160,
+      "invalidation": "n/a (mentor gave no invalidation)",
+      "exitRules": [],
+      "legs": [
+        {
+          "underlying": "NVDA",
+          "type": "call",
+          "strike": 220,
+          "qty": 1,
+          "premium": 1.6,
+          "expiration": "2026-10-23"
+        },
+        {
+          "underlying": "NVDA",
+          "type": "call",
+          "strike": 225,
+          "qty": -1,
+          "premium": 0,
+          "expiration": "2026-10-23"
+        }
+      ],
+      "underlyingAtEntry": 215.93,
+      "lesson": "Max gain $340/contract",
+      "violations": [
+        "exceeds_1pct_cap_at_5000"
+      ]
+    },
+    {
+      "id": "mentor-intc-cds-2026-10-15",
+      "openedAt": "2026-10-15T10:35:00-04:00",
+      "symbol": "INTC",
+      "strategy": "call_debit_spread",
+      "kind": "practice",
+      "source": "mentor_shadow",
+      "mode": "paper",
+      "view": {
+        "direction": "bullish",
+        "volatility": "n/a",
+        "time": "exp 2026-10-23"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Shadowing the mentor call (大佬), 1 contract",
+      "thesis": "技术反弹。不会拿到截止日。技术性交易。",
+      "thesisRecordedAt": "2026-10-15T10:35:00-04:00",
+      "maxLoss": 140,
+      "invalidation": "n/a (mentor gave no invalidation)",
+      "exitRules": [],
+      "legs": [
+        {
+          "underlying": "INTC",
+          "type": "call",
+          "strike": 95,
+          "qty": 1,
+          "premium": 1.4,
+          "expiration": "2026-10-23"
+        },
+        {
+          "underlying": "INTC",
+          "type": "call",
+          "strike": 100,
+          "qty": -1,
+          "premium": 0,
+          "expiration": "2026-10-23"
+        }
+      ],
+      "underlyingAtEntry": 91.97,
+      "lesson": "Max gain $360/contract",
+      "violations": [
+        "exceeds_1pct_cap_at_5000"
+      ]
+    },
+    {
+      "id": "mentor-gdx-call-2026-10-15",
+      "openedAt": "2026-10-15T10:35:00-04:00",
+      "symbol": "GDX",
+      "strategy": "long_call",
+      "kind": "practice",
+      "source": "mentor_shadow",
+      "mode": "paper",
+      "view": {
+        "direction": "bullish",
+        "volatility": "n/a",
+        "time": "exp 2026-11-20"
+      },
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "structureRationale": "Shadowing the mentor call (大佬), 1 contract",
+      "thesis": "美金疲软。大家避险。技术性交易。",
+      "thesisRecordedAt": "2026-10-15T10:35:00-04:00",
+      "maxLoss": 260,
+      "invalidation": "n/a (mentor gave no invalidation)",
+      "exitRules": [],
+      "legs": [
+        {
+          "underlying": "GDX",
+          "type": "call",
+          "strike": 90,
+          "qty": 1,
+          "premium": 2.6,
+          "expiration": "2026-11-20"
+        }
+      ],
+      "underlyingAtEntry": 85.17,
+      "violations": [
+        "exceeds_1pct_cap_at_5000"
+      ]
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "costUnknown": true,
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "exitRules": [],
+      "structureRationale": "Real Robinhood trade logged for review (details from the user’s screenshot at 11:40 ET 10/15); entry cost unknown",
+      "maxLoss": null,
+      "id": "crwv-pds-2026-10-16-real",
+      "openedAt": "2026-10-15",
+      "openedAtUncertain": true,
+      "symbol": "CRWV",
+      "strategy": "put_debit_spread",
+      "view": {
+        "direction": "bearish",
+        "volatility": "n/a",
+        "time": "exp 2026-10-16"
+      },
+      "invalidation": "n/a (not recorded)",
+      "legs": [
+        {
+          "underlying": "CRWV",
+          "type": "put",
+          "strike": 55,
+          "qty": 1,
+          "premium": null,
+          "expiration": "2026-10-16"
+        },
+        {
+          "underlying": "CRWV",
+          "type": "put",
+          "strike": 50,
+          "qty": -1,
+          "premium": null,
+          "expiration": "2026-10-16"
+        }
+      ],
+      "pnlSnapshots": [
+        {
+          "at": "2026-10-15 morning (time unknown)",
+          "pnl": 20,
+          "note": "approx: up ~+200% (~+$20+) earlier this morning, not closed"
+        },
+        {
+          "at": "2026-10-15T11:40:00-04:00",
+          "pnl": -4,
+          "note": "Robinhood P&L at 11:40"
+        },
+        {
+          "at": "2026-10-15T11:41:00-04:00",
+          "pnl": -4,
+          "spot": 63.77,
+          "note": "CRWV 63.77"
+        }
+      ],
+      "lossReview": {
+        "at": "2026-10-15",
+        "errorClass": "execution",
+        "errorTags": [
+          "no_pre_set_take_profit"
+        ],
+        "note": "Gain of ~+200% turned into a loss; no take-profit was set at entry."
+      },
+      "lesson": "止盈必须开仓时写死。"
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "costUnknown": true,
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "exitRules": [],
+      "structureRationale": "Real Robinhood trade logged for review (details from the user’s screenshot at 11:40 ET 10/15); entry cost unknown",
+      "maxLoss": null,
+      "id": "vix-cds-2026-10-21-real",
+      "openedAt": "2026-10-15",
+      "openedAtUncertain": true,
+      "symbol": "VIX",
+      "strategy": "call_debit_spread",
+      "view": {
+        "direction": "bullish vol",
+        "volatility": "long",
+        "time": "exp 2026-10-21 (AM-settled)"
+      },
+      "invalidation": "n/a (not recorded)",
+      "legs": [
+        {
+          "underlying": "VIX",
+          "type": "call",
+          "strike": 20,
+          "qty": 1,
+          "premium": null,
+          "expiration": "2026-10-21"
+        },
+        {
+          "underlying": "VIX",
+          "type": "call",
+          "strike": 25,
+          "qty": -1,
+          "premium": null,
+          "expiration": "2026-10-21"
+        }
+      ],
+      "settlement": "AM",
+      "pnlSnapshots": [
+        {
+          "at": "2026-10-15T11:40:00-04:00",
+          "pnl": -6,
+          "note": "Robinhood P&L at 11:40; profitable this morning, not closed"
+        }
+      ],
+      "lossReview": {
+        "at": "2026-10-15",
+        "errorClass": "execution",
+        "errorTags": [
+          "no_pre_set_take_profit"
+        ],
+        "note": "Morning gain turned into a loss; no take-profit was set at entry. VIX options are AM-settled: the last trading day is the day before the 10/21 settlement."
+      },
+      "lesson": "止盈必须开仓时写死。"
+    },
+    {
+      "kind": "practice",
+      "source": "real_practice",
+      "mode": "paper",
+      "costUnknown": true,
+      "ivRank": null,
+      "greeks": {
+        "delta": 0,
+        "gamma": 0,
+        "theta": 0,
+        "vega": 0
+      },
+      "expectedMove": null,
+      "exitRules": [],
+      "structureRationale": "Real Robinhood trade logged for review (details from the user’s screenshot at 11:40 ET 10/15); entry cost unknown",
+      "maxLoss": null,
+      "id": "aapl-pds-2026-10-30-real",
+      "openedAt": "2026-10-15",
+      "openedAtUncertain": true,
+      "symbol": "AAPL",
+      "strategy": "put_debit_spread",
+      "view": {
+        "direction": "bearish",
+        "volatility": "n/a",
+        "time": "exp 2026-10-30"
+      },
+      "thesis": "OpEx 10/16: tech rallies while consumer names like AAPL fall (user)",
+      "dkNote": "DK: AAPL is classified as tech (XLK/QQQ heavyweight), so the tech-up / AAPL-down rotation thesis is questionable",
+      "invalidation": "close above 335 (suggested)",
+      "legs": [
+        {
+          "underlying": "AAPL",
+          "type": "put",
+          "strike": 335,
+          "qty": 1,
+          "premium": null,
+          "expiration": "2026-10-30"
+        },
+        {
+          "underlying": "AAPL",
+          "type": "put",
+          "strike": 325,
+          "qty": -1,
+          "premium": null,
+          "expiration": "2026-10-30"
+        }
+      ],
+      "pnlSnapshots": [
+        {
+          "at": "2026-10-15T11:40:00-04:00",
+          "pnl": -44,
+          "note": "Robinhood P&L at 11:40"
+        }
+      ]
+    }
+  ]
+}
