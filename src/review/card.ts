@@ -175,7 +175,7 @@ export function buildCard(i: CardInput): Card {
   if (i.fed === undefined || i.fed === null) s7.push("- 美联储讲话：不可用（没有 data/in/fed-speakers.json，运行 npm run fedspeak）");
   else if (exp) {
     const sp = i.fed.speeches.filter((x) => x.date <= exp && (x.date > today || (x.date === today && (x.timeEt == null || Number(x.timeEt.replace(":", "")) >= hmNow))));
-    s7.push(`- 美联储讲话（到期前，理事会日历）：${sp.length ? sp.map((x) => `${x.date} ${x.timeEt ?? "?"} ${x.role} ${x.speaker}${x.voter ? "（票委）" : ""}：${x.topic || "主题未公布"}`).join("；") : "无"}；地区联储主席未覆盖`);
+    s7.push(`- 美联储讲话（到期前）：${sp.length ? sp.map((x) => `${x.date} ${x.timeEt ?? "?"} ${x.role === "Board" ? "" : `${x.role} `}${x.speaker}${x.voter ? "（票委）" : ""}：${x.topic || "主题未公布"}${x.sourceKind === "secondary" ? "［二手］" : ""}${x.suspicious ? " ⚠️静默期内，可疑" : ""}`).join("；") : "无"}；${i.fed.coverage?.length ? `覆盖 理事会+12 家地区联储（不可用：${i.fed.coverage.filter((c) => c.official.startsWith("unavailable") && !c.secondary.startsWith("ok")).map((c) => c.bank).join("、") || "无"}）` : "地区联储主席未覆盖"}`);
     const bl = i.fed.blackouts.filter((b) => b.to > today && b.from <= exp);
     for (const b of bl) s7.push(`- 🔇 FOMC 静默期 ${b.from}～${b.to}（不含）${inBlackout(today, [b]) ? "：现在就在静默期" : ""}`);
     fedRisk = sp.some((x) => x.voter);

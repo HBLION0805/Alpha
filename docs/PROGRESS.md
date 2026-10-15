@@ -161,3 +161,8 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - `src/options/earningsStore.ts`: merges earnings.json + earnings-by-symbol.json (Robinhood get_earnings_results, read-only), confirmed vs estimated. `npm run earnings [-- --need]`. Routine text: docs/ROUTINE_EARNINGS.md.
 - `src/ingest/fedSpeakers.ts`: Fed Board official calendar JSON → speaker, role, voter, time ET, topic; FOMC blackout (2nd Saturday before → day after). Regional presidents not on that calendar → marked unavailable. `npm run fedspeak`; brief §今日经济日历 + card §7/§8.
 - Card: earnings inside expiry → risk item (§7 warn + §8); voter speech before expiry → warn.
+
+## 2026-10-15 — regional Fed presidents in fedspeak
+- `src/ingest/fedRegional.ts`: 12 banks (official speeches/events page scan, nearest-date pairing) + labeled secondary metalsmine weekly calendar (exact UTC→ET time, topic from history page). curl→fetch fallback; JS-only/failed pages = unavailable.
+- 2026 voters verified (fomc.htm + Jan 2026 minutes): NY, Cleveland, Philadelphia, Dallas, Minneapolis. Atlanta = interim Venable.
+- Merge Board + official + secondary, dedupe (same speaker/date, ≤2h), anything listed inside a blackout flagged suspicious. Per-bank coverage in `npm run fedspeak`, brief and card.

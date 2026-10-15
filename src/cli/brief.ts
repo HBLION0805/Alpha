@@ -61,7 +61,7 @@ const macro = buildMacroReport(store.db, recent, calendar, now);
 const vPath = "data/out/volume-latest.md";
 const volumeLines = existsSync(vPath) && now.getTime() - statSync(vPath).mtimeMs < 20 * 3600_000 ? readFileSync(vPath, "utf8").split("\n").filter((l) => /^- (🚨|⚠️|•)/.test(l) || /Put\/Call/.test(l)).slice(0, 12) : null;
 const fedR = await loadFedSpeakers({ offline: values.offline ?? false, now });
-const fedLines = fedR.data ? renderFedSpeakers(fedR.data.speeches, fedR.data.blackouts, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), 14, fedR.status) : [`- 不可用：${fedR.status}`];
+const fedLines = fedR.data ? renderFedSpeakers(fedR.data.speeches, fedR.data.blackouts, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), 14, fedR.status, fedR.data.coverage) : [`- 不可用：${fedR.status}`];
 const pm = buildPremarket({ fedLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
 const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;
