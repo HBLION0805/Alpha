@@ -26,7 +26,7 @@ export function idfTable(docs: Set<string>[]): (t: string) => number {
 /** Scheduled macro releases: two reports sharing one of these keys on the same day are very likely the same event. */
 export const EVENT_KEYS = new Set(["cpi", "inflation", "ppi", "pce", "payrolls", "nonfarm", "gdp", "fed", "jobless", "unemployment", "retail"]);
 const EVENT_ALIAS: Record<string, string> = { inflation: "cpi", nonfarm: "payrolls", unemployment: "payrolls" };
-export const EVENT_BONUS = 0.3;
+export const EVENT_BONUS = 0.2;
 
 function eventKeys(a: Set<string>): Set<string> {
   const out = new Set<string>();
@@ -57,6 +57,14 @@ export function weightedSim(a: Set<string>, b: Set<string>, idf: (t: string) => 
   return sim;
 }
 
+/** Seed tokens plus tokens shared by >=2 members: stops the union from snowballing. */
+function centroid(c: { members: Array<{ tk: Set<string> }> }): Set<string> {
+  if (c.members.length < 3) return c.members[0]!.tk;
+  const n = new Map<string, number>();
+  for (const m of c.members) for (const t of m.tk) n.set(t, (n.get(t) ?? 0) + 1);
+  return new Set([...c.members[0]!.tk, ...[...n].filter(([, k]) => k >= 2).map(([t]) => t)]);
+}
+
 type Work = Cluster & { members: Array<{ src: string; tk: Set<string> }> };
 
 export function clusterTokens(it: Pick<StoredItem, "title">): Set<string> {
@@ -84,6 +92,7 @@ export function clusterItems(items: StoredItem[], opts: ClusterOptions = DEFAULT
         const need = m.src === it.sourceId ? opts.sameSourceThreshold : opts.threshold;
         if (s >= need) sim = Math.max(sim, s);
       }
+      if (sim && c.members.length >= 3 && weightedSim(tk, centroid(c), idf) < opts.threshold * 0.6) sim = 0;
       if (sim > bestSim) [best, bestSim] = [c, sim];
     }
     if (best) {
@@ -106,11 +115,11 @@ export function clusterItems(items: StoredItem[], opts: ClusterOptions = DEFAULT
         if (Math.abs(Date.parse(a.firstSeen) - Date.parse(b.firstSeen)) > win) continue;
         const srcs = new Set([...a.members, ...b.members].map((m) => m.src));
         if (srcs.size < 2) continue;
-        if (weightedSim(a.tokens, b.tokens, idf) < opts.mergeThreshold) continue;
+        if (weightedSim(centroid(a), centroid(b), idf) < opts.mergeThreshold) continue;
         // also require one direct member-to-member link above the join threshold minus slack
         let link = 0;
         for (const x of a.members) for (const y of b.members) if (x.src !== y.src) link = Math.max(link, weightedSim(x.tk, y.tk, idf));
-        if (link < opts.threshold * 0.75) continue;
+        if (link < opts.threshold) continue;
         a.items.push(...b.items);
         a.members.push(...b.members);
         for (const x of b.tokens) a.tokens.add(x);

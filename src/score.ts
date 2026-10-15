@@ -1,5 +1,6 @@
 import type { Cluster } from "./types.ts";
 import { isBoilerplate } from "./noise.ts";
+import { mainClause, tokens } from "./normalize.ts";
 
 export interface Topic {
   id: string;
@@ -65,9 +66,15 @@ export function scoreCluster(c: Cluster, now = new Date()): ScoredCluster {
   const breakdown = { tier, topic: Math.round(topic), confirmation, recency: Math.round(recency), official: officialBonus };
   const score = Math.min(100, Math.round(tier + topic + confirmation + recency + officialBonus));
 
-  // headline: best tier, prefer concise titles, then earliest
-  const head = [...c.items].sort((a, b) => a.tier - b.tier || Number(a.title.length > 140) - Number(b.title.length > 140) || a.publishedAt.localeCompare(b.publishedAt))[0]!;
-  return { cluster: c, score, topics, assets: [...new Set(topics.flatMap((t) => t.assets))], sources, stances, breakdown, headline: head.title };
+  // headline: the most representative report (shares most tokens with the rest), tier as tiebreak; avoid run-on wire titles
+  const tk = c.items.map((i) => tokens(mainClause(i.title)));
+  const rep = c.items.map((it, k) => {
+    let shared = 0;
+    tk.forEach((o, j) => { if (j !== k) for (const t of tk[k]!) if (o.has(t)) shared++; });
+    return { it, v: shared / Math.max(1, c.items.length - 1) - it.tier * 0.3 - (it.title.length > 140 ? 2 : 0) };
+  });
+  const head = rep.sort((a, b) => b.v - a.v || a.it.publishedAt.localeCompare(b.it.publishedAt))[0]!.it;
+  return { cluster: c, score, topics, assets: [...new Set(topics.flatMap((t) => t.assets))], sources, stances, breakdown, headline: head.title.length > 160 ? (mainClause(head.title).slice(0, 157) + "…") : head.title };
 }
 
 export function rank(clusters: Cluster[], now = new Date()): ScoredCluster[] {
