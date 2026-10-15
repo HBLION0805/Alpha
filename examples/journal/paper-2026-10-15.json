@@ -972,7 +972,22 @@
       "pnl": 1,
       "exitKind": "discretionary",
       "exitReason": "closed in Robinhood @0.15 (20C 0.20 / 30C 0.05)",
-      "reviewPending": true
+      "postMortem": {
+        "at": "2026-10-15T21:22:46.263Z",
+        "outcome": "win",
+        "classification": "judgment",
+        "tags": [
+          "market_reaction_misread"
+        ],
+        "lesson": "数据判断对了不等于市场反应判断对了",
+        "followed": {
+          "stop": null,
+          "takeProfit": null,
+          "size": null
+        },
+        "note": "The user expected a hot PPI to cause panic. PPI was hot, but the market rallied calmly."
+      },
+      "lesson": "数据判断对了不等于市场反应判断对了"
     },
     {
       "kind": "practice",
@@ -1040,7 +1055,32 @@
       "pnl": -40,
       "exitKind": "discretionary",
       "exitReason": "closed in Robinhood @0.09 ×2 = $18 credit (54C 0.19 / 56C 0.06 / 58C 0.02)",
-      "reviewPending": true
+      "postMortem": {
+        "at": "2026-10-15T21:22:46.548Z",
+        "outcome": "loss",
+        "classification": "execution",
+        "tags": [
+          "bad_entry_price",
+          "position_over_cap"
+        ],
+        "lesson": "趋势对也要等计划内入场价，单笔最大亏损≤$50",
+        "followed": {
+          "stop": null,
+          "takeProfit": null,
+          "size": null
+        },
+        "note": "Same trend logic as the NVDA trade."
+      },
+      "lesson": "趋势对也要等计划内入场价，单笔最大亏损≤$50",
+      "lossReview": {
+        "at": "2026-10-15T21:22:46.548Z",
+        "errorClass": "execution",
+        "errorTags": [
+          "bad_entry_price",
+          "position_over_cap"
+        ],
+        "note": "趋势对也要等计划内入场价，单笔最大亏损≤$50 (Same trend logic as the NVDA trade.)"
+      }
     },
     {
       "kind": "practice",
@@ -1100,7 +1140,21 @@
       "pnl": 8,
       "exitKind": "discretionary",
       "exitReason": "closed in Robinhood @0.40 (220P 0.49 / 217.5P 0.09)",
-      "reviewPending": true
+      "postMortem": {
+        "at": "2026-10-15T21:22:46.889Z",
+        "outcome": "win",
+        "classification": "good",
+        "tags": [
+          "took_profit"
+        ],
+        "lesson": "按趋势执行并及时止盈",
+        "followed": {
+          "stop": null,
+          "takeProfit": null,
+          "size": null
+        }
+      },
+      "lesson": "按趋势执行并及时止盈"
     }
   ]
 }
