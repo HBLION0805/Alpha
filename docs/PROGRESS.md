@@ -156,3 +156,8 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - `npm run card -- --sym NVDA --dir bear [--structure put_spread --legs "+210P,-200P"] --exp 2026-10-23 [--thesis ...] [--save]`
 - 8 sections (plan match, macro, hedge, two stops, staged TP, max loss vs $50/$100, GEX/levels/events, devil's advocate + past mistakes) → ✅ 可做(正式) / 🟡 仅练习 / 🛑 不做.
 - `--save` → data/journal/pending-cards.json; `paper open --card <id>` links. Tests: test/card.test.ts.
+
+## 2026-10-15 — earnings coverage + Fed speakers
+- `src/options/earningsStore.ts`: merges earnings.json + earnings-by-symbol.json (Robinhood get_earnings_results, read-only), confirmed vs estimated. `npm run earnings [-- --need]`. Routine text: docs/ROUTINE_EARNINGS.md.
+- `src/ingest/fedSpeakers.ts`: Fed Board official calendar JSON → speaker, role, voter, time ET, topic; FOMC blackout (2nd Saturday before → day after). Regional presidents not on that calendar → marked unavailable. `npm run fedspeak`; brief §今日经济日历 + card §7/§8.
+- Card: earnings inside expiry → risk item (§7 warn + §8); voter speech before expiry → warn.

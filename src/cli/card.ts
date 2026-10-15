@@ -14,6 +14,8 @@ import { referenceLevels } from "../levels.ts";
 import { withOpex } from "../macro/opex.ts";
 import { parseEarnings } from "../options/events.ts";
 import { defaultCapital } from "../config.ts";
+import { loadEarningsBook, nextEarnings } from "../options/earningsStore.ts";
+import { loadFedSpeakers } from "../ingest/fedSpeakers.ts";
 
 const { values } = parseArgs({ options: { sym: { type: "string" }, dir: { type: "string" }, structure: { type: "string" }, legs: { type: "string" }, exp: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, save: { type: "boolean" }, out: { type: "string" }, journal: { type: "string", default: "data/journal/paper.json" } } });
@@ -40,7 +42,8 @@ const calendar = withOpex(existsSync(calF) ? JSON.parse(readFileSync(calF, "utf8
 const earnings = existsSync("data/in/earnings.json") ? parseEarnings(JSON.parse(readFileSync("data/in/earnings.json", "utf8"))) : null;
 const j = existsSync(values.journal!) ? JSON.parse(readFileSync(values.journal!, "utf8")) : { capital: defaultCapital(), entries: [] };
 const card = buildCard({ now, sym, dir, structure: values.structure, legs, exp: values.exp, spot, bars, levels: bars.length > 30 ? referenceLevels(bars as never) : null, quotes,
-  brief, gex: gexFromRaw(sym, raw), calendar, earnings, journal: j.entries, capital: j.capital ?? defaultCapital(), thesis: values.thesis, invalidation: values.invalidation });
+  brief, gex: gexFromRaw(sym, raw), calendar, earnings, earningsNext: nextEarnings(loadEarningsBook(), sym, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })), fed: (await loadFedSpeakers({ now })).data,
+  journal: j.entries, capital: j.capital ?? defaultCapital(), thesis: values.thesis, invalidation: values.invalidation });
 const md = renderCard(card, spot, values.exp ?? null);
 const out = values.out ?? `data/out/card-${sym}.md`;
 mkdirSync("data/out", { recursive: true }); writeFileSync(out, md + "\n"); writeFileSync(out.replace(/\.md$/, ".json"), JSON.stringify(card, null, 2) + "\n");

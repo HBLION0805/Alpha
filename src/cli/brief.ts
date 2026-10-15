@@ -27,6 +27,7 @@ import { referenceLevels, renderReferenceLevels } from "../levels.ts";
 import { loadDailyBars } from "../adapters/bars.ts";
 import { ALARM_SOURCES } from "../alerts.ts";
 import { fetchReleaseCalendar, type CalendarEvent } from "../ingest/officialCalendar.ts";
+import { loadFedSpeakers, renderFedSpeakers } from "../ingest/fedSpeakers.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -59,7 +60,9 @@ const recent = ranked.filter((r) => Date.parse(r.cluster.lastSeen) >= now.getTim
 const macro = buildMacroReport(store.db, recent, calendar, now);
 const vPath = "data/out/volume-latest.md";
 const volumeLines = existsSync(vPath) && now.getTime() - statSync(vPath).mtimeMs < 20 * 3600_000 ? readFileSync(vPath, "utf8").split("\n").filter((l) => /^- (🚨|⚠️|•)/.test(l) || /Put\/Call/.test(l)).slice(0, 12) : null;
-const pm = buildPremarket({ now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
+const fedR = await loadFedSpeakers({ offline: values.offline ?? false, now });
+const fedLines = fedR.data ? renderFedSpeakers(fedR.data.speeches, fedR.data.blackouts, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), 14, fedR.status) : [`- 不可用：${fedR.status}`];
+const pm = buildPremarket({ fedLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
 const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;
 const sc = buildScenarios({ now, data, calendar, headlines: ranked.slice(0, 40).map((r) => r.headline), earningsCount: earnings?.length ?? null, regimeLabel: macro.regime.label, previousLeader });

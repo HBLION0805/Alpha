@@ -38,3 +38,11 @@ test("missing quotes → not formal, marked missing", () => {
   const c = buildCard(base({ quotes: [], legs: [{ qty: 1, type: "put", strike: 100 }, { qty: -1, type: "put", strike: 99 }] }));
   assert.equal(c.verdict, "no"); assert.equal(c.sections.find((s) => s.n === 6)!.status, "missing");
 });
+test("earnings inside expiry → risk item; fed blackout shown", () => {
+  const c = buildCard(base({ legs: [{ qty: 1, type: "put", strike: 100 }, { qty: -1, type: "put", strike: 99 }],
+    earningsNext: { symbol: "XYZ", date: "2026-10-20", timing: "am", confirmed: false, source: "t" },
+    fed: { fetchedAt: "t", speeches: [], blackouts: [{ meetingStart: "2026-10-27", meetingEnd: "2026-10-28", from: "2026-10-17", to: "2026-10-29" }] } }));
+  const s7 = c.sections.find((s) => s.n === 7)!, s8 = c.sections.find((s) => s.n === 8)!;
+  assert.equal(s7.status, "warn"); assert.ok(s7.lines.some((l) => /预估（未确认）.*在到期前/.test(l))); assert.ok(s7.lines.some((l) => /静默期 2026-10-17/.test(l)));
+  assert.ok(s8.lines.some((l) => /财报.*在到期前/.test(l)));
+});

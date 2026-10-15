@@ -29,7 +29,7 @@ export const PM_SERIES: SeriesDef[] = [
 const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED", "EFFR", "REAL10Y"]);
 
 export interface Alarm { kind: "CARRY_UNWIND" | "HYG_DIVERGENCE" | "UST10Y_SPIKE" | "VIX_BACKWARDATION" | OilAlarm["kind"]; level: "ALARM" | "WARNING"; title: string; detail: string; by: "mentor" | "dk" | "user"; score?: number }
-export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null; volumeLines?: string[] | null }
+export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null; volumeLines?: string[] | null; fedLines?: string[] | null }
 export interface PremarketResult { md: string; alarms: Alarm[]; noTrade: string[]; mentorLines: string[]; dkLines: string[]; oilLines: string[]; bondLines: number }
 
 const last = (o?: Obs[]) => (o?.length ? o.at(-1)!.v : null);
@@ -113,6 +113,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   if (ratio != null && ratio >= 1) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio.toFixed(3)}`, detail: "近端恐慌高于远端：市场压力", by: "dk" });
   const todays = (inp.calendar ?? []).filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
   K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${eventUtcMs(e) <= inp.now.getTime() ? "（已公布）" : e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));
+  K.push("", "### 美联储官员讲话（未来 14 天，ET）", ...(inp.fedLines ?? ["- 不可用（未获取 Fed 官方日历）"]));
   // only releases still ahead: an evening run must not warn about this morning's 08:30 print
   const pre = todays.filter((e) => e.timeEt < "09:30" && eventUtcMs(e) > inp.now.getTime() && ["CPI", "NFP", "PCE", "PPI", "FOMC", "GDP"].some((k) => e.kind.includes(k)));
   if (pre.length) noTrade.push(`盘前重大数据 ${pre.map((e) => `${e.kind} ${e.timeEt}`).join("、")}：数据公布前不新开仓`);

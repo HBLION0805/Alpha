@@ -16,6 +16,8 @@ import type { RefLevels } from "../levels.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import type { JournalEntry } from "../options/journal.ts";
 import type { YBar } from "../adapters/yahoo.ts";
+import { fmtEarnings, type EarningsRow } from "../options/earningsStore.ts";
+import { inBlackout, type FedCache } from "../ingest/fedSpeakers.ts";
 
 export type Dir = "bull" | "bear";
 export interface Quote { type: "call" | "put"; strike: number; expiration: string; bid: number | null; ask: number | null; src: string }
@@ -25,6 +27,7 @@ export interface CardInput {
   spot: number | null; bars: YBar[]; levels: RefLevels | null; quotes: Quote[];
   brief: { generatedAt: string; leader: string | null; verdict: string | null; reasons?: string[]; plan?: PlanItem[] } | null;
   gex: GexOut | null; calendar: CalendarEvent[]; earnings: Array<{ symbol: string; date: string; timing: string | null }> | null;
+  /** next report from earningsStore: undefined = never looked up, null = none upcoming */ earningsNext?: EarningsRow | null; fed?: FedCache | null;
   journal: JournalEntry[]; capital: number; thesis?: string; invalidation?: string;
 }
 export type Status = "ok" | "warn" | "fail" | "missing";
@@ -167,9 +170,26 @@ export function buildCard(i: CardInput): Card {
   const hmNow = Number(i.now.toLocaleTimeString("en-GB", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit" }).replace(":", ""));
   const evs = exp ? i.calendar.filter((e) => e.date <= exp && (e.date > today || (e.date === today && Number(e.timeEt.replace(":", "")) >= hmNow))) : [];
   s7.push(`- 到期前事件：${evs.length ? evs.map((e) => `${e.date} ${e.title}`).join("；") : exp ? "无（官方日历）" : "缺少到期日"}`);
-  const er = i.earnings?.find((e) => e.symbol === i.sym);
-  s7.push(`- 财报：${i.earnings == null ? "未知（没有 data/in/earnings.json）" : er ? `${er.date}${er.timing ? ` ${er.timing}` : ""}${exp && er.date >= today && er.date <= exp ? " **在到期前 → 事件风险**" : "（不在到期前）"}` : `未知（data/in/earnings.json 里没有 ${i.sym}）`}`);
-  S.push({ n: 7, title: "时机参考（只看节奏，不定方向）", status: evs.some((e) => e.kind !== "OPEX") || (er && exp && er.date >= today && er.date <= exp) ? "warn" : "ok", lines: s7 });
+  // Fed speakers + blackout inside the holding window
+  let fedRisk = false;
+  if (i.fed === undefined || i.fed === null) s7.push("- 美联储讲话：不可用（没有 data/in/fed-speakers.json，运行 npm run fedspeak）");
+  else if (exp) {
+    const sp = i.fed.speeches.filter((x) => x.date <= exp && (x.date > today || (x.date === today && (x.timeEt == null || Number(x.timeEt.replace(":", "")) >= hmNow))));
+    s7.push(`- 美联储讲话（到期前，理事会日历）：${sp.length ? sp.map((x) => `${x.date} ${x.timeEt ?? "?"} ${x.role} ${x.speaker}${x.voter ? "（票委）" : ""}：${x.topic || "主题未公布"}`).join("；") : "无"}；地区联储主席未覆盖`);
+    const bl = i.fed.blackouts.filter((b) => b.to > today && b.from <= exp);
+    for (const b of bl) s7.push(`- 🔇 FOMC 静默期 ${b.from}～${b.to}（不含）${inBlackout(today, [b]) ? "：现在就在静默期" : ""}`);
+    fedRisk = sp.some((x) => x.voter);
+  }
+  // earnings: risk item when inside expiry
+  let erRisk = false;
+  const en = i.earningsNext;
+  if (en === undefined) s7.push(`- 财报：❔ 未知（${i.sym} 没查过；运行 routine 刷新 data/in/earnings-by-symbol.json）`);
+  else if (en === null) s7.push("- 财报：Robinhood 未返回即将到来的财报");
+  else { erRisk = !!exp && en.date <= exp; s7.push(`- 财报：${fmtEarnings(en)}${erRisk ? " 🛑 **在到期前 → 财报事件风险（IV crush / 跳空）**" : "（不在到期前）"}`); }
+  S.push({ n: 7, title: "时机参考（只看节奏，不定方向）", status: evs.some((e) => e.kind !== "OPEX") || erRisk || fedRisk ? "warn" : en === undefined ? "missing" : "ok", lines: s7 });
+  const riskItems: string[] = [];
+  if (erRisk && en) riskItems.push(`⚠️ 财报 ${fmtEarnings(en)} 在到期前：持仓会穿过财报（跳空 + IV crush），要么到期选在财报前，要么明确这是财报单`);
+  if (fedRisk) riskItems.push("⚠️ 到期前有票委讲话：可能改变利率预期");
 
   // 8) devil's advocate + past mistakes
   let cr: Critique | null = null;
@@ -184,8 +204,9 @@ export function buildCard(i: CardInput): Card {
   const pm = pastMistakes(i.journal, i.sym);
   const s8 = cr ? cr.objections.map((o) => `- ${o.severity === "BLOCK" ? "🛑" : "⚠️"} ${o.text}`) : ["- 无法运行唱反调（缺结构/价格）"];
   if (!i.thesis) s8.unshift("- ❔ 你还没写论点（--thesis \"因为…所以…\"）");
+  s8.push(...riskItems.map((x) => `- ${x}`));
   if (pm.tags.length && !cr) s8.push(`- 重复错误：${pm.tags.map(([t, n]) => `${t}×${n}`).join("、")}`);
-  S.push({ n: 8, title: "反方意见 + 过去的错误", status: cr?.blocks ? "fail" : (cr?.warns || !i.thesis) ? "warn" : cr ? "ok" : "missing", lines: s8 });
+  S.push({ n: 8, title: "反方意见 + 过去的错误", status: cr?.blocks ? "fail" : (cr?.warns || !i.thesis || riskItems.length) ? "warn" : cr ? "ok" : "missing", lines: s8 });
   if (cr?.blocks) failing.push(...cr.objections.filter((o) => o.severity === "BLOCK").map((o) => `唱反调 ${o.id}`));
 
   const no = failing.length > 0;
