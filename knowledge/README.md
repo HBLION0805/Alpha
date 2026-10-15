@@ -19,6 +19,7 @@
 | [status/](status/) | `macro-context/playbook/psychology*.json` status records | 5 |
 | [research/macro/](research/macro/) | batch-1 (M01–M05 + synthesis + review), batch-2 (M06–M10 + synthesis + review), world-model real-news validations | 20 |
 | [owner-capital/](owner-capital/) | Owner capital shopping list (research universe, not allocation) — JSON data + spec + status | 50 entries |
+| [options/](options/STRATEGIES.md) | 期权课程目录 / options course catalog: `course.json` (verbatim export of `course-catalog.mjs` + `course-framework.mjs`), `STRATEGIES.md`, structure-comparison spec + delivery, course framework/archive delivery docs, status JSON, synthetic comparison fixture; `source-code/` has `OptionsStructureComparisonEngine.ts` payoff math + fixtures/tests and the two `.mjs` originals as `.txt` | 19 strategies · 7 framework checks · 21 chapters |
 | [source-code/](source-code/) | Original catalog sources as `.txt` (provenance for the JSON; not built) | 3 |
 
 The markdown views are generated: `node scripts/render-knowledge.ts` (edit `catalog.json`, not the .md).

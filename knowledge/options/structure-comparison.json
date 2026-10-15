@@ -1,0 +1,145 @@
+{
+  "version": "OPTIONS_STRUCTURE_COMPARISON_DELIVERY_V1",
+  "recordedAt": "2026-09-07T18:35:23.641Z",
+  "sourceBaseCommit": "ba48874",
+  "status": "DECLARED_STRUCTURE_COMPARISON_IMPLEMENTED",
+  "fullSystemComplete": false,
+  "marketValidated": false,
+  "scope": {
+    "symbols": [
+      "GLD",
+      "IBIT"
+    ],
+    "structures": [
+      "LONG_CALL",
+      "LONG_PUT",
+      "BULL_CALL_DEBIT",
+      "BEAR_PUT_DEBIT",
+      "BULL_PUT_CREDIT",
+      "BEAR_CALL_CREDIT",
+      "LONG_STRADDLE",
+      "LONG_STRANGLE"
+    ],
+    "independentEquityCents": 100000,
+    "model": "TERMINAL_INTRINSIC_MINUS_NET_ENTRY_AND_DECLARED_COST_RESERVE",
+    "preExpiryPricing": false,
+    "multiLegLifecycle": false,
+    "ranking": false,
+    "winProbability": null,
+    "portfolioApplied": false,
+    "brokerCollateral": "UNKNOWN",
+    "accountEligibility": "UNKNOWN"
+  },
+  "demo": {
+    "status": "STRUCTURE_ARTIFACT_RECOMPUTED",
+    "artifactId": "structure-rehearsal-20260907",
+    "recordedAt": "2026-09-07T18:28:18.712Z",
+    "checkedAt": "2026-09-07T18:28:18.893Z",
+    "artifactSha256": "6409fc36a6ffce3ddb01f32307eaaf2fcc29abdb9c265eacd33ca826be80dc6b",
+    "comparisonCount": 2,
+    "calculatedCandidates": 18,
+    "uncalculatedCandidates": 2,
+    "existingJournalAppends": 0,
+    "executionAllowed": false
+  },
+  "localInput": {
+    "status": "STRUCTURE_ARTIFACT_RECOMPUTED",
+    "artifactId": "structure-input-20260907",
+    "recordedAt": "2026-09-07T18:28:18.731Z",
+    "checkedAt": "2026-09-07T18:28:19.046Z",
+    "artifactSha256": "f27b156c33300164446a1998b3827d43c7a3d89ae46234cef22e2f436fac18b4",
+    "comparisonCount": 1,
+    "calculatedCandidates": 8,
+    "uncalculatedCandidates": 0,
+    "existingJournalAppends": 0,
+    "executionAllowed": false
+  },
+  "validation": {
+    "focusedEngine": {
+      "passed": 43,
+      "failed": 0
+    },
+    "focusedStorage": {
+      "passed": 16,
+      "failed": 0
+    },
+    "aggregate": {
+      "status": "PASSED",
+      "componentCount": 129,
+      "testsExecuted": 3297,
+      "passed": 3297,
+      "failed": 0,
+      "durationMs": 67003,
+      "warnings": [
+        "Working tree has changes. This is expected during an uncommitted task but must be reviewed before commit.",
+        "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/CHANGELOG.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/DECISIONS.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/HANDOFF.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/OPTIONS_CURRENT_OPERATIONS.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'docs/ROADMAP.md', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'scripts/alpha-validate.mjs', LF will be replaced by CRLF the next time Git touches it"
+      ]
+    },
+    "independentProcessRestart": true,
+    "reproductionCommands": [
+      "npm run typecheck",
+      "npm run test:options-structures",
+      "npm run test:options-structures-io",
+      "npm run options:structures -- --demo --save structure-rehearsal-20260907",
+      "npm run options:structures -- --input fixtures/options-structure-comparison/comparison.synthetic.json --save structure-input-20260907",
+      "node node_modules/tsx/dist/cli.mjs scripts/options-structures.mjs --verify structure-rehearsal-20260907",
+      "node node_modules/tsx/dist/cli.mjs scripts/options-structures.mjs --verify structure-input-20260907",
+      "npm run alpha:validate"
+    ]
+  },
+  "preservation": {
+    "recordedAt": "2026-09-07T18:34:28.311Z",
+    "protectedFileCount": 502,
+    "changed": [],
+    "hostPath": "C:/Users/liuha/.codex/automations/gld-ibit/automation.toml",
+    "hostSha256": "f1fad742f21584171c41d738e744a58e1f27f2be9c518a5d29a6936cbb713310"
+  },
+  "evidenceFiles": {
+    "data/runtime/options-structure-comparison/structure-rehearsal-20260907.json": "2ec31cf04c1c3ad500a873a93b7779847d79212ec633b131a33b9f8a96a9cf5a",
+    "data/runtime/options-structure-comparison/structure-input-20260907.json": "255eaccac84f476545235ad458f2f147d431deb556807e8ff15218200b871ce1",
+    "data/runtime/options-structure-comparison/demo-restart-verification.json": "0a0e4f0ddf2a01d10ce2c43603ca296e67c25ce3924f51cfaaf6644f312abe5a",
+    "data/runtime/options-structure-comparison/input-restart-verification.json": "d6a3f2ebb52b6f3384a93227160245fd71b8cd59eb9b03c56e772f5c62e03ba9",
+    "data/runtime/options-structure-comparison/validation.log": "be0e8c181fb66247fa28bc8628ff2b2396d5a2948a3d97d57d96997cf3b8cd54",
+    "data/runtime/options-structure-comparison/preservation.final.json": "ca73afdb35d8699e72d734557c9e1a4d48b2dbafed4dbe470f43260da488fb76",
+    "data/runtime/options-structure-comparison/protected-before.json": "ceb1c8fd1b72760ef2f2d8015b812763fb93e4dbcf20c830edb964c94c16adb9"
+  },
+  "originalJournalAppends": 0,
+  "marketSourceRefreshes": 0,
+  "brokerAccountCalls": 0,
+  "brokerOrderCalls": 0,
+  "newTrades": 0,
+  "hostConfigurationMutations": 0,
+  "paidDataPurchased": false,
+  "executionAllowed": false,
+  "sizeEscalationAllowed": false,
+  "limitations": [
+    "All demonstration data and results are synthetic declarations, not trades, observed returns or win rates.",
+    "Input hashes and restart recomputation prove local consistency, not authenticated quotes or original source provenance.",
+    "Terminal extrema exclude pre-expiry volatility/time/path pricing, early assignment, exercise, delivery and separate-leg execution exposure.",
+    "Existing long-single-leg feasibility assumptions remain unvalidated and unchanged; portfolio risk does not accept these multi-leg candidates.",
+    "Qualified eligible-session Robinhood data, retention and independent size/timing evidence, declared account rules and costs remain prerequisites for a source-specific paper adapter."
+  ],
+  "nextIndependentWork": "Holdout and sample-partition validation without invented market samples or calibrated performance claims",
+  "collection": {
+    "studyId": "gld-ibit-observe-open-20260908",
+    "windowNewYork": "2026-09-08 09:30-09:50",
+    "restorationVersion": "V6",
+    "unchanged": true
+  },
+  "git": {
+    "baseCommit": "ba48874",
+    "initialWorktree": "CLEAN",
+    "commitAndPushAuthorized": true,
+    "finalRevision": "Confirmed after commit in conversation; checkpoint describes the validated pre-commit tree"
+  }
+}
