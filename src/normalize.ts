@@ -21,7 +21,8 @@ export function normalizeTitle(title: string): string {
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/\s+[-|–—]\s+[^-|–—]{2,40}$/u, "") // trailing " - Outlet"
-    .replace(/[^\p{L}\p{N}%$ ]+/gu, " ")
+    .replace(/(\d)[.,](\d)/g, "$1_$2") // keep 3.7% / 0.6 as one token
+    .replace(/[^\p{L}\p{N}%$_ ]+/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -31,7 +32,11 @@ const STOP = new Set(
 );
 
 /** crude stemming so "tariffs"/"tariff", "rates"/"rate" collide */
+const IRREGULAR: Record<string, string> = { rose: "rise", risen: "rise", rising: "rise", fell: "fall", fallen: "fall", falling: "fall", jumped: "jump", slid: "slide", sank: "sink", hiked: "hike", cut: "cut", cuts: "cut", soared: "soar", surged: "surge", tumbled: "tumble", plunged: "plunge" };
+
 function stem(w: string): string {
+  const irr = IRREGULAR[w];
+  if (irr) return irr;
   if (w.length > 4 && w.endsWith("ies")) return w.slice(0, -3) + "y";
   if (w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) return w.slice(0, -1);
   return w;
@@ -41,7 +46,9 @@ const ALIASES: Array<[RegExp, string]> = [
   [/\bfederal reserve\b|\bfomc\b/g, "fed"],
   [/\bbitcoin\b/g, "btc"],
   [/\bethereum\b/g, "eth"],
-  [/\bconsumer price index\b/g, "cpi"],
+  [/\bconsumer price index\b|\bconsumer prices?\b/g, "cpi"],
+  [/\bproducer price index\b|\bproducer prices?\b/g, "ppi"],
+  [/(\d+(?:_\d+)?) percent\b/g, "$1%"],
   [/\bnonfarm payrolls?\b/g, "payrolls"],
   [/\bunited states\b/g, "us"],
 ];
@@ -70,4 +77,12 @@ export function overlap(a: Set<string>, b: Set<string>): number {
   let inter = 0;
   for (const t of a) if (b.has(t)) inter++;
   return inter / Math.min(a.size, b.size);
+}
+
+/** Headline clause used for clustering: drop a short "Speaker:" prefix, keep text before the first ";". */
+export function mainClause(title: string): string {
+  let t = title.split(/;\s/)[0] ?? title;
+  const m = t.match(/^([^:]{2,25}):\s+(.{12,})$/);
+  if (m) t = m[2]!;
+  return t;
 }

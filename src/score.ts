@@ -1,4 +1,5 @@
 import type { Cluster } from "./types.ts";
+import { isBoilerplate } from "./noise.ts";
 
 export interface Topic {
   id: string;
@@ -41,15 +42,22 @@ const TIER_POINTS: Record<number, number> = { 1: 20, 2: 12, 3: 6 };
 export function scoreCluster(c: Cluster, now = new Date()): ScoredCluster {
   const sources = [...new Set(c.items.map((i) => i.sourceId))];
   const stances = [...new Set(c.items.map((i) => i.stance))];
-  const text = c.items.map((i) => `${i.title} ${i.summary}`).join(" \n ");
-  const titles = c.items.map((i) => i.title).join(" \n ");
-  const topics = TOPICS.filter((t) => t.pattern.test(text));
+  // Topics: headline evidence counts fully. Summary-only evidence needs >=2 items (or >=half of a small cluster)
+  // and counts a quarter; geopolitics and regulation are headline-only (summaries mention "war"/"SEC" loosely).
+  const HEADLINE_ONLY = new Set(["geopolitics", "regulation"]);
+  const topicHits = TOPICS.map((t) => {
+    const titleHits = c.items.filter((i) => t.pattern.test(i.title)).length;
+    const sumHits = HEADLINE_ONLY.has(t.id) ? 0 : c.items.filter((i) => !t.pattern.test(i.title) && t.pattern.test(i.summary)).length;
+    const viaSummary = titleHits === 0 && sumHits >= Math.max(2, Math.ceil(c.items.length / 2));
+    return { t, titleHits, points: titleHits ? t.weight : viaSummary ? t.weight / 4 : 0 };
+  }).filter((h) => h.points > 0);
+  const topics = topicHits.map((h) => h.t);
   const bestTier = Math.min(...c.items.map((i) => i.tier));
   const official = c.items.some((i) => i.stance === "us_official");
 
   const tier = TIER_POINTS[bestTier] ?? 0;
   // topic points: headline matches count fully, summary-only matches half; capped
-  const topic = Math.min(35, topics.reduce((s, t) => s + (t.pattern.test(titles) ? t.weight : t.weight / 2), 0));
+  const topic = Math.min(35, topicHits.reduce((s, h) => s + h.points, 0));
   const confirmation = Math.min(25, (sources.length - 1) * 6 + (stances.length - 1) * 4);
   const ageH = (now.getTime() - Date.parse(c.lastSeen)) / 3600_000;
   const recency = Math.max(0, 10 - Math.max(0, ageH) * (10 / 24));
@@ -57,10 +65,14 @@ export function scoreCluster(c: Cluster, now = new Date()): ScoredCluster {
   const breakdown = { tier, topic: Math.round(topic), confirmation, recency: Math.round(recency), official: officialBonus };
   const score = Math.min(100, Math.round(tier + topic + confirmation + recency + officialBonus));
 
-  const head = [...c.items].sort((a, b) => a.tier - b.tier || a.publishedAt.localeCompare(b.publishedAt))[0]!;
+  // headline: best tier, prefer concise titles, then earliest
+  const head = [...c.items].sort((a, b) => a.tier - b.tier || Number(a.title.length > 140) - Number(b.title.length > 140) || a.publishedAt.localeCompare(b.publishedAt))[0]!;
   return { cluster: c, score, topics, assets: [...new Set(topics.flatMap((t) => t.assets))], sources, stances, breakdown, headline: head.title };
 }
 
 export function rank(clusters: Cluster[], now = new Date()): ScoredCluster[] {
-  return clusters.map((c) => scoreCluster(c, now)).sort((a, b) => b.score - a.score || b.cluster.lastSeen.localeCompare(a.cluster.lastSeen));
+  return clusters
+    .map((c) => ({ ...c, items: c.items.filter((i) => !isBoilerplate(i.title)) }))
+    .filter((c) => c.items.length > 0)
+    .map((c) => scoreCluster(c, now)).sort((a, b) => b.score - a.score || b.cluster.lastSeen.localeCompare(a.cluster.lastSeen));
 }
