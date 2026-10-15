@@ -1,3 +1,4 @@
+import { stemWord } from "./adapters/nlp.ts";
 const TRACKING = /^(utm_|fbclid|gclid|mc_|cmpid|ref$|src$|taid$|yptr$|mod$|siteid$|__source)/i;
 
 export function normalizeUrl(raw: string): string {
@@ -31,15 +32,14 @@ const STOP = new Set(
   "a an the and or but of to in on at for from by with as is are was were be been it its this that these those after before over under into about than more new says said say will would could may can amid as up down out not no vs via how why what who when where us u s live latest news update updates video watch here".split(" "),
 );
 
-/** crude stemming so "tariffs"/"tariff", "rates"/"rate" collide */
+/** Irregular verbs the Porter stemmer cannot join (rose/rise, fell/fall). */
 const IRREGULAR: Record<string, string> = { rose: "rise", risen: "rise", rising: "rise", fell: "fall", fallen: "fall", falling: "fall", jumped: "jump", slid: "slide", sank: "sink", hiked: "hike", cut: "cut", cuts: "cut", soared: "soar", surged: "surge", tumbled: "tumble", plunged: "plunge" };
 
-function stem(w: string): string {
+/** Porter stem (adapters/nlp.ts → natural) after the irregular map; tokens with digits/%/$/_ are kept as-is. */
+export function stem(w: string): string {
   const irr = IRREGULAR[w];
-  if (irr) return irr;
-  if (w.length > 4 && w.endsWith("ies")) return w.slice(0, -3) + "y";
-  if (w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) return w.slice(0, -1);
-  return w;
+  if (irr) return stemWord(irr);
+  return /[\d%$_]/.test(w) ? w : stemWord(w);
 }
 
 const ALIASES: Array<[RegExp, string]> = [

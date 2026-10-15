@@ -1,5 +1,5 @@
 import type { Cluster, StoredItem } from "./types.ts";
-import { mainClause, tokens } from "./normalize.ts";
+import { mainClause, tokens, stem } from "./normalize.ts";
 import { isTemplated } from "./noise.ts";
 
 export interface ClusterOptions {
@@ -24,8 +24,9 @@ export function idfTable(docs: Set<string>[]): (t: string) => number {
 }
 
 /** Scheduled macro releases: two reports sharing one of these keys on the same day are very likely the same event. */
-export const EVENT_KEYS = new Set(["cpi", "inflation", "ppi", "pce", "payrolls", "nonfarm", "gdp", "fed", "jobless", "unemployment", "retail"]);
-const EVENT_ALIAS: Record<string, string> = { inflation: "cpi", nonfarm: "payrolls", unemployment: "payrolls" };
+// keys go through the same stemmer as tokens
+export const EVENT_KEYS = new Set(["cpi", "inflation", "ppi", "pce", "payrolls", "nonfarm", "gdp", "fed", "jobless", "unemployment", "retail"].map(stem));
+const EVENT_ALIAS: Record<string, string> = { [stem("inflation")]: "cpi", [stem("nonfarm")]: stem("payrolls"), [stem("unemployment")]: stem("payrolls") };
 export const EVENT_BONUS = 0.2;
 
 function eventKeys(a: Set<string>): Set<string> {

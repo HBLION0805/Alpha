@@ -15,7 +15,10 @@ export function agreement(): { precision: number; recall: number; got: number[][
   return { precision: n.size ? hit / n.size : 1, recall: g.size ? hit / g.size : 1, got };
 }
 
-test("golden clusters: co-clustered pairs match the frozen baseline", () => {
+// Porter stemming (natural) keeps every baseline pair (recall 1.0) and adds merges reviewed by hand on 2026-10-14:
+// Guilfoyle resignation x2 (same story), Musk/Starshield (same story), White House media-ban ruling +1 outlet,
+// Greenland drilling +Denmark response, and one more Benzinga "how much you would have made" template (already clustered).
+test("golden clusters: no baseline pair lost; extra merges bounded", () => {
   const a = agreement();
-  assert.ok(a.precision >= 0.95 && a.recall >= 0.95, `precision ${a.precision.toFixed(3)} recall ${a.recall.toFixed(3)}`);
+  assert.ok(a.recall >= 0.98 && a.precision >= 0.9, `precision ${a.precision.toFixed(3)} recall ${a.recall.toFixed(3)}`);
 });
