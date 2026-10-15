@@ -54,3 +54,7 @@ npm test && npm run typecheck
 ## Macro first
 
 The user is a macro trader first. Direction comes from the macro Why (`src/macro`, the thesis and actors). Technicals (K-line, FIB, the mentor's TradingView indicator) are for entry timing and levels only, never direction. The macro output keeps the **宏观 Why** and the **市场机制 How/When** sections separate (`knowledge/mentor/better-macro-trader.md` #9).
+
+## Scenarios and reference levels (DK additions, 2026-10-14)
+- `npm run scenarios` → `data/out/scenarios-latest.md`: 4 scenarios to year-end 2026 (base / hawkish / growth scare / melt-up) from live premarket series + CPI headlines + release calendar. Weights are qualitative ranks from live signals, never probabilities. Re-run at 16:30 ET; a change of leading scenario becomes an alert (score 70). Cites catalog items and verbatim world-lines watch items.
+- `npm run levels -- --tickers SPY,QQQ` → prior-day H/L/C, weekly H/L, SMA 20/50/200, swing pivots, Fib retracements of the latest swing. Reads `data/in/<T>-bars.json` (Robinhood `get_equity_historicals`, zod-validated), falls back to Yahoo. Timing only, never direction.

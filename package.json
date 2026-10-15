@@ -19,7 +19,8 @@
     "validate": "npm run typecheck && npm test",
     "options": "node src/cli/options.ts",
     "premarket": "node src/cli/premarket.ts",
-    "volume": "node src/cli/volume.ts"
+    "volume": "node src/cli/volume.ts",
+    "scenarios": "node src/cli/scenarios.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",
