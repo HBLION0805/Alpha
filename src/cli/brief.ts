@@ -12,6 +12,7 @@ import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
 import { refreshMacro, buildMacroReport } from "../macro/build.ts";
 import { fetchDailyOnce, fetchCount, type Obs } from "../macro/fetch.ts";
+import { OIL_IDS } from "../macro/oil.ts";
 import { PM_SERIES, buildPremarket, alarmItems } from "../macro/premarket.ts";
 import { buildScenarios, scenarioAlarmItems, type ScenarioId } from "../macro/scenarios.ts";
 import { buildBrief } from "../macro/brief.ts";
@@ -28,9 +29,11 @@ const failed: Record<string, string> = {};
 // 1) one fetch per series: macro SERIES (into SQLite) and premarket/scenario series share fetchDailyOnce
 await refreshMacro(store.db, { offline: values.offline ?? false, log: (s) => console.error(s) });
 const since = new Date(now.getTime() - 120 * 86400_000).toISOString().slice(0, 10);
+const since400 = new Date(now.getTime() - 400 * 86400_000).toISOString().slice(0, 10);
 const data: Record<string, Obs[]> = {};
 if (!values.offline) await Promise.all(PM_SERIES.map(async (s) => {
-  try { data[s.id] = (await fetchDailyOnce(s)).filter((o) => o.t >= since); if (!data[s.id]!.length) failed[s.id] = "no data"; } catch (e) { failed[s.id] = (e as Error).message; }
+  // oil block needs 50-day SMA + 52-week high → keep ~400 days for those series
+  try { data[s.id] = (await fetchDailyOnce(s)).filter((o) => o.t >= (OIL_IDS.includes(s.id) ? since400 : since)); if (!data[s.id]!.length) failed[s.id] = "no data"; } catch (e) { failed[s.id] = (e as Error).message; }
 }));
 // 2) calendar, earnings, headlines
 const staticPath = new URL(`../../calendar/releases-${now.getFullYear()}.json`, import.meta.url);

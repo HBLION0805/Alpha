@@ -1,10 +1,10 @@
 /**
  * Unified Chinese daily brief (P3, 2026-10-14): ONE report, ONE NO_TRADE verdict. Replaces the separate macro /
  * premarket / scenarios reports. Pure: takes the already-built parts; the CLI fetches each series once.
- * Order: 1 结论+领先情景 · 2 警报 · 3【大佬流程】 · 4【DK 补充】 · 5 价位（择时） · 6 日历 · 7 盘前自检 (纪律 #2/#20).
+ * Order: 1 结论+领先情景 · 2 警报 · 3【大佬流程】①国债 · 3.1【用户要求】原油 · 3.2【大佬流程】续 · 4【DK 补充】 · 5 价位（择时） · 6 日历 · 7 盘前自检 (纪律 #2/#20).
  */
 import type { MacroReport } from "./build.ts";
-import type { PremarketResult } from "./premarket.ts";
+import { BY, OIL_HEAD, type PremarketResult } from "./premarket.ts";
 import type { ScenarioResult } from "./scenarios.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import { SESSION_QUESTIONS } from "../options/discipline.ts";
@@ -32,7 +32,7 @@ export function buildBrief(i: BriefInput): BriefResult {
   const g = i.macro.regime, lead = i.sc.ranked[0]!;
   const V = { NO_TRADE: "🛑 NO_TRADE 不交易", CAUTION: "⚠️ CAUTION 谨慎", RESEARCH_OK: "✅ RESEARCH_OK 可研究" }[verdict];
   const scen = i.sc.leader ? `${lead.s.name}（支持：${lead.pro.map((p) => p.label.split("（")[0]).join("、") || "—"}${lead.con.length ? `；反对：${lead.con.map((p) => p.id).join("、")}` : ""}）` : "无单一领先情景（信号并列 → 方向不清）";
-  const alarms = [...i.pm.alarms.map((a) => `${a.level === "ALARM" ? "🚨" : "⚠️"} ${a.title}：${a.detail}（${a.by === "mentor" ? "大佬流程" : "DK 补充"}）`), ...(i.sc.changed ? [`⚠️ 领先情景切换 → ${i.sc.leader ?? "无"}`] : [])];
+  const alarms = [...i.pm.alarms.map((a) => `${a.level === "ALARM" ? "🚨" : "⚠️"} ${a.title}：${a.detail}（${BY[a.by]}）`), ...(i.sc.changed ? [`⚠️ 领先情景切换 → ${i.sc.leader ?? "无"}`] : [])];
   const upcoming = i.calendar.filter((e) => e.date >= day).sort((a, b) => (a.date + a.timeEt).localeCompare(b.date + b.timeEt)).slice(0, 8);
   const failed = Object.entries(i.failed ?? {});
   const L = [
@@ -45,7 +45,9 @@ export function buildBrief(i: BriefInput): BriefResult {
     ...(i.sc.leader ? [`- 若做（仍需过 pretrade 闸门）：${lead.s.expressions[0]}`, `- 失效条件：${lead.s.invalidation.join("；")}`] : []),
     "- 情景权重为定性排序，不是概率。详见 4.3。", "",
     "## 2. 警报", "", ...(alarms.length ? alarms.map((a) => `- ${a}`) : ["- 无"]), "",
-    "## 3. 【大佬流程】", "_来源：knowledge/mentor/discipline/premarket-routine.md_", "", ...i.pm.mentorLines, "",
+    "## 3. 【大佬流程】", "_来源：knowledge/mentor/discipline/premarket-routine.md_", "", ...i.pm.mentorLines.slice(0, i.pm.bondLines), "",
+    "## 3.1 【用户要求】原油", OIL_HEAD[1]!, "", ...i.pm.oilLines, "",
+    "## 3.2 【大佬流程】（续）", "", ...i.pm.mentorLines.slice(i.pm.bondLines), "",
     "## 4. 【DK 补充】", "_以下为 DK 的补充，不是大佬原流程。_", "", ...i.pm.dkLines, "",
     "### 4.2 宏观各维度（确定性规则）", "", "| 维度 | 状态 | 证据 |", "|---|---|---|", ...g.axes.map((a) => `| ${a.id} | ${a.label} | ${a.evidence} |`), "",
     ...(i.macro.confirmations.length ? ["**新闻 vs 市场反应：**", ...i.macro.confirmations.map((c) => `- ${c.c.verdict} — ${c.headline}（${c.sources} 家）`), ""] : []),
