@@ -12,7 +12,7 @@ import { MECHANICS_QUESTIONS } from "./render.ts";
 
 const LABEL_ZH: Record<string, string> = { RISK_ON: "风险偏好", RISK_OFF: "避险", HAWKISH_TIGHTENING: "鹰派收紧", STAGFLATION_ISH: "类滞胀", DISINFLATION_EASING: "通胀回落/宽松", MIXED: "信号混杂" };
 export type Verdict = "NO_TRADE" | "CAUTION" | "RESEARCH_OK";
-export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult; sc: ScenarioResult; levelsMd?: string | null; planLines?: string[]; calendar: CalendarEvent[]; failed?: Record<string, string> }
+export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult; sc: ScenarioResult; levelsMd?: string | null; planLines?: string[]; matrixLines?: string[]; calendar: CalendarEvent[]; failed?: Record<string, string> }
 export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
 
 /** Single verdict: any NO_TRADE reason from macro risk, premarket or scenarios → NO_TRADE; else macro CAUTION → CAUTION. */
@@ -44,6 +44,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     `- 领先情景：${scen}`,
     ...(i.sc.leader ? [`- 若做（仍需过 pretrade 闸门）：${lead.s.expressions[0]}`, `- 失效条件：${lead.s.invalidation.join("；")}`] : []),
     "- 情景权重为定性排序，不是概率。详见 4.3。", "",
+    ...(i.matrixLines?.length ? [...i.matrixLines, ""] : []),
     "## 2. 警报", "", ...(alarms.length ? alarms.map((a) => `- ${a}`) : ["- 无"]), "",
     "## 2.1 今日交易计划", "", ...(i.planLines ?? ["- 未生成（缺少价位/数据）→ 今天没有计划内触发，NO_TRADE"]), "",
     "## 3. 【大佬流程】", "_来源：knowledge/mentor/discipline/premarket-routine.md_", "", ...i.pm.mentorLines.slice(0, i.pm.bondLines), "",

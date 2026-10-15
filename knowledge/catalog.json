@@ -164,6 +164,12 @@
       "title": "大佬周复盘：胜率从85%掉到20% + 防御性组合更新 (verbatim, names/dates removed by the user)",
       "url": "knowledge/mentor/reviews/winrate-drop-review.md",
       "coverage": "Byte-for-byte, split at the '---' separator into winrate-drop-review.md and defensive-portfolio-2026-10.md (+ defensive-portfolio-2026-10.png). Lessons: concurrent positions <10, no trades to share/entertain, don't exit before the thesis plays out while invalidation hasn't triggered, controlled losses make a low win rate survivable, own every decision. BAC 'add to all positions' is NOT encoded (only consistent with the one-add-after-reconfirmation rule)."
+    },
+    {
+      "id": "mentor-scenario-matrix",
+      "title": "大佬 市场情景对照 (image, transcribed verbatim)",
+      "url": "knowledge/mentor/macro/market-scenario-matrix.md",
+      "coverage": "5 stages (牛市, 轮动, 熊市 stages 1–3) × 4 dimensions (利率, 油价, 科技盈利, 就业). Deduped: no existing item covered it; scenarios.ts is a separate DK engine. The original image is in the user's chat only. Classifier: src/macro/matrix.ts, brief §1 【大佬情景对照】."
     }
   ],
   "items": [

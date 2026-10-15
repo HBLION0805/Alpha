@@ -16,6 +16,7 @@ import { OIL_IDS } from "../macro/oil.ts";
 import { PM_SERIES, buildPremarket, alarmItems } from "../macro/premarket.ts";
 import { buildScenarios, scenarioAlarmItems, type ScenarioId } from "../macro/scenarios.ts";
 import { buildBrief, briefVerdict } from "../macro/brief.ts";
+import { classifyMatrix, renderMatrix } from "../macro/matrix.ts";
 import { buildTradePlan } from "../macro/tradeplan.ts";
 import { parseEarnings } from "../options/events.ts";
 import { referenceLevels, renderReferenceLevels } from "../levels.ts";
@@ -36,6 +37,11 @@ if (!values.offline) await Promise.all(PM_SERIES.map(async (s) => {
   // oil block needs 50-day SMA + 52-week high → keep ~400 days for those series
   try { data[s.id] = (await fetchDailyOnce(s)).filter((o) => o.t >= (OIL_IDS.includes(s.id) ? since400 : since)); if (!data[s.id]!.length) failed[s.id] = "no data"; } catch (e) { failed[s.id] = (e as Error).message; }
 }));
+// 【大佬情景对照】 jobs data (FRED; weekly claims, monthly payrolls) — UNKNOWN if the fetch fails
+for (const [id, ref] of [["ICSA", "ICSA"], ["PAYEMS", "PAYEMS"]] as const) {
+  if (values.offline) break;
+  try { data[id] = (await fetchDailyOnce({ id, provider: "fred", ref, label: id, unit: "price", frequency: "daily" })).filter((o) => o.t >= since400); } catch (e) { failed[id] = (e as Error).message; }
+}
 // 2) calendar, earnings, headlines
 const staticPath = new URL(`../../calendar/releases-${now.getFullYear()}.json`, import.meta.url);
 let calendar: CalendarEvent[] = existsSync(staticPath) ? (parseInput(CalendarFileSchema, JSON.parse(readFileSync(staticPath, "utf8")), "release calendar").events as CalendarEvent[]) : [];
@@ -65,7 +71,8 @@ if (!values.offline) {
 for (const t of ["SPY", "QQQ", "IWM", "TLT"]) if (!planRefs[t]) { try { const r = await loadDailyBars(t); planRefs[t] = referenceLevels(r.bars); const b = r.bars; planB5[t] = b.length > 5 ? ((b.at(-1)!.c - b[b.length - 6]!.c) / b[b.length - 6]!.c) * 100 : null; } catch { /* candidate shows "没有价位数据" */ } }
 const { verdict: v0, reasons: r0 } = briefVerdict({ macro, pm, sc });
 const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: process.env.ALPHA_CAPITAL ? Number(process.env.ALPHA_CAPITAL) : null });
-const res = buildBrief({ now, macro, pm, sc, levelsMd, planLines: plan.lines, calendar, failed });
+const mx = classifyMatrix(data);
+const res = buildBrief({ now, macro, pm, sc, levelsMd, planLines: plan.lines, matrixLines: renderMatrix(mx, sc.leader), calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {
   if (pm.alarms.length) store.insert(alarmItems(pm.alarms, now), { stance: "center", tier: 1 }, now);
@@ -74,7 +81,7 @@ if (!values["no-alarms"]) {
 store.close();
 const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); };
 write(values.out, res.md);
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified, alarms: pm.alarms, failed }, null, 2) + "\n");
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified, matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");
