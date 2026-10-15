@@ -60,3 +60,7 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
   5 stages (牛市, 轮动, 熊市 stages 1–3) × 4 dimensions (利率, 油价, 科技盈利, 就业). Deduped: no existing item covered it; scenarios.ts is a separate DK engine. The original image is in the user's chat only. Classifier: src/macro/matrix.ts, brief §1 【大佬情景对照】.
 - **大佬 daily note: 黄金加仓 + OpEx 科技反弹 (verbatim)** (`mentor-daily-gold-tech-rebound`) — knowledge/mentor/daily/daily-note-gold-tech-rebound.md
   Gold futures (MACD turning, falling wedge) vs DXY (rising wedge); tech oversold rebound into monthly OpEx. Deduped.
+- **大佬：Memory Trade 会先死在资金、杠杆和注意力上 (verbatim)** (`mentor-memory-attention`) — knowledge/mentor/macro/memory-trade-capital-leverage-attention.md
+  memory, SNDK, 2X leveraged ETF hedging feedback, hyperscaler capex financing, rates, attention/narrative rotation; ~mid-2027 fade view
+- **机构观点: Morgan Stanley AP 'Tech Bytes: Memory – Cycles vs. Super Cycles' (2026-10-11)** (`ms-memory-cycles-2026-10-11`) — knowledge/institutional/morgan-stanley-memory-cycles-2026-10-11.md
+  Institutional, not mentor. Structured summary by DK: super cycle real, easy money past, key numbers, cycle history, CXMT/YMTC, rack content, stock preferences; cross-reference with the mentor view
