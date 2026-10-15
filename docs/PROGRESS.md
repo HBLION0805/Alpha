@@ -8,7 +8,7 @@
 
 Technicals are for timing only. Update this file after every task.
 
-_Last updated 2026-10-15 08:15 ET (Trump posts as a core alert source)._
+_Last updated 2026-10-15 09:00 ET (【用户要求】原油 block)._
 
 **Delivery is handled:** the 30-minute weekday routine `alpha-2` (08:00–18:30 ET) runs the alerts and messages the user, starting 2026-10-15. The CPI lag on 10/14 happened only because routines had not started yet.
 
@@ -21,6 +21,7 @@ _Last updated 2026-10-15 08:15 ET (Trump posts as a core alert source)._
 | (1) Trump | trump.ts, ingest/xTrump.ts; sources `trump_truth` (trumpstruth.org RSS) + `trump_x` (data/in/x-trump.json from the routine's x MCP call) | yes (poll + alerts) | live 10/15: feed 100 items, 5 market posts in 3 days scored 73–76; X file 10 link-only posts (ignored) | ✅ new; X needs the alpha-2 step below |
 | (1) | ingest/alpacaNewsWs, cli/stream | no | REST backfill only | optional |
 | (2) Brief | macro/brief + cli/brief (`npm run brief`): macro + premarket + scenarios + levels + calendar, ONE verdict, 7 sections | yes, every run (macro-latest.json still feeds the digest) | live 10/14 22:33 ET: NO_TRADE, leader hawkish, 35 series fetched once, 0 failed | ✅ P3 done; old cli/macro, premarket, scenarios deleted |
+| (2) oil | macro/oil.ts: 【用户要求】原油, brief §3.1 right after bonds (user's own requirement, not mentor/DK) | yes, every brief | live 10/15 09:00: WTI 94.00, Brent 104.42, spread $10.42 (5d −$2.37), no alarm | ✅ alarms OIL_SPIKE 80 / OIL_CRASH 70 / BRENT_WTI_WIDEN 65 (+5 with shipping news) → alerts |
 | (2) timing | macro/volume, levels, adapters/bars, adapters/indicators | volume in its windows; levels inside the brief | levels live in the brief (SPY/QQQ/IWM) | ok / volume still needs `data/in/` chains |
 | (3) Gates | options/rules, pretrade, discipline, stops, adjust, payoff, bs | via `options --proposal` (manual) | tests + examples | ✅ logic |
 | (3) | options/plan (managementPlan + Kelly cap + take-profit ladder), printed with every proposal | `options --proposal` | examples | ✅ wired (Kelly only when `pAssumed` is given) |
