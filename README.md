@@ -32,6 +32,8 @@ npm run stream -- --seconds 600    # Alpaca/Benzinga websocket → SQLite (lowes
 npm run alerts                     # only NEW / escalated clusters since last run (state in SQLite); --format json
 npm run digest -- --out d.md       # 24h markdown digest (atomic write) with FOMC/CPI/NFP/PPI/PCE/GDP calendar
 npm run brief                      # 统一中文日报 daily brief (macro + premarket + scenarios + levels, ONE verdict) → data/out/brief-latest.{md,json} (+ macro-latest.json, scenarios-latest.json); --no-alarms
+npm run paper -- open|close|list|mark  # 模拟交易 only (no order path): 唱反调 critique first, --ack for WARNs → data/journal/paper.json
+npm run readiness                  # 实盘准备度评分卡 from the paper journal (5 criteria)
 npm run options -- chain.json --direction bull --bars spy-daily.json --earnings earnings.json --book positions.json --journal journal.json --proposal trade.json
                                    # 期权工具箱 → data/out/options-latest.{md,json}; saves daily IV30 to SQLite for IV rank
 npm run levels -- bars.json        # key levels from Robinhood historicals JSON (MCP output saved to a file)
