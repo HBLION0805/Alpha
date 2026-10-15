@@ -12,15 +12,13 @@
     "levels": "node src/cli/levels.ts",
     "run": "bash scripts/run.sh",
     "calendar:snapshot": "node scripts/snapshot-calendar.ts",
-    "macro": "node src/cli/macro.ts",
     "digest": "node src/cli/digest.ts",
     "test": "node --test \"test/**/*.test.ts\"",
     "typecheck": "tsc -p tsconfig.json",
     "validate": "npm run typecheck && npm test",
     "options": "node src/cli/options.ts",
-    "premarket": "node src/cli/premarket.ts",
     "volume": "node src/cli/volume.ts",
-    "scenarios": "node src/cli/scenarios.ts"
+    "brief": "node src/cli/brief.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",

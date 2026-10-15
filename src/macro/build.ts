@@ -1,6 +1,6 @@
 import type { DatabaseSync } from "node:sqlite";
 import { SERIES, INTRADAY } from "./series.ts";
-import { fetchDaily, fetchIntraday, type Obs } from "./fetch.ts";
+import { fetchDailyOnce, fetchIntraday, type Obs } from "./fetch.ts";
 import { initMacro, saveObs, loadObs, recordFetch, fetchReport } from "./store.ts";
 import { computeStats, type SeriesStats } from "./stats.ts";
 import { classifyAxes, classifyRegime, type Regime } from "./regime.ts";
@@ -22,11 +22,10 @@ export interface MacroReport {
 export async function refreshMacro(db: DatabaseSync, opts: { offline?: boolean; log?: (s: string) => void } = {}): Promise<void> {
   initMacro(db);
   if (opts.offline) return;
-  const since = new Date(Date.now() - 800 * 86400_000).toISOString().slice(0, 10);
   await Promise.all(
     SERIES.map(async (s) => {
       try {
-        const obs = await fetchDaily(s, since);
+        const obs = await fetchDailyOnce(s);
         if (!obs.length) throw new Error("no observations");
         saveObs(db, s.id, obs);
         let n = obs.length;

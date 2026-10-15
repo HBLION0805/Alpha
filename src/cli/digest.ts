@@ -35,7 +35,7 @@ if (!values["no-calendar"]) {
     calendar = upcoming(staticEvents, now, 21);
   }
 }
-// macro section from the latest `npm run macro` output, if fresh (< 6h)
+// macro section from the latest `npm run brief` output (macro-latest.json), if fresh (< 6h)
 let macroSection: string | undefined;
 const macroPath = process.env.ALPHA_MACRO_JSON ?? "data/out/macro-latest.json";
 if (existsSync(macroPath) && now.getTime() - statSync(macroPath).mtimeMs < 6 * 3600_000) {
