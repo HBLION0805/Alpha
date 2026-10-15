@@ -6,6 +6,9 @@ import { Store } from "../store.ts";
 import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
 import { renderDigest } from "../digest.ts";
+import { renderMacro } from "../macro/render.ts";
+import type { MacroReport } from "../macro/build.ts";
+import { statSync } from "node:fs";
 import { fetchReleaseCalendar, upcoming, type CalendarEvent } from "../ingest/officialCalendar.ts";
 
 const { values } = parseArgs({
@@ -30,7 +33,17 @@ if (!values["no-calendar"]) {
     calendar = upcoming(staticEvents, now, 21);
   }
 }
-const md = renderDigest({ ranked, sources: loadSources(), generatedAt: now, hours, top: Number(values.top), alertThreshold: Number(values.threshold), calendar, feedReport: store.feedReport() });
+// macro section from the latest `npm run macro` output, if fresh (< 6h)
+let macroSection: string | undefined;
+const macroPath = process.env.ALPHA_MACRO_JSON ?? "data/out/macro-latest.json";
+if (existsSync(macroPath) && now.getTime() - statSync(macroPath).mtimeMs < 6 * 3600_000) {
+  try {
+    macroSection = renderMacro(JSON.parse(readFileSync(macroPath, "utf8")) as MacroReport, false);
+  } catch (e) {
+    console.error("[digest] macro section skipped:", (e as Error).message);
+  }
+}
+const md = renderDigest({ macroSection, ranked, sources: loadSources(), generatedAt: now, hours, top: Number(values.top), alertThreshold: Number(values.threshold), calendar, feedReport: store.feedReport() });
 store.close();
 if (values.out) {
   mkdirSync(dirname(values.out), { recursive: true });

@@ -16,6 +16,8 @@ export interface DigestInput {
   alertThreshold?: number;
   calendar?: CalendarEvent[];
   feedReport?: Array<Record<string, unknown>>;
+  /** pre-rendered macro section (from data/out/macro-latest.json) */
+  macroSection?: string;
 }
 
 export function renderDigest(d: DigestInput): string {
@@ -32,6 +34,8 @@ export function renderDigest(d: DigestInput): string {
   if (!alerts.length) L.push("_None above threshold._", "");
   for (const r of alerts.slice(0, 10)) L.push(`- **${r.score}** ${r.headline} — ${r.topics.map((t) => t.label).join(", ") || "general"} · ${r.sources.length} sources`);
   L.push("");
+
+  if (d.macroSection) L.push("## 🌐 宏观 / Macro", "", d.macroSection);
 
   if (d.calendar?.length) {
     L.push("## 📅 Upcoming official events", "");

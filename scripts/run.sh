@@ -17,6 +17,7 @@ log="data/logs/run-$(date +%Y%m%d).log"
     node src/cli/alerts.ts --out data/out/alerts-latest.md --jsonl data/out/alerts.jsonl
   fi
   if [ "${1:-}" != "--no-digest" ]; then
+    node src/cli/macro.ts --out data/out/macro-latest.md || echo "[run] macro failed; digest continues without it"
     node src/cli/digest.ts --hours 24 --out data/out/digest-latest.md
   fi
 } >>"$log" 2>&1

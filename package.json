@@ -12,6 +12,7 @@
     "levels": "node src/cli/levels.ts",
     "run": "bash scripts/run.sh",
     "calendar:snapshot": "node scripts/snapshot-calendar.ts",
+    "macro": "node src/cli/macro.ts",
     "digest": "node src/cli/digest.ts",
     "test": "node --test \"test/**/*.test.ts\"",
     "typecheck": "tsc -p tsconfig.json",

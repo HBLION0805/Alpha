@@ -31,6 +31,7 @@ npm run poll                       # fetch enabled feeds (+ Alpaca REST backfill
 npm run stream -- --seconds 600    # Alpaca/Benzinga websocket → SQLite (lowest latency)
 npm run alerts                     # only NEW / escalated clusters since last run (state in SQLite); --format json
 npm run digest -- --out d.md       # 24h markdown digest (atomic write) with FOMC/CPI/NFP/PPI/PCE/GDP calendar
+npm run macro                      # 宏观状态 macro regime → data/out/macro-latest.{md,json}; --quotes rh.json (Robinhood MCP quotes) --offline
 npm run levels -- bars.json        # key levels from Robinhood historicals JSON (MCP output saved to a file)
 npm run run                        # scheduled entry: poll → alerts → digest (scripts/run.sh, flock-protected)
 npm run calendar:snapshot          # refresh calendar/releases-<year>.json fallback
@@ -42,6 +43,7 @@ npm test && npm run typecheck
 - `sources.yaml` — sources with stance / tier / verified status (dead feeds kept with notes).
 - `src/ingest/` — `rss.ts` (RSS/Atom/Google-News sitemap, timeouts, ETag/If-Modified-Since), `alpacaNewsWs.ts`, `officialCalendar.ts` (Fed FOMC page, FRED release calendars, BEA schedule; static fallback in `calendar/`).
 - `src/store.ts` SQLite + dedupe + alert state · `src/cluster.ts` IDF-weighted, number/event-aware similarity + merge pass · `src/noise.ts` wire boilerplate · `src/score.ts` · `src/narrative.ts` · `src/alerts.ts` · `src/digest.ts` · `src/levels.ts`.
-- Outputs of `scripts/run.sh`: `data/out/alerts-latest.md`, `data/out/alerts.jsonl`, `data/out/digest-latest.md`, logs in `data/logs/`.
+- `src/macro/` — 宏观仪表盘 / macro dashboard: `series.ts` (FRED keyless CSV: DGS2, DGS10, DFII10, T5YIE, T10YIE, DFF, BAMLH0A0HYM2, NFCI, DTWEXBGS, VIXCLS; Yahoo chart: SPY, GLD, GC=F, ^VIX, DX-Y.NYB, ^TNX, ZT=F; Coinbase BTC-USD), `regime.ts` (deterministic thresholds, no AI), `confirm.ts` (news vs market reaction: CONFIRMED / NOT_CONFIRMED / UNCLEAR), `risk.ts` (per-asset risk notes, NO_TRADE rules: conflicting signals, FOMC/CPI/NFP/PCE/PPI within 48h, unconfirmed headlines, credit/vol stress; links verbatim `knowledge/` entries).
+- Outputs of `scripts/run.sh`: `data/out/alerts-latest.md`, `data/out/alerts.jsonl`, `data/out/macro-latest.{md,json}`, `data/out/digest-latest.md` (includes a macro section), logs in `data/logs/`.
 
 旧的 Codex 代码已删除，可从 `codex/weekly-source-integration-20261011` 分支恢复。 / The legacy Codex tree was removed and is recoverable from `codex/weekly-source-integration-20261011`.
