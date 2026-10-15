@@ -166,3 +166,7 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - `src/ingest/fedRegional.ts`: 12 banks (official speeches/events page scan, nearest-date pairing) + labeled secondary metalsmine weekly calendar (exact UTC→ET time, topic from history page). curl→fetch fallback; JS-only/failed pages = unavailable.
 - 2026 voters verified (fomc.htm + Jan 2026 minutes): NY, Cleveland, Philadelphia, Dallas, Minneapolis. Atlanta = interim Venable.
 - Merge Board + official + secondary, dedupe (same speaker/date, ≤2h), anything listed inside a blackout flagged suspicious. Per-bank coverage in `npm run fedspeak`, brief and card.
+
+## 2026-10-15 — mentor reading (Milgram) + weekly review
+- knowledge/mentor/reading/milgram-experiment.md: mentor assignment verbatim + separate "DK 整理" summary/trading takeaway; catalog source `mentor-reading-milgram`, item `authority-bias`.
+- `npm run review -- --week [--print]` → data/out/review-week-<date>.md: 4 categories, readiness progress, tags week-over-week, lessons, mentor vs actual, 3 data-derived focus items (src/options/weekly.ts). Shock dates shared via src/options/shockdates.ts. Routine: docs/ROUTINE_WEEKLY.md.

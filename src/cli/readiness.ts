@@ -7,8 +7,7 @@ import { defaultCapital } from "../config.ts";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
-import { Store } from "../store.ts";
-import { initMacro, loadObs } from "../macro/store.ts";
+import { loadShockDates } from "../options/shockdates.ts";
 import { readiness, renderReadiness } from "../options/readiness.ts";
 import type { JournalEntry } from "../options/journal.ts";
 
@@ -17,16 +16,7 @@ const raw = existsSync(values.journal!) ? JSON.parse(readFileSync(values.journal
 const journal: JournalEntry[] = Array.isArray(raw) ? raw : raw.entries ?? [];
 const capital = Number(values.capital ?? raw.capital ?? defaultCapital());
 
-const shock = new Set<string>();
-try {
-  const st = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite"); initMacro(st.db);
-  const v3 = new Map(loadObs(st.db, "VIX3M").map((o) => [o.t.slice(0, 10), o.v]));
-  for (const o of loadObs(st.db, "VIX")) { const m = v3.get(o.t.slice(0, 10)); if (m != null && o.v > m) shock.add(o.t.slice(0, 10)); }
-} catch { /* no store → calendar only */ }
-for (const y of new Set(journal.map((e) => e.openedAt.slice(0, 4)))) {
-  const f = new URL(`../../calendar/releases-${y}.json`, import.meta.url);
-  if (existsSync(f)) for (const e of JSON.parse(readFileSync(f, "utf8")).events ?? []) shock.add(String(e.date).slice(0, 10));
-}
+const shock = loadShockDates(journal.map((e) => e.openedAt.slice(0, 4)));
 
 const r = readiness({ journal, capital, shockDates: [...shock] });
 const md = renderReadiness(r);

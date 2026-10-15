@@ -194,6 +194,12 @@
       "title": "大佬 daily note: 防御轮动 + 图表 (verbatim)",
       "url": "knowledge/mentor/daily/daily-note-defensive-rotation-charts.md",
       "coverage": "30Y/2Y, DXY, gold, KOSPI, NQ, RTY (FIB), equal-weight EWF, /CL Dec-26 95C call flow, TLT; defensive rotation, put protection; 10 images in assets/defensive-rotation/"
+    },
+    {
+      "id": "mentor-reading-milgram",
+      "title": "Mentor reading assignment — Milgram experiment (verbatim) + DK summary",
+      "url": null,
+      "coverage": "Assignment text stored verbatim in knowledge/mentor/reading/milgram-experiment.md; the summary section is DK-written, not mentor content."
     }
   ],
   "items": [
@@ -1645,6 +1651,24 @@
       "application": "Readiness judges expectancy and loss caps, never win rate alone; it prints win rate as context and still asks for every loss to be reviewed.",
       "limits": "Positive expectancy on a small sample can be luck; criterion 2 removes the top 2 winners.",
       "destination": "reviews"
+    },
+    {
+      "id": "authority-bias",
+      "group": "Psychology",
+      "title": "Do not obey authority blindly (Milgram)",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-reading-milgram"
+      ],
+      "topics": [
+        "Obedience to authority",
+        "Responsibility",
+        "Devil's advocate"
+      ],
+      "principle": "An authority's view (bank research, analysts, influencers, the mentor) is an input, not an instruction; responsibility for the trade does not transfer.",
+      "application": "Run every idea through the pre-trade card (npm run card): devil's-advocate objections plus your own invalidation level. Mentor-shadow trades are for comparison only. Original source: knowledge/mentor/reading/milgram-experiment.md (mentor assignment verbatim; summary is DK 整理).",
+      "limits": "Lab obedience findings are about behaviour under instruction, not a market signal; the mentor's assignment text is only the title.",
+      "destination": "guidance"
     }
   ],
   "fields": [
