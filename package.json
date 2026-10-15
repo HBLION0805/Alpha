@@ -16,7 +16,8 @@
     "digest": "node src/cli/digest.ts",
     "test": "node --test \"test/**/*.test.ts\"",
     "typecheck": "tsc -p tsconfig.json",
-    "validate": "npm run typecheck && npm test"
+    "validate": "npm run typecheck && npm test",
+    "options": "node src/cli/options.ts"
   },
   "dependencies": {
     "yaml": "^2.9.1"

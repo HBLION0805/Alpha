@@ -1,0 +1,144 @@
+[
+ {
+  "id": "j1",
+  "openedAt": "2026-08-03",
+  "closedAt": "2026-08-20",
+  "symbol": "SPY",
+  "strategy": "iron_condor",
+  "view": {
+   "direction": "SPY stays inside 1σ into Sep opex",
+   "volatility": "IV rank high, expect IV to fall",
+   "time": "30 DTE, manage at 21"
+  },
+  "ivRank": 62,
+  "greeks": {
+   "delta": -2,
+   "gamma": -0.3,
+   "theta": 9,
+   "vega": -40
+  },
+  "expectedMove": 28,
+  "event": null,
+  "structureRationale": "high IV neutral → defined-risk short vol",
+  "maxLoss": 1400,
+  "invalidation": "SPY close beyond short strike",
+  "exitRules": [
+   "TP 50%",
+   "21 DTE",
+   "stop 2x credit"
+  ],
+  "pnl": 300,
+  "followedRules": true,
+  "commissions": 2.6,
+  "attribution": {
+   "direction": "win",
+   "time": "win",
+   "volatility": "win"
+  }
+ },
+ {
+  "id": "j2",
+  "openedAt": "2026-09-02",
+  "closedAt": "2026-09-12",
+  "symbol": "SPY",
+  "strategy": "iron_condor",
+  "view": {
+   "direction": "range",
+   "volatility": "IV high",
+   "time": "30 DTE"
+  },
+  "ivRank": 55,
+  "greeks": {
+   "delta": 1,
+   "gamma": -0.3,
+   "theta": 8,
+   "vega": -38
+  },
+  "expectedMove": 30,
+  "event": "CPI 09-11",
+  "structureRationale": "range",
+  "maxLoss": 1400,
+  "invalidation": "short strike",
+  "exitRules": [
+   "TP 50%",
+   "stop 2x credit"
+  ],
+  "pnl": -1050,
+  "followedRules": false,
+  "lesson": "held through CPI past the stop",
+  "commissions": 2.6,
+  "attribution": {
+   "direction": "lose",
+   "time": "win",
+   "volatility": "lose"
+  },
+  "adjustments": [
+   {
+    "at": "2026-09-11",
+    "action": "rolled put side down (new decision)",
+    "maxLoss": 600,
+    "pnl": -120,
+    "commissions": 2.6
+   }
+  ]
+ },
+ {
+  "id": "j3",
+  "openedAt": "2026-09-15",
+  "closedAt": "2026-10-01",
+  "symbol": "NVDA",
+  "strategy": "bull_call_debit_spread",
+  "view": {
+   "direction": "breakout above 190",
+   "volatility": "IV mid, neutral",
+   "time": "needs move within 2 weeks"
+  },
+  "ivRank": 38,
+  "greeks": {
+   "delta": 30,
+   "gamma": 1.2,
+   "theta": -6,
+   "vega": 5
+  },
+  "expectedMove": 11,
+  "event": null,
+  "structureRationale": "debit spread cuts vega",
+  "maxLoss": 420,
+  "invalidation": "close < 176",
+  "exitRules": [
+   "TP 100%",
+   "time stop day 10"
+  ],
+  "pnl": 510,
+  "followedRules": true,
+  "commissions": 2.6,
+  "attribution": {
+   "direction": "win",
+   "time": "win",
+   "volatility": "win"
+  }
+ },
+ {
+  "id": "j4",
+  "openedAt": "2026-10-01",
+  "symbol": "QQQ",
+  "strategy": "long_put",
+  "view": {
+   "direction": "down",
+   "volatility": "",
+   "time": ""
+  },
+  "ivRank": null,
+  "greeks": {
+   "delta": -40,
+   "gamma": 2,
+   "theta": -12,
+   "vega": 20
+  },
+  "expectedMove": null,
+  "structureRationale": "hedge",
+  "maxLoss": 600,
+  "invalidation": "QQQ > 620",
+  "exitRules": []
+ }
+]
