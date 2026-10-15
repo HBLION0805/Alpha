@@ -3,6 +3,7 @@
  * Part 2 【DK 补充】 holds DK's own additions and is labeled as such. Pure functions: data in, markdown and alarms out. The CLI does the fetching.
  * Macro first: technicals are for timing only, never direction (better-macro-trader.md #9).
  */
+import { eventUtcMs } from "./risk.ts";
 import type { Obs } from "./fetch.ts";
 import type { SeriesDef } from "./series.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
@@ -105,10 +106,11 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   K.push("### VIX 与期限结构", `- VIX ${vix?.toFixed(2) ?? "n/a"} · VIX3M ${v3?.toFixed(2) ?? "n/a"} · VIX/VIX3M ${ratio?.toFixed(3) ?? "n/a"} → ${ratio == null ? "n/a" : ratio >= 1 ? "🚨 **倒挂（backwardation）= 压力**" : ratio >= 0.95 ? "接近倒挂" : "正常升水（contango）"}`);
   if (ratio != null && ratio >= 1) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio.toFixed(3)}`, detail: "近端恐慌高于远端：市场压力", by: "dk" });
   const todays = (inp.calendar ?? []).filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
-  K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));
-  const pre = todays.filter((e) => e.timeEt < "09:30" && ["CPI", "NFP", "PCE", "PPI", "FOMC", "GDP"].some((k) => e.kind.includes(k)));
+  K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${eventUtcMs(e) <= inp.now.getTime() ? "（已公布）" : e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));
+  // only releases still ahead: an evening run must not warn about this morning's 08:30 print
+  const pre = todays.filter((e) => e.timeEt < "09:30" && eventUtcMs(e) > inp.now.getTime() && ["CPI", "NFP", "PCE", "PPI", "FOMC", "GDP"].some((k) => e.kind.includes(k)));
   if (pre.length) noTrade.push(`盘前重大数据 ${pre.map((e) => `${e.kind} ${e.timeEt}`).join("、")}：数据公布前不新开仓`);
-  if (todays.some((e) => e.kind === "FOMC")) noTrade.push("今日 FOMC：决议前不新开方向仓");
+  if (todays.some((e) => e.kind === "FOMC" && eventUtcMs(e) > inp.now.getTime())) noTrade.push("今日 FOMC：决议前不新开方向仓");
   K.push("", "### 财报（今日盘前 / 盘后）");
   if (inp.earnings == null) K.push("- 无缓存的 Robinhood 财报数据（data/in/earnings.json），跳过");
   else { const e = inp.earnings.filter((x) => x.date === day); K.push(...(e.length ? e.map((x) => `- ${x.symbol} ${x.timing ?? ""}`) : ["- 今日无"])); }

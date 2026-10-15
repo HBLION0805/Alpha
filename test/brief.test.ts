@@ -61,3 +61,16 @@ test("proposal plan: TP ladder always; Kelly only with an explicit pAssumed and 
   assert.match(md, /上限参考/);
   assert.match(md, /止盈计划/);
 });
+
+test("brief timing: past releases don't block an evening run; the 48h event warning prints once", async () => {
+  const { buildPremarket: bp } = await import("../src/macro/premarket.ts");
+  const cpi = { kind: "CPI", title: "CPI", date: "2026-10-14", timeEt: "08:30", source: "x" } as never;
+  const morning = bp({ now: new Date("2026-10-14T11:00:00Z"), data: {}, calendar: [cpi], earnings: null, headlines: [] });
+  const evening = bp({ now: new Date("2026-10-15T02:30:00Z"), data: {}, calendar: [cpi], earnings: null, headlines: [] });
+  assert.ok(morning.noTrade.some((r) => /CPI 08:30/.test(r)));
+  assert.ok(!evening.noTrade.some((r) => /CPI 08:30/.test(r)));
+  const p = parts({ scNo: ["48h 内高影响事件：PPI 2026-10-15 → 不开新仓（risk.ts）"] });
+  p.macro.risk.overall = "NO_TRADE"; p.macro.risk.noTradeReasons = ["高影响事件 48 小时内 / high-impact event within 48h: PPI 2026-10-15 08:30 ET"];
+  const v = briefVerdict(p);
+  assert.equal(v.reasons.filter((r) => /PPI/.test(r)).length, 1);
+});

@@ -17,7 +17,10 @@ export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
 
 /** Single verdict: any NO_TRADE reason from macro risk, premarket or scenarios → NO_TRADE; else macro CAUTION → CAUTION. */
 export function briefVerdict(i: Pick<BriefInput, "macro" | "pm" | "sc">): { verdict: Verdict; reasons: string[] } {
-  const reasons = [...new Set([...(i.macro.risk.overall === "NO_TRADE" ? i.macro.risk.noTradeReasons : []), ...i.pm.noTrade, ...i.sc.noTrade])];
+  const macroR = i.macro.risk.overall === "NO_TRADE" ? i.macro.risk.noTradeReasons : [];
+  // the 48h event window is computed by risk.ts for both macro and scenarios → print it once
+  const scR = macroR.some((r) => /高影响事件 48/.test(r)) ? i.sc.noTrade.filter((r) => !/^48h 内高影响事件/.test(r)) : i.sc.noTrade;
+  const reasons = [...new Set([...macroR, ...i.pm.noTrade, ...scR])];
   const verdict: Verdict = reasons.length ? "NO_TRADE" : i.macro.risk.overall === "CAUTION" ? "CAUTION" : "RESEARCH_OK";
   return { verdict, reasons: reasons.length ? reasons : i.macro.risk.overall === "CAUTION" ? i.macro.risk.noTradeReasons : [] };
 }
