@@ -45,3 +45,6 @@ sources:
   - { id: sec_8k, name: SEC EDGAR current 8-K, stance: us_official, tier: 2, url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&count=40&output=atom", enabled: false, note: "403 from box for browse-edgar, Archives RSS and efts even with SEC-format User-Agent + rate limiting (re-tested 2026-10-14); likely IP-level block" }
   # --- low-latency wire (non-RSS) ---
   - { id: alpaca_benzinga, name: Benzinga via Alpaca, stance: center, tier: 2, kind: alpaca, url: "wss://stream.data.alpaca.markets/v1beta1/news", enabled: true, note: "needs ALPACA_KEY/ALPACA_SECRET env; REST backfill in poll, websocket in `npm run stream`" }
+  # --- Trump posts (core alert source, user request 2026-10-15). Scored by src/trump.ts, NOT clustered/confirmed. ---
+  - { id: trump_truth, name: Trump Truth Social (trumpstruth.org mirror), stance: us_official, tier: 1, url: "https://www.trumpstruth.org/feed", enabled: true, note: "verified 2026-10-15 08:05 ET: 100 items, newest 07:01 UTC; www. host (bare host serves an HTML redirect). Each item carries truth:originalUrl" }
+  - { id: trump_x, name: Trump on X (@realDonaldTrump, id 25073877), stance: us_official, tier: 1, kind: xfile, url: "data/in/x-trump.json", enabled: true, note: "scripts cannot call X; routine alpha-2 writes the x MCP get_users_posts response here each run (src/ingest/xTrump.ts)" }

@@ -55,7 +55,7 @@ export async function parseFeed(xml: string, sourceId: string, now = new Date().
     let url = (r.link ?? "").trim();
     if (!url && guid && /^https?:/.test(guid)) url = guid;
     if (!title || !url) continue;
-    const item: FeedItem = { sourceId, title, url: decodeEntities(url), publishedAt: clampFuture(toIso(r.date, now), now), summary: text(r.summary).slice(0, 500) };
+    const item: FeedItem = { sourceId, title, url: decodeEntities(url), publishedAt: clampFuture(toIso(r.date, now), now), summary: text(r.summary).slice(0, sourceId.startsWith("trump_") ? 4000 : 500) };
     if (guid) item.guid = guid;
     out.push(item);
   }

@@ -7,7 +7,7 @@ export interface Source {
   tier: 1 | 2 | 3;
   url: string;
   enabled: boolean;
-  kind?: "rss" | "alpaca";
+  kind?: "rss" | "alpaca" | "xfile";
   note?: string;
 }
 

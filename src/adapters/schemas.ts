@@ -45,3 +45,9 @@ export const JournalCoreSchema = z.looseObject({
   structureRationale: z.string().min(1), maxLoss: num, invalidation: z.string().min(1), exitRules: z.array(z.string()),
   ivRank: num.nullable(),
 });
+
+/** data/in/x-trump.json: the x MCP get_users_posts response as saved by the routine (extra fields ignored). */
+export const XPostsFileSchema = z.looseObject({
+  fetchedAt: z.string().optional(),
+  data: z.array(z.looseObject({ id: z.string().min(1), text: z.string(), created_at: z.string().min(1), url: z.string().optional() })).default([]),
+});

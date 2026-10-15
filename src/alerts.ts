@@ -14,6 +14,8 @@ export interface Alert {
   lastSeen: string;
   escalation: boolean; // already alerted before, score rose by >= ESCALATION
   links: Array<{ source: string; title: string; url: string }>;
+  /** verbatim post text (Trump alerts) and a fixed caution line */
+  quote?: string; note?: string;
 }
 
 export const ESCALATION = 15;
@@ -52,7 +54,10 @@ export function renderAlertsMarkdown(alerts: Alert[], now: Date): string {
   for (const a of alerts) {
     L.push(`- **${a.score}**${a.escalation ? " ⬆️" : ""} ${a.headline}`);
     L.push(`  ${a.topics.join(", ") || "general"} · watch ${a.watch.join(", ") || "—"} · ${a.sources.length} src (${a.sources.slice(0, 4).join(", ")}) · first ${et(a.firstSeen)}`);
-    if (a.links[0]) L.push(`  ${a.links[0].url}`);
+    if (a.quote) L.push(`  > “${a.quote}”`);
+    if (a.note) L.push(`  ${a.note}`);
+    if (a.quote) for (const l of a.links) L.push(`  ${l.source}: ${l.url}`);
+    else if (a.links[0]) L.push(`  ${a.links[0].url}`);
   }
   return L.join("\n") + "\n";
 }
