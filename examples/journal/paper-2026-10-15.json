@@ -619,7 +619,33 @@
         "exceeds_1pct_cap_at_5000",
         "exceeds_1pct_cap",
         "no_pre_written_plan"
-      ]
+      ],
+      "postMortem": {
+        "at": "2026-10-15T21:12:45.956Z",
+        "outcome": "loss",
+        "classification": "execution",
+        "tags": [
+          "bad_entry_timing",
+          "position_over_cap"
+        ],
+        "lesson": "趋势判断对了也要等计划内的入场点，单笔最大亏损不超过 $50",
+        "followed": {
+          "stop": null,
+          "takeProfit": null,
+          "size": null
+        },
+        "note": "The user says the trend judgment was right but the entry timing was wrong."
+      },
+      "lesson": "趋势判断对了也要等计划内的入场点，单笔最大亏损不超过 $50",
+      "lossReview": {
+        "at": "2026-10-15T21:12:45.956Z",
+        "errorClass": "execution",
+        "errorTags": [
+          "bad_entry_timing",
+          "position_over_cap"
+        ],
+        "note": "趋势判断对了也要等计划内的入场点，单笔最大亏损不超过 $50 (The user says the trend judgment was right but the entry timing was wrong.)"
+      }
     },
     {
       "kind": "practice",
