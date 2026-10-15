@@ -18,6 +18,8 @@ log="data/logs/run-$(date +%Y%m%d).log"
   fi
   if [ "${1:-}" != "--no-digest" ]; then
     node src/cli/macro.ts --out data/out/macro-latest.md || echo "[run] macro failed; digest continues without it"
+    # options dashboard when a fresh chain was saved from Robinhood MCP (data/in/spy-chain.json)
+    if [ -s data/in/spy-chain.json ]; then node src/cli/options.ts data/in/spy-chain.json --out data/out/options-latest.md >/dev/null || echo "[run] options failed"; fi
     node src/cli/digest.ts --hours 24 --out data/out/digest-latest.md
   fi
 } >>"$log" 2>&1
