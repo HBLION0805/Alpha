@@ -38,6 +38,7 @@ export const CHECKLIST = [
   "只用有限风险结构；不裸卖期权 / Defined-risk only; no naked short options",
   "遵守单笔与每日亏损上限 / Respect per-trade and daily loss caps",
   "NO_TRADE 是合法结果 / NO_TRADE is a valid outcome",
+  "现金也是一种仓位 / Cash is a position: no good setup → let it sit (大佬 纪律 #12)",
   "复盘先看亏损 / Review losses first",
 ];
 

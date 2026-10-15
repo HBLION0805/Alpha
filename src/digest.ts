@@ -1,3 +1,4 @@
+import { CASH_NOTE } from "./options/discipline.ts";
 import { ACTORS } from "./macro/risk.ts";
 import type { Source } from "./types.ts";
 import type { ScoredCluster } from "./score.ts";
@@ -35,6 +36,8 @@ export function renderDigest(d: DigestInput): string {
   if (!alerts.length) L.push("_None above threshold._", "");
   for (const r of alerts.slice(0, 10)) L.push(`- **${r.score}** ${r.headline} — ${r.topics.map((t) => t.label).join(", ") || "general"} · ${r.sources.length} sources`);
   L.push("");
+
+  L.push(`> ${CASH_NOTE}`, "");
 
   if (d.macroSection) L.push("## 🌐 宏观 / Macro", "", d.macroSection);
 

@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import { kellyFraction, kellyReference } from "../src/options/kelly.ts";
+const AP = { price: 32, qty: 1, maxAdds: 1, totalCapQty: 2, maxLoss: 300 };
 import { adjustmentPlaybookChecks, suggestNextStep } from "../src/options/adjust.ts";
 import { preTradeChecks, type Proposal } from "../src/options/pretrade.ts";
 
@@ -39,18 +40,18 @@ const lp = (strike: number, qty = 1) => ({ type: "put" as const, strike, qty, pr
 const sev = (cs: { id: string; severity: string }[], id: string) => cs.find((c) => c.id === id)?.severity;
 
 test("INTC playbook: add only after confirmation, never because cheaper", () => {
-  assert.equal(sev(adjustmentPlaybookChecks([lp(30)], 32, { action: "add", direction: "bearish" }), "add_needs_confirmation"), "BLOCK");
-  assert.equal(sev(adjustmentPlaybookChecks([lp(30)], 32, { action: "add", direction: "bearish", confirmation: { confirmed: true, evidence: "x" }, reason: "price is cheaper now" }), "no_add_because_cheaper"), "BLOCK");
-  const ok = adjustmentPlaybookChecks([lp(30)], 32, { action: "add", direction: "bearish", confirmation: { confirmed: true, evidence: "daily close below 33 on volume" } });
+  assert.equal(sev(adjustmentPlaybookChecks([lp(30)], 32, { action: "add", direction: "bearish", addPlan: AP }), "add_needs_confirmation"), "BLOCK");
+  assert.equal(sev(adjustmentPlaybookChecks([lp(30)], 32, { action: "add", direction: "bearish", addPlan: AP, confirmation: { confirmed: true, evidence: "x" }, reason: "price is cheaper now" }), "no_add_because_cheaper"), "BLOCK");
+  const ok = adjustmentPlaybookChecks([lp(30)], 32, { action: "add", direction: "bearish", addPlan: AP, confirmation: { confirmed: true, evidence: "daily close below 33 on volume" } });
   assert.ok(!ok.some((c) => c.severity === "BLOCK"));
 });
 
 test("INTC playbook: re-add long options only; convert to PDS must be covered", () => {
-  assert.equal(sev(adjustmentPlaybookChecks([lp(30), lp(25, -1)], 28, { action: "readd_long", direction: "bearish", confirmation: { confirmed: true, evidence: "y" } }), "readd_long_only"), "BLOCK");
+  assert.equal(sev(adjustmentPlaybookChecks([lp(30), lp(25, -1)], 28, { action: "readd_long", direction: "bearish", addPlan: AP, confirmation: { confirmed: true, evidence: "y" } }), "readd_long_only"), "BLOCK");
   const conv = adjustmentPlaybookChecks([lp(30), lp(25, -1)], 26, { action: "convert_to_spread", direction: "bearish", supportLevel: 25.5 });
   assert.equal(sev(conv, "convert_defined_risk"), "OK"); assert.equal(sev(conv, "convert_trigger"), "OK");
   assert.equal(sev(adjustmentPlaybookChecks([lp(25, -1)], 26, { action: "convert_to_spread", direction: "bearish" }), "convert_defined_risk"), "BLOCK");
-  assert.equal(sev(adjustmentPlaybookChecks([lp(30)], 26, { action: "add", direction: "bearish", confirmation: { confirmed: true, evidence: "z" }, supportLevel: 25.5 }), "room_shrinking"), "WARN");
+  assert.equal(sev(adjustmentPlaybookChecks([lp(30)], 26, { action: "add", direction: "bearish", addPlan: AP, confirmation: { confirmed: true, evidence: "z" }, supportLevel: 25.5 }), "room_shrinking"), "WARN");
 });
 
 test("suggestNextStep follows long put → wait → add → PDS → re-add long", () => {
@@ -63,7 +64,7 @@ test("suggestNextStep follows long put → wait → add → PDS → re-add long"
 });
 
 test("pretrade wires the playbook; adjustment still needs its own max loss", () => {
-  const p: Proposal = { symbol: "INTC", strategy: "long_put", asOf: "2026-10-14", underlyingPrice: 32, thesisHorizonDays: 20, legs: [lp(30)], capital: 50000, buyingPower: 20000, adjustmentOf: "intc-1", adjustment: { action: "add", direction: "bearish" } };
+  const p: Proposal = { symbol: "INTC", strategy: "long_put", asOf: "2026-10-14", underlyingPrice: 32, thesisHorizonDays: 20, legs: [lp(30)], capital: 50000, buyingPower: 20000, adjustmentOf: "intc-1", adjustment: { action: "add", direction: "bearish", addPlan: AP } };
   const r = preTradeChecks(p);
   assert.ok(r.blocked);
   assert.equal(sev(r.checks, "add_needs_confirmation"), "BLOCK");

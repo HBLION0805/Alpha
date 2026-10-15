@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mechanicalStop, rule3030, multiLegChecklist, thesisStop, timeStop, volStop, overnightCheck, technicalStop, technicalSignals, costAndStopChecks, stopMoveCheck } from "../src/options/stops.ts";
+const AP = { price: 32, qty: 1, maxAdds: 1, totalCapQty: 2, maxLoss: 300 };
 import { adjustmentPlaybookChecks } from "../src/options/adjust.ts";
 import { readFileSync } from "node:fs";
 import type { Bar } from "../src/levels.ts";
@@ -61,10 +62,10 @@ test("cost control and stop placement", () => {
 test("adding: one disciplined add on a loser, needs reason + thesis intact; never a second", () => {
   const lp = [{ type: "put" as const, strike: 30, qty: 1, premium: 1 }];
   const conf = { confirmed: true, evidence: "close below 31" };
-  assert.equal(adjustmentPlaybookChecks(lp, 32, { action: "add", direction: "bearish", confirmation: conf, positionPnl: -100 }).find((c) => c.id === "losing_add_limit")!.severity, "BLOCK");
-  const ok = adjustmentPlaybookChecks(lp, 32, { action: "add", direction: "bearish", confirmation: conf, positionPnl: -100, reason: "held key resistance; thesis intact", thesisIntact: true });
+  assert.equal(adjustmentPlaybookChecks(lp, 32, { action: "add", direction: "bearish", addPlan: AP, confirmation: conf, positionPnl: -100 }).find((c) => c.id === "losing_add_limit")!.severity, "BLOCK");
+  const ok = adjustmentPlaybookChecks(lp, 32, { action: "add", direction: "bearish", addPlan: AP, confirmation: conf, positionPnl: -100, reason: "held key resistance; thesis intact", thesisIntact: true });
   assert.ok(!ok.some((c) => c.severity === "BLOCK"));
-  assert.equal(adjustmentPlaybookChecks(lp, 32, { action: "add", direction: "bearish", confirmation: conf, positionPnl: -100, reason: "r", thesisIntact: true, losingAddsUsed: 1 }).find((c) => c.id === "losing_add_limit")!.severity, "BLOCK");
+  assert.equal(adjustmentPlaybookChecks(lp, 32, { action: "add", direction: "bearish", addPlan: AP, confirmation: conf, positionPnl: -100, reason: "r", thesisIntact: true, losingAddsUsed: 1 }).find((c) => c.id === "losing_add_limit")!.severity, "BLOCK");
 });
 test("catalog cites the canonical stop-loss text; psych-30-30 resolved, no duplicate items", () => {
   const cat = JSON.parse(readFileSync(new URL("../knowledge/catalog.json", import.meta.url), "utf8")) as { items: Array<{ id: string; status: string; sources: string[] }> };

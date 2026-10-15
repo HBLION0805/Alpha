@@ -25,6 +25,13 @@ export interface JournalEntry {
   adjustments?: Array<{ at: string; action: string; maxLoss: number; pnl?: number; commissions?: number }>;
   /** assigned shares held after the original trade: tracked SEPARATELY, never credited back (复盘 9) */
   assignedFollowUp?: { shares: number; costBasis: number; pnl?: number; note?: string };
+  // --- 纪律系列 (knowledge/mentor/discipline/discipline-01-20.md) ---
+  is0dte?: boolean;                                   // #4 one 0DTE per day
+  entryRange?: { low: number; high: number };         // #7 no chasing outside plan
+  addPlan?: { price: number; qty: number; maxAdds: number; totalCapQty: number; maxLoss: number }; // #10
+  hesitations?: Array<{ at: string; about: "stop" | "take_profit"; note?: string }>; // #13 second → EXIT
+  /** #19 thesis and position judged separately at every review */
+  reviews?: Array<{ at: string; thesisValid: boolean; positionValid: boolean; note?: string }>;
 }
 
 const REQ: Array<keyof JournalEntry> = ["id", "openedAt", "symbol", "strategy", "view", "greeks", "structureRationale", "maxLoss", "invalidation", "exitRules"];
@@ -42,6 +49,7 @@ export function validateEntry(e: Partial<JournalEntry>): string[] {
   if (e.closedAt && !e.attribution) errs.push("closed without 三维归因 (清单 14-3: 每笔必填)");
   if (e.closedAt && e.commissions == null) errs.push("closed without commissions — full accounting (复盘 9)");
   for (const a of e.adjustments ?? []) if (!(a.maxLoss > 0)) errs.push(`adjustment ${a.at} has no own maxLoss — each adjustment is a new trade (复盘 8)`);
+  for (const r of e.reviews ?? []) if (typeof r.thesisValid !== "boolean" || typeof r.positionValid !== "boolean") errs.push(`review ${r.at} must judge thesis and position separately (纪律 #19)`);
   return errs;
 }
 

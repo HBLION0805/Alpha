@@ -7,6 +7,7 @@
  * Every adjustment is still a new trade with its own max loss (复盘 HYG/IWM/TLT/TQQQ 8, enforced in pretrade.ts).
  */
 import type { PosLeg } from "./rules.ts";
+import { addPlanCheck, complexityCheck, type AddPlan } from "./discipline.ts";
 
 export const INTC_CITE = "大佬 INTC 案例 2026-10-14 (knowledge/mentor/MENTOR_KELLY_INTC_2026-10-14.md)";
 export type AdjustAction = "add" | "convert_to_spread" | "readd_long" | "reduce" | "hold";
@@ -21,9 +22,14 @@ export interface AdjustmentContext {
   supportLevel?: number; targetLevel?: number; entryPrice?: number;
   /** 止损学 §Re-Entering & Adding: is the position currently losing? how many disciplined adds already made while losing? */
   positionPnl?: number; losingAddsUsed?: number; thesisIntact?: boolean;
+  /** 纪律 #10: the add plan written at entry + this add's numbers. Every add/readd is checked against it */
+  addPlan?: AddPlan; addState?: { addsDone: number; currentQty: number; addQty: number; price: number; side: "long" | "short"; newTotalMaxLoss: number };
+  /** 纪律 #16: structural changes (legs/rolls/hedges) on a losing trade must have been planned at entry */
+  complexity?: { action: "add_leg" | "roll" | "hedge" | "new_expiry" | "related_position"; plannedAtEntry: boolean };
 }
 export interface AdjCheck { id: string; severity: "BLOCK" | "WARN" | "OK" | "INFO"; detail: string; cite: string }
 
+const asAdj = (d: { id: string; severity: string; detail: string; cite: string }): AdjCheck => ({ ...d, severity: d.severity === "OK" ? "OK" : d.severity === "WARN" || d.severity === "INFO" ? d.severity : "BLOCK" });
 const CHEAP = /cheap|便宜|averag|摊|lower price|better price|补仓摊/i;
 /** fraction of the original room (entry → target) still left; also distance to support as % of spot */
 export function remainingRoom(spot: number, c: AdjustmentContext): { roomFrac: number | null; toLevelPct: number | null } {
@@ -40,7 +46,9 @@ export function adjustmentPlaybookChecks(legs: PosLeg[], spot: number, c: Adjust
   const { roomFrac, toLevelPct } = remainingRoom(spot, c);
   const tight = (toLevelPct != null && toLevelPct <= nearPct) || (roomFrac != null && roomFrac <= roomLeft);
 
+  if (c.complexity) out.push(asAdj(complexityCheck({ ...c.complexity, losing: (c.positionPnl ?? 0) < 0 })));
   if (c.action === "add" || c.action === "readd_long") {
+    out.push(asAdj(c.addState ? addPlanCheck(c.addPlan, { ...c.addState, losing: (c.positionPnl ?? 0) < 0 }) : addPlanCheck(c.addPlan, { addsDone: 0, currentQty: 0, addQty: 0, price: c.addPlan?.price ?? 0, side: "long", losing: (c.positionPnl ?? 0) < 0, newTotalMaxLoss: 0 })));
     const conf = c.confirmation;
     if (!conf?.confirmed || !conf.evidence?.trim()) out.push({ id: "add_needs_confirmation", severity: "BLOCK", detail: "adding exposure needs written market confirmation (what the market did that proves the thesis). Without it, wait: 不抢确认", cite: `${INTC_CITE}: 等到下跌方向得到进一步确认，我才开始加大敞口` });
     else out.push({ id: "add_needs_confirmation", severity: "OK", detail: `confirmation: ${conf.evidence}`, cite: INTC_CITE });

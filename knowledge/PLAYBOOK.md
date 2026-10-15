@@ -72,11 +72,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `journal` · **status:** PROCESS_GUIDE · **destination:** journal
 - **topics:** Trading journal; Invalidation; Counterevidence; Review; Exit before entry
-- **sources:** owner, thesis, review, owner-psychology-20260926
+- **sources:** owner, thesis, review, owner-psychology-20260926, mentor-discipline
 
 **Principle.** Retain the original reasoning, source references and later updates as separate records.
 
-**Application.** Before entry document where/how to exit if wrong, how/where profit is taken if right, and what evidence invalidates the thesis. Reuse invalidation, deadline, costs, counterevidence and existing planned stop/target fields; use the trade journal for reported executions and fees.
+**Application.** Before entry document where/how to exit if wrong, how/where profit is taken if right, and what evidence invalidates the thesis. Reuse invalidation, deadline, costs, counterevidence and existing planned stop/target fields; use the trade journal for reported executions and fees. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #17. Encoded in src/options/journal.ts exitRules/invalidation + stops.ts thesisStop (already enforced).
 
 **Limits.** A note labeled pre-trade is not proof it preceded a fill. Text coverage does not validate its logic. New notes do not backfill the frozen trend cohort.
 
@@ -96,11 +96,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `patience` · **status:** PROCESS_GUIDE · **destination:** guidance
 - **topics:** Boredom; No trade; Selectivity; Cash; Optionality
-- **sources:** owner, course, owner-psychology-20260926
+- **sources:** owner, course, owner-psychology-20260926, mentor-discipline
 
 **Principle.** Document missing evidence and the observation that would justify another review. Choosing not to trade is a valid option with unclear direction, poor risk/reward, low liquidity, noisy structure, missing evidence or voluntarily reported insufficient attention/readiness.
 
-**Application.** Keep WATCH, NO_TRADE or cash when no opportunity qualifies. Cash can preserve low market exposure, liquidity, buying power, optionality and the ability to wait; capital need not be forced into a position.
+**Application.** Keep WATCH, NO_TRADE or cash when no opportunity qualifies. Cash can preserve low market exposure, liquidity, buying power, optionality and the ability to wait; capital need not be forced into a position. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #02, 纪律 #12. Encoded in src/options/discipline.ts sessionGate (market-not-worth-trading → NO_TRADE); CASH_NOTE in digest + macro CHECKLIST.
 
 **Limits.** Fewer trades alone do not improve expectancy. Cash is not risk-free in every sense; there is no allocation target or automatic capital movement. Readiness is voluntary reflection, never inferred health or an automatic psychological gate. Patience does not cancel a defined exit or monitoring obligation.
 
@@ -108,11 +108,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `balance` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Leisure; Sleep and rest; Exercise; Meals; Meditation; Work/life balance; Microscopic trading; Monitoring capacity
-- **sources:** owner, owner-psychology-20260926
+- **sources:** owner, owner-psychology-20260926, mentor-discipline
 
 **Principle.** Choose a review cadence compatible with the strategy and record who can monitor the position.
 
-**Application.** Include a contingency for being away, a stopped collector or unavailable quotes before relying on a short-lived option setup. Voluntarily consider attention, monitoring capacity and time away; constant watching when planned work is complete, no opportunity exists or markets are closed is not automatically productive.
+**Application.** Include a contingency for being away, a stopped collector or unavailable quotes before relying on a short-lived option setup. Voluntarily consider attention, monitoring capacity and time away; constant watching when planned work is complete, no opportunity exists or markets are closed is not automatically productive. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #20.
 
 **Limits.** No lifestyle behavior is prescribed and no health or relationship information is collected or inferred. Lifestyle examples are not a diagnosis or proven edge. Quiet Mondays, midday breaks, open-for-exits and close-for-entries are not universal rules; existing exit obligations remain.
 
@@ -146,11 +146,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `size` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Positional stop; Partial reduction; Shared market factor; Total directional exposure; Emotional sizing
-- **sources:** owner, owner-psychology-20260926, mentor-stop-loss
+- **sources:** owner, owner-psychology-20260926, mentor-stop-loss, mentor-discipline
 
 **Principle.** A smaller position changes future dollar exposure; it does not fix the original thesis.
 
-**Application.** Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss.
+**Application.** Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress.
 
 **Limits.** Size changes need a new documented decision. Excitement, anger, revenge, recent wins or a hot-hand belief cannot increase allowed size; confidence is not a sizing multiplier. Correlations are not assumed static; no correlation engine, anecdotal portfolio score or automatic reduction is implemented. A smaller loss or later recovery is not guaranteed.
 
@@ -158,11 +158,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `thesis-stop` · **status:** PROCESS_GUIDE · **destination:** journal
 - **topics:** Thesis stop; Do not rewrite the reason; PRICE_ADVERSE_BUT_THESIS_NOT_INVALIDATED; THESIS_CORE_VARIABLE_CHANGED; Capital survival; LOSS_AVERSION_STOP_DRIFT
-- **sources:** owner, thesis, owner-psychology-20260923, owner-psychology-20260926, mentor-stop-loss
+- **sources:** owner, thesis, owner-psychology-20260923, owner-psychology-20260926, mentor-stop-loss, mentor-discipline
 
 **Principle.** PRICE_ADVERSE_BUT_THESIS_NOT_INVALIDATED names an adverse price move without verified invalidation; loss alone does not prove the macro thesis wrong. THESIS_CORE_VARIABLE_CHANGED names a verified change in an original core variable that requires reassessment.
 
-**Application.** Before entry identify the relevant war, sanctions, energy, central-bank policy, rates, dollar, liquidity or other original macro variable and its evidence source. Document independent exits for wrong/right outcomes and thesis invalidation before entry. Compare new facts with the saved thesis, then apply price, time, capital and contract exits; preserving capital protects future participation. Canonical text: knowledge/mentor/discipline/stop-loss.md §Thesis Stop Loss. Encoded in src/options/stops.ts thesisStop + pretrade thesisRecord.
+**Application.** Before entry identify the relevant war, sanctions, energy, central-bank policy, rates, dollar, liquidity or other original macro variable and its evidence source. Document independent exits for wrong/right outcomes and thesis invalidation before entry. Compare new facts with the saved thesis, then apply price, time, capital and contract exits; preserving capital protects future participation. Canonical text: knowledge/mentor/discipline/stop-loss.md §Thesis Stop Loss. Encoded in src/options/stops.ts thesisStop + pretrade thesisRecord. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #17, 纪律 #18.
 
 **Limits.** These terms are educational, not an automatic state machine. A compelling story cannot override an independent exit. Moving a stop farther away solely to avoid realizing a loss is LOSS_AVERSION_STOP_DRIFT; the plan remains frozen after entry except already predefined exceptions supported by new verified information. No new stop percentage. Neither hedge nor averaging repairs a broken thesis or erases a loss; requiring both price and thesis damage is not a universal rule.
 
@@ -230,11 +230,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `hedge` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Hedging stop; Call plus put; Cross-asset hedge; Basis risk; Net exposure; Decision time
-- **sources:** owner, owner-psychology-20260923, owner-psychology-20260926, mentor-stop-loss
+- **sources:** owner, owner-psychology-20260923, owner-psychology-20260926, mentor-stop-loss, mentor-discipline
 
 **Principle.** A hedge may reduce portfolio sensitivity and buy decision time during uncertain macro news, but it cannot repair an invalid original thesis.
 
-**Application.** State the hedging instrument, exact risk, horizon, ratio or quantity, cost, basis risk, remaining net exposure and hedge exit condition. Compare combined payoff and net sensitivities under direction, IV and time scenarios; reassess whether the thesis failed, entry was early, the move is temporary or the regime changed. Canonical text: knowledge/mentor/discipline/stop-loss.md §Hedging Stop Loss. Encoded in src/options/stops.ts HEDGE_SUGGESTIONS.
+**Application.** State the hedging instrument, exact risk, horizon, ratio or quantity, cost, basis risk, remaining net exposure and hedge exit condition. Compare combined payoff and net sensitivities under direction, IV and time scenarios; reassess whether the thesis failed, entry was early, the move is temporary or the regime changed. Canonical text: knowledge/mentor/discipline/stop-loss.md §Hedging Stop Loss. Encoded in src/options/stops.ts HEDGE_SUGGESTIONS. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #06.
 
 **Limits.** Hedging buys time only conditionally: it costs money, adds basis risk and may also lose. Opposite directions alone do not demonstrate protection; a hedge cannot fix invalidation or waive an independent exit. No automatic hedge, new SPY/QQQ/sector strategy or broader trading universe is enabled.
 
@@ -242,11 +242,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `cost` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Cost control; Limit order; Premium; Position size
-- **sources:** owner, stops, mentor-stop-loss
+- **sources:** owner, stops, mentor-stop-loss, mentor-discipline
 
 **Principle.** Compare entry cost, spread, exit costs and full-premium exposure before evaluating a target.
 
-**Application.** Use the existing cost desk and whole-contract calculations; distinguish declared assumptions from actual fees. Canonical text: knowledge/mentor/discipline/stop-loss.md §Cost Control. Encoded in src/options/stops.ts costAndStopChecks.
+**Application.** Use the existing cost desk and whole-contract calculations; distinguish declared assumptions from actual fees. Canonical text: knowledge/mentor/discipline/stop-loss.md §Cost Control. Encoded in src/options/stops.ts costAndStopChecks. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #07. Encoded in src/options/discipline.ts entryRangeCheck.
 
 **Limits.** A limit order controls the acceptable price but may not fill. A cheap premium does not establish good value, and waiting for a lower entry may change the signal.
 
@@ -254,11 +254,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `stop-hunting` · **status:** CANDIDATE_UNTESTED · **destination:** reviews
 - **topics:** Stop hunting; Closing confirmation; Wider stops
-- **sources:** owner, stops, mentor-stop-loss
+- **sources:** owner, stops, mentor-stop-loss, mentor-discipline
 
 **Principle.** A reversal after a stop is an observed path, not proof someone targeted the order.
 
-**Application.** If testing close confirmation or volatility-based exits, predefine the rule and evaluate its added exposure. Canonical text: knowledge/mentor/discipline/stop-loss.md §Fighting Against Stop Hunting. Encoded in src/options/stops.ts costAndStopChecks / stopMoveCheck.
+**Application.** If testing close confirmation or volatility-based exits, predefine the rule and evaluate its added exposure. Canonical text: knowledge/mentor/discipline/stop-loss.md §Fighting Against Stop Hunting. Encoded in src/options/stops.ts costAndStopChecks / stopMoveCheck. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #14. Encoded in src/options/stops.ts stopMoveCheck (already enforced).
 
 **Limits.** Wider or delayed stops can increase loss. No recommendation to hide stops, abandon them or wait for a rebound is activated.
 
@@ -276,15 +276,27 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 ### Re-entry is a fresh exposure decision
 
-- **id:** `adding` · **status:** CANDIDATE_UNTESTED · **destination:** planner
+- **id:** `adding` · **status:** RESOLVED_FROM_SOURCE · **destination:** planner
 - **topics:** One loss addition; Adding winners; Re-entering; Fresh-cash test; Rolling; Debit spread conversion
-- **sources:** owner, owner-psychology-20260923, owner-psychology-20260926, mentor-stop-loss
+- **sources:** owner, owner-psychology-20260923, owner-psychology-20260926, mentor-stop-loss, mentor-discipline
 
 **Principle.** Repeated emotional additions to a loser are not justified by sunk cost. The Owner preference to consider at most one planned, disciplined loss addition with fresh evidence remains an untested candidate, not an active risk rule.
 
-**Application.** Ask: If I had no position and fresh cash today, would I buy this exact exposure? Lower price alone is not a reason to add. Any addition needs a prospective condition/price, quantity, maximum number of additions, total position ceiling, maximum loss and thesis-validity check. Reassess time, strike, expiry, current premium, combined exposure and costs under the authoritative allocation policy. Canonical text: knowledge/mentor/discipline/stop-loss.md §Re-Entering & Adding. Encoded in src/options/adjust.ts losing_add_limit + pretrade 1-adjustment cap.
+**Application.** Ask: If I had no position and fresh cash today, would I buy this exact exposure? Lower price alone is not a reason to add. Any addition needs a prospective condition/price, quantity, maximum number of additions, total position ceiling, maximum loss and thesis-validity check. Reassess time, strike, expiry, current premium, combined exposure and costs under the authoritative allocation policy. Canonical text: knowledge/mentor/discipline/stop-loss.md §Re-Entering & Adding. Encoded in src/options/adjust.ts losing_add_limit + pretrade 1-adjustment cap. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #10. Encoded in src/options/discipline.ts addPlanCheck via adjust.ts.
 
-**Limits.** Lower average cost is not risk management by itself; second or third rescue additions have no sunk-cost justification. An 80% option loss or later 35% rebound from the depressed premium is not a threshold or recovery proof; theta, IV and expiry can defeat a correct direction. Rolling closes or realizes the old position and opens new exposure without erasing the loss. A debit spread changes the payoff structure and requires separate assessment. No automatic averaging, roll or spread conversion.
+**Limits.** Reconciled: allowed adds = min(add plan's maxAdds written at entry [纪律 #10], 1 while losing [止损学 §Re-Entering & Adding], rule-card maxAdjustmentsPerPosition = 1). Unplanned adds are blocked; INTC confirmation and the 'cheaper is not a reason' rule still apply. No cap loosened.
+
+### Survive first to be there for the big opportunity
+
+- **id:** `discipline-survive-first` · **status:** PROCESS_GUIDE · **destination:** planner
+- **topics:** Survival; Small size; Drawdown control; Show Hand
+- **sources:** mentor-discipline
+
+**Principle.** See 纪律 #01 (先活下来，再等机会): whatever happens on this trade, you must still be able to keep trading.
+
+**Application.** Already reflected in the rule card (1%/trade, 3%/underlying), kelly.ts (fractional Kelly as an upper reference only) and NO_TRADE as a valid outcome. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #01.
+
+**Limits.** Not a licence to size up later: '下重手' when a big opportunity comes still sits inside the rule-card caps.
 
 ## Profit and curves
 
@@ -292,11 +304,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `windfall` · **status:** CANDIDATE_UNTESTED · **destination:** journal
 - **topics:** Lottery profit curve; 90% exit / 10% runner; Images 1
-- **sources:** owner
+- **sources:** owner, mentor-discipline
 
 **Principle.** Rapid gains are a reason to revisit a previously written exit plan.
 
-**Application.** Check the executable quote and exact number of whole contracts that a partial exit would require.
+**Application.** Check the executable quote and exact number of whole contracts that a partial exit would require. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #03. Encoded in src/options/discipline.ts euphoriaGate.
 
 **Limits.** 90/10 is an untested split, not an optimum. One contract cannot be split; do not increase size to manufacture a runner. Delta does not identify the peak.
 
@@ -390,11 +402,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-revenge` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Revenge trading; FOMO; Recovery pressure; Missed opportunity
-- **sources:** owner-psychology, owner-psychology-20260926
+- **sources:** owner-psychology, owner-psychology-20260926, mentor-discipline
 
 **Principle.** Treat each proposed entry as a fresh decision with its own evidence, costs and exposure.
 
-**Application.** Ask whether the same idea would be considered without the recent loss, missed rally or someone else's reported profit. Missing a trade is not a realized financial loss; the next trade needs independent justification, not a claim that the market owes the lost money. Voluntarily review faster entries, larger size, lower standards, looser stops or entries without a qualified setup.
+**Application.** Ask whether the same idea would be considered without the recent loss, missed rally or someone else's reported profit. Missing a trade is not a realized financial loss; the next trade needs independent justification, not a claim that the market owes the lost money. Voluntarily review faster entries, larger size, lower standards, looser stops or entries without a qualified setup. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #15. Encoded in src/options/discipline.ts sizeDisciplineCheck.
 
 **Limits.** A loss is still a financial loss when described as a strategic retreat. Prior profit is not free risk capital. Self-reported warning signs are reflection, not inferred diagnosis; no automatic cooldown or emotion-triggered trade ban is introduced.
 
@@ -402,11 +414,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-confidence` · **status:** PROCESS_GUIDE · **destination:** reviews
 - **topics:** Confidence formula; High conviction; Guru confidence; Hot streak; Tenfold opportunity
-- **sources:** owner-psychology, owner-psychology-20260923, owner-psychology-20260926
+- **sources:** owner-psychology, owner-psychology-20260923, owner-psychology-20260926, mentor-discipline
 
 **Principle.** Keep personal conviction, process adherence and independently measured results separate. Recent wins do not authorize a larger position.
 
-**Application.** Record evidence and alternatives before relying on a trader, AI or a winning streak. EUPHORIA_GATE is a reflection question: qualified new opportunity, desire for another win, or willingness to loosen standards? Ask whether one ordinary loss could erase several prior gains; size remains based on capital policy, defined maximum loss, instrument economics, total account exposure, evidence quality and current risk constraints.
+**Application.** Record evidence and alternatives before relying on a trader, AI or a winning streak. EUPHORIA_GATE is a reflection question: qualified new opportunity, desire for another win, or willingness to loosen standards? Ask whether one ordinary loss could erase several prior gains; size remains based on capital policy, defined maximum loss, instrument economics, total account exposure, evidence quality and current risk constraints. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #03, 纪律 #09. Encoded in src/options/discipline.ts sizeDisciplineCheck.
 
 **Limits.** Successes/failures is not a calibrated probability; zero failures does not imply infinite skill. Fewer trades need not improve expectancy. Excitement, anger, revenge, recent wins and hot-hand feelings never authorize a sizing multiplier, lower evidence standards, looser stops or extra trades. EUPHORIA_GATE is not an active execution gate; no automatic size change.
 
@@ -510,11 +522,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-returns` · **status:** PROCESS_GUIDE · **destination:** reviews
 - **topics:** 2% every week; 60% losses; Guaranteed gains; Survivorship
-- **sources:** owner-psychology
+- **sources:** owner-psychology, mentor-discipline
 
 **Principle.** Treat universal performance claims as unsupported until their population, sample, costs and method are known.
 
-**Application.** For scale only: 1.02^52 - 1 is about 180% compounded annual gain if every week earns exactly 2%, before costs. This arithmetic is not a forecast or target.
+**Application.** For scale only: 1.02^52 - 1 is about 180% compounded annual gain if every week earns exactly 2%, before costs. This arithmetic is not a forecast or target. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #01.
 
 **Limits.** Everyone can earn 2% weekly, most traders lose 60%+, and everyone eventually catches a huge winner are not established by these anecdotes. A sustainable process can still have losing weeks.
 
@@ -546,11 +558,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-wellbeing` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Sleep; Fatigue; Spending; Bills; Emotional position size; Weekend learning
-- **sources:** owner-psychology, owner-psychology-20260926
+- **sources:** owner-psychology, owner-psychology-20260926, mentor-discipline
 
 **Principle.** Voluntarily reflect on attention, readiness, monitoring capacity and time away; choosing not to trade can be valid when attention is insufficient or the market setup is poor.
 
-**Application.** Consider waiting on a new entry or arranging help with an existing monitoring obligation. Once planned work is complete, no opportunity exists or markets are closed, constant price watching is not automatically productive. Keep the financial plan separate from self-worth.
+**Application.** Consider waiting on a new entry or arranging help with an existing monitoring obligation. Once planned work is complete, no opportunity exists or markets are closed, constant price watching is not automatically productive. Keep the financial plan separate from self-worth. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #02, 纪律 #20. Encoded in src/options/discipline.ts sessionGate (self-reported state → NO_TRADE; answers not stored).
 
 **Limits.** No health information is collected and no lifestyle behavior is prescribed. Do not infer health, sleep, emotions, diagnosis or relationship status from system data. Self-reported pressure does not prove a position is too large; there is no automatic psychological gate or capital change.
 
@@ -664,61 +676,61 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 ### One-and-done 0DTE discipline
 
-- **id:** `psych-0dte-one-and-done` · **status:** CANDIDATE_UNTESTED · **destination:** reviews
+- **id:** `psych-0dte-one-and-done` · **status:** RESOLVED_FROM_SOURCE · **destination:** reviews
 - **topics:** 0DTE; One completed trade; Revenge pressure; Euphoria; Impulsive re-entry
-- **sources:** owner-psychology-20260926
+- **sources:** owner-psychology-20260926, mentor-discipline
 
-**Principle.** Owner heuristic: for 0DTE, stop after the first completed trade of the day, whether profit, loss or flat. Fast feedback may increase revenge pressure, euphoria, impulsive re-entry and lowered standards.
+**Principle.** Resolved by 纪律 #04 (一天只做一笔…一笔结束，今天的 0DTE 就结束). Enforced as a journal-based block on a second 0DTE entry on the same ET day.
 
-**Application.** Keep this as a discipline candidate. Any future promotion requires explicit Owner approval through Strategy Versioning and a prospective definition of the covered trades and session.
+**Application.** Keep this as a discipline candidate. Any future promotion requires explicit Owner approval through Strategy Versioning and a prospective definition of the covered trades and session. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #04. Encoded in src/options/discipline.ts zeroDteCheck.
 
-**Limits.** Not an active Alpha rule. No trade counter, daily blocker, session lock or 0DTE execution logic; the current contract policy is unchanged.
+**Limits.** Applies to 0DTE only. The block prevents new 0DTE entries; it never forces holding an open one.
 
 ### Do not require the exact top or bottom
 
 - **id:** `psych-extreme-point-precision` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Top / bottom prediction; Confirmation; Risk-defined participation; Fish head / body / tail
-- **sources:** owner-psychology-20260926
+- **sources:** owner-psychology-20260926, mentor-discipline
 
 **Principle.** Participation need not prove the exact extreme. Consider evidence-defined participation with specified risk, sufficient direction/setup confirmation and defined invalidation; accept that parts of the initial and final move may be missed.
 
-**Application.** Use the existing evidence and plan fields to explain participation and its risks rather than claiming an exact top or bottom.
+**Application.** Use the existing evidence and plan fields to explain participation and its risks rather than claiming an exact top or bottom. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #08.
 
 **Limits.** Confirmation does not always produce better returns. Fish head/body/tail is an illustration only; no detector or fixed 10%/80% middle-of-move rule.
 
 ### A daily loss limit protects judgment as well as capital
 
-- **id:** `psych-daily-loss-limit` · **status:** CANDIDATE_UNTESTED · **destination:** planner
+- **id:** `psych-daily-loss-limit` · **status:** RESOLVED_FROM_SOURCE · **destination:** planner
 - **topics:** Daily loss limit; UNKNOWN; Revenge sequence; Future risk-policy proposal
-- **sources:** owner-psychology-20260926
+- **sources:** owner-psychology-20260926, mentor-discipline
 
-**Principle.** A daily maximum loss may help keep a normal losing day from becoming a revenge-trading sequence. dailyLossLimit = UNKNOWN: this batch declares no numeric threshold.
+**Principle.** Resolved by 纪律 #11 (到了这个数字，今天结束). The source gives no number. dailyLossLimitPct = 2 is a PROVISIONAL, configurable default pending the user's own number.
 
-**Application.** Future activation needs an explicit Owner amount or formula, scope, covered instruments, reset clock/timezone, realized versus unrealized definition, treatment of open positions and Strategy/Risk versioning approval.
+**Application.** Future activation needs an explicit Owner amount or formula, scope, covered instruments, reset clock/timezone, realized versus unrealized definition, treatment of open positions and Strategy/Risk versioning approval. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #11. Encoded in src/options/discipline.ts dailyLossCheck.
 
-**Limits.** No historical dollar value is reused or invented. No active loss blocker or new risk setting is created.
+**Limits.** The provisional 2% is a cautious placeholder, not the mentor's or the user's figure. Hitting it blocks new entries for the rest of the ET day; it never loosens other caps.
 
 ### Repeated hesitation is a review signal
 
-- **id:** `psych-two-hesitations` · **status:** CANDIDATE_UNTESTED · **destination:** journal
+- **id:** `psych-two-hesitations` · **status:** RESOLVED_FROM_SOURCE · **destination:** journal
 - **topics:** Two hesitations; Voluntary reflection; Original exit plan
-- **sources:** owner-psychology-20260926
+- **sources:** owner-psychology-20260926, mentor-discipline
 
-**Principle.** Owner heuristic: twice independently considering profit-taking or stopping out may be a reason to review whether the trade remains as clear as at entry.
+**Principle.** Resolved by 纪律 #13 (两次犹豫，就退出): the second logged hesitation gives an EXIT signal; if the position is in profit, take the profit.
 
-**Application.** Use only as a voluntary reflection trigger and compare with the original price, time and thesis exits.
+**Application.** Use only as a voluntary reflection trigger and compare with the original price, time and thesis exits. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #13. Encoded in src/options/discipline.ts hesitationCheck + journal hesitations.
 
-**Limits.** Two hesitations is not an automatic exit: the count is subjective, repeated thought is not market evidence and it may conflict with a frozen plan. Predefined exits remain authoritative. No counter or execution action.
+**Limits.** The count is self-logged in the journal (hesitations[]). The existing predefined hard exits still fire first. The signal is EXIT; the user executes.
 
 ### Do not add complexity just to avoid closing a bad trade
 
 - **id:** `psych-rescue-complexity` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Rescue complexity; Hedge; Spread; Roll; New expiry; Related asset; Additional leg
-- **sources:** owner-psychology-20260926
+- **sources:** owner-psychology-20260926, mentor-discipline
 
 **Principle.** Repeated hedges, spreads, rolls, expiries, related assets or additional legs can make a losing simple position harder to understand.
 
-**Application.** Ask whether a new structure manages a still-valid trade or avoids closing an invalid one. Each added layer needs its own purpose, incremental risk, cost, total exposure and exit condition.
+**Application.** Ask whether a new structure manages a still-valid trade or avoids closing an invalid one. Each added layer needs its own purpose, incremental risk, cost, total exposure and exit condition. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #16. Encoded in src/options/discipline.ts complexityCheck via adjust.ts.
 
 **Limits.** Rolling or restructuring does not erase the original loss. No automatic ban on complexity and no automatic roll, spread or hedge; unsupported structures do not gain execution authority.
 
@@ -726,11 +738,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-thesis-position-separation` · **status:** PROCESS_GUIDE · **destination:** journal
 - **topics:** Thesis versus position; Timing; Entry price; Strike; Expiry; Size; Instrument; Structure; Prediction accuracy != trading profitability
-- **sources:** owner-psychology-20260926
+- **sources:** owner-psychology-20260926, mentor-discipline
 
 **Principle.** A broad directional view can remain plausible while a specific position fails because of timing, price, strike, expiry, size, instrument or structure.
 
-**Application.** Review Prediction/thesis, Instrument, Entry, Position, Execution and Outcome separately. Closing an unsuitable position does not necessarily reject the entire macro thesis; any new expression requires a fresh plan.
+**Application.** Review Prediction/thesis, Instrument, Entry, Position, Execution and Outcome separately. Closing an unsuitable position does not necessarily reject the entire macro thesis; any new expression requires a fresh plan. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #19. Encoded in src/options/discipline.ts thesisPositionVerdict + journal reviews[].
 
 **Limits.** Belief in the thesis does not justify protecting a bad position. Prediction accuracy is not trading profitability. No prediction mutation, automatic reopening or replacement trade.
 
