@@ -1,3 +1,4 @@
+import { parseInput, EarningsSchema } from "../adapters/schemas.ts";
 import type { Bar } from "../levels.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import type { ExpirySummary } from "./chain.ts";
@@ -5,8 +6,7 @@ import type { ExpirySummary } from "./chain.ts";
 export interface Earnings { symbol: string; date: string; timing: string | null }
 /** Accepts Robinhood get_earnings_calendar output ({data:{results}} or {results}) or a plain array. */
 export function parseEarnings(json: unknown): Earnings[] {
-  const j = json as { data?: { results?: unknown[] }; results?: unknown[] } | unknown[];
-  const rows = (Array.isArray(j) ? j : (j.data?.results ?? j.results ?? [])) as Array<{ symbol: string; report?: { date: string; timing?: string }; date?: string; timing?: string }>;
+  const rows = parseInput(EarningsSchema, json, "earnings");
   return rows.map((r) => ({ symbol: r.symbol, date: r.report?.date ?? r.date ?? "", timing: r.report?.timing ?? r.timing ?? null })).filter((r) => r.date);
 }
 

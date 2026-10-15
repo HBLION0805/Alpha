@@ -3,13 +3,14 @@ import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync, readdir
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
 import { yahooDaily } from "../adapters/yahoo.ts";
+import { parseInput, WatchlistSchema } from "../adapters/schemas.ts";
 import { Store } from "../store.ts";
 import { parseChain, type Chain } from "../options/chain.ts";
 import { DEFAULT_WATCHLIST, buildVolumeReport, volumeAlarmItems, type Bar } from "../macro/volume.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/volume-latest.md" }, "no-alarms": { type: "boolean" }, in: { type: "string", default: "data/in" } } });
 const now = new Date();
-const extra: string[] = existsSync(`${values.in}/watchlist.json`) ? (() => { const j = JSON.parse(readFileSync(`${values.in}/watchlist.json`, "utf8")); return (Array.isArray(j) ? j : j.symbols ?? []).map(String); })() : [];
+const extra: string[] = existsSync(`${values.in}/watchlist.json`) ? parseInput(WatchlistSchema, JSON.parse(readFileSync(`${values.in}/watchlist.json`, "utf8")), "watchlist.json") : [];
 const symbols = [...new Set([...DEFAULT_WATCHLIST, ...extra.map((s) => s.toUpperCase())])];
 const bars: Record<string, Bar[]> = {}; const failed: Record<string, string> = {};
 await Promise.all(symbols.map(async (s) => {

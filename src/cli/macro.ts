@@ -2,6 +2,7 @@
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
+import { parseInput, CalendarFileSchema } from "../adapters/schemas.ts";
 import { Store } from "../store.ts";
 import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
@@ -16,7 +17,7 @@ const store = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite");
 await refreshMacro(store.db, { offline: values.offline ?? false, log: (s) => console.error(s) });
 const ranked = rank(clusterItems(store.since(new Date(now.getTime() - 24 * 3600_000).toISOString())), now);
 const staticPath = new URL(`../../calendar/releases-${now.getFullYear()}.json`, import.meta.url);
-const staticEvents: CalendarEvent[] = existsSync(staticPath) ? (JSON.parse(readFileSync(staticPath, "utf8")) as { events: CalendarEvent[] }).events : [];
+const staticEvents: CalendarEvent[] = existsSync(staticPath) ? (parseInput(CalendarFileSchema, JSON.parse(readFileSync(staticPath, "utf8")), "release calendar").events as CalendarEvent[]) : [];
 let calendar = staticEvents;
 if (!values.offline) {
   try {

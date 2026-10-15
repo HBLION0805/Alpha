@@ -61,7 +61,7 @@ test("better-macro-trader: verbatim, cited; journal requires invalidation (#7); 
   const cat = JSON.parse(readFileSync(new URL("../knowledge/catalog.json", import.meta.url), "utf8")) as { items: Array<{ id: string; sources: string[] }> };
   for (const id of ["research", "journal", "patience", "mechanisms", "uncertainty"]) assert.ok(cat.items.find((i) => i.id === id)!.sources.includes("mentor-better-macro-trader"), id);
   const { validateEntry } = await import("../src/options/journal.ts");
-  assert.ok(validateEntry({}).includes("missing invalidation"));
+  assert.ok(validateEntry({}).some((e) => e.startsWith("provide invalidation")));
   const { MECHANICS_NOTE, MECHANICS_QUESTIONS } = await import("../src/macro/render.ts");
   assert.match(MECHANICS_NOTE, /为什么它应该动/); assert.match(MECHANICS_NOTE, /entry timing only/); assert.ok(MECHANICS_QUESTIONS.length >= 4);
   assert.match(readFileSync(new URL("../src/macro/render.ts", import.meta.url), "utf8"), /宏观 Why[\s\S]*市场机制 How \/ When/);

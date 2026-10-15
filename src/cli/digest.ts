@@ -2,6 +2,7 @@ import { ALARM_SOURCES } from "../alerts.ts";
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
+import { parseInput, CalendarFileSchema } from "../adapters/schemas.ts";
 import { loadSources } from "../sources.ts";
 import { Store } from "../store.ts";
 import { clusterItems } from "../cluster.ts";
@@ -24,7 +25,7 @@ let calendar: CalendarEvent[] = [];
 if (!values["no-calendar"]) {
   const year = now.getFullYear();
   const staticPath = new URL(`../../calendar/releases-${year}.json`, import.meta.url);
-  const staticEvents = existsSync(staticPath) ? ((JSON.parse(readFileSync(staticPath, "utf8")) as { events: CalendarEvent[] }).events ?? []) : [];
+  const staticEvents = existsSync(staticPath) ? ((parseInput(CalendarFileSchema, JSON.parse(readFileSync(staticPath, "utf8")), "release calendar").events as CalendarEvent[])) : [];
   try {
     const r = await fetchReleaseCalendar(year, staticEvents);
     if (r.errors.length) console.error(`[digest] calendar: ${r.errors.length} live source(s) failed${r.usedStatic ? ", used static snapshot" : ""}`);

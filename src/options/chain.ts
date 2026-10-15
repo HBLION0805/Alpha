@@ -1,3 +1,4 @@
+import { parseInput, ChainSchema } from "../adapters/schemas.ts";
 import { bs, impliedVol, yearFrac, daysTo, expectedMove, STRADDLE_TO_EM, type Right } from "./bs.ts";
 
 export interface Contract {
@@ -11,9 +12,7 @@ export interface Chain { symbol: string; underlyingPrice: number; asOf: string; 
 
 /** Accepts our normalized chain JSON. (Raw Robinhood quotes lack strike/expiry — join instruments first; see README.) */
 export function parseChain(json: unknown): Chain {
-  const c = json as Chain;
-  if (!c || typeof c.underlyingPrice !== "number" || !Array.isArray(c.contracts)) throw new Error("chain: need {symbol, underlyingPrice, asOf, contracts[]}");
-  return { ...c, contracts: c.contracts.map((x) => ({ ...x, strike: Number(x.strike) })) };
+  return parseInput(ChainSchema, json, "chain") as Chain;
 }
 
 /** Fill null IV (from mark) and null greeks (Black-Scholes). Never overwrites Robinhood values. */

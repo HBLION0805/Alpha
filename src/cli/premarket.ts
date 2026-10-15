@@ -2,6 +2,7 @@
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
+import { parseInput, CalendarFileSchema } from "../adapters/schemas.ts";
 import { Store } from "../store.ts";
 import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
@@ -22,7 +23,7 @@ else await Promise.all(PM_SERIES.map(async (s) => {
   catch (e) { failed[`${s.id} (${s.provider}:${s.ref})`] = (e as Error).message; }
 }));
 const calPath = new URL(`../../calendar/releases-${now.getFullYear()}.json`, import.meta.url);
-const calendar: CalendarEvent[] = existsSync(calPath) ? (JSON.parse(readFileSync(calPath, "utf8")) as { events: CalendarEvent[] }).events : [];
+const calendar: CalendarEvent[] = existsSync(calPath) ? (parseInput(CalendarFileSchema, JSON.parse(readFileSync(calPath, "utf8")), "release calendar").events as CalendarEvent[]) : [];
 const earnings = existsSync("data/in/earnings.json") ? parseEarnings(JSON.parse(readFileSync("data/in/earnings.json", "utf8"))) : null;
 const regimeLabel = existsSync("data/out/macro-latest.json") ? ((JSON.parse(readFileSync("data/out/macro-latest.json", "utf8")) as { regime?: { label?: string } }).regime?.label ?? null) : null;
 const store = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite");

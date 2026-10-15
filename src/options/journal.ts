@@ -2,6 +2,7 @@
  * Options trade journal — schema from 期权课 14.8 / 附录 D.3, plus full-accounting rules from
  * 复盘 HYG/IWM/TLT/TQQQ (knowledge/mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md, 以后我会调整什么 8–9).
  */
+import { issues, JournalCoreSchema } from "../adapters/schemas.ts";
 export interface JournalEntry {
   id: string; openedAt: string; closedAt?: string; symbol: string; strategy: string;
   /** D.3 三句话 */
@@ -34,10 +35,8 @@ export interface JournalEntry {
   reviews?: Array<{ at: string; thesisValid: boolean; positionValid: boolean; note?: string }>;
 }
 
-const REQ: Array<keyof JournalEntry> = ["id", "openedAt", "symbol", "strategy", "view", "greeks", "structureRationale", "maxLoss", "invalidation", "exitRules"];
 export function validateEntry(e: Partial<JournalEntry>): string[] {
-  const errs: string[] = [];
-  for (const k of REQ) if (e[k] == null || e[k] === "") errs.push(`missing ${k}`);
+  const errs: string[] = issues(JournalCoreSchema, e);
   if (e.view) {
     if (!e.view.direction?.trim()) errs.push("view.direction empty");
     if (!(e.view.magnitudeTime ?? e.view.time)?.trim()) errs.push("view.magnitudeTime (幅度与时间) empty — 很多失败来自只有第一句 (14.2)");
@@ -45,7 +44,6 @@ export function validateEntry(e: Partial<JournalEntry>): string[] {
   }
   if (e.exitRules && e.exitRules.length === 0) errs.push("exitRules must be written before entry (14.7)");
   if (e.maxLoss != null && !(e.maxLoss > 0)) errs.push("maxLoss must be a positive dollar amount (defined risk)");
-  if (!("ivRank" in e)) errs.push("missing ivRank (null allowed if history too short)");
   if (e.closedAt && !e.attribution) errs.push("closed without 三维归因 (清单 14-3: 每笔必填)");
   if (e.closedAt && e.commissions == null) errs.push("closed without commissions — full accounting (复盘 9)");
   for (const a of e.adjustments ?? []) if (!(a.maxLoss > 0)) errs.push(`adjustment ${a.at} has no own maxLoss — each adjustment is a new trade (复盘 8)`);

@@ -9,6 +9,7 @@
 import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
+import { parseInput, CalendarFileSchema, ProposalSchema } from "../adapters/schemas.ts";
 import { DatabaseSync } from "node:sqlite";
 import { parseChain, type Chain } from "../options/chain.ts";
 import { chainFromRobinhood, unwrapJson } from "../options/robinhood.ts";
@@ -42,7 +43,7 @@ if (values["rh-instruments"] && values["rh-quotes"]) {
 
 const year = chain.asOf.slice(0, 4);
 const calPath = new URL(`../../calendar/releases-${year}.json`, import.meta.url);
-const calendar: CalendarEvent[] = existsSync(calPath) ? (JSON.parse(readFileSync(calPath, "utf8")) as { events: CalendarEvent[] }).events : [];
+const calendar: CalendarEvent[] = existsSync(calPath) ? (parseInput(CalendarFileSchema, JSON.parse(readFileSync(calPath, "utf8")), "release calendar").events as CalendarEvent[]) : [];
 const dbPath = process.env.ALPHA_DB ?? "data/alpha-news.sqlite";
 mkdirSync(dirname(dbPath), { recursive: true });
 const db = new DatabaseSync(dbPath);
@@ -84,7 +85,7 @@ if (values.journal) {
   for (const b of bad) extra.push(`- ⚠️ ${b.id}: ${b.errs.join("; ")}`);
 }
 if (values.proposal) {
-  const prop = read(values.proposal) as Proposal;
+  const prop = parseInput(ProposalSchema, read(values.proposal), "proposal") as unknown as Proposal;
   const r = preTradeChecks(prop, { ...DEFAULT_RULES });
   json.preTrade = r;
   const icon = { NO_TRADE: "🛑", BLOCK: "⛔", WARN: "⚠️", OK: "✅", INFO: "ℹ️" } as const;
