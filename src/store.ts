@@ -15,6 +15,7 @@ export class Store {
     this.db = new DatabaseSync(path);
     this.db.exec(`
       PRAGMA journal_mode = WAL;
+      PRAGMA busy_timeout = 5000;
       CREATE TABLE IF NOT EXISTS items (
         id INTEGER PRIMARY KEY,
         source_id TEXT NOT NULL, stance TEXT NOT NULL, tier INTEGER NOT NULL,
@@ -28,7 +29,12 @@ export class Store {
       CREATE TABLE IF NOT EXISTS feed_state (
         source_id TEXT PRIMARY KEY, etag TEXT, last_modified TEXT,
         last_status TEXT, last_error TEXT, last_count INTEGER, last_ms INTEGER, checked_at TEXT
-      );`);
+      );
+      CREATE TABLE IF NOT EXISTS alerts (
+        id INTEGER PRIMARY KEY, created_at TEXT NOT NULL, score INTEGER NOT NULL, headline TEXT NOT NULL, payload TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS alerted_items (item_id INTEGER NOT NULL, alert_id INTEGER NOT NULL, score INTEGER NOT NULL, PRIMARY KEY (item_id, alert_id));
+      CREATE INDEX IF NOT EXISTS alerted_item ON alerted_items(item_id);`);
   }
 
   feedState(sourceId: string): FeedState {
@@ -79,6 +85,21 @@ export class Store {
       if (r.guid) s.guid = String(r.guid);
       return s;
     });
+  }
+
+  /** Highest score at which any of these items was already alerted, or null if never. */
+  priorAlertScore(itemIds: number[]): number | null {
+    if (!itemIds.length) return null;
+    const r = this.db.prepare(`SELECT MAX(score) AS s FROM alerted_items WHERE item_id IN (${itemIds.map(() => "?").join(",")})`).get(...itemIds) as { s: number | null };
+    return r.s ?? null;
+  }
+
+  recordAlert(score: number, headline: string, itemIds: number[], payload: unknown, now = new Date()): number {
+    const r = this.db.prepare("INSERT INTO alerts (created_at, score, headline, payload) VALUES (?,?,?,?)").run(now.toISOString(), score, headline, JSON.stringify(payload));
+    const id = Number(r.lastInsertRowid);
+    const ins = this.db.prepare("INSERT OR IGNORE INTO alerted_items VALUES (?,?,?)");
+    for (const i of itemIds) ins.run(i, id, score);
+    return id;
   }
 
   feedReport(): Array<Record<string, unknown>> {

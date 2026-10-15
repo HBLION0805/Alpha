@@ -35,7 +35,7 @@ export function renderDigest(d: DigestInput): string {
 
   if (d.calendar?.length) {
     L.push("## 📅 Upcoming official events", "");
-    for (const e of d.calendar) L.push(`- ${e.date} 14:00 ET — ${e.title}`);
+    for (const e of d.calendar) L.push(`- ${e.date} ${e.timeEt} ET — ${e.title}`);
     L.push("");
   }
 
