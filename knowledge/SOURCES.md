@@ -48,3 +48,5 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
   Canonical verbatim text (31,110 bytes, cmp-verified; author names/timestamps stripped at the user's request). 20 numbered lessons, cited as 纪律 #NN.
 - **大佬 纪律 channel — 止盈学 (Take Profit), verbatim + 11 curve images** (`mentor-take-profit`) — knowledge/mentor/discipline/take-profit.md
   Canonical text take-profit.verbatim.md (8,480 bytes, cmp-verified; author names and timestamps stripped at the user's request). take-profit.md is the same text with the images embedded at each section (take-profit-img/01–11.png, byte-identical). Sections §1–§12 cited as 止盈学 §N.
+- **大佬 — 如何成为更好的宏观交易员 (original 10-point essay), verbatim** (`mentor-better-macro-trader`) — knowledge/mentor/better-macro-trader.md
+  Canonical verbatim text (8,859 bytes, cmp-verified; author names and timestamps stripped). The original source that the macro course (knowledge/courses/macro/) expands. Cited as 宏观交易员 #N.

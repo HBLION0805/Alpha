@@ -6,11 +6,18 @@ const LABEL_ZH: Record<string, string> = { RISK_ON: "风险偏好", RISK_OFF: "�
 const AXIS_ZH: Record<string, string> = { rates: "利率方向 Rates", expectations: "政策预期 Expectations", usd: "美元 USD", realYields: "实际利率 Real yields", inflationExp: "通胀预期 Breakevens", volatility: "波动率 Volatility", credit: "信用/风险偏好 Credit", liquidity: "流动性 Liquidity", equities: "股市趋势 Equities" };
 const STANCE_ZH: Record<string, string> = { NO_TRADE: "🛑 NO_TRADE 不交易", CAUTION: "⚠️ CAUTION 谨慎", RESEARCH_OK: "✅ RESEARCH_OK 可研究" };
 
+export const MECHANICS_NOTE = "宏观告诉你：为什么它应该动。市场机制告诉你：它可能怎么动，以及什么时候动。 (knowledge/mentor/better-macro-trader.md #9). The user trades macro first: the regime above is the direction; K-line/FIB technicals are for entry timing only, never direction.";
+export const MECHANICS_QUESTIONS = [
+  "Positioning / crowding: is the move the macro story, or a squeeze? (空头仓位, market positioning)",
+  "Dealer hedging & options OI: big gamma/OI near strikes that could pin or accelerate price? (Dealer Hedging, 期权未平仓量)",
+  "Liquidity: thin book, holiday or after-hours conditions that exaggerate moves? (做市商, 流动性)",
+  "Greeks of your expression: Delta / Gamma / Theta / Vega: can you be right on the macro and still lose on the trade?",
+];
 export function renderMacro(r: MacroReport, full = true): string {
   const g = r.regime;
   const L: string[] = [];
   if (full) L.push(`# 宏观状态 / Macro regime — ${et(r.generatedAt)}`, "", "_确定性规则，无 AI 计算 / Deterministic rules, no AI in calculations. Not trade advice._", "");
-  L.push(`${full ? "## " : "### "}结论 / Regime: **${g.label}** (${LABEL_ZH[g.label]}) · confidence ${g.confidence}`, "");
+  L.push(`${full ? "## " : "### "}宏观 Why · 结论 / Regime: **${g.label}** (${LABEL_ZH[g.label]}) · confidence ${g.confidence}`, "");
   L.push(`**总体 / Overall: ${STANCE_ZH[r.risk.overall]}**`);
   for (const x of r.risk.noTradeReasons) L.push(`- ${x}`);
   L.push("");
@@ -27,6 +34,11 @@ export function renderMacro(r: MacroReport, full = true): string {
     L.push(`- **${c.c.verdict}** — ${c.headline} (${c.sources} src, ${et(c.firstSeen)}; read as ${c.c.direction}) — ${c.c.reason}`);
     if (full) L.push(`  ${c.c.moves.map((m) => `${m.series} ${m.result === "NO_DATA" ? "n/a" : `${m.pct > 0 ? "+" : ""}${m.pct}%`}${m.result === "CONSISTENT" ? "✔" : m.result === "INCONSISTENT" ? "✘" : ""}`).join(" · ")} (window ${et(c.c.windowFrom)} → ${et(c.c.windowTo)}; ZT is 2Y futures price: down = yield up)`);
   }
+  L.push("");
+  // 大佬 如何成为更好的宏观交易员 #9: 宏观告诉你为什么它应该动；市场机制告诉你它可能怎么动、什么时候动
+  L.push(`${full ? "## " : "#### "}市场机制 How / When (separate from the macro Why above)`, "", `> ${MECHANICS_NOTE}`, "");
+  for (const q of MECHANICS_QUESTIONS) L.push(`- [ ] ${q}`);
+  if (r.risk.eventRisk.length) L.push(`- When: scheduled catalysts in window: ${r.risk.eventRisk.map((e) => `${e.kind} ${e.date} ${e.timeEt} ET`).join(" · ")}`);
   L.push("");
   L.push(`${full ? "## " : "#### "}风险视角 / Risk view (risk first)`, "");
   for (const a of r.risk.assets) {

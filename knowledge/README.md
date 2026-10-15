@@ -6,6 +6,9 @@
 
 ## Index / 目录
 
+
+> **Macro first.** The user is a macro trader first: direction comes from the macro Why (regime, thesis, actors). Technicals (K-line reading, FIB, the mentor's TradingView indicator) are used **only for entry timing and levels, never for direction** (大佬 宏观交易员 #9: 宏观告诉你为什么它应该动；市场机制告诉你它可能怎么动、什么时候动).
+
 | File | Content | Count |
 |---|---|---|
 | [catalog.json](catalog.json) | Canonical data, extracted verbatim from the legacy TS catalogs (`macroCatalog()` output, revision `OWNER_PSYCHOLOGY_20260928_V6`) | 62 items · 17 biases · 21 prompts · 12 worksheet fields · 20 sources |
@@ -25,6 +28,7 @@
 | [mentor/](mentor/) | **大佬补充（两门课之外）/ Mentor's supplement beyond the two courses** — [MENTOR_NOTE_CLASS_AND_UPBRINGING.md](mentor/MENTOR_NOTE_CLASS_AND_UPBRINGING.md) 家教与阶级 (byte-for-byte). Drives the "actors" prompt in the macro risk view and digest (谁在制定规则 / 谁在承担代价 / 谁拥有选择 / 激励与恐惧) | 1 |
 | [mentor/reviews/](mentor/reviews/) | **大佬复盘 / Mentor trade reviews** (byte-for-byte; more will be added here): [REVIEW_HYG_IWM_TLT_TQQQ.md](mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md) — lessons enforced in `src/options/pretrade.ts` (assignment plan, per-leg risk, buying power for full short notional on Robinhood, time buffer, adjustments = new trades, full accounting) and `matrix.ts` (credit spreads de-prioritised) | 1 |
 | [mentor/MENTOR_KELLY_INTC_2026-10-14.md](mentor/MENTOR_KELLY_INTC_2026-10-14.md) | **大佬 2026-10-14: Kelly 批判 + INTC 调仓案例** (byte-for-byte). The critique of Kelly (correlations go to 1, p is an assumption, liquidity/cash/margin) is enforced by `src/options/kelly.ts`. INTC: 错的时候控制风险，对的时候增加敞口；不抢确认，不死守结构. Enforced by `src/options/adjust.ts` and the pretrade adjustment checks | 1 |
+| [mentor/better-macro-trader.md](mentor/better-macro-trader.md) | **大佬原文: 如何成为更好的宏观交易员** (10 points, byte-for-byte). It is the **original source the macro course [courses/macro/](courses/macro/) expands**. Map: #1 旅行 → ch04 / `research` · #2 阅读 → ch09, ch15 / `research`, `psych-news` · #3 休闲 → ch15 / `balance`, `psych-wellbeing` · #4 学历史 → ch03 + 附录B / `research`, `psych-long-horizon` · #5 经济学 → ch04–05 / `expectations`, `psych-second-order` · #6 英语 → (no chapter) / `research`, `psych-long-horizon` · #7 交易日志 → ch11, ch15–16, 附录D / `journal` (invalidation required by `journal.ts`) · #8 无聊 → ch15 耐心本身就是一种仓位 / `patience` · #9 市场机制 → ch07 / `mechanisms`, `volatility` (the macro output separates Why from How/When) · #10 接受不确定 → ch16 / `uncertainty`, `psych-responsibility`, `psych-loss-attribution` | 1 |
 | [mentor/kelly/](mentor/kelly/) | Kelly 公式补充 article: the PDF as received, plus a pdftotext extraction and a README | 3 |
 | [mentor/tradingview/](mentor/tradingview/) | 大佬's Pine v6 indicator "K线阅读 · Bzzb" (price-action trendlines, S/R, patterns; best on small timeframes): `.pine` byte-for-byte, plus a README | 2 |
 | [mentor/world-lines.md](mentor/world-lines.md) | **世界的20条主线**: https://world-lines.jolly-moose-6445.chatgpt.site/ fetched 2026-10-14 21:38 ET. All 20 lessons, verbatim from the page's embedded data. Raw JSON in [world-lines.data.json](mentor/world-lines.data.json) | 2 |

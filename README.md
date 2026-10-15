@@ -50,3 +50,7 @@ npm test && npm run typecheck
 - Outputs of `scripts/run.sh`: `data/out/alerts-latest.md`, `data/out/alerts.jsonl`, `data/out/macro-latest.{md,json}`, `data/out/digest-latest.md` (includes a macro section), logs in `data/logs/`.
 
 旧的 Codex 代码已删除，可从 `codex/weekly-source-integration-20261011` 分支恢复。 / The legacy Codex tree was removed and is recoverable from `codex/weekly-source-integration-20261011`.
+
+## Macro first
+
+The user is a macro trader first. Direction comes from the macro Why (`src/macro`, the thesis and actors). Technicals (K-line, FIB, the mentor's TradingView indicator) are for entry timing and levels only, never direction. The macro output keeps the **宏观 Why** and the **市场机制 How/When** sections separate (`knowledge/mentor/better-macro-trader.md` #9).

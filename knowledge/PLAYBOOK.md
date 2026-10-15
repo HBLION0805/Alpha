@@ -10,11 +10,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `research` · **status:** PROCESS_GUIDE · **destination:** context
 - **topics:** Travel; Reading; History; English
-- **sources:** owner, course
+- **sources:** owner, course, mentor-better-macro-trader
 
 **Principle.** Use diverse viewpoints, original language sources and historical comparisons to challenge a preferred explanation.
 
-**Application.** Record source dates and translation uncertainty; compare the historical regime with the current GLD/IBIT context.
+**Application.** Record source dates and translation uncertainty; compare the historical regime with the current GLD/IBIT context. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #1, 宏观交易员 #2, 宏观交易员 #4, 宏观交易员 #6.
 
 **Limits.** Travel anecdotes are selective observations. Historical resemblance and language fluency do not establish predictive power. These are personal research practices, not return factors.
 
@@ -22,11 +22,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `expectations` · **status:** PROCESS_GUIDE · **destination:** context
 - **topics:** Economics; Policy transmission; Consensus; Scenario analysis
-- **sources:** owner, course, thesis
+- **sources:** owner, course, thesis, mentor-better-macro-trader
 
 **Principle.** Describe a causal chain, competing outcomes and the difference between your view and documented market expectations.
 
-**Application.** Separate event expectations, verified actuals, rates/USD transmission and observed GLD/IBIT prices. Label subjective probabilities; leave unsupported probabilities unknown.
+**Application.** Separate event expectations, verified actuals, rates/USD transmission and observed GLD/IBIT prices. Label subjective probabilities; leave unsupported probabilities unknown. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5.
 
 **Limits.** Neither a correct policy forecast nor a made-up scenario probability establishes an option opportunity. Correlations and policy reactions vary by regime.
 
@@ -58,11 +58,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `mechanisms` · **status:** MECHANICS_REFERENCE · **destination:** guidance
 - **topics:** Dealer hedging; Liquidity; Positioning; Open interest; Delta; Gamma; Theta; Vega
-- **sources:** owner, greeks
+- **sources:** owner, greeks, mentor-better-macro-trader
 
 **Principle.** Greeks describe model sensitivities; liquidity and positioning can affect how a macro view is expressed.
 
-**Application.** Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one.
+**Application.** Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9.
 
 **Limits.** Open interest and volume alone do not identify dealer direction. Delta is not a profit peak or a verified win probability. No dealer-flow detector is introduced.
 
@@ -72,11 +72,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `journal` · **status:** PROCESS_GUIDE · **destination:** journal
 - **topics:** Trading journal; Invalidation; Counterevidence; Review; Exit before entry
-- **sources:** owner, thesis, review, owner-psychology-20260926, mentor-discipline
+- **sources:** owner, thesis, review, owner-psychology-20260926, mentor-discipline, mentor-better-macro-trader
 
 **Principle.** Retain the original reasoning, source references and later updates as separate records.
 
-**Application.** Before entry document where/how to exit if wrong, how/where profit is taken if right, and what evidence invalidates the thesis. Reuse invalidation, deadline, costs, counterevidence and existing planned stop/target fields; use the trade journal for reported executions and fees. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #17. Encoded in src/options/journal.ts exitRules/invalidation + stops.ts thesisStop (already enforced).
+**Application.** Before entry document where/how to exit if wrong, how/where profit is taken if right, and what evidence invalidates the thesis. Reuse invalidation, deadline, costs, counterevidence and existing planned stop/target fields; use the trade journal for reported executions and fees. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #17. Encoded in src/options/journal.ts exitRules/invalidation + stops.ts thesisStop (already enforced). Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #7.
 
 **Limits.** A note labeled pre-trade is not proof it preceded a fill. Text coverage does not validate its logic. New notes do not backfill the frozen trend cohort.
 
@@ -84,11 +84,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `uncertainty` · **status:** PROCESS_GUIDE · **destination:** reviews
 - **topics:** Uncertainty; Imperfection; Mistakes
-- **sources:** owner, review
+- **sources:** owner, review, mentor-better-macro-trader
 
 **Principle.** Keep an alternative explanation and a clear observation that would contradict the thesis.
 
-**Application.** Record what changed and which evidence was available at the decision time.
+**Application.** Record what changed and which evidence was available at the decision time. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10.
 
 **Limits.** Loss alone does not prove a bad decision; profit does not prove skill. Do not automatically attribute a loss to luck, fear, manipulation or a broker.
 
@@ -96,11 +96,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `patience` · **status:** PROCESS_GUIDE · **destination:** guidance
 - **topics:** Boredom; No trade; Selectivity; Cash; Optionality
-- **sources:** owner, course, owner-psychology-20260926, mentor-discipline
+- **sources:** owner, course, owner-psychology-20260926, mentor-discipline, mentor-better-macro-trader
 
 **Principle.** Document missing evidence and the observation that would justify another review. Choosing not to trade is a valid option with unclear direction, poor risk/reward, low liquidity, noisy structure, missing evidence or voluntarily reported insufficient attention/readiness.
 
-**Application.** Keep WATCH, NO_TRADE or cash when no opportunity qualifies. Cash can preserve low market exposure, liquidity, buying power, optionality and the ability to wait; capital need not be forced into a position. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #02, 纪律 #12. Encoded in src/options/discipline.ts sessionGate (market-not-worth-trading → NO_TRADE); CASH_NOTE in digest + macro CHECKLIST.
+**Application.** Keep WATCH, NO_TRADE or cash when no opportunity qualifies. Cash can preserve low market exposure, liquidity, buying power, optionality and the ability to wait; capital need not be forced into a position. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #02, 纪律 #12. Encoded in src/options/discipline.ts sessionGate (market-not-worth-trading → NO_TRADE); CASH_NOTE in digest + macro CHECKLIST. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #8.
 
 **Limits.** Fewer trades alone do not improve expectancy. Cash is not risk-free in every sense; there is no allocation target or automatic capital movement. Readiness is voluntary reflection, never inferred health or an automatic psychological gate. Patience does not cancel a defined exit or monitoring obligation.
 
@@ -108,11 +108,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `balance` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Leisure; Sleep and rest; Exercise; Meals; Meditation; Work/life balance; Microscopic trading; Monitoring capacity
-- **sources:** owner, owner-psychology-20260926, mentor-discipline
+- **sources:** owner, owner-psychology-20260926, mentor-discipline, mentor-better-macro-trader
 
 **Principle.** Choose a review cadence compatible with the strategy and record who can monitor the position.
 
-**Application.** Include a contingency for being away, a stopped collector or unavailable quotes before relying on a short-lived option setup. Voluntarily consider attention, monitoring capacity and time away; constant watching when planned work is complete, no opportunity exists or markets are closed is not automatically productive. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #20.
+**Application.** Include a contingency for being away, a stopped collector or unavailable quotes before relying on a short-lived option setup. Voluntarily consider attention, monitoring capacity and time away; constant watching when planned work is complete, no opportunity exists or markets are closed is not automatically productive. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #20. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #3.
 
 **Limits.** No lifestyle behavior is prescribed and no health or relationship information is collected or inferred. Lifestyle examples are not a diagnosis or proven edge. Quiet Mondays, midday breaks, open-for-exits and close-for-entries are not universal rules; existing exit obligations remain.
 
@@ -206,11 +206,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `volatility` · **status:** MECHANICS_REFERENCE · **destination:** guidance
 - **topics:** Volatility stop; IV crush; Near expiration
-- **sources:** owner, vega, theta, mentor-stop-loss
+- **sources:** owner, vega, theta, mentor-stop-loss, mentor-better-macro-trader
 
 **Principle.** Option values also depend on implied volatility and remaining time. Direction alone is insufficient.
 
-**Application.** Review contract-level IV and net sensitivities across every leg; identify what evidence supports a volatility scenario. Canonical text: knowledge/mentor/discipline/stop-loss.md §Volatility Stop Loss. Encoded in src/options/stops.ts volStop.
+**Application.** Review contract-level IV and net sensitivities across every leg; identify what evidence supports a volatility scenario. Canonical text: knowledge/mentor/discipline/stop-loss.md §Volatility Stop Loss. Encoded in src/options/stops.ts volStop. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9.
 
 **Limits.** High IV alone is not an automatic ban or selling signal. Theta depends on moneyness and other inputs; it is not a fixed daily bill. No IV history or exit trigger is invented.
 
@@ -450,11 +450,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-news` · **status:** PROCESS_GUIDE · **destination:** context
 - **topics:** Multilingual news; Political bias; Narrative; Manipulation allegations; Independent sources; Symmetric evidence
-- **sources:** owner-psychology, owner-psychology-20260924
+- **sources:** owner-psychology, owner-psychology-20260924, mentor-better-macro-trader
 
 **Principle.** Check the original claim, time and context; distinguish reporting, commentary, official statements and observed market reactions.
 
-**Application.** Use News & calendar source comparisons to preserve original claims, attributed interpretations, differences, gaps and conditional GLD/IBIT relevance. Link a specific original plan condition; translations of one wire story do not multiply evidence. Apply the same evidence standard to the United States, China, any other country, government, party or favored or disliked public figure. Ask what is observed, inferred or unknown and how any verified change reaches markets. Do not stand with a narrative; trace the cost.
+**Application.** Use News & calendar source comparisons to preserve original claims, attributed interpretations, differences, gaps and conditional GLD/IBIT relevance. Link a specific original plan condition; translations of one wire story do not multiply evidence. Apply the same evidence standard to the United States, China, any other country, government, party or favored or disliked public figure. Ask what is observed, inferred or unknown and how any verified change reaches markets. Do not stand with a narrative; trace the cost. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #2.
 
 **Limits.** Truth is not necessarily midway between opposing views. Citation linkage alone does not verify meaning. No permanent left/right reliability scores, unsupported insider allegations or claim that news never affects prices is adopted. Intent requires evidence.
 
@@ -546,11 +546,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-responsibility` · **status:** PROCESS_GUIDE · **destination:** reviews
 - **topics:** Extreme Ownership; Self-attribution; Account management; Journal
-- **sources:** owner-psychology, owner-psychology-20260923, owner-psychology-20260926, ownership-book
+- **sources:** owner-psychology, owner-psychology-20260923, owner-psychology-20260926, ownership-book, mentor-better-macro-trader
 
 **Principle.** Record what you decided, what was observable, what you controlled and what remains unexplained. Discipline aims to preserve the ability to participate in future opportunities through bounded exposure, repeatable execution, controlled drawdown and future optionality.
 
-**Application.** Review a specific deviation and prevention step against the original dated plan; preserve source outages, execution records and contrary evidence. One exciting thesis must not justify risking the account. Any proposed larger allocation still needs capital policy, risk authority, evidence, total exposure and explicit Owner approval.
+**Application.** Review a specific deviation and prevention step against the original dated plan; preserve source outages, execution records and contrary evidence. One exciting thesis must not justify risking the account. Any proposed larger allocation still needs capital policy, risk authority, evidence, total exposure and explicit Owner approval. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10.
 
 **Limits.** Calling an exit a strategic reset does not erase its real loss. Responsibility does not mean every loss is your fault or all external failures are excuses. A leadership book is not evidence of market edge; one review cannot approve a permanent lesson. Betting harder or subjective confidence is not automatic sizing permission.
 
@@ -558,11 +558,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-wellbeing` · **status:** PROCESS_GUIDE · **destination:** planner
 - **topics:** Sleep; Fatigue; Spending; Bills; Emotional position size; Weekend learning
-- **sources:** owner-psychology, owner-psychology-20260926, mentor-discipline
+- **sources:** owner-psychology, owner-psychology-20260926, mentor-discipline, mentor-better-macro-trader
 
 **Principle.** Voluntarily reflect on attention, readiness, monitoring capacity and time away; choosing not to trade can be valid when attention is insufficient or the market setup is poor.
 
-**Application.** Consider waiting on a new entry or arranging help with an existing monitoring obligation. Once planned work is complete, no opportunity exists or markets are closed, constant price watching is not automatically productive. Keep the financial plan separate from self-worth. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #02, 纪律 #20. Encoded in src/options/discipline.ts sessionGate (self-reported state → NO_TRADE; answers not stored).
+**Application.** Consider waiting on a new entry or arranging help with an existing monitoring obligation. Once planned work is complete, no opportunity exists or markets are closed, constant price watching is not automatically productive. Keep the financial plan separate from self-worth. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #02, 纪律 #20. Encoded in src/options/discipline.ts sessionGate (self-reported state → NO_TRADE; answers not stored). Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #3.
 
 **Limits.** No health information is collected and no lifestyle behavior is prescribed. Do not infer health, sleep, emotions, diagnosis or relationship status from system data. Self-reported pressure does not prove a position is too large; there is no automatic psychological gate or capital change.
 
@@ -582,11 +582,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-second-order` · **status:** PROCESS_GUIDE · **destination:** context
 - **topics:** Oil / airlines / JETS; Rates / small caps / IWM; War / insurance; Market ecosystem; Two-sided conflict costs
-- **sources:** owner-psychology, owner-psychology-20260924
+- **sources:** owner-psychology, owner-psychology-20260924, mentor-better-macro-trader
 
 **Principle.** Map an event through prices, costs, demand and balance sheets for both sides; identify who might benefit, who bears or transfers each cost and which opposing channel could dominate.
 
-**Application.** For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT.
+**Application.** For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5.
 
 **Limits.** One side can face meaningful cost even when the other also pays; neither zero cost nor equal suffering is assumed. Cost distribution and market impact require dated evidence. These are conditional examples, not trades or fixed correlations; no winner, loser, new ticker coverage or execution rule is inferred.
 
@@ -594,11 +594,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-long-horizon` · **status:** PROCESS_GUIDE · **destination:** reviews
 - **topics:** Darwin; Pulak Prasad; Quality companies; DCF precision; History / economics / English
-- **sources:** owner-psychology, darwin-book
+- **sources:** owner-psychology, darwin-book, mentor-better-macro-trader
 
 **Principle.** Use the supplied book summary to question catastrophic exposure, business quality and false precision in long forecasts.
 
-**Application.** Separate learning from strategy selection. Record what evidence would transfer to the chosen instrument and what would not.
+**Application.** Separate learning from strategy selection. Record what evidence would transfer to the chosen instrument and what would not. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #4, 宏观交易员 #5, 宏观交易员 #6.
 
 **Limits.** Patient ownership of a business is not an instruction to hold an expiring option indefinitely. The full book and detailed chapter summary were not independently reviewed. No cultural explanation of trading ability is adopted.
 
@@ -666,11 +666,11 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
 
 - **id:** `psych-loss-attribution` · **status:** PROCESS_GUIDE · **destination:** reviews
 - **topics:** Loss attribution; Prediction error; Execution error; Entry timing; Sizing and risk; Instrument mismatch; Risk updates; Incomplete hedge; Plan deviation; Normal variance
-- **sources:** owner-psychology-20260926
+- **sources:** owner-psychology-20260926, mentor-better-macro-trader
 
 **Principle.** A losing outcome may reflect thesis/prediction error, execution error, chasing or entry timing, sizing/risk error, instrument or structure mismatch, missed later risk updates, an incomplete hedge or copied single leg, changing the original plan, or normal variance despite a valid process.
 
-**Application.** Compare the original dated plan with information available at entry, entry price and timing, intended versus actual size, instrument, expiry, strike and structure, hedge context, later risk updates, actual execution and exit behavior. Classify only what the evidence supports and retain unknown causes.
+**Application.** Compare the original dated plan with information available at entry, entry price and timing, intended versus actual size, instrument, expiry, strike and structure, hedge context, later risk updates, actual execution and exit behavior. Classify only what the evidence supports and retain unknown causes. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10.
 
 **Limits.** A loss alone does not prove the prediction wrong; a correct prediction does not prove good execution; normal drawdown does not prove the strategy should change. No automatic cause assignment or rewriting of the original trade.
 
