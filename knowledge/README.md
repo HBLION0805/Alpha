@@ -20,6 +20,10 @@
 | [research/macro/](research/macro/) | batch-1 (M01–M05 + synthesis + review), batch-2 (M06–M10 + synthesis + review), world-model real-news validations | 20 |
 | [owner-capital/](owner-capital/) | Owner capital shopping list (research universe, not allocation) — JSON data + spec + status | 50 entries |
 | [options/](options/STRATEGIES.md) | 期权课程目录 / options course catalog: `course.json` (verbatim export of `course-catalog.mjs` + `course-framework.mjs`), `STRATEGIES.md`, structure-comparison spec + delivery, course framework/archive delivery docs, status JSON, synthetic comparison fixture; `source-code/` has `OptionsStructureComparisonEngine.ts` payoff math + fixtures/tests and the two `.mjs` originals as `.txt` | 19 strategies · 7 framework checks · 21 chapters |
+| [courses/](courses/README.md) | **两门课程原文（逐字）** from https://emacrotrading.com/ — `macro/` 《如何成为更好的宏观交易员》 index + 16 chapters + 附录 A–D (21 pages), `options/` 《美股期权交易》 index + 16 chapters + 附录 A–E (22 pages); 336,614 chars total | 43 |
+| [options/COURSE_OUTLINE.md](options/COURSE_OUTLINE.md) | Options course outline page (verbatim, same as courses/options/00-index.md) | 1 |
+| [mentor/](mentor/) | **大佬补充（两门课之外）/ Mentor's supplement beyond the two courses** — [MENTOR_NOTE_CLASS_AND_UPBRINGING.md](mentor/MENTOR_NOTE_CLASS_AND_UPBRINGING.md) 家教与阶级 (byte-for-byte). Drives the "actors" prompt in the macro risk view and digest (谁在制定规则 / 谁在承担代价 / 谁拥有选择 / 激励与恐惧) | 1 |
+| [mentor/reviews/](mentor/reviews/) | **大佬复盘 / Mentor trade reviews** (byte-for-byte; more will be added here): [REVIEW_HYG_IWM_TLT_TQQQ.md](mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md) — lessons enforced in `src/options/pretrade.ts` (assignment plan, per-leg risk, buying power for full short notional on Robinhood, time buffer, adjustments = new trades, full accounting) and `matrix.ts` (credit spreads de-prioritised) | 1 |
 | [source-code/](source-code/) | Original catalog sources as `.txt` (provenance for the JSON; not built) | 3 |
 
 The markdown views are generated: `node scripts/render-knowledge.ts` (edit `catalog.json`, not the .md).
