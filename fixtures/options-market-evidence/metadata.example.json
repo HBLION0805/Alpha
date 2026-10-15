@@ -1,8 +1,0 @@
-{
-  "datasetId": "replace-with-your-local-dataset-id",
-  "origin": "OWNER_PROVIDED_FILE",
-  "source": "CBOE_DATASHOP_OPTION_QUOTES",
-  "usageDeclaration": "UNKNOWN",
-  "intervalMinutes": 1,
-  "delivery": "HISTORICAL_FILE"
-}
