@@ -13,6 +13,7 @@ import { defaultCapital } from "../config.ts";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, renameSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
+import { capFlags } from "../options/breach.ts";
 import { chainsFromQuotes } from "../options/paper.ts";
 import { settleable, expireEntry, weekendRule, isAm } from "../options/expire.ts";
 import { checkTakeProfit, costBasis } from "../options/tpplan.ts";
@@ -78,6 +79,7 @@ if (cmd === "open") {
       for (const h of checkTakeProfit(e.takeProfit, costBasis(e.legs ?? []), m.pnl, etDate(now), e.tpHits)) { (e.tpHits ??= []).push(h.gainPct); process.stdout.write(`⚠️ ${e.id} ${e.symbol}: ${h.text}\n`); } }
     catch (err) { process.stdout.write(`${e.id} ${e.symbol}: 无法估值 ${(err as Error).message}\n`); }
   }
+  for (const f of capFlags(j.entries, j.capital, now)) process.stdout.write(f + "\n");
   save();
 } else if (cmd === "expire") {
   // settle expired entries (PM close from Yahoo; AM-settled VIX needs --settle VIX=<VRO>), then the mentor weekend rule
