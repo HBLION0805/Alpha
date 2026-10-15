@@ -12,7 +12,7 @@ import { MECHANICS_QUESTIONS } from "./render.ts";
 
 const LABEL_ZH: Record<string, string> = { RISK_ON: "风险偏好", RISK_OFF: "避险", HAWKISH_TIGHTENING: "鹰派收紧", STAGFLATION_ISH: "类滞胀", DISINFLATION_EASING: "通胀回落/宽松", MIXED: "信号混杂" };
 export type Verdict = "NO_TRADE" | "CAUTION" | "RESEARCH_OK";
-export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult; sc: ScenarioResult; levelsMd?: string | null; planLines?: string[]; matrixLines?: string[]; calendar: CalendarEvent[]; failed?: Record<string, string> }
+export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult; sc: ScenarioResult; levelsMd?: string | null; planLines?: string[]; matrixLines?: string[]; gexLines?: string[]; calendar: CalendarEvent[]; failed?: Record<string, string> }
 export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
 
 /** Single verdict: any NO_TRADE reason from macro risk, premarket or scenarios → NO_TRADE; else macro CAUTION → CAUTION. */
@@ -57,6 +57,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     ...i.sc.ranked.map((x) => `| ${x.s.name} | ${x.weight} | ${x.pro.map((p) => p.id).join(", ") || "—"} | ${x.con.map((p) => p.id).join(", ") || "—"} |`), "",
     "**市场机制（How / When）：**", ...MECHANICS_QUESTIONS.map((q) => `- [ ] ${q}`), "",
     "## 5. 价位（只用于择时）", "", ...(i.levelsMd ? [i.levelsMd.replace(/^# .*\n+/, "").replace(/^## /gm, "### ")] : ["- 无（npm run levels 未产出）"]), "",
+    ...(i.gexLines?.length ? i.gexLines : []),
     "## 6. 日历", "", ...(upcoming.length ? upcoming.map((e) => `- ${e.date} ${e.timeEt} ET · ${e.title}${e.date === day ? " **（今日）**" : ""}`) : ["- 无"]), "",
     "## 7. 盘前自检（纪律 #2 / #20）", "_任何一项是“不好” → 今天 NO_TRADE（pretrade 的 sessionGate 会强制执行）。_", "",
     ...SESSION_QUESTIONS.map((q) => `- [ ] ${q}`), "- [ ] 今天的市场值得交易吗？（成交清淡 / 方向不清 / 来回震荡 / 盈亏比差 → NO_TRADE）", "",

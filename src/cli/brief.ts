@@ -3,6 +3,7 @@
  * ONE Chinese daily brief (macro + premarket + scenarios + levels + calendar + self-check), ONE verdict.
  * Each series is fetched once (fetchDailyOnce). Also writes data/out/macro-latest.json (digest) and scenarios-latest.json (leader state).
  */
+import { fetchGex, renderGex } from "../options/gex.ts";
 import { planId } from "../options/planlink.ts";
 import { defaultCapital } from "../config.ts";
 import { withOpex } from "../macro/opex.ts";
@@ -27,7 +28,7 @@ import { loadDailyBars } from "../adapters/bars.ts";
 import { ALARM_SOURCES } from "../alerts.ts";
 import { fetchReleaseCalendar, type CalendarEvent } from "../ingest/officialCalendar.ts";
 
-const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
+const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
 const store = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite");
 const failed: Record<string, string> = {};
@@ -76,8 +77,12 @@ for (const t of ["SPY", "QQQ", "IWM", "TLT"]) if (!planRefs[t]) { try { const r 
 const { verdict: v0, reasons: r0 } = briefVerdict({ macro, pm, sc });
 const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: defaultCapital() });
 const mx = classifyMatrix(data);
+// dealer gamma (GEX) from CBOE delayed quotes — config/gex.json or ALPHA_GEX_SYMBOLS; failures marked unavailable
+const gexCfg = existsSync("config/gex.json") ? JSON.parse(readFileSync("config/gex.json", "utf8")) : { symbols: ["SPY", "QQQ", "NVDA", "SOXL"], days: 45 };
+const gexSyms: string[] = (process.env.ALPHA_GEX_SYMBOLS?.split(",").map((x) => x.trim()).filter(Boolean)) ?? gexCfg.symbols;
+const gex = values.offline || values["no-gex"] ? [] : await Promise.all(gexSyms.map((s) => fetchGex(s, gexCfg.days ?? 45)));
 const planIdLines = plan.qualified.map((c) => `- plan-id：\`${planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c)}\`（paper open --plan-id）`);
-const res = buildBrief({ now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines], matrixLines: renderMatrix(mx, sc.leader), calendar, failed });
+const res = buildBrief({ now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines], matrixLines: renderMatrix(mx, sc.leader), gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {
   if (pm.alarms.length) store.insert(alarmItems(pm.alarms, now), { stance: "center", tier: 1 }, now);
@@ -86,7 +91,7 @@ if (!values["no-alarms"]) {
 store.close();
 const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); };
 write(values.out, res.md);
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, failed }, null, 2) + "\n");
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");

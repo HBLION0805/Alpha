@@ -1,0 +1,5 @@
+{
+  "note": "Symbols for the brief's dealer-gamma (GEX) section. Edit freely; ALPHA_GEX_SYMBOLS=SPY,QQQ overrides. Index options use CBOE's _SPX style automatically.",
+  "symbols": ["SPY", "QQQ", "NVDA", "SOXL", "AAPL", "INTC", "MU", "GDX", "IWM"],
+  "days": 45
+}
