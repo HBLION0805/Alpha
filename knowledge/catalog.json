@@ -200,6 +200,12 @@
       "title": "Mentor reading assignment — Milgram experiment (verbatim) + DK summary",
       "url": null,
       "coverage": "Assignment text stored verbatim in knowledge/mentor/reading/milgram-experiment.md; the summary section is DK-written, not mentor content."
+    },
+    {
+      "id": "external-correct-approach-7-steps",
+      "title": "用户收集的外部资料 — 做交易的正确思路（7 步）screenshot",
+      "url": null,
+      "coverage": "Text stored verbatim in knowledge/external/trading-correct-approach-7-steps.md with the screenshot; author unknown, NOT mentor content. DK 整理 section is DK-written."
     }
   ],
   "items": [
@@ -1668,6 +1674,25 @@
       "principle": "An authority's view (bank research, analysts, influencers, the mentor) is an input, not an instruction; responsibility for the trade does not transfer.",
       "application": "Run every idea through the pre-trade card (npm run card): devil's-advocate objections plus your own invalidation level. Mentor-shadow trades are for comparison only. Original source: knowledge/mentor/reading/milgram-experiment.md (mentor assignment verbatim; summary is DK 整理).",
       "limits": "Lab obedience findings are about behaviour under instruction, not a market signal; the mentor's assignment text is only the title.",
+      "destination": "guidance"
+    },
+    {
+      "id": "single-trade-flow",
+      "group": "Execution",
+      "title": "Single-trade execution flow (layer 1 of 3): defence first, then offence",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "external-correct-approach-7-steps"
+      ],
+      "topics": [
+        "Execution",
+        "Stops",
+        "Planning",
+        "Patience"
+      ],
+      "principle": "Analyse objective facts, wait for the market's signal, plan around it, define the defensive level (stop) first, then the attack, set reward/risk, execute and go flat after each exit. This is only layer 1; the foundation is positive expectancy × no ruin × compounding (layer 2 sizing, layer 3 statistics/review).",
+      "application": "Brief (scenario, §2.1 plan) → card §1–§2 → card §4 two stops + §3 hedge → card §6/§7 → card §5 take-profit; sizing via rules caps/card §6/fractional Kelly ≤1/4; validation via readiness + review --week. News is a risk warning more than an entry trigger. Original source: knowledge/external/trading-correct-approach-7-steps.md (user-collected, not mentor).",
+      "limits": "Third-party checklist, author unknown, no performance evidence. Asia/Europe/US session liquidity is not modelled in Alpha. Win-rate claims (e.g. pinbar) say nothing without payoff/expectancy.",
       "destination": "guidance"
     }
   ],

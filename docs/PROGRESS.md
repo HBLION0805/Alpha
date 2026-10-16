@@ -175,3 +175,6 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - paper open --kind practice: hard = saved plan card (direction, thesis, stop, TP) + defined risk; all other refusals → `warnTags` (+ `violations` for cap breaches). Formal unchanged.
 - Card: new verdict 🟢 可练习（有提示） with warn tags; 🛑 for practice only when plan fields are missing.
 - Weekly review: 门槛校准 (14-day window, per warn tag: n, win rate, avg P&L, avg loss vs no-warning trades; promote/keep/drop, min 10 closed).
+
+## 2026-10-15 — external: 做交易的正确思路 7 步
+- knowledge/external/trading-correct-approach-7-steps.md (+ screenshot): user-collected, verbatim, layer 1 of 3; DK 整理 three-layer foundation mapped to Alpha modules; catalog item `single-trade-flow`.
