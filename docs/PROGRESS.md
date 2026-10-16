@@ -178,3 +178,5 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 
 ## 2026-10-15 — external: 做交易的正确思路 7 步
 - knowledge/external/trading-correct-approach-7-steps.md (+ screenshot): user-collected, verbatim, layer 1 of 3; DK 整理 three-layer foundation mapped to Alpha modules; catalog item `single-trade-flow`.
+
+## 2026-10-15 — knowledge/framework/toolbox-layers.md (DK 整理), catalog `toolbox-layers`

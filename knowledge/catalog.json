@@ -206,6 +206,12 @@
       "title": "用户收集的外部资料 — 做交易的正确思路（7 步）screenshot",
       "url": null,
       "coverage": "Text stored verbatim in knowledge/external/trading-correct-approach-7-steps.md with the screenshot; author unknown, NOT mentor content. DK 整理 section is DK-written."
+    },
+    {
+      "id": "dk-toolbox-layers",
+      "title": "DK 整理 — toolbox by layer",
+      "url": null,
+      "coverage": "DK-written framework in knowledge/framework/toolbox-layers.md; not mentor or external content."
     }
   ],
   "items": [
@@ -1693,6 +1699,25 @@
       "principle": "Analyse objective facts, wait for the market's signal, plan around it, define the defensive level (stop) first, then the attack, set reward/risk, execute and go flat after each exit. This is only layer 1; the foundation is positive expectancy × no ruin × compounding (layer 2 sizing, layer 3 statistics/review).",
       "application": "Brief (scenario, §2.1 plan) → card §1–§2 → card §4 two stops + §3 hedge → card §6/§7 → card §5 take-profit; sizing via rules caps/card §6/fractional Kelly ≤1/4; validation via readiness + review --week. News is a risk warning more than an entry trigger. Original source: knowledge/external/trading-correct-approach-7-steps.md (user-collected, not mentor).",
       "limits": "Third-party checklist, author unknown, no performance evidence. Asia/Europe/US session liquidity is not modelled in Alpha. Win-rate claims (e.g. pinbar) say nothing without payoff/expectancy.",
+      "destination": "guidance"
+    },
+    {
+      "id": "toolbox-layers",
+      "group": "Process",
+      "title": "Toolbox by layer (direction/structure/timing · sizing · statistics)",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "dk-toolbox-layers"
+      ],
+      "topics": [
+        "Indicators",
+        "Models",
+        "Sizing",
+        "Review"
+      ],
+      "principle": "Every tool answers one question in one layer (single trade, sizing, method validation); tools never replace positive expectancy × no ruin × compounding.",
+      "application": "Add a tool only for a review-identified gap or after ~30 formal trades with positive expectancy and clean discipline; one at a time; trial on 10–20 practice trades; compare weekly reviews; promote only if expectancy improves; pre-write tools in the plan card. Original source: knowledge/framework/toolbox-layers.md (DK 整理).",
+      "limits": "Status labels reflect Alpha's current usage, not tool validity; indicators can conflict — decide the tie-breaker in advance.",
       "destination": "guidance"
     }
   ],
