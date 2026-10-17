@@ -6,6 +6,7 @@ import type { JournalEntry } from "./journal.ts";
 import { mentorCompare, needsPostMortem } from "./postmortem.ts";
 import { effectiveRules } from "./rules.ts";
 import { sinsOf, SINS } from "./sins.ts";
+import { JOURNAL_QUESTIONS, LOSS_CLASS_ZH, profitableButWrong, type LossClass } from "./psych.ts";
 const KIND = (e: JournalEntry) => e.source === "real_practice" ? "真实账户练习" : e.source === "mentor_shadow" ? "大佬影子单" : e.kind === "practice" ? "模拟练习" : "正式";
 const etDay = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 const legsStr = (e: JournalEntry) => (e.legs ?? []).map((l) => `${l.qty > 0 ? "+" : ""}${l.qty} ${l.strike}${l.type === "stock" ? "" : l.type[0]!.toUpperCase()}${l.expiration ? ` ${l.expiration.slice(5)}` : ""}`).join(" / ");
@@ -20,8 +21,19 @@ export function tradeCard(e: JournalEntry, all: JournalEntry[] = [e]): string[] 
   if (e.source !== "mentor_shadow") L.push(`- 七宗罪：${sn.length ? sn.map((x) => `${SINS[x.sin].zh}${x.by === "auto" ? "（自动候选）" : ""}：${x.reason}`).join("；") : "无"}`);
   if (e.shortChecklist) L.push(`- 做空清单（开仓时）：${e.shortChecklist.tags.join("、") || "自动项无提示"} · 复盘手动问：价格和论点分离时走了吗？恐慌日收钱了吗？错了认了吗（不是“最后看对了”）？轧空/叙事检查写了吗？`);
   if (e.postMortem) L.push(`- 复盘：${e.postMortem.classification}${e.postMortem.tags.length ? `（${e.postMortem.tags.join("、")}）` : ""} · 教训：${e.postMortem.lesson}`);
-  else if (e.lossReview) L.push(`- 复盘：${e.lossReview.errorClass}（${e.lossReview.errorTags.join("、")}）${e.lesson ? ` · 教训：${e.lesson}` : ""}`);
+  else if (e.lossReview) L.push(`- 复盘：${e.lossReview.errorClass}${LOSS_CLASS_ZH[e.lossReview.errorClass as LossClass] ? `（${LOSS_CLASS_ZH[e.lossReview.errorClass as LossClass]}）` : ""}（${e.lossReview.errorTags.join("、")}）${e.lesson ? ` · 教训：${e.lesson}` : ""}`);
   else if (e.closedAt) L.push("- 复盘：⚠️ 未写（npm run paper -- review --id … --class … --lesson …）");
+  if (e.source !== "mentor_shadow") {
+    // 交易心理 (knowledge/mentor/psychology/): psych entry tags, 交易日记 6 问, 赚钱但做错, and the questions Alpha cannot answer from data
+    if (e.psychTags?.length) L.push(`- 心理提示（开仓时，不阻止）：${e.psychTags.join("、")}`);
+    if (e.closedAt) {
+      const tj = e.tradeJournal, miss = JOURNAL_QUESTIONS.filter(([k]) => !tj?.[k]);
+      L.push(tj ? `- 交易日记：${JOURNAL_QUESTIONS.filter(([k]) => tj[k]).map(([k, q]) => `${q} ${tj[k]}`).join(" · ")}${miss.length ? ` · ⚠️ 未答：${miss.map(([, q]) => q).join(" ")}` : ""}` : "- 交易日记：⚠️ 6 问未写（npm run paper -- journal --id … --why … --thesis … --right … --wrong … --violated … --redo …）");
+      const pbw = profitableButWrong(e);
+      if (pbw.flag) L.push(`- ⚠️ 赚钱但做错：${pbw.why}${pbw.by === "auto" ? "（paper journal --profitable-but-wrong yes|no 确认）" : ""}`);
+      L.push("- 复盘手动问：这笔仓位让你焦虑/睡不着吗？（是 → 下一笔缩小仓位）· 是因为追涨/怕错过、还是计划内？· 换一个结果，你的决定还一样吗？（结果偏误）");
+    }
+  }
   if (e.source === "mentor_shadow") L.push(...mentorCompare(e));
   return L;
 }

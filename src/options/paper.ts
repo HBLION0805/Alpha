@@ -14,12 +14,15 @@ import type { Chain } from "./chain.ts";
 import { buildRiskPlan } from "./riskplan.ts";
 import { entrySinWarnTags } from "./sins.ts";
 import { shortEntryChecks, type ShortInput } from "./shortside.ts";
+import { psychEntryTags, type PsychCtx } from "./psych.ts";
 import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
 export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; card?: PlanCardRef | null; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard>;
   /** bearish opens: daily bars of the underlying + SPY + sector and the written squeeze check (做空清单, src/options/shortside.ts) — warn tags only */
-  short?: Pick<ShortInput, "bars" | "spyBars" | "sectorSym" | "sectorBars" | "squeezeCheck" | "netGamma"> }
+  short?: Pick<ShortInput, "bars" | "spyBars" | "sectorSym" | "sectorBars" | "squeezeCheck" | "netGamma">;
+  /** 交易心理 (src/options/psych.ts): earnings rows / flagged events for the 72h rule, --confirm note for adds to a loser, --target for Put strikes — warn tags only */
+  psych?: PsychCtx }
 type Leg = NonNullable<JournalEntry["legs"]>[number];
 const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
@@ -144,6 +147,12 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
     entry.shortChecklist = { tags: sc.tags, details: sc.details, info: sc.info, manual: sc.manual, metrics: sc.metrics };
     if (entry.kind === "practice" && sc.tags.length) { entry.warnTags = [...new Set([...(entry.warnTags ?? []), ...sc.tags])]; entry.warnDetails = [...(entry.warnDetails ?? []), ...sc.details]; entry.violations ??= []; }
   }
+  // 交易心理 batch: recorded on every entry (psychTags); practice also gets them as warn tags. Never a block — the plan card stays the only hard gate.
+  const ps = psychEntryTags(entry, j.entries, { capital: j.capital, ...(a.psych ?? {}) });
+  if (a.psych?.confirm) entry.confirmNote = a.psych.confirm;
+  if (a.psych?.target != null) entry.priceTarget = a.psych.target;
+  if (ps.tags.length) { entry.psychTags = ps.tags;
+    if (entry.kind === "practice") { entry.warnTags = [...new Set([...(entry.warnTags ?? []), ...ps.tags])]; entry.warnDetails = [...(entry.warnDetails ?? []), ...ps.details]; entry.violations ??= []; } }
   return { entry, checks, refused };
 }
 
@@ -206,7 +215,7 @@ export function upsertMark(e: JournalEntry, m: NonNullable<JournalEntry["marks"]
   e.marks.push(m); e.marks.sort((a, b) => a.at.localeCompare(b.at));
 }
 
-export interface CloseArgs { exitKind?: JournalEntry["exitKind"]; pnl?: number; commissions?: number; errorClass?: "judgment" | "execution"; errorTags?: string[]; violations?: string[]; lesson?: string; now: Date }
+export interface CloseArgs { exitKind?: JournalEntry["exitKind"]; pnl?: number; commissions?: number; errorClass?: "judgment" | "execution" | "risk" | "variance"; errorTags?: string[]; violations?: string[]; lesson?: string; now: Date }
 const KINDS = ["invalidation", "time_stop", "take_profit", "max_loss", "discretionary", "expiry", "weekend_rule"];
 export function paperClose(e: JournalEntry, a: CloseArgs): { entry: JournalEntry | null; refused: string[] } {
   const refused: string[] = [];
@@ -214,7 +223,8 @@ export function paperClose(e: JournalEntry, a: CloseArgs): { entry: JournalEntry
   if (!a.exitKind || !KINDS.includes(a.exitKind)) refused.push(`缺少 --exit-kind（${KINDS.join(" | ")}）`);
   const pnl = a.pnl ?? e.marks?.at(-1)?.pnl;
   if (pnl == null) refused.push("缺少 --pnl，且没有可用的 mark（先运行 paper mark）");
-  if (pnl != null && pnl <= 0 && (!a.errorClass || !a.errorTags?.length)) refused.push("亏损必须复盘：--error-class judgment|execution 和 --error-tags tag1,tag2");
+  if (pnl != null && pnl <= 0 && (!a.errorClass || !a.errorTags?.length)) refused.push("亏损必须复盘：--error-class judgment|execution|risk|variance 和 --error-tags tag1,tag2（建议标签：late_entry, oversized, ignored_follow_up, copied_one_leg, wrong_instrument, changed_script）");
+  if (a.errorClass && !["judgment", "execution", "risk", "variance"].includes(a.errorClass)) refused.push(`--error-class ${a.errorClass} 无效：judgment（判断错）| execution（执行错）| risk（风险管理错）| variance（正常概率波动）`);
   if (refused.length) return { entry: null, refused };
   const closed: JournalEntry = { ...e, closedAt: a.now.toISOString(), pnl: pnl!, commissions: a.commissions ?? 0, exitKind: a.exitKind, exitReason: a.exitKind,
     violations: [...(e.violations ?? []), ...(a.violations ?? [])], lesson: a.lesson,

@@ -1,5 +1,25 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-17 — Keep nakedShortLegs; covered calls stay an open item
+- **KEEP `paper.ts nakedShortLegs`** (practice opens refuse short stock / naked short puts / naked short calls). User confirmed by default (they didn't object; will confirm before push).
+- **Covered calls: left as-is** (long stock ≥ 100 × short calls still passes the practice naked check). **Open item** — phase 2 only per the phase-2 decision below; blocking them in practice would be a separate rule change the user has not asked for.
+
+## 2026-10-17 — 交易心理 batch → warn-only tags, journal, loss attribution, confidence ratio
+- Source: mentor psychology batch 1 + 2 (knowledge/mentor/psychology/, verbatim segments; author → [导师], member → [群友]; batch-1 provenance note and batch-2 【缺失】 marker kept, nothing filled in) + DK's video summary 《The Trading Game》 (not verbatim). Catalog sources `mentor-psych-batch`, `mentor-video-trading-game`; items `psych-entry-warn-tags`, `psych-put-price-call-time`, `psych-video-trading-game`; existing psych-* items linked (not copied). `manifest.json` + test/psych.test.ts verify byte-exact reconstruction.
+- **Practice gates stay warn-only. The written plan card remains the only hard requirement.** No new block anywhere. Code: src/options/psych.ts. Practice opens get these as warnTags (so 门槛校准 picks them up); every own entry stores them as `psychTags`; formal opens print them but verdicts are unchanged.
+- Tags and **defaults (all UNTESTED, `PSYCH_LIMITS`)**:
+  - `warn_72h_event` — opened < 72 h after the ticker's earnings (earnings book incl. past rows; am = 09:30 ET, pm = 16:05 ET, unknown = 16:00) or an event in data/in/major-events.json (hand-maintained; `symbol: null` = market-wide).
+  - `warn_add_to_loser_unconfirmed` — same symbol + strategy while an own open position on it has last mark < 0 and no `--confirm "…"` note. `warn_second_add_to_loser` — ≥2 such open positions with combined mark < 0 (max one planned add, only after confirmation).
+  - `warn_pyramid_add_larger` — follow-on unit within 10 days after a same symbol + strategy winner (open mark > 0 or closed > 0) with a larger max loss (1.00 → 0.50 → 0.30 → 0.20 illustration).
+  - `warn_size_up_after_wins` — ≥3 straight own wins or last trading day realized ≥ 1% of capital, and max loss > average of the last 5 closed. `warn_day_after_big_win` — first trading day after a ≥ 1% day.
+  - `info_midday_entry` — opened outside 09:30–10:30 / 15:00–16:00 ET (informational).
+  - `warn_put_strike_unrealistic` — long put strike below `--target`, or (no target) below spot × (1 − 1 × IV × √(DTE/365)); IV from the leg, else 35%; thesis containing 彩票/lottery exempt. **Call respects time** is already covered by pretrade `time_buffer` / critique `horizon_short` — not duplicated.
+  - `info_ticker_magnetism` — ≥2nd re-entry into a ticker after an own trade whose peak mark was > 0 closed ≤ 0 (informational).
+- **Loss attribution:** `lossReview.errorClass` = judgment | execution | **risk** | **variance** (validated on close). Suggested tags: late_entry, oversized, ignored_follow_up, copied_one_leg, wrong_instrument, changed_script (free text still allowed). Readiness shows the four counts; the post-mortem `--class` vocabulary (judgment/execution/luck/good) is unchanged.
+- **Journal:** `npm run paper -- journal --id … --why --thesis --right --wrong --violated --redo [--profitable-but-wrong yes|no]`. Review card shows answers / unanswered questions; **profitable-but-wrong auto candidate** = closed winner with violations or non-info warn tags (confirm or reject with the flag).
+- **Confidence ratio** (weekly §八之四, week + 30 days): successes ÷ failures; failure = violations, errorClass judgment/execution/risk, or profitable-but-wrong; success = other closed own winners and variance losses; unclassified losses are counted separately, not in either. Mentor shadow excluded.
+- **Manual review questions (no data):** did the size cause anxiety / bad sleep → shrink next; FOMO vs plan; outcome bias ("same decision with the opposite result?"); big news in the 72 h before entry when no event data exists. Weekend checklist (manual) in docs/ROUTINE_WEEKLY.md. Bias chart → signal mapping is documentation only (journal-and-outcome-bias.md).
+
 ## 2026-10-17 — 做空学 → short-side checklist (warn-only); short stock / covered put NOT enabled
 - Source: mentor texts 做空学 + 做空赚钱 (knowledge/mentor/discipline/short-selling.md, verbatim) → catalog `short-side-checklist`, `phase2-short-stock-covered-put`; code src/options/shortside.ts; spec knowledge/mentor/discipline/short-selling.rules.json.
 - **Short-side checklist is warn-only.** Bearish plan cards (§9) and short-side paper opens get `short_*` tags (vs_strength, no_relative_weakness, chasing, squeeze_prone, squeeze_risk_unchecked, expiry_too_short, invalidation_not_above_spot, data_insufficient). Practice: warn tags only; card verdicts unchanged. The only hard requirement for practice stays the written plan card. Thresholds are DK review thresholds (untested) and go through 门槛校准.

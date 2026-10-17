@@ -8,7 +8,7 @@
 
 Technicals are for timing only. Update this file after every task.
 
-_Last updated 2026-10-15 09:45 ET (risk plan on paper open, formal/practice, 今日交易计划)._
+_Last updated 2026-10-17 ET (交易心理 batch: verbatim topic files, warn-only psych tags, journal, confidence ratio)._
 
 **Delivery is handled:** the 30-minute weekday routine `alpha-2` (08:00–18:30 ET) runs the alerts and messages the user, starting 2026-10-15. The CPI lag on 10/14 happened only because routines had not started yet.
 
@@ -34,6 +34,7 @@ _Last updated 2026-10-15 09:45 ET (risk plan on paper open, formal/practice, 今
 | (3) | review/critique (唱反调, deterministic) before every `paper open`; docs/CRITIQUE_PROMPT.md for chat | via paper open | tests + live smoke | ✅ new |
 | (3/2) | options/chain, robinhood, dashboard, matrix, ivhistory, events | only if `data/in/spy-chain.json` exists | never | frozen |
 | (4) KB | knowledge/*, catalog.json (67 items, 27 sources) | cited by brief, pretrade, readiness | yes | ok |
+| (3/4) psych | knowledge/mentor/psychology/ (12 verbatim topic files + video summary + 7 images, manifest-verified); options/psych.ts warn tags (72h, add-to-loser, pyramid, size after wins, day after big win, entry window, put strike, ticker magnetism); `paper journal` 6 问 + 赚钱但做错; loss classes risk/variance; weekly §八之四 交易信心; ROUTINE_WEEKLY 周末清单 | via paper open / review / weekly | tests (224 passing) | ✅ new 2026-10-17; warn-only, defaults untested |
 
 ## Phase: paper trading (now)
 

@@ -230,6 +230,18 @@
       "title": "Mentor texts — 做空学 (10 points) + 做空赚钱 short note (verbatim) + DK short-side checklist",
       "url": null,
       "coverage": "Both texts stored byte-exact in knowledge/mentor/discipline/short-selling.md (cmp-verified against the inbox file; no author names or timestamps present). The DK 整理 checklist, thresholds and short-selling.rules.json spec are DK-written, not mentor content. No performance evidence; thresholds are untested."
+    },
+    {
+      "id": "mentor-psych-batch",
+      "title": "Mentor texts — 交易心理 batch 1 + batch 2 (verbatim, names redacted) + DK 整理",
+      "url": null,
+      "coverage": "Both inbox files stored as verbatim segments in knowledge/mentor/psychology/*.md (author name → [导师], member handle → [群友]; links kept; batch-1 provenance note and batch-2 【缺失】 truncation marker kept, nothing filled in). manifest.json + test/psych.test.ts verify byte-exact reconstruction of the redacted sources. Batch 1 is DK's manual transcription from screenshots (may differ in individual characters; see its provenance note). DK 整理 sections, warn tags and thresholds are DK-written and untested. Seven images stored in knowledge/mentor/psychology/assets/."
+    },
+    {
+      "id": "mentor-video-trading-game",
+      "title": "DK summary of the video 《The Trading Game》 (1987 Chicago trading-floor documentary)",
+      "url": null,
+      "coverage": "DK's summary, NOT a transcript; stored unchanged in knowledge/mentor/psychology/video-the-trading-game.md. Quotes are paraphrased. No performance evidence."
     }
   ],
   "items": [
@@ -359,7 +371,8 @@
         "review",
         "owner-psychology-20260926",
         "mentor-discipline",
-        "mentor-better-macro-trader"
+        "mentor-better-macro-trader",
+        "mentor-psych-batch"
       ],
       "topics": [
         "Trading journal",
@@ -369,7 +382,7 @@
         "Exit before entry"
       ],
       "principle": "Retain the original reasoning, source references and later updates as separate records.",
-      "application": "Before entry document where/how to exit if wrong, how/where profit is taken if right, and what evidence invalidates the thesis. Reuse invalidation, deadline, costs, counterevidence and existing planned stop/target fields; use the trade journal for reported executions and fees. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #17. Encoded in src/options/journal.ts exitRules/invalidation + stops.ts thesisStop (already enforced). Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #7.",
+      "application": "Before entry document where/how to exit if wrong, how/where profit is taken if right, and what evidence invalidates the thesis. Reuse invalidation, deadline, costs, counterevidence and existing planned stop/target fields; use the trade journal for reported executions and fees. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #17. Encoded in src/options/journal.ts exitRules/invalidation + stops.ts thesisStop (already enforced). Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #7. Verbatim mentor text: knowledge/mentor/psychology/journal-and-outcome-bias.md. `npm run paper -- journal` stores the six 交易日记 questions and the 赚钱但做错 flag (auto candidate: a winner with violations/warn tags).",
       "limits": "A note labeled pre-trade is not proof it preceded a fill. Text coverage does not validate its logic. New notes do not backfill the frozen trend cohort.",
       "destination": "journal"
     },
@@ -473,7 +486,8 @@
         "mentor-stop-loss",
         "mentor-discipline",
         "mentor-premarket",
-        "mentor-short-selling"
+        "mentor-short-selling",
+        "mentor-psych-batch"
       ],
       "topics": [
         "Positional stop",
@@ -483,7 +497,7 @@
         "Emotional sizing"
       ],
       "principle": "A smaller position changes future dollar exposure; it does not fix the original thesis.",
-      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress. Premarket: correlated risk-off across crypto/equities/EM when USD or yen spike (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts). Short side: 纪律 #05 also warns against stacking more shorts just because many names look weak; 做空学 #1/#7 (pick the soft persimmon) does not override total-exposure checks. See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
+      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress. Premarket: correlated risk-off across crypto/equities/EM when USD or yen spike (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts). Short side: 纪律 #05 also warns against stacking more shorts just because many names look weak; 做空学 #1/#7 (pick the soft persimmon) does not override total-exposure checks. See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`. Verbatim mentor text: knowledge/mentor/psychology/position-sizing-after-wins.md. Practice warn tags: warn_add_to_loser_unconfirmed, warn_second_add_to_loser, warn_size_up_after_wins, warn_day_after_big_win, warn_pyramid_add_larger (untested defaults).",
       "limits": "Size changes need a new documented decision. Excitement, anger, revenge, recent wins or a hot-hand belief cannot increase allowed size; confidence is not a sizing multiplier. Correlations are not assumed static; no correlation engine, anecdotal portfolio score or automatic reduction is implemented. A smaller loss or later recovery is not guaranteed.",
       "destination": "planner"
     },
@@ -949,14 +963,15 @@
         "Tenfold opportunity"
       ],
       "principle": "Keep personal conviction, process adherence and independently measured results separate. Recent wins do not authorize a larger position.",
-      "application": "Record evidence and alternatives before relying on a trader, AI or a winning streak. EUPHORIA_GATE is a reflection question: qualified new opportunity, desire for another win, or willingness to loosen standards? Ask whether one ordinary loss could erase several prior gains; size remains based on capital policy, defined maximum loss, instrument economics, total account exposure, evidence quality and current risk constraints. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #03, 纪律 #09. Encoded in src/options/discipline.ts sizeDisciplineCheck.",
+      "application": "Record evidence and alternatives before relying on a trader, AI or a winning streak. EUPHORIA_GATE is a reflection question: qualified new opportunity, desire for another win, or willingness to loosen standards? Ask whether one ordinary loss could erase several prior gains; size remains based on capital policy, defined maximum loss, instrument economics, total account exposure, evidence quality and current risk constraints. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #03, 纪律 #09. Encoded in src/options/discipline.ts sizeDisciplineCheck. Verbatim mentor text: knowledge/mentor/psychology/patience-and-overtrading.md. Weekly review §八之四 shows the 交易信心 ratio (successes ÷ failures; week + 30 days); warn_size_up_after_wins / warn_day_after_big_win are the practice warn-tag versions of the euphoria gate.",
       "limits": "Successes/failures is not a calibrated probability; zero failures does not imply infinite skill. Fewer trades need not improve expectancy. Excitement, anger, revenge, recent wins and hot-hand feelings never authorize a sizing multiplier, lower evidence standards, looser stops or extra trades. EUPHORIA_GATE is not an active execution gate; no automatic size change.",
       "destination": "reviews",
       "sources": [
         "owner-psychology",
         "owner-psychology-20260923",
         "owner-psychology-20260926",
-        "mentor-discipline"
+        "mentor-discipline",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -990,13 +1005,14 @@
         "Chart limitations"
       ],
       "principle": "Compare current evidence with the original expectations, source clocks and predefined exits. Distinguish adverse price movement from a change in the thesis core variables.",
-      "application": "Ask which original macro, event, liquidity or price condition changed, when it became observable and whether it satisfies a predeclared invalidation. Separate observation, interpretation, action and unknowns. Distinguish NEW VERIFIED INFORMATION UNDER A PREDEFINED EXCEPTION from LOSS_AVERSION_STOP_DRIFT; preserve the original decision and append any permitted exception evidence.",
+      "application": "Ask which original macro, event, liquidity or price condition changed, when it became observable and whether it satisfies a predeclared invalidation. Separate observation, interpretation, action and unknowns. Distinguish NEW VERIFIED INFORMATION UNDER A PREDEFINED EXCEPTION from LOSS_AVERSION_STOP_DRIFT; preserve the original decision and append any permitted exception evidence. Verbatim mentor text: knowledge/mentor/psychology/battlefield-and-uncertainty.md.",
       "limits": "A loss alone does not prove thesis invalidation, and an intact macro story cannot cancel an independent stop, profit target or time exit. Discomfort alone cannot move a stop farther away or rewrite the frozen plan. Incomplete information does not waive data gates; sparse captures do not provide continuous monitoring. No new stop percentage or drift detector.",
       "destination": "guidance",
       "sources": [
         "owner-psychology",
         "owner-psychology-20260923",
-        "owner-psychology-20260926"
+        "owner-psychology-20260926",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1013,13 +1029,14 @@
         "Symmetric evidence"
       ],
       "principle": "Check the original claim, time and context; distinguish reporting, commentary, official statements and observed market reactions.",
-      "application": "Use News & calendar source comparisons to preserve original claims, attributed interpretations, differences, gaps and conditional GLD/IBIT relevance. Link a specific original plan condition; translations of one wire story do not multiply evidence. Apply the same evidence standard to the United States, China, any other country, government, party or favored or disliked public figure. Ask what is observed, inferred or unknown and how any verified change reaches markets. Do not stand with a narrative; trace the cost. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #2.",
+      "application": "Use News & calendar source comparisons to preserve original claims, attributed interpretations, differences, gaps and conditional GLD/IBIT relevance. Link a specific original plan condition; translations of one wire story do not multiply evidence. Apply the same evidence standard to the United States, China, any other country, government, party or favored or disliked public figure. Ask what is observed, inferred or unknown and how any verified change reaches markets. Do not stand with a narrative; trace the cost. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #2. Verbatim mentor text: knowledge/mentor/psychology/narrative-and-news.md.",
       "limits": "Truth is not necessarily midway between opposing views. Citation linkage alone does not verify meaning. No permanent left/right reliability scores, unsupported insider allegations or claim that news never affects prices is adopted. Intent requires evidence.",
       "destination": "context",
       "sources": [
         "owner-psychology",
         "owner-psychology-20260924",
-        "mentor-better-macro-trader"
+        "mentor-better-macro-trader",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1040,11 +1057,12 @@
         "Transmission"
       ],
       "principle": "Political identity or allegiance is not macro evidence. Distinguish a country, its government, a party, its population, a policy statement, enacted and implemented policy, observed economic consequences and observed market reactions.",
-      "application": "For a political or geopolitical claim, ask who spoke and with what authority; whether it is rhetoric, proposal, law or implementation; which economic variable and causal channel could change; what dated evidence shows that change; what the market had already priced; how the asset actually responded; and what credible counterevidence exists.",
+      "application": "For a political or geopolitical claim, ask who spoke and with what authority; whether it is rhetoric, proposal, law or implementation; which economic variable and causal channel could change; what dated evidence shows that change; what the market had already priced; how the asset actually responded; and what credible counterevidence exists. Verbatim mentor text: knowledge/mentor/psychology/narrative-and-news.md.",
       "limits": "People do not uniformly support a government; criticizing a government is not hostility toward a country; supporting a party does not endorse every policy. An announcement does not guarantee implementation, and implementation does not guarantee a market response. No political score, ideology classifier, voting advice or execution rule.",
       "destination": "context",
       "sources": [
-        "owner-psychology-20260924"
+        "owner-psychology-20260924",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1079,11 +1097,12 @@
         "Waiting period"
       ],
       "principle": "The supplied fixed delay after news is an author heuristic without a tested definition here.",
-      "application": "A future proposal would need event receipt time, calendar versus trading hours, eligible instruments, exceptions and independent comparison outcomes.",
-      "limits": "A blanket wait can outlast a short-dated option. It cannot delay an existing risk or expiry exit. No 72-hour timer or entry gate is installed.",
+      "application": "A future proposal would need event receipt time, calendar versus trading hours, eligible instruments, exceptions and independent comparison outcomes. Verbatim mentor text: knowledge/mentor/psychology/narrative-and-news.md. Warn-only since 2026-10-17: practice opens < 72h after the ticker's earnings (earnings book, past rows) or a flagged data/in/major-events.json event get warn_72h_event (src/options/psych.ts); untested default, never a gate.",
+      "limits": "A blanket wait can outlast a short-dated option. It cannot delay an existing risk or expiry exit. No entry gate is installed: only the warn_72h_event tag (practice warn tag; recorded as psychTags on formal entries). Without event data it cannot fire — the review asks manually.",
       "destination": "event-research",
       "sources": [
-        "owner-psychology"
+        "owner-psychology",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1138,12 +1157,13 @@
         "Survivorship"
       ],
       "principle": "Treat universal performance claims as unsupported until their population, sample, costs and method are known.",
-      "application": "For scale only: 1.02^52 - 1 is about 180% compounded annual gain if every week earns exactly 2%, before costs. This arithmetic is not a forecast or target. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #01.",
+      "application": "For scale only: 1.02^52 - 1 is about 180% compounded annual gain if every week earns exactly 2%, before costs. This arithmetic is not a forecast or target. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #01. Verbatim mentor text: knowledge/mentor/psychology/money-and-life.md.",
       "limits": "Everyone can earn 2% weekly, most traders lose 60%+, and everyone eventually catches a huge winner are not established by these anecdotes. A sustainable process can still have losing weeks.",
       "destination": "reviews",
       "sources": [
         "owner-psychology",
-        "mentor-discipline"
+        "mentor-discipline",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1181,7 +1201,7 @@
         "Journal"
       ],
       "principle": "Record what you decided, what was observable, what you controlled and what remains unexplained. Discipline aims to preserve the ability to participate in future opportunities through bounded exposure, repeatable execution, controlled drawdown and future optionality.",
-      "application": "Review a specific deviation and prevention step against the original dated plan; preserve source outages, execution records and contrary evidence. One exciting thesis must not justify risking the account. Any proposed larger allocation still needs capital policy, risk authority, evidence, total exposure and explicit Owner approval. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10.",
+      "application": "Review a specific deviation and prevention step against the original dated plan; preserve source outages, execution records and contrary evidence. One exciting thesis must not justify risking the account. Any proposed larger allocation still needs capital policy, risk authority, evidence, total exposure and explicit Owner approval. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10. Verbatim mentor text: knowledge/mentor/psychology/stop-loss-and-ownership.md.",
       "limits": "Calling an exit a strategic reset does not erase its real loss. Responsibility does not mean every loss is your fault or all external failures are excuses. A leadership book is not evidence of market edge; one review cannot approve a permanent lesson. Betting harder or subjective confidence is not automatic sizing permission.",
       "destination": "reviews",
       "sources": [
@@ -1190,7 +1210,8 @@
         "owner-psychology-20260926",
         "ownership-book",
         "mentor-better-macro-trader",
-        "mentor-winrate-review"
+        "mentor-winrate-review",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1229,12 +1250,13 @@
         "Past winner"
       ],
       "principle": "Ask whether a fresh decision would be supported without the memory of an earlier win or the wish to recover a loss.",
-      "application": "Compare current evidence and alternatives; retain unknowns rather than repeatedly retelling the same narrative.",
+      "application": "Compare current evidence and alternatives; retain unknowns rather than repeatedly retelling the same narrative. Verbatim mentor text: knowledge/mentor/psychology/conviction-and-independence.md. info_ticker_magnetism (informational) marks the ≥2nd re-entry into a ticker whose winner turned into a loser.",
       "limits": "Attachment is a reflection prompt, not a clinical diagnosis. A prior winner is neither automatically good nor banned; stories do not necessarily occur only once. The GLD/IBIT scope remains unchanged.",
       "destination": "reviews",
       "sources": [
         "owner-psychology",
-        "behavior-summary"
+        "behavior-summary",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1250,14 +1272,15 @@
         "Two-sided conflict costs"
       ],
       "principle": "Map an event through prices, costs, demand and balance sheets for both sides; identify who might benefit, who bears or transfers each cost and which opposing channel could dominate.",
-      "application": "For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5. Premarket: rates up → high-risk assets drained; oil ↔ CAD; Korea ↔ US semis (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
+      "application": "For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5. Premarket: rates up → high-risk assets drained; oil ↔ CAD; Korea ↔ US semis (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts). Verbatim mentor text: knowledge/mentor/psychology/macro-thinking.md. Event-lifecycle image: knowledge/mentor/psychology/assets/event-lifecycle-main-vs-secondary-trade.jpg.",
       "limits": "One side can face meaningful cost even when the other also pays; neither zero cost nor equal suffering is assumed. Cost distribution and market impact require dated evidence. These are conditional examples, not trades or fixed correlations; no winner, loser, new ticker coverage or execution rule is inferred.",
       "destination": "context",
       "sources": [
         "owner-psychology",
         "owner-psychology-20260924",
         "mentor-better-macro-trader",
-        "mentor-premarket"
+        "mentor-premarket",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1273,13 +1296,14 @@
         "History / economics / English"
       ],
       "principle": "Use the supplied book summary to question catastrophic exposure, business quality and false precision in long forecasts.",
-      "application": "Separate learning from strategy selection. Record what evidence would transfer to the chosen instrument and what would not. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #4, 宏观交易员 #5, 宏观交易员 #6.",
+      "application": "Separate learning from strategy selection. Record what evidence would transfer to the chosen instrument and what would not. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #4, 宏观交易员 #5, 宏观交易员 #6. Verbatim mentor text: knowledge/mentor/psychology/conviction-and-independence.md.",
       "limits": "Patient ownership of a business is not an instruction to hold an expiring option indefinitely. The full book and detailed chapter summary were not independently reviewed. No cultural explanation of trading ability is adopted.",
       "destination": "reviews",
       "sources": [
         "owner-psychology",
         "darwin-book",
-        "mentor-better-macro-trader"
+        "mentor-better-macro-trader",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1412,13 +1436,14 @@
         "Normal variance"
       ],
       "principle": "A losing outcome may reflect thesis/prediction error, execution error, chasing or entry timing, sizing/risk error, instrument or structure mismatch, missed later risk updates, an incomplete hedge or copied single leg, changing the original plan, or normal variance despite a valid process.",
-      "application": "Compare the original dated plan with information available at entry, entry price and timing, intended versus actual size, instrument, expiry, strike and structure, hedge context, later risk updates, actual execution and exit behavior. Classify only what the evidence supports and retain unknown causes. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10.",
+      "application": "Compare the original dated plan with information available at entry, entry price and timing, intended versus actual size, instrument, expiry, strike and structure, hedge context, later risk updates, actual execution and exit behavior. Classify only what the evidence supports and retain unknown causes. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10. Verbatim mentor text: knowledge/mentor/psychology/why-new-members-lose.md. Ledger: lossReview.errorClass judgment | execution | risk | variance; suggested tags late_entry, oversized, ignored_follow_up, copied_one_leg, wrong_instrument, changed_script (src/options/psych.ts LOSS_TAGS); readiness shows the four counts.",
       "limits": "A loss alone does not prove the prediction wrong; a correct prediction does not prove good execution; normal drawdown does not prove the strategy should change. No automatic cause assignment or rewriting of the original trade.",
       "destination": "reviews",
       "sources": [
         "owner-psychology-20260926",
         "mentor-better-macro-trader",
-        "mentor-winrate-review"
+        "mentor-winrate-review",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1566,11 +1591,12 @@
         "Illustrative 1.00 / 0.50 / 0.30 / 0.20 units"
       ],
       "principle": "A later trade begins only after the prior trade is fully closed. Each new trade is a separate decision and may deliberately use less capital as price extends or uncertainty increases.",
-      "application": "Require a fresh, independently qualified opportunity and review its thesis, entry, current price, risk/reward, position size, total account exposure, stop, target, invalidation, time horizon, instrument/contract fit and current capital policy. The prior trade carries neither its thesis nor permission into the next trade. This describes sequential redeployment after realized exits, not averaging into the same losing or open position.",
+      "application": "Require a fresh, independently qualified opportunity and review its thesis, entry, current price, risk/reward, position size, total account exposure, stop, target, invalidation, time horizon, instrument/contract fit and current capital policy. The prior trade carries neither its thesis nor permission into the next trade. This describes sequential redeployment after realized exits, not averaging into the same losing or open position. Verbatim mentor text: knowledge/mentor/psychology/position-sizing-after-wins.md. The illustration image is now stored: knowledge/mentor/psychology/assets/realized-profit-pyramid-1.00-0.50-0.30-0.20.jpg. warn_pyramid_add_larger flags a follow-on unit after a winner whose max loss is larger than the prior unit's.",
       "limits": "Prior profit is not free risk capital: realized gains become Owner capital and every later trade can lose real capital. A profitable exit does not authorize another entry, reopening or extension from regret, excitement or FOMO. The Owner prompt describes the unavailable image as showing illustrative prices 100 / 104 / 107 / 110 and units 1.00 / 0.50 / 0.30 / 0.20 only; they define no formula, fixed reduction, pyramiding, reinvestment, position-sizing rule or automatic trade. Existing capital policy remains authoritative.",
       "destination": "planner",
       "sources": [
-        "owner-psychology-20260927"
+        "owner-psychology-20260927",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1588,11 +1614,12 @@
         "Rationalization risk"
       ],
       "principle": "Rules create a default safe process. Unusual market conditions may motivate an exception proposal, but an exception requires stronger evidence and tighter documentation than ordinary execution.",
-      "application": "Before any future exception to a rule explicitly designated adaptable, document: the exact rule; dated evidence that the current regime materially differs from the rule's intended conditions; why the normal rule would be suboptimal; affected scope, instrument and size; maximum additional risk; start and end or expiry; invalidation and abort condition; evidence that would show rationalization rather than justified adaptation; and a post-trade review. Require explicit review before the exception and preserve the original plan and later audit trail.",
+      "application": "Before any future exception to a rule explicitly designated adaptable, document: the exact rule; dated evidence that the current regime materially differs from the rule's intended conditions; why the normal rule would be suboptimal; affected scope, instrument and size; maximum additional risk; start and end or expiry; invalidation and abort condition; evidence that would show rationalization rather than justified adaptation; and a post-trade review. Require explicit review before the exception and preserve the original plan and later audit trail. Verbatim mentor text: knowledge/mentor/psychology/patience-and-overtrading.md. The original 规则第 650 条 wording is now stored (psych-batch-2.txt L39).",
       "limits": "High certainty is subjective and uncalibrated, never a numerical confidence threshold or automatic bypass. Recent wins, FOMO, urgency, narrative conviction, loss recovery and fear of missing profit are insufficient. No exception may relax authorization, executionAllowed=false, automaticExecution=false, market-data authenticity or freshness, account/order permissions, capital or risk limits, broker or legal constraints, immutable audit/history, or active Daily Guidance gates, stops, risk, freshness, pagination and weekly-plan requirements. No automatic exception, size increase, extended stop, delayed exit, extra trade or order permission. Repeated exceptions call for prospective review of the base rule, not repeated bypass. Following rules does not guarantee profit.",
       "destination": "reviews",
       "sources": [
-        "owner-psychology-20260928"
+        "owner-psychology-20260928",
+        "mentor-psych-batch"
       ]
     },
     {
@@ -1850,6 +1877,71 @@
       "application": "Recorded only. Not enabled in any phase now: short stock has unlimited upside risk; the short put adds an assignment obligation. Paper opens refuse short stock / covered puts / naked short options even as practice (src/options/paper.ts nakedShortLegs; same rule as the plan card's 定义风险（裸卖）). Phase 1 expresses bearish views via long puts / put debit spreads. Decision: docs/DECISIONS.md 2026-10-17. Original source: knowledge/mentor/discipline/short-selling.md (second note); related: knowledge/mentor/phase2/long-term-position-management.md (short stock ↔ sell puts).",
       "limits": "A covered put caps the profit at the put strike (assignment buys the shares back there) and gives no protection against an upside squeeze beyond the premium received; borrow fees, recalls, dividends owed and margin are not modelled.",
       "destination": "guidance"
+    },
+    {
+      "id": "psych-put-price-call-time",
+      "group": "Psychology and evidence",
+      "title": "Call respects time, Put respects price",
+      "status": "CANDIDATE_UNTESTED",
+      "sources": [
+        "mentor-psych-batch"
+      ],
+      "topics": [
+        "Call vs Put",
+        "Expiry vs horizon",
+        "Put strike realism",
+        "Target price"
+      ],
+      "principle": "A long call fails mostly by running out of time; a long put fails mostly by a strike the price will not realistically reach in the window.",
+      "application": "Call time: already enforced by pretrade time_buffer (practice warn_time_buffer) and critique horizon_short. Put price: warn_put_strike_unrealistic when the long put strike is below --target, or (no target) below a 1-standard-deviation move by expiry (leg IV, else 35%); a thesis that declares a lottery is exempt. Verbatim: knowledge/mentor/psychology/options-call-time-put-price.md.",
+      "limits": "1 SD and the 35% default IV are DK defaults, untested. Warn only; never blocks.",
+      "destination": "planner"
+    },
+    {
+      "id": "psych-entry-warn-tags",
+      "group": "Psychology and evidence",
+      "title": "Psychology batch → warn-only entry tags and review questions",
+      "status": "CANDIDATE_UNTESTED",
+      "sources": [
+        "mentor-psych-batch"
+      ],
+      "topics": [
+        "72-hour rule",
+        "Averaging down",
+        "Win-streak sizing",
+        "Day after a big win",
+        "Pyramid units",
+        "Entry window",
+        "Ticker magnetism",
+        "Journal",
+        "Profitable but wrong",
+        "Confidence ratio",
+        "Weekend checklist"
+      ],
+      "principle": "Mentor psychology heuristics become visible reminders, not rules: the written plan card remains the only hard requirement for practice trades.",
+      "application": "src/options/psych.ts psychEntryTags: warn_72h_event, warn_add_to_loser_unconfirmed, warn_second_add_to_loser, warn_pyramid_add_larger, warn_size_up_after_wins, warn_day_after_big_win, warn_put_strike_unrealistic, info_midday_entry, info_ticker_magnetism → practice warnTags (included in 门槛校准) and psychTags on every own entry. Review card: journal answers, 赚钱但做错 candidate, manual questions (size anxiety → shrink; FOMO; outcome bias). Weekly §八之四 confidence ratio. Weekend checklist: docs/ROUTINE_WEEKLY.md. Defaults in PSYCH_LIMITS; decision docs/DECISIONS.md 2026-10-17. Index: knowledge/mentor/psychology/README.md.",
+      "limits": "All thresholds untested (72h, ≥3 wins, ≥1% big-win day, 10-day pyramid window, 10:30–15:00 ET, 1 SD put floor, 2 re-entries). Event data is incomplete (only the earnings book and a hand-maintained major-events file).",
+      "destination": "reviews"
+    },
+    {
+      "id": "psych-video-trading-game",
+      "group": "Psychology and evidence",
+      "title": "The Trading Game (1987): loss acceptance, discipline, physical and mental capital",
+      "status": "ILLUSTRATION_ONLY",
+      "sources": [
+        "mentor-video-trading-game"
+      ],
+      "topics": [
+        "Loss acceptance",
+        "Discipline",
+        "Stress",
+        "Physical capital",
+        "Mental capital"
+      ],
+      "principle": "Hate losses but keep them in their place with discipline; most trades may lose if winners are handled well; manage stress and the body.",
+      "application": "DK summary (not verbatim): knowledge/mentor/psychology/video-the-trading-game.md; its DK 整理 maps to the 1%/2% caps, the wrath tag, four-way loss attribution and weekend checklist item 5.",
+      "limits": "Documentary anecdotes; no performance evidence.",
+      "destination": "context"
     }
   ],
   "fields": [

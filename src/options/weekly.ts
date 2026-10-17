@@ -6,6 +6,7 @@ import { fullPnl, type JournalEntry } from "./journal.ts";
 import type { Readiness } from "./readiness.ts";
 import { mentorCompare } from "./postmortem.ts";
 import { sinSection, SINS, type SinRow } from "./sins.ts";
+import { confidenceSection } from "./psych.ts";
 
 export type Cat = "formal" | "practice" | "real" | "mentor";
 export const catOf = (e: JournalEntry): Cat => e.source === "real_practice" ? "real" : e.source === "mentor_shadow" ? "mentor" : e.kind === "practice" ? "practice" : "formal";
@@ -92,6 +93,9 @@ export function weeklyReport(i: WeeklyInput): Weekly {
   // 5c) 七宗罪 behaviour checklist (knowledge/mentor/discipline/seven-sins.md): counts per sin; most frequent (30 days) = next month's focus
   const sins = sinSection(E, from, to, i.capital);
   L.push("## 八之三、七宗罪（行为自检）", ...sins.lines, "");
+
+  // 5d) 交易信心比率 (knowledge/mentor/psychology/patience-and-overtrading.md): successes / failures, week + 30 days
+  L.push("## 八之四、交易信心（成功 ÷ 失败）", ...confidenceSection(E, from, to), "");
 
   // 6) focus (data-derived, priority order, max 3)
   const F: string[] = [];

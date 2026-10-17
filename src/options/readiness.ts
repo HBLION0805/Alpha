@@ -96,8 +96,8 @@ export function readiness(i: ReadinessInput): Readiness {
   const cls = (c: string) => losses.filter((e) => e.lossReview?.errorClass === c).length;
   const ignored = losses.filter((e) => e.critique?.acked && e.critique.warns > 0);
   const ignoredWins = closed.filter((e) => fullPnl(e) > 0 && e.critique?.acked && e.critique.warns > 0).length;
-  C.push({ id: "loss_review", title: "每笔亏损都复盘并归类（判断错误 vs 执行错误）", pass: unrev.length === 0 && noPm.length === 0,
-    detail: [`亏损 ${losses.length} 笔：判断 ${cls("judgment")} / 执行 ${cls("execution")}`, `唱反调：亏损前被 --ack 忽略的警告 ${ignored.length} 笔（盈利 ${ignoredWins} 笔）${ignored.length ? `：${[...new Set(ignored.flatMap((e) => e.critique!.objections.filter((o) => o.severity === "WARN").map((o) => o.id)))].join("、")}` : ""}`,
+  C.push({ id: "loss_review", title: "每笔亏损都复盘并归类（判断 / 执行 / 风险管理 / 正常概率波动）", pass: unrev.length === 0 && noPm.length === 0,
+    detail: [`亏损 ${losses.length} 笔：判断 ${cls("judgment")} / 执行 ${cls("execution")} / 风险管理 ${cls("risk")} / 正常波动 ${cls("variance")}`, `唱反调：亏损前被 --ack 忽略的警告 ${ignored.length} 笔（盈利 ${ignoredWins} 笔）${ignored.length ? `：${[...new Set(ignored.flatMap((e) => e.critique!.objections.filter((o) => o.severity === "WARN").map((o) => o.id)))].join("、")}` : ""}`,
       ...(repeated.length ? [`⚠️ 重复错误：${repeated.map(([t, n]) => `${t}×${n}`).join("、")}`] : [])],
     missing: [...unrev.map((e) => `${e.id} ${e.symbol} 亏损未复盘`), ...noPm.map((e) => `${e.id} ${e.symbol} 盈利也要复盘（paper review）`)] });
 

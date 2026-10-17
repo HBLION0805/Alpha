@@ -2,12 +2,14 @@
  * npm run paper -- open|close|list|mark   (paper trades ONLY — this file never calls a broker; there is no order path)
  *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis --tp short_dated|narrative|windfall [--time-stop YYYY-MM-DD] [--ack]
  *         bearish: [--sector SMH] [--squeeze-check "SI x% · float y · gamma … · 情绪 …"] → 做空清单 warn tags (src/options/shortside.ts; warn only)
+ *         心理 (warn only, src/options/psych.ts): [--confirm "确认信号"] (adding to a losing position) [--target 95] (Put 目标价); 72h rule reads data/in/earnings*.json + data/in/major-events.json
  *         --hedge built_in_spread|direct|portfolio --hedge-detail "…" [--stop-pct 7 (stocks)] [--kind formal|practice]
  *         (唱反调 critique printed first; BLOCK refuses, WARNs need --ack; the critique is saved in the entry)
  *   mark  [--quotes data/in/x-chain.json ...]   (Robinhood chain JSON when present, else Yahoo spot + Black-Scholes)
  *   close --id P001 --exit-kind invalidation|time_stop|take_profit|max_loss|discretionary [--pnl N] [--commissions N]
- *         [--error-class judgment|execution --error-tags a,b] [--violations chasing,...] [--lesson "…"]
+ *         [--error-class judgment|execution|risk|variance --error-tags a,b] [--violations chasing,...] [--lesson "…"]
  *   list
+ *   journal --id X [--why "…"] [--thesis "…"] [--right "…"] [--wrong "…"] [--violated "…"] [--redo "…"] [--profitable-but-wrong yes|no]   (交易日记 6 问; knowledge/mentor/psychology/journal-and-outcome-bias.md)
  *   sin   --id X --sin wrath,greed [--note "…"] | --remove greed   (股市七宗罪 manual tag / reject an auto candidate; src/options/sins.ts)
  *   sins  [--backfill]   (list auto-derived 七宗罪 candidates per own closed trade; --backfill stores them as by:"auto" in the journal)
  * Common: --journal data/journal/paper.json (default), --capital N (first use; default ALPHA_CAPITAL or 5000 (src/config.ts)).
@@ -34,12 +36,14 @@ import type { Motive } from "../options/discipline.ts";
 import type { JournalEntry } from "../options/journal.ts";
 import { autoSins, sinsOf, SINS, SIN_IDS, type SinId } from "../options/sins.ts";
 import { SECTOR_OF, BROAD_ETFS } from "../options/shortside.ts";
+import { loadEarningsBook } from "../options/earningsStore.ts";
+import { JOURNAL_QUESTIONS, LOSS_CLASSES, profitableButWrong, type MajorEvent } from "../options/psych.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true }, "plan-id": { type: "string" }, card: { type: "string" }, class: { type: "string" }, tags: { type: "string" }, result: { type: "string" }, "pnl-pct": { type: "string" }, note: { type: "string" }, "followed-stop": { type: "string" }, "followed-tp": { type: "string" }, "followed-size": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
-  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, sin: { type: "string" }, remove: { type: "string" }, backfill: { type: "boolean", default: false }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
+  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, sin: { type: "string" }, confirm: { type: "string" }, target: { type: "string" }, why: { type: "string" }, right: { type: "string" }, wrong: { type: "string" }, violated: { type: "string" }, redo: { type: "string" }, "profitable-but-wrong": { type: "string" }, remove: { type: "string" }, backfill: { type: "boolean", default: false }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
 const cmd = positionals[0];
 const now = values.now ? new Date(values.now) : new Date();
 const path = values.journal!;
@@ -75,9 +79,14 @@ if (cmd === "open") {
     const [sb, spy, sec] = await Promise.all([yahooDaily(p.symbol, 200).catch(() => []), p.symbol.toUpperCase() === "SPY" ? Promise.resolve([]) : yahooDaily("SPY", 200).catch(() => []), sectorSym ? yahooDaily(sectorSym, 200).catch(() => []) : Promise.resolve([])]);
     short = { bars: sb, spyBars: spy, sectorSym, sectorBars: sec, squeezeCheck: values["squeeze-check"] ?? card?.squeezeCheck ?? null };
   }
-  const r = paperOpen(j, p, { short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
+  // 交易心理: earnings rows (past ones too, for the 72h rule) + flagged major events (data/in/major-events.json: {"events":[{"at":ISO,"symbol":null|"XYZ","title":"…"}]})
+  const evF = "data/in/major-events.json", events: MajorEvent[] = existsSync(evF) ? JSON.parse(readFileSync(evF, "utf8")).events ?? [] : [];
+  if (values.target != null && !(Number(values.target) > 0)) fail([`--target ${values.target} 无效（目标价，正数）`]);
+  const psych = { earnings: loadEarningsBook().rows, events, confirm: values.confirm ?? null, target: values.target != null ? Number(values.target) : null };
+  const r = paperOpen(j, p, { psych, short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
+  if (r.entry!.kind !== "practice" && r.entry!.psychTags?.length) process.stdout.write(`🧠 心理提示（不阻止）：${r.entry!.psychTags.join("、")}\n`);
   if (r.entry!.warnTags?.length) process.stdout.write(`🟢 练习单已记录提示（不阻止）：${r.entry!.warnTags.join("、")}\n${(r.entry!.warnDetails ?? []).map((d) => `  - ${d}`).join("\n")}\n`);
   j.entries.push(r.entry!); save();
   process.stdout.write(renderRiskPlan(r.entry!.riskPlan!) + "\n");
@@ -154,7 +163,7 @@ if (cmd === "open") {
   const e = j.entries.find((x) => x.id === values.id && x.mode === "paper");
   if (!e) fail([`找不到模拟交易 --id ${values.id ?? ""}`]);
   const r = paperClose(e!, { exitKind: values["exit-kind"] as JournalEntry["exitKind"], pnl: values.pnl != null ? Number(values.pnl) : undefined, commissions: values.commissions != null ? Number(values.commissions) : undefined,
-    errorClass: values["error-class"] as "judgment" | "execution", errorTags: list(values["error-tags"]), violations: list(values.violations), lesson: values.lesson, now });
+    errorClass: values["error-class"] as (typeof LOSS_CLASSES)[number], errorTags: list(values["error-tags"]), violations: list(values.violations), lesson: values.lesson, now });
   if (!r.entry) fail(r.refused);
   j.entries[j.entries.indexOf(e!)] = r.entry!; save();
   process.stdout.write(`[paper] 模拟平仓 ${e!.id} P&L $${r.entry!.pnl} · ${r.entry!.exitKind}${r.entry!.exitKind === "discretionary" ? "（失效条件未触发、时间止损未到 → 记为提前离场）" : ""}\n`);
@@ -172,6 +181,19 @@ if (cmd === "open") {
   const at = now.toISOString(), keep = (e!.behaviorSins ?? []).filter((x) => !add.includes(x.sin) && !rm.includes(x.sin));
   e!.behaviorSins = [...keep, ...add.map((sin) => ({ sin: sin as SinId, by: "manual" as const, reason: values.note ?? "手动标记", at })), ...rm.map((sin) => ({ sin: sin as SinId, by: "manual" as const, reason: values.note ?? "复盘确认不是", at, removed: true }))];
   save(); process.stdout.write(`[sin] ${e!.id}：${sinsOf(e!, j.entries, undefined, j.capital).map((x) => `${SINS[x.sin].zh}${x.by === "auto" ? "(自动)" : ""}`).join("、") || "无"}\n`);
+} else if (cmd === "journal") {
+  // 交易日记 6 问 + 赚钱但做错 (warn-only review data; never changes readiness)
+  const e = j.entries.find((x) => x.id === values.id);
+  if (!e) fail([`找不到 --id ${values.id ?? ""}`]);
+  const v = values as unknown as Record<string, string | undefined>, ans = Object.fromEntries(JOURNAL_QUESTIONS.map(([k]) => [k, v[k]]).filter(([, x]) => x?.trim()));
+  const pbw = v["profitable-but-wrong"];
+  if (pbw != null && !/^(y|yes|true|1|n|no|false|0)$/i.test(pbw)) fail(["--profitable-but-wrong yes|no"]);
+  if (!Object.keys(ans).length && pbw == null) fail([`至少回答一题：${JOURNAL_QUESTIONS.map(([k, q]) => `--${k}（${q}）`).join(" ")}`]);
+  e!.tradeJournal = { ...(e!.tradeJournal ?? {}), ...ans, at: now.toISOString() };
+  if (pbw != null) e!.profitableButWrong = /^(y|yes|true|1)$/i.test(pbw);
+  save();
+  const miss = JOURNAL_QUESTIONS.filter(([k]) => !e!.tradeJournal?.[k]).map(([, q]) => q), c = profitableButWrong(e!);
+  process.stdout.write(`[journal] ${e!.id} 已记录${miss.length ? ` · 还没答：${miss.join(" ")}` : " · 6 问已答完"}${c.flag ? ` · ⚠️ ${c.why}` : ""}\n`);
 } else if (cmd === "sins") {
   let n = 0;
   for (const e of j.entries.filter((x) => x.closedAt && x.source !== "mentor_shadow")) {
@@ -182,4 +204,4 @@ if (cmd === "open") {
     process.stdout.write(`${e.id} ${e.symbol}: ${all.length ? all.map((x) => `${SINS[x.sin].zh}${x.by === "auto" ? "(自动)" : ""} — ${x.reason}`).join(" | ") : "无"}\n`);
   }
   if (values.backfill) { save(); process.stdout.write(`[sins] backfill：写入 ${n} 个自动候选标签 → ${path}\n`); }
-} else fail(["用法：npm run paper -- open|close|list|mark|expire|review|mentor|sin|sins（只做模拟交易）"]);
+} else fail(["用法：npm run paper -- open|close|list|mark|expire|review|mentor|journal|sin|sins（只做模拟交易）"]);

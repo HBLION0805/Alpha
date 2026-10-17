@@ -65,7 +65,13 @@ export interface JournalEntry {
   behaviorSins?: import("./sins.ts").StoredSin[];
   /** bearish entries: 做空清单 snapshot at entry (src/options/shortside.ts); tags are warnings, manual = items Alpha cannot check */
   shortChecklist?: { tags: string[]; details: string[]; info: string[]; manual: string[]; metrics: import("./shortside.ts").ShortMetrics };
-  lossReview?: { at: string; errorClass: "judgment" | "execution"; errorTags: string[]; note?: string };
+  /** 亏损归因 (knowledge/mentor/psychology/why-new-members-lose.md): judgment / execution / risk (sizing, stop) / variance (normal probability); tags see psych.ts LOSS_TAGS */
+  lossReview?: { at: string; errorClass: "judgment" | "execution" | "risk" | "variance"; errorTags: string[]; note?: string };
+  /** 交易日记 6 问 (knowledge/mentor/psychology/journal-and-outcome-bias.md); profitableButWrong = 赚钱但做错 confirmed at review (null/undefined = not judged) */
+  tradeJournal?: { at: string; why?: string; thesis?: string; right?: string; wrong?: string; violated?: string; redo?: string };
+  profitableButWrong?: boolean;
+  /** psychology entry tags (src/options/psych.ts), warn-only; confirmNote = confirmation signal written for an add to a loser; target = price target (Put 要尊重价格) */
+  psychTags?: string[]; confirmNote?: string; priceTarget?: number;
   /** exit kind; "discretionary" before invalidation and before the time stop = premature (大佬复盘 mentor-winrate-review) */
   exitKind?: "invalidation" | "time_stop" | "take_profit" | "max_loss" | "discretionary" | "expiry" | "weekend_rule";
   /** net debit per contract at entry and where it came from */
