@@ -12,6 +12,7 @@ import type { JournalEntry } from "./journal.ts";
 import type { Motive, TradeLog } from "./discipline.ts";
 import type { Chain } from "./chain.ts";
 import { buildRiskPlan } from "./riskplan.ts";
+import { entrySinWarnTags } from "./sins.ts";
 import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
@@ -116,6 +117,9 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
     critique: a.critique ? { ...a.critique, acked: a.critique.warns > 0 } : undefined,
     ...(warnTags.length ? { warnTags, warnDetails, violations: warnTags.includes("warn_over_cap") ? ["exceeds_1pct_cap"] : [] } : {}),
   };
+  // practice: 七宗罪 that are knowable at entry (wrath after a same-day loss, >3 opens/day, cheap short-dated lottery) → warn tags only, never a block
+  if (entry.kind === "practice") { const s = entrySinWarnTags(entry, j.entries, a.rules, j.capital);
+    if (s.tags.length) { entry.warnTags = [...new Set([...(entry.warnTags ?? []), ...s.tags])]; entry.warnDetails = [...(entry.warnDetails ?? []), ...s.details]; entry.violations ??= []; } }
   return { entry, checks, refused };
 }
 

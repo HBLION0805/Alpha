@@ -61,6 +61,8 @@ export interface JournalEntry {
   /** practice trades: rules that would have blocked a formal trade, recorded instead of blocking (warn_over_cap, warn_no_hedge, …) */
   warnTags?: string[]; warnDetails?: string[];
   /** every loss: judgment (thesis/selection) vs execution (sizing, entry, exit, rules) + tags for repeated-error detection */
+  /** 股市七宗罪 behaviour tags (src/options/sins.ts): manual or backfilled auto candidates; live auto-derivation is merged at review */
+  behaviorSins?: import("./sins.ts").StoredSin[];
   lossReview?: { at: string; errorClass: "judgment" | "execution"; errorTags: string[]; note?: string };
   /** exit kind; "discretionary" before invalidation and before the time stop = premature (大佬复盘 mentor-winrate-review) */
   exitKind?: "invalidation" | "time_stop" | "take_profit" | "max_loss" | "discretionary" | "expiry" | "weekend_rule";

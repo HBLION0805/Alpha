@@ -5,6 +5,7 @@
 import { fullPnl, type JournalEntry } from "./journal.ts";
 import type { Readiness } from "./readiness.ts";
 import { mentorCompare } from "./postmortem.ts";
+import { sinSection, SINS, type SinRow } from "./sins.ts";
 
 export type Cat = "formal" | "practice" | "real" | "mentor";
 export const catOf = (e: JournalEntry): Cat => e.source === "real_practice" ? "real" : e.source === "mentor_shadow" ? "mentor" : e.kind === "practice" ? "practice" : "formal";
@@ -28,7 +29,7 @@ const FIX: Record<string, string> = {
 };
 
 export interface WeeklyInput { entries: JournalEntry[]; capital: number; from: string; to: string; readiness: Readiness; ddLimitPct?: number }
-export interface Weekly { md: string; focus: string[]; tagsThis: Array<[string, number]>; tagsPrev: Array<[string, number]> }
+export interface Weekly { md: string; focus: string[]; tagsThis: Array<[string, number]>; tagsPrev: Array<[string, number]>; sinTop: SinRow | null; sinsWeek: SinRow[] }
 
 export function weeklyReport(i: WeeklyInput): Weekly {
   const { entries: E, from, to, readiness: R } = i, dd = i.ddLimitPct ?? 6;
@@ -88,6 +89,10 @@ export function weeklyReport(i: WeeklyInput): Weekly {
   // 5b) 门槛校准 (biweekly): did trades opened despite a warning do worse?
   L.push("## 八之二、门槛校准（双周，练习单的提示标签）", ...calibration(E, to).lines, "");
 
+  // 5c) 七宗罪 behaviour checklist (knowledge/mentor/discipline/seven-sins.md): counts per sin; most frequent (30 days) = next month's focus
+  const sins = sinSection(E, from, to, i.capital);
+  L.push("## 八之三、七宗罪（行为自检）", ...sins.lines, "");
+
   // 6) focus (data-derived, priority order, max 3)
   const F: string[] = [];
   for (const [t, n] of tw) if (F.length < 2 && FIX[t] && n >= 1) F.push(`${t}（本周 ${n} 次）→ ${FIX[t]}`);
@@ -98,8 +103,9 @@ export function weeklyReport(i: WeeklyInput): Weekly {
   if (noMentor.length) F.push(`记录大佬实际结果 ${noMentor.length} 笔（paper mentor --id … --result …）`);
   if (Number(S.maxDrawdown ?? 0) > i.capital * dd / 200) F.push(`回撤已用超过一半 → 下周单笔风险减半到 $25`);
   const focus = F.slice(0, 3);
-  L.push("## 九、下周 3 个重点（由本周数据推出）", ...(focus.length ? focus.map((f, k) => `${k + 1}. ${f}`) : ["- 数据不足以推出重点"]), "");
-  return { md: L.join("\n"), focus, tagsThis: tw, tagsPrev: tp };
+  L.push("## 九、下周 3 个重点（由本周数据推出）", ...(focus.length ? focus.map((f, k) => `${k + 1}. ${f}`) : ["- 数据不足以推出重点"]),
+    ...(sins.top ? [`- 下个月行为重点（七宗罪，近 30 天最多）：${SINS[sins.top.sin].zh} ${sins.top.sin} ×${sins.top.total}`] : []), "");
+  return { md: L.join("\n"), focus, tagsThis: tw, tagsPrev: tp, sinTop: sins.top, sinsWeek: sins.week };
 }
 
 /** legacy violations → warn tags, so pre-2026-10-15 trades also count */

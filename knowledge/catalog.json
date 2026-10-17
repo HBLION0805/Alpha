@@ -212,6 +212,12 @@
       "title": "DK 整理 — toolbox by layer",
       "url": null,
       "coverage": "DK-written framework in knowledge/framework/toolbox-layers.md; not mentor or external content."
+    },
+    {
+      "id": "mentor-seven-sins",
+      "title": "Mentor article (Discord 夜雨 [RNMK]) — 股市七宗罪 (verbatim) + DK checklist",
+      "url": null,
+      "coverage": "Article stored verbatim in knowledge/mentor/discipline/seven-sins.md; the DK 整理 table (sin → tag → what the ledger can derive) is DK-written, not mentor content. Behavioural self-check, not a diagnosis; no performance evidence."
     }
   ],
   "items": [
@@ -1719,6 +1725,27 @@
       "application": "Add a tool only for a review-identified gap or after ~30 formal trades with positive expectancy and clean discipline; one at a time; trial on 10–20 practice trades; compare weekly reviews; promote only if expectancy improves; pre-write tools in the plan card. Original source: knowledge/framework/toolbox-layers.md (DK 整理).",
       "limits": "Status labels reflect Alpha's current usage, not tool validity; indicators can conflict — decide the tie-breaker in advance.",
       "destination": "guidance"
+    },
+    {
+      "id": "behavior-seven-sins",
+      "group": "Psychology",
+      "title": "Seven sins of the stock market — per-trade behaviour checklist",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-seven-sins"
+      ],
+      "topics": [
+        "Review",
+        "Behaviour",
+        "Revenge trading",
+        "Overtrading",
+        "Lottery options",
+        "Sizing"
+      ],
+      "principle": "Repeated account damage usually comes from the trader's behaviour, not the trade: sloth (no homework/absent), wrath (revenge after a loss), greed (not taking planned profit; cheap lottery options), envy (chasing others' gains), gluttony (no pause between impulse and order; overtrading, adding to losers), pride (never admitting the error; blaming others), lust (abandoning principles for quick wealth). Check the person clicking the button.",
+      "application": "Every closed own trade carries 七宗罪 tags (JournalEntry.behaviorSins): manual via `npm run paper -- sin --id … --sin wrath,pride`, and ledger-derived candidates from src/options/sins.ts (sloth = no_pre_written_plan; wrath = new trade the same ET day after a losing close within 60 min / same symbol / bigger size / after the daily cap; greed = net debit < $0.25 with ≤7 DTE, or TP alert hit then closed at a loss; envy = chasing / outside entryRange; gluttony = 4th+ open of the day, unplanned_add; pride = ≥2 stop hesitations then a loss; lust = own cap breaches). Weekly review §八之三 counts per sin (week, 30 days); the most frequent 30-day sin is next month's focus. Practice opens record warn_sin_wrath/gluttony/greed as warn tags only. Original source: knowledge/mentor/discipline/seven-sins.md.",
+      "limits": "Auto tags are candidates from timestamps and prices, not proof of motive; confirm or --remove at review. Absence at the open, FOMO, moved stops, blaming others and ethical lapses are not in the ledger and stay manual. Thresholds (0.25, 7 DTE, 3/day, 60 min) are DK review thresholds, not trading rules; nothing here blocks a trade. Mentor-shadow trades are excluded.",
+      "destination": "reviews"
     }
   ],
   "fields": [

@@ -7,6 +7,8 @@
  *   close --id P001 --exit-kind invalidation|time_stop|take_profit|max_loss|discretionary [--pnl N] [--commissions N]
  *         [--error-class judgment|execution --error-tags a,b] [--violations chasing,...] [--lesson "…"]
  *   list
+ *   sin   --id X --sin wrath,greed [--note "…"] | --remove greed   (股市七宗罪 manual tag / reject an auto candidate; src/options/sins.ts)
+ *   sins  [--backfill]   (list auto-derived 七宗罪 candidates per own closed trade; --backfill stores them as by:"auto" in the journal)
  * Common: --journal data/journal/paper.json (default), --capital N (first use; default ALPHA_CAPITAL or 5000 (src/config.ts)).
  */
 import { defaultCapital } from "../config.ts";
@@ -29,12 +31,13 @@ import { critique, renderCritique, proposalSide } from "../review/critique.ts";
 import type { Proposal } from "../options/pretrade.ts";
 import type { Motive } from "../options/discipline.ts";
 import type { JournalEntry } from "../options/journal.ts";
+import { autoSins, sinsOf, SINS, SIN_IDS, type SinId } from "../options/sins.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true }, "plan-id": { type: "string" }, card: { type: "string" }, class: { type: "string" }, tags: { type: "string" }, result: { type: "string" }, "pnl-pct": { type: "string" }, note: { type: "string" }, "followed-stop": { type: "string" }, "followed-tp": { type: "string" }, "followed-size": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
-  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
+  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, sin: { type: "string" }, remove: { type: "string" }, backfill: { type: "boolean", default: false }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
 const cmd = positionals[0];
 const now = values.now ? new Date(values.now) : new Date();
 const path = values.journal!;
@@ -149,4 +152,24 @@ if (cmd === "open") {
   const rows = j.entries.filter((e) => e.mode === "paper").map((e) => `| ${e.id}${e.kind === "practice" ? "（练习）" : ""} | ${e.symbol} | ${e.strategy} | ${e.openedAt.slice(0, 10)} | ${e.closedAt?.slice(0, 10) ?? "open"} | ${e.pnl ?? e.marks?.at(-1)?.pnl ?? "—"} | ${e.exitKind ?? ""} |`);
   const r = readiness({ journal: j.entries, capital: j.capital, shockDates: [] });
   process.stdout.write(["| id | 标的 | 结构 | 开仓 | 平仓 | P&L | 离场 |", "|---|---|---|---|---|---|---|", ...rows, "", `持仓 ${openPaper(j).length} · 已平仓 ${r.stats.paperClosed} · 期望值 $${r.stats.ev}/笔 · 详见 npm run readiness`].join("\n") + "\n");
-} else fail(["用法：npm run paper -- open|close|list|mark|expire|review|mentor（只做模拟交易）"]);
+} else if (cmd === "sin") {
+  // 股市七宗罪: manual behaviour tag (or reject an auto candidate with --remove); warn-only, never a rule
+  const e = j.entries.find((x) => x.id === values.id);
+  if (!e) fail([`找不到 --id ${values.id ?? ""}`]);
+  if (e!.source === "mentor_shadow") fail(["大佬影子单不打七宗罪标签（那是大佬的决定）"]);
+  const add = list(values.sin) ?? [], rm = list(values.remove) ?? [], bad = [...add, ...rm].filter((x) => !SIN_IDS.includes(x as SinId));
+  if (bad.length || !(add.length || rm.length)) fail([`--sin / --remove 取值：${SIN_IDS.map((x) => `${x}(${SINS[x].zh})`).join(" ")}${bad.length ? `；无效：${bad.join(",")}` : ""}`]);
+  const at = now.toISOString(), keep = (e!.behaviorSins ?? []).filter((x) => !add.includes(x.sin) && !rm.includes(x.sin));
+  e!.behaviorSins = [...keep, ...add.map((sin) => ({ sin: sin as SinId, by: "manual" as const, reason: values.note ?? "手动标记", at })), ...rm.map((sin) => ({ sin: sin as SinId, by: "manual" as const, reason: values.note ?? "复盘确认不是", at, removed: true }))];
+  save(); process.stdout.write(`[sin] ${e!.id}：${sinsOf(e!, j.entries, undefined, j.capital).map((x) => `${SINS[x.sin].zh}${x.by === "auto" ? "(自动)" : ""}`).join("、") || "无"}\n`);
+} else if (cmd === "sins") {
+  let n = 0;
+  for (const e of j.entries.filter((x) => x.closedAt && x.source !== "mentor_shadow")) {
+    const xs = autoSins(e, j.entries, undefined, j.capital);
+    if (values.backfill) { const have = new Set((e.behaviorSins ?? []).map((x) => x.sin)); const add = xs.filter((x) => !have.has(x.sin)).map((x) => ({ ...x, at: now.toISOString() }));
+      if (add.length) { e.behaviorSins = [...(e.behaviorSins ?? []), ...add]; n += add.length; } }
+    const all = sinsOf(e, j.entries, undefined, j.capital);
+    process.stdout.write(`${e.id} ${e.symbol}: ${all.length ? all.map((x) => `${SINS[x.sin].zh}${x.by === "auto" ? "(自动)" : ""} — ${x.reason}`).join(" | ") : "无"}\n`);
+  }
+  if (values.backfill) { save(); process.stdout.write(`[sins] backfill：写入 ${n} 个自动候选标签 → ${path}\n`); }
+} else fail(["用法：npm run paper -- open|close|list|mark|expire|review|mentor|sin|sins（只做模拟交易）"]);

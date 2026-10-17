@@ -180,3 +180,11 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - knowledge/external/trading-correct-approach-7-steps.md (+ screenshot): user-collected, verbatim, layer 1 of 3; DK 整理 three-layer foundation mapped to Alpha modules; catalog item `single-trade-flow`.
 
 ## 2026-10-15 — knowledge/framework/toolbox-layers.md (DK 整理), catalog `toolbox-layers`
+
+## 2026-10-17 — mentor: 股市七宗罪 → per-trade behaviour tags (warn-only)
+- knowledge/mentor/discipline/seven-sins.md: mentor article (Discord 夜雨 [RNMK]) verbatim + DK checklist; catalog source `mentor-seven-sins`, item `behavior-seven-sins`.
+- src/options/sins.ts: 7 sins (sloth/wrath/greed/envy/gluttony/pride/lust); auto candidates only from ledger data, manual tags in `JournalEntry.behaviorSins`; mentor-shadow trades excluded.
+- `npm run paper -- sin --id … --sin … [--remove …]` (manual) and `paper sins [--backfill]` (list / store auto candidates).
+- Weekly review §八之三 七宗罪: per-sin counts (week auto/manual, 30 days), most frequent = next month's focus; daily review cards show sins. Practice opens add warn_sin_wrath/gluttony/greed (warn only, no new block).
+- Backfill on data/journal/paper.json (backup /tmp/paper.json.bak-20261017-112238): sloth 12, greed 7, wrath 5, gluttony 2, lust 2, envy 0, pride 0. 10/16: no trade opened after the −$147 sim day (BAC −49.5 + two mentor shadows, realized 16:00–16:05 ET) → no wrath from that breach.
+- Tests: test/sins.test.ts.
