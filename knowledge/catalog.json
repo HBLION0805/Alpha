@@ -218,6 +218,12 @@
       "title": "Mentor article (Discord 夜雨 [RNMK]) — 股市七宗罪 (verbatim) + DK checklist",
       "url": null,
       "coverage": "Article stored verbatim in knowledge/mentor/discipline/seven-sins.md; the DK 整理 table (sin → tag → what the ledger can derive) is DK-written, not mentor content. Behavioural self-check, not a diagnosis; no performance evidence."
+    },
+    {
+      "id": "mentor-long-term-position-management",
+      "title": "Mentor article (Discord 夜雨 [RNMK]) — 进阶长期仓位管理策略 (verbatim) + DK phase-2 playbook",
+      "url": null,
+      "coverage": "Article stored verbatim in knowledge/mentor/phase2/long-term-position-management.md; the DK 整理 table is DK-written. Phase-2 reference only; numerical examples ($10 stock, $0.20–0.30 premiums, $20/$15 put) are illustrations, not verified results."
     }
   ],
   "items": [
@@ -1745,6 +1751,47 @@
       "principle": "Repeated account damage usually comes from the trader's behaviour, not the trade: sloth (no homework/absent), wrath (revenge after a loss), greed (not taking planned profit; cheap lottery options), envy (chasing others' gains), gluttony (no pause between impulse and order; overtrading, adding to losers), pride (never admitting the error; blaming others), lust (abandoning principles for quick wealth). Check the person clicking the button.",
       "application": "Every closed own trade carries 七宗罪 tags (JournalEntry.behaviorSins): manual via `npm run paper -- sin --id … --sin wrath,pride`, and ledger-derived candidates from src/options/sins.ts (sloth = no_pre_written_plan; wrath = new trade the same ET day after a losing close within 60 min / same symbol / bigger size / after the daily cap; greed = net debit < $0.25 with ≤7 DTE, or TP alert hit then closed at a loss; envy = chasing / outside entryRange; gluttony = 4th+ open of the day, unplanned_add; pride = ≥2 stop hesitations then a loss; lust = own cap breaches). Weekly review §八之三 counts per sin (week, 30 days); the most frequent 30-day sin is next month's focus. Practice opens record warn_sin_wrath/gluttony/greed as warn tags only. Original source: knowledge/mentor/discipline/seven-sins.md.",
       "limits": "Auto tags are candidates from timestamps and prices, not proof of motive; confirm or --remove at review. Absence at the open, FOMO, moved stops, blaming others and ethical lapses are not in the ledger and stay manual. Thresholds (0.25, 7 DTE, 3/day, 60 min) are DK review thresholds, not trading rules; nothing here blocks a trade. Mentor-shadow trades are excluded.",
+      "destination": "reviews"
+    },
+    {
+      "id": "phase2-long-term-position-management",
+      "group": "Exit and exposure",
+      "title": "PHASE 2 ONLY (not active): long-term stock positions managed with options",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "mentor-long-term-position-management"
+      ],
+      "topics": [
+        "Phase 2",
+        "Cash-secured put",
+        "Covered call",
+        "Protective put",
+        "ITM covered call",
+        "Collar"
+      ],
+      "principle": "Holding for years still needs risk management: enter via cash-secured puts only on stocks you are willing to own at the strike (full cash reserved); sell OTM calls on about half the shares; buy protective puts in hostile markets; sell ITM covered calls during sustained narrative headwinds on the part you are willing to sell; collar (short call pays for protective put). Premium is an obligation, not interest; it adjusts risk and cash-flow timing and cannot make a loss disappear.",
+      "application": "Reference only for phase 2 (long-term stock holding, options for hedging). Not enabled in phase 1: Alpha has no execution, sizing or payoff logic for these structures and none is planned now. Preconditions when phase 2 starts: shares held for every short call, strike × 100 × contracts cash reserved for every short put. Naked short calls stay blocked in every phase. Decision: docs/DECISIONS.md 2026-10-17. Original source: knowledge/mentor/phase2/long-term-position-management.md.",
+      "limits": "Uncovered short calls have unlimited loss and remain BLOCKED. Assignment, early exercise, earnings gaps and margin rules are not modelled. Premium income must not be annualised; cumulative cash returned is not a negative cost basis or tax basis. Rolling for small premiums can turn a small trade into a long burden.",
+      "destination": "guidance"
+    },
+    {
+      "id": "phase2-thesis-or-ego",
+      "group": "Psychology",
+      "title": "PHASE 2 review check: holding because the thesis holds, or because you won't admit you were wrong?",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-long-term-position-management"
+      ],
+      "topics": [
+        "Phase 2",
+        "Review",
+        "Thesis",
+        "Sunk cost",
+        "Pride"
+      ],
+      "principle": "Between a conviction stock and a stuck stock: if the thesis still holds you can manage and wait; if it is broken, no amount of premium turns a bad company into a good investment.",
+      "application": "Phase 2 only: ask at every long-term holding review, judging thesis and position separately (纪律 #19, JournalEntry.reviews[].thesisValid / positionValid). A \"won't admit it\" answer is a manual pride tag (behavior-seven-sins). Not wired into phase-1 tooling. Original source: knowledge/mentor/phase2/long-term-position-management.md (closing question).",
+      "limits": "Self-assessment; the answer is only as honest as the reviewer. Not an automatic exit rule.",
       "destination": "reviews"
     }
   ],

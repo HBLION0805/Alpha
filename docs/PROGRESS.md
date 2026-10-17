@@ -188,3 +188,8 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - Weekly review §八之三 七宗罪: per-sin counts (week auto/manual, 30 days), most frequent = next month's focus; daily review cards show sins. Practice opens add warn_sin_wrath/gluttony/greed (warn only, no new block).
 - Backfill on data/journal/paper.json (backup /tmp/paper.json.bak-20261017-112238): sloth 12, greed 7, wrath 5, gluttony 2, lust 2, envy 0, pride 0. 10/16: no trade opened after the −$147 sim day (BAC −49.5 + two mentor shadows, realized 16:00–16:05 ET) → no wrath from that breach.
 - Tests: test/sins.test.ts.
+
+## 2026-10-17 — mentor: 进阶长期仓位管理策略 → phase-2 reference playbook (not active)
+- knowledge/mentor/phase2/long-term-position-management.md: mentor article verbatim + DK phase-2 table (cash-secured put entry, covered OTM calls on ~half, protective puts, ITM covered calls in narrative headwinds, collars) and the phase-2 review check "thesis holds, or won't admit wrong?".
+- Catalog: source `mentor-long-term-position-management`, items `phase2-long-term-position-management` (PHASE 2 ONLY), `phase2-thesis-or-ego`.
+- DECISIONS 2026-10-17: naked short calls stay blocked; CSP / covered calls are phase 2 only with shares or full cash collateral; not enabled now; no execution logic built. Open item noted: rules.ts already exempts strategy `cash_secured_put` from the uncovered-short check without a cash check (unchanged, needs user confirmation).

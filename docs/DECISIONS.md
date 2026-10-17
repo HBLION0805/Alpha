@@ -1,5 +1,14 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-17 — Phase-2 option overlays are reference only; naked short calls stay blocked
+- Source: mentor article 进阶长期仓位管理策略 (knowledge/mentor/phase2/long-term-position-management.md, verbatim) → catalog `phase2-long-term-position-management`, `phase2-thesis-or-ego`.
+- **Naked (uncovered) short calls remain BLOCKED in every phase** (unlimited loss; rules.ts `forbidden`, `defined_risk` check, pretrade `adjustment_naked`). Naked short puts stay blocked too.
+- **Cash-secured puts and covered calls (OTM on ~half the shares, ITM in narrative headwinds), protective puts and collars are PHASE 2 ONLY** (phase 2 = long-term stock holding, options for hedging).
+  They require real collateral: shares held for every short call (100 per contract), strike × 100 × contracts cash fully reserved for every short put, and only on stocks you are willing to own.
+- **Not enabled now (phase 1 = capital accumulation, lose less first).** No execution, sizing, payoff or assignment logic was built for them; turning phase 2 on is the user's decision.
+- Phase-2 review check (when phase 2 starts): "holding because the thesis holds, or because I won't admit I was wrong?" — thesis broken → exit; premium does not fix a bad company.
+- Open item (not changed, needs the user's confirmation): `rules.ts checkBook` already lets a position whose strategy is labelled `cash_secured_put` pass the uncovered-short check without verifying cash, and `matrix.ts` lists CSP / covered call as optional candidates. Phase 1 has no such trades; a phase gate would be a rule change.
+
 ## 2026-10-17 — 股市七宗罪 = per-trade behaviour tags (warn-only)
 - Source: mentor article 股市七宗罪 (knowledge/mentor/discipline/seven-sins.md, verbatim) → catalog `behavior-seven-sins`; code src/options/sins.ts.
 - Each closed own trade can carry sins: 懒惰 sloth, 暴怒 wrath, 贪婪 greed, 嫉妒 envy, 暴食 gluttony, 傲慢 pride, 色欲 lust (JournalEntry.behaviorSins).
