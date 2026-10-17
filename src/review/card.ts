@@ -18,6 +18,7 @@ import type { JournalEntry } from "../options/journal.ts";
 import type { YBar } from "../adapters/yahoo.ts";
 import { fmtEarnings, type EarningsRow } from "../options/earningsStore.ts";
 import { inBlackout, type FedCache } from "../ingest/fedSpeakers.ts";
+import { shortEntryChecks, renderShortSection, type ShortInput } from "../options/shortside.ts";
 
 export type Dir = "bull" | "bear";
 export interface Quote { type: "call" | "put"; strike: number; expiration: string; bid: number | null; ask: number | null; src: string }
@@ -29,10 +30,13 @@ export interface CardInput {
   gex: GexOut | null; calendar: CalendarEvent[]; earnings: Array<{ symbol: string; date: string; timing: string | null }> | null;
   /** next report from earningsStore: undefined = never looked up, null = none upcoming */ earningsNext?: EarningsRow | null; fed?: FedCache | null;
   journal: JournalEntry[]; capital: number; thesis?: string; invalidation?: string;
+  /** bearish cards: benchmark bars + the written squeeze check for the 做空清单 (src/options/shortside.ts); absent = reported as missing */
+  short?: Pick<ShortInput, "spyBars" | "sectorSym" | "sectorBars" | "squeezeCheck" | "horizonDays">;
 }
 export type Status = "ok" | "warn" | "fail" | "missing";
 export interface Section { n: number; title: string; status: Status; lines: string[] }
 export interface Card { id: string; createdAt: string; sym: string; dir: Dir; verdict: "formal" | "practice" | "practice_warn" | "no"; verdictText: string; failing: string[]; warnTags?: string[]; planMissing?: string[]; sections: Section[];
+  /** bearish cards only: 做空清单 warn tags (kept even on a formal verdict) + manual items */ shortTags?: string[]; shortManual?: string[];
   trade: { legs: CardLeg[]; exp: string | null; contracts: number; perContractMaxLoss: number | null; maxLoss: number | null; planId: string | null; tpKind: string | null; invalidationLevel: number | null; mechanical: string | null } }
 
 const ICON: Record<Status, string> = { ok: "✅", warn: "🟡", fail: "🛑", missing: "❔" };
@@ -209,16 +213,21 @@ export function buildCard(i: CardInput): Card {
   S.push({ n: 8, title: "反方意见 + 过去的错误", status: cr?.blocks ? "fail" : (cr?.warns || !i.thesis || riskItems.length) ? "warn" : cr ? "ok" : "missing", lines: s8 });
   if (cr?.blocks) failing.push(...cr.objections.filter((o) => o.severity === "BLOCK").map((o) => `唱反调 ${o.id}`));
 
+  // 9) 做空清单 (bearish only; warn-only — never changes the verdict)
+  const shortChk = i.dir === "bear" ? shortEntryChecks({ sym: i.sym, bars: i.bars, spot: i.spot, expirations: exp ? [exp] : [], asOf: today, invalidationLevel: invLevel, netGamma: g?.ok ? g.net : null, ...(i.short ?? {}) }) : null;
+  if (shortChk) S.push({ n: 9, title: "做空清单（大佬 做空学，只提示）", status: shortChk.tags.length ? "warn" : "ok", lines: renderShortSection(shortChk) });
+
   // practice philosophy (2026-10-15): only the written plan is hard; everything else is a recorded warning
   const planMissing = [...(!i.thesis?.trim() ? ["论点"] : []), ...(mech == null && invLevel == null && !i.invalidation?.trim() ? ["止损（机械或论点失效）"] : []), ...(!tp?.plan ? ["止盈计划"] : []), ...(naked ? ["定义风险（裸卖）"] : [])];
   const otmWarn = S.find((s) => s.n === 6)?.lines.some((l) => /价外/.test(l));
   const warnTags = [...new Set([...failing.map((f) => /最大亏损 \$|超限/.test(f) ? "warn_over_cap" : /无可行结构|缺报价/.test(f) ? "warn_no_fit" : /对冲/.test(f) ? "warn_no_hedge" : /^唱反调 (\w+)/.test(f) ? `warn_${/^唱反调 (\w+)/.exec(f)![1]!.toLowerCase()}` : "warn_other"),
-    ...(!match ? ["warn_off_plan"] : []), ...(match && !inZone ? ["warn_out_of_zone"] : []), ...(otmWarn ? ["warn_far_otm"] : [])])];
+    ...(!match ? ["warn_off_plan"] : []), ...(match && !inZone ? ["warn_out_of_zone"] : []), ...(otmWarn ? ["warn_far_otm"] : []), ...(shortChk?.tags ?? [])])];
   const formal = failing.length === 0 && !!match && !!inZone && hedge === "ok" && S.every((s) => s.status !== "missing");
   const verdict: Card["verdict"] = planMissing.length ? "no" : formal ? "formal" : failing.length || otmWarn ? "practice_warn" : "practice";
   const verdictText = verdict === "no" ? "🛑 不做（练习也不行：计划没写全）" : verdict === "formal" ? "✅ 可做（正式）" : verdict === "practice_warn" ? "🟢 可练习（有提示）" : "🟡 仅练习";
   if (verdict === "no") failing.unshift(...planMissing.map((m) => `计划缺：${m}`));
   return { id, createdAt: i.now.toISOString(), sym: i.sym, dir: i.dir, verdict, verdictText, failing, warnTags: verdict === "formal" ? [] : warnTags, planMissing, sections: S,
+    ...(shortChk ? { shortTags: shortChk.tags, shortManual: shortChk.manual } : {}),
     trade: { legs, exp, contracts, perContractMaxLoss: per, maxLoss: per != null ? r2(per * contracts) : null, planId: match?.id ?? null, tpKind: tp?.plan?.kind ?? null, invalidationLevel: invLevel != null ? r2(invLevel) : null, mechanical: mech } };
 }
 export function renderCard(c: Card, spot: number | null, exp: string | null): string {

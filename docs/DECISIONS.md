@@ -1,5 +1,14 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-17 — 做空学 → short-side checklist (warn-only); short stock / covered put NOT enabled
+- Source: mentor texts 做空学 + 做空赚钱 (knowledge/mentor/discipline/short-selling.md, verbatim) → catalog `short-side-checklist`, `phase2-short-stock-covered-put`; code src/options/shortside.ts; spec knowledge/mentor/discipline/short-selling.rules.json.
+- **Short-side checklist is warn-only.** Bearish plan cards (§9) and short-side paper opens get `short_*` tags (vs_strength, no_relative_weakness, chasing, squeeze_prone, squeeze_risk_unchecked, expiry_too_short, invalidation_not_above_spot, data_insufficient). Practice: warn tags only; card verdicts unchanged. The only hard requirement for practice stays the written plan card. Thresholds are DK review thresholds (untested) and go through 门槛校准.
+- **Short stock has unlimited upside risk** (plus borrow cost, recall, squeeze gaps). **Short puts add an obligation** (assignment, early exercise, margin).
+- **Naked shorts are blocked.** Formal trades were already blocked (pretrade `per_leg_risk`, rules.ts `defined_risk` / `forbidden`). Practice opens had a gap: short stock and naked short puts got through as warn tags. Now `paper.ts nakedShortLegs` refuses them even for practice. This is the same rule as the plan card's 定义风险（裸卖）, which already treats naked as "plan missing". Naked short calls were already refused (undefined max loss).
+- **Phase 1 expresses bearish views only through defined-risk structures: long puts / put debit spreads.**
+- **Short stock and the covered put (short stock + short put to offset borrow) are recorded as phase-2 reference only, not enabled.** A covered put caps profit at the put strike and does not protect against an upside squeeze (premium is the only buffer). No execution, sizing or assignment logic was built. Enabling it is the user's decision.
+- Not changed: covered calls (long stock ≥ 100 × short calls) still pass the practice naked check. Per the 2026-10-17 phase-2 decision they are phase 2 only. Blocking them in practice would be a separate rule change.
+
 ## 2026-10-17 — Phase-2 option overlays are reference only; naked short calls stay blocked
 - Source: mentor article 进阶长期仓位管理策略 (knowledge/mentor/phase2/long-term-position-management.md, verbatim) → catalog `phase2-long-term-position-management`, `phase2-thesis-or-ego`.
 - **Naked (uncovered) short calls remain BLOCKED in every phase** (unlimited loss; rules.ts `forbidden`, `defined_risk` check, pretrade `adjustment_naked`). Naked short puts stay blocked too.

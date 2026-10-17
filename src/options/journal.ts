@@ -63,6 +63,8 @@ export interface JournalEntry {
   /** every loss: judgment (thesis/selection) vs execution (sizing, entry, exit, rules) + tags for repeated-error detection */
   /** 股市七宗罪 behaviour tags (src/options/sins.ts): manual or backfilled auto candidates; live auto-derivation is merged at review */
   behaviorSins?: import("./sins.ts").StoredSin[];
+  /** bearish entries: 做空清单 snapshot at entry (src/options/shortside.ts); tags are warnings, manual = items Alpha cannot check */
+  shortChecklist?: { tags: string[]; details: string[]; info: string[]; manual: string[]; metrics: import("./shortside.ts").ShortMetrics };
   lossReview?: { at: string; errorClass: "judgment" | "execution"; errorTags: string[]; note?: string };
   /** exit kind; "discretionary" before invalidation and before the time stop = premature (大佬复盘 mentor-winrate-review) */
   exitKind?: "invalidation" | "time_stop" | "take_profit" | "max_loss" | "discretionary" | "expiry" | "weekend_rule";

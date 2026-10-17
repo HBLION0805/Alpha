@@ -224,6 +224,12 @@
       "title": "Mentor article (Discord 夜雨 [RNMK]) — 进阶长期仓位管理策略 (verbatim) + DK phase-2 playbook",
       "url": null,
       "coverage": "Article stored verbatim in knowledge/mentor/phase2/long-term-position-management.md; the DK 整理 table is DK-written. Phase-2 reference only; numerical examples ($10 stock, $0.20–0.30 premiums, $20/$15 put) are illustrations, not verified results."
+    },
+    {
+      "id": "mentor-short-selling",
+      "title": "Mentor texts — 做空学 (10 points) + 做空赚钱 short note (verbatim) + DK short-side checklist",
+      "url": null,
+      "coverage": "Both texts stored byte-exact in knowledge/mentor/discipline/short-selling.md (cmp-verified against the inbox file; no author names or timestamps present). The DK 整理 checklist, thresholds and short-selling.rules.json spec are DK-written, not mentor content. No performance evidence; thresholds are untested."
     }
   ],
   "items": [
@@ -466,7 +472,8 @@
         "owner-psychology-20260926",
         "mentor-stop-loss",
         "mentor-discipline",
-        "mentor-premarket"
+        "mentor-premarket",
+        "mentor-short-selling"
       ],
       "topics": [
         "Positional stop",
@@ -476,7 +483,7 @@
         "Emotional sizing"
       ],
       "principle": "A smaller position changes future dollar exposure; it does not fix the original thesis.",
-      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress. Premarket: correlated risk-off across crypto/equities/EM when USD or yen spike (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
+      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress. Premarket: correlated risk-off across crypto/equities/EM when USD or yen spike (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts). Short side: 纪律 #05 also warns against stacking more shorts just because many names look weak; 做空学 #1/#7 (pick the soft persimmon) does not override total-exposure checks. See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
       "limits": "Size changes need a new documented decision. Excitement, anger, revenge, recent wins or a hot-hand belief cannot increase allowed size; confidence is not a sizing multiplier. Correlations are not assumed static; no correlation engine, anecdotal portfolio score or automatic reduction is implemented. A smaller loss or later recovery is not guaranteed.",
       "destination": "planner"
     },
@@ -541,14 +548,15 @@
         "theta",
         "owner-psychology-20260926",
         "mentor-stop-loss",
-        "mentor-winrate-review"
+        "mentor-winrate-review",
+        "mentor-short-selling"
       ],
       "topics": [
         "Time-based stop",
         "Catalyst deadline"
       ],
       "principle": "Specify when the expected development must occur and a separate option exit deadline.",
-      "application": "Before entry record catalyst timing, review time, expiration and the action if the expected response does not appear; retain the original independent stop, profit-taking and thesis-invalidation plan. Canonical text: knowledge/mentor/discipline/stop-loss.md §Time-Based Stop Loss. Encoded in src/options/stops.ts timeStop + multiLegChecklist (pretrade BLOCK).",
+      "application": "Before entry record catalyst timing, review time, expiration and the action if the expected response does not appear; retain the original independent stop, profit-taking and thesis-invalidation plan. Canonical text: knowledge/mentor/discipline/stop-loss.md §Time-Based Stop Loss. Encoded in src/options/stops.ts timeStop + multiLegChecklist (pretrade BLOCK). Short side: 做空学 #8 — front expiry must be ≥ thesis horizon + 14 days (two weeks early) → warn tag short_expiry_too_short. See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
       "limits": "Waiting consumes option time; a deadline does not guarantee an executable exit. Preserve existing frozen deadlines.",
       "destination": "journal"
     },
@@ -1377,12 +1385,13 @@
         "Price response"
       ],
       "principle": "An advance of 100–500% by itself says neither that a reversal is due nor that short exposure has favorable economics.",
-      "application": "As an educational proposal, distinguish apparent sell-side volume from effective downward price impact. If price holds or rises despite classified selling, absorption, buyers accepting supply, limited impact and classification error are competing hypotheses, not identified actors. Look for defined failed continuation, lower highs/lows, lost support, weaker relative strength, failed recovery or adverse fundamentals and liquidity; consider squeeze and borrow risks before proposing a separate study. Volume data: see `volume-confirmation` (src/macro/volume.ts, DK).",
+      "application": "As an educational proposal, distinguish apparent sell-side volume from effective downward price impact. If price holds or rises despite classified selling, absorption, buyers accepting supply, limited impact and classification error are competing hypotheses, not identified actors. Look for defined failed continuation, lower highs/lows, lost support, weaker relative strength, failed recovery or adverse fundamentals and liquidity; consider squeeze and borrow risks before proposing a separate study. Volume data: see `volume-confirmation` (src/macro/volume.ts, DK). Mentor version: 做空学 #3 (别猜顶) and #7 (空弱不空强 — lag the index AND the sector/peers) in knowledge/mentor/discipline/short-selling.md; entry-time warn tags short_vs_strength / short_no_relative_weakness in src/options/shortside.ts (catalog `short-side-checklist`). Still no short scanner or short-stock position.",
       "limits": "Trade-classified buy/sell volume does not reveal counterparties, intent or inventory; sell volume above buy volume alone proves neither bearish nor bullish direction, institutional accumulation, dealer buying, a squeeze, manipulation or a future rise. This remains untested: no short rule, scanner or position. Current GLD/IBIT scope is unchanged; borrow and option risks still matter.",
       "destination": "reviews",
       "sources": [
         "owner-psychology-20260923",
-        "owner-psychology-20260924"
+        "owner-psychology-20260924",
+        "mentor-short-selling"
       ]
     },
     {
@@ -1445,13 +1454,14 @@
         "Fish head / body / tail"
       ],
       "principle": "Participation need not prove the exact extreme. Consider evidence-defined participation with specified risk, sufficient direction/setup confirmation and defined invalidation; accept that parts of the initial and final move may be missed.",
-      "application": "Use the existing evidence and plan fields to explain participation and its risks rather than claiming an exact top or bottom. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #08. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §12. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "application": "Use the existing evidence and plan fields to explain participation and its risks rather than claiming an exact top or bottom. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #08. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §12. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice). Short side: 做空学 #3 (“涨太多了”从来不是做空理由; wait for it to start falling) → warn tag short_vs_strength (src/options/shortside.ts).",
       "limits": "Confirmation does not always produce better returns. Fish head/body/tail is an illustration only; no detector or fixed 10%/80% middle-of-move rule.",
       "destination": "planner",
       "sources": [
         "owner-psychology-20260926",
         "mentor-discipline",
-        "mentor-take-profit"
+        "mentor-take-profit",
+        "mentor-short-selling"
       ]
     },
     {
@@ -1533,12 +1543,13 @@
         "Prediction accuracy != trading profitability"
       ],
       "principle": "A broad directional view can remain plausible while a specific position fails because of timing, price, strike, expiry, size, instrument or structure.",
-      "application": "Review Prediction/thesis, Instrument, Entry, Position, Execution and Outcome separately. Closing an unsuitable position does not necessarily reject the entire macro thesis; any new expression requires a fresh plan. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #19. Encoded in src/options/discipline.ts thesisPositionVerdict + journal reviews[].",
+      "application": "Review Prediction/thesis, Instrument, Entry, Position, Execution and Outcome separately. Closing an unsuitable position does not necessarily reject the entire macro thesis; any new expression requires a fresh plan. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #19. Encoded in src/options/discipline.ts thesisPositionVerdict + journal reviews[]. Short side: 做空学 #8 (right but two weeks early = dead) and #10 (“可是我最后看对了”) — structure must outlive the thesis (warn tag short_expiry_too_short). See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
       "limits": "Belief in the thesis does not justify protecting a bad position. Prediction accuracy is not trading profitability. No prediction mutation, automatic reopening or replacement trade.",
       "destination": "journal",
       "sources": [
         "owner-psychology-20260926",
-        "mentor-discipline"
+        "mentor-discipline",
+        "mentor-short-selling"
       ]
     },
     {
@@ -1738,7 +1749,8 @@
       "title": "Seven sins of the stock market — per-trade behaviour checklist",
       "status": "PROCESS_GUIDE",
       "sources": [
-        "mentor-seven-sins"
+        "mentor-seven-sins",
+        "mentor-short-selling"
       ],
       "topics": [
         "Review",
@@ -1749,7 +1761,7 @@
         "Sizing"
       ],
       "principle": "Repeated account damage usually comes from the trader's behaviour, not the trade: sloth (no homework/absent), wrath (revenge after a loss), greed (not taking planned profit; cheap lottery options), envy (chasing others' gains), gluttony (no pause between impulse and order; overtrading, adding to losers), pride (never admitting the error; blaming others), lust (abandoning principles for quick wealth). Check the person clicking the button.",
-      "application": "Every closed own trade carries 七宗罪 tags (JournalEntry.behaviorSins): manual via `npm run paper -- sin --id … --sin wrath,pride`, and ledger-derived candidates from src/options/sins.ts (sloth = no_pre_written_plan; wrath = new trade the same ET day after a losing close within 60 min / same symbol / bigger size / after the daily cap; greed = net debit < $0.25 with ≤7 DTE, or TP alert hit then closed at a loss; envy = chasing / outside entryRange; gluttony = 4th+ open of the day, unplanned_add; pride = ≥2 stop hesitations then a loss; lust = own cap breaches). Weekly review §八之三 counts per sin (week, 30 days); the most frequent 30-day sin is next month's focus. Practice opens record warn_sin_wrath/gluttony/greed as warn tags only. Original source: knowledge/mentor/discipline/seven-sins.md.",
+      "application": "Every closed own trade carries 七宗罪 tags (JournalEntry.behaviorSins): manual via `npm run paper -- sin --id … --sin wrath,pride`, and ledger-derived candidates from src/options/sins.ts (sloth = no_pre_written_plan; wrath = new trade the same ET day after a losing close within 60 min / same symbol / bigger size / after the daily cap; greed = net debit < $0.25 with ≤7 DTE, or TP alert hit then closed at a loss; envy = chasing / outside entryRange; gluttony = 4th+ open of the day, unplanned_add; pride = ≥2 stop hesitations then a loss; lust = own cap breaches). Weekly review §八之三 counts per sin (week, 30 days); the most frequent 30-day sin is next month's focus. Practice opens record warn_sin_wrath/gluttony/greed as warn tags only. Original source: knowledge/mentor/discipline/seven-sins.md. Short side: chasing a short after a big down candle (做空学 #4, warn tag short_chasing) is the same envy/FOMO pattern; refusing to admit a wrong short (#10) is pride. See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
       "limits": "Auto tags are candidates from timestamps and prices, not proof of motive; confirm or --remove at review. Absence at the open, FOMO, moved stops, blaming others and ethical lapses are not in the ledger and stay manual. Thresholds (0.25, 7 DTE, 3/day, 60 min) are DK review thresholds, not trading rules; nothing here blocks a trade. Mentor-shadow trades are excluded.",
       "destination": "reviews"
     },
@@ -1780,7 +1792,8 @@
       "title": "PHASE 2 review check: holding because the thesis holds, or because you won't admit you were wrong?",
       "status": "PROCESS_GUIDE",
       "sources": [
-        "mentor-long-term-position-management"
+        "mentor-long-term-position-management",
+        "mentor-short-selling"
       ],
       "topics": [
         "Phase 2",
@@ -1790,9 +1803,53 @@
         "Pride"
       ],
       "principle": "Between a conviction stock and a stuck stock: if the thesis still holds you can manage and wait; if it is broken, no amount of premium turns a bad company into a good investment.",
-      "application": "Phase 2 only: ask at every long-term holding review, judging thesis and position separately (纪律 #19, JournalEntry.reviews[].thesisValid / positionValid). A \"won't admit it\" answer is a manual pride tag (behavior-seven-sins). Not wired into phase-1 tooling. Original source: knowledge/mentor/phase2/long-term-position-management.md (closing question).",
+      "application": "Phase 2 only: ask at every long-term holding review, judging thesis and position separately (纪律 #19, JournalEntry.reviews[].thesisValid / positionValid). A \"won't admit it\" answer is a manual pride tag (behavior-seven-sins). Not wired into phase-1 tooling. Original source: knowledge/mentor/phase2/long-term-position-management.md (closing question). Same question on the short side: 做空学 #2/#6/#10 (thesis wrong → admit; price separated from thesis → leave; don't bury the account for your ego). See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
       "limits": "Self-assessment; the answer is only as honest as the reviewer. Not an automatic exit rule.",
       "destination": "reviews"
+    },
+    {
+      "id": "short-side-checklist",
+      "group": "Exit and exposure",
+      "title": "Short-side pre-trade checklist (做空学): short the weak, not the strong; don't chase; survive the timing",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-short-selling"
+      ],
+      "topics": [
+        "Short side",
+        "Relative weakness",
+        "Do not guess the top",
+        "Failed rebound entry",
+        "Short squeeze",
+        "Time risk",
+        "Take profit into panic",
+        "Thesis invalidation"
+      ],
+      "principle": "Short what is already weak and losing its narrative and flows, not the hottest crowded name; 'up too much' is not a reason; enter on failed rebounds to resistance rather than under a big red candle; junk can double before it goes to zero (short interest, low float, gamma, sentiment); being right but two weeks early is the same as being wrong; take profits into panic; pre-write where you are wrong and admit it.",
+      "application": "Bearish plan cards (npm run card -- --dir bear, §9) and short-side paper opens run src/options/shortside.ts shortEntryChecks on daily OHLC: short_vs_strength (close > MA20 > MA50, MA50 rising), short_no_relative_weakness (20-day return not below BOTH SPY and the sector ETF; SECTOR_OF map or --sector), short_chasing (day ≤ −3%, below prior-day low, or ≥ 2 ATR under MA20), short_squeeze_prone (a +10% day in 60 sessions or 20-day realised vol ≥ 80%), short_squeeze_risk_unchecked (no --squeeze-check note), short_expiry_too_short (front DTE < horizon + 14, or time stop after expiry), short_invalidation_not_above_spot, short_data_insufficient. Practice opens record them as warn tags (weekly 门槛校准); every short-side entry stores JournalEntry.shortChecklist; review cards ask the manual items (narrative/flows, peers, price-thesis divergence exit, take profit into panic, admit when wrong). Machine-readable spec with auto-from-daily-OHLC flags for later backtests: knowledge/mentor/discipline/short-selling.rules.json. Original source: knowledge/mentor/discipline/short-selling.md. Related discipline texts (cited, not restated): 纪律 #05, #07, #08, #18, #19 in knowledge/mentor/discipline/discipline-01-20.md.",
+      "limits": "Warn-only: the written plan card remains the only hard requirement for practice; nothing here changes a card verdict. Thresholds are DK review thresholds, untested. The squeeze proxy is not short-interest, float or borrow data. Peers beyond one sector ETF, narrative/flows, divergence exits and panic take-profits are manual (divergence and panic exits are spec-only backtest candidates). Phase 1 bearish views use long puts / put debit spreads only.",
+      "destination": "planner"
+    },
+    {
+      "id": "phase2-short-stock-covered-put",
+      "group": "Exit and exposure",
+      "title": "PHASE 2 REFERENCE ONLY (not enabled): short stock + short put ('covered put') to offset borrow cost",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "mentor-short-selling",
+        "mentor-long-term-position-management"
+      ],
+      "topics": [
+        "Phase 2",
+        "Short stock",
+        "Covered put",
+        "Borrow cost",
+        "Assignment"
+      ],
+      "principle": "Mentor note 做空赚钱: short the stock and sell a covered put so the premium offsets the borrow cost (借刀杀人).",
+      "application": "Recorded only. Not enabled in any phase now: short stock has unlimited upside risk; the short put adds an assignment obligation. Paper opens refuse short stock / covered puts / naked short options even as practice (src/options/paper.ts nakedShortLegs; same rule as the plan card's 定义风险（裸卖）). Phase 1 expresses bearish views via long puts / put debit spreads. Decision: docs/DECISIONS.md 2026-10-17. Original source: knowledge/mentor/discipline/short-selling.md (second note); related: knowledge/mentor/phase2/long-term-position-management.md (short stock ↔ sell puts).",
+      "limits": "A covered put caps the profit at the put strike (assignment buys the shares back there) and gives no protection against an upside squeeze beyond the premium received; borrow fees, recalls, dividends owed and margin are not modelled.",
+      "destination": "guidance"
     }
   ],
   "fields": [

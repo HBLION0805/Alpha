@@ -1,6 +1,7 @@
 /**
  * npm run paper -- open|close|list|mark   (paper trades ONLY — this file never calls a broker; there is no order path)
  *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis --tp short_dated|narrative|windfall [--time-stop YYYY-MM-DD] [--ack]
+ *         bearish: [--sector SMH] [--squeeze-check "SI x% · float y · gamma … · 情绪 …"] → 做空清单 warn tags (src/options/shortside.ts; warn only)
  *         --hedge built_in_spread|direct|portfolio --hedge-detail "…" [--stop-pct 7 (stocks)] [--kind formal|practice]
  *         (唱反调 critique printed first; BLOCK refuses, WARNs need --ack; the critique is saved in the entry)
  *   mark  [--quotes data/in/x-chain.json ...]   (Robinhood chain JSON when present, else Yahoo spot + Black-Scholes)
@@ -32,12 +33,13 @@ import type { Proposal } from "../options/pretrade.ts";
 import type { Motive } from "../options/discipline.ts";
 import type { JournalEntry } from "../options/journal.ts";
 import { autoSins, sinsOf, SINS, SIN_IDS, type SinId } from "../options/sins.ts";
+import { SECTOR_OF, BROAD_ETFS } from "../options/shortside.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true }, "plan-id": { type: "string" }, card: { type: "string" }, class: { type: "string" }, tags: { type: "string" }, result: { type: "string" }, "pnl-pct": { type: "string" }, note: { type: "string" }, "followed-stop": { type: "string" }, "followed-tp": { type: "string" }, "followed-size": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
-  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, sin: { type: "string" }, remove: { type: "string" }, backfill: { type: "boolean", default: false }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
+  "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, sin: { type: "string" }, remove: { type: "string" }, backfill: { type: "boolean", default: false }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
 const cmd = positionals[0];
 const now = values.now ? new Date(values.now) : new Date();
 const path = values.journal!;
@@ -65,7 +67,15 @@ if (cmd === "open") {
   process.stdout.write(renderCritique(cr) + "\n");
   const pcF = "data/journal/pending-cards.json", card = values.card && existsSync(pcF) ? (JSON.parse(readFileSync(pcF, "utf8")).cards ?? []).find((c: { id: string }) => c.id === values.card) ?? null : null;
   if (values.card && !card) process.stdout.write(`⚠️ 找不到计划卡 ${values.card}（${pcF}）\n`);
-  const r = paperOpen(j, p, { card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
+  // bearish: 做空清单 inputs (120 daily bars of the underlying, SPY, sector ETF); warn tags only, missing data reported by shortside.ts
+  const side = proposalSide(p); // same side paperOpen uses
+  let short: Parameters<typeof paperOpen>[2]["short"];
+  if (side === "short") {
+    const sectorSym = BROAD_ETFS.has(p.symbol.toUpperCase()) ? null : values.sector?.toUpperCase() ?? SECTOR_OF[p.symbol.toUpperCase()] ?? null;
+    const [sb, spy, sec] = await Promise.all([yahooDaily(p.symbol, 200).catch(() => []), p.symbol.toUpperCase() === "SPY" ? Promise.resolve([]) : yahooDaily("SPY", 200).catch(() => []), sectorSym ? yahooDaily(sectorSym, 200).catch(() => []) : Promise.resolve([])]);
+    short = { bars: sb, spyBars: spy, sectorSym, sectorBars: sec, squeezeCheck: values["squeeze-check"] ?? card?.squeezeCheck ?? null };
+  }
+  const r = paperOpen(j, p, { short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
   if (r.entry!.warnTags?.length) process.stdout.write(`🟢 练习单已记录提示（不阻止）：${r.entry!.warnTags.join("、")}\n${(r.entry!.warnDetails ?? []).map((d) => `  - ${d}`).join("\n")}\n`);

@@ -13,10 +13,13 @@ import type { Motive, TradeLog } from "./discipline.ts";
 import type { Chain } from "./chain.ts";
 import { buildRiskPlan } from "./riskplan.ts";
 import { entrySinWarnTags } from "./sins.ts";
+import { shortEntryChecks, type ShortInput } from "./shortside.ts";
 import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
-export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; card?: PlanCardRef | null; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard> }
+export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; card?: PlanCardRef | null; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard>;
+  /** bearish opens: daily bars of the underlying + SPY + sector and the written squeeze check (做空清单, src/options/shortside.ts) — warn tags only */
+  short?: Pick<ShortInput, "bars" | "spyBars" | "sectorSym" | "sectorBars" | "squeezeCheck" | "netGamma"> }
 type Leg = NonNullable<JournalEntry["legs"]>[number];
 const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
@@ -28,7 +31,7 @@ const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, 
 const fill = (l: Proposal["legs"][number]) => (l.bid != null && l.ask != null ? (l.bid + l.ask) / 2 : l.premium);
 
 /** the saved pre-trade plan card (data/journal/pending-cards.json) a practice trade must point to */
-export interface PlanCardRef { id: string; sym: string; dir: "bull" | "bear"; thesis?: string | null; invalidation?: string | null; trade?: { mechanical?: string | null; invalidationLevel?: number | null; tpKind?: string | null } }
+export interface PlanCardRef { id: string; sym: string; dir: "bull" | "bear"; thesis?: string | null; invalidation?: string | null; squeezeCheck?: string | null; trade?: { mechanical?: string | null; invalidationLevel?: number | null; tpKind?: string | null } }
 /** HARD requirements for a practice trade: direction, thesis, a stop (mechanical or invalidation) and a take-profit plan. */
 export function cardMissing(c: PlanCardRef | null | undefined): string[] {
   if (!c) return ["练习单必须先保存计划卡：npm run card -- … --thesis \"…\" --save，再 paper open --card <id>"];
@@ -38,6 +41,18 @@ export function cardMissing(c: PlanCardRef | null | undefined): string[] {
   if (!c.trade?.mechanical && c.trade?.invalidationLevel == null && !c.invalidation?.trim()) m.push("计划卡缺止损（机械止损或论点失效价）");
   if (!c.trade?.tpKind) m.push("计划卡缺止盈计划");
   return m.map((x) => `${x}（${c.id}）`);
+}
+/** Naked shorts are refused even for practice (same rule as the plan card's 定义风险（裸卖）; DECISIONS 2026-10-17):
+ *  short stock (incl. stock + short put = "covered put") and short options not covered by a long of the same type/qty. */
+export function nakedShortLegs(legs: Proposal["legs"]): string[] {
+  const out: string[] = [];
+  if (legs.some((l) => l.type === "stock" && l.qty < 0)) out.push("做空股票（含 covered put）不启用：上涨风险无上限 → 第一阶段看空只用买 Put / Put 借方价差（DECISIONS 2026-10-17）");
+  for (const t of ["call", "put"] as const) {
+    const short = legs.filter((l) => l.type === t && l.qty < 0).reduce((s, l) => s - l.qty, 0), long = legs.filter((l) => l.type === t && l.qty > 0).reduce((s, l) => s + l.qty, 0);
+    const covered = t === "call" ? long + Math.floor(legs.filter((l) => l.type === "stock" && l.qty > 0).reduce((s, l) => s + l.qty, 0) / 100) : long;
+    if (short > covered) out.push(`裸卖 ${t}（${short} 张卖出 > ${covered} 张保护）→ 只做定义风险`);
+  }
+  return out;
 }
 /** Map a strict-mode refusal to a practice warn tag. */
 export function warnTag(msg: string): string {
@@ -95,7 +110,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
   let warnTags: string[] = [], warnDetails: string[] = [];
   if (a.kind === "practice") {
     const hard = [...cardMissing(a.card), ...(a.card && a.card.sym.toUpperCase() !== p.symbol.toUpperCase() ? [`计划卡标的 ${a.card.sym} ≠ ${p.symbol}`] : []),
-      ...refused.filter((x) => /最大亏损未定义|maxLoss|--kind .* 无效/.test(x))];
+      ...refused.filter((x) => /最大亏损未定义|maxLoss|--kind .* 无效/.test(x)), ...nakedShortLegs(p.legs)];
     if (hard.length) return { entry: null, checks, refused: hard };
     warnDetails = refused.filter((x) => !/^缺少 --(thesis|invalidation|stop|motive|tp)|缺少止盈|--tp/.test(x));
     warnTags = [...new Set(warnDetails.map(warnTag))];
@@ -120,6 +135,15 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
   // practice: 七宗罪 that are knowable at entry (wrath after a same-day loss, >3 opens/day, cheap short-dated lottery) → warn tags only, never a block
   if (entry.kind === "practice") { const s = entrySinWarnTags(entry, j.entries, a.rules, j.capital);
     if (s.tags.length) { entry.warnTags = [...new Set([...(entry.warnTags ?? []), ...s.tags])]; entry.warnDetails = [...(entry.warnDetails ?? []), ...s.details]; entry.violations ??= []; } }
+  // bearish: 做空清单 (大佬 做空学) — recorded on every short-side entry; practice also gets them as warn tags. Never a block.
+  const side = a.side ?? p.discipline?.side;
+  if (side === "short") {
+    const lvl = a.card?.trade?.invalidationLevel ?? (() => { const m = (a.invalidation ?? "").match(/(?<![A-Za-z\d.])\d+(?:\.\d+)?(?![\d%])/g) ?? []; return m.length === 1 ? Number(m[0]) : null; })(); // one plain number only (not MA20 / 5%)
+    const sc = shortEntryChecks({ sym: p.symbol, bars: [], ...(a.short ?? {}), spot: spot ?? null, expirations: legs.filter((l) => l.type !== "stock").map((l) => l.expiration!).filter(Boolean), asOf: etDay,
+      horizonDays: p.thesisHorizonDays, timeStopAt: a.timeStopAt ?? null, invalidationLevel: lvl, squeezeCheck: a.short?.squeezeCheck ?? a.card?.squeezeCheck ?? null });
+    entry.shortChecklist = { tags: sc.tags, details: sc.details, info: sc.info, manual: sc.manual, metrics: sc.metrics };
+    if (entry.kind === "practice" && sc.tags.length) { entry.warnTags = [...new Set([...(entry.warnTags ?? []), ...sc.tags])]; entry.warnDetails = [...(entry.warnDetails ?? []), ...sc.details]; entry.violations ??= []; }
+  }
   return { entry, checks, refused };
 }
 
