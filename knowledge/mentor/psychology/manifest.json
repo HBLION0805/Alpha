@@ -11,9 +11,9 @@
       }
     },
     "psych-batch-2.txt": {
-      "rawBytes": 8969,
-      "rawSha256": "8365ccdd1ddd3b6278e3638b9c4ea62969ee333c1a1e323eff04447561507930",
-      "redactedSha256": "8365ccdd1ddd3b6278e3638b9c4ea62969ee333c1a1e323eff04447561507930",
+      "rawBytes": 9770,
+      "rawSha256": "0806108273ef8ebbb8665c4e678cac9a7b5f2057355c40429e33d709775f8bb1",
+      "redactedSha256": "0806108273ef8ebbb8665c4e678cac9a7b5f2057355c40429e33d709775f8bb1",
       "replacements": {
         "[导师]": 0,
         "[群友]": 0
@@ -645,27 +645,27 @@
       "source": "psych-batch-2.txt",
       "lines": [
         61,
-        84
+        104
       ],
       "topic": "money",
       "file": "money-and-life.md",
-      "sha256": "fdec3cc5795462918cfc73438c4bc9e0daa4ba1ef851793e9f9026a0e540508b"
+      "sha256": "bbc989906502e96b303edf92537aa4f47e7dd74ccfd3598fc226accb30083faa"
     },
     {
       "source": "psych-batch-2.txt",
       "lines": [
-        85,
-        88
+        105,
+        112
       ],
       "topic": "conviction",
       "file": "conviction-and-independence.md",
-      "sha256": "35f31d94f2b2ac95462d9e96ae080823d603c1d92a494f7f2717c17d02f86451"
+      "sha256": "04ca8355b9f9dea907c86ae10fd748f9d55173aa9ff332128d997bc701e0b2f6"
     },
     {
       "source": "psych-batch-2.txt",
       "lines": [
-        89,
-        98
+        113,
+        122
       ],
       "topic": "conviction",
       "file": "conviction-and-independence.md",
@@ -674,8 +674,8 @@
     {
       "source": "psych-batch-2.txt",
       "lines": [
-        99,
-        110
+        123,
+        134
       ],
       "topic": "sizing",
       "file": "position-sizing-after-wins.md",
@@ -684,8 +684,8 @@
     {
       "source": "psych-batch-2.txt",
       "lines": [
-        111,
-        118
+        135,
+        142
       ],
       "topic": "money",
       "file": "money-and-life.md",
@@ -694,8 +694,8 @@
     {
       "source": "psych-batch-2.txt",
       "lines": [
-        119,
-        126
+        143,
+        150
       ],
       "topic": "sizing",
       "file": "position-sizing-after-wins.md",
@@ -704,8 +704,8 @@
     {
       "source": "psych-batch-2.txt",
       "lines": [
-        127,
-        143
+        151,
+        167
       ],
       "topic": "money",
       "file": "money-and-life.md",

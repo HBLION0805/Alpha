@@ -235,7 +235,7 @@
       "id": "mentor-psych-batch",
       "title": "Mentor texts — 交易心理 batch 1 + batch 2 (verbatim, names redacted) + DK 整理",
       "url": null,
-      "coverage": "Both inbox files stored as verbatim segments in knowledge/mentor/psychology/*.md (author name → [导师], member handle → [群友]; links kept; batch-1 provenance note and batch-2 【缺失】 truncation marker kept, nothing filled in). manifest.json + test/psych.test.ts verify byte-exact reconstruction of the redacted sources. Batch 1 is DK's manual transcription from screenshots (may differ in individual characters; see its provenance note). DK 整理 sections, warn tags and thresholds are DK-written and untested. Seven images stored in knowledge/mentor/psychology/assets/."
+      "coverage": "Both inbox files stored as verbatim segments in knowledge/mentor/psychology/*.md (author name → [导师], member handle → [群友]; links kept; batch-1 provenance note and batch-2 「认知」 completed from the user's resend; the remaining batch-2 【缺失】 marker (missing opening of the group-rules post, followed by ……) kept, nothing filled in). manifest.json + test/psych.test.ts verify byte-exact reconstruction of the redacted sources. Batch 1 is DK's manual transcription from screenshots (may differ in individual characters; see its provenance note). DK 整理 sections, warn tags and thresholds are DK-written and untested. Seven images stored in knowledge/mentor/psychology/assets/."
     },
     {
       "id": "mentor-video-trading-game",

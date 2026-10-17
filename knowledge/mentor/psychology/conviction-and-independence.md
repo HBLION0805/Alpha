@@ -206,14 +206,18 @@ Prasad 更喜欢 “优秀公司 + 合理价格”，而不是“差公司 + 极
 
 <!-- /verbatim -->
 
-<!-- verbatim psych-batch-2.txt L85-L88 sha256=35f31d94f2b2ac95 -->
+<!-- verbatim psych-batch-2.txt L105-L112 sha256=04ca8355b9f9dea9 -->
+【缺失：此处一篇群规文的开头在读取时被截断，待用户补发后补齐；下文从该文中途开始】
+
+……
+
 习的传统，也不值得别人花精力帮你。那就回去好好上你的班，别再碰股市。
 
  我可以把时间花在哄孩子一样反复安抚大家，也可以把时间花在研究市场、提供信息和交易机会。但我没有精力同时做好这两件事。 长期这样下去，我提供的交易质量会下降，你们会亏钱，而我也会被彻底耗干。 我请各位群友一起落实这些规则，互相提醒、互相监督。 这不是为了苛责谁、发泄怒气，更不是让大家去攻击谁，而是因为这些规矩确实有必要，也需要我们长期坚持。
 
 <!-- /verbatim -->
 
-<!-- verbatim psych-batch-2.txt L89-L98 sha256=ea1a95e8f27040ca -->
+<!-- verbatim psych-batch-2.txt L113-L122 sha256=ea1a95e8f27040ca -->
 巴菲特在2022年股东信中，最相关的一句是：
 
 “我们令人满意的成绩，主要来自大约十二个真正出色的决策。” 
@@ -229,7 +233,8 @@ Prasad 更喜欢 “优秀公司 + 合理价格”，而不是“差公司 + 极
 ## DK 整理（不是导师原话）
 
 - **Ticker 磁吸症**（L159 起）= catalog `psych-ticker`。Alpha：某标的曾经从盈利变成亏损、之后第 2 次以上回来 → `info_ticker_magnetism`（只提示）。
-- 不要问“[导师]今天做什么”（L207、L688 起）；投资者 vs 交易者（L1040）；Darwin（L874 起）= catalog `psych-long-horizon`（`darwin-book`）；巴菲特（batch-2 L89）→ catalog `phase2-thesis-or-ego` 等长期持仓条目。
+- 不要问“[导师]今天做什么”（L207、L688 起）；投资者 vs 交易者（L1040）；Darwin（L874 起）= catalog `psych-long-horizon`（`darwin-book`）；巴菲特（batch-2 L113）→ catalog `phase2-thesis-or-ego` 等长期持仓条目。
+- 群规文（batch-2 L105 起）开头缺失：【缺失】标记按原样保留，没有补写。
 - 大佬影子单只做对照，不跟单（`mentor_shadow` 从不计入准备度）。
 
 _所有 Alpha 检查都只提示（warn / info），不阻止开仓；练习单唯一的硬要求仍是计划卡。默认值都未经检验，见 docs/DECISIONS.md 2026-10-17（交易心理）。_

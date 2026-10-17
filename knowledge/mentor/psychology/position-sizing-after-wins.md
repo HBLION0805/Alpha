@@ -97,7 +97,7 @@ _原文部分逐字保存（只把作者名换成 [导师]、群友名换成 [�
 
 <!-- /verbatim -->
 
-<!-- verbatim psych-batch-2.txt L99-L110 sha256=32571aa72f5ac4d8 -->
+<!-- verbatim psych-batch-2.txt L123-L134 sha256=32571aa72f5ac4d8 -->
 我跟大家交易的理念稍微不同一点
 
 我把自己的帐号当成某种Hedge Fund，部署资源。我不把它当成钱。
@@ -112,7 +112,7 @@ _原文部分逐字保存（只把作者名换成 [导师]、群友名换成 [�
 
 <!-- /verbatim -->
 
-<!-- verbatim psych-batch-2.txt L119-L126 sha256=ce0ad8addfab15e3 -->
+<!-- verbatim psych-batch-2.txt L143-L150 sha256=ce0ad8addfab15e3 -->
 股市是一把枪。
 
 用对的人可以财务自由。用错的人会被洗劫一空。
@@ -129,7 +129,7 @@ _原文部分逐字保存（只把作者名换成 [导师]、群友名换成 [�
 - **赚钱以后缩小仓位 / 骄兵必败**（L975、L1051 起）：连赢 ≥3 笔或上一交易日赚 ≥1% 本金后，最大亏损高于最近 5 笔平均 → `warn_size_up_after_wins`；上一交易日大赚 → `warn_day_after_big_win`（“赚了以后停一天”）。已有 `discipline.ts` euphoriaGate / sizeDisciplineCheck（同日、正式单）——这里是练习单的提示版。阈值未检验。
 - **用已实现利润开下一笔，仓位递减**（下图，1.00 → 0.50 → 0.30 → 0.20；每笔是独立的新交易，不是往同一仓位加）= catalog `psych-realized-profit-redeployment`（之前缺图，现在有了）。Alpha：跟着盈利单开的下一笔最大亏损更大 → `warn_pyramid_add_larger`。
 - **情绪不稳就缩仓，缩到睡得着**（L859 起）：数据里看不出焦虑 → 复盘卡手动问「这笔仓位让你焦虑/睡不着吗？是 → 下一笔缩小」。体力/心理资本 → [video-the-trading-game.md](video-the-trading-game.md)。
-- 对冲基金心态、股市是一把枪（batch-2 L99、L119）→ catalog `size`、`psych-daily-loss-limit`。
+- 对冲基金心态、股市是一把枪（batch-2 L123、L143）→ catalog `size`、`psych-daily-loss-limit`。
 
 ![用已实现利润开下一笔：100/104/107/110 进场，仓位 1.00 → 0.50 → 0.30 → 0.20](assets/realized-profit-pyramid-1.00-0.50-0.30-0.20.jpg)
 
