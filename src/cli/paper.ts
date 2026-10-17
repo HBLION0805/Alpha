@@ -39,6 +39,7 @@ import { SECTOR_OF, BROAD_ETFS } from "../options/shortside.ts";
 import { loadEarningsBook } from "../options/earningsStore.ts";
 import { JOURNAL_QUESTIONS, LOSS_CLASSES, profitableButWrong } from "../options/psych.ts";
 import { loadMajorEvents } from "../options/majorEvents.ts";
+import { mentorForTags, lossPrompt, renderLossPrompt } from "../review/mentor.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
@@ -89,6 +90,8 @@ if (cmd === "open") {
   if (!r.entry) fail(r.refused);
   if (r.entry!.kind !== "practice" && r.entry!.psychTags?.length) process.stdout.write(`🧠 心理提示（不阻止）：${r.entry!.psychTags.join("、")}\n`);
   if (r.entry!.warnTags?.length) process.stdout.write(`🟢 练习单已记录提示（不阻止）：${r.entry!.warnTags.join("、")}\n${(r.entry!.warnDetails ?? []).map((d) => `  - ${d}`).join("\n")}\n`);
+  { const t = r.entry!.kind === "practice" ? r.entry!.warnTags ?? [] : [...(r.entry!.psychTags ?? []), ...(r.entry!.shortChecklist?.tags ?? [])];
+    if (t.length) process.stdout.write(["📜 导师怎么说（只提醒，不阻止）：", ...mentorForTags(t, now)].join("\n") + "\n"); }
   j.entries.push(r.entry!); save();
   process.stdout.write(renderRiskPlan(r.entry!.riskPlan!) + "\n");
   process.stdout.write(`[paper] 模拟开仓 ${r.entry!.id} ${r.entry!.symbol} ${r.entry!.strategy} · 最大亏损 $${r.entry!.maxLoss} · 当前持仓 ${r.entry!.concurrentAtEntry} → ${path}（不是真实订单）\n`);
@@ -136,7 +139,9 @@ if (cmd === "open") {
       for (const l of e.legs ?? []) { const u = (l.underlying ?? e.symbol).toUpperCase(); const exp = l.expiration!;
         if (settle[u] == null && !isAm(u)) settle[u] = (await yahooDaily(u, 10).catch(() => [])).find((b) => b.t.slice(0, 10) === exp)?.c ?? NaN; }
       const r = expireEntry(e, settle, now);
-      if (r.entry) { j.entries[i] = r.entry; process.stdout.write(`[expire] ${e.id} ${e.symbol} 到期结算 ${JSON.stringify(r.entry.settlement!.prices)} → P&L $${r.entry.pnl}${r.entry.pnl! <= 0 ? "（亏损：待复盘）" : ""}\n`); }
+      if (r.entry) { const lp = lossPrompt(r.entry, j.entries, now, j.capital); if (lp) r.entry.lossPrompt = lp;
+        j.entries[i] = r.entry; process.stdout.write(`[expire] ${e.id} ${e.symbol} 到期结算 ${JSON.stringify(r.entry.settlement!.prices)} → P&L $${r.entry.pnl}${r.entry.pnl! <= 0 ? "（亏损：待复盘）" : ""}\n`);
+        if (lp) process.stdout.write(renderLossPrompt(lp, now).join("\n") + "\n"); }
       else { j.entries[i] = { ...e, settlePending: `${now.toISOString()} ${r.error}` } ; process.stdout.write(`[expire] ${e.id}: 待结算 · ${r.error}\n`); }
       continue;
     }
@@ -166,7 +171,9 @@ if (cmd === "open") {
   const r = paperClose(e!, { exitKind: values["exit-kind"] as JournalEntry["exitKind"], pnl: values.pnl != null ? Number(values.pnl) : undefined, commissions: values.commissions != null ? Number(values.commissions) : undefined,
     errorClass: values["error-class"] as (typeof LOSS_CLASSES)[number], errorTags: list(values["error-tags"]), violations: list(values.violations), lesson: values.lesson, now });
   if (!r.entry) fail(r.refused);
+  const lp = lossPrompt(r.entry!, j.entries, now, j.capital); if (lp) r.entry!.lossPrompt = lp;
   j.entries[j.entries.indexOf(e!)] = r.entry!; save();
+  if (lp) process.stdout.write(renderLossPrompt(lp, now).join("\n") + "\n");
   process.stdout.write(`[paper] 模拟平仓 ${e!.id} P&L $${r.entry!.pnl} · ${r.entry!.exitKind}${r.entry!.exitKind === "discretionary" ? "（失效条件未触发、时间止损未到 → 记为提前离场）" : ""}\n`);
 } else if (cmd === "list") {
   const rows = j.entries.filter((e) => e.mode === "paper").map((e) => `| ${e.id}${e.kind === "practice" ? "（练习）" : ""} | ${e.symbol} | ${e.strategy} | ${e.openedAt.slice(0, 10)} | ${e.closedAt?.slice(0, 10) ?? "open"} | ${e.pnl ?? e.marks?.at(-1)?.pnl ?? "—"} | ${e.exitKind ?? ""} |`);

@@ -28,6 +28,7 @@ import { loadDailyBars } from "../adapters/bars.ts";
 import { ALARM_SOURCES } from "../alerts.ts";
 import { fetchReleaseCalendar, type CalendarEvent } from "../ingest/officialCalendar.ts";
 import { loadFedSpeakers, renderFedSpeakers } from "../ingest/fedSpeakers.ts";
+import { loadMajorEvents } from "../options/majorEvents.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -85,7 +86,11 @@ const gexCfg = existsSync("config/gex.json") ? JSON.parse(readFileSync("config/g
 const gexSyms: string[] = (process.env.ALPHA_GEX_SYMBOLS?.split(",").map((x) => x.trim()).filter(Boolean)) ?? gexCfg.symbols;
 const gex = values.offline || values["no-gex"] ? [] : await Promise.all(gexSyms.map((s) => fetchGex(s, gexCfg.days ?? 45)));
 const planIdLines = plan.qualified.map((c) => `- plan-id：\`${planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c)}\`（paper open --plan-id）`);
-const res = buildBrief({ now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines], matrixLines: renderMatrix(mx, sc.leader), gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
+// 导师提醒: previous regime (macro-latest.json is overwritten below), paper ledger, official FOMC/CPI/NFP + flagged events
+const prevMacroF = "data/out/macro-latest.json", previousRegime = existsSync(prevMacroF) ? (JSON.parse(readFileSync(prevMacroF, "utf8")) as { regime?: { label?: string } }).regime?.label ?? null : null;
+const pj = existsSync("data/journal/paper.json") ? JSON.parse(readFileSync("data/journal/paper.json", "utf8")) : { capital: defaultCapital(), entries: [] };
+const mentor = { events: loadMajorEvents().events, journal: pj.entries ?? [], capital: pj.capital ?? defaultCapital(), previousRegime, previousLeader };
+const res = buildBrief({ mentor, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines], matrixLines: renderMatrix(mx, sc.leader), gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {
   if (pm.alarms.length) store.insert(alarmItems(pm.alarms, now), { stance: "center", tier: 1 }, now);

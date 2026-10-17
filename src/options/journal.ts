@@ -72,6 +72,8 @@ export interface JournalEntry {
   profitableButWrong?: boolean;
   /** psychology entry tags (src/options/psych.ts), warn-only; confirmNote = confirmation signal written for an add to a loser; target = price target (Put 要尊重价格) */
   psychTags?: string[]; confirmNote?: string; priceTarget?: number;
+  /** losing close: the four attribution questions (chosen class ticked) + repeat-error callouts (src/review/mentor.ts lossPrompt) */
+  lossPrompt?: { at: string; questions: string[]; repeats: string[] };
   /** exit kind; "discretionary" before invalidation and before the time stop = premature (大佬复盘 mentor-winrate-review) */
   exitKind?: "invalidation" | "time_stop" | "take_profit" | "max_loss" | "discretionary" | "expiry" | "weekend_rule";
   /** net debit per contract at entry and where it came from */

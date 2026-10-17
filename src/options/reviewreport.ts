@@ -31,6 +31,7 @@ export function tradeCard(e: JournalEntry, all: JournalEntry[] = [e]): string[] 
       L.push(tj ? `- 交易日记：${JOURNAL_QUESTIONS.filter(([k]) => tj[k]).map(([k, q]) => `${q} ${tj[k]}`).join(" · ")}${miss.length ? ` · ⚠️ 未答：${miss.map(([, q]) => q).join(" ")}` : ""}` : "- 交易日记：⚠️ 6 问未写（npm run paper -- journal --id … --why … --thesis … --right … --wrong … --violated … --redo …）");
       const pbw = profitableButWrong(e);
       if (pbw.flag) L.push(`- ⚠️ 赚钱但做错：${pbw.why}${pbw.by === "auto" ? "（paper journal --profitable-but-wrong yes|no 确认）" : ""}`);
+      if (e.lossPrompt) L.push(`- 亏损归因 4 问：${e.lossPrompt.questions.join(" · ")}`, ...e.lossPrompt.repeats.map((x) => `- 🔁 重复错误：${x}`));
       L.push("- 复盘手动问：这笔仓位让你焦虑/睡不着吗？（是 → 下一笔缩小仓位）· 是因为追涨/怕错过、还是计划内？· 换一个结果，你的决定还一样吗？（结果偏误）");
     }
   }

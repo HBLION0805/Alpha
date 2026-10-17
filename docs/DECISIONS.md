@@ -1,5 +1,12 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-17 — Mentor material shapes daily use (导师提醒), not just the knowledge base
+- User feedback: "don't just add it to the knowledge base." Code: src/review/mentor.ts (rules = name + one-line rule + verbatim quotes + topic file; every quote is checked to be a verbatim substring of the mentor's original text, not the DK sections — test/mentor.test.ts).
+- **Brief §1.1 导师提醒** (every run.sh brief, premarket and afternoon): 1–3 reminders chosen from real state, in priority order: daily loss limit hit in the last 3 days → 暴怒/今天结束 (always first); major event within ±72 h (majorEvents loader: official FOMC/CPI/NFP + flagged) → 72 小时原则; ≥3 straight wins or a ≥1% day in the last 3 days → 骄兵必败; macro regime change or leader flip → 图表背后的逻辑还成立吗; bearish leader (hawkish / risk_off) → 柿子挑软的捏 / 不空强; NO_TRADE → 少交易 / 现金也是仓位; most frequent sin in 30 days (same count as weekly §八之三) → this month's focus. Cap 3; nothing triggered → one rotating general reminder. Quotes rotate deterministically by ET day; no quote repeats within a brief.
+- **Plan card + paper open:** every fired warn/info/short tag prints the mentor rule name + verbatim quote + topic link ("导师怎么说"); tags sharing a rule are grouped; tags without a mentor source say so (no guessed quote).
+- **Losing close (paper close / expire):** prints and stores (`JournalEntry.lossPrompt`) the four attribution questions (judgment / execution / risk / variance; the chosen class ticked) and a 🔁 repeat-error callout when the same errorClass, error tag or 七宗罪 occurred in the previous 30 days. Review card shows both.
+- Warn-only: no verdict, gate or readiness rule changed; the written plan card remains the only hard requirement.
+
 ## 2026-10-17 — Covered calls stay ALLOWED in practice trades (user decision; open item closed)
 - User decision: practice opens keep allowing covered calls (long stock ≥ 100 × short calls passes `nakedShortLegs`). No code change. **The covered-call open item below is closed.**
 - Unchanged: naked short calls / naked short puts / short stock stay refused in practice; formal trades follow rules.ts / pretrade as before; covered calls as a strategy are still phase 2 per the phase-2 note (practice only, not formal readiness).
