@@ -1920,7 +1920,7 @@
       ],
       "principle": "Mentor psychology heuristics become visible reminders, not rules: the written plan card remains the only hard requirement for practice trades.",
       "application": "src/options/psych.ts psychEntryTags: warn_72h_event, warn_add_to_loser_unconfirmed, warn_second_add_to_loser, warn_pyramid_add_larger, warn_size_up_after_wins, warn_day_after_big_win, warn_put_strike_unrealistic, info_midday_entry, info_ticker_magnetism → practice warnTags (included in 门槛校准) and psychTags on every own entry. Review card: journal answers, 赚钱但做错 candidate, manual questions (size anxiety → shrink; FOMO; outcome bias). Weekly §八之四 confidence ratio. Weekend checklist: docs/ROUTINE_WEEKLY.md. Defaults in PSYCH_LIMITS; decision docs/DECISIONS.md 2026-10-17. Index: knowledge/mentor/psychology/README.md.",
-      "limits": "All thresholds untested (72h, ≥3 wins, ≥1% big-win day, 10-day pyramid window, 10:30–15:00 ET, 1 SD put floor, 2 re-entries). Event data is incomplete (only the earnings book and a hand-maintained major-events file).",
+      "limits": "All thresholds untested (72h, ≥3 wins, ≥1% big-win day, 10-day pyramid window, 10:30–15:00 ET, 1 SD put floor, 2 re-entries). Event data: earnings book + official FOMC/CPI/NFP calendar 2026-10-17→2027-12-31 (knowledge/calendar/major-events-2026-2027.json); other events (bailouts, company news) must be added by hand to data/in/major-events.json.",
       "destination": "reviews"
     },
     {

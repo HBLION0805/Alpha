@@ -2,7 +2,7 @@
  * npm run paper -- open|close|list|mark   (paper trades ONLY — this file never calls a broker; there is no order path)
  *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis --tp short_dated|narrative|windfall [--time-stop YYYY-MM-DD] [--ack]
  *         bearish: [--sector SMH] [--squeeze-check "SI x% · float y · gamma … · 情绪 …"] → 做空清单 warn tags (src/options/shortside.ts; warn only)
- *         心理 (warn only, src/options/psych.ts): [--confirm "确认信号"] (adding to a losing position) [--target 95] (Put 目标价); 72h rule reads data/in/earnings*.json + data/in/major-events.json
+ *         心理 (warn only, src/options/psych.ts): [--confirm "确认信号"] (adding to a losing position) [--target 95] (Put 目标价); 72h rule reads data/in/earnings*.json + data/in/major-events.json (fallback: knowledge/calendar/major-events-2026-2027.json)
  *         --hedge built_in_spread|direct|portfolio --hedge-detail "…" [--stop-pct 7 (stocks)] [--kind formal|practice]
  *         (唱反调 critique printed first; BLOCK refuses, WARNs need --ack; the critique is saved in the entry)
  *   mark  [--quotes data/in/x-chain.json ...]   (Robinhood chain JSON when present, else Yahoo spot + Black-Scholes)
@@ -37,7 +37,8 @@ import type { JournalEntry } from "../options/journal.ts";
 import { autoSins, sinsOf, SINS, SIN_IDS, type SinId } from "../options/sins.ts";
 import { SECTOR_OF, BROAD_ETFS } from "../options/shortside.ts";
 import { loadEarningsBook } from "../options/earningsStore.ts";
-import { JOURNAL_QUESTIONS, LOSS_CLASSES, profitableButWrong, type MajorEvent } from "../options/psych.ts";
+import { JOURNAL_QUESTIONS, LOSS_CLASSES, profitableButWrong } from "../options/psych.ts";
+import { loadMajorEvents } from "../options/majorEvents.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
@@ -80,7 +81,7 @@ if (cmd === "open") {
     short = { bars: sb, spyBars: spy, sectorSym, sectorBars: sec, squeezeCheck: values["squeeze-check"] ?? card?.squeezeCheck ?? null };
   }
   // 交易心理: earnings rows (past ones too, for the 72h rule) + flagged major events (data/in/major-events.json: {"events":[{"at":ISO,"symbol":null|"XYZ","title":"…"}]})
-  const evF = "data/in/major-events.json", events: MajorEvent[] = existsSync(evF) ? JSON.parse(readFileSync(evF, "utf8")).events ?? [] : [];
+  const { events } = loadMajorEvents(); // data/in/major-events.json, else knowledge/calendar/major-events-2026-2027.json (FOMC/CPI/NFP)
   if (values.target != null && !(Number(values.target) > 0)) fail([`--target ${values.target} 无效（目标价，正数）`]);
   const psych = { earnings: loadEarningsBook().rows, events, confirm: values.confirm ?? null, target: values.target != null ? Number(values.target) : null };
   const r = paperOpen(j, p, { psych, short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });

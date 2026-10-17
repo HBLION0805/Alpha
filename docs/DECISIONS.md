@@ -1,14 +1,22 @@
 # Standing decisions (memory-like notes)
 
-## 2026-10-17 — Keep nakedShortLegs; covered calls stay an open item
+## 2026-10-17 — Covered calls stay ALLOWED in practice trades (user decision; open item closed)
+- User decision: practice opens keep allowing covered calls (long stock ≥ 100 × short calls passes `nakedShortLegs`). No code change. **The covered-call open item below is closed.**
+- Unchanged: naked short calls / naked short puts / short stock stay refused in practice; formal trades follow rules.ts / pretrade as before; covered calls as a strategy are still phase 2 per the phase-2 note (practice only, not formal readiness).
+
+## 2026-10-17 — 72-hour rule event calendar = official FOMC / CPI / NFP schedules
+- knowledge/calendar/major-events-2026-2027.json (tracked) + identical local copy data/in/major-events.json (gitignored). Loader `src/options/majorEvents.ts`: data/in first, else the tracked file.
+- Window 2026-10-17 → 2027-12-31, fetched 2026-10-17 from federalreserve.gov/monetarypolicy/fomccalendars.htm and bls.gov/schedule/news_release/cpi.htm, empsit.htm. FOMC = decision day (2nd meeting day) 14:00 ET, 10 dates (2027 dates are marked tentative by the Fed); CPI 14 and NFP 14 releases at 08:30 ET. No gaps inside the window (Dec 2027 reference-month releases fall in Jan 2028). All entries `symbol: null` (market-wide) → `warn_72h_event` for every ticker within 72 h after. Re-check if a schedule changes (shutdown delays, unscheduled FOMC meetings are not included).
+
+## 2026-10-17 — Keep nakedShortLegs; covered calls ~~stay an open item~~ (closed above: allowed)
 - **KEEP `paper.ts nakedShortLegs`** (practice opens refuse short stock / naked short puts / naked short calls). User confirmed by default (they didn't object; will confirm before push).
-- **Covered calls: left as-is** (long stock ≥ 100 × short calls still passes the practice naked check). **Open item** — phase 2 only per the phase-2 decision below; blocking them in practice would be a separate rule change the user has not asked for.
+- **Covered calls: left as-is** (long stock ≥ 100 × short calls still passes the practice naked check). ~~Open item~~ closed: user decided they stay allowed (see above) — phase 2 only per the phase-2 decision below; blocking them in practice would be a separate rule change the user has not asked for.
 
 ## 2026-10-17 — 交易心理 batch → warn-only tags, journal, loss attribution, confidence ratio
 - Source: mentor psychology batch 1 + 2 (knowledge/mentor/psychology/, verbatim segments; author → [导师], member → [群友]; batch-1 provenance note and batch-2 「认知」 completed from the user's resend 2026-10-17; the narrower 【缺失】 marker for the missing opening of the group-rules post kept, nothing filled in) + DK's video summary 《The Trading Game》 (not verbatim). Catalog sources `mentor-psych-batch`, `mentor-video-trading-game`; items `psych-entry-warn-tags`, `psych-put-price-call-time`, `psych-video-trading-game`; existing psych-* items linked (not copied). `manifest.json` + test/psych.test.ts verify byte-exact reconstruction.
 - **Practice gates stay warn-only. The written plan card remains the only hard requirement.** No new block anywhere. Code: src/options/psych.ts. Practice opens get these as warnTags (so 门槛校准 picks them up); every own entry stores them as `psychTags`; formal opens print them but verdicts are unchanged.
 - Tags and **defaults (all UNTESTED, `PSYCH_LIMITS`)**:
-  - `warn_72h_event` — opened < 72 h after the ticker's earnings (earnings book incl. past rows; am = 09:30 ET, pm = 16:05 ET, unknown = 16:00) or an event in data/in/major-events.json (hand-maintained; `symbol: null` = market-wide).
+  - `warn_72h_event` — opened < 72 h after the ticker's earnings (earnings book incl. past rows; am = 09:30 ET, pm = 16:05 ET, unknown = 16:00) or an event in data/in/major-events.json (official FOMC/CPI/NFP calendar, fallback knowledge/calendar/major-events-2026-2027.json; `symbol: null` = market-wide).
   - `warn_add_to_loser_unconfirmed` — same symbol + strategy while an own open position on it has last mark < 0 and no `--confirm "…"` note. `warn_second_add_to_loser` — ≥2 such open positions with combined mark < 0 (max one planned add, only after confirmation).
   - `warn_pyramid_add_larger` — follow-on unit within 10 days after a same symbol + strategy winner (open mark > 0 or closed > 0) with a larger max loss (1.00 → 0.50 → 0.30 → 0.20 illustration).
   - `warn_size_up_after_wins` — ≥3 straight own wins or last trading day realized ≥ 1% of capital, and max loss > average of the last 5 closed. `warn_day_after_big_win` — first trading day after a ≥ 1% day.

@@ -80,7 +80,7 @@ The market moves the news. The news does not move the market. 股票想怎么走
 
 ## DK 整理（不是导师原话）
 
-- **72 小时原则**（L66）：财报、救市、新闻，等 72 小时再动。Alpha：开仓距该标的财报（`data/in/earnings*.json`，am=09:30 / pm=16:05 ET）或 `data/in/major-events.json` 里标记的事件 < 72 小时 → `warn_72h_event`（只提示）。catalog `psych-72-hours` 已更新。没有事件数据时它不会触发——复盘手动问「开仓前 72 小时内有没有大新闻？」。
+- **72 小时原则**（L66）：财报、救市、新闻，等 72 小时再动。Alpha：开仓距该标的财报（`data/in/earnings*.json`，am=09:30 / pm=16:05 ET）或标记的事件（`data/in/major-events.json`，没有就用官方日历 `knowledge/calendar/major-events-2026-2027.json`：FOMC / CPI / 非农）< 72 小时 → `warn_72h_event`（只提示）。catalog `psych-72-hours` 已更新。没有事件数据时它不会触发——复盘手动问「开仓前 72 小时内有没有大新闻？」。
 - The market moves the news（L119）、叙事（L9）、政治立场（L1164 起）→ catalog `psych-news`、`psych-political-entity-separation`、`psych-social`；技术派 vs 宏观破位（batch-2 L43）→ `src/macro/premarket.ts` 市场确认。
 - 做空时的叙事检查 → [short-selling.md](../discipline/short-selling.md) 第 1 条。
 

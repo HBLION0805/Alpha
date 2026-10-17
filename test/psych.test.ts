@@ -148,3 +148,18 @@ test("psychology: no author names; images ≤400 KB, hashed and referenced; vide
   for (const id of ["mentor-psych-batch", "mentor-video-trading-game"]) assert.ok(cat.sources.some((s) => s.id === id), id);
   for (const id of ["psych-72-hours", "psych-ticker", "psych-loss-attribution", "psych-realized-profit-redeployment", "psych-entry-warn-tags"]) assert.ok(cat.items.find((i) => i.id === id)!.sources.includes("mentor-psych-batch"), id);
 });
+
+test("72h rule fires off the official FOMC / CPI / NFP calendar (tracked fallback)", async () => {
+  const { loadMajorEvents } = await import("../src/options/majorEvents.ts");
+  const { events, from } = loadMajorEvents("/nonexistent/major-events.json");
+  assert.equal(from, "knowledge/calendar/major-events-2026-2027.json");
+  const n = (s: string) => events.filter((e) => e.series === s).length;
+  assert.deepEqual([n("FOMC"), n("CPI"), n("NFP")], [10, 14, 14]);
+  for (const e of events) { assert.match(e.source!, /^https:\/\/www\.(federalreserve|bls)\.gov\//); assert.equal(e.timeET, e.series === "FOMC" ? "14:00" : "08:30"); }
+  const at = (iso: string) => psychEntryTags(T({ symbol: "SPY", openedAt: iso }), [], { capital: 5000, events }).details.join();
+  assert.match(at("2026-10-29T14:00:00Z"), /FOMC 利率决议.*之后 20 小时/); // FOMC 2026-10-28 14:00 EDT
+  assert.match(at("2026-11-10T20:00:00Z"), /CPI（October 2026）/);      // CPI 08:30 EST = 13:30Z
+  assert.match(at("2026-11-07T15:00:00Z"), /非农就业/);                  // NFP 2026-11-06
+  assert.doesNotMatch(at("2026-11-02T15:00:00Z"), /warn_72h_event/);      // > 72h after FOMC, before NFP
+  assert.doesNotMatch(at("2026-10-28T17:59:00Z"), /warn_72h_event/);      // one minute before the decision
+});

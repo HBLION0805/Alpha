@@ -25,7 +25,7 @@ export const PSYCH_LIMITS = {
 export const PSYCH_TAGS = ["warn_72h_event", "warn_add_to_loser_unconfirmed", "warn_second_add_to_loser", "warn_pyramid_add_larger", "warn_size_up_after_wins",
   "warn_day_after_big_win", "warn_put_strike_unrealistic", "info_midday_entry", "info_ticker_magnetism"] as const;
 export type PsychTag = typeof PSYCH_TAGS[number];
-export interface MajorEvent { at: string; symbol?: string | null; title: string }
+export interface MajorEvent { at: string; symbol?: string | null; title: string; series?: string; dateET?: string; timeET?: string; source?: string; tentative?: boolean }
 export interface PsychCtx { earnings?: EarningsRow[]; events?: MajorEvent[]; confirm?: string | null; target?: number | null; capital?: number }
 
 const etDay = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
