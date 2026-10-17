@@ -1,0 +1,702 @@
+{
+  "generatedAt": "2026-10-15T01:00:19.815Z",
+  "year": 2026,
+  "sources": [
+    "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+    "https://fred.stlouisfed.org/releases/calendar (mirrors BLS/BEA/Census schedules; times converted CT→ET)",
+    "https://www.bea.gov/news/schedule"
+  ],
+  "crossCheck": {
+    "beaDatesMissingFromFred": []
+  },
+  "errors": [],
+  "events": [
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-01-07",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-01-09",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-01-13",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-01-14",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-01-14",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-01-22",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-01-22",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "FOMC",
+      "title": "FOMC decision",
+      "date": "2026-01-28",
+      "timeEt": "14:00",
+      "sep": false,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-01-30",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-02-05",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-02-10",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-02-11",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-02-13",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-02-20",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-02-20",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-02-27",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-03-06",
+      "timeEt": "07:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-03-06",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-03-11",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-03-13",
+      "timeEt": "09:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-03-13",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-03-13",
+      "timeEt": "11:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-03-18",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "FOMC",
+      "title": "FOMC decision + SEP/dot plot",
+      "date": "2026-03-18",
+      "timeEt": "14:00",
+      "sep": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-03-31",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-04-01",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-04-03",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-04-09",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-04-09",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-04-10",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-04-14",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-04-21",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "FOMC",
+      "title": "FOMC decision",
+      "date": "2026-04-29",
+      "timeEt": "14:00",
+      "sep": false,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-04-30",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-04-30",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-05-05",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-05-08",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-05-12",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-05-13",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-05-14",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-05-28",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-05-28",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-06-02",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-06-05",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-06-10",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-06-11",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-06-17",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "FOMC",
+      "title": "FOMC decision + SEP/dot plot",
+      "date": "2026-06-17",
+      "timeEt": "14:00",
+      "sep": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-06-25",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-06-25",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-06-30",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-07-02",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-07-14",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-07-15",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-07-16",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "FOMC",
+      "title": "FOMC decision",
+      "date": "2026-07-29",
+      "timeEt": "14:00",
+      "sep": false,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-07-30",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-07-30",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-08-04",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-08-07",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-08-12",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-08-13",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-08-14",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-08-26",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-08-26",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-09-01",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-09-04",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-09-10",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-09-11",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-09-16",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "FOMC",
+      "title": "FOMC decision + SEP/dot plot",
+      "date": "2026-09-16",
+      "timeEt": "14:00",
+      "sep": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-09-28",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-09-29",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-09-30",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-09-30",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-10-02",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-10-14",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-10-15",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-10-15",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "FOMC",
+      "title": "FOMC decision",
+      "date": "2026-10-28",
+      "timeEt": "14:00",
+      "sep": false,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-10-29",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-10-29",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-11-03",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-11-06",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-11-10",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-11-13",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-11-17",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-11-25",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-11-25",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "JOLTS",
+      "title": "JOLTS (BLS)",
+      "date": "2026-12-01",
+      "timeEt": "10:00",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "NFP",
+      "title": "Employment Situation / NFP (BLS)",
+      "date": "2026-12-04",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "FOMC",
+      "title": "FOMC decision + SEP/dot plot",
+      "date": "2026-12-09",
+      "timeEt": "14:00",
+      "sep": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "CPI",
+      "title": "CPI (BLS)",
+      "date": "2026-12-10",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "PPI",
+      "title": "PPI (BLS)",
+      "date": "2026-12-15",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "RETAIL",
+      "title": "Retail sales (Census)",
+      "date": "2026-12-16",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "PCE",
+      "title": "Personal Income & Outlays / PCE (BEA)",
+      "date": "2026-12-23",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "GDP",
+      "title": "GDP (BEA)",
+      "date": "2026-12-23",
+      "timeEt": "08:30",
+      "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    }
+  ]
+}
