@@ -7,7 +7,7 @@
  * Every quote is a verbatim substring of its file (test/mentor.test.ts checks this). Rotation is deterministic by ET day.
  */
 import type { JournalEntry } from "../options/journal.ts";
-import { fullPnl } from "../options/journal.ts";
+import { fullPnl, countsTowardDailyCap } from "../options/journal.ts";
 import type { MajorEvent } from "../options/psych.ts";
 import { LOSS_CLASS_ZH, type LossClass } from "../options/psych.ts";
 import { sinCounts, topSin, sinsOf, SINS, type SinId } from "../options/sins.ts";
@@ -126,16 +126,19 @@ export function selectReminders(s: ReminderState, cap = 3): Reminder[] {
   const ev = s.events.map((e) => ({ e, dt: Date.parse(e.at) - now })).filter((x) => Math.abs(x.dt) < 72 * 3600_000).sort((a, b) => Math.abs(a.dt) - Math.abs(b.dt))[0];
   if (ev) out.push({ id: "rule_72h", why: `${ev.e.title} ${ev.dt >= 0 ? `还有 ${Math.round(ev.dt / 3600_000)} 小时` : `已过去 ${Math.round(-ev.dt / 3600_000)} 小时`}` });
   // ledger: own closed trades
-  const closed = s.journal.filter((e) => own(e) && e.closedAt && Date.parse(e.closedAt) <= now).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
-  const byDay = new Map<string, number>(); for (const e of closed) { const d = etDay(e.closedAt!); if (e.source !== "real_practice") byDay.set(d, (byDay.get(d) ?? 0) + fullPnl(e)); }
+  const done = s.journal.filter((e) => e.closedAt && Date.parse(e.closedAt) <= now).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
+  const closed = done.filter(own); // win streak / big day = your own trades
+  // daily loss cap = every simulated trade incl. mentor_shadow (DECISIONS 2026-10-17); real_practice stays out
+  const byDay = new Map<string, number>(); for (const e of done) { const d = etDay(e.closedAt!); if (countsTowardDailyCap(e)) byDay.set(d, (byDay.get(d) ?? 0) + fullPnl(e)); }
+  const ownByDay = new Map<string, number>(); for (const e of closed) { const d = etDay(e.closedAt!); if (countsTowardDailyCap(e)) ownByDay.set(d, (ownByDay.get(d) ?? 0) + fullPnl(e)); }
   const recentDays = [...byDay.keys()].filter((d) => d <= today && Date.parse(today) - Date.parse(d) <= 3 * 864e5).sort();
   // 3) loss limit breached in the last 3 calendar days (checked before wins: stop and walk away beats size advice)
   const perDay = s.capital * effectiveRules().dailyLossLimitPct / 100;
   const breach = recentDays.filter((d) => byDay.get(d)! <= -perDay).at(-1);
   // 2) winning streak ≥3 / ≥1% day recently
   let streak = 0; for (let i = closed.length - 1; i >= 0 && fullPnl(closed[i]!) > 0; i--) streak++;
-  const big = recentDays.filter((d) => byDay.get(d)! >= s.capital * 0.01).at(-1);
-  if (streak >= 3 || big) out.push({ id: "pride_after_wins", why: streak >= 3 ? `连赢 ${streak} 笔` : `${big} 已实现 +$${Math.round(byDay.get(big!)! * 100) / 100}（≥1% 本金）` });
+  const big = recentDays.filter((d) => (ownByDay.get(d) ?? 0) >= s.capital * 0.01).at(-1);
+  if (streak >= 3 || big) out.push({ id: "pride_after_wins", why: streak >= 3 ? `连赢 ${streak} 笔` : `${big} 已实现 +$${Math.round(ownByDay.get(big!)! * 100) / 100}（≥1% 本金）` });
   if (breach) out.push({ id: "wrath_stop", why: `${breach} 已实现 $${Math.round(byDay.get(breach)! * 100) / 100}，触发日亏上限 $${perDay}` });
   // 4) narrative regime change / leader flip
   const regimeFlip = s.previousRegime && s.regime && s.previousRegime !== s.regime, leaderFlip = s.leaderChanged || (s.previousLeader !== undefined && s.previousLeader !== s.leader);

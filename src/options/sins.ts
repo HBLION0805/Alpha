@@ -40,15 +40,18 @@ export function autoSins(e: JournalEntry, all: JournalEntry[], rules?: Partial<R
   // 暴怒: opened the same ET day after one of your own losing closes; after the daily cap was already breached; bigger size after a loss
   const day = etDay(e.openedAt), peers = all.filter((x) => own(x) && x.id !== e.id);
   const lossesBefore = peers.filter((x) => x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt) && (x.pnl ?? 0) < 0).sort((a, b) => t(a.closedAt!) - t(b.closedAt!));
-  if (lossesBefore.length) {
-    const perDay = capital * effectiveRules(rules).dailyLossLimitPct / 100;
-    const realized = peers.filter((x) => x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt)).reduce((s, x) => s + (x.pnl ?? 0), 0);
-    const last = lossesBefore.at(-1)!, mins = Math.round((t(e.openedAt) - t(last.closedAt!)) / 60000);
-    const same = lossesBefore.filter((x) => x.symbol === e.symbol).at(-1), bigger = (e.maxLoss ?? 0) > (last.maxLoss ?? Infinity), breached = -realized > perDay;
-    const why = [breached ? `当天已实现 $${Math.round(realized * 100) / 100} 已超日亏上限 $${perDay} 后仍开新单` : "",
-      mins <= SIN_LIMITS.wrathWindowMin ? `亏损平仓 ${last.symbol} $${last.pnl}（${etTime(last.closedAt!)} ET）后 ${mins} 分钟就开仓` : "",
+  // daily-cap breach: every trade closed earlier that day now INCLUDING mentor_shadow (DECISIONS 2026-10-17). real_practice was already
+  // counted here before (unlike breach.ts / brief) — left unchanged, flagged as an open question in DECISIONS.
+  const perDay = capital * effectiveRules(rules).dailyLossLimitPct / 100;
+  const realized = all.filter((x) => x.id !== e.id && x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt)).reduce((s, x) => s + (x.pnl ?? 0), 0);
+  const breached = -realized > perDay;
+  if (lossesBefore.length || breached) {
+    const last = lossesBefore.at(-1), mins = last ? Math.round((t(e.openedAt) - t(last.closedAt!)) / 60000) : Infinity;
+    const same = lossesBefore.filter((x) => x.symbol === e.symbol).at(-1), bigger = !!last && (e.maxLoss ?? 0) > (last.maxLoss ?? Infinity);
+    const why = [breached ? `当天已实现 $${Math.round(realized * 100) / 100}（含大佬影子单）已超日亏上限 $${perDay} 后仍开新单` : "",
+      last && mins <= SIN_LIMITS.wrathWindowMin ? `亏损平仓 ${last.symbol} $${last.pnl}（${etTime(last.closedAt!)} ET）后 ${mins} 分钟就开仓` : "",
       same ? `同一标的 ${same.symbol} 刚亏 $${same.pnl}（${etTime(same.closedAt!)} ET）后再开` : "",
-      bigger ? `亏损后仓位变大（最大亏损 $${e.maxLoss} > 上一笔亏损单 $${last.maxLoss}）` : ""].filter(Boolean);
+      bigger ? `亏损后仓位变大（最大亏损 $${e.maxLoss} > 上一笔亏损单 $${last!.maxLoss}）` : ""].filter(Boolean);
     if (why.length) add("wrath", why.join("；"));
   }
   // 贪婪: cheap short-dated lottery option; take-profit alert fired but closed at a loss

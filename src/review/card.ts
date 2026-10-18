@@ -15,7 +15,7 @@ import type { PlanItem } from "../options/planlink.ts";
 import type { GexOut } from "../options/gex.ts";
 import type { RefLevels } from "../levels.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
-import type { JournalEntry } from "../options/journal.ts";
+import { countsTowardDailyCap, type JournalEntry } from "../options/journal.ts";
 import type { YBar } from "../adapters/yahoo.ts";
 import { fmtEarnings, type EarningsRow } from "../options/earningsStore.ts";
 import { inBlackout, type FedCache } from "../ingest/fedSpeakers.ts";
@@ -75,7 +75,7 @@ export function suggestVerticals(dir: Dir, spot: number, exp: string, quotes: Qu
   return out.sort((a, b) => Math.abs(a.legs[0]!.strike - spot) - Math.abs(b.legs[0]!.strike - spot) || b.loss - a.loss).slice(0, 3);
 }
 export function dailyBudget(journal: JournalEntry[], capital: number, now: Date, perDayPct = 2): { used: number; remaining: number } {
-  const today = etDay(now), sim = journal.filter((e) => e.mode === "paper" && e.source !== "real_practice");
+  const today = etDay(now), sim = journal.filter((e) => e.mode === "paper" && countsTowardDailyCap(e)); // incl. mentor_shadow (DECISIONS 2026-10-17)
   const pnl = sim.filter((e) => e.closedAt && etDay(new Date(e.closedAt)) === today).reduce((s, e) => s + (e.pnl ?? 0), 0)
     + sim.filter((e) => !e.closedAt).reduce((s, e) => s + (e.marks?.at(-1)?.pnl ?? 0), 0);
   const used = Math.max(0, -pnl);

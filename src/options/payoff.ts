@@ -11,7 +11,7 @@ export function legValueAtExpiry(l: Leg, S: number): number {
 }
 /** P&L in dollars at expiry (all legs same expiry). */
 export function pnlAtExpiry(legs: Leg[], S: number): number {
-  return legs.reduce((s, l) => s + l.qty * (legValueAtExpiry(l, S) - l.premium) * (l.type === "stock" ? 1 : MULT) * (l.type === "stock" ? 1 : 1), 0);
+  return legs.reduce((s, l) => s + l.qty * (legValueAtExpiry(l, S) - l.premium) * (l.type === "stock" ? 1 : MULT), 0);
 }
 
 /** Exact analysis: payoff is piecewise-linear with kinks at strikes, so checking kinks + slopes at the ends is exact. */

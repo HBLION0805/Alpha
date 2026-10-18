@@ -1,10 +1,10 @@
 /**
  * Live cap breaches at mark time (sim capital $5,000 → $50/trade (1%), $100/day (2%); src/config.ts, rules.ts).
  * - per trade: open loss beyond the 1% cap → 🚨 and violation "open_loss_over_cap"
- * - per day: today's realized + current unrealized beyond the 2% cap → 🚨 (simulated trades only)
+ * - per day: today's realized + current unrealized beyond the 2% cap → 🚨 (all simulated trades incl. mentor_shadow; journal.ts countsTowardDailyCap)
  * - at entry: max loss beyond the 1% cap → "exceeds_1pct_cap" (mentor_shadow trades are allowed to be logged but are flagged)
  */
-import type { JournalEntry } from "./journal.ts";
+import { countsTowardDailyCap, type JournalEntry } from "./journal.ts";
 import { effectiveRules, type RuleCard } from "./rules.ts";
 const etDay = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 const add = (e: JournalEntry, v: string) => { if (!(e.violations ?? []).includes(v)) (e.violations ??= []).push(v); };
@@ -17,7 +17,7 @@ export function capFlags(entries: JournalEntry[], capital: number, now: Date, ru
     if (!e.closedAt && m && -m.pnl > perTrade) { add(e, "open_loss_over_cap"); out.push(`🚨 超限 ${e.id} ${e.symbol} 浮亏 $${-m.pnl} > 单笔上限 $${perTrade}`); }
     else if ((e.maxLoss ?? 0) > perTrade && !e.closedAt) out.push(`⚠️ ${e.id} ${e.symbol} 最大亏损 $${e.maxLoss} > 单笔上限 $${perTrade}${e.source === "mentor_shadow" ? "（大佬影子单，超出 Alpha 风控）" : ""}`);
   }
-  const sim = entries.filter((e) => e.source !== "real_practice");
+  const sim = entries.filter(countsTowardDailyCap);
   const realized = sim.filter((e) => e.closedAt && etDay(e.closedAt) === today).reduce((s, e) => s + (e.pnl ?? 0), 0);
   const unreal = sim.filter((e) => !e.closedAt).reduce((s, e) => s + (e.marks?.at(-1)?.pnl ?? 0), 0);
   const dayPnl = Math.round((realized + unreal) * 100) / 100;

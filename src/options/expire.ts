@@ -6,7 +6,7 @@
  * - Weekend rule (user-approved 2026-10-15): a mentor_shadow trade losing at Friday ≥15:45 ET is closed at its
  *   latest mark (exitKind weekend_rule). Winners are kept.
  */
-import type { JournalEntry } from "./journal.ts";
+import { normalizedLegs, type JournalEntry } from "./journal.ts";
 type Leg = NonNullable<JournalEntry["legs"]>[number];
 export const AM_SETTLED = new Set(["VIX", "SPX_AM", "RUT_AM", "NDX_AM"]);
 const etParts = (d: Date) => {
@@ -28,17 +28,19 @@ export const legMult = (l: Leg) => (l.type === "stock" ? 1 : 100);
 export function expireEntry(e: JournalEntry, settle: Record<string, number>, now: Date): { entry: JournalEntry | null; error?: string } {
   const kind = settleable(e, now);
   if (!kind) return { entry: null, error: `${e.id} 未到结算时间` };
-  if ((e.legs ?? []).some((l) => l.premium == null)) return { entry: null, error: `${e.id} 缺开仓价，无法结算（先从券商订单回填）` };
+  const legs = normalizedLegs(e);
+  if (legs.some((l) => l.premium == null || !Number.isFinite(l.premium))) return { entry: null, error: `${e.id} 缺开仓价，无法结算（先从券商订单回填）` };
   const prices: Record<string, number> = {};
-  for (const l of e.legs ?? []) {
+  for (const l of legs) {
     const u = (l.underlying ?? e.symbol).toUpperCase(), S = settle[u];
     if (S == null || !Number.isFinite(S)) return { entry: null, error: kind === "AM_VRO" ? `${u} 是上午结算（VRO）：需要 --settle ${u}=<VRO>，不能用收盘价代替` : `缺 ${u} 到期日收盘价` };
     prices[u] = S;
   }
-  const value = (e.legs ?? []).reduce((s, l) => s + l.qty * intrinsic(l, prices[(l.underlying ?? e.symbol).toUpperCase()]!) * legMult(l), 0);
-  const cost = (e.legs ?? []).reduce((s, l) => s + l.qty * l.premium * legMult(l), 0);
+  // stock legs are valued at the same settlement price (qty × S, multiplier 1): the simulated position is closed in full
+  const value = legs.reduce((s, l) => s + l.qty * intrinsic(l, prices[(l.underlying ?? e.symbol).toUpperCase()]!) * legMult(l), 0);
+  const cost = legs.reduce((s, l) => s + l.qty * l.premium * legMult(l), 0);
   const pnl = Math.round((value - cost) * 100) / 100;
-  return { entry: { ...e, closedAt: now.toISOString(), pnl, exitKind: "expiry", exitReason: `expired ${kind}`, settlement: { at: now.toISOString(), prices, kind, value: Math.round(value * 100) / 100 } } };
+  return { entry: { ...e, legs, closedAt: now.toISOString(), pnl, exitKind: "expiry", exitReason: `expired ${kind}`, settlement: { at: now.toISOString(), prices, kind, value: Math.round(value * 100) / 100 } } };
 }
 export function weekendRule(e: JournalEntry, now: Date): JournalEntry | null {
   const { wd, hm } = etParts(now);

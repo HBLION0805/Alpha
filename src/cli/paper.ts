@@ -33,7 +33,7 @@ import { renderRiskPlan } from "../options/riskplan.ts";
 import { critique, renderCritique, proposalSide } from "../review/critique.ts";
 import type { Proposal } from "../options/pretrade.ts";
 import type { Motive } from "../options/discipline.ts";
-import type { JournalEntry } from "../options/journal.ts";
+import { normalizeJournalLegs, type JournalEntry } from "../options/journal.ts";
 import { autoSins, sinsOf, SINS, SIN_IDS, type SinId } from "../options/sins.ts";
 import { SECTOR_OF, BROAD_ETFS } from "../options/shortside.ts";
 import { loadEarningsBook } from "../options/earningsStore.ts";
@@ -50,6 +50,9 @@ const cmd = positionals[0];
 const now = values.now ? new Date(values.now) : new Date();
 const path = values.journal!;
 const j: PaperJournal = existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : { capital: Number(values.capital ?? defaultCapital()), entries: [] };
+// stock legs logged as { qty, price } get premium/strike so mark / expire / review can value them (persisted on the next save)
+const legFixes = normalizeJournalLegs(j.entries);
+if (legFixes.length) process.stderr.write(`[paper] 股票腿补全 premium/strike：${legFixes.join(", ")}\n`);
 const save = () => { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path + ".tmp", JSON.stringify(j, null, 2) + "\n"); renameSync(path + ".tmp", path); };
 const list = (s: string | undefined) => (s ? s.split(",").map((x) => x.trim()).filter(Boolean) : undefined);
 const fail = (lines: string[]) => { process.stderr.write(["[paper] 拒绝 refused:", ...lines.map((l) => `  - ${l}`)].join("\n") + "\n"); process.exit(1); };
@@ -136,8 +139,10 @@ if (cmd === "open") {
     const kind = settleable(e, now);
     if (kind) {
       const settle: Record<string, number> = { ...manual };
-      for (const l of e.legs ?? []) { const u = (l.underlying ?? e.symbol).toUpperCase(); const exp = l.expiration!;
-        if (settle[u] == null && !isAm(u)) settle[u] = (await yahooDaily(u, 10).catch(() => [])).find((b) => b.t.slice(0, 10) === exp)?.c ?? NaN; }
+      // settlement date = the entry's last option expiration (a stock leg has none; it is valued at the same close)
+      const exp = (e.legs ?? []).map((l) => l.expiration).filter(Boolean).sort().at(-1)!;
+      for (const l of e.legs ?? []) { const u = (l.underlying ?? e.symbol).toUpperCase();
+        if ((settle[u] == null || !Number.isFinite(settle[u])) && !isAm(u)) settle[u] = (await yahooDaily(u, 10).catch(() => [])).find((b) => b.t.slice(0, 10) === exp)?.c ?? NaN; }
       const r = expireEntry(e, settle, now);
       if (r.entry) { const lp = lossPrompt(r.entry, j.entries, now, j.capital); if (lp) r.entry.lossPrompt = lp;
         j.entries[i] = r.entry; process.stdout.write(`[expire] ${e.id} ${e.symbol} 到期结算 ${JSON.stringify(r.entry.settlement!.prices)} → P&L $${r.entry.pnl}${r.entry.pnl! <= 0 ? "（亏损：待复盘）" : ""}\n`);

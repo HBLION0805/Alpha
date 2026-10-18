@@ -68,7 +68,11 @@ export function readiness(i: ReadinessInput): Readiness {
   // 3) loss caps + max drawdown
   const capOf = (e: JournalEntry) => e.capitalAtEntry ?? i.capital;
   const bigLoss = closed.filter((e) => -fullPnl(e) > capOf(e) * R.sellerMaxLossPerTradePct / 100);
-  const byDay = new Map<string, number>(); for (const e of closed) byDay.set(day(e.closedAt!), (byDay.get(day(e.closedAt!)) ?? 0) + fullPnl(e));
+  // daily-loss cap: formal trades PLUS mentor_shadow closes on the same days (DECISIONS 2026-10-17). Shadow trades still never
+  // count as readiness trades (sample / expectancy / per-trade / drawdown stay formal-only); they only add to a day's loss.
+  const first0 = closed[0]?.closedAt, last0 = closed.at(-1)?.closedAt;
+  const shadowDays = first0 && last0 ? practice.filter((e) => e.source === "mentor_shadow" && e.closedAt && e.pnl != null && day(e.closedAt) >= day(first0) && day(e.closedAt) <= day(last0)) : [];
+  const byDay = new Map<string, number>(); for (const e of [...closed, ...shadowDays]) byDay.set(day(e.closedAt!), (byDay.get(day(e.closedAt!)) ?? 0) + fullPnl(e));
   const badDays = [...byDay].filter(([, v]) => -v > i.capital * R.dailyLossLimitPct / 100);
   let eq = 0, peak = 0, mdd = 0; for (const p of ps) { eq += p; peak = Math.max(peak, eq); mdd = Math.max(mdd, peak - eq); }
   const ddOver = mdd > i.capital * ddLimitPct / 100;

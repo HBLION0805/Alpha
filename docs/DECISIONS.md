@@ -1,5 +1,23 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-17 — mentor_shadow trades COUNT toward the daily loss cap ($100/day = 2% of $5k)
+- User decision. One definition: `journal.ts countsTowardDailyCap` = every simulated trade (formal + practice + mentor_shadow); real_practice (real-account trades logged for review) stays out.
+- Applied to: live 🚨 day breach at mark (breach.ts, already included shadow), plan-card daily budget (card.ts, already included), pretrade daily_loss_limit (already included),
+  brief §1.1 暴怒 / 今天结束 reminder (mentor.ts — **changed**, was own trades only; win streak / big-day "pride" stays own trades),
+  暴怒 tag "opened after the daily cap was breached" (sins.ts — **changed**: shadow closes now count, and a breach alone triggers it even with no own losing close),
+  readiness loss_caps day check (readiness.ts — **changed**: a day's loss = formal + mentor_shadow closes that day; shadow trades are still never readiness trades for sample / expectancy / per-trade / drawdown).
+- Per-trade $50 cap for mentor_shadow: unchanged and consistent — flagged (exceeds_1pct_cap / open_loss_over_cap / "超出 Alpha 风控") but never refused; not a readiness criterion (shadow trades aren't readiness trades).
+- Open question (not changed): sins.ts 暴怒-after-breach also counts real_practice closes (it did before), while breach.ts / brief / card exclude them.
+- Existing ledger impact: 2026-10-16 becomes a breach day (paper_sim −49.50 + mentor_shadow −41 −56.50 = −$147 > $100). Both shadow trades closed 16:05 ET; no own open after that → no new 暴怒 tags. The Mon 10/19 brief will show 暴怒 / 今天结束 for 10/16 (3-day window). Readiness unchanged (no formal trades yet).
+
+## 2026-10-17 — Stock-leg valuation fix + practice false hard-refuse
+- Root cause: stock legs logged by hand / routine as `{ type: "stock", qty, price }` (BAC 10/16) had no `premium`/`strike`; every valuer reads those, so paperMark threw "entry price unknown", analyze/costBasis gave NaN ("Close-run valuer could not price stock leg (bug)").
+  Fix: `journal.ts normalizeLeg` (premium = price, else entryPrice for all-stock entries only; strike = premium), applied in paperMark, expireEntry and on journal load in cli/paper.ts. Stock = qty × price (×1), options = qty × price × 100, sign from qty.
+- `paper expire` fetched the settlement close per leg and a stock leg (no expiration) poisoned it with NaN → combos with stock could never settle. Now the settlement date = the entry's last option expiration; stock legs are valued at the same close.
+- Covered-call max loss already includes the stock going to 0 (payoff.ts kinks start at S=0): +100 @50 / −1 55C @1.20 → max loss $4,880, practice gets warn_over_cap. Regression tests pin this.
+- Practice hard-refuse regex matched the bare word "maxLoss", which appears in the multi-leg checklist text → every practice spread without a written checklist was hard-refused. Now only "最大亏损未定义" and an invalid --kind stay hard (`paper.ts isHardRefusal`).
+- Ledger: only bac-long-2026-10-16-paper changed (premium/strike 52.16 added). P&L −49.50 unchanged (= 75 × (51.50 − 52.16), stop fill); marks none. Backup data/out/backup-20261017-203117.json.
+
 ## 2026-10-17 — Shadow tracks A/B: forward paper test of the backtest hypotheses (virtual, separate ledger)
 - User-approved. Spec docs/SHADOW_TRACKS.md; code src/shadow/engine.ts, src/cli/shadow.ts (`npm run shadow`, `npm run shadow -- report`); ledger data/out/shadow/ledger.json.
 - Track A = v2a exactly (SPY long-only + leader/≥3-of-4 confirmations + prior-day breakout + 48h FOMC/CPI/NFP gate, next-open fills, 7 bp/side, $50 risk sizing on $5,000, 10-bar time stop).

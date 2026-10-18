@@ -8,7 +8,7 @@ import { buildTakeProfit, renderTakeProfit } from "./tpplan.ts";
 import { effectiveRules, type RuleCard } from "./rules.ts";
 import { analyze } from "./payoff.ts";
 import { bs, impliedVol, yearFrac } from "./bs.ts";
-import type { JournalEntry } from "./journal.ts";
+import { normalizedLegs, type JournalEntry } from "./journal.ts";
 import type { Motive, TradeLog } from "./discipline.ts";
 import type { Chain } from "./chain.ts";
 import { buildRiskPlan } from "./riskplan.ts";
@@ -57,6 +57,10 @@ export function nakedShortLegs(legs: Proposal["legs"]): string[] {
   }
   return out;
 }
+/** Practice opens: which strict-mode refusals stay HARD. Only an undefined max loss (riskplan.ts "期权结构最大亏损未定义") and an
+ *  invalid --kind. Matching the bare word "maxLoss" was wrong: the multi-leg checklist text "multi-leg checklist incomplete: maxLoss, …"
+ *  (stops.ts) contains it, so every practice spread without a written checklist was hard-refused instead of getting a warn tag. */
+export const isHardRefusal = (x: string) => /最大亏损未定义|--kind .* 无效/.test(x);
 /** Map a strict-mode refusal to a practice warn tag. */
 export function warnTag(msg: string): string {
   const id = /^(?:唱反调 (?:BLOCK )?|BLOCK |NO_TRADE )(\w+)/.exec(msg)?.[1]?.toLowerCase();
@@ -113,7 +117,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
   let warnTags: string[] = [], warnDetails: string[] = [];
   if (a.kind === "practice") {
     const hard = [...cardMissing(a.card), ...(a.card && a.card.sym.toUpperCase() !== p.symbol.toUpperCase() ? [`计划卡标的 ${a.card.sym} ≠ ${p.symbol}`] : []),
-      ...refused.filter((x) => /最大亏损未定义|maxLoss|--kind .* 无效/.test(x)), ...nakedShortLegs(p.legs)];
+      ...refused.filter(isHardRefusal), ...nakedShortLegs(p.legs)];
     if (hard.length) return { entry: null, checks, refused: hard };
     warnDetails = refused.filter((x) => !/^缺少 --(thesis|invalidation|stop|motive|tp)|缺少止盈|--tp/.test(x));
     warnTags = [...new Set(warnDetails.map(warnTag))];
@@ -161,9 +165,10 @@ export interface PriceSource { spot(sym: string): Promise<number | null>; chains
  *  Yahoo spot with the IV implied by the entry fill. Each leg reports its source. */
 export async function paperMark(e: JournalEntry, src: PriceSource, now: Date): Promise<NonNullable<JournalEntry["marks"]>[number]> {
   const asOf = now.toISOString().slice(0, 10);
-  if ((e.legs ?? []).some((l) => l.premium == null)) throw new Error("entry price unknown (backfill from broker orders first)");
+  const legs = normalizedLegs(e); // stock legs written as { qty, price } → premium/strike (stock: qty × price, multiplier 1)
+  if (legs.some((l) => l.premium == null || !Number.isFinite(l.premium))) throw new Error("entry price unknown (backfill from broker orders first)");
   let value = 0, spot0: number | null = null, estimated = false; const sources: string[] = [];
-  for (const l of e.legs ?? []) {
+  for (const l of legs) {
     const u = l.underlying ?? e.symbol;
     const S = await src.spot(u); if (u === e.symbol) spot0 = S;
     if (l.type === "stock") { if (S == null) throw new Error(`no spot for ${u}`); value += l.qty * S; sources.push(`${u} stock yahoo`); continue; }
@@ -177,7 +182,7 @@ export async function paperMark(e: JournalEntry, src: PriceSource, now: Date): P
     estimated = true;
     value += l.qty * px * MULT; sources.push(`${u} ${l.strike}${l.type[0]} BS估算(yahoo spot ${S}, iv ${ivSrc.iv.toFixed(3)} ${ivSrc.from}) ${px.toFixed(2)}`);
   }
-  const cost = (e.legs ?? []).reduce((s, l) => s + l.qty * l.premium * mult(l), 0);
+  const cost = legs.reduce((s, l) => s + l.qty * l.premium * mult(l), 0);
   return { at: now.toISOString(), value: Math.round(value * 100) / 100, pnl: Math.round((value - cost) * 100) / 100, spot: spot0, sources, estimated };
 }
 

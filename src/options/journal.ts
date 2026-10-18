@@ -94,6 +94,32 @@ export interface JournalEntry {
   marks?: Array<{ at: string; value: number; pnl: number; spot: number | null; sources: string[]; estimated?: boolean }>;
 }
 
+/** Daily loss cap (rules.ts dailyLossLimitPct, $100 on $5k) counts every SIMULATED trade: formal, practice AND mentor_shadow
+ *  (user decision 2026-10-17). real_practice records are real-account trades logged for review and stay out. */
+export const countsTowardDailyCap = (e: Pick<JournalEntry, "source">) => e.source !== "real_practice";
+
+type JLeg = NonNullable<JournalEntry["legs"]>[number];
+/** Stock legs are also written by hand / routines as { type: "stock", qty, price } (no premium, no strike). Every valuer
+ *  (paperMark, expireEntry, analyze, costBasis) reads premium/strike, so such a leg was "entry price unknown" / NaN.
+ *  Normalize: premium = price (else the entry's entryPrice), strike = premium (payoff.ts convention: stock strike = entry). */
+export function normalizeLeg(l: JLeg, entryPrice?: number | null): JLeg {
+  if (l.type !== "stock") return l;
+  const raw = l as JLeg & { price?: number };
+  const premium = Number.isFinite(raw.premium) ? raw.premium : Number.isFinite(raw.price) ? raw.price! : Number.isFinite(entryPrice) ? entryPrice! : raw.premium;
+  const strike = Number.isFinite(raw.strike) ? raw.strike : premium;
+  return premium === raw.premium && strike === raw.strike ? l : { ...l, premium, strike };
+}
+export const normalizedLegs = (e: Pick<JournalEntry, "legs" | "entryPrice">): JLeg[] => {
+  const legs = e.legs ?? [], ep = legs.length && legs.every((l) => l.type === "stock") ? e.entryPrice : null; // entryPrice of a combo is the net debit, not the stock price
+  return legs.map((l) => normalizeLeg(l, ep));
+};
+/** in place (cli load); returns the ids whose legs changed */
+export function normalizeJournalLegs(entries: JournalEntry[]): string[] {
+  const out: string[] = [];
+  for (const e of entries) { if (!e.legs) continue; const n = normalizedLegs(e); if (n.some((l, i) => l !== e.legs![i])) { e.legs = n; out.push(e.id); } }
+  return out;
+}
+
 export function validateEntry(e: Partial<JournalEntry>): string[] {
   const errs: string[] = issues(JournalCoreSchema, e);
   if (e.view) {
