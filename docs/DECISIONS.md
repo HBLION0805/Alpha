@@ -1,5 +1,11 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-18 — 今日能不能睡 (mentor's 不能睡 / 可以睡 list) as a brief label; flag only
+- User-approved. Post archived verbatim in knowledge/mentor/premarket-routine/sleep-days-2026-10-18.md (sha256 test). 老川 = Trump.
+- Brief §1 label every run (today; + next trading day in the afternoon run or when today is closed): 🚨 不能睡 / 🚨🚨 加强 / 😴 可以睡 / 普通 / 休市. Never changes the verdict.
+- 不能睡: OpEx (quad witching = 加强; holiday Friday → previous trading day; other OpEx-week days only get a ⚠️ flag), FOMC decision + Chair press conference, Fed officials' speeches from the existing Fed speakers cache (~14-day window; beyond it: 讲话未知, FOMC only), Trump post ≥ 70 in the last 24h or a "Trump to announce…" headline, CPI / NFP (user addition). 可以睡: Monday, Jul–Aug, Dec 24–Jan 1, Thanksgiving week, day before a long-weekend NYSE holiday. 不能睡 wins; both reasons shown.
+- NYSE holidays/early closes hard-coded from nyse.com (2026–2028) in src/macro/nyse.ts; opexEvents now moves a holiday 3rd Friday to the previous trading day (June 2026 → Thu 6/18, June 2027 → Thu 6/17). Rules: docs/SLEEP_DAYS.md.
+
 ## 2026-10-18 — Mentor premarket video (原油与 VIX): oil speed + driver heuristic, VIX-vs-index confirmation; VIX call hedge = Phase 2 only
 - User-approved. Transcript archived byte-for-byte in knowledge/mentor/premarket-routine/ (not checked word-by-word; the ~70 MB video is not committed).
 - Brief oil block (user's own requirement) adds speed (⚡ |1d| ≥ 3% or |5d| ≥ 8%), a HEURISTIC demand-vs-supply driver (may be 无法判断; copper HG=F added, never filled in) and, for supply shocks, the JETS / XLY pressure note. VIX vs SPX/NDX over 5 days → 方向确认 / 背离/未确认. Flag only; existing oil alarms unchanged. Rules: docs/OIL_VIX.md.
