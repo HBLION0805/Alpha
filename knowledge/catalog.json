@@ -242,6 +242,12 @@
       "title": "DK summary of the video 《The Trading Game》 (1987 Chicago trading-floor documentary)",
       "url": null,
       "coverage": "DK's summary, NOT a transcript; stored unchanged in knowledge/mentor/psychology/video-the-trading-game.md. Quotes are paraphrased. No performance evidence."
+    },
+    {
+      "id": "mentor-premarket-oil-vix",
+      "title": "Mentor premarket video — 原油与 VIX (video-model transcript, 2026-10-18)",
+      "url": null,
+      "coverage": "Transcript stored byte-exact in knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md (sha256 in manifest.json). Transcribed by a video model and NOT checked word-by-word against the video; author name stripped. The video file is not stored in the repo. Oil speed thresholds, the demand/supply heuristic and the VIX confirmation bands in src/macro/oilvix.ts are DK-written, not mentor content. No performance evidence."
     }
   ],
   "items": [
@@ -1876,6 +1882,26 @@
       "principle": "Mentor note 做空赚钱: short the stock and sell a covered put so the premium offsets the borrow cost (借刀杀人).",
       "application": "Recorded only. Not enabled in any phase now: short stock has unlimited upside risk; the short put adds an assignment obligation. Paper opens refuse short stock / covered puts / naked short options even as practice (src/options/paper.ts nakedShortLegs; same rule as the plan card's 定义风险（裸卖）). Phase 1 expresses bearish views via long puts / put debit spreads. Decision: docs/DECISIONS.md 2026-10-17. Original source: knowledge/mentor/discipline/short-selling.md (second note); related: knowledge/mentor/phase2/long-term-position-management.md (short stock ↔ sell puts).",
       "limits": "A covered put caps the profit at the put strike (assignment buys the shares back there) and gives no protection against an upside squeeze beyond the premium received; borrow fees, recalls, dividends owed and margin are not modelled.",
+      "destination": "guidance"
+    },
+    {
+      "id": "phase2-vix-call-hedge",
+      "group": "Exit and exposure",
+      "title": "PHASE 2 REFERENCE ONLY (not enabled): VIX call options as a hedge against a sudden volatility spike",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "mentor-premarket-oil-vix",
+        "mentor-long-term-position-management"
+      ],
+      "topics": [
+        "Phase 2",
+        "Hedge",
+        "VIX options",
+        "Volatility"
+      ],
+      "principle": "Mentor premarket video: VIX calls bought in advance can gain when the market drops sharply and fear rises; taking that profit offsets part of the portfolio loss. The insurance has a cost, and the result depends on entry timing, strike and expiry.",
+      "application": "Recorded only as a Phase 2 hedging reference (Phase 2 = long-term holdings, options for hedging). Not enabled now and not part of the practice rules: no paper/practice rule, sizing, roll or exit logic was built for it. Decision: docs/DECISIONS.md 2026-10-18. Original source: knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md (VIX section, last paragraph).",
+      "limits": "VIX options settle to the VRO on expiration morning (AM-settled, see src/options/expire.ts), track VIX futures rather than spot VIX, and the premium decays when no spike comes; timing, strike and expiry decide whether the hedge pays. Transcript not checked word-by-word.",
       "destination": "guidance"
     },
     {

@@ -40,6 +40,7 @@ export function buildBrief(i: BriefInput): BriefResult {
   const alarms = [...i.pm.alarms.map((a) => `${a.level === "ALARM" ? "🚨" : "⚠️"} ${a.title}：${a.detail}（${BY[a.by]}）`), ...(i.sc.changed ? [`⚠️ 领先情景切换 → ${i.sc.leader ?? "无"}`] : [])];
   const upcoming = i.calendar.filter((e) => e.date >= day).sort((a, b) => (a.date + a.timeEt).localeCompare(b.date + b.timeEt)).slice(0, 8);
   const failed = Object.entries(i.failed ?? {});
+  const mentorState = i.mentor ? { ...i.mentor, oilVix: i.mentor.oilVix ?? { fast: i.pm.oilVix?.fast ?? false, driver: i.pm.oilVix?.driver ?? "no_data", vix: i.pm.oilVix?.vix.label ?? "unclear" } } : null;
   const L = [
     `# 每日简报 Daily brief — ${day}（${hm} ET）`, "",
     "_宏观先行：方向来自宏观与情景；技术面只用于择时。不是交易建议。数据：Yahoo / FRED（FRED 为 T-1）。_", "",
@@ -49,7 +50,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     `- 领先情景：${scen}`,
     ...(i.sc.leader ? [`- 若做（仍需过 pretrade 闸门）：${lead.s.expressions[0]}`, `- 失效条件：${lead.s.invalidation.join("；")}`] : []),
     "- 情景权重为定性排序，不是概率。详见 4.3。", "",
-    ...(i.mentor ? reminderSection({ ...i.mentor, now: i.now, verdict, leader: i.sc.leader, regime: g.label, leaderChanged: i.sc.changed }) : []),
+    ...(mentorState ? reminderSection({ ...mentorState, now: i.now, verdict, leader: i.sc.leader, regime: g.label, leaderChanged: i.sc.changed }) : []),
     ...(i.liquidityLines?.length ? i.liquidityLines : []),
     ...(i.matrixLines?.length ? [...i.matrixLines, ""] : []),
     "## 2. 警报", "", ...(alarms.length ? alarms.map((a) => `- ${a}`) : ["- 无"]), "",

@@ -66,3 +66,21 @@ _Verbatim from `knowledge/catalog.json` (OPTIONS_MACRO_PLAYBOOK_V1, revision OWN
   Institutional, not mentor. Structured summary by DK: super cycle real, easy money past, key numbers, cycle history, CXMT/YMTC, rack content, stock preferences; cross-reference with the mentor view
 - **大佬 daily note: 防御轮动 + 图表 (verbatim)** (`mentor-daily-defensive-rotation`) — knowledge/mentor/daily/daily-note-defensive-rotation-charts.md
   30Y/2Y, DXY, gold, KOSPI, NQ, RTY (FIB), equal-weight EWF, /CL Dec-26 95C call flow, TLT; defensive rotation, put protection; 10 images in assets/defensive-rotation/
+- **Mentor reading assignment — Milgram experiment (verbatim) + DK summary** (`mentor-reading-milgram`)
+  Assignment text stored verbatim in knowledge/mentor/reading/milgram-experiment.md; the summary section is DK-written, not mentor content.
+- **用户收集的外部资料 — 做交易的正确思路（7 步）screenshot** (`external-correct-approach-7-steps`)
+  Text stored verbatim in knowledge/external/trading-correct-approach-7-steps.md with the screenshot; author unknown, NOT mentor content. DK 整理 section is DK-written.
+- **DK 整理 — toolbox by layer** (`dk-toolbox-layers`)
+  DK-written framework in knowledge/framework/toolbox-layers.md; not mentor or external content.
+- **Mentor article (Discord 夜雨 [RNMK]) — 股市七宗罪 (verbatim) + DK checklist** (`mentor-seven-sins`)
+  Article stored verbatim in knowledge/mentor/discipline/seven-sins.md; the DK 整理 table (sin → tag → what the ledger can derive) is DK-written, not mentor content. Behavioural self-check, not a diagnosis; no performance evidence.
+- **Mentor article (Discord 夜雨 [RNMK]) — 进阶长期仓位管理策略 (verbatim) + DK phase-2 playbook** (`mentor-long-term-position-management`)
+  Article stored verbatim in knowledge/mentor/phase2/long-term-position-management.md; the DK 整理 table is DK-written. Phase-2 reference only; numerical examples ($10 stock, $0.20–0.30 premiums, $20/$15 put) are illustrations, not verified results.
+- **Mentor texts — 做空学 (10 points) + 做空赚钱 short note (verbatim) + DK short-side checklist** (`mentor-short-selling`)
+  Both texts stored byte-exact in knowledge/mentor/discipline/short-selling.md (cmp-verified against the inbox file; no author names or timestamps present). The DK 整理 checklist, thresholds and short-selling.rules.json spec are DK-written, not mentor content. No performance evidence; thresholds are untested.
+- **Mentor texts — 交易心理 batch 1 + batch 2 (verbatim, names redacted) + DK 整理** (`mentor-psych-batch`)
+  Both inbox files stored as verbatim segments in knowledge/mentor/psychology/*.md (author name → [导师], member handle → [群友]; links kept; batch-1 provenance note and batch-2 「认知」 completed from the user's resend; the remaining batch-2 【缺失】 marker (missing opening of the group-rules post, followed by ……) kept, nothing filled in). manifest.json + test/psych.test.ts verify byte-exact reconstruction of the redacted sources. Batch 1 is DK's manual transcription from screenshots (may differ in individual characters; see its provenance note). DK 整理 sections, warn tags and thresholds are DK-written and untested. Seven images stored in knowledge/mentor/psychology/assets/.
+- **DK summary of the video 《The Trading Game》 (1987 Chicago trading-floor documentary)** (`mentor-video-trading-game`)
+  DK's summary, NOT a transcript; stored unchanged in knowledge/mentor/psychology/video-the-trading-game.md. Quotes are paraphrased. No performance evidence.
+- **Mentor premarket video — 原油与 VIX (video-model transcript, 2026-10-18)** (`mentor-premarket-oil-vix`)
+  Transcript stored byte-exact in knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md (sha256 in manifest.json). Transcribed by a video model and NOT checked word-by-word against the video; author name stripped. The video file is not stored in the repo. Oil speed thresholds, the demand/supply heuristic and the VIX confirmation bands in src/macro/oilvix.ts are DK-written, not mentor content. No performance evidence.

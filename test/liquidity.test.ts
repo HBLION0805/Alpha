@@ -87,7 +87,7 @@ test("plan card: liquidity / pivot / rotation thesis → both verbatim mentor li
   assert.match(L[0]!, /论点提到「流动性」/); assert.ok(L[1]!.includes("「宏观逻辑不能跳过中间环节，直接变成买单。」")); assert.ok(L[2]!.includes("「融资条件改善，可以和盈利疲软、衰退风险同时存在。」"));
   const card = { id: "c1", createdAt: "2026-10-18T15:00:00Z", sym: "QQQ", dir: "bull", verdict: "formal", verdictText: "✅", failing: [], sections: [], macroTheme: L,
     trade: { legs: [], exp: null, contracts: 1, perContractMaxLoss: null, maxLoss: null, planId: null, tpKind: null, invalidationLevel: null, mechanical: null } } as unknown as Card;
-  const md = renderCard(card, 500, null); assert.match(md, /导师怎么说（宏观流动性论点，只提醒）/); assert.ok(md.includes("直接变成买单。」"));
+  const md = renderCard(card, 500, null); assert.match(md, /导师怎么说（宏观论点 \/ 原油冲击，只提醒）/); assert.ok(md.includes("直接变成买单。」"));
 });
 test("§1.1 导师提醒: liquidity_chain only when the watch flags something", () => {
   const base = { now: new Date("2026-10-19T11:30:00Z"), verdict: "RESEARCH_OK", leader: "base", previousLeader: "base", regime: "MIXED", previousRegime: "MIXED", events: [], journal: [], capital: 5000 };

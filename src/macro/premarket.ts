@@ -5,6 +5,7 @@
  */
 import { eventUtcMs } from "./risk.ts";
 import { buildOil, type OilAlarm } from "./oil.ts";
+import { buildOilVix, type OilVixResult } from "./oilvix.ts";
 import type { Obs } from "./fetch.ts";
 import type { SeriesDef } from "./series.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
@@ -21,7 +22,7 @@ export const PM_SERIES: SeriesDef[] = [
   y("DXY", "DX-Y.NYB", "美元指数 DXY"), y("USDCAD", "CAD=X", "USDCAD"), y("USDJPY", "JPY=X", "USDJPY"),
   // DK 补充
   // 【用户要求】原油 (src/macro/oil.ts)
-  y("BRENT", "BZ=F", "Brent 原油"), y("RBOB", "RB=F", "RBOB 汽油"), y("XLE", "XLE", "XLE 能源股"),
+  y("BRENT", "BZ=F", "Brent 原油"), y("RBOB", "RB=F", "RBOB 汽油"), y("XLE", "XLE", "XLE 能源股"), y("COPPER", "HG=F", "铜 HG（原油驱动判断用）"),
   y("VIX", "^VIX", "VIX"), y("VIX3M", "^VIX3M", "VIX3M"), y("WTI", "CL=F", "WTI 原油"), y("GOLD", "GC=F", "黄金"),
   { id: "BTC", provider: "yahoo", ref: "BTC-USD", label: "比特币", unit: "price", frequency: "daily" },
   f("EFFR", "DFF", "有效联邦基金利率"), f("REAL10Y", "DFII10", "10Y 实际利率 (TIPS)"),
@@ -30,7 +31,8 @@ const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED"
 
 export interface Alarm { kind: "CARRY_UNWIND" | "HYG_DIVERGENCE" | "UST10Y_SPIKE" | "VIX_BACKWARDATION" | OilAlarm["kind"]; level: "ALARM" | "WARNING"; title: string; detail: string; by: "mentor" | "dk" | "user"; score?: number }
 export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null; volumeLines?: string[] | null; fedLines?: string[] | null }
-export interface PremarketResult { md: string; alarms: Alarm[]; noTrade: string[]; mentorLines: string[]; dkLines: string[]; oilLines: string[]; bondLines: number }
+export interface PremarketResult { md: string; alarms: Alarm[]; noTrade: string[]; mentorLines: string[]; dkLines: string[]; oilLines: string[]; bondLines: number;
+  /** mentor premarket video (oilvix.ts): oil speed / driver heuristic / VIX-vs-index confirmation — flag only */ oilVix: OilVixResult }
 
 const last = (o?: Obs[]) => (o?.length ? o.at(-1)!.v : null);
 /** change over k observations: bp for yields, % otherwise */
@@ -110,6 +112,9 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   // ── DK 补充 ──
   const vix = v("VIX"), v3 = v("VIX3M"), ratio = vix != null && v3 ? vix / v3 : null;
   K.push("### VIX 与期限结构", `- VIX ${vix?.toFixed(2) ?? "n/a"} · VIX3M ${v3?.toFixed(2) ?? "n/a"} · VIX/VIX3M ${ratio?.toFixed(3) ?? "n/a"} → ${ratio == null ? "n/a" : ratio >= 1 ? "🚨 **倒挂（backwardation）= 压力**" : ratio >= 0.95 ? "接近倒挂" : "正常升水（contango）"}`);
+  // mentor premarket video (原油与 VIX): VIX trend vs index trend — flag only
+  const ov = buildOilVix(D);
+  K.push("", "### VIX 与指数是否互相确认（导师盘前视频 · 只标记）", ...ov.lines.vix);
   if (ratio != null && ratio >= 1) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio.toFixed(3)}`, detail: "近端恐慌高于远端：市场压力", by: "dk" });
   const todays = (inp.calendar ?? []).filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
   K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${eventUtcMs(e) <= inp.now.getTime() ? "（已公布）" : e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));
@@ -131,6 +136,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   // 【用户要求】原油 — right after the bonds; its alarms feed the alert flow
   const oil = buildOil(D, { now: inp.now, headlines: inp.headlines, calendar: inp.calendar });
   alarms.push(...oil.alarms);
+  const oilLines = [...oil.lines, "", "**价格 · 速度 · 原因**（导师盘前视频；驱动判断为启发式，规则见 docs/OIL_VIX.md）", ...ov.lines.oil];
   // synthesis
   if (alarms.some((a) => a.level === "ALARM")) noTrade.push(`警报未解除：${alarms.filter((a) => a.level === "ALARM").map((a) => a.kind).join("、")}`);
   if (maxAbs >= 1.5) noTrade.push("期货跳空 ≥1.5%：开盘不追，等确认");
@@ -141,14 +147,14 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
     `# 盘前流程 Premarket — ${day}（${inp.now.toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", hour12: false })} ET）`, "",
     "_数据：Yahoo (yahoo-finance2) / FRED（免费，可能有延迟；FRED 为 T-1）。不是交易建议。_", "",
     "## 【大佬流程】", "_来源：knowledge/mentor/discipline/premarket-routine.md（视频转写，近似原文）_", "", ...M.slice(0, bondLines), "",
-    ...OIL_HEAD, "", ...oil.lines, "",
+    ...OIL_HEAD, "", ...oilLines, "",
     "## 【大佬流程】（续）", "", ...M.slice(bondLines), "",
     "---", "", "## 【DK 补充】", "_以下为 DK 的补充，不是大佬原流程。_", "", ...K, "",
     "## 综合判断", "", syn, "",
     ...(alarms.length ? ["## 警报（已交给 30 分钟 alert 流程）", "", ...alarms.map((a) => `- ${a.level === "ALARM" ? "🚨" : "⚠️"} ${a.title}：${a.detail}（${BY[a.by]}）`), ""] : []),
     ...(failed.length ? ["## 数据失败", "", ...failed.map(([k, e]) => `- ${k}: ${e}`), ""] : []),
   ].join("\n");
-  return { md, alarms, noTrade, mentorLines: M, dkLines: K, oilLines: oil.lines, bondLines };
+  return { md, alarms, noTrade, mentorLines: M, dkLines: K, oilLines, bondLines, oilVix: ov };
 }
 
 /** Alarm → FeedItem so the existing store / 30-min alert routine can surface it (sourceId "premarket-alarm"). */

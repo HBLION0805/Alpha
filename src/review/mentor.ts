@@ -13,7 +13,7 @@ import { LOSS_CLASS_ZH, type LossClass } from "../options/psych.ts";
 import { sinCounts, topSin, sinsOf, SINS, type SinId } from "../options/sins.ts";
 import { effectiveRules } from "../options/rules.ts";
 
-const P = "knowledge/mentor/psychology/", D = "knowledge/mentor/discipline/", LQ = "knowledge/mentor/macro-liquidity/mentor-review-howell-2026-10-16.md";
+const P = "knowledge/mentor/psychology/", D = "knowledge/mentor/discipline/", LQ = "knowledge/mentor/macro-liquidity/mentor-review-howell-2026-10-16.md", PV = "knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md";
 export interface Quote { text: string; file: string }
 export interface MentorRule { id: string; name: string; rule: string; quotes: Quote[] }
 const q = (file: string, text: string): Quote => ({ file, text });
@@ -75,6 +75,12 @@ export const RULES: Record<string, MentorRule> = Object.fromEntries([
     q(P + "journal-and-outcome-bias.md", "尤其要记录那些赚钱但做错了的交易。")),
   R("liquidity_chain", "宏观逻辑要经过中间环节", "流动性/降息/转向的论点：逆风减弱 ≠ 顺风到来；融资改善不等于盈利改善，先写清楚中间环节再下单",
     q(LQ, "宏观逻辑不能跳过中间环节，直接变成买单。"), q(LQ, "融资条件改善，可以和盈利疲软、衰退风险同时存在。"), q(LQ, "“逆风可能正在减弱”，和“顺风已经到来”，是两个不同的交易逻辑。")),
+  R("oil_speed", "原油：价格、速度、原因", "油价快速变动时，先问是需求增强还是哪里出事了；同时看价格、变化速度和原因",
+    q(PV, "我看原油，会同时看价格、变化速度以及背后的原因。"), q(PV, "所以，油价突然上涨时，我会先看，是经济需求增强了，还是哪里又出事了？")),
+  R("vix_confirm", "VIX 要和指数互相确认", "VIX 和指数同涨或同跌 = 方向未被确认，不凭 VIX 的高低下结论",
+    q(PV, "结合VIX的变化趋势和指数走势，判断市场方向是否得到确认，而不是单凭一个高低数值下结论。")),
+  R("oil_squeeze", "高油价挤压航空与消费", "供应冲击推高油价时，航空 / 出行 / 可选消费的利润和需求都承压",
+    q(PV, "航空公司就是很直接的例子。燃油是他们的重要成本。油价上涨会挤压利润，如果提高票价，又可能削弱出行需求。"), q(PV, "消费者购买力变弱，旅游、购物和娱乐支出就容易受到影响，企业营收也会跟着承压。")),
   R("sin_sloth", "七宗罪·懒惰", "该判断、该执行的时候在场；计划先写好", q(D + "seven-sins.md", "一、懒惰：想要交易的回报，却不愿做交易的功课。")),
   R("sin_wrath", "七宗罪·暴怒", "亏损后不报复交易、不加码", q(D + "seven-sins.md", "二、暴怒：你不再寻找机会，你只想把钱赢回来。")),
   R("sin_greed", "七宗罪·贪婪", "到目标就拿钱；不买便宜彩票单", q(D + "seven-sins.md", "三、贪婪：该拿的钱不肯拿，不该省的钱拼命省。")),
@@ -120,6 +126,18 @@ export interface ReminderState {
   regime?: string | null; previousRegime?: string | null; events: MajorEvent[]; journal: JournalEntry[]; capital: number;
   /** §1.2 流动性观察 result (src/macro/liquidity.ts); relevant when it flags something (weakening/tailwind or an alert) */
   liquidity?: { status: string; label: string; alerts: string[] } | null;
+  /** brief oil/VIX flags (src/macro/oilvix.ts): fast oil move, driver heuristic, VIX-vs-index label */
+  oilVix?: { fast: boolean; driver: string; vix: string } | null;
+}
+/** plan card: airline / travel / consumer names or theses */
+export const SQUEEZE_THEME_RE = /航空|机票|出行|旅游|旅行|酒店|邮轮|可选消费|消费股|零售|airlines?|travel|cruise|hotels?|consumer|retail|discretionary/i;
+export const SQUEEZE_TICKERS = new Set(["JETS", "XLY", "DAL", "UAL", "AAL", "LUV", "JBLU", "ALK", "BKNG", "EXPE", "ABNB", "MAR", "HLT", "CCL", "RCL", "NCLH", "XRT"]);
+/** plan card: the squeeze reminder when the brief flags a supply shock and the plan involves airlines / travel / consumer */
+export function oilSqueezeLines(sym: string, thesis: string | null | undefined, oil: { driver?: string } | null | undefined): string[] {
+  if (oil?.driver !== "supply_shock") return [];
+  const hit = SQUEEZE_TICKERS.has(sym.toUpperCase()) ? sym.toUpperCase() : thesis ? SQUEEZE_THEME_RE.exec(thesis)?.[0] : undefined; if (!hit) return [];
+  const r = RULES.oil_squeeze!;
+  return [`- 简报原油驱动 = 偏供应冲击，计划涉及「${hit}」→ **${r.name}**：${r.rule}`, ...r.quotes.map((x) => `  - 「${x.text}」 → [${x.file.replace(/^knowledge\/mentor\//, "")}](${x.file})`)];
 }
 /** plan-card thesis mentions liquidity / rate pivot / rotation-type macro themes */
 export const LIQUIDITY_THEME_RE = /流动性|降息|转向|宽松|放水|缩表|扩表|准备金|回购|比特币|轮动|liquidity|pivot|rate[- ]?cuts?|easing|\bQE\b|\bBTC\b|bitcoin|rotation/i;
@@ -159,6 +177,9 @@ export function selectReminders(s: ReminderState, cap = 3): Reminder[] {
   if (s.leader && BEAR.has(s.leader)) out.push({ id: "short_soft", why: `领先情景 ${s.leader}（偏空）` });
   // 5b) liquidity watch flagged something (status label or BTC < $70k / repo stress alert)
   if (s.liquidity && (s.liquidity.status === "weakening" || s.liquidity.status === "tailwind" || s.liquidity.alerts.length)) out.push({ id: "liquidity_chain", why: `流动性观察：${s.liquidity.label}${s.liquidity.alerts.length ? `；${s.liquidity.alerts.length} 条报警` : ""}` });
+  // 5c) oil fast move / VIX not confirming the index trend (mentor premarket video)
+  if (s.oilVix?.fast) out.push({ id: "oil_speed", why: `原油快速变动；驱动（启发式）：${s.oilVix.driver}` });
+  if (s.oilVix?.vix === "diverge") out.push({ id: "vix_confirm", why: "VIX 与指数同向（背离/未确认）" });
   // 6) NO_TRADE day
   if (s.verdict === "NO_TRADE") out.push({ id: "patience", why: "今天 NO_TRADE" });
   // 7) most frequent sin (30 days, same count the weekly review uses) → this month's focus

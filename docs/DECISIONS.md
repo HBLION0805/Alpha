@@ -1,5 +1,11 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-18 — Mentor premarket video (原油与 VIX): oil speed + driver heuristic, VIX-vs-index confirmation; VIX call hedge = Phase 2 only
+- User-approved. Transcript archived byte-for-byte in knowledge/mentor/premarket-routine/ (not checked word-by-word; the ~70 MB video is not committed).
+- Brief oil block (user's own requirement) adds speed (⚡ |1d| ≥ 3% or |5d| ≥ 8%), a HEURISTIC demand-vs-supply driver (may be 无法判断; copper HG=F added, never filled in) and, for supply shocks, the JETS / XLY pressure note. VIX vs SPX/NDX over 5 days → 方向确认 / 背离/未确认. Flag only; existing oil alarms unchanged. Rules: docs/OIL_VIX.md.
+- Mentor rules `oil_speed`, `vix_confirm` (§1.1) and `oil_squeeze` (plan card, supply shock + airline/travel/consumer plan).
+- **VIX call options as a hedge: PHASE 2 REFERENCE ONLY, not enabled** (catalog `phase2-vix-call-hedge`), same treatment as short stock + covered put. Not added to the practice rules; no sizing/roll/exit logic built.
+
 ## 2026-10-18 — Macro-liquidity theme (Howell 2026-10-16 + mentor review): archive, brief §1.2 watch, plan-card reminder
 - User-approved. Archive knowledge/mentor/macro-liquidity/ byte-for-byte (manifest sha256); Howell attribution kept (published article); mentor review anonymous.
 - Brief §1.2 流动性观察 (docs/LIQUIDITY_WATCH.md): one label 逆风减弱（观察） / 顺风确认 / 无信号, BTC < $70k and SOFR−IORB > +0.10pp alerts. **Flag only — no trade signal, no verdict change.** Conservative: 顺风确认 needs 4 consecutive weekly checkpoints + SOFR−2Y rising + BTC > 200DMA + MOVE lower (MOVE missing → no confirmation).

@@ -1,0 +1,16 @@
+{
+  "note": "Byte-for-byte copy of /workspace/mentor-inbox/videos/premarket-oil-vix.md (received 2026-10-18). A video model transcribed the mentor's premarket video; NOT checked word-by-word against the video (its own 来源说明 header says so). Author name stripped before receipt. The video (premarket-crypto-gold.mp4, ~70 MB) is NOT stored in the repo. test/oilvix.test.ts checks the sha256.",
+  "theme": "premarket-routine",
+  "receivedAt": "2026-10-18",
+  "files": [
+    {
+      "file": "oil-vix-2026-10-18.md",
+      "source": "mentor-inbox/videos/premarket-oil-vix.md",
+      "bytes": 3350,
+      "sha256": "42827c663c6bd6d63648719b7c691a816e7edc563c82cc0e6b0a90abd5ddc68b",
+      "verbatimChecked": false,
+      "video": "mentor-inbox/videos/premarket-crypto-gold.mp4 (not committed)",
+      "videoBytes": 73254427
+    }
+  ]
+}
