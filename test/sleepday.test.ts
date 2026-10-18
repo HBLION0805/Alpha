@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
-import { sleepDay, sleepLine, renderSleep, Q, NO_SLEEP_Q, SLEEP_Q, SLEEP_FILE, TRUMP_SCHEDULED_RE, type SleepInput } from "../src/macro/sleepday.ts";
+import { readdirSync, statSync } from "node:fs";
+import { sleepDay, sleepLine, renderSleep, SLEEP_NOT_UNWATCHED, Q, NO_SLEEP_Q, SLEEP_Q, SLEEP_FILE, TRUMP_SCHEDULED_RE, type SleepInput } from "../src/macro/sleepday.ts";
 import { NYSE_HOLIDAYS, NYSE_EARLY_CLOSE, isTradingDay, nextTradingDay, prevTradingDay, thanksgiving } from "../src/macro/nyse.ts";
 import { opexDate, opexEvents, opexWeek, thirdFriday } from "../src/macro/opex.ts";
 import { buildMacroReport } from "../src/macro/build.ts";
@@ -53,7 +54,7 @@ test("labels: Monday 可以睡; OpEx 不能睡; quad witching 加强; OpEx week 
   const ox = at("2026-11-20"); assert.equal(ox.label, "no_sleep"); assert.equal(ox.strong, false); assert.match(sleepLine(ox, "今日"), /🚨 不能睡\*\* — 月度 OpEx.*「每个月的OpEx」/);
   const quad = at("2026-12-18"); assert.equal(quad.strong, true); assert.match(sleepLine(quad, "今日"), /🚨🚨 不能睡（加强）.*四巫日/);
   const wk = at("2026-11-16"); assert.equal(wk.label, "sleep"); assert.match(sleepLine(wk, "今日"), /⚠️ 本周是 OpEx 周（11\/20 周五到期）/);
-  assert.equal(at("2026-11-18").label, "normal"); assert.match(sleepLine(at("2026-11-18"), "今日"), /普通\*\* — 没有触发导师清单 · ⚠️ 本周是 OpEx 周/);
+  assert.equal(at("2026-11-18").label, "normal"); assert.match(sleepLine(at("2026-11-18"), "今日"), /普通\*\* — 不在导师清单的两类里，按平常流程 · ⚠️ 本周是 OpEx 周/);
   assert.match(sleepLine(at("2026-10-28"), "x"), /FOMC 利率决议 14:00 ET \+ 主席记者会 14:30 ET（导师：「美联储讲话」）/);
   assert.ok(!at("2026-10-28").notes.some((n) => /静默期/.test(n)), "no blackout note on the meeting day");
   assert.match(sleepLine(at("2026-11-10"), "x"), /CPI 08:30 ET（用户补充）/); assert.match(sleepLine(at("2026-11-06"), "x"), /非农 NFP 08:30 ET（用户补充）/);
@@ -106,4 +107,42 @@ test("render: premarket shows today only; afternoon (≥12:00 ET) and closed day
   assert.equal(with_.verdict, without.verdict); assert.deepEqual(with_.reasons, briefVerdict({ macro, pm, sc }).reasons);
   assert.ok(with_.md.indexOf("今日能不能睡") > with_.md.indexOf("## 1. 结论") && with_.md.indexOf("今日能不能睡") < with_.md.indexOf("## 2. 警报"));
   assert.match(with_.md, /🚨 不能睡\*\* — 月度 OpEx/); assert.doesNotMatch(without.md, /今日能不能睡/);
+});
+
+test("可以睡 ≠ 不看盘: every 😴 line carries the reminder; 不能睡 / 普通 / 休市 lines don't", () => {
+  for (const d of ["2026-10-19", "2026-11-25", "2026-12-24", "2026-07-02", "2026-09-04"]) {
+    const l = sleepLine(at(d), "今日"); assert.match(l, /😴 可以睡/); assert.ok(l.endsWith(` ${SLEEP_NOT_UNWATCHED}`), l);
+  }
+  assert.equal(SLEEP_NOT_UNWATCHED, "（可以睡≠不看盘：照常看盘前简报和提醒，止损照设）");
+  for (const d of ["2026-11-20", "2026-11-18", "2026-11-26", "2027-01-15"]) assert.ok(!sleepLine(at(d), "x").includes(SLEEP_NOT_UNWATCHED), d);
+  assert.ok(renderSleep(base({ now: new Date("2026-10-18T22:52:00Z") })).lines.join("\n").includes(`😴 可以睡** — 周一（导师：「周一」） ${SLEEP_NOT_UNWATCHED}`));
+});
+
+const walk = (dir: string): string[] => readdirSync(dir).flatMap((f) => { const p = `${dir}/${f}`; return statSync(p).isDirectory() ? walk(p) : p.endsWith(".ts") ? [p] : []; });
+test("display only (static): nothing but the brief CLI uses the sleep label, and there only for brief text + JSON output", () => {
+  const src = new URL("src", root).pathname, files = walk(src), rel = (p: string) => p.slice(src.length + 1);
+  const users = files.filter((f) => rel(f) !== "macro/sleepday.ts" && /sleepday\.ts|sleepLines|renderSleep|sleepJson|sleepDay\b/.test(readFileSync(f, "utf8"))).map(rel).sort();
+  assert.deepEqual(users, ["cli/brief.ts", "macro/brief.ts"]);
+  // macro/brief.ts only splices the pre-rendered lines into §1
+  assert.deepEqual(readFileSync(`${src}/macro/brief.ts`, "utf8").split("\n").filter((l) => /sleepLines/.test(l) && !/^\s*(\/\*\*|\*)/.test(l)).map((l) => l.trim()), ["sleepLines?: string[] }", "...(i.sleepLines?.length ? i.sleepLines : []),"]);
+  // cli/brief.ts: `sleep` is built, passed as text, written to JSON — never in a condition / filter / alarm / store call
+  const cli = readFileSync(`${src}/cli/brief.ts`, "utf8").split("\n").filter((l) => /\bsleep\b/.test(l) && !/^\s*(\/\/|import)/.test(l));
+  assert.equal(cli.length, 3, cli.join("\n"));
+  assert.match(cli[0]!, /^const sleep = renderSleep\(/); assert.match(cli[1]!, /sleepLines: sleep\.lines,/); assert.match(cli[2]!, /^write\(values\.out\.replace/);
+  for (const l of cli) assert.doesNotMatch(l, /\b(if|while)\s*\(.*sleep|sleep[^,)]*\?|store\.insert|alarm(s|Items)?\(.*sleep|filter\(.*sleep/);
+  // nobody reads the `sleep` field back from brief-latest.json (discipline.ts SessionState.sleep / pretrade.ts session_gate = the trader's own sleep self-check, unrelated)
+  const readers = files.filter((f) => !["macro/sleepday.ts", "cli/brief.ts", "options/discipline.ts", "options/pretrade.ts"].includes(rel(f)) && /\bsleep\b/.test(readFileSync(f, "utf8"))).map(rel);
+  assert.deepEqual(readers, []);
+});
+test("display only (rendered): adding the sleep section changes nothing else — same verdict, reasons, alarms, sections", () => {
+  const n = new Date("2026-10-19T11:30:00Z");
+  const macro = buildMacroReport(new DatabaseSync(":memory:"), [], [], n), pm = buildPremarket({ now: n, data: {}, calendar: [], earnings: null, headlines: [], regimeLabel: macro.regime.label }), sc = buildScenarios({ now: n, data: {}, calendar: [] });
+  pm.alarms = [{ kind: "OIL_SPIKE", level: "ALARM", title: "油价急涨", detail: "WTI +5%", by: "user" }];
+  const sl = renderSleep(base({ now: n })); assert.equal(sl.today.label, "sleep");
+  const cal = [{ kind: "CPI" as const, title: "CPI", date: "2026-10-19", timeEt: "08:30", source: "x" }];
+  const a = buildBrief({ now: n, macro, pm, sc, calendar: cal as never, sleepLines: sl.lines }), b = buildBrief({ now: n, macro, pm, sc, calendar: cal as never });
+  assert.equal(a.verdict, b.verdict); assert.deepEqual(a.reasons, b.reasons);
+  assert.equal(a.md.replace(sl.lines.join("\n") + "\n", ""), b.md, "only the sleep block differs");
+  assert.match(a.md, /🚨 油价急涨：WTI \+5%/); assert.match(a.md, /CPI \*\*（今日）\*\*/);
+  assert.deepEqual([...a.md.matchAll(/^##+ .*/gm)].map((m) => m[0]).filter((h) => !/今日能不能睡/.test(h)), [...b.md.matchAll(/^##+ .*/gm)].map((m) => m[0]));
 });

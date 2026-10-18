@@ -30,7 +30,7 @@ import { fetchReleaseCalendar, type CalendarEvent } from "../ingest/officialCale
 import { loadFedSpeakers, renderFedSpeakers } from "../ingest/fedSpeakers.ts";
 import { loadMajorEvents } from "../options/majorEvents.ts";
 import { fetchLiquidity, liquidityWatch, renderLiquidity } from "../macro/liquidity.ts";
-import { renderSleep, TRUMP_SCHEDULED_RE, TRUMP_MIN_SCORE } from "../macro/sleepday.ts";
+import { renderSleep, sleepJson, TRUMP_SCHEDULED_RE, TRUMP_MIN_SCORE } from "../macro/sleepday.ts";
 import { addDays, etDate } from "../macro/nyse.ts";
 import { TRUMP_SOURCES, scoreTrumpPost, fullText } from "../trump.ts";
 
@@ -117,7 +117,7 @@ if (!values["no-alarms"]) {
 store.close();
 const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); };
 write(values.out, res.md);
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: { today: { date: sleep.today.date, label: sleep.today.label, strong: sleep.today.strong, noSleep: sleep.today.noSleep.map((r) => r.text), sleep: sleep.today.sleep.map((r) => r.text) }, next: sleep.next ? { date: sleep.next.date, label: sleep.next.label, noSleep: sleep.next.noSleep.map((r) => r.text), sleep: sleep.next.sleep.map((r) => r.text) } : null }, oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");

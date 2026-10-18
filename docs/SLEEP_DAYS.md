@@ -3,6 +3,10 @@
 Source: knowledge/mentor/premarket-routine/sleep-days-2026-10-18.md (the mentor's post, verbatim; 老川 = Trump). Code: `src/macro/sleepday.ts`, NYSE calendar `src/macro/nyse.ts`, OpEx `src/macro/opex.ts`. User-approved 2026-10-18.
 Shown in brief §1 under the verdict, on every `npm run brief` (premarket and afternoon runs). **It never changes the verdict and never adds a NO_TRADE reason.** Each reason cites the mentor line it maps to; CPI / NFP are marked 用户补充.
 
+**What 😴 可以睡 means (用户补充, 2026-10-18):** 「可以睡不代表不观察的，不是说直接就一点盘不看了」. It marks a lower-risk day where you can relax; it does **not** mean stop watching. Every 可以睡 line ends with 「（可以睡≠不看盘：照常看盘前简报和提醒，止损照设）」. 普通 is neutral: 「不在导师清单的两类里，按平常流程」.
+
+**Display only:** the label is computed in `src/cli/brief.ts` and used only for the brief text (`sleepLines`) and the `sleep` field of brief-latest.json, which nothing reads. It never suppresses or skips an alert, alarm, brief section, event alert, or paper mark (test/sleepday.test.ts checks this both statically and on the rendered brief).
+
 Labels: 🚨 不能睡 · 🚨🚨 不能睡（加强）(quad witching) · 😴 可以睡 · 普通 · 休市. **不能睡 wins over 可以睡**; both sets of reasons are printed.
 Today is always shown; the next trading day is added when the run is at/after 12:00 ET (afternoon brief) or when today is closed.
 

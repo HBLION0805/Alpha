@@ -1,6 +1,7 @@
 /**
  * 今日能不能睡 — the mentor's "不能睡 / 可以睡" day list as a daily label in the brief (premarket + afternoon runs).
- * Flag only: never changes the verdict, never adds a NO_TRADE reason. Pure: the CLI passes events, Fed speakers, Trump signals.
+ * Flag only / display only: never changes the verdict, never adds a NO_TRADE reason, never suppresses an alert, alarm, brief section or paper mark.
+ * 😴 可以睡 = lower-risk day, can relax — NOT "stop watching" (user 2026-10-18). Pure: the CLI passes events, Fed speakers, Trump signals.
  * Source: knowledge/mentor/premarket-routine/sleep-days-2026-10-18.md (verbatim). Rules: docs/SLEEP_DAYS.md.
  * Conflicts: 不能睡 wins over 可以睡; both reasons are shown. Missing data is said, never guessed.
  */
@@ -12,6 +13,9 @@ export const SLEEP_FILE = "knowledge/mentor/premarket-routine/sleep-days-2026-10
 /** verbatim lines of the mentor's list (test: each is a line of SLEEP_FILE) */
 export const Q = { opex: "每个月的OpEx", fed: "美联储讲话", trump: "老川准备拉屎的时候", monday: "周一", summer: "美国大部分暑假", xmas: "美国圣诞节到新年", thanks: "美国感恩节前后几天", longWeekend: "美国长周末公众假期前一天" } as const;
 export const NO_SLEEP_Q = [Q.opex, Q.fed, Q.trump], SLEEP_Q = [Q.monday, Q.summer, Q.xmas, Q.thanks, Q.longWeekend];
+/** user 2026-10-18: 「可以睡不代表不观察的，不是说直接就一点盘不看了」 → appended wherever 😴 可以睡 is shown */
+export const SLEEP_NOT_UNWATCHED = "（可以睡≠不看盘：照常看盘前简报和提醒，止损照设）";
+export const NORMAL_TEXT = "不在导师清单的两类里，按平常流程";
 export const TRUMP_MIN_SCORE = 70; // same bar as a Trump alert (src/trump.ts)
 export const TRUMP_WINDOW_H = 24;
 /** news headline says Trump is about to announce / sign / address something */
@@ -85,8 +89,8 @@ export function sleepLine(s: SleepDay, head: string): string {
   const flags = s.flags.length ? ` · ${s.flags.join(" · ")}` : "";
   if (s.label === "closed") return `${h}休市**${flags}`;
   if (s.label === "no_sleep") return `${h}${s.strong ? "🚨🚨 不能睡（加强）" : "🚨 不能睡"}** — ${s.noSleep.map(r).join("；")}${s.sleep.length ? ` · 可以睡的理由也成立，但不能睡优先：${s.sleep.map(r).join("；")}` : ""}${flags}`;
-  if (s.label === "sleep") return `${h}😴 可以睡** — ${s.sleep.map(r).join("；")}${flags}`;
-  return `${h}普通** — 没有触发导师清单${flags}`;
+  if (s.label === "sleep") return `${h}😴 可以睡** — ${s.sleep.map(r).join("；")}${flags} ${SLEEP_NOT_UNWATCHED}`;
+  return `${h}普通** — ${NORMAL_TEXT}${flags}`;
 }
 
 /** Brief section: today; plus the next trading day in the afternoon run (ET ≥ 12:00) or when today is closed. */
@@ -100,4 +104,10 @@ export function renderSleep(base: Omit<SleepInput, "date">): { lines: string[]; 
   L.push(`- 导师清单（原文）→ [sleep-days-2026-10-18.md](${SLEEP_FILE})：不能睡 ${NO_SLEEP_Q.map((q) => `「${q}」`).join("")}；可以睡 ${SLEEP_Q.map((q) => `「${q}」`).join("")}`,
     "- _CPI / 非农是用户补充；OpEx 周和季度四巫日是用户要求的加注。规则：docs/SLEEP_DAYS.md_", "");
   return { lines: L, today: t, next: n };
+}
+
+/** brief-latest.json `sleep` field — informational only; nothing reads it back. */
+export function sleepJson(r: { today: SleepDay; next: SleepDay | null }) {
+  const j = (s: SleepDay) => ({ date: s.date, label: s.label, strong: s.strong, noSleep: s.noSleep.map((x) => x.text), sleep: s.sleep.map((x) => x.text), meaning: s.label === "sleep" ? SLEEP_NOT_UNWATCHED : undefined });
+  return { today: j(r.today), next: r.next ? j(r.next) : null };
 }

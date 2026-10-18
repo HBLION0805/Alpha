@@ -1,6 +1,7 @@
 # Standing decisions (memory-like notes)
 
 ## 2026-10-18 — 今日能不能睡 (mentor's 不能睡 / 可以睡 list) as a brief label; flag only
+- **用户补充:** 「可以睡不代表不观察的，不是说直接就一点盘不看了」 → 😴 可以睡 = lower-risk / can relax, NOT stop watching; every 可以睡 line says 「（可以睡≠不看盘：照常看盘前简报和提醒，止损照设）」. Display only: nothing keys off the label.
 - User-approved. Post archived verbatim in knowledge/mentor/premarket-routine/sleep-days-2026-10-18.md (sha256 test). 老川 = Trump.
 - Brief §1 label every run (today; + next trading day in the afternoon run or when today is closed): 🚨 不能睡 / 🚨🚨 加强 / 😴 可以睡 / 普通 / 休市. Never changes the verdict.
 - 不能睡: OpEx (quad witching = 加强; holiday Friday → previous trading day; other OpEx-week days only get a ⚠️ flag), FOMC decision + Chair press conference, Fed officials' speeches from the existing Fed speakers cache (~14-day window; beyond it: 讲话未知, FOMC only), Trump post ≥ 70 in the last 24h or a "Trump to announce…" headline, CPI / NFP (user addition). 可以睡: Monday, Jul–Aug, Dec 24–Jan 1, Thanksgiving week, day before a long-weekend NYSE holiday. 不能睡 wins; both reasons shown.
