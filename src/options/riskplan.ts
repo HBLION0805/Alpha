@@ -55,7 +55,13 @@ export function buildRiskPlan(legs: L[], a: RiskArgs): { plan: RiskPlan | null; 
       const maxLoss = Math.abs(an.maxLoss), dte = Math.max(1, Math.round((Date.parse(exp) - Date.parse(a.asOf)) / 864e5));
       const entryValue = Math.abs(an.netDebit);
       const d3030 = new Date(Date.parse(a.asOf) + Math.round(dte * 0.3) * 864e5).toISOString().slice(0, 10);
+      // stock + options (covered call / collar / protective put): the stock leg also gets the mechanical stock stop (default −7% from its entry).
+      // Max loss stays the structure's stock-to-zero figure; whichever stop triggers first applies (DECISIONS 2026-10-17).
+      const st = legs.filter((l) => l.type === "stock"), sq = st.reduce((s, l) => s + l.qty, 0), stopPct = a.stopPct ?? 7;
+      const sEntry = sq ? st.reduce((s, l) => s + l.qty * l.premium, 0) / sq : 0, sSide = sq >= 0 ? "long" as const : "short" as const;
+      const stock = st.length && sq !== 0 && stopPct > 0 ? { entry: Number(sEntry.toFixed(4)), stopPct, side: sSide, stopPrice: Number((sSide === "long" ? sEntry * (1 - stopPct / 100) : sEntry * (1 + stopPct / 100)).toFixed(2)) } : undefined;
       plan = { instrument: "option", hedge: { method: a.hedge as HedgeMethod, detail: a.hedgeDetail ?? "" }, invalidation: a.invalidation ?? "", maxLoss: Math.round(maxLoss), maxLossPct: Number(((maxLoss / a.capital) * 100).toFixed(2)), capPct,
+        ...(stock ? { stock } : {}),
         option: { entryValue: Math.round(entryValue), dteAtEntry: dte, rule3030Date: d3030, loss30Value: Math.round(entryValue * 0.7), loss30Pnl: -Math.round(entryValue * 0.3) }, rule: STOP_RULE };
     }
   }
@@ -70,10 +76,21 @@ export function tightenOnly(plan: RiskPlan, next: { stopPrice?: number; maxLoss?
   return null;
 }
 
+/** Mark-time check of the written stops (warn only): stock stop on the underlying spot, 30/30 date, −30% value (debit structures only).
+ *  Returns every stop that has triggered; the first one to trigger applies. */
+export function stopHits(p: RiskPlan | undefined, m: { value: number; spot: number | null }, todayEt: string): string[] {
+  if (!p) return [];
+  const out: string[] = [];
+  if (p.stock && m.spot != null && (p.stock.side === "long" ? m.spot <= p.stock.stopPrice : m.spot >= p.stock.stopPrice))
+    out.push(`股票机械止损触发：现价 ${m.spot} ${p.stock.side === "long" ? "≤" : "≥"} ${p.stock.stopPrice}（${p.stock.side === "long" ? "−" : "+"}${p.stock.stopPct}%）`);
+  if (p.option && p.option.entryValue > 0 && p.option.loss30Value > 0 && m.value > 0 && m.value <= p.option.loss30Value) out.push(`30/30 价值止损触发：价值 $${m.value} ≤ $${p.option.loss30Value}（−30%）`);
+  if (p.option && todayEt >= p.option.rule3030Date) out.push(`30/30 时间到：${p.option.rule3030Date}（论点没兑现就离场）`);
+  return out;
+}
 export function renderRiskPlan(p: RiskPlan): string {
   return ["### 风险计划", `- 对冲：${p.hedge.method} — ${p.hedge.detail}`, `- 论点失效：${p.invalidation}`,
     `- 最大亏损 $${p.maxLoss}（${p.maxLossPct}%，硬上限 ${p.capPct}%）`,
-    ...(p.stock ? [`- 机械止损 ${p.stock.side === "long" ? "−" : "+"}${p.stock.stopPct}% → ${p.stock.stopPrice}（stop-loss.md：一般是 -7%）`] : []),
+    ...(p.stock ? [`- ${p.option ? "股票腿" : ""}机械止损 ${p.stock.side === "long" ? "−" : "+"}${p.stock.stopPct}% → ${p.stock.stopPrice}（stop-loss.md：一般是 -7%）${p.option ? " · 与下面 30/30 并行，先触发的执行" : ""}`] : []),
     ...(p.option ? [`- 30/30 参考：${p.option.rule3030Date}（剩余 ${p.option.dteAtEntry} 天的 30%）或价值跌到 $${p.option.loss30Value}（−30%，$${p.option.loss30Pnl}）；论点一旦出问题，时钟从那一刻重算（stops.ts）`] : []),
     `- ${p.rule}`].join("\n");
 }

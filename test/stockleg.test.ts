@@ -102,3 +102,46 @@ test("daily cap: mentor_shadow losses count (live 🚨, plan-card budget, brief 
   const after = M({ id: "o", source: "paper_sim", openedAt: "2026-10-15T19:45:00Z" });
   assert.match(autoSins(after, [sh, sh2, after]).find((s) => s.sin === "wrath")!.reason, /含大佬影子单/);
 });
+
+// ---------- 2026-10-17 follow-up: real_practice out of every daily-loss consumer; covered-call stock stop ----------
+test("daily cap: real_practice losses count nowhere (alert, budget, brief, pretrade, wrath, readiness)", async () => {
+  const { dailyLossCheck } = await import("../src/options/discipline.ts");
+  const now = new Date("2026-10-15T20:30:00Z");
+  const real = M({ id: "r1", source: "real_practice", closedAt: "2026-10-15T18:00:00Z", pnl: -150 });
+  const sim = M({ id: "s1", source: "paper_sim", closedAt: "2026-10-15T18:30:00Z", pnl: -60 });
+  assert.ok(!capFlags([real, sim], 5000, now).some((x) => /日亏上限/.test(x)));
+  assert.deepEqual(dailyBudget([real, sim], 5000, now), { used: 60, remaining: 40 });
+  assert.ok(!selectReminders({ now: new Date("2026-10-16T11:30:00Z"), verdict: "RESEARCH_OK", leader: "base", previousLeader: "base", regime: "MIXED", previousRegime: "MIXED", events: [], journal: [real, sim], capital: 5000 }).some((r) => r.id === "wrath_stop"));
+  const log = [real, sim].map((e) => ({ id: e.id, openedAt: e.openedAt, closedAt: e.closedAt, pnl: e.pnl, source: e.source }));
+  assert.equal(dailyLossCheck(log, "2026-10-15", 5000, 0, 2).severity, "OK");
+  assert.equal(dailyLossCheck([...log, { ...log[1]!, id: "s2", pnl: -50 }], "2026-10-15", 5000, 0, 2).severity, "BLOCK", "sim −$110 still blocks");
+  const after = M({ id: "o", source: "paper_sim", openedAt: "2026-10-15T19:45:00Z" });
+  assert.ok(!(autoSins(after, [real, after]).find((s) => s.sin === "wrath")?.reason ?? "").includes("超日亏上限"));
+  const f = M({ id: "f1", kind: "formal", source: "paper_sim", closedAt: "2026-10-15T17:00:00Z", pnl: -40, commissions: 0 });
+  assert.ok(!readiness({ journal: [f, real], capital: 5000, shockDates: [] }).criteria.find((c) => c.id === "loss_caps")!.missing.some((x) => /单日亏/.test(x)));
+});
+test("covered call risk plan: stock stop −7% on the stock leg + 30/30, max loss still stock-to-zero; first trigger applies", async () => {
+  const { buildRiskPlan, renderRiskPlan, stopHits } = await import("../src/options/riskplan.ts");
+  const r = buildRiskPlan(CC, { hedge: "direct", hedgeDetail: "x", invalidation: "x", capital: 5000, asOf: "2026-10-16" });
+  const p = r.draft!;
+  assert.equal(p.maxLoss, 4880);
+  assert.deepEqual(p.stock, { entry: 50, stopPct: 7, side: "long", stopPrice: 46.5 });  // 50 × 0.93
+  assert.deepEqual(p.option, { entryValue: 4880, dteAtEntry: 35, rule3030Date: "2026-10-27", loss30Value: 3416, loss30Pnl: -1464 });
+  const txt = renderRiskPlan(p); assert.match(txt, /股票腿机械止损 −7% → 46.5/); assert.match(txt, /30\/30 参考：2026-10-27/); assert.match(txt, /先触发的执行/);
+  assert.deepEqual(stopHits(p, { value: 4700, spot: 47 }, "2026-10-20"), []);
+  assert.match(stopHits(p, { value: 4560, spot: 46.4 }, "2026-10-20")[0]!, /股票机械止损触发：现价 46.4 ≤ 46.5/);   // stock stop first (100×46.4 − ~80)
+  assert.match(stopHits(p, { value: 4900, spot: 50 }, "2026-10-27")[0]!, /30\/30 时间到/);
+  assert.equal(buildRiskPlan(CC, { hedge: "direct", hedgeDetail: "x", invalidation: "x", capital: 5000, asOf: "2026-10-16", stopPct: 5 }).draft!.stock!.stopPrice, 47.5);
+  // options-only structures get no stock block; stock-only plans unchanged
+  assert.equal(buildRiskPlan([CC[1]!, { type: "call", strike: 50, qty: 1, premium: 2.5, expiration: "2026-11-20" }], { hedge: "built_in_spread", hedgeDetail: "x", invalidation: "x", capital: 5000, asOf: "2026-10-16" }).draft!.stock, undefined);
+  assert.equal(buildRiskPlan([CC[0]!], { hedge: "direct", hedgeDetail: "x", invalidation: "x", capital: 50000, asOf: "2026-10-16" }).plan!.stock!.stopPrice, 46.5);
+  // practice open: exit plan lists both
+  const j: PaperJournal = { capital: 5000, entries: [] };
+  const prop = { symbol: "XYZ", strategy: "covered_call", asOf: "2026-10-16", underlyingPrice: 50, thesisHorizonDays: 20, capital: 5000, buyingPower: 10000,
+    legs: [{ type: "stock", strike: 50, qty: 100, premium: 50 }, { type: "call", strike: 55, qty: -1, premium: 1.2, expiration: "2026-11-20", openInterest: 5000, bid: 1.15, ask: 1.25 }],
+    discipline: { journal: [], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" }, market: { lowVolume: false, unclearDirection: false, chop: false, poorRR: false }, plannedMaxLoss: 50, entryRange: { low: 49, high: 51 }, side: "long" } } as never;
+  const e = paperOpen(j, prop, { now: new Date("2026-10-16T15:00:00Z"), kind: "practice", card: { id: "c", sym: "XYZ", dir: "bull", thesis: "t", trade: { mechanical: "m", invalidationLevel: 46.5, tpKind: "narrative" } }, critique: { at: "x", objections: [], blocks: 0, warns: 0 } }).entry!;
+  assert.ok(e.exitRules.some((x) => /mechanical stop 46.5 \(−7% on the stock leg; with 30\/30 below, first to trigger applies\)/.test(x)), e.exitRules.join(" | "));
+  assert.ok(e.exitRules.some((x) => /^30\/30: 2026-10-27/.test(x)));
+  assert.equal(e.riskPlan!.maxLoss, 4880);
+});

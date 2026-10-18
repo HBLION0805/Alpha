@@ -28,7 +28,7 @@ const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
 /** open SIMULATED positions; real_practice records (real broker trades logged for review) are never marked or counted toward the position cap */
 export const openPaper = (j: PaperJournal) => j.entries.filter((e) => e.mode === "paper" && !e.closedAt && e.source !== "real_practice");
-const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, closedAt: e.closedAt, pnl: e.pnl, maxLoss: e.maxLoss });
+const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, closedAt: e.closedAt, pnl: e.pnl, maxLoss: e.maxLoss, source: e.source });
 
 /** Simulated fill: mid if bid/ask given, else the proposal premium. */
 const fill = (l: Proposal["legs"][number]) => (l.bid != null && l.ask != null ? (l.bid + l.ask) / 2 : l.premium);
@@ -134,7 +134,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
     id: `P${String(j.entries.length + 1).padStart(3, "0")}`, mode: "paper", openedAt: now, symbol: p.symbol, strategy: p.strategy,
     thesis: a.thesis, stop: a.stop, invalidation: a.invalidation!, thesisRecordedAt: now, stopRecordedAt: now, motive: a.motive, timeStopAt: a.timeStopAt,
     view: { direction: a.thesis!, volatility: "n/a (paper)" }, ivRank: null, greeks: { delta: 0, gamma: 0, theta: 0, vega: 0 }, expectedMove: null,
-    structureRationale: p.strategy, maxLoss: rp.plan!.maxLoss, kind: a.kind ?? "formal", riskPlan: rp.plan!, exitRules: [`stop: ${a.stop}`, `invalidation: ${a.invalidation}`, ...(rp.plan!.stock ? [`mechanical stop ${rp.plan!.stock.stopPrice} (−${rp.plan!.stock.stopPct}%)`] : []), ...(rp.plan!.option ? [`30/30: ${rp.plan!.option.rule3030Date} or value ≤ $${rp.plan!.option.loss30Value}`] : []), rp.plan!.rule, renderTakeProfit(tp.plan!), ...(a.timeStopAt ? [`time stop: ${a.timeStopAt}`] : [])],
+    structureRationale: p.strategy, maxLoss: rp.plan!.maxLoss, kind: a.kind ?? "formal", riskPlan: rp.plan!, exitRules: [`stop: ${a.stop}`, `invalidation: ${a.invalidation}`, ...(rp.plan!.stock ? [`mechanical stop ${rp.plan!.stock.stopPrice} (${rp.plan!.stock.side === "long" ? "−" : "+"}${rp.plan!.stock.stopPct}%${rp.plan!.option ? " on the stock leg; with 30/30 below, first to trigger applies" : ""})`] : []), ...(rp.plan!.option ? [`30/30: ${rp.plan!.option.rule3030Date} or value ≤ $${rp.plan!.option.loss30Value}`] : []), rp.plan!.rule, renderTakeProfit(tp.plan!), ...(a.timeStopAt ? [`time stop: ${a.timeStopAt}`] : [])],
     takeProfit: tp.plan!, tpHits: [], ...(a.planId ? { planId: a.planId } : {}), ...(a.cardId ? { cardId: a.cardId } : {}), capitalAtEntry: j.capital, concurrentAtEntry: open.length + 1, legs, underlyingAtEntry: spot, marks: [],
     critique: a.critique ? { ...a.critique, acked: a.critique.warns > 0 } : undefined,
     ...(warnTags.length ? { warnTags, warnDetails, violations: warnTags.includes("warn_over_cap") ? ["exceeds_1pct_cap"] : [] } : {}),

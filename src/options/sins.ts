@@ -5,7 +5,7 @@
  *  - auto:   derived ONLY from what the ledger actually records (autoSins below); always a candidate to confirm at review.
  * Warn-only: nothing here blocks a trade. Mentor-shadow trades are never tagged (the mentor's decision, not the user's behaviour).
  */
-import type { JournalEntry } from "./journal.ts";
+import { countsTowardDailyCap, type JournalEntry } from "./journal.ts";
 import { effectiveRules, type RuleCard } from "./rules.ts";
 
 export type SinId = "sloth" | "wrath" | "greed" | "envy" | "gluttony" | "pride" | "lust";
@@ -40,10 +40,9 @@ export function autoSins(e: JournalEntry, all: JournalEntry[], rules?: Partial<R
   // 暴怒: opened the same ET day after one of your own losing closes; after the daily cap was already breached; bigger size after a loss
   const day = etDay(e.openedAt), peers = all.filter((x) => own(x) && x.id !== e.id);
   const lossesBefore = peers.filter((x) => x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt) && (x.pnl ?? 0) < 0).sort((a, b) => t(a.closedAt!) - t(b.closedAt!));
-  // daily-cap breach: every trade closed earlier that day now INCLUDING mentor_shadow (DECISIONS 2026-10-17). real_practice was already
-  // counted here before (unlike breach.ts / brief) — left unchanged, flagged as an open question in DECISIONS.
+  // daily-cap breach: simulated trades closed earlier that day (formal + practice + mentor_shadow); real_practice never counts (DECISIONS 2026-10-17)
   const perDay = capital * effectiveRules(rules).dailyLossLimitPct / 100;
-  const realized = all.filter((x) => x.id !== e.id && x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt)).reduce((s, x) => s + (x.pnl ?? 0), 0);
+  const realized = all.filter((x) => x.id !== e.id && countsTowardDailyCap(x) && x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt)).reduce((s, x) => s + (x.pnl ?? 0), 0);
   const breached = -realized > perDay;
   if (lossesBefore.length || breached) {
     const last = lossesBefore.at(-1), mins = last ? Math.round((t(e.openedAt) - t(last.closedAt!)) / 60000) : Infinity;

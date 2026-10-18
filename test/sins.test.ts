@@ -41,9 +41,12 @@ test("wrath: same-day loss then quick / same-symbol / bigger / after daily cap; 
   assert.ok(!ids(before, all).includes("wrath")); assert.ok(!ids(next, all).includes("wrath"));
   const win = T({ id: "w", closedAt: "2026-10-15T19:12:00Z", pnl: 20 });
   assert.ok(!ids(T({ id: "z", openedAt: "2026-10-15T19:20:00Z" }), [win]).includes("wrath"));
-  const big = T({ id: "B", symbol: "SPY", closedAt: "2026-10-15T16:00:00Z", pnl: -120 });
+  const big = T({ id: "B", symbol: "SPY", source: "paper_sim", closedAt: "2026-10-15T16:00:00Z", pnl: -120 });
   const after = T({ id: "A", symbol: "QQQ", openedAt: "2026-10-15T19:00:00Z", maxLoss: 10 });
   assert.match(autoSins(after, [big, after]).find((s) => s.sin === "wrath")!.reason, /超日亏上限/);
+  // real_practice losses never count toward the $5k sim daily cap (DECISIONS 2026-10-17); the own-loss-then-quick-open part still applies to them
+  const realBig = T({ ...big, source: "real_practice" }), a3 = T({ id: "A3", symbol: "QQQ", openedAt: "2026-10-15T19:00:00Z", maxLoss: 10 });
+  assert.ok(!autoSins(a3, [realBig, a3]).find((s) => s.sin === "wrath")?.reason.includes("超日亏上限"));
   // DECISIONS 2026-10-17: mentor_shadow losses COUNT toward the daily cap → opening after a shadow-driven breach is 暴怒
   assert.match(autoSins(T({ id: "mm", openedAt: "2026-10-15T19:20:00Z" }), [T({ ...big, source: "mentor_shadow" })]).find((s) => s.sin === "wrath")!.reason, /超日亏上限 \$100/);
   assert.ok(!ids(T({ id: "m2", openedAt: "2026-10-15T19:20:00Z" }), [T({ ...big, pnl: -60, source: "mentor_shadow" })]).includes("wrath"), "a shadow loss under the cap is not a reason by itself (it is not your own loss)");

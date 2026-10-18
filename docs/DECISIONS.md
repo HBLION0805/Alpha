@@ -1,5 +1,13 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-17 (later) — real_practice never counts toward the sim daily cap; covered-call stock stop
+- User decision (both open items closed). **Daily loss sum = formal + practice + mentor_shadow simulated trades only — everywhere**: live 🚨 (breach.ts), brief 暴怒 / 今天结束 (mentor.ts),
+  plan-card budget (card.ts), pretrade daily_loss_limit (discipline.ts dailyLossCheck now skips `source: real_practice` logs), 暴怒-after-breach tag (sins.ts), readiness day check. One predicate: `journal.ts countsTowardDailyCap`.
+  real_practice still gets the other 暴怒 reasons (opening minutes after one's own losing close / same symbol / bigger size) — those are behavior, not the cap.
+- **Covered call / any stock + option structure**: the risk plan now carries the stock-leg mechanical stop (default −7% from the stock leg's entry, `--stop-pct` overrides) alongside the option 30/30 rule.
+  Max loss stays stock-to-zero (structure payoff). Exit rules and `renderRiskPlan` show both; at mark time `riskplan.ts stopHits` prints every triggered stop (stock stop on spot, 30/30 date, −30% value for debit structures) — the first to trigger applies. Warn-only output; nothing is auto-closed.
+- Ledger-day impact: none. Sim-only day totals are unchanged (10/16 −$147 breach stays; real_practice was already outside breach.ts / brief / card); no stored or derived 暴怒-after-breach reason changes (none was triggered by real_practice closes).
+
 ## 2026-10-17 — mentor_shadow trades COUNT toward the daily loss cap ($100/day = 2% of $5k)
 - User decision. One definition: `journal.ts countsTowardDailyCap` = every simulated trade (formal + practice + mentor_shadow); real_practice (real-account trades logged for review) stays out.
 - Applied to: live 🚨 day breach at mark (breach.ts, already included shadow), plan-card daily budget (card.ts, already included), pretrade daily_loss_limit (already included),
@@ -7,7 +15,7 @@
   暴怒 tag "opened after the daily cap was breached" (sins.ts — **changed**: shadow closes now count, and a breach alone triggers it even with no own losing close),
   readiness loss_caps day check (readiness.ts — **changed**: a day's loss = formal + mentor_shadow closes that day; shadow trades are still never readiness trades for sample / expectancy / per-trade / drawdown).
 - Per-trade $50 cap for mentor_shadow: unchanged and consistent — flagged (exceeds_1pct_cap / open_loss_over_cap / "超出 Alpha 风控") but never refused; not a readiness criterion (shadow trades aren't readiness trades).
-- Open question (not changed): sins.ts 暴怒-after-breach also counts real_practice closes (it did before), while breach.ts / brief / card exclude them.
+- ~~Open question~~ closed (see "later" entry above): real_practice is out of every daily-loss consumer, including the 暴怒-after-breach tag.
 - Existing ledger impact: 2026-10-16 becomes a breach day (paper_sim −49.50 + mentor_shadow −41 −56.50 = −$147 > $100). Both shadow trades closed 16:05 ET; no own open after that → no new 暴怒 tags. The Mon 10/19 brief will show 暴怒 / 今天结束 for 10/16 (3-day window). Readiness unchanged (no formal trades yet).
 
 ## 2026-10-17 — Stock-leg valuation fix + practice false hard-refuse

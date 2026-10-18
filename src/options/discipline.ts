@@ -11,7 +11,7 @@ import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
 export const D = (n: number, quote: string) => `纪律 #${String(n).padStart(2, "0")}: ${quote} (knowledge/mentor/discipline/discipline-01-20.md)`;
 export interface DiscSignal { id: string; severity: "NO_TRADE" | "EXIT" | "BLOCK" | "WARN" | "OK" | "INFO"; detail: string; cite: string }
 
-export interface TradeLog { id: string; openedAt: string; closedAt?: string; is0dte?: boolean; pnl?: number; maxLoss?: number }
+export interface TradeLog { id: string; openedAt: string; closedAt?: string; is0dte?: boolean; pnl?: number; maxLoss?: number; source?: string }
 const day = (iso: string) => iso.slice(0, 10);
 
 // #4 0DTE: one trade per day
@@ -24,7 +24,8 @@ export function zeroDteCheck(log: TradeLog[], todayEt: string): DiscSignal {
 
 // #11 daily max loss: rule-card dailyLossLimitPct (user-confirmed 2%, configurable)
 export function dailyLossCheck(log: TradeLog[], todayEt: string, capital: number, openPnlToday = 0, limitPct = DEFAULT_RULES.dailyLossLimitPct): DiscSignal {
-  const realized = log.filter((t) => t.closedAt && day(t.closedAt) === todayEt).reduce((s, t) => s + (t.pnl ?? 0), 0);
+  // simulated trades only (formal + practice + mentor_shadow); real_practice never counts toward the $5k sim cap (DECISIONS 2026-10-17)
+  const realized = log.filter((t) => t.source !== "real_practice" && t.closedAt && day(t.closedAt) === todayEt).reduce((s, t) => s + (t.pnl ?? 0), 0);
   const total = realized + openPnlToday; const lim = (capital * limitPct) / 100;
   return -total >= lim
     ? { id: "daily_loss_limit", severity: "BLOCK", detail: `today's P&L $${total.toFixed(0)} hit the daily limit −$${lim.toFixed(0)} (${limitPct}%). Today is over; close the software`, cite: D(11, "到了这个数字，今天结束。不管你觉得下一笔有多好") }

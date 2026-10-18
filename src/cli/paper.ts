@@ -29,7 +29,7 @@ import { parseChain, type Chain } from "../options/chain.ts";
 import { unwrapJson } from "../options/robinhood.ts";
 import { yahooDaily } from "../adapters/yahoo.ts";
 import { readiness } from "../options/readiness.ts";
-import { renderRiskPlan } from "../options/riskplan.ts";
+import { renderRiskPlan, stopHits } from "../options/riskplan.ts";
 import { critique, renderCritique, proposalSide } from "../review/critique.ts";
 import type { Proposal } from "../options/pretrade.ts";
 import type { Motive } from "../options/discipline.ts";
@@ -114,6 +114,7 @@ if (cmd === "open") {
   const toMark = [...openPaper(j), ...j.entries.filter((e) => e.source === "real_practice" && !e.closedAt && (e.legs ?? []).every((l) => l.premium != null))];
   for (const e of toMark) {
     try { const m = await paperMark(e, { spot, chains }, now); upsertMark(e, m); process.stdout.write(`${e.id} ${e.symbol}: P&L $${m.pnl}${m.estimated ? "（估算）" : ""} (${((m.pnl / (e.capitalAtEntry ?? j.capital)) * 100).toFixed(2)}%) · ${m.sources.join("; ")}\n`);
+      for (const s of stopHits(e.riskPlan, m, etDate(now))) process.stdout.write(`🛑 ${e.id} ${e.symbol}: ${s} → 先触发的止损执行\n`);
       for (const h of checkTakeProfit(e.takeProfit, costBasis(e.legs ?? []), m.pnl, etDate(now), e.tpHits)) { (e.tpHits ??= []).push(h.gainPct); process.stdout.write(`⚠️ ${e.id} ${e.symbol}: ${h.text}\n`); } }
     catch (err) { process.stdout.write(`${e.id} ${e.symbol}: 无法估值 ${(err as Error).message}\n`); }
   }
