@@ -1,5 +1,11 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-17 — Shadow tracks A/B: forward paper test of the backtest hypotheses (virtual, separate ledger)
+- User-approved. Spec docs/SHADOW_TRACKS.md; code src/shadow/engine.ts, src/cli/shadow.ts (`npm run shadow`, `npm run shadow -- report`); ledger data/out/shadow/ledger.json.
+- Track A = v2a exactly (SPY long-only + leader/≥3-of-4 confirmations + prior-day breakout + 48h FOMC/CPI/NFP gate, next-open fills, 7 bp/side, $50 risk sizing on $5,000, 10-bar time stop).
+- Track B = v2b + ONE added condition: shorts only while the signal-day SPY close < its 200-day SMA. No other filter (both hawkish and risk_off shorts stay, as in v2b).
+- Not retuned. Brief NO_TRADE verdict recorded, not used (the backtest omitted it). Never touches the paper journal; not counted toward readiness, caps, sins, 门槛校准 or confidence. Weekly §八之五 shows it as info.
+
 ## 2026-10-17 — Mentor material shapes daily use (导师提醒), not just the knowledge base
 - User feedback: "don't just add it to the knowledge base." Code: src/review/mentor.ts (rules = name + one-line rule + verbatim quotes + topic file; every quote is checked to be a verbatim substring of the mentor's original text, not the DK sections — test/mentor.test.ts).
 - **Brief §1.1 导师提醒** (every run.sh brief, premarket and afternoon): 1–3 reminders chosen from real state, in priority order: daily loss limit hit in the last 3 days → 暴怒/今天结束 (always first); major event within ±72 h (majorEvents loader: official FOMC/CPI/NFP + flagged) → 72 小时原则; ≥3 straight wins or a ≥1% day in the last 3 days → 骄兵必败; macro regime change or leader flip → 图表背后的逻辑还成立吗; bearish leader (hawkish / risk_off) → 柿子挑软的捏 / 不空强; NO_TRADE → 少交易 / 现金也是仓位; most frequent sin in 30 days (same count as weekly §八之三) → this month's focus. Cap 3; nothing triggered → one rotating general reminder. Quotes rotate deterministically by ET day; no quote repeats within a brief.

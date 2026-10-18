@@ -29,7 +29,9 @@ const FIX: Record<string, string> = {
   market_reaction_misread: "数据/新闻后先看市场是否确认（简报“市场未确认头条”），再决定方向",
 };
 
-export interface WeeklyInput { entries: JournalEntry[]; capital: number; from: string; to: string; readiness: Readiness; ddLimitPct?: number }
+export interface WeeklyInput { entries: JournalEntry[]; capital: number; from: string; to: string; readiness: Readiness; ddLimitPct?: number;
+  /** 影子跟踪 (src/shadow/engine.ts shadowReport) — info only, separate virtual ledger; omitted → section skipped */
+  shadowLines?: string[] }
 export interface Weekly { md: string; focus: string[]; tagsThis: Array<[string, number]>; tagsPrev: Array<[string, number]>; sinTop: SinRow | null; sinsWeek: SinRow[] }
 
 export function weeklyReport(i: WeeklyInput): Weekly {
@@ -96,6 +98,7 @@ export function weeklyReport(i: WeeklyInput): Weekly {
 
   // 5d) 交易信心比率 (knowledge/mentor/psychology/patience-and-overtrading.md): successes / failures, week + 30 days
   L.push("## 八之四、交易信心（成功 ÷ 失败）", ...confidenceSection(E, from, to), "");
+  if (i.shadowLines?.length) L.push("## 八之五、影子跟踪（回测假设 A / B，向前样本外，只做观察）", ...i.shadowLines, "");
 
   // 6) focus (data-derived, priority order, max 3)
   const F: string[] = [];

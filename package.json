@@ -24,7 +24,8 @@
     "review": "node src/cli/review.ts",
     "card": "node src/cli/card.ts",
     "fedspeak": "node src/cli/fedspeak.ts",
-    "earnings": "node src/cli/earnings.ts"
+    "earnings": "node src/cli/earnings.ts",
+    "shadow": "node src/cli/shadow.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",

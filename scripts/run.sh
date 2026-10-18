@@ -29,6 +29,11 @@ log="data/logs/run-$(date +%Y%m%d).log"
     # leading-scenario changes go into the store, so the alert step below picks them up.
     node src/cli/brief.ts --out data/out/brief-latest.md >/dev/null || echo "[run] brief failed"
     node src/cli/alerts.ts --out data/out/alerts-latest.md --jsonl data/out/alerts.jsonl
+    # shadow tracks A/B (docs/SHADOW_TRACKS.md): after the post-close brief, weekdays 16:30-18:59 ET; idempotent (later runs are no-ops)
+    dow0=$(TZ=America/New_York date +%u)
+    if [ "$dow0" -le 5 ] && [ "$hm" -ge 1630 ] && [ "$hm" -lt 1900 ]; then
+      node src/cli/shadow.ts || echo "[run] shadow failed"
+    fi
     # paper ledger close step (Mon–Fri 15:45–16:59 ET): mark with the routine's fresh Robinhood quotes
     # (data/in/rh-option-quotes.json, see docs/ROUTINE_PAPER.md), then expire (settles after 16:00; VIX needs
     # data/in/settle.json, else stays pending) and the Friday 15:45 mentor weekend rule; then the review report.
