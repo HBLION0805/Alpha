@@ -13,7 +13,7 @@ import { LOSS_CLASS_ZH, type LossClass } from "../options/psych.ts";
 import { sinCounts, topSin, sinsOf, SINS, type SinId } from "../options/sins.ts";
 import { effectiveRules } from "../options/rules.ts";
 
-const P = "knowledge/mentor/psychology/", D = "knowledge/mentor/discipline/";
+const P = "knowledge/mentor/psychology/", D = "knowledge/mentor/discipline/", LQ = "knowledge/mentor/macro-liquidity/mentor-review-howell-2026-10-16.md";
 export interface Quote { text: string; file: string }
 export interface MentorRule { id: string; name: string; rule: string; quotes: Quote[] }
 const q = (file: string, text: string): Quote => ({ file, text });
@@ -73,6 +73,8 @@ export const RULES: Record<string, MentorRule> = Object.fromEntries([
     q(P + "why-new-members-lose.md", "到底是交易判断错了，执行错了，风险管理错了，还是单纯遇到了正常的概率波动。")),
   R("journal", "记录赚钱但做错的交易", "赚钱的单子也要问是不是做对了",
     q(P + "journal-and-outcome-bias.md", "尤其要记录那些赚钱但做错了的交易。")),
+  R("liquidity_chain", "宏观逻辑要经过中间环节", "流动性/降息/转向的论点：逆风减弱 ≠ 顺风到来；融资改善不等于盈利改善，先写清楚中间环节再下单",
+    q(LQ, "宏观逻辑不能跳过中间环节，直接变成买单。"), q(LQ, "融资条件改善，可以和盈利疲软、衰退风险同时存在。"), q(LQ, "“逆风可能正在减弱”，和“顺风已经到来”，是两个不同的交易逻辑。")),
   R("sin_sloth", "七宗罪·懒惰", "该判断、该执行的时候在场；计划先写好", q(D + "seven-sins.md", "一、懒惰：想要交易的回报，却不愿做交易的功课。")),
   R("sin_wrath", "七宗罪·暴怒", "亏损后不报复交易、不加码", q(D + "seven-sins.md", "二、暴怒：你不再寻找机会，你只想把钱赢回来。")),
   R("sin_greed", "七宗罪·贪婪", "到目标就拿钱；不买便宜彩票单", q(D + "seven-sins.md", "三、贪婪：该拿的钱不肯拿，不该省的钱拼命省。")),
@@ -116,6 +118,16 @@ export function mentorForTags(tags: string[], now: Date): string[] {
 export interface ReminderState {
   now: Date; verdict: string; leader: string | null; previousLeader?: string | null; leaderChanged?: boolean;
   regime?: string | null; previousRegime?: string | null; events: MajorEvent[]; journal: JournalEntry[]; capital: number;
+  /** §1.2 流动性观察 result (src/macro/liquidity.ts); relevant when it flags something (weakening/tailwind or an alert) */
+  liquidity?: { status: string; label: string; alerts: string[] } | null;
+}
+/** plan-card thesis mentions liquidity / rate pivot / rotation-type macro themes */
+export const LIQUIDITY_THEME_RE = /流动性|降息|转向|宽松|放水|缩表|扩表|准备金|回购|比特币|轮动|liquidity|pivot|rate[- ]?cuts?|easing|\bQE\b|\bBTC\b|bitcoin|rotation/i;
+/** plan card: both verbatim reminders (fixed, not rotated) when the thesis is liquidity-themed */
+export function liquidityThemeLines(thesis: string | null | undefined): string[] {
+  const m = thesis ? LIQUIDITY_THEME_RE.exec(thesis) : null; if (!m) return [];
+  const r = RULES.liquidity_chain!;
+  return [`- 论点提到「${m[0]}」→ **${r.name}**：${r.rule}`, ...r.quotes.slice(0, 2).map((x) => `  - 「${x.text}」 → [${x.file.replace(/^knowledge\/mentor\//, "")}](${x.file})`)];
 }
 export interface Reminder { id: string; why: string; line: string }
 const BEAR = new Set(["hawkish", "risk_off"]);
@@ -145,6 +157,8 @@ export function selectReminders(s: ReminderState, cap = 3): Reminder[] {
   if (regimeFlip || leaderFlip) out.push({ id: "chart_logic", why: [regimeFlip ? `宏观状态 ${s.previousRegime} → ${s.regime}` : "", leaderFlip ? `领先情景 ${s.previousLeader ?? "无"} → ${s.leader ?? "无"}` : ""].filter(Boolean).join("；") });
   // 5) bearish leader
   if (s.leader && BEAR.has(s.leader)) out.push({ id: "short_soft", why: `领先情景 ${s.leader}（偏空）` });
+  // 5b) liquidity watch flagged something (status label or BTC < $70k / repo stress alert)
+  if (s.liquidity && (s.liquidity.status === "weakening" || s.liquidity.status === "tailwind" || s.liquidity.alerts.length)) out.push({ id: "liquidity_chain", why: `流动性观察：${s.liquidity.label}${s.liquidity.alerts.length ? `；${s.liquidity.alerts.length} 条报警` : ""}` });
   // 6) NO_TRADE day
   if (s.verdict === "NO_TRADE") out.push({ id: "patience", why: "今天 NO_TRADE" });
   // 7) most frequent sin (30 days, same count the weekly review uses) → this month's focus

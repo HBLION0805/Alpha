@@ -3,7 +3,7 @@
  * is reported as missing, never filled in. Reuses planlink (§2.1), scenarios, riskplan (30/30 + STOP_RULE),
  * tpplan (分批止盈), gex, levels, calendar/OpEx, earnings, critique (唱反调) and postmortem (past mistakes).
  */
-import { mentorForTags } from "./mentor.ts";
+import { mentorForTags, liquidityThemeLines } from "./mentor.ts";
 import { SCENARIOS } from "../macro/scenarios.ts";
 import { STOP_RULE } from "../options/riskplan.ts";
 import { buildTakeProfit, renderTakeProfit } from "../options/tpplan.ts";
@@ -38,6 +38,7 @@ export type Status = "ok" | "warn" | "fail" | "missing";
 export interface Section { n: number; title: string; status: Status; lines: string[] }
 export interface Card { id: string; createdAt: string; sym: string; dir: Dir; verdict: "formal" | "practice" | "practice_warn" | "no"; verdictText: string; failing: string[]; warnTags?: string[]; planMissing?: string[]; sections: Section[];
   /** bearish cards only: 做空清单 warn tags (kept even on a formal verdict) + manual items */ shortTags?: string[]; shortManual?: string[];
+  /** thesis mentions liquidity / pivot / rotation themes → the mentor's verbatim reminders (src/review/mentor.ts liquidityThemeLines); shown on any verdict, info only */ macroTheme?: string[];
   trade: { legs: CardLeg[]; exp: string | null; contracts: number; perContractMaxLoss: number | null; maxLoss: number | null; planId: string | null; tpKind: string | null; invalidationLevel: number | null; mechanical: string | null } }
 
 const ICON: Record<Status, string> = { ok: "✅", warn: "🟡", fail: "🛑", missing: "❔" };
@@ -229,13 +230,15 @@ export function buildCard(i: CardInput): Card {
   if (verdict === "no") failing.unshift(...planMissing.map((m) => `计划缺：${m}`));
   return { id, createdAt: i.now.toISOString(), sym: i.sym, dir: i.dir, verdict, verdictText, failing, warnTags: verdict === "formal" ? [] : warnTags, planMissing, sections: S,
     ...(shortChk ? { shortTags: shortChk.tags, shortManual: shortChk.manual } : {}),
+    ...(() => { const m = liquidityThemeLines(i.thesis); return m.length ? { macroTheme: m } : {}; })(),
     trade: { legs, exp, contracts, perContractMaxLoss: per, maxLoss: per != null ? r2(per * contracts) : null, planId: match?.id ?? null, tpKind: tp?.plan?.kind ?? null, invalidationLevel: invLevel != null ? r2(invLevel) : null, mechanical: mech } };
 }
 export function renderCard(c: Card, spot: number | null, exp: string | null): string {
   return [`# 入场前计划卡：${c.sym} ${c.dir === "bear" ? "看空" : "看多"}${exp ? ` · 到期 ${exp}` : ""}`, "",
     `**结论：${c.verdictText}**${c.failing.length ? ` — ${c.verdict === "no" ? "不通过" : "正式单不通过 / 练习提示"}：${c.failing.join("；")}` : ""}`,
     ...(c.verdict !== "formal" && c.warnTags?.length ? [`- 练习提示标签（开仓后记录在交易上，用于门槛校准）：${c.warnTags.join("、")}`] : []),
-    ...(() => { const t = [...(c.verdict !== "formal" ? c.warnTags ?? [] : []), ...(c.shortTags ?? [])]; return t.length ? ["", "**导师怎么说（每个提示对应的原文，只提醒）：**", ...mentorForTags(t, new Date(c.createdAt))] : []; })(), "",
+    ...(() => { const t = [...(c.verdict !== "formal" ? c.warnTags ?? [] : []), ...(c.shortTags ?? [])]; return t.length ? ["", "**导师怎么说（每个提示对应的原文，只提醒）：**", ...mentorForTags(t, new Date(c.createdAt))] : []; })(),
+    ...(c.macroTheme?.length ? ["", "**导师怎么说（宏观流动性论点，只提醒）：**", ...c.macroTheme] : []), "",
     `- 卡片 id：\`${c.id}\` · 现价 ${spot ?? "未知"} · ${new Date(c.createdAt).toLocaleString("zh-CN", { timeZone: "America/New_York", hour12: false })} ET`, "",
     ...c.sections.flatMap((s) => [`## ${s.n}. ${ICON[s.status]} ${s.title}`, ...s.lines, ""]),
     "_只做定义风险；NO_TRADE 是合法结果。数据缺失处已标注，未做任何填补。_"].join("\n");

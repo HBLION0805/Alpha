@@ -1,5 +1,10 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-18 — Macro-liquidity theme (Howell 2026-10-16 + mentor review): archive, brief §1.2 watch, plan-card reminder
+- User-approved. Archive knowledge/mentor/macro-liquidity/ byte-for-byte (manifest sha256); Howell attribution kept (published article); mentor review anonymous.
+- Brief §1.2 流动性观察 (docs/LIQUIDITY_WATCH.md): one label 逆风减弱（观察） / 顺风确认 / 无信号, BTC < $70k and SOFR−IORB > +0.10pp alerts. **Flag only — no trade signal, no verdict change.** Conservative: 顺风确认 needs 4 consecutive weekly checkpoints + SOFR−2Y rising + BTC > 200DMA + MOVE lower (MOVE missing → no confirmation).
+- Mentor rule `liquidity_chain` (verbatim quotes from the review): plan card when the thesis is liquidity/pivot/rotation-themed; §1.1 when the watch flags something.
+
 ## 2026-10-17 (later) — real_practice never counts toward the sim daily cap; covered-call stock stop
 - User decision (both open items closed). **Daily loss sum = formal + practice + mentor_shadow simulated trades only — everywhere**: live 🚨 (breach.ts), brief 暴怒 / 今天结束 (mentor.ts),
   plan-card budget (card.ts), pretrade daily_loss_limit (discipline.ts dailyLossCheck now skips `source: real_practice` logs), 暴怒-after-breach tag (sins.ts), readiness day check. One predicate: `journal.ts countsTowardDailyCap`.
