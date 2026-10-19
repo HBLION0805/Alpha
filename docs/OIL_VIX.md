@@ -32,5 +32,12 @@ Missing copper never gets filled in: the demand and demand-weakness cases need i
 - §1.1 导师提醒: `oil_speed` when ⚡ fires; `vix_confirm` when 背离/未确认 fires.
 - Plan card: `oil_squeeze` (airline + consumer quotes) when the latest brief (< 24h) says 偏供应冲击 and the plan's symbol (JETS, XLY, XRT, DAL, UAL, AAL, LUV, JBLU, ALK, BKNG, EXPE, ABNB, MAR, HLT, CCL, RCL, NCLH) or thesis (航空 / 机票 / 出行 / 旅游 / 旅行 / 酒店 / 邮轮 / 可选消费 / 消费股 / 零售 / airline / travel / cruise / hotel / consumer / retail / discretionary) involves them.
 
+## VIX 分档 (user-shared infographic, display only)
+Source: knowledge/vix-regimes.md (public Douyin-style infographic 如何用VIX观察市场情绪 shared by the user; not the mentor's). Code: `vixRegime` in src/macro/oilvix.ts, shown in §4 above the VIX-vs-index check.
+- Bands on the latest VIX close: < 20 🟢 波动较低 · 20–<30 🟡 波动升高 · 30–40 🟠 市场恐惧 · > 40 🔴 极度恐慌. 20 and 30 go to the higher band; exactly 40 stays in 30–40.
+- > 40: the infographic's 「分批布局」 is NOT used in phase 1 → 「极度恐慌——第一阶段不抄底，少亏优先，NO_TRADE 合理」.
+- Speed: ⚡ 急升 when 1d ≥ +20% or 5d ≥ +35%; ↘ 回落 when 1d ≤ −15% or 5d ≤ −25% (drop thresholds DK-chosen). No history → speed skipped.
+- Footer once: 「VIX 是情绪与波动指标，不是独立买卖信号」. Display only: no verdict, alarm, sizing or 能不能睡 effect.
+
 ## VIX call hedge
 Phase 2 reference only (catalog `phase2-vix-call-hedge`), not enabled, not in the practice rules.

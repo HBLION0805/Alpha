@@ -1,5 +1,11 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-19 — VIX 分档 label in brief §4 (user-shared infographic); display only
+- Bands from the user-shared infographic 如何用VIX观察市场情绪 (knowledge/vix-regimes.md; public, not the mentor's): < 20 🟢 / 20–<30 🟡 / 30–40 🟠 / > 40 🔴; 20 and 30 → higher band, 40 → 30–40.
+- > 40: the infographic's 「分批布局」 does not apply in phase 1 → 「第一阶段不抄底，少亏优先，NO_TRADE 合理」 (text only — the verdict is not changed).
+- Speed over level (user agreed): ⚡ 急升 1d ≥ +20% or 5d ≥ +35%; ↘ 回落 1d ≤ −15% or 5d ≤ −25% (DK-chosen drop thresholds).
+- Display only: no verdict, alarm, sizing or sleep-label effect (test/vixregime.test.ts checks statically and on the brief).
+
 ## 2026-10-18 — 今日能不能睡 (mentor's 不能睡 / 可以睡 list) as a brief label; flag only
 - **用户补充:** 「可以睡不代表不观察的，不是说直接就一点盘不看了」 → 😴 可以睡 = lower-risk / can relax, NOT stop watching; every 可以睡 line says 「（可以睡≠不看盘：照常看盘前简报和提醒，止损照设）」. Display only: nothing keys off the label.
 - User-approved. Post archived verbatim in knowledge/mentor/premarket-routine/sleep-days-2026-10-18.md (sha256 test). 老川 = Trump.

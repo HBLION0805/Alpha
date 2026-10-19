@@ -12,6 +12,39 @@ export const OV = {
   idxBandPct: 0.5, vixTrendBandPct: 3, // VIX vs index confirmation (5 trading days)
   window: 5,
 } as const;
+/**
+ * VIX 分档 (user-shared infographic 如何用VIX观察市场情绪, knowledge/vix-regimes.md). Boundaries: 20 and 30 go to the higher
+ * band, exactly 40 stays in 30–40. Speed matters more than level (user): ⚡ 急升 / ↘ 回落. DISPLAY ONLY — no verdict,
+ * alarm, sizing or 能不能睡-label effect.
+ */
+export const VIX_REGIME = { spike1dPct: 20, spike5dPct: 35, drop1dPct: -15, drop5dPct: -25 } as const;
+export const VIX_REGIME_FILE = "knowledge/vix-regimes.md";
+export const VIX_FOOTER = "VIX 是情绪与波动指标，不是独立买卖信号";
+export type VixBand = "low" | "elevated" | "fear" | "panic";
+export const VIX_BANDS: Record<VixBand, { icon: string; zh: string; short: string; note: string }> = {
+  low: { icon: "🟢", zh: "波动较低", short: "警惕自满", note: "警惕自满，检查风险敞口；保护便宜时可考虑买对冲" },
+  elevated: { icon: "🟡", zh: "波动升高", short: "结合趋势，管理仓位", note: "结合趋势，管理仓位；单笔更小、止损更严" },
+  fear: { icon: "🟠", zh: "市场恐惧", short: "谨慎观察", note: "谨慎观察；第一阶段优先减仓/NO_TRADE" },
+  panic: { icon: "🔴", zh: "极度恐慌", short: "第一阶段不抄底", note: "极度恐慌——第一阶段不抄底，少亏优先，NO_TRADE 合理（信息图写「分批布局」，不适用于第一阶段：先积累本金、少亏优先）" },
+};
+export function vixBand(v: number): VixBand { return v < 20 ? "low" : v < 30 ? "elevated" : v <= 40 ? "fear" : "panic"; }
+export interface VixRegime { level: number | null; date: string | null; band: VixBand | null; d1: number | null; d5: number | null; speed: "spike" | "drop" | null; lines: string[] }
+export function vixRegime(data: Record<string, Obs[]>): VixRegime {
+  const o = data.VIX, level = o?.at(-1)?.v ?? null, date = lastDate(o);
+  if (level == null) return { level, date, band: null, d1: null, d5: null, speed: null, lines: ["- **VIX 分档**：VIX 数据不可用 → 不分档", `- _${VIX_FOOTER}。分档来自用户分享的信息图（${VIX_REGIME_FILE}），只标记。_`] };
+  const r2 = (x: number | null) => (x == null ? null : Math.round(x * 100) / 100); // compare at 0.01% so exact thresholds hit
+  const band = vixBand(level), b = VIX_BANDS[band], d1 = r2(pct(o, 1)), d5 = r2(pct(o, OV.window)), R = VIX_REGIME;
+  const spike = (d1 != null && d1 >= R.spike1dPct) || (d5 != null && d5 >= R.spike5dPct), drop = !spike && ((d1 != null && d1 <= R.drop1dPct) || (d5 != null && d5 <= R.drop5dPct));
+  const p0 = (x: number) => `${x > 0 ? "+" : ""}${x.toFixed(0)}%`;
+  const hits = (up: boolean) => [d1 != null && (up ? d1 >= R.spike1dPct : d1 <= R.drop1dPct) ? `${p0(d1)} 1d` : "", d5 != null && (up ? d5 >= R.spike5dPct : d5 <= R.drop5dPct) ? `${p0(d5)} 5d` : ""].filter(Boolean).join(" · ");
+  const speedTxt = spike ? ` ⚡ 急升 ${hits(true)}` : drop ? ` ↘ 回落 ${hits(false)}` : "";
+  const ctx = d1 == null && d5 == null ? "速度：历史不足，略过" : `1日 ${f(d1, 1)} · 5日 ${f(d5, 1)}；⚡ 急升 = 1日 ≥ +${R.spike1dPct}% 或 5日 ≥ +${R.spike5dPct}%，↘ 回落 = 1日 ≤ ${R.drop1dPct}% 或 5日 ≤ ${R.drop5dPct}%`;
+  return { level, date, band, d1, d5, speed: spike ? "spike" : drop ? "drop" : null, lines: [
+    `- **VIX 分档**（${date}）：VIX ${level.toFixed(2)} · ${b.icon} ${b.zh}（${b.short}）${speedTxt}`,
+    `  - ${b.note}`, `  - ${ctx}`,
+    `- _${VIX_FOOTER}。分档来自用户分享的信息图（[vix-regimes.md](${VIX_REGIME_FILE})；20、30 归上一档，40 归 30–40），只标记，不改变结论、警报、仓位或「能不能睡」。_`,
+  ] };
+}
 export const PM_FILE = "knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md";
 export const OIL_QUOTE = "我看原油，会同时看价格、变化速度以及背后的原因。";
 export const VIX_QUOTE = "结合VIX的变化趋势和指数走势，判断市场方向是否得到确认，而不是单凭一个高低数值下结论。";
@@ -28,7 +61,8 @@ export interface OilVixResult {
   speed: OilSpeed[]; fast: boolean;
   driver: Driver; driverWhy: string; inputs: { oil5: number | null; spx5: number | null; hg5: number | null; vix5: number | null };
   vix: { label: "confirm" | "diverge" | "unclear"; zh: string; why: string; vix5: number | null; spx5: number | null; ndx5: number | null };
-  lines: { oil: string[]; vix: string[] };
+  /** VIX 分档 (display only) */ regime: VixRegime;
+  lines: { oil: string[]; vix: string[]; regime: string[] };
 }
 export function oilSpeed(data: Record<string, Obs[]>): OilSpeed[] {
   return (["WTI", "BRENT"] as const).map((id) => { const d1 = pct(data[id], 1), d5 = pct(data[id], OV.window);
@@ -76,5 +110,6 @@ export function buildOilVix(data: Record<string, Obs[]>): OilVixResult {
     `- **VIX vs 指数（5 个交易日）**：VIX ${f(vix.vix5)} · SPX ${f(vix.spx5)} · NDX ${f(vix.ndx5)} → **${vix.zh}**（${vix.why}）。只标记，不改变结论。`,
     `- 导师：「${VIX_QUOTE}」 → [premarket-routine/oil-vix-2026-10-18.md](${PM_FILE})`,
   ];
-  return { speed, fast, driver: d.driver, driverWhy: d.why, inputs: d.inputs, vix, lines: { oil, vix: vixLines } };
+  const regime = vixRegime(data);
+  return { speed, fast, driver: d.driver, driverWhy: d.why, inputs: d.inputs, vix, regime, lines: { oil, vix: vixLines, regime: regime.lines } };
 }

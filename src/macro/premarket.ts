@@ -114,6 +114,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   K.push("### VIX 与期限结构", `- VIX ${vix?.toFixed(2) ?? "n/a"} · VIX3M ${v3?.toFixed(2) ?? "n/a"} · VIX/VIX3M ${ratio?.toFixed(3) ?? "n/a"} → ${ratio == null ? "n/a" : ratio >= 1 ? "🚨 **倒挂（backwardation）= 压力**" : ratio >= 0.95 ? "接近倒挂" : "正常升水（contango）"}`);
   // mentor premarket video (原油与 VIX): VIX trend vs index trend — flag only
   const ov = buildOilVix(D);
+  K.push("", "### VIX 分档（用户分享的信息图 · 只标记）", ...ov.lines.regime);
   K.push("", "### VIX 与指数是否互相确认（导师盘前视频 · 只标记）", ...ov.lines.vix);
   if (ratio != null && ratio >= 1) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio.toFixed(3)}`, detail: "近端恐慌高于远端：市场压力", by: "dk" });
   const todays = (inp.calendar ?? []).filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
