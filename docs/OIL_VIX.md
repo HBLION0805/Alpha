@@ -4,7 +4,7 @@ Source: knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md (mentor premark
 Code: `src/macro/oilvix.ts`, rendered in the brief's 【用户要求】原油 block (oil is the user's own must-check block) and in §4 VIX. User-approved 2026-10-18.
 **Nothing here changes the verdict, adds a NO_TRADE reason or raises an alarm.** The existing oil alarms (oil.ts) are unchanged: OIL_SPIKE +4% 1d / +10% 5d, OIL_CRASH −5% 1d.
 
-Data: Yahoo daily closes already in the brief — WTI `CL=F`, Brent `BZ=F`, SPX `^GSPC`, NDX `^NDX`, VIX `^VIX`; **new:** copper `HG=F` (series `COPPER`). Changes are over observations (1 = previous close, 5 = five trading days).
+Data: Yahoo daily closes already in the brief — WTI = **front-month contract** (`CLX26.NYM` etc. via `frontContinuous` in src/macro/wtiFront.ts; falls back to `CL=F` if the contract has < 6 bars — Yahoo CL=F rolls early and splices closes, which made a fake −3.7% on 2026-10-19), Brent `BZ=F`, SPX `^GSPC`, NDX `^NDX`, VIX `^VIX`; **new:** copper `HG=F` (series `COPPER`). Changes are over observations (1 = previous close, 5 = five trading days).
 
 ## Speed of change
 - WTI and Brent: 1-day and 5-day % change.

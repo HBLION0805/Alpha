@@ -244,5 +244,5 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
   - Nov WTI 100.71 (above 100 by 0.71, +0.7%)
   - NQ 29,848 (below 30,000 by 152, −0.5%)
   - DXY +0.08%, oil −0.69%, 30Y +2.8bp
-- **Known issue (not changed):** the existing 【用户要求】原油 block, the oil alarms and the oilvix "fast move" flag still use Yahoo CL=F, which reads a fake −3.7% today because of the roll. Moving them to the front contract would change alerts, so it needs the user's OK.
+- **Fixed (user-approved 10/19 11:10 ET):** the 【用户要求】原油 block, the oil alarms (OIL_SPIKE/OIL_CRASH, same thresholds), the oilvix 快速变动 flag and the USDCAD line now use the front-month series (`frontContinuous` in src/macro/wtiFront.ts: last 10 trading days = the front contract itself, older history = CL=F ratio-adjusted at the junction). Live 10/19 ~11:13 ET: CLX26 100.61, 1d −0.79% (CL=F showed a fake −3.80%), 5d +7.33%, no ⚡, no oil alarm, Brent–WTI $7.56. Brent BZ=F, scenarios, matrix and trade plan still use the Yahoo series; NO_TRADE, sizing and 能不能睡 code unchanged. Tests: test/oilroll.test.ts.
 

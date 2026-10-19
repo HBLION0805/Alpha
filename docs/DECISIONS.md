@@ -7,7 +7,7 @@
   - the afternoon run (≥16:00 ET) reports the closes;
   - the next morning gives a recap.
 - CRWV 65 is also a dead-cat checklist row and a tech-long plan-card quote.
-- Oil levels use the **front-month CL contract** (the same contract as CNBC @CL.1), because Yahoo CL=F rolls early and splices closes. The dead-cat checklist and the economic table switched to the front contract too.
+- Oil levels use the **front-month CL contract** (the same contract as CNBC @CL.1), because Yahoo CL=F rolls early and splices closes. The dead-cat checklist and the economic table switched to the front contract too. 2026-10-19 (user-approved): the oil block, the oil alarms, the 快速变动 flag and the USDCAD line followed (same thresholds; the last 10 days come from one contract, older history is ratio-adjusted). Scenarios / matrix / trade plan / Brent are unchanged.
 - Never changes NO_TRADE, 48h/72h, alerts, sizing or 能不能睡.
 
 ## 2026-10-19 — 大佬「死猫反弹，还是市场见底？」: active, display only

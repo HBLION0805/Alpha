@@ -7,6 +7,7 @@ import { eventUtcMs } from "./risk.ts";
 import { buildOil, type OilAlarm } from "./oil.ts";
 import { buildOilVix, type OilVixResult } from "./oilvix.ts";
 import type { Obs } from "./fetch.ts";
+import type { FrontSeries } from "./wtiFront.ts";
 import type { SeriesDef } from "./series.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import type { Earnings } from "../options/events.ts";
@@ -30,7 +31,9 @@ export const PM_SERIES: SeriesDef[] = [
 const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED", "EFFR", "REAL10Y"]);
 
 export interface Alarm { kind: "CARRY_UNWIND" | "HYG_DIVERGENCE" | "UST10Y_SPIKE" | "VIX_BACKWARDATION" | OilAlarm["kind"]; level: "ALARM" | "WARNING"; title: string; detail: string; by: "mentor" | "dk" | "user"; score?: number }
-export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null; volumeLines?: string[] | null; fedLines?: string[] | null }
+export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null; volumeLines?: string[] | null; fedLines?: string[] | null;
+  /** front-month WTI (wtiFront.ts frontContinuous) for the oil block, oil alarms, 快速变动 flag and the USDCAD line ONLY; absent → data.WTI (CL=F) */
+  oilFront?: FrontSeries | null }
 export interface PremarketResult { md: string; alarms: Alarm[]; noTrade: string[]; mentorLines: string[]; dkLines: string[]; oilLines: string[]; bondLines: number;
   /** mentor premarket video (oilvix.ts): oil speed / driver heuristic / VIX-vs-index confirmation — flag only */ oilVix: OilVixResult }
 
@@ -47,7 +50,7 @@ const fmt = (x: number | null, unit: "bp" | "%", d = 2) => (x == null ? "n/a" : 
 export const BY = { mentor: "大佬流程", dk: "DK 补充", user: "用户要求" } as const;
 export const OIL_HEAD = ["## 【用户要求】原油", "_用户本人的要求（2026-10-15）：原油是核心盘前指标。不是大佬流程，也不是 DK 补充。_"];
 export function buildPremarket(inp: PremarketInput): PremarketResult {
-  const D = inp.data; const alarms: Alarm[] = []; const M: string[] = []; const K: string[] = []; const noTrade: string[] = [];
+  const D = inp.data, OD = inp.oilFront ? { ...D, WTI: inp.oilFront.series } : D; const alarms: Alarm[] = []; const M: string[] = []; const K: string[] = []; const noTrade: string[] = [];
   const day = inp.now.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
   const c = (id: string, k = 1) => chg(id, D[id], k);
   const v = (id: string) => last(D[id]);
@@ -100,7 +103,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   const dxy1 = c("DXY");
   const conf = dxy1 == null ? [] : [["黄金", -(c("GOLD") ?? 0)], ["BTC", -(c("BTC") ?? 0)], ["2Y", (c("UST2Y") ?? 0) / 10], ["USDCAD", c("USDCAD") ?? 0]].filter(([, x]) => Math.sign(x as number) === Math.sign(dxy1) && Math.abs(x as number) > 0.05).map(([n]) => n);
   M.push(`- DXY ${v("DXY")?.toFixed(2) ?? "n/a"} · 1日 ${fmt(dxy1, "%")} · 5日 ${fmt(c("DXY", 5), "%")} · 跨资产确认: ${dxy1 == null ? "n/a" : conf.length >= 2 ? `✅ ${conf.join("、")}` : `❌ 仅 ${conf.join("、") || "无"}（不机械解读）`}`);
-  const cad1 = c("USDCAD"), oil1 = c("WTI");
+  const cad1 = c("USDCAD"), oil1 = chg("WTI", OD.WTI, 1);
   M.push(`- USDCAD ${v("USDCAD")?.toFixed(4) ?? "n/a"} · 1日 ${fmt(cad1, "%")} · WTI ${fmt(oil1, "%")} → ${cad1 == null || oil1 == null ? "n/a" : Math.sign(cad1) === -Math.sign(oil1) ? "CAD 与油价一致（油涨 CAD 强 / 油跌 CAD 弱）" : "CAD 与油价不一致：看其他驱动（利差、风险偏好）"}`);
   const jpy1 = c("USDJPY"), jpy5 = c("USDJPY", 5);
   M.push(`- USDJPY ${v("USDJPY")?.toFixed(2) ?? "n/a"} · 1日 ${fmt(jpy1, "%")} · 5日 ${fmt(jpy5, "%")}`);
@@ -113,7 +116,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   const vix = v("VIX"), v3 = v("VIX3M"), ratio = vix != null && v3 ? vix / v3 : null;
   K.push("### VIX 与期限结构", `- VIX ${vix?.toFixed(2) ?? "n/a"} · VIX3M ${v3?.toFixed(2) ?? "n/a"} · VIX/VIX3M ${ratio?.toFixed(3) ?? "n/a"} → ${ratio == null ? "n/a" : ratio >= 1 ? "🚨 **倒挂（backwardation）= 压力**" : ratio >= 0.95 ? "接近倒挂" : "正常升水（contango）"}`);
   // mentor premarket video (原油与 VIX): VIX trend vs index trend — flag only
-  const ov = buildOilVix(D);
+  const ov = buildOilVix(OD);
   K.push("", "### VIX 分档（用户分享的信息图 · 只标记）", ...ov.lines.regime);
   K.push("", "### VIX 与指数是否互相确认（导师盘前视频 · 只标记）", ...ov.lines.vix);
   if (ratio != null && ratio >= 1) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio.toFixed(3)}`, detail: "近端恐慌高于远端：市场压力", by: "dk" });
@@ -135,9 +138,9 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   K.push("", "### 隔夜新闻（alert store）", ...((inp.headlines ?? []).length ? inp.headlines!.slice(0, 6).map((h) => `- ${h}`) : ["- 无"]));
 
   // 【用户要求】原油 — right after the bonds; its alarms feed the alert flow
-  const oil = buildOil(D, { now: inp.now, headlines: inp.headlines, calendar: inp.calendar });
+  const oil = buildOil(OD, { now: inp.now, headlines: inp.headlines, calendar: inp.calendar, wtiLabel: inp.oilFront ? `WTI（近月 ${inp.oilFront.code}）` : undefined });
   alarms.push(...oil.alarms);
-  const oilLines = [...oil.lines, "", "**价格 · 速度 · 原因**（导师盘前视频；驱动判断为启发式，规则见 docs/OIL_VIX.md）", ...ov.lines.oil];
+  const oilLines = [...(inp.oilFront ? [`_${inp.oilFront.note}_`, ""] : []), ...oil.lines, "", "**价格 · 速度 · 原因**（导师盘前视频；驱动判断为启发式，规则见 docs/OIL_VIX.md）", ...ov.lines.oil];
   // synthesis
   if (alarms.some((a) => a.level === "ALARM")) noTrade.push(`警报未解除：${alarms.filter((a) => a.level === "ALARM").map((a) => a.kind).join("、")}`);
   if (maxAbs >= 1.5) noTrade.push("期货跳空 ≥1.5%：开盘不追，等确认");

@@ -26,14 +26,14 @@ function spreadSeries(b?: Obs[], w?: Obs[]): Obs[] {
   return b.filter((o) => wm.has(o.t.slice(0, 10))).map((o) => ({ t: o.t, v: o.v - wm.get(o.t.slice(0, 10))! }));
 }
 
-export function buildOil(data: Record<string, Obs[]>, opts: { now: Date; headlines?: string[]; calendar?: CalendarEvent[] }): OilResult {
+export function buildOil(data: Record<string, Obs[]>, opts: { now: Date; headlines?: string[]; calendar?: CalendarEvent[]; wtiLabel?: string }): OilResult {
   const L: string[] = []; const alarms: OilAlarm[] = [];
   const ship = (opts.headlines ?? []).filter((h) => SHIPPING_RE.test(h));
   const row = (id: string, name: string) => {
     const o = data[id], v = lastV(o), s50 = sma(o, 50), h = hi52(o);
     return `| ${name} | ${v?.toFixed(2) ?? "n/a"} | ${f(pct(o, 1))} | ${f(pct(o, 5))} | ${s50 && v ? f(((v - s50) / s50) * 100) : "n/a"} | ${h && v ? f(((v - h) / h) * 100) : "n/a"} |`;
   };
-  L.push("| 品种 | 价格 | 1日 | 5日 | 距 50 日均线 | 距 52 周高点 |", "|---|---|---|---|---|---|", row("WTI", "WTI (CL=F)"), row("BRENT", "Brent (BZ=F)"), row("RBOB", "汽油 RBOB (RB=F)"), row("XLE", "XLE 能源股"));
+  L.push("| 品种 | 价格 | 1日 | 5日 | 距 50 日均线 | 距 52 周高点 |", "|---|---|---|---|---|---|", row("WTI", opts.wtiLabel ?? "WTI (CL=F)"), row("BRENT", "Brent (BZ=F)"), row("RBOB", "汽油 RBOB (RB=F)"), row("XLE", "XLE 能源股"));
 
   const sp = spreadSeries(data.BRENT, data.WTI), spNow = lastV(sp), sp5 = sp.length > 5 ? spNow! - sp[sp.length - 6]!.v : null;
   L.push("", `- **Brent–WTI 价差** $${spNow?.toFixed(2) ?? "n/a"}（5日 ${f(sp5, "$")}）→ ${spNow == null ? "n/a" : sp5 != null && sp5 > 1 ? "走阔：海运 / 中东供应风险溢价上升" : sp5 != null && sp5 < -1 ? "收窄：海运风险溢价回落" : "大致稳定"}${spNow != null && spNow >= 8 ? "（价差处于高位 ≥$8：海运/中东风险已在定价）" : ""}`);
