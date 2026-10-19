@@ -7,6 +7,7 @@
  */
 import type { Store } from "./store.ts";
 import type { Alert } from "./alerts.ts";
+import { groupPosts } from "./trumpPosts.ts";
 
 export const TRUMP_SOURCES = new Set(["trump_truth_official", "trump_truth", "trump_x"]);
 export const TRUMP_NOTE = "宣布≠执行，等市场确认";
@@ -59,30 +60,53 @@ export function scoreTrumpPost(raw: string): TrumpScore | null {
 
 export const postKey = (t: string) => postText(t).toLowerCase().replace(/[^\p{L}\p{N} ]/gu, "").slice(0, 160);
 const PLATFORM: Record<string, string> = { trump_truth_official: "Truth Social", trump_truth: "Truth Social", trump_x: "X" };
-type Item = { id: number; sourceId: string; title: string; summary: string; url: string; publishedAt: string };
+type Item = { id: number; sourceId: string; title: string; summary: string; url: string; publishedAt: string; fetchedAt?: string };
+export const PLATFORM_OF = (sourceId: string) => PLATFORM[sourceId] ?? sourceId;
+/** a post first seen (fetched) inside the window still alerts when it was published up to this long before it (late feed / mirror lag / runs paused overnight) */
+export const LATE_POST_HOURS = 36;
 
-/** One alert per post (deduped across Truth Social and X by normalized text); store-deduped like every alert. */
+/** One alert per post, deduped across Truth Social and X (trumpPosts.ts samePost: similar text within 6h); store-deduped like every alert.
+ *  In the window = published since sinceMs, OR first fetched since sinceMs and published ≤ LATE_POST_HOURS before it (a post the
+ *  mirror/routine delivered late — e.g. the 2026-10-18 16:36 ET Russia post first fetched 15h later — is no longer dropped). */
 export function trumpAlerts(items: Item[], store: Pick<Store, "priorAlertScore">, threshold: number, sinceMs: number): Array<{ alert: Alert; itemIds: number[] }> {
-  const groups = new Map<string, Item[]>();
-  for (const i of items.filter((x) => TRUMP_SOURCES.has(x.sourceId) && !isMediaOnly(fullText(x)))) {
-    const k = postKey(fullText(i)); if (!k) continue;
-    groups.set(k, [...(groups.get(k) ?? []), i]);
-  }
+  const groups = groupPosts(items.filter((x) => TRUMP_SOURCES.has(x.sourceId) && !isMediaOnly(fullText(x)) && postKey(fullText(x))), (i) => ({ text: fullText(i), at: i.publishedAt }));
   const out: Array<{ alert: Alert; itemIds: number[] }> = [];
-  for (const g of groups.values()) {
+  const fresh = (i: Item) => Date.parse(i.publishedAt) >= sinceMs || (i.fetchedAt != null && Date.parse(i.fetchedAt) >= sinceMs && Date.parse(i.publishedAt) >= sinceMs - LATE_POST_HOURS * 3600_000);
+  for (const g of groups) {
     g.sort((a, b) => a.publishedAt.localeCompare(b.publishedAt));
-    if (!g.some((i) => Date.parse(i.publishedAt) >= sinceMs)) continue;
+    if (!g.some(fresh)) continue;
     const s = scoreTrumpPost(fullText(g[0]!));
     if (!s || s.score < threshold || store.priorAlertScore(g.map((i) => i.id)) !== null) continue;
     const quote = fullText(g[0]!);
-    const plats = [...new Set(g.map((i) => PLATFORM[i.sourceId] ?? i.sourceId))];
+    const plats = [...new Set(g.map((i) => PLATFORM_OF(i.sourceId)))];
+    const lateH = g[0]!.fetchedAt ? (Date.parse(g[0]!.fetchedAt) - Date.parse(g[0]!.publishedAt)) / 3600_000 : 0;
+    const etTime = new Date(g[0]!.publishedAt).toLocaleString("sv-SE", { timeZone: "America/New_York" }).slice(5, 16);
     out.push({ itemIds: g.map((i) => i.id), alert: {
       score: s.score, headline: `川普${isRepost(g[0]!) ? "转发" : "发帖"}（${plats.join(" + ")}）：${s.topics.map((x) => x.label).join("、")}${s.action ? " · 行动级" : ""}`,
       topics: ["trump", ...s.topics.map((x) => x.id)], watch: s.assets, sources: plats.map((p) => `Trump ${p}`), stances: ["us_official"],
       firstSeen: g[0]!.publishedAt, lastSeen: g.at(-1)!.publishedAt, escalation: false,
-      links: g.map((i) => ({ source: PLATFORM[i.sourceId] ?? i.sourceId, title: quote, url: i.url })),
-      quote, note: `可能影响：${s.assets.join("、") || "—"}。${TRUMP_NOTE}`,
+      links: [...new Map(g.map((i) => [PLATFORM_OF(i.sourceId), { source: PLATFORM_OF(i.sourceId), title: quote, url: i.url }])).values()],
+      quote, note: `发布于 ${etTime} ET（${plats.join(" + ")}）${lateH > 2 ? `，晚到 ${Math.round(lateH)} 小时才抓到` : ""}。可能影响：${s.assets.join("、") || "—"}。${TRUMP_NOTE}`,
     } });
   }
   return out;
+}
+
+/** 能不能睡 / brief input: market-scored Trump posts from BOTH platforms, cross-posts merged (platforms + URLs kept),
+ *  plus a per-platform freshness line. Pure; `items` = store items of the last ~48h (any source; non-Trump ignored). */
+export function trumpSignal(items: Item[], now: Date, minScore = 70): { posts: Array<{ at: string; score: number; topics: string[]; url: string; platforms: string[]; urls: Record<string, string>; text: string }>; status: string } {
+  const T = items.filter((i) => TRUMP_SOURCES.has(i.sourceId));
+  const groups = groupPosts(T.filter((i) => !isMediaOnly(fullText(i))), (i) => ({ text: fullText(i), at: i.publishedAt }));
+  const posts = groups.flatMap((g) => {
+    const s = scoreTrumpPost(fullText(g[0]!)); if (!s) return [];
+    const urls: Record<string, string> = {}; for (const i of g) urls[PLATFORM_OF(i.sourceId)] ??= i.url;
+    return [{ at: g[0]!.publishedAt, score: s.score, topics: s.topics.map((t) => t.label), url: urls["Truth Social"] ?? urls.X ?? g[0]!.url, platforms: Object.keys(urls), urls, text: fullText(g[0]!) }];
+  });
+  const since = now.getTime() - 24 * 3600_000, et = (iso: string) => new Date(iso).toLocaleString("sv-SE", { timeZone: "America/New_York" }).slice(0, 16) + " ET";
+  const hits = posts.filter((p) => p.score >= minScore && Date.parse(p.at) >= since && Date.parse(p.at) <= now.getTime());
+  const per = (["X", "Truth Social"] as const).map((pl) => {
+    const last = T.filter((i) => PLATFORM_OF(i.sourceId) === pl).map((i) => i.publishedAt).sort().at(-1);
+    return `${pl} ${hits.filter((p) => p.platforms.includes(pl)).length} 条（最新帖 ${last ? et(last) : "无"}${last && now.getTime() - Date.parse(last) > 24 * 3600_000 ? "，超过 24h，抓取可能没跑" : ""}）`;
+  });
+  return { posts, status: `最近 24h 达到提醒线（≥${minScore} 分）的帖子 ${hits.length} 条（跨平台同帖合并）：${per.join(" · ")}` };
 }

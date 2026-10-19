@@ -3,6 +3,7 @@ import { Store } from "../store.ts";
 import { fetchFeed, type FetchResult } from "../ingest/rss.ts";
 import { readXFile } from "../ingest/xTrump.ts";
 import { fetchTruthApi } from "../ingest/truthApi.ts";
+import { readTruthFile } from "../ingest/truthTrump.ts";
 import { alpacaEnabled, backfillAlpacaNews } from "../ingest/alpacaNewsWs.ts";
 
 const dbPath = process.env.ALPHA_DB ?? "data/alpha-news.sqlite";
@@ -23,6 +24,10 @@ const results = await Promise.all(
       }
     } else if (s.kind === "xfile") {
       const t = Date.now(), x = readXFile(s.url, s.id);
+      r = { sourceId: s.id, status: x.error ? "error" : 200, notModified: false, items: x.items, ms: Date.now() - t };
+      if (x.error) r.error = x.error; else if ((x.ageMin ?? 0) > 90) r.error = `stale: file is ${x.ageMin} min old`;
+    } else if (s.kind === "truthfile") { // data/in/truth-trump.json, written by src/cli/trump.ts (official API → mirror)
+      const t = Date.now(), x = readTruthFile(s.url, s.id);
       r = { sourceId: s.id, status: x.error ? "error" : 200, notModified: false, items: x.items, ms: Date.now() - t };
       if (x.error) r.error = x.error; else if ((x.ageMin ?? 0) > 90) r.error = `stale: file is ${x.ageMin} min old`;
     } else if (s.kind === "truthapi") { r = await fetchTruthApi(s.id, s.url);

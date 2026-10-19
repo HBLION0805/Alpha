@@ -19,6 +19,9 @@ log="data/logs/run-$(date +%Y%m%d).log"
 {
   echo "=== $(date '+%F %T %Z') ==="
   if [ "${1:-}" != "--digest-only" ]; then
+    # Trump on BOTH platforms: Truth Social (official API → mirror) → data/in/truth-trump.json + merged data/in/trump-posts.json
+    # (X comes from the routine's data/in/x-trump.json). A Truth failure is one warning line; the run continues with X only.
+    node src/cli/trump.ts 2>&1 | tail -2 || echo "[run] trump fetch failed → X only"
     node src/cli/poll.ts | tail -1
     hm=$(TZ=America/New_York date +%H%M)
     # volume anomalies: prior session before the open, today's after 16:15 ET (or ALPHA_VOLUME=1)

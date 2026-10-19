@@ -25,7 +25,8 @@
     "card": "node src/cli/card.ts",
     "fedspeak": "node src/cli/fedspeak.ts",
     "earnings": "node src/cli/earnings.ts",
-    "shadow": "node src/cli/shadow.ts"
+    "shadow": "node src/cli/shadow.ts",
+    "trump": "node src/cli/trump.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",

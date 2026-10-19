@@ -23,7 +23,7 @@ export const TRUMP_SCHEDULED_RE = /\btrump\b[^.?!]{0,50}\b(to|will|set to|expect
 
 export interface SleepEvent { dateET?: string; series?: string; title: string; timeET?: string }
 export interface SleepFed { speeches: FedSpeech[]; blackouts: Blackout[]; coverTo: string | null; status: string }
-export interface TrumpSignal { posts: Array<{ at: string; score: number; topics: string[]; url?: string }>; scheduled: Array<{ at: string; headline: string }>; status: string }
+export interface TrumpSignal { posts: Array<{ at: string; score: number; topics: string[]; url?: string; platforms?: string[]; urls?: Record<string, string>; text?: string }>; scheduled: Array<{ at: string; headline: string }>; status: string }
 export interface SleepInput { date: string; now: Date; events: SleepEvent[]; fed: SleepFed | null; trump: TrumpSignal | null }
 export interface Reason { text: string; quote: string | null; by: "mentor" | "user" }
 export interface SleepDay { date: string; trading: boolean; label: "no_sleep" | "sleep" | "normal" | "closed"; strong: boolean; noSleep: Reason[]; sleep: Reason[]; flags: string[]; notes: string[] }
@@ -61,7 +61,8 @@ export function sleepDay(i: SleepInput): SleepDay {
     if (!i.trump) out.notes.push("川普信号不可用（未读到帖子/新闻库）");
     else {
       const since = i.now.getTime() - TRUMP_WINDOW_H * 3600_000, posts = i.trump.posts.filter((p) => Date.parse(p.at) >= since && Date.parse(p.at) <= i.now.getTime() && p.score >= TRUMP_MIN_SCORE);
-      if (posts.length) { const top = [...posts].sort((a, b) => b.score - a.score)[0]!; out.noSleep.push({ text: `川普 ${TRUMP_WINDOW_H}h 内发了 ${posts.length} 条市场相关帖（最高 ${top.score} 分：${top.topics.join("、")}）`, quote: Q.trump, by: "mentor" }); }
+      if (posts.length) { const top = [...posts].sort((a, b) => b.score - a.score)[0]!; out.noSleep.push({ text: `川普 ${TRUMP_WINDOW_H}h 内发了 ${posts.length} 条市场相关帖（最高 ${top.score} 分：${top.topics.join("、")}${top.platforms?.length ? ` · ${top.platforms.join(" + ")}` : ""}）`, quote: Q.trump, by: "mentor" });
+        for (const p of [...posts].sort((a, b) => b.at.localeCompare(a.at)).slice(0, 3)) out.notes.push(`川普帖（${p.platforms?.join(" + ") ?? "?"}，${new Date(p.at).toLocaleString("sv-SE", { timeZone: "America/New_York" }).slice(5, 16)} ET，${p.score} 分）：「${(p.text ?? "").slice(0, 80)}${(p.text ?? "").length > 80 ? "…" : ""}」 → ${Object.values(p.urls ?? {}).join(" · ") || p.url || "—"}`); }
       const sch = i.trump.scheduled.filter((s) => Date.parse(s.at) >= since);
       if (sch.length) out.noSleep.push({ text: `新闻：川普预计有宣布/讲话（「${sch[0]!.headline.slice(0, 80)}」${sch.length > 1 ? ` 等 ${sch.length} 条` : ""}）`, quote: Q.trump, by: "mentor" });
       out.notes.push(`川普：${i.trump.status}`);

@@ -211,3 +211,15 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - knowledge/mentor/discipline/short-selling.rules.json: 13 items with thresholds, formulas and `autoFromDailyOHLC` / `liveImplemented` flags. The divergence exit and panic take-profit items are spec-only backtest candidates. test/shortside.test.ts keeps the spec in sync with the code.
 - Practice gap closed: short stock / covered put / naked short options are now refused even as practice (`paper.ts nakedShortLegs`). DECISIONS 2026-10-17. Catalog: source `mentor-short-selling`, items `short-side-checklist`, `phase2-short-stock-covered-put`. Cross-links were added to psych-short-weakness, psych-extreme-point-precision, size, psych-thesis-position-separation, phase2-thesis-or-ego, behavior-seven-sins and time-stop.
 - Tests: test/shortside.test.ts (12).
+
+## Trump on both platforms (2026-10-19)
+- Trigger: the 2026-10-18 16:36 ET Truth Social post on Russia (diesel sanctions; scored 76) produced no Trump alert. It came through only via news.
+- Root cause: this was not "X only". The mirror had ingested the post (`trump_truth`), but it was first fetched 15h later (no runs overnight). `trumpAlerts` only took posts *published* in the last 12h, so it was dropped.
+- Fixes:
+  - `src/cli/trump.ts` (`npm run trump`) runs first in every `scripts/run.sh` pass. It tries the official API (now Cloudflare 403 from the box), then falls back to the trumpstruth.org mirror, and writes `data/in/truth-trump.json` (same core shape as x-trump.json plus `source:"truth"`, `repost`, `postType`, and the original truthsocial.com URL). It merges with x-trump.json into `data/in/trump-posts.json`. If the fetch fails it prints one warning line, keeps the old file, and the run goes on with X only.
+  - `trump_truth` is now kind `truthfile`; `trump_truth_official` is disabled.
+  - Cross-post dedupe (`src/trumpPosts.ts`): normalized text that is equal, contained, or has token Jaccard ≥ 0.8, within 6h. Mirror placeholders like "Video post from…" never merge.
+  - Alerts: one alert per post across platforms, with the platform and both links. A post first *fetched* in the window also alerts if it was published ≤ 36h before, with a 晚到 N 小时 note.
+  - 能不能睡 / brief: `trumpSignal` merges both platforms and reports per-platform counts and freshness (a platform with no post in 24h gets a warning). Each post line shows the platform, ET time and link.
+- Live 10/19 10:35 ET: official API 403; mirror 99 posts; X 20 posts; 113 merged (5 cross-posts).
+

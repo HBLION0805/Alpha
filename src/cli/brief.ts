@@ -32,7 +32,7 @@ import { loadMajorEvents } from "../options/majorEvents.ts";
 import { fetchLiquidity, liquidityWatch, renderLiquidity } from "../macro/liquidity.ts";
 import { renderSleep, sleepJson, TRUMP_SCHEDULED_RE, TRUMP_MIN_SCORE } from "../macro/sleepday.ts";
 import { addDays, etDate } from "../macro/nyse.ts";
-import { TRUMP_SOURCES, scoreTrumpPost, fullText } from "../trump.ts";
+import { trumpSignal } from "../trump.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -100,14 +100,12 @@ try { const L = await fetchLiquidity({ now, offline: values.offline ?? false });
 catch (e) { failed.liquidity = (e as Error).message; liquidityLines = ["## 1.2 流动性观察（每周 · 只标记）", "", `- 数据不可用（${(e as Error).message}）`, ""]; }
 const mentor = { liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts } : null, events: loadMajorEvents().events, journal: pj.entries ?? [], capital: pj.capital ?? defaultCapital(), previousRegime, previousLeader };
 // 今日能不能睡 (mentor list; flag only): official FOMC/CPI/NFP, Fed speakers cache (Board + regional, 14-day window), Trump posts + news in the store
-const trumpItems = store.since(new Date(now.getTime() - 48 * 3600_000).toISOString()).filter((i) => TRUMP_SOURCES.has(i.sourceId));
-const trumpPosts = trumpItems.map((i) => ({ i, s: scoreTrumpPost(fullText(i)) })).filter((x) => x.s).map((x) => ({ at: x.i.publishedAt, score: x.s!.score, topics: x.s!.topics.map((t) => t.label), url: x.i.url }));
-const lastTrump = (store.db.prepare(`SELECT max(published_at) AS t FROM items WHERE source_id IN (${[...TRUMP_SOURCES].map(() => "?").join(",")})`).get(...TRUMP_SOURCES) as { t: string | null }).t;
+const trumpSig = trumpSignal(store.since(new Date(now.getTime() - 48 * 3600_000).toISOString()), now, TRUMP_MIN_SCORE); // X + Truth Social, cross-posts merged
 const fmtEt = (iso: string) => new Date(iso).toLocaleString("sv-SE", { timeZone: "America/New_York" }).slice(0, 16) + " ET";
 const sleep = renderSleep({ now, events: mentor.events,
   fed: fedR.data ? { speeches: fedR.data.speeches, blackouts: fedR.data.blackouts, coverTo: addDays(etDate(new Date(fedR.data.fetchedAt)), 14), status: fedR.status } : null,
-  trump: { posts: trumpPosts, scheduled: ranked.filter((r) => Date.parse(r.cluster.lastSeen) >= now.getTime() - 24 * 3600_000 && TRUMP_SCHEDULED_RE.test(r.headline)).map((r) => ({ at: r.cluster.lastSeen, headline: r.headline })),
-    status: `最近 24h 达到提醒线（≥${TRUMP_MIN_SCORE} 分）的帖子 ${trumpPosts.filter((p) => p.score >= TRUMP_MIN_SCORE && Date.parse(p.at) >= now.getTime() - 24 * 3600_000).length} 条；库里最新一条川普帖 ${lastTrump ? fmtEt(lastTrump) : "无"}${lastTrump && now.getTime() - Date.parse(lastTrump) > 24 * 3600_000 ? "（超过 24h，抓取可能没跑）" : ""}` } });
+  trump: { posts: trumpSig.posts, scheduled: ranked.filter((r) => Date.parse(r.cluster.lastSeen) >= now.getTime() - 24 * 3600_000 && TRUMP_SCHEDULED_RE.test(r.headline)).map((r) => ({ at: r.cluster.lastSeen, headline: r.headline })),
+    status: trumpSig.status } });
 // today's releases (incl. tier-2 08:30 prints) for the 8:30 数据快报 routine
 const todayReleases = calendar.filter((e) => e.date === etDate(now)).sort((a, b) => a.timeEt.localeCompare(b.timeEt)).map((e) => ({ timeEt: e.timeEt, kind: e.kind, title: e.title, tier: e.tier ?? 1 }));
 const res = buildBrief({ mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines], matrixLines: renderMatrix(mx, sc.leader), gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });

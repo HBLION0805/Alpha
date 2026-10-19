@@ -1,5 +1,11 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-19 — Trump: watch X AND Truth Social
+- Truth Social is fetched by Alpha itself, read-only and without login. The official public API is tried first; the trumpstruth.org mirror is the fallback (the API returns a Cloudflare 403 from the box). No Truth connector is needed, and nothing is ever posted, liked or replied to.
+- If a platform fails, we continue with what we have (X only), print one warning line, and never crash the run.
+- Cross-posts count as one post (similar text within 6h). Both platforms and both URLs are kept.
+- Late-delivered posts (fetched ≤36h after publication) still alert, with a delay note, so they are not silently dropped.
+
 ## 2026-10-19 — Tier-2 08:30 releases in the release calendar (claims, housing starts, durables, trade)
 - User-approved. calendar/releases-2026.json gains `tier: 2` events: HOUSING / DURABLES / TRADE from the official Census economic-indicator calendar (census.gov/economic-indicators/calendar-listview-2026.html, fetched 2026-10-19); CLAIMS from DOL's published rule "every Thursday 8:30 ET" (`inferred: true`) plus DOL's official exception list (oui.doleta.gov/unemploy/claims_arch.asp: Wed 2026-11-25 for Thanksgiving; 2027-11-10, 2027-11-24). Holiday Thursday with no listed date (2026-01-01) is skipped, not guessed. Retail sales already came from FRED. Empire State / Philly Fed not added (no official machine-readable schedule fetched).
 - Tier 2 = listed only: brief §6 「今天 8:30：…（次要）」, premarket 今日经济日历 （次要）, brief JSON `todayReleases`, plan card 「到期前次要数据」. Never in HIGH_IMPACT / the 48h window / premarket 盘前重大数据 NO_TRADE / critique / 72h rule (major-events file unchanged) / 能不能睡; plan-card §7 status ignores them. Major events behave as before.
