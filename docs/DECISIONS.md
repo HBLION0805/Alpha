@@ -172,3 +172,6 @@
 ## 2026-10-19 — Stock-protection reminder (mentor note 11:12 ET)
 - Trigger = stock long card (`--structure long_stock|stock|shares|正股`) AND (mentor-declared junk/sideways phase in phases.json OR ^NDX |105-day change| ≤ 5%). Either input alone is enough; NDX fetch failure → declared phase only.
 - Covered call is offered only with ≥ 100 shares held (`--shares`); unknown shares = not allowed. Naked options are never suggested. Display only: no effect on verdict, sizing, NO_TRADE or 能不能睡.
+
+## 2026-10-19 — Geopolitical / election events are display + reminder only
+- Separate tracked file knowledge/calendar/geo-events-2026.json, rendered only into brief text. Not merged into the release calendar or major events, so NO_TRADE, the 48h window, the 72h post-event tag and 能不能睡 for US trades don't change. Promoting an event to a gate needs the user's explicit OK.

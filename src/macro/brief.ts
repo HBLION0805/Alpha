@@ -20,6 +20,8 @@ export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult
   liquidityLines?: string[];
   /** 大佬 10/19 经济情景表 + 死猫 vs 见底清单 (src/macro/deadcat.ts renderDeadCat) — display only; omitted → section skipped */
   deadCatLines?: string[];
+  /** 地缘/选举事件 (src/macro/geoEvents.ts) — display + 72h reminder only; never in the verdict */
+  geo?: { reminder: string[]; calendar: string[] };
   /** 今日能不能睡 (src/macro/sleepday.ts renderSleep) — flag only; omitted → section skipped */
   sleepLines?: string[] }
 export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
@@ -58,6 +60,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     "- 情景权重为定性排序，不是概率。详见 4.3。", "",
     ...(i.sleepLines?.length ? i.sleepLines : []),
     ...(mentorState ? reminderSection({ ...mentorState, now: i.now, verdict, leader: i.sc.leader, regime: g.label, leaderChanged: i.sc.changed }) : []),
+    ...(i.geo?.reminder.length ? [...i.geo.reminder, ""] : []),
     ...(i.liquidityLines?.length ? i.liquidityLines : []),
     ...(i.matrixLines?.length ? [...i.matrixLines, ""] : []),
     ...(i.deadCatLines?.length ? i.deadCatLines : []),
@@ -74,7 +77,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     "**市场机制（How / When）：**", ...MECHANICS_QUESTIONS.map((q) => `- [ ] ${q}`), "",
     "## 5. 价位（只用于择时）", "", ...(i.levelsMd ? [i.levelsMd.replace(/^# .*\n+/, "").replace(/^## /gm, "### ")] : ["- 无（npm run levels 未产出）"]), "",
     ...(i.gexLines?.length ? i.gexLines : []),
-    "## 6. 日历", "", ...(todayCal.length ? todayCal.map((e) => `- **今天 ${e.timeEt.replace(/^0/, "")}：${e.title}**${minor(e)}`) : ["- 今天：无已登记的数据"]), ...(upcoming.length ? upcoming.map((e) => `- ${e.date} ${e.timeEt} ET · ${e.title}${minor(e)}`) : ["- 之后：无"]), "_（次要）= 初请 / 新屋开工 / 耐用品 / 贸易差额：只列出，不触发 48h/72h 事件规则、NO_TRADE 或「不能睡」。_", "",
+    "## 6. 日历", "", ...(i.geo?.calendar ?? []), ...(todayCal.length ? todayCal.map((e) => `- **今天 ${e.timeEt.replace(/^0/, "")}：${e.title}**${minor(e)}`) : ["- 今天：无已登记的数据"]), ...(upcoming.length ? upcoming.map((e) => `- ${e.date} ${e.timeEt} ET · ${e.title}${minor(e)}`) : ["- 之后：无"]), "_（次要）= 初请 / 新屋开工 / 耐用品 / 贸易差额：只列出，不触发 48h/72h 事件规则、NO_TRADE 或「不能睡」。_", "",
     "## 7. 盘前自检（纪律 #2 / #20）", "_任何一项是“不好” → 今天 NO_TRADE（pretrade 的 sessionGate 会强制执行）。_", "",
     ...SESSION_QUESTIONS.map((q) => `- [ ] ${q}`), "- [ ] 今天的市场值得交易吗？（成交清淡 / 方向不清 / 来回震荡 / 盈亏比差 → NO_TRADE）", "",
     ...(failed.length ? ["_数据失败：" + failed.map(([k, e]) => `${k} (${e})`).join("; ") + "_"] : []),
