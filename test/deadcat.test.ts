@@ -28,7 +28,12 @@ test("archive: article + 10 figures byte-for-byte (sha256 in manifest); no autho
   assert.equal(m.files.find((f: { file: string }) => f.file === "assets/fig1.png").containsAuthorHandle, true);
   const art = readFileSync(new URL(DIR + "article.md", root), "utf8");
   assert.match(art, /^# 死猫反弹，还是市场见底？/); assert.ok(art.includes("跟他们男人的鸡巴一样"), "crude wording kept");
-  for (const p of [DIR + "article.md", DIR + "README.md", DIR + "manifest.json", "docs/MENTOR_DEADCAT.md"]) assert.doesNotMatch(readFileSync(new URL(p, root), "utf8"), /夜雨/, p);
+  // the author's 2-character handle (visible in fig1) must not appear in any text; only its sha256 is kept here, never the name
+  const HANDLE_SHA = "288f26ff083ffd9c57dd08a1d7828ea87d89ecf47c39bcaa8ba733b6b4ea7a8a";
+  for (const p of [DIR + "article.md", DIR + "README.md", DIR + "manifest.json", "docs/MENTOR_DEADCAT.md", "docs/DECISIONS.md", "knowledge/README.md", "src/macro/deadcat.ts", "src/review/mentor.ts"]) {
+    const t = [...readFileSync(new URL(p, root), "utf8")];
+    for (let k = 0; k + 1 < t.length; k++) if (/\p{Script=Han}/u.test(t[k]!) && /\p{Script=Han}/u.test(t[k + 1]!)) assert.notEqual(createHash("sha256").update(t[k]! + t[k + 1]!).digest("hex"), HANDLE_SHA, p);
+  }
 });
 
 const E = (o: Partial<EconInput>): EconInput => ({ wti5: 0, dxy5: 0, y30bp5: 0, spy5: 0, def5: 0, growth5: 0, ...o });
