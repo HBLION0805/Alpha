@@ -175,3 +175,8 @@
 
 ## 2026-10-19 — Geopolitical / election events are display + reminder only
 - Separate tracked file knowledge/calendar/geo-events-2026.json, rendered only into brief text. Not merged into the release calendar or major events, so NO_TRADE, the 48h window, the 72h post-event tag and 能不能睡 for US trades don't change. Promoting an event to a gate needs the user's explicit OK.
+
+## 2026-10-19 — Crisis path tracker is semi-monthly and standalone
+- User scope change: not in the daily brief, no per-run alerts; runs on the 1st / 15th (next trading day) via `npm run crisis-path -- --if-due`. Display only.
+- 无数据 (fetch failure, stale series, stale manual CMBS reading) keeps the previous state; first-trigger dates are never overwritten. 1929 needs theme break AND credit stress (user: "plus credit stress").
+- The first run is a baseline: everything already triggered gets that date, so their relative order is not meaningful (tie → path score).

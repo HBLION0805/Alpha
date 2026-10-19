@@ -23,6 +23,7 @@
     "paper": "node src/cli/paper.ts",
     "review": "node src/cli/review.ts",
     "card": "node src/cli/card.ts",
+    "crisis-path": "node src/cli/crisisPath.ts",
     "fedspeak": "node src/cli/fedspeak.ts",
     "earnings": "node src/cli/earnings.ts",
     "shadow": "node src/cli/shadow.ts",
