@@ -223,3 +223,16 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
   - 能不能睡 / brief: `trumpSignal` merges both platforms and reports per-platform counts and freshness (a platform with no post in 24h gets a warning). Each post line shows the platform, ET time and link.
 - Live 10/19 10:35 ET: official API 403; mirror 99 posts; X 20 posts; 113 merged (5 cross-posts).
 
+## 大佬 死猫反弹 vs 见底 (2026-10-19)
+- **Archive:** knowledge/mentor/market-calls/dead-cat-2026-10-19/ (article plus 10 figures, sha256 manifest).
+- **Brief §1.3** (`src/macro/deadcat.ts`), shown on every brief, display only:
+  - 【大佬经济情景表】 (fig8), compared against the older 【大佬情景对照】;
+  - 死猫 vs 见底 checklist with DK's 3-of-4 bottom flag.
+- **Plan card / losing close:** reminders `dead_cat_rebound` and `oil_hurts_defensives`.
+- **New series** (brief only, kept separate from the premarket data): SPY, QQQ, XLP, XLV, XLU, RSP, EWF=F.
+- **Live 10/19 10:47 ET:**
+  - Economic table: 滞胀 4/4 (WTI +4.4% 5d, DXY −0.61%, 30Y −14bp, defensives +1.7% vs QQQ/SMH −4.8%). It disagrees with 【大佬情景对照】 (轮动 2/4).
+  - Checklist: WTI 🟢 97.88 falling; KOSPI 🟢 5768 (+1.76%); RSP 🔴 −0.32% (rotation reversing); VIX 🟡 17.81, cooling on day 1 after the 19.99 spike; NQ 🟡 29792.
+  - Bottom conditions: 1/4 met → the dead-cat call is not overturned.
+- Rules: docs/MENTOR_DEADCAT.md.
+

@@ -18,6 +18,8 @@ export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult
   mentor?: Omit<ReminderState, "now" | "verdict" | "leader" | "regime" | "leaderChanged">;
   /** §1.2 流动性观察 (src/macro/liquidity.ts renderLiquidity) — flag only; omitted → section skipped */
   liquidityLines?: string[];
+  /** 大佬 10/19 经济情景表 + 死猫 vs 见底清单 (src/macro/deadcat.ts renderDeadCat) — display only; omitted → section skipped */
+  deadCatLines?: string[];
   /** 今日能不能睡 (src/macro/sleepday.ts renderSleep) — flag only; omitted → section skipped */
   sleepLines?: string[] }
 export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
@@ -58,6 +60,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     ...(mentorState ? reminderSection({ ...mentorState, now: i.now, verdict, leader: i.sc.leader, regime: g.label, leaderChanged: i.sc.changed }) : []),
     ...(i.liquidityLines?.length ? i.liquidityLines : []),
     ...(i.matrixLines?.length ? [...i.matrixLines, ""] : []),
+    ...(i.deadCatLines?.length ? i.deadCatLines : []),
     "## 2. 警报", "", ...(alarms.length ? alarms.map((a) => `- ${a}`) : ["- 无"]), "",
     "## 2.1 今日交易计划", "", ...(i.planLines ?? ["- 未生成（缺少价位/数据）→ 今天没有计划内触发，NO_TRADE"]), "",
     "## 3. 【大佬流程】", "_来源：knowledge/mentor/discipline/premarket-routine.md_", "", ...i.pm.mentorLines.slice(0, i.pm.bondLines), "",

@@ -3,7 +3,7 @@
  * is reported as missing, never filled in. Reuses planlink (§2.1), scenarios, riskplan (30/30 + STOP_RULE),
  * tpplan (分批止盈), gex, levels, calendar/OpEx, earnings, critique (唱反调) and postmortem (past mistakes).
  */
-import { mentorForTags, liquidityThemeLines, oilSqueezeLines } from "./mentor.ts";
+import { mentorForTags, liquidityThemeLines, oilSqueezeLines, deadCatCardLines } from "./mentor.ts";
 import { SCENARIOS } from "../macro/scenarios.ts";
 import { STOP_RULE } from "../options/riskplan.ts";
 import { buildTakeProfit, renderTakeProfit } from "../options/tpplan.ts";
@@ -27,7 +27,7 @@ export interface CardLeg { type: "call" | "put"; strike: number; qty: number; ex
 export interface CardInput {
   now: Date; sym: string; dir: Dir; structure?: string; legs?: Array<{ qty: number; type: "call" | "put"; strike: number }>; exp?: string;
   spot: number | null; bars: YBar[]; levels: RefLevels | null; quotes: Quote[];
-  brief: { generatedAt: string; leader: string | null; verdict: string | null; reasons?: string[]; plan?: PlanItem[]; oilVix?: { fast: boolean; driver: string; vix: string } | null } | null;
+  brief: { generatedAt: string; leader: string | null; verdict: string | null; reasons?: string[]; plan?: PlanItem[]; oilVix?: { fast: boolean; driver: string; vix: string } | null; deadCat?: { wti?: number | null } | null } | null;
   gex: GexOut | null; calendar: CalendarEvent[]; earnings: Array<{ symbol: string; date: string; timing: string | null }> | null;
   /** next report from earningsStore: undefined = never looked up, null = none upcoming */ earningsNext?: EarningsRow | null; fed?: FedCache | null;
   journal: JournalEntry[]; capital: number; thesis?: string; invalidation?: string;
@@ -233,7 +233,7 @@ export function buildCard(i: CardInput): Card {
   return { id, createdAt: i.now.toISOString(), sym: i.sym, dir: i.dir, verdict, verdictText, failing, warnTags: verdict === "formal" ? [] : warnTags, planMissing, sections: S,
     ...(shortChk ? { shortTags: shortChk.tags, shortManual: shortChk.manual } : {}),
     ...(() => { const fresh = i.brief && i.now.getTime() - Date.parse(i.brief.generatedAt) < 24 * 3600_000;
-      const m = [...liquidityThemeLines(i.thesis), ...oilSqueezeLines(i.sym, i.thesis, fresh ? i.brief!.oilVix : null)]; return m.length ? { macroTheme: m } : {}; })(),
+      const m = [...liquidityThemeLines(i.thesis), ...oilSqueezeLines(i.sym, i.thesis, fresh ? i.brief!.oilVix : null), ...deadCatCardLines(i.sym, i.dir, i.thesis, fresh ? i.brief!.deadCat : null)]; return m.length ? { macroTheme: m } : {}; })(),
     trade: { legs, exp, contracts, perContractMaxLoss: per, maxLoss: per != null ? r2(per * contracts) : null, planId: match?.id ?? null, tpKind: tp?.plan?.kind ?? null, invalidationLevel: invLevel != null ? r2(invLevel) : null, mechanical: mech } };
 }
 export function renderCard(c: Card, spot: number | null, exp: string | null): string {

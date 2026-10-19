@@ -1,5 +1,20 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-19 — 大佬「死猫反弹，还是市场见底？」: active, display only
+- The post is archived byte-for-byte under knowledge/mentor/market-calls/dead-cat-2026-10-19/. Author name stripped; fig1's Discord handle is noted and the image left unedited.
+- Brief §1.3 shows two blocks on every brief (premarket and afternoon):
+  - 【大佬经济情景表】 (fig8): 5-day directions with small dead-bands, best row plus match score, and an agree/disagree line against the older 【大佬情景对照】.
+  - 死猫 vs 见底 checklist.
+- DK's devil's-advocate bottom check: WTI < 95, VIX < 17, KOSPI holds 5266, NQ ≥ 30000. Meeting 3 of 4 shows 「死猫判断可能错了」. These are DK's conditions, labeled as such.
+- Proxies, each labeled where it is used:
+  - RSP for EWF1! (Yahoo has no EWF=F history);
+  - EWY for KOSPI if ^KS11 fails;
+  - QQQ-equivalent levels for NQ if NQ=F fails.
+- Plan cards and losing closes get two reminders:
+  - long tech or rebound → 「大佬：如果是死猫反弹，每一次反弹都是卖掉破玩意儿的机会」;
+  - long defensive or staples when WTI > 95 → 「大佬：油价继续上涨，连防御股也得遭殃」.
+- None of this changes the verdict, alerts, sizing, card verdicts or 能不能睡. Tests check this both statically and on rendered output. Any promotion to a rule needs the user's confirmation.
+
 ## 2026-10-19 — Trump: watch X AND Truth Social
 - Truth Social is fetched by Alpha itself, read-only and without login. The official public API is tried first; the trumpstruth.org mirror is the fallback (the API returns a Cloudflare 403 from the box). No Truth connector is needed, and nothing is ever posted, liked or replied to.
 - If a platform fails, we continue with what we have (X only), print one warning line, and never crash the run.

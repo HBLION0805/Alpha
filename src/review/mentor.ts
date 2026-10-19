@@ -13,7 +13,7 @@ import { LOSS_CLASS_ZH, type LossClass } from "../options/psych.ts";
 import { sinCounts, topSin, sinsOf, SINS, type SinId } from "../options/sins.ts";
 import { effectiveRules } from "../options/rules.ts";
 
-const P = "knowledge/mentor/psychology/", D = "knowledge/mentor/discipline/", LQ = "knowledge/mentor/macro-liquidity/mentor-review-howell-2026-10-16.md", PV = "knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md";
+const P = "knowledge/mentor/psychology/", D = "knowledge/mentor/discipline/", LQ = "knowledge/mentor/macro-liquidity/mentor-review-howell-2026-10-16.md", PV = "knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md", DC = "knowledge/mentor/market-calls/dead-cat-2026-10-19/article.md";
 export interface Quote { text: string; file: string }
 export interface MentorRule { id: string; name: string; rule: string; quotes: Quote[] }
 const q = (file: string, text: string): Quote => ({ file, text });
@@ -81,6 +81,10 @@ export const RULES: Record<string, MentorRule> = Object.fromEntries([
     q(PV, "结合VIX的变化趋势和指数走势，判断市场方向是否得到确认，而不是单凭一个高低数值下结论。")),
   R("oil_squeeze", "高油价挤压航空与消费", "供应冲击推高油价时，航空 / 出行 / 可选消费的利润和需求都承压",
     q(PV, "航空公司就是很直接的例子。燃油是他们的重要成本。油价上涨会挤压利润，如果提高票价，又可能削弱出行需求。"), q(PV, "消费者购买力变弱，旅游、购物和娱乐支出就容易受到影响，企业营收也会跟着承压。")),
+  R("dead_cat_rebound", "死猫反弹：反弹是卖的机会", "大佬：如果是死猫反弹，每一次反弹都是卖掉破玩意儿的机会",
+    q(DC, "如果真的重演，那这就是死猫反弹，每一次反弹，都是让你趁崩盘前，把手里的破玩意儿卖掉的机会。")),
+  R("oil_hurts_defensives", "油价继续涨，防御股也挡不住", "大佬：油价继续上涨，连防御股也得遭殃",
+    q(DC, "但如果油价继续上涨，连防御股也得遭殃。")),
   R("sin_sloth", "七宗罪·懒惰", "该判断、该执行的时候在场；计划先写好", q(D + "seven-sins.md", "一、懒惰：想要交易的回报，却不愿做交易的功课。")),
   R("sin_wrath", "七宗罪·暴怒", "亏损后不报复交易、不加码", q(D + "seven-sins.md", "二、暴怒：你不再寻找机会，你只想把钱赢回来。")),
   R("sin_greed", "七宗罪·贪婪", "到目标就拿钱；不买便宜彩票单", q(D + "seven-sins.md", "三、贪婪：该拿的钱不肯拿，不该省的钱拼命省。")),
@@ -147,6 +151,28 @@ export function liquidityThemeLines(thesis: string | null | undefined): string[]
   const r = RULES.liquidity_chain!;
   return [`- 论点提到「${m[0]}」→ **${r.name}**：${r.rule}`, ...r.quotes.slice(0, 2).map((x) => `  - 「${x.text}」 → [${x.file.replace(/^knowledge\/mentor\//, "")}](${x.file})`)];
 }
+/** 大佬 10/19 死猫 hooks (plan card + losing close). Long tech / rebound plans; long defensive / staples plans when WTI > 95. Info only. */
+export const TECH_TICKERS = new Set(["QQQ", "TQQQ", "QLD", "SMH", "SOXX", "SOXL", "XLK", "TECL", "NVDA", "AMD", "AAPL", "MSFT", "GOOGL", "GOOG", "META", "AMZN", "TSLA", "AVGO", "TSM", "MU", "INTC", "NFLX", "ARM", "PLTR", "ORCL", "CRM", "ADBE", "QCOM", "AMAT", "LRCX", "KLAC", "ASML", "MRVL", "SMCI"]);
+export const REBOUND_RE = /反弹|抄底|超跌|见底|探底|回升|bounce|rebound|bottom|oversold|buy the dip|dip/i;
+export const DEFENSIVE_TICKERS = new Set(["XLP", "XLV", "XLU", "VDC", "VHT", "VPU", "KXI", "IHE", "PG", "KO", "PEP", "WMT", "COST", "CL", "KMB", "MDLZ", "GIS", "MO", "PM", "JNJ", "MRK", "PFE", "ABBV", "LLY", "UNH", "NEE", "DUK", "SO", "D", "AEP"]);
+export const DEFENSIVE_RE = /防御|必需消费|日用品|公用事业|医疗|staples|defensive|utilities|healthcare/i;
+export const OIL_DEFENSIVE_WTI = 95;
+const BULL_STRATEGY_RE = /^(long_call|call_debit|call_butterfly|long_stock|covered_call|short_put|bull_|cds\b|put_credit)/;
+const dcQuote = (id: string) => { const r = RULES[id]!; return [`- 「${r.rule}」（${r.name}）`, ...r.quotes.map((x) => `  - 原文：「${x.text}」 → [${x.file.replace(/^knowledge\/mentor\//, "")}](${x.file})`)]; };
+export function deadCatCardLines(sym: string, dir: "bull" | "bear", thesis: string | null | undefined, dc: { wti?: number | null } | null | undefined): string[] {
+  if (dir !== "bull") return [];
+  const S = sym.toUpperCase(), out: string[] = [];
+  const reb = thesis ? REBOUND_RE.exec(thesis)?.[0] : undefined;
+  if (TECH_TICKERS.has(S) || reb) out.push(`- 做多${TECH_TICKERS.has(S) ? `科技（${S}）` : ""}${reb ? `${TECH_TICKERS.has(S) ? "，" : ""}论点提到「${reb}」` : ""} →`, ...dcQuote("dead_cat_rebound"));
+  const defHit = DEFENSIVE_TICKERS.has(S) ? S : thesis ? DEFENSIVE_RE.exec(thesis)?.[0] : undefined;
+  if (defHit && dc?.wti != null && dc.wti > OIL_DEFENSIVE_WTI) out.push(`- 做多防御/必需消费（${defHit}），简报 WTI ${dc.wti.toFixed(2)} > ${OIL_DEFENSIVE_WTI} →`, ...dcQuote("oil_hurts_defensives"));
+  return out;
+}
+/** losing close of a long tech / rebound trade → the dead-cat reminder (info only) */
+export function deadCatLossLines(e: Pick<JournalEntry, "symbol" | "strategy" | "thesis">): string[] {
+  if (!BULL_STRATEGY_RE.test(e.strategy)) return [];
+  return deadCatCardLines(e.symbol, "bull", e.thesis, null).length ? ["🐈 亏损的是做多科技/反弹单：", ...dcQuote("dead_cat_rebound").map((l) => `  ${l}`)] : [];
+}
 export interface Reminder { id: string; why: string; line: string }
 const BEAR = new Set(["hawkish", "risk_off"]);
 const own = (e: JournalEntry) => e.source !== "mentor_shadow";
@@ -200,7 +226,7 @@ export function reminderSection(s: ReminderState): string[] {
 export const ATTRIBUTION_QUESTIONS: Array<[LossClass, string]> = [
   ["judgment", "判断错了吗？（论点/方向/时机的判断本身错了）"], ["execution", "执行错了吗？（追价、没按计划进出、改剧本）"],
   ["risk", "风险管理错了吗？（仓位太大、止损没设/没执行、工具或到期选错）"], ["variance", "还是按计划执行、只是正常的概率波动？"]];
-export interface LossPrompt { at: string; questions: string[]; repeats: string[] }
+export interface LossPrompt { at: string; questions: string[]; repeats: string[]; mentor?: string[] }
 export function lossPrompt(e: JournalEntry, all: JournalEntry[], now: Date, capital?: number): LossPrompt | null {
   if (!e.closedAt || fullPnl(e) > 0 || !own(e)) return null;
   const from = now.getTime() - 30 * 864e5;
@@ -210,10 +236,11 @@ export function lossPrompt(e: JournalEntry, all: JournalEntry[], now: Date, capi
   for (const t of e.lossReview?.errorTags ?? []) { const n = prior.filter((x) => (x.lossReview?.errorTags ?? []).includes(t)); if (n.length) repeats.push(`错误标签 ${t} 30 天内第 ${n.length + 1} 次：${n.map((x) => x.id).join("、")}`); }
   const mine = sinsOf(e, all, undefined, capital).map((x) => x.sin);
   for (const sn of [...new Set(mine)]) { const n = prior.filter((x) => sinsOf(x, all, undefined, capital).some((y) => y.sin === sn)); if (n.length) repeats.push(`七宗罪 ${SINS[sn].zh}（${sn}）30 天内第 ${n.length + 1} 次：${n.map((x) => x.id).join("、")}`); }
-  return { at: now.toISOString(), questions: ATTRIBUTION_QUESTIONS.map(([c, t]) => `${cls === c ? "☑" : "☐"} ${c}：${t}`), repeats };
+  const dc = deadCatLossLines(e);
+  return { at: now.toISOString(), questions: ATTRIBUTION_QUESTIONS.map(([c, t]) => `${cls === c ? "☑" : "☐"} ${c}：${t}`), repeats, ...(dc.length ? { mentor: dc } : {}) };
 }
 export function renderLossPrompt(p: LossPrompt, now: Date): string[] {
   const r = RULES.attribution!;
   return [`🧭 亏损归因（只提醒）：${mentorLine(r, pickQuote(r, now))}`, ...p.questions.map((x) => `  ${x}`),
-    ...(p.repeats.length ? [`🔁 重复错误：`, ...p.repeats.map((x) => `  - ${x}`)] : [])];
+    ...(p.repeats.length ? [`🔁 重复错误：`, ...p.repeats.map((x) => `  - ${x}`)] : []), ...(p.mentor ?? [])];
 }
