@@ -236,3 +236,13 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
   - Bottom conditions: 1/4 met → the dead-cat call is not overturned.
 - Rules: docs/MENTOR_DEADCAT.md.
 
+## 大佬市场日报 key levels (2026-10-19)
+- **Archive:** knowledge/mentor/market-calls/daily-2026-10-19/. Levels are data in knowledge/mentor/market-calls/levels.json.
+- **Code:** `src/macro/mentorLevels.ts` drives brief §1.3 「大佬今日价位」 (morning, intraday, afternoon close result, next-day recap), the dead-cat checklist row and the tech-long card quote. `src/macro/wtiFront.ts` picks the front-month WTI contract (CLX26 until 10/20, then CLZ26).
+- **Live 10/19 11:07 ET:**
+  - CRWV 63.22 (below 65 by 1.78, −2.7%)
+  - Nov WTI 100.71 (above 100 by 0.71, +0.7%)
+  - NQ 29,848 (below 30,000 by 152, −0.5%)
+  - DXY +0.08%, oil −0.69%, 30Y +2.8bp
+- **Known issue (not changed):** the existing 【用户要求】原油 block, the oil alarms and the oilvix "fast move" flag still use Yahoo CL=F, which reads a fake −3.7% today because of the roll. Moving them to the front contract would change alerts, so it needs the user's OK.
+

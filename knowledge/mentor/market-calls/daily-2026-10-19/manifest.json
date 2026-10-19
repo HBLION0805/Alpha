@@ -1,0 +1,16 @@
+{
+  "note": "Mentor (大佬) market daily for Mon 2026-10-19, shared by the user at 11:00 AM ET. article.md = the text between the --- markers of the user's message, byte-for-byte (no header added; the text names no author). Key levels are copied into ../levels.json (data-driven, dated). Checked by test/mentorlevels.test.ts.",
+  "theme": "market-calls",
+  "title": "大佬市场日报 2026-10-19",
+  "postedAt": "2026-10-19",
+  "receivedAt": "2026-10-19T11:00:00-04:00",
+  "files": [
+    {
+      "file": "article.md",
+      "source": "mentor daily relayed in the user's task message (2026-10-19 11:00 ET), text between the --- markers",
+      "bytes": 1000,
+      "sha256": "4871cbd239f1d367ddd615fee306db83be1c7c9f6ed8283298aa0d471834889f",
+      "verbatimChecked": true
+    }
+  ]
+}

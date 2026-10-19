@@ -49,7 +49,7 @@ const avg = (xs: Array<number | null>) => { const v = xs.filter((x): x is number
 export interface EconInput { wti5: number | null; dxy5: number | null; y30bp5: number | null; spy5: number | null; def5: number | null; growth5: number | null }
 export function econInputs(d: Record<string, Obs[]>): EconInput {
   const c5 = (id: string) => chgK(d[id], 5);
-  return { wti5: c5("WTI"), dxy5: c5("DXY"), y30bp5: chgK(d.UST30Y?.length ? d.UST30Y : d.UST30Y_FRED, 5, true), spy5: c5("SPY"),
+  return { wti5: c5(d.WTI_FRONT?.length ? "WTI_FRONT" : "WTI"), dxy5: c5("DXY"), y30bp5: chgK(d.UST30Y?.length ? d.UST30Y : d.UST30Y_FRED, 5, true), spy5: c5("SPY"),
     def5: avg([c5("XLP"), c5("XLV"), c5("XLU")]), growth5: avg([c5("QQQ"), c5("SMH")]) };
 }
 export function stockState(i: Pick<EconInput, "spy5" | "def5" | "growth5">): StockState {
@@ -108,11 +108,13 @@ const f2 = (x: number | null, d = 2) => (x == null ? "n/a" : x.toFixed(d));
 export function deadCatChecklist(d: Record<string, Obs[]>): CheckResult {
   const items: CheckItem[] = [];
   // 1) WTI vs 100
-  const wti = lastV(d.WTI), w1 = chgK(d.WTI, 1);
+  // front-month contract when available (Yahoo CL=F rolls early and splices closes → fake 1-day moves on roll days)
+  const W = d.WTI_FRONT?.length ? d.WTI_FRONT : d.WTI, wti = lastV(W), w1 = chgK(W, 1);
+  const cl = lastV(d.WTI), roll = W !== d.WTI && cl != null && wti != null && Math.abs(cl / wti - 1) > 0.01 ? `；Yahoo CL=F ${f2(cl)} 已换到下月合约，不用` : "";
   items.push(wti == null ? { id: "wti", label: "原油 WTI vs 100", value: "n/a", status: "na", note: "无数据" }
-    : wti >= LV.wtiResist ? { id: "wti", label: "原油 WTI vs 100", value: `${f2(wti)}（1日 ${pct(w1)}）`, status: "dead_cat", note: "重新涨破 100 → 纳指很可能还得继续跌" }
-    : w1 != null && w1 < 0 ? { id: "wti", label: "原油 WTI vs 100", value: `${f2(wti)}（1日 ${pct(w1)}）`, status: "bottom", note: "在 100 下方继续回落 → 抛售短期可能结束" }
-    : { id: "wti", label: "原油 WTI vs 100", value: `${f2(wti)}（1日 ${pct(w1)}）`, status: "neutral", note: "在 100 下方，但在回升 → 油价重新上涨，市场可能又要卖下来" });
+    : wti >= LV.wtiResist ? { id: "wti", label: "原油 WTI vs 100", value: `${f2(wti)}（1日 ${pct(w1)}${roll}）`, status: "dead_cat", note: "重新涨破 100 → 纳指很可能还得继续跌" }
+    : w1 != null && w1 < 0 ? { id: "wti", label: "原油 WTI vs 100", value: `${f2(wti)}（1日 ${pct(w1)}${roll}）`, status: "bottom", note: "在 100 下方继续回落 → 抛售短期可能结束" }
+    : { id: "wti", label: "原油 WTI vs 100", value: `${f2(wti)}（1日 ${pct(w1)}${roll}）`, status: "neutral", note: "在 100 下方，但在回升 → 油价重新上涨，市场可能又要卖下来" });
   // 2) KOSPI vs 5266.12 + bounce strength (EWY = proxy without the level)
   const kos = lastV(d.KOSPI), k1 = chgK(d.KOSPI, 1), ewy1 = chgK(d.EWY, 1);
   if (kos != null) {
@@ -168,13 +170,15 @@ export function renderChecklist(c: CheckResult): string[] {
   ];
 }
 
-export function renderDeadCat(d: Record<string, Obs[]>, older?: MatrixResult | null): { lines: string[]; econ: EconResult; check: CheckResult } {
+/** extra: checklist rows from the mentor's daily levels (the mentor-levels module, checklistItems); levelsLines: the 大佬今日价位 block */
+export function renderDeadCat(d: Record<string, Obs[]>, older?: MatrixResult | null, extra: CheckItem[] = [], levelsLines: string[] = []): { lines: string[]; econ: EconResult; check: CheckResult } {
   const econ = matchEcon(econInputs(d)), check = deadCatChecklist(d);
+  check.items.push(...extra);
   return { econ, check, lines: ["## 1.3 大佬：死猫反弹，还是市场见底？（10/19 帖 · 只显示）",
     "_大佬 2026-10-19 的帖子，原文在 knowledge/mentor/market-calls/dead-cat-2026-10-19/。只显示：不改结论、提醒、仓位，也不改「能不能睡」。_", "",
-    ...renderEcon(econ, older), ...renderChecklist(check), ""] };
+    ...levelsLines, ...renderEcon(econ, older), ...renderChecklist(check), ""] };
 }
 /** brief-latest.json `deadCat` — read by plan cards (WTI for the defensive-stock reminder); informational only */
 export function deadCatJson(r: { econ: EconResult; check: CheckResult }, d: Record<string, Obs[]>) {
-  return { econ: r.econ.best.map((b) => b.id), score: r.econ.score, known: r.econ.known, wti: lastV(d.WTI), bottomMet: r.check.met, deadCatWrong: r.check.wrongFlag, items: Object.fromEntries(r.check.items.map((x) => [x.id, x.status])) };
+  return { econ: r.econ.best.map((b) => b.id), score: r.econ.score, known: r.econ.known, wti: lastV(d.WTI_FRONT?.length ? d.WTI_FRONT : d.WTI), bottomMet: r.check.met, deadCatWrong: r.check.wrongFlag, items: Object.fromEntries(r.check.items.map((x) => [x.id, x.status])) };
 }

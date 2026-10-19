@@ -74,3 +74,21 @@ New series are fetched by the brief into their own record, so the premarket, mat
 - EWF=F (Yahoo returns only today's bar, so RSP is used for now)
 
 KOSPI, EWY, NQ, NDX, VIX, WTI, DXY and 30Y already came from the premarket series. `--offline` runs have no market data, so every item shows n/a.
+
+## D) 大佬今日价位 — the mentor's market dailies (from 2026-10-19)
+- **Archive:** each daily is stored byte-for-byte under `knowledge/mentor/market-calls/daily-YYYY-MM-DD/` (article.md, manifest.json, README.md). The first one is 2026-10-19.
+- **Levels are data, not code.** `knowledge/mentor/market-calls/levels.json` holds one entry per date. Each entry has `levels[]` and an optional `watch` field.
+  - Each level has `{id, label, series, level, rule, unit, meaning, quote, cardHook?, checklist?}`. `rule` is either `close_above` (it must close at or above the level) or `stay_below` (being above the level is the danger).
+  - `series` is a Yahoo ref. The special value `@WTI_FRONT` means the front-month CL contract (`src/macro/wtiFront.ts`, the same contract CNBC shows as @CL.1).
+  - **Adding a daily needs no code change:** archive the article and add an entry. `test/mentorlevels.test.ts` checks that every quote is a verbatim substring of its source.
+- **Brief §1.3** (`src/macro/mentorLevels.ts`, shown above the economic table): each level's value, above/below, distance in points and %, and the mentor's quote, plus the DXY / oil / 30Y 1-day direction line. The block follows the time of day (ET):
+  - **Before 09:30:** shows the previous close.
+  - **Intraday:** a close_above level that is below reads 🟡 「收盘前必须站回」.
+  - **From 16:00 (the afternoon run):** reads ✅ or ❌ on the close, plus a 「下午场：CRWV 65 … · NQ 30,000 …」 line. NQ futures settle at 17:00, so the line is labeled as the latest daily value.
+  - **Next trading day, if there is no new daily:** a recap against that day's close.
+  - **Extra flag:** if oil is above 100 while the 30Y falls, it shows the mentor's recession-signal combination.
+- **Dead-cat checklist:** levels with `checklist:true` (CRWV 65) are added as a row. DK's four bottom conditions are unchanged.
+- **Plan cards:** levels with `cardHook:"tech_long"` (CRWV 65) appear on any tech long card that day. A card qualifies on a tech ticker or a thesis mentioning 科技 / 半导体 / 芯片 / AI / tech / semis / nasdaq. The card also shows the state from the brief when the brief is for the same day.
+- **WTI front month:** the dead-cat checklist and the economic table now prefer the front contract. Yahoo `CL=F` rolls to the next month early and splices the previous contract's close. On 2026-10-19 it showed 97.69 (Dec) against a previous close of 101.41 (Nov), a fake −3.7%, while Nov itself was 100.70, −0.7%. When the two differ, the checklist row says so.
+- **Display only:** it never feeds the verdict, NO_TRADE, 48h/72h, alerts, sizing or 能不能睡. Static and rendered tests check this.
+

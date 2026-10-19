@@ -34,6 +34,8 @@ import { renderSleep, sleepJson, TRUMP_SCHEDULED_RE, TRUMP_MIN_SCORE } from "../
 import { addDays, etDate } from "../macro/nyse.ts";
 import { trumpSignal } from "../trump.ts";
 import { DEADCAT_SERIES, renderDeadCat, deadCatJson } from "../macro/deadcat.ts";
+import { loadLevels, activeEntry, levelSeries, renderMentorLevels, checklistItems, levelsJson } from "../macro/mentorLevels.ts";
+import { wtiFront } from "../macro/wtiFront.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -50,7 +52,11 @@ if (!values.offline) await Promise.all(PM_SERIES.map(async (s) => {
 }));
 // 大佬 10/19 死猫 vs 见底 (display only): extra ETFs in their own record so the premarket / matrix inputs stay unchanged
 const dcData: Record<string, Obs[]> = {};
-if (!values.offline) await Promise.all(DEADCAT_SERIES.map(async (s) => { try { dcData[s.id] = (await fetchDailyOnce(s)).filter((o) => o.t >= since); } catch (e) { failed[`deadcat ${s.id}`] = (e as Error).message; } }));
+const front = wtiFront(etDate(now));
+if (!values.offline) await Promise.all([...DEADCAT_SERIES, { id: "WTI_FRONT", provider: "yahoo" as const, ref: front.yahoo, label: `WTI 近月 ${front.code}`, unit: "price" as const, frequency: "daily" as const }].map(async (s) => { try { dcData[s.id] = (await fetchDailyOnce(s)).filter((o) => o.t >= since); } catch (e) { failed[`deadcat ${s.id}`] = (e as Error).message; } }));
+// 大佬今日价位 (knowledge/mentor/market-calls/levels.json; display only): series keyed by the level's `series` string
+const lv = loadLevels(), lvActive = activeEntry(lv.entries, now), lvData: Record<string, Obs[]> = {};
+if (!values.offline && lvActive) await Promise.all(levelSeries(lvActive.entry).map(async ({ key, def }) => { try { lvData[key] = (await fetchDailyOnce(def)).filter((o) => o.t >= since); } catch (e) { failed[`levels ${key}`] = (e as Error).message; } }));
 // 【大佬情景对照】 jobs data (FRED; weekly claims, monthly payrolls) — UNKNOWN if the fetch fails
 for (const [id, ref] of [["ICSA", "ICSA"], ["PAYEMS", "PAYEMS"]] as const) {
   if (values.offline) break;
@@ -89,7 +95,8 @@ for (const t of ["SPY", "QQQ", "IWM", "TLT"]) if (!planRefs[t]) { try { const r 
 const { verdict: v0, reasons: r0 } = briefVerdict({ macro, pm, sc });
 const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: defaultCapital() });
 const mx = classifyMatrix(data);
-const dc = renderDeadCat({ ...data, ...dcData }, mx);
+const mlv = renderMentorLevels(lv.entries, { ...data, ...lvData }, now, lv.error);
+const dc = renderDeadCat({ ...data, ...dcData }, mx, checklistItems(mlv), mlv.lines);
 // dealer gamma (GEX) from CBOE delayed quotes — config/gex.json or ALPHA_GEX_SYMBOLS; failures marked unavailable
 const gexCfg = existsSync("config/gex.json") ? JSON.parse(readFileSync("config/gex.json", "utf8")) : { symbols: ["SPY", "QQQ", "NVDA", "SOXL"], days: 45 };
 const gexSyms: string[] = (process.env.ALPHA_GEX_SYMBOLS?.split(",").map((x) => x.trim()).filter(Boolean)) ?? gexCfg.symbols;
@@ -122,7 +129,7 @@ if (!values["no-alarms"]) {
 store.close();
 const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); };
 write(values.out, res.md);
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: deadCatJson(dc, data), oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: { ...deadCatJson(dc, { ...data, ...dcData }), mentorLevels: levelsJson(mlv) }, oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");

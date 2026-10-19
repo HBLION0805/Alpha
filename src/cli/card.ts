@@ -6,6 +6,7 @@
  * Read-only data: Yahoo daily bars, CBOE delayed quotes (+ data/in/rh-option-quotes.json when fresh), brief-latest.json,
  * official calendar + OpEx, data/in/earnings.json, the paper journal. Nothing here can place an order.
  */
+import { loadLevels } from "../macro/mentorLevels.ts";
 import { parseArgs } from "node:util";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { buildCard, renderCard, type Quote } from "../review/card.ts";
@@ -49,6 +50,7 @@ const j = existsSync(values.journal!) ? JSON.parse(readFileSync(values.journal!,
 const card = buildCard({ now, sym, dir, structure: values.structure, legs, exp: values.exp, spot, bars, levels: bars.length > 30 ? referenceLevels(bars as never) : null, quotes,
   brief, gex: gexFromRaw(sym, raw), calendar, earnings, earningsNext: nextEarnings(loadEarningsBook(), sym, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })), fed: (await loadFedSpeakers({ now })).data,
   journal: j.entries, capital: j.capital ?? defaultCapital(), thesis: values.thesis, invalidation: values.invalidation,
+  mentorLevels: loadLevels().entries.find((e) => e.date === now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })) ?? null,
   ...(dir === "bear" ? { short: { spyBars, sectorSym, sectorBars, squeezeCheck: values["squeeze-check"] ?? null, horizonDays: values.horizon ? Number(values.horizon) : null } } : {}) });
 const md = renderCard(card, spot, values.exp ?? null);
 const out = values.out ?? `data/out/card-${sym}.md`;

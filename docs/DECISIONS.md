@@ -1,5 +1,15 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-19 — 大佬 market dailies: key levels as dated data, display only
+- The daily is archived verbatim with the author stripped. Its levels go in `knowledge/mentor/market-calls/levels.json`, one entry per date with verbatim quotes, so new dailies need no code.
+- Brief §1.3 「大佬今日价位」:
+  - each level's value, above/below and distance, plus the DXY / oil / 30Y line;
+  - the afternoon run (≥16:00 ET) reports the closes;
+  - the next morning gives a recap.
+- CRWV 65 is also a dead-cat checklist row and a tech-long plan-card quote.
+- Oil levels use the **front-month CL contract** (the same contract as CNBC @CL.1), because Yahoo CL=F rolls early and splices closes. The dead-cat checklist and the economic table switched to the front contract too.
+- Never changes NO_TRADE, 48h/72h, alerts, sizing or 能不能睡.
+
 ## 2026-10-19 — 大佬「死猫反弹，还是市场见底？」: active, display only
 - The post is archived byte-for-byte under knowledge/mentor/market-calls/dead-cat-2026-10-19/. Author name stripped; fig1's Discord handle is noted and the image left unedited.
 - Brief §1.3 shows two blocks on every brief (premarket and afternoon):

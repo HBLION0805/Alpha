@@ -12,6 +12,7 @@ import type { MajorEvent } from "../options/psych.ts";
 import { LOSS_CLASS_ZH, type LossClass } from "../options/psych.ts";
 import { sinCounts, topSin, sinsOf, SINS, type SinId } from "../options/sins.ts";
 import { effectiveRules } from "../options/rules.ts";
+import type { LevelEntry } from "../macro/mentorLevels.ts";
 
 const P = "knowledge/mentor/psychology/", D = "knowledge/mentor/discipline/", LQ = "knowledge/mentor/macro-liquidity/mentor-review-howell-2026-10-16.md", PV = "knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md", DC = "knowledge/mentor/market-calls/dead-cat-2026-10-19/article.md";
 export interface Quote { text: string; file: string }
@@ -167,6 +168,18 @@ export function deadCatCardLines(sym: string, dir: "bull" | "bear", thesis: stri
   const defHit = DEFENSIVE_TICKERS.has(S) ? S : thesis ? DEFENSIVE_RE.exec(thesis)?.[0] : undefined;
   if (defHit && dc?.wti != null && dc.wti > OIL_DEFENSIVE_WTI) out.push(`- 做多防御/必需消费（${defHit}），简报 WTI ${dc.wti.toFixed(2)} > ${OIL_DEFENSIVE_WTI} →`, ...dcQuote("oil_hurts_defensives"));
   return out;
+}
+/** 大佬今日价位 on tech long cards (levels.json cardHook "tech_long", today's entry only); state from the fresh brief when it is for the same day */
+export const TECH_THEME_RE = /科技|半导体|芯片|\bAI\b|人工智能|纳指|tech|semis?\b|semiconductor|nasdaq/i;
+export function mentorLevelCardLines(sym: string, dir: "bull" | "bear", thesis: string | null | undefined, entry: LevelEntry | null | undefined,
+  state?: { date: string; levels: Array<{ id: string; value: number | null; above: boolean | null; final: boolean }> } | null): string[] {
+  if (dir !== "bull" || !entry) return [];
+  const tech = TECH_TICKERS.has(sym.toUpperCase()) ? sym.toUpperCase() : thesis ? TECH_THEME_RE.exec(thesis)?.[0] : undefined; if (!tech) return [];
+  return entry.levels.filter((l) => l.cardHook === "tech_long").flatMap((l) => {
+    const s = state?.date === entry.date ? state.levels.find((x) => x.id === l.id) : undefined;
+    const now = s?.value != null ? `（简报：${l.series} ${s.value.toFixed(2)}，${s.above ? "在上方" : "在下方"}${s.final ? "，已收盘" : ""}）` : "";
+    return [`- 做多科技（${tech}）→ 大佬 ${entry.date} 日报价位 **${l.label}**：${l.meaning}${now}`, `  - 原文：「${l.quote}」 → [${entry.source.replace(/^knowledge\/mentor\//, "")}](${entry.source})`];
+  });
 }
 /** losing close of a long tech / rebound trade → the dead-cat reminder (info only) */
 export function deadCatLossLines(e: Pick<JournalEntry, "symbol" | "strategy" | "thesis">): string[] {
