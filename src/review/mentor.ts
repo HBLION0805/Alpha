@@ -13,6 +13,7 @@ import { LOSS_CLASS_ZH, type LossClass } from "../options/psych.ts";
 import { sinCounts, topSin, sinsOf, SINS, type SinId } from "../options/sins.ts";
 import { effectiveRules } from "../options/rules.ts";
 import type { LevelEntry } from "../macro/mentorLevels.ts";
+import type { MarketPhase } from "../macro/marketPhase.ts";
 
 const P = "knowledge/mentor/psychology/", D = "knowledge/mentor/discipline/", LQ = "knowledge/mentor/macro-liquidity/mentor-review-howell-2026-10-16.md", PV = "knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md", DC = "knowledge/mentor/market-calls/dead-cat-2026-10-19/article.md";
 export interface Quote { text: string; file: string }
@@ -180,6 +181,19 @@ export function mentorLevelCardLines(sym: string, dir: "bull" | "bear", thesis: 
     const now = s?.value != null ? `（简报：${l.series} ${s.value.toFixed(2)}，${s.above ? "在上方" : "在下方"}${s.final ? "，已收盘" : ""}）` : "";
     return [`- 做多科技（${tech}）→ 大佬 ${entry.date} 日报价位 **${l.label}**：${l.meaning}${now}`, `  - 原文：「${l.quote}」 → [${entry.source.replace(/^knowledge\/mentor\//, "")}](${entry.source})`];
   });
+}
+/** stock long (structure long_stock / stock / shares / 正股) in a sideways or junk phase → pair it with protection or cost reduction (info only) */
+export const STOCK_LONG_RE = /^(long_stock|stock|shares|equity|正股|股票)/i;
+export function stockProtectionLines(dir: "bull" | "bear", structure: string | null | undefined, shares: number | null | undefined, phase: MarketPhase | null | undefined): string[] {
+  if (dir !== "bull" || !structure || !STOCK_LONG_RE.test(structure.trim()) || !phase?.active) return [];
+  const n = shares != null && Number.isFinite(shares) && shares > 0 ? Math.floor(shares) : null, lots = n != null ? Math.floor(n / 100) : 0;
+  const cc = lots >= 1 ? `可以：持有 ${n} 股 → 最多卖 ${lots} 张（每 100 股 1 张）` : `现在不行：${n != null ? `持有 ${n} 股，不足 100 股` : "没填 --shares（持股数未知）"} → 不能卖 covered call`;
+  const d = phase.declared && phase.declared.phase !== "normal" ? phase.declared : null;
+  return [`- 正股做多 + 横盘/垃圾时间段（${phase.why.join("；")}）→ 正股要配保护或拉低成本（只提醒，不改结论和仓位）：`,
+    "  - 保护：买保护性 put，或 collar（持股 + 买 put + 卖 covered call；卖 call 那一腿同样需要 ≥ 100 股）",
+    `  - 拉低成本：covered call，只在持有 ≥ 100 股时 — ${cc}`,
+    "  - 绝不裸卖期权（没有正股覆盖的 call、没有现金担保的 put 都不做）",
+    ...(d ? d.quotes.map((q) => `  - 原文：「${q}」 → [${d.source.replace(/^knowledge\/mentor\//, "")}](${d.source})`) : [])];
 }
 /** losing close of a long tech / rebound trade → the dead-cat reminder (info only) */
 export function deadCatLossLines(e: Pick<JournalEntry, "symbol" | "strategy" | "thesis">): string[] {

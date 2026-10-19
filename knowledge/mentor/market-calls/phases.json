@@ -1,0 +1,16 @@
+{
+  "note": "Mentor-declared market phases (dated data). The latest entry with date <= today is the active one; add a new entry (e.g. phase \"normal\") when the mentor changes the call. Display only: used by the plan card's stock-protection reminder (src/macro/marketPhase.ts), never by NO_TRADE, sizing, 48h/72h or 能不能睡. Quotes are verbatim substrings of the source article (checked by test/stockprotect.test.ts).",
+  "entries": [
+    {
+      "date": "2026-10-19",
+      "phase": "junk",
+      "label": "纳指横盘约五个月 · 非常垃圾的股市时间段",
+      "source": "knowledge/mentor/market-calls/note-2026-10-19-sideways-options/article.md",
+      "quotes": [
+        "细看NASDAQ至今基本上横盘了五个月了。",
+        "这种时间段基本上资产大回调会影响所有的人，所以特别需要学会用期权保护或拉低正股的成本。",
+        "天下哪里有那么容易得到的财富？"
+      ]
+    }
+  ]
+}

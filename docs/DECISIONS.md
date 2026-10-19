@@ -168,3 +168,7 @@
 
 ## Earlier standing rules
 - Never push; never touch main; no secrets. Robinhood MCP read-only. Sim capital $5,000: $50/trade, $100/day, 6% max drawdown.
+
+## 2026-10-19 — Stock-protection reminder (mentor note 11:12 ET)
+- Trigger = stock long card (`--structure long_stock|stock|shares|正股`) AND (mentor-declared junk/sideways phase in phases.json OR ^NDX |105-day change| ≤ 5%). Either input alone is enough; NDX fetch failure → declared phase only.
+- Covered call is offered only with ≥ 100 shares held (`--shares`); unknown shares = not allowed. Naked options are never suggested. Display only: no effect on verdict, sizing, NO_TRADE or 能不能睡.

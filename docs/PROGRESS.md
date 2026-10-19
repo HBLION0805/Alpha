@@ -246,3 +246,8 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
   - DXY +0.08%, oil −0.69%, 30Y +2.8bp
 - **Fixed (user-approved 10/19 11:10 ET):** the 【用户要求】原油 block, the oil alarms (OIL_SPIKE/OIL_CRASH, same thresholds), the oilvix 快速变动 flag and the USDCAD line now use the front-month series (`frontContinuous` in src/macro/wtiFront.ts: last 10 trading days = the front contract itself, older history = CL=F ratio-adjusted at the junction). Live 10/19 ~11:13 ET: CLX26 100.61, 1d −0.79% (CL=F showed a fake −3.80%), 5d +7.33%, no ⚡, no oil alarm, Brent–WTI $7.56. Brent BZ=F, scenarios, matrix and trade plan still use the Yahoo series; NO_TRADE, sizing and 能不能睡 code unchanged. Tests: test/oilroll.test.ts.
 
+
+## 2026-10-19 11:20 ET — mentor note: sideways / junk phase → protect stock longs (display only)
+- **Archive:** knowledge/mentor/market-calls/note-2026-10-19-sideways-options/ (article.md byte-for-byte from mentor-inbox, 493 bytes, sha256 in manifest; README). Mentor-declared phase is data in knowledge/mentor/market-calls/phases.json (latest entry dated ≤ today; add a `normal` entry when the call changes).
+- **Code:** `src/macro/marketPhase.ts` (declared phase + ^NDX 105-trading-day change within ±5% = 横盘; 10/19 live +3.05% → sideways). `stockProtectionLines` in src/review/mentor.ts → plan card 「导师怎么说」: `npm run card -- --dir bull --structure long_stock --shares N` shows protective put / collar, covered call only with ≥ 100 shares (N/100 contracts), never naked options, plus the verbatim quotes.
+- Verdict, failing, tags, trade, sizing, NO_TRADE, 48h/72h and 能不能睡 unchanged. Tests: test/stockprotect.test.ts (4).

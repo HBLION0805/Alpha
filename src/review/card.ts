@@ -3,7 +3,8 @@
  * is reported as missing, never filled in. Reuses planlink (§2.1), scenarios, riskplan (30/30 + STOP_RULE),
  * tpplan (分批止盈), gex, levels, calendar/OpEx, earnings, critique (唱反调) and postmortem (past mistakes).
  */
-import { mentorForTags, liquidityThemeLines, oilSqueezeLines, deadCatCardLines, mentorLevelCardLines } from "./mentor.ts";
+import { mentorForTags, liquidityThemeLines, oilSqueezeLines, deadCatCardLines, mentorLevelCardLines, stockProtectionLines } from "./mentor.ts";
+import type { MarketPhase } from "../macro/marketPhase.ts";
 import type { LevelEntry } from "../macro/mentorLevels.ts";
 import { SCENARIOS } from "../macro/scenarios.ts";
 import { STOP_RULE } from "../options/riskplan.ts";
@@ -35,6 +36,8 @@ export interface CardInput {
   /** bearish cards: benchmark bars + the written squeeze check for the 做空清单 (src/options/shortside.ts); absent = reported as missing */
   /** today's 大佬 daily levels entry (knowledge/mentor/market-calls/levels.json), loaded by cli/card.ts; info only */
   mentorLevels?: LevelEntry | null;
+  /** stock long cards: shares held (covered call needs >= 100) and the market phase (src/macro/marketPhase.ts); info only */
+  shares?: number | null; marketPhase?: MarketPhase | null;
   short?: Pick<ShortInput, "spyBars" | "sectorSym" | "sectorBars" | "squeezeCheck" | "horizonDays">;
 }
 export type Status = "ok" | "warn" | "fail" | "missing";
@@ -236,7 +239,7 @@ export function buildCard(i: CardInput): Card {
   return { id, createdAt: i.now.toISOString(), sym: i.sym, dir: i.dir, verdict, verdictText, failing, warnTags: verdict === "formal" ? [] : warnTags, planMissing, sections: S,
     ...(shortChk ? { shortTags: shortChk.tags, shortManual: shortChk.manual } : {}),
     ...(() => { const fresh = i.brief && i.now.getTime() - Date.parse(i.brief.generatedAt) < 24 * 3600_000;
-      const m = [...liquidityThemeLines(i.thesis), ...oilSqueezeLines(i.sym, i.thesis, fresh ? i.brief!.oilVix : null), ...deadCatCardLines(i.sym, i.dir, i.thesis, fresh ? i.brief!.deadCat : null), ...mentorLevelCardLines(i.sym, i.dir, i.thesis, i.mentorLevels, fresh ? i.brief!.deadCat?.mentorLevels : null)]; return m.length ? { macroTheme: m } : {}; })(),
+      const m = [...liquidityThemeLines(i.thesis), ...oilSqueezeLines(i.sym, i.thesis, fresh ? i.brief!.oilVix : null), ...deadCatCardLines(i.sym, i.dir, i.thesis, fresh ? i.brief!.deadCat : null), ...mentorLevelCardLines(i.sym, i.dir, i.thesis, i.mentorLevels, fresh ? i.brief!.deadCat?.mentorLevels : null), ...stockProtectionLines(i.dir, i.structure, i.shares, i.marketPhase)]; return m.length ? { macroTheme: m } : {}; })(),
     trade: { legs, exp, contracts, perContractMaxLoss: per, maxLoss: per != null ? r2(per * contracts) : null, planId: match?.id ?? null, tpKind: tp?.plan?.kind ?? null, invalidationLevel: invLevel != null ? r2(invLevel) : null, mechanical: mech } };
 }
 export function renderCard(c: Card, spot: number | null, exp: string | null): string {
