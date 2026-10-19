@@ -40,7 +40,9 @@ export function buildBrief(i: BriefInput): BriefResult {
   const V = { NO_TRADE: "🛑 NO_TRADE 不交易", CAUTION: "⚠️ CAUTION 谨慎", RESEARCH_OK: "✅ RESEARCH_OK 可研究" }[verdict];
   const scen = i.sc.leader ? `${lead.s.name}（支持：${lead.pro.map((p) => p.label.split("（")[0]).join("、") || "—"}${lead.con.length ? `；反对：${lead.con.map((p) => p.id).join("、")}` : ""}）` : "无单一领先情景（信号并列 → 方向不清）";
   const alarms = [...i.pm.alarms.map((a) => `${a.level === "ALARM" ? "🚨" : "⚠️"} ${a.title}：${a.detail}（${BY[a.by]}）`), ...(i.sc.changed ? [`⚠️ 领先情景切换 → ${i.sc.leader ?? "无"}`] : [])];
-  const upcoming = i.calendar.filter((e) => e.date >= day).sort((a, b) => (a.date + a.timeEt).localeCompare(b.date + b.timeEt)).slice(0, 8);
+  const upcoming = i.calendar.filter((e) => e.date > day).sort((a, b) => (a.date + a.timeEt).localeCompare(b.date + b.timeEt)).slice(0, 10);
+  const todayCal = i.calendar.filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
+  const minor = (e: CalendarEvent) => (e.tier === 2 ? "（次要）" : "");
   const failed = Object.entries(i.failed ?? {});
   const mentorState = i.mentor ? { ...i.mentor, oilVix: i.mentor.oilVix ?? { fast: i.pm.oilVix?.fast ?? false, driver: i.pm.oilVix?.driver ?? "no_data", vix: i.pm.oilVix?.vix.label ?? "unclear" } } : null;
   const L = [
@@ -69,7 +71,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     "**市场机制（How / When）：**", ...MECHANICS_QUESTIONS.map((q) => `- [ ] ${q}`), "",
     "## 5. 价位（只用于择时）", "", ...(i.levelsMd ? [i.levelsMd.replace(/^# .*\n+/, "").replace(/^## /gm, "### ")] : ["- 无（npm run levels 未产出）"]), "",
     ...(i.gexLines?.length ? i.gexLines : []),
-    "## 6. 日历", "", ...(upcoming.length ? upcoming.map((e) => `- ${e.date} ${e.timeEt} ET · ${e.title}${e.date === day ? " **（今日）**" : ""}`) : ["- 无"]), "",
+    "## 6. 日历", "", ...(todayCal.length ? todayCal.map((e) => `- **今天 ${e.timeEt.replace(/^0/, "")}：${e.title}**${minor(e)}`) : ["- 今天：无已登记的数据"]), ...(upcoming.length ? upcoming.map((e) => `- ${e.date} ${e.timeEt} ET · ${e.title}${minor(e)}`) : ["- 之后：无"]), "_（次要）= 初请 / 新屋开工 / 耐用品 / 贸易差额：只列出，不触发 48h/72h 事件规则、NO_TRADE 或「不能睡」。_", "",
     "## 7. 盘前自检（纪律 #2 / #20）", "_任何一项是“不好” → 今天 NO_TRADE（pretrade 的 sessionGate 会强制执行）。_", "",
     ...SESSION_QUESTIONS.map((q) => `- [ ] ${q}`), "- [ ] 今天的市场值得交易吗？（成交清淡 / 方向不清 / 来回震荡 / 盈亏比差 → NO_TRADE）", "",
     ...(failed.length ? ["_数据失败：" + failed.map(([k, e]) => `${k} (${e})`).join("; ") + "_"] : []),

@@ -34,6 +34,7 @@ _Last updated 2026-10-17 ET (交易心理 batch: verbatim topic files, warn-only
 | (3) | review/critique (唱反调, deterministic) before every `paper open`; docs/CRITIQUE_PROMPT.md for chat | via paper open | tests + live smoke | ✅ new |
 | (3/2) | options/chain, robinhood, dashboard, matrix, ivhistory, events | only if `data/in/spy-chain.json` exists | never | frozen |
 | (4) KB | knowledge/*, catalog.json (67 items, 27 sources) | cited by brief, pretrade, readiness | yes | ok |
+| (3) tier-2 08:30 releases | calendar: CLAIMS (DOL rule + exceptions), HOUSING / DURABLES / TRADE (Census); tier 2 = listed only | brief §6 今天 8:30 / premarket 今日经济日历 / card §7 | test/releases.test.ts | ✅ 2026-10-19 |
 | (3) VIX 分档 (user infographic) | oilvix.ts vixRegime: 🟢/🟡/🟠/🔴 bands + ⚡ 急升 / ↘ 回落; phase-1 override of 分批布局 | brief §4 | test/vixregime.test.ts | ✅ 2026-10-19 |
 | (3) 今日能不能睡 (mentor day list) | macro/sleepday.ts + nyse.ts: OpEx / quad witching / FOMC / Fed speakers / Trump 24h / CPI·NFP vs Monday / summer / Xmas–NY / Thanksgiving week / long-weekend eve; 不能睡 wins | brief §1 (premarket + afternoon) | test/sleepday.test.ts | ✅ 2026-10-18 |
 | (3) oil / VIX (mentor premarket video) | macro/oilvix.ts: oil 1d/5d speed ⚡, demand-vs-supply heuristic (copper HG=F), JETS/XLY pressure note, VIX vs SPX/NDX 方向确认 / 背离; mentor `oil_speed` / `vix_confirm` / `oil_squeeze`; VIX call hedge = phase-2 reference | brief oil block + §4 | test/oilvix.test.ts | ✅ 2026-10-18 |

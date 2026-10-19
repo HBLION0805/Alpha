@@ -118,10 +118,10 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   K.push("", "### VIX 与指数是否互相确认（导师盘前视频 · 只标记）", ...ov.lines.vix);
   if (ratio != null && ratio >= 1) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio.toFixed(3)}`, detail: "近端恐慌高于远端：市场压力", by: "dk" });
   const todays = (inp.calendar ?? []).filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
-  K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${eventUtcMs(e) <= inp.now.getTime() ? "（已公布）" : e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));
+  K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${e.tier === 2 ? "（次要）" : ""}${eventUtcMs(e) <= inp.now.getTime() ? "（已公布）" : e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));
   K.push("", "### 美联储官员讲话（未来 14 天，ET）", ...(inp.fedLines ?? ["- 不可用（未获取 Fed 官方日历）"]));
   // only releases still ahead: an evening run must not warn about this morning's 08:30 print
-  const pre = todays.filter((e) => e.timeEt < "09:30" && eventUtcMs(e) > inp.now.getTime() && ["CPI", "NFP", "PCE", "PPI", "FOMC", "GDP"].some((k) => e.kind.includes(k)));
+  const pre = todays.filter((e) => e.tier !== 2 && e.timeEt < "09:30" && eventUtcMs(e) > inp.now.getTime() && ["CPI", "NFP", "PCE", "PPI", "FOMC", "GDP"].some((k) => e.kind.includes(k)));
   if (pre.length) noTrade.push(`盘前重大数据 ${pre.map((e) => `${e.kind} ${e.timeEt}`).join("、")}：数据公布前不新开仓`);
   if (todays.some((e) => e.kind === "FOMC" && eventUtcMs(e) > inp.now.getTime())) noTrade.push("今日 FOMC：决议前不新开方向仓");
   K.push("", "### 财报（今日盘前 / 盘后）");

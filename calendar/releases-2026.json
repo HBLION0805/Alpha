@@ -4,7 +4,9 @@
   "sources": [
     "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
     "https://fred.stlouisfed.org/releases/calendar (mirrors BLS/BEA/Census schedules; times converted CT→ET)",
-    "https://www.bea.gov/news/schedule"
+    "https://www.bea.gov/news/schedule",
+    "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+    "https://oui.doleta.gov/unemploy/claims_arch.asp"
   ],
   "crossCheck": {
     "beaDatesMissingFromFred": []
@@ -19,11 +21,36 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
     },
     {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-01-08",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-01-08",
+      "inferred": true
+    },
+    {
       "kind": "NFP",
       "title": "Employment Situation / NFP (BLS)",
       "date": "2026-01-09",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-01-09",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "CPI",
@@ -47,6 +74,15 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-01-15",
+      "inferred": true
+    },
+    {
       "kind": "GDP",
       "title": "GDP (BEA)",
       "date": "2026-01-22",
@@ -54,11 +90,28 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-01-22",
+      "inferred": true
+    },
+    {
       "kind": "PCE",
       "title": "Personal Income & Outlays / PCE (BEA)",
       "date": "2026-01-22",
       "timeEt": "10:00",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=54&y=2026"
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-01-26",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "FOMC",
@@ -69,11 +122,37 @@
       "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
     },
     {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-01-29",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-01-29",
+      "inferred": true
+    },
+    {
       "kind": "PPI",
       "title": "PPI (BLS)",
       "date": "2026-01-30",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-02-05",
+      "inferred": true
     },
     {
       "kind": "JOLTS",
@@ -97,11 +176,53 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-02-12",
+      "inferred": true
+    },
+    {
       "kind": "CPI",
       "title": "CPI (BLS)",
       "date": "2026-02-13",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-02-18",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-02-18",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-02-19",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-02-19",
+      "inferred": true
     },
     {
       "kind": "PCE",
@@ -118,11 +239,29 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-02-26",
+      "inferred": true
+    },
+    {
       "kind": "PPI",
       "title": "PPI (BLS)",
       "date": "2026-02-27",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-03-05",
+      "inferred": true
     },
     {
       "kind": "RETAIL",
@@ -144,6 +283,39 @@
       "date": "2026-03-11",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-03-12",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-03-12",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-03-12",
+      "inferred": true
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-03-13",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "GDP",
@@ -182,6 +354,24 @@
       "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-03-19",
+      "inferred": true
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-03-26",
+      "inferred": true
+    },
+    {
       "kind": "JOLTS",
       "title": "JOLTS (BLS)",
       "date": "2026-03-31",
@@ -196,11 +386,36 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
     },
     {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-04-02",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-04-02",
+      "inferred": true
+    },
+    {
       "kind": "NFP",
       "title": "Employment Situation / NFP (BLS)",
       "date": "2026-04-03",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-04-07",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "PCE",
@@ -217,6 +432,15 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-04-09",
+      "inferred": true
+    },
+    {
       "kind": "CPI",
       "title": "CPI (BLS)",
       "date": "2026-04-10",
@@ -231,11 +455,45 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-04-16",
+      "inferred": true
+    },
+    {
       "kind": "RETAIL",
       "title": "Retail sales (Census)",
       "date": "2026-04-21",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-04-23",
+      "inferred": true
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-04-29",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-04-29",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "FOMC",
@@ -260,11 +518,37 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-04-30",
+      "inferred": true
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-05-05",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
       "kind": "JOLTS",
       "title": "JOLTS (BLS)",
       "date": "2026-05-05",
       "timeEt": "10:00",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-05-07",
+      "inferred": true
     },
     {
       "kind": "NFP",
@@ -295,6 +579,32 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-05-14",
+      "inferred": true
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-05-21",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-05-21",
+      "inferred": true
+    },
+    {
       "kind": "PCE",
       "title": "Personal Income & Outlays / PCE (BEA)",
       "date": "2026-05-28",
@@ -309,6 +619,23 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-05-28",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-05-28",
+      "inferred": true
+    },
+    {
       "kind": "JOLTS",
       "title": "JOLTS (BLS)",
       "date": "2026-06-02",
@@ -316,11 +643,28 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-06-04",
+      "inferred": true
+    },
+    {
       "kind": "NFP",
       "title": "Employment Situation / NFP (BLS)",
       "date": "2026-06-05",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-06-09",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "CPI",
@@ -335,6 +679,23 @@
       "date": "2026-06-11",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-06-11",
+      "inferred": true
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-06-16",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "RETAIL",
@@ -352,6 +713,15 @@
       "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-06-18",
+      "inferred": true
+    },
+    {
       "kind": "PCE",
       "title": "Personal Income & Outlays / PCE (BEA)",
       "date": "2026-06-25",
@@ -366,6 +736,23 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-06-25",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-06-25",
+      "inferred": true
+    },
+    {
       "kind": "JOLTS",
       "title": "JOLTS (BLS)",
       "date": "2026-06-30",
@@ -378,6 +765,32 @@
       "date": "2026-07-02",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-07-02",
+      "inferred": true
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-07-07",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-07-09",
+      "inferred": true
     },
     {
       "kind": "CPI",
@@ -399,6 +812,40 @@
       "date": "2026-07-16",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-07-16",
+      "inferred": true
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-07-17",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-07-23",
+      "inferred": true
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-07-27",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "FOMC",
@@ -423,11 +870,37 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-07-30",
+      "inferred": true
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-08-04",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
       "kind": "JOLTS",
       "title": "JOLTS (BLS)",
       "date": "2026-08-04",
       "timeEt": "10:00",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-08-06",
+      "inferred": true
     },
     {
       "kind": "NFP",
@@ -451,11 +924,37 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-08-13",
+      "inferred": true
+    },
+    {
       "kind": "RETAIL",
       "title": "Retail sales (Census)",
       "date": "2026-08-14",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-08-18",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-08-20",
+      "inferred": true
     },
     {
       "kind": "PCE",
@@ -472,11 +971,45 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-08-26",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-08-27",
+      "inferred": true
+    },
+    {
       "kind": "JOLTS",
       "title": "JOLTS (BLS)",
       "date": "2026-09-01",
       "timeEt": "10:00",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-09-03",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-09-03",
+      "inferred": true
     },
     {
       "kind": "NFP",
@@ -491,6 +1024,15 @@
       "date": "2026-09-10",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=46&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-09-10",
+      "inferred": true
     },
     {
       "kind": "CPI",
@@ -513,6 +1055,40 @@
       "timeEt": "14:00",
       "sep": true,
       "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-09-17",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-09-17",
+      "inferred": true
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-09-24",
+      "inferred": true
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-09-25",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "RETAIL",
@@ -543,11 +1119,37 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-10-01",
+      "inferred": true
+    },
+    {
       "kind": "NFP",
       "title": "Employment Situation / NFP (BLS)",
       "date": "2026-10-02",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-10-06",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-10-08",
+      "inferred": true
     },
     {
       "kind": "CPI",
@@ -569,6 +1171,40 @@
       "date": "2026-10-15",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-10-15",
+      "inferred": true
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-10-20",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-10-22",
+      "inferred": true
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-10-27",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "FOMC",
@@ -593,11 +1229,37 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-10-29",
+      "inferred": true
+    },
+    {
       "kind": "JOLTS",
       "title": "JOLTS (BLS)",
       "date": "2026-11-03",
       "timeEt": "10:00",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-11-04",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-11-05",
+      "inferred": true
     },
     {
       "kind": "NFP",
@@ -614,6 +1276,15 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-11-12",
+      "inferred": true
+    },
+    {
       "kind": "PPI",
       "title": "PPI (BLS)",
       "date": "2026-11-13",
@@ -626,6 +1297,23 @@
       "date": "2026-11-17",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
+    },
+    {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-11-18",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-11-19",
+      "inferred": true
     },
     {
       "kind": "PCE",
@@ -642,6 +1330,22 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
     },
     {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-11-25",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)（11-26 联邦假日，DOL 官方改到周三）",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-11-25"
+    },
+    {
       "kind": "JOLTS",
       "title": "JOLTS (BLS)",
       "date": "2026-12-01",
@@ -649,11 +1353,28 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=192&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-12-03",
+      "inferred": true
+    },
+    {
       "kind": "NFP",
       "title": "Employment Situation / NFP (BLS)",
       "date": "2026-12-04",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=50&y=2026"
+    },
+    {
+      "kind": "TRADE",
+      "title": "贸易差额 Trade balance (Census/BEA)",
+      "date": "2026-12-08",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
     },
     {
       "kind": "FOMC",
@@ -671,6 +1392,15 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=10&y=2026"
     },
     {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-12-10",
+      "inferred": true
+    },
+    {
       "kind": "PPI",
       "title": "PPI (BLS)",
       "date": "2026-12-15",
@@ -685,6 +1415,23 @@
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=9&y=2026"
     },
     {
+      "kind": "HOUSING",
+      "title": "新屋开工/营建许可 Housing starts & building permits (Census)",
+      "date": "2026-12-17",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-12-17",
+      "inferred": true
+    },
+    {
       "kind": "PCE",
       "title": "Personal Income & Outlays / PCE (BEA)",
       "date": "2026-12-23",
@@ -697,6 +1444,39 @@
       "date": "2026-12-23",
       "timeEt": "08:30",
       "source": "https://fred.stlouisfed.org/releases/calendar?rid=53&y=2026"
+    },
+    {
+      "kind": "DURABLES",
+      "title": "耐用品订单 Durable goods, advance (Census)",
+      "date": "2026-12-23",
+      "timeEt": "08:30",
+      "source": "https://www.census.gov/economic-indicators/calendar-listview-2026.html",
+      "tier": 2
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-12-24",
+      "inferred": true
+    },
+    {
+      "kind": "CLAIMS",
+      "title": "初请失业金 Initial jobless claims (DOL)",
+      "timeEt": "08:30",
+      "source": "https://oui.doleta.gov/unemploy/claims_arch.asp",
+      "tier": 2,
+      "date": "2026-12-31",
+      "inferred": true
     }
-  ]
+  ],
+  "tier2": {
+    "addedAt": "2026-10-19",
+    "note": "Tier-2 08:30 releases (tier: 2) — listed in the brief only; never high-impact / 48h / 72h / NO_TRADE / 不能睡. HOUSING/DURABLES/TRADE from the official Census economic-indicator calendar (fetched 2026-10-19). CLAIMS from DOL's rule 'every Thursday 8:30 ET' (inferred: true) plus DOL's official exception list (2026-11-25 Wednesday, Thanksgiving).",
+    "claimsSkipped": [
+      "2026-01-01（联邦假日，DOL 未列出替代日期 → 不登记）"
+    ]
+  }
 }

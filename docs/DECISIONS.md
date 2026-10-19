@@ -1,5 +1,10 @@
 # Standing decisions (memory-like notes)
 
+## 2026-10-19 — Tier-2 08:30 releases in the release calendar (claims, housing starts, durables, trade)
+- User-approved. calendar/releases-2026.json gains `tier: 2` events: HOUSING / DURABLES / TRADE from the official Census economic-indicator calendar (census.gov/economic-indicators/calendar-listview-2026.html, fetched 2026-10-19); CLAIMS from DOL's published rule "every Thursday 8:30 ET" (`inferred: true`) plus DOL's official exception list (oui.doleta.gov/unemploy/claims_arch.asp: Wed 2026-11-25 for Thanksgiving; 2027-11-10, 2027-11-24). Holiday Thursday with no listed date (2026-01-01) is skipped, not guessed. Retail sales already came from FRED. Empire State / Philly Fed not added (no official machine-readable schedule fetched).
+- Tier 2 = listed only: brief §6 「今天 8:30：…（次要）」, premarket 今日经济日历 （次要）, brief JSON `todayReleases`, plan card 「到期前次要数据」. Never in HIGH_IMPACT / the 48h window / premarket 盘前重大数据 NO_TRADE / critique / 72h rule (major-events file unchanged) / 能不能睡; plan-card §7 status ignores them. Major events behave as before.
+- 2027: releases-2027.json does not exist yet (the release calendar is per-year); `npm run calendar:snapshot -- 2027` now also pulls Census + DOL claims. Census 2027 dates are already published.
+
 ## 2026-10-19 — VIX 分档 label in brief §4 (user-shared infographic); display only
 - Bands from the user-shared infographic 如何用VIX观察市场情绪 (knowledge/vix-regimes.md; public, not the mentor's): < 20 🟢 / 20–<30 🟡 / 30–40 🟠 / > 40 🔴; 20 and 30 → higher band, 40 → 30–40.
 - > 40: the infographic's 「分批布局」 does not apply in phase 1 → 「第一阶段不抄底，少亏优先，NO_TRADE 合理」 (text only — the verdict is not changed).

@@ -1,6 +1,6 @@
 import { USER_AGENT } from "./rss.ts";
 
-export type ReleaseKind = "FOMC" | "CPI" | "NFP" | "PPI" | "PCE" | "GDP" | "RETAIL" | "JOLTS" | "CLAIMS" | "OPEX";
+export type ReleaseKind = "FOMC" | "CPI" | "NFP" | "PPI" | "PCE" | "GDP" | "RETAIL" | "JOLTS" | "CLAIMS" | "HOUSING" | "DURABLES" | "TRADE" | "OPEX";
 
 export interface CalendarEvent {
   kind: ReleaseKind;
@@ -11,6 +11,60 @@ export interface CalendarEvent {
   timeEt: string;
   sep?: boolean; // FOMC * = Summary of Economic Projections
   source: string; // citation URL
+  /** 2 = minor 08:30 release (claims, housing starts, durables, trade): listed in the brief/calendar only — never a
+   *  high-impact / 48h / 72h / NO_TRADE / 不能睡 trigger. Omitted = the original major tier. */
+  tier?: 1 | 2;
+  /** claims dates generated from DOL's rule ("every Thursday 8:30 ET") rather than listed one by one */
+  inferred?: boolean;
+}
+
+/** Minor (tier-2) release kinds. risk.ts HIGH_IMPACT, premarket's 盘前重大数据 rule and the 72h-rule / 能不能睡 major events never include them. */
+export const MINOR_KINDS = new Set<ReleaseKind>(["CLAIMS", "HOUSING", "DURABLES", "TRADE"]);
+export const isMinorRelease = (e: Pick<CalendarEvent, "kind" | "tier">) => e.tier === 2 || MINOR_KINDS.has(e.kind);
+export const RELEASE_ZH: Partial<Record<ReleaseKind, string>> = { CLAIMS: "初请失业金", HOUSING: "新屋开工/营建许可", DURABLES: "耐用品订单", TRADE: "贸易差额" };
+
+/** Census economic-indicator calendar (official; the undated page shows next year, -YYYY.html a given year). */
+export const censusCalendarUrl = (year: number) => `https://www.census.gov/economic-indicators/calendar-listview-${year}.html`;
+const CENSUS_KINDS: Array<{ re: RegExp; kind: ReleaseKind; title: string }> = [
+  { re: /^New Residential Construction/, kind: "HOUSING", title: "新屋开工/营建许可 Housing starts & building permits (Census)" },
+  { re: /^Advance Report on Durable Goods/, kind: "DURABLES", title: "耐用品订单 Durable goods, advance (Census)" },
+  { re: /^U\.S\. International Trade in Goods and Services/, kind: "TRADE", title: "贸易差额 Trade balance (Census/BEA)" },
+];
+/** Parse the Census calendar table: name · sortable YYYYMMDDHHMM key · time. Only the tier-2 kinds above; deduped by kind+date. */
+export function parseCensusCalendar(html: string, source: string): CalendarEvent[] {
+  const out: CalendarEvent[] = [], seen = new Set<string>();
+  const re = /<tr[^>]*>\s*<td[^>]*>([\s\S]*?)<\/td>\s*<td sorttable_customkey="(\d{12})">/g;
+  for (const m of html.matchAll(re)) {
+    const name = m[1]!.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim(), k = m[2]!;
+    const c = CENSUS_KINDS.find((x) => x.re.test(name)); if (!c) continue;
+    const date = `${k.slice(0, 4)}-${k.slice(4, 6)}-${k.slice(6, 8)}`, timeEt = `${k.slice(8, 10)}:${k.slice(10, 12)}`;
+    if (seen.has(c.kind + date)) continue; seen.add(c.kind + date);
+    out.push({ kind: c.kind, title: c.title, date, timeEt, source, tier: 2 });
+  }
+  return out.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/** DOL weekly claims: "published each week on Thursday morning at 8:30am" except when the Thursday is a federal holiday;
+ *  the official exception list (fetched 2026-10-19) gives the replacement dates. */
+export const DOL_CLAIMS_URL = "https://oui.doleta.gov/unemploy/claims_arch.asp";
+export const DOL_CLAIMS_EXCEPTIONS: Record<string, string> = { "2026-11-26": "2026-11-25", "2027-11-11": "2027-11-10", "2027-11-25": "2027-11-24" };
+/** Federal holidays that can fall on a Thursday: fixed-date ones on their actual date, plus Thanksgiving (4th Thursday of November). */
+export function federalThursdayHolidays(year: number): string[] {
+  const fixed = ["01-01", "06-19", "07-04", "11-11", "12-25"].map((md) => `${year}-${md}`).filter((d) => new Date(d + "T12:00:00Z").getUTCDay() === 4);
+  const first = new Date(Date.UTC(year, 10, 1)).getUTCDay(), tg = `${year}-11-${String(1 + ((4 - first + 7) % 7) + 21).padStart(2, "0")}`;
+  return [...fixed, tg].sort();
+}
+export function claimsEvents(year: number): { events: CalendarEvent[]; skipped: string[] } {
+  const events: CalendarEvent[] = [], skipped: string[] = [], hol = new Set(federalThursdayHolidays(year));
+  const d = new Date(Date.UTC(year, 0, 1)); while (d.getUTCDay() !== 4) d.setUTCDate(d.getUTCDate() + 1);
+  for (; d.getUTCFullYear() === year; d.setUTCDate(d.getUTCDate() + 7)) {
+    const thu = d.toISOString().slice(0, 10), ex = DOL_CLAIMS_EXCEPTIONS[thu];
+    const base = { kind: "CLAIMS" as const, title: "初请失业金 Initial jobless claims (DOL)", timeEt: "08:30", source: DOL_CLAIMS_URL, tier: 2 as const };
+    if (ex) events.push({ ...base, date: ex, title: `${base.title}（${thu.slice(5)} 联邦假日，DOL 官方改到周三）` });
+    else if (hol.has(thu)) skipped.push(`${thu}（联邦假日，DOL 未列出替代日期 → 不登记）`);
+    else events.push({ ...base, date: thu, inferred: true });
+  }
+  return { events, skipped };
 }
 
 export const FOMC_URL = "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm";

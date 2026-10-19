@@ -175,7 +175,9 @@ export function buildCard(i: CardInput): Card {
   else s7.push("- 价位：缺少日线数据");
   const hmNow = Number(i.now.toLocaleTimeString("en-GB", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit" }).replace(":", ""));
   const evs = exp ? i.calendar.filter((e) => e.date <= exp && (e.date > today || (e.date === today && Number(e.timeEt.replace(":", "")) >= hmNow))) : [];
-  s7.push(`- 到期前事件：${evs.length ? evs.map((e) => `${e.date} ${e.title}`).join("；") : exp ? "无（官方日历）" : "缺少到期日"}`);
+  const majorEvs = evs.filter((e) => e.tier !== 2), minorEvs = evs.filter((e) => e.tier === 2); // tier-2 (claims etc.) listed, never a warn
+  s7.push(`- 到期前事件：${majorEvs.length ? majorEvs.map((e) => `${e.date} ${e.title}`).join("；") : exp ? "无（官方日历）" : "缺少到期日"}`);
+  if (minorEvs.length) s7.push(`- 到期前次要数据（只列出，不算风险）：${minorEvs.map((e) => `${e.date.slice(5)} ${e.title.split(" ")[0]}`).join("；")}`);
   // Fed speakers + blackout inside the holding window
   let fedRisk = false;
   if (i.fed === undefined || i.fed === null) s7.push("- 美联储讲话：不可用（没有 data/in/fed-speakers.json，运行 npm run fedspeak）");
@@ -192,7 +194,7 @@ export function buildCard(i: CardInput): Card {
   if (en === undefined) s7.push(`- 财报：❔ 未知（${i.sym} 没查过；运行 routine 刷新 data/in/earnings-by-symbol.json）`);
   else if (en === null) s7.push("- 财报：Robinhood 未返回即将到来的财报");
   else { erRisk = !!exp && en.date <= exp; s7.push(`- 财报：${fmtEarnings(en)}${erRisk ? " 🛑 **在到期前 → 财报事件风险（IV crush / 跳空）**" : "（不在到期前）"}`); }
-  S.push({ n: 7, title: "时机参考（只看节奏，不定方向）", status: evs.some((e) => e.kind !== "OPEX") || erRisk || fedRisk ? "warn" : en === undefined ? "missing" : "ok", lines: s7 });
+  S.push({ n: 7, title: "时机参考（只看节奏，不定方向）", status: majorEvs.some((e) => e.kind !== "OPEX") || erRisk || fedRisk ? "warn" : en === undefined ? "missing" : "ok", lines: s7 });
   const riskItems: string[] = [];
   if (erRisk && en) riskItems.push(`⚠️ 财报 ${fmtEarnings(en)} 在到期前：持仓会穿过财报（跳空 + IV crush），要么到期选在财报前，要么明确这是财报单`);
   if (fedRisk) riskItems.push("⚠️ 到期前有票委讲话：可能改变利率预期");

@@ -68,7 +68,7 @@ export function eventUtcMs(e: CalendarEvent): number {
 }
 
 export function upcomingHighImpact(cal: CalendarEvent[], now: Date, hours = EVENT_WINDOW_HOURS): CalendarEvent[] {
-  return cal.filter((e) => HIGH_IMPACT.has(e.kind)).filter((e) => {
+  return cal.filter((e) => HIGH_IMPACT.has(e.kind) && e.tier !== 2).filter((e) => { // tier-2 (claims / housing / durables / trade) never count
     const t = eventUtcMs(e);
     return t >= now.getTime() && t <= now.getTime() + hours * 3600_000;
   });

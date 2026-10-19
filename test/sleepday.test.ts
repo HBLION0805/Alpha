@@ -143,6 +143,6 @@ test("display only (rendered): adding the sleep section changes nothing else —
   const a = buildBrief({ now: n, macro, pm, sc, calendar: cal as never, sleepLines: sl.lines }), b = buildBrief({ now: n, macro, pm, sc, calendar: cal as never });
   assert.equal(a.verdict, b.verdict); assert.deepEqual(a.reasons, b.reasons);
   assert.equal(a.md.replace(sl.lines.join("\n") + "\n", ""), b.md, "only the sleep block differs");
-  assert.match(a.md, /🚨 油价急涨：WTI \+5%/); assert.match(a.md, /CPI \*\*（今日）\*\*/);
+  assert.match(a.md, /🚨 油价急涨：WTI \+5%/); assert.match(a.md, /今天 8:30：CPI\*\*/);
   assert.deepEqual([...a.md.matchAll(/^##+ .*/gm)].map((m) => m[0]).filter((h) => !/今日能不能睡/.test(h)), [...b.md.matchAll(/^##+ .*/gm)].map((m) => m[0]));
 });
