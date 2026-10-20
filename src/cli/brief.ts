@@ -38,6 +38,7 @@ import { loadLevels, activeEntry, levelSeries, renderMentorLevels, checklistItem
 import { wtiFront, frontContinuous } from "../macro/wtiFront.ts";
 import { loadGeoEvents, geoReminderLines, geoCalendarLines } from "../macro/geoEvents.ts";
 import { loadFollowups, loadFollowupInputs, followupLines } from "../macro/eventFollowup.ts";
+import { ratesLines, regimeOilContract, loadManual } from "../macro/ratesRegime.ts";
 import { paperEquity } from "../options/confidence.ts";
 import { yahooDaily } from "../adapters/yahoo.ts";
 import { runScenarios, suggestHedge, renderScenarioTable } from "../options/scenarioEngine.ts";
@@ -142,7 +143,11 @@ if (!values.offline) for (const e of (pj0.entries ?? []).filter((x: { mode?: str
     if (inp) { const r = runScenarios(inp); scenarioLines.push(...renderScenarioTable(r, "情景推演"), `- 对冲建议：${suggestHedge(inp, r).text}`, ""); } }
   catch (err) { failed[`scenario ${e.id}`] = (err as Error).message; }
 }
-const res = buildBrief({ followupLines: followupLines(fu.followups, loadFollowupInputs(), now), geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines, ...(scenarioLines.length ? ["", "#### 情景推演（持仓，只显示）", "", ...scenarioLines] : [])], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
+// 利率/油价/美元 联动 (display only): 2Y FRED, 10Y ^TNX, 30Y ^TYX, DXY from PM_SERIES; regime oil = front (next contract on/after expiry day)
+const rOil = regimeOilContract(etDate(now)); let rOilData: Obs[] = [];
+if (!values.offline) try { rOilData = (await fetchDailyOnce({ id: "WTI_REGIME", provider: "yahoo", ref: rOil.yahoo, label: rOil.code, unit: "price", frequency: "daily" })).filter((o) => o.t >= since); } catch (e) { failed[`rates oil ${rOil.code}`] = (e as Error).message; }
+const rLines = ratesLines({ y2: data.UST2Y, y10: data.UST10Y?.length ? data.UST10Y : data.UST10Y_FRED, y30: data.UST30Y?.length ? data.UST30Y : data.UST30Y_FRED, dxy: data.DXY, oil: rOilData.length ? rOilData : dcData.WTI_FRONT, oilCode: rOilData.length ? rOil.code : front.code, manual: loadManual() });
+const res = buildBrief({ ratesLines: rLines, followupLines: followupLines(fu.followups, loadFollowupInputs(), now), geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines, ...(scenarioLines.length ? ["", "#### 情景推演（持仓，只显示）", "", ...scenarioLines] : [])], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {
   if (pm.alarms.length) store.insert(alarmItems(pm.alarms, now), { stance: "center", tier: 1 }, now);
