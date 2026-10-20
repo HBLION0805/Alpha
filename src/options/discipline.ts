@@ -7,6 +7,11 @@
  * Every check returns a signal; the user executes. Caps are never loosened here.
  */
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
+/** 情景推演 written before entry (user 2026-10-20): problems from scenarioEngine.planProblems → BLOCK (practice: warn tag + violation no_scenario_plan_at_entry) */
+export function scenarioPlanCheck(problems: string[]): DiscSignal {
+  return problems.length ? { id: "scenario_plan", severity: "BLOCK", detail: `进场前没有写好情景计划：${problems.join("；")} → 先写大跌/慢跌/横盘/上涨各自怎么做（paper open --scenarios 或计划卡）`, cite: "情景推演 (src/options/scenarioEngine.ts, DECISIONS 2026-10-20)" }
+    : { id: "scenario_plan", severity: "OK", detail: "情景计划已在进场前写好", cite: "情景推演 (src/options/scenarioEngine.ts)" };
+}
 
 export const D = (n: number, quote: string) => `纪律 #${String(n).padStart(2, "0")}: ${quote} (knowledge/mentor/discipline/discipline-01-20.md)`;
 export interface DiscSignal { id: string; severity: "NO_TRADE" | "EXIT" | "BLOCK" | "WARN" | "OK" | "INFO"; detail: string; cite: string }

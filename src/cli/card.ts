@@ -1,6 +1,7 @@
 /**
  * 入场前计划卡: npm run card -- --sym NVDA --dir bear [--structure put_spread] [--legs "+210P,-200P"] --exp 2026-10-23
  *   [--thesis "因为…所以…"] [--invalidation "收盘站上 225"] [--save] [--out data/out/card-<sym>.md]
+ *   confidence: [--confidence low|medium|high|highest] [--tech-entry] → per-trade cap 0.5–2% of live paper equity (high/highest need macro + scenario plan + technical entry aligned)
  *   stock long: --structure long_stock [--shares 100] → protection / covered-call reminder in a sideways or junk phase (info only)
  *   bearish (做空清单, src/options/shortside.ts): [--sector SMH] [--squeeze-check "SI 3% · float 4B · gamma + · 无梗股热度"] [--horizon 10]
  * --save appends to data/journal/pending-cards.json; later: npm run paper -- open ... --card <id>.
@@ -24,7 +25,7 @@ import { loadFedSpeakers } from "../ingest/fedSpeakers.ts";
 import { SECTOR_OF, BROAD_ETFS } from "../options/shortside.ts";
 
 const { values } = parseArgs({ options: { sym: { type: "string" }, dir: { type: "string" }, structure: { type: "string" }, legs: { type: "string" }, exp: { type: "string" },
-  thesis: { type: "string" }, invalidation: { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, horizon: { type: "string" }, shares: { type: "string" }, save: { type: "boolean" }, out: { type: "string" }, journal: { type: "string", default: "data/journal/paper.json" } } });
+  thesis: { type: "string" }, invalidation: { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, horizon: { type: "string" }, confidence: { type: "string" }, "tech-entry": { type: "boolean" }, shares: { type: "string" }, save: { type: "boolean" }, out: { type: "string" }, journal: { type: "string", default: "data/journal/paper.json" } } });
 const fail = (m: string) => { process.stderr.write(m + "\n"); process.exit(2); };
 const sym = values.sym?.toUpperCase() ?? fail("缺少 --sym")!;
 const dir = (/^(bear|short|空|看空)/i.test(values.dir ?? "") ? "bear" : /^(bull|long|多|看多)/i.test(values.dir ?? "") ? "bull" : fail("--dir bear|bull")) as "bear" | "bull";
@@ -57,6 +58,7 @@ const card = buildCard({ now, sym, dir, structure: values.structure, legs, exp: 
   brief, gex: gexFromRaw(sym, raw), calendar, earnings, earningsNext: nextEarnings(loadEarningsBook(), sym, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })), fed: (await loadFedSpeakers({ now })).data,
   journal: j.entries, capital: j.capital ?? defaultCapital(), thesis: values.thesis, invalidation: values.invalidation,
   shares: values.shares ? Number(values.shares) : null,
+  confidence: { tier: values.confidence as never, technical: values["tech-entry"] ?? false }, mentorAll: loadLevels().entries,
   marketPhase: stockLong ? marketPhase(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), ndxBars as Array<{ t: string; c: number }>, loadPhases().entries) : null,
   mentorLevels: loadLevels().entries.find((e) => e.date === now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })) ?? null,
   ...(dir === "bear" ? { short: { spyBars, sectorSym, sectorBars, squeezeCheck: values["squeeze-check"] ?? null, horizonDays: values.horizon ? Number(values.horizon) : null } } : {}) });
@@ -65,7 +67,7 @@ const out = values.out ?? `data/out/card-${sym}.md`;
 mkdirSync("data/out", { recursive: true }); writeFileSync(out, md + "\n"); writeFileSync(out.replace(/\.md$/, ".json"), JSON.stringify(card, null, 2) + "\n");
 if (values.save) {
   const p = "data/journal/pending-cards.json", pc = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { cards: [] };
-  pc.cards.push({ id: card.id, createdAt: card.createdAt, sym, dir, verdict: card.verdict, trade: card.trade, thesis: values.thesis ?? null, invalidation: values.invalidation ?? null, warnTags: card.warnTags ?? [],
+  pc.cards.push({ id: card.id, createdAt: card.createdAt, sym, dir, verdict: card.verdict, trade: card.trade, thesis: values.thesis ?? null, invalidation: values.invalidation ?? null, warnTags: card.warnTags ?? [], confidence: card.confidence ?? null, scenarioPlan: card.scenarioPlan ?? null,
     ...(dir === "bear" ? { squeezeCheck: values["squeeze-check"] ?? null, shortTags: card.shortTags ?? [] } : {}) });
   mkdirSync("data/journal", { recursive: true }); writeFileSync(p, JSON.stringify(pc, null, 2) + "\n");
 }

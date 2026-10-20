@@ -22,6 +22,10 @@ import type { YBar } from "../adapters/yahoo.ts";
 import { fmtEarnings, type EarningsRow } from "../options/earningsStore.ts";
 import { inBlackout, type FedCache } from "../ingest/fedSpeakers.ts";
 import { shortEntryChecks, renderShortSection, type ShortInput } from "../options/shortside.ts";
+import { paperEquity, tradeCap, capLabel, dayCapUsd, type Tier, type TradeCap } from "../options/confidence.ts";
+import { runScenarios, renderWithHedge, planFromResult, type ELeg, type ScenarioPlan } from "../options/scenarioEngine.ts";
+import { atr14, keyLevels } from "../options/scenarioCtx.ts";
+import type { Bar } from "../levels.ts";
 
 export type Dir = "bull" | "bear";
 export interface Quote { type: "call" | "put"; strike: number; expiration: string; bid: number | null; ask: number | null; src: string }
@@ -36,6 +40,9 @@ export interface CardInput {
   /** bearish cards: benchmark bars + the written squeeze check for the 做空清单 (src/options/shortside.ts); absent = reported as missing */
   /** today's 大佬 daily levels entry (knowledge/mentor/market-calls/levels.json), loaded by cli/card.ts; info only */
   mentorLevels?: LevelEntry | null;
+  /** confidence tier → per-trade cap 0.5–2% of live paper equity (src/options/confidence.ts); macro alignment comes from the brief, technical from --tech-entry */
+  confidence?: { tier?: Tier; technical?: boolean };
+  /** 大佬 levels.json entries (all dates) for scenario targets */ mentorAll?: LevelEntry[];
   /** stock long cards: shares held (covered call needs >= 100) and the market phase (src/macro/marketPhase.ts); info only */
   shares?: number | null; marketPhase?: MarketPhase | null;
   short?: Pick<ShortInput, "spyBars" | "sectorSym" | "sectorBars" | "squeezeCheck" | "horizonDays">;
@@ -43,6 +50,8 @@ export interface CardInput {
 export type Status = "ok" | "warn" | "fail" | "missing";
 export interface Section { n: number; title: string; status: Status; lines: string[] }
 export interface Card { id: string; createdAt: string; sym: string; dir: Dir; verdict: "formal" | "practice" | "practice_warn" | "no"; verdictText: string; failing: string[]; warnTags?: string[]; planMissing?: string[]; sections: Section[];
+  /** per-trade cap used by this card + the engine's scenario plan (paper open --card stores it as the written plan) */
+  confidence?: { tier: Tier; pct: number; capUsd: number; equity: number; downgraded: boolean }; scenarioPlan?: ScenarioPlan | null;
   /** bearish cards only: 做空清单 warn tags (kept even on a formal verdict) + manual items */ shortTags?: string[]; shortManual?: string[];
   /** thesis mentions liquidity / pivot / rotation themes → the mentor's verbatim reminders (src/review/mentor.ts liquidityThemeLines); shown on any verdict, info only */ macroTheme?: string[];
   trade: { legs: CardLeg[]; exp: string | null; contracts: number; perContractMaxLoss: number | null; maxLoss: number | null; planId: string | null; tpKind: string | null; invalidationLevel: number | null; mechanical: string | null } }
@@ -92,10 +101,14 @@ const legStr = (l: CardLeg[]) => l.map((x) => `${x.qty > 0 ? "买" : "卖"} ${x.
 
 export function buildCard(i: CardInput): Card {
   const S: Section[] = [], failing: string[] = [];
-  const today = etDay(i.now), side = i.dir === "bear" ? "short" : "long", perTrade = r2(i.capital * 0.01);
+  const today = etDay(i.now), side = i.dir === "bear" ? "short" : "long";
+  // per-trade cap = confidence tier × live paper equity (user 2026-10-20); high/highest need macro + scenario plan + technical aligned
+  const sc0 = i.brief?.leader ? SCENARIOS.find((s) => s.id === i.brief!.leader) : null, d0 = sc0 ? (sc0.dirs as Record<string, string>)[COL[i.sym] ?? "SPX"] : null;
+  const equity = paperEquity(i.journal, i.capital), cap: TradeCap = tradeCap(equity, i.confidence?.tier, { macro: d0 === (i.dir === "bear" ? "↓" : "↑"), technical: i.confidence?.technical, scenarioPlan: i.exp != null && i.spot != null });
+  const perTrade = cap.usd;
   const id = `card-${today}-${i.sym}-${i.dir}-${i.now.getTime().toString(36)}`;
   const exp = i.exp ?? null;
-  const budget = dailyBudget(i.journal, i.capital, i.now), allowed = Math.min(perTrade, budget.remaining);
+  const budget = dailyBudget(i.journal, equity, i.now), allowed = Math.min(perTrade, budget.remaining);
 
   // legs: user-specified, else suggest a debit vertical
   let legs: CardLeg[] = [], suggested = false;
@@ -148,7 +161,7 @@ export function buildCard(i: CardInput): Card {
   S.push({ n: 5, title: "分批止盈", status: tp?.plan ? "ok" : "missing", lines: tp?.plan ? [`- ${renderTakeProfit(tp.plan)}`, "- 暴利（短时间 +80% 以上）：先止盈 ≥90%，Runner ≤10%（windfall）"] : ["- 缺少到期日 → 无法给出"] });
 
   // 6) max loss vs budget
-  const s6: string[] = [`- 单笔上限 $${perTrade}；今日已用 $${budget.used}，日内剩余 $${budget.remaining}（上限 $${r2(i.capital * 0.02)}）→ 本笔最多 $${r2(allowed)}`];
+  const s6: string[] = [`- ${capLabel(cap)}；今日已用 $${budget.used}，日内剩余 $${budget.remaining}（日上限 2% = $${dayCapUsd(equity)}）→ 本笔最多 $${r2(allowed)}`];
   let st6: Status = "ok";
   if (!legs.length) { st6 = "fail"; s6.push(exp ? `- 🛑 在 $${r2(allowed)} 内找不到 ${exp} 的定义风险价差（或无报价）→ 不可能按规则做` : "- 缺少到期日 --exp"); failing.push("最大亏损：无可行结构"); }
   else if (per == null) { st6 = naked ? "fail" : "missing"; s6.push(`- 结构 ${legStr(legs)}：${naked ? "风险无限" : "缺少报价 → 最大亏损未知"}`); if (!naked) failing.push("最大亏损：缺报价"); }
@@ -233,6 +246,14 @@ export function buildCard(i: CardInput): Card {
   const warnTags = [...new Set([...failing.map((f) => /最大亏损 \$|超限/.test(f) ? "warn_over_cap" : /无可行结构|缺报价/.test(f) ? "warn_no_fit" : /对冲/.test(f) ? "warn_no_hedge" : /^唱反调 (\w+)/.test(f) ? `warn_${/^唱反调 (\w+)/.exec(f)![1]!.toLowerCase()}` : "warn_other"),
     ...(!match ? ["warn_off_plan"] : []), ...(match && !inZone ? ["warn_out_of_zone"] : []), ...(otmWarn ? ["warn_far_otm"] : []), ...(shortChk?.tags ?? [])])];
   const formal = failing.length === 0 && !!match && !!inZone && hedge === "ok" && S.every((s) => s.status !== "missing");
+  // 10) 情景推演 (display only): P&L at expiry + mid-point under 大跌/慢跌/横盘/上涨, one hedge suggestion within the cap
+  let scenarioPlan: ScenarioPlan | null = null;
+  if (legs.length && exp && i.spot != null && legs.every((l) => l.mid != null)) {
+    const q = Math.max(1, contracts), el: ELeg[] = legs.map((l) => ({ type: l.type, strike: l.strike, qty: l.qty * q, premium: l.mid!, expiration: l.expiration }));
+    const inp = { legs: el, spot: i.spot, asOf: i.now.toISOString(), iv: null, atr: atr14(i.bars), levels: keyLevels(i.sym, i.spot, i.bars as unknown as Bar[], i.mentorAll ?? (i.mentorLevels ? [i.mentorLevels] : [])), capUsd: r2(allowed), label: `${i.sym} ×${q}` };
+    scenarioPlan = planFromResult(runScenarios(inp), i.now.toISOString(), "card");
+    S.push({ n: 10, title: "情景推演（先列情景，再看每个情景怎么处理；只显示）", status: "ok", lines: renderWithHedge(inp) });
+  } else S.push({ n: 10, title: "情景推演", status: "missing", lines: ["- 结构没有完整报价 → 无法推演；开仓前要自己写下大跌/慢跌/横盘/上涨各自怎么做（paper open --scenarios）"] });
   const verdict: Card["verdict"] = planMissing.length ? "no" : formal ? "formal" : failing.length || otmWarn ? "practice_warn" : "practice";
   const verdictText = verdict === "no" ? "🛑 不做（练习也不行：计划没写全）" : verdict === "formal" ? "✅ 可做（正式）" : verdict === "practice_warn" ? "🟢 可练习（有提示）" : "🟡 仅练习";
   if (verdict === "no") failing.unshift(...planMissing.map((m) => `计划缺：${m}`));
@@ -240,6 +261,7 @@ export function buildCard(i: CardInput): Card {
     ...(shortChk ? { shortTags: shortChk.tags, shortManual: shortChk.manual } : {}),
     ...(() => { const fresh = i.brief && i.now.getTime() - Date.parse(i.brief.generatedAt) < 24 * 3600_000;
       const m = [...liquidityThemeLines(i.thesis), ...oilSqueezeLines(i.sym, i.thesis, fresh ? i.brief!.oilVix : null), ...deadCatCardLines(i.sym, i.dir, i.thesis, fresh ? i.brief!.deadCat : null), ...mentorLevelCardLines(i.sym, i.dir, i.thesis, i.mentorLevels, fresh ? i.brief!.deadCat?.mentorLevels : null), ...stockProtectionLines(i.dir, i.structure, i.shares, i.marketPhase)]; return m.length ? { macroTheme: m } : {}; })(),
+    confidence: { tier: cap.tier, pct: cap.pct, capUsd: cap.usd, equity: cap.equity, downgraded: cap.downgraded }, scenarioPlan,
     trade: { legs, exp, contracts, perContractMaxLoss: per, maxLoss: per != null ? r2(per * contracts) : null, planId: match?.id ?? null, tpKind: tp?.plan?.kind ?? null, invalidationLevel: invLevel != null ? r2(invLevel) : null, mechanical: mech } };
 }
 export function renderCard(c: Card, spot: number | null, exp: string | null): string {

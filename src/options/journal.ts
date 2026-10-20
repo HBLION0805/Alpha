@@ -52,6 +52,10 @@ export interface JournalEntry {
   riskPlan?: import("./riskplan.ts").RiskPlan;
   /** "paper" = simulated entry on real data; default "live" */
   mode?: "paper" | "live";
+  /** confidence-scaled per-trade cap at open (src/options/confidence.ts): tier, % of equity, $ cap, equity used */
+  confidence?: { tier: import("./confidence.ts").Tier; pct: number; capUsd: number; equity: number; downgraded?: boolean };
+  /** 情景推演 written before entry (src/options/scenarios.ts ScenarioPlan); missing on a new entry = violation no_scenario_plan_at_entry */
+  scenarioPlan?: import("./scenarioEngine.ts").ScenarioPlan;
   /** account size when the trade was opened (for the 1% / 2% checks) */
   capitalAtEntry?: number;
   /** timestamps proving thesis and stop were written BEFORE entry (must be ≤ openedAt) */

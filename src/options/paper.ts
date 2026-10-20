@@ -15,6 +15,8 @@ import { buildRiskPlan } from "./riskplan.ts";
 import { entrySinWarnTags } from "./sins.ts";
 import { shortEntryChecks, type ShortInput } from "./shortside.ts";
 import { psychEntryTags, type PsychCtx } from "./psych.ts";
+import { paperEquity, tradeCap, type Tier } from "./confidence.ts";
+import { planProblems, type ScenarioPlan } from "./scenarioEngine.ts";
 import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
@@ -22,7 +24,11 @@ export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeD
   /** bearish opens: daily bars of the underlying + SPY + sector and the written squeeze check (做空清单, src/options/shortside.ts) — warn tags only */
   short?: Pick<ShortInput, "bars" | "spyBars" | "sectorSym" | "sectorBars" | "squeezeCheck" | "netGamma">;
   /** 交易心理 (src/options/psych.ts): earnings rows / flagged events for the 72h rule, --confirm note for adds to a loser, --target for Put strikes — warn tags only */
-  psych?: PsychCtx }
+  psych?: PsychCtx;
+  /** confidence tier (low|medium|high|highest) + alignment flags → per-trade cap on live paper equity (src/options/confidence.ts) */
+  confidence?: { tier?: Tier; macro?: boolean; technical?: boolean };
+  /** 情景推演 written before entry (--scenarios or the plan card's table) */
+  scenarioPlan?: ScenarioPlan | null }
 type Leg = NonNullable<JournalEntry["legs"]>[number];
 const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
@@ -34,7 +40,7 @@ const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, 
 const fill = (l: Proposal["legs"][number]) => (l.bid != null && l.ask != null ? (l.bid + l.ask) / 2 : l.premium);
 
 /** the saved pre-trade plan card (data/journal/pending-cards.json) a practice trade must point to */
-export interface PlanCardRef { id: string; sym: string; dir: "bull" | "bear"; thesis?: string | null; invalidation?: string | null; squeezeCheck?: string | null; trade?: { mechanical?: string | null; invalidationLevel?: number | null; tpKind?: string | null } }
+export interface PlanCardRef { id: string; sym: string; dir: "bull" | "bear"; thesis?: string | null; invalidation?: string | null; squeezeCheck?: string | null; scenarioPlan?: ScenarioPlan | null; trade?: { mechanical?: string | null; invalidationLevel?: number | null; tpKind?: string | null } }
 /** HARD requirements for a practice trade: direction, thesis, a stop (mechanical or invalidation) and a take-profit plan. */
 export function cardMissing(c: PlanCardRef | null | undefined): string[] {
   if (!c) return ["练习单必须先保存计划卡：npm run card -- … --thesis \"…\" --save，再 paper open --card <id>"];
@@ -64,6 +70,7 @@ export const isHardRefusal = (x: string) => /最大亏损未定义|--kind .* 无
 /** Map a strict-mode refusal to a practice warn tag. */
 export function warnTag(msg: string): string {
   const id = /^(?:唱反调 (?:BLOCK )?|BLOCK |NO_TRADE )(\w+)/.exec(msg)?.[1]?.toLowerCase();
+  if (id === "scenario_plan") return "warn_no_scenario_plan";
   if (id) return /otm|far|strike/.test(id) ? "warn_far_otm" : /trend|confirm/.test(id) ? "warn_trend_unconfirmed" : /concurrent|positions/.test(id) ? "warn_position_cap" : /daily/.test(id) ? "warn_daily_cap"
     : /cap|size|loss/.test(id) ? "warn_over_cap" : /plan/.test(id) ? "warn_off_plan" : /hedge/.test(id) ? "warn_no_hedge" : `warn_${id}`;
   if (/计划|plan|进场区间|方向 .* ≠|标的 .* ≠/i.test(msg)) return "warn_off_plan";
@@ -85,13 +92,16 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
   if (a.kind === "practice" && a.card) { // practice: the plan card supplies anything not given on the command line
     const c = a.card, lvl = c.trade?.invalidationLevel;
     a = { ...a, cardId: a.cardId ?? c.id, thesis: a.thesis || c.thesis || undefined, invalidation: a.invalidation || c.invalidation || (lvl != null ? `收盘${c.dir === "bear" ? "站上" : "跌破"} ${lvl}` : undefined),
-      stop: a.stop || c.trade?.mechanical || (lvl != null ? `论点失效 ${lvl}` : undefined), motive: a.motive ?? "thesis", tp: a.tp ?? c.trade?.tpKind ?? undefined, side: a.side ?? (c.dir === "bear" ? "short" : "long") };
+      stop: a.stop || c.trade?.mechanical || (lvl != null ? `论点失效 ${lvl}` : undefined), motive: a.motive ?? "thesis", scenarioPlan: a.scenarioPlan ?? c.scenarioPlan ?? null, tp: a.tp ?? c.trade?.tpKind ?? undefined, side: a.side ?? (c.dir === "bear" ? "short" : "long") };
   }
   for (const k of ["thesis", "invalidation", "stop", "motive"] as const) if (!a[k]?.toString().trim()) refused.push(`缺少 --${k}（开仓前必须写下 thesis / invalidation / stop / motive）`);
   if (a.kind && a.kind !== "formal" && a.kind !== "practice") refused.push(`--kind ${a.kind} 无效：formal | practice`);
   // mandatory risk plan (riskplan.ts): hedge, invalidation, stock −7% stop / option max loss + 30/30, ≤1% hard cap
+  // per-trade cap: confidence tier × LIVE paper equity (src/options/confidence.ts), not a constant
+  const equity = paperEquity(j.entries, j.capital), scProblems = planProblems(a.scenarioPlan, a.now.toISOString());
+  const cap = tradeCap(equity, a.confidence?.tier, { macro: a.confidence?.macro, technical: a.confidence?.technical, scenarioPlan: scProblems.length === 0 });
   let rp = buildRiskPlan(p.legs.map((l) => ({ type: l.type, strike: l.strike, qty: l.qty, premium: fill(l), expiration: l.expiration })),
-    { hedge: a.hedge, hedgeDetail: a.hedgeDetail, invalidation: a.invalidation, stopPct: a.stopPct, capital: j.capital, asOf: a.now.toISOString().slice(0, 10), rules: a.rules });
+    { hedge: a.hedge, hedgeDetail: a.hedgeDetail, invalidation: a.invalidation, stopPct: a.stopPct, capital: equity, asOf: a.now.toISOString().slice(0, 10), rules: a.rules, capPct: cap.pct });
   refused.push(...rp.errors);
   const tp = buildTakeProfit(a.tp, p.legs.map((l) => l.expiration), a.now.toISOString().slice(0, 10));
   refused.push(...tp.errors);
@@ -107,7 +117,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
   const R = effectiveRules(a.rules);
   const open = openPaper(j);
   const asOf = a.now.toISOString().slice(0, 10);
-  const prop: Proposal = { ...p, asOf: p.asOf ?? asOf, capital: j.capital,
+  const prop: Proposal = { ...p, asOf: p.asOf ?? asOf, capital: equity, confidence: a.confidence ?? { tier: cap.tier }, scenarioPlan: a.scenarioPlan ?? null,
     thesisRecord: { thesis: a.thesis ?? "", invalidation: a.invalidation ?? "", recordedAt: a.now.toISOString() },
     discipline: { ...(p.discipline ?? {}), motive: a.motive, openPositions: open.length, journal: j.entries.filter((e) => e.mode === "paper").map(toLog), todayEt: asOf,
       openPnlToday: p.discipline?.openPnlToday ?? open.reduce((s, e) => s + (e.marks?.at(-1)?.pnl ?? 0), 0) } };
@@ -122,7 +132,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
     warnDetails = refused.filter((x) => !/^缺少 --(thesis|invalidation|stop|motive|tp)|缺少止盈|--tp/.test(x));
     warnTags = [...new Set(warnDetails.map(warnTag))];
     if (!rp.plan) { const r2 = buildRiskPlan(p.legs.map((l) => ({ type: l.type, strike: l.strike, qty: l.qty, premium: fill(l), expiration: l.expiration })),
-      { hedge: p.legs.some((l) => l.type !== "stock" && l.qty < 0) ? "built_in_spread" : "direct", hedgeDetail: a.hedgeDetail || "练习单：未写对冲", invalidation: a.invalidation, stopPct: a.stopPct ?? 7, capital: j.capital, asOf: a.now.toISOString().slice(0, 10), rules: a.rules }); rp = { ...r2, plan: r2.draft ?? null }; }
+      { hedge: p.legs.some((l) => l.type !== "stock" && l.qty < 0) ? "built_in_spread" : "direct", hedgeDetail: a.hedgeDetail || "练习单：未写对冲", invalidation: a.invalidation, stopPct: a.stopPct ?? 7, capital: equity, asOf: a.now.toISOString().slice(0, 10), rules: a.rules, capPct: cap.pct }); rp = { ...r2, plan: r2.draft ?? null }; }
     if (!rp.plan || !tp.plan) return { entry: null, checks, refused: [...(rp.plan ? [] : ["无法建立风险计划（最大亏损未定义？）"]), ...(tp.plan ? [] : tp.errors)] };
     refused.length = 0;
   } else if (refused.length || blocked) return { entry: null, checks, refused };
@@ -137,8 +147,11 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
     structureRationale: p.strategy, maxLoss: rp.plan!.maxLoss, kind: a.kind ?? "formal", riskPlan: rp.plan!, exitRules: [`stop: ${a.stop}`, `invalidation: ${a.invalidation}`, ...(rp.plan!.stock ? [`mechanical stop ${rp.plan!.stock.stopPrice} (${rp.plan!.stock.side === "long" ? "−" : "+"}${rp.plan!.stock.stopPct}%${rp.plan!.option ? " on the stock leg; with 30/30 below, first to trigger applies" : ""})`] : []), ...(rp.plan!.option ? [`30/30: ${rp.plan!.option.rule3030Date} or value ≤ $${rp.plan!.option.loss30Value}`] : []), rp.plan!.rule, renderTakeProfit(tp.plan!), ...(a.timeStopAt ? [`time stop: ${a.timeStopAt}`] : [])],
     takeProfit: tp.plan!, tpHits: [], ...(a.planId ? { planId: a.planId } : {}), ...(a.cardId ? { cardId: a.cardId } : {}), capitalAtEntry: j.capital, concurrentAtEntry: open.length + 1, legs, underlyingAtEntry: spot, marks: [],
     critique: a.critique ? { ...a.critique, acked: a.critique.warns > 0 } : undefined,
+    confidence: { tier: cap.tier, pct: cap.pct, capUsd: cap.usd, equity: cap.equity, ...(cap.downgraded ? { downgraded: true } : {}) },
+    ...(a.scenarioPlan ? { scenarioPlan: a.scenarioPlan } : {}),
     ...(warnTags.length ? { warnTags, warnDetails, violations: warnTags.includes("warn_over_cap") ? ["exceeds_1pct_cap"] : [] } : {}),
   };
+  if (scProblems.length) { entry.violations = [...new Set([...(entry.violations ?? []), "no_scenario_plan_at_entry"])]; }
   // practice: 七宗罪 that are knowable at entry (wrath after a same-day loss, >3 opens/day, cheap short-dated lottery) → warn tags only, never a block
   if (entry.kind === "practice") { const s = entrySinWarnTags(entry, j.entries, a.rules, j.capital);
     if (s.tags.length) { entry.warnTags = [...new Set([...(entry.warnTags ?? []), ...s.tags])]; entry.warnDetails = [...(entry.warnDetails ?? []), ...s.details]; entry.violations ??= []; } }

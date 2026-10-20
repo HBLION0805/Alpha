@@ -40,9 +40,13 @@ import { loadEarningsBook } from "../options/earningsStore.ts";
 import { JOURNAL_QUESTIONS, LOSS_CLASSES, profitableButWrong } from "../options/psych.ts";
 import { loadMajorEvents } from "../options/majorEvents.ts";
 import { mentorForTags, lossPrompt, renderLossPrompt } from "../review/mentor.ts";
+import { parsePlan, renderWithHedge } from "../options/scenarioEngine.ts";
+import { entryInput } from "../options/scenarioCtx.ts";
+import { paperEquity, tradeCap, capLabel, entryCapUsd } from "../options/confidence.ts";
+import { loadLevels } from "../macro/mentorLevels.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
-  journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, proposal: { type: "string" },
+  journal: { type: "string", default: "data/journal/paper.json" }, scenarios: { type: "string" }, confidence: { type: "string" }, "tech-entry": { type: "boolean" }, "macro-aligned": { type: "boolean" }, capital: { type: "string" }, proposal: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true }, "plan-id": { type: "string" }, card: { type: "string" }, class: { type: "string" }, tags: { type: "string" }, result: { type: "string" }, "pnl-pct": { type: "string" }, note: { type: "string" }, "followed-stop": { type: "string" }, "followed-tp": { type: "string" }, "followed-size": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
   "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, sin: { type: "string" }, confirm: { type: "string" }, target: { type: "string" }, why: { type: "string" }, right: { type: "string" }, wrong: { type: "string" }, violated: { type: "string" }, redo: { type: "string" }, "profitable-but-wrong": { type: "string" }, remove: { type: "string" }, backfill: { type: "boolean", default: false }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
@@ -88,7 +92,10 @@ if (cmd === "open") {
   const { events } = loadMajorEvents(); // data/in/major-events.json, else knowledge/calendar/major-events-2026-2027.json (FOMC/CPI/NFP)
   if (values.target != null && !(Number(values.target) > 0)) fail([`--target ${values.target} 无效（目标价，正数）`]);
   const psych = { earnings: loadEarningsBook().rows, events, confirm: values.confirm ?? null, target: values.target != null ? Number(values.target) : null };
-  const r = paperOpen(j, p, { psych, short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
+  // 情景推演 written before entry: --scenarios "大跌:止损;慢跌:持有;横盘:时间止损;上涨:止盈", else the plan card's table
+  const scenarioPlan = parsePlan(values.scenarios, now.toISOString()) ?? card?.scenarioPlan ?? null;
+  const confidence = { tier: values.confidence as never, macro: values["macro-aligned"] ?? false, technical: values["tech-entry"] ?? false };
+  const r = paperOpen(j, p, { scenarioPlan, confidence, psych, short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
   if (r.entry!.kind !== "practice" && r.entry!.psychTags?.length) process.stdout.write(`🧠 心理提示（不阻止）：${r.entry!.psychTags.join("、")}\n`);
@@ -120,6 +127,17 @@ if (cmd === "open") {
   }
   for (const f of capFlags(j.entries, j.capital, now)) process.stdout.write(f + "\n");
   save();
+} else if (cmd === "scenarios") {
+  // 情景推演 for every open simulated position (display only): spot + 400 daily bars (ATR, key levels) from Yahoo, IVs from data/in/rh-option-quotes.json
+  const qf = existsSync("data/in/rh-option-quotes.json") ? JSON.parse(readFileSync("data/in/rh-option-quotes.json", "utf8")) : null;
+  const eq = paperEquity(j.entries, j.capital);
+  process.stdout.write(`# 情景推演（持仓）\n\n- 账户权益 $${eq}；新开仓默认 ${capLabel(tradeCap(eq))}；已开仓位按开仓时记录的上限\n\n`);
+  for (const e of openPaper(j)) {
+    const bars = await yahooDaily(e.symbol, 400).catch(() => []), spot = bars.at(-1)?.c;
+    if (spot == null) { process.stdout.write(`${e.id} ${e.symbol}: 无行情 → 无法推演\n\n`); continue; }
+    const inp = entryInput(e, { spot, asOf: now.toISOString(), bars: bars as never, quotes: qf?.quotes ?? [], mentor: loadLevels().entries, capUsd: entryCapUsd(e, j.capital) });
+    process.stdout.write((inp ? renderWithHedge(inp) : [`${e.id}: 没有可估值的腿`]).join("\n") + "\n");
+  }
 } else if (cmd === "legs") {
   // open option legs that need a Robinhood quote (routine: get_option_instruments → get_option_quotes → data/in/rh-option-quotes.json)
   const today = etDate(now), seen = new Set<string>(), out: object[] = [];

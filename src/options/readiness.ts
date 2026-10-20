@@ -67,7 +67,8 @@ export function readiness(i: ReadinessInput): Readiness {
 
   // 3) loss caps + max drawdown
   const capOf = (e: JournalEntry) => e.capitalAtEntry ?? i.capital;
-  const bigLoss = closed.filter((e) => -fullPnl(e) > capOf(e) * R.sellerMaxLossPerTradePct / 100);
+  const capUsd = (e: JournalEntry) => e.confidence?.capUsd ?? capOf(e) * R.sellerMaxLossPerTradePct / 100; // confidence-scaled cap at open (0.5–2%), else rule card
+  const bigLoss = closed.filter((e) => -fullPnl(e) > capUsd(e));
   // daily-loss cap: formal trades PLUS mentor_shadow closes on the same days (DECISIONS 2026-10-17). Shadow trades still never
   // count as readiness trades (sample / expectancy / per-trade / drawdown stay formal-only); they only add to a day's loss.
   const first0 = closed[0]?.closedAt, last0 = closed.at(-1)?.closedAt;
@@ -76,9 +77,9 @@ export function readiness(i: ReadinessInput): Readiness {
   const badDays = [...byDay].filter(([, v]) => -v > i.capital * R.dailyLossLimitPct / 100);
   let eq = 0, peak = 0, mdd = 0; for (const p of ps) { eq += p; peak = Math.max(peak, eq); mdd = Math.max(mdd, peak - eq); }
   const ddOver = mdd > i.capital * ddLimitPct / 100;
-  C.push({ id: "loss_caps", title: `单笔亏损 ≤${R.sellerMaxLossPerTradePct}%，单日亏损 ≤${R.dailyLossLimitPct}%，最大回撤 ≤${ddLimitPct}%`, pass: closed.length > 0 && !bigLoss.length && !badDays.length && !ddOver,
+  C.push({ id: "loss_caps", title: `单笔亏损 ≤ 开仓时的置信度上限（权益 0.5–2%，默认 ${R.sellerMaxLossPerTradePct}%），单日亏损 ≤${R.dailyLossLimitPct}%，最大回撤 ≤${ddLimitPct}%`, pass: closed.length > 0 && !bigLoss.length && !badDays.length && !ddOver,
     detail: [`最大回撤 $${r2(mdd)}（${r2((mdd / i.capital) * 100)}%，上限 ${ddLimitPct}% = $${r2(i.capital * ddLimitPct / 100)}）`, `最大单笔亏损 $${r2(-Math.min(0, ...ps))}`],
-    missing: [...(ddOver ? [`最大回撤 $${r2(mdd)} > ${ddLimitPct}%`] : []), ...bigLoss.map((e) => `${e.id} ${e.symbol} 亏 $${r2(-fullPnl(e))} > ${R.sellerMaxLossPerTradePct}%`), ...badDays.map(([d, v]) => `${d} 单日亏 $${r2(-v)} > ${R.dailyLossLimitPct}%`)] });
+    missing: [...(ddOver ? [`最大回撤 $${r2(mdd)} > ${ddLimitPct}%`] : []), ...bigLoss.map((e) => `${e.id} ${e.symbol} 亏 $${r2(-fullPnl(e))} > 上限 $${r2(capUsd(e))}`), ...badDays.map(([d, v]) => `${d} 单日亏 $${r2(-v)} > ${R.dailyLossLimitPct}%`)] });
 
   // 4) discipline: violations ≈ 0; thesis + stop recorded before entry; concurrent cap; premature exits
   const viol = paper.flatMap((e) => [...(e.violations ?? []), ...(e.motive && VIOLATION_FROM_MOTIVE.has(e.motive) ? [`motive_${e.motive}`] : []),

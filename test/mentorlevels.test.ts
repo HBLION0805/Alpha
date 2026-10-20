@@ -124,7 +124,7 @@ const walk = (dir: string): string[] => readdirSync(dir).flatMap((f) => { const 
 test("display only: levels never reach the verdict / NO_TRADE / 48h·72h / alerts / 能不能睡", () => {
   const src = new URL("src", root).pathname, rel = (p: string) => p.slice(src.length + 1);
   const users = walk(src).filter((f) => rel(f) !== "macro/mentorLevels.ts" && /mentorLevels\.ts/.test(readFileSync(f, "utf8"))).map(rel).sort();
-  assert.deepEqual(users, ["cli/brief.ts", "cli/card.ts", "review/card.ts", "review/mentor.ts"]);
+  assert.deepEqual(users, ["cli/brief.ts", "cli/card.ts", "cli/paper.ts", "options/scenarioCtx.ts", "review/card.ts", "review/mentor.ts"]);
   for (const f of ["review/card.ts", "review/mentor.ts"]) assert.match(readFileSync(`${src}/${f}`, "utf8"), /import type \{ LevelEntry \} from "\.\.\/macro\/mentorLevels\.ts";/, `${f}: type-only`);
   const code = readFileSync(`${src}/macro/mentorLevels.ts`, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
   assert.doesNotMatch(code, /alarm|noTrade|store\.insert|verdict\s*=|import .*(risk|brief|alerts|store|sleepday|psych)\.ts/i);

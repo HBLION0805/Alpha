@@ -39,7 +39,7 @@ export function buildTradePlan(i: PlanInput): { candidates: Candidate[]; qualifi
     ];
     const score = factors.filter((f) => f.agree === true).length;
     const struct = side === "long" ? "看涨借方价差 call debit spread（定义风险）" : "看跌借方价差 put debit spread（定义风险）";
-    const size = i.capital ? `最大亏损 ≤ ${i.capPct ?? 1}% = $${Math.round(i.capital * (i.capPct ?? 1) / 100)}（按价差最大亏损算张数）` : `最大亏损 ≤ 账户 ${i.capPct ?? 1}%（按价差最大亏损算张数）`;
+    const size = i.capital ? `最大亏损 ≤ 置信度「中」${i.capPct ?? 1}% × 权益 = $${Math.round(i.capital * (i.capPct ?? 1) / 100)}（按价差最大亏损算张数；4/4 确认 + 情景计划 + 技术入场都对齐时可用「高」1.5% $${Math.round(i.capital * 1.5 / 100)} /「最高」2% $${Math.round(i.capital * 2 / 100)}；开仓前写好大跌/慢跌/横盘/上涨情景计划）` : `最大亏损 ≤ 账户 ${i.capPct ?? 1}%（按价差最大亏损算张数）`;
     if (!L?.priorDay) { cands.push({ ticker: tk, side, structure: struct, trigger: "—", entryZone: [0, 0], stop: "—", invalidation: sc.invalidation.join("；"), size, confirm: { score, of: 4, factors }, qualifies: false, why: "没有价位数据" }); continue; }
     const pd = L.priorDay, r = (x: number) => Number(x.toFixed(2));
     const c: Candidate = side === "short"

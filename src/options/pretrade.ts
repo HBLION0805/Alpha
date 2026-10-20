@@ -10,6 +10,9 @@ import { DEFAULT_RULES, type RuleCard, type PosLeg } from "./rules.ts";
 import { multiLegChecklist, thesisStop, type MultiLegChecklist, type ThesisRecord } from "./stops.ts";
 import { motiveCheck, concurrentCheck, type Motive, zeroDteCheck, dailyLossCheck, euphoriaGate, sessionGate, sizeDisciplineCheck, entryRangeCheck, type TradeLog, type SessionState, type MarketState } from "./discipline.ts";
 import { adjustmentPlaybookChecks, type AdjustmentContext } from "./adjust.ts";
+import { tradeCap, capLabel, type Tier } from "./confidence.ts";
+import { planProblems, type ScenarioPlan } from "./scenarioEngine.ts";
+import { scenarioPlanCheck } from "./discipline.ts";
 
 const REVIEW = "复盘 HYG/IWM/TLT/TQQQ (knowledge/mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md)";
 
@@ -30,6 +33,10 @@ export interface Proposal {
   checklist?: MultiLegChecklist;
   /** 止损学 §Thesis Stop Loss: when set (new entries should set it), thesis + invalidation are required */
   thesisRecord?: ThesisRecord;
+  /** confidence tier for the per-trade cap (src/options/confidence.ts; default medium 1%); high/highest need macro + scenario plan + technical entry aligned */
+  confidence?: { tier?: Tier; macro?: boolean; technical?: boolean };
+  /** 情景推演 written before entry (src/options/scenarioEngine.ts); missing → BLOCK scenario_plan */
+  scenarioPlan?: ScenarioPlan | null;
   /** 纪律系列 inputs (knowledge/mentor/discipline/discipline-01-20.md). Missing inputs → BLOCK / NO_TRADE with "provide X". */
   discipline?: {
     todayEt?: string; journal?: TradeLog[]; openPnlToday?: number;
@@ -50,8 +57,13 @@ const isShortOpt = (l: ProposalLeg) => l.type !== "stock" && l.qty < 0;
 const und = (p: Proposal, l: ProposalLeg) => l.underlying ?? p.symbol;
 const spot = (p: Proposal, u: string) => (typeof p.underlyingPrice === "number" ? p.underlyingPrice : p.underlyingPrice[u] ?? NaN);
 
-export function preTradeChecks(p: Proposal, R: RuleCard = DEFAULT_RULES): { checks: PreCheck[]; blocked: boolean } {
+export function preTradeChecks(p: Proposal, R0: RuleCard = DEFAULT_RULES): { checks: PreCheck[]; blocked: boolean } {
   const out: PreCheck[] = [];
+  // per-trade cap scales with confidence (0.5–2% of equity); without a tier the rule card's value applies (medium = 1%)
+  let R = R0;
+  if (p.confidence) { const c = tradeCap(p.capital, p.confidence.tier, { macro: p.confidence.macro, technical: p.confidence.technical, scenarioPlan: planProblems(p.scenarioPlan, `${p.asOf.slice(0, 10)}T23:59:59Z`).length === 0 });
+    R = { ...R0, sellerMaxLossPerTradePct: c.pct, buyerPremiumPerTradePct: c.pct };
+    out.push({ id: "confidence_cap", severity: "INFO", detail: capLabel(c), cite: "src/options/confidence.ts (user 2026-10-20)" }); }
   const shorts = p.legs.filter(isShortOpt);
   const americanShorts = shorts.filter((l) => l.style !== "european");
 
@@ -165,6 +177,8 @@ export function disciplineChecks(p: Proposal, proposedMaxLoss: number, R: RuleCa
   out.push(conv(motiveCheck(d.motive)));
   if (d.openPositions == null) need("max_concurrent_positions", "BLOCK", `discipline.openPositions (cap ${R.maxConcurrentPositions})`);
   else out.push(conv(concurrentCheck(d.openPositions, R.maxConcurrentPositions)));
+  // 情景推演 written before entry
+  out.push(conv(scenarioPlanCheck(planProblems(p.scenarioPlan, p.thesisRecord?.recordedAt ?? `${p.asOf.slice(0, 10)}T23:59:59Z`))));
   // #7 entry range on the underlying
   if (!d.entryRange || !d.side) need("entry_range", "BLOCK", "discipline.entryRange {low, high} and discipline.side (纪律 #07 no chasing)");
   else if (!Number.isFinite(spot(p, p.symbol))) need("entry_range", "BLOCK", `underlyingPrice for ${p.symbol} (entry range is checked on the proposal symbol's price)`);

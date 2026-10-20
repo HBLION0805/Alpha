@@ -90,7 +90,7 @@ test("catalog: mentor-discipline cited, candidates resolved, no duplicate ids", 
 
 test("pretrade wires discipline checks; missing inputs → provide X (NO_TRADE/BLOCK)", async () => {
   const { preTradeChecks } = await import("../src/options/pretrade.ts");
-  const base = { symbol: "SPY", strategy: "long_call", asOf: "2026-10-14", underlyingPrice: 600, thesisHorizonDays: 10, capital: 50000, buyingPower: 50000,
+  const base = { scenarioPlan: { at: "2026-01-01T00:00:00Z", source: "user" as const, rows: [{ id: "crash" as const, action: "止盈" }, { id: "flat" as const, action: "时间止损" }, { id: "rally" as const, action: "止损" }] }, symbol: "SPY", strategy: "long_call", asOf: "2026-10-14", underlyingPrice: 600, thesisHorizonDays: 10, capital: 50000, buyingPower: 50000,
     legs: [{ type: "call" as const, strike: 610, qty: 1, premium: 3, expiration: "2026-12-18" }] };
   const none = preTradeChecks(base);
   for (const id of ["session_gate", "journal_inputs", "entry_range"]) assert.match(none.checks.find((c) => c.id === id)!.detail, /^provide /, id);

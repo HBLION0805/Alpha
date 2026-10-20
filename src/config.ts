@@ -1,4 +1,4 @@
-/** Simulation capital: the user chose $5,000 (2026-10-15), so 1%/trade = $50 and 2%/day = $100. ALPHA_CAPITAL overrides it. Live money later scales proportionally. */
+/** Simulation capital: the user chose $5,000 (2026-10-15), per-trade cap = confidence tier 0.5–2% of live paper equity (src/options/confidence.ts), 2%/day of equity. ALPHA_CAPITAL overrides it. Live money later scales proportionally. */
 export const DEFAULT_CAPITAL = 5000;
 export function defaultCapital(env = process.env): number {
   const n = Number(env.ALPHA_CAPITAL);

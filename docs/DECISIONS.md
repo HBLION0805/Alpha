@@ -183,3 +183,10 @@
 
 ## 2026-10-20 — Event follow-ups are data + display only
 - knowledge/events/event-followups.json; entries expire by date. No trades, no new alerts (the alerts CLI only appends the block to its markdown), no NO_TRADE / sizing / 能不能睡 input. A verdict needs quotes taken after the phase started; otherwise 无法判断 (no stale-data verdicts).
+
+## 2026-10-20 — Scenario engine (情景推演) + confidence-scaled per-trade cap
+- Every proposed/open position gets P&L at expiry and mid-point under 大跌 (−1.5×EM or next support) / 慢跌 (−0.5×EM) / 横盘 / 上涨 (+1×EM or resistance). EM from IV, else ATR, else a flagged 5%. Targets come from reference levels (Fib, MAs, pivots) + mentor levels.json. Display only: it never changes NO_TRADE, 48h/72h, sizing or 能不能睡.
+- Hedge: at most one defined-risk debit spread against the worst scenario, only when the combined max loss stays ≤ cap and no naked short is created (matrix.ts FORBIDDEN unchanged); otherwise "对冲成本超出上限 → 缩小仓位或 NO_TRADE".
+- Phase 2 (deferred): the 4-leg bearish diagonal + call spread + crash-put combo.
+- A written 3/4-scenario plan is required before entry: formal = BLOCK `scenario_plan`; practice = warn tag + violation `no_scenario_plan_at_entry` (counted by readiness).
+- Per-trade cap replaces the fixed $50: confidence tier × live paper equity — low 0.5% / medium 1% (default) / high 1.5% / highest 2%; high/highest are downgraded to medium unless macro direction + scenario plan + technical entry all align. Daily cap = 2% of equity. Open entries keep the cap recorded at entry (old ones = 1% of capital at entry). The shadow engine's fixed riskUsd 50 is unchanged (separate mentor-shadow bookkeeping).

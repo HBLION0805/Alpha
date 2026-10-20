@@ -38,6 +38,11 @@ import { loadLevels, activeEntry, levelSeries, renderMentorLevels, checklistItem
 import { wtiFront, frontContinuous } from "../macro/wtiFront.ts";
 import { loadGeoEvents, geoReminderLines, geoCalendarLines } from "../macro/geoEvents.ts";
 import { loadFollowups, loadFollowupInputs, followupLines } from "../macro/eventFollowup.ts";
+import { paperEquity } from "../options/confidence.ts";
+import { yahooDaily } from "../adapters/yahoo.ts";
+import { runScenarios, suggestHedge, renderScenarioTable } from "../options/scenarioEngine.ts";
+import { entryInput } from "../options/scenarioCtx.ts";
+import { entryCapUsd } from "../options/confidence.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -96,7 +101,9 @@ if (!values.offline) {
 // 今日交易计划 needs TLT levels too (not a default levels ticker)
 for (const t of ["SPY", "QQQ", "IWM", "TLT"]) if (!planRefs[t]) { try { const r = await loadDailyBars(t); planRefs[t] = referenceLevels(r.bars); const b = r.bars; planB5[t] = b.length > 5 ? ((b.at(-1)!.c - b[b.length - 6]!.c) / b[b.length - 6]!.c) * 100 : null; } catch { /* candidate shows "没有价位数据" */ } }
 const { verdict: v0, reasons: r0 } = briefVerdict({ macro, pm, sc });
-const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: defaultCapital() });
+const pj0 = existsSync("data/journal/paper.json") ? JSON.parse(readFileSync("data/journal/paper.json", "utf8")) : { capital: defaultCapital(), entries: [] };
+const equity0 = paperEquity(pj0.entries ?? [], pj0.capital ?? defaultCapital()); // per-trade cap = confidence tier × live paper equity
+const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: equity0 });
 const mx = classifyMatrix(data);
 const mlv = renderMentorLevels(lv.entries, { ...data, ...lvData }, now, lv.error);
 const dc = renderDeadCat({ ...data, ...dcData }, mx, checklistItems(mlv), mlv.lines);
@@ -126,7 +133,16 @@ const todayReleases = calendar.filter((e) => e.date === etDate(now)).sort((a, b)
 // 地缘/选举事件: display + 72h reminder only (kept out of calendar/mentor.events on purpose)
 const geoF = loadGeoEvents(); if (geoF.error) failed.geoEvents = geoF.error;
 const fu = loadFollowups(); if (fu.error) failed.eventFollowups = fu.error; // 事件跟进: display only
-const res = buildBrief({ followupLines: followupLines(fu.followups, loadFollowupInputs(), now), geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
+// 情景推演（持仓）: compact tables for open simulated positions (display only; online only — needs live bars)
+const scenarioLines: string[] = [];
+if (!values.offline) for (const e of (pj0.entries ?? []).filter((x: { mode?: string; closedAt?: string; source?: string }) => x.mode === "paper" && !x.closedAt && x.source !== "real_practice")) {
+  try { const bars = await yahooDaily(e.symbol, 400), spot = bars.at(-1)?.c; if (spot == null) continue;
+    const rq = existsSync("data/in/rh-option-quotes.json") ? JSON.parse(readFileSync("data/in/rh-option-quotes.json", "utf8")).quotes ?? [] : [];
+    const inp = entryInput(e, { spot, asOf: now.toISOString(), bars: bars as never, quotes: rq, mentor: loadLevels().entries, capUsd: entryCapUsd(e, pj0.capital ?? defaultCapital()) });
+    if (inp) { const r = runScenarios(inp); scenarioLines.push(...renderScenarioTable(r, "情景推演"), `- 对冲建议：${suggestHedge(inp, r).text}`, ""); } }
+  catch (err) { failed[`scenario ${e.id}`] = (err as Error).message; }
+}
+const res = buildBrief({ followupLines: followupLines(fu.followups, loadFollowupInputs(), now), geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines, ...(scenarioLines.length ? ["", "#### 情景推演（持仓，只显示）", "", ...scenarioLines] : [])], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {
   if (pm.alarms.length) store.insert(alarmItems(pm.alarms, now), { stance: "center", tier: 1 }, now);

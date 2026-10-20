@@ -21,7 +21,7 @@ const isCap = (v: string) => /cap/.test(v);
 /** Concrete fix for a repeated tag (Chinese, actionable). */
 const FIX: Record<string, string> = {
   no_pre_written_plan: "每笔开仓前先跑 `npm run card -- … --save`，写好论点、两个止损和分批止盈，再开仓（用 --card 关联）",
-  position_over_cap: "开仓前看计划卡第 6 节：单笔最大亏损 ≤$50；超了就换更窄/更便宜的价差或不做",
+  position_over_cap: "开仓前看计划卡第 6 节：单笔最大亏损 ≤ 卡上写的置信度上限（权益 0.5–2%，默认 1%）；超了就换更窄/更便宜的价差或不做",
   strikes_too_far_otm: "短期（≤10 天）顺势单，买入腿放在平值附近，不买远价外",
   no_pre_set_take_profit: "开仓时把分批止盈写死（计划卡第 5 节），到价就执行",
   bad_entry_timing: "等盘前计划里的入场区间/确认信号，不追开盘第一波",

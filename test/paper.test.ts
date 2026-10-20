@@ -9,7 +9,7 @@ const prop = () => ({ symbol: "INTC", strategy: "long_put", asOf: "2026-10-15", 
   legs: [{ type: "put", strike: 30, qty: 2, premium: 0.8, expiration: "2026-12-18", openInterest: 5000, bid: 0.78, ask: 0.82 }],
   discipline: { journal: [], openPnlToday: 0, session: { emotion: "ok", sleep: "ok", health: "ok", lifeEvents: "ok" }, market: { lowVolume: false, unclearDirection: false, chop: false, poorRR: false }, plannedMaxLoss: 200, entryRange: { low: 31, high: 33 }, side: "short" } }) as never;
 const CLEAN = { at: "x", objections: [], blocks: 0, warns: 0 };
-const A = { hedge: "portfolio", hedgeDetail: "SPY 30d 5% OTM put spread already held", critique: CLEAN, thesis: "capex slowdown", invalidation: "INTC > 35", stop: "INTC > 35", motive: "thesis" as const, timeStopAt: "2026-11-06", tp: "narrative", planId: "2026-10-15-INTC-short", plan: [{ id: "2026-10-15-INTC-short", ticker: "INTC", side: "short", entryZone: [31, 33] }] as never, now };
+const A = { scenarioPlan: { at: "2026-01-01T00:00:00Z", source: "user" as const, rows: [{ id: "crash" as const, action: "止盈" }, { id: "flat" as const, action: "时间止损" }, { id: "rally" as const, action: "止损" }] }, hedge: "portfolio", hedgeDetail: "SPY 30d 5% OTM put spread already held", critique: CLEAN, thesis: "capex slowdown", invalidation: "INTC > 35", stop: "INTC > 35", motive: "thesis" as const, timeStopAt: "2026-11-06", tp: "narrative", planId: "2026-10-15-INTC-short", plan: [{ id: "2026-10-15-INTC-short", ticker: "INTC", side: "short", entryZone: [31, 33] }] as never, now };
 
 test("paper open: requires thesis/invalidation/stop/motive and refuses on BLOCK", () => {
   const j: PaperJournal = { capital: 50000, entries: [] };
@@ -102,4 +102,12 @@ test("warnTag mapping", async () => {
   assert.equal(warnTag("缺少 --hedge（…）"), "warn_no_hedge");
   assert.equal(warnTag("单笔最大亏损 $160（3.2%）> 硬上限 1%（$50）→ 减少数量"), "warn_over_cap");
   assert.equal(warnTag("现价 35 不在计划进场区间 31–33（纪律 #07 不追）"), "warn_off_plan");
+});
+test("scenario plan required at entry: formal BLOCK, practice → violation + warn tag; confidence cap recorded", () => {
+  const j: PaperJournal = { capital: 5000, entries: [] };
+  const noPlan = { ...A, scenarioPlan: undefined };
+  assert.ok(paperOpen(j, prop(), noPlan).refused.some((x) => /情景计划/.test(x)));
+  const pr = paperOpen(j, prop(), { now, kind: "practice", card: CARD, critique: CLEAN }).entry!;
+  assert.ok(pr.violations?.includes("no_scenario_plan_at_entry")); assert.ok(pr.warnTags?.includes("warn_no_scenario_plan"));
+  const ok = paperOpen(j, prop(), A).entry; if (ok) assert.equal(ok.confidence?.capUsd, 50);
 });

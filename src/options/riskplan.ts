@@ -24,11 +24,11 @@ export interface RiskPlan {
   rule: string;
 }
 type L = { type: "call" | "put" | "stock"; strike: number; qty: number; premium: number; expiration?: string };
-export interface RiskArgs { hedge?: string; hedgeDetail?: string; invalidation?: string; stopPct?: number; capital: number; asOf: string; rules?: Partial<RuleCard> }
+export interface RiskArgs { hedge?: string; hedgeDetail?: string; invalidation?: string; stopPct?: number; capital: number; asOf: string; rules?: Partial<RuleCard>; /** confidence-scaled cap % (src/options/confidence.ts); default rule card */ capPct?: number }
 
 export function buildRiskPlan(legs: L[], a: RiskArgs): { plan: RiskPlan | null; errors: string[]; draft?: RiskPlan | null } {
   const E: string[] = [];
-  const R = effectiveRules(a.rules), capPct = R.sellerMaxLossPerTradePct;
+  const R = effectiveRules(a.rules), capPct = a.capPct ?? R.sellerMaxLossPerTradePct;
   const isStock = legs.every((l) => l.type === "stock");
   if (!a.hedge) E.push(`缺少 --hedge（${HEDGE_METHODS.join(" | ")}）${isStock ? "" : "；期权建议 built_in_spread（价差本身就是对冲）"}`);
   else if (!HEDGE_METHODS.includes(a.hedge as HedgeMethod)) E.push(`--hedge ${a.hedge} 无效：只能是 ${HEDGE_METHODS.join(" | ")}`);

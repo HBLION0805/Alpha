@@ -273,3 +273,6 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
   - verdict (10/22 from 04:00 ET): premarket basket averages → 应验 (cloud < 0 and chips > 0) / 未应验 (opposite) / 混合 / 无法判断.
   - Quotes older than the phase start (event time, or 04:00 on the verdict day) or > 90 min old are not used.
 - **Routine needs:** refresh data/in/earnings-by-symbol.json for META, and data/in/quotes.json for META,CRWV,NBIS,ORCL,NVDA,AVGO before the 18/20/22 runs and the 10/22 7:30 brief. Tests: test/eventfollowup.test.ts (5).
+
+## 2026-10-20 — 情景推演 + confidence cap
+- src/options/scenarioEngine.ts, scenarioCtx.ts, confidence.ts; wired into plan card (section 10 + cap label in section 6), pretrade (`scenario_plan`, `confidence_cap`), paper open (`--scenarios`, `--confidence`, `--macro-aligned`, `--tech-entry`), `paper scenarios` (open-position review), brief trade-idea section (online), breach/readiness per-entry caps. Tests: test/scenarioengine.test.ts.

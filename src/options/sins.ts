@@ -20,7 +20,7 @@ export const SINS: Record<SinId, { zh: string; question: string; fix: string }> 
   envy: { zh: "嫉妒", question: "我是因为别人赚钱、怕错过才追进去的吗？", fix: "只在计划进场区间内开仓；别人的盈利不是你的入场信号" },
   gluttony: { zh: "暴食", question: "冲动和下单之间有没有停顿？今天是不是做太多了？", fix: "每天最多 3 笔；做完计划内的单就收手；不在亏损仓位上补仓" },
   pride: { zh: "傲慢", question: "我承认错误了吗？止损动过吗？复盘里是不是在怪别人？", fix: "止损写死不移动；复盘只写自己的决定（判断/执行），不写别人" },
-  lust: { zh: "色欲", question: "为了快速暴富，有没有违背自己的原则（仓位上限、风控）？", fix: "单笔最大亏损 ≤ 1%（$50）；超了就换更窄的价差或不做" },
+  lust: { zh: "色欲", question: "为了快速暴富，有没有违背自己的原则（仓位上限、风控）？", fix: "单笔最大亏损 ≤ 置信度上限（权益 0.5–2%，默认 1%）；超了就换更窄的价差或不做" },
 };
 /** review thresholds (not trading rules; changing them changes only what gets flagged) */
 export const SIN_LIMITS = { lotteryPremium: 0.25, lotteryMaxDte: 7, maxOpensPerDay: 3, wrathWindowMin: 60 };
