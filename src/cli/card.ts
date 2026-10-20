@@ -58,7 +58,7 @@ const card = buildCard({ now, sym, dir, structure: values.structure, legs, exp: 
   brief, gex: gexFromRaw(sym, raw), calendar, earnings, earningsNext: nextEarnings(loadEarningsBook(), sym, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })), fed: (await loadFedSpeakers({ now })).data,
   journal: j.entries, capital: j.capital ?? defaultCapital(), thesis: values.thesis, invalidation: values.invalidation,
   shares: values.shares ? Number(values.shares) : null,
-  confidence: { tier: values.confidence as never, technical: values["tech-entry"] ?? false }, mentorAll: loadLevels().entries,
+  confidence: { tier: values.confidence as never, technical: values["tech-entry"] ?? false }, mentorAll: loadLevels().entries, optionQuotes: existsSync("data/in/rh-option-quotes.json") ? JSON.parse(readFileSync("data/in/rh-option-quotes.json", "utf8")).quotes ?? [] : [],
   marketPhase: stockLong ? marketPhase(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), ndxBars as Array<{ t: string; c: number }>, loadPhases().entries) : null,
   mentorLevels: loadLevels().entries.find((e) => e.date === now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })) ?? null,
   ...(dir === "bear" ? { short: { spyBars, sectorSym, sectorBars, squeezeCheck: values["squeeze-check"] ?? null, horizonDays: values.horizon ? Number(values.horizon) : null } } : {}) });

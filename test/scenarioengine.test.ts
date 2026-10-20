@@ -59,3 +59,31 @@ test("no hardcoded $50 per-trade text left in plan-card cap line", async () => {
   const s = readFileSync(new URL("../src/review/card.ts", import.meta.url), "utf8");
   assert.ok(!/capital \* 0\.01/.test(s)); assert.match(s, /capLabel\(cap\)/); assert.match(s, /情景推演/);
 });
+
+import { hedgeMenu, renderHedgeMenu, renderScenariosWithMenu } from "../src/options/hedgeMenu.ts";
+test("hedge menu: every losing scenario gets 1–3 candidates; no naked shorts; over-cap shown as 超上限", () => {
+  const r = runScenarios(PDS), m = hedgeMenu(PDS, [], "SMH", r);
+  const losing = r.rows.filter((x) => x.pnlExpiry < 0 || (x.pnlMid > 0 && x.pnlExpiry < 0.5 * x.pnlMid)).map((x) => x.id);
+  assert.deepEqual(m.map((s) => s.id), losing); assert.ok(!losing.includes("crash"));
+  for (const s of m) { assert.ok(s.picks.length >= 1 && s.picks.length <= 3, s.zh);
+    for (const c of s.picks) { assert.equal(forbiddenGuard([...PDS.legs, ...c.legs]), null); assert.equal(c.fits, (c.newMaxLoss ?? Infinity) <= PDS.capUsd);
+      assert.ok(c.pnl[s.id] > s.basePnl, "improves its scenario"); assert.deepEqual(Object.keys(c.pnl).sort(), ["crash", "flat", "rally", "slow_down"]); } }
+  const rally = m.find((s) => s.id === "rally")!; assert.ok(rally.picks.some((c) => c.kind === "debit_spread" && c.legs[0]!.type === "call" || c.kind === "butterfly"));
+  assert.ok(m.find((s) => s.id === "flat")!.picks.some((c) => c.kind === "butterfly" || c.kind === "time_stop"));
+  const txt = renderHedgeMenu(hedgeMenu({ ...PDS, capUsd: 1 }, [], "SMH"), r, 1).join("\n"); assert.match(txt, /超上限/); assert.match(txt, /\| 大跌 \| 慢跌 \| 横盘 \| 上涨 \|/);
+});
+test("hedge menu: long call → covered vertical / calendar; RH mark used only when every leg is quoted", () => {
+  const m = hedgeMenu(CALL, [], "GDX"), all = m.flatMap((s) => s.picks);
+  assert.ok(all.some((c) => c.kind === "covered_short" && c.legs[0]!.qty < 0 && c.legs[0]!.strike > 90 && c.newMaxLoss! < 260));
+  for (const c of all) assert.equal(forbiddenGuard([...CALL.legs, ...c.legs]), null);
+  const cs = all.find((c) => c.kind === "covered_short")!, K = cs.legs[0]!.strike;
+  const withRh = hedgeMenu(CALL, [{ underlying: "GDX", type: "call", strike: K, expiration: "2026-11-20", mark: 1.11 }], "GDX").flatMap((s) => s.picks).find((c) => c.kind === "covered_short" && c.legs[0]!.strike === K)!;
+  assert.equal(withRh.src, "RH"); assert.equal(withRh.cost, -111);
+  const naked: EngineInput = { ...CALL, legs: [{ type: "put", strike: 80, qty: -1, premium: 1, expiration: "2026-11-20" }] };
+  assert.deepEqual(hedgeMenu(naked), []);
+  assert.match(renderScenariosWithMenu(CALL).join("\n"), /分情景对冲/);
+});
+test("hedge menu: short put tail → further-OTM crash wing", () => {
+  const bps: EngineInput = { ...PDS, legs: [{ type: "put", strike: 540, qty: -1, premium: 6, expiration: "2026-11-20" }, { type: "put", strike: 530, qty: 1, premium: 3, expiration: "2026-11-20" }], capUsd: 2000 };
+  const crash = hedgeMenu(bps).find((s) => s.id === "crash"); assert.ok(crash && crash.picks.length);
+});

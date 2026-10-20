@@ -23,7 +23,8 @@ import { fmtEarnings, type EarningsRow } from "../options/earningsStore.ts";
 import { inBlackout, type FedCache } from "../ingest/fedSpeakers.ts";
 import { shortEntryChecks, renderShortSection, type ShortInput } from "../options/shortside.ts";
 import { paperEquity, tradeCap, capLabel, dayCapUsd, type Tier, type TradeCap } from "../options/confidence.ts";
-import { runScenarios, renderWithHedge, planFromResult, type ELeg, type ScenarioPlan } from "../options/scenarioEngine.ts";
+import { renderScenariosWithMenu } from "../options/hedgeMenu.ts";
+import { runScenarios, planFromResult, type ELeg, type ScenarioPlan } from "../options/scenarioEngine.ts";
 import { atr14, keyLevels } from "../options/scenarioCtx.ts";
 import type { Bar } from "../levels.ts";
 
@@ -42,6 +43,7 @@ export interface CardInput {
   mentorLevels?: LevelEntry | null;
   /** confidence tier → per-trade cap 0.5–2% of live paper equity (src/options/confidence.ts); macro alignment comes from the brief, technical from --tech-entry */
   confidence?: { tier?: Tier; technical?: boolean };
+  /** Robinhood option quotes (data/in/rh-option-quotes.json, read-only) for hedge-candidate pricing; BS fallback */ optionQuotes?: import("../options/hedgeMenu.ts").RhQuote[];
   /** 大佬 levels.json entries (all dates) for scenario targets */ mentorAll?: LevelEntry[];
   /** stock long cards: shares held (covered call needs >= 100) and the market phase (src/macro/marketPhase.ts); info only */
   shares?: number | null; marketPhase?: MarketPhase | null;
@@ -252,7 +254,7 @@ export function buildCard(i: CardInput): Card {
     const q = Math.max(1, contracts), el: ELeg[] = legs.map((l) => ({ type: l.type, strike: l.strike, qty: l.qty * q, premium: l.mid!, expiration: l.expiration }));
     const inp = { legs: el, spot: i.spot, asOf: i.now.toISOString(), iv: null, atr: atr14(i.bars), levels: keyLevels(i.sym, i.spot, i.bars as unknown as Bar[], i.mentorAll ?? (i.mentorLevels ? [i.mentorLevels] : [])), capUsd: r2(allowed), label: `${i.sym} ×${q}` };
     scenarioPlan = planFromResult(runScenarios(inp), i.now.toISOString(), "card");
-    S.push({ n: 10, title: "情景推演（先列情景，再看每个情景怎么处理；只显示）", status: "ok", lines: renderWithHedge(inp) });
+    S.push({ n: 10, title: "情景推演（先列情景，再看每个情景怎么处理；只显示）", status: "ok", lines: renderScenariosWithMenu(inp, i.optionQuotes ?? [], i.sym) });
   } else S.push({ n: 10, title: "情景推演", status: "missing", lines: ["- 结构没有完整报价 → 无法推演；开仓前要自己写下大跌/慢跌/横盘/上涨各自怎么做（paper open --scenarios）"] });
   const verdict: Card["verdict"] = planMissing.length ? "no" : formal ? "formal" : failing.length || otmWarn ? "practice_warn" : "practice";
   const verdictText = verdict === "no" ? "🛑 不做（练习也不行：计划没写全）" : verdict === "formal" ? "✅ 可做（正式）" : verdict === "practice_warn" ? "🟢 可练习（有提示）" : "🟡 仅练习";

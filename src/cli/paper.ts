@@ -40,7 +40,8 @@ import { loadEarningsBook } from "../options/earningsStore.ts";
 import { JOURNAL_QUESTIONS, LOSS_CLASSES, profitableButWrong } from "../options/psych.ts";
 import { loadMajorEvents } from "../options/majorEvents.ts";
 import { mentorForTags, lossPrompt, renderLossPrompt } from "../review/mentor.ts";
-import { parsePlan, renderWithHedge } from "../options/scenarioEngine.ts";
+import { parsePlan } from "../options/scenarioEngine.ts";
+import { renderScenariosWithMenu } from "../options/hedgeMenu.ts";
 import { entryInput } from "../options/scenarioCtx.ts";
 import { paperEquity, tradeCap, capLabel, entryCapUsd } from "../options/confidence.ts";
 import { loadLevels } from "../macro/mentorLevels.ts";
@@ -136,7 +137,7 @@ if (cmd === "open") {
     const bars = await yahooDaily(e.symbol, 400).catch(() => []), spot = bars.at(-1)?.c;
     if (spot == null) { process.stdout.write(`${e.id} ${e.symbol}: 无行情 → 无法推演\n\n`); continue; }
     const inp = entryInput(e, { spot, asOf: now.toISOString(), bars: bars as never, quotes: qf?.quotes ?? [], mentor: loadLevels().entries, capUsd: entryCapUsd(e, j.capital) });
-    process.stdout.write((inp ? renderWithHedge(inp) : [`${e.id}: 没有可估值的腿`]).join("\n") + "\n");
+    process.stdout.write((inp ? renderScenariosWithMenu(inp, qf?.quotes ?? [], e.symbol) : [`${e.id}: 没有可估值的腿`]).join("\n") + "\n");
   }
 } else if (cmd === "legs") {
   // open option legs that need a Robinhood quote (routine: get_option_instruments → get_option_quotes → data/in/rh-option-quotes.json)
