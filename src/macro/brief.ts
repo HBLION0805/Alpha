@@ -22,6 +22,8 @@ export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult
   deadCatLines?: string[];
   /** 地缘/选举事件 (src/macro/geoEvents.ts) — display + 72h reminder only; never in the verdict */
   geo?: { reminder: string[]; calendar: string[] };
+  /** 事件跟进 (src/macro/eventFollowup.ts, knowledge/events/event-followups.json) — display only; never in the verdict */
+  followupLines?: string[];
   /** 今日能不能睡 (src/macro/sleepday.ts renderSleep) — flag only; omitted → section skipped */
   sleepLines?: string[] }
 export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
@@ -61,6 +63,7 @@ export function buildBrief(i: BriefInput): BriefResult {
     ...(i.sleepLines?.length ? i.sleepLines : []),
     ...(mentorState ? reminderSection({ ...mentorState, now: i.now, verdict, leader: i.sc.leader, regime: g.label, leaderChanged: i.sc.changed }) : []),
     ...(i.geo?.reminder.length ? [...i.geo.reminder, ""] : []),
+    ...(i.followupLines?.length ? i.followupLines : []),
     ...(i.liquidityLines?.length ? i.liquidityLines : []),
     ...(i.matrixLines?.length ? [...i.matrixLines, ""] : []),
     ...(i.deadCatLines?.length ? i.deadCatLines : []),

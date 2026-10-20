@@ -263,3 +263,13 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - **Signals:** knowledge/macro/crisis-signals.json (12 signals, thresholds from report §8 + user spec): 2007 HY OAS / claims 4wk / Sahm / XLF·KRE break / CMBS (manual Trepp readings); 1973 WTI front-month sustained > 110 / core CPI 3m ann. / T5YIE / T10Y3M / SPY & TLT 20d both down; 1929 QQQ·NVDA·CRWV −20% from high **and** HY OAS triggered (theme break alone = 接近); 2020 VIX < 20 → > 40 within 10 days.
 - **Run:** `npm run crisis-path` (manual) or `npm run crisis-path -- --if-due` for the routine (1st / 15th, or next NYSE trading day; missed slot catches up); `--dry` = don't write state. Output data/out/crisis-path-latest.md/.json + dated copy; state data/crisis-path-state.json (first-trigger dates, cleared dates).
 - **Not** in the daily brief, no alerts, no trades; fetch failure / stale data = 无数据 and never changes state (no fake switches). Baseline run 2026-10-19: 触发 XLF/KRE break (KRE −2.1% below 200DMA), SPY & TLT both down 20d; 接近 CMBS 8.02% rising, AI theme break (CRWV −56%) without credit stress → leading path 2007. Tests: test/crisispath.test.ts (6).
+
+## 2026-10-20 08:40 ET — 事件跟进: META earnings (mentor note 10/19 15:39), display only
+- **Archive:** knowledge/mentor/market-calls/note-2026-10-19-meta-cashflow/ (article.md byte-for-byte, 101 bytes; manifest sha256; README).
+- **Data:** knowledge/events/event-followups.json (generic; one entry `meta-earnings-2026-10-21`: EPS est 5.89, cloud basket CRWV/NBIS/ORCL expected down, chip basket NVDA/AVGO expected up; expires 2026-10-22).
+- **Code:** src/macro/eventFollowup.ts → brief §1 block (`followupLines`), appended to `npm run alerts` markdown output (not json, not recorded as an alert), and standalone `npm run event-followup [-- --at ISO]`.
+  - pre (10/21 until 16:00 ET): thesis + quotes + EPS estimate.
+  - after (10/21 16:00 → 10/22 04:00 ET; the 18/20/22 runs): actual EPS from data/in/earnings-by-symbol.json (Robinhood get_earnings_results), revenue/capex/FCF from optional data/in/event-results.json, after-hours moves (lastExt vs regular close) from data/in/quotes.json.
+  - verdict (10/22 from 04:00 ET): premarket basket averages → 应验 (cloud < 0 and chips > 0) / 未应验 (opposite) / 混合 / 无法判断.
+  - Quotes older than the phase start (event time, or 04:00 on the verdict day) or > 90 min old are not used.
+- **Routine needs:** refresh data/in/earnings-by-symbol.json for META, and data/in/quotes.json for META,CRWV,NBIS,ORCL,NVDA,AVGO before the 18/20/22 runs and the 10/22 7:30 brief. Tests: test/eventfollowup.test.ts (5).

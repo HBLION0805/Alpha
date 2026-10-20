@@ -37,6 +37,7 @@ import { DEADCAT_SERIES, renderDeadCat, deadCatJson } from "../macro/deadcat.ts"
 import { loadLevels, activeEntry, levelSeries, renderMentorLevels, checklistItems, levelsJson } from "../macro/mentorLevels.ts";
 import { wtiFront, frontContinuous } from "../macro/wtiFront.ts";
 import { loadGeoEvents, geoReminderLines, geoCalendarLines } from "../macro/geoEvents.ts";
+import { loadFollowups, loadFollowupInputs, followupLines } from "../macro/eventFollowup.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -124,7 +125,8 @@ const sleep = renderSleep({ now, events: mentor.events,
 const todayReleases = calendar.filter((e) => e.date === etDate(now)).sort((a, b) => a.timeEt.localeCompare(b.timeEt)).map((e) => ({ timeEt: e.timeEt, kind: e.kind, title: e.title, tier: e.tier ?? 1 }));
 // 地缘/选举事件: display + 72h reminder only (kept out of calendar/mentor.events on purpose)
 const geoF = loadGeoEvents(); if (geoF.error) failed.geoEvents = geoF.error;
-const res = buildBrief({ geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
+const fu = loadFollowups(); if (fu.error) failed.eventFollowups = fu.error; // 事件跟进: display only
+const res = buildBrief({ followupLines: followupLines(fu.followups, loadFollowupInputs(), now), geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {
   if (pm.alarms.length) store.insert(alarmItems(pm.alarms, now), { stance: "center", tier: 1 }, now);

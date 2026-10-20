@@ -180,3 +180,6 @@
 - User scope change: not in the daily brief, no per-run alerts; runs on the 1st / 15th (next trading day) via `npm run crisis-path -- --if-due`. Display only.
 - 无数据 (fetch failure, stale series, stale manual CMBS reading) keeps the previous state; first-trigger dates are never overwritten. 1929 needs theme break AND credit stress (user: "plus credit stress").
 - The first run is a baseline: everything already triggered gets that date, so their relative order is not meaningful (tie → path score).
+
+## 2026-10-20 — Event follow-ups are data + display only
+- knowledge/events/event-followups.json; entries expire by date. No trades, no new alerts (the alerts CLI only appends the block to its markdown), no NO_TRADE / sizing / 能不能睡 input. A verdict needs quotes taken after the phase started; otherwise 无法判断 (no stale-data verdicts).

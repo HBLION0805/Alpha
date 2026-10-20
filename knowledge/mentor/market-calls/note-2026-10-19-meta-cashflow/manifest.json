@@ -1,0 +1,8 @@
+{
+  "note": "Mentor (大佬) short note, Mon 2026-10-19 ~15:39 ET, ahead of META earnings (Wed 2026-10-21 after close). article.md = mentor-inbox/notes/2026-10-19-1539-meta-cashflow-cloud-chips.md byte-for-byte (the text names no author; nothing removed). Event follow-up is data in knowledge/events/event-followups.json. Checked by test/eventfollowup.test.ts.",
+  "theme": "market-calls",
+  "title": "大佬短评 2026-10-19：Meta 现金流出问题 → 云跌芯片升；不要大赌",
+  "postedAt": "2026-10-19",
+  "receivedAt": "2026-10-19T15:39:00-04:00",
+  "files": [ { "file": "article.md", "source": "mentor-inbox/notes/2026-10-19-1539-meta-cashflow-cloud-chips.md", "bytes": 101, "sha256": "de098c8071c74bf2223fb8b4b1110975c522af645d827737a5d4856042c682b8", "verbatimChecked": true } ]
+}

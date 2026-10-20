@@ -7,6 +7,7 @@ import { Store } from "../store.ts";
 import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
 import { trumpAlerts, TRUMP_SOURCES } from "../trump.ts";
+import { loadFollowups, loadFollowupInputs, followupLines } from "../macro/eventFollowup.ts";
 import { renderAlertsMarkdown, selectNewAlerts, toAlert, premarketAlarmAlerts, ALARM_SOURCES } from "../alerts.ts";
 
 const { values } = parseArgs({
@@ -39,7 +40,9 @@ if (!values["dry-run"]) for (const a of tr) store.recordAlert(a.alert.score, a.a
 alerts.unshift(...tr.map((a) => a.alert));
 store.close();
 
-const body = values.format === "json" ? JSON.stringify({ generatedAt: now.toISOString(), count: alerts.length, alerts }, null, 2) + "\n" : renderAlertsMarkdown(alerts, now);
+// 事件跟进 (knowledge/events/event-followups.json): display-only block appended to the markdown output; not an alert, never recorded
+const fuLines = values.format === "json" ? [] : followupLines(loadFollowups().followups, loadFollowupInputs(), now);
+const body = values.format === "json" ? JSON.stringify({ generatedAt: now.toISOString(), count: alerts.length, alerts }, null, 2) + "\n" : renderAlertsMarkdown(alerts, now) + (fuLines.length ? `\n${fuLines.join("\n")}\n` : "");
 if (values.jsonl && alerts.length) {
   mkdirSync(dirname(values.jsonl), { recursive: true });
   appendFileSync(values.jsonl, alerts.map((a) => JSON.stringify({ at: now.toISOString(), ...a })).join("\n") + "\n");
