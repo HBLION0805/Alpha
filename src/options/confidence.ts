@@ -32,6 +32,10 @@ export function tradeCap(equity: number, requested: Tier | null | undefined = DE
 export const dayCapUsd = (equity: number) => r2(equity * DAILY_CAP_PCT / 100);
 export const capLabel = (c: TradeCap) => `置信度「${TIER_ZH[c.tier]}」${c.pct}% × 权益 $${c.equity.toLocaleString("en-US")} = 单笔上限 $${c.usd}${c.downgraded ? `（${c.why}）` : ""}`;
 /** cap recorded on a journal entry at open; old entries (before 2026-10-20) = medium on their capital at entry */
-export function entryCapUsd(e: Pick<JournalEntry, "confidence" | "capitalAtEntry">, capital: number): number {
-  return e.confidence?.capUsd ?? r2((e.capitalAtEntry ?? capital) * TIERS.medium / 100);
+export function entryCapUsd(e: Pick<JournalEntry, "confidence" | "capitalAtEntry"> & { maxLoss?: number }, capital: number): number {
+  if (e.confidence?.capUsd != null) return e.confidence.capUsd;
+  // no tier recorded (2026-10-22 fix, was a fixed medium 1% = $50): the trade's own max-loss tier = smallest 0.5/1/1.5/2% tier
+  // covering its recorded max loss, never above 2% of capital at entry
+  const base = e.capitalAtEntry ?? capital, tiers = Object.values(TIERS).map((p) => r2(base * p / 100));
+  return e.maxLoss != null && e.maxLoss > 0 ? tiers.find((c) => c >= e.maxLoss!) ?? tiers.at(-1)! : r2(base * TIERS.medium / 100);
 }

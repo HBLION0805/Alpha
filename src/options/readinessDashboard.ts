@@ -5,6 +5,7 @@
  */
 import { fullPnl, type JournalEntry } from "./journal.ts";
 import { expectancy } from "./readiness.ts";
+import { entryCapUsd } from "./confidence.ts";
 
 export interface Dashboard { asOf: string; target: number; trades: { simulated: number; formal: number; closed: number; open: number; realPractice: number; macro: number; macroOpen: number; macroPnl: number };
   monthsElapsed: number | null; firstTradeAt: string | null; expectancy: { perTrade: number; winRate: number; total: number; exTop1: number | null; exTop2: number | null; top2SharePct: number | null; dependsOnTop: boolean } | null;
@@ -26,7 +27,7 @@ export function buildDashboard(entries: JournalEntry[], capital: number, now = n
   const top2 = sorted.slice(0, 2).filter((x) => x > 0).reduce((a, b) => a + b, 0);
   const ex = ps.length ? expectancy(ps) : null;
   let eq = 0, peak = 0, mdd = 0; for (const p of ps) { eq += p; peak = Math.max(peak, eq); mdd = Math.max(mdd, peak - eq); }
-  const cap = (e: E) => e.confidence?.capUsd ?? (e.capitalAtEntry ?? capital) * 0.01 * 2; // no tier recorded → hard ceiling 2%
+  const cap = (e: E) => entryCapUsd(e, capital); // recorded tier, else the trade's own max-loss tier (0.5–2%)
   const perTrade = closed.filter((e) => -fullPnl(e) > cap(e) + 0.005).map((e) => ({ id: e.id, loss: r2(-fullPnl(e)), cap: r2(cap(e)) }));
   const byDay = new Map<string, number>(); for (const e of closed) byDay.set(etDay(e.closedAt!), (byDay.get(etDay(e.closedAt!)) ?? 0) + fullPnl(e));
   const dCap = capital * (o.dailyCapPct ?? 2) / 100;

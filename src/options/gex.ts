@@ -7,6 +7,7 @@
  */
 import { execFile } from "node:child_process";
 import { normPdf } from "./bs.ts";
+import type { Chain } from "./chain.ts";
 export interface GexResult {
   symbol: string; ok: true; spot: number; asOfUtc: string; net: number; flip: number | null; callWall: number | null; putWall: number | null;
   nextExpiry: string; maxPain: number | null; nextExpiryShare: number; expiries: number;
@@ -103,4 +104,12 @@ export function renderGex(rs: GexOut[]): string[] {
   if (bad.length) L.push("", `- 不可用（不编造）：${bad.map((r) => `${r.symbol}（${(r as { error: string }).error}）`).join("；")}`);
   L.push("", `- 数据：CBOE 延时报价${ts ? `，时间 ${new Date(ts).toLocaleString("zh-CN", { timeZone: "America/New_York", hour12: false })} ET` : ""}；窗口 45 天内到期。`, "");
   return L;
+}
+/** CBOE delayed quotes → a mark-able Chain (mid as mark). Used by `paper mark` for index options Robinhood may not list (VIX, SPX, …). */
+export const CBOE_INDEX = new Set(["VIX", "SPX", "NDX", "RUT", "XSP"]);
+export function chainFromCboe(symbol: string, json: unknown): Chain | null {
+  const j = json as { timestamp?: string; data?: { current_price?: number } };
+  const q = cboeQuotes(json); if (!q.length || j?.data?.current_price == null) return null;
+  return { symbol, underlyingPrice: j.data.current_price, asOf: j.timestamp ?? "", source: "cboe_delayed",
+    contracts: q.map((c) => ({ expiration: c.expiration, strike: c.strike, type: c.type, bid: c.bid, ask: c.ask, mark: c.bid != null && c.ask != null ? Math.round(((c.bid + c.ask) / 2) * 1000) / 1000 : null, iv: c.iv ?? null, delta: null, gamma: null, theta: null, vega: null, openInterest: c.oi })) };
 }
