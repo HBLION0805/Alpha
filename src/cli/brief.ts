@@ -44,6 +44,8 @@ import { yahooDaily } from "../adapters/yahoo.ts";
 import { runScenarios, suggestHedge, renderScenarioTable } from "../options/scenarioEngine.ts";
 import { entryInput } from "../options/scenarioCtx.ts";
 import { entryCapUsd } from "../options/confidence.ts";
+import { mentorSignals, renderMentorSignals, mentorSignalsJson } from "../macro/mentorSignals.ts";
+import { paperGate, renderGate } from "../macro/paperGate.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -105,6 +107,11 @@ const { verdict: v0, reasons: r0 } = briefVerdict({ macro, pm, sc });
 const pj0 = existsSync("data/journal/paper.json") ? JSON.parse(readFileSync("data/journal/paper.json", "utf8")) : { capital: defaultCapital(), entries: [] };
 const equity0 = paperEquity(pj0.entries ?? [], pj0.capital ?? defaultCapital()); // per-trade cap = confidence tier × live paper equity
 const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: equity0 });
+// 导师框架信号 + 纸面交易闸门 (paper only; user-approved 2026-10-22)
+const msig = mentorSignals({ ...lvData, ...dcData, ...data }, dcData.WTI_FRONT?.length ? { series: dcData.WTI_FRONT, src: `WTI 近月 ${front.code}` } : null);
+const today0 = etDate(now);
+const lossToday = -(pj0.entries ?? []).filter((e: { mode?: string; source?: string; closedAt?: string; pnl?: number }) => e.mode === "paper" && e.source !== "real_practice" && e.closedAt && e.pnl != null && etDate(new Date(e.closedAt)) === today0).reduce((s: number, e: { pnl?: number }) => s + (e.pnl ?? 0), 0);
+const gate = paperGate({ verdict: v0, reasons: r0, leader: sc.leader, candidates: plan.candidates, levels: planRefs, data: { ...data, ...dcData }, signals: msig, equity: equity0, lossToday });
 const mx = classifyMatrix(data);
 const mlv = renderMentorLevels(lv.entries, { ...data, ...lvData }, now, lv.error);
 const dc = renderDeadCat({ ...data, ...dcData }, mx, checklistItems(mlv), mlv.lines);
@@ -147,7 +154,7 @@ if (!values.offline) for (const e of (pj0.entries ?? []).filter((x: { mode?: str
 const rOil = regimeOilContract(etDate(now)); let rOilData: Obs[] = [];
 if (!values.offline) try { rOilData = (await fetchDailyOnce({ id: "WTI_REGIME", provider: "yahoo", ref: rOil.yahoo, label: rOil.code, unit: "price", frequency: "daily" })).filter((o) => o.t >= since); } catch (e) { failed[`rates oil ${rOil.code}`] = (e as Error).message; }
 const rLines = ratesLines({ y2: data.UST2Y, y10: data.UST10Y?.length ? data.UST10Y : data.UST10Y_FRED, y30: data.UST30Y?.length ? data.UST30Y : data.UST30Y_FRED, dxy: data.DXY, oil: rOilData.length ? rOilData : dcData.WTI_FRONT, oilCode: rOilData.length ? rOil.code : front.code, manual: loadManual() });
-const res = buildBrief({ ratesLines: rLines, followupLines: followupLines(fu.followups, loadFollowupInputs(), now), geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines, ...(scenarioLines.length ? ["", "#### 情景推演（持仓，只显示）", "", ...scenarioLines] : [])], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
+const res = buildBrief({ mentorSignalLines: renderMentorSignals(msig), gateLines: renderGate(gate), ratesLines: rLines, followupLines: followupLines(fu.followups, loadFollowupInputs(), now), geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines, ...(scenarioLines.length ? ["", "#### 情景推演（持仓，只显示）", "", ...scenarioLines] : [])], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {
   if (pm.alarms.length) store.insert(alarmItems(pm.alarms, now), { stance: "center", tier: 1 }, now);
@@ -156,8 +163,8 @@ if (!values["no-alarms"]) {
 store.close();
 const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); };
 write(values.out, res.md);
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: { ...deadCatJson(dc, { ...data, ...dcData }), mentorLevels: levelsJson(mlv) }, oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: plan.qualified.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: { ...deadCatJson(dc, { ...data, ...dcData }), mentorLevels: levelsJson(mlv) }, paperGate: gate, mentorSignals: mentorSignalsJson(msig), oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");
-console.error(`[brief] ${res.verdict} · leader ${sc.leader ?? "none"}${sc.changed ? ` (was ${previousLeader})` : ""} · ${pm.alarms.length} alarm(s) · ${fetchCount()} daily series fetched once · ${Object.keys(failed).length} failed → ${values.out}`);
+console.error(`[brief] ${res.verdict} · paper gate ${gate.decision}${gate.card ? ` ${gate.card.ticker} ${gate.card.side} $${gate.card.riskUsd}` : ""} · leader ${sc.leader ?? "none"}${sc.changed ? ` (was ${previousLeader})` : ""} · ${pm.alarms.length} alarm(s) · ${fetchCount()} daily series fetched once · ${Object.keys(failed).length} failed → ${values.out}`);

@@ -26,6 +26,8 @@ export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult
   followupLines?: string[];
   ratesLines?: string[];
   /** 今日能不能睡 (src/macro/sleepday.ts renderSleep) — flag only; omitted → section skipped */
+  /** §1.3 导师框架信号 (src/macro/mentorSignals.ts) */ mentorSignalLines?: string[];
+  /** §2.0 纸面交易闸门 (src/macro/paperGate.ts) — paper only */ gateLines?: string[];
   sleepLines?: string[] }
 export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
 
@@ -67,9 +69,11 @@ export function buildBrief(i: BriefInput): BriefResult {
     ...(i.followupLines?.length ? i.followupLines : []),
     ...(i.ratesLines?.length ? i.ratesLines : []),
     ...(i.liquidityLines?.length ? i.liquidityLines : []),
+    ...(i.mentorSignalLines?.length ? i.mentorSignalLines : []),
     ...(i.matrixLines?.length ? [...i.matrixLines, ""] : []),
     ...(i.deadCatLines?.length ? i.deadCatLines : []),
     "## 2. 警报", "", ...(alarms.length ? alarms.map((a) => `- ${a}`) : ["- 无"]), "",
+    ...(i.gateLines?.length ? i.gateLines : []),
     "## 2.1 今日交易计划", "", ...(i.planLines ?? ["- 未生成（缺少价位/数据）→ 今天没有计划内触发，NO_TRADE"]), "",
     "## 3. 【大佬流程】", "_来源：knowledge/mentor/discipline/premarket-routine.md_", "", ...i.pm.mentorLines.slice(0, i.pm.bondLines), "",
     "## 3.1 【用户要求】原油", OIL_HEAD[1]!, "", ...i.pm.oilLines, "",
