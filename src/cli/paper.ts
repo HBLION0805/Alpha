@@ -3,12 +3,14 @@
  *   open  --proposal p.json --thesis "…" --invalidation "…" --stop "…" --motive thesis --tp short_dated|narrative|windfall [--time-stop YYYY-MM-DD] [--ack]
  *         bearish: [--sector SMH] [--squeeze-check "SI x% · float y · gamma … · 情绪 …"] → 做空清单 warn tags (src/options/shortside.ts; warn only)
  *         心理 (warn only, src/options/psych.ts): [--confirm "确认信号"] (adding to a losing position) [--target 95] (Put 目标价); 72h rule reads data/in/earnings*.json + data/in/major-events.json (fallback: knowledge/calendar/major-events-2026-2027.json)
- *         --hedge built_in_spread|direct|portfolio --hedge-detail "…" [--stop-pct 7 (stocks)] [--kind formal|practice]
+ *         --hedge built_in_spread|direct|portfolio --hedge-detail "…" [--stop-pct 7 (stocks)] [--kind formal|practice] (default formal: needs --plan-id from brief §2.1 or the §2.0 gate card)
  *         (唱反调 critique printed first; BLOCK refuses, WARNs need --ack; the critique is saved in the entry)
  *   mark  [--quotes data/in/x-chain.json ...]   (Robinhood chain JSON when present, else Yahoo spot + Black-Scholes)
  *   close --id P001 --exit-kind invalidation|time_stop|take_profit|max_loss|discretionary [--pnl N] [--commissions N]
  *         [--error-class judgment|execution|risk|variance --error-tags a,b] [--violations chasing,...] [--lesson "…"]
  *   list
+ *   macro-open --symbol GDX --strategy call_debit_spread --dir bullish --max-loss 100 --thesis "…" [--stop "…"] [--legs '[…]'] [--note "…"]   (宏观单: forwarded mentor trade; never formal)
+ *   macro-migrate   (tag existing mentor_shadow entries as 宏观单; idempotent)
  *   journal --id X [--why "…"] [--thesis "…"] [--right "…"] [--wrong "…"] [--violated "…"] [--redo "…"] [--profitable-but-wrong yes|no]   (交易日记 6 问; knowledge/mentor/psychology/journal-and-outcome-bias.md)
  *   sin   --id X --sin wrath,greed [--note "…"] | --remove greed   (股市七宗罪 manual tag / reject an auto candidate; src/options/sins.ts)
  *   sins  [--backfill]   (list auto-derived 七宗罪 candidates per own closed trade; --backfill stores them as by:"auto" in the journal)
@@ -45,9 +47,10 @@ import { renderScenariosWithMenu } from "../options/hedgeMenu.ts";
 import { entryInput } from "../options/scenarioCtx.ts";
 import { paperEquity, tradeCap, capLabel, entryCapUsd } from "../options/confidence.ts";
 import { loadLevels } from "../macro/mentorLevels.ts";
+import { macroEntry, migrateMacro } from "../options/macroLedger.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
-  journal: { type: "string", default: "data/journal/paper.json" }, scenarios: { type: "string" }, confidence: { type: "string" }, "tech-entry": { type: "boolean" }, "macro-aligned": { type: "boolean" }, capital: { type: "string" }, proposal: { type: "string" },
+  journal: { type: "string", default: "data/journal/paper.json" }, symbol: { type: "string" }, strategy: { type: "string" }, dir: { type: "string" }, "max-loss": { type: "string" }, legs: { type: "string" }, scenarios: { type: "string" }, confidence: { type: "string" }, "tech-entry": { type: "boolean" }, "macro-aligned": { type: "boolean" }, capital: { type: "string" }, proposal: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true }, "plan-id": { type: "string" }, card: { type: "string" }, class: { type: "string" }, tags: { type: "string" }, result: { type: "string" }, "pnl-pct": { type: "string" }, note: { type: "string" }, "followed-stop": { type: "string" }, "followed-tp": { type: "string" }, "followed-size": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
   "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, sin: { type: "string" }, confirm: { type: "string" }, target: { type: "string" }, why: { type: "string" }, right: { type: "string" }, wrong: { type: "string" }, violated: { type: "string" }, redo: { type: "string" }, "profitable-but-wrong": { type: "string" }, remove: { type: "string" }, backfill: { type: "boolean", default: false }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
@@ -182,6 +185,13 @@ if (cmd === "open") {
   const r = writePostMortem(j.entries[i]!, { classification: values.class, tags: list(values.tags), lesson: values.lesson, followed: { stop: yn("followed-stop"), takeProfit: yn("followed-tp"), size: yn("followed-size") }, now });
   if (!r.entry) fail(r.refused);
   j.entries[i] = r.entry!; save(); process.stdout.write(`[review] ${values.id} 复盘已记录：${r.entry!.postMortem!.classification} · ${r.entry!.postMortem!.lesson}\n`);
+} else if (cmd === "macro-open") {
+  // 宏观单: a mentor trade the user forwarded — separate category, never formal / readiness
+  const r = macroEntry({ symbol: values.symbol, strategy: values.strategy, dir: values.dir, maxLoss: values["max-loss"] != null ? Number(values["max-loss"]) : undefined, thesis: values.thesis, stop: values.stop, legs: values.legs, note: values.note, now }, j.entries);
+  if (!r.entry) fail(r.refused);
+  j.entries.push(r.entry!); save(); process.stdout.write(`[paper] 宏观单已记录 ${r.entry!.id}（${r.entry!.symbol} ${r.entry!.strategy}，最大亏损 $${r.entry!.maxLoss}；不计入正式 30 笔）\n`);
+} else if (cmd === "macro-migrate") {
+  const ids = migrateMacro(j.entries); if (ids.length) save(); process.stdout.write(`[paper] 宏观单迁移：${ids.length ? ids.join(", ") : "无需迁移"}\n`);
 } else if (cmd === "mentor") {
   // record the mentor's actual result for a mentor_shadow trade
   const e = j.entries.find((x) => x.id === values.id && x.source === "mentor_shadow");
@@ -201,7 +211,7 @@ if (cmd === "open") {
   if (lp) process.stdout.write(renderLossPrompt(lp, now).join("\n") + "\n");
   process.stdout.write(`[paper] 模拟平仓 ${e!.id} P&L $${r.entry!.pnl} · ${r.entry!.exitKind}${r.entry!.exitKind === "discretionary" ? "（失效条件未触发、时间止损未到 → 记为提前离场）" : ""}\n`);
 } else if (cmd === "list") {
-  const rows = j.entries.filter((e) => e.mode === "paper").map((e) => `| ${e.id}${e.kind === "practice" ? "（练习）" : ""} | ${e.symbol} | ${e.strategy} | ${e.openedAt.slice(0, 10)} | ${e.closedAt?.slice(0, 10) ?? "open"} | ${e.pnl ?? e.marks?.at(-1)?.pnl ?? "—"} | ${e.exitKind ?? ""} |`);
+  const rows = j.entries.filter((e) => e.mode === "paper").map((e) => `| ${e.id}${e.category === "macro" || e.source === "mentor_shadow" ? "（宏观单）" : e.kind === "practice" ? "（练习）" : ""} | ${e.symbol} | ${e.strategy} | ${e.openedAt.slice(0, 10)} | ${e.closedAt?.slice(0, 10) ?? "open"} | ${e.pnl ?? e.marks?.at(-1)?.pnl ?? "—"} | ${e.exitKind ?? ""} |`);
   const r = readiness({ journal: j.entries, capital: j.capital, shockDates: [] });
   process.stdout.write(["| id | 标的 | 结构 | 开仓 | 平仓 | P&L | 离场 |", "|---|---|---|---|---|---|---|", ...rows, "", `持仓 ${openPaper(j).length} · 已平仓 ${r.stats.paperClosed} · 期望值 $${r.stats.ev}/笔 · 详见 npm run readiness`].join("\n") + "\n");
 } else if (cmd === "sin") {

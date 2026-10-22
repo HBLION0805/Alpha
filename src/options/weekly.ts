@@ -9,8 +9,8 @@ import { sinSection, SINS, type SinRow } from "./sins.ts";
 import { confidenceSection } from "./psych.ts";
 
 export type Cat = "formal" | "practice" | "real" | "mentor";
-export const catOf = (e: JournalEntry): Cat => e.source === "real_practice" ? "real" : e.source === "mentor_shadow" ? "mentor" : e.kind === "practice" ? "practice" : "formal";
-const CAT_NAME: Record<Cat, string> = { formal: "正式模拟单（计入实盘准备度）", practice: "模拟练习单（不计入）", real: "真实账户练习单（真钱，不计入模拟上限与准备度）", mentor: "大佬影子单（只做对照）" };
+export const catOf = (e: JournalEntry): Cat => e.source === "real_practice" ? "real" : e.source === "mentor_shadow" || e.category === "macro" ? "mentor" : e.kind === "practice" ? "practice" : "formal";
+const CAT_NAME: Record<Cat, string> = { formal: "正式模拟单（计入实盘准备度）", practice: "模拟练习单（不计入）", real: "真实账户练习单（真钱，不计入模拟上限与准备度）", mentor: "宏观单（大佬转发的交易，单独记账，不计入正式 30 笔）" };
 const etDay = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 const r2 = (x: number) => Math.round(x * 100) / 100;
 const money = (x: number) => `${x < 0 ? "−" : ""}$${Math.abs(r2(x))}`;
@@ -85,7 +85,7 @@ export function weeklyReport(i: WeeklyInput): Weekly {
     const a = tw.find(([x]) => x === t)?.[1] ?? 0, b = pm.get(t) ?? 0; return `- ${t}：本周 ${a} · 上周 ${b} ${a > b ? "↑ 变多" : a < b ? "↓ 变少" : "→ 持平"}${a >= 2 ? " · ⚠️ 本周重复" : ""}`; }) : ["- 两周都没有错误标签"]), "");
 
   // 5) lessons
-  const les = E.filter((e) => inW(e.closedAt, from, to) && (e.postMortem?.lesson || e.lesson)).map((e) => `- ${e.symbol}（${catOf(e) === "real" ? "真实" : catOf(e) === "mentor" ? "影子" : catOf(e) === "practice" ? "练习" : "正式"}）：${e.postMortem?.lesson ?? e.lesson}`);
+  const les = E.filter((e) => inW(e.closedAt, from, to) && (e.postMortem?.lesson || e.lesson)).map((e) => `- ${e.symbol}（${catOf(e) === "real" ? "真实" : catOf(e) === "mentor" ? "宏观" : catOf(e) === "practice" ? "练习" : "正式"}）：${e.postMortem?.lesson ?? e.lesson}`);
   const unrev = E.filter((e) => e.closedAt && !e.postMortem && !e.lossReview);
   L.push("## 八、本周教训", ...(les.length ? les : ["- 本周平仓的单子没有写教训"]), ...(unrev.length ? [`- ⚠️ 还没复盘：${unrev.map((e) => e.id).join("、")}`] : []), "");
 

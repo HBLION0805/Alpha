@@ -42,6 +42,8 @@ export interface JournalEntry {
   cardId?: string;
   /** mentor_shadow = shadowing a mentor call (thesis verbatim, never readiness); real_practice = a small REAL-account trade (e.g. Robinhood) logged here for review only; always kind=practice, never readiness */
   source?: "paper_sim" | "real_practice" | "mentor_shadow";
+  /** 宏观单 (user 2026-10-22): mentor trades the user forwards. Always source=mentor_shadow + kind=practice → never in the formal 30 / readiness */
+  category?: "macro";
   /** real_practice: broker-reported P&L snapshots (entry cost may be unknown → costUnknown, premiums null) */
   pnlSnapshots?: Array<{ at: string; pnl: number; spot?: number; note?: string }>; costUnknown?: boolean;
   /** per-trade post-mortem (src/options/postmortem.ts) and, for mentor_shadow, the mentor's actual result */

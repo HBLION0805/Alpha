@@ -6,7 +6,7 @@
 import { fullPnl, type JournalEntry } from "./journal.ts";
 import { expectancy } from "./readiness.ts";
 
-export interface Dashboard { asOf: string; target: number; trades: { simulated: number; formal: number; closed: number; open: number; realPractice: number; mentorShadow: number };
+export interface Dashboard { asOf: string; target: number; trades: { simulated: number; formal: number; closed: number; open: number; realPractice: number; macro: number; macroOpen: number; macroPnl: number };
   monthsElapsed: number | null; firstTradeAt: string | null; expectancy: { perTrade: number; winRate: number; total: number; exTop1: number | null; exTop2: number | null; top2SharePct: number | null; dependsOnTop: boolean } | null;
   maxDrawdown: number; capBreaches: { perTrade: Array<{ id: string; loss: number; cap: number }>; daily: Array<{ day: string; loss: number }> };
   discipline: { missingThesis: string[]; missingStop: string[] }; errors: { judgment: number; execution: number; good: number; unclassified: number; ids: Record<string, string[]> } }
@@ -18,7 +18,7 @@ const blank = (s?: unknown) => s == null || (typeof s === "string" && (!s.trim()
 export function buildDashboard(entries: JournalEntry[], capital: number, now = new Date(), o: { target?: number; dailyCapPct?: number } = {}): Dashboard {
   type E = JournalEntry & { thesis?: string; stop?: string; lossReview?: { errorClass?: string }; postMortem?: { classification?: string }; confidence?: { capUsd?: number } };
   const all = entries as E[], P = all.filter((e) => e.mode === "paper");
-  const sim = P.filter((e) => e.source !== "real_practice" && e.source !== "mentor_shadow");
+  const sim = P.filter((e) => e.source !== "real_practice" && e.source !== "mentor_shadow" && e.category !== "macro");
   const closed = sim.filter((e) => e.closedAt && e.pnl != null).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
   const first = [...sim].sort((a, b) => a.openedAt.localeCompare(b.openedAt))[0]?.openedAt ?? null;
   const ps = closed.map(fullPnl), total = ps.reduce((a, b) => a + b, 0), sorted = [...ps].sort((a, b) => b - a);
@@ -35,7 +35,7 @@ export function buildDashboard(entries: JournalEntry[], capital: number, now = n
   for (const e of closed) { const c = (e.errorType === "logic" ? "judgment" : e.errorType === "execution" ? "execution" : undefined) ?? (e.lossReview?.errorClass as string | undefined) ?? (e.postMortem?.classification as string | undefined);
     const k = c === "judgment" || c === "logic" ? "judgment" : c === "execution" ? "execution" : c === "good" ? "good" : "unclassified"; err[k]++; (err.ids[k] ??= []).push(e.id); }
   return { asOf: now.toISOString(), target: o.target ?? 30,
-    trades: { simulated: sim.length, formal: sim.filter((e) => e.kind !== "practice").length, closed: closed.length, open: sim.length - closed.length, realPractice: P.filter((e) => e.source === "real_practice").length, mentorShadow: P.filter((e) => e.source === "mentor_shadow").length },
+    trades: { simulated: sim.length, formal: sim.filter((e) => e.kind !== "practice").length, closed: closed.length, open: sim.length - closed.length, realPractice: P.filter((e) => e.source === "real_practice").length, macro: P.filter((e) => e.source === "mentor_shadow" || e.category === "macro").length, macroOpen: P.filter((e) => (e.source === "mentor_shadow" || e.category === "macro") && !e.closedAt).length, macroPnl: r2(P.filter((e) => (e.source === "mentor_shadow" || e.category === "macro") && e.closedAt && e.pnl != null).reduce((s, e) => s + fullPnl(e), 0)) },
     firstTradeAt: first, monthsElapsed: first ? r2((now.getTime() - Date.parse(first)) / (30.44 * 864e5)) : null,
     expectancy: ex ? { perTrade: r2(ex.ev), winRate: r2(ex.winRate * 100), total: r2(total), exTop1: exDrop(1) == null ? null : r2(exDrop(1)!), exTop2: exDrop(2) == null ? null : r2(exDrop(2)!), top2SharePct: total > 0 ? r2(top2 / total * 100) : null,
       dependsOnTop: total > 0 && (top2 / total > 0.5 || (exDrop(2) ?? 0) <= 0) } : null,
@@ -47,9 +47,10 @@ export function buildDashboard(entries: JournalEntry[], capital: number, now = n
 export function renderDashboard(d: Dashboard, h = "##"): string {
   const m = (x: number) => `${x < 0 ? "−" : ""}$${Math.abs(x)}`, x = d.expectancy;
   const bar = (n: number) => "█".repeat(Math.min(30, n)) + "░".repeat(Math.max(0, 30 - n));
-  return [`${h} 实盘准备度看板 Readiness dashboard`, `_生成 ${d.asOf.slice(0, 16)}Z · 范围：模拟单（正式 + 模拟练习；不含真实账户练习单 ${d.trades.realPractice} 笔、大佬影子单 ${d.trades.mentorShadow} 笔）_`, "",
+  return [`${h} 实盘准备度看板 Readiness dashboard`, `_生成 ${d.asOf.slice(0, 16)}Z · 范围：模拟单（正式 + 模拟练习；不含真实账户练习单 ${d.trades.realPractice} 笔、宏观单 ${d.trades.macro} 笔）_`, "",
     "| 指标 | 数值 |", "|---|---|",
-    `| 交易数 vs 目标 | ${d.trades.simulated} / ${d.target}（已平 ${d.trades.closed}，持仓 ${d.trades.open}；其中正式单 ${d.trades.formal}）\`${bar(d.trades.simulated)}\` |`,
+    `| 正式单 vs 目标 | ${d.trades.formal} / ${d.target} \`${bar(d.trades.formal)}\`（全部模拟单 ${d.trades.simulated}：已平 ${d.trades.closed}，持仓 ${d.trades.open}） |`,
+    `| 宏观单（单独记账，不计入 30） | ${d.trades.macro} 笔（持仓 ${d.trades.macroOpen}，已平合计 ${m(d.trades.macroPnl)}） |`,
     `| 已过月数 | ${d.monthsElapsed ?? "n/a"}（首笔 ${d.firstTradeAt?.slice(0, 10) ?? "—"}） |`,
     `| 期望值 / 笔 | ${x ? `${m(x.perTrade)}（胜率 ${x.winRate}%，合计 ${m(x.total)}）` : "无已平仓"} |`,
     `| 去掉最大 1 / 2 笔后 | ${x ? `${x.exTop1 == null ? "n/a" : m(x.exTop1)} / ${x.exTop2 == null ? "n/a" : m(x.exTop2)}${x.top2SharePct != null ? `；最大 2 笔占总盈利 ${x.top2SharePct}%` : ""} → ${x.dependsOnTop ? "**依赖少数大赢家**" : "不依赖"}` : "n/a"} |`,
