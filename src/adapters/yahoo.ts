@@ -24,6 +24,16 @@ async function chart(symbol: string, days: number, interval: "1d" | "15m" | "1h"
   return toBars(r.quotes as Quote[], interval === "1d", r.meta.exchangeTimezoneName ?? "America/New_York");
 }
 
+/** Live/last quote from the v8 chart meta (regularMarketPrice + regularMarketTime). Throws on failure. */
+export async function yahooQuote(symbol: string, timeoutMs = 8_000): Promise<{ price: number; at: string; prevClose: number | null }> {
+  const p = client().chart(symbol, { period1: new Date(Date.now() - 3 * 86_400_000), interval: "5m" });
+  const r = await Promise.race([p, new Promise<never>((_, rej) => setTimeout(() => rej(new Error(`timeout ${timeoutMs}ms`)), timeoutMs).unref())]);
+  const m = r.meta as { regularMarketPrice?: number; regularMarketTime?: Date | number; chartPreviousClose?: number; previousClose?: number };
+  if (m.regularMarketPrice == null || !Number.isFinite(m.regularMarketPrice) || m.regularMarketTime == null) throw new Error("no regularMarketPrice");
+  const at = m.regularMarketTime instanceof Date ? m.regularMarketTime : new Date(Number(m.regularMarketTime) * (Number(m.regularMarketTime) < 1e12 ? 1000 : 1));
+  return { price: m.regularMarketPrice, at: at.toISOString(), prevClose: m.previousClose ?? m.chartPreviousClose ?? null };
+}
+
 /** Crypto (UTC, 7 days a week): Yahoo sometimes returns a null daily bar around the UTC rollover. Fill missing recent days from hourly closes. */
 export function fillCryptoGaps(daily: YBar[], hourly: YBar[]): YBar[] {
   const have = new Set(daily.map((b) => b.t));

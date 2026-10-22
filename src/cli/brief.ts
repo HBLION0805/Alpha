@@ -44,7 +44,8 @@ import { yahooDaily } from "../adapters/yahoo.ts";
 import { runScenarios, suggestHedge, renderScenarioTable } from "../options/scenarioEngine.ts";
 import { entryInput } from "../options/scenarioCtx.ts";
 import { entryCapUsd } from "../options/confidence.ts";
-import { mentorSignals, renderMentorSignals, mentorSignalsJson } from "../macro/mentorSignals.ts";
+import { mentorSignals, renderMentorSignals, mentorSignalsJson, liveFirst } from "../macro/mentorSignals.ts";
+import { yahooQuote } from "../adapters/yahoo.ts";
 import { paperGate, renderGate } from "../macro/paperGate.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
@@ -108,10 +109,15 @@ const pj0 = existsSync("data/journal/paper.json") ? JSON.parse(readFileSync("dat
 const equity0 = paperEquity(pj0.entries ?? [], pj0.capital ?? defaultCapital()); // per-trade cap = confidence tier × live paper equity
 const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: equity0 });
 // 导师框架信号 + 纸面交易闸门 (paper only; user-approved 2026-10-22)
-const msig = mentorSignals({ ...lvData, ...dcData, ...data }, dcData.WTI_FRONT?.length ? { series: dcData.WTI_FRONT, src: `WTI 近月 ${front.code}` } : null);
+// live-first inputs (Yahoo v8 chart meta regularMarketPrice): daily bars lag intraday; stale → labelled with timestamp
+const q = async (sym: string) => (values.offline ? null : await yahooQuote(sym).catch((e) => { failed[`live ${sym}`] = (e as Error).message; return null; }));
+const [qNq, qWti, qVix, qGold] = await Promise.all(["NQ=F", front.yahoo, "^VIX", "GC=F"].map(q));
+const sigBase = { ...lvData, ...dcData, ...data };
+const lNq = liveFirst(sigBase.NQ, qNq, now), lWti = liveFirst(dcData.WTI_FRONT?.length ? dcData.WTI_FRONT : data.WTI, dcData.WTI_FRONT?.length ? qWti : null, now), lVix = liveFirst(sigBase.VIX, qVix, now), lGold = liveFirst(sigBase.GOLD, qGold, now);
+const msig = mentorSignals({ ...sigBase, NQ: lNq.series, VIX: lVix.series, GOLD: lGold.series }, lWti.series.length ? { series: lWti.series, src: dcData.WTI_FRONT?.length ? `WTI 近月 ${front.code}` : "CL=F" } : null, { nq: lNq.stamp, wti: lWti.stamp, vix: lVix.stamp, gold: lGold.stamp });
 const today0 = etDate(now);
 const lossToday = -(pj0.entries ?? []).filter((e: { mode?: string; source?: string; closedAt?: string; pnl?: number }) => e.mode === "paper" && e.source !== "real_practice" && e.closedAt && e.pnl != null && etDate(new Date(e.closedAt)) === today0).reduce((s: number, e: { pnl?: number }) => s + (e.pnl ?? 0), 0);
-const gate = paperGate({ verdict: v0, reasons: r0, leader: sc.leader, candidates: plan.candidates, levels: planRefs, data: { ...data, ...dcData }, signals: msig, equity: equity0, lossToday });
+const gate = paperGate({ verdict: v0, reasons: r0, leader: sc.leader, candidates: plan.candidates, levels: planRefs, data: { ...data, ...dcData, VIX: lVix.series, NQ: lNq.series }, signals: msig, equity: equity0, lossToday });
 const mx = classifyMatrix(data);
 const mlv = renderMentorLevels(lv.entries, { ...data, ...lvData }, now, lv.error);
 const dc = renderDeadCat({ ...data, ...dcData }, mx, checklistItems(mlv), mlv.lines);

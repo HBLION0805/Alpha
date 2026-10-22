@@ -52,3 +52,17 @@ test("readiness dashboard: count vs 30, top-trade dependence, cap breaches, disc
   assert.deepEqual(d.discipline.missingThesis, ["b"]); assert.equal(d.errors.execution, 1); assert.equal(d.errors.judgment, 1);
   assert.equal(d.maxDrawdown, 150); assert.match(renderDashboard(d), /4 \/ 30/);
 });
+
+test("liveFirst: fresh quote replaces today's bar with a 实时 timestamp; stale quote / no quote → 过时 label, close kept", async () => {
+  const { liveFirst } = await import("../src/macro/mentorSignals.ts");
+  const d: Obs[] = [{ t: "2026-10-21", v: 16.68 }, { t: "2026-10-22", v: 18.24 }];
+  const now = new Date("2026-10-22T18:05:00Z");
+  const a = liveFirst(d, { price: 19.12, at: "2026-10-22T18:04:00Z" }, now);
+  assert.equal(a.series.at(-1)!.v, 19.12); assert.equal(a.series.length, 2); assert.ok(a.stamp.live); assert.match(a.stamp.label, /实时 10-22 14:04 ET/);
+  const b = liveFirst(d, { price: 19.12, at: "2026-10-22T16:00:00Z" }, now);
+  assert.equal(b.series.at(-1)!.v, 18.24); assert.ok(!b.stamp.live); assert.match(b.stamp.label, /过时/);
+  assert.match(liveFirst(d, null, now).stamp.label, /过时：日线收盘 2026-10-22/);
+  assert.equal(liveFirst([{ t: "2026-10-21", v: 16.68 }], { price: 19, at: "2026-10-22T18:04:00Z" }, now).series.length, 2);
+  const s = mentorSignals({ VIX: a.series, NQ: ser(29000, 29300) }, null, { vix: a.stamp });
+  assert.match(renderMentorSignals(s).join("\n"), /19\.12（实时 10-22 14:04 ET）/);
+});

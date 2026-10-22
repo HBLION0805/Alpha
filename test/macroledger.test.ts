@@ -20,7 +20,7 @@ test("宏观单: migration tags mentor_shadow only; excluded from formal 30 / re
     { id: "f", source: "paper_sim", kind: "formal", mode: "paper", openedAt: "2026-10-16T14:00:00Z", closedAt: "2026-10-16T19:00:00Z", pnl: 10, symbol: "QQQ", thesis: "t", stop: "s" },
     { id: "p", source: "paper_sim", kind: "practice", mode: "paper", openedAt: "2026-10-16T14:00:00Z", symbol: "SMH" }] as never[];
   assert.deepEqual(migrateMacro(E), ["m"]); assert.deepEqual(migrateMacro(E), []);
-  assert.equal((E[2] as { kind: string }).kind, "practice"); // existing practice not retagged
+  assert.equal((E[2] as unknown as { kind: string }).kind, "practice"); // existing practice not retagged
   const d = buildDashboard(E, 5000, now);
   assert.equal(d.trades.formal, 1); assert.equal(d.trades.macro, 1); assert.equal(d.trades.macroPnl, -40); assert.equal(d.trades.simulated, 2);
   assert.match(readiness({ journal: E, capital: 5000, shockDates: [] }).criteria[0]!.detail[0]!, /模拟交易 1 笔/);

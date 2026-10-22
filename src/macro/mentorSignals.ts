@@ -14,6 +14,7 @@ export interface MentorSignals {
   gold: { last: number; sma20: number | null; sma50: number | null; chg20Pct: number | null; trend: "up" | "down" | "flat" | "unknown" } | null;
   /** net tilt for NQ implied by the four signals (Alpha's own rule, see RULES) */
   tilt: Tilt; votes: Array<{ id: string; vote: -1 | 0 | 1; why: string }>;
+  /** per-input timestamps (liveFirst); absent → daily bars only */ stamps?: Partial<Record<"nq" | "wti" | "vix" | "gold", Stamp>>;
 }
 export const RULES = [
   "NQ 在 30000 之上视为多头控制区，之下视为反弹未收复（距离用百分比表示）。",
@@ -27,7 +28,7 @@ const pct = (a: number, b: number) => ((a - b) / b) * 100;
 const f2 = (x: number | null | undefined) => (x == null ? "n/a" : x.toFixed(2));
 const sp = (x: number) => `${x > 0 ? "+" : ""}${x.toFixed(2)}%`;
 
-export function mentorSignals(d: Record<string, Obs[] | undefined>, wtiOverride?: { series: Obs[]; src: string } | null): MentorSignals {
+export function mentorSignals(d: Record<string, Obs[] | undefined>, wtiOverride?: { series: Obs[]; src: string } | null, stamps?: MentorSignals["stamps"]): MentorSignals {
   const nqV = lastV(d.NQ), ndxV = lastV(d.NDX);
   const nq = nqV != null ? { src: "NQ=F", last: nqV } : ndxV != null ? { src: "NDX（NQ 无数据时代用）", last: ndxV } : null;
   const wS = wtiOverride?.series?.length ? wtiOverride : d.WTI?.length ? { series: d.WTI, src: "CL=F" } : null;
@@ -42,7 +43,7 @@ export function mentorSignals(d: Record<string, Obs[] | undefined>, wtiOverride?
     gold: gLast != null ? (() => { const a = sma(g, 20), b = sma(g, 50), c = g.length > 20 ? pct(gLast, g[g.length - 21]!.v) : null;
       const trend = a == null || b == null || c == null ? "unknown" as const : gLast > a && gLast > b && c > 1 ? "up" as const : gLast < a && gLast < b && c < -1 ? "down" as const : "flat" as const;
       return { last: gLast, sma20: a, sma50: b, chg20Pct: c, trend }; })() : null,
-    tilt: "unknown", votes: [],
+    tilt: "unknown", votes: [], ...(stamps ? { stamps } : {}),
   };
   if (s.nq) s.votes.push({ id: "nq", vote: s.nq.above ? 1 : -1, why: s.nq.above ? "NQ 在 30000 之上" : "NQ 未收复 30000" });
   if (s.wti) { const w1 = wS!.series.length > 1 ? s.wti.last - wS!.series.at(-2)!.v : 0;
@@ -53,18 +54,34 @@ export function mentorSignals(d: Record<string, Obs[] | undefined>, wtiOverride?
   return s;
 }
 
+const ts = (s: MentorSignals, k: "nq" | "wti" | "vix" | "gold") => (s.stamps?.[k] ? `（${s.stamps[k]!.label}）` : "");
 export function renderMentorSignals(s: MentorSignals): string[] {
   const TZ = { bearish: "偏空", bullish: "偏多", neutral: "中性", unknown: "数据不足" }[s.tilt];
   return [
     "## 1.3a 导师框架信号（每日计算）", "_依据导师的分析框架推导；下列规则文字由 Alpha 撰写，并非导师原话。只作方向参考，进入 §2.0 纸面交易闸门。_", "",
     "| 信号 | 当前 | 状态 |", "|---|---|---|",
-    `| NQ 距 30000 | ${s.nq ? `${s.nq.src} ${f2(s.nq.last)}` : "n/a"} | ${s.nq ? `${sp(s.nq.distPct)}（${s.nq.above ? "在上方" : "在下方"}）` : "无数据"} |`,
-    `| WTI 距 100 | ${s.wti ? `${s.wti.src} ${f2(s.wti.last)}` : "n/a"} | ${s.wti ? `${sp(s.wti.distPct)}（${s.wti.above ? "≥100：对 NQ 偏空" : "<100"}）` : "无数据"} |`,
-    `| VIX 水平 / 突破 | ${s.vix ? f2(s.vix.last) : "n/a"} | ${s.vix ? `20 日前高 ${f2(s.vix.prior20High)}；>20：${s.vix.aboveLevel ? "是" : "否"}；破 20 日高：${s.vix.above20dHigh ? "是" : "否"} → ${s.vix.breakout ? "**突破**" : "未突破"}` : "无数据"} |`,
-    `| 黄金趋势 | ${s.gold ? f2(s.gold.last) : "n/a"} | ${s.gold ? `${{ up: "上行", down: "下行", flat: "震荡", unknown: "n/a" }[s.gold.trend]}（MA20 ${f2(s.gold.sma20)} / MA50 ${f2(s.gold.sma50)}，20 日 ${s.gold.chg20Pct == null ? "n/a" : sp(s.gold.chg20Pct)}）` : "无数据"} |`,
+    `| NQ 距 30000 | ${s.nq ? `${s.nq.src} ${f2(s.nq.last)}${ts(s, "nq")}` : "n/a"} | ${s.nq ? `${sp(s.nq.distPct)}（${s.nq.above ? "在上方" : "在下方"}）` : "无数据"} |`,
+    `| WTI 距 100 | ${s.wti ? `${s.wti.src} ${f2(s.wti.last)}${ts(s, "wti")}` : "n/a"} | ${s.wti ? `${sp(s.wti.distPct)}（${s.wti.above ? "≥100：对 NQ 偏空" : "<100"}）` : "无数据"} |`,
+    `| VIX 水平 / 突破 | ${s.vix ? `${f2(s.vix.last)}${ts(s, "vix")}` : "n/a"} | ${s.vix ? `20 日前高 ${f2(s.vix.prior20High)}；>20：${s.vix.aboveLevel ? "是" : "否"}；破 20 日高：${s.vix.above20dHigh ? "是" : "否"} → ${s.vix.breakout ? "**突破**" : "未突破"}` : "无数据"} |`,
+    `| 黄金趋势 | ${s.gold ? `${f2(s.gold.last)}${ts(s, "gold")}` : "n/a"} | ${s.gold ? `${{ up: "上行", down: "下行", flat: "震荡", unknown: "n/a" }[s.gold.trend]}（MA20 ${f2(s.gold.sma20)} / MA50 ${f2(s.gold.sma50)}，20 日 ${s.gold.chg20Pct == null ? "n/a" : sp(s.gold.chg20Pct)}）` : "无数据"} |`,
     "", `- 对 NQ 的合成倾向：**${TZ}**（${s.votes.map((v) => `${v.why} ${v.vote > 0 ? "+1" : v.vote < 0 ? "−1" : "0"}`).join("；") || "无"}）`,
     "- 规则（Alpha 撰写）：", ...RULES.map((r) => `  - ${r}`), "",
   ];
 }
 
 export const mentorSignalsJson = (s: MentorSignals) => ({ nq: s.nq, wti: s.wti, vix: s.vix, gold: s.gold, tilt: s.tilt, votes: s.votes });
+
+/** Live-first input: overlay a live quote on a daily series. Fresh (≤ maxAgeMin old) → replaces/appends today's bar, label 实时;
+ *  otherwise the last daily close is kept and labelled 过时 with its timestamp. No quote → last bar, 过时（日线）. */
+export interface Stamp { at: string | null; live: boolean; label: string }
+export function liveFirst(series: Obs[] | undefined, q: { price: number; at: string } | null | undefined, now: Date, maxAgeMin = 30): { series: Obs[]; stamp: Stamp } {
+  const s = [...(series ?? [])];
+  const et = (iso: string) => new Date(iso).toLocaleString("sv-SE", { timeZone: "America/New_York" }).slice(5, 16) + " ET";
+  if (q && now.getTime() - Date.parse(q.at) <= maxAgeMin * 60_000) {
+    const d = new Date(q.at).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    if (s.length && s.at(-1)!.t.slice(0, 10) === d) s[s.length - 1] = { t: s.at(-1)!.t, v: q.price }; else s.push({ t: d, v: q.price });
+    return { series: s, stamp: { at: q.at, live: true, label: `实时 ${et(q.at)}` } };
+  }
+  if (q) return { series: s, stamp: { at: q.at, live: false, label: `过时：最后报价 ${et(q.at)}` } };
+  return { series: s, stamp: { at: s.at(-1)?.t ?? null, live: false, label: `过时：日线收盘 ${s.at(-1)?.t ?? "n/a"}` } };
+}
