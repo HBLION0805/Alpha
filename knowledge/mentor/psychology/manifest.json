@@ -1,0 +1,755 @@
+{
+  "note": "Verbatim segments of the redacted mentor sources. Redaction: author name → [导师], member handle → [群友] (names not recorded here). Reconstruction: '\\n'.join(segment texts in order) == redacted source.",
+  "sources": {
+    "psych-batch-1.txt": {
+      "rawBytes": 62970,
+      "rawSha256": "43fb669d8cdbd509c64d60e7c2be09278243c1a78648800725419bf79dfbee4b",
+      "redactedSha256": "59e89af96ea818f8a2c9c56ec065f08e2f6d44fbcb487b0040cb7ab13e872cb0",
+      "replacements": {
+        "[导师]": 4,
+        "[群友]": 1
+      }
+    },
+    "psych-batch-2.txt": {
+      "rawBytes": 9770,
+      "rawSha256": "0806108273ef8ebbb8665c4e678cac9a7b5f2057355c40429e33d709775f8bb1",
+      "redactedSha256": "0806108273ef8ebbb8665c4e678cac9a7b5f2057355c40429e33d709775f8bb1",
+      "replacements": {
+        "[导师]": 0,
+        "[群友]": 0
+      }
+    }
+  },
+  "segments": [
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        1,
+        2
+      ],
+      "topic": "README",
+      "file": "README.md",
+      "sha256": "40e7100780091cbb408f67c50258a6637f82d42670c5736dd5926b3d5217534e"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        3,
+        8
+      ],
+      "topic": "patience",
+      "file": "patience-and-overtrading.md",
+      "sha256": "facb57f1e5b37d235e4d257e0ff0504810c57c26b3b92392c912d79d8bfd9f88"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        9,
+        13
+      ],
+      "topic": "narrative",
+      "file": "narrative-and-news.md",
+      "sha256": "88b804b56f4d7c2ea64b0edbf88b8b1bdcd3f491a80db80b35e82ef2fb386a2c"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        14,
+        62
+      ],
+      "topic": "patience",
+      "file": "patience-and-overtrading.md",
+      "sha256": "f632daad6b0b3bcbc24775d686894ac3b9592d8f9543da1ed8b71ce7f572b6b8"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        63,
+        65
+      ],
+      "topic": "sizing",
+      "file": "position-sizing-after-wins.md",
+      "sha256": "96b62aa1aa1dfd77d9103bb262f24c66a90801c55e12504e67fa684ee4a72e2d"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        66,
+        67
+      ],
+      "topic": "narrative",
+      "file": "narrative-and-news.md",
+      "sha256": "bf604e51e4c5ac089edce67a3bae600b319e526f137947821a381fa72b21654f"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        68,
+        69
+      ],
+      "topic": "battlefield",
+      "file": "battlefield-and-uncertainty.md",
+      "sha256": "58a52a1020acddde197134c4538431b19575d0072e089598c7a0a21fd2e70a60"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        70,
+        74
+      ],
+      "topic": "patience",
+      "file": "patience-and-overtrading.md",
+      "sha256": "eeffdaafb7af383314cad4689325bb66e862c419d2a9b162024460c02606020b"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        75,
+        93
+      ],
+      "topic": "stoploss",
+      "file": "stop-loss-and-ownership.md",
+      "sha256": "03deca4dceb4cccdd72857b0ce415906bdce2b12cc2b0b7c3f40c2586cf4a95d"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        94,
+        95
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "8876ba3c53226b20eea5dc6d3b7eca4d09ab0d1b9556e4de44fc31ba3fd0c4ab"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        96,
+        106
+      ],
+      "topic": "battlefield",
+      "file": "battlefield-and-uncertainty.md",
+      "sha256": "07017ecfd3d798455c2a58ce943bd8ea4bbdcb7a7bd615c6c0793e492f3b78f6"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        107,
+        112
+      ],
+      "topic": "patience",
+      "file": "patience-and-overtrading.md",
+      "sha256": "8ce28aad9fd786da6ae698089433f4cd60f4018af350d3535e0807fff3eb63f2"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        113,
+        118
+      ],
+      "topic": "options",
+      "file": "options-call-time-put-price.md",
+      "sha256": "0bf517a9e69904b3084546ff43f2f2adf631af7cc2387461471b526570f10613"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        119,
+        120
+      ],
+      "topic": "narrative",
+      "file": "narrative-and-news.md",
+      "sha256": "5509c9a46426b8487063aedfb10d8d8fa4ae1c40d8c543dc092fb1cfb654294d"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        121,
+        123
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "d75889bf15d0927165f3dab6c4d0ae0f15c0116351e47a69cf8ac72ebfe7882f"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        124,
+        130
+      ],
+      "topic": "patience",
+      "file": "patience-and-overtrading.md",
+      "sha256": "ec6ae1c0e640c676794e418ed22826f62a4e35e7a907a4f04ed0c4aa9514d80c"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        131,
+        153
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "d2eadd3f9af6544f32abb3affa3467ce0cd0bc868233be8de73c2ec0873a0d39"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        154,
+        158
+      ],
+      "topic": "macro",
+      "file": "macro-thinking.md",
+      "sha256": "80ee0fe092052939fa568bec5d9182f791486c28857f413e4025951b0a93ae80"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        159,
+        206
+      ],
+      "topic": "conviction",
+      "file": "conviction-and-independence.md",
+      "sha256": "931ddbb6df38290b043f390bb24d9034b12669f6d26594c32b03e7ce35f19f13"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        207,
+        220
+      ],
+      "topic": "conviction",
+      "file": "conviction-and-independence.md",
+      "sha256": "a8d02a8b7ecfd2a500ee964c386b9132f69eee0a4f26eed4387622a9f790983c"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        221,
+        302
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "a71698d006a5ca0d4a34c7c9b99f62c9d5832dd91930434cc1b04ab824b03e73"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        303,
+        345
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "1a386199bd54e18930548a86ce652bb75bfd6cfb700cf3dba0938bd7adddce8f"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        346,
+        352
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "781cb4c1383d883ffbfbcf459be507ad8a9f69006891ad84849c755501d64f64"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        353,
+        406
+      ],
+      "topic": "battlefield",
+      "file": "battlefield-and-uncertainty.md",
+      "sha256": "5b5f0393ff9e0c4e2d45eb71d370abd31eda48261b63ce5b8b172fadac8747d9"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        407,
+        437
+      ],
+      "topic": "conviction",
+      "file": "conviction-and-independence.md",
+      "sha256": "1ca26481ac6a64a948e568c453c8ccc84e4b480498a3c345073b28c997aa43a0"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        438,
+        449
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "fc347698ae2f7a71bcf16d104033e04ea49a3e9dc352e988b75ad74030880aec"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        450,
+        458
+      ],
+      "topic": "battlefield",
+      "file": "battlefield-and-uncertainty.md",
+      "sha256": "f43197b177af8cdadd335cf87a0ed84f71c0d7bb144bcdbf3a1bdd9eef2542e5"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        459,
+        484
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "9fbeb5fc44684f4c030df16c5e3258fbc085eb4cef6b8a20e73cbbbc616b354c"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        485,
+        532
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "860d993fef7be1c4b135553c3a4a0f6fcd105550c7435b5187bff0565b1cec1b"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        533,
+        543
+      ],
+      "topic": "journal",
+      "file": "journal-and-outcome-bias.md",
+      "sha256": "259cdb52defd3d518759bbdd547b060533fdfb86bdea9a2570e02325480d3d67"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        544,
+        546
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "bf54d3e08c7375a9887256bc4963c066d05c9de1b5113add0febd385f40a1e64"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        547,
+        653
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "45f8bab78b77b7bbfe0fc8c12fdf3861ef9bcbf9a25d7d1d608d09f4c391a5f2"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        654,
+        657
+      ],
+      "topic": "whynew",
+      "file": "why-new-members-lose.md",
+      "sha256": "d23162e87987ccaeca75b43e1579afaa6e2d560f41770e80671c2b190e2fe061"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        658,
+        660
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "aeb1ca5eac57a7384dcfec3e536de466600d988b665fa170af1e444a36daa97a"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        661,
+        665
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "883943a0275bb74e5b44b569643a8d5b61d4db5051016d3b602edb0dd4bcf5bb"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        666,
+        687
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "6104c002ea31394d61833956718854de25f2e18a06c1becde6a1684faf7443e7"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        688,
+        723
+      ],
+      "topic": "conviction",
+      "file": "conviction-and-independence.md",
+      "sha256": "bacb2d3e74299ac08216655b08cb4b4afd1d1165934eb5b46157d820804f8fdd"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        724,
+        733
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "397e3471f9aa1ad7a9e5e40a5b09b50d3b1a937949f28bbbac968b5e3cb462a1"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        734,
+        747
+      ],
+      "topic": "sizing",
+      "file": "position-sizing-after-wins.md",
+      "sha256": "9257bac9c74eb21be24038882e88447704fc7ca5f3df156c1b5f01edc7a203cf"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        748,
+        754
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "30bb38e592f0d85b54ea57f130a76e9f3345d1877f117da0201da634b4855153"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        755,
+        812
+      ],
+      "topic": "battlefield",
+      "file": "battlefield-and-uncertainty.md",
+      "sha256": "2d3625e4e500e050ce50065061e2c67f4ba84ae26f3c12a07e722ba25f8b8f74"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        813,
+        833
+      ],
+      "topic": "whynew",
+      "file": "why-new-members-lose.md",
+      "sha256": "4f86fe8118db6f8f463505dcfe866e2340716e5c48dc818cce7e9ca12855120e"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        834,
+        840
+      ],
+      "topic": "patience",
+      "file": "patience-and-overtrading.md",
+      "sha256": "63b2b8b45d90c26c8f156df788fdf138a1dcbd7bf8e078d7350d791492d3713b"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        841,
+        858
+      ],
+      "topic": "macro",
+      "file": "macro-thinking.md",
+      "sha256": "51c2e24717de14dcae7a65a1f3ea401cb709da7cc9e7902190ad38554f4ec591"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        859,
+        863
+      ],
+      "topic": "sizing",
+      "file": "position-sizing-after-wins.md",
+      "sha256": "6e24a3969b6dcf2f403f11c91c6ae6e36e75040f9970cab48fc6aa66f9cb93b3"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        864,
+        866
+      ],
+      "topic": "patience",
+      "file": "patience-and-overtrading.md",
+      "sha256": "5f837b8df91af2b97629f86f964ee4f75135aed02110ee878c3db74651ca5d20"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        867,
+        873
+      ],
+      "topic": "stoploss",
+      "file": "stop-loss-and-ownership.md",
+      "sha256": "4b9241b3ff09b88193626645d16a41d07fcf31494348435be96544f13906b1e9"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        874,
+        917
+      ],
+      "topic": "conviction",
+      "file": "conviction-and-independence.md",
+      "sha256": "1f0067492a93adcdb822a71f65ab95cc01098a4a5a677ffbe861cc076664e3b8"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        918,
+        951
+      ],
+      "topic": "macro",
+      "file": "macro-thinking.md",
+      "sha256": "c22e844cb9bdd60c78d6f882603014233f75aadb5f6bd312835c17c0b74f5267"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        952,
+        974
+      ],
+      "topic": "macro",
+      "file": "macro-thinking.md",
+      "sha256": "7a16576f956a64d1b1d3555cd62b48f616a6393d5530b38878347d0e528caf1d"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        975,
+        1003
+      ],
+      "topic": "sizing",
+      "file": "position-sizing-after-wins.md",
+      "sha256": "ad4c729d8310c1a265ee4382422c31d3fcb09cc20cb9d28dc56c45d1aabdfe88"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        1004,
+        1035
+      ],
+      "topic": "stoploss",
+      "file": "stop-loss-and-ownership.md",
+      "sha256": "9816070bdc76fd4fb62dc538b272782453d27f56c55af2041a9732718a9ca0ca"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        1036,
+        1039
+      ],
+      "topic": "options",
+      "file": "options-call-time-put-price.md",
+      "sha256": "379496431b109d8b4a42e0492da12ce7e19a566592c96bbb0f5803b8bf570c11"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        1040,
+        1050
+      ],
+      "topic": "conviction",
+      "file": "conviction-and-independence.md",
+      "sha256": "373f4fb38a433550b9a349415bbb0a24fb2aee2bf5e9de73e5c302b8174755cf"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        1051,
+        1077
+      ],
+      "topic": "sizing",
+      "file": "position-sizing-after-wins.md",
+      "sha256": "5ceb723358e79444181b16f15138d1d3236324b6b3cc9703918dd979d0e20d47"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        1078,
+        1163
+      ],
+      "topic": "options",
+      "file": "options-call-time-put-price.md",
+      "sha256": "5beeebc8883b788ca4667ec347927cde494ba9b635b0d87ffea3deedf612bd09"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        1164,
+        1195
+      ],
+      "topic": "narrative",
+      "file": "narrative-and-news.md",
+      "sha256": "09514ea9fc08470c743db25bb541d391011b17ff623afab97f41326b311b2d6c"
+    },
+    {
+      "source": "psych-batch-1.txt",
+      "lines": [
+        1196,
+        1214
+      ],
+      "topic": "stoploss",
+      "file": "stop-loss-and-ownership.md",
+      "sha256": "6aec045c89b4797bf0b6e634dc3f5e87ff2450d3ddc448741d8328edc2619bf7"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        1,
+        38
+      ],
+      "topic": "whynew",
+      "file": "why-new-members-lose.md",
+      "sha256": "ae6602a8818a8156b68956053965bb2426da3ce1a5e67e7a68d9c9be11d6c23d"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        39,
+        40
+      ],
+      "topic": "patience",
+      "file": "patience-and-overtrading.md",
+      "sha256": "89f8a812569bd6187f38aeaa9bce4d0690be0c6f5c8af4418063081a0f83640f"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        41,
+        42
+      ],
+      "topic": "routine",
+      "file": "mentor-routine-and-origin.md",
+      "sha256": "5172802378fad868962764d4e0cf7e44c562d167456816195bc109c0e339ad5f"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        43,
+        60
+      ],
+      "topic": "narrative",
+      "file": "narrative-and-news.md",
+      "sha256": "c877aaaf1bbf76ac9e7cb831399fb628333c09cc80b5c22b4f6d77142bbf7398"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        61,
+        104
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "bbc989906502e96b303edf92537aa4f47e7dd74ccfd3598fc226accb30083faa"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        105,
+        112
+      ],
+      "topic": "conviction",
+      "file": "conviction-and-independence.md",
+      "sha256": "04ca8355b9f9dea907c86ae10fd748f9d55173aa9ff332128d997bc701e0b2f6"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        113,
+        122
+      ],
+      "topic": "conviction",
+      "file": "conviction-and-independence.md",
+      "sha256": "ea1a95e8f27040ca0a0900986462e7028ede797d6779240de2947e6e7359c8bf"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        123,
+        134
+      ],
+      "topic": "sizing",
+      "file": "position-sizing-after-wins.md",
+      "sha256": "32571aa72f5ac4d811912c7fae6d01f036e86c01f380d7f8196617061905ba0d"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        135,
+        142
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "f1806c97162e577c469c8fb3bf9c4233e7f980ee3463ea87b9e8622987a98fd3"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        143,
+        150
+      ],
+      "topic": "sizing",
+      "file": "position-sizing-after-wins.md",
+      "sha256": "ce0ad8addfab15e31749f43a14bc4ea43eb98e37187cd63fd73f0f198b4169e1"
+    },
+    {
+      "source": "psych-batch-2.txt",
+      "lines": [
+        151,
+        167
+      ],
+      "topic": "money",
+      "file": "money-and-life.md",
+      "sha256": "88f9e260d32ef5ff3b8cad58ec488aecbef59dd81d092e8dfdb03943ede2f9e2"
+    }
+  ],
+  "images": {
+    "36-stratagems-cover-mantian-guohai.jpg": {
+      "bytes": 128224,
+      "sha256": "bd58804c9bbd94b21f2d0817d8080139fc28f493e56150a250fa519364102ef7",
+      "file": "battlefield-and-uncertainty.md"
+    },
+    "36-stratagems-full-list.jpg": {
+      "bytes": 117552,
+      "sha256": "3cae5e6a1d12781b38c18c108ea4c545b86a9527b74fdda3235e57ce4c5906e2",
+      "file": "battlefield-and-uncertainty.md"
+    },
+    "allocation-70-stocks-20-options-10-cash.jpg": {
+      "bytes": 32915,
+      "sha256": "7627c3a3e1e81745cbaab25b8a661958f8e69e4965652c63f1c1dbff406ad8ac",
+      "file": "money-and-life.md"
+    },
+    "cognitive-bias-chart-5-categories.jpg": {
+      "bytes": 355982,
+      "sha256": "4b8e32757223c37403ecd2528a1deb5181ed1ae16efacb7ab7659a7ecc0fdf26",
+      "file": "journal-and-outcome-bias.md"
+    },
+    "gopro-nasdaq-delisting-warning.jpg": {
+      "bytes": 34206,
+      "sha256": "5b516e00589df56bbc7072ae3994038d88b6bc4104a1185f10a572fea707653d",
+      "file": "mentor-routine-and-origin.md"
+    },
+    "realized-profit-pyramid-1.00-0.50-0.30-0.20.jpg": {
+      "bytes": 125929,
+      "sha256": "01c9750a56cd70db1f6832ec63329aa2b895ad127f93b56a1633d9a79b1bbbf2",
+      "file": "position-sizing-after-wins.md"
+    },
+    "event-lifecycle-main-vs-secondary-trade.jpg": {
+      "bytes": 95883,
+      "sha256": "c36934ec1c7b984ff465e04fd9ac87b4cd9945fe54cf3291b96a517f558e374a",
+      "file": "macro-thinking.md"
+    }
+  },
+  "nonVerbatim": [
+    "video-the-trading-game.md"
+  ]
+}

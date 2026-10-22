@@ -1,0 +1,27 @@
+{
+  "note": "Display-only event follow-ups (src/macro/eventFollowup.ts). Each entry: an event (earnings), a mentor thesis with two baskets (expected down / expected up), and a time window. Phases (ET): pre (from showFrom until the event time) → after (event time until 04:00 next trading day; results + after-hours moves) → verdict (next trading day 04:00 until expires; premarket basket comparison). After `expires` nothing is shown. Inputs, all read-only and written by the routine: data/in/earnings-by-symbol.json (Robinhood get_earnings_results), data/in/quotes.json (Robinhood quotes: last = regular close, lastExt = extended-hours price), optional data/in/event-results.json for revenue / capex / FCF. No trades, no alerts, never feeds NO_TRADE, sizing, 48h/72h or 能不能睡.",
+  "followups": [
+    {
+      "id": "meta-earnings-2026-10-21",
+      "symbol": "META",
+      "kind": "earnings",
+      "date": "2026-10-21",
+      "timing": "pm",
+      "eventAtET": "16:00",
+      "epsEstimate": 5.89,
+      "estimateSource": "Robinhood（例行任务 2026-10-20 核对）",
+      "showFrom": "2026-10-21",
+      "verdictDate": "2026-10-22",
+      "expires": "2026-10-22",
+      "title": "META 财报（周三 10/21 盘后）",
+      "thesis": "如果现金流 / 资本开支（capex）让人失望 → 云 / AI 基建（CRWV、NBIS、ORCL）大概率跌，芯片（NVDA、AVGO）涨；不要大赌",
+      "condition": "前提是现金流 / capex 出问题；方向判断只看篮子涨跌，前提是否成立要结合实际数字自己判断",
+      "baskets": {
+        "down": { "label": "云 / AI 基建", "symbols": ["CRWV", "NBIS", "ORCL"] },
+        "up": { "label": "芯片", "symbols": ["NVDA", "AVGO"] }
+      },
+      "quotes": ["如果Meta的现金流这周财报出问题，云跌芯片升。", "有点心理准备不要大赌。"],
+      "source": "knowledge/mentor/market-calls/note-2026-10-19-meta-cashflow/article.md"
+    }
+  ]
+}

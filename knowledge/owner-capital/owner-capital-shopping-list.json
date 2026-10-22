@@ -1,0 +1,559 @@
+{
+  "version": "OWNER_CAPITAL_SHOPPING_LIST_V1",
+  "source": "OWNER_SUPPLIED",
+  "purpose": "LONG_TERM_CAPITAL / STOCK_AND_ETF_RESEARCH",
+  "orderMeaning": "OWNER_GROUPING_NOT_RANKING",
+  "executionAllowed": false,
+  "automaticExecution": false,
+  "allocationAllowed": false,
+  "orderPermission": false,
+  "entries": [
+    {
+      "symbol": "PLD",
+      "displayName": "Prologis",
+      "instrumentType": "STOCK",
+      "themes": [
+        "LATIN_AMERICA_SECURITY_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "FCX",
+      "displayName": "Freeport-McMoRan",
+      "instrumentType": "STOCK",
+      "themes": [
+        "LATIN_AMERICA_SECURITY_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "SLB",
+      "displayName": "SLB",
+      "instrumentType": "STOCK",
+      "themes": [
+        "LATIN_AMERICA_SECURITY_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "AVAV",
+      "displayName": "AeroVironment",
+      "instrumentType": "STOCK",
+      "themes": [
+        "LATIN_AMERICA_SECURITY_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "HII",
+      "displayName": "Huntington Ingalls",
+      "instrumentType": "STOCK",
+      "themes": [
+        "LATIN_AMERICA_SECURITY_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "PLTR",
+      "displayName": "Palantir",
+      "instrumentType": "STOCK",
+      "themes": [
+        "LATIN_AMERICA_SECURITY_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "GEO",
+      "displayName": "GEO Group",
+      "instrumentType": "STOCK",
+      "themes": [
+        "LATIN_AMERICA_SECURITY_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "KTOS",
+      "displayName": "Kratos",
+      "instrumentType": "STOCK",
+      "themes": [
+        "DEFENSE_WAR"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "UMAC",
+      "displayName": "Unusual Machines",
+      "instrumentType": "STOCK",
+      "themes": [
+        "DEFENSE_WAR"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "OLN",
+      "displayName": "Olin",
+      "instrumentType": "STOCK",
+      "themes": [
+        "DEFENSE_WAR"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "UAL",
+      "displayName": "United Airlines",
+      "instrumentType": "STOCK",
+      "themes": [
+        "POST_WAR_AVIATION_TRAVEL"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "DAL",
+      "displayName": "Delta Air Lines",
+      "instrumentType": "STOCK",
+      "themes": [
+        "POST_WAR_AVIATION_TRAVEL"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "JBLU",
+      "displayName": "JetBlue",
+      "instrumentType": "STOCK",
+      "themes": [
+        "POST_WAR_AVIATION_TRAVEL"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "AXP",
+      "displayName": "American Express",
+      "instrumentType": "STOCK",
+      "themes": [
+        "POST_WAR_AVIATION_TRAVEL"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "DG",
+      "displayName": "Dollar General",
+      "instrumentType": "STOCK",
+      "themes": [
+        "INFLATION_US_CONSUMER"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "COST",
+      "displayName": "Costco",
+      "instrumentType": "STOCK",
+      "themes": [
+        "INFLATION_US_CONSUMER"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "SFD",
+      "displayName": "Smithfield Foods",
+      "instrumentType": "STOCK",
+      "themes": [
+        "INFLATION_US_CONSUMER"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "V",
+      "displayName": "Visa",
+      "instrumentType": "STOCK",
+      "themes": [
+        "INFLATION_US_CONSUMER"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "VITL",
+      "displayName": "Vital Farms",
+      "instrumentType": "STOCK",
+      "themes": [
+        "AGRICULTURE_FOOD_SECURITY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "MOS",
+      "displayName": "Mosaic",
+      "instrumentType": "STOCK",
+      "themes": [
+        "AGRICULTURE_FOOD_SECURITY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "CF",
+      "displayName": "CF Industries",
+      "instrumentType": "STOCK",
+      "themes": [
+        "AGRICULTURE_FOOD_SECURITY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "ADM",
+      "displayName": "Archer-Daniels-Midland",
+      "instrumentType": "STOCK",
+      "themes": [
+        "AGRICULTURE_FOOD_SECURITY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "PCAR",
+      "displayName": "PACCAR",
+      "instrumentType": "STOCK",
+      "themes": [
+        "US_MANUFACTURING"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "SANM",
+      "displayName": "Sanmina",
+      "instrumentType": "STOCK",
+      "themes": [
+        "US_MANUFACTURING",
+        "AI_INFRASTRUCTURE"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "FLR",
+      "displayName": "Fluor",
+      "instrumentType": "STOCK",
+      "themes": [
+        "US_MANUFACTURING"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "LZB",
+      "displayName": "La-Z-Boy",
+      "instrumentType": "STOCK",
+      "themes": [
+        "US_MANUFACTURING"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "ALB",
+      "displayName": "Albemarle",
+      "instrumentType": "STOCK",
+      "themes": [
+        "ENERGY_STRATEGIC_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "USAR",
+      "displayName": "USA Rare Earth",
+      "instrumentType": "STOCK",
+      "themes": [
+        "ENERGY_STRATEGIC_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "VLO",
+      "displayName": "Valero",
+      "instrumentType": "STOCK",
+      "themes": [
+        "ENERGY_STRATEGIC_RESOURCES"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "VST",
+      "displayName": "Vistra",
+      "instrumentType": "STOCK",
+      "themes": [
+        "AI_INFRASTRUCTURE"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "CEG",
+      "displayName": "Constellation Energy",
+      "instrumentType": "STOCK",
+      "themes": [
+        "AI_INFRASTRUCTURE"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "NOK",
+      "displayName": "Nokia",
+      "instrumentType": "STOCK",
+      "themes": [
+        "AI_INFRASTRUCTURE"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "DJT",
+      "displayName": "Trump Media",
+      "instrumentType": "STOCK",
+      "themes": [
+        "AI_INFRASTRUCTURE"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "TSLA",
+      "displayName": "Tesla",
+      "instrumentType": "STOCK",
+      "themes": [
+        "ROBOTICS"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "CCXI",
+      "displayName": "Churchill Capital XI / Agility Robotics",
+      "instrumentType": "STOCK",
+      "themes": [
+        "ROBOTICS"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied CCXI / Agility Robotics relationship; not independently verified. Identity and tradability remain pending verification."
+    },
+    {
+      "symbol": "AGLT",
+      "displayName": "AGLT (Owner-expected future ticker)",
+      "instrumentType": "STOCK",
+      "themes": [
+        "ROBOTICS"
+      ],
+      "ownerStatus": "FUTURE_WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Future expected ticker supplied by Owner. Security identity and tradability are not accepted; not currently actionable."
+    },
+    {
+      "symbol": "RXST",
+      "displayName": "RxSight",
+      "instrumentType": "STOCK",
+      "themes": [
+        "HEALTHCARE_LONGEVITY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "BIOA",
+      "displayName": "BioAge Labs",
+      "instrumentType": "STOCK",
+      "themes": [
+        "HEALTHCARE_LONGEVITY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "DHR",
+      "displayName": "Danaher",
+      "instrumentType": "STOCK",
+      "themes": [
+        "HEALTHCARE_LONGEVITY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "BSX",
+      "displayName": "Boston Scientific",
+      "instrumentType": "STOCK",
+      "themes": [
+        "HEALTHCARE_LONGEVITY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "ILF",
+      "displayName": "Latin America ETF",
+      "instrumentType": "ETF",
+      "themes": [
+        "LATIN_AMERICA"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "SHLD",
+      "displayName": "Global X Defense Tech ETF",
+      "instrumentType": "ETF",
+      "themes": [
+        "DEFENSE"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "PPA",
+      "displayName": "Invesco Aerospace & Defense ETF / SPADE Defense Index",
+      "instrumentType": "ETF",
+      "themes": [
+        "DEFENSE"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "JETS",
+      "displayName": "U.S. Global Jets ETF",
+      "instrumentType": "ETF",
+      "themes": [
+        "POST_WAR_AVIATION_ENERGY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "USOY",
+      "displayName": "Defiance Oil Enhanced Options Income ETF",
+      "instrumentType": "ETF",
+      "themes": [
+        "POST_WAR_AVIATION_ENERGY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "XLE",
+      "displayName": "Energy Select Sector SPDR Fund",
+      "instrumentType": "ETF",
+      "themes": [
+        "ENERGY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "JEPQ",
+      "displayName": "JPMorgan Nasdaq Equity Premium Income ETF",
+      "instrumentType": "ETF",
+      "themes": [
+        "AI_TECHNOLOGY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "UFO",
+      "displayName": "Procure Space ETF",
+      "instrumentType": "ETF",
+      "themes": [
+        "SPACE_ECONOMY"
+      ],
+      "ownerStatus": "WATCH",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner-supplied thematic research interest. Identity and investment case have not been independently verified."
+    },
+    {
+      "symbol": "NTR",
+      "displayName": "Nutrien",
+      "instrumentType": "STOCK",
+      "themes": [],
+      "ownerStatus": "EXCLUDED",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner currently excludes NTR from the core Capital Shopping List; this does not affect other Alpha uses."
+    },
+    {
+      "symbol": "SPCX",
+      "displayName": "SPCX",
+      "instrumentType": "ETF",
+      "themes": [],
+      "ownerStatus": "EXCLUDED",
+      "identityStatus": "OWNER_SUPPLIED_PENDING_VERIFICATION",
+      "notes": "Owner currently considers single-space-company concentration too high and prefers UFO for space exposure. This judgment is Owner-supplied, not independently verified. Exclusion applies only to this list."
+    }
+  ]
+}
