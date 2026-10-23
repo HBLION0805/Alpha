@@ -29,6 +29,7 @@ import { ALARM_SOURCES } from "../alerts.ts";
 import { fetchReleaseCalendar, type CalendarEvent } from "../ingest/officialCalendar.ts";
 import { loadFedSpeakers, renderFedSpeakers } from "../ingest/fedSpeakers.ts";
 import { loadMajorEvents } from "../options/majorEvents.ts";
+import { loadEarningsWeeks, renderEarningsWeek } from "../macro/earningsWeek.ts";
 import { fetchLiquidity, liquidityWatch, renderLiquidity } from "../macro/liquidity.ts";
 import { renderSleep, sleepJson, TRUMP_SCHEDULED_RE, TRUMP_MIN_SCORE } from "../macro/sleepday.ts";
 import { addDays, etDate } from "../macro/nyse.ts";
@@ -89,7 +90,8 @@ const volumeLines = existsSync(vPath) && now.getTime() - statSync(vPath).mtimeMs
 const fedR = await loadFedSpeakers({ offline: values.offline ?? false, now });
 const fedLines = fedR.data ? renderFedSpeakers(fedR.data.speeches, fedR.data.blackouts, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), 14, fedR.status, fedR.data.coverage) : [`- 不可用：${fedR.status}`];
 const oilFront = dcData.WTI_FRONT?.length ? frontContinuous(data.WTI, dcData.WTI_FRONT, front.code) : null; // oil block / alarms / 快速变动 only
-const pm = buildPremarket({ oilFront, fedLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
+const earningsWeekLines = renderEarningsWeek(loadEarningsWeeks(new URL("../../knowledge/calendar/", import.meta.url)), now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }));
+const pm = buildPremarket({ oilFront, fedLines, earningsWeekLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
 const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;
 const sc = buildScenarios({ now, data, calendar, headlines: ranked.slice(0, 40).map((r) => r.headline), earningsCount: earnings?.length ?? null, regimeLabel: macro.regime.label, previousLeader });

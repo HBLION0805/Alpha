@@ -1,0 +1,251 @@
+{
+  "generatedAt": "2026-10-23",
+  "window": [
+    "2026-10-26",
+    "2026-10-30"
+  ],
+  "note": "Week of 2026-10-26 earnings (dates ET). Source list: Earnings Whispers screenshot; verified 2026-10-23 against StockTitan/Nasdaq calendar (company-confirmed notices), SoFi IR, SK hynix IR. No mismatches found. BMO = before open, AMC = after close.",
+  "reminders": [
+    "财报前 IV 偏高：优先价差（spreads），避免裸买期权（long options）",
+    "周三 MSFT/GOOGL 盘后财报前，不新开 SMH/纳指方向仓"
+  ],
+  "events": [
+    {
+      "dateET": "2026-10-26",
+      "timing": "BMO",
+      "symbol": "VZ",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-27",
+      "timing": "BMO",
+      "symbol": "KO",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-27",
+      "timing": "BMO",
+      "symbol": "UPS",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-27",
+      "timing": "BMO",
+      "symbol": "SOFI",
+      "themes": [],
+      "source": "https://investors.sofi.com/news/news-details/2026/SoFi-Schedules-Conference-Call-to-Discuss-Q3-2026-Results/default.aspx"
+    },
+    {
+      "dateET": "2026-10-27",
+      "timing": "AMC",
+      "symbol": "SKHY",
+      "themes": [
+        "semis/SMH"
+      ],
+      "source": "https://news.skhynix.com/en/q3-2026-earnings-conference-call-invitation/",
+      "note": "SK hynix: release before 09:00 KST Wed 10/28 = Tue 10/27 evening ET (AMC in ET terms)"
+    },
+    {
+      "dateET": "2026-10-27",
+      "timing": "AMC",
+      "symbol": "HOOD",
+      "themes": [
+        "stablecoin"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-27",
+      "timing": "AMC",
+      "symbol": "V",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-27",
+      "timing": "AMC",
+      "symbol": "STX",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-28",
+      "timing": "BMO",
+      "symbol": "VRT",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-28",
+      "timing": "BMO",
+      "symbol": "GEV",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-28",
+      "timing": "BMO",
+      "symbol": "BSX",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-28",
+      "timing": "AMC",
+      "symbol": "MSFT",
+      "themes": [
+        "Mag7"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-28",
+      "timing": "AMC",
+      "symbol": "GOOGL",
+      "themes": [
+        "Mag7"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-28",
+      "timing": "AMC",
+      "symbol": "KLAC",
+      "themes": [
+        "semis/SMH"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-28",
+      "timing": "AMC",
+      "symbol": "NOW",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-28",
+      "timing": "AMC",
+      "symbol": "FTNT",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "BMO",
+      "symbol": "CAT",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "BMO",
+      "symbol": "LLY",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "BMO",
+      "symbol": "STM",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "AMC",
+      "symbol": "AMZN",
+      "themes": [
+        "Mag7"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "AMC",
+      "symbol": "INTC",
+      "themes": [
+        "semis/SMH"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "AMC",
+      "symbol": "SNDK",
+      "themes": [
+        "semis/SMH"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "AMC",
+      "symbol": "COIN",
+      "themes": [
+        "stablecoin"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "AMC",
+      "symbol": "RBLX",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-29",
+      "timing": "AMC",
+      "symbol": "RDDT",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-30",
+      "timing": "BMO",
+      "symbol": "XOM",
+      "themes": [
+        "oil"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-30",
+      "timing": "BMO",
+      "symbol": "CVX",
+      "themes": [
+        "oil"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-30",
+      "timing": "BMO",
+      "symbol": "BP",
+      "themes": [
+        "oil"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-30",
+      "timing": "BMO",
+      "symbol": "CCJ",
+      "themes": [
+        "uranium"
+      ],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    },
+    {
+      "dateET": "2026-10-30",
+      "timing": "BMO",
+      "symbol": "AZN",
+      "themes": [],
+      "source": "https://www.stocktitan.net/articles/earnings-calendar-week-of-october-26-2026"
+    }
+  ]
+}

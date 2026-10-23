@@ -32,6 +32,7 @@ const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED"
 
 export interface Alarm { kind: "CARRY_UNWIND" | "HYG_DIVERGENCE" | "UST10Y_SPIKE" | "VIX_BACKWARDATION" | OilAlarm["kind"]; level: "ALARM" | "WARNING"; title: string; detail: string; by: "mentor" | "dk" | "user"; score?: number }
 export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null; volumeLines?: string[] | null; fedLines?: string[] | null;
+  /** registered earnings weeks (src/macro/earningsWeek.ts renderEarningsWeek) */ earningsWeekLines?: string[] | null;
   /** front-month WTI (wtiFront.ts frontContinuous) for the oil block, oil alarms, 快速变动 flag and the USDCAD line ONLY; absent → data.WTI (CL=F) */
   oilFront?: FrontSeries | null }
 export interface PremarketResult { md: string; alarms: Alarm[]; noTrade: string[]; mentorLines: string[]; dkLines: string[]; oilLines: string[]; bondLines: number;
@@ -128,6 +129,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   if (pre.length) noTrade.push(`盘前重大数据 ${pre.map((e) => `${e.kind} ${e.timeEt}`).join("、")}：数据公布前不新开仓`);
   if (todays.some((e) => e.kind === "FOMC" && eventUtcMs(e) > inp.now.getTime())) noTrade.push("今日 FOMC：决议前不新开方向仓");
   K.push("", "### 财报（今日盘前 / 盘后）");
+  if (inp.earningsWeekLines?.length) K.push("已登记财报周（knowledge/calendar/earnings-week-*.json）：", ...inp.earningsWeekLines);
   if (inp.earnings == null) K.push("- 无缓存的 Robinhood 财报数据（data/in/earnings.json），跳过");
   else { const e = inp.earnings.filter((x) => x.date === day); K.push(...(e.length ? e.map((x) => `- ${x.symbol} ${x.timing ?? ""}`) : ["- 今日无"])); }
   K.push("", "### 隔夜：黄金 / BTC（原油见【用户要求】原油）", `- 黄金 ${v("GOLD")?.toFixed(1) ?? "n/a"} (${fmt(c("GOLD"), "%")}) · BTC ${v("BTC")?.toFixed(0) ?? "n/a"} (${fmt(c("BTC"), "%")})`);
