@@ -123,3 +123,12 @@ test("paper open: daily NEW risk — Σ defined max loss of today's opens + this
   for (const e of j.entries) e.openedAt = "2026-10-14T15:00:00Z";
   assert.ok(paperOpen(j, prop(), A).entry);
 });
+
+test("paper open: a 0% daily-cap rule card refuses every new trade (formal and practice)", () => {
+  const j: PaperJournal = { capital: 50000, entries: [] };
+  const r = paperOpen(j, prop(), { ...A, rules: { dailyLossLimitPct: 0 } });
+  assert.equal(r.entry, null); assert.ok(r.refused.some((x) => /daily_new_risk.*daily cap \$0 /.test(x)), r.refused.join("|"));
+  const pr = paperOpen(j, prop(), { ...A, kind: "practice", rules: { dailyLossLimitPct: 0 } });
+  assert.equal(pr.entry, null, "practice too: a 0 cap is a hard refusal, not a warn tag"); assert.ok(pr.refused.some((x) => /daily_new_risk/.test(x)));
+  assert.ok(paperOpen(j, prop(), A).entry, "default card still opens");
+});

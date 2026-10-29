@@ -29,7 +29,7 @@ export function dailyRiskCapPct(date: string | Date, equity: number, rules?: Par
   const d = etDate(date);
   const sched = d >= DAILY_CAP_SMALL_ACCOUNT_FROM && equity <= DAILY_CAP_SMALL_ACCOUNT_MAX_EQUITY ? DAILY_CAP_SMALL_ACCOUNT_PCT : DAILY_CAP_BASE_PCT;
   const o = rules?.dailyLossLimitPct;
-  return o != null && Number.isFinite(o) && o > 0 ? Math.min(sched, o) : sched; // an override can only lower the dated cap (5% card in the 10% regime → 5%)
+  return o != null && Number.isFinite(o) && o >= 0 ? Math.min(sched, o) : sched; // an override can only lower the dated cap (5% card in the 10% regime → 5%; 0% card = no new risk)
 }
 /** daily cap in dollars (rounded to cents) */
 export const dailyRiskCapUsd = (date: string | Date, equity: number, rules?: Partial<Pick<RuleCard, "dailyLossLimitPct">>) =>

@@ -68,7 +68,7 @@ export function nakedShortLegs(legs: Proposal["legs"]): string[] {
 /** Practice opens: which strict-mode refusals stay HARD. Only an undefined max loss (riskplan.ts "期权结构最大亏损未定义") and an
  *  invalid --kind. Matching the bare word "maxLoss" was wrong: the multi-leg checklist text "multi-leg checklist incomplete: maxLoss, …"
  *  (stops.ts) contains it, so every practice spread without a written checklist was hard-refused instead of getting a warn tag. */
-export const isHardRefusal = (x: string) => /最大亏损未定义|--kind .* 无效/.test(x);
+export const isHardRefusal = (x: string) => /最大亏损未定义|--kind .* 无效|daily_new_risk: .*daily cap \$0 \(/.test(x); // a 0% daily-cap card = no new risk, practice included
 /** Map a strict-mode refusal to a practice warn tag. */
 export function warnTag(msg: string): string {
   const id = /^(?:唱反调 (?:BLOCK )?|BLOCK |NO_TRADE )(\w+)/.exec(msg)?.[1]?.toLowerCase();

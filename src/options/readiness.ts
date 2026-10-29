@@ -4,7 +4,7 @@
  * Win rate is shown as context only: a low win rate is not failure when losses stay controlled
  * (大佬复盘 mentor-winrate-review) — expectancy and loss caps decide.
  */
-import { dailyRiskCapUsd, etDate, hasDefinedRisk, newRiskOpened, RISK_UNDEFINED_VIOLATION } from "./riskCap.ts";
+import { dailyRiskCapUsd, equityAtStartOf, etDate, hasDefinedRisk, newRiskOpened, RISK_UNDEFINED_VIOLATION } from "./riskCap.ts";
 import { fullPnl, type JournalEntry } from "./journal.ts";
 import { entryCapUsd } from "./confidence.ts";
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
@@ -77,7 +77,7 @@ export function readiness(i: ReadinessInput): Readiness {
   const shadowDays = first0 && last0 ? practice.filter((e) => e.source === "mentor_shadow" && e.closedAt && e.pnl != null && day(e.closedAt) >= day(first0) && day(e.closedAt) <= day(last0)) : [];
   const byDay = new Map<string, number>(); for (const e of [...closed, ...shadowDays]) byDay.set(day(e.closedAt!), (byDay.get(day(e.closedAt!)) ?? 0) + fullPnl(e));
   // each day against THAT day's cap (riskCap.ts: 2% before 2026-10-30; 10% while equity ≤ $10k after); equity = capital + earlier closes
-  const eqBefore = (d: string) => i.capital + closed.filter((e) => day(e.closedAt!) < d).reduce((s, e) => s + fullPnl(e), 0);
+  const eqBefore = (d: string) => equityAtStartOf(i.journal, i.capital, d); // same start-of-day equity as everywhere else (riskCap.ts)
   const capDay = (d: string) => dailyRiskCapUsd(d, eqBefore(d), R);
   const badDays = [...byDay].filter(([d, v]) => -v > capDay(d));
   // NEW risk opened per ET day (user rule 2026-10-29): Σ defined max loss of all simulated opens that day (formal + practice + mentor_shadow) ≤ that day's cap

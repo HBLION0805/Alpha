@@ -11,6 +11,7 @@ import { autoSins } from "../src/options/sins.ts";
 import { renderReview } from "../src/options/reviewreport.ts";
 import { selectReminders } from "../src/review/mentor.ts";
 import type { JournalEntry } from "../src/options/journal.ts";
+import { effectiveRules } from "../src/options/rules.ts";
 
 const E = (o: Partial<JournalEntry> & { id: string; openedAt: string }) => ({ mode: "paper", kind: "formal", source: "paper_sim", symbol: "SPY", strategy: "pds", stop: "−50% of debit", maxLoss: 100, thesis: "t", invalidation: "i",
   thesisRecordedAt: o.openedAt, stopRecordedAt: o.openedAt, commissions: 0, ...o }) as JournalEntry;
@@ -103,4 +104,15 @@ test("sins + review report use that day's equity and that day's cap", () => {
   // wrath-after-breach on that day's equity: −$600 realized on 10-30 is under $700 (would breach $500 on starting capital)
   const loss = E({ id: "L", openedAt: "2026-10-30T13:35:00Z", closedAt: "2026-10-30T13:50:00Z", pnl: -600 }), later = E({ id: "z", openedAt: "2026-10-30T19:00:00Z", maxLoss: 50 });
   assert.ok(!(autoSins(later, [win, loss, later]).find((s) => s.sin === "wrath")?.reason ?? "").includes("已超日亏上限"));
+});
+
+test("0% rule card = no new risk: cap 0 (not 'unset'), pretrade + paper-gate + budget block everything", () => {
+  assert.equal(dailyRiskCapPct("2026-10-30", 5000, { dailyLossLimitPct: 0 }), 0);
+  assert.equal(dailyRiskCapPct("2026-10-29", 5000, { dailyLossLimitPct: 0 }), 0);
+  const nr = newRiskCheck({ entries: [], day: "2026-10-30", equity: 5000, proposedUsd: 1, rules: { dailyLossLimitPct: 0 } });
+  assert.equal(nr.cap, 0); assert.equal(nr.ok, false);
+  const c = disciplineChecks({ symbol: "SPY", strategy: "pds", asOf: "2026-10-30", legs: [], capital: 5000, discipline: { journal: [], todayEt: "2026-10-30", openPnlToday: 0 } } as never, 1, { ...effectiveRules({ dailyLossLimitPct: 0 }) });
+  assert.equal(c.find((x) => x.id === "daily_new_risk")!.severity, "BLOCK");
+  assert.equal(effectiveRules({ dailyLossLimitPct: 0 }).dailyLossLimitPct, 0);
+  assert.deepEqual(dailyBudget([], 5000, new Date("2026-10-30T15:00:00Z"), 0), { used: 0, remaining: 0, newRisk: 0, newRiskRemaining: 0 });
 });
