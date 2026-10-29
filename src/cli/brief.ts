@@ -46,7 +46,7 @@ import { entryInput } from "../options/scenarioCtx.ts";
 import { entryCapUsd } from "../options/confidence.ts";
 import { mentorSignals, renderMentorSignals, mentorSignalsJson, liveFirst } from "../macro/mentorSignals.ts";
 import { yahooQuote, yahooFutQuote } from "../adapters/yahoo.ts";
-import { OIL_CONT, parseContract, sameContractChange, sameContractNote, type FrontState, type OilId, type SameContract } from "../macro/oilContract.ts";
+import { OIL_CONT, parseContract, sameContractChange, sameContractNote, OFFLINE_OIL_NOTE, type FrontState, type OilId, type SameContract } from "../macro/oilContract.ts";
 import { briefArchivePath } from "../macro/briefArchive.ts";
 import { paperGate, renderGate } from "../macro/paperGate.ts";
 
@@ -104,9 +104,16 @@ if (!values.offline) for (const id of ["WTI", "BRENT"] as const) {
     if (r.sc) try { oilBars[id] = (await fetchDailyOnce({ id: `${id}_CONTRACT`, provider: "yahoo", ref: r.sc.contract, label: r.sc.code, unit: "price", frequency: "daily" })).filter((o) => o.t >= since400); } catch (e) { failed[`oil bars ${r.sc.code}`] = (e as Error).message; }
   } catch (e) { failed[`oil quote ${id}`] = (e as Error).message; oilSame[id] = null; oilNotes.push(`${OIL_CONT[id]} 同合约报价失败 → 1日涨跌不计算（不用连续合约日线）`); }
 }
-const wtiCode = oilSame.WTI?.code ?? front.code, wtiBars = oilBars.WTI?.length ? oilBars.WTI : dcData.WTI_FRONT;
-const oilFront = wtiBars?.length ? frontContinuous(data.WTI, wtiBars, wtiCode) : null; // oil block / alarms / 快速变动 only
-const brentFront = oilSame.BRENT && oilBars.BRENT?.length ? frontContinuous(data.BRENT, oilBars.BRENT, oilSame.BRENT.code) : null;
+// History must be the SAME contract as the 1d change: WTI's own bars, or the calendar front only when it is that same contract.
+// Missing → null → premarket shows 5日 / 均线 / 52周 n/a and fires no 5d alarm (never the spliced CL=F / BZ=F bars).
+// Offline: no quotes → legacy continuous method (labelled OFFLINE_OIL_NOTE).
+const sameBars = (id: OilId, alt?: { code: string; bars?: Obs[] }) => { const sc = oilSame[id]; if (!sc) return null;
+  const bars = oilBars[id]?.length ? oilBars[id] : alt && alt.code === sc.code ? alt.bars : undefined;
+  const fs = bars?.length ? frontContinuous(data[id], bars, sc.code) : null; return fs?.junction != null ? fs : null; };
+const oilFront = values.offline ? (dcData.WTI_FRONT?.length ? frontContinuous(data.WTI, dcData.WTI_FRONT, front.code) : null) : sameBars("WTI", { code: front.code, bars: dcData.WTI_FRONT });
+const brentFront = values.offline ? null : sameBars("BRENT");
+if (values.offline) oilNotes.push(OFFLINE_OIL_NOTE);
+for (const [id, fs] of [["WTI", oilFront], ["BRENT", brentFront]] as const) if (!values.offline && oilSame[id] && !fs) oilNotes.push(`${oilSame[id]!.code} 合约日线不可用 → 5日 / 50日均线 / 52周高点 n/a，不触发 5日警报（不用连续合约日线）`);
 const pm = buildPremarket({ oilFront, brentFront, oilSame: values.offline ? undefined : oilSame, oilNotes, fedLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
 const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;

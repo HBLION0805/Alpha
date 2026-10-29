@@ -51,12 +51,12 @@ export async function yahooDaily(symbol: string, days = 730, timeoutMs = 12_000)
 export const yahooIntraday = (symbol: string, days = 5, timeoutMs = 12_000) => chart(symbol, days, "15m", timeoutMs);
 
 /** Futures quote (v7 quote; the library handles the crumb): continuous `BZ=F` → `underlyingSymbol` = the specific contract. */
-export interface YFutQuote { symbol: string; underlyingSymbol: string | null; price: number; prevClose: number | null; at: string }
+export interface YFutQuote { symbol: string; /** symbol field Yahoo actually returned (null if absent) */ returnedSymbol: string | null; underlyingSymbol: string | null; price: number; prevClose: number | null; at: string }
 export async function yahooFutQuote(symbol: string, timeoutMs = 8_000): Promise<YFutQuote> {
   const p = client().quote(symbol);
   const q = (await Promise.race([p, new Promise<never>((_, rej) => setTimeout(() => rej(new Error(`timeout ${timeoutMs}ms`)), timeoutMs).unref())])) as {
-    underlyingSymbol?: string; regularMarketPrice?: number; regularMarketPreviousClose?: number; regularMarketTime?: Date | number };
+    symbol?: string; underlyingSymbol?: string; regularMarketPrice?: number; regularMarketPreviousClose?: number; regularMarketTime?: Date | number };
   if (q?.regularMarketPrice == null || !Number.isFinite(q.regularMarketPrice)) throw new Error(`no regularMarketPrice for ${symbol}`);
   const t = q.regularMarketTime instanceof Date ? q.regularMarketTime : new Date(Number(q.regularMarketTime ?? Date.now()) * (Number(q.regularMarketTime) < 1e12 ? 1000 : 1));
-  return { symbol, underlyingSymbol: q.underlyingSymbol ?? null, price: q.regularMarketPrice, prevClose: q.regularMarketPreviousClose ?? null, at: t.toISOString() };
+  return { symbol, returnedSymbol: q.symbol ?? null, underlyingSymbol: q.underlyingSymbol ?? null, price: q.regularMarketPrice, prevClose: q.regularMarketPreviousClose ?? null, at: t.toISOString() };
 }

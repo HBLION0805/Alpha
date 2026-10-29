@@ -8,7 +8,7 @@ import { buildOil, type OilAlarm } from "./oil.ts";
 import { buildOilVix, type OilVixResult } from "./oilvix.ts";
 import type { Obs } from "./fetch.ts";
 import type { FrontSeries } from "./wtiFront.ts";
-import type { OilId, SameContract } from "./oilContract.ts";
+import { contractSeriesNote, priceOnly, type OilId, type SameContract } from "./oilContract.ts";
 import type { SeriesDef } from "./series.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import type { Earnings } from "../options/events.ts";
@@ -55,8 +55,11 @@ const fmt = (x: number | null, unit: "bp" | "%", d = 2) => (x == null ? "n/a" : 
 export const BY = { mentor: "大佬流程", dk: "DK 补充", user: "用户要求" } as const;
 export const OIL_HEAD = ["## 【用户要求】原油", "_用户本人的要求（2026-10-15）：原油是核心盘前指标。不是大佬流程，也不是 DK 补充。_"];
 export function buildPremarket(inp: PremarketInput): PremarketResult {
-  const D = inp.data, OD = { ...D, ...(inp.oilFront ? { WTI: inp.oilFront.series } : {}), ...(inp.brentFront ? { BRENT: inp.brentFront.series } : {}) };
-  const S = inp.oilSame; const alarms: Alarm[] = []; const M: string[] = []; const K: string[] = []; const noTrade: string[] = [];
+  const D = inp.data, S = inp.oilSame;
+  // strict (oilSame given): WTI / BRENT history only from that contract's own series; missing → price only (5日 / 均线 / 52周 n/a, no 5d alarm,
+  // spread 5日 n/a). Never the continuous CL=F / BZ=F bars. Not strict (offline / legacy callers): old continuous behaviour.
+  const hist = (id: OilId, fs: FrontSeries | null | undefined) => (S ? (fs && fs.junction != null && S[id] ? fs.series : priceOnly(S[id])) : fs ? fs.series : D[id]!);
+  const OD = { ...D, WTI: hist("WTI", inp.oilFront), BRENT: hist("BRENT", inp.brentFront) }; const alarms: Alarm[] = []; const M: string[] = []; const K: string[] = []; const noTrade: string[] = [];
   const day = inp.now.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
   const c = (id: string, k = 1) => chg(id, D[id], k);
   const v = (id: string) => last(D[id]);
@@ -147,7 +150,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   const oil = buildOil(OD, { now: inp.now, headlines: inp.headlines, calendar: inp.calendar, same: S, brentLabel: S?.BRENT ? `Brent（${S.BRENT.label}）` : inp.brentFront ? `Brent（近月 ${inp.brentFront.code}）` : undefined,
     wtiLabel: S?.WTI ? `WTI（${S.WTI.label}）` : inp.oilFront ? `WTI（近月 ${inp.oilFront.code}）` : undefined });
   alarms.push(...oil.alarms);
-  const oilLines = [...(inp.oilNotes?.length ? [...inp.oilNotes.map((n) => `- ${n}`), ""] : []), ...(inp.oilFront ? [`_${inp.oilFront.note}_`, ""] : []), ...(inp.brentFront ? [`_${inp.brentFront.note.replace(/WTI/g, "Brent").replace(/CL=F/g, "BZ=F").replace(/（= CNBC @CL\.1）/, "")}_`, ""] : []), ...oil.lines, "", "**价格 · 速度 · 原因**（导师盘前视频；驱动判断为启发式，规则见 docs/OIL_VIX.md）", ...ov.lines.oil];
+  const oilLines = [...(inp.oilNotes?.length ? [...inp.oilNotes.map((n) => `- ${n}`), ""] : []), ...(inp.oilFront ? [`_${inp.oilFront.note}_`, ""] : []), ...(inp.brentFront?.junction != null ? [`_${contractSeriesNote("Brent", "BZ=F", inp.brentFront, D.BRENT?.at(-1)?.v)}_`, ""] : []), ...oil.lines, "", "**价格 · 速度 · 原因**（导师盘前视频；驱动判断为启发式，规则见 docs/OIL_VIX.md）", ...ov.lines.oil];
   // synthesis
   if (alarms.some((a) => a.level === "ALARM")) noTrade.push(`警报未解除：${alarms.filter((a) => a.level === "ALARM").map((a) => a.kind).join("、")}`);
   if (maxAbs >= 1.5) noTrade.push("期货跳空 ≥1.5%：开盘不追，等确认");
