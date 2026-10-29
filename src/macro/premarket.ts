@@ -38,7 +38,8 @@ export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed
   /** front-month Brent (BZ=F underlyingSymbol contract, frontContinuous) — same scope as oilFront */ brentFront?: FrontSeries | null;
   /** same-contract 1d changes (oilContract.ts) for the oil block, oil alarms (OIL_CRASH…), 快速变动 flag and USDCAD line; key with null → 1d n/a */
   oilSame?: Partial<Record<OilId, SameContract | null>>;
-  /** notes shown above the oil table (e.g. 已换月至 BZF27) */ oilNotes?: string[] }
+  /** notes shown above the oil table (e.g. 已换月至 BZF27) */ oilNotes?: string[];
+  /** non-oil futures same-contract notes (rolls, n/a, offline) shown under ④ (futContract.ts) */ futNotes?: string[] }
 export interface PremarketResult { md: string; alarms: Alarm[]; noTrade: string[]; mentorLines: string[]; dkLines: string[]; oilLines: string[]; bondLines: number;
   /** mentor premarket video (oilvix.ts): oil speed / driver heuristic / VIX-vs-index confirmation — flag only */ oilVix: OilVixResult }
 
@@ -94,6 +95,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   M.push("", "### ④ 盘前期货 ES / NQ / RTY（焦虑度）", "> 期货更加在告诉我，市场到底有多焦虑。");
   const fut = ["ES", "NQ", "RTY"].map((id) => ({ id, x: c(id) }));
   M.push(`- ${fut.map((x) => `${x.id} ${fmt(x.x, "%")}`).join(" · ")}`);
+  if (inp.futNotes?.length) M.push(...inp.futNotes.map((n) => `- _${n}_`));
   const maxAbs = Math.max(0, ...fut.map((x) => Math.abs(x.x ?? 0)));
   const up = fut.every((x) => (x.x ?? 0) > 0);
   if (maxAbs >= 1) {

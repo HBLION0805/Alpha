@@ -141,7 +141,7 @@ test("brief archive: dated, timestamped copy for premarket / close only (ET)", (
 
 test("brief CLI wires the same-contract path and the archive (static)", () => {
   const src = readFileSync(new URL("../src/cli/brief.ts", import.meta.url), "utf8");
-  assert.match(src, /yahooFutQuote\(OIL_CONT\[id\]\)/); assert.match(src, /oilSame: values\.offline \? undefined : oilSame/);
+  assert.match(src, /futSameChange\(f\.id, f\.cont, cq\[f\.cont\]/); assert.match(src, /oilSame: values\.offline \? undefined : oilSame/);
   assert.match(src, /briefArchivePath\(now, dirname\(values\.out\)\)/);
 });
 
