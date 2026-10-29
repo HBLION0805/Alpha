@@ -144,3 +144,17 @@ test("brief CLI wires the same-contract path and the archive (static)", () => {
   assert.match(src, /yahooFutQuote\(OIL_CONT\[id\]\)/); assert.match(src, /oilSame: values\.offline \? undefined : oilSame/);
   assert.match(src, /briefArchivePath\(now, dirname\(values\.out\)\)/);
 });
+
+test("50-day / 52-week columns are labelled 回溯调整连续合约 and feed no alarm", () => {
+  const sc = { BRENT: brent().sc, WTI: wti().sc };
+  const run = (cl: Obs[], bz: Obs[]) => pm({ WTI: cl, BRENT: bz }, { oilSame: sc, oilFront: frontContinuous(cl, CLZ, "CLZ26"), brentFront: frontContinuous(bz, BZF, "BZF27") });
+  const r = run(CL, BZ);
+  assert.match(r.oilLines.join("\n"), /\| 距 50 日均线（回溯调整连续合约） \| 距 52 周高点（回溯调整连续合约） \|/);
+  // halve every bar older than the same-contract window: 50-day / 52-week figures change, alarms / ⚡ / NO_TRADE do not
+  const cut = CLZ.at(-11)!.t, half = (o: Obs[]) => o.map((x) => (x.t < cut ? { ...x, v: x.v / 2 } : x));
+  const h = run(half(CL), half(BZ));
+  assert.notEqual(row(h.oilLines, "WTI"), row(r.oilLines, "WTI"), "history change is visible in the columns");
+  assert.deepEqual(h.alarms, r.alarms); assert.equal(h.oilVix.fast, r.oilVix.fast); assert.deepEqual(h.noTrade, r.noTrade);
+  // legacy / offline (no contract series): no label
+  assert.doesNotMatch(pm({ WTI: CL, BRENT: BZ }).oilLines.join("\n"), /回溯调整/);
+});

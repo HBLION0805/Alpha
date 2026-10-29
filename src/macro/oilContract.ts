@@ -62,3 +62,5 @@ export function contractSeriesNote(name: "WTI" | "Brent", cont: string, fs: { co
 export const OFFLINE_OIL_NOTE = "⚠️ 离线/无同合约数据：原油沿用旧的连续合约方法（CL=F / BZ=F 日线计算 1日/5日），换月日可能出现假变动和假警报";
 /** strict mode, no same-contract history for this id → only the live contract price (5日 / 50日均线 / 52周高点 → n/a, no 5d alarm) */
 export const priceOnly = (sc: SameContract | null | undefined) => (sc ? [{ t: sc.at.slice(0, 10), v: sc.price }] : []);
+/** 50-day / 52-week columns: only the last ~10 days are the contract itself; older bars are the continuous series ratio-adjusted (wtiFront.ts frontContinuous). Display only. */
+export const HIST_LABEL = "回溯调整连续合约";

@@ -8,7 +8,7 @@ import { buildOil, type OilAlarm } from "./oil.ts";
 import { buildOilVix, type OilVixResult } from "./oilvix.ts";
 import type { Obs } from "./fetch.ts";
 import type { FrontSeries } from "./wtiFront.ts";
-import { contractSeriesNote, priceOnly, type OilId, type SameContract } from "./oilContract.ts";
+import { contractSeriesNote, priceOnly, HIST_LABEL, type OilId, type SameContract } from "./oilContract.ts";
 import type { SeriesDef } from "./series.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import type { Earnings } from "../options/events.ts";
@@ -147,7 +147,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   K.push("", "### 隔夜新闻（alert store）", ...((inp.headlines ?? []).length ? inp.headlines!.slice(0, 6).map((h) => `- ${h}`) : ["- 无"]));
 
   // 【用户要求】原油 — right after the bonds; its alarms feed the alert flow
-  const oil = buildOil(OD, { now: inp.now, headlines: inp.headlines, calendar: inp.calendar, same: S, brentLabel: S?.BRENT ? `Brent（${S.BRENT.label}）` : inp.brentFront ? `Brent（近月 ${inp.brentFront.code}）` : undefined,
+  const oil = buildOil(OD, { now: inp.now, headlines: inp.headlines, calendar: inp.calendar, same: S, histLabel: inp.oilFront || inp.brentFront ? HIST_LABEL : undefined, brentLabel: S?.BRENT ? `Brent（${S.BRENT.label}）` : inp.brentFront ? `Brent（近月 ${inp.brentFront.code}）` : undefined,
     wtiLabel: S?.WTI ? `WTI（${S.WTI.label}）` : inp.oilFront ? `WTI（近月 ${inp.oilFront.code}）` : undefined });
   alarms.push(...oil.alarms);
   const oilLines = [...(inp.oilNotes?.length ? [...inp.oilNotes.map((n) => `- ${n}`), ""] : []), ...(inp.oilFront ? [`_${inp.oilFront.note}_`, ""] : []), ...(inp.brentFront?.junction != null ? [`_${contractSeriesNote("Brent", "BZ=F", inp.brentFront, D.BRENT?.at(-1)?.v)}_`, ""] : []), ...oil.lines, "", "**价格 · 速度 · 原因**（导师盘前视频；驱动判断为启发式，规则见 docs/OIL_VIX.md）", ...ov.lines.oil];
