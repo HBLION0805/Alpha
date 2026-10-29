@@ -54,3 +54,4 @@ Review follow-ups (PR #15):
 - The contract quote must come back with Yahoo's own `symbol` equal to the requested contract, or the 1-day change is n/a.
 - **`--offline`:** there are no quotes, so the oil block uses the old continuous method and says so (「离线…沿用旧的连续合约方法」).
 - **50-day average and 52-week high = back-adjusted continuous (回溯调整连续合约).** `frontContinuous` uses the contract itself only for the last ~10 trading days; older history is the continuous `CL=F` / `BZ=F` scaled by the junction ratio. The brief labels both columns 「（回溯调整连续合约）」. They are display only: no alarm (OIL_SPIKE / OIL_CRASH / BRENT_WTI_WIDEN), no ⚡ and no NO_TRADE reads them (test/oilcontract.test.ts).
+- Generalized to every futures series: docs/FUTURES_SAME_CONTRACT.md (src/macro/futContract.ts; state now data/out/futures-front.json, legacy oil-front.json carried over).

@@ -52,9 +52,11 @@ const n2 = (x: number, u: string) => `${u}${x.toLocaleString("en-US", { maximumF
 const sgn = (x: number, d = 2) => `${x >= 0 ? "+" : ""}${x.toFixed(d)}`;
 
 /** one level vs its series. recap/closed → judged on the entry date's daily close (final) */
-export function levelState(l: MentorLevel, o: Obs[] | undefined, entryDate: string, phase: Phase, recap: boolean): LevelState {
+export function levelState(l: MentorLevel, o: Obs[] | undefined, entryDate: string, phase: Phase, recap: boolean, rollNote?: string): LevelState {
   const bar = recap ? o?.find((x) => x.t.slice(0, 10) === entryDate) : o?.at(-1);
   const base = { id: l.id, label: l.label, level: l.level };
+  // roll: the level was set on the OLD contract; comparing it with the new front would flip close_above/stay_below on a calendar spread
+  if (rollNote) return { ...base, value: null, asOf: null, above: null, dist: null, distPct: null, status: "na", text: `n/a（换月影响：${rollNote}；价位按旧合约给出，不判定）`, final: false };
   if (!bar || (!recap && bar.t.slice(0, 10) < entryDate && phase !== "pre")) return { ...base, value: null, asOf: bar?.t ?? null, above: null, dist: null, distPct: null, status: "na", text: `n/a（没有 ${entryDate} 的数据）`, final: false };
   const v = bar.v, above = v >= l.level, dist = v - l.level, distPct = (dist / l.level) * 100, final = recap || phase === "closed";
   const where = `${n2(v, l.unit)}，${above ? "在上方" : "在下方"} ${sgn(dist, l.level >= 1000 ? 0 : 2)}（${sgn(distPct)}%）`;
@@ -74,11 +76,12 @@ const c1 = (o?: Obs[], bp = false) => (!o || o.length < 2 ? null : bp ? (o.at(-1
 
 export interface LevelsResult { lines: string[]; states: LevelState[]; entry: LevelEntry | null; recap: boolean; phase: Phase }
 /** data: premarket series (DXY, UST30Y, …) plus level series keyed by their `series` string (CRWV, NQ=F, @WTI_FRONT) */
-export function renderMentorLevels(entries: LevelEntry[], data: Record<string, Obs[]>, now: Date, loadError?: string): LevelsResult {
+/** rollAffected: level series key → reason; those levels are n/a (futContract.ts roll state) */
+export function renderMentorLevels(entries: LevelEntry[], data: Record<string, Obs[]>, now: Date, loadError?: string, rollAffected: Record<string, string> = {}): LevelsResult {
   const a = activeEntry(entries, now), phase = phaseOf(now);
   if (!a) return { lines: loadError ? [`- **大佬今日价位**：不可用（${loadError}）`, ""] : [], states: [], entry: null, recap: false, phase };
   const { entry, recap } = a, src = entry.source;
-  const states = entry.levels.map((l) => levelState(l, data[l.series], entry.date, phase, recap));
+  const states = entry.levels.map((l) => levelState(l, data[l.series], entry.date, phase, recap, rollAffected[l.series]));
   const front = entry.levels.some((l) => l.series === "@WTI_FRONT") ? wtiFront(entry.date) : null;
   const head = recap ? `- **大佬价位回顾（${entry.date} 日报，按当天收盘）**` : `- **大佬今日价位（${entry.date} 日报）**${phase === "closed" ? " — 收盘结果" : phase === "pre" ? " — 盘前" : " — 盘中（未收盘）"}`;
   const L = [head];
@@ -111,3 +114,16 @@ export function checklistItems(r: LevelsResult): Array<{ id: string; label: stri
   });
 }
 export const levelsJson = (r: LevelsResult) => r.entry ? { date: r.entry.date, recap: r.recap, phase: r.phase, levels: r.states.map((s) => ({ id: s.id, value: s.value, level: s.level, above: s.above, status: s.status, final: s.final })) } : null;
+/**
+ * Level series whose contract rolled since the level was given: =F series (state id ML_<series>) rolled today or front since > entry date;
+ * @WTI_FRONT when the entry date's calendar front differs from the current front contract.
+ */
+export function rollAffectedLevels(entry: LevelEntry, state: Partial<Record<string, { contract: string; since: string; from: string | null }>>, rolledNow: Record<string, boolean>, wtiNow?: string | null): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const s of new Set(entry.levels.map((l) => l.series))) {
+    if (s === "@WTI_FRONT") { const old = wtiFront(entry.date).code; if (wtiNow && wtiNow !== old) out[s] = `近月已由 ${old} 换至 ${wtiNow}`; continue; }
+    const st = state[`ML_${s}`];
+    if (rolledNow[`ML_${s}`] || (st && st.from && st.since > entry.date)) out[s] = `${s} 已换月至 ${st?.contract ?? "新合约"}${st?.from ? `（原 ${st.from}）` : ""}`;
+  }
+  return out;
+}

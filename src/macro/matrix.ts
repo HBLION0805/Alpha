@@ -42,13 +42,14 @@ export function jobsState(icsa?: Obs[], payems?: Obs[]): { state: Jobs; detail: 
 export interface MatrixResult { best: Stage[]; matches: number; known: number; dims: Array<{ dim: string; value: string; detail: string }>; perStage: Array<{ stage: Stage; match: string[]; mismatch: string[] }>; unknown: string[] }
 const LBL: Record<string, string> = { up: "↑", down: "↓", flat: "→", unknown: "?", good: "好", bad: "差", very_bad: "很差" };
 
-export function classifyMatrix(d: Record<string, Obs[]>): MatrixResult {
+/** `adjusted`: series ids whose older history is back-adjusted continuous (futContract.ts) → their multi-day details are labelled 回溯调整 */
+export function classifyMatrix(d: Record<string, Obs[]>, adjusted: ReadonlySet<string> = new Set()): MatrixResult {
   const rates = trend(d.UST10Y, true, 5, 10), oil = trend(d.WTI ?? d.USO, false, 2, 4);
   const rel: Obs[] = (() => { const s = d.SMH, q = d.QQQ ?? d.NDX; if (!s || !q) return []; const m = new Map(q.map((o) => [o.t.slice(0, 10), o.v])); return s.filter((o) => m.has(o.t.slice(0, 10))).map((o) => ({ t: o.t, v: o.v / m.get(o.t.slice(0, 10))! })); })();
   const tech = trend(rel.length ? rel : undefined, false, 1, 2);
   const jobs = jobsState(d.ICSA, d.PAYEMS);
   const dims = [
-    { dim: "利率", value: rates.dir, detail: `10Y ${rates.detail}` }, { dim: "油价", value: oil.dir, detail: `WTI ${oil.detail}` },
+    { dim: "利率", value: rates.dir, detail: `10Y ${rates.detail}` }, { dim: "油价", value: oil.dir, detail: `WTI ${oil.detail}${adjusted.has("WTI") && oil.dir !== "unknown" ? "（回溯调整连续合约）" : ""}` },
     { dim: "科技盈利", value: tech.dir, detail: `代理指标：SMH/QQQ 相对强弱 ${tech.detail}（非盈利修正数据）` }, { dim: "就业", value: jobs.state, detail: jobs.detail },
   ];
   const unknown = dims.filter((x) => x.value === "unknown").map((x) => x.dim);
