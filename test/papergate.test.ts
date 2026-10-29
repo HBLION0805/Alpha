@@ -48,7 +48,7 @@ test("readiness dashboard: count vs 30, top-trade dependence, cap breaches, disc
   const e = (id: string, pnl: number, day: string, x: object = {}) => ({ id, mode: "paper", kind: "formal", source: "paper_sim", openedAt: `${day}T14:00:00Z`, closedAt: `${day}T19:00:00Z`, pnl, symbol: "QQQ", thesis: "t", stop: "s", maxLoss: 25, ...x }) as never;
   const d = buildDashboard([e("a", 300, "2026-09-01"), e("b", -30, "2026-09-02", { thesis: "", stop: "" }), e("c", -120, "2026-09-03", { lossReview: { errorClass: "execution" } }), e("d", 10, "2026-09-04", { errorType: "logic" })], 5000, new Date("2026-10-22T12:00:00Z"));
   assert.equal(d.trades.simulated, 4); assert.ok(d.expectancy!.dependsOnTop);
-  assert.equal(d.capBreaches.perTrade.length, 1); assert.equal(d.capBreaches.daily.length, 1);
+  assert.equal(d.capBreaches.perTrade.length, 2); // own tier $25: b (−30) and c (−120) assert.equal(d.capBreaches.daily.length, 1);
   assert.deepEqual(d.discipline.missingThesis, ["b"]); assert.equal(d.errors.execution, 1); assert.equal(d.errors.judgment, 1);
   assert.equal(d.maxDrawdown, 150); assert.match(renderDashboard(d), /4 \/ 30/);
 });

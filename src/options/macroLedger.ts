@@ -17,6 +17,9 @@ export function macroEntry(a: MacroArgs, existing: JournalEntry[]): { entry?: Jo
   if (!a.thesis?.trim()) refused.push("缺少 --thesis（大佬的论点，照录）");
   let legs: unknown[] = [];
   if (a.legs) { try { legs = JSON.parse(a.legs); if (!Array.isArray(legs)) throw 0; } catch { refused.push("--legs 必须是 JSON 数组"); } }
+  // normalize to the journal leg shape used by paper mark / legs: expiry → expiration; side "short" → negative qty
+  legs = legs.map((l) => { const x = { ...(l as Record<string, unknown>) }; if (x.expiry && !x.expiration) { x.expiration = x.expiry; delete x.expiry; }
+    if (x.side === "short" && Number(x.qty) > 0) x.qty = -Number(x.qty); return x; });
   if (refused.length) return { refused };
   const day = a.now.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
   let id = `macro-${a.symbol!.toLowerCase()}-${a.strategy!.replace(/_/g, "-")}-${day}`;

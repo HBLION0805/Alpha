@@ -2,6 +2,7 @@
  * Paper trading (PROGRESS.md phase "paper trading"): simulated entries on real data, journaled for the
  * live-readiness scorecard (readiness.ts). Nothing here can place, preview or cancel a real order.
  */
+import { entryCapUsd } from "./confidence.ts";
 import { preTradeChecks, type Proposal, type PreCheck } from "./pretrade.ts";
 import { checkPlanLink } from "./planlink.ts";
 import { buildTakeProfit, renderTakeProfit } from "./tpplan.ts";
@@ -185,9 +186,10 @@ export async function paperMark(e: JournalEntry, src: PriceSource, now: Date): P
     const u = l.underlying ?? e.symbol;
     const S = await src.spot(u); if (u === e.symbol) spot0 = S;
     if (l.type === "stock") { if (S == null) throw new Error(`no spot for ${u}`); value += l.qty * S; sources.push(`${u} stock yahoo`); continue; }
-    const c = src.chains.find((ch) => ch.symbol === u)?.contracts.find((k) => k.type === l.type && k.strike === l.strike && k.expiration === l.expiration);
+    const chU = src.chains.filter((ch) => ch.symbol === u).find((ch) => ch.contracts.some((k) => k.type === l.type && k.strike === l.strike && k.expiration === l.expiration)) ?? src.chains.find((ch) => ch.symbol === u);
+    const c = chU?.contracts.find((k) => k.type === l.type && k.strike === l.strike && k.expiration === l.expiration);
     const rh = c ? c.mark ?? (c.bid != null && c.ask != null ? (c.bid + c.ask) / 2 : null) : null;
-    if (rh != null) { value += l.qty * rh * MULT; sources.push(`${u} ${l.strike}${l.type[0]} robinhood ${rh}`); continue; }
+    if (rh != null) { value += l.qty * rh * MULT; sources.push(`${u} ${l.strike}${l.type[0]} ${chU?.source === "cboe_delayed" ? "cboe" : "robinhood"} ${rh}`); continue; }
     if (S == null || !l.expiration) throw new Error(`no price for ${u} ${l.strike}${l.type[0]}`);
     const T = Math.max(yearFrac(asOf, l.expiration), 0);
     const ivSrc = legIv(e, l, c?.iv ?? null, S);
@@ -233,7 +235,7 @@ export function upsertMark(e: JournalEntry, m: NonNullable<JournalEntry["marks"]
   e.marks.push(m); e.marks.sort((a, b) => a.at.localeCompare(b.at));
 }
 
-export interface CloseArgs { exitKind?: JournalEntry["exitKind"]; pnl?: number; commissions?: number; errorClass?: "judgment" | "execution" | "risk" | "variance"; errorTags?: string[]; violations?: string[]; lesson?: string; now: Date }
+export interface CloseArgs { exitKind?: JournalEntry["exitKind"]; pnl?: number; commissions?: number; errorClass?: "judgment" | "execution" | "risk" | "variance"; errorTags?: string[]; violations?: string[]; lesson?: string; now: Date; /** for the per-trade cap check (entryCapUsd); omitted → no cap flag */ capital?: number }
 const KINDS = ["invalidation", "time_stop", "take_profit", "max_loss", "discretionary", "expiry", "weekend_rule"];
 export function paperClose(e: JournalEntry, a: CloseArgs): { entry: JournalEntry | null; refused: string[] } {
   const refused: string[] = [];
@@ -245,7 +247,8 @@ export function paperClose(e: JournalEntry, a: CloseArgs): { entry: JournalEntry
   if (a.errorClass && !["judgment", "execution", "risk", "variance"].includes(a.errorClass)) refused.push(`--error-class ${a.errorClass} 无效：judgment（判断错）| execution（执行错）| risk（风险管理错）| variance（正常概率波动）`);
   if (refused.length) return { entry: null, refused };
   const closed: JournalEntry = { ...e, closedAt: a.now.toISOString(), pnl: pnl!, commissions: a.commissions ?? 0, exitKind: a.exitKind, exitReason: a.exitKind,
-    violations: [...(e.violations ?? []), ...(a.violations ?? [])], lesson: a.lesson,
+    violations: [...new Set([...(e.violations ?? []), ...(a.violations ?? []), ...(a.capital != null && -pnl! > entryCapUsd(e, a.capital) + 0.005 ? ["closed_loss_over_cap"] : [])])], lesson: a.lesson,
+    ...(a.capital != null ? { capAtClose: entryCapUsd(e, a.capital) } : {}),
     ...(pnl! <= 0 ? { lossReview: { at: a.now.toISOString(), errorClass: a.errorClass!, errorTags: a.errorTags!, note: a.lesson } } : {}) };
   return { entry: closed, refused };
 }

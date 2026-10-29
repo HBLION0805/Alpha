@@ -29,6 +29,7 @@ import { ALARM_SOURCES } from "../alerts.ts";
 import { fetchReleaseCalendar, type CalendarEvent } from "../ingest/officialCalendar.ts";
 import { loadFedSpeakers, renderFedSpeakers } from "../ingest/fedSpeakers.ts";
 import { loadMajorEvents } from "../options/majorEvents.ts";
+import { loadEarningsWeeks, renderEarningsWeek } from "../macro/earningsWeek.ts";
 import { fetchLiquidity, liquidityWatch, renderLiquidity } from "../macro/liquidity.ts";
 import { renderSleep, sleepJson, TRUMP_SCHEDULED_RE, TRUMP_MIN_SCORE } from "../macro/sleepday.ts";
 import { addDays, etDate } from "../macro/nyse.ts";
@@ -143,7 +144,8 @@ if (!values.offline) for (const f of futSrcs) { const r = contractSeries(f.get()
 // price-level thresholds (WTI 100/98 in mentor signals, dead-cat, mentor levels): current front's last price; roll day → new front wins
 const wtiLvl = frontLevel(futSame.WTI, data.WTI, { code: front.code, series: dcData.WTI_FRONT }, data.WTI);
 if (!values.offline && futSame.WTI && data.WTI?.length) dcData.WTI_FRONT = data.WTI; // mentor levels keep their own (entry-date) contract; rolls → n/a below
-const pm = buildPremarket({ oilFront, brentFront, oilSame: values.offline ? undefined : oilSame, oilNotes, futNotes: futRollLines, fedLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
+const earningsWeekLines = renderEarningsWeek(loadEarningsWeeks(new URL("../../knowledge/calendar/", import.meta.url)), now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }));
+const pm = buildPremarket({ oilFront, brentFront, oilSame: values.offline ? undefined : oilSame, oilNotes, futNotes: futRollLines, fedLines, earningsWeekLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
 const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;
 const sc = buildScenarios({ adjusted: futAdj, incomplete: futIncomplete, suppressChange: firstFutRun ? "首次同合约运行：期货历史按回溯调整比例整体移动，并非真实行情变化（只此一次）" : null, now, data, calendar, headlines: ranked.slice(0, 40).map((r) => r.headline), earningsCount: earnings?.length ?? null, regimeLabel: macro.regime.label, previousLeader });

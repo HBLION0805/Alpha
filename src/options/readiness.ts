@@ -5,6 +5,7 @@
  * (大佬复盘 mentor-winrate-review) — expectancy and loss caps decide.
  */
 import { fullPnl, type JournalEntry } from "./journal.ts";
+import { entryCapUsd } from "./confidence.ts";
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
 
 export interface Criterion { id: string; title: string; pass: boolean; detail: string[]; missing: string[] }
@@ -67,7 +68,7 @@ export function readiness(i: ReadinessInput): Readiness {
 
   // 3) loss caps + max drawdown
   const capOf = (e: JournalEntry) => e.capitalAtEntry ?? i.capital;
-  const capUsd = (e: JournalEntry) => e.confidence?.capUsd ?? capOf(e) * R.sellerMaxLossPerTradePct / 100; // confidence-scaled cap at open (0.5–2%), else rule card
+  const capUsd = (e: JournalEntry) => e.confidence?.capUsd ?? entryCapUsd({ ...e, capitalAtEntry: capOf(e) }, i.capital); // confidence-scaled cap at open (0.5–2%), else rule card
   const bigLoss = closed.filter((e) => -fullPnl(e) > capUsd(e));
   // daily-loss cap: formal trades PLUS mentor_shadow closes on the same days (DECISIONS 2026-10-17). Shadow trades still never
   // count as readiness trades (sample / expectancy / per-trade / drawdown stay formal-only); they only add to a day's loss.

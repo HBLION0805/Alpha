@@ -47,6 +47,7 @@ import { renderScenariosWithMenu } from "../options/hedgeMenu.ts";
 import { entryInput } from "../options/scenarioCtx.ts";
 import { paperEquity, tradeCap, capLabel, entryCapUsd } from "../options/confidence.ts";
 import { loadLevels } from "../macro/mentorLevels.ts";
+import { CBOE_INDEX, chainFromCboe, fetchCboeRaw } from "../options/gex.ts";
 import { macroEntry, migrateMacro } from "../options/macroLedger.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
@@ -119,6 +120,12 @@ if (cmd === "open") {
     if (!(age <= 60)) process.stdout.write(`⚠️ data/in/rh-option-quotes.json 已 ${age} 分钟未更新（例行任务应先刷新 Robinhood 报价，见 docs/ROUTINE_PAPER.md）\n`);
     chains.unshift(...chainsFromQuotes(qf));
   } else process.stdout.write("⚠️ 没有 data/in/rh-option-quotes.json → 用 Black-Scholes 估算（见 docs/ROUTINE_PAPER.md）\n");
+  // index options (VIX, SPX, …) Robinhood may not list → CBOE delayed quotes (mid), after Robinhood so RH stays first
+  for (const u of new Set(openPaper(j).flatMap((e) => (e.legs ?? []).filter((l) => l.type !== "stock").map((l) => (l.underlying ?? e.symbol).toUpperCase())))) {
+    if (!CBOE_INDEX.has(u)) continue;
+    const raw = await fetchCboeRaw(u), ch = raw.json ? chainFromCboe(u, raw.json) : null;
+    if (ch) { chains.push(ch); process.stdout.write(`[paper] ${u} 期权用 CBOE 延迟报价（${ch.asOf} UTC）\n`); } else process.stdout.write(`⚠️ ${u} CBOE 报价不可用：${raw.error ?? "空"}\n`);
+  }
   const cache = new Map<string, number | null>();
   const spot = async (s: string) => { if (!cache.has(s)) { const ch = chains.find((c) => c.symbol === s); cache.set(s, ch?.underlyingPrice ?? (await yahooDaily(s, 10).catch(() => [])).at(-1)?.c ?? null); } return cache.get(s)!; };
   // simulated positions + open real_practice records (marked for review only; never in caps/readiness)
@@ -148,7 +155,7 @@ if (cmd === "open") {
   for (const e of j.entries.filter((x) => !x.closedAt && x.mode === "paper")) for (const l of e.legs ?? []) {
     if (l.type === "stock" || !l.expiration || l.expiration < today) continue;
     const u = (l.underlying ?? e.symbol).toUpperCase(), k = `${u}|${l.type}|${l.strike}|${l.expiration}`;
-    if (!seen.has(k)) { seen.add(k); out.push({ underlying: u, type: l.type, strike: l.strike, expiration: l.expiration }); }
+    if (!seen.has(k)) { seen.add(k); out.push({ underlying: u, type: l.type, strike: l.strike, expiration: l.expiration, ...(CBOE_INDEX.has(u) ? { quoteSource: "cboe" } : {}) }); }
   }
   writeFileSync("data/in/paper-open-legs.json", JSON.stringify({ generatedAt: now.toISOString(), legs: out }, null, 1) + "\n");
   process.stdout.write(JSON.stringify(out) + "\n");
@@ -204,7 +211,7 @@ if (cmd === "open") {
   const e = j.entries.find((x) => x.id === values.id && x.mode === "paper");
   if (!e) fail([`找不到模拟交易 --id ${values.id ?? ""}`]);
   const r = paperClose(e!, { exitKind: values["exit-kind"] as JournalEntry["exitKind"], pnl: values.pnl != null ? Number(values.pnl) : undefined, commissions: values.commissions != null ? Number(values.commissions) : undefined,
-    errorClass: values["error-class"] as (typeof LOSS_CLASSES)[number], errorTags: list(values["error-tags"]), violations: list(values.violations), lesson: values.lesson, now });
+    errorClass: values["error-class"] as (typeof LOSS_CLASSES)[number], errorTags: list(values["error-tags"]), violations: list(values.violations), lesson: values.lesson, now, capital: j.capital });
   if (!r.entry) fail(r.refused);
   const lp = lossPrompt(r.entry!, j.entries, now, j.capital); if (lp) r.entry!.lossPrompt = lp;
   j.entries[j.entries.indexOf(e!)] = r.entry!; save();
