@@ -30,3 +30,14 @@ This generalizes PR #15's oil method (docs/OIL_VIX.md) to every futures series i
 
 Alerts (`src/alerts.ts`) read the alarms the brief inserts into the store, so they inherit the same-contract numbers.
 Tests: test/futcontract.test.ts (ES Dec→Mar roll: the fake +1.05% 🔥 is gone), test/oilcontract.test.ts.
+
+## Rule (DK, confirmed 2026-10-29)
+
+1. **Single-day changes** in the brief, scenarios and matrix always use the same contract (the contract's price ÷ its own previous close). Scenarios and the matrix only use 5-day and 20-day windows for futures; their 1-day inputs come from the same-contract series.
+2. **Price-level thresholds** (WTI 100/98 in mentor signals and the dead-cat checklist, NQ 30000, …) use the **current front contract's last price**. On a roll day the new front (underlyingSymbol) wins over the calendar front (`frontLevel`). The WTI live quote is the same contract as the series.
+3. **Multi-day trends, moving averages and 52-week highs** use the continuous history, ratio back-adjusted onto the contract. They are labelled 回溯调整 (oil table columns, matrix 油价, scenarios WTI/黄金 20日).
+
+Review follow-ups:
+- **Mentor levels** (levels.json) were set on the contract that was front on the entry date. If that series rolled today, or its state `since` is after the entry date (for `@WTI_FRONT`: the entry-date calendar front ≠ the current front), the level shows **n/a（换月影响）** in the brief, the recap, the dead-cat checklist and `brief-latest.json` (so plan cards see `na`).
+- **Failed contract quote** → the scenario output shows 「⚠️ 数据不完整」 listing the symbols.
+- **First run after the merge** (no `data/out/futures-front.json` yet): a leader change is shown but not counted (no scenario alarm, `scenarioChanged: false`), because history moved by the back-adjustment ratio rather than the market.

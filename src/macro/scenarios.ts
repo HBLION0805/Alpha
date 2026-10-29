@@ -24,7 +24,10 @@ export interface Scenario {
   expressions: string[]; invalidation: string[];
   catalog: string[]; worldLines: Array<{ n: number; title: string; watch: string }>;
 }
-export interface ScenarioInput { now: Date; data: Record<string, Obs[]>; calendar?: CalendarEvent[]; headlines?: string[]; earningsCount?: number | null; regimeLabel?: string | null; previousLeader?: ScenarioId | null }
+export interface ScenarioInput { now: Date; data: Record<string, Obs[]>; calendar?: CalendarEvent[]; headlines?: string[]; earningsCount?: number | null; regimeLabel?: string | null; previousLeader?: ScenarioId | null;
+  /** series ids whose older history is back-adjusted continuous (futContract.ts): multi-day details labelled 回溯调整 */ adjusted?: ReadonlySet<string>;
+  /** futures whose same-contract quote failed (futContract.ts) → visible 数据不完整 flag */ incomplete?: string[];
+  /** reason to not count a leader change this run (e.g. first same-contract run: history shifted by back-adjustment) */ suppressChange?: string | null }
 export interface Ranked { s: Scenario; score: number; pro: SignalResult[]; con: SignalResult[]; weight: string }
 export interface ScenarioResult { md: string; ranked: Ranked[]; leader: ScenarioId | null; changed: boolean; signals: SignalResult[]; noTrade: string[] }
 
@@ -35,6 +38,7 @@ const f = (x: number | null, u: string, d = 1) => (x == null ? "n/a" : `${x > 0 
 /** Live signals, each tied to an existing premarket/regime check. null = data missing (never counted). */
 export function computeSignals(inp: ScenarioInput): SignalResult[] {
   const d = inp.data; const S: SignalResult[] = [];
+  const adj = (id: string) => (inp.adjusted?.has(id) && d[id]?.length ? "（回溯调整连续合约）" : "");
   const add = (id: string, label: string, hit: boolean | null, evidence: string) => S.push({ id, label, hit, evidence });
   const y2 = chg("UST2Y", d.UST2Y, 20), y10 = chg("UST10Y", d.UST10Y, 5), r10 = chg("REAL10Y", d.REAL10Y, 20);
   add("front_end_up", "2Y 20 日上行 >10bp（加息/更久高息定价）", y2 == null ? null : y2 > 10, `2Y 20日 ${f(y2, "bp")}`);
@@ -55,9 +59,9 @@ export function computeSignals(inp: ScenarioInput): SignalResult[] {
   const jpy = chg("USDJPY", d.USDJPY, 5);
   add("carry_unwind", "USDJPY 5 日 < −2%（日元套利平仓，主线 20）", jpy == null ? null : jpy < -2, `USDJPY 5日 ${f(jpy, "%", 2)}`);
   const oil = chg("WTI", d.WTI, 20);
-  add("oil_up", "WTI 20 日 >+10%（通胀压力，主线 11）", oil == null ? null : oil > 10, `WTI 20日 ${f(oil, "%")}`);
+  add("oil_up", "WTI 20 日 >+10%（通胀压力，主线 11）", oil == null ? null : oil > 10, `WTI 20日 ${f(oil, "%")}${adj("WTI")}`);
   const gold = chg("GOLD", d.GOLD, 20);
-  add("gold_bid", "黄金 20 日 >+3%（避险/去美元化需求）", gold == null ? null : gold > 3, `黄金 20日 ${f(gold, "%")}`);
+  add("gold_bid", "黄金 20 日 >+3%（避险/去美元化需求）", gold == null ? null : gold > 3, `黄金 20日 ${f(gold, "%")}${adj("GOLD")}`);
   const hot = (inp.headlines ?? []).find((h) => /(cpi|inflation|consumer prices?)[^|]*(hot|faster|more than expected|above|accelerat|sharply)|(hotter|faster)[^|]*(cpi|inflation)/i.test(h));
   add("cpi_hot", "CPI 偏热（新闻标题，非数据）", inp.headlines ? !!hot : null, hot ? `标题: ${hot.slice(0, 90)}` : "近 48h 标题中未见 CPI 偏热");
   return S;
@@ -113,7 +117,8 @@ export function buildScenarios(inp: ScenarioInput): ScenarioResult {
   const ranked = rankScenarios(signals);
   const tie = ranked[0]!.score === ranked[1]!.score;
   const leader = tie ? null : ranked[0]!.s.id;
-  const changed = inp.previousLeader !== undefined && inp.previousLeader !== null && leader !== inp.previousLeader;
+  const rawChanged = inp.previousLeader !== undefined && inp.previousLeader !== null && leader !== inp.previousLeader;
+  const changed = rawChanged && !inp.suppressChange;
   const events = upcomingHighImpact(inp.calendar ?? [], inp.now);
   const noTrade: string[] = [];
   if (events.length) noTrade.push(`48h 内高影响事件：${events.map((e) => `${e.kind} ${e.date}`).join("、")} → 不开新仓（risk.ts）`);
@@ -127,8 +132,9 @@ export function buildScenarios(inp: ScenarioInput): ScenarioResult {
     `# 情景分析 Scenarios：2026 年 10 月 → 年底（${day}）`, "",
     "_来源：大佬《better-macro-trader》宏观先行（catalog source `mentor-better-macro-trader`）+ 世界 20 条主线；情景与权重为 DK 补充。_", "",
     "_权重是**定性排序**，依据下列实时信号有多少支持/反对每个情景；**不是概率，也不是数据**。宏观先行：情景解释 Why，信号确认 When。不是交易建议。_", "",
-    `**领先情景：** ${leader ? `${ranked[0]!.s.name}` : "无（并列）"}${changed ? ` ⚠️ 已从 \`${inp.previousLeader}\` 切换` : ""}${inp.regimeLabel ? ` · 宏观 regime：${inp.regimeLabel}` : ""}`,
+    `**领先情景：** ${leader ? `${ranked[0]!.s.name}` : "无（并列）"}${changed ? ` ⚠️ 已从 \`${inp.previousLeader}\` 切换` : rawChanged ? `（ℹ️ 与上次 \`${inp.previousLeader}\` 不同，但不计为切换：${inp.suppressChange}）` : ""}${inp.regimeLabel ? ` · 宏观 regime：${inp.regimeLabel}` : ""}`,
     `**年底前关键日程：** ${nextEvents.join(" · ") || "n/a"}${inp.earningsCount ? ` · 财报季：data/in/earnings.json 中 ${inp.earningsCount} 家` : " · 财报季进行中（未提供 earnings.json）"}`, "",
+    ...(inp.incomplete?.length ? [`> ⚠️ **数据不完整**：${inp.incomplete.join("、")} 同合约报价失败 → 相关信号为 n/a（不用连续合约补），情景排序可能偏差`, ""] : []),
     "## 实时信号", "",
     ...signals.map((s) => `- ${s.hit === true ? "✅" : s.hit === false ? "▫️" : "❔"} ${s.label} — ${s.evidence}`), "",
     "## 情景排序（定性）", "", "| 情景 | 定性权重 | 支持信号 | 反对信号 |", "|---|---|---|---|",

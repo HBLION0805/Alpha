@@ -76,3 +76,16 @@ export function futNote(name: string, sc: SameContract, contPrevBar?: number | n
     + (sc.rolled && naive != null ? `（${sc.cont} 日线拼接会显示 ${p(naive)}，为换月假变动，不用）` : "");
 }
 export const OFFLINE_FUT_NOTE = "⚠️ 离线/无同合约数据：期货（ES/NQ/RTY/黄金/铜/汽油/EWF 等 =F）沿用旧的连续合约方法（连续合约日线计算涨跌），换月日可能出现假变动";
+
+/**
+ * DK rule (PR #17): price-level thresholds (WTI 100/98, NQ 30000 …) use the CURRENT front contract's last price; on a roll day the
+ * new front (underlyingSymbol) wins over the calendar front. sc present + contract series → that series; else the calendar
+ * front series (a specific contract) → else the continuous fallback.
+ */
+export function frontLevel(sc: SameContract | null | undefined, contractSeries: Obs[] | undefined, calendar: { code: string; series?: Obs[] }, fallback?: Obs[]): { series: Obs[]; code: string | null; src: string } {
+  if (sc && contractSeries?.length) return { series: contractSeries, code: sc.code, src: `近月 ${sc.code}` };
+  if (calendar.series?.length) return { series: calendar.series, code: calendar.code, src: `近月 ${calendar.code}` };
+  return { series: fallback ?? [], code: null, src: "连续合约" };
+}
+/** label for multi-day trends / moving averages / 52-week highs computed on a same-contract series with back-adjusted older history */
+export const ADJ_LABEL = "回溯调整";

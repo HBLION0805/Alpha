@@ -37,7 +37,7 @@ test("audit: every =F series in PM_SERIES and DEADCAT_SERIES is picked up by the
   assert.match(src, /PM_SERIES\.filter\(\(d\) => d\.provider === "yahoo" && isFutures\(d\.ref\)\)/);
   assert.match(src, /DEADCAT_SERIES\.filter\(\(d\) => d\.provider === "yahoo" && isFutures\(d\.ref\)\)/);
   assert.match(src, /levelSeries\(lvActive\.entry\)[^\n]*isFutures\(x\.def\.ref\)/);
-  assert.match(src, /for \(const f of futSrcs\) f\.set\(contractSeries\(f\.get\(\), futBars\[f\.id\], futSame\[f\.id\]\)\.series\)/);
+  assert.match(src, /for \(const f of futSrcs\) \{ const r = contractSeries\(f\.get\(\), futBars\[f\.id\], futSame\[f\.id\]\); f\.set\(r\.series\)/);
   assert.match(src, /qFut\("NQ"\), qFut\("WTI", front\.yahoo\), q\("\^VIX"\), qFut\("GOLD"\)/, "live NQ / GC quotes = the contract itself");
 });
 

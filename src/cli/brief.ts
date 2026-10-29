@@ -34,7 +34,7 @@ import { renderSleep, sleepJson, TRUMP_SCHEDULED_RE, TRUMP_MIN_SCORE } from "../
 import { addDays, etDate } from "../macro/nyse.ts";
 import { trumpSignal } from "../trump.ts";
 import { DEADCAT_SERIES, renderDeadCat, deadCatJson } from "../macro/deadcat.ts";
-import { loadLevels, activeEntry, levelSeries, renderMentorLevels, checklistItems, levelsJson } from "../macro/mentorLevels.ts";
+import { loadLevels, activeEntry, levelSeries, renderMentorLevels, rollAffectedLevels, checklistItems, levelsJson } from "../macro/mentorLevels.ts";
 import { wtiFront, frontContinuous } from "../macro/wtiFront.ts";
 import { loadGeoEvents, geoReminderLines, geoCalendarLines } from "../macro/geoEvents.ts";
 import { loadFollowups, loadFollowupInputs, followupLines } from "../macro/eventFollowup.ts";
@@ -47,7 +47,7 @@ import { entryCapUsd } from "../options/confidence.ts";
 import { mentorSignals, renderMentorSignals, mentorSignalsJson, liveFirst } from "../macro/mentorSignals.ts";
 import { yahooQuote, yahooFutQuote } from "../adapters/yahoo.ts";
 import { OFFLINE_OIL_NOTE, type OilId } from "../macro/oilContract.ts";
-import { futSameChange, futNote, contractSeries, mergeFrontState, isFutures, parseContract, OFFLINE_FUT_NOTE, type FrontState, type SameContract } from "../macro/futContract.ts";
+import { frontLevel, futSameChange, futNote, contractSeries, mergeFrontState, isFutures, parseContract, OFFLINE_FUT_NOTE, type FrontState, type SameContract } from "../macro/futContract.ts";
 import { briefArchivePath } from "../macro/briefArchive.ts";
 import { paperGate, renderGate } from "../macro/paperGate.ts";
 
@@ -98,6 +98,7 @@ const fedLines = fedR.data ? renderFedSpeakers(fedR.data.speeches, fedR.data.bla
 // close. Never the continuous daily bars (they splice contracts on roll days → fake moves / alarms). Oil (WTI/BRENT) is one client.
 const futStatePath = "data/out/futures-front.json", legacyOilState = "data/out/oil-front.json";
 const readJson = (f: string) => { try { return existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) as FrontState : null; } catch { return null; } };
+const firstFutRun = !values.offline && !existsSync(futStatePath); // first run after the same-contract merge
 let futState: FrontState = mergeFrontState(readJson(futStatePath), readJson(legacyOilState));
 type FutSrc = { id: string; cont: string; get: () => Obs[] | undefined; set: (o: Obs[]) => void };
 const futSrcs: FutSrc[] = [
@@ -136,11 +137,16 @@ for (const [id, fs] of [["WTI", oilFront], ["BRENT", brentFront]] as const) if (
 // every futures consumer (premarket ④ ES/NQ/RTY, gold, copper, RBOB, scenarios, matrix, dead-cat EWF, mentor levels, mentor signals) now
 // reads the same-contract series; missing → price only / empty → n/a, no alarm. Offline: old continuous method, labelled.
 const futRollLines: string[] = values.offline ? [OFFLINE_FUT_NOTE] : futSrcs.filter((f) => f.id !== "WTI" && f.id !== "BRENT" && (futSame[f.id]?.rolled || !futSame[f.id] || !futBars[f.id]?.length)).map((f) => futNotes[f.id] + (futSame[f.id] && !futBars[f.id]?.length ? `；${futSame[f.id]!.code} 合约日线不可用 → 5日等 n/a` : ""));
-if (!values.offline) for (const f of futSrcs) f.set(contractSeries(f.get(), futBars[f.id], futSame[f.id]).series);
+// DK rule: single-day = same contract; multi-day / MA / 52w = contract tail + back-adjusted continuous history (labelled 回溯调整)
+const futAdj = new Set<string>(), futIncomplete = values.offline ? [] : [...new Set(futSrcs.filter((f) => !futSame[f.id]).map((f) => f.cont))];
+if (!values.offline) for (const f of futSrcs) { const r = contractSeries(f.get(), futBars[f.id], futSame[f.id]); f.set(r.series); if (r.full) futAdj.add(f.id); }
+// price-level thresholds (WTI 100/98 in mentor signals, dead-cat, mentor levels): current front's last price; roll day → new front wins
+const wtiLvl = frontLevel(futSame.WTI, data.WTI, { code: front.code, series: dcData.WTI_FRONT }, data.WTI);
+if (!values.offline && futSame.WTI && data.WTI?.length) dcData.WTI_FRONT = data.WTI; // mentor levels keep their own (entry-date) contract; rolls → n/a below
 const pm = buildPremarket({ oilFront, brentFront, oilSame: values.offline ? undefined : oilSame, oilNotes, futNotes: futRollLines, fedLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
 const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;
-const sc = buildScenarios({ now, data, calendar, headlines: ranked.slice(0, 40).map((r) => r.headline), earningsCount: earnings?.length ?? null, regimeLabel: macro.regime.label, previousLeader });
+const sc = buildScenarios({ adjusted: futAdj, incomplete: futIncomplete, suppressChange: firstFutRun ? "首次同合约运行：期货历史按回溯调整比例整体移动，并非真实行情变化（只此一次）" : null, now, data, calendar, headlines: ranked.slice(0, 40).map((r) => r.headline), earningsCount: earnings?.length ?? null, regimeLabel: macro.regime.label, previousLeader });
 let levelsMd: string | null = null;
 const planRefs: Record<string, ReturnType<typeof referenceLevels>> = {}; const planB5: Record<string, number | null> = {};
 if (!values.offline) {
@@ -163,13 +169,14 @@ const q = async (sym: string) => (values.offline ? null : await yahooQuote(sym).
 const qFut = (id: string, fb?: string) => (futSame[id] ? q(futSame[id]!.contract) : fb && !values.offline ? q(fb) : Promise.resolve(null));
 const [qNq, qWti, qVix, qGold] = await Promise.all([qFut("NQ"), qFut("WTI", front.yahoo), q("^VIX"), qFut("GOLD")]);
 const sigBase = { ...lvData, ...dcData, ...data };
-const lNq = liveFirst(sigBase.NQ, qNq, now), lWti = liveFirst(dcData.WTI_FRONT?.length ? dcData.WTI_FRONT : data.WTI, dcData.WTI_FRONT?.length ? qWti : null, now), lVix = liveFirst(sigBase.VIX, qVix, now), lGold = liveFirst(sigBase.GOLD, qGold, now);
-const msig = mentorSignals({ ...sigBase, NQ: lNq.series, VIX: lVix.series, GOLD: lGold.series }, lWti.series.length ? { series: lWti.series, src: dcData.WTI_FRONT?.length ? `WTI 近月 ${front.code}` : "CL=F" } : null, { nq: lNq.stamp, wti: lWti.stamp, vix: lVix.stamp, gold: lGold.stamp });
+const lNq = liveFirst(sigBase.NQ, qNq, now), lWti = liveFirst(wtiLvl.series, wtiLvl.code ? qWti : null, now), lVix = liveFirst(sigBase.VIX, qVix, now), lGold = liveFirst(sigBase.GOLD, qGold, now);
+const msig = mentorSignals({ ...sigBase, NQ: lNq.series, VIX: lVix.series, GOLD: lGold.series }, lWti.series.length ? { series: lWti.series, src: wtiLvl.code ? `WTI ${wtiLvl.src}` : "CL=F" } : null, { nq: lNq.stamp, wti: lWti.stamp, vix: lVix.stamp, gold: lGold.stamp });
 const today0 = etDate(now);
 const lossToday = -(pj0.entries ?? []).filter((e: { mode?: string; source?: string; closedAt?: string; pnl?: number }) => e.mode === "paper" && e.source !== "real_practice" && e.closedAt && e.pnl != null && etDate(new Date(e.closedAt)) === today0).reduce((s: number, e: { pnl?: number }) => s + (e.pnl ?? 0), 0);
 const gate = paperGate({ verdict: v0, reasons: r0, leader: sc.leader, candidates: plan.candidates, levels: planRefs, data: { ...data, ...dcData, VIX: lVix.series, NQ: lNq.series }, signals: msig, equity: equity0, lossToday });
-const mx = classifyMatrix(data);
-const mlv = renderMentorLevels(lv.entries, { ...data, ...lvData }, now, lv.error);
+const mx = classifyMatrix(data, futAdj);
+const lvRoll = lvActive && !values.offline ? rollAffectedLevels(lvActive.entry, futState, Object.fromEntries(Object.entries(futSame).map(([k, v]) => [k, !!v?.rolled])), futSame.WTI?.code) : {};
+const mlv = renderMentorLevels(lv.entries, { ...data, ...lvData }, now, lv.error, lvRoll);
 const dc = renderDeadCat({ ...data, ...dcData }, mx, checklistItems(mlv), mlv.lines);
 // dealer gamma (GEX) from CBOE delayed quotes — config/gex.json or ALPHA_GEX_SYMBOLS; failures marked unavailable
 const gexCfg = existsSync("config/gex.json") ? JSON.parse(readFileSync("config/gex.json", "utf8")) : { symbols: ["SPY", "QQQ", "NVDA", "SOXL"], days: 45 };
