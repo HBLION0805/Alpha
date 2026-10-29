@@ -64,8 +64,8 @@ export interface OilVixResult {
   /** VIX 分档 (display only) */ regime: VixRegime;
   lines: { oil: string[]; vix: string[]; regime: string[] };
 }
-export function oilSpeed(data: Record<string, Obs[]>): OilSpeed[] {
-  return (["WTI", "BRENT"] as const).map((id) => { const d1 = pct(data[id], 1), d5 = pct(data[id], OV.window);
+export function oilSpeed(data: Record<string, Obs[]>, same?: Partial<Record<"WTI" | "BRENT", { pct1: number } | null>>): OilSpeed[] {
+  return (["WTI", "BRENT"] as const).map((id) => { const d1 = same && id in same ? (same[id]?.pct1 ?? null) : pct(data[id], 1), d5 = pct(data[id], OV.window);
     return { id, d1, d5, fast: (d1 != null && Math.abs(d1) >= OV.fast1dPct) || (d5 != null && Math.abs(d5) >= OV.fast5dPct) }; });
 }
 /** HEURISTIC (not a model): 5-day moves of WTI vs SPX, copper (HG=F) and VIX. Copper missing → the cases that need it become 无法判断. */
@@ -97,8 +97,9 @@ export function vixConfirm(data: Record<string, Obs[]>): OilVixResult["vix"] {
   return v === -s ? { ...base, label: "confirm", zh: "方向确认", why: `${s > 0 ? "指数涨、VIX 跌" : "指数跌、VIX 升"}` }
     : { ...base, label: "diverge", zh: "背离/未确认", why: `${s > 0 ? "指数涨，VIX 也涨（上涨未被确认，有人在买保险）" : "指数跌，VIX 也跌（下跌未被恐慌确认）"}` };
 }
-export function buildOilVix(data: Record<string, Obs[]>): OilVixResult {
-  const speed = oilSpeed(data), fast = speed.some((s) => s.fast), d = oilDriver(data), vix = vixConfirm(data);
+/** `same`: same-contract 1d changes (oilContract.ts) — see buildOil */
+export function buildOilVix(data: Record<string, Obs[]>, same?: Partial<Record<"WTI" | "BRENT", { pct1: number } | null>>): OilVixResult {
+  const speed = oilSpeed(data, same), fast = speed.some((s) => s.fast), d = oilDriver(data), vix = vixConfirm(data);
   const dt = lastDate(data.WTI);
   const oil = [
     `- **变化速度**（${dt ?? "n/a"}）：${speed.map((s) => `${s.id === "WTI" ? "WTI" : "Brent"} 1日 ${f(s.d1)} · 5日 ${f(s.d5)}${s.fast ? " ⚡" : ""}`).join("；")} → ${fast ? `⚡ **快速变动**（|1日| ≥ ${OV.fast1dPct}% 或 |5日| ≥ ${OV.fast5dPct}%）` : `不算快（阈值 |1日| ≥ ${OV.fast1dPct}% 或 |5日| ≥ ${OV.fast5dPct}%）`}`,

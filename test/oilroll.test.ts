@@ -62,8 +62,8 @@ test("roll-day alarms: a spliced −5.5% no longer raises OIL_CRASH; a real fron
 
 test("only the oil input changes: scenarios / matrix / trade plan / dead-cat still get data.WTI; NO_TRADE, sizing and 能不能睡 code untouched", () => {
   const cli = readFileSync(new URL("src/cli/brief.ts", root), "utf8");
-  assert.match(cli, /const oilFront = dcData\.WTI_FRONT\?\.length \? frontContinuous\(data\.WTI, dcData\.WTI_FRONT, front\.code\) : null;/);
-  assert.deepEqual(cli.split("\n").filter((l) => /oilFront/.test(l) && !/^\s*\/\//.test(l)).length, 2, "built once, passed only to buildPremarket");
+  assert.match(cli, /const oilFront = values\.offline \? .* : sameBars\(\"WTI\", \{ code: front\.code, bars: dcData\.WTI_FRONT \}\);/); // contract = CL=F underlyingSymbol (oilContract.ts); calendar front only if it is that contract
+  assert.deepEqual(cli.split("\n").filter((l) => /oilFront/.test(l) && !/^\s*\/\//.test(l)).length, 3, "built once, n/a note loop, passed only to buildPremarket");
   assert.match(cli, /const pm = buildPremarket\(\{ oilFront, /); assert.doesNotMatch(cli, /data\.WTI = |data\["WTI"\] =/);
   const pmSrc = readFileSync(new URL("src/macro/premarket.ts", root), "utf8").split("\n").filter((l) => /\bOD\b/.test(l)).map((l) => l.trim().slice(0, 40));
   assert.equal(pmSrc.length, 4, pmSrc.join("\n")); // definition + USDCAD line + buildOilVix + buildOil
