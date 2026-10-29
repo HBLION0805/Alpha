@@ -5,6 +5,7 @@
  *  - auto:   derived ONLY from what the ledger actually records (autoSins below); always a candidate to confirm at review.
  * Warn-only: nothing here blocks a trade. Mentor-shadow trades are never tagged (the mentor's decision, not the user's behaviour).
  */
+import { dailyRiskCapUsd } from "./riskCap.ts";
 import { countsTowardDailyCap, type JournalEntry } from "./journal.ts";
 import { effectiveRules, type RuleCard } from "./rules.ts";
 
@@ -41,7 +42,7 @@ export function autoSins(e: JournalEntry, all: JournalEntry[], rules?: Partial<R
   const day = etDay(e.openedAt), peers = all.filter((x) => own(x) && x.id !== e.id);
   const lossesBefore = peers.filter((x) => x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt) && (x.pnl ?? 0) < 0).sort((a, b) => t(a.closedAt!) - t(b.closedAt!));
   // daily-cap breach: simulated trades closed earlier that day (formal + practice + mentor_shadow); real_practice never counts (DECISIONS 2026-10-17)
-  const perDay = capital * effectiveRules(rules).dailyLossLimitPct / 100;
+  const perDay = dailyRiskCapUsd(day, capital, effectiveRules(rules)); // that day's cap (riskCap.ts)
   const realized = all.filter((x) => x.id !== e.id && countsTowardDailyCap(x) && x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt)).reduce((s, x) => s + (x.pnl ?? 0), 0);
   const breached = -realized > perDay;
   if (lossesBefore.length || breached) {

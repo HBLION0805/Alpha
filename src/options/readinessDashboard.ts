@@ -3,6 +3,7 @@
  * Scope "simulated" = mode paper, source ≠ real_practice / mentor_shadow (formal + paper_sim practice). Formal-only count is shown too,
  * because only formal trades count toward the readiness criteria (src/options/readiness.ts).
  */
+import { dailyRiskCapUsd } from "./riskCap.ts";
 import { fullPnl, type JournalEntry } from "./journal.ts";
 import { expectancy } from "./readiness.ts";
 import { entryCapUsd } from "./confidence.ts";
@@ -30,8 +31,10 @@ export function buildDashboard(entries: JournalEntry[], capital: number, now = n
   const cap = (e: E) => entryCapUsd(e, capital); // recorded tier, else the trade's own max-loss tier (0.5–2%)
   const perTrade = closed.filter((e) => -fullPnl(e) > cap(e) + 0.005).map((e) => ({ id: e.id, loss: r2(-fullPnl(e)), cap: r2(cap(e)) }));
   const byDay = new Map<string, number>(); for (const e of closed) byDay.set(etDay(e.closedAt!), (byDay.get(etDay(e.closedAt!)) ?? 0) + fullPnl(e));
-  const dCap = capital * (o.dailyCapPct ?? 2) / 100;
-  const daily = [...byDay].filter(([, v]) => -v > dCap).map(([day, v]) => ({ day, loss: r2(-v) }));
+  // each day judged against THAT day's cap (riskCap.ts), equity = capital + P&L closed before the day
+  const eqBefore = (d: string) => capital + closed.filter((e) => etDay(e.closedAt!) < d).reduce((s, e) => s + fullPnl(e), 0);
+  const dCap = (d: string) => (o.dailyCapPct != null ? capital * o.dailyCapPct / 100 : dailyRiskCapUsd(d, eqBefore(d)));
+  const daily = [...byDay].filter(([d, v]) => -v > dCap(d)).map(([day, v]) => ({ day, loss: r2(-v) }));
   const err = { judgment: 0, execution: 0, good: 0, unclassified: 0, ids: {} as Record<string, string[]> };
   for (const e of closed) { const c = (e.errorType === "logic" ? "judgment" : e.errorType === "execution" ? "execution" : undefined) ?? (e.lossReview?.errorClass as string | undefined) ?? (e.postMortem?.classification as string | undefined);
     const k = c === "judgment" || c === "logic" ? "judgment" : c === "execution" ? "execution" : c === "good" ? "good" : "unclassified"; err[k]++; (err.ids[k] ??= []).push(e.id); }

@@ -16,6 +16,6 @@ Use this when the user shares a trade idea in chat. It goes deeper than the dete
 9. **结论**: one of 不做 / 等确认（写明条件）/ 可以模拟（列出必须 ack 的 WARN）. One line: 这是你的决定，结果由你负责.
 
 ## Rules
-- Never loosen caps (1% per trade, 3% per underlying, one adjustment, 2% daily, ≤10 positions). Never suggest averaging down; at most one add, and only after the thesis is reconfirmed.
+- Never loosen caps (1% per trade, 3% per underlying, one adjustment, the daily cap (src/options/riskCap.ts: 2% before 2026-10-30; from 10-30 10% while equity ≤ $10k, 2% above), ≤10 positions). Never suggest averaging down; at most one add, and only after the thesis is reconfirmed.
 - Never say "this will work". No probabilities presented as data.
 - Short. At most 2 lines per section. Quote the mentor verbatim when citing.

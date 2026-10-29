@@ -29,7 +29,7 @@ export interface RuleCard {
   buyerTimeStopFraction: number;      // 14.7 到期时间过半无进展 → 退出
   debitSpreadTakeProfitPct: number;   // 14.7 借记价差 最大盈利的 50–75%
   calendarTakeProfitPct: number; calendarStopPct: number; // 14.7 日历 25–50% / 净支出 50%
-  dailyLossLimitPct: number;         // 纪律 #11 每日最大亏损 — user-confirmed 2% (2026-10-14)
+  dailyLossLimitPct: number;         // 纪律 #11 每日最大亏损 — base 2% (2026-10-14); dated rule in riskCap.ts (10% from 2026-10-30 while equity ≤ $10k); an override here can only lower it
   maxConcurrentPositions: number;     // 大佬复盘 (mentor-winrate-review): 同时管理的仓位降回10个以下 — default 10, user may only lower it
   forbidden: string[];
 }

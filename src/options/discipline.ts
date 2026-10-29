@@ -27,7 +27,7 @@ export function zeroDteCheck(log: TradeLog[], todayEt: string): DiscSignal {
     : { id: "0dte_one_per_day", severity: "OK", detail: "first 0DTE trade today", cite: D(4, "一天只做一笔") };
 }
 
-// #11 daily max loss: rule-card dailyLossLimitPct (user-confirmed 2%, configurable)
+// #11 daily max loss: callers pass riskCap.ts dailyRiskCapPct(date, equity) (2% before 2026-10-30; 10% while equity ≤ $10k after)
 export function dailyLossCheck(log: TradeLog[], todayEt: string, capital: number, openPnlToday = 0, limitPct = DEFAULT_RULES.dailyLossLimitPct): DiscSignal {
   // simulated trades only (formal + practice + mentor_shadow); real_practice never counts toward the $5k sim cap (DECISIONS 2026-10-17)
   const realized = log.filter((t) => t.source !== "real_practice" && t.closedAt && day(t.closedAt) === todayEt).reduce((s, t) => s + (t.pnl ?? 0), 0);

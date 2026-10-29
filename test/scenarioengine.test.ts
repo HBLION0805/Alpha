@@ -49,7 +49,7 @@ test("confidence cap: 0.5–2% of live equity, high/highest need all three align
   const h = tradeCap(5000, "highest", { macro: true, scenarioPlan: true, technical: false }); assert.equal(h.tier, "medium"); assert.ok(h.downgraded);
   assert.equal(tradeCap(5000, "highest", { macro: true, scenarioPlan: true, technical: true }).usd, 100);
   assert.equal(tradeCap(5000, "high", { macro: true, scenarioPlan: true, technical: true }).usd, 75);
-  assert.equal(dayCapUsd(4831), 96.62);
+  assert.equal(dayCapUsd(4831, "2026-10-29"), 96.62); assert.equal(dayCapUsd(4831, "2026-10-30"), 483.1);
   const eq = paperEquity([{ mode: "paper", source: "practice", closedAt: "x", pnl: -200 } as never], 5000); assert.equal(eq, 4800);
   assert.equal(tradeCap(eq).usd, 48); assert.match(capLabel(tradeCap(eq)), /置信度「中」1% × 权益 \$4,800 = 单笔上限 \$48/);
   assert.equal(entryCapUsd({ capitalAtEntry: 5000 } as never, 5000), 50); assert.equal(entryCapUsd({ confidence: { capUsd: 75 } } as never, 5000), 75);

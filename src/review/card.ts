@@ -3,6 +3,7 @@
  * is reported as missing, never filled in. Reuses planlink (§2.1), scenarios, riskplan (30/30 + STOP_RULE),
  * tpplan (分批止盈), gex, levels, calendar/OpEx, earnings, critique (唱反调) and postmortem (past mistakes).
  */
+import { dailyRiskCapPct } from "../options/riskCap.ts";
 import { mentorForTags, liquidityThemeLines, oilSqueezeLines, deadCatCardLines, mentorLevelCardLines, stockProtectionLines } from "./mentor.ts";
 import type { MarketPhase } from "../macro/marketPhase.ts";
 import type { LevelEntry } from "../macro/mentorLevels.ts";
@@ -92,12 +93,12 @@ export function suggestVerticals(dir: Dir, spot: number, exp: string, quotes: Qu
   }
   return out.sort((a, b) => Math.abs(a.legs[0]!.strike - spot) - Math.abs(b.legs[0]!.strike - spot) || b.loss - a.loss).slice(0, 3);
 }
-export function dailyBudget(journal: JournalEntry[], capital: number, now: Date, perDayPct = 2): { used: number; remaining: number } {
-  const today = etDay(now), sim = journal.filter((e) => e.mode === "paper" && countsTowardDailyCap(e)); // incl. mentor_shadow (DECISIONS 2026-10-17)
+export function dailyBudget(journal: JournalEntry[], capital: number, now: Date, perDayPct?: number): { used: number; remaining: number } {
+  const today = etDay(now), pct = perDayPct ?? dailyRiskCapPct(today, capital), sim = journal.filter((e) => e.mode === "paper" && countsTowardDailyCap(e)); // incl. mentor_shadow (DECISIONS 2026-10-17)
   const pnl = sim.filter((e) => e.closedAt && etDay(new Date(e.closedAt)) === today).reduce((s, e) => s + (e.pnl ?? 0), 0)
     + sim.filter((e) => !e.closedAt).reduce((s, e) => s + (e.marks?.at(-1)?.pnl ?? 0), 0);
   const used = Math.max(0, -pnl);
-  return { used: r2(used), remaining: r2(Math.max(0, capital * perDayPct / 100 - used)) };
+  return { used: r2(used), remaining: r2(Math.max(0, capital * pct / 100 - used)) };
 }
 const legStr = (l: CardLeg[]) => l.map((x) => `${x.qty > 0 ? "买" : "卖"} ${x.strike}${x.type === "put" ? "P" : "C"}（${x.mid ?? "无价"}${x.mid != null ? `，${x.src}` : ""}）`).join(" / ");
 
@@ -163,7 +164,7 @@ export function buildCard(i: CardInput): Card {
   S.push({ n: 5, title: "分批止盈", status: tp?.plan ? "ok" : "missing", lines: tp?.plan ? [`- ${renderTakeProfit(tp.plan)}`, "- 暴利（短时间 +80% 以上）：先止盈 ≥90%，Runner ≤10%（windfall）"] : ["- 缺少到期日 → 无法给出"] });
 
   // 6) max loss vs budget
-  const s6: string[] = [`- ${capLabel(cap)}；今日已用 $${budget.used}，日内剩余 $${budget.remaining}（日上限 2% = $${dayCapUsd(equity)}）→ 本笔最多 $${r2(allowed)}`];
+  const s6: string[] = [`- ${capLabel(cap)}；今日已用 $${budget.used}，日内剩余 $${budget.remaining}（日上限 ${dailyRiskCapPct(i.now, equity)}% = $${dayCapUsd(equity, i.now)}）→ 本笔最多 $${r2(allowed)}`];
   let st6: Status = "ok";
   if (!legs.length) { st6 = "fail"; s6.push(exp ? `- 🛑 在 $${r2(allowed)} 内找不到 ${exp} 的定义风险价差（或无报价）→ 不可能按规则做` : "- 缺少到期日 --exp"); failing.push("最大亏损：无可行结构"); }
   else if (per == null) { st6 = naked ? "fail" : "missing"; s6.push(`- 结构 ${legStr(legs)}：${naked ? "风险无限" : "缺少报价 → 最大亏损未知"}`); if (!naked) failing.push("最大亏损：缺报价"); }

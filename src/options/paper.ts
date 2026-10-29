@@ -2,6 +2,7 @@
  * Paper trading (PROGRESS.md phase "paper trading"): simulated entries on real data, journaled for the
  * live-readiness scorecard (readiness.ts). Nothing here can place, preview or cancel a real order.
  */
+import { hasDefinedRisk, RISK_UNDEFINED_VIOLATION } from "./riskCap.ts";
 import { entryCapUsd } from "./confidence.ts";
 import { preTradeChecks, type Proposal, type PreCheck } from "./pretrade.ts";
 import { checkPlanLink } from "./planlink.ts";
@@ -153,6 +154,8 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
     ...(warnTags.length ? { warnTags, warnDetails, violations: warnTags.includes("warn_over_cap") ? ["exceeds_1pct_cap"] : [] } : {}),
   };
   if (scProblems.length) { entry.violations = [...new Set([...(entry.violations ?? []), "no_scenario_plan_at_entry"])]; }
+  // user rule 2026-10-29: every trade needs a hard stop or a fixed max loss; otherwise a violation and not defined risk (riskCap.ts)
+  if (!hasDefinedRisk(entry)) entry.violations = [...new Set([...(entry.violations ?? []), RISK_UNDEFINED_VIOLATION])];
   // practice: 七宗罪 that are knowable at entry (wrath after a same-day loss, >3 opens/day, cheap short-dated lottery) → warn tags only, never a block
   if (entry.kind === "practice") { const s = entrySinWarnTags(entry, j.entries, a.rules, j.capital);
     if (s.tags.length) { entry.warnTags = [...new Set([...(entry.warnTags ?? []), ...s.tags])]; entry.warnDetails = [...(entry.warnDetails ?? []), ...s.details]; entry.violations ??= []; } }

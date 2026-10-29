@@ -3,7 +3,7 @@
  * Macro-first (mentor-better-macro-trader): scenarios explain WHY; premarket/regime signals say WHEN they are confirmed.
  * Weights are QUALITATIVE ranks justified by which live signals agree. They are not probabilities and not data.
  * Every expression respects the rule card (src/options/rules.ts): defined-risk only, 1% max loss per trade, 3% per underlying,
- * 1 adjustment, 2% daily loss; NO_TRADE inside the 48h high-impact event window (risk.ts) and when no scenario leads.
+ * 1 adjustment, daily loss cap (riskCap.ts); NO_TRADE inside the 48h high-impact event window (risk.ts) and when no scenario leads.
  */
 import type { Obs } from "./fetch.ts";
 import { chg } from "./premarket.ts";

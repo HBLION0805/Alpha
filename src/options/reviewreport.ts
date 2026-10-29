@@ -2,6 +2,7 @@
  * Review report (plan P2 #9): per-trade cards and a period summary.
  * Output: data/out/review-YYYY-MM-DD.md (`npm run review`; `--week` = last 7 days).
  */
+import { dailyRiskCapUsd } from "./riskCap.ts";
 import type { JournalEntry } from "./journal.ts";
 import { mentorCompare, needsPostMortem } from "./postmortem.ts";
 import { effectiveRules } from "./rules.ts";
@@ -39,7 +40,7 @@ export function tradeCard(e: JournalEntry, all: JournalEntry[] = [e]): string[] 
   return L;
 }
 export function renderReview(entries: JournalEntry[], capital: number, from: string, to: string): string {
-  const R = effectiveRules(), perDay = capital * R.dailyLossLimitPct / 100;
+  const R = effectiveRules(), perDay = dailyRiskCapUsd(to, capital, R); // cap of the range end date (riskCap.ts)
   const inRange = (iso?: string) => !!iso && etDay(iso) >= from && etDay(iso) <= to;
   const xs = entries.filter((e) => inRange(e.openedAt) || inRange(e.closedAt) || !e.closedAt);
   const sim = xs.filter((e) => e.source !== "real_practice");

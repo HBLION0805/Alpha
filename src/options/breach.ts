@@ -6,16 +6,18 @@
  * - per day: today's realized + current unrealized beyond the 2% cap → 🚨 (all simulated trades incl. mentor_shadow; journal.ts countsTowardDailyCap)
  * - at entry: max loss beyond the 1% cap → "exceeds_1pct_cap" (mentor_shadow trades are allowed to be logged but are flagged)
  */
+import { dailyRiskCapUsd, hasDefinedRisk, RISK_UNDEFINED_VIOLATION } from "./riskCap.ts";
 import { countsTowardDailyCap, type JournalEntry } from "./journal.ts";
 import { effectiveRules, type RuleCard } from "./rules.ts";
 import { entryCapUsd, paperEquity } from "./confidence.ts";
 const etDay = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 const add = (e: JournalEntry, v: string) => { if (!(e.violations ?? []).includes(v)) (e.violations ??= []).push(v); };
 export function capFlags(entries: JournalEntry[], capital: number, now: Date, rules?: Partial<RuleCard>): string[] {
-  const R = effectiveRules(rules), perDay = Math.round(paperEquity(entries, capital) * R.dailyLossLimitPct) / 100;
-  const out: string[] = [], today = etDay(now.toISOString());
+  const R = effectiveRules(rules), today = etDay(now.toISOString()), perDay = dailyRiskCapUsd(today, paperEquity(entries, capital), R);
+  const out: string[] = [];
   for (const e of entries) {
     const perTrade = entryCapUsd(e, capital);
+    if (!hasDefinedRisk(e)) add(e, RISK_UNDEFINED_VIOLATION);
     if ((e.maxLoss ?? 0) > perTrade) { add(e, "exceeds_1pct_cap"); }
     const m = e.marks?.at(-1);
     if (!e.closedAt && m && -m.pnl > perTrade) { add(e, "open_loss_over_cap"); out.push(`🚨 超限 ${e.id} ${e.symbol} 浮亏 $${-m.pnl} > 单笔上限 $${perTrade}`); }

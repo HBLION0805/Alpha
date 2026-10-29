@@ -4,6 +4,7 @@
  * Win rate is shown as context only: a low win rate is not failure when losses stay controlled
  * (大佬复盘 mentor-winrate-review) — expectancy and loss caps decide.
  */
+import { dailyRiskCapUsd, hasDefinedRisk, RISK_UNDEFINED_VIOLATION } from "./riskCap.ts";
 import { fullPnl, type JournalEntry } from "./journal.ts";
 import { entryCapUsd } from "./confidence.ts";
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
@@ -75,16 +76,19 @@ export function readiness(i: ReadinessInput): Readiness {
   const first0 = closed[0]?.closedAt, last0 = closed.at(-1)?.closedAt;
   const shadowDays = first0 && last0 ? practice.filter((e) => e.source === "mentor_shadow" && e.closedAt && e.pnl != null && day(e.closedAt) >= day(first0) && day(e.closedAt) <= day(last0)) : [];
   const byDay = new Map<string, number>(); for (const e of [...closed, ...shadowDays]) byDay.set(day(e.closedAt!), (byDay.get(day(e.closedAt!)) ?? 0) + fullPnl(e));
-  const badDays = [...byDay].filter(([, v]) => -v > i.capital * R.dailyLossLimitPct / 100);
+  // each day against THAT day's cap (riskCap.ts: 2% before 2026-10-30; 10% while equity ≤ $10k after); equity = capital + earlier closes
+  const eqBefore = (d: string) => i.capital + closed.filter((e) => day(e.closedAt!) < d).reduce((s, e) => s + fullPnl(e), 0);
+  const capDay = (d: string) => dailyRiskCapUsd(d, eqBefore(d), R);
+  const badDays = [...byDay].filter(([d, v]) => -v > capDay(d));
   let eq = 0, peak = 0, mdd = 0; for (const p of ps) { eq += p; peak = Math.max(peak, eq); mdd = Math.max(mdd, peak - eq); }
   const ddOver = mdd > i.capital * ddLimitPct / 100;
-  C.push({ id: "loss_caps", title: `单笔亏损 ≤ 开仓时的置信度上限（权益 0.5–2%，默认 ${R.sellerMaxLossPerTradePct}%），单日亏损 ≤${R.dailyLossLimitPct}%，最大回撤 ≤${ddLimitPct}%`, pass: closed.length > 0 && !bigLoss.length && !badDays.length && !ddOver,
+  C.push({ id: "loss_caps", title: `单笔亏损 ≤ 开仓时的置信度上限（权益 0.5–2%，默认 ${R.sellerMaxLossPerTradePct}%），单日亏损 ≤ 当天上限（2026-10-30 前 2%；之后权益 ≤$10k 时 10%，>$10k 回到 2%），最大回撤 ≤${ddLimitPct}%`, pass: closed.length > 0 && !bigLoss.length && !badDays.length && !ddOver,
     detail: [`最大回撤 $${r2(mdd)}（${r2((mdd / i.capital) * 100)}%，上限 ${ddLimitPct}% = $${r2(i.capital * ddLimitPct / 100)}）`, `最大单笔亏损 $${r2(-Math.min(0, ...ps))}`],
-    missing: [...(ddOver ? [`最大回撤 $${r2(mdd)} > ${ddLimitPct}%`] : []), ...bigLoss.map((e) => `${e.id} ${e.symbol} 亏 $${r2(-fullPnl(e))} > 上限 $${r2(capUsd(e))}`), ...badDays.map(([d, v]) => `${d} 单日亏 $${r2(-v)} > ${R.dailyLossLimitPct}%`)] });
+    missing: [...(ddOver ? [`最大回撤 $${r2(mdd)} > ${ddLimitPct}%`] : []), ...bigLoss.map((e) => `${e.id} ${e.symbol} 亏 $${r2(-fullPnl(e))} > 上限 $${r2(capUsd(e))}`), ...badDays.map(([d, v]) => `${d} 单日亏 $${r2(-v)} > 当天上限 $${r2(capDay(d))}`)] });
 
   // 4) discipline: violations ≈ 0; thesis + stop recorded before entry; concurrent cap; premature exits
   const viol = paper.flatMap((e) => [...(e.violations ?? []), ...(e.motive && VIOLATION_FROM_MOTIVE.has(e.motive) ? [`motive_${e.motive}`] : []),
-    ...((e.concurrentAtEntry ?? 0) > R.maxConcurrentPositions ? ["over_concurrent_cap"] : [])].map((v) => `${e.id}:${v}`));
+    ...((e.concurrentAtEntry ?? 0) > R.maxConcurrentPositions ? ["over_concurrent_cap"] : []), ...(!hasDefinedRisk(e) && !(e.violations ?? []).includes(RISK_UNDEFINED_VIOLATION) ? [RISK_UNDEFINED_VIOLATION] : [])].map((v) => `${e.id}:${v}`));
   const noPre = paper.filter((e) => !(e.thesisRecordedAt && e.stopRecordedAt && e.thesisRecordedAt <= e.openedAt && e.stopRecordedAt <= e.openedAt));
   const premature = closed.filter(isPremature);
   const peakConc = Math.max(0, ...paper.map((e) => e.concurrentAtEntry ?? 0));

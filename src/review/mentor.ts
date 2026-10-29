@@ -6,6 +6,7 @@
  * Warn-only. Never changes a verdict or blocks anything; the written plan card stays the only hard requirement.
  * Every quote is a verbatim substring of its file (test/mentor.test.ts checks this). Rotation is deterministic by ET day.
  */
+import { dailyRiskCapUsd } from "../options/riskCap.ts";
 import type { JournalEntry } from "../options/journal.ts";
 import { fullPnl, countsTowardDailyCap } from "../options/journal.ts";
 import type { MajorEvent } from "../options/psych.ts";
@@ -216,8 +217,8 @@ export function selectReminders(s: ReminderState, cap = 3): Reminder[] {
   const ownByDay = new Map<string, number>(); for (const e of closed) { const d = etDay(e.closedAt!); if (countsTowardDailyCap(e)) ownByDay.set(d, (ownByDay.get(d) ?? 0) + fullPnl(e)); }
   const recentDays = [...byDay.keys()].filter((d) => d <= today && Date.parse(today) - Date.parse(d) <= 3 * 864e5).sort();
   // 3) loss limit breached in the last 3 calendar days (checked before wins: stop and walk away beats size advice)
-  const perDay = s.capital * effectiveRules().dailyLossLimitPct / 100;
-  const breach = recentDays.filter((d) => byDay.get(d)! <= -perDay).at(-1);
+  const capOn = (d: string) => dailyRiskCapUsd(d, s.capital, effectiveRules()); // each day's own cap (riskCap.ts)
+  const breach = recentDays.filter((d) => byDay.get(d)! <= -capOn(d)).at(-1), perDay = breach ? capOn(breach) : 0;
   // 2) winning streak ≥3 / ≥1% day recently
   let streak = 0; for (let i = closed.length - 1; i >= 0 && fullPnl(closed[i]!) > 0; i--) streak++;
   const big = recentDays.filter((d) => (ownByDay.get(d) ?? 0) >= s.capital * 0.01).at(-1);

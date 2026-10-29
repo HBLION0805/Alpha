@@ -4,6 +4,7 @@
  *   knowledge/mentor/reviews/REVIEW_HYG_IWM_TLT_TQQQ.md  (cited as "复盘 HYG/IWM/TLT/TQQQ")
  * plus 期权课 第13章 / 14.5 / 附录 D.2.
  */
+import { dailyRiskCapPct } from "./riskCap.ts";
 import { daysTo } from "./bs.ts";
 import { analyze, type Leg } from "./payoff.ts";
 import { DEFAULT_RULES, type RuleCard, type PosLeg } from "./rules.ts";
@@ -164,7 +165,7 @@ export function disciplineChecks(p: Proposal, proposedMaxLoss: number, R: RuleCa
     const is0dte = p.legs.some((l) => l.type !== "stock" && l.expiration?.slice(0, 10) === p.asOf.slice(0, 10));
     if (is0dte) out.push(conv(zeroDteCheck(d.journal, today)));
     if (d.openPnlToday == null) need("daily_loss_limit", "BLOCK", "discipline.openPnlToday (today's unrealized P&L; 0 if flat)");
-    else out.push(conv(dailyLossCheck(d.journal, today, p.capital, d.openPnlToday, R.dailyLossLimitPct)));
+    else out.push(conv(dailyLossCheck(d.journal, today, p.capital, d.openPnlToday, dailyRiskCapPct(today, p.capital, R))));
     const closed = d.journal.filter((t) => t.closedAt).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
     let streak = 0; for (let i = closed.length - 1; i >= 0 && (closed[i]!.pnl ?? 0) > 0; i--) streak++;
     const todays = closed.filter((t) => t.closedAt!.slice(0, 10) === today);
