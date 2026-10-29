@@ -46,7 +46,8 @@ import { entryInput } from "../options/scenarioCtx.ts";
 import { entryCapUsd } from "../options/confidence.ts";
 import { mentorSignals, renderMentorSignals, mentorSignalsJson, liveFirst } from "../macro/mentorSignals.ts";
 import { yahooQuote, yahooFutQuote } from "../adapters/yahoo.ts";
-import { OIL_CONT, parseContract, sameContractChange, sameContractNote, OFFLINE_OIL_NOTE, type FrontState, type OilId, type SameContract } from "../macro/oilContract.ts";
+import { OFFLINE_OIL_NOTE, type OilId } from "../macro/oilContract.ts";
+import { futSameChange, futNote, contractSeries, mergeFrontState, isFutures, parseContract, OFFLINE_FUT_NOTE, type FrontState, type SameContract } from "../macro/futContract.ts";
 import { briefArchivePath } from "../macro/briefArchive.ts";
 import { paperGate, renderGate } from "../macro/paperGate.ts";
 
@@ -92,18 +93,36 @@ const fedR = await loadFedSpeakers({ offline: values.offline ?? false, now });
 const fedLines = fedR.data ? renderFedSpeakers(fedR.data.speeches, fedR.data.blackouts, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), 14, fedR.status, fedR.data.coverage) : [`- 不可用：${fedR.status}`];
 // 原油同合约涨跌 (src/macro/oilContract.ts): front contract = underlyingSymbol of BZ=F / CL=F; 1d = that contract's price ÷ ITS
 // previous close. Never the continuous daily bars (they splice contracts on roll days → fake OIL_CRASH). Brief + alarms both use it.
-const oilStatePath = "data/out/oil-front.json";
-let oilState: FrontState = existsSync(oilStatePath) ? (() => { try { return JSON.parse(readFileSync(oilStatePath, "utf8")) as FrontState; } catch { return {}; } })() : {};
-const oilSame: Partial<Record<OilId, SameContract | null>> = {}, oilNotes: string[] = [], oilBars: Partial<Record<OilId, Obs[]>> = {};
-if (!values.offline) for (const id of ["WTI", "BRENT"] as const) {
-  const today = etDate(now), prevBar = data[id]?.filter((o) => o.t.slice(0, 10) < today).at(-1)?.v ?? null;
-  try {
-    const cq = await yahooFutQuote(OIL_CONT[id]), kq = parseContract(cq.underlyingSymbol) ? await yahooFutQuote(cq.underlyingSymbol!) : null;
-    const r = sameContractChange(id, cq, kq, { today, state: oilState, contPrevBar: prevBar });
-    oilState = r.state; oilSame[id] = r.sc; oilNotes.push(r.sc ? sameContractNote(r.sc, prevBar) : r.note);
-    if (r.sc) try { oilBars[id] = (await fetchDailyOnce({ id: `${id}_CONTRACT`, provider: "yahoo", ref: r.sc.contract, label: r.sc.code, unit: "price", frequency: "daily" })).filter((o) => o.t >= since400); } catch (e) { failed[`oil bars ${r.sc.code}`] = (e as Error).message; }
-  } catch (e) { failed[`oil quote ${id}`] = (e as Error).message; oilSame[id] = null; oilNotes.push(`${OIL_CONT[id]} 同合约报价失败 → 1日涨跌不计算（不用连续合约日线）`); }
+// 期货同合约涨跌 (src/macro/futContract.ts; docs/FUTURES_SAME_CONTRACT.md): for EVERY Yahoo =F series in the brief (premarket,
+// dead-cat, mentor levels) the front contract = underlyingSymbol of the continuous quote; 1d = that contract's price ÷ ITS previous
+// close. Never the continuous daily bars (they splice contracts on roll days → fake moves / alarms). Oil (WTI/BRENT) is one client.
+const futStatePath = "data/out/futures-front.json", legacyOilState = "data/out/oil-front.json";
+const readJson = (f: string) => { try { return existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) as FrontState : null; } catch { return null; } };
+let futState: FrontState = mergeFrontState(readJson(futStatePath), readJson(legacyOilState));
+type FutSrc = { id: string; cont: string; get: () => Obs[] | undefined; set: (o: Obs[]) => void };
+const futSrcs: FutSrc[] = [
+  ...PM_SERIES.filter((d) => d.provider === "yahoo" && isFutures(d.ref)).map((d) => ({ id: d.id, cont: d.ref, get: () => data[d.id], set: (o: Obs[]) => { data[d.id] = o; } })),
+  ...DEADCAT_SERIES.filter((d) => d.provider === "yahoo" && isFutures(d.ref)).map((d) => ({ id: d.id, cont: d.ref, get: () => dcData[d.id], set: (o: Obs[]) => { dcData[d.id] = o; } })),
+  ...(lvActive ? levelSeries(lvActive.entry) : []).filter((x) => isFutures(x.def.ref)).map((x) => ({ id: `ML_${x.key}`, cont: x.def.ref, get: () => lvData[x.key], set: (o: Obs[]) => { lvData[x.key] = o; } })),
+];
+const futSame: Record<string, SameContract | null> = {}, futBars: Record<string, Obs[] | undefined> = {}, futNotes: Record<string, string> = {};
+const futQuote = (sym: string) => yahooFutQuote(sym).catch((e) => { failed[`fut quote ${sym}`] = (e as Error).message; return null; });
+if (!values.offline) {
+  const today = etDate(now), conts = [...new Set(futSrcs.map((f) => f.cont))];
+  const cq = Object.fromEntries(await Promise.all(conts.map(async (c) => [c, await futQuote(c)] as const)));
+  const kq = Object.fromEntries(await Promise.all(conts.map(async (c) => { const u = cq[c]?.underlyingSymbol; return [c, parseContract(u) ? await futQuote(u!) : null] as const; })));
+  for (const f of futSrcs) {
+    const r = futSameChange(f.id, f.cont, cq[f.cont] ?? null, kq[f.cont] ?? null, { today, state: futState });
+    futState = r.state; futSame[f.id] = r.sc;
+    const prevBar = f.get()?.filter((o) => o.t.slice(0, 10) < today).at(-1)?.v ?? null;
+    futNotes[f.id] = r.sc ? futNote(f.cont, r.sc, prevBar) : r.note;
+  }
+  await Promise.all([...new Set(futSrcs.map((f) => futSame[f.id]?.contract).filter((c): c is string => !!c))].map(async (c) => {
+    try { const bars = (await fetchDailyOnce({ id: `${c}_CONTRACT`, provider: "yahoo", ref: c, label: c, unit: "price", frequency: "daily" })).filter((o) => o.t >= since400);
+      for (const f of futSrcs) if (futSame[f.id]?.contract === c) futBars[f.id] = bars; } catch (e) { failed[`fut bars ${c}`] = (e as Error).message; } }));
 }
+const oilSame: Partial<Record<OilId, SameContract | null>> = {}, oilNotes: string[] = [], oilBars: Partial<Record<OilId, Obs[]>> = {};
+if (!values.offline) for (const id of ["WTI", "BRENT"] as const) { oilSame[id] = futSame[id] ?? null; oilBars[id] = futBars[id]; if (futNotes[id]) oilNotes.push(futNotes[id]!.replace(/^(CL|BZ)=F = /, id === "WTI" ? "WTI = " : "Brent = ")); }
 // History must be the SAME contract as the 1d change: WTI's own bars, or the calendar front only when it is that same contract.
 // Missing → null → premarket shows 5日 / 均线 / 52周 n/a and fires no 5d alarm (never the spliced CL=F / BZ=F bars).
 // Offline: no quotes → legacy continuous method (labelled OFFLINE_OIL_NOTE).
@@ -114,7 +133,11 @@ const oilFront = values.offline ? (dcData.WTI_FRONT?.length ? frontContinuous(da
 const brentFront = values.offline ? null : sameBars("BRENT");
 if (values.offline) oilNotes.push(OFFLINE_OIL_NOTE);
 for (const [id, fs] of [["WTI", oilFront], ["BRENT", brentFront]] as const) if (!values.offline && oilSame[id] && !fs) oilNotes.push(`${oilSame[id]!.code} 合约日线不可用 → 5日 / 50日均线 / 52周高点 n/a，不触发 5日警报（不用连续合约日线）`);
-const pm = buildPremarket({ oilFront, brentFront, oilSame: values.offline ? undefined : oilSame, oilNotes, fedLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
+// every futures consumer (premarket ④ ES/NQ/RTY, gold, copper, RBOB, scenarios, matrix, dead-cat EWF, mentor levels, mentor signals) now
+// reads the same-contract series; missing → price only / empty → n/a, no alarm. Offline: old continuous method, labelled.
+const futRollLines: string[] = values.offline ? [OFFLINE_FUT_NOTE] : futSrcs.filter((f) => f.id !== "WTI" && f.id !== "BRENT" && (futSame[f.id]?.rolled || !futSame[f.id] || !futBars[f.id]?.length)).map((f) => futNotes[f.id] + (futSame[f.id] && !futBars[f.id]?.length ? `；${futSame[f.id]!.code} 合约日线不可用 → 5日等 n/a` : ""));
+if (!values.offline) for (const f of futSrcs) f.set(contractSeries(f.get(), futBars[f.id], futSame[f.id]).series);
+const pm = buildPremarket({ oilFront, brentFront, oilSame: values.offline ? undefined : oilSame, oilNotes, futNotes: futRollLines, fedLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
 const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;
 const sc = buildScenarios({ now, data, calendar, headlines: ranked.slice(0, 40).map((r) => r.headline), earningsCount: earnings?.length ?? null, regimeLabel: macro.regime.label, previousLeader });
@@ -136,7 +159,9 @@ const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, level
 // 导师框架信号 + 纸面交易闸门 (paper only; user-approved 2026-10-22)
 // live-first inputs (Yahoo v8 chart meta regularMarketPrice): daily bars lag intraday; stale → labelled with timestamp
 const q = async (sym: string) => (values.offline ? null : await yahooQuote(sym).catch((e) => { failed[`live ${sym}`] = (e as Error).message; return null; }));
-const [qNq, qWti, qVix, qGold] = await Promise.all(["NQ=F", front.yahoo, "^VIX", "GC=F"].map(q));
+// futures live quotes = the underlyingSymbol contract itself (same contract as the series); no contract → no live quote
+const qFut = (id: string, fb?: string) => (futSame[id] ? q(futSame[id]!.contract) : fb && !values.offline ? q(fb) : Promise.resolve(null));
+const [qNq, qWti, qVix, qGold] = await Promise.all([qFut("NQ"), qFut("WTI", front.yahoo), q("^VIX"), qFut("GOLD")]);
 const sigBase = { ...lvData, ...dcData, ...data };
 const lNq = liveFirst(sigBase.NQ, qNq, now), lWti = liveFirst(dcData.WTI_FRONT?.length ? dcData.WTI_FRONT : data.WTI, dcData.WTI_FRONT?.length ? qWti : null, now), lVix = liveFirst(sigBase.VIX, qVix, now), lGold = liveFirst(sigBase.GOLD, qGold, now);
 const msig = mentorSignals({ ...sigBase, NQ: lNq.series, VIX: lVix.series, GOLD: lGold.series }, lWti.series.length ? { series: lWti.series, src: dcData.WTI_FRONT?.length ? `WTI 近月 ${front.code}` : "CL=F" } : null, { nq: lNq.stamp, wti: lWti.stamp, vix: lVix.stamp, gold: lGold.stamp });
@@ -199,8 +224,8 @@ const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: 
 write(values.out, res.md);
 // dated archive of the premarket (07:00–09:29 ET) / close (16:00–18:59 ET) brief; brief-latest.md is still the one to send
 const archive = briefArchivePath(now, dirname(values.out)); if (archive) write(archive, res.md);
-if (!values.offline) write(oilStatePath, JSON.stringify(oilState, null, 2) + "\n");
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: planOut.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: { ...deadCatJson(dc, { ...data, ...dcData }), mentorLevels: levelsJson(mlv) }, paperGate: gate, mentorSignals: mentorSignalsJson(msig), oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
+if (!values.offline) write(futStatePath, JSON.stringify(futState, null, 2) + "\n");
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: planOut.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, futures: Object.fromEntries(Object.entries(futSame).map(([k, v]) => [k, v ? { contract: v.contract, pct1: v.pct1, rolled: v.rolled, label: v.label } : null])), liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: { ...deadCatJson(dc, { ...data, ...dcData }), mentorLevels: levelsJson(mlv) }, paperGate: gate, mentorSignals: mentorSignalsJson(msig), oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");
