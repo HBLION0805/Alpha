@@ -13,7 +13,7 @@
 | 时间（ET，工作日） | 内容 |
 |---|---|
 | 每 30 分钟（routine `alpha-2`，08:00–18:30） | `scripts/run.sh`：抓新闻 → 新警报 → 刷新简报 → 发消息给用户 |
-| 07:30 / 16:30 | 每日中文简报 `data/out/brief-latest.md`：盘前版 / 收盘情景版 |
+| 07:30 / 16:30 | 每日中文简报 `data/out/brief-latest.md`：盘前版 / 收盘情景版；另存归档 `data/out/briefs/YYYY-MM-DD_HHMM_{premarket,close}.md`（ET 07:00–09:29 / 16:00–18:59） |
 | 07:00–09:29、16:15–16:59 | 成交量异常 `data/out/volume-latest.md` |
 
 Routine 读取：`brief-latest.md`、`brief-latest.json`（`verdict`、`scenarioChanged`）、`alerts-latest.md`、`volume-latest.md`（都在 `data/out/` 下）。

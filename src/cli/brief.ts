@@ -46,7 +46,9 @@ import { runScenarios, suggestHedge, renderScenarioTable } from "../options/scen
 import { entryInput } from "../options/scenarioCtx.ts";
 import { entryCapUsd } from "../options/confidence.ts";
 import { mentorSignals, renderMentorSignals, mentorSignalsJson, liveFirst } from "../macro/mentorSignals.ts";
-import { yahooQuote } from "../adapters/yahoo.ts";
+import { yahooQuote, yahooFutQuote } from "../adapters/yahoo.ts";
+import { OIL_CONT, parseContract, sameContractChange, sameContractNote, OFFLINE_OIL_NOTE, type FrontState, type OilId, type SameContract } from "../macro/oilContract.ts";
+import { briefArchivePath } from "../macro/briefArchive.ts";
 import { paperGate, renderGate } from "../macro/paperGate.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
@@ -89,9 +91,32 @@ const vPath = "data/out/volume-latest.md";
 const volumeLines = existsSync(vPath) && now.getTime() - statSync(vPath).mtimeMs < 20 * 3600_000 ? readFileSync(vPath, "utf8").split("\n").filter((l) => /^- (🚨|⚠️|•)/.test(l) || /Put\/Call/.test(l)).slice(0, 12) : null;
 const fedR = await loadFedSpeakers({ offline: values.offline ?? false, now });
 const fedLines = fedR.data ? renderFedSpeakers(fedR.data.speeches, fedR.data.blackouts, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), 14, fedR.status, fedR.data.coverage) : [`- 不可用：${fedR.status}`];
-const oilFront = dcData.WTI_FRONT?.length ? frontContinuous(data.WTI, dcData.WTI_FRONT, front.code) : null; // oil block / alarms / 快速变动 only
+// 原油同合约涨跌 (src/macro/oilContract.ts): front contract = underlyingSymbol of BZ=F / CL=F; 1d = that contract's price ÷ ITS
+// previous close. Never the continuous daily bars (they splice contracts on roll days → fake OIL_CRASH). Brief + alarms both use it.
+const oilStatePath = "data/out/oil-front.json";
+let oilState: FrontState = existsSync(oilStatePath) ? (() => { try { return JSON.parse(readFileSync(oilStatePath, "utf8")) as FrontState; } catch { return {}; } })() : {};
+const oilSame: Partial<Record<OilId, SameContract | null>> = {}, oilNotes: string[] = [], oilBars: Partial<Record<OilId, Obs[]>> = {};
+if (!values.offline) for (const id of ["WTI", "BRENT"] as const) {
+  const today = etDate(now), prevBar = data[id]?.filter((o) => o.t.slice(0, 10) < today).at(-1)?.v ?? null;
+  try {
+    const cq = await yahooFutQuote(OIL_CONT[id]), kq = parseContract(cq.underlyingSymbol) ? await yahooFutQuote(cq.underlyingSymbol!) : null;
+    const r = sameContractChange(id, cq, kq, { today, state: oilState, contPrevBar: prevBar });
+    oilState = r.state; oilSame[id] = r.sc; oilNotes.push(r.sc ? sameContractNote(r.sc, prevBar) : r.note);
+    if (r.sc) try { oilBars[id] = (await fetchDailyOnce({ id: `${id}_CONTRACT`, provider: "yahoo", ref: r.sc.contract, label: r.sc.code, unit: "price", frequency: "daily" })).filter((o) => o.t >= since400); } catch (e) { failed[`oil bars ${r.sc.code}`] = (e as Error).message; }
+  } catch (e) { failed[`oil quote ${id}`] = (e as Error).message; oilSame[id] = null; oilNotes.push(`${OIL_CONT[id]} 同合约报价失败 → 1日涨跌不计算（不用连续合约日线）`); }
+}
+// History must be the SAME contract as the 1d change: WTI's own bars, or the calendar front only when it is that same contract.
+// Missing → null → premarket shows 5日 / 均线 / 52周 n/a and fires no 5d alarm (never the spliced CL=F / BZ=F bars).
+// Offline: no quotes → legacy continuous method (labelled OFFLINE_OIL_NOTE).
+const sameBars = (id: OilId, alt?: { code: string; bars?: Obs[] }) => { const sc = oilSame[id]; if (!sc) return null;
+  const bars = oilBars[id]?.length ? oilBars[id] : alt && alt.code === sc.code ? alt.bars : undefined;
+  const fs = bars?.length ? frontContinuous(data[id], bars, sc.code) : null; return fs?.junction != null ? fs : null; };
+const oilFront = values.offline ? (dcData.WTI_FRONT?.length ? frontContinuous(data.WTI, dcData.WTI_FRONT, front.code) : null) : sameBars("WTI", { code: front.code, bars: dcData.WTI_FRONT });
+const brentFront = values.offline ? null : sameBars("BRENT");
+if (values.offline) oilNotes.push(OFFLINE_OIL_NOTE);
+for (const [id, fs] of [["WTI", oilFront], ["BRENT", brentFront]] as const) if (!values.offline && oilSame[id] && !fs) oilNotes.push(`${oilSame[id]!.code} 合约日线不可用 → 5日 / 50日均线 / 52周高点 n/a，不触发 5日警报（不用连续合约日线）`);
 const earningsWeekLines = renderEarningsWeek(loadEarningsWeeks(new URL("../../knowledge/calendar/", import.meta.url)), now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }));
-const pm = buildPremarket({ oilFront, fedLines, earningsWeekLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
+const pm = buildPremarket({ oilFront, brentFront, oilSame: values.offline ? undefined : oilSame, oilNotes, fedLines, earningsWeekLines, now, data, failed, calendar, earnings, headlines: recent.slice(0, 6).map((r) => `${r.score} · ${r.headline}`), regimeLabel: macro.regime.label, volumeLines });
 const scPath = "data/out/scenarios-latest.json";
 const previousLeader: ScenarioId | null = existsSync(scPath) ? ((JSON.parse(readFileSync(scPath, "utf8")) as { leader?: ScenarioId | null }).leader ?? null) : null;
 const sc = buildScenarios({ now, data, calendar, headlines: ranked.slice(0, 40).map((r) => r.headline), earningsCount: earnings?.length ?? null, regimeLabel: macro.regime.label, previousLeader });
@@ -174,8 +199,11 @@ if (!values["no-alarms"]) {
 store.close();
 const write = (p: string, body: string) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); };
 write(values.out, res.md);
+// dated archive of the premarket (07:00–09:29 ET) / close (16:00–18:59 ET) brief; brief-latest.md is still the one to send
+const archive = briefArchivePath(now, dirname(values.out)); if (archive) write(archive, res.md);
+if (!values.offline) write(oilStatePath, JSON.stringify(oilState, null, 2) + "\n");
 write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: planOut.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: { ...deadCatJson(dc, { ...data, ...dcData }), mentorLevels: levelsJson(mlv) }, paperGate: gate, mentorSignals: mentorSignalsJson(msig), oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");
-console.error(`[brief] ${res.verdict} · paper gate ${gate.decision}${gate.card ? ` ${gate.card.ticker} ${gate.card.side} $${gate.card.riskUsd}` : ""} · leader ${sc.leader ?? "none"}${sc.changed ? ` (was ${previousLeader})` : ""} · ${pm.alarms.length} alarm(s) · ${fetchCount()} daily series fetched once · ${Object.keys(failed).length} failed → ${values.out}`);
+console.error(`[brief] ${res.verdict} · paper gate ${gate.decision}${gate.card ? ` ${gate.card.ticker} ${gate.card.side} $${gate.card.riskUsd}` : ""} · leader ${sc.leader ?? "none"}${sc.changed ? ` (was ${previousLeader})` : ""} · ${pm.alarms.length} alarm(s) · ${fetchCount()} daily series fetched once · ${Object.keys(failed).length} failed → ${values.out}${archive ? ` + ${archive}` : ""}`);
