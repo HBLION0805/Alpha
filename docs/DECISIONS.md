@@ -201,3 +201,7 @@
 - The per-trade cap is unchanged: confidence tier 0.5–2% of equity (confidence.ts).
 - Every trade must have a hard stop or a fixed positive max loss (`hasDefinedRisk`). Without one it is a violation (`no_hard_stop_or_max_loss`, added at paper open, flagged by the live breach check, counted by readiness), and its risk is not counted as defined (`definedRiskUsd` → null).
 - Earlier entries above that say "$100/day" describe the rule at that time.
+- Review follow-up (PR #21): the cap limits **NEW risk opened per ET day** — Σ `definedRiskUsd` of every simulated open that ET day plus the proposed trade ≤ `dailyRiskCapUsd(day, equity)` (`riskCap.ts newRiskCheck`; pretrade `daily_new_risk` BLOCK, paper open, readiness / dashboard per day, live 🚨, plan-card and paper-gate budget, 色欲 tag, mentor reminder). The realized + unrealized loss stop (`daily_loss_limit`) stays a separate check on the same cap.
+- `rules.ts dailyLossLimitPct` is now a **ceiling** (default 10 = the small-account %); the effective cap is `min(dated cap, card value)`, so a 5% card gives 5% from 10-30 and 2% before. Explicit `dailyCapPct` inputs (dashboard, paper gate, plan card) are also `min`'d with the dated cap on that day's equity.
+- Dates: ISO timestamps are converted to ET (`etDate`), not sliced (02:30Z on 10-30 = 10-29 ET). Reviews / 暴怒 / mentor use that day's equity (capital + simulated P&L closed before the day).
+- Placeholder stops (empty, 无, none, n/a, -, not recorded…) are not a hard stop.
