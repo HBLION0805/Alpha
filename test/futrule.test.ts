@@ -103,3 +103,14 @@ test("(b) first same-contract run: a leader change is labelled, not counted (no 
   assert.match(brief, /const firstFutRun = !values\.offline && !existsSync\(futStatePath\)/);
   assert.match(brief, /suppressChange: firstFutRun \?/);
 });
+
+test("roll ON the level date is still caught by the next day's recap (since >= entry date)", () => {
+  const nowR = new Date("2026-11-19T21:30:00Z"); // recap of the 11-18 entry, run on 11-19
+  const st = { "ML_NQ=F": { contract: "NQH27", since: "2026-11-18", from: "NQZ26" } }; // rolled on the level date itself
+  const aff = rollAffectedLevels(entry, st, {}, null);
+  assert.match(aff["NQ=F"]!, /已换月至 NQH27（原 NQZ26）/);
+  const r = renderMentorLevels([entry], { "NQ=F": ser(() => 30100) }, nowR, undefined, aff);
+  assert.equal(r.states.find((s) => s.id === "nq30k")!.status, "na");
+  // rolled the day before the level date → the level was given on the new contract → judged normally
+  assert.equal(rollAffectedLevels(entry, { "ML_NQ=F": { contract: "NQH27", since: "2026-11-17", from: "NQZ26" } }, {}, null)["NQ=F"], undefined);
+});

@@ -123,7 +123,7 @@ export function rollAffectedLevels(entry: LevelEntry, state: Partial<Record<stri
   for (const s of new Set(entry.levels.map((l) => l.series))) {
     if (s === "@WTI_FRONT") { const old = wtiFront(entry.date).code; if (wtiNow && wtiNow !== old) out[s] = `近月已由 ${old} 换至 ${wtiNow}`; continue; }
     const st = state[`ML_${s}`];
-    if (rolledNow[`ML_${s}`] || (st && st.from && st.since > entry.date)) out[s] = `${s} 已换月至 ${st?.contract ?? "新合约"}${st?.from ? `（原 ${st.from}）` : ""}`;
+    if (rolledNow[`ML_${s}`] || (st && st.from && st.since >= entry.date)) out[s] = `${s} 已换月至 ${st?.contract ?? "新合约"}${st?.from ? `（原 ${st.from}）` : ""}`;
   }
   return out;
 }
