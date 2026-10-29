@@ -2,15 +2,15 @@
  * Confidence-scaled per-trade cap (user 2026-10-20, replaces the fixed 1% = $50): 0.5%–2% of CURRENT paper account
  * equity. low 0.5% · medium 1% (default) · high 1.5% · highest 2%. high/highest only when macro direction, the written
  * scenario plan and the technical entry ALL align; otherwise downgraded to medium. NO_TRADE still applies on top.
- * Daily cap stays 2% of equity. Equity = starting capital + realized P&L of simulated trades + open marks.
+ * Daily cap: riskCap.ts dailyRiskCapPct (2% before 2026-10-30; 10% while equity ≤ $10k after). Equity = starting capital + realized P&L of simulated trades + open marks.
  */
+import { dailyRiskCapUsd } from "./riskCap.ts";
 import { countsTowardDailyCap, type JournalEntry } from "./journal.ts";
 
 export const TIERS = { low: 0.5, medium: 1, high: 1.5, highest: 2 } as const;
 export type Tier = keyof typeof TIERS;
 export const TIER_ZH: Record<Tier, string> = { low: "低", medium: "中", high: "高", highest: "最高" };
 export const DEFAULT_TIER: Tier = "medium";
-export const DAILY_CAP_PCT = 2;
 export interface Alignment { macro?: boolean | null; scenarioPlan?: boolean | null; technical?: boolean | null }
 export interface TradeCap { tier: Tier; requested: Tier; pct: number; usd: number; equity: number; downgraded: boolean; why: string }
 
@@ -29,7 +29,8 @@ export function tradeCap(equity: number, requested: Tier | null | undefined = DE
   return { tier, requested: req, pct, usd: r2(equity * pct / 100), equity: r2(equity), downgraded: down,
     why: down ? `要求「${TIER_ZH[req]}」但${missing.join("、")}没对齐 → 降为「中」` : tier === "high" || tier === "highest" ? "宏观方向 + 情景计划 + 技术入场三者对齐" : tier === "low" ? "低置信度" : "默认置信度" };
 }
-export const dayCapUsd = (equity: number) => r2(equity * DAILY_CAP_PCT / 100);
+/** daily cap in $ for `date` (riskCap.ts): 2% before 2026-10-30, 10% while equity ≤ $10k after */
+export const dayCapUsd = (equity: number, date: string | Date = new Date()) => dailyRiskCapUsd(date, equity);
 export const capLabel = (c: TradeCap) => `置信度「${TIER_ZH[c.tier]}」${c.pct}% × 权益 $${c.equity.toLocaleString("en-US")} = 单笔上限 $${c.usd}${c.downgraded ? `（${c.why}）` : ""}`;
 /** cap recorded on a journal entry at open; old entries (before 2026-10-20) = medium on their capital at entry */
 export function entryCapUsd(e: Pick<JournalEntry, "confidence" | "capitalAtEntry"> & { maxLoss?: number }, capital: number): number {

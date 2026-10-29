@@ -2,6 +2,7 @@
  * Paper trading (PROGRESS.md phase "paper trading"): simulated entries on real data, journaled for the
  * live-readiness scorecard (readiness.ts). Nothing here can place, preview or cancel a real order.
  */
+import { hasDefinedRisk, RISK_UNDEFINED_VIOLATION } from "./riskCap.ts";
 import { entryCapUsd } from "./confidence.ts";
 import { preTradeChecks, type Proposal, type PreCheck } from "./pretrade.ts";
 import { checkPlanLink } from "./planlink.ts";
@@ -35,7 +36,7 @@ const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
 /** open SIMULATED positions; real_practice records (real broker trades logged for review) are never marked or counted toward the position cap */
 export const openPaper = (j: PaperJournal) => j.entries.filter((e) => e.mode === "paper" && !e.closedAt && e.source !== "real_practice");
-const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, closedAt: e.closedAt, pnl: e.pnl, maxLoss: e.maxLoss, source: e.source });
+const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, closedAt: e.closedAt, pnl: e.pnl, maxLoss: e.maxLoss, stop: e.stop, source: e.source });
 
 /** Simulated fill: mid if bid/ask given, else the proposal premium. */
 const fill = (l: Proposal["legs"][number]) => (l.bid != null && l.ask != null ? (l.bid + l.ask) / 2 : l.premium);
@@ -67,7 +68,7 @@ export function nakedShortLegs(legs: Proposal["legs"]): string[] {
 /** Practice opens: which strict-mode refusals stay HARD. Only an undefined max loss (riskplan.ts "期权结构最大亏损未定义") and an
  *  invalid --kind. Matching the bare word "maxLoss" was wrong: the multi-leg checklist text "multi-leg checklist incomplete: maxLoss, …"
  *  (stops.ts) contains it, so every practice spread without a written checklist was hard-refused instead of getting a warn tag. */
-export const isHardRefusal = (x: string) => /最大亏损未定义|--kind .* 无效/.test(x);
+export const isHardRefusal = (x: string) => /最大亏损未定义|--kind .* 无效|daily_new_risk: .*daily cap \$0 \(/.test(x); // a 0% daily-cap card = no new risk, practice included
 /** Map a strict-mode refusal to a practice warn tag. */
 export function warnTag(msg: string): string {
   const id = /^(?:唱反调 (?:BLOCK )?|BLOCK |NO_TRADE )(\w+)/.exec(msg)?.[1]?.toLowerCase();
@@ -153,6 +154,8 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
     ...(warnTags.length ? { warnTags, warnDetails, violations: warnTags.includes("warn_over_cap") ? ["exceeds_1pct_cap"] : [] } : {}),
   };
   if (scProblems.length) { entry.violations = [...new Set([...(entry.violations ?? []), "no_scenario_plan_at_entry"])]; }
+  // user rule 2026-10-29: every trade needs a hard stop or a fixed max loss; otherwise a violation and not defined risk (riskCap.ts)
+  if (!hasDefinedRisk(entry)) entry.violations = [...new Set([...(entry.violations ?? []), RISK_UNDEFINED_VIOLATION])];
   // practice: 七宗罪 that are knowable at entry (wrath after a same-day loss, >3 opens/day, cheap short-dated lottery) → warn tags only, never a block
   if (entry.kind === "practice") { const s = entrySinWarnTags(entry, j.entries, a.rules, j.capital);
     if (s.tags.length) { entry.warnTags = [...new Set([...(entry.warnTags ?? []), ...s.tags])]; entry.warnDetails = [...(entry.warnDetails ?? []), ...s.details]; entry.violations ??= []; } }

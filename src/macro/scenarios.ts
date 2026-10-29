@@ -3,7 +3,7 @@
  * Macro-first (mentor-better-macro-trader): scenarios explain WHY; premarket/regime signals say WHEN they are confirmed.
  * Weights are QUALITATIVE ranks justified by which live signals agree. They are not probabilities and not data.
  * Every expression respects the rule card (src/options/rules.ts): defined-risk only, 1% max loss per trade, 3% per underlying,
- * 1 adjustment, 2% daily loss; NO_TRADE inside the 48h high-impact event window (risk.ts) and when no scenario leads.
+ * 1 adjustment, daily loss cap (riskCap.ts); NO_TRADE inside the 48h high-impact event window (risk.ts) and when no scenario leads.
  */
 import type { Obs } from "./fetch.ts";
 import { chg } from "./premarket.ts";
@@ -145,7 +145,7 @@ export function buildScenarios(inp: ScenarioInput): ScenarioResult {
   for (const x of ranked) {
     L.push(`## ${x.s.name}（${x.weight}）`, "", "**驱动：**", ...x.s.drivers.map((d) => `- ${d}`), "",
       "**确认信号（来自盘前/regime 检查）：**", ...x.s.supports.map((id) => { const s = signals.find((y) => y.id === id)!; return `- ${s.hit === true ? "✅" : s.hit === false ? "▫️" : "❔"} ${s.label}`; }), "",
-      `**定义风险的表达（规则卡：单笔 ≤${Math.max(R.sellerMaxLossPerTradePct, R.buyerPremiumPerTradePct)}%，同标的 ≤${R.perUnderlyingMaxLossPct}%，最多 ${R.maxAdjustmentsPerPosition} 次调整，日亏 ${R.dailyLossLimitPct}% 停手）：**`,
+      `**定义风险的表达（规则卡：单笔 ≤${Math.max(R.sellerMaxLossPerTradePct, R.buyerPremiumPerTradePct)}%，同标的 ≤${R.perUnderlyingMaxLossPct}%，最多 ${R.maxAdjustmentsPerPosition} 次调整，日上限按 riskCap.ts（2026-10-30 前 2%；之后权益 ≤$10k 10%）${R.dailyLossLimitPct < DEFAULT_RULES.dailyLossLimitPct ? `，卡片封顶 ${R.dailyLossLimitPct}%` : ""} 停手）：**`,
       ...x.s.expressions.map((e) => `- ${e}`), ...(x.s.id === leader ? [] : ["- 非领先情景：只观察，不预先建仓（NO_TRADE）"]), "",
       "**失效条件：**", ...x.s.invalidation.map((e) => `- ${e}`), "",
       `**引用：** catalog ${x.s.catalog.map(ref).join(" ")} · 世界主线 ${x.s.worldLines.map((w) => `#${w.n} ${w.title}（观察：${w.watch}）`).join("；")}`, "");

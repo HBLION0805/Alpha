@@ -194,3 +194,14 @@
 
 ## 2026-10-20 — Rates / oil / USD co-movement block (display only)
 - Brief section 「利率 / 油价 / 美元 联动」: 30Y (^TYX, else FRED DGS30); 2Y vs 30Y daily bp co-movement on the latest date both have (2Y = FRED DGS2, T-1; Yahoo 2YY=F is stale), 1bp dead-band; oil/10Y/DXY regime (user's mentor framework) with the WTI front month, switching to the next contract on the front's expiry day (10/20: CLX26 → CLZ26); MOVE / collateral multiplier manual values in data/rates-manual.json (MOVE up + multiplier down flagged 🚨). Never feeds verdict / NO_TRADE / sizing.
+
+## 2026-10-29 — Daily risk cap 10% from 2026-10-30 on the small paper account; hard stop or max loss required
+- User rule, implemented in `src/options/riskCap.ts` (`dailyRiskCapPct(date, equity)`, named constants). Trades dated **before 2026-10-30** (ET) keep **2%**. From **2026-10-30** the daily cap is **10% of equity** (≈ $500 on $5k) while equity **≤ $10,000**. Above $10,000 it automatically reverts to 2%. A rule-card override can only lower it.
+- Used by pretrade daily_loss_limit, live 🚨 breach (breach.ts), plan-card / paper-gate daily budget, the review report, the 暴怒-after-breach tag, the mentor reminder, readiness (each day against that day's cap, equity = capital + earlier closes) and the readiness dashboard.
+- The per-trade cap is unchanged: confidence tier 0.5–2% of equity (confidence.ts).
+- Every trade must have a hard stop or a fixed positive max loss (`hasDefinedRisk`). Without one it is a violation (`no_hard_stop_or_max_loss`, added at paper open, flagged by the live breach check, counted by readiness), and its risk is not counted as defined (`definedRiskUsd` → null).
+- Earlier entries above that say "$100/day" describe the rule at that time.
+- Review follow-up (PR #21): the cap limits **NEW risk opened per ET day** — Σ `definedRiskUsd` of every simulated open that ET day plus the proposed trade ≤ `dailyRiskCapUsd(day, equity)` (`riskCap.ts newRiskCheck`; pretrade `daily_new_risk` BLOCK, paper open, readiness / dashboard per day, live 🚨, plan-card and paper-gate budget, 色欲 tag, mentor reminder). The realized + unrealized loss stop (`daily_loss_limit`) stays a separate check on the same cap.
+- `rules.ts dailyLossLimitPct` is now a **ceiling** (default 10 = the small-account %); the effective cap is `min(dated cap, card value)`, so a 5% card gives 5% from 10-30 and 2% before. Explicit `dailyCapPct` inputs (dashboard, paper gate, plan card) are also `min`'d with the dated cap on that day's equity.
+- Dates: ISO timestamps are converted to ET (`etDate`), not sliced (02:30Z on 10-30 = 10-29 ET). Reviews / 暴怒 / mentor use that day's equity (capital + simulated P&L closed before the day).
+- Placeholder stops (empty, 无, none, n/a, -, not recorded…) are not a hard stop.

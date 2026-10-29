@@ -6,6 +6,7 @@
  *   #5 correlation → kelly.ts correlation_stress (per-trade) + sameDirectionExposure below (book level)
  * Every check returns a signal; the user executes. Caps are never loosened here.
  */
+import { etDate, DAILY_CAP_BASE_PCT } from "./riskCap.ts";
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
 /** 情景推演 written before entry (user 2026-10-20): problems from scenarioEngine.planProblems → BLOCK (practice: warn tag + violation no_scenario_plan_at_entry) */
 export function scenarioPlanCheck(problems: string[]): DiscSignal {
@@ -16,8 +17,8 @@ export function scenarioPlanCheck(problems: string[]): DiscSignal {
 export const D = (n: number, quote: string) => `纪律 #${String(n).padStart(2, "0")}: ${quote} (knowledge/mentor/discipline/discipline-01-20.md)`;
 export interface DiscSignal { id: string; severity: "NO_TRADE" | "EXIT" | "BLOCK" | "WARN" | "OK" | "INFO"; detail: string; cite: string }
 
-export interface TradeLog { id: string; openedAt: string; closedAt?: string; is0dte?: boolean; pnl?: number; maxLoss?: number; source?: string }
-const day = (iso: string) => iso.slice(0, 10);
+export interface TradeLog { id: string; openedAt: string; closedAt?: string; is0dte?: boolean; pnl?: number; maxLoss?: number; stop?: string; source?: string }
+const day = (iso: string) => etDate(iso); // ISO timestamps → ET date (riskCap.ts)
 
 // #4 0DTE: one trade per day
 export function zeroDteCheck(log: TradeLog[], todayEt: string): DiscSignal {
@@ -27,8 +28,8 @@ export function zeroDteCheck(log: TradeLog[], todayEt: string): DiscSignal {
     : { id: "0dte_one_per_day", severity: "OK", detail: "first 0DTE trade today", cite: D(4, "一天只做一笔") };
 }
 
-// #11 daily max loss: rule-card dailyLossLimitPct (user-confirmed 2%, configurable)
-export function dailyLossCheck(log: TradeLog[], todayEt: string, capital: number, openPnlToday = 0, limitPct = DEFAULT_RULES.dailyLossLimitPct): DiscSignal {
+// #11 daily max loss: callers pass riskCap.ts dailyRiskCapPct(date, equity) (2% before 2026-10-30; 10% while equity ≤ $10k after)
+export function dailyLossCheck(log: TradeLog[], todayEt: string, capital: number, openPnlToday = 0, limitPct: number = DAILY_CAP_BASE_PCT) /* callers pass riskCap.ts dailyRiskCapPct(today, equity, R) */: DiscSignal {
   // simulated trades only (formal + practice + mentor_shadow); real_practice never counts toward the $5k sim cap (DECISIONS 2026-10-17)
   const realized = log.filter((t) => t.source !== "real_practice" && t.closedAt && day(t.closedAt) === todayEt).reduce((s, t) => s + (t.pnl ?? 0), 0);
   const total = realized + openPnlToday; const lim = (capital * limitPct) / 100;

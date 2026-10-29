@@ -29,7 +29,7 @@ export interface RuleCard {
   buyerTimeStopFraction: number;      // 14.7 到期时间过半无进展 → 退出
   debitSpreadTakeProfitPct: number;   // 14.7 借记价差 最大盈利的 50–75%
   calendarTakeProfitPct: number; calendarStopPct: number; // 14.7 日历 25–50% / 净支出 50%
-  dailyLossLimitPct: number;         // 纪律 #11 每日最大亏损 — user-confirmed 2% (2026-10-14)
+  dailyLossLimitPct: number;         // 纪律 #11 每日上限 CEILING (%). The dated cap lives in riskCap.ts dailyRiskCapPct (2% before 2026-10-30; 10% while equity ≤ $10k after); a card value can only lower it (min)
   maxConcurrentPositions: number;     // 大佬复盘 (mentor-winrate-review): 同时管理的仓位降回10个以下 — default 10, user may only lower it
   forbidden: string[];
 }
@@ -40,7 +40,7 @@ export const DEFAULT_RULES: RuleCard = {
   minOpenInterest: 1000, maxBidAskPct: 10, maxAdjustmentsPerPosition: 1, winStreakReview: 10,
   creditTakeProfitPct: 50, creditManageAtDte: 21, creditStopMultipleOfCredit: 2, buyerTakeProfitPct: 50, buyerTimeStopFraction: 0.5,
   debitSpreadTakeProfitPct: 50, calendarTakeProfitPct: 25, calendarStopPct: 50,
-  dailyLossLimitPct: 2,
+  dailyLossLimitPct: 10, // = DAILY_CAP_SMALL_ACCOUNT_PCT: ceiling only; the effective cap is riskCap.ts dailyRiskCapPct(date, equity, R)
   maxConcurrentPositions: 10,
   forbidden: ["naked_call", "naked_put", "short_straddle", "short_strangle"],
 };

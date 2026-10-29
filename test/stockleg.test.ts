@@ -90,7 +90,7 @@ test("daily cap: mentor_shadow losses count (live 🚨, plan-card budget, brief 
   assert.ok(countsTowardDailyCap(sh) && !countsTowardDailyCap(M({ source: "real_practice" })));
   assert.ok(capFlags([sh, sh2], 5000, now).some((x) => /日亏上限/.test(x)), "−$110 > $100");
   assert.ok(!capFlags([sh, M({ ...sh2, source: "real_practice" })], 5000, now).some((x) => /日亏上限/.test(x)));
-  assert.deepEqual(dailyBudget([sh, sh2], 5000, now), { used: 110, remaining: 0 });
+  assert.deepEqual((({ used, remaining }) => ({ used, remaining }))(dailyBudget([sh, sh2], 5000, now)), { used: 110, remaining: 0 });
   const rem = selectReminders({ now: new Date("2026-10-16T11:30:00Z"), verdict: "RESEARCH_OK", leader: "base", previousLeader: "base", regime: "MIXED", previousRegime: "MIXED", events: [], journal: [sh, sh2], capital: 5000 });
   assert.match(rem.find((r) => r.id === "wrath_stop")!.why, /2026-10-15 已实现 \$-110，触发日亏上限 \$100/);
   // readiness: shadow losses add to a formal day's loss (formal −$40 + shadow −$110 = −$150 > $100) but are not readiness trades
@@ -110,7 +110,7 @@ test("daily cap: real_practice losses count nowhere (alert, budget, brief, pretr
   const real = M({ id: "r1", source: "real_practice", closedAt: "2026-10-15T18:00:00Z", pnl: -150 });
   const sim = M({ id: "s1", source: "paper_sim", closedAt: "2026-10-15T18:30:00Z", pnl: -60 });
   assert.ok(!capFlags([real, sim], 5000, now).some((x) => /日亏上限/.test(x)));
-  assert.deepEqual(dailyBudget([real, sim], 5000, now), { used: 60, remaining: 40 });
+  assert.deepEqual((({ used, remaining }) => ({ used, remaining }))(dailyBudget([real, sim], 5000, now)), { used: 60, remaining: 40 });
   assert.ok(!selectReminders({ now: new Date("2026-10-16T11:30:00Z"), verdict: "RESEARCH_OK", leader: "base", previousLeader: "base", regime: "MIXED", previousRegime: "MIXED", events: [], journal: [real, sim], capital: 5000 }).some((r) => r.id === "wrath_stop"));
   const log = [real, sim].map((e) => ({ id: e.id, openedAt: e.openedAt, closedAt: e.closedAt, pnl: e.pnl, source: e.source }));
   assert.equal(dailyLossCheck(log, "2026-10-15", 5000, 0, 2).severity, "OK");

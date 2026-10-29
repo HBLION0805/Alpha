@@ -2,6 +2,7 @@
  * Review report (plan P2 #9): per-trade cards and a period summary.
  * Output: data/out/review-YYYY-MM-DD.md (`npm run review`; `--week` = last 7 days).
  */
+import { dailyRiskCapUsd, equityAtStartOf, newRiskOpened } from "./riskCap.ts";
 import type { JournalEntry } from "./journal.ts";
 import { mentorCompare, needsPostMortem } from "./postmortem.ts";
 import { effectiveRules } from "./rules.ts";
@@ -39,7 +40,8 @@ export function tradeCard(e: JournalEntry, all: JournalEntry[] = [e]): string[] 
   return L;
 }
 export function renderReview(entries: JournalEntry[], capital: number, from: string, to: string): string {
-  const R = effectiveRules(), perDay = capital * R.dailyLossLimitPct / 100;
+  const R = effectiveRules(), capOn = (d: string) => dailyRiskCapUsd(d, equityAtStartOf(entries, capital, d), R); // that day's cap on that day's equity (riskCap.ts)
+  const perDay = capOn(to);
   const inRange = (iso?: string) => !!iso && etDay(iso) >= from && etDay(iso) <= to;
   const xs = entries.filter((e) => inRange(e.openedAt) || inRange(e.closedAt) || !e.closedAt);
   const sim = xs.filter((e) => e.source !== "real_practice");
@@ -48,11 +50,14 @@ export function renderReview(entries: JournalEntry[], capital: number, from: str
   const realAcct = xs.filter((e) => e.source === "real_practice" && inRange(e.closedAt)).reduce((s, e) => s + (e.pnl ?? 0), 0);
   const tagN = new Map<string, number>();
   for (const e of entries) for (const t of new Set([...(e.lossReview?.errorTags ?? []), ...(e.postMortem?.tags ?? [])])) tagN.set(t, (tagN.get(t) ?? 0) + 1);
+  const days = [...new Set(entries.filter((e) => e.mode === "paper" && inRange(e.openedAt)).map((e) => etDay(e.openedAt)))].sort();
+  const riskDays = days.map((d) => ({ d, v: newRiskOpened(entries.filter((e) => e.mode === "paper"), d).usd, cap: capOn(d) })).filter((x) => x.v > x.cap + 0.005);
   const breaches = xs.filter((e) => (e.violations ?? []).some((v) => /cap/.test(v)));
   const formalClosed = entries.filter((e) => e.kind !== "practice" && e.mode === "paper" && e.closedAt).length;
   return [`# 交易复盘 ${from}${from === to ? "" : ` → ${to}`}`, "",
     "## 汇总",
-    `- 模拟（正式+练习+影子）：已实现 $${Math.round(realized * 100) / 100} · 未实现 $${Math.round(unreal * 100) / 100}（日亏上限 $${perDay}）`,
+    `- 模拟（正式+练习+影子）：已实现 $${Math.round(realized * 100) / 100} · 未实现 $${Math.round(unreal * 100) / 100}（${to} 日上限 $${perDay}）`,
+    ...riskDays.map((x) => `- 🚨 ${x.d} 当日新开风险 $${x.v} > 当天上限 $${x.cap}`),
     `- 真实账户练习单已实现：$${Math.round(realAcct * 100) / 100}（不计入模拟上限与 readiness）`,
     `- 超限：${breaches.length} 笔${breaches.length ? `（${breaches.map((e) => `${e.symbol}:${(e.violations ?? []).filter((v) => /cap/.test(v)).join("/")}`).join("、")}）` : ""}`,
     `- 重复错误：${[...tagN].filter(([, n]) => n >= 2).map(([t, n]) => `${t}×${n}`).join("、") || "无"}${[...tagN].filter(([, n]) => n === 1).length ? ` · 单次：${[...tagN].filter(([, n]) => n === 1).map(([t]) => t).join("、")}` : ""}`,

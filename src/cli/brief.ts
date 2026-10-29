@@ -3,6 +3,7 @@
  * ONE Chinese daily brief (macro + premarket + scenarios + levels + calendar + self-check), ONE verdict.
  * Each series is fetched once (fetchDailyOnce). Also writes data/out/macro-latest.json (digest) and scenarios-latest.json (leader state).
  */
+import { newRiskOpened } from "../options/riskCap.ts";
 import { fetchGex, renderGex } from "../options/gex.ts";
 import { planId } from "../options/planlink.ts";
 import { defaultCapital } from "../config.ts";
@@ -175,7 +176,7 @@ const lNq = liveFirst(sigBase.NQ, qNq, now), lWti = liveFirst(wtiLvl.series, wti
 const msig = mentorSignals({ ...sigBase, NQ: lNq.series, VIX: lVix.series, GOLD: lGold.series }, lWti.series.length ? { series: lWti.series, src: wtiLvl.code ? `WTI ${wtiLvl.src}` : "CL=F" } : null, { nq: lNq.stamp, wti: lWti.stamp, vix: lVix.stamp, gold: lGold.stamp });
 const today0 = etDate(now);
 const lossToday = -(pj0.entries ?? []).filter((e: { mode?: string; source?: string; closedAt?: string; pnl?: number }) => e.mode === "paper" && e.source !== "real_practice" && e.closedAt && e.pnl != null && etDate(new Date(e.closedAt)) === today0).reduce((s: number, e: { pnl?: number }) => s + (e.pnl ?? 0), 0);
-const gate = paperGate({ verdict: v0, reasons: r0, leader: sc.leader, candidates: plan.candidates, levels: planRefs, data: { ...data, ...dcData, VIX: lVix.series, NQ: lNq.series }, signals: msig, equity: equity0, lossToday });
+const gate = paperGate({ now, verdict: v0, reasons: r0, leader: sc.leader, candidates: plan.candidates, levels: planRefs, data: { ...data, ...dcData, VIX: lVix.series, NQ: lNq.series }, signals: msig, equity: equity0, lossToday, newRiskToday: newRiskOpened((pj0.entries ?? []).filter((e: { mode?: string }) => e.mode === "paper"), today0).usd });
 const mx = classifyMatrix(data, futAdj);
 const lvRoll = lvActive && !values.offline ? rollAffectedLevels(lvActive.entry, futState, Object.fromEntries(Object.entries(futSame).map(([k, v]) => [k, !!v?.rolled])), futSame.WTI?.code) : {};
 const mlv = renderMentorLevels(lv.entries, { ...data, ...lvData }, now, lv.error, lvRoll);

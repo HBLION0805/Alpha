@@ -100,7 +100,7 @@ export interface JournalEntry {
   marks?: Array<{ at: string; value: number; pnl: number; spot: number | null; sources: string[]; estimated?: boolean }>;
 }
 
-/** Daily loss cap (rules.ts dailyLossLimitPct, $100 on $5k) counts every SIMULATED trade: formal, practice AND mentor_shadow
+/** Daily cap (riskCap.ts dailyRiskCapPct: 2% before 2026-10-30 = $100 on $5k; from 10-30 10% while equity ≤ $10k ≈ $500 on $5k; rules.ts dailyLossLimitPct is only a ceiling) counts every SIMULATED trade: formal, practice AND mentor_shadow
  *  (user decision 2026-10-17). real_practice records are real-account trades logged for review and stay out. */
 export const countsTowardDailyCap = (e: Pick<JournalEntry, "source">) => e.source !== "real_practice";
 

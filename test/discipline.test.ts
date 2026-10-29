@@ -14,7 +14,7 @@ test("#4 one 0DTE per day", () => {
   assert.equal(D.zeroDteCheck([T("a", "2026-10-13T10:00", { is0dte: true })], "2026-10-14").severity, "OK");
 });
 test("#11 daily loss limit, confirmed 2% rule-card value", () => {
-  assert.equal(DEFAULT_RULES.dailyLossLimitPct, 2);
+  assert.equal(DEFAULT_RULES.dailyLossLimitPct, 10, "ceiling; the dated cap is riskCap.ts (2% before 2026-10-30)");
   const log = [T("a", "2026-10-14T10:00", { closedAt: "2026-10-14T11:00", pnl: -150 })];
   const ok = D.dailyLossCheck(log, "2026-10-14", 10000); assert.equal(ok.severity, "OK"); assert.match(ok.detail, /\(2%\)/); assert.doesNotMatch(ok.detail, /PROVISIONAL/);
   assert.equal(D.dailyLossCheck(log, "2026-10-14", 10000, -60).severity, "BLOCK");
@@ -119,5 +119,5 @@ test("mentor-winrate-review: motive must be thesis; concurrent cap 10 can only b
   assert.equal(R.effectiveRules({ maxConcurrentPositions: 30 }).maxConcurrentPositions, 10, "never loosened");
   assert.equal(R.effectiveRules({ maxConcurrentPositions: 6 }).maxConcurrentPositions, 6, "user may lower");
   assert.equal(R.effectiveRules({ sellerMaxLossPerTradePct: 2, dailyLossLimitPct: 5 }).sellerMaxLossPerTradePct, 1);
-  assert.equal(R.effectiveRules({ dailyLossLimitPct: 5 }).dailyLossLimitPct, 2);
+  assert.equal(R.effectiveRules({ dailyLossLimitPct: 5 }).dailyLossLimitPct, 5); assert.equal(R.effectiveRules({ dailyLossLimitPct: 20 }).dailyLossLimitPct, 10);
 });

@@ -4,8 +4,9 @@
  * macro direction (leading scenario → else mentor-framework tilt). Intraday allowed.
  * Hard NO_TRADE only for real reasons: daily loss cap hit · extreme event · no instrument aligned with a direction.
  * Everything else (mixed regime, 48h event, gap, unconfirmed headline, credit widening, weak 2–3/4 confirmation) → lowest tier $25.
- * Hard caps unchanged: per-trade ≤ confidence tier (0.5/1/1.5/2% of equity), daily loss ≤ 2%, defined risk, no naked shorts.
+ * Hard caps unchanged: per-trade ≤ confidence tier (0.5/1/1.5/2% of equity), daily loss ≤ riskCap.ts dailyRiskCapPct (2% before 2026-10-30; 10% while equity ≤ $10k after), defined risk, no naked shorts.
  */
+import { dailyRiskCapPct } from "../options/riskCap.ts";
 import type { Obs } from "./fetch.ts";
 import type { RefLevels } from "../levels.ts";
 import type { Candidate } from "./tradeplan.ts";
@@ -14,7 +15,7 @@ import type { MentorSignals } from "./mentorSignals.ts";
 export const TIERS = [{ id: "low", pct: 0.5, zh: "低" }, { id: "medium", pct: 1, zh: "中" }, { id: "high", pct: 1.5, zh: "高" }, { id: "max", pct: 2, zh: "最高" }] as const;
 export const EXTREME = { vix: 30, vix1dPct: 20, index1dPct: 3 };
 export interface GateInput { verdict: string; reasons: string[]; leader: string | null; candidates: Candidate[]; levels: Record<string, RefLevels | undefined>;
-  data: Record<string, Obs[] | undefined>; signals: MentorSignals; equity: number; lossToday: number; dailyCapPct?: number; bars5d?: Record<string, number | null> }
+  data: Record<string, Obs[] | undefined>; signals: MentorSignals; equity: number; lossToday: number; /** Σ defined max loss of today's opens (riskCap.ts newRiskOpened) */ newRiskToday?: number; dailyCapPct?: number; /** trade date for the daily cap (riskCap.ts) */ now?: Date; bars5d?: Record<string, number | null> }
 export interface Scenario { id: "big_drop" | "slow_drop" | "sideways" | "rally"; name: string; pnl: number; note: string; hedge?: string }
 export interface PaperCard { ticker: string; side: "long" | "short"; structure: string; direction: string; source: "scenario" | "mentor_tilt"; trigger: string; entryZone: [number, number];
   stop: string; takeProfit: string; timeStop: string; tier: (typeof TIERS)[number]["id"]; riskUsd: number; confirm: string; why: string[]; scenarios: Scenario[] }
@@ -46,10 +47,12 @@ export function scenarioTable(side: "long" | "short", R: number, ticker: string)
 }
 
 export function paperGate(i: GateInput): GateResult {
-  const dailyCapUsd = Math.round(i.equity * (i.dailyCapPct ?? 2)) / 100, remaining = Math.max(0, dailyCapUsd - Math.max(0, i.lossToday));
+  const dated = dailyRiskCapPct(i.now ?? new Date(), i.equity), pct = i.dailyCapPct != null ? Math.min(i.dailyCapPct, dated) : dated; // an explicit pct can only lower the dated cap
+  const dailyCapUsd = Math.round(i.equity * pct) / 100, remaining = Math.max(0, dailyCapUsd - Math.max(0, i.lossToday)), newRiskLeft = Math.max(0, dailyCapUsd - Math.max(0, i.newRiskToday ?? 0));
   const lowUsd = Math.round(i.equity * TIERS[0].pct) / 100;
   const hard: string[] = [];
   if (remaining < lowUsd) hard.push(`单日亏损上限：今日已亏 $${r2(i.lossToday)}，剩余 $${r2(remaining)} < 最低档 $${lowUsd}`);
+  if (newRiskLeft < lowUsd) hard.push(`单日新开风险上限：今日已开 $${r2(i.newRiskToday ?? 0)}，剩余 $${r2(newRiskLeft)} < 最低档 $${lowUsd}`);
   hard.push(...extremeReasons(i.data, i.reasons));
   const soft = i.reasons.filter((r) => !/VIX STRESS/.test(r));
   // direction: leading-scenario candidates (best confirmation first), else mentor tilt on QQQ

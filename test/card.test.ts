@@ -21,7 +21,7 @@ test("suggestVerticals respects budget", () => {
   assert.ok(s.length > 0); for (const x of s) assert.ok(x.loss <= 50);
   assert.equal(suggestVerticals("bear", 100, EXP, QUOTES, 10).length, 0);
 });
-test("dailyBudget: empty journal → full $100", () => assert.deepEqual(dailyBudget([], 5000, NOW), { used: 0, remaining: 100 }));
+test("dailyBudget: empty journal → full $100", () => assert.deepEqual(dailyBudget([], 5000, NOW), { used: 0, remaining: 100, newRisk: 0, newRiskRemaining: 100 }));
 test("naked short → hedge fail → 不做", () => {
   const c = buildCard(base({ legs: [{ qty: -1, type: "put", strike: 95 }] }));
   assert.equal(c.verdict, "no"); assert.equal(c.sections.find((s) => s.n === 3)!.status, "fail");
