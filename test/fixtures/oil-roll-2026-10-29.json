@@ -1,0 +1,15 @@
+{
+  "_source": "Yahoo v7 quote + v8 chart, recorded 2026-10-29 ~10:43 ET (14:43 UTC) — /workspace/brent_roll_research.md §0; BZ=F rolled Dec→Jan one day before the Dec LTD (2026-10-30)",
+  "quotes": {
+    "BZ=F": { "underlyingSymbol": "BZF27.NYM", "price": 109.94, "prevClose": 111.64 },
+    "BZF27.NYM": { "price": 109.90, "prevClose": 111.64 },
+    "BZZ26.NYM": { "price": 114.20, "prevClose": 115.32 },
+    "CL=F": { "underlyingSymbol": "CLZ26.NYM", "price": 100.32, "prevClose": 102.78 },
+    "CLZ26.NYM": { "price": 100.32, "prevClose": 102.78 }
+  },
+  "daily": {
+    "BZ=F": [["2026-10-23", 116.72], ["2026-10-26", 115.81], ["2026-10-27", 113.88], ["2026-10-28", 115.32], ["2026-10-29", 109.94]],
+    "BZF27.NYM": [["2026-10-23", 113.10], ["2026-10-26", 112.20], ["2026-10-27", 110.30], ["2026-10-28", 111.64], ["2026-10-29", 109.90]],
+    "CL=F": [["2026-10-23", 103.90], ["2026-10-26", 103.10], ["2026-10-27", 101.60], ["2026-10-28", 102.78], ["2026-10-29", 100.32]]
+  }
+}

@@ -41,3 +41,8 @@ Source: knowledge/vix-regimes.md (public Douyin-style infographic 如何用VIX�
 
 ## VIX call hedge
 Phase 2 reference only (catalog `phase2-vix-call-hedge`), not enabled, not in the practice rules.
+
+
+## 2026-10-29 — same-contract 1-day change (Brent + WTI)
+
+Yahoo `BZ=F` rolled Dec→Jan on 2026-10-29 (one day before the Dec LTD) and its daily bars spliced Dec's 115.32 close onto Jan's price ("−4.7%/−5%", the false `OIL_CRASH` in alerts.jsonl). Now (`src/macro/oilContract.ts`): the front contract is the `underlyingSymbol` of `BZ=F` / `CL=F` (Yahoo v7 quote); the 1-day change is **that contract's price ÷ the same contract's previous close − 1** and feeds the oil block, the oil alarms (OIL_SPIKE / OIL_CRASH → event alerts), the 快速变动 flag and the USDCAD line. 5-day / SMA history comes from the contract's own bars (`frontContinuous`). No quote / no underlyingSymbol → 1d n/a and no 1d alarm; the continuous daily bars are never used for the change. A roll (state `data/out/oil-front.json` changed today, or the continuous prev bar ≠ the contract's prev close) is labelled `已换月至 BZF27（Jan 27）`. Thresholds unchanged. Tests: test/oilcontract.test.ts (recorded 2026-10-29 data).
