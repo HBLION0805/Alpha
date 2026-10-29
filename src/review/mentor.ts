@@ -6,7 +6,7 @@
  * Warn-only. Never changes a verdict or blocks anything; the written plan card stays the only hard requirement.
  * Every quote is a verbatim substring of its file (test/mentor.test.ts checks this). Rotation is deterministic by ET day.
  */
-import { dailyRiskCapUsd } from "../options/riskCap.ts";
+import { dailyRiskCapUsd, equityAtStartOf, newRiskOpened } from "../options/riskCap.ts";
 import type { JournalEntry } from "../options/journal.ts";
 import { fullPnl, countsTowardDailyCap } from "../options/journal.ts";
 import type { MajorEvent } from "../options/psych.ts";
@@ -217,13 +217,15 @@ export function selectReminders(s: ReminderState, cap = 3): Reminder[] {
   const ownByDay = new Map<string, number>(); for (const e of closed) { const d = etDay(e.closedAt!); if (countsTowardDailyCap(e)) ownByDay.set(d, (ownByDay.get(d) ?? 0) + fullPnl(e)); }
   const recentDays = [...byDay.keys()].filter((d) => d <= today && Date.parse(today) - Date.parse(d) <= 3 * 864e5).sort();
   // 3) loss limit breached in the last 3 calendar days (checked before wins: stop and walk away beats size advice)
-  const capOn = (d: string) => dailyRiskCapUsd(d, s.capital, effectiveRules()); // each day's own cap (riskCap.ts)
+  const capOn = (d: string) => dailyRiskCapUsd(d, equityAtStartOf(s.journal, s.capital, d), effectiveRules()); // each day's own cap on that day's equity (riskCap.ts)
   const breach = recentDays.filter((d) => byDay.get(d)! <= -capOn(d)).at(-1), perDay = breach ? capOn(breach) : 0;
   // 2) winning streak ≥3 / ≥1% day recently
   let streak = 0; for (let i = closed.length - 1; i >= 0 && fullPnl(closed[i]!) > 0; i--) streak++;
   const big = recentDays.filter((d) => (ownByDay.get(d) ?? 0) >= s.capital * 0.01).at(-1);
   if (streak >= 3 || big) out.push({ id: "pride_after_wins", why: streak >= 3 ? `连赢 ${streak} 笔` : `${big} 已实现 +$${Math.round(ownByDay.get(big!)! * 100) / 100}（≥1% 本金）` });
+  const riskToday = newRiskOpened(s.journal.filter((e) => e.mode === "paper" && Date.parse(e.openedAt) <= now), today).usd;
   if (breach) out.push({ id: "wrath_stop", why: `${breach} 已实现 $${Math.round(byDay.get(breach)! * 100) / 100}，触发日亏上限 $${perDay}` });
+  else if (riskToday >= capOn(today) - 0.005 && riskToday > 0) out.push({ id: "wrath_stop", why: `今日新开风险 $${riskToday} 已到日上限 $${capOn(today)} → 今天不再开新仓` });
   // 4) narrative regime change / leader flip
   const regimeFlip = s.previousRegime && s.regime && s.previousRegime !== s.regime, leaderFlip = s.leaderChanged || (s.previousLeader !== undefined && s.previousLeader !== s.leader);
   if (regimeFlip || leaderFlip) out.push({ id: "chart_logic", why: [regimeFlip ? `宏观状态 ${s.previousRegime} → ${s.regime}` : "", leaderFlip ? `领先情景 ${s.previousLeader ?? "无"} → ${s.leader ?? "无"}` : ""].filter(Boolean).join("；") });

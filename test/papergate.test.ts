@@ -66,3 +66,14 @@ test("liveFirst: fresh quote replaces today's bar with a 实时 timestamp; stale
   const s = mentorSignals({ VIX: a.series, NQ: ser(29000, 29300) }, null, { vix: a.stamp });
   assert.match(renderMentorSignals(s).join("\n"), /19\.12（实时 10-22 14:04 ET）/);
 });
+
+test("paper gate: NEW risk opened today uses the same dated cap; explicit dailyCapPct only lowers it (review #21)", () => {
+  const sig = mentorSignals(bear), base = { verdict: "OK" as const, reasons: [], leader: null, candidates: [], levels, data: bear, signals: sig, equity: 5000, lossToday: 0 };
+  const d30 = new Date("2026-10-30T14:00:00Z");
+  assert.doesNotMatch(paperGate({ ...base, now: d30, newRiskToday: 450 }).hardReasons.join(), /新开风险/, "$500 cap − $450 = $50 ≥ $25 lowest tier");
+  assert.match(paperGate({ ...base, now: d30, newRiskToday: 480 }).hardReasons.join(), /单日新开风险上限：今日已开 \$480，剩余 \$20/);
+  assert.match(paperGate({ ...base, now: new Date("2026-10-29T14:00:00Z"), newRiskToday: 80 }).hardReasons.join(), /单日新开风险上限/, "10-29 cap $100");
+  assert.match(paperGate({ ...base, now: d30, lossToday: 90, dailyCapPct: 2 }).hardReasons.join(), /单日亏损上限/, "explicit 2% < dated 10% → $100");
+  assert.doesNotMatch(paperGate({ ...base, now: new Date("2026-10-29T14:00:00Z"), lossToday: 50, dailyCapPct: 10 }).hardReasons.join(), /单日亏损上限/);
+  assert.match(paperGate({ ...base, now: new Date("2026-10-29T14:00:00Z"), lossToday: 90, dailyCapPct: 10 }).hardReasons.join(), /单日亏损上限/, "explicit 10% cannot raise the 2% day");
+});

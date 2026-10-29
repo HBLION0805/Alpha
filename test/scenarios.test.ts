@@ -20,7 +20,7 @@ test("scenarios: hawkish leads on rates/USD/CPI-hot signals; weights are words, 
   assert.doesNotMatch(r.md.split("## 实时信号")[0]! + r.md.split("## 情景排序")[1]!.split("## 方向预期")[0]!, /\d+\s*%(?!\))/, "no numeric probability in the ranking");
   assert.match(r.md, /不是概率，也不是数据/);
   for (const a of ["SPX", "NDX", "RUT", "TLT", "DXY", "黄金", "BTC"]) assert.ok(r.md.includes(a));
-  assert.match(r.md, /单笔 ≤1%，同标的 ≤3%，最多 1 次调整，日亏 2% 停手/);
+  assert.match(r.md, /单笔 ≤1%，同标的 ≤3%，最多 1 次调整，日上限按 riskCap.ts（2026-10-30 前 2%；之后权益 ≤\$10k 10%） 停手/);
 });
 
 test("scenarios: tie → no leader → NO_TRADE; event window → NO_TRADE; missing data never counted", () => {

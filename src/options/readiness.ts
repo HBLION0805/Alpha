@@ -4,7 +4,7 @@
  * Win rate is shown as context only: a low win rate is not failure when losses stay controlled
  * (大佬复盘 mentor-winrate-review) — expectancy and loss caps decide.
  */
-import { dailyRiskCapUsd, hasDefinedRisk, RISK_UNDEFINED_VIOLATION } from "./riskCap.ts";
+import { dailyRiskCapUsd, etDate, hasDefinedRisk, newRiskOpened, RISK_UNDEFINED_VIOLATION } from "./riskCap.ts";
 import { fullPnl, type JournalEntry } from "./journal.ts";
 import { entryCapUsd } from "./confidence.ts";
 import { DEFAULT_RULES, type RuleCard } from "./rules.ts";
@@ -13,7 +13,7 @@ export interface Criterion { id: string; title: string; pass: boolean; detail: s
 export interface Readiness { ready: boolean; criteria: Criterion[]; stats: Record<string, number | string | null>; practice: { n: number; closed: number; ev: number; total: number; bySource?: Record<string, { n: number; closed: number; total: number }> }; next: string }
 export interface ReadinessInput { journal: JournalEntry[]; capital: number; shockDates: string[]; rules?: RuleCard; maxViolations?: number; /** user-approved 2026-10-15: 6% ($300 at $5k) */ maxDrawdownPct?: number; windowDays?: number }
 
-const day = (s: string) => s.slice(0, 10);
+const day = (s: string) => etDate(s); // ISO timestamps → ET date
 const r2 = (x: number) => Math.round(x * 100) / 100;
 const daysBetween = (a: string, b: string) => Math.round((Date.parse(day(b)) - Date.parse(day(a))) / 864e5);
 const VIOLATION_FROM_MOTIVE = new Set(["share", "entertain", "excitement"]);
@@ -80,11 +80,15 @@ export function readiness(i: ReadinessInput): Readiness {
   const eqBefore = (d: string) => i.capital + closed.filter((e) => day(e.closedAt!) < d).reduce((s, e) => s + fullPnl(e), 0);
   const capDay = (d: string) => dailyRiskCapUsd(d, eqBefore(d), R);
   const badDays = [...byDay].filter(([d, v]) => -v > capDay(d));
+  // NEW risk opened per ET day (user rule 2026-10-29): Σ defined max loss of all simulated opens that day (formal + practice + mentor_shadow) ≤ that day's cap
+  const sim = i.journal.filter((e) => e.mode === "paper" && e.source !== "real_practice");
+  const openDays = [...new Set(paper.filter((e) => !lastAt || daysBetween(e.openedAt, lastAt) <= W).map((e) => day(e.openedAt)))].sort();
+  const riskDays = openDays.map((d) => [d, newRiskOpened(sim, d).usd] as const).filter(([d, v]) => v > capDay(d) + 0.005);
   let eq = 0, peak = 0, mdd = 0; for (const p of ps) { eq += p; peak = Math.max(peak, eq); mdd = Math.max(mdd, peak - eq); }
   const ddOver = mdd > i.capital * ddLimitPct / 100;
-  C.push({ id: "loss_caps", title: `单笔亏损 ≤ 开仓时的置信度上限（权益 0.5–2%，默认 ${R.sellerMaxLossPerTradePct}%），单日亏损 ≤ 当天上限（2026-10-30 前 2%；之后权益 ≤$10k 时 10%，>$10k 回到 2%），最大回撤 ≤${ddLimitPct}%`, pass: closed.length > 0 && !bigLoss.length && !badDays.length && !ddOver,
+  C.push({ id: "loss_caps", title: `单笔亏损 ≤ 开仓时的置信度上限（权益 0.5–2%，默认 ${R.sellerMaxLossPerTradePct}%），单日亏损与单日新开风险 ≤ 当天上限（2026-10-30 前 2%；之后权益 ≤$10k 时 10%，>$10k 回到 2%），最大回撤 ≤${ddLimitPct}%`, pass: closed.length > 0 && !bigLoss.length && !badDays.length && !riskDays.length && !ddOver,
     detail: [`最大回撤 $${r2(mdd)}（${r2((mdd / i.capital) * 100)}%，上限 ${ddLimitPct}% = $${r2(i.capital * ddLimitPct / 100)}）`, `最大单笔亏损 $${r2(-Math.min(0, ...ps))}`],
-    missing: [...(ddOver ? [`最大回撤 $${r2(mdd)} > ${ddLimitPct}%`] : []), ...bigLoss.map((e) => `${e.id} ${e.symbol} 亏 $${r2(-fullPnl(e))} > 上限 $${r2(capUsd(e))}`), ...badDays.map(([d, v]) => `${d} 单日亏 $${r2(-v)} > 当天上限 $${r2(capDay(d))}`)] });
+    missing: [...(ddOver ? [`最大回撤 $${r2(mdd)} > ${ddLimitPct}%`] : []), ...bigLoss.map((e) => `${e.id} ${e.symbol} 亏 $${r2(-fullPnl(e))} > 上限 $${r2(capUsd(e))}`), ...badDays.map(([d, v]) => `${d} 单日亏 $${r2(-v)} > 当天上限 $${r2(capDay(d))}`), ...riskDays.map(([d, v]) => `${d} 当日新开风险 $${r2(v)} > 当天上限 $${r2(capDay(d))}`)] });
 
   // 4) discipline: violations ≈ 0; thesis + stop recorded before entry; concurrent cap; premature exits
   const viol = paper.flatMap((e) => [...(e.violations ?? []), ...(e.motive && VIOLATION_FROM_MOTIVE.has(e.motive) ? [`motive_${e.motive}`] : []),
@@ -114,7 +118,7 @@ export function readiness(i: ReadinessInput): Readiness {
   const ready = C.every((c) => c.pass);
   return { ready, criteria: C, stats: { paperClosed: closed.length, spanDays: span, winRate: r2(ex.winRate), ev: r2(ex.ev), evTrim2: r2(ex2.ev), maxDrawdown: r2(mdd), premature: premature.length, ignoredWarnLosses: ignored.length, peakConcurrent: peakConc, violations: viol.length },
     practice: { n: practice.length, closed: pc.length, ev: r2(expectancy(pc).ev), total: r2(pc.reduce((a, b) => a + b, 0)), bySource: Object.fromEntries((["paper_sim", "real_practice", "mentor_shadow"] as const).map((k) => { const xs = practice.filter((e) => (e.source ?? "paper_sim") === k), c = xs.filter((e) => e.closedAt && e.pnl != null).map(fullPnl); return [k, { n: xs.length, closed: c.length, total: r2(c.reduce((a, b) => a + b, 0)) }]; })) },
-    next: ready ? "全部通过 → 真钱从 1/4 仓位开始，约 20 笔后再恢复正常仓位（上限不变：单笔 1%、同标的 3%、日亏 2%）。" : "未通过 → 继续模拟交易，不上真钱。" };
+    next: ready ? "全部通过 → 真钱从 1/4 仓位开始，约 20 笔后再恢复正常仓位（上限不变：单笔按置信度 0.5–2%、同标的 3%、单日上限按 riskCap.ts：2026-10-30 前 2%，之后权益 ≤$10k 10%、>$10k 2%）。" : "未通过 → 继续模拟交易，不上真钱。" };
 }
 
 export function renderReadiness(r: Readiness): string {

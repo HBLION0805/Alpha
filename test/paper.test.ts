@@ -30,7 +30,8 @@ test("paper open: requires thesis/invalidation/stop/motive and refuses on BLOCK"
 
 test("paper open: position cap from journal (10 open → refused)", () => {
   const j: PaperJournal = { capital: 50000, entries: [] };
-  for (let i = 0; i < 10; i++) j.entries.push({ ...paperOpen(j, prop(), A).entry!, id: `X${i}` });
+  // earlier days, so the daily NEW-risk cap (riskCap.ts) does not trip before the concurrency cap
+  for (let i = 0; i < 10; i++) { const r0 = paperOpen(j, prop(), A); assert.ok(r0.entry, r0.refused.join("; ")); j.entries.push({ ...r0.entry!, id: `X${i}`, openedAt: `2026-09-${String(10 + i).padStart(2, "0")}T15:00:00Z` }); }
   const r = paperOpen(j, prop(), A);
   assert.equal(r.entry, null);
   assert.ok(r.refused.some((x) => /max_concurrent_positions/.test(x)));
@@ -110,4 +111,15 @@ test("scenario plan required at entry: formal BLOCK, practice → violation + wa
   const pr = paperOpen(j, prop(), { now, kind: "practice", card: CARD, critique: CLEAN }).entry!;
   assert.ok(pr.violations?.includes("no_scenario_plan_at_entry")); assert.ok(pr.warnTags?.includes("warn_no_scenario_plan"));
   const ok = paperOpen(j, prop(), A).entry; if (ok) assert.equal(ok.confidence?.capUsd, 50);
+});
+
+test("paper open: daily NEW risk — Σ defined max loss of today's opens + this trade ≤ today's cap (review #21)", () => {
+  const j: PaperJournal = { capital: 50000, entries: [] };
+  for (let i = 0; i < 2; i++) { const r0 = paperOpen(j, prop(), A); assert.ok(r0.entry, r0.refused.join("; ")); j.entries.push({ ...r0.entry!, id: `N${i}`, maxLoss: 450 }); }
+  // 2026-10-15 is before 10-30 → 2% of $50k = $1,000; opened $900 + this $160 = $1,060 → refused
+  const r = paperOpen(j, prop(), A);
+  assert.equal(r.entry, null); assert.ok(r.refused.some((x) => /daily_new_risk.*\$900 \+ this \$160 = \$1060 > daily cap \$1000/.test(x)), r.refused.join("|"));
+  // same two trades opened the previous ET day → today's new risk is just this trade
+  for (const e of j.entries) e.openedAt = "2026-10-14T15:00:00Z";
+  assert.ok(paperOpen(j, prop(), A).entry);
 });

@@ -3,6 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dailyRiskCapPct, dailyRiskCapUsd, hasDefinedRisk, definedRiskUsd, RISK_UNDEFINED_VIOLATION, DAILY_CAP_BASE_PCT, DAILY_CAP_SMALL_ACCOUNT_PCT, DAILY_CAP_SMALL_ACCOUNT_FROM, DAILY_CAP_SMALL_ACCOUNT_MAX_EQUITY } from "../src/options/riskCap.ts";
+import { effectiveRules } from "../src/options/rules.ts";
 import { readiness } from "../src/options/readiness.ts";
 import { buildDashboard } from "../src/options/readinessDashboard.ts";
 import { capFlags } from "../src/options/breach.ts";
@@ -31,7 +32,12 @@ test("equity threshold: exactly $10,000 → 10%; just above → 2%", () => {
 
 test("a rule-card override can only lower the cap", () => {
   assert.equal(dailyRiskCapPct("2026-10-30", 5000, { dailyLossLimitPct: 1 }), 1);
-  assert.equal(dailyRiskCapPct("2026-10-30", 5000, { dailyLossLimitPct: 2 }), 10, "default 2 is not an override");
+  assert.equal(dailyRiskCapPct("2026-10-30", 5000, { dailyLossLimitPct: 2 }), 2, "an explicit 2% card lowers the 10% regime");
+  assert.equal(dailyRiskCapPct("2026-10-30", 5000, { dailyLossLimitPct: 5 }), 5, "5% card in the 10% regime → 5% (review #21 item 2)");
+  assert.equal(dailyRiskCapPct("2026-10-30", 5000, { dailyLossLimitPct: 20 }), 10, "never loosens");
+  assert.equal(dailyRiskCapPct("2026-10-30", 5000, effectiveRules()), 10, "default card (ceiling 10) keeps the dated cap");
+  assert.equal(dailyRiskCapPct("2026-10-29", 5000, effectiveRules()), 2);
+  assert.equal(dailyRiskCapPct("2026-10-30", 5000, effectiveRules({ dailyLossLimitPct: 5 })), 5);
   assert.equal(dailyRiskCapPct("2026-10-29", 5000, { dailyLossLimitPct: 5 }), 2);
 });
 

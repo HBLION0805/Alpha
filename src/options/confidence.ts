@@ -2,17 +2,15 @@
  * Confidence-scaled per-trade cap (user 2026-10-20, replaces the fixed 1% = $50): 0.5%–2% of CURRENT paper account
  * equity. low 0.5% · medium 1% (default) · high 1.5% · highest 2%. high/highest only when macro direction, the written
  * scenario plan and the technical entry ALL align; otherwise downgraded to medium. NO_TRADE still applies on top.
- * Daily cap stays 2% of equity. Equity = starting capital + realized P&L of simulated trades + open marks.
+ * Daily cap: riskCap.ts dailyRiskCapPct (2% before 2026-10-30; 10% while equity ≤ $10k after). Equity = starting capital + realized P&L of simulated trades + open marks.
  */
-import { dailyRiskCapUsd, DAILY_CAP_BASE_PCT } from "./riskCap.ts";
+import { dailyRiskCapUsd } from "./riskCap.ts";
 import { countsTowardDailyCap, type JournalEntry } from "./journal.ts";
 
 export const TIERS = { low: 0.5, medium: 1, high: 1.5, highest: 2 } as const;
 export type Tier = keyof typeof TIERS;
 export const TIER_ZH: Record<Tier, string> = { low: "低", medium: "中", high: "高", highest: "最高" };
 export const DEFAULT_TIER: Tier = "medium";
-/** base daily cap (before 2026-10-30 / equity > $10k); the dated rule lives in riskCap.ts dailyRiskCapPct */
-export const DAILY_CAP_PCT = DAILY_CAP_BASE_PCT;
 export interface Alignment { macro?: boolean | null; scenarioPlan?: boolean | null; technical?: boolean | null }
 export interface TradeCap { tier: Tier; requested: Tier; pct: number; usd: number; equity: number; downgraded: boolean; why: string }
 

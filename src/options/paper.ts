@@ -36,7 +36,7 @@ const MULT = 100;
 const mult = (l: Leg) => (l.type === "stock" ? 1 : MULT);
 /** open SIMULATED positions; real_practice records (real broker trades logged for review) are never marked or counted toward the position cap */
 export const openPaper = (j: PaperJournal) => j.entries.filter((e) => e.mode === "paper" && !e.closedAt && e.source !== "real_practice");
-const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, closedAt: e.closedAt, pnl: e.pnl, maxLoss: e.maxLoss, source: e.source });
+const toLog = (e: JournalEntry): TradeLog => ({ id: e.id, openedAt: e.openedAt, closedAt: e.closedAt, pnl: e.pnl, maxLoss: e.maxLoss, stop: e.stop, source: e.source });
 
 /** Simulated fill: mid if bid/ask given, else the proposal premium. */
 const fill = (l: Proposal["legs"][number]) => (l.bid != null && l.ask != null ? (l.bid + l.ask) / 2 : l.premium);

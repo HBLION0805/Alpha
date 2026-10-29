@@ -5,7 +5,7 @@
  *  - auto:   derived ONLY from what the ledger actually records (autoSins below); always a candidate to confirm at review.
  * Warn-only: nothing here blocks a trade. Mentor-shadow trades are never tagged (the mentor's decision, not the user's behaviour).
  */
-import { dailyRiskCapUsd } from "./riskCap.ts";
+import { dailyRiskCapUsd, definedRiskUsd, equityAtStartOf, newRiskOpened } from "./riskCap.ts";
 import { countsTowardDailyCap, type JournalEntry } from "./journal.ts";
 import { effectiveRules, type RuleCard } from "./rules.ts";
 
@@ -42,7 +42,10 @@ export function autoSins(e: JournalEntry, all: JournalEntry[], rules?: Partial<R
   const day = etDay(e.openedAt), peers = all.filter((x) => own(x) && x.id !== e.id);
   const lossesBefore = peers.filter((x) => x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt) && (x.pnl ?? 0) < 0).sort((a, b) => t(a.closedAt!) - t(b.closedAt!));
   // daily-cap breach: simulated trades closed earlier that day (formal + practice + mentor_shadow); real_practice never counts (DECISIONS 2026-10-17)
-  const perDay = dailyRiskCapUsd(day, capital, effectiveRules(rules)); // that day's cap (riskCap.ts)
+  const perDay = dailyRiskCapUsd(day, equityAtStartOf(all, capital, day), effectiveRules(rules)); // that day's cap on that day's equity (riskCap.ts)
+  // 色欲: this open pushed the day's NEW risk (opens up to and including this one) over the day's cap
+  const upTo = all.filter((x) => x.mode === "paper" && t(x.openedAt) <= t(e.openedAt)), dayRisk = newRiskOpened(upTo, day).usd;
+  if (definedRiskUsd(e) != null && dayRisk > perDay + 0.005) add("lust", `当天新开风险 $${dayRisk} > 日上限 $${perDay}（本笔 $${definedRiskUsd(e)}）`);
   const realized = all.filter((x) => x.id !== e.id && countsTowardDailyCap(x) && x.closedAt && etDay(x.closedAt) === day && t(x.closedAt) < t(e.openedAt)).reduce((s, x) => s + (x.pnl ?? 0), 0);
   const breached = -realized > perDay;
   if (lossesBefore.length || breached) {
