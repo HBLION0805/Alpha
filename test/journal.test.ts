@@ -5,7 +5,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { appendJsonl, journalDir, journalPath, readPath, outPath } from "../src/storage/paths.ts";
 import { savePlanDay, loadPlanDay, mergePlanDay } from "../src/storage/plans.ts";
-import { migrateJournal } from "../src/storage/migrate.ts";
+import { migrateJournal, backupJournal } from "../src/storage/migrate.ts";
+import { execFileSync } from "node:child_process";
 import type { PlanItem } from "../src/options/planlink.ts";
 
 let root = "", jd = "", od = "";
@@ -90,4 +91,33 @@ test("CLIs: no hard-coded data/journal or data/out artifact paths for persistent
   for (const f of ["card.ts", "paper.ts", "brief.ts", "earnings.ts", "readiness.ts", "review.ts", "alerts.ts"]) assert.doesNotMatch(src(f).replace(/^\s*\*.*$/gm, ""), /"data\/journal\//, f);
   assert.doesNotMatch(src("card.ts"), /`data\/out\/card-/);
   assert.match(readFileSync(new URL("../scripts/run.sh", import.meta.url), "utf8"), /--jsonl "\$journal\/alerts\.jsonl"/);
+});
+
+test("backupJournal (review #28): timestamped snapshot before migrating; never overwritten; missing journal → null", () => {
+  assert.equal(backupJournal(new Date("2026-10-30T14:30:00Z")), null);
+  put(journalPath("paper.json"), '{"v":1}'); put(journalPath("plans/2026-10-30.json"), "{}");
+  const t = new Date("2026-10-30T14:30:00Z"), b1 = backupJournal(t)!;
+  assert.equal(b1, join(`${jd}-backups`, "journal-20261030T143000Z"));
+  assert.equal(readFileSync(join(b1, "paper.json"), "utf8"), '{"v":1}'); assert.ok(existsSync(join(b1, "plans/2026-10-30.json")));
+  put(journalPath("paper.json"), '{"v":2}');
+  const b2 = backupJournal(t)!; // same second → new suffixed dir, first snapshot untouched
+  assert.equal(b2, `${b1}-2`); assert.equal(readFileSync(join(b1, "paper.json"), "utf8"), '{"v":1}'); assert.equal(readFileSync(join(b2, "paper.json"), "utf8"), '{"v":2}');
+});
+
+test("migrate:journal CLI snapshots the journal before copying", () => {
+  put(journalPath("paper.json"), '{"v":1}'); put(outPath("flash-0830-2026-10-30.json"), '{"f":1}');
+  const cwd = new URL("..", import.meta.url).pathname, out = execFileSync(process.execPath, ["src/cli/migrateJournal.ts"], { cwd, env: { ...process.env }, encoding: "utf8" });
+  assert.match(out, /备份 .*journal-backups\/journal-\d{8}T\d{6}Z/);
+  const snap = readdirSync(`${jd}-backups`); assert.equal(snap.length, 1);
+  assert.ok(!existsSync(join(`${jd}-backups`, snap[0]!, "flash")), "snapshot taken before the migration copied flash files");
+  assert.equal(readFileSync(journalPath("flash/flash-0830-2026-10-30.json"), "utf8"), '{"f":1}');
+});
+
+test("flash CLI (review #28): JSON kept in <journal>/flash/ with a data/out copy", () => {
+  const cwd = new URL("..", import.meta.url).pathname;
+  execFileSync(process.execPath, ["src/cli/flash.ts", "--slot", "0830", "--offline", "--out-dir", od], { cwd, env: { ...process.env }, encoding: "utf8", stdio: "pipe" });
+  const name = readdirSync(od).find((f) => /^flash-0830-\d{4}-\d\d-\d\d\.json$/.test(f))!;
+  assert.ok(name, "data/out copy");
+  const kept = readFileSync(journalPath("flash", name), "utf8");
+  assert.equal(kept, readFileSync(join(od, name), "utf8")); assert.equal(JSON.parse(kept).slot, "0830");
 });

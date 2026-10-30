@@ -3,9 +3,9 @@
  * Never overwrites or deletes: existing journal files are kept (a differing copy is reported as a conflict),
  * alerts.jsonl lines already in the journal are not appended again. data/out is left untouched.
  */
-import { appendFileSync, copyFileSync, constants, existsSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
+import { appendFileSync, copyFileSync, constants, cpSync, existsSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { ALERTS_JSONL, cardRel, flashRel, journalPath, outPath, planRel, writeAtomic } from "./paths.ts";
+import { ALERTS_JSONL, cardRel, flashRel, journalDir, journalPath, outPath, planRel, writeAtomic } from "./paths.ts";
 import { mergePlanDay } from "./plans.ts";
 
 export interface MigrateReport { copied: string[]; skipped: string[]; conflicts: string[]; alertsAppended: number }
@@ -47,4 +47,16 @@ export function migrateJournal(): MigrateReport {
     }
   } catch { /* unreadable brief: nothing to migrate */ }
   return r;
+}
+
+/** Snapshot of the whole journal taken before migrating (review #28): <journal>-backups/journal-<UTC stamp>/.
+ *  Never overwrites: an existing snapshot dir gets a -2, -3… suffix, and files are copied with errorOnExist. */
+export function backupJournal(now = new Date(), root = `${journalDir().replace(/\/+$/, "")}-backups`): string | null {
+  if (!existsSync(journalDir())) return null;
+  const stamp = now.toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
+  let dst = join(root, `journal-${stamp}`);
+  for (let n = 2; existsSync(dst); n++) dst = join(root, `journal-${stamp}-${n}`);
+  mkdirSync(root, { recursive: true });
+  cpSync(journalDir(), dst, { recursive: true, force: false, errorOnExist: true });
+  return dst;
 }
