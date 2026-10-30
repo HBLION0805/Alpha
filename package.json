@@ -28,7 +28,8 @@
     "fedspeak": "node src/cli/fedspeak.ts",
     "earnings": "node src/cli/earnings.ts",
     "shadow": "node src/cli/shadow.ts",
-    "trump": "node src/cli/trump.ts"
+    "trump": "node src/cli/trump.ts",
+    "flatten": "node src/cli/flatten.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",
