@@ -61,3 +61,16 @@ test("Alpaca adapter is paper-only and needs env keys", () => {
   assert.equal(ALPACA_PAPER_BASE, "https://paper-api.alpaca.markets/v2/");
   assert.throws(() => alpacaPaperHttp({}), /ALPACA_KEY/);
 });
+
+test("flatten CLI flags (review #25): dry-run unless --confirm; --symbols or --all required; --force needs --confirm", async () => {
+  const { flattenCliOptions } = await import("../src/paper/flatten.ts");
+  assert.deepEqual(flattenCliOptions({ symbols: "rsp, meta" }), { dryRun: true, symbols: ["RSP", "META"], force: false }, "default = dry-run");
+  assert.deepEqual(flattenCliOptions({ symbols: "RSP", confirm: true }), { dryRun: false, symbols: ["RSP"], force: false });
+  assert.deepEqual(flattenCliOptions({ all: true, confirm: true }), { dryRun: false, symbols: undefined, force: false });
+  assert.equal(flattenCliOptions({ all: true, confirm: true, "dry-run": true }).dryRun, true, "--dry-run wins over --confirm");
+  assert.throws(() => flattenCliOptions({ confirm: true }), /--symbols X,Y 或 --all/);
+  assert.throws(() => flattenCliOptions({ symbols: "", confirm: true }), /--symbols X,Y 或 --all/);
+  assert.throws(() => flattenCliOptions({ symbols: "RSP", all: true }), /二选一/);
+  assert.throws(() => flattenCliOptions({ all: true, force: true }), /--force 需要同时加 --confirm/);
+  assert.deepEqual(flattenCliOptions({ all: true, force: true, confirm: true }), { dryRun: false, symbols: undefined, force: true });
+});
