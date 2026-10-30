@@ -33,7 +33,18 @@ test("paper gate: soft NO_TRADE reasons → still one $25 card with stop, TP, 4 
 
 test("paper gate: hard reasons → NO_TRADE (daily cap, extreme VIX, no direction)", () => {
   const sig = mentorSignals(bear);
-  assert.equal(paperGate({ verdict: "OK", reasons: [], leader: "hawkish", candidates: [], levels, data: bear, signals: sig, equity: 5000, lossToday: 600 }).decision, "NO_TRADE");
+  // daily cap is dated (riskCap.ts): pin the trade date so both regimes are checked regardless of the real clock
+  const cap = (now: string, lossToday: number) => paperGate({ verdict: "OK", reasons: [], leader: "hawkish", candidates: [], levels, data: bear, signals: sig, equity: 5000, lossToday, now: new Date(now) });
+  const CAP_RE = /^单日亏损上限/;
+  const pre = cap("2026-10-29T13:00:00Z", 90); // 2% of $5k = $100
+  assert.equal(pre.dailyCapUsd, 100); assert.equal(pre.decision, "NO_TRADE"); assert.ok(pre.hardReasons.some((r) => CAP_RE.test(r)), "pre: $90 breaches 2%");
+  const post600 = cap("2026-10-30T13:00:00Z", 600); // 10% of $5k = $500
+  assert.equal(post600.dailyCapUsd, 500); assert.equal(post600.dailyRemainingUsd, 0); assert.equal(post600.decision, "NO_TRADE"); assert.ok(post600.hardReasons.some((r) => CAP_RE.test(r)), "post: $600 breaches 10%");
+  const post499 = cap("2026-10-30T13:00:00Z", 499);
+  assert.equal(post499.dailyCapUsd, 500); assert.equal(post499.dailyRemainingUsd, 1, "post: $499 stays under the $500 cap");
+  // note: the gate still blocks new trades once remaining ($1) < smallest tier ($25) — that's the min-tier rule, not a cap breach
+  const post90 = cap("2026-10-30T13:00:00Z", 90);
+  assert.ok(!post90.hardReasons.some((r) => CAP_RE.test(r)), "post: $90 no longer trips the cap");
   const hot = { ...bear, VIX: ser(20, 35) };
   assert.match(paperGate({ verdict: "OK", reasons: [], leader: null, candidates: [], levels, data: hot, signals: sig, equity: 5000, lossToday: 0 }).hardReasons.join(), /VIX/);
   const flat = { NQ: ser(30100, 30100), WTI: ser(90, 90), VIX: ser(21, 21) };
