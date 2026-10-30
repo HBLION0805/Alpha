@@ -11,8 +11,9 @@ import { loadShockDates } from "../options/shockdates.ts";
 import { readiness, renderReadiness } from "../options/readiness.ts";
 import type { JournalEntry } from "../options/journal.ts";
 import { buildDashboard, renderDashboard } from "../options/readinessDashboard.ts";
+import { journalPath } from "../storage/paths.ts";
 
-const { values } = parseArgs({ options: { journal: { type: "string", default: "data/journal/paper.json" }, capital: { type: "string" }, out: { type: "string", default: "data/out/readiness-latest.md" }, json: { type: "boolean", default: false } } });
+const { values } = parseArgs({ options: { journal: { type: "string", default: journalPath("paper.json") }, capital: { type: "string" }, out: { type: "string", default: "data/out/readiness-latest.md" }, json: { type: "boolean", default: false } } });
 const raw = existsSync(values.journal!) ? JSON.parse(readFileSync(values.journal!, "utf8")) : { entries: [] };
 const journal: JournalEntry[] = Array.isArray(raw) ? raw : raw.entries ?? [];
 const capital = Number(values.capital ?? raw.capital ?? defaultCapital());

@@ -30,6 +30,7 @@
     "earnings": "node src/cli/earnings.ts",
     "shadow": "node src/cli/shadow.ts",
     "trump": "node src/cli/trump.ts",
+    "migrate:journal": "node src/cli/migrateJournal.ts",
     "flatten": "node src/cli/flatten.ts",
     "execute": "node src/cli/execute.ts",
     "flash": "node src/cli/flash.ts"

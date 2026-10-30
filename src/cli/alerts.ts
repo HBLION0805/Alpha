@@ -1,6 +1,6 @@
 /** Emit only NEW (or escalated) high-score clusters since the last run. State lives in SQLite (alerts tables). */
-import { writeFileSync, renameSync, mkdirSync, appendFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { writeFileSync, renameSync, mkdirSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { loadSources } from "../sources.ts";
 import { Store } from "../store.ts";
@@ -8,6 +8,7 @@ import { clusterItems } from "../cluster.ts";
 import { rank } from "../score.ts";
 import { trumpAlerts, TRUMP_SOURCES } from "../trump.ts";
 import { loadFollowups, loadFollowupInputs, followupLines } from "../macro/eventFollowup.ts";
+import { ALERTS_JSONL, appendJsonl, journalPath } from "../storage/paths.ts";
 import { renderAlertsMarkdown, selectNewAlerts, toAlert, premarketAlarmAlerts, ALARM_SOURCES } from "../alerts.ts";
 
 const { values } = parseArgs({
@@ -16,10 +17,12 @@ const { values } = parseArgs({
     hours: { type: "string", default: "12" },
     format: { type: "string", default: "md" }, // md | json
     out: { type: "string" },
-    jsonl: { type: "string" }, // append each alert as one JSON line
+    jsonl: { type: "string", default: journalPath(ALERTS_JSONL) }, // append-only history (persistent journal); skipped on --dry-run
     "dry-run": { type: "boolean" },
   },
 });
+// alerts.jsonl was once found rewritten: --out (a truncating write) must never target the append-only history
+if (values.out && (/\.jsonl$/i.test(values.out) || resolve(values.out) === resolve(values.jsonl!))) { process.stderr.write(`[alerts] 拒绝：--out ${values.out} 会覆盖 alerts 历史（只追加，用 --jsonl）\n`); process.exit(2); }
 const now = new Date();
 const store = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite");
 const sources = loadSources();
@@ -43,10 +46,7 @@ store.close();
 // 事件跟进 (knowledge/events/event-followups.json): display-only block appended to the markdown output; not an alert, never recorded
 const fuLines = values.format === "json" ? [] : followupLines(loadFollowups().followups, loadFollowupInputs(), now);
 const body = values.format === "json" ? JSON.stringify({ generatedAt: now.toISOString(), count: alerts.length, alerts }, null, 2) + "\n" : renderAlertsMarkdown(alerts, now) + (fuLines.length ? `\n${fuLines.join("\n")}\n` : "");
-if (values.jsonl && alerts.length) {
-  mkdirSync(dirname(values.jsonl), { recursive: true });
-  appendFileSync(values.jsonl, alerts.map((a) => JSON.stringify({ at: now.toISOString(), ...a })).join("\n") + "\n");
-}
+if (values.jsonl && !values["dry-run"]) appendJsonl(values.jsonl, alerts.map((a) => ({ at: now.toISOString(), ...a })));
 if (values.out) {
   mkdirSync(dirname(values.out), { recursive: true });
   writeFileSync(values.out + ".tmp", body);

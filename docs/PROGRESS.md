@@ -78,7 +78,7 @@ The premarket and scenarios reports no longer exist. Read:
 - `data/out/brief-latest.md`: the Chinese daily brief (send this). `data/out/brief-latest.json` has `{generatedAt, verdict, reasons, leader, previousLeader, scenarioChanged, alarms, failed}`.
 - `data/out/scenarios-latest.json`: `{generatedAt, leader, previousLeader, changed}`. **Scenario-changed flag = `changed`** (also `scenarioChanged` in brief-latest.json). It is true only on the run where the leader flipped; the alert itself is also inserted into the store, so it arrives through alerts.
 - `data/out/volume-latest.md`: volume anomalies (written 07:00–09:29 and 16:15–16:59 ET only).
-- `data/out/alerts-latest.md`, `data/out/alerts.jsonl`: new alerts (also printed on stdout by run.sh).
+- `data/out/alerts-latest.md` (latest, regenerable) + `data/journal/alerts.jsonl` (append-only history; `ALPHA_JOURNAL_DIR`): new alerts (also printed on stdout by run.sh).
 - `data/out/digest-latest.md`: digest. `data/out/macro-latest.json` is internal (digest input).
 
 ## Trump posts (2026-10-15)

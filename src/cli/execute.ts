@@ -10,6 +10,7 @@
  *  --equity defaults to the paper ledger's equity at the start of the ET day. DRY-RUN BY DEFAULT (only GETs, no files); --confirm sends orders to the paper account.
  *  Keys: ALPACA_KEY / ALPACA_SECRET (never printed). Exit 0 = ok, 2 = flatten left something open, 1 = error. */
 import { parseArgs } from "node:util";
+import { journalPath } from "../storage/paths.ts";
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { alpacaBars, alpacaPaperHttp } from "../adapters/alpacaPaper.ts";
@@ -19,9 +20,9 @@ import { defaultCapital } from "../config.ts";
 import type { PaperJournal } from "../options/paper.ts";
 
 const { values } = parseArgs({ options: { plan: { type: "string" }, "dry-run": { type: "boolean" }, confirm: { type: "boolean" }, equity: { type: "string" }, risk: { type: "string" }, entry: { type: "string", default: "limit" },
-  state: { type: "string" }, journal: { type: "string", default: "data/journal/paper.json" } } });
+  state: { type: "string" }, journal: { type: "string", default: journalPath("paper.json") } } });
 const now = new Date(), day = etDay(now), dryRun = executeDryRun(values);
-const statePath = values.state ?? `data/journal/plans/intraday-state-${day}.json`, jPath = values.journal!;
+const statePath = values.state ?? journalPath("plans", `intraday-state-${day}.json`), jPath = values.journal!;
 const save = (p: string, x: unknown) => { mkdirSync(dirname(p), { recursive: true }); writeFileSync(p + ".tmp", JSON.stringify(x, null, 2) + "\n"); renameSync(p + ".tmp", p); };
 try {
   if (!values.plan) throw new Error("--plan path.md required");

@@ -7,10 +7,11 @@ import { appendFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { alpacaPaperHttp } from "../adapters/alpacaPaper.ts";
 import { flatten, flattenCliOptions } from "../paper/flatten.ts";
+import { journalPath } from "../storage/paths.ts";
 
 const { values } = parseArgs({ options: { before: { type: "string", default: "15:45" }, lead: { type: "string", default: "5" }, symbols: { type: "string" }, all: { type: "boolean" }, confirm: { type: "boolean" }, "dry-run": { type: "boolean" }, force: { type: "boolean" }, log: { type: "string" } } });
 const now = new Date(), day = now.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
-const log = values.log ?? `data/journal/flatten-${day}.jsonl`;
+const log = values.log ?? journalPath(`flatten-${day}.jsonl`);
 try {
   const opt = flattenCliOptions(values);
   const r = await flatten({ http: alpacaPaperHttp(), now, before: values.before!, leadMin: Number(values.lead), ...opt });
