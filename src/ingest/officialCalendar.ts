@@ -1,6 +1,6 @@
 import { USER_AGENT } from "./rss.ts";
 
-export type ReleaseKind = "FOMC" | "CPI" | "NFP" | "PPI" | "PCE" | "GDP" | "RETAIL" | "JOLTS" | "CLAIMS" | "HOUSING" | "DURABLES" | "TRADE" | "OPEX";
+export type ReleaseKind = "FOMC" | "CPI" | "NFP" | "PPI" | "PCE" | "GDP" | "RETAIL" | "JOLTS" | "CLAIMS" | "HOUSING" | "DURABLES" | "TRADE" | "ECI" | "OPEX";
 
 export interface CalendarEvent {
   kind: ReleaseKind;
@@ -11,7 +11,7 @@ export interface CalendarEvent {
   timeEt: string;
   sep?: boolean; // FOMC * = Summary of Economic Projections
   source: string; // citation URL
-  /** 2 = minor 08:30 release (claims, housing starts, durables, trade): listed in the brief/calendar only — never a
+  /** 2 = minor 08:30 release (claims, housing starts, durables, trade, ECI): listed in the brief/calendar only — never a
    *  high-impact / 48h / 72h / NO_TRADE / 不能睡 trigger. Omitted = the original major tier. */
   tier?: 1 | 2;
   /** claims dates generated from DOL's rule ("every Thursday 8:30 ET") rather than listed one by one */
@@ -19,9 +19,9 @@ export interface CalendarEvent {
 }
 
 /** Minor (tier-2) release kinds. risk.ts HIGH_IMPACT, premarket's 盘前重大数据 rule and the 72h-rule / 能不能睡 major events never include them. */
-export const MINOR_KINDS = new Set<ReleaseKind>(["CLAIMS", "HOUSING", "DURABLES", "TRADE"]);
+export const MINOR_KINDS = new Set<ReleaseKind>(["CLAIMS", "HOUSING", "DURABLES", "TRADE", "ECI"]);
 export const isMinorRelease = (e: Pick<CalendarEvent, "kind" | "tier">) => e.tier === 2 || MINOR_KINDS.has(e.kind);
-export const RELEASE_ZH: Partial<Record<ReleaseKind, string>> = { CLAIMS: "初请失业金", HOUSING: "新屋开工/营建许可", DURABLES: "耐用品订单", TRADE: "贸易差额" };
+export const RELEASE_ZH: Partial<Record<ReleaseKind, string>> = { CLAIMS: "初请失业金", HOUSING: "新屋开工/营建许可", DURABLES: "耐用品订单", TRADE: "贸易差额", ECI: "就业成本指数" };
 
 /** Census economic-indicator calendar (official; the undated page shows next year, -YYYY.html a given year). */
 export const censusCalendarUrl = (year: number) => `https://www.census.gov/economic-indicators/calendar-listview-${year}.html`;
@@ -65,6 +65,17 @@ export function claimsEvents(year: number): { events: CalendarEvent[]; skipped: 
     else events.push({ ...base, date: thu, inferred: true });
   }
   return { events, skipped };
+}
+
+/** BLS Employment Cost Index (quarterly, 08:30 ET). Not on our FRED list, so dates come from BLS's official schedule
+ *  (bls.gov/schedule/news_release/eci.htm, fetched 2026-10-30) — listed one by one, never inferred. Tier 2 like the other 08:30 prints. */
+export const BLS_ECI_URL = "https://www.bls.gov/schedule/news_release/eci.htm";
+export const ECI_DATES: Record<string, string> = {
+  "2026-10-30": "Q3 2026", "2027-01-29": "Q4 2026", "2027-04-30": "Q1 2027", "2027-07-30": "Q2 2027", "2027-10-29": "Q3 2027",
+};
+export function eciEvents(year?: number): CalendarEvent[] {
+  return Object.entries(ECI_DATES).filter(([d]) => year == null || d.startsWith(String(year)))
+    .map(([date, q]) => ({ kind: "ECI" as const, title: `就业成本指数 Employment Cost Index ${q} (BLS)`, date, timeEt: "08:30", source: BLS_ECI_URL, tier: 2 as const }));
 }
 
 export const FOMC_URL = "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm";
@@ -166,6 +177,7 @@ export async function fetchReleaseCalendar(year: number, staticEvents: CalendarE
   ];
   const results = await Promise.allSettled(jobs);
   results.forEach((r) => r.status === "rejected" && errors.push(String((r.reason as Error).message)));
+  events.push(...eciEvents(year), ...eciEvents(year + 1)); // official BLS list (code constant, no fetch)
   let usedStatic = false;
   const have = new Set(events.map((e) => e.kind));
   for (const e of staticEvents) if (!have.has(e.kind)) {
