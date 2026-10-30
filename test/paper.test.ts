@@ -132,3 +132,10 @@ test("paper open: a 0% daily-cap rule card refuses every new trade (formal and p
   assert.equal(pr.entry, null, "practice too: a 0 cap is a hard refusal, not a warn tag"); assert.ok(pr.refused.some((x) => /daily_new_risk/.test(x)));
   assert.ok(paperOpen(j, prop(), A).entry, "default card still opens");
 });
+
+test("paper open: other saved cards' reserved risk counts toward today's new-risk cap (review #27)", () => {
+  const j: PaperJournal = { capital: 50000, entries: [] };
+  assert.ok(paperOpen(j, prop(), { ...A, reservedUsd: 840 }).entry, "840 + 160 = 1000 fits the $1,000 cap");
+  const r = paperOpen(j, prop(), { ...A, reservedUsd: 841 });
+  assert.equal(r.entry, null); assert.ok(r.refused.some((x) => /daily_new_risk.*reserved by saved cards \$841 \+ this \$160 = \$1001 > daily cap \$1000/.test(x)), r.refused.join("|"));
+});

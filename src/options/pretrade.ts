@@ -49,6 +49,8 @@ export interface Proposal {
     motive?: Motive;
     /** positions open right now (cap rules.maxConcurrentPositions, default 10) */
     openPositions?: number;
+    /** max loss held by other saved, unopened plan cards today (counts as new risk) */
+    reservedUsd?: number;
   };
 }
 export type Severity = "NO_TRADE" | "BLOCK" | "WARN" | "OK" | "INFO";
@@ -167,7 +169,7 @@ export function disciplineChecks(p: Proposal, proposedMaxLoss: number, R: RuleCa
     if (d.openPnlToday == null) need("daily_loss_limit", "BLOCK", "discipline.openPnlToday (today's unrealized P&L; 0 if flat)");
     else out.push(conv(dailyLossCheck(d.journal, today, p.capital, d.openPnlToday, dailyRiskCapPct(today, p.capital, R)))); // realized-loss stop (separate)
     // user rule 2026-10-29: NEW risk opened this ET day (Σ defined max loss of today's opens + this trade) ≤ today's cap
-    const nr = newRiskCheck({ entries: d.journal, day: today, equity: p.capital, proposedUsd: proposedMaxLoss, rules: R });
+    const nr = newRiskCheck({ entries: d.journal, day: today, equity: p.capital, proposedUsd: proposedMaxLoss, rules: R, reservedUsd: d.reservedUsd });
     out.push({ id: "daily_new_risk", severity: nr.ok ? "OK" : "BLOCK", detail: nr.detail + (nr.undefinedIds.length ? `; no hard stop / max loss (violation): ${nr.undefinedIds.join(", ")}` : ""), cite: DC });
     const closed = d.journal.filter((t) => t.closedAt).sort((a, b) => a.closedAt!.localeCompare(b.closedAt!));
     let streak = 0; for (let i = closed.length - 1; i >= 0 && (closed[i]!.pnl ?? 0) > 0; i--) streak++;

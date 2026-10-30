@@ -58,12 +58,13 @@ export function newRiskOpened(entries: RiskEntry[], day: string): { usd: number;
   return { usd: Math.round(usd * 100) / 100, ids: xs.filter((e) => definedRiskUsd(e) != null).map((e) => e.id ?? "?"), undefinedIds: xs.filter((e) => definedRiskUsd(e) == null).map((e) => e.id ?? "?") };
 }
 /** user rule 2026-10-29: new risk opened per ET day (already opened + the proposed trade) ≤ that day's cap. Separate from the realized-loss stop. */
-export function newRiskCheck(i: { entries: RiskEntry[]; day: string; equity: number; proposedUsd: number | null; rules?: Partial<Pick<RuleCard, "dailyLossLimitPct">> }) {
+/** reservedUsd = max loss held by other saved, not-yet-opened plan cards today (src/review/orderBlock.ts reservedRiskUsd) */
+export function newRiskCheck(i: { entries: RiskEntry[]; day: string; equity: number; proposedUsd: number | null; rules?: Partial<Pick<RuleCard, "dailyLossLimitPct">>; reservedUsd?: number }) {
   const day = etDate(i.day), cap = dailyRiskCapUsd(day, i.equity, i.rules), opened = newRiskOpened(i.entries, day);
   const proposed = i.proposedUsd != null && Number.isFinite(i.proposedUsd) && i.proposedUsd > 0 ? i.proposedUsd : null;
-  const total = Math.round((opened.usd + (proposed ?? 0)) * 100) / 100;
+  const reserved = Math.max(0, i.reservedUsd ?? 0), total = Math.round((opened.usd + reserved + (proposed ?? 0)) * 100) / 100;
   const ok = proposed != null && total <= cap + 0.005;
-  return { id: "daily_new_risk" as const, ok, day, cap, pct: dailyRiskCapPct(day, i.equity, i.rules), opened: opened.usd, proposed, total, remaining: Math.max(0, Math.round((cap - opened.usd) * 100) / 100), undefinedIds: opened.undefinedIds,
+  return { id: "daily_new_risk" as const, ok, day, cap, pct: dailyRiskCapPct(day, i.equity, i.rules), opened: opened.usd, proposed, total, reserved, remaining: Math.max(0, Math.round((cap - opened.usd - reserved) * 100) / 100), undefinedIds: opened.undefinedIds,
     detail: proposed == null ? `proposed trade has no defined max loss → ${RISK_UNDEFINED_VIOLATION}; cannot count toward the daily new-risk cap`
-      : `new risk ${day}: opened $${opened.usd} + this $${proposed} = $${total} ${ok ? "≤" : ">"} daily cap $${cap} (${dailyRiskCapPct(day, i.equity, i.rules)}% of $${i.equity})` };
+      : `new risk ${day}: opened $${opened.usd}${reserved ? ` + reserved by saved cards $${reserved}` : ""} + this $${proposed} = $${total} ${ok ? "≤" : ">"} daily cap $${cap} (${dailyRiskCapPct(day, i.equity, i.rules)}% of $${i.equity})` };
 }

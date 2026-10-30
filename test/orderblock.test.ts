@@ -37,3 +37,9 @@ test("risk reservation: today's saved, unopened cards hold their max loss agains
   const b0 = dailyBudget([], 5000, now), b1 = dailyBudget([], 5000, now, undefined, r.usd);
   assert.equal(b0.newRiskRemaining, 500); assert.equal(b1.newRiskRemaining, 455); assert.equal(b1.newRisk, 45);
 });
+
+test("re-saving a card (review #27): excludeId drops the superseded card's own reservation", () => {
+  const now = new Date("2026-10-30T15:00:00Z"), cards = [{ id: "OLD", createdAt: "2026-10-30T14:00:00Z", verdict: "formal", trade: { maxLoss: 90 } }, { id: "OTHER", createdAt: "2026-10-30T14:05:00Z", verdict: "formal", trade: { maxLoss: 40 } }];
+  assert.equal(reservedRiskUsd(cards, [], now).usd, 130);
+  assert.deepEqual(reservedRiskUsd(cards, [], now, "OLD"), { usd: 40, ids: ["OTHER"] });
+});
