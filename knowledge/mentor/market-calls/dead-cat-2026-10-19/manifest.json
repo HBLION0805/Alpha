@@ -1,0 +1,87 @@
+{
+  "note": "Mentor (大佬) post 「死猫反弹，还是市场见底？」 2026-10-19, forwarded by the user. article.md is a byte-for-byte copy of the inbox file (crude wording kept as-is; the text names no author). Figures copied byte-for-byte. fig1 is a Discord screenshot that shows the author's handle; it is stored unedited, but the name is not written in any text. dkDescription fields are DK's, not the mentor's. Checked by test/deadcat.test.ts.",
+  "theme": "market-calls",
+  "title": "死猫反弹，还是市场见底？",
+  "postedAt": "2026-10-19",
+  "receivedAt": "2026-10-19",
+  "files": [
+    {
+      "file": "article.md",
+      "source": "mentor-inbox/dead-cat-2026-10-19/article.md",
+      "bytes": 2507,
+      "sha256": "eaac23c426fdfcfed25b23803cd7e1817fbf7f501e254ca99b5450a45c794603",
+      "verbatimChecked": true
+    },
+    {
+      "file": "assets/fig1.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig1.png",
+      "bytes": 84635,
+      "sha256": "dd281586f25561bb397fa0a60a0c1bdc067977f1fc3bcae3d6d964eb048538da",
+      "dkDescription": "Discord 截图（2026-10-05）：十月买九月输家的回调、做空赢家的反弹（轮动）。⚠️ 截图里有作者的 Discord 显示名/头像——图片原样保存，名字不写进任何文字",
+      "containsAuthorHandle": true
+    },
+    {
+      "file": "assets/fig2.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig2.png",
+      "bytes": 2125619,
+      "sha256": "6cc169b62112787d0d76c45e78eb37436d0cafa52ee92e3c81e44357dfc73fca",
+      "dkDescription": "板块热力图：半导体红，防御/能源绿"
+    },
+    {
+      "file": "assets/fig3.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig3.png",
+      "bytes": 487363,
+      "sha256": "99db738083b57787f87fd7ee7fd1fbd20550a642a155d22a0ca940cbc8e23262",
+      "dkDescription": "NQ1! 日线：ABC 调整，价位 30000 / 28500 / 26830"
+    },
+    {
+      "file": "assets/fig4.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig4.png",
+      "bytes": 515736,
+      "sha256": "c3a7f078b2d53c01dc3b98691f8967024709b577beea2ec0765a98be6f11fcfc",
+      "dkDescription": "KOSPI 日线：头肩顶，关键支撑 5266.12"
+    },
+    {
+      "file": "assets/fig5.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig5.png",
+      "bytes": 453408,
+      "sha256": "aa3fb575b438f67e07514113ae6593fb12e2de4623ebe7710c9ff5caa11287bd",
+      "dkDescription": "EWF1!（E-mini 标普500 等权期货）日线：8600 附近圆弧底，隔夜下跌"
+    },
+    {
+      "file": "assets/fig6.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig6.png",
+      "bytes": 458004,
+      "sha256": "a71795c073fb1c020ec595640bae015513fa6186c8cda1e32394c622133e78d7",
+      "dkDescription": "CL1! 原油：突破下降楔形，100 阻力"
+    },
+    {
+      "file": "assets/fig7.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig7.png",
+      "bytes": 479363,
+      "sha256": "12d90531642743f10556dcacc42cea20b2b61001d526c97755e43ff9c2dcbe19",
+      "dkDescription": "DXY：从约 102.5 回落，100.225 价位"
+    },
+    {
+      "file": "assets/fig8.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig8.png",
+      "bytes": 1295634,
+      "sha256": "e32fa161c1fb05f41410ef4c2554c1917977a78333fa4fa01fe10caf7f9f59f0",
+      "dkDescription": "经济情景表：原油 / 美元指数 / 30年期美债收益率 / 股票 × 经济增长、通货膨胀、滞胀、经济衰退"
+    },
+    {
+      "file": "assets/fig9.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig9.png",
+      "bytes": 371058,
+      "sha256": "37ce584cca15708f198827044dc54c07cc960032b4d525f28cbe637396ccacb6",
+      "dkDescription": "VIX 周线：突破下降楔形，价位 20 / 17"
+    },
+    {
+      "file": "assets/fig10.png",
+      "source": "mentor-inbox/dead-cat-2026-10-19/assets/fig10.png",
+      "bytes": 497429,
+      "sha256": "4372f5b26b7b10ddbb3c10e31fd72c7353266fddb7e6cd91412cf34c654a8a63",
+      "dkDescription": "VIX 日线（去年）：10/10 周五飙升，周一降温，然后再冲一波"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "note": "四大危机对比与当前宏观定位报告 (2026-10-19), stored byte-for-byte from /workspace/reports. Signal thresholds for the crisis path tracker are copied (with the report section) into knowledge/macro/crisis-signals.json; checked by test/crisispath.test.ts.",
+  "title": "四大危机对比与当前宏观定位报告（2026-10-19）",
+  "storedAt": "2026-10-19",
+  "files": [
+    {
+      "file": "crisis-compare-2026-10-19.md",
+      "source": "/workspace/reports/crisis-compare-2026-10-19.md",
+      "bytes": 47739,
+      "sha256": "a0a66b140fa87989566a65d7fd28fab17f1a7b95bcba384bac2ca3bf58199976",
+      "verbatimChecked": true
+    },
+    {
+      "file": "crisis-compare-2026-10-19.pdf",
+      "source": "/workspace/reports/crisis-compare-2026-10-19.pdf",
+      "bytes": 1706262,
+      "sha256": "5a1721531de618a48f9b193a7de944c1858b407db167c22ac56cdd753cf44ed7",
+      "verbatimChecked": true
+    }
+  ]
+}

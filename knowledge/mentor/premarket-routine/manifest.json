@@ -1,0 +1,24 @@
+{
+  "note": "Byte-for-byte mentor material on the premarket routine. oil-vix: copy of /workspace/mentor-inbox/videos/premarket-oil-vix.md (video-model transcript, NOT checked word-by-word; its own 来源说明 header says so; the ~70 MB video premarket-crypto-gold.mp4 is NOT stored), checked by test/oilvix.test.ts. sleep-days: the mentor's post as relayed in the user's task 2026-10-18, stored verbatim (no header added; no author name in the text), checked by test/sleepday.test.ts.",
+  "theme": "premarket-routine",
+  "receivedAt": "2026-10-18",
+  "files": [
+    {
+      "file": "oil-vix-2026-10-18.md",
+      "source": "mentor-inbox/videos/premarket-oil-vix.md",
+      "bytes": 3350,
+      "sha256": "42827c663c6bd6d63648719b7c691a816e7edc563c82cc0e6b0a90abd5ddc68b",
+      "verbatimChecked": false,
+      "video": "mentor-inbox/videos/premarket-crypto-gold.mp4 (not committed)",
+      "videoBytes": 73254427
+    },
+    {
+      "file": "sleep-days-2026-10-18.md",
+      "source": "mentor post relayed in the user's task message (2026-10-18), text between the --- markers",
+      "bytes": 231,
+      "sha256": "295f4908b4e456d4b33c70541715f5e939fd24289f9befc08ebd0ec609748e79",
+      "verbatimChecked": true,
+      "gloss": "老川 = Trump (user's note: the joke means 'when Trump is about to drop something')"
+    }
+  ]
+}

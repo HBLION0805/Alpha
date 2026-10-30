@@ -1,0 +1,25 @@
+{
+  "note": "Geopolitical / election events (tracked, hand-curated, official sources per entry). DISPLAY + 72h pre-event REMINDER ONLY: rendered by src/macro/geoEvents.ts into brief §1.1 and §6 日历. Deliberately NOT part of calendar/releases-2026.json (US releases: 48h event window / NO_TRADE in risk.ts and scenarios.ts) and NOT part of the major-events files (72h post-event psych tag, 能不能睡). `at` = polls open; reminder starts 72h before `at`.",
+  "events": [
+    {
+      "id": "br-2026-runoff",
+      "category": "geopolitical",
+      "subtype": "election",
+      "country": "Brazil",
+      "sector": "LatAm",
+      "title": "巴西总统大选第二轮投票（Lula vs Flávio Bolsonaro）",
+      "dateET": "2026-10-25",
+      "at": "2026-10-25T11:00:00.000Z",
+      "timeET": "07:00",
+      "localTime": "08:00–17:00 Brasília (UTC−3) = 07:00–16:00 ET; results released from 17:00 Brasília = 16:00 ET Sunday",
+      "resultsAt": "2026-10-25T20:00:00.000Z",
+      "assets": ["EWZ", "PBR", "VALE", "ITUB", "NU", "BBD", "BRL", "ILF", "EWW", "ECH", "ARGT"],
+      "context": "Mentor flagged Brazil / LatAm sector risk after the Lula vs Flávio Bolsonaro TV debate (Lula: 'On the 25th you're gonna lose your immunity'). Sunday vote → first US session to price the result is Mon 2026-10-26 (BRL / EWZ / ADRs gap risk).",
+      "sources": [
+        "https://www.tse.jus.br/legislacao/compilada/res/2026/resolucao-no-23-751-de-26-de-fevereiro-de-2026 (Res. TSE 23.751/2026 art. 2: 1º turno 4 Oct 2026, 2º turno 25 Oct 2026)",
+        "https://www.tse.jus.br/comunicacao/noticias/2026/Marco/eleicoes-2026-confira-as-principais-datas-do-calendario-eleitoral (25 de outubro, último domingo: 2º turno; 8h–17h Brasília)"
+      ],
+      "verifiedAt": "2026-10-19"
+    }
+  ]
+}

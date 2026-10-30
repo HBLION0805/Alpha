@@ -1,0 +1,161 @@
+{
+ "source": "Robinhood MCP get_earnings_calendar(start 2026-10-15, 14d, high_market_cap) \u2014 filtered to mega-caps/watchlist",
+ "data": {
+  "results": [
+   {
+    "symbol": "TSM",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "4.450000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-15",
+     "timing": "am",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "NFLX",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "0.820000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-20",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "TSLA",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "0.410000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-21",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "IBM",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "2.870000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-21",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "META",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "6.210000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-21",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "NEM",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "1.930000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-22",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "V",
+    "year": 2026,
+    "quarter": 4,
+    "eps": {
+     "estimate": "3.430000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-27",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "GOOGL",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "3.010000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-28",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "GOOG",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "3.020000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-28",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "MSFT",
+    "year": 2027,
+    "quarter": 1,
+    "eps": {
+     "estimate": "4.720000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-28",
+     "timing": "pm",
+     "verified": true
+    }
+   },
+   {
+    "symbol": "NOW",
+    "year": 2026,
+    "quarter": 3,
+    "eps": {
+     "estimate": "0.930000",
+     "actual": null
+    },
+    "report": {
+     "date": "2026-10-28",
+     "timing": "pm",
+     "verified": true
+    }
+   }
+  ]
+ }
+}

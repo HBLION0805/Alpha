@@ -1,0 +1,202 @@
+{
+ "data": [
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:42:08.000Z",
+   "edit_history_tweet_ids": [
+    "2110244744362185107"
+   ],
+   "id": "2110244744362185107",
+   "public_metrics": {
+    "bookmark_count": 7020,
+    "impression_count": 3552150,
+    "like_count": 107252,
+    "quote_count": 1807,
+    "reply_count": 9175,
+    "retweet_count": 19132
+   },
+   "text": "https://t.co/74FFzwQqx6",
+   "url": "https://x.com/realDonaldTrump/status/2110244744362185107"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:36:24.000Z",
+   "edit_history_tweet_ids": [
+    "2110243301479870493"
+   ],
+   "id": "2110243301479870493",
+   "public_metrics": {
+    "bookmark_count": 582,
+    "impression_count": 1821822,
+    "like_count": 20616,
+    "quote_count": 116,
+    "reply_count": 1254,
+    "retweet_count": 3345
+   },
+   "text": "https://t.co/PDW6yy3ZzY",
+   "url": "https://x.com/realDonaldTrump/status/2110243301479870493"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:36:18.000Z",
+   "edit_history_tweet_ids": [
+    "2110243275735007273"
+   ],
+   "id": "2110243275735007273",
+   "public_metrics": {
+    "bookmark_count": 624,
+    "impression_count": 3448321,
+    "like_count": 16837,
+    "quote_count": 77,
+    "reply_count": 679,
+    "retweet_count": 2844
+   },
+   "text": "https://t.co/xzs9qWyPqo",
+   "url": "https://x.com/realDonaldTrump/status/2110243275735007273"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:36:13.000Z",
+   "edit_history_tweet_ids": [
+    "2110243256998985775"
+   ],
+   "id": "2110243256998985775",
+   "public_metrics": {
+    "bookmark_count": 419,
+    "impression_count": 1175709,
+    "like_count": 18490,
+    "quote_count": 84,
+    "reply_count": 637,
+    "retweet_count": 3190
+   },
+   "text": "https://t.co/8QHHVS2BNQ",
+   "url": "https://x.com/realDonaldTrump/status/2110243256998985775"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:33:39.000Z",
+   "edit_history_tweet_ids": [
+    "2110242610103099601"
+   ],
+   "id": "2110242610103099601",
+   "public_metrics": {
+    "bookmark_count": 967,
+    "impression_count": 3465121,
+    "like_count": 24190,
+    "quote_count": 268,
+    "reply_count": 1263,
+    "retweet_count": 4358
+   },
+   "text": "https://t.co/J1QDUvmL88",
+   "url": "https://x.com/realDonaldTrump/status/2110242610103099601"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:32:11.000Z",
+   "edit_history_tweet_ids": [
+    "2110242241046270372"
+   ],
+   "id": "2110242241046270372",
+   "public_metrics": {
+    "bookmark_count": 765,
+    "impression_count": 3711804,
+    "like_count": 21854,
+    "quote_count": 124,
+    "reply_count": 818,
+    "retweet_count": 3620
+   },
+   "text": "https://t.co/Iu7ShXMoc1",
+   "url": "https://x.com/realDonaldTrump/status/2110242241046270372"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:30:15.000Z",
+   "edit_history_tweet_ids": [
+    "2110241754318602716"
+   ],
+   "id": "2110241754318602716",
+   "public_metrics": {
+    "bookmark_count": 272,
+    "impression_count": 916393,
+    "like_count": 10129,
+    "quote_count": 52,
+    "reply_count": 456,
+    "retweet_count": 1940
+   },
+   "text": "https://t.co/QOM1feeKG1",
+   "url": "https://x.com/realDonaldTrump/status/2110241754318602716"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:29:44.000Z",
+   "edit_history_tweet_ids": [
+    "2110241624190279701"
+   ],
+   "id": "2110241624190279701",
+   "public_metrics": {
+    "bookmark_count": 541,
+    "impression_count": 3645581,
+    "like_count": 16987,
+    "quote_count": 107,
+    "reply_count": 781,
+    "retweet_count": 2868
+   },
+   "text": "https://t.co/rnZNO3iFUJ",
+   "url": "https://x.com/realDonaldTrump/status/2110241624190279701"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:16:58.000Z",
+   "edit_history_tweet_ids": [
+    "2110238410690695616"
+   ],
+   "id": "2110238410690695616",
+   "public_metrics": {
+    "bookmark_count": 1246,
+    "impression_count": 5013591,
+    "like_count": 29482,
+    "quote_count": 350,
+    "reply_count": 2482,
+    "retweet_count": 5325
+   },
+   "text": "https://t.co/Xgg5VKNXoC",
+   "url": "https://x.com/realDonaldTrump/status/2110238410690695616"
+  },
+  {
+   "author_id": "25073877",
+   "created_at": "2026-10-14T05:15:42.000Z",
+   "edit_history_tweet_ids": [
+    "2110238093211214092"
+   ],
+   "id": "2110238093211214092",
+   "public_metrics": {
+    "bookmark_count": 511,
+    "impression_count": 2076729,
+    "like_count": 21229,
+    "quote_count": 101,
+    "reply_count": 790,
+    "retweet_count": 3519
+   },
+   "text": "https://t.co/tneRhPTtEX",
+   "url": "https://x.com/realDonaldTrump/status/2110238093211214092"
+  }
+ ],
+ "includes": {
+  "users": [
+   {
+    "id": "25073877",
+    "name": "Donald J. Trump",
+    "profile_image_url": "https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_normal.jpg",
+    "username": "realDonaldTrump",
+    "verified": true
+   }
+  ]
+ },
+ "meta": {
+  "newest_id": "2110244744362185107",
+  "next_token": "7140dibdnow9c7btwp0g6xg0ng5fef611hmpbjivzydrm",
+  "oldest_id": "2110238093211214092",
+  "result_count": 10
+ },
+ "fetchedAt": "2026-10-15T12:04:30Z"
+}
