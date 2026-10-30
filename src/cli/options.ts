@@ -13,6 +13,7 @@ import { parseInput, CalendarFileSchema, ProposalSchema } from "../adapters/sche
 import { DatabaseSync } from "node:sqlite";
 import { parseChain, type Chain } from "../options/chain.ts";
 import { chainFromRobinhood, unwrapJson } from "../options/robinhood.ts";
+import { prepareChain, staleLabel } from "../options/freshness.ts";
 import { buildDashboard, renderDashboard } from "../options/dashboard.ts";
 import { initIv, saveIv, loadIv } from "../options/ivhistory.ts";
 import { parseEarnings } from "../options/events.ts";
@@ -41,6 +42,9 @@ if (values["rh-instruments"] && values["rh-quotes"]) {
   if (!positionals[0]) { console.error("usage: npm run options -- chain.json [--direction bull|bear|neutral] ..."); process.exit(2); }
   chain = parseChain(read(positionals[0]));
 }
+// expired contracts (before today ET) never reach the dashboard; >1 trading day old → 过时 banner + JSON freshness
+const fresh = prepareChain(chain, new Date()); chain = fresh;
+const banner = [staleLabel(fresh.freshness), fresh.freshness.droppedExpired ? `已剔除 ${fresh.freshness.droppedExpired} 个已到期合约（早于 ${fresh.freshness.today}）` : ""].filter(Boolean).join(" · ");
 
 const year = chain.asOf.slice(0, 4);
 const calPath = new URL(`../../calendar/releases-${year}.json`, import.meta.url);
@@ -63,7 +67,7 @@ const etDate = new Date(chain.asOf).toLocaleDateString("en-CA", { timeZone: "Ame
 if (!values["no-save"] && dash.iv30 != null) saveIv(db, { symbol: chain.symbol, date: etDate, iv30: dash.iv30, frontIv: dash.term.frontIv, backIv: dash.term.backIv, skew25: dash.expiries[0]?.skew25 ?? null, source: chain.source ?? "chain.json" });
 db.close();
 
-const extra: string[] = []; const json: Record<string, unknown> = { dashboard: dash };
+const extra: string[] = []; const json: Record<string, unknown> = { freshness: fresh.freshness, dashboard: dash };
 if (values.book) {
   const book = read(values.book) as Book;
   const { rules, checks } = checkBook(book); const st = stressTest(book);
@@ -95,7 +99,7 @@ if (values.proposal) {
   json.plan = plan;
   extra.push(...renderPlan(plan));
 }
-const md = renderDashboard(dash, extra);
+const md0 = renderDashboard(dash, extra), md = banner ? md0.replace("\n", `\n\n> ⚠️ ${banner}\n`) : md0;
 mkdirSync(dirname(values.out!), { recursive: true });
 const jsonPath = values.out!.replace(/\.md$/, "") + ".json";
 for (const [p, body] of [[values.out!, md], [jsonPath, JSON.stringify(json, null, 2) + "\n"]] as const) { writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); }

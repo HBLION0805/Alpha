@@ -5,6 +5,7 @@
  */
 import type { Chain } from "../options/chain.ts";
 import { daysTo } from "../options/bs.ts";
+import { prepareChain, staleLabel, type ChainFreshness } from "../options/freshness.ts";
 
 export const TAG = "成交量仅用于确认/排查，不单独下单";
 export const DEFAULT_WATCHLIST = ["SPY", "QQQ", "IWM", "DIA", "SMH", "HYG", "TLT", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "AVGO", "TSLA"];
@@ -39,7 +40,7 @@ export function optionAnomalies(ch: Chain, minVolume = 500, strongRatio = 5): { 
   return { anomalies, callVol, putVol, pcr: callVol > 0 ? Math.round((putVol / callVol) * 100) / 100 : null };
 }
 
-export interface VolumeReport { md: string; strong: Array<{ title: string; detail: string }>; stocks: StockVol[]; failed: Record<string, string> }
+export interface VolumeReport { md: string; strong: Array<{ title: string; detail: string }>; stocks: StockVol[]; failed: Record<string, string>; chains: Array<{ symbol: string; asOf: string } & ChainFreshness> }
 export function buildVolumeReport(inp: { now: Date; bars: Record<string, Bar[]>; chains: Chain[]; failed?: Record<string, string>; minRvol?: number; minOptVolume?: number }): VolumeReport {
   const T = ` _（${TAG}）_`;
   const stocks = Object.entries(inp.bars).map(([s, b]) => stockVolume(s, b, inp.minRvol ?? 2)).filter((x): x is StockVol => x != null).sort((a, b) => b.rvol - a.rvol);
@@ -55,19 +56,24 @@ export function buildVolumeReport(inp: { now: Date; bars: Record<string, Bar[]>;
   L.push("", `<details><summary>全部 ${stocks.length} 个标的</summary>`, "", "| 标的 | RVOL | 涨跌% | 突破 |", "|---|---|---|---|", ...stocks.map((s) => `| ${s.symbol} | ${s.rvol} | ${s.chgPct} | ${s.breakout ?? "—"} |`), "", "</details>", "");
   L.push("## 期权异常（成交量 > 未平仓量）", "");
   if (!inp.chains.length) L.push(`- data/in/ 下没有 *-chain.json（需 routine 用 Robinhood MCP 保存）${T}`);
-  for (const ch of inp.chains) {
+  const chains: VolumeReport["chains"] = [];
+  // expired contracts are always dropped; a stale chain (>1 trading day) is labelled 过时 on every line (the brief copies them) and raises no alarms
+  for (const ch of inp.chains.map((c) => prepareChain(c, inp.now))) {
+    const f = ch.freshness, st = staleLabel(f), sx = st ? ` ⚠️ ${st}` : "";
+    chains.push({ symbol: ch.symbol, asOf: ch.asOf, ...f });
     const o = optionAnomalies(ch, inp.minOptVolume ?? 500);
-    L.push(`### ${ch.symbol}（链时间 ${ch.asOf}）`, `- 认购量 ${o.callVol.toLocaleString()} · 认沽量 ${o.putVol.toLocaleString()} · **Put/Call 成交量比 ${o.pcr ?? "n/a"}**${T}`);
-    if (!o.anomalies.length) L.push(`- 无成交量 > OI 且 ≥${inp.minOptVolume ?? 500} 张的合约${T}`);
+    L.push(`### ${ch.symbol}（链时间 ${ch.asOf}${st ? ` · ${st}` : ""}）`, `- ${ch.symbol} 认购量 ${o.callVol.toLocaleString()} · 认沽量 ${o.putVol.toLocaleString()} · **Put/Call 成交量比 ${o.pcr ?? "n/a"}**${sx}${T}`);
+    if (f.droppedExpired) L.push(`- 已剔除 ${f.droppedExpired} 个已到期（早于 ${f.today}）的合约${T}`);
+    if (!o.anomalies.length) L.push(`- 无成交量 > OI 且 ≥${inp.minOptVolume ?? 500} 张的合约${sx}${T}`);
     for (const a of o.anomalies.slice(0, 12)) {
-      L.push(`- ${a.strong ? "🚨" : "⚠️"} ${a.expiration}（${a.dte} DTE）${a.strike} ${a.type === "call" ? "Call" : "Put"} · 量 ${a.volume.toLocaleString()} / OI ${a.oi.toLocaleString()} = ${a.ratio === 999 ? "OI=0" : a.ratio + "x"} · 方向（买/卖）无法推断${T}`);
-      if (a.strong) strong.push({ title: `${a.symbol} ${a.expiration} ${a.strike}${a.type === "call" ? "C" : "P"} 量/OI ${a.ratio === 999 ? "OI=0" : a.ratio + "x"}`, detail: `vol ${a.volume} OI ${a.oi} · ${a.dte} DTE · ${TAG}` });
+      L.push(`- ${a.strong ? "🚨" : "⚠️"} ${a.symbol} ${a.expiration}（${a.dte} DTE）${a.strike} ${a.type === "call" ? "Call" : "Put"} · 量 ${a.volume.toLocaleString()} / OI ${a.oi.toLocaleString()} = ${a.ratio === 999 ? "OI=0" : a.ratio + "x"} · 方向（买/卖）无法推断${sx}${T}`);
+      if (a.strong && !f.stale) strong.push({ title: `${a.symbol} ${a.expiration} ${a.strike}${a.type === "call" ? "C" : "P"} 量/OI ${a.ratio === 999 ? "OI=0" : a.ratio + "x"}`, detail: `vol ${a.volume} OI ${a.oi} · ${a.dte} DTE · ${TAG}` });
     }
     L.push("");
   }
   const failed = Object.entries(inp.failed ?? {});
   if (failed.length) L.push("## 数据失败", "", ...failed.map(([k, e]) => `- ${k}: ${e}`), "");
-  return { md: L.join("\n"), strong, stocks, failed: inp.failed ?? {} };
+  return { md: L.join("\n"), strong, stocks, failed: inp.failed ?? {}, chains };
 }
 
 export const VOLUME_ALARM_SOURCE = "volume-alarm";
