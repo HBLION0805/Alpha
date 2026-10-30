@@ -18,15 +18,18 @@ export function toBars(quotes: Quote[], daily: boolean, tz = "America/New_York")
   return [...out.values()];
 }
 
+/** Yahoo uses "-" for share classes (BRK-B, BF-B); our watchlist/broker form is "BRK.B". Indices (^), futures (=F), FX/DXY (DX-Y.NYB) and crypto untouched. */
+export const toYahooSymbol = (s: string) => (/^[A-Z]{1,5}\.[A-Z]$/.test(s) ? s.replace(".", "-") : s);
+
 async function chart(symbol: string, days: number, interval: "1d" | "15m" | "1h", timeoutMs: number): Promise<YBar[]> {
-  const p = client().chart(symbol, { period1: new Date(Date.now() - days * 86_400_000), interval });
+  const p = client().chart(toYahooSymbol(symbol), { period1: new Date(Date.now() - days * 86_400_000), interval });
   const r = await Promise.race([p, new Promise<never>((_, rej) => setTimeout(() => rej(new Error(`timeout ${timeoutMs}ms`)), timeoutMs).unref())]);
   return toBars(r.quotes as Quote[], interval === "1d", r.meta.exchangeTimezoneName ?? "America/New_York");
 }
 
 /** Live/last quote from the v8 chart meta (regularMarketPrice + regularMarketTime). Throws on failure. */
 export async function yahooQuote(symbol: string, timeoutMs = 8_000): Promise<{ price: number; at: string; prevClose: number | null }> {
-  const p = client().chart(symbol, { period1: new Date(Date.now() - 3 * 86_400_000), interval: "5m" });
+  const p = client().chart(toYahooSymbol(symbol), { period1: new Date(Date.now() - 3 * 86_400_000), interval: "5m" });
   const r = await Promise.race([p, new Promise<never>((_, rej) => setTimeout(() => rej(new Error(`timeout ${timeoutMs}ms`)), timeoutMs).unref())]);
   const m = r.meta as { regularMarketPrice?: number; regularMarketTime?: Date | number; chartPreviousClose?: number; previousClose?: number };
   if (m.regularMarketPrice == null || !Number.isFinite(m.regularMarketPrice) || m.regularMarketTime == null) throw new Error("no regularMarketPrice");
