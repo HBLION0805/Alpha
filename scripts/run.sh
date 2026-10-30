@@ -12,7 +12,10 @@ for d in /home/box/.local/node24/bin /workspace/node-v24.22.0-linux-x64/bin; do
   [ -x "$d/node" ] && export PATH="$d:$PATH"
 done
 node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 24 ? 0 : 1)' || { echo "Node 24+ required (set ALPHA_NODE_BIN)" >&2; exit 2; }
-mkdir -p data/out data/logs
+# data/out = regenerable output only; plan cards, trade plans, alerts history (append-only), flash snapshots and the
+# paper ledger live in the persistent journal (src/storage/paths.ts; ALPHA_JOURNAL_DIR, default data/journal)
+journal="${ALPHA_JOURNAL_DIR:-data/journal}"
+mkdir -p data/out data/logs "$journal"
 exec 9>data/.run.lock
 flock -n 9 || { echo "[run] previous run still active; skipping" >&2; exit 0; }
 log="data/logs/run-$(date +%Y%m%d).log"
@@ -31,7 +34,7 @@ log="data/logs/run-$(date +%Y%m%d).log"
     # ONE daily brief every run (macro + premarket + scenarios + levels; each series fetched once). Its alarms and
     # leading-scenario changes go into the store, so the alert step below picks them up.
     node src/cli/brief.ts --out data/out/brief-latest.md >/dev/null || echo "[run] brief failed"
-    node src/cli/alerts.ts --out data/out/alerts-latest.md --jsonl data/out/alerts.jsonl
+    node src/cli/alerts.ts --out data/out/alerts-latest.md --jsonl "$journal/alerts.jsonl"
     # shadow tracks A/B (docs/SHADOW_TRACKS.md): after the post-close brief, weekdays 16:30-18:59 ET; idempotent (later runs are no-ops)
     dow0=$(TZ=America/New_York date +%u)
     if [ "$dow0" -le 5 ] && [ "$hm" -ge 1630 ] && [ "$hm" -lt 1900 ]; then
@@ -41,7 +44,7 @@ log="data/logs/run-$(date +%Y%m%d).log"
     # (data/in/rh-option-quotes.json, see docs/ROUTINE_PAPER.md), then expire (settles after 16:00; VIX needs
     # data/in/settle.json, else stays pending) and the Friday 15:45 mentor weekend rule; then the review report.
     dow=$(TZ=America/New_York date +%u)
-    if [ "$dow" -le 5 ] && [ "$hm" -ge 1545 ] && [ "$hm" -lt 1700 ] && [ -s data/journal/paper.json ]; then
+    if [ "$dow" -le 5 ] && [ "$hm" -ge 1545 ] && [ "$hm" -lt 1700 ] && [ -s "$journal/paper.json" ]; then
       node src/cli/paper.ts mark || echo "[run] paper mark failed"
       node src/cli/paper.ts expire || echo "[run] paper expire failed"
       node src/cli/review.ts >/dev/null || echo "[run] review failed"

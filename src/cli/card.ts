@@ -1,10 +1,10 @@
 /**
  * 入场前计划卡: npm run card -- --sym NVDA --dir bear [--structure put_spread] [--legs "+210P,-200P"] --exp 2026-10-23
- *   [--thesis "因为…所以…"] [--invalidation "收盘站上 225"] [--save] [--out data/out/card-<sym>.md]
+ *   [--thesis "因为…所以…"] [--invalidation "收盘站上 225"] [--save] [--out data/out/card-<sym>.md (latest copy; kept: <journal>/cards/<id>.md/.json)]
  *   confidence: [--confidence low|medium|high|highest] [--tech-entry] → per-trade cap 0.5–2% of live paper equity (high/highest need macro + scenario plan + technical entry aligned)
  *   stock long: --structure long_stock [--shares 100] → protection / covered-call reminder in a sideways or junk phase (info only)
  *   bearish (做空清单, src/options/shortside.ts): [--sector SMH] [--squeeze-check "SI 3% · float 4B · gamma + · 无梗股热度"] [--horizon 10]
- * --save appends to data/journal/pending-cards.json; later: npm run paper -- open ... --card <id>.
+ * --save appends to <journal>/pending-cards.json (journal = ALPHA_JOURNAL_DIR, default data/journal; src/storage/paths.ts); later: npm run paper -- open ... --card <id>.
  * Read-only data: Yahoo daily bars, CBOE delayed quotes (+ data/in/rh-option-quotes.json when fresh), brief-latest.json,
  * official calendar + OpEx, data/in/earnings.json, the paper journal. Nothing here can place an order.
  */
@@ -23,9 +23,11 @@ import { defaultCapital } from "../config.ts";
 import { loadEarningsBook, nextEarnings } from "../options/earningsStore.ts";
 import { loadFedSpeakers } from "../ingest/fedSpeakers.ts";
 import { SECTOR_OF, BROAD_ETFS } from "../options/shortside.ts";
+import { cardRel, journalPath, outPath, writeAtomic } from "../storage/paths.ts";
+import { dirname } from "node:path";
 
 const { values } = parseArgs({ options: { sym: { type: "string" }, dir: { type: "string" }, structure: { type: "string" }, legs: { type: "string" }, exp: { type: "string" },
-  thesis: { type: "string" }, invalidation: { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, horizon: { type: "string" }, confidence: { type: "string" }, "tech-entry": { type: "boolean" }, shares: { type: "string" }, save: { type: "boolean" }, out: { type: "string" }, journal: { type: "string", default: "data/journal/paper.json" } } });
+  thesis: { type: "string" }, invalidation: { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, horizon: { type: "string" }, confidence: { type: "string" }, "tech-entry": { type: "boolean" }, shares: { type: "string" }, save: { type: "boolean" }, out: { type: "string" }, journal: { type: "string", default: journalPath("paper.json") } } });
 const fail = (m: string) => { process.stderr.write(m + "\n"); process.exit(2); };
 const sym = values.sym?.toUpperCase() ?? fail("缺少 --sym")!;
 const dir = (/^(bear|short|空|看空)/i.test(values.dir ?? "") ? "bear" : /^(bull|long|多|看多)/i.test(values.dir ?? "") ? "bull" : fail("--dir bear|bull")) as "bear" | "bull";
@@ -49,7 +51,7 @@ const [spyBars, sectorBars] = dir === "bear" ? await Promise.all([sym === "SPY" 
 const stockLong = dir === "bull" && STOCK_LONG_RE.test(values.structure ?? "");
 const ndxBars = stockLong ? await yahooDaily("^NDX", 300).catch(() => []) : [];
 const spot = (raw.json as { data?: { current_price?: number } } | null)?.data?.current_price ?? bars.at(-1)?.c ?? null;
-const brief = existsSync("data/out/brief-latest.json") ? JSON.parse(readFileSync("data/out/brief-latest.json", "utf8")) : null;
+const briefF = outPath("brief-latest.json"), brief = existsSync(briefF) ? JSON.parse(readFileSync(briefF, "utf8")) : null;
 const calF = `calendar/releases-${now.getFullYear()}.json`;
 const calendar = withOpex(existsSync(calF) ? JSON.parse(readFileSync(calF, "utf8")).events ?? [] : [], now.getFullYear());
 const earnings = existsSync("data/in/earnings.json") ? parseEarnings(JSON.parse(readFileSync("data/in/earnings.json", "utf8"))) : null;
@@ -63,12 +65,15 @@ const card = buildCard({ now, sym, dir, structure: values.structure, legs, exp: 
   mentorLevels: loadLevels().entries.find((e) => e.date === now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })) ?? null,
   ...(dir === "bear" ? { short: { spyBars, sectorSym, sectorBars, squeezeCheck: values["squeeze-check"] ?? null, horizonDays: values.horizon ? Number(values.horizon) : null } } : {}) });
 const md = renderCard(card, spot, values.exp ?? null);
-const out = values.out ?? `data/out/card-${sym}.md`;
-mkdirSync("data/out", { recursive: true }); writeFileSync(out, md + "\n"); writeFileSync(out.replace(/\.md$/, ".json"), JSON.stringify(card, null, 2) + "\n");
+// persistent copy per card id (<journal>/cards/), plus the regenerable "latest" copy in data/out for back-compat
+const kept = journalPath(cardRel(card.id, "md"));
+writeAtomic(kept, md + "\n"); writeAtomic(journalPath(cardRel(card.id, "json")), JSON.stringify(card, null, 2) + "\n");
+const out = values.out ?? outPath(`card-${sym}.md`);
+mkdirSync(dirname(out), { recursive: true }); writeFileSync(out, md + "\n"); writeFileSync(out.replace(/\.md$/, ".json"), JSON.stringify(card, null, 2) + "\n");
 if (values.save) {
-  const p = "data/journal/pending-cards.json", pc = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { cards: [] };
+  const p = journalPath("pending-cards.json"), pc = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { cards: [] };
   pc.cards.push({ id: card.id, createdAt: card.createdAt, sym, dir, verdict: card.verdict, trade: card.trade, thesis: values.thesis ?? null, invalidation: values.invalidation ?? null, warnTags: card.warnTags ?? [], confidence: card.confidence ?? null, scenarioPlan: card.scenarioPlan ?? null,
     ...(dir === "bear" ? { squeezeCheck: values["squeeze-check"] ?? null, shortTags: card.shortTags ?? [] } : {}) });
-  mkdirSync("data/journal", { recursive: true }); writeFileSync(p, JSON.stringify(pc, null, 2) + "\n");
+  writeAtomic(p, JSON.stringify(pc, null, 2) + "\n");
 }
-process.stdout.write(md + `\n\n[card] ${card.verdictText} → ${out}${values.save ? "（已保存待开仓：paper open --card " + card.id + "）" : ""}\n`);
+process.stdout.write(md + `\n\n[card] ${card.verdictText} → ${kept}（最新副本 ${out}）${values.save ? "（已保存待开仓：paper open --card " + card.id + "）" : ""}\n`);

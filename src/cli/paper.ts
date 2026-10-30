@@ -14,7 +14,7 @@
  *   journal --id X [--why "…"] [--thesis "…"] [--right "…"] [--wrong "…"] [--violated "…"] [--redo "…"] [--profitable-but-wrong yes|no]   (交易日记 6 问; knowledge/mentor/psychology/journal-and-outcome-bias.md)
  *   sin   --id X --sin wrath,greed [--note "…"] | --remove greed   (股市七宗罪 manual tag / reject an auto candidate; src/options/sins.ts)
  *   sins  [--backfill]   (list auto-derived 七宗罪 candidates per own closed trade; --backfill stores them as by:"auto" in the journal)
- * Common: --journal data/journal/paper.json (default), --capital N (first use; default ALPHA_CAPITAL or 5000 (src/config.ts)).
+ * Common: --journal <journal>/paper.json (default; journal = ALPHA_JOURNAL_DIR or data/journal), --capital N (first use; default ALPHA_CAPITAL or 5000 (src/config.ts)).
  */
 import { defaultCapital } from "../config.ts";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, renameSync } from "node:fs";
@@ -49,9 +49,11 @@ import { paperEquity, tradeCap, capLabel, entryCapUsd } from "../options/confide
 import { loadLevels } from "../macro/mentorLevels.ts";
 import { CBOE_INDEX, chainFromCboe, fetchCboeRaw } from "../options/gex.ts";
 import { macroEntry, migrateMacro } from "../options/macroLedger.ts";
+import { journalPath, outPath } from "../storage/paths.ts";
+import { loadPlanDay } from "../storage/plans.ts";
 
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
-  journal: { type: "string", default: "data/journal/paper.json" }, symbol: { type: "string" }, strategy: { type: "string" }, dir: { type: "string" }, "max-loss": { type: "string" }, legs: { type: "string" }, scenarios: { type: "string" }, confidence: { type: "string" }, "tech-entry": { type: "boolean" }, "macro-aligned": { type: "boolean" }, capital: { type: "string" }, proposal: { type: "string" },
+  journal: { type: "string", default: journalPath("paper.json") }, symbol: { type: "string" }, strategy: { type: "string" }, dir: { type: "string" }, "max-loss": { type: "string" }, legs: { type: "string" }, scenarios: { type: "string" }, confidence: { type: "string" }, "tech-entry": { type: "boolean" }, "macro-aligned": { type: "boolean" }, capital: { type: "string" }, proposal: { type: "string" },
   thesis: { type: "string" }, invalidation: { type: "string" }, stop: { type: "string" }, motive: { type: "string" }, "time-stop": { type: "string" }, tp: { type: "string" }, settle: { type: "string", multiple: true }, "plan-id": { type: "string" }, card: { type: "string" }, class: { type: "string" }, tags: { type: "string" }, result: { type: "string" }, "pnl-pct": { type: "string" }, note: { type: "string" }, "followed-stop": { type: "string" }, "followed-tp": { type: "string" }, "followed-size": { type: "string" },
   quotes: { type: "string", multiple: true }, id: { type: "string" }, "exit-kind": { type: "string" }, pnl: { type: "string" }, commissions: { type: "string" },
   "error-class": { type: "string" }, "error-tags": { type: "string" }, violations: { type: "string" }, lesson: { type: "string" }, kind: { type: "string" }, hedge: { type: "string" }, "hedge-detail": { type: "string" }, "stop-pct": { type: "string" }, sector: { type: "string" }, "squeeze-check": { type: "string" }, sin: { type: "string" }, confirm: { type: "string" }, target: { type: "string" }, why: { type: "string" }, right: { type: "string" }, wrong: { type: "string" }, violated: { type: "string" }, redo: { type: "string" }, "profitable-but-wrong": { type: "string" }, remove: { type: "string" }, backfill: { type: "boolean", default: false }, ack: { type: "boolean", default: false }, now: { type: "string" } } });
@@ -75,15 +77,17 @@ if (cmd === "open") {
   const ps = typeof p.underlyingPrice === "number" ? p.underlyingPrice : p.underlyingPrice[p.symbol];
   if (live == null) fail([`无法取得 ${p.symbol} 实时价格（Yahoo），不能确认是真实数据`]);
   if (ps == null || Math.abs(ps / live! - 1) > 0.03) fail([`proposal underlyingPrice ${ps} 与 Yahoo ${live!.toFixed(2)} 相差 >3% → 方案已过期，请用当前链/报价重做`]);
-  const bf = existsSync("data/out/brief-latest.json") ? JSON.parse(readFileSync("data/out/brief-latest.json", "utf8")) : null;
+  const bfF = outPath("brief-latest.json"), bf = existsSync(bfF) ? JSON.parse(readFileSync(bfF, "utf8")) : null;
   const brief = bf && now.getTime() - Date.parse(bf.generatedAt) < 12 * 3600_000 ? bf : {};
+  // §2.1 plan: today's persisted plan (<journal>/plans/<date>.json, survives a data/out wipe), else brief-latest.json
+  const planDay = loadPlanDay(etDate(now)), todayPlan = planDay?.plan ?? brief.plan ?? [];
   const year = now.getFullYear(), calF = new URL(`../../calendar/releases-${year}.json`, import.meta.url);
   const calendar = existsSync(calF) ? JSON.parse(readFileSync(calF, "utf8")).events ?? [] : [];
   const cr = critique({ proposal: p, side: proposalSide(p), thesis: values.thesis ?? "", invalidation: values.invalidation ?? "", stop: values.stop ?? "", motive: values.motive,
     leader: brief.leader === undefined ? undefined : brief.leader, verdict: brief.verdict ?? null, verdictReasons: brief.reasons ?? [],
     futuresGapPct: (brief.reasons ?? []).some((x: string) => /期货跳空/.test(x)) ? 1.5 : null, open: openPaper(j), history: j.entries, bars, calendar, now, capital: j.capital });
   process.stdout.write(renderCritique(cr) + "\n");
-  const pcF = "data/journal/pending-cards.json", card = values.card && existsSync(pcF) ? (JSON.parse(readFileSync(pcF, "utf8")).cards ?? []).find((c: { id: string }) => c.id === values.card) ?? null : null;
+  const pcF = journalPath("pending-cards.json"), card = values.card && existsSync(pcF) ? (JSON.parse(readFileSync(pcF, "utf8")).cards ?? []).find((c: { id: string }) => c.id === values.card) ?? null : null;
   if (values.card && !card) process.stdout.write(`⚠️ 找不到计划卡 ${values.card}（${pcF}）\n`);
   // bearish: 做空清单 inputs (120 daily bars of the underlying, SPY, sector ETF); warn tags only, missing data reported by shortside.ts
   const side = proposalSide(p); // same side paperOpen uses
@@ -100,7 +104,7 @@ if (cmd === "open") {
   // 情景推演 written before entry: --scenarios "大跌:止损;慢跌:持有;横盘:时间止损;上涨:止盈", else the plan card's table
   const scenarioPlan = parsePlan(values.scenarios, now.toISOString()) ?? card?.scenarioPlan ?? null;
   const confidence = { tier: values.confidence as never, macro: values["macro-aligned"] ?? false, technical: values["tech-entry"] ?? false };
-  const r = paperOpen(j, p, { scenarioPlan, confidence, psych, short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: brief.plan ?? [], side: proposalSide(p), now });
+  const r = paperOpen(j, p, { scenarioPlan, confidence, psych, short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: todayPlan, side: proposalSide(p), now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
   if (r.entry!.kind !== "practice" && r.entry!.psychTags?.length) process.stdout.write(`🧠 心理提示（不阻止）：${r.entry!.psychTags.join("、")}\n`);

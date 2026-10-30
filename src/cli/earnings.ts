@@ -6,9 +6,10 @@ import { existsSync, readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { DEFAULT_WATCHLIST } from "../macro/volume.ts";
 import { loadEarningsBook, nextEarnings, fmtEarnings, symbolsNeedingEarnings } from "../options/earningsStore.ts";
+import { journalPath } from "../storage/paths.ts";
 const { values } = parseArgs({ options: { need: { type: "boolean" } } });
 const rd = (f: string) => (existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : null);
-const wl = rd("data/in/watchlist.json"), j = rd("data/journal/paper.json"), pc = rd("data/journal/pending-cards.json");
+const wl = rd("data/in/watchlist.json"), j = rd(journalPath("paper.json")), pc = rd(journalPath("pending-cards.json"));
 const syms = symbolsNeedingEarnings([...DEFAULT_WATCHLIST, ...(Array.isArray(wl) ? wl : wl?.symbols ?? []),
   ...((j?.entries ?? []) as Array<{ underlying?: string; symbol?: string }>).map((e) => e.underlying ?? e.symbol ?? ""),
   ...((pc?.cards ?? pc ?? []) as Array<{ sym?: string }>).map((c) => c.sym ?? "")]);

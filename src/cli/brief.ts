@@ -52,6 +52,8 @@ import { OFFLINE_OIL_NOTE, type OilId } from "../macro/oilContract.ts";
 import { frontLevel, futSameChange, futNote, contractSeries, mergeFrontState, isFutures, parseContract, OFFLINE_FUT_NOTE, type FrontState, type SameContract } from "../macro/futContract.ts";
 import { briefArchivePath } from "../macro/briefArchive.ts";
 import { paperGate, renderGate } from "../macro/paperGate.ts";
+import { journalPath } from "../storage/paths.ts";
+import { savePlanDay } from "../storage/plans.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -162,7 +164,7 @@ if (!values.offline) {
 // 今日交易计划 needs TLT levels too (not a default levels ticker)
 for (const t of ["SPY", "QQQ", "IWM", "TLT"]) if (!planRefs[t]) { try { const r = await loadDailyBars(t); planRefs[t] = referenceLevels(r.bars); const b = r.bars; planB5[t] = b.length > 5 ? ((b.at(-1)!.c - b[b.length - 6]!.c) / b[b.length - 6]!.c) * 100 : null; } catch { /* candidate shows "没有价位数据" */ } }
 const { verdict: v0, reasons: r0 } = briefVerdict({ macro, pm, sc });
-const pj0 = existsSync("data/journal/paper.json") ? JSON.parse(readFileSync("data/journal/paper.json", "utf8")) : { capital: defaultCapital(), entries: [] };
+const paperF = journalPath("paper.json"), pj0 = existsSync(paperF) ? JSON.parse(readFileSync(paperF, "utf8")) : { capital: defaultCapital(), entries: [] };
 const equity0 = paperEquity(pj0.entries ?? [], pj0.capital ?? defaultCapital()); // per-trade cap = confidence tier × live paper equity
 const plan = buildTradePlan({ leader: sc.leader, verdict: v0, noTrade: r0, levels: planRefs, data, bars5d: planB5, capital: equity0 });
 // 导师框架信号 + 纸面交易闸门 (paper only; user-approved 2026-10-22)
@@ -191,7 +193,7 @@ const gateIdLine = gateItem ? [`- 闸门卡 plan-id：\`${planId(now.toLocaleDat
 const planIdLines = plan.qualified.map((c) => `- plan-id：\`${planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c)}\`（paper open --plan-id）`);
 // 导师提醒: previous regime (macro-latest.json is overwritten below), paper ledger, official FOMC/CPI/NFP + flagged events
 const prevMacroF = "data/out/macro-latest.json", previousRegime = existsSync(prevMacroF) ? (JSON.parse(readFileSync(prevMacroF, "utf8")) as { regime?: { label?: string } }).regime?.label ?? null : null;
-const pj = existsSync("data/journal/paper.json") ? JSON.parse(readFileSync("data/journal/paper.json", "utf8")) : { capital: defaultCapital(), entries: [] };
+const pj = existsSync(paperF) ? JSON.parse(readFileSync(paperF, "utf8")) : { capital: defaultCapital(), entries: [] };
 // 流动性观察 (weekly Howell framework; flag only). Per-series timeout + 6h cache; any failure → 数据不可用, never fabricated
 let liquidityLines: string[] | undefined, liq: ReturnType<typeof liquidityWatch> | null = null;
 try { const L = await fetchLiquidity({ now, offline: values.offline ?? false }); liq = liquidityWatch(L.data, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })); liquidityLines = renderLiquidity(liq, L.data, L.meta);
@@ -235,7 +237,10 @@ write(values.out, res.md);
 // dated archive of the premarket (07:00–09:29 ET) / close (16:00–18:59 ET) brief; brief-latest.md is still the one to send
 const archive = briefArchivePath(now, dirname(values.out)); if (archive) write(archive, res.md);
 if (!values.offline) write(futStatePath, JSON.stringify(futState, null, 2) + "\n");
-write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: planOut.map((c) => ({ ...c, id: planId(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), c) })), gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, futures: Object.fromEntries(Object.entries(futSame).map(([k, v]) => [k, v ? { contract: v.contract, pct1: v.pct1, rolled: v.rolled, label: v.label } : null])), liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: { ...deadCatJson(dc, { ...data, ...dcData }), mentorLevels: levelsJson(mlv) }, paperGate: gate, mentorSignals: mentorSignalsJson(msig), oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
+const planDate = now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), planItems = planOut.map((c) => ({ ...c, id: planId(planDate, c) }));
+// §2.1 plan also kept in the persistent journal (<journal>/plans/<date>.json) — brief-latest.json is regenerable output
+savePlanDay({ date: planDate, generatedAt: now.toISOString(), verdict: res.verdict, plan: planItems });
+write(values.out.replace(/\.md$/, ".json"), JSON.stringify({ generatedAt: now.toISOString(), verdict: res.verdict, reasons: res.reasons, leader: sc.leader, previousLeader, scenarioChanged: sc.changed, plan: planItems, gex: gex.map((g) => (g.ok ? { symbol: g.symbol, net: Math.round(g.net), flip: g.flip, callWall: g.callWall, putWall: g.putWall, maxPain: g.maxPain, asOfUtc: g.asOfUtc } : { symbol: g.symbol, error: g.error })), matrix: { best: mx.best.map((b) => b.id), matches: mx.matches, unknown: mx.unknown }, alarms: pm.alarms, futures: Object.fromEntries(Object.entries(futSame).map(([k, v]) => [k, v ? { contract: v.contract, pct1: v.pct1, rolled: v.rolled, label: v.label } : null])), liquidity: liq ? { status: liq.status, label: liq.label, alerts: liq.alerts, asOf: liq.now.date } : null, sleep: sleepJson(sleep), todayReleases, deadCat: { ...deadCatJson(dc, { ...data, ...dcData }), mentorLevels: levelsJson(mlv) }, paperGate: gate, mentorSignals: mentorSignalsJson(msig), oilVix: { fast: pm.oilVix.fast, driver: pm.oilVix.driver, vix: pm.oilVix.vix.label }, failed }, null, 2) + "\n");
 write("data/out/macro-latest.json", JSON.stringify(macro, null, 2) + "\n");
 write(scPath, JSON.stringify({ generatedAt: now.toISOString(), leader: sc.leader, previousLeader, changed: sc.changed }, null, 2) + "\n");
 process.stdout.write(res.md + "\n");
