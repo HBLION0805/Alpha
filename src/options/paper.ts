@@ -22,7 +22,7 @@ import { planProblems, type ScenarioPlan } from "./scenarioEngine.ts";
 import type { Critique } from "../review/critique.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
-export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; card?: PlanCardRef | null; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard>;
+export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; /** other saved cards' reserved risk today (cli/paper.ts, excludes this card) */ reservedUsd?: number; card?: PlanCardRef | null; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard>;
   /** bearish opens: daily bars of the underlying + SPY + sector and the written squeeze check (做空清单, src/options/shortside.ts) — warn tags only */
   short?: Pick<ShortInput, "bars" | "spyBars" | "sectorSym" | "sectorBars" | "squeezeCheck" | "netGamma">;
   /** 交易心理 (src/options/psych.ts): earnings rows / flagged events for the 72h rule, --confirm note for adds to a loser, --target for Put strikes — warn tags only */
@@ -121,7 +121,7 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
   const asOf = a.now.toISOString().slice(0, 10);
   const prop: Proposal = { ...p, asOf: p.asOf ?? asOf, capital: equity, confidence: a.confidence ?? { tier: cap.tier }, scenarioPlan: a.scenarioPlan ?? null,
     thesisRecord: { thesis: a.thesis ?? "", invalidation: a.invalidation ?? "", recordedAt: a.now.toISOString() },
-    discipline: { ...(p.discipline ?? {}), motive: a.motive, openPositions: open.length, journal: j.entries.filter((e) => e.mode === "paper").map(toLog), todayEt: asOf,
+    discipline: { ...(p.discipline ?? {}), motive: a.motive, openPositions: open.length, journal: j.entries.filter((e) => e.mode === "paper").map(toLog), todayEt: asOf, reservedUsd: a.reservedUsd ?? p.discipline?.reservedUsd,
       openPnlToday: p.discipline?.openPnlToday ?? open.reduce((s, e) => s + (e.marks?.at(-1)?.pnl ?? 0), 0) } };
   const { checks, blocked } = preTradeChecks(prop, R);
   for (const c of checks) if (c.severity === "BLOCK" || c.severity === "NO_TRADE") refused.push(`${c.severity} ${c.id}: ${c.detail}`);

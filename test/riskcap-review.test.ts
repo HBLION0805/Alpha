@@ -116,3 +116,11 @@ test("0% rule card = no new risk: cap 0 (not 'unset'), pretrade + paper-gate + b
   assert.equal(effectiveRules({ dailyLossLimitPct: 0 }).dailyLossLimitPct, 0);
   assert.deepEqual(dailyBudget([], 5000, new Date("2026-10-30T15:00:00Z"), 0), { used: 0, remaining: 0, newRisk: 0, newRiskRemaining: 0 });
 });
+
+test("reservation (review #27): newRiskCheck + pretrade daily_new_risk count other saved cards' reserved risk", () => {
+  const ok = newRiskCheck({ entries: [], day: "2026-10-30", equity: 5000, proposedUsd: 100, reservedUsd: 400 });
+  assert.equal(ok.ok, true); assert.equal(ok.total, 500); assert.equal(ok.remaining, 100); assert.match(ok.detail, /reserved by saved cards \$400/);
+  assert.equal(newRiskCheck({ entries: [], day: "2026-10-30", equity: 5000, proposedUsd: 101, reservedUsd: 400 }).ok, false);
+  const chk = (reservedUsd?: number) => disciplineChecks({ symbol: "SPY", strategy: "pds", asOf: "2026-10-30", legs: [], capital: 5000, discipline: { journal: [], todayEt: "2026-10-30", openPnlToday: 0, reservedUsd } } as never, 150).find((c) => c.id === "daily_new_risk")!;
+  assert.equal(chk().severity, "OK"); assert.equal(chk(400).severity, "BLOCK"); assert.match(chk(400).detail, /\$0 \+ reserved by saved cards \$400 \+ this \$150 = \$550 > daily cap \$500/);
+});

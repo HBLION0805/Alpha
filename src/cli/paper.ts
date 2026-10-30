@@ -26,6 +26,7 @@ import { chainsFromQuotes, upsertMark } from "../options/paper.ts";
 import { settleable, expireEntry, weekendRule, isAm } from "../options/expire.ts";
 import { checkTakeProfit, costBasis } from "../options/tpplan.ts";
 const etDate = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+import { reservedRiskUsd } from "../review/orderBlock.ts";
 import { paperOpen, paperMark, paperClose, openPaper, type PaperJournal } from "../options/paper.ts";
 import { parseChain, type Chain } from "../options/chain.ts";
 import { unwrapJson } from "../options/robinhood.ts";
@@ -87,7 +88,8 @@ if (cmd === "open") {
     leader: brief.leader === undefined ? undefined : brief.leader, verdict: brief.verdict ?? null, verdictReasons: brief.reasons ?? [],
     futuresGapPct: (brief.reasons ?? []).some((x: string) => /期货跳空/.test(x)) ? 1.5 : null, open: openPaper(j), history: j.entries, bars, calendar, now, capital: j.capital });
   process.stdout.write(renderCritique(cr) + "\n");
-  const pcF = journalPath("pending-cards.json"), card = values.card && existsSync(pcF) ? (JSON.parse(readFileSync(pcF, "utf8")).cards ?? []).find((c: { id: string }) => c.id === values.card) ?? null : null;
+  const pcF = journalPath("pending-cards.json"), pendingCards = existsSync(pcF) ? JSON.parse(readFileSync(pcF, "utf8")).cards ?? [] : [], card = values.card ? pendingCards.find((c: { id: string }) => c.id === values.card) ?? null : null;
+  const reserved = reservedRiskUsd(pendingCards, j.entries, now, values.card); // other cards' held risk; this card's own reservation is released by opening it
   if (values.card && !card) process.stdout.write(`⚠️ 找不到计划卡 ${values.card}（${pcF}）\n`);
   // bearish: 做空清单 inputs (120 daily bars of the underlying, SPY, sector ETF); warn tags only, missing data reported by shortside.ts
   const side = proposalSide(p); // same side paperOpen uses
@@ -104,7 +106,7 @@ if (cmd === "open") {
   // 情景推演 written before entry: --scenarios "大跌:止损;慢跌:持有;横盘:时间止损;上涨:止盈", else the plan card's table
   const scenarioPlan = parsePlan(values.scenarios, now.toISOString()) ?? card?.scenarioPlan ?? null;
   const confidence = { tier: values.confidence as never, macro: values["macro-aligned"] ?? false, technical: values["tech-entry"] ?? false };
-  const r = paperOpen(j, p, { scenarioPlan, confidence, psych, short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, planId: values["plan-id"], plan: todayPlan, side: proposalSide(p), now });
+  const r = paperOpen(j, p, { scenarioPlan, confidence, psych, short, card, kind: values.kind as "formal" | "practice" | undefined, hedge: values.hedge, hedgeDetail: values["hedge-detail"], stopPct: values["stop-pct"] != null ? Number(values["stop-pct"]) : undefined, critique: cr, ack: values.ack, thesis: values.thesis, invalidation: values.invalidation, stop: values.stop, motive: values.motive as Motive, timeStopAt: values["time-stop"], tp: values.tp, cardId: values.card, reservedUsd: reserved.usd, planId: values["plan-id"], plan: todayPlan, side: proposalSide(p), now });
   for (const c of r.checks.filter((c) => c.severity !== "OK" && c.severity !== "INFO")) process.stdout.write(`${c.severity} ${c.id}: ${c.detail}\n`);
   if (!r.entry) fail(r.refused);
   if (r.entry!.kind !== "practice" && r.entry!.psychTags?.length) process.stdout.write(`🧠 心理提示（不阻止）：${r.entry!.psychTags.join("、")}\n`);

@@ -39,6 +39,7 @@ export interface CardInput {
   gex: GexOut | null; calendar: CalendarEvent[]; earnings: Array<{ symbol: string; date: string; timing: string | null }> | null;
   /** next report from earningsStore: undefined = never looked up, null = none upcoming */ earningsNext?: EarningsRow | null; fed?: FedCache | null;
   journal: JournalEntry[]; capital: number; thesis?: string; invalidation?: string;
+  /** risk already held by today's saved, unopened cards (src/review/orderBlock.ts reservedRiskUsd) — counts as new risk */ reservedUsd?: number;
   /** bearish cards: benchmark bars + the written squeeze check for the 做空清单 (src/options/shortside.ts); absent = reported as missing */
   /** today's 大佬 daily levels entry (knowledge/mentor/market-calls/levels.json), loaded by cli/card.ts; info only */
   mentorLevels?: LevelEntry | null;
@@ -93,12 +94,12 @@ export function suggestVerticals(dir: Dir, spot: number, exp: string, quotes: Qu
   }
   return out.sort((a, b) => Math.abs(a.legs[0]!.strike - spot) - Math.abs(b.legs[0]!.strike - spot) || b.loss - a.loss).slice(0, 3);
 }
-export function dailyBudget(journal: JournalEntry[], capital: number, now: Date, perDayPct?: number): { used: number; remaining: number; newRisk: number; newRiskRemaining: number } {
+export function dailyBudget(journal: JournalEntry[], capital: number, now: Date, perDayPct?: number, reservedUsd = 0): { used: number; remaining: number; newRisk: number; newRiskRemaining: number } {
   const today = etDay(now), dated = dailyRiskCapPct(today, capital), pct = perDayPct != null ? Math.min(perDayPct, dated) : dated, sim = journal.filter((e) => e.mode === "paper" && countsTowardDailyCap(e)); // incl. mentor_shadow (DECISIONS 2026-10-17)
   const pnl = sim.filter((e) => e.closedAt && etDay(new Date(e.closedAt)) === today).reduce((s, e) => s + (e.pnl ?? 0), 0)
     + sim.filter((e) => !e.closedAt).reduce((s, e) => s + (e.marks?.at(-1)?.pnl ?? 0), 0);
   const used = Math.max(0, -pnl);
-  const newRisk = newRiskOpened(sim, today).usd; // user rule 2026-10-29: NEW risk opened today counts against the same cap
+  const newRisk = newRiskOpened(sim, today).usd + Math.max(0, reservedUsd); // + max loss held by today's saved, not-yet-opened cards (orderBlock.ts) // user rule 2026-10-29: NEW risk opened today counts against the same cap
   return { used: r2(used), remaining: r2(Math.max(0, capital * pct / 100 - used)), newRisk: r2(newRisk), newRiskRemaining: r2(Math.max(0, capital * pct / 100 - newRisk)) };
 }
 const legStr = (l: CardLeg[]) => l.map((x) => `${x.qty > 0 ? "买" : "卖"} ${x.strike}${x.type === "put" ? "P" : "C"}（${x.mid ?? "无价"}${x.mid != null ? `，${x.src}` : ""}）`).join(" / ");
@@ -112,7 +113,7 @@ export function buildCard(i: CardInput): Card {
   const perTrade = cap.usd;
   const id = `card-${today}-${i.sym}-${i.dir}-${i.now.getTime().toString(36)}`;
   const exp = i.exp ?? null;
-  const budget = dailyBudget(i.journal, equity, i.now), allowed = Math.min(perTrade, budget.remaining, budget.newRiskRemaining);
+  const budget = dailyBudget(i.journal, equity, i.now, undefined, i.reservedUsd ?? 0), allowed = Math.min(perTrade, budget.remaining, budget.newRiskRemaining);
 
   // legs: user-specified, else suggest a debit vertical
   let legs: CardLeg[] = [], suggested = false;
@@ -165,7 +166,7 @@ export function buildCard(i: CardInput): Card {
   S.push({ n: 5, title: "分批止盈", status: tp?.plan ? "ok" : "missing", lines: tp?.plan ? [`- ${renderTakeProfit(tp.plan)}`, "- 暴利（短时间 +80% 以上）：先止盈 ≥90%，Runner ≤10%（windfall）"] : ["- 缺少到期日 → 无法给出"] });
 
   // 6) max loss vs budget
-  const s6: string[] = [`- ${capLabel(cap)}；今日已用 $${budget.used}，日内剩余 $${budget.remaining}；今日已开新风险 $${budget.newRisk}，新风险剩余 $${budget.newRiskRemaining}（日上限 ${dailyRiskCapPct(i.now, equity)}% = $${dayCapUsd(equity, i.now)}）→ 本笔最多 $${r2(allowed)}`];
+  const s6: string[] = [`- ${capLabel(cap)}；今日已用 $${budget.used}，日内剩余 $${budget.remaining}；今日已开新风险 $${budget.newRisk}${i.reservedUsd ? `（含待开仓卡预留 $${r2(i.reservedUsd)}）` : ""}，新风险剩余 $${budget.newRiskRemaining}（日上限 ${dailyRiskCapPct(i.now, equity)}% = $${dayCapUsd(equity, i.now)}）→ 本笔最多 $${r2(allowed)}`];
   let st6: Status = "ok";
   if (!legs.length) { st6 = "fail"; s6.push(exp ? `- 🛑 在 $${r2(allowed)} 内找不到 ${exp} 的定义风险价差（或无报价）→ 不可能按规则做` : "- 缺少到期日 --exp"); failing.push("最大亏损：无可行结构"); }
   else if (per == null) { st6 = naked ? "fail" : "missing"; s6.push(`- 结构 ${legStr(legs)}：${naked ? "风险无限" : "缺少报价 → 最大亏损未知"}`); if (!naked) failing.push("最大亏损：缺报价"); }
