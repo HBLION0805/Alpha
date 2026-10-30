@@ -1,4 +1,5 @@
-/** npm run volume [-- --out data/out/volume-latest.md] [--no-alarms]. Watchlist: defaults + data/in/watchlist.json (array or {symbols}). Chains: data/in/*-chain.json. */
+/** npm run volume [-- --out data/out/volume-latest.md] [--no-alarms]. Watchlist: defaults + data/in/watchlist.json (array or {symbols}). Chains: data/in/*-chain.json
+ * (expired contracts dropped; chains >1 trading day old labelled 过时, no alarms). Also writes volume-latest.json with per-chain freshness. */
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
@@ -29,6 +30,7 @@ if (existsSync(values.in)) for (const f of readdirSync(values.in).filter((x) => 
 const res = buildVolumeReport({ now, bars, chains, failed });
 if (!values["no-alarms"] && res.strong.length) { const st = new Store(process.env.ALPHA_DB ?? "data/alpha-news.sqlite"); st.insert(volumeAlarmItems(res.strong, now), { stance: "center", tier: 2 }, now); st.close(); }
 mkdirSync(dirname(values.out), { recursive: true });
-writeFileSync(values.out + ".tmp", res.md); renameSync(values.out + ".tmp", values.out);
+const jsonPath = values.out.replace(/\.md$/, "") + ".json"; // chain freshness (stale / asOfDate / droppedExpired) for machines
+for (const [p, body] of [[values.out, res.md], [jsonPath, JSON.stringify({ generatedAt: now.toISOString(), chains: res.chains, strong: res.strong, failed: res.failed }, null, 2) + "\n"]] as const) { writeFileSync(p + ".tmp", body); renameSync(p + ".tmp", p); }
 process.stdout.write(res.md + "\n");
-console.error(`[volume] ${symbols.length} symbols, ${chains.length} chains, ${res.strong.length} strong anomalies, ${Object.keys(failed).length} failed → ${values.out}`);
+console.error(`[volume] ${symbols.length} symbols, ${chains.length} chains (${res.chains.filter((c) => c.stale).length} 过时), ${res.strong.length} strong anomalies, ${Object.keys(failed).length} failed → ${values.out}`);
