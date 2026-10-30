@@ -204,3 +204,6 @@ export async function executePlan(o: ExecOpts): Promise<ExecResult> {
   }
   return done("entry");
 }
+
+/** CLI safety (review of #29, same rule as flatten): dry-run unless --confirm; --dry-run always wins. */
+export const executeDryRun = (f: { confirm?: boolean; "dry-run"?: boolean }) => !f.confirm || !!f["dry-run"];

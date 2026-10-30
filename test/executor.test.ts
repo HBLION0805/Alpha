@@ -127,3 +127,9 @@ test("dry-run: only GETs, nothing persisted, would-submit listed", async () => {
   const b2 = fakeBroker([{ symbol: "QQQ", qty: "-4" }]), fl = await run(b2, et("15:50"), { dryRun: true });
   assert.deepEqual(b2.writes(), []); assert.equal(fl.persist, false);
 });
+
+test("execute CLI (review #29): dry-run by default, --confirm to send, --dry-run always wins", async () => {
+  const { executeDryRun } = await import("../src/paper/executor.ts");
+  assert.equal(executeDryRun({}), true); assert.equal(executeDryRun({ confirm: true }), false);
+  assert.equal(executeDryRun({ confirm: true, "dry-run": true }), true); assert.equal(executeDryRun({ "dry-run": true }), true);
+});
