@@ -96,3 +96,17 @@ test("plan card: tier-2 prints before expiry are listed separately and don't tur
   assert.match(minor.lines.join("\n"), /到期前事件：无（官方日历）/);
   assert.equal(s7([{ kind: "CPI", title: "CPI", date: "2026-10-21", timeEt: "08:30", source: "x" }]).status, "warn", "major events still warn");
 });
+
+test("ECI (BLS, quarterly 08:30 ET): official dates incl. 2026-10-30 and 2027-01-29, tier 2, recognised by the 7:30 brief", async () => {
+  const { eciEvents, BLS_ECI_URL, ECI_DATES } = await import("../src/ingest/officialCalendar.ts");
+  assert.deepEqual(Object.keys(ECI_DATES), ["2026-10-30", "2027-01-29", "2027-04-30", "2027-07-30", "2027-10-29"]);
+  assert.deepEqual(eciEvents(2026).map((e) => e.date), ["2026-10-30"]);
+  assert.ok(eciEvents().every((e) => e.kind === "ECI" && e.timeEt === "08:30" && e.tier === 2 && e.source === BLS_ECI_URL && isMinorRelease(e)));
+  assert.ok(CAL.events.some((e) => e.kind === "ECI" && e.date === "2026-10-30" && e.timeEt === "08:30" && e.tier === 2), "committed 2026 snapshot has the missed 10-30 print");
+  assert.ok(CAL.sources.includes(BLS_ECI_URL));
+  const fri = new Date("2026-10-30T11:30:00Z");
+  assert.match(buildBrief({ now: fri, ...parts(fri, CAL.events), calendar: CAL.events }).md, /今天 8:30：就业成本指数 Employment Cost Index Q3 2026 \(BLS\)\*\*（次要）/);
+  const jan = new Date("2027-01-29T12:30:00Z"), cal27 = eciEvents(2027);
+  assert.match(buildBrief({ now: jan, ...parts(jan, cal27), calendar: cal27 }).md, /今天 8:30：就业成本指数 Employment Cost Index Q4 2026/);
+  assert.ok(!upcomingHighImpact(CAL.events, new Date("2026-10-29T12:00:00Z")).some((e) => e.kind === "ECI"), "tier 2: no 48h/NO_TRADE trigger");
+});

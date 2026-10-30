@@ -33,7 +33,7 @@ test("paper gate: soft NO_TRADE reasons → still one $25 card with stop, TP, 4 
 
 test("paper gate: hard reasons → NO_TRADE (daily cap, extreme VIX, no direction)", () => {
   const sig = mentorSignals(bear);
-  assert.equal(paperGate({ verdict: "OK", reasons: [], leader: "hawkish", candidates: [], levels, data: bear, signals: sig, equity: 5000, lossToday: 90 }).decision, "NO_TRADE");
+  assert.equal(paperGate({ verdict: "OK", reasons: [], leader: "hawkish", candidates: [], levels, data: bear, signals: sig, equity: 5000, lossToday: 600 }).decision, "NO_TRADE");
   const hot = { ...bear, VIX: ser(20, 35) };
   assert.match(paperGate({ verdict: "OK", reasons: [], leader: null, candidates: [], levels, data: hot, signals: sig, equity: 5000, lossToday: 0 }).hardReasons.join(), /VIX/);
   const flat = { NQ: ser(30100, 30100), WTI: ser(90, 90), VIX: ser(21, 21) };
