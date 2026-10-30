@@ -29,7 +29,8 @@
     "earnings": "node src/cli/earnings.ts",
     "shadow": "node src/cli/shadow.ts",
     "trump": "node src/cli/trump.ts",
-    "migrate:journal": "node src/cli/migrateJournal.ts"
+    "migrate:journal": "node src/cli/migrateJournal.ts",
+    "flash": "node src/cli/flash.ts"
   },
   "dependencies": {
     "indicatorts": "^2.2.2",
