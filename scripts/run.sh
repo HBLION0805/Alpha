@@ -2,6 +2,7 @@
 # Scheduled entry point: poll feeds → emit new alerts → refresh digest.
 # Usage: scripts/run.sh [--digest-only|--no-digest]
 # Brief: every run → data/out/brief-latest.md (+ macro-latest.json for the digest, scenarios-latest.json for leader state)
+# Chains: data/in/rh-chain/*.json → data/in/<sym>-chain.json (src/cli/chains.ts); options dashboards for each → data/out/options-*-latest.md
 # Volume: 7:00–9:29 (prior session, feeds premarket) and 16:15–16:59 ET → data/out/volume-latest.md (src/cli/volume.ts)
 # Env: ALPHA_VOLUME=1 forces volume; ALPHA_NODE_BIN (dir with node 24), ALPHA_DB, ALPHA_ALERT_THRESHOLD, ALPACA_KEY/ALPACA_SECRET (optional)
 set -uo pipefail
@@ -23,6 +24,9 @@ log="data/logs/run-$(date +%Y%m%d).log"
     # (X comes from the routine's data/in/x-trump.json). A Truth failure is one warning line; the run continues with X only.
     node src/cli/trump.ts 2>&1 | tail -2 || echo "[run] trump fetch failed → X only"
     node src/cli/poll.ts | tail -1
+    # option chains: raw Robinhood pages the routine saved (data/in/rh-chain/<SYM>.json, docs/ROUTINE_CHAINS.md) → data/in/<sym>-chain.json
+    # for SPY/QQQ/IWM + every optionable watchlist symbol; one symbol failing skips only that symbol
+    [ -d data/in/rh-chain ] && { node src/cli/chains.ts --build || echo "[run] chains build failed"; }
     hm=$(TZ=America/New_York date +%H%M)
     # volume anomalies: prior session before the open, today's after 16:15 ET (or ALPHA_VOLUME=1)
     if [ "${ALPHA_VOLUME:-}" = "1" ] || { [ "$hm" -ge 0700 ] && [ "$hm" -lt 0930 ]; } || { [ "$hm" -ge 1615 ] && [ "$hm" -lt 1700 ]; }; then
@@ -49,8 +53,14 @@ log="data/logs/run-$(date +%Y%m%d).log"
   fi
   if [ "${1:-}" != "--no-digest" ]; then
     [ "${1:-}" = "--digest-only" ] && { node src/cli/brief.ts --no-alarms --out data/out/brief-latest.md >/dev/null || echo "[run] brief failed"; }
-    # options dashboard when a fresh chain was saved from Robinhood MCP (data/in/spy-chain.json)
-    if [ -s data/in/spy-chain.json ]; then node src/cli/options.ts data/in/spy-chain.json --out data/out/options-latest.md >/dev/null || echo "[run] options failed"; fi
+    # options dashboard per saved chain (refresh list from `chains --need`; SPY also → options-latest.md as before).
+    # Expired contracts are dropped and stale chains labelled 过时 by options.ts; a failing symbol does not stop the others.
+    syms=$(node src/cli/chains.ts --need) || syms=SPY
+    for s in ${syms//,/ }; do
+      f="data/in/$(echo "$s" | tr 'A-Z' 'a-z')-chain.json"; [ -s "$f" ] || continue
+      out="data/out/options-$(echo "$s" | tr 'A-Z' 'a-z')-latest.md"; [ "$s" = "SPY" ] && out=data/out/options-latest.md
+      node src/cli/options.ts "$f" --out "$out" >/dev/null || echo "[run] options $s failed"
+    done
     node src/cli/digest.ts --hours 24 --out data/out/digest-latest.md
   fi
 } >>"$log" 2>&1
