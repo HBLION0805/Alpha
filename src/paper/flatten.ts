@@ -54,3 +54,14 @@ export async function flatten(o: { http: AlpacaHttp; now: Date; before: string; 
   steps.push({ at: at(), action: "check", status: 200, detail: `positions ${left.length}, open orders ${leftOrders.length}` });
   return { mode, window, steps, remainingPositions: left.map((p) => `${p.symbol} ${p.qty}`), remainingOrders: leftOrders.map((x) => `${x.symbol} ${x.id}`), ok: !left.length && !leftOrders.length };
 }
+
+/** CLI safety (review of #25): dry-run unless --confirm; a target is required (--symbols X,Y or --all, never implicit);
+ *  --force (skip the time window) only together with --confirm. Throws a usage error otherwise. */
+export interface FlattenCliFlags { symbols?: string; all?: boolean; confirm?: boolean; "dry-run"?: boolean; force?: boolean }
+export function flattenCliOptions(f: FlattenCliFlags): { dryRun: boolean; symbols: string[] | undefined; force: boolean } {
+  const symbols = f.symbols?.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean);
+  if (symbols?.length && f.all) throw new Error("--symbols 与 --all 只能二选一");
+  if (!symbols?.length && !f.all) throw new Error("必须指定 --symbols X,Y 或 --all（不会默认平掉全部）");
+  if (f.force && !f.confirm) throw new Error("--force 需要同时加 --confirm");
+  return { dryRun: !f.confirm || !!f["dry-run"], symbols: f.all ? undefined : symbols, force: !!f.force };
+}
