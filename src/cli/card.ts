@@ -14,6 +14,7 @@ import { STOCK_LONG_RE } from "../review/mentor.ts";
 import { parseArgs } from "node:util";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { buildCard, renderCard, type Quote } from "../review/card.ts";
+import { cardOrderBlock, renderOrderBlock, reservedRiskUsd } from "../review/orderBlock.ts";
 import { fetchCboeRaw, gexFromRaw, cboeQuotes } from "../options/gex.ts";
 import { yahooDaily } from "../adapters/yahoo.ts";
 import { referenceLevels } from "../levels.ts";
@@ -54,7 +55,11 @@ const calF = `calendar/releases-${now.getFullYear()}.json`;
 const calendar = withOpex(existsSync(calF) ? JSON.parse(readFileSync(calF, "utf8")).events ?? [] : [], now.getFullYear());
 const earnings = existsSync("data/in/earnings.json") ? parseEarnings(JSON.parse(readFileSync("data/in/earnings.json", "utf8"))) : null;
 const j = existsSync(values.journal!) ? JSON.parse(readFileSync(values.journal!, "utf8")) : { capital: defaultCapital(), entries: [] };
-const card = buildCard({ now, sym, dir, structure: values.structure, legs, exp: values.exp, spot, bars, levels: bars.length > 30 ? referenceLevels(bars as never) : null, quotes,
+const pcF = "data/journal/pending-cards.json", pending = existsSync(pcF) ? JSON.parse(readFileSync(pcF, "utf8")).cards ?? [] : [];
+// re-saving: today's unopened pending card for the same sym+dir is superseded (its risk is not counted twice and the entry is replaced)
+const prior = pending.find((c: { sym?: string; dir?: string; createdAt: string; id: string }) => c.sym === sym && c.dir === dir && new Date(c.createdAt).toLocaleDateString("en-CA", { timeZone: "America/New_York" }) === now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }) && !(j.entries ?? []).some((e: { cardId?: string }) => e.cardId === c.id));
+const reserved = reservedRiskUsd(pending, j.entries ?? [], now, prior?.id);
+const card = buildCard({ now, reservedUsd: reserved.usd, sym, dir, structure: values.structure, legs, exp: values.exp, spot, bars, levels: bars.length > 30 ? referenceLevels(bars as never) : null, quotes,
   brief, gex: gexFromRaw(sym, raw), calendar, earnings, earningsNext: nextEarnings(loadEarningsBook(), sym, now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })), fed: (await loadFedSpeakers({ now })).data,
   journal: j.entries, capital: j.capital ?? defaultCapital(), thesis: values.thesis, invalidation: values.invalidation,
   shares: values.shares ? Number(values.shares) : null,
@@ -62,12 +67,15 @@ const card = buildCard({ now, sym, dir, structure: values.structure, legs, exp: 
   marketPhase: stockLong ? marketPhase(now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }), ndxBars as Array<{ t: string; c: number }>, loadPhases().entries) : null,
   mentorLevels: loadLevels().entries.find((e) => e.date === now.toLocaleDateString("en-CA", { timeZone: "America/New_York" })) ?? null,
   ...(dir === "bear" ? { short: { spyBars, sectorSym, sectorBars, squeezeCheck: values["squeeze-check"] ?? null, horizonDays: values.horizon ? Number(values.horizon) : null } } : {}) });
-const md = renderCard(card, spot, values.exp ?? null);
+const ob = cardOrderBlock(card);
+const md = [renderCard(card, spot, values.exp ?? null), "", ...(card.verdict !== "no" ? renderOrderBlock(ob) : [])].join("\n");
 const out = values.out ?? `data/out/card-${sym}.md`;
-mkdirSync("data/out", { recursive: true }); writeFileSync(out, md + "\n"); writeFileSync(out.replace(/\.md$/, ".json"), JSON.stringify(card, null, 2) + "\n");
+mkdirSync("data/out", { recursive: true }); writeFileSync(out, md + "\n"); writeFileSync(out.replace(/\.md$/, ".json"), JSON.stringify({ ...card, orderBlock: "reason" in ob ? null : ob }, null, 2) + "\n");
 if (values.save) {
-  const p = "data/journal/pending-cards.json", pc = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { cards: [] };
-  pc.cards.push({ id: card.id, createdAt: card.createdAt, sym, dir, verdict: card.verdict, trade: card.trade, thesis: values.thesis ?? null, invalidation: values.invalidation ?? null, warnTags: card.warnTags ?? [], confidence: card.confidence ?? null, scenarioPlan: card.scenarioPlan ?? null,
+  // saving reserves the card's max loss against today's new-risk cap until it is opened (paper open --card) or the day ends
+  const p = pcF, pc = existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : { cards: [] };
+  if (prior) pc.cards = pc.cards.filter((c: { id: string }) => c.id !== prior.id);
+  pc.cards.push({ id: card.id, createdAt: card.createdAt, sym, dir, verdict: card.verdict, trade: card.trade, thesis: values.thesis ?? null, invalidation: values.invalidation ?? null, warnTags: card.warnTags ?? [], confidence: card.confidence ?? null, scenarioPlan: card.scenarioPlan ?? null, orderBlock: "reason" in ob ? null : ob, reservedUsd: card.verdict !== "no" ? card.trade.maxLoss ?? 0 : 0,
     ...(dir === "bear" ? { squeezeCheck: values["squeeze-check"] ?? null, shortTags: card.shortTags ?? [] } : {}) });
   mkdirSync("data/journal", { recursive: true }); writeFileSync(p, JSON.stringify(pc, null, 2) + "\n");
 }
