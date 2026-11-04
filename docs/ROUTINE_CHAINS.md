@@ -11,6 +11,12 @@ routine agent saves the raw pages and `scripts/run.sh` (`npm run chains -- --bui
 
 ## Routine prompt text (add to the daily premarket routine, before `scripts/run.sh`)
 
+> Daily bars refresh (READ-ONLY, do this FIRST; QA C4): run `npm run -s chains -- --need` to get the comma list of symbols.
+> Fetch bars for ALL of them (not just SPY/QQQ/IWM): call `get_equity_historicals` with up to 10 symbols per call,
+> `interval=day`, start = one year ago, and write each symbol's raw response as-is to `data/in/<SYM>-bars.json`. Every symbol
+> must be fetched; list any skipped/failed symbol in your report. After saving (and after the chain build below) run
+> `npm run -s chains -- --build` and refetch any symbol whose freshness is not ✅.
+>
 > Option-chain refresh (READ-ONLY; never place/cancel/modify anything): in /workspace/Alpha run `npm run -s chains -- --need`
 > to get a comma list of symbols. For EACH symbol, independently (if one fails, note it and continue with the next):
 > get the last price, call `get_option_instruments` (`chain_symbol=<SYM>`, expirations within ~60 days) and `get_option_quotes`

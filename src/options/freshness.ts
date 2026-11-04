@@ -9,8 +9,20 @@ import { isTradingDay, addDays, etDate } from "../macro/nyse.ts";
 export const CHAIN_BASE = ["SPY", "QQQ", "IWM"];
 /** Listed-option tickers only: drops Yahoo-style index/futures/crypto/FX symbols (^VIX, CL=F, BTC-USD, EURUSD=X). */
 export const hasListedOptions = (s: string) => /^[A-Z][A-Z.]{0,5}$/.test(s);
-export function chainRefreshSymbols(watchlist: string[]): string[] {
-  return [...new Set([...CHAIN_BASE, ...watchlist.map((s) => s.trim().toUpperCase()).filter(hasListedOptions)])];
+/** Tickers with no Robinhood option contracts (get_option_instruments returns nothing), excluded from --need. */
+export const NO_OPTIONS = ["GLDM"];
+export function chainRefreshSymbols(watchlist: string[], exclude: string[] = NO_OPTIONS): string[] {
+  const ex = new Set(exclude.map((s) => s.trim().toUpperCase()));
+  return [...new Set([...CHAIN_BASE, ...watchlist.map((s) => s.trim().toUpperCase()).filter(hasListedOptions)])].filter((s) => !ex.has(s));
+}
+/** One line per problem kind instead of one per symbol: "[chains] 36/41 raw files missing: SPY,HOOD,…". */
+export function summarizeBuild(total: number, missing: string[], stale: string[], failed: Record<string, string>): string[] {
+  const out: string[] = [];
+  if (missing.length) out.push(`[chains] ${missing.length}/${total} raw files missing (routine did not fetch): ${missing.join(",")}`);
+  if (stale.length) out.push(`[chains] ${stale.length}/${total} raw stale (>1 trading day old): ${stale.join(",")}`);
+  const f = Object.entries(failed);
+  if (f.length) out.push(`[chains] ${f.length}/${total} build failed: ${f.map(([s, e]) => `${s} (${e})`).join("; ")}`);
+  return out;
 }
 export const chainFile = (sym: string, dir = "data/in") => `${dir}/${sym.toLowerCase()}-chain.json`;
 

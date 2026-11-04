@@ -58,6 +58,7 @@ export async function loadDailyBars(ticker: string, dir = "data/in", maxAgeHours
       note = `${file} stale (last bar ${bars.at(-1)!.t.slice(0, 10)})`;
     } catch (e) { note = `${file}: ${(e as Error).message}`; }
   } else note = `${p} missing`;
+  console.error(`[bars] WARN ${ticker.toUpperCase()}: ${note} → Yahoo fallback (routine should refresh data/in/${ticker.toUpperCase()}-bars.json)`);
   const y = await yahooDaily(ticker, 400);
   return { bars: y.filter((b) => b.v > 0 || /^\^/.test(ticker)).map((b) => ({ t: b.t, o: b.o, h: b.h, l: b.l, c: b.c, v: b.v })), source: "yahoo", note: `${note} → Yahoo fallback` };
 }

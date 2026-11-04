@@ -5,12 +5,12 @@
  *   --build  data/in/rh-chain/<SYM>.json (raw MCP pages) → data/in/<sym>-chain.json, one symbol at a time (a failure skips only that symbol)
  *   (always) status: asOf per symbol, 过时 when >1 trading day old, 缺失 when no chain
  */
-import { existsSync, readFileSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
+import { existsSync, statSync, readFileSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { parseInput, WatchlistSchema } from "../adapters/schemas.ts";
 import { parseChain } from "../options/chain.ts";
 import { chainFromRobinhood, unwrapJson } from "../options/robinhood.ts";
-import { chainRefreshSymbols, chainFile, chainFreshness, staleLabel } from "../options/freshness.ts";
+import { chainRefreshSymbols, summarizeBuild, chainFile, chainFreshness, staleLabel } from "../options/freshness.ts";
 import { etDate } from "../macro/nyse.ts";
 
 const { values } = parseArgs({ options: { need: { type: "boolean" }, build: { type: "boolean" }, in: { type: "string", default: "data/in" } } });
@@ -18,14 +18,16 @@ const dir = values.in!, wlPath = `${dir}/watchlist.json`;
 const syms = chainRefreshSymbols(existsSync(wlPath) ? parseInput(WatchlistSchema, JSON.parse(readFileSync(wlPath, "utf8")), "watchlist.json") : []);
 if (values.need) { console.log(syms.join(",")); process.exit(0); }
 
-const failed: Record<string, string> = {};
+const failed: Record<string, string> = {}, missing: string[] = [], rawStale: string[] = [];
 if (values.build) {
   mkdirSync(dir, { recursive: true });
   for (const s of syms) {
     const raw = `${dir}/rh-chain/${s}.json`;
-    if (!existsSync(raw)) { failed[s] = `no ${raw} (routine did not fetch it)`; continue; }
+    if (!existsSync(raw)) { missing.push(s); continue; }
     try {
       const r = unwrapJson(readFileSync(raw, "utf8")) as { spot?: number; fetchedAt?: string; instruments?: unknown[]; quotes?: unknown[] };
+      const fa = r.fetchedAt ?? statSync(raw).mtime.toISOString();
+      if (chainFreshness(fa, etDate(new Date())).stale) rawStale.push(s);
       if (!(Number(r.spot) > 0)) throw new Error("spot missing");
       const ch = chainFromRobinhood(r.instruments ?? [], r.quotes ?? [], s, Number(r.spot), r.fetchedAt);
       if (!ch.contracts.length) throw new Error("no contracts joined (instruments × quotes)");
@@ -45,4 +47,4 @@ for (const s of syms) {
     console.log(`- ${s}: ${fr.stale ? `⚠️ ${staleLabel({ ...fr, droppedExpired: 0 })}` : `✅ asOf ${fr.asOfDate}`} · ${ch.contracts.length} 合约`);
   } catch (e) { console.log(`- ${s}: ❌ ${f} 无法解析: ${(e as Error).message}`); }
 }
-for (const [s, e] of Object.entries(failed)) console.error(`[chains] ${s} build failed: ${e}`);
+for (const l of summarizeBuild(syms.length, missing, rawStale, failed)) console.error(l);

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chainRefreshSymbols, chainFile, asOfEtDate, tradingDaysSince, chainFreshness, dropExpired, prepareChain, staleLabel } from "../src/options/freshness.ts";
+import { chainRefreshSymbols, summarizeBuild, chainFile, asOfEtDate, tradingDaysSince, chainFreshness, dropExpired, prepareChain, staleLabel } from "../src/options/freshness.ts";
 import { buildVolumeReport } from "../src/macro/volume.ts";
 import type { Chain, Contract } from "../src/options/chain.ts";
 
@@ -59,4 +59,18 @@ test("volume report: no expired contracts, 过时 + asOf on every chain line, st
   const fresh = buildVolumeReport({ now: NOW, bars: {}, chains: [{ ...avgo, asOf: "2026-10-29T20:00:00Z" }] });
   assert.doesNotMatch(fresh.md, /过时|2026-10-23/);
   assert.deepEqual(fresh.strong.map((s) => s.title), ["AVGO 2026-11-20 400C 量/OI 6x"]);
+});
+
+test("refresh list: symbols without Robinhood options (GLDM) excluded; custom exclusion list", () => {
+  assert.deepEqual(chainRefreshSymbols(["NVDA", "gldm"]), ["SPY", "QQQ", "IWM", "NVDA"]);
+  assert.deepEqual(chainRefreshSymbols(["NVDA", "GLDM"], ["nvda"]), ["SPY", "QQQ", "IWM", "GLDM"]);
+});
+
+test("build summary: one line per problem kind, not one per symbol", () => {
+  assert.deepEqual(summarizeBuild(41, ["SPY", "HOOD"], [], {}), ["[chains] 2/41 raw files missing (routine did not fetch): SPY,HOOD"]);
+  const l = summarizeBuild(5, [], ["SPY"], { AVGO: "spot missing" });
+  assert.equal(l.length, 2);
+  assert.match(l[0]!, /1\/5 raw stale.*SPY/);
+  assert.match(l[1]!, /1\/5 build failed: AVGO \(spot missing\)/);
+  assert.deepEqual(summarizeBuild(3, [], [], {}), []);
 });
