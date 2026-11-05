@@ -24,3 +24,10 @@ Only these read-only tools are used: `get_option_instruments` and `get_option_qu
   - VIX settles from `settle.json`.
   - Friday 15:45+: the mentor weekend rule.
 - **`npm run review`:** writes `data/out/review-<date>.md`.
+
+## 分类规则（2026-10-29 用户决定）
+- Alpha 根据自己事先写好的计划卡开的纸面单（如 `data/out/intraday-YYYY-MM-DD.md`、`swing-spreads-*.md`）= **正式单**（kind=formal, source=paper_sim），计入 30 笔 readiness。走正式开仓路径：`npx tsx src/cli/paper.ts open --kind formal --card <卡id> …`（需 proposal / 计划卡关联），并在 entry 中保留 cardId/planRef 与 preWrittenPlan=true，避免 no_pre_written_plan。
+- 只有直接照抄导师的交易才用 `macro-open`（宏观单，不计入）。
+- 计划卡里的【导师】/【Alpha】标签不改变分类；决定分类的是"是否由 Alpha 自己预写计划"。
+- 环境注意：本机 / run.sh 用 Node 24+（系统 /usr/local/bin/node → v24.22.1；项目本地 /home/box/.local/node24/bin → v24.22.0；package.json `engines` node>=24）。`scripts/run.sh` 先加 `ALPHA_NODE_BIN`，否则把上述 Node 24 目录加到 PATH 前面，Node <24 时直接拒绝运行。`npm run readiness` 在 Node 24 下可用（node:sqlite）。Cron/routine 请经由 `scripts/run.sh` 调用，或先 `export PATH=/home/box/.local/node24/bin:$PATH`（或设 `ALPHA_NODE_BIN`）。
+- 先例：2026-10-29 RSP/META 两笔由 macro 改为 formal（id 改为 rsp-/meta-stock-long-2026-10-29-paper，oldId 保留；备份 data/journal/paper.pre-reclass-2026-10-29.json）。

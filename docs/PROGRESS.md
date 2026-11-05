@@ -8,7 +8,7 @@
 
 Technicals are for timing only. Update this file after every task.
 
-_Last updated 2026-10-17 ET (交易心理 batch: verbatim topic files, warn-only psych tags, journal, confidence ratio)._
+_Last updated 2026-11-05 ET (catch-up through 11-04: dated daily new-risk cap 2%→10%, ECI calendar, option-chain/bars freshness, card order block + reservation, flatten/execute paper CLIs, data/journal persistence)._
 
 **Delivery is handled:** the 30-minute weekday routine `alpha-2` (08:00–18:30 ET) runs the alerts and messages the user, starting 2026-10-15. The CPI lag on 10/14 happened only because routines had not started yet.
 
@@ -276,3 +276,39 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 
 ## 2026-10-20 — 情景推演 + confidence cap
 - src/options/scenarioEngine.ts, scenarioCtx.ts, confidence.ts; wired into plan card (section 10 + cap label in section 6), pretrade (`scenario_plan`, `confidence_cap`), paper open (`--scenarios`, `--confidence`, `--macro-aligned`, `--tech-entry`), `paper scenarios` (open-position review), brief trade-idea section (online), breach/readiness per-entry caps. Tests: test/scenarioengine.test.ts.
+
+## 2026-10-29 — daily new-risk cap 2%→10% (+ 0% rule) (PR #21)
+- **Code:** `dailyRiskCapPct(date, equity)` centralized in src/options/riskCap.ts: 2% before 2026-10-30; from 2026-10-30, 10% while equity ≤ $10k (> $10k back to 2%). `DAILY_CAP_PCT` dropped. Commits ce7b310, f4d75e5, cf6b9a1.
+- **Check = NEW risk opened per ET day** (ET date conversion, per-day equity): pretrade, paper open, readiness, readiness dashboard, breach, plan card, plus paperGate / sins / mentor / review report. A card override = min(dated cap, card cap).
+- **0% rule card** = cap 0 → hard refusal in pretrade and paper open, practice included. readiness uses `equityAtStartOf`.
+- Per-trade risk still 0.5–2% by confidence tier; hard stop / max loss required. Docs: docs/DECISIONS.md, README.
+- Tests: test/riskcap.test.ts, test/riskcap-review.test.ts, test/paper.test.ts, test/papergate.test.ts (b172267 / PR #23 pins the trade date: 2% pre-10-30, 10% after).
+
+## 2026-10-30 — ECI on calendar (tier 2) (PR #22)
+- BLS Employment Cost Index, quarterly 08:30 ET, tier 2, in calendar/releases-2026.json + src/ingest/officialCalendar.ts: 2026-10-30 (missed), 2027-01-29 / 04-30 / 07-30 / 10-29 from the bls.gov schedule. Commit 9bfe2d7. Tests: test/releases.test.ts.
+
+## 2026-10-30 — quick fixes: BRK-B, flash JSON (QA C5 / C2) (PR #24)
+- Yahoo share-class symbols mapped BRK.B → BRK-B (src/adapters/yahoo.ts; QA C5).
+- `npm run flash` (src/cli/flash.ts, src/flash/flash.ts) writes data/out/flash-<0830|0900>-YYYY-MM-DD.json (QA C2). Commit 9f34594. Tests: test/flash.test.ts.
+
+## 2026-10-30 — option chain refresh / stale marking (QA C7) (PR #26)
+- `npm run chains` (src/cli/chains.ts): `--need` = refresh list SPY/QQQ/IWM + optionable symbols in data/in/watchlist.json; `--build` normalises data/in/rh-chain/<SYM>.json (scripts/run.sh builds when data/in/rh-chain exists); prints ✅ / ⚠️ 过时 / ❔ 缺失 per symbol.
+- src/options/freshness.ts: chain > 1 NYSE trading day old → labelled 过时 in volume / brief / options dashboard (`freshness.stale`), no volume alarms; expired contracts always dropped. Routine prompt: docs/ROUTINE_CHAINS.md. Commit 9d005eb. Tests: test/chainfresh.test.ts.
+
+## 2026-10-30 — plan card Alpaca order block + card risk reservation (PR #27)
+- src/review/orderBlock.ts: plan card prints a ready-to-submit Alpaca paper order block (OCC legs, mleg net-mid limit, `client_order_id` = card id).
+- Saved cards reserve their max loss against today's new-risk cap (pretrade `daily_new_risk`, paper open count other saved cards); re-saving a card excludes its own superseded copy. Commits 53f44e8, 0449906. Tests: test/orderblock.test.ts, test/paper.test.ts, test/riskcap-review.test.ts.
+
+## 2026-10-30 — timed flatten CLI (PR #25)
+- `npm run flatten` (src/cli/flatten.ts, src/paper/flatten.ts, src/adapters/alpacaPaper.ts): dry-run by default, `--confirm` to send; `--symbols` or `--all` required; `--force` needs `--confirm`; `--before HH:MM` for an external scheduler. Idempotent: cancels bracket parents/legs, then closes positions. Alpaca paper only. Commits ea90135, 28efc68. Tests: test/flatten.test.ts.
+
+## 2026-10-30 — pre-market plan executor (PR #29)
+- `npm run execute` (src/cli/execute.ts, src/paper/executor.ts): parses the 盘前计划书, confirms the 5m trigger after the 09:45 opening range, sends a bracket order risking $25–100 within the dated daily cap, `client_order_id` idempotency, no new entries after 15:20, flatten 15:45 (reuses flatten.ts), fills → formal ledger. Alpaca paper only; dry-run by default, `--confirm` to send. Commits c3f48f1, 80fe2a1. Tests: test/executor.test.ts (fixture test/fixtures/plan-premarket-2026-10-30.md).
+
+## 2026-10-30 — journal persistence to data/journal (PR #28)
+- src/storage/paths.ts, plans.ts, migrate.ts: plan cards, daily plan, alerts history (append-only `alerts.jsonl`) and flash snapshots live in data/journal (`ALPHA_JOURNAL_DIR`); data/out is regenerable output only. Reads are journal-first with back-compat fallback to the old data/out paths.
+- `npm run migrate:journal` (src/cli/migrateJournal.ts) takes a timestamped, never-overwritten journal snapshot before migrating. Flash JSON kept in <journal>/flash/ with a data/out copy. Commits 23f04f0, 28ce069. Tests: test/journal.test.ts.
+
+## 2026-11-04 — bars routine (QA C4/C7)
+- Routine fetches daily bars for ALL symbols from `npm run -s chains -- --need` (not just SPY/QQQ/IWM) → data/in/<SYM>-bars.json; refetch anything not ✅ after `--build`.
+- `chains --build` prints summarized build errors + raw stale; GLDM excluded; Yahoo bars fallback warns (src/adapters/bars.ts, src/options/freshness.ts). docs/ROUTINE_CHAINS.md updated. Commit d37cca4. Tests: test/bars.test.ts, test/chainfresh.test.ts.
