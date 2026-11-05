@@ -1,0 +1,2349 @@
+{
+  "version": "OPTIONS_MACRO_PLAYBOOK_V1",
+  "contentRevision": "OWNER_PSYCHOLOGY_20260928_V6",
+  "reviewedDateNewYork": "2026-09-28",
+  "sources": [
+    {
+      "id": "owner",
+      "title": "Owner-supplied trader experience and 13 conceptual images",
+      "url": null,
+      "coverage": "Supplied prose and illustrations reviewed; author attribution and performance unverified."
+    },
+    {
+      "id": "course",
+      "title": "Macro trading course — syllabus",
+      "url": "https://macro-trading.pages.dev/",
+      "coverage": "Full syllabus reviewed. This is a 16-chapter course; other chapter bodies are not all reviewed."
+    },
+    {
+      "id": "thesis",
+      "title": "Course chapter 11 — scenarios and thesis",
+      "url": "https://macro-trading.pages.dev/12-第11章-情景分析与论点构建/",
+      "coverage": "Chapter body reviewed as educational opinion; historical anecdotes and numerical examples not independently verified."
+    },
+    {
+      "id": "review",
+      "title": "Course chapter 16 — uncertainty and review",
+      "url": "https://macro-trading.pages.dev/17-第16章-不确定错误复盘与进化/",
+      "coverage": "Chapter body reviewed; causal and psychological labels require independent evidence."
+    },
+    {
+      "id": "spread",
+      "title": "OIC — bull call spread",
+      "url": "https://www.optionseducation.org/strategies/all-strategies/bull-call-spread-debit-call-spread",
+      "coverage": "Payoff, volatility, assignment and expiration mechanics checked."
+    },
+    {
+      "id": "stops",
+      "title": "FINRA — stop orders during volatile markets",
+      "url": "https://www.finra.org/investors/insights/stop-orders-factors-consider-during-volatile-markets",
+      "coverage": "Trigger, execution price and stop-limit nonexecution distinctions checked."
+    },
+    {
+      "id": "greeks",
+      "title": "OIC — understanding options Greeks",
+      "url": "https://www.optionseducation.org/advancedconcepts/understanding-options-greeks",
+      "coverage": "Theoretical sensitivities, not exact future premium predictions."
+    },
+    {
+      "id": "theta",
+      "title": "OIC — theta",
+      "url": "https://www.optionseducation.org/advancedconcepts/theta",
+      "coverage": "Conditional time decay and moneyness dependence checked."
+    },
+    {
+      "id": "vega",
+      "title": "OIC — vega",
+      "url": "https://www.optionseducation.org/advancedconcepts/vega",
+      "coverage": "Sensitivity to implied volatility checked."
+    },
+    {
+      "id": "owner-psychology",
+      "title": "Owner-supplied psychology batch and two reference images",
+      "url": null,
+      "coverage": "Prose, cognitive-bias chart and Thirty-Six Stratagems image reviewed as supplied experience. Author performance, statistics, historical allegations and clinical claims are unverified."
+    },
+    {
+      "id": "owner-psychology-20260923",
+      "title": "Owner-supplied options and macro psychology experience — September 23, 2026",
+      "url": null,
+      "coverage": "Reviewed as supplied experience. Heuristics, performance claims and strategy effects are not externally validated; educational reflection only."
+    },
+    {
+      "id": "owner-psychology-20260924",
+      "title": "Owner-supplied macro political and narrative discipline — September 24, 2026",
+      "url": null,
+      "coverage": "Political and national narratives, entity separation, symmetric evidence, two-sided conflict costs and sell-volume versus price-response examples. Current U.S./China claims are Owner-supplied and require verification; no present economic assertion or trading effect is independently established."
+    },
+    {
+      "id": "owner-psychology-20260926",
+      "title": "Owner-supplied trading discipline and behavioral-risk batch — September 26, 2026",
+      "url": null,
+      "coverage": "Educational Owner experience, not externally validated universal trading laws or evidence of Owner behavior. Loss attribution, survival, exposure, voluntary reflection and inactive discipline candidates do not diagnose, resize or change strategy. Owner reports prose numbering 01–17, a duplicate 17, then 19 and 20; no Discipline 18 is supplied or invented. Knowledge IDs are semantic; no original numbered prose was reconstructed."
+    },
+    {
+      "id": "owner-psychology-20260927",
+      "title": "Owner-supplied realized-profit redeployment concept — September 27, 2026",
+      "url": null,
+      "coverage": "Concept and illustrative numbers supplied in the Owner prompt. The referenced image was not available in this session: rawImageArchived=false; no image bytes, filename, receipt time or SHA-256 is claimed. Educational proposal only, without an active sizing, reinvestment or trading rule."
+    },
+    {
+      "id": "owner-psychology-20260928",
+      "title": "Owner-supplied Rule 650 exception-discipline concept — September 28, 2026",
+      "url": null,
+      "coverage": "Owner experience and educational philosophy, not externally validated. Rule 650 is source wording only, with no implied preceding numbered Alpha rules. The supplied non-English prose rendered as question marks in this session; no original wording is reconstructed. No active exception authority, bypass or trading edge."
+    },
+    {
+      "id": "behavior-summary",
+      "title": "SEC-hosted Library of Congress behavioral research summary",
+      "url": "https://www.sec.gov/investor/tools/behaviorialpatterns.htm",
+      "coverage": "Summary reviewed: active trading, disposition effect, familiarity and costs. It is not validation of every bias in the supplied chart or of this Owner; the findings are those of the report author."
+    },
+    {
+      "id": "ownership-book",
+      "title": "Macmillan — Extreme Ownership",
+      "url": "https://us.macmillan.com/books/9781250183866/extremeownership/",
+      "coverage": "Publisher page confirms Jocko Willink and Leif Babin and the leadership subject. Full book not reviewed; the supplied trading analogy is not a tested strategy."
+    },
+    {
+      "id": "darwin-book",
+      "title": "Columbia University Press — What I Learned About Investing from Darwin",
+      "url": "https://cup.columbia.edu/book/what-i-learned-about-investing-from-darwin/9780231203487/",
+      "coverage": "Publisher search description confirms Pulak Prasad and patient long-term investing. Full book not reviewed; detailed chapter interpretations remain Owner-supplied."
+    },
+    {
+      "id": "social-reference",
+      "title": "Supplied Truth Social profile reference",
+      "url": "https://truthsocial.com/@realDonaldTrump",
+      "coverage": "Public page opened, but no readable post body was returned. No individual post, policy claim or price effect verified; no account created or followed and no collector added."
+    },
+    {
+      "id": "covered-call",
+      "title": "OIC — covered call",
+      "url": "https://www.optionseducation.org/strategies/all-strategies/covered-call-buy-write",
+      "coverage": "Downside exposure checked: premium income does not remove substantial stock-loss risk."
+    },
+    {
+      "id": "mentor-stop-loss",
+      "title": "大佬 纪律 channel — 止损学 (Stop Loss), verbatim",
+      "url": "knowledge/mentor/discipline/stop-loss.md",
+      "coverage": "Canonical verbatim text (15,628 bytes, cmp-verified). Sections: Mechanical, Positional, Thesis, Technical, Time-Based, Built-In, Volatility, Overnight, Hedging, Cost Control, Stop Hunting, 30/30 Rule, Re-Entering & Adding. Includes the note: [旧频道迁移内容] 原发于 2026-08-30 12:31 JST."
+    },
+    {
+      "id": "mentor-discipline",
+      "title": "大佬 纪律系列 01–20, verbatim",
+      "url": "knowledge/mentor/discipline/discipline-01-20.md",
+      "coverage": "Canonical verbatim text (31,110 bytes, cmp-verified; author names/timestamps stripped at the user's request). 20 numbered lessons, cited as 纪律 #NN."
+    },
+    {
+      "id": "mentor-take-profit",
+      "title": "大佬 纪律 channel — 止盈学 (Take Profit), verbatim + 11 curve images",
+      "url": "knowledge/mentor/discipline/take-profit.md",
+      "coverage": "Canonical text take-profit.verbatim.md (8,480 bytes, cmp-verified; author names and timestamps stripped at the user's request). take-profit.md is the same text with the images embedded at each section (take-profit-img/01–11.png, byte-identical). Sections §1–§12 cited as 止盈学 §N."
+    },
+    {
+      "id": "mentor-better-macro-trader",
+      "title": "大佬 — 如何成为更好的宏观交易员 (original 10-point essay), verbatim",
+      "url": "knowledge/mentor/better-macro-trader.md",
+      "coverage": "Canonical verbatim text (8,859 bytes, cmp-verified; author names and timestamps stripped). The original source that the macro course (knowledge/courses/macro/) expands. Cited as 宏观交易员 #N."
+    },
+    {
+      "id": "mentor-premarket",
+      "title": "大佬 Premarket Routine — 3 videos (video transcription, near-verbatim)",
+      "url": "knowledge/mentor/discipline/premarket-routine.md",
+      "coverage": "Video transcription, near-verbatim (not word-for-word), 5,137 bytes, saved unchanged. Video 1: 2Y/10Y/30Y + HYG credit confirmation. Video 2: SPX/NDQ/RUT breadth, ES/NQ/RTY futures as an anxiety gauge, KOSPI/EWY semiconductor thermometer. Video 3: DXY (why + cross-asset confirmation), USDCAD, USDJPY carry unwind. Run daily by src/macro/premarket.ts (【大佬流程】)."
+    },
+    {
+      "id": "dk-volume",
+      "title": "DK addition: volume-anomaly module (user-approved 2026-10-14)",
+      "url": "src/macro/volume.ts",
+      "coverage": "DK's own rule set, not mentor or course text. It builds on the 期权课 ch02 options-chain fields (Volume = liquidity indicator; OI > 1000) and ch16 position data."
+    },
+    {
+      "id": "mentor-winrate-review",
+      "title": "大佬周复盘：胜率从85%掉到20% + 防御性组合更新 (verbatim, names/dates removed by the user)",
+      "url": "knowledge/mentor/reviews/winrate-drop-review.md",
+      "coverage": "Byte-for-byte, split at the '---' separator into winrate-drop-review.md and defensive-portfolio-2026-10.md (+ defensive-portfolio-2026-10.png). Lessons: concurrent positions <10, no trades to share/entertain, don't exit before the thesis plays out while invalidation hasn't triggered, controlled losses make a low win rate survivable, own every decision. BAC 'add to all positions' is NOT encoded (only consistent with the one-add-after-reconfirmation rule)."
+    },
+    {
+      "id": "mentor-scenario-matrix",
+      "title": "大佬 市场情景对照 (image, transcribed verbatim)",
+      "url": "knowledge/mentor/macro/market-scenario-matrix.md",
+      "coverage": "5 stages (牛市, 轮动, 熊市 stages 1–3) × 4 dimensions (利率, 油价, 科技盈利, 就业). Deduped: no existing item covered it; scenarios.ts is a separate DK engine. The original image is in the user's chat only. Classifier: src/macro/matrix.ts, brief §1 【大佬情景对照】."
+    },
+    {
+      "id": "mentor-daily-gold-tech-rebound",
+      "title": "大佬 daily note: 黄金加仓 + OpEx 科技反弹 (verbatim)",
+      "url": "knowledge/mentor/daily/daily-note-gold-tech-rebound.md",
+      "coverage": "Gold futures (MACD turning, falling wedge) vs DXY (rising wedge); tech oversold rebound into monthly OpEx. Deduped."
+    },
+    {
+      "id": "mentor-memory-attention",
+      "title": "大佬：Memory Trade 会先死在资金、杠杆和注意力上 (verbatim)",
+      "url": "knowledge/mentor/macro/memory-trade-capital-leverage-attention.md",
+      "coverage": "memory, SNDK, 2X leveraged ETF hedging feedback, hyperscaler capex financing, rates, attention/narrative rotation; ~mid-2027 fade view"
+    },
+    {
+      "id": "ms-memory-cycles-2026-10-11",
+      "title": "机构观点: Morgan Stanley AP 'Tech Bytes: Memory – Cycles vs. Super Cycles' (2026-10-11)",
+      "url": "knowledge/institutional/morgan-stanley-memory-cycles-2026-10-11.md",
+      "coverage": "Institutional, not mentor. Structured summary by DK: super cycle real, easy money past, key numbers, cycle history, CXMT/YMTC, rack content, stock preferences; cross-reference with the mentor view"
+    },
+    {
+      "id": "mentor-daily-defensive-rotation",
+      "title": "大佬 daily note: 防御轮动 + 图表 (verbatim)",
+      "url": "knowledge/mentor/daily/daily-note-defensive-rotation-charts.md",
+      "coverage": "30Y/2Y, DXY, gold, KOSPI, NQ, RTY (FIB), equal-weight EWF, /CL Dec-26 95C call flow, TLT; defensive rotation, put protection; 10 images in assets/defensive-rotation/"
+    },
+    {
+      "id": "mentor-reading-milgram",
+      "title": "Mentor reading assignment — Milgram experiment (verbatim) + DK summary",
+      "url": null,
+      "coverage": "Assignment text stored verbatim in knowledge/mentor/reading/milgram-experiment.md; the summary section is DK-written, not mentor content."
+    },
+    {
+      "id": "external-correct-approach-7-steps",
+      "title": "用户收集的外部资料 — 做交易的正确思路（7 步）screenshot",
+      "url": null,
+      "coverage": "Text stored verbatim in knowledge/external/trading-correct-approach-7-steps.md with the screenshot; author unknown, NOT mentor content. DK 整理 section is DK-written."
+    },
+    {
+      "id": "dk-toolbox-layers",
+      "title": "DK 整理 — toolbox by layer",
+      "url": null,
+      "coverage": "DK-written framework in knowledge/framework/toolbox-layers.md; not mentor or external content."
+    },
+    {
+      "id": "mentor-seven-sins",
+      "title": "Mentor article (Discord 夜雨 [RNMK]) — 股市七宗罪 (verbatim) + DK checklist",
+      "url": null,
+      "coverage": "Article stored verbatim in knowledge/mentor/discipline/seven-sins.md; the DK 整理 table (sin → tag → what the ledger can derive) is DK-written, not mentor content. Behavioural self-check, not a diagnosis; no performance evidence."
+    },
+    {
+      "id": "mentor-long-term-position-management",
+      "title": "Mentor article (Discord 夜雨 [RNMK]) — 进阶长期仓位管理策略 (verbatim) + DK phase-2 playbook",
+      "url": null,
+      "coverage": "Article stored verbatim in knowledge/mentor/phase2/long-term-position-management.md; the DK 整理 table is DK-written. Phase-2 reference only; numerical examples ($10 stock, $0.20–0.30 premiums, $20/$15 put) are illustrations, not verified results."
+    },
+    {
+      "id": "mentor-short-selling",
+      "title": "Mentor texts — 做空学 (10 points) + 做空赚钱 short note (verbatim) + DK short-side checklist",
+      "url": null,
+      "coverage": "Both texts stored byte-exact in knowledge/mentor/discipline/short-selling.md (cmp-verified against the inbox file; no author names or timestamps present). The DK 整理 checklist, thresholds and short-selling.rules.json spec are DK-written, not mentor content. No performance evidence; thresholds are untested."
+    },
+    {
+      "id": "mentor-psych-batch",
+      "title": "Mentor texts — 交易心理 batch 1 + batch 2 (verbatim, names redacted) + DK 整理",
+      "url": null,
+      "coverage": "Both inbox files stored as verbatim segments in knowledge/mentor/psychology/*.md (author name → [导师], member handle → [群友]; links kept; batch-1 provenance note and batch-2 「认知」 completed from the user's resend; the remaining batch-2 【缺失】 marker (missing opening of the group-rules post, followed by ……) kept, nothing filled in). manifest.json + test/psych.test.ts verify byte-exact reconstruction of the redacted sources. Batch 1 is DK's manual transcription from screenshots (may differ in individual characters; see its provenance note). DK 整理 sections, warn tags and thresholds are DK-written and untested. Seven images stored in knowledge/mentor/psychology/assets/."
+    },
+    {
+      "id": "mentor-video-trading-game",
+      "title": "DK summary of the video 《The Trading Game》 (1987 Chicago trading-floor documentary)",
+      "url": null,
+      "coverage": "DK's summary, NOT a transcript; stored unchanged in knowledge/mentor/psychology/video-the-trading-game.md. Quotes are paraphrased. No performance evidence."
+    },
+    {
+      "id": "mentor-premarket-oil-vix",
+      "title": "Mentor premarket video — 原油与 VIX (video-model transcript, 2026-10-18)",
+      "url": null,
+      "coverage": "Transcript stored byte-exact in knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md (sha256 in manifest.json). Transcribed by a video model and NOT checked word-by-word against the video; author name stripped. The video file is not stored in the repo. Oil speed thresholds, the demand/supply heuristic and the VIX confirmation bands in src/macro/oilvix.ts are DK-written, not mentor content. No performance evidence."
+    }
+  ],
+  "items": [
+    {
+      "id": "research",
+      "group": "Macro reasoning",
+      "title": "Broaden the evidence base",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "course",
+        "mentor-better-macro-trader"
+      ],
+      "topics": [
+        "Travel",
+        "Reading",
+        "History",
+        "English"
+      ],
+      "principle": "Use diverse viewpoints, original language sources and historical comparisons to challenge a preferred explanation.",
+      "application": "Record source dates and translation uncertainty; compare the historical regime with the current GLD/IBIT context. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #1, 宏观交易员 #2, 宏观交易员 #4, 宏观交易员 #6.",
+      "limits": "Travel anecdotes are selective observations. Historical resemblance and language fluency do not establish predictive power. These are personal research practices, not return factors.",
+      "destination": "context"
+    },
+    {
+      "id": "expectations",
+      "group": "Macro reasoning",
+      "title": "From a macro story to a testable hypothesis",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "course",
+        "thesis",
+        "mentor-better-macro-trader",
+        "mentor-premarket"
+      ],
+      "topics": [
+        "Economics",
+        "Policy transmission",
+        "Consensus",
+        "Scenario analysis"
+      ],
+      "principle": "Describe a causal chain, competing outcomes and the difference between your view and documented market expectations.",
+      "application": "Separate event expectations, verified actuals, rates/USD transmission and observed GLD/IBIT prices. Label subjective probabilities; leave unsupported probabilities unknown. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5. Premarket: 2Y = market's Fed expectations (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
+      "limits": "Neither a correct policy forecast nor a made-up scenario probability establishes an option opportunity. Correlations and policy reactions vary by regime.",
+      "destination": "context"
+    },
+    {
+      "id": "horizons",
+      "group": "Macro reasoning",
+      "title": "Direction needs a horizon",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "owner-psychology-20260923",
+        "mentor-premarket"
+      ],
+      "topics": [
+        "Scalper",
+        "Day trader",
+        "Swing trader",
+        "Position trader",
+        "Long-term investor",
+        "Investor research cadence",
+        "Trader research cadence"
+      ],
+      "principle": "Keep the macro thesis horizon, ETF signal timeframe, intended holding period and option expiration separate. Investors may research a business or macro thesis deeply up front and reassess periodically; traders need more frequent relevant updates, including overnight changes.",
+      "application": "Explain how a five-minute setup fits the intended holding window and why the contract has sufficient time for the thesis. Before acting as a trader, refresh the thesis, risk and position using source-dated evidence; an investor need not react to every intraday move. Premarket: traders need overnight/premarket updates (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
+      "limits": "Neither style is inherently superior. Long-term conviction cannot justify holding an expiring option indefinitely, and constant monitoring cannot turn stale or weak sources into certainty. The five trader types are approximate; current collection cadence does not support reliable scalping.",
+      "destination": "guidance"
+    },
+    {
+      "id": "styles",
+      "group": "Macro reasoning",
+      "title": "Style is a research lens",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner"
+      ],
+      "topics": [
+        "Value",
+        "Contrarian",
+        "Catalyst / speculative",
+        "Fundamental / growth",
+        "Macro",
+        "Narrative"
+      ],
+      "principle": "Identify whether the idea rests on valuation, disputed consensus, a catalyst, business growth, macro transmission or changing beliefs.",
+      "application": "For GLD/IBIT, explain the underlying exposure and ETF link; do not import operating-company valuation assumptions without a model.",
+      "limits": "Styles overlap. Contrarian does not mean automatically opposing consensus; a compelling narrative or catalyst does not establish a favorable price or probability.",
+      "destination": "guidance"
+    },
+    {
+      "id": "mechanisms",
+      "group": "Macro reasoning",
+      "title": "Mechanisms need evidence",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "owner",
+        "greeks",
+        "mentor-better-macro-trader",
+        "mentor-premarket"
+      ],
+      "topics": [
+        "Dealer hedging",
+        "Liquidity",
+        "Positioning",
+        "Open interest",
+        "Delta",
+        "Gamma",
+        "Theta",
+        "Vega"
+      ],
+      "principle": "Greeks describe model sensitivities; liquidity and positioning can affect how a macro view is expressed.",
+      "application": "Use the saved sensitivities with their clocks, bid/ask and contract identity. Distinguish a possible mechanism from an observed one. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9. Premarket: carry unwind via USDJPY; credit (HYG) as confirmation (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts). Volume data: see `volume-confirmation` (src/macro/volume.ts, DK).",
+      "limits": "Open interest and volume alone do not identify dealer direction. Delta is not a profit peak or a verified win probability. No dealer-flow detector is introduced.",
+      "destination": "guidance"
+    },
+    {
+      "id": "journal",
+      "group": "Decision process",
+      "title": "Write before knowing the result",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "thesis",
+        "review",
+        "owner-psychology-20260926",
+        "mentor-discipline",
+        "mentor-better-macro-trader",
+        "mentor-psych-batch"
+      ],
+      "topics": [
+        "Trading journal",
+        "Invalidation",
+        "Counterevidence",
+        "Review",
+        "Exit before entry"
+      ],
+      "principle": "Retain the original reasoning, source references and later updates as separate records.",
+      "application": "Before entry document where/how to exit if wrong, how/where profit is taken if right, and what evidence invalidates the thesis. Reuse invalidation, deadline, costs, counterevidence and existing planned stop/target fields; use the trade journal for reported executions and fees. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #17. Encoded in src/options/journal.ts exitRules/invalidation + stops.ts thesisStop (already enforced). Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #7. Verbatim mentor text: knowledge/mentor/psychology/journal-and-outcome-bias.md. `npm run paper -- journal` stores the six 交易日记 questions and the 赚钱但做错 flag (auto candidate: a winner with violations/warn tags).",
+      "limits": "A note labeled pre-trade is not proof it preceded a fill. Text coverage does not validate its logic. New notes do not backfill the frozen trend cohort.",
+      "destination": "journal"
+    },
+    {
+      "id": "uncertainty",
+      "group": "Decision process",
+      "title": "Update when evidence changes",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "review",
+        "mentor-better-macro-trader"
+      ],
+      "topics": [
+        "Uncertainty",
+        "Imperfection",
+        "Mistakes"
+      ],
+      "principle": "Keep an alternative explanation and a clear observation that would contradict the thesis.",
+      "application": "Record what changed and which evidence was available at the decision time. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10.",
+      "limits": "Loss alone does not prove a bad decision; profit does not prove skill. Do not automatically attribute a loss to luck, fear, manipulation or a broker.",
+      "destination": "reviews"
+    },
+    {
+      "id": "patience",
+      "group": "Decision process",
+      "title": "Waiting is a valid decision",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "course",
+        "owner-psychology-20260926",
+        "mentor-discipline",
+        "mentor-better-macro-trader"
+      ],
+      "topics": [
+        "Boredom",
+        "No trade",
+        "Selectivity",
+        "Cash",
+        "Optionality"
+      ],
+      "principle": "Document missing evidence and the observation that would justify another review. Choosing not to trade is a valid option with unclear direction, poor risk/reward, low liquidity, noisy structure, missing evidence or voluntarily reported insufficient attention/readiness.",
+      "application": "Keep WATCH, NO_TRADE or cash when no opportunity qualifies. Cash can preserve low market exposure, liquidity, buying power, optionality and the ability to wait; capital need not be forced into a position. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #02, 纪律 #12. Encoded in src/options/discipline.ts sessionGate (market-not-worth-trading → NO_TRADE); CASH_NOTE in digest + macro CHECKLIST. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #8.",
+      "limits": "Fewer trades alone do not improve expectancy. Cash is not risk-free in every sense; there is no allocation target or automatic capital movement. Readiness is voluntary reflection, never inferred health or an automatic psychological gate. Patience does not cancel a defined exit or monitoring obligation.",
+      "destination": "guidance"
+    },
+    {
+      "id": "balance",
+      "group": "Decision process",
+      "title": "Make the monitoring plan sustainable",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "owner-psychology-20260926",
+        "mentor-discipline",
+        "mentor-better-macro-trader"
+      ],
+      "topics": [
+        "Leisure",
+        "Sleep and rest",
+        "Exercise",
+        "Meals",
+        "Meditation",
+        "Work/life balance",
+        "Microscopic trading",
+        "Monitoring capacity"
+      ],
+      "principle": "Choose a review cadence compatible with the strategy and record who can monitor the position.",
+      "application": "Include a contingency for being away, a stopped collector or unavailable quotes before relying on a short-lived option setup. Voluntarily consider attention, monitoring capacity and time away; constant watching when planned work is complete, no opportunity exists or markets are closed is not automatically productive. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #20. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #3.",
+      "limits": "No lifestyle behavior is prescribed and no health or relationship information is collected or inferred. Lifestyle examples are not a diagnosis or proven edge. Quiet Mondays, midday breaks, open-for-exits and close-for-entries are not universal rules; existing exit obligations remain.",
+      "destination": "planner"
+    },
+    {
+      "id": "mechanical",
+      "group": "Exit and exposure",
+      "title": "Mechanical stop example",
+      "status": "CANDIDATE_UNTESTED",
+      "sources": [
+        "owner",
+        "stops",
+        "mentor-stop-loss"
+      ],
+      "topics": [
+        "Mechanical stop",
+        "Stock -7%"
+      ],
+      "principle": "The supplied -7% threshold is an author-specific stock example.",
+      "application": "Compare any proposed trigger with ETF volatility, option sensitivities, costs and expected execution. Canonical text: knowledge/mentor/discipline/stop-loss.md §Mechanical Stop Loss. Encoded in src/options/stops.ts mechanicalStop (stocks only).",
+      "limits": "Do not transfer -7% to options or replace the frozen study stop. A triggered stop does not guarantee its execution price.",
+      "destination": "planner"
+    },
+    {
+      "id": "size",
+      "group": "Exit and exposure",
+      "title": "Reducing exposure",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "owner-psychology-20260926",
+        "mentor-stop-loss",
+        "mentor-discipline",
+        "mentor-premarket",
+        "mentor-short-selling",
+        "mentor-psych-batch"
+      ],
+      "topics": [
+        "Positional stop",
+        "Partial reduction",
+        "Shared market factor",
+        "Total directional exposure",
+        "Emotional sizing"
+      ],
+      "principle": "A smaller position changes future dollar exposure; it does not fix the original thesis.",
+      "application": "Reassess remaining whole contracts and total account exposure using capital policy, defined maximum loss, instrument economics, evidence quality and current risk constraints. Different tickers need not be independent: technology, semiconductors, high beta, small caps and long calls can share a factor. Ask how many positions might lose together if that factor moves against the idea. Canonical text: knowledge/mentor/discipline/stop-loss.md §Positional Stop Loss. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #05. Encoded in src/options/discipline.ts sameDirectionExposure + kelly.ts correlation_stress. Premarket: correlated risk-off across crypto/equities/EM when USD or yen spike (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts). Short side: 纪律 #05 also warns against stacking more shorts just because many names look weak; 做空学 #1/#7 (pick the soft persimmon) does not override total-exposure checks. See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`. Verbatim mentor text: knowledge/mentor/psychology/position-sizing-after-wins.md. Practice warn tags: warn_add_to_loser_unconfirmed, warn_second_add_to_loser, warn_size_up_after_wins, warn_day_after_big_win, warn_pyramid_add_larger (untested defaults).",
+      "limits": "Size changes need a new documented decision. Excitement, anger, revenge, recent wins or a hot-hand belief cannot increase allowed size; confidence is not a sizing multiplier. Correlations are not assumed static; no correlation engine, anecdotal portfolio score or automatic reduction is implemented. A smaller loss or later recovery is not guaranteed.",
+      "destination": "planner"
+    },
+    {
+      "id": "thesis-stop",
+      "group": "Exit and exposure",
+      "title": "Distinguish challenged and invalidated",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "thesis",
+        "owner-psychology-20260923",
+        "owner-psychology-20260926",
+        "mentor-stop-loss",
+        "mentor-discipline",
+        "mentor-winrate-review"
+      ],
+      "topics": [
+        "Thesis stop",
+        "Do not rewrite the reason",
+        "PRICE_ADVERSE_BUT_THESIS_NOT_INVALIDATED",
+        "THESIS_CORE_VARIABLE_CHANGED",
+        "Capital survival",
+        "LOSS_AVERSION_STOP_DRIFT"
+      ],
+      "principle": "PRICE_ADVERSE_BUT_THESIS_NOT_INVALIDATED names an adverse price move without verified invalidation; loss alone does not prove the macro thesis wrong. THESIS_CORE_VARIABLE_CHANGED names a verified change in an original core variable that requires reassessment.",
+      "application": "Before entry identify the relevant war, sanctions, energy, central-bank policy, rates, dollar, liquidity or other original macro variable and its evidence source. Document independent exits for wrong/right outcomes and thesis invalidation before entry. Compare new facts with the saved thesis, then apply price, time, capital and contract exits; preserving capital protects future participation. Canonical text: knowledge/mentor/discipline/stop-loss.md §Thesis Stop Loss. Encoded in src/options/stops.ts thesisStop + pretrade thesisRecord. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #17, 纪律 #18.",
+      "limits": "These terms are educational, not an automatic state machine. A compelling story cannot override an independent exit. Moving a stop farther away solely to avoid realizing a loss is LOSS_AVERSION_STOP_DRIFT; the plan remains frozen after entry except already predefined exceptions supported by new verified information. No new stop percentage. Neither hedge nor averaging repairs a broken thesis or erases a loss; requiring both price and thesis damage is not a universal rule.",
+      "destination": "journal"
+    },
+    {
+      "id": "technical-stop",
+      "group": "Exit and exposure",
+      "title": "Technical exits need specified inputs",
+      "status": "CANDIDATE_UNTESTED",
+      "sources": [
+        "owner",
+        "mentor-stop-loss",
+        "mentor-take-profit"
+      ],
+      "topics": [
+        "Support",
+        "MACD",
+        "RSI",
+        "Bollinger bands",
+        "50 / 200 moving averages",
+        "Vortex",
+        "Gap fill"
+      ],
+      "principle": "An indicator-based exit requires a timeframe, formula, threshold and observable trigger.",
+      "application": "Use qualified traded-ETF bars and register a separate prospective rule before measuring it. Canonical text: knowledge/mentor/discipline/stop-loss.md §Technical Stop Loss. Encoded in src/options/stops.ts technicalStop. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §7. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "limits": "Several correlated indicators are not independent confirmations. A gap need not fill. These indicators are not newly implemented trading gates.",
+      "destination": "guidance"
+    },
+    {
+      "id": "time-stop",
+      "group": "Exit and exposure",
+      "title": "A thesis has a deadline",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "theta",
+        "owner-psychology-20260926",
+        "mentor-stop-loss",
+        "mentor-winrate-review",
+        "mentor-short-selling"
+      ],
+      "topics": [
+        "Time-based stop",
+        "Catalyst deadline"
+      ],
+      "principle": "Specify when the expected development must occur and a separate option exit deadline.",
+      "application": "Before entry record catalyst timing, review time, expiration and the action if the expected response does not appear; retain the original independent stop, profit-taking and thesis-invalidation plan. Canonical text: knowledge/mentor/discipline/stop-loss.md §Time-Based Stop Loss. Encoded in src/options/stops.ts timeStop + multiLegChecklist (pretrade BLOCK). Short side: 做空学 #8 — front expiry must be ≥ thesis horizon + 14 days (two weeks early) → warn tag short_expiry_too_short. See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
+      "limits": "Waiting consumes option time; a deadline does not guarantee an executable exit. Preserve existing frozen deadlines.",
+      "destination": "journal"
+    },
+    {
+      "id": "spread-risk",
+      "group": "Exit and exposure",
+      "title": "Defined payoff is not a guaranteed exit",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "owner",
+        "spread",
+        "mentor-stop-loss"
+      ],
+      "topics": [
+        "Built-in stop",
+        "Call debit spread",
+        "Put debit spread",
+        "Credit spreads",
+        "Iron condor"
+      ],
+      "principle": "For a standard intact equal-quantity, same-expiry bull call spread, gross terminal loss is the net debit; maximum gross gain is strike width less debit.",
+      "application": "Include the multiplier, all legs and costs. Call terminal breakeven is long strike plus debit; describe exercise and assignment handling separately. Canonical text: knowledge/mentor/discipline/stop-loss.md §Built-In Stop Loss. Encoded in src/options/stops.ts multiLegChecklist.",
+      "limits": "Operational exposure can change through legging, assignment or expiration. Long calls/puts already limit premium loss before exercise. Other structures need their own payoff models; this catalog does not enable them.",
+      "destination": "planner"
+    },
+    {
+      "id": "volatility",
+      "group": "Exit and exposure",
+      "title": "Direction and volatility are different bets",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "owner",
+        "vega",
+        "theta",
+        "mentor-stop-loss",
+        "mentor-better-macro-trader"
+      ],
+      "topics": [
+        "Volatility stop",
+        "IV crush",
+        "Near expiration"
+      ],
+      "principle": "Option values also depend on implied volatility and remaining time. Direction alone is insufficient.",
+      "application": "Review contract-level IV and net sensitivities across every leg; identify what evidence supports a volatility scenario. Canonical text: knowledge/mentor/discipline/stop-loss.md §Volatility Stop Loss. Encoded in src/options/stops.ts volStop. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #9.",
+      "limits": "High IV alone is not an automatic ban or selling signal. Theta depends on moneyness and other inputs; it is not a fixed daily bill. No IV history or exit trigger is invented.",
+      "destination": "guidance"
+    },
+    {
+      "id": "overnight",
+      "group": "Exit and exposure",
+      "title": "Decide overnight exposure in advance",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "stops",
+        "mentor-stop-loss",
+        "mentor-premarket"
+      ],
+      "topics": [
+        "Overnight stop",
+        "Gap risk",
+        "Event risk"
+      ],
+      "principle": "Consider what can happen while the instrument cannot be traded and how much exposure remains.",
+      "application": "Write a pre-close decision and next-session contingency; BTC trading overnight does not make IBIT options continuously executable. Canonical text: knowledge/mentor/discipline/stop-loss.md §Overnight Stop Loss. Encoded in src/options/stops.ts overnightCheck. Premarket: premarket futures gap = anxiety gauge; open strategy (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts).",
+      "limits": "A stop cannot guarantee protection across a gap. Buying another option introduces costs and may not cover the intended scenario.",
+      "destination": "planner"
+    },
+    {
+      "id": "hedge",
+      "group": "Exit and exposure",
+      "title": "Test the whole hedge",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "owner-psychology-20260923",
+        "owner-psychology-20260926",
+        "mentor-stop-loss",
+        "mentor-discipline"
+      ],
+      "topics": [
+        "Hedging stop",
+        "Call plus put",
+        "Cross-asset hedge",
+        "Basis risk",
+        "Net exposure",
+        "Decision time"
+      ],
+      "principle": "A hedge may reduce portfolio sensitivity and buy decision time during uncertain macro news, but it cannot repair an invalid original thesis.",
+      "application": "State the hedging instrument, exact risk, horizon, ratio or quantity, cost, basis risk, remaining net exposure and hedge exit condition. Compare combined payoff and net sensitivities under direction, IV and time scenarios; reassess whether the thesis failed, entry was early, the move is temporary or the regime changed. Canonical text: knowledge/mentor/discipline/stop-loss.md §Hedging Stop Loss. Encoded in src/options/stops.ts HEDGE_SUGGESTIONS. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #06.",
+      "limits": "Hedging buys time only conditionally: it costs money, adds basis risk and may also lose. Opposite directions alone do not demonstrate protection; a hedge cannot fix invalidation or waive an independent exit. No automatic hedge, new SPY/QQQ/sector strategy or broader trading universe is enabled.",
+      "destination": "planner"
+    },
+    {
+      "id": "cost",
+      "group": "Exit and exposure",
+      "title": "Evaluate all-in costs before entry",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "stops",
+        "mentor-stop-loss",
+        "mentor-discipline"
+      ],
+      "topics": [
+        "Cost control",
+        "Limit order",
+        "Premium",
+        "Position size"
+      ],
+      "principle": "Compare entry cost, spread, exit costs and full-premium exposure before evaluating a target.",
+      "application": "Use the existing cost desk and whole-contract calculations; distinguish declared assumptions from actual fees. Canonical text: knowledge/mentor/discipline/stop-loss.md §Cost Control. Encoded in src/options/stops.ts costAndStopChecks. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #07. Encoded in src/options/discipline.ts entryRangeCheck.",
+      "limits": "A limit order controls the acceptable price but may not fill. A cheap premium does not establish good value, and waiting for a lower entry may change the signal.",
+      "destination": "planner"
+    },
+    {
+      "id": "stop-hunting",
+      "group": "Exit and exposure",
+      "title": "Do not infer intent from a reversal",
+      "status": "CANDIDATE_UNTESTED",
+      "sources": [
+        "owner",
+        "stops",
+        "mentor-stop-loss",
+        "mentor-discipline"
+      ],
+      "topics": [
+        "Stop hunting",
+        "Closing confirmation",
+        "Wider stops"
+      ],
+      "principle": "A reversal after a stop is an observed path, not proof someone targeted the order.",
+      "application": "If testing close confirmation or volatility-based exits, predefine the rule and evaluate its added exposure. Canonical text: knowledge/mentor/discipline/stop-loss.md §Fighting Against Stop Hunting. Encoded in src/options/stops.ts costAndStopChecks / stopMoveCheck. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #14. Encoded in src/options/stops.ts stopMoveCheck (already enforced).",
+      "limits": "Wider or delayed stops can increase loss. No recommendation to hide stops, abandon them or wait for a rebound is activated.",
+      "destination": "reviews"
+    },
+    {
+      "id": "thirty-thirty",
+      "group": "Exit and exposure",
+      "title": "30/30 is an untested personal heuristic",
+      "status": "CANDIDATE_UNTESTED",
+      "sources": [
+        "owner",
+        "mentor-stop-loss"
+      ],
+      "topics": [
+        "30% remaining time",
+        "30% option loss"
+      ],
+      "principle": "The author proposes a time-or-loss review once the thesis begins to weaken.",
+      "application": "Any future test must freeze the time anchor, original remaining life, loss denominator and priority among exits. Canonical text: knowledge/mentor/discipline/stop-loss.md §30/30 Rule. Encoded in src/options/stops.ts rule3030.",
+      "limits": "Challenged is not invalidated. This heuristic cannot grant extra waiting after a hard exit. No 30% threshold becomes an active rule. Definition resolved in psych-30-30 (canonical 止损学 §30/30 Rule).",
+      "destination": "reviews"
+    },
+    {
+      "id": "adding",
+      "group": "Exit and exposure",
+      "title": "Re-entry is a fresh exposure decision",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "owner",
+        "owner-psychology-20260923",
+        "owner-psychology-20260926",
+        "mentor-stop-loss",
+        "mentor-discipline"
+      ],
+      "topics": [
+        "One loss addition",
+        "Adding winners",
+        "Re-entering",
+        "Fresh-cash test",
+        "Rolling",
+        "Debit spread conversion"
+      ],
+      "principle": "Repeated emotional additions to a loser are not justified by sunk cost. The Owner preference to consider at most one planned, disciplined loss addition with fresh evidence remains an untested candidate, not an active risk rule.",
+      "application": "Ask: If I had no position and fresh cash today, would I buy this exact exposure? Lower price alone is not a reason to add. Any addition needs a prospective condition/price, quantity, maximum number of additions, total position ceiling, maximum loss and thesis-validity check. Reassess time, strike, expiry, current premium, combined exposure and costs under the authoritative allocation policy. Canonical text: knowledge/mentor/discipline/stop-loss.md §Re-Entering & Adding. Encoded in src/options/adjust.ts losing_add_limit + pretrade 1-adjustment cap. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #10. Encoded in src/options/discipline.ts addPlanCheck via adjust.ts.",
+      "limits": "Reconciled: allowed adds = min(add plan's maxAdds written at entry [纪律 #10], 1 while losing [止损学 §Re-Entering & Adding], rule-card maxAdjustmentsPerPosition = 1). Unplanned adds are blocked; INTC confirmation and the 'cheaper is not a reason' rule still apply. No cap loosened.",
+      "destination": "planner"
+    },
+    {
+      "id": "windfall",
+      "group": "Profit and curves",
+      "title": "Windfall and rapid profit",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "owner",
+        "mentor-discipline",
+        "mentor-take-profit"
+      ],
+      "topics": [
+        "Lottery profit curve",
+        "90% exit / 10% runner",
+        "Images 1"
+      ],
+      "principle": "Resolved by 止盈学 §2: when the market suddenly hands you a large gain, lock it: sell ≥90%, runner ≤10%.",
+      "application": "Check the executable quote and exact number of whole contracts that a partial exit would require. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #03. Encoded in src/options/discipline.ts euphoriaGate. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §2. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "limits": "Whole contracts: the amount sold is rounded up, so a 1-contract position has no runner. Never increase size to manufacture a runner. Delta does not identify the peak.",
+      "destination": "journal"
+    },
+    {
+      "id": "loss-curves",
+      "group": "Profit and curves",
+      "title": "Loss paths do not prove the next move",
+      "status": "ILLUSTRATION_ONLY",
+      "sources": [
+        "owner",
+        "mentor-take-profit"
+      ],
+      "topics": [
+        "Catastrophic loss curve",
+        "Turbulent loss curve",
+        "Images 2, 11"
+      ],
+      "principle": "These drawings illustrate possible adverse outcomes without numerical market evidence.",
+      "application": "Evaluate the original invalidation, current tradability and remaining exposure. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §3, 止盈学 §10. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "limits": "A drawing cannot establish that recovery is unlikely or that holding will recover the loss. Do not wait for near-total loss before checking the original exit.",
+      "destination": "reviews"
+    },
+    {
+      "id": "recovery-curves",
+      "group": "Profit and curves",
+      "title": "A recovery and a trap can look alike early",
+      "status": "ILLUSTRATION_ONLY",
+      "sources": [
+        "owner",
+        "mentor-take-profit"
+      ],
+      "topics": [
+        "Standard curve",
+        "Bull trap",
+        "Technical confirmation",
+        "Turbulent gain",
+        "Images 3, 5, 6, 10, 12"
+      ],
+      "principle": "The same early PnL path can precede different outcomes. Confirmations need independently specified ETF evidence.",
+      "application": "Record what was visible at the time, rather than labeling the path with its eventual ending. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §1, 止盈学 §4, 止盈学 §6, 止盈学 §7, 止盈学 §11. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice). Volume data: see `volume-confirmation` (src/macro/volume.ts, DK).",
+      "limits": "Profit crossing zero is not technical confirmation. Profit crossing zero is not confirmation. 止盈学 §6 bull-trap rule: without volume + hold confirmation, exit flat/small and adding is blocked. takeprofit.ts classifies the path for advice only; it never predicts a rebound or places orders.",
+      "destination": "reviews"
+    },
+    {
+      "id": "giveback",
+      "group": "Profit and curves",
+      "title": "Compare exit alternatives prospectively",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "owner",
+        "mentor-take-profit"
+      ],
+      "topics": [
+        "Standard curve variant",
+        "30–50% profit",
+        "80–100% profit",
+        "Images 4"
+      ],
+      "principle": "Resolved by 止盈学 §5: +30–50% → consider TP; +80–100% → exit (≥90% out, runner ≤10%). Reconciled with 期权课 14.7 buyerTakeProfitPct 50 (take ≥ half at +50%); the stricter threshold wins.",
+      "application": "A future comparison would need separately registered rules, independent quotes, costs and complete adverse outcomes. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §5. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "limits": "Thresholds are cumulative minimums on the fraction sold. They only ever raise it. A plan followed is not a process failure even if profit is given back.",
+      "destination": "reviews"
+    },
+    {
+      "id": "catalyst-runner",
+      "group": "Profit and curves",
+      "title": "Partial exits require exact quantities",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "owner",
+        "mentor-take-profit"
+      ],
+      "topics": [
+        "Narrative / catalyst confirmation",
+        "+100% sell 50%",
+        "+200% sell 25%",
+        "25% runner",
+        "Images 7, 8"
+      ],
+      "principle": "Resolved by 止盈学 §8 (catalyst/narrative confirmed): +100% → ≥50% sold, +200% → ≥75% sold, last ≤25% lottery runner. Read as cumulative minimums; the course half-off at +50% still applies first.",
+      "application": "At an exact doubling, selling half recovers gross entry premium only when whole-contract quantities and fills permit it; fees still matter. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §8. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "limits": "50/25/25 usually requires at least four original contracts. Do not round or buy more to fit. Remaining contracts have market value and can lose it; they are not free risk.",
+      "destination": "planner"
+    },
+    {
+      "id": "expiry-curve",
+      "group": "Profit and curves",
+      "title": "Near expiry changes the problem",
+      "status": "ILLUSTRATION_ONLY",
+      "sources": [
+        "owner",
+        "theta",
+        "mentor-take-profit"
+      ],
+      "topics": [
+        "Near-term general profit curve",
+        "Images 9"
+      ],
+      "principle": "As expiration approaches, reassess time sensitivity, tradability and exercise obligations.",
+      "application": "Keep an explicit time exit and consider how much time value remains on each leg. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §9. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "limits": "A drawn plateau cannot identify an optimal sale time. Expiration pressure varies with moneyness and structure; an in-the-money contract need not decay to zero.",
+      "destination": "journal"
+    },
+    {
+      "id": "emotion-curve",
+      "group": "Profit and curves",
+      "title": "Record feelings without inferring them",
+      "status": "ILLUSTRATION_ONLY",
+      "sources": [
+        "owner",
+        "mentor-take-profit"
+      ],
+      "topics": [
+        "Excitement",
+        "Panic",
+        "Images 13"
+      ],
+      "principle": "The image is a prompt to record self-reported reactions and the action taken.",
+      "application": "Use a voluntary note alongside the original plan and observed execution evidence. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §12. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice).",
+      "limits": "The drawing does not diagnose the owner. A manual sale after a loss is not proof of panic, nor evidence of a brokerage liquidation.",
+      "destination": "reviews"
+    },
+    {
+      "id": "quality",
+      "group": "Decision process",
+      "title": "Process adherence and PnL are separate",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "owner",
+        "review"
+      ],
+      "topics": [
+        "Confidence formula",
+        "Outcome bias",
+        "Good process / loss",
+        "Poor process / profit"
+      ],
+      "principle": "Review process against the original plan and then separately record the financial outcome.",
+      "application": "Keep both assessments unknown when supporting evidence is absent; inspect assumptions even when execution followed the plan.",
+      "limits": "Successes divided by failures is an illustrative confidence metaphor, not a calibrated statistic. Adherence to an unprofitable strategy does not validate it. Do not automatically label outcomes deserved or lucky.",
+      "destination": "reviews"
+    },
+    {
+      "id": "psych-entry-comfort",
+      "group": "Psychology and evidence",
+      "title": "Entry comfort is not entry evidence",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "$11 / $13 / $12 example",
+        "Breakeven fixation",
+        "Entry discomfort"
+      ],
+      "principle": "Separate the discomfort of an early loss from evidence that an entry has become invalid.",
+      "application": "Before entry, record a prospective ETF confirmation and what would contradict it. During review, compare actions with that plan rather than the purchase price alone. The same direction at a materially different entry price can be a different risk/reward trade; if the original entry condition has gone, require a fresh setup.",
+      "limits": "The later rise in the example is hindsight. Buying a pullback at $12 is not inherently safer than $11; a higher price or immediate profit does not prove confirmation. No automatic price-too-high threshold.",
+      "destination": "journal",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260926",
+        "mentor-winrate-review"
+      ]
+    },
+    {
+      "id": "psych-revenge",
+      "group": "Psychology and evidence",
+      "title": "Do not ask the next trade to repay the last",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Revenge trading",
+        "FOMO",
+        "Recovery pressure",
+        "Missed opportunity"
+      ],
+      "principle": "Treat each proposed entry as a fresh decision with its own evidence, costs and exposure.",
+      "application": "Ask whether the same idea would be considered without the recent loss, missed rally or someone else's reported profit. Missing a trade is not a realized financial loss; the next trade needs independent justification, not a claim that the market owes the lost money. Voluntarily review faster entries, larger size, lower standards, looser stops or entries without a qualified setup. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #15. Encoded in src/options/discipline.ts sizeDisciplineCheck.",
+      "limits": "A loss is still a financial loss when described as a strategic retreat. Prior profit is not free risk capital. Self-reported warning signs are reflection, not inferred diagnosis; no automatic cooldown or emotion-triggered trade ban is introduced.",
+      "destination": "planner",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260926",
+        "mentor-discipline"
+      ]
+    },
+    {
+      "id": "psych-confidence",
+      "group": "Psychology and evidence",
+      "title": "Confidence needs calibration, not a sizing multiplier",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Confidence formula",
+        "High conviction",
+        "Guru confidence",
+        "Hot streak",
+        "Tenfold opportunity"
+      ],
+      "principle": "Keep personal conviction, process adherence and independently measured results separate. Recent wins do not authorize a larger position.",
+      "application": "Record evidence and alternatives before relying on a trader, AI or a winning streak. EUPHORIA_GATE is a reflection question: qualified new opportunity, desire for another win, or willingness to loosen standards? Ask whether one ordinary loss could erase several prior gains; size remains based on capital policy, defined maximum loss, instrument economics, total account exposure, evidence quality and current risk constraints. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #03, 纪律 #09. Encoded in src/options/discipline.ts sizeDisciplineCheck. Verbatim mentor text: knowledge/mentor/psychology/patience-and-overtrading.md. Weekly review §八之四 shows the 交易信心 ratio (successes ÷ failures; week + 30 days); warn_size_up_after_wins / warn_day_after_big_win are the practice warn-tag versions of the euphoria gate.",
+      "limits": "Successes/failures is not a calibrated probability; zero failures does not imply infinite skill. Fewer trades need not improve expectancy. Excitement, anger, revenge, recent wins and hot-hand feelings never authorize a sizing multiplier, lower evidence standards, looser stops or extra trades. EUPHORIA_GATE is not an active execution gate; no automatic size change.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260923",
+        "owner-psychology-20260926",
+        "mentor-discipline",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-direction",
+      "group": "Psychology and evidence",
+      "title": "Closing one direction does not establish the opposite",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Direction switch",
+        "No longer bearish",
+        "Neutral",
+        "Options sideways decay"
+      ],
+      "principle": "An exit and an opposite entry answer different questions.",
+      "application": "State independent evidence for a new direction, contract fit and exits. Include remaining positions if both directions would coexist.",
+      "limits": "A price that stops falling has not necessarily begun an uptrend. Neutral is valid; opposing option premiums can both lose value.",
+      "destination": "guidance",
+      "sources": [
+        "owner-psychology"
+      ]
+    },
+    {
+      "id": "psych-tactical",
+      "group": "Psychology and evidence",
+      "title": "Observe again without rewriting the original plan",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Tactical awareness",
+        "Regime change",
+        "Uncertainty",
+        "Chart limitations"
+      ],
+      "principle": "Compare current evidence with the original expectations, source clocks and predefined exits. Distinguish adverse price movement from a change in the thesis core variables.",
+      "application": "Ask which original macro, event, liquidity or price condition changed, when it became observable and whether it satisfies a predeclared invalidation. Separate observation, interpretation, action and unknowns. Distinguish NEW VERIFIED INFORMATION UNDER A PREDEFINED EXCEPTION from LOSS_AVERSION_STOP_DRIFT; preserve the original decision and append any permitted exception evidence. Verbatim mentor text: knowledge/mentor/psychology/battlefield-and-uncertainty.md.",
+      "limits": "A loss alone does not prove thesis invalidation, and an intact macro story cannot cancel an independent stop, profit target or time exit. Discomfort alone cannot move a stop farther away or rewrite the frozen plan. Incomplete information does not waive data gates; sparse captures do not provide continuous monitoring. No new stop percentage or drift detector.",
+      "destination": "guidance",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260923",
+        "owner-psychology-20260926",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-news",
+      "group": "Psychology and evidence",
+      "title": "Cross-check claims, not political averages",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Multilingual news",
+        "Political bias",
+        "Narrative",
+        "Manipulation allegations",
+        "Independent sources",
+        "Symmetric evidence"
+      ],
+      "principle": "Check the original claim, time and context; distinguish reporting, commentary, official statements and observed market reactions.",
+      "application": "Use News & calendar source comparisons to preserve original claims, attributed interpretations, differences, gaps and conditional GLD/IBIT relevance. Link a specific original plan condition; translations of one wire story do not multiply evidence. Apply the same evidence standard to the United States, China, any other country, government, party or favored or disliked public figure. Ask what is observed, inferred or unknown and how any verified change reaches markets. Do not stand with a narrative; trace the cost. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #2. Verbatim mentor text: knowledge/mentor/psychology/narrative-and-news.md.",
+      "limits": "Truth is not necessarily midway between opposing views. Citation linkage alone does not verify meaning. No permanent left/right reliability scores, unsupported insider allegations or claim that news never affects prices is adopted. Intent requires evidence.",
+      "destination": "context",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260924",
+        "mentor-better-macro-trader",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-political-entity-separation",
+      "group": "Psychology and evidence",
+      "title": "Separate country, government, party, people and policy",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Political identity",
+        "Country",
+        "Government",
+        "Party",
+        "People",
+        "Policy",
+        "Narrative",
+        "Macro evidence",
+        "Economic conflict",
+        "Transmission"
+      ],
+      "principle": "Political identity or allegiance is not macro evidence. Distinguish a country, its government, a party, its population, a policy statement, enacted and implemented policy, observed economic consequences and observed market reactions.",
+      "application": "For a political or geopolitical claim, ask who spoke and with what authority; whether it is rhetoric, proposal, law or implementation; which economic variable and causal channel could change; what dated evidence shows that change; what the market had already priced; how the asset actually responded; and what credible counterevidence exists. Verbatim mentor text: knowledge/mentor/psychology/narrative-and-news.md.",
+      "limits": "People do not uniformly support a government; criticizing a government is not hostility toward a country; supporting a party does not endorse every policy. An announcement does not guarantee implementation, and implementation does not guarantee a market response. No political score, ideology classifier, voting advice or execution rule.",
+      "destination": "context",
+      "sources": [
+        "owner-psychology-20260924",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-social",
+      "group": "Psychology and evidence",
+      "title": "A political post is a source claim, not a trade signal",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Trump",
+        "Truth Social",
+        "Policy event",
+        "Publication and receipt clocks"
+      ],
+      "principle": "A verified original post can establish what its author said; implementation and market consequences are separate propositions.",
+      "application": "Record the exact post, publication and receipt times, revisions, official policy confirmation and independent ETF evidence before using it in a thesis.",
+      "limits": "No post content was verified in this review. One person does not determine every asset price. The excerpt's instruction to create an account is not an Owner instruction to register, follow or monitor.",
+      "destination": "context",
+      "sources": [
+        "owner-psychology",
+        "social-reference"
+      ]
+    },
+    {
+      "id": "psych-72-hours",
+      "group": "Psychology and evidence",
+      "title": "72 hours is a research proposal",
+      "status": "CANDIDATE_UNTESTED",
+      "topics": [
+        "72-hour rule",
+        "Earnings",
+        "Rescue news",
+        "Waiting period"
+      ],
+      "principle": "The supplied fixed delay after news is an author heuristic without a tested definition here.",
+      "application": "A future proposal would need event receipt time, calendar versus trading hours, eligible instruments, exceptions and independent comparison outcomes. Verbatim mentor text: knowledge/mentor/psychology/narrative-and-news.md. Warn-only since 2026-10-17: practice opens < 72h after the ticker's earnings (earnings book, past rows) or a flagged data/in/major-events.json event get warn_72h_event (src/options/psych.ts); untested default, never a gate.",
+      "limits": "A blanket wait can outlast a short-dated option. It cannot delay an existing risk or expiry exit. No entry gate is installed: only the warn_72h_event tag (practice warn tag; recorded as psychTags on formal entries). Without event data it cannot fire — the review asks manually.",
+      "destination": "event-research",
+      "sources": [
+        "owner-psychology",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-30-30",
+      "group": "Psychology and evidence",
+      "title": "30/30 resolved by the canonical 止损学 text",
+      "status": "RESOLVED_FROM_SOURCE",
+      "topics": [
+        "30/30 conflict",
+        "30% elapsed life",
+        "30% value loss",
+        "Rolling"
+      ],
+      "principle": "Resolved by knowledge/mentor/discipline/stop-loss.md §30/30 Rule. The clock starts when the thesis breaks (从交易逻辑开始出现问题算起). Exit at whichever comes first: about 30% of the option's remaining life at that moment is used without the market re-proving the thesis, or the option value is down about 30% (e.g. 30 days left → about 9 days; −30% on day 2 → exit then). Earlier batch wordings are superseded where they differ.",
+      "application": "Encoded as src/options/stops.ts rule3030. Time origin = thesisBrokenAt. Denominator = expiration minus thesisBrokenAt. Loss basis = option value at thesisBrokenAt. Priority: the loss leg fires immediately, otherwise the time deadline applies. The signal is EXIT; the user executes.",
+      "limits": "Only runs after the thesis is flagged broken; it never grants extra waiting after a hard exit (thesis invalidation, max loss, rule-card caps). Rolling closes the old position and opens new exposure; it does not reset the clock or erase the loss. 30% is the mentor's own number, not a magic constant (这条规则的目的不是证明 30% 是一个神奇的数字).",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology",
+        "mentor-stop-loss"
+      ]
+    },
+    {
+      "id": "psych-breakout-clock",
+      "group": "Psychology and evidence",
+      "title": "A retest requires a defined observation",
+      "status": "CANDIDATE_UNTESTED",
+      "topics": [
+        "Support / resistance flip",
+        "True / false breakout",
+        "Last 30 seconds",
+        "Open / close hour"
+      ],
+      "principle": "A support/resistance retest can be formulated as a hypothesis with a timeframe and failure condition.",
+      "application": "Specify qualified ETF bars, close rules, volume/liquidity checks and when the evidence becomes available before comparing outcomes. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §6. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice). Volume data: see `volume-confirmation` (src/macro/volume.ts, DK).",
+      "limits": "The last 30 seconds or opening/closing hour is not universally decisive. A transient rebound does not establish a durable reversal. No new pattern detector or capture cadence.",
+      "destination": "guidance",
+      "sources": [
+        "owner-psychology",
+        "mentor-take-profit"
+      ]
+    },
+    {
+      "id": "psych-returns",
+      "group": "Psychology and evidence",
+      "title": "Reject universal return and win-rate promises",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "2% every week",
+        "60% losses",
+        "Guaranteed gains",
+        "Survivorship"
+      ],
+      "principle": "Treat universal performance claims as unsupported until their population, sample, costs and method are known.",
+      "application": "For scale only: 1.02^52 - 1 is about 180% compounded annual gain if every week earns exactly 2%, before costs. This arithmetic is not a forecast or target. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #01. Verbatim mentor text: knowledge/mentor/psychology/money-and-life.md.",
+      "limits": "Everyone can earn 2% weekly, most traders lose 60%+, and everyone eventually catches a huge winner are not established by these anecdotes. A sustainable process can still have losing weeks.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology",
+        "mentor-discipline",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-options-choice",
+      "group": "Psychology and evidence",
+      "title": "Options are a tool, not compulsory insurance",
+      "status": "MECHANICS_REFERENCE",
+      "topics": [
+        "Earnings 50% claim",
+        "Principal protection",
+        "Covered calls",
+        "Insurance analogy"
+      ],
+      "principle": "A call needs enough time for the bullish thesis; a put needs a plausible price path to its strike. Neither is a universal contract-selection rule.",
+      "application": "Compare direction, magnitude, time horizon, strike, expiry, implied volatility, premium and liquidity together. A six-month thesis paired with a three-week call may expire before the thesis plays out; a bearish move from 100 toward 90 need not make a 60-strike put attractive. Review the full payoff, fees and exercise/assignment exposure; distinguish a hedge from income generation or taking less exposure.",
+      "limits": "These numbers are illustrations, not thresholds or forecasts. Far out-of-the-money contracts can be bounded-premium lottery exposure, not automatically good value. Earnings are not a 50/50 crash bet, covered calls do not guarantee principal, and no new strategy, ticker or broker is enabled.",
+      "destination": "planner",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260923",
+        "spread",
+        "theta",
+        "covered-call"
+      ]
+    },
+    {
+      "id": "psych-responsibility",
+      "group": "Psychology and evidence",
+      "title": "Own controllable decisions; investigate actual causes",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Extreme Ownership",
+        "Self-attribution",
+        "Account management",
+        "Journal"
+      ],
+      "principle": "Record what you decided, what was observable, what you controlled and what remains unexplained. Discipline aims to preserve the ability to participate in future opportunities through bounded exposure, repeatable execution, controlled drawdown and future optionality.",
+      "application": "Review a specific deviation and prevention step against the original dated plan; preserve source outages, execution records and contrary evidence. One exciting thesis must not justify risking the account. Any proposed larger allocation still needs capital policy, risk authority, evidence, total exposure and explicit Owner approval. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10. Verbatim mentor text: knowledge/mentor/psychology/stop-loss-and-ownership.md.",
+      "limits": "Calling an exit a strategic reset does not erase its real loss. Responsibility does not mean every loss is your fault or all external failures are excuses. A leadership book is not evidence of market edge; one review cannot approve a permanent lesson. Betting harder or subjective confidence is not automatic sizing permission.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260923",
+        "owner-psychology-20260926",
+        "ownership-book",
+        "mentor-better-macro-trader",
+        "mentor-winrate-review",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-wellbeing",
+      "group": "Psychology and evidence",
+      "title": "Reflect on pressure without judging the person",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Sleep",
+        "Fatigue",
+        "Spending",
+        "Bills",
+        "Emotional position size",
+        "Weekend learning"
+      ],
+      "principle": "Voluntarily reflect on attention, readiness, monitoring capacity and time away; choosing not to trade can be valid when attention is insufficient or the market setup is poor.",
+      "application": "Consider waiting on a new entry or arranging help with an existing monitoring obligation. Once planned work is complete, no opportunity exists or markets are closed, constant price watching is not automatically productive. Keep the financial plan separate from self-worth. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #02, 纪律 #20. Encoded in src/options/discipline.ts sessionGate (self-reported state → NO_TRADE; answers not stored). Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #3.",
+      "limits": "No health information is collected and no lifestyle behavior is prescribed. Do not infer health, sleep, emotions, diagnosis or relationship status from system data. Self-reported pressure does not prove a position is too large; there is no automatic psychological gate or capital change.",
+      "destination": "planner",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260926",
+        "mentor-discipline",
+        "mentor-better-macro-trader"
+      ]
+    },
+    {
+      "id": "psych-ticker",
+      "group": "Psychology and evidence",
+      "title": "Reassess a familiar ticker from current evidence",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Ticker magnetism",
+        "Attachment",
+        "Endowment",
+        "Past winner"
+      ],
+      "principle": "Ask whether a fresh decision would be supported without the memory of an earlier win or the wish to recover a loss.",
+      "application": "Compare current evidence and alternatives; retain unknowns rather than repeatedly retelling the same narrative. Verbatim mentor text: knowledge/mentor/psychology/conviction-and-independence.md. info_ticker_magnetism (informational) marks the ≥2nd re-entry into a ticker whose winner turned into a loser.",
+      "limits": "Attachment is a reflection prompt, not a clinical diagnosis. A prior winner is neither automatically good nor banned; stories do not necessarily occur only once. The GLD/IBIT scope remains unchanged.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology",
+        "behavior-summary",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-second-order",
+      "group": "Psychology and evidence",
+      "title": "Trace second-order effects and offsetting channels",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Oil / airlines / JETS",
+        "Rates / small caps / IWM",
+        "War / insurance",
+        "Market ecosystem",
+        "Two-sided conflict costs"
+      ],
+      "principle": "Map an event through prices, costs, demand and balance sheets for both sides; identify who might benefit, who bears or transfers each cost and which opposing channel could dominate.",
+      "application": "For trade conflict, sanctions, export controls, tariffs, war, energy restrictions, capital controls or industrial policy, compare direct and fiscal costs, financing, inflation, substitution, FX, rates, margins, consumers, capital flows, second-order beneficiaries, time horizon and what prices already reflect. Airlines may face weaker demand despite cheaper fuel; small firms differ in financing; insurance claims can outweigh higher premiums. Apply the same branching questions to GLD/IBIT. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #5. Premarket: rates up → high-risk assets drained; oil ↔ CAD; Korea ↔ US semis (knowledge/mentor/discipline/premarket-routine.md; run by src/macro/premarket.ts). Verbatim mentor text: knowledge/mentor/psychology/macro-thinking.md. Event-lifecycle image: knowledge/mentor/psychology/assets/event-lifecycle-main-vs-secondary-trade.jpg.",
+      "limits": "One side can face meaningful cost even when the other also pays; neither zero cost nor equal suffering is assumed. Cost distribution and market impact require dated evidence. These are conditional examples, not trades or fixed correlations; no winner, loser, new ticker coverage or execution rule is inferred.",
+      "destination": "context",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260924",
+        "mentor-better-macro-trader",
+        "mentor-premarket",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-long-horizon",
+      "group": "Psychology and evidence",
+      "title": "Long-term investing lessons need a horizon boundary",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Darwin",
+        "Pulak Prasad",
+        "Quality companies",
+        "DCF precision",
+        "History / economics / English"
+      ],
+      "principle": "Use the supplied book summary to question catastrophic exposure, business quality and false precision in long forecasts.",
+      "application": "Separate learning from strategy selection. Record what evidence would transfer to the chosen instrument and what would not. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #4, 宏观交易员 #5, 宏观交易员 #6. Verbatim mentor text: knowledge/mentor/psychology/conviction-and-independence.md.",
+      "limits": "Patient ownership of a business is not an instruction to hold an expiring option indefinitely. The full book and detailed chapter summary were not independently reviewed. No cultural explanation of trading ability is adopted.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology",
+        "darwin-book",
+        "mentor-better-macro-trader",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-tools",
+      "group": "Psychology and evidence",
+      "title": "Evaluate tools by a documented need",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "IBKR",
+        "DAS Trader",
+        "TradingView",
+        "OptionStrat",
+        "Barchart",
+        "Referral links"
+      ],
+      "principle": "Define the missing capability, evidence of benefit, total cost and available alternatives before considering a tool.",
+      "application": "IBKR: brokerage access; DAS Trader: execution/routing workflow; TradingView: charting/alerts; OptionStrat: option-structure illustrations; Barchart: market/option analytics. These are the supplied author's use cases. Alpha already has saved quotes, deterministic single-leg cost/exit checks and a source-linked journal; it has no verified connection/use receipt for these five tools.",
+      "limits": "Connection, actual use and current fees for each named tool remain UNKNOWN. The author's broker is not the Owner's account. Prices, execution quality, free features and gamma estimates are unverified; referral links are not recommendations. No install, purchase, subscription, login or migration.",
+      "destination": "context",
+      "sources": [
+        "owner-psychology"
+      ]
+    },
+    {
+      "id": "psych-metaphors",
+      "group": "Psychology and evidence",
+      "title": "Extract questions from metaphors, not trading commands",
+      "status": "ILLUSTRATION_ONLY",
+      "topics": [
+        "Thirty-Six Stratagems",
+        "Guerrilla maxims",
+        "Battlefield",
+        "Parking fine",
+        "Opportunity cost"
+      ],
+      "principle": "Preserving resources, cutting a loss under the original plan, observing and considering opportunity cost can inspire neutral decision questions.",
+      "application": "Translate the metaphor into evidence, permitted actions, cost and alternative scenarios before it enters a worksheet.",
+      "limits": "Military sayings are not market laws or buy/add signals; preserving capital never waives the recorded loss or an independent exit. A fine is not permission or a complete cost estimate. Market manipulation allegations and claims that all wealth is plunder remain unsupported.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology",
+        "owner-psychology-20260923"
+      ]
+    },
+    {
+      "id": "psych-sample-review",
+      "group": "Psychology and evidence",
+      "title": "Evaluate the framework beyond one result",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Sample size",
+        "Expectancy",
+        "Independent outcomes",
+        "Hindsight",
+        "Outcome bias"
+      ],
+      "principle": "Compare the original decision process and independent financial result across prospective observations.",
+      "application": "Retain missing sessions, rejected ideas, fees, drawdowns, dependence and regime differences. Inspect profitable deviations as well as compliant losses.",
+      "limits": "Dozens or hundreds of trades is not an automatic pass; correlated bets are not independent replications. The frozen 20-session study is not a profit qualification or permission to manufacture trades.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology",
+        "behavior-summary"
+      ]
+    },
+    {
+      "id": "psych-tunnel-vision",
+      "group": "Psychology and evidence",
+      "title": "A trade system is more than the entry signal",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Tunnel vision",
+        "Selective reading",
+        "Entry signal",
+        "Risk warnings",
+        "Invalidation",
+        "Hedge",
+        "No trade"
+      ],
+      "principle": "A promising entry signal is one part of a decision; selective reading can hide the warning or the option-specific cost.",
+      "application": "Before entry and during review, examine the thesis, contrary evidence, invalidation, position size, hedge plan and required data together. Ask when not to chase, when to reduce and when to do nothing. EUPHORIA_GATE asks whether another trade is a genuine new opportunity or an attempt to preserve the feeling of winning or loosen standards after success.",
+      "limits": "These are optional reflection questions, not a diagnosis, scanner or new execution gate. Another trader's entry or a macro narrative cannot replace independent evidence; a favorable signal or recent profit cannot cancel an existing stop/time exit, lower evidence standards or authorize extra trades.",
+      "destination": "planner",
+      "sources": [
+        "owner-psychology-20260923",
+        "owner-psychology-20260926"
+      ]
+    },
+    {
+      "id": "psych-short-weakness",
+      "group": "Psychology and evidence",
+      "title": "A large rise alone is not a short thesis",
+      "status": "CANDIDATE_UNTESTED",
+      "topics": [
+        "100–500% rise",
+        "Short weakness",
+        "Buy pressure",
+        "Momentum",
+        "Continuation",
+        "Narrative",
+        "Capital withdrawal",
+        "Sell-volume classification",
+        "Price response"
+      ],
+      "principle": "An advance of 100–500% by itself says neither that a reversal is due nor that short exposure has favorable economics.",
+      "application": "As an educational proposal, distinguish apparent sell-side volume from effective downward price impact. If price holds or rises despite classified selling, absorption, buyers accepting supply, limited impact and classification error are competing hypotheses, not identified actors. Look for defined failed continuation, lower highs/lows, lost support, weaker relative strength, failed recovery or adverse fundamentals and liquidity; consider squeeze and borrow risks before proposing a separate study. Volume data: see `volume-confirmation` (src/macro/volume.ts, DK). Mentor version: 做空学 #3 (别猜顶) and #7 (空弱不空强 — lag the index AND the sector/peers) in knowledge/mentor/discipline/short-selling.md; entry-time warn tags short_vs_strength / short_no_relative_weakness in src/options/shortside.ts (catalog `short-side-checklist`). Still no short scanner or short-stock position.",
+      "limits": "Trade-classified buy/sell volume does not reveal counterparties, intent or inventory; sell volume above buy volume alone proves neither bearish nor bullish direction, institutional accumulation, dealer buying, a squeeze, manipulation or a future rise. This remains untested: no short rule, scanner or position. Current GLD/IBIT scope is unchanged; borrow and option risks still matter.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology-20260923",
+        "owner-psychology-20260924",
+        "mentor-short-selling"
+      ]
+    },
+    {
+      "id": "psych-loss-attribution",
+      "group": "Psychology and evidence",
+      "title": "Diagnose the loss before changing the system",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Loss attribution",
+        "Prediction error",
+        "Execution error",
+        "Entry timing",
+        "Sizing and risk",
+        "Instrument mismatch",
+        "Risk updates",
+        "Incomplete hedge",
+        "Plan deviation",
+        "Normal variance"
+      ],
+      "principle": "A losing outcome may reflect thesis/prediction error, execution error, chasing or entry timing, sizing/risk error, instrument or structure mismatch, missed later risk updates, an incomplete hedge or copied single leg, changing the original plan, or normal variance despite a valid process.",
+      "application": "Compare the original dated plan with information available at entry, entry price and timing, intended versus actual size, instrument, expiry, strike and structure, hedge context, later risk updates, actual execution and exit behavior. Classify only what the evidence supports and retain unknown causes. Original source: knowledge/mentor/better-macro-trader.md 宏观交易员 #10. Verbatim mentor text: knowledge/mentor/psychology/why-new-members-lose.md. Ledger: lossReview.errorClass judgment | execution | risk | variance; suggested tags late_entry, oversized, ignored_follow_up, copied_one_leg, wrong_instrument, changed_script (src/options/psych.ts LOSS_TAGS); readiness shows the four counts.",
+      "limits": "A loss alone does not prove the prediction wrong; a correct prediction does not prove good execution; normal drawdown does not prove the strategy should change. No automatic cause assignment or rewriting of the original trade.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology-20260926",
+        "mentor-better-macro-trader",
+        "mentor-winrate-review",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-0dte-one-and-done",
+      "group": "Psychology and evidence",
+      "title": "One-and-done 0DTE discipline",
+      "status": "RESOLVED_FROM_SOURCE",
+      "topics": [
+        "0DTE",
+        "One completed trade",
+        "Revenge pressure",
+        "Euphoria",
+        "Impulsive re-entry"
+      ],
+      "principle": "Resolved by 纪律 #04 (一天只做一笔…一笔结束，今天的 0DTE 就结束). Enforced as a journal-based block on a second 0DTE entry on the same ET day.",
+      "application": "Keep this as a discipline candidate. Any future promotion requires explicit Owner approval through Strategy Versioning and a prospective definition of the covered trades and session. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #04. Encoded in src/options/discipline.ts zeroDteCheck.",
+      "limits": "Applies to 0DTE only. The block prevents new 0DTE entries; it never forces holding an open one.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology-20260926",
+        "mentor-discipline"
+      ]
+    },
+    {
+      "id": "psych-extreme-point-precision",
+      "group": "Psychology and evidence",
+      "title": "Do not require the exact top or bottom",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Top / bottom prediction",
+        "Confirmation",
+        "Risk-defined participation",
+        "Fish head / body / tail"
+      ],
+      "principle": "Participation need not prove the exact extreme. Consider evidence-defined participation with specified risk, sufficient direction/setup confirmation and defined invalidation; accept that parts of the initial and final move may be missed.",
+      "application": "Use the existing evidence and plan fields to explain participation and its risks rather than claiming an exact top or bottom. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #08. Canonical text: knowledge/mentor/discipline/take-profit.md 止盈学 §12. Encoded in src/options/takeprofit.ts (classifyCurve / takeProfitAdvice). Short side: 做空学 #3 (“涨太多了”从来不是做空理由; wait for it to start falling) → warn tag short_vs_strength (src/options/shortside.ts).",
+      "limits": "Confirmation does not always produce better returns. Fish head/body/tail is an illustration only; no detector or fixed 10%/80% middle-of-move rule.",
+      "destination": "planner",
+      "sources": [
+        "owner-psychology-20260926",
+        "mentor-discipline",
+        "mentor-take-profit",
+        "mentor-short-selling"
+      ]
+    },
+    {
+      "id": "psych-daily-loss-limit",
+      "group": "Psychology and evidence",
+      "title": "A daily loss limit protects judgment as well as capital",
+      "status": "RESOLVED_FROM_SOURCE",
+      "topics": [
+        "Daily loss limit",
+        "UNKNOWN",
+        "Revenge sequence",
+        "Future risk-policy proposal"
+      ],
+      "principle": "Resolved by 纪律 #11 (到了这个数字，今天结束). The user confirmed dailyLossLimitPct = 2 (% of account) on 2026-10-14. It is a rule-card value (src/options/rules.ts), still configurable.",
+      "application": "Future activation needs an explicit Owner amount or formula, scope, covered instruments, reset clock/timezone, realized versus unrealized definition, treatment of open positions and Strategy/Risk versioning approval. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #11. Encoded in src/options/discipline.ts dailyLossCheck.",
+      "limits": "Hitting it blocks new entries for the rest of the ET day. It never loosens other caps and never forces holding an open position.",
+      "destination": "planner",
+      "sources": [
+        "owner-psychology-20260926",
+        "mentor-discipline"
+      ]
+    },
+    {
+      "id": "psych-two-hesitations",
+      "group": "Psychology and evidence",
+      "title": "Repeated hesitation is a review signal",
+      "status": "RESOLVED_FROM_SOURCE",
+      "topics": [
+        "Two hesitations",
+        "Voluntary reflection",
+        "Original exit plan"
+      ],
+      "principle": "Resolved by 纪律 #13 (两次犹豫，就退出): the second logged hesitation gives an EXIT signal; if the position is in profit, take the profit.",
+      "application": "Use only as a voluntary reflection trigger and compare with the original price, time and thesis exits. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #13. Encoded in src/options/discipline.ts hesitationCheck + journal hesitations.",
+      "limits": "The count is self-logged in the journal (hesitations[]). The existing predefined hard exits still fire first. The signal is EXIT; the user executes.",
+      "destination": "journal",
+      "sources": [
+        "owner-psychology-20260926",
+        "mentor-discipline"
+      ]
+    },
+    {
+      "id": "psych-rescue-complexity",
+      "group": "Psychology and evidence",
+      "title": "Do not add complexity just to avoid closing a bad trade",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Rescue complexity",
+        "Hedge",
+        "Spread",
+        "Roll",
+        "New expiry",
+        "Related asset",
+        "Additional leg"
+      ],
+      "principle": "Repeated hedges, spreads, rolls, expiries, related assets or additional legs can make a losing simple position harder to understand.",
+      "application": "Ask whether a new structure manages a still-valid trade or avoids closing an invalid one. Each added layer needs its own purpose, incremental risk, cost, total exposure and exit condition. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #16. Encoded in src/options/discipline.ts complexityCheck via adjust.ts.",
+      "limits": "Rolling or restructuring does not erase the original loss. No automatic ban on complexity and no automatic roll, spread or hedge; unsupported structures do not gain execution authority.",
+      "destination": "planner",
+      "sources": [
+        "owner-psychology-20260926",
+        "mentor-discipline"
+      ]
+    },
+    {
+      "id": "psych-thesis-position-separation",
+      "group": "Psychology and evidence",
+      "title": "A valid thesis does not make every position valid",
+      "status": "PROCESS_GUIDE",
+      "topics": [
+        "Thesis versus position",
+        "Timing",
+        "Entry price",
+        "Strike",
+        "Expiry",
+        "Size",
+        "Instrument",
+        "Structure",
+        "Prediction accuracy != trading profitability"
+      ],
+      "principle": "A broad directional view can remain plausible while a specific position fails because of timing, price, strike, expiry, size, instrument or structure.",
+      "application": "Review Prediction/thesis, Instrument, Entry, Position, Execution and Outcome separately. Closing an unsuitable position does not necessarily reject the entire macro thesis; any new expression requires a fresh plan. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #19. Encoded in src/options/discipline.ts thesisPositionVerdict + journal reviews[]. Short side: 做空学 #8 (right but two weeks early = dead) and #10 (“可是我最后看对了”) — structure must outlive the thesis (warn tag short_expiry_too_short). See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
+      "limits": "Belief in the thesis does not justify protecting a bad position. Prediction accuracy is not trading profitability. No prediction mutation, automatic reopening or replacement trade.",
+      "destination": "journal",
+      "sources": [
+        "owner-psychology-20260926",
+        "mentor-discipline",
+        "mentor-short-selling"
+      ]
+    },
+    {
+      "id": "psych-realized-profit-redeployment",
+      "group": "Psychology and evidence",
+      "title": "Realized profit may fund a new trade, but it is still capital",
+      "status": "CANDIDATE_UNTESTED",
+      "topics": [
+        "Realized profit",
+        "Sequential independent trades",
+        "House money",
+        "Fresh setup",
+        "Bounded exposure",
+        "Illustrative 1.00 / 0.50 / 0.30 / 0.20 units"
+      ],
+      "principle": "A later trade begins only after the prior trade is fully closed. Each new trade is a separate decision and may deliberately use less capital as price extends or uncertainty increases.",
+      "application": "Require a fresh, independently qualified opportunity and review its thesis, entry, current price, risk/reward, position size, total account exposure, stop, target, invalidation, time horizon, instrument/contract fit and current capital policy. The prior trade carries neither its thesis nor permission into the next trade. This describes sequential redeployment after realized exits, not averaging into the same losing or open position. Verbatim mentor text: knowledge/mentor/psychology/position-sizing-after-wins.md. The illustration image is now stored: knowledge/mentor/psychology/assets/realized-profit-pyramid-1.00-0.50-0.30-0.20.jpg. warn_pyramid_add_larger flags a follow-on unit after a winner whose max loss is larger than the prior unit's.",
+      "limits": "Prior profit is not free risk capital: realized gains become Owner capital and every later trade can lose real capital. A profitable exit does not authorize another entry, reopening or extension from regret, excitement or FOMO. The Owner prompt describes the unavailable image as showing illustrative prices 100 / 104 / 107 / 110 and units 1.00 / 0.50 / 0.30 / 0.20 only; they define no formula, fixed reduction, pyramiding, reinvestment, position-sizing rule or automatic trade. Existing capital policy remains authoritative.",
+      "destination": "planner",
+      "sources": [
+        "owner-psychology-20260927",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "psych-rule-exception-discipline",
+      "group": "Psychology and evidence",
+      "title": "Exceptions require more discipline, not less",
+      "status": "CANDIDATE_UNTESTED",
+      "topics": [
+        "Rule 650",
+        "Rule exception",
+        "Dynamic market",
+        "High conviction",
+        "Discipline",
+        "Exception governance",
+        "Rationalization risk"
+      ],
+      "principle": "Rules create a default safe process. Unusual market conditions may motivate an exception proposal, but an exception requires stronger evidence and tighter documentation than ordinary execution.",
+      "application": "Before any future exception to a rule explicitly designated adaptable, document: the exact rule; dated evidence that the current regime materially differs from the rule's intended conditions; why the normal rule would be suboptimal; affected scope, instrument and size; maximum additional risk; start and end or expiry; invalidation and abort condition; evidence that would show rationalization rather than justified adaptation; and a post-trade review. Require explicit review before the exception and preserve the original plan and later audit trail. Verbatim mentor text: knowledge/mentor/psychology/patience-and-overtrading.md. The original 规则第 650 条 wording is now stored (psych-batch-2.txt L39).",
+      "limits": "High certainty is subjective and uncalibrated, never a numerical confidence threshold or automatic bypass. Recent wins, FOMO, urgency, narrative conviction, loss recovery and fear of missing profit are insufficient. No exception may relax authorization, executionAllowed=false, automaticExecution=false, market-data authenticity or freshness, account/order permissions, capital or risk limits, broker or legal constraints, immutable audit/history, or active Daily Guidance gates, stops, risk, freshness, pagination and weekly-plan requirements. No automatic exception, size increase, extended stop, delayed exit, extra trade or order permission. Repeated exceptions call for prospective review of the base rule, not repeated bypass. Following rules does not guarantee profit.",
+      "destination": "reviews",
+      "sources": [
+        "owner-psychology-20260928",
+        "mentor-psych-batch"
+      ]
+    },
+    {
+      "id": "discipline-survive-first",
+      "group": "Exit and exposure",
+      "title": "Survive first to be there for the big opportunity",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-discipline"
+      ],
+      "topics": [
+        "Survival",
+        "Small size",
+        "Drawdown control",
+        "Show Hand"
+      ],
+      "principle": "See 纪律 #01 (先活下来，再等机会): whatever happens on this trade, you must still be able to keep trading.",
+      "application": "Already reflected in the rule card (1%/trade, 3%/underlying), kelly.ts (fractional Kelly as an upper reference only) and NO_TRADE as a valid outcome. Canonical text: knowledge/mentor/discipline/discipline-01-20.md 纪律 #01.",
+      "limits": "Not a licence to size up later: '下重手' when a big opportunity comes still sits inside the rule-card caps.",
+      "destination": "planner"
+    },
+    {
+      "id": "volume-confirmation",
+      "group": "Exit and exposure",
+      "title": "Volume confirms or rules out; it never triggers a trade (DK)",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "dk-volume"
+      ],
+      "topics": [
+        "Relative volume",
+        "20-day breakout",
+        "Option volume > OI",
+        "Put/call ratio",
+        "DK addition"
+      ],
+      "principle": "DK's addition, not the mentor's. Relative volume (today ÷ 20-day average) ≥2x is worth investigating. A 20-day high/low break on high volume is confirmation; on low volume it is suspicious. Option volume above open interest shows new activity, but buyer vs seller cannot be inferred.",
+      "application": "Run by src/macro/volume.ts (npm run volume; run.sh at 7:00–9:29 for the prior session, feeding the premarket report, and at 16:15–16:59 ET). Strong anomalies (≥3x with a price break, or option volume/OI ≥5x) go to alerts at score 60. Related existing entries: `mechanisms` (OI/volume don't identify dealer direction), `recovery-curves` (止盈学 §6 bull trap needs volume + hold), `psych-breakout-clock`, `psych-short-weakness`.",
+      "limits": "成交量仅用于确认/排查，不单独下单. Volume never sets direction (macro first) or size. Free Yahoo volume is consolidated but may lag. Chains are whatever the routine saved to data/in/.",
+      "destination": "planner"
+    },
+    {
+      "id": "max-concurrent-positions",
+      "group": "Exit and exposure",
+      "title": "Concurrent open positions ≤10 (大佬复盘)",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "mentor-winrate-review"
+      ],
+      "topics": [
+        "Position count",
+        "Attention budget"
+      ],
+      "principle": "原文：「原本同时管理不到10个仓位，后来膨胀到接近30个」；「把同时管理的仓位降回10个以下…每一个仓位都必须有值得持有的理由」。",
+      "application": "RuleCard.maxConcurrentPositions = 10 (default). pretrade.ts BLOCKs a new position when open positions + 1 would exceed it. The user may set it lower; never higher (validated). Readiness scorecard reports the peak concurrent count.",
+      "limits": "A count cap, not a risk cap; the 1%/3%/2% caps still apply independently.",
+      "destination": "planner"
+    },
+    {
+      "id": "psych-no-performance-trades",
+      "group": "Psychology and evidence",
+      "title": "No trades made to share, entertain or chase excitement (大佬复盘)",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "mentor-winrate-review"
+      ],
+      "topics": [
+        "Motive",
+        "Boredom",
+        "Audience"
+      ],
+      "principle": "原文：「为了满足一些人想看交易、想找刺激的需求，我做了不必要的单子」；「不会为了有东西跟大家分享而硬做交易」。",
+      "application": "discipline.ts motive check: motive 'share' | 'entertain' | 'excitement' → BLOCK. The journal records the motive; readiness counts these as discipline violations.",
+      "limits": "Self-reported; it only works if the motive is answered honestly before entry.",
+      "destination": "journal"
+    },
+    {
+      "id": "psych-winrate-not-failure",
+      "group": "Psychology and evidence",
+      "title": "A low win rate is not failure when losses stay controlled — but not an excuse either (大佬复盘)",
+      "status": "RESOLVED_FROM_SOURCE",
+      "sources": [
+        "mentor-winrate-review"
+      ],
+      "topics": [
+        "Win rate",
+        "Expectancy",
+        "Loss control"
+      ],
+      "principle": "原文：「仓位控制让亏损保持在可控范围内，我预计最终仍能盈利。但这不能成为交易做得不够好的借口。」",
+      "application": "Readiness judges expectancy and loss caps, never win rate alone; it prints win rate as context and still asks for every loss to be reviewed.",
+      "limits": "Positive expectancy on a small sample can be luck; criterion 2 removes the top 2 winners.",
+      "destination": "reviews"
+    },
+    {
+      "id": "authority-bias",
+      "group": "Psychology",
+      "title": "Do not obey authority blindly (Milgram)",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-reading-milgram"
+      ],
+      "topics": [
+        "Obedience to authority",
+        "Responsibility",
+        "Devil's advocate"
+      ],
+      "principle": "An authority's view (bank research, analysts, influencers, the mentor) is an input, not an instruction; responsibility for the trade does not transfer.",
+      "application": "Run every idea through the pre-trade card (npm run card): devil's-advocate objections plus your own invalidation level. Mentor-shadow trades are for comparison only. Original source: knowledge/mentor/reading/milgram-experiment.md (mentor assignment verbatim; summary is DK 整理).",
+      "limits": "Lab obedience findings are about behaviour under instruction, not a market signal; the mentor's assignment text is only the title.",
+      "destination": "guidance"
+    },
+    {
+      "id": "single-trade-flow",
+      "group": "Execution",
+      "title": "Single-trade execution flow (layer 1 of 3): defence first, then offence",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "external-correct-approach-7-steps"
+      ],
+      "topics": [
+        "Execution",
+        "Stops",
+        "Planning",
+        "Patience"
+      ],
+      "principle": "Analyse objective facts, wait for the market's signal, plan around it, define the defensive level (stop) first, then the attack, set reward/risk, execute and go flat after each exit. This is only layer 1; the foundation is positive expectancy × no ruin × compounding (layer 2 sizing, layer 3 statistics/review).",
+      "application": "Brief (scenario, §2.1 plan) → card §1–§2 → card §4 two stops + §3 hedge → card §6/§7 → card §5 take-profit; sizing via rules caps/card §6/fractional Kelly ≤1/4; validation via readiness + review --week. News is a risk warning more than an entry trigger. Original source: knowledge/external/trading-correct-approach-7-steps.md (user-collected, not mentor).",
+      "limits": "Third-party checklist, author unknown, no performance evidence. Asia/Europe/US session liquidity is not modelled in Alpha. Win-rate claims (e.g. pinbar) say nothing without payoff/expectancy.",
+      "destination": "guidance"
+    },
+    {
+      "id": "toolbox-layers",
+      "group": "Process",
+      "title": "Toolbox by layer (direction/structure/timing · sizing · statistics)",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "dk-toolbox-layers"
+      ],
+      "topics": [
+        "Indicators",
+        "Models",
+        "Sizing",
+        "Review"
+      ],
+      "principle": "Every tool answers one question in one layer (single trade, sizing, method validation); tools never replace positive expectancy × no ruin × compounding.",
+      "application": "Add a tool only for a review-identified gap or after ~30 formal trades with positive expectancy and clean discipline; one at a time; trial on 10–20 practice trades; compare weekly reviews; promote only if expectancy improves; pre-write tools in the plan card. Original source: knowledge/framework/toolbox-layers.md (DK 整理).",
+      "limits": "Status labels reflect Alpha's current usage, not tool validity; indicators can conflict — decide the tie-breaker in advance.",
+      "destination": "guidance"
+    },
+    {
+      "id": "behavior-seven-sins",
+      "group": "Psychology",
+      "title": "Seven sins of the stock market — per-trade behaviour checklist",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-seven-sins",
+        "mentor-short-selling"
+      ],
+      "topics": [
+        "Review",
+        "Behaviour",
+        "Revenge trading",
+        "Overtrading",
+        "Lottery options",
+        "Sizing"
+      ],
+      "principle": "Repeated account damage usually comes from the trader's behaviour, not the trade: sloth (no homework/absent), wrath (revenge after a loss), greed (not taking planned profit; cheap lottery options), envy (chasing others' gains), gluttony (no pause between impulse and order; overtrading, adding to losers), pride (never admitting the error; blaming others), lust (abandoning principles for quick wealth). Check the person clicking the button.",
+      "application": "Every closed own trade carries 七宗罪 tags (JournalEntry.behaviorSins): manual via `npm run paper -- sin --id … --sin wrath,pride`, and ledger-derived candidates from src/options/sins.ts (sloth = no_pre_written_plan; wrath = new trade the same ET day after a losing close within 60 min / same symbol / bigger size / after the daily cap; greed = net debit < $0.25 with ≤7 DTE, or TP alert hit then closed at a loss; envy = chasing / outside entryRange; gluttony = 4th+ open of the day, unplanned_add; pride = ≥2 stop hesitations then a loss; lust = own cap breaches). Weekly review §八之三 counts per sin (week, 30 days); the most frequent 30-day sin is next month's focus. Practice opens record warn_sin_wrath/gluttony/greed as warn tags only. Original source: knowledge/mentor/discipline/seven-sins.md. Short side: chasing a short after a big down candle (做空学 #4, warn tag short_chasing) is the same envy/FOMO pattern; refusing to admit a wrong short (#10) is pride. See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
+      "limits": "Auto tags are candidates from timestamps and prices, not proof of motive; confirm or --remove at review. Absence at the open, FOMO, moved stops, blaming others and ethical lapses are not in the ledger and stay manual. Thresholds (0.25, 7 DTE, 3/day, 60 min) are DK review thresholds, not trading rules; nothing here blocks a trade. Mentor-shadow trades are excluded.",
+      "destination": "reviews"
+    },
+    {
+      "id": "phase2-long-term-position-management",
+      "group": "Exit and exposure",
+      "title": "PHASE 2 ONLY (not active): long-term stock positions managed with options",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "mentor-long-term-position-management"
+      ],
+      "topics": [
+        "Phase 2",
+        "Cash-secured put",
+        "Covered call",
+        "Protective put",
+        "ITM covered call",
+        "Collar"
+      ],
+      "principle": "Holding for years still needs risk management: enter via cash-secured puts only on stocks you are willing to own at the strike (full cash reserved); sell OTM calls on about half the shares; buy protective puts in hostile markets; sell ITM covered calls during sustained narrative headwinds on the part you are willing to sell; collar (short call pays for protective put). Premium is an obligation, not interest; it adjusts risk and cash-flow timing and cannot make a loss disappear.",
+      "application": "Reference only for phase 2 (long-term stock holding, options for hedging). Not enabled in phase 1: Alpha has no execution, sizing or payoff logic for these structures and none is planned now. Preconditions when phase 2 starts: shares held for every short call, strike × 100 × contracts cash reserved for every short put. Naked short calls stay blocked in every phase. Decision: docs/DECISIONS.md 2026-10-17. Original source: knowledge/mentor/phase2/long-term-position-management.md.",
+      "limits": "Uncovered short calls have unlimited loss and remain BLOCKED. Assignment, early exercise, earnings gaps and margin rules are not modelled. Premium income must not be annualised; cumulative cash returned is not a negative cost basis or tax basis. Rolling for small premiums can turn a small trade into a long burden.",
+      "destination": "guidance"
+    },
+    {
+      "id": "phase2-thesis-or-ego",
+      "group": "Psychology",
+      "title": "PHASE 2 review check: holding because the thesis holds, or because you won't admit you were wrong?",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-long-term-position-management",
+        "mentor-short-selling"
+      ],
+      "topics": [
+        "Phase 2",
+        "Review",
+        "Thesis",
+        "Sunk cost",
+        "Pride"
+      ],
+      "principle": "Between a conviction stock and a stuck stock: if the thesis still holds you can manage and wait; if it is broken, no amount of premium turns a bad company into a good investment.",
+      "application": "Phase 2 only: ask at every long-term holding review, judging thesis and position separately (纪律 #19, JournalEntry.reviews[].thesisValid / positionValid). A \"won't admit it\" answer is a manual pride tag (behavior-seven-sins). Not wired into phase-1 tooling. Original source: knowledge/mentor/phase2/long-term-position-management.md (closing question). Same question on the short side: 做空学 #2/#6/#10 (thesis wrong → admit; price separated from thesis → leave; don't bury the account for your ego). See also: knowledge/mentor/discipline/short-selling.md (mentor 做空学) and catalog `short-side-checklist`.",
+      "limits": "Self-assessment; the answer is only as honest as the reviewer. Not an automatic exit rule.",
+      "destination": "reviews"
+    },
+    {
+      "id": "short-side-checklist",
+      "group": "Exit and exposure",
+      "title": "Short-side pre-trade checklist (做空学): short the weak, not the strong; don't chase; survive the timing",
+      "status": "PROCESS_GUIDE",
+      "sources": [
+        "mentor-short-selling"
+      ],
+      "topics": [
+        "Short side",
+        "Relative weakness",
+        "Do not guess the top",
+        "Failed rebound entry",
+        "Short squeeze",
+        "Time risk",
+        "Take profit into panic",
+        "Thesis invalidation"
+      ],
+      "principle": "Short what is already weak and losing its narrative and flows, not the hottest crowded name; 'up too much' is not a reason; enter on failed rebounds to resistance rather than under a big red candle; junk can double before it goes to zero (short interest, low float, gamma, sentiment); being right but two weeks early is the same as being wrong; take profits into panic; pre-write where you are wrong and admit it.",
+      "application": "Bearish plan cards (npm run card -- --dir bear, §9) and short-side paper opens run src/options/shortside.ts shortEntryChecks on daily OHLC: short_vs_strength (close > MA20 > MA50, MA50 rising), short_no_relative_weakness (20-day return not below BOTH SPY and the sector ETF; SECTOR_OF map or --sector), short_chasing (day ≤ −3%, below prior-day low, or ≥ 2 ATR under MA20), short_squeeze_prone (a +10% day in 60 sessions or 20-day realised vol ≥ 80%), short_squeeze_risk_unchecked (no --squeeze-check note), short_expiry_too_short (front DTE < horizon + 14, or time stop after expiry), short_invalidation_not_above_spot, short_data_insufficient. Practice opens record them as warn tags (weekly 门槛校准); every short-side entry stores JournalEntry.shortChecklist; review cards ask the manual items (narrative/flows, peers, price-thesis divergence exit, take profit into panic, admit when wrong). Machine-readable spec with auto-from-daily-OHLC flags for later backtests: knowledge/mentor/discipline/short-selling.rules.json. Original source: knowledge/mentor/discipline/short-selling.md. Related discipline texts (cited, not restated): 纪律 #05, #07, #08, #18, #19 in knowledge/mentor/discipline/discipline-01-20.md.",
+      "limits": "Warn-only: the written plan card remains the only hard requirement for practice; nothing here changes a card verdict. Thresholds are DK review thresholds, untested. The squeeze proxy is not short-interest, float or borrow data. Peers beyond one sector ETF, narrative/flows, divergence exits and panic take-profits are manual (divergence and panic exits are spec-only backtest candidates). Phase 1 bearish views use long puts / put debit spreads only.",
+      "destination": "planner"
+    },
+    {
+      "id": "phase2-short-stock-covered-put",
+      "group": "Exit and exposure",
+      "title": "PHASE 2 REFERENCE ONLY (not enabled): short stock + short put ('covered put') to offset borrow cost",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "mentor-short-selling",
+        "mentor-long-term-position-management"
+      ],
+      "topics": [
+        "Phase 2",
+        "Short stock",
+        "Covered put",
+        "Borrow cost",
+        "Assignment"
+      ],
+      "principle": "Mentor note 做空赚钱: short the stock and sell a covered put so the premium offsets the borrow cost (借刀杀人).",
+      "application": "Recorded only. Not enabled in any phase now: short stock has unlimited upside risk; the short put adds an assignment obligation. Paper opens refuse short stock / covered puts / naked short options even as practice (src/options/paper.ts nakedShortLegs; same rule as the plan card's 定义风险（裸卖）). Phase 1 expresses bearish views via long puts / put debit spreads. Decision: docs/DECISIONS.md 2026-10-17. Original source: knowledge/mentor/discipline/short-selling.md (second note); related: knowledge/mentor/phase2/long-term-position-management.md (short stock ↔ sell puts).",
+      "limits": "A covered put caps the profit at the put strike (assignment buys the shares back there) and gives no protection against an upside squeeze beyond the premium received; borrow fees, recalls, dividends owed and margin are not modelled.",
+      "destination": "guidance"
+    },
+    {
+      "id": "phase2-vix-call-hedge",
+      "group": "Exit and exposure",
+      "title": "PHASE 2 REFERENCE ONLY (not enabled): VIX call options as a hedge against a sudden volatility spike",
+      "status": "MECHANICS_REFERENCE",
+      "sources": [
+        "mentor-premarket-oil-vix",
+        "mentor-long-term-position-management"
+      ],
+      "topics": [
+        "Phase 2",
+        "Hedge",
+        "VIX options",
+        "Volatility"
+      ],
+      "principle": "Mentor premarket video: VIX calls bought in advance can gain when the market drops sharply and fear rises; taking that profit offsets part of the portfolio loss. The insurance has a cost, and the result depends on entry timing, strike and expiry.",
+      "application": "Recorded only as a Phase 2 hedging reference (Phase 2 = long-term holdings, options for hedging). Not enabled now and not part of the practice rules: no paper/practice rule, sizing, roll or exit logic was built for it. Decision: docs/DECISIONS.md 2026-10-18. Original source: knowledge/mentor/premarket-routine/oil-vix-2026-10-18.md (VIX section, last paragraph).",
+      "limits": "VIX options settle to the VRO on expiration morning (AM-settled, see src/options/expire.ts), track VIX futures rather than spot VIX, and the premium decays when no spike comes; timing, strike and expiry decide whether the hedge pays. Transcript not checked word-by-word.",
+      "destination": "guidance"
+    },
+    {
+      "id": "psych-put-price-call-time",
+      "group": "Psychology and evidence",
+      "title": "Call respects time, Put respects price",
+      "status": "CANDIDATE_UNTESTED",
+      "sources": [
+        "mentor-psych-batch"
+      ],
+      "topics": [
+        "Call vs Put",
+        "Expiry vs horizon",
+        "Put strike realism",
+        "Target price"
+      ],
+      "principle": "A long call fails mostly by running out of time; a long put fails mostly by a strike the price will not realistically reach in the window.",
+      "application": "Call time: already enforced by pretrade time_buffer (practice warn_time_buffer) and critique horizon_short. Put price: warn_put_strike_unrealistic when the long put strike is below --target, or (no target) below a 1-standard-deviation move by expiry (leg IV, else 35%); a thesis that declares a lottery is exempt. Verbatim: knowledge/mentor/psychology/options-call-time-put-price.md.",
+      "limits": "1 SD and the 35% default IV are DK defaults, untested. Warn only; never blocks.",
+      "destination": "planner"
+    },
+    {
+      "id": "psych-entry-warn-tags",
+      "group": "Psychology and evidence",
+      "title": "Psychology batch → warn-only entry tags and review questions",
+      "status": "CANDIDATE_UNTESTED",
+      "sources": [
+        "mentor-psych-batch"
+      ],
+      "topics": [
+        "72-hour rule",
+        "Averaging down",
+        "Win-streak sizing",
+        "Day after a big win",
+        "Pyramid units",
+        "Entry window",
+        "Ticker magnetism",
+        "Journal",
+        "Profitable but wrong",
+        "Confidence ratio",
+        "Weekend checklist"
+      ],
+      "principle": "Mentor psychology heuristics become visible reminders, not rules: the written plan card remains the only hard requirement for practice trades.",
+      "application": "src/options/psych.ts psychEntryTags: warn_72h_event, warn_add_to_loser_unconfirmed, warn_second_add_to_loser, warn_pyramid_add_larger, warn_size_up_after_wins, warn_day_after_big_win, warn_put_strike_unrealistic, info_midday_entry, info_ticker_magnetism → practice warnTags (included in 门槛校准) and psychTags on every own entry. Review card: journal answers, 赚钱但做错 candidate, manual questions (size anxiety → shrink; FOMO; outcome bias). Weekly §八之四 confidence ratio. Weekend checklist: docs/ROUTINE_WEEKLY.md. Defaults in PSYCH_LIMITS; decision docs/DECISIONS.md 2026-10-17. Index: knowledge/mentor/psychology/README.md.",
+      "limits": "All thresholds untested (72h, ≥3 wins, ≥1% big-win day, 10-day pyramid window, 10:30–15:00 ET, 1 SD put floor, 2 re-entries). Event data: earnings book + official FOMC/CPI/NFP calendar 2026-10-17→2027-12-31 (knowledge/calendar/major-events-2026-2027.json); other events (bailouts, company news) must be added by hand to data/in/major-events.json.",
+      "destination": "reviews"
+    },
+    {
+      "id": "psych-video-trading-game",
+      "group": "Psychology and evidence",
+      "title": "The Trading Game (1987): loss acceptance, discipline, physical and mental capital",
+      "status": "ILLUSTRATION_ONLY",
+      "sources": [
+        "mentor-video-trading-game"
+      ],
+      "topics": [
+        "Loss acceptance",
+        "Discipline",
+        "Stress",
+        "Physical capital",
+        "Mental capital"
+      ],
+      "principle": "Hate losses but keep them in their place with discipline; most trades may lose if winners are handled well; manage stress and the body.",
+      "application": "DK summary (not verbatim): knowledge/mentor/psychology/video-the-trading-game.md; its DK 整理 maps to the 1%/2% caps, the wrath tag, four-way loss attribution and weekend checklist item 5.",
+      "limits": "Documentary anecdotes; no performance evidence.",
+      "destination": "context"
+    }
+  ],
+  "fields": [
+    {
+      "id": "horizons",
+      "label": "Horizon and holding period",
+      "prompt": "Separate macro horizon, ETF signal timeframe, intended holding period and option expiry."
+    },
+    {
+      "id": "sources",
+      "label": "Sources and clocks",
+      "prompt": "Source IDs/links, observation time, receipt time, revisions and known data gaps."
+    },
+    {
+      "id": "expectations",
+      "label": "Expectations and surprise",
+      "prompt": "What is documented consensus, what is your view, and what is still unknown?"
+    },
+    {
+      "id": "transmission",
+      "label": "Causal chain and alternatives",
+      "prompt": "How does the event reach GLD or IBIT? What else could explain the move?"
+    },
+    {
+      "id": "confirmation",
+      "label": "ETF entry evidence",
+      "prompt": "Specify the traded ETF trigger and available bars; do not substitute an option curve or spot/futures price."
+    },
+    {
+      "id": "contract",
+      "label": "Contract and volatility fit",
+      "prompt": "Identity, expiry, strike, every leg, IV/Greeks clocks, liquidity and why this structure fits the horizon."
+    },
+    {
+      "id": "exposure",
+      "label": "Combined exposure and hedge",
+      "prompt": "Total cost and worst-case assumptions across positions; which shared factor could cause losses together, and which risk does a proposed hedge offset?"
+    },
+    {
+      "id": "invalidation",
+      "label": "Thesis and price exits",
+      "prompt": "Before entry: where/how to exit if wrong, what observable evidence invalidates the thesis and which independent price/exposure trigger applies; state precedence."
+    },
+    {
+      "id": "deadline",
+      "label": "Catalyst and time exit",
+      "prompt": "Before entry: catalyst date/time/zone, review deadline and option exit deadline; avoid indefinite extensions."
+    },
+    {
+      "id": "monitoring",
+      "label": "Overnight and monitoring contingency",
+      "prompt": "What happens during gaps, unavailable quotes or time away? Who can act and when?"
+    },
+    {
+      "id": "costs",
+      "label": "Costs and whole-contract exits",
+      "prompt": "Before entry: planned profit-taking/target where supported, fees known/unknown, bid/ask, slippage, integer quantities and gross versus net target basis."
+    },
+    {
+      "id": "counterevidence",
+      "label": "Counterevidence and no-trade condition",
+      "prompt": "What would change your mind? What missing evidence is enough to wait rather than enter?"
+    }
+  ],
+  "psychology": {
+    "revision": "OWNER_PSYCHOLOGY_20260928_V6",
+    "boundary": "Voluntary reflection only. No score, diagnosis, inferred emotion, position change or automatic save. Question selection is not an admission of a bias.",
+    "biases": [
+      {
+        "id": "confirmation",
+        "title": "Confirmation",
+        "group": "Judgment",
+        "prompt": "What contrary observation did I actively seek, and what did it show?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "anchoring",
+        "title": "Anchoring",
+        "group": "Judgment",
+        "prompt": "Would this decision change if I did not know my purchase price?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "narrative",
+        "title": "Narrative",
+        "group": "Judgment",
+        "prompt": "Which part of this story is observed, and which causal link is still a hypothesis?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "loss-aversion",
+        "title": "Loss aversion",
+        "group": "Losses",
+        "prompt": "Am I changing an exit because of new evidence or because realizing a loss feels difficult?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "sunk-cost",
+        "title": "Sunk cost",
+        "group": "Losses",
+        "prompt": "Ignoring past money and effort, is the remaining exposure justified now?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "disposition",
+        "title": "Disposition effect",
+        "group": "Losses",
+        "prompt": "Are my winner and loser exits consistent with their original plans rather than relief or regret?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "endowment",
+        "title": "Endowment",
+        "group": "Losses",
+        "prompt": "Would I choose this exposure if I did not already own it?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "overconfidence",
+        "title": "Overconfidence",
+        "group": "Success",
+        "prompt": "What is uncertain despite recent wins, and what could invalidate my estimate?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "self-attribution",
+        "title": "Self-attribution",
+        "group": "Success",
+        "prompt": "Did I use the same evidence standard when explaining gains and losses?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "hot-hand",
+        "title": "Hot-hand belief",
+        "group": "Success",
+        "prompt": "Does the next trade have evidence beyond the fact that the last trades won?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "herding",
+        "title": "Herding",
+        "group": "Groups",
+        "prompt": "What is my independent reason beyond what the crowd or a favored trader is doing?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "fomo",
+        "title": "FOMO",
+        "group": "Groups",
+        "prompt": "Would this still qualify without a deadline to catch up with someone else?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "availability",
+        "title": "Availability",
+        "group": "Groups",
+        "prompt": "Is repeated coverage one source being repeated, or independent evidence?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "recency",
+        "title": "Recency",
+        "group": "Time and probability",
+        "prompt": "How does the recent event compare with the relevant longer sample and current regime?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "hindsight",
+        "title": "Hindsight",
+        "group": "Time and probability",
+        "prompt": "What does the original dated note say I knew before the result?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "gamblers-fallacy",
+        "title": "Gambler's fallacy",
+        "group": "Time and probability",
+        "prompt": "What supports a reversal beyond a run of losses? Market returns need not be independent coin flips.",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "outcome",
+        "title": "Outcome bias",
+        "group": "Process and result",
+        "prompt": "Would I assess the same decision process differently if the financial outcome were reversed?",
+        "source": "owner-psychology",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      }
+    ],
+    "prompts": [
+      {
+        "id": "entry-urge",
+        "stage": "Before entry",
+        "title": "Recovery or opportunity?",
+        "text": "Am I trying to recover a loss or catch a missed move? What fresh evidence would support this entry if the previous trade had not happened?"
+      },
+      {
+        "id": "entry-independent",
+        "stage": "Before entry",
+        "title": "Whose conviction?",
+        "text": "If I held no position and had not seen another trader's call, would I choose this exposure? What independent evidence and contrary evidence support my decision?"
+      },
+      {
+        "id": "entry-risk",
+        "stage": "Before entry",
+        "title": "Dollars before upside",
+        "text": "What can the combined position lose under the stated assumptions, including costs and expiry? What is unknown, and can the monitoring plan actually support it?"
+      },
+      {
+        "id": "entry-size-confidence",
+        "stage": "Before entry",
+        "title": "Risk budget or confidence?",
+        "text": "Is the proposed size supported by the existing risk budget, defined loss, costs and evidence, or by a recent winning streak? Could one ordinary loss erase several prior gains?"
+      },
+      {
+        "id": "entry-evidence-or-allegiance",
+        "stage": "Before entry",
+        "title": "Evidence or allegiance?",
+        "text": "Would I interpret the same evidence the same way if the country, government, party or public figure were different? Which part is observed evidence, and which part is political or narrative preference?",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "holding-anchor",
+        "stage": "While holding",
+        "title": "Price anchor or changed evidence?",
+        "text": "Am I waiting only to get back to my entry price? Which original exit conditions are met, and what evidence has actually changed?"
+      },
+      {
+        "id": "holding-change",
+        "stage": "While holding",
+        "title": "Adding, rolling or flipping?",
+        "text": "What new evidence justifies this change, what old result will be realized, and what total exposure and costs follow? Closing one direction does not confirm the opposite."
+      },
+      {
+        "id": "holding-pressure",
+        "stage": "While holding",
+        "title": "Attention and deadline",
+        "text": "Is pressure or fatigue affecting this decision? What is the original time exit, and what happens if I cannot monitor? No personal health details are needed."
+      },
+      {
+        "id": "holding-thesis-change",
+        "stage": "While holding",
+        "title": "Price move or thesis break?",
+        "text": "Is this only an adverse price move, or has a core variable of the original thesis changed? Which dated evidence shows that, and which independent exit conditions are already triggered?"
+      },
+      {
+        "id": "holding-fresh-cash",
+        "stage": "While holding",
+        "title": "Would I buy it fresh today?",
+        "text": "With no current position and fresh cash, would I buy this exact exposure, strike and expiry today after checking remaining time, premium, total exposure and costs? If not, why consider adding, and what original rule governs holding or exit?"
+      },
+      {
+        "id": "holding-pressure-or-weakness",
+        "stage": "While holding",
+        "title": "Pressure or actual weakness?",
+        "text": "Is the market showing only apparent selling pressure, or has price confirmed weakness? What distinguishes a volume classification from effective downward price impact?",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "review-process",
+        "stage": "After a decision",
+        "title": "Process apart from PnL",
+        "text": "Against the original dated plan, what did I follow or deviate from? Record the financial result separately; a profit does not prove good process and a loss does not prove poor process."
+      },
+      {
+        "id": "review-cause",
+        "stage": "After a decision",
+        "title": "Evidence before blame",
+        "text": "Which decisions were controllable, which external problems are documented, and what remains unknown? What specific improvement could be tested prospectively?"
+      },
+      {
+        "id": "review-no-trade",
+        "stage": "After a decision",
+        "title": "Review waiting too",
+        "text": "What evidence supported waiting or rejecting this idea at the time? Do not rewrite that decision because the asset later rose or fell."
+      },
+      {
+        "id": "review-loss-attribution",
+        "stage": "After a decision",
+        "title": "What actually caused this loss?",
+        "text": "Does the dated plan and execution evidence support prediction, execution, entry timing, sizing/risk, instrument mismatch, missed risk updates, incomplete hedge, plan deviation or normal variance? What remains unknown? Do not force a category from the loss alone.",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "entry-total-exposure",
+        "stage": "Before entry",
+        "title": "How many positions are really the same bet?",
+        "text": "If the main market factor moves against this idea, which current positions may lose at the same time? Different tickers need not mean independent risks; what exposure evidence is still missing?",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "entry-euphoria-gate",
+        "stage": "Before entry",
+        "title": "Opportunity or another win?",
+        "text": "Is this a genuinely qualified new setup, or am I continuing because recent profits make me want another trade or loosen standards? Recent wins do not authorize more size, weaker evidence or looser stops. (纪律 #03 Euphoria Gate: after a big win or a win streak this question must be answered before the next entry. Enforced by src/options/discipline.ts euphoriaGate.)",
+        "status": "ENFORCED_GATE"
+      },
+      {
+        "id": "holding-stop-drift",
+        "stage": "While holding",
+        "title": "New evidence or moving the goalpost?",
+        "text": "Am I changing the stop because verified information meets a predefined exceptional event, or because realizing the planned loss feels uncomfortable? The original independent exits remain authoritative.",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "holding-rescue-complexity",
+        "stage": "While holding",
+        "title": "Risk management or rescue attempt?",
+        "text": "Does this proposed hedge/roll/spread/addition have an independent purpose, incremental risk, cost, total exposure and exit, or am I adding complexity to avoid closing the original trade?",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "holding-thesis-position",
+        "stage": "While holding",
+        "title": "Is the thesis valid but this position wrong?",
+        "text": "Could the broader view remain plausible while this strike, expiry, entry, size or structure is no longer appropriate? Which original exits apply, and would any new expression require a fresh plan?",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "holding-rule-exception",
+        "stage": "While holding",
+        "title": "Exception or rationalization?",
+        "text": "Which exact rule am I proposing to break, what new evidence makes this situation materially different from the rule's intended case, what extra risk does the exception add, and when does the exception end?",
+        "status": "REFLECTION_ONLY_NOT_DIAGNOSIS"
+      },
+      {
+        "id": "entry-session-state",
+        "stage": "Before entry",
+        "title": "Am I fit to trade today?",
+        "text": "Self-check before the session: emotion (anger, anxiety, breakup, family argument), sleep, physical health, major life events. Any 'bad' answer → NO_TRADE today. Answers are self-reported and not stored. 纪律 #02 / #20.",
+        "status": "ENFORCED_GATE"
+      },
+      {
+        "id": "entry-market-worth-trading",
+        "stage": "Before entry",
+        "title": "Is the market worth trading today?",
+        "text": "Low volume, unclear direction, choppy two-way sweeps, no trend, poor risk/reward → NO_TRADE. 你不欠市场一笔交易. 纪律 #02.",
+        "status": "ENFORCED_GATE"
+      }
+    ],
+    "adoption": [
+      {
+        "status": "USE_AS_REFLECTION",
+        "title": "Use as questions",
+        "text": "Counterevidence, independent judgment, original-plan comparison, recovery pressure, ticker attachment, costs, monitoring and separate process/outcome review."
+      },
+      {
+        "status": "CANDIDATE_UNTESTED",
+        "title": "Keep as inactive proposals",
+        "text": "72 hours, both conflicting 30/30 versions, one loser addition, adding winners, breakout/retest timing, final-30-second claims, 0DTE one-and-done, an unspecified daily loss limit, two hesitations, realized-profit redeployment and Rule 650 exception discipline. None is an active rule. EUPHORIA_GATE is reflection only. Update 2026-10-14: the canonical mentor texts resolved these items: both 30/30 versions (止损学), 0DTE one-and-done, the daily loss limit (user-confirmed 2%), two hesitations, the one loser addition (planned adds) and EUPHORIA_GATE (纪律系列). They are now enforced in src/options/stops.ts and discipline.ts. 72 hours, breakout/retest, final-30-second claims, realized-profit redeployment and Rule 650 remain candidates."
+      },
+      {
+        "status": "NOT_ADOPTED_AS_FACT",
+        "title": "Do not adopt as facts or targets",
+        "text": "Universal weekly returns, unsupported win rates, guaranteed options protection, personality or cultural judgments, and unverified manipulation accusations."
+      }
+    ]
+  },
+  "strategyStatus": "UNVALIDATED",
+  "activeRuleCount": 0,
+  "executionAllowed": false,
+  "boundary": "Educational references and owner-authored notes. No new trading rule, source collection or study enrollment."
+}

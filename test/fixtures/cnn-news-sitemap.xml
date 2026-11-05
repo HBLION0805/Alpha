@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>https://www.cnn.com/2026/10/14/politics/live-news/midterm-election-congress</loc>
+      <lastmod>2026-10-15T01:01:06.995000+00:00</lastmod>
+      <news:news>
+         <news:publication>
+            <news:name>CNN</news:name>
+            <news:language>en</news:language>
+         </news:publication>
+         <news:publication_date>2026-10-14T12:00:05.969Z</news:publication_date>
+         <news:title>Voters press Talarico on economy, healthcare and mudslinging at Texas town hall</news:title>
+      </news:news>
+      <image:image>
+         <image:loc>https://media.cnn.com/api/v1/images/stellar/prod/tr208937.JPG?c=original/w_800</image:loc>
+      </image:image>
+   </url><url>
+      <loc>https://www.cnn.com/2026/10/14/world/video/malcom-kerr-lebanon-middle-east-murder-kim-ghattas-intv-101406seg1-cnni-world-fast</loc>
+      <lastmod>2026-10-15T00:35:48.533000+00:00</lastmod>
+      <news:news>
+         <news:publication>
+            <news:name>CNN</news:name>
+            <news:language>en</news:language>
+         </news:publication>
+         <news:publication_date>2026-10-15T00:35:48.533Z</news:publication_date>
+         <news:title>New book investigates unsolved 1984 murder in Lebanon</news:title>
+      </news:news>
+   </url><url>
+      <loc>https://www.cnn.com/2026/10/14/us/six-flags-georgia-incident-death-wwk-hnk</loc>
+      <lastmod>2026-10-15T00:30:25.930000+00:00</lastmod>
+      <news:news>
+         <news:publication>
+            <news:name>CNN</news:name>
+            <news:language>en</news:language>
+         </news:publication>
+         <news:publication_date>2026-10-14T08:44:54.052Z</news:publication_date>
+         <news:title>What we know about the fatal roller coaster incident at Six Flags Over Georgia</news:title>
+      </news:news>
+      <image:image>
+         <image:loc>https://media.cnn.com/api/v1/images/stellar/prod/23064723-six-flags-ga-16x9-thumb.jpg?c=original/w_800</image:loc>
+      </image:image>
+   </url></urlset>

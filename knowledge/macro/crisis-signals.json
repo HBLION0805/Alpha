@@ -1,0 +1,194 @@
+{
+  "note": "Crisis path tracker (危机路径追踪) signal definitions, from knowledge/macro/crisis-compare-2026-10-19/ §8 (确认/证伪信号清单) plus the user's 2026-10-19 spec. Semi-monthly standalone report (npm run crisis-path), display only: never generates trades and never feeds NO_TRADE, sizing, 48h/72h or 能不能睡. Thresholds are the report's empirical warning lines, not trading rules. near = 接近. maxAgeDays: older data = 数据过期 (treated like no data: the previous state is kept).",
+  "report": "knowledge/macro/crisis-compare-2026-10-19/crisis-compare-2026-10-19.md",
+  "paths": {
+    "2007": {
+      "label": "2007 信用危机路径",
+      "short": "2007"
+    },
+    "1973": {
+      "label": "1973 滞胀路径",
+      "short": "1973"
+    },
+    "1929": {
+      "label": "1929 泡沫破裂路径",
+      "short": "1929"
+    },
+    "2020": {
+      "label": "2020 外生冲击路径",
+      "short": "2020"
+    }
+  },
+  "signals": [
+    {
+      "id": "hy_oas",
+      "path": "2007",
+      "label": "高收益债利差 HY OAS",
+      "kind": "last_gt",
+      "series": "fred:BAMLH0A0HYM2",
+      "threshold": 4.5,
+      "near": 4.0,
+      "unit": "%",
+      "maxAgeDays": 10,
+      "reportRef": "§8.1 HY OAS 持续 > 4.5%"
+    },
+    {
+      "id": "claims_4wk",
+      "path": "2007",
+      "label": "初请失业金 4 周均值",
+      "kind": "avg_gt",
+      "n": 4,
+      "series": "fred:ICSA",
+      "threshold": 250000,
+      "near": 230000,
+      "unit": "人",
+      "maxAgeDays": 21,
+      "reportRef": "§8.1 4 周均值 > 25 万"
+    },
+    {
+      "id": "sahm",
+      "path": "2007",
+      "label": "Sahm 规则",
+      "kind": "last_gte",
+      "series": "fred:SAHMREALTIME",
+      "threshold": 0.5,
+      "near": 0.3,
+      "unit": "pp",
+      "maxAgeDays": 75,
+      "reportRef": "§8.1 Sahm ≥ 0.50"
+    },
+    {
+      "id": "banks_break",
+      "path": "2007",
+      "label": "金融 XLF / 地区银行 KRE 破位",
+      "kind": "break_200dma_or_dd",
+      "symbols": [
+        "XLF",
+        "KRE"
+      ],
+      "threshold": -15,
+      "near": -10,
+      "unit": "% 距 52 周高点",
+      "maxAgeDays": 7,
+      "reportRef": "§8.1 XLF/KRE 破位、银行股先于大盘破位（用户：跌破 200 日均线或距 52 周高点 −15%）"
+    },
+    {
+      "id": "cmbs",
+      "path": "2007",
+      "label": "CMBS 违约率（Trepp，手工录入）",
+      "kind": "manual_rising",
+      "threshold": 9.0,
+      "near": 8.0,
+      "unit": "%",
+      "maxAgeDays": 75,
+      "readings": [
+        {
+          "date": "2025-09-30",
+          "v": 7.23,
+          "source": "Trepp（报告 §6.1：一年前 7.23%）"
+        },
+        {
+          "date": "2026-09-30",
+          "v": 8.02,
+          "source": "Trepp CMBS 违约报告 2026-09（报告 §6.1）"
+        }
+      ],
+      "reportRef": "§8.1 CMBS 违约率 > 9%，且继续上升；接近 = ≥ 8% 且比上次上升"
+    },
+    {
+      "id": "wti_front",
+      "path": "1973",
+      "label": "WTI 近月合约持续 > 110",
+      "kind": "sustained_gt",
+      "n": 5,
+      "series": "wti_front",
+      "threshold": 110,
+      "near": 105,
+      "unit": "$",
+      "maxAgeDays": 7,
+      "reportRef": "§8.2 持续 > $110–115（超过 2026-04 高点 $114.58）；持续 = 最近 5 个收盘都在上方"
+    },
+    {
+      "id": "core_cpi_3m",
+      "path": "1973",
+      "label": "核心 CPI 3 个月年化",
+      "kind": "ann3m_gt",
+      "series": "fred:CPILFESL",
+      "threshold": 4.0,
+      "near": 3.5,
+      "unit": "%",
+      "maxAgeDays": 75,
+      "reportRef": "§8.2 核心 3 个月年化持续 > 4%"
+    },
+    {
+      "id": "be5y",
+      "path": "1973",
+      "label": "5 年盈亏平衡通胀 T5YIE",
+      "kind": "last_gt",
+      "series": "fred:T5YIE",
+      "threshold": 2.75,
+      "near": 2.6,
+      "unit": "%",
+      "maxAgeDays": 10,
+      "reportRef": "§8.2 > 2.75–3.0%"
+    },
+    {
+      "id": "curve_3m10y",
+      "path": "1973",
+      "label": "3m10y 再度倒挂 T10Y3M",
+      "kind": "last_lt",
+      "series": "fred:T10Y3M",
+      "threshold": 0,
+      "near": 0.25,
+      "unit": "pp",
+      "maxAgeDays": 10,
+      "reportRef": "§8.2 因前端加息再度倒挂"
+    },
+    {
+      "id": "stocks_bonds_down",
+      "path": "1973",
+      "label": "股债双杀 SPY 与 TLT 20 日都跌",
+      "kind": "both_down",
+      "symbols": [
+        "SPY",
+        "TLT"
+      ],
+      "n": 20,
+      "threshold": 0,
+      "near": 1,
+      "unit": "% 20 日",
+      "maxAgeDays": 7,
+      "reportRef": "§8.2 股债双杀（用户：SPY 与 TLT 20 日都为负）；接近 = 一个为负、另一个 < +1%"
+    },
+    {
+      "id": "ai_theme_break",
+      "path": "1929",
+      "label": "主题集中破裂（QQQ / NVDA / CRWV 距高点）+ 信用压力",
+      "kind": "dd_any",
+      "symbols": [
+        "QQQ",
+        "NVDA",
+        "CRWV"
+      ],
+      "threshold": -20,
+      "near": -15,
+      "unit": "% 距 52 周高点",
+      "maxAgeDays": 7,
+      "reportRef": "§8.3 QQQ/XLK 自高点 > 20%，AI 龙头与 AI 基建同步破位；用户：主题破裂 + 信用压力。触发 = 任一 ≤ −20% 且 HY OAS 触发（> 4.5%）；只有主题破位 = 接近（CAPE 40.7 为背景）",
+      "requires": "hy_oas"
+    },
+    {
+      "id": "vix_spike",
+      "path": "2020",
+      "label": "VIX 10 天内从 < 20 急升到 > 40",
+      "kind": "vix_spike",
+      "series": "yahoo:^VIX",
+      "n": 10,
+      "threshold": 40,
+      "near": 30,
+      "unit": "",
+      "maxAgeDays": 7,
+      "reportRef": "用户：外生冲击，VIX 10 个交易日内由 < 20 升到 > 40；接近 = VIX ≥ 30"
+    }
+  ]
+}

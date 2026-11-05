@@ -1,0 +1,2412 @@
+//@version=6
+indicator("K线阅读 · Bzzb", overlay=true, max_labels_count=500, max_lines_count=100, max_bars_back=350)
+
+MAX_OFF = 349
+Z95   = 1.96
+Z95SQ = 3.8416
+SIG_MIN_N = 20
+PANEL_CELL_W = 14
+
+showPatterns = true
+showSR       = true
+showDiv      = true
+showChartPat = true
+showOi       = true
+showPanel    = true
+showPlan     = true
+
+srCount    = 2
+srMergeAtr = 0.5
+posNearAtr = 1.0
+
+showTL     = true
+triMaxBars = 30
+touchGap   = 4
+tlMinGap   = 5
+tlMaxViol  = 0
+tlSwitchMul = 2.0
+tlHoldMul   = 6.0
+tlStaleMul = 3.0
+tlTouchTol  = 0.3
+tlMaxPierce = 1
+tlEvenTouch = true
+tlMinTouch  = 3
+tlRefine    = true
+tlFreshBars = 60
+tlMaxDistAtr = 6.0
+tlProjBars = 0
+
+showGate    = true
+gateHard    = true
+gateFlatAtr = 0.5
+
+showTD      = true
+
+rsiLen   = 14
+divRsiHi = 60
+divRsiLo = 40
+macdFast = 12
+macdSlow = 26
+macdSig  = 9
+kdjLen   = 9
+kSmooth  = 3
+dSmooth  = 3
+bollLen  = 20
+bollMult = 2.0
+volMALen = 20
+oiLen    = 3
+oiMinPct = 0.3
+
+dojiThr    = 0.1
+shadowMult = 2.0
+bigMult    = 1.5
+swpPierceMin = 0.25
+swpMinBars   = 12
+
+patTolAtr = 0.5
+patMinAtr = 0.8
+hnsSymTol = 0.5
+
+g7 = "风险 / 仓位（结构止损反推仓位）"
+showRisk = true
+costPct = input.float(0.07, "来回成本%", minval=0, maxval=2.0, step=0.01, group=g7)
+riskPct  = input.float(1.0, "单笔风险%", minval=0.1, maxval=5.0, step=0.1, group=g7)
+levMult  = input.int(3, "杠杆倍数", minval=1, maxval=100, group=g7)
+minStopAtr = 0.5
+minPlanRR = 1.0
+stopBufAtr = 0.2
+
+staleMult = 3
+chopDamp  = 0.4
+momMaxAge = 30
+tightAtr  = 0.8
+wideAtr   = 6.0
+showLastN = 300
+lblKeep   = 15
+lblStagGap= 12
+minGap    = 12
+lblMinGap = 5
+dedupMult = 8
+showEnv = true
+envLen  = 55
+envMult = 4.0
+envTrapWin = 10
+tradeStatWin = 50
+
+pnlLum  = color.r(chart.bg_color) * 0.299 + color.g(chart.bg_color) * 0.587 + color.b(chart.bg_color) * 0.114
+pnlDark = pnlLum < 128
+pnlTxt  = pnlDark ? color.white : color.black
+pnlA(a) => pnlDark ? math.max(a - 20, 0) : a
+
+tfSec    = timeframe.in_seconds()
+autoFast = tfSec <= 900 ? 9  : tfSec <= 3600 ? 12 : tfSec <= 14400 ? 20  : tfSec <= 86400 ? 20  : 10
+autoMid  = tfSec <= 900 ? 21 : tfSec <= 3600 ? 26 : tfSec <= 14400 ? 50  : tfSec <= 86400 ? 50  : 30
+autoSlow = tfSec <= 900 ? 55 : tfSec <= 3600 ? 60 : tfSec <= 14400 ? 100 : tfSec <= 86400 ? 200 : 60
+autoSw   = tfSec <= 900 ? 5  : tfSec <= 3600 ? 6  : tfSec <= 14400 ? 8   : tfSec <= 86400 ? 10  : 12
+
+effLenFast = autoFast
+effLenMid  = autoMid
+effLenSlow = autoSlow
+effSwingL  = autoSw
+effSwingR  = effSwingL
+effMaxPierce = tlMaxPierce + (tfSec <= 900 ? 2 : tfSec <= 14400 ? 1 : 0)
+
+biasBg(b)  => b > 0 ? color.new(#26a69a, pnlA(70)) : b < 0 ? color.new(#ef5350, pnlA(70)) : color.new(color.gray, pnlA(80))
+patColor(b) => b > 0 ? color.new(#26a69a, 0) : b < 0 ? color.new(#ef5350, 0) : color.new(color.gray, 0)
+RNEED_INF = 1000000.0
+rrFmt(r) => na(r) ? "无" : r > 99 ? "1:99+" : "1:" + str.tostring(r, "#.#")
+
+f_fitCell(base, mark, allowed) =>
+    string one = base + mark
+    string r = na
+    if str.length(one) <= PANEL_CELL_W
+        r := one
+    else if str.length(base) <= PANEL_CELL_W and str.length(mark) <= PANEL_CELL_W
+        r := base + "\n" + mark
+    else
+        r := allowed ? base : "未放行"
+    r
+
+findNeck(b1, b2, bars, prices, bool wantMin) =>
+    float nk = na
+    if array.size(bars) > 0
+        for i = 0 to array.size(bars) - 1
+            bb = array.get(bars, i)
+            if bb > b1 and bb < b2
+                pp = array.get(prices, i)
+                nk := na(nk) ? pp : (wantMin ? math.min(nk, pp) : math.max(nk, pp))
+    nk
+
+f_hnsSym(bL, bH, bR, float tol) =>
+    int lSpan = bH - bL
+    int rSpan = bR - bH
+    lSpan > 0 and rSpan > 0 and math.abs(lSpan - rSpan) <= tol * math.max(lSpan, rSpan)
+
+detectTop(hp, hb, lp, lb, tolAbs, minAmp, maxSpan, hnsTol) =>
+    string txt = ""
+    float neck = na
+    float pkPat = na
+    bool symFail = false
+    int n = array.size(hp)
+    if n >= 3
+        h0 = array.get(hp, n - 3)
+        h1 = array.get(hp, n - 2)
+        h2 = array.get(hp, n - 1)
+        b0 = array.get(hb, n - 3)
+        b1 = array.get(hb, n - 2)
+        b2 = array.get(hb, n - 1)
+        bool spanOK   = (b2 - b0) <= maxSpan
+        bool isHS     = spanOK and h1 > h0 and h1 > h2 and math.abs(h0 - h2) < tolAbs * 2.0 and (h1 - math.max(h0, h2)) >= minAmp
+        bool isTriple = spanOK and math.abs(h0 - h1) < tolAbs and math.abs(h1 - h2) < tolAbs and math.abs(h0 - h2) < tolAbs
+        symFail      := isHS and not f_hnsSym(b0, b1, b2, hnsTol)
+        if isHS
+            txt   := "头肩顶"
+            neck  := findNeck(b0, b2, lb, lp, true)
+            pkPat := h1
+        else if isTriple
+            txt   := "三重顶"
+            neck  := findNeck(b0, b2, lb, lp, true)
+            pkPat := math.max(math.max(h0, h1), h2)
+    if txt != "" and na(neck)
+        txt := ""
+    if txt == "" and n >= 2
+        hh1 = array.get(hp, n - 2)
+        hh2 = array.get(hp, n - 1)
+        bb1 = array.get(hb, n - 2)
+        bb2 = array.get(hb, n - 1)
+        if math.abs(hh1 - hh2) < tolAbs and (bb2 - bb1) <= maxSpan
+            txt   := "双顶"
+            neck  := findNeck(bb1, bb2, lb, lp, true)
+            pkPat := math.max(hh1, hh2)
+    if txt != "" and not na(neck) and pkPat - neck < minAmp
+        txt  := ""
+        neck := na
+    if symFail and txt == "头肩顶"
+        txt  := ""
+        neck := na
+    [txt, neck, pkPat]
+
+detectBot(lp, lb, hp, hb, tolAbs, minAmp, maxSpan, hnsTol) =>
+    string txt = ""
+    float neck = na
+    float pkPat = na
+    bool symFail = false
+    int n = array.size(lp)
+    if n >= 3
+        l0 = array.get(lp, n - 3)
+        l1 = array.get(lp, n - 2)
+        l2 = array.get(lp, n - 1)
+        c0 = array.get(lb, n - 3)
+        c1 = array.get(lb, n - 2)
+        c2 = array.get(lb, n - 1)
+        bool spanOK   = (c2 - c0) <= maxSpan
+        bool isHS     = spanOK and l1 < l0 and l1 < l2 and math.abs(l0 - l2) < tolAbs * 2.0 and (math.min(l0, l2) - l1) >= minAmp
+        bool isTriple = spanOK and math.abs(l0 - l1) < tolAbs and math.abs(l1 - l2) < tolAbs and math.abs(l0 - l2) < tolAbs
+        symFail      := isHS and not f_hnsSym(c0, c1, c2, hnsTol)
+        if isHS
+            txt   := "头肩底"
+            neck  := findNeck(c0, c2, hb, hp, false)
+            pkPat := l1
+        else if isTriple
+            txt   := "三重底"
+            neck  := findNeck(c0, c2, hb, hp, false)
+            pkPat := math.min(math.min(l0, l1), l2)
+    if txt != "" and na(neck)
+        txt := ""
+    if txt == "" and n >= 2
+        ll1 = array.get(lp, n - 2)
+        ll2 = array.get(lp, n - 1)
+        cc1 = array.get(lb, n - 2)
+        cc2 = array.get(lb, n - 1)
+        if math.abs(ll1 - ll2) < tolAbs and (cc2 - cc1) <= maxSpan
+            txt   := "双底"
+            neck  := findNeck(cc1, cc2, hb, hp, false)
+            pkPat := math.min(ll1, ll2)
+    if txt != "" and not na(neck) and neck - pkPat < minAmp
+        txt  := ""
+        neck := na
+    if symFail and txt == "头肩底"
+        txt  := ""
+        neck := na
+    [txt, neck, pkPat]
+
+emaFast = ta.ema(close, effLenFast)
+emaMid  = ta.ema(close, effLenMid)
+emaSlow = ta.ema(close, effLenSlow)
+bullStack = emaFast > emaMid and emaMid > emaSlow
+bearStack = emaFast < emaMid and emaMid < emaSlow
+
+atrVal = ta.atr(14)
+envBas = ta.ema(close, envLen)
+envAtr = ta.atr(envLen)
+envUp  = envBas + envMult * envAtr
+envLo  = envBas - envMult * envAtr
+rsiVal = ta.rsi(close, rsiLen)
+[macdLine, sigLine, _] = ta.macd(close, macdFast, macdSlow, macdSig)
+
+rsvRaw = ta.stoch(close, high, low, kdjLen)
+rsv    = na(rsvRaw) ? 50.0 : rsvRaw
+var float kVal = na
+var float dVal = na
+pk = na(kVal) ? 50.0 : kVal
+pd = na(dVal) ? 50.0 : dVal
+kVal := pk * (1.0 - 1.0 / kSmooth) + rsv  * (1.0 / kSmooth)
+dVal := pd * (1.0 - 1.0 / dSmooth) + kVal * (1.0 / dSmooth)
+
+bollBasis = ta.sma(close, bollLen)
+bollDev   = bollMult * ta.stdev(close, bollLen)
+bollUp    = bollBasis + bollDev
+bollLo    = bollBasis - bollDev
+bandwidth = (bollUp - bollLo) / bollBasis
+bwLow     = ta.lowest(bandwidth, 120)
+bwHigh    = ta.highest(bandwidth, 120)
+bollSqueeze = bandwidth <= bwLow + (bwHigh - bwLow) * 0.2
+
+volMA    = ta.sma(volume, volMALen)
+hasVol   = not na(volume) and not na(volMA) and volMA > 0
+volRatio = hasVol ? volume / volMA : 1.0
+volUp    = close > close[1]
+volBias  = not hasVol ? 0 : (volRatio > 1.3 and volUp) ? 1 : (volRatio > 1.3 and close < close[1]) ? -1 : 0
+
+oiSym    = syminfo.prefix + ":" + syminfo.ticker + "_OI"
+oiRaw    = request.security(oiSym, timeframe.period, close, lookahead=barmerge.lookahead_off, ignore_invalid_symbol=true)
+oiHave   = not na(oiRaw) and not na(oiRaw[oiLen]) and oiRaw[oiLen] > 0
+oiOK     = showOi and oiHave
+oiChgPct = oiOK ? (oiRaw - oiRaw[oiLen]) / oiRaw[oiLen] * 100.0 : na
+oiPxUp   = close > close[oiLen]
+oiPxDn   = close < close[oiLen]
+oiUp     = oiOK and oiChgPct > 0 and oiChgPct >= oiMinPct
+oiBias   = not oiOK ? 0 : oiUp and oiPxUp ? 1 : oiUp and oiPxDn ? -1 : 0
+
+body    = math.abs(close - open)
+rng     = high - low
+upSh    = high - math.max(close, open)
+loSh    = math.min(close, open) - low
+isBull  = close > open
+isBear  = close < open
+bodyAvg = ta.sma(body, 14)
+
+var label[] lblPool = array.new_label()
+var int[]   lblPoolP = array.new_int()
+var int[]   lblPoolA = array.new_int()
+var float[] lblPoolR = array.new_float()
+LP_NECK = 6
+LP_SWP  = 5
+LP_DIV  = 4
+LP_ENV  = 3
+LP_PAT  = 2
+LP_TD   = 1
+
+f_lblClashP(b) =>
+    int best = -1
+    if lblMinGap > 0 and array.size(lblPool) > 0
+        for i = 0 to array.size(lblPool) - 1
+            int lx = label.get_x(array.get(lblPool, i))
+            if lx != b and math.abs(b - lx) < lblMinGap
+                best := math.max(best, array.get(lblPoolP, i))
+    best
+
+f_poolReject(prio) =>
+    bool rej = false
+    if array.size(lblPoolP) > 0 and array.size(lblPool) >= lblKeep
+        int minP = array.get(lblPoolP, 0)
+        if array.size(lblPoolP) > 1
+            for i = 1 to array.size(lblPoolP) - 1
+                minP := math.min(minP, array.get(lblPoolP, i))
+        rej := prio < minP
+    rej
+
+LBL_BASE_ATR   = 0.5
+LBL_STEP_ATR   = 1.15
+LBL_MAXOUT_ATR = 2.8
+hiClr = ta.highest(high, 5)
+loClr = ta.lowest(low, 5)
+
+f_stagYX(bx, isAbv, refPx, exI, exClash) =>
+    float yBase = isAbv ? refPx + atrVal * LBL_BASE_ATR : refPx - atrVal * LBL_BASE_ATR
+    float ext   = na
+    if lblStagGap > 0 and array.size(lblPool) > 0
+        for i = 0 to array.size(lblPool) - 1
+            if i != exI and array.get(lblPoolA, i) == (isAbv ? 1 : 0)
+                label lbS = array.get(lblPool, i)
+                bool skip = exClash and label.get_x(lbS) != bx and math.abs(bx - label.get_x(lbS)) < lblMinGap
+                if not skip and math.abs(bx - label.get_x(lbS)) < lblStagGap
+                    float ly = label.get_y(lbS)
+                    ext := na(ext) ? ly : isAbv ? math.max(ext, ly) : math.min(ext, ly)
+    float step = atrVal * LBL_STEP_ATR
+    float y = na(ext) ? yBase : isAbv ? (yBase < ext + step ? ext + step : yBase) : (yBase > ext - step ? ext - step : yBase)
+    float lim = atrVal * LBL_MAXOUT_ATR
+    isAbv ? (y > refPx + lim ? na : y) : (y < refPx - lim ? na : y)
+f_stagY(bx, isAbv, refPx) =>
+    f_stagYX(bx, isAbv, refPx, -1, false)
+f_samePx(a, b) =>
+    na(a) and na(b) ? true : not na(a) and not na(b) and math.abs(a - b) <= syminfo.mintick / 2
+f_lblRelayout(bx, isAbv, refPx, exI) =>
+    float step = atrVal * LBL_STEP_ATR
+    float lim  = atrVal * LBL_MAXOUT_ATR
+    idx  = array.new_int(0)
+    anch = array.new_float(0)
+    base = array.new_float(0)
+    if lblStagGap > 0 and array.size(lblPool) > 0
+        for i = 0 to array.size(lblPool) - 1
+            if i != exI and array.get(lblPoolA, i) == (isAbv ? 1 : 0) and math.abs(bx - label.get_x(array.get(lblPool, i))) < lblStagGap
+                float rp = array.get(lblPoolR, i)
+                array.push(idx, i)
+                array.push(anch, rp)
+                array.push(base, isAbv ? rp + atrVal * LBL_BASE_ATR : rp - atrVal * LBL_BASE_ATR)
+    array.push(idx, -1)
+    array.push(anch, refPx)
+    array.push(base, isAbv ? refPx + atrVal * LBL_BASE_ATR : refPx - atrVal * LBL_BASE_ATR)
+    ord  = array.sort_indices(base, isAbv ? order.ascending : order.descending)
+    ys   = array.new_float(array.size(idx), na)
+    float ext = na
+    bool ok = true
+    for k = 0 to array.size(ord) - 1
+        int   j  = array.get(ord, k)
+        float yb = array.get(base, j)
+        float y  = na(ext) ? yb : isAbv ? (yb < ext + step ? ext + step : yb) : (yb > ext - step ? ext - step : yb)
+        float a  = array.get(anch, j)
+        if isAbv ? y > a + lim : y < a - lim
+            ok := false
+            break
+        array.set(ys, j, y)
+        ext := y
+    float out = na
+    if ok
+        for k = 0 to array.size(idx) - 1
+            int i = array.get(idx, k)
+            if i >= 0
+                label.set_y(array.get(lblPool, i), array.get(ys, k))
+            else
+                out := array.get(ys, k)
+    out
+
+f_pushLbl(lb, prio, isAbv, refPx) =>
+    int  b      = label.get_x(lb)
+    bool drop   = false
+    int  clashP = f_lblClashP(b)
+    if clashP >= 0
+        if prio > clashP
+            if na(f_stagYX(b, isAbv, refPx, -1, true))
+                label.delete(lb)
+                drop := true
+            else
+                for i = array.size(lblPool) - 1 to 0
+                    int lx = label.get_x(array.get(lblPool, i))
+                    if lx != b and math.abs(b - lx) < lblMinGap
+                        label.delete(array.remove(lblPool, i))
+                        array.remove(lblPoolP, i)
+                        array.remove(lblPoolA, i)
+                        array.remove(lblPoolR, i)
+        else
+            label.delete(lb)
+            drop := true
+    else if f_poolReject(prio)
+        label.delete(lb)
+        drop := true
+    if not drop
+        float yFix = f_stagY(b, isAbv, refPx)
+        if na(yFix)
+            int mi = -1
+            int mp = 0
+            if lblStagGap > 0 and array.size(lblPool) > 0
+                for i = 0 to array.size(lblPool) - 1
+                    if array.get(lblPoolA, i) == (isAbv ? 1 : 0) and math.abs(b - label.get_x(array.get(lblPool, i))) < lblStagGap
+                        int pi = array.get(lblPoolP, i)
+                        if mi < 0 or pi < mp
+                            mp := pi
+                            mi := i
+            if mi >= 0 and prio > mp
+                float yTry = f_lblRelayout(b, isAbv, refPx, mi)
+                if not na(yTry)
+                    label.delete(array.remove(lblPool, mi))
+                    array.remove(lblPoolP, mi)
+                    array.remove(lblPoolA, mi)
+                    array.remove(lblPoolR, mi)
+                    yFix := yTry
+        if na(yFix)
+            label.delete(lb)
+            drop := true
+        else
+            label.set_y(lb, yFix)
+    if not drop
+        array.push(lblPool, lb)
+        array.push(lblPoolP, prio)
+        array.push(lblPoolA, isAbv ? 1 : 0)
+        array.push(lblPoolR, refPx)
+        if array.size(lblPool) > lblKeep
+            int worst = 0
+            for i = 1 to array.size(lblPoolP) - 1
+                if array.get(lblPoolP, i) < array.get(lblPoolP, worst)
+                    worst := i
+            label.delete(array.remove(lblPool, worst))
+            array.remove(lblPoolP, worst)
+            array.remove(lblPoolA, worst)
+            array.remove(lblPoolR, worst)
+    lb
+f_lblDedup(txt, dupWin, prios) =>
+    int  lastX = na
+    bool dup   = false
+    if array.size(lblPool) > 0
+        for i = 0 to array.size(lblPool) - 1
+            if array.includes(prios, array.get(lblPoolP, i))
+                label lbD = array.get(lblPool, i)
+                int lx = label.get_x(lbD)
+                lastX := na(lastX) ? lx : math.max(lastX, lx)
+                if txt != "" and bar_index - lx < dupWin and label.get_text(lbD) == txt
+                    dup := true
+    [lastX, dup]
+
+var int[] LBL_GAP_PAT    = array.from(LP_PAT, LP_ENV, LP_SWP)
+var int[] LBL_GAP_ENV    = array.from(LP_ENV, LP_SWP)
+var int[] LBL_GAP_SWP    = array.from(LP_SWP)
+var int[] LBL_NECK_PRIOS = array.from(LP_NECK)
+
+if barstate.isconfirmed and array.size(lblPool) > 0
+    for i = array.size(lblPool) - 1 to 0
+        label lbOld = array.get(lblPool, i)
+        int   xOld  = label.get_x(lbOld)
+        if last_bar_index - xOld >= showLastN
+            label.delete(lbOld)
+            array.remove(lblPool, i)
+            array.remove(lblPoolP, i)
+            array.remove(lblPoolA, i)
+            array.remove(lblPoolR, i)
+
+ph = ta.pivothigh(high, effSwingL, effSwingR)
+pl = ta.pivotlow(low,  effSwingL, effSwingR)
+
+var float lastPH = na
+var float lastPL = na
+
+var float[] phPrices = array.new_float()
+var int[]   phBars   = array.new_int()
+var float[] phRsi    = array.new_float()
+var float[] plPrices = array.new_float()
+var int[]   plBars   = array.new_int()
+var float[] plRsi    = array.new_float()
+
+var int    lastDivBias = 0
+var int    lastDivBar  = na
+
+bool divTopRaw = false
+bool divBotRaw = false
+if not na(ph) and array.size(phPrices) > 0
+    qTp = array.get(phPrices, array.size(phPrices) - 1)
+    qTr = array.get(phRsi,    array.size(phRsi)    - 1)
+    pTr = rsiVal[effSwingR]
+    divTopRaw := showDiv and not na(pTr) and not na(qTr) and ph > qTp and pTr < qTr and qTr >= divRsiHi
+if not na(pl) and array.size(plPrices) > 0
+    qBp = array.get(plPrices, array.size(plPrices) - 1)
+    qBr = array.get(plRsi,    array.size(plRsi)    - 1)
+    pBr = rsiVal[effSwingR]
+    divBotRaw := showDiv and not na(pBr) and not na(qBr) and pl < qBp and pBr > qBr and qBr <= divRsiLo
+
+if not na(ph) and barstate.isconfirmed
+    lastPH := ph
+    array.push(phPrices, ph)
+    array.push(phBars, bar_index - effSwingR)
+    array.push(phRsi, rsiVal[effSwingR])
+    if array.size(phPrices) > 12
+        array.shift(phPrices)
+        array.shift(phBars)
+        array.shift(phRsi)
+    if divTopRaw
+        lastDivBias := -1
+        lastDivBar  := bar_index
+        if showDiv and (last_bar_index - (bar_index - effSwingR)) < showLastN
+            float yDvT = f_stagY(bar_index - effSwingR, true, ph)
+            f_pushLbl(label.new(bar_index - effSwingR, yDvT, "涨势乏力↓", style=label.style_label_down, color=color.new(color.orange, 0), textcolor=color.white, size=size.tiny), LP_DIV, true, ph)
+
+if not na(pl) and barstate.isconfirmed
+    lastPL := pl
+    array.push(plPrices, pl)
+    array.push(plBars, bar_index - effSwingR)
+    array.push(plRsi, rsiVal[effSwingR])
+    if array.size(plPrices) > 12
+        array.shift(plPrices)
+        array.shift(plBars)
+        array.shift(plRsi)
+    if divBotRaw
+        lastDivBias := 1
+        lastDivBar  := bar_index
+        if showDiv and (last_bar_index - (bar_index - effSwingR)) < showLastN
+            float yDvB = f_stagY(bar_index - effSwingR, false, pl)
+            f_pushLbl(label.new(bar_index - effSwingR, yDvB, "跌势乏力↑", style=label.style_label_up, color=color.new(color.orange, 0), textcolor=color.white, size=size.tiny), LP_DIV, false, pl)
+
+f_pickAnchor(prices, bars, wantAsc, minGap, maxViol, isRes) =>
+    float ry1 = na
+    int   rb1 = na
+    float ry2 = na
+    int   rb2 = na
+    int n = array.size(prices)
+    if n >= 2
+        y2 = array.get(prices, n - 1)
+        b2 = array.get(bars,   n - 1)
+        int i = n - 2
+        bool found = false
+        while i <= n - 2 and not found
+            y1   = array.get(prices, i)
+            b1   = array.get(bars,   i)
+            span = b2 - b1
+            dirOK = wantAsc ? y2 > y1 : y2 < y1
+            if dirOK and span >= minGap and span <= 250
+                int viol = 0
+                int k = math.max(b1 + 1, bar_index - MAX_OFF)
+                while k <= bar_index and viol <= maxViol
+                    off = bar_index - k
+                    lv = y1 + (y2 - y1) * (k - b1) / span
+                    if isRes ? close[off] > lv : close[off] < lv
+                        viol += 1
+                    k += 1
+                if viol <= maxViol
+                    ry1 := y1
+                    rb1 := b1
+                    ry2 := y2
+                    rb2 := b2
+                    found := true
+            i += 1
+    [ry1, rb1, ry2, rb2]
+
+f_tlVal(y1, b1, y2, b2, staleMul, maxDistAtr, atr) =>
+    float v = na
+    if not na(y1) and not na(b1) and not na(b2) and b2 > b1
+        span = b2 - b1
+        if (bar_index - b2) <= span * staleMul
+            v := y2 + (y2 - y1) / span * (bar_index - b2)
+    if not na(v) and atr > 0 and math.abs(close - v) > maxDistAtr * atr
+        v := na
+    v
+
+f_tlSlope(y1, b1, y2, b2) =>
+    not na(y1) and not na(b1) and not na(b2) and b2 > b1 ? (y2 - y1) / (b2 - b1) : na
+
+var float tlMinUpY1 = na
+var int   tlMinUpB1 = na
+var float tlMinUpY2 = na
+var int   tlMinUpB2 = na
+var float tlMajUpY1 = na
+var int   tlMajUpB1 = na
+var float tlMajUpY2 = na
+var int   tlMajUpB2 = na
+var float tlMinDnY1 = na
+var int   tlMinDnB1 = na
+var float tlMinDnY2 = na
+var int   tlMinDnB2 = na
+var float tlMajDnY1 = na
+var int   tlMajDnB1 = na
+var float tlMajDnY2 = na
+var int   tlMajDnB2 = na
+
+f_scoreLine(y1, b1, b2, sl, isUp, tolAbs, scanFrom) =>
+    int touch  = 0
+    int pierce = 0
+    int lastOff = 999999
+    int lastTouchK = -999999
+    int s0 = 0
+    int s1 = 0
+    int s2 = 0
+    int spanSeg = b2 - b1
+    int k = scanFrom
+    while k <= bar_index
+        off = bar_index - k
+        lv  = y1 + sl * (k - b1)
+        px  = isUp ? low[off] : high[off]
+        d   = px - lv
+        bool isPierce = isUp ? (d < -tolAbs) : (d > tolAbs)
+        if math.abs(d) <= tolAbs and k - lastTouchK >= touchGap
+            touch += 1
+            lastTouchK := int(k)
+            lastOff := int(off)
+            if k >= b1 and k <= b2 and spanSeg > 0
+                int sg = int(math.min(2, (k - b1) * 3 / spanSeg))
+                if sg == 0
+                    s0 += 1
+                else if sg == 1
+                    s1 += 1
+                else
+                    s2 += 1
+        else if isPierce
+            pierce += 1
+        k += 1
+    int segMin = int(math.min(s0, math.min(s1, s2)))
+    [touch, pierce, lastOff, segMin]
+
+f_bestFit(prices, bars, isUp, tolAbs, maxPierce, minGapBars, minTouch, freshMax, refine, evenReq) =>
+    float bY1 = na
+    int   bB1 = na
+    float bY2 = na
+    int   bB2 = na
+    int   bTouch = 0
+    int   bSeg   = -1
+    int sz = array.size(prices)
+    int n  = int(math.min(sz, 12))
+    int st = sz - n
+    int scanFrom = sz >= 2 ? int(math.max(array.get(bars, st), bar_index - MAX_OFF)) : bar_index
+    if n >= 2
+        for i = st to sz - 2
+            for j = i + 1 to sz - 1
+                float y1 = array.get(prices, i)
+                int   b1 = int(array.get(bars, i))
+                float y2 = array.get(prices, j)
+                int   b2 = int(array.get(bars, j))
+                if b2 - b1 >= minGapBars
+                    slope = (y2 - y1) / (b2 - b1)
+                    [touch, pierce, lastOff, segMin] = f_scoreLine(y1, b1, b2, slope, isUp, tolAbs, scanFrom)
+                    bool evenOK = (segMin >= 1) == (bSeg >= 1)
+                    bool better = segMin >= 1 and bSeg < 1
+                    if not better and evenOK
+                        better := touch > bTouch or (touch == bTouch and b2 > bB2)
+                    if pierce <= maxPierce and touch >= minTouch and (not evenReq or segMin >= 1) and lastOff <= freshMax and better and (isUp ? slope > 0 : slope < 0)
+                        bTouch := touch
+                        bSeg := segMin
+                        bY1 := y1
+                        bB1 := b1
+                        bY2 := y2
+                        bB2 := b2
+    if refine and not na(bB1) and bB2 > bB1
+        int   span0 = bB2 - bB1
+        float step0 = tolAbs / span0
+        float bs0   = (bY2 - bY1) / span0
+        float fY2   = bY2
+        int   fT    = bTouch
+        int   fSeg  = bSeg
+        for ds = -2 to 2
+            float sl = bs0 + ds * step0
+            [t2, p2, lo2, sm2] = f_scoreLine(bY1, bB1, bB2, sl, isUp, tolAbs, scanFrom)
+            bool evenOK2 = (sm2 >= 1) == (fSeg >= 1)
+            bool take = sm2 >= 1 and fSeg < 1
+            if not take and evenOK2
+                take := t2 > fT
+            if p2 <= maxPierce and t2 >= minTouch and (not evenReq or sm2 >= 1) and lo2 <= freshMax and take and (isUp ? sl > 0 : sl < 0)
+                fT   := t2
+                fSeg := sm2
+                fY2  := bY1 + sl * span0
+        bY2 := fY2
+        bTouch := fT
+        bSeg := fSeg
+    [bY1, bB1, bY2, bB2, bTouch, bSeg]
+
+f_chOffset(y1, b1, y2, b2, wantHigh) =>
+    float best   = na
+    float secBest = na
+    if not na(y1) and not na(b1) and not na(b2) and b2 > b1
+        slope = (y2 - y1) / (b2 - b1)
+        pxArr = wantHigh ? phPrices : plPrices
+        bArr  = wantHigh ? phBars   : plBars
+        int n = array.size(pxArr)
+        if n > 0
+            for i = 0 to n - 1
+                pb = array.get(bArr, i)
+                if pb >= b1 and bar_index - pb <= MAX_OFF
+                    lv = y1 + slope * (pb - b1)
+                    d  = array.get(pxArr, i) - lv
+                    if na(best) or (wantHigh ? d > best : d < best)
+                        secBest := best
+                        best   := d
+                    else if na(secBest) or (wantHigh ? d > secBest : d < secBest)
+                        secBest := d
+    na(secBest) ? best : secBest
+
+var float tlUpChOffMaj = na
+var float tlUpChOffMin = na
+var float tlDnChOffMaj = na
+var float tlDnChOffMin = na
+
+var int tlMajUpSeg = 0
+var int tlMajDnSeg = 0
+var int tlMajUpTouch = 0
+var int tlMajDnTouch = 0
+
+var int tlGen = 0
+if showTL and not na(pl) and barstate.isconfirmed
+    tlGen += 1
+    [a1, a2, a3, a4] = f_pickAnchor(plPrices, plBars, true, tlMinGap, tlMaxViol, false)
+    tlMinUpY1 := a1
+    tlMinUpB1 := a2
+    tlMinUpY2 := a3
+    tlMinUpB2 := a4
+    [c1, c2, c3, c4, ct, cs] = f_bestFit(plPrices, plBars, true, atrVal * tlTouchTol, effMaxPierce, tlMinGap, tlMinTouch, tlFreshBars, tlRefine, tlEvenTouch)
+    tlMajUpY1 := c1
+    tlMajUpB1 := c2
+    tlMajUpY2 := c3
+    tlMajUpB2 := c4
+    tlMajUpSeg := cs
+    tlMajUpTouch := ct
+    tlUpChOffMaj := f_chOffset(c1, c2, c3, c4, true)
+    tlUpChOffMin := f_chOffset(a1, a2, a3, a4, true)
+    tlDnChOffMaj := f_chOffset(tlMajDnY1, tlMajDnB1, tlMajDnY2, tlMajDnB2, false)
+    tlDnChOffMin := f_chOffset(tlMinDnY1, tlMinDnB1, tlMinDnY2, tlMinDnB2, false)
+
+if showTL and not na(ph) and barstate.isconfirmed
+    tlGen += 1
+    [d1, d2, d3, d4] = f_pickAnchor(phPrices, phBars, false, tlMinGap, tlMaxViol, true)
+    tlMinDnY1 := d1
+    tlMinDnB1 := d2
+    tlMinDnY2 := d3
+    tlMinDnB2 := d4
+    [e1, e2, e3, e4, et, es] = f_bestFit(phPrices, phBars, false, atrVal * tlTouchTol, effMaxPierce, tlMinGap, tlMinTouch, tlFreshBars, tlRefine, tlEvenTouch)
+    tlMajDnY1 := e1
+    tlMajDnB1 := e2
+    tlMajDnY2 := e3
+    tlMajDnB2 := e4
+    tlMajDnSeg := es
+    tlMajDnTouch := et
+    tlDnChOffMaj := f_chOffset(e1, e2, e3, e4, false)
+    tlDnChOffMin := f_chOffset(d1, d2, d3, d4, false)
+    tlUpChOffMaj := f_chOffset(tlMajUpY1, tlMajUpB1, tlMajUpY2, tlMajUpB2, true)
+    tlUpChOffMin := f_chOffset(tlMinUpY1, tlMinUpB1, tlMinUpY2, tlMinUpB2, true)
+
+tlMinUpVal = f_tlVal(tlMinUpY1, tlMinUpB1, tlMinUpY2, tlMinUpB2, tlStaleMul, tlMaxDistAtr, atrVal)
+tlMajUpVal = f_tlVal(tlMajUpY1, tlMajUpB1, tlMajUpY2, tlMajUpB2, tlStaleMul, tlMaxDistAtr, atrVal)
+tlMinDnVal = f_tlVal(tlMinDnY1, tlMinDnB1, tlMinDnY2, tlMinDnB2, tlStaleMul, tlMaxDistAtr, atrVal)
+tlMajDnVal = f_tlVal(tlMajDnY1, tlMajDnB1, tlMajDnY2, tlMajDnB2, tlStaleMul, tlMaxDistAtr, atrVal)
+tlSwitchBars = int(effSwingL * tlSwitchMul)
+tlHoldBars   = int(effSwingL * tlHoldMul)
+var bool tlUpUseMin  = false
+var bool tlDnUseMin  = false
+var int  tlUpFlipBar = -99999
+var int  tlDnFlipBar = -99999
+tlMajUpOK = tlMajUpSeg >= 1 and not na(tlMajUpVal)
+tlMajDnOK = tlMajDnSeg >= 1 and not na(tlMajDnVal)
+upBothB   = not na(tlMinUpB2) and not na(tlMajUpB2)
+wantUpMin = not tlMajUpOK ? true : na(tlMinUpVal) ? false : upBothB and tlMinUpB2 - tlMajUpB2 >= tlSwitchBars ? true : upBothB and tlMajUpB2 >= tlMinUpB2 ? false : tlUpUseMin
+upForced  = not tlMajUpOK or na(tlMinUpVal)
+if barstate.isconfirmed and wantUpMin != tlUpUseMin and (upForced or bar_index - tlUpFlipBar >= tlHoldBars)
+    tlUpUseMin  := wantUpMin
+    tlUpFlipBar := bar_index
+    tlGen       += 1
+dnBothB   = not na(tlMinDnB2) and not na(tlMajDnB2)
+wantDnMin = not tlMajDnOK ? true : na(tlMinDnVal) ? false : dnBothB and tlMinDnB2 - tlMajDnB2 >= tlSwitchBars ? true : dnBothB and tlMajDnB2 >= tlMinDnB2 ? false : tlDnUseMin
+dnForced  = not tlMajDnOK or na(tlMinDnVal)
+if barstate.isconfirmed and wantDnMin != tlDnUseMin and (dnForced or bar_index - tlDnFlipBar >= tlHoldBars)
+    tlDnUseMin  := wantDnMin
+    tlDnFlipBar := bar_index
+    tlGen       += 1
+tlUpRaw = tlUpUseMin ? tlMinUpVal : tlMajUpVal
+tlDnRaw = tlDnUseMin ? tlMinDnVal : tlMajDnVal
+
+tlBothLive = not na(tlUpRaw) and not na(tlDnRaw)
+tlGapNow  = tlBothLive ? tlDnRaw - tlUpRaw : na
+var bool tlHadTri   = false
+var bool tlTriDead  = false
+var int  tlDeathGen = na
+if tlGen != tlGen[1]
+    tlHadTri := false
+if tlTriDead and tlGen != tlDeathGen
+    tlTriDead := false
+tlApexCross = tlBothLive and tlHadTri and tlGapNow <= 0 and not tlTriDead
+if tlApexCross
+    tlTriDead  := true
+    tlDeathGen := tlGen
+    tlHadTri   := false
+if not tlBothLive
+    tlHadTri := false
+tlApexPassed = tlApexCross or tlTriDead
+tlUpEff = tlUpRaw
+tlDnEff = tlDnRaw
+tlUpIsMaj = not na(tlUpRaw) and not tlUpUseMin
+tlDnIsMaj = not na(tlDnRaw) and not tlDnUseMin
+tlActive  = showTL and (not na(tlUpEff) or not na(tlDnEff))
+
+slopeUp = tlUpIsMaj ? f_tlSlope(tlMajUpY1, tlMajUpB1, tlMajUpY2, tlMajUpB2) : f_tlSlope(tlMinUpY1, tlMinUpB1, tlMinUpY2, tlMinUpB2)
+slopeDn = tlDnIsMaj ? f_tlSlope(tlMajDnY1, tlMajDnB1, tlMajDnY2, tlMajDnB2) : f_tlSlope(tlMinDnY1, tlMinDnB1, tlMinDnY2, tlMinDnB2)
+tlConverging = not na(tlUpEff) and not na(tlDnEff) and tlGapNow > 0 and not na(slopeUp) and not na(slopeDn) and slopeUp > slopeDn
+if tlConverging
+    tlHadTri := true
+tlBarsToApex = tlConverging ? math.round(tlGapNow / (slopeUp - slopeDn)) : na
+
+int tlBias = 0
+if showTL and not na(tlUpEff)
+    tlBias := close > tlUpEff ? 1 : -1
+if showTL and not na(tlDnEff)
+    tlBias := tlBias + (close < tlDnEff ? -1 : 1)
+tlBias := tlBias > 0 ? 1 : tlBias < 0 ? -1 : 0
+
+tlBrkDn    = not na(tlUpEff) and tlGen == tlGen[1] and close < tlUpEff and close[1] >= tlUpEff[1]
+tlBrkUp    = not na(tlDnEff) and tlGen == tlGen[1] and close > tlDnEff and close[1] <= tlDnEff[1]
+tlApexSoon = tlConverging and not na(tlBarsToApex) and tlBarsToApex <= 5
+var bool tlApexAlerted = false
+if tlApexPassed or not tlBothLive or tlGen != tlGen[1]
+    tlApexAlerted := false
+tlApexSoonFire = tlApexSoon and not tlApexAlerted
+if tlApexSoonFire and barstate.isconfirmed
+    tlApexAlerted := true
+
+divFresh    = showDiv and not na(lastDivBar) and (bar_index - lastDivBar) <= effSwingL * staleMult
+divBiasShow = divFresh ? lastDivBias : 0
+
+int    trendBias = bullStack ? 1 : bearStack ? -1 : 0
+
+gateSlopeN   = effSwingL * 2
+gateSlopeAtr = atrVal > 0 ? (emaSlow - emaSlow[gateSlopeN]) / atrVal : na
+gateFlat     = na(gateSlopeAtr) or math.abs(gateSlopeAtr) < gateFlatAtr
+gateUp       = not gateFlat and gateSlopeAtr > 0 and close > emaSlow
+gateDn       = not gateFlat and gateSlopeAtr < 0 and close < emaSlow
+gateBias     = gateUp ? 1 : gateDn ? -1 : 0
+
+rangeHi    = ta.highest(high, effSwingL * 4)
+rangeLo    = ta.lowest(low,  effSwingL * 4)
+posInRange = rangeHi > rangeLo ? (close - rangeLo) / (rangeHi - rangeLo) : 0.5
+atLow      = posInRange < 0.35
+atHigh     = posInRange > 0.65
+
+var int   lastSwpBar  = na
+var int   lastSwpBias = 0
+var float lastSwpEdge = na
+var float lastSwpRef  = na
+var bool  lastSwpVol  = false
+swpHi = lastPH
+swpLo = lastPL
+swpUpPierce = not na(swpHi) ? high - swpHi : na
+swpDnPierce = not na(swpLo) ? swpLo - low  : na
+swpUpOK = not na(swpUpPierce) and swpUpPierce > atrVal * swpPierceMin and swpUpPierce < atrVal * 1.5
+swpDnOK = not na(swpDnPierce) and swpDnPierce > atrVal * swpPierceMin and swpDnPierce < atrVal * 1.5
+swpBigEnough = rng > atrVal * 0.5
+upThrustRaw = swpUpOK and swpBigEnough and close < swpHi and rng > 0 and (close - low) / rng < 0.4
+springRaw   = swpDnOK and swpBigEnough and close > swpLo and rng > 0 and (high - close) / rng < 0.4
+swpGapOK = na(lastSwpBar) or (bar_index - lastSwpBar) >= swpMinBars
+upThrust = upThrustRaw and swpGapOK
+spring   = springRaw and swpGapOK
+swpVolOK = hasVol and volRatio > 1.2
+if (spring or upThrust) and barstate.isconfirmed
+    lastSwpBar  := bar_index
+    lastSwpBias := spring ? 1 : -1
+    lastSwpEdge := spring ? low : high
+    lastSwpRef  := spring ? swpLo : swpHi
+    lastSwpVol  := swpVolOK
+swpFresh = not na(lastSwpBar) and (bar_index - lastSwpBar) <= effSwingL * staleMult
+swpBias  = swpFresh ? lastSwpBias : 0
+int swpAge = na(lastSwpBar) ? na : bar_index - lastSwpBar
+swpText  = not swpFresh ? "无" : (lastSwpBias > 0 ? "假跌破↑" : "假突破↓") + (swpAge == 0 ? "·就是这根" : "·" + str.tostring(swpAge) + "根前") + (lastSwpVol ? "放量" : "")
+
+bullEngulf = isBull and close[1] < open[1] and close >= open[1] and open <= close[1] and body > body[1]
+bearEngulf = isBear and close[1] > open[1] and close <= open[1] and open >= close[1] and body > body[1]
+hammer     = rng > 0 and body > 0 and loSh >= body * shadowMult and upSh <= body * 0.5
+invHammer  = rng > 0 and body > 0 and upSh >= body * shadowMult and loSh <= body * 0.5
+bigBull    = isBull and body >= bodyAvg * bigMult and body >= rng * 0.6
+bigBear    = isBear and body >= bodyAvg * bigMult and body >= rng * 0.6
+doji       = rng > 0 and body <= rng * dojiThr
+harami     = math.max(open, close) <= math.max(open[1], close[1]) and math.min(open, close) >= math.min(open[1], close[1]) and body < body[1] and rng > 0
+
+pinFollowBull = hammer[1] and atLow[1] and posInRange < 0.5 and isBull and body >= bodyAvg * 0.8
+pinFollowBear = invHammer[1] and atHigh[1] and posInRange > 0.5 and isBear and body >= bodyAvg * 0.8
+
+string patText = ""
+string patMean = ""
+int    patBias = 0
+int    patKind = 0
+if pinFollowBull
+    patText := "收针+跟随·低位承接↑"
+    patMean := "跟随·低位承接↑"
+    patBias := 1
+    patKind := 1
+else if pinFollowBear
+    patText := "流星+跟随·高位受阻↓"
+    patMean := "跟随·高位受阻↓"
+    patBias := -1
+    patKind := 1
+else if bullEngulf
+    patText := "看涨吞没·或反转↑"
+    patMean := "或反转↑"
+    patBias := 1
+    patKind := 1
+else if bearEngulf
+    patText := "看跌吞没·或反转↓"
+    patMean := "或反转↓"
+    patBias := -1
+    patKind := 1
+else if hammer
+    patText := atLow ? "锤子·低位承接↑" : atHigh ? "上吊线·高位滞涨↓" : "长下影·多空争"
+    patMean := atLow ? "低位承接↑" : atHigh ? "高位滞涨↓" : "多空争"
+    patBias := atLow ? 1 : atHigh ? -1 : 0
+    patKind := patBias != 0 ? 2 : 4
+else if invHammer
+    patText := atHigh ? "流星·高位受阻↓" : atLow ? "倒锤·低位试多↑" : "长上影·多空争"
+    patMean := atHigh ? "高位受阻↓" : atLow ? "低位试多↑" : "多空争"
+    patBias := atHigh ? -1 : atLow ? 1 : 0
+    patKind := patBias != 0 ? 2 : 4
+else if bigBull
+    patText := "大阳线·多头强"
+    patMean := "多头强"
+    patBias := 1
+    patKind := 3
+else if bigBear
+    patText := "大阴线·空头强"
+    patMean := "空头强"
+    patBias := -1
+    patKind := 3
+else if doji
+    patText := "十字星·多空僵持"
+    patMean := "多空僵持"
+    patBias := 0
+    patKind := 4
+else if harami
+    patText := "孕线·动能减弱"
+    patMean := "动能减弱"
+    patBias := 0
+    patKind := 4
+
+var int    lastPatBias = 0
+var int    lastPatBar  = na
+if patText != "" and patBias != 0 and barstate.isconfirmed
+    lastPatBias := patBias
+    lastPatBar  := bar_index
+patFresh    = not na(lastPatBar) and (bar_index - lastPatBar) <= effSwingL * staleMult
+patBiasEff  = patFresh ? lastPatBias : 0
+
+[lastLblX, dupSameName] = f_lblDedup(patMean, minGap * dedupMult, LBL_GAP_PAT)
+gapOK  = na(lastLblX) or bar_index - lastLblX >= minGap
+[envLblX, envDupIgn] = f_lblDedup("", minGap * dedupMult, LBL_GAP_ENV)
+envLblGapOK = na(envLblX) or bar_index - envLblX >= minGap
+[swpLblX, swpDupIgn] = f_lblDedup("", minGap * dedupMult, LBL_GAP_SWP)
+swpLblGapOK = na(swpLblX) or bar_index - swpLblX >= minGap
+patAtEdge = (patBias > 0 and atLow) or (patBias < 0 and atHigh)
+patLblOK = patKind <= 2 and patAtEdge
+showThisPat = showPatterns and barstate.isconfirmed and patText != "" and (last_bar_index - bar_index) < showLastN and patBias != 0 and patLblOK and gapOK and not dupSameName and not (spring or upThrust)
+if showThisPat
+    isAbv = patBias < 0
+    float yP = f_stagY(bar_index, isAbv, isAbv ? hiClr : loClr)
+    f_pushLbl(label.new(bar_index, yP, patMean, yloc=yloc.price, style=isAbv ? label.style_label_down : label.style_label_up, color=patColor(patBias), textcolor=color.white, size=size.tiny), LP_PAT, isAbv, isAbv ? hiClr : loClr)
+
+var int envAbv = 0
+var int envBlw = 0
+int envPrevAbv = nz(envAbv[1], 0)
+int envPrevBlw = nz(envBlw[1], 0)
+bool envWickDn   = high > envUp and close < envUp
+bool envWickUp   = low  < envLo and close > envLo
+bool envReturnDn = close < envUp and envPrevAbv >= 1 and envPrevAbv <= envTrapWin
+bool envReturnUp = close > envLo and envPrevBlw >= 1 and envPrevBlw <= envTrapWin
+bool envTrapDn   = envWickDn or envReturnDn
+bool envTrapUp   = envWickUp or envReturnUp
+envAbv := close > envUp ? envPrevAbv + 1 : 0
+envBlw := close < envLo ? envPrevBlw + 1 : 0
+if showEnv and barstate.isconfirmed and (envTrapUp or envTrapDn) and (last_bar_index - bar_index) < showLastN and envLblGapOK
+    float yEnv = f_stagY(bar_index, envTrapDn, envTrapDn ? hiClr : loClr)
+    f_pushLbl(label.new(bar_index, yEnv, envTrapDn ? "宽轨假突破↓" : "宽轨假跌破↑", yloc=yloc.price, style=envTrapDn ? label.style_label_down : label.style_label_up, color=envTrapDn ? color.new(color.maroon, 25) : color.new(color.teal, 25), textcolor=color.white, size=size.tiny), LP_ENV, envTrapDn, envTrapDn ? hiClr : loClr)
+
+swpLblOK = showPatterns and barstate.isconfirmed and (last_bar_index - bar_index) < showLastN and swpLblGapOK
+if swpLblOK and (spring or upThrust)
+    bool swpAbv = not spring
+    float ySwp = f_stagY(bar_index, swpAbv, swpAbv ? hiClr : loClr)
+    f_pushLbl(label.new(bar_index, ySwp, spring ? "假跌破↑" : "假突破↓", yloc = yloc.price, style = spring ? label.style_label_up : label.style_label_down, color = spring ? color.new(color.teal, 10) : color.new(color.maroon, 10), textcolor = color.white, size = size.tiny), LP_SWP, swpAbv, swpAbv ? hiClr : loClr)
+
+var int  tdBuySu   = 0
+var int  tdSellSu  = 0
+var int  tdBuyCd   = 0
+var int  tdSellCd  = 0
+var bool tdBuyCdOn = false
+var bool tdSellCdOn= false
+bool tdBuySetupDone  = false
+bool tdSellSetupDone = false
+bool tdBuyCdDone     = false
+bool tdSellCdDone    = false
+if showTD and barstate.isconfirmed
+    if tdBuyCdOn and close <= low[2]
+        tdBuyCd += 1
+        if tdBuyCd >= 13
+            tdBuyCdDone := true
+            tdBuyCdOn   := false
+            tdBuyCd     := 0
+    if tdSellCdOn and close >= high[2]
+        tdSellCd += 1
+        if tdSellCd >= 13
+            tdSellCdDone := true
+            tdSellCdOn   := false
+            tdSellCd     := 0
+    tdBuySu  := close < close[4] ? tdBuySu  + 1 : 0
+    tdSellSu := close > close[4] ? tdSellSu + 1 : 0
+    if tdBuySu >= 9
+        tdBuySetupDone := true
+        tdBuySu    := 0
+        if not tdBuyCdOn
+            tdBuyCdOn := true
+            tdBuyCd   := 0
+        tdSellCdOn := false
+        tdSellCd   := 0
+    if tdSellSu >= 9
+        tdSellSetupDone := true
+        tdSellSu   := 0
+        if not tdSellCdOn
+            tdSellCdOn := true
+            tdSellCd   := 0
+        tdBuyCdOn  := false
+        tdBuyCd    := 0
+
+tdEvBias  = tdBuyCdDone ? 1 : tdSellCdDone ? -1 : tdBuySetupDone ? 1 : tdSellSetupDone ? -1 : 0
+tdEvStage = (tdBuyCdDone or tdSellCdDone) ? 13 : (tdBuySetupDone or tdSellSetupDone) ? 9 : 0
+
+var int tdLastBar   = na
+var int tdLastBias  = 0
+var int tdLastStage = 0
+if tdEvBias != 0
+    tdLastBar   := bar_index
+    tdLastBias  := tdEvBias
+    tdLastStage := tdEvStage
+tdFresh = showTD and not na(tdLastBar) and (bar_index - tdLastBar) <= effSwingL * 2
+tdBias  = tdFresh ? tdLastBias : 0
+int tdAge = na(tdLastBar) ? na : bar_index - tdLastBar
+tdDoneTxt = not tdFresh ? "" : (tdLastBias > 0 ? (tdLastStage == 13 ? "跌势力竭↑13" : "跌足9根↑") : (tdLastStage == 13 ? "涨势力竭↓13" : "涨足9根↓")) + (tdAge == 0 ? "·就是这根" : "·" + str.tostring(tdAge) + "根前")
+tdProgMin = 5
+tdProgTxt = tdBuyCdOn and tdBuyCd >= tdProgMin ? "确认中 " + str.tostring(tdBuyCd) + "/13↑" : tdSellCdOn and tdSellCd >= tdProgMin ? "确认中 " + str.tostring(tdSellCd) + "/13↓" : tdBuySu >= tdProgMin ? "跌 " + str.tostring(tdBuySu) + "/9" : tdSellSu >= tdProgMin ? "涨 " + str.tostring(tdSellSu) + "/9" : ""
+tdText    = tdDoneTxt != "" ? tdDoneTxt : tdProgTxt != "" ? tdProgTxt : "—"
+
+tdLblOK = showTD and barstate.isconfirmed and (last_bar_index - bar_index) < showLastN
+tdLbl13 = tdEvStage == 13
+tdLblFire = tdLblOK and tdLbl13
+if tdLblFire
+    tdUp = tdEvBias > 0
+    tdTx = tdLbl13 ? (tdUp ? "跌势力竭↑" : "涨势力竭↓") : (tdUp ? "跌9根↑" : "涨9根↓")
+    float yTd = f_stagY(bar_index, not tdUp, tdUp ? loClr : hiClr)
+    f_pushLbl(label.new(bar_index, yTd, tdTx, yloc=yloc.price, style=tdUp ? label.style_label_up : label.style_label_down, color=tdUp ? color.new(color.teal, 10) : color.new(#c62828, 10), textcolor=color.white, size=size.tiny), LP_TD, not tdUp, tdUp ? loClr : hiClr)
+
+[topPat, topNeck, topPk] = detectTop(phPrices, phBars, plPrices, plBars, atrVal * patTolAtr, atrVal * patMinAtr, effSwingL * staleMult * 4, hnsSymTol)
+[botPat, botNeck, botPk] = detectBot(plPrices, plBars, phPrices, phBars, atrVal * patTolAtr, atrVal * patMinAtr, effSwingL * staleMult * 4, hnsSymTol)
+
+var int    lastBigBias = 0
+var int    lastBigBar  = na
+var float  lastBigTgt  = na
+var float  lastBigNeck = na
+bigGapOK = na(lastBigBar) or bar_index - lastBigBar >= effSwingL * 2
+
+[lastNeckX, _dupNeck] = f_lblDedup("", minGap * dedupMult, LBL_NECK_PRIOS)
+neckLblOK = (last_bar_index - bar_index) < showLastN and (na(lastNeckX) or bar_index - lastNeckX >= minGap * dedupMult)
+bigDupWin   = effSwingL * staleMult * 2
+bigNeckLive = not na(lastBigBar) and not na(lastBigNeck) and (bar_index - lastBigBar) <= bigDupWin
+bigDupTop   = bigNeckLive and lastBigBias < 0 and not na(topNeck) and math.abs(topNeck - lastBigNeck) <= atrVal * 0.5
+bigDupBot   = bigNeckLive and lastBigBias > 0 and not na(botNeck) and math.abs(botNeck - lastBigNeck) <= atrVal * 0.5
+bigTopRaw = showChartPat and bigGapOK and not bigDupTop and topPat != "" and not na(topNeck) and close < topNeck and (close[1] >= topNeck or topPat[1] == "")
+bigBotRaw = showChartPat and bigGapOK and not bigDupBot and botPat != "" and not na(botNeck) and close > botNeck and (close[1] <= botNeck or botPat[1] == "")
+bigTop = bigTopRaw and barstate.isconfirmed
+bigBot = bigBotRaw and barstate.isconfirmed
+if bigTop
+    if neckLblOK
+        float yTop = f_stagY(bar_index, true, hiClr)
+        f_pushLbl(label.new(bar_index, yTop, "破颈↓", style=label.style_label_down, color=color.new(color.maroon, 0), textcolor=color.white, size=size.tiny), LP_NECK, true, hiClr)
+    lastBigBias := -1
+    lastBigBar  := bar_index
+    lastBigNeck := topNeck
+    lastBigTgt  := topNeck - (topPk - topNeck)
+if bigBot
+    if neckLblOK
+        float yBot = f_stagY(bar_index, false, loClr)
+        f_pushLbl(label.new(bar_index, yBot, "破颈↑", style=label.style_label_up, color=color.new(color.teal, 0), textcolor=color.white, size=size.tiny), LP_NECK, false, loClr)
+    lastBigBias := 1
+    lastBigBar  := bar_index
+    lastBigNeck := botNeck
+    lastBigTgt  := botNeck + (botNeck - botPk)
+
+bigFresh    = not na(lastBigBar) and (bar_index - lastBigBar) <= effSwingL * staleMult * 2
+bigBiasShow = bigFresh ? lastBigBias : 0
+
+var line[]  resL   = array.new_line()
+var label[] resLbl = array.new_label()
+var float[] resPx  = array.new_float()
+var line[]  supL   = array.new_line()
+var label[] supLbl = array.new_label()
+var float[] supPx  = array.new_float()
+
+if showSR and not na(ph) and barstate.isconfirmed
+    if array.size(resPx) > 0
+        for i = array.size(resPx) - 1 to 0
+            if math.abs(array.get(resPx, i) - ph) < atrVal * srMergeAtr
+                line.delete(array.remove(resL, i))
+                label.delete(array.remove(resLbl, i))
+                array.remove(resPx, i)
+    x1 = bar_index - effSwingR
+    ln = line.new(x1, ph, bar_index, ph, color=color.new(color.red, 0), width=1, extend=extend.right)
+    lb = label.new(bar_index, ph, "阻力 " + str.tostring(ph, format.mintick), style=label.style_label_left, color=color.new(color.red, 20), textcolor=color.white, size=size.tiny)
+    array.push(resL, ln)
+    array.push(resLbl, lb)
+    array.push(resPx, ph)
+    if array.size(resL) > srCount
+        int  delIdx   = 0
+        bool foundBrk = false
+        for i = 0 to array.size(resPx) - 1
+            if not foundBrk and close > array.get(resPx, i)
+                delIdx   := i
+                foundBrk := true
+        line.delete(array.remove(resL, delIdx))
+        label.delete(array.remove(resLbl, delIdx))
+        array.remove(resPx, delIdx)
+
+if showSR and not na(pl) and barstate.isconfirmed
+    if array.size(supPx) > 0
+        for i = array.size(supPx) - 1 to 0
+            if math.abs(array.get(supPx, i) - pl) < atrVal * srMergeAtr
+                line.delete(array.remove(supL, i))
+                label.delete(array.remove(supLbl, i))
+                array.remove(supPx, i)
+    x1 = bar_index - effSwingR
+    ln = line.new(x1, pl, bar_index, pl, color=color.new(color.green, 0), width=1, extend=extend.right)
+    lb = label.new(bar_index, pl, "支撑 " + str.tostring(pl, format.mintick), style=label.style_label_left, color=color.new(color.green, 20), textcolor=color.white, size=size.tiny)
+    array.push(supL, ln)
+    array.push(supLbl, lb)
+    array.push(supPx, pl)
+    if array.size(supL) > srCount
+        int  delIdx   = 0
+        bool foundBrk = false
+        for i = 0 to array.size(supPx) - 1
+            if not foundBrk and close < array.get(supPx, i)
+                delIdx   := i
+                foundBrk := true
+        line.delete(array.remove(supL, delIdx))
+        label.delete(array.remove(supLbl, delIdx))
+        array.remove(supPx, delIdx)
+
+bool resBreakRaw = false
+bool supBreakRaw = false
+if showSR and array.size(resPx) > 0
+    for i = 0 to array.size(resPx) - 1
+        pxB = array.get(resPx, i)
+        if close > pxB and close[1] <= pxB
+            resBreakRaw := true
+if showSR and array.size(supPx) > 0
+    for i = 0 to array.size(supPx) - 1
+        pxB = array.get(supPx, i)
+        if close < pxB and close[1] >= pxB
+            supBreakRaw := true
+
+float supBelow = na
+float resAbove = na
+if array.size(supPx) > 0
+    for i = 0 to array.size(supPx) - 1
+        pxP = array.get(supPx, i)
+        if pxP < close and (na(supBelow) or pxP > supBelow)
+            supBelow := pxP
+        if pxP > close and (na(resAbove) or pxP < resAbove)
+            resAbove := pxP
+if array.size(resPx) > 0
+    for i = 0 to array.size(resPx) - 1
+        pxP2 = array.get(resPx, i)
+        if pxP2 < close and (na(supBelow) or pxP2 > supBelow)
+            supBelow := pxP2
+        if pxP2 > close and (na(resAbove) or pxP2 < resAbove)
+            resAbove := pxP2
+supBelowH = supBelow
+resAboveH = resAbove
+triDnGap  = not na(tlDnEff) and not na(supBelow) and close < tlDnEff and close > supBelow ? tlDnEff - supBelow : na
+triDnBars = not na(triDnGap) and not na(slopeDn) and slopeDn < 0 and triDnGap > 0 ? int(math.round(triDnGap / (-slopeDn))) : na
+triUpGap  = not na(tlUpEff) and not na(resAbove) and close > tlUpEff and close < resAbove ? resAbove - tlUpEff : na
+triUpBars = not na(triUpGap) and not na(slopeUp) and slopeUp > 0 and triUpGap > 0 ? int(math.round(triUpGap / slopeUp)) : na
+triDnOK   = showTL and not na(triDnBars) and triDnBars >= 0 and triDnBars <= triMaxBars
+triUpOK   = showTL and not na(triUpBars) and triUpBars >= 0 and triUpBars <= triMaxBars
+if not na(tlUpEff)
+    if tlUpEff < close and (na(supBelow) or tlUpEff > supBelow)
+        supBelow := tlUpEff
+    if tlUpEff > close and (na(resAbove) or tlUpEff < resAbove)
+        resAbove := tlUpEff
+if not na(tlDnEff)
+    if tlDnEff < close and (na(supBelow) or tlDnEff > supBelow)
+        supBelow := tlDnEff
+    if tlDnEff > close and (na(resAbove) or tlDnEff < resAbove)
+        resAbove := tlDnEff
+supDistAtr = not na(supBelowH) and atrVal > 0 ? (close - supBelowH) / atrVal : na
+resDistAtr = not na(resAboveH) and atrVal > 0 ? (resAboveH - close) / atrVal : na
+nearSup = not na(supDistAtr) and supDistAtr <= posNearAtr
+nearRes = not na(resDistAtr) and resDistAtr <= posNearAtr
+
+tlUpChOff = tlUpIsMaj ? tlUpChOffMaj : tlUpChOffMin
+tlDnChOff = tlDnIsMaj ? tlDnChOffMaj : tlDnChOffMin
+chTwoRail = not na(tlUpEff) and not na(tlDnEff) and (tlDnEff - tlUpEff) > atrVal * 0.3
+chUpLive = not na(tlUpEff) and not na(tlUpChOff) and not tlConverging
+chDnLive = not na(tlDnEff) and not na(tlDnChOff) and not tlConverging
+chUpSpan = chUpLive ? (tlUpIsMaj ? tlMajUpB2 - tlMajUpB1 : tlMinUpB2 - tlMinUpB1) : -1
+chDnSpan = chDnLive ? (tlDnIsMaj ? tlMajDnB2 - tlMajDnB1 : tlMinDnB2 - tlMinDnB1) : -1
+chIsUp   = chTwoRail ? (slopeUp + slopeDn) / 2 > 0 : chUpLive and (not chDnLive or chUpSpan >= chDnSpan)
+chLive   = chUpLive or chDnLive or chTwoRail
+chLo = chTwoRail ? tlUpEff : not chLive ? na : chIsUp ? tlUpEff : tlDnEff + tlDnChOff
+chHi = chTwoRail ? tlDnEff : not chLive ? na : chIsUp ? tlUpEff + tlUpChOff : tlDnEff
+chWid    = not na(chHi) and not na(chLo) ? chHi - chLo : na
+chWidAtr = not na(chWid) and atrVal > 0 ? chWid / atrVal : na
+chOK = chLive and not na(chWidAtr) and chWidAtr >= 0.5 and chWidAtr <= 12.0 and chWid > 0
+chPct  = chOK ? (close - chLo) / chWid : na
+chAtLo = chOK and chPct >= 0 and chPct <= 0.25
+chAtHi = chOK and chPct <= 1 and chPct >= 0.75
+chOut  = chOK and (chPct < -0.15 or chPct > 1.15)
+AI_EMA_LEN = 20
+AI_BRK_ATR = 0.5
+aiEma = ta.ema(close, AI_EMA_LEN)
+f_alwaysIn(float emaRef, float atrRef) =>
+    var int   d    = 0
+    var int   cand = 0
+    var float trg  = na
+    if barstate.isconfirmed
+        float brk = na(atrRef) ? 0.0 : atrRef * AI_BRK_ATR
+        if cand == 1 and not na(trg) and close > trg + brk
+            d    := 1
+            cand := 0
+            trg  := na
+        else if cand == -1 and not na(trg) and close < trg - brk
+            d    := -1
+            cand := 0
+            trg  := na
+        if close > emaRef and d != 1
+            cand := 1
+            trg  := high
+        else if close < emaRef and d != -1
+            cand := -1
+            trg  := low
+    d
+aiDir = f_alwaysIn(aiEma, atrVal)
+aiTag = aiDir > 0 ? "多头·" : aiDir < 0 ? "空头·" : ""
+chWidTxt = na(chWidAtr) ? "" : chWidAtr <= 2.5 ? "窄幅" : chWidAtr <= 6.0 ? "中幅" : "宽幅"
+chStruct = aiTag + (tlConverging ? "三角收敛" : not chOK or chOut ? (triDnOK ? "上边压着" : triUpOK ? "下边托着" : tlApexPassed ? "三角走完了" : chLive ? "通道不合用·忽略" : "没通道") : chWidTxt + (chIsUp ? "涨通道里" : "跌通道里"))
+chPosTxt = not chOK ? (nearSup ? "近支撑" : nearRes ? "近阻力" : "不在关键位") : chPct > 1.15 ? "上轨之外" : chPct < -0.15 ? "下轨之外" : chPct > 1 ? "刚出上轨" : chPct < 0 ? "刚出下轨" : chAtHi ? "通道上沿" : chAtLo ? "通道下沿" : "通道中部"
+chBias = not chOK or chOut ? 0 : chIsUp ? 1 : -1
+chGateOpp   = chBias != 0 and gateBias != 0 and chBias != gateBias
+chGateClash = gateHard and chGateOpp
+gateWord    = gateBias > 0 ? "环境只许多" : gateBias < 0 ? "环境只许空" : ""
+gateShort   = gateBias > 0 ? "环境多" : gateBias < 0 ? "环境空" : ""
+chChanShort = not chOK or chOut ? "" : chIsUp ? "通道多" : "通道空"
+chChanWord  = not chOK or chOut ? "" : chIsUp ? "通道只许多" : "通道只许空"
+chLimitTxt  = chGateClash ? chChanShort + "×" + gateShort + "·别做" : chGateOpp ? chChanShort + "×" + gateShort + "·打架" : chChanWord != "" and gateWord != "" ? "只许" + (chBias > 0 ? "多" : "空") + "·通道+环境" : chChanWord != "" ? chChanWord : gateWord != "" ? gateWord : "无约束·按综合分"
+chLimitBias = chGateClash ? 0 : chBias != 0 ? chBias : gateBias
+chEdgeOK  = chOK and (chIsUp ? chAtLo : chAtHi)
+chSlope   = not chOK ? na : chIsUp ? (tlUpIsMaj ? f_tlSlope(tlMajUpY1, tlMajUpB1, tlMajUpY2, tlMajUpB2) : f_tlSlope(tlMinUpY1, tlMinUpB1, tlMinUpY2, tlMinUpB2)) : (tlDnIsMaj ? f_tlSlope(tlMajDnY1, tlMajDnB1, tlMajDnY2, tlMajDnB2) : f_tlSlope(tlMinDnY1, tlMinDnB1, tlMinDnY2, tlMinDnB2))
+chSlopeHi = chTwoRail ? slopeDn : chSlope
+chSlopeLo = chTwoRail ? slopeUp : chSlope
+var chProjN = math.max(tlProjBars, 10)
+
+var line tlLnMinUp = na
+var line tlLnMajUp = na
+var line tlLnMinDn = na
+var line tlLnMajDn = na
+
+f_drawTL(ln, y1, b1, y2, b2, valNow, isUp, projBars) =>
+    line res = ln
+    if na(y1) or na(valNow) or b2 <= b1
+        if not na(res)
+            line.delete(res)
+            res := na
+    else
+        slope = (y2 - y1) / (b2 - b1)
+        xEnd  = bar_index + projBars
+        yEnd  = y1 + slope * (xEnd - b1)
+        brkPx  = barstate.isconfirmed ? close  : close[1]
+        brkVal = barstate.isconfirmed ? valNow : valNow - slope
+        brk = isUp ? brkPx < brkVal : brkPx > brkVal
+        col = brk ? color.new(color.gray, 50) : color.new(#2962FF, 0)
+        wid = 2
+        sty = brk ? line.style_dashed : line.style_solid
+        if na(res)
+            res := line.new(b1, y1, xEnd, yEnd, extend=extend.none, color=col, width=wid, style=sty)
+        else
+            line.set_xy1(res, b1, y1)
+            line.set_xy2(res, xEnd, yEnd)
+            line.set_color(res, col)
+            line.set_width(res, wid)
+            line.set_style(res, sty)
+    res
+
+tlParallel  = chOK and not chTwoRail
+tlPairOK    = tlParallel or (not na(tlUpEff) and not na(tlDnEff))
+TL_BIG_SPAN  = 150
+TL_BIG_TOUCH = 5
+tlBigUp = tlUpIsMaj and not na(tlMajUpB1) and not na(tlMajUpB2) and (tlMajUpB2 - tlMajUpB1) >= TL_BIG_SPAN and tlMajUpTouch >= TL_BIG_TOUCH
+tlBigDn = tlDnIsMaj and not na(tlMajDnB1) and not na(tlMajDnB2) and (tlMajDnB2 - tlMajDnB1) >= TL_BIG_SPAN and tlMajDnTouch >= TL_BIG_TOUCH
+tlShowUp    = tlParallel ? chIsUp     : (tlPairOK or tlBigUp)
+tlShowDn    = tlParallel ? not chIsUp : (tlPairOK or tlBigDn)
+tlDrawMajUp = tlShowUp and tlUpIsMaj     and tlMajUpOK ? tlMajUpVal : na
+tlDrawMinUp = tlShowUp and not tlUpIsMaj               ? tlMinUpVal : na
+tlDrawMajDn = tlShowDn and tlDnIsMaj     and tlMajDnOK ? tlMajDnVal : na
+tlDrawMinDn = tlShowDn and not tlDnIsMaj               ? tlMinDnVal : na
+
+if barstate.islast
+    tlLnMajUp := f_drawTL(tlLnMajUp, tlMajUpY1, tlMajUpB1, tlMajUpY2, tlMajUpB2, tlDrawMajUp, true,  tlProjBars)
+    tlLnMinUp := f_drawTL(tlLnMinUp, tlMinUpY1, tlMinUpB1, tlMinUpY2, tlMinUpB2, tlDrawMinUp, true,  tlProjBars)
+    tlLnMajDn := f_drawTL(tlLnMajDn, tlMajDnY1, tlMajDnB1, tlMajDnY2, tlMajDnB2, tlDrawMajDn, false, tlProjBars)
+    tlLnMinDn := f_drawTL(tlLnMinDn, tlMinDnY1, tlMinDnB1, tlMinDnY2, tlMinDnB2, tlDrawMinDn, false, tlProjBars)
+
+var line chLnPar = na
+if barstate.islast
+    if not chOK or chTwoRail
+        if not na(chLnPar)
+            line.delete(chLnPar)
+            chLnPar := na
+    else
+        y1p = chIsUp ? (tlUpIsMaj ? tlMajUpY1 : tlMinUpY1) : (tlDnIsMaj ? tlMajDnY1 : tlMinDnY1)
+        b1p = chIsUp ? (tlUpIsMaj ? tlMajUpB1 : tlMinUpB1) : (tlDnIsMaj ? tlMajDnB1 : tlMinDnB1)
+        offp = chIsUp ? tlUpChOff : tlDnChOff
+        if na(y1p) or na(b1p) or na(offp) or na(chSlope)
+            if not na(chLnPar)
+                line.delete(chLnPar)
+                chLnPar := na
+        else
+            xE = bar_index + tlProjBars
+            colP = color.new(#2962FF, 0)
+            if na(chLnPar)
+                chLnPar := line.new(b1p, y1p + offp, xE, y1p + offp + chSlope * (xE - b1p), extend=extend.none, color=colP, width=2)
+            else
+                line.set_xy1(chLnPar, b1p, y1p + offp)
+                line.set_xy2(chLnPar, xE, y1p + offp + chSlope * (xE - b1p))
+                line.set_color(chLnPar, colP)
+
+if showSR and barstate.islast
+    if array.size(resL) > 0
+        resTop = array.size(resL) - 1
+        int resHotIdx = -1
+        float resHotPx = na
+        for i = 0 to resTop
+            pxH = array.get(resPx, i)
+            if close <= pxH and (na(resHotPx) or pxH < resHotPx)
+                resHotIdx := i
+                resHotPx  := pxH
+        for i = 0 to resTop
+            pxR  = array.get(resPx, i)
+            brkR = close > pxR
+            hotR = i == resHotIdx
+            line.set_color(array.get(resL, i), brkR ? color.new(color.gray, 45) : hotR ? color.new(color.red, 0) : color.new(color.red, 62))
+            line.set_style(array.get(resL, i), brkR ? line.style_dashed : line.style_solid)
+            line.set_width(array.get(resL, i), hotR ? 2 : 1)
+            lbR = array.get(resLbl, i)
+            label.set_x(lbR, last_bar_index + 2)
+            label.set_text(lbR, (brkR ? "破 " : "阻力 ") + str.tostring(pxR, format.mintick))
+            label.set_color(lbR, brkR ? color.new(color.gray, 30) : hotR ? color.new(color.red, 20) : color.new(color.red, 50))
+    if array.size(supL) > 0
+        supTop = array.size(supL) - 1
+        int supHotIdx = -1
+        float supHotPx = na
+        for i = 0 to supTop
+            pxH2 = array.get(supPx, i)
+            if close >= pxH2 and (na(supHotPx) or pxH2 > supHotPx)
+                supHotIdx := i
+                supHotPx  := pxH2
+        for i = 0 to supTop
+            pxS  = array.get(supPx, i)
+            brkS = close < pxS
+            hotS = i == supHotIdx
+            line.set_color(array.get(supL, i), brkS ? color.new(color.gray, 45) : hotS ? color.new(color.green, 0) : color.new(color.green, 62))
+            line.set_style(array.get(supL, i), brkS ? line.style_dashed : line.style_solid)
+            line.set_width(array.get(supL, i), hotS ? 2 : 1)
+            lbS = array.get(supLbl, i)
+            label.set_x(lbS, last_bar_index + 2)
+            label.set_text(lbS, (brkS ? "破 " : "支撑 ") + str.tostring(pxS, format.mintick))
+            label.set_color(lbS, brkS ? color.new(color.gray, 30) : hotS ? color.new(color.green, 20) : color.new(color.green, 50))
+
+rsiBias = rsiVal >= 55 ? 1 : rsiVal <= 45 ? -1 : 0
+
+macdBias = macdLine > sigLine ? 1 : macdLine < sigLine ? -1 : 0
+
+kdjBias = kVal > dVal ? 1 : kVal < dVal ? -1 : 0
+
+f_legDecay() =>
+    int    nH = array.size(phBars)
+    int    nL = array.size(plBars)
+    int    b  = 0
+    bool   ok = false
+    if nH >= 2 and nL >= 2
+        int hb1 = array.get(phBars, nH - 1)
+        int hb2 = array.get(phBars, nH - 2)
+        int lb1 = array.get(plBars, nL - 1)
+        int lb2 = array.get(plBars, nL - 2)
+        bool upNew = hb1 > lb1 and lb1 > hb2 and hb2 > lb2
+        bool dnNew = lb1 > hb1 and hb1 > lb2 and lb2 > hb2
+        if upNew or dnNew
+            float hp1 = array.get(phPrices, nH - 1)
+            float hp2 = array.get(phPrices, nH - 2)
+            float lp1 = array.get(plPrices, nL - 1)
+            float lp2 = array.get(plPrices, nL - 2)
+            float ampNew = hp1 - lp1
+            float ampOld = hp2 - lp2
+            int   durNew = upNew ? hb1 - lb1 : lb1 - hb1
+            int   durOld = upNew ? hb2 - lb2 : lb2 - hb2
+            if durNew > 0 and durOld > 0 and ampNew > 0 and ampOld > 0
+                bool fade = ampNew < ampOld and durNew > durOld
+                if fade and bar_index - math.max(hb1, lb1) <= momMaxAge
+                    b  := upNew ? -1 : 1
+                    ok := true
+    [b, ok]
+
+[momBias, momOK] = f_legDecay()
+
+wTrend = 0.7
+wMacd  = 0.15
+wRsi   = 0.15
+wKdj   = 0.15
+wPat   = 0.6
+wVol   = 0.8
+wTL    = 0.3
+wSwp   = 1.0
+wTd    = 0.4
+wOi    = 0.8
+wMom   = 0.6
+weightedTotal = trendBias*wTrend + macdBias*wMacd + rsiBias*wRsi + kdjBias*wKdj + patBiasEff*wPat + volBias*wVol + tlBias*wTL + swpBias*wSwp + tdBias*wTd + oiBias*wOi + momBias*wMom
+maxW  = wTrend + wMacd + wRsi + wKdj + (patFresh ? wPat : 0.0) + (hasVol ? wVol : 0.0) + (tlActive ? wTL : 0.0) + (swpFresh ? wSwp : 0.0) + (tdFresh ? wTd : 0.0) + (oiOK ? wOi : 0.0) + (momOK ? wMom : 0.0)
+chopMode  = not bullStack and not bearStack and (bollSqueeze or (not atLow and not atHigh))
+chopWidth = atrVal > 0 ? (rangeHi - rangeLo) / atrVal : 0.0
+chopTight = chopMode and not na(emaSlow) and math.abs(close - emaSlow) < tightAtr * atrVal and chopWidth < wideAtr
+rawRatio = maxW > 0 ? weightedTotal / maxW : 0.0
+ratio    = chopTight ? rawRatio * chopDamp : rawRatio
+score = math.round(math.max(0, math.min(100, 50 + ratio * 50)))
+concBias = ratio >= 0.15 ? 1 : ratio <= -0.15 ? -1 : 0
+
+planBiasRaw = chBias != 0 ? chBias : concBias
+envBlock  = showGate and gateHard and gateBias != 0 and planBiasRaw != 0 and planBiasRaw != gateBias
+gateBlock = envBlock
+planBias  = gateBlock ? 0 : planBiasRaw
+
+f_push3(float[] mp, int[] mb, float[] sp, int[] sb, bool up) =>
+    int res = 0
+    int ms = array.size(mp)
+    int ss = array.size(sp)
+    if ms >= 3 and ss >= 2
+        float m1 = array.get(mp, ms - 3)
+        float m2 = array.get(mp, ms - 2)
+        float m3 = array.get(mp, ms - 1)
+        int   b1 = array.get(mb, ms - 3)
+        int   b2 = array.get(mb, ms - 2)
+        int   b3 = array.get(mb, ms - 1)
+        bool  seq = up ? (m1 < m2 and m2 < m3) : (m1 > m2 and m2 > m3)
+        if seq and b1 < b2 and b2 < b3
+            float s1 = na
+            float s2 = na
+            int   c1 = na
+            int   c2 = na
+            for i = 0 to ss - 1
+                int   bb = array.get(sb, i)
+                float pp = array.get(sp, i)
+                if bb > b1 and bb < b2
+                    if na(s1) or (up ? pp < s1 : pp > s1)
+                        s1 := pp
+                        c1 := bb
+                else if bb > b2 and bb < b3
+                    if na(s2) or (up ? pp < s2 : pp > s2)
+                        s2 := pp
+                        c2 := bb
+            if not na(s1) and not na(s2) and c2 > c1
+                float p2 = up ? m2 - s1 : s1 - m2
+                float p3 = up ? m3 - s2 : s2 - m3
+                if p3 < p2
+                    float slM = (m3 - m1) / (b3 - b1)
+                    float slS = (s2 - s1) / (c2 - c1)
+                    res := (up ? slM : slS) < (up ? slS : slM) ? 2 : 1
+    res
+
+push3Up = f_push3(phPrices, phBars, plPrices, plBars, true)
+push3Dn = f_push3(plPrices, plBars, phPrices, phBars, false)
+push3AgeUp = array.size(phBars) > 0 ? bar_index - array.get(phBars, array.size(phBars) - 1) : na
+push3AgeDn = array.size(plBars) > 0 ? bar_index - array.get(plBars, array.size(plBars) - 1) : na
+push3Stale = effSwingL * staleMult
+push3Clash = planBias > 0 and push3Up == 2 and not na(push3AgeUp) and push3AgeUp <= push3Stale ? 1 : planBias < 0 and push3Dn == 2 and not na(push3AgeDn) and push3AgeDn <= push3Stale ? -1 : 0
+
+chDirTxt = planBiasRaw == 0 ? "没方向" : (planBiasRaw > 0 ? "偏多·" : "偏空·") + (chBias != 0 ? "看通道" : "靠评分")
+float planStop = na
+float planTgt  = na
+if planBias > 0
+    planStop := not na(chLo) and chOK ? chLo - atrVal * stopBufAtr : not na(supBelow) ? supBelow - atrVal * stopBufAtr : na
+    float tA = resAboveH
+    float tB = chOK ? chHi : bigBiasShow > 0 and not na(lastBigTgt) ? lastBigTgt : na
+    float tC = chOK and not na(chSlopeHi) ? chHi + chSlopeHi * chProjN : na
+    float cA = not na(tA) and tA > close ? tA : 1e20
+    float cB = not na(tB) and tB > close ? tB : 1e20
+    float cC = not na(tC) and tC > close ? tC : 1e20
+    float best = math.min(cA, math.min(cB, cC))
+    planTgt  := best >= 1e20 ? na : best
+else if planBias < 0
+    planStop := not na(chHi) and chOK ? chHi + atrVal * stopBufAtr : not na(resAbove) ? resAbove + atrVal * stopBufAtr : na
+    float tA = supBelowH
+    float tB = chOK ? chLo : bigBiasShow < 0 and not na(lastBigTgt) ? lastBigTgt : na
+    float tC = chOK and not na(chSlopeLo) ? chLo + chSlopeLo * chProjN : na
+    float cA = not na(tA) and tA < close ? tA : -1e20
+    float cB = not na(tB) and tB < close ? tB : -1e20
+    float cC = not na(tC) and tC < close ? tC : -1e20
+    float best = math.max(cA, math.max(cB, cC))
+    planTgt  := best <= -1e20 ? na : best
+swpStopOK = swpFresh and not na(lastSwpEdge) and planBias != 0 and swpBias == planBias
+if swpStopOK and planBias > 0
+    edgeStop = lastSwpEdge - atrVal * stopBufAtr
+    planStop := na(planStop) ? edgeStop : math.min(planStop, edgeStop)
+else if swpStopOK and planBias < 0
+    edgeStop = lastSwpEdge + atrVal * stopBufAtr
+    planStop := na(planStop) ? edgeStop : math.max(planStop, edgeStop)
+
+if planBias > 0
+    planStop := not na(planStop) and planStop < close ? planStop : na
+    planTgt  := not na(planTgt) and planTgt > close ? planTgt : na
+else if planBias < 0
+    planStop := not na(planStop) and planStop > close ? planStop : na
+    planTgt  := not na(planTgt) and planTgt < close ? planTgt : na
+f_tick(px, up) => na(px) ? na : (up ? math.ceil(px / syminfo.mintick) : math.floor(px / syminfo.mintick)) * syminfo.mintick
+lmtRef = planBias > 0 ? (chOK ? chLo : supBelow) : planBias < 0 ? (chOK ? chHi : resAbove) : na
+lmtPx  = not na(lmtRef) and (planBias > 0 ? lmtRef < close : lmtRef > close) ? f_tick(lmtRef, planBias < 0) : na
+if not na(planStop) and minStopAtr > 0
+    if planBias > 0
+        planStop := math.min(planStop, close - atrVal * minStopAtr, nz(lmtPx, close) - atrVal * minStopAtr)
+    else if planBias < 0
+        planStop := math.max(planStop, close + atrVal * minStopAtr, nz(lmtPx, close) + atrVal * minStopAtr)
+planStop := f_tick(planStop, planBias < 0)
+lmtStopOK = not na(lmtPx) and not na(planStop) and (planBias > 0 ? planStop < lmtPx : planStop > lmtPx)
+
+planRRTgt = f_tick(planTgt, planBias < 0)
+
+planTgtDist = not na(planRRTgt) and not na(lmtPx) ? math.abs(planRRTgt - lmtPx) : na
+planStpDist = not na(planStop) and not na(lmtPx) ? math.abs(lmtPx - planStop) : na
+planCostAbs = not na(lmtPx) ? lmtPx * costPct / 100.0 : na
+planRR = not na(planStpDist) and not na(planTgtDist) and planStpDist > 0 ? math.max(0.0, planTgtDist - planCostAbs) / (planStpDist + planCostAbs) : na
+fmtLv(v) => na(v) ? "无" : str.tostring(v, format.mintick)
+
+rrGateOk = not na(planRR) and (minPlanRR <= 0 or planRR >= minPlanRR)
+
+f_planLine(ln, lb, px, txt, col, dashed) =>
+    line rl = ln
+    label rb = lb
+    if na(px)
+        if not na(rl)
+            line.delete(rl)
+            rl := na
+        if not na(rb)
+            label.delete(rb)
+            rb := na
+    else
+        x1 = bar_index - math.max(effSwingL * 3, 20)
+        x2 = bar_index + math.max(tlProjBars, 6)
+        if na(rl)
+            rl := line.new(x1, px, x2, px, color=col, width=1, style=dashed ? line.style_dashed : line.style_solid)
+        else
+            line.set_xy1(rl, x1, px)
+            line.set_xy2(rl, x2, px)
+            line.set_color(rl, col)
+        if na(rb)
+            rb := label.new(x2, px, txt + " " + str.tostring(px, format.mintick), style=label.style_label_left, color=col, textcolor=color.white, size=size.tiny)
+        else
+            label.set_xy(rb, x2, px)
+            label.set_text(rb, txt + " " + str.tostring(px, format.mintick))
+            label.set_color(rb, col)
+    [rl, rb]
+
+var line  plLnStop = na
+var label plLbStop = na
+var line  plLnTp1  = na
+var label plLbTp1  = na
+bullVotes = (trendBias>0?1:0)+(rsiBias>0?1:0)+(macdBias>0?1:0)+(kdjBias>0?1:0)+(patBiasEff>0?1:0)+(volBias>0?1:0)+(oiBias>0?1:0)+(tlBias>0?1:0)+(swpBias>0?1:0)+(tdBias>0?1:0)+(momBias>0?1:0)
+bearVotes = (trendBias<0?1:0)+(rsiBias<0?1:0)+(macdBias<0?1:0)+(kdjBias<0?1:0)+(patBiasEff<0?1:0)+(volBias<0?1:0)+(oiBias<0?1:0)+(tlBias<0?1:0)+(swpBias<0?1:0)+(tdBias<0?1:0)+(momBias<0?1:0)
+
+posBull = chOK ? chEdgeOK and chIsUp : nearSup and not nearRes
+posBear = chOK ? chEdgeOK and not chIsUp : nearRes and not nearSup
+
+f_sigKind(d, sw, pa, td, dv) =>
+    d > 0 ? (sw > 0 ? 1 : pa > 0 ? 2 : td > 0 ? 3 : dv > 0 ? 4 : 0) : d < 0 ? (sw < 0 ? 1 : pa < 0 ? 2 : td < 0 ? 3 : dv < 0 ? 4 : 0) : 0
+var float[] kdSeq0 = array.new_float()
+var float[] kdSeq1 = array.new_float()
+var float[] kdSeq2 = array.new_float()
+var float[] kdSeq3 = array.new_float()
+f_kdSeq(i) => i == 0 ? kdSeq0 : i == 1 ? kdSeq1 : i == 2 ? kdSeq2 : kdSeq3
+var int[] kdGen0 = array.new_int()
+var int[] kdGen1 = array.new_int()
+var int[] kdGen2 = array.new_int()
+var int[] kdGen3 = array.new_int()
+f_kdGen(i) => i == 0 ? kdGen0 : i == 1 ? kdGen1 : i == 2 ? kdGen2 : kdGen3
+var int[] kdEp = array.new_int(4, 0)
+var int[] kdAmbN = array.new_int(4, 0)
+var int[]   kdN = array.new_int(4, 0)
+var int[]   kdW = array.new_int(4, 0)
+var float[] kdR = array.new_float(4, 0.0)
+var float[] kdR2 = array.new_float(4, 0.0)
+var float[] kdRL = array.new_float(4, 0.0)
+var int[] kdWrote = array.new_int(1, 0)
+var int   kdOwed  = 0
+f_kdAudit(cls, owed, statN, win, ambN) =>
+    float d = 0.0
+    d += math.abs(array.get(kdN, 0) - array.size(kdSeq0)) + math.abs(array.size(kdSeq0) - array.size(kdGen0))
+    d += math.abs(array.get(kdN, 1) - array.size(kdSeq1)) + math.abs(array.size(kdSeq1) - array.size(kdGen1))
+    d += math.abs(array.get(kdN, 2) - array.size(kdSeq2)) + math.abs(array.size(kdSeq2) - array.size(kdGen2))
+    d += math.abs(array.get(kdN, 3) - array.size(kdSeq3)) + math.abs(array.size(kdSeq3) - array.size(kdGen3))
+    d += math.abs(cls)
+    d += math.abs(owed - array.get(kdWrote, 0))
+    d += statN > win ? 1 : 0
+    d += math.abs(statN - ambN)
+    d += array.get(kdAmbN, 0) > array.get(kdN, 0) ? 1 : 0
+    d += array.get(kdAmbN, 1) > array.get(kdN, 1) ? 1 : 0
+    d += array.get(kdAmbN, 2) > array.get(kdN, 2) ? 1 : 0
+    d += array.get(kdAmbN, 3) > array.get(kdN, 3) ? 1 : 0
+    d
+
+f_kdWrite(ki, r, gen, amb, win) =>
+    float[] sq = f_kdSeq(ki)
+    int[]   gq = f_kdGen(ki)
+    array.push(sq, r)
+    array.push(gq, amb ? -(gen + 1) : gen + 1)
+    if amb
+        array.set(kdAmbN, ki, array.get(kdAmbN, ki) + 1)
+    array.set(kdN, ki, array.get(kdN, ki) + 1)
+    array.set(kdW, ki, array.get(kdW, ki) + (r > 0 ? 1 : 0))
+    array.set(kdR, ki, array.get(kdR, ki) + r)
+    array.set(kdR2, ki, array.get(kdR2, ki) + r * r)
+    if r <= 0
+        array.set(kdRL, ki, array.get(kdRL, ki) + r)
+    bool epNew = true
+    if array.size(gq) > 1
+        for i = 0 to array.size(gq) - 2
+            if math.abs(array.get(gq, i)) == gen + 1
+                epNew := false
+                break
+    if epNew
+        array.set(kdEp, ki, array.get(kdEp, ki) + 1)
+    if array.size(sq) > win
+        float outV = array.shift(sq)
+        int   outG = array.shift(gq)
+        array.set(kdN, ki, array.get(kdN, ki) - 1)
+        array.set(kdW, ki, array.get(kdW, ki) - (outV > 0 ? 1 : 0))
+        array.set(kdR, ki, array.get(kdR, ki) - outV)
+        array.set(kdR2, ki, array.get(kdR2, ki) - outV * outV)
+        if outV <= 0
+            array.set(kdRL, ki, array.get(kdRL, ki) - outV)
+        if outG < 0
+            array.set(kdAmbN, ki, array.get(kdAmbN, ki) - 1)
+        bool epGone = true
+        if array.size(gq) > 0
+            for i = 0 to array.size(gq) - 1
+                if math.abs(array.get(gq, i)) == math.abs(outG)
+                    epGone := false
+                    break
+        if epGone
+            array.set(kdEp, ki, array.get(kdEp, ki) - 1)
+    array.set(kdWrote, 0, array.get(kdWrote, 0) + 1)
+    true
+kdCnt(i) => array.get(kdN, i)
+kdAmbRate(i) => array.get(kdN, i) > 0 ? 1.0 * array.get(kdAmbN, i) / array.get(kdN, i) : 0.0
+kdEpN(i) => math.max(int(math.round(array.get(kdEp, i) * (1.0 - kdAmbRate(i)))), 1)
+kdExpR(i) => array.get(kdN, i) > 0 ? array.get(kdR, i) / array.get(kdN, i) : na
+kdSig(i) =>
+    int   n = array.get(kdN, i)
+    int   nEff = kdEpN(i)
+    float sd = n > 1 ? math.sqrt(math.max((array.get(kdR2, i) - array.get(kdR, i) * array.get(kdR, i) / n) / n, 0.0)) : na
+    float se = not na(sd) and sd > 0 and nEff > 0 ? sd / math.sqrt(nEff) : na
+    n == 0 ? na : nEff >= SIG_MIN_N and not na(se) and se > 0 and math.abs(array.get(kdR, i) / n) / se >= 2 ? 1 : 0
+
+kdLossR(i) =>
+    int n = array.get(kdN, i)
+    int w = array.get(kdW, i)
+    n - w > 0 ? math.max(-array.get(kdRL, i) / (n - w), 1.0) : 1.0
+
+kdRneedMin(i) =>
+    int n = array.get(kdN, i)
+    int nEff = kdEpN(i)
+    float pHi = na
+    if n > 0
+        float p   = array.get(kdW, i) / n
+        float z2  = Z95SQ
+        float ctr = (p + z2 / (2 * nEff)) / (1 + z2 / nEff)
+        float hlf = (Z95 / (1 + z2 / nEff)) * math.sqrt(p * (1 - p) / nEff + z2 / (4 * nEff * nEff))
+        pHi := math.min(ctr + hlf, 1.0)
+    n == 0 ? na : not na(pHi) and pHi > 0 ? (1 - pHi) / pHi * kdLossR(i) : RNEED_INF
+
+kdTakeoverN = 20
+plnSigKind  = f_sigKind(planBias, swpBias, patBiasEff, tdBias, divBiasShow)
+
+SWP_SAME_ATR = 0.5
+swpRef  = chOK ? (swpBias > 0 ? chLo : chHi) : (swpBias > 0 ? supBelowH : resAboveH)
+swpSame = not na(lastSwpRef) and not na(swpRef) and math.abs(lastSwpRef - swpRef) <= atrVal * SWP_SAME_ATR
+swpOnlySig = swpFresh and swpBias != 0 and swpSame
+posBullEff = posBull and not (swpOnlySig and swpBias > 0)
+posBearEff = posBear and not (swpOnlySig and swpBias < 0)
+sigBull = patBiasEff > 0 or divBiasShow > 0 or swpBias > 0 or tdBias > 0
+sigBear = patBiasEff < 0 or divBiasShow < 0 or swpBias < 0 or tdBias < 0
+sigClash = sigBull and sigBear
+stackBullN = (posBullEff ? 1 : 0) + (sigBull ? 1 : 0) + (rrGateOk ? 1 : 0)
+stackBearN = (posBearEff ? 1 : 0) + (sigBear ? 1 : 0) + (rrGateOk ? 1 : 0)
+
+plnDir   = planBias > 0 ? "做多" : planBias < 0 ? "做空" : "—"
+plnPosOk = planBias > 0 ? posBullEff : planBias < 0 ? posBearEff : false
+plnSigOk = planBias > 0 ? sigBull : planBias < 0 ? sigBear : false
+plnN     = planBias > 0 ? stackBullN : planBias < 0 ? stackBearN : 0
+
+rrKindLow = plnN >= 3 and plnSigKind > 0 and kdEpN(plnSigKind - 1) >= kdTakeoverN and not na(planRR) and not na(kdRneedMin(plnSigKind - 1)) and planRR < kdRneedMin(plnSigKind - 1)
+plnReady = plnPosOk and rrGateOk
+plnMiss  = (plnPosOk ? "" : " 位置") + (plnSigOk ? "" : " 信号") + (rrGateOk ? "" : " 赔率")
+plnMiss := plnMiss == "" ? "无" : str.substring(plnMiss, 1)
+int    plnKind    = 1
+bool   plnProbe   = false
+string plnVerdict = "别进"
+swpVsGate = showGate and gateHard and gateBias != 0 and swpBias != 0 and swpBias != gateBias
+if swpFresh and swpAge == 0 and swpVsGate
+    plnKind    := 2
+    plnVerdict := (swpBias > 0 ? "下方扫损又拉回" : "上方扫损又打回") + "·逆环境别做"
+else if gateBlock
+    plnKind    := 2
+    plnVerdict := "别做·逆环境·只许" + (gateBias > 0 ? "多" : "空")
+else if tlConverging and planBias == 0
+    plnKind    := 2
+    tlApexTxt = na(tlBarsToApex) or tlBarsToApex < 0 or tlBarsToApex > 99 ? "" : "·剩" + str.tostring(tlBarsToApex) + "根"
+    plnVerdict := "三角收口" + tlApexTxt + "·等它选边"
+else if (triDnOK or triUpOK) and planBias == 0
+    plnKind    := 2
+    plnVerdict := (triDnOK ? "下降三角" : "上升三角") + "·等突破"
+else if chOut
+    plnKind    := 1
+    plnVerdict := "别进·价格跑出通道"
+else if planBias == 0
+    plnKind    := 2
+    plnVerdict := "别做·看不出方向"
+else if chopTight
+    plnKind    := 2
+    plnVerdict := "别做·挤在均线上·等突破"
+else if chOK and not chEdgeOK
+    plnKind    := 1
+    plnVerdict := "别进·还没到边上"
+else if rrKindLow
+    plnKind    := 1
+    plnVerdict := "别进·这类要" + rrFmt(kdRneedMin(plnSigKind - 1))
+else if plnN >= 3 and lmtStopOK
+    plnKind    := 0
+    plnVerdict := push3Clash != 0 ? "可以进·" + plnDir + "·" + (push3Clash > 0 ? "顶" : "底") + "三推楔" : sigClash ? "可以进·" + plnDir + "·信号打架" : "可以进·" + plnDir + "·三样都够"
+else if plnN >= 3
+    plnKind    := 1
+    plnVerdict := "别进·价差不足"
+else if plnReady
+    plnKind    := 1
+    plnProbe   := true
+    plnVerdict := "先别进·" + plnDir + "·就差" + plnMiss
+else
+    plnKind    := 1
+    plnVerdict := na(planStop) ? "别进·算不出止损" : na(planRRTgt) ? "别进·没有像样的目标" : na(lmtPx) ? "别进·没有可挂的位" : na(planRR) ? "别进·赔率算不出" : not rrGateOk and plnN >= 2 ? "别进·赔率" + rrFmt(planRR) + "·太低" : "别进·偏" + (planBias > 0 ? "多" : "空") + "·只够" + str.tostring(plnN) + "样"
+tradeAllowed = plnKind == 0 and planBias != 0 and not gateBlock and not chopTight and not chOut and (not chOK or chEdgeOK) and not na(planStop) and not na(planRRTgt) and lmtStopOK
+trkArm       = planBias != 0 and not gateBlock and not chopTight and not chOut and (not chOK or chEdgeOK) and not na(planStop) and not na(planRRTgt) and lmtStopOK and (plnKind == 0 or plnProbe or rrKindLow)
+tradeDir     = trkArm ? planBias : 0
+var float  dcLmt     = na
+var float  dcStop    = na
+var float  dcTgt     = na
+var string dcVerdict = "别进"
+var bool   dcAllowed = false
+var bool   dcStopOK  = false
+var int    dcBias    = 0
+var float  dcRR      = na
+var int    dcKind    = 0
+var float  dcClose   = na
+var float  dcBoll    = na
+var string dcDirTxt  = "没方向"
+var int    dcBiasRaw = 0
+if barstate.isconfirmed
+    dcLmt     := lmtPx
+    dcStop    := planStop
+    dcTgt     := planRRTgt
+    dcVerdict := plnVerdict
+    dcAllowed := tradeAllowed
+    dcStopOK  := lmtStopOK
+    dcBias    := planBias
+    dcKind    := plnKind
+    dcClose   := close
+    dcBoll    := bollBasis
+    dcDirTxt  := chDirTxt
+    dcBiasRaw := planBiasRaw
+    dcRR      := planRR
+
+tradeEntry   = trkArm ? lmtPx : na
+tradeStop    = trkArm ? planStop : na
+tradeTarget  = trkArm ? planRRTgt : na
+armUp        = trkArm and trkArm[1] and tradeAllowed and not tradeAllowed[1] and tradeDir == tradeDir[1]
+tradeEvent   = barstate.isconfirmed and trkArm and (not trkArm[1] or tradeDir != tradeDir[1] or armUp)
+var int armGen = 0
+if barstate.isconfirmed and trkArm and (not trkArm[1] or tradeDir != tradeDir[1])
+    armGen += 1
+var int pndGen = 0
+var int trkGen = 0
+
+if barstate.islast
+    sShow  = showPlan and dcAllowed ? dcStop : na
+    tShow  = showPlan and dcAllowed ? dcTgt : na
+    [l0, b0] = f_planLine(plLnStop, plLbStop, sShow, "止损", color.new(#ef5350, 0), false)
+    plLnStop := l0
+    plLbStop := b0
+    [l1, b1] = f_planLine(plLnTp1, plLbTp1, tShow, "止盈", color.new(#26a69a, 0), true)
+    plLnTp1 := l1
+    plLbTp1 := b1
+
+evalN     = effSwingL
+biasThen  = planBias[evalN]
+moveSince = close - close[evalN]
+var int hitCnt = 0
+var int misCnt = 0
+if barstate.isconfirmed and biasThen != 0
+    hitOne = (biasThen > 0) == (moveSince > 0) and math.abs(moveSince) > atrVal * 0.1
+    if hitOne
+        hitCnt += 1
+    else
+        misCnt += 1
+hitRate     = hitCnt + misCnt > 0 ? 100.0 * hitCnt / (hitCnt + misCnt) : na
+
+f_tgtR(ent, tgt, cost, risk) => (math.abs(tgt - ent) - cost) / risk
+
+f_trkExit(dir, ent, stp, tgt, cost, risk, entBar, holdN, revNow, fillNow, lmtE) =>
+    bool opFill = not fillNow or (dir > 0 ? open <= lmtE : open >= lmtE)
+    bool tMay = not na(tgt) and (dir > 0 ? high >= tgt : low <= tgt)
+    bool opStop = not fillNow and (dir > 0 ? open <= stp : open >= stp)
+    bool opTgt  = not fillNow and not na(tgt) and (dir > 0 ? open >= tgt : open <= tgt)
+    bool clsTgt = fillNow and not na(tgt) and (dir > 0 ? close >= tgt : close <= tgt)
+    bool tHit = tMay and (opFill or clsTgt)
+    bool sHit = dir > 0 ? low  <= stp : high >= stp
+    bool  amb = tMay and not opStop and not opTgt and (sHit or not tHit)
+    float r   = na
+    bool  tmo = false
+    bool  rev = false
+    if opTgt
+        r := f_tgtR(ent, tgt, cost, risk)
+    else if sHit
+        float fillPx = dir > 0 ? math.min(open, stp) : math.max(open, stp)
+        float lossPx = dir > 0 ? ent - fillPx : fillPx - ent
+        r := -(lossPx + cost) / risk
+    else if tHit
+        r := f_tgtR(ent, tgt, cost, risk)
+    else if bar_index - entBar >= holdN
+        float mvT = dir > 0 ? close - ent : ent - close
+        r := (mvT - cost) / risk
+        tmo := true
+    else if revNow
+        float mvR = dir > 0 ? close - ent : ent - close
+        r := (mvR - cost) / risk
+        rev := true
+    [r, amb, tmo, rev]
+
+var bool  trkOn   = false
+var bool  trkFillNow = false
+var float trkLmtE = na
+var bool  trkJustClosed = false
+var int   trkDir  = 0
+var float trkEnt  = na
+var float trkStp  = na
+var float trkTgt  = na
+var float trkCost = na
+var float trkRisk = na
+var int   trkBar  = na
+var bool  pprPend = false
+var bool  pprOn   = false
+var bool  pprFillNow = false
+var float pprLmtE = na
+var bool  pprJustClosed = false
+var bool  pprAmb  = false
+var int   pprDir  = 0
+var float pprPx   = na
+var float pprStop = na
+var float pprTgt  = na
+var float pprRisk = na
+var float pprCost = na
+var int   pprBar  = na
+var int   pprCls  = 0
+var int   pprKind = 0
+var int   pprGen  = 0
+var bool  trkPend = false
+var int   pndDir  = 0
+var float pndPx   = na
+var float pndStop = na
+var float pndTgt  = na
+var int   pndBar  = na
+var int   pndCls = 0
+var int   pndKind = 0
+var int   trkCncl = 0
+var int   trkFill = 0
+var bool  trkAmb  = false
+var bool  trkAmbT = false
+var int   trkAmbig = 0
+var float trkAmbUp = 0.0
+var int   trkAmbigT = 0
+var int   trkMissR = 0
+var int   trkSilent = 0
+pndLife = effSwingL * staleMult
+var int   trkLossRun = 0
+var int   trkMaxLoss = 0
+var int   trkPN = 0
+var float trkPR = 0.0
+var int   trkCls = 0
+var int   trkGN = 0
+var float trkGR = 0.0
+var int   trkWin  = 0
+var int   trkLos  = 0
+var int   trkTmo  = 0
+var int   trkRev  = 0
+var int   trkTgtNearR = 0
+var int   trkFillR    = 0
+var float trkSumR = 0.0
+var float trkEqu  = 0.0
+var float trkPeak = 0.0
+var float trkMaxDD = 0.0
+var float[] trkRArr = array.new_float()
+var float[] trkWArr = array.new_float()
+var float[] trkSpanArr = array.new_float()
+var int   trkKind = 0
+curCls = plnProbe ? 1 : tradeAllowed ? 0 : 2
+trkHold = int(effSwingL * 12)
+if barstate.isconfirmed
+    trkFillNow := false
+    trkJustClosed := false
+    pprFillNow := false
+    pprJustClosed := false
+    float trkResultR = na
+    bool  trkTimedOut = false
+    bool  trkReversed = false
+    bool  trkNewOrd = false
+    if trkPend
+        bool pndHit  = pndDir > 0 ? low <= pndPx : high >= pndPx
+        bool pndDown = pndCls == 0 and not tradeAllowed
+        bool pndTmOut = bar_index - pndBar >= pndLife
+        bool pndDead = pndTmOut or not trkArm or tradeDir != pndDir or pndDown
+        if pndHit
+            float fCost = pndPx * costPct / 100.0
+            float fRisk = math.abs(pndPx - pndStop) + fCost
+            trkPend := false
+            if fRisk > 0
+                trkFill += 1
+                if pndCls == 0
+                    trkFillR += 1
+                if pndCls == 0 and not na(pndTgt) and not na(atrVal) and atrVal > 0 and math.abs(pndTgt - pndPx) < atrVal
+                    trkTgtNearR += 1
+                trkOn   := true
+                trkGen  := pndGen
+                trkDir  := pndDir
+                trkEnt  := pndPx
+                trkStp  := pndStop
+                trkTgt  := pndTgt
+                trkCost := fCost
+                trkRisk := fRisk
+                trkBar  := bar_index
+                trkFillNow := true
+                trkLmtE := pndPx
+                trkKind := pndKind
+                trkCls := pndCls
+            else
+                trkCncl += 1
+        else if pndDead
+            trkPend := false
+            trkCncl += 1
+    if trkOn
+        [exR, exAmb, exTmo, exRev] = f_trkExit(trkDir, trkEnt, trkStp, trkTgt, trkCost, trkRisk, trkBar, trkHold, tradeEvent and tradeAllowed and tradeDir != trkDir, trkFillNow, trkLmtE)
+        if exAmb
+            trkAmb := true
+            if trkFillNow
+                trkAmbT := true
+        trkResultR  := exR
+        trkTimedOut := exTmo
+        trkReversed := exRev
+        if not na(trkResultR)
+            trkOn   := false
+            trkJustClosed := true
+            if trkKind > 0
+                kdOwed += 1
+            bool ambNow  = trkAmb
+            bool ambTNow = trkAmbT
+            trkAmb  := false
+            trkAmbT := false
+            trkSumR += trkResultR
+            if trkResultR > 0
+                trkWin += 1
+                trkLossRun := 0
+            else
+                trkLos += 1
+                trkLossRun += 1
+                trkMaxLoss := math.max(trkMaxLoss, trkLossRun)
+            array.push(trkRArr, trkResultR)
+            array.push(trkWArr, trkResultR > 0 ? 1.0 : 0.0)
+            trkEqu  += trkResultR
+            trkPeak := math.max(trkPeak, trkEqu)
+            trkMaxDD := math.max(trkMaxDD, trkPeak - trkEqu)
+            float ambSpanNow = ambNow ? f_tgtR(trkEnt, trkTgt, trkCost, trkRisk) - trkResultR : 0.0
+            array.push(trkSpanArr, ambSpanNow)
+            if ambNow
+                trkAmbig += 1
+                trkAmbUp += ambSpanNow
+            if ambTNow
+                trkAmbigT += 1
+            if trkTimedOut
+                trkTmo += 1
+            if trkReversed
+                trkRev += 1
+            if trkKind > 0
+                f_kdWrite(trkKind - 1, trkResultR, trkGen, ambNow, tradeStatWin)
+            if array.size(trkRArr) > tradeStatWin
+                array.shift(trkRArr)
+                array.shift(trkWArr)
+                array.shift(trkSpanArr)
+
+    if trkArm and curCls == 0 and not trkOn and not trkPend and not trkJustClosed and not na(tradeEntry) and not na(tradeStop) and math.abs(tradeEntry - tradeStop) > 0
+        trkPend  := true
+        trkNewOrd := true
+        pndGen   := armGen
+        pndDir   := tradeDir
+        pndPx    := tradeEntry
+        pndStop  := tradeStop
+        pndTgt   := tradeTarget
+        pndBar   := bar_index
+        pndCls   := curCls
+        pndKind  := f_sigKind(tradeDir, swpBias, patBiasEff, tdBias, divBiasShow)
+    if trkArm and curCls == 0 and tradeEvent and tradeAllowed and not trkNewOrd and (trkOn or trkPend or trkJustClosed)
+        trkMissR += 1
+    if trkNewOrd and not (tradeEvent and tradeAllowed)
+        trkSilent += 1
+
+    if pprPend
+        bool pHit  = pprDir > 0 ? low <= pprPx : high >= pprPx
+        bool pDead = bar_index - pprBar >= pndLife or not trkArm or tradeDir != pprDir
+        if pHit
+            float pC  = pprPx * costPct / 100.0
+            float pRk = math.abs(pprPx - pprStop) + pC
+            pprPend := false
+            if pRk > 0
+                pprOn   := true
+                pprCost := pC
+                pprRisk := pRk
+                pprBar  := bar_index
+                pprFillNow := true
+                pprLmtE := pprPx
+        else if pDead
+            pprPend := false
+        else if curCls != 0 and curCls != pprCls
+            pprPend := false
+    if pprOn
+        [pR, pAmb, pTmo, pRev] = f_trkExit(pprDir, pprPx, pprStop, pprTgt, pprCost, pprRisk, pprBar, trkHold, tradeEvent and tradeAllowed and tradeDir != pprDir, pprFillNow, pprLmtE)
+        if pAmb
+            pprAmb := true
+        if not na(pR)
+            pprOn := false
+            pprJustClosed := true
+            if pprKind > 0
+                kdOwed += 1
+            if pprCls == 1
+                trkPN += 1
+                trkPR += pR
+            else
+                trkSumR += pR
+                if pR > 0
+                    trkWin += 1
+                else
+                    trkLos += 1
+                trkGN += 1
+                trkGR += pR
+                if pTmo
+                    trkTmo += 1
+                if pRev
+                    trkRev += 1
+            if pprKind > 0
+                f_kdWrite(pprKind - 1, pR, pprGen, pprAmb, tradeStatWin)
+            pprAmb := false
+    if trkArm and curCls != 0 and not pprOn and not pprPend and not pprJustClosed and not na(tradeEntry) and not na(tradeStop) and math.abs(tradeEntry - tradeStop) > 0
+        pprPend := true
+        pprDir  := tradeDir
+        pprPx   := tradeEntry
+        pprStop := tradeStop
+        pprTgt  := tradeTarget
+        pprBar  := bar_index
+        pprCls  := curCls
+        pprKind := f_sigKind(tradeDir, swpBias, patBiasEff, tdBias, divBiasShow)
+        pprGen  := armGen
+trkSample = array.size(trkRArr)
+trkRate   = trkSample > 0 ? 100.0 * array.avg(trkWArr) : na
+trkExpR   = trkSample > 0 ? array.avg(trkRArr) : na
+trkSD     = trkSample > 1 ? array.stdev(trkRArr) : na
+trkSE     = not na(trkSD) and trkSD > 0 ? trkSD / math.sqrt(trkSample) : na
+trkSig    = trkSample >= SIG_MIN_N and not na(trkSE) and not na(trkExpR) and math.abs(trkExpR) / trkSE >= 2
+
+lmtRefPx       = dcLmt
+tradeStopRef   = dcStop
+tradeTargetRef = dcTgt
+dcLmtDir  = dcBias > 0 ? "多" : dcBias < 0 ? "空" : ""
+dcDirWord = dcBias > 0 ? "做多" : dcBias < 0 ? "做空" : "—"
+lmtStpDist = dcStopOK ? math.abs(lmtRefPx - tradeStopRef) : na
+lmtCostAbs = not na(lmtRefPx) ? lmtRefPx * costPct / 100.0 : na
+chStopPct  = not na(lmtStpDist) and not na(lmtRefPx) and lmtRefPx > 0 ? lmtStpDist / lmtRefPx * 100.0 : na
+chLevVal   = not na(lmtStpDist) and lmtStpDist > 0 and not na(lmtRefPx) and lmtRefPx > 0 ? riskPct / 100.0 * lmtRefPx / (lmtStpDist + lmtCostAbs) : na
+f_posCell(lev, mult) =>
+    float pct = not na(lev) ? math.floor(math.min(lev * 100.0 / mult, 100.0)) : na
+    bool small = not na(lev) and lev * 100.0 / mult < 1.0
+    [pct, small]
+[tradePosPct, posTooSmall] = f_posCell(chLevVal, levMult)
+chEnterTxt = dcBias == 0 or na(chLevVal) ? (dcBias != 0 ? "无挂单价" : "未放行") : f_fitCell(posTooSmall ? "仓位太小" : dcDirWord + str.tostring(tradePosPct, "#") + "%", dcAllowed ? "" : "·未放行", dcAllowed)
+
+sigMore  = planBias == 0 ? "" : (patBiasEff == planBias ? "形态" : "") + (patBiasEff == planBias and divBiasShow == planBias ? "+" : "") + (divBiasShow == planBias ? "背离" : "")
+chSigA   = not swpFresh ? "" : planBias != 0 and swpBias != planBias ? swpText + "·反" : swpText
+chSigB   = tdText == "—" ? "" : tdText
+sigL1    = chSigA != "" ? chSigA : chSigB != "" ? chSigB : sigMore
+sigL2    = chSigA != "" ? (chSigB != "" ? chSigB : sigMore) : (chSigB != "" ? sigMore : "")
+chSigTxt = sigL1 == "" ? "无" : sigL2 == "" ? sigL1 : sigL1 + "\n" + sigL2
+
+plot(envUp, "包络上轨", color=color.new(color.red,  55), linewidth=2)
+plot(envLo, "包络下轨", color=color.new(color.teal, 55), linewidth=2)
+trkAmbSpan = trkSample > 0 ? array.avg(trkSpanArr) : na
+trkAmbHigh = not na(trkAmbSpan) and not na(trkExpR) and trkAmbSpan > math.abs(trkExpR)
+
+f_obsEnv(int win) =>
+    net  = close - close[win]
+    path = math.sum(math.abs(close - close[1]), win)
+    eff  = path > 0 ? math.abs(net) / path : na
+    hiN  = ta.highest(high, win)
+    loN  = ta.lowest(low,  win)
+    dd   = na(net) or net == 0 ? na : net > 0 ? (hiN - close) / math.abs(net) : (close - loN) / math.abs(net)
+    ovRng = math.max(high, high[1]) - math.min(low, low[1])
+    ovOne = ovRng > 0 ? math.max(0.0, math.min(high, high[1]) - math.max(low, low[1])) / ovRng : na
+    ov    = math.sum(nz(ovOne), win) / win
+    out   = math.sum(not na(chHi) and not na(chLo) and (close > chHi or close < chLo) ? 1 : 0, win) / win
+    netAtr = atrVal > 0 ? math.abs(net) / atrVal : na
+    vEff = na(eff) ? 0 : eff >= 0.35 ? 1 : eff <= 0.15 ? -1 : 0
+    vDD  = na(dd)  ? 0 : dd  <= 0.35 ? 1 : dd  >= 0.80 ? -1 : 0
+    vOv  = na(ov)  ? 0 : ov  <= 0.45 ? 1 : ov  >= 0.70 ? -1 : 0
+    vOut = out >= 0.25 ? 1 : out <= 0.05 ? -1 : 0
+    vote = vEff + vDD + vOv + vOut
+    regime = na(netAtr) or netAtr < 1.0 ? 0 : vote >= 2 ? 1 : vote <= -2 ? 2 : 0
+    why = (vEff > 0 ? 1 : 0) + (vDD > 0 ? 2 : 0) + (vOv > 0 ? 4 : 0) + (vOut > 0 ? 8 : 0) + (vEff < 0 ? 16 : 0) + (vDD < 0 ? 32 : 0) + (vOv < 0 ? 64 : 0) + (vOut < 0 ? 128 : 0)
+    [regime, why, eff, ov]
+OBS_WIN = 20
+[obsRegime, obsWhy, obsEff, obsOv] = f_obsEnv(OBS_WIN)
+
+OBS_TMO  = 12
+OBS_CONF = 1.0
+var int   obsFcId    = 0
+var int   obsFcDir   = 0
+var float obsFcRef   = na
+var int   obsFcBar   = na
+var int   obsFcState = 0
+if barstate.isconfirmed
+    bool brkUp = not na(chHi) and close > chHi and close[1] <= nz(chHi[1], close[1])
+    bool brkDn = not na(chLo) and close < chLo and close[1] >= nz(chLo[1], close[1])
+    bool idle  = obsFcState == 0 or obsFcState >= 2
+    if obsFcState == 1
+        if obsFcDir > 0 and close >= obsFcRef + OBS_CONF * atrVal
+            obsFcState := 2
+        else if obsFcDir < 0 and close <= obsFcRef - OBS_CONF * atrVal
+            obsFcState := 2
+        else if obsFcDir > 0 and close < obsFcRef
+            obsFcState := 3
+        else if obsFcDir < 0 and close > obsFcRef
+            obsFcState := 3
+        else if bar_index - obsFcBar >= OBS_TMO
+            obsFcState := 4
+    if (brkUp or brkDn) and (idle or obsFcState >= 2)
+        obsFcId    += 1
+        obsFcDir   := brkUp ? 1 : -1
+        obsFcRef   := brkUp ? chHi : chLo
+        obsFcBar   := bar_index
+        obsFcState := 1
+
+OBS_IOI_TMO = 5
+f_obsIoi() =>
+    var int   oSt  = 0
+    var float oHiR = na
+    var float oLoR = na
+    var int   oBar = na
+    if barstate.isconfirmed
+        if oSt == 1
+            if close > oHiR
+                oSt := 2
+            else if close < oLoR
+                oSt := 3
+            else if bar_index - oBar >= OBS_IOI_TMO
+                oSt := 4
+        bool in2  = high[2] <= high[3] and low[2] >= low[3]
+        bool out1 = high[1] >  high[2] and low[1] <  low[2]
+        bool in0  = high    <= high[1] and low    >= low[1]
+        if in2 and out1 and in0 and oSt != 1
+            oSt  := 1
+            oHiR := high
+            oLoR := low
+            oBar := bar_index
+    [oSt, oHiR, oLoR]
+[obsIoiSt, obsIoiHi, obsIoiLo] = f_obsIoi()
+
+f_obsMM() =>
+    var int   oSt  = 0
+    var float oTgt = na
+    var int   oDir = 0
+    if barstate.isconfirmed and not na(chHi) and not na(chLo) and not na(chWid)
+        bool up = close > chHi and close[1] <= nz(chHi[1], close[1])
+        bool dn = close < chLo and close[1] >= nz(chLo[1], close[1])
+        if oSt == 1
+            if oDir > 0 and high >= oTgt
+                oSt := 2
+            else if oDir < 0 and low <= oTgt
+                oSt := 2
+            else if oDir > 0 and close < chHi
+                oSt := 3
+            else if oDir < 0 and close > chLo
+                oSt := 3
+        if (up or dn) and oSt != 1
+            oSt  := 1
+            oDir := up ? 1 : -1
+            oTgt := up ? chHi + chWid : chLo - chWid
+    [oSt, oTgt, oDir]
+[obsMMSt, obsMMTgt, obsMMDir] = f_obsMM()
+
+OBS_H2_GAP = 10
+f_obsH2() =>
+    var int   oSt   = 0
+    var int   oDir  = 0
+    var int   oCnt  = 0
+    var bool  oPull = false
+    var float oPEx  = na
+    var float oOrg  = na
+    var int   oBar  = na
+    if barstate.isconfirmed and not na(emaMid)
+        int bg = close > emaMid ? 1 : close < emaMid ? -1 : 0
+        if oDir != 0 and bg != 0 and bg != oDir
+            oSt   := oSt == 1 ? 3 : 0
+            oCnt  := 0
+            oDir  := 0
+            oPull := false
+        if bg != 0
+            if oDir == 0
+                oDir  := bg
+                oCnt  := 0
+                oPull := false
+            bool up = oDir > 0
+            if not oPull and (up ? low < low[1] : high > high[1])
+                oPull := true
+                oPEx  := up ? low : high
+            else if oPull
+                oPEx := up ? math.min(oPEx, low) : math.max(oPEx, high)
+                if up ? high > high[1] : low < low[1]
+                    oPull := false
+                    oCnt  := oCnt + 1
+                    oBar  := bar_index
+                    oOrg  := oCnt == 1 ? oPEx : oOrg
+                    oSt   := oCnt >= 2 ? 2 : 1
+            if oCnt >= 1 and not na(oOrg) and (up ? low < oOrg : high > oOrg)
+                oSt   := 3
+                oCnt  := 0
+                oPull := false
+            else if oSt == 1 and not na(oBar) and bar_index - oBar > OBS_H2_GAP
+                oSt   := 3
+                oCnt  := 0
+                oPull := false
+    [oSt, oDir, oCnt]
+[obsH2St, obsH2Dir, obsH2Cnt] = f_obsH2()
+
+OBS_CLX_TMO = 6
+f_obsClx(int p3u, int p3d, bool bigU, bool bigD) =>
+    var int   oSt  = 0
+    var int   oDir = 0
+    var float oRef = na
+    var int   oBar = na
+    if barstate.isconfirmed
+        if oSt == 1
+            if oDir > 0 and bigD and close < oRef
+                oSt := 2
+            else if oDir < 0 and bigU and close > oRef
+                oSt := 2
+            else if oDir > 0 and not na(atrVal) and close > oRef + atrVal
+                oSt := 3
+            else if oDir < 0 and not na(atrVal) and close < oRef - atrVal
+                oSt := 3
+            else if not na(oBar) and bar_index - oBar >= OBS_CLX_TMO
+                oSt := 3
+        bool buyC  = p3u == 2 and bigU
+        bool sellC = p3d == 2 and bigD
+        if (buyC or sellC) and oSt != 1
+            oSt  := 1
+            oDir := buyC ? 1 : -1
+            oRef := close
+            oBar := bar_index
+    [oSt, oDir]
+[obsClxSt, obsClxDir] = f_obsClx(push3Up, push3Dn, bigBull, bigBear)
+
+OBS_BOM_N   = 5
+OBS_BOM_ATR = 1.2
+f_obsBom(float hiN, float loN) =>
+    var int   oSt = 0
+    var float oHi = na
+    var float oLo = na
+    if barstate.isconfirmed
+        if oSt == 1
+            if close > oHi
+                oSt := 2
+            else if close < oLo
+                oSt := 3
+        bool tight = not na(hiN) and not na(loN) and not na(atrVal) and atrVal > 0 and (hiN - loN) <= atrVal * OBS_BOM_ATR
+        if tight and oSt != 1
+            oSt := 1
+            oHi := hiN
+            oLo := loN
+    [oSt, oHi, oLo]
+bomHiN = ta.highest(high, OBS_BOM_N)
+bomLoN = ta.lowest(low, OBS_BOM_N)
+[obsBomSt, obsBomHi, obsBomLo] = f_obsBom(bomHiN, bomLoN)
+
+plot(obsIoiSt + obsMMSt * 100 + obsH2St * 10000 + math.min(obsH2Cnt, 99) * 1000000 + obsClxSt * 100000000 + obsFcState * 10000000000 + obsBomSt * 1000000000000 + (aiDir + 1) * 100000000000000 + obsRegime * 1000000000000000, "观察七项状态码+AI向+环境", display=display.data_window)
+
+panelPos = position.top_right
+
+tblCols = 2
+tblRows = 11 + 1
+rVerd   = 9
+rTrk    = 10
+rDecl   = 11
+var table t = table.new(panelPos, tblCols, tblRows, frame_color=color.new(color.gray, 40), frame_width=1, border_color=color.new(color.gray, 60), border_width=1)
+
+f_drawPanel() =>
+    sz  = size.tiny
+    szB = size.small
+    table.cell(t, 0, 0, "现行情", text_color=pnlTxt, bgcolor=color.new(#26a69a, pnlA(55)), text_size=sz, width=6)
+    table.cell(t, 1, 0, chStruct, text_color=pnlTxt, bgcolor=color.new(#26a69a, pnlA(78)), text_size=sz, width=15)
+    table.cell(t, 0, 1, "现位置", text_color=pnlTxt, text_size=sz, width=6)
+    table.cell(t, 1, 1, chPosTxt + (na(chPct) ? "" : "　" + str.tostring(math.round(chPct * 100)) + "%"), text_color=pnlTxt, bgcolor=chOut ? color.new(color.gray, pnlA(72)) : (chOK ? chEdgeOK : nearSup or nearRes) ? color.new(color.orange, pnlA(62)) : color.new(color.gray, pnlA(82)), text_size=sz, width=15)
+    table.cell(t, 0, 2, "现约束", text_color=pnlTxt, bgcolor=color.new(#26a69a, pnlA(55)), text_size=sz, width=6)
+    table.cell(t, 1, 2, chLimitTxt, text_color=pnlTxt, bgcolor=chGateOpp ? color.new(color.orange, pnlA(62)) : biasBg(chLimitBias), text_size=sz, width=15)
+    table.cell(t, 0, 3, "现信号", text_color=pnlTxt, text_size=sz, width=6)
+    table.cell(t, 1, 3, chSigTxt, text_color=pnlTxt, bgcolor=chSigTxt == "无" ? na : color.new(color.blue, pnlA(80)), text_size=sz, width=15)
+    table.cell(t, 0, 4, "方向", text_color=pnlTxt, bgcolor=color.new(color.gray, pnlA(60)), text_size=szB, width=6)
+    table.cell(t, 1, 4, dcDirTxt, text_color=pnlTxt, bgcolor=biasBg(dcBiasRaw), text_size=szB, width=15)
+    stopPctV = chStopPct
+    stopSuf  = na(stopPctV) ? "" : "　" + (stopPctV >= 10 ? str.tostring(stopPctV, "#") : str.tostring(stopPctV, "#.#")) + "%"
+    stopDir  = na(tradeStopRef) or dcBias == 0 ? "" : dcBias > 0 ? "多" : "空"
+    stopBase = stopDir + fmtLv(tradeStopRef)
+    stopMark = na(tradeStopRef) or dcAllowed ? stopSuf : "·未放行"
+    stopCell = f_fitCell(stopBase, stopMark, dcAllowed)
+    tgtTrail = na(tradeTargetRef) and dcBias != 0 and not na(dcBoll) and not na(dcClose) and (dcBias > 0 ? dcBoll > dcClose : dcBoll < dcClose) ? dcBoll : na
+    tgtSuf   = na(dcRR) ? "" : "　赚" + str.tostring(math.min(dcRR, 99), "#.#") + "倍"
+    tgtDir   = na(tradeTargetRef) or dcBias == 0 ? "" : dcBias > 0 ? "多" : "空"
+    tgtBase  = na(tradeTargetRef) and not na(tgtTrail) ? "跟中轨" + fmtLv(tgtTrail) : tgtDir + fmtLv(tradeTargetRef)
+    tgtHasPx = not na(tradeTargetRef) or not na(tgtTrail)
+    tgtMark  = not tgtHasPx or dcAllowed ? tgtSuf : "·未放行"
+    tgtCell  = f_fitCell(tgtBase, tgtMark, dcAllowed)
+    lmtBase = dcLmtDir + "挂" + fmtLv(lmtRefPx)
+    bool pndSame = pndDir == dcBias and f_samePx(pndPx, lmtRefPx) and f_samePx(pndStop, tradeStopRef) and f_samePx(pndTgt, tradeTargetRef)
+    lmtBusy = dcAllowed and not na(lmtRefPx) and (trkOn or (trkPend and not pndSame))
+    lmtMark = na(lmtRefPx) or dcAllowed ? (lmtBusy ? (trkOn ? "·账本持仓" : "·撤单重挂") : "") : "·未放行"
+    lmtCell = dcBias == 0 ? "—" : na(lmtRefPx) ? dcLmtDir + "·无参照位" : f_fitCell(lmtBase, lmtMark, dcAllowed)
+    lmtBg   = dcAllowed and not na(lmtRefPx) ? (dcBias > 0 ? color.new(#2962FF, pnlA(62)) : color.new(#FF6D00, pnlA(62))) : color.new(color.gray, pnlA(74))
+    table.cell(t, 0, 5, "限价", text_color=pnlTxt, bgcolor=lmtBg, text_size=sz, width=6)
+    table.cell(t, 1, 5, lmtCell, text_color=pnlTxt, bgcolor=lmtBg, text_size=sz, width=15)
+    table.cell(t, 0, 6, "止损", text_color=pnlTxt, text_size=sz, width=6)
+    table.cell(t, 1, 6, stopCell, text_color=pnlTxt, bgcolor=dcAllowed ? color.new(#ef5350, pnlA(70)) : color.new(color.gray, pnlA(74)), text_size=sz, width=15)
+    table.cell(t, 0, 7, "止盈", text_color=pnlTxt, text_size=sz, width=6)
+    table.cell(t, 1, 7, tgtCell, text_color=pnlTxt, bgcolor=dcAllowed ? color.new(#26a69a, pnlA(72)) : color.new(color.gray, pnlA(74)), text_size=sz, width=15)
+    if showRisk
+        table.cell(t, 0, 8, "仓位", text_color=pnlTxt, text_size=sz, width=6)
+        table.cell(t, 1, 8, chEnterTxt, text_color=pnlTxt, text_size=sz, width=15)
+    table.cell(t, 0, rVerd, "判决", text_color=pnlTxt, bgcolor=color.new(color.gray, pnlA(60)), text_size=szB, width=6)
+    table.cell(t, 1, rVerd, dcVerdict, text_color=pnlTxt, bgcolor=dcAllowed ? color.new(color.green, pnlA(62)) : dcKind == 1 ? color.new(color.red, pnlA(68)) : color.new(color.gray, pnlA(72)), text_size=szB, width=15)
+    table.cell(t, 0, rTrk, "战绩", text_color=pnlTxt, text_size=sz, width=6)
+    table.cell(t, 1, rTrk, trkSample == 0 ? "还没有记录" + (trkOn ? "·统计中" : "") : str.tostring(trkSample) + "笔·对" + str.tostring(trkRate, "#") + "%" + (trkOn ? "·统计中" : "") + "\n" + (math.abs(trkExpR) < 0.05 ? "平均基本打平" : "平均" + (trkExpR >= 0 ? "赚" : "亏") + str.tostring(math.min(math.abs(trkExpR), 99), "#.#") + "个止损") + (trkAmbHigh ? "·靠猜" : trkSig ? "" : "·存疑"), text_color=pnlTxt, bgcolor=na(trkExpR) ? na : (trkAmbHigh or not trkSig) ? color.new(color.gray, pnlA(82)) : trkExpR > 0 ? color.new(color.green, pnlA(82)) : color.new(color.red, pnlA(82)), text_size=sz, width=15)
+    table.cell(t, 0, rDecl, "声明", text_color=pnlTxt, text_size=size.tiny, width=6)
+    table.cell(t, 1, rDecl, "仅供参考 非投资建议", text_color=pnlTxt, text_size=size.tiny, width=15, tooltip="本指标是技术分析辅助工具，不是交易信号，也不构成任何投资建议。\n面板上的方向、止损、止盈、仓位全部由历史价格算出，不预测未来、不保证盈利，据此交易的盈亏由你自己承担。\n\n【实测披露】作者用本指标自带的回测账本做过真机采样，结论是：小周期（15 分钟 / 1 小时）上这套规则不支持使用 —— 来回成本吃掉的，比规则本身的优势还多；4 小时上没有显示为负，但也**没有**证明为正。\n建议 4 小时起用，并且自己用面板的「战绩」行持续核对。\n本版不列具体数字：判决链仍在改动，而一批采样只对采它的那一版代码有效，拿旧版的数字描述新版是误导。重采完成后会补回本说明。\n\n【成本是决定性变量】设置里「来回成本%」默认 0.07（币安永续挂单口径：maker 0.02 + taker 0.05）。成本吃掉的比例直接决定这套规则还剩多少期望 —— 周期越小，成本占每笔风险的比例越高，这正是小周期表现更差的原因。换券商、换品种、或者你习惯吃单成交，务必按自己的实际费率改这个数。\n\n【绘图配额】TradingView 对单个脚本的绘图 + 警报总数有上限（64）。本脚本尚有余量，你可以再加自己的绘图或警报；一旦总数超过上限，图表会报 RE10140 整个不出图，那时需要先关掉一个。\n\n作者：Bzzb。本产品仅授权购买者本人使用，严禁转卖、转发或公开发布源码。")
+
+    true
+
+if showPanel and barstate.islast
+    f_drawPanel()
+strongBull = planBias > 0 and score >= 80 and (bullVotes - bearVotes) >= 3
+strongBear = planBias < 0 and score <= 20 and (bearVotes - bullVotes) >= 3
+
+alertcondition(bigTop, title="图表形态·顶部破颈↓", message="{{ticker}} {{interval}}：顶部形态破颈线，警惕下跌｜仅提示·不是放行信号")
+alertcondition(bigBot, title="图表形态·底部破颈↑", message="{{ticker}} {{interval}}：底部形态破颈线，关注上涨｜仅提示·不是放行信号")
+alertcondition(divTopRaw and barstate.isconfirmed, title="顶背离↓", message="{{ticker}} {{interval}}：顶背离——价格创新高但动能减弱｜仅提示·不是放行信号")
+alertcondition(divBotRaw and barstate.isconfirmed, title="底背离↑", message="{{ticker}} {{interval}}：底背离——价格创新低但动能转强｜仅提示·不是放行信号")
+alertcondition(resBreakRaw and barstate.isconfirmed, title="阻力突破↑", message="{{ticker}} {{interval}}：收盘上穿在册阻力位｜仅提示·不是放行信号")
+alertcondition(supBreakRaw and barstate.isconfirmed, title="支撑跌破↓", message="{{ticker}} {{interval}}：收盘跌破在册支撑位｜仅提示·不是放行信号")
+alertcondition(nearSup and not nearSup[1] and barstate.isconfirmed, title="接近水平支撑", message="{{ticker}} {{interval}}：价格进入在册「水平」支撑附近，开始盯承接信号。注意：有通道时判决的「位置」这一关看的是通道轨、不是这条线，两者可能不一致｜仅提示·不是放行信号")
+alertcondition(nearRes and not nearRes[1] and barstate.isconfirmed, title="接近水平阻力", message="{{ticker}} {{interval}}：价格进入在册「水平」阻力附近，开始盯受阻信号。注意：有通道时判决的「位置」这一关看的是通道轨、不是这条线，两者可能不一致｜仅提示·不是放行信号")
+alertcondition(tlBrkDn and barstate.isconfirmed, title="跌破上升趋势线↓", message="{{ticker}} {{interval}}：收盘跌破上升趋势线，上升结构可能被破坏｜仅提示·不是放行信号")
+alertcondition(tlBrkUp and barstate.isconfirmed, title="突破下降趋势线↑", message="{{ticker}} {{interval}}：收盘突破下降趋势线，下降结构可能被打破｜仅提示·不是放行信号")
+alertcondition(tlApexSoonFire and barstate.isconfirmed, title="三角形临近触顶(≤5根)", message="{{ticker}} {{interval}}：收敛三角形约5根内触顶，突破随时发生，开始盯盘｜仅提示·不是放行信号")
+
+alertcondition(spring and barstate.isconfirmed,   title="假跌破↑（下方扫损又拉回）", message="{{ticker}} {{interval}}：跌破前期低点后收回——下方止损被扫又拉回，止损放插针尖端外｜仅提示·不是放行信号")
+alertcondition(upThrust and barstate.isconfirmed, title="假突破↓（上方扫损又打回）", message="{{ticker}} {{interval}}：突破前期高点后跌回——上方止损被扫又打回，止损放插针尖端外｜仅提示·不是放行信号")
+alertcondition(tdBuySetupDone and barstate.isconfirmed,  title="TD·跌足9根↑（或反弹）", message="{{ticker}} {{interval}}：TD 买入结构9完成——连跌9根，注意反弹。这是「该注意了」不是入场点，等确认K线｜仅提示·不是放行信号")
+alertcondition(tdSellSetupDone and barstate.isconfirmed, title="TD·涨足9根↓（或回落）", message="{{ticker}} {{interval}}：TD 卖出结构9完成——连涨9根，注意回落。这是「该注意了」不是入场点，等确认K线｜仅提示·不是放行信号")
+alertcondition(tdBuyCdDone and barstate.isconfirmed,     title="TD·跌势力竭↑（13确认）", message="{{ticker}} {{interval}}：TD 买入交叉13完成——第二段确认到位，跌势力竭。仍需其它维度共振，别单独用｜仅提示·不是放行信号")
+alertcondition(tdSellCdDone and barstate.isconfirmed,    title="TD·涨势力竭↓（13确认）", message="{{ticker}} {{interval}}：TD 卖出交叉13完成——第二段确认到位，涨势力竭。仍需其它维度共振，别单独用｜仅提示·不是放行信号")
+var int gateLastNZ = 0
+gateFlip = gateBias != 0 and gateLastNZ != 0 and gateBias != gateLastNZ
+if gateBias != 0 and barstate.isconfirmed
+    gateLastNZ := gateBias
+alertcondition(gateFlip and barstate.isconfirmed, title="环境闸门翻转(只许做的那一边变了)", message="{{ticker}} {{interval}}：长期均线环境换边——之前允许的方向现在被闸门拦下，重新评估在手仓位｜仅提示·不是放行信号")
+alertcondition(strongBull and not strongBull[1] and barstate.isconfirmed, title="转为强偏多(多维一致)", message="{{ticker}} {{interval}}：多数维度转为一致偏多｜仅提示·不是放行信号")
+alertcondition(tradeEvent and tradeAllowed and tradeDir > 0, title="判决放行·做多", message="{{ticker}} {{interval}}：统一交易出口放行做多；按面板「限价」行那个价挂单，不要市价追；止损与目标按面板")
+alertcondition(tradeEvent and tradeAllowed and tradeDir < 0, title="判决放行·做空", message="{{ticker}} {{interval}}：统一交易出口放行做空；按面板「限价」行那个价挂单，不要市价追；止损与目标按面板")
+alertcondition(strongBear and not strongBear[1] and barstate.isconfirmed, title="转为强偏空(多维一致)", message="{{ticker}} {{interval}}：多数维度转为一致偏空｜仅提示·不是放行信号")

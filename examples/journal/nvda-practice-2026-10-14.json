@@ -1,0 +1,64 @@
+{
+  "id": "nvda-pds-2026-10-14-real",
+  "openedAt": "2026-10-14",
+  "symbol": "NVDA",
+  "strategy": "put_debit_spread",
+  "kind": "practice",
+  "source": "real_practice",
+  "mode": "paper",
+  "view": {
+    "direction": "bearish",
+    "magnitudeTime": "continuation down from 10/14 within 2 sessions",
+    "volatility": "n/a",
+    "time": "exp 2026-10-16"
+  },
+  "ivRank": null,
+  "greeks": {
+    "delta": 0,
+    "gamma": 0,
+    "theta": 0,
+    "vega": 0
+  },
+  "expectedMove": null,
+  "structureRationale": "Defined-risk bearish continuation; real Robinhood account, 1 contract, $2 total debit",
+  "maxLoss": 2,
+  "invalidation": "n/a (not written before entry)",
+  "exitRules": [],
+  "thesis": "Continuation down from 10/14",
+  "legs": [
+    {
+      "underlying": "NVDA",
+      "type": "put",
+      "strike": 202.5,
+      "qty": 1,
+      "premium": 0.02,
+      "expiration": "2026-10-16"
+    },
+    {
+      "underlying": "NVDA",
+      "type": "put",
+      "strike": 200,
+      "qty": -1,
+      "premium": 0,
+      "expiration": "2026-10-16"
+    }
+  ],
+  "underlyingAtEntry": 221,
+  "lossReview": {
+    "at": "2026-10-15",
+    "errorClass": "execution",
+    "errorTags": [
+      "strikes_too_far_otm"
+    ],
+    "note": "Direction was right (221→216). The user does not judge the expiry as wrong. The strikes needed about −9% in 2 days."
+  },
+  "lesson": "For short-window continuation trades, put the long strike near ATM (e.g. 217.5/212.5 from 221), not far OTM.",
+  "reviews": [
+    {
+      "at": "2026-10-15T10:23:00-04:00",
+      "thesisValid": true,
+      "positionValid": false,
+      "note": "NVDA 216.08 at 10:23 ET; result pending, likely expires worthless"
+    }
+  ]
+}

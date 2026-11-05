@@ -1,0 +1,4456 @@
+{
+  "version": "batch-1-knowledge-review.v1",
+  "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+  "runtimeUse": "PROHIBITED",
+  "ownerApprovalRequired": true,
+  "reviewStage": "OWNER_REVIEW_READY",
+  "generatedAt": "2026-09-20T16:47:08.860Z",
+  "reviewer": "Codex in current development session; self-review, not independent or Owner approval",
+  "sourceReviewScope": "Saved dossier statements, source maps, qualifiers and provenance only; no new web reads and no fresh current-state attestation.",
+  "schemaPurpose": "REVIEW_ARTIFACT_ONLY_NOT_PRODUCTION_SCHEMA",
+  "sourceBatch": {
+    "path": "../",
+    "commit": "507a5dbc0f504f1379401b041829fc81330a9284",
+    "status": "RESEARCH_ONLY_NOT_RUNTIME_KNOWLEDGE",
+    "files": [
+      {
+        "dossierId": "M01",
+        "path": "../M01_OIL_IS_POWER.md",
+        "sha256": "e660d22995b1daffd9d271a9df0ada03fe9ebefea68115631242582c46d92ec3"
+      },
+      {
+        "dossierId": "M02",
+        "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+        "sha256": "45c341ba0ba85ce6efaf5093628fccd14115ae41523f4bfc5f1f9dd8d7a6a248"
+      },
+      {
+        "dossierId": "M03",
+        "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+        "sha256": "1bc9aa3f0c4735da17266b92937752aee80c507d187dd15c5340a186232a93a1"
+      },
+      {
+        "dossierId": "M04",
+        "path": "../M04_YEN_CARRY_TRADE.md",
+        "sha256": "c2c2d24e986a9c38a602bb8ca34065785fed8f23c7de975e16f02eb098fd3ccb"
+      },
+      {
+        "dossierId": "M05",
+        "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+        "sha256": "69b7e1a39e1520a06b3a1199ba9321942851857d8742a8ca9a95b84931ebb519"
+      },
+      {
+        "dossierId": "BATCH",
+        "path": "../BATCH_1_SYNTHESIS.md",
+        "sha256": "c9ad7bd3830b22ba6ccd17578be3dbe18674b86b6338a84f053f9c8419bf6cfd"
+      }
+    ]
+  },
+  "themes": [
+    {
+      "themeId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md"
+    },
+    {
+      "themeId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md"
+    },
+    {
+      "themeId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md"
+    },
+    {
+      "themeId": "M04",
+      "dossierPath": "../M04_YEN_CARRY_TRADE.md"
+    },
+    {
+      "themeId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md"
+    }
+  ],
+  "evidenceLegend": {
+    "VERIFIED": "原档案范围内有来源的具体事实/定义，非本轮重新外部认证，更非Owner批准。",
+    "SUPPORTED_MECHANISM": "已有机构/制度机制支持；不自动证明当期发生。",
+    "WELL_ESTABLISHED": "限定的算术/制度关系，不自动扩展到全部经济后果。",
+    "CONDITIONAL_HYPOTHESIS": "保留原CONDITIONAL/HYPOTHESIS的条件性，不提升为FACT。",
+    "ALPHA_INFERENCE": "本批分析组合；外部引用只支持组件，不认证整条推断。",
+    "UNKNOWN": "资料或识别不足，未补填。",
+    "FACTUAL_DEPENDENCY": "结构/运输/资产角色联系，非固定价格关系。"
+  },
+  "measurementVocabulary": [
+    "STOCK",
+    "FLOW",
+    "CAPACITY",
+    "AUTHORIZATION",
+    "ANNOUNCEMENT",
+    "VALUATION_CHANGE"
+  ],
+  "validityNote": "null表示尚未知/不适用并由limitations说明；不是零、无限有效或允许默认补值。没有固定TTL。",
+  "sourceMap": [
+    {
+      "sourceRef": "M01.S01",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "primary, institutional history",
+      "savedCitation": "[OPEC Brief history](https://www.opec.org/brief-history.html)，页面更新日 UNKNOWN；1960s/1970s/2010s",
+      "savedSupportAndLimitations": "成立和合作历史及自述目标；非独立评价",
+      "urls": [
+        "https://www.opec.org/brief-history.html"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S02",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "primary",
+      "savedCitation": "[OPEC 6 September 2026](https://www.opec.org/pr-detail/613-6-september-2026.html)，2026-09-06，正文决定段",
+      "savedSupportAndLimitations": "七国及十月安排；配额图表数字未读，不评履约",
+      "urls": [
+        "https://www.opec.org/pr-detail/613-6-september-2026.html"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S03",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "primary statistics methodology",
+      "savedCitation": "[EIA capacity definitions](https://www.eia.gov/todayinenergy/detail.php?id=66904)，2025-12-19，三个定义小节",
+      "savedSupportAndLimitations": "新口径；估计不等于工程可用性测试",
+      "urls": [
+        "https://www.eia.gov/todayinenergy/detail.php?id=66904"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S04",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "primary",
+      "savedCitation": "[DOE SPR facts](https://www.energy.gov/hgeo/opr/spr-quick-facts)，库存截至2026-08-20，页面完整短表；[Origins](https://www.energy.gov/hgeo/opr/spr-origins)，检索节选，更新 UNKNOWN",
+      "savedSupportAndLimitations": "库存、站点、建立背景；Origins 仅检索节选，未声称完整阅读",
+      "urls": [
+        "https://www.energy.gov/hgeo/opr/spr-quick-facts",
+        "https://www.energy.gov/hgeo/opr/spr-origins"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S05",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "primary official assessment",
+      "savedCitation": "[Fed July MPR](https://www.federalreserve.gov/monetarypolicy/2026-07-mpr-part1.htm)，2026-07-10，能源/消费/海外价格段",
+      "savedSupportAndLimitations": "对通胀和活动的官方分析；不是九月数据；转引 BEA/Haver 非独立副本",
+      "urls": [
+        "https://www.federalreserve.gov/monetarypolicy/2026-07-mpr-part1.htm"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S06",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "primary forecast",
+      "savedCitation": "[EIA September STEO](https://www.eia.gov/outlooks/steo/)，2026-09-09，cutoff 09-03，overview/table",
+      "savedSupportAndLimitations": "观测与预测须分开；网页有 distillate crack spread 更正，不使用被更正旧数",
+      "urls": [
+        "https://www.eia.gov/outlooks/steo/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S07",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "primary educational history",
+      "savedCitation": "[EIA benchmarks](https://www.eia.gov/todayinEnergy/detail.php?id=18571)，2014，基准定义段；[2013 bottlenecks](https://www.eia.gov/todayinEnergy/detail.php?id=11891)，2013-06-28，检索正文节选",
+      "savedSupportAndLimitations": "WTI/Brent/Dubai-Oman 区别与历史价差；不采用旧 Brent 篮子为现行规范",
+      "urls": [
+        "https://www.eia.gov/todayinEnergy/detail.php?id=18571",
+        "https://www.eia.gov/todayinEnergy/detail.php?id=11891"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S09",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S09",
+      "category": "primary compiled estimates",
+      "savedCitation": "[EIA Energy Security](https://www.eia.gov/outlooks/steo/report/energysecurity/article.php)，2026-08-12，Table 2",
+      "savedSupportAndLimitations": "航运量转引 Vortexa 等；季度与统计口径、Malacca源内冲突见 M05",
+      "urls": [
+        "https://www.eia.gov/outlooks/steo/report/energysecurity/article.php"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M01.S10",
+      "dossierId": "M01",
+      "dossierPath": "../M01_OIL_IS_POWER.md",
+      "section": "M",
+      "mapEntryId": "S10",
+      "category": "primary legal explanation",
+      "savedCitation": "[OFAC FAQ 1150](https://ofac.treasury.gov/faqs/1150)，2023-12-22 determination；读取现行页",
+      "savedSupportAndLimitations": "对外国金融机构的制裁风险，非所有石油禁运证明；M02详述",
+      "urls": [
+        "https://ofac.treasury.gov/faqs/1150"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S01",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "institutional research",
+      "savedCitation": "[Fed dollar role 2025](https://www.federalreserve.gov/econres/notes/feds-notes/the-international-role-of-the-u-s-dollar-2025-edition-20250718.html)，2025-07-18，储备/计价/银行/历史段",
+      "savedSupportAndLimitations": "网络层次；大多2024及更早数据，不判断2026即时份额",
+      "urls": [
+        "https://www.federalreserve.gov/econres/notes/feds-notes/the-international-role-of-the-u-s-dollar-2025-edition-20250718.html"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S02",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "primary statistics",
+      "savedCitation": "[IMF COFER brief](https://data.imf.org/en/news/imf%20data%20brief%20july%201)，2026-07-01，2026Q1；[COFER metadata](https://data.imf.org/Datasets/COFER)，方法/更新入口，更新日 UNKNOWN",
+      "savedSupportAndLimitations": "当期存量份额及统计范围；不是净购买；具体方法变更未重建历史序列",
+      "urls": [
+        "https://data.imf.org/en/news/imf%20data%20brief%20july%201",
+        "https://data.imf.org/Datasets/COFER"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S03",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "primary operator/legal explanation",
+      "savedCitation": "[SWIFT and sanctions](https://www.swift.com/es/node/11306)，更新 UNKNOWN，2012/2022/2025说明段",
+      "savedSupportAndLimitations": "断开及适用法规；经营者说明不是完整法律意见",
+      "urls": [
+        "https://www.swift.com/es/node/11306"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S04",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "primary operator",
+      "savedCitation": "[SWIFT Who we are](https://www.swift.com/about-us/who-we-are)，更新 UNKNOWN，Does Swift move money FAQ",
+      "savedSupportAndLimitations": "报文与资金区别",
+      "urls": [
+        "https://www.swift.com/about-us/who-we-are"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S05",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "primary operator/industry",
+      "savedCitation": "[CHIPS](https://www.theclearinghouse.org/payment-systems/chips)，更新 UNKNOWN，产品职能/最终性段",
+      "savedSupportAndLimitations": "清算、流动性节约；营销性能指标不当独立实测",
+      "urls": [
+        "https://www.theclearinghouse.org/payment-systems/chips"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S06",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "primary legal",
+      "savedCitation": "[OFAC FAQ 998](https://ofac.treasury.gov/faqs/998)，2022-03-02、更新2023-05-19；[2026-06-11更新](https://ofac.treasury.gov/faqs/updated/2026-06-11)，CAPTA段",
+      "savedSupportAndLimitations": "交易限制/不可用资产/拒付区别；许可和名单需另查，冻结非没收",
+      "urls": [
+        "https://ofac.treasury.gov/faqs/998",
+        "https://ofac.treasury.gov/faqs/updated/2026-06-11"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S07",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "primary legal",
+      "savedCitation": "[OFAC FAQ 1150](https://ofac.treasury.gov/faqs/1150)，2023-12-22 determination；[FAQ1151](https://ofac.treasury.gov/faqs/1151)，2024-06-12更新",
+      "savedSupportAndLimitations": "外国机构风险及术语；不量化执行效果",
+      "urls": [
+        "https://ofac.treasury.gov/faqs/1150",
+        "https://ofac.treasury.gov/faqs/1151"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S08",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "category": "primary facility documentation",
+      "savedCitation": "[Fed swap FAQ](https://www.federalreserve.gov/monetarypolicy/bst_swapfaqs.htm)，更新 UNKNOWN，常设/历史分节",
+      "savedSupportAndLimitations": "2013常设及风险分担；旧临时额度不视为当前额度",
+      "urls": [
+        "https://www.federalreserve.gov/monetarypolicy/bst_swapfaqs.htm"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M02.S09",
+      "dossierId": "M02",
+      "dossierPath": "../M02_DOLLAR_AND_SANCTIONS.md",
+      "section": "M",
+      "mapEntryId": "S09",
+      "category": "institutional research",
+      "savedCitation": "[Weiss gold reserves abstract](https://www.federalreserve.gov/econres/ifdp/exploring-central-bank-gold-purchases-and-the-dollars-role-in-international-reserves.htm)，2025-09，仅摘要",
+      "savedSupportAndLimitations": "多样化与去美元区别；未复现估计，不冒充全文回归审计",
+      "urls": [
+        "https://www.federalreserve.gov/econres/ifdp/exploring-central-bank-gold-purchases-and-the-dollars-role-in-international-reserves.htm"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S01",
+      "dossierId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "primary fiscal projection",
+      "savedCitation": "[CBO 2026–2036](https://www.cbo.gov/publication/62105)，2026-02；债务定义、table1-3说明、净利息、基线变更段；[summary](https://www.cbo.gov/publication/61882)，检索摘要",
+      "savedSupportAndLimitations": "概念与条件预测；不是实时收支",
+      "urls": [
+        "https://www.cbo.gov/publication/62105",
+        "https://www.cbo.gov/publication/61882"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S02",
+      "dossierId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "primary financing release",
+      "savedCitation": "[Treasury borrowing estimates](https://home.treasury.gov/news/press-releases/sb0584)，2026-08-03，Q2实际、Q3/Q4预测及SOMA脚注",
+      "savedSupportAndLimitations": "借款口径与现金假设；非总债务",
+      "urls": [
+        "https://home.treasury.gov/news/press-releases/sb0584"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S03",
+      "dossierId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "primary debt-office plan",
+      "savedCitation": "[Treasury refunding](https://home.treasury.gov/news/press-releases/sb0590)，2026-08-05，期限表、bills/TIPS段",
+      "savedSupportAndLimitations": "已宣布安排；并非所有未来拍卖已经执行",
+      "urls": [
+        "https://home.treasury.gov/news/press-releases/sb0590"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S04",
+      "dossierId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "institutional history",
+      "savedCitation": "[Treasury–Fed Accord](https://www.federalreservehistory.org/essays/treasury-fed-accord)，written as of 2013-11-22，1942/1951正文",
+      "savedSupportAndLimitations": "制度历史，不能用来断言2026相同",
+      "urls": [
+        "https://www.federalreservehistory.org/essays/treasury-fed-accord"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S05",
+      "dossierId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "institutional research",
+      "savedCitation": "[BIS Paper65](https://www.bis.org/publications/paper-65-threat-fiscal-dominance)，2012-05-31，编辑导言已读，未通读312页",
+      "savedSupportAndLimitations": "多种机制/不确定性，而非统一结论",
+      "urls": [
+        "https://www.bis.org/publications/paper-65-threat-fiscal-dominance"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S06",
+      "dossierId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "academic/institutional",
+      "savedCitation": "[IMF WP26/160](https://www.elibrary.imf.org/view/journals/001/2026/160/001.2026.issue-160-en.xml)，2026-07-31，搜索返回摘要/部分正文，直读403",
+      "savedSupportAndLimitations": "模型、17个发达经济体历史量化思路；未复现、未核全表；不作当前美国regime证据",
+      "urls": [
+        "https://www.elibrary.imf.org/view/journals/001/2026/160/001.2026.issue-160-en.xml"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S07",
+      "dossierId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "institutional methodology",
+      "savedCitation": "[NYFed term premia](https://libertystreeteconomics.newyorkfed.org/2014/05/treasury-term-premia-1961-present/)，2014-05-12，方法与跨模型差异正文",
+      "savedSupportAndLimitations": "分解及模型风险；文中当时更新频率不冒充2026服务保证",
+      "urls": [
+        "https://libertystreeteconomics.newyorkfed.org/2014/05/treasury-term-premia-1961-present/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M03.S08",
+      "dossierId": "M03",
+      "dossierPath": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "category": "institutional research",
+      "savedCitation": "[Fed dollar role](https://www.federalreserve.gov/econres/notes/feds-notes/the-international-role-of-the-u-s-dollar-2025-edition-20250718.html)，2025-07-18，美债持有/制度段",
+      "savedSupportAndLimitations": "储备需求结构，统计有滞后",
+      "urls": [
+        "https://www.federalreserve.gov/econres/notes/feds-notes/the-international-role-of-the-u-s-dollar-2025-edition-20250718.html"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S01",
+      "dossierId": "M04",
+      "dossierPath": "../M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "primary policy",
+      "savedCitation": "[BOJ 2026-09-18 decision](https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf)，第1–3页及脚注；[reference](https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918b.pdf)，同日",
+      "savedSupportAndLimitations": "新目标、生效日、异议和官方展望；不是当前市场资金成本或全球清算记录",
+      "urls": [
+        "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf",
+        "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918b.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S02",
+      "dossierId": "M04",
+      "dossierPath": "../M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "institutional event research",
+      "savedCitation": "[BIS Bulletin90](https://www.bis.org/publications/bulletin-90-market-turbulence-and-carry-trade-unwind-august-2024)，2024-08-27；[8页PDF](https://www.bis.org/publications/bulletin-90-market-turbulence-and-carry-trade-unwind-august-2024.pdf)，key takeaways/触发与规模段",
+      "savedSupportAndLimitations": "2024事件、杠杆放大、估算局限；非2026持仓数据",
+      "urls": [
+        "https://www.bis.org/publications/bulletin-90-market-turbulence-and-carry-trade-unwind-august-2024",
+        "https://www.bis.org/publications/bulletin-90-market-turbulence-and-carry-trade-unwind-august-2024.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S03",
+      "dossierId": "M04",
+      "dossierPath": "../M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "institutional methodology",
+      "savedCitation": "[BIS derivatives statistics](https://www.bis.org/publications/qr-202512/international-finance-through-lens-bis-statistics-derivatives-markets)，2025-12，FX工具、统计与cross-currency/carry小节",
+      "savedSupportAndLimitations": "hedging、basis、carry差异及测量限制；名义额不代表净风险",
+      "urls": [
+        "https://www.bis.org/publications/qr-202512/international-finance-through-lens-bis-statistics-derivatives-markets"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S04",
+      "dossierId": "M04",
+      "dossierPath": "../M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "primary institutional history",
+      "savedCitation": "[BOJ 2025-02-19 charts](https://www.boj.or.jp/en/about/press/koen_2025/data/ko250219a2.pdf)，Chart16/17，第9个PDF页；日期/标签文本",
+      "savedSupportAndLimitations": "1999/2001/2013/2016/2024政策史；不采用无关股票回报图",
+      "urls": [
+        "https://www.boj.or.jp/en/about/press/koen_2025/data/ko250219a2.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S05",
+      "dossierId": "M04",
+      "dossierPath": "../M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "primary statistics",
+      "savedCitation": "[MOF securities index](https://www.mof.go.jp/english/policy/international_policy/reference/itn_transactions_in_securities/index.htm)，09-17更新；[weekly PDF](https://www.mof.go.jp/english/policy/international_policy/reference/itn_transactions_in_securities/week.pdf)，2026-09-17，日期/分类/修订脚注",
+      "savedSupportAndLimitations": "指定机构、居住地分类与观察期；动态URL会更新；未可靠对齐数表，不抄净额",
+      "urls": [
+        "https://www.mof.go.jp/english/policy/international_policy/reference/itn_transactions_in_securities/index.htm",
+        "https://www.mof.go.jp/english/policy/international_policy/reference/itn_transactions_in_securities/week.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S06",
+      "dossierId": "M04",
+      "dossierPath": "../M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "primary facility",
+      "savedCitation": "[Fed swaps FAQ](https://www.federalreserve.gov/monetarypolicy/bst_swapfaqs.htm)，更新时间 UNKNOWN，常设与转贷风险段",
+      "savedSupportAndLimitations": "央行美元后备机制，非当前提款额",
+      "urls": [
+        "https://www.federalreserve.gov/monetarypolicy/bst_swapfaqs.htm"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M04.S07",
+      "dossierId": "M04",
+      "dossierPath": "../M04_YEN_CARRY_TRADE.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "primary statistical methodology",
+      "savedCitation": "[CFTC COT guide](https://publicreporting.cftc.gov/stories/s/COT-Help/p2fg-u73y/)，更新日 UNKNOWN；[release FAQ](https://www.cftc.gov/es/node/128971)，官方索引充分节选，频率/假日段",
+      "savedSupportAndLimitations": "观察日与发布日不同；没有读取当前日元净头寸，不把净持仓变化全归因交易，分类也可能变化",
+      "urls": [
+        "https://publicreporting.cftc.gov/stories/s/COT-Help/p2fg-u73y/",
+        "https://www.cftc.gov/es/node/128971"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S01",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S01",
+      "category": "primary energy statistics",
+      "savedCitation": "[EIA Energy security](https://www.eia.gov/outlooks/steo/report/energysecurity/article.php)，2026-08-12，Tables2–4及方法脚注",
+      "savedSupportAndLimitations": "2026Q2分通道油量；Table2/3的2025Q4 Malacca总量冲突保留",
+      "urls": [
+        "https://www.eia.gov/outlooks/steo/report/energysecurity/article.php"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S02",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S02",
+      "category": "primary energy geography",
+      "savedCitation": "[EIA World oil transit chokepoints](https://www.eia.gov/international/content/analysis/special_topics/World_Oil_Transit_Chokepoints/)，2026-03-03；五处通道、替代路径、过去容量与数据口径",
+      "savedSupportAndLimitations": "地理/替代/油气区别；历史量与可用管道能力不移作9月即时数据",
+      "urls": [
+        "https://www.eia.gov/international/content/analysis/special_topics/World_Oil_Transit_Chokepoints/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S03",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S03",
+      "category": "primary safety",
+      "savedCitation": "[IMO stop attacks](https://www.imo.org/en/mediacentre/pressbriefings/pages/stop-attacking-ships-and-seafarers-imo-secretary-general.aspx)，2026-09-16，事件核验与秘书长声明",
+      "savedSupportAndLimitations": "核验次数、伤亡及安全立场；不证明封锁程度或每起归责",
+      "urls": [
+        "https://www.imo.org/en/mediacentre/pressbriefings/pages/stop-attacking-ships-and-seafarers-imo-secretary-general.aspx"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S04",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S04",
+      "category": "primary operator",
+      "savedCitation": "[SCA OOCL Portugal](https://www.suezcanal.gov.eg/french/MediaCenter/News/Pages/Sca_16-9-2026_2.aspx)，2026-09-16；法文正文、累计集装箱船净吨位",
+      "savedSupportAndLimitations": "一次通行和2026年1—8月经营数据；恢复评价归属SCA，不代表独立安全验证",
+      "urls": [
+        "https://www.suezcanal.gov.eg/french/MediaCenter/News/Pages/Sca_16-9-2026_2.aspx"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S05",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S05",
+      "category": "primary operator",
+      "savedCitation": "[ACP higher transits](https://pancanal.com/en/panama-canal-reports-higher-transits-and-tonnage-while-preparing-to-meet-demand-amid-expected-el-nino-conditions/)，精确发布日 UNKNOWN；正文2025-10—2026-06",
+      "savedSupportAndLimitations": "累计船次与PC/UMS；未采用口径不明的“日均35”或把项目当当前能力",
+      "urls": [
+        "https://pancanal.com/en/panama-canal-reports-higher-transits-and-tonnage-while-preparing-to-meet-demand-amid-expected-el-nino-conditions/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S06",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S06",
+      "category": "primary operator notice",
+      "savedCitation": "[ACP reduced precipitation measures](https://pancanal.com/en/panama-canal-adopts-additional-measures-to-address-reduced-precipitation-in-the-canal-watershed/)，精确发布日 UNKNOWN；正文列2026-09-03/09-15实施安排",
+      "savedSupportAndLimitations": "预约与吃水政策；未证明每个自然日实际执行/后续是否调整",
+      "urls": [
+        "https://pancanal.com/en/panama-canal-adopts-additional-measures-to-address-reduced-precipitation-in-the-canal-watershed/"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S07",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S07",
+      "category": "institutional research",
+      "savedCitation": "[UNCTAD 2025 review](https://unctad.org/publication/review-maritime-transport-2025)，2025-09-24；[overview](https://unctad.org/news/maritime-trade-under-pressure-growth-set-stall-2025)",
+      "savedSupportAndLimitations": "官方索引/节选支持距离、运力及贸易区分；正文403、PDF读取失败，不声称通读或采用2025预测作实绩",
+      "urls": [
+        "https://unctad.org/publication/review-maritime-transport-2025",
+        "https://unctad.org/news/maritime-trade-under-pressure-growth-set-stall-2025"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S08",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S08",
+      "category": "institutional model",
+      "savedCitation": "[UNCTAD chokepoint vulnerability](https://unctad.org/news/vulnerability-supply-chains-exposed-global-maritime-chokepoints-come-under-pressure)，2024年vintage，精确发布日本批 UNKNOWN",
+      "savedSupportAndLimitations": "仅官方索引节选可读；条件价格水平估算的误读提醒，不充当当前观测",
+      "urls": [
+        "https://unctad.org/news/vulnerability-supply-chains-exposed-global-maritime-chokepoints-come-under-pressure"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S09",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S09",
+      "category": "primary history",
+      "savedCitation": "[SCA characteristics](https://www.suezcanal.gov.eg/English/About/SuezCanal/Pages/CanalCharacteristics.aspx)，更新时间 UNKNOWN；历史段",
+      "savedSupportAndLimitations": "1869/1956/1967—1975节点；未采用旧船队比例作当前份额",
+      "urls": [
+        "https://www.suezcanal.gov.eg/English/About/SuezCanal/Pages/CanalCharacteristics.aspx"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    },
+    {
+      "sourceRef": "M05.S11",
+      "dossierId": "M05",
+      "dossierPath": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+      "section": "M",
+      "mapEntryId": "S11",
+      "category": "primary unit definition",
+      "savedCitation": "[ACP tolls assessment](https://www.pancanal.com/wp-content/uploads/2023/06/Tolls-Assessment_May-2023.pdf)，2023-05；可读索引中吨位定义",
+      "savedSupportAndLimitations": "PC/UMS容积计量，不是货重；不使用2023费率作为2026成本",
+      "urls": [
+        "https://www.pancanal.com/wp-content/uploads/2023/06/Tolls-Assessment_May-2023.pdf"
+      ],
+      "batchRetrievedOn": "2026-09-20",
+      "reopenedInThisGate": false
+    }
+  ],
+  "candidates": [
+    {
+      "knowledgeId": "macro.structural-fact.opec-vs-opecplus.v1",
+      "reviewLabel": "F01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M01",
+      "themeLinks": [
+        "M02"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "OPEC成员组织与OPEC+合作安排不同；俄罗斯参与后者不等于成为OPEC成员。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S01",
+        "M01.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "合作名单和当次签署国会变化；不由组织身份推断产量、履约或价格控制。"
+      ],
+      "aliases": [
+        "OPEC / OPEC+ distinction"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "promotionReason": "辨别新闻中的组织/合作名单，避免把合作参与误作成员身份。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+      "reviewLabel": "F02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M01",
+      "themeLinks": [
+        "M05",
+        "M03"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "配额是政策安排，备用产能是带条件的能力，SPR库存是存量，实际生产/释放/交付才是期间流量；这些量不可互换。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S02",
+        "M01.S03",
+        "M01.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "具体产能时间定义须带提供方版本；公告不证明执行，库存不保证即时可提取。"
+      ],
+      "aliases": [
+        "quota is not production",
+        "spare capacity is not delivered flow",
+        "SPR stock is not release"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "measurementTypes": [
+        "ANNOUNCEMENT",
+        "AUTHORIZATION",
+        "CAPACITY",
+        "STOCK",
+        "FLOW"
+      ],
+      "promotionReason": "反复复用的政策、能力、库存与实际交付测量边界。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.messaging-and-settlement-layers.v1",
+      "reviewLabel": "F03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M02",
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "SWIFT提供金融报文；CHIPS提供大额美元清算结算；代理行账户是账务关系。报文接入不等于货币本身或最终结算。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S03",
+        "M02.S04",
+        "M02.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "断开报文可能严重增加摩擦，但不能单独证明全部金融隔绝；替代报文也不解除其他法律限制。"
+      ],
+      "aliases": [
+        "SWIFT is not USD",
+        "SWIFT is not settlement"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "promotionReason": "跨能源/制裁/航运报道都需要的支付层次区别，只保留一个主体。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.reserve-share-versus-transactions.v1",
+      "reviewLabel": "F04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M02",
+      "themeLinks": [
+        "M03"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "储备币种份额是指定口径的存量占比；变化可能涉及交易、汇率、资产估值或方法。COFER外汇储备不含黄金，不能直接当净资金流或全部官方储备。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S01",
+        "M02.S02",
+        "M02.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "需要同口径数量及估值调整才能识别净配置；聚合份额不能推断单国动机。"
+      ],
+      "aliases": [
+        "reserve share is not capital flow",
+        "gold valuation is not gold purchase"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "measurementTypes": [
+        "STOCK",
+        "VALUATION_CHANGE",
+        "FLOW"
+      ],
+      "promotionReason": "避免把储备估值和占比误判为资金流或政治意图。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+      "reviewLabel": "F05",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M02"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "赤字是期间收支差，债务是存量；gross debt、public debt与marketable debt口径不同。Public debt包含Fed持有；总拍卖、私人净融资和赤字也不等同。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S01",
+        "M03.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "比较需匹配期间、现金余额、到期及政府内部持有；不能用一口径替代另一口径。"
+      ],
+      "aliases": [
+        "gross versus public debt",
+        "auction gross versus net financing"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "measurementTypes": [
+        "STOCK",
+        "FLOW"
+      ],
+      "promotionReason": "财政叙事进入任何比较前必须统一的存量/期间和持有人口径。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.debt-is-not-fiscal-dominance.v1",
+      "reviewLabel": "F06",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "财政主导需要财政融资约束货币政策或价格稳定选择的制度证据；高债务、一次降息或QE本身不足以识别。金融抑制是另一个需辨认的机制。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S04",
+        "M03.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "属于概念与识别边界，非宣布当前制度；不同学术定义存在差异，需保留具体版本。"
+      ],
+      "aliases": [
+        "high debt is not fiscal dominance",
+        "QE is not sufficient regime evidence"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "promotionReason": "为长期反复出现的财政主导叙事保留识别门槛而非当前结论。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.unhedged-carry-versus-hedged-assets.v1",
+      "reviewLabel": "F07",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "未对冲日元carry承担日元融资与外币资产风险；完全对冲海外投资和美元换日元basis交易不能自动归为同一方向的投机carry。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "实际融资利率、远期、basis、期限和费用需匹配；机构所在地不能确定融资币种或净敞口。"
+      ],
+      "aliases": [
+        "Japanese overseas investment is not all carry"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "promotionReason": "区分真实承担的汇率/融资风险，避免把所有日本海外投资混成一类。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.carry-proxy-coverage.v1",
+      "reviewLabel": "F08",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M02"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "衍生名义金额、日元期货净头寸和日本居民海外证券交易各有覆盖边界；它们都不能单独测得全球净日元carry杠杆或平仓额。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03",
+        "M04.S05",
+        "M04.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "统计可以有用但不完整；分类变化、对冲、双边关系和非银缺口仍在。"
+      ],
+      "aliases": [
+        "notional is not net exposure",
+        "MOF flow is not global unwind"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "promotionReason": "让未来分析能解释代理数据不能覆盖什么。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.shipping-routes-and-double-counting.v1",
+      "reviewLabel": "F09",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M05",
+      "themeLinks": [
+        "M01"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "相同货物可能经过多个串联咽喉；各通道流量不能简单相加。Suez与SUMED合计油量也不能全称运河船运或推广到LNG、集装箱。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M05.S01",
+        "M05.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "须匹配货类、路线、期间、方向和统计范围；Malacca冲突季度不能从中挑一个总量。"
+      ],
+      "aliases": [
+        "chokepoint totals are not additive",
+        "Suez plus SUMED scope"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "promotionReason": "避免跨通道重复计数和错用Suez/SUMED合计口径。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.vessel-tonnage-versus-cargo.v1",
+      "reviewLabel": "F10",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M05",
+      "themeLinks": [
+        "M01"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "PC/UMS等船舶容积相关吨位、货物重量、货值、船次与吨海里是不同指标；船闸/吃水/预约能力不等于已运输货物。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M05.S05",
+        "M05.S06",
+        "M05.S11"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "所用来源部分发布日期未知或仅索引节选；只提取已说明的计量区别，不提升为当前运营状态。"
+      ],
+      "aliases": [
+        "PC/UMS is not cargo mass",
+        "capacity is not transported cargo"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "measurementTypes": [
+        "CAPACITY",
+        "ANNOUNCEMENT",
+        "FLOW"
+      ],
+      "promotionReason": "避免航运不同量纲与能力被误写为已运货物。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.yield-components-are-not-one-signal.v1",
+      "reviewLabel": "F11",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M04"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "名义长期收益率可分解为预期短率与期限溢价；成分来自模型估计。不能把名义收益率上涨单独解释成政策短率预期上涨。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "模型、期限与样本会改变结果；没有当前点估计或方向。TIPS价差具体成分不在本候选提升范围，原档案延伸讨论待专门方法复核。"
+      ],
+      "aliases": [
+        "nominal versus real rates",
+        "term premium model boundary"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "promotionReason": "保存收益率解释的中间组成和模型限制，不存方向阈值。"
+    },
+    {
+      "knowledgeId": "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+      "reviewLabel": "F12",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M05"
+      ],
+      "knowledgeType": "STRUCTURAL_FACT",
+      "statement": "政策公告日、正式生效日和实际成交/观察日须分开；公告存在不证明新条件已适用于所有交易，研究接收日也不是源数据日期。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S01",
+        "M03.S02",
+        "M05.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "这是由已存案例支持的时间边界；具体政策效力仍需其文件，未知日期不能补齐。"
+      ],
+      "aliases": [
+        "announced is not effective",
+        "retrieval time is not observation time"
+      ],
+      "supersedes": [],
+      "validFrom": null,
+      "validTo": null,
+      "promotionReason": "保留政策公告、实施与资料接收的独立时钟。"
+    },
+    {
+      "knowledgeId": "macro.historical-fact.treasury-fed-accord-1951.v1",
+      "reviewLabel": "H01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M02"
+      ],
+      "knowledgeType": "HISTORICAL_FACT",
+      "statement": "1951年Treasury–Fed Accord改变了此前战时国债利率安排下财政与货币政策的关系。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不能把历史安排直接解释为当前美国制度。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "eventPeriod": "1951-03",
+      "whatChanged": "政府债务管理与货币政策的制度分离。",
+      "whyStructurallyRelevant": "提供辨识财政融资约束与政策自主性的有日期实例。",
+      "promotionReason": "以少量制度史帮助区分财政货币安排，而非搬运全部时间线。"
+    },
+    {
+      "knowledgeId": "macro.historical-fact.boj-framework-exit-2024.v1",
+      "reviewLabel": "H02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "knowledgeType": "HISTORICAL_FACT",
+      "statement": "BOJ在2024年3月退出负利率/YCC框架；不能以此前框架概括此后全部时期。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S04"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "没有据此填写今天所有融资利率；原证据为政策历史图的可读日期/标签。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "eventPeriod": "2024-03",
+      "whatChanged": "货币操作框架发生转折。",
+      "whyStructurallyRelevant": "为解释利差与carry历史样本提供制度分界。",
+      "promotionReason": "保留评估历史carry样本必须注意的制度分界。"
+    },
+    {
+      "knowledgeId": "macro.current-state.eia-capacity-definition-20251219.v1",
+      "reviewLabel": "C01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "CURRENT_STATE_CANDIDATE",
+      "themeId": "M01",
+      "themeLinks": [
+        "M05"
+      ],
+      "knowledgeType": "CURRENT_STATE",
+      "statement": "按dossier记录的2025-12-19 EIA修订说明，有效产能采用90天内可达到并可持续的条件，最大可持续产能采用一年内可达到条件；不将旧口径直接平接。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "仅EIA提供方版本的摘要，不是可直接计算产能的完整定义或所有机构通用口径；未重建旧定义或验证工程可用性。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "asOf": "2025-12-19",
+      "sourceDate": "2025-12-19",
+      "sourceRetrievedOn": "2026-09-20",
+      "freshnessClass": "POLICY_VERSIONED",
+      "reviewTrigger": [
+        "EIA发布定义或方法修订",
+        "使用跨版本产能时间序列前"
+      ],
+      "effectiveFrom": null,
+      "measurementType": "CAPACITY",
+      "definitionDurations": {
+        "effectiveCapacityReachableWithinDays": 90,
+        "maximumSustainableReachableWithinYears": 1
+      },
+      "canonicalRefs": [
+        "macro.structural-fact.oil-policy-capacity-stock-flow.v1"
+      ],
+      "promotionReason": "方法版本有持续比较价值，但必须跟随提供方修订。"
+    },
+    {
+      "knowledgeId": "macro.current-state.cofer-2026q1-vintage-20260701.v1",
+      "reviewLabel": "C02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "CURRENT_STATE_CANDIDATE",
+      "themeId": "M02",
+      "themeLinks": [
+        "M03"
+      ],
+      "knowledgeType": "CURRENT_STATE",
+      "statement": "已保存IMF 2026-07-01发布版本记载：2026Q1外汇储备总量13.10万亿美元，美元占57.13%；这是该期存量口径。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不是9月实时值、交易流量或含黄金的全部储备；后续修订与方法变更需另存。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "asOf": "2026-03-31",
+      "period": "2026-Q1",
+      "sourceDate": "2026-07-01",
+      "sourceRetrievedOn": "2026-09-20",
+      "freshnessClass": "PERIODIC_DATA",
+      "reviewTrigger": [
+        "下一次COFER发布",
+        "该季度修订或方法/估值口径改变",
+        "尝试用于当前判断前"
+      ],
+      "measurementType": "STOCK",
+      "values": [
+        {
+          "value": 13.1,
+          "unit": "trillion USD",
+          "denominator": "该发布版本外汇储备总存量"
+        },
+        {
+          "value": 57.13,
+          "unit": "percent",
+          "denominator": "同一COFER外汇储备口径；不含黄金"
+        }
+      ],
+      "canonicalRefs": [
+        "macro.structural-fact.reserve-share-versus-transactions.v1"
+      ],
+      "promotionReason": "保留有明确期间/来源的储备快照示例，不作为永久结构数值。"
+    },
+    {
+      "knowledgeId": "macro.current-state.treasury-q3-financing-estimate-20260803.v1",
+      "reviewLabel": "C03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "CURRENT_STATE_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M02"
+      ],
+      "knowledgeType": "CURRENT_STATE",
+      "statement": "Treasury在2026-08-03预计2026Q3私人持有净可交易借款7390亿美元，并假定季末现金9500亿美元；不能标成已实现融资。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "假设现金及会计口径特定；不是总拍卖额或年度赤字，不从预测推出财政主导。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "asOf": "2026-08-03",
+      "sourceDate": "2026-08-03",
+      "period": "2026-Q3 forecast",
+      "sourceRetrievedOn": "2026-09-20",
+      "freshnessClass": "PERIODIC_DATA",
+      "reviewTrigger": [
+        "下一次Treasury融资声明/修订",
+        "Q3实际结果发布",
+        "现金假设变化"
+      ],
+      "measurementType": "ANNOUNCEMENT",
+      "announcedMeasurementType": "FLOW",
+      "value": {
+        "value": 739,
+        "unit": "billion USD",
+        "denominator": "privately-held net marketable borrowing for 2026-Q3"
+      },
+      "cashAssumption": {
+        "value": 950,
+        "unit": "billion USD",
+        "measurementType": "STOCK",
+        "asOf": "2026-09-30",
+        "status": "FORECAST_ASSUMPTION_NOT_OBSERVED"
+      },
+      "canonicalRefs": [
+        "macro.structural-fact.debt-stock-and-financing-definitions.v1"
+      ],
+      "promotionReason": "保留预测、现金假设和实际融资的差别供后续版本对照。"
+    },
+    {
+      "knowledgeId": "macro.current-state.boj-announcement-20260918.v1",
+      "reviewLabel": "C04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "CURRENT_STATE_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "knowledgeType": "CURRENT_STATE",
+      "statement": "已保存BOJ 2026-09-18公告将隔夜call rate目标调整至约1.25%，新目标与配套利率注明09-24生效；原批研究日2026-09-20尚未到该日。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S01"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "这是公告事实，不是已成交融资成本；不证明意外程度、基金暴露或正在清算。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "asOf": "2026-09-18",
+      "sourceDate": "2026-09-18",
+      "sourceRetrievedOn": "2026-09-20",
+      "freshnessClass": "POLICY_VERSIONED",
+      "reviewTrigger": [
+        "新BOJ决定或公告更正",
+        "09-24实施日到来时核验实施证据",
+        "试图用于某笔融资成本之前"
+      ],
+      "effectiveFrom": "2026-09-24",
+      "measurementType": "ANNOUNCEMENT",
+      "value": {
+        "value": 1.25,
+        "unit": "percent",
+        "denominator": "announced approximate uncollateralized overnight call-rate target"
+      },
+      "implementationObserved": false,
+      "canonicalRefs": [
+        "macro.structural-fact.announcement-effect-and-observation-clocks.v1"
+      ],
+      "promotionReason": "保留已公告未实施这一明确政策状态，不认证市场实际融资成本。"
+    },
+    {
+      "knowledgeId": "macro.mechanism.deliverable-oil-and-price-transmission.v1",
+      "reviewLabel": "ME01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M01",
+      "themeLinks": [
+        "M03",
+        "M05"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "可交付供给损失可能经库存/产品成本和实际收入传到通胀、活动与政策，不能省略中间环节。",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S05",
+        "M01.S06",
+        "M05.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不是固定方向、概率或交易触发器；当前是否发生须独立观察。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "trigger": "实物供给/交付持续损失",
+      "firstOrderEffect": "库存或替代供应承压，可能推高现货及产品成本",
+      "secondOrderEffects": [
+        "家庭真实购买力/企业利润变化",
+        "成本扩散和预期变化可能影响政策；加息不是必然"
+      ],
+      "counterforces": [
+        "需求下降",
+        "替代供应、释放库存或航路恢复",
+        "补贴、利润吸收和锚定预期"
+      ],
+      "observableConfirmation": [
+        "装运/到货与库存",
+        "裂解价差和能源项",
+        "非能源价格、工资/预期及央行说明"
+      ],
+      "falsification": [
+        "交付恢复、库存重建且成本不扩散",
+        "增长需求冲击比供给证据更强"
+      ],
+      "timeHorizon": "实物日—月；下游与政策周—季，非固定滞后",
+      "scopeNote": "成本预算约束有较强依据；整条宏观链保守保留条件等级。",
+      "promotionReason": "复用实物到宏观的条件链及反力，防止油价直跳加息。"
+    },
+    {
+      "knowledgeId": "macro.mechanism.financial-access-and-trade-cost.v1",
+      "reviewLabel": "ME02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M02",
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "法律限制可以改变中介可服务范围；融资/贸易成本与实际业务量的变化仍取决于执行、许可和替代。",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S06",
+        "M02.S07",
+        "M01.S10"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不是固定方向、概率或交易触发器；当前是否发生须独立观察。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "trigger": "适用的账户/交易限制或执行变化",
+      "firstOrderEffect": "中介不能或不愿处理特定交易",
+      "secondOrderEffects": [
+        "资本/贸易获取成本可能提高",
+        "付款路径、净回款或交付可能调整"
+      ],
+      "counterforces": [
+        "合法许可",
+        "其他中介/市场替代",
+        "客户和商品改道"
+      ],
+      "observableConfirmation": [
+        "具体适用法律与执行事件",
+        "拒付/授信成本及匹配贸易数量"
+      ],
+      "falsification": [
+        "业务量/成本未改变",
+        "只看到出口折价而无全球缺量证据"
+      ],
+      "timeHorizon": "日—季；法律生效与经济影响分开",
+      "promotionReason": "法律限制到现实效果之间需要中介和业务证据。"
+    },
+    {
+      "knowledgeId": "macro.mechanism.debt-rollover-cost.v1",
+      "reviewLabel": "ME03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "既有固定利率债务的合同付息成本不会随当日市场收益率全部立即重定价；更高融资成本经到期再融资逐步进入付息。",
+      "evidenceStatus": "WELL_ESTABLISHED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S01",
+        "M03.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不是固定方向、概率或交易触发器；当前是否发生须独立观察。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "trigger": "新融资/滚动融资利率高于被替换成本",
+      "firstOrderEffect": "到期或新借部分成本变化",
+      "secondOrderEffects": [
+        "有效付息成本逐步改变",
+        "现金和未来融资需要可能变化"
+      ],
+      "counterforces": [
+        "长久期锁定旧利率",
+        "收入/增长改善",
+        "初级财政调整"
+      ],
+      "observableConfirmation": [
+        "期限分布、到期再融资和有效利率",
+        "实际净利息与现金流"
+      ],
+      "falsification": [
+        "以当日十年率乘全部存量的算法不成立",
+        "若到期结构或收入抵消则不能推出失控"
+      ],
+      "timeHorizon": "随到期结构，季度—多年",
+      "scopeNote": "仅固定利率债务合同付息/再融资关系，不否认债券市场价格重估；浮动或指数化条款需另看。财政危机、通胀或汇率后果未提升为事实。",
+      "promotionReason": "保留到期结构导致的合同成本滞后，区别市场价格重估。"
+    },
+    {
+      "knowledgeId": "macro.mechanism.treasury-duration-and-dollar-demand.v1",
+      "reviewLabel": "ME04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M02",
+        "M04"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "净发行的期限构成与投资者安全资产需求共同影响私人久期吸收；收益率反应不是总债务的一元函数。",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S02",
+        "M03.S03",
+        "M03.S07",
+        "M02.S01"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不是固定方向、概率或交易触发器；当前是否发生须独立观察。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "trigger": "Treasury净发行/期限构成或投资者需求改变",
+      "firstOrderEffect": "私人需吸收的期限风险或美元安全资产需求改变",
+      "secondOrderEffects": [
+        "期限溢价与融资条件可能变化",
+        "美元储备/抵押资产使用与配置发生互动"
+      ],
+      "counterforces": [
+        "国内储蓄与官方需求",
+        "发行期限缩短",
+        "央行持有及避险需求"
+      ],
+      "observableConfirmation": [
+        "净久期供给、期限与持有人结构",
+        "多模型溢价及资金市场"
+      ],
+      "falsification": [
+        "私人吸收平稳且需求同步增加",
+        "一次弱拍卖被误解成长期财政危机"
+      ],
+      "timeHorizon": "日—季；网络结构年尺度",
+      "scopeNote": "美债资产角色有结构证据；边际收益率/汇率幅度仍为条件机制。",
+      "promotionReason": "保留期限供给与安全资产需求的互动，而非债务总量定方向。"
+    },
+    {
+      "knowledgeId": "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+      "reviewLabel": "ME05",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "跨币种融资与海外资产配置取决于同期限资金成本、远期、basis和负债匹配；政策利差不等于对冲后可得收益。",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S03",
+        "M04.S05",
+        "M04.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不是固定方向、概率或交易触发器；当前是否发生须独立观察。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "trigger": "同期限融资利差、FX远期/基差或目标资产收益变化",
+      "firstOrderEffect": "对冲成本及组合净回报改变",
+      "secondOrderEffects": [
+        "机构可能调整hedge或资产配置",
+        "货币融资和债券需求可能变化"
+      ],
+      "counterforces": [
+        "负债匹配/监管",
+        "市场已预期",
+        "自然币种收入和央行后备"
+      ],
+      "observableConfirmation": [
+        "同期限资金与远期/basis",
+        "机构分类交易及hedge资料"
+      ],
+      "falsification": [
+        "只用两国政策率或居民净卖出推断carry",
+        "对冲后净回报/配置未变"
+      ],
+      "timeHorizon": "资金小时—日；机构配置日—季",
+      "promotionReason": "合并利差、hedge和basis在美元/日元主题的重复机制。"
+    },
+    {
+      "knowledgeId": "macro.mechanism.yen-loss-margin-unwind.v1",
+      "reviewLabel": "ME06",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "日元升值可损害未对冲短日元组合；融资、margin或风险约束收紧时，冲击可能放大为跨资产去杠杆；也可能发生主动减仓。",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不是固定方向、概率或交易触发器；当前是否发生须独立观察。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "trigger": "未对冲日元负债组合遭汇率/资产损失或波动冲击",
+      "firstOrderEffect": "净值、抵押品或VaR余量下降",
+      "secondOrderEffects": [
+        "补保证金、降低风险或平仓",
+        "卖出目标资产、购回融资币种可能放大流动性压力"
+      ],
+      "counterforces": [
+        "充足资本/抵押品",
+        "汇率对冲",
+        "融资展期、后备流动性和其他买家"
+      ],
+      "observableConfirmation": [
+        "可观察短日元暴露减少",
+        "融资/保证金压力",
+        "可关联的实际跨资产减仓"
+      ],
+      "falsification": [
+        "组合已对冲或不受融资约束",
+        "仅价格共动，无仓位/融资证据",
+        "美国宏观消息等替代解释更强"
+      ],
+      "timeHorizon": "小时—周；无保证清算时点",
+      "scopeNote": "损益算术与强平发生分开；BIS历史例不是2026当前结论。",
+      "promotionReason": "保留净损失到融资约束到卖出的条件，不由共跌认定资金来源。"
+    },
+    {
+      "knowledgeId": "macro.mechanism.rerouting-vessel-time-cost.v1",
+      "reviewLabel": "ME07",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M05",
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "knowledgeType": "MECHANISM",
+      "statement": "绕航可能增加船期和燃料、占用有效运力，进而影响运费与交付；仍需按路线、船型和需求检验。",
+      "evidenceStatus": "CONDITIONAL_HYPOTHESIS",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M05.S02",
+        "M05.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "UNCTAD部分材料仅原批索引节选，未复算成本系数；不保留统一绕航天数或通胀弹性。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "trigger": "原航路受限且实际改走更长路径",
+      "firstOrderEffect": "单航次时间/燃料及同船队占用增加",
+      "secondOrderEffects": [
+        "交付频次和库存需要改变",
+        "运价/下游成本可能变化"
+      ],
+      "counterforces": [
+        "闲置船和新船",
+        "航速调整",
+        "需求减弱、库存及利润吸收"
+      ],
+      "observableConfirmation": [
+        "实际改道/吨海里和到港时间",
+        "匹配航线运费和目的地库存"
+      ],
+      "falsification": [
+        "只有头条没有路线或交付变化",
+        "港口拥堵或需求变化更能解释费用"
+      ],
+      "timeHorizon": "航次日—周；下游周—季",
+      "promotionReason": "区分运输变慢、运力占用和实际货量损失。"
+    },
+    {
+      "knowledgeId": "macro.actor-relation.eu-regulates-swift.v1",
+      "reviewLabel": "A01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "ACTOR_RELATION_CANDIDATE",
+      "themeId": "M02",
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "knowledgeType": "ACTOR_RELATION",
+      "statement": "SWIFT受其适用的欧盟/比利时法律约束；其对指定实体的接入限制须与立法者角色分开。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不将某国政策视为公司任意命令；不表示所有制裁相同、全部银行都被排除。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "actorA": "European Union legal authorities",
+      "relationType": "REGULATES",
+      "actorB": "SWIFT",
+      "evidenceType": "OFFICIAL_STATEMENT",
+      "asOf": "2026-09-20",
+      "asOfMeaning": "原批读取制度说明之日，非新法规生效日；网页更新时间UNKNOWN",
+      "canonicalRefs": [
+        "macro.structural-fact.messaging-and-settlement-layers.v1"
+      ],
+      "promotionReason": "保留基础设施与立法者的权责关系；不建立动机关联。",
+      "sourceDate": null
+    },
+    {
+      "knowledgeId": "macro.actor-relation.fed-boj-dollar-backstop.v1",
+      "reviewLabel": "A02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "ACTOR_RELATION_CANDIDATE",
+      "themeId": "M02",
+      "themeLinks": [
+        "M04"
+      ],
+      "knowledgeType": "ACTOR_RELATION",
+      "statement": "Fed与BOJ的央行互换关系提供美元后备渠道；BOJ对当地机构的转贷与Fed对央行的关系分开。",
+      "evidenceStatus": "VERIFIED",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M02.S08",
+        "M04.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "这是后备授权关系，非当日提款、无条件全球可得或直接向非银买股票融资。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "actorA": "Federal Reserve",
+      "relationType": "FUNDS",
+      "relationQualifier": "BACKSTOP_AUTHORIZATION_NOT_OBSERVED_DISBURSEMENT",
+      "actorB": "Bank of Japan",
+      "evidenceType": "OFFICIAL_STATEMENT",
+      "asOf": "2026-09-20",
+      "asOfMeaning": "原批FAQ读取日；更新时间UNKNOWN，不作为精确带日期政策变化",
+      "measurementType": "AUTHORIZATION",
+      "promotionReason": "保存央行后备拓扑及授权限定，不保存当日提款假设。",
+      "sourceDate": null
+    },
+    {
+      "knowledgeId": "macro.flow-relation.primary-net-treasury-financing.v1",
+      "reviewLabel": "FL01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M02"
+      ],
+      "knowledgeType": "FLOW_RELATION",
+      "statement": "Treasury从发行取得现金并偿还到期证券；净融资必须与总拍卖、二级换手及现金余额变化分开。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M03.S02",
+        "M03.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "当前量值不写入结构；二级买入不会直接给财政新增现金。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "from": "Primary-market investors",
+      "to": "US Treasury",
+      "object": "USD financing against marketable securities",
+      "flowType": "DEBT_FUNDING",
+      "measurementType": "FLOW",
+      "period": null,
+      "unit": "USD per specified financing period",
+      "magnitude": null,
+      "flowStatus": "INFERRED_FLOW",
+      "measurementNote": "本条只描述关系；已发生或预计金额需单独的有日期记录。",
+      "canonicalRefs": [
+        "macro.structural-fact.debt-stock-and-financing-definitions.v1"
+      ],
+      "datedExampleRef": "macro.current-state.treasury-q3-financing-estimate-20260803.v1",
+      "promotionReason": "保存财政一级融资端点及会计边界，数值单独日期化。"
+    },
+    {
+      "knowledgeId": "macro.flow-relation.energy-route-delivery.v1",
+      "reviewLabel": "FL02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "PROMOTE_CANDIDATE",
+      "themeId": "M05",
+      "themeLinks": [
+        "M01"
+      ],
+      "knowledgeType": "FLOW_RELATION",
+      "statement": "港口之间的能源运输通过特定海峡/运河或有限替代路径，流量需标货类、期间、起终点与统计范围。",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M05.S01",
+        "M05.S02"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "没有默认份额或当期数值；油、LNG单位不能混合，串联通道不可相加。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "from": "Origin export ports",
+      "to": "Destination ports / refineries",
+      "object": "Crude and petroleum liquids, or separately identified LNG",
+      "flowType": "ENERGY_TRANSPORT",
+      "measurementType": "FLOW",
+      "period": null,
+      "unit": null,
+      "magnitude": null,
+      "flowStatus": "INFERRED_FLOW",
+      "measurementNote": "未选定品类/期间，因此unit与period保持null；未来具体观测再说明桶/日或气体单位。",
+      "canonicalRefs": [
+        "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+        "macro.structural-fact.shipping-routes-and-double-counting.v1",
+        "macro.structural-fact.vessel-tonnage-versus-cargo.v1"
+      ],
+      "promotionReason": "保存可复用的能源运输关系，不固化季度份额或通道总量。"
+    },
+    {
+      "knowledgeId": "macro.transmission-channel-candidate.macro-to-gold-channels.v1",
+      "reviewLabel": "T01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M01",
+      "themeLinks": [
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "knowledgeType": "TRANSMISSION_CHANNEL_CANDIDATE",
+      "statement": "能源/财政/融资冲击可能经实际收益率、美元、避险或现金需求影响黄金；没有固定GLD方向。",
+      "evidenceStatus": "ALPHA_INFERENCE",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M01.S05",
+        "M03.S07",
+        "M02.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "外部来源支持中间机制，未验证GLD因果系数；央行实物购金不等于GLD申赎。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "sourceTheme": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "intermediateVariables": [
+        "实际收益率及其测量",
+        "USD资金需求",
+        "避险偏好/现金缺口"
+      ],
+      "targetAssetClass": "Gold / GLD",
+      "mechanism": "多个渠道可相反；需匹配当时证据，不能从单一宏观标题推出价格。",
+      "counterforces": [
+        "强美元",
+        "现金需求卖出",
+        "黄金与ETF特定供需"
+      ],
+      "requiredObservations": [
+        "同期限实际利率/流动性",
+        "黄金数量与GLD流量分别观察",
+        "当时宏观/融资资料"
+      ],
+      "falsification": [
+        "中间变量未变化或黄金自身供需足以解释结果"
+      ],
+      "promotionReason": "将大量黄金推断压为一个含相反渠道的待审模板。"
+    },
+    {
+      "knowledgeId": "macro.transmission-channel-candidate.funding-to-risk-assets-channels.v1",
+      "reviewLabel": "T02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "MECHANISM_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M05"
+      ],
+      "knowledgeType": "TRANSMISSION_CHANNEL_CANDIDATE",
+      "statement": "融资/保证金及风险预算变化可能传到风险资产，包括BTC/IBIT；直接日元融资暴露尚未知。",
+      "evidenceStatus": "ALPHA_INFERENCE",
+      "evidenceBasis": "SAVED_DOSSIER_EXTRACTION_NOT_NEW_EXTERNAL_VERIFICATION",
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03",
+        "M02.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "limitations": [
+        "不把carry或航运叙事当BTC/IBIT实际资金来源；ETF与底层资产数据分开。"
+      ],
+      "aliases": [],
+      "supersedes": [],
+      "sourceTheme": [
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "intermediateVariables": [
+        "融资成本/basis",
+        "抵押品与margin",
+        "风险预算与实际减仓"
+      ],
+      "targetAssetClass": "Broad risk assets, including BTC / IBIT",
+      "mechanism": "可能通过流动性与杠杆间接传导；不产生方向、概率或交易许可。",
+      "counterforces": [
+        "后备流动性与其他买家",
+        "加密自身监管/供需",
+        "无杠杆资金"
+      ],
+      "requiredObservations": [
+        "实际融资/杠杆关系",
+        "减仓证据",
+        "BTC及IBIT各自流量"
+      ],
+      "falsification": [
+        "融资与头寸未变而资产独立重估"
+      ],
+      "promotionReason": "将风险资产传导压为一个明确直接资金关系未知的推断。"
+    }
+  ],
+  "edges": [
+    {
+      "edgeId": "macro.edge.batch1-l1.v1",
+      "sourceEdge": "BATCH_1_SYNTHESIS:L1",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "fromTheme": "M05",
+      "toTheme": "M01",
+      "mechanismRef": "macro.mechanism.deliverable-oil-and-price-transmission.v1",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "statement": "路线与有限旁路约束可交付能源；只保留物流依赖，不加入固定价格方向。",
+      "timeHorizon": "小时—月；新设施更久",
+      "counterforces": [
+        "库存与替代路径/产地",
+        "实际约束未触及该批货物"
+      ],
+      "sourceRefs": [
+        "M05.S02",
+        "M01.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "originalThemeNotation": "M01↔M05",
+      "priceEffectStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "edgeId": "macro.edge.batch1-l2.v1",
+      "sourceEdge": "BATCH_1_SYNTHESIS:L2",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "fromTheme": "M02",
+      "toTheme": "M01",
+      "mechanismRef": "macro.mechanism.financial-access-and-trade-cost.v1",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "statement": "适用支付/融资限制可能改变能源贸易成本及路径；效果取决执行。",
+      "timeHorizon": "日—季",
+      "counterforces": [
+        "许可与替代中介",
+        "贸易改道保持数量"
+      ],
+      "sourceRefs": [
+        "M02.S06",
+        "M02.S07",
+        "M01.S10"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "edgeId": "macro.edge.batch1-l3.v1",
+      "sourceEdge": "BATCH_1_SYNTHESIS:L3",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "fromTheme": "M03",
+      "toTheme": "M02",
+      "mechanismRef": "macro.mechanism.treasury-duration-and-dollar-demand.v1",
+      "evidenceStatus": "FACTUAL_DEPENDENCY",
+      "statement": "美债作为美元储备/抵押资产连接融资与货币网络；不存固定汇率关系。",
+      "timeHorizon": "日—多年",
+      "counterforces": [
+        "其他资产与国内吸收",
+        "制度风险和需求变化"
+      ],
+      "sourceRefs": [
+        "M02.S01",
+        "M03.S08"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "priceEffectStatus": "CONDITIONAL_HYPOTHESIS"
+    },
+    {
+      "edgeId": "macro.edge.batch1-l4.v1",
+      "sourceEdge": "BATCH_1_SYNTHESIS:L4",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "fromTheme": "M02",
+      "toTheme": "M04",
+      "mechanismRef": "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "statement": "FX swaps与央行美元后备连接跨币种融资；对冲需求和投机carry需区分。",
+      "timeHorizon": "小时—季",
+      "counterforces": [
+        "hedge与basis",
+        "后备流动性和自然对冲"
+      ],
+      "sourceRefs": [
+        "M04.S03",
+        "M04.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "edgeId": "macro.edge.batch1-l5.v1",
+      "sourceEdge": "BATCH_1_SYNTHESIS:L5",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "fromTheme": "M03",
+      "toTheme": "M04",
+      "mechanismRef": "macro.mechanism.cross-currency-hedge-and-allocation.v1",
+      "evidenceStatus": "SUPPORTED_MECHANISM",
+      "statement": "美债收益及同期限hedge成本可能改变日本机构配置；不是单一政策利差公式。",
+      "timeHorizon": "日—季",
+      "counterforces": [
+        "负债匹配/监管",
+        "已计价和汇率对冲"
+      ],
+      "sourceRefs": [
+        "M04.S03",
+        "M04.S05"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "edgeId": "macro.edge.batch1-l6.v1",
+      "sourceEdge": "BATCH_1_SYNTHESIS:L6",
+      "reviewDecision": "KEEP_CANDIDATE",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "fromTheme": "M01",
+      "toTheme": "M03",
+      "mechanismRef": "macro.mechanism.deliverable-oil-and-price-transmission.v1",
+      "evidenceStatus": "ALPHA_INFERENCE",
+      "statement": "能源成本若扩散并影响政策/利率，可能经到期结构传至财政利息；每一步都需证据。",
+      "timeHorizon": "周—多年",
+      "counterforces": [
+        "需求下修、锚定预期",
+        "锁定旧利率与财政调整"
+      ],
+      "sourceRefs": [
+        "M01.S05",
+        "M03.S01"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "supportingMechanismRefs": [
+        "macro.mechanism.debt-rollover-cost.v1"
+      ],
+      "hypothesisStatus": "CONDITIONAL_HYPOTHESIS",
+      "falsification": [
+        "成本未扩散或政策/利率未响应",
+        "再融资/收入变化抵消付息压力"
+      ]
+    }
+  ],
+  "edgeReviews": [
+    {
+      "sourceEdge": "BATCH_1_SYNTHESIS:L1",
+      "decision": "KEEP_CANDIDATE",
+      "candidateEdgeId": "macro.edge.batch1-l1.v1",
+      "reason": "保留物流关系；将原双向叙述收窄为运输约束→可交付供给。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "sourceEdge": "BATCH_1_SYNTHESIS:L2",
+      "decision": "KEEP_CANDIDATE",
+      "candidateEdgeId": "macro.edge.batch1-l2.v1",
+      "reason": "保留法律与中介传导，删除任何全面禁运或必然少油暗示。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "sourceEdge": "BATCH_1_SYNTHESIS:L3",
+      "decision": "KEEP_CANDIDATE",
+      "candidateEdgeId": "macro.edge.batch1-l3.v1",
+      "reason": "保留资产角色，边际价格仍条件性。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "sourceEdge": "BATCH_1_SYNTHESIS:L4",
+      "decision": "KEEP_CANDIDATE",
+      "candidateEdgeId": "macro.edge.batch1-l4.v1",
+      "reason": "保留工具连接，后备关系不作已提款。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "sourceEdge": "BATCH_1_SYNTHESIS:L5",
+      "decision": "KEEP_CANDIDATE",
+      "candidateEdgeId": "macro.edge.batch1-l5.v1",
+      "reason": "保留机构配置渠道，不推导必然资本回流。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "sourceEdge": "BATCH_1_SYNTHESIS:L6",
+      "decision": "KEEP_CANDIDATE",
+      "candidateEdgeId": "macro.edge.batch1-l6.v1",
+      "reason": "保留原有组合推断等级，不能从油价直跳财政主导。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "sourceEdge": "BATCH_1_SYNTHESIS:L7",
+      "decision": "DOSSIER_ONLY",
+      "candidateEdgeId": null,
+      "reason": "航运→营运资金→美元压力尚无实际授信证据，且反向准入成本已在ME02；避免复制一个更长、未识别的反馈环。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "sourceEdge": "BATCH_1_SYNTHESIS:L8",
+      "decision": "DOSSIER_ONLY",
+      "candidateEdgeId": null,
+      "reason": "日本进口成本→政策预期→carry的中间链尚无当前直接证据；保留原档案研究问题，不建立航运→平仓快捷边。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    }
+  ],
+  "watchQuestions": [
+    {
+      "watchId": "macro.watch.physical-oil-versus-headlines.v1",
+      "reviewLabel": "W01",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M01",
+      "themeLinks": [
+        "M05"
+      ],
+      "question": "实际可交付石油是否减少，还是只有配额/标题或需求在变？",
+      "whyItMatters": "先确认实物环节再延伸通胀故事。",
+      "confirmingEvidence": [
+        "同期间生产、配额、装运与库存",
+        "地区/产品价差及需求"
+      ],
+      "whatItCannotProve": [
+        "不能由单价识别战争原因",
+        "不能从库存推即时释放能力"
+      ],
+      "suggestedSources": [
+        "M01.S02",
+        "M01.S06",
+        "M01.S09"
+      ],
+      "sourceRefs": [
+        "M01.S02",
+        "M01.S06",
+        "M01.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "knownLag": "月报/季度运输估计与周库存不同步，可修订。",
+      "reviewTrigger": [
+        "新产量决定",
+        "新装运/库存资料或明显矛盾"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "automaticMonitoring": false
+    },
+    {
+      "watchId": "macro.watch.reserve-reallocation-or-valuation.v1",
+      "reviewLabel": "W02",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M02",
+      "themeLinks": [
+        "M03"
+      ],
+      "question": "美元储备份额变化来自实际配置、估值还是统计方法？",
+      "whyItMatters": "避免把份额变化误称资本出逃或政策动机。",
+      "confirmingEvidence": [
+        "同口径数量/币值与估值调整",
+        "方法修订和储备管理者具名说明"
+      ],
+      "whatItCannotProve": [
+        "不能量化整个美元融资网络",
+        "不能推定每家央行政治意图"
+      ],
+      "suggestedSources": [
+        "M02.S02",
+        "M02.S09"
+      ],
+      "sourceRefs": [
+        "M02.S02",
+        "M02.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "knownLag": "季度发布约有一季滞后；币种/黄金分母不同。",
+      "reviewTrigger": [
+        "COFER新版本",
+        "估值或方法变化"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "automaticMonitoring": false
+    },
+    {
+      "watchId": "macro.watch.treasury-financing-composition.v1",
+      "reviewLabel": "W03",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M03",
+      "themeLinks": [
+        "M02",
+        "M04"
+      ],
+      "question": "净融资、期限和现金假设是否改变了实际再融资负担？",
+      "whyItMatters": "把总债务叙事拆成可核的现金与久期问题。",
+      "confirmingEvidence": [
+        "季度计划对照实际融资",
+        "到期结构、有效利率及净利息",
+        "多模型期限溢价"
+      ],
+      "whatItCannotProve": [
+        "不能由单次拍卖认定财政危机",
+        "不能自动识别财政主导"
+      ],
+      "suggestedSources": [
+        "M03.S01",
+        "M03.S02",
+        "M03.S03",
+        "M03.S07"
+      ],
+      "sourceRefs": [
+        "M03.S01",
+        "M03.S02",
+        "M03.S03",
+        "M03.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        }
+      ],
+      "knownLag": "季度计划/月度实绩/模型各有滞后；预测不提前当结果。",
+      "reviewTrigger": [
+        "新refunding/融资声明",
+        "实际结果/现金假设修订"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "automaticMonitoring": false
+    },
+    {
+      "watchId": "macro.watch.yen-unwind-versus-comovement.v1",
+      "reviewLabel": "W04",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M04",
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "question": "日元融资杠杆真的在退，还是仅有资产价格共动？",
+      "whyItMatters": "需要头寸和融资中间证据，减少单因解释。",
+      "confirmingEvidence": [
+        "可观察短日元头寸变化",
+        "basis/融资与margin压力",
+        "可关联的跨资产出售"
+      ],
+      "whatItCannotProve": [
+        "代理指标不能覆盖全部OTC净暴露",
+        "居民卖出可能是再平衡或负债匹配"
+      ],
+      "suggestedSources": [
+        "M04.S02",
+        "M04.S03",
+        "M04.S05",
+        "M04.S07"
+      ],
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03",
+        "M04.S05",
+        "M04.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "knownLag": "COT通常周五发布周二头寸且假日可变；MOF周/月、BIS更慢。",
+      "reviewTrigger": [
+        "新政策/汇率冲击后的可核头寸资料",
+        "融资或保证金条件变化"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "automaticMonitoring": false
+    },
+    {
+      "watchId": "macro.watch.delivered-volume-or-delay.v1",
+      "reviewLabel": "W05",
+      "knowledgeType": "WATCH_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "WATCH_QUESTION_CANDIDATE",
+      "themeId": "M05",
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "question": "运输中断改变了实际交付量，还是主要延长时间/提高成本？",
+      "whyItMatters": "区分出口受阻、绕航、限载及需求变化。",
+      "confirmingEvidence": [
+        "分货类路线、船次/货量、到港时间",
+        "运费/承保与正式吃水限制",
+        "目的地库存"
+      ],
+      "whatItCannotProve": [
+        "部分回流不能证明全程安全",
+        "保费不证明净利润",
+        "不同通道不可相加"
+      ],
+      "suggestedSources": [
+        "M05.S01",
+        "M05.S02",
+        "M05.S03",
+        "M05.S04",
+        "M05.S06"
+      ],
+      "sourceRefs": [
+        "M05.S01",
+        "M05.S02",
+        "M05.S03",
+        "M05.S04",
+        "M05.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "knownLag": "公告/事故核验与月季流量时差不固定；未建立实时覆盖。",
+      "reviewTrigger": [
+        "新安全/复航证据",
+        "实际流量或吃水/水文更新"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "automaticMonitoring": false
+    }
+  ],
+  "openQuestions": [
+    {
+      "knowledgeId": "macro.open.exportable-spare-capacity.v1",
+      "reviewLabel": "Q01",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M01",
+      "themeLinks": [
+        "M05"
+      ],
+      "evidenceStatus": "UNKNOWN",
+      "question": "当前真正可快速出口并到达买家的备用桶数是多少？",
+      "whyUnresolved": "名义能力、设施状态与运输约束不能直接拼成实时交付量。",
+      "whatEvidenceWouldResolve": [
+        "同一时间版本的工程可用性、港口/管道和实际装运",
+        "旧新产能定义的可比桥接"
+      ],
+      "sourceLimitations": [
+        "季度估计滞后",
+        "没有独立工程量测",
+        "当前日期不因本轮提取而刷新"
+      ],
+      "sourceRefs": [
+        "M01.S03",
+        "M01.S09"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "lastReviewed": "2026-09-20T16:47:08.860Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.sanctions-actual-reallocation.v1",
+      "reviewLabel": "Q02",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M02",
+      "themeLinks": [
+        "M01",
+        "M05"
+      ],
+      "evidenceStatus": "UNKNOWN",
+      "question": "制裁对实际交易量、成本及改道规模分别产生多大影响？",
+      "whyUnresolved": "法律范围不等于执行效果；可比银行/贸易数据不全。",
+      "whatEvidenceWouldResolve": [
+        "合法许可/执行资料及匹配交易数据",
+        "区分估值、总额/净额和重复路径的研究"
+      ],
+      "sourceLimitations": [
+        "法律专业适用仍需复核",
+        "报文量或储备份额不能替代实际效果"
+      ],
+      "sourceRefs": [
+        "M02.S06",
+        "M02.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "lastReviewed": "2026-09-20T16:47:08.860Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.current-fiscal-dominance-identification.v1",
+      "reviewLabel": "Q03",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M03",
+      "themeLinks": [
+        "M02"
+      ],
+      "evidenceStatus": "UNKNOWN",
+      "question": "当前财政融资需求是否实质约束了价格稳定政策？",
+      "whyUnresolved": "债务和发行数字不能识别决策反事实、约束或被迫吸收。",
+      "whatEvidenceWouldResolve": [
+        "政策/法律约束及决策证据",
+        "财政调整与通胀预期",
+        "跨模型和自由/受约束投资者对照"
+      ],
+      "sourceLimitations": [
+        "没有本期充分识别证据",
+        "机构工作论文不是官方政策认定"
+      ],
+      "sourceRefs": [
+        "M03.S04",
+        "M03.S05",
+        "M03.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "lastReviewed": "2026-09-20T16:47:08.860Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.global-yen-net-leverage.v1",
+      "reviewLabel": "Q04",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M04",
+      "themeLinks": [
+        "M02",
+        "M03"
+      ],
+      "evidenceStatus": "UNKNOWN",
+      "question": "当前全球净日元融资杠杆及其最终资产暴露有多大？",
+      "whyUnresolved": "OTC双边对冲、净额、最终用途和非银账本不可完整观察。",
+      "whatEvidenceWouldResolve": [
+        "币种融资与hedge匹配的持仓/保证金资料",
+        "有覆盖与重复计数说明的估计"
+      ],
+      "sourceLimitations": [
+        "BIS历史估计不是当前总量",
+        "CFTC/MOF只是部分代理；BTC/IBIT直接份额未知"
+      ],
+      "sourceRefs": [
+        "M04.S02",
+        "M04.S03",
+        "M04.S05",
+        "M04.S07"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "lastReviewed": "2026-09-20T16:47:08.860Z",
+      "resolvedBy": null
+    },
+    {
+      "knowledgeId": "macro.open.route-specific-insurance-and-cost.v1",
+      "reviewLabel": "Q05",
+      "knowledgeType": "OPEN_QUESTION",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M05",
+      "themeLinks": [
+        "M01",
+        "M02"
+      ],
+      "evidenceStatus": "UNKNOWN",
+      "question": "指定航线的实际保险/等待/绕行成本与净损益是多少？",
+      "whyUnresolved": "缺逐条保单、拒保、企业暴露和相匹配航次数据。",
+      "whatEvidenceWouldResolve": [
+        "有日期且按航线/船型的实际保单、费用和航次",
+        "承保除外、赔付及公司资本占用"
+      ],
+      "sourceLimitations": [
+        "官方安全事件和运营公告不提供完整账本",
+        "无当前净利润或统一成本弹性"
+      ],
+      "sourceRefs": [
+        "M05.S03",
+        "M05.S04",
+        "M05.S06"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        }
+      ],
+      "lastReviewed": "2026-09-20T16:47:08.860Z",
+      "resolvedBy": null
+    }
+  ],
+  "conflicts": [
+    {
+      "conflictId": "macro.conflict.malacca-2025q4-total.v1",
+      "status": "CONFLICTED",
+      "approvalStatus": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M05",
+      "themeLinks": [
+        "M01"
+      ],
+      "conflictType": "WITHIN_SOURCE_VALUE_CONFLICT",
+      "period": "2025-Q4",
+      "unit": "million barrels/day",
+      "measurementType": "FLOW",
+      "claimA": {
+        "statement": "Table2总量24.9",
+        "value": 24.9,
+        "sourceRef": "M05.S01",
+        "locator": "Table2 / Malacca / 2025Q4"
+      },
+      "claimB": {
+        "statement": "Table3 Total 24.0；该表分项18.0+6.9为24.9",
+        "value": 24,
+        "sourceRef": "M05.S01",
+        "locator": "Table3 / 2025Q4"
+      },
+      "sourceRefs": [
+        "M05.S01"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "whyUnresolved": "同源同期间不同总量；算术一致不能替发布方决定哪一表正确。",
+      "canonicalValue": null,
+      "resolutionEvidenceRequired": "发布方更正或明确方法解释；新记录引用两项原主张，不覆盖。",
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    },
+    {
+      "conflictId": "macro.conflict.eia-capacity-definition-bridge.v1",
+      "status": "UNBRIDGED",
+      "approvalStatus": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "ownerApprovalRequired": true,
+      "promotionDecision": "OPEN_QUESTION",
+      "themeId": "M01",
+      "themeLinks": [
+        "M05"
+      ],
+      "conflictType": "DEFINITION_VERSION_CHANGE_NOT_SIMULTANEOUS_FACT_DISPUTE",
+      "claimA": {
+        "statement": "M01 H保留旧30/90简称；完整旧约束本批未重建。",
+        "sourceRef": "M01.S03",
+        "locator": "M01 H/N的旧口径提醒；非新增旧定义全文验证"
+      },
+      "claimB": {
+        "statement": "2025-12-19 EIA新定义的响应时段不同，见C01。",
+        "sourceRef": "M01.S03",
+        "locator": "M01 H及来源M/S03"
+      },
+      "sourceRefs": [
+        "M01.S03"
+      ],
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "N",
+          "anchor": "n-adversarial-review"
+        }
+      ],
+      "whyUnresolved": "新旧版本日期不同，不是同一时期两个当前定义；未有可比桥接，不能把历史序列静默改口径。",
+      "canonicalValue": null,
+      "currentVersionRef": "macro.current-state.eia-capacity-definition-20251219.v1",
+      "resolutionEvidenceRequired": "完整旧/新方法和可比序列；版本分别保留。",
+      "reviewedAt": "2026-09-20T16:47:08.860Z"
+    }
+  ],
+  "aliasReferences": [
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.opec-vs-opecplus.v1",
+      "aliases": [
+        "OPEC / OPEC+ distinction"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.oil-policy-capacity-stock-flow.v1",
+      "aliases": [
+        "quota is not production",
+        "spare capacity is not delivered flow",
+        "SPR stock is not release"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M05",
+        "M03"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.messaging-and-settlement-layers.v1",
+      "aliases": [
+        "SWIFT is not USD",
+        "SWIFT is not settlement"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "J",
+          "anchor": "j-cross-theme-links"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M05"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.reserve-share-versus-transactions.v1",
+      "aliases": [
+        "reserve share is not capital flow",
+        "gold valuation is not gold purchase"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "themeLinks": [
+        "M03"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.debt-stock-and-financing-definitions.v1",
+      "aliases": [
+        "gross versus public debt",
+        "auction gross versus net financing"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.debt-is-not-fiscal-dominance.v1",
+      "aliases": [
+        "high debt is not fiscal dominance",
+        "QE is not sufficient regime evidence"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.unhedged-carry-versus-hedged-assets.v1",
+      "aliases": [
+        "Japanese overseas investment is not all carry"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        }
+      ],
+      "themeLinks": [
+        "M02",
+        "M03"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.carry-proxy-coverage.v1",
+      "aliases": [
+        "notional is not net exposure",
+        "MOF flow is not global unwind"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "I",
+          "anchor": "i-watch-indicators"
+        }
+      ],
+      "themeLinks": [
+        "M02"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.shipping-routes-and-double-counting.v1",
+      "aliases": [
+        "chokepoint totals are not additive",
+        "Suez plus SUMED scope"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M01"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.vessel-tonnage-versus-cargo.v1",
+      "aliases": [
+        "PC/UMS is not cargo mass",
+        "capacity is not transported cargo"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "themeLinks": [
+        "M01"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.yield-components-are-not-one-signal.v1",
+      "aliases": [
+        "nominal versus real rates",
+        "term premium model boundary"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M04"
+      ]
+    },
+    {
+      "canonicalKnowledgeId": "macro.structural-fact.announcement-effect-and-observation-clocks.v1",
+      "aliases": [
+        "announced is not effective",
+        "retrieval time is not observation time"
+      ],
+      "occurrenceRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "themeLinks": [
+        "M01",
+        "M02",
+        "M03",
+        "M05"
+      ]
+    }
+  ],
+  "exclusions": [
+    {
+      "reviewId": "macro.exclusion.d01.v1",
+      "reviewLabel": "D01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "statement": "本批403、截图失败、token/工具操作记录及工程交付说明。",
+      "reason": "研究过程记录不是世界结构知识；保留原档案，来源覆盖限制仍附在受影响候选。",
+      "dossierRefs": [
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "8",
+          "anchor": "8-source-coverage-and-remaining-gaps"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "9",
+          "anchor": "9-usage-storage-and-validation-boundary"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.d02.v1",
+      "reviewLabel": "D02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "statement": "其余背景时间线、单次库存/运输/船次及历史例子数值。",
+      "reason": "只选H01/H02制度节点；其余留原文，避免把偶发样本当长期参数。",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "B",
+          "anchor": "b-historical-development"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.d03.v1",
+      "reviewLabel": "D03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M01",
+        "M05"
+      ],
+      "statement": "旧产能30/90简称、旧Brent篮子、旧航队比例及历史运价预测。",
+      "reason": "只允许有日期历史引用；不提升为现行定义或当前数值。新旧产能桥接另保留。",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "M",
+          "anchor": "m-source-map"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "M",
+          "anchor": "m-source-map"
+        }
+      ],
+      "sourceRefs": [
+        "M01.S03",
+        "M01.S07",
+        "M05.S08",
+        "M05.S09"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.d04.v1",
+      "reviewLabel": "D04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M05"
+      ],
+      "statement": "没有精确发布日期的Panama运营/预约网页作为当前状态。",
+      "reason": "缺少明确版本和后续替代关系；可支持计量区别，不作高可信即时运营候选。",
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "M",
+          "anchor": "m-source-map"
+        }
+      ],
+      "sourceRefs": [
+        "M05.S05",
+        "M05.S06"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.d05.v1",
+      "reviewLabel": "D05",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M01",
+        "M05"
+      ],
+      "statement": "本次OPEC七国公告、单船回流、IMO累计事故数等快速变化样本。",
+      "reason": "来源可以支持有日期事件，但本包不搬运全部实时状态；新闻案例不值得都变长期条目。",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "sourceRefs": [
+        "M01.S02",
+        "M05.S03",
+        "M05.S04"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.d06.v1",
+      "reviewLabel": "D06",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M02",
+        "M03",
+        "M05"
+      ],
+      "statement": "黄金配置、金融抑制、航运通胀模型的具体估计和未通读方法。",
+      "reason": "机构分析不是官方政策；摘要不足以承接完整识别结论或通用弹性。",
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "sourceRefs": [
+        "M02.S09",
+        "M03.S06",
+        "M05.S08"
+      ],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.d07.v1",
+      "reviewLabel": "D07",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "DOSSIER_ONLY",
+      "themes": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "statement": "各档案K的大量资产逐格推断及L7/L8长链。",
+      "reason": "压缩为T01/T02并保留ALPHA_INFERENCE；不逐条制造弱关联边。",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "K",
+          "anchor": "k-relevance-to-alpha"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "4",
+          "anchor": "4-cross-theme-causal-map"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.r01.v1",
+      "reviewLabel": "R01",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "statement": "国家隐藏动机、政治价值排名、统一政府/投资者人格。",
+      "reason": "缺证据且混同主体；本批原文已限定，不因提取重新引入。",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "D",
+          "anchor": "d-actor-positions-actions-interests-and-constraints"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.r02.v1",
+      "reviewLabel": "R02",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "statement": "油涨必加息、债高必贬值、冲突必推黄金等固定资产方向。",
+      "reason": "省略需求、政策、期限、融资及资产自身反力；不能建立买卖规则。",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "F",
+          "anchor": "f-causal-mechanisms"
+        },
+        {
+          "dossierId": "BATCH",
+          "path": "../BATCH_1_SYNTHESIS.md",
+          "section": "5",
+          "anchor": "5-common-market-transmission"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.r03.v1",
+      "reviewLabel": "R03",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M01",
+        "M02",
+        "M03",
+        "M05"
+      ],
+      "statement": "将授权/配额/能力/库存当本期实际流量，或将季度值永久化。",
+      "reason": "测量种类及期间被偷换；F02/F04/F05/F10给出正确边界。",
+      "dossierRefs": [
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.r04.v1",
+      "reviewLabel": "R04",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M04"
+      ],
+      "statement": "由日元涨、股跌反推所有卖盘来自carry或smart money。",
+      "reason": "没有融资/净头寸及交易路径证据；历史估计不解决当前覆盖缺口。",
+      "dossierRefs": [
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M04",
+          "path": "../M04_YEN_CARRY_TRADE.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.r05.v1",
+      "reviewLabel": "R05",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M02"
+      ],
+      "statement": "SWIFT排除等于完全隔绝、替代报文等于免制裁、储备份额变化等于美元系统崩溃。",
+      "reason": "混淆制度层、执行、分母及资金流。",
+      "dossierRefs": [
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M02",
+          "path": "../M02_DOLLAR_AND_SANCTIONS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.r06.v1",
+      "reviewLabel": "R06",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M03"
+      ],
+      "statement": "高债务即已财政主导、任何QE均为财政屈从。",
+      "reason": "缺制度识别和反事实；Q03继续UNKNOWN。",
+      "dossierRefs": [
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "A",
+          "anchor": "a-executive-definition"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        },
+        {
+          "dossierId": "M03",
+          "path": "../M03_DEBT_AND_FISCAL_DOMINANCE.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.r07.v1",
+      "reviewLabel": "R07",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M05"
+      ],
+      "statement": "相加串联通道求全球货量、净吨当货重、保费涨即净利增。",
+      "reason": "重复计数、量纲和损益混淆；没有公司账本支持净利判断。",
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "G",
+          "anchor": "g-competing-explanations"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    },
+    {
+      "reviewId": "macro.exclusion.r08.v1",
+      "reviewLabel": "R08",
+      "status": "KNOWLEDGE_CANDIDATE_NOT_APPROVED",
+      "runtimeUse": "PROHIBITED",
+      "promotionDecision": "REJECT_FROM_RUNTIME",
+      "themes": [
+        "M01",
+        "M05"
+      ],
+      "statement": "按算术挑选Malacca冲突值，或静默把旧产能序列改成新定义。",
+      "reason": "更像正确不等于来源已更正；两项冲突/版本问题均留在conflicts。",
+      "dossierRefs": [
+        {
+          "dossierId": "M05",
+          "path": "../M05_GLOBAL_SHIPPING_CHOKEPOINTS.md",
+          "section": "E",
+          "anchor": "e-flows"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "H",
+          "anchor": "h-current-structure"
+        },
+        {
+          "dossierId": "M01",
+          "path": "../M01_OIL_IS_POWER.md",
+          "section": "L",
+          "anchor": "l-open-questions"
+        }
+      ],
+      "sourceRefs": [],
+      "reviewedAt": "2026-09-20T16:47:08.860Z",
+      "ownerApprovalRequired": true
+    }
+  ],
+  "usage": {
+    "webSearches": 0,
+    "pageReads": 0,
+    "hostGenerationInterfaceCalls": 0,
+    "additionalModelApiCalls": 0,
+    "marketCalls": 0,
+    "businessApiCalls": 0,
+    "codexSessionGeneration": "本次会话完成提取与自审；内部生成次数/token未有账单，不声称零模型消耗。",
+    "usdCost": "UNKNOWN",
+    "gitOperations": "远端核验/正常push另计，不是数据源或市场调用。"
+  }
+}

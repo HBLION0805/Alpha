@@ -1,0 +1,51 @@
+{
+  "note": "大佬 key levels by date (data-driven: add a new {date, levels} entry for each new daily; no code change needed). Each quote must be a verbatim substring of its source file (test/mentorlevels.test.ts). rule: close_above = must close at/above the level (confirmation); stay_below = above the level is the danger. series: Yahoo ref, or @WTI_FRONT = the front-month WTI futures contract (CNBC @CL.1 equivalent; Yahoo CL=F rolls early). cardHook tech_long = shown on tech long plan cards that day. DISPLAY ONLY: never changes NO_TRADE, 48h/72h or 能不能睡.",
+  "entries": [
+    {
+      "date": "2026-10-19",
+      "source": "knowledge/mentor/market-calls/daily-2026-10-19/article.md",
+      "watch": {
+        "series": [
+          "DXY",
+          "WTI",
+          "UST30Y"
+        ],
+        "quote": "盯住 DXY、油价和30年期美债收益率，你就能看到答案。"
+      },
+      "levels": [
+        {
+          "id": "crwv65",
+          "label": "CRWV 65",
+          "series": "CRWV",
+          "level": 65,
+          "rule": "close_above",
+          "unit": "$",
+          "meaning": "确认科技股反弹：收盘前守住并确立为支撑；失守 = 科技股这波反弹结束",
+          "quote": "这是确认科技股反弹的关键价位，今天收盘前必须守住，并确立为支撑。否则，一旦失守，科技股这波反弹也就结束了。",
+          "cardHook": "tech_long",
+          "checklist": true
+        },
+        {
+          "id": "wti100",
+          "label": "油价 100",
+          "series": "@WTI_FRONT",
+          "level": 100,
+          "rule": "stay_below",
+          "unit": "$",
+          "meaning": "站上 100 → 算法抛售指数（含科技股），长端收益率可能下跌、释放衰退信号",
+          "quote": "油价若站上100美元，会触发算法抛售包括科技股在内的指数，因为长端美债收益率可能随之下跌，释放衰退信号。"
+        },
+        {
+          "id": "nq30000",
+          "label": "NQ 30,000",
+          "series": "NQ=F",
+          "level": 30000,
+          "rule": "close_above",
+          "unit": "",
+          "meaning": "纳指期货收在 30,000 以上，才能确认这波不是死猫反弹",
+          "quote": "纳指期货必须收在30,000点以上，才能确认这波不是死猫反弹。"
+        }
+      ]
+    }
+  ]
+}

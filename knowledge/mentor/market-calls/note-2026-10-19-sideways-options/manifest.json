@@ -1,0 +1,16 @@
+{
+  "note": "Mentor (大佬) short note, Mon 2026-10-19 ~11:12 ET: NASDAQ sideways five months, junk market phase, use options to protect or lower the cost of stock. article.md = mentor-inbox/notes/2026-10-19-1112-nasdaq-sideways-options.md byte-for-byte (the text names no author; nothing removed). Phase is data in ../phases.json. Checked by test/stockprotect.test.ts.",
+  "theme": "market-calls",
+  "title": "大佬短评 2026-10-19：纳指横盘五个月 · 垃圾时间段 · 用期权保护或拉低正股成本",
+  "postedAt": "2026-10-19",
+  "receivedAt": "2026-10-19T11:12:00-04:00",
+  "files": [
+    {
+      "file": "article.md",
+      "source": "mentor-inbox/notes/2026-10-19-1112-nasdaq-sideways-options.md (relayed by the user 2026-10-19 11:12 ET)",
+      "bytes": 493,
+      "sha256": "7f843bb544f5beb0f28195dcf377157331c01c97596753d4654041ff08a06312",
+      "verbatimChecked": true
+    }
+  ]
+}

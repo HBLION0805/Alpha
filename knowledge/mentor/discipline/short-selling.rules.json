@@ -1,0 +1,130 @@
+{
+  "id": "mentor-short-selling-checklist",
+  "version": 1,
+  "createdNewYork": "2026-10-17",
+  "source": "knowledge/mentor/discipline/short-selling.md (mentor text 做空学, verbatim; this spec is DK 整理, not mentor content)",
+  "implementation": "src/options/shortside.ts shortEntryChecks (plan card §9 for --dir bear; paper open side=short → JournalEntry.shortChecklist, practice also warnTags)",
+  "mode": "warn_only",
+  "hardRequirement": "Only the written plan card (thesis, stop or invalidation, take-profit plan) is hard for practice trades; nothing in this spec blocks a trade.",
+  "scope": "Phase 1 bearish views via defined-risk structures only (long puts / put debit spreads). Short stock and covered puts are phase-2 reference only, not enabled (docs/DECISIONS.md 2026-10-17).",
+  "conventions": {
+    "bars": "daily OHLC, oldest first; bar[-1] = entry day (entry at its close for backtests; may be a live bar in production); bar[-2] = prior day",
+    "returns": "close-to-close % over N bars; benchmark bars aligned to the underlying's dates (common dates only)",
+    "atr": "simple average of true range over atrPeriod bars",
+    "realizedVol": "annualised stdev of log close-to-close returns over 20 bars × sqrt(252), in %",
+    "broadEtfs": "SPY, QQQ, IWM, DIA, sector ETFs (SMH, XL*), TLT, HYG, GLD, GDX, UUP, IBIT, KRE, XBI, ARKK: no sector benchmark, no single-stock squeeze check"
+  },
+  "thresholds": {
+    "rsLookback": 20,
+    "rsShortLookback": 5,
+    "maFast": 20,
+    "maSlow": 50,
+    "maSlopeLookback": 10,
+    "chaseDayDropPct": -3,
+    "chaseStretchAtr": 2,
+    "atrPeriod": 14,
+    "reboundLookback": 5,
+    "squeezeUpDayPct": 10,
+    "squeezeUpDayLookback": 60,
+    "squeezeRvolPct": 80,
+    "defaultHorizonDays": 7,
+    "earlyBufferDays": 14
+  },
+  "items": [
+    {
+      "id": "no_short_strong_uptrend", "points": [3], "stage": "entry", "tag": "short_vs_strength",
+      "text": "Don't short a strong uptrend; 'up too much' is not a reason. Wait for it to start falling.",
+      "autoFromDailyOHLC": true, "inputs": ["underlying close"],
+      "formula": "close > SMA(maFast) AND SMA(maFast) > SMA(maSlow) AND SMA(maSlow) > SMA(maSlow) maSlopeLookback bars ago",
+      "liveImplemented": true
+    },
+    {
+      "id": "relative_weakness_index_and_sector", "points": [7], "stage": "entry", "tag": "short_no_relative_weakness",
+      "text": "Short the weak, not the strong: it should already lag the index AND its sector/peers.",
+      "autoFromDailyOHLC": true, "inputs": ["underlying close", "SPY close", "sector ETF close (SECTOR_OF map or --sector)"],
+      "formula": "warn if ret(rsLookback) >= SPY ret(rsLookback) OR ret(rsLookback) >= sector ret(rsLookback); ret(rsShortLookback) reported only; peers beyond the sector ETF are manual",
+      "liveImplemented": true
+    },
+    {
+      "id": "no_chasing_after_big_down_candle", "points": [4], "stage": "entry", "tag": "short_chasing",
+      "text": "Don't chase after it is already on the floor; best entries are failed rebounds to resistance.",
+      "autoFromDailyOHLC": true, "inputs": ["underlying OHLC"],
+      "formula": "warn if (entry / prior close − 1)×100 <= chaseDayDropPct OR entry < prior-day low OR (SMA(maFast) − entry) / ATR(atrPeriod) >= chaseStretchAtr",
+      "liveImplemented": true
+    },
+    {
+      "id": "prefer_failed_rebound", "points": [4], "stage": "entry", "tag": null,
+      "text": "Preferred entry: a rebound reached resistance and failed.",
+      "autoFromDailyOHLC": true, "inputs": ["underlying OHLC"],
+      "formula": "info (not a warning): some bar in the last reboundLookback bars (excluding entry bar) had high >= its SMA(maFast), AND entry < SMA(maFast), AND entry <= that window's max high − ATR(atrPeriod)",
+      "liveImplemented": true
+    },
+    {
+      "id": "squeeze_prone_proxy", "points": [5], "stage": "entry", "tag": "short_squeeze_prone",
+      "text": "Junk can double before it goes to zero (short interest, low float, gamma, sentiment).",
+      "autoFromDailyOHLC": true, "inputs": ["underlying close"],
+      "formula": "warn if max single-day % gain over the last squeezeUpDayLookback bars >= squeezeUpDayPct OR realizedVol(20) >= squeezeRvolPct. Proxy only — not short-interest data.",
+      "liveImplemented": true
+    },
+    {
+      "id": "squeeze_check_written", "points": [5], "stage": "entry", "tag": "short_squeeze_risk_unchecked",
+      "text": "Write the squeeze check: short interest % float, float size, option gamma, meme/retail sentiment.",
+      "autoFromDailyOHLC": false, "inputs": ["user note --squeeze-check (card or paper open)"],
+      "formula": "warn if no squeeze note (single stocks only); negative dealer gamma from gex.ts is shown in the detail when available",
+      "liveImplemented": true
+    },
+    {
+      "id": "structure_survives_thesis", "points": [8], "stage": "entry", "tag": "short_expiry_too_short",
+      "text": "Being two weeks early can kill you: the structure must survive until the thesis can play out.",
+      "autoFromDailyOHLC": true, "inputs": ["front option expiry", "thesis horizon days (proposal.thesisHorizonDays / card --horizon)", "time stop date"],
+      "formula": "warn if frontDTE < (horizon or defaultHorizonDays) + earlyBufferDays, OR timeStopAt > front expiry",
+      "liveImplemented": true
+    },
+    {
+      "id": "invalidation_prewritten_above_entry", "points": [2, 10], "stage": "entry", "tag": "short_invalidation_not_above_spot",
+      "text": "Pre-write where the thesis is wrong (hard: plan card); for a short it must sit above the entry.",
+      "autoFromDailyOHLC": true, "inputs": ["invalidation level", "entry price"],
+      "formula": "warn if invalidationLevel <= entry",
+      "liveImplemented": true
+    },
+    {
+      "id": "data_insufficient", "points": [], "stage": "entry", "tag": "short_data_insufficient",
+      "text": "An automatic check could not run (missing bars / benchmark / sector mapping); judge it manually.",
+      "autoFromDailyOHLC": true, "inputs": ["bar counts"],
+      "formula": "warn listing every check that lacked data (trend needs maSlow+maSlopeLookback bars; RS needs rsLookback+1 aligned bars)",
+      "liveImplemented": true
+    },
+    {
+      "id": "narrative_breaking", "points": [1], "stage": "entry", "tag": null,
+      "text": "Short what the narrative is leaving and money is exiting, not the crowded hot stock.",
+      "autoFromDailyOHLC": false, "inputs": ["news / flows / guidance (manual)"],
+      "formula": "manual checklist item; possible future OHLCV proxy (down-day volume > up-day volume over 20 bars) is NOT implemented",
+      "liveImplemented": false
+    },
+    {
+      "id": "price_thesis_divergence_exit", "points": [6], "stage": "holding", "tag": null,
+      "text": "If price action separates from the thesis, get out; don't argue with the market.",
+      "autoFromDailyOHLC": true, "inputs": ["underlying close", "invalidation level", "SPY/sector close"],
+      "formula": "backtest candidate: exit at first close > invalidationLevel, or when ret since entry > benchmark ret since entry by more than ATR%-scaled margin (margin TBD). Live: manual review question only.",
+      "liveImplemented": false
+    },
+    {
+      "id": "take_profit_into_panic", "points": [9], "stage": "holding", "tag": null,
+      "text": "Panic gives short profits and takes them back fast: take profits into panic, staged.",
+      "autoFromDailyOHLC": true, "inputs": ["underlying OHLC", "position P&L"],
+      "formula": "backtest candidate: while in profit, a bar with (prior close − close) >= 2 × ATR(atrPeriod) → take a tranche. Live: plan card §5 staged take-profit (tpplan.ts) + review question.",
+      "liveImplemented": false
+    },
+    {
+      "id": "admit_when_wrong", "points": [2, 10], "stage": "review", "tag": null,
+      "text": "Thesis wrong → admit; size wrong → cut; timing wrong → leave. 'But I was right in the end' does not count.",
+      "autoFromDailyOHLC": false, "inputs": ["review (纪律 #19 thesisValid / positionValid)"],
+      "formula": "manual review question",
+      "liveImplemented": false
+    }
+  ],
+  "notEnabled": [
+    { "id": "short_stock", "reason": "unlimited upside risk, borrow cost, recall; naked/undefined-risk shorts are refused (rules.ts defined_risk; practice: max loss undefined is hard)" },
+    { "id": "covered_put", "reason": "short stock + short put: profit capped at the put strike, no protection against an upside squeeze, adds assignment obligation; phase-2 reference only" }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "_note": "EXAMPLE that reproduces the HYG/TLT review failure modes: near-ATM short puts, no assignment plan, horizon too tight, multi-underlying combo. Expected: BLOCKED.",
+  "symbol": "COMBO",
+  "strategy": "multi_leg_credit_combo",
+  "asOf": "2026-10-14T20:15:00Z",
+  "underlyingPrice": {
+    "HYG": 80.1,
+    "TLT": 88.4
+  },
+  "thesisHorizonDays": 14,
+  "capital": 100000,
+  "buyingPower": 12000,
+  "broker": "robinhood",
+  "legs": [
+    {
+      "underlying": "HYG",
+      "type": "put",
+      "strike": 80,
+      "qty": -5,
+      "premium": 0.85,
+      "expiration": "2026-10-30",
+      "delta": -0.47,
+      "openInterest": 4200,
+      "bid": 0.83,
+      "ask": 0.87
+    },
+    {
+      "underlying": "HYG",
+      "type": "put",
+      "strike": 78,
+      "qty": 5,
+      "premium": 0.25,
+      "expiration": "2026-10-30",
+      "delta": -0.18
+    },
+    {
+      "underlying": "TLT",
+      "type": "put",
+      "strike": 88,
+      "qty": -5,
+      "premium": 1.3,
+      "expiration": "2026-10-30",
+      "delta": -0.44
+    },
+    {
+      "underlying": "TLT",
+      "type": "put",
+      "strike": 85,
+      "qty": 5,
+      "premium": 0.4,
+      "expiration": "2026-10-30",
+      "delta": -0.2
+    }
+  ],
+  "discipline": {
+    "todayEt": "2026-10-14",
+    "journal": [],
+    "openPnlToday": 0,
+    "session": {
+      "emotion": "ok",
+      "sleep": "ok",
+      "health": "ok",
+      "lifeEvents": "ok"
+    },
+    "market": {
+      "lowVolume": false,
+      "unclearDirection": false,
+      "chop": false,
+      "poorRR": false
+    },
+    "plannedMaxLoss": 500,
+    "entryRange": {
+      "low": 79.5,
+      "high": 80.5
+    },
+    "side": "long",
+    "motive": "thesis",
+    "openPositions": 4
+  }
+}

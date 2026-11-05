@@ -1,0 +1,360 @@
+{
+  "generatedAt": "2026-10-17",
+  "window": [
+    "2026-10-17",
+    "2027-12-31"
+  ],
+  "note": "Official schedules only, fetched 2026-10-17 (federalreserve.gov FOMC calendar; bls.gov CPI and Employment Situation release schedules). FOMC entry = policy decision day (second meeting day) 14:00 ET; Fed marks 2027 dates tentative until confirmed at the preceding meeting. CPI/NFP 08:30 ET. Reference month December 2027 (CPI, NFP) releases in January 2028 — outside the window. symbol null = market-wide (72-hour rule, src/options/psych.ts). Re-check the schedules for changes (e.g. shutdown delays).",
+  "events": [
+    {
+      "at": "2026-10-28T18:00:00.000Z",
+      "dateET": "2026-10-28",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 October 27-28, 2026）",
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2026-11-06T13:30:00.000Z",
+      "dateET": "2026-11-06",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（October 2026）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2026-11-10T13:30:00.000Z",
+      "dateET": "2026-11-10",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（October 2026）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2026-12-04T13:30:00.000Z",
+      "dateET": "2026-12-04",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（November 2026）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2026-12-09T19:00:00.000Z",
+      "dateET": "2026-12-09",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 December 8-9, 2026，含 SEP）",
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2026-12-10T13:30:00.000Z",
+      "dateET": "2026-12-10",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（November 2026）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-01-08T13:30:00.000Z",
+      "dateET": "2027-01-08",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（December 2026）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-01-13T13:30:00.000Z",
+      "dateET": "2027-01-13",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（December 2026）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-01-27T19:00:00.000Z",
+      "dateET": "2027-01-27",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 January 26-27, 2027）",
+      "tentative": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2027-02-05T13:30:00.000Z",
+      "dateET": "2027-02-05",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（January 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-02-11T13:30:00.000Z",
+      "dateET": "2027-02-11",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（January 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-03-05T13:30:00.000Z",
+      "dateET": "2027-03-05",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（February 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-03-10T13:30:00.000Z",
+      "dateET": "2027-03-10",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（February 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-03-17T18:00:00.000Z",
+      "dateET": "2027-03-17",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 March 16-17, 2027，含 SEP）",
+      "tentative": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2027-04-02T12:30:00.000Z",
+      "dateET": "2027-04-02",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（March 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-04-13T12:30:00.000Z",
+      "dateET": "2027-04-13",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（March 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-04-28T18:00:00.000Z",
+      "dateET": "2027-04-28",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 April 27-28, 2027）",
+      "tentative": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2027-05-07T12:30:00.000Z",
+      "dateET": "2027-05-07",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（April 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-05-12T12:30:00.000Z",
+      "dateET": "2027-05-12",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（April 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-06-04T12:30:00.000Z",
+      "dateET": "2027-06-04",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（May 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-06-09T18:00:00.000Z",
+      "dateET": "2027-06-09",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 June 8-9, 2027，含 SEP）",
+      "tentative": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2027-06-10T12:30:00.000Z",
+      "dateET": "2027-06-10",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（May 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-07-02T12:30:00.000Z",
+      "dateET": "2027-07-02",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（June 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-07-14T12:30:00.000Z",
+      "dateET": "2027-07-14",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（June 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-07-28T18:00:00.000Z",
+      "dateET": "2027-07-28",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 July 27-28, 2027）",
+      "tentative": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2027-08-06T12:30:00.000Z",
+      "dateET": "2027-08-06",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（July 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-08-11T12:30:00.000Z",
+      "dateET": "2027-08-11",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（July 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-09-03T12:30:00.000Z",
+      "dateET": "2027-09-03",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（August 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-09-14T12:30:00.000Z",
+      "dateET": "2027-09-14",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（August 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-09-15T18:00:00.000Z",
+      "dateET": "2027-09-15",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 September 14-15, 2027，含 SEP）",
+      "tentative": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2027-10-08T12:30:00.000Z",
+      "dateET": "2027-10-08",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（September 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-10-14T12:30:00.000Z",
+      "dateET": "2027-10-14",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（September 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-10-27T18:00:00.000Z",
+      "dateET": "2027-10-27",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 October 26-27, 2027）",
+      "tentative": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2027-11-05T12:30:00.000Z",
+      "dateET": "2027-11-05",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（October 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-11-10T13:30:00.000Z",
+      "dateET": "2027-11-10",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（October 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    },
+    {
+      "at": "2027-12-03T13:30:00.000Z",
+      "dateET": "2027-12-03",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "NFP",
+      "title": "非农就业 Employment Situation（November 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/empsit.htm"
+    },
+    {
+      "at": "2027-12-08T19:00:00.000Z",
+      "dateET": "2027-12-08",
+      "timeET": "14:00",
+      "symbol": null,
+      "series": "FOMC",
+      "title": "FOMC 利率决议（会议 December 7-8, 2027，含 SEP）",
+      "tentative": true,
+      "source": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      "at": "2027-12-10T13:30:00.000Z",
+      "dateET": "2027-12-10",
+      "timeET": "08:30",
+      "symbol": null,
+      "series": "CPI",
+      "title": "CPI（November 2027）",
+      "source": "https://www.bls.gov/schedule/news_release/cpi.htm"
+    }
+  ]
+}

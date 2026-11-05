@@ -1,0 +1,67 @@
+{
+  "note": "Byte-for-byte copies of /workspace/mentor-inbox/howell-liquidity (received 2026-10-18). No rewording. The article keeps Michael Howell's attribution (published article, user-forwarded Chinese translation). The mentor review is anonymous (author name stripped before it was received; 'Howell' in it is the article author, not the reviewer). test/liquidity.test.ts checks every sha256.",
+  "theme": "macro-liquidity",
+  "receivedAt": "2026-10-18",
+  "files": [
+    {
+      "file": "howell-2026-10-16-liquidity-cycle.md",
+      "source": "mentor-inbox/howell-liquidity/article.md",
+      "bytes": 8149,
+      "sha256": "802561e40b69432de0c374583a82c4d77557f1146b8b0918fca845f6c083c0c3"
+    },
+    {
+      "file": "mentor-review-howell-2026-10-16.md",
+      "source": "mentor-inbox/howell-liquidity/mentor-review.md",
+      "bytes": 2726,
+      "sha256": "96734025ff5889d464ba54ea351a4e746360ab3a0102f1a9cf70a164809d1ed7"
+    },
+    {
+      "file": "assets/fig1.png",
+      "source": "mentor-inbox/howell-liquidity/assets/fig1.png",
+      "bytes": 110243,
+      "sha256": "867233108f0be308009e38d4500f5128273b46e142829b8eaa1d5cd6c5cceac0"
+    },
+    {
+      "file": "assets/fig2.png",
+      "source": "mentor-inbox/howell-liquidity/assets/fig2.png",
+      "bytes": 325369,
+      "sha256": "fb7b55d59f95d8751c3dd56e2e3f9c4124232e54822d17c0ae8ba2193f6c691c"
+    },
+    {
+      "file": "assets/fig3.png",
+      "source": "mentor-inbox/howell-liquidity/assets/fig3.png",
+      "bytes": 113667,
+      "sha256": "9fd8170e8f6669feecf70c02b829e6922e3adecd4f2e5fd8ef9554c530f3f023"
+    },
+    {
+      "file": "assets/fig4.png",
+      "source": "mentor-inbox/howell-liquidity/assets/fig4.png",
+      "bytes": 115582,
+      "sha256": "01e26bb952de25b3b133ebd0eb76d2db9e40251ec5c6bd0065709bd5ab9b73bc"
+    },
+    {
+      "file": "assets/fig5.png",
+      "source": "mentor-inbox/howell-liquidity/assets/fig5.png",
+      "bytes": 153262,
+      "sha256": "2b91e5939022990bb3f62b43e58e4540a36c22a707f38af23aead546bd2cf5e8"
+    },
+    {
+      "file": "assets/fig6.png",
+      "source": "mentor-inbox/howell-liquidity/assets/fig6.png",
+      "bytes": 89537,
+      "sha256": "ce59ab2ded91f1099fea1f8569c40967a187bef2186b8b9b2cf79e28b832c9cc"
+    },
+    {
+      "file": "assets/fig7.png",
+      "source": "mentor-inbox/howell-liquidity/assets/fig7.png",
+      "bytes": 94388,
+      "sha256": "48f295605e337064f82ad9c1b2501a7ea7fd62e05253ddc2a5a0567ee7278fe3"
+    },
+    {
+      "file": "assets/fig8.png",
+      "source": "mentor-inbox/howell-liquidity/assets/fig8.png",
+      "bytes": 233185,
+      "sha256": "54c06b1e7fe4cfe157288e14b864f7a29942054c66cad8872aced401ca0bd0d5"
+    }
+  ]
+}

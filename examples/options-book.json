@@ -1,0 +1,18 @@
+{
+  "_note": "EXAMPLE book (not the owner's positions). Premiums/IVs from the 2026-10-14 SPY Robinhood chain fixture.",
+  "capital": 100000,
+  "asOf": "2026-10-14T20:15:00Z",
+  "positions": [
+    { "id": "ic1", "symbol": "SPY", "strategy": "iron_condor", "underlyingPrice": 769.6, "legs": [
+      { "type": "put", "strike": 730, "qty": 1, "premium": 4.04, "expiration": "2026-11-20", "iv": 0.1877 },
+      { "type": "put", "strike": 750, "qty": -1, "premium": 6.81, "expiration": "2026-11-20", "iv": 0.1623 },
+      { "type": "call", "strike": 790, "qty": -1, "premium": 4.905, "expiration": "2026-11-20", "iv": 0.1165 },
+      { "type": "call", "strike": 810, "qty": 1, "premium": 1.02, "expiration": "2026-11-20", "iv": 0.1069 } ] },
+    { "id": "bcs1", "symbol": "SPY", "strategy": "bull_call_debit_spread", "underlyingPrice": 769.6, "legs": [
+      { "type": "call", "strike": 770, "qty": 1, "premium": 14.605, "expiration": "2026-11-20", "iv": 0.1349 },
+      { "type": "call", "strike": 790, "qty": -1, "premium": 4.905, "expiration": "2026-11-20", "iv": 0.1165 } ] },
+    { "id": "pp1", "symbol": "SPY", "strategy": "protective_put", "underlyingPrice": 769.6, "legs": [
+      { "type": "stock", "strike": 769.6, "qty": 100, "premium": 769.6 },
+      { "type": "put", "strike": 730, "qty": 1, "premium": 4.04, "expiration": "2026-11-20", "iv": 0.1877 } ] }
+  ]
+}
