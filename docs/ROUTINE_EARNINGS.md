@@ -1,7 +1,8 @@
 # Routine: earnings coverage (Robinhood, READ-ONLY)
 
 The card and brief read `data/in/earnings-by-symbol.json`; symbols never looked up show ❔ (never guessed).
-`npm run earnings -- --need` prints the symbols (watchlist + journal + pending cards, ETFs excluded).
+`npm run earnings -- --need` prints the symbols: `data/in/watchlist.json` (fixed 35-name universe, ETFs excluded → only LEN) + journal
+underlyings + pending-card symbols. No hardcoded mega-cap list — individual names appear only via mentor / event-followup / thesis cards.
 `npm run earnings` shows coverage and the missing list. Fed speakers need no MCP: `npm run fedspeak` (the brief also refreshes it).
 
 ## Routine prompt text (add to the daily premarket routine)

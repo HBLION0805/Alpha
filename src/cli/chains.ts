@@ -1,21 +1,22 @@
 /**
  * npm run chains [-- --need | --build] [--in data/in]: daily option-chain refresh (Robinhood, READ-ONLY; see docs/ROUTINE_CHAINS.md).
- * Symbols = SPY/QQQ/IWM + every optionable symbol in data/in/watchlist.json (no hardcoded list).
+ * Symbols = SPY/QQQ/IWM + every optionable symbol in data/in/watchlist.json (the fixed 35-name universe; GLDM dropped as NO_OPTIONS).
+ * Robinhood personal watchlists never override it; a missing file falls back to FIXED_UNIVERSE (src/macro/universe.ts).
  *   --need   comma list for the routine to fetch
  *   --build  data/in/rh-chain/<SYM>.json (raw MCP pages) → data/in/<sym>-chain.json, one symbol at a time (a failure skips only that symbol)
  *   (always) status: asOf per symbol, 过时 when >1 trading day old, 缺失 when no chain
  */
 import { existsSync, statSync, readFileSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
 import { parseArgs } from "node:util";
-import { parseInput, WatchlistSchema } from "../adapters/schemas.ts";
 import { parseChain } from "../options/chain.ts";
 import { chainFromRobinhood, unwrapJson } from "../options/robinhood.ts";
 import { chainRefreshSymbols, summarizeBuild, chainFile, chainFreshness, staleLabel } from "../options/freshness.ts";
 import { etDate } from "../macro/nyse.ts";
+import { loadUniverse } from "../macro/universe.ts";
 
 const { values } = parseArgs({ options: { need: { type: "boolean" }, build: { type: "boolean" }, in: { type: "string", default: "data/in" } } });
-const dir = values.in!, wlPath = `${dir}/watchlist.json`;
-const syms = chainRefreshSymbols(existsSync(wlPath) ? parseInput(WatchlistSchema, JSON.parse(readFileSync(wlPath, "utf8")), "watchlist.json") : []);
+const dir = values.in!;
+const syms = chainRefreshSymbols(loadUniverse(dir));
 if (values.need) { console.log(syms.join(",")); process.exit(0); }
 
 const failed: Record<string, string> = {}, missing: string[] = [], rawStale: string[] = [];

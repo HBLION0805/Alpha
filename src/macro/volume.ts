@@ -6,9 +6,11 @@
 import type { Chain } from "../options/chain.ts";
 import { daysTo } from "../options/bs.ts";
 import { prepareChain, staleLabel, type ChainFreshness } from "../options/freshness.ts";
+import { FIXED_UNIVERSE } from "./universe.ts";
 
 export const TAG = "成交量仅用于确认/排查，不单独下单";
-export const DEFAULT_WATCHLIST = ["SPY", "QQQ", "IWM", "DIA", "SMH", "HYG", "TLT", "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "AVGO", "TSLA"];
+/** Fallback only (= fixed 35-name universe); CLIs read loadUniverse(). No default mega-caps (2026-11-06). */
+export const DEFAULT_WATCHLIST: readonly string[] = [...FIXED_UNIVERSE];
 export interface Bar { t: string; c: number; h: number; l: number; v: number }
 
 export interface StockVol { symbol: string; date: string; rvol: number; volume: number; avg20: number; chgPct: number; breakout: "high" | "low" | null; verdict: string; strong: boolean }

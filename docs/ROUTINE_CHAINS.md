@@ -3,7 +3,10 @@
 Volume alerts, the brief and the options dashboards read `data/in/<sym>-chain.json`. Scripts cannot call the Robinhood MCP, so the
 routine agent saves the raw pages and `scripts/run.sh` (`npm run chains -- --build`) normalises them.
 
-- **Symbols:** `npm run -s chains -- --need` = SPY, QQQ, IWM + every optionable symbol in `data/in/watchlist.json` (no hardcoded list).
+- **Symbols:** `npm run -s chains -- --need` = the optionable names in `data/in/watchlist.json` — the fixed 35-name macro universe
+  (`knowledge/macro/fixed-watchlist-and-flows.md`; SPY/QQQ/IWM already in it and always first; GLDM excluded as no-options). Missing file →
+  `FIXED_UNIVERSE` (src/macro/universe.ts). No mega-cap defaults.
+- **Do NOT overwrite `data/in/watchlist.json`** from Robinhood `get_watchlists` / personal 自选. If it drifts, restore it from the knowledge list.
 - **Freshness (QA C7):** on load, contracts expiring before today (ET) are always dropped. A chain more than 1 NYSE trading day old is
   labelled **过时（asOf …）** in the volume report, the brief and the options dashboard, and carries `freshness.stale: true` in
   `data/out/volume-latest.json` / `options-*-latest.json`. A stale chain raises no volume alarms.
@@ -11,7 +14,7 @@ routine agent saves the raw pages and `scripts/run.sh` (`npm run chains -- --bui
 
 ## Routine prompt text (add to the daily premarket routine, before `scripts/run.sh`)
 
-> Daily bars refresh (READ-ONLY, do this FIRST; QA C4): run `npm run -s chains -- --need` to get the comma list of symbols.
+> Daily bars refresh (READ-ONLY, do this FIRST; QA C4; never write data/in/watchlist.json from Robinhood watchlists): run `npm run -s chains -- --need` to get the comma list of symbols.
 > Fetch bars for ALL of them (not just SPY/QQQ/IWM): call `get_equity_historicals` with up to 10 symbols per call,
 > `interval=day`, start = one year ago, and write each symbol's raw response as-is to `data/in/<SYM>-bars.json`. Every symbol
 > must be fetched; list any skipped/failed symbol in your report. After saving (and after the chain build below) run
