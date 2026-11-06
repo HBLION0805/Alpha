@@ -185,7 +185,7 @@ const lvRoll = lvActive && !values.offline ? rollAffectedLevels(lvActive.entry, 
 const mlv = renderMentorLevels(lv.entries, { ...data, ...lvData }, now, lv.error, lvRoll);
 const dc = renderDeadCat({ ...data, ...dcData }, mx, checklistItems(mlv), mlv.lines);
 // dealer gamma (GEX) from CBOE delayed quotes — config/gex.json or ALPHA_GEX_SYMBOLS; failures marked unavailable
-const gexCfg = existsSync("config/gex.json") ? JSON.parse(readFileSync("config/gex.json", "utf8")) : { symbols: ["SPY", "QQQ", "NVDA", "SOXL"], days: 45 };
+const gexCfg = existsSync("config/gex.json") ? JSON.parse(readFileSync("config/gex.json", "utf8")) : { symbols: ["SPY", "QQQ", "IWM", "SMH"], days: 45 };
 const gexSyms: string[] = (process.env.ALPHA_GEX_SYMBOLS?.split(",").map((x) => x.trim()).filter(Boolean)) ?? gexCfg.symbols;
 const gex = values.offline || values["no-gex"] ? [] : await Promise.all(gexSyms.map((s) => fetchGex(s, gexCfg.days ?? 45)));
 const gateItem = gate.card ? { ticker: gate.card.ticker, side: gate.card.side, structure: gate.card.structure, trigger: gate.card.trigger, entryZone: gate.card.entryZone, stop: gate.card.stop, invalidation: "§2.0 纸面交易闸门卡", size: `$${gate.card.riskUsd}`, confirm: { score: 0, of: 4, factors: [] }, qualifies: true, why: "paper gate" } : null;

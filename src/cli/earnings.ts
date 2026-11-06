@@ -1,16 +1,17 @@
 /**
- * npm run earnings [-- --need]: earnings coverage for watchlist + journal + pending-card symbols.
+ * npm run earnings [-- --need]: earnings coverage for the fixed universe (data/in/watchlist.json, ETFs excluded → LEN) + journal + pending-card symbols.
+ * No hardcoded mega-cap list: individual names come only from journal / pending cards (mentor / event-followup / thesis).
  * --need prints the comma list the routine must look up with Robinhood get_earnings_results (read-only).
  */
 import { existsSync, readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
-import { DEFAULT_WATCHLIST } from "../macro/volume.ts";
+import { loadUniverse } from "../macro/universe.ts";
 import { loadEarningsBook, nextEarnings, fmtEarnings, symbolsNeedingEarnings } from "../options/earningsStore.ts";
 import { journalPath } from "../storage/paths.ts";
 const { values } = parseArgs({ options: { need: { type: "boolean" } } });
 const rd = (f: string) => (existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : null);
-const wl = rd("data/in/watchlist.json"), j = rd(journalPath("paper.json")), pc = rd(journalPath("pending-cards.json"));
-const syms = symbolsNeedingEarnings([...DEFAULT_WATCHLIST, ...(Array.isArray(wl) ? wl : wl?.symbols ?? []),
+const j = rd(journalPath("paper.json")), pc = rd(journalPath("pending-cards.json"));
+const syms = symbolsNeedingEarnings([...loadUniverse(),
   ...((j?.entries ?? []) as Array<{ underlying?: string; symbol?: string }>).map((e) => e.underlying ?? e.symbol ?? ""),
   ...((pc?.cards ?? pc ?? []) as Array<{ sym?: string }>).map((c) => c.sym ?? "")]);
 if (values.need) { console.log(syms.join(",")); process.exit(0); }

@@ -1,5 +1,10 @@
 # Standing decisions (memory-like notes)
 
+## 2026-11-06 — 宏观钉死: daily universe = fixed 35-name macro list
+- `data/in/watchlist.json` = the 35 names in `knowledge/macro/fixed-watchlist-and-flows.md` (committed copy: `FIXED_UNIVERSE`, src/macro/universe.ts; fallback when the file is missing).
+- Robinhood personal watchlists / 自选 never overwrite it. volume / earnings / chains `--need` / bars all read it; the old mega-cap `DEFAULT_WATCHLIST` is gone.
+- Trade plan stays ETF-default (SPY/QQQ/IWM/TLT). Individual stocks only via mentor / event-followup / explicit thesis cards — never a default mega-cap scan. NO_TRADE / risk caps unchanged.
+
 ## 2026-10-19 — 大佬 market dailies: key levels as dated data, display only
 - The daily is archived verbatim with the author stripped. Its levels go in `knowledge/mentor/market-calls/levels.json`, one entry per date with verbatim quotes, so new dailies need no code.
 - Brief §1.3 「大佬今日价位」:

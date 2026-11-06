@@ -1,18 +1,17 @@
-/** npm run volume [-- --out data/out/volume-latest.md] [--no-alarms]. Watchlist: defaults + data/in/watchlist.json (array or {symbols}). Chains: data/in/*-chain.json
+/** npm run volume [-- --out data/out/volume-latest.md] [--no-alarms]. Symbols: data/in/watchlist.json (fixed 35-name universe, array or {symbols}; missing → FIXED_UNIVERSE). No mega-cap defaults; RH 自选 never overrides. Chains: data/in/*-chain.json
  * (expired contracts dropped; chains >1 trading day old labelled 过时, no alarms). Also writes volume-latest.json with per-chain freshness. */
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseArgs } from "node:util";
 import { yahooDaily } from "../adapters/yahoo.ts";
-import { parseInput, WatchlistSchema } from "../adapters/schemas.ts";
 import { Store } from "../store.ts";
 import { parseChain, type Chain } from "../options/chain.ts";
-import { DEFAULT_WATCHLIST, buildVolumeReport, volumeAlarmItems, type Bar } from "../macro/volume.ts";
+import { loadUniverse } from "../macro/universe.ts";
+import { buildVolumeReport, volumeAlarmItems, type Bar } from "../macro/volume.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/volume-latest.md" }, "no-alarms": { type: "boolean" }, in: { type: "string", default: "data/in" } } });
 const now = new Date();
-const extra: string[] = existsSync(`${values.in}/watchlist.json`) ? parseInput(WatchlistSchema, JSON.parse(readFileSync(`${values.in}/watchlist.json`, "utf8")), "watchlist.json") : [];
-const symbols = [...new Set([...DEFAULT_WATCHLIST, ...extra.map((s) => s.toUpperCase())])];
+const symbols = loadUniverse(values.in);
 const bars: Record<string, Bar[]> = {}; const failed: Record<string, string> = {};
 await Promise.all(symbols.map(async (s) => {
   try {
