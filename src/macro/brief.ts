@@ -1,7 +1,7 @@
 /**
  * Unified Chinese daily brief (P3, 2026-10-14): ONE report, ONE NO_TRADE verdict. Replaces the separate macro /
  * premarket / scenarios reports. Pure: takes the already-built parts; the CLI fetches each series once.
- * Order: 1 结论+领先情景 (+ 今日能不能睡, src/macro/sleepday.ts, flag only) · 1.1 导师提醒 (src/review/mentor.ts) · 1.2 流动性观察 (src/macro/liquidity.ts, flag only) · 2 警报 · 2.1 今日交易计划 · 3【大佬流程】①国债 · 3.1【用户要求】原油 · 3.2【大佬流程】续 · 4【DK 补充】 · 5 价位（择时） · 6 日历 · 7 盘前自检 (纪律 #2/#20).
+ * Order: 1 结论+领先情景 (+ 今日能不能睡, src/macro/sleepday.ts, flag only) · 1.1 导师提醒 (src/review/mentor.ts) · 1.2 流动性观察 (src/macro/liquidity.ts, flag only) · 1.3 导师框架信号 / 死猫 · 【宏观盯盘】+【资金流】(src/macro/fixedWatchlist.ts, ALWAYS rendered) · 2 警报 · 2.1 今日交易计划 · 3【大佬流程】①国债 · 3.1【用户要求】原油 · 3.2【大佬流程】续 · 4【DK 补充】 · 5 价位（择时） · 6 日历 · 7 盘前自检 (纪律 #2/#20).
  */
 import type { MacroReport } from "./build.ts";
 import { BY, OIL_HEAD, type PremarketResult } from "./premarket.ts";
@@ -10,6 +10,7 @@ import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import { SESSION_QUESTIONS } from "../options/discipline.ts";
 import { MECHANICS_QUESTIONS } from "./render.ts";
 import { reminderSection, type ReminderState } from "../review/mentor.ts";
+import { buildFixedWatchlist, WATCH_HEAD, FLOW_HEAD } from "./fixedWatchlist.ts";
 
 const LABEL_ZH: Record<string, string> = { RISK_ON: "风险偏好", RISK_OFF: "避险", HAWKISH_TIGHTENING: "鹰派收紧", STAGFLATION_ISH: "类滞胀", DISINFLATION_EASING: "通胀回落/宽松", MIXED: "信号混杂" };
 export type Verdict = "NO_TRADE" | "CAUTION" | "RESEARCH_OK";
@@ -28,6 +29,8 @@ export interface BriefInput { now: Date; macro: MacroReport; pm: PremarketResult
   /** 今日能不能睡 (src/macro/sleepday.ts renderSleep) — flag only; omitted → section skipped */
   /** §1.3 导师框架信号 (src/macro/mentorSignals.ts) */ mentorSignalLines?: string[];
   /** §2.0 纸面交易闸门 (src/macro/paperGate.ts) — paper only */ gateLines?: string[];
+  /** 【宏观盯盘】 (src/macro/fixedWatchlist.ts) — display only; omitted/empty → still rendered with 数据不足 */ fixedWatchLines?: string[];
+  /** 【资金流】 (src/macro/fixedWatchlist.ts) — display only; omitted/empty → still rendered with 数据不足 */ fundFlowLines?: string[];
   sleepLines?: string[] }
 export interface BriefResult { md: string; verdict: Verdict; reasons: string[] }
 
@@ -54,6 +57,9 @@ export function buildBrief(i: BriefInput): BriefResult {
   const minor = (e: CalendarEvent) => (e.tier === 2 ? "（次要）" : "");
   const failed = Object.entries(i.failed ?? {});
   const mentorState = i.mentor ? { ...i.mentor, oilVix: i.mentor.oilVix ?? { fast: i.pm.oilVix?.fast ?? false, driver: i.pm.oilVix?.driver ?? "no_data", vix: i.pm.oilVix?.vix.label ?? "unclear" } } : null;
+  // 固定栏 can never be skipped: missing lines → the empty-data render (headings + 数据不足); heading forced if a caller dropped it
+  const fwEmpty = buildFixedWatchlist({});
+  const fixed = (lines: string[] | undefined, head: string, empty: string[]) => (!lines?.length ? empty : lines[0] === head ? lines : [head, "", ...lines]);
   const L = [
     `# 每日简报 Daily brief — ${day}（${hm} ET）`, "",
     "_宏观先行：方向来自宏观与情景；技术面只用于择时。不是交易建议。数据：Yahoo / FRED（FRED 为 T-1）。_", "",
@@ -72,6 +78,8 @@ export function buildBrief(i: BriefInput): BriefResult {
     ...(i.mentorSignalLines?.length ? i.mentorSignalLines : []),
     ...(i.matrixLines?.length ? [...i.matrixLines, ""] : []),
     ...(i.deadCatLines?.length ? i.deadCatLines : []),
+    ...fixed(i.fixedWatchLines, WATCH_HEAD, fwEmpty.watchLines),
+    ...fixed(i.fundFlowLines, FLOW_HEAD, fwEmpty.flowLines),
     "## 2. 警报", "", ...(alarms.length ? alarms.map((a) => `- ${a}`) : ["- 无"]), "",
     ...(i.gateLines?.length ? i.gateLines : []),
     "## 2.1 今日交易计划", "", ...(i.planLines ?? ["- 未生成（缺少价位/数据）→ 今天没有计划内触发，NO_TRADE"]), "",

@@ -39,6 +39,18 @@ test("brief: sections 1–7 in order, single verdict line, SESSION_QUESTIONS as 
   for (const q of SESSION_QUESTIONS) assert.ok(r.md.includes(q));
 });
 
+test("brief: 【宏观盯盘】+【资金流】 always rendered (even without inputs), before ## 2. 警报", () => {
+  const r = buildBrief({ now, ...parts(), calendar: [] });
+  const w = r.md.indexOf("## 【宏观盯盘】"), f = r.md.indexOf("## 【资金流】"), a = r.md.indexOf("## 2. 警报");
+  assert.ok(w > 0 && f > w && a > f, "order: 宏观盯盘 → 资金流 → 2. 警报");
+  assert.match(r.md.slice(w, a), /数据不足/);
+  const c = buildBrief({ now, ...parts(), calendar: [], deadCatLines: ["### 死猫", ""], fixedWatchLines: ["## 【宏观盯盘】", "", "- CUSTOM_WATCH", ""], fundFlowLines: ["- CUSTOM_FLOW"] });
+  const i = (x: string) => c.md.indexOf(x);
+  assert.ok(i("### 死猫") < i("## 【宏观盯盘】") && i("CUSTOM_WATCH") < i("## 【资金流】") && i("## 【资金流】") < i("CUSTOM_FLOW") && i("CUSTOM_FLOW") < i("## 2. 警报"));
+  assert.equal(c.md.split("## 【资金流】").length, 2, "heading forced once when a caller dropped it");
+  assert.deepEqual(briefVerdict(parts()), briefVerdict(parts()), "verdict untouched");
+});
+
 test("managementPlan: at most one add, only after thesis reconfirmed, never a guessed bottom", () => {
   assert.match(ADD_RULE, /最多 1 次/);
   assert.match(ADD_RULE, /重新确认/);
