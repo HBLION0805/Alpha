@@ -24,6 +24,8 @@ Page: 宏观板块关联图 (correlations + scenarios + fund-flow section).
 
 结论格式示例: 「资金流：偏防守 / 偏进攻成长 / 混乱并列」+ 一句依据。
 
+用户 2026-11-08 拍板：相对强弱投出偏进攻后，若信用利差走阔或 VIX 期限倒挂，结论改为混乱并列，并写明是 OAS、VIX 还是两者。走阔 = 已有「利差走阔」（HY OAS 20 日变化 > 30bp，且该读数未过期）。倒挂 = 已有 `VIX_BACKWARDATION`（VIX/VIX3M >= 1，且两根 asOf 相同；比值恰好为 1 也算）。缺数据、stale、或 VIX 与 VIX3M 日期不同的那一路不降级，文案写数据不足。偏防守、以及本来就是混乱并列的，不改。
+
 ## Alpha `data/in/watchlist.json` (synced 2026-11-06)
 
 35 tradeable symbols only (no VIX/DXY/CL/BZ futures — those stay in brief/market data via proxies UUP / USO·UCO / VIX series):

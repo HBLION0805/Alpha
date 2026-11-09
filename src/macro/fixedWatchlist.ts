@@ -8,12 +8,14 @@
  * volume confirmation needs separate OHLCV bars (yahooDaily `v`). Relative price is not ETF create/redeem flow.
  * HYG vs TLT is not an OAS spread: missing OAS never says 信用利差扩大. A parallel TLT/SHY (or yield) move is duration, not risk appetite.
  * Each symbol is stamped source/asOf/session/stale (quoteMeta.ts). Different sessions are not one timestamp.
+ * User 2026-11-08: a 偏进攻 label becomes 混乱并列 when OAS is 利差走阔 (oasWidened) or VIX_BACKWARDATION (vixBackwardationAlarm). 偏防守 and an existing 混乱并列 stay. A missing, stale, or mis-dated leg does not fire.
  */
 import type { Obs } from "./fetch.ts";
 import type { SeriesDef } from "./series.ts";
-import { PM_SERIES } from "./premarket.ts";
+import { PM_SERIES, vixBackwardationAlarm } from "./premarket.ts";
 import { etDate, isTradingDay } from "./nyse.ts";
 import { quoteStamp, stampText } from "./quoteMeta.ts";
+import { T } from "./regime.ts";
 
 export const FW_FILE = "knowledge/macro/fixed-watchlist-and-flows.md";
 export const WATCH_HEAD = "## 【宏观盯盘】", FLOW_HEAD = "## 【资金流】";
@@ -85,13 +87,42 @@ export function durationNote(tlt: number | null, shy: number | null, yldBp: numb
     return `久期/利率干扰：收益率 1日 ${yldBp >= 0 ? "+" : ""}${yldBp.toFixed(1)}bp 与 TLT ${pct(tlt)} 反向，TLT 不计入风险偏好`;
   return null;
 }
-/** Same 30bp / 20d bar as regime.ts credit WIDENING. Missing or stale OAS never says the spread widened. */
+/** Same bar as regime.ts credit WIDENING (`T.hy20Widening`, 20d change > 30bp) and only when the reading is not stale. */
+export function oasWidened(oas: OasReading | null | undefined): boolean {
+  return !!oas && !oas.stale && oas.asOf !== "n/a" && oas.chg20Bp > T.hy20Widening;
+}
+const oasStamp = (oas: OasReading) => `source=${oas.source} asOf=${oas.asOf} session=${oas.session} stale=${oas.stale}`;
+/** Missing or stale OAS never says the spread widened. */
 export function oasSentence(oas: OasReading | null | undefined): string {
   if (!oas) return "缺 OAS，不写信用利差扩大。";
-  const stamp = `source=${oas.source} asOf=${oas.asOf} session=${oas.session} stale=${oas.stale}`;
-  if (oas.stale) return `OAS ${oas.last}%（${stamp}）已过期，不写信用利差扩大。`;
-  if (oas.chg20Bp > 30) return `HY OAS ${oas.last}% 20日 ${oas.chg20Bp >= 0 ? "+" : ""}${oas.chg20Bp.toFixed(0)}bp（${stamp}），利差走阔。`;
+  const stamp = oasStamp(oas);
+  if (oas.stale || oas.asOf === "n/a") return `OAS ${oas.last}%（${stamp}）已过期，不写信用利差扩大。`;
+  if (oasWidened(oas)) return `HY OAS ${oas.last}% 20日 ${oas.chg20Bp >= 0 ? "+" : ""}${oas.chg20Bp.toFixed(0)}bp（${stamp}），利差走阔。`;
   return `HY OAS ${oas.last}% 20日 ${oas.chg20Bp >= 0 ? "+" : ""}${oas.chg20Bp.toFixed(0)}bp（${stamp}），未达走阔，不写信用利差扩大。`;
+}
+
+/** OAS leg of the 2026-11-08 downgrade. Hit only when oasSentence would say 利差走阔. */
+function oasLeg(oas: OasReading | null | undefined): { hit: boolean; text: string } {
+  if (!oas || oas.asOf === "n/a") return { hit: false, text: "OAS 数据不足（缺 OAS），不触发降级" };
+  const stamp = oasStamp(oas);
+  if (oas.stale) return { hit: false, text: `OAS 数据不足（已过期，${stamp}），不触发降级` };
+  if (oasWidened(oas)) return { hit: true, text: `OAS 利差走阔（${stamp}）` };
+  return { hit: false, text: `OAS 未达走阔（${stamp}），不触发降级` };
+}
+
+/** VIX leg. Same predicate as the VIX_BACKWARDATION alarm. Missing, stale, or different asOf dates do not hit. */
+function vixLeg(data: Record<string, Obs[] | undefined>, now: Date): { hit: boolean; text: string } {
+  const vix = data.VIX, v3 = data.VIX3M;
+  const lv = vix?.at(-1)?.v, l3 = v3?.at(-1)?.v;
+  const qv = quoteStamp("VIX", vix, now), q3 = quoteStamp("VIX3M", v3, now);
+  if (lv == null || l3 == null || !Number.isFinite(lv) || !Number.isFinite(l3) || l3 === 0 || qv.asOf === "n/a" || q3.asOf === "n/a")
+    return { hit: false, text: "VIX/VIX3M 数据不足，不触发降级" };
+  const stamps = `VIX ${stampText(qv)}；VIX3M ${stampText(q3)}`;
+  if (qv.asOf !== q3.asOf) return { hit: false, text: `VIX/VIX3M 日期错位（${stamps}），数据不足，不触发降级` };
+  if (qv.stale || q3.stale) return { hit: false, text: `VIX/VIX3M 数据不足（stale，${stamps}），不触发降级` };
+  const ratio = lv / l3;
+  if (vixBackwardationAlarm(ratio, true)) return { hit: true, text: `VIX 倒挂 VIX/VIX3M ${ratio.toFixed(3)}（${stamps}）` };
+  return { hit: false, text: `VIX 未倒挂 VIX/VIX3M ${ratio.toFixed(3)}（${stamps}），不触发降级` };
 }
 
 export function buildFixedWatchlist(data: Record<string, Obs[] | undefined>, extras: FwExtras = {}): FixedWatchlist {
@@ -141,8 +172,15 @@ export function buildFixedWatchlist(data: Record<string, Obs[] | undefined>, ext
   if (interference && c("HYG") != null && (c("TLT") != null || c("GLD") != null)) votes.push({ id: "HYG vs TLT/GLD", vote: 0, text: interference });
   else pushBand("HYG vs TLT/GLD", riskD, "HYG 强于 TLT/GLD", "TLT/GLD 强于 HYG");
   const off = votes.filter((v) => v.vote === 1).length, def = votes.filter((v) => v.vote === -1).length;
-  const label: FlowLabel = votes.length < 2 ? NA : off >= def + 2 ? "偏进攻" : def >= off + 2 ? "偏防守" : "混乱并列";
-  const evidence = label === NA ? `可比较的相对强弱少于 2 组（${votes.length} 组），不下结论。` : `依据（1日，±${BAND}pp 内算持平）：${votes.map((v) => v.text).join("、")}（进攻 ${off} 票 / 防守 ${def} 票）。`;
+  const raw: FlowLabel = votes.length < 2 ? NA : off >= def + 2 ? "偏进攻" : def >= off + 2 ? "偏防守" : "混乱并列";
+  const oasL = oasLeg(extras.oas), vixL = vixLeg(data, now);
+  const which = oasL.hit && vixL.hit ? "OAS 与 VIX" : oasL.hit ? "OAS" : vixL.hit ? "VIX" : "";
+  const downgraded = raw === "偏进攻" && which !== "";
+  const label: FlowLabel = downgraded ? "混乱并列" : raw;
+  const evidence = raw === NA ? `可比较的相对强弱少于 2 组（${votes.length} 组），不下结论。` : `依据（1日，±${BAND}pp 内算持平）：${votes.map((v) => v.text).join("、")}（进攻 ${off} 票 / 防守 ${def} 票）。`;
+  const head = downgraded ? `信用/波动率示警，偏进攻降为混乱并列（${which}）。`
+    : raw === "偏防守" && which ? `信用/波动率示警（${which}），偏防守不受影响。`
+    : raw === "混乱并列" && which ? `信用/波动率示警（${which}），结论已是混乱并列，不改。` : "";
   const flowLines = [
     FLOW_HEAD,
     "_相对强弱推断资金偏向，不是 ETF 申赎净额；不给金额。只显示，不改变上面的结论。_", "",
@@ -151,7 +189,8 @@ export function buildFixedWatchlist(data: Record<string, Obs[] | undefined>, ext
     `- 风险 vs 避险：${rkText}`,
     `- 成交量确认：${volText}`,
     ...(extras.aux ? [`- 辅助：${extras.aux}`] : []),
-    `- **资金流：${label}** — ${evidence}`, "",
+    `- 信用/波动率：${oasL.text}；${vixL.text}`,
+    `- **资金流：${label}** — ${head}${evidence}`, "",
   ];
   return { watchLines, flowLines, label, votes, chg };
 }

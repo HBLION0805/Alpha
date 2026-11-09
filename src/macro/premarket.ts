@@ -33,6 +33,11 @@ export const PM_SERIES: SeriesDef[] = [
 ];
 const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED", "EFFR", "REAL10Y"]);
 
+/** Existing VIX_BACKWARDATION gate. ratio = last VIX / last VIX3M. >= 1 is the alarm (exactly 1 counts); aligned = the two asOf dates match. No second cutoff. */
+export function vixBackwardationAlarm(ratio: number | null, aligned: boolean): boolean {
+  return ratio != null && ratio >= 1 && aligned;
+}
+
 export interface Alarm { kind: "CARRY_UNWIND" | "HYG_DIVERGENCE" | "UST10Y_SPIKE" | "VIX_BACKWARDATION" | OilAlarm["kind"]; level: "ALARM" | "WARNING"; title: string; detail: string; by: "mentor" | "dk" | "user"; score?: number;
   /** bar date. With live:false, alarmItems keys the alert to this date instead of the rerun day. */
   observedOn?: string;
@@ -152,7 +157,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   const ov = buildOilVix(OD, S);
   K.push("", "### VIX 分档（用户分享的信息图 · 只标记）", ...ov.lines.regime);
   K.push("", "### VIX 与指数是否互相确认（导师盘前视频 · 只标记）", ...ov.lines.vix);
-  if (ratio != null && ratio >= 1 && vixAligned) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio.toFixed(3)}`, detail: `近端恐慌高于远端：市场压力。${stampText(vixQ)}。${liveNote || "读取的是该 asOf 的收盘，不是盘中新打印。"}`, by: "dk", observedOn: vixBar ?? undefined, live: !runClosed });
+  if (vixBackwardationAlarm(ratio, vixAligned)) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio!.toFixed(3)}`, detail: `近端恐慌高于远端：市场压力。${stampText(vixQ)}。${liveNote || "读取的是该 asOf 的收盘，不是盘中新打印。"}`, by: "dk", observedOn: vixBar ?? undefined, live: !runClosed });
   else if (ratio != null && ratio >= 1) K.push(`- 不触发倒挂警报：VIX asOf ${vixBar ?? "n/a"} 与 VIX3M asOf ${v3Bar ?? "n/a"} 不是同一时点。`);
   const todays = (inp.calendar ?? []).filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
   K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${e.tier === 2 ? "（次要）" : ""}${eventUtcMs(e) <= inp.now.getTime() ? "（已公布）" : e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));

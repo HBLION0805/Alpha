@@ -1,5 +1,12 @@
 # Standing decisions (memory-like notes)
 
+## 2026-11-08 — 资金流：信用/波动率示警把偏进攻降为混乱并列（用户拍板；2026-11-09 写入）
+- Display only. Relative-strength votes are unchanged. If those votes are 偏进攻, the 【资金流】label becomes 混乱并列 when either leg below hits. The line says 「信用/波动率示警，偏进攻降为混乱并列」 and names OAS, VIX, or OAS 与 VIX.
+- OAS leg = the existing 利差走阔 condition, not a new bar: `oasWidened` is `chg20Bp > regime.ts T.hy20Widening` (30bp over 20 days) and the OAS reading is present with `stale=false`.
+- VIX leg = the existing `VIX_BACKWARDATION` predicate `vixBackwardationAlarm` in `premarket.ts`: last VIX/VIX3M `>= 1` and the two asOf dates match. A ratio of exactly 1 counts, same as the alarm. No second cutoff.
+- A leg that is missing, stale, or (VIX vs VIX3M) on different dates does not hit. That leg's line says 数据不足 and 不触发降级.
+- 偏防守 is not downgraded. A vote result that is already 混乱并列 stays 混乱并列. 数据不足 stays 数据不足. NO_TRADE, the VIX alarm itself, risk caps, and readiness are unchanged.
+
 ## 2026-11-09 — brief data semantics (display only)
 - Fixed 35 stays the only universe. `readUniverse()` warns and ignores a `watchlist.json` that is not an exact match; nothing writes that file.
 - 【资金流】stays 偏进攻 / 偏防守 / 混乱并列 (or 数据不足). Relative price is not create/redeem flow. No OAS → the brief does not say credit spreads widened. No volume → it does not say 放量. TLT vs SHY (or a 10Y move) can zero the HYG vote as duration, not risk appetite.

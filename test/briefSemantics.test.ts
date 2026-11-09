@@ -8,6 +8,7 @@ import { buildScenarios } from "../src/macro/scenarios.ts";
 import { buildBrief, briefVerdict } from "../src/macro/brief.ts";
 import { assembleBriefWatch } from "../src/macro/briefWatch.ts";
 import { buildFixedWatchlist, type OasReading } from "../src/macro/fixedWatchlist.ts";
+import { vixBackwardationAlarm } from "../src/macro/premarket.ts";
 import { buildOilVix } from "../src/macro/oilvix.ts";
 import { lastUsCashSession, quoteStamp, sessionOf } from "../src/macro/quoteMeta.ts";
 import type { Obs } from "../src/macro/fetch.ts";
@@ -145,5 +146,74 @@ test("production seam: assembleBriefWatch output is what buildBrief renders, and
   assert.ok(w > 0 && f > w && a > f);
   assert.match(rendered.md.slice(w, a), /source=yahoo/);
   assert.match(rendered.md.slice(w, a), /不写信用利差扩大/);
+  assert.match(rendered.md.slice(w, a), /VIX\/VIX3M 数据不足，不触发降级/);
   assert.deepEqual(briefVerdict(parts(now)), before);
+});
+
+test("credit or VIX stress downgrades 偏进攻 to 混乱并列; missing, stale, or misaligned data does not; 偏防守 stays", () => {
+  const now = new Date("2026-11-06T21:00:00Z"); // Friday 16:00 ET
+  const OFF = D({ SPY: 1, RSP: 1.6, IWM: 2, SMH: 3, XLE: 0.5, XLF: 1.2, XLU: -0.5, XLY: 1.5, XLP: -0.3, HYG: 0.4, TLT: -0.8, GLD: -0.5 });
+  const DEF = D({ SPY: -0.5, RSP: -1, IWM: -1.8, SMH: -2.5, XLE: -0.2, XLF: -1, XLU: 1, XLY: -1.2, XLP: 0.6, HYG: -0.4, TLT: 0.9, GLD: 1.1 });
+  const MIX = D({ SPY: 1, RSP: 0, IWM: -0.5, SMH: 2, XLE: 0, XLF: 0.3, XLU: -0.5, XLY: 1, XLP: 0, HYG: 0, TLT: 1, GLD: 1.5 });
+  const oas = (chg20Bp: number, stale = false): OasReading => ({ source: "fred", asOf: "2026-11-06", session: "FRED发布", stale, last: 3.48, chg20Bp });
+  const term = (vix: number, v3: number, a = "2026-11-05", b = "2026-11-06") => ({
+    VIX: [{ t: a, v: vix }, { t: b, v: vix }],
+    VIX3M: [{ t: a, v: v3 }, { t: b, v: v3 }],
+  });
+  const line = (r: ReturnType<typeof buildFixedWatchlist>) => r.flowLines.join("\n");
+
+  assert.equal(vixBackwardationAlarm(1, true), true);
+  assert.equal(vixBackwardationAlarm(1, false), false);
+  assert.equal(vixBackwardationAlarm(0.999, true), false);
+
+  const plain = buildFixedWatchlist(OFF, { now });
+  assert.equal(plain.label, "偏进攻");
+  assert.match(line(plain), /OAS 数据不足（缺 OAS），不触发降级/);
+  assert.match(line(plain), /VIX\/VIX3M 数据不足，不触发降级/);
+  assert.doesNotMatch(line(plain), /降为混乱并列/);
+
+  const widen = buildFixedWatchlist(OFF, { now, oas: oas(31) });
+  assert.equal(widen.label, "混乱并列");
+  assert.match(line(widen), /信用\/波动率示警，偏进攻降为混乱并列（OAS）/);
+  assert.match(line(widen), /source=fred asOf=2026-11-06 session=FRED发布 stale=false/);
+  assert.match(line(widen), /利差走阔/);
+  assert.doesNotMatch(line(widen), /OAS 与 VIX/);
+  assert.equal(buildFixedWatchlist(OFF, { now, oas: oas(30) }).label, "偏进攻", "30bp is not widening; the bar is chg20 > 30");
+
+  const back = buildFixedWatchlist({ ...OFF, ...term(20, 20) }, { now });
+  assert.equal(back.label, "混乱并列", "ratio exactly 1 uses the VIX_BACKWARDATION alarm");
+  assert.match(line(back), /信用\/波动率示警，偏进攻降为混乱并列（VIX）/);
+  assert.match(line(back), /source=yahoo asOf=2026-11-06 session=美股现金\/CBOE stale=false/);
+  assert.match(line(back), /OAS 数据不足/);
+
+  const both = buildFixedWatchlist({ ...OFF, ...term(24, 20) }, { now, oas: oas(40) });
+  assert.equal(both.label, "混乱并列");
+  assert.match(line(both), /信用\/波动率示警，偏进攻降为混乱并列（OAS 与 VIX）/);
+
+  const staleOas = buildFixedWatchlist({ ...OFF, ...term(24, 20, "2026-11-03", "2026-11-04") }, { now, oas: oas(80, true) });
+  assert.equal(staleOas.label, "偏进攻");
+  assert.match(line(staleOas), /OAS 数据不足（已过期/);
+  assert.match(line(staleOas), /VIX\/VIX3M 数据不足（stale/);
+  assert.doesNotMatch(line(staleOas), /降为混乱并列/);
+  assert.doesNotMatch(line(staleOas), /利差走阔/);
+
+  const skew = buildFixedWatchlist({
+    ...OFF,
+    VIX: [{ t: "2026-11-05", v: 20 }, { t: "2026-11-06", v: 24 }],
+    VIX3M: [{ t: "2026-11-04", v: 18 }, { t: "2026-11-05", v: 20 }],
+  }, { now, oas: oas(10) });
+  assert.equal(skew.label, "偏进攻");
+  assert.match(line(skew), /日期错位/);
+  assert.match(line(skew), /数据不足，不触发降级/);
+  assert.doesNotMatch(line(skew), /降为混乱并列/);
+
+  const guard = buildFixedWatchlist({ ...DEF, ...term(24, 20) }, { now, oas: oas(40) });
+  assert.equal(guard.label, "偏防守");
+  assert.match(line(guard), /偏防守不受影响/);
+  assert.doesNotMatch(line(guard), /降为混乱并列/);
+
+  const already = buildFixedWatchlist({ ...MIX, ...term(24, 20) }, { now, oas: oas(40) });
+  assert.equal(already.label, "混乱并列");
+  assert.match(line(already), /结论已是混乱并列，不改/);
+  assert.doesNotMatch(line(already), /降为混乱并列/);
 });

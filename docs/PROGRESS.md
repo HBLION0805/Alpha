@@ -313,6 +313,10 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - Routine fetches daily bars for ALL symbols from `npm run -s chains -- --need` (not just SPY/QQQ/IWM) → data/in/<SYM>-bars.json; refetch anything not ✅ after `--build`.
 - `chains --build` prints summarized build errors + raw stale; GLDM excluded; Yahoo bars fallback warns (src/adapters/bars.ts, src/options/freshness.ts). docs/ROUTINE_CHAINS.md updated. Commit d37cca4. Tests: test/bars.test.ts, test/chainfresh.test.ts.
 
+## 2026-11-09 — 资金流信用/波动率降级（用户 2026-11-08 拍板）
+- 【资金流】relative-strength 偏进攻 becomes 混乱并列 when HY OAS is 利差走阔 (`oasWidened`: chg20 > `T.hy20Widening` 30bp and not stale) or VIX/VIX3M is the existing `VIX_BACKWARDATION` (`vixBackwardationAlarm`: ratio >= 1 and same asOf). The line names OAS, VIX, or both.
+- Missing, stale, or mis-dated OAS / VIX / VIX3M does not fire that leg and the copy says 数据不足. 偏防守 and an existing 混乱并列 are unchanged. Verdict / NO_TRADE / risk caps unchanged.
+
 ## 2026-11-09 — brief data semantics (display only)
 - `src/macro/quoteMeta.ts` stamps source/asOf/session/stale. 【宏观盯盘】no longer uses one max date for every symbol. KOSPI (韩国现金) is not averaged with EWY and is not treated as the same instant as SMH/SOX.
 - Weekend/holiday rerun: Friday VIX/VIX3M backwardation still raises the existing alarm (NO_TRADE rules unchanged) but `alarmItems` keys url/guid to the bar date and the line says it is not a new realtime event. Misaligned VIX vs VIX3M dates do not fire the alarm.

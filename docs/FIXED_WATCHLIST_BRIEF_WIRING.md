@@ -37,6 +37,7 @@ Exact ETF create/redeem net-flow vendors; single-stock research.
 - OAS is passed only from macro `HYOAS` stats. Missing or stale → 不写信用利差扩大. Widening text requires chg20 > 30bp and stale=false.
 - Volume line says 放量 only from OHLCV `relVolume`. Missing bars say 数据不足 and do not say 放量.
 - HYG vs TLT/GLD drops to a non-scoring note when SHY/yields show a duration move, or when that rate proxy is missing.
+- User 2026-11-08: if the vote is 偏进攻, `oasWidened` (same 利差走阔 bar: 20d OAS change > `T.hy20Widening` 30bp, not stale) or `vixBackwardationAlarm` (existing `VIX_BACKWARDATION`: VIX/VIX3M >= 1 and the same asOf) rewrites the label to 混乱并列. The sentence names OAS, VIX, or both. A missing, stale, or mis-dated leg says 数据不足 and does not fire. 偏防守 and an existing 混乱并列 stay.
 
 ## Daily universe (宏观钉死 2026-11-06)
 - Operational source of truth: `FIXED_UNIVERSE`. `loadUniverse()` uses `data/in/watchlist.json` only when it matches that list exactly; drift warns and is ignored.
