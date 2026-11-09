@@ -10,6 +10,7 @@
     "stream": "node src/cli/stream.ts",
     "alerts": "node src/cli/alerts.ts",
     "levels": "node src/cli/levels.ts",
+    "bars": "node src/cli/bars.ts",
     "run": "bash scripts/run.sh",
     "calendar:snapshot": "node scripts/snapshot-calendar.ts",
     "digest": "node src/cli/digest.ts",

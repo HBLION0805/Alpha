@@ -8,7 +8,7 @@
 
 Technicals are for timing only. Update this file after every task.
 
-_Last updated 2026-11-09 ET (brief data semantics: quote stamps, weekend VIX not a new event, KOSPI vs US not one timestamp, no OAS/volume invention, duration note. Universe drift no longer overrides. Previously 2026-11-06 宏观钉死)._
+_Last updated 2026-11-09 ET (drop unfinished Robinhood daily bars. Previously: brief data semantics — quote stamps, weekend VIX not a new event, KOSPI vs US not one timestamp, no OAS/volume invention, duration note. Universe drift no longer overrides. Previously 2026-11-06 宏观钉死)._
 
 **Delivery is handled:** the 30-minute weekday routine `alpha-2` (08:00–18:30 ET) runs the alerts and messages the user, starting 2026-10-15. The CPI lag on 10/14 happened only because routines had not started yet.
 
@@ -324,6 +324,11 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - Oil down alone is not a demand-recession call (`oilvix.ts` / `oil.ts` wording). Risk caps, readiness thresholds and `briefVerdict` are unchanged.
 - `readUniverse`: drifted `data/in/watchlist.json` warns and does not replace `FIXED_UNIVERSE`.
 - Follow-up, not changed: weekly review vs readiness dashboard counts, and unrealized P&L. `renderReview` 「正式 n/30」counts all-time closed formal trades (`kind !== practice` and `closedAt`). The readiness dashboard 「正式单」also includes open formal trades, and neither number is "how many rows I counted in this week's 逐笔". Unrealized in the weekly review is the last mark's pnl, and a missing mark adds 0 — that is not a broker mark (a hand total such as +1.7 can differ). Do not change readiness / review / journal rules to reconcile 7 vs 11 or 0 vs +1.7 until the journal rows are compared on purpose.
+
+## 2026-11-09 — drop unfinished Robinhood daily bars
+- `get_equity_historicals` can append a bar for a session that has not closed (`interpolated: true`, or volume 0 with open=high=low=close). On 2026-11-06 13:35 ET that bar was written into `data/in/<SYM>-bars.json`. Monday's refresh treated the date as already present and skipped the symbol; `loadDailyBars` (30h + 72h weekend grace) treated the placeholder as fresh. The brief used those prints (SPY 733 vs the real close 735.29; QQQ 647.05 vs 656.10).
+- `parseBars` / `loadDailyBars` and `writeBarsFile` (`npm run bars -- --write`) drop those bars. `barsNeedRefresh` (`npm run bars -- --need --through <session>`) re-fetches a symbol whose file is missing, whose last bar is before that session, or whose last bar is a placeholder or has no volume. Risk caps and readiness are unchanged.
+- Tests: test/bars.test.ts.
 
 ## 2026-11-06 — 宏观钉死: fixed 35-name universe
 - src/macro/universe.ts: `FIXED_UNIVERSE` (35 names, LEN the only stock). `loadUniverse(dir)` uses watchlist.json only on an exact match; otherwise FIXED_UNIVERSE. Read-only; no Robinhood 自选 sync. (2026-11-09: drift warns and does not override.)

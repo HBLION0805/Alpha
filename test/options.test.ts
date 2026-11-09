@@ -170,7 +170,7 @@ test("events: variance split, historical moves, verdict, earnings parser", () =>
   const f = fillGreeks(chain); const a = summarizeExpiry(f, "2026-10-23"), b = summarizeExpiry(f, "2026-11-20");
   assert.equal(impliedEventMove(769.6, a, b), null, "front IV below back → no event premium");
   assert.ok(impliedEventMove(769.6, { ...a, atmIv: 0.25 }, b)! > 0);
-  const mv = historicalEventMoves(bars, ["2026-10-14"]); assert.equal(mv.length, 1);
+  const mv = historicalEventMoves(bars, ["2026-10-13"]); assert.equal(mv.length, 1); // 2026-10-14 in the fixture is an interpolated placeholder and is dropped
   const cal = ["2026-01-13", "2026-02-13", "2026-03-11", "2026-04-10", "2026-11-10"].map((date) => ({ kind: "CPI" as const, title: "CPI", date, timeEt: "08:30", source: "t" }));
   const c = compareEvent("CPI", cal, bars, chain.asOf, 5); assert.equal(c.verdict, "RICH"); assert.equal(c.nextDate, "2026-11-10"); assert.equal(c.exceededPriced, 0);
   assert.equal(parseEarnings(j("./fixtures/earnings-2026-10-15.json"))[0]!.symbol, "TSM");
