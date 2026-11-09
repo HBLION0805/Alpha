@@ -14,10 +14,9 @@ routine agent saves the raw pages and `scripts/run.sh` (`npm run chains -- --bui
 
 ## Routine prompt text (add to the daily premarket routine, before `scripts/run.sh`)
 
-> Daily bars refresh (READ-ONLY, do this FIRST; QA C4; never write data/in/watchlist.json from Robinhood watchlists): run `npm run -s chains -- --need` to get the comma list of symbols.
-> Fetch bars for ALL of them (not just SPY/QQQ/IWM): call `get_equity_historicals` with up to 10 symbols per call,
-> `interval=day`, start = one year ago, and write each symbol's raw response as-is to `data/in/<SYM>-bars.json`. Every symbol
-> must be fetched; list any skipped/failed symbol in your report. After saving (and after the chain build below) run
+> Daily bars refresh (READ-ONLY, do this FIRST; QA C4; never write data/in/watchlist.json from Robinhood watchlists): run `npm run -s bars -- --need --through <last closed NYSE session YYYY-MM-DD>` to get the comma list of symbols that still need a completed daily bar. A missing file is fetched. A file whose last bar is already that session is skipped only when that bar is a real bar with volume. If the last bar is `interpolated: true`, or volume is 0 (including open=high=low=close), do not skip it — re-fetch.
+> Fetch every symbol it prints (not just SPY/QQQ/IWM): call `get_equity_historicals` with up to 10 symbols per call,
+> `interval=day`, start = one year ago. Do not write the raw response as-is. Pipe each symbol's JSON to `npm run -s bars -- --write <SYM>` so interpolated bars and flat zero-volume bars are dropped before `data/in/<SYM>-bars.json` is saved. List any skipped/failed symbol in your report. After saving (and after the chain build below) run
 > `npm run -s chains -- --build` and refetch any symbol whose freshness is not ✅.
 >
 > Option-chain refresh (READ-ONLY; never place/cancel/modify anything): in /workspace/Alpha run `npm run -s chains -- --need`
