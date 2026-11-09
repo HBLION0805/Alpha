@@ -12,6 +12,8 @@ import { contractSeriesNote, priceOnly, HIST_LABEL, type OilId, type SameContrac
 import type { SeriesDef } from "./series.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import type { Earnings } from "../options/events.ts";
+import { etDate, isTradingDay } from "./nyse.ts";
+import { quoteStamp, stampText } from "./quoteMeta.ts";
 
 const y = (id: string, ref: string, label: string, unit: SeriesDef["unit"] = "price"): SeriesDef => ({ id, provider: "yahoo", ref, label, unit, frequency: "daily" });
 const f = (id: string, ref: string, label: string): SeriesDef => ({ id, provider: "fred", ref, label, unit: "pct", frequency: "daily" });
@@ -31,7 +33,16 @@ export const PM_SERIES: SeriesDef[] = [
 ];
 const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED", "EFFR", "REAL10Y"]);
 
-export interface Alarm { kind: "CARRY_UNWIND" | "HYG_DIVERGENCE" | "UST10Y_SPIKE" | "VIX_BACKWARDATION" | OilAlarm["kind"]; level: "ALARM" | "WARNING"; title: string; detail: string; by: "mentor" | "dk" | "user"; score?: number }
+/** Existing VIX_BACKWARDATION gate. ratio = last VIX / last VIX3M. >= 1 is the alarm (exactly 1 counts); aligned = the two asOf dates match. No second cutoff. */
+export function vixBackwardationAlarm(ratio: number | null, aligned: boolean): boolean {
+  return ratio != null && ratio >= 1 && aligned;
+}
+
+export interface Alarm { kind: "CARRY_UNWIND" | "HYG_DIVERGENCE" | "UST10Y_SPIKE" | "VIX_BACKWARDATION" | OilAlarm["kind"]; level: "ALARM" | "WARNING"; title: string; detail: string; by: "mentor" | "dk" | "user"; score?: number;
+  /** bar date. With live:false, alarmItems keys the alert to this date instead of the rerun day. */
+  observedOn?: string;
+  /** false = carried close on a non-session day, not a new realtime event. Omitted = keyed to the run day. */
+  live?: boolean }
 export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed?: Record<string, string>; calendar?: CalendarEvent[]; earnings?: Earnings[] | null; headlines?: string[]; regimeLabel?: string | null; volumeLines?: string[] | null; fedLines?: string[] | null;
   /** registered earnings weeks (src/macro/earningsWeek.ts renderEarningsWeek) */ earningsWeekLines?: string[] | null;
   /** front-month WTI (wtiFront.ts frontContinuous) for the oil block, oil alarms, 快速变动 flag and the USDCAD line ONLY; absent → data.WTI (CL=F) */
@@ -62,9 +73,10 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   // spread 5日 n/a). Never the continuous CL=F / BZ=F bars. Not strict (offline / legacy callers): old continuous behaviour.
   const hist = (id: OilId, fs: FrontSeries | null | undefined) => (S ? (fs && fs.junction != null && S[id] ? fs.series : priceOnly(S[id])) : fs ? fs.series : D[id]!);
   const OD = { ...D, WTI: hist("WTI", inp.oilFront), BRENT: hist("BRENT", inp.brentFront) }; const alarms: Alarm[] = []; const M: string[] = []; const K: string[] = []; const noTrade: string[] = [];
-  const day = inp.now.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  const day = etDate(inp.now);
   const c = (id: string, k = 1) => chg(id, D[id], k);
   const v = (id: string) => last(D[id]);
+  const qtext = (id: string) => `${id} ${fmt(c(id), "%")}（${stampText(quoteStamp(id, D[id], inp.now))}）`;
 
   // ── 大佬流程 ① 国债 ──
   M.push("### ① 美国国债 2Y / 10Y / 30Y", "> 很多时候股票市场的答案其实藏在债券市场里。");
@@ -87,6 +99,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
     alarms.push({ kind: "HYG_DIVERGENCE", level: "WARNING", title: `HYG 背离：标普近 20 日高位但 HYG 5日 ${fmt(hyg5, "%")}`, detail: "股票创高、信用走弱：债市没那么放心", by: "mentor" });
     M.push("- ⚠️ **WARNING：股票接近新高、HYG 走弱 → 信用不确认**");
   } else if (hyg5 != null) M.push(`- 信用${hyg5 >= 0 ? "确认风险偏好" : "略弱，未构成背离"}`);
+  M.push("- _HYG 是 ETF 价格，不是 OAS。这一节不写信用利差扩大；利差只在另有 FRED OAS 时才说。_");
   // ③ 指数广度
   M.push("", "### ③ 指数广度 SPX / NDX / RUT");
   M.push(`- 1日: SPX ${fmt(c("SPX"), "%")} · NDX ${fmt(c("NDX"), "%")} · RUT ${fmt(c("RUT"), "%")}；5日: SPX ${fmt(c("SPX", 5), "%")} · NDX ${fmt(c("NDX", 5), "%")} · RUT ${fmt(c("RUT", 5), "%")}`);
@@ -103,12 +116,19 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
     M.push(`- 🔥 **大幅${up ? "高开 → FOMO" : "低开 → 恐慌"}**（|期货| ≥ 1%）`);
     M.push(`- 开盘策略：${up ? "有盈利的仓位考虑止盈；想卖 call 只能在有限风险结构里（例如把 long call 改成价差），**绝不裸卖**" : "不抢反弹；先等开盘 30 分钟后的确认；新仓只用有限风险结构"}`);
   } else M.push(`- 期货${maxAbs >= 0.5 ? "有一定情绪（≥0.5%）" : "平静"}`);
-  // ⑤ 韩国半导体温度计
+  // ⑤ 韩国半导体温度计. KOSPI (Asia/Seoul cash) and US listings are not one timestamp. EWY is a US-listed ETF, not KOSPI.
   M.push("", "### ⑤ KOSPI / EWY vs 美国半导体（SMH / SOX）", "> 韩国可以给我一个美国开盘之前的半导体温度计。");
-  const kr = [c("KOSPI"), c("EWY")].filter((x): x is number => x != null), us = [c("SMH"), c("SOX")].filter((x): x is number => x != null);
-  const krA = kr.length ? kr.reduce((a, b) => a + b) / kr.length : null, usA = us.length ? us.reduce((a, b) => a + b) / us.length : null;
-  M.push(`- KOSPI ${fmt(c("KOSPI"), "%")} · EWY ${fmt(c("EWY"), "%")} vs SMH ${fmt(c("SMH"), "%")} · SOX ${fmt(c("SOX"), "%")} · NQ ${fmt(c("NQ"), "%")}`);
-  if (krA != null && usA != null) M.push(Math.sign(krA) !== Math.sign(usA) && Math.abs(krA - usA) >= 1.5 ? `- ⚠️ **背离**：韩国 ${fmt(krA, "%")} vs 美国半导体 ${fmt(usA, "%")} → 半导体链风险偏好不一致` : krA > 0 && usA > 0 ? "- 韩国与美国半导体同向走强 → 产业链风险偏好一致" : krA < 0 && usA < 0 ? "- 韩国与美国半导体同向走弱" : "- 无明显背离");
+  const kospiC = c("KOSPI"), usXs = [c("SMH"), c("SOX")].filter((x): x is number => x != null);
+  const usA = usXs.length ? usXs.reduce((a, b) => a + b) / usXs.length : null;
+  M.push(`- ${qtext("KOSPI")} · ${qtext("EWY")} vs ${qtext("SMH")} · ${qtext("SOX")} · ${qtext("NQ")}`);
+  M.push("- _EWY 是美股上市的韩国 ETF（美股现金），不是 KOSPI。KOSPI 为韩国现金（Asia/Seoul；stale 只按周末，本仓库无韩国节假日表）。session 不同就不能当成同一时点。_");
+  if (kospiC != null && usA != null) {
+    const opposite = Math.sign(kospiC) !== 0 && Math.sign(usA) !== 0 && Math.sign(kospiC) !== Math.sign(usA) && Math.abs(kospiC - usA) >= 1.5;
+    M.push(opposite ? `- 方向相反：KOSPI ${fmt(kospiC, "%")} vs 美国半导体 ${fmt(usA, "%")}。这不是同一时点的同步背离（见各自 source/asOf/session/stale）。`
+      : kospiC > 0 && usA > 0 ? "- 韩国现金与美国半导体同向走强（时点仍不同，只作开盘前温度计）"
+      : kospiC < 0 && usA < 0 ? "- 韩国现金与美国半导体同向走弱（时点仍不同）"
+      : "- 无明显方向差（时点仍不同，不称同步背离）");
+  }
   M.push("- 注：SOX 期货没有免费数据，用 SMH / ^SOX 现货收盘代替");
   // ⑥ 美元
   M.push("", "### ⑥ 美元 DXY / USDCAD / USDJPY", "> 美元为什么在动？其他资产有没有确认？");
@@ -126,12 +146,19 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
 
   // ── DK 补充 ──
   const vix = v("VIX"), v3 = v("VIX3M"), ratio = vix != null && v3 ? vix / v3 : null;
-  K.push("### VIX 与期限结构", `- VIX ${vix?.toFixed(2) ?? "n/a"} · VIX3M ${v3?.toFixed(2) ?? "n/a"} · VIX/VIX3M ${ratio?.toFixed(3) ?? "n/a"} → ${ratio == null ? "n/a" : ratio >= 1 ? "🚨 **倒挂（backwardation）= 压力**" : ratio >= 0.95 ? "接近倒挂" : "正常升水（contango）"}`);
+  const vixBar = D.VIX?.at(-1)?.t.slice(0, 10) ?? null, v3Bar = D.VIX3M?.at(-1)?.t.slice(0, 10) ?? null;
+  const vixQ = quoteStamp("VIX", D.VIX, inp.now), v3Q = quoteStamp("VIX3M", D.VIX3M, inp.now);
+  const vixAligned = vixBar != null && vixBar === v3Bar;
+  const runClosed = !isTradingDay(day);
+  const liveNote = runClosed ? `周末/休市重跑：这是 asOf ${vixBar ?? "n/a"} 的期限结构，不是 ${day} 的新实时风险事件。` : "";
+  const vixRead = ratio == null ? "n/a" : !vixAligned ? "两根 asOf 不同，不能当成同一时点的期限结构" : ratio >= 1 ? `🚨 **倒挂（backwardation）= 压力**${liveNote ? `。${liveNote}` : ""}` : ratio >= 0.95 ? "接近倒挂" : "正常升水（contango）";
+  K.push("### VIX 与期限结构", `- VIX ${vix?.toFixed(2) ?? "n/a"}（${stampText(vixQ)}） · VIX3M ${v3?.toFixed(2) ?? "n/a"}（${stampText(v3Q)}） · VIX/VIX3M ${ratio?.toFixed(3) ?? "n/a"} → ${vixRead}`);
   // mentor premarket video (原油与 VIX): VIX trend vs index trend — flag only
   const ov = buildOilVix(OD, S);
   K.push("", "### VIX 分档（用户分享的信息图 · 只标记）", ...ov.lines.regime);
   K.push("", "### VIX 与指数是否互相确认（导师盘前视频 · 只标记）", ...ov.lines.vix);
-  if (ratio != null && ratio >= 1) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio.toFixed(3)}`, detail: "近端恐慌高于远端：市场压力", by: "dk" });
+  if (vixBackwardationAlarm(ratio, vixAligned)) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio!.toFixed(3)}`, detail: `近端恐慌高于远端：市场压力。${stampText(vixQ)}。${liveNote || "读取的是该 asOf 的收盘，不是盘中新打印。"}`, by: "dk", observedOn: vixBar ?? undefined, live: !runClosed });
+  else if (ratio != null && ratio >= 1) K.push(`- 不触发倒挂警报：VIX asOf ${vixBar ?? "n/a"} 与 VIX3M asOf ${v3Bar ?? "n/a"} 不是同一时点。`);
   const todays = (inp.calendar ?? []).filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
   K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${e.tier === 2 ? "（次要）" : ""}${eventUtcMs(e) <= inp.now.getTime() ? "（已公布）" : e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));
   K.push("", "### 美联储官员讲话（未来 14 天，ET）", ...(inp.fedLines ?? ["- 不可用（未获取 Fed 官方日历）"]));
@@ -178,6 +205,11 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
 /** Alarm → FeedItem so the existing store / 30-min alert routine can surface it (sourceId "premarket-alarm"). */
 export const ALARM_SOURCE = "premarket-alarm";
 export function alarmItems(alarms: Alarm[], now: Date) {
-  const day = now.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
-  return alarms.map((a) => ({ sourceId: ALARM_SOURCE, title: `[盘前 ${day}] ${a.level} ${a.kind}${a.score != null ? `(${a.score})` : ""}: ${a.title}`, url: `alpha://premarket/${day}/${a.kind}`, publishedAt: now.toISOString(), summary: a.detail, guid: `premarket:${day}:${a.kind}` }));
+  const runDay = etDate(now);
+  return alarms.map((a) => {
+    const carried = a.live === false && !!a.observedOn;
+    const day = carried ? a.observedOn!.slice(0, 10) : runDay;
+    const tag = carried ? "收盘" : "盘前";
+    return { sourceId: ALARM_SOURCE, title: `[${tag} ${day}] ${a.level} ${a.kind}${a.score != null ? `(${a.score})` : ""}: ${a.title}`, url: `alpha://premarket/${day}/${a.kind}`, publishedAt: now.toISOString(), summary: a.detail, guid: `premarket:${day}:${a.kind}` };
+  });
 }

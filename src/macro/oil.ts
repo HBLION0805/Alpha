@@ -44,7 +44,7 @@ export function buildOil(data: Record<string, Obs[]>, opts: { now: Date; headlin
   const sp = spreadSeries(data.BRENT, data.WTI), spNow = lastV(sp), sp5 = sp.length > 5 ? spNow! - sp[sp.length - 6]!.v : null;
   L.push("", `- **Brent–WTI 价差** $${spNow?.toFixed(2) ?? "n/a"}（5日 ${f(sp5, "$")}）→ ${spNow == null ? "n/a" : sp5 != null && sp5 > 1 ? "走阔：海运 / 中东供应风险溢价上升" : sp5 != null && sp5 < -1 ? "收窄：海运风险溢价回落" : "大致稳定"}${spNow != null && spNow >= 8 ? "（价差处于高位 ≥$8：海运/中东风险已在定价）" : ""}`);
   const w5 = pct(data.WTI, 5), r5 = pct(data.RBOB, 5), x5 = pct(data.XLE, 5);
-  L.push(`- **汽油 vs 原油（5日）** RBOB ${f(r5)} vs WTI ${f(w5)} → ${r5 == null || w5 == null ? "n/a" : r5 - w5 > 2 ? "汽油更强：裂解价差扩大（炼厂/成品油紧张，CPI 能源分项上行风险）" : r5 - w5 < -2 ? "汽油更弱：需求偏软" : "同步"}`);
+  L.push(`- **汽油 vs 原油（5日）** RBOB ${f(r5)} vs WTI ${f(w5)} → ${r5 == null || w5 == null ? "n/a" : r5 - w5 > 2 ? "汽油更强：裂解价差扩大（炼厂/成品油紧张，CPI 能源分项上行风险）" : r5 - w5 < -2 ? "汽油更弱：成品油相对原油偏软（不是凭原油下跌判定需求衰退）" : "同步"}`);
   L.push(`- **XLE vs 原油（5日）** XLE ${f(x5)} vs WTI ${f(w5)} → ${x5 == null || w5 == null ? "n/a" : w5 > 2 && x5 < w5 / 3 ? "股票不跟油价：市场认为油价上涨不持久（或增长担忧）" : w5 < -2 && x5 > w5 / 3 ? "能源股抗跌：市场认为油价下跌是暂时的" : "大致确认"}`);
   const cad1 = pct(data.USDCAD, 1), wti1 = d1Of("WTI");
   L.push(`- **USDCAD 联动** USDCAD 1日 ${f(cad1)} · WTI 1日 ${f(wti1)} → ${cad1 == null || wti1 == null ? "n/a" : Math.sign(cad1) === -Math.sign(wti1) ? "一致（油涨 CAD 强 = USDCAD 跌）：油价变动有外汇确认" : "不一致：油价变动未得到 CAD 确认"}`);
@@ -54,7 +54,7 @@ export function buildOil(data: Record<string, Obs[]>, opts: { now: Date; headlin
   const next = (opts.calendar ?? []).filter((e) => /CPI|PPI/.test(e.kind) && eventUtcMs(e) > opts.now.getTime()).sort((a, b) => a.date.localeCompare(b.date))[0];
   const read = w5 == null || y5 == null ? "n/a" : w5 > 3 && y5 > 5 ? "**通胀传导**：油涨 + 长端收益率上行 → 市场在定价更高的整体通胀（PPI/CPI）→ 利空长债、估值" :
     w5 > 3 && y5 < -5 ? "**增长恐慌读法**：油涨但长端收益率下行 → 市场把油价当成增长税（供应冲击压需求），偏避险" :
-    w5 < -3 && y5 < -5 ? "通缩/需求走弱：油跌 + 收益率下行" : w5 < -3 && y5 > 5 ? "油跌但收益率上行：利率由油以外因素驱动（财政/期限溢价）" : "油价与收益率无明显传导信号";
+    w5 < -3 && y5 < -5 ? "油跌且收益率下行：不能单凭油价判断需求衰退（缺增长与工业金属确认）" : w5 < -3 && y5 > 5 ? "油跌但收益率上行：利率由油以外因素驱动（财政/期限溢价）" : "油价与收益率无明显传导信号";
   L.push(`- **传导** 原油 → 整体通胀（PPI/CPI）→ 收益率：WTI 5日 ${f(w5)} · 10Y 5日 ${f(y5, "bp", 1)} → ${read}${next ? `。下一次 ${next.kind}：${next.date} ${next.timeEt} ET` : ""}`);
   L.push("", `- **海运 / 霍尔木兹新闻**（alert 的 shipping 主题）：${ship.length ? "" : "近 48h 无"}`, ...ship.slice(0, 4).map((h) => `  - ${h}`));
 
@@ -66,7 +66,7 @@ export function buildOil(data: Record<string, Obs[]>, opts: { now: Date; headlin
   }
   for (const [id, name] of [["WTI", "WTI"], ["BRENT", "Brent"]] as const) {
     const d1 = d1Of(id);
-    if (d1 != null && d1 <= -5) { alarms.push({ kind: "OIL_CRASH", level: "WARNING", title: `${name} 暴跌 1日 ${f(d1)}`, detail: "阈值 1日 −5%（需求/增长担忧或供应恢复）", by: "user", score: OIL_ALARM_SCORE.OIL_CRASH! }); break; }
+    if (d1 != null && d1 <= -5) { alarms.push({ kind: "OIL_CRASH", level: "WARNING", title: `${name} 暴跌 1日 ${f(d1)}`, detail: "阈值 1日 −5%。油价下跌本身不能判断需求衰退（也可能是供应恢复）。", by: "user", score: OIL_ALARM_SCORE.OIL_CRASH! }); break; }
   }
   if (sp5 != null && sp5 > 3) alarms.push({ kind: "BRENT_WTI_WIDEN", level: "WARNING", title: `Brent–WTI 价差 5日走阔 ${f(sp5, "$")} 至 $${spNow!.toFixed(2)}`, detail: `阈值 5日 +$3：海运/中东风险${shipNote}`, by: "user", score: OIL_ALARM_SCORE.BRENT_WTI_WIDEN! + (ship.length ? 5 : 0) });
   return { lines: L, alarms, spread: spNow, spread5dChg: sp5 };

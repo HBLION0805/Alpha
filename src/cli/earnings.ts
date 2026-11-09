@@ -1,5 +1,6 @@
 /**
- * npm run earnings [-- --need]: earnings coverage for the fixed universe (data/in/watchlist.json, ETFs excluded → LEN) + journal + pending-card symbols.
+ * npm run earnings [-- --need]: earnings coverage for the fixed universe (ETFs excluded → LEN) + journal + pending-card symbols.
+ * data/in/watchlist.json must match FIXED_UNIVERSE; a drifted file warns and does not override.
  * No hardcoded mega-cap list: individual names come only from journal / pending cards (mentor / event-followup / thesis).
  * --need prints the comma list the routine must look up with Robinhood get_earnings_results (read-only).
  */

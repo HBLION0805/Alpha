@@ -1,7 +1,7 @@
 /**
  * npm run chains [-- --need | --build] [--in data/in]: daily option-chain refresh (Robinhood, READ-ONLY; see docs/ROUTINE_CHAINS.md).
- * Symbols = SPY/QQQ/IWM + every optionable symbol in data/in/watchlist.json (the fixed 35-name universe; GLDM dropped as NO_OPTIONS).
- * Robinhood personal watchlists never override it; a missing file falls back to FIXED_UNIVERSE (src/macro/universe.ts).
+ * Symbols = SPY/QQQ/IWM + every optionable name in the fixed 35 (GLDM dropped as NO_OPTIONS).
+ * data/in/watchlist.json is checked, not trusted: a drifted file (including Robinhood 自选) warns and does not override FIXED_UNIVERSE.
  *   --need   comma list for the routine to fetch
  *   --build  data/in/rh-chain/<SYM>.json (raw MCP pages) → data/in/<sym>-chain.json, one symbol at a time (a failure skips only that symbol)
  *   (always) status: asOf per symbol, 过时 when >1 trading day old, 缺失 when no chain

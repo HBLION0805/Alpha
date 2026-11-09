@@ -50,7 +50,7 @@ export function computeSignals(inp: ScenarioInput): SignalResult[] {
   add("vix_high", "VIX >20 或 VIX/VIX3M >1（倒挂）", vix == null ? null : vix > 20 || (v3 != null && vix / v3 > 1), `VIX ${vix?.toFixed(1) ?? "n/a"}${v3 ? ` · VIX/VIX3M ${(vix! / v3).toFixed(2)}` : ""}`);
   add("vix_low", "VIX <15", vix == null ? null : vix < 15, `VIX ${vix?.toFixed(1) ?? "n/a"}`);
   const hyg = chg("HYG", d.HYG, 5);
-  add("credit_stress", "HYG 5 日 < −1%（信用走弱）", hyg == null ? null : hyg < -1, `HYG 5日 ${f(hyg, "%", 2)}`);
+  add("credit_stress", "HYG 5 日 < −1%（价格走弱，不是 OAS）", hyg == null ? null : hyg < -1, `HYG 5日 ${f(hyg, "%", 2)}（缺 OAS 不写信用利差扩大）`);
   const spx = lastV(d.SPX), m50 = ma(d.SPX, 50);
   add("spx_above_50", "SPX 在 50 日均线上方", spx == null || m50 == null ? null : spx > m50, `SPX ${spx?.toFixed(0) ?? "n/a"} vs 50MA ${m50?.toFixed(0) ?? "n/a"}`);
   const rut = chg("RUT", d.RUT, 20), sp20 = chg("SPX", d.SPX, 20);
@@ -84,7 +84,7 @@ export const SCENARIOS: Scenario[] = [
     invalidation: ["2Y 与 10Y 回落到 20 日区间内，且 DXY 转跌", "下一次 CPI（11/10）降温"],
     catalog: ["expectations", "mechanisms", "horizons", "psych-second-order", "thesis-stop"], worldLines: [WL(18, "债务与财政主导", "期限溢价、通胀预期与央行政策可信度"), WL(11, "石油就是权力", "Brent／WTI 期限结构和炼油价差"), WL(12, "美元体系与金融制裁", "美联储政策、美元融资成本及跨币种基差")] },
   { id: "risk_off", name: "增长恐慌 / 避险（growth scare）",
-    drivers: ["信用利差走阔、波动率倒挂", "日元套利平仓引发去杠杆（主线 20）", "AI 资本开支回报受质疑，半导体领跌"],
+    drivers: ["信用压力（只有 OAS 才能说利差走阔；HYG 价格不是信用利差）、波动率倒挂", "日元套利平仓引发去杠杆（主线 20）", "AI 资本开支回报受质疑，半导体领跌"],
     supports: ["vix_high", "credit_stress", "carry_unwind", "breadth_down", "gold_bid"], contradicts: ["spx_above_50", "vix_low", "breadth_up"],
     dirs: { SPX: "↓", NDX: "↓", RUT: "↓", TLT: "↑", DXY: "↕", "黄金": "↑", BTC: "↓" },
     expressions: ["SPY/QQQ 看跌借方价差，小仓；VIX 已高时不追买 put（IV 贵，cost 规则）", "现金也是仓位：先减仓、不开新多（mentor-discipline #12）", "触发 HYG 背离 / carry unwind 警报当天 NO_TRADE，等收盘确认"],
