@@ -1,5 +1,5 @@
 /**
- * 入场前计划卡: npm run card -- --sym NVDA --dir bear [--structure put_spread] [--legs "+210P,-200P"] --exp 2026-10-23
+ * 入场前计划卡: npm run card -- --sym SPY --dir bear [--structure put_spread] [--legs "+580P,-570P"] --exp 2026-10-23
  *   [--thesis "因为…所以…"] [--invalidation "收盘站上 225"] [--save] [--out data/out/card-<sym>.md (latest copy; kept: <journal>/cards/<id>.md/.json)]
  *   confidence: [--confidence low|medium|high|highest] [--tech-entry] → per-trade cap 0.5–2% of live paper equity (high/highest need macro + scenario plan + technical entry aligned)
  *   stock long: --structure long_stock [--shares 100] → protection / covered-call reminder in a sideways or junk phase (info only)

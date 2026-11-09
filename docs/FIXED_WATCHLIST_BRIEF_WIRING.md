@@ -30,3 +30,8 @@ Exact ETF create/redeem net-flow vendors; single-stock research.
 - Vote (1d, ±0.3pp dead-band): SMH vs XLU · XLY vs XLP · avg(RSP, IWM) − SPY · HYG − avg(TLT, GLD). 进攻 ≥ 防守 + 2 → 偏进攻; mirror → 偏防守; else 混乱并列; < 2 comparable pairs → 数据不足.
 - 成交量确认: yahooDaily OHLCV for SPY / QQQ, last bar vs 20-day average (≥1.2× 放量, ≤0.8× 缩量); missing → 数据不足. Aux = SPY GEX sign only when §5 GEX fetched.
 - `buildBrief` always renders both sections after §1.3 / 死猫 and before `## 2. 警报`; missing/empty lines → empty-data render (headings + 数据不足). Display only; verdict unchanged.
+
+## Daily universe (宏观钉死 2026-11-06)
+- Operational source of truth: `data/in/watchlist.json` = the 35 names in the knowledge file (committed copy + fallback: `FIXED_UNIVERSE` in `src/macro/universe.ts`, `loadUniverse()`).
+- Robinhood personal watchlists (自选) never override it; no code path writes the file.
+- `chains --need` / bars routine / `volume` / `earnings --need` defaults all read that file. No default mega-caps; individual names only via mentor / event-followup / thesis (journal, pending cards).

@@ -8,7 +8,7 @@
 
 Technicals are for timing only. Update this file after every task.
 
-_Last updated 2026-11-05 ET (catch-up through 11-04: dated daily new-risk cap 2%→10%, ECI calendar, option-chain/bars freshness, card order block + reservation, flatten/execute paper CLIs, data/journal persistence)._
+_Last updated 2026-11-06 ET (宏观钉死: daily universe pinned to the fixed 35-name list; previously: catch-up through 11-04 — dated daily new-risk cap 2%→10%, ECI calendar, option-chain/bars freshness, card order block + reservation, flatten/execute paper CLIs, data/journal persistence)._
 
 **Delivery is handled:** the 30-minute weekday routine `alpha-2` (08:00–18:30 ET) runs the alerts and messages the user, starting 2026-10-15. The CPI lag on 10/14 happened only because routines had not started yet.
 
@@ -312,3 +312,10 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 ## 2026-11-04 — bars routine (QA C4/C7)
 - Routine fetches daily bars for ALL symbols from `npm run -s chains -- --need` (not just SPY/QQQ/IWM) → data/in/<SYM>-bars.json; refetch anything not ✅ after `--build`.
 - `chains --build` prints summarized build errors + raw stale; GLDM excluded; Yahoo bars fallback warns (src/adapters/bars.ts, src/options/freshness.ts). docs/ROUTINE_CHAINS.md updated. Commit d37cca4. Tests: test/bars.test.ts, test/chainfresh.test.ts.
+
+## 2026-11-06 — 宏观钉死: fixed 35-name universe
+- src/macro/universe.ts: `FIXED_UNIVERSE` (35 names, LEN the only stock) + `loadUniverse(dir)` = data/in/watchlist.json, else FIXED_UNIVERSE. Read-only; no Robinhood 自选 sync, RH personal watchlists never override.
+- volume / earnings / chains `--need` (→ bars routine) all read the universe; mega-cap `DEFAULT_WATCHLIST` removed (now = FIXED_UNIVERSE). Earnings ETF exclusion covers every universe ETF → `--need` = LEN + journal + pending-card names.
+- Trade plan stays ETF-default (SPY/QQQ/IWM/TLT) with a visible policy line (个股只在导师/事件跟踪/明确论点时单独开卡); NO_TRADE and qualification unchanged. card.ts example `--sym SPY`; brief GEX fallback SPY/QQQ/IWM/SMH (config/gex.json untouched).
+- Tests: test/universe.test.ts.
+- Next: if the 35 names change, update the knowledge list, `FIXED_UNIVERSE` and local data/in/watchlist.json together; do not restore RH 自选 sync.

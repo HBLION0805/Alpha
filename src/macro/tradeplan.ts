@@ -3,12 +3,15 @@
  * Only these planned triggers may be entered intraday. Each candidate: trigger, direction + defined-risk structure,
  * entry zone, stop/invalidation, size (≤1%), trend-confirmation score (bonds / USD / oil / flows agreeing).
  * A candidate qualifies only with ≥3 of 4 confirmations. None qualifying → NO_TRADE with the reason.
+ * Default candidates are index/rates ETFs only (MAP: SPY/QQQ/IWM/TLT). Individual stocks get their own card only via mentor /
+ * event-followup / explicit thesis (`npm run card -- --sym …`) — never a default mega-cap scan (宏观钉死 2026-11-06).
  */
 import type { Obs } from "./fetch.ts";
 import type { RefLevels } from "../levels.ts";
 import { SCENARIOS, type ScenarioId } from "./scenarios.ts";
 
 export const PLAN_RULE = "规则：盘中只允许执行这里事先写好的触发条件；没写的、没触发的，一律不做（纪律 #07 不追；NO_TRADE 是合法结果）。";
+export const PLAN_UNIVERSE_NOTE = "默认候选只用指数/板块 ETF（SPY/QQQ/IWM/TLT）；个股只在导师/事件跟踪/明确论点时单独开卡（默认不做 mega-cap）。";
 const MAP: Array<[string, string]> = [["SPY", "SPX"], ["QQQ", "NDX"], ["IWM", "RUT"], ["TLT", "TLT"]];
 export interface Candidate {
   ticker: string; side: "long" | "short"; structure: string; trigger: string; entryZone: [number, number]; stop: string; invalidation: string;
@@ -49,7 +52,7 @@ export function buildTradePlan(i: PlanInput): { candidates: Candidate[]; qualifi
     cands.push(c);
   }
   const q = cands.filter((c) => c.qualifies);
-  const L: string[] = [PLAN_RULE, ""];
+  const L: string[] = [PLAN_RULE, PLAN_UNIVERSE_NOTE, ""];
   if (i.verdict === "NO_TRADE") L.push(`**当前结论 NO_TRADE。** 下列候选只在这些条件全部解除后才有效：`, ...i.noTrade.map((n) => `- ${n}`), "");
   if (!sc) L.push("**NO_TRADE：没有单一领先情景（信号并列）→ 方向不清，今天没有计划内触发。**");
   else if (!q.length) L.push(`**NO_TRADE：领先情景「${sc.name}」下没有候选通过趋势确认（≥3/4）。**`, ...cands.map((c) => `- ${c.ticker} ${c.side === "long" ? "多" : "空"}：${c.why}（${c.confirm.factors.map((f) => `${f.name} ${f.agree == null ? "n/a" : f.agree ? "✓" : "✗"}`).join("，")}）`));

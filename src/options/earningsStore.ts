@@ -5,6 +5,7 @@
  */
 import { existsSync, readFileSync } from "node:fs";
 import { parseEarnings } from "./events.ts";
+import { FIXED_UNIVERSE, UNIVERSE_STOCKS } from "../macro/universe.ts";
 
 export interface EarningsRow { symbol: string; date: string; timing: string | null; confirmed: boolean | null; source: string }
 export interface EarningsBook { rows: EarningsRow[]; fetchedAt: string | null; covered: Set<string> }
@@ -48,7 +49,8 @@ export function loadEarningsBook(dir = "data/in"): EarningsBook {
   return { rows, fetchedAt: bs?.fetchedAt ?? null, covered: new Set([...Object.keys(bs?.bySymbol ?? {}).map((s) => s.toUpperCase()), ...cal.map((c) => c.symbol)]) };
 }
 
-const ETF = new Set(["SPY", "QQQ", "IWM", "DIA", "SMH", "SOXX", "HYG", "TLT", "IEF", "GLD", "GDX", "USO", "BNO", "UUP", "IBIT", "XLP", "VIX", "DRAM"]);
+// every FIXED_UNIVERSE ETF (all but LEN) + legacy extras kept for back-compat
+const ETF = new Set([...FIXED_UNIVERSE.filter((s) => !UNIVERSE_STOCKS.includes(s)), "SOXX", "GDX", "BNO", "IBIT", "VIX", "DRAM"]);
 /** Symbols that need a per-symbol lookup: watchlist + journal + pending cards, minus ETFs/indexes. */
 export function symbolsNeedingEarnings(syms: string[]): string[] {
   return [...new Set(syms.map((s) => s.toUpperCase()).filter((s) => s && !ETF.has(s)))].sort();
