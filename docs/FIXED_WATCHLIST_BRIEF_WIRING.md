@@ -31,7 +31,14 @@ Exact ETF create/redeem net-flow vendors; single-stock research.
 - 成交量确认: yahooDaily OHLCV for SPY / QQQ, last bar vs 20-day average (≥1.2× 放量, ≤0.8× 缩量); missing → 数据不足. Aux = SPY GEX sign only when §5 GEX fetched.
 - `buildBrief` always renders both sections after §1.3 / 死猫 and before `## 2. 警报`; missing/empty lines → empty-data render (headings + 数据不足). Display only; verdict unchanged.
 
+## Semantics (2026-11-09)
+- CLI path is `assembleBriefWatch` in `src/macro/briefWatch.ts`, called from `src/cli/brief.ts` (not only `buildFixedWatchlist` unit tests).
+- Each symbol line carries `source` / `asOf` / `session` / `stale`. One shared "最新日线" date is not used.
+- OAS is passed only from macro `HYOAS` stats. Missing or stale → 不写信用利差扩大. Widening text requires chg20 > 30bp and stale=false.
+- Volume line says 放量 only from OHLCV `relVolume`. Missing bars say 数据不足 and do not say 放量.
+- HYG vs TLT/GLD drops to a non-scoring note when SHY/yields show a duration move, or when that rate proxy is missing.
+
 ## Daily universe (宏观钉死 2026-11-06)
-- Operational source of truth: `data/in/watchlist.json` = the 35 names in the knowledge file (committed copy + fallback: `FIXED_UNIVERSE` in `src/macro/universe.ts`, `loadUniverse()`).
+- Operational source of truth: `FIXED_UNIVERSE`. `loadUniverse()` uses `data/in/watchlist.json` only when it matches that list exactly; drift warns and is ignored.
 - Robinhood personal watchlists (自选) never override it; no code path writes the file.
 - `chains --need` / bars routine / `volume` / `earnings --need` defaults all read that file. No default mega-caps; individual names only via mentor / event-followup / thesis (journal, pending cards).

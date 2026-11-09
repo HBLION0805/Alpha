@@ -18,7 +18,7 @@ Data: Yahoo daily closes already in the brief — WTI = **front-month contract**
 | up | otherwise, SPX < −0.5% OR VIX > +5% | 偏供应冲击 / 经济负担 → adds 承压板块: 航空（JETS）、可选消费（XLY） |
 | up | otherwise | 无法判断 |
 | down | SPX > +0.5% AND VIX ≤ 0 | 偏供应缓解（缓解通胀） |
-| down | SPX < −0.5% AND copper < −1% | 偏需求走弱（衰退迹象） |
+| down | SPX < −0.5% AND copper < −1% | 偏需求走弱（油、股、铜同跌；不是单凭油价，也不是已确认的衰退） |
 | down | otherwise | 无法判断 |
 Missing copper never gets filled in: the demand and demand-weakness cases need it, so without copper they fall to 无法判断 (the row shows 「铜 HG 数据不可用」). Missing WTI or SPX → 无法判断（缺数据）.
 

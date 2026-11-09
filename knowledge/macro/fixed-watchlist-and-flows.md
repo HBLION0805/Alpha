@@ -29,8 +29,7 @@ Page: 宏观板块关联图 (correlations + scenarios + fund-flow section).
 35 tradeable symbols only (no VIX/DXY/CL/BZ futures — those stay in brief/market data via proxies UUP / USO·UCO / VIX series):
 SPY QQQ IWM DIA RSP · TLT IEF SHY UUP HYG LQD · USO UCO GLD GLDM CPER · SMH XLK XLE XLF XLI XLB XLY XLP XLV XLU XLRE XLC IYT JETS · EWY FXI KWEB LEN KRE.
 
-Operational universe = `data/in/watchlist.json` = this list (local file; `data/` is gitignored, so the committed copy is `FIXED_UNIVERSE` in `src/macro/universe.ts`, which is also the fallback when the file is missing). volume / earnings / chains `--need` / bars all read it.
-The daily routine must NOT rewrite `watchlist.json` from Robinhood personal watchlists (`get_watchlists` / RH 自选). If the file ever drifts, restore it from this list — never from RH 自选. No default mega-cap scan (NVDA/AAPL/MSFT/AMZN/GOOGL/META/AVGO/TSLA); individual names only via mentor / event-followup / explicit thesis.
+Operational universe = `FIXED_UNIVERSE` in `src/macro/universe.ts` (this list, this order). `data/in/watchlist.json` is local and gitignored: `loadUniverse()` accepts it only when it matches exactly. A missing file falls back to the fixed list. A drifted file — including anything written from Robinhood personal watchlists (`get_watchlists` / RH 自选) — warns on stderr and does **not** override. The routine must not rewrite the file from RH 自选. No default mega-cap scan (NVDA/AAPL/MSFT/AMZN/GOOGL/META/AVGO/TSLA); individual names only via mentor / event-followup / explicit thesis.
 
 ## Alpha 宏观辅佐定位（2026-11-06）
 

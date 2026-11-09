@@ -1,7 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { FIXED_UNIVERSE, UNIVERSE_STOCKS, loadUniverse } from "../src/macro/universe.ts";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { FIXED_UNIVERSE, UNIVERSE_STOCKS, loadUniverse, readUniverse } from "../src/macro/universe.ts";
 import { DEFAULT_WATCHLIST } from "../src/macro/volume.ts";
 import { symbolsNeedingEarnings } from "../src/options/earningsStore.ts";
 import { chainRefreshSymbols } from "../src/options/freshness.ts";
@@ -59,6 +61,25 @@ test("universe: trade plan stays ETF-default and states the policy line", () => 
   assert.match(PLAN_UNIVERSE_NOTE, /个股只在导师\/事件跟踪\/明确论点时单独开卡/);
   const none = buildTradePlan({ leader: null, verdict: "NO_TRADE", noTrade: ["x"], levels: {}, data: {}, bars5d: {} });
   assert.ok(none.lines.includes(PLAN_UNIVERSE_NOTE));
+});
+
+test("universe: a drifted watchlist.json does not override the fixed 35", () => {
+  const dir = join(tmpdir(), `alpha-univ-${Date.now()}`);
+  mkdirSync(dir, { recursive: true });
+  try {
+    writeFileSync(join(dir, "watchlist.json"), JSON.stringify(["NVDA", "AAPL", "SPY"]));
+    const report = readUniverse(dir);
+    assert.equal(report.file, "drift");
+    assert.match(report.warning ?? "", /不覆盖/);
+    assert.deepEqual(report.symbols, NAMES);
+    const errs: string[] = [];
+    const orig = console.error;
+    console.error = (...a: unknown[]) => { errs.push(a.map(String).join(" ")); };
+    try { assert.deepEqual(loadUniverse(dir), NAMES); }
+    finally { console.error = orig; }
+    assert.match(errs.join("\n"), /NVDA/);
+    assert.ok(!NAMES.includes("NVDA"));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
 test("universe: src never writes watchlist.json; routine docs forbid RH override", () => {

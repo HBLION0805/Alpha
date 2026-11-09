@@ -54,7 +54,8 @@ import { briefArchivePath } from "../macro/briefArchive.ts";
 import { paperGate, renderGate } from "../macro/paperGate.ts";
 import { journalPath } from "../storage/paths.ts";
 import { savePlanDay } from "../storage/plans.ts";
-import { FW_EXTRA_SERIES, buildFixedWatchlist, type VolBar } from "../macro/fixedWatchlist.ts";
+import { FW_EXTRA_SERIES, type VolBar } from "../macro/fixedWatchlist.ts";
+import { assembleBriefWatch } from "../macro/briefWatch.ts";
 
 const { values } = parseArgs({ options: { out: { type: "string", default: "data/out/brief-latest.md" }, offline: { type: "boolean" }, "no-alarms": { type: "boolean" }, "no-gex": { type: "boolean" }, tickers: { type: "string", default: process.env.ALPHA_LEVEL_TICKERS ?? "SPY,QQQ,IWM" } } });
 const now = new Date();
@@ -234,7 +235,7 @@ if (!values.offline) {
   await Promise.all(["SPY", "QQQ"].map(async (t) => { try { fwVol[t] = await yahooDaily(t, 60); } catch (e) { failed[`watchlist volume ${t}`] = (e as Error).message; } }));
 }
 const gexSpy = gex.find((g) => g.symbol === "SPY" && g.ok) as { net: number } | undefined;
-const fw = buildFixedWatchlist({ ...fwData, ...dcData, ...data }, { volume: fwVol, aux: gexSpy ? `SPY dealer GEX ${gexSpy.net >= 0 ? "为正（做市商正 gamma，波动倾向被压制）" : "为负（做市商负 gamma，波动易放大）"}（§5 GEX，CBOE 延迟报价）` : null });
+const fw = assembleBriefWatch({ ...fwData, ...dcData, ...data }, { now, volume: fwVol, aux: gexSpy ? `SPY dealer GEX ${gexSpy.net >= 0 ? "为正（做市商正 gamma，波动倾向被压制）" : "为负（做市商负 gamma，波动易放大）"}（§5 GEX，CBOE 延迟报价）` : null, oas: macro.stats.HYOAS });
 const res = buildBrief({ mentorSignalLines: renderMentorSignals(msig), gateLines: [...renderGate(gate), ...gateIdLine], ratesLines: rLines, followupLines: followupLines(fu.followups, loadFollowupInputs(), now), geo: { reminder: geoReminderLines(geoF.events, now), calendar: geoCalendarLines(geoF.events, now) }, mentor, liquidityLines, sleepLines: sleep.lines, now, macro, pm, sc, levelsMd, planLines: [...plan.lines, ...planIdLines, ...(scenarioLines.length ? ["", "#### 情景推演（持仓，只显示）", "", ...scenarioLines] : [])], matrixLines: renderMatrix(mx, sc.leader), deadCatLines: dc.lines, fixedWatchLines: fw.watchLines, fundFlowLines: fw.flowLines, gexLines: gex.length ? renderGex(gex) : undefined, calendar, failed });
 // 4) alarms into the 30-min alert flow (deduped by guid/url)
 if (!values["no-alarms"]) {

@@ -55,7 +55,7 @@ const f = (x: number | null, d = 2) => (x == null ? "n/a" : `${x > 0 ? "+" : ""}
 const lastDate = (o?: Obs[]) => o?.at(-1)?.t.slice(0, 10) ?? null;
 
 export type Driver = "demand" | "supply_shock" | "supply_relief" | "demand_weak" | "unclear" | "small_move" | "no_data";
-export const DRIVER_ZH: Record<Driver, string> = { demand: "偏需求（经济较强）", supply_shock: "偏供应冲击 / 经济负担", supply_relief: "偏供应缓解（缓解通胀）", demand_weak: "偏需求走弱（衰退迹象）", unclear: "无法判断", small_move: "变化不大，不判断", no_data: "无法判断（缺数据）" };
+export const DRIVER_ZH: Record<Driver, string> = { demand: "偏需求（经济较强）", supply_shock: "偏供应冲击 / 经济负担", supply_relief: "偏供应缓解（缓解通胀）", demand_weak: "偏需求走弱（油、股、铜同跌，不是单凭油价，也不是已确认的衰退）", unclear: "无法判断", small_move: "变化不大，不判断", no_data: "无法判断（缺数据）" };
 export interface OilSpeed { id: "WTI" | "BRENT"; d1: number | null; d5: number | null; fast: boolean }
 export interface OilVixResult {
   speed: OilSpeed[]; fast: boolean;
@@ -104,6 +104,7 @@ export function buildOilVix(data: Record<string, Obs[]>, same?: Partial<Record<"
   const oil = [
     `- **变化速度**（${dt ?? "n/a"}）：${speed.map((s) => `${s.id === "WTI" ? "WTI" : "Brent"} 1日 ${f(s.d1)} · 5日 ${f(s.d5)}${s.fast ? " ⚡" : ""}`).join("；")} → ${fast ? `⚡ **快速变动**（|1日| ≥ ${OV.fast1dPct}% 或 |5日| ≥ ${OV.fast5dPct}%）` : `不算快（阈值 |1日| ≥ ${OV.fast1dPct}% 或 |5日| ≥ ${OV.fast5dPct}%）`}`,
     `- **驱动判断（启发式，不是结论）**：**${DRIVER_ZH[d.driver]}** — ${d.why}（5日：WTI ${f(d.inputs.oil5)} · 标普 ${f(d.inputs.spx5)} · 铜 HG ${d.inputs.hg5 == null ? "数据不可用" : f(d.inputs.hg5)} · VIX ${f(d.inputs.vix5)}）`,
+    ...(d.inputs.oil5 != null && d.inputs.oil5 < 0 ? ["- 仅油价下跌不能判断需求衰退；需求走弱至少要标普与铜同时走弱，且那仍不是已确认的衰退。"] : []),
     ...(d.driver === "supply_shock" ? ["- **承压板块**：航空（JETS）、可选消费（XLY）——燃油/运输成本挤压利润，加油和日常开支占比上升后可自由消费的钱变少"] : []),
     `- 导师：「${OIL_QUOTE}」 → [premarket-routine/oil-vix-2026-10-18.md](${PM_FILE})`,
   ];

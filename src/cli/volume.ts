@@ -1,4 +1,4 @@
-/** npm run volume [-- --out data/out/volume-latest.md] [--no-alarms]. Symbols: data/in/watchlist.json (fixed 35-name universe, array or {symbols}; missing → FIXED_UNIVERSE). No mega-cap defaults; RH 自选 never overrides. Chains: data/in/*-chain.json
+/** npm run volume [-- --out data/out/volume-latest.md] [--no-alarms]. Symbols: fixed 35 (data/in/watchlist.json must match; drift warns and does not override). No mega-cap defaults; RH 自选 never overrides. Chains: data/in/*-chain.json
  * (expired contracts dropped; chains >1 trading day old labelled 过时, no alarms). Also writes volume-latest.json with per-chain freshness. */
 import { writeFileSync, renameSync, mkdirSync, readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname } from "node:path";

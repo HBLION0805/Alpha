@@ -1,8 +1,14 @@
 # Standing decisions (memory-like notes)
 
+## 2026-11-09 — brief data semantics (display only)
+- Fixed 35 stays the only universe. `readUniverse()` warns and ignores a `watchlist.json` that is not an exact match; nothing writes that file.
+- 【资金流】stays 偏进攻 / 偏防守 / 混乱并列 (or 数据不足). Relative price is not create/redeem flow. No OAS → the brief does not say credit spreads widened. No volume → it does not say 放量. TLT vs SHY (or a 10Y move) can zero the HYG vote as duration, not risk appetite.
+- Quotes in the fixed list and the KOSPI vs US block carry source/asOf/session/stale. KOSPI and US listings are not one timestamp. A weekend rerun of Friday's VIX backwardation keeps the alarm (NO_TRADE unchanged) but the alert URL/guid stays on the bar date, and the text says it is not a new realtime event.
+- Oil down alone is not a demand recession. NO_TRADE, risk caps and readiness thresholds are unchanged.
+
 ## 2026-11-06 — 宏观钉死: daily universe = fixed 35-name macro list
-- `data/in/watchlist.json` = the 35 names in `knowledge/macro/fixed-watchlist-and-flows.md` (committed copy: `FIXED_UNIVERSE`, src/macro/universe.ts; fallback when the file is missing).
-- Robinhood personal watchlists / 自选 never overwrite it. volume / earnings / chains `--need` / bars all read it; the old mega-cap `DEFAULT_WATCHLIST` is gone.
+- The 35 names in `knowledge/macro/fixed-watchlist-and-flows.md` are `FIXED_UNIVERSE` (src/macro/universe.ts). `data/in/watchlist.json` must match; it is not a second source.
+- Robinhood personal watchlists / 自选 never overwrite it. volume / earnings / chains `--need` / bars all read the fixed list; the old mega-cap `DEFAULT_WATCHLIST` is gone.
 - Trade plan stays ETF-default (SPY/QQQ/IWM/TLT). Individual stocks only via mentor / event-followup / explicit thesis cards — never a default mega-cap scan. NO_TRADE / risk caps unchanged.
 
 ## 2026-10-19 — 大佬 market dailies: key levels as dated data, display only

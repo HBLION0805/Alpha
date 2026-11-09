@@ -8,7 +8,7 @@
 
 Technicals are for timing only. Update this file after every task.
 
-_Last updated 2026-11-06 ET (宏观钉死: daily universe pinned to the fixed 35-name list; previously: catch-up through 11-04 — dated daily new-risk cap 2%→10%, ECI calendar, option-chain/bars freshness, card order block + reservation, flatten/execute paper CLIs, data/journal persistence)._
+_Last updated 2026-11-09 ET (brief data semantics: quote stamps, weekend VIX not a new event, KOSPI vs US not one timestamp, no OAS/volume invention, duration note. Universe drift no longer overrides. Previously 2026-11-06 宏观钉死)._
 
 **Delivery is handled:** the 30-minute weekday routine `alpha-2` (08:00–18:30 ET) runs the alerts and messages the user, starting 2026-10-15. The CPI lag on 10/14 happened only because routines had not started yet.
 
@@ -313,8 +313,16 @@ Saved verbatim: `knowledge/mentor/reviews/winrate-drop-review.md` and `defensive
 - Routine fetches daily bars for ALL symbols from `npm run -s chains -- --need` (not just SPY/QQQ/IWM) → data/in/<SYM>-bars.json; refetch anything not ✅ after `--build`.
 - `chains --build` prints summarized build errors + raw stale; GLDM excluded; Yahoo bars fallback warns (src/adapters/bars.ts, src/options/freshness.ts). docs/ROUTINE_CHAINS.md updated. Commit d37cca4. Tests: test/bars.test.ts, test/chainfresh.test.ts.
 
+## 2026-11-09 — brief data semantics (display only)
+- `src/macro/quoteMeta.ts` stamps source/asOf/session/stale. 【宏观盯盘】no longer uses one max date for every symbol. KOSPI (韩国现金) is not averaged with EWY and is not treated as the same instant as SMH/SOX.
+- Weekend/holiday rerun: Friday VIX/VIX3M backwardation still raises the existing alarm (NO_TRADE rules unchanged) but `alarmItems` keys url/guid to the bar date and the line says it is not a new realtime event. Misaligned VIX vs VIX3M dates do not fire the alarm.
+- 【资金流】via `assembleBriefWatch` (the CLI seam): SMH/XLE/XLF/XLU stay a relative-price ranking; HYG vs TLT/GLD is not scored when duration (SHY or 10Y) explains TLT, or when that proxy is missing. Missing OAS does not say spreads widened. Missing volume does not say 放量.
+- Oil down alone is not a demand-recession call (`oilvix.ts` / `oil.ts` wording). Risk caps, readiness thresholds and `briefVerdict` are unchanged.
+- `readUniverse`: drifted `data/in/watchlist.json` warns and does not replace `FIXED_UNIVERSE`.
+- Follow-up, not changed: weekly review vs readiness dashboard counts, and unrealized P&L. `renderReview` 「正式 n/30」counts all-time closed formal trades (`kind !== practice` and `closedAt`). The readiness dashboard 「正式单」also includes open formal trades, and neither number is "how many rows I counted in this week's 逐笔". Unrealized in the weekly review is the last mark's pnl, and a missing mark adds 0 — that is not a broker mark (a hand total such as +1.7 can differ). Do not change readiness / review / journal rules to reconcile 7 vs 11 or 0 vs +1.7 until the journal rows are compared on purpose.
+
 ## 2026-11-06 — 宏观钉死: fixed 35-name universe
-- src/macro/universe.ts: `FIXED_UNIVERSE` (35 names, LEN the only stock) + `loadUniverse(dir)` = data/in/watchlist.json, else FIXED_UNIVERSE. Read-only; no Robinhood 自选 sync, RH personal watchlists never override.
+- src/macro/universe.ts: `FIXED_UNIVERSE` (35 names, LEN the only stock). `loadUniverse(dir)` uses watchlist.json only on an exact match; otherwise FIXED_UNIVERSE. Read-only; no Robinhood 自选 sync. (2026-11-09: drift warns and does not override.)
 - volume / earnings / chains `--need` (→ bars routine) all read the universe; mega-cap `DEFAULT_WATCHLIST` removed (now = FIXED_UNIVERSE). Earnings ETF exclusion covers every universe ETF → `--need` = LEN + journal + pending-card names.
 - Trade plan stays ETF-default (SPY/QQQ/IWM/TLT) with a visible policy line (个股只在导师/事件跟踪/明确论点时单独开卡); NO_TRADE and qualification unchanged. card.ts example `--sym SPY`; brief GEX fallback SPY/QQQ/IWM/SMH (config/gex.json untouched).
 - Tests: test/universe.test.ts.
