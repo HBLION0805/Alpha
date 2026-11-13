@@ -54,7 +54,7 @@ export function classifyAxes(st: Record<string, SeriesStats | undefined>): Axis[
   const two = st.UST2Y;
   if (two?.chg20 != null) {
     const c = two.chg20;
-    axes.push({ id: "rates", label: c > T.rates20bp ? "RISING" : c < -T.rates20bp ? "FALLING" : "FLAT", evidence: `2Y ${two.last}% (${fmt(two.chg1, "bp")} 1d, ${fmt(two.chg5, "bp")} 5d, ${fmt(c, "bp")} 20d, z ${two.z20})`, stats: [pick(two)] });
+    axes.push({ id: "rates", label: c > T.rates20bp ? "RISING" : c < -T.rates20bp ? "FALLING" : "FLAT", evidence: `2Y ${two.last}% asOf ${two.lastDate} (${fmt(two.chg1, "bp")} last obs, ${fmt(two.chg5, "bp")} 5d, ${fmt(c, "bp")} 20d, z ${two.z20})`, stats: [pick(two)] });
   } else axes.push(miss("rates", "2Y yield unavailable"));
 
   const ff = st.FEDFUNDS;

@@ -5,7 +5,7 @@
  *         心理 (warn only, src/options/psych.ts): [--confirm "确认信号"] (adding to a losing position) [--target 95] (Put 目标价); 72h rule reads data/in/earnings*.json + data/in/major-events.json (fallback: knowledge/calendar/major-events-2026-2027.json)
  *         --hedge built_in_spread|direct|portfolio --hedge-detail "…" [--stop-pct 7 (stocks)] [--kind formal|practice] (default formal: needs --plan-id from brief §2.1 or the §2.0 gate card)
  *         (唱反调 critique printed first; BLOCK refuses, WARNs need --ack; the critique is saved in the entry)
- *   mark  [--quotes data/in/x-chain.json ...]   (Robinhood chain JSON when present, else Yahoo spot + Black-Scholes)
+ *   mark  [--quotes data/in/x-chain.json ...]   (option legs: Robinhood chain JSON when present, else Black-Scholes; stock legs + BS spot: Yahoo live/daily, never a stale chain underlyingPrice)
  *   close --id P001 --exit-kind invalidation|time_stop|take_profit|max_loss|discretionary [--pnl N] [--commissions N]
  *         [--error-class judgment|execution|risk|variance --error-tags a,b] [--violations chasing,...] [--lesson "…"]
  *   list
@@ -22,7 +22,7 @@ import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 import { writePostMortem, mentorCompare } from "../options/postmortem.ts";
 import { capFlags } from "../options/breach.ts";
-import { chainsFromQuotes, upsertMark } from "../options/paper.ts";
+import { chainsFromQuotes, upsertMark, stockSpot, markStaleLine, type SpotQuote } from "../options/paper.ts";
 import { settleable, expireEntry, weekendRule, isAm } from "../options/expire.ts";
 import { checkTakeProfit, costBasis } from "../options/tpplan.ts";
 const etDate = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
@@ -30,13 +30,13 @@ import { reservedRiskUsd } from "../review/orderBlock.ts";
 import { paperOpen, paperMark, paperClose, openPaper, type PaperJournal } from "../options/paper.ts";
 import { parseChain, type Chain } from "../options/chain.ts";
 import { unwrapJson } from "../options/robinhood.ts";
-import { yahooDaily } from "../adapters/yahoo.ts";
+import { yahooDaily, yahooQuote } from "../adapters/yahoo.ts";
 import { readiness } from "../options/readiness.ts";
 import { renderRiskPlan, stopHits } from "../options/riskplan.ts";
 import { critique, renderCritique, proposalSide } from "../review/critique.ts";
 import type { Proposal } from "../options/pretrade.ts";
 import type { Motive } from "../options/discipline.ts";
-import { normalizeJournalLegs, type JournalEntry } from "../options/journal.ts";
+import { normalizeJournalLegs, normalizedLegs, type JournalEntry } from "../options/journal.ts";
 import { autoSins, sinsOf, SINS, SIN_IDS, type SinId } from "../options/sins.ts";
 import { SECTOR_OF, BROAD_ETFS } from "../options/shortside.ts";
 import { loadEarningsBook } from "../options/earningsStore.ts";
@@ -132,14 +132,16 @@ if (cmd === "open") {
     const raw = await fetchCboeRaw(u), ch = raw.json ? chainFromCboe(u, raw.json) : null;
     if (ch) { chains.push(ch); process.stdout.write(`[paper] ${u} 期权用 CBOE 延迟报价（${ch.asOf} UTC）\n`); } else process.stdout.write(`⚠️ ${u} CBOE 报价不可用：${raw.error ?? "空"}\n`);
   }
-  const cache = new Map<string, number | null>();
-  const spot = async (s: string) => { if (!cache.has(s)) { const ch = chains.find((c) => c.symbol === s); cache.set(s, ch?.underlyingPrice ?? (await yahooDaily(s, 10).catch(() => [])).at(-1)?.c ?? null); } return cache.get(s)!; };
+  // stock price: Yahoo live quote / latest daily bar (never a chain's underlyingPrice — chains go stale when not refreshed); paperMark uses a chain spot for option BS only when the chain is fresh
+  const cache = new Map<string, Promise<SpotQuote | null>>();
+  const spot = (s: string) => { if (!cache.has(s)) cache.set(s, stockSpot(s, { live: (x) => yahooQuote(x), daily: (x) => yahooDaily(x, 10), now })); return cache.get(s)!; };
   // simulated positions + open real_practice records (marked for review only; never in caps/readiness)
   const toMark = [...openPaper(j), ...j.entries.filter((e) => e.source === "real_practice" && !e.closedAt && (e.legs ?? []).every((l) => l.premium != null))];
   for (const e of toMark) {
     try { const m = await paperMark(e, { spot, chains }, now); upsertMark(e, m); process.stdout.write(`${e.id} ${e.symbol}: P&L $${m.pnl}${m.estimated ? "（估算）" : ""} (${((m.pnl / (e.capitalAtEntry ?? j.capital)) * 100).toFixed(2)}%) · ${m.sources.join("; ")}\n`);
+      const sl = markStaleLine(e, m, now); if (sl) process.stdout.write(sl + "\n");
       for (const s of stopHits(e.riskPlan, m, etDate(now))) process.stdout.write(`🛑 ${e.id} ${e.symbol}: ${s} → 先触发的止损执行\n`);
-      for (const h of checkTakeProfit(e.takeProfit, costBasis(e.legs ?? []), m.pnl, etDate(now), e.tpHits)) { (e.tpHits ??= []).push(h.gainPct); process.stdout.write(`⚠️ ${e.id} ${e.symbol}: ${h.text}\n`); } }
+      for (const h of checkTakeProfit(e.takeProfit, costBasis(normalizedLegs(e)), m.pnl, etDate(now), e.tpHits)) { (e.tpHits ??= []).push(h.gainPct); process.stdout.write(`⚠️ ${e.id} ${e.symbol}: ${h.text}\n`); } }
     catch (err) { process.stdout.write(`${e.id} ${e.symbol}: 无法估值 ${(err as Error).message}\n`); }
   }
   for (const f of capFlags(j.entries, j.capital, now)) process.stdout.write(f + "\n");

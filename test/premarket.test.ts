@@ -35,7 +35,7 @@ test("alarms: carry unwind, HYG divergence, 10Y spike, VIX backwardation", () =>
   d.HYG = ser([...Array(25).fill(80), 80, 79.8, 79.6, 79.5, 79.4]); // 5d −0.75%
   d.RUT = ramp(100, 90);                                        // lagging
   d.VIX = flat(25); d.VIX3M = flat(22);
-  const r = buildPremarket({ now, data: d });
+  const r = buildPremarket({ now: new Date("2026-10-01T11:30:00Z"), data: d }); // fixture ends 09-30 = last cash session (stale VIX no longer fires)
   const kinds = r.alarms.map((a) => a.kind).sort();
   assert.deepEqual(kinds, ["CARRY_UNWIND", "HYG_DIVERGENCE", "UST10Y_SPIKE", "VIX_BACKWARDATION"]);
   assert.equal(r.alarms.find((a) => a.kind === "VIX_BACKWARDATION")!.by, "dk");
