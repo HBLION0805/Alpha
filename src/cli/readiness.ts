@@ -12,17 +12,20 @@ import { readiness, renderReadiness } from "../options/readiness.ts";
 import type { JournalEntry } from "../options/journal.ts";
 import { buildDashboard, renderDashboard } from "../options/readinessDashboard.ts";
 import { journalPath } from "../storage/paths.ts";
+import { splitUnfilled, unfilledNote } from "../options/unfilled.ts";
 
 const { values } = parseArgs({ options: { journal: { type: "string", default: journalPath("paper.json") }, capital: { type: "string" }, out: { type: "string", default: "data/out/readiness-latest.md" }, json: { type: "boolean", default: false } } });
 const raw = existsSync(values.journal!) ? JSON.parse(readFileSync(values.journal!, "utf8")) : { entries: [] };
-const journal: JournalEntry[] = Array.isArray(raw) ? raw : raw.entries ?? [];
+// Unfilled/resting orders (openedAt null) never opened a position: they don't count toward readiness.
+const { filled: journal, unfilled } = splitUnfilled<JournalEntry>(Array.isArray(raw) ? raw : raw.entries ?? []);
 const capital = Number(values.capital ?? raw.capital ?? defaultCapital());
 
 const shock = loadShockDates(journal.map((e) => e.openedAt.slice(0, 4)));
 
 const r = readiness({ journal, capital, shockDates: [...shock] });
 const dash = buildDashboard(journal, capital);
-const md = renderDashboard(dash) + "\n" + renderReadiness(r);
+const note = unfilledNote(unfilled);
+const md = renderDashboard(dash) + "\n" + renderReadiness(r) + (note ? `\n${note}\n` : "");
 writeFileSync((values.out!).replace(/\.md$/, "") + "-dashboard.json", JSON.stringify(dash, null, 2) + "\n");
 mkdirSync(dirname(values.out!), { recursive: true });
 writeFileSync(values.out!, md);
