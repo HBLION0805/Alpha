@@ -20,6 +20,7 @@ import { psychEntryTags, type PsychCtx } from "./psych.ts";
 import { paperEquity, tradeCap, type Tier } from "./confidence.ts";
 import { planProblems, type ScenarioPlan } from "./scenarioEngine.ts";
 import type { Critique } from "../review/critique.ts";
+import { lastUsCashSession } from "../macro/quoteMeta.ts";
 
 export interface PaperJournal { capital: number; entries: JournalEntry[] }
 export interface OpenArgs { kind?: "formal" | "practice"; hedge?: string; hedgeDetail?: string; stopPct?: number; critique?: Critique; ack?: boolean; thesis?: string; invalidation?: string; stop?: string; motive?: Motive; timeStopAt?: string; tp?: string; cardId?: string; /** other saved cards' reserved risk today (cli/paper.ts, excludes this card) */ reservedUsd?: number; card?: PlanCardRef | null; planId?: string; plan?: import("./planlink.ts").PlanItem[]; side?: "long" | "short"; now: Date; rules?: Partial<RuleCard>;
@@ -177,31 +178,61 @@ export function paperOpen(j: PaperJournal, p: Proposal, a0: OpenArgs): { entry: 
   return { entry, checks, refused };
 }
 
-export interface PriceSource { spot(sym: string): Promise<number | null>; chains: Chain[] }
-/** Robinhood-chain mark (mark, else mid) when the contract is in a saved chain; otherwise Black-Scholes on the
- *  Yahoo spot with the IV implied by the entry fill. Each leg reports its source. */
+/** A stock/ETF price with provenance. asOf = ISO time (live) or YYYY-MM-DD (daily bar); stale = price date < last completed US cash session. */
+export interface SpotQuote { price: number; source: string; asOf: string; stale: boolean }
+/** spot() may return a bare number (tests / callers without provenance) or a SpotQuote. Stock legs NEVER use a chain's underlyingPrice. */
+export interface PriceSource { spot(sym: string): Promise<number | SpotQuote | null>; chains: Chain[] }
+const etDay = (iso: string) => (/^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : new Date(iso).toLocaleDateString("en-CA", { timeZone: "America/New_York" }));
+/** Fresh stock price: Yahoo live quote (v8 chart meta) vs latest Yahoo daily bar, newer ET date wins (live on ties). Fetchers injected. */
+export async function stockSpot(sym: string, f: { live?: (s: string) => Promise<{ price: number; at: string }>; daily?: (s: string) => Promise<Array<{ t: string; c: number }>>; now: Date }): Promise<SpotQuote | null> {
+  const [lv, bars] = await Promise.all([f.live ? f.live(sym).catch(() => null) : null, f.daily ? f.daily(sym).catch(() => []) : []]);
+  const b = bars.filter((x) => Number.isFinite(x.c)).at(-1);
+  const live = lv && Number.isFinite(lv.price) ? { price: lv.price, source: "yahoo-live", asOf: lv.at } : null;
+  const daily = b ? { price: b.c, source: "yahoo-daily", asOf: b.t.slice(0, 10) } : null;
+  const q = live && (!daily || etDay(live.asOf) >= daily.asOf) ? live : daily;
+  return q ? { ...q, stale: etDay(q.asOf) < lastUsCashSession(f.now) } : null;
+}
+/** a chain's underlyingPrice is usable (option BS spot only) when the chain is dated on/after the last completed US cash session */
+export const chainFresh = (ch: Chain | undefined, now: Date) => !!ch && Number.isFinite(ch.underlyingPrice) && !!ch.asOf && etDay(ch.asOf) >= lastUsCashSession(now);
+const quoteOf = (x: number | SpotQuote | null): SpotQuote | null => (x == null ? null : typeof x === "number" ? (Number.isFinite(x) ? { price: x, source: "spot", asOf: "n/a", stale: false } : null) : x);
+const srcText = (q: SpotQuote) => `${q.source} ${q.price}${q.asOf !== "n/a" ? ` @${q.asOf}` : ""}${q.stale ? " ⚠️stale" : ""}`;
+/** Robinhood-chain mark (mark, else mid) when the contract is in a saved chain; otherwise Black-Scholes on a fresh spot
+ *  (fresh chain underlyingPrice, else the stock quote) with the IV implied by the entry fill. Each leg reports its real source. */
 export async function paperMark(e: JournalEntry, src: PriceSource, now: Date): Promise<NonNullable<JournalEntry["marks"]>[number]> {
-  const asOf = now.toISOString().slice(0, 10);
-  const legs = normalizedLegs(e); // stock legs written as { qty, price } → premium/strike (stock: qty × price, multiplier 1)
+  const asOf = now.toISOString().slice(0, 10), session = lastUsCashSession(now);
+  const legs = normalizedLegs(e); // stock legs written as { qty, price } → premium/strike; leg-less qty/entry equity → one stock leg
+  if (!legs.length) throw new Error("no legs (legs 为空且无 qty/entry)");
   if (legs.some((l) => l.premium == null || !Number.isFinite(l.premium))) throw new Error("entry price unknown (backfill from broker orders first)");
-  let value = 0, spot0: number | null = null, estimated = false; const sources: string[] = [];
+  let value = 0, spot0: number | null = null, spot0Q: SpotQuote | null = null, estimated = false, stale = false; const sources: string[] = [];
   for (const l of legs) {
     const u = l.underlying ?? e.symbol;
-    const S = await src.spot(u); if (u === e.symbol) spot0 = S;
-    if (l.type === "stock") { if (S == null) throw new Error(`no spot for ${u}`); value += l.qty * S; sources.push(`${u} stock yahoo`); continue; }
+    const Q = quoteOf(await src.spot(u));
+    if (l.type === "stock") { if (Q == null) throw new Error(`no spot for ${u}`);
+      if (u === e.symbol) { spot0 = Q.price; spot0Q = Q; } stale ||= Q.stale; value += l.qty * Q.price; sources.push(`${u} stock ${srcText(Q)}`); continue; }
     const chU = src.chains.filter((ch) => ch.symbol === u).find((ch) => ch.contracts.some((k) => k.type === l.type && k.strike === l.strike && k.expiration === l.expiration)) ?? src.chains.find((ch) => ch.symbol === u);
     const c = chU?.contracts.find((k) => k.type === l.type && k.strike === l.strike && k.expiration === l.expiration);
     const rh = c ? c.mark ?? (c.bid != null && c.ask != null ? (c.bid + c.ask) / 2 : null) : null;
-    if (rh != null) { value += l.qty * rh * MULT; sources.push(`${u} ${l.strike}${l.type[0]} ${chU?.source === "cboe_delayed" ? "cboe" : "robinhood"} ${rh}`); continue; }
+    const chFresh = src.chains.find((ch) => ch.symbol === u && chainFresh(ch, now));
+    const S: SpotQuote | null = chFresh ? { price: chFresh.underlyingPrice, source: `chain(${chFresh.source ?? "robinhood"})`, asOf: chFresh.asOf, stale: false } : Q;
+    if (u === e.symbol && S && spot0 == null) { spot0 = S.price; spot0Q = S; }
+    if (rh != null) { const old = !!chU?.asOf && etDay(chU.asOf) < session; stale ||= old;
+      value += l.qty * rh * MULT; sources.push(`${u} ${l.strike}${l.type[0]} ${chU?.source === "cboe_delayed" ? "cboe" : "robinhood"} ${rh}${chU?.asOf ? ` @${chU.asOf}` : ""}${old ? " ⚠️stale" : ""}`); continue; }
     if (S == null || !l.expiration) throw new Error(`no price for ${u} ${l.strike}${l.type[0]}`);
+    stale ||= S.stale;
     const T = Math.max(yearFrac(asOf, l.expiration), 0);
-    const ivSrc = legIv(e, l, c?.iv ?? null, S);
-    const px = T > 0 ? bs({ S, K: l.strike, T, sigma: ivSrc.iv, right: l.type }).price : Math.max(0, l.type === "call" ? S - l.strike : l.strike - S);
+    const ivSrc = legIv(e, l, c?.iv ?? null, S.price);
+    const px = T > 0 ? bs({ S: S.price, K: l.strike, T, sigma: ivSrc.iv, right: l.type }).price : Math.max(0, l.type === "call" ? S.price - l.strike : l.strike - S.price);
     estimated = true;
-    value += l.qty * px * MULT; sources.push(`${u} ${l.strike}${l.type[0]} BS估算(yahoo spot ${S}, iv ${ivSrc.iv.toFixed(3)} ${ivSrc.from}) ${px.toFixed(2)}`);
+    value += l.qty * px * MULT; sources.push(`${u} ${l.strike}${l.type[0]} BS估算(${srcText(S)}, iv ${ivSrc.iv.toFixed(3)} ${ivSrc.from}) ${px.toFixed(2)}`);
   }
   const cost = legs.reduce((s, l) => s + l.qty * l.premium * mult(l), 0);
-  return { at: now.toISOString(), value: Math.round(value * 100) / 100, pnl: Math.round((value - cost) * 100) / 100, spot: spot0, sources, estimated };
+  return { at: now.toISOString(), value: Math.round(value * 100) / 100, pnl: Math.round((value - cost) * 100) / 100, spot: spot0, sources, estimated,
+    ...(spot0Q ? { spotSource: spot0Q.source, spotAsOf: spot0Q.asOf } : {}), stale };
+}
+
+/** CLI ⚠️ line when a mark used a price older than the last completed US cash session; null when fresh */
+export function markStaleLine(e: Pick<JournalEntry, "id" | "symbol">, m: NonNullable<JournalEntry["marks"]>[number], now: Date): string | null {
+  return m.stale ? `⚠️ ${e.id} ${e.symbol}: 价格过期（带 ⚠️stale 的来源早于上一美股收盘日 ${lastUsCashSession(now)}；spot ${m.spotSource ?? "?"} asOf=${m.spotAsOf ?? "?"}）→ P&L 不是最新` : null;
 }
 
 /** Sane per-leg IV for the Black-Scholes fallback: quote IV → leg IV → IV implied by a real (≥$0.05) entry premium → 30%.

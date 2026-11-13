@@ -8,13 +8,13 @@
  * volume confirmation needs separate OHLCV bars (yahooDaily `v`). Relative price is not ETF create/redeem flow.
  * HYG vs TLT is not an OAS spread: missing OAS never says 信用利差扩大. A parallel TLT/SHY (or yield) move is duration, not risk appetite.
  * Each symbol is stamped source/asOf/session/stale (quoteMeta.ts). Different sessions are not one timestamp.
- * User 2026-11-08: a 偏进攻 label becomes 混乱并列 when OAS is 利差走阔 (oasWidened) or VIX_BACKWARDATION (vixBackwardationAlarm). 偏防守 and an existing 混乱并列 stay. A missing, stale, or mis-dated leg does not fire.
+ * User 2026-11-08: a 偏进攻 label becomes 混乱并列 when OAS is 利差走阔 (oasWidened) or VIX_BACKWARDATION (vixBackwardationAlarm). 偏防守 and an existing 混乱并列 stay. A missing or stale leg does not fire; VIX/VIX3M with different last dates use the latest common close (vixTerm).
  */
 import type { Obs } from "./fetch.ts";
 import type { SeriesDef } from "./series.ts";
-import { PM_SERIES, vixBackwardationAlarm } from "./premarket.ts";
+import { PM_SERIES, vixBackwardationAlarm, vixTerm, vixTermText } from "./premarket.ts";
 import { etDate, isTradingDay } from "./nyse.ts";
-import { quoteStamp, stampText } from "./quoteMeta.ts";
+import { quoteStamp, stampText, lastUsCashSession } from "./quoteMeta.ts";
 import { T } from "./regime.ts";
 
 export const FW_FILE = "knowledge/macro/fixed-watchlist-and-flows.md";
@@ -110,19 +110,20 @@ function oasLeg(oas: OasReading | null | undefined): { hit: boolean; text: strin
   return { hit: false, text: `OAS 未达走阔（${stamp}），不触发降级` };
 }
 
-/** VIX leg. Same predicate as the VIX_BACKWARDATION alarm. Missing, stale, or different asOf dates do not hit. */
+/** VIX leg. Same rule as the VIX_BACKWARDATION alarm (premarket.ts vixTerm): different last dates → ratio on the latest COMMON close,
+ *  labelled as such, the newer leg shown separately; it may hit only when that date is not older than the last completed US cash session. */
 function vixLeg(data: Record<string, Obs[] | undefined>, now: Date): { hit: boolean; text: string } {
-  const vix = data.VIX, v3 = data.VIX3M;
-  const lv = vix?.at(-1)?.v, l3 = v3?.at(-1)?.v;
-  const qv = quoteStamp("VIX", vix, now), q3 = quoteStamp("VIX3M", v3, now);
-  if (lv == null || l3 == null || !Number.isFinite(lv) || !Number.isFinite(l3) || l3 === 0 || qv.asOf === "n/a" || q3.asOf === "n/a")
+  const t = vixTerm(data.VIX, data.VIX3M, now);
+  const qv = quoteStamp("VIX", data.VIX, now), q3 = quoteStamp("VIX3M", data.VIX3M, now);
+  if (t.vix == null || t.v3 == null || !Number.isFinite(t.vix) || !Number.isFinite(t.v3) || qv.asOf === "n/a" || q3.asOf === "n/a")
     return { hit: false, text: "VIX/VIX3M 数据不足，不触发降级" };
   const stamps = `VIX ${stampText(qv)}；VIX3M ${stampText(q3)}`;
-  if (qv.asOf !== q3.asOf) return { hit: false, text: `VIX/VIX3M 日期错位（${stamps}），数据不足，不触发降级` };
-  if (qv.stale || q3.stale) return { hit: false, text: `VIX/VIX3M 数据不足（stale，${stamps}），不触发降级` };
-  const ratio = lv / l3;
-  if (vixBackwardationAlarm(ratio, true)) return { hit: true, text: `VIX 倒挂 VIX/VIX3M ${ratio.toFixed(3)}（${stamps}）` };
-  return { hit: false, text: `VIX 未倒挂 VIX/VIX3M ${ratio.toFixed(3)}（${stamps}），不触发降级` };
+  if (t.ratio == null) return { hit: false, text: `VIX/VIX3M 日期错位且无共同收盘日（${stamps}），数据不足，不触发降级` };
+  if (!t.usable) return { hit: false, text: t.common ? `VIX/VIX3M 日期错位（stale：最近共同收盘 ${t.date} 早于上一美股收盘 ${lastUsCashSession(now)}；${stamps}），数据不足，不触发降级`
+    : `VIX/VIX3M 数据不足（stale，${stamps}），不触发降级` };
+  const lab = vixTermText(t);
+  if (vixBackwardationAlarm(t.ratio, true)) return { hit: true, text: `VIX 倒挂 ${lab}（${stamps}）` };
+  return { hit: false, text: `VIX 未倒挂 ${lab}（${stamps}），不触发降级` };
 }
 
 export function buildFixedWatchlist(data: Record<string, Obs[] | undefined>, extras: FwExtras = {}): FixedWatchlist {

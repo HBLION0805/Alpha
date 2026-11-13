@@ -19,6 +19,9 @@ Only these read-only tools are used: `get_option_instruments` and `get_option_qu
 
 `scripts/run.sh` then does the rest:
 - **`paper mark`:** one mark per trade per ET day. It warns if the quotes file is >60 min old; missing legs fall back to Black-Scholes, marked 估算.
+  - Stock/ETF legs (2026-11-13): Yahoo live quote (v8 chart meta) or the latest Yahoo daily bar, whichever is newer. Never a chain's `underlyingPrice`: `data/in/*-chain.json` is no longer refreshed daily, and JETS stayed at the 11/10 30.22. Black-Scholes uses a chain spot only when the chain's asOf is on/after the last completed US cash session.
+  - Each leg's source shows the real source + time, e.g. `JETS stock yahoo-live 29.04 @…` or `yahoo-daily 30.22 @2026-11-10 ⚠️stale`. The mark stores `spotSource` / `spotAsOf` / `stale`. When the price is older than the last completed US cash session, `stale=true` and the CLI prints a ⚠️ 价格过期 line.
+  - Leg-less equity entries (`legs` null/[] with numeric top-level `qty` + `entry`, strategy `stock_long|stock_short`, e.g. WEAT) are valued as one stock leg (±qty @ entry). The journal is not migrated. Closed `legs: []` entries with null qty/entry stay leg-less. A position with no legs is reported as 无法估值, not marked $0.
 - **`paper expire`:**
   - Equity/ETF expiries settle at the Yahoo close after 16:00 ET.
   - VIX settles from `settle.json`.

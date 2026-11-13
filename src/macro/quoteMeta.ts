@@ -4,9 +4,11 @@
  * A weekend rerun of Friday's US cash close is not stale (it is the last session) and is also not a new live print;
  * callers say so when the run day is not an NYSE session (nyse.ts).
  * Korea: weekends only. This repo has no KRX holiday table.
+ * FRED daily rates (FRED_DAILY_RATE): stale = older than the previous bond session (T-1, SIFMA Columbus/Veterans Day skipped) — FRED's
+ * H.15 lag then shows an older close, which callers must not label 1日. Weekly/monthly FRED ids: lastUsCashSession − 5 days.
  */
 import type { Obs } from "./fetch.ts";
-import { addDays, etDate, isTradingDay, prevTradingDay } from "./nyse.ts";
+import { addDays, dow, etDate, isTradingDay, prevTradingDay } from "./nyse.ts";
 
 export interface QuoteStamp {
   source: string;
@@ -20,6 +22,8 @@ const FX = new Set(["DXY", "USDCAD", "USDJPY"]);
 const KR = new Set(["KOSPI"]);
 const FRED = new Set(["UST2Y", "UST10Y_FRED", "UST30Y_FRED", "EFFR", "REAL10Y", "HYOAS", "FEDFUNDS", "BE5Y", "BE10Y", "NFCI", "USD_BROAD", "VIX_FRED"]);
 const CBOE = new Set(["VIX", "VIX3M"]);
+/** FRED DAILY rate series (H.15 / TIPS). Expected latest obs = previous bond session (T-1); weekly/monthly FRED ids keep the loose −5d rule. */
+export const FRED_DAILY_RATE = new Set(["UST2Y", "UST10Y_FRED", "UST30Y_FRED", "REAL10Y"]);
 const CRYPTO = new Set(["BTC"]);
 
 export function sessionOf(id: string): string {
@@ -60,8 +64,22 @@ export function lastKrCashSession(now: Date): string {
   return x;
 }
 
+/** SIFMA bond-market full closes on NYSE trading days (no Treasury obs): Columbus Day (2nd Mon Oct), Veterans Day (Nov 11, Sun → Mon). */
+export function isBondHoliday(d: string): boolean {
+  const m = Number(d.slice(5, 7)), day = Number(d.slice(8, 10)), w = dow(d);
+  return (m === 10 && w === 1 && day >= 8 && day <= 14) || (m === 11 && ((day === 11 && w >= 1 && w <= 5) || (day === 12 && w === 1)));
+}
+/** Latest bond session a FRED daily rate obs is expected for: the previous NYSE trading day before the run's ET date, skipping bond holidays.
+ *  (On 2026-11-13 the 11-12 close is expected; 11-11 Veterans Day has no obs, so on 11-12 the 11-10 obs is current.) */
+export function expectedRateObs(now: Date): string {
+  let x = prevTradingDay(etDate(now));
+  while (isBondHoliday(x)) x = prevTradingDay(x);
+  return x;
+}
+
 function freshThrough(id: string, now: Date): string {
   if (KR.has(id)) return lastKrCashSession(now);
+  if (FRED_DAILY_RATE.has(id)) return expectedRateObs(now);
   if (FRED.has(id)) return addDays(lastUsCashSession(now), -5);
   if (FUTURES.has(id) || FX.has(id) || CRYPTO.has(id)) return addDays(etDate(now), -2);
   return lastUsCashSession(now);

@@ -45,7 +45,7 @@ test("BUG: stock leg logged as { qty, price } (BAC 10/16) was 'entry price unkno
   const m = await paperMark(bac, src(51.225), new Date("2026-10-16T20:05:00Z"));
   close(m.value, 3841.88);                   // 75 × 51.225
   close(m.pnl, -70.13);                      // 75 × (51.225 − 52.16) = −70.125 (the close-price figure in the BAC exit note)
-  assert.deepEqual(m.sources, ["BAC stock yahoo"]);
+  assert.deepEqual(m.sources, ["BAC stock spot 51.225"]); // injected bare number → labelled "spot" (no longer a hard-coded "yahoo")
   const n = normalizedLegs(bac); assert.equal(n[0]!.premium, 52.16); assert.equal(n[0]!.strike, 52.16);
   assert.equal(analyze(n).maxLoss, -3912);   // 75 × 52.16 (stock to 0)
   close(costBasis(n)!, 3912);

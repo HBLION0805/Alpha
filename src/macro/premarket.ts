@@ -13,7 +13,7 @@ import type { SeriesDef } from "./series.ts";
 import type { CalendarEvent } from "../ingest/officialCalendar.ts";
 import type { Earnings } from "../options/events.ts";
 import { etDate, isTradingDay } from "./nyse.ts";
-import { quoteStamp, stampText } from "./quoteMeta.ts";
+import { quoteStamp, stampText, lastUsCashSession, expectedRateObs, FRED_DAILY_RATE } from "./quoteMeta.ts";
 
 const y = (id: string, ref: string, label: string, unit: SeriesDef["unit"] = "price"): SeriesDef => ({ id, provider: "yahoo", ref, label, unit, frequency: "daily" });
 const f = (id: string, ref: string, label: string): SeriesDef => ({ id, provider: "fred", ref, label, unit: "pct", frequency: "daily" });
@@ -33,6 +33,37 @@ export const PM_SERIES: SeriesDef[] = [
 ];
 const YIELD = new Set(["UST2Y", "UST10Y", "UST30Y", "UST10Y_FRED", "UST30Y_FRED", "EFFR", "REAL10Y"]);
 
+/** VIX / VIX3M term structure on one date. Same last date → that date. Different last dates (premarket ^VIX often carries today's
+ *  live bar, ^VIX3M the prior close) → the latest COMMON close date of both series (common=true). usable = that date is not older than
+ *  the last completed US cash session; only then may the ratio fire VIX_BACKWARDATION / the 资金流 downgrade. */
+export interface VixTerm { ratio: number | null; date: string | null; common: boolean; usable: boolean; vix: number | null; vixAsOf: string; v3: number | null; v3AsOf: string }
+export function vixTerm(vix: Obs[] | undefined, v3: Obs[] | undefined, now: Date): VixTerm {
+  const d = (o: Obs) => o.t.slice(0, 10), ok = (o: Obs | undefined): o is Obs => !!o && Number.isFinite(o.v);
+  const lv = vix?.at(-1), l3 = v3?.at(-1);
+  const base = { vix: lv?.v ?? null, vixAsOf: lv ? d(lv) : "n/a", v3: l3?.v ?? null, v3AsOf: l3 ? d(l3) : "n/a" };
+  if (!ok(lv) || !ok(l3)) return { ...base, ratio: null, date: null, common: false, usable: false };
+  let a: Obs | undefined = lv, b: Obs | undefined = l3; const common = d(lv) !== d(l3);
+  if (common) { const m3 = new Map(v3!.filter(ok).map((o) => [d(o), o])); a = [...vix!].reverse().find((o) => ok(o) && m3.has(d(o))); b = a && m3.get(d(a)); }
+  if (!a || !b || !b.v) return { ...base, ratio: null, date: null, common, usable: false };
+  const date = d(a);
+  return { ...base, ratio: a.v / b.v, date, common, usable: date >= lastUsCashSession(now) };
+}
+/** 「最近共同收盘 YYYY-MM-DD VIX/VIX3M 比值 x」 + the newer leg shown separately, or plain 「VIX/VIX3M x」 when both share the last date */
+export function vixTermText(t: VixTerm): string {
+  const r = t.ratio?.toFixed(3) ?? "n/a";
+  if (!t.common) return `VIX/VIX3M ${r}`;
+  const newer = t.vixAsOf > t.v3AsOf ? `实时 VIX ${t.vix?.toFixed(2)} (asOf ${t.vixAsOf})` : `VIX3M ${t.v3?.toFixed(2)} (asOf ${t.v3AsOf})`;
+  return `最近共同收盘 ${t.date ?? "无"} VIX/VIX3M 比值 ${r}（另列 ${newer}；两根最新 asOf 不是同一时点）`;
+}
+/** ZT=F (2Y T-note futures, price moves inverse to yield) live hint under the FRED 2Y line. Direction only — never converted to a yield. */
+export interface ZtQuote { price: number; prevClose: number | null; at: string }
+export function ztHint(q: ZtQuote | null | undefined, now: Date, maxAgeMin = 30): string | null {
+  if (!q || !Number.isFinite(q.price) || !q.prevClose || !Number.isFinite(q.prevClose)) return null;
+  const p = (q.price / q.prevClose - 1) * 100, dir = Math.abs(p) < 0.01 ? "持平" : p > 0 ? "下" : "上";
+  const at = new Date(q.at).toLocaleString("sv-SE", { timeZone: "America/New_York" }).slice(0, 16);
+  return `  - ZT=F ${now.getTime() - Date.parse(q.at) <= maxAgeMin * 60_000 ? "实时" : "最后报价"} ${q.price.toFixed(4)} (${p >= 0 ? "+" : ""}${p.toFixed(3)}% vs prev close, ${at} ET) → 隐含 2Y 收益率方向 ${dir}（仅提示，官方口径仍为 FRED 收盘）`;
+}
+
 /** Existing VIX_BACKWARDATION gate. ratio = last VIX / last VIX3M. >= 1 is the alarm (exactly 1 counts); aligned = the two asOf dates match. No second cutoff. */
 export function vixBackwardationAlarm(ratio: number | null, aligned: boolean): boolean {
   return ratio != null && ratio >= 1 && aligned;
@@ -51,7 +82,8 @@ export interface PremarketInput { now: Date; data: Record<string, Obs[]>; failed
   /** same-contract 1d changes (oilContract.ts) for the oil block, oil alarms (OIL_CRASH…), 快速变动 flag and USDCAD line; key with null → 1d n/a */
   oilSame?: Partial<Record<OilId, SameContract | null>>;
   /** notes shown above the oil table (e.g. 已换月至 BZF27) */ oilNotes?: string[];
-  /** non-oil futures same-contract notes (rolls, n/a, offline) shown under ④ (futContract.ts) */ futNotes?: string[] }
+  /** non-oil futures same-contract notes (rolls, n/a, offline) shown under ④ (futContract.ts) */ futNotes?: string[];
+  /** ZT=F live quote (yahooQuote) → optional direction hint under 2Y; missing → omitted */ zt?: ZtQuote | null }
 export interface PremarketResult { md: string; alarms: Alarm[]; noTrade: string[]; mentorLines: string[]; dkLines: string[]; oilLines: string[]; bondLines: number;
   /** mentor premarket video (oilvix.ts): oil speed / driver heuristic / VIX-vs-index confirmation — flag only */ oilVix: OilVixResult }
 
@@ -76,6 +108,10 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   const day = etDate(inp.now);
   const c = (id: string, k = 1) => chg(id, D[id], k);
   const v = (id: string) => last(D[id]);
+  // FRED daily rates lagging T-1 (H.15 lag, holidays): the last-vs-previous obs change is NOT today's move → null for every derived check
+  const lag = (id: string) => FRED_DAILY_RATE.has(id) && !!D[id]?.length && quoteStamp(id, D[id], inp.now).stale;
+  const cf = (id: string, k = 1) => (lag(id) ? null : c(id, k));
+  const mmdd = (o: Obs | undefined) => o?.t.slice(5, 10).replace("-", "/") ?? "?";
   const qtext = (id: string) => `${id} ${fmt(c(id), "%")}（${stampText(quoteStamp(id, D[id], inp.now))}）`;
 
   // ── 大佬流程 ① 国债 ──
@@ -83,9 +119,12 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   for (const id of ["UST2Y", "UST10Y", "UST30Y"]) {
     const alt = id === "UST10Y" ? "UST10Y_FRED" : id === "UST30Y" ? "UST30Y_FRED" : null;
     const use = D[id]?.length ? id : alt && D[alt]?.length ? alt : id;
-    M.push(`- ${id.replace("UST", "")}: ${v(use)?.toFixed(3) ?? "n/a"}% · 1日 ${fmt(c(use), "bp")} · 5日 ${fmt(c(use, 5), "bp")}${use !== id ? "（Yahoo 失败，用 FRED T-1）" : ""}`);
+    const st = quoteStamp(use, D[use], inp.now), o = D[use], late = lag(use);
+    const d1 = late ? `变动(${mmdd(o?.at(-2))}→${mmdd(o?.at(-1))}) ${fmt(c(use), "bp")}（滞后，非最新一日）` : `1日 ${fmt(c(use), "bp")}`;
+    M.push(`- ${id.replace("UST", "")}: ${v(use)?.toFixed(3) ?? "n/a"}% · ${d1} · ${late ? `5日(截至${mmdd(o?.at(-1))})` : "5日"} ${fmt(c(use, 5), "bp")}${use !== id ? "（Yahoo 失败，用 FRED T-1）" : ""}（${stampText(st)}${late ? `；应有 ${expectedRateObs(inp.now)} 收盘，FRED 未更新` : ""}）`);
+    if (id === "UST2Y") { const h = ztHint(inp.zt, inp.now); if (h) M.push(h); }
   }
-  const t1 = c("UST10Y") ?? c("UST10Y_FRED"), t5 = c("UST10Y", 5) ?? c("UST10Y_FRED", 5);
+  const t1 = c("UST10Y") ?? cf("UST10Y_FRED"), t5 = c("UST10Y", 5) ?? cf("UST10Y_FRED", 5);
   if ((t1 != null && t1 >= 10) || (t5 != null && t5 >= 25)) {
     alarms.push({ kind: "UST10Y_SPIKE", level: "WARNING", title: `10Y 快速上冲 1日 ${fmt(t1, "bp")} / 5日 ${fmt(t5, "bp")}`, detail: "十年期是不是突然间上去了？高风险资产（科技、crypto）可能被抽走资金", by: "mentor" });
     M.push(`- ⚠️ **10Y 快速上冲**（1日 ≥ +10bp 或 5日 ≥ +25bp）→ 先看债市，再看个股`);
@@ -133,8 +172,8 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   // ⑥ 美元
   M.push("", "### ⑥ 美元 DXY / USDCAD / USDJPY", "> 美元为什么在动？其他资产有没有确认？");
   const dxy1 = c("DXY");
-  const conf = dxy1 == null ? [] : [["黄金", -(c("GOLD") ?? 0)], ["BTC", -(c("BTC") ?? 0)], ["2Y", (c("UST2Y") ?? 0) / 10], ["USDCAD", c("USDCAD") ?? 0]].filter(([, x]) => Math.sign(x as number) === Math.sign(dxy1) && Math.abs(x as number) > 0.05).map(([n]) => n);
-  M.push(`- DXY ${v("DXY")?.toFixed(2) ?? "n/a"} · 1日 ${fmt(dxy1, "%")} · 5日 ${fmt(c("DXY", 5), "%")} · 跨资产确认: ${dxy1 == null ? "n/a" : conf.length >= 2 ? `✅ ${conf.join("、")}` : `❌ 仅 ${conf.join("、") || "无"}（不机械解读）`}`);
+  const conf = dxy1 == null ? [] : [["黄金", -(c("GOLD") ?? 0)], ["BTC", -(c("BTC") ?? 0)], ["2Y", (cf("UST2Y") ?? 0) / 10], ["USDCAD", c("USDCAD") ?? 0]].filter(([, x]) => Math.sign(x as number) === Math.sign(dxy1) && Math.abs(x as number) > 0.05).map(([n]) => n);
+  M.push(`- DXY ${v("DXY")?.toFixed(2) ?? "n/a"} · 1日 ${fmt(dxy1, "%")} · 5日 ${fmt(c("DXY", 5), "%")} · 跨资产确认: ${dxy1 == null ? "n/a" : conf.length >= 2 ? `✅ ${conf.join("、")}` : `❌ 仅 ${conf.join("、") || "无"}（不机械解读）`}${dxy1 != null && lag("UST2Y") ? `（2Y asOf ${D.UST2Y?.at(-1)?.t.slice(0, 10)} 滞后，不计入确认）` : ""}`);
   const cad1 = c("USDCAD"), oil1 = S && "WTI" in S ? (S.WTI?.pct1 ?? null) : chg("WTI", OD.WTI, 1);
   M.push(`- USDCAD ${v("USDCAD")?.toFixed(4) ?? "n/a"} · 1日 ${fmt(cad1, "%")} · WTI ${fmt(oil1, "%")} → ${cad1 == null || oil1 == null ? "n/a" : Math.sign(cad1) === -Math.sign(oil1) ? "CAD 与油价一致（油涨 CAD 强 / 油跌 CAD 弱）" : "CAD 与油价不一致：看其他驱动（利差、风险偏好）"}`);
   const jpy1 = c("USDJPY"), jpy5 = c("USDJPY", 5);
@@ -145,20 +184,18 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   }
 
   // ── DK 补充 ──
-  const vix = v("VIX"), v3 = v("VIX3M"), ratio = vix != null && v3 ? vix / v3 : null;
-  const vixBar = D.VIX?.at(-1)?.t.slice(0, 10) ?? null, v3Bar = D.VIX3M?.at(-1)?.t.slice(0, 10) ?? null;
+  const vt = vixTerm(D.VIX, D.VIX3M, inp.now), ratio = vt.ratio, vixBar = vt.date;
   const vixQ = quoteStamp("VIX", D.VIX, inp.now), v3Q = quoteStamp("VIX3M", D.VIX3M, inp.now);
-  const vixAligned = vixBar != null && vixBar === v3Bar;
-  const runClosed = !isTradingDay(day);
+  const runClosed = !isTradingDay(day), session = lastUsCashSession(inp.now);
   const liveNote = runClosed ? `周末/休市重跑：这是 asOf ${vixBar ?? "n/a"} 的期限结构，不是 ${day} 的新实时风险事件。` : "";
-  const vixRead = ratio == null ? "n/a" : !vixAligned ? "两根 asOf 不同，不能当成同一时点的期限结构" : ratio >= 1 ? `🚨 **倒挂（backwardation）= 压力**${liveNote ? `。${liveNote}` : ""}` : ratio >= 0.95 ? "接近倒挂" : "正常升水（contango）";
-  K.push("### VIX 与期限结构", `- VIX ${vix?.toFixed(2) ?? "n/a"}（${stampText(vixQ)}） · VIX3M ${v3?.toFixed(2) ?? "n/a"}（${stampText(v3Q)}） · VIX/VIX3M ${ratio?.toFixed(3) ?? "n/a"} → ${vixRead}`);
+  const vixRead = ratio == null ? (vt.common ? "两根 asOf 不同且无共同收盘日 → 数据不足" : "n/a") : !vt.usable ? `${vt.common ? "两根 asOf 不同，不是同一时点；最近共同收盘 " : ""}${vixBar} 早于上一美股收盘 ${session} → 数据不足（stale）` : ratio >= 1 ? `🚨 **倒挂（backwardation）= 压力**${liveNote ? `。${liveNote}` : ""}` : ratio >= 0.95 ? "接近倒挂" : "正常升水（contango）";
+  K.push("### VIX 与期限结构", `- VIX ${vt.vix?.toFixed(2) ?? "n/a"}（${stampText(vixQ)}） · VIX3M ${vt.v3?.toFixed(2) ?? "n/a"}（${stampText(v3Q)}） · ${vixTermText(vt)} → ${vixRead}`);
   // mentor premarket video (原油与 VIX): VIX trend vs index trend — flag only
   const ov = buildOilVix(OD, S);
   K.push("", "### VIX 分档（用户分享的信息图 · 只标记）", ...ov.lines.regime);
   K.push("", "### VIX 与指数是否互相确认（导师盘前视频 · 只标记）", ...ov.lines.vix);
-  if (vixBackwardationAlarm(ratio, vixAligned)) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 VIX/VIX3M ${ratio!.toFixed(3)}`, detail: `近端恐慌高于远端：市场压力。${stampText(vixQ)}。${liveNote || "读取的是该 asOf 的收盘，不是盘中新打印。"}`, by: "dk", observedOn: vixBar ?? undefined, live: !runClosed });
-  else if (ratio != null && ratio >= 1) K.push(`- 不触发倒挂警报：VIX asOf ${vixBar ?? "n/a"} 与 VIX3M asOf ${v3Bar ?? "n/a"} 不是同一时点。`);
+  if (vixBackwardationAlarm(ratio, vt.usable)) alarms.push({ kind: "VIX_BACKWARDATION", level: "ALARM", title: `VIX 期限结构倒挂 ${vt.common ? `最近共同收盘 ${vixBar} ` : ""}VIX/VIX3M ${ratio!.toFixed(3)}`, detail: `近端恐慌高于远端：市场压力。${vt.common ? `按最近共同收盘 ${vixBar}（VIX asOf ${vt.vixAsOf} / VIX3M asOf ${vt.v3AsOf}）。` : `${stampText(vixQ)}。`}${liveNote || "读取的是该 asOf 的收盘，不是盘中新打印。"}`, by: "dk", observedOn: vixBar ?? undefined, live: !runClosed });
+  else if (ratio != null && ratio >= 1) K.push(`- 不触发倒挂警报：比值日期 ${vixBar ?? "n/a"} 早于上一美股收盘 ${session}（VIX asOf ${vt.vixAsOf} / VIX3M asOf ${vt.v3AsOf}）。`);
   const todays = (inp.calendar ?? []).filter((e) => e.date === day).sort((a, b) => a.timeEt.localeCompare(b.timeEt));
   K.push("", "### 今日经济日历（ET）", ...(todays.length ? todays.map((e) => `- ${e.timeEt} ${e.title}${e.tier === 2 ? "（次要）" : ""}${eventUtcMs(e) <= inp.now.getTime() ? "（已公布）" : e.timeEt < "09:30" ? " **（盘前）**" : ""}`) : ["- 今日无已登记的重要数据"]));
   K.push("", "### 美联储官员讲话（未来 14 天，ET）", ...(inp.fedLines ?? ["- 不可用（未获取 Fed 官方日历）"]));
@@ -172,7 +209,7 @@ export function buildPremarket(inp: PremarketInput): PremarketResult {
   else { const e = inp.earnings.filter((x) => x.date === day); K.push(...(e.length ? e.map((x) => `- ${x.symbol} ${x.timing ?? ""}`) : ["- 今日无"])); }
   K.push("", "### 隔夜：黄金 / BTC（原油见【用户要求】原油）", `- 黄金 ${v("GOLD")?.toFixed(1) ?? "n/a"} (${fmt(c("GOLD"), "%")}) · BTC ${v("BTC")?.toFixed(0) ?? "n/a"} (${fmt(c("BTC"), "%")})`);
   const two = v("UST2Y"), ff = v("EFFR"), spread = two != null && ff != null ? (two - ff) * 100 : null;
-  K.push("", "### 利率预期代理（2Y − 联邦基金，类 FedWatch）", `- 2Y ${two?.toFixed(2) ?? "n/a"}% − EFFR ${ff?.toFixed(2) ?? "n/a"}% = ${spread == null ? "n/a" : `${spread.toFixed(0)}bp → ${spread <= -25 ? "市场定价降息" : spread >= 25 ? "市场定价加息" : "大致按兵不动"}`}（粗略代理，非 CME FedWatch）`);
+  K.push("", "### 利率预期代理（2Y − 联邦基金，类 FedWatch）", `- 2Y ${two?.toFixed(2) ?? "n/a"}%${lag("UST2Y") ? `（asOf ${D.UST2Y?.at(-1)?.t.slice(0, 10)}，滞后）` : ""} − EFFR ${ff?.toFixed(2) ?? "n/a"}% = ${spread == null ? "n/a" : `${spread.toFixed(0)}bp → ${spread <= -25 ? "市场定价降息" : spread >= 25 ? "市场定价加息" : "大致按兵不动"}`}（粗略代理，非 CME FedWatch）`);
   K.push("", "### 实际利率", `- 10Y TIPS ${v("REAL10Y")?.toFixed(2) ?? "n/a"}% · 5日 ${fmt(c("REAL10Y", 5), "bp")}`);
   K.push("", "### 前一交易日成交量异常（src/macro/volume.ts · 成交量仅用于确认/排查，不单独下单）", ...(inp.volumeLines == null ? ["- 无最新 volume 报告（npm run volume）"] : inp.volumeLines.length ? inp.volumeLines : ["- 无异常"]));
   K.push("", "### 隔夜新闻（alert store）", ...((inp.headlines ?? []).length ? inp.headlines!.slice(0, 6).map((h) => `- ${h}`) : ["- 无"]));

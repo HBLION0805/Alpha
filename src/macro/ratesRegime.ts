@@ -1,7 +1,7 @@
 /**
  * 利率 / 油价 / 美元 联动 (user 2026-10-20; the oil–yields–USD regime is the user's mentor framework). Display only —
  * never feeds the verdict / NO_TRADE / 48h·72h / sizing / 能不能睡.
- *  1) 30Y yield + 2Y vs 30Y co-movement (daily bp change, |chg| < 1bp = flat) on the latest date both series have.
+ *  1) 30Y yield + 2Y vs 30Y co-movement (daily bp change, |chg| < 1bp = flat) on the latest date both series have; both asOfs printed, different → 日期错位.
  *  2) Regime: WTI front month (after the front's expiry day → next contract) + 10Y + DXY daily changes.
  *  3) MOVE / collateral multiplier: manual values in data/rates-manual.json (from the forwarded Howell weekly).
  */
@@ -67,10 +67,13 @@ export function ratesLines(i: RatesInput): string[] {
   // co-movement on the latest date BOTH have (2Y is FRED, usually T-1)
   const common = [...new Set(y2.map(day))].filter((d) => y30.some((o) => day(o) === d)).sort().at(-1);
   const c2 = dailyChg(y2, "bp", common), c30 = dailyChg(y30, "bp", common), l30 = dailyChg(y30, "bp");
+  // stamp both asOfs: FRED 2Y often lags ^TYX (H.15 lag / bond holidays) → say 错位 instead of implying the same latest day
+  const a2 = y2.at(-1) ? day(y2.at(-1)!) : "n/a", a30 = y30.at(-1) ? day(y30.at(-1)!) : "n/a";
+  const skew = `2Y asOf ${a2} · 30Y asOf ${a30}${a2 !== a30 ? `，日期错位：按共同日期 ${common ?? "无"} 计算，不是两者最新一日` : ""}`;
   const o = dailyChg(i.oil, "pct"), t = dailyChg(y10, "bp"), u = dailyChg(i.dxy, "pct"), rg = regime(o.chg, t.chg, u.chg);
   return ["### 利率 / 油价 / 美元 联动（只显示）", "",
     `- 30Y 美债收益率 ${l30.v?.toFixed(3) ?? "n/a"}%（${l30.date ?? "?"}，1日 ${fx(l30.chg, 1, "bp")}）`,
-    `- 2Y vs 30Y 联动（${common ?? "无共同日期"}）：2Y ${fx(c2.chg, 1, "bp")} · 30Y ${fx(c30.chg, 1, "bp")} → **${coMove(c2.chg, c30.chg)}**（|变动|<1bp 视为平）`,
+    `- 2Y vs 30Y 联动（${common ?? "无共同日期"}）：2Y ${fx(c2.chg, 1, "bp")} · 30Y ${fx(c30.chg, 1, "bp")} → **${coMove(c2.chg, c30.chg)}**（|变动|<1bp 视为平；${skew}）`,
     `- 油价/利率/美元 组合（导师框架）：WTI ${i.oilCode} ${fx(o.chg, 2, "%")}（${o.date ?? "?"}）· 10Y ${fx(t.chg, 1, "bp")} · DXY ${fx(u.chg, 2, "%")} → **${rg.text}**`,
     ...manualLines(i.manual), ""];
 }

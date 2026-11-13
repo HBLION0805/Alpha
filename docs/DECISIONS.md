@@ -1,5 +1,12 @@
 # Standing decisions (memory-like notes)
 
+## 2026-11-13 — data staleness: paper mark spot, FRED 2Y lag, VIX/VIX3M dates
+- `paper mark`: stock/ETF legs use a Yahoo live quote or the latest daily bar. They never use a chain's `underlyingPrice`. Black-Scholes uses a chain spot only when the chain is fresh (asOf on/after `lastUsCashSession`). Marks carry `spotSource` / `spotAsOf` / `stale`. Leg-less `qty` + `entry` equity entries are valued as one stock leg. Details in docs/ROUTINE_PAPER.md.
+- FRED daily rates (`quoteMeta.ts FRED_DAILY_RATE`: UST2Y, UST10Y_FRED, UST30Y_FRED, REAL10Y): the expected latest obs is the previous bond session (T-1, skipping SIFMA Columbus/Veterans Day, `expectedRateObs`). Anything older is stale. Weekly/monthly FRED ids (HYOAS, NFCI, FEDFUNDS …) keep `lastUsCashSession − 5d`.
+- Premarket ① shows source/asOf/stale on each 2Y/10Y/30Y line. A lagging FRED obs prints `变动(MM/DD→MM/DD) …（滞后，非最新一日）`, never 1日, and is excluded from the DXY cross-asset confirmation and the FRED-fallback 10Y spike check. The 2Y vs 30Y 联动 line prints both asOfs and says 日期错位 when they differ.
+- ZT=F (2Y T-note futures) live quote: one hint line under 2Y giving direction only (隐含 2Y 收益率方向 上/下, vs prev close), with a timestamp. It is never converted to a yield and never replaces FRED. Missing → omitted. The roll can make prev close a different contract on roll day; it is a hint only.
+- VIX/VIX3M with different last dates: the ratio uses the latest common close (`vixTerm`), labelled 「最近共同收盘 … VIX/VIX3M 比值」, with the newer leg listed separately. It may fire the 资金流 downgrade and `VIX_BACKWARDATION` only if that date ≥ `lastUsCashSession`. Stale equal-dated pairs no longer fire the alarm either. This supersedes the 11-08 "different dates never hit" line below.
+
 ## 2026-11-08 — 资金流：信用/波动率示警把偏进攻降为混乱并列（用户拍板；2026-11-09 写入）
 - Display only. Relative-strength votes are unchanged. If those votes are 偏进攻, the 【资金流】label becomes 混乱并列 when either leg below hits. The line says 「信用/波动率示警，偏进攻降为混乱并列」 and names OAS, VIX, or OAS 与 VIX.
 - OAS leg = the existing 利差走阔 condition, not a new bar: `oasWidened` is `chg20Bp > regime.ts T.hy20Widening` (30bp over 20 days) and the OAS reading is present with `stale=false`.

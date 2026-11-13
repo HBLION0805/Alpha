@@ -97,7 +97,10 @@ export interface JournalEntry {
   underlyingAtEntry?: number;
   /** 唱反调 critique shown before entry (src/review/critique.ts); acked = WARNs were overridden with --ack */
   critique?: { at: string; objections: Array<{ id: string; severity: "BLOCK" | "WARN"; text: string; cite: string }>; blocks: number; warns: number; acked?: boolean };
-  marks?: Array<{ at: string; value: number; pnl: number; spot: number | null; sources: string[]; estimated?: boolean }>;
+  /** spotSource/spotAsOf = where spot came from (yahoo-live / yahoo-daily / chain); stale = price date older than the last completed US cash session */
+  marks?: Array<{ at: string; value: number; pnl: number; spot: number | null; sources: string[]; estimated?: boolean; spotSource?: string; spotAsOf?: string; stale?: boolean }>;
+  /** hand-logged leg-less equity positions (legs null/[]): share count + fill; normalizedLegs turns them into one stock leg */
+  qty?: number | null; entry?: number | null;
 }
 
 /** Daily cap (riskCap.ts dailyRiskCapPct: 2% before 2026-10-30 = $100 on $5k; from 10-30 10% while equity ≤ $10k ≈ $500 on $5k; rules.ts dailyLossLimitPct is only a ceiling) counts every SIMULATED trade: formal, practice AND mentor_shadow
@@ -115,14 +118,23 @@ export function normalizeLeg(l: JLeg, entryPrice?: number | null): JLeg {
   const strike = Number.isFinite(raw.strike) ? raw.strike : premium;
   return premium === raw.premium && strike === raw.strike ? l : { ...l, premium, strike };
 }
-export const normalizedLegs = (e: Pick<JournalEntry, "legs" | "entryPrice">): JLeg[] => {
+/** Leg-less equity position (legs null/[], numeric top-level qty + entry, strategy stock_long|stock_short …) → one stock leg
+ *  (long +qty, short −qty, premium = strike = entry). Closed entries with legs [] and qty/entry null stay leg-less. */
+export function legLessStockLeg(e: Pick<JournalEntry, "legs" | "symbol" | "strategy" | "qty" | "entry">): JLeg | null {
+  if (e.legs?.length || !Number.isFinite(e.qty) || !Number.isFinite(e.entry) || !e.qty || !/^(stock|shares?|equity|etf)_(long|short)$/.test(e.strategy ?? "")) return null;
+  const q = Math.abs(e.qty!);
+  return { underlying: e.symbol, type: "stock", strike: e.entry!, qty: /_short$/.test(e.strategy!) ? -q : q, premium: e.entry! };
+}
+export const normalizedLegs = (e: Pick<JournalEntry, "legs" | "entryPrice"> & Partial<Pick<JournalEntry, "symbol" | "strategy" | "qty" | "entry">>): JLeg[] => {
+  const ll = e.symbol != null ? legLessStockLeg(e as JournalEntry) : null; if (ll) return [ll];
   const legs = e.legs ?? [], ep = legs.length && legs.every((l) => l.type === "stock") ? e.entryPrice : null; // entryPrice of a combo is the net debit, not the stock price
   return legs.map((l) => normalizeLeg(l, ep));
 };
 /** in place (cli load); returns the ids whose legs changed */
 export function normalizeJournalLegs(entries: JournalEntry[]): string[] {
   const out: string[] = [];
-  for (const e of entries) { if (!e.legs) continue; const n = normalizedLegs(e); if (n.some((l, i) => l !== e.legs![i])) { e.legs = n; out.push(e.id); } }
+  for (const e of entries) { if (!e.legs?.length) continue; // leg-less entries are normalized on read only (never migrated)
+    const n = normalizedLegs(e); if (n.some((l, i) => l !== e.legs![i])) { e.legs = n; out.push(e.id); } }
   return out;
 }
 
